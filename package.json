@@ -1,0 +1,43 @@
+{
+  "name": "egdev-design-system",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.34.1",
+  "scripts": {
+    "build": "pnpm -r --filter ./packages/** run build",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "storybook": "storybook dev -p 6006",
+    "storybook-build": "storybook build",
+    "tokens": "pnpm --filter @egdev/tokens run build"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.6",
+    "@storybook/addon-a11y": "8.6.18",
+    "@storybook/addon-actions": "8.6.18",
+    "@storybook/addon-essentials": "8.6.18",
+    "@storybook/blocks": "8.6.18",
+    "@storybook/react": "8.6.18",
+    "@storybook/react-vite": "8.6.18",
+    "@tailwindcss/vite": "4.3.3",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.1",
+    "@types/node": "26.1.2",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react-swc": "4.3.2",
+    "jsdom": "29.1.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "storybook": "8.6.18",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "vite": "6.4.3",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "4.1.10"
+  }
+}

@@ -1,0 +1,25 @@
+/* Surface · primitiva: caja con material (Material v2). Base de tarjetas, paneles, tiras y overlays.
+   Por defecto: surface-1 con brillo cenital, borde hairline, borde de luz y sombra de dos capas. */
+.eg-surface{box-sizing:border-box;padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge),var(--shadow-elev-1);color:var(--color-fg-default)}
+
+/* Elevación */
+.eg-surface--flat{box-shadow:var(--shadow-edge)}
+.eg-surface--high{border-color:var(--color-border-hairline-strong);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-2)}
+
+/* Tonos */
+.eg-surface--glass{background:var(--color-surface-overlay);border-color:var(--color-border-hairline-strong);-webkit-backdrop-filter:blur(var(--blur-overlay)) saturate(150%);backdrop-filter:blur(var(--blur-overlay)) saturate(150%);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)}
+.eg-surface--brand{background:var(--gradient-post-new),var(--color-surface-1);border-color:var(--color-border-brand);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-2)}
+.eg-surface--well{background:var(--color-surface-0);border-color:var(--color-border-hairline);box-shadow:var(--shadow-well)}
+.eg-surface--ghost{background:transparent;border-style:dashed;border-color:var(--color-border-control);box-shadow:none}
+
+/* Espaciado y radio */
+.eg-surface--pad-none{padding:0}
+.eg-surface--pad-sm{padding:var(--space-3)}
+.eg-surface--pad-lg{padding:var(--space-8)}
+.eg-surface--radius-md{border-radius:var(--radius-md)}
+.eg-surface--radius-lg{border-radius:var(--radius-lg)}
+.eg-surface--radius-full{border-radius:var(--radius-full)}
+
+@media (prefers-reduced-transparency:reduce){
+  .eg-surface--glass{background:var(--color-surface-2);-webkit-backdrop-filter:none;backdrop-filter:none}
+}

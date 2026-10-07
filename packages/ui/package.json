@@ -1,0 +1,31 @@
+{
+  "name": "@egdev/ui",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Componentes de EGDEV Foundation sobre Radix UI: primitivas, átomos, moléculas, organismos y plantillas.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    "./styles.css": "./src/styles/index.css"
+  },
+  "files": ["dist", "src/styles"],
+  "sideEffects": ["**/*.css"],
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "radix-ui": "^1.4.3"
+  },
+  "peerDependencies": {
+    "@egdev/tokens": "workspace:*",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@egdev/tokens": "workspace:*"
+  }
+}

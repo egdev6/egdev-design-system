@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node", "vitest/globals", "@testing-library/jest-dom"],
+    "paths": { "@/*": ["./packages/ui/src/*"] }
+  },
+  "include": ["packages/*/src", ".storybook", "vitest.config.ts", "vitest.setup.ts"]
+}

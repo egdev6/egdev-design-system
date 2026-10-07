@@ -1,0 +1,15 @@
+/*
+ * Hoja de estilos de @egdev/ui.
+ * 1. legacy/bundle.css: la hoja completa de EGDEV Foundation tal cual sale de Claude Design.
+ *    Se va vaciando a medida que cada componente se porta y mueve sus reglas a su propio .css.
+ * 2. Un .css por componente portado, junto a su carpeta.
+ * Los tokens NO se importan aquí: la app importa @egdev/tokens/tokens.css (o theme.css con Tailwind) antes.
+ * Todo va en @layer components (mismo orden de capas que Tailwind v4): las utilidades de Tailwind y el CSS
+ * sin capa de la app siempre ganan a las clases eg-* sin !important. Ver skills/_shared/component-contract.md.
+ */
+@layer theme, base, components, utilities;
+
+@import './legacy/bundle.css' layer(components);
+
+@import '../primitives/surface/surface.css' layer(components);
+@import '../atoms/icon-button/icon-button.css' layer(components);

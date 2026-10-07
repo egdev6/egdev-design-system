@@ -1,0 +1,6 @@
+/* IconButton · variantes añadidas al portar (el resto vive aún en legacy/bundle.css, ya con Material v2). */
+.eg-icon-btn--square{border-radius:var(--radius-md)}
+.eg-icon-btn--sm{width:32px;height:32px}
+.eg-icon-btn--sm .eg-icon,.eg-icon-btn--sm svg{width:16px;height:16px}
+/* Conmutado: sube como lo seleccionado (surface-3 con borde de luz). */
+.eg-icon-btn[aria-pressed="true"]{color:var(--color-fg-default);background:var(--gradient-sheen),var(--color-surface-3);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1)}

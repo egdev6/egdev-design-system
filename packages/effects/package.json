@@ -1,0 +1,16 @@
+{
+  "name": "@egdev/effects",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Capas de efecto de EGDEV (AmbientBackground, Isotipo3D). Dependen de canvas y three.js.",
+  "main": "./src/index.ts",
+  "files": ["src", "reference"],
+  "scripts": {
+    "build": "echo 'pendiente: portar reference/ a componentes'",
+    "typecheck": "echo 'pendiente'"
+  },
+  "peerDependencies": {
+    "@egdev/tokens": "workspace:*",
+    "react": ">=18.0.0"
+  }
+}

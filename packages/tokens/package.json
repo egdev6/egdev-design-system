@@ -1,0 +1,18 @@
+{
+  "name": "@egdev/tokens",
+  "version": "0.2.0",
+  "type": "module",
+  "description": "Tokens de EGDEV Foundation: JSON fuente, variables CSS y tema de Tailwind v4.",
+  "exports": {
+    "./tokens.json": "./src/tokens.json",
+    "./tokens.css": "./src/tokens.css",
+    "./theme.css": "./src/theme.css"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "build": "node scripts/build-tokens.mjs && node scripts/build-theme.mjs",
+    "typecheck": "echo 'sin TS'"
+  }
+}
