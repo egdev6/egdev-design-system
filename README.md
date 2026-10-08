@@ -2,6 +2,8 @@
 
 EGDEV Foundation en código: el sistema de diseño que comparten egdev.es y todas las herramientas egdev (Mando, Cadencia, egdev-live, Criterio, media-tool y Quorb).
 
+> **Mando** formará parte de **Gentle Dots**, el gestor de agentes de Gentleman Programming, en colaboración con Alan Buscaglia: Mando aporta la capa de módulos (herramientas MCP, permisos, delegación e interfaces de los módulos) y Gentle Dots la orquestación.
+
 - **Base:** React + [Radix UI](https://www.radix-ui.com/) para el comportamiento, CSS con tokens para el aspecto.
 - **Diseño:** se decide en Claude Design (artefacto *EGDEV Foundation*) y se traspasa aquí.
 - **Metodología:** atomic design con primitivas, heredada de [Stack & Flow Design System](https://github.com/Stack-and-Flow/design-system).

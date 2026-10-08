@@ -15,7 +15,7 @@ El diseño se sigue decidiendo en Claude Design (artefacto *EGDEV Foundation*). 
 Lo que solo tiene sentido en un producto **no entra en el sistema**: se queda en el repo de esa app, en `src/patterns/`, y se construye con `@egdev/ui`:
 
 - **Web (egdev.es):** secciones de la home (Hero, LiveBand, NotesBoard…), tarjetas de contenido (NowCard, TipCard, ArticleItem…), TopBar, Footer, SectionShell y HomeTemplate.
-- **Mando:** el panel del agente (AgentPanel, ChatMessage, Composer, ToolCallChip, ConfirmCard) y el preset PermissionLevel.
+- **Mando:** el panel del agente (AgentPanel, ChatMessage, Composer, ToolCallChip, ConfirmCard) y el preset PermissionLevel. Mando será la capa de módulos de **Gentle Dots** (Gentleman Programming), que lleva la orquestación y su propio panel de agente; está por ver qué patrones se usan allí y cuáles quedan para las interfaces de los módulos (ModuleCard, ToolCallChip, ConfirmCard).
 - **Cadencia:** PostCard, montado sobre ListItem.
 
 **Regla de subida:** un patrón de producto pasa a `@egdev/ui` cuando lo necesita una segunda app. Se generaliza al subir: nombre neutro, sin datos ni textos del dominio.
