@@ -1,6 +1,6 @@
 # Decisiones
 
-> Copia del registro de decisiones del artefacto *EGDEV Foundation* (Claude Design, versión 32). Se actualiza en cada traspaso; la fuente es el artefacto.
+> Copia del registro de decisiones del artefacto *EGDEV Foundation* (Claude Design, versión 35). Se actualiza en cada traspaso; la fuente es el artefacto.
 
 Registro de lo que se aprobó, se descartó o sigue pendiente mientras se diseñaba la web EGDEV Pulso (1 de octubre de 2026).
 
@@ -77,6 +77,16 @@ Registro de lo que se aprobó, se descartó o sigue pendiente mientras se diseñ
 - **Ampliado tras aplicarlo a las apps** (web, Mando, egdev-live, Criterio, Cadencia, Quorb, media-tool): marca de ModuleRail con degradado y bisel; AgentPanel en surface-1 con hairline, sombra lateral y cabecera en surface-2; divisores del rail en hairline; SelectTile con materia (miniatura en pozo, seleccionado en surface-3); `.eg-post__media` en pozo; Gauge strip, SectionNav, MobileMenu y CommandPalette como overlay; botón de UserMenu con canto. Las marcas de producto (letra sobre neón) usan `gradient-btn-primary` + `shadow-btn-primary`.
 - **Origen:** criterios de las skills frontend-design (Anthropic), ckw-design y claude-design-skill: un elemento firma, estados que ganan contraste, radios concéntricos, sombra de dos capas, elevación tonal en oscuro y alternativa sólida a las transparencias.
 
+### Grafito (9 de octubre de 2026)
+
+- **El canvas deja de ser negro.** La escalera de superficies pasa a grises, inspirada en apps de escritorio como OBSBOT Center: `surface-0` #141518, `-1` #1B1C20, `-2` #232428 y `-3` #2D2E33 (primitivos `color-primitive-graphite-*`). `color-bg-canvas` es igual que `surface-0`.
+- **Se validó en Quorb** (lienzo «Quorb — Rediseño», fila «Propuesta · elevación tonal en grafito»): ajustes, escritorio y comparativa de escalas.
+- **Tokens que cambian para mantener el contraste:** `color-fg-muted` → #A1A2A8 (≥5.32:1), `color-border-default` → #2A2B30, `color-border-control` → #7A7B81 (≥3.21:1), `color-fg-brand-raised` y `color-status-danger` → `color-primitive-red-300` #FF6680 (≥4.82:1), hueco de `shadow-focus` en #141518 y `shadow-well` más suave.
+- **Token nuevo:** `color-bg-scrim` (negro) para el velo de modales y diálogos.
+- **Neón como texto, solo sobre `surface-0`.** Sobre `surface-1…3` el texto de marca es `color-fg-brand-raised`. El neón sigue en rellenos, anillos, subrayados y gráficas.
+- **Variante nueva:** ModuleCard `--banded` (+ parte `__foot`): cabecera un tono por encima, pie un tono por debajo.
+- **No cambia:** el rojo, la tipografía, las sombras de dos capas, la web Pulso sobre `color-ambient-bg` y las piezas Show (flood, deep, negro).
+
 ## Descartado
 
 - El degradado del CTA (#FF1A4B → #CC0030): da 3.82:1 con texto blanco. (Material v2 sí usa un degradado, #FF2D57 → #FF0036 → #EE0031, porque el texto es negro: ≥4,7:1 en todo el botón.)
@@ -89,6 +99,10 @@ Registro de lo que se aprobó, se descartó o sigue pendiente mientras se diseñ
 - Contadores en el hero y franja inferior «Frontend / IA / Developer tools».
 
 ## Pendiente
+
+- **Grafito en los lienzos de las apps:** Mando, Cadencia, egdev-live, Criterio, media-tool y Quorb llevan una copia de los tokens anteriores; hay que reinstalar EGDEV Foundation en cada lienzo para verlos en grafito.
+- **Grafito en Penpot:** dar de alta `color-primitive-graphite-*`, `color-primitive-red-300` y `color-bg-scrim`, y actualizar las superficies.
+- **Tarjeta hot sobre grafito:** `gradient-hot` termina en #0E0709, más oscuro que el canvas nuevo; revisar si se sube un tono.
 
 - **Penpot:** sincronizar `font.family.sans` y crear `font.family.display`, y dar de alta los tokens nuevos de esta versión y los de Material v2 (familias `gradient`, `shadow-elev-*`, `color-surface-*`).
 - **Logo de Stack & Flow:** falta el archivo.

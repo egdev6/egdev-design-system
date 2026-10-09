@@ -97,7 +97,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **PageHeader** | — | — | Text, ButtonGroup | nuevo | Eyebrow + título + acciones. Repetido a mano en todas las apps. |
 | **SectionHeader** | SectionHeader (molécula) | — | Text | mantener | Cabecera de sección en registro Show; valorar unificar con PageHeader por `register`. |
 | **MeterRow** | — | Progress | ProgressBar, Text, Gauge key | nuevo | Etiqueta + valor + barra + ayuda (Quorb, egdev-live, Criterio). |
-| **ModuleCard** | ModuleCard (molécula) | — | Surface, Badge, Button | mantener | `--error`, `--stopped`, `--wide`; `--glass` pasa a Surface. |
+| **ModuleCard** | ModuleCard (molécula) | — | Surface, Badge, Button | mantener | `--error`, `--stopped`, `--wide`, `--banded` (cabecera y pie en banda tonal, Grafito); `--glass` pasa a Surface. |
 | **SearchTrigger** | SearchTrigger (molécula) | — | Button, Kbd | mantener | Abre CommandPalette. |
 | **SocialLinks** | SocialLinks (molécula) | — | IconButton, Cluster | mantener |  |
 | **PhotoFrame** | PhotoFrame (molécula) | AspectRatio | — | mantener |  |

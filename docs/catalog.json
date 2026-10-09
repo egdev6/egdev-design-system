@@ -624,7 +624,7 @@
     "radix": "—",
     "compone": "Surface, Badge, Button",
     "accion": "mantener",
-    "notas": "`--error`, `--stopped`, `--wide`; `--glass` pasa a Surface."
+    "notas": "`--error`, `--stopped`, `--wide`, `--banded` (cabecera y pie en banda tonal, Grafito); `--glass` pasa a Surface."
   },
   {
     "actual": "SearchTrigger",

@@ -60,7 +60,7 @@ C = [
 ("—","—","PageHeader","molecule","ui","—","Text, ButtonGroup","nuevo","Eyebrow + título + acciones. Repetido a mano en todas las apps."),
 ("SectionHeader","molécula","SectionHeader","molecule","ui","—","Text","mantener","Cabecera de sección en registro Show; valorar unificar con PageHeader por `register`."),
 ("—","—","MeterRow","molecule","ui","Progress","ProgressBar, Text, Gauge key","nuevo","Etiqueta + valor + barra + ayuda (Quorb, egdev-live, Criterio)."),
-("ModuleCard","molécula","ModuleCard","molecule","ui","—","Surface, Badge, Button","mantener","`--error`, `--stopped`, `--wide`; `--glass` pasa a Surface."),
+("ModuleCard","molécula","ModuleCard","molecule","ui","—","Surface, Badge, Button","mantener","`--error`, `--stopped`, `--wide`, `--banded` (cabecera y pie en banda tonal, Grafito); `--glass` pasa a Surface."),
 ("SearchTrigger","molécula","SearchTrigger","molecule","ui","—","Button, Kbd","mantener","Abre CommandPalette."),
 ("SocialLinks","molécula","SocialLinks","molecule","ui","—","IconButton, Cluster","mantener",""),
 ("PhotoFrame","molécula","PhotoFrame","molecule","ui","AspectRatio","—","mantener",""),
