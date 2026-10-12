@@ -1,0 +1,16 @@
+pre-commit:
+  parallel: false
+  commands:
+    biome:
+      glob: '*.{ts,tsx,js,jsx,mjs,json,css}'
+      run: pnpm exec biome check --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
+    typecheck:
+      run: pnpm typecheck
+commit-msg:
+  commands:
+    commitlint:
+      run: pnpm exec commitlint --edit {1}
+pre-push:
+  commands:
+    test:
+      run: pnpm test

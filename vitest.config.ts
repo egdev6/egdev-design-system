@@ -1,5 +1,5 @@
-import react from '@vitejs/plugin-react-swc';
 import { fileURLToPath } from 'node:url';
+import react from '@vitejs/plugin-react-swc';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -12,6 +12,12 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./vitest.setup.ts'],
     include: ['packages/*/src/**/*.test.{ts,tsx}'],
-    css: false
+    css: false,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'lcov'],
+      include: ['packages/ui/src/**/*.{ts,tsx}'],
+      exclude: ['**/*.stories.*', '**/*.test.*', '**/index.ts']
+    }
   }
 });

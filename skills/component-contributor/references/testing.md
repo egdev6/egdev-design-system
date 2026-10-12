@@ -1,182 +1,89 @@
-> Copiado de Stack & Flow (`skills/component-contributor/references/testing.md`, MIT). Adaptación para este repo: donde dice utilidades de Tailwind, `theme.css` o `@theme`, aquí aplica **clases `eg-*` y variables de `@egdev/tokens`**; en las stories, el layout de ejemplo puede ir con estilos en línea mínimos. El resto aplica tal cual.
+> Adaptado de Stack & Flow (`skills/component-contributor/references/testing.md`, MIT), no copiado tal cual: EGDEV usa CSS BEM, tokens y el [contrato compartido](../../_shared/component-contract.md). M2 fija normas; no acredita la adaptación de M3.
 
-# Reference: Testing
+# Referencia: tests de componentes
 
-> Canonical source: `src/components/atoms/button/Button.test.tsx`
-> Testing stack: **Vitest** + **@testing-library/react** + **@testing-library/user-event**
-> Test file: `ComponentName.test.tsx` (complete test suite in one file)
+Vitest 4 + Testing Library React + user-event. Referencias reales bajo `packages/ui/src/`: `atoms/icon-button/IconButton.test.tsx`, `molecules/tabs/Tabs.test.tsx` y `lib/cn.test.ts`.
 
----
+## Organización y entorno
 
-## Single-file strategy
+- El patrón objetivo de siete archivos reserva `ComponentName.test.tsx` para hook (`renderHook`) y componente (`render` + `screen` + `userEvent`). No crees hooks ficticios ni archivos vacíos para alcanzar el número.
+- `vitest.config.ts` incluye `packages/*/src/**/*.test.{ts,tsx}`, usa `jsdom`, `css: false` y `vitest.setup.ts` carga `@testing-library/jest-dom/vitest`.
+- `packages/ui/src/lib/storybook-docgen.test.ts` es una prueba separada de metadatos reales con `// @vitest-environment node`: evita conflictos de `TextEncoder` al cargar herramientas Vite/docgen en jsdom. No cambies el entorno global ni el de las pruebas DOM.
+- Código y nombres de tests en inglés; documentación y textos nuevos de stories en español. No traduzcas stories heredadas sin alcance aprobado.
 
-Every component has ONE test file: `ComponentName.test.tsx`
+## Cobertura observable
 
-This file contains TWO test suites:
+| Contrato | Evidencia cuando aplique |
+|---|---|
+| Hook | Defaults, estado controlado/no controlado y resultados públicos; no cada detalle interno |
+| DOM y accesibilidad | Roles, nombres accesibles, relaciones ARIA y atributos nativos |
+| Interacción | Clic, teclado, foco, callbacks y ausencia de interacción al deshabilitar |
+| Composición | `asChild`, paso de atributos y restricciones públicas reales |
+| Refs y SSR | Ref conectada al DOM en cliente si la API la acepta; render servidor por separado |
+| API de estilos | Solo marcador raíz BEM estable (`eg-icon-btn`, no `eg-icon-button`) |
 
-| Suite | Tool | What it tests |
-|-------|------|---------------|
-| **Hook** | `renderHook` | Pure logic — no DOM |
-| **Component** | `render` + `screen` + `userEvent` | Observable DOM behavior |
+No pruebes cadenas completas de clases, snapshots de apariencia ni internos de animaciones. `cn.test.ts` sí comprueba el contrato de combinación/conflictos de la utilidad: no demuestra apariencia CSS.
 
-### What to test
-- State values returned by the hook (disabled, isLoading, variant, etc.)
-- Computed functions returned by the hook (e.g. `iconSize()`)
-- DOM rendering — correct element, text, attributes
-- ARIA attributes — aria-label, aria-pressed, aria-disabled
-- Interaction — click, keyboard, focus triggers expected result
-- Disabled/loading states block interaction
+Si la API pública acepta refs, comprueba que llegan al elemento DOM esperado en cada versión de React soportada, tanto en uso nativo como en la composición autorizada. Ni la firma del componente ni usar `forwardRef` acreditan por sí solos ese comportamiento. SSR no conecta refs y no sustituye la prueba cliente. El peer `>=18` tampoco demuestra compatibilidad universal: registra resultados por versión.
 
-### What NOT to test
-- Specific CSS class strings
-- Internal refs
-- Animation implementation (ripple, spinner internals)
-- Tailwind utility names
+## Dobles solo si hacen falta
 
----
+Mockea únicamente módulos realmente importados y necesarios para aislar el caso; `vi.mock` se eleva en Vitest. No añadas mocks de iconos, CSS ni paquetes ausentes por plantilla. No se prescribe `spinners-react` ni se autoriza añadir dependencias. Nunca mockees teclado, foco o ARIA de Radix para hacer pasar una prueba.
 
-## Required mocks
+## Ejemplo mínimo con la API real
 
-Declare ALL mocks BEFORE importing the component. Order matters in Vitest.
+Para `packages/ui/src/atoms/icon-button/IconButton.test.tsx`:
 
 ```tsx
-// ─── MOCKS (before component import) ───
-
-vi.mock('lucide-react/dynamic', () => ({
-  // biome-ignore lint/style/useNamingConvention: must match library export name
-  DynamicIcon: () => null
-}));
-
-// Only when the component imports spinners-react
-vi.mock('spinners-react', () => ({
-  // biome-ignore lint/style/useNamingConvention: must match library export name
-  SpinnerCircular: () => null
-}));
-
-// CSS import — prevent parse errors in jsdom
-vi.mock('@/components/utils/styles/index.css', () => ({}));
-
-// ─── IMPORTS (after mocks) ───
-import { MyComponent } from './MyComponent';
-import { useMyComponent } from './useMyComponent';
-```
-
-**Why**: jsdom cannot handle dynamic imports (lucide-react/dynamic), CSS animations (spinners-react), or raw CSS files. Mocking them prevents test crashes that are unrelated to component logic.
-
-**Rule**: Mock only what the component imports. Any component that renders a loading spinner must import `SpinnerCircular` from `spinners-react`, following `Button` as the canonical example, and must mock that import in tests. Do not implement component-local CSS spinners.
-
----
-
-## Hook tests — renderHook pattern
-
-```tsx
-import { renderHook } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
-import { useMyComponent } from './useMyComponent';
-
-describe('useMyComponent — logic', () => {
-  it('returns the default value for myProp', () => {
-    const { result } = renderHook(() => useMyComponent({}));
-    expect(result.current.myProp).toBe('default');
-  });
-
-  it('reflects the passed prop correctly', () => {
-    const { result } = renderHook(() => useMyComponent({ variant: 'ghost' }));
-    expect(result.current.variant).toBe('ghost');
-  });
-
-  it('computed function returns correct value for input', () => {
-    const { result } = renderHook(() => useMyComponent({ size: 'sm' }));
-    expect(result.current.computedSize()).toBe('expected-class');
-  });
-});
-```
-
----
-
-## Component tests — render/screen/userEvent pattern
-
-```tsx
-import { render, screen } from '@testing-library/react';
+import { render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { MyComponent } from './MyComponent';
+import { IconButton } from './IconButton';
+import { useIconButton } from './useIconButton';
 
-describe('MyComponent — component behavior', () => {
-  it('renders the expected element in the DOM', () => {
-    render(<MyComponent />);
-    expect(screen.getByRole('button')).toBeInTheDocument();
+const icon = <svg viewBox='0 0 24 24' />;
+
+describe('IconButton public contract', () => {
+  it('defaults to a native button', () => {
+    const { result } = renderHook(() => useIconButton({ label: 'Save', icon }));
+    expect(result.current.type).toBe('button');
   });
 
-  it('displays the text prop as content', () => {
-    render(<MyComponent text='Hello' />);
-    expect(screen.getByText('Hello')).toBeInTheDocument();
-  });
-
-  it('is disabled when the disabled prop is true', () => {
-    render(<MyComponent text='Submit' disabled={true} />);
-    expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
-  });
-
-  it('calls onClick when clicked', async () => {
-    const handleClick = vi.fn();
-    render(<MyComponent text='Click' onClick={handleClick} />);
-    await userEvent.click(screen.getByRole('button', { name: 'Click' }));
-    expect(handleClick).toHaveBeenCalledTimes(1);
-  });
-
-  it('does NOT call onClick when disabled', async () => {
-    const handleClick = vi.fn();
-    render(<MyComponent text='Click' disabled={true} onClick={handleClick} />);
-    await userEvent.click(screen.getByRole('button', { name: 'Click' }));
-    expect(handleClick).not.toHaveBeenCalled();
+  it('dispatches clicks but blocks them when disabled', async () => {
+    const user = userEvent.setup();
+    const onClick = vi.fn();
+    const { rerender } = render(<IconButton label='Save' icon={icon} onClick={onClick} />);
+    const button = screen.getByRole('button', { name: 'Save' });
+    expect(button).toHaveClass('eg-icon-btn');
+    await user.click(button);
+    expect(onClick).toHaveBeenCalledOnce();
+    onClick.mockClear();
+    rerender(<IconButton label='Save' icon={icon} disabled onClick={onClick} />);
+    expect(button).toBeDisabled();
+    await user.click(button);
+    expect(onClick).not.toHaveBeenCalled();
   });
 });
 ```
 
----
+Completa los casos pertinentes: `pressed` conserva `aria-pressed` en un botón; no lo conviertas en `switch`. Tabs debe probar selección, paneles, flechas, elementos deshabilitados y callbacks controlados. Los casos negativos de tipos consumidores pueden usar `@ts-expect-error` con motivo concreto (p. ej., falta `label` obligatorio); no casts indiscriminados ni supresiones generales.
 
-## ARIA testing patterns
+## Comandos y límites de la evidencia
 
-```tsx
-// aria-label
-render(<MyComponent ariaLabel='Submit form' />);
-expect(screen.getByRole('button', { name: 'Submit form' })).toBeInTheDocument();
+Ejecuta primero la unidad afectada, p. ej. `pnpm test -- packages/ui/src/atoms/icon-button/IconButton.test.tsx`; después los gates autorizados. Esta guía no afirma que hayan pasado.
 
-// aria-pressed + role="switch"
-render(<MyComponent text='Toggle' aria-pressed={true} />);
-expect(screen.getByRole('switch', { name: 'Toggle' })).toBeInTheDocument();
+| Comando del root | Qué comprueba / requisito |
+|---|---|
+| `pnpm test` / `pnpm test:coverage` | Suites Vitest / cobertura v8; no validación visual |
+| `pnpm typecheck` / `pnpm lint` | Tipos / Biome; no prueba de consumo externo |
+| `pnpm build` → `pnpm test:package-exports` | Build previo; archivos exportados y grafo `.d.ts`, no funcionalidad ni CSS consumido |
+| `pnpm test:package-consumption` | Build previo; paquetes externos empaquetados, TS estricto/negativos, CSS Vite, SSR, cliente/refs y deduplicación por major; instala fixtures aisladas, requiere autorización |
+| `pnpm test:storybook-mcp` | Servidor local docs-only existente; APIs/documentación e iframe HTML, no render visual de navegador |
 
-// aria-disabled
-render(<MyComponent text='Blocked' disabled={true} />);
-expect(screen.getByRole('button', { name: 'Blocked' })).toHaveAttribute('aria-disabled', 'true');
-```
+El consumo externo y los gates runtime siguen pendientes de resultados del responsable; no declares React 18/19 verificado por leer sus scripts. Storybook documenta: sin `play` ni addon de tests impuesto. Metadatos docgen y smoke MCP no prueban widgets Controls, foco ni apariencia: verifica también la UI real, sin habilitar herramientas MCP de tests ni crear servidor por esta guía. Comprueba los exports públicos en `packages/ui/src/index.ts` y `packages/ui/package.json`, no rutas del proyecto de origen.
 
----
+## Revisión
 
-## Storybook stories
-
-Stories are for visual documentation and design exploration — NOT for testing.
-
-- NO `play` functions in stories
-- NO interaction testing in Storybook
-- ALL tests go in `ComponentName.test.tsx`
-
----
-
-## Running tests
-
-```bash
-# Vitest (unit + hook tests)
-pnpm test
-```
-
----
-
-## Checklist before opening a PR
-
-- [ ] Hook tested with `renderHook` — all returned values and computed functions covered
-- [ ] Component tested with `render/screen/userEvent` — rendering, ARIA, interaction, disabled states
-- [ ] All required mocks declared BEFORE component imports
-- [ ] All tests in `ComponentName.test.tsx`
-- [ ] `pnpm test` passes with no failures
+- [ ] Casos aplicables de hook, DOM, accesibilidad, interacción y refs cubiertos sin mocks de Radix.
+- [ ] Tipos negativos justificados y marcadores públicos distinguidos de apariencia.
+- [ ] Gates ejecutados con resultado observado; pendientes y comprobación visual separados.

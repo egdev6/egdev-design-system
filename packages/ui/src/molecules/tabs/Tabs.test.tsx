@@ -51,7 +51,16 @@ describe('Tabs — component', () => {
 
   it('works as a segmented selector without panels', async () => {
     const onValueChange = vi.fn();
-    render(<Tabs label='Historial' variant='segmented' size='sm' defaultValue='7d' items={range} onValueChange={onValueChange} />);
+    render(
+      <Tabs
+        label='Historial'
+        variant='segmented'
+        size='sm'
+        defaultValue='7d'
+        items={range}
+        onValueChange={onValueChange}
+      />
+    );
     expect(screen.getByRole('tab', { name: '7 d' })).toHaveAttribute('aria-selected', 'true');
     expect(screen.queryByRole('tabpanel')).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole('tab', { name: '30 d' }));

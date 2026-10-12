@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
-/** Une clases condicionales. Las clases del sistema son BEM (`eg-*`), así que no hace falta tailwind-merge. */
-export const cn = (...inputs: ClassValue[]): string => clsx(inputs);
+/** Combina clases condicionales y resuelve utilidades Tailwind sin eliminar la API pública eg-*. */
+export const cn = (...inputs: ClassValue[]): string => twMerge(clsx(inputs));

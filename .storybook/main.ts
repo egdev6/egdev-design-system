@@ -1,12 +1,23 @@
+import { fileURLToPath } from 'node:url';
 import type { StorybookConfig } from '@storybook/react-vite';
 import tailwindcss from '@tailwindcss/vite';
-import { fileURLToPath } from 'node:url';
 import { mergeConfig } from 'vite';
 
 const config: StorybookConfig = {
   stories: ['../docs/**/*.mdx', '../packages/*/src/**/*.mdx', '../packages/*/src/**/*.stories.@(ts|tsx)'],
-  addons: ['@storybook/addon-essentials', '@storybook/addon-a11y'],
+  addons: [
+    '@storybook/addon-docs',
+    '@storybook/addon-a11y',
+    {
+      name: '@storybook/addon-mcp',
+      options: {
+        endpoint: '/mcp',
+        toolsets: { dev: false, docs: true, test: false }
+      }
+    }
+  ],
   framework: { name: '@storybook/react-vite', options: {} },
+  features: { componentsManifest: true },
   typescript: {
     reactDocgen: 'react-docgen-typescript',
     reactDocgenTypescriptOptions: {
