@@ -1,5 +1,6 @@
 import { render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { createRef } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { IconButton } from './IconButton';
 import { useIconButton } from './useIconButton';
@@ -19,6 +20,16 @@ describe('useIconButton — logic', () => {
 });
 
 describe('IconButton — component', () => {
+  it.each([false, true])('forwards its public button ref with asChild=%s', (asChild) => {
+    const ref = createRef<HTMLButtonElement>();
+    render(
+      <IconButton asChild={asChild} ref={ref} label='Save' icon={icon}>
+        {asChild ? <button type='button' /> : undefined}
+      </IconButton>
+    );
+    expect(ref.current).toBe(screen.getByRole('button', { name: 'Save' }));
+  });
+
   it('is reachable by its label', () => {
     render(<IconButton label='Ajustes' icon={icon} />);
     expect(screen.getByRole('button', { name: 'Ajustes' })).toBeInTheDocument();

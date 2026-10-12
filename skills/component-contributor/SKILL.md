@@ -4,39 +4,45 @@ description: "Implementa o porta un componente de EGDEV Foundation (Claude Desig
 license: MIT
 metadata:
   author: egdev
-  version: "0.1"
+  version: "0.2"
   basedOn: "stack-and-flow/component-contributor"
 ---
 
+> Modificado por EGDEV (2026) a partir de material de Stack and Flow (copyright 2025), cuyo original conserva Apache-2.0. Las modificaciones propias se ofrecen bajo MIT. Véanse los [avisos de terceros](../../THIRD_PARTY_NOTICES.md) y la [licencia original](../../LICENSES/Apache-2.0.txt).
+
 ## Cuándo usarla
 
-Para implementar un componente que ya tiene decisión de catalogación (fila en `docs/CATALOGO.md` o salida de `component-cataloging`). Si el componente no está en el catálogo o hay dudas de nivel, primero `skills/component-cataloging/SKILL.md`.
+Exige decisión y plan aprobados; una fila provisional no basta. Sin decisión, usa [component-cataloging](../component-cataloging/SKILL.md). M2 fija el flujo, no inicia M3 ni acredita adaptación.
 
 ## Lecturas obligatorias, en este orden
 
-1. `skills/_shared/component-contract.md`
-2. `docs/CATALOGO.md` — fila del componente: nivel, destino, base Radix, qué compone.
-3. La ficha del componente en EGDEV Foundation (`components/<Nombre>/README.md` y `preview.html` del artefacto de Claude Design), si existe: es la fuente del aspecto, las variantes y la accesibilidad.
-4. Sus reglas en `packages/ui/src/styles/legacy/bundle.css` (busca `.eg-<bloque>`).
-5. `skills/component-contributor/references/radix-patterns.md` si usa Radix.
-6. `references/stories.md` y `references/testing.md`.
-7. Un componente de referencia del mismo nivel: `primitives/surface`, `atoms/icon-button` o `molecules/tabs`.
+1. [Contrato](../_shared/component-contract.md), [arquitectura](../../docs/ARQUITECTURA.md) y [catalogación](../../docs/CATALOGACION.md): autoridades.
+2. [Catálogo provisional](../../docs/CATALOGO.md) y props/exports React reales.
+3. Ficha Foundation (`components/<Nombre>/README.md`, `preview.html`) y [Material](../../docs/MATERIAL.md).
+4. CSS propio y `packages/ui/src/styles/legacy/bundle.css`.
+5. [Radix](references/radix-patterns.md): ignora imports unificados heredados.
+6. [Stories](references/stories.md) y [tests](references/testing.md): no impongas rutas/mocks/dependencias ajenos.
+7. Referencias existentes Surface, IconButton o Tabs, sin asumir conformidad.
 
 ## Pasos
 
-1. **Comprueba dependencias.** Todo lo que aparece en «Compone» del catálogo tiene que existir. Si falta, se implementa antes (de abajo arriba) o se para y se avisa.
-2. **Crea la carpeta** `packages/ui/src/<nivel>/<kebab-name>/` con los 7 archivos del contrato.
-3. **`types.ts`:** traduce cada modificador BEM de la ficha a una variante CVA. Un modificador que en realidad cambia la semántica no es variante: avisa y propón separarlo.
-4. **Mueve el CSS:** corta las reglas del bloque de `legacy/bundle.css` y pégalas en `<kebab-name>.css`. Cambia los selectores de estado `.is-*` por los atributos de Radix/ARIA (deja también `.is-*` solo si los lienzos de Claude Design lo siguen necesitando). Importa el archivo en `styles/index.css`.
-5. **`useComponentName.ts`:** defaults, CVA, aria y handlers.
-6. **`ComponentName.tsx`:** solo JSX sobre la primitiva de Radix.
-7. **Tests y stories** según las referencias. Las stories enseñan las variantes que existían en la ficha.
-8. **Exporta** en `index.ts` y en `packages/ui/src/index.ts`.
-9. **Actualiza el catálogo:** en `scripts/catalog_data.py` si cambia algo de lo previsto, y `python scripts/build_catalog.py`.
-10. **Verifica:** `pnpm typecheck`, `pnpm test`, `pnpm lint`, y abre la story en `pnpm storybook`.
+1. **Inspecciona composición/API.** Piezas, paquetes o tokens ausentes: bloquea y propone, nunca implementes prerrequisitos sin aprobación. Nivel por responsabilidad/coordinación, no tamaño/recuentos; Surface es apoyo legítimo.
+2. **Presenta el plan y espera aprobación humana antes de código:** anatomía, API/defaults, estados, accesibilidad, Radix, Material, rutas y compatibilidad/lienzos. Siete responsabilidades significativas; excepciones justificadas y aprobadas, nunca archivos vacíos.
+3. **`types.ts`:** props públicas, `type`, CVA/BEM, JSDoc español y `@default` real, incluidos defaults derivados. Cambios semánticos: propón separar. Herencia nativa con `Omit`; `ComponentPropsWithoutRef` si excluye refs. No infieras forwarding/compatibilidad React 18.
+4. **CSS del port aprobado:** tokens/receta Material, Surface para cajas con materia; hoja propia importada con `layer(components)`. Nada de recetas improvisadas/migración masiva. Raíz pública estable: IconButton = `eg-icon-btn`, nunca `eg-icon-button`; nuevas raíces `eg-<nombre>`. Estados por atributos Radix/ARIA o `data-state`, ids accesibles con `useId()`. Conserva legado/`.is-*` de lienzos hasta paridad y retirada aprobadas.
+5. **`useComponentName.ts`:** lógica, estado, refs, handlers, aria y llamada CVA; retorno tipado sin `any`, `cn()` para raíz/`className` de layout.
+6. **`ComponentName.tsx`:** solo JSX, hook y props explícitas; namespaces `@radix-ui/react-*` ya disponibles. No reimplementes teclado/foco/ARIA. Verifica `Portal`, `asChild`, `...rest` y semántica nativa.
+7. **Tests/stories:** hook/componente con `renderHook`, `render`, roles/nombres y `userEvent`; defaults, ARIA, teclado y deshabilitado aplicables. Sin cadenas completas de clases; raíz pública/invariantes `cn()` sí. Storybook 10: autodocs, `Meta`/`StoryObj` de `@storybook/react-vite`, `action` de `storybook/actions`; sin `argTypes` manuales/`play`. Prueba `react-docgen-typescript` real: required, enums, nativas, defaults, `asChild`. `@control` no garantiza widget; args requeridos/ejemplos, `Default` sin sustituir defaults.
+8. **`index.ts`:** exports nombrados de componente/tipos y en índice público; límites de paquete aplicables.
+9. **Catálogo autorizado:** `scripts/catalog_data.py` y `python3 scripts/build_catalog.py`, nunca edición del generado.
+10. **Verifica:** pruebas focalizadas primero; suites/Storybook solo autorizados. Metadatos, smoke HTML o lint no prueban apariencia/accesibilidad.
 
 ## Reglas
 
-- No añadir dependencias ni tocar `tokens.json` sin confirmación.
-- Si la ficha de EGDEV Foundation y el catálogo se contradicen, para y pregunta.
-- Textos de ejemplo realistas y en español, sin datos ni nombres de personas reales.
+- Tokens/dependencias: confirmación específica. Contradicciones: para y pregunta con evidencia.
+- Código/tests/IDs en inglés; documentación/stories nuevas en español, sin datos personales. No traduzcas legado fuera de alcance.
+- Sin commits, issues, labels ni gates externos automáticos.
+
+## Entrega
+
+Devuelve archivos, decisiones aprobadas, resultados observados y pendientes. Distingue previsto/implementado y verificación funcional/aprobación nativa. Estado del stack: [ODD](../../docs/odd/stack-alignment.md).

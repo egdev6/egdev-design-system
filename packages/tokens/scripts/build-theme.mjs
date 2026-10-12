@@ -27,4 +27,6 @@ const out = [
 ].join('\n');
 
 writeFileSync(join(root, 'theme.css'), out);
-console.log(`theme.css: ${decls.filter(([n]) => isTheme(n)).length} en @theme, ${decls.filter(([n]) => !isTheme(n)).length} en :root`);
+console.log(
+  `theme.css: ${decls.filter(([n]) => isTheme(n)).length} en @theme, ${decls.filter(([n]) => !isTheme(n)).length} en :root`
+);

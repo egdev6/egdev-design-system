@@ -1,12 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { IconButton } from './IconButton';
-
-const Gear = () => (
-  <svg className='eg-icon' viewBox='0 0 24 24' aria-hidden='true'>
-    <circle cx='12' cy='12' r='3' />
-    <path d='M12 2v3M12 19v3M2 12h3M19 12h3' />
-  </svg>
-);
 
 /**
  * ## Descripción
@@ -22,7 +15,15 @@ const meta: Meta<typeof IconButton> = {
   title: 'Atoms/IconButton',
   component: IconButton,
   tags: ['autodocs'],
-  args: { label: 'Ajustes', icon: <Gear /> }
+  args: {
+    label: 'Ajustes',
+    icon: (
+      <svg className='eg-icon' viewBox='0 0 24 24' aria-hidden='true'>
+        <circle cx='12' cy='12' r='3' />
+        <path d='M12 2v3M12 19v3M2 12h3M19 12h3' />
+      </svg>
+    )
+  }
 };
 export default meta;
 

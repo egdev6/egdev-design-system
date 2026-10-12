@@ -3,3 +3,5 @@ packages:
 allowBuilds:
   "@swc/core": true
   esbuild: true
+  # Hook installation is explicit via pnpm hooks:install, not a dependency lifecycle side effect.
+  lefthook: false

@@ -30,7 +30,9 @@ for (const [family, value] of Object.entries(source)) {
     }
     continue;
   }
-  if (!value || typeof value !== 'object' || !Array.isArray(value.tokens)) continue;
+  if (!value || typeof value !== 'object' || !Array.isArray(value.tokens)) {
+    continue;
+  }
   lines.push('', `  /* ${family} */`);
   for (const token of value.tokens) {
     lines.push(`  --${token.name}:${resolve(token.value)};`);

@@ -1,56 +1,54 @@
-> Copiado de Stack & Flow (`skills/component-contributor/references/stories.md`, MIT). Adaptación para este repo: donde dice utilidades de Tailwind, `theme.css` o `@theme`, aquí aplica **clases `eg-*` y variables de `@egdev/tokens`**; en las stories, el layout de ejemplo puede ir con estilos en línea mínimos. El resto aplica tal cual.
+> Adaptado de Stack & Flow (`skills/component-contributor/references/stories.md`, MIT), no aplicado tal cual: EGDEV documenta en español, usa tokens/CSS BEM y reserva Tailwind para colocación. Sin estilos inline de apariencia ni espaciados arbitrarios; manda el [contrato compartido](../../_shared/component-contract.md).
 
-# Storybook Stories Reference
+# Referencia de stories de Storybook
 
-Canonical conventions for `*.stories.tsx` in this repository.
+Convenciones canónicas para `*.stories.tsx` en este repositorio.
 
-## Purpose
+## Propósito
 
-Use this reference BEFORE writing or reviewing stories. Do not improvise Storybook conventions from generic defaults.
+Consulta esta referencia ANTES de escribir o revisar stories. No improvises convenciones a partir de los valores genéricos de Storybook.
 
-## Non-negotiable rules
+## Reglas obligatorias
 
-- Use `autodocs`.
-- Do **not** define manual `argTypes` in `meta` or individual stories unless there is a documented exception.
-- Use `@storybook/addon-actions` with `action(...)` for event args.
-- Never use inline no-op handlers like `() => undefined` in story args.
-- Use Tailwind token utility classes from `@theme` or reusable semantic classes from the style system; do **not** use `[var(--token)]` or direct `var()` in stories.
-- Custom fractional spacing tokens declared in `theme.css` must use Tailwind v4 dash utility names (`p-0-75`, `p-1-25`, `min-w-4-5`), not dotted custom-token names (`p-0.75`, `p-1.25`, `min-w-4.5`). Built-in half-step utilities such as `p-0.5`, `gap-1.5`, and `px-2.5` stay valid.
-- HARD RULE: keep all Storybook documentation in English, including docs headings, descriptions, comments, story names, and arg labels.
-- Component-level docs must be written as a JSDoc block immediately above `const meta`; do **not** put component docs in `parameters.docs.description.component`.
-- The component-level JSDoc block must use this English story header structure:
-  - `## Description` — required for every component; describe what it does and when to use it.
-  - `## Dependencies` — include only when the story/component uses other design-system components or external primitives; list each dependency and why it is used.
-  - `## Usage Guide` — include only when usage is complex; explain composition, constraints, or non-obvious behavior.
-- Story-level docs must be written as a useful JSDoc block immediately above each `export const StoryName`; do **not** render documentation cards, panels, helper text blocks, or usage notes inside the story canvas.
-- Each story must earn its place: demonstrate a distinct state, variant axis, composition constraint, accessibility behavior, or integration context. Do not add stories that duplicate coverage already provided by controls, args, or another story.
-- Do **not** add a generic `DarkMode` story just to show the component in dark theme. Storybook already provides global dark/light switching via the toolbar.
-- A dedicated dark-mode story is allowed only when it demonstrates behavior the global theme toggle cannot express, such as local dark-scope rendering, portal theme inheritance, or a theme-specific bug/regression case. State that reason in the story JSDoc.
-- Story render functions and decorators are examples only: they may provide layout needed to demonstrate the component, but not narrative documentation UI.
-- `Default` story args must not override the component `defaultVariants`.
-- Interactive components must include `Disabled` and interaction-focused stories as appropriate.
-- NO `play` functions — interaction testing belongs in `ComponentName.test.tsx`.
+- Usa `autodocs`.
+- **No** definas `argTypes` manuales en `meta` ni en stories individuales salvo excepción justificada y aprobada en el plan; nunca para ocultar fallos de docgen.
+- Importa `action(...)` desde `storybook/actions` para los argumentos de eventos.
+- Importa los tipos `Meta` y `StoryObj` desde el framework `@storybook/react-vite`.
+- Nunca uses manejadores vacíos como `() => undefined` en los argumentos.
+- Usa las clases semánticas del sistema (`eg-*`); Tailwind solo para el layout de ejemplo, nunca para cambiar el aspecto del componente.
+- No copies utilidades fraccionarias de otros temas: usa solo espaciados disponibles en `@egdev/tokens/theme.css`; que Tailwind admita una clase no acredita un token EGDEV.
+- Toda la documentación de Storybook va en español: encabezados, descripciones, comentarios, nombres visibles de stories y etiquetas de argumentos. El código y los identificadores siguen en inglés. Traducir stories heredadas requiere alcance explícito.
+- La documentación del componente va en un bloque JSDoc inmediatamente antes de `const meta`; **no** en `parameters.docs.description.component`.
+- El bloque JSDoc del componente usa estos encabezados:
+  - `## Descripción` — obligatorio; explica qué hace y cuándo usarlo.
+  - `## Dependencias` — solo cuando usa otros componentes del sistema o primitivas externas; indica cada dependencia y su motivo.
+  - `## Guía de uso` — solo para usos complejos; explica composición, restricciones o comportamientos no evidentes.
+- Cada story lleva un JSDoc útil inmediatamente antes de `export const StoryName`; **no** añadas tarjetas de documentación, paneles, textos auxiliares ni notas de uso al lienzo.
+- Cada story debe demostrar un estado, eje de variantes, restricción de composición, comportamiento accesible o integración distinto. No dupliques lo que ya cubren los controles, argumentos u otras stories.
+- `.storybook/preview.tsx` no define `globalTypes` ni selector de tema: desactiva backgrounds, usa layout `padded` y ordena niveles con `storySort`. No inventes un selector ni añadas una story genérica `DarkMode`.
+- Un caso temático debe usar configuración real y demostrar ámbito local, herencia en portales o una regresión relevante; explica el motivo en JSDoc y aprueba cambios de configuración por separado.
+- Los renders y decoradores son ejemplos: pueden aportar layout, pero no interfaces narrativas de documentación.
+- Los argumentos de `Default`, incluidos los heredados de meta, no deben sustituir defaults del componente/hook/CVA: solo props requeridas y ejemplos.
+- Los componentes interactivos incluyen `Disabled` y escenarios de interacción cuando corresponda.
+- Sin funciones `play`: los tests de interacción van en `ComponentName.test.tsx`.
 
-## Recommended structure
+## Estructura recomendada
 
 ```tsx
-import type { Meta, StoryObj } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import { Component } from "./Component";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { action } from "storybook/actions";
+import { IconButton } from "./IconButton";
 
 /**
- * ## Description
- * Concise English description of the component.
+ * ## Descripción
+ * Botón de solo icono con nombre accesible obligatorio.
  *
- * ## Dependencies
- * Uses `OtherComponent` to compose the example because ...
- *
- * ## Usage Guide
- * Use this component when ... Avoid ...
+ * ## Dependencias
+ * Radix AccessibleIcon aporta el nombre del icono; Slot permite composición con asChild.
  */
-const meta: Meta<typeof Component> = {
-  title: "Atoms/Component",
-  component: Component,
+const meta: Meta<typeof IconButton> = {
+  title: "Atoms/IconButton",
+  component: IconButton,
   parameters: {
     docs: {
       autodocs: true,
@@ -61,37 +59,43 @@ const meta: Meta<typeof Component> = {
 
 export default meta;
 
-type Story = StoryObj<typeof Component>;
+type Story = StoryObj<typeof IconButton>;
 
 /**
- * Demonstrates the component with its built-in default variants so consumers can compare other stories against the baseline API.
+ * Demuestra las variantes predeterminadas para comparar otras stories con la API base.
  */
 export const Default: Story = {
+  name: "Predeterminado",
   args: {
-    children: "Example",
-    onClick: action("click"),
+    label: "Ajustes",
+    icon: <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" /><path d="M12 2v3M12 19v3M2 12h3M19 12h3" /></svg>,
+    onClick: action("clic"),
   },
 };
 ```
 
-## Review checklist
+## Lista de revisión
 
-- Does the story rely on autodocs instead of custom `argTypes`?
-- Are actions wired with `action(...)`?
-- Are token utilities / semantic style-system classes used instead of `[var(--token)]` or direct `var()` bypasses?
-- Do custom fractional spacing utilities use dash names from `theme.css` (`0-75`, `1-25`, `4-5`) instead of dotted custom-token names?
-- Is the component-level docs JSDoc block immediately above `const meta`?
-- Does the component-level JSDoc block include required `## Description`?
-- Are `## Dependencies` and `## Usage Guide` included only when applicable?
-- Does each story JSDoc explain the scenario and why it matters instead of restating the story name or saying only "Shows the component"?
-- Is every story necessary, with no duplicate coverage that controls, args, the global dark-mode toolbar, or another story already provide?
-- Are generic theme-only `DarkMode` stories absent unless they document a local scope, portal inheritance, or regression case that the toolbar cannot express?
-- Are documentation cards, panels, helper text blocks, and usage notes absent from the story canvas?
-- Does `meta.parameters.docs` avoid `description.component`?
-- Are examples aligned with the canonical component API and public docs style?
-- Does each story demonstrate one axis clearly?
-- Do public props in `types.ts` document runtime defaults with `@default`, matching hook/component defaults and CVA `defaultVariants`?
+- ¿Usa autodocs en lugar de `argTypes` personalizados?
+- ¿Conecta los eventos con `action(...)` desde `storybook/actions`?
+- ¿Importa los tipos desde `@storybook/react-vite`?
+- ¿Usa clases semánticas y reserva Tailwind para el layout del ejemplo?
+- ¿Los espaciados existen en el tema EGDEV, sin valores arbitrarios ni apariencia inline?
+- ¿El JSDoc del componente está inmediatamente antes de `const meta`?
+- ¿Incluye el encabezado obligatorio `## Descripción`?
+- ¿Incluye `## Dependencias` y `## Guía de uso` solo cuando corresponde?
+- ¿Cada JSDoc explica el escenario y su importancia, en vez de repetir el nombre o decir solo «Muestra el componente»?
+- ¿Todas las stories aportan cobertura distinta de los controles, argumentos y otras stories, sin presuponer selector de tema?
+- ¿Evita stories genéricas `DarkMode` salvo casos locales, portales o regresiones documentadas?
+- ¿Evita tarjetas, paneles y notas de documentación dentro del lienzo?
+- ¿Evita `description.component` en `meta.parameters.docs`?
+- ¿Los ejemplos respetan la API canónica y la documentación pública en español?
+- ¿Cada story demuestra claramente un eje?
+- ¿Las props públicas en `types.ts` documentan sus valores por defecto con `@default`, coincidiendo con el hook/componente y los `defaultVariants` de CVA?
 
-## Notes
+## Notas
 
-- If a future project decision changes the official actions helper or autodocs policy, update this reference FIRST, then update the affected skills.
+- Comprueba extracción real de required, literales, defaults y `asChild` y su UI en Controls. `@control select` expresa intención, no garantiza combobox: dos valores pueden ser radios. No tapes discrepancias con `argTypes`.
+- MCP favorece ejemplos resolubles estáticamente: un helper local como `Gear` puede dejar un símbolo sin resolver en el snippet. El SVG intrínseco anterior evita ese caso; no prohíbe helpers en general. Inspecciona manifest y snippet completo, no solo que exista una story.
+- `.storybook/main.ts` habilita MCP solo docs (`dev: false`, `test: false`). El smoke de `scripts/storybook-mcp.test.mjs` comprueba HTML del iframe, no render visual ni widgets: la comprobación en navegador sigue siendo necesaria.
+- Si cambia el helper oficial de acciones o la política de autodocs, actualiza PRIMERO esta referencia y después los skills afectados.

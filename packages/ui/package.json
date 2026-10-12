@@ -6,11 +6,19 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
     "./styles.css": "./src/styles/index.css"
   },
-  "files": ["dist", "src/styles"],
-  "sideEffects": ["**/*.css"],
+  "files": [
+    "dist",
+    "src/**/*.css"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "scripts": {
     "build": "vite build",
     "typecheck": "tsc -p tsconfig.json --noEmit"
@@ -18,7 +26,10 @@
   "dependencies": {
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
-    "radix-ui": "^1.4.3"
+    "@radix-ui/react-accessible-icon": "1.2.0",
+    "@radix-ui/react-slot": "1.5.0",
+    "@radix-ui/react-tabs": "1.2.0",
+    "tailwind-merge": "3.7.0"
   },
   "peerDependencies": {
     "@egdev/tokens": "workspace:*",
@@ -26,6 +37,10 @@
     "react-dom": ">=18.0.0"
   },
   "devDependencies": {
-    "@egdev/tokens": "workspace:*"
+    "@egdev/tokens": "workspace:*",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
   }
 }

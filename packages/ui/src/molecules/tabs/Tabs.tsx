@@ -1,4 +1,4 @@
-import { Tabs as TabsPrimitive } from 'radix-ui';
+import * as TabsPrimitive from '@radix-ui/react-tabs';
 import type { FC } from 'react';
 import type { TabsProps } from './types';
 import { tabTriggerClassName, useTabs } from './useTabs';

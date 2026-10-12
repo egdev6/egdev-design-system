@@ -1,6 +1,6 @@
 # Referencia: patrones de Radix UI
 
-> Adaptado de Stack & Flow. Diferencias: paquete unificado `radix-ui` y estilos con clases `eg-*` en lugar de utilidades de Tailwind.
+> Adaptado de Stack & Flow: namespaces de paquetes individuales, CSS BEM y tokens según el [contrato](../../_shared/component-contract.md#radix); no adopta su apariencia ni implica M3 ejecutada.
 > Referencias en el repo: `molecules/tabs` (Tabs), `atoms/icon-button` (Slot + AccessibleIcon), `primitives/surface` (Slot).
 
 ## Por qué Radix
@@ -9,22 +9,25 @@ Radix da primitivas sin estilo y accesibles: teclado, ARIA, foco y portales. Nos
 
 ## Importación
 
-Del paquete unificado, con alias `*Primitive` para que se vea de dónde sale cada pieza:
+De paquetes individuales, con namespace `*Primitive`. Hoy solo están declarados `@radix-ui/react-tabs`, `@radix-ui/react-slot` y `@radix-ui/react-accessible-icon` en `packages/ui/package.json`. Menú, diálogo y el resto son esquemas futuros, no componentes disponibles: añadir su paquete requiere confirmación.
 
 ```tsx
 // ✅
-import { DropdownMenu as DropdownMenuPrimitive, Dialog as DialogPrimitive } from 'radix-ui';
+import * as TabsPrimitive from '@radix-ui/react-tabs';
+import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'; // esquema: paquete aún no aprobado
+import * as DialogPrimitive from '@radix-ui/react-dialog'; // esquema: paquete aún no aprobado
 
 // ❌ piezas sueltas: no se sabe a qué primitiva pertenecen
 import { Root, Trigger, Content } from '@radix-ui/react-dropdown-menu';
 ```
 
-Excepción: utilidades sin partes (`Slot`, `AccessibleIcon`, `VisuallyHidden`) se usan por su nombre: `Slot.Root`, `AccessibleIcon.Root`.
+Las utilidades también usan namespace: `import * as Slot from '@radix-ui/react-slot'` e `import * as AccessibleIcon from '@radix-ui/react-accessible-icon'`; JSX: `Slot.Root`, `AccessibleIcon.Root`.
 
 ## Menú (Menu)
 
 ```tsx
-import { DropdownMenu as DropdownMenuPrimitive } from 'radix-ui';
+// Esquema: MenuProps/useMenu no existen aquí; aprobar anatomía, paquete y plan primero.
+import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 
 export const Menu: FC<MenuProps> = (props) => {
   const { items, align, sideOffset, trigger } = useMenu(props);
@@ -32,7 +35,7 @@ export const Menu: FC<MenuProps> = (props) => {
     <DropdownMenuPrimitive.Root>
       <DropdownMenuPrimitive.Trigger asChild={true}>{trigger}</DropdownMenuPrimitive.Trigger>
       <DropdownMenuPrimitive.Portal>
-        <DropdownMenuPrimitive.Content className='eg-menu' align={align} sideOffset={sideOffset} collisionPadding={8}>
+        <DropdownMenuPrimitive.Content className='eg-menu' align={align} sideOffset={sideOffset}>
           {items.map((item) => (
             <DropdownMenuPrimitive.Item
               key={item.id}
@@ -53,13 +56,19 @@ export const Menu: FC<MenuProps> = (props) => {
 ```
 
 ```css
-.eg-menu[data-state='open'] { animation: eg-fade-in var(--duration-fast) var(--ease-out); }
-.eg-menu__item[data-highlighted] { background: var(--color-action-primary-bg-default); color: var(--color-fg-default); }
-.eg-menu__item[data-disabled] { opacity: .45; pointer-events: none; }
+@layer components {
+  .eg-menu__item[data-highlighted] { background: var(--color-surface-3); color: var(--color-fg-default); }
+  .eg-menu__item[data-disabled] { opacity: .45; pointer-events: none; }
+  .eg-menu__item:focus-visible { box-shadow: var(--shadow-focus); }
+  @media (prefers-reduced-motion: reduce) {
+    .eg-menu, .eg-menu__item { animation: none; transform: none; transition: none; }
+  }
+}
 ```
 
 - `data-highlighted` es el foco de teclado y el hover del item: no hace falta `:hover` aparte.
 - Items con `cursor: default`, como un menú nativo.
+- El fragmento solo ilustra estados; la raíz necesita Material: reutiliza `<Surface>` y la receta overlay de [MATERIAL.md](../../../docs/MATERIAL.md). Espaciado por tokens; offsets personalizados se justifican, no se copia `collisionPadding={8}` como norma.
 
 ## Navegación lateral (NavList)
 
@@ -68,6 +77,9 @@ Grupos plegables con `Accordion` (`type="multiple"`) o `Collapsible` si es un so
 ## Diálogo y sheet
 
 ```tsx
+import * as DialogPrimitive from '@radix-ui/react-dialog'; // esquema: requiere aprobación
+import { IconButton } from '@/atoms/icon-button';
+
 <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
   <DialogPrimitive.Trigger asChild={true}>{trigger}</DialogPrimitive.Trigger>
   <DialogPrimitive.Portal>
@@ -77,7 +89,7 @@ Grupos plegables con `Accordion` (`type="multiple"`) o `Collapsible` si es un so
       <DialogPrimitive.Description className='eg-dialog__desc'>{description}</DialogPrimitive.Description>
       {children}
       <DialogPrimitive.Close asChild={true}>
-        <IconButton label='Cerrar' icon={<Icon name='x' />} />
+        <IconButton label='Cerrar' icon={<svg viewBox='0 0 24 24'><path d='M6 6l12 12M18 6L6 18' /></svg>} />
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </DialogPrimitive.Portal>
@@ -101,22 +113,22 @@ Grupos plegables con `Accordion` (`type="multiple"`) o `Collapsible` si es un so
 
 ## Flotantes de lectura
 
-- **Tooltip:** solo texto, nunca contenido interactivo. Un `Tooltip.Provider` en la raíz de la app (AppShell).
-- **HoverCard:** panel de detalle al pasar (Quorb). Siempre con una vía de teclado equivalente (el Gauge es un botón que abre lo mismo).
+- **Tooltip:** solo texto, nunca contenido interactivo. Un `TooltipPrimitive.Provider` en la raíz de la app cuando se apruebe ese paquete.
+- **HoverCard:** panel de detalle al pasar (Quorb). Siempre con una vía de teclado equivalente; no presupone un Gauge implementado.
 - **Popover:** panel interactivo al hacer clic.
 
 ## Reglas
 
 - `Portal` siempre para lo flotante.
 - `asChild` en los triggers.
-- Nunca reimplementar teclado ni foco.
+- Nunca reimplementar teclado, foco ni ARIA. El hijo de `asChild` debe conservar la semántica y aceptar props/refs compatibles; comprobarlo, no prometer refs React 18 por los tipos.
 - Foco visible con `:focus-visible` y `--shadow-focus`; nunca solo un brillo.
 - Animaciones con `[data-state]`, y desactivadas con `prefers-reduced-motion`.
 - Estado de abrir/cerrar y cálculos en el hook.
 
 ## Checklist
 
-- [ ] Importado de `radix-ui` con alias `*Primitive`
+- [ ] Importado por namespace de `@radix-ui/react-*`; paquete existente o incorporación aprobada
 - [ ] Flotantes en `Portal`
 - [ ] `asChild` en triggers
 - [ ] Foco visible con el token de foco

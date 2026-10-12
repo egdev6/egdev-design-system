@@ -1,15 +1,16 @@
-import { AccessibleIcon, Slot } from 'radix-ui';
-import type { FC } from 'react';
+import * as AccessibleIcon from '@radix-ui/react-accessible-icon';
+import * as Slot from '@radix-ui/react-slot';
+import { forwardRef } from 'react';
 import type { IconButtonProps } from './types';
 import { useIconButton } from './useIconButton';
 
-export const IconButton: FC<IconButtonProps> = (props) => {
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>((props, ref) => {
   const { asChild, ariaLabel, ariaPressed, icon, type, children, ...rest } = useIconButton(props);
   const content = <AccessibleIcon.Root label={ariaLabel}>{icon}</AccessibleIcon.Root>;
 
   if (asChild) {
     return (
-      <Slot.Root {...rest}>
+      <Slot.Root {...rest} ref={ref}>
         <Slot.Slottable>{children}</Slot.Slottable>
         {content}
       </Slot.Root>
@@ -17,8 +18,9 @@ export const IconButton: FC<IconButtonProps> = (props) => {
   }
 
   return (
-    <button {...rest} type={type} aria-pressed={ariaPressed}>
+    <button {...rest} ref={ref} type={type} aria-pressed={ariaPressed}>
       {content}
     </button>
   );
-};
+});
+IconButton.displayName = 'IconButton';

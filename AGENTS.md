@@ -12,7 +12,7 @@ Este archivo se inyecta como contexto a cualquier agente que trabaje en el repo.
 | `@egdev/ui` | `packages/ui` |
 | `@egdev/effects` | `packages/effects` |
 
-**Stack:** React 19 · TypeScript estricto · Radix UI (`radix-ui`) · CVA · CSS con tokens (clases BEM `eg-*`) · Tailwind v4 solo para layout de apps · Storybook 8 · Vitest · Biome · pnpm.
+**Stack:** React 19 · TypeScript estricto · Radix UI (paquetes individuales `@radix-ui/react-*`) · CVA · CSS con tokens (clases BEM `eg-*`) · Tailwind v4 solo para layout de apps · Storybook 10 · Vitest · Biome · pnpm.
 
 **Comandos:** `pnpm storybook`, `pnpm test`, `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm tokens`.
 
@@ -28,7 +28,7 @@ Este archivo se inyecta como contexto a cualquier agente que trabaje en el repo.
 
 - Antes de crear un componente, se intenta reutilizar o añadir una variante (`docs/CATALOGACION.md`).
 - Comportamiento interactivo siempre con Radix si existe la primitiva. Nunca reimplementar teclado, foco ni ARIA.
-- Radix se importa del paquete unificado: `import { Tabs as TabsPrimitive } from 'radix-ui'`.
+- Radix se importa por paquetes individuales: `import * as TabsPrimitive from '@radix-ui/react-tabs'`. La actualización M1 mantiene la API y el CSS legado; M2 fija las normas y M3 adapta los componentes al contrato.
 - `type`, nunca `interface`. Nunca `any`.
 - Ni colores, ni espaciados, ni fuentes a mano: solo variables de `@egdev/tokens`. Si falta un token, se propone en `tokens.json` y se pide confirmación.
 - Ninguna superficie plana: fondo, borde y sombra salen de Material (`<Surface>` o las recetas de `docs/MATERIAL.md`). Nada de sombras ni degradados escritos a mano.
