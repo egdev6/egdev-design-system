@@ -1,6 +1,6 @@
 # Decisiones
 
-> Copia del registro de decisiones del artefacto *EGDEV Foundation* (Claude Design, versión 35). Se actualiza en cada traspaso; la fuente es el artefacto.
+> Copia del registro de decisiones del artefacto *EGDEV Foundation* (Claude Design, versión 37). Se actualiza en cada traspaso; la fuente es el artefacto.
 
 Registro de lo que se aprobó, se descartó o sigue pendiente mientras se diseñaba la web EGDEV Pulso (1 de octubre de 2026).
 
@@ -85,7 +85,19 @@ Registro de lo que se aprobó, se descartó o sigue pendiente mientras se diseñ
 - **Token nuevo:** `color-bg-scrim` (negro) para el velo de modales y diálogos.
 - **Neón como texto, solo sobre `surface-0`.** Sobre `surface-1…3` el texto de marca es `color-fg-brand-raised`. El neón sigue en rellenos, anillos, subrayados y gráficas.
 - **Variante nueva:** ModuleCard `--banded` (+ parte `__foot`): cabecera un tono por encima, pie un tono por debajo.
-- **No cambia:** el rojo, la tipografía, las sombras de dos capas, la web Pulso sobre `color-ambient-bg` y las piezas Show (flood, deep, negro).
+- **No cambia:** el rojo, la tipografía, las sombras de dos capas y las piezas Show (flood, deep, negro). La web Pulso se adaptó después (ver *Pulso en Grafito*).
+
+### Pulso en Grafito (10 de octubre de 2026)
+
+- **Pro sobre gris, Show sobre negro.** Las secciones de lectura de la web (Sobre mí, Build, Think, Blog, Discord y el footer) llevan SectionShell `--grafito`: `surface-0` al 50 % sobre el fondo de partículas, con fundido en los bordes de cada grupo (`--fade-top` / `--fade-bottom`). Hero, capítulo, Lab, Live, Comunidad y cierre siguen en negro con el 3D.
+- **Partículas detrás del gris:** en las zonas Pro el director baja el fondo a 0.6 en perfil `read`. Se probó el gris al 92 % y al 72 %: tapaba las partículas; al 50 % se ven y el gris sigue separando lectura y escena.
+- **Tarjetas sólidas en gris:** dentro de `--grafito`, NowCard, ProjectCard (salvo `--feat`), ArticleFeature, CommunityCard, TerminalCard, NoteItem y ArticleItem pierden el cristal y pasan a `surface-1` (hover `surface-2`).
+- **Bandas en la web:** cabecera de TerminalCard y de CommunityCard un tono por encima (`surface-2`), pie de NowCard un tono por debajo (`surface-0`).
+- **Tarjeta hot:** `gradient-hot` termina en #22121A (antes #0E0709), para que sobre gris no se lea como un agujero.
+- **Neón como texto en overlays:** el número de SectionNav y el enlace activo de MobileMenu pasan a `color-fg-brand-raised`.
+- **Foco:** anillo neón con hueco del tono de fondo; blanco sobre el campo rojo.
+- **Grano fuera:** la web quitó la capa de grano (estaba en Descartado); HomeTemplate ya no la incluye.
+- **Directo:** los miércoles a las 19:00 (Madrid), no a las 18:00. Cambia la cuenta atrás del director y los textos por defecto de LiveBand y NowCard.
 
 ## Descartado
 
@@ -102,7 +114,6 @@ Registro de lo que se aprobó, se descartó o sigue pendiente mientras se diseñ
 
 - **Grafito en los lienzos de las apps:** Mando, Cadencia, egdev-live, Criterio, media-tool y Quorb llevan una copia de los tokens anteriores; hay que reinstalar EGDEV Foundation en cada lienzo para verlos en grafito.
 - **Grafito en Penpot:** dar de alta `color-primitive-graphite-*`, `color-primitive-red-300` y `color-bg-scrim`, y actualizar las superficies.
-- **Tarjeta hot sobre grafito:** `gradient-hot` termina en #0E0709, más oscuro que el canvas nuevo; revisar si se sube un tono.
 
 - **Penpot:** sincronizar `font.family.sans` y crear `font.family.display`, y dar de alta los tokens nuevos de esta versión y los de Material v2 (familias `gradient`, `shadow-elev-*`, `color-surface-*`).
 - **Logo de Stack & Flow:** falta el archivo.

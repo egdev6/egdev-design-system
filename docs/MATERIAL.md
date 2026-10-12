@@ -2,7 +2,7 @@
 
 Desde octubre de 2026 (Material v2), EGDEV Foundation deja de ser plano: el rojo no cambia, cambia cómo están hechas las superficies. Desde Grafito (9 de octubre de 2026) la escalera de superficies es gris en lugar de negra. Este documento es la referencia para implementar componentes y pantallas con materia.
 
-Origen: la versión 35 del artefacto *EGDEV Foundation* (Claude Design). Material v2 se aplicó a la web y a las seis apps; Grafito se validó en Quorb. Las decisiones están en [DECISIONES.md](DECISIONES.md).
+Origen: la versión 37 del artefacto *EGDEV Foundation* (Claude Design). Material v2 se aplicó a la web y a las seis apps; Grafito se validó en Quorb y se llevó a la web Pulso el 10 de octubre de 2026. Las decisiones están en [DECISIONES.md](DECISIONES.md).
 
 ## Principios
 
@@ -36,7 +36,7 @@ Origen: la versión 35 del artefacto *EGDEV Foundation* (Claude Design). Materia
 | `--gradient-btn-primary` (+ `-hover`), `--shadow-btn-primary` (+ `-hover`, `-pressed`) | | Botón primario: degradado, bisel y halo. Texto negro ≥4,7:1 en todo el botón |
 | `--gradient-btn-secondary` (+ `-hover`) | | Secundario, sobre surface-1 |
 | `--gradient-chip-active`, `--gradient-post-new`, `--gradient-progress` | | Chip activo, lo que añade el agente, carga de ProgressBar |
-| `--gradient-hot`, `--shadow-hot` | | Tarjeta firma |
+| `--gradient-hot`, `--shadow-hot` | base #22121A | Tarjeta firma. La base subió de #0E0709 para no leerse como un agujero sobre gris |
 | `--ease-spring`, `--ease-snappy`, `--duration-press` | | Hover con muelle; pulsación en 90ms |
 
 ## Recetas
@@ -67,6 +67,14 @@ pie:      background: var(--color-surface-0); border-top: 1px solid var(--color-
 /* Pulsado */
 .eg-x:active { transform: translateY(1px) scale(.97); transition-duration: var(--duration-press); transition-timing-function: var(--ease-snappy); }
 ```
+
+## En la web (Pulso)
+
+- **Pro sobre gris, Show sobre negro.** Las secciones de lectura llevan SectionShell `--grafito`: `--color-surface-0` al 50 % sobre el fondo de partículas, que el director baja a 0.6 en perfil `read`. Las escenas (hero, capítulo, Lab, Live, Comunidad, cierre) siguen en negro con el 3D.
+- **Fundidos solo en los bordes del grupo** (`--fade-top`, `--fade-bottom`): about + build, think + blog, discord y footer. Entre dos secciones grises seguidas no hay fundido.
+- **Tarjetas sólidas en gris.** Dentro de `--grafito`, las tarjetas de la web pierden el cristal y pasan a `surface-1` (hover `surface-2`); la ProjectCard `--feat` sigue siendo la tarjeta hot.
+- **Bandas.** Cabecera de TerminalCard y CommunityCard en `surface-2`; pie de NowCard en `surface-0`.
+- Hoy viven en `legacy/bundle.css`; al portar SectionShell y esas tarjetas, sus reglas se mueven con ellas.
 
 ## En el código
 

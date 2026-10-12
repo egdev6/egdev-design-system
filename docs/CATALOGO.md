@@ -178,15 +178,15 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
-| **TerminalCard** | TerminalCard (molécula) | — | Surface | mover | Ficha de perfil de la web. |
-| **NowCard** | NowCard (molécula) | — | Surface, Text | mover |  |
+| **TerminalCard** | TerminalCard (molécula) | — | Surface | mover | Ficha de perfil de la web. Barra en banda `surface-2` (Grafito). |
+| **NowCard** | NowCard (molécula) | — | Surface, Text | mover | Pie en banda `surface-0` (Grafito). |
 | **ProjectCard** | ProjectCard (molécula) | — | Surface, Badge, Link | mover |  |
 | **NoteItem** | NoteItem (molécula) | — | ListItem | mover | Valorar construirlo sobre ListItem. |
 | **TipCard** | TipCard (molécula) | — | AspectRatio, Text | mover |  |
 | **ArticleFeature** | ArticleFeature (molécula) | — | PhotoFrame, Text | mover |  |
 | **ArticleItem** | ArticleItem (molécula) | — | ListItem | mover |  |
 | **StreamItem** | StreamItem (molécula) | — | ListItem | mover |  |
-| **CommunityCard** | CommunityCard (molécula) | — | Surface, Avatar, Button | mover |  |
+| **CommunityCard** | CommunityCard (molécula) | — | Surface, Avatar, Button | mover | Cabecera en banda `surface-2` (Grafito). |
 
 ### Organismos
 
@@ -212,7 +212,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
-| **SectionShell** | SectionShell (plantilla) | — | — | mover |  |
+| **SectionShell** | SectionShell (plantilla) | — | — | mover | `--pro`, `--show`, `--flood`, `--deep`; `--grafito` (+ `--fade-top`, `--fade-bottom`) para lectura sobre gris. |
 | **HomeTemplate** | HomeTemplate (plantilla) | — | Secciones web, effects | mover |  |
 
 ## Primitivas de Radix que se usan

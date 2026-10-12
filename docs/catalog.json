@@ -690,7 +690,7 @@
     "radix": "—",
     "compone": "Surface",
     "accion": "mover",
-    "notas": "Ficha de perfil de la web."
+    "notas": "Ficha de perfil de la web. Barra en banda `surface-2` (Grafito)."
   },
   {
     "actual": "ToolCallChip",
@@ -745,7 +745,7 @@
     "radix": "—",
     "compone": "Surface, Text",
     "accion": "mover",
-    "notas": ""
+    "notas": "Pie en banda `surface-0` (Grafito)."
   },
   {
     "actual": "ProjectCard",
@@ -822,7 +822,7 @@
     "radix": "—",
     "compone": "Surface, Avatar, Button",
     "accion": "mover",
-    "notas": ""
+    "notas": "Cabecera en banda `surface-2` (Grafito)."
   },
   {
     "actual": "—",
@@ -1163,7 +1163,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "mover",
-    "notas": ""
+    "notas": "`--pro`, `--show`, `--flood`, `--deep`; `--grafito` (+ `--fade-top`, `--fade-bottom`) para lectura sobre gris."
   },
   {
     "actual": "HomeTemplate",

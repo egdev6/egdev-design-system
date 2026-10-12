@@ -52,17 +52,18 @@
   var MQ3D = window.matchMedia ? window.matchMedia("(max-width: 760px)") : { matches: false };
   var MOBFX = window.innerWidth < 700;
 
+  /* Pulso en Grafito (10 oct 2026): en las zonas Pro el fondo baja a 0.6 en perfil read y se ve a través del gris (SectionShell --grafito). */
   var ZONES = {
     hero:      { gl: 1, amb: 0,    prof: "base", nav: "" },
-    about:     { gl: 0, amb: 1,    prof: "base", nav: "about" },
-    build:     { gl: 0, amb: 1,    prof: "base", nav: "build" },
+    about:     { gl: 0, amb: 0.6,  prof: "read", nav: "about" },
+    build:     { gl: 0, amb: 0.6,  prof: "read", nav: "build" },
     chapter:   { gl: 1, amb: 0,    prof: "base", nav: "" },
-    think:     { gl: 0, amb: 1,    prof: "read", nav: "think" },
-    blog:      { gl: 0, amb: 1,    prof: "read", nav: "blog" },
+    think:     { gl: 0, amb: 0.6,  prof: "read", nav: "think" },
+    blog:      { gl: 0, amb: 0.6,  prof: "read", nav: "blog" },
     lab:       { gl: 1, amb: 0,    prof: "base", nav: "lab" },
     live:      { gl: 0, amb: 1,    prof: "live", nav: "live" },
     community: { gl: 0, amb: 1,    prof: "base", nav: "community" },
-    discord:   { gl: 0, amb: 1,    prof: "base", nav: "community" },
+    discord:   { gl: 0, amb: 0.6,  prof: "read", nav: "community" },
     outro:     { gl: 1, amb: 0,    prof: "base", nav: "" },
     footer:    { gl: 0, amb: 0.25, prof: "read", nav: "" }
   };
@@ -425,7 +426,7 @@
   });
   mnav.addEventListener("click", function (e) { if (e.target.closest("a")) closeMenu(); });
 
-  /* ---------------- CUENTA ATRÁS (Europe/Madrid, miércoles 18:00) ---------------- */
+  /* ---------------- CUENTA ATRÁS (Europe/Madrid, miércoles 19:00) ---------------- */
   var fmt = null;
   try { fmt = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Madrid", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23", weekday: "short" }); } catch (e) { fmt = null; }
   function parts2(d) { var o = {}; fmt.formatToParts(d).forEach(function (p) { o[p.type] = p.value; }); return o; }
@@ -435,8 +436,8 @@
     var wd = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }[o.weekday];
     var secOfDay = (+o.hour % 24) * 3600 + (+o.minute) * 60 + (+o.second);
     var add = (3 - wd + 7) % 7, live = false;
-    if (add === 0 && secOfDay >= 18 * 3600) { if (secOfDay < 20 * 3600) live = true; else add = 7; }
-    var wall = Date.UTC(+o.year, +o.month - 1, +o.day + add, 18, 0, 0);
+    if (add === 0 && secOfDay >= 19 * 3600) { if (secOfDay < 21 * 3600) live = true; else add = 7; }
+    var wall = Date.UTC(+o.year, +o.month - 1, +o.day + add, 19, 0, 0);
     var ts = wall - offsetAt(wall); ts = wall - offsetAt(ts);
     return { ts: ts, live: live };
   }
@@ -453,14 +454,14 @@
       d = Math.max(0, Math.floor((now - n.ts) / 1000));
       cdLabel.textContent = "En directo desde hace";
     } else {
-      if (signal) { signal.classList.remove("on"); sigLabel.textContent = "Offline · Próximo directo mié 18:00"; }
+      if (signal) { signal.classList.remove("on"); sigLabel.textContent = "Offline · Próximo directo mié 19:00"; }
       d = Math.max(0, Math.floor((n.ts - now) / 1000));
       cdLabel.textContent = "Próximo directo en";
     }
     var dd = Math.floor(d / 86400), hh = Math.floor(d / 3600) % 24, mm = Math.floor(d / 60) % 60, ss = d % 60;
     if (sigTime) sigTime.textContent = (dd ? dd + "D " : "") + pad(hh) + ":" + pad(mm) + ":" + pad(ss);
     cdD.textContent = String(dd); cdH.textContent = pad(hh); cdM.textContent = pad(mm); cdS.textContent = pad(ss);
-    if (nextDate) { var p = parts2(new Date(n.ts)); nextDate.textContent = p.day + " " + MES[+p.month - 1] + " · 18:00"; }
+    if (nextDate) { var p = parts2(new Date(n.ts)); nextDate.textContent = p.day + " " + MES[+p.month - 1] + " · 19:00"; }
   }
   tick(); setInterval(tick, 1000);
 
