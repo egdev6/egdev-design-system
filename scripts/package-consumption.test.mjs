@@ -157,8 +157,9 @@ try {
 
 const css = `
 import assert from 'node:assert/strict';
-import { realpathSync } from 'node:fs';
+import { readFileSync, realpathSync } from 'node:fs';
 import { build, version } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
 const instances = { react: new Set(), 'react-dom': new Set() };
 const result = await build({ configFile: false, logLevel: 'error', build: { cssMinify: false }, plugins: [{
   name: 'consumer-react-instances',
@@ -172,13 +173,30 @@ const result = await build({ configFile: false, logLevel: 'error', build: { cssM
 const assets = [result].flat().flatMap((bundle) => bundle.output).filter((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'));
 const emitted = assets.map((asset) => String(asset.source)).join('\\n');
 assert.ok(assets.length > 0, 'Vite must emit consumer CSS');
+assert.ok(!emitted.includes('@theme'), 'Native consumption must not need Tailwind to interpret @theme');
 for (const selector of ['.eg-surface', '.eg-icon-btn--square', '.eg-tabs__item']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
-for (const token of ['--color-surface-1', '--radius-md', '--shadow-edge']) {
-  assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
-  assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
-}
+const shipped = readFileSync(new URL('./node_modules/@egdev/tokens/dist/tokens.css', import.meta.url), 'utf8');
+const names = shipped
+  .split(String.fromCharCode(10))
+  .flatMap((line) => {
+    const at = line.indexOf('--');
+    if (at === -1) return [];
+    const name = line.slice(at).split(':')[0].trim();
+    return name.startsWith('--') ? [name] : [];
+  });
+assert.equal(names.length, 168, 'Packed native artifact must expose 168 variables');
+for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
+for (const token of ['--color-surface-1', '--radius-md', '--shadow-edge']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const [name, paths] of Object.entries(instances)) assert.equal(paths.size, 1, 'Consumer bundle must contain one physical ' + name);
-console.log(JSON.stringify({ vite: version, cssAssets: assets.length, cssBytes: emitted.length, bundleInstances: { react: 1, 'react-dom': 1 } }));
+const tailwind = await build({ configFile: false, logLevel: 'error', plugins: [tailwindcss({ optimize: false })], build: { cssMinify: false, emptyOutDir: true, outDir: 'dist-tw', rolldownOptions: { input: 'tailwind.css', output: { assetFileNames: 'tailwind.css' } } } });
+const twAssets = [tailwind].flat().flatMap((bundle) => bundle.output).filter((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'));
+const twCss = twAssets.map((asset) => String(asset.source)).join(' ');
+assert.ok(twAssets.length > 0, 'Tailwind build must emit CSS');
+for (const selector of ['.text-fg-secondary', '.bg-bg-surface', '.rounded-xl', '.shadow-edge', '.font-display']) assert.ok(twCss.includes(selector), 'Missing generated utility ' + selector);
+assert.ok(twCss.includes('--color-ambient-bg:'), 'Static theme must emit unused variables');
+assert.ok(!twCss.includes('--color-red-500'), 'Color reset must remove the default palette');
+assert.ok(twCss.includes('@layer'), 'Tailwind cascade layers must be present');
+console.log(JSON.stringify({ vite: version, cssAssets: assets.length, cssBytes: emitted.length, nativeTokens: names.length, tailwindAssets: twAssets.length, bundleInstances: { react: 1, 'react-dom': 1 } }));
 `;
 
 for (const [react, [types, domTypes]] of Object.entries(versions)) {
@@ -204,6 +222,8 @@ for (const [react, [types, domTypes]] of Object.entries(versions)) {
         dependencies: {
           '@egdev/ui': tarballs.ui,
           '@egdev/tokens': tarballs.tokens,
+          '@tailwindcss/vite': manifest.devDependencies['@tailwindcss/vite'],
+          tailwindcss: manifest.devDependencies.tailwindcss,
           react,
           'react-dom': react,
           '@types/react': types,
@@ -231,8 +251,16 @@ for (const [react, [types, domTypes]] of Object.entries(versions)) {
       }
       write('index.html', '<div id="app"></div><script type="module" src="/main.ts"></script>');
       write(
+        'tailwind.classes.html',
+        '<div class="text-fg-secondary bg-bg-surface rounded-xl shadow-edge font-display"></div>'
+      );
+      write(
+        'tailwind.css',
+        '@import "tailwindcss";\n@import "@egdev/tokens/theme.css";\n@source "./tailwind.classes.html";\n'
+      );
+      write(
         'main.ts',
-        `import '@egdev/tokens/tokens.css';\nimport '@egdev/tokens/theme.css';\nimport '@egdev/ui/styles.css';\nimport { createElement } from 'react';\nimport { createRoot } from 'react-dom/client';\nimport { App } from './consumer';\ncreateRoot(document.getElementById('app')!).render(createElement(App));\n`
+        `import '@egdev/tokens/tokens.css';\nimport '@egdev/ui/styles.css';\nimport { createElement } from 'react';\nimport { createRoot } from 'react-dom/client';\nimport { App } from './consumer';\ncreateRoot(document.getElementById('app')!).render(createElement(App));\n`
       );
       const install = ['install', '--ignore-scripts', '--no-frozen-lockfile', '--strict-peer-dependencies'];
       run(fixture, 'pnpm', install, 120_000);

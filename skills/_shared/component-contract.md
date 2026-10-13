@@ -43,7 +43,7 @@ No crees archivos vacíos para cumplir un número. Una excepción por reutilizac
 ## Estilos **(egdev)**
 
 - Variantes en CVA dentro de `types.ts`, y cada valor produce clases BEM: bloque `eg-<nombre>`, elemento `eg-<nombre>__<parte>`, modificador `eg-<nombre>--<variante>`.
-- Colores, espaciados y fuentes salen de variables de `@egdev/tokens`; no de valores en duro ni estilos inline de apariencia. Si falta un token, propón incorporarlo a `tokens.json` y espera confirmación.
+- Colores, espaciados y fuentes salen de variables de `@egdev/tokens`; no de valores en duro ni estilos inline de apariencia. Si falta un token, propón incorporarlo a `packages/tokens/src/theme.css` y espera confirmación. La salida nativa `tokens.css` es compilada y no se edita.
 - No escribas sombras, degradados ni mezclas de color a mano. Usa los tokens y recetas de [MATERIAL.md](../../docs/MATERIAL.md); un tratamiento nuevo requiere propuesta y confirmación, aunque todavía no se repita.
 - **Material v2:** una caja con materia reutiliza `<Surface>`; los controles aplican la receta correspondiente, no una superficie plana improvisada. Superficie elevada, pozo, overlay y pulsado conservan su tratamiento y alternativas de transparencia/movimiento según Material. `ghost` y `flat` son variantes existentes, no permiso para eludir esas recetas.
 - Estados por atributo de Radix o ARIA: `[data-state="open"]`, `[data-state="checked"]`, `[data-disabled]`, `[aria-selected="true"]`, `[aria-pressed="true"]`. Las clases `.is-*` del legado solo se mantienen para los lienzos de Claude Design.

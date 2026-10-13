@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
-@import "../packages/tokens/src/tokens.css";
+@import "../packages/tokens/dist/tokens.css";
 @import "../packages/ui/src/styles/index.css";
 
 body {

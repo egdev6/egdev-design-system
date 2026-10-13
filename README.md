@@ -12,7 +12,7 @@ EGDEV Foundation en código: el sistema de diseño que comparten egdev.es y toda
 
 | Paquete | Qué es |
 |---|---|
-| [`@egdev/tokens`](packages/tokens) | Tokens: JSON fuente, variables CSS y tema de Tailwind v4 |
+| [`@egdev/tokens`](packages/tokens) | Tokens: fuente CSS única, salida CSS nativa y tema de Tailwind v4 |
 | [`@egdev/ui`](packages/ui) | Componentes sobre Radix: primitivas, átomos, moléculas, organismos y plantillas |
 | [`@egdev/effects`](packages/effects) | Capas de efecto de la web (partículas, isotipo 3D) |
 
@@ -20,9 +20,10 @@ EGDEV Foundation en código: el sistema de diseño que comparten egdev.es y toda
 
 ```bash
 pnpm install
-pnpm tokens        # regenera tokens.css y theme.css desde tokens.json
+pnpm tokens        # compila CSS nativo desde la fuente theme.css
 pnpm storybook     # http://localhost:6006
 pnpm test
+pnpm test:tokens   # compila y comprueba fuente, alias y paridad
 pnpm typecheck
 pnpm build
 ```

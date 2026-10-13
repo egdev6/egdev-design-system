@@ -1,0 +1,7 @@
+/*
+ * Native @egdev/tokens compilation entry.
+ * Vite and @tailwindcss/vite compile this file to dist/tokens.css.
+ * theme.css is the only manual value source; source(none) avoids utilities.
+ */
+@import "./theme.css";
+@tailwind utilities source(none);

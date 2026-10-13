@@ -64,8 +64,23 @@ test('UI CSS export resolves to a nonempty file', () => {
   artifact('ui', ui.exports['./styles.css']);
 });
 
-for (const subpath of ['./tokens.css', './theme.css']) {
+for (const subpath of ['./tokens.css', './theme.css', './native.css']) {
   test(`Tokens ${subpath} export resolves to a nonempty file`, () => {
     artifact('tokens', tokens.exports[subpath]);
   });
 }
+
+test('Tokens ships a compiled native artifact under dist without @theme', () => {
+  assert.equal(tokens.exports['./tokens.css'], './dist/tokens.css', 'native import must be the compiled artifact');
+  const entry = artifact('tokens', tokens.exports['./tokens.css']);
+  assert.doesNotMatch(readFileSync(entry, 'utf8'), /@theme/, 'compiled artifact must not keep the @theme at-rule');
+});
+
+test('Tokens retires the JSON export and its source file', () => {
+  assert.equal(tokens.exports['./tokens.json'], undefined, 'tokens.json export must be retired');
+  assert.equal(
+    existsSync(resolve(root, 'packages/tokens/src/tokens.json')),
+    false,
+    'tokens.json source must be removed, not just unexported'
+  );
+});

@@ -18,9 +18,9 @@
       "!**/pnpm-lock.yaml",
       "!packages/effects/reference",
       "!packages/ui/src/styles/legacy",
-      "!packages/tokens/src/tokens.css",
       "!packages/tokens/src/theme.css",
-      "!packages/tokens/src/tokens.json"
+      "!packages/tokens/src/native.css",
+      "!packages/tokens/tests/fixtures"
     ]
   },
   "formatter": {

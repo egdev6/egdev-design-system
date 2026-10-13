@@ -15,11 +15,12 @@
     "hooks:install": "lefthook install",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "storybook": "storybook dev -p 6006 --host 127.0.0.1",
-    "storybook-build": "storybook build",
+    "storybook": "pnpm tokens && storybook dev -p 6006 --host 127.0.0.1",
+    "storybook-build": "pnpm tokens && storybook build",
     "test:storybook-mcp": "node --test scripts/storybook-mcp.test.mjs",
     "test:package-exports": "node --test scripts/package-exports.test.mjs",
     "test:package-consumption": "node --test scripts/package-consumption.test.mjs",
+    "test:tokens": "pnpm tokens && pnpm --filter @egdev/tokens run test",
     "tokens": "pnpm --filter @egdev/tokens run build"
   },
   "devDependencies": {
