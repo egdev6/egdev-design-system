@@ -1,175 +1,354 @@
-/* Generado por scripts/build-theme.mjs a partir de tokens.css. No editar a mano. */
-@theme {
+/*
+ * Fuente manual de tokens de EGDEV Foundation.
+ *
+ * @theme static conserva las variables que generan utilidades de Tailwind;
+ * :root las que no las generan. `tokens.css` es el artefacto nativo compilado
+ * con `pnpm tokens` (Vite + @tailwindcss/vite) y no se edita a mano.
+ * La escala de espaciado de Tailwind (4 px) coincide con --space-*.
+ */
+
+@theme static {
+  /* Reinicia el espacio de nombres de color de Tailwind: solo los tokens EGDEV. */
   --color-*: initial;
+  /* Único tema de color: EGDDEV Foundation (oscuro). No se añade un tema claro. */
+
+  /* --color-primitive-black — Primitivo. Base de color-bg-scrim, del texto sobre neón (color-action-primary-solid-fg, color-fg-on-flood, color-fg-on-status) y de las piezas Show. Desde Grafito ya no es el canvas. */
   --color-primitive-black: #000000;
+  /* --color-primitive-neutral-950 — Primitivo heredado (antes base de color.bg.surface). Sin uso en componentes desde Grafito. */
   --color-primitive-neutral-950: #0A0A0A;
+  /* --color-primitive-neutral-900 — Primitivo heredado (antes base de color.border.default). Sin uso semántico desde Grafito. */
   --color-primitive-neutral-900: #1A1A1A;
+  /* --color-primitive-white — Primitivo. Base de color.fg.default y color.action.primary.fg. */
   --color-primitive-white: #FFFFFF;
+  /* --color-primitive-neutral-200 — Primitivo. Base de color.fg.secondary. */
   --color-primitive-neutral-200: #CCCCCC;
+  /* --color-primitive-neutral-500 — Primitivo heredado (antes base de color.fg.muted; baja de 4.5:1 sobre surface-2 y 3). Sin uso semántico desde Grafito. */
   --color-primitive-neutral-500: #888888;
+  /* --color-primitive-red-neon — Primitivo de marca. Base de color.fg.brand.default y color.focus.ring. */
   --color-primitive-red-neon: #FF0036;
+  /* --color-primitive-red-dark — Primitivo de marca. Sin rol semántico asignado todavía. */
   --color-primitive-red-dark: #CC002B;
+  /* --color-primitive-red-light — Primitivo de marca. Base de color.fg.brand.hover. */
   --color-primitive-red-light: #FF335E;
+  /* --color-alpha-white-07 — Transparencia. Base de color.border.subtle. ≈ #121212 sobre negro. */
   --color-alpha-white-07: rgba(255, 255, 255, 0.07);
+  /* --color-alpha-white-08 — Transparencia. Base de color.bg.glass. ≈ #141414 sobre negro. */
   --color-alpha-white-08: rgba(255, 255, 255, 0.08);
+  /* --color-alpha-red-07 — Transparencia de marca. Sin rol semántico asignado. Solo dentro de sombras; no usar suelto. */
   --color-alpha-red-07: rgba(255, 0, 54, 0.07);
+  /* --color-alpha-red-10 — Transparencia de marca. Base de color.bg.brand.subtle. */
   --color-alpha-red-10: rgba(255, 0, 54, 0.10);
+  /* --color-alpha-red-12 — Transparencia de marca. Base de color.action.primary.bg.default. ≈ #1F0006 sobre negro. */
   --color-alpha-red-12: rgba(255, 0, 54, 0.12);
+  /* --color-alpha-red-15 — Transparencia de marca. Coincide con el color de shadow.glow.base. Solo dentro de sombras; no usar suelto. */
   --color-alpha-red-15: rgba(255, 0, 54, 0.15);
+  /* --color-alpha-red-18 — Transparencia de marca. Base de color.bg.brand.hover y color.action.primary.bg.hover. ≈ #2E000A sobre negro. */
   --color-alpha-red-18: rgba(255, 0, 54, 0.18);
+  /* --color-alpha-red-30 — Transparencia de marca. Coincide con el color de shadow.glow.active. Solo dentro de sombras; no usar suelto. */
   --color-alpha-red-30: rgba(255, 0, 54, 0.30);
+  /* --color-alpha-red-45 — Transparencia de marca. Base de color.border.brand. ≈ #730018 sobre negro. */
   --color-alpha-red-45: rgba(255, 0, 54, 0.45);
+  /* --color-alpha-red-65 — Transparencia de marca. Coincide con la primera capa de shadow.glow.intense. Solo dentro de sombras; no usar suelto. */
   --color-alpha-red-65: rgba(255, 0, 54, 0.65);
+  /* --color-alpha-black-25 — Transparencia oscura. Sin rol semántico asignado. */
   --color-alpha-black-25: rgba(0, 0, 0, 0.25);
+  /* --color-alpha-black-42 — Transparencia oscura. Sin rol semántico asignado. */
   --color-alpha-black-42: rgba(0, 0, 0, 0.42);
+  /* --color-bg-canvas — Fondo base de pantallas y apps (#141518, Grafito). Igual que color-surface-0. La web pinta encima color-ambient-bg con el fondo de partículas. */
   --color-bg-canvas: var(--color-primitive-graphite-950);
+  /* --color-bg-scrim — Velo negro bajo modales y diálogos (con transparencia). Lo único de la interfaz de producto que sigue siendo negro puro. */
   --color-bg-scrim: var(--color-primitive-black);
+  /* --color-bg-surface — Superficies (tarjetas, paneles). Alias de color-surface-1 desde Material v2 (antes neutral-950 #0A0A0A). */
   --color-bg-surface: var(--color-surface-1);
+  /* --color-bg-glass — Superficie glass sobre canvas o surface. Blur no definido. fg.brand.default baja a 4.65:1 aquí. */
   --color-bg-glass: var(--color-alpha-white-08);
+  /* --color-bg-brand-subtle — Fondo tintado de marca en reposo (badges, zonas destacadas). */
   --color-bg-brand-subtle: var(--color-alpha-red-10);
+  /* --color-bg-brand-hover — Fondo tintado de marca en hover. */
   --color-bg-brand-hover: var(--color-alpha-red-18);
+  /* --color-fg-default — Texto principal. 21:1 sobre canvas, 18.4:1 sobre glass, 19.8:1 sobre action.primary.bg.default. */
   --color-fg-default: var(--color-primitive-white);
+  /* --color-fg-secondary — Texto secundario. 13.1:1 sobre canvas. */
   --color-fg-secondary: var(--color-primitive-neutral-200);
+  /* --color-fg-muted — Texto atenuado (#A1A2A8). 7.17:1 surface-0 · 6.69 surface-1 · 6.09 surface-2 · 5.32 surface-3. */
   --color-fg-muted: var(--color-primitive-graphite-400);
+  /* --color-fg-brand-default — Texto/enlace de marca (neón). 4.61:1 solo sobre surface-0/canvas; FALLA sobre surface-1 (4.30), -2 (3.92) y -3 (3.42): ahí usa color-fg-brand-raised. Como relleno, anillo o gráfica vale en cualquier superficie. */
   --color-fg-brand-default: var(--color-primitive-red-neon);
+  /* --color-fg-brand-hover — Texto/enlace de marca en hover. 5.89:1 canvas · 5.16:1 glass. */
   --color-fg-brand-hover: var(--color-primitive-red-light);
+  /* --color-border-default — Divisor decorativo (#2A2B30). 1.29:1 sobre canvas: no válido como único límite de un control (WCAG 1.4.11 pide 3:1). */
   --color-border-default: var(--color-primitive-graphite-800);
+  /* --color-border-subtle — Borde de superficies glass. 1.12:1 sobre canvas: decorativo. */
   --color-border-subtle: var(--color-alpha-white-07);
+  /* --color-border-brand — Borde de marca. 1.74:1 sobre canvas: decorativo; no delimita controles por sí solo. */
   --color-border-brand: var(--color-alpha-red-45);
+  /* --color-action-primary-bg-default — Fondo de la acción primaria en reposo. ≈ #1F0006 sobre negro. */
   --color-action-primary-bg-default: var(--color-alpha-red-12);
+  /* --color-action-primary-bg-hover — Fondo de la acción primaria en hover. */
   --color-action-primary-bg-hover: var(--color-alpha-red-18);
+  /* --color-action-primary-fg — Texto de la acción primaria. 19.8:1 sobre bg.default. */
   --color-action-primary-fg: var(--color-primitive-white);
+  /* --color-focus-ring — Anillo de foco. 5.31:1 sobre canvas. Geometría sin definir. Solo 1.47:1 contra red-dark. */
   --color-focus-ring: var(--color-primitive-red-neon);
+  /* --color-primitive-neutral-600 — Primitivo heredado (antes base de color.border.control; baja de 3:1 sobre surface-2 y 3). Sin uso semántico desde Grafito. */
   --color-primitive-neutral-600: #6B6B6B;
+  /* --color-primitive-red-200 — Rosa claro para texto de marca sobre fondos tintados: 9.73:1 canvas · 9.17:1 sobre alpha-red-12. */
   --color-primitive-red-200: #FF8FA6;
+  /* --color-primitive-red-950 — Equivalente opaco de alpha-red-12 sobre negro, para cuando se apilan capas glass. */
   --color-primitive-red-950: #1F0006;
+  /* --color-border-control — Borde de inputs, checkboxes y botones secundarios (#7A7B81). ≥3:1 en todas las superficies: 4.33 surface-0 · 4.04 surface-1 · 3.68 surface-2 · 3.21 surface-3. */
   --color-border-control: var(--color-primitive-graphite-500);
+  /* --color-border-brand-strong — Rol "acción" de red-dark: borde de controles de marca (3.60:1 canvas) y estado pressed. */
   --color-border-brand-strong: var(--color-primitive-red-dark);
+  /* --color-action-primary-solid-bg — CTA principal en ambos registros: relleno neón sólido. Con color-action-primary-solid-fg (negro) = 5.31:1. */
   --color-action-primary-solid-bg: var(--color-primitive-red-neon);
+  /* --color-action-primary-solid-fg — Texto negro sobre el CTA neón (5.31:1) y sobre su hover red-light (5.89:1). Sustituye a la propuesta anterior de blanco sobre red-dark, que cumplía pero apagaba la marca. */
   --color-action-primary-solid-fg: var(--color-primitive-black);
+  /* --color-fg-brand-raised — Texto de marca sobre superficies elevadas (surface-1…3): #FF6680, ≥4.82:1. El neón como texto solo sobre surface-0. */
   --color-fg-brand-raised: var(--color-primitive-red-300);
+  /* --color-focus-ring-inverse — Foco sobre rellenos rojos sólidos: blanco = 3.96:1 contra neón y 5.83:1 contra red-dark. */
   --color-focus-ring-inverse: var(--color-primitive-white);
+  /* --color-status-success — Éxito (aguamarina, fuera del eje rojo-verde). 12.8:1 canvas. Siempre con icono + texto. */
   --color-status-success: #2DE2C4;
+  /* --color-status-warning — Aviso (ámbar). 11.7:1 canvas. Siempre con icono + texto. */
   --color-status-warning: #FFB224;
+  /* --color-status-info — Información (azul hielo). 10.1:1 canvas. */
   --color-status-info: #8AB4FF;
+  /* --color-status-danger — Error = red-300 + icono circle-alert + texto, para no confundirse con la marca. 6.49:1 canvas · 4.82:1 surface-3. */
   --color-status-danger: var(--color-primitive-red-300);
+  /* --color-fg-on-status — Texto sobre rellenos de estado sólidos (≥10:1 en los tres). */
   --color-fg-on-status: var(--color-primitive-black);
+  /* --color-alpha-red-22 — Ya se usa en egdev.es y Agent Teams como borde de card de marca; formalizarlo. Decorativo (≈ #38000C, 1.17:1). */
   --color-alpha-red-22: rgba(255, 0, 54, 0.22);
+  /* --color-action-primary-solid-bg-hover — Hover del CTA neón, con shadow-cta-hover. Negro encima 5.89:1. */
   --color-action-primary-solid-bg-hover: var(--color-primitive-red-light);
+  /* --color-bg-flood — Registro Show: campo de rojo sólido a sangre (sección, banda, bloque de hero). Texto encima: color-fg-on-flood. */
   --color-bg-flood: var(--color-primitive-red-neon);
+  /* --color-fg-on-flood — Texto sobre color-bg-flood: 5.31:1 (válido a cualquier tamaño). Nunca blanco (3.96:1). */
   --color-fg-on-flood: var(--color-primitive-black);
+  /* --color-bg-deep — Rol 'profundidad': el rojo sombra del isotipo como fondo de campos profundos. Blanco encima 10.56:1; el neón encima solo 2.67:1 (no usar para texto). */
   --color-bg-deep: var(--logo-red-shade);
+  /* --color-ambient-bg — Fondo del motor de partículas (Particle Studio). Es el negro de base de la web. */
   --color-ambient-bg: #060103;
+  /* --color-ambient-glow — Halo radial central del fondo de partículas (opacidad 0.10). */
   --color-ambient-glow: #b40a1e;
+  /* --color-ambient-line — Núcleo de los haces diagonales del fondo. */
   --color-ambient-line: #950e20;
+  /* --color-ambient-line-glow — Resplandor de los haces diagonales. */
   --color-ambient-line-glow: #4d000d;
+  /* --color-ambient-square — Rombos del fondo de partículas. */
   --color-ambient-square: #e6001a;
+  /* --color-ambient-square-glow — Resplandor de los rombos del fondo. */
   --color-ambient-square-glow: #ff2244;
+  /* --color-primitive-graphite-950 — Primitivo Grafito. Base de color-surface-0 y color-bg-canvas. */
   --color-primitive-graphite-950: #141518;
+  /* --color-primitive-graphite-900 — Primitivo Grafito. Base de color-surface-1. */
   --color-primitive-graphite-900: #1B1C20;
+  /* --color-primitive-graphite-850 — Primitivo Grafito. Base de color-surface-2. */
   --color-primitive-graphite-850: #232428;
+  /* --color-primitive-graphite-800 — Primitivo Grafito. Base de color-border-default (decorativo, 1.29:1 sobre canvas). */
   --color-primitive-graphite-800: #2A2B30;
+  /* --color-primitive-graphite-750 — Primitivo Grafito. Base de color-surface-3. */
   --color-primitive-graphite-750: #2D2E33;
+  /* --color-primitive-graphite-500 — Primitivo Grafito. Base de color-border-control (≥3.21:1 sobre surface-0…3). */
   --color-primitive-graphite-500: #7A7B81;
+  /* --color-primitive-graphite-400 — Primitivo Grafito. Base de color-fg-muted (≥5.32:1 sobre surface-0…3). */
   --color-primitive-graphite-400: #A1A2A8;
+  /* --color-primitive-red-300 — Primitivo de marca. Base de color-fg-brand-raised y color-status-danger: rojo legible como texto sobre cualquier superficie (≥4.82:1 en surface-3). */
   --color-primitive-red-300: #FF6680;
+  /* --color-surface-0 — Nivel 0 (Grafito): canvas y pozos (inputs, pistas de progreso, Tabs --segmented). Lo más hundido. */
   --color-surface-0: var(--color-primitive-graphite-950);
+  /* --color-surface-1 — Nivel 1 (Grafito): tarjetas, paneles, barras laterales, tablas. Alias: color-bg-surface. */
   --color-surface-1: var(--color-primitive-graphite-900);
+  /* --color-surface-2 — Nivel 2 (Grafito): hover, cabeceras de panel (ModuleCard --banded), diálogos, overlays sólidos. */
   --color-surface-2: var(--color-primitive-graphite-850);
+  /* --color-surface-3 — Nivel 3 (Grafito): lo seleccionado y la cabecera de un panel flotante (--glass --banded). */
   --color-surface-3: var(--color-primitive-graphite-750);
+  /* --color-surface-overlay — Overlay translúcido (Grafito, surface-2 al 84 %) con blur-overlay y saturate(150%). Alternativa sólida: surface-2. */
   --color-surface-overlay: rgba(35, 36, 40, 0.84);
+  /* --color-border-hairline — Material v2 · separación de superficies (tarjetas, tablas, barras). Decorativo: los controles siguen con color-border-control (≥3:1). */
   --color-border-hairline: rgba(255, 255, 255, 0.08);
+  /* --color-border-hairline-strong — Material v2 · hairline en hover y en overlays. */
   --color-border-hairline-strong: rgba(255, 255, 255, 0.14);
+  /* --font-display — Familia display de titulares y Show. */
   --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  /* --font-sans — Familia sans del cuerpo de texto. */
   --font-sans: "Barlow", system-ui, sans-serif;
+  /* --font-mono — Familia mono solo para bloques de código. */
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /* --radius-none — Sin redondeo. */
   --radius-none: 0px;
+  /* --radius-sm — Asignación a componentes sin definir. */
   --radius-sm: 4px;
+  /* --radius-md — Asignación a componentes sin definir. */
   --radius-md: 12px;
+  /* --radius-lg — Asignación a componentes sin definir. */
   --radius-lg: 16px;
+  /* --radius-xl — Asignación a componentes sin definir. */
   --radius-xl: 22px;
+  /* --radius-2xl — Asignación a componentes sin definir. */
   --radius-2xl: 24px;
+  /* --radius-full — Píldoras y círculos. */
   --radius-full: 9999px;
+  /* --shadow-glow-base — Glow en reposo de elementos de marca. */
   --shadow-glow-base: 0 4px 20px 0 rgba(255, 0, 54, 0.15);
+  /* --shadow-glow-active — Glow de estado activo/hover. */
   --shadow-glow-active: 0 8px 30px 0 rgba(255, 0, 54, 0.30);
+  /* --shadow-glow-intense — Glow máximo, uso puntual (un elemento por vista). */
   --shadow-glow-intense: 0 0 22px 4px rgba(255, 0, 54, 0.65), 0 0 55px 8px rgba(255, 0, 54, 0.28);
+  /* --shadow-cta-hover — Hover del CTA. Conserva las tres capas. */
   --shadow-cta-hover: 0 0 16px 4px rgba(255, 0, 54, 0.35), 0 0 45px 10px rgba(255, 0, 54, 0.15), inset 0 0 16px 0 rgba(255, 0, 54, 0.08);
+  /* --shadow-focus — Anillo de foco de 2px con separación de 2px en color canvas. Grafito: el hueco de 2px toma el color del canvas (#141518). */
   --shadow-focus: 0 0 0 2px #141518, 0 0 0 4px #FF0036;
+  /* --shadow-card — Sombra de card en hover tal como la usa egdev.es. */
   --shadow-card: 0 0 0 1px rgba(255, 0, 54, 0.12), 0 8px 40px 0 rgba(255, 0, 54, 0.12), inset 0 0 16px 0 rgba(255, 0, 54, 0.08);
+  /* --shadow-glow-hot — Registro Show: glow 'incandescente' con núcleo blanco, tomado de tu capa de efectos de Affinity. Un único elemento por pieza. */
   --shadow-glow-hot: 0 0 4px 1px rgba(255, 255, 255, 0.85), 0 0 18px 4px rgba(255, 0, 54, 0.75), 0 0 60px 12px rgba(255, 0, 54, 0.35);
+  /* --shadow-edge — Material v2 · borde de luz superior de toda superficie elevada. */
   --shadow-edge: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  /* --shadow-edge-strong — Borde de luz en hover, seleccionado y overlays. */
   --shadow-edge-strong: inset 0 1px 0 rgba(255, 255, 255, 0.13);
+  /* --shadow-elev-1 — Elevación 1 (dos capas: pegada + amplia): tarjetas, chips elevados, botón secundario. */
   --shadow-elev-1: 0 1px 2px rgba(0, 0, 0, 0.7), 0 4px 14px -2px rgba(0, 0, 0, 0.55);
+  /* --shadow-elev-2 — Elevación 2: tarjeta en hover, tarjetas glass de la web. */
   --shadow-elev-2: 0 2px 4px rgba(0, 0, 0, 0.7), 0 14px 36px -6px rgba(0, 0, 0, 0.75);
+  /* --shadow-elev-3 — Elevación 3: overlays (menús, diálogos, paleta). */
   --shadow-elev-3: 0 4px 10px rgba(0, 0, 0, 0.7), 0 28px 70px -10px rgba(0, 0, 0, 0.9);
+  /* --shadow-well — Pozo: lo que se rellena se hunde (inputs, buscador, casillas, pista de progreso, segmentado). Grafito: más suave, porque sobre gris el negro al 80 % se ve como un agujero. */
   --shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.55), inset 0 0 0 1px rgba(0, 0, 0, 0.28);
+  /* --shadow-ring-brand — Anillo suave de foco en campos (junto a border-brand-strong). No sustituye a shadow-focus en controles. */
   --shadow-ring-brand: 0 0 0 3px rgba(255, 0, 54, 0.22);
+  /* --shadow-btn-primary — Bisel y halo del botón primario. */
   --shadow-btn-primary: inset 0 1px 0 rgba(255, 255, 255, 0.38), inset 0 -1px 0 rgba(0, 0, 0, 0.28), 0 1px 2px rgba(0, 0, 0, 0.6), 0 8px 22px -8px rgba(255, 0, 54, 0.7);
+  /* --shadow-btn-primary-hover — Primario en hover. Sustituye a shadow-cta-hover en botones. */
   --shadow-btn-primary-hover: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -1px 0 rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 0, 54, 0.35), 0 10px 30px -6px rgba(255, 0, 54, 0.75);
+  /* --shadow-btn-pressed — Botón pulsado: sin bisel, hundido. */
   --shadow-btn-pressed: inset 0 2px 5px rgba(0, 0, 0, 0.4);
+  /* --shadow-hot — Firma: tarjeta hot (bisel, dos escalones de grosor y halo). Una por vista como mucho. */
   --shadow-hot: inset 0 1px 0 rgba(255, 180, 195, 0.35), inset 0 0 0 1px rgba(255, 0, 54, 0.18), 0 2px 0 0 #7A0A1C, 0 5px 0 0 #3D050E, 0 18px 40px -10px rgba(0, 0, 0, 0.85), 0 0 50px -6px rgba(255, 0, 54, 0.45);
+  /* --blur-glass — backdrop-filter: blur() de las superficies glass (nav, tarjetas glass, pop-ups). */
   --blur-glass: 16px;
+  /* --blur-overlay — Material v2 · desenfoque de color-surface-overlay (con saturate 150 %). */
   --blur-overlay: 20px;
+  /* --ease-out — Curva por defecto de toda la interfaz. */
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* --ease-overshoot — Solo registro Show: entradas con rebote. */
   --ease-overshoot: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* --ease-spring — Hover de botones e IconButton: muelle corto. Registro Pro incluido (sobrepasa poco). */
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* --ease-snappy — Pulsación y respuestas inmediatas (toggles, tooltips). */
   --ease-snappy: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 :root {
+  /* --logo-red — Del archivo del logotipo V4 (no está en Penpot). Cara iluminada del isotipo. Solo para el logo y piezas que lo citan; 4.67:1 sobre canvas. */
   --logo-red: #E91B35;
+  /* --logo-red-shade — Del archivo del logotipo V4 (no está en Penpot). Cara en sombra del isotipo. Decorativo: 1.99:1 sobre canvas, nunca para texto. */
   --logo-red-shade: #800C1D;
+  /* --space-0 — Sin espacio. */
   --space-0: 0px;
+  /* --space-1 — Separación icono-texto mínima. */
   --space-1: 4px;
+  /* --space-2 — Gaps compactos. */
   --space-2: 8px;
+  /* --space-3 — Padding vertical de controles. */
   --space-3: 12px;
+  /* --space-4 — Padding base. */
   --space-4: 16px;
+  /* --space-5 — Escala. */
   --space-5: 20px;
+  /* --space-6 — Padding de card. */
   --space-6: 24px;
+  /* --space-7 — Escala. */
   --space-7: 28px;
+  /* --space-8 — Separación entre bloques. */
   --space-8: 32px;
+  /* --space-10 — Escala. Coincide con effect.grid.size. */
   --space-10: 40px;
+  /* --space-12 — Escala. */
   --space-12: 48px;
+  /* --space-14 — Escala. */
   --space-14: 56px;
+  /* --space-16 — Separación entre secciones. */
   --space-16: 64px;
+  /* --space-20 — Escala. */
   --space-20: 80px;
+  /* --space-24 — Márgenes de sección amplios. */
   --space-24: 96px;
+  /* --effect-grid-opacity — Opacidad de la retícula de fondo. Color, grosor y construcción sin definir. */
   --effect-grid-opacity: 0.025;
+  /* --effect-grid-size — Paso de la retícula de fondo. */
   --effect-grid-size: 40px;
+  /* --border-width — Grosor de borde de superficies y controles. */
   --border-width: 1px;
+  /* --focus-width — Grosor del anillo de foco. */
   --focus-width: 2px;
+  /* --focus-offset — Separación del anillo de foco. */
   --focus-offset: 2px;
+  /* --icon-size — Tamaño base Lucide: 20px (16 en labels y menús, 24 en headings). */
   --icon-size: 20px;
+  /* --icon-stroke — stroke-width Lucide, a juego con el peso medio de Space Grotesk. */
   --icon-stroke: 1.75;
+  /* --duration-fast — Color, fondo, hover de enlaces y botones. */
   --duration-fast: 200ms;
+  /* --duration-base — Glow, borde y transform de tarjetas; cambio de texto del botón de secciones. */
   --duration-base: 300ms;
+  /* --duration-reveal — Entradas al hacer scroll. */
   --duration-reveal: 560ms;
+  /* --ambient-cycle — Ciclo mínimo de pulsos ambientales. */
   --ambient-cycle: 10s;
+  /* --delay-popover — Espera de hover antes de abrir el pop-up del botón de secciones. */
   --delay-popover: 2s;
+  /* --duration-press — Pulsación de botones (translateY 1px + scale .97). */
   --duration-press: 90ms;
+  /* --content-max — Ancho máximo del contenido (wrap). */
   --content-max: 1280px;
+  /* --gutter — Margen lateral de la página. */
   --gutter: clamp(16px, 4vw, 40px);
+  /* --nav-height — Alto de la barra superior; las secciones lo compensan arriba. */
   --nav-height: 68px;
+  /* --section-min-height — Toda sección ocupa al menos una pantalla y centra su contenido en vertical. */
   --section-min-height: 100dvh;
+  /* --bp-sm — Breakpoint móvil estrecho. */
   --bp-sm: 520px;
+  /* --bp-md — Breakpoint tablet/escritorio: por debajo, una columna y 3D solo en hero y Lab. */
   --bp-md: 960px;
+  /* --bp-lg — Breakpoint escritorio ancho. */
   --bp-lg: 1260px;
+  /* --tilt-max — Rotación máxima de elementos Show. */
   --tilt-max: 6deg;
+  /* --ambient-angle — Ángulo de los haces y rombos (grados). */
   --ambient-angle: 315;
+  /* --ambient-line-count — Haces en tramo base (lectura 20, Live 110, móvil −40%). */
   --ambient-line-count: 70;
+  /* --ambient-square-count — Rombos en tramo base (lectura 25, Live 120). */
   --ambient-square-count: 90;
+  /* --ambient-speed — Multiplicador de velocidad (lectura 0.6, Live 1.4). */
   --ambient-speed: 1;
+  /* --ambient-glow-opacity — Opacidad del halo central (Live 0.18). */
   --ambient-glow-opacity: 0.1;
+  /* --ambient-square-size-min — Tamaño mínimo de rombo. */
   --ambient-square-size-min: 6px;
+  /* --ambient-square-size-max — Tamaño máximo de rombo. */
   --ambient-square-size-max: 28px;
+  /* --gradient-sheen — Brillo cenital sobre las superficies (se apila encima del color de surface). */
   --gradient-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0) 42%);
+  /* --gradient-glass-card — Brillo de las tarjetas glass de la web (NowCard, ProjectCard, ArticleFeature, CommunityCard, TerminalCard). */
   --gradient-glass-card: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015) 45%);
+  /* --gradient-btn-primary — Relleno del botón primario y casillas marcadas. Texto negro: 5,8:1 arriba, 5,3:1 en el centro y 4,7:1 abajo. */
   --gradient-btn-primary: linear-gradient(180deg, #FF2D57 0%, #FF0036 52%, #EE0031 100%);
+  /* --gradient-btn-primary-hover — Primario en hover. */
   --gradient-btn-primary-hover: linear-gradient(180deg, #FF4A6E 0%, #FF1A49 52%, #F00033 100%);
+  /* --gradient-btn-secondary — Secundario, sobre color-surface-1. */
   --gradient-btn-secondary: linear-gradient(180deg, rgba(255, 0, 54, 0.20) 0%, rgba(255, 0, 54, 0.08) 100%);
+  /* --gradient-btn-secondary-hover — Secundario en hover. */
   --gradient-btn-secondary-hover: linear-gradient(180deg, rgba(255, 0, 54, 0.30) 0%, rgba(255, 0, 54, 0.13) 100%);
+  /* --gradient-chip-active — Chip activo (filtro elegido). */
   --gradient-chip-active: linear-gradient(180deg, rgba(255, 0, 54, 0.24), rgba(255, 0, 54, 0.09));
+  /* --gradient-post-new — PostCard --new: lo que añade el agente. */
   --gradient-post-new: linear-gradient(180deg, rgba(255, 0, 54, 0.11), rgba(255, 0, 54, 0.03) 60%);
+  /* --gradient-progress — Carga de ProgressBar --lg. */
   --gradient-progress: linear-gradient(180deg, #FF4A6E, #FF0036 60%, #D9002D);
+  /* --gradient-hot — Fondo de la tarjeta hot (ProjectCard --feat). Grafito: base #22121A (antes #0E0709), para que sobre gris no se lea como un agujero. */
   --gradient-hot: radial-gradient(120% 80% at 85% -10%, rgba(255, 0, 54, 0.26), transparent 55%), linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 40%), #22121A;
 }

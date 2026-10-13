@@ -1,6 +1,6 @@
 # Plan de traspaso
 
-Orden propuesto para pasar EGDEV Foundation de Claude Design a este repo. Cada fase deja algo usable: las primeras desbloquean la web y el AppShell de las apps.
+Plan histórico de traspaso desde Claude Design; no es el roadmap vigente ni autoriza implementación. La planificación aprobada vive en [#8](https://github.com/egdev6/egdev-design-system/issues/8). Las menciones a JSON y generadores describen el arranque; T1 los sustituye por [fuente CSS única](odd/t1-css-tokens.md). Cada fase original proponía algo usable para la web y el AppShell.
 
 ## Fase 0 · Base (hecho en el arranque)
 

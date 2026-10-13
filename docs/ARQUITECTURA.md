@@ -16,7 +16,7 @@ M2 establece normas; no migra ni recataloga los tres componentes existentes (Sur
 
 | Paquete | Qué contiene | Depende de |
 |---|---|---|
-| `@egdev/tokens` | `tokens.json` (fuente), `tokens.css` y `theme.css` (generados: variables CSS y tema de Tailwind v4) | — |
+| `@egdev/tokens` | `src/theme.css` (fuente CSS manual); `tokens.css` (artefacto nativo compilado) y `theme.css` (fuente para Tailwind v4) | — |
 | `@egdev/ui` | Primitivas, átomos, moléculas, organismos y plantillas genéricos | Paquetes individuales `@radix-ui/react-*`, CVA, `@egdev/tokens` |
 | `@egdev/effects` | Capas de efecto de la web (AmbientBackground, Isotipo3D) | canvas, three.js, `@egdev/tokens` |
 
@@ -58,7 +58,7 @@ La hoja de EGDEV Foundation ya existe: clases `eg-*` en BEM, construidas con los
 2. **Las variantes se declaran con CVA en `types.ts`** y producen clases BEM (`tone: 'glass'` → `eg-surface--glass`). CVA sigue siendo la API tipada de variantes, como en Stack & Flow.
 3. **Los estados de Radix se estilan por atributo**: `[data-state="open"]`, `[aria-selected="true"]`, `[data-disabled]`. Nunca con clases de estado puestas a mano.
 4. **Tailwind se usa para el layout de las apps**, no dentro de los componentes. `@egdev/tokens/theme.css` da las utilidades con los mismos tokens (`bg-bg-surface`, `rounded-xl`, `font-display`).
-5. **Material:** las superficies, bordes, sombras y estados de pulsado salen de los tokens y recetas de [MATERIAL.md](MATERIAL.md), que conserva su autoridad y procedencia visual. Una caja con materia reutiliza `<Surface>`; los controles usan su receta. Nada de colores, espaciados, fuentes, sombras o degradados improvisados. Si falta un token, se propone y se espera confirmación antes de editar `tokens.json`.
+5. **Material:** las superficies, bordes, sombras y estados de pulsado salen de los tokens y recetas de [MATERIAL.md](MATERIAL.md), que conserva su autoridad y procedencia visual. Una caja con materia reutiliza `<Surface>`; los controles usan su receta. Nada de colores, espaciados, fuentes, sombras o degradados improvisados. Si falta un token, se propone y se espera confirmación antes de modificar `packages/tokens/src/theme.css`.
 6. **Migración:** `packages/ui/src/styles/legacy/bundle.css` es la hoja completa de Claude Design. Al portar un componente, sus reglas se mueven de ahí a su `.css`. Cuando quede vacía, se borra.
 7. **Clase pública, nunca estilos por `id`:** raíz estable `eg-<nombre>`, con la excepción heredada **IconButton = `eg-icon-btn`**, no `eg-icon-button`. Ids internos solo para accesibilidad, con `useId()`. Variantes BEM; estados por atributos Radix/ARIA, sin copias en clases. Estados propios en `data-state`, sin sustituir semántica nativa como `aria-pressed`.
 8. **Capas de cascada:** todo el CSS de `@egdev/ui` va en `@layer components`, en el mismo orden de capas que Tailwind v4 (`theme, base, components, utilities`). Una utilidad de Tailwind puesta por `className` siempre gana a la clase del componente, sin `!important`; se usa solo para colocar el componente (margen, ancho, grid), nunca para cambiar su aspecto.
@@ -66,6 +66,12 @@ La hoja de EGDEV Foundation ya existe: clases `eg-*` en BEM, construidas con los
 La norma completa, con ejemplos de lo que se permite y lo que no, está en el contrato de componente: [skills/_shared/component-contract.md](../skills/_shared/component-contract.md#clases-ids-y-capas-egdev).
 
 > De Stack & Flow se toma el rigor de separación de responsabilidades y revisión, no sus seis archivos, Tailwind de apariencia, idioma de stories ni gates de GitHub. Las decisiones propias de EGDEV no se cambian al adaptar una referencia.
+
+### Fuente y distribución de tokens
+
+`packages/tokens/src/theme.css` es la única fuente de valores: `@theme static` conserva las variables de utilidades y `:root` las variables sin utilidad. Vite y el plugin oficial de Tailwind compilan la entrada `src/native.css` a `dist/tokens.css`, sin generar valores desde JSON. La optimización de Tailwind está desactivada en esa salida para preservar exactamente colores alfa y alias.
+
+Desde `@egdev/tokens` 0.3.0 se retira el export `tokens.json`. Los imports CSS públicos no cambian; el consumo nativo requiere el paquete construido, no interpretar `@theme` en el navegador. Las recetas tipográficas aún no publicadas se conservan como [referencia para T2](tokens-reference.md); no son una segunda fuente de tokens. Una futura consulta MCP queda fuera de T1.
 
 ### Uso en una app
 
