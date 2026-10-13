@@ -176,6 +176,76 @@
   --font-sans: "Barlow", system-ui, sans-serif;
   /* --font-mono — Familia mono solo para bloques de código. */
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /*
+   * Typography recipes restored from docs/tokens-reference.md (Foundation v2). Each
+   * --text-* set feeds a Tailwind text-* utility; font family and casing stay in the
+   * existing --font-* tokens and the separate uppercase utility classes.
+   */
+  /* --text-display-hero — Display hero: Barlow Condensed (display), uppercase; 56px/1.1. */
+  --text-display-hero: 56px;
+  --text-display-hero--line-height: 1.1;
+  --text-display-hero--font-weight: 800;
+  --text-display-hero--letter-spacing: 0;
+  /* --text-display-show — Show register hero: display family, uppercase; 96px/0.9. */
+  --text-display-show: 96px;
+  --text-display-show--line-height: 0.9;
+  --text-display-show--font-weight: 800;
+  --text-display-show--letter-spacing: 0;
+  /* --text-display-pro — Pro register hero: display family, uppercase; 64px/0.95. */
+  --text-display-pro: 64px;
+  --text-display-pro--line-height: 0.95;
+  --text-display-pro--font-weight: 800;
+  --text-display-pro--letter-spacing: 0;
+  /* --text-heading-section — Section headings: display family, uppercase; 40px/1.2. */
+  --text-heading-section: 40px;
+  --text-heading-section--line-height: 1.2;
+  --text-heading-section--font-weight: 800;
+  --text-heading-section--letter-spacing: 0;
+  /* --text-heading-small — Card and block titles: sans family, normal case; 24px/1.2. */
+  --text-heading-small: 24px;
+  --text-heading-small--line-height: 1.2;
+  --text-heading-small--font-weight: 700;
+  --text-heading-small--letter-spacing: 0;
+  /* --text-body-large — Large body copy: sans family; 20px/1.6. */
+  --text-body-large: 20px;
+  --text-body-large--line-height: 1.6;
+  --text-body-large--font-weight: 500;
+  --text-body-large--letter-spacing: 0;
+  /* --text-body-default — Default body copy: sans family; 16px/1.6. */
+  --text-body-default: 16px;
+  --text-body-default--line-height: 1.6;
+  --text-body-default--font-weight: 500;
+  --text-body-default--letter-spacing: 0;
+  /* --text-body-muted — Muted body copy: sans family (the name does not imply color); 20px/1.6. */
+  --text-body-muted: 20px;
+  --text-body-muted--line-height: 1.6;
+  --text-body-muted--font-weight: 400;
+  --text-body-muted--letter-spacing: 0;
+  /* --text-label-default — Default labels: sans family; 14px/1.2. */
+  --text-label-default: 14px;
+  --text-label-default--line-height: 1.2;
+  --text-label-default--font-weight: 600;
+  --text-label-default--letter-spacing: 0;
+  /* --text-label-eyebrow — Eyebrow labels: display family, uppercase, tracking 0.12em; 14px/1.2. */
+  --text-label-eyebrow: 14px;
+  --text-label-eyebrow--line-height: 1.2;
+  --text-label-eyebrow--font-weight: 700;
+  --text-label-eyebrow--letter-spacing: 0.12em;
+  /* --text-meta — Metadata, versions and tags: display family, uppercase, tracking 0.08em; 14px/1.3. */
+  --text-meta: 14px;
+  --text-meta--line-height: 1.3;
+  --text-meta--font-weight: 600;
+  --text-meta--letter-spacing: 0.08em;
+  /* --text-cta-label — Call-to-action labels: sans family; 16px/1.2. */
+  --text-cta-label: 16px;
+  --text-cta-label--line-height: 1.2;
+  --text-cta-label--font-weight: 700;
+  --text-cta-label--letter-spacing: 0;
+  /* --text-code — Code blocks and snippets only: mono family; 14px/1.6. */
+  --text-code: 14px;
+  --text-code--line-height: 1.6;
+  --text-code--font-weight: 400;
+  --text-code--letter-spacing: 0;
   /* --radius-none — Sin redondeo. */
   --radius-none: 0px;
   /* --radius-sm — Asignación a componentes sin definir. */
@@ -351,4 +421,43 @@
   --gradient-progress: linear-gradient(180deg, #FF4A6E, #FF0036 60%, #D9002D);
   /* --gradient-hot — Fondo de la tarjeta hot (ProjectCard --feat). Grafito: base #22121A (antes #0E0709), para que sobre gris no se lea como un agujero. */
   --gradient-hot: radial-gradient(120% 80% at 85% -10%, rgba(255, 0, 54, 0.26), transparent 55%), linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 40%), #22121A;
+}
+
+/*
+ * Tailwind v4 spacing scale bound to the EGDEV --space-* source. `inline` keeps the
+ * var() reference in generated utilities, so a local --space-* override still wins.
+ */
+@theme inline static {
+  /* --spacing — Base Tailwind step for fractional utilities (p-0.5); maps to --space-1 (4px). */
+  --spacing: var(--space-1);
+  /* --spacing-0 — Tailwind step bound to --space-0 (0px). */
+  --spacing-0: var(--space-0);
+  /* --spacing-1 — Tailwind step bound to --space-1 (4px). */
+  --spacing-1: var(--space-1);
+  /* --spacing-2 — Tailwind step bound to --space-2 (8px). */
+  --spacing-2: var(--space-2);
+  /* --spacing-3 — Tailwind step bound to --space-3 (12px). */
+  --spacing-3: var(--space-3);
+  /* --spacing-4 — Tailwind step bound to --space-4 (16px). */
+  --spacing-4: var(--space-4);
+  /* --spacing-5 — Tailwind step bound to --space-5 (20px). */
+  --spacing-5: var(--space-5);
+  /* --spacing-6 — Tailwind step bound to --space-6 (24px). */
+  --spacing-6: var(--space-6);
+  /* --spacing-7 — Tailwind step bound to --space-7 (28px). */
+  --spacing-7: var(--space-7);
+  /* --spacing-8 — Tailwind step bound to --space-8 (32px). */
+  --spacing-8: var(--space-8);
+  /* --spacing-10 — Tailwind step bound to --space-10 (40px). */
+  --spacing-10: var(--space-10);
+  /* --spacing-12 — Tailwind step bound to --space-12 (48px). */
+  --spacing-12: var(--space-12);
+  /* --spacing-14 — Tailwind step bound to --space-14 (56px). */
+  --spacing-14: var(--space-14);
+  /* --spacing-16 — Tailwind step bound to --space-16 (64px). */
+  --spacing-16: var(--space-16);
+  /* --spacing-20 — Tailwind step bound to --space-20 (80px). */
+  --spacing-20: var(--space-20);
+  /* --spacing-24 — Tailwind step bound to --space-24 (96px). */
+  --spacing-24: var(--space-24);
 }

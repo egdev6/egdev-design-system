@@ -69,9 +69,9 @@ La norma completa, con ejemplos de lo que se permite y lo que no, está en el co
 
 ### Fuente y distribución de tokens
 
-`packages/tokens/src/theme.css` es la única fuente de valores: `@theme static` conserva las variables de utilidades y `:root` las variables sin utilidad. Vite y el plugin oficial de Tailwind compilan la entrada `src/native.css` a `dist/tokens.css`, sin generar valores desde JSON. La optimización de Tailwind está desactivada en esa salida para preservar exactamente colores alfa y alias.
+`packages/tokens/src/theme.css` es la única fuente de valores: `@theme static` conserva las variables de utilidades y `:root` las variables sin utilidad. T2 añade únicamente los alias de espaciado en `@theme inline static`, para emitirlos siempre y resolver overrides locales en el elemento consumidor. Vite y el plugin oficial de Tailwind compilan la entrada `src/native.css` a `dist/tokens.css`, sin generar valores desde JSON. La optimización de Tailwind está desactivada en esa salida para preservar exactamente colores alfa y alias.
 
-Desde `@egdev/tokens` 0.3.0 se retira el export `tokens.json`. Los imports CSS públicos no cambian; el consumo nativo requiere el paquete construido, no interpretar `@theme` en el navegador. Las recetas tipográficas aún no publicadas se conservan como [referencia para T2](tokens-reference.md); no son una segunda fuente de tokens. Una futura consulta MCP queda fuera de T1.
+Desde `@egdev/tokens` 0.3.0 se retira el export `tokens.json`. Los imports CSS públicos no cambian; el consumo nativo requiere el paquete construido, no interpretar `@theme` en el navegador. Las [13 recetas tipográficas](tokens-reference.md) tienen tamaño, interlineado, peso y tracking en `--text-*`; familia y mayúsculas se componen aparte. El espaciado nativo y Tailwind se vincula explícitamente en px, incluso con raíz distinta de 16px. La referencia conserva procedencia y muestras, no es una segunda fuente de tokens. Una futura consulta MCP queda fuera de T1/T2.
 
 ### Uso en una app
 
