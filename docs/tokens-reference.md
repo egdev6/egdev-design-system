@@ -1,12 +1,12 @@
-# Referencia tipográfica conservada para T2
+# Contrato tipográfico y espaciado — T2
 
-Estas 13 recetas existían en el JSON de EGDEV Foundation pero no se exportaban como variables CSS. T1 las conserva aquí sin publicar tokens nuevos ni convertir esta referencia en una segunda fuente de valores del paquete. Su contrato CSS y la vinculación del espaciado se decidirán en [#10](https://github.com/egdev6/egdev-design-system/issues/10).
+Las 13 recetas heredadas se publican como variables CSS y utilidades Tailwind en [#10](https://github.com/egdev6/egdev-design-system/issues/10), sin portar componentes ni rediseñar la tipografía. La única fuente autoritativa de valores es `packages/tokens/src/theme.css`. Esta referencia conserva el snapshot aprobado, familias, muestras y procedencia; no genera tokens.
 
 ## Procedencia
 
 Baseline anterior a T1: commit `13cb1252e205c080ea831666aa2ee29f432b4af4`, esquema de origen versión 2. Metadatos originales: `{"source": "Penpot · Foundation / Token Contract"}`. Las familias exportadas siguen siendo autoritativas en `packages/tokens/src/theme.css`; esta tabla usa sus identificadores, no copias de sus valores.
 
-## Recetas no exportadas
+## Recetas aprobadas (snapshot de T2)
 
 | Grupo | Nombre | Familia | Tamaño | Interlineado | Peso | Tracking |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -23,6 +23,48 @@ Baseline anterior a T1: commit `13cb1252e205c080ea831666aa2ee29f432b4af4`, esque
 | Label | meta | display | 14px | 1.3 | 600 | 0.08em |
 | CTA | cta-label | sans | 16px | 1.2 | 700 | 0 |
 | Code | code | mono | 14px | 1.6 | 400 | 0 |
+
+## Consumir una receta
+
+Para cada nombre `R`, el contrato publica `--text-R`, `--text-R--line-height`, `--text-R--font-weight` y `--text-R--letter-spacing`. Tailwind compila `text-R` con esos cuatro valores; **no añade automáticamente la familia ni las mayúsculas**.
+
+En CSS nativo de una app:
+
+```css
+.hero-title {
+  font-family: var(--font-display);
+  font-size: var(--text-display-hero);
+  line-height: var(--text-display-hero--line-height);
+  font-weight: var(--text-display-hero--font-weight);
+  letter-spacing: var(--text-display-hero--letter-spacing);
+  text-transform: uppercase;
+}
+```
+
+En HTML de una app con Tailwind:
+
+```html
+<h1 class="font-display text-display-hero uppercase">HAZ QUE SUCEDA</h1>
+<p class="font-sans text-body-muted">Texto secundario, sin color implícito.</p>
+<code class="font-mono text-code">touch-action: pan-y;</code>
+```
+
+Los ejemplos no autorizan cambiar el aspecto de un componente `@egdev/ui` mediante `className`: se mantiene el contrato de variantes. El consumidor carga las fuentes; declarar una familia no acredita su descarga ni el renderizado de glifos.
+
+## Espaciado y tamaño raíz
+
+Se conservan `--space-0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24` en px. Sus alias `--spacing-N` viven en `@theme inline static` y las utilidades usan `var(--space-N)` directamente. La base `--spacing` referencia `--space-1` para pasos no enumerados y decimales.
+
+| Caso sin overrides | Raíz 16px | Raíz 20px |
+| --- | --- | --- |
+| `p-4` y `padding: var(--space-4)` | 16px | 16px |
+| `p-0.5` | 2px | 2px |
+| `p-9` (derivado de la base, no nuevo token) | 36px | 36px |
+| `text-display-hero` | 56px | 56px |
+
+**Cambio aprobado respecto al default Tailwind:** antes `--spacing: 0.25rem` hacía que `p-4` valiese 20px con raíz de 20px; T2 lo vincula a los tokens EGDEV en px. El zoom del navegador es otro mecanismo y no se sustituye por este test de tamaño raíz.
+
+Un override local de `--space-4: 24px` afecta a `p-4` en ese ámbito, sin cambiar los demás pasos. Un override de `--space-1: 6px` afecta a los pasos derivados (`p-0.5` = 3px, `p-9` = 54px); los pasos con alias propio conservan su token correspondiente. No se modifica el espaciado de componentes existentes por publicar estos alias.
 
 ## Notas y muestras originales
 
@@ -47,10 +89,10 @@ Baseline anterior a T1: commit `13cb1252e205c080ea831666aa2ee29f432b4af4`, esque
 - **code**: JetBrains Mono SOLO dentro de bloques y fragmentos de código.
   Muestra: `touch-action: pan-y;`.
 
-## Qué queda fuera de T1
+## Qué queda fuera de T2
 
-- Resolver las notas pendientes de Penpot o alterar las recetas.
-- Crear utilidades tipográficas, cambiar unidades o vincular `--space-*` a Tailwind.
-- Añadir dimensiones semánticas (#11) o una herramienta MCP de consulta.
+- Resolver las notas pendientes de Penpot, alterar las recetas o migrar tipografía legacy.
+- Convertir tamaños o espaciados de px a rem; añadir familias o cambiar colores de `body-muted`.
+- Añadir dimensiones semánticas (#11), componentes o una herramienta MCP de consulta.
 
 Las notas de tokens ya publicados se mantienen como comentarios junto a la única fuente CSS; no se conserva un export JSON estático.

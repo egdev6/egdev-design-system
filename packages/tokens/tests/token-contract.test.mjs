@@ -22,16 +22,18 @@ const manifest = JSON.parse(readFileSync(at('../package.json'), 'utf8'));
 
 const globalReset = /--\*\s*:\s*initial\s*;/;
 const themeBlock = themeSource.match(/@theme\s+static\s*\{([\s\S]*?)\n\}/)?.[1] ?? '';
+const inlineBlock = themeSource.match(/@theme\s+inline\s+static\s*\{([\s\S]*?)\n\}/)?.[1] ?? '';
 const rootBlock = themeSource.match(/\n:root\s*\{([\s\S]*?)\n\}/)?.[1] ?? '';
 
-test('theme.css is the manual source with @theme static and no inline/plain theme', () => {
-  assert.match(themeSource, /@theme\s+static\s*\{/, 'theme.css must open @theme static');
-  assert.doesNotMatch(
-    themeSource,
-    /@theme\s+inline/,
-    'inline theme would change utility expressions and alias resolution'
+test('theme.css keeps exactly the static theme and the inline spacing theme', () => {
+  const headers = [...themeSource.matchAll(/@theme[^\n{]*\{/g)].map(([header]) => header.replace(/\s+/g, ' ').trim());
+  assert.deepEqual(
+    headers,
+    ['@theme static {', '@theme inline static {'],
+    'theme.css must not open a plain or additional @theme block'
   );
   assert.ok(themeBlock, 'theme.css must expose a @theme static block');
+  assert.ok(inlineBlock, 'theme.css must expose a @theme inline static block');
   assert.ok(rootBlock, 'theme.css must expose a :root block');
 });
 
@@ -40,15 +42,16 @@ test('theme.css keeps the Tailwind color reset instead of a global reset', () =>
   assert.doesNotMatch(themeSource, globalReset, 'only the color namespace may be reset');
 });
 
-test('theme.css declares exactly 113 utility variables and 55 root variables', () => {
-  assert.equal(extractDeclarations(themeBlock).length, 113, 'utility namespace declaration count');
+test('theme.css declares exactly 165 utility variables, 16 inline aliases, and 55 root variables', () => {
+  assert.equal(extractDeclarations(themeBlock).length, 165, 'utility namespace declaration count');
+  assert.equal(extractDeclarations(inlineBlock).length, 16, 'inline spacing alias count');
   assert.equal(extractDeclarations(rootBlock).length, 55, 'root declaration count');
-  assert.equal(extractDeclarations(themeSource).length, 168, 'total declaration count');
+  assert.equal(extractDeclarations(themeSource).length, 236, 'total declaration count');
 });
 
-test('theme.css preserves all 34 aliases and has no duplicates, missing targets, or cycles', () => {
+test('theme.css preserves all 50 aliases and has no duplicates, missing targets, or cycles', () => {
   const declarations = extractDeclarations(themeSource);
-  assert.equal(declarations.filter(({ value }) => value.includes('var(')).length, 34, 'alias count');
+  assert.equal(declarations.filter(({ value }) => value.includes('var(')).length, 50, 'alias count');
   assert.deepEqual(findDuplicates(declarations), [], 'duplicate declarations');
   assert.deepEqual(findUnresolvedAliases(declarations), [], 'unresolved aliases');
   assert.deepEqual(findAliasCycles(declarations), [], 'alias cycles');
@@ -80,16 +83,23 @@ test('package publishes compiled tokens and keeps backward CSS exports', () => {
   assert.ok(manifest.files.includes('dist'), 'compiled artifact must ship');
 });
 
-test('compiled dist/tokens.css matches the original token values exactly', () => {
+test('compiled dist/tokens.css exposes the 236 manual variables and preserves the original 168 values', () => {
   const artifactPath = at('../dist/tokens.css');
   assert.ok(existsSync(artifactPath), 'dist/tokens.css missing — run pnpm tokens before this test');
   const artifact = readFileSync(artifactPath, 'utf8');
   assert.doesNotMatch(artifact, /@theme/, 'compiled artifact must not keep the @theme at-rule');
-  const parity = compareParity(artifact, baseline);
+  const compiled = toDeclarationMap(artifact);
+  assert.equal(compiled.size, 236, 'compiled artifact must expose 236 variables');
+  const parity = compareParity(artifact, themeSource);
   assert.deepEqual(parity.missing, [], 'compiled artifact dropped tokens');
   assert.deepEqual(parity.extra, [], 'compiled artifact invented tokens');
   assert.deepEqual(parity.changed, [], 'compiled artifact changed token values');
-  assert.equal(toDeclarationMap(artifact).size, 168, 'compiled artifact must expose 168 variables');
+  // The immutable fixture proves the pre-#10 tokens keep their exact values and units.
+  const original = toDeclarationMap(baseline);
+  assert.equal(original.size, 168, 'baseline fixture must keep its 168 original tokens');
+  for (const [name, value] of original) {
+    assert.equal(compiled.get(name), value, `compiled artifact must preserve the original value of ${name}`);
+  }
 });
 
 test('reset guard catches a global theme reset without rejecting the color reset', () => {

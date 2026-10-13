@@ -155,6 +155,51 @@ try {
 }
 `;
 
+const typographyNames = [
+  'display-hero',
+  'display-show',
+  'display-pro',
+  'heading-section',
+  'heading-small',
+  'body-large',
+  'body-default',
+  'body-muted',
+  'label-default',
+  'label-eyebrow',
+  'meta',
+  'cta-label',
+  'code'
+];
+const spacingClasses = [
+  'p-0',
+  'p-1',
+  'p-2',
+  'p-3',
+  'p-4',
+  'p-5',
+  'p-6',
+  'p-7',
+  'p-8',
+  'p-10',
+  'p-12',
+  'p-14',
+  'p-16',
+  'p-20',
+  'p-24',
+  'p-0.5',
+  'p-9'
+];
+// Test-only class list: it drives @source scanning and carries no production values.
+const tailwindClasses = [
+  'text-fg-secondary',
+  'bg-bg-surface',
+  'rounded-xl',
+  'shadow-edge',
+  'font-display',
+  ...typographyNames.map((name) => `text-${name}`),
+  ...spacingClasses
+].join(' ');
+
 const css = `
 import assert from 'node:assert/strict';
 import { readFileSync, realpathSync } from 'node:fs';
@@ -184,15 +229,31 @@ const names = shipped
     const name = line.slice(at).split(':')[0].trim();
     return name.startsWith('--') ? [name] : [];
   });
-assert.equal(names.length, 168, 'Packed native artifact must expose 168 variables');
+const typography = ${JSON.stringify(typographyNames)};
+assert.equal(names.length, 236, 'Packed native artifact must expose 236 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-1', '--radius-md', '--shadow-edge']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
+for (const name of typography) {
+  for (const field of ['--line-height', '--font-weight', '--letter-spacing']) assert.ok(emitted.includes('--text-' + name + field + ':'), 'Native artifact must expose --text-' + name + field);
+}
+assert.ok(emitted.includes('--effect-grid-size: 40px'), 'Native artifact must emit unused effect spacing');
+assert.ok(emitted.includes('--spacing-16: var(--space-16)'), 'Native artifact must emit unused spacing aliases');
 for (const [name, paths] of Object.entries(instances)) assert.equal(paths.size, 1, 'Consumer bundle must contain one physical ' + name);
 const tailwind = await build({ configFile: false, logLevel: 'error', plugins: [tailwindcss({ optimize: false })], build: { cssMinify: false, emptyOutDir: true, outDir: 'dist-tw', rolldownOptions: { input: 'tailwind.css', output: { assetFileNames: 'tailwind.css' } } } });
 const twAssets = [tailwind].flat().flatMap((bundle) => bundle.output).filter((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'));
 const twCss = twAssets.map((asset) => String(asset.source)).join(' ');
 assert.ok(twAssets.length > 0, 'Tailwind build must emit CSS');
 for (const selector of ['.text-fg-secondary', '.bg-bg-surface', '.rounded-xl', '.shadow-edge', '.font-display']) assert.ok(twCss.includes(selector), 'Missing generated utility ' + selector);
+for (const name of typography) {
+  assert.ok(twCss.includes('.text-' + name), 'Tailwind must emit the text-' + name + ' utility');
+  assert.ok(twCss.includes('--tw-leading, var(--text-' + name + '--line-height)'), 'text-' + name + ' must carry line-height');
+  assert.ok(twCss.includes('--tw-font-weight, var(--text-' + name + '--font-weight)'), 'text-' + name + ' must carry font-weight');
+  assert.ok(twCss.includes('--tw-tracking, var(--text-' + name + '--letter-spacing)'), 'text-' + name + ' must carry letter-spacing');
+}
+assert.ok(twCss.includes('padding: var(--space-4)'), 'Tailwind must bind p-4 to --space-4');
+assert.ok(twCss.includes('padding: var(--space-16)'), 'Tailwind must bind p-16 to --space-16');
+assert.ok(twCss.includes('calc(var(--space-1) * 0.5)'), 'Fractional spacing must derive from --space-1');
+assert.ok(twCss.includes('calc(var(--space-1) * 9)'), 'Unlisted spacing steps must derive from the base --spacing token');
 assert.ok(twCss.includes('--color-ambient-bg:'), 'Static theme must emit unused variables');
 assert.ok(!twCss.includes('--color-red-500'), 'Color reset must remove the default palette');
 assert.ok(twCss.includes('@layer'), 'Tailwind cascade layers must be present');
@@ -250,10 +311,7 @@ for (const [react, [types, domTypes]] of Object.entries(versions)) {
         write(`${name}.mjs`, source);
       }
       write('index.html', '<div id="app"></div><script type="module" src="/main.ts"></script>');
-      write(
-        'tailwind.classes.html',
-        '<div class="text-fg-secondary bg-bg-surface rounded-xl shadow-edge font-display"></div>'
-      );
+      write('tailwind.classes.html', `<div class="${tailwindClasses}"></div>`);
       write(
         'tailwind.css',
         '@import "tailwindcss";\n@import "@egdev/tokens/theme.css";\n@source "./tailwind.classes.html";\n'
