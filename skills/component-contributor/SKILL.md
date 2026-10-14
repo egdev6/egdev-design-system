@@ -4,7 +4,7 @@ description: "Implementa o porta un componente de EGDEV Foundation (Claude Desig
 license: MIT
 metadata:
   author: egdev
-  version: "0.3"
+  version: "0.4"
   basedOn: "stack-and-flow/component-contributor"
 ---
 
@@ -18,7 +18,7 @@ Para proponer el plan exige decisión y ficha individual aprobadas y recuperable
 
 1. [Contrato](../_shared/component-contract.md), [arquitectura](../../docs/ARQUITECTURA.md) y [catalogación](../../docs/CATALOGACION.md): autoridades.
 2. [Catálogo provisional](../../docs/CATALOGO.md) y props/exports React reales.
-3. Ficha individual aprobada y su versión/referencia. Ficha Foundation (`components/<Nombre>/README.md`, `preview.html`), si existe, como evidencia de diseño, no como aprobación ni prueba React. Consulta [Material](../../docs/MATERIAL.md).
+3. Ficha individual aprobada y su versión/referencia, incluidas las capturas del diseño esperado y sus condiciones según [docs/design](../../docs/design/README.md). Ficha Foundation (`components/<Nombre>/README.md`, `preview.html`), si existe, como evidencia de diseño, no como aprobación ni prueba React. Consulta [Material](../../docs/MATERIAL.md).
 4. CSS propio y `packages/ui/src/styles/legacy/bundle.css`.
 5. [Radix](references/radix-patterns.md): ignora imports unificados heredados.
 6. [Stories](references/stories.md) y [tests](references/testing.md): no impongas rutas/mocks/dependencias ajenos.
@@ -35,7 +35,7 @@ Para proponer el plan exige decisión y ficha individual aprobadas y recuperable
 7. **Tests/stories:** hook/componente con `renderHook`, `render`, roles/nombres y `userEvent`; defaults, ARIA, teclado y deshabilitado aplicables. Sin cadenas completas de clases; raíz pública/invariantes `cn()` sí. Storybook 10: autodocs, `Meta`/`StoryObj` de `@storybook/react-vite`, `action` de `storybook/actions`; sin `argTypes` manuales/`play`. Prueba `react-docgen-typescript` real: required, enums, nativas, defaults, `asChild`. `@control` no garantiza widget; args requeridos/ejemplos, `Default` sin sustituir defaults.
 8. **`index.ts`:** exports nombrados de componente/tipos y en índice público; límites de paquete aplicables.
 9. **Catálogo autorizado:** `scripts/catalog_data.py` y `python3 scripts/build_catalog.py`, nunca edición del generado.
-10. **Verifica:** pruebas focalizadas primero; suites/Storybook solo autorizados. Metadatos, smoke HTML o lint no prueban apariencia/accesibilidad.
+10. **Verifica:** compara la apariencia con las referencias visuales aprobadas en condiciones equivalentes y registra diferencias por criterio, sin reemplazar la referencia por la implementación actual. Sin evidencia comparable, declara conformidad visual «no evaluado». Pruebas focalizadas primero; suites/Storybook solo autorizados. Metadatos, smoke HTML o lint no prueban apariencia/accesibilidad.
 
 ## Reglas
 

@@ -88,6 +88,24 @@ Define qué promete un componente antes de planificar su implementación. Comple
 - **Composición de clases:** <contrato de `className` y conflictos que deben resolver `cn()`/twMerge>
 - **Propuestas pendientes:** <tokens, tratamientos Material, dependencias o excepciones CSS globales que necesitan confirmación; o ninguna>
 
+### Referencia visual del diseño esperado
+
+Sigue la [guía de capturas](../../docs/design/README.md). Conserva las imágenes solicitadas en `docs/design/<kebab-name>/v<spec-version>/` y enlázalas desde la ubicación real de esta ficha. No uses una captura de la implementación actual como diseño aprobado sin adopción humana explícita.
+
+| ID visual | Captura (enlace relativo y descripción) | Variante / estado / props | Origen y versión de la fuente | Estado y aprobación recuperable |
+| --- | --- | --- | --- | --- |
+| VIS-01 | <imagen real o pendiente; no enlace ficticio> | <escenario principal> | <URL/story/lienzo y commit/versión; diseño esperado o estado actual> | <propuesta / aprobada; versión y referencia humana> |
+
+Para cada ID registra:
+
+- **Condiciones de captura:** <viewport, escala de dispositivo, navegador/versión, tema, fuentes, movimiento/transparencia y recorte o página completa>
+- **Procedencia:** <fecha y Playwright MCP; o imagen aportada, con límites verificables>
+- **Intención y diferencias permitidas:** <anatomía, Material, tipografía, espaciado y tokens relevantes; no deducir valores desde píxeles>
+- **Criterios asociados:** <IDs de aceptación que se comprobarán con esta referencia; estados/variantes adicionales acordados>
+- **Pendientes visuales:** <fuente/captura/aprobación/condiciones faltantes; o ninguno>
+
+Sin referencia recuperable y aprobada, la conformidad visual queda pendiente, no validada. La captura no sustituye comportamiento, accesibilidad ni tests. Si se cambia el diseño esperado, conserva la referencia anterior y solicita aprobación de una nueva versión.
+
 ## 7. Criterios de aceptación
 
 Asigna un ID a cada promesa verificable. Indica comprobaciones previstas y, por separado, resultados obtenidos: un test o una story planificados no son evidencia de cumplimiento.
@@ -102,6 +120,7 @@ Asigna un ID a cada promesa verificable. Indica comprobaciones previstas y, por 
 - [ ] No quedan dudas que impidan definir las promesas del componente.
 - [ ] Las propuestas se distinguen de la implementación verificada.
 - [ ] Cada promesa tiene un criterio y un método de comprobación adecuado.
-- [ ] La aprobación humana corresponde a esta versión de la ficha.
+- [ ] Las referencias visuales identifican su origen, condiciones y relación con criterios; las capturas pendientes no se presentan como verificación.
+- [ ] La aprobación humana corresponde a esta versión de la ficha y a las referencias visuales que identifica.
 
 **Siguiente paso:** presentar el plan de implementación y esperar su aprobación. Esta ficha no autoriza cambios de tokens, dependencias, código ni mutaciones externas.

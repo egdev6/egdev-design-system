@@ -4,7 +4,7 @@ description: "Revisa un componente de @egdev/ui contra el contrato, Radix, Story
 license: MIT
 metadata:
   author: egdev
-  version: "0.3"
+  version: "0.4"
   basedOn: "stack-and-flow/components-auditor"
 ---
 
@@ -20,7 +20,8 @@ Audita solo el alcance explícito; corregir requiere autorización aparte. M2 no
 2. [Radix](../component-contributor/references/radix-patterns.md): ignora imports unificados heredados.
 3. [Stories](../component-contributor/references/stories.md) y [tests](../component-contributor/references/testing.md): no impongas rutas/mocks/dependencias ajenos.
 4. [Catálogo provisional](../../docs/CATALOGO.md) y props/exports React reales.
-5. [Material](../../docs/MATERIAL.md) y `packages/tokens/src/theme.css` y su salida construida `packages/tokens/dist/tokens.css`.
+5. [Referencias visuales](../../docs/design/README.md), imágenes/condiciones/aprobación de la ficha; fuente actual no equivale a diseño esperado.
+6. [Material](../../docs/MATERIAL.md) y `packages/tokens/src/theme.css` y su salida construida `packages/tokens/dist/tokens.css`.
 
 ## Fases
 
@@ -29,8 +30,9 @@ Audita solo el alcance explícito; corregir requiere autorización aparte. M2 no
 3. **Catálogo:** evidencia de mantener/reutilizar → variante → componer → extraer → nuevo. Nivel por responsabilidad semántica/coordinación, no tamaño/CSS/recuentos. Surface es apoyo legítimo; detecta cambios semánticos o conceptos separables.
 4. **Radix/nativos:** namespace de paquetes individuales, primitiva, `Portal`, `asChild`, estados por atributo. Teclado/foco/ARIA/deshabilitado reales; no reimplementación ni interacción inventada para nativos.
 5. **Material/CSS:** tokens/receta, Surface, hoja propia en `layer(components)`, foco y alternativas movimiento/transparencia. Raíz pública estable (IconButton: `eg-icon-btn`), ids accesibles/`useId()`, estados Radix/ARIA/`data-state`. Legado/lienzos según paridad/migración aprobadas, nunca borrar `.is-*` o renombrar automáticamente.
-6. **Stories:** Storybook 10/autodocs, `@storybook/react-vite`, `storybook/actions`; sin `argTypes` manuales/`play`. Prueba docgen real: required, nativas, enums, defaults, `asChild`; args requeridos/ejemplos sin sustituir defaults. `@control` no prueba widget ni smoke HTML apariencia. Código/IDs inglés, textos nuevos español; traducción heredada solo autorizada.
-7. **Tests/accesibilidad:** hook/componente, defaults, roles/nombres, ARIA, teclado, interacción/deshabilitado, contraste, color nunca solo y tamaño táctil aplicables. No cadenas completas de clases; sí invariantes de raíz pública/`cn()`. Pruebas pertinentes, no dependencias ajenas.
+6. **Conformidad visual:** compara con los IDs visuales aprobados usando Playwright MCP solo sobre fuente y condiciones autorizadas. Registra captura observada, viewport, tema, estado y diferencias por criterio; no sobrescribas la referencia ni deduzcas tokens desde píxeles. Sin referencia/aprobación/condiciones comparables o herramienta disponible, marca «no evaluado», continúa el resto y registra el bloqueo. Conflictos con Material/tokens/accesibilidad requieren decisión, no igualar la imagen a costa del contrato.
+7. **Stories:** Storybook 10/autodocs, `@storybook/react-vite`, `storybook/actions`; sin `argTypes` manuales/`play`. Prueba docgen real: required, nativas, enums, defaults, `asChild`; args requeridos/ejemplos sin sustituir defaults. `@control` no prueba widget ni smoke HTML apariencia. Código/IDs inglés, textos nuevos español; traducción heredada solo autorizada.
+8. **Tests/accesibilidad:** hook/componente, defaults, roles/nombres, ARIA, teclado, interacción/deshabilitado, contraste, color nunca solo y tamaño táctil aplicables. No cadenas completas de clases; sí invariantes de raíz pública/`cn()`. Pruebas pertinentes, no dependencias ajenas.
 
 ## Severidad
 
@@ -53,6 +55,7 @@ Comprobaciones focalizadas primero y solo autorizadas; sin suites, servidores, c
 **Veredicto funcional:** PASA / PASA CON AVISOS / NO PASA / no evaluado
 **Alcance:** {archivos, API y exclusiones}
 **Ficha individual:** {ruta o referencia recuperable y versión; o ausente/no recuperable}
+**Referencias visuales:** {IDs, rutas, aprobación y condiciones comparadas; o pendientes/no evaluado}
 **Aprobación nativa:** no otorgada por esta auditoría
 
 | Área | Estado | Notas |
@@ -61,6 +64,7 @@ Comprobaciones focalizadas primero y solo autorizadas; sin suites, servidores, c
 | Catálogo y nivel | ✅ / ⚠️ / ❌ | |
 | Radix | ✅ / ⚠️ / ❌ | |
 | Estilos y tokens | ✅ / ⚠️ / ❌ | |
+| Conformidad visual | ✅ / ⚠️ / ❌ / no evaluado | |
 | Stories | ✅ / ⚠️ / ❌ | |
 | Tests | ✅ / ⚠️ / ❌ | |
 | Accesibilidad | ✅ / ⚠️ / ❌ | |
