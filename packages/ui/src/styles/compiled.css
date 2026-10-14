@@ -1,0 +1,2 @@
+/* Bundle the existing BEM styles; tokens remain an explicit consumer import. */
+@import "./index.css";

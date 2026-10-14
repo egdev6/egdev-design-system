@@ -69,6 +69,12 @@ assert.equal(ui.exports['.'].import, './dist/index.js');
 assert.equal(ui.exports['.'].types, './dist/index.d.ts');
 assert.equal(ui.types, ui.exports['.'].types);
 assert.ok(readFileSync(resolve(dirname(entry), 'index.d.ts'), 'utf8').trim(), 'Public declaration must be reachable');
+assert.equal(ui.exports['./styles.css'], './dist/styles.css');
+const styles = fileURLToPath(import.meta.resolve('@egdev/ui/styles.css'));
+assert.ok(!realpathSync(styles).startsWith(${JSON.stringify(root)}), 'CSS must resolve outside the workspace');
+const shippedStyles = readFileSync(styles, 'utf8');
+assert.doesNotMatch(shippedStyles, /@(import|reference|source|tailwind|theme|custom-variant|apply)\\b/, 'Packed CSS must be ready for native consumption');
+assert.ok(shippedStyles.includes('.eg-surface'), 'Packed styles must retain public BEM classes');
 const local = createRequire(import.meta.url);
 const fromUI = createRequire(entry);
 for (const name of ['react', 'react-dom']) {
@@ -243,6 +249,9 @@ const tailwind = await build({ configFile: false, logLevel: 'error', plugins: [t
 const twAssets = [tailwind].flat().flatMap((bundle) => bundle.output).filter((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'));
 const twCss = twAssets.map((asset) => String(asset.source)).join(' ');
 assert.ok(twAssets.length > 0, 'Tailwind build must emit CSS');
+for (const selector of ['.eg-surface', '.eg-icon-btn--square', '.eg-tabs__item']) {
+  assert.ok(twCss.includes(selector), 'Tailwind consumer must retain shipped UI selector ' + selector);
+}
 for (const selector of ['.text-fg-secondary', '.bg-bg-surface', '.rounded-xl', '.shadow-edge', '.font-display']) assert.ok(twCss.includes(selector), 'Missing generated utility ' + selector);
 for (const name of typography) {
   assert.ok(twCss.includes('.text-' + name), 'Tailwind must emit the text-' + name + ' utility');
@@ -314,7 +323,7 @@ for (const [react, [types, domTypes]] of Object.entries(versions)) {
       write('tailwind.classes.html', `<div class="${tailwindClasses}"></div>`);
       write(
         'tailwind.css',
-        '@import "tailwindcss";\n@import "@egdev/tokens/theme.css";\n@source "./tailwind.classes.html";\n'
+        '@import "tailwindcss";\n@import "@egdev/tokens/theme.css";\n@import "@egdev/ui/styles.css";\n@source "./tailwind.classes.html";\n'
       );
       write(
         'main.ts',

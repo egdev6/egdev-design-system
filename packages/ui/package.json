@@ -10,7 +10,7 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./styles.css": "./src/styles/index.css"
+    "./styles.css": "./dist/styles.css"
   },
   "files": [
     "dist",
@@ -20,7 +20,7 @@
     "**/*.css"
   ],
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && vite build --config vite.styles.config.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
