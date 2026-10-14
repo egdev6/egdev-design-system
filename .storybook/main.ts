@@ -4,6 +4,10 @@ import tailwindcss from '@tailwindcss/vite';
 import { mergeConfig } from 'vite';
 
 const config: StorybookConfig = {
+  staticDirs: [
+    { from: '../packages/tokens/dist', to: '/tokens' },
+    { from: './public', to: '/brand' }
+  ],
   stories: ['../docs/**/*.mdx', '../packages/*/src/**/*.mdx', '../packages/*/src/**/*.stories.@(ts|tsx)'],
   addons: [
     '@storybook/addon-docs',
