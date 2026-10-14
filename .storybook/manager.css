@@ -1,0 +1,41 @@
+/* La interfaz de Storybook usa los mismos valores que el sistema, sin otra paleta. */
+body {
+  background: var(--color-bg-canvas);
+  color: var(--color-fg-default);
+  font-family: var(--font-sans);
+}
+
+/* La clase repetida supera el estilo Emotion inyectado después sin !important. */
+.sidebar-container.sidebar-container {
+  background: var(--gradient-sheen), var(--color-surface-1);
+  border-inline-end: var(--border-width) solid var(--color-border-hairline);
+  box-shadow: var(--shadow-edge);
+}
+
+.sidebar-header a[href="https://egdev.es"] {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-fg-default);
+  font-family: var(--font-display);
+  font-size: var(--text-heading-small);
+  font-weight: var(--text-heading-small--font-weight);
+  letter-spacing: var(--text-heading-small--letter-spacing);
+}
+
+.sidebar-header a[href="https://egdev.es"] img {
+  width: var(--space-8);
+  height: var(--space-8);
+  max-width: var(--space-8);
+  object-fit: contain;
+}
+
+/* El alt del logo ya anuncia EGDEV; el rótulo visual no duplica su nombre accesible. */
+.sidebar-header a[href="https://egdev.es"]::after {
+  content: "EGDEV" / "";
+}
+
+:where(a, button, input, select, textarea):focus-visible {
+  outline: var(--focus-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-offset);
+}
