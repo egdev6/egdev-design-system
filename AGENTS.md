@@ -45,5 +45,6 @@ Este archivo se inyecta como contexto a cualquier agente que trabaje en el repo.
 | Cuándo | Skill |
 |---|---|
 | Se propone un componente nuevo o se duda de su nivel | `skills/component-cataloging/SKILL.md` |
+| Se define o cambia la ficha individual de un componente | `skills/component-spec-proposer/SKILL.md` |
 | Se implementa o porta un componente desde EGDEV Foundation | `skills/component-contributor/SKILL.md` |
 | Se revisa un componente existente | `skills/components-auditor/SKILL.md` |

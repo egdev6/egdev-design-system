@@ -4,7 +4,7 @@ description: "Implementa o porta un componente de EGDEV Foundation (Claude Desig
 license: MIT
 metadata:
   author: egdev
-  version: "0.2"
+  version: "0.3"
   basedOn: "stack-and-flow/component-contributor"
 ---
 
@@ -12,13 +12,13 @@ metadata:
 
 ## Cuándo usarla
 
-Exige decisión y plan aprobados; una fila provisional no basta. Sin decisión, usa [component-cataloging](../component-cataloging/SKILL.md). M2 fija el flujo, no inicia M3 ni acredita adaptación.
+Para proponer el plan exige decisión y ficha individual aprobadas y recuperables; para escribir código exige además el plan aprobado. Una fila provisional no basta. Sin decisión, usa [component-cataloging](../component-cataloging/SKILL.md). Sin ficha aprobada o si cambian sus promesas, usa [component-spec-proposer](../component-spec-proposer/SKILL.md); no implementes ni inventes aprobación. M2 fija el flujo, no inicia M3 ni acredita adaptación.
 
 ## Lecturas obligatorias, en este orden
 
 1. [Contrato](../_shared/component-contract.md), [arquitectura](../../docs/ARQUITECTURA.md) y [catalogación](../../docs/CATALOGACION.md): autoridades.
 2. [Catálogo provisional](../../docs/CATALOGO.md) y props/exports React reales.
-3. Ficha Foundation (`components/<Nombre>/README.md`, `preview.html`) y [Material](../../docs/MATERIAL.md).
+3. Ficha individual aprobada y su versión/referencia. Ficha Foundation (`components/<Nombre>/README.md`, `preview.html`), si existe, como evidencia de diseño, no como aprobación ni prueba React. Consulta [Material](../../docs/MATERIAL.md).
 4. CSS propio y `packages/ui/src/styles/legacy/bundle.css`.
 5. [Radix](references/radix-patterns.md): ignora imports unificados heredados.
 6. [Stories](references/stories.md) y [tests](references/testing.md): no impongas rutas/mocks/dependencias ajenos.

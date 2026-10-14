@@ -7,8 +7,9 @@ El diseño se sigue decidiendo en Claude Design (artefacto *EGDEV Foundation*). 
 ## Ruta de trabajo y alcance
 
 1. Inspeccionar implementación y catálogo provisional; justificar reutilizar → variante → componer → extraer → nuevo en [CATALOGACION.md](CATALOGACION.md).
-2. Acordar anatomía, API, estados, accesibilidad, Material y base Radix; aprobar el plan por responsabilidades antes de implementar.
-3. Comprobar la unidad aprobada y entregar evidencia y pendientes según el [contrato compartido](../skills/_shared/component-contract.md).
+2. Para crear o cambiar promesas, proponer y aprobar una versión recuperable de la [ficha individual](../skills/_shared/component-spec-template.md) mediante [component-spec-proposer](../skills/component-spec-proposer/SKILL.md). Reutilizar sin cambiar promesas no requiere una ficha nueva.
+3. Con decisión y ficha aprobadas, proponer el plan por responsabilidades; aprobarlo antes de implementar. Tokens y dependencias pendientes requieren confirmación específica, no implícita en la ficha.
+4. Comprobar la unidad aprobada y entregar evidencia y pendientes según el [contrato compartido](../skills/_shared/component-contract.md).
 
 M2 establece normas; no migra ni recataloga los tres componentes existentes (Surface, IconButton y Tabs). Esa adaptación corresponde a M3, fuera del tramo autorizado. Las versiones objetivo y el estado de verificación del stack se registran en el [plan ODD](odd/stack-alignment.md): el contrato no demuestra ejecución con Vite 8 ni consumo React 18/19.
 
