@@ -5,3 +5,7 @@ coverage
 *.log
 .DS_Store
 __pycache__
+
+# Local code indexes and browser capture artifacts
+/.codegraph/
+/.playwright-mcp/
