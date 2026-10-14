@@ -20,4 +20,6 @@ No se han traído las que dependen del flujo de GitHub Projects de Stack & Flow 
 3. `component-contributor`: con decisión y ficha aprobadas, propone el plan; solo lo implementa tras una aprobación independiente.
 4. `components-auditor`: comprueba lo implementado contra el contrato general y la ficha aprobada, sin corregir automáticamente.
 
+Las fichas incluyen las [referencias visuales de diseño esperado](../docs/design/README.md), conservadas en `docs/design/<kebab-name>/v<spec-version>/`. Registra captura, origen, condiciones y aprobación; Playwright MCP captura evidencia, no aprueba diseños ni sustituye tests. Implementación y auditoría comparan con esas referencias sin sobrescribirlas.
+
 Si reutilizar basta sin cambiar promesas, no hace falta una ficha nueva ni implementar. Las fichas Foundation existentes son evidencia de diseño, no prueba de disponibilidad React ni aprobación del contrato individual.
