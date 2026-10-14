@@ -66,7 +66,7 @@ Contar primitivas de apoyo o piezas Radix no decide el nivel. Un icono decorativ
 La skill [component-cataloging](../skills/component-cataloging/SKILL.md) presenta esta plantilla como **borrador** para aprobación humana antes de implementar. Si hay preguntas, entrega bloqueos, no una decisión final. No se exige un label de GitHub por adaptar esta referencia.
 
 ```md
-## Decisión de catalogación
+## Borrador de decisión de catalogación
 
 - Componente:
 - Nivel: primitive | atom | molecule | organism | template
@@ -86,4 +86,4 @@ La skill [component-cataloging](../skills/component-cataloging/SKILL.md) present
 - Impacto previsto en imports, exports, API, clases públicas, stories y tests:
 ```
 
-Tras aprobar la decisión, el plan de contribución sigue el [contrato compartido](../skills/_shared/component-contract.md). Si se autoriza actualizar el catálogo, se editan `scripts/catalog_data.py` y se genera con `scripts/build_catalog.py`; nunca se edita directamente `CATALOGO.md`. Publicar esta guía no autoriza ejecutar esa actualización ni iniciar M3.
+Si reutilizar basta sin cambiar promesas, entrega la recomendación sin crear una ficha nueva. Para crear o cambiar promesas, tras aprobar la decisión usa [component-spec-proposer](../skills/component-spec-proposer/SKILL.md) y la [plantilla individual](../skills/_shared/component-spec-template.md): aprueba una versión recuperable de la ficha antes de proponer el plan. Confirma específicamente tokens o dependencias pendientes y aprueba el plan por separado antes de código, según el [contrato compartido](../skills/_shared/component-contract.md). Si se autoriza actualizar el catálogo, se editan `scripts/catalog_data.py` y se genera con `scripts/build_catalog.py`; nunca se edita directamente `CATALOGO.md`. Publicar esta guía no autoriza ejecutar esa actualización ni iniciar M3.

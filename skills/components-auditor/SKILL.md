@@ -4,7 +4,7 @@ description: "Revisa un componente de @egdev/ui contra el contrato, Radix, Story
 license: MIT
 metadata:
   author: egdev
-  version: "0.2"
+  version: "0.3"
   basedOn: "stack-and-flow/components-auditor"
 ---
 
@@ -20,11 +20,11 @@ Audita solo el alcance explícito; corregir requiere autorización aparte. M2 no
 2. [Radix](../component-contributor/references/radix-patterns.md): ignora imports unificados heredados.
 3. [Stories](../component-contributor/references/stories.md) y [tests](../component-contributor/references/testing.md): no impongas rutas/mocks/dependencias ajenos.
 4. [Catálogo provisional](../../docs/CATALOGO.md) y props/exports React reales.
-5. [Material](../../docs/MATERIAL.md) y `packages/tokens/src/tokens.css`.
+5. [Material](../../docs/MATERIAL.md) y `packages/tokens/src/theme.css` y su salida construida `packages/tokens/dist/tokens.css`.
 
 ## Fases
 
-1. **Alcance:** carpeta, API/exports, plan y criterios aplicables. Evidencia con rutas/líneas y pruebas/fixtures reales; no inspeccionado = «no evaluado».
+1. **Alcance:** carpeta, API/exports, ficha individual aprobada (versión y referencia), plan y criterios aplicables. Si no hay ficha recuperable, continúa la auditoría del contrato general, marca los criterios individuales «no evaluado» y recomienda [component-spec-proposer](../component-spec-proposer/SKILL.md) para definirla, sin ejecutar ese flujo ni inventar aprobación. Evidencia con rutas/líneas y pruebas/fixtures reales; no inspeccionado = «no evaluado».
 2. **Contrato:** siete responsabilidades significativas, no vacíos/recuentos/lint. JSX consume hook; lógica/llamada CVA en hook, variantes/props en `types.ts`. Comprueba `type`, JSDoc/defaults reales, herencia nativa, `...rest`, refs, exports/límites de paquete aplicables; tipos/peer no prueban compatibilidad React.
 3. **Catálogo:** evidencia de mantener/reutilizar → variante → componer → extraer → nuevo. Nivel por responsabilidad semántica/coordinación, no tamaño/CSS/recuentos. Surface es apoyo legítimo; detecta cambios semánticos o conceptos separables.
 4. **Radix/nativos:** namespace de paquetes individuales, primitiva, `Portal`, `asChild`, estados por atributo. Teclado/foco/ARIA/deshabilitado reales; no reimplementación ni interacción inventada para nativos.
@@ -41,7 +41,7 @@ Audita solo el alcance explícito; corregir requiere autorización aparte. M2 no
 | MENOR | Documentación, stories o tests incompletos sin romper nada |
 | SUGERENCIA | Mejora opcional |
 
-Veredicto funcional: **PASA** (sin hallazgos), **PASA CON AVISOS** (solo menores/sugerencias), **NO PASA** (críticos/mayores abiertos). Explicita excepciones autorizadas, nunca infieras aceptación. Evidencia esencial ausente: «no evaluado» y pendientes, no pase ni aprobación nativa.
+Veredicto funcional: **PASA** (sin hallazgos), **PASA CON AVISOS** (solo menores/sugerencias), **NO PASA** (críticos/mayores abiertos). Explicita excepciones autorizadas, nunca infieras aceptación. Evidencia esencial ausente: «no evaluado» y pendientes, no pase ni aprobación nativa. Sin ficha recuperable, el cumplimiento individual y el veredicto global quedan «no evaluado»; informa los hallazgos comprobados del contrato general por separado.
 
 ## Informe
 
@@ -52,6 +52,7 @@ Comprobaciones focalizadas primero y solo autorizadas; sin suites, servidores, c
 
 **Veredicto funcional:** PASA / PASA CON AVISOS / NO PASA / no evaluado
 **Alcance:** {archivos, API y exclusiones}
+**Ficha individual:** {ruta o referencia recuperable y versión; o ausente/no recuperable}
 **Aprobación nativa:** no otorgada por esta auditoría
 
 | Área | Estado | Notas |

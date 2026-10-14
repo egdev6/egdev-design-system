@@ -5,7 +5,7 @@ Referencia normativa para implementar, auditar o revisar un componente. Adaptada
 ## Antes de implementar
 
 1. Inspecciona el catálogo **y la implementación React pública**; decide reutilizar → variante → componer → extraer → nuevo según [CATALOGACION.md](../../docs/CATALOGACION.md).
-2. Documenta anatomía, props, defaults, estados, accesibilidad, base Radix y evidencia de la decisión. Si faltan datos o hay contradicciones, para y pregunta.
+2. Para crear o cambiar promesas, usa [component-spec-proposer](../component-spec-proposer/SKILL.md) y la [plantilla individual](component-spec-template.md): documenta anatomía, props, defaults, estados, accesibilidad, base Radix y evidencia de la decisión. Espera aprobación explícita de esa versión de la ficha. Reutilizar sin cambiar promesas no requiere una ficha nueva. Si faltan datos o hay contradicciones, para y pregunta.
 3. Presenta el plan por responsabilidades y espera aprobación. Si falta un token o paquete individual de Radix, propón el cambio y espera confirmación antes de modificar tokens o dependencias.
 4. Implementa la unidad aprobada, comprueba comportamiento y documentación, y entrega evidencia y pendientes; no declares adaptado lo que solo está previsto.
 

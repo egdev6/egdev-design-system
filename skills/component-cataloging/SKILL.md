@@ -4,7 +4,7 @@ description: "Decide si una necesidad de interfaz se cubre reutilizando, con una
 license: MIT
 metadata:
   author: egdev
-  version: "0.2"
+  version: "0.3"
   basedOn: "stack-and-flow/component-spec-cataloging-validator"
 ---
 
@@ -57,4 +57,4 @@ Devuelve la plantilla de catalogación bajo `## Borrador de decisión de catalog
 - Siguiente paso:
 ```
 
-Tras aprobación humana, sigue [component-contributor](../component-contributor/SKILL.md): el plan también requiere aprobación antes de código. Catálogo solo autorizado: `scripts/catalog_data.py` y `python3 scripts/build_catalog.py`, nunca editar el generado. Informa archivos/comprobaciones/pendientes; sin aprobación nativa ni gates GitHub.
+Si mantener/reutilizar basta sin cambiar promesas, entrega la recomendación sin iniciar implementación. Para variantes, composición genérica, extracción, componentes nuevos o cambios de promesas, tras aprobar la decisión sigue [component-spec-proposer](../component-spec-proposer/SKILL.md) y su [plantilla](../_shared/component-spec-template.md). Aprobar la ficha no aprueba el plan de [component-contributor](../component-contributor/SKILL.md) ni autoriza código. Catálogo solo autorizado: `scripts/catalog_data.py` y `python3 scripts/build_catalog.py`, nunca editar el generado. Informa archivos/comprobaciones/pendientes; sin aprobación nativa ni gates GitHub.
