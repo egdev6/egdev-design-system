@@ -1,0 +1,28 @@
+<!-- Tooltip specimen (no Foundation board exists). Trigger uses the Foundation eg-icon-btn class; the bubble uses only tokens, following the Material overlay recipe (docs/MATERIAL.md, bundle.css .eg-menu). -->
+<div style="box-sizing:border-box;padding:var(--space-8);display:flex;flex-wrap:wrap;gap:var(--space-10);align-items:flex-start;font-family:var(--font-sans);color:var(--color-fg-default)">
+
+  <div style="display:grid;gap:var(--space-3);justify-items:center">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);padding:var(--space-5);border-radius:var(--radius-lg);background:var(--gradient-sheen),var(--color-surface-1);border:1px solid var(--color-border-hairline);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+      <span role="tooltip" class="eg-tooltip" style="box-sizing:border-box;padding:var(--space-1) var(--space-2);border-radius:var(--radius-sm);background:var(--color-surface-overlay);-webkit-backdrop-filter:blur(var(--blur-overlay)) saturate(150%);backdrop-filter:blur(var(--blur-overlay)) saturate(150%);border:1px solid var(--color-border-hairline-strong);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);font-weight:var(--text-label-default--font-weight);color:var(--color-fg-default);white-space:nowrap">Search</span>
+      <button class="eg-icon-btn" type="button" aria-label="Search"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></button>
+    </div>
+    <span style="font-size:var(--text-meta);color:var(--color-fg-muted)">side="top" — opened on hover</span>
+  </div>
+
+  <div style="display:grid;gap:var(--space-3);justify-items:center">
+    <div style="display:flex;align-items:center;gap:var(--space-2);padding:var(--space-5);border-radius:var(--radius-lg);background:var(--gradient-sheen),var(--color-surface-1);border:1px solid var(--color-border-hairline);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+      <button class="eg-icon-btn" type="button" aria-label="Settings" style="box-shadow:var(--shadow-focus)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
+      <span role="tooltip" class="eg-tooltip" style="box-sizing:border-box;padding:var(--space-1) var(--space-2);border-radius:var(--radius-sm);background:var(--color-surface-overlay);-webkit-backdrop-filter:blur(var(--blur-overlay)) saturate(150%);backdrop-filter:blur(var(--blur-overlay)) saturate(150%);border:1px solid var(--color-border-hairline-strong);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);font-weight:var(--text-label-default--font-weight);color:var(--color-fg-default);white-space:nowrap">egdev-publish, running</span>
+    </div>
+    <span style="font-size:var(--text-meta);color:var(--color-fg-muted)">side="right" — opened on keyboard focus (rail)</span>
+  </div>
+
+  <div style="display:grid;gap:var(--space-3);justify-items:center">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);padding:var(--space-5);border-radius:var(--radius-lg);background:var(--gradient-sheen),var(--color-surface-1);border:1px solid var(--color-border-hairline);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+      <button class="eg-icon-btn" type="button" aria-label="Close"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+      <span role="tooltip" class="eg-tooltip" style="box-sizing:border-box;padding:var(--space-1) var(--space-2);border-radius:var(--radius-sm);background:var(--color-surface-2);border:1px solid var(--color-border-hairline-strong);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);font-weight:var(--text-label-default--font-weight);color:var(--color-fg-default);white-space:nowrap">Close panel</span>
+    </div>
+    <span style="font-size:var(--text-meta);color:var(--color-fg-muted)">side="bottom" — reduced-transparency solid fallback</span>
+  </div>
+
+</div>

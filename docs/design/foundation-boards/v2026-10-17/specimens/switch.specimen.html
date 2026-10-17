@@ -1,0 +1,28 @@
+<!-- Switch specimen: legacy .eg-check.eg-check--switch from Foundation components/bundle.css; inline styles use tokens only. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<div style="box-sizing:border-box;padding:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans);display:flex;flex-wrap:wrap;gap:var(--space-8);align-items:flex-start">
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-2)">
+    <label class="eg-check eg-check--switch"><input type="checkbox" role="switch" aria-label="Off"></label>
+    <figcaption style="font-size:var(--text-label-default);color:var(--color-fg-muted)">Off</figcaption>
+  </figure>
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-2)">
+    <label class="eg-check eg-check--switch"><input type="checkbox" role="switch" aria-label="On" checked></label>
+    <figcaption style="font-size:var(--text-label-default);color:var(--color-fg-muted)">On</figcaption>
+  </figure>
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-2)">
+    <label class="eg-check eg-check--switch"><input type="checkbox" role="switch" aria-label="On, focused" checked style="box-shadow:var(--shadow-focus)"></label>
+    <figcaption style="font-size:var(--text-label-default);color:var(--color-fg-muted)">On, focus (simulated)</figcaption>
+  </figure>
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-2)">
+    <label class="eg-check eg-check--switch" style="opacity:45%"><input type="checkbox" role="switch" aria-label="Off, disabled" disabled></label>
+    <figcaption style="font-size:var(--text-label-default);color:var(--color-fg-muted)">Off, disabled</figcaption>
+  </figure>
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-2)">
+    <label class="eg-check eg-check--switch" style="opacity:45%"><input type="checkbox" role="switch" aria-label="On, disabled" checked disabled></label>
+    <figcaption style="font-size:var(--text-label-default);color:var(--color-fg-muted)">On, disabled</figcaption>
+  </figure>
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-2)">
+    <label class="eg-check eg-check--switch"><input type="checkbox" role="switch" checked> Live alerts</label>
+    <figcaption style="font-size:var(--text-label-default);color:var(--color-fg-muted)">Composed with a label (Field choice row)</figcaption>
+  </figure>
+</div>

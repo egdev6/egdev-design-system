@@ -1,0 +1,23 @@
+<!-- ProgressBar specimen: variants missing from the Foundation board (size lg, variant muted). Foundation classes only; inline styles use tokens. -->
+<div style="box-sizing:border-box;padding:var(--space-6);display:grid;gap:var(--space-6);width:50%;font-family:var(--font-sans);color:var(--color-fg-default)">
+  <div style="display:grid;gap:var(--space-2)">
+    <span style="font-size:var(--text-meta);color:var(--color-fg-muted)">size="lg" — goal bar at 37% (well track, gradient fill)</span>
+    <span class="eg-progress eg-progress--lg" style="--p:.37" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="37" aria-label="Subs goal"><span class="eg-progress__bar"></span></span>
+  </div>
+  <div style="display:grid;gap:var(--space-2)">
+    <span style="font-size:var(--text-meta);color:var(--color-fg-muted)">size="lg" — goal bar at 100%</span>
+    <span class="eg-progress eg-progress--lg" style="--p:1" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-label="Follows goal"><span class="eg-progress__bar"></span></span>
+  </div>
+  <div style="display:grid;gap:var(--space-2)">
+    <span style="font-size:var(--text-meta);color:var(--color-fg-muted)">variant="default" — highlighted series at 80%</span>
+    <span class="eg-progress" style="--p:.8" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80" aria-label="Personal posts"><span class="eg-progress__bar"></span></span>
+  </div>
+  <div style="display:grid;gap:var(--space-2)">
+    <span style="font-size:var(--text-meta);color:var(--color-fg-muted)">variant="muted" — comparison series at 60%</span>
+    <span class="eg-progress eg-progress--muted" style="--p:.6" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60" aria-label="Other posts"><span class="eg-progress__bar"></span></span>
+  </div>
+  <div style="display:grid;gap:var(--space-2)">
+    <span style="font-size:var(--text-meta);color:var(--color-fg-muted)">size="lg" variant="muted" — comparison goal at 45%</span>
+    <span class="eg-progress eg-progress--lg eg-progress--muted" style="--p:.45" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45" aria-label="Previous stream"><span class="eg-progress__bar"></span></span>
+  </div>
+</div>

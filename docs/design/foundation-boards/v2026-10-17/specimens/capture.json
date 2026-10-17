@@ -1,0 +1,122 @@
+{
+  "kind": "Expected-design specimens for atoms without a Foundation board, or for states the boards do not show",
+  "capturedAt": "2026-10-18",
+  "source": {
+    "specimens": "*.specimen.html in this folder, written by the atom spec drafts using only Foundation bundle.css classes and var(--…) tokens (literal values limited to 0, 1px borders and percentages)",
+    "componentCSS": "EGDEV Foundation components/bundle.css, sha256:4f1763a54e080cd206b9d64f57ff9bbc5e3858159ec786ef8263134edee997fc",
+    "tokens": "packages/tokens/dist/tokens.css, sha256:7ce0a0d70d0d058eadbb95b5063e2f3969a1f0426ed551478c70d15dcdb2b4fe",
+    "harness": "about:blank; Google Fonts link, tokens.css, bundle.css and canvas body style inlined; specimen fragment unmodified"
+  },
+  "conditions": {
+    "tool": "Playwright MCP (browser_evaluate + browser_take_screenshot fullPage, scale css)",
+    "browser": "Chromium 148.0.0.0, Linux x86_64",
+    "viewport": "1280x900",
+    "deviceScaleFactor": 1,
+    "theme": "dark (--color-bg-canvas)",
+    "reducedMotion": false,
+    "fontsLoaded": "Barlow, Barlow Condensed, JetBrains Mono as used per board",
+    "waitAfterLoad": "1.5 s plus document.fonts.ready",
+    "crop": "Full viewport board; each board shows all variants and states of its source preview"
+  },
+  "limits": [
+    "Specimens are agent-composed expected design from existing classes and tokens, not owner-drawn designs; they are adopted for owner review in each component issue.",
+    "Hover, focus and pressed are simulated with static classes or styles in the specimen, not real interaction."
+  ],
+  "approval": {
+    "status": "Approved",
+    "reference": "Owner instruction 2026-10-17: \"atoms, hagamos una cosa...no me preguntes, aplica tu las opciones sugeridas y si tengo que irerar en la revisión ya lo vemos\"; captures adopted as expected design per the spec that cites them, subject to owner review in each component issue."
+  },
+  "images": [
+    {
+      "file": "avatar--specimen.png",
+      "component": "avatar",
+      "specimenSource": "avatar.specimen.html",
+      "sha256": "35bef1fb29077bbe3936cdd507e8cdd6a103c2034f700fd5264f2f97db2aae00",
+      "specimenSourceSha256": "4b1c931de246ebfe44fe289f8bbb8753681902c35197e4b17d3832f2178717dd"
+    },
+    {
+      "file": "button--specimen.png",
+      "component": "button",
+      "specimenSource": "button.specimen.html",
+      "sha256": "566c7a0e5cd33d4d17e29fdeb7cf9fff6ad031bbe6cec7f9d69b9953dfa0e425",
+      "specimenSourceSha256": "b2f44a11d54164030336b9c5338b61ee4dd157950d2da5b68653a4c83eb99f44"
+    },
+    {
+      "file": "dropzone--specimen.png",
+      "component": "dropzone",
+      "specimenSource": "dropzone.specimen.html",
+      "sha256": "6bf6b8dd7d374f951766abb5762062dd47ce9a6e130e32b025f5a1125995094e",
+      "specimenSourceSha256": "f20e6f5fa9fff916f42a808b2947810b1717083b173fb23458158ed916f394cc"
+    },
+    {
+      "file": "icon-button--specimen.png",
+      "component": "icon-button",
+      "specimenSource": "icon-button.specimen.html",
+      "sha256": "cc7ff50c78f695a4758349aaf430a2aa88cb1b0d0d91c0c64b3e067328e366c9",
+      "specimenSourceSha256": "10a64cb4c084975ddc2e114b08654e86bdc043be582e1c41e1d8dae68ee838eb"
+    },
+    {
+      "file": "logo--specimen.png",
+      "component": "logo",
+      "specimenSource": "logo.specimen.html",
+      "sha256": "108f14516ff3314abd755dcfff61b02162c9d0cc60bc96e5299e2138008929a0",
+      "specimenSourceSha256": "e5b970630df00b5e23fbca4af1885b24a5713008cc4fbf2a8ac3a595f613fd0d"
+    },
+    {
+      "file": "product-mark--specimen.png",
+      "component": "product-mark",
+      "specimenSource": "product-mark.specimen.html",
+      "sha256": "dcc8e2f6007e597bc94bb416d51ec8d3856b7f38ee21813ae0a51f821c2b5e75",
+      "specimenSourceSha256": "6eee63294c448681f4d430726a7630d814b036148717dae5ed0c6aa6fbeb0031"
+    },
+    {
+      "file": "progress-bar--specimen.png",
+      "component": "progress-bar",
+      "specimenSource": "progress-bar.specimen.html",
+      "sha256": "6e6d838662bb4c7c63735d0738c8e843533dbc2325ecf881acf9796420c28025",
+      "specimenSourceSha256": "9bfd974bbf5dc31a47b44aac1afdc0bba5da579097ac561e02d187eb589fa8fd"
+    },
+    {
+      "file": "radio-group--specimen.png",
+      "component": "radio-group",
+      "specimenSource": "radio-group.specimen.html",
+      "sha256": "552c1a52fe3188a49ecf94007a81f6fc322cefa94cd1b63140da75fb1fdff343",
+      "specimenSourceSha256": "adb2b1356a3da09ab9cf2ec11e611507fb01772c9b2f861f4dc661ab7917276e"
+    },
+    {
+      "file": "slider--specimen.png",
+      "component": "slider",
+      "specimenSource": "slider.specimen.html",
+      "sha256": "bfd416a007ad24b277f45e982cc6010dc9d35d7cf952745f16e641946ca3ff4b",
+      "specimenSourceSha256": "51d558913789cdab70c2138ac2dfd475506505c8abd4569540b0e1d7880773e6"
+    },
+    {
+      "file": "spinner--specimen.png",
+      "component": "spinner",
+      "specimenSource": "spinner.specimen.html",
+      "sha256": "560ed7978cb65f5da60777002160830c38b9bf35f56eabd653af46c81081b0bd",
+      "specimenSourceSha256": "77480496d280d9a39bc1086f820d88ced1d2696622d6550b388976c132c69bea"
+    },
+    {
+      "file": "switch--specimen.png",
+      "component": "switch",
+      "specimenSource": "switch.specimen.html",
+      "sha256": "f02f77ff7e2840bb5b0e49ecd107670127e776bfedeb9ad066691cd6b0415d46",
+      "specimenSourceSha256": "1fe99cbe3bcfbde20a61d3b0ae18d53aeb336528e96c1e1f6f4fd09999723fd0"
+    },
+    {
+      "file": "toggle--specimen.png",
+      "component": "toggle",
+      "specimenSource": "toggle.specimen.html",
+      "sha256": "2da6461061708bb7f76444d37ecd778801cec5e6a4be6e0c1a63098a1710a821",
+      "specimenSourceSha256": "e39defb6e8f9c23fce5e97d771cc1906f35097bb06677be0988c7b2ebaa63e5f"
+    },
+    {
+      "file": "tooltip--specimen.png",
+      "component": "tooltip",
+      "specimenSource": "tooltip.specimen.html",
+      "sha256": "99bc5c6ab1f184f2583d48c4b3fb762cd835a1f448e7f67681d98e1da1a64b42",
+      "specimenSourceSha256": "93b589f7555df59f3230d49f274b7cb5b05ddfcca64cbde5f324d047ff7406bf"
+    }
+  ]
+}

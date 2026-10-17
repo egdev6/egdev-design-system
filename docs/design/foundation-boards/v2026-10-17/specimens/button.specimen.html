@@ -1,0 +1,44 @@
+<!-- Button specimen v0.1: loading and focus-visible states not covered by the Foundation board. Only bundle.css classes and token var() inline styles. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<div style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3);padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border-subtle)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">loading (spinner replaces the icon slot; static frame)</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-5)">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-btn eg-btn--primary" type="button" aria-busy="true" style="cursor:progress">Saving <svg class="eg-btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">primary md</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-btn eg-btn--secondary" type="button" aria-busy="true" style="cursor:progress"><svg class="eg-btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>Publishing</button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">secondary md, icon start</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-btn eg-btn--primary eg-btn--sm" type="button" aria-busy="true" style="cursor:progress">Join <svg class="eg-btn__icon" viewBox="0 0 24 24" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">primary sm</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-btn eg-btn--ghost eg-btn--sm" type="button" aria-busy="true" style="cursor:progress">Refresh <svg class="eg-btn__icon" viewBox="0 0 24 24" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg></button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">ghost sm</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">focus-visible (focus ring replaces material shadows)</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-5)">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-btn eg-btn--primary" type="button" style="box-shadow:var(--shadow-focus)">View projects <svg class="eg-btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">primary</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-btn eg-btn--secondary" type="button" style="box-shadow:var(--shadow-focus)">Later</button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">secondary</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-btn eg-btn--ghost" type="button" style="box-shadow:var(--shadow-focus)">Cancel</button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">ghost</span>
+      </div>
+    </div>
+  </section>
+</div>
