@@ -89,7 +89,7 @@ test('catalog parser never borrows a neighboring component story', () => {
   ]);
 });
 
-test('docs-only MCP exposes real component APIs, Spanish stories and valid previews', {
+test('docs-only MCP exposes only Gauge and eight valid story previews', {
   timeout: 30_000
 }, async (t) => {
   let session;
@@ -154,39 +154,42 @@ test('docs-only MCP exposes real component APIs, Spanish stories and valid previ
     return text;
   }
   const listing = await call('docs-list', { withStoryIds: true });
-  const components = parseComponents(listing);
+  const catalogEntries = parseComponents(listing);
   const indexResponse = await request(new URL('/index.json', endpoint));
   assert.ok(indexResponse.ok, `Story index: HTTP ${indexResponse.status}`);
   const index = await indexResponse.json();
-  for (const [name, description] of [
-    ['IconButton', /Botón redondo ghost por defecto/],
-    ['Surface', /Superficie por defecto/],
-    ['Tabs', /Pestañas con paneles/]
-  ]) {
-    const entry = components.find((component) => component.name === name);
-    assert.ok(entry, `${name} and its story IDs must be listed`);
-    const { id, storyId } = entry;
-    assert.ok(storyId, `${name} must advertise a story ID; docs-list returned:\n${listing}`);
-    const docs = await call('docs-show', { id });
-    assert.match(docs, /#{2,6} Descripción/);
-    if (name === 'IconButton') {
-      assert.match(docs, /label: string;/);
-      assert.match(docs, /icon: [^;\n]+;/);
-      assert.match(docs, /Nombre accesible/);
-      for (const [prop, options, value] of [
-        ['variant', ['ghost', 'outline'], 'ghost'],
-        ['shape', ['round', 'square'], 'round'],
-        ['size', ['md', 'sm'], 'md']
-      ]) {
-        const declaration = docs.match(new RegExp(`\\b${prop}\\?: ([^;\\n]+);`))?.[1];
-        assert.ok(declaration, `${prop} must be documented`);
-        for (const option of options) {
-          assert.match(declaration, new RegExp(`['"]${option}['"]`));
-        }
-        assert.match(declaration, new RegExp(`= ['"]*${value}['"]*$`));
-      }
-      assert.match(docs, /asChild\?: boolean = ['"]*false['"]*;/);
-    }
+  assert.deepEqual(
+    catalogEntries.map(({ id, name }) => ({ id, name })),
+    [{ id: 'atoms-gauge', name: 'Gauge' }]
+  );
+  const entry = catalogEntries.find(({ id, name }) => id === 'atoms-gauge' && name === 'Gauge');
+  assert.ok(entry?.storyId, `Gauge must advertise a story ID; docs-list returned:\n${listing}`);
+  const docs = await call('docs-show', { id: entry.id });
+  assert.match(docs, /#{2,6} Description/);
+  assert.match(docs, /passive circular meter/);
+  assert.match(docs, /label: string;/);
+  assert.match(docs, /value: number;/);
+  assert.match(docs, /Required non-empty accessible name/);
+  assert.match(docs, /stateText/);
+  const stories = [
+    ['default', /required accessible name and measurement/],
+    ['value-limits', /clamped geometry and accessible value/],
+    ['decimal-value', /Fractional measurements remain decimal/],
+    ['states', /consumer-selected conditions/],
+    ['center-content', /centers are decorative/],
+    ['contextual-value', /domain units/],
+    ['invalid-value', /Non-finite inputs show readable fallback/],
+    ['sizes', /custom 64\.5px stays fractional/]
+  ];
+  assert.deepEqual(
+    Object.values(index.entries)
+      .filter(({ type }) => type === 'story')
+      .map(({ id }) => id)
+      .sort(),
+    stories.map(([name]) => `atoms-gauge--${name}`).sort()
+  );
+  for (const [name, description] of stories) {
+    const storyId = `atoms-gauge--${name}`;
     assert.match(await call('docs-show-story', { storyId }), description);
     assert.equal(index.entries[storyId]?.type, 'story', `${storyId} must exist in the live index`);
     // The official docs tools return no preview URL: derive it from the returned ID.
