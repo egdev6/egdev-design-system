@@ -86,7 +86,7 @@ Desde `@egdev/tokens` 0.3.0 se retira el export `tokens.json`. Los imports CSS p
 
 ## Anatomía de un componente
 
-Six meaningful files are mandatory and the stylesheet is optional; no empty files, fake hooks or automatic migration. The approved spec/plan records the stylesheet role or “No stylesheet” before implementation:
+Six meaningful files are mandatory and the stylesheet is optional; no empty files, fake hooks or automatic migration. The approved spec/plan records the stylesheet role or “No stylesheet”, plus any spec-named internal module (never exported), before implementation:
 
 ```
 packages/ui/src/{primitives|atoms|molecules|organisms|templates}/{kebab-name}/
