@@ -27,7 +27,7 @@ El patrón objetivo de cada carpeta `packages/ui/src/{primitives|atoms|molecules
 6. `ComponentName.stories.tsx` — documentación en Storybook.
 7. `index.ts` — exportación con nombre y tipos.
 
-Six meaningful files are mandatory: `types.ts`, `useComponentName.ts`, `ComponentName.tsx`, `ComponentName.test.tsx`, `ComponentName.stories.tsx` and `index.ts`. The stylesheet is optional: create `component-name.css` only when the approved spec/plan records a meaningful role that utilities cannot express under the utility-first/minimal-global-CSS policy; otherwise the spec states “No stylesheet” and the file is not created. Never create empty/dummy files or fake hooks, or invent a replacement architecture.
+Six meaningful files are mandatory: `types.ts`, `useComponentName.ts`, `ComponentName.tsx`, `ComponentName.test.tsx`, `ComponentName.stories.tsx` and `index.ts`. The stylesheet is optional: create `component-name.css` only when the approved spec/plan records a meaningful role that utilities cannot express under the utility-first/minimal-global-CSS policy; otherwise the spec states “No stylesheet” and the file is not created. Additional internal modules (for example a ported canvas/WebGL engine) may live in the component folder only when the approved spec names each one and its responsibility; they are never exported from `index.ts` and never hold JSX, CVA or React state that belongs to the six files. Never create empty/dummy files or fake hooks, or invent a replacement architecture.
 
 ## Snapshot identity and issue history
 
