@@ -1,0 +1,63 @@
+<!-- Slider v0.1 specimen: expected design, tokens only. Track = well (surface-0 + shadow-well), range = fg-brand-default, thumb = raised fg-default with elev-1. -->
+<div style="box-sizing:border-box;padding:var(--space-6);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-8);background:var(--color-bg-surface);font-family:var(--font-sans);color:var(--color-fg-default)">
+
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-3)">
+    <div style="position:relative;display:flex;align-items:center;width:100%;height:var(--space-6)">
+      <span style="position:relative;flex-grow:1;height:var(--space-1);border-radius:var(--radius-full);background:var(--color-surface-0);box-shadow:var(--shadow-well);overflow:hidden">
+        <span style="position:absolute;left:0;top:0;bottom:0;width:40%;background:var(--color-fg-brand-default)"></span>
+      </span>
+      <span style="position:absolute;left:40%;width:var(--space-4);height:var(--space-4);transform:translateX(-50%);border-radius:var(--radius-full);background:var(--color-fg-default);box-shadow:var(--shadow-elev-1)"></span>
+    </div>
+    <figcaption style="font-size:var(--text-label-default);color:var(--color-fg-muted)">Default · value 40</figcaption>
+  </figure>
+
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-3)">
+    <div style="position:relative;display:flex;align-items:center;width:100%;height:var(--space-6)">
+      <span style="position:relative;flex-grow:1;height:var(--space-1);border-radius:var(--radius-full);background:var(--color-surface-0);box-shadow:var(--shadow-well);overflow:hidden">
+        <span style="position:absolute;left:0;top:0;bottom:0;width:70%;background:var(--color-fg-brand-default)"></span>
+      </span>
+      <span style="position:absolute;left:70%;width:var(--space-4);height:var(--space-4);transform:translateX(-50%);border-radius:var(--radius-full);background:var(--color-fg-default);box-shadow:var(--shadow-focus)"></span>
+    </div>
+    <figcaption style="font-size:var(--text-label-default);color:var(--color-fg-muted)">Focus-visible thumb · value 70</figcaption>
+  </figure>
+
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-3);opacity:45%">
+    <div style="position:relative;display:flex;align-items:center;width:100%;height:var(--space-6)">
+      <span style="position:relative;flex-grow:1;height:var(--space-1);border-radius:var(--radius-full);background:var(--color-surface-0);box-shadow:var(--shadow-well);overflow:hidden">
+        <span style="position:absolute;left:0;top:0;bottom:0;width:25%;background:var(--color-fg-brand-default)"></span>
+      </span>
+      <span style="position:absolute;left:25%;width:var(--space-4);height:var(--space-4);transform:translateX(-50%);border-radius:var(--radius-full);background:var(--color-fg-default);box-shadow:var(--shadow-elev-1)"></span>
+    </div>
+    <figcaption style="font-size:var(--text-label-default);color:var(--color-fg-muted)">Disabled · value 25</figcaption>
+  </figure>
+
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-3)">
+    <div style="position:relative;display:flex;align-items:center;width:100%;height:var(--space-6)">
+      <span style="position:relative;flex-grow:1;height:var(--space-1);border-radius:var(--radius-full);background:var(--color-surface-0);box-shadow:var(--shadow-well);overflow:hidden"></span>
+      <span style="position:absolute;left:0;width:var(--space-4);height:var(--space-4);border-radius:var(--radius-full);background:var(--color-fg-default);box-shadow:var(--shadow-elev-1)"></span>
+    </div>
+    <figcaption style="font-size:var(--text-label-default);color:var(--color-fg-muted)">Minimum · value 0</figcaption>
+  </figure>
+
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-3)">
+    <div style="position:relative;display:flex;align-items:center;width:100%;height:var(--space-6)">
+      <span style="position:relative;flex-grow:1;height:var(--space-1);border-radius:var(--radius-full);background:var(--color-surface-0);box-shadow:var(--shadow-well);overflow:hidden">
+        <span style="position:absolute;left:0;top:0;bottom:0;width:100%;background:var(--color-fg-brand-default)"></span>
+      </span>
+      <span style="position:absolute;right:0;width:var(--space-4);height:var(--space-4);border-radius:var(--radius-full);background:var(--color-fg-default);box-shadow:var(--shadow-elev-1)"></span>
+    </div>
+    <figcaption style="font-size:var(--text-label-default);color:var(--color-fg-muted)">Maximum · value 100</figcaption>
+  </figure>
+
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-2)">
+    <div class="eg-field__label" style="display:flex;justify-content:space-between;gap:var(--space-2)"><span>Ring size</span><span style="font-variant-numeric:tabular-nums;color:var(--color-fg-default)">56 px</span></div>
+    <div style="position:relative;display:flex;align-items:center;width:100%;height:var(--space-6)">
+      <span style="position:relative;flex-grow:1;height:var(--space-1);border-radius:var(--radius-full);background:var(--color-surface-0);box-shadow:var(--shadow-well);overflow:hidden">
+        <span style="position:absolute;left:0;top:0;bottom:0;width:50%;background:var(--color-fg-brand-default)"></span>
+      </span>
+      <span style="position:absolute;left:50%;width:var(--space-4);height:var(--space-4);transform:translateX(-50%);border-radius:var(--radius-full);background:var(--color-fg-default);box-shadow:var(--shadow-elev-1)"></span>
+    </div>
+    <figcaption style="font-size:var(--text-label-default);color:var(--color-fg-muted)">In context: label and value belong to the Field molecule</figcaption>
+  </figure>
+
+</div>

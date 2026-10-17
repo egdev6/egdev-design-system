@@ -1,0 +1,118 @@
+{
+  "kind": "Expected-design source boards captured from the EGDEV Foundation component previews",
+  "capturedAt": "2026-10-17",
+  "source": {
+    "design": "EGDEV Foundation (owner's local design files), components/<Name>/preview.html fragments, read-only",
+    "componentCSS": "EGDEV Foundation components/bundle.css, sha256:4f1763a54e080cd206b9d64f57ff9bbc5e3858159ec786ef8263134edee997fc (same fingerprint as the Gauge v0.3 source)",
+    "tokens": "packages/tokens/dist/tokens.css built from main, sha256:7ce0a0d70d0d058eadbb95b5063e2f3969a1f0426ed551478c70d15dcdb2b4fe",
+    "harness": "about:blank page; tokens.css and bundle.css inlined in <style>, preview fragment unmodified in <body>; Google Fonts loaded by the fragment"
+  },
+  "conditions": {
+    "tool": "Playwright MCP (browser_evaluate + browser_take_screenshot fullPage, scale css)",
+    "browser": "Chromium 148.0.0.0, Linux x86_64",
+    "viewport": "1280x900",
+    "deviceScaleFactor": 1,
+    "theme": "dark (--color-bg-canvas)",
+    "reducedMotion": false,
+    "fontsLoaded": "Barlow, Barlow Condensed, JetBrains Mono as used per board",
+    "waitAfterLoad": "1.5 s plus document.fonts.ready",
+    "crop": "Full viewport board; each board shows all variants and states of its source preview"
+  },
+  "limits": [
+    "Interactive states (hover, pressed) are shown through the preview's legacy .is-* classes, not real pointer interaction.",
+    "Visible board text is the original Spanish preview copy, kept unchanged for source fidelity; component specs define English examples.",
+    "Boards are shared: one board may serve several component specs (e.g. Field for Input, Textarea, Select and Checkbox).",
+    "Avatar.png (image row), Logo.png (all logo artwork) and Dropzone.png (file thumbnail) show broken-image placeholders: the previews reference design-tool '/_blob/' assets that are not available outside the design tool. Specs cite only the valid rows and cover the rest with specimens."
+  ],
+  "approval": {
+    "status": "Approved",
+    "reference": "Owner instruction 2026-10-17: \"atoms, hagamos una cosa...no me preguntes, aplica tu las opciones sugeridas y si tengo que irerar en la revisión ya lo vemos\"; captures adopted as expected design per the spec that cites them, subject to owner review in each component issue."
+  },
+  "images": [
+    {
+      "file": "Avatar.png",
+      "sourcePreview": "EGDEV Foundation/components/Avatar/preview.html",
+      "sha256": "df077723a6b24cdcbb504ea4aeb6fd3d21ef758692104c7d3cba224753faa6ca"
+    },
+    {
+      "file": "Button.png",
+      "sourcePreview": "EGDEV Foundation/components/Button/preview.html",
+      "sha256": "bdf100bc73e73b3817d4a82251f1082ec6a4c3e2d5f5e3601ab7cfad01f32be1"
+    },
+    {
+      "file": "Chip.png",
+      "sourcePreview": "EGDEV Foundation/components/Chip/preview.html",
+      "sha256": "a45c6772f1ab77e6d14cc45a05c518a17f3ae581e601b4e04884655c548c72ae"
+    },
+    {
+      "file": "Dropzone.png",
+      "sourcePreview": "EGDEV Foundation/components/Dropzone/preview.html",
+      "sha256": "e411150ff53a0ce06939cc5975571bc83314969eb2a245636ee44e9550a6e89f"
+    },
+    {
+      "file": "Field.png",
+      "sourcePreview": "EGDEV Foundation/components/Field/preview.html",
+      "sha256": "80af435a468eecb6ffd17b1b7187d06dc9015bd9d0b8477d874493ff88498df6"
+    },
+    {
+      "file": "Icon.png",
+      "sourcePreview": "EGDEV Foundation/components/Icon/preview.html",
+      "sha256": "14991312739b67ed6f1d25a0a8df54bffb0185f6035f7c3916a055c3246bec35"
+    },
+    {
+      "file": "IconButton.png",
+      "sourcePreview": "EGDEV Foundation/components/IconButton/preview.html",
+      "sha256": "5b6c4dd02d58a04f36bac9799106ac925825486dde1b4904c30f3bf24bd6a2b5"
+    },
+    {
+      "file": "Kbd.png",
+      "sourcePreview": "EGDEV Foundation/components/Kbd/preview.html",
+      "sha256": "8dd243cff9aa000bf2db7c8a16a7a01bbc044e4022e84b37004cc111928cfd88"
+    },
+    {
+      "file": "Link.png",
+      "sourcePreview": "EGDEV Foundation/components/Link/preview.html",
+      "sha256": "31eb1841a9bc072f49c5aaf2e7fa3fa4d2dbd3077eb5bccb146c827f93e7b03f"
+    },
+    {
+      "file": "LiveDot.png",
+      "sourcePreview": "EGDEV Foundation/components/LiveDot/preview.html",
+      "sha256": "8eb6e8cd1fd497f1cd7d6591f2054cf5c124c1c23a927f7f1017d6f2e8dd7a92"
+    },
+    {
+      "file": "Logo.png",
+      "sourcePreview": "EGDEV Foundation/components/Logo/preview.html",
+      "sha256": "6bad9ae3d3fc0f529b3e6b97cd3dbde495f017a6d794a6fd3a8b3459f175d32b"
+    },
+    {
+      "file": "Mark.png",
+      "sourcePreview": "EGDEV Foundation/components/Mark/preview.html",
+      "sha256": "6621bea1f4f921f79fe5db034c33e1d7e840febd9a15015516170cffaa823d5f"
+    },
+    {
+      "file": "ProgressBar.png",
+      "sourcePreview": "EGDEV Foundation/components/ProgressBar/preview.html",
+      "sha256": "6c5e7d0eed830604b22b731e21383ee91778dbcde7745982ab478771dab633e9"
+    },
+    {
+      "file": "Stat.png",
+      "sourcePreview": "EGDEV Foundation/components/Stat/preview.html",
+      "sha256": "3bfb59c4b504d1e3d7157516c03cb40a0953e36ca7124cc9b05f013e91877e8b"
+    },
+    {
+      "file": "StatusBadge.png",
+      "sourcePreview": "EGDEV Foundation/components/StatusBadge/preview.html",
+      "sha256": "3c3c0421264526cb3cd40ed531cb2f47445ef63810bf804aa643118536d6d2d3"
+    },
+    {
+      "file": "StatusDot.png",
+      "sourcePreview": "EGDEV Foundation/components/StatusDot/preview.html",
+      "sha256": "84d03fd7b443959cc30193d9d7074a49d78058844c223d9b1022ab38c8f021b6"
+    },
+    {
+      "file": "Tag.png",
+      "sourcePreview": "EGDEV Foundation/components/Tag/preview.html",
+      "sha256": "ae23d314b0ba27b9c7b72b0da84a7e7e1a4d1f8cb540beace2ec0848c9ca1b54"
+    }
+  ]
+}

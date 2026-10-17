@@ -1,0 +1,85 @@
+<!-- Toggle specimen v0.1: no Foundation board. Off = IconButton ghost classes; on = Material selected treatment from tokens. Only bundle.css classes and token var() inline styles. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<div style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3);padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border-subtle)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">icon-only md (40): off · off hover · on</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--space-5)">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-icon-btn" type="button" aria-pressed="false" aria-label="Show grid" style="box-sizing:border-box;border:1px solid transparent"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg></button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">off</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-icon-btn is-hover" type="button" aria-pressed="false" aria-label="Show grid" style="box-sizing:border-box;border:1px solid transparent"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg></button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">off hover</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-icon-btn" type="button" aria-pressed="true" aria-label="Show grid" style="box-sizing:border-box;border:1px solid var(--color-border-hairline-strong);background:var(--gradient-sheen),var(--color-surface-3);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1);color:var(--color-fg-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--color-fg-brand-raised)"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg></button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">on</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3);padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border-subtle)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">sizes sm 32 · md 40 · lg 48 (off, on)</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--space-5)">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div style="display:flex;gap:var(--space-2)">
+          <button class="eg-icon-btn" type="button" aria-pressed="false" aria-label="Mute" style="box-sizing:border-box;width:var(--space-8);height:var(--space-8);border:1px solid transparent"><svg class="eg-icon eg-icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg></button>
+          <button class="eg-icon-btn" type="button" aria-pressed="true" aria-label="Mute" style="box-sizing:border-box;width:var(--space-8);height:var(--space-8);border:1px solid var(--color-border-hairline-strong);background:var(--gradient-sheen),var(--color-surface-3);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1);color:var(--color-fg-default)"><svg class="eg-icon eg-icon--sm" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--color-fg-brand-raised)"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg></button>
+        </div>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">sm</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div style="display:flex;gap:var(--space-2)">
+          <button class="eg-icon-btn" type="button" aria-pressed="false" aria-label="Mute" style="box-sizing:border-box;border:1px solid transparent"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg></button>
+          <button class="eg-icon-btn" type="button" aria-pressed="true" aria-label="Mute" style="box-sizing:border-box;border:1px solid var(--color-border-hairline-strong);background:var(--gradient-sheen),var(--color-surface-3);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1);color:var(--color-fg-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--color-fg-brand-raised)"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg></button>
+        </div>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">md</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div style="display:flex;gap:var(--space-2)">
+          <button class="eg-icon-btn" type="button" aria-pressed="false" aria-label="Mute" style="box-sizing:border-box;width:var(--space-12);height:var(--space-12);border:1px solid transparent"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg></button>
+          <button class="eg-icon-btn" type="button" aria-pressed="true" aria-label="Mute" style="box-sizing:border-box;width:var(--space-12);height:var(--space-12);border:1px solid var(--color-border-hairline-strong);background:var(--gradient-sheen),var(--color-surface-3);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1);color:var(--color-fg-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--color-fg-brand-raised)"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg></button>
+        </div>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">lg</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3);padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border-subtle)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">text toggle md (leading icon + label): off · on</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--space-5)">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-icon-btn" type="button" aria-pressed="false" style="box-sizing:border-box;width:auto;height:var(--space-10);padding:0 var(--space-3);display:inline-flex;align-items:center;gap:var(--space-2);border:1px solid transparent;font-family:var(--font-sans);font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight);line-height:var(--text-label-default--line-height)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>Show overlay</button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">off</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-icon-btn" type="button" aria-pressed="true" style="box-sizing:border-box;width:auto;height:var(--space-10);padding:0 var(--space-3);display:inline-flex;align-items:center;gap:var(--space-2);border:1px solid var(--color-border-hairline-strong);background:var(--gradient-sheen),var(--color-surface-3);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1);color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight);line-height:var(--text-label-default--line-height)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--color-fg-brand-raised)"><path d="m12 2 10 5-10 5L2 7l10-5z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>Show overlay</button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">on</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">focus-visible · disabled</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--space-5)">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-icon-btn" type="button" aria-pressed="false" aria-label="Pin" style="box-sizing:border-box;border:1px solid transparent;box-shadow:var(--shadow-focus)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">focus off</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-icon-btn" type="button" aria-pressed="true" aria-label="Pin" style="box-sizing:border-box;border:1px solid var(--color-border-hairline-strong);background:var(--gradient-sheen),var(--color-surface-3);box-shadow:var(--shadow-focus);color:var(--color-fg-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--color-fg-brand-raised)"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">focus on</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-icon-btn" type="button" aria-pressed="false" aria-label="Pin" disabled style="box-sizing:border-box;border:1px solid transparent"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">disabled off</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <button class="eg-icon-btn" type="button" aria-pressed="true" aria-label="Pin" disabled style="box-sizing:border-box;border:1px solid var(--color-border-hairline-strong);background:var(--gradient-sheen),var(--color-surface-3);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1);color:var(--color-fg-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--color-fg-brand-raised)"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg></button>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">disabled on</span>
+      </div>
+    </div>
+  </section>
+</div>

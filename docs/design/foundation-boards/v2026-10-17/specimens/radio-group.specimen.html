@@ -1,0 +1,68 @@
+<!-- RadioGroup v0.1 specimen: expected design, tokens only. Unchecked = well circle; checked = raised primary gradient with black dot. -->
+<div style="box-sizing:border-box;padding:var(--space-6);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-8);background:var(--color-bg-surface);font-family:var(--font-sans);color:var(--color-fg-secondary);font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight);line-height:var(--text-label-default--line-height)">
+
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-3)">
+    <div role="radiogroup" aria-label="Publish visibility" style="display:flex;flex-direction:column;gap:var(--space-1)">
+      <div style="display:flex;align-items:center;gap:var(--space-2);min-height:var(--space-10)">
+        <span style="display:grid;place-items:center;flex:none;box-sizing:border-box;width:var(--space-5);height:var(--space-5);border-radius:var(--radius-full);border:1px solid var(--color-action-primary-solid-bg);background:var(--gradient-btn-primary);box-shadow:var(--shadow-btn-primary)"><span style="width:var(--space-2);height:var(--space-2);border-radius:var(--radius-full);background:var(--color-action-primary-solid-fg)"></span></span>
+        <span style="color:var(--color-fg-default)">Public</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--space-2);min-height:var(--space-10)">
+        <span style="flex:none;box-sizing:border-box;width:var(--space-5);height:var(--space-5);border-radius:var(--radius-full);border:1px solid var(--color-border-control);background:var(--color-surface-0);box-shadow:var(--shadow-well)"></span>
+        <span>Unlisted</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--space-2);min-height:var(--space-10)">
+        <span style="flex:none;box-sizing:border-box;width:var(--space-5);height:var(--space-5);border-radius:var(--radius-full);border:1px solid var(--color-border-control);background:var(--color-surface-0);box-shadow:var(--shadow-well)"></span>
+        <span>Private</span>
+      </div>
+    </div>
+    <figcaption style="color:var(--color-fg-muted)">Vertical (default) · Public checked</figcaption>
+  </figure>
+
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-3)">
+    <div style="display:flex;flex-direction:column;gap:var(--space-1)">
+      <div style="display:flex;align-items:center;gap:var(--space-2);min-height:var(--space-10)">
+        <span style="flex:none;box-sizing:border-box;width:var(--space-5);height:var(--space-5);border-radius:var(--radius-full);border:1px solid var(--color-border-control);background:var(--color-surface-0);box-shadow:var(--shadow-well)"></span>
+        <span>Public</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--space-2);min-height:var(--space-10)">
+        <span style="flex:none;box-sizing:border-box;width:var(--space-5);height:var(--space-5);border-radius:var(--radius-full);border:1px solid var(--color-fg-muted);background:var(--color-surface-0);box-shadow:var(--shadow-focus)"></span>
+        <span>Unlisted</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--space-2);min-height:var(--space-10);opacity:45%">
+        <span style="flex:none;box-sizing:border-box;width:var(--space-5);height:var(--space-5);border-radius:var(--radius-full);border:1px solid var(--color-border-control);background:var(--color-surface-0);box-shadow:var(--shadow-well)"></span>
+        <span>Private</span>
+      </div>
+    </div>
+    <figcaption style="color:var(--color-fg-muted)">Focus-visible on Unlisted · Private disabled · nothing checked</figcaption>
+  </figure>
+
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-3)">
+    <div style="display:flex;flex-wrap:wrap;column-gap:var(--space-6);row-gap:var(--space-1)">
+      <div style="display:flex;align-items:center;gap:var(--space-2);min-height:var(--space-10)">
+        <span style="flex:none;box-sizing:border-box;width:var(--space-5);height:var(--space-5);border-radius:var(--radius-full);border:1px solid var(--color-border-control);background:var(--color-surface-0);box-shadow:var(--shadow-well)"></span>
+        <span>Card</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--space-2);min-height:var(--space-10)">
+        <span style="display:grid;place-items:center;flex:none;box-sizing:border-box;width:var(--space-5);height:var(--space-5);border-radius:var(--radius-full);border:1px solid var(--color-action-primary-solid-bg);background:var(--gradient-btn-primary);box-shadow:var(--shadow-btn-primary)"><span style="width:var(--space-2);height:var(--space-2);border-radius:var(--radius-full);background:var(--color-action-primary-solid-fg)"></span></span>
+        <span style="color:var(--color-fg-default)">Video</span>
+      </div>
+    </div>
+    <figcaption style="color:var(--color-fg-muted)">Horizontal orientation · Video checked</figcaption>
+  </figure>
+
+  <figure style="margin:0;display:flex;flex-direction:column;gap:var(--space-3);opacity:45%">
+    <div style="display:flex;flex-direction:column;gap:var(--space-1)">
+      <div style="display:flex;align-items:center;gap:var(--space-2);min-height:var(--space-10)">
+        <span style="display:grid;place-items:center;flex:none;box-sizing:border-box;width:var(--space-5);height:var(--space-5);border-radius:var(--radius-full);border:1px solid var(--color-action-primary-solid-bg);background:var(--gradient-btn-primary);box-shadow:var(--shadow-btn-primary)"><span style="width:var(--space-2);height:var(--space-2);border-radius:var(--radius-full);background:var(--color-action-primary-solid-fg)"></span></span>
+        <span style="color:var(--color-fg-default)">Daily</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--space-2);min-height:var(--space-10)">
+        <span style="flex:none;box-sizing:border-box;width:var(--space-5);height:var(--space-5);border-radius:var(--radius-full);border:1px solid var(--color-border-control);background:var(--color-surface-0);box-shadow:var(--shadow-well)"></span>
+        <span>Weekly</span>
+      </div>
+    </div>
+    <figcaption style="color:var(--color-fg-muted)">Whole group disabled</figcaption>
+  </figure>
+
+</div>

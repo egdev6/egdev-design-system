@@ -1,0 +1,503 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "recordedAt": "2026-10-17T21:59:29.747Z",
+  "sourceCommit": "0c477f97ce9ddff82f0c41f5c04143498d1ea990",
+  "sourceRegistry": "skills/_shared/prop-naming.json",
+  "decision": "Approve 29 new naming conventions proposed by the v0.1 atom specs, approve three previously proposed conventions they reuse, and widen two existing conventions (surface-material-tone, unavailable-measurement-message) so the atoms can reuse them.",
+  "evidence": {
+    "channel": "Interactive user conversation",
+    "userConfirmation": [
+      "atoms, hagamos una cosa...no me preguntes, aplica tu las opciones sugeridas y si tengo que irerar en la revisión ya lo vemos",
+      "no dejes pendientes. todo de una cuando definamos specs. añade captura y acepta props"
+    ],
+    "proposal": "Atom spec drafts v0.1 (odd/tasks/atom-specs.md, tasks T2–T6) proposed these conventions; the owner delegated acceptance of recommended options and asked for props to be accepted with each spec."
+  },
+  "limits": [
+    "Assistant-recorded human delegation, not provider-native, signed or independent review authority.",
+    "Approval binds names and semantic convention content, not component implementation; owner review in each component issue may revise names, which then requires a new approval record.",
+    "No usages are recorded: none of these atoms has source yet; usages are added with reviewed source evidence at implementation.",
+    "surface-elevation stays proposed (no atom uses it).",
+    "Widened entries keep their IDs; surface-material-tone now covers semantic status tones despite its historical ID."
+  ],
+  "widened": ["surface-material-tone", "unavailable-measurement-message"],
+  "previouslyProposedNowApproved": ["visual-treatment", "initial-uncontrolled-value", "interactive-value-change"],
+  "entries": [
+    {
+      "scope": "convention:surface-material-tone",
+      "contentHash": "sha256:66b858751fbc6e67d40aedf1ebf1ca4e8cf76ea08cecf27fb5ce0d79122ae18f",
+      "convention": {
+        "id": "surface-material-tone",
+        "name": "tone",
+        "meaning": "A component's color tone: a semantic status family or a material surface tone; values are component-specific.",
+        "whenToUse": "Select the tone family a component supports, such as Badge or Mark status tones.",
+        "avoid": "A consumer-selected measurement condition (use state), arbitrary colors, or assuming every component exposes the same tone values.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:unavailable-measurement-message",
+      "contentHash": "sha256:ff63b05f0ddf57fd283b0e79beda04a9a3cf40fb2bfd6cd1689eff127baf5fd4",
+      "convention": {
+        "id": "unavailable-measurement-message",
+        "name": "unavailableText",
+        "meaning": "Readable fallback when a displayed measurement (Gauge, Stat) is unavailable and no value is exposed.",
+        "whenToUse": "Propose non-empty unavailable-data text separately from invalid-input policy approval.",
+        "avoid": "Loading, disabled state, fabricated zero measurements or assuming fallback wording is approved.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:visual-treatment",
+      "contentHash": "sha256:bccb8984aaea33dc2e70aefee09daf2fb1c398da4c4f5536a6699afaf81e1565",
+      "convention": {
+        "id": "visual-treatment",
+        "name": "variant",
+        "meaning": "Visual treatment within a component's responsibility.",
+        "whenToUse": "Choose presentation such as an outline or segmented treatment.",
+        "avoid": "Consumer-selected condition or Surface material tone.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:initial-uncontrolled-value",
+      "contentHash": "sha256:357b86ed5fc52187e8ef99f2dee3b5ddb39a3e48ba1c87ede18f0669c495575e",
+      "convention": {
+        "id": "initial-uncontrolled-value",
+        "name": "defaultValue",
+        "meaning": "The initial value of an uncontrolled interactive component.",
+        "whenToUse": "An actual interactive API supports uncontrolled initialization.",
+        "avoid": "Passive measurements such as Gauge or APIs without uncontrolled behavior.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:interactive-value-change",
+      "contentHash": "sha256:4b91f9121870d3ca28b3c95b4a0980b7e34849608eec96d7a8dd8b16b981b825",
+      "convention": {
+        "id": "interactive-value-change",
+        "name": "onValueChange",
+        "meaning": "Notification of a user-driven value change in an interactive component.",
+        "whenToUse": "The component actually emits selection or editing changes.",
+        "avoid": "Passive displays such as Gauge or notifications for incoming prop updates.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:corner-badge-icon",
+      "contentHash": "sha256:cc6b4addc87c4854e33fb9d0cec49c4d26a336bd8aa0cac5eff5c4d760ab189d",
+      "convention": {
+        "id": "corner-badge-icon",
+        "name": "badgeIcon",
+        "meaning": "System glyph shown in a small decorative badge overlaid on a corner of the component, such as the network of a channel avatar.",
+        "whenToUse": "Mark the origin or network of the represented entity with a corner glyph.",
+        "avoid": "Leading glyphs next to content (use leading-icon/icon), counts or status (use Badge or StatusDot), or the sole source of meaning.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:paused-presentation",
+      "contentHash": "sha256:219caeeb57708a58d487b04dc56c148f300734c22fb283f3639ead2f94b93ce1",
+      "convention": {
+        "id": "paused-presentation",
+        "name": "paused",
+        "meaning": "Shows the represented entity as paused or inactive with visual de-emphasis and data-state=\"paused\".",
+        "whenToUse": "A channel, account or similar entity is paused and the meaning is also given in text.",
+        "avoid": "Disabled controls (use native disabled), loading, or as the only cue for the paused meaning.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:leading-icon",
+      "contentHash": "sha256:b680df32f87ea2cd2592faa56782bb458d91a8a941b413e7740121f84954e5dd",
+      "convention": {
+        "id": "leading-icon",
+        "name": "icon",
+        "meaning": "Optional decorative icon rendered beside a component's text label (before it by default) and hidden from assistive technology.",
+        "whenToUse": "A labelled component offers a leading pictogram that repeats or decorates meaning already present in its text.",
+        "avoid": "Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:icon-placement",
+      "contentHash": "sha256:61478be9f061b962c459b4bcdcddba1ac4141a7e7fb88bbd11f71bb417eebd5d",
+      "convention": {
+        "id": "icon-placement",
+        "name": "iconPosition",
+        "meaning": "Which side of the visible label a component's decorative icon slot is rendered on.",
+        "whenToUse": "A labelled control or link exposes an optional decorative icon that may lead or trail its label.",
+        "avoid": "Icon-only controls, icon identity or size, or reordering meaningful content.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:pending-activity",
+      "contentHash": "sha256:c9b37e89e6d2294a15d5c43c8bd4303dc7753324d53dc070240db84df2a99b5b",
+      "convention": {
+        "id": "pending-activity",
+        "name": "loading",
+        "meaning": "The control has started an operation that is still pending; it stays focusable but cannot be activated again.",
+        "whenToUse": "An action control shows in-progress feedback for an operation it triggered.",
+        "avoid": "Disabled semantics, data-fetching placeholders, skeletons or progress with a known value.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:slot-composition",
+      "contentHash": "sha256:af0de27f67b68a784baa486c45a8f20fb6be09d5d7dd2d9ea63e3f3beb875dbb",
+      "convention": {
+        "id": "slot-composition",
+        "name": "asChild",
+        "meaning": "Render the component's behavior and styling onto its single child element through Radix Slot instead of its default element.",
+        "whenToUse": "A consumer must supply the element, such as an anchor or a router link, while keeping the component's contract.",
+        "avoid": "Multiple children, wrapping non-element content, or changing the component's semantic role.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:checked-change",
+      "contentHash": "sha256:81eb5a513fc702384e97094fc29b235bbdc22fa967175089ed0a5f12a55b111e",
+      "convention": {
+        "id": "checked-change",
+        "name": "onCheckedChange",
+        "meaning": "Notification of a user-driven change of a binary or mixed checked state, receiving the next checked state.",
+        "whenToUse": "A checkbox or switch control emits its next checked state when the user toggles it.",
+        "avoid": "Selection of a value among options (use onValueChange), pressed buttons (use onPressedChange), or notifications for incoming prop updates.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:pressed-state",
+      "contentHash": "sha256:758992ccf2fc84669d8d696cd6bea56d0de490fb8d772f179ada72679a670654",
+      "convention": {
+        "id": "pressed-state",
+        "name": "pressed",
+        "meaning": "Controlled on/off pressed state of a toggle control, exposed as aria-pressed.",
+        "whenToUse": "A single control persists an on/off state the user switches by pressing it.",
+        "avoid": "Selection of a value from a set (use value), form checkbox semantics (checked) or transient active styling.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:initial-uncontrolled-pressed",
+      "contentHash": "sha256:f4469b891840e29a21078a9f9ae204f018479a56fba9a5d058fd68a2310b04d0",
+      "convention": {
+        "id": "initial-uncontrolled-pressed",
+        "name": "defaultPressed",
+        "meaning": "Initial pressed state of an uncontrolled toggle control.",
+        "whenToUse": "A toggle control supports uncontrolled use alongside the pressed prop.",
+        "avoid": "Controlled components without uncontrolled behavior or value-based selection.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:pressed-change",
+      "contentHash": "sha256:39c6acd2bb389f64285bd196c8f3d44d158c571edb81220afb9643ec173cb524",
+      "convention": {
+        "id": "pressed-change",
+        "name": "onPressedChange",
+        "meaning": "Notification of a user-driven change of a toggle control's pressed state, with the next boolean.",
+        "whenToUse": "A toggle control emits pressed changes from user interaction.",
+        "avoid": "Value selection changes (use onValueChange) or notifications for incoming prop updates.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:files-received",
+      "contentHash": "sha256:5f5b718ed824a2773263a057d33d19922de5e04611b420f315c90f2a8a2fc5e9",
+      "convention": {
+        "id": "files-received",
+        "name": "onFiles",
+        "meaning": "Notification carrying the files the user picked, dropped or pasted into a file target.",
+        "whenToUse": "A component accepts files from the user and hands them to the consumer for validation and upload.",
+        "avoid": "Upload progress or results, value changes of non-file inputs, or validation feedback.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:drop-target-label",
+      "contentHash": "sha256:684ecfcd55900b34f3ae9671a691246768c97913442d62ee35dabd0c8e52da9e",
+      "convention": {
+        "id": "drop-target-label",
+        "name": "dropLabel",
+        "meaning": "Visible text a drop target shows while compatible items are dragged over it.",
+        "whenToUse": "A drop target replaces its resting text during drag-over, such as Drop here.",
+        "avoid": "The resting accessible name, error messages or generic hover text.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:icon-glyph-name",
+      "contentHash": "sha256:ef9238a6d55457a7d986f47ba75fd0d0cf85b1103ab94acda4ee451e7da9820b",
+      "convention": {
+        "id": "icon-glyph-name",
+        "name": "name",
+        "meaning": "Identifier of the glyph that the Icon component draws from the closed system icon set.",
+        "whenToUse": "Select which system glyph Icon renders.",
+        "avoid": "Icon slots inside other components (use leading-icon/icon), native form-control name attributes or arbitrary SVG content.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:filled-glyph",
+      "contentHash": "sha256:37d0ae423af58724ac1d2971979e142d51fc609d98df9cc82a21b33d3872c2f7",
+      "convention": {
+        "id": "filled-glyph",
+        "name": "filled",
+        "meaning": "Renders a stroke glyph with a solid currentColor fill in addition to its stroke.",
+        "whenToUse": "A glyph needs its solid form, such as a play triangle.",
+        "avoid": "Selected, pressed or active state, or any color change.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:new-tab-navigation",
+      "contentHash": "sha256:3a3fa42382c95c9d6cdcd79d4ae637877b86c6fc5924d50d9e469f17226e79df",
+      "convention": {
+        "id": "new-tab-navigation",
+        "name": "external",
+        "meaning": "The link opens its destination in a new browsing context with safe rel values and an external cue.",
+        "whenToUse": "A navigational component links to a destination that should open in a new tab, usually outside the product.",
+        "avoid": "Marking same-tab links as external, download behavior, or styling-only treatments.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:new-tab-notice",
+      "contentHash": "sha256:1178af624809e34c03c3b35a0bcd97342b753a45552d0631698db77a11ca5fa2",
+      "convention": {
+        "id": "new-tab-notice",
+        "name": "newTabText",
+        "meaning": "Readable text announcing that a link opens in a new tab, rendered for assistive technology.",
+        "whenToUse": "A component that can open a new tab lets consumers localize the notice.",
+        "avoid": "Replacing the link's accessible name or describing the destination.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:trailing-arrow",
+      "contentHash": "sha256:d5a4021345d5e3d9afc6f9e6d672ce6e26e35bcee6d5573c9bd01f0a631ad5ae",
+      "convention": {
+        "id": "trailing-arrow",
+        "name": "arrow",
+        "meaning": "Whether a link shows its trailing decorative direction arrow; the glyph is derived by the component.",
+        "whenToUse": "A text link may hide its built-in arrow, for example in legal or dense footer links.",
+        "avoid": "Choosing arbitrary icons or conveying meaning through the arrow alone.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:rule-reference",
+      "contentHash": "sha256:80d92b40691b546243c907c4c83a0852fedbca2760aa9377605d1a267017afd3",
+      "convention": {
+        "id": "rule-reference",
+        "name": "rule",
+        "meaning": "Short code or letter of the review rule that flagged a piece of content, shown next to it.",
+        "whenToUse": "A highlighted fragment must show which linter or style rule produced it, linking it to its notice.",
+        "avoid": "Status tone, accessible naming, validation rules of form fields or long rule descriptions.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:brand-monogram",
+      "contentHash": "sha256:dfa272857f50780b81311e412c8aef723927a730b547cb6f3dbc34e12e770429",
+      "convention": {
+        "id": "brand-monogram",
+        "name": "monogram",
+        "meaning": "The one or two visible characters that identify a product in a compact brand mark.",
+        "whenToUse": "A compact product mark shows letters instead of artwork.",
+        "avoid": "Accessible naming (use accessible-name/label), user initials in avatars, or long text.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:container-edge-placement",
+      "contentHash": "sha256:414ea85ec9e8f24bddbafd024735fa3c6cdef4b2e4a3010bff7f042a1e581f62",
+      "convention": {
+        "id": "container-edge-placement",
+        "name": "edge",
+        "meaning": "Pins a thin decorative-or-status strip to the bottom edge of its positioned container, spanning its full width.",
+        "whenToUse": "A progress or status strip must sit flush on a container edge, such as the SectionNav button.",
+        "avoid": "Generic positioning, side selection for floating content or layout overrides; the container must be positioned and clip overflow.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:choice-options",
+      "contentHash": "sha256:2fa52745a60308f47286aecc1cbdc2cd1fa47370ded17fd329fdeea07f4aa52a",
+      "convention": {
+        "id": "choice-options",
+        "name": "options",
+        "meaning": "Ordered list of selectable options, each with a value, a visible text label and optional per-option disabled state; item shape is component-specific.",
+        "whenToUse": "A selection component renders a standard item for each option from data.",
+        "avoid": "Custom item rendering (compose primitives instead), navigation items or arbitrary ReactNode collections.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:layout-orientation",
+      "contentHash": "sha256:fdbca8a6a0e91adc0854e8ad1dba270d549fe1a47cb1ac559aae844dfbef2313",
+      "convention": {
+        "id": "layout-orientation",
+        "name": "orientation",
+        "meaning": "Main axis of a component's items, which also sets its arrow-key navigation axis.",
+        "whenToUse": "A component lays out a collection along one axis and its keyboard model follows that axis.",
+        "avoid": "Purely visual direction changes without keyboard impact, or text direction (use dir).",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:selection-placeholder",
+      "contentHash": "sha256:2db3a4a84161a87011054006709ce352ac2d86bb4c240b68033f8ecb7f47fa05",
+      "convention": {
+        "id": "selection-placeholder",
+        "name": "placeholder",
+        "meaning": "Hint text shown in a choice control while no value is selected; not the accessible name or a default value.",
+        "whenToUse": "A non-native choice control (such as a Radix Select trigger) needs the equivalent of a native input placeholder.",
+        "avoid": "Native inputs and textareas, which already have the placeholder attribute; using it as a label, instruction that must stay visible, or selected value.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:committed-value-change",
+      "contentHash": "sha256:4baedb8ad3a7ab0d1b001ad18f614e2fd24f8254ef2476370df895da7d662fb6",
+      "convention": {
+        "id": "committed-value-change",
+        "name": "onValueCommit",
+        "meaning": "Notification of the final value when the user ends a continuous interaction such as a drag or a keyboard step.",
+        "whenToUse": "A continuous control lets consumers defer expensive work until the user settles on a value, alongside onValueChange.",
+        "avoid": "Discrete selections where every change is final, form submission or notifications for incoming prop updates.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:value-context",
+      "contentHash": "sha256:a7391906610ed289d190dc89ca31f844db7e248c9ae5dde198bdd03f8b0d2494",
+      "convention": {
+        "id": "value-context",
+        "name": "delta",
+        "meaning": "Short secondary text that gives context to a displayed figure, such as its latest change or why it is unavailable.",
+        "whenToUse": "A figure component shows a one-line change summary or a no-data reason under its value.",
+        "avoid": "Accessible naming, long descriptions, help text for form fields or the figure itself.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:transient-highlight",
+      "contentHash": "sha256:aa3830c7fc5cfe380cc1f3d161fd848d20c227f6eb625cd8caddb01d716044fc",
+      "convention": {
+        "id": "transient-highlight",
+        "name": "highlighted",
+        "meaning": "Consumer-controlled, temporary emphasis that draws attention to a component after its content changed.",
+        "whenToUse": "The consumer briefly emphasizes one item (for example a live total that just changed) and removes the emphasis itself.",
+        "avoid": "Selection, pressed or current state, persistent status tones, or component-managed timers.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:signal-pulse",
+      "contentHash": "sha256:790869d33b95e930385433e0786da2028cc8beb697bee57e093f6d7dc7e85659",
+      "convention": {
+        "id": "signal-pulse",
+        "name": "pulse",
+        "meaning": "Whether a live or attention signal indicator plays its pulse animation; reduced-motion preferences always stop it.",
+        "whenToUse": "A decorative signal indicator offers an optional pulsing emphasis that the consumer can switch to a static presentation.",
+        "avoid": "Loading or progress animation, general motion toggles for interactive components, or conveying meaning only through motion.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:tooltip-content",
+      "contentHash": "sha256:d1891eabfd57ab09c15a6c365250a02039e99ef195c7a6038becb4cbeacf850c",
+      "convention": {
+        "id": "tooltip-content",
+        "name": "content",
+        "meaning": "Supplementary plain text shown by a floating hint attached to a trigger.",
+        "whenToUse": "A tooltip-like component shows a short, non-essential, non-interactive description on hover or focus.",
+        "avoid": "Accessible names, essential instructions, interactive or rich content, or page content slots.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:floating-side",
+      "contentHash": "sha256:36780fe8c8c1498cd448a3e29b0e199bdc9e40f2b615e4109094f6c0a4b14e49",
+      "convention": {
+        "id": "floating-side",
+        "name": "side",
+        "meaning": "The preferred side of the trigger where floating content is placed before collision handling.",
+        "whenToUse": "A floating component (tooltip, popover, menu) lets the consumer choose top, right, bottom or left.",
+        "avoid": "Edge pinning inside a container, text direction or alignment along the side.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}
