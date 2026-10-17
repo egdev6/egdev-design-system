@@ -5,7 +5,7 @@ import { Gauge } from './Gauge';
  * ## Description
  * A passive circular meter for a magnitude normalized to 0–100, not task progress.
  *
- * The native decorative well uses existing Material background and inset-shadow tokens.
+ * The decorative circular frame is transparent; the unfilled track blends with the host background.
  *
  * ## Usage guidelines
  * Consumers choose states independently of values and provide visible stateText outside normal.

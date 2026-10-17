@@ -1,0 +1,1006 @@
+{
+  "tool": "Playwright MCP",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "dpr": 1,
+  "colorScheme": "dark",
+  "reducedMotion": "reduce",
+  "observations": [
+    {
+      "scene": "default",
+      "token": "--color-bg-canvas",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": "Capacity",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        }
+      ]
+    },
+    {
+      "scene": "default",
+      "token": "--color-surface-2",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": "Capacity",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        }
+      ]
+    },
+    {
+      "scene": "sizes",
+      "token": "--color-bg-canvas",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": "Small capacity meter, 40 pixels",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "40px",
+            "height": "40px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 3px), rgb(0, 0, 0) calc(100% - 2.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Medium capacity meter, 56 pixels",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Large capacity meter, 80 pixels",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "80px",
+            "height": "80px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 6px), rgb(0, 0, 0) calc(100% - 5.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Custom capacity meter, 64.5 pixels",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "64.5px",
+            "height": "64.5px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4.60714px), rgb(0, 0, 0) calc(100% - 4.10714px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Invalid diameter falls back to 56 pixels",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        }
+      ]
+    },
+    {
+      "scene": "sizes",
+      "token": "--color-surface-2",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": "Small capacity meter, 40 pixels",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "40px",
+            "height": "40px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 3px), rgb(0, 0, 0) calc(100% - 2.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Medium capacity meter, 56 pixels",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Large capacity meter, 80 pixels",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "80px",
+            "height": "80px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 6px), rgb(0, 0, 0) calc(100% - 5.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Custom capacity meter, 64.5 pixels",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "64.5px",
+            "height": "64.5px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4.60714px), rgb(0, 0, 0) calc(100% - 4.10714px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Invalid diameter falls back to 56 pixels",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        }
+      ]
+    },
+    {
+      "scene": "states",
+      "token": "--color-bg-canvas",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": "Normal capacity",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Warning capacity",
+          "value": "42",
+          "state": "warning",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 178, 36) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Critical capacity",
+          "value": "42",
+          "state": "critical",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Muted capacity",
+          "value": "42",
+          "state": "muted",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(161, 162, 168) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        }
+      ]
+    },
+    {
+      "scene": "states",
+      "token": "--color-surface-2",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": "Normal capacity",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Warning capacity",
+          "value": "42",
+          "state": "warning",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 178, 36) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Critical capacity",
+          "value": "42",
+          "state": "critical",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Muted capacity",
+          "value": "42",
+          "state": "muted",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(161, 162, 168) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        }
+      ]
+    },
+    {
+      "scene": "value-limits",
+      "token": "--color-bg-canvas",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": "Empty capacity",
+          "value": "0",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Full capacity",
+          "value": "100",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 100%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Capacity below range",
+          "value": "0",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Capacity above range",
+          "value": "100",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 100%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        }
+      ]
+    },
+    {
+      "scene": "value-limits",
+      "token": "--color-surface-2",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": "Empty capacity",
+          "value": "0",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Full capacity",
+          "value": "100",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 100%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Capacity below range",
+          "value": "0",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Capacity above range",
+          "value": "100",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 100%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        }
+      ]
+    },
+    {
+      "scene": "center-content",
+      "token": "--color-bg-canvas",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": "Capacity without center",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Capacity within expected range",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": {
+            "text": "",
+            "svg": true,
+            "hidden": "true",
+            "inset": "16.7969px"
+          }
+        },
+        {
+          "label": "Capacity with numeric center",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": {
+            "text": "42",
+            "svg": false,
+            "hidden": "true",
+            "inset": "16.7969px"
+          }
+        },
+        {
+          "label": "Capacity within expected range",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": {
+            "text": "OK",
+            "svg": false,
+            "hidden": "true",
+            "inset": "16.7969px"
+          }
+        }
+      ]
+    },
+    {
+      "scene": "center-content",
+      "token": "--color-surface-2",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": "Capacity without center",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        },
+        {
+          "label": "Capacity within expected range",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": {
+            "text": "",
+            "svg": true,
+            "hidden": "true",
+            "inset": "16.7969px"
+          }
+        },
+        {
+          "label": "Capacity with numeric center",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": {
+            "text": "42",
+            "svg": false,
+            "hidden": "true",
+            "inset": "16.7969px"
+          }
+        },
+        {
+          "label": "Capacity within expected range",
+          "value": "42",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": {
+            "text": "OK",
+            "svg": false,
+            "hidden": "true",
+            "inset": "16.7969px"
+          }
+        }
+      ]
+    },
+    {
+      "scene": "invalid-value",
+      "token": "--color-bg-canvas",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": null,
+          "text": "Unknown capacityData unavailable",
+          "meter": null,
+          "circle": null
+        },
+        {
+          "label": null,
+          "text": "Disconnected sensorSensor offline",
+          "meter": null,
+          "circle": null
+        },
+        {
+          "label": null,
+          "text": "Invalid sensor readingData unavailable",
+          "meter": null,
+          "circle": null
+        }
+      ]
+    },
+    {
+      "scene": "invalid-value",
+      "token": "--color-surface-2",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": null,
+          "text": "Unknown capacityData unavailable",
+          "meter": null,
+          "circle": null
+        },
+        {
+          "label": null,
+          "text": "Disconnected sensorSensor offline",
+          "meter": null,
+          "circle": null
+        },
+        {
+          "label": null,
+          "text": "Invalid sensor readingData unavailable",
+          "meter": null,
+          "circle": null
+        }
+      ]
+    },
+    {
+      "scene": "decimal-value",
+      "token": "--color-bg-canvas",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": "Capacity",
+          "value": "42.5",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42.5%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": {
+            "text": "42.5",
+            "svg": false,
+            "hidden": "true",
+            "inset": "16.7969px"
+          }
+        }
+      ]
+    },
+    {
+      "scene": "decimal-value",
+      "token": "--color-surface-2",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": "Capacity",
+          "value": "42.5",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42.5%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": {
+            "text": "42.5",
+            "svg": false,
+            "hidden": "true",
+            "inset": "16.7969px"
+          }
+        }
+      ]
+    },
+    {
+      "scene": "contextual-value",
+      "token": "--color-bg-canvas",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": "Storage capacity",
+          "value": "42.5",
+          "state": "normal",
+          "host": "rgb(20, 21, 24)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42.5%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        }
+      ]
+    },
+    {
+      "scene": "contextual-value",
+      "token": "--color-surface-2",
+      "fonts": "loaded",
+      "rows": [
+        {
+          "label": "Storage capacity",
+          "value": "42.5",
+          "state": "normal",
+          "host": "rgb(35, 36, 40)",
+          "circle": {
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "width": "56px",
+            "height": "56px",
+            "border": "0px",
+            "padding": "0px"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42.5%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+          },
+          "center": null
+        }
+      ]
+    }
+  ],
+  "images": [
+    "docs/components/gauge/v0.10/verification/after--default--canvas--1280.png",
+    "docs/components/gauge/v0.10/verification/after--default--surface-2--1280.png",
+    "docs/components/gauge/v0.10/verification/after--center-content--canvas--1280.png",
+    "docs/components/gauge/v0.10/verification/after--center-content--surface-2--1280.png"
+  ]
+}

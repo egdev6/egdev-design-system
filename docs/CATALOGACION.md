@@ -2,7 +2,7 @@
 
 Cómo decidir reutilización, variantes, composición, extracción o creación, y justificar el nivel por responsabilidad. Adaptado del rigor de catalogación de Stack & Flow, sin importar sus gates de GitHub ni restricciones de carpetas.
 
-**Current availability:** [CATALOGO.md](CATALOGO.md) is a generated provisional map, not proof of importable implementations or final classification. Gauge is the only public React component in `@egdev/ui`; `cn` is a utility. Surface, IconButton and Tabs remain future/provisional Foundation concepts, not current reuse candidates. Gauge's accepted pilot follows the [effective v0.9 base-plus-amendment contract](../skills/_shared/component-contract.md#current-gauge-contract); it does not establish catalog-wide M3 adaptation or completed retirement gates.
+**Current availability:** [CATALOGO.md](CATALOGO.md) is a generated provisional map, not proof of importable implementations or final classification. Gauge is the only public React component in `@egdev/ui`; `cn` is a utility. Surface, IconButton and Tabs remain future/provisional Foundation concepts, not current reuse candidates. Gauge's accepted pilot follows the [effective v0.10 base-plus-amendments contract](../skills/_shared/component-contract.md#current-gauge-contract); it does not establish catalog-wide M3 adaptation or completed retirement gates.
 
 ## Antes de crear nada
 

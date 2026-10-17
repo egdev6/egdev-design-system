@@ -4,7 +4,7 @@
 
 Convenciones canónicas para `*.stories.tsx` en este repositorio.
 
-**Current example:** Gauge is the only public React component and the only active component-story reference; `cn` is a utility. Use its [effective v0.9 base-plus-amendment contract and separate plan approval](../../_shared/component-contract.md#current-gauge-contract). Surface, IconButton and Tabs are future/provisional Foundation concepts, not available imports or current stories. Gauge is passive: no events/actions, `Disabled`, ref or `asChild` example applies.
+**Current example:** Gauge is the only public React component and the only active component-story reference; `cn` is a utility. Use its [effective v0.10 base-plus-amendments contract and separate plan approval](../../_shared/component-contract.md#current-gauge-contract). Surface, IconButton and Tabs are future/provisional Foundation concepts, not available imports or current stories. Gauge is passive: no events/actions, `Disabled`, ref or `asChild` example applies.
 
 ## Propósito
 

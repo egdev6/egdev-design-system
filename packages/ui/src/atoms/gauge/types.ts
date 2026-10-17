@@ -104,7 +104,7 @@ export const gaugeRootVariants = cva(
   'eg-gauge inline-flex h-auto w-auto flex-col items-center gap-2 rounded-none bg-transparent shadow-none hover:shadow-none transition-none cursor-default font-sans text-label-default text-fg-default'
 );
 export const gaugeCircleVariants = cva(
-  'eg-gauge-well relative shrink-0 overflow-hidden box-border p-0 border-0 border-solid border-[var(--color-border-hairline)] rounded-[var(--radius-full)] bg-[var(--color-surface-0)] bg-none [box-shadow:var(--shadow-well)] text-fg-default',
+  'eg-gauge-well relative shrink-0 overflow-hidden box-border p-0 border-0 border-solid border-[var(--color-border-hairline)] rounded-[var(--radius-full)] bg-transparent bg-none [box-shadow:none] text-fg-default',
   {
     variants: {
       size: {

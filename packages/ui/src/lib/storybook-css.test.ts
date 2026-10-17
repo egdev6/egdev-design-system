@@ -228,23 +228,15 @@ describe('Storybook preview CSS', () => {
       String.raw`.rounded-\[var\(--radius-full\)\]`,
       /border-radius:\s*var\(--radius-full\)\s*;/
     ],
-    [
-      'bg-[var(--color-surface-0)]',
-      String.raw`.bg-\[var\(--color-surface-0\)\]`,
-      /background-color:\s*var\(--color-surface-0\)\s*;/
-    ],
+    ['bg-transparent', '.bg-transparent', /background-color:\s*(?:transparent|#0000(?:0000)?)\s*;/],
     ['bg-none', '.bg-none', /background-image:\s*none\s*;/],
-    [
-      '[box-shadow:var(--shadow-well)]',
-      String.raw`.\[box-shadow\:var\(--shadow-well\)\]`,
-      /box-shadow:\s*var\(--shadow-well\)\s*;/
-    ],
+    ['[box-shadow:none]', String.raw`.\[box-shadow\:none\]`, /box-shadow:\s*none\s*;/],
     [
       'text-fg-default',
       '.text-fg-default',
       /color:\s*var\(--color-fg-default(?:,\s*var\(--color-primitive-white\))?\)\s*;/
     ]
-  ])('emits the native Gauge well Material utility %s', (utility, selector, declaration) => {
+  ])('emits the native Gauge transparent-frame utility %s', (utility, selector, declaration) => {
     // Inspect the exact emitted utility, not a legacy or retired component's Material recipe.
     expect(rule(selector)).toMatch(declaration);
     expect(gaugeCircleVariants().split(/\s+/)).toContain(utility);

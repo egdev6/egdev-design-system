@@ -1,0 +1,133 @@
+{
+  "schema": "gauge-v0.10-local-capture-evidence",
+  "baselineCommit": "637b422c90ed60e87c34ccd9d1a1c6ac07cda1c0",
+  "tool": "Playwright MCP",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "dpr": 1,
+  "colorScheme": "dark",
+  "reducedMotion": "reduce",
+  "fontStatus": "loaded",
+  "sourceRevision": "36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a",
+  "scenesAcrossBackgrounds": 16,
+  "finiteMeterEvaluations": 40,
+  "unavailableEvaluations": 6,
+  "observations": "computed-styles.json",
+  "pixelChecks": {
+    "decoder": "Existing browser PNG decoder and OffscreenCanvas; no installed dependency, image modification or server restart",
+    "results": [
+      {
+        "token": "--color-bg-canvas",
+        "hostRGBA": [20, 21, 24, 255],
+        "oldCenterRGBA": [20, 21, 24, 255],
+        "newCenterRGBA": [20, 21, 24, 255],
+        "sampleCoordinates": [[28, 28], [16, 28], [40, 28], [28, 16], [28, 40]],
+        "fiveInteriorSamplesMatchHost": true,
+        "filledArcTopSampleUnchanged": true,
+        "defaultGeometryAndArcUnchanged": true
+      },
+      {
+        "token": "--color-surface-2",
+        "hostRGBA": [35, 36, 40, 255],
+        "oldCenterRGBA": [20, 21, 24, 255],
+        "newCenterRGBA": [35, 36, 40, 255],
+        "sampleCoordinates": [[28, 28], [16, 28], [40, 28], [28, 16], [28, 40]],
+        "fiveInteriorSamplesMatchHost": true,
+        "filledArcTopSampleUnchanged": true,
+        "defaultGeometryAndArcUnchanged": true
+      }
+    ]
+  },
+  "images": [
+    {
+      "path": "docs/components/gauge/v0.10/verification/after--center-content--canvas--1280.png",
+      "sha256": "6f71e6c900eba3e805da3641d3125b044d40cd493f8fc3ce4766c6162ec4dedf",
+      "dimensions": [1248, 56],
+      "bytes": 3330
+    },
+    {
+      "path": "docs/components/gauge/v0.10/verification/after--center-content--surface-2--1280.png",
+      "sha256": "18a8e4e6f0377da71828173e6e7a09f442a89865315eb99bc62eae7e3f179703",
+      "dimensions": [1248, 56],
+      "bytes": 3358
+    },
+    {
+      "path": "docs/components/gauge/v0.10/verification/after--default--canvas--1280.png",
+      "sha256": "6a855499479fb86434b5fb4382ca71e22cdd738ca8e7c07d98f0131c637c4d1d",
+      "dimensions": [56, 56],
+      "bytes": 1375
+    },
+    {
+      "path": "docs/components/gauge/v0.10/verification/after--default--surface-2--1280.png",
+      "sha256": "db174da55497b0217d681210fc5a0fee20ecfb28cb1a82ccd8af423dca3f6813",
+      "dimensions": [56, 56],
+      "bytes": 1393
+    },
+    {
+      "path": "docs/components/gauge/v0.10/verification/before--canvas--1280.png",
+      "sha256": "50f21937e4257a9f0360146600f52177947a3116e382dbf676365a6f5150fe1b",
+      "dimensions": [56, 56],
+      "bytes": 1728
+    },
+    {
+      "path": "docs/components/gauge/v0.10/verification/before--surface-2--1280.png",
+      "sha256": "5d64afb006052470cbd45be5c1c53883cfd08fa57c0ef4b67f43f748d142277f",
+      "dimensions": [56, 56],
+      "bytes": 1745
+    }
+  ],
+  "limits": [
+    "Before/after images are real browser crops, never recreated or modified.",
+    "Screenshots cover Default and CenterContent; computed cases additionally cover sizes, states, limits, invalid, decimal and contextual values.",
+    "Track alpha blends with host by design; neither full-image parity nor cross-background track pixel equality is claimed.",
+    "No packed React matrix, full Storybook MCP RPC, screen-reader, universal contrast, native approval or release-readiness claim."
+  ],
+  "baselineStyles": [
+    {
+      "token": "--color-bg-canvas",
+      "hostColor": "rgb(20, 21, 24)",
+      "circle": {
+        "background": "rgb(20, 21, 24)",
+        "image": "none",
+        "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+        "width": "56px",
+        "height": "56px",
+        "border": "0px",
+        "padding": "0px"
+      },
+      "arc": {
+        "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+        "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+      },
+      "label": "Capacity",
+      "value": "42",
+      "fonts": "loaded",
+      "fontFamily": "Barlow, system-ui, sans-serif",
+      "file": "docs/components/gauge/v0.10/verification/before--canvas--1280.png"
+    },
+    {
+      "token": "--color-surface-2",
+      "hostColor": "rgb(35, 36, 40)",
+      "circle": {
+        "background": "rgb(20, 21, 24)",
+        "image": "none",
+        "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+        "width": "56px",
+        "height": "56px",
+        "border": "0px",
+        "padding": "0px"
+      },
+      "arc": {
+        "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+        "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))"
+      },
+      "label": "Capacity",
+      "value": "42",
+      "fonts": "loaded",
+      "fontFamily": "Barlow, system-ui, sans-serif",
+      "file": "docs/components/gauge/v0.10/verification/before--surface-2--1280.png"
+    }
+  ]
+}

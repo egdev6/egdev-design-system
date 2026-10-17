@@ -12,9 +12,9 @@ export function Capacity() {
 }
 ```
 
-Gauge is a passive controlled 0–100 measurement, not task progress or an action. Both `label` and `value` are required. Non-normal `state` values require visible `stateText`; optional centers must be decorative and non-interactive. Gauge owns its native decorative Material well and has no `ref` or `asChild` API. `className` supports outer margin/alignment only, not appearance overrides.
+Gauge is a passive controlled 0–100 measurement, not task progress or an action. Both `label` and `value` are required. Non-normal `state` values require visible `stateText`; optional centers must be decorative and non-interactive. Gauge owns a transparent native geometry frame with no background/image/shadow paint and has no `ref` or `asChild` API. `className` supports outer margin/alignment only, not appearance overrides.
 
-The effective contract is the [v0.9 composition amendment](../../docs/components/gauge/v0.9/composition-amendment.md) plus the [base specification](../../docs/specs/gauge.md); implementation approval is recorded separately.
+The effective contract is the [base specification](../../docs/specs/gauge.md), [v0.9 composition amendment](../../docs/components/gauge/v0.9/composition-amendment.md) and [v0.10 transparent-interior amendment](../../docs/components/gauge/v0.10/transparent-interior-amendment.md), with a [bounded plan](../../docs/components/gauge/v0.10/implementation-plan.md) and [separate approval](../../docs/components/gauge/v0.10/approval.json). The interior shows the actual host background; the unchanged 10% alpha track blends with that host.
 
 ## Distributed CSS
 

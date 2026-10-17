@@ -36,7 +36,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 |---|---|---|---|---|---|
 | **Slot** | — | Slot | — | nuevo | Lo da Radix; se reexporta para `asChild` en todo el sistema. |
 | **VisuallyHidden** | — | VisuallyHidden | — | nuevo | Sustituye el `clip: rect(0 0 0 0)` repetido en todos los lienzos. |
-| **Surface** | — | Slot | — | nuevo | Provisional future Material concept, not an implemented or importable React API. The previous reference was retired; Gauge owns its native decorative well. See [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) and [base contract](specs/gauge.md). |
+| **Surface** | — | Slot | — | nuevo | Provisional future Material concept, not an implemented or importable React API. The previous reference was retired; Gauge owns its transparent native frame. See [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md), [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) and [base contract](specs/gauge.md). |
 | **Stack / Cluster** | — | Slot | — | nuevo | Apilado vertical y fila con salto. Elimina los `display:flex; gap` en línea. |
 | **Text / Heading** | Title + Eyebrow (átomo) | Slot | — | fusionar | Una primitiva tipográfica con variantes (`display`, `hero`, `section`, `eyebrow`, `show`, `inverse`). |
 | **Divider** | Divider (átomo) | Separator | — | mantener | Absorbe `.eg-rule` y `--vertical`. |
@@ -50,7 +50,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
 | **Button** | Button (átomo) | Slot | Icon, Spinner | mantener | Pierde `--icon` (pasa a IconButton). Mantiene `.eg-btn-split` como molécula ButtonGroup. |
-| **IconButton** | IconButton (átomo) | Slot + AccessibleIcon | Icon | mantener | Provisional future icon-only action concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md). |
+| **IconButton** | IconButton (átomo) | Slot + AccessibleIcon | Icon | mantener | Provisional future icon-only action concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md); Gauge's current finish follows the [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md). |
 | **Toggle** | — | Toggle | Icon | nuevo | Botón conmutado (mostrar/ocultar capa, silenciar). IconButton `pressed` puede apoyarse en él. |
 | **Link** | Link (átomo) | Slot | — | mantener |  |
 | **Icon** | Icon (átomo) | AccessibleIcon | — | mantener | Faltan 14 iconos (ver DECISIONES). |
@@ -69,7 +69,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Logo** | Logo (átomo) | — | — | mantener |  |
 | **ProductMark** | — | — | — | nuevo | Letra o marca de producto con `gradient-btn-primary` + `shadow-btn-primary` (M, C, L, Cr, Mt, Q). Hoy está copiada a mano en cada app. |
 | **ProgressBar** | ProgressBar (átomo) | Progress | — | mantener | Radix Progress da `role=progressbar` y los aria-value*. |
-| **Gauge** | Gauge (átomo) | — (native role=meter) | Native decorative Material well | mantener | Currently implemented React component: one passive circular 0–100 measurement with optional decorative center and consumer-selected normal, warning, critical or muted state. Own native well uses existing tokens, not Surface. Effective contract: [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) plus [base](specs/gauge.md). Not task progress, multiple rings or a dock API; no Radix dependency. |
+| **Gauge** | Gauge (átomo) | — (native role=meter) | Native transparent geometry frame | mantener | Currently implemented React component: one passive circular 0–100 measurement with optional decorative center and consumer-selected normal, warning, critical or muted state. Own transparent native frame uses existing tokens, not Surface. Effective contract: [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md), [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) and [base](specs/gauge.md). Not task progress, multiple rings or a dock API; no Radix dependency. |
 | **Stat** | Stat (átomo) | — | Text | mantener | Pierde `--glass` (usa Surface). |
 | **Mark** | Mark (átomo) | — | — | mantener |  |
 | **Dropzone** | Dropzone (átomo) | — | Icon, VisuallyHidden | mantener | Input file nativo oculto con VisuallyHidden. |
@@ -83,7 +83,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Field** | Field (átomo) | Form.Field / Label | Label, Input\|Textarea\|Select\|Slider, Text | separar | Pasa a molécula: etiqueta + control + ayuda + error + contador. El control es un átomo aparte. |
 | **ButtonGroup** | `.eg-btn-split` (sin ficha) | — | Button, IconButton, Menu | extraer | Botón dividido (`--join-start/--join-end`) y grupos de botones. |
 | **ChipGroup** | — | ToggleGroup | Chip | nuevo | Filtros (múltiple) y selección exclusiva (borde de la pantalla en Quorb). |
-| **Tabs** | Tabs (molécula) | Tabs | Badge (contador) | mantener | Provisional future tab-selection concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md). |
+| **Tabs** | Tabs (molécula) | Tabs | Badge (contador) | mantener | Provisional future tab-selection concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md); Gauge's current finish follows the [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md). |
 | **Menu** | MenuList (popup) (molécula) | DropdownMenu | Icon, Kbd | separar | Menú desplegable con items, separadores, `--danger` y submenús. |
 | **NavList** | MenuList --nav (molécula) | Accordion (grupos) / Collapsible | Icon, Badge, StatusDot | separar | Navegación lateral con grupos plegables, contadores y etiquetas `__tag`. |
 | **UserMenu** | UserMenu (molécula) | DropdownMenu | Avatar, Menu | mantener | Es Menu con Avatar de trigger; podría ser solo un ejemplo de Menu. |

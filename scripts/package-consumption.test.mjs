@@ -115,25 +115,21 @@ function assertGaugeCSS(css) {
     assert.ok(css.includes('--eg-gauge-fill: var(--color-' + token + ')'), 'Missing state token ' + token);
   }
   for (const selector of [
-    String.raw`.bg-\[var\(--color-surface-0\)\]`,
-    String.raw`.\[box-shadow\:var\(--shadow-well\)\]`,
+    '.bg-transparent',
+    '.bg-none',
+    String.raw`.\[box-shadow\:none\]`,
     String.raw`.rounded-\[var\(--radius-full\)\]`,
     '.border-0',
     '.p-0'
   ]) {
-    assert.ok(css.includes(selector), 'Missing native Material well utility ' + selector);
+    assert.ok(css.includes(selector), 'Missing native transparent-frame utility ' + selector);
   }
+  assert.match(css, /\.bg-transparent\s*\{[^}]*background-color:\s*(?:transparent|#0000(?:0000)?)\s*;/);
+  assert.match(css, /\.bg-none\s*\{[^}]*background-image:\s*none\s*;/);
+  assert.match(css, /\.\\\[box-shadow\\:none\\\]\s*\{[^}]*box-shadow:\s*none\s*;/);
   assert.match(css, /@layer components\s*\{/);
   assert.match(css, /@layer utilities\s*\{/);
-  for (const token of [
-    'space-2',
-    'font-sans',
-    'text-label-default',
-    'color-fg-brand-default',
-    'color-surface-0',
-    'radius-full',
-    'shadow-well'
-  ]) {
+  for (const token of ['space-2', 'font-sans', 'text-label-default', 'color-fg-brand-default', 'radius-full']) {
     assert.ok(css.includes('var(--' + token), 'Gauge must consume token ' + token);
   }
 }
