@@ -11,5 +11,4 @@
 
 @import "./legacy/bundle.css" layer(components);
 
-@import "../primitives/surface/surface.css" layer(components);
-@import "../atoms/icon-button/icon-button.css" layer(components);
+@import "../atoms/gauge/gauge.css";

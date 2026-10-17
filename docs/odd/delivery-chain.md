@@ -78,10 +78,13 @@ draft PRs. It does not authorize retries of blocked MCP/packed checks, dependenc
 installations or cache probes. Do not infer merge readiness from source snapshot
 checks or from this plan.
 
-Fresh CI currently runs tests before build, while tests require ignored token dist
-artifacts. The build/test ordering fix is not resolved or implicitly authorized by
-this document. It needs a separate CI review artifact and plan approval from the
-parent before implementation; do not silently fold it into a child unit.
+The fresh-checkout prerequisite was reproduced on boundary 03: its CSS checks
+cannot load ignored token dist artifacts before the producer runs. A separately
+reviewed native plan was explicitly approved and applied, moving the existing
+Build packages step before Unit tests without changing actions or permissions.
+Boundary 03 includes this correction and its proposal sources. Boundary 04 must
+preserve that order when adding registry checks and obtain its own current plan
+authorization; an earlier authorization is not reusable.
 
 ## Progress checklist
 
@@ -99,7 +102,11 @@ parent before implementation; do not silently fold it into a child unit.
 ## Plan evolution
 
 Initial recorded decision: use the approved six-child chain with a tracking seed;
-issue #32 is the confirmed delivery issue. No additional plan approvals, completed
-phases, timestamps, review receipts or implementation outcomes are recorded here.
-Update this section only with actual decisions and evidence; keep Pending states
-until the corresponding boundary is verified.
+issue #32 is the confirmed delivery issue. The seed and documentation boundaries
+01/02 were committed with normal typecheck and commitlint hooks. Their copied
+bytes, including all normative images, match the preserved source snapshot.
+Boundary 03 then built packages and passed types, lint, unit tests, token tests,
+package-export tests and the two offline MCP parser fixtures. Its source isolation
+was checked through ESM exports inside the delivery worktree. Full MCP and packed
+consumer checks remain blocked and were not retried. These are local checks, not
+remote CI or native code-review approval. Update only with actual evidence.

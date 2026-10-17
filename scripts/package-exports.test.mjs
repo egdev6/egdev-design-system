@@ -19,6 +19,31 @@ function artifact(name, target) {
   return path;
 }
 
+// Read a complete emitted block, including nested supports/media rules and quoted values.
+function cssBlock(css, opening) {
+  const match = opening.exec(css);
+  assert.ok(match, `Missing emitted CSS block ${opening}`);
+  let depth = 1;
+  let quote = '';
+  for (let index = match.index + match[0].length; index < css.length; index++) {
+    const char = css[index];
+    if (char === '\\') {
+      index++;
+    } else if (quote) {
+      if (char === quote) {
+        quote = '';
+      }
+    } else if (char === '"' || char === "'") {
+      quote = char;
+    } else if (char === '{') {
+      depth++;
+    } else if (char === '}' && --depth === 0) {
+      return css.slice(match.index, index + 1);
+    }
+  }
+  assert.fail(`Unclosed emitted CSS block ${opening}`);
+}
+
 test('UI publishes its stable declaration entry and reachable internal declarations', (context) => {
   assert.equal(ui.exports['.'].types, './dist/index.d.ts');
   assert.equal(ui.types, ui.exports['.'].types);
@@ -65,20 +90,97 @@ test('UI CSS export resolves to a compiled artifact under dist', () => {
   artifact('ui', ui.exports['./styles.css']);
 });
 
-test('UI ships plain layered CSS without token definitions or scanned utilities', () => {
-  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+test('UI ships plain layered CSS without canonical token definitions or unrelated utilities', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   assert.doesNotMatch(css, /@(import|reference|source|tailwind|theme|custom-variant|apply)\b/);
   assert.match(css, /@layer theme, base, components, utilities\s*;/);
   assert.match(css, /@layer components\s*\{/);
-  for (const selector of ['.eg-surface', '.eg-icon-btn--square', '.eg-tabs__item']) {
+  for (const selector of ['.eg-gauge-arc', '.eg-gauge-center', '.bg-\\[var\\(--color-surface-0\\)\\]']) {
     assert.ok(css.includes(selector), `Missing shipped selector ${selector}`);
   }
-  for (const token of ['--color-surface-1', '--radius-md', '--shadow-edge']) {
+  for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) {
     assert.ok(css.includes(`var(${token})`), `UI must consume ${token}`);
     assert.ok(!css.includes(`${token}:`), `UI must not redefine ${token}`);
   }
+  const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const canonical = new Set([...theme.matchAll(/(--[\w-]+)\s*:/g)].map((match) => match[1]));
+  for (const token of canonical) {
+    assert.doesNotMatch(css, new RegExp(`${token}\\s*:`), `UI must not redefine ${token}`);
+  }
   assert.match(css, /prefers-reduced-transparency:\s*reduce/);
+  // Only Gauge's explicit CVA source is scanned, not stories, tests or the default palette.
   assert.doesNotMatch(css, /\.(flex|p-4|gap-4|bg-red-500)\s*[,{]/);
+});
+
+test('UI ships functional static Gauge utilities without an application Tailwind compiler', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}(?:\\[data-state=[^\\]]+\\])?\\s*\\{`));
+  };
+  for (const [selector, declaration] of [
+    [String.raw`.bg-\[var\(--color-surface-0\)\]`, /background-color:\s*var\(--color-surface-0\)\s*;/],
+    [String.raw`.\[box-shadow\:var\(--shadow-well\)\]`, /(?:box-shadow|--tw-shadow):\s*var\(--shadow-well\)\s*;/],
+    [String.raw`.rounded-\[var\(--radius-full\)\]`, /border-radius:\s*var\(--radius-full\)\s*;/],
+    ['.border-0', /border(?:-width)?:\s*(?:0|0px)\s*;/],
+    ['.p-0', /padding:\s*(?:0|0px|var\(--space-0\)|calc\(var\(--(?:space-1|spacing)\)\s*\*\s*0\))\s*;/],
+    ['.inline-flex', /display:\s*inline-flex\s*;/],
+    ['.gap-2', /gap:\s*var\(--space-2\)\s*;/],
+    ['.font-sans', /font-family:\s*var\(--font-sans(?:,\s*"Barlow",\s*system-ui,\s*sans-serif)?\)\s*;/],
+    ['.text-fg-default', /color:\s*var\(--color-fg-default(?:,\s*var\(--color-primitive-white\))?\)\s*;/],
+    ['.text-label-default', /font-size:\s*var\(--text-label-default(?:,\s*14px)?\)\s*;/],
+    ['.transition-none', /transition-property:\s*none\s*;/],
+    [String.raw`.hover\:shadow-none:hover`, /box-shadow:\s*[^;]+;/]
+  ]) {
+    assert.match(rule(selector), declaration);
+  }
+  for (const size of ['space-4', 'space-10', 'space-14', 'space-20', 'eg-gauge-size']) {
+    for (const [prefix, property] of [
+      ['w', 'width'],
+      ['h', 'height']
+    ]) {
+      assert.match(rule(`.${prefix}-\\[var\\(--${size}\\)\\]`), new RegExp(`${property}:\\s*var\\(--${size}\\)\\s*;`));
+    }
+  }
+  for (const stroke of ['3px', '4px', '6px']) {
+    assert.ok(rule(`.\\[--eg-gauge-stroke\\:${stroke}\\]`).includes(`--eg-gauge-stroke: ${stroke};`));
+  }
+  assert.match(
+    rule(String.raw`.\[--eg-gauge-stroke\:calc\(var\(--eg-gauge-size\)\/14\)\]`),
+    /--eg-gauge-stroke:\s*calc\(var\(--eg-gauge-size\)\s*\/\s*14\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.\[--eg-gauge-track\:--alpha\(var\(--color-fg-default\)\/10\%\)\]`),
+    /--eg-gauge-track:\s*color-mix\(in oklab,\s*var\(--color-fg-default\)\s*10%,\s*transparent\)\s*;/
+  );
+  assert.doesNotMatch(css, /--alpha\s*\(/);
+  assert.match(
+    rule(String.raw`.\[--eg-gauge-fill\:var\(--color-fg-brand-default\)\]`),
+    /--eg-gauge-fill:\s*var\(--color-fg-brand-default\)\s*;/
+  );
+  for (const [state, token] of [
+    ['warning', 'status-warning'],
+    ['critical', 'status-danger'],
+    ['muted', 'fg-muted']
+  ]) {
+    const body = rule(`.data-\\[state\\=${state}\\]\\:\\[--eg-gauge-fill\\:var\\(--color-${token}\\)\\]`);
+    assert.match(body, new RegExp(`\\[data-state=["']?${state}["']?\\]\\s*\\{`));
+    assert.ok(body.includes(`--eg-gauge-fill: var(--color-${token});`));
+  }
+});
+
+test('UI ships the approved Gauge geometry in the components layer', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const components = cssBlock(css, /@layer components\s*\{/);
+  const arc = cssBlock(components, /\.eg-gauge-arc\s*\{/);
+  const center = cssBlock(components, /\.eg-gauge-center\s*\{/);
+  assert.match(
+    arc,
+    /background:\s*conic-gradient\(var\(--eg-gauge-fill\) calc\(var\(--eg-gauge-value\) \* 1%\), var\(--eg-gauge-track\) 0\)\s*;/
+  );
+  assert.match(arc, /mask:\s*radial-gradient\(/);
+  assert.match(center, /inset:\s*30%\s*;/);
 });
 
 test('UI JavaScript remains importable without a CSS loader', async () => {
@@ -87,8 +189,40 @@ test('UI JavaScript remains importable without a CSS loader', async () => {
   assert.ok(!imports.some(({ fileName }) => fileName.endsWith('.css')), 'Styles must remain an explicit import');
   const { createElement } = await import('react');
   const { renderToString } = await import('react-dom/server');
-  const { Surface } = await import(entry);
-  assert.match(renderToString(createElement(Surface, null, 'CSS consumer')), /eg-surface/);
+  const { Gauge } = await import(entry);
+  assert.match(renderToString(createElement(Gauge, { label: 'CSS consumer', value: 42 })), /role="meter"/);
+});
+
+test('UI root exports Gauge and its public types with passive SSR semantics', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  assert.deepEqual(Object.keys(exported).sort(), ['Gauge', 'cn'], 'Only Gauge and cn are public runtime exports');
+  assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
+  assert.equal(exported.default, undefined, 'UI must not introduce a default export');
+  const declaration = artifact('ui', ui.exports['.'].types);
+  const program = ts.createProgram([declaration], { moduleResolution: ts.ModuleResolutionKind.Bundler });
+  const checker = program.getTypeChecker();
+  const symbol = checker.getSymbolAtLocation(program.getSourceFile(declaration));
+  const names = new Set(checker.getExportsOfModule(symbol).map((item) => item.name));
+  assert.deepEqual([...names].sort(), ['Gauge', 'GaugeProps', 'GaugeSize', 'GaugeState', 'cn']);
+  for (const name of ['Gauge', 'GaugeProps', 'GaugeState', 'GaugeSize']) {
+    assert.ok(names.has(name), `Missing public declaration export ${name}`);
+  }
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(createElement(exported.Gauge, { label: 'Capacity', value: 42.5 }));
+  for (const text of [
+    'eg-gauge',
+    'role="meter"',
+    'aria-label="Capacity"',
+    'aria-valuenow="42.5"',
+    'aria-valuetext="42.5 / 100"'
+  ]) {
+    assert.ok(html.includes(text), `Gauge SSR must render ${text}`);
+  }
+  const invalid = renderToString(createElement(exported.Gauge, { label: 'Capacity', value: NaN }));
+  assert.match(invalid, /Data unavailable/);
+  assert.doesNotMatch(invalid, /role="meter"|aria-value(?:now|min|max|text)=|eg-gauge-arc/);
+  assert.doesNotMatch(html + invalid, /aria-live=|<button|<input|tabindex=/);
 });
 
 for (const subpath of ['./tokens.css', './theme.css', './native.css']) {

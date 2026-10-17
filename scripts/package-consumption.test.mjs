@@ -29,31 +29,114 @@ function run(cwd, command, args, timeout) {
 
 const consumer = `
 import { createElement, createRef } from 'react';
-import { Surface, IconButton, Tabs } from '@egdev/ui';
-import type { SurfaceProps, IconButtonProps, TabsProps, TabItem } from '@egdev/ui';
-export const surfaceRef = createRef<HTMLDivElement>();
-export const buttonRef = createRef<HTMLButtonElement>();
+import { Gauge } from '@egdev/ui';
+import type { GaugeProps, GaugeState, GaugeSize } from '@egdev/ui';
+const unsupportedGaugeRef = createRef<HTMLDivElement>();
 const icon = createElement('svg', { viewBox: '0 0 24 24' }, createElement('path', { d: 'M1 1h2v2H1z' }));
-const items: TabItem[] = [
-  { value: 'alpha', label: 'Alpha', content: 'Alpha panel' },
-  { value: 'beta', label: 'Beta', content: 'Beta panel' },
-  { value: 'locked', label: 'Locked', disabled: true, content: 'Locked panel' }
-];
-export function App({ onClick, disabled = false }: { onClick?: () => void; disabled?: boolean } = {}) {
-  const surface: SurfaceProps = { tone: 'glass', padding: 'sm', ref: surfaceRef };
-  const button: IconButtonProps = { label: 'Save', icon, shape: 'square', ref: buttonRef, onClick, disabled };
-  const tabs: TabsProps = { label: 'Workspace', items, defaultValue: 'alpha', variant: 'segmented' };
-  return createElement(Surface, surface, createElement(IconButton, button), createElement(Tabs, tabs));
+const gaugeState: GaugeState = 'warning';
+const gaugeSize: GaugeSize = 'sm';
+export const gaugeDefaults: GaugeProps = { label: 'Capacity', value: 42.5 };
+export const gaugeWarning: GaugeProps = {
+  label: 'Warning capacity', value: 42.5, state: gaugeState, stateText: 'Review capacity',
+  valueText: '42.5 capacity units', size: 64.5, center: 0
+};
+export function GaugeSamples({ value = 42.5 }: { value?: number } = {}) {
+  return createElement('section', { 'aria-label': 'Measurements' },
+    createElement(Gauge, { ...gaugeDefaults, value }),
+    createElement(Gauge, gaugeWarning),
+    createElement(Gauge, { label: 'Small capacity', value: 25, size: gaugeSize, center: icon }),
+    createElement(Gauge, { label: 'Named capacity', value: 25, center: 'OK' })
+  );
 }
-// @ts-expect-error Accessible label is required, even when an SVG icon is provided.
-const missingLabel: IconButtonProps = { icon };
-// @ts-expect-error An accessible label does not replace the required icon.
-const missingIcon: IconButtonProps = { label: 'Save' };
-// @ts-expect-error Public variants reject arbitrary strings.
-const invalidTone: SurfaceProps = { tone: 'unknown' };
-// @ts-expect-error Tabs must have an accessible list name.
-const unnamedTabs: TabsProps = { items };
+export function App({ gaugeValue }: { gaugeValue?: number } = {}) {
+  // Intrinsic controls are consumer harness elements, not additional SDK components.
+  return createElement('main', null,
+    createElement('button', { type: 'button' }, 'Before measurements'),
+    createElement(GaugeSamples, { value: gaugeValue }),
+    createElement('button', { type: 'button' }, 'After measurements'));
+}
+// @ts-expect-error A passive measurement still requires an accessible name.
+const unnamedGauge: GaugeProps = { value: 42 };
+// @ts-expect-error A label does not replace the controlled measurement.
+const missingGaugeValue: GaugeProps = { label: 'Capacity' };
+// @ts-expect-error Non-normal conditions require visible stateText.
+const unexplainedWarning: GaugeProps = { label: 'Capacity', value: 42, state: 'warning' };
+// @ts-expect-error Critical conditions also require visible stateText.
+const unexplainedCritical: GaugeProps = { label: 'Capacity', value: 42, state: 'critical' };
+// @ts-expect-error Muted is a condition, not disabled semantics, and requires stateText.
+const unexplainedMuted: GaugeProps = { label: 'Capacity', value: 42, state: 'muted' };
+// @ts-expect-error Gauge has no public ref API on either React major.
+const referencedGauge: GaugeProps = { label: 'Capacity', value: 42, ref: unsupportedGaugeRef };
+// @ts-expect-error Gauge cannot delegate its meter semantics to a child.
+const slottedGauge: GaugeProps = { label: 'Capacity', value: 42, asChild: true };
+// @ts-expect-error A passive measurement does not expose click actions.
+const actionableGauge: GaugeProps = { label: 'Capacity', value: 42, onClick: () => {} };
+// @ts-expect-error Arbitrary presets are not part of Gauge's size API.
+const invalidGaugeSize: GaugeProps = { label: 'Capacity', value: 42, size: 'xl' };
+// @ts-expect-error Gauge owns passive meter semantics.
+const interactiveGauge: GaugeProps = { label: 'Capacity', value: 42, role: 'button' };
 `;
+
+// Reused inside the installed fixture, against shipped CSS and both consumer build paths.
+function assertGaugeCSS(css) {
+  for (const selector of ['.eg-gauge-arc', '.eg-gauge-center', '.inline-flex', '.gap-2', '.text-label-default']) {
+    assert.ok(css.includes(selector), 'Missing Gauge selector ' + selector);
+  }
+  assert.match(css, /conic-gradient\(var\(--eg-gauge-fill\) calc\(var\(--eg-gauge-value\) \* 1%\)/);
+  assert.match(css, /mask:\s*radial-gradient\(/);
+  assert.match(css, /\.eg-gauge-center\s*\{[^}]*inset:\s*30%/);
+  for (const size of ['space-4', 'space-10', 'space-14', 'space-20', 'eg-gauge-size']) {
+    for (const [prefix, property] of [
+      ['w', 'width'],
+      ['h', 'height']
+    ]) {
+      assert.ok(
+        css.includes('.' + prefix + '-\\[var\\(--' + size + '\\)\\]'),
+        'Missing static Gauge dimension ' + size
+      );
+      assert.ok(css.includes(property + ': var(--' + size + ')'), 'Missing Gauge geometry binding ' + size);
+    }
+  }
+  for (const stroke of ['3px', '4px', '6px']) {
+    assert.ok(css.includes('--eg-gauge-stroke: ' + stroke), 'Missing preset stroke ' + stroke);
+  }
+  assert.match(css, /--eg-gauge-stroke:\s*calc\(var\(--eg-gauge-size\)\s*\/\s*14\)/);
+  assert.match(css, /--eg-gauge-track:\s*color-mix\(in oklab,\s*var\(--color-fg-default\)\s*10%,\s*transparent\)/);
+  assert.doesNotMatch(css, /--alpha\s*\(/);
+  for (const [state, token] of [
+    ['warning', 'status-warning'],
+    ['critical', 'status-danger'],
+    ['muted', 'fg-muted']
+  ]) {
+    assert.ok(
+      css.includes('data-state=' + state) || css.includes('data-state="' + state + '"'),
+      'Missing state ' + state
+    );
+    assert.ok(css.includes('--eg-gauge-fill: var(--color-' + token + ')'), 'Missing state token ' + token);
+  }
+  for (const selector of [
+    String.raw`.bg-\[var\(--color-surface-0\)\]`,
+    String.raw`.\[box-shadow\:var\(--shadow-well\)\]`,
+    String.raw`.rounded-\[var\(--radius-full\)\]`,
+    '.border-0',
+    '.p-0'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing native Material well utility ' + selector);
+  }
+  assert.match(css, /@layer components\s*\{/);
+  assert.match(css, /@layer utilities\s*\{/);
+  for (const token of [
+    'space-2',
+    'font-sans',
+    'text-label-default',
+    'color-fg-brand-default',
+    'color-surface-0',
+    'radius-full',
+    'shadow-well'
+  ]) {
+    assert.ok(css.includes('var(--' + token), 'Gauge must consume token ' + token);
+  }
+}
 
 const entries = `
 import assert from 'node:assert/strict';
@@ -74,7 +157,14 @@ const styles = fileURLToPath(import.meta.resolve('@egdev/ui/styles.css'));
 assert.ok(!realpathSync(styles).startsWith(${JSON.stringify(root)}), 'CSS must resolve outside the workspace');
 const shippedStyles = readFileSync(styles, 'utf8');
 assert.doesNotMatch(shippedStyles, /@(import|reference|source|tailwind|theme|custom-variant|apply)\\b/, 'Packed CSS must be ready for native consumption');
-assert.ok(shippedStyles.includes('.eg-surface'), 'Packed styles must retain public BEM classes');
+assert.ok(shippedStyles.includes('.eg-gauge-arc'), 'Packed styles must retain Gauge geometry');
+assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), ['Gauge', 'cn']);
+${assertGaugeCSS.toString()}
+assertGaugeCSS(shippedStyles);
+const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
+for (const [, token] of theme.matchAll(/(--[\\w-]+)\\s*:/g)) {
+  assert.doesNotMatch(shippedStyles, new RegExp(token + '\\\\s*:'), 'UI must not redefine canonical token ' + token);
+}
 const local = createRequire(import.meta.url);
 const fromUI = createRequire(entry);
 for (const name of ['react', 'react-dom']) {
@@ -93,12 +183,55 @@ const ssr = `
 import assert from 'node:assert/strict';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
+import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
+import { Gauge } from '@egdev/ui';
 import { App } from './consumer.ts';
 const html = renderToString(createElement(App));
-for (const text of ['eg-surface', 'eg-icon-btn', '<svg', 'Save', 'role="tablist"', 'aria-label="Workspace"', 'role="tabpanel"', 'Alpha panel']) {
+for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity']) {
   assert.ok(html.includes(text), 'SSR must render ' + text);
 }
-console.log(JSON.stringify({ ssr: ['Surface', 'IconButton', 'Tabs', 'SVG', 'TabItem.content'], bytes: html.length }));
+const dom = new JSDOM(html);
+try {
+  const document = dom.window.document;
+  const normal = document.querySelector('.eg-gauge[aria-label="Capacity"]');
+  assert.equal(normal.getAttribute('role'), 'meter');
+  assert.equal(normal.getAttribute('data-state'), 'normal');
+  assert.equal(normal.getAttribute('aria-valuenow'), '42.5');
+  assert.equal(normal.getAttribute('aria-valuetext'), '42.5 / 100');
+  assert.ok(normal.querySelector('[class*="--space-14"]'), 'Default size must use the md token');
+  assert.equal(normal.querySelector('.eg-gauge-center'), null, 'Default center must be absent');
+  const warning = document.querySelector('.eg-gauge[aria-label="Warning capacity"]');
+  assert.equal(warning.getAttribute('data-state'), 'warning');
+  assert.equal(warning.style.getPropertyValue('--eg-gauge-size'), '64.5px');
+  assert.equal(warning.getAttribute('aria-valuetext'), '42.5 capacity units');
+  assert.equal(document.getElementById(warning.getAttribute('aria-describedby')).textContent, 'Review capacity');
+  assert.equal(warning.querySelector('.eg-gauge-center').textContent, '0');
+  for (const gauge of document.querySelectorAll('.eg-gauge')) {
+    assert.equal(gauge.getAttribute('aria-valuemin'), '0');
+    assert.equal(gauge.getAttribute('aria-valuemax'), '100');
+    assert.ok(Number.isFinite(Number(gauge.getAttribute('aria-valuenow'))));
+    assert.equal(gauge.querySelector('[aria-live], button, a, input, [tabindex]'), null);
+    assert.equal(gauge.hasAttribute('aria-live'), false);
+    const center = gauge.querySelector('.eg-gauge-center');
+    if (center) assert.equal(center.getAttribute('aria-hidden'), 'true');
+  }
+} finally {
+  dom.window.close();
+}
+for (const [value, normalized] of [[-1, 0], [42.5, 42.5], [101, 100]]) {
+  const rendered = renderToString(createElement(Gauge, { label: 'Bounded capacity', value }));
+  assert.ok(rendered.includes('aria-valuenow="' + normalized + '"'));
+  assert.ok(rendered.includes('aria-valuetext="' + normalized + ' / 100"'));
+  assert.ok(rendered.includes('--eg-gauge-value:' + normalized));
+}
+for (const value of [NaN, Infinity, -Infinity]) {
+  const rendered = renderToString(createElement(Gauge, {
+    label: 'Disconnected capacity', value, state: 'critical', stateText: 'Hidden condition', center: 'Hidden center'
+  }));
+  assert.ok(rendered.includes('Disconnected capacity') && rendered.includes('Data unavailable'));
+  assert.doesNotMatch(rendered, /role="meter"|aria-value(?:now|min|max|text)=|eg-gauge-arc|--eg-gauge-value|Hidden condition|Hidden center|aria-live=|<button|tabindex=/);
+}
+console.log(JSON.stringify({ ssr: ['Gauge finite, bounded and unavailable', 'decorative centers', 'visible conditions'], bytes: html.length }));
 `;
 
 const csr = `
@@ -117,41 +250,36 @@ globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 stage('setup:complete');
 const { act, createElement } = await import('react');
 const { createRoot } = await import('react-dom/client');
-const { App, surfaceRef, buttonRef } = await import('./consumer.ts');
+const { App } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
-let clicks = 0;
 try {
   stage('mount:start');
-  await act(async () => root.render(createElement(App, { onClick: () => clicks++ })));
+  await act(async () => root.render(createElement(App)));
   stage('mount:complete');
-  const button = document.querySelector('button:not([role="tab"])');
-  stage('click:start');
-  await act(async () => button.click());
-  assert.equal(clicks, 1, 'IconButton must dispatch clicks');
-  stage('click:complete');
-  const tabs = [...document.querySelectorAll('[role="tab"]')];
-  assert.equal(tabs[0].getAttribute('aria-selected'), 'true');
-  stage('tabs:select:start');
-  await act(async () => tabs[1].dispatchEvent(new dom.window.MouseEvent('mousedown', { bubbles: true, button: 0 })));
-  assert.equal(tabs[1].getAttribute('aria-selected'), 'true', 'Tabs must change selection');
-  assert.equal(document.querySelector('[role="tabpanel"][data-state="active"]').textContent, 'Beta panel');
-  stage('tabs:select:complete');
-  stage('tabs:disabled:start');
-  await act(async () => tabs[2].dispatchEvent(new dom.window.MouseEvent('mousedown', { bubbles: true, button: 0 })));
-  assert.equal(tabs[1].getAttribute('aria-selected'), 'true', 'Disabled tabs must not change selection');
-  stage('tabs:disabled:complete');
-  stage('disabled:render:start');
-  await act(async () => root.render(createElement(App, { onClick: () => clicks++, disabled: true })));
-  await act(async () => button.click());
-  assert.equal(clicks, 1, 'Disabled IconButton must not dispatch clicks');
-  stage('disabled:complete');
-  stage('refs:start');
-  // ComponentProps<'div'/'button'> publicly accepts refs; verify that promise on both React majors.
-  assert.equal(surfaceRef.current, document.querySelector('.eg-surface'), 'Surface must attach its public ref');
-  assert.equal(buttonRef.current, button, 'IconButton must attach its public ref');
-  stage('refs:complete');
-  console.log(JSON.stringify({ csr: ['click', 'disabled', 'Tabs selection', 'panels', 'refs'] }));
+  const buttons = [...document.querySelectorAll('button')];
+  assert.equal(buttons.length, 2, 'Only intrinsic consumer controls may be focusable');
+  buttons[0].focus();
+  assert.equal(document.activeElement, buttons[0]);
+  buttons[1].focus();
+  assert.equal(document.activeElement, buttons[1]);
+  stage('gauge:rerender:start');
+  const measurement = () => document.querySelector('section[aria-label="Measurements"] > .eg-gauge');
+  assert.equal(measurement().getAttribute('aria-valuenow'), '42.5');
+  await act(async () => root.render(createElement(App, { gaugeValue: 101 })));
+  assert.equal(measurement().getAttribute('aria-valuenow'), '100');
+  assert.equal(measurement().style.getPropertyValue('--eg-gauge-value'), '100');
+  await act(async () => root.render(createElement(App, { gaugeValue: NaN })));
+  assert.equal(measurement().hasAttribute('role'), false);
+  assert.equal(measurement().querySelector('[aria-valuenow], .eg-gauge-arc'), null);
+  assert.ok(measurement().textContent.includes('Data unavailable'));
+  await act(async () => root.render(createElement(App, { gaugeValue: 0 })));
+  assert.equal(measurement().getAttribute('aria-valuenow'), '0');
+  assert.equal(measurement().textContent.includes('Data unavailable'), false);
+  assert.equal(measurement().querySelector('[aria-live], button, a, input, [tabindex]'), null);
+  assert.equal(measurement().hasAttribute('aria-live'), false);
+  stage('gauge:rerender:complete');
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -225,7 +353,9 @@ const assets = [result].flat().flatMap((bundle) => bundle.output).filter((asset)
 const emitted = assets.map((asset) => String(asset.source)).join('\\n');
 assert.ok(assets.length > 0, 'Vite must emit consumer CSS');
 assert.ok(!emitted.includes('@theme'), 'Native consumption must not need Tailwind to interpret @theme');
-for (const selector of ['.eg-surface', '.eg-icon-btn--square', '.eg-tabs__item']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
+${assertGaugeCSS.toString()}
+assertGaugeCSS(emitted);
+for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
 const shipped = readFileSync(new URL('./node_modules/@egdev/tokens/dist/tokens.css', import.meta.url), 'utf8');
 const names = shipped
   .split(String.fromCharCode(10))
@@ -238,7 +368,7 @@ const names = shipped
 const typography = ${JSON.stringify(typographyNames)};
 assert.equal(names.length, 236, 'Packed native artifact must expose 236 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
-for (const token of ['--color-surface-1', '--radius-md', '--shadow-edge']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
+for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
   for (const field of ['--line-height', '--font-weight', '--letter-spacing']) assert.ok(emitted.includes('--text-' + name + field + ':'), 'Native artifact must expose --text-' + name + field);
 }
@@ -249,7 +379,8 @@ const tailwind = await build({ configFile: false, logLevel: 'error', plugins: [t
 const twAssets = [tailwind].flat().flatMap((bundle) => bundle.output).filter((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'));
 const twCss = twAssets.map((asset) => String(asset.source)).join(' ');
 assert.ok(twAssets.length > 0, 'Tailwind build must emit CSS');
-for (const selector of ['.eg-surface', '.eg-icon-btn--square', '.eg-tabs__item']) {
+assertGaugeCSS(twCss);
+for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) {
   assert.ok(twCss.includes(selector), 'Tailwind consumer must retain shipped UI selector ' + selector);
 }
 for (const selector of ['.text-fg-secondary', '.bg-bg-surface', '.rounded-xl', '.shadow-edge', '.font-display']) assert.ok(twCss.includes(selector), 'Missing generated utility ' + selector);
@@ -289,6 +420,7 @@ for (const [react, [types, domTypes]] of Object.entries(versions)) {
       writeJSON('package.json', {
         private: true,
         type: 'module',
+        packageManager: manifest.packageManager,
         dependencies: {
           '@egdev/ui': tarballs.ui,
           '@egdev/tokens': tarballs.tokens,
@@ -329,7 +461,18 @@ for (const [react, [types, domTypes]] of Object.entries(versions)) {
         'main.ts',
         `import '@egdev/tokens/tokens.css';\nimport '@egdev/ui/styles.css';\nimport { createElement } from 'react';\nimport { createRoot } from 'react-dom/client';\nimport { App } from './consumer';\ncreateRoot(document.getElementById('app')!).render(createElement(App));\n`
       );
+      // Keep temporary consumers on the repository's managed pnpm, not the global version/store.
+      const expectedPnpmVersion = manifest.packageManager.match(/^pnpm@([^+]+)(?:\+.*)?$/)?.[1];
+      assert.ok(expectedPnpmVersion, 'Root packageManager must pin pnpm');
+      assert.equal(
+        run(fixture, 'pnpm', ['--version'], 30_000),
+        expectedPnpmVersion,
+        'Fixture pnpm must match the root packageManager pin before installing dependencies'
+      );
       const install = ['install', '--ignore-scripts', '--no-frozen-lockfile', '--strict-peer-dependencies'];
+      if (process.env.EGDEV_CONSUMER_OFFLINE === '1') {
+        install.push('--offline');
+      }
       run(fixture, 'pnpm', install, 120_000);
       const timeouts = { entries: 20_000, types: 30_000, ssr: 20_000, csr: 30_000, css: 60_000 };
       for (const [name, timeout] of Object.entries(timeouts)) {

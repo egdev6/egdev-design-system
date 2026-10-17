@@ -1,8 +1,10 @@
 import { fileURLToPath } from 'node:url';
+import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 
 // Bundle CSS separately so the JavaScript entry remains usable in Node SSR.
 export default defineConfig({
+  plugins: [tailwindcss({ optimize: false })],
   build: {
     minify: false,
     cssMinify: false,

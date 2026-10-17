@@ -44,10 +44,10 @@ jobs:
         run: pnpm lint
       - name: Typecheck
         run: pnpm typecheck
-      - name: Unit tests
-        run: pnpm test
       - name: Build packages
         run: pnpm build
+      - name: Unit tests
+        run: pnpm test
       - name: Test compiled token contract
         run: pnpm --filter @egdev/tokens run test
       - name: Test package exports after build
