@@ -112,5 +112,10 @@ was checked through ESM exports inside the delivery worktree. Full MCP and packe
 consumer checks remain blocked and were not retried. These are local checks, not
 remote CI or native code-review approval. Boundary 04 also passes registry
 freshness, all 73 tooling tests, types, lint and the same 110 unit tests. All 13
-naming conventions remain proposed with null approval. Update only with actual
-evidence.
+naming conventions remain proposed with null approval. Boundary 05 preserves all
+14 governance documents byte-for-byte and passes registry, types and lint checks.
+Boundary 06 restores the approved final preview/MCP hunks and all seven guides;
+it passes 123 unit tests, 73 registry tests, 19 token tests, 13 package-export tests,
+15 offline MCP fixtures, types, lint, package and Storybook builds. The consumer
+script has syntax evidence only. Remote CI and the final source-tree comparison
+remain separate gates; no blocked live or packed check was retried.

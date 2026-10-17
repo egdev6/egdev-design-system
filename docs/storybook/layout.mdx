@@ -1,0 +1,52 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundations/Layout" />
+
+<div className="eg-docs">
+  <header className="eg-docs-hero"><div className="eg-docs-eyebrow">Foundations / 03</div><h1><span className="eg-docs-title">Space makes structure</span></h1><div className="eg-docs-lead">A four-pixel base, deliberate rhythm and layouts that wrap before they squeeze.</div></header>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">A shared spacing scale</span></h2>
+    <p>The published steps are 0, 4, 8, 12, 16, 20, 24, 28, 32, 40, 48, 56, 64, 80 and 96px. Token suffixes count four-pixel steps, not pixels.</p>
+    <div className="eg-docs-spacing">
+      {[
+        ['1', '4px', 'Icon-to-text minimum'], ['2', '8px', 'Compact gaps'],
+        ['4', '16px', 'Base padding'], ['6', '24px', 'Card padding'],
+        ['8', '32px', 'Between blocks'], ['16', '64px', 'Between sections'],
+        ['24', '96px', 'Broad section margins']
+      ].map(([step, value, use]) => (
+        <div className="eg-docs-space-row" key={step}><code>{`--space-${step}`}</code><span className="eg-docs-space-bar" data-space={step} aria-hidden="true" /><span>{value} · {use}</span></div>
+      ))}
+    </div>
+    <pre className="eg-docs-code"><code>{`/* Native CSS in your app */
+padding: var(--space-6);
+gap: var(--space-4);
+
+/* Tailwind v4 equivalents: p-6 gap-4 */`}</code></pre>
+    <p className="eg-docs-note">The native and Tailwind scales are bound in px. Without local overrides, <code>p-4</code> stays 16px at a 16px or 20px root. Browser zoom is a separate accessibility mechanism.</p>
+  </section>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Edges and containers</span></h2>
+    <div className="eg-docs-grid">
+      <article className="eg-docs-card"><h3><span className="eg-docs-card-title">Radius</span></h3><p><code>--radius-none</code> 0 · <code>sm</code> 4 · <code>md</code> 12 · <code>lg</code> 16 · <code>xl</code> 22 · <code>2xl</code> 24px. <code>--radius-full</code> is for pills and circles; it is not a spacing value.</p></article>
+      <article className="eg-docs-card"><h3><span className="eg-docs-card-title">Page frame</span></h3><p><code>--content-max</code> 1280px caps the content. <code>--gutter</code> is <code>clamp(16px, 4vw, 40px)</code>. <code>--nav-height</code> is 68px; account for fixed navigation in the app.</p></article>
+    </div>
+    <h3><span className="eg-docs-card-title">Responsive reference points</span></h3>
+    <div className="eg-docs-table-wrap">
+      <table>
+        <thead><tr><th>Token</th><th>Value</th><th>Intent</th></tr></thead>
+        <tbody>
+          <tr><td><code>--bp-sm</code></td><td>520px</td><td>Narrow mobile reference.</td></tr>
+          <tr><td><code>--bp-md</code></td><td>960px</td><td>Tablet/desktop boundary; simplify below it.</td></tr>
+          <tr><td><code>--bp-lg</code></td><td>1260px</td><td>Wide desktop reference.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>These tokens do not automatically configure Tailwind breakpoint variants. CSS custom properties cannot be used as ordinary media-query thresholds. Prefer intrinsic wrapping where it fits; explicit breakpoint rules need the documented values.</p>
+  </section>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Make room, not a new component</span></h2>
+    <p>App-owned grids can use <code>repeat(auto-fit, minmax(min(100%, var(--space-24)), 1fr))</code> and token gaps. Choose a minimum appropriate to the content; preserve reading order and allow long names to wrap.</p>
+    <p>These documentation panels are HTML examples, not an exported layout API. Product-specific layouts stay in the app until a second app justifies a reusable pattern.</p>
+  </section>
+  <footer className="eg-docs-links"><a href="/?path=/docs/foundations-material--docs" target="_top">Add depth without clutter →</a><a href="https://github.com/egdev6/egdev-design-system/blob/main/packages/tokens/src/theme.css" target="_blank" rel="noopener noreferrer">Spacing, radius and layout source ↗</a></footer>
+</div>
