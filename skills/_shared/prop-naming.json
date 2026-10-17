@@ -5,8 +5,12 @@
     "meaning": "The selected value or displayed measurement; domain and type are component-specific.",
     "whenToUse": "Expose the primary selection or magnitude.",
     "avoid": "Do not infer editability, numeric universality or shared normalization.",
-    "status": "proposed",
-    "approval": null,
+    "status": "approved",
+    "approval": {
+      "reference": "docs/decisions/prop-naming-gauge-approval.json",
+      "scope": "convention:primary-value",
+      "contentHash": "sha256:a5545e6b971ed030a9c5a0ce9c5bf38ed5e7c456151d83e4a307dcc7445f9b0a"
+    },
     "aliases": [],
     "exceptions": [],
     "usages": [
@@ -52,8 +56,12 @@
     "meaning": "Component-specific dimensions through supported presets or custom dimensions.",
     "whenToUse": "Choose dimensional presets or custom dimensions supported by the component.",
     "avoid": "Assuming identical dimensions or accepted types across components; Gauge numeric CSS-pixel support does not extend Tabs or IconButton. Gauge finite-positive validation, invalid-size behavior and any min/max policy still require review.",
-    "status": "proposed",
-    "approval": null,
+    "status": "approved",
+    "approval": {
+      "reference": "docs/decisions/prop-naming-gauge-approval.json",
+      "scope": "convention:preset-dimensions",
+      "contentHash": "sha256:5d812bfb6f9f6d3dc9fc3b5d26840e13d7ed0ccd509768b2e5b15b8ebc676246"
+    },
     "aliases": [],
     "exceptions": [],
     "usages": [
@@ -111,8 +119,12 @@
     "meaning": "The accessible name of the control or displayed magnitude.",
     "whenToUse": "The public API owns an explicit accessible-name input.",
     "avoid": "Assuming Surface has this prop or using it as a generic visible caption.",
-    "status": "proposed",
-    "approval": null,
+    "status": "approved",
+    "approval": {
+      "reference": "docs/decisions/prop-naming-gauge-approval.json",
+      "scope": "convention:accessible-name",
+      "contentHash": "sha256:6d20aa57ba4692b62dc87e3d0a4ac2871e9113442fa738a61759e8c842a093f5"
+    },
     "aliases": [],
     "exceptions": [],
     "usages": [
@@ -134,8 +146,12 @@
     "meaning": "The consumer-selected interpretation of a Gauge magnitude, independent of thresholds.",
     "whenToUse": "Propose Gauge condition normal, warning, critical or muted.",
     "avoid": "Visual variants, material tone, loading behavior or automatic threshold inference.",
-    "status": "proposed",
-    "approval": null,
+    "status": "approved",
+    "approval": {
+      "reference": "docs/decisions/prop-naming-gauge-approval.json",
+      "scope": "convention:consumer-selected-condition",
+      "contentHash": "sha256:e9219a1929ef4b120468907faae100804f2b6e3eaac320a1c130b5fa811ba5a8"
+    },
     "aliases": [],
     "exceptions": [],
     "usages": [
@@ -157,8 +173,12 @@
     "meaning": "Visible non-color text describing the selected Gauge condition.",
     "whenToUse": "Propose condition text, required for non-normal Gauge states by the draft union.",
     "avoid": "Replacing the accessible name or the numeric equivalent.",
-    "status": "proposed",
-    "approval": null,
+    "status": "approved",
+    "approval": {
+      "reference": "docs/decisions/prop-naming-gauge-approval.json",
+      "scope": "convention:condition-description",
+      "contentHash": "sha256:025ef213d44fcdaa4e82755765e299f5209202cc240d1d781e40c72086a385eb"
+    },
     "aliases": [],
     "exceptions": [],
     "usages": [
@@ -180,8 +200,12 @@
     "meaning": "A contextual text equivalent of the normalized displayed measurement.",
     "whenToUse": "Propose a readable Gauge measurement equivalent coherent with clamping.",
     "avoid": "Condition text, accessible naming or an incoherent raw out-of-range value.",
-    "status": "proposed",
-    "approval": null,
+    "status": "approved",
+    "approval": {
+      "reference": "docs/decisions/prop-naming-gauge-approval.json",
+      "scope": "convention:measurement-text-equivalent",
+      "contentHash": "sha256:061046c0f54f08064954bfc835a3726deab15043b11c7573b7c0f5e37c38b6b9"
+    },
     "aliases": [],
     "exceptions": [],
     "usages": [
@@ -203,8 +227,12 @@
     "meaning": "Optional decorative, non-interactive content inside the Gauge ring.",
     "whenToUse": "Propose an icon, value or short text with meaning already represented accessibly.",
     "avoid": "Actions, focusable descendants, a fixed logo or the sole source of meaning.",
-    "status": "proposed",
-    "approval": null,
+    "status": "approved",
+    "approval": {
+      "reference": "docs/decisions/prop-naming-gauge-approval.json",
+      "scope": "convention:decorative-center-content",
+      "contentHash": "sha256:61eb3a08fb971e36eaea141a02db39090f2d3facb98efdccddf883c26195c577"
+    },
     "aliases": [],
     "exceptions": [],
     "usages": [
@@ -226,8 +254,12 @@
     "meaning": "Readable fallback when Gauge input is non-finite and no measurement is exposed.",
     "whenToUse": "Propose non-empty unavailable-data text separately from invalid-input policy approval.",
     "avoid": "Loading, disabled state, fabricated zero measurements or assuming fallback wording is approved.",
-    "status": "proposed",
-    "approval": null,
+    "status": "approved",
+    "approval": {
+      "reference": "docs/decisions/prop-naming-gauge-approval.json",
+      "scope": "convention:unavailable-measurement-message",
+      "contentHash": "sha256:3b23c0a5fd76c86e29212adb6211457c9d7292a1a528ec94fc32138462fec79f"
+    },
     "aliases": [],
     "exceptions": [],
     "usages": [
