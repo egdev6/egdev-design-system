@@ -41,9 +41,9 @@ Origen: la versión 37 del artefacto *EGDEV Foundation* (Claude Design). Materia
 
 ## Recipes — visual semantics, not a CSS mandate
 
-These historical CSS recipes define binding Material semantics, not permission to hand-author per-component appearance or copy literal values into utilities. Use token-backed Tailwind/CVA; wells, overlays, solid/reduced-transparency fallbacks, reduced motion and focus remain mandatory. Surface is a future Foundation composition concept, not an importable React box. Gauge is the only implemented public React component; its approved native-well exception is specified below. Other components require an approved Material recipe or Surface proposal before implementation, not automatic reuse or cloning of retired Surface classes. Minimize justified global CSS; approve any recipe exception and the meaningful seventh-file role in spec/plan, or STOP for human resolution. No new hardcoded values, tokens or dependencies without explicit approval.
+These historical CSS recipes define binding Material semantics, not permission to hand-author per-component appearance or copy literal values into utilities. Use token-backed Tailwind/CVA; wells, overlays, solid/reduced-transparency fallbacks, reduced motion and focus remain mandatory. Surface is a future Foundation composition concept, not an importable React box. Gauge is the only implemented public React component; its approved transparent-frame exception is specified below. Other components require an approved Material recipe or Surface proposal before implementation, not automatic reuse or cloning of retired Surface classes. Minimize justified global CSS; approve any recipe exception and the meaningful seventh-file role in spec/plan, or STOP for human resolution. No new hardcoded values, tokens or dependencies without explicit approval.
 
-The Surface names in the following historical recipes describe conceptual/future treatments, not current React APIs. A future Surface's general base hairline border remains a separate design concern; Gauge's accepted 0px well border does not change that concept or every well recipe.
+The Surface names in the following historical recipes describe conceptual/future treatments, not current React APIs. A future Surface's general base hairline border remains a separate design concern; Gauge's accepted 0px frame border does not change that concept or every well recipe.
 
 ```css
 /* Elevated surface: conceptual future Surface, not a current React API. */
@@ -80,12 +80,12 @@ pie:      background: var(--color-surface-0); border-top: 1px solid var(--color-
 - **Bandas.** Cabecera de TerminalCard y CommunityCard en `surface-2`; pie de NowCard en `surface-0`.
 - Historical location: `legacy/bundle.css`. Preserve these styles and consumers until visual parity and an explicitly approved migration; porting does not automatically authorize moving/deleting rules.
 
-## Gauge-only native-well exception
+## Gauge-only transparent-frame exception
 
-The current Gauge contract is the [immutable v0.8 base](specs/gauge.md) plus the [v0.9 composition amendment](components/gauge/v0.9/composition-amendment.md), with a [separate full-plan approval](components/gauge/v0.9/plan-approval.json). The accepted pilot adopts the existing recessed well, not a new flat appearance:
+The current Gauge contract is the [immutable v0.8 base](specs/gauge.md), [v0.9 composition amendment](components/gauge/v0.9/composition-amendment.md) and [v0.10 transparent-interior amendment](components/gauge/v0.10/transparent-interior-amendment.md), with a [bounded plan](components/gauge/v0.10/implementation-plan.md) and [separate approval](components/gauge/v0.10/approval.json). The v0.10 finish supersedes only Gauge's opaque background and recessed shadow; frozen v0.9 proposal wording is historical, interpreted through its approval record:
 
-- Gauge owns a native decorative `div` (`eg-gauge-well`, internal marker only), hidden from accessibility APIs. No Surface import, private React replacement or public part-override API.
-- Static token-backed CVA utilities in `types.ts`, composed through the hook with per-part `cn()`, own border-box sizing, padding 0, solid **0px border**, full radius via `--radius-full`, `--color-surface-0` background with no image, existing two-inset `--shadow-well` and `--color-fg-default`. Do not copy Surface's conceptual base 1px border.
+- Gauge owns a transparent native geometry-frame `div` (`eg-gauge-well`, retained internal marker only), hidden from accessibility APIs. No Surface import, private React replacement or public part-override API.
+- Static token-backed CVA utilities in `types.ts`, composed through the hook with per-part `cn()`, own border-box sizing, padding 0, solid **0px border**, full radius via `--radius-full` and `--color-fg-default`, with transparent background, no image and explicit `box-shadow: none`. The actual host remains visible; the unchanged 10% alpha track blends with it, without an opaque annular backing. Decorative center content may still paint its own content. Do not copy Surface's conceptual base 1px border.
 - `gauge.css` remains geometry-only: conic arc, radial mask and supporting alignment/clipping, including **+0.5px inner-edge smoothing**. The seven meaningful file roles, passive API, numeric policy and root outer-margin/alignment-only `className` contract remain unchanged.
 - This bounded exception grants no global appearance permission, handwritten Material recipe, generic Surface-class cloning, new tokens/dependencies or automatic reuse for future components. A changed promise or broader stylesheet role requires separate approval.
 
@@ -93,7 +93,7 @@ Approval and the accepted pilot are not evidence that all retirement/test/build/
 
 ## En el código
 
-- **Future composition concepts, not current APIs:** Surface treatments (`default`, `glass`, `brand`, `well`, `ghost`; conceptual elevations `flat`, `low`, `high`) and segmented Tabs remain provisional. They require their own approved contracts/plans before becoming usable React components; do not import them from `@egdev/ui` or retain a hidden Surface helper. Gauge's native well is the bounded exception above, not a general substitute.
+- **Future composition concepts, not current APIs:** Surface treatments (`default`, `glass`, `brand`, `well`, `ghost`; conceptual elevations `flat`, `low`, `high`) and segmented Tabs remain provisional. They require their own approved contracts/plans before becoming usable React components; do not import them from `@egdev/ui` or retain a hidden Surface helper. Gauge's transparent frame is the bounded exception above, not a general substitute.
 - **Marcas de producto** (ProductMark, pendiente de portar): `--gradient-btn-primary` + `--shadow-btn-primary`.
 - **Foco** sigue siendo `--shadow-focus` y gana siempre a las sombras de material.
 - **Deshabilitado** sigue siendo opacidad `.45`.

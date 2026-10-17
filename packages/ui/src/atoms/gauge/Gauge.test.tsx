@@ -9,7 +9,7 @@ import { useGauge } from './useGauge';
 const base = { label: 'Capacity', value: 42.5 };
 
 describe('Gauge contract', () => {
-  it('owns a native decorative well without Surface identity', () => {
+  it('owns a transparent native geometry frame without Surface identity', () => {
     const { container } = render(<Gauge {...base} center='42.5' />);
     const meter = screen.getByRole('meter', { name: base.label });
     const well = meter.querySelector('.eg-gauge-well');
@@ -18,7 +18,8 @@ describe('Gauge contract', () => {
     expect(well).toHaveAttribute('aria-hidden', 'true');
     // cn() must retain independent zero-width, solid-style and token-color border utilities.
     expect(well).toHaveClass('box-border', 'p-0', 'border-0', 'border-solid', 'border-[var(--color-border-hairline)]');
-    expect(well).toHaveClass('rounded-[var(--radius-full)]', '[box-shadow:var(--shadow-well)]');
+    expect(well).toHaveClass('rounded-[var(--radius-full)]', 'bg-transparent', 'bg-none', '[box-shadow:none]');
+    expect(well).not.toHaveClass('bg-[var(--color-surface-0)]', '[box-shadow:var(--shadow-well)]');
     expect(well?.parentElement).toBe(meter);
     expect(well?.querySelector('.eg-gauge-arc')).not.toBeNull();
     expect(well?.querySelector('.eg-gauge-center')).toHaveAttribute('aria-hidden', 'true');

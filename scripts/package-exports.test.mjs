@@ -95,7 +95,13 @@ test('UI ships plain layered CSS without canonical token definitions or unrelate
   assert.doesNotMatch(css, /@(import|reference|source|tailwind|theme|custom-variant|apply)\b/);
   assert.match(css, /@layer theme, base, components, utilities\s*;/);
   assert.match(css, /@layer components\s*\{/);
-  for (const selector of ['.eg-gauge-arc', '.eg-gauge-center', '.bg-\\[var\\(--color-surface-0\\)\\]']) {
+  for (const selector of [
+    '.eg-gauge-arc',
+    '.eg-gauge-center',
+    '.bg-transparent',
+    '.bg-none',
+    String.raw`.\[box-shadow\:none\]`
+  ]) {
     assert.ok(css.includes(selector), `Missing shipped selector ${selector}`);
   }
   for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) {
@@ -120,8 +126,9 @@ test('UI ships functional static Gauge utilities without an application Tailwind
     return cssBlock(utilities, new RegExp(`${escaped}(?:\\[data-state=[^\\]]+\\])?\\s*\\{`));
   };
   for (const [selector, declaration] of [
-    [String.raw`.bg-\[var\(--color-surface-0\)\]`, /background-color:\s*var\(--color-surface-0\)\s*;/],
-    [String.raw`.\[box-shadow\:var\(--shadow-well\)\]`, /(?:box-shadow|--tw-shadow):\s*var\(--shadow-well\)\s*;/],
+    ['.bg-transparent', /background-color:\s*(?:transparent|#0000(?:0000)?)\s*;/],
+    ['.bg-none', /background-image:\s*none\s*;/],
+    [String.raw`.\[box-shadow\:none\]`, /box-shadow:\s*none\s*;/],
     [String.raw`.rounded-\[var\(--radius-full\)\]`, /border-radius:\s*var\(--radius-full\)\s*;/],
     ['.border-0', /border(?:-width)?:\s*(?:0|0px)\s*;/],
     ['.p-0', /padding:\s*(?:0|0px|var\(--space-0\)|calc\(var\(--(?:space-1|spacing)\)\s*\*\s*0\))\s*;/],

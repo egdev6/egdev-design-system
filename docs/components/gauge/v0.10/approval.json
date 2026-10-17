@@ -1,0 +1,33 @@
+{
+  "kind": "manual-human-approval-record",
+  "contractVersion": "0.10",
+  "nativeReviewApproval": false,
+  "recordedAt": "2026-10-17T16:51:51.089546+00:00",
+  "sourceCommit": "637b422c90ed60e87c34ccd9d1a1c6ac07cda1c0",
+  "observedDecision": "Aprobar enmienda y ejecutar plan m\u00ednimo",
+  "scopes": [
+    "Gauge-only transparent visual delta, including track blending with the host",
+    "Local implementation and verification under the exact presented plan"
+  ],
+  "plan": {
+    "path": "docs/components/gauge/v0.10/implementation-plan.md",
+    "sha256": "e3c534bf02abc8d256f467c677febbc19c33c3fcb85ced600002698eada0ac71",
+    "hashDefinition": "Whole UTF-8 file bytes, including final newline; frozen as presented."
+  },
+  "visualDelta": {
+    "source": "Visual contract delta section of the approved plan",
+    "sha256": "b08ae111033ac1f34c69983206aee1899581a2eb76d9d5f1047354c1204fe191"
+  },
+  "technicalElaboration": {
+    "path": "docs/components/gauge/v0.10/transparent-interior-amendment.md",
+    "sha256": "0018d8730fd7cdaf4791006a12bcf7f0b5a86c2415b80c6a7adf924ca235f82e",
+    "provenance": "Written after acceptance to organize the approved delta; not separately presented byte-for-byte."
+  },
+  "limits": [
+    "No Gauge API or geometry changes, new tokens/dependencies, blanket Material exceptions or historical rewrites.",
+    "No full Storybook MCP RPC or packed React matrix retry, install, server restart or automatic publication.",
+    "This is an observed human decision recorded by the assistant, not a signed or provider-native approval."
+  ],
+  "canonicalIssue": "https://github.com/egdev6/egdev-design-system/issues/30",
+  "remotePublication": "Not authorized; no new version comment published."
+}

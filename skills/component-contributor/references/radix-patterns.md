@@ -1,7 +1,7 @@
 # Referencia: patrones de Radix UI
 
 > Adapted from Stack & Flow: individual-package namespaces and token-backed Tailwind/CVA under the [contract](../../_shared/component-contract.md#radix); no implied completed migration. Historical BEM Menu/Dialog snippets below illustrate Radix structure only, not target appearance permission. Use approved types.ts variants and hook-derived per-part cn() composition, attribute data/aria variants and minimal justified CSS; preserve legacy until parity and migration approval.
-> Current implementation reference: `packages/ui/src/atoms/gauge/` under the [effective v0.9 contract](../../_shared/component-contract.md#current-gauge-contract). Gauge is passive and uses no Radix primitive; it is the only public React component. Surface, IconButton and Tabs are future/provisional Foundation concepts, not current importable references.
+> Current implementation reference: `packages/ui/src/atoms/gauge/` under the [effective v0.10 contract](../../_shared/component-contract.md#current-gauge-contract). Gauge is passive and uses no Radix primitive; it is the only public React component. Surface, IconButton and Tabs are future/provisional Foundation concepts, not current importable references.
 
 ## Por qué Radix
 
@@ -70,7 +70,7 @@ Historical state-recipe illustration only: use token-backed `data-[highlighted]:
 
 - `data-highlighted` es el foco de teclado y el hover del item: no hace falta `:hover` aparte.
 - Items con `cursor: default`, como un menú nativo.
-- This conceptual future snippet illustrates states only. Its root still needs the overlay treatment from [Material](../../../docs/MATERIAL.md), an approved component recipe or Surface proposal, and the required contract/plan/package approvals. Surface is not currently importable; Gauge's native-well exception does not authorize a generic wrapper or Surface-class cloning. Use token spacing and justify custom offsets; do not copy `collisionPadding={8}` as policy.
+- This conceptual future snippet illustrates states only. Its root still needs the overlay treatment from [Material](../../../docs/MATERIAL.md), an approved component recipe or Surface proposal, and the required contract/plan/package approvals. Surface is not currently importable; Gauge's transparent-frame exception does not authorize a generic wrapper or Surface-class cloning. Use token spacing and justify custom offsets; do not copy `collisionPadding={8}` as policy.
 
 ## Navegación lateral (NavList)
 

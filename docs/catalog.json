@@ -30,7 +30,7 @@
     "radix": "Slot",
     "compone": "—",
     "accion": "nuevo",
-    "notas": "Provisional future Material concept, not an implemented or importable React API. The previous reference was retired; Gauge owns its native decorative well. See [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) and [base contract](specs/gauge.md)."
+    "notas": "Provisional future Material concept, not an implemented or importable React API. The previous reference was retired; Gauge owns its transparent native frame. See [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md), [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) and [base contract](specs/gauge.md)."
   },
   {
     "actual": "—",
@@ -118,7 +118,7 @@
     "radix": "Slot + AccessibleIcon",
     "compone": "Icon",
     "accion": "mantener",
-    "notas": "Provisional future icon-only action concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md)."
+    "notas": "Provisional future icon-only action concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md); Gauge's current finish follows the [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md)."
   },
   {
     "actual": "—",
@@ -347,9 +347,9 @@
     "nivel": "atom",
     "destino": "ui",
     "radix": "— (native role=meter)",
-    "compone": "Native decorative Material well",
+    "compone": "Native transparent geometry frame",
     "accion": "mantener",
-    "notas": "Currently implemented React component: one passive circular 0–100 measurement with optional decorative center and consumer-selected normal, warning, critical or muted state. Own native well uses existing tokens, not Surface. Effective contract: [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) plus [base](specs/gauge.md). Not task progress, multiple rings or a dock API; no Radix dependency."
+    "notas": "Currently implemented React component: one passive circular 0–100 measurement with optional decorative center and consumer-selected normal, warning, critical or muted state. Own transparent native frame uses existing tokens, not Surface. Effective contract: [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md), [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) and [base](specs/gauge.md). Not task progress, multiple rings or a dock API; no Radix dependency."
   },
   {
     "actual": "Stat",
@@ -459,7 +459,7 @@
     "radix": "Tabs",
     "compone": "Badge (contador)",
     "accion": "mantener",
-    "notas": "Provisional future tab-selection concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md)."
+    "notas": "Provisional future tab-selection concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md); Gauge's current finish follows the [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md)."
   },
   {
     "actual": "MenuList (popup)",

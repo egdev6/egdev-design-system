@@ -1,21 +1,17 @@
 import { Meta } from '@storybook/addon-docs/blocks';
+import tokenSource from '../../packages/tokens/src/theme.css?raw';
+import { ColorInventory } from '../../.storybook/color-inventory';
 
 <Meta title="Foundations/Color" />
 
 <div className="eg-docs">
   <header className="eg-docs-hero"><div className="eg-docs-eyebrow">Foundations / 01</div><h1><span className="eg-docs-title">Color with a role</span></h1><div className="eg-docs-lead">A dark Graphite canvas. A deliberate red accent. Choose meaning before choosing a swatch.</div></header>
   <section className="eg-docs-panel">
-    <h2><span className="eg-docs-section-title">Primitives are ingredients</span></h2>
-    <p>A curated view of the source palette, not a second token inventory. Neutral legacy values remain available; the current surface ladder uses Graphite.</p>
+    <h2><span className="eg-docs-section-title">Read the complete palette</span></h2>
+    <p>The inventory below includes every existing color declaration and both logo colors, directly from the token source. Primitives are ingredients; choose semantic roles for UI. Neutral legacy values remain available; the current surface ladder uses Graphite.</p>
+    <p>Each card pairs <strong>Original token</strong> (the canonical source value, resolving original aliases) with <strong>Storybook preview</strong> (the actual CSS variable and its browser-computed value). Opaque preview values are shown as hex; transparent values retain alpha. A difference label identifies local substitutions, not a token change.</p>
     <p className="eg-docs-note">Storybook locally maps <code>--color-primitive-red-300</code> to <code>--color-primitive-red-neon</code> across the manager, Docs and story canvases, including raised-brand and danger aliases. Published tokens are unchanged. Neon meets normal-text contrast on the canvas, but not WCAG AA's 4.5:1 minimum on raised surfaces; this local preview is not an accessible-text recommendation there.</p>
-    <div className="eg-docs-grid eg-docs-swatches">
-      <figure><span className="eg-docs-swatch" data-color="neutral-950" /><figcaption><code>--color-primitive-neutral-950</code><span>Legacy neutral</span></figcaption></figure>
-      <figure><span className="eg-docs-swatch" data-color="graphite-950" /><figcaption><code>--color-primitive-graphite-950</code><span>Canvas base</span></figcaption></figure>
-      <figure><span className="eg-docs-swatch" data-color="red-neon" /><figcaption><code>--color-primitive-red-neon</code><span>Brand neon</span></figcaption></figure>
-      <figure><span className="eg-docs-swatch" data-color="alpha-white" /><figcaption><code>--color-alpha-white-08</code><span>White alpha over this panel</span></figcaption></figure>
-      <figure><span className="eg-docs-swatch" data-color="alpha-red" /><figcaption><code>--color-alpha-red-12</code><span>Red alpha over this panel</span></figcaption></figure>
-    </div>
-    <p className="eg-docs-note">Alpha colors depend on what is underneath. Shadow-only alpha tokens are not standalone fills. The logo has its own source colors; do not recolor the supplied artwork with UI neon.</p>
+    <p className="eg-docs-note">Alpha colors depend on what is underneath; specimens are shown over the same Material card. Shadow-only alpha tokens are documentary samples, not standalone UI fills. The logo has its own source colors; do not recolor the supplied artwork with UI neon.</p>
   </section>
   <section className="eg-docs-panel">
     <h2><span className="eg-docs-section-title">Use semantic aliases in UI</span></h2>
@@ -38,13 +34,9 @@ color: var(--color-fg-brand-raised);
   </section>
   <section className="eg-docs-panel">
     <h2><span className="eg-docs-section-title">Feedback is not branding</span></h2>
-    <div className="eg-docs-grid eg-docs-swatches">
-      <figure><span className="eg-docs-swatch" data-color="success" /><figcaption><code>--color-status-success</code><span>Success · pair with a text/icon cue</span></figcaption></figure>
-      <figure><span className="eg-docs-swatch" data-color="warning" /><figcaption><code>--color-status-warning</code><span>Warning · explain what needs attention</span></figcaption></figure>
-      <figure><span className="eg-docs-swatch" data-color="info" /><figcaption><code>--color-status-info</code><span>Information · keep the message explicit</span></figcaption></figure>
-      <figure><span className="eg-docs-swatch" data-color="danger" /><figcaption><code>--color-status-danger</code><span>Danger · distinguish from brand with icon + text</span></figcaption></figure>
-    </div>
+    <p>Success needs a text/icon cue. Warning explains what needs attention. Information keeps the message explicit. Danger uses icon + text to distinguish it from brand red; all four status tokens appear under Semantic roles below.</p>
     <p>Never communicate condition through color alone. Gauge does not derive state from numeric thresholds; the consumer owns that meaning.</p>
   </section>
+  <ColorInventory source={tokenSource} />
   <footer className="eg-docs-links"><a href="/?path=/docs/foundations-material--docs" target="_top">Build the surface →</a><a href="https://github.com/egdev6/egdev-design-system/blob/main/packages/tokens/src/theme.css" target="_blank" rel="noopener noreferrer">Complete token source ↗</a></footer>
 </div>

@@ -16,7 +16,7 @@ Este archivo se inyecta como contexto a cualquier agente que trabaje en el repo.
 
 **Comandos:** `pnpm storybook`, `pnpm test`, `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm tokens`.
 
-**Current React availability:** `@egdev/ui` provides Gauge only; `cn` is a utility, not a component. Surface, IconButton and Tabs remain provisional/future Foundation concepts, not importable React APIs or current review references. Tokens and effects are unchanged. Recover Gauge's [effective v0.9 contract and separate plan approval](skills/_shared/component-contract.md#current-gauge-contract); this pilot does not establish catalog-wide M3 compliance.
+**Current React availability:** `@egdev/ui` provides Gauge only; `cn` is a utility, not a component. Surface, IconButton and Tabs remain provisional/future Foundation concepts, not importable React APIs or current review references. Tokens and effects are unchanged. Recover Gauge's [effective v0.10 contract and separate plan approval](skills/_shared/component-contract.md#current-gauge-contract); this pilot does not establish catalog-wide M3 compliance.
 
 ## Documentos que mandan
 
@@ -35,7 +35,7 @@ Este archivo se inyecta como contexto a cualquier agente que trabaje en el repo.
 - `type`, nunca `interface`. Nunca `any`.
 - Ni colores, ni espaciados, ni fuentes a mano: solo variables de `@egdev/tokens`. Si falta un token, se propone en `packages/tokens/src/theme.css` y se pide confirmación.
 - Limited Gauge numeric-geometry exception: static `w-[var(--eg-gauge-size)]` / `h-[var(--eg-gauge-size)]` and a numeric CSS-pixel custom property only; presets use approved token utilities. No dynamic class interpolation or inline appearance; see the shared contract. API/validation and mandatory stylesheet approval remain separate.
-- No flat replacements: background, border and shadow must follow [Material](docs/MATERIAL.md). Surface is a future concept, not an available React prerequisite. Gauge alone has an approved native-well CVA recipe with existing tokens and a 0px border; other Material composition needs an approved recipe or Surface proposal. No handwritten shadows/gradients or generic Surface-class cloning.
+- No flat replacements: background, border and shadow must follow [Material](docs/MATERIAL.md). Surface is a future concept, not an available React prerequisite. Gauge alone has an approved transparent native-frame CVA recipe with existing tokens, a 0px border and no background/image/shadow paint; other Material composition needs an approved recipe or Surface proposal. No handwritten shadows/gradients or generic Surface-class cloning.
 - Declare utility variants with CVA in `types.ts`; compose each supported part with `cn()`. Exactly seven meaningful files remain mandatory; approve the stylesheet's compliant role in the spec/plan. If none exists, STOP for a human decision: no dummy CSS, omitted file or invented replacement (see the shared contract).
 - Style Radix/ARIA/`data-state` attributes through Tailwind data/aria variants; never mirror states into classes.
 - Cada componente tiene su clase raíz estable `eg-<nombre>` (API pública). Nunca se estila por `id`; los `id` solo para accesibilidad, con `useId()`. Estados propios en `data-state`.

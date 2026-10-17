@@ -2,7 +2,7 @@
 
 # Referencia: tests de componentes
 
-Vitest 4 + Testing Library React + user-event. Current component reference: `packages/ui/src/atoms/gauge/Gauge.test.tsx`, under the [effective v0.9 base-plus-amendment contract and separate plan approval](../../_shared/component-contract.md#current-gauge-contract). Gauge is the only public React component; `packages/ui/src/lib/cn.test.ts` tests a utility, not another component. Surface, IconButton and Tabs remain future/provisional Foundation concepts, not current fixtures or importable APIs.
+Vitest 4 + Testing Library React + user-event. Current component reference: `packages/ui/src/atoms/gauge/Gauge.test.tsx`, under the [effective v0.10 base-plus-amendments contract and separate plan approval](../../_shared/component-contract.md#current-gauge-contract). Gauge is the only public React component; `packages/ui/src/lib/cn.test.ts` tests a utility, not another component. Surface, IconButton and Tabs remain future/provisional Foundation concepts, not current fixtures or importable APIs.
 
 ## Organización y entorno
 
@@ -50,7 +50,7 @@ describe('Gauge public contract', () => {
     expect(result.current.showCenter).toBe(false);
   });
 
-  it('owns a native decorative well without Surface identity', () => {
+  it('owns a transparent native geometry frame without Surface identity', () => {
     render(<Gauge {...base} />);
     const meter = screen.getByRole('meter', { name: 'Capacity' });
     expect(meter).toHaveClass('eg-gauge');
@@ -59,6 +59,7 @@ describe('Gauge public contract', () => {
     expect(well?.tagName).toBe('DIV');
     expect(well).toHaveAttribute('aria-hidden', 'true');
     expect(well).toHaveClass('box-border', 'p-0', 'border-0', 'border-solid');
+    expect(well).toHaveClass('bg-transparent', 'bg-none', '[box-shadow:none]');
     expect(meter.querySelector('[class*="eg-surface"]')).toBeNull();
   });
 
@@ -75,7 +76,7 @@ describe('Gauge public contract', () => {
 });
 ```
 
-The internal well query checks a bounded composition invariant, not a new public part-selector API or full class snapshot. Its existing Material appearance belongs to static CVA utilities in `types.ts`: border-box, padding 0, solid **0px border** (not Surface's conceptual base 1px), full token radius, surface-0/no image, two-inset well shadow and foreground. `gauge.css` remains geometry-only, including +0.5px smoothing. DOM classes alone do not prove computed or pixel parity; no hidden React Surface helper, flat well or global recipe permission follows from these assertions.
+The internal well query checks a bounded composition invariant, not a new public part-selector API or full class snapshot. Its v0.10 transparent-frame finish belongs to static CVA utilities in `types.ts`: border-box, padding 0, solid **0px border** (not Surface's conceptual base 1px), full token radius and foreground, with transparent background, no image and explicit no-shadow reset. The unchanged 10% alpha track blends with the actual host. `gauge.css` remains geometry-only, including +0.5px smoothing. Require emitted CSS and separate browser evidence for this finish; DOM classes alone do not prove computed or pixel parity. No hidden React Surface helper or general flat-well/global recipe permission follows from these assertions.
 
 Complete applicable Gauge cases: clamped endpoints/decimals, consumer-selected states with visible non-color cues, merged unique descriptions, decorative centers, finite-positive fractional sizes/invalid fallback, native semantic protection and passive focus/pointer behavior. Gauge has no ref, `asChild`, disabled or action/event API; use `userEvent` where it tests passivity, not to invent interaction. Future button/tab contracts must test their actual native/Radix behavior only after approval and implementation; they are not live Gauge examples. Consumer type negatives may use `@ts-expect-error` with a concrete reason (for example, a missing required label), never indiscriminate casts or general suppressions.
 
