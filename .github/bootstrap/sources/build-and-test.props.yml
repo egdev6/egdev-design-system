@@ -1,0 +1,58 @@
+# Repository-owned quality gate. No secrets, privileged PR event or deployment.
+# @egdev/effects currently has a placeholder build; this job does not certify its artifacts.
+name: Build and test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-and-test-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node from .nvmrc
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+      - name: Set up locked pnpm version
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          version: 10.34.6
+          run_install: false
+          cache: false
+      - name: Install locked dependencies without lifecycle scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Lint
+        run: pnpm lint
+      - name: Validate prop naming registry
+        run: pnpm props:check
+      - name: Test prop naming tooling
+        run: pnpm test:props
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Build packages
+        run: pnpm build
+      - name: Unit tests
+        run: pnpm test
+      - name: Test compiled token contract
+        run: pnpm --filter @egdev/tokens run test
+      - name: Test package exports after build
+        run: pnpm test:package-exports

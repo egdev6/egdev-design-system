@@ -82,9 +82,10 @@ The fresh-checkout prerequisite was reproduced on boundary 03: its CSS checks
 cannot load ignored token dist artifacts before the producer runs. A separately
 reviewed native plan was explicitly approved and applied, moving the existing
 Build packages step before Unit tests without changing actions or permissions.
-Boundary 03 includes this correction and its proposal sources. Boundary 04 must
-preserve that order when adding registry checks and obtain its own current plan
-authorization; an earlier authorization is not reusable.
+Boundary 03 includes this correction and its proposal sources. Boundary 04 received
+its own explicitly approved native plan and adds only registry validation/tooling
+checks, preserving the build-first order. Both applied workflow versions were
+read back against their reviewed sources; neither authorization is reusable.
 
 ## Progress checklist
 
@@ -109,4 +110,7 @@ Boundary 03 then built packages and passed types, lint, unit tests, token tests,
 package-export tests and the two offline MCP parser fixtures. Its source isolation
 was checked through ESM exports inside the delivery worktree. Full MCP and packed
 consumer checks remain blocked and were not retried. These are local checks, not
-remote CI or native code-review approval. Update only with actual evidence.
+remote CI or native code-review approval. Boundary 04 also passes registry
+freshness, all 73 tooling tests, types, lint and the same 110 unit tests. All 13
+naming conventions remain proposed with null approval. Update only with actual
+evidence.

@@ -21,6 +21,9 @@
     "test:package-exports": "node --test scripts/package-exports.test.mjs",
     "test:package-consumption": "node --test scripts/package-consumption.test.mjs",
     "test:tokens": "pnpm tokens && pnpm --filter @egdev/tokens run test",
+    "props:check": "node scripts/prop-naming.mjs --check",
+    "props:docs": "node scripts/prop-naming.mjs --write",
+    "test:props": "node --test scripts/prop-naming.test.mjs",
     "tokens": "pnpm --filter @egdev/tokens run build"
   },
   "devDependencies": {

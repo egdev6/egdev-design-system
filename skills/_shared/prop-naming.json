@@ -1,0 +1,246 @@
+[
+  {
+    "id": "primary-value",
+    "name": "value",
+    "meaning": "The selected value or displayed measurement; domain and type are component-specific.",
+    "whenToUse": "Expose the primary selection or magnitude.",
+    "avoid": "Do not infer editability, numeric universality or shared normalization.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Gauge",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/gauge/types.ts",
+          "symbol": "GaugeProps",
+          "revision": "sha256:e6f03e386d0ac9f55062f32af68a22bea9af00ab22c0174d1f3ce906a2f8a709"
+        }
+      }
+    ]
+  },
+  {
+    "id": "initial-uncontrolled-value",
+    "name": "defaultValue",
+    "meaning": "The initial value of an uncontrolled interactive component.",
+    "whenToUse": "An actual interactive API supports uncontrolled initialization.",
+    "avoid": "Passive measurements such as Gauge or APIs without uncontrolled behavior.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": []
+  },
+  {
+    "id": "interactive-value-change",
+    "name": "onValueChange",
+    "meaning": "Notification of a user-driven value change in an interactive component.",
+    "whenToUse": "The component actually emits selection or editing changes.",
+    "avoid": "Passive displays such as Gauge or notifications for incoming prop updates.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": []
+  },
+  {
+    "id": "preset-dimensions",
+    "name": "size",
+    "meaning": "Component-specific dimensions through supported presets or custom dimensions.",
+    "whenToUse": "Choose dimensional presets or custom dimensions supported by the component.",
+    "avoid": "Assuming identical dimensions or accepted types across components; Gauge numeric CSS-pixel support does not extend Tabs or IconButton. Gauge finite-positive validation, invalid-size behavior and any min/max policy still require review.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Gauge",
+        "type": "GaugeSize | number (GaugeSize = 'sm' | 'md' | 'lg'; numeric CSS pixels, e.g. 64)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/gauge/types.ts",
+          "symbol": "GaugeProps",
+          "revision": "sha256:e6f03e386d0ac9f55062f32af68a22bea9af00ab22c0174d1f3ce906a2f8a709"
+        }
+      }
+    ]
+  },
+  {
+    "id": "visual-treatment",
+    "name": "variant",
+    "meaning": "Visual treatment within a component's responsibility.",
+    "whenToUse": "Choose presentation such as an outline or segmented treatment.",
+    "avoid": "Consumer-selected condition or Surface material tone.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": []
+  },
+  {
+    "id": "surface-material-tone",
+    "name": "tone",
+    "meaning": "Surface material treatment, not a measurement condition.",
+    "whenToUse": "Select Surface material responsibility.",
+    "avoid": "Renaming condition state to tone or assuming every component exposes tone.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": []
+  },
+  {
+    "id": "surface-elevation",
+    "name": "elevation",
+    "meaning": "The elevation treatment of a material surface.",
+    "whenToUse": "A surface exposes a supported elevation axis.",
+    "avoid": "Condition, dimensions or an arbitrary shadow value.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": []
+  },
+  {
+    "id": "accessible-name",
+    "name": "label",
+    "meaning": "The accessible name of the control or displayed magnitude.",
+    "whenToUse": "The public API owns an explicit accessible-name input.",
+    "avoid": "Assuming Surface has this prop or using it as a generic visible caption.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Gauge",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/gauge/types.ts",
+          "symbol": "GaugeProps",
+          "revision": "sha256:e6f03e386d0ac9f55062f32af68a22bea9af00ab22c0174d1f3ce906a2f8a709"
+        }
+      }
+    ]
+  },
+  {
+    "id": "consumer-selected-condition",
+    "name": "state",
+    "meaning": "The consumer-selected interpretation of a Gauge magnitude, independent of thresholds.",
+    "whenToUse": "Propose Gauge condition normal, warning, critical or muted.",
+    "avoid": "Visual variants, material tone, loading behavior or automatic threshold inference.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Gauge",
+        "type": "GaugeState = 'normal' | 'warning' | 'critical' | 'muted' (GaugeStateProps union)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/gauge/types.ts",
+          "symbol": "GaugeProps",
+          "revision": "sha256:e6f03e386d0ac9f55062f32af68a22bea9af00ab22c0174d1f3ce906a2f8a709"
+        }
+      }
+    ]
+  },
+  {
+    "id": "condition-description",
+    "name": "stateText",
+    "meaning": "Visible non-color text describing the selected Gauge condition.",
+    "whenToUse": "Propose condition text, required for non-normal Gauge states by the draft union.",
+    "avoid": "Replacing the accessible name or the numeric equivalent.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Gauge",
+        "type": "string (conditional requiredness in GaugeStateProps)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/gauge/types.ts",
+          "symbol": "GaugeProps",
+          "revision": "sha256:e6f03e386d0ac9f55062f32af68a22bea9af00ab22c0174d1f3ce906a2f8a709"
+        }
+      }
+    ]
+  },
+  {
+    "id": "measurement-text-equivalent",
+    "name": "valueText",
+    "meaning": "A contextual text equivalent of the normalized displayed measurement.",
+    "whenToUse": "Propose a readable Gauge measurement equivalent coherent with clamping.",
+    "avoid": "Condition text, accessible naming or an incoherent raw out-of-range value.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Gauge",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/gauge/types.ts",
+          "symbol": "GaugeProps",
+          "revision": "sha256:e6f03e386d0ac9f55062f32af68a22bea9af00ab22c0174d1f3ce906a2f8a709"
+        }
+      }
+    ]
+  },
+  {
+    "id": "decorative-center-content",
+    "name": "center",
+    "meaning": "Optional decorative, non-interactive content inside the Gauge ring.",
+    "whenToUse": "Propose an icon, value or short text with meaning already represented accessibly.",
+    "avoid": "Actions, focusable descendants, a fixed logo or the sole source of meaning.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Gauge",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/gauge/types.ts",
+          "symbol": "GaugeProps",
+          "revision": "sha256:e6f03e386d0ac9f55062f32af68a22bea9af00ab22c0174d1f3ce906a2f8a709"
+        }
+      }
+    ]
+  },
+  {
+    "id": "unavailable-measurement-message",
+    "name": "unavailableText",
+    "meaning": "Readable fallback when Gauge input is non-finite and no measurement is exposed.",
+    "whenToUse": "Propose non-empty unavailable-data text separately from invalid-input policy approval.",
+    "avoid": "Loading, disabled state, fabricated zero measurements or assuming fallback wording is approved.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Gauge",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/gauge/types.ts",
+          "symbol": "GaugeProps",
+          "revision": "sha256:e6f03e386d0ac9f55062f32af68a22bea9af00ab22c0174d1f3ce906a2f8a709"
+        }
+      }
+    ]
+  }
+]
