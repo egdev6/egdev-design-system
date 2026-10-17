@@ -1,0 +1,39 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Welcome" />
+
+<div className="eg-docs">
+  <header className="eg-docs-hero">
+    <img className="eg-docs-logo" src="/brand/egdev-logo-with-name.png" alt="EGDEV" />
+    <div className="eg-docs-eyebrow">Tokens · components · guidelines</div>
+    <h1><span className="eg-docs-title">Egdev Design system</span></h1>
+    <div className="eg-docs-lead">One visual language for egdev.es and the tools we build. Graphite surfaces, purposeful red, clear typography and accessible behavior.</div>
+    <nav className="eg-docs-links" aria-label="Start exploring">
+      <a href="/?path=/docs/foundations-color--docs" target="_top">Explore foundations →</a>
+      <a href="/?path=/docs/atoms-gauge--docs" target="_top">Open Gauge →</a>
+    </nav>
+  </header>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Start with what exists</span></h2>
+    <div className="eg-docs-grid">
+      <article className="eg-docs-card"><h3><span className="eg-docs-card-title">Tokens</span></h3><p><code>@egdev/tokens</code> owns color, typography, spacing, Material and motion. Its CSS source is the single authority; use semantic roles in interfaces.</p><a href="/?path=/docs/foundations-color--docs" target="_top">Choose a role →</a></article>
+      <article className="eg-docs-card"><h3><span className="eg-docs-card-title">React UI</span></h3><p><code>@egdev/ui</code> currently provides <strong>Gauge only</strong>, plus the <code>cn</code> utility. Surface, IconButton and Tabs are future concepts, not importable APIs.</p><a href="/?path=/docs/atoms-gauge--docs" target="_top">Inspect the real API →</a></article>
+      <article className="eg-docs-card"><h3><span className="eg-docs-card-title">Effects</span></h3><p><code>@egdev/effects</code> is the home of web effect layers. Keep expressive scenes separate from the quiet surfaces used for reading and work.</p><a href="https://github.com/egdev6/egdev-design-system/blob/main/docs/ARQUITECTURA.md" target="_blank" rel="noopener noreferrer">Read the architecture →</a></article>
+    </div>
+  </section>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Your first measurement</span></h2>
+    <p>In a consuming React app with the built workspace packages available, load native tokens before UI styles. No Tailwind compiler is required for this path.</p>
+    <pre className="eg-docs-code"><code>{`import { Gauge } from '@egdev/ui';
+import '@egdev/tokens/tokens.css';
+import '@egdev/ui/styles.css';
+
+// Capacity is your app component, not an @egdev/ui export.
+export function Capacity() {
+  return <Gauge label="Storage capacity" value={42.5} />;
+}`}</code></pre>
+    <p>Gauge is a passive 0–100 magnitude, not task progress or an action. Consumers choose conditions independently of values; non-normal states require visible <code>stateText</code>. Centers are decorative and non-interactive.</p>
+    <p className="eg-docs-note">This is a source/workspace guide, not a package publication or React compatibility claim. Fonts must also be loaded by the consuming app.</p>
+  </section>
+  <footer className="eg-docs-links"><a href="/?path=/docs/foundations-typography--docs" target="_top">Meet the type system →</a><a href="/?path=/docs/contributing--docs" target="_top">Contribute with a clear contract →</a><a href="https://github.com/egdev6/egdev-design-system" target="_blank" rel="noopener noreferrer">Repository ↗</a></footer>
+</div>

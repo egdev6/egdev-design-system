@@ -12,9 +12,11 @@ Este archivo se inyecta como contexto a cualquier agente que trabaje en el repo.
 | `@egdev/ui` | `packages/ui` |
 | `@egdev/effects` | `packages/effects` |
 
-**Stack:** React 19 · TypeScript estricto · Radix UI (paquetes individuales `@radix-ui/react-*`) · CVA · CSS con tokens (clases BEM `eg-*`) · Tailwind v4 solo para layout de apps · Storybook 10 · Vitest · Biome · pnpm.
+**Stack:** React 19 · strict TypeScript · individual `@radix-ui/react-*` packages · CVA · Tailwind v4 appearance utilities backed by `@egdev/tokens` · `cn()` (`clsx` + `twMerge`) · Storybook 10 · Vitest · Biome · pnpm.
 
 **Comandos:** `pnpm storybook`, `pnpm test`, `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm tokens`.
+
+**Current React availability:** `@egdev/ui` provides Gauge only; `cn` is a utility, not a component. Surface, IconButton and Tabs remain provisional/future Foundation concepts, not importable React APIs or current review references. Tokens and effects are unchanged. Recover Gauge's [effective v0.9 contract and separate plan approval](skills/_shared/component-contract.md#current-gauge-contract); this pilot does not establish catalog-wide M3 compliance.
 
 ## Documentos que mandan
 
@@ -23,6 +25,7 @@ Este archivo se inyecta como contexto a cualquier agente que trabaje en el repo.
 - `docs/CATALOGACION.md` — reutilizar → variante → componer → extraer → nuevo.
 - `docs/CATALOGO.md` — nivel, paquete y base Radix de cada componente (se genera desde `scripts/catalog_data.py`).
 - `skills/_shared/component-contract.md` — contrato de componente.
+- [Prop naming source](skills/_shared/prop-naming.json) and [generated reference](docs/prop-naming.md): before new/changed own props, follow the [shared lookup/review workflow](skills/_shared/component-contract.md#prop-naming-registry); record exact conventions in specs/issues, never infer global approval or migrate APIs automatically.
 
 ## Reglas que no se negocian
 
@@ -31,13 +34,14 @@ Este archivo se inyecta como contexto a cualquier agente que trabaje en el repo.
 - Radix se importa por paquetes individuales: `import * as TabsPrimitive from '@radix-ui/react-tabs'`. La actualización M1 mantiene la API y el CSS legado; M2 fija las normas y M3 adapta los componentes al contrato.
 - `type`, nunca `interface`. Nunca `any`.
 - Ni colores, ni espaciados, ni fuentes a mano: solo variables de `@egdev/tokens`. Si falta un token, se propone en `packages/tokens/src/theme.css` y se pide confirmación.
-- Ninguna superficie plana: fondo, borde y sombra salen de Material (`<Surface>` o las recetas de `docs/MATERIAL.md`). Nada de sombras ni degradados escritos a mano.
-- Variantes con CVA en `types.ts`, que producen clases BEM `eg-*`. El CSS del componente va en su propio `.css`.
-- Estados de Radix por atributo (`[data-state]`, `[aria-selected]`), no con clases a mano.
+- Limited Gauge numeric-geometry exception: static `w-[var(--eg-gauge-size)]` / `h-[var(--eg-gauge-size)]` and a numeric CSS-pixel custom property only; presets use approved token utilities. No dynamic class interpolation or inline appearance; see the shared contract. API/validation and mandatory stylesheet approval remain separate.
+- No flat replacements: background, border and shadow must follow [Material](docs/MATERIAL.md). Surface is a future concept, not an available React prerequisite. Gauge alone has an approved native-well CVA recipe with existing tokens and a 0px border; other Material composition needs an approved recipe or Surface proposal. No handwritten shadows/gradients or generic Surface-class cloning.
+- Declare utility variants with CVA in `types.ts`; compose each supported part with `cn()`. Exactly seven meaningful files remain mandatory; approve the stylesheet's compliant role in the spec/plan. If none exists, STOP for a human decision: no dummy CSS, omitted file or invented replacement (see the shared contract).
+- Style Radix/ARIA/`data-state` attributes through Tailwind data/aria variants; never mirror states into classes.
 - Cada componente tiene su clase raíz estable `eg-<nombre>` (API pública). Nunca se estila por `id`; los `id` solo para accesibilidad, con `useId()`. Estados propios en `data-state`.
-- Todo el CSS de `@egdev/ui` va en `@layer components`; Tailwind por `className` solo para colocar un componente, nunca para cambiar su aspecto (eso es una variante).
+- Stable `eg-*` roots (including `eg-icon-btn`) are public markers, not a required BEM visual engine. Preserve legacy styles/consumers until parity and migration approval. Use minimal justified global CSS; approved hand-authored component recipes use `@layer components`, utilities their natural layer. `className` is not blanket appearance-override permission; document and test supported merge precedence.
 - No añadir ni cambiar valores de tokens en `packages/tokens/src/theme.css`, ni añadir dependencias, sin confirmación del usuario. `tokens.css` es un artefacto compilado: no se edita.
-- Código y tests en inglés; documentación y textos de Storybook en español.
+- Código, tests y toda documentación nueva o actualizada en inglés: fichas, READMEs, JSDoc y stories (incluidos textos visibles y ejemplos). No traducir contenido heredado fuera del alcance autorizado.
 - Commits en Conventional Commits: `<tipo>(<ámbito>): <descripción>`.
 
 ## Skills

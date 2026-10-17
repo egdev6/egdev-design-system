@@ -1,0 +1,90 @@
+{
+  "component": "Gauge",
+  "version": "0.9",
+  "status": "Historical composition-only approval; separate full-plan execution approval recorded in plan-approval.json",
+  "scope": "COMPOSITION_AMENDMENT_AND_LOCAL_PERSISTENCE_ONLY",
+  "source": {
+    "kind": "Manual observed conversation supplied by parent",
+    "presentedProposal": "He acotado la retirada. Propongo esta **enmienda de composición para Gauge v0.9**:\n\n- Sustituir Surface por un `div` propio, sin crear otro componente auxiliar.\n- Conservar el acabado actual con tokens Material y CVA: fondo, sombra interior, radio completo y **borde de 0 px**, como se renderiza ahora.\n- Mantener API, accesibilidad, tamaños, estados, siete archivos y suavizado de 0,5 px.\n- Usar el piloto que has aceptado como referencia de paridad.\n\nDespués se retirarán los **20 archivos** de Surface, IconButton y Tabs, sus exports, stories y referencias activas. Conservaré el historial y las propuestas del catálogo, indicando que esos componentes no están implementados.\n\n**Todavía no he cambiado ni eliminado archivos.**\n\n¿Apruebas esta composición y que la registre como v0.9, sin sobrescribir v0.8? Después te presentaré el plan de implementación para su aprobación aparte.",
+    "question": "¿Apruebas esta composición y que la registre como v0.9, sin sobrescribir v0.8? Después te presentaré el plan de implementación para su aprobación aparte.",
+    "userStatement": "si",
+    "observationBasis": "Parent supplied this exact presented proposal and explicit response in the delegated task. This writer did not independently retrieve a provider transcript. The decision accepts the limited composition and local registration, followed by a separately presented implementation plan; it does not approve execution of the later retirement.",
+    "priorChoiceContext": "Parent also reports the prior choice to remove Surface itself, not retain it as a private internal component; this is context, not an invented verbatim quotation.",
+    "sessionReference": null,
+    "messageReference": null,
+    "url": null,
+    "exactApprovalTimestamp": null,
+    "unknownReferences": "No stable message/session identifier, URL or exact approval timestamp was supplied; none is invented."
+  },
+  "approvalBasis": {
+    "presentedContent": "The exact Spanish composition proposal in source.presentedProposal, not the later full English artifact bytes or a newly presented content hash.",
+    "acceptedComposition": [
+      "Replace Surface with a Gauge-owned native div, without another helper component or a private Surface implementation",
+      "Preserve the current Material-token/CVA finish: background, inset well shadow, full radius and rendered 0px border",
+      "Preserve Gauge API, accessibility, sizes, states, seven files and 0.5px smoothing",
+      "Use the accepted pilot as the parity reference",
+      "Record the bounded amendment locally as v0.9 without overwriting v0.8; present implementation and subsequent 20-file retirement in a separate plan"
+    ],
+    "inheritedContractApproval": "Unchanged Gauge API and remaining v0.8 promises were already approved separately in the recoverable base receipt; no new API or global convention consent is inferred here.",
+    "technicalElaborationLimit": "The English base-plus-delta document operationalizes the presented bounded decision. Its post-decision digest identifies the saved snapshot; it is not evidence that the human reviewed these exact bytes or a full v0.9 contract hash before responding. Any newly discovered promise, appearance-role expansion or departure requires separate approval."
+  },
+  "baseContract": {
+    "version": "0.8",
+    "path": "docs/specs/gauge.md",
+    "relativePath": "../../../specs/gauge.md",
+    "approvalPath": "docs/components/gauge/v0.8/approval.json",
+    "approvalRelativePath": "../v0.8/approval.json",
+    "payloadSHA256": "f0999610927cc8556259c3896365697f4447ebae69eff810f3a2b66b57a3210d",
+    "hashDefinition": "SHA-256 of UTF-8 bytes from the exact heading line matching /^## 1\\. Purpose and scope$/m through EOF, LF including final LF; tracking header excluded. Never search for the first unanchored occurrence of the heading phrase.",
+    "immutability": "Base tracking header, frozen payload, old approvals/plans, historical captures and reports remain untouched. Interpret frozen proposal wording through the base whole-contract approval; do not rewrite it."
+  },
+  "localSnapshotRecordedAfterDecision": {
+    "amendmentPath": "docs/components/gauge/v0.9/composition-amendment.md",
+    "amendmentRelativePath": "composition-amendment.md",
+    "amendmentPayloadSHA256": "9386ba4e3a3e195064c4bda95916c1346c58ce03c5490cf3cf0ec448a7d1186d",
+    "amendmentHashDefinition": "SHA-256 of UTF-8 bytes from the exact heading line matching /^## 1\\. Purpose and scope$/m through EOF, LF including final LF; tracking header excluded.",
+    "effectiveContractIdentity": "The separately identified immutable v0.8 base plus this bounded amendment, not a new single full-spec byte stream. Neither digest authenticates human consent.",
+    "planPath": "docs/components/gauge/v0.9/implementation-plan.md",
+    "planRelativePath": "implementation-plan.md",
+    "planWholeFileSHA256": "84554738d0fdb255c7a37c36225d3b9b6baf266b2cbee196f1e7bbf73f7932c8",
+    "planHashDefinition": "SHA-256 of the whole UTF-8 plan file, LF including final LF; snapshot identity only, not approval."
+  },
+  "pilotParityReference": {
+    "adoption": "The presented proposal explicitly adopts the already accepted pilot finish for composition parity. This is not a retroactive rewrite of historical image statuses.",
+    "existingEvidencePaths": [
+      "docs/components/gauge/v0.8/verification/report.md",
+      "docs/components/gauge/v0.8/verification/capture-manifest.json",
+      "docs/components/gauge/v0.8/verification/default--normal--1280--dark.png",
+      "docs/components/gauge/v0.8/verification/smoothing--after--sm--100--dark.png",
+      "docs/components/gauge/v0.8/verification/jsdoc-runtime-integration.md"
+    ],
+    "currentComputedObservationBasis": "Parent-supplied MCP observation: Default value 42/normal, well and arc 56px, border-box, padding 0, border 0px solid with hairline token color, full radius, surface-0/no background image, two-inset well shadow and foreground token. Not a new writer/browser measurement.",
+    "historicalVisualScope": "v0.3 VIS-01 retains its scoped anatomy/proportions/optional-center adoption, excluding fixed A/caption; VIS-02 remains context only. Keep original versions/hashes and metadata unchanged.",
+    "freshBeforeAfterCapturePaths": null,
+    "freshCaptureStatus": "Pending authorized implementation evidence; record comparable conditions, loaded fonts, component-zone MCP crops and actual computed parity. No new external asset or image-byte approval is claimed.",
+    "visualConformity": "Not evaluated for v0.9"
+  },
+  "implementationPlan": {
+    "status": "Approved separately for bounded local implementation and retirement",
+    "approvalReference": "docs/components/gauge/v0.9/plan-approval.json",
+    "approvalRelativePath": "plan-approval.json",
+    "executionAuthorized": true,
+    "oldPlanBoundary": "v0.8 plan approval records earlier local work and two prerequisites only; it does not authorize v0.9 implementation or retirement. The separate v0.9 plan-approval.json records the later full-plan decision.",
+    "historicalDecisionBoundary": "This receipt's original source, approval basis, scope and excluded authorizations remain the historical composition-only decision. Current execution authority comes only from the separate plan receipt; this status update does not rewrite or enlarge the original approval. The frozen plan's Pending wording is historical and superseded by that separate receipt, not edited."
+  },
+  "registryBoundary": "All 13 global conventions remain proposed with approval null. Current 19 fresh usage observations and future removal of 11 retired usages/refresh of eight Gauge whole-file revisions are evidence maintenance only, not convention approval.",
+  "excludedAuthorizations": [
+    "Runtime code changes, deletion of any file, or execution of the proposed implementation plan",
+    "Catalog, registry, existing documentation, configuration, dependency or token edits in this docs-only unit",
+    "New Gauge API promises, a widened gauge.css appearance role, or a global Surface/Material policy exception",
+    "Tests, builds, server startup/restart, browser/capture work or new runtime verification in this docs-only unit",
+    "Packed fixture retry before offline cache is provided, dependency installation or network fallback",
+    "Global registry convention approval or reassignment of retired usages to Gauge",
+    "Native/provider/signed approval, RDD consumption, GitHub reads/writes, assets/uploads, commits, pushes, publication or release"
+  ],
+  "trustAndRecovery": {
+    "receiptKind": "Local manual observed-approval record, not cryptographically signed, provider-issued, native-assessed or an external approval",
+    "limitation": "Hashes computed during persistence bind artifact identity only. They were not newly presented to the human before the recorded si and prove neither consent nor provenance authenticity.",
+    "recoveryRequirement": "Recover the exact supplied proposal/response, approved base and bounded delta before relying on this decision. If the source decision cannot be recovered, seek explicit confirmation rather than treating the file as self-authorizing. Recover a separate plan approval before any implementation."
+  }
+}

@@ -30,7 +30,7 @@
     "radix": "Slot",
     "compone": "—",
     "accion": "nuevo",
-    "notas": "Material: fondo + borde + radio + sombra. `tone` (default, glass, brand, well, ghost) y `elevation` (flat, low, high). Absorbe ModuleCard --glass, Stat --glass y la tira de Gauge. Implementado como referencia."
+    "notas": "Provisional future Material concept, not an implemented or importable React API. The previous reference was retired; Gauge owns its native decorative well. See [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) and [base contract](specs/gauge.md)."
   },
   {
     "actual": "—",
@@ -118,7 +118,7 @@
     "radix": "Slot + AccessibleIcon",
     "compone": "Icon",
     "accion": "mantener",
-    "notas": "Gana `shape: square` (antes Button --icon) y `pressed`. Implementado como referencia."
+    "notas": "Provisional future icon-only action concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md)."
   },
   {
     "actual": "—",
@@ -346,10 +346,10 @@
     "nombre": "Gauge",
     "nivel": "atom",
     "destino": "ui",
-    "radix": "Progress (uno por anillo) o role=img",
-    "compone": "—",
+    "radix": "— (native role=meter)",
+    "compone": "Native decorative Material well",
     "accion": "mantener",
-    "notas": "Revisar si exponer cada anillo como Progress o el conjunto como imagen con etiqueta."
+    "notas": "Currently implemented React component: one passive circular 0–100 measurement with optional decorative center and consumer-selected normal, warning, critical or muted state. Own native well uses existing tokens, not Surface. Effective contract: [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) plus [base](specs/gauge.md). Not task progress, multiple rings or a dock API; no Radix dependency."
   },
   {
     "actual": "Stat",
@@ -459,7 +459,7 @@
     "radix": "Tabs",
     "compone": "Badge (contador)",
     "accion": "mantener",
-    "notas": "`variant`: underline o segmented (Material v2, para 2–4 opciones cortas). Implementado como referencia."
+    "notas": "Provisional future tab-selection concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md)."
   },
   {
     "actual": "MenuList (popup)",

@@ -1,0 +1,79 @@
+{
+  "scope": "Runtime JSDoc-to-Controls integration and truthful Docs defaults",
+  "storybookVersion": "10.6.1",
+  "sourceRevision": "sha256:55f5ac509ae79f79cd2a9eee98312a85214008a59b51cbb247bbb1352c79c829",
+  "configuration": {
+    "registration": "Preview.argTypesEnhancers, first pass",
+    "metadata": "component.__docgenInfo.props[prop].tags",
+    "directives": "string -> text; number; boolean; select from a finite enum; false disables editing without hiding the row",
+    "defaultArgsInjected": false
+  },
+  "checks": {
+    "initialBehaviorRed": "1 passed, 5 failed before the metadata enhancer",
+    "defaultCorrectionRed": "8 failed, 62 passed before fixing source comments",
+    "focusedGreen": "70 passed: 44 Controls and 26 docgen tests",
+    "finalGate": "job-35 exited 0: 132 Vitest tests, typecheck, lint, registry check, 73 registry tests and diff check",
+    "storybookBuild": "job-36 exited 0; /tmp/egdev-jsdoc-final-storybook.ZRH6PI",
+    "nativeAssessment": "Unassessable because untracked scope was not declared; no native approval claimed"
+  },
+  "browser": {
+    "viewport": "1280 x 900",
+    "theme": "dark",
+    "selectorScope": "Control table rows, excluding the Storybook manager search combobox",
+    "selectCounts": {
+      "Gauge": 1,
+      "IconButton": 3,
+      "Surface": 4,
+      "Tabs": 2
+    },
+    "disabledRowsRetainDocumentation": "Gauge center/size; IconButton icon/children; Tabs items/onValueChange",
+    "booleanWidget": "Native checkbox input exposed with role=switch; Surface unset control becomes a switch after Set boolean",
+    "gaugeInteraction": "42.5 yields aria-valuenow=42.5 and aria-valuetext=42.5 / 100; selecting warning with stateText shows the warning and visible cue",
+    "finalGauge": "value=42, state=normal, aria-valuetext=42 / 100, diameter=56 CSS pixels",
+    "rawJSDocTagsLeakedIntoDescriptions": false,
+    "renderedDefaults": {
+      "Gauge": {
+        "state": "\"normal\"",
+        "size": "md",
+        "unavailableText": "\"Data unavailable\"",
+        "label": "-",
+        "value": "-",
+        "valueText": "-",
+        "stateText": "-",
+        "center": "-"
+      },
+      "IconButton": {
+        "variant": "\"ghost\"",
+        "shape": "\"round\"",
+        "size": "\"md\"",
+        "asChild": "false",
+        "pressed": "-"
+      },
+      "Tabs": {
+        "size": "\"md\"",
+        "variant": "\"underline\"",
+        "defaultValue": "-",
+        "value": "-"
+      },
+      "Surface": {
+        "tone": "\"default\"",
+        "elevation": "\"low\"",
+        "padding": "\"md\"",
+        "radius": "\"xl\"",
+        "asChild": "false"
+      }
+    }
+  },
+  "captures": {
+    "docs": "jsdoc-runtime--docs-table--dark.png",
+    "controls": "jsdoc-runtime--controls--dark.png",
+    "component": "jsdoc-runtime--default-gauge--dark.png"
+  },
+  "automationCorrections": {
+    "managerSearch": "The initial unscoped combobox count included the manager search; scoped state-row assertion passed.",
+    "concatenatedCellText": "A word-boundary selector missed childrenSetup controls; exact prop-row extraction confirmed no editor and a visible row.",
+    "booleanRole": "The input type is checkbox but its accessible role is switch; the corrected role assertion passed.",
+    "surfaceTimeout": "One Docs probe timed out after 30 seconds waiting for Surface.size, which does not exist. After diagnosis, a new check waited for an actual component prop and verified all four Docs tables."
+  },
+  "limits": "No production browser matrix, screen reader evaluation or packed React consumer rerun. Existing offline consumer-cache blocker is unchanged. Components' non-comment TypeScript tokens and runtime APIs are unchanged."
+}

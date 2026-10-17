@@ -1,0 +1,654 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "story": "default",
+      "passed": true,
+      "data": [
+        {
+          "label": "Capacity",
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        }
+      ]
+    },
+    {
+      "story": "value-limits",
+      "passed": true,
+      "data": [
+        {
+          "label": "Empty capacity",
+          "role": "meter",
+          "value": "0",
+          "valueText": "0 / 100",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        },
+        {
+          "label": "Full capacity",
+          "role": "meter",
+          "value": "100",
+          "valueText": "100 / 100",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 100%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        },
+        {
+          "label": "Capacity below range",
+          "role": "meter",
+          "value": "0",
+          "valueText": "0 / 100",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 0%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        },
+        {
+          "label": "Capacity above range",
+          "role": "meter",
+          "value": "100",
+          "valueText": "100 / 100",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 100%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        }
+      ]
+    },
+    {
+      "story": "decimal-value",
+      "passed": true,
+      "data": [
+        {
+          "label": "Capacity",
+          "role": "meter",
+          "value": "42.5",
+          "valueText": "42.5 / 100",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "42.5",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42.5%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 1,
+          "hiddenRing": "true"
+        }
+      ]
+    },
+    {
+      "story": "states",
+      "passed": true,
+      "data": [
+        {
+          "label": "Normal capacity",
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "describedBy": "_r_0_",
+          "cue": "Within expected range",
+          "tabIndex": null,
+          "live": null,
+          "visible": "Within expected range",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        },
+        {
+          "label": "Warning capacity",
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "warning",
+          "describedBy": "_r_1_",
+          "cue": "Review capacity",
+          "tabIndex": null,
+          "live": null,
+          "visible": "Review capacity",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 178, 36) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        },
+        {
+          "label": "Critical capacity",
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "critical",
+          "describedBy": "_r_2_",
+          "cue": "Capacity needs attention",
+          "tabIndex": null,
+          "live": null,
+          "visible": "Capacity needs attention",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 102, 128) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        },
+        {
+          "label": "Muted capacity",
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "muted",
+          "describedBy": "_r_3_",
+          "cue": "Reference measurement",
+          "tabIndex": null,
+          "live": null,
+          "visible": "Reference measurement",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(161, 162, 168) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        }
+      ]
+    },
+    {
+      "story": "center-content",
+      "passed": true,
+      "data": [
+        {
+          "label": "Capacity without center",
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        },
+        {
+          "label": "Capacity within expected range",
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 1,
+          "hiddenRing": "true"
+        },
+        {
+          "label": "Capacity with numeric center",
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "42",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 1,
+          "hiddenRing": "true"
+        },
+        {
+          "label": "Capacity within expected range",
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "OK",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 1,
+          "hiddenRing": "true"
+        }
+      ]
+    },
+    {
+      "story": "contextual-value",
+      "passed": true,
+      "data": [
+        {
+          "label": "Storage capacity",
+          "role": "meter",
+          "value": "42.5",
+          "valueText": "42.5 of 100 capacity units",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42.5%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        }
+      ]
+    },
+    {
+      "story": "invalid-value",
+      "passed": true,
+      "data": [
+        {
+          "label": null,
+          "role": null,
+          "value": null,
+          "valueText": null,
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "Unknown capacityData unavailable",
+          "circle": null,
+          "arc": null,
+          "centerCount": 0
+        },
+        {
+          "label": null,
+          "role": null,
+          "value": null,
+          "valueText": null,
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "Disconnected sensorSensor offline",
+          "circle": null,
+          "arc": null,
+          "centerCount": 0
+        },
+        {
+          "label": null,
+          "role": null,
+          "value": null,
+          "valueText": null,
+          "state": "critical",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "Invalid sensor readingData unavailable",
+          "circle": null,
+          "arc": null,
+          "centerCount": 0
+        }
+      ]
+    },
+    {
+      "story": "sizes",
+      "passed": true,
+      "data": [
+        {
+          "label": "Small capacity meter, 40 pixels",
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "",
+          "circle": {
+            "width": 40,
+            "height": 40,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 3px), rgb(0, 0, 0) calc(100% - 3px))",
+            "stroke": "3px"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        },
+        {
+          "label": "Medium capacity meter, 56 pixels",
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        },
+        {
+          "label": "Large capacity meter, 80 pixels",
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "",
+          "circle": {
+            "width": 80,
+            "height": 80,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 6px), rgb(0, 0, 0) calc(100% - 6px))",
+            "stroke": "6px"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        },
+        {
+          "label": "Custom capacity meter, 64.5 pixels",
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "",
+          "circle": {
+            "width": 64.5,
+            "height": 64.5,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4.60714px), rgb(0, 0, 0) calc(100% - 4.60714px))",
+            "stroke": "calc(64.5px / 14)"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        },
+        {
+          "label": "Invalid diameter falls back to 56 pixels",
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "describedBy": null,
+          "cue": null,
+          "tabIndex": null,
+          "live": null,
+          "visible": "",
+          "circle": {
+            "width": 56,
+            "height": 56,
+            "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset"
+          },
+          "arc": {
+            "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+            "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 4px))",
+            "stroke": "4px"
+          },
+          "centerCount": 0,
+          "hiddenRing": "true"
+        }
+      ]
+    }
+  ],
+  "hoverPassed": true,
+  "focusPassed": true,
+  "accessibility": {
+    "method": "Chromium accessibility tree, not a screen-reader test",
+    "role": {
+      "type": "role",
+      "value": "meter"
+    },
+    "name": {
+      "type": "computedString",
+      "value": "Capacity",
+      "sources": [
+        {
+          "type": "relatedElement",
+          "attribute": "aria-labelledby"
+        },
+        {
+          "type": "attribute",
+          "value": {
+            "type": "computedString",
+            "value": "Capacity"
+          },
+          "attribute": "aria-label",
+          "attributeValue": {
+            "type": "string",
+            "value": "Capacity"
+          }
+        },
+        {
+          "type": "attribute",
+          "attribute": "title",
+          "superseded": true
+        }
+      ]
+    },
+    "value": {
+      "type": "number",
+      "value": 42
+    },
+    "properties": [
+      {
+        "name": "valuemin",
+        "value": {
+          "type": "number",
+          "value": 0
+        }
+      },
+      {
+        "name": "valuemax",
+        "value": {
+          "type": "number",
+          "value": 100
+        }
+      },
+      {
+        "name": "valuetext",
+        "value": {
+          "type": "string",
+          "value": "42 / 100"
+        }
+      }
+    ]
+  },
+  "conditions": {
+    "browser": "148.0.7778.167",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "dpr": 1,
+    "dark": true,
+    "reducedMotion": true,
+    "barlowLoaded": true,
+    "capturedAt": "2026-10-16T22:10:24.035Z"
+  },
+  "errors": []
+}

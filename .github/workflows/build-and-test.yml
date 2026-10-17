@@ -42,12 +42,16 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
       - name: Lint
         run: pnpm lint
+      - name: Validate prop naming registry
+        run: pnpm props:check
+      - name: Test prop naming tooling
+        run: pnpm test:props
       - name: Typecheck
         run: pnpm typecheck
-      - name: Unit tests
-        run: pnpm test
       - name: Build packages
         run: pnpm build
+      - name: Unit tests
+        run: pnpm test
       - name: Test compiled token contract
         run: pnpm --filter @egdev/tokens run test
       - name: Test package exports after build

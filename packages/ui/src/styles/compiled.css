@@ -1,2 +1,9 @@
-/* Bundle the existing BEM styles; tokens remain an explicit consumer import. */
+/* Keep legacy styles; reference token context without shipping its declarations. */
 @import "./index.css";
+@reference "@egdev/tokens/theme.css";
+
+/* Compile only the production Gauge CVA classes, never incidental story/test classes. */
+@source "../atoms/gauge/types.ts";
+@layer utilities {
+  @tailwind utilities source(none);
+}

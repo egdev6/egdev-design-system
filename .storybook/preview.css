@@ -1,6 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 @import "../packages/tokens/dist/tokens.css";
-@import "../packages/ui/src/styles/index.css";
+@import "../packages/ui/src/styles/compiled.css";
+@import "./palette.css";
+
+/* Example layout utilities belong to Storybook, not the production UI stylesheet. */
+@source "../packages/ui/src/atoms/gauge/Gauge.stories.tsx";
 
 body {
   margin: 0;

@@ -25,9 +25,14 @@ const config: StorybookConfig = {
   typescript: {
     reactDocgen: 'react-docgen-typescript',
     reactDocgenTypescriptOptions: {
+      // Match the installed Vite plugin defaults in direct parser regressions too.
+      shouldIncludePropTagMap: true,
+      savePropValueAsString: true,
       shouldExtractLiteralValuesFromEnum: true,
       shouldRemoveUndefinedFromOptional: true,
-      propFilter: (prop) => (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true)
+      propFilter: (prop, component) =>
+        (component.name === 'Gauge' && ['id', 'title', 'aria-describedby', 'className', 'style'].includes(prop.name)) ||
+        (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true)
     }
   },
   viteFinal: async (cfg) =>

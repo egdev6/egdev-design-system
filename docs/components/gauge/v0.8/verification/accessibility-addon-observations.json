@@ -1,0 +1,14 @@
+{
+  "component": "Gauge",
+  "contractVersion": "0.8",
+  "story": "Default",
+  "method": "Observed the existing Storybook Accessibility addon UI with Playwright MCP after its scan completed",
+  "violations": 0,
+  "passes": 13,
+  "inconclusive": 0,
+  "message": "No accessibility violations found.",
+  "scope": "Default story only; not a claim of automated coverage for every variant",
+  "screenReader": "Not evaluated; browser accessibility-tree inspection and this automated scan do not substitute for assistive-technology testing",
+  "dependenciesInstalled": false,
+  "storybookWarning": "The manager reports an ariaLabel deprecation warning for Storybook 11; no component runtime errors were observed"
+}
