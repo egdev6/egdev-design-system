@@ -1,0 +1,49 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundations/Typography" />
+
+<div className="eg-docs">
+  <header className="eg-docs-hero"><div className="eg-docs-eyebrow">Foundations / 02</div><h1><span className="eg-docs-title">Three voices. One hierarchy.</span></h1><div className="eg-docs-lead">Barlow Condensed leads. Barlow explains. JetBrains Mono is reserved for code and technical snippets.</div></header>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Pick a voice</span></h2>
+    <div className="eg-docs-grid">
+      <article className="eg-docs-card"><div className="eg-docs-type" data-recipe="heading-section">Make it happen</div><h3><span className="eg-docs-card-title">Barlow Condensed</span></h3><p><code>--font-display</code> · expressive titles, section headings, eyebrows and metadata.</p></article>
+      <article className="eg-docs-card"><div className="eg-docs-type" data-recipe="body-large">Clarity is a feature.</div><h3><span className="eg-docs-card-title">Barlow</span></h3><p><code>--font-sans</code> · reading, interface copy, labels and actions.</p></article>
+      <article className="eg-docs-card"><pre className="eg-docs-code"><code>{`const capacity = 42.5;`}</code></pre><h3><span className="eg-docs-card-title">JetBrains Mono</span></h3><p><code>--font-mono</code> · code only, not a substitute for the metadata voice.</p></article>
+    </div>
+    <p className="eg-docs-note">The consuming app loads the font files. A family declaration alone does not download a font; fallbacks remain active until the chosen fonts are available.</p>
+  </section>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">The thirteen recipes</span></h2>
+    <p>Each recipe binds size, line height, weight and tracking. These specimens use the source variables, with family and casing composed separately.</p>
+    <div className="eg-docs-type-scale">
+      {[
+        ['display-show', 'Make it happen', '96px / 0.9 · 800'],
+        ['display-pro', 'Build with clarity', '64px / 0.95 · 800'],
+        ['display-hero', 'A shared language', '56px / 1.1 · 800'],
+        ['heading-section', 'Foundations first', '40px / 1.2 · 800'],
+        ['heading-small', 'A focused panel', '24px / 1.2 · 700'],
+        ['body-large', 'Start with the information that matters.', '20px / 1.6 · 500'],
+        ['body-default', 'Readable copy for everyday interfaces.', '16px / 1.6 · 500'],
+        ['body-muted', 'A quieter weight, not an implicit color.', '20px / 1.6 · 400'],
+        ['label-default', 'Storage capacity', '14px / 1.2 · 600'],
+        ['label-eyebrow', 'The essentials', '14px / 1.2 · 700 · 0.12em'],
+        ['meta', 'Design notes · 4 min', '14px / 1.3 · 600 · 0.08em'],
+        ['cta-label', 'Explore the system', '16px / 1.2 · 700']
+      ].map(([recipe, sample, details]) => (
+        <div className="eg-docs-type-row" key={recipe}><div className="eg-docs-type" data-recipe={recipe}>{sample}</div><div><code>{`--text-${recipe}`}</code><span className="eg-docs-caption">{details}</span></div></div>
+      ))}
+      <div className="eg-docs-type-row"><pre className="eg-docs-code"><code>{`touch-action: pan-y;`}</code></pre><div><code>--text-code</code><span className="eg-docs-caption">14px / 1.6 · 400 · mono</span></div></div>
+    </div>
+  </section>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Compose, do not guess</span></h2>
+    <pre className="eg-docs-code"><code>{`<!-- In app-owned markup with Tailwind v4 -->
+<h1 class="font-display text-display-hero uppercase">Build with clarity</h1>
+<p class="font-sans text-body-muted">Color is chosen separately.</p>
+<code class="font-mono text-code">touch-action: pan-y;</code>`}</code></pre>
+    <p><code>text-display-hero</code> does not set a font family or uppercase automatically. The <code>body-muted</code> recipe changes weight, not color. Recipe names describe visual roles, not heading semantics: choose a logical heading level for the document.</p>
+    <p>These examples are not permission to override component appearance with <code>className</code>. Gauge supports outer margin and alignment only.</p>
+  </section>
+  <footer className="eg-docs-links"><a href="/?path=/docs/foundations-layout--docs" target="_top">Give the type room →</a><a href="https://github.com/egdev6/egdev-design-system/blob/main/docs/tokens-reference.md" target="_blank" rel="noopener noreferrer">Recipe contract and provenance ↗</a></footer>
+</div>

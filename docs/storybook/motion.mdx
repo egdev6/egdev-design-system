@@ -1,0 +1,49 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundations/Motion" />
+
+<div className="eg-docs">
+  <header className="eg-docs-hero"><div className="eg-docs-eyebrow">Foundations / 05</div><h1><span className="eg-docs-title">Movement earns its place</span></h1><div className="eg-docs-lead">Feedback should feel immediate. Reveals explain arrival. Ambient motion never sets the pace of an action.</div></header>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Choose the right clock</span></h2>
+    <div className="eg-docs-grid">
+      <article className="eg-docs-card"><div className="eg-docs-metric">90ms</div><h3><span className="eg-docs-card-title">Press</span></h3><p><code>--duration-press</code> · crisp pressed feedback.</p></article>
+      <article className="eg-docs-card"><div className="eg-docs-metric">200ms</div><h3><span className="eg-docs-card-title">Fast</span></h3><p><code>--duration-fast</code> · color and hover feedback.</p></article>
+      <article className="eg-docs-card"><div className="eg-docs-metric">300ms</div><h3><span className="eg-docs-card-title">Base</span></h3><p><code>--duration-base</code> · card borders, glow and transforms.</p></article>
+      <article className="eg-docs-card"><div className="eg-docs-metric">560ms</div><h3><span className="eg-docs-card-title">Reveal</span></h3><p><code>--duration-reveal</code> · deliberate entrance timing.</p></article>
+    </div>
+    <p className="eg-docs-note"><code>--ambient-cycle</code> is a 10s minimum ambient cycle. <code>--delay-popover</code> is a 2s hover wait. Neither is an action-transition duration.</p>
+  </section>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Match the curve to the intent</span></h2>
+    <div className="eg-docs-table-wrap">
+      <table>
+        <thead><tr><th>Token</th><th>Use</th><th>Boundary</th></tr></thead>
+        <tbody>
+          <tr><td><code>--ease-out</code></td><td>Default interface easing.</td><td>Start here for ordinary transitions.</td></tr>
+          <tr><td><code>--ease-spring</code></td><td>Short hover spring, including Pro.</td><td>Keep it restrained.</td></tr>
+          <tr><td><code>--ease-snappy</code></td><td>Presses and immediate responses.</td><td>Pair with short feedback.</td></tr>
+          <tr><td><code>--ease-overshoot</code></td><td>Expressive entrance bounce.</td><td>Show register only, not routine reading UI.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Spring and overshoot currently share a curve value, but their intended roles differ. Choose the semantic token rather than duplicating its cubic-bezier values.</p>
+  </section>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Reduced motion means no displacement</span></h2>
+    <p>Do not replace motion with a made-up zero-duration token. Remove animations and transforms when reduced motion is requested, while preserving readable state and focus.</p>
+    <pre className="eg-docs-code"><code>{`/* An app-owned example, not a Gauge appearance override. */
+.app-link {
+  transition: color var(--duration-fast) var(--ease-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-link {
+    transition: none;
+    animation: none;
+    transform: none;
+  }
+}`}</code></pre>
+    <p>This guide uses static specimens: no looping motion and nothing to pause. Gauge remains passive; it has no press or hover animation contract.</p>
+  </section>
+  <footer className="eg-docs-links"><a href="/?path=/docs/contributing--docs" target="_top">Bring a change into the system →</a><a href="https://github.com/egdev6/egdev-design-system/blob/main/packages/tokens/src/theme.css" target="_blank" rel="noopener noreferrer">Motion token source ↗</a></footer>
+</div>
