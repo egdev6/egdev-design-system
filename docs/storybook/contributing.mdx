@@ -1,0 +1,46 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Contributing" />
+
+<div className="eg-docs">
+  <header className="eg-docs-hero"><div className="eg-docs-eyebrow">Contributing</div><h1><span className="eg-docs-title">Make the next change clear</span></h1><div className="eg-docs-lead">Reuse first. Agree on the promise. Implement a bounded plan. Deliver evidence, not assumptions.</div></header>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Follow the existing path</span></h2>
+    <div className="eg-docs-grid">
+      <article className="eg-docs-card"><h3><span className="eg-docs-card-title">01 / Inspect and reuse</span></h3><p>Check public exports and real implementation, then consider reuse → variant → compose → extract → new. A provisional catalog row or legacy class does not prove availability.</p><a href="https://github.com/egdev6/egdev-design-system/blob/main/docs/CATALOGACION.md" target="_blank" rel="noopener noreferrer">Cataloging decisions →</a></article>
+      <article className="eg-docs-card"><h3><span className="eg-docs-card-title">02 / Agree on the contract</span></h3><p>For new or changed promises, recover the anatomy, API, defaults, states and accessibility in an individual specification. Get explicit approval of that version before planning implementation.</p><a href="https://github.com/egdev6/egdev-design-system/blob/main/skills/component-spec-proposer/SKILL.md" target="_blank" rel="noopener noreferrer">Specification workflow →</a></article>
+      <article className="eg-docs-card"><h3><span className="eg-docs-card-title">03 / Approve the plan</span></h3><p>Approval of a specification is not approval of its implementation plan. Resolve the meaningful stylesheet role and confirm any missing tokens or dependencies separately.</p><a href="https://github.com/egdev6/egdev-design-system/blob/main/skills/_shared/component-contract.md" target="_blank" rel="noopener noreferrer">Shared component contract →</a></article>
+      <article className="eg-docs-card"><h3><span className="eg-docs-card-title">04 / Implement and verify</span></h3><p>Use focused behavioral tests, real Storybook extraction and applicable build checks. Keep unverified consumer or accessibility gates visible instead of treating approval as completion.</p><a href="https://github.com/egdev6/egdev-design-system/blob/main/skills/component-contributor/SKILL.md" target="_blank" rel="noopener noreferrer">Contributor workflow →</a></article>
+    </div>
+  </section>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Seven meaningful files</span></h2>
+    <pre className="eg-docs-code"><code>{`ComponentName.tsx          // Presentational JSX
+useComponentName.ts        // Logic, ARIA and class composition
+types.ts                  // Public props, JSDoc and CVA variants
+component-name.css        // Explicitly approved, meaningful CSS role
+ComponentName.test.tsx     // Behavior and contract coverage
+ComponentName.stories.tsx  // Real examples and autodocs
+index.ts                  // Named public exports`}</code></pre>
+    <p>Do not create empty CSS or fake hooks to satisfy a count. If no compliant stylesheet role exists, stop for a human decision. Appearance uses token-backed utilities, CVA in <code>types.ts</code> and <code>cn()</code> per supported part; handwritten exceptions need approval.</p>
+  </section>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Keep the boundaries visible</span></h2>
+    <div className="eg-docs-table-wrap">
+      <table>
+        <thead><tr><th>Area</th><th>Review question</th></tr></thead>
+        <tbody>
+          <tr><td>Availability</td><td>Does the example use Gauge, the only current public React component, rather than a future Surface, IconButton or Tabs?</td></tr>
+          <tr><td>Interaction</td><td>If Radix has the behavior, is its individual package used rather than rebuilding keyboard, focus or ARIA?</td></tr>
+          <tr><td>Props</td><td>Were meaning, canonical names and aliases checked in the registry? Its 13 proposed conventions are not globally approved.</td></tr>
+          <tr><td>Accessibility</td><td>Are accessible names, keyboard behavior where applicable, visible condition text, focus and reduced-motion/transparency fallbacks verified?</td></tr>
+          <tr><td>Consumer limits</td><td>Are supported merge precedence and appearance boundaries documented? Gauge allows outer margin/alignment only.</td></tr>
+          <tr><td>Preservation</td><td>Are historical approvals, captures, public markers and legacy CSS preserved until an explicitly approved migration?</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Write code, tests, stories and new or updated documentation in English. Use <code>type</code>, not <code>interface</code>; never use <code>any</code>. Keep product-only patterns in the app.</p>
+    <p className="eg-docs-note">Gauge is the current implementation reference, interpreted through its immutable base plus v0.9 amendment and separate plan approval. That pilot does not certify the whole catalog.</p>
+  </section>
+  <footer className="eg-docs-links"><a href="https://github.com/egdev6/egdev-design-system/blob/main/docs/prop-naming.md" target="_blank" rel="noopener noreferrer">Naming registry reference ↗</a><a href="https://github.com/egdev6/egdev-design-system/blob/main/skills/components-auditor/SKILL.md" target="_blank" rel="noopener noreferrer">Audit workflow ↗</a><a href="/?path=/docs/atoms-gauge--docs" target="_top">Review Gauge →</a></footer>
+</div>

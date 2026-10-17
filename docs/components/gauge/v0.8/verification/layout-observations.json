@@ -1,0 +1,94 @@
+{
+  "passed": true,
+  "zoom": {
+    "method": "CSS page zoom 200%, not an operating-system text-only accessibility setting",
+    "data": [
+      {
+        "label": "Normal capacity",
+        "right": 357.46875,
+        "left": 32,
+        "width": 325.46875,
+        "circleWidth": 112,
+        "text": "Within expected range"
+      },
+      {
+        "label": "Warning capacity",
+        "right": 637.734375,
+        "left": 389.46875,
+        "width": 248.265625,
+        "circleWidth": 112,
+        "text": "Review capacity"
+      },
+      {
+        "label": "Critical capacity",
+        "right": 1025.75,
+        "left": 669.734375,
+        "width": 356.015625,
+        "circleWidth": 112,
+        "text": "Capacity needs attention"
+      },
+      {
+        "label": "Muted capacity",
+        "right": 383.5625,
+        "left": 32,
+        "width": 351.5625,
+        "circleWidth": 112,
+        "text": "Reference measurement"
+      }
+    ]
+  },
+  "mobile": {
+    "viewport": {
+      "width": 360,
+      "height": 800
+    },
+    "data": [
+      {
+        "left": 16,
+        "right": 178.734375,
+        "text": "Within expected range"
+      },
+      {
+        "left": 194.734375,
+        "right": 318.875,
+        "text": "Review capacity"
+      },
+      {
+        "left": 16,
+        "right": 194,
+        "text": "Capacity needs attention"
+      },
+      {
+        "left": 16,
+        "right": 191.78125,
+        "text": "Reference measurement"
+      }
+    ]
+  },
+  "stateAccessibility": {
+    "method": "Chromium accessibility tree, not a screen reader",
+    "meters": [
+      {
+        "name": "Normal capacity",
+        "description": "Within expected range",
+        "value": 42
+      },
+      {
+        "name": "Warning capacity",
+        "description": "Review capacity",
+        "value": 42
+      },
+      {
+        "name": "Critical capacity",
+        "description": "Capacity needs attention",
+        "value": 42
+      },
+      {
+        "name": "Muted capacity",
+        "description": "Reference measurement",
+        "value": 42
+      }
+    ]
+  },
+  "screenReader": "Not evaluated; no assistive technology runner available"
+}

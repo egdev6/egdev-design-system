@@ -1,6 +1,6 @@
 import { create } from 'storybook/theming/create';
 
-/** Lee valores resueltos: Storybook calcula colores y necesita valores, no expresiones var(). */
+/** Read resolved tokens: Storybook calculates colors and cannot use var() expressions. */
 export const createBrandTheme = (
   readToken: (name: string) => string = (name) => getComputedStyle(document.documentElement).getPropertyValue(name)
 ) => {
@@ -13,8 +13,8 @@ export const createBrandTheme = (
   };
   return create({
     base: 'dark',
-    brandTitle: 'EGDEV',
-    brandImage: './brand/egdev-logo.png',
+    brandTitle: 'Egdev Design system',
+    brandImage: './brand/egdev-logo-with-name.png',
     brandUrl: 'https://egdev.es',
     brandTarget: '_blank',
     colorPrimary: token('--color-fg-brand-default'),

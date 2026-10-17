@@ -1,0 +1,50 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundations/Color" />
+
+<div className="eg-docs">
+  <header className="eg-docs-hero"><div className="eg-docs-eyebrow">Foundations / 01</div><h1><span className="eg-docs-title">Color with a role</span></h1><div className="eg-docs-lead">A dark Graphite canvas. A deliberate red accent. Choose meaning before choosing a swatch.</div></header>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Primitives are ingredients</span></h2>
+    <p>A curated view of the source palette, not a second token inventory. Neutral legacy values remain available; the current surface ladder uses Graphite.</p>
+    <p className="eg-docs-note">Storybook locally maps <code>--color-primitive-red-300</code> to <code>--color-primitive-red-neon</code> across the manager, Docs and story canvases, including raised-brand and danger aliases. Published tokens are unchanged. Neon meets normal-text contrast on the canvas, but not WCAG AA's 4.5:1 minimum on raised surfaces; this local preview is not an accessible-text recommendation there.</p>
+    <div className="eg-docs-grid eg-docs-swatches">
+      <figure><span className="eg-docs-swatch" data-color="neutral-950" /><figcaption><code>--color-primitive-neutral-950</code><span>Legacy neutral</span></figcaption></figure>
+      <figure><span className="eg-docs-swatch" data-color="graphite-950" /><figcaption><code>--color-primitive-graphite-950</code><span>Canvas base</span></figcaption></figure>
+      <figure><span className="eg-docs-swatch" data-color="red-neon" /><figcaption><code>--color-primitive-red-neon</code><span>Brand neon</span></figcaption></figure>
+      <figure><span className="eg-docs-swatch" data-color="alpha-white" /><figcaption><code>--color-alpha-white-08</code><span>White alpha over this panel</span></figcaption></figure>
+      <figure><span className="eg-docs-swatch" data-color="alpha-red" /><figcaption><code>--color-alpha-red-12</code><span>Red alpha over this panel</span></figcaption></figure>
+    </div>
+    <p className="eg-docs-note">Alpha colors depend on what is underneath. Shadow-only alpha tokens are not standalone fills. The logo has its own source colors; do not recolor the supplied artwork with UI neon.</p>
+  </section>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Use semantic aliases in UI</span></h2>
+    <div className="eg-docs-table-wrap">
+      <table>
+        <thead><tr><th>Role</th><th>Token</th><th>Decision</th></tr></thead>
+        <tbody>
+          <tr><td>Canvas / raised</td><td><code>--color-bg-canvas</code> / <code>--color-surface-1</code></td><td>Base plane / panels; add the full Material recipe.</td></tr>
+          <tr><td>Primary / supporting text</td><td><code>--color-fg-default</code> / <code>--color-fg-muted</code></td><td>Readable content, not a disabled state.</td></tr>
+          <tr><td>Brand text on canvas</td><td><code>--color-fg-brand-default</code></td><td>Neon text is for surface-0 only.</td></tr>
+          <tr><td>Brand text on raised panels</td><td><code>--color-fg-brand-raised</code></td><td>Published role for surface-1 through surface-3; Storybook's local substitution does not meet text contrast here.</td></tr>
+          <tr><td>Solid primary action</td><td><code>--color-action-primary-solid-bg</code> / <code>--color-action-primary-solid-fg</code></td><td>Neon with black text, never white text.</td></tr>
+          <tr><td>Control boundary / focus</td><td><code>--color-border-control</code> / <code>--color-focus-ring</code></td><td>A decorative hairline alone cannot define a control.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <pre className="eg-docs-code"><code>{`/* In an app-owned raised panel, not a Gauge override. */
+color: var(--color-fg-brand-raised);
+/* Compose its background, border and shadows with Material. */`}</code></pre>
+  </section>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Feedback is not branding</span></h2>
+    <div className="eg-docs-grid eg-docs-swatches">
+      <figure><span className="eg-docs-swatch" data-color="success" /><figcaption><code>--color-status-success</code><span>Success · pair with a text/icon cue</span></figcaption></figure>
+      <figure><span className="eg-docs-swatch" data-color="warning" /><figcaption><code>--color-status-warning</code><span>Warning · explain what needs attention</span></figcaption></figure>
+      <figure><span className="eg-docs-swatch" data-color="info" /><figcaption><code>--color-status-info</code><span>Information · keep the message explicit</span></figcaption></figure>
+      <figure><span className="eg-docs-swatch" data-color="danger" /><figcaption><code>--color-status-danger</code><span>Danger · distinguish from brand with icon + text</span></figcaption></figure>
+    </div>
+    <p>Never communicate condition through color alone. Gauge does not derive state from numeric thresholds; the consumer owns that meaning.</p>
+  </section>
+  <footer className="eg-docs-links"><a href="/?path=/docs/foundations-material--docs" target="_top">Build the surface →</a><a href="https://github.com/egdev6/egdev-design-system/blob/main/packages/tokens/src/theme.css" target="_blank" rel="noopener noreferrer">Complete token source ↗</a></footer>
+</div>

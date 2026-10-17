@@ -1,0 +1,262 @@
+{
+  "phase": "RETIRED_LOCAL_VALIDATION_COMPLETE",
+  "scope": "Exact current working-tree recovery copy before approved retirement; not a permanent backup guarantee",
+  "planSHA256": "84554738d0fdb255c7a37c36225d3b9b6baf266b2cbee196f1e7bbf73f7932c8",
+  "archive": "/tmp/egdev-gauge-v0.9-retirement-EZFtTe/source-snapshot.tar",
+  "archiveSHA256": "bfdcea5a0f64f6ebf4c417a1677103dc64770ff56e6e7ecb07b2cd6c6d67058e",
+  "sourceFileCount": 20,
+  "sourceFiles": [
+    {
+      "path": "packages/ui/src/atoms/icon-button/IconButton.tsx",
+      "sha256": "f3ebad4a75730760e98dddf927c84cac208d1f2384c6bb96b420eda3fbf24018",
+      "bytes": 855,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/atoms/icon-button/useIconButton.ts",
+      "sha256": "696e7947edb54b7db47068fafa568995c9961d21faf11abfbac487545a940c2b",
+      "bytes": 719,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/atoms/icon-button/types.ts",
+      "sha256": "220246add2be693b442da803e4213913831a8799b3932c0e8fcdfcd1529bc0bc",
+      "bytes": 1914,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/atoms/icon-button/index.ts",
+      "sha256": "7548e91c22e72e0d9020c3f8939e41d1b8ab11051d781e6da3ba4c6663b57f32",
+      "bytes": 119,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/atoms/icon-button/icon-button.css",
+      "sha256": "098f2ea569b94d5ae922c84aba8620b61eeb28ff96097555de0c09c5b901613a",
+      "bytes": 577,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/atoms/icon-button/IconButton.test.tsx",
+      "sha256": "79918e7dff3db35539fc80f009b468e349f27bc19b0bde6adc9e52bc98684b4c",
+      "bytes": 2202,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/atoms/icon-button/IconButton.stories.tsx",
+      "sha256": "ba43d0e1b368166f191c8928ff62bd8348ac7e96cf0ba3f4078d2cebb0087a09",
+      "bytes": 1653,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/primitives/surface/Surface.tsx",
+      "sha256": "1f2c55781089fb243478c9e8f66dc47351d0a0780bddbd9c41a58fbb17ccfb76",
+      "bytes": 423,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/primitives/surface/useSurface.ts",
+      "sha256": "999588938b102abbb107a127adc9244a3ebaf1e204a8783a942177da86de6927",
+      "bytes": 527,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/primitives/surface/types.ts",
+      "sha256": "09ac209a98675f791827611b59b0df2a5ac3ed3f861ed0fca66f19aa67f8e3a7",
+      "bytes": 2062,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/primitives/surface/index.ts",
+      "sha256": "58681fd34277d64f8e6d9d3a5fcbb471721f0334d8832b3e5a5d8954f5236783",
+      "bytes": 110,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/primitives/surface/surface.css",
+      "sha256": "131dabc7c3da827a2d93bd646d6cdd7b2fcb3942e1ac4421e098ec5fe86596ad",
+      "bytes": 2056,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/primitives/surface/Surface.test.tsx",
+      "sha256": "480c5c6435c423842a6bbf3a8510060515e087cc8d5d28fb99adfcc66e629c52",
+      "bytes": 1846,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/primitives/surface/Surface.stories.tsx",
+      "sha256": "c59e18c7fbf0ea3883af026b21388b34b7a023783162a7e34f61075a199b302d",
+      "bytes": 1905,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/molecules/tabs/Tabs.tsx",
+      "sha256": "05c7a8cd0ff4aba3425154a65508f561eba5e7760bd4c1832d18b504bc41ad8f",
+      "bytes": 1133,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/molecules/tabs/useTabs.ts",
+      "sha256": "3d3de0d24058830708b108b44ae2376c1d9e9873aa51bdd165ef3d7903889caf",
+      "bytes": 922,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/molecules/tabs/types.ts",
+      "sha256": "2390057cd349132bb92d5906e5d160c785d081a6a1a59b952c4bc56c2a50c509",
+      "bytes": 2256,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/molecules/tabs/index.ts",
+      "sha256": "102179e23b4a66cd610d60d600a62c7b904fd8215f67432242bd7cf0ce2662bb",
+      "bytes": 61,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/molecules/tabs/Tabs.test.tsx",
+      "sha256": "ce845ebb1450fc6c895c8cca5b90311a85ca386483d021fb359fa74a16aed989",
+      "bytes": 2613,
+      "mode": 420
+    },
+    {
+      "path": "packages/ui/src/molecules/tabs/Tabs.stories.tsx",
+      "sha256": "81f18be18a8e263e72e07b47c65642b29bb1f18aedefbbd4f27efb215be7636a",
+      "bytes": 2468,
+      "mode": 420
+    }
+  ],
+  "gitStatusBeforeRetirement": " M packages/ui/src/atoms/icon-button/IconButton.stories.tsx\n M packages/ui/src/atoms/icon-button/types.ts\n M packages/ui/src/molecules/tabs/Tabs.stories.tsx\n M packages/ui/src/molecules/tabs/types.ts\n M packages/ui/src/primitives/surface/types.ts\n",
+  "conventionsRecorded": null,
+  "provenance": {
+    "sourceManifest": "/tmp/egdev-gauge-v0.9-retirement-EZFtTe/manifest.json",
+    "creation": "Parent created the private recovery archive and manifest before this metadata unit. The writer copied every original manifest field unchanged into this public audit metadata; no React implementation or archive is copied into the repository.",
+    "privateDirectoryMode": "0700",
+    "modeDefinition": "sourceFiles.mode retains the private manifest's decimal POSIX permission bits; 420 means octal 0644.",
+    "conventionsRecordedMeaning": "The private manifest records null. This is preserved as unknown/not recorded, not an inferred count, capability or convention approval.",
+    "parentPreflight": "Parent reports the plan hash, exactly 20 tracked regular non-symlink targets, no target changes after plan preparation and props:check exit 0. These are supplied observations, not commands rerun by this writer."
+  },
+  "preservationObservation": {
+    "sourceState": "All 20 source paths remain present as regular non-symlink files, matching the private manifest hashes, byte counts and modes.",
+    "retiredFileCount": 0,
+    "executionClaim": "Source preservation only. No source adaptation, retirement, runtime tests, builds, browser/server work, parity completion or native assessment is claimed by this metadata unit.",
+    "recoveryLimit": "The archive location is local/private and may be temporary; this metadata is not the recovery contents or a permanent backup guarantee. Recheck all preservation evidence and unexpected edits/entries before actual retirement."
+  },
+  "retirementVerification": {
+    "executedBy": "Parent session under explicit user-approved plan",
+    "removedFiles": [
+      "packages/ui/src/atoms/icon-button/IconButton.tsx",
+      "packages/ui/src/atoms/icon-button/useIconButton.ts",
+      "packages/ui/src/atoms/icon-button/types.ts",
+      "packages/ui/src/atoms/icon-button/index.ts",
+      "packages/ui/src/atoms/icon-button/icon-button.css",
+      "packages/ui/src/atoms/icon-button/IconButton.test.tsx",
+      "packages/ui/src/atoms/icon-button/IconButton.stories.tsx",
+      "packages/ui/src/primitives/surface/Surface.tsx",
+      "packages/ui/src/primitives/surface/useSurface.ts",
+      "packages/ui/src/primitives/surface/types.ts",
+      "packages/ui/src/primitives/surface/index.ts",
+      "packages/ui/src/primitives/surface/surface.css",
+      "packages/ui/src/primitives/surface/Surface.test.tsx",
+      "packages/ui/src/primitives/surface/Surface.stories.tsx",
+      "packages/ui/src/molecules/tabs/Tabs.tsx",
+      "packages/ui/src/molecules/tabs/useTabs.ts",
+      "packages/ui/src/molecules/tabs/types.ts",
+      "packages/ui/src/molecules/tabs/index.ts",
+      "packages/ui/src/molecules/tabs/Tabs.test.tsx",
+      "packages/ui/src/molecules/tabs/Tabs.stories.tsx"
+    ],
+    "removedCount": 20,
+    "preDeletionSourceHashesMatched": true,
+    "archiveVerified": true,
+    "parityGate": "PASSED_BEFORE_RETIREMENT",
+    "pngPairsByteIdentical": 9,
+    "scope": "Only the exact 20 preserved files; empty directories removed non-recursively",
+    "integrationMaintenance": "LOCALLY_VERIFIED; packed React 18/19 compatibility remains blocked, not full completion or release readiness"
+  },
+  "closingVerification": {
+    "scope": "Documentation consolidation of parent-observed execution; writer independently performed passive artifact integrity checks only",
+    "localStatus": "LOCAL_RETIREMENT_DONE",
+    "compatibilityStatus": "PACKED_REACT_18_19_BLOCKED",
+    "evidenceReferences": {
+      "report": "docs/components/gauge/v0.9/verification/report.md",
+      "captureManifest": "docs/components/gauge/v0.9/verification/capture-manifest.json",
+      "planApproval": "docs/components/gauge/v0.9/plan-approval.json",
+      "compositionApproval": "docs/components/gauge/v0.9/approval.json",
+      "amendment": "docs/components/gauge/v0.9/composition-amendment.md",
+      "base": "docs/specs/gauge.md"
+    },
+    "parentObservedValidation": [
+      {
+        "command": "pnpm test && pnpm typecheck && pnpm lint && pnpm props:check && pnpm test:props && git diff --check",
+        "evidence": "Parent final gate job 40; log inspected by closing writer",
+        "exitCode": 0,
+        "vitest": { "passed": 110, "files": 6 },
+        "registryTests": { "passed": 73, "failed": 0, "skipped": 0 }
+      },
+      {
+        "command": "pnpm build",
+        "evidence": "Parent job 39 build succeeded; subsequent package-export assertion failed separately",
+        "exitCode": 0
+      },
+      {
+        "command": "pnpm test:package-exports",
+        "evidence": "Parent-observed final rerun after assertion-only canonical space-0 alternative; earlier job 39 had 12 passes and one failure",
+        "exitCode": 0,
+        "passed": 13,
+        "limit": "Local declarations, SSR and CSS are not the packed client compatibility matrix"
+      },
+      {
+        "command": "pnpm storybook-build && pnpm test:storybook-mcp",
+        "evidence": "Parent job 41; log inspected by closing writer",
+        "exitCode": 0,
+        "mcpTestsPassed": 3,
+        "liveIndex": "Eight Gauge stories and Docs only; existing authorized server reused, not started or restarted"
+      },
+      {
+        "command": "node --check scripts/package-consumption.test.mjs",
+        "evidence": "Parent diagnostic observation",
+        "exitCode": 0,
+        "limit": "Syntax only; embedded TypeScript and client programs not compiled or executed"
+      },
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/build_catalog.py",
+        "evidence": "Parent canonical generation observation",
+        "exitCode": 0,
+        "rows": 107
+      }
+    ],
+    "passiveIntegrity": {
+      "observation": "Closing writer read-only verification, not implementation/deletion/runtime execution",
+      "planWholeFileSHA256Matched": true,
+      "basePayloadSHA256": "f0999610927cc8556259c3896365697f4447ebae69eff810f3a2b66b57a3210d",
+      "amendmentPayloadSHA256": "9386ba4e3a3e195064c4bda95916c1346c58ce03c5490cf3cf0ec448a7d1186d",
+      "archiveSHA256Matched": true,
+      "absentSourceFiles": 20,
+      "absentRetiredDirectories": 3,
+      "presentRegularGaugeFiles": 7,
+      "gaugeTypesSHA256": "e6f03e386d0ac9f55062f32af68a22bea9af00ab22c0174d1f3ce906a2f8a709",
+      "verifiedPNGFiles": 27,
+      "beforeAfterIdenticalPairs": 9,
+      "beforePostRetirementIdenticalPairs": 9,
+      "computedComparisonsEqual": true
+    },
+    "registry": {
+      "gaugeUsages": 8,
+      "withdrawnRetiredObservations": 11,
+      "proposedConventions": 13,
+      "allConventionApprovalsNull": true,
+      "emptyUsageArrays": 5,
+      "boundary": "Evidence maintenance only; no renaming, reassignment or global naming approval"
+    },
+    "limits": [
+      "React 18.3.1 packed consumer remains blocked by missing offline loose-envify metadata; React 19.3.0 by missing class-variance-authority@0.7.1 tarball. No retry/install/network fallback under this plan.",
+      "Actual screen-reader evaluation remains Not evaluated; captured parity is limited to nine scenarios at the recorded viewport/theme/font/media conditions.",
+      "Final executed local gates passed, but LSP information/warnings and nonblocking build advisories remain; diagnostics are not universally clean.",
+      "Native assessment of untracked scope was unassessable, not approval; RDD was off. Manual conversation records and captures are not provider/native receipts.",
+      "No commit, push, remote publication, asset upload, npm release or full-completion claim; temporary archive is not a permanent-backup guarantee."
+    ],
+    "historicalObservationBoundary": "preservationObservation records the original pre-retirement preservation stage and is retained unchanged. Current phase and retirementVerification supersede its source-presence/count status, not its historical evidence. Original archive/sourceFiles/gitStatusBeforeRetirement and removedFiles history are preserved."
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "component": "Gauge",
+  "specVersion": "0.5",
+  "specPath": "docs/specs/gauge.md",
+  "status": "Draft — not ready for implementation",
+  "approval": {
+    "status": "PARTIAL_PRODUCT_DECISIONS",
+    "reference": "current conversation: user numbered feedback",
+    "approvedProductDecisions": "Single passive ring, normalized 0–100, optional center, normal/warning/critical/muted states and no actions; finite clamping and NaN/±Infinity unavailable behavior; sm/md/lg diameters 40/56/80px with md (56px) default; numeric CSS-pixel ring diameter confirmed, e.g. size={64}; existing DS or Tailwind default tokens allowed for appearance.",
+    "scope": "Overall Draft, not exact-version or implementation approval. Naming/API, meter/accessibility semantics, non-normal stateText, refs/native restrictions, default unavailable wording, visual references, exact token/Material mappings and the mandatory stylesheet exception remain proposed.",
+    "numericCustomization": "Confirmed ability: size?: GaugeSize | number; numeric ring diameter is CSS pixels, e.g. 64. Finite-positive validation, invalid-size behavior and any min/max policy still need review; no arbitrary bounds or overall API approval. Measurement value remains normalized 0–100."
+  },
+  "publication": {
+    "githubAccessibility": "Pending",
+    "repositoryImageReference": null,
+    "authorization": "Local v0.5 is not published; remote #30 remains v0.4 per parent-provided context, not checked remotely in this unit. Prior draft-body permission is not authority for a v0.5 update; separate explicit authorization and concurrency review are required. Asset publication/upload, automatic commit/push and other publication remain unauthorized; use image-publication-pending text rather than local embeds or fabricated URLs in any authorized handoff.",
+    "intendedIssue": "https://github.com/egdev6/egdev-design-system/issues/30"
+  },
+  "provenance": {
+    "source": "authorized original Gauge preview",
+    "sourceCaptureVersion": "0.3",
+    "versionNote": "Local spec v0.5 retains unchanged v0.3 source captures, image paths, bytes and capture conditions; no recapture or visual approval. Remote issue #30 remains v0.4; no remote update is authorized by this revision.",
+    "sourceCommit": null,
+    "tool": "Playwright MCP",
+    "captureEvidence": "Real browser captures supplied by the parent; no new capture was performed by this documentation writer.",
+    "sourceUnchanged": true,
+    "sourceVerification": "Parent verified source SHA-256 fingerprints before capture; writer did not reopen private source files.",
+    "sourceFingerprints": {
+      "algorithm": "SHA-256",
+      "preview": "522db11feebb9e3e1ff94dd3e5156e62b6dbb15e795fbd393da192fdaeb1db32",
+      "bundle": "4f1763a54e080cd206b9d64f57ff9bbc5e3858159ec786ef8263134edee997fc",
+      "tokensJSON": "ef60dcb003c891bba83bdd1b959539d56fc2024fab85e88b972e97aeef600042",
+      "readme": "3bab5e446d9b3445329eb805c7f9faf58b1f1e2216115b4b12b347a9c368e528"
+    },
+    "sourceTokenBridge": {
+      "sourceJSONVersion": 2,
+      "cssVariableCount": 168,
+      "fontFamiliesIncluded": true,
+      "conversion": "Literal-value copy and {alias} to var(--alias) conversion only.",
+      "missingReferences": 0,
+      "sourceEdits": false,
+      "newTokens": false,
+      "verification": "Parent-reported capture setup; not evidence of equivalence with current package tokens."
+    },
+    "originalLanguage": "Spanish; screenshot text retained unchanged for source fidelity.",
+    "console": {
+      "reportedErrors": ["Favicon request returned 404."],
+      "componentErrorReported": false,
+      "verification": "Parent-reported capture observation, not a new runtime test."
+    }
+  },
+  "conditions": {
+    "browser": "Chromium",
+    "browserVersion": "148.0.7778.167",
+    "viewportCSSPixels": { "width": 1280, "height": 900 },
+    "devicePixelRatio": 1,
+    "theme": "dark",
+    "reducedMotion": "reduce",
+    "reducedTransparency": null,
+    "reducedTransparencyNote": "Not recorded; no inferred preference.",
+    "loadedFonts": [{ "family": "Barlow", "weight": 400 }, { "family": "Barlow Condensed", "weight": 800 }],
+    "documentFontsLoaded": true,
+    "reportedCanvasColor": "rgb(20, 21, 24)",
+    "verification": "Parent-supplied browser observations."
+  },
+  "dateEvidence": {
+    "artifactDateUTC": "2026-10-16",
+    "basis": "Existing image file modification timestamps read as UTC datetime values.",
+    "exactBrowserCaptureTimestamp": null,
+    "limitation": "Artifact file times are not claimed as exact browser shutter times."
+  },
+  "images": [
+    {
+      "visualId": "VIS-01",
+      "path": "docs/design/gauge/v0.3/single-ring--normal--dark--1280.png",
+      "alt": "Small single red ring around a decorative A with the original size caption",
+      "role": "Proposed principal visual reference",
+      "status": "Proposed",
+      "approvalReference": null,
+      "scenario": {
+        "sourceState": "normal",
+        "ringCount": 1,
+        "sourceDiameterCSSPixels": 40,
+        "sourceCenter": "Decorative A; not a fixed-logo requirement.",
+        "targetProps": null,
+        "targetPropsNote": "No public Gauge API existed in the source; do not infer a target value or defaults from pixels."
+      },
+      "captureKind": "Element crop including the original caption",
+      "pixelDimensions": { "width": 40, "height": 62 },
+      "fileModifiedAtUTC": "2026-10-16T18:36:07.391137+00:00",
+      "sha256": "3e12c98b6b46341576117dc8694a4ec207310a2eff9d619d2920b8efd1f2774b",
+      "acceptanceIds": ["G-01", "G-07", "G-08", "G-13"],
+      "limits": "Only a normal small single ring is observed; caption height is not ring diameter. Proposed anatomy/top origin/center placement require adoption."
+    },
+    {
+      "visualId": "VIS-02",
+      "path": "docs/design/gauge/v0.3/source-board--dark--1280.png",
+      "alt": "Original Gauge board with single and multi-ring examples, warning and muted treatments, and a toolbar",
+      "role": "Source context only; not expected-design acceptance for the atom",
+      "status": "Observed context",
+      "approvalReference": null,
+      "scenario": {
+        "ringCounts": [1, 2, 3],
+        "observedDiametersCSSPixels": [40, 56, 80],
+        "scopeNote": "The 56px and 80px examples use multiple rings; two/three-ring concepts and toolbar are outside issue #30."
+      },
+      "captureKind": "Full source board",
+      "pixelDimensions": { "width": 1280, "height": 900 },
+      "fileModifiedAtUTC": "2026-10-16T18:36:07.195137+00:00",
+      "sha256": "b54ba9681dd14899ab8b303cba3bfbc64ed937cefe314fc342d5007108ba2c80",
+      "acceptanceIds": ["G-13"],
+      "limits": "Legacy role=img, 0–1 values, clicks, state classes/glows and multi-ring composition are source evidence, not the proposed public contract."
+    }
+  ],
+  "verification": {
+    "writerChecks": "Image SHA-256, PNG dimensions and file dates verified locally; relative spec image links and metadata checked separately.",
+    "visualConformity": "Not evaluated",
+    "behaviorAccessibilityRuntime": "Not evaluated; captures are not behavior or accessibility tests.",
+    "pendingScenarios": [
+      "Zero and full circumference",
+      "Decimal and updated value",
+      "Warning, critical and muted single rings with text and icon cues",
+      "Absent, icon, value and short-text center",
+      "Invalid value fallback",
+      "Approved medium and large preset dimensions in single-ring captures (visual treatment pending)",
+      "Comparable approved token and Material treatment"
+    ],
+    "permittedDifferencesProposal": "Generalized center content without a fixed logo or source caption, accessible text/icon cues, passive meter semantics and approved token/Material corrections; human approval is pending."
+  }
+}

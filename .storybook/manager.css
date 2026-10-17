@@ -1,4 +1,6 @@
-/* La interfaz de Storybook usa los mismos valores que el sistema, sin otra paleta. */
+@import "./palette.css";
+
+/* Storybook chrome uses the shared local palette and system tokens. */
 body {
   background: var(--color-bg-canvas);
   color: var(--color-fg-default);
@@ -23,16 +25,12 @@ body {
   letter-spacing: var(--text-heading-small--letter-spacing);
 }
 
+/* The approved horizontal wordmark includes its name; preserve its intrinsic ratio. */
 .sidebar-header a[href="https://egdev.es"] img {
-  width: var(--space-8);
-  height: var(--space-8);
-  max-width: var(--space-8);
+  width: auto;
+  height: var(--space-10);
+  max-width: 100%;
   object-fit: contain;
-}
-
-/* El alt del logo ya anuncia EGDEV; el rótulo visual no duplica su nombre accesible. */
-.sidebar-header a[href="https://egdev.es"]::after {
-  content: "EGDEV" / "";
 }
 
 :where(a, button, input, select, textarea):focus-visible {

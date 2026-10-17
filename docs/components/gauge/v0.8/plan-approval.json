@@ -1,0 +1,24 @@
+{
+  "component": "Gauge",
+  "contractVersion": "0.8",
+  "scope": "LOCAL_IMPLEMENTATION_PLAN_AND_TWO_PREREQUISITES",
+  "status": "Approved",
+  "planPath": "docs/components/gauge/v0.8/implementation-plan.md",
+  "payloadSHA256": "0c86b261dd1334913f642b5efbba3becef5a67105ab12ea8a78945cdf3540072",
+  "hashDefinition": "SHA-256 from exact prerequisite heading through EOF with final LF; tracking header excluded.",
+  "source": {
+    "kind": "Current conversation",
+    "question": "¿Apruebas este plan, incluidos ambos prerrequisitos, para empezar la implementación?",
+    "userStatement": "si",
+    "limitation": "Manual observed approval record, not a signed/provider-issued authorization. Recover source approval before relying on it."
+  },
+  "approvedPrerequisites": [
+    "Narrow UI stylesheet Tailwind emission and distribution test update with existing dependencies; no broad component migration.",
+    "Private normalized numeric arc geometry custom property in addition to the approved numeric diameter property."
+  ],
+  "excluded": [
+    "New dependencies or canonical token values",
+    "Dependency installation or network access without its separate authorized scope",
+    "Remote issue comments, asset uploads, commits, pushes, pull requests, merges, closures or releases"
+  ]
+}
