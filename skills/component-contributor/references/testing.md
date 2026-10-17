@@ -6,7 +6,7 @@ Vitest 4 + Testing Library React + user-event. Current component reference: `pac
 
 ## Organización y entorno
 
-- Exactly seven meaningful files remain mandatory: ComponentName.test.tsx covers the real hook (`renderHook`) and component (`render`, `screen`, `userEvent`); no fake hooks/empty files. Missing meaningful compliant CSS role blocks spec/plan approval for human resolution.
+- Six meaningful files are mandatory: ComponentName.test.tsx covers the real hook (`renderHook`) and component (`render`, `screen`, `userEvent`); no fake hooks/empty files. `component-name.css` is optional and exists only with a spec-approved meaningful role.
 - `vitest.config.ts` incluye `packages/*/src/**/*.test.{ts,tsx}`, usa `jsdom`, `css: false` y `vitest.setup.ts` carga `@testing-library/jest-dom/vitest`.
 - `packages/ui/src/lib/storybook-docgen.test.ts` es una prueba separada de metadatos reales con `// @vitest-environment node`: evita conflictos de `TextEncoder` al cargar herramientas Vite/docgen en jsdom. No cambies el entorno global ni el de las pruebas DOM.
 - Código, nombres de tests y toda documentación nueva o actualizada en inglés, incluidos JSDoc y textos de stories. No traduzcas contenido heredado fuera del alcance aprobado.
