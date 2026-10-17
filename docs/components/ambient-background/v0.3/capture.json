@@ -1,0 +1,58 @@
+{
+  "component": "AmbientBackground",
+  "specVersion": "0.4",
+  "sourceCaptureVersion": "0.3",
+  "canonicalIssue": "https://github.com/egdev6/egdev-design-system/issues/45",
+  "kind": "Expected design captured from the approved reference engine; not a React implementation capture",
+  "source": {
+    "path": "packages/effects/reference/particle-streaks.js",
+    "revision": "sha256:acabbacd1bdb1b94bb1745cbcb7e3e4bf804a77c3fef3e375d63692bd9ad9086",
+    "repositoryCommit": "570936c7af6df99af89e9783f6df44b4a11b1f83",
+    "harness": "about:blank page with one full-viewport canvas; the unmodified engine inlined and started with createParticleStreaks(canvas, profile).start(); profile multipliers from reference/pulso-director.js PROF"
+  },
+  "conditions": {
+    "tool": "Playwright MCP (browser_evaluate + browser_take_screenshot, scale css)",
+    "browser": "Chromium 148.0.0.0, Linux x86_64",
+    "viewport": "1280x720",
+    "deviceScaleFactor": 1,
+    "theme": "dark (engine background --color-ambient-bg)",
+    "motion": "animation running; screenshot taken 3 s after start",
+    "transparency": "default",
+    "fonts": "Not applicable (no text)",
+    "crop": "Full viewport = component zone (canvas fills the viewport)",
+    "capturedAt": "2026-10-17"
+  },
+  "limits": [
+    "The engine uses Math.random: particle positions differ on every run; compare density, palette, glow, angle and size distribution, never pixel positions.",
+    "Opacity 1 only; consumer-driven opacity and the 0.6 mobile density factor are not shown.",
+    "Captured outside the website page; no SectionShell or other overlay above the layer."
+  ],
+  "visuals": [
+    {
+      "id": "VIS-01",
+      "file": "base--running--1280--dark.png",
+      "sha256": "d52cdd0877d242f8e9b72dc3d2cd065c274a75f8f1b8eee628b766aee97b5711",
+      "scenario": "profile base: 70 lines, 90 squares, speed 1, glow 0.1",
+      "alt": "Dark red-black background with diagonal glowing red streaks and scattered red diamonds of varied size and brightness, with a soft central red glow."
+    },
+    {
+      "id": "VIS-02",
+      "file": "read--running--1280--dark.png",
+      "sha256": "bba1da4dfbd898164dc88c5f8c7c5dbe03f0e3bbb57c2d6421c9a31cfe4c43f4",
+      "scenario": "profile read: 20 lines, 25 squares, speed 0.6, glow 0.1",
+      "alt": "Mostly empty dark red-black background with a few diagonal red streaks and sparse red diamonds."
+    },
+    {
+      "id": "VIS-03",
+      "file": "live--running--1280--dark.png",
+      "sha256": "4c0feaa1722243122d27ea9581abaedd7d8ea0feeb2573383a56acb012b08c84",
+      "scenario": "profile live: 110 lines, 120 squares, speed 1.4, glow 0.18",
+      "alt": "Dense dark red background with many diagonal glowing red streaks, numerous red diamonds and a brighter central glow."
+    }
+  ],
+  "approval": {
+    "status": "Approved",
+    "reference": "Explicit owner instruction on 2026-10-17: \"no dejes pendientes. todo de una cuando definamos specs. añade captura y acepta props\"",
+    "scope": "VIS-01 to VIS-03 adopted as expected design for density, palette, glow and streak angle per profile; positions are random and not normative."
+  }
+}

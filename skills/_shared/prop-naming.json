@@ -274,5 +274,37 @@
         }
       }
     ]
+  },
+  {
+    "id": "effect-profile",
+    "name": "profile",
+    "meaning": "A named preset of engine parameters for a decorative effect layer.",
+    "whenToUse": "Select among the effect presets supported by the component, such as density and speed profiles.",
+    "avoid": "Do not use it for visual Material treatment, sizes or arbitrary per-parameter overrides; preset names and values are component-specific.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-ambient-background-approval.json",
+      "scope": "convention:effect-profile",
+      "contentHash": "sha256:293194eade9734f78ff66b5f2174df11e8984d0dc312fa5d0d6eb924c3d694b6"
+    },
+    "usages": []
+  },
+  {
+    "id": "layer-opacity",
+    "name": "opacity",
+    "meaning": "The opacity of a decorative effect layer, a number from 0 to 1.",
+    "whenToUse": "Let the consumer fade a decorative layer in or out; a component may stop its work at 0.",
+    "avoid": "Do not use it as a general appearance override for interactive components or text; clamping and non-finite handling are component-specific.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-ambient-background-approval.json",
+      "scope": "convention:layer-opacity",
+      "contentHash": "sha256:02d11f63a0d25c145b57398f0db20b29f0b2e1199ae00205410224951880814c"
+    },
+    "usages": []
   }
 ]
