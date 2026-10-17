@@ -65,10 +65,50 @@ test('seed and component-specific types are valid; importing performs no CLI wor
   assert.match(renderRegistry(registry), /number/);
 });
 
-test('registry keeps proposed conventions separate from reviewed implementation usage', () => {
+test('registry binds eight explicit convention approvals separately from Gauge implementation usage', () => {
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   validate(actual);
-  assert.ok(actual.every((entry) => entry.status === 'proposed' && entry.approval === null));
+  assert.match(renderRegistry(actual), /Conventions start as proposed and require separate scoped approval\./);
+  const approvedIds = [
+    'primary-value',
+    'preset-dimensions',
+    'accessible-name',
+    'consumer-selected-condition',
+    'condition-description',
+    'measurement-text-equivalent',
+    'decorative-center-content',
+    'unavailable-measurement-message'
+  ];
+  const deferredIds = [
+    'initial-uncontrolled-value',
+    'interactive-value-change',
+    'visual-treatment',
+    'surface-material-tone',
+    'surface-elevation'
+  ];
+  for (const id of approvedIds) {
+    assert.equal(actual.find((entry) => entry.id === id)?.status, 'approved', id);
+  }
+  for (const id of deferredIds) {
+    const entry = actual.find((entry) => entry.id === id);
+    assert.equal(entry?.status, 'proposed', id);
+    assert.equal(entry.approval, null, id);
+  }
+  const reference = 'docs/decisions/prop-naming-gauge-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.deepEqual(receipt.entries.map((record) => record.convention.id).sort(), [...approvedIds].sort());
+  assert.deepEqual([...receipt.deferredIds].sort(), [...deferredIds].sort());
+  for (const id of approvedIds) {
+    const entry = actual.find((entry) => entry.id === id);
+    const { approval, usages: _usages, ...convention } = entry;
+    const record = receipt.entries.find((record) => record.convention.id === id);
+    assert.deepEqual(record.convention, convention);
+    assert.equal(record.scope, `convention:${id}`);
+    assert.equal(record.contentHash, props.conventionHash(entry));
+    assert.deepEqual(approval, { reference, scope: record.scope, contentHash: record.contentHash });
+  }
   const observed = actual.flatMap((entry) =>
     entry.usages.filter((usage) => usage.component === 'Gauge').map((usage) => [entry.name, usage])
   );

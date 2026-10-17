@@ -262,7 +262,7 @@ export function renderRegistry(registry) {
     '',
     '- Look up both meaning and name before proposing a prop; review semantic meaning with a human.',
     '- Reuse a matching responsibility and append its component usage; propose a new semantic ID for a new responsibility.',
-    '- Existing usage is evidence, never automatic global approval. All initial conventions are proposed.',
+    '- Existing usage is evidence, never automatic global approval. Conventions start as proposed and require separate scoped approval.',
     '- Aliases are search references, not accepted extra API props. Exceptions record component scope, alternative propName and reason; null approval means pending, never API permission.',
     '- Native attributes are not proprietary conventions unless an explicit semantic policy is proposed.',
     '- Types belong to each component: no universal type requirement or forced API migration.',
