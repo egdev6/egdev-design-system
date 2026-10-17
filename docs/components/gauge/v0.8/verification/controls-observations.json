@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "valueInput101ClampsTo100": true,
+  "stateSelection": "warning",
+  "stateDescription": "Review capacity",
+  "sizeEditor": "Storybook JSON editor for the mixed preset-or-number union; no manual argTypes",
+  "sizeChecks": [
+    {
+      "input": "64.5",
+      "width": 64.5
+    },
+    {
+      "input": "\"sm\"",
+      "width": 40
+    },
+    {
+      "input": "0",
+      "width": 56
+    }
+  ],
+  "nativeRows": ["id", "title", "aria-describedby", "className", "style"],
+  "excludedAPIs": ["ref", "asChild", "onClick"],
+  "rows": [
+    "NameControl",
+    "styleSet object",
+    "titleSet string",
+    "classNameSet string",
+    "idSet string",
+    "aria-describedbySet string",
+    "statestatenormalwarningcriticalmuted",
+    "stateTextReview capacity",
+    "label*Capacity",
+    "value*",
+    "valueTextSet string",
+    "centerSet object",
+    "sizeEdit size as JSON0",
+    "unavailableTextSet string"
+  ],
+  "errors": []
+}

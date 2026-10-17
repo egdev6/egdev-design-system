@@ -1,0 +1,29 @@
+{
+  "scope": "Gauge documentary control annotations and unchanged live Controls",
+  "sourceRevision": "sha256:d02e44efccd995d7de5ba37e08242ffa195e9fc8b8edbaed02ea6a2ad85204b2",
+  "ownPropNames": 8,
+  "ownPropDeclarations": 10,
+  "documentaryExceptions": {
+    "center": "Non-serializable ReactNode; CenterContent story",
+    "size": "Mixed preset and numeric diameter union; Sizes story"
+  },
+  "tagsConfigureWidgets": false,
+  "browser": {
+    "url": "http://127.0.0.1:6006/?path=/story/atoms-gauge--default",
+    "stateWidget": "Four radio inputs: normal, warning, critical, muted",
+    "valueInput": "Number input: 101 clamps to accessible value 100; restored to 42",
+    "centerWidget": "Set object remains present despite documentary @control false",
+    "sizeWidget": "Set object / JSON editor remains present despite documentary @control false",
+    "numericSizeCheck": "64.5 produces 64.5 CSS pixels",
+    "presetSizeCheck": "sm produces 40 CSS pixels; restored to md at 56 CSS pixels",
+    "nativeRows": "style, title, className, id, aria-describedby remain present",
+    "consoleErrors": 0
+  },
+  "checks": {
+    "red": "Focused docgen suite: exit 1, 6 failed and 6 passed before annotation changes",
+    "green": "Focused docgen suite: exit 0, 12 passed including five negative mutation cases",
+    "finalJob": "job-25: exit 0; 74 Vitest tests, typecheck, lint, registry check, 73 registry tests and diff check",
+    "lsp": "Two changed TypeScript files checked actively: no diagnostics"
+  },
+  "limitations": "No new production build or packaged React consumer matrix run. Native assessment was unassessable due to untracked scope; no native approval is claimed. Prior offline consumer-cache blocker remains unchanged."
+}

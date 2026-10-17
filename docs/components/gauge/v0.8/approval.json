@@ -1,0 +1,74 @@
+{
+  "component": "Gauge",
+  "version": "0.8",
+  "status": "Approved",
+  "scope": "COMPONENT_CONTRACT_ONLY",
+  "specPath": "docs/specs/gauge.md",
+  "specRelativePath": "../../../specs/gauge.md",
+  "contentSHA256": "f0999610927cc8556259c3896365697f4447ebae69eff810f3a2b66b57a3210d",
+  "hashDefinition": "SHA-256 of UTF-8 payload from the exact heading line ## 1. Purpose and scope through EOF, LF including the final newline; tracking header excluded.",
+  "captureMetadataPath": "docs/components/gauge/v0.3/capture.json",
+  "captureMetadataRelativePath": "../v0.3/capture.json",
+  "source": {
+    "kind": "Current conversation",
+    "reference": "Current conversation: explicit user si to the complete v0.8 approval question, restated with the exact payload and visual hashes in this session's approval-persistence instruction.",
+    "question": "¿Apruebas la ficha v0.8 completa con esos detalles para pasar al plan de implementación? El plan tendrá aprobación independiente.",
+    "userStatement": "si",
+    "observationBasis": "Manual record of the observed approval exchange supplied in the current conversation; no independent provider transcript retrieval was performed by this writer.",
+    "sessionReference": null,
+    "messageReference": null,
+    "url": null,
+    "exactApprovalTimestamp": null,
+    "unknownReferences": "No stable session/message identifier, approval URL or exact approval time was supplied; none is invented."
+  },
+  "presentedSnapshot": {
+    "version": "0.8",
+    "contentSHA256": "f0999610927cc8556259c3896365697f4447ebae69eff810f3a2b66b57a3210d",
+    "scope": "Entire Gauge v0.8 component contract, not merely prior block approvals and not an implementation plan.",
+    "acceptedAPIDetails": [
+      "valueText defaults to normalized decimal X / 100, retaining decimals and clamping coherence",
+      "state defaults to normal; GaugeStateProps requires stateText for non-normal states",
+      "center defaults to absent and remains passive/decorative when supplied",
+      "No ref, asChild or Gauge events; documented native semantic protections, name-source/description wiring and compatible inherited attributes are accepted",
+      "Root layout-only className precedence and documented named exports/type shape are accepted"
+    ],
+    "acceptedContractScope": "All seven blocks and reviewed proposals, including previously approved product boundaries, names, passive accessibility, numeric diameter/fallback, unavailableText, conic-gradient/radial-mask CSS geometry, visual table and Material well semantics. Acceptance checks remain planned, not completed.",
+    "frozenPayloadNote": "The original proposal/review wording, closure checklist and next-step text are retained byte-for-byte as the approved presented snapshot. Tracking header and this receipt record their acceptance without rewriting the payload or claiming runtime checks complete."
+  },
+  "visuals": [
+    {
+      "visualId": "VIS-01",
+      "path": "docs/components/gauge/v0.3/single-ring--normal--dark--1280.png",
+      "sha256": "3e12c98b6b46341576117dc8694a4ec207310a2eff9d619d2920b8efd1f2774b",
+      "status": "Approved (scoped)",
+      "scope": "Single-ring anatomy, proportions and optional-center placement only; exclude fixed A and caption. Not an exact color/Material/state/behavior target."
+    },
+    {
+      "visualId": "VIS-02",
+      "path": "docs/components/gauge/v0.3/source-board--dark--1280.png",
+      "sha256": "b54ba9681dd14899ab8b303cba3bfbc64ed937cefe314fc342d5007108ba2c80",
+      "status": "Observed context",
+      "scope": "Context only, not approved expected design; no full-board adoption, two/three rings or toolbar."
+    }
+  ],
+  "sourceCaptureVersion": "0.3",
+  "implementationPlanApproval": "Approved for local implementation and the two explicit prerequisites; see plan-approval.json. Contract approval does not itself grant implementation authority.",
+  "visualConformity": "Not evaluated",
+  "behaviorAccessibilityRuntime": "Not evaluated",
+  "githubAssetPublication": "Pending — separate external publishing gate",
+  "snapshotPublication": "Not authorized; local v0.8 remains unpublished",
+  "excludedAuthorizations": [
+    "Implementation-plan approval or runtime implementation",
+    "Global registry convention approval or API migration",
+    "Remote reads/writes, GitHub publication or asset upload",
+    "Server startup, capture work or new expected-design images",
+    "Commits, pushes, dependency changes or token changes"
+  ],
+  "registryBoundary": "All 13 conventions stay proposed with approval null. The eight Gauge usage whole-file revisions are reviewed-source observations only, not convention approvals.",
+  "trustAndRecovery": {
+    "receiptKind": "English manual observed-approval record; not cryptographically signed or provider-issued",
+    "limitation": "Hashes bind content identity, not human consent or provenance authenticity. This repository record is not self-authorizing trust and is not memory-only proof.",
+    "recoveryRequirement": "Recover the source explicit user approval, the exact presented v0.8 payload and identified visual scopes before relying on this approval. If a future agent cannot recover the source approval, STOP and request explicit confirmation; the manual receipt alone cannot authorize continuation."
+  },
+  "implementationPlanApprovalReference": "docs/components/gauge/v0.8/plan-approval.json"
+}

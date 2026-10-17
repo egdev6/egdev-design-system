@@ -1,0 +1,181 @@
+{
+  "component": "Gauge",
+  "specVersion": "0.8",
+  "specPath": "docs/specs/gauge.md",
+  "contentSHA256": "f0999610927cc8556259c3896365697f4447ebae69eff810f3a2b66b57a3210d",
+  "hashDefinition": "SHA-256 of UTF-8 spec payload from ## 1. Purpose and scope through EOF, LF including the final newline; tracking header excluded.",
+  "status": "Approved v0.8 component contract; separate local implementation plan Approved; implementation PARTIAL — packed consumer matrix blocked",
+  "approval": {
+    "status": "Approved",
+    "reference": "docs/components/gauge/v0.8/approval.json",
+    "relativeReference": "../v0.8/approval.json",
+    "contentSHA256": "f0999610927cc8556259c3896365697f4447ebae69eff810f3a2b66b57a3210d",
+    "implementationPlanApproval": "Approved for local implementation and two prerequisites; separate from component-contract approval",
+    "implementationPlanApprovalReference": "docs/components/gauge/v0.8/plan-approval.json",
+    "approvedProductDecisions": "Single passive ring, normalized 0–100, optional center, normal/warning/critical/muted consumer-selected states and no actions; finite measurement clamping and NaN/±Infinity unavailable behavior; sm/md/lg diameters 40/56/80px with md (56px) default; existing DS or Tailwind default tokens for appearance. Maintain v0.6 own-prop names linked to the registry; passive meter with required name, visible non-normal state text plus icon, no focus/actions/automatic announcements; customizable unavailableText defaulting to Data unavailable. Meaningful gauge.css original conic-gradient plus radial-mask geometry recipe reusable by a future group, not new SVG rendering; appearance/variants/sizes remain existing DS or allowed Tailwind utilities/CVA with seven meaningful files. Approved visual table: preset strokes sm/md/lg 3/4/6px at diameters 40/56/80px; custom numeric stroke diameter/14 including fractions; existing DS brand/warning/danger/muted fill tokens; source foreground track at 10% via tokens and allowed Tailwind opacity, no handwritten new color mix; original centered proportions with 30% inset, no fixed A/caption; Material Surface well semantics, no flat replacement, hover, glows or motion. Component geometry parameters are approved source values, not new canonical tokens; any demonstrated new-token need still requires confirmation.",
+    "scope": "COMPONENT_CONTRACT_ONLY: explicit current-conversation user si approves the entire presented v0.8 contract and payload hash, including valueText X / 100, state normal, absent center, no ref/asChild/Gauge events, protected native semantics and layout-only className. All reviewed component proposals are accepted; frozen payload review wording is historical, not an open API gate or completed checks. VIS-01 anatomy/proportions/optional-center placement only, excluding fixed A/caption; VIS-02 context only. No global registry, plan, runtime, remote asset or commit authorization. Visual conformity and runtime remain Not evaluated; asset publication/access is independently Pending. Manual receipt is not signed/provider-issued or self-authorizing; future agents unable to recover the source explicit approval must STOP and request confirmation.",
+    "blockApproval": {
+      "historicalNote": "Prior scoped approvals retained as history. Their excludedScopes describe the earlier block-only decisions, not the subsequent whole-contract approval recorded above and in v0.8/approval.json.",
+      "reference": "Current conversation: explicit user si approving LASTBLOCK, recorded in v0.7, followed by explicit user si to the visual table, restated in the bounded v0.8 documentation-update request.",
+      "sourceKind": "Direct conversation approval, not a published issue comment",
+      "approvedScopes": [
+        "Maintain v0.6 Gauge own-prop names linked to the proposed registry",
+        "Passive-meter accessibility with required name and visible non-normal text plus icon; no focus/actions/automatic announcements",
+        "Finite positive numeric diameter including fractions; invalid numbers fall back to md (56px); no artificial maximum",
+        "Customizable unavailableText default Data unavailable",
+        "Meaningful original conic-gradient/radial-mask CSS geometry recipe reusable by a future group",
+        "Visual table: original preset strokes, proportional custom stroke and center inset, existing DS state colors, subdued token/utility track, Material Surface well semantics and no hover/glows/motion",
+        "VIS-01 adoption for anatomy/proportions and optional-center placement only, excluding fixed A and caption"
+      ],
+      "excludedScopes": [
+        "Global registry convention approval",
+        "Unmentioned native/ref restrictions and other API proposals",
+        "Exact-version full spec approval",
+        "VIS-01 as an exact color/Material/state or behavior target; VIS-02 expected-design adoption",
+        "Implementation-plan approval or implementation authorization"
+      ]
+    },
+    "numericCustomization": "Approved: size?: GaugeSize | number; any finite positive CSS-pixel ring diameter including 0.5 or 64.5, with no artificial maximum or positive minimum cutoff. Zero, negatives, NaN and ±Infinity fall back to md (56px). Measurement value alone is clamped to 0–100; non-finite value is unavailable, never fake zero. Static w-[var(--eg-gauge-size)] and h-[var(--eg-gauge-size)] plus numeric CSS-pixel --eg-gauge-size remain limited to diameter geometry; presets use token utilities. No inline appearance or dynamic utility-string interpolation. The conic-gradient/radial-mask exception is geometric, not permission for decorative gradients/shadows or custom appearance."
+  },
+  "publication": {
+    "githubAccessibility": "Pending",
+    "repositoryImageReference": null,
+    "authorization": "Local v0.5/v0.6/v0.7 were unpublished; v0.8 is approved as a component contract only and unpublished. Remote #30 initial body remains v0.4 per supplied context, not checked remotely here. Next change must be a separately authorized comment on #30, not a body edit or new issue. Exact target/action/credential and content review required; no commit/push/upload authorization. Choose human attachment or bounded authorized asset-publication branch and verify actual URL access and PNG hash before linking.",
+    "intendedIssue": "https://github.com/egdev6/egdev-design-system/issues/30",
+    "latestPublishedComment": null
+  },
+  "provenance": {
+    "source": "authorized original Gauge preview",
+    "sourceCaptureVersion": "0.3",
+    "versionNote": "Current spec v0.8 reuses unchanged source captures v0.3 at docs/components/gauge/v0.3/. Original docs/design/gauge/v0.3/ files remain untouched historical references. Conditions, source fingerprints, PNG hashes and recorded original artifact timestamps are retained; no new image or capture is implied. Entire v0.8 component-contract approval is recorded in docs/components/gauge/v0.8/approval.json; VIS-01 adoption remains scoped to anatomy/proportions/optional-center placement only. VIS-02 remains context only; no visual conformity, runtime verification or remote publication is implied.",
+    "sourceCommit": null,
+    "tool": "Playwright MCP",
+    "captureEvidence": "Real browser captures supplied by the parent; no new capture was performed by this documentation writer.",
+    "sourceUnchanged": true,
+    "sourceVerification": "Parent verified source SHA-256 fingerprints before capture; writer did not reopen private source files.",
+    "sourceFingerprints": {
+      "algorithm": "SHA-256",
+      "preview": "522db11feebb9e3e1ff94dd3e5156e62b6dbb15e795fbd393da192fdaeb1db32",
+      "bundle": "4f1763a54e080cd206b9d64f57ff9bbc5e3858159ec786ef8263134edee997fc",
+      "tokensJSON": "ef60dcb003c891bba83bdd1b959539d56fc2024fab85e88b972e97aeef600042",
+      "readme": "3bab5e446d9b3445329eb805c7f9faf58b1f1e2216115b4b12b347a9c368e528"
+    },
+    "sourceTokenBridge": {
+      "sourceJSONVersion": 2,
+      "cssVariableCount": 168,
+      "fontFamiliesIncluded": true,
+      "conversion": "Literal-value copy and {alias} to var(--alias) conversion only.",
+      "missingReferences": 0,
+      "sourceEdits": false,
+      "newTokens": false,
+      "verification": "Parent-reported capture setup; not evidence of equivalence with current package tokens."
+    },
+    "originalLanguage": "Spanish; screenshot text retained unchanged for source fidelity.",
+    "console": {
+      "reportedErrors": ["Favicon request returned 404."],
+      "componentErrorReported": false,
+      "verification": "Parent-reported capture observation, not a new runtime test."
+    }
+  },
+  "conditions": {
+    "browser": "Chromium",
+    "browserVersion": "148.0.7778.167",
+    "viewportCSSPixels": { "width": 1280, "height": 900 },
+    "devicePixelRatio": 1,
+    "theme": "dark",
+    "reducedMotion": "reduce",
+    "reducedTransparency": null,
+    "reducedTransparencyNote": "Not recorded; no inferred preference.",
+    "loadedFonts": [{ "family": "Barlow", "weight": 400 }, { "family": "Barlow Condensed", "weight": 800 }],
+    "documentFontsLoaded": true,
+    "reportedCanvasColor": "rgb(20, 21, 24)",
+    "verification": "Parent-supplied browser observations."
+  },
+  "dateEvidence": {
+    "artifactDateUTC": "2026-10-16",
+    "basis": "Existing image file modification timestamps read as UTC datetime values.",
+    "exactBrowserCaptureTimestamp": null,
+    "limitation": "Artifact file times are not claimed as exact browser shutter times."
+  },
+  "images": [
+    {
+      "visualId": "VIS-01",
+      "path": "docs/components/gauge/v0.3/single-ring--normal--dark--1280.png",
+      "alt": "Small single red ring around a decorative A with the original size caption",
+      "role": "Adopted principal reference for anatomy/proportions and optional-center placement only",
+      "status": "Approved (scoped)",
+      "approvalReference": "Current conversation: explicit user si to the visual table, restated in the bounded v0.8 documentation-update request; not a GitHub comment.",
+      "approval": {
+        "status": "Approved",
+        "reference": "Current conversation: explicit user si to the visual table, restated in the bounded v0.8 documentation-update request.",
+        "scope": "Single-ring anatomy, proportions and optional-center placement only; exclude fixed A and caption. Not proof of requested well/state-color/accessibility-cue conformity or behavior."
+      },
+      "scenario": {
+        "sourceState": "normal",
+        "ringCount": 1,
+        "sourceDiameterCSSPixels": 40,
+        "sourceCenter": "Decorative A; not a fixed-logo requirement.",
+        "targetProps": null,
+        "targetPropsNote": "No public Gauge API existed in the source; do not infer a target value or defaults from pixels."
+      },
+      "captureKind": "Element crop including the original caption",
+      "pixelDimensions": { "width": 40, "height": 62 },
+      "fileModifiedAtUTC": "2026-10-16T18:36:07.391137+00:00",
+      "sha256": "3e12c98b6b46341576117dc8694a4ec207310a2eff9d619d2920b8efd1f2774b",
+      "acceptanceIds": ["G-07", "G-08", "G-10", "G-13"],
+      "limits": "Only normal small single-ring anatomy/proportions and optional-center placement are adopted; caption height is not ring diameter. Fixed A and caption excluded. G-07 placement, G-08 small anatomy/proportions, G-10 original ring anatomy and G-13 provenance/adoption only; not G-01 endpoints, other sizes/states, well/state-color/cue conformity, all centers or behavior."
+    },
+    {
+      "visualId": "VIS-02",
+      "path": "docs/components/gauge/v0.3/source-board--dark--1280.png",
+      "alt": "Original Gauge board with single and multi-ring examples, warning and muted treatments, and a toolbar",
+      "role": "Source context only; not expected-design acceptance for the atom",
+      "status": "Observed context",
+      "approvalReference": null,
+      "approval": {
+        "status": "Not approved",
+        "reference": null,
+        "scope": "Observed context only; full board is not an approved target. Two/three rings and toolbar remain outside issue #30."
+      },
+      "scenario": {
+        "ringCounts": [1, 2, 3],
+        "observedDiametersCSSPixels": [40, 56, 80],
+        "scopeNote": "The 56px and 80px examples use multiple rings; two/three-ring concepts and toolbar are outside issue #30."
+      },
+      "captureKind": "Full source board",
+      "pixelDimensions": { "width": 1280, "height": 900 },
+      "fileModifiedAtUTC": "2026-10-16T18:36:07.195137+00:00",
+      "sha256": "b54ba9681dd14899ab8b303cba3bfbc64ed937cefe314fc342d5007108ba2c80",
+      "acceptanceIds": ["G-13"],
+      "limits": "Legacy role=img, 0–1 values, clicks, state classes/glows and multi-ring composition are source evidence, not the proposed public contract."
+    }
+  ],
+  "verification": {
+    "writerChecks": "Image SHA-256, PNG dimensions and file dates verified locally; relative spec image links and metadata checked separately.",
+    "visualConformity": "Not evaluated",
+    "behaviorAccessibilityRuntime": "Not evaluated; captures are not behavior or accessibility tests.",
+    "pendingScenarios": [
+      "Zero and full circumference",
+      "Decimal and updated value",
+      "Warning, critical and muted single rings with text and icon cues",
+      "Absent, icon, value and short-text center",
+      "Invalid value fallback",
+      "Medium and large single-ring captures using approved diameters and preset strokes; custom numeric stroke diameter/14 including fractions",
+      "Comparable approved DS state colors, subdued track and Material Surface well treatment; no hover/glow/motion"
+    ],
+    "permittedDifferences": "Approved intentional differences: omit fixed A/source caption; use approved DS brand/warning/danger/muted tokens, foreground track at original 10% via allowed Tailwind opacity and Material Surface well semantics (--color-surface-0 background plus --shadow-well inset shadow); passive meter and visible non-normal text/icon cues replace legacy semantics/interactions/glows. Preserve adopted ring anatomy/proportions/top origin and 30% center inset. Requested well/state colors/cues are not all captured. Later real implementation and comparable approved references must check the eight-story G-01–G-13 scenario matrix. VIS-02 is context only. No arbitrary tolerance, fresh capture, behavior/accessibility result or visual conformity is claimed."
+  },
+  "currentTracking": {
+    "implementationPlanPath": "docs/components/gauge/v0.8/implementation-plan.md",
+    "planApprovalReference": "docs/components/gauge/v0.8/plan-approval.json",
+    "implementationStatus": "PARTIAL — LOCAL IMPLEMENTATION VERIFIED, PACKED CONSUMER MATRIX BLOCKED",
+    "runtimeVerificationReport": "docs/components/gauge/v0.8/verification/report.md",
+    "implementationCaptureManifest": "docs/components/gauge/v0.8/verification/capture-manifest.json",
+    "scope": "Tracking update only. Original v0.3 capture facts, conditions, fingerprints, images, dates, scoped adoption and source-era verification statements remain unchanged. Historical approval scope and pending runtime statements are not current implementation results; runtime evidence is reported separately in the linked report. Observed v0.8 images do not replace approved source references. Contract receipt alone does not authorize implementation; the plan has its own approval record.",
+    "remainingGates": "Packed React 18/19 installs failed offline before consumer assertions; screen reader Not evaluated; GitHub asset accessibility/publication Pending. No further fixture attempt, network fallback or remote issue update is claimed."
+  },
+  "currentSpecVersion": "0.8",
+  "sourceCaptureVersion": "0.3",
+  "pathBase": "repository-root",
+  "specRelativePath": "../../../specs/gauge.md"
+}
