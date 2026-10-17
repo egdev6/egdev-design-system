@@ -4,123 +4,99 @@ Define qué promete un componente antes de planificar su implementación. Comple
 
 ## Cómo usarla
 
-- Copia la ficha siguiente y sustituye los campos entre `<…>`.
-- Marca lo que no aplique como «No aplica» y explica el motivo.
-- Separa lo propuesto de lo existente y verificado; cita rutas, símbolos o comprobaciones para acreditar lo segundo.
-- Deja dudas y decisiones pendientes explícitas. No inventes defaults, comportamientos ni evidencia.
-- Presenta la ficha para aprobación humana. Aprobar el contrato no autoriza implementar: después se presenta y aprueba el plan por responsabilidades.
-- Si cambia una promesa aprobada, presenta el cambio de contrato antes de implementarlo.
+- Copy the English schema below; replace placeholders without inventing defaults, evidence or approval. Write all generated documentation, metadata, JSDoc and visible examples in English; do not translate unrelated legacy prose.
+- Use “Not applicable” with reasons. Separate proposals, verified implementation and planned checks; cite inspected paths/symbols/results.
+- Present a version for explicit human approval; persist only with permission. Changed promises need new approval; an approved spec does not approve the implementation plan, tokens/dependencies or external mutations.
+- For an explicitly requested issue, follow [issue handoff](../component-spec-proposer/references/issue-handoff.md); open blocking choices cannot be exported as implementation-ready.
 
 ---
 
-# Contrato de componente — <ComponentName>
+# Component contract — <ComponentName>
 
-- **Versión:** <versión de la ficha>
-- **Estado:** <borrador | aprobado; solo registrar aprobación humana explícita>
-- **Aprobación:** <pendiente o referencia recuperable a la aprobación de esta versión>
-- **Conservación:** <ruta acordada o referencia desde la que otra sesión puede recuperar esta ficha; guardar solo con permiso>
-- **Situación actual:** <nuevo | existente; qué se ha verificado y qué está propuesto>
-- **Pendientes:** <preguntas, decisiones y evidencia que falta; o ninguno>
+- **Version / status:** <version; Draft or Approved only with explicit human approval>
+- **Approval / recovery:** <pending or recoverable approval of this version; agreed spec location, save only with permission>
+- **Current situation / pending decisions:** <new or existing; verified vs proposed; missing evidence and blocking questions, or none>
+- **Snapshot identity:** `version: <version>`; `contentSHA256: <digest or Pending before finalization>`; `visualHashes: <VIS ID → SHA-256 or Pending>`; `approvalReference: <recoverable scoped human reference or Pending>`; `canonicalIssue: <one component issue URL or Pending>`; `latestPublishedComment: <latest snapshot comment URL or Pending; initial body is not a comment>`.
+- **Hash definition:** SHA-256 of the UTF-8 canonical payload from `## 1. Purpose and scope` through EOF, with LF line endings and the recorded final newline. All tracking metadata stays above that heading and is excluded, avoiding a self-referential digest. Finalize the digest before publication; approval must bind this version, digest and identified visuals, not mutable prose or memory.
 
-## 1. Propósito y alcance
+## 1. Purpose and scope
 
-- **Necesidad que resuelve:** <responsabilidad y casos de uso>
-- **Fuera de alcance:** <casos que no cubre>
-- **Decisión de catalogación:** <reutilizar | variante | componer | extraer | nuevo>
-- **Alternativas descartadas:** <recorrer las opciones anteriores y explicar por qué no bastan>
-- **Evidencia:** <catálogo e implementación React pública inspeccionada: rutas, props y exports>
-- **Nivel y paquete:** <ubicación propuesta o existente; justificar por responsabilidad>
+- **Need / non-goals:** <responsibility, use cases and exclusions>
+- **Cataloging decision / alternatives:** <reuse | variant | compose | extract | new; justify preceding rejected options>
+- **Evidence / level and package:** <inspected public React paths, props and exports; location justified by responsibility>
 
-## 2. Anatomía y composición
+## 2. Anatomy and composition
 
-| Parte | Responsabilidad | Elemento nativo / primitiva Radix | Contenido permitido |
+| Part | Responsibility | Native element / Radix primitive | Allowed content |
 | --- | --- | --- | --- |
-| <raíz o parte> | <función> | <elemento o primitiva> | <contenido> |
+| <root or part> | <function> | <element or primitive> | <content> |
 
-- **Base Radix:** <paquete individual disponible; o ninguna, con motivo>
-- **Composición:** <piezas reutilizadas, restricciones y contrato de `asChild` si aplica>
-- **Clase raíz pública:** <marcador estable; conservar el existente>
-- **Marcadores de partes:** <si existen o están propuestos>
+- **Radix / composition:** <available individual package or justified none; reused pieces, asChild constraints>
+- **Public markers:** <stable root and existing/proposed part markers; compatibility obligations>
 
-## 3. API pública
+## 3. Public API
 
-| Prop / evento | Tipo | Obligatorio | Default o regla | Descripción |
+- **Prop conventions:** consult the [canonical registry](prop-naming.json), [generated view](../../docs/prop-naming.md) and [lookup workflow](component-contract.md#prop-naming-registry). Record exact applied entry IDs/prop mappings, new semantic-ID proposals and component-specific types with reviewed `source: {path, symbol, revision}` (`sha256:<whole-file byte hash>`). Exceptions identify component `scope`, alternative `propName`, `reason` and null/pending or structured `approval`. Keep convention/spec approval separate: approved/deprecated conventions need recoverable `{reference, scope, contentHash}` with exact `convention:<id>` scope; approved exceptions use `exception:<id>:<scope>:<propName>` and the documented exception hash. Structural references/hashes cannot prove consent or API types; never invent approvals or silently refresh stale source evidence. Link rather than duplicate the global matrix; inherited native props/`className` are not automatically own conventions.
+
+| Prop / event | Type | Required | Default or rule | Description |
 | --- | --- | --- | --- | --- |
-| <nombre> | <tipo> | <sí / no> | <valor, regla dependiente o sin default> | <promesa pública> |
+| <name> | <complete type> | <yes / no> | <value, derived rule or none> | <public promise> |
 
-- **Props nativas:** <elemento del que se heredan, destino y restricciones; no duplicar todas sus props>
-- **Refs:** <si se exponen, tipo y destino real; o no se exponen>
-- **Controlado / no controlado:** <props de cada modo, inicialización y notificaciones; o no aplica>
-- **Compatibilidad:** <impacto en API, exports, marcadores públicos y consumidores existentes>
+- **Native props / refs:** <inherited element, destination and restrictions; ref type and actual target or no refs>
+- **Controlled / uncontrolled:** <initialization, state props and notifications or Not applicable>
+- **Compatibility:** <API, public exports/markers and existing consumers; React-version evidence, not type-only claims>
 
-## 4. Comportamiento
+## 4. Behavior
 
-| Estado inicial / acción | Resultado esperado | Evento emitido |
+| Initial state / action | Expected result | Emitted event |
 | --- | --- | --- |
-| <estado y acción> | <estado final y efecto observable> | <evento y datos; o ninguno> |
+| <state and action> | <observable result> | <event and payload or none> |
 
-- **Estados de interacción:** <estados admitidos y transiciones; no confundir con variantes visuales>
-- **Representación:** <atributos Radix, ARIA o `data-state` propios>
-- **Límites y casos especiales:** <deshabilitado, datos vacíos, límites, acciones repetidas u otros casos aplicables>
-- **Responsabilidad del consumidor:** <comportamiento que no gestiona el componente>
+- **States / representation:** <transitions; Radix/ARIA/own data-state attributes, not mirrored classes or visual variants>
+- **Limits / consumer responsibilities:** <disabled, empty data, boundaries, repeated actions and unmanaged behavior>
 
-## 5. Accesibilidad
+## 5. Accessibility
 
-- **Nombre accesible:** <origen y obligación del consumidor>
-- **Roles y relaciones:** <semántica nativa, ARIA e ids relacionados>
-- **Teclado:** <teclas, resultado y responsable: nativo, Radix o lógica propia justificada>
-- **Foco:** <entrada, navegación, salida y restitución cuando aplique>
-- **Anuncios:** <qué cambios se anuncian y cómo; o no aplica>
-- **Otras condiciones:** <objetivo táctil, información no dependiente solo del color y requisitos aplicables>
-- **Reparto de responsabilidades:** <garantías del componente y obligaciones del consumidor>
+- **Accessible name / roles / relationships:** <source, required consumer input, native/ARIA semantics and related ids>
+- **Keyboard / focus:** <keys and results; native/Radix/justified owner; entry, navigation, exit and restoration>
+- **Announcements / other conditions:** <changes announced and mechanism or Not applicable; touch targets, non-color cues; component vs consumer guarantees>
 
-## 6. Apariencia
+## 6. Appearance
 
-| Eje de variante | Valores admitidos | Default o regla | Combinaciones / restricciones |
+| Variant axis | Allowed values | Default or rule | Combinations / restrictions |
 | --- | --- | --- | --- |
-| <eje, incluido tamaño si aplica> | <valores> | <valor o regla> | <compatibilidad> |
+| <axis including size when applicable> | <values> | <value or rule> | <compatibility> |
 
-- **Tokens:** <variables existentes que definen la apariencia; no introducir valores en duro>
-- **Layout externo:** <colocación permitida por `className` desde la app; Tailwind solo para layout, nunca para cambiar apariencia ni dentro del componente>
-- **Material:** <Surface o receta utilizada y dónde se define>
-- **Estados visuales:** <tratamiento de los estados de interacción y foco>
-- **Movimiento reducido:** <resultado esperado>
-- **Composición de clases:** <contrato de `className` y conflictos que deben resolver `cn()`/twMerge>
-- **Propuestas pendientes:** <tokens, tratamientos Material, dependencias o excepciones CSS globales que necesitan confirmación; o ninguna>
+- **Tokens / Material:** <existing token-backed Tailwind utilities, CVA in types.ts; Surface/recipe and definition location; state-specific visual treatments, well/overlay/solid, focus, reduced motion/transparency; no hardcoded values>
+- **Dynamic geometry:** <only an explicitly approved limited mechanism; Gauge numeric diameter uses static `w-[var(--eg-gauge-size)]` / `h-[var(--eg-gauge-size)]` plus inline numeric CSS-pixel `--eg-gauge-size`, presets use approved token utilities. No interpolated class strings or inline appearance; validation/bounds remain separate policy decisions>.
+- **Class composition / consumer layout:** <supported className surface and precedence per part, cn/clsx/twMerge limits and tests; defaults/variants remain appearance API, no arbitrary overrides>
+- **Seven-file gate / pending proposals:** <meaningful roles for types.ts, useComponentName.ts, ComponentName.tsx, component-name.css, ComponentName.test.tsx, ComponentName.stories.tsx, index.ts; approved compliant CSS role, minimal global CSS/exceptions and token/dependency confirmations. Without a meaningful compliant CSS role STOP for human resolution, never dummy files, fake hooks, omission or replacement>
 
-### Referencia visual del diseño esperado
+### Expected-design visual reference
 
-Sigue la [guía de capturas](../../docs/design/README.md). Conserva las imágenes solicitadas en `docs/design/<kebab-name>/v<spec-version>/` y enlázalas desde la ubicación real de esta ficha. No uses una captura de la implementación actual como diseño aprobado sin adopción humana explícita.
+Follow the [capture guide](../../docs/design/README.md): real requested images in `docs/components/<kebab-name>/v<spec-version>/`, linked from the actual spec location. Reused historical captures retain their original capture version, hashes and limits; record current spec and source capture versions separately. Current implementation is not approved expected design without explicit adoption.
 
-| ID visual | Captura (enlace relativo y descripción) | Variante / estado / props | Origen y versión de la fuente | Estado y aprobación recuperable |
+| Visual ID | Real image / descriptive English alt text | Variant / state / props | Source and version | Status / recoverable approval |
 | --- | --- | --- | --- | --- |
-| VIS-01 | <imagen real o pendiente; no enlace ficticio> | <escenario principal> | <URL/story/lienzo y commit/versión; diseño esperado o estado actual> | <propuesta / aprobada; versión y referencia humana> |
+| VIS-01 | <real relative image or Pending, never fake links> | <principal and agreed additional scenarios> | <URL/story/canvas and commit/version; expected or observed> | <Proposed / Approved; spec version and human reference> |
 
-Para cada ID registra:
+- **Conditions / provenance per VIS ID:** <viewport, device scale, browser/version, theme, loaded fonts, motion/transparency, crop/full page; date/tool or supplied-image provenance and verification limits>
+- **Intent / acceptance / pending evidence:** <anatomy, Material, typography, spacing/tokens, allowed differences; related AC IDs and missing source/capture/approval/conditions; never infer tokens from pixels>
+- Without recoverable approved references and comparable conditions, visual conformity is **Not evaluated**. Captures do not replace behavior/accessibility tests; preserve previous expected-design versions and obtain new approval for changes.
 
-- **Condiciones de captura:** <viewport, escala de dispositivo, navegador/versión, tema, fuentes, movimiento/transparencia y recorte o página completa>
-- **Procedencia:** <fecha y Playwright MCP; o imagen aportada, con límites verificables>
-- **Intención y diferencias permitidas:** <anatomía, Material, tipografía, espaciado y tokens relevantes; no deducir valores desde píxeles>
-- **Criterios asociados:** <IDs de aceptación que se comprobarán con esta referencia; estados/variantes adicionales acordados>
-- **Pendientes visuales:** <fuente/captura/aprobación/condiciones faltantes; o ninguno>
+## 7. Acceptance criteria
 
-Sin referencia recuperable y aprobada, la conformidad visual queda pendiente, no validada. La captura no sustituye comportamiento, accesibilidad ni tests. Si se cambia el diseño esperado, conserva la referencia anterior y solicita aprobación de una nueva versión.
-
-## 7. Criterios de aceptación
-
-Asigna un ID a cada promesa verificable. Indica comprobaciones previstas y, por separado, resultados obtenidos: un test o una story planificados no son evidencia de cumplimiento.
-
-| ID | Resultado verificable | Test previsto | Story / comprobación visual prevista | Evidencia obtenida |
+| ID | Observable promise | Planned test / method | Planned story / visual check | Observed evidence |
 | --- | --- | --- | --- | --- |
-| AC-01 | <dado un caso, al actuar, ocurre un resultado observable> | <caso y archivo, o no aplica con motivo> | <ejemplo o comprobación, o no aplica con motivo> | <pendiente o resultado y referencia> |
+| AC-01 | <given/when/then> | <case and file or justified Not applicable> | <scenario and VIS ID or justified Not applicable> | <Pending or actual result/reference> |
 
-### Cierre de la ficha
+### Spec closure
 
-- [ ] Los siete bloques están completos o justificados como «No aplica».
-- [ ] No quedan dudas que impidan definir las promesas del componente.
-- [ ] Las propuestas se distinguen de la implementación verificada.
-- [ ] Cada promesa tiene un criterio y un método de comprobación adecuado.
-- [ ] Las referencias visuales identifican su origen, condiciones y relación con criterios; las capturas pendientes no se presentan como verificación.
-- [ ] La aprobación humana corresponde a esta versión de la ficha y a las referencias visuales que identifica.
+- [ ] All seven blocks are complete or justified as Not applicable; no blocking promise decisions remain.
+- [ ] New/changed own props have registry lookup evidence, exact applied/proposed IDs and reviewed exceptions; convention approval remains explicit and separate, including in issue handoffs.
+- [ ] Proposals, verified implementation, planned test/story matrices and observed results are distinct; each promise has an acceptance ID and suitable method.
+- [ ] Visual IDs identify real image provenance, conditions and related criteria; pending captures are not verification.
+- [ ] Snapshot identity is recoverable; human approval identifies this exact version, content digest, visual hashes and scope; otherwise status remains Draft.
+- [ ] One canonical component issue is retained; subsequent versions are authorized comments with reason, compatibility impact, capture links/IDs, previous-comment link and recoverable full snapshot, never silent body edits or one issue per version.
 
-**Siguiente paso:** presentar el plan de implementación y esperar su aprobación. Esta ficha no autoriza cambios de tokens, dependencias, código ni mutaciones externas.
+**Next step:** propose the implementation plan and await separate approval; this spec authorizes no code, token/dependency changes or external writes.

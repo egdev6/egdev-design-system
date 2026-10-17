@@ -39,22 +39,26 @@ Origen: la versión 37 del artefacto *EGDEV Foundation* (Claude Design). Materia
 | `--gradient-hot`, `--shadow-hot` | base #22121A | Tarjeta firma. La base subió de #0E0709 para no leerse como un agujero sobre gris |
 | `--ease-spring`, `--ease-snappy`, `--duration-press` | | Hover con muelle; pulsación en 90ms |
 
-## Recetas
+## Recipes — visual semantics, not a CSS mandate
+
+These historical CSS recipes define binding Material semantics, not permission to hand-author per-component appearance or copy literal values into utilities. Use token-backed Tailwind/CVA; wells, overlays, solid/reduced-transparency fallbacks, reduced motion and focus remain mandatory. Surface is a future Foundation composition concept, not an importable React box. Gauge is the only implemented public React component; its approved native-well exception is specified below. Other components require an approved Material recipe or Surface proposal before implementation, not automatic reuse or cloning of retired Surface classes. Minimize justified global CSS; approve any recipe exception and the meaningful seventh-file role in spec/plan, or STOP for human resolution. No new hardcoded values, tokens or dependencies without explicit approval.
+
+The Surface names in the following historical recipes describe conceptual/future treatments, not current React APIs. A future Surface's general base hairline border remains a separate design concern; Gauge's accepted 0px well border does not change that concept or every well recipe.
 
 ```css
-/* Superficie elevada (lo hace <Surface>) */
+/* Elevated surface: conceptual future Surface, not a current React API. */
 background: var(--gradient-sheen), var(--color-surface-1);
 border: 1px solid var(--color-border-hairline);
 box-shadow: var(--shadow-edge), var(--shadow-elev-1);
 
-/* Overlay (lo hace <Surface tone="glass">) */
+/* Overlay: conceptual future Surface glass treatment, not an importable API. */
 background: var(--color-surface-overlay);
 backdrop-filter: blur(var(--blur-overlay)) saturate(150%);
 border: 1px solid var(--color-border-hairline-strong);
 box-shadow: var(--shadow-edge-strong), var(--shadow-elev-3);
 @media (prefers-reduced-transparency: reduce) { background: var(--color-surface-2); backdrop-filter: none; }
 
-/* Pozo (lo hace <Surface tone="well">) */
+/* Well: existing Material semantics; future Surface composition is conceptual. */
 background: var(--color-surface-0);
 box-shadow: var(--shadow-well);
 
@@ -74,13 +78,23 @@ pie:      background: var(--color-surface-0); border-top: 1px solid var(--color-
 - **Fundidos solo en los bordes del grupo** (`--fade-top`, `--fade-bottom`): about + build, think + blog, discord y footer. Entre dos secciones grises seguidas no hay fundido.
 - **Tarjetas sólidas en gris.** Dentro de `--grafito`, las tarjetas de la web pierden el cristal y pasan a `surface-1` (hover `surface-2`); la ProjectCard `--feat` sigue siendo la tarjeta hot.
 - **Bandas.** Cabecera de TerminalCard y CommunityCard en `surface-2`; pie de NowCard en `surface-0`.
-- Hoy viven en `legacy/bundle.css`; al portar SectionShell y esas tarjetas, sus reglas se mueven con ellas.
+- Historical location: `legacy/bundle.css`. Preserve these styles and consumers until visual parity and an explicitly approved migration; porting does not automatically authorize moving/deleting rules.
+
+## Gauge-only native-well exception
+
+The current Gauge contract is the [immutable v0.8 base](specs/gauge.md) plus the [v0.9 composition amendment](components/gauge/v0.9/composition-amendment.md), with a [separate full-plan approval](components/gauge/v0.9/plan-approval.json). The accepted pilot adopts the existing recessed well, not a new flat appearance:
+
+- Gauge owns a native decorative `div` (`eg-gauge-well`, internal marker only), hidden from accessibility APIs. No Surface import, private React replacement or public part-override API.
+- Static token-backed CVA utilities in `types.ts`, composed through the hook with per-part `cn()`, own border-box sizing, padding 0, solid **0px border**, full radius via `--radius-full`, `--color-surface-0` background with no image, existing two-inset `--shadow-well` and `--color-fg-default`. Do not copy Surface's conceptual base 1px border.
+- `gauge.css` remains geometry-only: conic arc, radial mask and supporting alignment/clipping, including **+0.5px inner-edge smoothing**. The seven meaningful file roles, passive API, numeric policy and root outer-margin/alignment-only `className` contract remain unchanged.
+- This bounded exception grants no global appearance permission, handwritten Material recipe, generic Surface-class cloning, new tokens/dependencies or automatic reuse for future components. A changed promise or broader stylesheet role requires separate approval.
+
+Approval and the accepted pilot are not evidence that all retirement/test/build/consumer gates have completed; report those separately.
 
 ## En el código
 
-- **No se repiten recetas a mano.** Una caja con materia es `<Surface>` (`tone`: `default`, `glass`, `brand`, `well`, `ghost`; `elevation`: `flat`, `low`, `high`).
-- **Selector corto** = `<Tabs variant="segmented">`.
+- **Future composition concepts, not current APIs:** Surface treatments (`default`, `glass`, `brand`, `well`, `ghost`; conceptual elevations `flat`, `low`, `high`) and segmented Tabs remain provisional. They require their own approved contracts/plans before becoming usable React components; do not import them from `@egdev/ui` or retain a hidden Surface helper. Gauge's native well is the bounded exception above, not a general substitute.
 - **Marcas de producto** (ProductMark, pendiente de portar): `--gradient-btn-primary` + `--shadow-btn-primary`.
 - **Foco** sigue siendo `--shadow-focus` y gana siempre a las sombras de material.
 - **Deshabilitado** sigue siendo opacidad `.45`.
-- `legacy/bundle.css` ya trae Material v2 en todos los componentes aún no portados; al portar uno, sus reglas se mueven con el material incluido.
+- Legacy Material v2 remains evidence, not proof of target compliance. Preserve its visual semantics and public markers; do not silently migrate consumers/styles.
