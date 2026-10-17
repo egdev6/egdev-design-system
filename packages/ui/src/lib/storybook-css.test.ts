@@ -8,6 +8,137 @@ import { gaugeCircleVariants } from '../atoms/gauge/types';
 
 let css: string;
 
+// Limited, comment-free emitted CSS: nonempty double-quoted charset strings (no escapes or
+// line breaks), and comma-separated dotted ASCII layer names starting with a letter/underscore.
+// This checks statement syntax/position, not encoding labels, reserved names or charset ordering.
+function isImportPreamble(prefix: string): boolean {
+  let position = 0;
+  const skipWhitespace = () => {
+    while (position < prefix.length && /[ \t\r\n\f]/.test(prefix[position] ?? '')) {
+      position++;
+    }
+  };
+
+  // The cursor only advances; all character tests and keyword lookups have bounded length.
+  while (true) {
+    skipWhitespace();
+    if (position === prefix.length) {
+      return true;
+    }
+    const charset = prefix.startsWith('@charset', position);
+    if (!charset && !prefix.startsWith('@layer', position)) {
+      return false;
+    }
+    position += charset ? 8 : 6;
+    const keywordEnd = position;
+    skipWhitespace();
+    if (position === keywordEnd) {
+      return false;
+    }
+
+    if (charset) {
+      if (prefix[position] !== '"') {
+        return false;
+      }
+      position++;
+      const stringStart = position;
+      while (position < prefix.length && prefix[position] !== '"') {
+        if (/[\\\r\n\f]/.test(prefix[position] ?? '')) {
+          return false;
+        }
+        position++;
+      }
+      if (position === stringStart || position === prefix.length) {
+        return false;
+      }
+      position++;
+    } else {
+      while (true) {
+        if (!/[A-Za-z_]/.test(prefix[position] ?? '')) {
+          return false;
+        }
+        position++;
+        while (position < prefix.length && /[A-Za-z0-9_-]/.test(prefix[position] ?? '')) {
+          position++;
+        }
+        if (prefix[position] === '.') {
+          position++;
+          continue;
+        }
+        skipWhitespace();
+        if (prefix[position] !== ',') {
+          break;
+        }
+        position++;
+        skipWhitespace();
+      }
+    }
+    skipWhitespace();
+    if (prefix[position] !== ';') {
+      return false;
+    }
+    position++;
+  }
+}
+
+describe('font import preamble validation', () => {
+  it.each([
+    '',
+    ' \t\r\n\f',
+    '@charset "UTF-8";',
+    '@charset "semi;colon";',
+    '@layer reset;',
+    '@layer _reset-2, theme.components;',
+    '@layer reset, theme.components, utilities;',
+    ' \n@charset "UTF-8";\n@layer reset; @layer theme.components;\n'
+  ])('accepts the supported preamble %j', (prefix) => {
+    expect(isImportPreamble(prefix)).toBe(true);
+  });
+
+  it.each([
+    'body { color: red; }',
+    '@layer reset {}',
+    '@media print {}',
+    '@import "other.css";',
+    '@charset "UTF-8"',
+    '@layer reset',
+    '@charset;',
+    '@layer;',
+    '@charset   ;',
+    '@layer \t ;',
+    '@charset "";',
+    '@charset UTF-8;',
+    '@charset "UTF-8;',
+    '@charset "UTF-8" extra;',
+    '@charset "UTF\n8";',
+    '@charset "UTF\\8";',
+    "@charset 'UTF-8';",
+    '@layered reset;',
+    '@charsetx "UTF-8";',
+    '@layer reset,;',
+    '@layer reset..theme;',
+    '@layer reset.;',
+    '@layer reset .theme;',
+    '@layer 2reset;',
+    '@layer reset theme;',
+    '@layer "reset";',
+    '@layer reset};',
+    '@layer reset; body {}'
+  ])('rejects the malformed or disallowed preamble %j', (prefix) => {
+    expect(isImportPreamble(prefix)).toBe(false);
+  });
+
+  it('handles long whitespace and missing delimiters without backtracking', () => {
+    const whitespace = ' '.repeat(100_000);
+    expect(isImportPreamble(whitespace)).toBe(true);
+    expect(isImportPreamble(`@layer ${whitespace};`)).toBe(false);
+    expect(isImportPreamble(`@charset ${whitespace}`)).toBe(false);
+    expect(isImportPreamble(`@charset "${'a'.repeat(100_000)}`)).toBe(false);
+    expect(isImportPreamble(`@layer ${'a'.repeat(100_000)}`)).toBe(false);
+    expect(isImportPreamble('@layer reset;\n'.repeat(10_000))).toBe(true);
+  });
+});
+
 // Match emitted static selectors, not class strings in source files or a full CSS snapshot.
 function rule(selector: string) {
   const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -147,7 +278,7 @@ describe('Storybook preview CSS', () => {
       throw new Error('Missing external font import');
     }
     // Only charset/layer statements may precede imports, never style rules or layer blocks.
-    expect(css.slice(0, fonts.index)).toMatch(/^(?:\s*@(?:charset\s+[^;]+|layer\s+[^;{]+);)*\s*$/);
+    expect(isImportPreamble(css.slice(0, fonts.index))).toBe(true);
     for (const family of ['Barlow+Condensed', 'Barlow', 'JetBrains+Mono']) {
       expect(fonts[0]).toContain(`family=${family}:`);
     }
