@@ -1,0 +1,49 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundations/Material" />
+
+<div className="eg-docs">
+  <header className="eg-docs-hero"><div className="eg-docs-eyebrow">Foundations / 04</div><h1><span className="eg-docs-title">Depth you can read</span></h1><div className="eg-docs-lead">Tonal steps establish hierarchy. Light catches the upper edge. Two-layer shadows support the structure, never replace it.</div></header>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Four planes, distinct jobs</span></h2>
+    <div className="eg-docs-grid eg-docs-swatches">
+      <figure><span className="eg-docs-swatch" data-color="surface-0" /><figcaption><code>--color-surface-0</code><span>Canvas and recessed wells</span></figcaption></figure>
+      <figure><span className="eg-docs-swatch" data-color="surface-1" /><figcaption><code>--color-surface-1</code><span>Panels, cards and tables</span></figcaption></figure>
+      <figure><span className="eg-docs-swatch" data-color="surface-2" /><figcaption><code>--color-surface-2</code><span>Raised headers and solid overlays</span></figcaption></figure>
+      <figure><span className="eg-docs-swatch" data-color="surface-3" /><figcaption><code>--color-surface-3</code><span>Selected areas and floating headers</span></figcaption></figure>
+    </div>
+    <p>Pure black is not the product canvas. Keep hairlines neutral; a red border is not a universal separation tool. Use <code>--color-border-control</code> when a control needs a perceivable boundary.</p>
+  </section>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Read the construction</span></h2>
+    <div className="eg-docs-grid">
+      <article className="eg-docs-card"><div className="eg-docs-band">Raised header · surface-2</div><h3><span className="eg-docs-card-title">Elevated panel</span></h3><p>A sheen, light edge and two-layer elevation sit above a surface-1 body.</p><div className="eg-docs-well">Recessed example · surface-0 + shadow-well</div></article>
+      <article className="eg-docs-card"><h3><span className="eg-docs-card-title">Floating layer</span></h3><div className="eg-docs-overlay"><strong>Overlay specimen</strong><p>Translucent surface, blur, strong hairline and elevation-3. The solid fallback is surface-2.</p></div><p>This static example is not a dialog or an interactive control.</p></article>
+    </div>
+    <pre className="eg-docs-code"><code>{`/* Documentation-only HTML panel: existing Material recipe. */
+background: var(--gradient-sheen), var(--color-surface-1);
+border: var(--border-width) solid var(--color-border-hairline);
+box-shadow: var(--shadow-edge), var(--shadow-elev-1);
+
+/* Recessed content uses the existing well treatment. */
+background: var(--color-surface-0);
+box-shadow: var(--shadow-well);`}</code></pre>
+    <p className="eg-docs-note">These are documentation specimens, not a private React Surface or a new reusable recipe. Surface remains a future concept. New library components still need their own approved Material composition and stylesheet role.</p>
+  </section>
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Restraint is part of the material</span></h2>
+    <div className="eg-docs-table-wrap">
+      <table>
+        <thead><tr><th>Do</th><th>Keep the boundary</th></tr></thead>
+        <tbody>
+          <tr><td>Sink things that fill; raise things that press.</td><td>Do not flatten a well into a bare background.</td></tr>
+          <tr><td>Use overlays only for genuinely floating UI.</td><td>Provide a solid fallback and honor reduced transparency.</td></tr>
+          <tr><td>Let focus win over decorative shadows.</td><td>A glow alone is not a focus indicator.</td></tr>
+          <tr><td>Reserve the hot treatment for one signature per view.</td><td>No handmade gradients, shadows or token additions.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Gauge alone has an approved native decorative well with a 0px border and existing inset-shadow tokens. It does not import Surface, and its geometry stylesheet does not grant general appearance overrides.</p>
+  </section>
+  <footer className="eg-docs-links"><a href="/?path=/docs/foundations-motion--docs" target="_top">Move with intention →</a><a href="https://github.com/egdev6/egdev-design-system/blob/main/docs/MATERIAL.md" target="_blank" rel="noopener noreferrer">Full Material rules and fallbacks ↗</a></footer>
+</div>

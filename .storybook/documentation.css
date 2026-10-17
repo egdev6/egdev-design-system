@@ -1,0 +1,377 @@
+/* Storybook-only HTML specimens; never target component roots or Docs internals.
+ * Keep these rules unlayered and qualify descendant classes with .eg-docs:
+ * Docs injects unlayered element font resets later, with one-class specificity.
+ */
+.eg-docs {
+  box-sizing: border-box;
+  max-width: var(--content-max);
+  padding: var(--gutter);
+  color: var(--color-fg-default);
+  background: var(--color-bg-canvas);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-default);
+  font-weight: var(--text-body-default--font-weight);
+  line-height: var(--text-body-default--line-height);
+  overflow-wrap: anywhere;
+}
+.eg-docs :where(h1, h2, h3, p, figure, pre) {
+  margin: var(--space-0);
+}
+.eg-docs :where(p, pre, h3, .eg-docs-grid, .eg-docs-table-wrap) + * {
+  margin-block-start: var(--space-4);
+}
+.eg-docs .eg-docs-hero,
+.eg-docs .eg-docs-panel,
+.eg-docs .eg-docs-card {
+  min-width: var(--space-0);
+  padding: var(--space-6);
+  border: var(--border-width) solid var(--color-border-hairline);
+  border-radius: var(--radius-lg);
+  background: var(--gradient-sheen), var(--color-surface-1);
+  box-shadow: var(--shadow-edge), var(--shadow-elev-1);
+}
+.eg-docs .eg-docs-hero {
+  padding: var(--gutter);
+}
+.eg-docs .eg-docs-panel,
+.eg-docs .eg-docs-links {
+  margin-block-start: var(--space-8);
+}
+.eg-docs .eg-docs-logo {
+  display: block;
+  width: min(100%, calc(var(--space-24) * 3));
+  height: auto;
+  margin-block-end: var(--space-8);
+}
+.eg-docs .eg-docs-title {
+  display: block;
+  margin-block: var(--space-3) var(--space-4);
+  color: var(--color-fg-default);
+  font:
+    var(--text-display-hero--font-weight) var(--text-display-hero) / var(--text-display-hero--line-height)
+    var(--font-display);
+  letter-spacing: var(--text-display-hero--letter-spacing);
+}
+.eg-docs .eg-docs-section-title {
+  display: block;
+  margin-block-end: var(--space-6);
+  color: var(--color-fg-brand-raised);
+  font:
+    var(--text-heading-section--font-weight) var(--text-heading-section) / var(--text-heading-section--line-height)
+    var(--font-display);
+  letter-spacing: var(--text-heading-section--letter-spacing);
+  text-transform: uppercase;
+}
+.eg-docs .eg-docs-card-title {
+  color: var(--color-fg-default);
+  font:
+    var(--text-heading-small--font-weight) var(--text-heading-small) / var(--text-heading-small--line-height)
+    var(--font-sans);
+  letter-spacing: var(--text-heading-small--letter-spacing);
+}
+.eg-docs .eg-docs-eyebrow {
+  color: var(--color-fg-brand-raised);
+  font:
+    var(--text-label-eyebrow--font-weight) var(--text-label-eyebrow) / var(--text-label-eyebrow--line-height)
+    var(--font-display);
+  letter-spacing: var(--text-label-eyebrow--letter-spacing);
+  text-transform: uppercase;
+}
+.eg-docs .eg-docs-lead {
+  color: var(--color-fg-secondary);
+  font:
+    var(--text-body-large--font-weight) var(--text-body-large) / var(--text-body-large--line-height) var(--font-sans);
+}
+.eg-docs a {
+  color: var(--color-fg-brand-raised);
+  font-weight: var(--text-cta-label--font-weight);
+  text-decoration: underline;
+  text-underline-offset: var(--space-1);
+}
+.eg-docs a:hover {
+  color: var(--color-fg-brand-hover);
+}
+.eg-docs a:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus-ring);
+  outline-offset: var(--focus-offset);
+}
+.eg-docs .eg-docs-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-6);
+}
+.eg-docs .eg-docs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--space-24) * 2)), 1fr));
+  gap: var(--space-4);
+}
+.eg-docs .eg-docs-card {
+  padding: var(--space-4);
+}
+.eg-docs .eg-docs-note {
+  padding: var(--space-4);
+  border-inline-start: var(--focus-width) solid var(--color-border-brand);
+  color: var(--color-fg-secondary);
+}
+.eg-docs code {
+  font: var(--text-code--font-weight) var(--text-code) / var(--text-code--line-height) var(--font-mono);
+  letter-spacing: var(--text-code--letter-spacing);
+  overflow-wrap: anywhere;
+}
+.eg-docs .eg-docs-panel :not(pre) > code {
+  white-space: normal;
+}
+.eg-docs .eg-docs-code code {
+  white-space: inherit;
+}
+.eg-docs .eg-docs-code {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  color: var(--color-fg-default);
+  background: var(--color-surface-0);
+  box-shadow: var(--shadow-well);
+  white-space: pre;
+}
+.eg-docs .eg-docs-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.eg-docs table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: start;
+}
+.eg-docs :where(th, td) {
+  padding: var(--space-3);
+  border-bottom: var(--border-width) solid var(--color-border-hairline);
+  vertical-align: top;
+}
+.eg-docs th {
+  color: var(--color-fg-default);
+  background: var(--gradient-sheen), var(--color-surface-2);
+  box-shadow: var(--shadow-edge);
+}
+.eg-docs .eg-docs-swatches {
+  row-gap: var(--space-6);
+}
+.eg-docs .eg-docs-swatch {
+  display: block;
+  height: var(--space-16);
+  border: var(--border-width) solid var(--color-border-hairline-strong);
+  border-radius: var(--radius-md);
+}
+.eg-docs figcaption {
+  display: grid;
+  gap: var(--space-1);
+  margin-block-start: var(--space-2);
+}
+.eg-docs figcaption span,
+.eg-docs .eg-docs-caption {
+  display: block;
+  color: var(--color-fg-muted);
+  font-size: var(--text-label-default);
+}
+.eg-docs .eg-docs-swatch[data-color="neutral-950"] {
+  background: var(--color-primitive-neutral-950);
+}
+.eg-docs .eg-docs-swatch[data-color="graphite-950"] {
+  background: var(--color-primitive-graphite-950);
+}
+.eg-docs .eg-docs-swatch[data-color="red-neon"] {
+  background: var(--color-primitive-red-neon);
+}
+.eg-docs .eg-docs-swatch[data-color="alpha-white"] {
+  background: var(--color-alpha-white-08);
+}
+.eg-docs .eg-docs-swatch[data-color="alpha-red"] {
+  background: var(--color-alpha-red-12);
+}
+.eg-docs .eg-docs-swatch[data-color="success"] {
+  background: var(--color-status-success);
+}
+.eg-docs .eg-docs-swatch[data-color="warning"] {
+  background: var(--color-status-warning);
+}
+.eg-docs .eg-docs-swatch[data-color="info"] {
+  background: var(--color-status-info);
+}
+.eg-docs .eg-docs-swatch[data-color="danger"] {
+  background: var(--color-status-danger);
+}
+.eg-docs .eg-docs-swatch[data-color="surface-0"] {
+  background: var(--color-surface-0);
+}
+.eg-docs .eg-docs-swatch[data-color="surface-1"] {
+  background: var(--color-surface-1);
+}
+.eg-docs .eg-docs-swatch[data-color="surface-2"] {
+  background: var(--color-surface-2);
+}
+.eg-docs .eg-docs-swatch[data-color="surface-3"] {
+  background: var(--color-surface-3);
+}
+.eg-docs .eg-docs-type-scale {
+  display: grid;
+  gap: var(--space-6);
+}
+.eg-docs .eg-docs-type-row {
+  display: grid;
+  gap: var(--space-2);
+  min-width: var(--space-0);
+  padding-block-end: var(--space-4);
+  border-bottom: var(--border-width) solid var(--color-border-hairline);
+}
+.eg-docs .eg-docs-type {
+  color: var(--color-fg-default);
+  overflow-wrap: anywhere;
+}
+.eg-docs .eg-docs-type[data-recipe="display-show"] {
+  font:
+    var(--text-display-show--font-weight) var(--text-display-show) / var(--text-display-show--line-height)
+    var(--font-display);
+  letter-spacing: var(--text-display-show--letter-spacing);
+  text-transform: uppercase;
+}
+.eg-docs .eg-docs-type[data-recipe="display-pro"] {
+  font:
+    var(--text-display-pro--font-weight) var(--text-display-pro) / var(--text-display-pro--line-height)
+    var(--font-display);
+  letter-spacing: var(--text-display-pro--letter-spacing);
+  text-transform: uppercase;
+}
+.eg-docs .eg-docs-type[data-recipe="display-hero"] {
+  font:
+    var(--text-display-hero--font-weight) var(--text-display-hero) / var(--text-display-hero--line-height)
+    var(--font-display);
+  letter-spacing: var(--text-display-hero--letter-spacing);
+  text-transform: uppercase;
+}
+.eg-docs .eg-docs-type[data-recipe="heading-section"] {
+  font:
+    var(--text-heading-section--font-weight) var(--text-heading-section) / var(--text-heading-section--line-height)
+    var(--font-display);
+  letter-spacing: var(--text-heading-section--letter-spacing);
+  text-transform: uppercase;
+}
+.eg-docs .eg-docs-type[data-recipe="heading-small"] {
+  font:
+    var(--text-heading-small--font-weight) var(--text-heading-small) / var(--text-heading-small--line-height)
+    var(--font-sans);
+  letter-spacing: var(--text-heading-small--letter-spacing);
+}
+.eg-docs .eg-docs-type[data-recipe="body-large"] {
+  font:
+    var(--text-body-large--font-weight) var(--text-body-large) / var(--text-body-large--line-height) var(--font-sans);
+  letter-spacing: var(--text-body-large--letter-spacing);
+}
+.eg-docs .eg-docs-type[data-recipe="body-default"] {
+  font:
+    var(--text-body-default--font-weight) var(--text-body-default) / var(--text-body-default--line-height)
+    var(--font-sans);
+  letter-spacing: var(--text-body-default--letter-spacing);
+}
+.eg-docs .eg-docs-type[data-recipe="body-muted"] {
+  font:
+    var(--text-body-muted--font-weight) var(--text-body-muted) / var(--text-body-muted--line-height) var(--font-sans);
+  letter-spacing: var(--text-body-muted--letter-spacing);
+}
+.eg-docs .eg-docs-type[data-recipe="label-default"] {
+  font:
+    var(--text-label-default--font-weight) var(--text-label-default) / var(--text-label-default--line-height)
+    var(--font-sans);
+  letter-spacing: var(--text-label-default--letter-spacing);
+}
+.eg-docs .eg-docs-type[data-recipe="label-eyebrow"] {
+  font:
+    var(--text-label-eyebrow--font-weight) var(--text-label-eyebrow) / var(--text-label-eyebrow--line-height)
+    var(--font-display);
+  letter-spacing: var(--text-label-eyebrow--letter-spacing);
+  text-transform: uppercase;
+}
+.eg-docs .eg-docs-type[data-recipe="meta"] {
+  font: var(--text-meta--font-weight) var(--text-meta) / var(--text-meta--line-height) var(--font-display);
+  letter-spacing: var(--text-meta--letter-spacing);
+  text-transform: uppercase;
+}
+.eg-docs .eg-docs-type[data-recipe="cta-label"] {
+  font: var(--text-cta-label--font-weight) var(--text-cta-label) / var(--text-cta-label--line-height) var(--font-sans);
+  letter-spacing: var(--text-cta-label--letter-spacing);
+}
+.eg-docs .eg-docs-spacing {
+  display: grid;
+  gap: var(--space-3);
+}
+.eg-docs .eg-docs-space-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.eg-docs .eg-docs-space-bar {
+  display: inline-block;
+  height: var(--space-4);
+  background: var(--color-fg-brand-raised);
+  border-radius: var(--radius-sm);
+}
+.eg-docs .eg-docs-space-bar[data-space="1"] {
+  width: var(--space-1);
+}
+.eg-docs .eg-docs-space-bar[data-space="2"] {
+  width: var(--space-2);
+}
+.eg-docs .eg-docs-space-bar[data-space="4"] {
+  width: var(--space-4);
+}
+.eg-docs .eg-docs-space-bar[data-space="6"] {
+  width: var(--space-6);
+}
+.eg-docs .eg-docs-space-bar[data-space="8"] {
+  width: var(--space-8);
+}
+.eg-docs .eg-docs-space-bar[data-space="16"] {
+  width: var(--space-16);
+}
+.eg-docs .eg-docs-space-bar[data-space="24"] {
+  width: var(--space-24);
+}
+.eg-docs .eg-docs-band {
+  padding: var(--space-3);
+  border-bottom: var(--border-width) solid var(--color-border-hairline);
+  border-radius: var(--radius-sm);
+  background: var(--gradient-sheen), var(--color-surface-2);
+  box-shadow: var(--shadow-edge);
+}
+.eg-docs .eg-docs-well {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  color: var(--color-fg-default);
+  background: var(--color-surface-0);
+  box-shadow: var(--shadow-well);
+}
+.eg-docs .eg-docs-overlay {
+  padding: var(--space-4);
+  border: var(--border-width) solid var(--color-border-hairline-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+  box-shadow: var(--shadow-edge-strong), var(--shadow-elev-3);
+}
+.eg-docs .eg-docs-metric {
+  color: var(--color-fg-brand-raised);
+  font:
+    var(--text-heading-section--font-weight) var(--text-heading-section) / var(--text-heading-section--line-height)
+    var(--font-display);
+}
+@supports (backdrop-filter: blur(var(--blur-overlay))) {
+  .eg-docs .eg-docs-overlay {
+    background: var(--color-surface-overlay);
+    backdrop-filter: blur(var(--blur-overlay)) saturate(150%);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .eg-docs .eg-docs-overlay {
+    background: var(--color-surface-2);
+    backdrop-filter: none;
+  }
+}

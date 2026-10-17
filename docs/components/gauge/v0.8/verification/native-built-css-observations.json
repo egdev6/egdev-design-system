@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "method": "Temporary Vite consumer with plugins: [], importing built UI JavaScript and built UI/token CSS; existing installed React, no dependency installation",
+  "limitations": "Not a packed external React18/19 consumer; uses existing dependency aliases and does not resolve the offline fixture block",
+  "data": [
+    {
+      "label": "Native compiled capacity",
+      "value": "42.5",
+      "state": "warning",
+      "circle": {
+        "width": 64.5,
+        "height": 64.5
+      },
+      "background": "conic-gradient(rgb(255, 178, 36) 42.5%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+      "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4.60714px), rgb(0, 0, 0) calc(100% - 4.60714px))",
+      "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+      "transition": "none"
+    },
+    {
+      "label": "Native preset capacity",
+      "value": "82",
+      "state": "normal",
+      "circle": {
+        "width": 40,
+        "height": 40
+      },
+      "background": "conic-gradient(rgb(255, 0, 54) 82%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)",
+      "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 3px), rgb(0, 0, 0) calc(100% - 3px))",
+      "shadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+      "transition": "none"
+    }
+  ],
+  "errors": []
+}

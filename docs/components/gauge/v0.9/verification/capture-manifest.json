@@ -1,0 +1,1310 @@
+{
+  "scope": "Approved v0.9 Gauge parity evidence",
+  "status": "Before, autonomous-well and post-retirement captures match: 9/9 computed snapshots and exact PNG bytes, Gauge-only live story index",
+  "before": {
+    "phase": "before",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "observations": [
+      {
+        "scene": "default",
+        "id": "atoms-gauge--default",
+        "args": "value:42;size:md;state:normal",
+        "capture": "docs/components/gauge/v0.9/verification/before--default--1280--dark.png",
+        "root": {
+          "width": 56,
+          "height": 56,
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "text": ""
+        },
+        "well": {
+          "width": 56,
+          "height": 56,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 56,
+          "height": 56,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))",
+          "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "sm",
+        "id": "atoms-gauge--default",
+        "args": "value:82;size:sm;state:normal",
+        "capture": "docs/components/gauge/v0.9/verification/before--sm--1280--dark.png",
+        "root": {
+          "width": 40,
+          "height": 40,
+          "role": "meter",
+          "value": "82",
+          "valueText": "82 / 100",
+          "state": "normal",
+          "text": ""
+        },
+        "well": {
+          "width": 40,
+          "height": 40,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 40,
+          "height": 40,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 3px), rgb(0, 0, 0) calc(100% - 2.5px))",
+          "background": "conic-gradient(rgb(255, 0, 54) 82%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "lg-full",
+        "id": "atoms-gauge--default",
+        "args": "value:100;size:lg;state:normal",
+        "capture": "docs/components/gauge/v0.9/verification/before--lg-full--1280--dark.png",
+        "root": {
+          "width": 80,
+          "height": 80,
+          "role": "meter",
+          "value": "100",
+          "valueText": "100 / 100",
+          "state": "normal",
+          "text": ""
+        },
+        "well": {
+          "width": 80,
+          "height": 80,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 80,
+          "height": 80,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 6px), rgb(0, 0, 0) calc(100% - 5.5px))",
+          "background": "conic-gradient(rgb(255, 0, 54) 100%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "custom-decimal",
+        "id": "atoms-gauge--default",
+        "args": "value:42.5;size:64.5;state:normal",
+        "capture": "docs/components/gauge/v0.9/verification/before--custom-decimal--1280--dark.png",
+        "root": {
+          "width": 64.5,
+          "height": 64.5,
+          "role": "meter",
+          "value": "42.5",
+          "valueText": "42.5 / 100",
+          "state": "normal",
+          "text": ""
+        },
+        "well": {
+          "width": 64.5,
+          "height": 64.5,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 64.5,
+          "height": 64.5,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4.60714px), rgb(0, 0, 0) calc(100% - 4.10714px))",
+          "background": "conic-gradient(rgb(255, 0, 54) 42.5%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "warning",
+        "id": "atoms-gauge--default",
+        "args": "value:42;size:md;state:warning;stateText:Review capacity",
+        "capture": "docs/components/gauge/v0.9/verification/before--warning--1280--dark.png",
+        "root": {
+          "width": 124.140625,
+          "height": 80.796875,
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "warning",
+          "text": "Review capacity"
+        },
+        "well": {
+          "width": 56,
+          "height": 56,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 56,
+          "height": 56,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))",
+          "background": "conic-gradient(rgb(255, 178, 36) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "critical",
+        "id": "atoms-gauge--default",
+        "args": "value:95;size:md;state:critical;stateText:Capacity critically high",
+        "capture": "docs/components/gauge/v0.9/verification/before--critical--1280--dark.png",
+        "root": {
+          "width": 163.484375,
+          "height": 80.796875,
+          "role": "meter",
+          "value": "95",
+          "valueText": "95 / 100",
+          "state": "critical",
+          "text": "Capacity critically high"
+        },
+        "well": {
+          "width": 56,
+          "height": 56,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 56,
+          "height": 56,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))",
+          "background": "conic-gradient(rgb(255, 102, 128) 95%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "muted",
+        "id": "atoms-gauge--default",
+        "args": "value:42;size:md;state:muted;stateText:Capacity is muted",
+        "capture": "docs/components/gauge/v0.9/verification/before--muted--1280--dark.png",
+        "root": {
+          "width": 133.796875,
+          "height": 80.796875,
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "muted",
+          "text": "Capacity is muted"
+        },
+        "well": {
+          "width": 56,
+          "height": 56,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 56,
+          "height": 56,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))",
+          "background": "conic-gradient(rgb(161, 162, 168) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "center",
+        "id": "atoms-gauge--default",
+        "args": "value:42;size:md;state:normal;center:42",
+        "capture": "docs/components/gauge/v0.9/verification/before--center--1280--dark.png",
+        "root": {
+          "width": 56,
+          "height": 56,
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "text": "42"
+        },
+        "well": {
+          "width": 56,
+          "height": 56,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 56,
+          "height": 56,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))",
+          "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "unavailable",
+        "id": "atoms-gauge--invalid-value",
+        "args": null,
+        "capture": "docs/components/gauge/v0.9/verification/before--unavailable--1280--dark.png",
+        "root": {
+          "width": 126.375,
+          "height": 46,
+          "role": null,
+          "value": null,
+          "valueText": null,
+          "state": "normal",
+          "text": "Unknown capacityData unavailable"
+        },
+        "well": null,
+        "arc": null,
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      }
+    ]
+  },
+  "after": {
+    "phase": "after",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "observations": [
+      {
+        "scene": "default",
+        "id": "atoms-gauge--default",
+        "args": "value:42;size:md;state:normal",
+        "capture": "docs/components/gauge/v0.9/verification/after--default--1280--dark.png",
+        "root": {
+          "width": 56,
+          "height": 56,
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "text": ""
+        },
+        "well": {
+          "width": 56,
+          "height": 56,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 56,
+          "height": 56,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))",
+          "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "sm",
+        "id": "atoms-gauge--default",
+        "args": "value:82;size:sm;state:normal",
+        "capture": "docs/components/gauge/v0.9/verification/after--sm--1280--dark.png",
+        "root": {
+          "width": 40,
+          "height": 40,
+          "role": "meter",
+          "value": "82",
+          "valueText": "82 / 100",
+          "state": "normal",
+          "text": ""
+        },
+        "well": {
+          "width": 40,
+          "height": 40,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 40,
+          "height": 40,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 3px), rgb(0, 0, 0) calc(100% - 2.5px))",
+          "background": "conic-gradient(rgb(255, 0, 54) 82%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "lg-full",
+        "id": "atoms-gauge--default",
+        "args": "value:100;size:lg;state:normal",
+        "capture": "docs/components/gauge/v0.9/verification/after--lg-full--1280--dark.png",
+        "root": {
+          "width": 80,
+          "height": 80,
+          "role": "meter",
+          "value": "100",
+          "valueText": "100 / 100",
+          "state": "normal",
+          "text": ""
+        },
+        "well": {
+          "width": 80,
+          "height": 80,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 80,
+          "height": 80,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 6px), rgb(0, 0, 0) calc(100% - 5.5px))",
+          "background": "conic-gradient(rgb(255, 0, 54) 100%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "custom-decimal",
+        "id": "atoms-gauge--default",
+        "args": "value:42.5;size:64.5;state:normal",
+        "capture": "docs/components/gauge/v0.9/verification/after--custom-decimal--1280--dark.png",
+        "root": {
+          "width": 64.5,
+          "height": 64.5,
+          "role": "meter",
+          "value": "42.5",
+          "valueText": "42.5 / 100",
+          "state": "normal",
+          "text": ""
+        },
+        "well": {
+          "width": 64.5,
+          "height": 64.5,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 64.5,
+          "height": 64.5,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4.60714px), rgb(0, 0, 0) calc(100% - 4.10714px))",
+          "background": "conic-gradient(rgb(255, 0, 54) 42.5%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "warning",
+        "id": "atoms-gauge--default",
+        "args": "value:42;size:md;state:warning;stateText:Review capacity",
+        "capture": "docs/components/gauge/v0.9/verification/after--warning--1280--dark.png",
+        "root": {
+          "width": 124.140625,
+          "height": 80.796875,
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "warning",
+          "text": "Review capacity"
+        },
+        "well": {
+          "width": 56,
+          "height": 56,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 56,
+          "height": 56,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))",
+          "background": "conic-gradient(rgb(255, 178, 36) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "critical",
+        "id": "atoms-gauge--default",
+        "args": "value:95;size:md;state:critical;stateText:Capacity critically high",
+        "capture": "docs/components/gauge/v0.9/verification/after--critical--1280--dark.png",
+        "root": {
+          "width": 163.484375,
+          "height": 80.796875,
+          "role": "meter",
+          "value": "95",
+          "valueText": "95 / 100",
+          "state": "critical",
+          "text": "Capacity critically high"
+        },
+        "well": {
+          "width": 56,
+          "height": 56,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 56,
+          "height": 56,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))",
+          "background": "conic-gradient(rgb(255, 102, 128) 95%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "muted",
+        "id": "atoms-gauge--default",
+        "args": "value:42;size:md;state:muted;stateText:Capacity is muted",
+        "capture": "docs/components/gauge/v0.9/verification/after--muted--1280--dark.png",
+        "root": {
+          "width": 133.796875,
+          "height": 80.796875,
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "muted",
+          "text": "Capacity is muted"
+        },
+        "well": {
+          "width": 56,
+          "height": 56,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 56,
+          "height": 56,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))",
+          "background": "conic-gradient(rgb(161, 162, 168) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "center",
+        "id": "atoms-gauge--default",
+        "args": "value:42;size:md;state:normal;center:42",
+        "capture": "docs/components/gauge/v0.9/verification/after--center--1280--dark.png",
+        "root": {
+          "width": 56,
+          "height": 56,
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "text": "42"
+        },
+        "well": {
+          "width": 56,
+          "height": 56,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 56,
+          "height": 56,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))",
+          "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "unavailable",
+        "id": "atoms-gauge--invalid-value",
+        "args": null,
+        "capture": "docs/components/gauge/v0.9/verification/after--unavailable--1280--dark.png",
+        "root": {
+          "width": 126.375,
+          "height": 46,
+          "role": null,
+          "value": null,
+          "valueText": null,
+          "state": "normal",
+          "text": "Unknown capacityData unavailable"
+        },
+        "well": null,
+        "arc": null,
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      }
+    ]
+  },
+  "computedDifferences": [],
+  "pngComparisons": [
+    {
+      "scene": "default",
+      "before": "docs/components/gauge/v0.9/verification/before--default--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after--default--1280--dark.png",
+      "beforeSHA256": "50f21937e4257a9f0360146600f52177947a3116e382dbf676365a6f5150fe1b",
+      "afterSHA256": "50f21937e4257a9f0360146600f52177947a3116e382dbf676365a6f5150fe1b",
+      "byteIdentical": true
+    },
+    {
+      "scene": "sm",
+      "before": "docs/components/gauge/v0.9/verification/before--sm--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after--sm--1280--dark.png",
+      "beforeSHA256": "e9c09df19a253464a977c51de481fcb32a592c30191c27d447e24a4372fa4307",
+      "afterSHA256": "e9c09df19a253464a977c51de481fcb32a592c30191c27d447e24a4372fa4307",
+      "byteIdentical": true
+    },
+    {
+      "scene": "lg-full",
+      "before": "docs/components/gauge/v0.9/verification/before--lg-full--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after--lg-full--1280--dark.png",
+      "beforeSHA256": "a43659829e747a38e5236b8a587c31f55d641397f8ec8771607ba8b75d56e4d0",
+      "afterSHA256": "a43659829e747a38e5236b8a587c31f55d641397f8ec8771607ba8b75d56e4d0",
+      "byteIdentical": true
+    },
+    {
+      "scene": "custom-decimal",
+      "before": "docs/components/gauge/v0.9/verification/before--custom-decimal--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after--custom-decimal--1280--dark.png",
+      "beforeSHA256": "e28f3fe0f3669e41bf6c677e8085c5b6f3e197ddfdda78c29ce870713ff313b6",
+      "afterSHA256": "e28f3fe0f3669e41bf6c677e8085c5b6f3e197ddfdda78c29ce870713ff313b6",
+      "byteIdentical": true
+    },
+    {
+      "scene": "warning",
+      "before": "docs/components/gauge/v0.9/verification/before--warning--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after--warning--1280--dark.png",
+      "beforeSHA256": "fd6bc66a6f3b26dbe277c44729d2e4dc9173b89ff8115ae6e976fd620ed92e8d",
+      "afterSHA256": "fd6bc66a6f3b26dbe277c44729d2e4dc9173b89ff8115ae6e976fd620ed92e8d",
+      "byteIdentical": true
+    },
+    {
+      "scene": "critical",
+      "before": "docs/components/gauge/v0.9/verification/before--critical--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after--critical--1280--dark.png",
+      "beforeSHA256": "799c0bd6619eacf9eba166457eb6cd06c061e874915ac6023efd2f428f38a024",
+      "afterSHA256": "799c0bd6619eacf9eba166457eb6cd06c061e874915ac6023efd2f428f38a024",
+      "byteIdentical": true
+    },
+    {
+      "scene": "muted",
+      "before": "docs/components/gauge/v0.9/verification/before--muted--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after--muted--1280--dark.png",
+      "beforeSHA256": "1112556d634807cb467a156fa93645cde944affde98310c7a4457c09db33ea0b",
+      "afterSHA256": "1112556d634807cb467a156fa93645cde944affde98310c7a4457c09db33ea0b",
+      "byteIdentical": true
+    },
+    {
+      "scene": "center",
+      "before": "docs/components/gauge/v0.9/verification/before--center--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after--center--1280--dark.png",
+      "beforeSHA256": "329d2a5d1a3702f07d840f78bc0b8c7da28d5027dbdbfc6dcc42d34ce7bb4249",
+      "afterSHA256": "329d2a5d1a3702f07d840f78bc0b8c7da28d5027dbdbfc6dcc42d34ce7bb4249",
+      "byteIdentical": true
+    },
+    {
+      "scene": "unavailable",
+      "before": "docs/components/gauge/v0.9/verification/before--unavailable--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after--unavailable--1280--dark.png",
+      "beforeSHA256": "32d2c6be94f73d26fc5eb59fe5562774321807cc8b6f4db439ef9d5d38e991de",
+      "afterSHA256": "32d2c6be94f73d26fc5eb59fe5562774321807cc8b6f4db439ef9d5d38e991de",
+      "byteIdentical": true
+    }
+  ],
+  "parityGate": "PASSED_BEFORE_RETIREMENT",
+  "afterRetirement": {
+    "phase": "after-retirement",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "observations": [
+      {
+        "scene": "default",
+        "id": "atoms-gauge--default",
+        "args": "value:42;size:md;state:normal",
+        "capture": "docs/components/gauge/v0.9/verification/after-retirement--default--1280--dark.png",
+        "root": {
+          "width": 56,
+          "height": 56,
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "text": ""
+        },
+        "well": {
+          "width": 56,
+          "height": 56,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 56,
+          "height": 56,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))",
+          "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "sm",
+        "id": "atoms-gauge--default",
+        "args": "value:82;size:sm;state:normal",
+        "capture": "docs/components/gauge/v0.9/verification/after-retirement--sm--1280--dark.png",
+        "root": {
+          "width": 40,
+          "height": 40,
+          "role": "meter",
+          "value": "82",
+          "valueText": "82 / 100",
+          "state": "normal",
+          "text": ""
+        },
+        "well": {
+          "width": 40,
+          "height": 40,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 40,
+          "height": 40,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 3px), rgb(0, 0, 0) calc(100% - 2.5px))",
+          "background": "conic-gradient(rgb(255, 0, 54) 82%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "lg-full",
+        "id": "atoms-gauge--default",
+        "args": "value:100;size:lg;state:normal",
+        "capture": "docs/components/gauge/v0.9/verification/after-retirement--lg-full--1280--dark.png",
+        "root": {
+          "width": 80,
+          "height": 80,
+          "role": "meter",
+          "value": "100",
+          "valueText": "100 / 100",
+          "state": "normal",
+          "text": ""
+        },
+        "well": {
+          "width": 80,
+          "height": 80,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 80,
+          "height": 80,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 6px), rgb(0, 0, 0) calc(100% - 5.5px))",
+          "background": "conic-gradient(rgb(255, 0, 54) 100%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "custom-decimal",
+        "id": "atoms-gauge--default",
+        "args": "value:42.5;size:64.5;state:normal",
+        "capture": "docs/components/gauge/v0.9/verification/after-retirement--custom-decimal--1280--dark.png",
+        "root": {
+          "width": 64.5,
+          "height": 64.5,
+          "role": "meter",
+          "value": "42.5",
+          "valueText": "42.5 / 100",
+          "state": "normal",
+          "text": ""
+        },
+        "well": {
+          "width": 64.5,
+          "height": 64.5,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 64.5,
+          "height": 64.5,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4.60714px), rgb(0, 0, 0) calc(100% - 4.10714px))",
+          "background": "conic-gradient(rgb(255, 0, 54) 42.5%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "warning",
+        "id": "atoms-gauge--default",
+        "args": "value:42;size:md;state:warning;stateText:Review capacity",
+        "capture": "docs/components/gauge/v0.9/verification/after-retirement--warning--1280--dark.png",
+        "root": {
+          "width": 124.140625,
+          "height": 80.796875,
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "warning",
+          "text": "Review capacity"
+        },
+        "well": {
+          "width": 56,
+          "height": 56,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 56,
+          "height": 56,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))",
+          "background": "conic-gradient(rgb(255, 178, 36) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "critical",
+        "id": "atoms-gauge--default",
+        "args": "value:95;size:md;state:critical;stateText:Capacity critically high",
+        "capture": "docs/components/gauge/v0.9/verification/after-retirement--critical--1280--dark.png",
+        "root": {
+          "width": 163.484375,
+          "height": 80.796875,
+          "role": "meter",
+          "value": "95",
+          "valueText": "95 / 100",
+          "state": "critical",
+          "text": "Capacity critically high"
+        },
+        "well": {
+          "width": 56,
+          "height": 56,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 56,
+          "height": 56,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))",
+          "background": "conic-gradient(rgb(255, 102, 128) 95%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "muted",
+        "id": "atoms-gauge--default",
+        "args": "value:42;size:md;state:muted;stateText:Capacity is muted",
+        "capture": "docs/components/gauge/v0.9/verification/after-retirement--muted--1280--dark.png",
+        "root": {
+          "width": 133.796875,
+          "height": 80.796875,
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "muted",
+          "text": "Capacity is muted"
+        },
+        "well": {
+          "width": 56,
+          "height": 56,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 56,
+          "height": 56,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))",
+          "background": "conic-gradient(rgb(161, 162, 168) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "center",
+        "id": "atoms-gauge--default",
+        "args": "value:42;size:md;state:normal;center:42",
+        "capture": "docs/components/gauge/v0.9/verification/after-retirement--center--1280--dark.png",
+        "root": {
+          "width": 56,
+          "height": 56,
+          "role": "meter",
+          "value": "42",
+          "valueText": "42 / 100",
+          "state": "normal",
+          "text": "42"
+        },
+        "well": {
+          "width": 56,
+          "height": 56,
+          "boxSizing": "border-box",
+          "padding": "0px",
+          "borderWidth": "0px",
+          "borderStyle": "solid",
+          "borderColor": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "9999px",
+          "backgroundColor": "rgb(20, 21, 24)",
+          "backgroundImage": "none",
+          "boxShadow": "rgba(0, 0, 0, 0.55) 0px 1px 2px 0px inset, rgba(0, 0, 0, 0.28) 0px 0px 0px 1px inset",
+          "color": "rgb(255, 255, 255)"
+        },
+        "arc": {
+          "width": 56,
+          "height": 56,
+          "mask": "radial-gradient(farthest-side, rgba(0, 0, 0, 0) calc(100% - 4px), rgb(0, 0, 0) calc(100% - 3.5px))",
+          "background": "conic-gradient(rgb(255, 0, 54) 42%, oklab(0.999994 0.0000455678 0.0000200868 / 0.1) 0deg)"
+        },
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      },
+      {
+        "scene": "unavailable",
+        "id": "atoms-gauge--invalid-value",
+        "args": null,
+        "capture": "docs/components/gauge/v0.9/verification/after-retirement--unavailable--1280--dark.png",
+        "root": {
+          "width": 126.375,
+          "height": 46,
+          "role": null,
+          "value": null,
+          "valueText": null,
+          "state": "normal",
+          "text": "Unknown capacityData unavailable"
+        },
+        "well": null,
+        "arc": null,
+        "context": {
+          "dpr": 1,
+          "fontsStatus": "loaded",
+          "fontFamily": "Barlow, system-ui, sans-serif",
+          "colorScheme": "dark",
+          "reducedMotion": true
+        }
+      }
+    ],
+    "storyIndex": [
+      {
+        "id": "atoms-gauge--docs",
+        "type": "docs",
+        "title": "Atoms/Gauge"
+      },
+      {
+        "id": "atoms-gauge--default",
+        "type": "story",
+        "title": "Atoms/Gauge"
+      },
+      {
+        "id": "atoms-gauge--value-limits",
+        "type": "story",
+        "title": "Atoms/Gauge"
+      },
+      {
+        "id": "atoms-gauge--decimal-value",
+        "type": "story",
+        "title": "Atoms/Gauge"
+      },
+      {
+        "id": "atoms-gauge--states",
+        "type": "story",
+        "title": "Atoms/Gauge"
+      },
+      {
+        "id": "atoms-gauge--center-content",
+        "type": "story",
+        "title": "Atoms/Gauge"
+      },
+      {
+        "id": "atoms-gauge--contextual-value",
+        "type": "story",
+        "title": "Atoms/Gauge"
+      },
+      {
+        "id": "atoms-gauge--invalid-value",
+        "type": "story",
+        "title": "Atoms/Gauge"
+      },
+      {
+        "id": "atoms-gauge--sizes",
+        "type": "story",
+        "title": "Atoms/Gauge"
+      }
+    ]
+  },
+  "postRetirementComputedDifferences": [],
+  "postRetirementPNGComparisons": [
+    {
+      "scene": "default",
+      "before": "docs/components/gauge/v0.9/verification/before--default--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after-retirement--default--1280--dark.png",
+      "beforeSHA256": "50f21937e4257a9f0360146600f52177947a3116e382dbf676365a6f5150fe1b",
+      "afterSHA256": "50f21937e4257a9f0360146600f52177947a3116e382dbf676365a6f5150fe1b",
+      "byteIdentical": true
+    },
+    {
+      "scene": "sm",
+      "before": "docs/components/gauge/v0.9/verification/before--sm--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after-retirement--sm--1280--dark.png",
+      "beforeSHA256": "e9c09df19a253464a977c51de481fcb32a592c30191c27d447e24a4372fa4307",
+      "afterSHA256": "e9c09df19a253464a977c51de481fcb32a592c30191c27d447e24a4372fa4307",
+      "byteIdentical": true
+    },
+    {
+      "scene": "lg-full",
+      "before": "docs/components/gauge/v0.9/verification/before--lg-full--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after-retirement--lg-full--1280--dark.png",
+      "beforeSHA256": "a43659829e747a38e5236b8a587c31f55d641397f8ec8771607ba8b75d56e4d0",
+      "afterSHA256": "a43659829e747a38e5236b8a587c31f55d641397f8ec8771607ba8b75d56e4d0",
+      "byteIdentical": true
+    },
+    {
+      "scene": "custom-decimal",
+      "before": "docs/components/gauge/v0.9/verification/before--custom-decimal--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after-retirement--custom-decimal--1280--dark.png",
+      "beforeSHA256": "e28f3fe0f3669e41bf6c677e8085c5b6f3e197ddfdda78c29ce870713ff313b6",
+      "afterSHA256": "e28f3fe0f3669e41bf6c677e8085c5b6f3e197ddfdda78c29ce870713ff313b6",
+      "byteIdentical": true
+    },
+    {
+      "scene": "warning",
+      "before": "docs/components/gauge/v0.9/verification/before--warning--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after-retirement--warning--1280--dark.png",
+      "beforeSHA256": "fd6bc66a6f3b26dbe277c44729d2e4dc9173b89ff8115ae6e976fd620ed92e8d",
+      "afterSHA256": "fd6bc66a6f3b26dbe277c44729d2e4dc9173b89ff8115ae6e976fd620ed92e8d",
+      "byteIdentical": true
+    },
+    {
+      "scene": "critical",
+      "before": "docs/components/gauge/v0.9/verification/before--critical--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after-retirement--critical--1280--dark.png",
+      "beforeSHA256": "799c0bd6619eacf9eba166457eb6cd06c061e874915ac6023efd2f428f38a024",
+      "afterSHA256": "799c0bd6619eacf9eba166457eb6cd06c061e874915ac6023efd2f428f38a024",
+      "byteIdentical": true
+    },
+    {
+      "scene": "muted",
+      "before": "docs/components/gauge/v0.9/verification/before--muted--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after-retirement--muted--1280--dark.png",
+      "beforeSHA256": "1112556d634807cb467a156fa93645cde944affde98310c7a4457c09db33ea0b",
+      "afterSHA256": "1112556d634807cb467a156fa93645cde944affde98310c7a4457c09db33ea0b",
+      "byteIdentical": true
+    },
+    {
+      "scene": "center",
+      "before": "docs/components/gauge/v0.9/verification/before--center--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after-retirement--center--1280--dark.png",
+      "beforeSHA256": "329d2a5d1a3702f07d840f78bc0b8c7da28d5027dbdbfc6dcc42d34ce7bb4249",
+      "afterSHA256": "329d2a5d1a3702f07d840f78bc0b8c7da28d5027dbdbfc6dcc42d34ce7bb4249",
+      "byteIdentical": true
+    },
+    {
+      "scene": "unavailable",
+      "before": "docs/components/gauge/v0.9/verification/before--unavailable--1280--dark.png",
+      "after": "docs/components/gauge/v0.9/verification/after-retirement--unavailable--1280--dark.png",
+      "beforeSHA256": "32d2c6be94f73d26fc5eb59fe5562774321807cc8b6f4db439ef9d5d38e991de",
+      "afterSHA256": "32d2c6be94f73d26fc5eb59fe5562774321807cc8b6f4db439ef9d5d38e991de",
+      "byteIdentical": true
+    }
+  ],
+  "postRetirementParityGate": "PASSED"
+}

@@ -1,0 +1,12 @@
+{
+  "account": "egdev6",
+  "repository": "egdev6/egdev-design-system",
+  "requiredScopes": ["repo"],
+  "codeSafety": false,
+  "files": {
+    ".github/workflows/build-and-test.yml": {
+      "source": ".github/bootstrap/sources/build-and-test.build-first.yml",
+      "mode": "replace"
+    }
+  }
+}

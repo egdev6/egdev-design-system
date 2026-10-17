@@ -1,0 +1,71 @@
+{
+  "component": "Gauge",
+  "version": "0.9",
+  "status": "Approved for bounded local implementation and retirement; execution results not claimed",
+  "scope": "LOCAL_IMPLEMENTATION_AND_EXACT_20_FILE_RETIREMENT_ONLY",
+  "executionAuthorized": true,
+  "source": {
+    "kind": "Manual observed conversation supplied by parent",
+    "question": "¿Apruebas el plan completo para iniciar la adaptación y la retirada?",
+    "userStatement": "si",
+    "observationBasis": "Parent supplied the exact question and explicit response, and reports that the question linked the complete implementation plan identified below. This writer did not independently retrieve a provider transcript. This is a separate full-plan decision after the earlier composition-only approval.",
+    "sessionReference": null,
+    "messageReference": null,
+    "url": null,
+    "exactApprovalTimestamp": null,
+    "unknownReferences": "No stable message/session identifier, URL or exact approval timestamp was supplied; none is invented."
+  },
+  "approvedPlan": {
+    "path": "docs/components/gauge/v0.9/implementation-plan.md",
+    "relativePath": "implementation-plan.md",
+    "wholeFileSHA256": "84554738d0fdb255c7a37c36225d3b9b6baf266b2cbee196f1e7bbf73f7932c8",
+    "hashDefinition": "SHA-256 of the whole UTF-8 plan file, LF including final LF.",
+    "approvalBasis": "The explicit si answers the full-plan question linked to this plan. The digest records linked artifact identity, not cryptographic consent or proof that the human reviewed these exact bytes.",
+    "frozenSnapshot": "The entire plan remains unchanged. Its Pending/proposed/not-authorized wording records the pre-decision state and is superseded only by this separate receipt for the bounded local execution below. No historical plan text is rewritten."
+  },
+  "effectiveContract": {
+    "basePath": "docs/specs/gauge.md",
+    "baseRelativePath": "../../../specs/gauge.md",
+    "baseApprovalPath": "docs/components/gauge/v0.8/approval.json",
+    "basePayloadSHA256": "f0999610927cc8556259c3896365697f4447ebae69eff810f3a2b66b57a3210d",
+    "amendmentPath": "docs/components/gauge/v0.9/composition-amendment.md",
+    "amendmentRelativePath": "composition-amendment.md",
+    "amendmentPayloadSHA256": "9386ba4e3a3e195064c4bda95916c1346c58ce03c5490cf3cf0ec448a7d1186d",
+    "payloadHashDefinition": "SHA-256 of UTF-8 bytes from the exact heading line matching /^## 1\\. Purpose and scope$/m through EOF, LF including final LF; tracking header excluded.",
+    "compositionApprovalPath": "docs/components/gauge/v0.9/approval.json",
+    "decisionSeparation": "The earlier receipt remains the historical composition-and-local-persistence decision. This separate receipt adds local plan execution authority; neither rewrites the other decision or the immutable v0.8 contract/header, approvals, plans or evidence."
+  },
+  "authorizedLocalWork": [
+    "Preserve the exact current dirty-tree retirement sources in the parent-owned private recovery copy before source changes; do not discard pre-existing edits",
+    "Adapt only the existing seven-file Gauge implementation to its own native decorative Material well, preserving API, passive accessibility, states, numeric behavior, geometry-only stylesheet, 0px border and accepted pilot parity; establish parity before deleting Surface",
+    "Retire exactly the 20 tracked regular source files enumerated in plan section 2 and the retirement manifest; remove their public exports, stories and active integration references, without private React replacements or recursive directory removal",
+    "Maintain only the plan's named active tests, fixtures, usage example, catalog source/generated outputs, governance references and registry evidence; preserve generic coverage, history, legacy styles and proposed/null global conventions",
+    "Perform the plan's specified focused test-first checks, registry checks, local gates, existing-owned-server MCP/browser review and comparable before/after evidence under its stated prerequisites and exact future write scope",
+    "Record actual checks, failures, evidence and blockers; recheck preservation and unexpected edits/entries immediately before retirement, and stop for a new decision if scope or contract must expand"
+  ],
+  "executionBoundaries": {
+    "writeScope": "Only the exact future write scope in the linked frozen plan, its named evidence outputs, and this separately delegated metadata unit. No additional implementation path is authorized by implication.",
+    "existingServer": "Confirm parent ownership and availability before using the already authorized Storybook server; no start or restart is granted. Missing access stops that check.",
+    "offlineConsumers": "No packed consumer matrix retry until required offline cache is provided and scoped execution is separately authorized. No online fallback or dependency installation is granted here.",
+    "registry": "All 13 global conventions remain proposed with approval null; usage removal and Gauge evidence revision refresh do not grant naming consent.",
+    "assessment": "Native assessment remains the parent's independent work. This receipt is not native/provider approval or RDD consumption. Screen-reader checks remain Not evaluated unless actually performed."
+  },
+  "excludedAuthorizations": [
+    "Unrelated API/design changes, new Gauge promises, broader stylesheet roles or global Material exceptions",
+    "Token values, dependencies, package versions, package manifests/lockfiles, CI/configuration changes or broad style migration",
+    "Unrelated files, immutable v0.8 header/payload or historical approvals/plans/captures/reports",
+    "Server startup/restart, offline packed consumer matrix retries, network installs or online fallback",
+    "Remote operations, GitHub reads/writes/assets/uploads, commits, pushes, publication or release"
+  ],
+  "preservationEvidence": {
+    "path": "docs/components/gauge/v0.9/verification/retirement-manifest.json",
+    "relativePath": "verification/retirement-manifest.json",
+    "phase": "PRESERVED_NOT_RETIRED",
+    "boundary": "The parent already created the private recovery archive. This documentation unit records its manifest and verifies all 20 source files still present; it performs no adaptation, deletion, test/build/server/browser work and claims no implementation or parity completion."
+  },
+  "trustAndRecovery": {
+    "receiptKind": "Local manual observed-approval record, not cryptographically signed, provider-issued, native-assessed or an external approval",
+    "limitation": "Hashes identify the linked frozen plan and base-plus-delta snapshots only; they authenticate neither consent nor provenance. No exact-byte human review, stable source identifier or timestamp is invented.",
+    "recoveryRequirement": "Recover the parent-supplied exact question/response, linked full-plan identity and separate composition/base decisions before relying on authority. If unrecoverable, seek explicit confirmation rather than treating this local file as self-authorizing."
+  }
+}

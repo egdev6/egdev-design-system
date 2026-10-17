@@ -1,0 +1,220 @@
+{
+  "component": "Gauge",
+  "contractVersion": "0.8",
+  "status": "PARTIAL — LOCAL IMPLEMENTATION VERIFIED, PACKED CONSUMER MATRIX BLOCKED",
+  "tool": "MCP Playwright",
+  "pathBase": "repository-root",
+  "reportPath": "docs/components/gauge/v0.8/verification/report.md",
+  "contractPayloadSHA256": "f0999610927cc8556259c3896365697f4447ebae69eff810f3a2b66b57a3210d",
+  "provenance": {
+    "basis": "Existing parent-supplied browser observations and PNG artifacts; no new browser capture, private-source rescan or remote access by this writer.",
+    "browserObservationPath": "docs/components/gauge/v0.8/verification/browser-observations.json",
+    "browserObservationCapturedAt": "2026-10-16T22:10:24.035Z",
+    "timestampBasis": "Each fileModifiedAtUTC is the existing PNG filesystem modification time, not an exact browser shutter time. The observation-run capturedAt is not assigned to individual images.",
+    "exactBrowserCaptureTimestamp": null,
+    "storySourcePath": "packages/ui/src/atoms/gauge/Gauge.stories.tsx",
+    "storyArgsBasis": "Existing story source and browser observations; explicit overrides for the small-ring comparison and native built-CSS fixture are parent-observed. Unrecorded arguments are not invented.",
+    "nonFiniteNotation": "Number.NaN, Infinity and -Infinity in storyArgs are symbolic source inputs, not literal strings passed to Gauge."
+  },
+  "expectedReferences": [
+    {
+      "visualId": "VIS-01",
+      "path": "docs/components/gauge/v0.3/single-ring--normal--dark--1280.png",
+      "sha256": "3e12c98b6b46341576117dc8694a4ec207310a2eff9d619d2920b8efd1f2774b",
+      "pixelDimensions": { "width": 40, "height": 62 },
+      "metadataPath": "docs/components/gauge/v0.3/capture.json",
+      "approvalPath": "docs/components/gauge/v0.8/approval.json",
+      "scope": "Approved single-ring anatomy, proportions and optional-center placement only. The crop includes a caption; ring diameter is 40px. Fixed A and caption excluded. Material well and DS state colors are intentional approved differences. No pixel-equality or arbitrary-tolerance acceptance; observed captures never replace this reference."
+    },
+    {
+      "visualId": "VIS-02",
+      "path": "docs/components/gauge/v0.3/source-board--dark--1280.png",
+      "sha256": "b54ba9681dd14899ab8b303cba3bfbc64ed937cefe314fc342d5007108ba2c80",
+      "pixelDimensions": { "width": 1280, "height": 900 },
+      "scope": "Observed context only, not an approved expected-design target."
+    }
+  ],
+  "conditions": {
+    "browser": "Chromium",
+    "browserVersion": "148.0.7778.167",
+    "viewportCSSPixels": { "width": 1280, "height": 900 },
+    "devicePixelRatio": 1,
+    "theme": "dark",
+    "reducedMotion": "reduce",
+    "reducedTransparency": null,
+    "barlowLoaded": true,
+    "cssZoomPercent": 100,
+    "scope": "Run-level conditions from existing browser evidence and parent observations, not a new per-image measurement; entry overrides and limitations take precedence."
+  },
+  "images": [
+    {
+      "path": "docs/components/gauge/v0.8/verification/default--normal--1280--dark.before-preview-fix.png",
+      "sha256": "854e368bd75ff3cd48046a406843bcebd78edff0277ca0f41a34f895fb5ee100",
+      "pixelDimensions": { "width": 56, "height": 56 },
+      "fileModifiedAtUTC": "2026-10-16T22:04:31.645786+00:00",
+      "kind": "failed-before-preview-fix",
+      "captureKind": "Element crop",
+      "story": "Default",
+      "storyArgs": { "label": "Capacity", "value": 42 },
+      "conditionOverrides": { "barlowLoaded": null },
+      "scope": "Failure evidence only: circle measured 56x2 CSS pixels with arc background none. The PNG crop is 56x56 pixels and does not establish valid ring geometry or font loading."
+    },
+    {
+      "path": "docs/components/gauge/v0.8/verification/default--normal--1280--dark.png",
+      "sha256": "24dd1ed71aa470cd8fef46caf51541aa625ef28caf5f440630f6f836028f6188",
+      "pixelDimensions": { "width": 56, "height": 56 },
+      "fileModifiedAtUTC": "2026-10-16T22:09:34.633750+00:00",
+      "kind": "observed-implementation",
+      "captureKind": "Element crop",
+      "story": "Default",
+      "storyArgs": { "label": "Capacity", "value": 42 },
+      "scope": "After preview fix: 56x56px, 42% arc, 4px mask stroke and inset well; observed implementation, not expected-design replacement."
+    },
+    {
+      "path": "docs/components/gauge/v0.8/verification/value-limits--1280--dark.png",
+      "sha256": "e3fbfa9b013ca2092fd488cda1c35ed119e4ca6173c57cabf51dc8f5779b6857",
+      "pixelDimensions": { "width": 280, "height": 64 },
+      "fileModifiedAtUTC": "2026-10-16T22:12:36.933729+00:00",
+      "kind": "observed-implementation",
+      "captureKind": "Story example crop",
+      "story": "ValueLimits",
+      "storyArgs": { "label": "Capacity", "value": 0 },
+      "renderedOverrides": [
+        { "label": "Empty capacity", "value": 0 },
+        { "label": "Full capacity", "value": 100 },
+        { "label": "Capacity below range", "value": -1 },
+        { "label": "Capacity above range", "value": 101 }
+      ],
+      "scope": "Observed boundary/clamping examples, corroborated by browser numeric/arc observations."
+    },
+    {
+      "path": "docs/components/gauge/v0.8/verification/states--1280--dark.png",
+      "sha256": "900a1f4fb5855b10263f40847828a57385991404032182687d741e1783f514f1",
+      "pixelDimensions": { "width": 697, "height": 89 },
+      "fileModifiedAtUTC": "2026-10-16T22:12:36.057729+00:00",
+      "kind": "observed-implementation",
+      "captureKind": "Story example crop",
+      "story": "States",
+      "storyArgs": { "label": "Capacity", "value": 42 },
+      "renderedOverrides": [
+        { "label": "Normal capacity", "state": "normal", "stateText": "Within expected range" },
+        { "label": "Warning capacity", "state": "warning", "stateText": "Review capacity" },
+        { "label": "Critical capacity", "state": "critical", "stateText": "Capacity needs attention" },
+        { "label": "Muted capacity", "state": "muted", "stateText": "Reference measurement" }
+      ],
+      "scope": "Consumer-selected state colors and visible text/icon cues at identical value; not all-state WCAG or screen-reader proof."
+    },
+    {
+      "path": "docs/components/gauge/v0.8/verification/center-content--1280--dark.png",
+      "sha256": "fc38e52ab3c5167cce7ddff91812aebd73fc5918473cbcb2c516f041c368dbcf",
+      "pixelDimensions": { "width": 280, "height": 64 },
+      "fileModifiedAtUTC": "2026-10-16T22:12:36.625729+00:00",
+      "kind": "observed-implementation",
+      "captureKind": "Story example crop",
+      "story": "CenterContent",
+      "storyArgs": { "label": "Capacity", "value": 42 },
+      "renderedCenters": ["Absent", "Decorative SVG check icon from story source", 42, "OK"],
+      "scope": "Observed md center alternatives; not arbitrary content-fit proof across every diameter."
+    },
+    {
+      "path": "docs/components/gauge/v0.8/verification/invalid-value--1280--dark.png",
+      "sha256": "65f05f3217f1d460b782da890117af91c552c8ef3ae28f87abda757743261590",
+      "pixelDimensions": { "width": 463, "height": 54 },
+      "fileModifiedAtUTC": "2026-10-16T22:12:37.253729+00:00",
+      "kind": "observed-implementation",
+      "captureKind": "Story example crop",
+      "story": "InvalidValue",
+      "storyArgs": { "label": "Capacity", "value": "Number.NaN" },
+      "renderedOverrides": [
+        { "label": "Unknown capacity", "value": "Number.NaN" },
+        { "label": "Disconnected sensor", "value": "Infinity", "unavailableText": "Sensor offline" },
+        {
+          "label": "Invalid sensor reading",
+          "value": "-Infinity",
+          "state": "critical",
+          "stateText": "Review reading",
+          "center": "!"
+        }
+      ],
+      "scope": "Readable unavailable content without fabricated meter or ring; input center/cue suppressed for unavailable data."
+    },
+    {
+      "path": "docs/components/gauge/v0.8/verification/sizes--1280--dark.png",
+      "sha256": "3f80661e3c407570644581be5605dc6eb48cfb192ec5472aa2b5c4ba2d777f55",
+      "pixelDimensions": { "width": 369, "height": 88 },
+      "fileModifiedAtUTC": "2026-10-16T22:12:36.321729+00:00",
+      "kind": "observed-implementation",
+      "captureKind": "Story example crop",
+      "story": "Sizes",
+      "storyArgs": { "label": "Capacity", "value": 42 },
+      "renderedSizes": ["sm", "md", "lg", 64.5, 0],
+      "scope": "Browser evidence corroborates 40/56/80/64.5/56px and 3/4/6px or diameter/14 strokes."
+    },
+    {
+      "path": "docs/components/gauge/v0.8/verification/single-ring--82--sm--1280--dark.png",
+      "sha256": "1dc79b920cd7969a299576a60d8952075ab06352ce7c40ead0e29cd9d7773123",
+      "pixelDimensions": { "width": 40, "height": 40 },
+      "fileModifiedAtUTC": "2026-10-16T22:12:37.585729+00:00",
+      "kind": "observed-implementation",
+      "captureKind": "Element crop",
+      "story": null,
+      "captureScenario": "Small-ring comparison override; underlying story not recorded",
+      "storyArgs": { "value": 82, "size": "sm", "state": "normal", "center": "A" },
+      "unrecordedArgs": ["label"],
+      "sourceExpectedVisualId": "VIS-01",
+      "sourceExpectedSHA256": "3e12c98b6b46341576117dc8694a4ec207310a2eff9d619d2920b8efd1f2774b",
+      "scope": "40x40px observed ring, 3px stroke and centered optional A. Compare only approved single-ring anatomy/proportions/center placement; fixed A and caption excluded. Well/state colors are intentional differences; no arbitrary pixel tolerance or replacement reference."
+    },
+    {
+      "path": "docs/components/gauge/v0.8/verification/states--200pct-css-zoom--1280--dark.png",
+      "sha256": "7dc039f8bcbe04cec4303c588d590229dc106a7e38796cd754a0bc2a25b86ee7",
+      "pixelDimensions": { "width": 1280, "height": 900 },
+      "fileModifiedAtUTC": "2026-10-16T22:13:24.045724+00:00",
+      "kind": "observed-implementation",
+      "captureKind": "Viewport screenshot",
+      "story": "States",
+      "storyArgs": { "label": "Capacity", "value": 42 },
+      "renderedOverridesSameAs": "States entry in this manifest",
+      "conditionOverrides": { "cssZoomPercent": 200 },
+      "observationPath": "docs/components/gauge/v0.8/verification/layout-observations.json",
+      "scope": "CSS page zoom simulation only, not an actual OS text-only accessibility setting."
+    },
+    {
+      "path": "docs/components/gauge/v0.8/verification/states--360--dark.png",
+      "sha256": "0bea68a72291804dc5344756b3762e016f1f46d9ac51d21a28ed03cbaef88403",
+      "pixelDimensions": { "width": 360, "height": 800 },
+      "fileModifiedAtUTC": "2026-10-16T22:13:24.077724+00:00",
+      "kind": "observed-implementation",
+      "captureKind": "Viewport screenshot",
+      "story": "States",
+      "storyArgs": { "label": "Capacity", "value": 42 },
+      "renderedOverridesSameAs": "States entry in this manifest",
+      "conditionOverrides": { "viewportCSSPixels": { "width": 360, "height": 800 } },
+      "observationPath": "docs/components/gauge/v0.8/verification/layout-observations.json",
+      "scope": "Observed state-example wrapping without horizontal clipping at 360px width."
+    },
+    {
+      "path": "docs/components/gauge/v0.8/verification/native-built-css--1280--dark.png",
+      "sha256": "ee737d8da48d18ea2dc2b745f77328ce92a8251329a0c5bc2d0801f4eca19e5a",
+      "pixelDimensions": { "width": 216, "height": 98 },
+      "fileModifiedAtUTC": "2026-10-16T22:17:42.205699+00:00",
+      "kind": "observed-implementation",
+      "captureKind": "Consumer example crop",
+      "story": null,
+      "storyArgs": [
+        {
+          "label": "Native compiled capacity",
+          "value": 42.5,
+          "size": 64.5,
+          "state": "warning",
+          "stateText": "Review capacity",
+          "center": 42.5
+        },
+        { "label": "Native preset capacity", "value": 82, "size": "sm", "state": "normal", "center": "A" }
+      ],
+      "conditionOverrides": { "barlowLoaded": null },
+      "observationPath": "docs/components/gauge/v0.8/verification/native-built-css-observations.json",
+      "scope": "Built UI JS/CSS and token CSS with installed React aliases, Vite plugins: [], no install or app Tailwind compiler. Font-loading status not independently recorded for this fixture. Not a packed external React18/19 consumer or replacement for its blocked matrix."
+    }
+  ]
+}

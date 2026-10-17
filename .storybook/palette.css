@@ -1,0 +1,6 @@
+/* Storybook-only substitution, shared by chrome, Docs and story canvases.
+ * Load before createBrandTheme reads resolved tokens; keep published tokens intact.
+ */
+:root {
+  --color-primitive-red-300: var(--color-primitive-red-neon);
+}

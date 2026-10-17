@@ -1,0 +1,19 @@
+/* Reusable circular geometry; static CVA utilities supply colors and stroke. */
+@layer components {
+  .eg-gauge-arc {
+    position: absolute;
+    inset: 0;
+    background: conic-gradient(var(--eg-gauge-fill) calc(var(--eg-gauge-value) * 1%), var(--eg-gauge-track) 0);
+    mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - var(--eg-gauge-stroke)),
+      black calc(100% - var(--eg-gauge-stroke) + 0.5px)
+    );
+  }
+  .eg-gauge-center {
+    position: absolute;
+    inset: 30%;
+    display: grid;
+    place-items: center;
+  }
+}

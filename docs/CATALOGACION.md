@@ -2,14 +2,14 @@
 
 Cómo decidir reutilización, variantes, composición, extracción o creación, y justificar el nivel por responsabilidad. Adaptado del rigor de catalogación de Stack & Flow, sin importar sus gates de GitHub ni restricciones de carpetas.
 
-**Estado:** [CATALOGO.md](CATALOGO.md) es un mapa provisional generado, no un inventario de componentes disponibles. Surface, IconButton y Tabs tienen implementación React; su adaptación completa y recatalogación son trabajo de M3, todavía no ejecutado.
+**Current availability:** [CATALOGO.md](CATALOGO.md) is a generated provisional map, not proof of importable implementations or final classification. Gauge is the only public React component in `@egdev/ui`; `cn` is a utility. Surface, IconButton and Tabs remain future/provisional Foundation concepts, not current reuse candidates. Gauge's accepted pilot follows the [effective v0.9 base-plus-amendment contract](../skills/_shared/component-contract.md#current-gauge-contract); it does not establish catalog-wide M3 adaptation or completed retirement gates.
 
 ## Antes de crear nada
 
 En este orden, y se para en el primer paso que resuelva la necesidad:
 
 1. **Mantener/reutilizar:** ¿la implementación pública existente ya lo hace? Se conserva o usa tal cual. Inspecciona props, comportamiento y exports; una regla CSS o una fila prevista no prueba disponibilidad.
-2. **Variante:** ¿lo hace un componente existente con otro aspecto o tamaño, sin cambiar lo que es? Se añade una variante. *Ejemplo: un IconButton sin redondeo completo es `shape="square"`, no un componente nuevo.*
+2. **Variant:** can an existing component meet the need with another appearance or size without changing its responsibility? Add a variant only within its approved contract. A hypothetical future IconButton shape variation illustrates this decision, but IconButton and `shape="square"` are not available current APIs.
 3. **Componer:** ¿se consigue juntando componentes existentes? Se compone en la app; si lo necesita otra app, se propone una unidad genérica en `@egdev/ui`, con nivel justificado por su responsabilidad.
 4. **Extraer:** ¿hay una pieza escondida dentro de otro componente que ahora necesitan varios? Se saca a su propio componente, en el nivel más bajo posible.
 5. **Nuevo:** solo si nada de lo anterior sirve. Se documentan nivel, base Radix y piezas reutilizadas antes de implementar.
@@ -22,7 +22,7 @@ Registra qué se inspeccionó y por qué cada opción anterior no basta; no salt
 
 | Nivel | Contrato | Puede depender de | No debe |
 |---|---|---|---|
-| Primitiva | Base reutilizable de estructura, semántica o Material; Surface es un ejemplo implementado | Tokens, utilidades, primitivas de Radix | Componer conceptos de producto, imponer textos, coordinar controles |
+| Primitive | Reusable structure, semantics or Material; Surface is a future concept, not an implemented example | Tokens, utilities, Radix primitives | Compose product concepts, impose copy, coordinate controls |
 | Átomo | Un único concepto semántico de interfaz, con API y estado local coherentes | Primitivas de apoyo, Radix, variantes CVA | Orquestar conceptos independientes, flujos o composición contextual |
 | Molécula | Conceptos coordinados que funcionan como una unidad reutilizable | Átomos, primitivas, hooks de interacción, layout local | Ser una sección de página, navegación de alto nivel, lógica de dominio extensa |
 | Organismo | Región con jerarquía y responsabilidad estructural | Moléculas, átomos, primitivas, datos de ejemplo en stories | Ser una página, mezclar reglas de una sola app, esconder piezas extraíbles |
