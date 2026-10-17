@@ -28,7 +28,8 @@ Activa para definir o cambiar las promesas de un componente nuevo o existente. R
 | --- | --- |
 | Falta decidir reutilización, nivel o paquete | Aplica `component-cataloging`; incorpora su decisión y estado de aprobación, sin duplicar el flujo |
 | Falta fuente visual, captura o herramienta autorizada | Registra el bloqueo y propone el siguiente paso; no inventes imágenes, implementes para capturar ni declares apariencia validada |
-| Missing data, contradictions or no meaningful compliant CSS role among the seven mandatory files | STOP with evidence and concrete choices for human resolution; no dummy files, fake hooks, omitted stylesheet or invented architecture |
+| Missing data or contradictions | STOP with evidence and concrete choices for human resolution; no dummy files, fake hooks or invented architecture |
+| No meaningful compliant CSS role | Record “No stylesheet” in the spec; the optional `component-name.css` is not created. Never add dummy CSS |
 | Explicit create-issue / add-comment handoff request | Follow [issue handoff](references/issue-handoff.md): one issue per component; later versions are authorized comments, never silent body edits/new issues per version. Prepare exact snapshots; do not publish or export blocking choices as ready |
 | Falta token, receta Material o paquete Radix | Registra propuesta pendiente de confirmación; no lo añadas |
 | Cambia una promesa aprobada | Expón diferencia e impacto; solicita nueva aprobación |

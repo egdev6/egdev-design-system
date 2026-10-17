@@ -55,7 +55,7 @@ export const Menu: FC<MenuProps> = (props) => {
 };
 ```
 
-Historical state-recipe illustration only: use token-backed `data-[highlighted]:` / `data-[disabled]:` and focus-visible utilities in the target; this CSS does not establish a meaningful seventh-file role or approve hardcoded values.
+Historical state-recipe illustration only: use token-backed `data-[highlighted]:` / `data-[disabled]:` and focus-visible utilities in the target; this CSS does not establish a meaningful stylesheet role or approve hardcoded values.
 
 ```css
 @layer components {

@@ -70,7 +70,7 @@ Define qué promete un componente antes de planificar su implementación. Comple
 - **Tokens / Material:** <existing token-backed Tailwind utilities, CVA in types.ts; Surface/recipe and definition location; state-specific visual treatments, well/overlay/solid, focus, reduced motion/transparency; no hardcoded values>
 - **Dynamic geometry:** <only an explicitly approved limited mechanism; Gauge numeric diameter uses static `w-[var(--eg-gauge-size)]` / `h-[var(--eg-gauge-size)]` plus inline numeric CSS-pixel `--eg-gauge-size`, presets use approved token utilities. No interpolated class strings or inline appearance; validation/bounds remain separate policy decisions>.
 - **Class composition / consumer layout:** <supported className surface and precedence per part, cn/clsx/twMerge limits and tests; defaults/variants remain appearance API, no arbitrary overrides>
-- **Seven-file gate / pending proposals:** <meaningful roles for types.ts, useComponentName.ts, ComponentName.tsx, component-name.css, ComponentName.test.tsx, ComponentName.stories.tsx, index.ts; approved compliant CSS role, minimal global CSS/exceptions and token/dependency confirmations. Without a meaningful compliant CSS role STOP for human resolution, never dummy files, fake hooks, omission or replacement>
+- **Files / pending proposals:** <meaningful roles for the six mandatory files types.ts, useComponentName.ts, ComponentName.tsx, ComponentName.test.tsx, ComponentName.stories.tsx, index.ts; optional component-name.css with its approved compliant role, or “No stylesheet”; minimal global CSS/exceptions and token/dependency confirmations. Never dummy files, fake hooks or replacement architecture>
 
 ### Expected-design visual reference
 

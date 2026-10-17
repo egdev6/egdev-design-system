@@ -59,7 +59,7 @@ Style Radix/ARIA/own `data-state` attributes through data/aria variants, never m
 
 Gauge numeric diameter has a limited geometry exception: static `w-[var(--eg-gauge-size)]` / `h-[var(--eg-gauge-size)]` consume the numeric CSS-pixel custom property; presets use approved token utilities. Do not interpolate class strings or extend this to inline appearance. Its current base-plus-v0.9-plus-v0.10 contract already approves numeric validation/fallback, passive API/accessibility and Material; do not reopen those accepted decisions. `gauge.css` retains its approved geometry-only role, including +0.5px inner-edge smoothing. Any expanded role or changed promise requires separate approval.
 
-Keep global CSS minimal and justified. Approved hand-authored component recipes belong in `@layer components`; utilities remain in their natural layer. Class order alone does not guarantee cascade precedence. Exactly seven meaningful files remain mandatory: document a compliant stylesheet role in the approved spec and plan, or STOP for a human decision. The seventh file does not authorize per-component BEM appearance, dummy CSS, omission or a replacement architecture.
+Keep global CSS minimal and justified. Approved hand-authored component recipes belong in `@layer components`; utilities remain in their natural layer. Class order alone does not guarantee cascade precedence. Six meaningful files are mandatory; the component stylesheet is optional. Create it only when the approved spec and plan document a meaningful compliant role; otherwise the spec states “No stylesheet”. A stylesheet does not authorize per-component BEM appearance, dummy CSS or a replacement architecture.
 
 > Preserve previously adopted Stack & Flow separation/review requirements. This target adopts token-backed utility appearance, not upstream six-file rules, unadopted requirements or GitHub gates.
 
@@ -86,14 +86,14 @@ Desde `@egdev/tokens` 0.3.0 se retira el export `tokens.json`. Los imports CSS p
 
 ## Anatomía de un componente
 
-Exactly seven meaningful files are mandatory; no empty files, fake hooks or automatic migration. The approved spec/plan must resolve the stylesheet-role gate above before implementation:
+Six meaningful files are mandatory and the stylesheet is optional; no empty files, fake hooks or automatic migration. The approved spec/plan records the stylesheet role or “No stylesheet” before implementation:
 
 ```
 packages/ui/src/{primitives|atoms|molecules|organisms|templates}/{kebab-name}/
   ComponentName.tsx          JSX; consume el hook
   useComponentName.ts        lógica, estado, aria y la llamada a CVA
   types.ts                   props públicas, variantes CVA y JSDoc/defaults
-  component-name.css         meaningful, explicitly approved compliant CSS role
+  component-name.css         optional: only with a spec-approved CSS role
   ComponentName.test.tsx     tests del hook y del componente
   ComponentName.stories.tsx  documentación en Storybook
   index.ts                   exportaciones públicas
