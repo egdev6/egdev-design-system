@@ -40,7 +40,7 @@ export const gaugeWarning: GaugeProps = {
   label: 'Warning capacity', value: 42.5, state: gaugeState, stateText: 'Review capacity',
   valueText: '42.5 capacity units', size: 64.5, center: 0
 };
-export function GaugeSamples({ value = 42.5 }: { value?: number } = {}) {
+export function GaugeSamples({ value = 42.5 }: { value?: number }) {
   return createElement('section', { 'aria-label': 'Measurements' },
     createElement(Gauge, { ...gaugeDefaults, value }),
     createElement(Gauge, gaugeWarning),
