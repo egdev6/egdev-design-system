@@ -1,0 +1,157 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-observed-human-delegation",
+  "sourceRegistry": "skills/_shared/prop-naming.json",
+  "sourceRegistrySHA256": "sha256:b5d1ffd75c8ded3c976115db39d9515f0ce321bdc15892fb63156309feea9adc",
+  "sourceRegistryEntryCount": 125,
+  "decision": "Register effect-scene (scene), effect-progress (progress) and pointer-tilt (pointerTilt) under the owner's explicit scoped permission. Apply the three Draft proposals with status approved and content-bound references here; retain layer-opacity and all 125 prior entries unchanged.",
+  "evidence": {
+    "channel": "Parent-observed owner conversation forwarded in the current consolidation task; no public conversation URL or timestamp supplied",
+    "taskReference": "odd/tasks/isotipo3d-spec.md",
+    "question": "¿Autorizás conservar las tres capturas como referencias —Lab con recorte y fallback solo geometría/paleta— y registrar las convenciones scene, progress y pointerTilt? Sin instalar three, implementar ni publicar todavía.",
+    "userStatements": [
+      {
+        "quote": "ok",
+        "provenance": "Parent reports the owner's reply to the exact question above. It authorizes local capture archiving and naming consolidation only; earlier source-capture permission was a separate si."
+      }
+    ],
+    "interpretation": "The owner explicitly authorized registration of the three named conventions. The assistant binds the exact Draft proposals below, changing status from proposed to approved and adding scoped approval references. This is not native, signed, independent or per-payload serialized human review, nor full-snapshot or dependency-policy approval. Hashes identify recorded content, not proof of consent.",
+    "draftSnapshot": {
+      "path": ".playwright-mcp/specs/isotipo3d/isotipo3d-v0.3.md",
+      "version": "0.3",
+      "wholeFileSHA256": "sha256:a926e56dfc4b28d257f3cdabfeab7f4ac9e51c765030848d09190d7d3afaacfc",
+      "canonicalSHA256": "sha256:8e2c363cc6871657789e94b17b68ddeaae3d6a358fe55ebbaa828b2f0e24389c",
+      "canonicalBytes": 49890,
+      "method": "Input read before registry/receipt addition. Canonical payload starts only at the unique anchored whole-line heading ## 1. Purpose and scope through EOF, LF with one final LF; inline mentions are excluded. Parse the single JSON fence as the three original proposed payloads. Draft remains unchanged and is not approved as a whole."
+    },
+    "semanticLookup": {
+      "method": "Rechecked all 125 registry entries by semantic meaning, canonical name and aliases before adding these IDs. No case-folded ID/name/alias collisions; no existing entry supplies these responsibilities.",
+      "scene": "effect-profile is an engine-parameter preset, not a pose family; visual-treatment, item-presentation-status, consumer-selected-condition and live-presentation do not model decorative camera/assembly/explosion scenes.",
+      "progress": "primary-value and measurement-text-equivalent describe selections or displayed measurements/task progress, not a consumer-supplied local animation coordinate; deadline/value-change concepts do not apply.",
+      "pointerTilt": "signal-pulse controls indicator emphasis, not bounded pointer-relative decorative tilt. No alias supplies this responsibility.",
+      "opacity": "Reuse layer-opacity verbatim, retaining its AmbientBackground approval and semantic hash sha256:02d11f63a0d25c145b57398f0db20b29f0b2e1199ae00205410224951880814c; no Isotipo3D usage is fabricated."
+    },
+    "captureAdoptionRecord": "docs/components/isotipo3d/v0.3/capture.json"
+  },
+  "limits": [
+    "Assistant-observed human delegation pattern follows the template receipt, but the authority here is the current explicit ok to the quoted naming/capture question; historical quotations are not substituted for that reply.",
+    "Original proposedConvention objects below preserve the full Draft proposal, including proposed status, approval null and usages []; proposedContentHash and contentHash intentionally differ because status participates in conventionHash.",
+    "Only status and approval metadata change on promotion. No existing semantics, aliases, exceptions, implementation usages or source revisions change. No new React public API symbol exists; all three new usages remain [].",
+    "The ignored Draft, capture plan, raw observations and original PNGs remain historical Proposed/Observed evidence. Tracked capture adoption is separately scoped in capture.json; neither record approves the full serialized Draft or exact target pixels.",
+    "No required three version or peer policy, installation, dependency/token change, Material recipe, implementation plan, runtime compatibility, API migration or implementation is approved.",
+    "No browser/source/network execution, GitHub write, public image URL/access verification, comment, PR, staging, commit or push is performed or authorized by this record.",
+    "All six prior receipts are immutable exact-byte predecessors. Their earlier deferrals and scope exclusions remain historical; this new record alone covers the three Isotipo3D conventions."
+  ],
+  "priorReceipts": [
+    {
+      "path": "docs/decisions/prop-naming-gauge-approval.json",
+      "wholeFileSHA256": "sha256:97374db3519c5cd1b0c7c05e5c73974138c47ce38c4326e702f613f800b69911"
+    },
+    {
+      "path": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "wholeFileSHA256": "sha256:a615c560018e7d142a9e627d85ba101c57c35a5289abf2fa48bf1cec0b69903b"
+    },
+    {
+      "path": "docs/decisions/prop-naming-ambient-background-approval.json",
+      "wholeFileSHA256": "sha256:bf7574a50d0d52f0bc2fc2a2c224d200b0dd84537c3ec565f193b3cd93190e71"
+    },
+    {
+      "path": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "wholeFileSHA256": "sha256:2ef1fd8192f5004da741b83570a08b4a2e517cee6e714cd6154e37d67b53e838"
+    },
+    {
+      "path": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "wholeFileSHA256": "sha256:c8bdcbb7e3ef9ef2621440b97128b8468b7c5f10b2e5e9b2de528abee4d9dea4"
+    },
+    {
+      "path": "docs/decisions/prop-naming-template-specs-approval.json",
+      "wholeFileSHA256": "sha256:4bf0cffbbb2403aedd4830b4983519c863ebd851705f7050f4b7f104327a550a"
+    }
+  ],
+  "previouslyProposedNowApproved": ["effect-scene", "effect-progress", "pointer-tilt"],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:effect-scene",
+      "proposedContentHash": "sha256:153b68933d1df373b063201e03fcac8c33b6780cec26065802af47bfbf6507dc",
+      "proposedConvention": {
+        "id": "effect-scene",
+        "name": "scene",
+        "meaning": "A named pose family of a decorative effect, optionally evaluated at consumer-supplied local progress.",
+        "whenToUse": "Select a decorative effect's supported camera, assembly or explosion scene; scene names are component-specific.",
+        "avoid": "Engine parameter presets (use effect-profile), Material treatments, page choreography, task progress or lifecycle state.",
+        "status": "proposed",
+        "approval": null,
+        "aliases": [],
+        "exceptions": [],
+        "usages": []
+      },
+      "contentHash": "sha256:a0ddc8aa8c8209ef712164e164408cf2e0d49d7b1ff11a9497d7e40c78f37818",
+      "convention": {
+        "id": "effect-scene",
+        "name": "scene",
+        "meaning": "A named pose family of a decorative effect, optionally evaluated at consumer-supplied local progress.",
+        "whenToUse": "Select a decorative effect's supported camera, assembly or explosion scene; scene names are component-specific.",
+        "avoid": "Engine parameter presets (use effect-profile), Material treatments, page choreography, task progress or lifecycle state.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:effect-progress",
+      "proposedContentHash": "sha256:2d645be86ca2574d3b8a0330e846def3894da1cdfd46f2f7b3e204bdbf8bd36d",
+      "proposedConvention": {
+        "id": "effect-progress",
+        "name": "progress",
+        "meaning": "Consumer-supplied normalized local progress used to evaluate a decorative effect scene.",
+        "whenToUse": "Drive a decorative pose or assembly curve independently of how the consumer derives its progress; normalization is component-specific.",
+        "avoid": "Task-completion or measurement semantics, accessible progress indicators, internal elapsed time or an uncontrolled user selection.",
+        "status": "proposed",
+        "approval": null,
+        "aliases": [],
+        "exceptions": [],
+        "usages": []
+      },
+      "contentHash": "sha256:5d3b9c8baefc158b078147f53b76a57f54a63e825c105f63f638010c2188a4b9",
+      "convention": {
+        "id": "effect-progress",
+        "name": "progress",
+        "meaning": "Consumer-supplied normalized local progress used to evaluate a decorative effect scene.",
+        "whenToUse": "Drive a decorative pose or assembly curve independently of how the consumer derives its progress; normalization is component-specific.",
+        "avoid": "Task-completion or measurement semantics, accessible progress indicators, internal elapsed time or an uncontrolled user selection.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:pointer-tilt",
+      "proposedContentHash": "sha256:91eae46168acb123c0f532b1ed3e45e0c9403386816faa20fc5c8977e3dd7815",
+      "proposedConvention": {
+        "id": "pointer-tilt",
+        "name": "pointerTilt",
+        "meaning": "Whether a decorative effect may apply a bounded pointer-relative tilt when its motion and input policy permits it.",
+        "whenToUse": "Let a consumer disable decorative pointer tilt; eligible pointer types, scenes, bounds and reduced-motion behavior are component-specific.",
+        "avoid": "Drag or selection interactions, keyboard behavior, arbitrary transforms, general animation toggles or bypassing reduced motion.",
+        "status": "proposed",
+        "approval": null,
+        "aliases": [],
+        "exceptions": [],
+        "usages": []
+      },
+      "contentHash": "sha256:4dd09b904cc3152e23929278dda86055a623f6c837977a691d7f7f93d71e5c00",
+      "convention": {
+        "id": "pointer-tilt",
+        "name": "pointerTilt",
+        "meaning": "Whether a decorative effect may apply a bounded pointer-relative tilt when its motion and input policy permits it.",
+        "whenToUse": "Let a consumer disable decorative pointer tilt; eligible pointer types, scenes, bounds and reduced-motion behavior are component-specific.",
+        "avoid": "Drag or selection interactions, keyboard behavior, arbitrary transforms, general animation toggles or bypassing reduced motion.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

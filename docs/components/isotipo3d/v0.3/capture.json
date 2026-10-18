@@ -1,0 +1,154 @@
+{
+  "component": "Isotipo3D",
+  "specVersion": "0.3",
+  "status": "Adopted source references for local archive only; full Draft and target visual approval pending",
+  "evidenceKind": "Three real original-preview element screenshots, not React output or runtime contract tests",
+  "draftAtAdoption": {
+    "path": ".playwright-mcp/specs/isotipo3d/isotipo3d-v0.3.md",
+    "wholeFileSHA256": "sha256:a926e56dfc4b28d257f3cdabfeab7f4ac9e51c765030848d09190d7d3afaacfc",
+    "canonicalSHA256": "sha256:8e2c363cc6871657789e94b17b68ddeaae3d6a358fe55ebbaa828b2f0e24389c",
+    "canonicalBytes": 49890,
+    "hashDefinition": "From the unique anchored whole-line heading ## 1. Purpose and scope through EOF, LF and one final LF; never an earlier inline heading mention. This identifies the input, not approval of the full snapshot."
+  },
+  "adoption": {
+    "authority": "assistant-observed-human-delegation",
+    "nativeReviewApproval": false,
+    "question": "¿Autorizás conservar las tres capturas como referencias —Lab con recorte y fallback solo geometría/paleta— y registrar las convenciones scene, progress y pointerTilt? Sin instalar three, implementar ni publicar todavía.",
+    "ownerReply": "ok",
+    "provenance": "Parent reports the owner's explicit reply to the exact question above in the current consolidation handoff; no public URL, signed/native receipt or conversation timestamp supplied.",
+    "scope": "Retain precisely these three PNG hashes as local tracked source references, with Lab clipping and SVG geometry/palette-only limits. Record the three naming conventions separately. Not full-snapshot approval, exact target pixels, implementation, peer/version/dependency approval or publication authority.",
+    "pngSHA256": [
+      "48a0c0c425d6b7b33c0c53711c062767472ea090be3f1614e9445d11c9bb8ff1",
+      "ce33c7d90e8fbe42a3cb3d207bee6715a443e7136bf3bfc4792b2772529642e4",
+      "cb2412989d99da261e3a869061397bb283bbc31b1c5fce669743a809bcbd0aaf"
+    ],
+    "namingReceipt": "docs/decisions/prop-naming-isotipo3d-approval.json",
+    "historyBoundary": "This is a new scoped adoption record. Ignored originals, raw observations, live/capture.json and capture-plan.json retain their historical Proposed/Observed and adoption-pending statuses unchanged."
+  },
+  "provenance": {
+    "captureOwner": "Parent orchestrator using Playwright MCP",
+    "capturePermission": "Separate parent-observed owner si to read-only local hosting, Playwright and the original Google Fonts/jsDelivr resources; this consolidation performs no source execution, browser or network work.",
+    "sourceProject": "egdev-website / egdev-foundation",
+    "previewPath": "egdev-foundation/design-system/components/Isotipo3D/preview.html",
+    "previewSHA256": "8984aeb1926622a23faf40a11250e0d10b6b4b979d6515e73cd3cbd791c6fa5c",
+    "previewIdentity": "Parent verified byte-identical original and sibling preview bytes; served unchanged through a local loopback host at /components/Isotipo3D/preview.html. No source changes or scene injection.",
+    "stylesheetHarness": "Original dependencies added with page.addStyleTag URLs /tokens.css then /components/bundle.css; no custom CSS.",
+    "stylesheetRevisionBoundary": "Legacy bundle CSS was inspected after capture. That read-after-capture inspection does not pin the exact stylesheet bytes loaded by the browser. No captured-response digest or exact loaded token/bundle revision was supplied; none is asserted here.",
+    "loadedStylesheetSHA256": null,
+    "externalResourcesAtCapture": ["Original Google Fonts", "Original jsDelivr three@0.160.0 import"],
+    "controls": "Original hero/Lab buttons; range End for hero 1, Home then 50 ArrowRight for Lab .50. Pointer moved to (1,1); wait 3200ms after controls for each normal-motion scenario.",
+    "encoding": "Original fragment lacks charset; observed windows-1252 and Spanish status mojibake outside crop. No artwork text/code changed.",
+    "inspection": "Parent and consolidation writer viewed all three real PNGs; archive retains original filenames and exact PNG bytes.",
+    "historicalMetadata": {
+      "path": ".playwright-mcp/specs/isotipo3d/live/capture.json",
+      "wholeFileSHA256": "sha256:dc7a39d0438e1785f564a4524f040628137a184a613989441e2cc6a97791fe05"
+    },
+    "historicalPlan": {
+      "path": ".playwright-mcp/specs/isotipo3d/capture-plan.json",
+      "wholeFileSHA256": "sha256:e14bd38ce7b54123d52f94c5c68393e26aee660ac8ce3cd644fd21799383f281"
+    }
+  },
+  "commonObservedConditions": {
+    "viewportCSSPixels": { "width": 1280, "height": 900 },
+    "deviceScaleFactor": 1,
+    "browser": "Chrome/148.0.0.0 as sampled in actual user agent, not inferred from installed tooling",
+    "theme": "Original dark Foundation tokens and bundle",
+    "reducedTransparency": "no-preference",
+    "loadedFontEntries": [
+      "Barlow 400",
+      "Barlow 500",
+      "Barlow 600",
+      "Barlow 600",
+      "Barlow Condensed 600",
+      "JetBrains Mono 400"
+    ],
+    "fontBoundary": "Sampled loaded entries, including duplicate Barlow 600; not an exhaustive failure audit.",
+    "tokensSampledByParent": { "canvas": "#000000", "logoRed": "#E91B35", "logoShade": "#800C1D" },
+    "computedFactsFromParent": {
+      "rootBodyLiveFallbackBackgroundColor": "rgba(0,0,0,0)",
+      "liveOverflow": "visible",
+      "liveBorderRadius": "0px",
+      "liveFilter": "none"
+    },
+    "framingBoundary": "Ancestor preview stage creates black/glow/rounded framing inside live crops. Source chrome is not adopted as target Material or proof of target transparent/no-border/overflow-hidden behavior.",
+    "timingBoundary": "Metadata samples precede each PNG slightly; timestamps are not exact screenshot times. Normal animation was not frozen. No pixel stability or exact source/target equivalence is claimed."
+  },
+  "captures": [
+    {
+      "id": "VIS-01",
+      "imagePath": "hero--progress-1--1280--dark.png",
+      "pngSHA256": "48a0c0c425d6b7b33c0c53711c062767472ea090be3f1614e9445d11c9bb8ff1",
+      "pngPixels": { "width": 619, "height": 559 },
+      "altText": "Red extruded EGDEV isotype in an assembled isometric hero pose, with shaded edges and legacy stage framing.",
+      "sourceObservation": {
+        "path": ".playwright-mcp/specs/isotipo3d/live/capture-vis01-observed.json",
+        "wholeFileSHA256": "sha256:ffd80a834c0453d9bb2c12f1e4e26d42cc32dc530a420fe9249a2496b62220ee"
+      },
+      "scenario": { "pose": "hero", "progress": 1, "motion": "no-preference" },
+      "componentSelector": ".pv-stage > [data-iso-demo]",
+      "componentBoundsCSSPixels": { "x": 33, "y": 63.1875, "width": 618.1875, "height": 558 },
+      "canvasPixels": [618, 558],
+      "webglActive": true,
+      "webglVendor": "Google Inc. (Google)",
+      "webglRenderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "metadataSampledAt": "2026-10-18T12:35:43.668Z",
+      "elapsedSinceNavigationMsAtSample": 23066.10000000149,
+      "waitAfterControlsMs": 3200,
+      "exactScreenshotTimestamp": null,
+      "adoptionScope": "Source geometry, palette and assembled hero pose reference only; stage chrome excluded. Software rendering observed, not a physical GPU claim or React evidence.",
+      "publicImageURL": null
+    },
+    {
+      "id": "VIS-02",
+      "imagePath": "lab--progress-0.50--1280--dark.png",
+      "pngSHA256": "ce33c7d90e8fbe42a3cb3d207bee6715a443e7136bf3bfc4792b2772529642e4",
+      "pngPixels": { "width": 619, "height": 559 },
+      "altText": "Separated red EGDEV isotype pieces and brand-shaped Lab debris, with large pieces visibly clipped at the crop edges.",
+      "sourceObservation": {
+        "path": ".playwright-mcp/specs/isotipo3d/live/capture-vis02-observed.json",
+        "wholeFileSHA256": "sha256:74581c9c3071915bfdb9f825ade428515ea7eae7a3bb79fa409bc37d0c556ae4"
+      },
+      "scenario": { "pose": "lab", "progress": 0.5, "readout": "0.50", "motion": "no-preference" },
+      "componentSelector": ".pv-stage > [data-iso-demo]",
+      "componentBoundsCSSPixels": { "x": 33, "y": 63.1875, "width": 618.1875, "height": 558 },
+      "canvasPixels": [618, 558],
+      "webglActive": true,
+      "webglBackend": null,
+      "webglBackendBoundary": "VIS-01 sampled SwiftShader in the same session; VIS-02 did not independently sample renderer/vendor.",
+      "sourceLowTier": false,
+      "metadataSampledAt": "2026-10-18T12:36:12.656Z",
+      "elapsedSinceNavigationMsAtSample": 52049.30000000447,
+      "waitAfterControlsMs": 3200,
+      "exactScreenshotTimestamp": null,
+      "adoptionScope": "Clipped source Lab reference at full-explosion plateau ex=1, not half explosion. Fit90% means assembled bounds only, never full-explosion containment or a source fix. Source viewport tier does not verify target container-tier/debris behavior; no React parity or stage chrome adoption.",
+      "publicImageURL": null
+    },
+    {
+      "id": "VIS-03",
+      "imagePath": "assembled--source-fallback--1280--dark.png",
+      "pngSHA256": "cb2412989d99da261e3a869061397bb283bbc31b1c5fce669743a809bcbd0aaf",
+      "pngPixels": { "width": 249, "height": 249 },
+      "altText": "Assembled two-tone EGDEV isotype with three detached brand pixels and legacy source glow, used for geometry and palette only.",
+      "sourceObservation": {
+        "path": ".playwright-mcp/specs/isotipo3d/live/capture-vis03-observed.json",
+        "wholeFileSHA256": "sha256:b70f88b369e0c0349977c92ca2fd69c7295b2636501e3f203c37db4225374551"
+      },
+      "scenario": { "standaloneAssembledSVG": true, "motion": "reduce", "legacyGlow": true, "forcedFailure": false },
+      "componentSelector": ".pv-fb > div:first-child .eg-iso3d",
+      "componentBoundsCSSPixels": { "x": 697.1875, "y": 266.546875, "width": 247.90625, "height": 247.90625 },
+      "svgBoundsCSSPixels": { "x": 697.1875, "y": 266.546875, "width": 247.90625, "height": 247.90625 },
+      "svgFilter": "drop-shadow(color(srgb 1 0 0.211765 / 0.28) 0px 0px 34px)",
+      "pixelAnimation": [{ "name": "none", "duration": "0s" }],
+      "metadataSampledAt": "2026-10-18T12:36:13.738Z",
+      "exactScreenshotTimestamp": null,
+      "adoptionScope": "GEOMETRY/PALETTE ONLY. Legacy glow is NOT adopted. Target fallback remains assembled, stationary, decorative and non-glowing. Not an exploded tile, forced engine-failure test, target rendering or React evidence.",
+      "publicImageURL": null
+    }
+  ],
+  "remainingGates": [
+    "Final full v0.3 contract and target visual-difference approval; no implementation acceptance criterion is reported as passed.",
+    "Separately approved implementation plan, placement/build scope and exact peer/version/dependency/install permissions; three 0.160.0 remains a Draft recommendation, not approval or compatibility evidence.",
+    "Public asset delivery, actual URL/access/hash verification, PR and exact #47 add-comment authorization/readback remain pending. No guessed public URLs or GitHub writes.",
+    "Draft naming/visual-link finalization is a separate unit: historical ignored Draft and raw metadata remain unchanged in this consolidation."
+  ]
+}

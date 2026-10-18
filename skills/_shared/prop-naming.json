@@ -2086,5 +2086,53 @@
       "contentHash": "sha256:59c322d5ee26a6f383c7b70d45014a784501acf1918a77865dcd2da1394dc971"
     },
     "usages": []
+  },
+  {
+    "id": "effect-scene",
+    "name": "scene",
+    "meaning": "A named pose family of a decorative effect, optionally evaluated at consumer-supplied local progress.",
+    "whenToUse": "Select a decorative effect's supported camera, assembly or explosion scene; scene names are component-specific.",
+    "avoid": "Engine parameter presets (use effect-profile), Material treatments, page choreography, task progress or lifecycle state.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/decisions/prop-naming-isotipo3d-approval.json",
+      "scope": "convention:effect-scene",
+      "contentHash": "sha256:a0ddc8aa8c8209ef712164e164408cf2e0d49d7b1ff11a9497d7e40c78f37818"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": []
+  },
+  {
+    "id": "effect-progress",
+    "name": "progress",
+    "meaning": "Consumer-supplied normalized local progress used to evaluate a decorative effect scene.",
+    "whenToUse": "Drive a decorative pose or assembly curve independently of how the consumer derives its progress; normalization is component-specific.",
+    "avoid": "Task-completion or measurement semantics, accessible progress indicators, internal elapsed time or an uncontrolled user selection.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/decisions/prop-naming-isotipo3d-approval.json",
+      "scope": "convention:effect-progress",
+      "contentHash": "sha256:5d3b9c8baefc158b078147f53b76a57f54a63e825c105f63f638010c2188a4b9"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": []
+  },
+  {
+    "id": "pointer-tilt",
+    "name": "pointerTilt",
+    "meaning": "Whether a decorative effect may apply a bounded pointer-relative tilt when its motion and input policy permits it.",
+    "whenToUse": "Let a consumer disable decorative pointer tilt; eligible pointer types, scenes, bounds and reduced-motion behavior are component-specific.",
+    "avoid": "Drag or selection interactions, keyboard behavior, arbitrary transforms, general animation toggles or bypassing reduced motion.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/decisions/prop-naming-isotipo3d-approval.json",
+      "scope": "convention:pointer-tilt",
+      "contentHash": "sha256:4dd09b904cc3152e23929278dda86055a623f6c837977a691d7f7f93d71e5c00"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": []
   }
 ]
