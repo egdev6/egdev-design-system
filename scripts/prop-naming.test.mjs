@@ -51,6 +51,26 @@ function approve(entry, status = 'approved') {
   entry.status = status;
   entry.approval = approval(`convention:${entry.id}`, props.conventionHash(entry));
 }
+// Delegated receipts in order; each later receipt is accepted only when it pins its predecessor's exact bytes.
+const receiptChain = [
+  'docs/decisions/prop-naming-molecule-specs-approval.json',
+  'docs/decisions/prop-naming-organism-specs-approval.json',
+  'docs/decisions/prop-naming-template-specs-approval.json'
+];
+function laterReceipts(reference) {
+  const later = new Map();
+  for (let index = receiptChain.indexOf(reference) + 1; index > 0 && index < receiptChain.length; index += 1) {
+    const previous = receiptChain[index - 1];
+    const current = JSON.parse(fs.readFileSync(resolve(root, receiptChain[index]), 'utf8'));
+    assert.equal(
+      current.priorReceipts.find(({ path }) => path === previous)?.wholeFileSHA256,
+      digest(fs.readFileSync(resolve(root, previous))),
+      receiptChain[index]
+    );
+    later.set(receiptChain[index], current);
+  }
+  return later;
+}
 function approveException(entry, exception) {
   exception.approval = approval(
     `exception:${entry.id}:${exception.scope}:${exception.propName}`,
@@ -173,18 +193,16 @@ test('molecule naming receipt binds delegated decisions without speculative impl
     history.set(prior.path, JSON.parse(bytes));
   }
   // A later receipt is reviewed history only when it pins this receipt's exact bytes.
-  const laterReference = 'docs/decisions/prop-naming-organism-specs-approval.json';
-  const later = JSON.parse(fs.readFileSync(resolve(root, laterReference), 'utf8'));
-  assert.equal(
-    later.priorReceipts.find(({ path }) => path === reference)?.wholeFileSHA256,
-    digest(fs.readFileSync(resolve(root, reference)))
-  );
+  const later = laterReceipts(reference);
+  assert.ok(later.size >= 1);
   const superseded = new Map(
-    later.semanticAmendments
-      .filter(({ previousReference }) => previousReference === reference)
-      .map((amendment) => [amendment.id, amendment])
+    [...later].flatMap(([laterReference, laterReceipt]) =>
+      laterReceipt.semanticAmendments
+        .filter(({ previousReference }) => previousReference === reference)
+        .map((amendment) => [amendment.id, { ...amendment, laterReference }])
+    )
   );
-  const receipts = new Map([...history, [reference, receipt], [laterReference, later]]);
+  const receipts = new Map([...history, [reference, receipt], ...later]);
   for (const entry of actual) {
     assert.equal(entry.status, 'approved', entry.id);
     const { approval, usages: _usages, ...convention } = entry;
@@ -209,7 +227,7 @@ test('molecule naming receipt binds delegated decisions without speculative impl
     const amendment = superseded.get(entry.id);
     if (amendment) {
       assert.equal(amendment.previousContentHash, record.contentHash, entry.id);
-      assert.equal(entry.approval.reference, laterReference, entry.id);
+      assert.equal(entry.approval.reference, amendment.laterReference, entry.id);
     } else {
       assert.equal(entry.approval.reference, reference, entry.id);
     }
@@ -353,7 +371,82 @@ test('organism naming receipt binds delegated decisions and the menu-entry-kind 
     assert.deepEqual(convention.aliases, [], convention.id);
     assert.deepEqual(convention.exceptions, [], convention.id);
   }
-  assert.equal(actual.length, 123);
+  // 123 entries at this receipt; later receipts that pin it may only add new IDs.
+  const later = laterReceipts(reference);
+  const knownIds = new Set([...historicalIds, ...receipt.entries.map(({ convention }) => convention.id)]);
+  const laterAdded = [...later.values()].flatMap(({ entries }) =>
+    entries.filter(({ convention }) => !knownIds.has(convention.id))
+  );
+  assert.equal(actual.length, 123 + laterAdded.length);
+});
+
+test('template naming receipt pins the organism receipt and binds two new layout slots', () => {
+  const reference = 'docs/decisions/prop-naming-template-specs-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const registryBytes = fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'));
+  const actual = JSON.parse(registryBytes);
+  validate(actual);
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-observed-human-delegation');
+  assert.notEqual(receipt.sourceRegistrySHA256, digest(registryBytes));
+  assert.deepEqual(
+    receipt.evidence.userStatements.map(({ quote }) => quote),
+    [
+      'no me preguntes, aplica tu las opciones sugeridas y si tengo que irerar en la revisión ya lo vemos',
+      'no dejes pendientes. todo de una cuando definamos specs. añade captura y acepta props',
+      'si'
+    ]
+  );
+  assert.ok(receipt.evidence.userStatements.every(({ provenance }) => provenance.length > 0));
+  assert.match(receipt.evidence.userStatements[2].provenance, /¿Seguimos con AppShell\?/);
+  assert.match(receipt.evidence.interpretation, /No per-convention user quotation/);
+  assert.equal(receipt.evidence.draftSnapshot.count, 1);
+  assert.deepEqual(Object.keys(receipt.evidence.draftSnapshot.wholeFileSHA256), ['app-shell.md']);
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  assert.deepEqual(
+    receipt.entries.map(({ convention }) => convention.id),
+    ['side-navigation', 'bottom-navigation']
+  );
+
+  const history = new Map();
+  for (const prior of receipt.priorReceipts) {
+    const bytes = fs.readFileSync(resolve(root, prior.path));
+    assert.equal(digest(bytes), prior.wholeFileSHA256, prior.path);
+    history.set(prior.path, JSON.parse(bytes));
+  }
+  assert.equal(history.size, 5);
+  assert.ok(history.has('docs/decisions/prop-naming-organism-specs-approval.json'));
+  const historicalIds = new Set(
+    [...history.values()].flatMap(({ entries }) => entries.map(({ convention }) => convention.id))
+  );
+  for (const record of receipt.entries) {
+    assert.equal(historicalIds.has(record.convention.id), false, record.convention.id);
+    const entry = actual.find((entry) => entry.id === record.convention.id);
+    assert.ok(entry, record.scope);
+    const { approval, usages, ...convention } = entry;
+    assert.deepEqual(record.convention, convention, entry.id);
+    assert.equal(record.scope, `convention:${entry.id}`);
+    assert.equal(record.contentHash, props.conventionHash(entry), entry.id);
+    assert.deepEqual(approval, { reference, scope: record.scope, contentHash: record.contentHash });
+    assert.deepEqual(usages, [], entry.id);
+    assert.deepEqual(convention.aliases, [], entry.id);
+    assert.deepEqual(convention.exceptions, [], entry.id);
+    const changed = structuredClone(actual);
+    changed.find((entry) => entry.id === record.convention.id).meaning += ' Changed.';
+    assert.throws(() => validate(changed), /approval/i, entry.id);
+  }
+  assert.equal(actual.find(({ id }) => id === 'side-navigation').name, 'sideNavigation');
+  assert.equal(actual.find(({ id }) => id === 'bottom-navigation').name, 'bottomNavigation');
+  const later = laterReceipts(reference);
+  const laterAdded = [...later.values()].flatMap(({ entries }) =>
+    entries.filter(
+      ({ convention }) =>
+        !historicalIds.has(convention.id) && !receipt.entries.some((r) => r.convention.id === convention.id)
+    )
+  );
+  assert.equal(actual.length, 125 + laterAdded.length);
 });
 
 test('promoting observed usage to existing does not approve or change its proposed convention', () => {

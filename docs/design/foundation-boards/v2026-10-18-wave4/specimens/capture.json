@@ -1,0 +1,58 @@
+{
+  "kind": "Real browser capture of the agent-composed AppShell expected-design specimen (template wave), not React implementation evidence",
+  "tool": "Playwright MCP",
+  "sources": {
+    "tokens": "packages/tokens/dist/tokens.css",
+    "tokensSHA256": "7ce0a0d70d0d058eadbb95b5063e2f3969a1f0426ed551478c70d15dcdb2b4fe",
+    "legacyCSS": "packages/ui/src/styles/legacy/bundle.css",
+    "legacyCSSSHA256": "4f1763a54e080cd206b9d64f57ff9bbc5e3858159ec786ef8263134edee997fc",
+    "fonts": "Barlow, Barlow Condensed, JetBrains Mono via explicit Google Fonts stylesheet and document.fonts.load"
+  },
+  "limits": [
+    "Static frames simulate wide and narrow viewports inside one 1280x900 capture; they do not verify media-query switching, focus or assistive technology.",
+    "Agent-composed specimen proposed for owner review in the AppShell issue under delegated recommended decisions."
+  ],
+  "approval": {
+    "status": "Approved",
+    "reference": "Owner instructions 2026-10-17/18: \"no me preguntes, aplica tu las opciones sugeridas y si tengo que irerar en la revisi\u00f3n ya lo vemos\" and \"si\" to continue with AppShell; adopted as expected design subject to owner review in the issue."
+  },
+  "images": [
+    {
+      "component": "app-shell",
+      "file": "app-shell--specimen.png",
+      "source": "app-shell.specimen.html",
+      "sha256": "27439a76a2beb70d16326452f9375a6fb447f255efea0eee7bd459a304a43c1d",
+      "sourceSHA256": "53845b5702489af72044d8cb412423a5eb540af6e974986667d6dff2b235db96",
+      "pixelDimensions": [1265, 1566],
+      "capturedAt": "2026-10-18T02:52:43.341Z",
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1265,
+          "height": 1566,
+          "top": 0,
+          "right": 1265,
+          "bottom": 1566,
+          "left": 0
+        },
+        "fonts": [
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow 700",
+          "Barlow Condensed 800",
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow 700",
+          "Barlow Condensed 800"
+        ],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      }
+    }
+  ]
+}
