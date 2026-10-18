@@ -1146,16 +1146,16 @@
   {
     "id": "menu-entry-kind",
     "name": "kind",
-    "meaning": "The semantic role of an entry in a data-driven menu: action, destination link, separator, group label or submenu.",
-    "whenToUse": "Menu exposes a discriminated public entry schema and selects the corresponding Radix menu part from each entry's role; recipe consumers reuse the same schema.",
+    "meaning": "The kind of a data-driven menu or navigation entry: action, destination link, separator, group label or submenu.",
+    "whenToUse": "A menu or navigation component exposes a discriminated public entry schema and selects the corresponding part (a Radix menu part, a link or a separator) from each entry's kind; recipe consumers reuse the same schema.",
     "avoid": "Selection cardinality (use type), native button or input type attributes, Radix-provided props, visual treatments or changing an action into a selectable form option.",
     "status": "approved",
     "aliases": [],
     "exceptions": [],
     "approval": {
-      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
       "scope": "convention:menu-entry-kind",
-      "contentHash": "sha256:f26d5c8941b136d2ae3964cd369237a9baba3518ef3bf515a69919d5eb20521c"
+      "contentHash": "sha256:0b0cb903110a56f70e453b35f949a782f3ad4da9820ba6a6d0b4bb4fdab95308"
     },
     "usages": []
   },
@@ -1732,6 +1732,326 @@
       "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
       "scope": "convention:announcement-label",
       "contentHash": "sha256:75da8f2d77b24d66fbcb0e1498f2572937d15319dcb081283bb0e06026596b59"
+    },
+    "usages": []
+  },
+  {
+    "id": "dialog-description",
+    "name": "description",
+    "meaning": "Optional visible plain-text sentence that explains the purpose or consequence of a dialog, rendered with its title and linked to the dialog as its accessible description.",
+    "whenToUse": "A modal or alert dialog needs one short explanatory sentence next to its heading that assistive technology announces when the dialog opens.",
+    "avoid": "The dialog's accessible name or heading (use title), form-field help (use hint), editorial introductions (use lede), status notes (use statusText), rich interactive content or long body copy.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:dialog-description",
+      "contentHash": "sha256:c4841a60fb7576538ec4dcbb12143a6ce9f4eae14b87aaa475824da19a2c334f"
+    },
+    "usages": []
+  },
+  {
+    "id": "header-status-text",
+    "name": "statusText",
+    "meaning": "Short visible plain-text note shown beside a panel's heading that reports the current state of its content, such as a saved draft.",
+    "whenToUse": "A dialog or panel header shows a passive, consumer-updated state note next to its title.",
+    "avoid": "Lifecycle presentation enums (use status), measurement condition text (use stateText), change announcements (use Toast or a live region), validation messages (use error) or the heading itself.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:header-status-text",
+      "contentHash": "sha256:89a19b570093b7240d0229c06ba729678faa08a7f6154c5b45d6d3bb17b83711"
+    },
+    "usages": []
+  },
+  {
+    "id": "search-query-change",
+    "name": "onQueryChange",
+    "meaning": "Notification carrying the next search text after each user edit of a component's built-in search field.",
+    "whenToUse": "A searchable collection owns its query field and consumers need the text to filter, fetch or log results themselves.",
+    "avoid": "Form inputs with native onChange, selection or highlighted-item changes (use onValueChange), programmatic resets, or debounced/committed search submissions.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:search-query-change",
+      "contentHash": "sha256:d3e3572c7a32fb22dbb27c9876b67fbe5aa156d7be2193c5be8ebb4affc1377a"
+    },
+    "usages": []
+  },
+  {
+    "id": "collection-filtering",
+    "name": "filtering",
+    "meaning": "Whether a searchable collection filters its consumer-supplied entries with its built-in matcher or renders them unchanged because the consumer already filtered them.",
+    "whenToUse": "A component offers built-in client-side matching but must also support server-side or custom search results.",
+    "avoid": "Choosing the matching algorithm or ranking, sorting, pagination, or hiding disabled entries.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:collection-filtering",
+      "contentHash": "sha256:f86b73a3d5bc39e134d521e99c345b47e5e4eda40afab45b99e95cde2c72908d"
+    },
+    "usages": []
+  },
+  {
+    "id": "results-busy",
+    "name": "busy",
+    "meaning": "The consumer is refreshing a collection's results; the component shows its loading message, marks the collection aria-busy and announces the pending state.",
+    "whenToUse": "A searchable or remote-backed collection waits for consumer-supplied results after a query change.",
+    "avoid": "Pending activation of a single control (use loading), skeleton placeholders for whole regions, progress values, or disabling the search field.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:results-busy",
+      "contentHash": "sha256:42000bfec7d3e02b6cb997983b5de14b320b5bd391a496f77b92926fffb3d3c9"
+    },
+    "usages": []
+  },
+  {
+    "id": "table-columns",
+    "name": "columns",
+    "meaning": "Ordered column definitions of a data table, each with a stable id, header text and an accessor that renders the cell for a consumer-defined row; the column shape is component-specific.",
+    "whenToUse": "A tabular component renders consumer-shaped rows through per-column accessors and may derive sorting, alignment or row headers from the definitions.",
+    "avoid": "Collections whose entries the component renders in its own standard shape (use items), selectable form options (use options) or CSS grid layout tracks.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:table-columns",
+      "contentHash": "sha256:2c5cc5cd16b267460705029d7c0c53610db39075b606a381449ccc7155a2b876"
+    },
+    "usages": []
+  },
+  {
+    "id": "table-rows",
+    "name": "rows",
+    "meaning": "Consumer-defined row records of a data table, each identified by a stable unique id; the component reads only the id and the column accessors, never the product schema.",
+    "whenToUse": "A tabular component receives generic row data whose fields it renders only through column definitions.",
+    "avoid": "Entries with a component-defined shape (use items), textarea line counts or layout row tracks.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:table-rows",
+      "contentHash": "sha256:c215a40f322d238a061190d6a374dd25eb991786840caee7cef9541e55aa269c"
+    },
+    "usages": []
+  },
+  {
+    "id": "table-sort",
+    "name": "sort",
+    "meaning": "Controlled sort state of a collection: the sorted column id and direction, or null for the supplied order.",
+    "whenToUse": "A component sorts its own rows locally and lets the host control which column and direction apply.",
+    "avoid": "Sorting functions or comparators, server query parameters, or the order of an unsorted collection.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:table-sort",
+      "contentHash": "sha256:29270905c11a7d8c9af56e25aaaa1a7b734101895befdb955b391c8453b4bdb2"
+    },
+    "usages": []
+  },
+  {
+    "id": "initial-uncontrolled-sort",
+    "name": "defaultSort",
+    "meaning": "Initial sort state of a collection that manages its sort internally, or null for the supplied order.",
+    "whenToUse": "A sortable component supports uncontrolled use alongside the sort prop.",
+    "avoid": "Controlled sorting, selection values (use defaultValue) or resetting the sort after mount.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:initial-uncontrolled-sort",
+      "contentHash": "sha256:ee1dbedbb39e03154a26958aea32ff09828424d4b6f6e50bf0c5f5c4d84f517a"
+    },
+    "usages": []
+  },
+  {
+    "id": "sort-change",
+    "name": "onSortChange",
+    "meaning": "Notification that the user requested a different sort column or direction, receiving the next sort state.",
+    "whenToUse": "A sortable component emits the next sort after the user activates a sortable header.",
+    "avoid": "Notifications for incoming prop updates, data reloads or selection changes (use onValueChange).",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:sort-change",
+      "contentHash": "sha256:f97407f82b31802b78908e3553f1e8d1a4db9a637b847ad9adc4e8354f4883ff"
+    },
+    "usages": []
+  },
+  {
+    "id": "row-selection",
+    "name": "selectable",
+    "meaning": "Enables the component-owned multiple row selection controls of a data collection, including a select-all control.",
+    "whenToUse": "A table or similar collection can show per-row selection checkboxes whose state is exposed through value.",
+    "avoid": "Single active or current rows (use activeRowId), text selection, selectable form options or the selection value itself.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:row-selection",
+      "contentHash": "sha256:82e080b6e1118518c052b766680772d537fc85b54a34fdc1e63ba6b390f1560e"
+    },
+    "usages": []
+  },
+  {
+    "id": "active-row",
+    "name": "activeRowId",
+    "meaning": "Id of the consumer-designated current row of a data collection, exposed as aria-current and given a distinct non-color cue; independent of selection.",
+    "whenToUse": "The host marks the row whose details or editing context is currently shown.",
+    "avoid": "Multiple selection (use value with selectable), temporary emphasis (use highlighted), focus position or row indices.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:active-row",
+      "contentHash": "sha256:899cd1694bbcbb9348c40a78eff3161a1523c1880b469c5d1655f3a4addfa632"
+    },
+    "usages": []
+  },
+  {
+    "id": "viewport-max-height",
+    "name": "maxHeight",
+    "meaning": "Preset maximum block size of a component's own scroll viewport; content beyond it scrolls inside the component, and absence means no cap.",
+    "whenToUse": "A collection component with another dimensional axis (such as density in size) offers bounded vertical scrolling.",
+    "avoid": "Arbitrary CSS lengths, density or control dimensions (use size), or page-level layout heights.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:viewport-max-height",
+      "contentHash": "sha256:a1fcb884a5350534b9664e23e1fba4e9c5af579d5da08c9e6da2b2ae72cd02f5"
+    },
+    "usages": []
+  },
+  {
+    "id": "product-identity",
+    "name": "product",
+    "meaning": "Identity of the EGDEV product or application that a structural region presents: its compact brand monogram, its visible and accessible name, and an optional home destination.",
+    "whenToUse": "An application region such as a sidebar shows which product the user is in by rendering ProductMark with the product's name, optionally linking to the product's home.",
+    "avoid": "The egdev corporate logo (use Logo), people or channel identities (use Avatar), page or section headings (use title), or accessible names of controls (use label).",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:product-identity",
+      "contentHash": "sha256:85e4aaafbe7146d2d854747fb43d16523860811dd3f0afd287ef2342784e0452"
+    },
+    "usages": []
+  },
+  {
+    "id": "end-items",
+    "name": "endItems",
+    "meaning": "Ordered secondary entries that a navigation region pins to its end, visually separated from its main collection, with the same entry shape as that region's items.",
+    "whenToUse": "A rail or bar keeps utility destinations such as Settings or Help at the bottom or trailing edge, apart from its main destinations.",
+    "avoid": "Non-navigation footer content or metadata (use footer), action buttons (use actions), page footers or reordering the main items.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:end-items",
+      "contentHash": "sha256:9a95c86f3155874b006075dfa97f7e397b6b78bb2d93506cff5dc37c29fe4b74"
+    },
+    "usages": []
+  },
+  {
+    "id": "add-request",
+    "name": "onAdd",
+    "meaning": "Notification that the user activated a component's built-in add control; the consumer performs the creation flow. The payload is component-specific: the originating event or the target position, such as a date. Supplying the handler renders the control.",
+    "whenToUse": "A collection, planning or navigation region offers an optional add entry point, globally or per slot, whose creation flow (dialog, page, installer) belongs to the application.",
+    "avoid": "Adding files (use onFiles), value or selection changes (use onValueChange), navigation to an existing destination (use onNavigate) or controls that perform the creation themselves.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:add-request",
+      "contentHash": "sha256:989d86b930117a5c51757561bdf0f93ae836f71e1b83d75f4e9611291f467796"
+    },
+    "usages": []
+  },
+  {
+    "id": "move-intent",
+    "name": "onMove",
+    "meaning": "Notification that the user asked to relocate an existing item to another position, such as another calendar date, receiving the item and the target position; the consumer applies or rejects the move and re-renders.",
+    "whenToUse": "A collection or planning region offers drag-and-drop or an equivalent move menu between containers and must not mutate consumer data itself.",
+    "avoid": "Within-list reordering without a target container, value selection (use onValueChange), navigation (use onNavigate) or notifications of moves that did not come from the user.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:move-intent",
+      "contentHash": "sha256:4012870d88118a3b8d9d5ce3916d9b393ed0fa61de7dafd5fadceade9d6133c3"
+    },
+    "usages": []
+  },
+  {
+    "id": "safe-area-guide",
+    "name": "safeArea",
+    "meaning": "Whether a fixed-ratio preview canvas shows a decorative inset rectangle marking the area safe from edge cropping on output devices.",
+    "whenToUse": "A preview of broadcast, video or social output shows where essential content must stay.",
+    "avoid": "Device safe-area insets (env(safe-area-inset-*)) for page layout, padding presets (use padding), or interactive crop handles.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:safe-area-guide",
+      "contentHash": "sha256:6907abfdc393028cba8972e992275e8428c7837715d2e7deb190b3e35dcb5ccf"
+    },
+    "usages": []
+  },
+  {
+    "id": "guide-zones",
+    "name": "zones",
+    "meaning": "Ordered, labelled, non-interactive guide rectangles drawn over a preview canvas in percentages of its size, each showing which area a device or context displays.",
+    "whenToUse": "A preview must show which part of the output is visible on specific devices or layouts, with a visible name per guide.",
+    "avoid": "Interactive regions or hotspots, image maps, navigation entries (use items), crop or selection tools, or unlabelled color-only overlays.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:guide-zones",
+      "contentHash": "sha256:9f087b7f24dd88644da462717d27231bbb4a26c2d7fd90165831b80a8c4d9bfa"
+    },
+    "usages": []
+  },
+  {
+    "id": "figure-caption",
+    "name": "figureCaption",
+    "meaning": "Optional visible plain-text caption of a non-image figure, such as a preview canvas or diagram, rendered as its native figcaption.",
+    "whenToUse": "A composite component renders a figure whose caption identifies what is previewed, such as its output name and resolution.",
+    "avoid": "Single image figures (use imageCaption), collection captions (use caption), headings (use title), accessible-name-only inputs (use label), or interactive content.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "scope": "convention:figure-caption",
+      "contentHash": "sha256:170ba06cd9fd19980688f56c43b5582d6e85227354b98ced6939e96e3d5e5b83"
     },
     "usages": []
   }
