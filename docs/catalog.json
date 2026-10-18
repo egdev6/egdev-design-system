@@ -839,34 +839,34 @@
     "actual": "Dialog",
     "nivelActual": "organismo",
     "nombre": "Dialog",
-    "nivel": "organism",
+    "nivel": "molecule",
     "destino": "ui",
     "radix": "Dialog",
     "compone": "Surface, ButtonGroup, Portal",
     "accion": "mantener",
-    "notas": "Variante `sheet` para paneles laterales (MobileMenu)."
+    "notas": "Coordinates dialog content and actions as one reusable overlay interaction, not a structural page region. Retains the `sheet` variant for side panels (MobileMenu). See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval."
   },
   {
     "actual": "—",
     "nivelActual": "—",
     "nombre": "AlertDialog",
-    "nivel": "organism",
+    "nivel": "molecule",
     "destino": "ui",
     "radix": "AlertDialog",
     "compone": "Dialog",
     "accion": "nuevo",
-    "notas": "Confirmaciones destructivas (borrar, desconectar)."
+    "notas": "Coordinates a confirmation prompt and decision actions as one reusable interaction, not a structural page region. Retains destructive confirmations (delete, disconnect). See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval."
   },
   {
     "actual": "CommandPalette",
     "nivelActual": "organismo",
     "nombre": "CommandPalette",
-    "nivel": "organism",
+    "nivel": "molecule",
     "destino": "ui",
     "radix": "Dialog (+ cmdk, a confirmar)",
     "compone": "Input, ListItem, Kbd",
     "accion": "mantener",
-    "notas": "Radix no tiene combobox; cmdk es la opción habitual sobre Radix Dialog."
+    "notas": "Coordinates search input, results and command activation as one reusable interaction, not application-level structure. Radix has no combobox; cmdk over Radix Dialog remains a candidate requiring confirmation. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation or dependency approval."
   },
   {
     "actual": "—",
@@ -905,12 +905,12 @@
     "actual": "Table",
     "nivelActual": "organismo",
     "nombre": "Table",
-    "nivel": "organism",
+    "nivel": "molecule",
     "destino": "ui",
     "radix": "ScrollArea",
     "compone": "Checkbox, Switch, Badge, ButtonGroup",
     "accion": "mantener",
-    "notas": "Tabla nativa; orden y selección en el hook."
+    "notas": "Coordinates tabular data and local sorting and selection as one reusable unit, not a structural page region. Retains the native table with sorting and selection in the hook. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval."
   },
   {
     "actual": "CalendarGrid",
@@ -1070,12 +1070,12 @@
     "actual": "ProjectsGrid",
     "nivelActual": "organismo",
     "nombre": "ProjectsGrid",
-    "nivel": "organism",
+    "nivel": "recipe",
     "destino": "web",
     "radix": "—",
     "compone": "ProjectCard",
-    "accion": "mover",
-    "notas": ""
+    "accion": "componer",
+    "notas": "Web composition recipe arranging ProjectCard instances; no independently specified component API or behavior beyond that composition. Not a standalone component or export. See [classification rules](CATALOGACION.md). Catalogue classification only, no implementation approval."
   },
   {
     "actual": "BlogGrid",
@@ -1125,23 +1125,23 @@
     "actual": "AmbientBackground",
     "nivelActual": "organismo (efecto)",
     "nombre": "AmbientBackground",
-    "nivel": "organism",
+    "nivel": "atom",
     "destino": "effects",
     "radix": "—",
     "compone": "—",
     "accion": "mover",
-    "notas": "Canvas de partículas."
+    "notas": "One decorative particle-background effect rendered with canvas; it does not coordinate independent UI concepts or define a structural region. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval."
   },
   {
     "actual": "Isotipo3D",
     "nivelActual": "organismo (efecto)",
     "nombre": "Isotipo3D",
-    "nivel": "organism",
+    "nivel": "atom",
     "destino": "effects",
     "radix": "—",
     "compone": "—",
     "accion": "mover",
-    "notas": "three.js con fallback SVG."
+    "notas": "One rendered brand-mark effect using three.js with an SVG fallback; rendering complexity does not make it a structural region or coordinate independent UI concepts. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation or dependency approval."
   },
   {
     "actual": "—",
