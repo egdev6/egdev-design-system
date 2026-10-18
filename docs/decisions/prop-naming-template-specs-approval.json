@@ -1,0 +1,98 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-observed-human-delegation",
+  "sourceRegistry": "skills/_shared/prop-naming.json",
+  "sourceRegistrySHA256": "sha256:c755708c8f74ca3f0c5819eb8366d0251ef3928067e03490711afb53dadb542d",
+  "decision": "Apply delegated recommended naming decisions for the template-wave v0.1 draft (AppShell): accept 2 unique new convention definitions (side-navigation, bottom-navigation). This records assistant-applied acceptance under human delegation, not individual human review of each payload.",
+  "evidence": {
+    "channel": "Parent-provided conversation context and current consolidation request",
+    "taskReference": "odd/tasks/template-specs.md#specs",
+    "userStatements": [
+      {
+        "quote": "no me preguntes, aplica tu las opciones sugeridas y si tengo que irerar en la revisión ya lo vemos",
+        "provenance": "Task S2 and parent-provided delegation context"
+      },
+      {
+        "quote": "no dejes pendientes. todo de una cuando definamos specs. añade captura y acepta props",
+        "provenance": "Task S3 and parent-provided delegation context"
+      },
+      {
+        "quote": "si",
+        "provenance": "Task S1: reply to the assistant question \"¿Seguimos con AppShell?\"; scopes the wave, not a per-payload confirmation"
+      }
+    ],
+    "interpretation": "The assistant applies the recommended options and accepts exact naming payloads below under the supplied delegation. No per-convention user quotation, signed approval, native review receipt or independent reviewer is asserted. Owner review may revise these choices, requiring a new scoped record.",
+    "draftSnapshot": {
+      "directory": ".playwright-mcp/specs/wave4",
+      "count": 1,
+      "method": "Read the current AppShell Markdown draft excluding BRIEF.md and the specimen; parse the JSON fences under \"### New prop conventions\"; fail on same-ID divergent JSON and on case-folded ID, canonical name, alias or exception propName collisions with the registry or within the wave. 2 unique payloads, no collisions. The reused localized-messages entry is unchanged. Whole-file hashes identify inputs, not approval of the entire component spec or visual/runtime verification.",
+      "wholeFileSHA256": {
+        "app-shell.md": "sha256:d2e6018fe12006230a3220d82c09f8ffb97d403a5ae54511927cac7c26ec31aa"
+      }
+    }
+  },
+  "limits": [
+    "Assistant-observed human delegation, not provider-native, signed, independent or per-payload human approval. Hashes bind content only and cannot prove consent.",
+    "Naming acceptance only: no exact-snapshot component approval, implementation plan, Material recipe, breakpoint, token/dependency change, API migration or runtime compatibility is authorized.",
+    "New entries have usages []; existing implementation usages, types and whole-file source revisions are retained verbatim. Planned types.ts files are not implementation evidence.",
+    "children, className and native div attributes are not registered as conventions.",
+    "Prior receipts are immutable history; no existing entry is amended and unchanged entries retain prior approvals.",
+    "Drafts remain unchanged. The tracked entries below are the recoverable exact naming snapshot even when local ignored drafts are unavailable.",
+    "Captures, browser/AT/runtime checks, GitHub publication, PR creation and terminal git delivery remain outside this consolidation unit. No such success is claimed."
+  ],
+  "priorReceipts": [
+    {
+      "path": "docs/decisions/prop-naming-gauge-approval.json",
+      "wholeFileSHA256": "sha256:97374db3519c5cd1b0c7c05e5c73974138c47ce38c4326e702f613f800b69911"
+    },
+    {
+      "path": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "wholeFileSHA256": "sha256:a615c560018e7d142a9e627d85ba101c57c35a5289abf2fa48bf1cec0b69903b"
+    },
+    {
+      "path": "docs/decisions/prop-naming-ambient-background-approval.json",
+      "wholeFileSHA256": "sha256:bf7574a50d0d52f0bc2fc2a2c224d200b0dd84537c3ec565f193b3cd93190e71"
+    },
+    {
+      "path": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "wholeFileSHA256": "sha256:2ef1fd8192f5004da741b83570a08b4a2e517cee6e714cd6154e37d67b53e838"
+    },
+    {
+      "path": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "wholeFileSHA256": "sha256:c8bdcbb7e3ef9ef2621440b97128b8468b7c5f10b2e5e9b2de528abee4d9dea4"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:side-navigation",
+      "contentHash": "sha256:5192bcdd094a11de6d3350e049019291a9ddf3a00741f3c461d1ff2f8067966f",
+      "convention": {
+        "id": "side-navigation",
+        "name": "sideNavigation",
+        "meaning": "Consumer-supplied primary navigation region that a layout template docks beside its main content, such as a sidebar or compact rail organism.",
+        "whenToUse": "An application layout places an already composed side navigation organism and owns its docking, sticky positioning and responsive visibility, while the organism owns its navigation data and behavior.",
+        "avoid": "Navigation data or entry arrays (use items), utility entries inside a navigation region (use endItems), panel metadata (use footer), secondary non-navigation panels or a bottom bar (use bottomNavigation).",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:bottom-navigation",
+      "contentHash": "sha256:59c322d5ee26a6f383c7b70d45014a784501acf1918a77865dcd2da1394dc971",
+      "convention": {
+        "id": "bottom-navigation",
+        "name": "bottomNavigation",
+        "meaning": "Consumer-supplied primary navigation region that a layout template docks at the bottom edge of the view below its main content, such as a mobile tab bar organism.",
+        "whenToUse": "An application layout shows a bottom bar of top-level destinations on narrow viewports, owning its docking and responsive visibility while the organism owns its destinations.",
+        "avoid": "Navigation data or entry arrays (use items), page footers or metadata (use footer), floating action buttons, sheets or drawers, or side regions (use sideNavigation).",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

@@ -2054,5 +2054,37 @@
       "contentHash": "sha256:170ba06cd9fd19980688f56c43b5582d6e85227354b98ced6939e96e3d5e5b83"
     },
     "usages": []
+  },
+  {
+    "id": "side-navigation",
+    "name": "sideNavigation",
+    "meaning": "Consumer-supplied primary navigation region that a layout template docks beside its main content, such as a sidebar or compact rail organism.",
+    "whenToUse": "An application layout places an already composed side navigation organism and owns its docking, sticky positioning and responsive visibility, while the organism owns its navigation data and behavior.",
+    "avoid": "Navigation data or entry arrays (use items), utility entries inside a navigation region (use endItems), panel metadata (use footer), secondary non-navigation panels or a bottom bar (use bottomNavigation).",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-template-specs-approval.json",
+      "scope": "convention:side-navigation",
+      "contentHash": "sha256:5192bcdd094a11de6d3350e049019291a9ddf3a00741f3c461d1ff2f8067966f"
+    },
+    "usages": []
+  },
+  {
+    "id": "bottom-navigation",
+    "name": "bottomNavigation",
+    "meaning": "Consumer-supplied primary navigation region that a layout template docks at the bottom edge of the view below its main content, such as a mobile tab bar organism.",
+    "whenToUse": "An application layout shows a bottom bar of top-level destinations on narrow viewports, owning its docking and responsive visibility while the organism owns its destinations.",
+    "avoid": "Navigation data or entry arrays (use items), page footers or metadata (use footer), floating action buttons, sheets or drawers, or side regions (use sideNavigation).",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-template-specs-approval.json",
+      "scope": "convention:bottom-navigation",
+      "contentHash": "sha256:59c322d5ee26a6f383c7b70d45014a784501acf1918a77865dcd2da1394dc971"
+    },
+    "usages": []
   }
 ]

@@ -1,0 +1,54 @@
+<!-- AppShell v0.1 static expected-design specimen (VIS-01), not an implementation.
+     Parent harness supplies tokens.css and Foundation components/bundle.css.
+     AppShell has no Foundation source: navigation regions are neutral, content-free placeholders
+     painted like the organisms that fill them (Surface surface-1, sheen, hairline, light edge).
+     Frame widths simulate the viewport on both sides of the 56rem switch.
+     Only the legacy eg-btn / eg-btn--secondary classes from packages/ui/src/styles/legacy/bundle.css
+     are reused (skip link, Button #53 stand-in).
+     No scripts: focus and sticky positions are illustrative, not behavior evidence. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-8);padding:var(--space-6);background:var(--color-surface-2);color:var(--color-fg-default);font-family:var(--font-sans)">
+
+  <!-- 1. Wide viewport: sideNavigation (Sidebar) + main region -->
+  <section style="width:calc(var(--space-24) * 10)">
+    <p style="margin:0;margin-bottom:var(--space-3);font-size:var(--text-label-default);color:var(--color-fg-muted)">Wide viewport (at least 56rem): sideNavigation with a Sidebar beside the main region; bottomNavigation hidden</p>
+    <div style="display:flex;flex-direction:column;height:calc(var(--space-24) * 4);overflow:hidden;border:1px solid var(--color-border-hairline-strong);background:var(--color-bg-canvas)">
+      <div style="flex:1;display:flex;min-height:0">
+        <div style="display:flex;flex-direction:column;justify-content:space-between;flex-shrink:0;box-sizing:border-box;width:calc(var(--space-16) * 4);padding:var(--space-5) var(--space-4);border:1px solid var(--color-border-hairline);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge)">
+          <span style="font-size:var(--text-label-default);color:var(--color-fg-secondary)">sideNavigation</span>
+          <span style="font-size:var(--text-label-default);color:var(--color-fg-muted)">Sidebar #123 (consumer-supplied), sticky, full height</span>
+        </div>
+        <main aria-label="Main region placeholder" style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;margin:var(--space-4);border:1px dashed var(--color-border-hairline-strong);border-radius:var(--radius-md);font-size:var(--text-label-default);color:var(--color-fg-muted)">main — children (content-free)</main>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Narrow viewport: main region + bottomNavigation (TabBar) -->
+  <section style="width:calc(var(--space-24) * 4)">
+    <p style="margin:0;margin-bottom:var(--space-3);font-size:var(--text-label-default);color:var(--color-fg-muted)">Narrow viewport (below 56rem): main region with a TabBar docked at the bottom; sideNavigation and skip link hidden</p>
+    <div style="display:flex;flex-direction:column;height:calc(var(--space-24) * 6);overflow:hidden;border:1px solid var(--color-border-hairline-strong);background:var(--color-bg-canvas)">
+      <main aria-label="Main region placeholder" style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;margin:var(--space-4);border:1px dashed var(--color-border-hairline-strong);border-radius:var(--radius-md);font-size:var(--text-label-default);color:var(--color-fg-muted)">main — children (content-free)</main>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-1);box-sizing:border-box;padding:calc(var(--space-1) + var(--space-1) / 2) var(--space-2) var(--space-5);border:1px solid var(--color-border-hairline);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge)">
+        <span style="display:flex;align-items:center;min-height:var(--space-12);font-size:var(--text-label-default);color:var(--color-fg-secondary)">bottomNavigation</span>
+        <span style="font-size:var(--text-label-default);color:var(--color-fg-muted)">TabBar #125 (consumer-supplied), sticky bottom</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Wide viewport: sideNavigation (ModuleRail) + focused skip link row -->
+  <section style="width:calc(var(--space-24) * 10)">
+    <p style="margin:0;margin-bottom:var(--space-3);font-size:var(--text-label-default);color:var(--color-fg-muted)">Wide viewport with a ModuleRail; the skip link is focused and shown in flow above both regions</p>
+    <div style="display:flex;flex-direction:column;height:calc(var(--space-24) * 4);overflow:hidden;border:1px solid var(--color-border-hairline-strong);background:var(--color-bg-canvas)">
+      <div>
+        <a class="eg-btn eg-btn--secondary" href="#app-shell-main" style="margin:var(--space-2);box-shadow:var(--shadow-focus)">Skip to content</a>
+      </div>
+      <div style="flex:1;display:flex;min-height:0">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:space-between;flex-shrink:0;box-sizing:border-box;width:calc(var(--space-1) * 19);padding:var(--space-4) 0;border:0;border-inline-end:1px solid var(--color-border-hairline);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge)">
+          <span style="writing-mode:vertical-rl;font-size:var(--text-label-default);color:var(--color-fg-secondary)">sideNavigation</span>
+          <span style="writing-mode:vertical-rl;font-size:var(--text-label-default);color:var(--color-fg-muted)">ModuleRail #124</span>
+        </div>
+        <main id="app-shell-main" tabindex="-1" aria-label="Main region placeholder" style="flex:1;min-width:0;display:flex;align-items:center;justify-content:center;margin:var(--space-4);border:1px dashed var(--color-border-hairline-strong);border-radius:var(--radius-md);font-size:var(--text-label-default);color:var(--color-fg-muted)">main — skip link target (tabindex −1)</main>
+      </div>
+    </div>
+  </section>
+</div>
