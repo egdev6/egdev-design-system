@@ -1,0 +1,104 @@
+<!-- Stack and Cluster specimen v0.1. No dedicated Foundation board exists.
+     Load built tokens.css and the read-only Foundation bundle.css in the parent's capture harness.
+     Layout wrappers paint nothing; existing eg-btn classes are child samples, not new Button recipes.
+     All dimensional inline values use theme.css tokens, 0 or percentages. No component implementation. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<div style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-body-default)">
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Stack default — column, gap 4 (16px), stretch / start</p>
+    <div style="display:flex;min-width:0;flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:flex-start;gap:var(--space-4);max-width:var(--bp-sm)">
+      <button class="eg-btn eg-btn--secondary" type="button">First item</button>
+      <button class="eg-btn eg-btn--secondary" type="button">Second item with a longer label</button>
+      <button class="eg-btn eg-btn--secondary" type="button">Third item</button>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Cluster default — row with wrapping, gap 4 (16px), center / start</p>
+    <div style="display:flex;min-width:0;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:var(--space-4)">
+      <button class="eg-btn eg-btn--secondary" type="button">First item</button>
+      <button class="eg-btn eg-btn--secondary" type="button">Second item with a longer label</button>
+      <button class="eg-btn eg-btn--secondary" type="button">Third item</button>
+    </div>
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Same Cluster constrained to token width — natural wrap, same gap on both axes</p>
+    <div style="display:flex;min-width:0;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:var(--space-4);width:calc(var(--space-24) + var(--space-24) + var(--space-24));max-width:100%">
+      <button class="eg-btn eg-btn--secondary" type="button">First item</button>
+      <button class="eg-btn eg-btn--secondary" type="button">Second item with a longer label</button>
+      <button class="eg-btn eg-btn--secondary" type="button">Third item</button>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Gap comparison — 0 / 2 (8px) / 6 (24px); no leading or trailing spacer</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-8)">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <span style="font-size:var(--text-meta);color:var(--color-fg-muted)">Cluster gap 0</span>
+        <div style="display:flex;min-width:0;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:0">
+          <button class="eg-btn eg-btn--secondary" type="button">One</button>
+          <button class="eg-btn eg-btn--secondary" type="button">Two</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <span style="font-size:var(--text-meta);color:var(--color-fg-muted)">Cluster gap 2</span>
+        <div style="display:flex;min-width:0;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:var(--space-2)">
+          <button class="eg-btn eg-btn--secondary" type="button">One</button>
+          <button class="eg-btn eg-btn--secondary" type="button">Two</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <span style="font-size:var(--text-meta);color:var(--color-fg-muted)">Stack gap 6</span>
+        <div style="display:flex;min-width:0;flex-direction:column;flex-wrap:nowrap;align-items:flex-start;justify-content:flex-start;gap:var(--space-6)">
+          <button class="eg-btn eg-btn--secondary" type="button">One</button>
+          <button class="eg-btn eg-btn--secondary" type="button">Two</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Stack cross-axis alignment — center / end (same token-sized container)</p>
+    <div style="display:flex;flex-wrap:wrap;gap:var(--space-8)">
+      <div style="display:flex;min-width:0;flex-direction:column;flex-wrap:nowrap;align-items:center;justify-content:flex-start;gap:var(--space-4);width:calc(var(--space-24) + var(--space-24) + var(--space-24));max-width:100%">
+        <button class="eg-btn eg-btn--secondary" type="button">Center</button>
+        <button class="eg-btn eg-btn--secondary" type="button">Longer centered item</button>
+      </div>
+      <div style="display:flex;min-width:0;flex-direction:column;flex-wrap:nowrap;align-items:flex-end;justify-content:flex-start;gap:var(--space-4);width:calc(var(--space-24) + var(--space-24) + var(--space-24));max-width:100%">
+        <button class="eg-btn eg-btn--secondary" type="button">End</button>
+        <button class="eg-btn eg-btn--secondary" type="button">Longer end-aligned item</button>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Cluster — baseline alignment / space-between distribution</p>
+    <div style="display:flex;min-width:0;flex-direction:row;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--space-4);max-width:var(--bp-md)">
+      <span style="font-family:var(--font-display);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight)">Larger text</span>
+      <span style="font-size:var(--text-body-default);line-height:var(--text-body-default--line-height)">Shared baseline</span>
+      <button class="eg-btn eg-btn--secondary" type="button">Trailing action</button>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Nested layout — Stack gap 4 contains two Clusters gap 2</p>
+    <div style="display:flex;min-width:0;flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:flex-start;gap:var(--space-4)">
+      <div style="display:flex;min-width:0;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:var(--space-2)">
+        <button class="eg-btn eg-btn--secondary" type="button">Row one: first</button>
+        <button class="eg-btn eg-btn--secondary" type="button">Row one: second</button>
+      </div>
+      <div style="display:flex;min-width:0;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:var(--space-2)">
+        <button class="eg-btn eg-btn--secondary" type="button">Row two: first</button>
+        <button class="eg-btn eg-btn--secondary" type="button">Row two: second</button>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Cluster RTL — DOM order First, Second, Third; row starts on the right</p>
+    <div dir="rtl" style="display:flex;min-width:0;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:var(--space-4);max-width:var(--bp-md)">
+      <button class="eg-btn eg-btn--secondary" type="button">First</button>
+      <button class="eg-btn eg-btn--secondary" type="button">Second</button>
+      <button class="eg-btn eg-btn--secondary" type="button">Third</button>
+    </div>
+  </section>
+</div>

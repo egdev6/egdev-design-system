@@ -1,0 +1,70 @@
+<!-- Surface specimen v0.1: no Foundation board. Material v2 recipes from docs/MATERIAL.md and surface.md (D1–D7), using only token var() inline styles. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<div style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3);padding-bottom:var(--space-6);border-bottom:1px solid var(--color-border-subtle)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">tone (elevation 1)</p>
+    <div style="display:flex;flex-wrap:wrap;gap:var(--space-6)">
+      <div style="box-sizing:border-box;flex:1 1 0;min-width:var(--space-24);padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-0);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+        <p style="margin:0;font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">surface-0</p>
+        <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">sheen at elevation 1</p>
+      </div>
+      <div style="box-sizing:border-box;flex:1 1 0;min-width:var(--space-24);padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+        <p style="margin:0;font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">surface-1</p>
+        <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">default</p>
+      </div>
+      <div style="box-sizing:border-box;flex:1 1 0;min-width:var(--space-24);padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-2);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+        <p style="margin:0;font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">surface-2</p>
+        <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">headers, dialogs</p>
+      </div>
+      <div style="box-sizing:border-box;flex:1 1 0;min-width:var(--space-24);padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-3);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+        <p style="margin:0;font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">surface-3</p>
+        <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">selected</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3);padding-bottom:var(--space-6);border-bottom:1px solid var(--color-border-subtle)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">elevation (tone surface-1)</p>
+    <div style="display:flex;flex-wrap:wrap;gap:var(--space-8)">
+      <div style="box-sizing:border-box;flex:1 1 0;min-width:var(--space-24);padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge)">
+        <p style="margin:0;font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">0</p>
+        <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">edge only</p>
+      </div>
+      <div style="box-sizing:border-box;flex:1 1 0;min-width:var(--space-24);padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+        <p style="margin:0;font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">1</p>
+        <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">card (default)</p>
+      </div>
+      <div style="box-sizing:border-box;flex:1 1 0;min-width:var(--space-24);padding:var(--space-6);border:1px solid var(--color-border-hairline-strong);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-2)">
+        <p style="margin:0;font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">2</p>
+        <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">hover, featured</p>
+      </div>
+      <div style="box-sizing:border-box;flex:1 1 0;min-width:var(--space-24);padding:var(--space-6);border:1px solid var(--color-border-hairline-strong);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)">
+        <p style="margin:0;font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">3</p>
+        <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">floating</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">well · overlay · overlay solid fallback</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:stretch;gap:var(--space-8)">
+      <div style="box-sizing:border-box;flex:1 1 0;min-width:var(--space-24);display:flex;flex-direction:column;gap:var(--space-3);padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+        <p style="margin:0;font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">well inside a surface-1 card</p>
+        <div style="box-sizing:border-box;padding:var(--space-3);border:1px solid var(--color-border-hairline);border-radius:var(--radius-md);background:var(--color-surface-0);box-shadow:var(--shadow-well);color:var(--color-fg-muted);font-family:var(--font-mono);font-size:var(--text-code)">recessed well</div>
+      </div>
+      <div style="box-sizing:border-box;flex:1 1 0;min-width:var(--space-24);position:relative;display:flex;align-items:center;justify-content:center;padding:var(--space-6);border-radius:var(--radius-xl);overflow:hidden;background:repeating-linear-gradient(45deg,var(--color-fg-brand-default) 0,var(--color-fg-brand-default) var(--space-2),var(--color-surface-2) var(--space-2),var(--color-surface-2) var(--space-4))">
+        <div style="box-sizing:border-box;width:100%;padding:var(--space-6);border:1px solid var(--color-border-hairline-strong);border-radius:var(--radius-xl);background:var(--color-surface-overlay);-webkit-backdrop-filter:blur(var(--blur-overlay)) saturate(150%);backdrop-filter:blur(var(--blur-overlay)) saturate(150%);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)">
+          <p style="margin:0;font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">overlay</p>
+          <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">translucent over content</p>
+        </div>
+      </div>
+      <div style="box-sizing:border-box;flex:1 1 0;min-width:var(--space-24);position:relative;display:flex;align-items:center;justify-content:center;padding:var(--space-6);border-radius:var(--radius-xl);overflow:hidden;background:repeating-linear-gradient(45deg,var(--color-fg-brand-default) 0,var(--color-fg-brand-default) var(--space-2),var(--color-surface-2) var(--space-2),var(--color-surface-2) var(--space-4))">
+        <div style="box-sizing:border-box;width:100%;padding:var(--space-6);border:1px solid var(--color-border-hairline-strong);border-radius:var(--radius-xl);background:var(--color-surface-2);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)">
+          <p style="margin:0;font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">overlay fallback</p>
+          <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">reduced transparency: solid surface-2</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,68 @@
+<!-- GaugeDock v0.1 target specimen, static HTML only.
+     Parent supplies @egdev/tokens and Foundation components/bundle.css.
+     Passive meter/unavailable nodes are SIBLINGS of actual buttons: never button descendants.
+     Source single-ring class is used at its default zero value, reset to a transparent passive frame;
+     this is a visual silhouette, not a copy of the implemented Gauge engine or its approved captures.
+     Focus/tabindex, disabled and solid fallback are staged illustrations, not tested Radix behavior.
+     No scripts, provider assets, dynamic numeric CSS properties or image requests. -->
+<div style="box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-8);padding:var(--space-8);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight)">
+
+  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3);max-width:100%">
+    <span style="color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Horizontal glass · focus is on the action, not the meter</span>
+    <div role="toolbar" aria-label="Usage detail actions" aria-orientation="horizontal" dir="ltr" style="box-sizing:border-box;display:inline-flex;align-items:center;flex-wrap:nowrap;gap:var(--space-3);max-width:100%;overflow:auto;padding:var(--space-3);border:1px solid var(--color-border-hairline-strong);border-radius:var(--radius-full);background:var(--color-surface-overlay);backdrop-filter:blur(var(--blur-overlay)) saturate(150%);-webkit-backdrop-filter:blur(var(--blur-overlay)) saturate(150%);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)">
+      <div style="display:flex;flex-shrink:0;align-items:center;gap:var(--space-2)">
+        <div class="eg-gauge eg-gauge--sm" role="meter" aria-label="Provider A session quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 / 100" style="padding:0;border:0;background:none;box-shadow:none;transition:none;cursor:default">
+          <span class="eg-gauge__ring" aria-hidden="true"></span>
+          <span class="eg-gauge__logo" aria-hidden="true" style="font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">0%</span>
+        </div>
+        <button type="button" class="eg-btn eg-btn--ghost" aria-label="Open Provider A session details" tabindex="0" style="box-shadow:var(--shadow-focus)">Open Provider A</button>
+      </div>
+      <div aria-hidden="true" style="flex-shrink:0;width:var(--border-width);height:var(--space-6);background:var(--color-border-hairline)"></div>
+      <div style="display:flex;flex-shrink:0;align-items:center;gap:var(--space-2)">
+        <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-1);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);font-weight:var(--text-label-default--font-weight)">
+          <span>Provider B weekly quota</span>
+          <span style="color:var(--color-fg-muted)">Data unavailable</span>
+        </div>
+        <button type="button" class="eg-btn eg-btn--ghost" aria-label="Open Provider B weekly details" tabindex="-1">Open Provider B</button>
+      </div>
+    </div>
+    <p style="margin:0;color:var(--color-fg-secondary)">Provider A’s example reading is zero. Provider B is independently unavailable; its detail action remains enabled.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3);max-width:100%">
+    <span style="color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Vertical glass · disabled action leaves its measurement readable</span>
+    <div role="toolbar" aria-label="Quota detail actions" aria-orientation="vertical" dir="ltr" style="box-sizing:border-box;display:inline-flex;flex-direction:column;align-items:center;flex-wrap:nowrap;gap:var(--space-3);max-width:100%;overflow:auto;padding:var(--space-3);border:1px solid var(--color-border-hairline-strong);border-radius:var(--radius-full);background:var(--color-surface-overlay);backdrop-filter:blur(var(--blur-overlay)) saturate(150%);-webkit-backdrop-filter:blur(var(--blur-overlay)) saturate(150%);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)">
+      <div style="display:flex;flex-shrink:0;align-items:center;gap:var(--space-2)">
+        <div class="eg-gauge eg-gauge--sm" role="meter" aria-label="Provider A weekly quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 / 100" style="padding:0;border:0;background:none;box-shadow:none;transition:none;cursor:default">
+          <span class="eg-gauge__ring" aria-hidden="true"></span>
+          <span class="eg-gauge__logo" aria-hidden="true" style="font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">0%</span>
+        </div>
+        <button type="button" class="eg-btn eg-btn--ghost" aria-label="Open Provider A weekly details" tabindex="0">Open Provider A</button>
+      </div>
+      <div aria-hidden="true" style="flex-shrink:0;width:var(--space-6);height:var(--border-width);background:var(--color-border-hairline)"></div>
+      <div style="display:flex;flex-shrink:0;align-items:center;gap:var(--space-2)">
+        <div class="eg-gauge eg-gauge--sm" role="meter" aria-label="Provider C session quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 / 100" style="padding:0;border:0;background:none;box-shadow:none;transition:none;cursor:default">
+          <span class="eg-gauge__ring" aria-hidden="true"></span>
+          <span class="eg-gauge__logo" aria-hidden="true" style="font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">0%</span>
+        </div>
+        <button type="button" class="eg-btn eg-btn--ghost" aria-label="Open Provider C session details" disabled tabindex="-1">Open Provider C</button>
+      </div>
+    </div>
+    <p style="margin:0;color:var(--color-fg-secondary)">Each quota keeps its own name and value. No combined percentage or global condition is shown.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3);max-width:100%">
+    <span style="color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Solid fallback · same passive-meter and action siblings</span>
+    <div role="toolbar" aria-label="Provider A detail actions" aria-orientation="horizontal" dir="ltr" style="box-sizing:border-box;display:inline-flex;align-items:center;flex-wrap:nowrap;gap:var(--space-3);max-width:100%;overflow:auto;padding:var(--space-3);border:1px solid var(--color-border-hairline-strong);border-radius:var(--radius-full);background:var(--color-surface-2);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)">
+      <div style="display:flex;flex-shrink:0;align-items:center;gap:var(--space-2)">
+        <div class="eg-gauge eg-gauge--sm" role="meter" aria-label="Provider A session quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 / 100" style="padding:0;border:0;background:none;box-shadow:none;transition:none;cursor:default">
+          <span class="eg-gauge__ring" aria-hidden="true"></span>
+          <span class="eg-gauge__logo" aria-hidden="true" style="font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">0%</span>
+        </div>
+        <button type="button" class="eg-btn eg-btn--ghost" aria-label="Open Provider A session details" tabindex="0">Open Provider A</button>
+      </div>
+    </div>
+    <p style="margin:0;color:var(--color-fg-secondary)">Static reduced-transparency fallback. Real Radix focus and media-preference behavior require implementation checks.</p>
+  </div>
+
+</div>

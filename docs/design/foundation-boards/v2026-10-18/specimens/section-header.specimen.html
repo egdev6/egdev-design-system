@@ -1,0 +1,41 @@
+<!-- SectionHeader v0.1 supplemental expected-design source, not React or a screenshot.
+     Parent harness supplies built tokens.css and the read-only Foundation components/bundle.css.
+     SectionHeader.png is the principal source board for stack/split/inline geometry.
+     Existing Title/Eyebrow classes preserve source geometry while proposed typography tokens are not installed.
+     Inline appearance uses only existing theme.css tokens; no source or peer files are changed.
+     Rows: token lede; raised-host accent; inline without eyebrow; split without lede. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<main style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Stack — source heading and eyebrow, existing body token for the lede</p>
+    <header class="eg-section-head">
+      <p class="eg-eyebrow">Think</p>
+      <h2 class="eg-title eg-title--section">Notes from <span class="eg-title__accent">the process.</span></h2>
+      <p class="eg-section-head__lede" style="max-width:var(--bp-sm);font-size:var(--text-body-muted);line-height:var(--text-body-muted--line-height);font-weight:var(--text-body-muted--font-weight);letter-spacing:var(--text-body-muted--letter-spacing)">Short ideas, decisions and lessons learned while building software.</p>
+    </header>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Raised host — Material belongs to the host; heading uses the raised brand accent</p>
+    <div style="box-sizing:border-box;padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+      <header class="eg-section-head">
+        <p class="eg-eyebrow">Build</p>
+        <h2 class="eg-title eg-title--section">Build <span class="eg-title__accent" style="color:var(--color-fg-brand-raised)">together.</span></h2>
+        <p class="eg-section-head__lede" style="max-width:var(--bp-sm);font-size:var(--text-body-muted);line-height:var(--text-body-muted--line-height);font-weight:var(--text-body-muted--font-weight);letter-spacing:var(--text-body-muted--letter-spacing)">Open tools and small experiments that make development better.</p>
+      </header>
+    </div>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Inline without eyebrow — effective stack, no orphan rule</p>
+    <header class="eg-section-head">
+      <h2 class="eg-title eg-title--section">Work in <span class="eg-title__accent">progress.</span></h2>
+      <p class="eg-section-head__lede" style="max-width:var(--bp-sm);font-size:var(--text-body-muted);line-height:var(--text-body-muted--line-height);font-weight:var(--text-body-muted--font-weight);letter-spacing:var(--text-body-muted--letter-spacing)">A quieter introduction with no empty eyebrow row.</p>
+    </header>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Split without lede — effective stack, no reserved second column</p>
+    <header class="eg-section-head">
+      <p class="eg-eyebrow">Community</p>
+      <h2 class="eg-title eg-title--section">Better <span class="eg-title__accent">together.</span></h2>
+    </header>
+  </section>
+</main>

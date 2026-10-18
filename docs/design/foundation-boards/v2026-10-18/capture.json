@@ -1,0 +1,137 @@
+{
+  "kind": "Expected-design source boards for primitives and molecules, captured from the EGDEV Foundation component previews",
+  "capturedAt": "2026-10-18",
+  "source": {
+    "design": "EGDEV Foundation (owner's local design files), components/<Name>/preview.html fragments, read-only",
+    "componentCSS": "EGDEV Foundation components/bundle.css, sha256:4f1763a54e080cd206b9d64f57ff9bbc5e3858159ec786ef8263134edee997fc (same fingerprint as the Gauge v0.3 source)",
+    "tokens": "packages/tokens/dist/tokens.css built from main, sha256:7ce0a0d70d0d058eadbb95b5063e2f3969a1f0426ed551478c70d15dcdb2b4fe",
+    "harness": "about:blank page; tokens.css and bundle.css inlined in <style>, preview fragment unmodified in <body>; Google Fonts loaded by the fragment"
+  },
+  "conditions": {
+    "tool": "Playwright MCP (browser_evaluate + browser_take_screenshot fullPage, scale css)",
+    "browser": "Chromium 148.0.0.0, Linux x86_64",
+    "viewport": "1280x900",
+    "deviceScaleFactor": 1,
+    "theme": "dark (--color-bg-canvas)",
+    "reducedMotion": false,
+    "fontsLoaded": "Barlow, Barlow Condensed, JetBrains Mono as used per board",
+    "waitAfterLoad": "1.5 s plus document.fonts.ready",
+    "crop": "Full viewport board; each board shows all variants and states of its source preview"
+  },
+  "limits": [
+    "Interactive states (hover, pressed) are shown through the preview's legacy .is-* classes, not real pointer interaction.",
+    "Visible board text is the original Spanish preview copy, kept unchanged for source fidelity; component specs define English examples.",
+    "Boards are shared: one board may serve several component specs (e.g. Field for Input, Textarea, Select and Checkbox).",
+    "PostCard, SelectTile, PhotoFrame and TipsSlider reference design-tool '/_blob/' photos that are not available; after load, each broken image was replaced by a neutral token-colored placeholder (surface-3 with a border-default silhouette). Photo content is not part of the expected design; frame, crop, radius, caption and overlay are."
+  ],
+  "approval": {
+    "status": "Approved",
+    "reference": "Owner instruction 2026-10-17: \"atoms, hagamos una cosa...no me preguntes, aplica tu las opciones sugeridas y si tengo que irerar en la revisión ya lo vemos\", extended to molecules on 2026-10-18 (\"arrancamos con las moleculas\"); adopted as expected design per citing spec, subject to owner review in each issue."
+  },
+  "images": [
+    {
+      "file": "Countdown.png",
+      "sourcePreview": "EGDEV Foundation/components/Countdown/preview.html",
+      "sha256": "f1c1c2fa94bf7a256e3523b12800af5b58486b4a415311b1a8402ce350dd7f76"
+    },
+    {
+      "file": "Dialog.png",
+      "sourcePreview": "EGDEV Foundation/components/Dialog/preview.html",
+      "sha256": "d80802e8ffcb69dbcf383b508571f9573f9462fd9c385d86fab894398321e82d"
+    },
+    {
+      "file": "Divider.png",
+      "sourcePreview": "EGDEV Foundation/components/Divider/preview.html",
+      "sha256": "262b11b6378a10089ab244b9a7f2d61a7804b2e9effcc0d8d54890621508229c"
+    },
+    {
+      "file": "Eyebrow.png",
+      "sourcePreview": "EGDEV Foundation/components/Eyebrow/preview.html",
+      "sha256": "bc5e7a84e6c53a7651a2ff043a9c424f7e5829cdd5854ebf7c6d5b098ba1b931"
+    },
+    {
+      "file": "Gauge.png",
+      "sourcePreview": "EGDEV Foundation/components/Gauge/preview.html",
+      "sha256": "edece4df541e7cfc9e9c36005d623a194b973139fa9074d59e2025ae1381f2f9"
+    },
+    {
+      "file": "MenuList.png",
+      "sourcePreview": "EGDEV Foundation/components/MenuList/preview.html",
+      "sha256": "8a88d52db066da90a5de0f618c5ec5143a898e745001ff4789765aaa2c7d8983"
+    },
+    {
+      "file": "ModuleCard.png",
+      "sourcePreview": "EGDEV Foundation/components/ModuleCard/preview.html",
+      "sha256": "b2c6995d581ddd101b6710b234112b19355d998c51eae3e27462d40b9991c812"
+    },
+    {
+      "file": "Notice.png",
+      "sourcePreview": "EGDEV Foundation/components/Notice/preview.html",
+      "sha256": "ef357f1df5027d232690ebd256ffe2b5b5fe02f3ca575837ada31a87531ada46"
+    },
+    {
+      "file": "PhotoFrame.png",
+      "sourcePreview": "EGDEV Foundation/components/PhotoFrame/preview.html",
+      "sha256": "da886df91ee0b7f113b07ff8715ce747bcb93126f0f77c50d75e7561e6d1f0c7",
+      "photoPlaceholder": true
+    },
+    {
+      "file": "PostCard.png",
+      "sourcePreview": "EGDEV Foundation/components/PostCard/preview.html",
+      "sha256": "1b3f2dcbc086ae029edc4dc0a7b92b95472b81e619db320507a4e23b6f8259ec",
+      "photoPlaceholder": true
+    },
+    {
+      "file": "PullQuote.png",
+      "sourcePreview": "EGDEV Foundation/components/PullQuote/preview.html",
+      "sha256": "5f95068caf9950e1516b036b3d8d5a214ec5b3cbdf31b79cecbcf7690217f1f7"
+    },
+    {
+      "file": "SearchTrigger.png",
+      "sourcePreview": "EGDEV Foundation/components/SearchTrigger/preview.html",
+      "sha256": "3c537a38c1ff3d2788d0989a230cf139cee56db65ad815fbfa182152a8d965c7"
+    },
+    {
+      "file": "SectionHeader.png",
+      "sourcePreview": "EGDEV Foundation/components/SectionHeader/preview.html",
+      "sha256": "90fd6f7c0583142c7b162f6871b021834dd887cb9835ac0a64ce17361215d642"
+    },
+    {
+      "file": "SelectTile.png",
+      "sourcePreview": "EGDEV Foundation/components/SelectTile/preview.html",
+      "sha256": "a8bf28bf73b9fce58dbd4bef38ec52d380f36f1635c200019c9aee0b56c8e26f",
+      "photoPlaceholder": true
+    },
+    {
+      "file": "SocialLinks.png",
+      "sourcePreview": "EGDEV Foundation/components/SocialLinks/preview.html",
+      "sha256": "3f6c7fe827538bca3bc71b75f8698522d3076b85231471ab52c0dda79362f7ac"
+    },
+    {
+      "file": "Tabs.png",
+      "sourcePreview": "EGDEV Foundation/components/Tabs/preview.html",
+      "sha256": "5c99ce8a8ba13d955327a9826f4765d824a65bca3262b3f0d450dcff73bb418a"
+    },
+    {
+      "file": "Timeline.png",
+      "sourcePreview": "EGDEV Foundation/components/Timeline/preview.html",
+      "sha256": "3511bd754204f4c9636d2d97f31a4f7e7bb5eaf67e5830ae852187912d4dee41"
+    },
+    {
+      "file": "TipsSlider.png",
+      "sourcePreview": "EGDEV Foundation/components/TipsSlider/preview.html",
+      "sha256": "4a82e76fdd06a0b3d981857229261e82d256bb6a1a41d0171dfb1311cef8db25",
+      "photoPlaceholder": true
+    },
+    {
+      "file": "Title.png",
+      "sourcePreview": "EGDEV Foundation/components/Title/preview.html",
+      "sha256": "0f836880954ad082887a5f8750cbb5adaa62156f99b5e8c347224ed5809aab20"
+    },
+    {
+      "file": "UserMenu.png",
+      "sourcePreview": "EGDEV Foundation/components/UserMenu/preview.html",
+      "sha256": "34757f0410d466c66cedf9216f0c4b5ad3c9f3e7d0acf12e8d6c6bd3a37bc1e4"
+    }
+  ]
+}

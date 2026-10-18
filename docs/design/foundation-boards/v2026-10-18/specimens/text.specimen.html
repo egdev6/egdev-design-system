@@ -1,0 +1,21 @@
+<!-- Text/Heading v0.1 supplemental specimen: canvas versus raised Material context.
+     Title.png and Eyebrow.png remain the primary boards for typography scales and variants.
+     Uses only existing Foundation eg-title/eg-eyebrow classes and existing theme.css token styles.
+     The host owns Material; Text/Heading does not paint a surface. No React implementation. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<div style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-8);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+  <section style="display:flex;flex-direction:column;gap:var(--space-4)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Canvas — Text eyebrow and Heading section, tone canvas, inline accent</p>
+    <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+      <p class="eg-eyebrow">Build in public</p>
+      <h2 class="eg-title eg-title--section">Things we are <span class="eg-title__accent">building.</span></h2>
+    </div>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-4)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Raised — same copy, tone raised, on a host surface-1 / elevation 1 panel</p>
+    <div style="box-sizing:border-box;display:flex;flex-direction:column;gap:var(--space-4);padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+      <p class="eg-eyebrow">Build in public</p>
+      <h2 class="eg-title eg-title--section">Things we are <span class="eg-title__accent" style="color:var(--color-fg-brand-raised)">building.</span></h2>
+    </div>
+  </section>
+</div>

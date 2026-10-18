@@ -1,0 +1,73 @@
+<!-- AspectRatio specimen v0.1. Plain HTML capture input, NOT React output.
+     Percentage spacers illustrate Radix-owned proportional geometry.
+     Token-backed wells below are illustrative CONSUMER content, not AspectRatio paint.
+     Every example host has the same token-derived width except the labelled narrower host.
+     Load existing built tokens via the parent's capture harness; no source theme.css browser import. -->
+<div style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">
+  <header style="display:flex;flex-direction:column;gap:var(--space-2)">
+    <p style="margin:0;font-size:var(--text-heading-small);font-weight:var(--text-heading-small--font-weight)">AspectRatio</p>
+    <p style="margin:0;color:var(--color-fg-muted)">Proportions only. The visible wells are example content; the primitive has no paint or crop.</p>
+  </header>
+
+  <section aria-label="Equal-width ratio examples" style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-6)">
+    <div style="width:calc(var(--space-16) * 3);max-width:100%;display:flex;flex-direction:column;gap:var(--space-2)">
+      <p style="margin:0;color:var(--color-fg-secondary)">Default · 1:1</p>
+      <div style="position:relative;width:100%;padding-bottom:100%">
+        <div style="position:absolute;inset:0;display:grid;place-items:center;background:var(--color-surface-0);box-shadow:var(--shadow-well);border:1px solid var(--color-border-control);border-radius:var(--radius-md);color:var(--color-fg-muted)">Square</div>
+      </div>
+    </div>
+
+    <div style="width:calc(var(--space-16) * 3);max-width:100%;display:flex;flex-direction:column;gap:var(--space-2)">
+      <p style="margin:0;color:var(--color-fg-secondary)">Landscape · 16:9</p>
+      <div style="position:relative;width:100%;padding-bottom:56.25%">
+        <div style="position:absolute;inset:0;display:grid;place-items:center;background:var(--color-surface-0);box-shadow:var(--shadow-well);border:1px solid var(--color-border-control);border-radius:var(--radius-md);color:var(--color-fg-muted)">Thumbnail</div>
+      </div>
+    </div>
+
+    <div style="width:calc(var(--space-16) * 3);max-width:100%;display:flex;flex-direction:column;gap:var(--space-2)">
+      <p style="margin:0;color:var(--color-fg-secondary)">Portrait · 4:5</p>
+      <div style="position:relative;width:100%;padding-bottom:125%">
+        <div style="position:absolute;inset:0;display:grid;place-items:center;background:var(--color-surface-0);box-shadow:var(--shadow-well);border:1px solid var(--color-border-control);border-radius:var(--radius-md);color:var(--color-fg-muted)">Portrait</div>
+      </div>
+    </div>
+
+    <div style="width:calc(var(--space-16) * 3);max-width:100%;display:flex;flex-direction:column;gap:var(--space-2)">
+      <p style="margin:0;color:var(--color-fg-secondary)">Landscape · 4:3</p>
+      <div style="position:relative;width:100%;padding-bottom:75%">
+        <div style="position:absolute;inset:0;display:grid;place-items:center;background:var(--color-surface-0);box-shadow:var(--shadow-well);border:1px solid var(--color-border-control);border-radius:var(--radius-md);color:var(--color-fg-muted)">Photo</div>
+      </div>
+    </div>
+
+    <div style="width:calc(var(--space-16) * 3);max-width:100%;display:flex;flex-direction:column;gap:var(--space-2)">
+      <p style="margin:0;color:var(--color-fg-secondary)">Story · 9:16</p>
+      <div style="position:relative;width:100%;padding-bottom:177.77777777777777%">
+        <div style="position:absolute;inset:0;display:grid;place-items:center;background:var(--color-surface-0);box-shadow:var(--shadow-well);border:1px solid var(--color-border-control);border-radius:var(--radius-md);color:var(--color-fg-muted)">Story</div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="Wide formats and responsive sizing" style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-6)">
+    <div style="width:calc(var(--space-16) * 3);max-width:100%;display:flex;flex-direction:column;gap:var(--space-2)">
+      <p style="margin:0;color:var(--color-fg-secondary)">Wide · 3:1</p>
+      <div style="position:relative;width:100%;padding-bottom:33.333333333333336%">
+        <div style="position:absolute;inset:0;display:grid;place-items:center;background:var(--color-surface-0);box-shadow:var(--shadow-well);border:1px solid var(--color-border-control);border-radius:var(--radius-md);color:var(--color-fg-muted)">Wide</div>
+      </div>
+    </div>
+
+    <div style="width:calc(var(--space-16) * 3);max-width:100%;display:flex;flex-direction:column;gap:var(--space-2)">
+      <p style="margin:0;color:var(--color-fg-secondary)">Banner · 4:1</p>
+      <div style="position:relative;width:100%;padding-bottom:25%">
+        <div style="position:absolute;inset:0;display:grid;place-items:center;background:var(--color-surface-0);box-shadow:var(--shadow-well);border:1px solid var(--color-border-control);border-radius:var(--radius-md);color:var(--color-fg-muted)">Banner</div>
+      </div>
+    </div>
+
+    <div style="width:calc(var(--space-16) * 2);max-width:100%;display:flex;flex-direction:column;gap:var(--space-2)">
+      <p style="margin:0;color:var(--color-fg-secondary)">Narrower host · 16:9</p>
+      <div style="position:relative;width:100%;padding-bottom:56.25%">
+        <div style="position:absolute;inset:0;display:grid;place-items:center;background:var(--color-surface-0);box-shadow:var(--shadow-well);border:1px solid var(--color-border-control);border-radius:var(--radius-md);color:var(--color-fg-muted)">Thumbnail</div>
+      </div>
+    </div>
+  </section>
+
+  <p style="margin:0;color:var(--color-fg-muted)">No interaction states. Empty content reserves the same geometry; media fit, loading, captions and focus belong to the consumer.</p>
+</div>

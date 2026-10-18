@@ -1,0 +1,41 @@
+<!-- Supplemental ModuleCard v0.1 source specimen. Parent supplies tokens, Foundation bundle.css and fonts. Static illustration only; no disclosure, retry, focus or preference behavior is implemented. -->
+<section aria-label="ModuleCard supplementary treatments" style="display:grid;gap:var(--space-4);padding:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+  <h2 style="margin:0;font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight)">ModuleCard — supplementary treatments</h2>
+  <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Source layouts absent from ModuleCard.png. Existing Foundation classes illustrate the anatomy; overlay blur and radius are normalized to Surface tokens. Buttons are static capture content.</p>
+
+  <div style="display:grid;gap:var(--space-2)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default)">Error · readable status and independent recovery action</p>
+    <article class="eg-module-card eg-module-card--error" aria-label="Publishing connection">
+      <div class="eg-module-card__head">
+        <h3 class="eg-module-card__name">Publishing connection</h3>
+        <span class="eg-status eg-status--danger"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>Needs attention</span>
+      </div>
+      <div class="eg-module-card__body">The connection is unavailable. Reconnect the account to resume publishing.</div>
+      <div class="eg-module-card__actions"><button type="button" class="eg-btn eg-btn--secondary">Reconnect account</button></div>
+    </article>
+  </div>
+
+  <div style="display:grid;gap:var(--space-2)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default)">Overlay + banded · surface-3 header, overlay body, surface-1 footer</p>
+    <article class="eg-module-card eg-module-card--glass eg-module-card--banded" aria-label="Usage details overlay" style="background:var(--color-surface-overlay);backdrop-filter:blur(var(--blur-overlay)) saturate(150%);border-radius:var(--radius-xl);overflow:visible">
+      <div class="eg-module-card__head" style="background:var(--gradient-sheen),var(--color-surface-3);box-shadow:var(--shadow-edge);border-start-start-radius:var(--radius-xl);border-start-end-radius:var(--radius-xl)">
+        <h3 class="eg-module-card__name" style="font-family:var(--font-display);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight);text-transform:uppercase">Usage details</h3>
+        <span class="eg-status eg-status--info"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>Ready</span>
+      </div>
+      <div class="eg-module-card__body">The floating host owns placement and interaction. Surface alone owns overlay paint and fallback behavior.</div>
+      <div class="eg-module-card__foot" style="background:var(--color-surface-1);border-end-start-radius:var(--radius-xl);border-end-end-radius:var(--radius-xl)"><span>Updated moments ago</span></div>
+    </article>
+  </div>
+
+  <div style="display:grid;gap:var(--space-2)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default)">Static overlay fallback · solid surface-2, same upper/lower bands, no blur</p>
+    <article class="eg-module-card eg-module-card--banded" aria-label="Usage details solid fallback" style="background:var(--color-surface-2);border-color:var(--color-border-hairline-strong);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3);border-radius:var(--radius-xl);overflow:visible">
+      <div class="eg-module-card__head" style="background:var(--gradient-sheen),var(--color-surface-3);box-shadow:var(--shadow-edge);padding-inline:var(--space-5);border-start-start-radius:var(--radius-xl);border-start-end-radius:var(--radius-xl)">
+        <h3 class="eg-module-card__name" style="font-family:var(--font-display);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight);text-transform:uppercase">Usage details</h3>
+        <span class="eg-status eg-status--info"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>Ready</span>
+      </div>
+      <div class="eg-module-card__body" style="padding:var(--space-5)">Illustrative solid fallback for reduced transparency or unavailable backdrop filtering. This panel does not emulate either browser condition.</div>
+      <div class="eg-module-card__foot" style="background:var(--color-surface-1);padding-inline-start:var(--space-5);border-end-start-radius:var(--radius-xl);border-end-end-radius:var(--radius-xl)"><span>Updated moments ago</span></div>
+    </article>
+  </div>
+</section>

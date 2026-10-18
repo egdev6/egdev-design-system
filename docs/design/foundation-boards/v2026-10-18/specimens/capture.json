@@ -1,0 +1,812 @@
+{
+  "kind": "Real browser captures of agent-composed expected-design specimens, not React implementation evidence",
+  "capturedAt": "2026-10-17T23:52:20.167Z",
+  "tool": "Playwright MCP",
+  "sources": {
+    "tokens": "packages/tokens/dist/tokens.css",
+    "tokensSHA256": "7ce0a0d70d0d058eadbb95b5063e2f3969a1f0426ed551478c70d15dcdb2b4fe",
+    "legacyCSS": "packages/ui/src/styles/legacy/bundle.css",
+    "legacyCSSSHA256": "4f1763a54e080cd206b9d64f57ff9bbc5e3858159ec786ef8263134edee997fc"
+  },
+  "limits": [
+    "Static states illustrate design intent; they do not verify keyboard, focus, assistive technology or runtime behavior.",
+    "Element screenshots capture the specimen zone. Tall specimens may have a 1265px root at a 1280px viewport because of the scrollbar.",
+    "Agent-composed specimen adoption is proposed for owner issue review under delegated recommended decisions, not a separate per-image explicit approval."
+  ],
+  "images": [
+    {
+      "component": "aspect-ratio",
+      "file": "aspect-ratio--specimen.png",
+      "source": "aspect-ratio.specimen.html",
+      "sha256": "4d34dd05ea5149073918dc2d54515310fe27ff0a665249f4d67ed1a393bb4600",
+      "sourceSHA256": "0c27d71a64a244dc79dc6ce5c257f5fbf47e1a47507bbd417b4aac282ec2a782",
+      "pixelDimensions": [1280, 654],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 653.3125,
+          "top": 0,
+          "right": 1280,
+          "bottom": 653.3125,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow 500", "Barlow 700", "Barlow Condensed 800", "JetBrains Mono 400"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": "2026-10-17T23:54:22.491Z"
+    },
+    {
+      "component": "button-group",
+      "file": "button-group--specimen.png",
+      "source": "button-group.specimen.html",
+      "sha256": "a77617b1f76cac9c06ab0772081edc3f4f4838cd4069f91628580cdd800eab60",
+      "sourceSHA256": "6637947d7f124c0f9984b4acdb1409c22639aca042a9b0c1c6208e6dc34164b7",
+      "pixelDimensions": [1280, 575],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 575,
+          "top": 0,
+          "right": 1280,
+          "bottom": 575,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow 700"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": null
+    },
+    {
+      "component": "carousel",
+      "file": "carousel--specimen.png",
+      "source": "carousel.specimen.html",
+      "sha256": "cb0eb3e136576f664c96a77a23e500b548c0a2773915d0a65cc561f209fa06c5",
+      "sourceSHA256": "af7a23e7b0c12f2e62894b687167dd28739b9f014f2fb7bc2a5a1f3e790bc449",
+      "pixelDimensions": [1280, 781],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 780.359375,
+          "top": 0,
+          "right": 1280,
+          "bottom": 780.359375,
+          "left": 0
+        },
+        "fonts": [
+          "Barlow 500",
+          "Barlow 700",
+          "Barlow Condensed 600",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 400"
+        ],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": "2026-10-17T23:54:26.682Z"
+    },
+    {
+      "component": "chip-group",
+      "file": "chip-group--specimen.png",
+      "source": "chip-group.specimen.html",
+      "sha256": "4d0d04003b38e7b46fdecb3b78bad8dcd4c8668f83d8e0fbc5350b772d1b9198",
+      "sourceSHA256": "9dc8b4e9292215351b1874891ceaea5410992ed06636e09d89b0ec2995ddec15",
+      "pixelDimensions": [1280, 467],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 467,
+          "top": 0,
+          "right": 1280,
+          "bottom": 467,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow 600"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": null
+    },
+    {
+      "component": "countdown",
+      "file": "countdown--specimen.png",
+      "source": "countdown.specimen.html",
+      "sha256": "c4253fad0ba30fe6d48375854aa35bb7472f0e1bc947e888e8d74d90f5d34ea4",
+      "sourceSHA256": "e35b546c8daff6b2d150f459d9968e852eb532e901430a6b760e951b2a23502c",
+      "pixelDimensions": [1280, 756],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "MAIN",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 755.125,
+          "top": 0,
+          "right": 1280,
+          "bottom": 755.125,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow 500", "Barlow Condensed 700", "Barlow Condensed 800"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": null
+    },
+    {
+      "component": "gauge-dock",
+      "file": "gauge-dock--specimen.png",
+      "source": "gauge-dock.specimen.html",
+      "sha256": "9290f26b1934f09f9d044ed4dc7b336753e5568eb0461585752dbf5214e275e1",
+      "sourceSHA256": "8d841f3ea4c851fb2b0a3cc0c55535e202f5135dbbe4692e09e32d462d3575a1",
+      "pixelDimensions": [1280, 623],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 622.171875,
+          "top": 0,
+          "right": 1280,
+          "bottom": 622.171875,
+          "left": 0
+        },
+        "fonts": ["Barlow 500", "Barlow 600", "Barlow 700", "Barlow Condensed 800", "JetBrains Mono 400"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": "2026-10-17T23:54:30.127Z"
+    },
+    {
+      "component": "gauge-group",
+      "file": "gauge-group--specimen.png",
+      "source": "gauge-group.specimen.html",
+      "sha256": "be0ca0d4c3e6f05d2e56612095b7e92c3ca957e8d02f9f8d9d453eac0ed1002c",
+      "sourceSHA256": "495963da130c1855b6416bd6fe8196f01020e03fd0e8e35ebfdbe19731b62e4e",
+      "pixelDimensions": [1265, 1019],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1265,
+          "height": 1018.234375,
+          "top": 0,
+          "right": 1265,
+          "bottom": 1018.234375,
+          "left": 0
+        },
+        "fonts": ["Barlow 500", "Barlow 600", "Barlow 700", "Barlow Condensed 800", "JetBrains Mono 400"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": "2026-10-17T23:54:33.642Z"
+    },
+    {
+      "component": "hover-card",
+      "file": "hover-card--specimen.png",
+      "source": "hover-card.specimen.html",
+      "sha256": "dca6b03b7436b4a7eb7437c79634bad42d3f937b34e2e67ec01ba73b39cad693",
+      "sourceSHA256": "f679ea7fe300e2e1a8a46cd5c410faa339245bdc62fd82d317737869d075f86c",
+      "pixelDimensions": [1280, 374],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 373.171875,
+          "top": 0,
+          "right": 1280,
+          "bottom": 373.171875,
+          "left": 0
+        },
+        "fonts": ["Barlow 500", "Barlow 600", "Barlow 700", "Barlow Condensed 800", "JetBrains Mono 400"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": "2026-10-17T23:54:36.868Z"
+    },
+    {
+      "component": "label",
+      "file": "label--specimen.png",
+      "source": "label.specimen.html",
+      "sha256": "35fdcd6c475842d9f175b013e8a9ea5bca09a19115273495fdfc5796113fde04",
+      "sourceSHA256": "f04b71b158db2060ce1f64e2647c74863279d540eb3b859ebf669c53c08de29f",
+      "pixelDimensions": [1280, 458],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 457.1875,
+          "top": 0,
+          "right": 1280,
+          "bottom": 457.1875,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow 500", "Barlow 600"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": null
+    },
+    {
+      "component": "list-item",
+      "file": "list-item--specimen.png",
+      "source": "list-item.specimen.html",
+      "sha256": "1e865c63c3b3a5001a686f5b2bdd50791267fbb1e68b2f7e2e8d0c7246116959",
+      "sourceSHA256": "c18a91b810e4302f1dacc84527022874e9f01bdbab7ea1b286cd2b6dc3387a17",
+      "pixelDimensions": [1280, 431],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "SECTION",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 430.59375,
+          "top": 0,
+          "right": 1280,
+          "bottom": 430.59375,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow 500", "Barlow 600", "Barlow 700", "Barlow Condensed 800", "JetBrains Mono 400"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": "2026-10-17T23:54:40.347Z"
+    },
+    {
+      "component": "menu",
+      "file": "menu--specimen.png",
+      "source": "menu.specimen.html",
+      "sha256": "8adad5c344e6635d6e98b77aa463208a806f3c406d6403537423e34b7914d3ad",
+      "sourceSHA256": "f956caab0a9d5ef41c40ae5d0634dbf309a794c7c5c50b90e371a172921dfff4",
+      "pixelDimensions": [1280, 336],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 335.34375,
+          "top": 0,
+          "right": 1280,
+          "bottom": 335.34375,
+          "left": 0
+        },
+        "fonts": [
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow 600",
+          "Barlow Condensed 600",
+          "Barlow Condensed 800",
+          "JetBrains Mono 400"
+        ],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": "2026-10-17T23:54:43.336Z"
+    },
+    {
+      "component": "meter-row",
+      "file": "meter-row--specimen.png",
+      "source": "meter-row.specimen.html",
+      "sha256": "454ddc4ca378300833a9d4cd931c62c5bfa4985d02c8a4484f52a292969d3d16",
+      "sourceSHA256": "cfc0c84d549bc92f4d2bc53b629de92be7afd4feb758a6e7c2fddd0c67264b55",
+      "pixelDimensions": [1280, 543],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "SECTION",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 542.578125,
+          "top": 0,
+          "right": 1280,
+          "bottom": 542.578125,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow 500", "Barlow 600", "Barlow 700", "Barlow Condensed 800", "JetBrains Mono 400"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": "2026-10-17T23:54:46.598Z"
+    },
+    {
+      "component": "module-card",
+      "file": "module-card--specimen.png",
+      "source": "module-card.specimen.html",
+      "sha256": "1847abeafb5cd580ff5136e618852283de20763099c2aa9792f6b4435f5b681a",
+      "sourceSHA256": "9093bd71f2198fbeb8710e44f0205a9613160fdfc816956fb8b4632ecc230baa",
+      "pixelDimensions": [1280, 721],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "SECTION",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 720.78125,
+          "top": 0,
+          "right": 1280,
+          "bottom": 720.78125,
+          "left": 0
+        },
+        "fonts": [
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow 600",
+          "Barlow 700",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 400"
+        ],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": "2026-10-17T23:54:49.870Z"
+    },
+    {
+      "component": "nav-list",
+      "file": "nav-list--specimen.png",
+      "source": "nav-list.specimen.html",
+      "sha256": "1c0673304fe2bd83ca3fe2d738f63e637932c9e6d13148ebcf552755a4c0ec4b",
+      "sourceSHA256": "a29094c3583ddd9ef934e8885e57f3465c3d24c96a24549b4aee1d4d9115fcea",
+      "pixelDimensions": [1280, 380],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "MAIN",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 379.796875,
+          "top": 0,
+          "right": 1280,
+          "bottom": 379.796875,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow 600", "Barlow Condensed 600"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": "2026-10-17T23:56:51.104203+00:00"
+    },
+    {
+      "component": "page-header",
+      "file": "page-header--specimen.png",
+      "source": "page-header.specimen.html",
+      "sha256": "7a44b8af5efef0f6681d4b56db9d66d208b4062c107f2d14388c23ee0d4dcfe7",
+      "sourceSHA256": "7941a0cf6725f877cfc12339474edbeb203ace41e06cbb99f179ad4147f9ead9",
+      "pixelDimensions": [1280, 652],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "MAIN",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 651.375,
+          "top": 0,
+          "right": 1280,
+          "bottom": 651.375,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow 700", "Barlow Condensed 700"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": null
+    },
+    {
+      "component": "photo-frame",
+      "file": "photo-frame--specimen.png",
+      "source": "photo-frame.specimen.html",
+      "sha256": "1095e82de8abc25c92a1cc6ffb14c1ee247f97d196dcb4c74c665bc65f204950",
+      "sourceSHA256": "f4e867e6c7481fcd312e39457a634a1a6c68daadb89671a805d343b4b3ae3b10",
+      "pixelDimensions": [1265, 1335],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "SECTION",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1265,
+          "height": 1334.015625,
+          "top": 0,
+          "right": 1265,
+          "bottom": 1334.015625,
+          "left": 0
+        },
+        "fonts": [
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow 700",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 400"
+        ],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": "2026-10-17T23:54:56.451Z"
+    },
+    {
+      "component": "popover",
+      "file": "popover--specimen.png",
+      "source": "popover.specimen.html",
+      "sha256": "6419a9479dd66332d319dfa43dad1a1a9e49d3327eddea42c944122f73535c2d",
+      "sourceSHA256": "9fa8bf17960f5d3d3dfcf92e2bf22becce88797c4a8bae7e244df8f42c99a4d7",
+      "pixelDimensions": [1280, 448],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 447.5625,
+          "top": 0,
+          "right": 1280,
+          "bottom": 447.5625,
+          "left": 0
+        },
+        "fonts": ["Barlow 500", "Barlow 600", "Barlow 700", "Barlow Condensed 800", "JetBrains Mono 400"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": "2026-10-17T23:54:59.574Z"
+    },
+    {
+      "component": "pull-quote",
+      "file": "pull-quote--specimen.png",
+      "source": "pull-quote.specimen.html",
+      "sha256": "961c59d3db328035537c94102eecf24830ea568d9bb73166af111b9039bf6b2d",
+      "sourceSHA256": "da40d49dc57846ebc3112af816985df04293ad0afb7c9f4b92664d3d664b9a9e",
+      "pixelDimensions": [1280, 623],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "MAIN",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 622.125,
+          "top": 0,
+          "right": 1280,
+          "bottom": 622.125,
+          "left": 0
+        },
+        "fonts": [
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow Condensed 800",
+          "JetBrains Mono 400",
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow Condensed 800"
+        ],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": "2026-10-17T23:55:02.445Z"
+    },
+    {
+      "component": "search-trigger",
+      "file": "search-trigger--specimen.png",
+      "source": "search-trigger.specimen.html",
+      "sha256": "a25503bf5b9b86a0f35c1c0a1c17aee49d6a8c53d869261b33a04f42d161d572",
+      "sourceSHA256": "17d30853fb3c77860622850e52b767cda46881ecf6605d55b0fc070e3a93b492",
+      "pixelDimensions": [1280, 356],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 356,
+          "top": 0,
+          "right": 1280,
+          "bottom": 356,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow 500", "Barlow 600"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": null
+    },
+    {
+      "component": "section-header",
+      "file": "section-header--specimen.png",
+      "source": "section-header.specimen.html",
+      "sha256": "53c344d1b637eda529c1f3e7246703e5f8607255ca184e4e9ff351f696112786",
+      "sourceSHA256": "fc78ab3be6e8c0a0fcbfafbbd026c4f1d3a93d84f5532fd8f148d21e317f0563",
+      "pixelDimensions": [1280, 847],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "MAIN",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 846.765625,
+          "top": 0,
+          "right": 1280,
+          "bottom": 846.765625,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow Condensed 700", "Barlow Condensed 800"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": null
+    },
+    {
+      "component": "select-tile",
+      "file": "select-tile--specimen.png",
+      "source": "select-tile.specimen.html",
+      "sha256": "2335071071e52c0a83184ae80373fafa53a15427b8c3a1c78bbd011d6aa116a7",
+      "sourceSHA256": "c1fbb7093f092830dc0163c173ac644b9945406fa7d2beb9496763ff760104a6",
+      "pixelDimensions": [1280, 776],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 775.59375,
+          "top": 0,
+          "right": 1280,
+          "bottom": 775.59375,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow 500", "Barlow 600", "Barlow 700"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": null
+    },
+    {
+      "component": "skeleton",
+      "file": "skeleton--specimen.png",
+      "source": "skeleton.specimen.html",
+      "sha256": "1ffa39be075f2e42f907e4cbc03ee78ce5f816d7b9d86f1a4685153d1b08e377",
+      "sourceSHA256": "7cd5ab892381525a814bc17784897ab9de37970059b41f7eb51756e8c4921514",
+      "pixelDimensions": [1265, 976],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1265,
+          "height": 976,
+          "top": 0,
+          "right": 1265,
+          "bottom": 976,
+          "left": 0
+        },
+        "fonts": ["Barlow 400"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": null
+    },
+    {
+      "component": "social-links",
+      "file": "social-links--specimen.png",
+      "source": "social-links.specimen.html",
+      "sha256": "4a841272eb6f03df22afe81a01995fbde5e077d9251cb3470d4d1dc58a95bfb6",
+      "sourceSHA256": "17c5cf8b168097162076125ea5711080482001086f0d36566b3d43c01bfece01",
+      "pixelDimensions": [1280, 653],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "MAIN",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 652.390625,
+          "top": 0,
+          "right": 1280,
+          "bottom": 652.390625,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow Condensed 700"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": null
+    },
+    {
+      "component": "stack",
+      "file": "stack--specimen.png",
+      "source": "stack.specimen.html",
+      "sha256": "00cd72cadf15b992a45a5deb7ea0967304a1bb62ac74a287ccc8e4315d5e16df",
+      "sourceSHA256": "d614ff08b52ec0d1aecaa903403d86627c30fe6b81edf097a9e417f4737d6df7",
+      "pixelDimensions": [1265, 1301],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1265,
+          "height": 1301,
+          "top": 0,
+          "right": 1265,
+          "bottom": 1301,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow 700", "Barlow Condensed 700"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": null
+    },
+    {
+      "component": "surface",
+      "file": "surface--specimen.png",
+      "source": "surface.specimen.html",
+      "sha256": "e227db8e4c11c22832964f973c2511f9a3a56454feaa992978c4b0f1858ee1eb",
+      "sourceSHA256": "79d10f5e9e63f469d5faba09e4295587619b87548d7e11cace565a8dad8a5866",
+      "pixelDimensions": [1280, 533],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 533,
+          "top": 0,
+          "right": 1280,
+          "bottom": 533,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow 600", "JetBrains Mono 400"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": null
+    },
+    {
+      "component": "text",
+      "file": "text--specimen.png",
+      "source": "text.specimen.html",
+      "sha256": "054ad1ee81e9fc6c22ec9bb7068d19789663b72a45254d7e02966c24ae3e08ad",
+      "sourceSHA256": "b47b7ec247e34c4e7aa557fddd2f952b4d4013bbf773128029e8e567f5ae0e6d",
+      "pixelDimensions": [1280, 377],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 376.78125,
+          "top": 0,
+          "right": 1280,
+          "bottom": 376.78125,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow Condensed 700", "Barlow Condensed 800"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": null
+    },
+    {
+      "component": "toast",
+      "file": "toast--specimen.png",
+      "source": "toast.specimen.html",
+      "sha256": "fe840655a8b4ca1c5454ecc5391b37a1244859821d193b68abc40d500edcfd26",
+      "sourceSHA256": "f9b377dabe09a7534e5e06e3da3b5b86fd095be55268edfd1eba868f943fd02d",
+      "pixelDimensions": [1280, 753],
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 753,
+          "top": 0,
+          "right": 1280,
+          "bottom": 753,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow 500", "Barlow 700", "Barlow Condensed 800", "JetBrains Mono 400"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      },
+      "recapturedAt": "2026-10-17T23:55:05.515Z"
+    }
+  ],
+  "fontCorrectionCompletedAt": "2026-10-17T23:55:05.515Z"
+}

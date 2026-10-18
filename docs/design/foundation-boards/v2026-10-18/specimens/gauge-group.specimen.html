@@ -1,0 +1,101 @@
+<!-- GaugeGroup v0.1 static target fragment. Parent supplies existing token CSS and Foundation bundle.css.
+     No scripts, external assets, links or fonts are requested here.
+     Legacy eg-gauge / eg-gauge__ring classes illustrate ZERO endpoints only (source --p defaults to 0).
+     Token-only geometry overrides stage the proposed Group presets, NOT unchanged React Gauge composition.
+     Background/hover/motion resets stage transparent diagrams; no new React engine is implemented.
+     IDs below are fixture-local description relationships; implementation must use useId().
+     These staged semantics are not runtime, browser, accessibility or visual verification. -->
+<div style="box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-8);padding:var(--space-8);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight)">
+  <div style="display:flex;flex-direction:column;gap:var(--space-2);max-width:100%">
+    <span style="font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight)">Independent limits, not a combined percentage</span>
+    <span style="color:var(--color-fg-secondary)">Static empty-endpoint diagrams. Position and text identify each reading without relying on color.</span>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3);max-width:100%">
+    <span style="color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Default · md · two independent readings</span>
+    <div role="group" aria-label="Provider A usage limits" style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:var(--space-3);max-width:100%">
+      <div class="eg-gauge" aria-hidden="true" style="--size:var(--space-20);--w:var(--space-1);--gap:var(--space-1);padding:0;border:0;background:none;box-shadow:none;transition:none;cursor:default">
+        <span class="eg-gauge__ring" style="--c:var(--color-fg-brand-default);inset:0"></span>
+        <span class="eg-gauge__ring" style="--c:var(--color-fg-brand-default);inset:calc(var(--space-1) + var(--space-1))"></span>
+      </div>
+      <ol style="display:flex;flex-direction:column;gap:var(--space-2);margin:0;padding-left:var(--space-6)">
+        <li data-state="normal">
+          <span>Outer · Provider A session quota</span>
+          <div role="meter" aria-label="Provider A session quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 / 100"><span aria-hidden="true">0 / 100</span></div>
+        </li>
+        <li data-state="normal">
+          <span>Inner · Provider A weekly quota</span>
+          <div role="meter" aria-label="Provider A weekly quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 / 100"><span aria-hidden="true">0 / 100</span></div>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3);max-width:100%">
+    <span style="color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">sm · three independent readings · text remains outside the smallest hole</span>
+    <div role="group" aria-label="Provider B usage limits" style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:var(--space-3);max-width:100%">
+      <div class="eg-gauge" aria-hidden="true" style="--size:var(--space-14);--w:var(--space-1);--gap:var(--space-1);padding:0;border:0;background:none;box-shadow:none;transition:none;cursor:default">
+        <span class="eg-gauge__ring" style="--c:var(--color-fg-brand-default);inset:0"></span>
+        <span class="eg-gauge__ring" style="--c:var(--color-fg-brand-default);inset:calc(var(--space-1) + var(--space-1))"></span>
+        <span class="eg-gauge__ring" style="--c:var(--color-fg-brand-default);inset:var(--space-4)"></span>
+      </div>
+      <ol style="display:flex;flex-direction:column;gap:var(--space-2);margin:0;padding-left:var(--space-6)">
+        <li data-state="normal">
+          <span>Outer · Provider B session quota</span>
+          <div role="meter" aria-label="Provider B session quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 / 100"><span aria-hidden="true">0 / 100</span></div>
+        </li>
+        <li data-state="normal">
+          <span>Middle · Provider B weekly quota</span>
+          <div role="meter" aria-label="Provider B weekly quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 / 100"><span aria-hidden="true">0 / 100</span></div>
+        </li>
+        <li data-state="normal">
+          <span>Inner · Provider B model quota</span>
+          <div role="meter" aria-label="Provider B model quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 / 100"><span aria-hidden="true">0 / 100</span></div>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3);max-width:100%">
+    <span style="color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">lg · mixed conditions · unavailable middle slot stays reserved</span>
+    <div role="group" aria-label="Provider C usage limits" style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:var(--space-3);max-width:100%">
+      <!-- Host swatch illustrates real background exposure, not a proposed Group material prop. -->
+      <div style="background:var(--color-surface-2)">
+        <div class="eg-gauge" aria-hidden="true" style="--size:var(--space-24);--w:var(--space-1);--gap:var(--space-1);padding:0;border:0;background:none;box-shadow:none;transition:none;cursor:default">
+          <span class="eg-gauge__ring" data-state="critical" style="--c:var(--color-status-danger);inset:0"></span>
+          <!-- No middle track/fill at all: explicit inner inset avoids nth-of-type slot collapse. -->
+          <span class="eg-gauge__ring" data-state="muted" style="--c:var(--color-fg-muted);inset:var(--space-4)"></span>
+          <span style="position:absolute;inset:var(--space-6);display:grid;place-items:center;font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);font-weight:var(--text-label-default--font-weight)">C</span>
+        </div>
+      </div>
+      <ol style="display:flex;flex-direction:column;gap:var(--space-2);margin:0;padding-left:var(--space-6)">
+        <li data-state="critical">
+          <span>Outer · Provider C session quota</span>
+          <div role="meter" aria-label="Provider C session quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 / 100" aria-describedby="gg-specimen-critical"><span aria-hidden="true">0 / 100</span></div>
+          <span id="gg-specimen-critical"><span aria-hidden="true">! </span>Access restricted by administrator</span>
+        </li>
+        <li>
+          <span>Middle · Provider C weekly quota</span>
+          <div style="color:var(--color-fg-muted)">Data unavailable</div>
+        </li>
+        <li data-state="muted">
+          <span>Inner · Provider C model quota</span>
+          <div role="meter" aria-label="Provider C model quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 / 100" aria-describedby="gg-specimen-muted"><span aria-hidden="true">0 / 100</span></div>
+          <span id="gg-specimen-muted"><span aria-hidden="true">− </span>Reference reading; not the active plan</span>
+        </li>
+      </ol>
+    </div>
+    <span style="color:var(--color-fg-secondary)">Conditions are consumer-selected independently of values. The C center is decorative, never a total.</span>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3);max-width:100%">
+    <span style="color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">All unavailable · no fake zero, no center, no meter semantics</span>
+    <div role="group" aria-label="Provider D usage limits" style="display:flex;align-items:flex-start;flex-wrap:wrap;gap:var(--space-3);max-width:100%">
+      <div aria-hidden="true" style="flex-shrink:0;width:var(--space-20);height:var(--space-20)"></div>
+      <ol style="display:flex;flex-direction:column;gap:var(--space-2);margin:0;padding-left:var(--space-6)">
+        <li><span>Outer · Provider D session quota</span><div style="color:var(--color-fg-muted)">Data unavailable</div></li>
+        <li><span>Inner · Provider D weekly quota</span><div style="color:var(--color-fg-muted)">Data unavailable</div></li>
+      </ol>
+    </div>
+  </div>
+</div>

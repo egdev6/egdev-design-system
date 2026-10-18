@@ -1,0 +1,74 @@
+<!-- Skeleton v0.1: newly authored expected-design proposal, NOT a recovered Foundation preview.
+     Shapes are static decorative spans. All inline appearance uses existing theme.css tokens.
+     No animation, scripts, real data fetching, React implementation or emulated preference state.
+     The host card uses Surface's proposed Material recipe; layout mirrors Stack/Cluster responsibilities. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<div style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Default — line / md, full width, static neutral silhouette</p>
+    <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:100%;height:var(--space-4);border:0;padding:0;border-radius:var(--radius-sm);background:var(--color-border-default)"></span>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Line sizes — sm (12px), md (16px), lg (20px)</p>
+    <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+      <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:100%;height:var(--space-3);border:0;padding:0;border-radius:var(--radius-sm);background:var(--color-border-default)"></span>
+      <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:100%;height:var(--space-4);border:0;padding:0;border-radius:var(--radius-sm);background:var(--color-border-default)"></span>
+      <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:100%;height:var(--space-5);border:0;padding:0;border-radius:var(--radius-sm);background:var(--color-border-default)"></span>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Block sizes — sm (48px), md (80px), lg (96px); each fills its own host</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-6)">
+      <div style="width:calc(var(--space-24) + var(--space-24) + var(--space-24));max-width:100%">
+        <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:100%;height:var(--space-12);border:0;padding:0;border-radius:var(--radius-md);background:var(--color-border-default)"></span>
+      </div>
+      <div style="width:calc(var(--space-24) + var(--space-24) + var(--space-24));max-width:100%">
+        <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:100%;height:var(--space-20);border:0;padding:0;border-radius:var(--radius-md);background:var(--color-border-default)"></span>
+      </div>
+      <div style="width:calc(var(--space-24) + var(--space-24) + var(--space-24));max-width:100%">
+        <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:100%;height:var(--space-24);border:0;padding:0;border-radius:var(--radius-md);background:var(--color-border-default)"></span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Circle sizes — sm (32px), md (48px), lg (64px)</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-6)">
+      <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:var(--space-8);height:var(--space-8);border:0;padding:0;border-radius:var(--radius-full);background:var(--color-border-default)"></span>
+      <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:var(--space-12);height:var(--space-12);border:0;padding:0;border-radius:var(--radius-full);background:var(--color-border-default)"></span>
+      <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:var(--space-16);height:var(--space-16);border:0;padding:0;border-radius:var(--radius-full);background:var(--color-border-default)"></span>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Short lines — md, widths 100% / 75% / 50%, arranged by host layout</p>
+    <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+      <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:100%;height:var(--space-4);border:0;padding:0;border-radius:var(--radius-sm);background:var(--color-border-default)"></span>
+      <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:75%;height:var(--space-4);border:0;padding:0;border-radius:var(--radius-sm);background:var(--color-border-default)"></span>
+      <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:50%;height:var(--space-4);border:0;padding:0;border-radius:var(--radius-sm);background:var(--color-border-default)"></span>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Loading-card composition — one host message, hidden shapes, no per-shape status</p>
+    <p role="status" style="margin:0;color:var(--color-fg-secondary);font-size:var(--text-body-default)">Loading account details</p>
+    <div aria-busy="true" style="box-sizing:border-box;display:flex;flex-direction:column;gap:var(--space-4);padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+      <div style="display:flex;align-items:center;gap:var(--space-4)">
+        <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:var(--space-12);height:var(--space-12);border:0;padding:0;border-radius:var(--radius-full);background:var(--color-border-default)"></span>
+        <div style="display:flex;flex-direction:column;gap:var(--space-3);width:100%;min-width:0">
+          <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:75%;height:var(--space-5);border:0;padding:0;border-radius:var(--radius-sm);background:var(--color-border-default)"></span>
+          <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:50%;height:var(--space-3);border:0;padding:0;border-radius:var(--radius-sm);background:var(--color-border-default)"></span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+        <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:100%;height:var(--space-4);border:0;padding:0;border-radius:var(--radius-sm);background:var(--color-border-default)"></span>
+        <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:75%;height:var(--space-4);border:0;padding:0;border-radius:var(--radius-sm);background:var(--color-border-default)"></span>
+      </div>
+      <span aria-hidden="true" style="display:block;box-sizing:border-box;flex-shrink:0;width:100%;height:var(--space-20);border:0;padding:0;border-radius:var(--radius-md);background:var(--color-border-default)"></span>
+    </div>
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Static by design in ordinary and reduced-motion environments. This fragment does not emulate a preference change or run a loading operation.</p>
+  </section>
+</div>

@@ -89,10 +89,10 @@ test('registry binds eight explicit convention approvals separately from Gauge i
   for (const id of approvedIds) {
     assert.equal(actual.find((entry) => entry.id === id)?.status, 'approved', id);
   }
-  // Later receipts may approve deferred IDs or widen Gauge-backed ones; surface-elevation stays deferred.
-  const stillDeferred = actual.find((entry) => entry.id === 'surface-elevation');
-  assert.equal(stillDeferred?.status, 'proposed');
-  assert.equal(stillDeferred.approval, null);
+  // Deferral belongs to the historical receipt; later scoped decisions may accept those IDs.
+  const elevation = actual.find((entry) => entry.id === 'surface-elevation');
+  assert.equal(elevation?.status, 'approved');
+  assert.equal(elevation.approval.reference, 'docs/decisions/prop-naming-molecule-specs-approval.json');
   const reference = 'docs/decisions/prop-naming-gauge-approval.json';
   const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
   assert.equal(receipt.kind, 'human-approval-record');
@@ -139,6 +139,122 @@ test('registry binds eight explicit convention approvals separately from Gauge i
     assert.equal(usage.source.symbol, 'GaugeProps');
     assert.equal(usage.source.revision, digest(fs.readFileSync(resolve(root, usage.source.path))));
   }
+});
+
+test('molecule naming receipt binds delegated decisions without speculative implementation evidence', () => {
+  const reference = 'docs/decisions/prop-naming-molecule-specs-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-observed-human-delegation');
+  assert.deepEqual(
+    receipt.evidence.userStatements.map(({ quote }) => quote),
+    [
+      'no me preguntes, aplica tu las opciones sugeridas y si tengo que irerar en la revisión ya lo vemos',
+      'no dejes pendientes. todo de una cuando definamos specs. añade captura y acepta props',
+      'hazlo'
+    ]
+  );
+  assert.ok(receipt.evidence.userStatements.every(({ provenance }) => provenance.length > 0));
+  assert.match(receipt.evidence.interpretation, /No per-convention user quotation/);
+  assert.equal(receipt.evidence.draftSnapshot.count, 36);
+  assert.equal(Object.keys(receipt.evidence.draftSnapshot.wholeFileSHA256).length, 36);
+  assert.deepEqual(receipt.previouslyProposedNowApproved, ['surface-elevation']);
+  assert.equal(receipt.entries.length, 66);
+  assert.equal(new Set(receipt.entries.map(({ scope }) => scope)).size, receipt.entries.length);
+
+  // Read tracked receipts only: ignored drafts are provenance, not a dependency of CI tests.
+  const history = new Map();
+  for (const prior of receipt.priorReceipts) {
+    const bytes = fs.readFileSync(resolve(root, prior.path));
+    assert.equal(digest(bytes), prior.wholeFileSHA256, prior.path);
+    history.set(prior.path, JSON.parse(bytes));
+  }
+  const receipts = new Map([...history, [reference, receipt]]);
+  for (const entry of actual) {
+    assert.equal(entry.status, 'approved', entry.id);
+    const { approval, usages: _usages, ...convention } = entry;
+    const currentReceipt = receipts.get(approval.reference);
+    assert.ok(currentReceipt, `Unreviewed receipt: ${approval.reference}`);
+    assert.equal(currentReceipt.kind, 'human-approval-record');
+    assert.equal(currentReceipt.nativeReviewApproval, false);
+    const record = currentReceipt.entries.find((record) => record.convention.id === entry.id);
+    assert.ok(record, entry.id);
+    assert.deepEqual(record.convention, convention, entry.id);
+    assert.equal(record.scope, `convention:${entry.id}`);
+    assert.equal(record.contentHash, props.conventionHash(entry), entry.id);
+    assert.deepEqual(approval, { reference: approval.reference, scope: record.scope, contentHash: record.contentHash });
+    assert.ok(
+      entry.usages.every((usage) => usage.component === 'Gauge'),
+      entry.id
+    );
+  }
+  for (const record of receipt.entries) {
+    const entry = actual.find((entry) => entry.id === record.convention.id);
+    assert.ok(entry, record.scope);
+    assert.equal(entry.approval.reference, reference, entry.id);
+    // Receipt bytes bind current content, not merely an existing file path or fresh digest.
+    const changed = structuredClone(actual);
+    changed.find((entry) => entry.id === record.convention.id).meaning += ' Changed.';
+    assert.throws(() => validate(changed), /approval/i, entry.id);
+  }
+
+  const amendedFields = {
+    'consumer-selected-condition': ['meaning', 'whenToUse'],
+    'condition-description': ['meaning', 'whenToUse'],
+    'decorative-center-content': ['meaning'],
+    'measurement-text-equivalent': ['meaning', 'whenToUse', 'avoid'],
+    'unavailable-measurement-message': ['meaning', 'avoid'],
+    'layout-orientation': ['meaning', 'whenToUse', 'avoid']
+  };
+  assert.deepEqual(receipt.semanticAmendments.map(({ id }) => id).sort(), Object.keys(amendedFields).sort());
+  for (const amendment of receipt.semanticAmendments) {
+    const previous = history
+      .get(amendment.previousReference)
+      .entries.find(({ convention }) => convention.id === amendment.id);
+    assert.equal(previous.contentHash, amendment.previousContentHash, amendment.id);
+    assert.equal(previous.contentHash, props.conventionHash(previous.convention), amendment.id);
+    const current = receipt.entries.find(({ convention }) => convention.id === amendment.id);
+    assert.notEqual(current.contentHash, previous.contentHash, amendment.id);
+    const changedFields = Object.keys(previous.convention).filter(
+      (field) => JSON.stringify(previous.convention[field]) !== JSON.stringify(current.convention[field])
+    );
+    assert.deepEqual(changedFields.sort(), [...amendedFields[amendment.id]].sort(), amendment.id);
+    assert.deepEqual([...amendment.changedFields].sort(), changedFields, amendment.id);
+    assert.ok(amendment.boundary.length > 0);
+  }
+  const amendments = new Set(receipt.semanticAmendments.map(({ id }) => id));
+  const newlyAccepted = receipt.entries.filter(
+    ({ convention }) => !amendments.has(convention.id) && convention.id !== 'surface-elevation'
+  );
+  assert.equal(newlyAccepted.length, 59);
+  const historicalIds = new Set(
+    [...history.values()].flatMap(({ entries }) => entries.map(({ convention }) => convention.id))
+  );
+  for (const { convention } of newlyAccepted) {
+    assert.equal(historicalIds.has(convention.id), false, convention.id);
+    assert.deepEqual(actual.find(({ id }) => id === convention.id).usages, [], convention.id);
+    assert.deepEqual(convention.aliases, [], convention.id);
+    assert.deepEqual(convention.exceptions, [], convention.id);
+  }
+  assert.equal(
+    actual.some(
+      ({ id, name, aliases }) => id === 'independent-gauge-rings' || name === 'rings' || aliases.includes('rings')
+    ),
+    false
+  );
+  assert.equal(actual.find(({ id }) => id === 'collection-items').name, 'items');
+  assert.match(actual.find(({ id }) => id === 'measurement-text-equivalent').avoid, /indeterminate-progress/);
+  assert.match(
+    actual.find(({ id }) => id === 'unavailable-measurement-message').avoid,
+    /initial clock sampling.*expired zero time.*indeterminate task progress/
+  );
+  assert.match(
+    actual.find(({ id }) => id === 'layout-orientation').avoid,
+    /inventing keyboard behavior for passive separators/
+  );
 });
 
 test('promoting observed usage to existing does not approve or change its proposed convention', () => {

@@ -1,0 +1,68 @@
+<!-- SelectTile v0.1 static expected-design fragment. Parent supplies token CSS + Foundation bundle.css. Legacy eg-tile/ratio classes illustrate geometry, not the proposed React stretched-button sibling anatomy. No photos, blob URLs, scripts, image-load or keyboard simulation. All previews below show the repeated-label fallback, not the board's neutral photo silhouettes. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<div style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-8);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Non-interactive gallery of six independent ratio previews, not one selection group. Each represents a separate collection with a fixed ratio. Missing or failed media keeps the well and decorative label fallback; equal widths demonstrate proportions, not a fixed card size.</p>
+    <div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--space-3);align-items:start;pointer-events:none">
+      <div class="eg-tile" style="min-height:var(--space-12)">
+        <span class="eg-tile__thumb" style="border:1px solid var(--color-border-hairline)"><span aria-hidden="true" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Landscape</span></span>
+        <span class="eg-tile__name" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Landscape</span>
+        <span class="eg-tile__meta" style="font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height)">16:9 · default</span>
+      </div>
+      <div class="eg-tile eg-tile--portrait is-active" style="min-height:var(--space-12)">
+        <span class="eg-tile__thumb" style="border:1px solid var(--color-border-hairline)"><span aria-hidden="true" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Portrait</span></span>
+        <span class="eg-tile__name" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height);text-decoration-line:underline;text-decoration-thickness:var(--border-width);text-underline-offset:var(--space-1)">Portrait</span>
+        <span class="eg-tile__meta" style="font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height)">4:5 · selected appearance</span>
+      </div>
+      <div class="eg-tile eg-tile--story" style="min-height:var(--space-12)">
+        <span class="eg-tile__thumb" style="border:1px solid var(--color-border-hairline)"><span aria-hidden="true" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Story</span></span>
+        <span class="eg-tile__name" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Story</span>
+        <span class="eg-tile__meta" style="font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height)">9:16</span>
+      </div>
+      <div class="eg-tile eg-tile--square" style="min-height:var(--space-12)">
+        <span class="eg-tile__thumb" style="border:1px solid var(--color-border-hairline)"><span aria-hidden="true" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Square</span></span>
+        <span class="eg-tile__name" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Square</span>
+        <span class="eg-tile__meta" style="font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height)">1:1</span>
+      </div>
+      <div class="eg-tile eg-tile--wide" style="min-height:var(--space-12)">
+        <span class="eg-tile__thumb" style="border:1px solid var(--color-border-hairline)"><span aria-hidden="true" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Wide</span></span>
+        <span class="eg-tile__name" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Wide</span>
+        <span class="eg-tile__meta" style="font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height)">3:1</span>
+      </div>
+      <div class="eg-tile eg-tile--banner" style="min-height:var(--space-12)">
+        <span class="eg-tile__thumb" style="border:1px solid var(--color-border-hairline)"><span aria-hidden="true" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Banner</span></span>
+        <span class="eg-tile__name" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Banner</span>
+        <span class="eg-tile__meta" style="font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height)">4:1</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Multiple-mode state samples: live but unselected; selected with focus ring; hovered off; selected and disabled. Live is independent of selection. Static states only.</p>
+    <div role="group" aria-label="Scene states" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-3);align-items:start">
+      <button type="button" class="eg-tile eg-tile--live" aria-pressed="false" style="min-height:var(--space-12);box-shadow:var(--shadow-edge-strong),var(--shadow-glow-base)">
+        <span class="eg-tile__thumb" style="border:1px solid var(--color-border-hairline)">
+          <span aria-hidden="true" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Code and camera</span>
+          <span class="eg-tile__badge" style="pointer-events:none"><span style="display:inline-flex;align-items:center;white-space:nowrap;padding:calc(var(--space-3) / 2) calc(var(--space-5) / 2);border-radius:var(--radius-full);border:1px solid var(--color-action-primary-solid-bg);background:var(--color-action-primary-solid-bg);color:var(--color-action-primary-solid-fg);font-family:var(--font-sans);font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight);line-height:var(--text-label-default--line-height)">Live</span></span>
+        </span>
+        <span class="eg-tile__name" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Code and camera</span>
+        <span class="eg-tile__meta" style="font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height)">6 layers · not selected</span>
+      </button>
+      <button type="button" class="eg-tile is-active" aria-pressed="true" style="min-height:var(--space-12);box-shadow:var(--shadow-focus)">
+        <span class="eg-tile__thumb" style="border:1px solid var(--color-border-hairline)"><span aria-hidden="true" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Camera only</span></span>
+        <span class="eg-tile__name" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height);text-decoration-line:underline;text-decoration-thickness:var(--border-width);text-underline-offset:var(--space-1)">Camera only</span>
+        <span class="eg-tile__meta" style="font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height)">Selected · focus-visible</span>
+      </button>
+      <button type="button" class="eg-tile is-hover" aria-pressed="false" style="min-height:var(--space-12)">
+        <span class="eg-tile__thumb" style="border:1px solid var(--color-border-hairline)"><span aria-hidden="true" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Pause</span></span>
+        <span class="eg-tile__name" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Pause</span>
+        <span class="eg-tile__meta" style="font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height)">Off · hover</span>
+      </button>
+      <button type="button" class="eg-tile is-active" aria-pressed="true" disabled style="min-height:var(--space-12);opacity:45%;pointer-events:none;cursor:not-allowed">
+        <span class="eg-tile__thumb" style="border:1px solid var(--color-border-hairline)"><span aria-hidden="true" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height)">Starting soon</span></span>
+        <span class="eg-tile__name" style="font-size:var(--text-cta-label);font-weight:var(--text-cta-label--font-weight);line-height:var(--text-cta-label--line-height);text-decoration-line:underline;text-decoration-thickness:var(--border-width);text-underline-offset:var(--space-1)">Starting soon</span>
+        <span class="eg-tile__meta" style="font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height)">Selected · disabled</span>
+      </button>
+    </div>
+  </section>
+</div>

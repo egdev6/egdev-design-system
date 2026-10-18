@@ -1,0 +1,64 @@
+<!-- SearchTrigger v0.1 static expected-design fragment. Parent supplies tokens.css + Foundation bundle.css. Legacy classes illustrate the native launcher; inline overrides show the explicit token-based deltas. No palette, JS, shortcut binding or OS detection. Focus/coarse examples are static illustrations, not browser-state tests. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<div style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-8);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+  <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Search launcher only. Hints below are explicit display examples, not registered shortcuts. The host owns opening and keyboard binding.</p>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-6);align-items:start">
+    <section style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3)">
+      <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Default · no hint</p>
+      <button class="eg-search" type="button" aria-label="Search…" style="height:auto;min-height:var(--space-10);min-width:calc(var(--space-24) + var(--space-24));font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height)">
+        <svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span class="eg-search__label">Search…</span>
+      </button>
+    </section>
+    <section style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3)">
+      <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Explicit Command hint</p>
+      <button class="eg-search" type="button" aria-label="Search…" style="height:auto;min-height:var(--space-10);min-width:calc(var(--space-24) + var(--space-24));font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height)">
+        <svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span class="eg-search__label">Search…</span>
+        <kbd class="eg-kbd" aria-hidden="true" style="font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight);line-height:var(--text-label-default--line-height)">⌘K</kbd>
+      </button>
+    </section>
+    <section style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3)">
+      <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Explicit Control hint</p>
+      <button class="eg-search" type="button" aria-label="Search…" style="height:auto;min-height:var(--space-10);min-width:calc(var(--space-24) + var(--space-24));font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height)">
+        <svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span class="eg-search__label">Search…</span>
+        <kbd class="eg-kbd" aria-hidden="true" style="font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight);line-height:var(--text-label-default--line-height)">Ctrl K</kbd>
+      </button>
+    </section>
+    <section style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3)">
+      <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Hover · custom label</p>
+      <button class="eg-search is-hover" type="button" aria-label="Search articles…" style="height:auto;min-height:var(--space-10);min-width:calc(var(--space-24) + var(--space-24));font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height)">
+        <svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span class="eg-search__label">Search articles…</span>
+        <kbd class="eg-kbd" aria-hidden="true" style="font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight);line-height:var(--text-label-default--line-height)">⌘K</kbd>
+      </button>
+    </section>
+    <section style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3)">
+      <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Focus-visible · well shadow replaced</p>
+      <button class="eg-search" type="button" aria-label="Search…" style="height:auto;min-height:var(--space-10);min-width:calc(var(--space-24) + var(--space-24));font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height);box-shadow:var(--shadow-focus)">
+        <svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span class="eg-search__label">Search…</span>
+      </button>
+    </section>
+    <section style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3)">
+      <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Disabled · 45% opacity</p>
+      <button class="eg-search" type="button" aria-label="Search…" disabled style="height:auto;min-height:var(--space-10);min-width:calc(var(--space-24) + var(--space-24));font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height);opacity:45%;pointer-events:none;cursor:not-allowed">
+        <svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <span class="eg-search__label">Search…</span>
+      </button>
+    </section>
+    <section style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3)">
+      <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Compact · pointer target 40</p>
+      <button class="eg-search eg-search--compact" type="button" aria-label="Search…" style="height:auto;min-height:var(--space-10);width:var(--space-10);min-width:0">
+        <svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </button>
+    </section>
+    <section style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-3)">
+      <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Compact · coarse-pointer target 44</p>
+      <button class="eg-search eg-search--compact" type="button" aria-label="Search…" style="height:auto;min-height:calc(var(--space-10) + var(--space-1));width:calc(var(--space-10) + var(--space-1));min-width:0">
+        <svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </button>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,53 @@
+<!-- Countdown v0.1 supplemental expected-design source, not React or a live timer.
+     Parent harness supplies built tokens.css and the read-only Foundation components/bundle.css.
+     No script, Date.now, timeout or interval. All numeric/date states are illustrative fixed snapshots.
+     Existing classes preserve source digit/gap geometry while proposed recipes are not installed.
+     Label/unit styles below use only existing label-eyebrow tokens; date/status use body-default tokens.
+     Fixed IDs are local artifact relationships; React implementation uses unconditional useId per instance. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<main style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Running snapshot — inherited black on a host flood field; values remain inspectable, live announcements off</p>
+    <div style="box-sizing:border-box;padding:var(--space-6);border-radius:var(--radius-lg);background:var(--color-bg-flood);color:var(--color-fg-on-flood)">
+      <div class="eg-countdown" role="timer" aria-live="off" aria-labelledby="countdown-spec-running-label" aria-describedby="countdown-spec-running-date" data-state="running">
+        <p class="eg-countdown__label" id="countdown-spec-running-label" style="font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing)">Next event in</p>
+        <div class="eg-countdown__row">
+          <span class="eg-countdown__unit"><span class="eg-countdown__value">2</span> <span class="eg-countdown__name" style="font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing)">days</span></span>
+          <span class="eg-countdown__unit"><span class="eg-countdown__value">04</span> <span class="eg-countdown__name" style="font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing)">hours</span></span>
+          <span class="eg-countdown__unit"><span class="eg-countdown__value">37</span> <span class="eg-countdown__name" style="font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing)">minutes</span></span>
+          <span class="eg-countdown__unit"><span class="eg-countdown__value">10</span> <span class="eg-countdown__name" style="font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing)">seconds</span></span>
+        </div>
+        <time id="countdown-spec-running-date" datetime="2030-05-01T19:00:00.000Z" style="display:block;margin-top:var(--space-3);font-family:var(--font-sans);font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight)">1 May 2030, 19:00 UTC</time>
+      </div>
+    </div>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Initializing — deterministic server and initial hydration presentation; no fake zero row</p>
+    <div class="eg-countdown eg-countdown--on-dark" role="timer" aria-live="off" aria-labelledby="countdown-spec-init-label" aria-describedby="countdown-spec-init-date countdown-spec-init-message" data-state="initializing">
+      <p class="eg-countdown__label" id="countdown-spec-init-label" style="font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing)">Next event in</p>
+      <p id="countdown-spec-init-message" style="margin:var(--space-3) 0 0;color:var(--color-fg-secondary);font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight)">Calculating time remaining</p>
+      <time id="countdown-spec-init-date" datetime="2030-05-01T19:00:00.000Z" style="display:block;margin-top:var(--space-3);color:var(--color-fg-secondary);font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight)">1 May 2030, 19:00 UTC</time>
+    </div>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Expired snapshot — genuine zero plus a non-live explanation; no claim that the event is active</p>
+    <div class="eg-countdown eg-countdown--sm eg-countdown--on-dark" role="timer" aria-live="off" aria-labelledby="countdown-spec-expired-label" aria-describedby="countdown-spec-expired-date countdown-spec-expired-message" data-state="expired">
+      <p class="eg-countdown__label" id="countdown-spec-expired-label" style="font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing)">Next event in</p>
+      <div class="eg-countdown__row">
+        <span class="eg-countdown__unit"><span class="eg-countdown__value">0</span> <span class="eg-countdown__name" style="font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing)">days</span></span>
+        <span class="eg-countdown__unit"><span class="eg-countdown__value">00</span> <span class="eg-countdown__name" style="font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing)">hours</span></span>
+        <span class="eg-countdown__unit"><span class="eg-countdown__value">00</span> <span class="eg-countdown__name" style="font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing)">minutes</span></span>
+        <span class="eg-countdown__unit"><span class="eg-countdown__value">00</span> <span class="eg-countdown__name" style="font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing)">seconds</span></span>
+      </div>
+      <p id="countdown-spec-expired-message" style="margin:var(--space-3) 0 0;color:var(--color-fg-secondary);font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight)">Time reached</p>
+      <time id="countdown-spec-expired-date" datetime="2030-05-01T19:00:00.000Z" style="display:block;margin-top:var(--space-3);color:var(--color-fg-secondary);font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight)">1 May 2030, 19:00 UTC</time>
+    </div>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Unavailable — invalid deadline input; no invented date metadata, zeros or expiration event</p>
+    <div class="eg-countdown eg-countdown--on-dark" role="timer" aria-live="off" aria-labelledby="countdown-spec-invalid-label" aria-describedby="countdown-spec-invalid-message" data-state="unavailable">
+      <p class="eg-countdown__label" id="countdown-spec-invalid-label" style="font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing)">Next event in</p>
+      <p id="countdown-spec-invalid-message" style="margin:var(--space-3) 0 0;color:var(--color-fg-secondary);font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight)">Time unavailable</p>
+    </div>
+  </section>
+</main>
