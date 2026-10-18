@@ -1,0 +1,95 @@
+<!-- Static Sidebar expected-design specimen. Parent supplies tokens.css and Foundation bundle.css.
+     No Foundation Sidebar source exists: this composition is derived from the catalog row, NavList, ProductMark,
+     Surface and docs/MATERIAL.md. No interaction script: scroll thumb and focus are illustrative, not behavior evidence.
+     Legacy eg-menu classes stand in for NavList rows as design tooling only; React adds the eg-sidebar root marker with CVA utilities; the specimen shows the unmodified Surface all-side hairline (Sidebar D11). -->
+<main style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-8);padding:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+
+  <!-- 1. Default: product header, NavList body with current page and static group, footer band -->
+  <section style="min-width:0">
+    <p style="margin:0;margin-bottom:var(--space-3);font-size:var(--text-label-default);color:var(--color-fg-muted)">Default: product, navigation and footer band</p>
+    <div style="box-sizing:border-box;display:flex;flex-direction:column;width:calc(var(--space-16) * 4);height:calc(var(--space-24) * 4 + var(--space-12));background:var(--gradient-sheen),var(--color-surface-1);border:1px solid var(--color-border-hairline);box-shadow:var(--shadow-edge);color:var(--color-fg-default)">
+      <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-5) var(--space-4) var(--space-4)">
+        <span role="img" aria-label="Cadencia" style="box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;flex:none;width:var(--space-10);height:var(--space-10);border-radius:var(--radius-md);background:var(--gradient-btn-primary);box-shadow:var(--shadow-btn-primary);color:var(--color-action-primary-solid-fg);font-family:var(--font-display);font-size:var(--text-heading-small);font-weight:var(--text-heading-small--font-weight);line-height:var(--text-heading-small--line-height)"><span aria-hidden="true">C</span></span>
+        <span aria-hidden="true" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--font-display);font-size:var(--text-heading-small);font-weight:var(--text-heading-small--font-weight);line-height:var(--text-heading-small--line-height)">Cadencia</span>
+      </div>
+      <div style="position:relative;flex:1 1 auto;min-height:0;overflow:hidden">
+        <div style="padding:0 var(--space-3) var(--space-4)">
+          <nav aria-label="Main">
+            <ul class="eg-menu eg-menu--nav" style="margin:0;list-style:none">
+              <li><a class="eg-menu__item" href="#calendar" aria-current="page" style="font-size:var(--text-label-default);border:1px solid var(--color-border-hairline);box-shadow:var(--shadow-edge),var(--shadow-elev-1)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span class="eg-menu__label">Calendar</span></a></li>
+              <li><a class="eg-menu__item" href="#queue" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h0M3 12h0M3 18h0"/></svg><span class="eg-menu__label">Queue</span><span class="eg-menu__count" style="font-size:var(--text-label-default)">4</span></a></li>
+              <li><a class="eg-menu__item" href="#channels" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.9 19.1a10 10 0 0 1 0-14.2M19.1 4.9a10 10 0 0 1 0 14.2"/><circle cx="12" cy="12" r="2"/></svg><span class="eg-menu__label">Channels</span></a></li>
+              <li>
+                <div class="eg-menu__group" id="sidebar-specimen-library" style="font-size:var(--text-meta);letter-spacing:var(--text-meta--letter-spacing)">Library</div>
+                <ul class="eg-menu eg-menu--nav" aria-labelledby="sidebar-specimen-library" style="margin:0;list-style:none">
+                  <li><a class="eg-menu__item" href="#templates" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg><span class="eg-menu__label">Templates</span></a></li>
+                  <li><a class="eg-menu__item" href="#assets" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg><span class="eg-menu__label">Assets</span></a></li>
+                </ul>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <div style="box-sizing:border-box;display:flex;align-items:center;gap:var(--space-2);padding:var(--space-3) var(--space-4);background:var(--color-surface-0);border:1px solid var(--color-border-hairline);font-size:var(--text-label-default);color:var(--color-fg-muted)">
+        <span style="flex:1 1 auto;min-width:0">Version 2.4</span>
+        <button class="eg-icon-btn" type="button" aria-label="Settings"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Overflowing body with a Radix-style scrollbar, linked product mark with keyboard focus -->
+  <section style="min-width:0">
+    <p style="margin:0;margin-bottom:var(--space-3);font-size:var(--text-label-default);color:var(--color-fg-muted)">Overflow, scrollbar and focused home link</p>
+    <div style="box-sizing:border-box;display:flex;flex-direction:column;width:calc(var(--space-16) * 4);height:calc(var(--space-24) * 4 + var(--space-12));background:var(--gradient-sheen),var(--color-surface-1);border:1px solid var(--color-border-hairline);box-shadow:var(--shadow-edge);color:var(--color-fg-default)">
+      <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-5) var(--space-4) var(--space-4)">
+        <a href="#home" aria-label="Quorb" style="box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;flex:none;width:var(--space-10);height:var(--space-10);border-radius:var(--radius-md);background:var(--gradient-btn-primary);box-shadow:var(--shadow-focus);color:var(--color-action-primary-solid-fg);font-family:var(--font-display);font-size:var(--text-heading-small);font-weight:var(--text-heading-small--font-weight);line-height:var(--text-heading-small--line-height);text-decoration:none"><span aria-hidden="true">Q</span></a>
+        <span aria-hidden="true" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--font-display);font-size:var(--text-heading-small);font-weight:var(--text-heading-small--font-weight);line-height:var(--text-heading-small--line-height)">Quorb</span>
+      </div>
+      <div style="position:relative;flex:1 1 auto;min-height:0;overflow:hidden">
+        <div style="padding:0 var(--space-3) var(--space-4)">
+          <nav aria-label="Main">
+            <ul class="eg-menu eg-menu--nav" style="margin:0;list-style:none">
+              <li><a class="eg-menu__item" href="#overview" style="font-size:var(--text-label-default)"><span class="eg-menu__label">Overview</span></a></li>
+              <li><a class="eg-menu__item" href="#services" aria-current="page" style="font-size:var(--text-label-default);border:1px solid var(--color-border-hairline);box-shadow:var(--shadow-edge),var(--shadow-elev-1)"><span class="eg-menu__label">Services</span><span class="eg-menu__count" style="font-size:var(--text-label-default)">9</span></a></li>
+              <li><a class="eg-menu__item" href="#hosts" style="font-size:var(--text-label-default)"><span class="eg-menu__label">Hosts</span></a></li>
+              <li><a class="eg-menu__item" href="#alerts" style="font-size:var(--text-label-default)"><span class="eg-menu__label">Alerts</span><span class="eg-menu__count" style="font-size:var(--text-label-default)">2</span></a></li>
+              <li><a class="eg-menu__item" href="#logs" style="font-size:var(--text-label-default)"><span class="eg-menu__label">Logs</span></a></li>
+              <li><a class="eg-menu__item" href="#metrics" style="font-size:var(--text-label-default)"><span class="eg-menu__label">Metrics</span></a></li>
+              <li><a class="eg-menu__item" href="#backups" style="font-size:var(--text-label-default)"><span class="eg-menu__label">Backups</span></a></li>
+              <li><a class="eg-menu__item" href="#network" style="font-size:var(--text-label-default)"><span class="eg-menu__label">Network</span></a></li>
+              <li><a class="eg-menu__item" href="#storage" style="font-size:var(--text-label-default)"><span class="eg-menu__label">Storage</span></a></li>
+            </ul>
+          </nav>
+        </div>
+        <div aria-hidden="true" style="position:absolute;top:0;bottom:0;inset-inline-end:0;display:flex;width:var(--space-2);box-sizing:border-box;padding:var(--space-0) calc(var(--space-1) / 2)">
+          <div style="width:100%;height:55%;border-radius:var(--radius-full);background:var(--color-border-hairline-strong)"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Minimal: no product, no footer; only the scrollable navigation body -->
+  <section style="min-width:0">
+    <p style="margin:0;margin-bottom:var(--space-3);font-size:var(--text-label-default);color:var(--color-fg-muted)">Without product or footer; long product name truncates</p>
+    <div style="display:flex;flex-direction:column;gap:var(--space-6)">
+      <div style="box-sizing:border-box;display:flex;flex-direction:column;width:calc(var(--space-16) * 4);height:calc(var(--space-24) * 2);background:var(--gradient-sheen),var(--color-surface-1);border:1px solid var(--color-border-hairline);box-shadow:var(--shadow-edge);color:var(--color-fg-default)">
+        <div style="position:relative;flex:1 1 auto;min-height:0;overflow:hidden">
+          <div style="padding:var(--space-4) var(--space-3)">
+            <nav aria-label="Settings">
+              <ul class="eg-menu eg-menu--nav" style="margin:0;list-style:none">
+                <li><a class="eg-menu__item" href="#account" aria-current="page" style="font-size:var(--text-label-default);border:1px solid var(--color-border-hairline);box-shadow:var(--shadow-edge),var(--shadow-elev-1)"><span class="eg-menu__label">Account</span></a></li>
+                <li><a class="eg-menu__item" href="#billing" style="font-size:var(--text-label-default)"><span class="eg-menu__label">Billing</span></a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div style="box-sizing:border-box;display:flex;flex-direction:column;width:calc(var(--space-16) * 4);background:var(--gradient-sheen),var(--color-surface-1);border:1px solid var(--color-border-hairline);box-shadow:var(--shadow-edge);color:var(--color-fg-default)">
+        <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-5) var(--space-4) var(--space-4)">
+          <span role="img" aria-label="Media tool workspace" style="box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;flex:none;width:var(--space-10);height:var(--space-10);border-radius:var(--radius-md);background:var(--gradient-btn-primary);box-shadow:var(--shadow-btn-primary);color:var(--color-action-primary-solid-fg);font-family:var(--font-display);font-size:var(--text-heading-small);font-weight:var(--text-heading-small--font-weight);line-height:var(--text-heading-small--line-height)"><span aria-hidden="true">Mt</span></span>
+          <span aria-hidden="true" style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--font-display);font-size:var(--text-heading-small);font-weight:var(--text-heading-small--font-weight);line-height:var(--text-heading-small--line-height)">Media tool workspace</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

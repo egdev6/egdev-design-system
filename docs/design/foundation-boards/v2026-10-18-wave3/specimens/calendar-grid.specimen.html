@@ -1,0 +1,108 @@
+<!-- Static CalendarGrid expected-design specimen (VIS-02). Parent supplies tokens.css and Foundation bundle.css.
+     No interaction script: hover, focus, open-menu and drop-target states are illustrative, not behavior evidence.
+     Legacy eg-cal/eg-post/eg-icon-btn classes are design tooling only; React uses eg-calendar-grid with CVA utilities.
+     The add button shows the intended transparent treatment (the source board renders a user-agent button fill). -->
+<main style="display:flex;flex-direction:column;gap:var(--space-8);padding:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans);min-width:calc(var(--space-24) * 10 + var(--space-10));box-sizing:border-box">
+
+  <!-- 1. Week: past (muted header), today (visible "Today" text), add buttons, move buttons, drop target, empty days -->
+  <section>
+    <p style="margin:0;margin-bottom:var(--space-3);font-size:var(--text-label-default);color:var(--color-fg-muted)">Week: past days (muted header), today, quiet add buttons (resting, hover, focus), move buttons on entries, a drop target while dragging, empty days</p>
+    <ol class="eg-cal" aria-label="Week of October 5" style="margin:0;padding:0;list-style:none">
+      <li class="eg-cal__day" style="min-height:calc(var(--space-12) * 6)">
+        <div class="eg-cal__head"><span class="eg-cal__dow">Mon</span><span class="eg-cal__num" style="color:var(--color-fg-muted)">5</span></div>
+        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-2)">
+          <li class="eg-post eg-post--compact eg-post--sent" style="opacity:1;padding:var(--space-3);gap:var(--space-1)">
+            <p class="eg-post__text" style="font-size:var(--text-label-default)">Stream clips</p>
+            <span class="eg-post__meta" style="font-size:var(--text-label-default)">10:00 · Done</span>
+          </li>
+        </ul>
+      </li>
+      <li class="eg-cal__day" style="min-height:calc(var(--space-12) * 6)">
+        <div class="eg-cal__head"><span class="eg-cal__dow">Tue</span><span class="eg-cal__num" style="color:var(--color-fg-muted)">6</span></div>
+        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-2)">
+          <li class="eg-post eg-post--compact eg-post--sent" style="opacity:1;padding:var(--space-3);gap:var(--space-1)">
+            <p class="eg-post__text" style="font-size:var(--text-label-default)">Monitor release</p>
+            <span class="eg-post__meta" style="font-size:var(--text-label-default)">13:00 · Done</span>
+          </li>
+        </ul>
+      </li>
+      <li class="eg-cal__day is-today" aria-current="date" style="min-height:calc(var(--space-12) * 6)">
+        <div class="eg-cal__head"><span class="eg-cal__dow">Wed · Today</span><span class="eg-cal__num">7</span></div>
+        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-2)">
+          <li class="eg-post eg-post--compact" style="padding:var(--space-3);gap:var(--space-1)">
+            <a href="#entry" class="eg-post__text" style="font-size:var(--text-label-default);color:var(--color-fg-default);text-decoration:none">Live at 19:00</a>
+            <div style="display:flex;align-items:center;gap:var(--space-2)"><span class="eg-post__meta" style="flex:1 1 auto;min-width:0;font-size:var(--text-label-default)">17:00</span><button type="button" class="eg-icon-btn" aria-label="Move Live at 19:00" style="width:var(--space-8);height:var(--space-8)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg></button></div>
+          </li>
+        </ul>
+        <button type="button" class="eg-cal__add" aria-label="Add entry on Wednesday, October 7" style="background:transparent;min-height:calc(var(--space-10) + var(--space-1));width:100%;border-color:var(--color-border-control);color:var(--color-fg-default);box-shadow:var(--shadow-focus)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      </li>
+      <li class="eg-cal__day" style="min-height:calc(var(--space-12) * 6)">
+        <div class="eg-cal__head"><span class="eg-cal__dow">Thu</span><span class="eg-cal__num">8</span></div>
+        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-2)">
+          <li class="eg-post eg-post--compact eg-post--new" style="padding:var(--space-3);gap:var(--space-1);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-2)">
+            <a href="#entry" class="eg-post__text" style="font-size:var(--text-label-default);color:var(--color-fg-default);text-decoration:none">Stream short</a>
+            <div style="display:flex;align-items:center;gap:var(--space-2)"><span class="eg-post__meta" style="flex:1 1 auto;min-width:0;font-size:var(--text-label-default)">18:00 · New</span><button type="button" class="eg-icon-btn" aria-label="Move Stream short" style="width:var(--space-8);height:var(--space-8)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg></button></div>
+          </li>
+        </ul>
+        <button type="button" class="eg-cal__add" aria-label="Add entry on Thursday, October 8" style="background:transparent;min-height:calc(var(--space-10) + var(--space-1));width:100%;border-color:var(--color-border-control);color:var(--color-fg-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      </li>
+      <li class="eg-cal__day" data-state="drop-target" style="min-height:calc(var(--space-12) * 6);border-color:var(--color-border-control);border-style:dashed">
+        <div class="eg-cal__head"><span class="eg-cal__dow">Fri</span><span class="eg-cal__num">9</span></div>
+        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--space-2)">
+          <li class="eg-post eg-post--compact" style="padding:var(--space-3);gap:var(--space-1)">
+            <a href="#entry" class="eg-post__text" style="font-size:var(--text-label-default);color:var(--color-fg-default);text-decoration:none">Tokens before components</a>
+            <div style="display:flex;align-items:center;gap:var(--space-2)"><span class="eg-post__meta" style="flex:1 1 auto;min-width:0;font-size:var(--text-label-default)">09:30</span><button type="button" class="eg-icon-btn" aria-label="Move Tokens before components" style="width:var(--space-8);height:var(--space-8)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg></button></div>
+          </li>
+        </ul>
+        <button type="button" class="eg-cal__add" aria-label="Add entry on Friday, October 9" style="background:transparent;min-height:calc(var(--space-10) + var(--space-1));width:100%"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      </li>
+      <li class="eg-cal__day" style="min-height:calc(var(--space-12) * 6)">
+        <div class="eg-cal__head"><span class="eg-cal__dow">Sat</span><span class="eg-cal__num">10</span></div>
+        <button type="button" class="eg-cal__add" aria-label="Add entry on Saturday, October 10" style="background:transparent;min-height:calc(var(--space-10) + var(--space-1));width:100%"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      </li>
+      <li class="eg-cal__day" style="min-height:calc(var(--space-12) * 6)">
+        <div class="eg-cal__head"><span class="eg-cal__dow">Sun</span><span class="eg-cal__num">11</span></div>
+        <button type="button" class="eg-cal__add" aria-label="Add entry on Sunday, October 11" style="background:transparent;min-height:calc(var(--space-10) + var(--space-1));width:100%"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      </li>
+    </ol>
+    <p style="margin:0;margin-top:var(--space-2);font-size:var(--text-label-default);color:var(--color-fg-muted)">Wednesday: add button with keyboard focus. Thursday: add button on hover. Friday: drop target while an entry is dragged (with the drag dependency only).</p>
+  </section>
+
+  <!-- 2. Move menu fallback (no drag dependency) and stacked narrow layout -->
+  <section style="display:flex;gap:var(--space-8);align-items:flex-start">
+    <div style="width:calc(var(--space-12) * 6)">
+      <p style="margin:0;margin-bottom:var(--space-3);font-size:var(--text-label-default);color:var(--color-fg-muted)">Move menu (keyboard and pointer, no drag dependency): days that accept entries</p>
+      <div class="eg-post eg-post--compact" style="padding:var(--space-3);gap:var(--space-1)">
+        <span class="eg-post__text" style="font-size:var(--text-label-default);color:var(--color-fg-default)">Live at 19:00</span>
+            <div style="display:flex;align-items:center;gap:var(--space-2)"><span class="eg-post__meta" style="flex:1 1 auto;min-width:0;font-size:var(--text-label-default)">17:00</span><button type="button" class="eg-icon-btn" aria-label="Move Live at 19:00" aria-expanded="true" style="width:var(--space-8);height:var(--space-8);box-shadow:var(--shadow-focus)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="width:var(--space-4);height:var(--space-4)"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg></button></div>
+      </div>
+      <div role="menu" aria-label="Move to" style="margin-top:var(--space-2);padding:var(--space-2);border:1px solid var(--color-border-hairline-strong);border-radius:var(--radius-md);background:var(--color-surface-overlay);backdrop-filter:blur(var(--blur-overlay)) saturate(150%);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)">
+        <div style="padding:var(--space-2) var(--space-3);font-family:var(--font-display);font-size:var(--text-meta);letter-spacing:var(--text-meta--letter-spacing);text-transform:uppercase;color:var(--color-fg-muted)">Move to</div>
+        <div role="menuitem" style="padding:var(--space-2) var(--space-3);border-radius:var(--radius-md);font-size:var(--text-label-default);background:var(--color-surface-3)">Thursday, October 8</div>
+        <div role="menuitem" style="padding:var(--space-2) var(--space-3);font-size:var(--text-label-default);color:var(--color-fg-secondary)">Friday, October 9</div>
+        <div role="menuitem" style="padding:var(--space-2) var(--space-3);font-size:var(--text-label-default);color:var(--color-fg-secondary)">Saturday, October 10</div>
+        <div role="menuitem" style="padding:var(--space-2) var(--space-3);font-size:var(--text-label-default);color:var(--color-fg-secondary)">Sunday, October 11</div>
+      </div>
+    </div>
+
+    <div style="width:calc(var(--space-12) * 8)">
+      <p style="margin:0;margin-bottom:var(--space-3);font-size:var(--text-label-default);color:var(--color-fg-muted)">Narrow container: days stack as a list; an empty day keeps its header and add button</p>
+      <ol class="eg-cal" aria-label="Week of October 5" style="margin:0;padding:0;list-style:none;grid-template-columns:minmax(0,1fr)">
+        <li class="eg-cal__day is-today" aria-current="date" style="min-height:0">
+          <div class="eg-cal__head"><span class="eg-cal__dow">Wed · Today</span><span class="eg-cal__num">7</span></div>
+          <ul style="margin:0;padding:0;list-style:none">
+            <li class="eg-post eg-post--compact" style="padding:var(--space-3);gap:var(--space-1)">
+              <span class="eg-post__text" style="font-size:var(--text-label-default);color:var(--color-fg-default)">Live at 19:00</span>
+              <span class="eg-post__meta" style="font-size:var(--text-label-default)">17:00</span>
+            </li>
+          </ul>
+          <button type="button" class="eg-cal__add" aria-label="Add entry on Wednesday, October 7" style="background:transparent;min-height:calc(var(--space-10) + var(--space-1));width:100%"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+        </li>
+        <li class="eg-cal__day" style="min-height:0">
+          <div class="eg-cal__head"><span class="eg-cal__dow">Thu</span><span class="eg-cal__num">8</span></div>
+          <button type="button" class="eg-cal__add" aria-label="Add entry on Thursday, October 8" style="background:transparent;min-height:calc(var(--space-10) + var(--space-1));width:100%"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+        </li>
+      </ol>
+    </div>
+  </section>
+</main>
