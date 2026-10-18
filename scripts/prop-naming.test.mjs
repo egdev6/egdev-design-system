@@ -55,7 +55,8 @@ function approve(entry, status = 'approved') {
 const receiptChain = [
   'docs/decisions/prop-naming-molecule-specs-approval.json',
   'docs/decisions/prop-naming-organism-specs-approval.json',
-  'docs/decisions/prop-naming-template-specs-approval.json'
+  'docs/decisions/prop-naming-template-specs-approval.json',
+  'docs/decisions/prop-naming-isotipo3d-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -447,6 +448,143 @@ test('template naming receipt pins the organism receipt and binds two new layout
     )
   );
   assert.equal(actual.length, 125 + laterAdded.length);
+});
+
+const isotipoReference = 'docs/decisions/prop-naming-isotipo3d-approval.json';
+const isotipoPriorPins = [
+  ['gauge', '97374db3519c5cd1b0c7c05e5c73974138c47ce38c4326e702f613f800b69911'],
+  ['atom-specs', 'a615c560018e7d142a9e627d85ba101c57c35a5289abf2fa48bf1cec0b69903b'],
+  ['ambient-background', 'bf7574a50d0d52f0bc2fc2a2c224d200b0dd84537c3ec565f193b3cd93190e71'],
+  ['molecule-specs', '2ef1fd8192f5004da741b83570a08b4a2e517cee6e714cd6154e37d67b53e838'],
+  ['organism-specs', 'c8bdcbb7e3ef9ef2621440b97128b8468b7c5f10b2e5e9b2de528abee4d9dea4'],
+  ['template-specs', '4bf0cffbbb2403aedd4830b4983519c863ebd851705f7050f4b7f104327a550a']
+].map(([name, hash]) => ({
+  path: `docs/decisions/prop-naming-${name}-approval.json`,
+  wholeFileSHA256: `sha256:${hash}`
+}));
+function checkIsotipoHistory(receipt, read = (path) => fs.readFileSync(resolve(root, path))) {
+  assert.deepEqual(receipt.priorReceipts, isotipoPriorPins);
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(digest(read(prior.path)), prior.wholeFileSHA256, prior.path);
+  }
+}
+
+test('Isotipo3D naming receipt preserves 125 entries and binds three scoped approvals, not full Draft consent', () => {
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, isotipoReference), 'utf8'));
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  assert.equal(actual.length, 128);
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-observed-human-delegation');
+  assert.equal(receipt.sourceRegistrySHA256, 'sha256:b5d1ffd75c8ded3c976115db39d9515f0ce321bdc15892fb63156309feea9adc');
+  assert.equal(digest(`${JSON.stringify(actual.slice(0, 125), null, 2)}\n`), receipt.sourceRegistrySHA256);
+  assert.equal(receipt.sourceRegistryEntryCount, 125);
+  assert.deepEqual(receipt.previouslyProposedNowApproved, ['effect-scene', 'effect-progress', 'pointer-tilt']);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  assert.deepEqual(
+    receipt.evidence.userStatements.map(({ quote }) => quote),
+    ['ok']
+  );
+  assert.ok(receipt.evidence.userStatements[0].provenance.length > 0);
+  assert.equal(
+    receipt.evidence.question,
+    '¿Autorizás conservar las tres capturas como referencias —Lab con recorte y fallback solo geometría/paleta— y registrar las convenciones scene, progress y pointerTilt? Sin instalar three, implementar ni publicar todavía.'
+  );
+  assert.match(receipt.evidence.interpretation, /not.*per-payload/);
+  assert.equal(receipt.evidence.draftSnapshot.path, '.playwright-mcp/specs/isotipo3d/isotipo3d-v0.3.md');
+  assert.equal(
+    receipt.evidence.draftSnapshot.wholeFileSHA256,
+    'sha256:a926e56dfc4b28d257f3cdabfeab7f4ac9e51c765030848d09190d7d3afaacfc'
+  );
+  assert.equal(
+    receipt.evidence.draftSnapshot.canonicalSHA256,
+    'sha256:8e2c363cc6871657789e94b17b68ddeaae3d6a358fe55ebbaa828b2f0e24389c'
+  );
+  assert.equal(receipt.evidence.draftSnapshot.canonicalBytes, 49890);
+  checkIsotipoHistory(receipt);
+  assert.ok(laterReceipts('docs/decisions/prop-naming-template-specs-approval.json').has(isotipoReference));
+  const hashes = [
+    [
+      'effect-scene',
+      'scene',
+      '153b68933d1df373b063201e03fcac8c33b6780cec26065802af47bfbf6507dc',
+      'a0ddc8aa8c8209ef712164e164408cf2e0d49d7b1ff11a9497d7e40c78f37818'
+    ],
+    [
+      'effect-progress',
+      'progress',
+      '2d645be86ca2574d3b8a0330e846def3894da1cdfd46f2f7b3e204bdbf8bd36d',
+      '5d3b9c8baefc158b078147f53b76a57f54a63e825c105f63f638010c2188a4b9'
+    ],
+    [
+      'pointer-tilt',
+      'pointerTilt',
+      '91eae46168acb123c0f532b1ed3e45e0c9403386816faa20fc5c8977e3dd7815',
+      '4dd09b904cc3152e23929278dda86055a623f6c837977a691d7f7f93d71e5c00'
+    ]
+  ];
+  assert.deepEqual(
+    receipt.entries.map(({ convention }) => convention.id),
+    hashes.map(([id]) => id)
+  );
+  for (const [id, name, proposedHash, approvedHash] of hashes) {
+    const record = receipt.entries.find(({ convention }) => convention.id === id);
+    const entry = actual.find((entry) => entry.id === id);
+    const { approval, usages, ...convention } = entry;
+    assert.equal(entry.name, name);
+    assert.equal(entry.status, 'approved');
+    assert.deepEqual(record.convention, convention);
+    assert.deepEqual(record.proposedConvention, { ...entry, status: 'proposed', approval: null });
+    assert.equal(record.proposedContentHash, `sha256:${proposedHash}`);
+    assert.equal(record.proposedContentHash, props.conventionHash(record.proposedConvention));
+    assert.equal(record.contentHash, `sha256:${approvedHash}`);
+    assert.equal(record.contentHash, props.conventionHash(entry));
+    assert.equal(record.scope, `convention:${id}`);
+    assert.deepEqual(approval, { reference: isotipoReference, scope: record.scope, contentHash: record.contentHash });
+    assert.deepEqual(usages, []);
+    assert.deepEqual(entry.aliases, []);
+    assert.deepEqual(entry.exceptions, []);
+  }
+  assert.equal(
+    actual.find(({ id }) => id === 'layer-opacity').approval.reference,
+    'docs/decisions/prop-naming-ambient-background-approval.json'
+  );
+});
+
+test('Isotipo3D rejects stale naming approvals and refreshed-but-unreviewed receipt semantics', () => {
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, isotipoReference), 'utf8'));
+  for (const record of receipt.entries) {
+    const changed = structuredClone(actual);
+    const entry = changed.find(({ id }) => id === record.convention.id);
+    entry.meaning += ' Changed.';
+    assert.throws(() => validate(changed), /approval/i);
+    entry.approval.contentHash = props.conventionHash(entry);
+    assert.notEqual(entry.approval.contentHash, record.contentHash);
+    const { approval: _approval, usages: _usages, ...convention } = entry;
+    assert.notDeepEqual(convention, record.convention);
+  }
+});
+
+test('Isotipo3D predecessor pins reject changed prior receipt bytes, changed pins and missing history in memory', () => {
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, isotipoReference), 'utf8'));
+  for (const prior of isotipoPriorPins) {
+    assert.throws(
+      () =>
+        checkIsotipoHistory(receipt, (path) => {
+          const bytes = fs.readFileSync(resolve(root, path));
+          return path === prior.path ? Buffer.concat([bytes, Buffer.from('\n')]) : bytes;
+        }),
+      /AssertionError/
+    );
+    const changed = structuredClone(receipt);
+    changed.priorReceipts.find(({ path }) => path === prior.path).wholeFileSHA256 = `sha256:${'0'.repeat(64)}`;
+    assert.throws(() => checkIsotipoHistory(changed), /AssertionError/);
+  }
+  const missing = structuredClone(receipt);
+  missing.priorReceipts.pop();
+  assert.throws(() => checkIsotipoHistory(missing), /AssertionError/);
 });
 
 test('promoting observed usage to existing does not approve or change its proposed convention', () => {
