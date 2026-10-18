@@ -1,0 +1,65 @@
+<!-- Carousel v0.1 target specimen: static HTML only, not a behavior implementation.
+     Parent supplies @egdev/tokens and Foundation components/bundle.css.
+     Only the current slide is shown in each visual fixture; the implementation keeps all items mounted.
+     These are read-only consumer Surface fixtures, not Carousel-owned card recipes or source photos.
+     Focus, current position and disabled states are explicitly staged. No scripts or image requests. -->
+<div style="box-sizing:border-box;display:flex;flex-direction:column;gap:var(--space-8);padding:var(--space-6);max-width:var(--content-max);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight)">
+
+  <div role="group" aria-roledescription="carousel" aria-labelledby="carousel-specimen-middle" style="display:flex;flex-direction:column;gap:var(--space-4);min-width:0">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--space-4)">
+      <span id="carousel-specimen-middle" style="font-family:var(--font-display);font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing);text-transform:uppercase;color:var(--color-fg-secondary)">Learning notes</span>
+      <div style="display:flex;align-items:center;gap:var(--space-2)">
+        <span aria-hidden="true" style="font-family:var(--font-display);font-size:var(--text-meta);font-weight:var(--text-meta--font-weight);font-variant-numeric:tabular-nums;color:var(--color-fg-secondary)"><b style="color:var(--color-fg-default)">02</b> / 03</span>
+        <button type="button" class="eg-icon-btn" aria-label="Previous slide" style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon eg-tips-slider__flip" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+        <button type="button" class="eg-icon-btn" aria-label="Next slide" style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+      </div>
+    </div>
+    <div style="box-sizing:border-box;padding:var(--space-2);min-width:0">
+      <div role="group" aria-roledescription="slide" aria-label="2 of 3: Keyboard access" aria-current="true" tabindex="0" style="border-radius:var(--radius-lg);box-shadow:var(--shadow-focus)">
+        <div style="box-sizing:border-box;padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+          <h3 style="margin:0;font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight)">Keyboard access</h3>
+          <p style="margin:var(--space-3) 0 0;color:var(--color-fg-secondary)">Use the arrow keys to move between slides. Home and End reach the first and last slide.</p>
+          <p style="margin:var(--space-2) 0 0;color:var(--color-fg-muted)">No automatic rotation. The position changes only when you navigate.</p>
+        </div>
+      </div>
+    </div>
+    <div aria-hidden="true" style="box-sizing:border-box;align-self:center;width:100%;max-width:calc(var(--space-20) * 4);height:calc(var(--border-width) + var(--border-width));border-radius:var(--radius-sm);background:var(--color-border-subtle);overflow:hidden"><div style="width:66.666667%;height:100%;border-radius:var(--radius-sm);background:var(--color-fg-brand-default)"></div></div>
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Middle item · focused slide · manual navigation</p>
+  </div>
+
+  <div role="group" aria-roledescription="carousel" aria-labelledby="carousel-specimen-single" style="display:flex;flex-direction:column;gap:var(--space-4);min-width:0">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--space-4)">
+      <span id="carousel-specimen-single" style="font-family:var(--font-display);font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing);text-transform:uppercase;color:var(--color-fg-secondary)">Reference card</span>
+      <div style="display:flex;align-items:center;gap:var(--space-2)">
+        <span aria-hidden="true" style="font-family:var(--font-display);font-size:var(--text-meta);font-weight:var(--text-meta--font-weight);font-variant-numeric:tabular-nums;color:var(--color-fg-secondary)"><b style="color:var(--color-fg-default)">01</b> / 01</span>
+        <button type="button" class="eg-icon-btn" aria-label="Previous slide" disabled style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon eg-tips-slider__flip" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+        <button type="button" class="eg-icon-btn" aria-label="Next slide" disabled style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+      </div>
+    </div>
+    <div style="box-sizing:border-box;padding:var(--space-2);min-width:0">
+      <div role="group" aria-roledescription="slide" aria-label="1 of 1: One item" aria-current="true" tabindex="0" style="border-radius:var(--radius-lg)">
+        <div style="box-sizing:border-box;padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+          <h3 style="margin:0;font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight)">One item</h3>
+          <p style="margin:var(--space-3) 0 0;color:var(--color-fg-secondary)">The slide remains readable and focusable. Both navigation controls are disabled.</p>
+        </div>
+      </div>
+    </div>
+    <div aria-hidden="true" style="box-sizing:border-box;align-self:center;width:100%;max-width:calc(var(--space-20) * 4);height:calc(var(--border-width) + var(--border-width));border-radius:var(--radius-sm);background:var(--color-border-subtle);overflow:hidden"><div style="width:100%;height:100%;border-radius:var(--radius-sm);background:var(--color-fg-brand-default)"></div></div>
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Single item · bounded controls · no wrapping</p>
+  </div>
+
+  <div role="group" aria-roledescription="carousel" aria-labelledby="carousel-specimen-empty" style="display:flex;flex-direction:column;gap:var(--space-4);min-width:0">
+    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--space-4)">
+      <span id="carousel-specimen-empty" style="font-family:var(--font-display);font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing);text-transform:uppercase;color:var(--color-fg-secondary)">Saved notes</span>
+      <div style="display:flex;align-items:center;gap:var(--space-2)">
+        <span aria-hidden="true" style="font-family:var(--font-display);font-size:var(--text-meta);font-weight:var(--text-meta--font-weight);font-variant-numeric:tabular-nums;color:var(--color-fg-secondary)">00 / 00</span>
+        <button type="button" class="eg-icon-btn" aria-label="Previous slide" disabled style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon eg-tips-slider__flip" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+        <button type="button" class="eg-icon-btn" aria-label="Next slide" disabled style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+      </div>
+    </div>
+    <p style="margin:0;color:var(--color-fg-secondary)">No slides</p>
+    <div aria-hidden="true" style="box-sizing:border-box;align-self:center;width:100%;max-width:calc(var(--space-20) * 4);height:calc(var(--border-width) + var(--border-width));border-radius:var(--radius-sm);background:var(--color-border-subtle)"></div>
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Empty collection · no slide tab stop</p>
+  </div>
+
+</div>

@@ -1,0 +1,91 @@
+<!-- ButtonGroup specimen v0.1: no Foundation board. Uses only bundle.css classes (.eg-btn*, .eg-btn-split, .eg-btn--join-*) and token var() inline styles. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<div style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3);padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border-subtle)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">variant spaced (default): related actions, gap space-3</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--space-8)">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div role="group" aria-label="Dialog actions" style="display:inline-flex;flex-wrap:wrap;align-items:center;gap:var(--space-3)">
+          <button type="button" class="eg-btn eg-btn--ghost eg-btn--sm">Cancel</button>
+          <button type="button" class="eg-btn eg-btn--primary eg-btn--sm">Save idea</button>
+        </div>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">sm · ghost + primary</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div role="group" aria-label="Page actions" style="display:inline-flex;flex-wrap:wrap;align-items:center;gap:var(--space-3)">
+          <button type="button" class="eg-btn eg-btn--secondary">Export</button>
+          <button type="button" class="eg-btn eg-btn--primary">New post</button>
+        </div>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">md · secondary + primary</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3);padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border-subtle)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">variant attached: split button (action + menu trigger), gap 2px, inner corners radius-sm</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--space-8)">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div class="eg-btn-split" role="group" aria-label="Save options">
+          <button type="button" class="eg-btn eg-btn--primary eg-btn--sm eg-btn--join-start">Save idea</button>
+          <button type="button" class="eg-btn eg-btn--primary eg-btn--sm eg-btn--icon eg-btn--join-end" aria-label="More save options" aria-haspopup="menu"><svg class="eg-btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        </div>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">sm · primary split</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div class="eg-btn-split" role="group" aria-label="Publish options">
+          <button type="button" class="eg-btn eg-btn--primary eg-btn--join-start">Publish</button>
+          <button type="button" class="eg-btn eg-btn--primary eg-btn--icon eg-btn--join-end" aria-label="More publish options" aria-haspopup="menu"><svg class="eg-btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        </div>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">md · primary split</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div class="eg-btn-split" role="group" aria-label="Schedule options">
+          <button type="button" class="eg-btn eg-btn--secondary eg-btn--sm eg-btn--join-start">Schedule</button>
+          <button type="button" class="eg-btn eg-btn--secondary eg-btn--sm eg-btn--icon eg-btn--join-end" aria-label="More schedule options" aria-haspopup="menu"><svg class="eg-btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        </div>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">sm · secondary split</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3);padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border-subtle)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">variant attached: three items (first, middle, last)</p>
+    <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+      <div class="eg-btn-split" role="group" aria-label="Post actions">
+        <button type="button" class="eg-btn eg-btn--secondary eg-btn--sm eg-btn--join-start">Copy</button>
+        <button type="button" class="eg-btn eg-btn--secondary eg-btn--sm" style="border-radius:var(--radius-sm)">Duplicate</button>
+        <button type="button" class="eg-btn eg-btn--secondary eg-btn--sm eg-btn--join-end">Archive</button>
+      </div>
+      <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">sm · secondary × 3 actions</span>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">states inside an attached group: hover · focus-visible (raised above neighbours) · disabled item</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--space-8)">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div class="eg-btn-split" role="group" aria-label="Save options">
+          <button type="button" class="eg-btn eg-btn--primary eg-btn--sm eg-btn--join-start is-hover">Save idea</button>
+          <button type="button" class="eg-btn eg-btn--primary eg-btn--sm eg-btn--icon eg-btn--join-end" aria-label="More save options" aria-haspopup="menu"><svg class="eg-btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        </div>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">hover on action</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div class="eg-btn-split" role="group" aria-label="Save options">
+          <button type="button" class="eg-btn eg-btn--primary eg-btn--sm eg-btn--join-start">Save idea</button>
+          <button type="button" class="eg-btn eg-btn--primary eg-btn--sm eg-btn--icon eg-btn--join-end" aria-label="More save options" aria-haspopup="menu" style="position:relative;z-index:1;box-shadow:var(--shadow-focus)"><svg class="eg-btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        </div>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">focus-visible on menu trigger</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div class="eg-btn-split" role="group" aria-label="Post actions">
+          <button type="button" class="eg-btn eg-btn--secondary eg-btn--sm eg-btn--join-start">Copy</button>
+          <button type="button" class="eg-btn eg-btn--secondary eg-btn--sm" style="border-radius:var(--radius-sm)" disabled>Duplicate</button>
+          <button type="button" class="eg-btn eg-btn--secondary eg-btn--sm eg-btn--join-end">Archive</button>
+        </div>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">disabled middle item</span>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,70 @@
+<!-- Static NavList expected-design specimen. Parent supplies tokens.css and Foundation bundle.css.
+     No interaction script: disclosure and focus states are illustrative, not behavior evidence.
+     Legacy classes are design tooling only; React uses eg-nav-list with CVA utilities. -->
+<main style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-6);padding:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+  <section style="width:30%;min-width:0">
+    <p style="margin:0;margin-bottom:var(--space-4);font-size:var(--text-label-default);color:var(--color-fg-muted)">Default, current page and static group</p>
+    <div style="padding:var(--space-4);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+      <nav aria-label="Workspace">
+        <ul class="eg-menu eg-menu--nav" style="margin:0;list-style:none">
+          <li><a class="eg-menu__item" href="#overview" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h18v18H3zM3 9h18M9 9v12"/></svg><span class="eg-menu__label">Overview</span></a></li>
+          <li><a class="eg-menu__item" href="#inbox" aria-current="page" style="font-size:var(--text-label-default);border:1px solid var(--color-border-hairline);box-shadow:var(--shadow-edge),var(--shadow-elev-1)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12h-6l-2 3h-4l-2-3H2M5 3h14l3 9v8H2v-8z"/></svg><span class="eg-menu__label">Inbox</span><span class="eg-menu__count" style="font-size:var(--text-label-default)">12</span></a></li>
+          <li><a class="eg-menu__item" href="#drafts" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 3 5 5-13 13H3v-5zM14 5l5 5"/></svg><span class="eg-menu__label">Drafts</span><span class="eg-menu__count" style="font-size:var(--text-label-default)">0</span></a></li>
+          <li>
+            <div class="eg-menu__group" id="nav-specimen-settings" style="font-size:var(--text-meta);letter-spacing:var(--text-meta--letter-spacing)">Settings</div>
+            <ul class="eg-menu eg-menu--nav" aria-labelledby="nav-specimen-settings" style="margin:0;list-style:none">
+              <li><a class="eg-menu__item" href="#profile" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="eg-menu__label">Profile</span></a></li>
+              <li><a class="eg-menu__item" href="#notifications" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"/></svg><span class="eg-menu__label">Notifications</span></a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+
+  <section style="width:30%;min-width:0">
+    <p style="margin:0;margin-bottom:var(--space-4);font-size:var(--text-label-default);color:var(--color-fg-muted)">Expanded group, tags and retained live signal</p>
+    <div style="padding:var(--space-4);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+      <nav aria-label="Content navigation">
+        <ul class="eg-menu eg-menu--nav" style="margin:0;list-style:none">
+          <li data-state="open">
+            <button class="eg-menu__group eg-menu__group--toggle" type="button" aria-expanded="true" aria-controls="nav-specimen-content" style="min-height:calc(var(--space-10) + var(--space-1));font-size:var(--text-meta);letter-spacing:var(--text-meta--letter-spacing)">
+              <svg class="eg-menu__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>Content<span class="eg-menu__count" style="font-size:var(--text-label-default)">16</span>
+            </button>
+            <ul class="eg-menu eg-menu--nav" id="nav-specimen-content" style="margin:0;list-style:none">
+              <li><a class="eg-menu__item" href="#queue" style="font-size:var(--text-label-default)"><span class="eg-menu__label">Queue</span><span style="display:inline-flex;align-items:center;gap:var(--space-2);margin-left:auto"><span style="display:inline-flex;align-items:center;white-space:nowrap;padding:calc(var(--space-1) + var(--space-1)/2) calc(var(--space-2) + var(--space-1)/2);border:1px solid var(--color-alpha-red-22);border-radius:var(--radius-full);background:var(--color-alpha-red-12);box-shadow:var(--shadow-edge);font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight);line-height:var(--text-label-default--line-height);color:var(--color-primitive-red-200)">In queue</span><span class="eg-menu__count" style="font-size:var(--text-label-default)">4</span></span></a></li>
+              <li><a class="eg-menu__item" href="#published" style="font-size:var(--text-label-default)"><span class="eg-menu__label">Published</span><span class="eg-menu__count" style="font-size:var(--text-label-default)">12</span></a></li>
+            </ul>
+          </li>
+          <li data-state="closed">
+            <button class="eg-menu__group eg-menu__group--toggle" type="button" aria-expanded="false" aria-controls="nav-specimen-live" style="min-height:calc(var(--space-10) + var(--space-1));font-size:var(--text-meta);letter-spacing:var(--text-meta--letter-spacing)">
+              <svg class="eg-menu__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>Community
+              <span class="eg-live-dot eg-live-dot--static" aria-hidden="true" style="background:var(--color-fg-brand-default)"></span>
+              <span style="position:absolute;width:var(--focus-width);height:var(--focus-width);padding:0;margin:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap">Voting live</span>
+              <span class="eg-menu__count" style="font-size:var(--text-label-default)">2</span>
+            </button>
+            <div id="nav-specimen-live" hidden><ul><li><a href="#polls">Polls</a></li></ul></div>
+          </li>
+        </ul>
+      </nav>
+      <p style="margin:var(--space-3);font-size:var(--text-label-default);color:var(--color-fg-muted)">The signal and count remain visible while closed.</p>
+    </div>
+  </section>
+
+  <section style="width:30%;min-width:0">
+    <p style="margin:0;margin-bottom:var(--space-4);font-size:var(--text-label-default);color:var(--color-fg-muted)">Closed group, keyboard focus and warning</p>
+    <div style="padding:var(--space-4);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+      <nav aria-label="Review navigation">
+        <ul class="eg-menu eg-menu--nav" style="margin:0;list-style:none">
+          <li data-state="closed">
+            <button class="eg-menu__group eg-menu__group--toggle" type="button" aria-expanded="false" aria-controls="nav-specimen-archive" style="min-height:calc(var(--space-10) + var(--space-1));font-size:var(--text-meta);letter-spacing:var(--text-meta--letter-spacing);box-shadow:var(--shadow-focus)"><svg class="eg-menu__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>Archive<span class="eg-menu__count" style="font-size:var(--text-label-default)">24</span></button>
+            <div id="nav-specimen-archive" hidden><ul><li><a href="#archive">Older entries</a></li></ul></div>
+          </li>
+          <li><a class="eg-menu__item" href="#review" style="font-size:var(--text-label-default)"><span class="eg-menu__label">Scheduled publications requiring review</span><span class="eg-menu__end"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m10 3-8 16a2 2 0 0 0 2 3h16a2 2 0 0 0 2-3L14 3a2 2 0 0 0-4 0zM12 9v4M12 17h0"/></svg></span><span style="position:absolute;width:var(--focus-width);height:var(--focus-width);padding:0;margin:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap">Needs attention</span></a></li>
+          <li><a class="eg-menu__item" href="#saved" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg><span class="eg-menu__label">Saved</span></a></li>
+        </ul>
+      </nav>
+      <p style="margin:var(--space-3);font-size:var(--text-label-default);color:var(--color-fg-muted)">Focus is illustrated on the trigger. The full navigation label remains accessible.</p>
+    </div>
+  </section>
+</main>

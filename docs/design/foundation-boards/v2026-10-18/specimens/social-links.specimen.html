@@ -1,0 +1,49 @@
+<!-- SocialLinks v0.1 supplemental expected-design source, not React or a screenshot.
+     Parent harness supplies built tokens.css and the read-only Foundation components/bundle.css.
+     Existing IconButton/Icon classes illustrate atomic Material and glyph geometry; token inline sizes show lg=48px.
+     Static aria-labels illustrate complete link names only. React uses IconButton's AccessibleIcon hidden-label mechanism.
+     Example profile destinations are illustrative, not looked up or verified. No link was opened by this writer.
+     Rows: default/mixed targets; caption-free ghost; constrained inline and list wrapping; static focus cue. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<main style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-8);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Outline — 48px targets; same-context GitHub, opt-in new-context YouTube and Twitch</p>
+    <div class="eg-social">
+      <p class="eg-social__label">Follow me</p>
+      <ul class="eg-social__list" role="list" aria-label="Social profiles">
+        <li><a class="eg-icon-btn eg-icon-btn--outline" href="https://github.com/example" aria-label="GitHub Example" style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a></li>
+        <li><a class="eg-icon-btn eg-icon-btn--outline" href="https://www.youtube.com/@example" target="_blank" rel="me noopener noreferrer" aria-label="YouTube Example (opens in a new tab)" style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg></a></li>
+        <li><a class="eg-icon-btn eg-icon-btn--outline" href="https://www.twitch.tv/example" target="_blank" rel="noopener noreferrer" aria-label="Twitch Example (opens in a new tab)" style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 2H3v16h5v4l4-4h5l4-4V2zm-10 9V7m5 4V7"/></svg></a></li>
+      </ul>
+    </div>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Ghost — no visible caption; list stays named; 48px targets with token gap 1</p>
+    <div class="eg-social">
+      <ul class="eg-social__list" role="list" aria-label="Social profiles" style="gap:var(--space-1)">
+        <li><a class="eg-icon-btn" href="https://github.com/example" aria-label="GitHub Example" style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a></li>
+        <li><a class="eg-icon-btn" href="https://www.youtube.com/@example" aria-label="YouTube Example" style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg></a></li>
+        <li><a class="eg-icon-btn" href="https://www.twitch.tv/example" aria-label="Twitch Example" style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 2H3v16h5v4l4-4h5l4-4V2zm-10 9V7m5 4V7"/></svg></a></li>
+      </ul>
+    </div>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Constrained inline — caption/list and individual destinations wrap without reordering</p>
+    <div class="eg-social eg-social--inline" style="flex-wrap:wrap;width:calc(var(--space-24) * 2);max-width:100%">
+      <p class="eg-social__label">Follow our latest updates</p>
+      <ul class="eg-social__list" role="list" aria-label="Social profiles" style="width:calc(var(--space-12) * 2 + var(--space-2));max-width:100%">
+        <li><a class="eg-icon-btn eg-icon-btn--outline" href="https://github.com/example" aria-label="GitHub Example" style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a></li>
+        <li><a class="eg-icon-btn eg-icon-btn--outline" href="https://www.youtube.com/@example" aria-label="YouTube Example" style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg></a></li>
+        <li><a class="eg-icon-btn eg-icon-btn--outline" href="https://www.twitch.tv/example" aria-label="Twitch Example" style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 2H3v16h5v4l4-4h5l4-4V2zm-10 9V7m5 4V7"/></svg></a></li>
+      </ul>
+    </div>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Static focus cue — the native anchor owns the atom focus ring, not the list</p>
+    <div class="eg-social">
+      <ul class="eg-social__list" role="list" aria-label="Social profiles">
+        <li><a class="eg-icon-btn eg-icon-btn--outline" href="https://github.com/example" aria-label="GitHub Example" style="width:var(--space-12);height:var(--space-12);box-shadow:var(--shadow-focus)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a></li>
+      </ul>
+    </div>
+  </section>
+</main>

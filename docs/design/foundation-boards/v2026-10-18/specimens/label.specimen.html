@@ -1,0 +1,59 @@
+<!-- Label specimen v0.1: field and choice label treatments, not React output. Only bundle.css classes and token var() inline styles. Field equals legacy .eg-field__label (600 14px/1.2 sans); choice uses --text-label-default with --text-body-default--font-weight (500). The legacy .eg-check class supplies illustrative checkbox/row paint only; its label typography is explicitly replaced by the proposed token recipe. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<div style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3);padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border-subtle)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">default (label alone)</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-8)">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <label class="eg-field__label" for="s-a">Title</label>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">short text</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2);max-width:calc(var(--space-16) * 2)">
+        <label class="eg-field__label" for="s-b">First comment shown under the published video</label>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">long text wraps</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3);padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border-subtle)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">composed by Field (label above the control)</p>
+    <div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:var(--space-5)">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div class="eg-field">
+          <label class="eg-field__label" for="s-c">Title</label>
+          <input class="eg-field__control" id="s-c" placeholder="Defaults to the first line">
+        </div>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">control at rest</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div class="eg-field">
+          <label class="eg-field__label" for="s-d">With focus</label>
+          <input class="eg-field__control is-focus" id="s-d" value="Building Mando">
+        </div>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">control focused: label unchanged</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--space-2)">
+        <div class="eg-field eg-field--range">
+          <label class="eg-field__label" for="s-e">Volume <output>50%</output></label>
+          <input type="range" id="s-e" value="50">
+        </div>
+        <span style="color:var(--color-fg-muted);font-size:var(--text-meta)">layout className: value at the end</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">choice (label beside a checkbox)</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-6)">
+      <label class="eg-check" for="s-choice-checked" style="font-family:var(--font-sans);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);font-weight:var(--text-body-default--font-weight);color:var(--color-fg-secondary)">
+        <input type="checkbox" id="s-choice-checked" checked> Notify subscribers
+      </label>
+      <label class="eg-check" for="s-choice-unchecked" style="font-family:var(--font-sans);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);font-weight:var(--text-body-default--font-weight);color:var(--color-fg-secondary)">
+        <input type="checkbox" id="s-choice-unchecked"> Schedule publication
+      </label>
+    </div>
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Choice labels use a lighter weight than field labels. Checkbox state does not change the label treatment.</p>
+  </section>
+
+</div>

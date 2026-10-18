@@ -1,0 +1,49 @@
+<!-- ChipGroup specimen v0.1. Static expected-design fragment, not a behavior implementation. The parent supplies tokens.css + Foundation bundle.css and captures it. Existing classes only; inline dimensions/colors use existing tokens or allowed percentages. Pointer target shown: 32px; coarse-pointer 44px is an implementation check. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<div style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3);padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border-subtle)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">Multiple filters: two on, two off; gap space-2</p>
+    <div role="group" aria-label="Topics" style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-2)">
+      <button type="button" class="eg-chip" aria-pressed="true" data-state="on" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);box-shadow:var(--shadow-edge-strong),var(--shadow-glow-base);text-decoration-line:underline;text-decoration-thickness:var(--border-width);text-underline-offset:var(--space-1)">React</button>
+      <button type="button" class="eg-chip" aria-pressed="false" data-state="off" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Design systems</button>
+      <button type="button" class="eg-chip" aria-pressed="true" data-state="on" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);box-shadow:var(--shadow-edge-strong),var(--shadow-glow-base);text-decoration-line:underline;text-decoration-thickness:var(--border-width);text-underline-offset:var(--space-1)">Accessibility</button>
+      <button type="button" class="eg-chip" aria-pressed="false" data-state="off" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Streaming</button>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3);padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border-subtle)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">Single choice: one on, with decorative leading icons (selection can be cleared)</p>
+    <div role="group" aria-label="Screen edge" style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-2)">
+      <button type="button" class="eg-chip" role="radio" aria-checked="false" data-state="off" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg>Top</button>
+      <button type="button" class="eg-chip is-active" role="radio" aria-checked="true" data-state="on" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);box-shadow:var(--shadow-edge-strong),var(--shadow-glow-base)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span style="text-decoration-line:underline;text-decoration-thickness:var(--border-width);text-underline-offset:var(--space-1)">Right</span></button>
+      <button type="button" class="eg-chip" role="radio" aria-checked="false" data-state="off" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>Bottom</button>
+      <button type="button" class="eg-chip" role="radio" aria-checked="false" data-state="off" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>Left</button>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3);padding-bottom:var(--space-5);border-bottom:1px solid var(--color-border-subtle)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">States: hover off; focus-visible on; disabled off (45%); default off</p>
+    <div role="group" aria-label="Channels" style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-2)">
+      <button type="button" class="eg-chip is-hover" aria-pressed="false" data-state="off" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">YouTube</button>
+      <button type="button" class="eg-chip" aria-pressed="true" data-state="on" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);box-shadow:var(--shadow-focus);text-decoration-line:underline;text-decoration-thickness:var(--border-width);text-underline-offset:var(--space-1)">Twitch</button>
+      <button type="button" class="eg-chip" aria-pressed="false" data-state="off" disabled data-disabled="" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);opacity:45%;pointer-events:none;cursor:not-allowed">Kick</button>
+      <button type="button" class="eg-chip" aria-pressed="false" data-state="off" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">LinkedIn</button>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);text-transform:uppercase;font-size:var(--text-meta)">Wrapping: rows keep gap space-2; no panel painted by ChipGroup</p>
+    <div style="width:25%">
+      <div role="group" aria-label="Formats" style="display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-2)">
+        <button type="button" class="eg-chip" aria-pressed="true" data-state="on" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);box-shadow:var(--shadow-edge-strong),var(--shadow-glow-base);text-decoration-line:underline;text-decoration-thickness:var(--border-width);text-underline-offset:var(--space-1)">Thumbnail</button>
+        <button type="button" class="eg-chip" aria-pressed="false" data-state="off" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Post</button>
+        <button type="button" class="eg-chip" aria-pressed="false" data-state="off" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Short</button>
+        <button type="button" class="eg-chip" aria-pressed="true" data-state="on" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);box-shadow:var(--shadow-edge-strong),var(--shadow-glow-base);text-decoration-line:underline;text-decoration-thickness:var(--border-width);text-underline-offset:var(--space-1)">Banner</button>
+        <button type="button" class="eg-chip" aria-pressed="false" data-state="off" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Story</button>
+        <button type="button" class="eg-chip" aria-pressed="false" data-state="off" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Cover</button>
+        <button type="button" class="eg-chip" aria-pressed="false" data-state="off" style="min-height:var(--space-8);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Square photo</button>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,32 @@
+<!-- PullQuote v0.1 supplemental expected-design source, not React or a screenshot.
+     Parent harness supplies built tokens.css and the read-only Foundation components/bundle.css.
+     No pv-cell rules: the source eg-quote 40ch measure is not replaced by the preview's max-width:100% override.
+     Legacy classes preserve the exact quote scales while proposed tokens are not installed.
+     Inline styles use existing tokens for caption leading, host Material and logical RTL filet/insets.
+     All passages, captions and cite URLs below are illustrative examples, not verified quotations or sources. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<main style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-body-default)">
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Pull — actual source measure; source caption outside the passage; cite metadata is not a link</p>
+    <figure class="eg-quote">
+      <blockquote class="eg-quote__text" cite="/examples/working-notes"><p>“Make one small thing work, then explain why it works.”</p></blockquote>
+      <figcaption class="eg-quote__source" style="font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight);letter-spacing:var(--text-body-default--letter-spacing)">Illustrative source — example workshop notes</figcaption>
+    </figure>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Display — a quotation, not a heading; accent remains part of the same passage</p>
+    <figure class="eg-quote eg-quote--display">
+      <blockquote class="eg-quote__text"><p>Build it, <span class="eg-quote__accent">then explain it.</span></p></blockquote>
+      <figcaption class="eg-quote__source" style="font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight);letter-spacing:var(--text-body-default--letter-spacing)">Illustrative quotation — no author or source URL is inferred.</figcaption>
+    </figure>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Raised host and RTL placement — logical start-edge filet, inline accent; English sample copy</p>
+    <div dir="rtl" style="box-sizing:border-box;padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-1);box-shadow:var(--shadow-edge),var(--shadow-elev-1)">
+      <figure class="eg-quote" style="border-left:0;border-inline-start:calc(var(--border-width) * 2) solid var(--color-fg-brand-default);padding:calc(var(--space-1) / 2) 0;padding-inline-start:calc(var(--space-4) + var(--space-1) / 2)">
+        <blockquote class="eg-quote__text"><p dir="ltr">A small change can still carry <span class="eg-quote__accent" style="color:var(--color-fg-brand-raised)">a clear idea.</span></p></blockquote>
+        <figcaption class="eg-quote__source" style="font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight);letter-spacing:var(--text-body-default--letter-spacing)">Illustrative commentary, not verified attribution</figcaption>
+      </figure>
+    </div>
+  </section>
+</main>

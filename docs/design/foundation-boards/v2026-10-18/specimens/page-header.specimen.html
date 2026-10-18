@@ -1,0 +1,70 @@
+<!-- PageHeader v0.1 expected-design specimen, not an implementation or screenshot.
+     Parent harness loads built tokens.css and the read-only Foundation components/bundle.css.
+     Header layout and typography use existing theme.css tokens only; buttons reuse Foundation classes.
+     Rows: supplied two-action ButtonGroup; title only; constrained group/disabled action; RTL single action; single-action focus cue.
+     Neutral action areas contain either one direct Button or one supplied group with at least two direct children.
+     No PageHeader board or Foundation PageHeader preview exists. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<main style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-8);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Grouped actions — eyebrow, title and one supplied two-action ButtonGroup</p>
+    <header style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;column-gap:var(--space-6);row-gap:var(--space-4);min-width:0">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2);flex-grow:1;flex-basis:calc(var(--space-24) * 3);min-width:0">
+        <p style="margin:0;font-family:var(--font-display);font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing);text-transform:uppercase;color:var(--color-fg-muted)">Workspace</p>
+        <h1 style="margin:0;font-family:var(--font-sans);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight);letter-spacing:var(--text-heading-small--letter-spacing);overflow-wrap:anywhere">Projects</h1>
+      </div>
+      <div style="max-width:100%;min-width:0">
+        <div role="group" style="display:inline-flex;flex-wrap:wrap;align-items:center;gap:var(--space-3);max-width:100%;min-width:0">
+          <button type="button" class="eg-btn eg-btn--secondary">Import</button>
+          <button type="button" class="eg-btn eg-btn--primary">New project</button>
+        </div>
+      </div>
+    </header>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Minimal — title only, no reserved action or eyebrow space</p>
+    <header style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;column-gap:var(--space-6);row-gap:var(--space-4);min-width:0">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2);flex-grow:1;flex-basis:calc(var(--space-24) * 3);min-width:0">
+        <h2 style="margin:0;font-family:var(--font-sans);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight);letter-spacing:var(--text-heading-small--letter-spacing);overflow-wrap:anywhere">Account settings</h2>
+      </div>
+    </header>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Constrained — natural wrap, long title and one disabled action</p>
+    <header style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;column-gap:var(--space-6);row-gap:var(--space-4);min-width:0;width:calc(var(--space-24) * 3);max-width:100%">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2);flex-grow:1;flex-basis:calc(var(--space-24) * 3);min-width:0">
+        <p style="margin:0;font-family:var(--font-display);font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing);text-transform:uppercase;color:var(--color-fg-muted)">Workspace</p>
+        <h2 style="margin:0;font-family:var(--font-sans);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight);letter-spacing:var(--text-heading-small--letter-spacing);overflow-wrap:anywhere">Projects shared across your teams</h2>
+      </div>
+      <div style="max-width:100%;min-width:0">
+        <div role="group" style="display:inline-flex;flex-wrap:wrap;align-items:center;gap:var(--space-3);max-width:100%;min-width:0">
+          <button type="button" class="eg-btn eg-btn--secondary" disabled>Import</button>
+          <button type="button" class="eg-btn eg-btn--primary">New project</button>
+        </div>
+      </div>
+    </header>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">RTL single action — direct Button outside ButtonGroup (English sample copy)</p>
+    <header dir="rtl" style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;column-gap:var(--space-6);row-gap:var(--space-4);min-width:0">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2);flex-grow:1;flex-basis:calc(var(--space-24) * 3);min-width:0">
+        <p style="margin:0;font-family:var(--font-display);font-size:var(--text-label-eyebrow);line-height:var(--text-label-eyebrow--line-height);font-weight:var(--text-label-eyebrow--font-weight);letter-spacing:var(--text-label-eyebrow--letter-spacing);text-transform:uppercase;color:var(--color-fg-muted)">Workspace</p>
+        <h2 style="margin:0;font-family:var(--font-sans);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight);letter-spacing:var(--text-heading-small--letter-spacing);overflow-wrap:anywhere">Projects</h2>
+      </div>
+      <div style="max-width:100%;min-width:0">
+        <button type="button" class="eg-btn eg-btn--primary">New project</button>
+      </div>
+    </header>
+  </section>
+  <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Single-action focus cue — direct Button owns its ring; no group role</p>
+    <header style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;column-gap:var(--space-6);row-gap:var(--space-4);min-width:0">
+      <div style="display:flex;flex-direction:column;gap:var(--space-2);flex-grow:1;flex-basis:calc(var(--space-24) * 3);min-width:0">
+        <h2 style="margin:0;font-family:var(--font-sans);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight);letter-spacing:var(--text-heading-small--letter-spacing);overflow-wrap:anywhere">Projects</h2>
+      </div>
+      <div style="max-width:100%;min-width:0">
+        <button type="button" class="eg-btn eg-btn--primary" style="box-shadow:var(--shadow-focus)">New project</button>
+      </div>
+    </header>
+  </section>
+</main>

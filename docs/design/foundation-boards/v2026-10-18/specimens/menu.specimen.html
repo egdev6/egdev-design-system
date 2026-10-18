@@ -1,0 +1,43 @@
+<!-- Menu VIS-02: uncaptured static specimen. Parent supplies tokens.css and Foundation bundle.css.
+     No scripts, external resources, real portals, keyboard navigation or interaction evidence.
+     Existing legacy classes illustrate highlights; React styles Radix attributes instead.
+     Both examples use kind-based MenuEntry roles; native type attributes are unrelated. -->
+<div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-8);padding:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+  <section>
+    <p style="margin:0;margin-bottom:var(--space-4);font-size:var(--text-label-default);color:var(--color-fg-muted)">Overlay · shortcuts, disabled action and submenu</p>
+    <div style="display:flex;align-items:flex-start;gap:var(--space-1)">
+      <div class="eg-menu" role="menu" aria-label="Document actions" style="border-radius:var(--radius-xl)">
+        <div style="padding:var(--space-2) var(--space-3);font-family:var(--font-display);font-size:var(--text-meta);letter-spacing:var(--text-meta--letter-spacing);text-transform:uppercase;color:var(--color-fg-muted)">Document</div>
+        <div class="eg-menu__item" role="menuitem" tabindex="-1" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 3 5 5-13 13H3v-5zM14 5l5 5"/></svg>Edit<span style="margin-left:auto"><kbd class="eg-kbd">Enter</kbd></span></div>
+        <div class="eg-menu__item" role="menuitem" tabindex="-1" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg>Duplicate<span style="margin-left:auto"><kbd class="eg-kbd">Ctrl D</kbd></span></div>
+        <div class="eg-menu__item" role="menuitem" aria-disabled="true" tabindex="-1" style="font-size:var(--text-label-default);opacity:45%;pointer-events:none"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 17v4h14v-4"/></svg>Export</div>
+        <div class="eg-menu__item is-hover" id="menu-specimen-move" role="menuitem" aria-haspopup="menu" aria-expanded="true" aria-controls="menu-specimen-destinations" tabindex="-1" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM8 12h8m-3-3 3 3-3 3"/></svg>Move to<svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="margin-left:auto"><path d="m9 6 6 6-6 6"/></svg></div>
+        <span class="eg-menu__sep" role="separator"></span>
+        <div class="eg-menu__item eg-menu__item--danger" role="menuitem" tabindex="-1" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg>Delete</div>
+      </div>
+      <div class="eg-menu" id="menu-specimen-destinations" role="menu" aria-labelledby="menu-specimen-move" style="margin-top:calc(var(--space-24) + var(--space-10) + var(--space-1));border-radius:var(--radius-xl)">
+        <div class="eg-menu__item" role="menuitem" tabindex="-1" style="font-size:var(--text-label-default)">Drafts</div>
+        <div class="eg-menu__item" role="menuitem" tabindex="-1" style="font-size:var(--text-label-default)">Archive</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p style="margin:0;margin-bottom:var(--space-4);font-size:var(--text-label-default);color:var(--color-fg-muted)">Same menu · solid fallback · no blur</p>
+    <div style="display:flex;align-items:flex-start;gap:var(--space-1)">
+      <div class="eg-menu" role="menu" aria-label="Document actions, solid fallback" style="border-radius:var(--radius-xl);background:var(--color-surface-2);backdrop-filter:none;-webkit-backdrop-filter:none">
+        <div style="padding:var(--space-2) var(--space-3);font-family:var(--font-display);font-size:var(--text-meta);letter-spacing:var(--text-meta--letter-spacing);text-transform:uppercase;color:var(--color-fg-muted)">Document</div>
+        <div class="eg-menu__item" role="menuitem" tabindex="-1" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 3 5 5-13 13H3v-5zM14 5l5 5"/></svg>Edit<span style="margin-left:auto"><kbd class="eg-kbd">Enter</kbd></span></div>
+        <div class="eg-menu__item" role="menuitem" tabindex="-1" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg>Duplicate<span style="margin-left:auto"><kbd class="eg-kbd">Ctrl D</kbd></span></div>
+        <div class="eg-menu__item" role="menuitem" aria-disabled="true" tabindex="-1" style="font-size:var(--text-label-default);opacity:45%;pointer-events:none"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 17v4h14v-4"/></svg>Export</div>
+        <div class="eg-menu__item is-hover" id="menu-specimen-solid-move" role="menuitem" aria-haspopup="menu" aria-expanded="true" aria-controls="menu-specimen-solid-destinations" tabindex="-1" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM8 12h8m-3-3 3 3-3 3"/></svg>Move to<svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true" style="margin-left:auto"><path d="m9 6 6 6-6 6"/></svg></div>
+        <span class="eg-menu__sep" role="separator"></span>
+        <div class="eg-menu__item eg-menu__item--danger" role="menuitem" tabindex="-1" style="font-size:var(--text-label-default)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></svg>Delete</div>
+      </div>
+      <div class="eg-menu" id="menu-specimen-solid-destinations" role="menu" aria-labelledby="menu-specimen-solid-move" style="margin-top:calc(var(--space-24) + var(--space-10) + var(--space-1));border-radius:var(--radius-xl);background:var(--color-surface-2);backdrop-filter:none;-webkit-backdrop-filter:none">
+        <div class="eg-menu__item" role="menuitem" tabindex="-1" style="font-size:var(--text-label-default)">Drafts</div>
+        <div class="eg-menu__item" role="menuitem" tabindex="-1" style="font-size:var(--text-label-default)">Archive</div>
+      </div>
+    </div>
+  </section>
+</div>

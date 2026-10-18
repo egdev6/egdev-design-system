@@ -1,0 +1,32 @@
+<!-- Supplemental source specimen for ListItem v0.1. Parent supplies token CSS, Foundation bundle.css and loaded fonts. Static illustration only: no drag engine or handlers. -->
+<section aria-label="ListItem row presentations" style="display:grid;gap:var(--space-4);padding:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+  <h2 style="margin:0;font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight)">ListItem — row presentations</h2>
+  <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Supplement to PostCard.png: default row, dragging and inactive. Existing Foundation classes illustrate the source, not the future React API. Buttons are static capture content.</p>
+
+  <div style="display:grid;gap:var(--space-2)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default)">Default row · content, metadata and independent actions</p>
+    <div class="eg-post eg-post--row">
+      <div class="eg-post__content"><b>Opening question</b><span style="color:var(--color-fg-secondary)">Ready for review</span></div>
+      <div class="eg-post__meta"><span class="eg-status eg-status--neutral">Ready</span></div>
+      <div class="eg-post__acts"><button type="button" class="eg-btn eg-btn--ghost eg-btn--sm">Move up</button><button type="button" class="eg-btn eg-btn--ghost eg-btn--sm">Move down</button></div>
+    </div>
+  </div>
+
+  <div style="display:grid;gap:var(--space-2)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default)">Dragging row · dashed, de-emphasized and explicitly labelled</p>
+    <div class="eg-post eg-post--row eg-post--dragging">
+      <div class="eg-post__content"><b>Alternative introduction</b><span style="color:var(--color-fg-secondary)">Dragging — move before the next item</span></div>
+      <div class="eg-post__meta"><span class="eg-status eg-status--info">Dragging</span></div>
+      <div class="eg-post__acts"><button type="button" class="eg-btn eg-btn--ghost eg-btn--sm">Move up</button><button type="button" class="eg-btn eg-btn--ghost eg-btn--sm">Move down</button></div>
+    </div>
+  </div>
+
+  <div style="display:grid;gap:var(--space-2)">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default)">Off row · unpainted dashed frame, readable text and enabled action</p>
+    <div class="eg-post eg-post--row is-off">
+      <div class="eg-post__content"><b>Background layer</b><span style="color:var(--color-fg-secondary)">Inactive — hidden from the composition</span></div>
+      <div class="eg-post__meta"><span class="eg-status eg-status--neutral">Inactive</span></div>
+      <div class="eg-post__acts"><button type="button" class="eg-btn eg-btn--ghost eg-btn--sm">Show layer</button></div>
+    </div>
+  </div>
+</section>

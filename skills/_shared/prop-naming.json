@@ -123,8 +123,12 @@
     "meaning": "The elevation treatment of a material surface.",
     "whenToUse": "A surface exposes a supported elevation axis.",
     "avoid": "Condition, dimensions or an arbitrary shadow value.",
-    "status": "proposed",
-    "approval": null,
+    "status": "approved",
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:surface-elevation",
+      "contentHash": "sha256:c09de251c560c73255556b501bcc9af978cfa0d2788e1ef6760b6c4ede9742d0"
+    },
     "aliases": [],
     "exceptions": [],
     "usages": []
@@ -159,14 +163,14 @@
   {
     "id": "consumer-selected-condition",
     "name": "state",
-    "meaning": "The consumer-selected interpretation of a Gauge magnitude, independent of thresholds.",
-    "whenToUse": "Propose Gauge condition normal, warning, critical or muted.",
+    "meaning": "The consumer-selected interpretation of a Gauge magnitude or an independent GaugeGroup ring magnitude, independent of thresholds.",
+    "whenToUse": "A Gauge or GaugeGroup ring exposes consumer-selected normal, warning, critical or muted measurement conditions.",
     "avoid": "Visual variants, material tone, loading behavior or automatic threshold inference.",
     "status": "approved",
     "approval": {
-      "reference": "docs/decisions/prop-naming-gauge-approval.json",
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
       "scope": "convention:consumer-selected-condition",
-      "contentHash": "sha256:e9219a1929ef4b120468907faae100804f2b6e3eaac320a1c130b5fa811ba5a8"
+      "contentHash": "sha256:d0c856444b73ed6637e49288dac923c66821c2de0c56cc0a8204ab065c6b1605"
     },
     "aliases": [],
     "exceptions": [],
@@ -186,14 +190,14 @@
   {
     "id": "condition-description",
     "name": "stateText",
-    "meaning": "Visible non-color text describing the selected Gauge condition.",
-    "whenToUse": "Propose condition text, required for non-normal Gauge states by the draft union.",
+    "meaning": "Visible non-color text describing the selected condition of a Gauge magnitude or independent GaugeGroup ring.",
+    "whenToUse": "Supply condition text, required for non-normal Gauge or GaugeGroup ring states by their conditional unions.",
     "avoid": "Replacing the accessible name or the numeric equivalent.",
     "status": "approved",
     "approval": {
-      "reference": "docs/decisions/prop-naming-gauge-approval.json",
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
       "scope": "convention:condition-description",
-      "contentHash": "sha256:025ef213d44fcdaa4e82755765e299f5209202cc240d1d781e40c72086a385eb"
+      "contentHash": "sha256:5f27da4b9742822035ffa3dc74856f28d9ce05f7ab66edfdcf6e48921096b1ee"
     },
     "aliases": [],
     "exceptions": [],
@@ -213,14 +217,14 @@
   {
     "id": "measurement-text-equivalent",
     "name": "valueText",
-    "meaning": "A contextual text equivalent of the normalized displayed measurement.",
-    "whenToUse": "Propose a readable Gauge measurement equivalent coherent with clamping.",
-    "avoid": "Condition text, accessible naming or an incoherent raw out-of-range value.",
+    "meaning": "A contextual text equivalent of a normalized displayed magnitude or determinate task-progress value.",
+    "whenToUse": "A magnitude or task-progress display exposes a readable value equivalent coherent with its component-specific normalization.",
+    "avoid": "Condition text, accessible naming, incoherent raw out-of-range values, unavailable-data messages or indeterminate-progress feedback.",
     "status": "approved",
     "approval": {
-      "reference": "docs/decisions/prop-naming-gauge-approval.json",
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
       "scope": "convention:measurement-text-equivalent",
-      "contentHash": "sha256:061046c0f54f08064954bfc835a3726deab15043b11c7573b7c0f5e37c38b6b9"
+      "contentHash": "sha256:bc3b7bcb72b8029e61ee9071bd0634a047aad82e05fa2dc7b4aa061ec61f683f"
     },
     "aliases": [],
     "exceptions": [],
@@ -240,14 +244,14 @@
   {
     "id": "decorative-center-content",
     "name": "center",
-    "meaning": "Optional decorative, non-interactive content inside the Gauge ring.",
+    "meaning": "Optional decorative, non-interactive content inside a Gauge ring or GaugeGroup's shared innermost hole.",
     "whenToUse": "Propose an icon, value or short text with meaning already represented accessibly.",
     "avoid": "Actions, focusable descendants, a fixed logo or the sole source of meaning.",
     "status": "approved",
     "approval": {
-      "reference": "docs/decisions/prop-naming-gauge-approval.json",
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
       "scope": "convention:decorative-center-content",
-      "contentHash": "sha256:61eb3a08fb971e36eaea141a02db39090f2d3facb98efdccddf883c26195c577"
+      "contentHash": "sha256:f2d25dec1d5ec7b5e52728666744d1d3526c7b4835ecc2a61b343c6238cd47c8"
     },
     "aliases": [],
     "exceptions": [],
@@ -267,14 +271,14 @@
   {
     "id": "unavailable-measurement-message",
     "name": "unavailableText",
-    "meaning": "Readable fallback when a displayed measurement (Gauge, Stat) is unavailable and no value is exposed.",
+    "meaning": "Readable fallback when a numeric or remaining-time display is unavailable and exposes no value.",
     "whenToUse": "Propose non-empty unavailable-data text separately from invalid-input policy approval.",
-    "avoid": "Loading, disabled state, fabricated zero measurements or assuming fallback wording is approved.",
+    "avoid": "Loading or initial clock sampling, disabled state, fabricated zero values, genuine expired zero time, indeterminate task progress or assuming fallback wording is approved.",
     "status": "approved",
     "approval": {
-      "reference": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
       "scope": "convention:unavailable-measurement-message",
-      "contentHash": "sha256:ff63b05f0ddf57fd283b0e79beda04a9a3cf40fb2bfd6cd1689eff127baf5fd4"
+      "contentHash": "sha256:78970145433c6674ed3677eb43834133bda32739f9876bd954467eb1f7909271"
     },
     "aliases": [],
     "exceptions": [],
@@ -662,14 +666,14 @@
   {
     "id": "layout-orientation",
     "name": "orientation",
-    "meaning": "Main axis of a component's items, which also sets its arrow-key navigation axis.",
-    "whenToUse": "A component lays out a collection along one axis and its keyboard model follows that axis.",
-    "avoid": "Purely visual direction changes without keyboard impact, or text direction (use dir).",
+    "meaning": "Main axis of a component's items or of a semantic separator; an interactive collection's arrow-key navigation follows that axis.",
+    "whenToUse": "A collection's layout and keyboard model share an axis, or a passive separator exposes its horizontal or vertical semantic orientation.",
+    "avoid": "Purely visual direction changes in generic layout primitives, text direction (use dir), or inventing keyboard behavior for passive separators.",
     "status": "approved",
     "approval": {
-      "reference": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
       "scope": "convention:layout-orientation",
-      "contentHash": "sha256:fdbca8a6a0e91adc0854e8ad1dba270d549fe1a47cb1ac559aae844dfbef2313"
+      "contentHash": "sha256:0949a8273207e12bcc069520be8996f3bcbab2eea353787f9d14d6acdecd267c"
     },
     "aliases": [],
     "exceptions": [],
@@ -785,6 +789,950 @@
     },
     "aliases": [],
     "exceptions": [],
+    "usages": []
+  },
+  {
+    "id": "aspect-ratio",
+    "name": "ratio",
+    "meaning": "The width-to-height proportion of a reserved media or content region, independent of its rendered dimensions.",
+    "whenToUse": "A primitive or media component reserves proportional space; the component-specific type may be a numeric width divided by height or a documented set of format presets.",
+    "avoid": "Absolute width or height, image crop or object-fit policy, measurement values, or Material treatment.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:aspect-ratio",
+      "contentHash": "sha256:bbef626ac769aef5d57f18e67b323715be50d20e75f467c5fca95879c183b0ff"
+    },
+    "usages": []
+  },
+  {
+    "id": "collection-items",
+    "name": "items",
+    "meaning": "Ordered data describing the entries a composite component renders, such as tabs, menu entries or navigation links; the entry shape is component-specific.",
+    "whenToUse": "A molecule renders its own standard entry, with its sub-parts, for each element of a consumer-supplied list.",
+    "avoid": "Selectable form options (use choice-options/options), free composition through children, or ReactNode lists without a defined entry shape.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:collection-items",
+      "contentHash": "sha256:304ac895a943454d04d057e18518794a315958b70252df2e696e00dc65b36f40"
+    },
+    "usages": []
+  },
+  {
+    "id": "localized-messages",
+    "name": "messages",
+    "meaning": "Component-specific dictionary of localizable built-in interface text and text formatters, with documented defaults for omitted entries.",
+    "whenToUse": "A composite component owns several related control labels, instructions or announcements that consumers need to translate together.",
+    "avoid": "User-authored content, the component's primary accessible name (use label), styling, behavior configuration or a global translation provider.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:localized-messages",
+      "contentHash": "sha256:555c4e48e004651531f1588e18a8f71781afd8054c2ae113959b2831d86736cd"
+    },
+    "usages": []
+  },
+  {
+    "id": "selection-cardinality",
+    "name": "type",
+    "meaning": "Whether a value-selection group allows at most one selected option or multiple selected options.",
+    "whenToUse": "A group explicitly supports single and multiple selection, with string and string-array value APIs respectively.",
+    "avoid": "Native button or input type attributes, visual treatments (use variant), boolean pressed state or requiring a form selection.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:selection-cardinality",
+      "contentHash": "sha256:f64c90bbbb7a034e76d20b15147113520b24c71e2c8061534800eb8e557a9da9"
+    },
+    "usages": []
+  },
+  {
+    "id": "deadline-instant",
+    "name": "deadline",
+    "meaning": "Absolute instant at which a countdown reaches zero, expressed as Unix epoch milliseconds.",
+    "whenToUse": "A time-based display counts down to one consumer-supplied instant with component-specific validity bounds.",
+    "avoid": "Durations, local calendar strings without timezone resolution, animation timing, task progress or automatic server-clock synchronization.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:deadline-instant",
+      "contentHash": "sha256:f6c3348ca89ee03685647a92361ab72e2bb89c6112633fbeb82639f274cf1fd6"
+    },
+    "usages": []
+  },
+  {
+    "id": "absolute-deadline-text",
+    "name": "deadlineText",
+    "meaning": "Human-readable date, time and timezone describing the absolute deadline independently of the changing remaining duration.",
+    "whenToUse": "A countdown supplies persistent readable context for its target instant and consumers own localization and timezone wording.",
+    "avoid": "The current numeric remainder, timer accessible name, expired messages, unverified event-start claims or automatic locale parsing.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:absolute-deadline-text",
+      "contentHash": "sha256:aca8ce3f801884207275fb3553059e06a9069ddedc8c2d7157196cdf3bc8d2c3"
+    },
+    "usages": []
+  },
+  {
+    "id": "time-unit-labels",
+    "name": "units",
+    "meaning": "Ordered localized labels for the day, hour, minute and second columns of a remaining-time display.",
+    "whenToUse": "A countdown renders a fixed four-unit breakdown and consumers provide short unit names or abbreviations.",
+    "avoid": "Measurement units of unrelated figures, duration values, arbitrary item collections or assuming grammatical pluralization is automatic.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:time-unit-labels",
+      "contentHash": "sha256:ff17a5baf945adc4ecc69bf9e3e1d3dd13e21aed8cc6bbd967b0201da538fdc0"
+    },
+    "usages": []
+  },
+  {
+    "id": "deadline-expiration",
+    "name": "onExpire",
+    "meaning": "Notification that the client observed a countdown deadline reached, receiving the expired instant in Unix epoch milliseconds.",
+    "whenToUse": "A countdown reports expiration with an explicit component-specific episode and remount policy so consumers can react or announce separately.",
+    "avoid": "Per-second ticks, user-driven value changes, callbacks during render or SSR, authoritative event-start signals or cross-instance exactly-once guarantees.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:deadline-expiration",
+      "contentHash": "sha256:4cfd772a5cf1576b23a3c8c92bc48c80c786bb097fc3ca31c9054cf8e143f117"
+    },
+    "usages": []
+  },
+  {
+    "id": "clock-initialization-message",
+    "name": "initializingText",
+    "meaning": "Readable placeholder while a time-based display has not yet sampled its client clock.",
+    "whenToUse": "A countdown deliberately renders deterministic server and initial hydration content before starting its client clock.",
+    "avoid": "Invalid or missing measurements (use unavailableText), loading controls, fabricated zero time or automatically announced status.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:clock-initialization-message",
+      "contentHash": "sha256:ce2e98958f8fa3708021e180ab159434c90e8de7c91dbba5beda4bc838057e07"
+    },
+    "usages": []
+  },
+  {
+    "id": "expired-deadline-message",
+    "name": "expiredText",
+    "meaning": "Visible text explaining that a countdown's target instant has been reached.",
+    "whenToUse": "A countdown retains a genuine zero readout and adds a localizable non-live expiration explanation.",
+    "avoid": "Assuming an event is live or completed, invalid-input messages, automatic announcements or the remaining duration itself.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:expired-deadline-message",
+      "contentHash": "sha256:82f8fc94bc238e8611407a1dbf0cb1a25911a05802c2bcb204eba9fb29814db0"
+    },
+    "usages": []
+  },
+  {
+    "id": "decorative-separation",
+    "name": "decorative",
+    "meaning": "Whether a passive separator is visual decoration rather than a meaningful content boundary exposed to assistive technology.",
+    "whenToUse": "A separator supports both decorative use beside text and semantic use between content regions without changing its paint.",
+    "avoid": "Hiding meaningful content, naming controls, interactive window splitters, visibility toggles or changing focus behavior.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:decorative-separation",
+      "contentHash": "sha256:2de412c2d3093a4d26054772a3c483d68ac81e342850449dd6fdcd1543f48006"
+    },
+    "usages": []
+  },
+  {
+    "id": "field-hint",
+    "name": "hint",
+    "meaning": "Muted help text shown with a form control and linked to it as its description.",
+    "whenToUse": "A labelled form control needs persistent guidance such as format, consequences or limits.",
+    "avoid": "Error messages (use error), accessible names, placeholders or long documentation.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:field-hint",
+      "contentHash": "sha256:6f36bc40d087a41d2c6d4d232cbd6f6c045a0b36df871f59e2776ff473f01332"
+    },
+    "usages": []
+  },
+  {
+    "id": "field-error",
+    "name": "error",
+    "meaning": "Consumer-supplied validation message that marks the form control invalid and is linked to it as its description.",
+    "whenToUse": "A form control's current value fails validation and the consumer explains why in text.",
+    "avoid": "Validation logic, status tones of non-form components, toasts or page-level alerts.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:field-error",
+      "contentHash": "sha256:b9da121be1a4f488289f4943aaff2291467679e2040b24ece21792c72fa9f74c"
+    },
+    "usages": []
+  },
+  {
+    "id": "character-counter",
+    "name": "counter",
+    "meaning": "Current length and maximum length of a text control, shown as a visible counter that changes tone when exceeded.",
+    "whenToUse": "A text field has a length limit the user should see while typing.",
+    "avoid": "Item counts, badges, numeric values of non-text controls, or replacing the error message.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:character-counter",
+      "contentHash": "sha256:5f5f7f0203e6cd22f415e8f994957c788a1da96858f46c70c4018bc82f005f19"
+    },
+    "usages": []
+  },
+  {
+    "id": "value-readout",
+    "name": "readout",
+    "meaning": "Visible text of a control's current value shown next to its label in an output element linked to the control.",
+    "whenToUse": "A control whose value is not readable on the control itself, such as a slider, shows its formatted value.",
+    "avoid": "Accessible value text (use the control's own value text), counters, hints or editable values.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:value-readout",
+      "contentHash": "sha256:542a4f8e79a608cedb5e1e403f8ddfa2728092293856e497141cd9cc7189fbc6"
+    },
+    "usages": []
+  },
+  {
+    "id": "visually-hidden-label",
+    "name": "hideLabel",
+    "meaning": "Hides a required visible label visually while keeping it in the accessibility tree as the control's name.",
+    "whenToUse": "The surrounding layout already makes the purpose obvious, such as a search box in a toolbar.",
+    "avoid": "Omitting the label, icon-only buttons (use their label prop) or hiding hints and errors.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:visually-hidden-label",
+      "contentHash": "sha256:593cade986ef68d1228a388e9bf9968dc66c0289705ab639774dac5e96030660"
+    },
+    "usages": []
+  },
+  {
+    "id": "label-layout",
+    "name": "layout",
+    "meaning": "Arrangement of a control and its label: label stacked above the control, or the control beside its label in one row.",
+    "whenToUse": "A wrapper places text fields with a stacked label and checkboxes or switches with an inline label.",
+    "avoid": "Item axes with keyboard navigation (use orientation), visual treatments (use variant) or page layout.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:label-layout",
+      "contentHash": "sha256:47912f850d9eafb0e3b8f2a521c7e4b9c861ff436b90da5eb67e482de04a05d2"
+    },
+    "usages": []
+  },
+  {
+    "id": "floating-align",
+    "name": "align",
+    "meaning": "Alignment of floating content along the chosen side of its trigger (start, center or end) before collision handling.",
+    "whenToUse": "A floating component such as a menu or popover lets the consumer line its panel up with the trigger's start, center or end edge.",
+    "avoid": "Text alignment, layout alignment of in-flow content, or choosing the side (use floating-side/side).",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:floating-align",
+      "contentHash": "sha256:ec3c51a76edd89a67049d49001e9017d43707075312a605d895739c79f949dd2"
+    },
+    "usages": []
+  },
+  {
+    "id": "open-state",
+    "name": "open",
+    "meaning": "Controlled visibility of a component's disclosed, floating or transient content, such as a collapsible group, panel or notification.",
+    "whenToUse": "A component lets the consumer control whether its disclosed, floating or transient content is shown, together with onOpenChange.",
+    "avoid": "Selection, pressed or checked state (use value, pressed or checked), or content that is always visible.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:open-state",
+      "contentHash": "sha256:6007292c57d0dfee10a01b1cc199795b014e40bd09a8b55fd2af3f8fa0274631"
+    },
+    "usages": []
+  },
+  {
+    "id": "initial-uncontrolled-open",
+    "name": "defaultOpen",
+    "meaning": "Initial visibility of an uncontrolled disclosure, floating or transient component.",
+    "whenToUse": "A component supports uncontrolled initialization alongside the open prop; its initial default is component-specific.",
+    "avoid": "Controlled-only components or initial selection values (use defaultValue).",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:initial-uncontrolled-open",
+      "contentHash": "sha256:2a8c4a933020f41d26f1efdb80320bb0eaf25326cf49c0384abc92416010606f"
+    },
+    "usages": []
+  },
+  {
+    "id": "open-change",
+    "name": "onOpenChange",
+    "meaning": "Notification requesting the next boolean open state after a supported user interaction or component-owned timer.",
+    "whenToUse": "A disclosure, floating or transient component reports visibility requests from triggers, focus/hover delays, Escape, outside interaction, selection or auto-dismissal.",
+    "avoid": "Incoming prop updates, initial mounting, value or selection changes (use onValueChange), and pressed or checked changes.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:open-change",
+      "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
+    },
+    "usages": []
+  },
+  {
+    "id": "item-presentation-status",
+    "name": "status",
+    "meaning": "Consumer-selected lifecycle or availability presentation of a content item, expressed through data-state and accompanied by readable status content.",
+    "whenToUse": "A content item or card represents a default, newly added, failed, completed, empty, dragged or inactive entity without owning its domain transitions.",
+    "avoid": "Gauge magnitude interpretation (use state), material or semantic color families (use tone), selection, pressed state, disabled controls, or automatic domain state machines.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:item-presentation-status",
+      "contentHash": "sha256:8402ef1355689cbd78c154bdc729ea1443566f5401d9a8bb1e18868a77a8d89a"
+    },
+    "usages": []
+  },
+  {
+    "id": "menu-entry-kind",
+    "name": "kind",
+    "meaning": "The semantic role of an entry in a data-driven menu: action, destination link, separator, group label or submenu.",
+    "whenToUse": "Menu exposes a discriminated public entry schema and selects the corresponding Radix menu part from each entry's role; recipe consumers reuse the same schema.",
+    "avoid": "Selection cardinality (use type), native button or input type attributes, Radix-provided props, visual treatments or changing an action into a selectable form option.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:menu-entry-kind",
+      "contentHash": "sha256:f26d5c8941b136d2ae3964cd369237a9baba3518ef3bf515a69919d5eb20521c"
+    },
+    "usages": []
+  },
+  {
+    "id": "panel-header",
+    "name": "header",
+    "meaning": "Non-interactive content shown at the top of a floating panel, above and separated from its entries.",
+    "whenToUse": "A menu or panel shows identity or context, such as the signed-in user, before its entries.",
+    "avoid": "Interactive controls, page or section headings, or text that is the panel's only accessible name.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:panel-header",
+      "contentHash": "sha256:d0e5fa1ca4fc22a01baadd487e235b17b52c43da13ffa3af81826f5085295714"
+    },
+    "usages": []
+  },
+  {
+    "id": "navigation-intent",
+    "name": "onNavigate",
+    "meaning": "Notification that the user activated a link entry rendered by the component, with the entry and the originating event; preventing the event's default lets a client-side router handle the navigation.",
+    "whenToUse": "A component renders anchors from data, such as menus or navigation lists, and single-page apps must intercept navigation.",
+    "avoid": "Action entries without a destination (use the entry's onSelect), form submission, or notifications of route changes that did not come from the user.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:navigation-intent",
+      "contentHash": "sha256:7fb068ceea0357c786c87878c1080e7737b18da24f7feb48010b643ba4d1e197"
+    },
+    "usages": []
+  },
+  {
+    "id": "numeric-display-help",
+    "name": "help",
+    "meaning": "Persistent plain-text guidance or context describing a non-interactive numeric display, linked to its semantic indicator when one is present.",
+    "whenToUse": "A row combines a named progress or magnitude display with a visible supporting explanation of what it represents or how to interpret it.",
+    "avoid": "Form-control hints (use hint), accessible names, numeric value equivalents (use valueText), short change deltas, errors, tooltips or interactive help content.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:numeric-display-help",
+      "contentHash": "sha256:8ee4e7bb40cdfd35b548ebf473ec7775f8e0fbe658d85747c2d0cd64de5b9ec7"
+    },
+    "usages": []
+  },
+  {
+    "id": "heading-title",
+    "name": "title",
+    "meaning": "Visible primary heading text identifying a page, section or content unit.",
+    "whenToUse": "A composite component owns a distinct heading slot and renders the supplied text with native heading semantics.",
+    "avoid": "Native title tooltips, accessible names of controls (use label), status-message lead sentences (use summary), or arbitrary rich content.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:heading-title",
+      "contentHash": "sha256:3b7c8409a2f43bbc296608d65ee61e78aebbe31118f1f65e955ff65078e8c2d3"
+    },
+    "usages": []
+  },
+  {
+    "id": "heading-level",
+    "name": "level",
+    "meaning": "Native semantic rank of a rendered heading, independent of its visual typography.",
+    "whenToUse": "A heading or heading-owning composition lets the consumer select the appropriate h1 through h6 rank for the document outline.",
+    "avoid": "Typography size, visual register, indentation, surface elevation or changing semantics solely for appearance.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:heading-level",
+      "contentHash": "sha256:3235f5126f7405ae3956b969186d33c48c302b42c2a40d169c9d2f11e1d12ead"
+    },
+    "usages": []
+  },
+  {
+    "id": "trailing-actions",
+    "name": "actions",
+    "meaning": "Consumer-supplied action elements (buttons or links) rendered in a component's trailing action area.",
+    "whenToUse": "A message, header or control bar offers one or two related actions that the consumer builds with system Button or Link components.",
+    "avoid": "Primary navigation, generating buttons from data inside the component, or arbitrary layout content unrelated to actions.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:trailing-actions",
+      "contentHash": "sha256:b00c5b3d1006ee97caa5d258e4ce04a046acb3d8d752d734e37bf96c92356550"
+    },
+    "usages": []
+  },
+  {
+    "id": "panel-footer",
+    "name": "footer",
+    "meaning": "Consumer-supplied supplementary metadata and optional utility control rendered after a panel's main content and primary actions.",
+    "whenToUse": "A card or panel offers a distinct lower area for context such as last-updated text and a refresh action, optionally on a lower tonal band.",
+    "avoid": "Primary action collections (use actions), page or site footers, navigation, arbitrary replacement of the body, or a consumer-defined Material recipe.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:panel-footer",
+      "contentHash": "sha256:2a42776342fb15a34c5ab7d86abd1cdd8683044d2e37f30504f2bfd59d2f6a71"
+    },
+    "usages": []
+  },
+  {
+    "id": "message-summary",
+    "name": "summary",
+    "meaning": "Short required lead sentence of a status message, shown first and emphasized, that states the situation in words.",
+    "whenToUse": "A notice or toast needs a keyword sentence that carries its meaning without relying on color, followed by optional detail.",
+    "avoid": "Accessible names of controls, headings of page sections, long descriptions, or native title tooltips.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:message-summary",
+      "contentHash": "sha256:975bcd3e71864c8c5033aa82310d14454013767fe690f531b87ba297497743cd"
+    },
+    "usages": []
+  },
+  {
+    "id": "heading-eyebrow",
+    "name": "eyebrow",
+    "meaning": "Short contextual text rendered before a component's primary heading.",
+    "whenToUse": "A header composition offers an optional context line above its title.",
+    "avoid": "The primary heading, an accessible name, status text, metadata collections or descriptions below the heading.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:heading-eyebrow",
+      "contentHash": "sha256:131bf821957930e7334f9f0efbd400f99c09bf13c6bc752d5e8e229603d4e96c"
+    },
+    "usages": []
+  },
+  {
+    "id": "image-caption",
+    "name": "imageCaption",
+    "meaning": "Optional plain-text caption associated with one image figure, providing context or accurately supplied credit separately from the image's alternative text.",
+    "whenToUse": "An image composition owns a native figcaption accompanying its media; the caption is not a replacement for descriptive alt text.",
+    "avoid": "Collection captions (use caption), accessible names of controls, generated attribution, unsupported license assertions, interactive content or automatic duplication of alt text.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:image-caption",
+      "contentHash": "sha256:55020a5c48746ed3b84b1a7b1e95a5694e8a9b4b26698034978d49d4c5be64ca"
+    },
+    "usages": []
+  },
+  {
+    "id": "image-focal-point",
+    "name": "focalPoint",
+    "meaning": "A supported alignment preset that selects which area of a cover-cropped image is prioritized within its reserved viewport.",
+    "whenToUse": "A media component exposes a finite set of static object-position choices independently of its aspect ratio and rendered dimensions.",
+    "avoid": "Absolute positioning, arbitrary inline CSS coordinates, image size/ratio, layout alignment, material tone or pointer-tracking effects.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:image-focal-point",
+      "contentHash": "sha256:5d450bbb1de545ef284c1d7a77165e41fd99d28c22625be19d61626004ae2a03"
+    },
+    "usages": []
+  },
+  {
+    "id": "interaction-modality",
+    "name": "modal",
+    "meaning": "Whether an open floating dialog restricts focus, assistive-technology access and pointer interaction to its own content instead of allowing interaction with the surrounding page.",
+    "whenToUse": "A floating dialog supports both non-modal and modal interaction through its underlying Radix primitive; the component defines dismissal and focus restoration separately.",
+    "avoid": "A visual scrim, a guarantee that a workflow cannot be dismissed, overlay elevation, or custom implementations of focus trapping and outside-interaction blocking.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:interaction-modality",
+      "contentHash": "sha256:a1b17de345877cfc32c4b0ec4ff757373f2beff70bcc1add9358ac04920150d1"
+    },
+    "usages": []
+  },
+  {
+    "id": "portal-container",
+    "name": "container",
+    "meaning": "The DOM node that a component's portalled content is rendered into instead of the document body.",
+    "whenToUse": "A component renders layered or floating content through a portal and the consumer may need another mount node, such as a shadow root, an iframe body or a subtree that scopes theme tokens.",
+    "avoid": "Layout wrappers, collision or positioning boundaries for floating content, or choosing which element a component renders as (use asChild).",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:portal-container",
+      "contentHash": "sha256:8779c40a8eca0370de3b1906ae7034a41ea1f8792714b19eaec0ab87597b3eeb"
+    },
+    "usages": []
+  },
+  {
+    "id": "trailing-text-accent",
+    "name": "accent",
+    "meaning": "One optional trailing text run visually emphasized within a display phrase while remaining part of its readable content.",
+    "whenToUse": "Display typography offers a highlighted ending or punctuation after its main children.",
+    "avoid": "Accessible names, status messages, arbitrary rich slots, interactive children or hiding meaningful text from assistive technology.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:trailing-text-accent",
+      "contentHash": "sha256:6ad8880449dfe520919a4dcd2b6cfeb8f16c20a842553c86c89acb3180f40d6b"
+    },
+    "usages": []
+  },
+  {
+    "id": "quotation-text",
+    "name": "text",
+    "meaning": "Main plain-text passage reproduced as a quotation, excluding separate attribution and optional trailing accent text.",
+    "whenToUse": "A quotation composition renders the consumer's passage inside native blockquote semantics without accepting rich content.",
+    "avoid": "Generic children, heading titles, accessible names, HTML strings intended for injection, source captions or automatically generated quotations.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:quotation-text",
+      "contentHash": "sha256:55c7384314a8f6363ee004e5cfa486ca220fdc32cd55d31fce65e8362c484dea"
+    },
+    "usages": []
+  },
+  {
+    "id": "quotation-source",
+    "name": "source",
+    "meaning": "Visible attribution or contextual source caption accompanying a quotation, outside the quoted passage.",
+    "whenToUse": "A quote composition exposes a plain-text figcaption for consumer-supplied attribution or contextual commentary.",
+    "avoid": "The quotation itself, native cite URL metadata, assuming a person's name is a work title, verified provenance claims or automatic source links.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:quotation-source",
+      "contentHash": "sha256:a0be51762732ed05c486336e61ea031fb22a3045c0c30cbe5df139a15414527f"
+    },
+    "usages": []
+  },
+  {
+    "id": "keyboard-shortcut-hint",
+    "name": "shortcut",
+    "meaning": "Display-only text showing a keyboard combination associated with an action; it does not register or parse a binding.",
+    "whenToUse": "A launcher or menu entry shows a passive Kbd hint for a shortcut registered by its host application.",
+    "avoid": "Global key listeners, platform detection, accessible-name replacement or treating display glyphs as aria-keyshortcuts syntax.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:keyboard-shortcut-hint",
+      "contentHash": "sha256:4f922985284399a34fe26994e80533c2a8db49066e01a3e9d00544c2fbbc1339"
+    },
+    "usages": []
+  },
+  {
+    "id": "compact-presentation",
+    "name": "compact",
+    "meaning": "Shows the compact icon-only presentation of a labelled launcher while retaining its accessible name and activation behavior.",
+    "whenToUse": "A launcher in a narrow toolbar hides its visible text and supplementary keyboard hint without changing its responsibility.",
+    "avoid": "Changing control semantics, arbitrary size presets, automatic responsive detection or removing the accessible name.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:compact-presentation",
+      "contentHash": "sha256:e9534ccfb215dce2fbca692466ba2003c296145b07601c31479862833d52387f"
+    },
+    "usages": []
+  },
+  {
+    "id": "accent-line-break",
+    "name": "accentBreak",
+    "meaning": "Whether the component's trailing text accent begins on a separate visual line.",
+    "whenToUse": "Display typography exposes a trailing text accent that may be block or inline without changing its semantic meaning.",
+    "avoid": "Automatic text splitting, truncation, extra accessible content or controlling arbitrary child layout.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:accent-line-break",
+      "contentHash": "sha256:4fea0ecdd89cde650ecfc3583ca8b1dd2d8a2937c4c628602af288bf1bbe5dfe"
+    },
+    "usages": []
+  },
+  {
+    "id": "section-lede",
+    "name": "lede",
+    "meaning": "Optional introductory paragraph accompanying a section heading.",
+    "whenToUse": "An editorial header composition offers short introductory copy beneath or beside its primary heading.",
+    "avoid": "Accessible names, form hints, status-message summaries, heading text, arbitrary rich blocks or whole-section body content.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:section-lede",
+      "contentHash": "sha256:ef61567892d3f63443d04376c139f0c65a817818da8a3ef4b69f9aa80e1e9235"
+    },
+    "usages": []
+  },
+  {
+    "id": "heading-id",
+    "name": "titleId",
+    "meaning": "Consumer-supplied DOM ID of a composite component's heading, distinct from the composite root's native id.",
+    "whenToUse": "A heading-owning composition lets an enclosing section or other external element reference its internal heading with aria-labelledby.",
+    "avoid": "Styling selectors, root element IDs, shared literal IDs across instances, accessible-name text or arbitrary internal-part IDs.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:heading-id",
+      "contentHash": "sha256:b2205b336988b3c2767d2cfbd2457f6f9d3033a0191e6d8c17a049237d0750f6"
+    },
+    "usages": []
+  },
+  {
+    "id": "option-metadata",
+    "name": "meta",
+    "meaning": "Short visible supplementary detail about an option, rendered below its label and available as its accessible description.",
+    "whenToUse": "A visual choice needs a secondary fact such as layer count, dimensions or duration to distinguish options.",
+    "avoid": "The option's accessible name, form instructions, numeric figure context, badges or long content.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:option-metadata",
+      "contentHash": "sha256:34ae867cd35b9609ef3b293c6953f965e3889d64c2b7030170666e27f9bd99e5"
+    },
+    "usages": []
+  },
+  {
+    "id": "preview-thumbnail",
+    "name": "thumb",
+    "meaning": "Decorative preview image data for a selectable option whose identity is already supplied by its visible label.",
+    "whenToUse": "A visual choice includes a cropped preview to help sighted users recognize the option.",
+    "avoid": "User avatars, meaningful standalone images, editable media, video controls or the only source of option identity.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:preview-thumbnail",
+      "contentHash": "sha256:ea9f56de34a4533555362e81a233937ffccc7379b423153c1824bc79d78291d3"
+    },
+    "usages": []
+  },
+  {
+    "id": "live-presentation",
+    "name": "live",
+    "meaning": "Marks the represented option as currently on air, independently of whether it is selected, with a required readable live-state annotation.",
+    "whenToUse": "A scene or media choice distinguishes the currently broadcast output from a preview selection.",
+    "avoid": "Selection state, loading, a generic status tone, live-region announcements or automatic broadcast activation.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:live-presentation",
+      "contentHash": "sha256:a5add4e971a9ab337f10f9c0c081fe4c28aa9ebba5bac220b623fe837853cdde"
+    },
+    "usages": []
+  },
+  {
+    "id": "thumbnail-badge",
+    "name": "badge",
+    "meaning": "Short non-interactive text annotation over a thumbnail, rendered as a Badge and included in the option's accessible description.",
+    "whenToUse": "A visual option needs an overlaid state annotation such as Live, independently of its name and selection.",
+    "avoid": "Numeric counters, interactive actions, corner icon glyphs or replacing the option label.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:thumbnail-badge",
+      "contentHash": "sha256:70917ec0755d7f42a11f600c3a201b349c173df0c884d5869637e9c7d6e744b1"
+    },
+    "usages": []
+  },
+  {
+    "id": "layout-gap",
+    "name": "gap",
+    "meaning": "Token-backed spacing between adjacent children of a layout container, including row and column gaps when it wraps.",
+    "whenToUse": "A reusable layout container exposes a finite set of spacing-token keys or presets for space between its children.",
+    "avoid": "Inner padding (use padding), outer margins, arbitrary CSS lengths or changing the children's order.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:layout-gap",
+      "contentHash": "sha256:1f1267aaafd194a30f1e21ec4d00eecbd8f12ff58f91634a874b4ac2457c1893"
+    },
+    "usages": []
+  },
+  {
+    "id": "group-caption",
+    "name": "caption",
+    "meaning": "Optional visible contextual text accompanying a grouped collection, distinct from its accessible-name input.",
+    "whenToUse": "A collection composition offers a short visible caption that may be omitted without leaving the collection unnamed.",
+    "avoid": "Accessible naming (use label), heading eyebrows, image-specific attribution, long descriptions or item labels.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:group-caption",
+      "contentHash": "sha256:d2efc7f6e50156598324373e8cb3cecd2e72a10db3f30df7f9d2cc638c574d93"
+    },
+    "usages": []
+  },
+  {
+    "id": "inline-caption-layout",
+    "name": "inline",
+    "meaning": "Whether a collection's visible caption and its content share a wrapping row instead of being stacked vertically.",
+    "whenToUse": "A captioned collection supports the same content arranged beside or below its caption without changing interaction semantics.",
+    "avoid": "Keyboard navigation axes, CSS display:inline, inline prose links, field label layout or arbitrary orientation/reordering.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:inline-caption-layout",
+      "contentHash": "sha256:e381bc3821dfcca9f868d6d2058f835037875063a134376245b4cc6b9e746d8e"
+    },
+    "usages": []
+  },
+  {
+    "id": "cross-axis-alignment",
+    "name": "alignItems",
+    "meaning": "Alignment of a layout container's children along its cross axis.",
+    "whenToUse": "A flex or grid layout container exposes supported item alignment choices such as start, center, end, stretch or baseline.",
+    "avoid": "Floating-panel alignment (use align), main-axis distribution (use justifyContent), text alignment or individual-child positioning.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:cross-axis-alignment",
+      "contentHash": "sha256:8d9242d24677898c72e19b9ebf8fa7c7d3f14f2f354746351b518f2d494b853a"
+    },
+    "usages": []
+  },
+  {
+    "id": "main-axis-distribution",
+    "name": "justifyContent",
+    "meaning": "Distribution of a layout container's children along its main axis when free space is available.",
+    "whenToUse": "A reusable layout container exposes supported distribution choices such as start, center, end or between.",
+    "avoid": "Cross-axis item alignment (use alignItems), floating-panel placement, text alignment or changing DOM order.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:main-axis-distribution",
+      "contentHash": "sha256:a2a015ce076aa2a9c1522ab78a2ad22aa45a463a5746298d25b5cb6099e6406f"
+    },
+    "usages": []
+  },
+  {
+    "id": "inner-padding",
+    "name": "padding",
+    "meaning": "Preset inner spacing between a container's edge and its content, mapped to spacing tokens.",
+    "whenToUse": "A container primitive such as Surface offers a few token-backed padding presets, including none for edge-to-edge content.",
+    "avoid": "Gaps between children (use gap), outer margins, arbitrary lengths or per-side overrides.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:inner-padding",
+      "contentHash": "sha256:81ad5c5f141961a62fc1a42b220a22b80d66ed464787407f544cdafdbba293a0"
+    },
+    "usages": []
+  },
+  {
+    "id": "corner-radius",
+    "name": "radius",
+    "meaning": "Preset corner radius of a container, mapped to radius tokens.",
+    "whenToUse": "A container primitive offers token-backed corner presets, such as none for bands inside a panel or full for pills.",
+    "avoid": "Arbitrary lengths, per-corner overrides or shape changes that alter the component's meaning.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:corner-radius",
+      "contentHash": "sha256:e09a3c41f5a7808c4e82d9dfc926f5c0747c227cbb67b43f53acdfa99c679f08"
+    },
+    "usages": []
+  },
+  {
+    "id": "auto-dismiss-duration",
+    "name": "duration",
+    "meaning": "Time in milliseconds a transient component stays visible before dismissing itself; Infinity disables auto-dismissal.",
+    "whenToUse": "A notification or similar transient element closes automatically after a consumer-adjustable time.",
+    "avoid": "Animation or transition durations, countdown targets, polling intervals or media lengths.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:auto-dismiss-duration",
+      "contentHash": "sha256:b3ca83682e8ce6d4eb40289923c084ded07cf40f7d2df483b1287a48ec4a3d9f"
+    },
+    "usages": []
+  },
+  {
+    "id": "dismiss-label",
+    "name": "dismissLabel",
+    "meaning": "Localizable accessible name of a component's built-in close or dismiss control.",
+    "whenToUse": "A component renders its own icon-only dismiss control and consumers must be able to translate its name.",
+    "avoid": "The accessible name of the component itself, visible button text supplied by consumers, or destructive actions.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:dismiss-label",
+      "contentHash": "sha256:4ce74a25f27e385b54732b3ef46e52d4f452cddbf2b1c17608aadc48c0ef1d7c"
+    },
+    "usages": []
+  },
+  {
+    "id": "action-alternative-text",
+    "name": "actionAltText",
+    "meaning": "Text describing how to perform a transient component's action through another, persistent route.",
+    "whenToUse": "A transient notification offers an action that may disappear before assistive-technology users reach it (Radix Toast Action altText).",
+    "avoid": "The visible action label, image alt text or accessible names of persistent controls.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:action-alternative-text",
+      "contentHash": "sha256:551982e0a68924713a4df488dc452b38bf41ba6f8ca94f8b7479fd54257e5e1b"
+    },
+    "usages": []
+  },
+  {
+    "id": "announcement-label",
+    "name": "announcementLabel",
+    "meaning": "Localizable prefix that assistive technology announces before the content of each transient notification.",
+    "whenToUse": "A notification system announces messages through a live region and lets consumers translate the category word.",
+    "avoid": "Region or landmark names (use label), message text, or visible headings.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "scope": "convention:announcement-label",
+      "contentHash": "sha256:75da8f2d77b24d66fbcb0e1498f2572937d15319dcb081283bb0e06026596b59"
+    },
     "usages": []
   }
 ]

@@ -1,0 +1,61 @@
+<!-- HoverCard v0.1 visual specimen, not an interactive implementation.
+     Parent harness supplies @egdev/tokens and Foundation components/bundle.css.
+     Three examples: open top/start glass preview, default closed, focused trigger with solid fallback.
+     Gauge uses existing Foundation classes with their default zero-valued ring; it is source context,
+     not an amendment to the implemented Gauge v0.10. Focus/fallback are statically illustrated.
+     All authored appearance values are existing token references; no scripts, fonts or asset requests. -->
+<div style="box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-6);padding:var(--space-8);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight)">
+
+  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-2);width:calc(var(--space-24) * 4);max-width:100%">
+    <div data-preview="open-glass" style="box-sizing:border-box;width:100%;padding:var(--space-6);border:1px solid var(--color-border-hairline-strong);border-radius:var(--radius-xl);background:var(--color-surface-overlay);backdrop-filter:blur(var(--blur-overlay)) saturate(150%);-webkit-backdrop-filter:blur(var(--blur-overlay)) saturate(150%);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)">
+      <h3 style="margin:0;color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight)">Provider A</h3>
+      <p style="margin:var(--space-2) 0 var(--space-4);color:var(--color-fg-secondary)">Usage details</p>
+      <dl style="display:flex;flex-direction:column;gap:var(--space-2);margin:0">
+        <div style="display:flex;justify-content:space-between;gap:var(--space-4)">
+          <dt style="color:var(--color-fg-secondary)">Session used</dt>
+          <dd style="margin:0">0 / 100</dd>
+        </div>
+        <div style="display:flex;justify-content:space-between;gap:var(--space-4)">
+          <dt style="color:var(--color-fg-secondary)">Resets in</dt>
+          <dd style="margin:0">5 hours</dd>
+        </div>
+      </dl>
+      <p style="margin:var(--space-4) 0 0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);font-weight:var(--text-label-default--font-weight)">All details are available at the link destination.</p>
+    </div>
+    <a href="/usage/provider-a" aria-label="Provider A usage details" style="display:inline-flex;align-items:center;justify-content:center;min-width:var(--space-12);min-height:var(--space-12);color:var(--color-fg-default);border-radius:var(--radius-md);text-decoration:none">
+      <span class="eg-gauge eg-gauge--sm" aria-hidden="true"><span class="eg-gauge__ring"></span><span class="eg-gauge__logo" style="font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">A</span></span>
+    </a>
+    <p style="margin:var(--space-2) 0 0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Hover-open · top / start · glass</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-2);width:calc(var(--space-24) * 2);max-width:100%">
+    <a href="/usage/provider-a" aria-label="Provider A usage details" style="display:inline-flex;align-items:center;justify-content:center;min-width:var(--space-12);min-height:var(--space-12);color:var(--color-fg-default);border-radius:var(--radius-md);text-decoration:none">
+      <span class="eg-gauge eg-gauge--sm" aria-hidden="true"><span class="eg-gauge__ring"></span><span class="eg-gauge__logo" style="font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">A</span></span>
+    </a>
+    <p style="margin:var(--space-2) 0 0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Default · closed</p>
+    <p style="margin:0;color:var(--color-fg-secondary)">Only the named link is visible before hover or focus.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-2);width:calc(var(--space-24) * 4);max-width:100%">
+    <div data-preview="open-solid" style="box-sizing:border-box;width:100%;padding:var(--space-6);border:1px solid var(--color-border-hairline-strong);border-radius:var(--radius-xl);background:var(--color-surface-2);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)">
+      <h3 style="margin:0;color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight)">Provider B</h3>
+      <p style="margin:var(--space-2) 0 var(--space-4);color:var(--color-fg-secondary)">Usage details</p>
+      <dl style="display:flex;flex-direction:column;gap:var(--space-2);margin:0">
+        <div style="display:flex;justify-content:space-between;gap:var(--space-4)">
+          <dt style="color:var(--color-fg-secondary)">Session used</dt>
+          <dd style="margin:0">0 / 100</dd>
+        </div>
+        <div style="display:flex;justify-content:space-between;gap:var(--space-4)">
+          <dt style="color:var(--color-fg-secondary)">Resets in</dt>
+          <dd style="margin:0">3 hours</dd>
+        </div>
+      </dl>
+      <p style="margin:var(--space-4) 0 0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);font-weight:var(--text-label-default--font-weight)">All details are available at the link destination.</p>
+    </div>
+    <a href="/usage/provider-b" aria-label="Provider B usage details" style="display:inline-flex;align-items:center;justify-content:center;min-width:var(--space-12);min-height:var(--space-12);color:var(--color-fg-default);border-radius:var(--radius-md);text-decoration:none;box-shadow:var(--shadow-focus)">
+      <span class="eg-gauge eg-gauge--sm" aria-hidden="true"><span class="eg-gauge__ring"></span><span class="eg-gauge__logo" style="font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight)">B</span></span>
+    </a>
+    <p style="margin:var(--space-2) 0 0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Focus-open · solid fallback · focus ring</p>
+  </div>
+
+</div>

@@ -1,0 +1,1077 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-observed-human-delegation",
+  "sourceRegistry": "skills/_shared/prop-naming.json",
+  "sourceRegistrySHA256": "sha256:f0792f3f6e63e595039ba06a31774204a025a296abeac33f0d3e7b9558d02462",
+  "decision": "Apply delegated recommended naming decisions for the 36 primitive/molecule v0.1 drafts: accept 59 unique new convention definitions, six narrowly scoped semantic amendments and the now-used surface-elevation convention. This records assistant-applied acceptance under human delegation, not individual human review of each payload.",
+  "evidence": {
+    "channel": "Parent-provided conversation context and current consolidation request",
+    "taskReference": "odd/tasks/molecule-specs.md#specs",
+    "userStatements": [
+      {
+        "quote": "no me preguntes, aplica tu las opciones sugeridas y si tengo que irerar en la revisión ya lo vemos",
+        "provenance": "Task S2 and parent-provided delegation context"
+      },
+      {
+        "quote": "no dejes pendientes. todo de una cuando definamos specs. añade captura y acepta props",
+        "provenance": "Task S3 and parent-provided delegation context"
+      },
+      {
+        "quote": "hazlo",
+        "provenance": "Parent reports this confirmation after consolidation, captures and PR were explained; not a per-payload confirmation"
+      }
+    ],
+    "interpretation": "The assistant applies the recommended options and accepts exact naming payloads below under the supplied delegation. No per-convention user quotation, signed approval, native review receipt or independent reviewer is asserted. Owner review may revise these choices, requiring a new scoped record.",
+    "inputs": [
+      {
+        "path": ".playwright-mcp/specs/wave2/prop-consolidation.json",
+        "wholeFileSHA256": "sha256:ca34830ac86906d58d46f3b4ddb28f596321c8aaab0282ebb0ddce977d7d7024",
+        "role": "Historical unapproved extraction only; stale GaugeGroup rings candidate is superseded by direct draft extraction"
+      },
+      {
+        "path": ".playwright-mcp/specs/wave2/prop-amendments.json",
+        "wholeFileSHA256": "sha256:e37898aed933085a17b0a7e9f0420b7e54a991e2be7f8659e6a32572320d450c",
+        "role": "Six recommended after-payloads adopted exactly under delegation, not prior consent evidence"
+      }
+    ],
+    "draftSnapshot": {
+      "directory": ".playwright-mcp/specs/wave2",
+      "count": 36,
+      "method": "Read current Markdown drafts excluding BRIEF.md; parse JSON fences, coalesce identical semantic IDs, compare definitions and canonical names/aliases. 60 unique payloads include one existing layout-orientation amendment, leaving 59 new IDs. Whole-file hashes identify inputs, not approval of entire component specs or visual/runtime verification.",
+      "wholeFileSHA256": {
+        "aspect-ratio.md": "sha256:c25856b5a2330e7e6dde405ea5698fe2708d164ce7f2191ea8afd36150084e54",
+        "button-group.md": "sha256:e275d0a143b87f28d21e485792b0e18ba2ca44bf76f00e129f473e136ee0e38e",
+        "carousel.md": "sha256:bd26743dd6fadaa8811242e759f1f78ec2279b9419d4792f73746bc8783a5f43",
+        "chip-group.md": "sha256:65be92de27c45bc6ad9949fef2eac4dec1a6998bb82fead9371614e2270c9456",
+        "countdown.md": "sha256:d96365e4f95592b22b98b5f82be2b4d24d8b8ad606078464c978850e32bd470b",
+        "divider.md": "sha256:7afe3920e110982283ff6403b23e1cc92f561297c9e56fad465f02ca08569747",
+        "field.md": "sha256:13eb8a2cf92f0503c2037e147e07233c62718db90359d10006182fb3ff52348c",
+        "gauge-dock.md": "sha256:ed1f0ade871263610d9b1e3fef5b60086b6dda635ca77d1c906a322b445f84da",
+        "gauge-group.md": "sha256:072b198c08ce49bbbf613e423b511493b6c6c1dbca5ce5503e462d48f4bddec1",
+        "hover-card.md": "sha256:760ea441c0902f1d1961d058a35ad7f6bf61a0f2fe5f9ec3d56f9ca543dc9fd8",
+        "label.md": "sha256:ba6b176c950336502f43ce321430d9e749d55372a135406ffeb1fff8b5a947b3",
+        "list-item.md": "sha256:8fd3b693c1aa79a72b564124c009a2470c69db5b47578e4d1273e6ad5424d202",
+        "menu.md": "sha256:66e0d7ee8acf47349cb294aa59d00cac2c1703eee9287ec1ba327f84b5e002b3",
+        "meter-row.md": "sha256:06414d1d1e3adaeee023366d76cbcb28f17fffb082b7f47d4866b7b32a152d03",
+        "module-card.md": "sha256:7e5d50c8110f511e40eb052bd190efd1e8cd30e557daad4e00ef57979babe209",
+        "nav-list.md": "sha256:c6e1d7c85c4f5a1db923cb537432f1cebba1d97868c28ed9e38e6b46ddf88df0",
+        "notice.md": "sha256:bd30357de340d154e653e721207835eeb6e8284d9b5c813aac345bde91167f14",
+        "page-header.md": "sha256:2d23c7e31759343dce8f93fcb694b902cdcbf653be7ee5de827645499efd3f40",
+        "photo-frame.md": "sha256:8cf65e730a320c9b6747e038ddd2bebc228b7b4672310ad1675b59616370a5d7",
+        "popover.md": "sha256:8be16a4ff81d71a6fbdb9522c2660ca09e0afa4907cf9743543554a759c010c5",
+        "portal.md": "sha256:de9f188a16e01daf92f520b07244929f54f0c9055091fcce6222fe251159a24b",
+        "pull-quote.md": "sha256:4f98e5315d8fd622fa2845cdb49d2eedc9b1d2d7fb9af3f4152fa76e19a96f92",
+        "search-trigger.md": "sha256:0910611b605cfef9fbde4a36af71e1c2bf2ade747cfe1ef751bf82419971a256",
+        "section-header.md": "sha256:0c80db1c391e7f48ad525cf03e2ad54cb22d3696303f5b48310cf5eb779471c3",
+        "select-tile.md": "sha256:6b34281098484d10e6558e178d92703e44254e05436d830a94048bd5a09b5d59",
+        "skeleton.md": "sha256:c33031e1ff630616648f9bf868819f2f93d3ff9b54167ecbb4447d4aa96e2ec4",
+        "slot.md": "sha256:348c4d2da5936c071b95ff5e8cd50df89c5b905d6d6538bb049ffe444f885984",
+        "social-links.md": "sha256:26654730e65fffb8b3dd8665c3ac3bcef3735f2b7eb0fb17026b58544b24f9aa",
+        "stack.md": "sha256:b6167d59dd383f3bfb01d7de943ff959a7df301b00b14d2eb44d8967f95c2425",
+        "surface.md": "sha256:facaa7957e2b70fafe73268277e802e9a5dd949303a271a999d4857f8f2d12d5",
+        "tabs.md": "sha256:d61adaa934ee2df319f796cac9579e652316e1d1de75dc344cb0f97549c20a77",
+        "text.md": "sha256:7ed554236b439d7a334be97719791ab9bfdc1d1d6aa2c32e00f4ef7ba22d7196",
+        "timeline.md": "sha256:e7253e58a67f253c52aaa34fcdff1bffdd6efcaf9c3cbb9c38ec4c3b4c02260c",
+        "toast.md": "sha256:eaf2db1d7f12679edfbde0c94d48a809648175463100150becd1547ffa27487c",
+        "user-menu.md": "sha256:837d738ae989c099f05ce20eefa106188af22db5bf0149e1d4b6d7febe098667",
+        "visually-hidden.md": "sha256:d8641ff63801f660353998029704392f01b9751dcdcceed8ae7ac2d196680cbf"
+      },
+      "gaugeGroup": "items / collection-items is reused verbatim; independent-gauge-rings is excluded, not renamed into an alias. Ring measurement fields remain per entry; center is shared decorative content."
+    }
+  },
+  "limits": [
+    "Assistant-observed human delegation, not provider-native, signed, independent or per-payload human approval. Hashes bind content only and cannot prove consent.",
+    "Naming acceptance only: no exact-snapshot component approval, implementation plan, Material recipe, geometry sharing, private Gauge refactor, token/dependency change, API migration or runtime compatibility is authorized.",
+    "New entries have usages []; existing implementation usages, types and whole-file source revisions are retained verbatim. Planned types.ts files are not implementation evidence.",
+    "Native/Radix attributes and unrelated local schema keys are not mass-registered. selection-cardinality/type does not cover native type or NavList branch discriminators; menu-entry-kind/kind remains menu-specific. UserMenu recipe adds no owned prop usages.",
+    "Prior receipts are immutable history. The six amended entries point here for their new content; unchanged entries retain prior approvals. surface-elevation is no longer deferred because Surface now exposes that axis.",
+    "Drafts and earlier extraction artifacts remain unchanged. The tracked entries below are the recoverable exact naming snapshot even when local ignored drafts are unavailable.",
+    "Captures, browser/AT/runtime checks, GitHub publication, PR creation and terminal git delivery remain outside this consolidation unit. No such success is claimed."
+  ],
+  "priorReceipts": [
+    {
+      "path": "docs/decisions/prop-naming-gauge-approval.json",
+      "wholeFileSHA256": "sha256:97374db3519c5cd1b0c7c05e5c73974138c47ce38c4326e702f613f800b69911"
+    },
+    {
+      "path": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "wholeFileSHA256": "sha256:a615c560018e7d142a9e627d85ba101c57c35a5289abf2fa48bf1cec0b69903b"
+    },
+    {
+      "path": "docs/decisions/prop-naming-ambient-background-approval.json",
+      "wholeFileSHA256": "sha256:bf7574a50d0d52f0bc2fc2a2c224d200b0dd84537c3ec565f193b3cd93190e71"
+    }
+  ],
+  "previouslyProposedNowApproved": ["surface-elevation"],
+  "semanticAmendments": [
+    {
+      "id": "consumer-selected-condition",
+      "previousReference": "docs/decisions/prop-naming-gauge-approval.json",
+      "previousContentHash": "sha256:e9219a1929ef4b120468907faae100804f2b6e3eaac320a1c130b5fa811ba5a8",
+      "changedFields": ["meaning", "whenToUse"],
+      "boundary": "Gauge/GaugeGroup independent passive meter conditions only; retain normal/warning/critical/muted and conditional stateText. No lifecycle/selection state, aggregate severity, threshold inference, progress or loading."
+    },
+    {
+      "id": "condition-description",
+      "previousReference": "docs/decisions/prop-naming-gauge-approval.json",
+      "previousContentHash": "sha256:025ef213d44fcdaa4e82755765e299f5209202cc240d1d781e40c72086a385eb",
+      "changedFields": ["meaning", "whenToUse"],
+      "boundary": "Visible per-meter non-color condition text; retain string/conditional requiredness, no live/group status, naming or numeric-equivalent substitution."
+    },
+    {
+      "id": "decorative-center-content",
+      "previousReference": "docs/decisions/prop-naming-gauge-approval.json",
+      "previousContentHash": "sha256:61eb3a08fb971e36eaea141a02db39090f2d3facb98efdccddf883c26195c577",
+      "changedFields": ["meaning"],
+      "boundary": "Gauge center or GaugeGroup shared innermost hole, decorative ReactNode only; no actions, focus, sole meaning or Group aggregate. Group suppresses center when all readings unavailable; Gauge unchanged."
+    },
+    {
+      "id": "measurement-text-equivalent",
+      "previousReference": "docs/decisions/prop-naming-gauge-approval.json",
+      "previousContentHash": "sha256:061046c0f54f08064954bfc835a3726deab15043b11c7573b7c0f5e37c38b6b9",
+      "changedFields": ["meaning", "whenToUse", "avoid"],
+      "boundary": "Share coherent normalized value text, not roles or algorithms: Gauge/GaugeGroup finite magnitudes are meters with X / 100 defaults; ProgressBar #65/MeterRow are task progressbars with percent/coherent text. Non-finite magnitudes are unavailable, non-finite task progress is indeterminate and suppresses finite valueText. No remote #65 edit or atom-contract approval."
+    },
+    {
+      "id": "unavailable-measurement-message",
+      "previousReference": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "previousContentHash": "sha256:ff63b05f0ddf57fd283b0e79beda04a9a3cf40fb2bfd6cd1689eff127baf5fd4",
+      "changedFields": ["meaning", "avoid"],
+      "boundary": "Unavailable numeric/remaining-time displays expose no value. Preserve component-specific invalid policies and defaults. Countdown invalid deadline has no timer or zero; initializingText is first sampling and expiredText accompanies genuine zero. Never use this fallback for indeterminate task progress."
+    },
+    {
+      "id": "layout-orientation",
+      "previousReference": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "previousContentHash": "sha256:fdbca8a6a0e91adc0854e8ad1dba270d549fe1a47cb1ac559aae844dfbef2313",
+      "changedFields": ["meaning", "whenToUse", "avoid"],
+      "boundary": "Interactive collection navigation axis or passive Radix separator orientation only. Divider remains horizontal/vertical with independent decorative semantics and no arrow navigation. Stack/Cluster visual flow and native dir are excluded."
+    }
+  ],
+  "entries": [
+    {
+      "scope": "convention:surface-elevation",
+      "contentHash": "sha256:c09de251c560c73255556b501bcc9af978cfa0d2788e1ef6760b6c4ede9742d0",
+      "convention": {
+        "id": "surface-elevation",
+        "name": "elevation",
+        "meaning": "The elevation treatment of a material surface.",
+        "whenToUse": "A surface exposes a supported elevation axis.",
+        "avoid": "Condition, dimensions or an arbitrary shadow value.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:consumer-selected-condition",
+      "contentHash": "sha256:d0c856444b73ed6637e49288dac923c66821c2de0c56cc0a8204ab065c6b1605",
+      "convention": {
+        "id": "consumer-selected-condition",
+        "name": "state",
+        "meaning": "The consumer-selected interpretation of a Gauge magnitude or an independent GaugeGroup ring magnitude, independent of thresholds.",
+        "whenToUse": "A Gauge or GaugeGroup ring exposes consumer-selected normal, warning, critical or muted measurement conditions.",
+        "avoid": "Visual variants, material tone, loading behavior or automatic threshold inference.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:condition-description",
+      "contentHash": "sha256:5f27da4b9742822035ffa3dc74856f28d9ce05f7ab66edfdcf6e48921096b1ee",
+      "convention": {
+        "id": "condition-description",
+        "name": "stateText",
+        "meaning": "Visible non-color text describing the selected condition of a Gauge magnitude or independent GaugeGroup ring.",
+        "whenToUse": "Supply condition text, required for non-normal Gauge or GaugeGroup ring states by their conditional unions.",
+        "avoid": "Replacing the accessible name or the numeric equivalent.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:measurement-text-equivalent",
+      "contentHash": "sha256:bc3b7bcb72b8029e61ee9071bd0634a047aad82e05fa2dc7b4aa061ec61f683f",
+      "convention": {
+        "id": "measurement-text-equivalent",
+        "name": "valueText",
+        "meaning": "A contextual text equivalent of a normalized displayed magnitude or determinate task-progress value.",
+        "whenToUse": "A magnitude or task-progress display exposes a readable value equivalent coherent with its component-specific normalization.",
+        "avoid": "Condition text, accessible naming, incoherent raw out-of-range values, unavailable-data messages or indeterminate-progress feedback.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:decorative-center-content",
+      "contentHash": "sha256:f2d25dec1d5ec7b5e52728666744d1d3526c7b4835ecc2a61b343c6238cd47c8",
+      "convention": {
+        "id": "decorative-center-content",
+        "name": "center",
+        "meaning": "Optional decorative, non-interactive content inside a Gauge ring or GaugeGroup's shared innermost hole.",
+        "whenToUse": "Propose an icon, value or short text with meaning already represented accessibly.",
+        "avoid": "Actions, focusable descendants, a fixed logo or the sole source of meaning.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:unavailable-measurement-message",
+      "contentHash": "sha256:78970145433c6674ed3677eb43834133bda32739f9876bd954467eb1f7909271",
+      "convention": {
+        "id": "unavailable-measurement-message",
+        "name": "unavailableText",
+        "meaning": "Readable fallback when a numeric or remaining-time display is unavailable and exposes no value.",
+        "whenToUse": "Propose non-empty unavailable-data text separately from invalid-input policy approval.",
+        "avoid": "Loading or initial clock sampling, disabled state, fabricated zero values, genuine expired zero time, indeterminate task progress or assuming fallback wording is approved.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:layout-orientation",
+      "contentHash": "sha256:0949a8273207e12bcc069520be8996f3bcbab2eea353787f9d14d6acdecd267c",
+      "convention": {
+        "id": "layout-orientation",
+        "name": "orientation",
+        "meaning": "Main axis of a component's items or of a semantic separator; an interactive collection's arrow-key navigation follows that axis.",
+        "whenToUse": "A collection's layout and keyboard model share an axis, or a passive separator exposes its horizontal or vertical semantic orientation.",
+        "avoid": "Purely visual direction changes in generic layout primitives, text direction (use dir), or inventing keyboard behavior for passive separators.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:aspect-ratio",
+      "contentHash": "sha256:bbef626ac769aef5d57f18e67b323715be50d20e75f467c5fca95879c183b0ff",
+      "convention": {
+        "id": "aspect-ratio",
+        "name": "ratio",
+        "meaning": "The width-to-height proportion of a reserved media or content region, independent of its rendered dimensions.",
+        "whenToUse": "A primitive or media component reserves proportional space; the component-specific type may be a numeric width divided by height or a documented set of format presets.",
+        "avoid": "Absolute width or height, image crop or object-fit policy, measurement values, or Material treatment.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:collection-items",
+      "contentHash": "sha256:304ac895a943454d04d057e18518794a315958b70252df2e696e00dc65b36f40",
+      "convention": {
+        "id": "collection-items",
+        "name": "items",
+        "meaning": "Ordered data describing the entries a composite component renders, such as tabs, menu entries or navigation links; the entry shape is component-specific.",
+        "whenToUse": "A molecule renders its own standard entry, with its sub-parts, for each element of a consumer-supplied list.",
+        "avoid": "Selectable form options (use choice-options/options), free composition through children, or ReactNode lists without a defined entry shape.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:localized-messages",
+      "contentHash": "sha256:555c4e48e004651531f1588e18a8f71781afd8054c2ae113959b2831d86736cd",
+      "convention": {
+        "id": "localized-messages",
+        "name": "messages",
+        "meaning": "Component-specific dictionary of localizable built-in interface text and text formatters, with documented defaults for omitted entries.",
+        "whenToUse": "A composite component owns several related control labels, instructions or announcements that consumers need to translate together.",
+        "avoid": "User-authored content, the component's primary accessible name (use label), styling, behavior configuration or a global translation provider.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:selection-cardinality",
+      "contentHash": "sha256:f64c90bbbb7a034e76d20b15147113520b24c71e2c8061534800eb8e557a9da9",
+      "convention": {
+        "id": "selection-cardinality",
+        "name": "type",
+        "meaning": "Whether a value-selection group allows at most one selected option or multiple selected options.",
+        "whenToUse": "A group explicitly supports single and multiple selection, with string and string-array value APIs respectively.",
+        "avoid": "Native button or input type attributes, visual treatments (use variant), boolean pressed state or requiring a form selection.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:deadline-instant",
+      "contentHash": "sha256:f6c3348ca89ee03685647a92361ab72e2bb89c6112633fbeb82639f274cf1fd6",
+      "convention": {
+        "id": "deadline-instant",
+        "name": "deadline",
+        "meaning": "Absolute instant at which a countdown reaches zero, expressed as Unix epoch milliseconds.",
+        "whenToUse": "A time-based display counts down to one consumer-supplied instant with component-specific validity bounds.",
+        "avoid": "Durations, local calendar strings without timezone resolution, animation timing, task progress or automatic server-clock synchronization.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:absolute-deadline-text",
+      "contentHash": "sha256:aca8ce3f801884207275fb3553059e06a9069ddedc8c2d7157196cdf3bc8d2c3",
+      "convention": {
+        "id": "absolute-deadline-text",
+        "name": "deadlineText",
+        "meaning": "Human-readable date, time and timezone describing the absolute deadline independently of the changing remaining duration.",
+        "whenToUse": "A countdown supplies persistent readable context for its target instant and consumers own localization and timezone wording.",
+        "avoid": "The current numeric remainder, timer accessible name, expired messages, unverified event-start claims or automatic locale parsing.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:time-unit-labels",
+      "contentHash": "sha256:ff17a5baf945adc4ecc69bf9e3e1d3dd13e21aed8cc6bbd967b0201da538fdc0",
+      "convention": {
+        "id": "time-unit-labels",
+        "name": "units",
+        "meaning": "Ordered localized labels for the day, hour, minute and second columns of a remaining-time display.",
+        "whenToUse": "A countdown renders a fixed four-unit breakdown and consumers provide short unit names or abbreviations.",
+        "avoid": "Measurement units of unrelated figures, duration values, arbitrary item collections or assuming grammatical pluralization is automatic.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:deadline-expiration",
+      "contentHash": "sha256:4cfd772a5cf1576b23a3c8c92bc48c80c786bb097fc3ca31c9054cf8e143f117",
+      "convention": {
+        "id": "deadline-expiration",
+        "name": "onExpire",
+        "meaning": "Notification that the client observed a countdown deadline reached, receiving the expired instant in Unix epoch milliseconds.",
+        "whenToUse": "A countdown reports expiration with an explicit component-specific episode and remount policy so consumers can react or announce separately.",
+        "avoid": "Per-second ticks, user-driven value changes, callbacks during render or SSR, authoritative event-start signals or cross-instance exactly-once guarantees.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:clock-initialization-message",
+      "contentHash": "sha256:ce2e98958f8fa3708021e180ab159434c90e8de7c91dbba5beda4bc838057e07",
+      "convention": {
+        "id": "clock-initialization-message",
+        "name": "initializingText",
+        "meaning": "Readable placeholder while a time-based display has not yet sampled its client clock.",
+        "whenToUse": "A countdown deliberately renders deterministic server and initial hydration content before starting its client clock.",
+        "avoid": "Invalid or missing measurements (use unavailableText), loading controls, fabricated zero time or automatically announced status.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:expired-deadline-message",
+      "contentHash": "sha256:82f8fc94bc238e8611407a1dbf0cb1a25911a05802c2bcb204eba9fb29814db0",
+      "convention": {
+        "id": "expired-deadline-message",
+        "name": "expiredText",
+        "meaning": "Visible text explaining that a countdown's target instant has been reached.",
+        "whenToUse": "A countdown retains a genuine zero readout and adds a localizable non-live expiration explanation.",
+        "avoid": "Assuming an event is live or completed, invalid-input messages, automatic announcements or the remaining duration itself.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:decorative-separation",
+      "contentHash": "sha256:2de412c2d3093a4d26054772a3c483d68ac81e342850449dd6fdcd1543f48006",
+      "convention": {
+        "id": "decorative-separation",
+        "name": "decorative",
+        "meaning": "Whether a passive separator is visual decoration rather than a meaningful content boundary exposed to assistive technology.",
+        "whenToUse": "A separator supports both decorative use beside text and semantic use between content regions without changing its paint.",
+        "avoid": "Hiding meaningful content, naming controls, interactive window splitters, visibility toggles or changing focus behavior.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:field-hint",
+      "contentHash": "sha256:6f36bc40d087a41d2c6d4d232cbd6f6c045a0b36df871f59e2776ff473f01332",
+      "convention": {
+        "id": "field-hint",
+        "name": "hint",
+        "meaning": "Muted help text shown with a form control and linked to it as its description.",
+        "whenToUse": "A labelled form control needs persistent guidance such as format, consequences or limits.",
+        "avoid": "Error messages (use error), accessible names, placeholders or long documentation.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:field-error",
+      "contentHash": "sha256:b9da121be1a4f488289f4943aaff2291467679e2040b24ece21792c72fa9f74c",
+      "convention": {
+        "id": "field-error",
+        "name": "error",
+        "meaning": "Consumer-supplied validation message that marks the form control invalid and is linked to it as its description.",
+        "whenToUse": "A form control's current value fails validation and the consumer explains why in text.",
+        "avoid": "Validation logic, status tones of non-form components, toasts or page-level alerts.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:character-counter",
+      "contentHash": "sha256:5f5f7f0203e6cd22f415e8f994957c788a1da96858f46c70c4018bc82f005f19",
+      "convention": {
+        "id": "character-counter",
+        "name": "counter",
+        "meaning": "Current length and maximum length of a text control, shown as a visible counter that changes tone when exceeded.",
+        "whenToUse": "A text field has a length limit the user should see while typing.",
+        "avoid": "Item counts, badges, numeric values of non-text controls, or replacing the error message.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:value-readout",
+      "contentHash": "sha256:542a4f8e79a608cedb5e1e403f8ddfa2728092293856e497141cd9cc7189fbc6",
+      "convention": {
+        "id": "value-readout",
+        "name": "readout",
+        "meaning": "Visible text of a control's current value shown next to its label in an output element linked to the control.",
+        "whenToUse": "A control whose value is not readable on the control itself, such as a slider, shows its formatted value.",
+        "avoid": "Accessible value text (use the control's own value text), counters, hints or editable values.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:visually-hidden-label",
+      "contentHash": "sha256:593cade986ef68d1228a388e9bf9968dc66c0289705ab639774dac5e96030660",
+      "convention": {
+        "id": "visually-hidden-label",
+        "name": "hideLabel",
+        "meaning": "Hides a required visible label visually while keeping it in the accessibility tree as the control's name.",
+        "whenToUse": "The surrounding layout already makes the purpose obvious, such as a search box in a toolbar.",
+        "avoid": "Omitting the label, icon-only buttons (use their label prop) or hiding hints and errors.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:label-layout",
+      "contentHash": "sha256:47912f850d9eafb0e3b8f2a521c7e4b9c861ff436b90da5eb67e482de04a05d2",
+      "convention": {
+        "id": "label-layout",
+        "name": "layout",
+        "meaning": "Arrangement of a control and its label: label stacked above the control, or the control beside its label in one row.",
+        "whenToUse": "A wrapper places text fields with a stacked label and checkboxes or switches with an inline label.",
+        "avoid": "Item axes with keyboard navigation (use orientation), visual treatments (use variant) or page layout.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:floating-align",
+      "contentHash": "sha256:ec3c51a76edd89a67049d49001e9017d43707075312a605d895739c79f949dd2",
+      "convention": {
+        "id": "floating-align",
+        "name": "align",
+        "meaning": "Alignment of floating content along the chosen side of its trigger (start, center or end) before collision handling.",
+        "whenToUse": "A floating component such as a menu or popover lets the consumer line its panel up with the trigger's start, center or end edge.",
+        "avoid": "Text alignment, layout alignment of in-flow content, or choosing the side (use floating-side/side).",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:open-state",
+      "contentHash": "sha256:6007292c57d0dfee10a01b1cc199795b014e40bd09a8b55fd2af3f8fa0274631",
+      "convention": {
+        "id": "open-state",
+        "name": "open",
+        "meaning": "Controlled visibility of a component's disclosed, floating or transient content, such as a collapsible group, panel or notification.",
+        "whenToUse": "A component lets the consumer control whether its disclosed, floating or transient content is shown, together with onOpenChange.",
+        "avoid": "Selection, pressed or checked state (use value, pressed or checked), or content that is always visible.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:initial-uncontrolled-open",
+      "contentHash": "sha256:2a8c4a933020f41d26f1efdb80320bb0eaf25326cf49c0384abc92416010606f",
+      "convention": {
+        "id": "initial-uncontrolled-open",
+        "name": "defaultOpen",
+        "meaning": "Initial visibility of an uncontrolled disclosure, floating or transient component.",
+        "whenToUse": "A component supports uncontrolled initialization alongside the open prop; its initial default is component-specific.",
+        "avoid": "Controlled-only components or initial selection values (use defaultValue).",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:open-change",
+      "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e",
+      "convention": {
+        "id": "open-change",
+        "name": "onOpenChange",
+        "meaning": "Notification requesting the next boolean open state after a supported user interaction or component-owned timer.",
+        "whenToUse": "A disclosure, floating or transient component reports visibility requests from triggers, focus/hover delays, Escape, outside interaction, selection or auto-dismissal.",
+        "avoid": "Incoming prop updates, initial mounting, value or selection changes (use onValueChange), and pressed or checked changes.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:item-presentation-status",
+      "contentHash": "sha256:8402ef1355689cbd78c154bdc729ea1443566f5401d9a8bb1e18868a77a8d89a",
+      "convention": {
+        "id": "item-presentation-status",
+        "name": "status",
+        "meaning": "Consumer-selected lifecycle or availability presentation of a content item, expressed through data-state and accompanied by readable status content.",
+        "whenToUse": "A content item or card represents a default, newly added, failed, completed, empty, dragged or inactive entity without owning its domain transitions.",
+        "avoid": "Gauge magnitude interpretation (use state), material or semantic color families (use tone), selection, pressed state, disabled controls, or automatic domain state machines.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:menu-entry-kind",
+      "contentHash": "sha256:f26d5c8941b136d2ae3964cd369237a9baba3518ef3bf515a69919d5eb20521c",
+      "convention": {
+        "id": "menu-entry-kind",
+        "name": "kind",
+        "meaning": "The semantic role of an entry in a data-driven menu: action, destination link, separator, group label or submenu.",
+        "whenToUse": "Menu exposes a discriminated public entry schema and selects the corresponding Radix menu part from each entry's role; recipe consumers reuse the same schema.",
+        "avoid": "Selection cardinality (use type), native button or input type attributes, Radix-provided props, visual treatments or changing an action into a selectable form option.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:panel-header",
+      "contentHash": "sha256:d0e5fa1ca4fc22a01baadd487e235b17b52c43da13ffa3af81826f5085295714",
+      "convention": {
+        "id": "panel-header",
+        "name": "header",
+        "meaning": "Non-interactive content shown at the top of a floating panel, above and separated from its entries.",
+        "whenToUse": "A menu or panel shows identity or context, such as the signed-in user, before its entries.",
+        "avoid": "Interactive controls, page or section headings, or text that is the panel's only accessible name.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:navigation-intent",
+      "contentHash": "sha256:7fb068ceea0357c786c87878c1080e7737b18da24f7feb48010b643ba4d1e197",
+      "convention": {
+        "id": "navigation-intent",
+        "name": "onNavigate",
+        "meaning": "Notification that the user activated a link entry rendered by the component, with the entry and the originating event; preventing the event's default lets a client-side router handle the navigation.",
+        "whenToUse": "A component renders anchors from data, such as menus or navigation lists, and single-page apps must intercept navigation.",
+        "avoid": "Action entries without a destination (use the entry's onSelect), form submission, or notifications of route changes that did not come from the user.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:numeric-display-help",
+      "contentHash": "sha256:8ee4e7bb40cdfd35b548ebf473ec7775f8e0fbe658d85747c2d0cd64de5b9ec7",
+      "convention": {
+        "id": "numeric-display-help",
+        "name": "help",
+        "meaning": "Persistent plain-text guidance or context describing a non-interactive numeric display, linked to its semantic indicator when one is present.",
+        "whenToUse": "A row combines a named progress or magnitude display with a visible supporting explanation of what it represents or how to interpret it.",
+        "avoid": "Form-control hints (use hint), accessible names, numeric value equivalents (use valueText), short change deltas, errors, tooltips or interactive help content.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:heading-title",
+      "contentHash": "sha256:3b7c8409a2f43bbc296608d65ee61e78aebbe31118f1f65e955ff65078e8c2d3",
+      "convention": {
+        "id": "heading-title",
+        "name": "title",
+        "meaning": "Visible primary heading text identifying a page, section or content unit.",
+        "whenToUse": "A composite component owns a distinct heading slot and renders the supplied text with native heading semantics.",
+        "avoid": "Native title tooltips, accessible names of controls (use label), status-message lead sentences (use summary), or arbitrary rich content.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:heading-level",
+      "contentHash": "sha256:3235f5126f7405ae3956b969186d33c48c302b42c2a40d169c9d2f11e1d12ead",
+      "convention": {
+        "id": "heading-level",
+        "name": "level",
+        "meaning": "Native semantic rank of a rendered heading, independent of its visual typography.",
+        "whenToUse": "A heading or heading-owning composition lets the consumer select the appropriate h1 through h6 rank for the document outline.",
+        "avoid": "Typography size, visual register, indentation, surface elevation or changing semantics solely for appearance.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:trailing-actions",
+      "contentHash": "sha256:b00c5b3d1006ee97caa5d258e4ce04a046acb3d8d752d734e37bf96c92356550",
+      "convention": {
+        "id": "trailing-actions",
+        "name": "actions",
+        "meaning": "Consumer-supplied action elements (buttons or links) rendered in a component's trailing action area.",
+        "whenToUse": "A message, header or control bar offers one or two related actions that the consumer builds with system Button or Link components.",
+        "avoid": "Primary navigation, generating buttons from data inside the component, or arbitrary layout content unrelated to actions.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:panel-footer",
+      "contentHash": "sha256:2a42776342fb15a34c5ab7d86abd1cdd8683044d2e37f30504f2bfd59d2f6a71",
+      "convention": {
+        "id": "panel-footer",
+        "name": "footer",
+        "meaning": "Consumer-supplied supplementary metadata and optional utility control rendered after a panel's main content and primary actions.",
+        "whenToUse": "A card or panel offers a distinct lower area for context such as last-updated text and a refresh action, optionally on a lower tonal band.",
+        "avoid": "Primary action collections (use actions), page or site footers, navigation, arbitrary replacement of the body, or a consumer-defined Material recipe.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:message-summary",
+      "contentHash": "sha256:975bcd3e71864c8c5033aa82310d14454013767fe690f531b87ba297497743cd",
+      "convention": {
+        "id": "message-summary",
+        "name": "summary",
+        "meaning": "Short required lead sentence of a status message, shown first and emphasized, that states the situation in words.",
+        "whenToUse": "A notice or toast needs a keyword sentence that carries its meaning without relying on color, followed by optional detail.",
+        "avoid": "Accessible names of controls, headings of page sections, long descriptions, or native title tooltips.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:heading-eyebrow",
+      "contentHash": "sha256:131bf821957930e7334f9f0efbd400f99c09bf13c6bc752d5e8e229603d4e96c",
+      "convention": {
+        "id": "heading-eyebrow",
+        "name": "eyebrow",
+        "meaning": "Short contextual text rendered before a component's primary heading.",
+        "whenToUse": "A header composition offers an optional context line above its title.",
+        "avoid": "The primary heading, an accessible name, status text, metadata collections or descriptions below the heading.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:image-caption",
+      "contentHash": "sha256:55020a5c48746ed3b84b1a7b1e95a5694e8a9b4b26698034978d49d4c5be64ca",
+      "convention": {
+        "id": "image-caption",
+        "name": "imageCaption",
+        "meaning": "Optional plain-text caption associated with one image figure, providing context or accurately supplied credit separately from the image's alternative text.",
+        "whenToUse": "An image composition owns a native figcaption accompanying its media; the caption is not a replacement for descriptive alt text.",
+        "avoid": "Collection captions (use caption), accessible names of controls, generated attribution, unsupported license assertions, interactive content or automatic duplication of alt text.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:image-focal-point",
+      "contentHash": "sha256:5d450bbb1de545ef284c1d7a77165e41fd99d28c22625be19d61626004ae2a03",
+      "convention": {
+        "id": "image-focal-point",
+        "name": "focalPoint",
+        "meaning": "A supported alignment preset that selects which area of a cover-cropped image is prioritized within its reserved viewport.",
+        "whenToUse": "A media component exposes a finite set of static object-position choices independently of its aspect ratio and rendered dimensions.",
+        "avoid": "Absolute positioning, arbitrary inline CSS coordinates, image size/ratio, layout alignment, material tone or pointer-tracking effects.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:interaction-modality",
+      "contentHash": "sha256:a1b17de345877cfc32c4b0ec4ff757373f2beff70bcc1add9358ac04920150d1",
+      "convention": {
+        "id": "interaction-modality",
+        "name": "modal",
+        "meaning": "Whether an open floating dialog restricts focus, assistive-technology access and pointer interaction to its own content instead of allowing interaction with the surrounding page.",
+        "whenToUse": "A floating dialog supports both non-modal and modal interaction through its underlying Radix primitive; the component defines dismissal and focus restoration separately.",
+        "avoid": "A visual scrim, a guarantee that a workflow cannot be dismissed, overlay elevation, or custom implementations of focus trapping and outside-interaction blocking.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:portal-container",
+      "contentHash": "sha256:8779c40a8eca0370de3b1906ae7034a41ea1f8792714b19eaec0ab87597b3eeb",
+      "convention": {
+        "id": "portal-container",
+        "name": "container",
+        "meaning": "The DOM node that a component's portalled content is rendered into instead of the document body.",
+        "whenToUse": "A component renders layered or floating content through a portal and the consumer may need another mount node, such as a shadow root, an iframe body or a subtree that scopes theme tokens.",
+        "avoid": "Layout wrappers, collision or positioning boundaries for floating content, or choosing which element a component renders as (use asChild).",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:trailing-text-accent",
+      "contentHash": "sha256:6ad8880449dfe520919a4dcd2b6cfeb8f16c20a842553c86c89acb3180f40d6b",
+      "convention": {
+        "id": "trailing-text-accent",
+        "name": "accent",
+        "meaning": "One optional trailing text run visually emphasized within a display phrase while remaining part of its readable content.",
+        "whenToUse": "Display typography offers a highlighted ending or punctuation after its main children.",
+        "avoid": "Accessible names, status messages, arbitrary rich slots, interactive children or hiding meaningful text from assistive technology.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:quotation-text",
+      "contentHash": "sha256:55c7384314a8f6363ee004e5cfa486ca220fdc32cd55d31fce65e8362c484dea",
+      "convention": {
+        "id": "quotation-text",
+        "name": "text",
+        "meaning": "Main plain-text passage reproduced as a quotation, excluding separate attribution and optional trailing accent text.",
+        "whenToUse": "A quotation composition renders the consumer's passage inside native blockquote semantics without accepting rich content.",
+        "avoid": "Generic children, heading titles, accessible names, HTML strings intended for injection, source captions or automatically generated quotations.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:quotation-source",
+      "contentHash": "sha256:a0be51762732ed05c486336e61ea031fb22a3045c0c30cbe5df139a15414527f",
+      "convention": {
+        "id": "quotation-source",
+        "name": "source",
+        "meaning": "Visible attribution or contextual source caption accompanying a quotation, outside the quoted passage.",
+        "whenToUse": "A quote composition exposes a plain-text figcaption for consumer-supplied attribution or contextual commentary.",
+        "avoid": "The quotation itself, native cite URL metadata, assuming a person's name is a work title, verified provenance claims or automatic source links.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:keyboard-shortcut-hint",
+      "contentHash": "sha256:4f922985284399a34fe26994e80533c2a8db49066e01a3e9d00544c2fbbc1339",
+      "convention": {
+        "id": "keyboard-shortcut-hint",
+        "name": "shortcut",
+        "meaning": "Display-only text showing a keyboard combination associated with an action; it does not register or parse a binding.",
+        "whenToUse": "A launcher or menu entry shows a passive Kbd hint for a shortcut registered by its host application.",
+        "avoid": "Global key listeners, platform detection, accessible-name replacement or treating display glyphs as aria-keyshortcuts syntax.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:compact-presentation",
+      "contentHash": "sha256:e9534ccfb215dce2fbca692466ba2003c296145b07601c31479862833d52387f",
+      "convention": {
+        "id": "compact-presentation",
+        "name": "compact",
+        "meaning": "Shows the compact icon-only presentation of a labelled launcher while retaining its accessible name and activation behavior.",
+        "whenToUse": "A launcher in a narrow toolbar hides its visible text and supplementary keyboard hint without changing its responsibility.",
+        "avoid": "Changing control semantics, arbitrary size presets, automatic responsive detection or removing the accessible name.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:accent-line-break",
+      "contentHash": "sha256:4fea0ecdd89cde650ecfc3583ca8b1dd2d8a2937c4c628602af288bf1bbe5dfe",
+      "convention": {
+        "id": "accent-line-break",
+        "name": "accentBreak",
+        "meaning": "Whether the component's trailing text accent begins on a separate visual line.",
+        "whenToUse": "Display typography exposes a trailing text accent that may be block or inline without changing its semantic meaning.",
+        "avoid": "Automatic text splitting, truncation, extra accessible content or controlling arbitrary child layout.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:section-lede",
+      "contentHash": "sha256:ef61567892d3f63443d04376c139f0c65a817818da8a3ef4b69f9aa80e1e9235",
+      "convention": {
+        "id": "section-lede",
+        "name": "lede",
+        "meaning": "Optional introductory paragraph accompanying a section heading.",
+        "whenToUse": "An editorial header composition offers short introductory copy beneath or beside its primary heading.",
+        "avoid": "Accessible names, form hints, status-message summaries, heading text, arbitrary rich blocks or whole-section body content.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:heading-id",
+      "contentHash": "sha256:b2205b336988b3c2767d2cfbd2457f6f9d3033a0191e6d8c17a049237d0750f6",
+      "convention": {
+        "id": "heading-id",
+        "name": "titleId",
+        "meaning": "Consumer-supplied DOM ID of a composite component's heading, distinct from the composite root's native id.",
+        "whenToUse": "A heading-owning composition lets an enclosing section or other external element reference its internal heading with aria-labelledby.",
+        "avoid": "Styling selectors, root element IDs, shared literal IDs across instances, accessible-name text or arbitrary internal-part IDs.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:option-metadata",
+      "contentHash": "sha256:34ae867cd35b9609ef3b293c6953f965e3889d64c2b7030170666e27f9bd99e5",
+      "convention": {
+        "id": "option-metadata",
+        "name": "meta",
+        "meaning": "Short visible supplementary detail about an option, rendered below its label and available as its accessible description.",
+        "whenToUse": "A visual choice needs a secondary fact such as layer count, dimensions or duration to distinguish options.",
+        "avoid": "The option's accessible name, form instructions, numeric figure context, badges or long content.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:preview-thumbnail",
+      "contentHash": "sha256:ea9f56de34a4533555362e81a233937ffccc7379b423153c1824bc79d78291d3",
+      "convention": {
+        "id": "preview-thumbnail",
+        "name": "thumb",
+        "meaning": "Decorative preview image data for a selectable option whose identity is already supplied by its visible label.",
+        "whenToUse": "A visual choice includes a cropped preview to help sighted users recognize the option.",
+        "avoid": "User avatars, meaningful standalone images, editable media, video controls or the only source of option identity.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:live-presentation",
+      "contentHash": "sha256:a5add4e971a9ab337f10f9c0c081fe4c28aa9ebba5bac220b623fe837853cdde",
+      "convention": {
+        "id": "live-presentation",
+        "name": "live",
+        "meaning": "Marks the represented option as currently on air, independently of whether it is selected, with a required readable live-state annotation.",
+        "whenToUse": "A scene or media choice distinguishes the currently broadcast output from a preview selection.",
+        "avoid": "Selection state, loading, a generic status tone, live-region announcements or automatic broadcast activation.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:thumbnail-badge",
+      "contentHash": "sha256:70917ec0755d7f42a11f600c3a201b349c173df0c884d5869637e9c7d6e744b1",
+      "convention": {
+        "id": "thumbnail-badge",
+        "name": "badge",
+        "meaning": "Short non-interactive text annotation over a thumbnail, rendered as a Badge and included in the option's accessible description.",
+        "whenToUse": "A visual option needs an overlaid state annotation such as Live, independently of its name and selection.",
+        "avoid": "Numeric counters, interactive actions, corner icon glyphs or replacing the option label.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:layout-gap",
+      "contentHash": "sha256:1f1267aaafd194a30f1e21ec4d00eecbd8f12ff58f91634a874b4ac2457c1893",
+      "convention": {
+        "id": "layout-gap",
+        "name": "gap",
+        "meaning": "Token-backed spacing between adjacent children of a layout container, including row and column gaps when it wraps.",
+        "whenToUse": "A reusable layout container exposes a finite set of spacing-token keys or presets for space between its children.",
+        "avoid": "Inner padding (use padding), outer margins, arbitrary CSS lengths or changing the children's order.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:group-caption",
+      "contentHash": "sha256:d2efc7f6e50156598324373e8cb3cecd2e72a10db3f30df7f9d2cc638c574d93",
+      "convention": {
+        "id": "group-caption",
+        "name": "caption",
+        "meaning": "Optional visible contextual text accompanying a grouped collection, distinct from its accessible-name input.",
+        "whenToUse": "A collection composition offers a short visible caption that may be omitted without leaving the collection unnamed.",
+        "avoid": "Accessible naming (use label), heading eyebrows, image-specific attribution, long descriptions or item labels.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:inline-caption-layout",
+      "contentHash": "sha256:e381bc3821dfcca9f868d6d2058f835037875063a134376245b4cc6b9e746d8e",
+      "convention": {
+        "id": "inline-caption-layout",
+        "name": "inline",
+        "meaning": "Whether a collection's visible caption and its content share a wrapping row instead of being stacked vertically.",
+        "whenToUse": "A captioned collection supports the same content arranged beside or below its caption without changing interaction semantics.",
+        "avoid": "Keyboard navigation axes, CSS display:inline, inline prose links, field label layout or arbitrary orientation/reordering.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:cross-axis-alignment",
+      "contentHash": "sha256:8d9242d24677898c72e19b9ebf8fa7c7d3f14f2f354746351b518f2d494b853a",
+      "convention": {
+        "id": "cross-axis-alignment",
+        "name": "alignItems",
+        "meaning": "Alignment of a layout container's children along its cross axis.",
+        "whenToUse": "A flex or grid layout container exposes supported item alignment choices such as start, center, end, stretch or baseline.",
+        "avoid": "Floating-panel alignment (use align), main-axis distribution (use justifyContent), text alignment or individual-child positioning.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:main-axis-distribution",
+      "contentHash": "sha256:a2a015ce076aa2a9c1522ab78a2ad22aa45a463a5746298d25b5cb6099e6406f",
+      "convention": {
+        "id": "main-axis-distribution",
+        "name": "justifyContent",
+        "meaning": "Distribution of a layout container's children along its main axis when free space is available.",
+        "whenToUse": "A reusable layout container exposes supported distribution choices such as start, center, end or between.",
+        "avoid": "Cross-axis item alignment (use alignItems), floating-panel placement, text alignment or changing DOM order.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:inner-padding",
+      "contentHash": "sha256:81ad5c5f141961a62fc1a42b220a22b80d66ed464787407f544cdafdbba293a0",
+      "convention": {
+        "id": "inner-padding",
+        "name": "padding",
+        "meaning": "Preset inner spacing between a container's edge and its content, mapped to spacing tokens.",
+        "whenToUse": "A container primitive such as Surface offers a few token-backed padding presets, including none for edge-to-edge content.",
+        "avoid": "Gaps between children (use gap), outer margins, arbitrary lengths or per-side overrides.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:corner-radius",
+      "contentHash": "sha256:e09a3c41f5a7808c4e82d9dfc926f5c0747c227cbb67b43f53acdfa99c679f08",
+      "convention": {
+        "id": "corner-radius",
+        "name": "radius",
+        "meaning": "Preset corner radius of a container, mapped to radius tokens.",
+        "whenToUse": "A container primitive offers token-backed corner presets, such as none for bands inside a panel or full for pills.",
+        "avoid": "Arbitrary lengths, per-corner overrides or shape changes that alter the component's meaning.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:auto-dismiss-duration",
+      "contentHash": "sha256:b3ca83682e8ce6d4eb40289923c084ded07cf40f7d2df483b1287a48ec4a3d9f",
+      "convention": {
+        "id": "auto-dismiss-duration",
+        "name": "duration",
+        "meaning": "Time in milliseconds a transient component stays visible before dismissing itself; Infinity disables auto-dismissal.",
+        "whenToUse": "A notification or similar transient element closes automatically after a consumer-adjustable time.",
+        "avoid": "Animation or transition durations, countdown targets, polling intervals or media lengths.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:dismiss-label",
+      "contentHash": "sha256:4ce74a25f27e385b54732b3ef46e52d4f452cddbf2b1c17608aadc48c0ef1d7c",
+      "convention": {
+        "id": "dismiss-label",
+        "name": "dismissLabel",
+        "meaning": "Localizable accessible name of a component's built-in close or dismiss control.",
+        "whenToUse": "A component renders its own icon-only dismiss control and consumers must be able to translate its name.",
+        "avoid": "The accessible name of the component itself, visible button text supplied by consumers, or destructive actions.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:action-alternative-text",
+      "contentHash": "sha256:551982e0a68924713a4df488dc452b38bf41ba6f8ca94f8b7479fd54257e5e1b",
+      "convention": {
+        "id": "action-alternative-text",
+        "name": "actionAltText",
+        "meaning": "Text describing how to perform a transient component's action through another, persistent route.",
+        "whenToUse": "A transient notification offers an action that may disappear before assistive-technology users reach it (Radix Toast Action altText).",
+        "avoid": "The visible action label, image alt text or accessible names of persistent controls.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:announcement-label",
+      "contentHash": "sha256:75da8f2d77b24d66fbcb0e1498f2572937d15319dcb081283bb0e06026596b59",
+      "convention": {
+        "id": "announcement-label",
+        "name": "announcementLabel",
+        "meaning": "Localizable prefix that assistive technology announces before the content of each transient notification.",
+        "whenToUse": "A notification system announces messages through a live region and lets consumers translate the category word.",
+        "avoid": "Region or landmark names (use label), message text, or visible headings.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

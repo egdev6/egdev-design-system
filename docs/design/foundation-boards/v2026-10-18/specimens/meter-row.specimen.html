@@ -1,0 +1,45 @@
+<!-- MeterRow v0.1 expected-design specimen. Parent supplies tokens, Foundation bundle.css and loaded Barlow fonts. Static percentage widths are capture scaffolding, not a React geometry implementation or Radix/AT verification. -->
+<section aria-label="MeterRow task-progress examples" style="display:grid;gap:var(--space-5);padding:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);font-weight:var(--text-label-default--font-weight)">
+  <h2 style="margin:0;font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight)">MeterRow — task progress only</h2>
+  <p style="margin:0;color:var(--color-fg-muted);font-weight:var(--text-body-muted--font-weight)">Each row has one semantic progressbar. The visible header repeats its label and value visually only. Capacity, usage and other measurements belong to Gauge, not this composition.</p>
+
+  <div style="display:flex;flex-direction:column;min-width:0;gap:var(--space-2)">
+    <div aria-hidden="true" style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--space-3)">
+      <span style="display:inline-flex;align-items:center;gap:var(--space-2)"><span style="display:inline-block;width:var(--space-2);height:var(--space-2);border-radius:var(--radius-full);background:var(--color-fg-brand-default)"></span>Import preparation</span><span>0%</span>
+    </div>
+    <span class="eg-progress eg-progress--lg" role="progressbar" aria-label="Import preparation" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0%" aria-describedby="mr-spec-start-help"><span class="eg-progress__bar" style="transform:none;width:0;box-shadow:var(--shadow-edge-strong)"></span></span>
+    <p id="mr-spec-start-help" style="margin:0;color:var(--color-fg-muted);font-weight:var(--text-body-muted--font-weight);line-height:var(--text-body-default--line-height)">No files have been processed yet.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;min-width:0;gap:var(--space-2)">
+    <div aria-hidden="true" style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--space-3)">
+      <span style="display:inline-flex;align-items:center;gap:var(--space-2)"><span style="display:inline-block;width:var(--space-2);height:var(--space-2);border-radius:var(--radius-full);background:var(--color-fg-brand-default)"></span>Import progress</span><span>45%</span>
+    </div>
+    <span class="eg-progress eg-progress--lg" role="progressbar" aria-label="Import progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="45" aria-valuetext="45%" aria-describedby="mr-spec-import-help"><span class="eg-progress__bar" style="transform:none;width:45%;box-shadow:var(--shadow-edge-strong)"></span></span>
+    <p id="mr-spec-import-help" style="margin:0;color:var(--color-fg-muted);font-weight:var(--text-body-muted--font-weight);line-height:var(--text-body-default--line-height)">9 of 20 files have been imported in this task.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;min-width:0;gap:var(--space-2)">
+    <div aria-hidden="true" style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--space-3)">
+      <span style="display:inline-flex;align-items:center;gap:var(--space-2)"><span style="display:inline-block;width:var(--space-2);height:var(--space-2);border-radius:var(--radius-full);background:var(--color-fg-brand-default)"></span>Archive creation</span><span>100%</span>
+    </div>
+    <span class="eg-progress eg-progress--lg" role="progressbar" aria-label="Archive creation" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-valuetext="100%" aria-describedby="mr-spec-complete-help"><span class="eg-progress__bar" style="transform:none;width:100%;box-shadow:var(--shadow-edge-strong)"></span></span>
+    <p id="mr-spec-complete-help" style="margin:0;color:var(--color-fg-muted);font-weight:var(--text-body-muted--font-weight);line-height:var(--text-body-default--line-height)">All files in this archive task have been processed.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;min-width:0;gap:var(--space-2)">
+    <div aria-hidden="true" style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--space-3)">
+      <span style="display:inline-flex;align-items:center;gap:var(--space-2)"><span style="display:inline-block;width:var(--space-2);height:var(--space-2);border-radius:var(--radius-full);background:var(--color-fg-muted)"></span>Previous import</span><span>12 of 20 files imported</span>
+    </div>
+    <span class="eg-progress eg-progress--lg eg-progress--muted" role="progressbar" aria-label="Previous import" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60" aria-valuetext="12 of 20 files imported" aria-describedby="mr-spec-comparison-help"><span class="eg-progress__bar" style="transform:none;width:60%;box-shadow:var(--shadow-edge-strong)"></span></span>
+    <p id="mr-spec-comparison-help" style="margin:0;color:var(--color-fg-muted);font-weight:var(--text-body-muted--font-weight);line-height:var(--text-body-default--line-height)">Completion of the comparison task, not an arbitrary statistical magnitude.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;min-width:0;gap:var(--space-2)">
+    <div aria-hidden="true" style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--space-3)">
+      <span style="display:inline-flex;align-items:center;gap:var(--space-2)"><span style="display:inline-block;width:var(--space-2);height:var(--space-2);border-radius:var(--radius-full);background:var(--color-fg-brand-default)"></span>Indexing progress</span><span id="mr-spec-unknown-value">In progress</span>
+    </div>
+    <span class="eg-progress eg-progress--lg" role="progressbar" aria-label="Indexing progress" aria-valuemin="0" aria-valuemax="100" aria-describedby="mr-spec-unknown-value mr-spec-unknown-help"><span class="eg-progress__bar" style="transform:none;width:0;box-shadow:var(--shadow-edge-strong)"></span></span>
+    <p id="mr-spec-unknown-help" style="margin:0;color:var(--color-fg-muted);font-weight:var(--text-body-muted--font-weight);line-height:var(--text-body-default--line-height)">The task is active, but the total amount of work is not known yet. The empty track does not mean zero completion.</p>
+  </div>
+</section>

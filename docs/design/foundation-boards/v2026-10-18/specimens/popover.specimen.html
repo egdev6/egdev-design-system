@@ -1,0 +1,45 @@
+<!-- Popover v0.1 static expected-design specimen, not an implementation.
+     Parent harness supplies tokens.css and Foundation components/bundle.css.
+     No scripts, external assets or actual Radix portal/focus/dismissal behavior.
+     Focus, modality and solid fallback are illustrated; aria-modal alone does not isolate the page.
+     Existing Button/Field classes supply supporting controls, not revised atom contracts. -->
+<div style="box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-6);padding:var(--space-8);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight)">
+
+  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-2);width:calc(var(--space-24) * 2);max-width:100%">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Default · closed</p>
+    <button class="eg-btn eg-btn--secondary eg-btn--sm" type="button" aria-haspopup="dialog" aria-expanded="false">Display settings</button>
+    <p style="margin:var(--space-2) 0 0;color:var(--color-fg-secondary)">Activate the button to open the panel. Hover alone does not open it.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-2);width:calc(var(--space-24) * 4);max-width:100%">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Non-modal · bottom / start · overlay</p>
+    <button class="eg-btn eg-btn--secondary eg-btn--sm" type="button" aria-haspopup="dialog" aria-expanded="true" aria-controls="popover-specimen-settings">Display settings</button>
+    <div id="popover-specimen-settings" role="dialog" aria-label="Display settings" data-state="open" data-side="bottom" data-align="start" style="box-sizing:border-box;width:100%;padding:var(--space-6);border:1px solid var(--color-border-hairline-strong);border-radius:var(--radius-xl);background:var(--color-surface-overlay);backdrop-filter:blur(var(--blur-overlay)) saturate(150%);-webkit-backdrop-filter:blur(var(--blur-overlay)) saturate(150%);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)">
+      <h3 style="margin:0;color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight)">Display settings</h3>
+      <p style="margin:var(--space-2) 0 var(--space-4);color:var(--color-fg-secondary)">Choose a short label for this workspace.</p>
+      <div class="eg-field" style="gap:var(--space-2)">
+        <label class="eg-field__label" for="popover-specimen-workspace">Workspace label</label>
+        <input class="eg-field__control" id="popover-specimen-workspace" type="text" value="Workspace" style="font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);border-color:var(--color-border-brand);box-shadow:var(--shadow-well),var(--shadow-focus)">
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:var(--space-4)">
+        <button class="eg-btn eg-btn--ghost eg-btn--sm" type="button">Close</button>
+      </div>
+    </div>
+    <p style="margin:var(--space-2) 0 0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">First-field focus illustrated. Outside interaction dismisses without stealing outside focus.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-2);width:calc(var(--space-24) * 4);max-width:100%">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Modal · solid fallback · no scrim</p>
+    <button class="eg-btn eg-btn--secondary eg-btn--sm" type="button" aria-haspopup="dialog" aria-expanded="true" aria-controls="popover-specimen-details">Display details</button>
+    <div id="popover-specimen-details" role="dialog" aria-label="Display details" aria-modal="true" data-state="open" data-side="bottom" data-align="start" style="box-sizing:border-box;width:100%;padding:var(--space-6);border:1px solid var(--color-border-hairline-strong);border-radius:var(--radius-xl);background:var(--color-surface-2);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)">
+      <h3 style="margin:0;color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight)">Display details</h3>
+      <p style="margin:var(--space-2) 0 var(--space-4);color:var(--color-fg-secondary)">The same overlay shape becomes solid when transparency is reduced.</p>
+      <p style="margin:0;color:var(--color-fg-muted)">Modal interaction changes focus and outside access, not the panel's visual treatment.</p>
+      <div style="display:flex;justify-content:flex-end;margin-top:var(--space-4)">
+        <button class="eg-btn eg-btn--ghost eg-btn--sm" type="button" style="box-shadow:var(--shadow-focus)">Close</button>
+      </div>
+    </div>
+    <p style="margin:var(--space-2) 0 0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Close-button focus illustrated. Actual focus containment and page isolation require Radix runtime tests.</p>
+  </div>
+
+</div>
