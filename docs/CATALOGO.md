@@ -9,24 +9,26 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 
 | Acción | Componentes |
 |---|---|
-| mover | 35 |
-| mantener | 32 |
+| mover | 36 |
+| mantener | 30 |
 | nuevo | 22 |
 | extraer | 9 |
 | fusionar | 3 |
 | separar | 3 |
 | renombrar | 2 |
 | absorber | 1 |
+| componer | 1 |
 
 | Destino | Componentes |
 |---|---|
-| @egdev/ui | 71 |
+| @egdev/ui | 70 |
 | @egdev/effects | 2 |
 | Mando | 6 |
 | Cadencia | 1 |
 | Web (egdev.es) | 27 |
+| Criterio | 1 |
 
-Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un componente se parte en varios), **extraer** (sale una pieza nueva de otro), **fusionar** (dos o más pasan a uno), **absorber** (pasa a ser variante o preset de otro), **mover** (cambia de paquete), **nuevo** (falta y hace falta).
+Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un componente se parte en varios), **extraer** (sale una pieza nueva de otro), **fusionar** (dos o más pasan a uno), **absorber** (pasa a ser variante o preset de otro), **mover** (cambia de paquete), **nuevo** (falta y hace falta), **componer** (documented composition recipe, not a standalone component).
 
 ## @egdev/ui
 
@@ -71,10 +73,13 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **ProgressBar** | ProgressBar (átomo) | Progress | — | mantener | Radix Progress da `role=progressbar` y los aria-value*. |
 | **Gauge** | Gauge (átomo) | — (native role=meter) | Native transparent geometry frame | mantener | Currently implemented React component: one passive circular 0–100 measurement with optional decorative center and consumer-selected normal, warning, critical or muted state. Own transparent native frame uses existing tokens, not Surface. Effective contract: [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md), [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) and [base](specs/gauge.md). Not task progress, multiple rings or a dock API; no Radix dependency. |
 | **Stat** | Stat (átomo) | — | Text | mantener | Pierde `--glass` (usa Surface). |
-| **Mark** | Mark (átomo) | — | — | mantener |  |
 | **Dropzone** | Dropzone (átomo) | — | Icon, VisuallyHidden | mantener | Input file nativo oculto con VisuallyHidden. |
 | **Tooltip** | — | Tooltip | Portal | nuevo | Hace falta para IconButton, ModuleRail y Gauge. No existe. |
 | **Spinner** | — | — | — | nuevo | Carga en Button y estados de espera (Stack & Flow usa spinners-react). |
+| **SearchTrigger** | SearchTrigger (molécula) | — | Button, Kbd | mantener | Approved six-row catalogue correction: one search-launch action with an optional shortcut hint; the consumer owns the palette and shortcut binding. See [classification rules](CATALOGACION.md). API unchanged; no implementation implied. |
+| **PhotoFrame** | PhotoFrame (molécula) | AspectRatio | — | mantener | Approved six-row catalogue correction: one framed-image concept; AspectRatio is a supporting primitive. See [classification rules](CATALOGACION.md). API unchanged; no implementation implied. |
+| **PullQuote** | PullQuote (molécula) | — | Text | mantener | Approved six-row catalogue correction: one quotation concept; Text is a supporting piece. See [classification rules](CATALOGACION.md). API unchanged; no implementation implied. |
+| **Countdown** | Countdown (molécula) | — | Text | mantener | Approved six-row catalogue correction: one time-remaining display concept; Text is a supporting piece. See [classification rules](CATALOGACION.md). API unchanged; no implementation implied. |
 
 ### Moléculas
 
@@ -86,7 +91,6 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Tabs** | Tabs (molécula) | Tabs | Badge (contador) | mantener | Provisional future tab-selection concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md); Gauge's current finish follows the [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md). |
 | **Menu** | MenuList (popup) (molécula) | DropdownMenu | Icon, Kbd | separar | Menú desplegable con items, separadores, `--danger` y submenús. |
 | **NavList** | MenuList --nav (molécula) | Accordion (grupos) / Collapsible | Icon, Badge, StatusDot | separar | Navegación lateral con grupos plegables, contadores y etiquetas `__tag`. |
-| **UserMenu** | UserMenu (molécula) | DropdownMenu | Avatar, Menu | mantener | Es Menu con Avatar de trigger; podría ser solo un ejemplo de Menu. |
 | **Popover** | — | Popover | Surface, Portal | nuevo | Panel flotante al hacer clic. |
 | **HoverCard** | — | HoverCard | Surface glass, Portal | nuevo | El panel de detalle de Quorb al pasar por un Gauge. |
 | **Notice** | Notice (molécula) | — | Icon, Button | mantener | `role=status` o `alert`. Mantiene `--sm`. |
@@ -98,11 +102,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **SectionHeader** | SectionHeader (molécula) | — | Text | mantener | Cabecera de sección en registro Show; valorar unificar con PageHeader por `register`. |
 | **MeterRow** | — | Progress | ProgressBar, Text, Gauge key | nuevo | Etiqueta + valor + barra + ayuda (Quorb, egdev-live, Criterio). |
 | **ModuleCard** | ModuleCard (molécula) | — | Surface, Badge, Button | mantener | `--error`, `--stopped`, `--wide`, `--banded` (cabecera y pie en banda tonal, Grafito); `--glass` pasa a Surface. |
-| **SearchTrigger** | SearchTrigger (molécula) | — | Button, Kbd | mantener | Abre CommandPalette. |
 | **SocialLinks** | SocialLinks (molécula) | — | IconButton, Cluster | mantener |  |
-| **PhotoFrame** | PhotoFrame (molécula) | AspectRatio | — | mantener |  |
-| **PullQuote** | PullQuote (molécula) | — | Text | mantener |  |
-| **Countdown** | Countdown (molécula) | — | Text | mantener | También útil en egdev-live. |
 | **Carousel** | — | — (roving focus propio) | IconButton, ProgressBar | extraer | Sale de TipsSlider: contador, anterior/siguiente, arrastre y teclado. |
 | **GaugeDock** | GaugeStrip (parte de Gauge) | Toolbar | Surface glass, Gauge | extraer | La tira es un `role=toolbar` con foco itinerante; Radix Toolbar lo da hecho. |
 
@@ -125,6 +125,12 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
 | **AppShell** | — | — | Sidebar, ModuleRail, TabBar | nuevo | Barra lateral + contenido; móvil con TabBar. Hoy se repite en las seis apps. |
+
+### Composition recipes
+
+| Componente | Antes | Radix | Compone | Acción | Notas |
+|---|---|---|---|---|---|
+| **UserMenu** | UserMenu (molécula) | DropdownMenu | Avatar, Menu | componer | Approved six-row catalogue correction: Menu composition recipe with an Avatar trigger; no standalone UserMenu export. See [classification rules](CATALOGACION.md). Catalogue decision only; no implementation implied. |
 
 ## @egdev/effects
 
@@ -214,6 +220,14 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 |---|---|---|---|---|---|
 | **SectionShell** | SectionShell (plantilla) | — | — | mover | `--pro`, `--show`, `--flood`, `--deep`; `--grafito` (+ `--fade-top`, `--fade-bottom`) para lectura sobre gris. |
 | **HomeTemplate** | HomeTemplate (plantilla) | — | Secciones web, effects | mover |  |
+
+## Criterio
+
+### Application patterns
+
+| Componente | Antes | Radix | Compone | Acción | Notas |
+|---|---|---|---|---|---|
+| **Mark** | Mark (átomo) | — | — | mover | Approved six-row catalogue correction: Criterio application pattern, not a generic UI atom or molecule. See [classification rules](CATALOGACION.md). Catalogue decision only; no implementation implied. |
 
 ## Primitivas de Radix que se usan
 

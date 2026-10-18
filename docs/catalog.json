@@ -366,12 +366,12 @@
     "actual": "Mark",
     "nivelActual": "átomo",
     "nombre": "Mark",
-    "nivel": "atom",
-    "destino": "ui",
+    "nivel": "pattern",
+    "destino": "criterio",
     "radix": "—",
     "compone": "—",
-    "accion": "mantener",
-    "notas": ""
+    "accion": "mover",
+    "notas": "Approved six-row catalogue correction: Criterio application pattern, not a generic UI atom or molecule. See [classification rules](CATALOGACION.md). Catalogue decision only; no implementation implied."
   },
   {
     "actual": "Dropzone",
@@ -487,12 +487,12 @@
     "actual": "UserMenu",
     "nivelActual": "molécula",
     "nombre": "UserMenu",
-    "nivel": "molecule",
+    "nivel": "recipe",
     "destino": "ui",
     "radix": "DropdownMenu",
     "compone": "Avatar, Menu",
-    "accion": "mantener",
-    "notas": "Es Menu con Avatar de trigger; podría ser solo un ejemplo de Menu."
+    "accion": "componer",
+    "notas": "Approved six-row catalogue correction: Menu composition recipe with an Avatar trigger; no standalone UserMenu export. See [classification rules](CATALOGACION.md). Catalogue decision only; no implementation implied."
   },
   {
     "actual": "—",
@@ -630,12 +630,12 @@
     "actual": "SearchTrigger",
     "nivelActual": "molécula",
     "nombre": "SearchTrigger",
-    "nivel": "molecule",
+    "nivel": "atom",
     "destino": "ui",
     "radix": "—",
     "compone": "Button, Kbd",
     "accion": "mantener",
-    "notas": "Abre CommandPalette."
+    "notas": "Approved six-row catalogue correction: one search-launch action with an optional shortcut hint; the consumer owns the palette and shortcut binding. See [classification rules](CATALOGACION.md). API unchanged; no implementation implied."
   },
   {
     "actual": "SocialLinks",
@@ -652,34 +652,34 @@
     "actual": "PhotoFrame",
     "nivelActual": "molécula",
     "nombre": "PhotoFrame",
-    "nivel": "molecule",
+    "nivel": "atom",
     "destino": "ui",
     "radix": "AspectRatio",
     "compone": "—",
     "accion": "mantener",
-    "notas": ""
+    "notas": "Approved six-row catalogue correction: one framed-image concept; AspectRatio is a supporting primitive. See [classification rules](CATALOGACION.md). API unchanged; no implementation implied."
   },
   {
     "actual": "PullQuote",
     "nivelActual": "molécula",
     "nombre": "PullQuote",
-    "nivel": "molecule",
+    "nivel": "atom",
     "destino": "ui",
     "radix": "—",
     "compone": "Text",
     "accion": "mantener",
-    "notas": ""
+    "notas": "Approved six-row catalogue correction: one quotation concept; Text is a supporting piece. See [classification rules](CATALOGACION.md). API unchanged; no implementation implied."
   },
   {
     "actual": "Countdown",
     "nivelActual": "molécula",
     "nombre": "Countdown",
-    "nivel": "molecule",
+    "nivel": "atom",
     "destino": "ui",
     "radix": "—",
     "compone": "Text",
     "accion": "mantener",
-    "notas": "También útil en egdev-live."
+    "notas": "Approved six-row catalogue correction: one time-remaining display concept; Text is a supporting piece. See [classification rules](CATALOGACION.md). API unchanged; no implementation implied."
   },
   {
     "actual": "TerminalCard",

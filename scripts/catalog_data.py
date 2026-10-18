@@ -1,5 +1,5 @@
 # Fuente del catálogo: (actual, nivel_actual, nuevo, nivel_nuevo, destino, radix, compone, accion, notas)
-# destino: ui | effects | web | mando | cadencia | —   accion: mantener | renombrar | separar | fusionar | mover | extraer | nuevo | absorber
+# Destinations: ui | effects | web | mando | cadencia | criterio | —   Actions: mantener | renombrar | separar | fusionar | mover | extraer | nuevo | absorber | componer
 C = [
 # ---------- PRIMITIVAS (nuevas) ----------
 ("—","—","Slot","primitive","ui","Slot","—","nuevo","Lo da Radix; se reexporta para `asChild` en todo el sistema."),
@@ -36,7 +36,7 @@ C = [
 ("ProgressBar","átomo","ProgressBar","atom","ui","Progress","—","mantener","Radix Progress da `role=progressbar` y los aria-value*."),
 ("Gauge","átomo","Gauge","atom","ui","— (native role=meter)","Native transparent geometry frame","mantener","Currently implemented React component: one passive circular 0–100 measurement with optional decorative center and consumer-selected normal, warning, critical or muted state. Own transparent native frame uses existing tokens, not Surface. Effective contract: [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md), [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) and [base](specs/gauge.md). Not task progress, multiple rings or a dock API; no Radix dependency."),
 ("Stat","átomo","Stat","atom","ui","—","Text","mantener","Pierde `--glass` (usa Surface)."),
-("Mark","átomo","Mark","atom","ui","—","—","mantener",""),
+("Mark","átomo","Mark","pattern","criterio","—","—","mover","Approved six-row catalogue correction: Criterio application pattern, not a generic UI atom or molecule. See [classification rules](CATALOGACION.md). Catalogue decision only; no implementation implied."),
 ("Dropzone","átomo","Dropzone","atom","ui","—","Icon, VisuallyHidden","mantener","Input file nativo oculto con VisuallyHidden."),
 ("—","—","Tooltip","atom","ui","Tooltip","Portal","nuevo","Hace falta para IconButton, ModuleRail y Gauge. No existe."),
 ("—","—","Spinner","atom","ui","—","—","nuevo","Carga en Button y estados de espera (Stack & Flow usa spinners-react)."),
@@ -48,7 +48,7 @@ C = [
 ("Tabs","molécula","Tabs","molecule","ui","Tabs","Badge (contador)","mantener","Provisional future tab-selection concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md); Gauge's current finish follows the [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md)."),
 ("MenuList (popup)","molécula","Menu","molecule","ui","DropdownMenu","Icon, Kbd","separar","Menú desplegable con items, separadores, `--danger` y submenús."),
 ("MenuList --nav","molécula","NavList","molecule","ui","Accordion (grupos) / Collapsible","Icon, Badge, StatusDot","separar","Navegación lateral con grupos plegables, contadores y etiquetas `__tag`."),
-("UserMenu","molécula","UserMenu","molecule","ui","DropdownMenu","Avatar, Menu","mantener","Es Menu con Avatar de trigger; podría ser solo un ejemplo de Menu."),
+("UserMenu","molécula","UserMenu","recipe","ui","DropdownMenu","Avatar, Menu","componer","Approved six-row catalogue correction: Menu composition recipe with an Avatar trigger; no standalone UserMenu export. See [classification rules](CATALOGACION.md). Catalogue decision only; no implementation implied."),
 ("—","—","Popover","molecule","ui","Popover","Surface, Portal","nuevo","Panel flotante al hacer clic."),
 ("—","—","HoverCard","molecule","ui","HoverCard","Surface glass, Portal","nuevo","El panel de detalle de Quorb al pasar por un Gauge."),
 ("Notice","molécula","Notice","molecule","ui","—","Icon, Button","mantener","`role=status` o `alert`. Mantiene `--sm`."),
@@ -61,11 +61,11 @@ C = [
 ("SectionHeader","molécula","SectionHeader","molecule","ui","—","Text","mantener","Cabecera de sección en registro Show; valorar unificar con PageHeader por `register`."),
 ("—","—","MeterRow","molecule","ui","Progress","ProgressBar, Text, Gauge key","nuevo","Etiqueta + valor + barra + ayuda (Quorb, egdev-live, Criterio)."),
 ("ModuleCard","molécula","ModuleCard","molecule","ui","—","Surface, Badge, Button","mantener","`--error`, `--stopped`, `--wide`, `--banded` (cabecera y pie en banda tonal, Grafito); `--glass` pasa a Surface."),
-("SearchTrigger","molécula","SearchTrigger","molecule","ui","—","Button, Kbd","mantener","Abre CommandPalette."),
+("SearchTrigger","molécula","SearchTrigger","atom","ui","—","Button, Kbd","mantener","Approved six-row catalogue correction: one search-launch action with an optional shortcut hint; the consumer owns the palette and shortcut binding. See [classification rules](CATALOGACION.md). API unchanged; no implementation implied."),
 ("SocialLinks","molécula","SocialLinks","molecule","ui","—","IconButton, Cluster","mantener",""),
-("PhotoFrame","molécula","PhotoFrame","molecule","ui","AspectRatio","—","mantener",""),
-("PullQuote","molécula","PullQuote","molecule","ui","—","Text","mantener",""),
-("Countdown","molécula","Countdown","molecule","ui","—","Text","mantener","También útil en egdev-live."),
+("PhotoFrame","molécula","PhotoFrame","atom","ui","AspectRatio","—","mantener","Approved six-row catalogue correction: one framed-image concept; AspectRatio is a supporting primitive. See [classification rules](CATALOGACION.md). API unchanged; no implementation implied."),
+("PullQuote","molécula","PullQuote","atom","ui","—","Text","mantener","Approved six-row catalogue correction: one quotation concept; Text is a supporting piece. See [classification rules](CATALOGACION.md). API unchanged; no implementation implied."),
+("Countdown","molécula","Countdown","atom","ui","—","Text","mantener","Approved six-row catalogue correction: one time-remaining display concept; Text is a supporting piece. See [classification rules](CATALOGACION.md). API unchanged; no implementation implied."),
 ("TerminalCard","molécula","TerminalCard","molecule","web","—","Surface","mover","Ficha de perfil de la web. Barra en banda `surface-2` (Grafito)."),
 ("ToolCallChip","molécula (agente)","ToolCallChip","molecule","mando","Collapsible","Badge, StatusDot","mover","Sube a ui si otra app aloja el agente."),
 ("ConfirmCard","molécula (agente)","ConfirmCard","molecule","mando","Collapsible","Surface, Badge, ButtonGroup","mover","Argumentos crudos en Collapsible."),
