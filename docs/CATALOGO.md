@@ -9,15 +9,15 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 
 | Acción | Componentes |
 |---|---|
-| mover | 36 |
+| mover | 35 |
 | mantener | 30 |
 | nuevo | 22 |
 | extraer | 9 |
 | fusionar | 3 |
 | separar | 3 |
+| componer | 2 |
 | renombrar | 2 |
 | absorber | 1 |
-| componer | 1 |
 
 | Destino | Componentes |
 |---|---|
@@ -104,19 +104,19 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **ModuleCard** | ModuleCard (molécula) | — | Surface, Badge, Button | mantener | `--error`, `--stopped`, `--wide`, `--banded` (cabecera y pie en banda tonal, Grafito); `--glass` pasa a Surface. |
 | **SocialLinks** | SocialLinks (molécula) | — | IconButton, Cluster | mantener |  |
 | **Carousel** | — | — (roving focus propio) | IconButton, ProgressBar | extraer | Sale de TipsSlider: contador, anterior/siguiente, arrastre y teclado. |
+| **Dialog** | Dialog (organismo) | Dialog | Surface, ButtonGroup, Portal | mantener | Coordinates dialog content and actions as one reusable overlay interaction, not a structural page region. Retains the `sheet` variant for side panels (MobileMenu). See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval. |
+| **AlertDialog** | — | AlertDialog | Dialog | nuevo | Coordinates a confirmation prompt and decision actions as one reusable interaction, not a structural page region. Retains destructive confirmations (delete, disconnect). See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval. |
+| **CommandPalette** | CommandPalette (organismo) | Dialog (+ cmdk, a confirmar) | Input, ListItem, Kbd | mantener | Coordinates search input, results and command activation as one reusable interaction, not application-level structure. Radix has no combobox; cmdk over Radix Dialog remains a candidate requiring confirmation. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation or dependency approval. |
+| **Table** | Table (organismo) | ScrollArea | Checkbox, Switch, Badge, ButtonGroup | mantener | Coordinates tabular data and local sorting and selection as one reusable unit, not a structural page region. Retains the native table with sorting and selection in the hook. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval. |
 | **GaugeDock** | GaugeStrip (parte de Gauge) | Toolbar | Surface glass, Gauge | extraer | La tira es un `role=toolbar` con foco itinerante; Radix Toolbar lo da hecho. |
 
 ### Organismos
 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
-| **Dialog** | Dialog (organismo) | Dialog | Surface, ButtonGroup, Portal | mantener | Variante `sheet` para paneles laterales (MobileMenu). |
-| **AlertDialog** | — | AlertDialog | Dialog | nuevo | Confirmaciones destructivas (borrar, desconectar). |
-| **CommandPalette** | CommandPalette (organismo) | Dialog (+ cmdk, a confirmar) | Input, ListItem, Kbd | mantener | Radix no tiene combobox; cmdk es la opción habitual sobre Radix Dialog. |
 | **Sidebar** | — | ScrollArea | ProductMark, NavList, Text | nuevo | La barra lateral de todas las apps. |
 | **ModuleRail** | ModuleRail (organismo (agente)) | Tooltip + NavigationMenu o ToggleGroup | ProductMark, IconButton, StatusDot | mantener | Raíl compacto de Mando; genérico. |
 | **TabBar** | TabBar (organismo (agente)) | — | Icon, Badge | mantener | Navegación inferior móvil. |
-| **Table** | Table (organismo) | ScrollArea | Checkbox, Switch, Badge, ButtonGroup | mantener | Tabla nativa; orden y selección en el hook. |
 | **CalendarGrid** | CalendarGrid (organismo) | — (arrastre: dnd-kit, a confirmar) | ListItem, Text | mantener | `.eg-day` y `.eg-post-row` pasan a partes internas. Falta vista Mes. |
 | **PreviewFrame** | StageFrame (organismo) | AspectRatio + Toolbar | IconButton, Chip | renombrar | Vista previa a tamaño fijo con zonas seguras. |
 
@@ -134,12 +134,12 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 
 ## @egdev/effects
 
-### Organismos
+### Átomos
 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
-| **AmbientBackground** | AmbientBackground (organismo (efecto)) | — | — | mover | Canvas de partículas. |
-| **Isotipo3D** | Isotipo3D (organismo (efecto)) | — | — | mover | three.js con fallback SVG. |
+| **AmbientBackground** | AmbientBackground (organismo (efecto)) | — | — | mover | One decorative particle-background effect rendered with canvas; it does not coordinate independent UI concepts or define a structural region. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval. |
+| **Isotipo3D** | Isotipo3D (organismo (efecto)) | — | — | mover | One rendered brand-mark effect using three.js with an SVG fallback; rendering complexity does not make it a structural region or coordinate independent UI concepts. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation or dependency approval. |
 
 ## Mando
 
@@ -208,7 +208,6 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Closing** | Closing (organismo) | — | Text, Button | mover |  |
 | **NotesBoard** | NotesBoard (organismo) | — | SectionHeader, ChipGroup, NoteItem | mover |  |
 | **NowStrip** | NowStrip (organismo) | — | NowCard | mover |  |
-| **ProjectsGrid** | ProjectsGrid (organismo) | — | ProjectCard | mover |  |
 | **BlogGrid** | BlogGrid (organismo) | — | ArticleFeature, ArticleItem | mover |  |
 | **LiveBand** | LiveBand (organismo) | — | Countdown, PhotoFrame, StreamItem | mover |  |
 | **CommunityGrid** | CommunityGrid (organismo) | — | CommunityCard | mover |  |
@@ -220,6 +219,12 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 |---|---|---|---|---|---|
 | **SectionShell** | SectionShell (plantilla) | — | — | mover | `--pro`, `--show`, `--flood`, `--deep`; `--grafito` (+ `--fade-top`, `--fade-bottom`) para lectura sobre gris. |
 | **HomeTemplate** | HomeTemplate (plantilla) | — | Secciones web, effects | mover |  |
+
+### Composition recipes
+
+| Componente | Antes | Radix | Compone | Acción | Notas |
+|---|---|---|---|---|---|
+| **ProjectsGrid** | ProjectsGrid (organismo) | — | ProjectCard | componer | Web composition recipe arranging ProjectCard instances; no independently specified component API or behavior beyond that composition. Not a standalone component or export. See [classification rules](CATALOGACION.md). Catalogue classification only, no implementation approval. |
 
 ## Criterio
 
