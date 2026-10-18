@@ -7,8 +7,8 @@ keys = ["actual", "nivelActual", "nombre", "nivel", "destino", "radix", "compone
 rows = [dict(zip(keys, r)) for r in C]
 (ROOT / "docs/catalog.json").write_text(json.dumps(rows, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-TIERS = [("primitive", "Primitivas"), ("atom", "Átomos"), ("molecule", "Moléculas"), ("organism", "Organismos"), ("template", "Plantillas")]
-DEST = [("ui", "@egdev/ui"), ("effects", "@egdev/effects"), ("mando", "Mando"), ("cadencia", "Cadencia"), ("web", "Web (egdev.es)")]
+TIERS = [("primitive", "Primitivas"), ("atom", "Átomos"), ("molecule", "Moléculas"), ("organism", "Organismos"), ("template", "Plantillas"), ("recipe", "Composition recipes"), ("pattern", "Application patterns")]
+DEST = [("ui", "@egdev/ui"), ("effects", "@egdev/effects"), ("mando", "Mando"), ("cadencia", "Cadencia"), ("web", "Web (egdev.es)"), ("criterio", "Criterio")]
 
 def esc(s): return s.replace("|", "\\|")
 
@@ -22,7 +22,7 @@ dcnt = collections.Counter(r["destino"] for r in rows)
 out += ["## Resumen", "",
         "| Acción | Componentes |", "|---|---|"] + [f"| {a} | {n} |" for a, n in sorted(cnt.items(), key=lambda x: -x[1])] + [""]
 out += ["| Destino | Componentes |", "|---|---|"] + [f"| {lbl} | {dcnt.get(d, 0)} |" for d, lbl in DEST] + [""]
-out += ["Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un componente se parte en varios), **extraer** (sale una pieza nueva de otro), **fusionar** (dos o más pasan a uno), **absorber** (pasa a ser variante o preset de otro), **mover** (cambia de paquete), **nuevo** (falta y hace falta).", ""]
+out += ["Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un componente se parte en varios), **extraer** (sale una pieza nueva de otro), **fusionar** (dos o más pasan a uno), **absorber** (pasa a ser variante o preset de otro), **mover** (cambia de paquete), **nuevo** (falta y hace falta), **componer** (documented composition recipe, not a standalone component).", ""]
 
 for d, lbl in DEST:
     sub = [r for r in rows if r["destino"] == d]
