@@ -1,0 +1,349 @@
+{
+  "kind": "Real browser captures of agent-composed expected-design specimens for the organism spec wave, not React implementation evidence",
+  "tool": "Playwright MCP",
+  "sources": {
+    "tokens": "packages/tokens/dist/tokens.css",
+    "tokensSHA256": "7ce0a0d70d0d058eadbb95b5063e2f3969a1f0426ed551478c70d15dcdb2b4fe",
+    "legacyCSS": "packages/ui/src/styles/legacy/bundle.css",
+    "legacyCSSSHA256": "4f1763a54e080cd206b9d64f57ff9bbc5e3858159ec786ef8263134edee997fc",
+    "fonts": "Barlow, Barlow Condensed, JetBrains Mono via explicit Google Fonts stylesheet and document.fonts.load"
+  },
+  "limits": [
+    "Static states illustrate design intent; they do not verify keyboard, focus, assistive technology or runtime behavior.",
+    "Element screenshots capture the specimen zone at a 1280x900 viewport; tall roots may be 1265px wide because of the scrollbar.",
+    "Agent-composed specimens are proposed for owner review in each issue under delegated recommended decisions."
+  ],
+  "approval": {
+    "status": "Approved",
+    "reference": "Owner instructions 2026-10-17/18: \"no me preguntes, aplica tu las opciones sugeridas y si tengo que irerar en la revisi\u00f3n ya lo vemos\" and \"empezamos con spcs de organismos\"; adopted as expected design per citing spec, subject to owner review in each issue."
+  },
+  "images": [
+    {
+      "component": "alert-dialog",
+      "file": "alert-dialog--specimen.png",
+      "source": "alert-dialog.specimen.html",
+      "sha256": "3d348ff39c64508416135197066439add03ac484256180484994e8495df996f4",
+      "sourceSHA256": "90b8e7d5f5330e1deb519025080d6e920e54d8f65e513f17f476268366ccd78f",
+      "pixelDimensions": [1280, 515],
+      "capturedAt": "2026-10-18T02:05:41.509Z",
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 514.390625,
+          "top": 0,
+          "right": 1280,
+          "bottom": 514.390625,
+          "left": 0
+        },
+        "fonts": ["Barlow 500", "Barlow 600", "Barlow Condensed 700", "Barlow Condensed 800", "JetBrains Mono 400"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      }
+    },
+    {
+      "component": "calendar-grid",
+      "file": "calendar-grid--specimen.png",
+      "source": "calendar-grid.specimen.html",
+      "sha256": "1ca8dfdec47c283d30134e5690efd3cbcf09897ad6d2467d58e9df1d10141fef",
+      "sourceSHA256": "4f71c21341dd66d738cb6126ba8b7bb4b05f534fc7fa89646e09004ca43c5872",
+      "pixelDimensions": [1280, 778],
+      "capturedAt": "2026-10-18T02:07:51.350Z",
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "MAIN",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 777.078125,
+          "top": 0,
+          "right": 1280,
+          "bottom": 777.078125,
+          "left": 0
+        },
+        "fonts": [
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow 600",
+          "Barlow Condensed 600",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 400"
+        ],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      }
+    },
+    {
+      "component": "command-palette",
+      "file": "command-palette--specimen.png",
+      "source": "command-palette.specimen.html",
+      "sha256": "e4093ba741679c5a8d5622336fc9c1ad73a6f5d272c97668e843ca816ff4261c",
+      "sourceSHA256": "e417ad4b65b2627c485119320ad5ef27f26053cce1dfa7cba24f5498e4eb40a1",
+      "pixelDimensions": [1280, 590],
+      "capturedAt": "2026-10-18T02:05:47.229Z",
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 590,
+          "top": 0,
+          "right": 1280,
+          "bottom": 590,
+          "left": 0
+        },
+        "fonts": [
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow 600",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 400",
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow 600",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 400"
+        ],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      }
+    },
+    {
+      "component": "dialog",
+      "file": "dialog--specimen.png",
+      "source": "dialog.specimen.html",
+      "sha256": "f989d068ab7524bf98cce04a4842c8b64c082cae4eb4db7d6cb5bb01b008e3a0",
+      "sourceSHA256": "752b1597c637061a79f10c03d9f3d0523990d0b12f4bc9607f179db3db848409",
+      "pixelDimensions": [1280, 628],
+      "capturedAt": "2026-10-18T02:05:33.949Z",
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 627.1875,
+          "top": 0,
+          "right": 1280,
+          "bottom": 627.1875,
+          "left": 0
+        },
+        "fonts": [
+          "Barlow 500",
+          "Barlow 600",
+          "Barlow 700",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 400"
+        ],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      }
+    },
+    {
+      "component": "module-rail",
+      "file": "module-rail--specimen.png",
+      "source": "module-rail.specimen.html",
+      "sha256": "94a506790fa479661d314ed5382734525faed7237bc79a1123892e77eb6c8679",
+      "sourceSHA256": "a6c29fa7df16e06a8a996926e2fcce423d3246298abff6d307dba0db98f2040b",
+      "pixelDimensions": [1280, 683],
+      "capturedAt": "2026-10-18T02:07:46.444Z",
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "MAIN",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 683,
+          "top": 0,
+          "right": 1280,
+          "bottom": 683,
+          "left": 0
+        },
+        "fonts": [
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow 600",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 400"
+        ],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      }
+    },
+    {
+      "component": "preview-frame",
+      "file": "preview-frame--specimen.png",
+      "source": "preview-frame.specimen.html",
+      "sha256": "aa863f6e2a9cd34d7a7468787776c38d72bdda95ac053e8f5a52d8344dcc78ab",
+      "sourceSHA256": "77ce2c75b723215a65d13cb7c146f4438b5107ff38857791b1226f0dc3011895",
+      "pixelDimensions": [1280, 717],
+      "capturedAt": "2026-10-18T02:07:04.425Z",
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 716.015625,
+          "top": 0,
+          "right": 1280,
+          "bottom": 716.015625,
+          "left": 0
+        },
+        "fonts": [
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow 600",
+          "Barlow 700",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 400",
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow 600",
+          "Barlow 700",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 400"
+        ],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      }
+    },
+    {
+      "component": "sidebar",
+      "file": "sidebar--specimen.png",
+      "source": "sidebar.specimen.html",
+      "sha256": "214e4a0ebb531561935419d309990d81eda88a29adef27b6825246cb9528e805",
+      "sourceSHA256": "a9f3274f1e999a9a6977f3aea5a3616205cce631966e99f2b750ccc1f61dc433",
+      "pixelDimensions": [1280, 509],
+      "capturedAt": "2026-10-18T02:07:56.212Z",
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "MAIN",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 509,
+          "top": 0,
+          "right": 1280,
+          "bottom": 509,
+          "left": 0
+        },
+        "fonts": [
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow 600",
+          "Barlow Condensed 600",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 400"
+        ],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      }
+    },
+    {
+      "component": "tab-bar",
+      "file": "tab-bar--specimen.png",
+      "source": "tab-bar.specimen.html",
+      "sha256": "a80fc6267124d538bc55ce7395540f604cfef89f0635ea3b6a2543d082ed1a05",
+      "sourceSHA256": "83bfaea5f3143fd7d28029942e24186eba5b561c5f979762dbf368021a7bda6e",
+      "pixelDimensions": [1280, 186],
+      "capturedAt": "2026-10-18T02:06:02.611Z",
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "MAIN",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 186,
+          "top": 0,
+          "right": 1280,
+          "bottom": 186,
+          "left": 0
+        },
+        "fonts": ["Barlow 400", "Barlow 500", "Barlow 600", "Barlow Condensed 800", "JetBrains Mono 400"],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      }
+    },
+    {
+      "component": "table",
+      "file": "table--specimen.png",
+      "source": "table.specimen.html",
+      "sha256": "8d8e8328a4cceac43496d9971d09632dca970169da4d2929f54f4badfda90b4e",
+      "sourceSHA256": "e1e2be3dd736a0bb870bed383e8906935bf948fd310e9023e1faf65c0741f5db",
+      "pixelDimensions": [960, 1046],
+      "capturedAt": "2026-10-18T02:05:52.272Z",
+      "conditions": {
+        "viewport": [1280, 900],
+        "dpr": 1,
+        "rootTag": "DIV",
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 960,
+          "height": 1045.28125,
+          "top": 0,
+          "right": 960,
+          "bottom": 1045.28125,
+          "left": 0
+        },
+        "fonts": [
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow 600",
+          "Barlow 700",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 400",
+          "JetBrains Mono 500",
+          "Barlow 400",
+          "Barlow 500",
+          "Barlow 600",
+          "Barlow 700",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 400",
+          "JetBrains Mono 500"
+        ],
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "reducedMotion": false,
+        "brokenImages": 0
+      }
+    }
+  ]
+}

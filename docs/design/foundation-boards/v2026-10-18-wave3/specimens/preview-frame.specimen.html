@@ -1,0 +1,57 @@
+<!-- PreviewFrame v0.1 static expected-design fragment (VIS-02). Parent supplies tokens.css + Foundation bundle.css. Legacy .eg-stage* classes illustrate the source frame; .eg-stage__frame is the canvas well wrapper (paint, clip, reticle; its legacy aspect-ratio reset to auto) and an inner geometry-only div stands in for AspectRatio #78 (the legacy reticle stands in for the proposed --pattern-grid token); inline token styles show the v0.1 deltas: Surface well canvas (surface-0, well shadow, hairline), hairline-strong safe area, labelled info/warning zones, 14px bars, plain variant, consumer-constrained 9:16 portrait and neutral Badge pills for variables. Placeholder blocks stand in for consumer content. Static illustration only: no JS, no interaction. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<div style="box-sizing:border-box;margin:0;padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-6);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans)">
+  <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">PreviewFrame v0.1 · static states. Canvas content, the Replay action and variable names are consumer content.</p>
+  <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-8);align-items:start">
+
+    <section style="display:flex;flex-direction:column;gap:var(--space-3);min-width:0">
+      <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">Grid · safe area · zones (info "TV", warning "Mobile") · caption, action, footer</p>
+      <figure class="eg-stage" style="margin:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-2)">
+        <figcaption style="min-width:0"><p class="eg-eyebrow">Preview · 1920×1080</p></figcaption>
+        <div style="display:flex;align-items:center;gap:var(--space-2);justify-self:end"><button type="button" class="eg-btn eg-btn--ghost eg-btn--sm">Replay</button></div>
+        <div class="eg-stage__frame" style="grid-column:1 / -1;aspect-ratio:auto;isolation:isolate;background-color:var(--color-surface-0);border-color:var(--color-border-hairline);box-shadow:var(--shadow-well)"><!-- canvas well wrapper: Surface well, clip, reticle -->
+          <div style="position:relative;aspect-ratio:16 / 9"><!-- AspectRatio #78 geometry only -->
+          <div aria-hidden="true" style="position:absolute;inset:0">
+            <span style="position:absolute;left:20%;top:16%;width:60%;height:50%;border-radius:var(--radius-md);background:var(--color-surface-3)"></span>
+            <span style="position:absolute;left:20%;width:60%;top:72%;text-align:center;font-family:var(--font-display);font-weight:800;font-size:var(--text-label-default);text-transform:uppercase;color:var(--color-fg-secondary)">Consumer content</span>
+          </div>
+          <span aria-hidden="true" style="position:absolute;left:10%;top:8%;width:80%;height:84%;border:1px dashed var(--color-status-info);opacity:70%;background:transparent"></span>
+          <span aria-hidden="true" style="position:absolute;left:10%;top:8%;width:80%;height:84%;background:var(--color-status-info);opacity:6%"></span>
+          <span aria-hidden="true" style="position:absolute;left:calc(10% + var(--space-1) * 1.5);top:calc(8% + var(--space-1));padding:calc(var(--space-1) / 2) calc(var(--space-1) * 1.5);border-radius:var(--radius-sm);background:var(--color-bg-canvas);font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight);line-height:var(--text-label-default--line-height);color:var(--color-status-info)">TV</span>
+          <span aria-hidden="true" style="position:absolute;left:30%;top:14%;width:40%;height:72%;border:1px dashed var(--color-status-warning);opacity:80%"></span>
+          <span aria-hidden="true" style="position:absolute;left:30%;top:14%;width:40%;height:72%;background:var(--color-status-warning);opacity:6%"></span>
+          <span aria-hidden="true" style="position:absolute;left:calc(30% + var(--space-1) * 1.5);top:calc(14% + var(--space-1));padding:calc(var(--space-1) / 2) calc(var(--space-1) * 1.5);border-radius:var(--radius-sm);background:var(--color-bg-canvas);font-size:var(--text-label-default);font-weight:var(--text-label-default--font-weight);line-height:var(--text-label-default--line-height);color:var(--color-status-warning)">Mobile</span>
+          <span aria-hidden="true" style="position:absolute;inset:5%;border:1px dashed var(--color-border-hairline-strong);border-radius:var(--radius-sm);pointer-events:none"></span>
+          </div>
+        </div>
+        <div style="grid-column:1 / -1;display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-2);font-size:var(--text-label-default);font-weight:var(--text-body-default--font-weight);line-height:var(--text-label-default--line-height);color:var(--color-fg-muted)">
+          <span>Variables:</span><span class="eg-status">{user}</span><span class="eg-status">{tier}</span><span class="eg-status">{message}</span>
+        </div>
+      </figure>
+    </section>
+
+    <section style="display:flex;flex-direction:column;gap:var(--space-3);min-width:0">
+      <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-meta)">variant="plain" · well without reticle · safe area on</p>
+      <figure class="eg-stage" aria-label="Banner preview" style="margin:0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-2)">
+        <figcaption style="min-width:0"><p class="eg-eyebrow">Banner · 1500×500</p></figcaption>
+        <div class="eg-stage__frame" style="grid-column:1 / -1;aspect-ratio:auto;isolation:isolate;background-color:var(--color-surface-0);background-image:none;border-color:var(--color-border-hairline);box-shadow:var(--shadow-well)">
+          <div style="position:relative;aspect-ratio:3 / 1">
+          <div aria-hidden="true" style="position:absolute;inset:0;background:var(--color-surface-2)"></div>
+          <span aria-hidden="true" style="position:absolute;inset:5%;border:1px dashed var(--color-border-hairline-strong);border-radius:var(--radius-sm)"></span>
+          </div>
+        </div>
+      </figure>
+
+      <p style="margin:var(--space-4) 0 0;color:var(--color-fg-muted);font-size:var(--text-meta)">Portrait 9:16 · width constrained by the consumer through root className · safeArea={false}</p>
+      <figure class="eg-stage" style="margin:0 auto;width:100%;max-width:calc(var(--space-20) * 2);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-2)">
+        <figcaption style="min-width:0"><p class="eg-eyebrow">Short · 1080×1920</p></figcaption>
+        <div class="eg-stage__frame" style="grid-column:1 / -1;aspect-ratio:auto;isolation:isolate;background-color:var(--color-surface-0);border-color:var(--color-border-hairline);box-shadow:var(--shadow-well)">
+          <div style="position:relative;aspect-ratio:9 / 16">
+          <div aria-hidden="true" style="position:absolute;left:10%;top:30%;width:80%;height:40%;border-radius:var(--radius-md);background:var(--color-surface-3)"></div>
+          </div>
+        </div>
+      </figure>
+    </section>
+
+  </div>
+</div>

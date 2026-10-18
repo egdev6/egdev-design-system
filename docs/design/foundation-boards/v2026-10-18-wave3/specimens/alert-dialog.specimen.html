@@ -1,0 +1,51 @@
+<!-- AlertDialog v0.1 static expected-design specimen, not an implementation.
+     Token-only: inline styles use var(--…) tokens from packages/tokens, 0, 1px borders and percentages.
+     No Foundation component classes, scripts, external assets, portal, focus trap or real dismissal.
+     SVG path/viewBox/stroke-width values are glyph geometry of the system `alert` icon, not appearance sizes.
+     Buttons are token silhouettes of Button #53 (primary / secondary, sm 40px), not revised atom contracts. -->
+<div style="box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-6);padding:var(--space-8);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight)">
+
+  <!-- Scenario 1: tone="danger", destructive confirmation, Cancel focused on open -->
+  <div style="display:flex;flex-direction:column;gap:var(--space-2);width:calc(var(--space-20) * 7);max-width:100%">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">tone="danger" · destructive confirmation · Cancel focused on open</p>
+    <div style="box-sizing:border-box;display:grid;place-items:center;height:calc(var(--space-24) * 4);overflow:hidden;padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-lg);background:color-mix(in srgb, var(--color-bg-scrim) 72%, transparent)">
+      <section role="alertdialog" aria-modal="true" aria-labelledby="ad-spec-1-title" aria-describedby="ad-spec-1-desc" data-state="open" style="box-sizing:border-box;display:flex;flex-direction:column;width:min(100%, calc(var(--space-24) * 5));max-height:100%;overflow:hidden;border:1px solid var(--color-border-hairline-strong);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-2);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)">
+        <div style="display:flex;flex-direction:column;gap:var(--space-2);padding:var(--space-6) var(--space-6) var(--space-4)">
+          <div style="display:flex;align-items:center;gap:var(--space-3)">
+            <svg viewBox="0 0 24 24" aria-hidden="true" style="flex:none;width:var(--space-6);height:var(--space-6);fill:none;stroke:var(--color-status-danger);stroke-linecap:round;stroke-linejoin:round" stroke-width="2"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+            <h2 id="ad-spec-1-title" style="margin:0;font-family:var(--font-display);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight);text-transform:uppercase">Delete this idea?</h2>
+          </div>
+          <p id="ad-spec-1-desc" style="margin:0;color:var(--color-fg-secondary)">“Four permission levels” and its notes are removed permanently. This cannot be undone.</p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:var(--space-3);padding:var(--space-4) var(--space-6);border-top:1px solid var(--color-border-hairline);background:var(--color-surface-0)">
+          <button type="button" style="box-sizing:border-box;min-height:var(--space-10);padding:var(--space-2) var(--space-4);border:1px solid color-mix(in srgb, var(--color-focus-ring) 50%, transparent);border-radius:var(--radius-md);background:var(--gradient-btn-secondary),var(--color-surface-1);color:var(--color-action-primary-fg);font-family:var(--font-sans);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);font-weight:var(--text-label-default--font-weight);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1),var(--shadow-focus)">Cancel</button>
+          <button type="button" style="box-sizing:border-box;min-height:var(--space-10);padding:var(--space-2) var(--space-4);border:1px solid color-mix(in srgb, var(--logo-red-shade) 70%, transparent);border-radius:var(--radius-md);background:var(--gradient-btn-primary);color:var(--color-action-primary-solid-fg);font-family:var(--font-sans);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);font-weight:var(--text-label-default--font-weight);box-shadow:var(--shadow-btn-primary)">Delete idea</button>
+        </div>
+      </section>
+    </div>
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Alert icon plus a verb-specific action label: danger is never color alone. No close (X) button; scrim clicks do nothing.</p>
+  </div>
+
+  <!-- Scenario 2: tone="neutral", consequence body, solid panel -->
+  <div style="display:flex;flex-direction:column;gap:var(--space-2);width:calc(var(--space-20) * 7);max-width:100%">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">tone="neutral" · optional body listing consequences</p>
+    <div style="box-sizing:border-box;display:grid;place-items:center;height:calc(var(--space-24) * 4);overflow:hidden;padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-lg);background:color-mix(in srgb, var(--color-bg-scrim) 72%, transparent)">
+      <section role="alertdialog" aria-modal="true" aria-labelledby="ad-spec-2-title" aria-describedby="ad-spec-2-desc" data-state="open" style="box-sizing:border-box;display:flex;flex-direction:column;width:min(100%, calc(var(--space-24) * 5));max-height:100%;overflow:hidden;border:1px solid var(--color-border-hairline-strong);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-2);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)">
+        <div style="display:flex;flex-direction:column;gap:var(--space-2);padding:var(--space-6) var(--space-6) var(--space-4)">
+          <h2 id="ad-spec-2-title" style="margin:0;font-family:var(--font-display);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight);text-transform:uppercase">Disconnect YouTube?</h2>
+          <p id="ad-spec-2-desc" style="margin:0;color:var(--color-fg-secondary)">Scheduled posts for this channel stop publishing.</p>
+        </div>
+        <ul style="margin:0;padding:0 var(--space-6) var(--space-6) calc(var(--space-6) + var(--space-5));color:var(--color-fg-secondary);font-size:var(--text-label-default);line-height:var(--text-body-default--line-height)">
+          <li>3 scheduled posts move to drafts</li>
+          <li>Live alerts are turned off</li>
+        </ul>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:var(--space-3);padding:var(--space-4) var(--space-6);border-top:1px solid var(--color-border-hairline);background:var(--color-surface-0)">
+          <button type="button" style="box-sizing:border-box;min-height:var(--space-10);padding:var(--space-2) var(--space-4);border:1px solid color-mix(in srgb, var(--color-focus-ring) 50%, transparent);border-radius:var(--radius-md);background:var(--gradient-btn-secondary),var(--color-surface-1);color:var(--color-action-primary-fg);font-family:var(--font-sans);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);font-weight:var(--text-label-default--font-weight);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1)">Keep connected</button>
+          <button type="button" style="box-sizing:border-box;min-height:var(--space-10);padding:var(--space-2) var(--space-4);border:1px solid color-mix(in srgb, var(--logo-red-shade) 70%, transparent);border-radius:var(--radius-md);background:var(--gradient-btn-primary);color:var(--color-action-primary-solid-fg);font-family:var(--font-sans);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);font-weight:var(--text-label-default--font-weight);box-shadow:var(--shadow-btn-primary)">Disconnect</button>
+        </div>
+      </section>
+    </div>
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Same Dialog sm panel, scrim and footer band; the body is example composition.</p>
+  </div>
+
+</div>

@@ -1,0 +1,70 @@
+{
+  "source": {
+    "design": "EGDEV Foundation (owner's local design files), components/<Name>/preview.html fragments, read-only",
+    "componentCSS": "EGDEV Foundation components/bundle.css, sha256:4f1763a54e080cd206b9d64f57ff9bbc5e3858159ec786ef8263134edee997fc (same fingerprint as the Gauge v0.3 source)",
+    "tokens": "packages/tokens/dist/tokens.css built from main, sha256:7ce0a0d70d0d058eadbb95b5063e2f3969a1f0426ed551478c70d15dcdb2b4fe",
+    "harness": "about:blank page; tokens.css and bundle.css inlined in <style>, preview fragment unmodified in <body>; Google Fonts loaded by the fragment"
+  },
+  "conditions": {
+    "tool": "Playwright MCP (browser_evaluate + browser_take_screenshot fullPage, scale css)",
+    "browser": "Chromium 148.0.0.0, Linux x86_64",
+    "viewport": "1280x900",
+    "deviceScaleFactor": 1,
+    "theme": "dark (--color-bg-canvas)",
+    "reducedMotion": false,
+    "fontsLoaded": "Barlow, Barlow Condensed, JetBrains Mono via explicit Google Fonts stylesheet",
+    "waitAfterLoad": "1.5 s plus document.fonts.ready",
+    "crop": "Full viewport board; each board shows all variants and states of its source preview"
+  },
+  "kind": "Expected-design source boards for the organism and reclassified-molecule spec wave, captured from the EGDEV Foundation component previews",
+  "capturedAt": "2026-10-18",
+  "limits": [
+    "StageFrame references a design-tool '/_blob/' image; after load it was replaced by a neutral token-colored placeholder. Photo content is not expected design.",
+    "CalendarGrid add buttons render with the preview's own styling as captured; specs state the intended treatment.",
+    "Interactive states are shown through the preview's legacy static classes, not real interaction.",
+    "Visible board text is the original Spanish preview copy, kept for source fidelity; specs use English examples."
+  ],
+  "approval": {
+    "status": "Approved",
+    "reference": "Owner instructions 2026-10-17/18: \"no me preguntes, aplica tu las opciones sugeridas y si tengo que irerar en la revisión ya lo vemos\" and \"empezamos con spcs de organismos\"; adopted as expected design per citing spec, subject to owner review in each issue."
+  },
+  "images": [
+    {
+      "file": "CalendarGrid.png",
+      "sourcePreview": "EGDEV Foundation/components/CalendarGrid/preview.html",
+      "sha256": "8caba8f920a0ca1b4455e11f95e121d5e063734e40c13992590de8a95dbf6891",
+      "pixelDimensions": [1280, 900]
+    },
+    {
+      "file": "CommandPalette.png",
+      "sourcePreview": "EGDEV Foundation/components/CommandPalette/preview.html",
+      "sha256": "db24e6adbea2109bde84f67331268b1f9c8ced867fdb19a71191802c95c1b789",
+      "pixelDimensions": [1265, 1050]
+    },
+    {
+      "file": "ModuleRail.png",
+      "sourcePreview": "EGDEV Foundation/components/ModuleRail/preview.html",
+      "sha256": "10bb0733c96c98d4f3b79a1c9c1f3e3ba073c81f283601b43b395d6372686703",
+      "pixelDimensions": [1280, 900]
+    },
+    {
+      "file": "StageFrame.png",
+      "sourcePreview": "EGDEV Foundation/components/StageFrame/preview.html",
+      "sha256": "7147851ebb391a32114e90501aa89c8c5432c2b807a296a189ac3e8479fe2a17",
+      "pixelDimensions": [1280, 900],
+      "photoPlaceholder": true
+    },
+    {
+      "file": "TabBar.png",
+      "sourcePreview": "EGDEV Foundation/components/TabBar/preview.html",
+      "sha256": "1fec3626d85edceb81022b48971c4c1acac910044c25764784a728bd4c0b4706",
+      "pixelDimensions": [1280, 900]
+    },
+    {
+      "file": "Table.png",
+      "sourcePreview": "EGDEV Foundation/components/Table/preview.html",
+      "sha256": "f3f90a878968840e82ad28ae1a1a7252c07277bd2a631ce3a2f8de63410cf3d7",
+      "pixelDimensions": [1280, 900]
+    }
+  ]
+}

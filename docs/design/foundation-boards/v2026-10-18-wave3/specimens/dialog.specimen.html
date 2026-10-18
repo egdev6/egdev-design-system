@@ -1,0 +1,72 @@
+<!-- Dialog v0.1 static expected-design specimen, not an implementation.
+     Parent harness supplies tokens.css and Foundation components/bundle.css.
+     Shows the two scenarios without a Foundation board: the `sheet` variant and a compact
+     `size="sm"` centered dialog with description, status text and actions.
+     No scripts, external assets or actual Radix portal, focus trap, scroll lock or dismissal.
+     Existing Button/IconButton/Icon classes supply supporting controls, not revised atom contracts.
+     Close buttons are 48px (IconButton lg) through inline token sizing; legacy .eg-icon-btn is 40px. -->
+<div style="box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--space-6);padding:var(--space-8);background:var(--color-bg-canvas);color:var(--color-fg-default);font-family:var(--font-sans);font-size:var(--text-body-default);line-height:var(--text-body-default--line-height);font-weight:var(--text-body-default--font-weight)">
+
+  <!-- Scenario 1: sheet variant pinned to the inline-end edge -->
+  <div style="display:flex;flex-direction:column;gap:var(--space-2);width:calc(var(--space-20) * 7);max-width:100%">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">variant="sheet" · inline-end edge · overlay tone · scrim</p>
+    <div style="position:relative;box-sizing:border-box;height:calc(var(--space-24) * 5);overflow:hidden;border:1px solid var(--color-border-hairline);border-radius:var(--radius-lg);background:var(--color-surface-0)">
+      <!-- Page behind the scrim -->
+      <div aria-hidden="true" style="display:grid;gap:var(--space-4);padding:var(--space-6)">
+        <div style="height:var(--space-10);border-radius:var(--radius-md);background:var(--color-surface-1)"></div>
+        <div style="height:var(--space-24);border-radius:var(--radius-md);background:var(--color-surface-1)"></div>
+        <div style="height:var(--space-24);border-radius:var(--radius-md);background:var(--color-surface-1)"></div>
+        <div style="height:var(--space-16);border-radius:var(--radius-md);background:var(--color-surface-1)"></div>
+      </div>
+      <!-- Scrim -->
+      <div aria-hidden="true" style="position:absolute;inset:0;background:color-mix(in srgb, var(--color-bg-scrim) 72%, transparent)"></div>
+      <!-- Sheet panel -->
+      <section role="dialog" aria-modal="true" aria-labelledby="dialog-specimen-sheet-title" data-state="open" style="position:absolute;inset-block:0;inset-inline-end:0;box-sizing:border-box;display:flex;flex-direction:column;width:min(100%, calc(var(--space-24) * 4));border:1px solid var(--color-border-hairline-strong);background:var(--color-surface-overlay);backdrop-filter:blur(var(--blur-overlay)) saturate(150%);-webkit-backdrop-filter:blur(var(--blur-overlay)) saturate(150%);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)">
+        <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4) var(--space-4) var(--space-4) var(--space-6)">
+          <h2 id="dialog-specimen-sheet-title" style="flex:1 1 auto;margin:0;font-family:var(--font-display);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight);text-transform:uppercase">Menu</h2>
+          <button type="button" class="eg-icon-btn" aria-label="Close" style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+        </div>
+        <nav aria-label="Main" style="flex:1 1 auto;min-height:0;overflow:auto;padding:0 var(--space-6) var(--space-6)">
+          <a href="#" style="display:block;padding:var(--space-3) 0;border-bottom:1px solid var(--color-border-hairline);color:var(--color-fg-brand-raised);font-family:var(--font-display);font-size:var(--text-heading-section);line-height:var(--text-heading-section--line-height);font-weight:var(--text-heading-section--font-weight);text-decoration:none;text-transform:uppercase" aria-current="page">Home</a>
+          <a href="#" style="display:block;padding:var(--space-3) 0;border-bottom:1px solid var(--color-border-hairline);color:var(--color-fg-default);font-family:var(--font-display);font-size:var(--text-heading-section);line-height:var(--text-heading-section--line-height);font-weight:var(--text-heading-section--font-weight);text-decoration:none;text-transform:uppercase">Projects</a>
+          <a href="#" style="display:block;padding:var(--space-3) 0;color:var(--color-fg-default);font-family:var(--font-display);font-size:var(--text-heading-section);line-height:var(--text-heading-section--line-height);font-weight:var(--text-heading-section--font-weight);text-decoration:none;text-transform:uppercase">Blog</a>
+        </nav>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:var(--space-3);padding:var(--space-4) var(--space-6);border-top:1px solid var(--color-border-hairline);background:var(--color-surface-1)">
+          <button type="button" class="eg-btn eg-btn--secondary eg-btn--sm">Contact</button>
+        </div>
+      </section>
+    </div>
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">Full height, no radius, translucent overlay over the scrim; footer band one tone above canvas (surface-1). Navigation content is example composition.</p>
+  </div>
+
+  <!-- Scenario 2: compact centered dialog -->
+  <div style="display:flex;flex-direction:column;gap:var(--space-2);width:calc(var(--space-20) * 7);max-width:100%">
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">variant="centered" · size="sm" · description · statusText · actions</p>
+    <div style="position:relative;box-sizing:border-box;display:grid;place-items:center;height:calc(var(--space-24) * 5);overflow:hidden;padding:var(--space-6);border:1px solid var(--color-border-hairline);border-radius:var(--radius-lg);background:color-mix(in srgb, var(--color-bg-scrim) 72%, transparent)">
+      <section role="dialog" aria-modal="true" aria-labelledby="dialog-specimen-sm-title" aria-describedby="dialog-specimen-sm-desc" data-state="open" style="box-sizing:border-box;display:flex;flex-direction:column;width:min(100%, calc(var(--space-24) * 5));max-height:100%;overflow:hidden;border:1px solid var(--color-border-hairline-strong);border-radius:var(--radius-xl);background:var(--gradient-sheen),var(--color-surface-2);box-shadow:var(--shadow-edge-strong),var(--shadow-elev-3)">
+        <div style="display:flex;align-items:flex-start;gap:var(--space-3);padding:var(--space-4) var(--space-4) 0 var(--space-6)">
+          <div style="display:flex;flex:1 1 auto;flex-direction:column;gap:var(--space-2);padding-top:var(--space-3)">
+            <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--space-3)">
+              <h2 id="dialog-specimen-sm-title" style="margin:0;font-family:var(--font-display);font-size:var(--text-heading-small);line-height:var(--text-heading-small--line-height);font-weight:var(--text-heading-small--font-weight);text-transform:uppercase">Rename idea</h2>
+              <span style="color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height);font-weight:var(--text-label-default--font-weight)">Draft saved</span>
+            </div>
+            <p id="dialog-specimen-sm-desc" style="margin:0;color:var(--color-fg-secondary)">The new title appears on the board and in the schedule.</p>
+          </div>
+          <button type="button" class="eg-icon-btn" aria-label="Close" style="width:var(--space-12);height:var(--space-12)"><svg class="eg-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+        </div>
+        <div style="padding:var(--space-6)">
+          <div class="eg-field">
+            <label class="eg-field__label" for="dialog-specimen-sm-input">Title</label>
+            <input class="eg-field__control" id="dialog-specimen-sm-input" type="text" value="Four permission levels" style="border-color:var(--color-border-brand);box-shadow:var(--shadow-well),var(--shadow-focus)">
+          </div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:var(--space-3);padding:var(--space-4) var(--space-6);border-top:1px solid var(--color-border-hairline);background:var(--color-surface-0)">
+          <button type="button" class="eg-btn eg-btn--ghost eg-btn--sm">Cancel</button>
+          <button type="button" class="eg-btn eg-btn--primary eg-btn--sm">Save</button>
+        </div>
+      </section>
+    </div>
+    <p style="margin:0;color:var(--color-fg-muted);font-size:var(--text-label-default);line-height:var(--text-label-default--line-height)">First-field focus illustrated (Radix autofocus; the close button follows the body in DOM order). Solid surface-2 panel with sheen, strong hairline and elevation 3; footer band on surface-0.</p>
+  </div>
+
+</div>
