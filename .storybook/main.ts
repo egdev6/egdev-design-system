@@ -5,7 +5,8 @@ import { mergeConfig } from 'vite';
 
 const documentedNativeProps: Record<string, readonly string[]> = {
   gauge: ['id', 'title', 'aria-describedby', 'className', 'style'],
-  aspectRatio: ['id', 'title', 'aria-describedby', 'className', 'style', 'onClick']
+  aspectRatio: ['id', 'title', 'aria-describedby', 'className', 'style', 'onClick'],
+  visuallyHidden: ['id', 'title', 'aria-describedby', 'className', 'style', 'lang']
 };
 
 const config: StorybookConfig = {
