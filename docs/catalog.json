@@ -415,7 +415,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "nuevo",
-    "notas": "Estados de carga de listas y tarjetas (tableros States)."
+    "notas": "Implemented React primitive under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/102#issuecomment-6251558042): static decorative placeholder in line/block/circle silhouettes with token preset sizes, hidden semantics, no animation and host-owned loading/busy state. No stylesheet or Radix base."
   },
   {
     "actual": "Field",
