@@ -40,7 +40,7 @@ C = [
 ("Dropzone","átomo","Dropzone","atom","ui","—","Icon, VisuallyHidden","mantener","Input file nativo oculto con VisuallyHidden."),
 ("—","—","Tooltip","atom","ui","Tooltip","Portal","nuevo","Hace falta para IconButton, ModuleRail y Gauge. No existe."),
 ("—","—","Spinner","atom","ui","—","—","nuevo","Carga en Button y estados de espera (Stack & Flow usa spinners-react)."),
-("—","—","Skeleton","primitive","ui","—","—","nuevo","Estados de carga de listas y tarjetas (tableros States)."),
+("—","—","Skeleton","primitive","ui","—","—","nuevo","Implemented React primitive under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/102#issuecomment-6251558042): static decorative placeholder in line/block/circle silhouettes with token preset sizes, hidden semantics, no animation and host-owned loading/busy state. No stylesheet or Radix base."),
 # ---------- MOLÉCULAS ----------
 ("Field","átomo","Field","molecule","ui","Form.Field / Label","Label, Input|Textarea|Select|Slider, Text","separar","Pasa a molécula: etiqueta + control + ayuda + error + contador. El control es un átomo aparte."),
 ("`.eg-btn-split`","sin ficha","ButtonGroup","molecule","ui","—","Button, IconButton, Menu","extraer","Botón dividido (`--join-start/--join-end`) y grupos de botones."),

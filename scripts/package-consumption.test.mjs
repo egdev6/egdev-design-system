@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Gauge, Label, Slot, Slottable, VisuallyHidden } from '@egdev/ui';
+import { AspectRatio, Gauge, Label, Skeleton, Slot, Slottable, VisuallyHidden } from '@egdev/ui';
 import type {
   AspectRatioProps,
   GaugeProps,
@@ -38,6 +38,9 @@ import type {
   GaugeSize,
   LabelProps,
   LabelVariant,
+  SkeletonProps,
+  SkeletonSize,
+  SkeletonVariant,
   SlotProps,
   VisuallyHiddenProps
 } from '@egdev/ui';
@@ -86,7 +89,6 @@ export const labelReference = createElement(Label, { ...labelDefaults, ref: crea
 export function LabelSamples() {
   return createElement('div', { 'aria-label': 'Label samples' }, createElement(Label, labelDefaults), createElement(Label, labelChoice));
 }
-
 export const gaugeDefaults: GaugeProps = { label: 'Capacity', value: 42.5 };
 export const gaugeWarning: GaugeProps = {
   label: 'Warning capacity', value: 42.5, state: gaugeState, stateText: 'Review capacity',
@@ -104,6 +106,24 @@ export const hiddenNote: VisuallyHiddenProps = {
   id: 'capacity-hint', className: 'consumer-hint', title: 'Screen reader hint', lang: 'en',
   children: 'All capacity values are percentages'
 };
+const skeletonVariant: SkeletonVariant = 'circle';
+const skeletonSize: SkeletonSize = 'lg';
+export const skeletonDefaults: SkeletonProps = { variant: 'line', size: 'md' };
+export const skeletonNative: SkeletonProps = {
+  id: 'consumer-skeleton', title: 'Decorative placeholder', lang: 'en', className: 'consumer-skeleton'
+};
+export function SkeletonSamples() {
+  const geometry: [SkeletonVariant, SkeletonSize][] = [
+    ['line', 'sm'], ['line', 'md'], ['line', 'lg'],
+    ['block', 'sm'], ['block', 'md'], ['block', 'lg'],
+    ['circle', 'sm'], ['circle', 'md'], ['circle', 'lg']
+  ];
+  return createElement('section', { 'aria-label': 'Loading placeholders' },
+    geometry.map(([variant, size]) => createElement(Skeleton, { key: variant + '-' + size, variant, size })),
+    createElement(Skeleton, { variant: 'line', size: 'md', id: 'line-width', title: 'Line width override', className: 'w-3/4' }),
+    createElement(Skeleton, { variant: 'block', size: 'md', id: 'block-width', className: 'w-1/2' }),
+    createElement(Skeleton, skeletonNative));
+}
 export function VisuallyHiddenSamples() {
   return createElement('section', { 'aria-label': 'Hidden support content' },
     createElement(VisuallyHidden, { ...hiddenNote, ref: hiddenNoteRef }),
@@ -121,8 +141,29 @@ export function App({ gaugeValue, wideRatio }: { gaugeValue?: number; wideRatio?
     createElement(AspectSamples, { wideRatio }),
     createElement(VisuallyHiddenSamples),
     createElement(LabelSamples),
+    createElement(SkeletonSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
+// @ts-expect-error Skeleton is decorative: it never accepts content.
+const skeletonChildren: SkeletonProps = { children: 'Not permitted' };
+// @ts-expect-error Skeleton never renders markup; hidden actions stay impossible.
+const skeletonMarkup: SkeletonProps = { dangerouslySetInnerHTML: { __html: '<button>Hidden action</button>' } };
+// @ts-expect-error Skeleton has no public ref API on either React major.
+const referencedSkeleton: SkeletonProps = { ref: createRef<HTMLSpanElement>() };
+// @ts-expect-error Skeleton cannot delegate its decorative span to a child.
+const slottedSkeleton: SkeletonProps = { asChild: true };
+// @ts-expect-error Skeleton owns decorative semantics; status regions are host decisions.
+const semanticSkeleton: SkeletonProps = { role: 'status' };
+// @ts-expect-error Hiddenness is component-owned and always true.
+const overriddenSkeleton: SkeletonProps = { 'aria-hidden': false };
+// @ts-expect-error Decorative placeholders never announce or report busy state.
+const liveSkeleton: SkeletonProps = { 'aria-live': 'polite', 'aria-busy': true };
+// @ts-expect-error Placeholders are not interactive or labelled.
+const actionableSkeleton: SkeletonProps = { 'aria-label': 'Loading', tabIndex: 0, contentEditable: true };
+// @ts-expect-error Placeholder geometry is preset-owned; numeric sizes are not supported.
+const numericSkeleton: SkeletonProps = { variant: 'circle', size: 16 };
+// @ts-expect-error Arbitrary silhouettes and presets are not part of Skeleton's API.
+const invalidSkeleton: SkeletonProps = { variant: 'xl', size: 'xl' };
 // @ts-expect-error Hidden content is required, not optional.
 const missingHiddenChildren: VisuallyHiddenProps = { id: 'orphan-hint' };
 // @ts-expect-error VisuallyHidden inherits span props; the anchor-only href is rejected.
@@ -237,14 +278,33 @@ function assertLabelCSS(css) {
   assert.match(css, /font-weight:\s*var\(--text-body-default--font-weight\)/, 'Missing Label choice weight binding');
 }
 
+// Skeleton ships static, token-backed silhouette utilities: no animations, no dynamic geometry.
+function assertSkeletonCSS(css) {
+  for (const dimension of ['h-3', 'h-4', 'h-5', 'h-12', 'h-20', 'h-24', 'size-8', 'size-12', 'size-16']) {
+    assert.ok(css.includes('.' + dimension), 'Missing Skeleton geometry utility ' + dimension);
+  }
+  for (const radius of ['rounded-sm', 'rounded-md', 'rounded-full']) {
+    assert.ok(css.includes('.' + radius), 'Missing Skeleton radius utility ' + radius);
+  }
+  for (const base of ['.block', '.box-border', '.shrink-0', '.w-full', '.bg-border-default', '.border-0', '.p-0']) {
+    assert.ok(css.includes(base), 'Missing Skeleton base utility ' + base);
+  }
+  assert.ok(
+    css.includes('background-color: var(--color-border-default, var(--color-primitive-graphite-800))'),
+    'Skeleton surface must consume the border token with its exact packed fallback'
+  );
+  // Legacy markers keep their own animations; the Skeleton recipe itself stays static.
+  assert.doesNotMatch(css, /\.eg-skeleton[^{]*\{[^}]*(?:animation|transition):/, 'Skeleton must stay static');
+  assert.doesNotMatch(css, /\.animate-/, 'No Skeleton animation utility may be emitted');
+}
+
 const entries = `
 import assert from 'node:assert/strict';
 import { readFileSync, realpathSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import ts from 'typescript';
-const entry = fileURLToPath(import.meta.resolve('@egdev/ui'));
+import ts from 'typescript';const entry = fileURLToPath(import.meta.resolve('@egdev/ui'));
 assert.ok(!realpathSync(entry).startsWith(${JSON.stringify(root)}), 'UI must be installed outside the workspace');
 const ui = JSON.parse(readFileSync(resolve(dirname(entry), '../package.json'), 'utf8'));
 assert.equal(ui.exports['.'].import, './dist/index.js');
@@ -259,9 +319,22 @@ assert.doesNotMatch(shippedStyles, /@(import|reference|source|tailwind|theme|cus
 assert.ok(shippedStyles.includes('.eg-gauge-arc'), 'Packed styles must retain Gauge geometry');
 assert.ok(shippedStyles.includes('.min-w-0'), 'Packed styles must retain the AspectRatio min-width guard');
 assert.ok(!shippedStyles.includes('.eg-visually-hidden'), 'VisuallyHidden must not add shipped CSS; Radix hides inline');
-assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), ['AspectRatio', 'Gauge', 'Label', 'Portal', 'Slot', 'Slottable', 'VisuallyHidden', 'cn', 'labelVariants']);
+assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
+  'AspectRatio',
+  'Gauge',
+  'Label',
+  'Portal',
+  'Skeleton',
+  'Slot',
+  'Slottable',
+  'VisuallyHidden',
+  'cn',
+  'labelVariants'
+]);
 ${assertGaugeCSS.toString()}
+${assertSkeletonCSS.toString()}
 assertGaugeCSS(shippedStyles);
+assertSkeletonCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -366,6 +439,44 @@ for (const frame of [square, wide]) {
   assert.equal(forwardedHeading.tagName, 'H2', 'A forwarding child must reach one HTML host');
   assert.ok(forwardedHeading.className.includes('eg-visually-hidden'));
   assert.ok(document.querySelector('.eg-visually-hidden span') === null, 'No nested wrapper span may remain');
+  const shapes = [...document.querySelectorAll('section[aria-label="Loading placeholders"] > .eg-skeleton')];
+  assert.equal(shapes.length, 12, 'All nine presets, two width overrides and the native sample must render');
+  const expectedGeometry = [
+    ['h-3', 'rounded-sm'],
+    ['h-4', 'rounded-sm'],
+    ['h-5', 'rounded-sm'],
+    ['h-12', 'rounded-md'],
+    ['h-20', 'rounded-md'],
+    ['h-24', 'rounded-md'],
+    ['size-8', 'rounded-full'],
+    ['size-12', 'rounded-full'],
+    ['size-16', 'rounded-full']
+  ];
+  expectedGeometry.forEach(([dimension, radius], index) => {
+    const classes = shapes[index].className.split(' ');
+    assert.ok(classes.includes(dimension), 'Skeleton ' + index + ' must carry ' + dimension);
+    assert.ok(classes.includes(radius), 'Skeleton ' + index + ' must carry ' + radius);
+  });
+  for (const shape of shapes) {
+    assert.equal(shape.tagName, 'SPAN');
+    assert.equal(shape.getAttribute('aria-hidden'), 'true');
+    assert.equal(shape.textContent, '');
+    assert.equal(shape.getAttribute('role'), null);
+    assert.equal(shape.getAttribute('tabindex'), null);
+    assert.equal(shape.hasAttribute('aria-live'), false);
+    assert.equal(shape.hasAttribute('data-state'), false);
+    assert.ok(!/animate-/.test(shape.className), 'Skeleton must not animate');
+  }
+  for (const [id, override] of [['line-width', 'w-3/4'], ['block-width', 'w-1/2']]) {
+    const shape = document.getElementById(id);
+    assert.ok(shape, 'Missing width override sample ' + id);
+    assert.ok(shape.className.includes(override), id + ' must keep the consumer width');
+    assert.ok(!shape.className.includes('w-full'), id + ' must replace the preset full width');
+  }
+  const nativeSkeleton = document.getElementById('consumer-skeleton');
+  assert.equal(nativeSkeleton.getAttribute('title'), 'Decorative placeholder');
+  assert.ok(nativeSkeleton.className.includes('consumer-skeleton'), 'Native span class merge must survive');
+  assert.equal(nativeSkeleton.getAttribute('lang'), 'en');
   // Native for/id named association and the approved typography recipe classes.
   const emailLabel = document.querySelector('label[for="consumer-email"]');
   assert.ok(emailLabel, 'Label must associate natively through for');
@@ -479,6 +590,13 @@ try {
   assert.ok(aspectWideRef.current === mediaWide(), 'Invalid-ratio rerender must preserve the inner ref target');
   stage('aspect:rerender:complete');
   console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery'] }));
+  const skeletons = document.querySelectorAll('.eg-skeleton');
+  assert.equal(skeletons.length, 12, 'Consumer Skeletons must mount behind the intrinsic controls');
+  for (const shape of skeletons) {
+    assert.equal(shape.getAttribute('aria-hidden'), 'true');
+    assert.equal(shape.textContent, '');
+    assert.equal(shape.querySelector('button, a, input, [tabindex]'), null);
+  }
   const slotRef = createRef();
   const childRef = createRef();
   const calls = [];
@@ -520,7 +638,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -595,13 +713,14 @@ const emitted = assets.map((asset) => String(asset.source)).join('\\n');
 assert.ok(assets.length > 0, 'Vite must emit consumer CSS');
 assert.ok(!emitted.includes('@theme'), 'Native consumption must not need Tailwind to interpret @theme');
 ${assertGaugeCSS.toString()}
+${assertSkeletonCSS.toString()}
 assertGaugeCSS(emitted);
 assert.match(
   emitted,
   /\\.min-w-0\\s*\\{[^}]*min-width:\\s*(?:0|0px|var\\(--space-0\\))\\s*;/,
   'Native consumer build must emit the AspectRatio min-width guard without Tailwind'
 );
-
+assertSkeletonCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
@@ -634,7 +753,7 @@ assert.match(
   /\\.min-w-0\\s*\\{[^}]*min-width:\\s*(?:0|0px|var\\(--space-0\\))\\s*;/,
   'Tailwind consumer must retain the AspectRatio min-width guard'
 );
-
+assertSkeletonCSS(twCss);
 assertLabelCSS(twCss);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) {
   assert.ok(twCss.includes(selector), 'Tailwind consumer must retain shipped UI selector ' + selector);

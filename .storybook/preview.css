@@ -8,6 +8,8 @@
 @source "../packages/ui/src/primitives/aspect-ratio/AspectRatio.stories.tsx";
 @source "../packages/ui/src/primitives/label/Label.stories.tsx";
 
+@source "../packages/ui/src/primitives/skeleton/Skeleton.stories.tsx";
+
 body {
   margin: 0;
   background: var(--color-bg-canvas);

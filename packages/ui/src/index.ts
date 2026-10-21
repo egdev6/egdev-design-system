@@ -9,6 +9,7 @@ export type { LabelProps, LabelVariant } from './primitives/label';
 export { Label, labelVariants } from './primitives/label';
 export type { PortalProps } from './primitives/portal';
 export { Portal } from './primitives/portal';
+export * from './primitives/skeleton';
 export type { SlotProps } from './primitives/slot';
 export { Slot, Slottable } from './primitives/slot';
 export * from './primitives/visually-hidden';
