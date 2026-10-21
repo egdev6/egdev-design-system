@@ -43,7 +43,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Text / Heading** | Title + Eyebrow (átomo) | Slot | — | fusionar | Una primitiva tipográfica con variantes (`display`, `hero`, `section`, `eyebrow`, `show`, `inverse`). |
 | **Divider** | Divider (átomo) | Separator | — | mantener | Absorbe `.eg-rule` y `--vertical`. |
 | **AspectRatio** | — | AspectRatio | — | nuevo | Base de PhotoFrame, SelectTile, PreviewFrame y portadas. |
-| **Portal** | — | Portal | — | nuevo | Contenido flotante (menús, diálogos, toasts). |
+| **Portal** | — | Portal | — | nuevo | Implemented unstyled out-of-tree div with eg-portal, ready custom container and forwarded div ref. No focus, positioning, presence or z-index policy; Radix-specific components keep their own portals. Contract: issue #97 v0.1. |
 | **Label** | — | Label | — | nuevo | Etiqueta de formulario; la usa Field. |
 | **Skeleton** | — | — | — | nuevo | Estados de carga de listas y tarjetas (tableros States). |
 

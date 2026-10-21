@@ -9,7 +9,7 @@ C = [
 ("Title + Eyebrow","átomo","Text / Heading","primitive","ui","Slot","—","fusionar","Una primitiva tipográfica con variantes (`display`, `hero`, `section`, `eyebrow`, `show`, `inverse`)."),
 ("Divider","átomo","Divider","primitive","ui","Separator","—","mantener","Absorbe `.eg-rule` y `--vertical`."),
 ("—","—","AspectRatio","primitive","ui","AspectRatio","—","nuevo","Base de PhotoFrame, SelectTile, PreviewFrame y portadas."),
-("—","—","Portal","primitive","ui","Portal","—","nuevo","Contenido flotante (menús, diálogos, toasts)."),
+("—","—","Portal","primitive","ui","Portal","—","nuevo","Implemented unstyled out-of-tree div with eg-portal, ready custom container and forwarded div ref. No focus, positioning, presence or z-index policy; Radix-specific components keep their own portals. Contract: issue #97 v0.1."),
 ("—","—","Label","primitive","ui","Label","—","nuevo","Etiqueta de formulario; la usa Field."),
 # ---------- ÁTOMOS ----------
 ("Button","átomo","Button","atom","ui","Slot","Icon, Spinner","mantener","Pierde `--icon` (pasa a IconButton). Mantiene `.eg-btn-split` como molécula ButtonGroup."),
