@@ -179,6 +179,47 @@ test('UI ships functional static Gauge utilities without an application Tailwind
   }
 });
 
+test('UI ships the approved static Skeleton silhouette utilities without animations', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  for (const [selector, property, token] of [
+    ['.h-3', 'height', 'space-3'],
+    ['.h-4', 'height', 'space-4'],
+    ['.h-5', 'height', 'space-5'],
+    ['.h-12', 'height', 'space-12'],
+    ['.h-20', 'height', 'space-20'],
+    ['.h-24', 'height', 'space-24'],
+    ['.size-8', 'width', 'space-8'],
+    ['.size-12', 'width', 'space-12'],
+    ['.size-16', 'width', 'space-16']
+  ]) {
+    const body = rule(selector);
+    assert.match(body, new RegExp(`${property}:\\s*var\\(--${token}\\)\\s*;`));
+    if (property === 'width') {
+      assert.match(body, new RegExp(`height:\\s*var\\(--${token}\\)\\s*;`), `${selector} must size both axes`);
+    }
+  }
+  for (const [selector, token, fallback] of [
+    ['.rounded-sm', 'radius-sm', '4px'],
+    ['.rounded-md', 'radius-md', '12px'],
+    ['.rounded-full', 'radius-full', '9999px']
+  ]) {
+    assert.match(rule(selector), new RegExp(`border-radius:\\s*var\\(--${token},\\s*${fallback}\\)\\s*;`));
+  }
+  assert.match(rule('.w-full'), /width:\s*100%\s*;/);
+  assert.match(
+    rule('.bg-border-default'),
+    /background-color:\s*var\(--color-border-default,\s*var\(--color-primitive-graphite-800\)\)\s*;/
+  );
+  assert.match(rule('.block'), /display:\s*block\s*;/);
+  const utilityLayer = cssBlock(css, /@layer utilities\s*\{/);
+  assert.doesNotMatch(utilityLayer, /animate-|@keyframes/, 'Skeleton utilities must stay static without animations');
+});
+
 test('UI ships the approved Gauge geometry in the components layer', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const components = cssBlock(css, /@layer components\s*\{/);
@@ -208,12 +249,13 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
   const exported = await import(artifact('ui', ui.exports['.'].import));
   assert.deepEqual(
     Object.keys(exported).sort(),
-    ['AspectRatio', 'Divider', 'Gauge', 'Portal', 'Slot', 'Slottable', 'VisuallyHidden', 'cn'],
+    ['AspectRatio', 'Divider', 'Gauge', 'Portal', 'Skeleton', 'Slot', 'Slottable', 'VisuallyHidden', 'cn'],
     'Only approved components and cn are public runtime exports'
   );
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
   // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
+  assert.equal(typeof exported.Skeleton, 'function', 'Skeleton must be a named root export');
   assert.equal(
     exported.VisuallyHidden?.$$typeof,
     Symbol.for('react.forward_ref'),
@@ -238,6 +280,10 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
     'GaugeState',
     'Portal',
     'PortalProps',
+    'Skeleton',
+    'SkeletonProps',
+    'SkeletonSize',
+    'SkeletonVariant',
     'Slot',
     'SlotProps',
     'Slottable',
@@ -257,6 +303,10 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
     'AspectRatioProps',
     'Portal',
     'PortalProps',
+    'Skeleton',
+    'SkeletonProps',
+    'SkeletonSize',
+    'SkeletonVariant',
     'Slot',
     'SlotProps',
     'Slottable',
@@ -299,6 +349,46 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
     const fallback = renderToString(createElement(exported.AspectRatio, { ratio }, 'Fallback'));
     assert.ok(fallback.includes('padding-bottom:100%'), `Invalid ratio ${ratio} must fall back to a square`);
   }
+  const geometry = [
+    ['line', 'sm', 'h-3', 'rounded-sm'],
+    ['line', 'md', 'h-4', 'rounded-sm'],
+    ['line', 'lg', 'h-5', 'rounded-sm'],
+    ['block', 'sm', 'h-12', 'rounded-md'],
+    ['block', 'md', 'h-20', 'rounded-md'],
+    ['block', 'lg', 'h-24', 'rounded-md'],
+    ['circle', 'sm', 'size-8', 'rounded-full'],
+    ['circle', 'md', 'size-12', 'rounded-full'],
+    ['circle', 'lg', 'size-16', 'rounded-full']
+  ];
+  for (const [variant, size, dimension, radius] of geometry) {
+    const shape = renderToString(createElement(exported.Skeleton, { variant, size }));
+    assert.match(
+      shape,
+      /^<span aria-hidden="true" class="eg-skeleton /,
+      `Skeleton ${variant}/${size} must keep the stable root class`
+    );
+    assert.ok(shape.includes(dimension), `Skeleton ${variant}/${size} must render ${dimension}`);
+    assert.ok(shape.includes(radius), `Skeleton ${variant}/${size} must render ${radius}`);
+    assert.equal(shape.includes('w-full'), variant !== 'circle', `Skeleton ${variant}/${size} width ownership`);
+    assert.ok(shape.endsWith('></span>'), `Skeleton ${variant}/${size} must stay an empty span`);
+    assert.match(shape, /aria-hidden="true"/);
+    assert.doesNotMatch(shape, /aria-live|aria-busy|role=|tabindex|data-state|animate-/);
+  }
+  const skeletonNative = renderToString(
+    createElement(exported.Skeleton, {
+      id: 'consumer-skeleton',
+      title: 'Decorative placeholder',
+      className: 'w-3/4 mt-2'
+    })
+  );
+  assert.ok(skeletonNative.includes('id="consumer-skeleton"'), 'Native span id must survive');
+  assert.ok(skeletonNative.includes('title="Decorative placeholder"'), 'Native span title must survive');
+  assert.ok(
+    skeletonNative.includes('w-3/4') && skeletonNative.includes('mt-2'),
+    'Supported width override must survive'
+  );
+  assert.ok(!skeletonNative.includes('w-full'), 'Consumer width must replace the preset full width');
+  assert.ok(skeletonNative.endsWith('></span>'), 'Native props must not add content');
 });
 
 test('UI VisuallyHidden renders non-visual content without shipped CSS or Tailwind', async () => {

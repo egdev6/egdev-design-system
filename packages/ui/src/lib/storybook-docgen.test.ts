@@ -132,6 +132,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/aspect-ratio',
       './primitives/divider',
       './primitives/portal',
+      './primitives/skeleton',
       './primitives/slot',
       './primitives/visually-hidden'
     ]);
@@ -140,6 +141,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Divider',
       'Gauge',
       'Portal',
+      'Skeleton',
       'Slot',
       'Slottable',
       'VisuallyHidden',
@@ -410,5 +412,142 @@ describe('Storybook TypeScript docgen contract', () => {
   it('limits real parser discovery to the current public React components', () => {
     expect(docs.map((doc) => doc.displayName)).toEqual(['Gauge', 'AspectRatio']);
     expect(Object.keys(gaugeControls)).toHaveLength(8);
+  });
+});
+
+function skeletonOwnProps(file: ts.SourceFile): ts.PropertySignature[] {
+  const properties: ts.PropertySignature[] = [];
+  function visit(node: ts.Node) {
+    if (ts.isPropertySignature(node)) {
+      properties.push(node);
+    }
+    ts.forEachChild(node, visit);
+  }
+  for (const node of file.statements) {
+    if (ts.isTypeAliasDeclaration(node) && node.name.text === 'SkeletonProps') {
+      visit(node.type);
+    }
+  }
+  return properties;
+}
+
+describe('Skeleton decorative metadata contract', () => {
+  it('keeps the silhouette unions and optional select-controlled variant/size annotations', () => {
+    const file = ast(source('primitives/skeleton/types.ts'));
+    const union = (name: string) => {
+      const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === name);
+      return alias && ts.isTypeAliasDeclaration(alias) ? alias.type.getText(file) : undefined;
+    };
+    expect(union('SkeletonVariant')).toBe("'line' | 'block' | 'circle'");
+    expect(union('SkeletonSize')).toBe("'sm' | 'md' | 'lg'");
+    const properties = skeletonOwnProps(file);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['variant', 'size']);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(property.type?.getText(file), `Skeleton.${name} alias`).toBe(
+        name === 'variant' ? 'SkeletonVariant' : 'SkeletonSize'
+      );
+      expect(property.questionToken, `Skeleton.${name} stays optional`).toBeTruthy();
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `Skeleton.${name} control`).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment), `Skeleton.${name} @control`).toBe('select');
+      const defaultTag = tags.find((tag) => tag.tagName.text === 'default');
+      expect(ts.getTextOfJSDocComment(defaultTag?.comment), `Skeleton.${name} @default`).toBe(
+        name === 'variant' ? 'line' : 'md'
+      );
+    }
+  });
+
+  it('omits exactly the forbidden content, semantic and interaction span props from SkeletonProps', () => {
+    const file = ast(source('primitives/skeleton/types.ts'));
+    const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'SkeletonProps');
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing SkeletonProps declaration');
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (
+        !omitted.length &&
+        ts.isTypeReferenceNode(node) &&
+        node.typeName.getText(file) === 'Omit' &&
+        node.typeArguments
+      ) {
+        const union = node.typeArguments[1];
+        if (union && ts.isUnionTypeNode(union)) {
+          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual([
+      'children',
+      'dangerouslySetInnerHTML',
+      'role',
+      'aria-hidden',
+      'aria-label',
+      'aria-labelledby',
+      'aria-live',
+      'aria-busy',
+      'tabIndex',
+      'contentEditable'
+    ]);
+    // No public ref or asChild: the decorative span host is component-owned.
+    expect(alias.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild/);
+  });
+
+  it('binds the CVA default variants to the documented line/md defaults', () => {
+    expect(defaults(source('primitives/skeleton/types.ts'), true)).toEqual({ variant: 'line', size: 'md' });
+  });
+
+  describe('installed docgen extraction', () => {
+    let skeletonDocs: ReturnType<typeof parser.parse>;
+
+    beforeAll(() => {
+      skeletonDocs = parser.parse(source('primitives/skeleton/Skeleton.tsx'));
+    }, 20_000);
+
+    it('extracts Skeleton enums, select controls and real defaults without semantic props', () => {
+      expect(skeletonDocs.map((doc) => doc.displayName)).toEqual(['Skeleton']);
+      const doc = skeletonDocs.find((item) => item.displayName === 'Skeleton');
+      if (!doc) {
+        throw new Error('Missing docgen for Skeleton');
+      }
+      const props = doc.props;
+      for (const [prop, choices] of [
+        ['variant', ['line', 'block', 'circle']],
+        ['size', ['sm', 'md', 'lg']]
+      ] as const) {
+        expect(props[prop], prop).toBeDefined();
+        expect(props[prop]?.required, `${prop} stays optional`).toBe(false);
+        expect(props[prop]?.type.value?.map((item: { value: string }) => normalize(item.value)).sort()).toEqual(
+          [...choices].sort()
+        );
+        expect(props[prop]?.tags).toMatchObject({ control: 'select' });
+        expect(normalize(props[prop]?.defaultValue?.value), `${prop} documented default`).toBe(
+          prop === 'variant' ? 'line' : 'md'
+        );
+      }
+      for (const prop of ['id', 'title', 'className', 'style']) {
+        expect(props[prop], `Skeleton native ${prop} must remain available in autodocs`).toBeDefined();
+      }
+      for (const prop of [
+        'children',
+        'dangerouslySetInnerHTML',
+        'ref',
+        'asChild',
+        'role',
+        'aria-hidden',
+        'aria-label',
+        'aria-labelledby',
+        'aria-live',
+        'aria-busy',
+        'tabIndex',
+        'contentEditable'
+      ]) {
+        expect(props[prop], prop).toBeUndefined();
+      }
+    });
   });
 });

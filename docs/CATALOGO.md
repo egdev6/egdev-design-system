@@ -45,7 +45,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **AspectRatio** | — | AspectRatio | — | nuevo | Implemented in @egdev/ui: unpainted responsive media geometry using Radix AspectRatio. See issue #78; consumer compositions own media semantics and Material. |
 | **Portal** | — | Portal | — | nuevo | Implemented unstyled out-of-tree div with eg-portal, ready custom container and forwarded div ref. No focus, positioning, presence or z-index policy; Radix-specific components keep their own portals. Contract: issue #97 v0.1. |
 | **Label** | — | Label | — | nuevo | Etiqueta de formulario; la usa Field. |
-| **Skeleton** | — | — | — | nuevo | Estados de carga de listas y tarjetas (tableros States). |
+| **Skeleton** | — | — | — | nuevo | Implemented React primitive under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/102#issuecomment-6251558042): static decorative placeholder in line/block/circle silhouettes with token preset sizes, hidden semantics, no animation and host-owned loading/busy state. No stylesheet or Radix base. |
 
 ### Átomos
 
