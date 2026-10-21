@@ -281,6 +281,7 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
     Object.keys(exported).sort(),
     [
       'AspectRatio',
+      'Divider',
       'Gauge',
       'Label',
       'Portal',
@@ -312,6 +313,9 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
   assert.deepEqual([...names].sort(), [
     'AspectRatio',
     'AspectRatioProps',
+    'Divider',
+    'DividerOrientation',
+    'DividerProps',
     'Gauge',
     'GaugeProps',
     'GaugeSize',
@@ -334,6 +338,9 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
     'labelVariants'
   ]);
   for (const name of [
+    'Divider',
+    'DividerOrientation',
+    'DividerProps',
     'Gauge',
     'GaugeProps',
     'GaugeState',

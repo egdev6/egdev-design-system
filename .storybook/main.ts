@@ -5,6 +5,7 @@ import { mergeConfig } from 'vite';
 
 const documentedNativeProps: Record<string, readonly string[]> = {
   gauge: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  divider: ['id', 'title', 'dir', 'aria-label', 'aria-labelledby', 'className', 'style'],
   aspectRatio: ['id', 'title', 'aria-describedby', 'className', 'style', 'onClick'],
   visuallyHidden: ['id', 'title', 'aria-describedby', 'className', 'style', 'lang'],
   skeleton: ['id', 'title', 'className', 'style'],
