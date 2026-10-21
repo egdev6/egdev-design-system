@@ -36,7 +36,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
-| **Slot** | — | Slot | — | nuevo | Lo da Radix; se reexporta para `asChild` en todo el sistema. |
+| **Slot** | — | Slot | — | nuevo | Implemented pure re-exports: `Slot`, `Slottable` and type `SlotProps` from `@radix-ui/react-slot`. No host, root marker or stylesheet; composing components expose `asChild`. Contract: [#103](https://github.com/egdev6/egdev-design-system/issues/103). |
 | **VisuallyHidden** | — | VisuallyHidden | — | nuevo | Sustituye el `clip: rect(0 0 0 0)` repetido en todos los lienzos. |
 | **Surface** | — | Slot | — | nuevo | Provisional future Material concept, not an implemented or importable React API. The previous reference was retired; Gauge owns its transparent native frame. See [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md), [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) and [base contract](specs/gauge.md). |
 | **Stack / Cluster** | — | Slot | — | nuevo | Apilado vertical y fila con salto. Elimina los `display:flex; gap` en línea. |
