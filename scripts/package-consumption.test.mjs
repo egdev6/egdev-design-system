@@ -29,12 +29,23 @@ function run(cwd, command, args, timeout) {
 
 const consumer = `
 import { createElement, createRef } from 'react';
-import { Gauge } from '@egdev/ui';
-import type { GaugeProps, GaugeState, GaugeSize } from '@egdev/ui';
+import { AspectRatio, Gauge } from '@egdev/ui';
+import type { AspectRatioProps, GaugeProps, GaugeState, GaugeSize } from '@egdev/ui';
 const unsupportedGaugeRef = createRef<HTMLDivElement>();
 const icon = createElement('svg', { viewBox: '0 0 24 24' }, createElement('path', { d: 'M1 1h2v2H1z' }));
 const gaugeState: GaugeState = 'warning';
 const gaugeSize: GaugeSize = 'sm';
+export const aspectWideRef = createRef<HTMLDivElement>();
+export const aspectDefaults: AspectRatioProps = {};
+export const aspectWide: AspectRatioProps = {
+  ratio: 16 / 9, className: 'grid', id: 'media-wide', title: 'Wide media'
+};
+export function AspectSamples({ wideRatio = 16 / 9 }: { wideRatio?: number }) {
+  return createElement('section', { 'aria-label': 'Media frames' },
+    createElement(AspectRatio, { id: 'media-square', 'aria-label': 'Square media' }, 'Square content'),
+    createElement(AspectRatio, { ...aspectWide, ratio: wideRatio, ref: aspectWideRef },
+      createElement('img', { alt: 'Wide media', src: 'wide.png' })));
+}
 export const gaugeDefaults: GaugeProps = { label: 'Capacity', value: 42.5 };
 export const gaugeWarning: GaugeProps = {
   label: 'Warning capacity', value: 42.5, state: gaugeState, stateText: 'Review capacity',
@@ -48,11 +59,12 @@ export function GaugeSamples({ value = 42.5 }: { value?: number }) {
     createElement(Gauge, { label: 'Named capacity', value: 25, center: 'OK' })
   );
 }
-export function App({ gaugeValue }: { gaugeValue?: number } = {}) {
+export function App({ gaugeValue, wideRatio }: { gaugeValue?: number; wideRatio?: number } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
     createElement(GaugeSamples, { value: gaugeValue }),
+    createElement(AspectSamples, { wideRatio }),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error A passive measurement still requires an accessible name.
@@ -75,6 +87,10 @@ const actionableGauge: GaugeProps = { label: 'Capacity', value: 42, onClick: () 
 const invalidGaugeSize: GaugeProps = { label: 'Capacity', value: 42, size: 'xl' };
 // @ts-expect-error Gauge owns passive meter semantics.
 const interactiveGauge: GaugeProps = { label: 'Capacity', value: 42, role: 'button' };
+// @ts-expect-error AspectRatio never delegates its element to a child.
+const slottedAspect: AspectRatioProps = { asChild: true };
+// @ts-expect-error Ratio must be a number, not a preset string.
+const stringAspectRatio: AspectRatioProps = { ratio: '16 / 9' };
 `;
 
 // Reused inside the installed fixture, against shipped CSS and both consumer build paths.
@@ -154,7 +170,8 @@ assert.ok(!realpathSync(styles).startsWith(${JSON.stringify(root)}), 'CSS must r
 const shippedStyles = readFileSync(styles, 'utf8');
 assert.doesNotMatch(shippedStyles, /@(import|reference|source|tailwind|theme|custom-variant|apply)\\b/, 'Packed CSS must be ready for native consumption');
 assert.ok(shippedStyles.includes('.eg-gauge-arc'), 'Packed styles must retain Gauge geometry');
-assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), ['Gauge', 'cn']);
+assert.ok(shippedStyles.includes('.min-w-0'), 'Packed styles must retain the AspectRatio min-width guard');
+assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), ['AspectRatio', 'Gauge', 'cn']);
 ${assertGaugeCSS.toString()}
 assertGaugeCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -180,10 +197,10 @@ import assert from 'node:assert/strict';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
-import { Gauge } from '@egdev/ui';
+import { AspectRatio, Gauge } from '@egdev/ui';
 import { App } from './consumer.ts';
 const html = renderToString(createElement(App));
-for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity']) {
+for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%']) {
   assert.ok(html.includes(text), 'SSR must render ' + text);
 }
 const dom = new JSDOM(html);
@@ -211,8 +228,34 @@ try {
     const center = gauge.querySelector('.eg-gauge-center');
     if (center) assert.equal(center.getAttribute('aria-hidden'), 'true');
   }
+const square = document.querySelector('#media-square');
+const wide = document.querySelector('#media-wide');
+assert.ok(square && wide, 'SSR must render AspectRatio samples');
+assert.equal(square.tagName, 'DIV');
+assert.ok(square.classList.contains('eg-aspect-ratio'), 'AspectRatio must carry its stable marker');
+assert.ok(square.classList.contains('min-w-0'), 'AspectRatio must carry its CVA base guard');
+assert.equal(square.getAttribute('aria-label'), 'Square media');
+assert.equal(square.textContent, 'Square content');
+assert.equal(square.style.getPropertyValue('position'), 'absolute', 'The marker div is Radix inner generic div');
+const squareFrame = square.parentElement;
+assert.equal(squareFrame.getAttribute('data-radix-aspect-ratio-wrapper'), '');
+assert.equal(squareFrame.style.getPropertyValue('padding-bottom'), '100%', 'Default ratio must be a square');
+assert.equal(wide.parentElement.style.getPropertyValue('padding-bottom'), '56.25%', '16/9 must derive its geometry');
+assert.equal(wide.getAttribute('id'), 'media-wide');
+assert.equal(wide.parentElement.getAttribute('data-radix-aspect-ratio-wrapper'), '');
+assert.equal(wide.querySelector('img')?.getAttribute('alt'), 'Wide media');
+for (const frame of [square, wide]) {
+  assert.equal(frame.getAttribute('role'), null);
+  assert.equal(frame.hasAttribute('aria-live'), false);
+  assert.equal(frame.querySelector('[aria-live], button, a, input, [tabindex]'), null);
+}
 } finally {
   dom.window.close();
+}
+for (const ratio of [0, -1, Number.NaN, Number.POSITIVE_INFINITY]) {
+  const fallback = renderToString(createElement(AspectRatio, { ratio }, 'Fallback'));
+  assert.ok(fallback.includes('padding-bottom:100%'), 'Invalid ratio ' + ratio + ' must fall back to a square');
+  assert.ok(fallback.includes('eg-aspect-ratio') && fallback.includes('Fallback'));
 }
 for (const [value, normalized] of [[-1, 0], [42.5, 42.5], [101, 100]]) {
   const rendered = renderToString(createElement(Gauge, { label: 'Bounded capacity', value }));
@@ -246,7 +289,7 @@ globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 stage('setup:complete');
 const { act, createElement } = await import('react');
 const { createRoot } = await import('react-dom/client');
-const { App } = await import('./consumer.ts');
+const { App, aspectWideRef } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -275,6 +318,31 @@ try {
   assert.equal(measurement().querySelector('[aria-live], button, a, input, [tabindex]'), null);
   assert.equal(measurement().hasAttribute('aria-live'), false);
   stage('gauge:rerender:complete');
+  stage('aspect:rerender:start');
+  const mediaSquare = () => document.querySelector('#media-square');
+  const mediaWide = () => document.querySelector('#media-wide');
+  assert.ok(mediaSquare() && mediaWide(), 'CSR must mount AspectRatio samples');
+  assert.equal(aspectWideRef.current, mediaWide(), 'Ref must target the inner generic div');
+  assert.equal(mediaWide().style.getPropertyValue('position'), 'absolute');
+  assert.equal(mediaWide().parentElement.style.getPropertyValue('padding-bottom'), '56.25%');
+  assert.equal(mediaWide().getAttribute('id'), 'media-wide');
+  assert.ok(mediaWide().classList.contains('eg-aspect-ratio'), 'CSR must keep the stable marker');
+  assert.ok(mediaWide().classList.contains('min-w-0'), 'CSR must keep the CVA base guard');
+  assert.equal(mediaSquare().textContent, 'Square content');
+  assert.equal(mediaWide().querySelector('img')?.getAttribute('alt'), 'Wide media');
+  const originalRoot = mediaWide();
+  const originalChild = mediaWide().querySelector('img');
+  await act(async () => root.render(createElement(App, { gaugeValue: 42.5, wideRatio: 4 })));
+  assert.equal(mediaWide(), originalRoot, 'Ratio updates must preserve the same root element');
+  assert.equal(mediaWide().querySelector('img'), originalChild, 'Ratio updates must preserve descendant identity');
+  assert.equal(mediaWide().parentElement.style.getPropertyValue('padding-bottom'), '25%');
+  assert.equal(aspectWideRef.current, mediaWide(), 'Rerender must preserve the inner ref target');
+  assert.equal(mediaWide().querySelector('img')?.getAttribute('alt'), 'Wide media', 'Rerender must preserve children');
+  assert.equal(mediaWide().getAttribute('id'), 'media-wide');
+  await act(async () => root.render(createElement(App, { gaugeValue: 42.5, wideRatio: -1 })));
+  assert.equal(mediaWide().parentElement.style.getPropertyValue('padding-bottom'), '100%', 'Invalid ratio must fall back to a square');
+  assert.equal(aspectWideRef.current, mediaWide());
+  stage('aspect:rerender:complete');
   console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery'] }));
 } finally {
   stage('unmount:start');
@@ -351,6 +419,11 @@ assert.ok(assets.length > 0, 'Vite must emit consumer CSS');
 assert.ok(!emitted.includes('@theme'), 'Native consumption must not need Tailwind to interpret @theme');
 ${assertGaugeCSS.toString()}
 assertGaugeCSS(emitted);
+assert.match(
+  emitted,
+  /\\.min-w-0\\s*\\{[^}]*min-width:\\s*(?:0|0px|var\\(--space-0\\))\\s*;/,
+  'Native consumer build must emit the AspectRatio min-width guard without Tailwind'
+);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
 const shipped = readFileSync(new URL('./node_modules/@egdev/tokens/dist/tokens.css', import.meta.url), 'utf8');
 const names = shipped
@@ -376,6 +449,11 @@ const twAssets = [tailwind].flat().flatMap((bundle) => bundle.output).filter((as
 const twCss = twAssets.map((asset) => String(asset.source)).join(' ');
 assert.ok(twAssets.length > 0, 'Tailwind build must emit CSS');
 assertGaugeCSS(twCss);
+assert.match(
+  twCss,
+  /\\.min-w-0\\s*\\{[^}]*min-width:\\s*(?:0|0px|var\\(--space-0\\))\\s*;/,
+  'Tailwind consumer must retain the AspectRatio min-width guard'
+);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) {
   assert.ok(twCss.includes(selector), 'Tailwind consumer must retain shipped UI selector ' + selector);
 }

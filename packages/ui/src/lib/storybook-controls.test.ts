@@ -8,7 +8,10 @@ import { jsdocControlsEnhancer, mapJSDocControls } from '../../../../.storybook/
 import config from '../../../../.storybook/main';
 import preview from '../../../../.storybook/preview';
 
-const components = [['Gauge', 'atoms/gauge']] as const;
+const components = [
+  ['AspectRatio', 'primitives/aspect-ratio'],
+  ['Gauge', 'atoms/gauge']
+] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
 });
@@ -57,6 +60,9 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  aspectratio: {
+    ratio: 'number'
+  },
   gauge: {
     label: 'text',
     value: 'number',
@@ -67,6 +73,14 @@ const expected: Record<string, Record<string, string | false>> = {
     center: false,
     size: false
   }
+};
+const ownPropCounts: Record<string, number> = { aspectratio: 1, gauge: 8 };
+const ownPropCount = (name: string): number => {
+  const count = ownPropCounts[name.toLowerCase()];
+  if (count === undefined) {
+    throw new Error(`Missing own prop count for ${name}`);
+  }
+  return count;
 };
 
 describe('pure JSDoc Controls metadata mapping', () => {
@@ -215,7 +229,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
 
   it.each(components)('%s maps every annotated own prop after real extraction and inference', (name) => {
     const composed = story(name);
-    expect(Object.keys(expected[name.toLowerCase()] ?? {})).toHaveLength(8);
+    expect(Object.keys(expected[name.toLowerCase()] ?? {})).toHaveLength(ownPropCount(name));
     for (const [prop, control] of Object.entries(expected[name.toLowerCase()] ?? {})) {
       expect
         .soft(composed.argTypes[prop]?.control, `${name}.${prop}`)
@@ -224,6 +238,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         expect(composed.argTypes[prop]?.type?.name, `${name}.${prop} semantic type`).toBe('string');
       }
     }
+    expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     expect(composed.args).toEqual({});
     const native = story(name, false).argTypes;
     for (const [prop, control] of Object.entries(expected[name.toLowerCase()] ?? {})) {
@@ -242,17 +257,17 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
   });
 
-  it.each([['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }]] as const)(
-    '%s presents actual constant defaults without extra quote characters',
-    (name, defaults) => {
-      const { argTypes, args } = story(name);
-      for (const [prop, summary] of Object.entries(defaults)) {
-        expect.soft(argTypes[prop]?.table?.defaultValue?.summary, `${name}.${prop}`).toBe(summary);
-      }
-      // Documentation must not initialize optional Controls args just to fill the UI.
-      expect(args).toEqual({});
+  it.each([
+    ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
+    ['AspectRatio', { ratio: '1' }]
+  ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
+    const { argTypes, args } = story(name);
+    for (const [prop, summary] of Object.entries(defaults)) {
+      expect.soft(argTypes[prop]?.table?.defaultValue?.summary, `${name}.${prop}`).toBe(summary);
     }
-  );
+    // Documentation must not initialize optional Controls args just to fill the UI.
+    expect(args).toEqual({});
+  });
 
   it('keeps computed fallbacks and optional absence in descriptions, not fixed default metadata', () => {
     for (const [name, prop, rules] of [
