@@ -43,6 +43,31 @@ function LoadingHost({ state }: { state: 'loading' | 'ready' | 'error' }) {
 }
 
 describe('Skeleton', () => {
+  it('pulses by default through the approved opacity utility', () => {
+    const { container } = render(<Skeleton />);
+    expect(container.querySelector('.eg-skeleton')).toHaveClass('animate-pulse', 'motion-reduce:animate-none');
+  });
+
+  it('renders exactly the v0.1 static class string when pulse is false', () => {
+    const { container: pulsing } = render(<Skeleton />);
+    const { container: shape } = render(<Skeleton pulse={false} />);
+    const staticClasses = shape.querySelector('.eg-skeleton')?.className.split(' ') ?? [];
+    const pulsingClasses = (pulsing.querySelector('.eg-skeleton')?.className.split(' ') ?? []).filter(
+      (name) => name !== 'animate-pulse' && name !== 'motion-reduce:animate-none'
+    );
+    expect(staticClasses).toEqual(pulsingClasses);
+    expect(staticClasses).not.toContain('animate-pulse');
+    expect(staticClasses).not.toContain('motion-reduce:animate-none');
+  });
+
+  it('never forwards the pulse switch to the DOM and keeps hidden decorative invariants', () => {
+    const { container } = render(<Skeleton pulse={true} />);
+    const shape = container.querySelector('.eg-skeleton');
+    expect(shape).not.toHaveAttribute('pulse');
+    expect(shape).toHaveAttribute('aria-hidden', 'true');
+    expect(shape).toBeEmptyDOMElement();
+  });
+
   it('defaults to an empty, hidden, non-focusable line/md span without state or semantics', () => {
     const { container } = render(<Skeleton />);
     const shape = container.querySelector('.eg-skeleton');
@@ -66,7 +91,7 @@ describe('Skeleton', () => {
   });
 
   it.each(cases)('resolves %s/%s geometry and radius', (variant, size, dimension, radius) => {
-    const { result } = renderHook(() => useSkeleton({ variant, size }));
+    const { result } = renderHook(() => useSkeleton({ variant, size, pulse: false }));
     const classes = result.current.rootProps.className?.split(' ') ?? [];
     expect(classes).toContain(dimension);
     expect(classes).toContain(radius);

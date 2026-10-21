@@ -30,6 +30,13 @@ export type SkeletonProps = Omit<
    * @default md
    */
   size?: SkeletonSize;
+  /**
+   * Plays a decorative opacity pulse while the placeholder is shown. Reduced-motion
+   * preferences always render it static.
+   * @control boolean
+   * @default true
+   */
+  pulse?: boolean;
 };
 
 export const skeletonVariants = cva('eg-skeleton block box-border shrink-0 bg-border-default border-0 p-0', {
@@ -39,7 +46,8 @@ export const skeletonVariants = cva('eg-skeleton block box-border shrink-0 bg-bo
       block: 'w-full rounded-md',
       circle: 'rounded-full'
     },
-    size: { sm: '', md: '', lg: '' }
+    size: { sm: '', md: '', lg: '' },
+    pulse: { true: 'animate-pulse motion-reduce:animate-none', false: '' }
   },
   compoundVariants: [
     { variant: 'line', size: 'sm', className: 'h-3' },
@@ -52,5 +60,5 @@ export const skeletonVariants = cva('eg-skeleton block box-border shrink-0 bg-bo
     { variant: 'circle', size: 'md', className: 'size-12' },
     { variant: 'circle', size: 'lg', className: 'size-16' }
   ],
-  defaultVariants: { variant: 'line', size: 'md' }
+  defaultVariants: { variant: 'line', size: 'md', pulse: true }
 });

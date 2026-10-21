@@ -20,7 +20,7 @@ const FORBIDDEN = new Set([
 
 /** Resolve the decorative shape and keep hidden decorative invariants. */
 export function useSkeleton(props: SkeletonProps) {
-  const { variant, size, className, ...rest } = props;
+  const { variant, size, pulse = true, className, ...rest } = props;
   const passthrough: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(rest)) {
     if (!FORBIDDEN.has(key)) {
@@ -28,6 +28,10 @@ export function useSkeleton(props: SkeletonProps) {
     }
   }
   return {
-    rootProps: { ...passthrough, 'aria-hidden': true, className: cn(skeletonVariants({ variant, size }), className) }
+    rootProps: {
+      ...passthrough,
+      'aria-hidden': true,
+      className: cn(skeletonVariants({ variant, size, pulse }), className)
+    }
   };
 }

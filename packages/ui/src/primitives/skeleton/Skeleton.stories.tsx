@@ -14,7 +14,8 @@ import { Skeleton } from './Skeleton';
  * aria-busy region, then clear busy when ready or on error. Never wrap already available
  * interactive content. Height and circle dimensions are preset-owned; className may add
  * outer margins, placement and token-backed/static percentage widths on line/block.
- * Static by design: no pulse, shimmer or timing.
+ * Decorative pulse is on by default and consumers may pass pulse={false} for a static
+ * placeholder; reduced-motion preferences always render it static. No shimmer or timing.
  */
 const meta: Meta<typeof Skeleton> = {
   title: 'Primitives/Skeleton',
@@ -25,8 +26,13 @@ const meta: Meta<typeof Skeleton> = {
 export default meta;
 type Story = StoryObj<typeof Skeleton>;
 
-/** Default line at md size, filling the available width. */
+/** Default line at md size, filling the available width and pulsing by default. */
 export const Default: Story = {};
+
+/** Static placeholder: the consumer opts out of the decorative pulse. */
+export const Static: Story = {
+  args: { pulse: false }
+};
 
 /** Every silhouette at each token preset. */
 export const VariantsAndSizes: Story = {
@@ -89,7 +95,10 @@ export const InLoadingCard: Story = {
   )
 };
 
-/** No animated presentation exists; the placeholder stays static. */
+/**
+ * Reduced-motion behavior: with the pulse on, the OS prefers-reduced-motion preference
+ * stops the animation and the placeholders render static.
+ */
 export const StaticReducedMotion: Story = {
   render: () => (
     <div className='flex flex-col gap-3'>

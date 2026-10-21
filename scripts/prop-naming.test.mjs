@@ -26,6 +26,7 @@ const postReceiptUsages = [
   { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/label/types.ts#LabelProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/skeleton/types.ts#SkeletonProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/primitives/skeleton/types.ts#SkeletonProps' },
+  { conventionId: 'signal-pulse', source: 'packages/ui/src/primitives/skeleton/types.ts#SkeletonProps' },
   { conventionId: 'layout-gap', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
   { conventionId: 'layout-gap', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
   { conventionId: 'cross-axis-alignment', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
@@ -799,15 +800,25 @@ test('Skeleton v0.2 naming receipt records the owner published-spec approval and
       scope: record.scope,
       contentHash: record.contentHash
     });
-    assert.deepEqual(usages, []);
+    const implementationUsage = {
+      component: 'Skeleton',
+      type: 'boolean',
+      status: 'existing',
+      source: {
+        path: 'packages/ui/src/primitives/skeleton/types.ts',
+        symbol: 'SkeletonProps',
+        revision: digest(fs.readFileSync(resolve(root, 'packages/ui/src/primitives/skeleton/types.ts')))
+      }
+    };
+    assert.deepEqual(usages, [implementationUsage]);
     assert.equal(entry.id, 'signal-pulse');
     assert.equal(entry.name, 'pulse');
     assert.equal(entry.status, 'approved');
     assert.deepEqual(entry.aliases, []);
     assert.deepEqual(entry.exceptions, []);
   }
-  // No usage is recorded in this unit; the Skeleton usage arrives with its later implementation commit.
-  assert.equal(actual.find(({ id }) => id === 'signal-pulse').usages.length, 0);
+  // The implementation commit records exactly one Skeleton usage under signal-pulse.
+  assert.equal(actual.find(({ id }) => id === 'signal-pulse').usages.length, 1);
 });
 
 test('promoting observed usage to existing does not approve or change its proposed convention', () => {

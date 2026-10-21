@@ -71,7 +71,7 @@ const expected: Record<string, Record<string, string | false>> = {
   stack: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   cluster: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   visuallyhidden: { children: false, asChild: 'boolean' },
-  skeleton: { variant: 'select', size: 'select' },
+  skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
   gauge: {
     label: 'text',
     value: 'number',
@@ -86,7 +86,7 @@ const expected: Record<string, Record<string, string | false>> = {
 const ownPropCounts: Record<string, number> = {
   aspectratio: 1,
   gauge: 8,
-  skeleton: 2,
+  skeleton: 3,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4
@@ -284,7 +284,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Stack', { gap: '4', alignItems: '"stretch"', justifyContent: '"start"', asChild: 'false' }],
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
-    ['Skeleton', { variant: '"line"', size: '"md"' }]
+    ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
     const { argTypes, args } = story(name);
     for (const [prop, summary] of Object.entries(defaults)) {
@@ -364,6 +364,9 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     // The installed extractor reorders resolved union members; only the choice set is contractual.
     expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['block', 'circle', 'line']);
     expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['lg', 'md', 'sm']);
+    expect(argTypes.pulse?.type, 'pulse').toMatchObject({ name: 'boolean', required: false });
+    expect(argTypes.pulse?.control, 'pulse').toEqual({ type: 'boolean' });
+    expect(argTypes.pulse?.table?.defaultValue?.summary, 'pulse must document its on default').toBe('true');
     for (const prop of ['variant', 'size']) {
       expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'enum', required: false });
       expect(argTypes[prop]?.control, prop).toEqual({ type: 'select' });

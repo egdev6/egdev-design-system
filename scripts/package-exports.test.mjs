@@ -179,7 +179,7 @@ test('UI ships functional static Gauge utilities without an application Tailwind
   }
 });
 
-test('UI ships the approved static Skeleton silhouette utilities without animations', () => {
+test('UI ships the approved Skeleton silhouette utilities with the canonical v0.2 pulse', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
   const rule = (selector) => {
@@ -217,7 +217,19 @@ test('UI ships the approved static Skeleton silhouette utilities without animati
   );
   assert.match(rule('.block'), /display:\s*block\s*;/);
   const utilityLayer = cssBlock(css, /@layer utilities\s*\{/);
-  assert.doesNotMatch(utilityLayer, /animate-|@keyframes/, 'Skeleton utilities must stay static without animations');
+  // The v0.2 delta binds the decorative pulse to the canonical --animate-pulse token.
+  assert.match(rule('.animate-pulse'), /animation:\s*var\(--animate-pulse[,)]/);
+  const reducedMotion = cssBlock(utilityLayer, /@media \(prefers-reduced-motion: reduce\)\s*\{/);
+  assert.match(
+    cssBlock(reducedMotion, /\.motion-reduce\\:animate-none\s*\{/),
+    /animation:\s*none\s*;/,
+    'Reduced-motion preferences must stop the pulse'
+  );
+  // The pulse is the only animation utility; transitions are limited to the pre-existing
+  // static Gauge transition-none (transition-property: none) and never reach the Skeleton.
+  assert.doesNotMatch(utilityLayer, /\.animate-(?!pulse)\w/, 'Only the approved pulse animation utility may ship');
+  assert.doesNotMatch(utilityLayer, /\.transition-(?!none)\w/, 'No animated transition utility may ship');
+  assert.doesNotMatch(utilityLayer, /@keyframes/, 'The utilities layer must not define keyframes');
 });
 
 test('UI ships the approved Gauge geometry in the components layer', () => {
@@ -472,8 +484,19 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     assert.equal(shape.includes('w-full'), variant !== 'circle', `Skeleton ${variant}/${size} width ownership`);
     assert.ok(shape.endsWith('></span>'), `Skeleton ${variant}/${size} must stay an empty span`);
     assert.match(shape, /aria-hidden="true"/);
-    assert.doesNotMatch(shape, /aria-live|aria-busy|role=|tabindex|data-state|animate-/);
+    assert.match(
+      shape,
+      /animate-pulse motion-reduce:animate-none/,
+      `Skeleton ${variant}/${size} must pulse by default with the reduced-motion opt-out`
+    );
+    assert.doesNotMatch(shape, /aria-live|aria-busy|role=|tabindex|data-state|transition/);
+    assert.doesNotMatch(shape, /\spulse=/, 'The pulse switch must never reach the DOM');
   }
+  const skeletonStatic = renderToString(
+    createElement(exported.Skeleton, { variant: 'line', size: 'md', pulse: false })
+  );
+  assert.ok(skeletonStatic.includes('eg-skeleton'), 'pulse:false must keep the stable root class');
+  assert.doesNotMatch(skeletonStatic, /animate-/, 'pulse:false must render fully static');
   const skeletonNative = renderToString(
     createElement(exported.Skeleton, {
       id: 'consumer-skeleton',

@@ -90,7 +90,7 @@
         "source": {
           "path": "packages/ui/src/primitives/skeleton/types.ts",
           "symbol": "SkeletonProps",
-          "revision": "sha256:4a070e80111b30c69d64078b57016e16815c4547704ca46ce93f37263955ca14"
+          "revision": "sha256:6bb6a4c5aa02b761a881e7694b6434f30330a859909145100cf483a7277fdcbb"
         }
       }
     ]
@@ -117,7 +117,7 @@
         "source": {
           "path": "packages/ui/src/primitives/skeleton/types.ts",
           "symbol": "SkeletonProps",
-          "revision": "sha256:4a070e80111b30c69d64078b57016e16815c4547704ca46ce93f37263955ca14"
+          "revision": "sha256:6bb6a4c5aa02b761a881e7694b6434f30330a859909145100cf483a7277fdcbb"
         }
       },
       {
@@ -830,7 +830,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Skeleton",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/skeleton/types.ts",
+          "symbol": "SkeletonProps",
+          "revision": "sha256:6bb6a4c5aa02b761a881e7694b6434f30330a859909145100cf483a7277fdcbb"
+        }
+      }
+    ]
   },
   {
     "id": "tooltip-content",

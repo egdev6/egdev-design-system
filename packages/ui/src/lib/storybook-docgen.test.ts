@@ -485,9 +485,20 @@ describe('Skeleton decorative metadata contract', () => {
     expect(union('SkeletonVariant')).toBe("'line' | 'block' | 'circle'");
     expect(union('SkeletonSize')).toBe("'sm' | 'md' | 'lg'");
     const properties = skeletonOwnProps(file);
-    expect(properties.map((property) => property.name.getText(file))).toEqual(['variant', 'size']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['variant', 'size', 'pulse']);
     for (const property of properties) {
       const name = property.name.getText(file);
+      if (name === 'pulse') {
+        expect(property.type?.getText(file), 'Skeleton.pulse type').toBe('boolean');
+        expect(property.questionToken, 'Skeleton.pulse stays optional').toBeTruthy();
+        const pulseTags = ts.getJSDocTags(property);
+        const pulseControls = pulseTags.filter((tag) => tag.tagName.text === 'control');
+        expect(pulseControls, 'Skeleton.pulse control').toHaveLength(1);
+        expect(ts.getTextOfJSDocComment(pulseControls[0]?.comment), 'Skeleton.pulse @control').toBe('boolean');
+        const pulseDefault = pulseTags.find((tag) => tag.tagName.text === 'default');
+        expect(ts.getTextOfJSDocComment(pulseDefault?.comment), 'Skeleton.pulse @default').toBe('true');
+        continue;
+      }
       expect(property.type?.getText(file), `Skeleton.${name} alias`).toBe(
         name === 'variant' ? 'SkeletonVariant' : 'SkeletonSize'
       );
@@ -541,8 +552,12 @@ describe('Skeleton decorative metadata contract', () => {
     expect(alias.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild/);
   });
 
-  it('binds the CVA default variants to the documented line/md defaults', () => {
-    expect(defaults(source('primitives/skeleton/types.ts'), true)).toEqual({ variant: 'line', size: 'md' });
+  it('binds the CVA default variants to the documented line/md defaults and the pulsing default', () => {
+    expect(defaults(source('primitives/skeleton/types.ts'), true)).toEqual({
+      variant: 'line',
+      size: 'md',
+      pulse: 'true'
+    });
   });
 
   describe('installed docgen extraction', () => {
@@ -573,6 +588,11 @@ describe('Skeleton decorative metadata contract', () => {
           prop === 'variant' ? 'line' : 'md'
         );
       }
+      expect(props.pulse, 'pulse').toBeDefined();
+      expect(props.pulse?.required, 'pulse stays optional').toBe(false);
+      expect(props.pulse?.type.name, 'pulse semantic type').toBe('boolean');
+      expect(props.pulse?.tags).toMatchObject({ control: 'boolean' });
+      expect(normalize(props.pulse?.defaultValue?.value), 'pulse documented default').toBe('true');
       for (const prop of ['id', 'title', 'className', 'style']) {
         expect(props[prop], `Skeleton native ${prop} must remain available in autodocs`).toBeDefined();
       }

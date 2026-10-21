@@ -114,6 +114,7 @@ export const hiddenNote: VisuallyHiddenProps = {
 const skeletonVariant: SkeletonVariant = 'circle';
 const skeletonSize: SkeletonSize = 'lg';
 export const skeletonDefaults: SkeletonProps = { variant: 'line', size: 'md' };
+export const skeletonStatic: SkeletonProps = { variant: 'line', size: 'md', pulse: false };
 export const skeletonNative: SkeletonProps = {
   id: 'consumer-skeleton', title: 'Decorative placeholder', lang: 'en', className: 'consumer-skeleton'
 };
@@ -127,6 +128,8 @@ export function SkeletonSamples() {
     geometry.map(([variant, size]) => createElement(Skeleton, { key: variant + '-' + size, variant, size })),
     createElement(Skeleton, { variant: 'line', size: 'md', id: 'line-width', title: 'Line width override', className: 'w-3/4' }),
     createElement(Skeleton, { variant: 'block', size: 'md', id: 'block-width', className: 'w-1/2' }),
+    createElement(Skeleton, { variant: 'line', size: 'md', id: 'pulse-default' }),
+    createElement(Skeleton, { variant: 'line', size: 'md', id: 'pulse-static', pulse: false }),
     createElement(Skeleton, skeletonNative));
 }
 export function VisuallyHiddenSamples() {
@@ -195,6 +198,8 @@ const liveSkeleton: SkeletonProps = { 'aria-live': 'polite', 'aria-busy': true }
 const actionableSkeleton: SkeletonProps = { 'aria-label': 'Loading', tabIndex: 0, contentEditable: true };
 // @ts-expect-error Placeholder geometry is preset-owned; numeric sizes are not supported.
 const numericSkeleton: SkeletonProps = { variant: 'circle', size: 16 };
+// @ts-expect-error pulse is a boolean switch, not a preset string.
+const skeletonPulsePreset: SkeletonProps = { pulse: 'false' };
 // @ts-expect-error Arbitrary silhouettes and presets are not part of Skeleton's API.
 const invalidSkeleton: SkeletonProps = { variant: 'xl', size: 'xl' };
 // @ts-expect-error Hidden content is required, not optional.
@@ -409,7 +414,7 @@ function assertLabelCSS(css) {
   assert.match(css, /font-weight:\s*var\(--text-body-default--font-weight\)/, 'Missing Label choice weight binding');
 }
 
-// Skeleton ships static, token-backed silhouette utilities: no animations, no dynamic geometry.
+// Skeleton ships token-backed silhouette utilities plus the approved pulse animation: no dynamic geometry.
 function assertSkeletonCSS(css) {
   for (const dimension of ['h-3', 'h-4', 'h-5', 'h-12', 'h-20', 'h-24', 'size-8', 'size-12', 'size-16']) {
     assert.ok(css.includes('.' + dimension), 'Missing Skeleton geometry utility ' + dimension);
@@ -424,9 +429,15 @@ function assertSkeletonCSS(css) {
     css.includes('background-color: var(--color-border-default, var(--color-primitive-graphite-800))'),
     'Skeleton surface must consume the border token with its exact packed fallback'
   );
-  // Legacy markers keep their own animations; the Skeleton recipe itself stays static.
-  assert.doesNotMatch(css, /\.eg-skeleton[^{]*\{[^}]*(?:animation|transition):/, 'Skeleton must stay static');
-  assert.doesNotMatch(css, /\.animate-/, 'No Skeleton animation utility may be emitted');
+  // The v0.2 pulse consumes the canonical --animate-pulse token and stops under reduced motion.
+  assert.match(
+    css,
+    /\.animate-pulse\s*\{[^}]*animation:\s*var\(--animate-pulse[,)]/,
+    'Missing the pulse utility bound to the canonical --animate-pulse token'
+  );
+  assert.ok(css.includes('motion-reduce\\:animate-none'), 'Missing the reduced-motion static override utility');
+  // The eg-skeleton marker itself never carries an animation rule; the utility class does.
+  assert.doesNotMatch(css, /\.eg-skeleton[^{]*\{[^}]*(?:animation|transition):/, 'Skeleton marker must stay static');
 }
 
 const entries = `
@@ -621,7 +632,7 @@ for (const frame of [square, wide]) {
   assert.ok(forwardedHeading.className.includes('eg-visually-hidden'));
   assert.ok(document.querySelector('.eg-visually-hidden span') === null, 'No nested wrapper span may remain');
   const shapes = [...document.querySelectorAll('section[aria-label="Loading placeholders"] > .eg-skeleton')];
-  assert.equal(shapes.length, 12, 'All nine presets, two width overrides and the native sample must render');
+  assert.equal(shapes.length, 14, 'All nine presets, two width overrides, two pulse samples and the native sample must render');
   const expectedGeometry = [
     ['h-3', 'rounded-sm'],
     ['h-4', 'rounded-sm'],
@@ -646,8 +657,27 @@ for (const frame of [square, wide]) {
     assert.equal(shape.getAttribute('tabindex'), null);
     assert.equal(shape.hasAttribute('aria-live'), false);
     assert.equal(shape.hasAttribute('data-state'), false);
-    assert.ok(!/animate-/.test(shape.className), 'Skeleton must not animate');
+    assert.equal(shape.className.includes('animate-pulse'), shape.id !== 'pulse-static', 'Skeleton pulse state mismatch');
+    assert.equal(shape.hasAttribute('pulse'), false, 'The pulse switch must never reach the DOM');
   }
+  // Class-string comparison only: never pass DOM nodes to deep equality.
+  const pulseDefault = document.getElementById('pulse-default');
+  const pulseStatic = document.getElementById('pulse-static');
+  assert.ok(pulseDefault && pulseStatic, 'Missing pulse samples');
+  assert.ok(
+    pulseDefault.className.includes('animate-pulse') && pulseDefault.className.includes('motion-reduce:animate-none'),
+    'The default Skeleton must pulse with the reduced-motion opt-out'
+  );
+  const pulsingClasses = pulseDefault.className
+    .split(' ')
+    .filter((name) => name !== 'animate-pulse' && name !== 'motion-reduce:animate-none')
+    .sort()
+    .join(' ');
+  assert.equal(
+    pulseStatic.className.split(' ').sort().join(' '),
+    pulsingClasses,
+    'pulse:false must render exactly the static v0.1 class string'
+  );
   for (const [id, override] of [['line-width', 'w-3/4'], ['block-width', 'w-1/2']]) {
     const shape = document.getElementById(id);
     assert.ok(shape, 'Missing width override sample ' + id);
@@ -831,12 +861,21 @@ try {
   }
   stage('divider:rerender:complete');
   const skeletons = document.querySelectorAll('.eg-skeleton');
-  assert.equal(skeletons.length, 12, 'Consumer Skeletons must mount behind the intrinsic controls');
+  assert.equal(skeletons.length, 14, 'Consumer Skeletons must mount behind the intrinsic controls');
   for (const shape of skeletons) {
     assert.equal(shape.getAttribute('aria-hidden'), 'true');
     assert.equal(shape.textContent, '');
     assert.equal(shape.querySelector('button, a, input, [tabindex]'), null);
   }
+  // Class-string comparison only: never pass DOM nodes to deep equality.
+  const csrPulseDefault = document.getElementById('pulse-default');
+  const csrPulseStatic = document.getElementById('pulse-static');
+  assert.ok(csrPulseDefault && csrPulseStatic, 'Missing CSR pulse samples');
+  assert.ok(
+    csrPulseDefault.className.includes('animate-pulse') && csrPulseDefault.className.includes('motion-reduce:animate-none'),
+    'The CSR default Skeleton must pulse'
+  );
+  assert.ok(!csrPulseStatic.className.includes('animate-pulse'), 'The CSR pulse:false Skeleton must stay static');
   stage('layout:rerender:start');
   const layoutStack = () => document.querySelector('.eg-stack[aria-label="Token sections"]');
   const layoutCluster = () => document.querySelector('.eg-cluster[aria-label="Token actions"]');
@@ -991,7 +1030,7 @@ const names = shipped
     return name.startsWith('--') ? [name] : [];
   });
 const typography = ${JSON.stringify(typographyNames)};
-assert.equal(names.length, 236, 'Packed native artifact must expose 236 variables');
+assert.equal(names.length, 237, 'Packed native artifact must expose 237 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
