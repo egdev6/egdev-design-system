@@ -2,14 +2,14 @@
 # Destinations: ui | effects | web | mando | cadencia | criterio | —   Actions: mantener | renombrar | separar | fusionar | mover | extraer | nuevo | absorber | componer
 C = [
 # ---------- PRIMITIVAS (nuevas) ----------
-("—","—","Slot","primitive","ui","Slot","—","nuevo","Lo da Radix; se reexporta para `asChild` en todo el sistema."),
-("—","—","VisuallyHidden","primitive","ui","VisuallyHidden","—","nuevo","Sustituye el `clip: rect(0 0 0 0)` repetido en todos los lienzos."),
+("—","—","Slot","primitive","ui","Slot","—","nuevo","Implemented pure re-exports: `Slot`, `Slottable` and type `SlotProps` from `@radix-ui/react-slot`. No host, root marker or stylesheet; composing components expose `asChild`. Contract: [#103](https://github.com/egdev6/egdev-design-system/issues/103)."),
+("—","—","VisuallyHidden","primitive","ui","VisuallyHidden","—","nuevo","Implemented React primitive under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/112#issuecomment-6251584644): screen-reader-only content with Radix-owned hiding geometry, required children, asChild and an HTMLElement ref to the actual HTML host. No stylesheet or appearance variants. Legacy hidden-content rules are unchanged."),
 ("—","—","Surface","primitive","ui","Slot","—","nuevo","Provisional future Material concept, not an implemented or importable React API. The previous reference was retired; Gauge owns its transparent native frame. See [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md), [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) and [base contract](specs/gauge.md)."),
 ("—","—","Stack / Cluster","primitive","ui","Slot","—","nuevo","Apilado vertical y fila con salto. Elimina los `display:flex; gap` en línea."),
 ("Title + Eyebrow","átomo","Text / Heading","primitive","ui","Slot","—","fusionar","Una primitiva tipográfica con variantes (`display`, `hero`, `section`, `eyebrow`, `show`, `inverse`)."),
 ("Divider","átomo","Divider","primitive","ui","Separator","—","mantener","Absorbe `.eg-rule` y `--vertical`."),
 ("—","—","AspectRatio","primitive","ui","AspectRatio","—","nuevo","Implemented in @egdev/ui: unpainted responsive media geometry using Radix AspectRatio. See issue #78; consumer compositions own media semantics and Material."),
-("—","—","Portal","primitive","ui","Portal","—","nuevo","Contenido flotante (menús, diálogos, toasts)."),
+("—","—","Portal","primitive","ui","Portal","—","nuevo","Implemented unstyled out-of-tree div with eg-portal, ready custom container and forwarded div ref. No focus, positioning, presence or z-index policy; Radix-specific components keep their own portals. Contract: issue #97 v0.1."),
 ("—","—","Label","primitive","ui","Label","—","nuevo","Etiqueta de formulario; la usa Field."),
 # ---------- ÁTOMOS ----------
 ("Button","átomo","Button","atom","ui","Slot","Icon, Spinner","mantener","Pierde `--icon` (pasa a IconButton). Mantiene `.eg-btn-split` como molécula ButtonGroup."),

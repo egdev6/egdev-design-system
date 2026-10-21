@@ -118,22 +118,80 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
-  it('exposes Gauge, AspectRatio and the cn utility through the package source barrel', () => {
+  it('exposes Gauge, AspectRatio, Portal, Slot and the cn utility through the package source barrel', () => {
     const file = ast(source('index.ts'));
     const modules = file.statements.flatMap((node) =>
       ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)
         ? [node.moduleSpecifier.text]
         : []
     );
-    // The type alias exports first and the runtime component second, both from the same module.
-    expect(modules).toEqual(['./atoms/gauge', './lib/cn', './primitives/aspect-ratio', './primitives/aspect-ratio']);
-    expect(Object.keys(publicAPI).sort()).toEqual(['AspectRatio', 'Gauge', 'cn']);
+    // Each primitive exports its type alias first and runtime component second; dedupe the specifiers.
+    expect([...new Set(modules)].sort()).toEqual([
+      './atoms/gauge',
+      './lib/cn',
+      './primitives/aspect-ratio',
+      './primitives/portal',
+      './primitives/slot',
+      './primitives/visually-hidden'
+    ]);
+    expect(Object.keys(publicAPI).sort()).toEqual([
+      'AspectRatio',
+      'Gauge',
+      'Portal',
+      'Slot',
+      'Slottable',
+      'VisuallyHidden',
+      'cn'
+    ]);
   });
 
   beforeAll(() => {
     expect(config.typescript?.reactDocgen).toBe('react-docgen-typescript');
     docs = parser.parse([source('atoms/gauge/Gauge.tsx'), source('primitives/aspect-ratio/AspectRatio.tsx')]);
   }, 20_000);
+
+  it('annotates each own VisuallyHidden prop without fabricating a content default', () => {
+    const file = ast(source('primitives/visually-hidden/types.ts'));
+    const properties: ts.PropertySignature[] = [];
+    const visit = (node: ts.Node) => {
+      if (ts.isPropertySignature(node)) {
+        properties.push(node);
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(file);
+    expect(properties.map((prop) => prop.name.getText(file))).toEqual(['children', 'asChild']);
+    for (const prop of properties) {
+      const tags = ts.getJSDocTags(prop);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe(
+        prop.name.getText(file) === 'children' ? 'false' : 'boolean'
+      );
+      if (!prop.questionToken) {
+        expect(tags.some((tag) => tag.tagName.text === 'default')).toBe(false);
+      }
+    }
+  });
+
+  it('extracts VisuallyHidden required content, composition metadata and native attributes', () => {
+    const doc = parser
+      .parse(source('primitives/visually-hidden/VisuallyHidden.tsx'))
+      .find((item) => item.displayName === 'VisuallyHidden');
+    expect(doc).toBeDefined();
+    expect(doc?.props.children).toMatchObject({ required: true, tags: { control: 'false' }, defaultValue: null });
+    expect(doc?.props.children?.tags).toMatchObject({
+      controlReason: expect.stringMatching(/ReactNode.*Default and AsChild/)
+    });
+    expect(doc?.props.asChild).toMatchObject({
+      required: false,
+      tags: { control: 'boolean' },
+      defaultValue: { value: 'false' }
+    });
+    for (const prop of ['id', 'title', 'className', 'style', 'aria-describedby', 'lang']) {
+      expect(doc?.props[prop], prop).toBeDefined();
+    }
+  });
 
   it('keeps explicit parser options aligned with Vite and extracts clean descriptions plus separate tags', () => {
     const options = config.typescript?.reactDocgenTypescriptOptions;

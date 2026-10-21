@@ -198,20 +198,28 @@ test('UI JavaScript remains importable without a CSS loader', async () => {
   assert.ok(!imports.some(({ fileName }) => fileName.endsWith('.css')), 'Styles must remain an explicit import');
   const { createElement } = await import('react');
   const { renderToString } = await import('react-dom/server');
-  const { Gauge } = await import(entry);
+  const { Gauge, VisuallyHidden } = await import(entry);
   assert.match(renderToString(createElement(Gauge, { label: 'CSS consumer', value: 42 })), /role="meter"/);
+  const hidden = renderToString(createElement(VisuallyHidden, null, 'Hidden note'));
+  assert.match(hidden, /<span class="eg-visually-hidden"[^>]*clip:rect\(0, 0, 0, 0\)[^>]*>Hidden note<\/span>/);
 });
 
-test('UI root exports Gauge, AspectRatio and their public types with passive SSR semantics', async () => {
+test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types with passive SSR semantics', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   assert.deepEqual(
     Object.keys(exported).sort(),
-    ['AspectRatio', 'Gauge', 'cn'],
-    'Only AspectRatio, Gauge and cn are public runtime exports'
+    ['AspectRatio', 'Gauge', 'Portal', 'Slot', 'Slottable', 'VisuallyHidden', 'cn'],
+    'Only approved components and cn are public runtime exports'
   );
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
   // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
+  assert.equal(
+    exported.VisuallyHidden?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'VisuallyHidden must be a forwardRef component with a public ref'
+  );
+  assert.equal(typeof exported.VisuallyHidden.render, 'function', 'VisuallyHidden must expose its render function');
   assert.equal(exported.default, undefined, 'UI must not introduce a default export');
   const declaration = artifact('ui', ui.exports['.'].types);
   const program = ts.createProgram([declaration], { moduleResolution: ts.ModuleResolutionKind.Bundler });
@@ -225,13 +233,35 @@ test('UI root exports Gauge, AspectRatio and their public types with passive SSR
     'GaugeProps',
     'GaugeSize',
     'GaugeState',
+    'Portal',
+    'PortalProps',
+    'Slot',
+    'SlotProps',
+    'Slottable',
+    'VisuallyHidden',
+    'VisuallyHiddenProps',
     'cn'
   ]);
-  for (const name of ['Gauge', 'GaugeProps', 'GaugeState', 'GaugeSize', 'AspectRatio', 'AspectRatioProps']) {
+  for (const name of [
+    'Gauge',
+    'GaugeProps',
+    'GaugeState',
+    'GaugeSize',
+    'AspectRatio',
+    'AspectRatioProps',
+    'Portal',
+    'PortalProps',
+    'Slot',
+    'SlotProps',
+    'Slottable',
+    'VisuallyHidden',
+    'VisuallyHiddenProps'
+  ]) {
     assert.ok(names.has(name), `Missing public declaration export ${name}`);
   }
   const { createElement } = await import('react');
   const { renderToString } = await import('react-dom/server');
+  assert.equal(renderToString(createElement(exported.Portal, { children: 'Server layer' })), '');
   const html = renderToString(createElement(exported.Gauge, { label: 'Capacity', value: 42.5 }));
   for (const text of [
     'eg-gauge',
@@ -263,6 +293,29 @@ test('UI root exports Gauge, AspectRatio and their public types with passive SSR
     const fallback = renderToString(createElement(exported.AspectRatio, { ratio }, 'Fallback'));
     assert.ok(fallback.includes('padding-bottom:100%'), `Invalid ratio ${ratio} must fall back to a square`);
   }
+});
+
+test('UI VisuallyHidden renders non-visual content without shipped CSS or Tailwind', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { VisuallyHidden } = exported;
+  const note = renderToString(createElement(VisuallyHidden, { id: 'hint', className: 'extra' }, 'Screen reader note'));
+  // Radix applies the hiding geometry inline; the class is the stable public marker only.
+  assert.match(note, /<span id="hint" class="eg-visually-hidden extra" style="[^"]*position:absolute/);
+  assert.match(note, /clip:rect\(0, 0, 0, 0\)/);
+  assert.match(note, />Screen reader note<\/span>/);
+  const slotted = renderToString(
+    createElement(VisuallyHidden, { asChild: true }, createElement('h2', { id: 'slotted' }, 'Hidden heading'))
+  );
+  assert.match(slotted, /^<h2 id="slotted" class="eg-visually-hidden" style="[^"]*position:absolute/);
+  assert.match(slotted, /clip:rect\(0, 0, 0, 0\)[^"]*">Hidden heading<\/h2>$/);
+  assert.doesNotMatch(slotted, /<span/, 'asChild must not keep a wrapping span');
+  const styles = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  assert.ok(
+    !styles.includes('.eg-visually-hidden'),
+    'Hiding geometry is inline Radix behavior; shipped CSS must stay untouched'
+  );
 });
 
 for (const subpath of ['./tokens.css', './theme.css', './native.css']) {

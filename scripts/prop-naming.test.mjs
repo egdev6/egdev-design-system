@@ -15,7 +15,12 @@ const postReceiptUsages = [
   {
     conventionId: 'aspect-ratio',
     source: 'packages/ui/src/primitives/aspect-ratio/types.ts#AspectRatioProps'
-  }
+  },
+  {
+    conventionId: 'slot-composition',
+    source: 'packages/ui/src/primitives/visually-hidden/types.ts#VisuallyHiddenProps'
+  },
+  { conventionId: 'portal-container', source: 'packages/ui/src/primitives/portal/types.ts#PortalProps' }
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({
