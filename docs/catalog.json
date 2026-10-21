@@ -85,7 +85,7 @@
     "radix": "Portal",
     "compone": "—",
     "accion": "nuevo",
-    "notas": "Contenido flotante (menús, diálogos, toasts)."
+    "notas": "Implemented unstyled out-of-tree div with eg-portal, ready custom container and forwarded div ref. No focus, positioning, presence or z-index policy; Radix-specific components keep their own portals. Contract: issue #97 v0.1."
   },
   {
     "actual": "—",

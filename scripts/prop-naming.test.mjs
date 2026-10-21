@@ -11,7 +11,9 @@ const { renderRegistry, runCli, validateRegistry } = props;
 const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
-const postReceiptUsages = [];
+const postReceiptUsages = [
+  { conventionId: 'portal-container', source: 'packages/ui/src/primitives/portal/types.ts#PortalProps' }
+];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({
     ...entry,
