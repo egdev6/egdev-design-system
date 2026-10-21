@@ -98,6 +98,7 @@ test('UI ships plain layered CSS without canonical token definitions or unrelate
   for (const selector of [
     '.eg-gauge-arc',
     '.eg-gauge-center',
+    '.min-w-0',
     '.bg-transparent',
     '.bg-none',
     String.raw`.\[box-shadow\:none\]`
@@ -133,6 +134,7 @@ test('UI ships functional static Gauge utilities without an application Tailwind
     ['.border-0', /border(?:-width)?:\s*(?:0|0px)\s*;/],
     ['.p-0', /padding:\s*(?:0|0px|var\(--space-0\)|calc\(var\(--(?:space-1|spacing)\)\s*\*\s*0\))\s*;/],
     ['.inline-flex', /display:\s*inline-flex\s*;/],
+    ['.min-w-0', /min-width:\s*(?:0|0px|var\(--space-0\))\s*;/],
     ['.gap-2', /gap:\s*var\(--space-2\)\s*;/],
     ['.font-sans', /font-family:\s*var\(--font-sans(?:,\s*"Barlow",\s*system-ui,\s*sans-serif)?\)\s*;/],
     ['.text-fg-default', /color:\s*var\(--color-fg-default(?:,\s*var\(--color-primitive-white\))?\)\s*;/],
@@ -200,18 +202,32 @@ test('UI JavaScript remains importable without a CSS loader', async () => {
   assert.match(renderToString(createElement(Gauge, { label: 'CSS consumer', value: 42 })), /role="meter"/);
 });
 
-test('UI root exports Gauge and its public types with passive SSR semantics', async () => {
+test('UI root exports Gauge, AspectRatio and their public types with passive SSR semantics', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
-  assert.deepEqual(Object.keys(exported).sort(), ['Gauge', 'cn'], 'Only Gauge and cn are public runtime exports');
+  assert.deepEqual(
+    Object.keys(exported).sort(),
+    ['AspectRatio', 'Gauge', 'cn'],
+    'Only AspectRatio, Gauge and cn are public runtime exports'
+  );
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
+  // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
+  assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
   assert.equal(exported.default, undefined, 'UI must not introduce a default export');
   const declaration = artifact('ui', ui.exports['.'].types);
   const program = ts.createProgram([declaration], { moduleResolution: ts.ModuleResolutionKind.Bundler });
   const checker = program.getTypeChecker();
   const symbol = checker.getSymbolAtLocation(program.getSourceFile(declaration));
   const names = new Set(checker.getExportsOfModule(symbol).map((item) => item.name));
-  assert.deepEqual([...names].sort(), ['Gauge', 'GaugeProps', 'GaugeSize', 'GaugeState', 'cn']);
-  for (const name of ['Gauge', 'GaugeProps', 'GaugeState', 'GaugeSize']) {
+  assert.deepEqual([...names].sort(), [
+    'AspectRatio',
+    'AspectRatioProps',
+    'Gauge',
+    'GaugeProps',
+    'GaugeSize',
+    'GaugeState',
+    'cn'
+  ]);
+  for (const name of ['Gauge', 'GaugeProps', 'GaugeState', 'GaugeSize', 'AspectRatio', 'AspectRatioProps']) {
     assert.ok(names.has(name), `Missing public declaration export ${name}`);
   }
   const { createElement } = await import('react');
@@ -230,6 +246,23 @@ test('UI root exports Gauge and its public types with passive SSR semantics', as
   assert.match(invalid, /Data unavailable/);
   assert.doesNotMatch(invalid, /role="meter"|aria-value(?:now|min|max|text)=|eg-gauge-arc/);
   assert.doesNotMatch(html + invalid, /aria-live=|<button|<input|tabindex=/);
+  // AspectRatio reserves geometry with the Radix padding-bottom trick and no extra semantics.
+  const wide = renderToString(createElement(exported.AspectRatio, { 'aria-label': 'Media', ratio: 16 / 9 }, 'Media'));
+  assert.ok(
+    wide.includes('eg-aspect-ratio') && wide.includes('min-w-0'),
+    'AspectRatio must carry its marker and CVA base'
+  );
+  assert.ok(wide.includes('padding-bottom:56.25%'), 'AspectRatio 16/9 must derive its padding-bottom geometry');
+  assert.ok(
+    wide.includes('data-radix-aspect-ratio-wrapper'),
+    'AspectRatio must render the inner generic div inside the Radix frame'
+  );
+  assert.ok(wide.includes('Media'), 'AspectRatio must render its children');
+  assert.doesNotMatch(wide, /aria-live=|<button|<input|tabindex=|role=/);
+  for (const ratio of [0, -1, Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
+    const fallback = renderToString(createElement(exported.AspectRatio, { ratio }, 'Fallback'));
+    assert.ok(fallback.includes('padding-bottom:100%'), `Invalid ratio ${ratio} must fall back to a square`);
+  }
 });
 
 for (const subpath of ['./tokens.css', './theme.css', './native.css']) {
