@@ -115,8 +115,8 @@ test('UI ships plain layered CSS without canonical token definitions or unrelate
     assert.doesNotMatch(css, new RegExp(`${token}\\s*:`), `UI must not redefine ${token}`);
   }
   assert.match(css, /prefers-reduced-transparency:\s*reduce/);
-  // Only Gauge's explicit CVA source is scanned, not stories, tests or the default palette.
-  assert.doesNotMatch(css, /\.(flex|p-4|gap-4|bg-red-500)\s*[,{]/);
+  // Only approved component CVA sources are scanned, not stories, tests or the default palette.
+  assert.doesNotMatch(css, /\.(p-4|bg-red-500)\s*[,\{]/);
 });
 
 test('UI ships functional static Gauge utilities without an application Tailwind compiler', () => {
@@ -245,11 +245,11 @@ test('UI JavaScript remains importable without a CSS loader', async () => {
   assert.match(hidden, /<span class="eg-visually-hidden"[^>]*clip:rect\(0, 0, 0, 0\)[^>]*>Hidden note<\/span>/);
 });
 
-test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types with passive SSR semantics', async () => {
+test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot with passive SSR semantics', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   assert.deepEqual(
     Object.keys(exported).sort(),
-    ['AspectRatio', 'Gauge', 'Portal', 'Skeleton', 'Slot', 'Slottable', 'VisuallyHidden', 'cn'],
+    ['AspectRatio', 'Cluster', 'Gauge', 'Portal', 'Skeleton', 'Slot', 'Slottable', 'Stack', 'VisuallyHidden', 'cn'],
     'Only approved components and cn are public runtime exports'
   );
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
@@ -262,6 +262,13 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
     'VisuallyHidden must be a forwardRef component with a public ref'
   );
   assert.equal(typeof exported.VisuallyHidden.render, 'function', 'VisuallyHidden must expose its render function');
+  assert.equal(typeof exported.Stack, 'function', 'Stack must be a plain function component without a ref API');
+  assert.equal(typeof exported.Cluster, 'function', 'Cluster must be a plain function component without a ref API');
+  assert.equal(
+    exported.Stack.prototype?.render,
+    undefined,
+    'Stack must not be a forwardRef component (D10: no public ref)'
+  );
   assert.equal(exported.default, undefined, 'UI must not introduce a default export');
   const declaration = artifact('ui', ui.exports['.'].types);
   const program = ts.createProgram([declaration], { moduleResolution: ts.ModuleResolutionKind.Bundler });
@@ -271,10 +278,15 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
   assert.deepEqual([...names].sort(), [
     'AspectRatio',
     'AspectRatioProps',
+    'Cluster',
+    'ClusterProps',
     'Gauge',
     'GaugeProps',
     'GaugeSize',
     'GaugeState',
+    'LayoutAlignItems',
+    'LayoutGap',
+    'LayoutJustifyContent',
     'Portal',
     'PortalProps',
     'Skeleton',
@@ -284,6 +296,8 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
     'Slot',
     'SlotProps',
     'Slottable',
+    'Stack',
+    'StackProps',
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'cn'
@@ -304,6 +318,13 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
     'Slot',
     'SlotProps',
     'Slottable',
+    'Stack',
+    'StackProps',
+    'Cluster',
+    'ClusterProps',
+    'LayoutAlignItems',
+    'LayoutGap',
+    'LayoutJustifyContent',
     'VisuallyHidden',
     'VisuallyHiddenProps'
   ]) {
@@ -333,6 +354,18 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
     'AspectRatio must carry its marker and CVA base'
   );
   assert.ok(wide.includes('padding-bottom:56.25%'), 'AspectRatio 16/9 must derive its padding-bottom geometry');
+  // Stack and Cluster resolve token gaps as static CVA utilities without inline appearance.
+  const stacked = renderToString(createElement(exported.Stack, { 'aria-label': 'Sections', gap: 6 }, 'Sections'));
+  assert.ok(
+    stacked.includes('eg-stack') && stacked.includes('flex-col') && stacked.includes('gap-6'),
+    'Stack must carry its marker and default column classes'
+  );
+  const clustered = renderToString(createElement(exported.Cluster, { 'aria-label': 'Actions', gap: 0 }, 'Actions'));
+  assert.ok(
+    clustered.includes('eg-cluster') && clustered.includes('flex-wrap') && clustered.includes('gap-0'),
+    'Cluster must carry its marker and wrapping row classes'
+  );
+  assert.doesNotMatch(stacked + clustered, /aria-live=|tabindex=|role=/);
   assert.ok(
     wide.includes('data-radix-aspect-ratio-wrapper'),
     'AspectRatio must render the inner generic div inside the Radix frame'

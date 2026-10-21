@@ -31,7 +31,6 @@ const postReceiptUsages = [
   { conventionId: 'main-axis-distribution', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' }
-
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({
@@ -65,7 +64,13 @@ test('post-receipt usages exist with valid source evidence', () => {
     );
     assert.deepEqual(
       filtered,
-      current.usages.filter((usage) => usage !== matching[0])
+      current.usages.filter(
+        (usage) =>
+          !postReceiptUsages.some(
+            (reviewed) =>
+              reviewed.conventionId === current.id && reviewed.source === `${usage.source.path}#${usage.source.symbol}`
+          )
+      )
     );
   }
 });

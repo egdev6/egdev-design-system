@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Gauge, Skeleton, Slot, Slottable, VisuallyHidden } from '@egdev/ui';
+import { AspectRatio, Cluster, Gauge, Skeleton, Slot, Slottable, Stack, VisuallyHidden } from '@egdev/ui';
 import type {
   AspectRatioProps,
   GaugeProps,
@@ -40,6 +40,9 @@ import type {
   SkeletonSize,
   SkeletonVariant,
   SlotProps,
+  ClusterProps,
+  LayoutGap,
+  StackProps,
   VisuallyHiddenProps
 } from '@egdev/ui';
 const slotProps: SlotProps = { 'aria-label': 'Composed documentation' };
@@ -117,12 +120,25 @@ export function VisuallyHiddenSamples() {
     createElement(VisuallyHidden, { asChild: true,
       children: createElement(HiddenHeading, { id: 'forwarded-heading' }, 'Forwarded details') }));
 }
-export function App({ gaugeValue, wideRatio }: { gaugeValue?: number; wideRatio?: number } = {}) {
+export const stackDefaults: StackProps = { gap: 4 };
+export const clusterRow: ClusterProps = { gap: 6, alignItems: 'start', justifyContent: 'between' };
+type LayoutSampleProps = { stackGap?: LayoutGap };
+export function LayoutSamples({ stackGap = 4 }: LayoutSampleProps) {
+  return createElement('section', { 'aria-label': 'Layout containers' },
+    createElement(Stack, { ...stackDefaults, gap: stackGap, 'aria-label': 'Token sections' },
+      createElement('p', { id: 'stack-first' }, 'First section'),
+      createElement('p', { id: 'stack-second' }, 'Second section')),
+    createElement(Cluster, { ...clusterRow, 'aria-label': 'Token actions' },
+      createElement('button', { type: 'button' }, 'Action one'),
+      createElement('button', { type: 'button' }, 'Action two')));
+}
+export function App({ gaugeValue, wideRatio, stackGap }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
     createElement(GaugeSamples, { value: gaugeValue }),
     createElement(AspectSamples, { wideRatio }),
+    createElement(LayoutSamples, { stackGap }),
     createElement(VisuallyHiddenSamples),
     createElement(SkeletonSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
@@ -181,6 +197,10 @@ const interactiveGauge: GaugeProps = { label: 'Capacity', value: 42, role: 'butt
 const slottedAspect: AspectRatioProps = { asChild: true };
 // @ts-expect-error Ratio must be a number, not a preset string.
 const stringAspectRatio: AspectRatioProps = { ratio: '16 / 9' };
+// @ts-expect-error Gap keys are exact spacing tokens, not arbitrary pixel lengths.
+const arbitraryStackGap: StackProps = { gap: 9 };
+// @ts-expect-error Unsupported alignment choices are rejected by the union type.
+const invalidClusterAlignment: ClusterProps = { alignItems: 'around' };
 `;
 
 // Reused inside the installed fixture, against shipped CSS and both consumer build paths.
@@ -281,13 +301,18 @@ assert.doesNotMatch(shippedStyles, /@(import|reference|source|tailwind|theme|cus
 assert.ok(shippedStyles.includes('.eg-gauge-arc'), 'Packed styles must retain Gauge geometry');
 assert.ok(shippedStyles.includes('.min-w-0'), 'Packed styles must retain the AspectRatio min-width guard');
 assert.ok(!shippedStyles.includes('.eg-visually-hidden'), 'VisuallyHidden must not add shipped CSS; Radix hides inline');
+for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.items-stretch', '.items-start', '.justify-between']) {
+  assert.ok(shippedStyles.includes(utility), 'Packed styles must retain layout utility ' + utility);
+}
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AspectRatio',
+  'Cluster',
   'Gauge',
   'Portal',
   'Skeleton',
   'Slot',
   'Slottable',
+  'Stack',
   'VisuallyHidden',
   'cn'
 ]);
@@ -332,7 +357,7 @@ try {
   slotDocument.window.close();
 }
 const html = renderToString(createElement(App));
-for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%']) {
+for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%', 'eg-stack', 'flex-col', 'flex-nowrap', 'gap-4', 'eg-cluster', 'flex-row', 'flex-wrap', 'gap-6', 'items-start', 'justify-between']) {
   assert.ok(html.includes(text), 'SSR must render ' + text);
 }
 const dom = new JSDOM(html);
@@ -435,6 +460,21 @@ for (const frame of [square, wide]) {
   assert.equal(nativeSkeleton.getAttribute('title'), 'Decorative placeholder');
   assert.ok(nativeSkeleton.className.includes('consumer-skeleton'), 'Native span class merge must survive');
   assert.equal(nativeSkeleton.getAttribute('lang'), 'en');
+  const tokenStack = document.querySelector('.eg-stack[aria-label="Token sections"]');
+  assert.ok(tokenStack, 'SSR must render Stack samples');
+  assert.ok(tokenStack.classList.contains('flex-col') && tokenStack.classList.contains('flex-nowrap'));
+  assert.ok(tokenStack.classList.contains('gap-4') && tokenStack.classList.contains('items-stretch'));
+  assert.equal(tokenStack.tagName, 'DIV');
+  assert.equal(tokenStack.children.length, 2, 'No phantom flex items for null children');
+  const tokenCluster = document.querySelector('.eg-cluster[aria-label="Token actions"]');
+  assert.ok(tokenCluster, 'SSR must render Cluster samples');
+  assert.ok(tokenCluster.classList.contains('flex-row') && tokenCluster.classList.contains('flex-wrap'));
+  assert.ok(tokenCluster.classList.contains('gap-6') && tokenCluster.classList.contains('items-start') && tokenCluster.classList.contains('justify-between'));
+  for (const layout of [tokenStack, tokenCluster]) {
+    assert.equal(layout.getAttribute('role'), null);
+    assert.equal(layout.hasAttribute('aria-live'), false);
+    assert.ok(layout.className.includes('min-w-0'));
+  }
 } finally {
   dom.window.close();
 }
@@ -488,7 +528,7 @@ try {
   assert.ok(slottedHeadingRef.current instanceof HTMLElement);
   assert.equal(slottedHeadingRef.current?.tagName, 'H2', 'The slotted ref must expose the h2 host');
   const buttons = [...document.querySelectorAll('button')];
-  assert.equal(buttons.length, 2, 'Only intrinsic consumer controls may be focusable');
+  assert.equal(buttons.length, 4, 'Only intrinsic consumer and Cluster harness controls may be focusable');
   buttons[0].focus();
   assert.equal(document.activeElement, buttons[0]);
   buttons[1].focus();
@@ -513,7 +553,7 @@ try {
   const mediaSquare = () => document.querySelector('#media-square');
   const mediaWide = () => document.querySelector('#media-wide');
   assert.ok(mediaSquare() && mediaWide(), 'CSR must mount AspectRatio samples');
-  assert.equal(aspectWideRef.current, mediaWide(), 'Ref must target the inner generic div');
+  assert.ok(aspectWideRef.current === mediaWide(), 'Ref must target the inner generic div');
   assert.equal(mediaWide().style.getPropertyValue('position'), 'absolute');
   assert.equal(mediaWide().parentElement.style.getPropertyValue('padding-bottom'), '56.25%');
   assert.equal(mediaWide().getAttribute('id'), 'media-wide');
@@ -524,15 +564,15 @@ try {
   const originalRoot = mediaWide();
   const originalChild = mediaWide().querySelector('img');
   await act(async () => root.render(createElement(App, { gaugeValue: 42.5, wideRatio: 4 })));
-  assert.equal(mediaWide(), originalRoot, 'Ratio updates must preserve the same root element');
-  assert.equal(mediaWide().querySelector('img'), originalChild, 'Ratio updates must preserve descendant identity');
+  assert.ok(mediaWide() === originalRoot, 'Ratio updates must preserve the same root element');
+  assert.ok(mediaWide().querySelector('img') === originalChild, 'Ratio updates must preserve descendant identity');
   assert.equal(mediaWide().parentElement.style.getPropertyValue('padding-bottom'), '25%');
-  assert.equal(aspectWideRef.current, mediaWide(), 'Rerender must preserve the inner ref target');
+  assert.ok(aspectWideRef.current === mediaWide(), 'Rerender must preserve the inner ref target');
   assert.equal(mediaWide().querySelector('img')?.getAttribute('alt'), 'Wide media', 'Rerender must preserve children');
   assert.equal(mediaWide().getAttribute('id'), 'media-wide');
   await act(async () => root.render(createElement(App, { gaugeValue: 42.5, wideRatio: -1 })));
   assert.equal(mediaWide().parentElement.style.getPropertyValue('padding-bottom'), '100%', 'Invalid ratio must fall back to a square');
-  assert.equal(aspectWideRef.current, mediaWide());
+  assert.ok(aspectWideRef.current === mediaWide(), 'Invalid ratio rerender must preserve the inner ref target');
   stage('aspect:rerender:complete');
   const skeletons = document.querySelectorAll('.eg-skeleton');
   assert.equal(skeletons.length, 12, 'Consumer Skeletons must mount behind the intrinsic controls');
@@ -541,6 +581,20 @@ try {
     assert.equal(shape.textContent, '');
     assert.equal(shape.querySelector('button, a, input, [tabindex]'), null);
   }
+  stage('layout:rerender:start');
+  const layoutStack = () => document.querySelector('.eg-stack[aria-label="Token sections"]');
+  const layoutCluster = () => document.querySelector('.eg-cluster[aria-label="Token actions"]');
+  assert.ok(layoutStack() && layoutCluster(), 'CSR must mount layout samples');
+  const layoutRootId = layoutStack().id || 'unnamed-stack-root';
+  const layoutFirstId = layoutStack().querySelector('#stack-first')?.id;
+  await act(async () => root.render(createElement(App, { gaugeValue: 42.5, stackGap: 8 })));
+  assert.ok(layoutStack().querySelector('#stack-first')?.id === layoutFirstId, 'Gap updates must preserve the same root and children');
+  assert.ok(layoutStack().className.includes(layoutRootId === 'unnamed-stack-root' ? 'eg-stack' : layoutRootId), 'Stack root identity must persist');
+  assert.ok(layoutStack().classList.contains('gap-8'), 'Gap updates must resolve the new token class');
+  assert.ok(!layoutStack().classList.contains('gap-4'), 'twMerge must drop the replaced gap utility');
+  assert.ok(layoutCluster().classList.contains('flex-wrap'), 'Cluster keeps wrapping behavior across renders');
+  stage('layout:rerender:complete');
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery'] }));
   const slotRef = createRef();
   const childRef = createRef();
   const calls = [];
@@ -645,6 +699,9 @@ assert.match(
   'Native consumer build must emit the AspectRatio min-width guard without Tailwind'
 );
 assertSkeletonCSS(emitted);
+for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
+  assert.ok(emitted.includes(utility), 'Native consumer build must emit layout utility ' + utility);
+}
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
 const shipped = readFileSync(new URL('./node_modules/@egdev/tokens/dist/tokens.css', import.meta.url), 'utf8');
 const names = shipped
@@ -676,6 +733,9 @@ assert.match(
   'Tailwind consumer must retain the AspectRatio min-width guard'
 );
 assertSkeletonCSS(twCss);
+for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
+  assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
+}
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) {
   assert.ok(twCss.includes(selector), 'Tailwind consumer must retain shipped UI selector ' + selector);
 }

@@ -7,6 +7,8 @@
 @source "../packages/ui/src/atoms/gauge/Gauge.stories.tsx";
 @source "../packages/ui/src/primitives/aspect-ratio/AspectRatio.stories.tsx";
 @source "../packages/ui/src/primitives/skeleton/Skeleton.stories.tsx";
+@source "../packages/ui/src/primitives/stack/Stack.stories.tsx";
+@source "../packages/ui/src/primitives/stack/Cluster.stories.tsx";
 
 body {
   margin: 0;

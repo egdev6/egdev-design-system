@@ -11,7 +11,9 @@ import preview from '../../../../.storybook/preview';
 
 const components = [
   ['AspectRatio', 'primitives/aspect-ratio'],
+  ['Cluster', 'primitives/stack'],
   ['Gauge', 'atoms/gauge'],
+  ['Stack', 'primitives/stack'],
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton']
 ] as const;
@@ -66,6 +68,8 @@ const expected: Record<string, Record<string, string | false>> = {
   aspectratio: {
     ratio: 'number'
   },
+  stack: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
+  cluster: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   visuallyhidden: { children: false, asChild: 'boolean' },
   skeleton: { variant: 'select', size: 'select' },
   gauge: {
@@ -79,7 +83,14 @@ const expected: Record<string, Record<string, string | false>> = {
     size: false
   }
 };
-const ownPropCounts: Record<string, number> = { aspectratio: 1, gauge: 8, skeleton: 2, visuallyhidden: 2 };
+const ownPropCounts: Record<string, number> = {
+  aspectratio: 1,
+  gauge: 8,
+  skeleton: 2,
+  visuallyhidden: 2,
+  stack: 4,
+  cluster: 4
+};
 const ownPropCount = (name: string): number => {
   const count = ownPropCounts[name.toLowerCase()];
   if (count === undefined) {
@@ -246,7 +257,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         expect(composed.argTypes[prop]?.type?.name, `${name}.${prop} semantic type`).toBe('string');
       }
     }
-    if (name !== 'VisuallyHidden') {
+    if (!['VisuallyHidden', 'Stack', 'Cluster'].includes(name)) {
       expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     }
     expect(composed.args).toEqual({});
@@ -270,6 +281,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
   it.each([
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
     ['AspectRatio', { ratio: '1' }],
+    ['Stack', { gap: '4', alignItems: '"stretch"', justifyContent: '"start"', asChild: 'false' }],
+    ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {

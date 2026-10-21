@@ -7,7 +7,9 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   gauge: ['id', 'title', 'aria-describedby', 'className', 'style'],
   aspectRatio: ['id', 'title', 'aria-describedby', 'className', 'style', 'onClick'],
   visuallyHidden: ['id', 'title', 'aria-describedby', 'className', 'style', 'lang'],
-  skeleton: ['id', 'title', 'className', 'style']
+  skeleton: ['id', 'title', 'className', 'style'],
+  stack: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  cluster: ['id', 'title', 'aria-describedby', 'className', 'style']
 };
 
 const config: StorybookConfig = {
