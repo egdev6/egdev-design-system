@@ -204,8 +204,8 @@ test('UI root exports implemented components and their public types with scoped 
   const exported = await import(artifact('ui', ui.exports['.'].import));
   assert.deepEqual(
     Object.keys(exported).sort(),
-    ['Gauge', 'Portal', 'cn'],
-    'Only implemented components and cn are public runtime exports'
+    ['Gauge', 'Portal', 'Slot', 'Slottable', 'cn'],
+    'Only approved components and cn are public runtime exports'
   );
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
   assert.equal(exported.default, undefined, 'UI must not introduce a default export');
@@ -221,9 +221,22 @@ test('UI root exports implemented components and their public types with scoped 
     'GaugeState',
     'Portal',
     'PortalProps',
+    'Slot',
+    'SlotProps',
+    'Slottable',
     'cn'
   ]);
-  for (const name of ['Gauge', 'GaugeProps', 'GaugeState', 'GaugeSize', 'Portal', 'PortalProps']) {
+  for (const name of [
+    'Gauge',
+    'GaugeProps',
+    'GaugeState',
+    'GaugeSize',
+    'Portal',
+    'PortalProps',
+    'Slot',
+    'SlotProps',
+    'Slottable'
+  ]) {
     assert.ok(names.has(name), `Missing public declaration export ${name}`);
   }
   const { createElement } = await import('react');

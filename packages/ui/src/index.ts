@@ -1,4 +1,9 @@
+// Atoms
 export * from './atoms/gauge';
+// Utilities
 export { cn } from './lib/cn';
+// Primitives
 export type { PortalProps } from './primitives/portal';
 export { Portal } from './primitives/portal';
+export type { SlotProps } from './primitives/slot';
+export { Slot, Slottable } from './primitives/slot';

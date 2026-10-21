@@ -114,15 +114,20 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
-  it('exposes implemented components and the cn utility through the package source barrel', () => {
+  it('exposes approved components and the cn utility through the package source barrel', () => {
     const file = ast(source('index.ts'));
     const modules = file.statements.flatMap((node) =>
       ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)
         ? [node.moduleSpecifier.text]
         : []
     );
-    expect(modules).toEqual(['./atoms/gauge', './lib/cn', './primitives/portal', './primitives/portal']);
-    expect(Object.keys(publicAPI).sort()).toEqual(['Gauge', 'Portal', 'cn']);
+    expect([...new Set(modules)].sort()).toEqual([
+      './atoms/gauge',
+      './lib/cn',
+      './primitives/portal',
+      './primitives/slot'
+    ]);
+    expect(Object.keys(publicAPI).sort()).toEqual(['Gauge', 'Portal', 'Slot', 'Slottable', 'cn']);
   });
 
   beforeAll(() => {
