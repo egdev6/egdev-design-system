@@ -282,6 +282,7 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     [
       'AspectRatio',
       'Cluster',
+      'Divider',
       'Gauge',
       'Label',
       'Portal',
@@ -323,6 +324,9 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'AspectRatioProps',
     'Cluster',
     'ClusterProps',
+    'Divider',
+    'DividerOrientation',
+    'DividerProps',
     'Gauge',
     'GaugeProps',
     'GaugeSize',
@@ -350,6 +354,9 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'labelVariants'
   ]);
   for (const name of [
+    'Divider',
+    'DividerOrientation',
+    'DividerProps',
     'Gauge',
     'GaugeProps',
     'GaugeState',

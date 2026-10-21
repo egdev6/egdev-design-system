@@ -20,6 +20,8 @@ const postReceiptUsages = [
     conventionId: 'slot-composition',
     source: 'packages/ui/src/primitives/visually-hidden/types.ts#VisuallyHiddenProps'
   },
+  { conventionId: 'layout-orientation', source: 'packages/ui/src/primitives/divider/types.ts#DividerProps' },
+  { conventionId: 'decorative-separation', source: 'packages/ui/src/primitives/divider/types.ts#DividerProps' },
   { conventionId: 'portal-container', source: 'packages/ui/src/primitives/portal/types.ts#PortalProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/label/types.ts#LabelProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/skeleton/types.ts#SkeletonProps' },

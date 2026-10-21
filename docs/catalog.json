@@ -63,7 +63,7 @@
     "radix": "Separator",
     "compone": "—",
     "accion": "mantener",
-    "notas": "Absorbe `.eg-rule` y `--vertical`."
+    "notas": "Implemented passive span via Radix Separator with decorative default and horizontal/vertical orientation. Token-backed brand rule; no public children, ref or asChild. Legacy `.eg-rule` and `--vertical` remain unchanged. Contract: [#83](https://github.com/egdev6/egdev-design-system/issues/83)."
   },
   {
     "actual": "—",
