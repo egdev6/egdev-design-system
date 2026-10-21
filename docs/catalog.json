@@ -41,7 +41,7 @@
     "radix": "Slot",
     "compone": "—",
     "accion": "nuevo",
-    "notas": "Apilado vertical y fila con salto. Elimina los `display:flex; gap` en línea."
+    "notas": "Implemented in @egdev/ui: Stack (vertical flow, no wrap) and Cluster (wrapping row) with exact spacing-token gaps and flex alignment. Contract: [#105](https://github.com/egdev6/egdev-design-system/issues/105)."
   },
   {
     "actual": "Title + Eyebrow",

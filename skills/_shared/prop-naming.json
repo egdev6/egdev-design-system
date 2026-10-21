@@ -452,6 +452,26 @@
           "symbol": "VisuallyHiddenProps",
           "revision": "sha256:e242d33b1e9769935e26a2feee013da2f98b10643795a9bedb4e4a962f1f9434"
         }
+      },
+      {
+        "component": "Stack",
+        "type": "boolean (asChild)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/stack/types.ts",
+          "symbol": "StackProps",
+          "revision": "sha256:38e98a5bdb660a50204947dc17c183cd64d8d7b1a4301d6bbcb11fbb98607722"
+        }
+      },
+      {
+        "component": "Cluster",
+        "type": "boolean (asChild)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/stack/types.ts",
+          "symbol": "ClusterProps",
+          "revision": "sha256:38e98a5bdb660a50204947dc17c183cd64d8d7b1a4301d6bbcb11fbb98607722"
+        }
       }
     ]
   },
@@ -1627,7 +1647,28 @@
       "scope": "convention:layout-gap",
       "contentHash": "sha256:1f1267aaafd194a30f1e21ec4d00eecbd8f12ff58f91634a874b4ac2457c1893"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Stack",
+        "type": "LayoutGap (0|1|2|3|4|5|6|7|8|10|12|14|16|20|24)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/stack/types.ts",
+          "symbol": "StackProps",
+          "revision": "sha256:38e98a5bdb660a50204947dc17c183cd64d8d7b1a4301d6bbcb11fbb98607722"
+        }
+      },
+      {
+        "component": "Cluster",
+        "type": "LayoutGap (0|1|2|3|4|5|6|7|8|10|12|14|16|20|24)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/stack/types.ts",
+          "symbol": "ClusterProps",
+          "revision": "sha256:38e98a5bdb660a50204947dc17c183cd64d8d7b1a4301d6bbcb11fbb98607722"
+        }
+      }
+    ]
   },
   {
     "id": "group-caption",
@@ -1675,7 +1716,28 @@
       "scope": "convention:cross-axis-alignment",
       "contentHash": "sha256:8d9242d24677898c72e19b9ebf8fa7c7d3f14f2f354746351b518f2d494b853a"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Stack",
+        "type": "LayoutAlignItems (start|center|end|stretch|baseline)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/stack/types.ts",
+          "symbol": "StackProps",
+          "revision": "sha256:38e98a5bdb660a50204947dc17c183cd64d8d7b1a4301d6bbcb11fbb98607722"
+        }
+      },
+      {
+        "component": "Cluster",
+        "type": "LayoutAlignItems (start|center|end|stretch|baseline)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/stack/types.ts",
+          "symbol": "ClusterProps",
+          "revision": "sha256:38e98a5bdb660a50204947dc17c183cd64d8d7b1a4301d6bbcb11fbb98607722"
+        }
+      }
+    ]
   },
   {
     "id": "main-axis-distribution",
@@ -1691,7 +1753,28 @@
       "scope": "convention:main-axis-distribution",
       "contentHash": "sha256:a2a015ce076aa2a9c1522ab78a2ad22aa45a463a5746298d25b5cb6099e6406f"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Stack",
+        "type": "LayoutJustifyContent (start|center|end|between)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/stack/types.ts",
+          "symbol": "StackProps",
+          "revision": "sha256:38e98a5bdb660a50204947dc17c183cd64d8d7b1a4301d6bbcb11fbb98607722"
+        }
+      },
+      {
+        "component": "Cluster",
+        "type": "LayoutJustifyContent (start|center|end|between)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/stack/types.ts",
+          "symbol": "ClusterProps",
+          "revision": "sha256:38e98a5bdb660a50204947dc17c183cd64d8d7b1a4301d6bbcb11fbb98607722"
+        }
+      }
+    ]
   },
   {
     "id": "inner-padding",
