@@ -10,7 +10,7 @@ C = [
 ("Divider","átomo","Divider","primitive","ui","Separator","—","mantener","Absorbe `.eg-rule` y `--vertical`."),
 ("—","—","AspectRatio","primitive","ui","AspectRatio","—","nuevo","Implemented in @egdev/ui: unpainted responsive media geometry using Radix AspectRatio. See issue #78; consumer compositions own media semantics and Material."),
 ("—","—","Portal","primitive","ui","Portal","—","nuevo","Implemented unstyled out-of-tree div with eg-portal, ready custom container and forwarded div ref. No focus, positioning, presence or z-index policy; Radix-specific components keep their own portals. Contract: issue #97 v0.1."),
-("—","—","Label","primitive","ui","Label","—","nuevo","Etiqueta de formulario; la usa Field."),
+("—","—","Label","primitive","ui","Label","—","nuevo","Implemented native form label via `@radix-ui/react-label`: `field`/`choice` typography, `eg-label`, native association and forwarded label ref. No stylesheet or `asChild`; future Field composes it. Contract: [#87](https://github.com/egdev6/egdev-design-system/issues/87)."),
 # ---------- ÁTOMOS ----------
 ("Button","átomo","Button","atom","ui","Slot","Icon, Spinner","mantener","Pierde `--icon` (pasa a IconButton). Mantiene `.eg-btn-split` como molécula ButtonGroup."),
 ("IconButton","átomo","IconButton","atom","ui","Slot + AccessibleIcon","Icon","mantener","Provisional future icon-only action concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md); Gauge's current finish follows the [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md)."),

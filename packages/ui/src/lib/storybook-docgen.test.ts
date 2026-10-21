@@ -130,6 +130,8 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/gauge',
       './lib/cn',
       './primitives/aspect-ratio',
+
+      './primitives/label',
       './primitives/portal',
       './primitives/skeleton',
       './primitives/slot',
@@ -140,13 +142,15 @@ describe('Storybook TypeScript docgen contract', () => {
       'AspectRatio',
       'Cluster',
       'Gauge',
+      'Label',
       'Portal',
       'Skeleton',
       'Slot',
       'Slottable',
       'Stack',
       'VisuallyHidden',
-      'cn'
+      'cn',
+      'labelVariants'
     ]);
   });
 

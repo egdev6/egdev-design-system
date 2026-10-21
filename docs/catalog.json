@@ -96,7 +96,7 @@
     "radix": "Label",
     "compone": "—",
     "accion": "nuevo",
-    "notas": "Etiqueta de formulario; la usa Field."
+    "notas": "Implemented native form label via `@radix-ui/react-label`: `field`/`choice` typography, `eg-label`, native association and forwarded label ref. No stylesheet or `asChild`; future Field composes it. Contract: [#87](https://github.com/egdev6/egdev-design-system/issues/87)."
   },
   {
     "actual": "Button",
