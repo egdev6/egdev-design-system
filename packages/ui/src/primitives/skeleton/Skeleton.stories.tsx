@@ -67,9 +67,10 @@ export const InLoadingCard: Story = {
   render: () => (
     <>
       <p role='status'>Loading account details</p>
+      {/* Material v2 edge plus elevation in the documented order (docs/MATERIAL.md:52). */}
       <article
         aria-busy='true'
-        className='flex flex-col gap-4 p-6 border border-border-hairline rounded-xl bg-[image:var(--gradient-sheen)] bg-surface-1 shadow-edge shadow-elev-1'
+        className='flex flex-col gap-4 p-6 border border-border-hairline rounded-xl bg-[image:var(--gradient-sheen)] bg-surface-1 shadow-[var(--shadow-edge),var(--shadow-elev-1)]'
       >
         <div className='flex items-center gap-4'>
           <Skeleton variant='circle' size='md' />

@@ -1,4 +1,5 @@
 // @vitest-environment node
+import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { composeStory, INTERNAL_DEFAULT_PROJECT_ANNOTATIONS } from '@storybook/react-vite';
 import { withCustomConfig } from 'react-docgen-typescript';
@@ -11,7 +12,8 @@ import preview from '../../../../.storybook/preview';
 const components = [
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Gauge', 'atoms/gauge'],
-  ['VisuallyHidden', 'primitives/visually-hidden']
+  ['VisuallyHidden', 'primitives/visually-hidden'],
+  ['Skeleton', 'primitives/skeleton']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -65,6 +67,7 @@ const expected: Record<string, Record<string, string | false>> = {
     ratio: 'number'
   },
   visuallyhidden: { children: false, asChild: 'boolean' },
+  skeleton: { variant: 'select', size: 'select' },
   gauge: {
     label: 'text',
     value: 'number',
@@ -76,7 +79,7 @@ const expected: Record<string, Record<string, string | false>> = {
     size: false
   }
 };
-const ownPropCounts: Record<string, number> = { aspectratio: 1, gauge: 8, visuallyhidden: 2 };
+const ownPropCounts: Record<string, number> = { aspectratio: 1, gauge: 8, skeleton: 2, visuallyhidden: 2 };
 const ownPropCount = (name: string): number => {
   const count = ownPropCounts[name.toLowerCase()];
   if (count === undefined) {
@@ -215,8 +218,11 @@ describe('pure JSDoc Controls metadata mapping', () => {
 
 describe('registered JSDoc Controls through installed Storybook extraction and inference', () => {
   beforeAll(() => {
+    // Parse only implemented components: pending files fail their own tests, never their siblings.
     docs = parser.parse(
-      components.map(([name, directory]) => fileURLToPath(new URL(`../${directory}/${name}.tsx`, import.meta.url)))
+      components
+        .map(([name, directory]) => fileURLToPath(new URL(`../${directory}/${name}.tsx`, import.meta.url)))
+        .filter((path) => existsSync(path))
     );
   }, 20_000);
 
@@ -264,7 +270,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
   it.each([
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
     ['AspectRatio', { ratio: '1' }],
-    ['VisuallyHidden', { asChild: 'false' }]
+    ['VisuallyHidden', { asChild: 'false' }],
+    ['Skeleton', { variant: '"line"', size: '"md"' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
     const { argTypes, args } = story(name);
     for (const [prop, summary] of Object.entries(defaults)) {
@@ -336,6 +343,36 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
     for (const prop of ['role', 'onClick', 'asChild', 'tabIndex']) {
       expect(argTypes[prop]).toBeUndefined();
+    }
+  });
+
+  it('retains Skeleton silhouette rows, full choice order and decorative native rows', () => {
+    const { argTypes } = story('Skeleton');
+    // The installed extractor reorders resolved union members; only the choice set is contractual.
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['block', 'circle', 'line']);
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['lg', 'md', 'sm']);
+    for (const prop of ['variant', 'size']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'enum', required: false });
+      expect(argTypes[prop]?.control, prop).toEqual({ type: 'select' });
+      expect(argTypes[prop]?.table?.defaultValue, `${prop} must document its preset`).toBeDefined();
+    }
+    for (const prop of ['id', 'title', 'className', 'style']) {
+      expect(argTypes[prop], prop).toEqual(story('Skeleton', false).argTypes[prop]);
+    }
+    for (const prop of [
+      'children',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild',
+      'role',
+      'aria-label',
+      'aria-hidden',
+      'aria-live',
+      'aria-busy',
+      'tabIndex',
+      'contentEditable'
+    ]) {
+      expect(argTypes[prop], prop).toBeUndefined();
     }
   });
 });
