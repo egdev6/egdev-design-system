@@ -3,6 +3,11 @@ import type { StorybookConfig } from '@storybook/react-vite';
 import tailwindcss from '@tailwindcss/vite';
 import { mergeConfig } from 'vite';
 
+const documentedNativeProps: Record<string, readonly string[]> = {
+  gauge: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  aspectRatio: ['id', 'title', 'aria-describedby', 'className', 'style', 'onClick']
+};
+
 const config: StorybookConfig = {
   staticDirs: [
     { from: '../packages/tokens/dist', to: '/tokens' },
@@ -31,7 +36,8 @@ const config: StorybookConfig = {
       shouldExtractLiteralValuesFromEnum: true,
       shouldRemoveUndefinedFromOptional: true,
       propFilter: (prop, component) =>
-        (component.name === 'Gauge' && ['id', 'title', 'aria-describedby', 'className', 'style'].includes(prop.name)) ||
+        (documentedNativeProps[component.name.charAt(0).toLowerCase() + component.name.slice(1)]?.includes(prop.name) ??
+          false) ||
         (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true)
     }
   },
