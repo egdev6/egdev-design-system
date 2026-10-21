@@ -31,7 +31,7 @@ const gaugeControlReasons: Record<string, RegExp> = {
   size: /Mixed preset and numeric diameter union.*Sizes/
 };
 
-function gaugeOwnProps(file: ts.SourceFile): ts.PropertySignature[] {
+function ownProps(file: ts.SourceFile, aliases: string[]): ts.PropertySignature[] {
   const properties: ts.PropertySignature[] = [];
   function visit(node: ts.Node) {
     if (ts.isPropertySignature(node)) {
@@ -40,11 +40,15 @@ function gaugeOwnProps(file: ts.SourceFile): ts.PropertySignature[] {
     ts.forEachChild(node, visit);
   }
   for (const node of file.statements) {
-    if (ts.isTypeAliasDeclaration(node) && ['GaugeProps', 'GaugeStateProps'].includes(node.name.text)) {
+    if (ts.isTypeAliasDeclaration(node) && aliases.includes(node.name.text)) {
       visit(node.type);
     }
   }
   return properties;
+}
+
+function gaugeOwnProps(file: ts.SourceFile): ts.PropertySignature[] {
+  return ownProps(file, ['GaugeProps', 'GaugeStateProps']);
 }
 
 function exportedStoryNames(file: ts.SourceFile): string[] {
@@ -114,26 +118,36 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
-  it('exposes approved components and the cn utility through the package source barrel', () => {
+  it('exposes Gauge, AspectRatio, Portal, Slot and the cn utility through the package source barrel', () => {
     const file = ast(source('index.ts'));
     const modules = file.statements.flatMap((node) =>
       ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)
         ? [node.moduleSpecifier.text]
         : []
     );
+    // Each primitive exports its type alias first and runtime component second; dedupe the specifiers.
     expect([...new Set(modules)].sort()).toEqual([
       './atoms/gauge',
       './lib/cn',
+      './primitives/aspect-ratio',
       './primitives/portal',
       './primitives/slot',
       './primitives/visually-hidden'
     ]);
-    expect(Object.keys(publicAPI).sort()).toEqual(['Gauge', 'Portal', 'Slot', 'Slottable', 'VisuallyHidden', 'cn']);
+    expect(Object.keys(publicAPI).sort()).toEqual([
+      'AspectRatio',
+      'Gauge',
+      'Portal',
+      'Slot',
+      'Slottable',
+      'VisuallyHidden',
+      'cn'
+    ]);
   });
 
   beforeAll(() => {
     expect(config.typescript?.reactDocgen).toBe('react-docgen-typescript');
-    docs = parser.parse(source('atoms/gauge/Gauge.tsx'));
+    docs = parser.parse([source('atoms/gauge/Gauge.tsx'), source('primitives/aspect-ratio/AspectRatio.tsx')]);
   }, 20_000);
 
   it('annotates each own VisuallyHidden prop without fabricating a content default', () => {
@@ -187,7 +201,9 @@ describe('Storybook TypeScript docgen contract', () => {
       for (const prop of Object.values(doc.props)) {
         expect(prop.description).not.toMatch(/@control(?:Reason)?/);
       }
-      expect(doc.props.label?.tags).toMatchObject({ control: 'text' });
+      if (doc.displayName === 'Gauge') {
+        expect(doc.props.label?.tags).toMatchObject({ control: 'text' });
+      }
     }
     const props = docs.find((doc) => doc.displayName === 'Gauge')?.props;
     expect(props?.state?.tags).toMatchObject({ control: 'select\nselect' });
@@ -348,8 +364,49 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(gaugeControlIssues(mutated)).toContain(`${prop}: required declarations must not invent @default`);
   });
 
-  it('limits real parser discovery to the current public React component', () => {
-    expect(docs.map((doc) => doc.displayName)).toEqual(['Gauge']);
+  it('extracts the real AspectRatio ratio contract and passive native props', () => {
+    const doc = docs.find((item) => item.displayName === 'AspectRatio');
+    expect(doc, 'AspectRatio must be discovered from its real component and public props alias').toBeDefined();
+    if (!doc) {
+      throw new Error('Missing docgen for AspectRatio');
+    }
+    const props = doc.props;
+    expect(props.ratio?.required).toBe(false);
+    expect(props.ratio?.type.name).toBe('number');
+    expect(normalize(props.ratio?.defaultValue?.value)).toBe('1');
+    expect(props.ratio?.tags).toMatchObject({ control: 'number' });
+    expect(props.ratio?.description).toMatch(/Non-positive, non-finite or unrepresentable/);
+    expect(props.ratio?.description).toMatch(/fall back to a square/);
+    for (const prop of ['id', 'title', 'aria-describedby', 'className']) {
+      expect
+        .soft(props[prop]?.type.name, `AspectRatio native ${prop} must remain available in autodocs`)
+        .toBe('string');
+    }
+    expect.soft(props.style?.type.name).toBe('CSSProperties');
+    for (const prop of ['ref', 'asChild']) {
+      expect(props[prop]).toBeUndefined();
+    }
+  });
+
+  it('documents controls on every AspectRatio own prop through its real annotations', () => {
+    const file = ast(source('primitives/aspect-ratio/types.ts'));
+    const properties = ownProps(file, ['AspectRatioProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['ratio']);
+    const property = properties[0];
+    if (!property) {
+      throw new Error('Missing AspectRatio.ratio property');
+    }
+    expect(property.questionToken, 'AspectRatio ratio must stay optional').toBeDefined();
+    expect(
+      ts
+        .getJSDocTags(property)
+        .map((tag) => tag.tagName.text)
+        .sort()
+    ).toEqual(['control', 'default']);
+  });
+
+  it('limits real parser discovery to the current public React components', () => {
+    expect(docs.map((doc) => doc.displayName)).toEqual(['Gauge', 'AspectRatio']);
     expect(Object.keys(gaugeControls)).toHaveLength(8);
   });
 });

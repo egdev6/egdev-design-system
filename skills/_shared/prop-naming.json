@@ -816,7 +816,18 @@
       "scope": "convention:aspect-ratio",
       "contentHash": "sha256:bbef626ac769aef5d57f18e67b323715be50d20e75f467c5fca95879c183b0ff"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "AspectRatio",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/aspect-ratio/types.ts",
+          "symbol": "AspectRatioProps",
+          "revision": "sha256:771b93daa9a3c3548cba5ea6172b0182b32705e6ab7caeaf1b207641669ff1ed"
+        }
+      }
+    ]
   },
   {
     "id": "collection-items",

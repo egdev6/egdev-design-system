@@ -74,7 +74,7 @@
     "radix": "AspectRatio",
     "compone": "—",
     "accion": "nuevo",
-    "notas": "Base de PhotoFrame, SelectTile, PreviewFrame y portadas."
+    "notas": "Implemented in @egdev/ui: unpainted responsive media geometry using Radix AspectRatio. See issue #78; consumer compositions own media semantics and Material."
   },
   {
     "actual": "—",

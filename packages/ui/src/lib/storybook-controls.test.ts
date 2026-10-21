@@ -9,6 +9,7 @@ import config from '../../../../.storybook/main';
 import preview from '../../../../.storybook/preview';
 
 const components = [
+  ['AspectRatio', 'primitives/aspect-ratio'],
   ['Gauge', 'atoms/gauge'],
   ['VisuallyHidden', 'primitives/visually-hidden']
 ] as const;
@@ -60,6 +61,9 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  aspectratio: {
+    ratio: 'number'
+  },
   visuallyhidden: { children: false, asChild: 'boolean' },
   gauge: {
     label: 'text',
@@ -71,6 +75,14 @@ const expected: Record<string, Record<string, string | false>> = {
     center: false,
     size: false
   }
+};
+const ownPropCounts: Record<string, number> = { aspectratio: 1, gauge: 8, visuallyhidden: 2 };
+const ownPropCount = (name: string): number => {
+  const count = ownPropCounts[name.toLowerCase()];
+  if (count === undefined) {
+    throw new Error(`Missing own prop count for ${name}`);
+  }
+  return count;
 };
 
 describe('pure JSDoc Controls metadata mapping', () => {
@@ -219,7 +231,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
 
   it.each(components)('%s maps every annotated own prop after real extraction and inference', (name) => {
     const composed = story(name);
-    expect(Object.keys(expected[name.toLowerCase()] ?? {})).toHaveLength(name === 'Gauge' ? 8 : 2);
+    expect(Object.keys(expected[name.toLowerCase()] ?? {})).toHaveLength(ownPropCount(name));
     for (const [prop, control] of Object.entries(expected[name.toLowerCase()] ?? {})) {
       expect
         .soft(composed.argTypes[prop]?.control, `${name}.${prop}`)
@@ -227,6 +239,9 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       if (control === 'text') {
         expect(composed.argTypes[prop]?.type?.name, `${name}.${prop} semantic type`).toBe('string');
       }
+    }
+    if (name !== 'VisuallyHidden') {
+      expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     }
     expect(composed.args).toEqual({});
     const native = story(name, false).argTypes;
@@ -248,6 +263,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
 
   it.each([
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
+    ['AspectRatio', { ratio: '1' }],
     ['VisuallyHidden', { asChild: 'false' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
     const { argTypes, args } = story(name);

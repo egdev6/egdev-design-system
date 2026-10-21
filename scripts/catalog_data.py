@@ -8,7 +8,7 @@ C = [
 ("—","—","Stack / Cluster","primitive","ui","Slot","—","nuevo","Apilado vertical y fila con salto. Elimina los `display:flex; gap` en línea."),
 ("Title + Eyebrow","átomo","Text / Heading","primitive","ui","Slot","—","fusionar","Una primitiva tipográfica con variantes (`display`, `hero`, `section`, `eyebrow`, `show`, `inverse`)."),
 ("Divider","átomo","Divider","primitive","ui","Separator","—","mantener","Absorbe `.eg-rule` y `--vertical`."),
-("—","—","AspectRatio","primitive","ui","AspectRatio","—","nuevo","Base de PhotoFrame, SelectTile, PreviewFrame y portadas."),
+("—","—","AspectRatio","primitive","ui","AspectRatio","—","nuevo","Implemented in @egdev/ui: unpainted responsive media geometry using Radix AspectRatio. See issue #78; consumer compositions own media semantics and Material."),
 ("—","—","Portal","primitive","ui","Portal","—","nuevo","Implemented unstyled out-of-tree div with eg-portal, ready custom container and forwarded div ref. No focus, positioning, presence or z-index policy; Radix-specific components keep their own portals. Contract: issue #97 v0.1."),
 ("—","—","Label","primitive","ui","Label","—","nuevo","Etiqueta de formulario; la usa Field."),
 # ---------- ÁTOMOS ----------

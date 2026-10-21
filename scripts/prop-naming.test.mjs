@@ -13,6 +13,10 @@ const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
   {
+    conventionId: 'aspect-ratio',
+    source: 'packages/ui/src/primitives/aspect-ratio/types.ts#AspectRatioProps'
+  },
+  {
     conventionId: 'slot-composition',
     source: 'packages/ui/src/primitives/visually-hidden/types.ts#VisuallyHiddenProps'
   },
