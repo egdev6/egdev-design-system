@@ -28,9 +28,10 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
-import { createElement, createRef } from 'react';
-import { Gauge, Slot, Slottable } from '@egdev/ui';
-import type { GaugeProps, GaugeState, GaugeSize, SlotProps } from '@egdev/ui';
+import { createElement, createRef, forwardRef } from 'react';
+import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
+import { Gauge, Slot, Slottable, VisuallyHidden } from '@egdev/ui';
+import type { GaugeProps, GaugeState, GaugeSize, SlotProps, VisuallyHiddenProps } from '@egdev/ui';
 const slotProps: SlotProps = { 'aria-label': 'Composed documentation' };
 export function SlotSample() {
   return createElement(Slot, slotProps,
@@ -45,6 +46,13 @@ const unsupportedGaugeRef = createRef<HTMLDivElement>();
 const icon = createElement('svg', { viewBox: '0 0 24 24' }, createElement('path', { d: 'M1 1h2v2H1z' }));
 const gaugeState: GaugeState = 'warning';
 const gaugeSize: GaugeSize = 'sm';
+// The public ref is HTMLElement: it hosts the default span or the slotted HTML element, never an inference.
+export const hiddenNoteRef = createRef<HTMLElement>();
+export const slottedHeadingRef = createRef<HTMLElement>();
+// A compliant custom child forwards props and its ref to one non-focusable HTML host.
+const HiddenHeading = forwardRef<HTMLHeadingElement, ComponentPropsWithoutRef<'h2'>>((headingProps, ref) =>
+  createElement('h2', { ...headingProps, ref })
+);
 export const gaugeDefaults: GaugeProps = { label: 'Capacity', value: 42.5 };
 export const gaugeWarning: GaugeProps = {
   label: 'Warning capacity', value: 42.5, state: gaugeState, stateText: 'Review capacity',
@@ -58,12 +66,35 @@ export function GaugeSamples({ value = 42.5 }: { value?: number }) {
     createElement(Gauge, { label: 'Named capacity', value: 25, center: 'OK' })
   );
 }
+export const hiddenNote: VisuallyHiddenProps = {
+  id: 'capacity-hint', className: 'consumer-hint', title: 'Screen reader hint', lang: 'en',
+  children: 'All capacity values are percentages'
+};
+export function VisuallyHiddenSamples() {
+  return createElement('section', { 'aria-label': 'Hidden support content' },
+    createElement(VisuallyHidden, { ...hiddenNote, ref: hiddenNoteRef }),
+    createElement(VisuallyHidden, { asChild: true, ref: slottedHeadingRef,
+      children: createElement('h2', { id: 'hidden-heading' }, 'Measurement details') }),
+    createElement(VisuallyHidden, { asChild: true,
+      children: createElement(HiddenHeading, { id: 'forwarded-heading' }, 'Forwarded details') }));
+}
 export function App({ gaugeValue }: { gaugeValue?: number } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
     createElement(GaugeSamples, { value: gaugeValue }),
+    createElement(VisuallyHiddenSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
+}
+// @ts-expect-error Hidden content is required, not optional.
+const missingHiddenChildren: VisuallyHiddenProps = { id: 'orphan-hint' };
+// @ts-expect-error VisuallyHidden inherits span props; the anchor-only href is rejected.
+const anchorHiddenProps: VisuallyHiddenProps = { href: '#capacity', children: 'Skip to capacity' };
+export function verifyHiddenRefType(host: ComponentRef<typeof VisuallyHidden>) {
+  const htmlHost: HTMLElement = host;
+  // @ts-expect-error The public ref is HTMLElement; an h2-specific host is never inferred.
+  const headingHost: HTMLHeadingElement = host;
+  return htmlHost;
 }
 // @ts-expect-error A passive measurement still requires an accessible name.
 const unnamedGauge: GaugeProps = { value: 42 };
@@ -164,7 +195,8 @@ assert.ok(!realpathSync(styles).startsWith(${JSON.stringify(root)}), 'CSS must r
 const shippedStyles = readFileSync(styles, 'utf8');
 assert.doesNotMatch(shippedStyles, /@(import|reference|source|tailwind|theme|custom-variant|apply)\\b/, 'Packed CSS must be ready for native consumption');
 assert.ok(shippedStyles.includes('.eg-gauge-arc'), 'Packed styles must retain Gauge geometry');
-assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), ['Gauge', 'Slot', 'Slottable', 'cn']);
+assert.ok(!shippedStyles.includes('.eg-visually-hidden'), 'VisuallyHidden must not add shipped CSS; Radix hides inline');
+assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), ['Gauge', 'Slot', 'Slottable', 'VisuallyHidden', 'cn']);
 ${assertGaugeCSS.toString()}
 assertGaugeCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -232,6 +264,22 @@ try {
     const center = gauge.querySelector('.eg-gauge-center');
     if (center) assert.equal(center.getAttribute('aria-hidden'), 'true');
   }
+  const hiddenNote = document.querySelector('span.eg-visually-hidden');
+  assert.ok(hiddenNote, 'Default VisuallyHidden must render the stable span marker');
+  assert.equal(hiddenNote.id, 'capacity-hint');
+  assert.ok(hiddenNote.className.includes('consumer-hint'), 'Native span attributes must survive');
+  for (const decl of ['position:absolute', 'clip:rect(0, 0, 0, 0)', 'width:1px', 'overflow:hidden']) {
+    assert.ok(hiddenNote.getAttribute('style').includes(decl), 'Hidden note must carry inline geometry ' + decl);
+  }
+  assert.equal(hiddenNote.textContent, 'All capacity values are percentages');
+  const slottedHeading = document.getElementById('hidden-heading');
+  assert.equal(slottedHeading.tagName, 'H2', 'asChild must slot the hiding geometry onto the h2 host');
+  assert.ok(slottedHeading.className.includes('eg-visually-hidden'));
+  assert.ok(slottedHeading.getAttribute('style').includes('clip:rect(0, 0, 0, 0)'));
+  const forwardedHeading = document.getElementById('forwarded-heading');
+  assert.equal(forwardedHeading.tagName, 'H2', 'A forwarding child must reach one HTML host');
+  assert.ok(forwardedHeading.className.includes('eg-visually-hidden'));
+  assert.equal(document.querySelector('.eg-visually-hidden span'), null, 'No nested wrapper span may remain');
 } finally {
   dom.window.close();
 }
@@ -268,13 +316,17 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App } = await import('./consumer.ts');
+const { App, hiddenNoteRef, slottedHeadingRef } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
   stage('mount:start');
   await act(async () => root.render(createElement(App)));
   stage('mount:complete');
+  assert.ok(hiddenNoteRef.current instanceof HTMLElement, 'The public ref must expose an HTMLElement');
+  assert.equal(hiddenNoteRef.current?.tagName, 'SPAN');
+  assert.ok(slottedHeadingRef.current instanceof HTMLElement);
+  assert.equal(slottedHeadingRef.current?.tagName, 'H2', 'The slotted ref must expose the h2 host');
   const buttons = [...document.querySelectorAll('button')];
   assert.equal(buttons.length, 2, 'Only intrinsic consumer controls may be focusable');
   buttons[0].focus();
@@ -318,7 +370,7 @@ try {
   await act(async () => root.render(null));
   assert.equal(slotRef.current, null);
   assert.equal(childRef.current, null);
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());

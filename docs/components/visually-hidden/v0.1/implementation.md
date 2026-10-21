@@ -46,6 +46,17 @@ existing filter. Gauge retains its exact previous allowlist; VisuallyHidden docu
 `id`, `title`, `aria-describedby`, `className`, `style` and `lang`. No manual `argTypes`,
 renderer adapter or enhancer behavior change is introduced.
 
+## Review units
+
+The coordinator approved one #112 PR with two feature work units despite the bounded
+aggregate exceeding 400 lines; no coverage or prose was compressed to fit a count.
+Shared Storybook/receipt-helper prerequisite commits are separate and deduplicate at rebase.
+
+1. `d4fccf8` — primitive, metadata regressions, registry/catalog and approval evidence:
+   379 changed lines (356 additions, 23 deletions, including generated/lock outputs).
+2. Packed consumer/export regressions and this evidence update: independent consumer
+   validation of the first unit, preserving Gauge coverage.
+
 ## Verification boundaries
 
 The initial component test run failed because the wrapper did not exist (RED).
@@ -59,6 +70,14 @@ Source/build checks observed on Linux: `pnpm lint`, `pnpm typecheck`,
 `pnpm props:check`, `pnpm test:props` (81/81), `pnpm test` (177/177), and
 `pnpm build` passed. The native assessment reported medium risk, RDD off,
 writer self-verification and no independent verifier. Browser checks remain pending.
+
+Packed artifacts also passed `pnpm test:package-exports` (14/14) and
+`pnpm test:package-consumption` (12/12, React 18.3.1 and 19.3.0). Each React major
+validated real installed declarations, SSR, client refs, and native CSS without an
+application Tailwind compiler. The consumer fixture initially failed required-children
+checks in `createElement`; supplying children in props fixed the fixture, not the API.
+A `ComponentRef<typeof VisuallyHidden>` regression confirms the exported host type
+is HTMLElement, without promising child-specific inference.
 
 Non-visual status means no expected-design images apply. Browser computed geometry,
 accessibility-tree inspection and actual Controls widgets remain separate coordinator
