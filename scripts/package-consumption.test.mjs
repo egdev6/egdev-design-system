@@ -30,12 +30,14 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Gauge, Skeleton, Slot, Slottable, VisuallyHidden } from '@egdev/ui';
+import { AspectRatio, Gauge, Label, Skeleton, Slot, Slottable, VisuallyHidden } from '@egdev/ui';
 import type {
   AspectRatioProps,
   GaugeProps,
   GaugeState,
   GaugeSize,
+  LabelProps,
+  LabelVariant,
   SkeletonProps,
   SkeletonSize,
   SkeletonVariant,
@@ -74,6 +76,19 @@ export const slottedHeadingRef = createRef<HTMLElement>();
 const HiddenHeading = forwardRef<HTMLHeadingElement, ComponentPropsWithoutRef<'h2'>>((headingProps, ref) =>
   createElement('h2', { ...headingProps, ref })
 );
+const labelVariant: LabelVariant = 'choice';
+export const labelDefaults: LabelProps = { children: 'Email address', htmlFor: 'consumer-email' };
+export const labelChoice: LabelProps = {
+  children: 'Choose a plan',
+  htmlFor: 'consumer-plan',
+  id: 'consumer-plan-label',
+  variant: labelVariant
+};
+// The forwarded ref targets the native label element.
+export const labelReference = createElement(Label, { ...labelDefaults, ref: createRef<HTMLLabelElement>() });
+export function LabelSamples() {
+  return createElement('div', { 'aria-label': 'Label samples' }, createElement(Label, labelDefaults), createElement(Label, labelChoice));
+}
 export const gaugeDefaults: GaugeProps = { label: 'Capacity', value: 42.5 };
 export const gaugeWarning: GaugeProps = {
   label: 'Warning capacity', value: 42.5, state: gaugeState, stateText: 'Review capacity',
@@ -121,9 +136,11 @@ export function App({ gaugeValue, wideRatio }: { gaugeValue?: number; wideRatio?
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
+    createElement('input', { id: 'consumer-email', type: 'email' }),
     createElement(GaugeSamples, { value: gaugeValue }),
     createElement(AspectSamples, { wideRatio }),
     createElement(VisuallyHiddenSamples),
+    createElement(LabelSamples),
     createElement(SkeletonSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
@@ -181,6 +198,13 @@ const interactiveGauge: GaugeProps = { label: 'Capacity', value: 42, role: 'butt
 const slottedAspect: AspectRatioProps = { asChild: true };
 // @ts-expect-error Ratio must be a number, not a preset string.
 const stringAspectRatio: AspectRatioProps = { ratio: '16 / 9' };
+
+// @ts-expect-error A visible label requires content.
+const emptyLabel: LabelProps = { htmlFor: 'consumer-email' };
+// @ts-expect-error Arbitrary typography presets are not part of the Label API.
+const invalidLabelVariant: LabelProps = { children: 'Email address', htmlFor: 'consumer-email', variant: 'compact' };
+// @ts-expect-error Label composes native content and has no asChild delegation.
+const slottedLabel: LabelProps = { children: 'Email address', htmlFor: 'consumer-email', asChild: true };
 `;
 
 // Reused inside the installed fixture, against shipped CSS and both consumer build paths.
@@ -240,6 +264,20 @@ function assertGaugeCSS(css) {
   }
 }
 
+// Reused inside the installed fixture, against shipped CSS and both consumer build paths.
+function assertLabelCSS(css) {
+  for (const selector of ['.text-label-default', '.text-fg-secondary', '.font-sans']) {
+    assert.ok(css.includes(selector), 'Missing Label selector ' + selector);
+  }
+  assert.ok(/var\(--text-label-default--font-weight(?:,\s*600)?\)/.test(css), 'Missing Label base recipe weight token');
+  assert.ok(/var\(--text-label-default--line-height(?:,\s*1\.2)?\)/.test(css), 'Missing Label line height token');
+  assert.ok(
+    css.includes('.font-\\[var\\(--text-body-default--font-weight\\)\\]'),
+    'Missing Label choice weight utility'
+  );
+  assert.match(css, /font-weight:\s*var\(--text-body-default--font-weight\)/, 'Missing Label choice weight binding');
+}
+
 // Skeleton ships static, token-backed silhouette utilities: no animations, no dynamic geometry.
 function assertSkeletonCSS(css) {
   for (const dimension of ['h-3', 'h-4', 'h-5', 'h-12', 'h-20', 'h-24', 'size-8', 'size-12', 'size-16']) {
@@ -284,17 +322,21 @@ assert.ok(!shippedStyles.includes('.eg-visually-hidden'), 'VisuallyHidden must n
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AspectRatio',
   'Gauge',
+  'Label',
   'Portal',
   'Skeleton',
   'Slot',
   'Slottable',
   'VisuallyHidden',
-  'cn'
+  'cn',
+  'labelVariants'
 ]);
 ${assertGaugeCSS.toString()}
 ${assertSkeletonCSS.toString()}
 assertGaugeCSS(shippedStyles);
 assertSkeletonCSS(shippedStyles);
+${assertLabelCSS.toString()}
+assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
 for (const [, token] of theme.matchAll(/(--[\\w-]+)\\s*:/g)) {
   assert.doesNotMatch(shippedStyles, new RegExp(token + '\\\\s*:'), 'UI must not redefine canonical token ' + token);
@@ -332,7 +374,7 @@ try {
   slotDocument.window.close();
 }
 const html = renderToString(createElement(App));
-for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%']) {
+for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%', 'Email address']) {
   assert.ok(html.includes(text), 'SSR must render ' + text);
 }
 const dom = new JSDOM(html);
@@ -344,7 +386,7 @@ try {
   assert.equal(normal.getAttribute('aria-valuenow'), '42.5');
   assert.equal(normal.getAttribute('aria-valuetext'), '42.5 / 100');
   assert.ok(normal.querySelector('[class*="--space-14"]'), 'Default size must use the md token');
-  assert.equal(normal.querySelector('.eg-gauge-center'), null, 'Default center must be absent');
+  assert.ok(normal.querySelector('.eg-gauge-center') === null, 'Default center must be absent');
   const warning = document.querySelector('.eg-gauge[aria-label="Warning capacity"]');
   assert.equal(warning.getAttribute('data-state'), 'warning');
   assert.equal(warning.style.getPropertyValue('--eg-gauge-size'), '64.5px');
@@ -355,7 +397,7 @@ try {
     assert.equal(gauge.getAttribute('aria-valuemin'), '0');
     assert.equal(gauge.getAttribute('aria-valuemax'), '100');
     assert.ok(Number.isFinite(Number(gauge.getAttribute('aria-valuenow'))));
-    assert.equal(gauge.querySelector('[aria-live], button, a, input, [tabindex]'), null);
+    assert.ok(gauge.querySelector('[aria-live], button, a, input, [tabindex]') === null, 'Gauge must stay passive');
     assert.equal(gauge.hasAttribute('aria-live'), false);
     const center = gauge.querySelector('.eg-gauge-center');
     if (center) assert.equal(center.getAttribute('aria-hidden'), 'true');
@@ -379,7 +421,7 @@ assert.equal(wide.querySelector('img')?.getAttribute('alt'), 'Wide media');
 for (const frame of [square, wide]) {
   assert.equal(frame.getAttribute('role'), null);
   assert.equal(frame.hasAttribute('aria-live'), false);
-  assert.equal(frame.querySelector('[aria-live], button, a, input, [tabindex]'), null);
+  assert.ok(frame.querySelector('[aria-live], button, a, input, [tabindex]') === null, 'Frame must stay passive');
 }
   const hiddenNote = document.querySelector('span.eg-visually-hidden');
   assert.ok(hiddenNote, 'Default VisuallyHidden must render the stable span marker');
@@ -396,7 +438,7 @@ for (const frame of [square, wide]) {
   const forwardedHeading = document.getElementById('forwarded-heading');
   assert.equal(forwardedHeading.tagName, 'H2', 'A forwarding child must reach one HTML host');
   assert.ok(forwardedHeading.className.includes('eg-visually-hidden'));
-  assert.equal(document.querySelector('.eg-visually-hidden span'), null, 'No nested wrapper span may remain');
+  assert.ok(document.querySelector('.eg-visually-hidden span') === null, 'No nested wrapper span may remain');
   const shapes = [...document.querySelectorAll('section[aria-label="Loading placeholders"] > .eg-skeleton')];
   assert.equal(shapes.length, 12, 'All nine presets, two width overrides and the native sample must render');
   const expectedGeometry = [
@@ -435,6 +477,19 @@ for (const frame of [square, wide]) {
   assert.equal(nativeSkeleton.getAttribute('title'), 'Decorative placeholder');
   assert.ok(nativeSkeleton.className.includes('consumer-skeleton'), 'Native span class merge must survive');
   assert.equal(nativeSkeleton.getAttribute('lang'), 'en');
+  // Native for/id named association and the approved typography recipe classes.
+  const emailLabel = document.querySelector('label[for="consumer-email"]');
+  assert.ok(emailLabel, 'Label must associate natively through for');
+  assert.ok(emailLabel.className.includes('eg-label'), 'Label must expose its public marker');
+  assert.ok(emailLabel.className.includes('text-label-default'), 'Label must render its base recipe');
+  assert.equal(document.getElementById('consumer-email').tagName, 'INPUT');
+  const planLabel = document.getElementById('consumer-plan-label');
+  assert.equal(planLabel.getAttribute('for'), 'consumer-plan');
+  assert.ok(planLabel.className.includes('text-fg-secondary'), 'Label choice must keep the foreground color');
+  assert.ok(
+    planLabel.className.includes('font-[var(--text-body-default--font-weight)]'),
+    'Label choice must carry the token-backed weight utility'
+  );
 } finally {
   dom.window.close();
 }
@@ -474,7 +529,7 @@ for (const name of ['getComputedStyle', 'requestAnimationFrame', 'cancelAnimatio
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
-const { Slot, Slottable } = await import('@egdev/ui');
+const { Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
 const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef } = await import('./consumer.ts');
 stage('imports:complete');
@@ -490,9 +545,9 @@ try {
   const buttons = [...document.querySelectorAll('button')];
   assert.equal(buttons.length, 2, 'Only intrinsic consumer controls may be focusable');
   buttons[0].focus();
-  assert.equal(document.activeElement, buttons[0]);
+  assert.ok(document.activeElement === buttons[0], 'First intrinsic button must receive focus');
   buttons[1].focus();
-  assert.equal(document.activeElement, buttons[1]);
+  assert.ok(document.activeElement === buttons[1], 'Last intrinsic button must receive focus');
   stage('gauge:rerender:start');
   const measurement = () => document.querySelector('section[aria-label="Measurements"] > .eg-gauge');
   assert.equal(measurement().getAttribute('aria-valuenow'), '42.5');
@@ -501,19 +556,19 @@ try {
   assert.equal(measurement().style.getPropertyValue('--eg-gauge-value'), '100');
   await act(async () => root.render(createElement(App, { gaugeValue: NaN })));
   assert.equal(measurement().hasAttribute('role'), false);
-  assert.equal(measurement().querySelector('[aria-valuenow], .eg-gauge-arc'), null);
+  assert.ok(measurement().querySelector('[aria-valuenow], .eg-gauge-arc') === null, 'Unavailable gauge must drop meter parts');
   assert.ok(measurement().textContent.includes('Data unavailable'));
   await act(async () => root.render(createElement(App, { gaugeValue: 0 })));
   assert.equal(measurement().getAttribute('aria-valuenow'), '0');
   assert.equal(measurement().textContent.includes('Data unavailable'), false);
-  assert.equal(measurement().querySelector('[aria-live], button, a, input, [tabindex]'), null);
+  assert.ok(measurement().querySelector('[aria-live], button, a, input, [tabindex]') === null, 'Recovered gauge must stay passive');
   assert.equal(measurement().hasAttribute('aria-live'), false);
   stage('gauge:rerender:complete');
   stage('aspect:rerender:start');
   const mediaSquare = () => document.querySelector('#media-square');
   const mediaWide = () => document.querySelector('#media-wide');
   assert.ok(mediaSquare() && mediaWide(), 'CSR must mount AspectRatio samples');
-  assert.equal(aspectWideRef.current, mediaWide(), 'Ref must target the inner generic div');
+  assert.ok(aspectWideRef.current === mediaWide(), 'Ref must target the inner generic div');
   assert.equal(mediaWide().style.getPropertyValue('position'), 'absolute');
   assert.equal(mediaWide().parentElement.style.getPropertyValue('padding-bottom'), '56.25%');
   assert.equal(mediaWide().getAttribute('id'), 'media-wide');
@@ -524,16 +579,17 @@ try {
   const originalRoot = mediaWide();
   const originalChild = mediaWide().querySelector('img');
   await act(async () => root.render(createElement(App, { gaugeValue: 42.5, wideRatio: 4 })));
-  assert.equal(mediaWide(), originalRoot, 'Ratio updates must preserve the same root element');
-  assert.equal(mediaWide().querySelector('img'), originalChild, 'Ratio updates must preserve descendant identity');
+  assert.ok(mediaWide() === originalRoot, 'Ratio updates must preserve the same root element');
+  assert.ok(mediaWide().querySelector('img') === originalChild, 'Ratio updates must preserve descendant identity');
   assert.equal(mediaWide().parentElement.style.getPropertyValue('padding-bottom'), '25%');
-  assert.equal(aspectWideRef.current, mediaWide(), 'Rerender must preserve the inner ref target');
+  assert.ok(aspectWideRef.current === mediaWide(), 'Rerender must preserve the inner ref target');
   assert.equal(mediaWide().querySelector('img')?.getAttribute('alt'), 'Wide media', 'Rerender must preserve children');
   assert.equal(mediaWide().getAttribute('id'), 'media-wide');
   await act(async () => root.render(createElement(App, { gaugeValue: 42.5, wideRatio: -1 })));
   assert.equal(mediaWide().parentElement.style.getPropertyValue('padding-bottom'), '100%', 'Invalid ratio must fall back to a square');
-  assert.equal(aspectWideRef.current, mediaWide());
+  assert.ok(aspectWideRef.current === mediaWide(), 'Invalid-ratio rerender must preserve the inner ref target');
   stage('aspect:rerender:complete');
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery'] }));
   const skeletons = document.querySelectorAll('.eg-skeleton');
   assert.equal(skeletons.length, 12, 'Consumer Skeletons must mount behind the intrinsic controls');
   for (const shape of skeletons) {
@@ -555,14 +611,34 @@ try {
   assert.equal(target.textContent, '→Documentation');
   assert.equal(target.getAttribute('aria-label'), 'Composed documentation');
   assert.equal(target.hasAttribute('class'), false);
-  assert.equal(slotRef.current, target);
-  assert.equal(childRef.current, target);
+  assert.ok(slotRef.current === target, 'Slot ref must target the slotted anchor');
+  assert.ok(childRef.current === target, 'Child ref must target the slotted anchor');
   await act(async () => target.click());
   assert.deepEqual(calls, ['child', 'slot']);
   await act(async () => root.render(null));
-  assert.equal(slotRef.current, null);
-  assert.equal(childRef.current, null);
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender'] }));
+  assert.ok(slotRef.current === null, 'Slot ref must be cleaned up on unmount');
+  assert.ok(childRef.current === null, 'Child ref must be cleaned up on unmount');
+  // Native label activation: clicking the associated label focuses the named control.
+  // The Slot scene unmounted App, so remount it before exercising LabelSamples.
+  await act(async () => root.render(createElement(App)));
+  // The label click must activate the associated control: jsdom forwards the click
+  // to the labeled input, which is the spec promise (focus stays covered by unit tests).
+  const emailInput = document.getElementById('consumer-email');
+  let activated = 0;
+  emailInput.addEventListener('click', () => {
+    activated += 1;
+  });
+  await act(async () => document.querySelector('label[for="consumer-email"]').click());
+  assert.equal(activated, 1, 'Label click must activate the associated input exactly once');
+  // Label forwards its HTMLLabelElement ref and cleans it up on unmount.
+  const labelRef = createRef();
+  await act(async () => root.render(createElement(Label, { htmlFor: 'consumer-email', ref: labelRef }, 'Email address')));
+  const labelNode = document.querySelector('label[for="consumer-email"]');
+  assert.ok(labelNode, 'Label scene must render a native label');
+  assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
+  await act(async () => root.render(null));
+  assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -645,6 +721,8 @@ assert.match(
   'Native consumer build must emit the AspectRatio min-width guard without Tailwind'
 );
 assertSkeletonCSS(emitted);
+${assertLabelCSS.toString()}
+assertLabelCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
 const shipped = readFileSync(new URL('./node_modules/@egdev/tokens/dist/tokens.css', import.meta.url), 'utf8');
 const names = shipped
@@ -676,6 +754,7 @@ assert.match(
   'Tailwind consumer must retain the AspectRatio min-width guard'
 );
 assertSkeletonCSS(twCss);
+assertLabelCSS(twCss);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) {
   assert.ok(twCss.includes(selector), 'Tailwind consumer must retain shipped UI selector ' + selector);
 }
@@ -770,7 +849,7 @@ for (const [react, [types, domTypes]] of Object.entries(versions)) {
         install.push('--offline');
       }
       run(fixture, 'pnpm', install, 120_000);
-      const timeouts = { entries: 20_000, types: 30_000, ssr: 20_000, csr: 30_000, css: 60_000 };
+      const timeouts = { entries: 20_000, types: 30_000, ssr: 20_000, csr: 60_000, css: 60_000 };
       for (const [name, timeout] of Object.entries(timeouts)) {
         await context.test(name, () => {
           const output =
