@@ -5,6 +5,7 @@ Portal is an unstyled out-of-tree primitive, not an overlay interaction system.
 ## Approved scope
 
 - Contract: [issue #97](https://github.com/egdev6/egdev-design-system/issues/97), v0.1, canonical SHA-256 `4535193dddb643e3d20b9f4f76b40ec05796488fd502200f911bde850d1de5fd`.
+- Read-only issue recomputation matched canonical SHA above and whole-body SHA-256 `a387f8b44d1c32abd82d56c7af98f932207d4ae0363d4736a07474ffe9297892`. Canonical method: UTF-8 payload starting at the actual `## 1. Purpose and scope` heading line (not the quoted metadata occurrence), LF line endings, recorded final newline preserved.
 - Full-contract approval: [owner approval record](https://github.com/egdev6/egdev-design-system/issues/97#issuecomment-6251543437). Historical Draft headers are retained in the issue.
 - Separate plan approval: coordinator `01a15f50-a92e` replied “PLAN #97 APPROVED as proposed” through intercom, relaying the owner's authorization to add exact `@radix-ui/react-portal@1.2.0` as a direct UI dependency. This local record is not a native or independently signed receipt.
 - Six prescribed files in `packages/ui/src/primitives/portal/`: `types.ts`, `usePortal.ts`, `Portal.tsx`, `Portal.test.tsx`, `Portal.stories.tsx`, `index.ts`. No file-pattern exception or internal module.
@@ -34,4 +35,10 @@ Test-first evidence: focused component suite initially exited 1 because Portal/u
 
 Stories: `Primitives/Portal/Default` escapes an overflow-hidden ancestor; `CustomContainer` conditionally mounts only after its ref supplies a ready client target. Both preserve actual defaults, with required example children and no manual argTypes or play functions.
 
-No expected-design images apply to this non-visual primitive. Browser Controls and owner story review remain pending at initial handoff; no Storybook server was started by the implementer. Installed React 19 development tests do not certify an unrun React 18 packed consumer matrix. The component adds no CSS, so no component appearance/CVA scanning or new token recipe is claimed.
+No expected-design images apply to this non-visual primitive. The coordinator's browser smoke verified `BODY > .eg-portal` for Default and placement inside “Custom portal host” for CustomContainer. Browser Controls and final owner review remain separate gates; no Storybook server was started by the implementer. Installed React 19 development tests do not certify an unrun React 18 packed consumer matrix. The component adds no CSS, so no component appearance/CVA scanning or new token recipe is claimed.
+
+### Storybook source warning investigation
+
+Authorized read-only instrumentation of the coordinator's port 6103 traced the React 19 `element.ref` deprecation warning to Storybook 10.6.1 Docs source serialization, not Portal: `elementRefGetterWithDeprecationWarning` → `_parseReactElement` in `@storybook/react/dist/_browser-chunks/chunk-B3FR4PBN.js:437` → `reactElementToJsxString` → source decorator `chunk-CS62LUFX.js:88`. Direct Default iframe/manager navigation had no captured errors; Docs source extraction reproduced it.
+
+Minimal browser reproduction, using only installed React and Storybook's serializer: `reactElementToJsxString(React.createElement('span', { ref: () => {} }, 'Minimal native element; no Portal'))` produces the identical warning/serializer stack without importing Portal or Radix. No component, dependency, server or configuration workaround was applied. The instrumentation tab was closed after investigation.
