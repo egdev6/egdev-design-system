@@ -13,7 +13,9 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   // Gauge retains its approved passive measurement list; Label documents the native
   // association (htmlFor/id) and the approved class-merge surface. Nothing else from
   // node_modules declarations is admitted.
-  label: ['htmlFor', 'id', 'className']
+  label: ['htmlFor', 'id', 'className'],
+  stack: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  cluster: ['id', 'title', 'aria-describedby', 'className', 'style']
 };
 const camelCase = (name: string) => name.charAt(0).toLowerCase() + name.slice(1);
 

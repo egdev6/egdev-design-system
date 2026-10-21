@@ -118,7 +118,7 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
-  it('exposes Gauge, AspectRatio, Portal, Slot and the cn utility through the package source barrel', () => {
+  it('exposes the layout primitives, Gauge, AspectRatio, Portal, Slot and the cn utility through the barrel', () => {
     const file = ast(source('index.ts'));
     const modules = file.statements.flatMap((node) =>
       ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)
@@ -136,10 +136,12 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/portal',
       './primitives/skeleton',
       './primitives/slot',
+      './primitives/stack',
       './primitives/visually-hidden'
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
       'AspectRatio',
+      'Cluster',
       'Divider',
       'Gauge',
       'Label',
@@ -147,6 +149,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Skeleton',
       'Slot',
       'Slottable',
+      'Stack',
       'VisuallyHidden',
       'cn',
       'labelVariants'
@@ -155,7 +158,12 @@ describe('Storybook TypeScript docgen contract', () => {
 
   beforeAll(() => {
     expect(config.typescript?.reactDocgen).toBe('react-docgen-typescript');
-    docs = parser.parse([source('atoms/gauge/Gauge.tsx'), source('primitives/aspect-ratio/AspectRatio.tsx')]);
+    docs = parser.parse([
+      source('atoms/gauge/Gauge.tsx'),
+      source('primitives/aspect-ratio/AspectRatio.tsx'),
+      source('primitives/stack/Stack.tsx'),
+      source('primitives/stack/Cluster.tsx')
+    ]);
   }, 20_000);
 
   it('annotates each own VisuallyHidden prop without fabricating a content default', () => {
@@ -396,6 +404,38 @@ describe('Storybook TypeScript docgen contract', () => {
     }
   });
 
+  it('extracts the real Stack and Cluster layout contracts with separate alignment defaults', () => {
+    for (const [name, alignmentDefault] of [
+      ['Stack', 'stretch'],
+      ['Cluster', 'center']
+    ] as const) {
+      const doc = docs.find((item) => item.displayName === name);
+      expect(doc, `${name} must be discovered from its real component`).toBeDefined();
+      if (!doc) {
+        throw new Error(`Missing docgen for ${name}`);
+      }
+      const props = doc.props;
+      expect(normalize(props.gap?.defaultValue?.value)).toBe('4');
+      expect(props.gap?.type.name).toBe('enum');
+      const gapValues = (props.gap?.type.value ?? []).map((item: { value: string }) => Number(normalize(item.value)));
+      expect(gapValues.sort((first: number, second: number) => first - second)).toEqual([
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24
+      ]);
+      expect(props.gap?.tags).toMatchObject({ control: 'select' });
+      expect(normalize(props.alignItems?.defaultValue?.value)).toBe(alignmentDefault);
+      expect(props.alignItems?.tags).toMatchObject({ control: 'select' });
+      expect(normalize(props.justifyContent?.defaultValue?.value)).toBe('start');
+      expect(props.justifyContent?.tags).toMatchObject({ control: 'select' });
+      expect(normalize(props.asChild?.defaultValue?.value)).toBe('false');
+      expect(props.asChild?.tags).toMatchObject({ control: 'boolean' });
+      for (const prop of ['id', 'title', 'aria-describedby', 'className']) {
+        expect.soft(props[prop]?.type.name, `${name} native ${prop} must remain available in autodocs`).toBe('string');
+      }
+      expect.soft(props.style?.type.name).toBe('CSSProperties');
+      // The propFilter omits the children row, as in the other primitives.
+    }
+  });
+
   it('documents controls on every AspectRatio own prop through its real annotations', () => {
     const file = ast(source('primitives/aspect-ratio/types.ts'));
     const properties = ownProps(file, ['AspectRatioProps']);
@@ -414,7 +454,7 @@ describe('Storybook TypeScript docgen contract', () => {
   });
 
   it('limits real parser discovery to the current public React components', () => {
-    expect(docs.map((doc) => doc.displayName)).toEqual(['Gauge', 'AspectRatio']);
+    expect(docs.map((doc) => doc.displayName)).toEqual(['Gauge', 'AspectRatio', 'Stack', 'Cluster']);
     expect(Object.keys(gaugeControls)).toHaveLength(8);
   });
 });

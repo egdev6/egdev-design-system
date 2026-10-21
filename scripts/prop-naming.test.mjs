@@ -25,7 +25,15 @@ const postReceiptUsages = [
   { conventionId: 'portal-container', source: 'packages/ui/src/primitives/portal/types.ts#PortalProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/label/types.ts#LabelProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/skeleton/types.ts#SkeletonProps' },
-  { conventionId: 'preset-dimensions', source: 'packages/ui/src/primitives/skeleton/types.ts#SkeletonProps' }
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/primitives/skeleton/types.ts#SkeletonProps' },
+  { conventionId: 'layout-gap', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
+  { conventionId: 'layout-gap', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
+  { conventionId: 'cross-axis-alignment', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
+  { conventionId: 'cross-axis-alignment', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
+  { conventionId: 'main-axis-distribution', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
+  { conventionId: 'main-axis-distribution', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
+  { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
+  { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' }
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({
