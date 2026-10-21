@@ -1,0 +1,99 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-observed-human-delegation",
+  "sourceRegistry": "skills/_shared/prop-naming.json",
+  "sourceRegistrySHA256": "sha256:76bd797a68e19111cb1449730149b766b2377acc08475ede02508adc0eb13885",
+  "sourceRegistryEntryCount": 128,
+  "decision": "Widen the approved signal-pulse (pulse) convention from decorative signal indicators to decorative signal indicators or content placeholders, recording the owner's scoped approval of the Skeleton v0.2 amendment (issue #102 comment, canonical sha256:4fea97ea3b2fcd36116fb3ab5acffb54ff9645f6f74a38616f67e0c16c6b5a72). The owner statement 'aprueba y publica' (2026-10-22) approved that exact snapshot including its section 3 signal-pulse widening. This record changes only the meaning, whenToUse and avoid fields of signal-pulse and repoints its approval here; no new conventions, usages, aliases or exceptions are added.",
+  "evidence": {
+    "channel": "Owner approval statement forwarded by the coordinating session task; the exact approved v0.2 snapshot is recoverable from the referenced published comment",
+    "taskReference": "Skeleton v0.2 pulse animation amendment; coordinating session instruction",
+    "userStatements": [
+      {
+        "quote": "aprueba y publica",
+        "provenance": "Owner statement (2026-10-22) in the coordinating session, approving the exact Skeleton v0.2 snapshot published at https://github.com/egdev6/egdev-design-system/issues/102#issuecomment-6328255802 including its section 3 proposed signal-pulse widening"
+      }
+    ],
+    "interpretation": "The owner approved the exact published v0.2 snapshot, whose section 3 fixes the three proposed field values copied verbatim into this receipt. The assistant binds those values to convention:signal-pulse under that approval. This is not native, signed, independent or per-payload serialized human review beyond the recorded statement, nor full-snapshot, implementation-plan, token or dependency approval. Hashes identify recorded content, not proof of consent.",
+    "draftSnapshot": {
+      "reference": "https://github.com/egdev6/egdev-design-system/issues/102#issuecomment-6328255802",
+      "version": "0.2",
+      "canonicalSHA256": "sha256:4fea97ea3b2fcd36116fb3ab5acffb54ff9645f6f74a38616f67e0c16c6b5a72",
+      "method": "The published comment is the approved snapshot. Its canonical payload starts at the unique anchored whole-line heading '## 1. Purpose and scope' through EOF, LF with one final LF, excluding tracking metadata above the heading; the snapshot header itself declares contentSHA256 sha256:4fea97ea3b2fcd36116fb3ab5acffb54ff9645f6f74a38616f67e0c16c6b5a72. Section 3's proposed meaning, whenToUse and avoid values are the exact amendment payload copied into this receipt."
+    }
+  },
+  "limits": [
+    "Assistant-recorded owner approval forwarded by the coordinating session; not native, signed, independent or per-payload serialized human review. The contentHash binds content, not proof of consent.",
+    "Scoped to convention:signal-pulse only: id, name (pulse), aliases, exceptions, status and observed usages are unchanged. No usage is added in this unit; the Skeleton usage is recorded separately after implementation review.",
+    "The approval covers the exact published v0.2 snapshot. Implementation plan approval, token/build/packaging verification, runtime and accessibility checks remain separate gates.",
+    "Prior receipts are immutable exact-byte history; their earlier deferrals and scope exclusions remain historical. The amended entry points here for its new content.",
+    "No dependency, token, implementation, publication or external write action is authorized by this record."
+  ],
+  "priorReceipts": [
+    {
+      "path": "docs/decisions/prop-naming-gauge-approval.json",
+      "wholeFileSHA256": "sha256:97374db3519c5cd1b0c7c05e5c73974138c47ce38c4326e702f613f800b69911"
+    },
+    {
+      "path": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "wholeFileSHA256": "sha256:a615c560018e7d142a9e627d85ba101c57c35a5289abf2fa48bf1cec0b69903b"
+    },
+    {
+      "path": "docs/decisions/prop-naming-ambient-background-approval.json",
+      "wholeFileSHA256": "sha256:bf7574a50d0d52f0bc2fc2a2c224d200b0dd84537c3ec565f193b3cd93190e71"
+    },
+    {
+      "path": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "wholeFileSHA256": "sha256:2ef1fd8192f5004da741b83570a08b4a2e517cee6e714cd6154e37d67b53e838"
+    },
+    {
+      "path": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "wholeFileSHA256": "sha256:c8bdcbb7e3ef9ef2621440b97128b8468b7c5f10b2e5e9b2de528abee4d9dea4"
+    },
+    {
+      "path": "docs/decisions/prop-naming-template-specs-approval.json",
+      "wholeFileSHA256": "sha256:4bf0cffbbb2403aedd4830b4983519c863ebd851705f7050f4b7f104327a550a"
+    },
+    {
+      "path": "docs/decisions/prop-naming-isotipo3d-approval.json",
+      "wholeFileSHA256": "sha256:7b2518dfd984374f3eb2b632040ff4faab8015c42be4617c26ed03803e338b60"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [
+    {
+      "id": "signal-pulse",
+      "previousReference": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "previousContentHash": "sha256:790869d33b95e930385433e0786da2028cc8beb697bee57e093f6d7dc7e85659",
+      "changedFields": ["meaning", "whenToUse", "avoid"],
+      "before": {
+        "meaning": "Whether a live or attention signal indicator plays its pulse animation; reduced-motion preferences always stop it.",
+        "whenToUse": "A decorative signal indicator offers an optional pulsing emphasis that the consumer can switch to a static presentation.",
+        "avoid": "Loading or progress animation, general motion toggles for interactive components, or conveying meaning only through motion."
+      },
+      "after": {
+        "meaning": "Whether a decorative signal indicator or placeholder plays its pulse animation; reduced-motion preferences always stop it.",
+        "whenToUse": "A decorative signal indicator or content placeholder offers an optional pulsing emphasis that the consumer can switch to a static presentation.",
+        "avoid": "Progress or completion animation, general motion toggles for interactive components, or conveying meaning only through motion."
+      },
+      "boundary": "Decorative pulse toggle of signal indicators and empty content placeholders only. Loading state semantics, progress or completion animation, general motion toggles for interactive components, animation timing or easing control, and conveying meaning only through motion stay excluded; id, name, aliases, exceptions and status are unchanged."
+    }
+  ],
+  "entries": [
+    {
+      "scope": "convention:signal-pulse",
+      "contentHash": "sha256:7ba93ccc63ee5e9ec8065de1816d5542d7bcdb5b9b3c579d3522328a72fb2d11",
+      "convention": {
+        "id": "signal-pulse",
+        "name": "pulse",
+        "meaning": "Whether a decorative signal indicator or placeholder plays its pulse animation; reduced-motion preferences always stop it.",
+        "whenToUse": "A decorative signal indicator or content placeholder offers an optional pulsing emphasis that the consumer can switch to a static presentation.",
+        "avoid": "Progress or completion animation, general motion toggles for interactive components, or conveying meaning only through motion.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

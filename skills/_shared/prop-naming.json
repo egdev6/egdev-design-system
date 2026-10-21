@@ -819,14 +819,14 @@
   {
     "id": "signal-pulse",
     "name": "pulse",
-    "meaning": "Whether a live or attention signal indicator plays its pulse animation; reduced-motion preferences always stop it.",
-    "whenToUse": "A decorative signal indicator offers an optional pulsing emphasis that the consumer can switch to a static presentation.",
-    "avoid": "Loading or progress animation, general motion toggles for interactive components, or conveying meaning only through motion.",
+    "meaning": "Whether a decorative signal indicator or placeholder plays its pulse animation; reduced-motion preferences always stop it.",
+    "whenToUse": "A decorative signal indicator or content placeholder offers an optional pulsing emphasis that the consumer can switch to a static presentation.",
+    "avoid": "Progress or completion animation, general motion toggles for interactive components, or conveying meaning only through motion.",
     "status": "approved",
     "approval": {
-      "reference": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "reference": "docs/decisions/prop-naming-skeleton-v0.2-approval.json",
       "scope": "convention:signal-pulse",
-      "contentHash": "sha256:790869d33b95e930385433e0786da2028cc8beb697bee57e093f6d7dc7e85659"
+      "contentHash": "sha256:7ba93ccc63ee5e9ec8065de1816d5542d7bcdb5b9b3c579d3522328a72fb2d11"
     },
     "aliases": [],
     "exceptions": [],
