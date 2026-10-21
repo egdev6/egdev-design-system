@@ -10,6 +10,52 @@ import * as props from './prop-naming.mjs';
 const { renderRegistry, runCli, validateRegistry } = props;
 const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
+// Reviewed implementation usages added after the immutable naming receipts.
+const postReceiptUsages = [];
+function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
+  return registry.map((entry) => ({
+    ...entry,
+    usages: entry.usages.filter(
+      (usage) =>
+        !reviewedUsages.some(
+          (reviewed) =>
+            reviewed.conventionId === entry.id && reviewed.source === `${usage.source.path}#${usage.source.symbol}`
+        )
+    )
+  }));
+}
+
+test('post-receipt usages exist with valid source evidence', () => {
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  for (const reviewed of postReceiptUsages) {
+    const current = actual.find(({ id }) => id === reviewed.conventionId);
+    assert.ok(current, reviewed.conventionId);
+    const matching = current.usages.filter(
+      (usage) => `${usage.source.path}#${usage.source.symbol}` === reviewed.source
+    );
+    assert.equal(matching.length, 1, reviewed.source);
+    assert.ok(fs.statSync(resolve(root, matching[0].source.path)).isFile());
+    assert.equal(matching[0].source.revision, digest(fs.readFileSync(resolve(root, matching[0].source.path))));
+    assert.deepEqual(historicalRegistry([current])[0].usages, []);
+  }
+});
+test('historical registry removes only exact reviewed convention and source pairs', () => {
+  const reviewed = [{ conventionId: 'example', source: 'example.ts#ExampleProps' }];
+  const accepted = { source: { path: 'example.ts', symbol: 'ExampleProps' } };
+  const otherSymbol = { source: { path: 'example.ts', symbol: 'Unreviewed' } };
+  const otherPath = { source: { path: 'other.ts', symbol: 'ExampleProps' } };
+  const fixture = [
+    { id: 'example', usages: [accepted, otherSymbol, otherPath], meaning: 'Unchanged' },
+    { id: 'another', usages: [accepted] }
+  ];
+  assert.deepEqual(historicalRegistry(fixture, reviewed), [
+    { ...fixture[0], usages: [otherSymbol, otherPath] },
+    fixture[1]
+  ]);
+  assert.throws(() => assert.deepEqual(historicalRegistry(fixture, reviewed)[0].usages, []));
+  assert.deepEqual(historicalRegistry(fixture, []), fixture);
+});
 const digest = (bytes) => `sha256:${createHash('sha256').update(bytes).digest('hex')}`;
 const source = () => ({
   path: sourcePath,
@@ -204,7 +250,7 @@ test('molecule naming receipt binds delegated decisions without speculative impl
     )
   );
   const receipts = new Map([...history, [reference, receipt], ...later]);
-  for (const entry of actual) {
+  for (const entry of historicalRegistry(actual)) {
     assert.equal(entry.status, 'approved', entry.id);
     const { approval, usages: _usages, ...convention } = entry;
     const currentReceipt = receipts.get(approval.reference);
@@ -272,7 +318,7 @@ test('molecule naming receipt binds delegated decisions without speculative impl
   );
   for (const { convention } of newlyAccepted) {
     assert.equal(historicalIds.has(convention.id), false, convention.id);
-    assert.deepEqual(actual.find(({ id }) => id === convention.id).usages, [], convention.id);
+    assert.deepEqual(historicalRegistry(actual).find(({ id }) => id === convention.id).usages, [], convention.id);
     assert.deepEqual(convention.aliases, [], convention.id);
     assert.deepEqual(convention.exceptions, [], convention.id);
   }
@@ -478,7 +524,10 @@ test('Isotipo3D naming receipt preserves 125 entries and binds three scoped appr
   assert.equal(receipt.nativeReviewApproval, false);
   assert.equal(receipt.authority, 'assistant-observed-human-delegation');
   assert.equal(receipt.sourceRegistrySHA256, 'sha256:b5d1ffd75c8ded3c976115db39d9515f0ce321bdc15892fb63156309feea9adc');
-  assert.equal(digest(`${JSON.stringify(actual.slice(0, 125), null, 2)}\n`), receipt.sourceRegistrySHA256);
+  assert.equal(
+    digest(`${JSON.stringify(historicalRegistry(actual).slice(0, 125), null, 2)}\n`),
+    receipt.sourceRegistrySHA256
+  );
   assert.equal(receipt.sourceRegistryEntryCount, 125);
   assert.deepEqual(receipt.previouslyProposedNowApproved, ['effect-scene', 'effect-progress', 'pointer-tilt']);
   assert.deepEqual(receipt.semanticAmendments, []);
