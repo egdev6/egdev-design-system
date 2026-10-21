@@ -124,10 +124,11 @@ describe('Storybook TypeScript docgen contract', () => {
     expect([...new Set(modules)].sort()).toEqual([
       './atoms/gauge',
       './lib/cn',
+      './primitives/portal',
       './primitives/slot',
       './primitives/visually-hidden'
     ]);
-    expect(Object.keys(publicAPI).sort()).toEqual(['Gauge', 'Slot', 'Slottable', 'VisuallyHidden', 'cn']);
+    expect(Object.keys(publicAPI).sort()).toEqual(['Gauge', 'Portal', 'Slot', 'Slottable', 'VisuallyHidden', 'cn']);
   });
 
   beforeAll(() => {

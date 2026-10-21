@@ -1376,7 +1376,18 @@
       "scope": "convention:portal-container",
       "contentHash": "sha256:8779c40a8eca0370de3b1906ae7034a41ea1f8792714b19eaec0ab87597b3eeb"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Portal",
+        "type": "Element | DocumentFragment | null",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/portal/types.ts",
+          "symbol": "PortalProps",
+          "revision": "sha256:b0fd77d5f283fa71d0617c210bdc9db31185f00a6f1bf1034c4e5a8867edf9ff"
+        }
+      }
+    ]
   },
   {
     "id": "trailing-text-accent",

@@ -202,11 +202,11 @@ test('UI JavaScript remains importable without a CSS loader', async () => {
   assert.match(hidden, /<span class="eg-visually-hidden"[^>]*clip:rect\(0, 0, 0, 0\)[^>]*>Hidden note<\/span>/);
 });
 
-test('UI root exports Gauge and VisuallyHidden with their public types', async () => {
+test('UI root exports implemented components and their public types with scoped SSR semantics', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   assert.deepEqual(
     Object.keys(exported).sort(),
-    ['Gauge', 'Slot', 'Slottable', 'VisuallyHidden', 'cn'],
+    ['Gauge', 'Portal', 'Slot', 'Slottable', 'VisuallyHidden', 'cn'],
     'Only approved components and cn are public runtime exports'
   );
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
@@ -227,6 +227,8 @@ test('UI root exports Gauge and VisuallyHidden with their public types', async (
     'GaugeProps',
     'GaugeSize',
     'GaugeState',
+    'Portal',
+    'PortalProps',
     'Slot',
     'SlotProps',
     'Slottable',
@@ -234,11 +236,24 @@ test('UI root exports Gauge and VisuallyHidden with their public types', async (
     'VisuallyHiddenProps',
     'cn'
   ]);
-  for (const name of ['Gauge', 'GaugeProps', 'GaugeState', 'GaugeSize', 'VisuallyHidden', 'VisuallyHiddenProps']) {
+  for (const name of [
+    'Gauge',
+    'GaugeProps',
+    'GaugeState',
+    'GaugeSize',
+    'Portal',
+    'PortalProps',
+    'Slot',
+    'SlotProps',
+    'Slottable',
+    'VisuallyHidden',
+    'VisuallyHiddenProps'
+  ]) {
     assert.ok(names.has(name), `Missing public declaration export ${name}`);
   }
   const { createElement } = await import('react');
   const { renderToString } = await import('react-dom/server');
+  assert.equal(renderToString(createElement(exported.Portal, { children: 'Server layer' })), '');
   const html = renderToString(createElement(exported.Gauge, { label: 'Capacity', value: 42.5 }));
   for (const text of [
     'eg-gauge',

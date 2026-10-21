@@ -196,7 +196,7 @@ const shippedStyles = readFileSync(styles, 'utf8');
 assert.doesNotMatch(shippedStyles, /@(import|reference|source|tailwind|theme|custom-variant|apply)\\b/, 'Packed CSS must be ready for native consumption');
 assert.ok(shippedStyles.includes('.eg-gauge-arc'), 'Packed styles must retain Gauge geometry');
 assert.ok(!shippedStyles.includes('.eg-visually-hidden'), 'VisuallyHidden must not add shipped CSS; Radix hides inline');
-assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), ['Gauge', 'Slot', 'Slottable', 'VisuallyHidden', 'cn']);
+assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), ['Gauge', 'Portal', 'Slot', 'Slottable', 'VisuallyHidden', 'cn']);
 ${assertGaugeCSS.toString()}
 assertGaugeCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
