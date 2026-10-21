@@ -26,6 +26,7 @@ const postReceiptUsages = [
   { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/label/types.ts#LabelProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/skeleton/types.ts#SkeletonProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/primitives/skeleton/types.ts#SkeletonProps' },
+  { conventionId: 'signal-pulse', source: 'packages/ui/src/primitives/skeleton/types.ts#SkeletonProps' },
   { conventionId: 'layout-gap', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
   { conventionId: 'layout-gap', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
   { conventionId: 'cross-axis-alignment', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
@@ -133,7 +134,8 @@ const receiptChain = [
   'docs/decisions/prop-naming-molecule-specs-approval.json',
   'docs/decisions/prop-naming-organism-specs-approval.json',
   'docs/decisions/prop-naming-template-specs-approval.json',
-  'docs/decisions/prop-naming-isotipo3d-approval.json'
+  'docs/decisions/prop-naming-isotipo3d-approval.json',
+  'docs/decisions/prop-naming-skeleton-v0.2-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -148,6 +150,40 @@ function laterReceipts(reference) {
     later.set(receiptChain[index], current);
   }
   return later;
+}
+// Semantic amendments from receipts later than `afterReference` are projected back onto the
+// current registry so a historical whole-registry snapshot stays reconstructable, the same way
+// laterReceipts/superseded projections resolve amended entries for earlier receipt tests. The
+// pre-image convention and approval come from the pinned previousReference receipt record and
+// are bound by amendment.previousContentHash, never by editing receipts or hash literals.
+function registryBeforeSemanticAmendments(registry, afterReference) {
+  const reverted = new Map();
+  for (const laterReceipt of laterReceipts(afterReference).values()) {
+    const history = new Map();
+    for (const prior of laterReceipt.priorReceipts) {
+      history.set(prior.path, JSON.parse(fs.readFileSync(resolve(root, prior.path), 'utf8')));
+    }
+    for (const amendment of laterReceipt.semanticAmendments) {
+      const previous = history
+        .get(amendment.previousReference)
+        ?.entries.find(({ convention }) => convention.id === amendment.id);
+      assert.ok(previous, amendment.id);
+      assert.equal(previous.contentHash, amendment.previousContentHash, amendment.id);
+      assert.equal(previous.contentHash, props.conventionHash(previous.convention), amendment.id);
+      reverted.set(amendment.id, {
+        ...previous.convention,
+        approval: {
+          reference: amendment.previousReference,
+          scope: previous.scope,
+          contentHash: previous.contentHash
+        }
+      });
+    }
+  }
+  return registry.map((entry) => {
+    const previous = reverted.get(entry.id);
+    return previous ? { ...entry, ...previous, usages: entry.usages } : entry;
+  });
 }
 function approveException(entry, exception) {
   exception.approval = approval(
@@ -528,6 +564,7 @@ test('template naming receipt pins the organism receipt and binds two new layout
 });
 
 const isotipoReference = 'docs/decisions/prop-naming-isotipo3d-approval.json';
+const skeletonReference = 'docs/decisions/prop-naming-skeleton-v0.2-approval.json';
 const isotipoPriorPins = [
   ['gauge', '97374db3519c5cd1b0c7c05e5c73974138c47ce38c4326e702f613f800b69911'],
   ['atom-specs', 'a615c560018e7d142a9e627d85ba101c57c35a5289abf2fa48bf1cec0b69903b'],
@@ -556,7 +593,13 @@ test('Isotipo3D naming receipt preserves 125 entries and binds three scoped appr
   assert.equal(receipt.authority, 'assistant-observed-human-delegation');
   assert.equal(receipt.sourceRegistrySHA256, 'sha256:b5d1ffd75c8ded3c976115db39d9515f0ce321bdc15892fb63156309feea9adc');
   assert.equal(
-    digest(`${JSON.stringify(historicalRegistry(actual).slice(0, 125), null, 2)}\n`),
+    digest(
+      `${JSON.stringify(
+        registryBeforeSemanticAmendments(historicalRegistry(actual).slice(0, 125), isotipoReference),
+        null,
+        2
+      )}\n`
+    ),
     receipt.sourceRegistrySHA256
   );
   assert.equal(receipt.sourceRegistryEntryCount, 125);
@@ -665,6 +708,117 @@ test('Isotipo3D predecessor pins reject changed prior receipt bytes, changed pin
   const missing = structuredClone(receipt);
   missing.priorReceipts.pop();
   assert.throws(() => checkIsotipoHistory(missing), /AssertionError/);
+});
+
+test('Skeleton v0.2 naming receipt records the owner published-spec approval and widens signal-pulse', () => {
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, skeletonReference), 'utf8'));
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  assert.equal(actual.length, 128);
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-observed-human-delegation');
+  assert.equal(receipt.sourceRegistryEntryCount, 128);
+  assert.equal(receipt.sourceRegistrySHA256, 'sha256:76bd797a68e19111cb1449730149b766b2377acc08475ede02508adc0eb13885');
+  assert.notEqual(
+    receipt.sourceRegistrySHA256,
+    digest(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json')))
+  );
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.match(
+    receipt.evidence.draftSnapshot.reference,
+    /^https:\/\/github\.com\/egdev6\/egdev-design-system\/issues\/102#issuecomment-6328255802$/
+  );
+  assert.equal(
+    receipt.evidence.draftSnapshot.canonicalSHA256,
+    'sha256:4fea97ea3b2fcd36116fb3ab5acffb54ff9645f6f74a38616f67e0c16c6b5a72'
+  );
+  assert.deepEqual(
+    receipt.evidence.userStatements.map(({ quote }) => quote),
+    ['aprueba y publica']
+  );
+  assert.match(receipt.evidence.userStatements[0].provenance, /issues\/102#issuecomment-6328255802/);
+  assert.match(receipt.evidence.userStatements[0].provenance, /2026-10-22/);
+  assert.match(receipt.evidence.interpretation, /not.*per-payload/);
+
+  const history = new Map();
+  for (const prior of receipt.priorReceipts) {
+    const bytes = fs.readFileSync(resolve(root, prior.path));
+    assert.equal(digest(bytes), prior.wholeFileSHA256, prior.path);
+    history.set(prior.path, JSON.parse(bytes));
+  }
+  assert.equal(history.size, 7);
+  assert.ok(history.has('docs/decisions/prop-naming-atom-specs-approval.json'));
+  assert.ok(laterReceipts(isotipoReference).has(skeletonReference));
+
+  assert.deepEqual(
+    receipt.semanticAmendments.map(({ id }) => id),
+    ['signal-pulse']
+  );
+  const [amendment] = receipt.semanticAmendments;
+  assert.equal(amendment.previousReference, 'docs/decisions/prop-naming-atom-specs-approval.json');
+  const previous = history
+    .get(amendment.previousReference)
+    .entries.find(({ convention }) => convention.id === amendment.id);
+  assert.equal(previous.contentHash, amendment.previousContentHash);
+  assert.equal(previous.contentHash, props.conventionHash(previous.convention));
+  const current = receipt.entries.find(({ convention }) => convention.id === amendment.id);
+  assert.notEqual(current.contentHash, previous.contentHash);
+  const changedFields = Object.keys(previous.convention).filter(
+    (field) => JSON.stringify(previous.convention[field]) !== JSON.stringify(current.convention[field])
+  );
+  assert.deepEqual(changedFields.sort(), ['avoid', 'meaning', 'whenToUse']);
+  assert.deepEqual([...amendment.changedFields].sort(), changedFields);
+  for (const field of changedFields) {
+    assert.equal(amendment.before[field], previous.convention[field], field);
+    assert.equal(amendment.after[field], current.convention[field], field);
+  }
+  assert.equal(
+    current.convention.meaning,
+    'Whether a decorative signal indicator or placeholder plays its pulse animation; reduced-motion preferences always stop it.'
+  );
+  assert.equal(
+    current.convention.whenToUse,
+    'A decorative signal indicator or content placeholder offers an optional pulsing emphasis that the consumer can switch to a static presentation.'
+  );
+  assert.equal(
+    current.convention.avoid,
+    'Progress or completion animation, general motion toggles for interactive components, or conveying meaning only through motion.'
+  );
+  assert.ok(amendment.boundary.length > 0);
+
+  assert.equal(receipt.entries.length, 1);
+  for (const record of receipt.entries) {
+    const entry = actual.find((entry) => entry.id === record.convention.id);
+    assert.ok(entry, record.scope);
+    const { approval, usages, ...convention } = entry;
+    assert.deepEqual(record.convention, convention);
+    assert.equal(record.scope, `convention:${entry.id}`);
+    assert.equal(record.contentHash, props.conventionHash(entry));
+    assert.deepEqual(approval, {
+      reference: skeletonReference,
+      scope: record.scope,
+      contentHash: record.contentHash
+    });
+    const implementationUsage = {
+      component: 'Skeleton',
+      type: 'boolean',
+      status: 'existing',
+      source: {
+        path: 'packages/ui/src/primitives/skeleton/types.ts',
+        symbol: 'SkeletonProps',
+        revision: digest(fs.readFileSync(resolve(root, 'packages/ui/src/primitives/skeleton/types.ts')))
+      }
+    };
+    assert.deepEqual(usages, [implementationUsage]);
+    assert.equal(entry.id, 'signal-pulse');
+    assert.equal(entry.name, 'pulse');
+    assert.equal(entry.status, 'approved');
+    assert.deepEqual(entry.aliases, []);
+    assert.deepEqual(entry.exceptions, []);
+  }
+  // The implementation commit records exactly one Skeleton usage under signal-pulse.
+  assert.equal(actual.find(({ id }) => id === 'signal-pulse').usages.length, 1);
 });
 
 test('promoting observed usage to existing does not approve or change its proposed convention', () => {
