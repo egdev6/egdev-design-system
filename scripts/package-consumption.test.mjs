@@ -29,8 +29,18 @@ function run(cwd, command, args, timeout) {
 
 const consumer = `
 import { createElement, createRef } from 'react';
-import { Gauge } from '@egdev/ui';
-import type { GaugeProps, GaugeState, GaugeSize } from '@egdev/ui';
+import { Gauge, Slot, Slottable } from '@egdev/ui';
+import type { GaugeProps, GaugeState, GaugeSize, SlotProps } from '@egdev/ui';
+const slotProps: SlotProps = { 'aria-label': 'Composed documentation' };
+export function SlotSample() {
+  return createElement(Slot, slotProps,
+    createElement('span', { 'aria-hidden': true }, '→'),
+    createElement(Slottable, null, createElement('a', { href: '#composition' }, 'Documentation')));
+}
+export const slotReference = createElement(Slot, { ref: createRef<HTMLElement>() },
+  createElement('a', { ref: createRef<HTMLAnchorElement>(), href: '#composition' }, 'Reference'));
+// @ts-expect-error Slot itself does not expose an asChild prop.
+const unsupportedSlotComposition: SlotProps = { asChild: true };
 const unsupportedGaugeRef = createRef<HTMLDivElement>();
 const icon = createElement('svg', { viewBox: '0 0 24 24' }, createElement('path', { d: 'M1 1h2v2H1z' }));
 const gaugeState: GaugeState = 'warning';
@@ -154,7 +164,7 @@ assert.ok(!realpathSync(styles).startsWith(${JSON.stringify(root)}), 'CSS must r
 const shippedStyles = readFileSync(styles, 'utf8');
 assert.doesNotMatch(shippedStyles, /@(import|reference|source|tailwind|theme|custom-variant|apply)\\b/, 'Packed CSS must be ready for native consumption');
 assert.ok(shippedStyles.includes('.eg-gauge-arc'), 'Packed styles must retain Gauge geometry');
-assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), ['Gauge', 'cn']);
+assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), ['Gauge', 'Slot', 'Slottable', 'cn']);
 ${assertGaugeCSS.toString()}
 assertGaugeCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -181,7 +191,18 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { Gauge } from '@egdev/ui';
-import { App } from './consumer.ts';
+import { App, SlotSample } from './consumer.ts';
+const slotDocument = new JSDOM(renderToString(createElement(SlotSample)));
+try {
+  const target = slotDocument.window.document.body;
+  assert.equal(target.children.length, 1);
+  assert.equal(target.firstElementChild.tagName, 'A');
+  assert.equal(target.firstElementChild.getAttribute('aria-label'), 'Composed documentation');
+  assert.equal(target.firstElementChild.textContent, '→Documentation');
+  assert.equal(target.firstElementChild.hasAttribute('class'), false);
+} finally {
+  slotDocument.window.close();
+}
 const html = renderToString(createElement(App));
 for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity']) {
   assert.ok(html.includes(text), 'SSR must render ' + text);
@@ -244,7 +265,8 @@ for (const name of ['getComputedStyle', 'requestAnimationFrame', 'cancelAnimatio
 }
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 stage('setup:complete');
-const { act, createElement } = await import('react');
+const { act, createElement, createRef } = await import('react');
+const { Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
 const { App } = await import('./consumer.ts');
 stage('imports:complete');
@@ -275,7 +297,28 @@ try {
   assert.equal(measurement().querySelector('[aria-live], button, a, input, [tabindex]'), null);
   assert.equal(measurement().hasAttribute('aria-live'), false);
   stage('gauge:rerender:complete');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery'] }));
+  const slotRef = createRef();
+  const childRef = createRef();
+  const calls = [];
+  await act(async () => root.render(createElement(Slot, {
+    ref: slotRef, onClick: () => calls.push('slot'), 'aria-label': 'Composed documentation'
+  }, createElement('span', { 'aria-hidden': true }, '→'),
+  createElement(Slottable, null, createElement('a', {
+    ref: childRef, href: '#composition', onClick: (event) => { event.preventDefault(); calls.push('child'); }
+  }, 'Documentation')))));
+  const target = document.querySelector('a');
+  assert.equal(document.getElementById('app').children.length, 1);
+  assert.equal(target.textContent, '→Documentation');
+  assert.equal(target.getAttribute('aria-label'), 'Composed documentation');
+  assert.equal(target.hasAttribute('class'), false);
+  assert.equal(slotRef.current, target);
+  assert.equal(childRef.current, target);
+  await act(async () => target.click());
+  assert.deepEqual(calls, ['child', 'slot']);
+  await act(async () => root.render(null));
+  assert.equal(slotRef.current, null);
+  assert.equal(childRef.current, null);
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());

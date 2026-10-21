@@ -202,7 +202,11 @@ test('UI JavaScript remains importable without a CSS loader', async () => {
 
 test('UI root exports Gauge and its public types with passive SSR semantics', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
-  assert.deepEqual(Object.keys(exported).sort(), ['Gauge', 'cn'], 'Only Gauge and cn are public runtime exports');
+  assert.deepEqual(
+    Object.keys(exported).sort(),
+    ['Gauge', 'Slot', 'Slottable', 'cn'],
+    'Only approved components and cn are public runtime exports'
+  );
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
   assert.equal(exported.default, undefined, 'UI must not introduce a default export');
   const declaration = artifact('ui', ui.exports['.'].types);
@@ -210,7 +214,16 @@ test('UI root exports Gauge and its public types with passive SSR semantics', as
   const checker = program.getTypeChecker();
   const symbol = checker.getSymbolAtLocation(program.getSourceFile(declaration));
   const names = new Set(checker.getExportsOfModule(symbol).map((item) => item.name));
-  assert.deepEqual([...names].sort(), ['Gauge', 'GaugeProps', 'GaugeSize', 'GaugeState', 'cn']);
+  assert.deepEqual([...names].sort(), [
+    'Gauge',
+    'GaugeProps',
+    'GaugeSize',
+    'GaugeState',
+    'Slot',
+    'SlotProps',
+    'Slottable',
+    'cn'
+  ]);
   for (const name of ['Gauge', 'GaugeProps', 'GaugeState', 'GaugeSize']) {
     assert.ok(names.has(name), `Missing public declaration export ${name}`);
   }
