@@ -19,7 +19,7 @@
     "radix": "VisuallyHidden",
     "compone": "—",
     "accion": "nuevo",
-    "notas": "Sustituye el `clip: rect(0 0 0 0)` repetido en todos los lienzos."
+    "notas": "Implemented React primitive under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/112#issuecomment-6251584644): screen-reader-only content with Radix-owned hiding geometry, required children, asChild and an HTMLElement ref to the actual HTML host. No stylesheet or appearance variants. Legacy hidden-content rules are unchanged."
   },
   {
     "actual": "—",

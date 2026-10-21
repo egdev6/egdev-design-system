@@ -8,7 +8,10 @@ import { jsdocControlsEnhancer, mapJSDocControls } from '../../../../.storybook/
 import config from '../../../../.storybook/main';
 import preview from '../../../../.storybook/preview';
 
-const components = [['Gauge', 'atoms/gauge']] as const;
+const components = [
+  ['Gauge', 'atoms/gauge'],
+  ['VisuallyHidden', 'primitives/visually-hidden']
+] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
 });
@@ -57,6 +60,7 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  visuallyhidden: { children: false, asChild: 'boolean' },
   gauge: {
     label: 'text',
     value: 'number',
@@ -215,7 +219,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
 
   it.each(components)('%s maps every annotated own prop after real extraction and inference', (name) => {
     const composed = story(name);
-    expect(Object.keys(expected[name.toLowerCase()] ?? {})).toHaveLength(8);
+    expect(Object.keys(expected[name.toLowerCase()] ?? {})).toHaveLength(name === 'Gauge' ? 8 : 2);
     for (const [prop, control] of Object.entries(expected[name.toLowerCase()] ?? {})) {
       expect
         .soft(composed.argTypes[prop]?.control, `${name}.${prop}`)
@@ -242,17 +246,17 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
   });
 
-  it.each([['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }]] as const)(
-    '%s presents actual constant defaults without extra quote characters',
-    (name, defaults) => {
-      const { argTypes, args } = story(name);
-      for (const [prop, summary] of Object.entries(defaults)) {
-        expect.soft(argTypes[prop]?.table?.defaultValue?.summary, `${name}.${prop}`).toBe(summary);
-      }
-      // Documentation must not initialize optional Controls args just to fill the UI.
-      expect(args).toEqual({});
+  it.each([
+    ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
+    ['VisuallyHidden', { asChild: 'false' }]
+  ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
+    const { argTypes, args } = story(name);
+    for (const [prop, summary] of Object.entries(defaults)) {
+      expect.soft(argTypes[prop]?.table?.defaultValue?.summary, `${name}.${prop}`).toBe(summary);
     }
-  );
+    // Documentation must not initialize optional Controls args just to fill the UI.
+    expect(args).toEqual({});
+  });
 
   it('keeps computed fallbacks and optional absence in descriptions, not fixed default metadata', () => {
     for (const [name, prop, rules] of [

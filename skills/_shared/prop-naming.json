@@ -421,7 +421,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "VisuallyHidden",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/visually-hidden/types.ts",
+          "symbol": "VisuallyHiddenProps",
+          "revision": "sha256:e242d33b1e9769935e26a2feee013da2f98b10643795a9bedb4e4a962f1f9434"
+        }
+      }
+    ]
   },
   {
     "id": "checked-change",

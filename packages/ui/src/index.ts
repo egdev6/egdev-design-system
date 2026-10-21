@@ -7,3 +7,4 @@ export type { PortalProps } from './primitives/portal';
 export { Portal } from './primitives/portal';
 export type { SlotProps } from './primitives/slot';
 export { Slot, Slottable } from './primitives/slot';
+export * from './primitives/visually-hidden';
