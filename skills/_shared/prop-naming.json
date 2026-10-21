@@ -688,7 +688,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Divider",
+        "type": "DividerOrientation",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/divider/types.ts",
+          "symbol": "DividerProps",
+          "revision": "sha256:34e4dece18b59fe810f9bf76aa3d799ee6ae759348776fa1513de7425413d152"
+        }
+      }
+    ]
   },
   {
     "id": "selection-placeholder",
@@ -987,7 +998,18 @@
       "scope": "convention:decorative-separation",
       "contentHash": "sha256:2de412c2d3093a4d26054772a3c483d68ac81e342850449dd6fdcd1543f48006"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Divider",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/divider/types.ts",
+          "symbol": "DividerProps",
+          "revision": "sha256:34e4dece18b59fe810f9bf76aa3d799ee6ae759348776fa1513de7425413d152"
+        }
+      }
+    ]
   },
   {
     "id": "field-hint",

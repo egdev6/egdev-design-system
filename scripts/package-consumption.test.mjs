@@ -30,8 +30,8 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Gauge, Slot, Slottable, VisuallyHidden } from '@egdev/ui';
-import type { AspectRatioProps, GaugeProps, GaugeState, GaugeSize, SlotProps, VisuallyHiddenProps } from '@egdev/ui';
+import { AspectRatio, Divider, Gauge, Slot, Slottable, VisuallyHidden } from '@egdev/ui';
+import type { AspectRatioProps, DividerOrientation, DividerProps, GaugeProps, GaugeState, GaugeSize, SlotProps, VisuallyHiddenProps } from '@egdev/ui';
 const slotProps: SlotProps = { 'aria-label': 'Composed documentation' };
 export function SlotSample() {
   return createElement(Slot, slotProps,
@@ -89,13 +89,28 @@ export function VisuallyHiddenSamples() {
     createElement(VisuallyHidden, { asChild: true,
       children: createElement(HiddenHeading, { id: 'forwarded-heading' }, 'Forwarded details') }));
 }
-export function App({ gaugeValue, wideRatio }: { gaugeValue?: number; wideRatio?: number } = {}) {
+export const dividerDefaults: DividerProps = {};
+export const dividerSemanticVertical: DividerProps = {
+  orientation: 'vertical', decorative: false, className: 'consumer-rule'
+};
+const dividerOrientation: DividerOrientation = 'vertical';
+export function DividerSamples({ semantic }: { semantic?: boolean }) {
+  return createElement('section', { 'aria-label': 'Separations' },
+    // Fixed empty span: no children, no ref and no ARIA overrides reach the host.
+    createElement(Divider, dividerDefaults),
+    createElement(Divider, dividerSemanticVertical),
+    createElement(Divider, semantic
+      ? { orientation: dividerOrientation, decorative: false, className: 'consumer-rule' }
+      : { className: 'consumer-rule' }));
+}
+export function App({ gaugeValue, wideRatio, dividerSemantic }: { gaugeValue?: number; wideRatio?: number; dividerSemantic?: boolean } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
     createElement(GaugeSamples, { value: gaugeValue }),
     createElement(AspectSamples, { wideRatio }),
     createElement(VisuallyHiddenSamples),
+    createElement(DividerSamples, { semantic: dividerSemantic }),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Hidden content is required, not optional.
@@ -132,6 +147,24 @@ const interactiveGauge: GaugeProps = { label: 'Capacity', value: 42, role: 'butt
 const slottedAspect: AspectRatioProps = { asChild: true };
 // @ts-expect-error Ratio must be a number, not a preset string.
 const stringAspectRatio: AspectRatioProps = { ratio: '16 / 9' };
+// @ts-expect-error Divider owns its separator semantics.
+const dividerRole: DividerProps = { role: 'separator' };
+// @ts-expect-error Divider renders a fixed empty span; children are not public.
+const dividerChildren: DividerProps = { children: null };
+// @ts-expect-error Composition through asChild is not public.
+const dividerAsChild: DividerProps = { asChild: true };
+// @ts-expect-error Hiding a boundary is not a consumer decision.
+const dividerAriaHidden: DividerProps = { 'aria-hidden': true };
+// @ts-expect-error Radix derives ARIA orientation from the orientation prop.
+const dividerAriaOrientation: DividerProps = { 'aria-orientation': 'vertical' };
+// @ts-expect-error A passive rule never becomes a Tab stop.
+const dividerTabIndex: DividerProps = { tabIndex: 0 };
+// @ts-expect-error Divider owns its empty rule content.
+const dividerHtml: DividerProps = { dangerouslySetInnerHTML: { __html: '<hr />' } };
+// @ts-expect-error Divider has no public ref API on either React major.
+const referencedDivider: DividerProps = { ref: unsupportedGaugeRef };
+// @ts-expect-error Only horizontal and vertical axes exist.
+const diagonalDivider: DividerProps = { orientation: 'diagonal' };
 `;
 
 // Reused inside the installed fixture, against shipped CSS and both consumer build paths.
@@ -191,6 +224,83 @@ function assertGaugeCSS(css) {
   }
 }
 
+// Reused inside the installed fixture, against shipped CSS and both consumer build paths.
+function assertDividerCSS(css, bundle) {
+  // eg-divider is a stable public marker, not a utility: with no stylesheet the CSS
+  // must carry the data-orientation recipes only, and the JS bundle the marker.
+  assert.doesNotMatch(css, /\.eg-divider\s*[,{]/, 'Divider marker must not become a CSS rule');
+  assert.ok(bundle.includes('eg-divider'), 'Divider JS bundle must carry the stable marker');
+  assert.ok(css.includes(String.raw`min-w-0`), 'Missing Divider base guard utility');
+  // The horizontal rule fades physically to the right from the brand border token to a 0% stop.
+  assert.ok(css.includes(String.raw`bg-linear-to-r`), 'Missing Divider gradient direction');
+  assert.match(css, /--tw-gradient-position:\s*to\s+right/, 'Divider fade must be physical to the right');
+  assert.match(
+    css,
+    /--tw-gradient-from:\s*var\(--color-border-brand(?:,\s*[^)]+)?\)/,
+    'Divider fade must start at the brand border token'
+  );
+  assert.match(
+    css,
+    /--tw-gradient-to:\s*color-mix\([^;]*--color-border-brand[^;]*0%[^;]*transparent\)/,
+    'Divider fade must end at a 0% brand stop'
+  );
+  // Tailwind escapes the data-orientation variant selector; locate the utility
+  // class prefix first, then bind the rule body to its attribute selector.
+  const rule = (orientation, property, value) => {
+    const escaped = `.data-\\[orientation\\=${orientation}\\]\\:`;
+    const literal = escaped.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const ruleBody = new RegExp(
+      literal + '[^\\n]*\\[data-orientation="' + orientation + '"\\]\\s*\\{[^}]*' + property + ':\\s*' + value + '\\s*;'
+    );
+    // Consumer builds interleave imported layers; test every utility-prefix occurrence.
+    let from = 0;
+    while (true) {
+      const start = css.indexOf(escaped, from);
+      if (start === -1) {
+        return false;
+      }
+      if (ruleBody.test(css.slice(start, start + 4000))) {
+        return true;
+      }
+      from = start + escaped.length;
+    }
+  };
+  assert.match(
+    css,
+    /--tw-gradient-from:\s*var\(--color-border-brand(?:,\s*[^)]+)?\)/,
+    'Divider fade must start at the brand border token'
+  );
+  assert.match(
+    css,
+    /--tw-gradient-to:\s*color-mix\([^;]*--color-border-brand[^;]*0%[^;]*transparent\)/,
+    'Divider fade must end at a 0% brand stop'
+  );
+  assert.match(css, /--tw-gradient-position:\s*to\s+right/, 'Divider fade must be physical to the right');
+  assert.ok(css.includes(String.raw`h-\[var\(--border-width\)\]`), 'Missing horizontal hairline height class');
+  assert.ok(css.includes(String.raw`w-\[var\(--border-width\)\]`), 'Missing vertical hairline width class');
+  assert.ok(
+    rule('horizontal', 'height', 'var\\(--border-width\\)'),
+    'Horizontal rule must bind the border-width token'
+  );
+  assert.ok(rule('vertical', 'width', 'var\\(--border-width\\)'), 'Vertical rule must bind the border-width token');
+  assert.ok(rule('horizontal', 'min-width', 'var\\(--space-6\\)'), 'Horizontal rule must keep the space-6 minimum');
+  assert.ok(
+    rule('vertical', 'min-width', '(?:var\\(--space-0\\)|0px?|0)'),
+    'Vertical rule must keep the space-0 minimum'
+  );
+  assert.ok(rule('horizontal', 'flex', '(?:1\\s+1\\s+auto|auto)'), 'Horizontal rule must flex to available length');
+  assert.ok(rule('vertical', 'flex', '(?:none|0\\s+0\\s+auto)'), 'Vertical rule must not flex');
+  assert.ok(rule('vertical', 'align-self', 'center'), 'Vertical rule must center on the cross axis');
+  assert.ok(
+    rule('vertical', 'height', 'calc\\(var\\(--space-1\\)\\s*\\*\\s*4\\.5\\)'),
+    'Vertical rule height must derive from space-1'
+  );
+  assert.ok(
+    rule('vertical', 'background-color', 'var\\(--color-border-brand(?:,\\s*var\\(--[a-z0-9-]+\\)\\)?)'),
+    'Vertical rule must paint solid brand'
+  );
+}
+
 const entries = `
 import assert from 'node:assert/strict';
 import { readFileSync, realpathSync } from 'node:fs';
@@ -212,10 +322,14 @@ const shippedStyles = readFileSync(styles, 'utf8');
 assert.doesNotMatch(shippedStyles, /@(import|reference|source|tailwind|theme|custom-variant|apply)\\b/, 'Packed CSS must be ready for native consumption');
 assert.ok(shippedStyles.includes('.eg-gauge-arc'), 'Packed styles must retain Gauge geometry');
 assert.ok(shippedStyles.includes('.min-w-0'), 'Packed styles must retain the AspectRatio min-width guard');
+assert.ok(readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8').includes('eg-divider'), 'Packed JS must retain the Divider marker');
+assert.doesNotMatch(shippedStyles, /\.eg-divider\s*[,{]/, 'Divider marker must not become a shipped CSS rule');
 assert.ok(!shippedStyles.includes('.eg-visually-hidden'), 'VisuallyHidden must not add shipped CSS; Radix hides inline');
-assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), ['AspectRatio', 'Gauge', 'Portal', 'Slot', 'Slottable', 'VisuallyHidden', 'cn']);
+assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), ['AspectRatio', 'Divider', 'Gauge', 'Portal', 'Slot', 'Slottable', 'VisuallyHidden', 'cn']);
 ${assertGaugeCSS.toString()}
+${assertDividerCSS.toString()}
 assertGaugeCSS(shippedStyles);
+assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
 for (const [, token] of theme.matchAll(/(--[\\w-]+)\\s*:/g)) {
   assert.doesNotMatch(shippedStyles, new RegExp(token + '\\\\s*:'), 'UI must not redefine canonical token ' + token);
@@ -239,7 +353,7 @@ import assert from 'node:assert/strict';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
-import { AspectRatio, Gauge } from '@egdev/ui';
+import { AspectRatio, Divider, Gauge } from '@egdev/ui';
 import { App, SlotSample } from './consumer.ts';
 const slotDocument = new JSDOM(renderToString(createElement(SlotSample)));
 try {
@@ -251,6 +365,35 @@ try {
   assert.equal(target.firstElementChild.hasAttribute('class'), false);
 } finally {
   slotDocument.window.close();
+}
+const decorativeDivider = new JSDOM(renderToString(createElement(Divider)));
+try {
+  const host = decorativeDivider.window.document.body;
+  assert.equal(host.children.length, 1, 'Divider must render exactly one element');
+  const rule = host.firstElementChild;
+  assert.equal(rule.tagName, 'SPAN', 'Divider must own one empty span host');
+  assert.equal(rule.textContent, '');
+  assert.equal(rule.childElementCount, 0, 'Divider must render a fixed empty span');
+  assert.ok(rule.className.includes('eg-divider'), 'Divider must keep its stable marker');
+  assert.equal(rule.getAttribute('data-orientation'), 'horizontal');
+  assert.equal(rule.getAttribute('role'), 'none', 'Decorative default must be Radix role none');
+  assert.equal(rule.hasAttribute('aria-orientation'), false);
+  assert.equal(rule.hasAttribute('aria-hidden'), false);
+  assert.equal(rule.hasAttribute('tabindex'), false);
+  assert.equal(rule.hasAttribute('data-state'), false);
+} finally {
+  decorativeDivider.window.close();
+}
+const semanticDivider = new JSDOM(renderToString(createElement(Divider, { orientation: 'vertical', decorative: false })));
+try {
+  const rule = semanticDivider.window.document.body.firstElementChild;
+  assert.equal(rule.tagName, 'SPAN');
+  assert.equal(rule.textContent, '');
+  assert.equal(rule.getAttribute('role'), 'separator', 'Meaningful boundaries must delegate to Radix separator semantics');
+  assert.equal(rule.getAttribute('aria-orientation'), 'vertical');
+  assert.equal(rule.getAttribute('data-orientation'), 'vertical');
+} finally {
+  semanticDivider.window.close();
 }
 const html = renderToString(createElement(App));
 for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%']) {
@@ -281,6 +424,16 @@ try {
     const center = gauge.querySelector('.eg-gauge-center');
     if (center) assert.equal(center.getAttribute('aria-hidden'), 'true');
   }
+  const separations = document.querySelector('section[aria-label="Separations"]');
+  assert.ok(separations, 'SSR must render the Divider samples section');
+  assert.equal(separations.children.length, 3, 'Each Divider usage must render exactly one element');
+  assert.equal(separations.children[0].getAttribute('role'), 'none', 'Decorative default must be Radix role none');
+  assert.equal(separations.children[0].getAttribute('data-orientation'), 'horizontal');
+  assert.equal(separations.children[1].getAttribute('role'), 'separator', 'Meaningful boundaries must delegate to Radix separator semantics');
+  assert.equal(separations.children[1].getAttribute('aria-orientation'), 'vertical');
+  assert.equal(separations.children[1].getAttribute('data-orientation'), 'vertical');
+  assert.ok(separations.children[2].className.includes('eg-divider'), 'Divider must keep its stable marker');
+  assert.ok(separations.children[2].className.includes('consumer-rule'), 'Native className must survive');
 const square = document.querySelector('#media-square');
 const wide = document.querySelector('#media-wide');
 assert.ok(square && wide, 'SSR must render AspectRatio samples');
@@ -417,6 +570,50 @@ try {
   assert.equal(mediaWide().parentElement.style.getPropertyValue('padding-bottom'), '100%', 'Invalid ratio must fall back to a square');
   assert.equal(aspectWideRef.current, mediaWide());
   stage('aspect:rerender:complete');
+  stage('divider:rerender:start');
+  const separations = document.querySelector('section[aria-label="Separations"]');
+  assert.ok(separations, 'Divider samples must render inside the consumer app');
+  assert.equal(separations.children.length, 3, 'Each Divider usage must render exactly one element');
+  const decorativeRule = separations.children[0];
+  const semanticRule = separations.children[1];
+  const rerenderRule = separations.children[2];
+  assert.equal(decorativeRule.tagName, 'SPAN', 'Divider must own one empty span host');
+  assert.equal(decorativeRule.textContent, '');
+  assert.equal(decorativeRule.childElementCount, 0, 'Divider must render a fixed empty span');
+  assert.ok(decorativeRule.className.includes('eg-divider'), 'Divider must keep its stable marker');
+  assert.equal(decorativeRule.getAttribute('data-orientation'), 'horizontal');
+  assert.equal(decorativeRule.getAttribute('role'), 'none', 'Decorative default must be Radix role none');
+  assert.equal(decorativeRule.hasAttribute('aria-orientation'), false);
+  assert.equal(decorativeRule.hasAttribute('aria-hidden'), false);
+  assert.equal(decorativeRule.hasAttribute('data-state'), false);
+  assert.equal(decorativeRule.getAttribute('tabindex'), null);
+  assert.equal(decorativeRule.tabIndex, -1, 'A passive rule must never become a Tab stop');
+  assert.equal(semanticRule.getAttribute('role'), 'separator');
+  assert.equal(semanticRule.getAttribute('aria-orientation'), 'vertical');
+  assert.equal(semanticRule.getAttribute('data-orientation'), 'vertical');
+  assert.equal(semanticRule.textContent, '');
+  assert.equal(semanticRule.tabIndex, -1);
+  assert.ok(semanticRule.className.includes('consumer-rule'), 'Native className must survive');
+  const rerenderRecipe = rerenderRule.className;
+  assert.equal(rerenderRule.getAttribute('role'), 'none');
+  assert.equal(rerenderRule.getAttribute('data-orientation'), 'horizontal');
+  await act(async () => root.render(createElement(App, { dividerSemantic: true })));
+  assert.equal(separations.children[2], rerenderRule, 'Rerender must preserve the divider host');
+  assert.equal(rerenderRule.getAttribute('role'), 'separator', 'Semantic rerender must delegate to Radix');
+  assert.equal(rerenderRule.getAttribute('aria-orientation'), 'vertical');
+  assert.equal(rerenderRule.getAttribute('data-orientation'), 'vertical');
+  assert.equal(rerenderRule.className, rerenderRecipe, 'Orientation semantics must never mirror into classes');
+  await act(async () => root.render(createElement(App)));
+  assert.equal(separations.children[2], rerenderRule);
+  assert.equal(rerenderRule.getAttribute('role'), 'none');
+  assert.equal(rerenderRule.hasAttribute('aria-orientation'), false);
+  assert.equal(rerenderRule.getAttribute('data-orientation'), 'horizontal');
+  assert.equal(rerenderRule.className, rerenderRecipe);
+  for (const rule of separations.querySelectorAll('.eg-divider')) {
+    assert.equal(rule.getAttribute('tabindex'), null);
+    assert.equal(rule.tabIndex, -1, 'No divider may add a Tab stop');
+  }
+  stage('divider:rerender:complete');
   console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery'] }));
   const slotRef = createRef();
   const childRef = createRef();
@@ -497,6 +694,7 @@ const tailwindClasses = [
 const css = `
 import assert from 'node:assert/strict';
 import { readFileSync, realpathSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { build, version } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 const instances = { react: new Set(), 'react-dom': new Set() };
@@ -514,7 +712,9 @@ const emitted = assets.map((asset) => String(asset.source)).join('\\n');
 assert.ok(assets.length > 0, 'Vite must emit consumer CSS');
 assert.ok(!emitted.includes('@theme'), 'Native consumption must not need Tailwind to interpret @theme');
 ${assertGaugeCSS.toString()}
+${assertDividerCSS.toString()}
 assertGaugeCSS(emitted);
+assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
   emitted,
   /\\.min-w-0\\s*\\{[^}]*min-width:\\s*(?:0|0px|var\\(--space-0\\))\\s*;/,
@@ -545,6 +745,7 @@ const twAssets = [tailwind].flat().flatMap((bundle) => bundle.output).filter((as
 const twCss = twAssets.map((asset) => String(asset.source)).join(' ');
 assert.ok(twAssets.length > 0, 'Tailwind build must emit CSS');
 assertGaugeCSS(twCss);
+assertDividerCSS(twCss, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
   twCss,
   /\\.min-w-0\\s*\\{[^}]*min-width:\\s*(?:0|0px|var\\(--space-0\\))\\s*;/,

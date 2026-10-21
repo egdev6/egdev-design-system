@@ -130,12 +130,14 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/gauge',
       './lib/cn',
       './primitives/aspect-ratio',
+      './primitives/divider',
       './primitives/portal',
       './primitives/slot',
       './primitives/visually-hidden'
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
       'AspectRatio',
+      'Divider',
       'Gauge',
       'Portal',
       'Slot',
