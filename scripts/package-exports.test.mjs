@@ -279,9 +279,18 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
   const exported = await import(artifact('ui', ui.exports['.'].import));
   assert.deepEqual(
     Object.keys(exported).sort(),
-    ['AspectRatio', 'Gauge', 'Label', 'Portal', 'Slot', 'Slottable', 'VisuallyHidden', 'cn', 'labelVariants'],
-
-    ['AspectRatio', 'Gauge', 'Portal', 'Skeleton', 'Slot', 'Slottable', 'VisuallyHidden', 'cn'],
+    [
+      'AspectRatio',
+      'Gauge',
+      'Label',
+      'Portal',
+      'Skeleton',
+      'Slot',
+      'Slottable',
+      'VisuallyHidden',
+      'cn',
+      'labelVariants'
+    ],
     'Only approved components and cn are public runtime exports'
   );
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
