@@ -131,6 +131,8 @@ describe('Storybook TypeScript docgen contract', () => {
       './lib/cn',
       './primitives/aspect-ratio',
       './primitives/divider',
+
+      './primitives/label',
       './primitives/portal',
       './primitives/skeleton',
       './primitives/slot',
@@ -140,12 +142,14 @@ describe('Storybook TypeScript docgen contract', () => {
       'AspectRatio',
       'Divider',
       'Gauge',
+      'Label',
       'Portal',
       'Skeleton',
       'Slot',
       'Slottable',
       'VisuallyHidden',
-      'cn'
+      'cn',
+      'labelVariants'
     ]);
   });
 

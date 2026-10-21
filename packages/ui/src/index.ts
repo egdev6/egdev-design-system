@@ -7,6 +7,8 @@ export type { AspectRatioProps } from './primitives/aspect-ratio';
 export { AspectRatio } from './primitives/aspect-ratio';
 export type { DividerOrientation, DividerProps } from './primitives/divider';
 export { Divider } from './primitives/divider';
+export type { LabelProps, LabelVariant } from './primitives/label';
+export { Label, labelVariants } from './primitives/label';
 export type { PortalProps } from './primitives/portal';
 export { Portal } from './primitives/portal';
 export * from './primitives/skeleton';

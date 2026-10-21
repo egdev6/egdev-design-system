@@ -23,6 +23,7 @@ const postReceiptUsages = [
   { conventionId: 'layout-orientation', source: 'packages/ui/src/primitives/divider/types.ts#DividerProps' },
   { conventionId: 'decorative-separation', source: 'packages/ui/src/primitives/divider/types.ts#DividerProps' },
   { conventionId: 'portal-container', source: 'packages/ui/src/primitives/portal/types.ts#PortalProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/label/types.ts#LabelProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/skeleton/types.ts#SkeletonProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/primitives/skeleton/types.ts#SkeletonProps' }
 ];
@@ -51,7 +52,7 @@ test('post-receipt usages exist with valid source evidence', () => {
     assert.equal(matching.length, 1, reviewed.source);
     assert.ok(fs.statSync(resolve(root, matching[0].source.path)).isFile());
     assert.equal(matching[0].source.revision, digest(fs.readFileSync(resolve(root, matching[0].source.path))));
-    const filtered = historicalRegistry([current])[0].usages;
+    const filtered = historicalRegistry([current], [reviewed])[0].usages;
     assert.ok(
       filtered.every((usage) => `${usage.source.path}#${usage.source.symbol}` !== reviewed.source),
       reviewed.source

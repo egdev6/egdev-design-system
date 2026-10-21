@@ -233,6 +233,36 @@ test('UI ships the approved Gauge geometry in the components layer', () => {
   assert.match(center, /inset:\s*30%\s*;/);
 });
 
+test('UI ships the approved Label typography recipe without an application Tailwind compiler', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // Base recipe: token typography, foreground color and sans family.
+  const base = rule('.text-label-default');
+  assert.match(base, /font-size:\s*var\(--text-label-default(?:,\s*14px)?\)\s*;/);
+  assert.match(
+    base,
+    /font-weight:\s*var\(--tw-font-weight,\s*var\(--text-label-default--font-weight(?:,\s*600)?\)\)\s*;/
+  );
+  assert.match(base, /line-height:\s*var\(--tw-leading,\s*var\(--text-label-default--line-height(?:,\s*1\.2)?\)\)\s*;/);
+  assert.match(
+    rule('.text-fg-secondary'),
+    /color:\s*var\(--color-fg-secondary(?:,\s*var\(--color-primitive-[a-z0-9-]+\))?\)\s*;/
+  );
+  assert.match(rule('.font-sans'), /font-family:\s*var\(--font-sans/);
+  // Choice treatment emits the approved token-backed weight, not a numeric value.
+  const choice = rule(String.raw`.font-\[var\(--text-body-default--font-weight\)\]`);
+  assert.match(choice, /font-weight:\s*var\(--text-body-default--font-weight\)\s*;/);
+  const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
+  for (const token of ['--text-label-default--font-weight', '--text-body-default--font-weight']) {
+    assert.ok(theme.includes(`${token}:`), `Choice/base weights must reference the existing token ${token}`);
+    assert.doesNotMatch(css, new RegExp(`${token}\\s*:`), `UI must not redefine ${token}`);
+  }
+});
+
 test('UI JavaScript remains importable without a CSS loader', async () => {
   const entry = artifact('ui', ui.exports['.'].import);
   const imports = ts.preProcessFile(readFileSync(entry, 'utf8'), true).importedFiles;
@@ -249,7 +279,19 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
   const exported = await import(artifact('ui', ui.exports['.'].import));
   assert.deepEqual(
     Object.keys(exported).sort(),
-    ['AspectRatio', 'Divider', 'Gauge', 'Portal', 'Skeleton', 'Slot', 'Slottable', 'VisuallyHidden', 'cn'],
+    [
+      'AspectRatio',
+      'Divider',
+      'Gauge',
+      'Label',
+      'Portal',
+      'Skeleton',
+      'Slot',
+      'Slottable',
+      'VisuallyHidden',
+      'cn',
+      'labelVariants'
+    ],
     'Only approved components and cn are public runtime exports'
   );
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
@@ -278,6 +320,9 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
     'GaugeProps',
     'GaugeSize',
     'GaugeState',
+    'Label',
+    'LabelProps',
+    'LabelVariant',
     'Portal',
     'PortalProps',
     'Skeleton',
@@ -289,7 +334,8 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
     'Slottable',
     'VisuallyHidden',
     'VisuallyHiddenProps',
-    'cn'
+    'cn',
+    'labelVariants'
   ]);
   for (const name of [
     'Divider',
@@ -301,6 +347,10 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
     'GaugeSize',
     'AspectRatio',
     'AspectRatioProps',
+
+    'Label',
+    'LabelProps',
+    'LabelVariant',
     'Portal',
     'PortalProps',
     'Skeleton',
@@ -311,13 +361,28 @@ test('UI root exports Gauge, AspectRatio, Portal, Slot and their public types wi
     'SlotProps',
     'Slottable',
     'VisuallyHidden',
-    'VisuallyHiddenProps'
+    'VisuallyHiddenProps',
+    'labelVariants'
   ]) {
     assert.ok(names.has(name), `Missing public declaration export ${name}`);
   }
   const { createElement } = await import('react');
   const { renderToString } = await import('react-dom/server');
   assert.equal(renderToString(createElement(exported.Portal, { children: 'Server layer' })), '');
+  assert.equal(typeof exported.labelVariants, 'function', 'Label composition recipe must stay a public export');
+  const labelHtml = renderToString(
+    createElement(exported.Label, { children: 'Email address', htmlFor: 'email', id: 'email-label' })
+  );
+  for (const text of ['<label', 'for="email"', 'id="email-label"', 'eg-label', 'text-label-default', 'Email address']) {
+    assert.ok(labelHtml.includes(text), `Label SSR must render ${text}`);
+  }
+  const choiceHtml = renderToString(
+    createElement(exported.Label, { children: 'Choose plan', htmlFor: 'plan', variant: 'choice' })
+  );
+  for (const text of ['text-fg-secondary', 'font-[var(--text-body-default--font-weight)]']) {
+    assert.ok(choiceHtml.includes(text), `Label choice SSR must render ${text}`);
+  }
+  assert.doesNotMatch(labelHtml + choiceHtml, /asChild|aria-live=|<button|<input|tabindex=/);
   const html = renderToString(createElement(exported.Gauge, { label: 'Capacity', value: 42.5 }));
   for (const text of [
     'eg-gauge',
