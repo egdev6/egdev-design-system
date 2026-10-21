@@ -99,7 +99,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Label",
+        "type": "LabelVariant (field|choice)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/label/types.ts",
+          "symbol": "LabelProps",
+          "revision": "sha256:afb762cb8e578348f234a11763dcdbda2c7303cfc02fdd3f385e9f4114ac93a3"
+        }
+      }
+    ]
   },
   {
     "id": "surface-material-tone",

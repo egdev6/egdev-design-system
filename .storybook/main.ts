@@ -6,8 +6,14 @@ import { mergeConfig } from 'vite';
 const documentedNativeProps: Record<string, readonly string[]> = {
   gauge: ['id', 'title', 'aria-describedby', 'className', 'style'],
   aspectRatio: ['id', 'title', 'aria-describedby', 'className', 'style', 'onClick'],
-  visuallyHidden: ['id', 'title', 'aria-describedby', 'className', 'style', 'lang']
+  visuallyHidden: ['id', 'title', 'aria-describedby', 'className', 'style', 'lang'],
+  // Native props re-exposed in autodocs per component, keyed by camelCase component name.
+  // Gauge retains its approved passive measurement list; Label documents the native
+  // association (htmlFor/id) and the approved class-merge surface. Nothing else from
+  // node_modules declarations is admitted.
+  label: ['htmlFor', 'id', 'className']
 };
+const camelCase = (name: string) => name.charAt(0).toLowerCase() + name.slice(1);
 
 const config: StorybookConfig = {
   staticDirs: [
@@ -37,8 +43,7 @@ const config: StorybookConfig = {
       shouldExtractLiteralValuesFromEnum: true,
       shouldRemoveUndefinedFromOptional: true,
       propFilter: (prop, component) =>
-        (documentedNativeProps[component.name.charAt(0).toLowerCase() + component.name.slice(1)]?.includes(prop.name) ??
-          false) ||
+        documentedNativeProps[camelCase(component.name)]?.includes(prop.name) ||
         (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true)
     }
   },

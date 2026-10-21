@@ -20,7 +20,8 @@ const postReceiptUsages = [
     conventionId: 'slot-composition',
     source: 'packages/ui/src/primitives/visually-hidden/types.ts#VisuallyHiddenProps'
   },
-  { conventionId: 'portal-container', source: 'packages/ui/src/primitives/portal/types.ts#PortalProps' }
+  { conventionId: 'portal-container', source: 'packages/ui/src/primitives/portal/types.ts#PortalProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/label/types.ts#LabelProps' }
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({
