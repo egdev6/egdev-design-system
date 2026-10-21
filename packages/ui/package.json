@@ -24,11 +24,12 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "class-variance-authority": "0.7.1",
-    "clsx": "2.1.1",
     "@radix-ui/react-accessible-icon": "1.2.0",
     "@radix-ui/react-slot": "1.5.0",
     "@radix-ui/react-tabs": "1.2.0",
+    "@radix-ui/react-visually-hidden": "1.2.13",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
     "tailwind-merge": "3.7.0"
   },
   "peerDependencies": {
