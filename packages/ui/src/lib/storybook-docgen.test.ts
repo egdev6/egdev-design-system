@@ -130,6 +130,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/avatar',
       './atoms/badge',
       './atoms/button',
+      './atoms/checkbox',
       './atoms/gauge',
       './atoms/icon',
       './atoms/input',
@@ -163,6 +164,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Avatar',
       'Badge',
       'Button',
+      'Checkbox',
       'Cluster',
       'Divider',
       'Gauge',
@@ -254,6 +256,7 @@ describe('Storybook TypeScript docgen contract', () => {
   beforeAll(() => {
     expect(config.typescript?.reactDocgen).toBe('react-docgen-typescript');
     docs = parser.parse([
+      source('atoms/checkbox/Checkbox.tsx'),
       source('atoms/gauge/Gauge.tsx'),
       source('primitives/aspect-ratio/AspectRatio.tsx'),
       source('primitives/stack/Stack.tsx'),
@@ -263,6 +266,61 @@ describe('Storybook TypeScript docgen contract', () => {
       source('primitives/surface/Surface.tsx')
     ]);
   }, 20_000);
+
+  it('documents every Checkbox declaration and real mixed state metadata without invented defaults', () => {
+    const file = ast(source('atoms/checkbox/types.ts'));
+    const controls: Record<string, string> = {
+      checked: 'false',
+      defaultChecked: 'false',
+      onCheckedChange: 'false',
+      disabled: 'boolean',
+      required: 'boolean',
+      name: 'text',
+      value: 'text'
+    };
+    const properties = ownProps(file, ['CheckboxProps']);
+    expect(properties).toHaveLength(7);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      expect(
+        tags.filter((tag) => tag.tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment))
+      ).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        expect(tags.find((tag) => tag.tagName.text === 'controlReason')?.comment).toMatch(/stories|story/);
+      }
+    }
+    const doc = docs.find((item) => item.displayName === 'Checkbox');
+    expect(doc).toBeDefined();
+    for (const name of Object.keys(controls)) {
+      expect(doc?.props[name]).toMatchObject({ required: false, tags: { control: controls[name] } });
+    }
+    expect(doc?.props.checked?.type.name).toMatch(/CheckboxCheckedState/);
+    expect(doc?.props.checked?.defaultValue).toBeNull();
+    expect(doc?.props.name?.defaultValue).toBeNull();
+    const actualDefaults = defaults(source('atoms/checkbox/useCheckbox.ts'), false);
+    for (const [name, value] of Object.entries({
+      defaultChecked: 'false',
+      disabled: 'false',
+      required: 'false',
+      value: 'on'
+    })) {
+      expect(actualDefaults[name], name).toBe(value);
+      expect(normalize(doc?.props[name]?.defaultValue?.value), name).toBe(value);
+    }
+    const storyFile = ast(source('atoms/checkbox/Checkbox.stories.tsx'));
+    expect(exportedStoryNames(storyFile)).toEqual([
+      'Default',
+      'Controlled',
+      'Indeterminate',
+      'Disabled',
+      'States',
+      'WithLabel'
+    ]);
+    expect(readFileSync(source('atoms/checkbox/Checkbox.stories.tsx'), 'utf8')).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+    expect(doc?.props.children).toBeUndefined();
+    expect(doc?.props.asChild).toBeUndefined();
+  });
 
   it('extracts every Badge own prop, defaults, native attributes and finite choices from the real source', () => {
     const file = ast(source('atoms/badge/types.ts'));
@@ -756,6 +814,7 @@ describe('Storybook TypeScript docgen contract', () => {
 
   it('limits real parser discovery to the current public React components', () => {
     expect(docs.map((doc) => doc.displayName)).toEqual([
+      'Checkbox',
       'Gauge',
       'AspectRatio',
       'Stack',

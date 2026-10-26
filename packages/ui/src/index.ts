@@ -2,6 +2,7 @@
 export * from './atoms/avatar';
 export * from './atoms/badge';
 export * from './atoms/button';
+export * from './atoms/checkbox';
 export * from './atoms/gauge';
 export * from './atoms/icon';
 export * from './atoms/input';

@@ -12,6 +12,7 @@ import preview from '../../../../.storybook/preview';
 const components = [
   ['Avatar', 'atoms/avatar'],
   ['Button', 'atoms/button'],
+  ['Checkbox', 'atoms/checkbox'],
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Cluster', 'primitives/stack'],
   ['Gauge', 'atoms/gauge'],
@@ -94,6 +95,15 @@ const expected: Record<string, Record<string, string | false>> = {
     iconPosition: 'select',
     loading: 'boolean',
     asChild: 'boolean'
+  },
+  checkbox: {
+    checked: false,
+    defaultChecked: false,
+    onCheckedChange: false,
+    disabled: 'boolean',
+    required: 'boolean',
+    name: 'text',
+    value: 'text'
   },
   aspectratio: {
     ratio: 'number'
@@ -192,6 +202,7 @@ const expected: Record<string, Record<string, string | false>> = {
 const ownPropCounts: Record<string, number> = {
   avatar: 5,
   button: 7,
+  checkbox: 7,
   aspectratio: 1,
   badge: 4,
   gauge: 8,
@@ -406,6 +417,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
 
   it.each([
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
+    ['Checkbox', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }],
     ['AspectRatio', { ratio: '1' }],
     ['Stack', { gap: '4', alignItems: '"stretch"', justifyContent: '"start"', asChild: 'false' }],
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],
@@ -472,6 +484,34 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(jsdocControlsEnhancer.secondPass).toBeUndefined();
     expect(preview.parameters?.backgrounds).toEqual({ disable: true });
     expect(preview.parameters?.layout).toBe('padded');
+  });
+
+  it('retains Checkbox mixed state types, disabled boolean and native naming without public parts', () => {
+    const { argTypes } = story('Checkbox');
+    for (const prop of ['checked', 'defaultChecked', 'onCheckedChange']) {
+      expect(argTypes[prop]?.control).toBe(false);
+      expect(argTypes[prop]?.table?.disable).toBeUndefined();
+      expect(argTypes[prop]?.description).toBeTruthy();
+    }
+    expect(argTypes.checked?.type?.name).not.toBe('boolean');
+    expect(argTypes.disabled?.control).toEqual({ type: 'boolean' });
+    expect(argTypes.checked?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.name?.table?.defaultValue).toBeUndefined();
+    for (const prop of [
+      'id',
+      'aria-label',
+      'aria-labelledby',
+      'aria-describedby',
+      'aria-invalid',
+      'className',
+      'form'
+    ]) {
+      expect(argTypes[prop], prop).toEqual(story('Checkbox', false).argTypes[prop]);
+      expect(argTypes[prop], prop).toBeDefined();
+    }
+    for (const prop of ['asChild', 'children', 'size', 'label', 'type', 'onChange', 'indicatorClassName']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
   });
 
   it('retains Gauge rows, full public types, requiredness, defaults and ordered state choices', () => {

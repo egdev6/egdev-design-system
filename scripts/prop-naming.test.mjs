@@ -12,6 +12,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  { conventionId: 'checked-change', source: 'packages/ui/src/atoms/checkbox/types.ts#CheckboxProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/avatar/types.ts#AvatarProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/avatar/types.ts#AvatarProps' },
   { conventionId: 'corner-badge-icon', source: 'packages/ui/src/atoms/avatar/types.ts#AvatarProps' },

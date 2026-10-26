@@ -1252,6 +1252,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Avatar',
       'Badge',
       'Button',
+      'Checkbox',
       'Cluster',
       'Divider',
       'Gauge',
@@ -1291,6 +1292,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     ],
     'Only approved components and cn are public runtime exports'
   );
+  assert.equal(exported.Checkbox?.$$typeof, Symbol.for('react.forward_ref'), 'Checkbox must forward its button ref');
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
   // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
@@ -1383,6 +1385,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ButtonProps',
     'ButtonSize',
     'ButtonVariant',
+    'Checkbox',
+    'CheckboxCheckedState',
+    'CheckboxProps',
     'Cluster',
     'ClusterProps',
     'Divider',
@@ -2041,6 +2046,91 @@ test('UI VisuallyHidden renders non-visual content without shipped CSS or Tailwi
     !styles.includes('.eg-visually-hidden'),
     'Hiding geometry is inline Radix behavior; shipped CSS must stay untouched'
   );
+});
+
+test('UI ships Checkbox static state, focus, geometry and decorative glyph utilities', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const rule = (selector) => cssBlock(css, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^{}]*\\{`));
+  assert.match(rule(String.raw`.size-4\.5`), /width:\s*calc\(var\(--space-1\)\s*\*\s*4\.5\)/);
+  assert.match(rule('.size-3'), /width:\s*var\(--space-3\)/);
+  assert.match(rule('.inline-grid'), /display:\s*inline-grid/);
+  assert.match(rule('.box-border'), /box-sizing:\s*border-box/);
+  assert.match(rule('.border-solid'), /border-style:\s*solid/);
+  assert.match(rule('.p-0'), /padding:\s*(?:0|0px|var\(--space-0\))/);
+  for (const state of ['checked', 'indeterminate']) {
+    const prefix = `.data-\\[state\\=${state}\\]\\:`;
+    const fill = rule(`${prefix}bg-\\[image\\:var\\(--gradient-btn-primary\\)\\]`);
+    assert.ok(fill.includes(`data-state=\"${state}\"`) || fill.includes(`data-state=${state}`));
+    assert.match(fill, /background-image:\s*var\(--gradient-btn-primary\)/);
+    assert.match(
+      rule(`${prefix}shadow-\\[var\\(--shadow-btn-primary\\)\\]`),
+      /--tw-shadow:\s*var\(--shadow-btn-primary\)/
+    );
+    const focus = rule(`${prefix}focus-visible\\:shadow-\\[var\\(--shadow-focus\\)\\]`);
+    assert.match(focus, /:focus-visible/);
+    assert.match(focus, /--tw-shadow:\s*var\(--shadow-focus\)/);
+  }
+  assert.match(rule(String.raw`.disabled\:opacity-45`), /:disabled[\s\S]*opacity:\s*(?:45%|0?\.45)/);
+  assert.match(
+    rule(String.raw`.aria-invalid\:data-\[state\=unchecked\]\:border-status-danger`),
+    /border-color:\s*var\(--color-status-danger/
+  );
+  for (const [state, child] of [
+    ['checked', 'last'],
+    ['indeterminate', 'first']
+  ]) {
+    const glyph = rule(`.data-\\[state\\=${state}\\]\\:\\[\\&\\>svg\\:${child}-child\\]\\:hidden`);
+    assert.match(glyph, new RegExp(`svg:${child}-child`));
+    assert.match(glyph, /display:\s*none/);
+  }
+  assert.doesNotMatch(css, /\.eg-checkbox\s*[,{]/, 'Checkbox has no stylesheet or public part selectors');
+});
+
+test('UI Checkbox SSR retains binary/mixed semantics, private recipes and form integration', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  for (const [checked, aria, state] of [
+    [false, 'false', 'unchecked'],
+    [true, 'true', 'checked'],
+    ['indeterminate', 'mixed', 'indeterminate']
+  ]) {
+    const html = renderToString(
+      createElement(
+        'form',
+        null,
+        createElement(exported.Checkbox, {
+          'aria-label': 'Select rows',
+          checked,
+          name: 'rows',
+          value: 'selected',
+          required: true
+        })
+      )
+    );
+    for (const text of [
+      '<button',
+      'eg-checkbox',
+      'role="checkbox"',
+      `aria-checked="${aria}"`,
+      `data-state="${state}"`,
+      'type="checkbox"',
+      'name="rows"',
+      'value="selected"',
+      'required=""'
+    ]) {
+      assert.ok(html.includes(text), `Checkbox SSR ${state} must render ${text}`);
+    }
+    if (checked) {
+      assert.match(html, /aria-hidden="true"/);
+      assert.equal((html.match(/<svg /g) ?? []).length, 2, 'Radix state utilities select the visible decorative glyph');
+    } else {
+      assert.doesNotMatch(html, /<svg /);
+    }
+  }
+  for (const name of ['checkboxVariants', 'checkboxIndicatorVariants', 'checkboxIconVariants', 'useCheckbox']) {
+    assert.equal(exported[name], undefined, `${name} stays private`);
+  }
 });
 
 for (const subpath of ['./tokens.css', './theme.css', './native.css']) {
