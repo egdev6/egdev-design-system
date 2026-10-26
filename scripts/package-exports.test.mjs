@@ -362,6 +362,58 @@ test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet ru
   assert.equal(kbdRules(css), kbdRules(legacy), 'Kbd has no stylesheet: its marker carries no new rule');
 });
 
+test('UI ships the Textarea well, sheet and state utilities without a Textarea-specific stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  assert.match(rule('.min-h-30'), /min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*30\)\s*;/);
+  assert.match(rule('.min-h-70'), /min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*70\)\s*;/);
+  assert.match(rule('.resize-y'), /resize:\s*vertical\s*;/);
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule('.bg-primitive-neutral-950'), /background-color:\s*var\(--color-primitive-neutral-950[,)]/);
+  assert.match(
+    rule(String.raw`.bg-\[image\:var\(--gradient-sheen\)\]`),
+    /background-image:\s*var\(--gradient-sheen\)\s*;/
+  );
+  assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)\s*;/);
+  assert.match(rule('.text-code'), /font-size:\s*var\(--text-code[,)]/);
+  assert.match(rule('.ease-out'), /transition-timing-function:\s*var\(--ease-out[,)]/);
+  assert.match(
+    rule(String.raw`.duration-\[var\(--duration-fast\)\]`),
+    /transition-duration:\s*var\(--duration-fast\)\s*;/
+  );
+  assert.match(rule(String.raw`.disabled\:opacity-45:disabled`), /opacity:\s*45%\s*;/);
+  assert.match(
+    cssBlock(utilities, /@media \(prefers-reduced-motion: reduce\)\s*\{(?=[^@]*\.motion-reduce\\:transition-none)/),
+    /\.motion-reduce\\:transition-none\s*\{\s*transition-property:\s*none\s*;/
+  );
+  // Invalid wins over the hover, read-only hover and focus border because it is emitted later (D7).
+  const at = (selector) => {
+    const index = utilities.indexOf(selector);
+    assert.ok(index >= 0, `Missing Textarea utility ${selector}`);
+    return index;
+  };
+  const invalid = at(String.raw`.aria-invalid\:border-status-danger[aria-invalid="true"]`);
+  const invalidHover = at(String.raw`.aria-invalid\:hover\:border-status-danger[aria-invalid="true"]:hover`);
+  const invalidFocus = at(
+    String.raw`.aria-invalid\:focus-visible\:border-status-danger[aria-invalid="true"]:focus-visible`
+  );
+  const readOnlyHover = at(String.raw`.read-only\:hover\:border-border-control:read-only:hover`);
+  for (const earlier of [
+    at(String.raw`.hover\:border-fg-muted:hover`),
+    at(String.raw`.focus-visible\:border-border-brand-strong:focus-visible`)
+  ]) {
+    assert.ok(earlier < invalid, 'Invalid border must follow hover and focus borders');
+  }
+  assert.ok(readOnlyHover < invalidHover, 'Invalid hover must follow the read-only hover reset');
+  assert.ok(invalid < invalidFocus, 'Focused invalid keeps the danger border');
+  // D11 no stylesheet: the marker carries no rule of its own.
+  assert.doesNotMatch(css, /\.eg-textarea[^{]*\{/, 'Textarea has no stylesheet: its marker carries no rule');
+});
+
 test('UI ships the Input well, state and preset utilities without an Input-specific stylesheet rule', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -701,6 +753,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'StatusDot',
       'Surface',
       'Text',
+      'Textarea',
       'VisuallyHidden',
       'cn',
       'labelVariants',
@@ -718,6 +771,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(typeof exported.StatusDot, 'function', 'StatusDot must be a plain function component without a ref API');
   assert.equal(typeof exported.statusDotVariants, 'function', 'StatusDot composition recipe must be a public export');
   assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
+  assert.equal(
+    exported.Textarea?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'Textarea must be a forwardRef component whose ref targets the native textarea (D9)'
+  );
   assert.equal(
     exported.Input?.$$typeof,
     Symbol.for('react.forward_ref'),
@@ -823,6 +881,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'TextProps',
     'TextTone',
     'TextVariant',
+    'Textarea',
+    'TextareaProps',
+    'TextareaVariant',
     'TitleVariant',
     'VisuallyHidden',
     'VisuallyHiddenProps',
@@ -845,6 +906,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'IconSize',
     'Kbd',
     'KbdProps',
+    'Textarea',
+    'TextareaProps',
+    'TextareaVariant',
     'Input',
     'InputProps',
     'InputSize',
@@ -1104,6 +1168,30 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     /^<kbd class="eg-kbd [^"]*"><span aria-hidden="true">⌘K<\/span><span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Command K<\/span><\/kbd>$/
   );
   assert.doesNotMatch(symbolKey, /role=|aria-label=|tabindex=|data-state/);
+  // Textarea: one native textarea root with the public marker first and layout classes last (D9).
+  const textareaHtml = renderToString(
+    createElement(exported.Textarea, {
+      'aria-label': 'Notes',
+      'aria-invalid': true,
+      rows: 3,
+      maxLength: 1250,
+      defaultValue: 'Draft',
+      className: 'mt-2 mt-4'
+    })
+  );
+  assert.match(textareaHtml, /^<textarea [^>]*class="eg-textarea [^"]* mt-4"[^>]*>Draft<\/textarea>$/);
+  for (const text of ['aria-label="Notes"', 'aria-invalid="true"', 'rows="3"', 'maxLength="1250"']) {
+    assert.ok(textareaHtml.includes(text), `Textarea SSR must forward ${text}`);
+  }
+  assert.doesNotMatch(textareaHtml, / mt-2 |variant=|data-state|role=|tabindex=/);
+  for (const [variant, utility] of [
+    ['default', 'bg-surface-0'],
+    ['code', 'bg-primitive-neutral-950'],
+    ['prose', 'bg-surface-1']
+  ]) {
+    const variantHtml = renderToString(createElement(exported.Textarea, { 'aria-label': variant, variant }));
+    assert.ok(variantHtml.includes(utility), `Textarea ${variant} must render ${utility}`);
+  }
   // Input: span.eg-input root, native input with forwarded attributes, className on the root only (D3).
   const field = renderToString(
     createElement(exported.Input, { 'aria-label': 'Title', name: 'title', placeholder: 'Untitled', className: 'w-64' })

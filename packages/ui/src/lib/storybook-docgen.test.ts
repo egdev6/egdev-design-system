@@ -135,6 +135,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/product-mark',
       './atoms/spinner',
       './atoms/status-dot',
+      './atoms/textarea',
       './lib/cn',
       './primitives/aspect-ratio',
       './primitives/divider',
@@ -169,6 +170,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'StatusDot',
       'Surface',
       'Text',
+      'Textarea',
       'VisuallyHidden',
       'cn',
       'labelVariants',
@@ -1192,6 +1194,74 @@ describe('Kbd passive metadata contract', () => {
       expect(props[prop], `Kbd native ${prop} must remain available in autodocs`).toBeDefined();
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick', 'variant', 'size']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('Textarea native control metadata contract', () => {
+  it('annotates exactly the optional variant as a select with the actual default', () => {
+    const file = ast(source('atoms/textarea/types.ts'));
+    const alias = file.statements.find(
+      (node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'TextareaVariant'
+    );
+    expect(alias && ts.isTypeAliasDeclaration(alias) ? alias.type.getText(file) : undefined).toBe(
+      "'default' | 'code' | 'prose'"
+    );
+    const properties = ownProps(file, ['TextareaProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['variant']);
+    const [variant] = properties;
+    expect(variant?.questionToken, 'Textarea.variant stays optional').toBeTruthy();
+    expect(variant?.type?.getText(file)).toBe('TextareaVariant');
+    const tags = variant ? ts.getJSDocTags(variant) : [];
+    const controls = tags.filter((tag) => tag.tagName.text === 'control');
+    expect(controls).toHaveLength(1);
+    expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe('select');
+    const defaultTag = tags.find((tag) => tag.tagName.text === 'default');
+    expect(ts.getTextOfJSDocComment(defaultTag?.comment)).toBe('default');
+    expect(defaults(source('atoms/textarea/types.ts'), true)).toEqual({ variant: 'default' });
+    expect(defaults(source('atoms/textarea/useTextarea.ts'), false)).toEqual({ variant: 'default' });
+  });
+
+  it('omits exactly children from the native textarea props and adds no asChild', () => {
+    const file = ast(source('atoms/textarea/types.ts'));
+    const alias = file.statements.find(
+      (node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'TextareaNativeProps'
+    );
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing TextareaNativeProps declaration');
+    }
+    expect(normalize(alias.type.getText(file))).toBe("Omit<ComponentPropsWithoutRef<'textarea'>, 'children'>");
+    expect(readFileSync(source('atoms/textarea/Textarea.tsx'), 'utf8')).toMatch(
+      /forwardRef<HTMLTextAreaElement, TextareaProps>/
+    );
+  });
+
+  it('extracts the variant enum, its default and only the documented native rows', () => {
+    const doc = parser.parse(source('atoms/textarea/Textarea.tsx')).find((item) => item.displayName === 'Textarea');
+    if (!doc) {
+      throw new Error('Missing docgen for Textarea');
+    }
+    const { props } = doc;
+    expect(props.variant).toMatchObject({ required: false, tags: { control: 'select', default: 'default' } });
+    expect(normalize(props.variant?.defaultValue?.value)).toBe('default');
+    expect(props.variant?.type.name).toBe('enum');
+    for (const prop of [
+      'id',
+      'name',
+      'rows',
+      'placeholder',
+      'disabled',
+      'readOnly',
+      'required',
+      'maxLength',
+      'aria-invalid',
+      'aria-describedby',
+      'className'
+    ]) {
+      expect(props[prop], `Textarea native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick', 'size']) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);

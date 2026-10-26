@@ -171,6 +171,16 @@
         }
       },
       {
+        "component": "Textarea",
+        "type": "TextareaVariant (default|code|prose)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/textarea/types.ts",
+          "symbol": "TextareaProps",
+          "revision": "sha256:9c34b2b174e78bfb667ce1b0f27dc41b8b4432e88099b65699928a5782a667c7"
+        }
+      },
+      {
         "component": "Input",
         "type": "InputVariant (default|code)",
         "status": "existing",
