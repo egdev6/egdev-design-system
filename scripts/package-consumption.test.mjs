@@ -29,8 +29,8 @@ function run(cwd, command, args, timeout) {
 
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
-import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Kbd, Label, Logo, ProductMark, Select, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
+import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
+import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Input, Kbd, Label, Logo, ProductMark, Select, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, Textarea, VisuallyHidden, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -41,6 +41,10 @@ import type {
   IconName,
   IconProps,
   IconSize,
+  InputProps,
+  InputSize,
+  InputType,
+  InputVariant,
   KbdProps,
   LabelProps,
   LabelVariant,
@@ -73,6 +77,8 @@ import type {
   SurfaceProps,
   SurfaceRadius,
   SurfaceTone,
+  TextareaProps,
+  TextareaVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
 const slotProps: SlotProps = { 'aria-label': 'Composed documentation' };
@@ -196,6 +202,54 @@ export function KbdSamples() {
     createElement(Kbd, { children: 'Ctrl', id: 'kbd-ctrl' }), ' + ',
     createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
     createElement(Kbd, kbdNative));
+}
+// Textarea: a bare native control; the consumer names it and owns value state (D1, D9).
+export const textareaRef = createRef<HTMLTextAreaElement>();
+export const textareaChanges: string[] = [];
+const textareaVariant: TextareaVariant = 'code';
+const recordTextareaChange: TextareaProps['onChange'] = (event) => {
+  textareaChanges.push(event.target.value);
+};
+export const textareaNative: TextareaProps = {
+  id: 'textarea-notes', name: 'notes', rows: 3, maxLength: 1250, placeholder: 'Write a note',
+  'aria-describedby': 'textarea-hint', className: 'mt-2 mt-4 consumer-textarea'
+};
+export function TextareaSamples() {
+  return createElement('section', { 'aria-label': 'Text entry' },
+    createElement('label', { htmlFor: 'textarea-notes' }, 'First comment'),
+    createElement(Textarea, {
+      ...textareaNative, ref: textareaRef, defaultValue: 'Draft',
+      onChange: recordTextareaChange
+    }),
+    createElement('p', { id: 'textarea-hint' }, 'Shown below the post'),
+    createElement(Textarea, { id: 'textarea-code', 'aria-label': 'Custom CSS', variant: textareaVariant }),
+    createElement(Textarea, { id: 'textarea-prose', 'aria-label': 'Long-form draft', variant: 'prose' }),
+    createElement(Textarea, { id: 'textarea-invalid', 'aria-label': 'Invalid notes', 'aria-invalid': true }),
+    createElement(Textarea, { id: 'textarea-disabled', 'aria-label': 'Archived notes', disabled: true }),
+    createElement(Textarea, { id: 'textarea-readonly', 'aria-label': 'Published notes', readOnly: true, defaultValue: 'Published' }));
+}
+export const inputRef = createRef<HTMLInputElement>();
+export const inputChanges: string[] = [];
+const inputSize: InputSize = 'sm';
+const inputVariant: InputVariant = 'code';
+const inputType: InputType = 'search';
+export const inputNative: InputProps = {
+  id: 'input-native', name: 'slug', placeholder: 'project-slug', autoComplete: 'off', required: true,
+  'aria-describedby': 'input-native-hint', className: 'w-64 w-80 consumer-input'
+};
+export function InputSamples({ inputValue = 'Launch notes' }: { inputValue?: string }) {
+  // Field-style composition: the consumer owns the label, hint and error text (D1, D7).
+  return createElement('section', { 'aria-label': 'Text entry' },
+    createElement('label', { htmlFor: 'input-title' }, 'Post title'),
+    createElement(Input, { id: 'input-title', ref: inputRef, value: inputValue,
+      onChange: (event: ChangeEvent<HTMLInputElement>) => { inputChanges.push(event.target.value); } }),
+    createElement(Input, inputNative),
+    createElement('p', { id: 'input-native-hint' }, 'Lowercase letters only.'),
+    createElement(Input, { id: 'input-search', 'aria-label': 'Search', type: inputType, size: inputSize, variant: inputVariant, icon }),
+    createElement(Input, { id: 'input-invalid', 'aria-label': 'Post text', 'aria-invalid': true, 'aria-describedby': 'input-error' }),
+    createElement('p', { id: 'input-error' }, 'Keep the post under 280 characters.'),
+    createElement(Input, { id: 'input-disabled', 'aria-label': 'Locked', disabled: true, defaultValue: 'fixed' }),
+    createElement(Input, { id: 'input-readonly', 'aria-label': 'Token', readOnly: true, defaultValue: 'abc123' }));
 }
 export const logoHome: LogoProps = { href: '#home', label: 'egdev, home', id: 'logo-home', rel: 'home' };
 export const logoNative: LogoProps = { id: 'consumer-logo', title: 'egdev', lang: 'en', className: 'ms-2 consumer-logo' };
@@ -333,7 +387,7 @@ export function DividerSamples({ semantic }: { semantic?: boolean }) {
       ? { orientation: dividerOrientation, decorative: false, className: 'consumer-rule' }
       : { className: 'consumer-rule' }));
 }
-export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, headingLevel, iconName, spinnerLoading, statusDotPulse }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; headingLevel?: HeadingLevel; iconName?: IconName; spinnerLoading?: boolean; statusDotPulse?: boolean } = {}) {
+export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, headingLevel, iconName, spinnerLoading, statusDotPulse, inputValue }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; headingLevel?: HeadingLevel; iconName?: IconName; spinnerLoading?: boolean; statusDotPulse?: boolean; inputValue?: string } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
@@ -351,6 +405,8 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(StatusDotSamples, { pulse: statusDotPulse }),
     createElement(KbdSamples),
+    createElement(TextareaSamples),
+    createElement(InputSamples, { inputValue }),
     createElement(LogoSamples),
     createElement(ProductMarkSamples),
     createElement(SelectSamples),
@@ -450,6 +506,35 @@ const referencedKbd: KbdProps = { children: 'K', ref: createRef<HTMLElement>() }
 const slottedKbd: KbdProps = { children: 'K', asChild: true };
 // @ts-expect-error Kbd has a single flat treatment; there are no variants (D4).
 const variantKbd: KbdProps = { children: 'K', variant: 'raised' };
+// @ts-expect-error Textarea renders its value, never children (D9).
+const childrenTextarea: TextareaProps = { children: 'Draft' };
+// @ts-expect-error Only default, code and prose treatments exist (D2).
+const richTextarea: TextareaProps = { variant: 'rich' };
+// @ts-expect-error There is no size axis in v0.1 (D4).
+const sizedTextarea: TextareaProps = { size: 'sm' };
+// @ts-expect-error Textarea cannot delegate its native root to a child.
+const slottedTextarea: TextareaProps = { asChild: true };
+// @ts-expect-error The forwarded ref targets an HTMLTextAreaElement, not a div.
+const divTextareaRef: ComponentProps<typeof Textarea> = { ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Choice, range and file inputs have their own components (D6).
+const checkboxInput: InputProps = { type: 'checkbox' };
+// @ts-expect-error The own size axis replaces the native size attribute (D5).
+const nativeSizeInput: InputProps = { size: 20 };
+// @ts-expect-error Only md and sm presets exist (D4).
+const largeInput: InputProps = { size: 'lg' };
+// @ts-expect-error The code treatment is named code, not mono (D8).
+const monoInput: InputProps = { variant: 'mono' };
+// @ts-expect-error Invalid is the native aria-invalid attribute, not an own prop (D7).
+const invalidPropInput: InputProps = { invalid: true };
+// @ts-expect-error Change notification is native onChange only (D11).
+const valueChangeInput: InputProps = { onValueChange: () => {} };
+// @ts-expect-error A void input element never accepts children.
+const childInput: InputProps = { children: 'Text' };
+// @ts-expect-error Input has no asChild delegation.
+const slottedInput: InputProps = { asChild: true };
+// @ts-expect-error The forwarded ref targets the native input, not a generic div (D12).
+const wrongInputRef: ComponentProps<typeof Input> = { ref: createRef<HTMLDivElement>() };
+export const inputElementRef: ComponentProps<typeof Input> = { ref: createRef<HTMLInputElement>() };
 // @ts-expect-error ProductMark requires its accessible label (D6).
 const unnamedMark: ProductMarkProps = { monogram: 'M' };
 // @ts-expect-error ProductMark requires its visible monogram (D1).
@@ -900,6 +985,93 @@ function assertKbdCSS(css) {
   assert.match(css, /--tw-border-style:\s*solid/, 'The hairline border style must resolve without Tailwind');
 }
 
+// Textarea ships its well, sheet and state utilities from the token theme; no Textarea stylesheet.
+function assertTextareaCSS(css) {
+  for (const utility of [
+    '.resize-y',
+    '.box-border',
+    '.rounded-md',
+    '.bg-surface-0',
+    '.bg-surface-1',
+    '.bg-primitive-neutral-950',
+    '.border-border-control',
+    '.border-border-hairline',
+    '.font-mono',
+    '.text-code',
+    '.text-body-default',
+    '.text-fg-default'
+  ]) {
+    assert.ok(css.includes(utility), 'Missing Textarea utility ' + utility);
+  }
+  assert.match(
+    css,
+    /\.min-h-30\s*\{[^}]*min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*30\)/,
+    'Textarea well minimum'
+  );
+  assert.match(
+    css,
+    /\.min-h-70\s*\{[^}]*min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*70\)/,
+    'Textarea prose minimum'
+  );
+  assert.match(
+    css,
+    /\.shadow-\\\[var\\\(--shadow-well\\\)\\\]\s*\{[^}]*--tw-shadow:\s*var\(--shadow-well\)/,
+    'Textarea well shadow'
+  );
+  assert.match(
+    css,
+    /\.bg-\\\[image\\:var\\\(--gradient-sheen\\\)\\\]\s*\{[^}]*background-image:\s*var\(--gradient-sheen\)/,
+    'Prose sheen'
+  );
+  assert.match(
+    css,
+    /\.aria-invalid\\:border-status-danger\[aria-invalid="true"\]\s*\{[^}]*border-color:\s*var\(--color-status-danger/,
+    'Invalid border'
+  );
+  assert.match(css, /\.disabled\\:opacity-45:disabled\s*\{[^}]*opacity:\s*45%/, 'Disabled opacity');
+  assert.ok(css.includes('.motion-reduce\\:transition-none'), 'Reduced motion removes the transition');
+  assert.doesNotMatch(css, /\.eg-textarea[^{]*\{/, 'Textarea marker must not become a shipped CSS rule');
+}
+
+// Input ships its Material well, state variants and presets as token utilities; no Input stylesheet.
+function assertInputCSS(css) {
+  for (const utility of [
+    '.border-border-control',
+    '.bg-primitive-neutral-950',
+    '.font-mono',
+    '.text-code',
+    '.text-body-default',
+    '.placeholder\\:text-fg-muted',
+    '.hover\\:border-fg-muted',
+    '.focus-visible\\:border-border-brand-strong',
+    '.aria-invalid\\:border-status-danger',
+    '.read-only\\:hover\\:border-border-control',
+    '.disabled\\:cursor-not-allowed',
+    '.motion-reduce\\:transition-none'
+  ]) {
+    assert.ok(css.includes(utility), 'Missing Input utility ' + utility);
+  }
+  assert.match(css, /--tw-shadow:\s*var\(--shadow-well\),\s*var\(--shadow-ring-brand\)/, 'Input focus ring must ship');
+  assert.match(
+    css,
+    /\.min-h-11\s*\{[^}]*min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*11\)/,
+    'Input md height'
+  );
+  assert.match(
+    css,
+    /\.min-h-9\s*\{[^}]*min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)/,
+    'Input sm height'
+  );
+  assert.match(
+    css,
+    /\.pl-9\s*\{[^}]*padding-left:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)/,
+    'Input icon offset'
+  );
+  assert.match(css, /:has\(:is\(:disabled\)\)\s*\{[^}]*opacity:\s*45%/, 'Input disabled dimming');
+  assert.match(css, /transition-duration:\s*var\(--duration-fast\)/, 'Input transition duration token');
+  assert.doesNotMatch(css, /\.eg-input[^{]*\{/, 'Input has no stylesheet: its marker carries no rule');
+}
+
 // ProductMark ships the product-mark Material and link focus utilities from the token theme; no stylesheet.
 function assertProductMarkCSS(css) {
   for (const utility of [
@@ -1010,6 +1182,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Gauge',
   'Heading',
   'Icon',
+  'Input',
   'Kbd',
   'Label',
   'Logo',
@@ -1024,6 +1197,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'StatusDot',
   'Surface',
   'Text',
+  'Textarea',
   'VisuallyHidden',
   'cn',
   'labelVariants',
@@ -1038,6 +1212,8 @@ ${assertSpinnerCSS.toString()}
 ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertTextareaCSS.toString()}
+${assertInputCSS.toString()}
 ${assertProductMarkCSS.toString()}
 ${assertSelectCSS.toString()}
 assertSelectCSS(shippedStyles);
@@ -1049,6 +1225,8 @@ assertSpinnerCSS(shippedStyles);
 assertLogoCSS(shippedStyles);
 assertStatusDotCSS(shippedStyles);
 assertKbdCSS(shippedStyles);
+assertTextareaCSS(shippedStyles);
+assertInputCSS(shippedStyles);
 assertProductMarkCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
@@ -1353,6 +1531,67 @@ for (const frame of [square, wide]) {
   assert.ok(nativeKbd.className.startsWith('eg-kbd '), 'The public marker leads the root classes');
   assert.ok(nativeKbd.className.endsWith(' ms-2 consumer-kbd'), 'Consumer layout classes merge last');
   assert.ok(!nativeKbd.className.split(' ').includes('ms-1'), 'Conflicting margin utilities resolve through cn()');
+  const notes = document.getElementById('textarea-notes');
+  assert.ok(notes, 'SSR must render Textarea samples');
+  assert.equal(notes.tagName, 'TEXTAREA', 'Textarea renders one native textarea root');
+  assert.equal(notes.value, 'Draft');
+  assert.equal(notes.getAttribute('rows'), '3');
+  assert.equal(notes.getAttribute('maxlength'), '1250');
+  assert.equal(notes.getAttribute('aria-describedby'), 'textarea-hint');
+  assert.ok(notes.className.startsWith('eg-textarea '), 'The public marker leads the root classes');
+  assert.ok(notes.className.endsWith(' mt-4 consumer-textarea'), 'Consumer layout classes merge last');
+  assert.ok(!notes.className.split(' ').includes('mt-2'), 'Conflicting margin utilities resolve through cn()');
+  assert.equal(document.querySelector('label[for="textarea-notes"]').textContent, 'First comment');
+  for (const [id, utility] of [['textarea-notes', 'bg-surface-0'], ['textarea-code', 'bg-primitive-neutral-950'], ['textarea-prose', 'bg-surface-1']]) {
+    assert.ok(document.getElementById(id).classList.contains(utility), id + ' must render ' + utility);
+  }
+  assert.equal(document.getElementById('textarea-invalid').getAttribute('aria-invalid'), 'true');
+  assert.equal(document.getElementById('textarea-disabled').hasAttribute('disabled'), true);
+  assert.equal(document.getElementById('textarea-readonly').hasAttribute('readonly'), true);
+  for (const node of document.querySelectorAll('textarea.eg-textarea')) {
+    assert.equal(node.hasAttribute('variant'), false);
+    assert.equal(node.hasAttribute('data-state'), false);
+    assert.equal(node.getAttribute('role'), null);
+  }
+  const titleInput = document.getElementById('input-title');
+  assert.ok(titleInput, 'SSR must render Input samples');
+  assert.equal(titleInput.tagName, 'INPUT');
+  assert.equal(titleInput.getAttribute('type'), 'text', 'Input defaults to type text');
+  assert.equal(titleInput.getAttribute('value'), 'Launch notes');
+  assert.equal(titleInput.parentElement.tagName, 'SPAN');
+  assert.ok(titleInput.parentElement.className.startsWith('eg-input '), 'The public marker leads the root classes');
+  assert.equal(titleInput.parentElement.children.length, 1, 'No icon wrapper without an icon');
+  assert.equal(document.querySelector('label[for="input-title"]').textContent, 'Post title');
+  for (const name of ['min-h-11', 'px-3', 'py-2', 'text-body-default', 'bg-surface-0', 'border-border-control', 'shadow-[var(--shadow-well)]']) {
+    assert.ok(titleInput.classList.contains(name), 'Default Input must carry ' + name);
+  }
+  const nativeInput = document.getElementById('input-native');
+  for (const [attribute, value] of [['name', 'slug'], ['placeholder', 'project-slug'], ['autocomplete', 'off'], ['aria-describedby', 'input-native-hint']]) {
+    assert.equal(nativeInput.getAttribute(attribute), value, 'Input must forward ' + attribute);
+  }
+  assert.equal(nativeInput.hasAttribute('required'), true);
+  assert.ok(nativeInput.parentElement.className.endsWith(' w-80 consumer-input'), 'Consumer layout classes merge last on the root');
+  assert.ok(!nativeInput.parentElement.classList.contains('w-64') && !nativeInput.parentElement.classList.contains('w-full'));
+  assert.ok(!nativeInput.classList.contains('w-80') && !nativeInput.classList.contains('consumer-input'), 'className never reaches the control');
+  const searchInput = document.getElementById('input-search');
+  assert.equal(searchInput.getAttribute('type'), 'search');
+  assert.equal(searchInput.hasAttribute('size'), false, 'The own size axis never reaches the native size attribute');
+  const searchIcon = searchInput.previousElementSibling;
+  assert.equal(searchIcon.getAttribute('aria-hidden'), 'true', 'The leading icon is decorative');
+  assert.equal(searchIcon.firstElementChild.tagName.toLowerCase(), 'svg');
+  for (const name of ['min-h-9', 'pl-9', 'font-mono', 'text-code', 'bg-primitive-neutral-950']) {
+    assert.ok(searchInput.classList.contains(name), 'sm/code/icon Input must carry ' + name);
+  }
+  for (const name of ['font-sans', 'bg-surface-0', 'text-label-default']) {
+    assert.ok(!searchInput.classList.contains(name), 'The code treatment must replace ' + name);
+  }
+  assert.equal(document.getElementById('input-invalid').getAttribute('aria-invalid'), 'true');
+  assert.equal(document.getElementById('input-disabled').hasAttribute('disabled'), true);
+  assert.equal(document.getElementById('input-readonly').hasAttribute('readonly'), true);
+  for (const control of document.querySelectorAll('.eg-input > input')) {
+    assert.equal(control.hasAttribute('data-state'), false, 'Input states stay native, never mirrored');
+    assert.equal(control.getAttribute('role'), null);
+  }
   const brand = document.querySelector('section[aria-label="Brand logos"]');
   assert.ok(brand, 'SSR must render Logo samples');
   const logos = [...brand.querySelectorAll('.eg-logo')];
@@ -1553,7 +1792,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, selectRef } = await import('./consumer.ts');
+const { App, aspectWideRef, hiddenNoteRef, inputChanges, inputRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, textareaChanges, textareaRef } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -1702,6 +1941,40 @@ try {
   }
   assert.equal(document.getElementById('kbd-command').children[0].getAttribute('aria-hidden'), 'true');
   stage('kbd:passive:complete');
+  stage('textarea:native:start');
+  const notesNode = document.getElementById('textarea-notes');
+  assert.ok(textareaRef.current === notesNode, 'Textarea must forward its HTMLTextAreaElement ref');
+  notesNode.focus();
+  assert.ok(document.activeElement === notesNode, 'Textarea must be focusable');
+  const setValue = Object.getOwnPropertyDescriptor(dom.window.HTMLTextAreaElement.prototype, 'value').set;
+  await act(async () => {
+    setValue.call(notesNode, 'Draft\\nSecond line');
+    notesNode.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  assert.deepEqual(textareaChanges, ['Draft\\nSecond line'], 'Native onChange must report the multi-line value');
+  assert.equal(document.getElementById('textarea-disabled').disabled, true, 'Disabled Textarea leaves the Tab order');
+  const readOnlyNode = document.getElementById('textarea-readonly');
+  readOnlyNode.focus();
+  assert.ok(document.activeElement === readOnlyNode, 'Read-only Textarea stays focusable');
+  stage('textarea:native:complete');
+  stage('input:controlled:start');
+  const titleControl = () => document.getElementById('input-title');
+  assert.ok(inputRef.current instanceof dom.window.HTMLInputElement, 'The forwarded ref must expose an HTMLInputElement');
+  assert.ok(inputRef.current === titleControl(), 'The ref must target the native input, not the root');
+  assert.equal(titleControl().value, 'Launch notes');
+  await act(async () => root.render(createElement(App, { gaugeValue: 42.5, inputValue: 'Release notes' })));
+  assert.ok(inputRef.current === titleControl(), 'Controlled updates must preserve the same input');
+  assert.equal(titleControl().value, 'Release notes', 'Controlled value must follow the consumer');
+  titleControl().focus();
+  assert.ok(document.activeElement === titleControl(), 'The text control must be focusable');
+  const disabledControl = document.getElementById('input-disabled');
+  disabledControl.focus();
+  assert.ok(document.activeElement !== disabledControl, 'A disabled Input must not take focus');
+  const readOnlyControl = document.getElementById('input-readonly');
+  readOnlyControl.focus();
+  assert.ok(document.activeElement === readOnlyControl, 'A read-only Input stays focusable');
+  assert.equal(inputChanges.length, 0, 'Rerendering a controlled value emits no change events');
+  stage('input:controlled:complete');
   const homeLink = document.getElementById('logo-home');
   homeLink.focus();
   assert.ok(document.activeElement === homeLink, 'The linked Logo must be a native tab stop');
@@ -1832,7 +2105,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1921,6 +2194,8 @@ ${assertSpinnerCSS.toString()}
 ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertTextareaCSS.toString()}
+${assertInputCSS.toString()}
 ${assertProductMarkCSS.toString()}
 ${assertSelectCSS.toString()}
 assertSelectCSS(emitted);
@@ -1937,6 +2212,8 @@ assertSpinnerCSS(emitted);
 assertLogoCSS(emitted);
 assertStatusDotCSS(emitted);
 assertKbdCSS(emitted);
+assertTextareaCSS(emitted);
+assertInputCSS(emitted);
 assertProductMarkCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
@@ -1982,6 +2259,8 @@ assertSpinnerCSS(twCss);
 assertLogoCSS(twCss);
 assertStatusDotCSS(twCss);
 assertKbdCSS(twCss);
+assertTextareaCSS(twCss);
+assertInputCSS(twCss);
 assertProductMarkCSS(twCss);
 assertSelectCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
