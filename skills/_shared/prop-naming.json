@@ -230,6 +230,16 @@
           "symbol": "SpinnerProps",
           "revision": "sha256:15beb1c08eb7851cb4b7c233fe4b15331b4fb193d7a11677189089f6615c3717"
         }
+      },
+      {
+        "component": "Kbd",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/kbd/types.ts",
+          "symbol": "KbdProps",
+          "revision": "sha256:1c6757b44bd0bff150128b8ccd9d4ee6b930b3d432b42a4dafe8c992d63a3de9"
+        }
       }
     ]
   },

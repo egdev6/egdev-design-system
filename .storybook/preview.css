@@ -5,6 +5,7 @@
 
 /* Example layout utilities belong to Storybook, not the production UI stylesheet. */
 @source "../packages/ui/src/atoms/gauge/Gauge.stories.tsx";
+@source "../packages/ui/src/atoms/kbd/Kbd.stories.tsx";
 @source "../packages/ui/src/atoms/spinner/Spinner.stories.tsx";
 @source "../packages/ui/src/primitives/aspect-ratio/AspectRatio.stories.tsx";
 @source "../packages/ui/src/primitives/divider/Divider.stories.tsx";

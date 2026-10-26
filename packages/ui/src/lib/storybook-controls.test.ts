@@ -17,7 +17,8 @@ const components = [
   ['Surface', 'primitives/surface'],
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
-  ['Spinner', 'atoms/spinner']
+  ['Spinner', 'atoms/spinner'],
+  ['Kbd', 'atoms/kbd']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -76,6 +77,7 @@ const expected: Record<string, Record<string, string | false>> = {
   visuallyhidden: { children: false, asChild: 'boolean' },
   skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
   spinner: { label: 'text', size: 'select' },
+  kbd: { children: 'text', label: 'text' },
   gauge: {
     label: 'text',
     value: 'number',
@@ -92,6 +94,7 @@ const ownPropCounts: Record<string, number> = {
   gauge: 8,
   skeleton: 3,
   spinner: 2,
+  kbd: 2,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,
@@ -412,6 +415,24 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Spinner', false).argTypes[prop]);
     }
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Kbd required children and optional label text rows without defaults or extra rows', () => {
+    const { argTypes, args } = story('Kbd');
+    expect(argTypes.children?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.children?.control).toEqual({ type: 'text' });
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.label?.control).toEqual({ type: 'text' });
+    for (const prop of ['children', 'label']) {
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+    }
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'className']) {
+      expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
+    }
+    for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

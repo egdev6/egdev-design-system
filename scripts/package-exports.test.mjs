@@ -266,6 +266,27 @@ test('UI ships the Spinner icon-scale, stroke and canonical spin utilities with 
   assert.doesNotMatch(css, /\.eg-spinner[^{]*\{/, 'Spinner has no stylesheet: its marker carries no rule');
 });
 
+test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  assert.match(rule('.inline-block'), /display:\s*inline-block\s*;/);
+  assert.match(rule('.whitespace-nowrap'), /white-space:\s*nowrap\s*;/);
+  assert.match(rule('.border'), /border-width:\s*1px\s*;/);
+  assert.match(rule('.border-border-subtle'), /border-color:\s*var\(--color-border-subtle[,)]/);
+  assert.match(rule(String.raw`.px-1\.5`), /padding-inline:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*1\.5\)\s*;/);
+  assert.match(rule(String.raw`.py-0\.5`), /padding-block:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*0\.5\)\s*;/);
+  // The hairline needs Tailwind's border-style initial value outside a Tailwind consumer.
+  assert.match(css, /@property --tw-border-style\s*\{[^}]*initial-value:\s*solid/);
+  // D6 no stylesheet: the only .eg-kbd rules are the retained legacy ones (components layer, below utilities).
+  const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
+  const kbdRules = (text) => (text.replace(/\/\*[\s\S]*?\*\//g, '').match(/\.eg-kbd[^{]*\{/g) ?? []).length;
+  assert.equal(kbdRules(css), kbdRules(legacy), 'Kbd has no stylesheet: its marker carries no new rule');
+});
+
 test('UI ships the approved Gauge geometry in the components layer', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const components = cssBlock(css, /@layer components\s*\{/);
@@ -378,6 +399,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Cluster',
       'Divider',
       'Gauge',
+      'Kbd',
       'Label',
       'Portal',
       'Skeleton',
@@ -398,6 +420,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
   assert.equal(typeof exported.Skeleton, 'function', 'Skeleton must be a named root export');
   assert.equal(typeof exported.Spinner, 'function', 'Spinner must be a plain function component without a ref API');
+  assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
   assert.equal(
     exported.VisuallyHidden?.$$typeof,
     Symbol.for('react.forward_ref'),
@@ -435,6 +458,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'GaugeProps',
     'GaugeSize',
     'GaugeState',
+    'Kbd',
+    'KbdProps',
     'Label',
     'LabelProps',
     'LabelVariant',
@@ -475,6 +500,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'GaugeProps',
     'GaugeState',
     'GaugeSize',
+    'Kbd',
+    'KbdProps',
     'AspectRatio',
     'AspectRatioProps',
 
@@ -616,6 +643,22 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     const sized = renderToString(createElement(exported.Spinner, { size }));
     assert.ok(sized.includes(`class="eg-spinner inline-flex shrink-0 ${utility}"`), `Spinner ${size} preset`);
   }
+  // Kbd: one native kbd per key; a label hides the glyph and adds hidden spoken text (D2).
+  const plainKey = renderToString(createElement(exported.Kbd, { children: 'Esc', id: 'escape-key' }));
+  assert.equal(
+    plainKey,
+    '<kbd id="escape-key" class="eg-kbd inline-block whitespace-nowrap rounded-sm border border-border-subtle px-1.5 py-0.5 font-sans text-label-default text-fg-secondary">Esc</kbd>'
+  );
+  assert.equal(
+    renderToString(createElement(exported.Kbd, { children: 'Ctrl', label: '' })).includes('aria-hidden'),
+    false
+  );
+  const symbolKey = renderToString(createElement(exported.Kbd, { children: '⌘K', label: 'Command K' }));
+  assert.match(
+    symbolKey,
+    /^<kbd class="eg-kbd [^"]*"><span aria-hidden="true">⌘K<\/span><span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Command K<\/span><\/kbd>$/
+  );
+  assert.doesNotMatch(symbolKey, /role=|aria-label=|tabindex=|data-state/);
   const geometry = [
     ['line', 'sm', 'h-3', 'rounded-sm'],
     ['line', 'md', 'h-4', 'rounded-sm'],

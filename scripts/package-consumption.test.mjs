@@ -29,8 +29,8 @@ function run(cwd, command, args, timeout) {
 
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
-import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Label, Skeleton, Slot, Slottable, Spinner, Stack, Surface, VisuallyHidden, surfaceVariants } from '@egdev/ui';
+import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
+import { AspectRatio, Cluster, Divider, Gauge, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, VisuallyHidden } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -38,6 +38,7 @@ import type {
   GaugeProps,
   GaugeState,
   GaugeSize,
+  KbdProps,
   LabelProps,
   LabelVariant,
   SkeletonProps,
@@ -153,6 +154,18 @@ export function SpinnerSamples({ loading = true }: { loading?: boolean }) {
       loading ? createElement(Spinner, { size: 'sm' }) : null, 'Saving draft'),
     createElement(Spinner, spinnerNative));
 }
+export const kbdSymbol: KbdProps = { children: '⌘K', label: 'Command K', id: 'kbd-command' };
+export const kbdNative: KbdProps = {
+  children: 'Esc', id: 'kbd-native', title: 'Close dialog', className: 'ms-1 ms-2 consumer-kbd'
+};
+export function KbdSamples() {
+  // One Kbd per key; the consumer composes combos with plain text separators (D3).
+  return createElement('p', { id: 'kbd-hint' },
+    'Press ', createElement(Kbd, kbdSymbol), ' or ',
+    createElement(Kbd, { children: 'Ctrl', id: 'kbd-ctrl' }), ' + ',
+    createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
+    createElement(Kbd, kbdNative));
+}
 export function VisuallyHiddenSamples() {
   return createElement('section', { 'aria-label': 'Hidden support content' },
     createElement(VisuallyHidden, { ...hiddenNote, ref: hiddenNoteRef }),
@@ -225,6 +238,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(LabelSamples),
     createElement(SkeletonSamples),
     createElement(SpinnerSamples, { loading: spinnerLoading }),
+    createElement(KbdSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -267,6 +281,18 @@ const numericSpinner: SpinnerProps = { size: 24 };
 const invalidSpinner: SpinnerProps = { size: 'xl' };
 // @ts-expect-error Color is inherited through currentColor; there is no tone prop (D5).
 const tonedSpinner: SpinnerProps = { tone: 'brand' };
+// @ts-expect-error Kbd key text is required.
+const missingKbdText: KbdProps = { label: 'Command K' };
+// @ts-expect-error Kbd children are plain text, not elements.
+const elementKbd: KbdProps = { children: createElement('span', null, 'K') };
+// @ts-expect-error Kbd never renders markup.
+const markupKbd: KbdProps = { children: 'K', dangerouslySetInnerHTML: { __html: '<b>K</b>' } };
+// @ts-expect-error Kbd has no public ref API (D5).
+const referencedKbd: KbdProps = { children: 'K', ref: createRef<HTMLElement>() };
+// @ts-expect-error Kbd cannot delegate its root to a child.
+const slottedKbd: KbdProps = { children: 'K', asChild: true };
+// @ts-expect-error Kbd has a single flat treatment; there are no variants (D4).
+const variantKbd: KbdProps = { children: 'K', variant: 'raised' };
 // @ts-expect-error Hidden content is required, not optional.
 const missingHiddenChildren: VisuallyHiddenProps = { id: 'orphan-hint' };
 // @ts-expect-error VisuallyHidden inherits span props; the anchor-only href is rejected.
@@ -543,6 +569,33 @@ function assertSkeletonCSS(css) {
   assert.doesNotMatch(css, /\.eg-skeleton[^{]*\{[^}]*(?:animation|transition):/, 'Skeleton marker must stay static');
 }
 
+// Kbd ships its flat token utilities and the hairline border-style initial value; no Kbd stylesheet.
+function assertKbdCSS(css) {
+  for (const utility of [
+    '.inline-block',
+    '.whitespace-nowrap',
+    '.rounded-sm',
+    '.border-border-subtle',
+    '.font-sans',
+    '.text-label-default',
+    '.text-fg-secondary'
+  ]) {
+    assert.ok(css.includes(utility), 'Missing Kbd utility ' + utility);
+  }
+  assert.match(css, /\.border\s*\{[^}]*border-width:\s*1px/, 'Kbd hairline must ship');
+  assert.match(
+    css,
+    /\.px-1\\\.5\s*\{[^}]*padding-inline:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*1\.5\)/,
+    'Kbd inline padding'
+  );
+  assert.match(
+    css,
+    /\.py-0\\\.5\s*\{[^}]*padding-block:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*0\.5\)/,
+    'Kbd block padding'
+  );
+  assert.match(css, /--tw-border-style:\s*solid/, 'The hairline border style must resolve without Tailwind');
+}
+
 // Spinner ships Icon-scale presets, inherited stroke utilities and the canonical spin token with keyframes.
 function assertSpinnerCSS(css) {
   for (const utility of [
@@ -606,6 +659,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Cluster',
   'Divider',
   'Gauge',
+  'Kbd',
   'Label',
   'Portal',
   'Skeleton',
@@ -623,10 +677,12 @@ ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
+${assertKbdCSS.toString()}
 assertGaugeCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assertSkeletonCSS(shippedStyles);
 assertSpinnerCSS(shippedStyles);
+assertKbdCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -857,6 +913,34 @@ for (const frame of [square, wide]) {
   assert.equal(nativeSpinner.getAttribute('title'), 'Uploading');
   assert.equal(nativeSpinner.getAttribute('lang'), 'en');
   assert.ok(nativeSpinner.className.endsWith('ms-2 consumer-spinner'), 'Consumer layout classes merge last');
+  const kbdHint = document.getElementById('kbd-hint');
+  assert.ok(kbdHint, 'SSR must render Kbd samples');
+  const keys = [...kbdHint.querySelectorAll('kbd.eg-kbd')];
+  assert.equal(keys.length, 4, 'One native kbd per key');
+  assert.equal(kbdHint.textContent, 'Press ⌘KCommand K or Ctrl + K to search. Esc');
+  const commandKey = document.getElementById('kbd-command');
+  assert.equal(commandKey.children.length, 2, 'A labelled key renders a hidden glyph and hidden spoken text');
+  assert.equal(commandKey.children[0].getAttribute('aria-hidden'), 'true');
+  assert.equal(commandKey.children[0].textContent, '⌘K');
+  assert.equal(commandKey.children[1].textContent, 'Command K');
+  assert.equal(commandKey.children[1].hasAttribute('aria-hidden'), false);
+  assert.ok(commandKey.children[1].getAttribute('style').includes('clip:rect(0, 0, 0, 0)'), 'Spoken name is visually hidden');
+  for (const id of ['kbd-ctrl', 'kbd-k']) {
+    const plain = document.getElementById(id);
+    assert.equal(plain.children.length, 0, 'Plain and empty-label keys read their text as-is');
+    assert.equal(plain.querySelector('[aria-hidden]'), null);
+  }
+  for (const key of keys) {
+    assert.equal(key.getAttribute('role'), null);
+    assert.equal(key.getAttribute('aria-label'), null);
+    assert.equal(key.getAttribute('tabindex'), null);
+    assert.equal(key.hasAttribute('data-state'), false);
+  }
+  const nativeKbd = document.getElementById('kbd-native');
+  assert.equal(nativeKbd.getAttribute('title'), 'Close dialog');
+  assert.ok(nativeKbd.className.startsWith('eg-kbd '), 'The public marker leads the root classes');
+  assert.ok(nativeKbd.className.endsWith(' ms-2 consumer-kbd'), 'Consumer layout classes merge last');
+  assert.ok(!nativeKbd.className.split(' ').includes('ms-1'), 'Conflicting margin utilities resolve through cn()');
   const tokenStack = document.querySelector('.eg-stack[aria-label="Token sections"]');
   assert.ok(tokenStack, 'SSR must render Stack samples');
   assert.ok(tokenStack.classList.contains('flex-col') && tokenStack.classList.contains('flex-nowrap'));
@@ -1075,6 +1159,15 @@ try {
   assert.equal(busyHost().textContent, 'Saving draft');
   assert.equal(document.getElementById('spinner-status').getAttribute('role'), 'status', 'Status Spinner persists');
   stage('spinner:rerender:complete');
+  stage('kbd:passive:start');
+  const csrKeys = document.querySelectorAll('#kbd-hint kbd.eg-kbd');
+  assert.equal(csrKeys.length, 4, 'Consumer Kbds must mount');
+  for (const key of csrKeys) {
+    assert.equal(key.tabIndex, -1, 'A passive key must never become a Tab stop');
+    assert.equal(key.getAttribute('role'), null);
+  }
+  assert.equal(document.getElementById('kbd-command').children[0].getAttribute('aria-hidden'), 'true');
+  stage('kbd:passive:complete');
   stage('layout:rerender:start');
   const layoutStack = () => document.querySelector('.eg-stack[aria-label="Token sections"]');
   const layoutCluster = () => document.querySelector('.eg-cluster[aria-label="Token actions"]');
@@ -1143,7 +1236,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Kbd passive keys outside the Tab order', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1222,6 +1315,7 @@ ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
+${assertKbdCSS.toString()}
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1231,6 +1325,7 @@ assert.match(
 );
 assertSkeletonCSS(emitted);
 assertSpinnerCSS(emitted);
+assertKbdCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
@@ -1268,6 +1363,7 @@ assert.match(
 );
 assertSkeletonCSS(twCss);
 assertSpinnerCSS(twCss);
+assertKbdCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
