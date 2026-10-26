@@ -139,7 +139,22 @@ const postReceiptUsages = [
   { conventionId: 'interactive-value-change', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' },
   { conventionId: 'choice-options', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' },
-  { conventionId: 'selection-placeholder', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' }
+  { conventionId: 'selection-placeholder', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' },
+  ...[
+    'accessible-name',
+    'preset-dimensions',
+    'surface-material-tone',
+    'unavailable-measurement-message',
+    'deadline-instant',
+    'absolute-deadline-text',
+    'time-unit-labels',
+    'deadline-expiration',
+    'clock-initialization-message',
+    'expired-deadline-message'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/countdown/types.ts#CountdownProps'
+  }))
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({
