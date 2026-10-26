@@ -2,11 +2,18 @@
 export * from './atoms/badge';
 export * from './atoms/gauge';
 export * from './atoms/icon';
+export * from './atoms/input';
 export * from './atoms/kbd';
 export * from './atoms/logo';
 export * from './atoms/product-mark';
+export * from './atoms/progress-bar';
+export * from './atoms/radio-group';
+export * from './atoms/slider';
 export * from './atoms/spinner';
 export * from './atoms/status-dot';
+export * from './atoms/switch';
+export * from './atoms/textarea';
+export * from './atoms/tooltip';
 // Utilities
 export { cn } from './lib/cn';
 // Primitives

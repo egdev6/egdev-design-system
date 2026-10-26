@@ -1,5 +1,26 @@
 # Badge — parent handoff
 
+## Bounded repair handoff — PR #159 plus main `05591b1`
+
+The seven conflict files are resolved in the working tree only; Git still reports them unmerged until the parent stages them. No staging, commit, merge command, install or push was performed by the repair writer.
+
+Repair writes:
+
+- `.storybook/main.ts`: Badge plus all main native metadata rows.
+- `packages/ui/src/lib/storybook-controls.test.ts`: additive component inventory; all independent main and Badge assertions retained.
+- `scripts/package-consumption.test.mjs`: one React type import, complete main/Badge samples, helpers and scenes; summaries include Badge.
+- `scripts/package-exports.test.mjs`: independently closed Badge and main CSS tests; all runtime/declaration recipes and private Slider exclusions retained.
+- `skills/_shared/prop-naming.json`: exact reviewed usage union, including both Badge and Input leading icons; no approval/revision changes.
+- `scripts/prop-naming.test.mjs`: exact Badge plus main post-receipt pairs; immutable assertions untouched.
+- `docs/prop-naming.md`: regenerated from the union.
+- This handoff and `implementation.md`: separate repair evidence from original pre-merge gate results.
+
+Auto-merged root exports, docgen, production/story CSS sources and catalogue were inspected for additive completeness; they retain main plus Badge, without claiming any open-PR component as implemented. Catalogue regeneration retains 107 rows. The exact seven approved transition selectors, twelve negatives, 255-token pin, shared DOM globals through the last scene and boolean identity assertions remain intact.
+
+Repair validation: **342/342 tests across 14 files**, lint (**299 files**), typecheck, naming check and **82/82 naming tests** passed under the authorized caps. Exact commands and preservation details are in the implementation document's **Main integration repair** section. Strict TDD was not activated; no fresh RED/GREEN or browser evidence is claimed.
+
+Parent still owns full build, exports and serialized packed React 18/19 gates, merge review/staging/completion and normal push. The original gate counts below are historical, not merged-tree verification.
+
 ## Proposed commit slices
 
 Parent owns review, commits, integration, push and PR creation. Keep each complete test file with its helpers/imports; do not split test prefixes.

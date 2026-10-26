@@ -91,6 +91,28 @@ All listed commands ran in the foreground. Build preceded tests because tests co
 
 Packed fixtures retain one React type import and all earlier component/type/composition checks, especially Surface, `surfaceVariants`, `ComponentProps`, Icon and Text/Heading. DOM identity checks use booleans, never node equality in `node:assert`.
 
+## Main integration repair — Slider baseline
+
+The parent started the merge of `origin/main` at `05591b1` (Slider #158) into Badge PR #159. This bounded repair resolves the seven shared-file conflicts by preserving main and adding only Badge's existing contract. Git staging, merge completion, installation, full gates and publication remain parent-owned.
+
+- Resolved `.storybook/main.ts`, both package test scripts, Controls metadata tests and naming source/tests/view as additive unions. Auto-merged root exports, docgen tests, production/story CSS sources and catalogue retain all main implementations plus Badge; no open-PR component is introduced.
+- Registry changes against main are exactly Badge's three reviewed usages. Convention semantics, scoped approvals, historical receipts, predecessor pins and source revisions are unchanged; the generated naming view was regenerated, not hand-edited. The catalogue generator retains 107 rows with only Badge differing from main.
+- Packed fixtures retain one React type import, independently closed samples, every main import/type/App prop/render/strict negative, Badge's six strict negatives, CSS helpers and all three CSS harness calls. Badge SSR/CSR scenes and summaries coexist with Slider keyboard/change/commit/form checks, RadioGroup/Switch controlled/disabled/reset/FormData scenes, Tooltip focus/portal/Escape, ProgressBar clamps/rerenders and Input/Textarea native scenes. Shared FormData/File/ResizeObserver globals remain available through the final scene. DOM identity assertions remain boolean comparisons.
+- The exact seven-selector transition guard and twelve rejection cases, including `shadow-extra`, are unchanged from main. Badge adds no transition permission. Runtime/declaration inventories retain `sliderVariants`, `radioGroupVariants`, `progressBarVariants`, `tooltipVariants`, all prior public recipes and `badgeVariants`; Slider's private-part exclusions remain intact. The packed token pin remains 255.
+- No component/API, token, dependency, manifest, lockfile, legacy CSS or coordination file was edited by this repair. No new behavior was introduced, and strict TDD was not activated; the earlier lifecycle above belongs to the original implementation, not this merge repair.
+
+| Exact repair command | Observed result |
+| --- | --- |
+| `node scripts/prop-naming.mjs --write` | Generated naming view regenerated |
+| `PYTHONDONTWRITEBYTECODE=1 python3 scripts/build_catalog.py` | 107 catalogue rows regenerated |
+| `timeout 300 systemd-run --user --scope -q -p MemoryMax=2G pnpm exec vitest run packages/ui/src/atoms/badge packages/ui/src/atoms/slider packages/ui/src/atoms/radio-group packages/ui/src/atoms/switch packages/ui/src/lib --maxWorkers=2` | 342/342 passed across 14 files |
+| `timeout 300 systemd-run --user --scope -q -p MemoryMax=2G pnpm lint` | Passed; 299 files, no fixes applied |
+| `timeout 300 systemd-run --user --scope -q -p MemoryMax=2G pnpm typecheck` | Passed |
+| `timeout 300 systemd-run --user --scope -q -p MemoryMax=2G pnpm props:check` | Registry valid, generated view current |
+| `timeout 300 systemd-run --user --scope -q -p MemoryMax=2G pnpm test:props` | 82/82 passed, including immutable receipt checks |
+
+These are focused source/metadata/registry results only. Full build, built exports and packed React 18/19 consumption must be rerun by the parent against the merged tree; the original pre-merge gate results above do not certify it. Browser/visual/Controls/axe evidence remains Not evaluated. CodeGraph was uninitialized; targeted readback was used because index creation was outside the allowed edit surfaces.
+
 ## Deferred browser review — Not evaluated
 
 Expected-design references remain the originals pinned to `e08f007ee71af90e97cec2cd3f7dd2a880364314`:
