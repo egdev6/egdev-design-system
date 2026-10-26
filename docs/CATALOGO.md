@@ -59,7 +59,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Input** | Field (input) (átomo) | — | — | extraer | Control nativo; sale de Field. Variante `mono` para código y URLs. |
 | **Textarea** | Field (textarea) (átomo) | — | — | extraer | Variantes `code` y `prose` (antes Field --code y --prose). |
 | **Select** | Field (select) (átomo) | Select | Icon | extraer | Select de Radix con el aspecto de Field. |
-| **Checkbox** | `.eg-check` (sin ficha) | Checkbox | Icon | extraer | Existía solo como clase. |
+| **Checkbox** | `.eg-check` (sin ficha) | Checkbox | Icon | extraer | Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/54): bare 18px Radix checkbox with binary/mixed state, decorative Icon check/minus glyphs, native form integration and a forwarded button ref. Consumers own naming, labels and the 44px touch target. Token-backed well/filled CVA recipes; no stylesheet or asChild. Legacy `.eg-check` unchanged. |
 | **Switch** | `.eg-check--switch` (sin ficha) | Switch | — | extraer |  |
 | **Slider** | Field --range (átomo) | Slider | — | extraer | Tamaño del anillo, umbrales, volumen. |
 | **RadioGroup** | — | RadioGroup | — | nuevo | Grupo de opciones exclusivas; base de SelectTile y de chips exclusivos. |

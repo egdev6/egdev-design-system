@@ -20,7 +20,7 @@ C = [
 ("Field (input)","átomo","Input","atom","ui","—","—","extraer","Control nativo; sale de Field. Variante `mono` para código y URLs."),
 ("Field (textarea)","átomo","Textarea","atom","ui","—","—","extraer","Variantes `code` y `prose` (antes Field --code y --prose)."),
 ("Field (select)","átomo","Select","atom","ui","Select","Icon","extraer","Select de Radix con el aspecto de Field."),
-("`.eg-check`","sin ficha","Checkbox","atom","ui","Checkbox","Icon","extraer","Existía solo como clase."),
+("`.eg-check`","sin ficha","Checkbox","atom","ui","Checkbox","Icon","extraer","Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/54): bare 18px Radix checkbox with binary/mixed state, decorative Icon check/minus glyphs, native form integration and a forwarded button ref. Consumers own naming, labels and the 44px touch target. Token-backed well/filled CVA recipes; no stylesheet or asChild. Legacy `.eg-check` unchanged."),
 ("`.eg-check--switch`","sin ficha","Switch","atom","ui","Switch","—","extraer",""),
 ("Field --range","átomo","Slider","atom","ui","Slider","—","extraer","Tamaño del anillo, umbrales, volumen."),
 ("—","—","RadioGroup","atom","ui","RadioGroup","—","nuevo","Grupo de opciones exclusivas; base de SelectTile y de chips exclusivos."),
