@@ -129,6 +129,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect([...new Set(modules)].sort()).toEqual([
       './atoms/gauge',
       './atoms/kbd',
+      './atoms/slider',
       './atoms/spinner',
       './lib/cn',
       './primitives/aspect-ratio',
@@ -151,6 +152,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Label',
       'Portal',
       'Skeleton',
+      'Slider',
       'Slot',
       'Slottable',
       'Spinner',
@@ -159,6 +161,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'VisuallyHidden',
       'cn',
       'labelVariants',
+      'sliderVariants',
       'surfaceVariants'
     ]);
   });
@@ -821,6 +824,123 @@ describe('Kbd passive metadata contract', () => {
       expect(props[prop], `Kbd native ${prop} must remain available in autodocs`).toBeDefined();
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick', 'variant', 'size']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('Slider interactive metadata contract', () => {
+  const sliderControls: Record<string, string> = {
+    label: 'text',
+    value: 'number',
+    defaultValue: 'number',
+    onValueChange: 'false',
+    onValueCommit: 'false',
+    min: 'number',
+    max: 'number',
+    step: 'number',
+    valueText: 'false',
+    disabled: 'boolean',
+    name: 'text'
+  };
+
+  it('annotates every own prop with one control, concrete false-control reasons and constant-only defaults', () => {
+    const file = ast(source('atoms/slider/types.ts'));
+    const properties = ownProps(file, ['SliderProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(sliderControls));
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const values = (tagName: string) =>
+        tags.filter((tag) => tag.tagName.text === tagName).map((tag) => ts.getTextOfJSDocComment(tag.comment));
+      expect(Boolean(property.questionToken), `Slider.${name} optionality`).toBe(name !== 'label');
+      expect(values('control'), `Slider.${name} control`).toEqual([sliderControls[name]]);
+      expect(values('controlReason').length, `Slider.${name} reason`).toBe(sliderControls[name] === 'false' ? 1 : 0);
+    }
+    const reasons = properties.flatMap((property) =>
+      ts
+        .getJSDocTags(property)
+        .filter((tag) => tag.tagName.text === 'controlReason')
+        .map((tag) => ts.getTextOfJSDocComment(tag.comment) ?? '')
+    );
+    const stories = exportedStoryNames(ast(source('atoms/slider/Slider.stories.tsx')));
+    for (const reason of reasons) {
+      const named = /see the (\w+) story/.exec(reason)?.[1];
+      expect(named && stories.includes(named), reason).toBe(true);
+    }
+  });
+
+  it('binds the documented constant defaults to the hook bindings', () => {
+    expect(defaults(source('atoms/slider/useSlider.ts'), false)).toEqual({
+      min: '0',
+      max: '100',
+      step: '1',
+      disabled: 'false'
+    });
+  });
+
+  it('omits exactly the contract span props and exposes no ref or asChild', () => {
+    const file = ast(source('atoms/slider/types.ts'));
+    const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'SliderProps');
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing SliderProps declaration');
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const union = node.typeArguments[1];
+        if (union && ts.isUnionTypeNode(union)) {
+          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual(['children', 'defaultValue', 'dir', 'onChange']);
+    expect(alias.type.getText(file)).toMatch(/ComponentPropsWithoutRef<'span'>/);
+    expect(alias.type.getText(file)).not.toMatch(/ComponentPropsWithRef|asChild/);
+  });
+
+  it('extracts required label, numeric bounds with defaults, callbacks and only the documented native rows', () => {
+    const doc = parser.parse(source('atoms/slider/Slider.tsx')).find((item) => item.displayName === 'Slider');
+    if (!doc) {
+      throw new Error('Missing docgen for Slider');
+    }
+    const { props } = doc;
+    expect(props.label).toMatchObject({ required: true, tags: { control: 'text' } });
+    expect(props.label?.type.name).toBe('string');
+    for (const [prop, value] of [
+      ['min', '0'],
+      ['max', '100'],
+      ['step', '1']
+    ] as const) {
+      expect(props[prop], prop).toMatchObject({ required: false, tags: { control: 'number' } });
+      expect(props[prop]?.type.name, prop).toBe('number');
+      expect(props[prop]?.defaultValue?.value, prop).toBe(value);
+    }
+    expect(props.disabled?.defaultValue?.value).toBe('false');
+    for (const prop of ['value', 'defaultValue', 'valueText', 'name', 'onValueChange', 'onValueCommit']) {
+      expect(props[prop], prop).toMatchObject({ required: false });
+      expect(props[prop]?.defaultValue ?? null, prop).toBeNull();
+    }
+    // The parser parenthesizes optional function types; the signatures stay scalar.
+    expect(props.onValueChange?.type.name).toBe('((value: number) => void)');
+    expect(props.onValueCommit?.type.name).toBe('((value: number) => void)');
+    expect(props.valueText?.type.name).toBe('((value: number) => string)');
+    for (const prop of ['id', 'title', 'aria-describedby', 'className']) {
+      expect(props[prop], `Slider native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of [
+      'ref',
+      'asChild',
+      'children',
+      'dir',
+      'onChange',
+      'orientation',
+      'inverted',
+      'style',
+      'onClick'
+    ]) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);
