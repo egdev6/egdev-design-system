@@ -53,6 +53,12 @@ const postReceiptUsages = [
   { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
   { conventionId: 'files-received', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
   { conventionId: 'drop-target-label', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/stat/types.ts#StatProps' },
+  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/stat/types.ts#StatProps' },
+  { conventionId: 'value-context', source: 'packages/ui/src/atoms/stat/types.ts#StatProps' },
+  { conventionId: 'transient-highlight', source: 'packages/ui/src/atoms/stat/types.ts#StatProps' },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/stat/types.ts#StatProps' },
+  { conventionId: 'unavailable-measurement-message', source: 'packages/ui/src/atoms/stat/types.ts#StatProps' },
   {
     conventionId: 'aspect-ratio',
     source: 'packages/ui/src/primitives/aspect-ratio/types.ts#AspectRatioProps'
