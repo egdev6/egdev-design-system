@@ -17,6 +17,7 @@ export * from './atoms/radio-group';
 export * from './atoms/select';
 export * from './atoms/slider';
 export * from './atoms/spinner';
+export * from './atoms/stat';
 export * from './atoms/status-dot';
 export * from './atoms/switch';
 export * from './atoms/textarea';

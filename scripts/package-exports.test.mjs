@@ -266,6 +266,54 @@ test('UI ships Dropzone token geometry, native resets and attribute-driven color
   assert.ok(utilities.includes(String.raw`.disabled\:cursor-not-allowed`));
 });
 
+test('UI ships the Stat Material card, figure recipes and highlight utilities without preflight', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`));
+  for (const [selector, declaration] of [
+    [
+      '.text-display-stat',
+      /font-size:\s*var\(--text-display-stat[,)][\s\S]*line-height:\s*var\(--tw-leading,\s*var\(--text-display-stat--line-height[,)]/
+    ],
+    ['.text-display-stat-sm', /font-size:\s*var\(--text-display-stat-sm[,)]/],
+    ['.tabular-nums', /font-variant-numeric:/],
+    ['.rounded-lg', /border-radius:\s*var\(--radius-lg[,)]/],
+    ['.bg-surface-1', /background-color:\s*var\(--color-surface-1[,)]/],
+    [String.raw`.bg-\[image\:var\(--gradient-sheen\)\]`, /background-image:\s*var\(--gradient-sheen\)/],
+    [
+      String.raw`.shadow-\[var\(--shadow-edge\)\,var\(--shadow-elev-1\)\]`,
+      /--tw-shadow:\s*var\(--shadow-edge\),\s*var\(--shadow-elev-1\)/
+    ],
+    [String.raw`.gap-1\.5`, /gap:\s*calc\(var\(--space-1\)\s*\*\s*1\.5\)/],
+    [String.raw`.py-2\.5`, /padding-block:\s*calc\(var\(--space-1\)\s*\*\s*2\.5\)/],
+    [String.raw`.transition-\[border-color\,box-shadow\]`, /transition-property:\s*border-color,\s*box-shadow/],
+    [String.raw`.duration-\[var\(--duration-base\)\]`, /transition-duration:\s*var\(--duration-base\)/],
+    [String.raw`.ease-\[var\(--ease-out\)\]`, /transition-timing-function:\s*var\(--ease-out\)/],
+    [
+      String.raw`.data-\[state\=highlighted\]\:border-border-brand[data-state="highlighted"]`,
+      /border-color:\s*var\(--color-border-brand[,)]/
+    ],
+    [
+      String.raw`.data-\[state\=highlighted\]\:shadow-\[var\(--shadow-edge\)\,var\(--shadow-glow-base\)\][data-state="highlighted"]`,
+      /--tw-shadow:\s*var\(--shadow-edge\),\s*var\(--shadow-glow-base\)/
+    ],
+    [
+      String.raw`.group-data-\[state\=highlighted\]\/stat\:text-fg-brand-raised:is(:where(.group\/stat)[data-state="highlighted"] *)`,
+      /color:\s*var\(--color-fg-brand-raised[,)]/
+    ],
+    [
+      String.raw`.data-\[state\=unavailable\]\:text-fg-muted[data-state="unavailable"]`,
+      /color:\s*var\(--color-fg-muted[,)]/
+    ],
+    [String.raw`.motion-reduce\:transition-none`, /transition-property:\s*none/]
+  ]) {
+    assert.match(rule(selector), declaration, selector);
+  }
+  assert.ok(utilities.includes('.sr-only'), 'Stat no-data text needs the sr-only utility');
+  assert.doesNotMatch(css, /\.eg-stat-(?:label|value|delta)\s*\{/, 'Stat part markers carry no stylesheet rules');
+});
+
 test('UI publishes its stable JavaScript entry', () => {
   assert.equal(ui.exports['.'].import, './dist/index.js');
   assert.equal(ui.main, ui.exports['.'].import);
@@ -420,6 +468,7 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   // Select #67 adds transition-colors only; Skeleton remains static in its own DOM checks.
   // Toggle #74 adds only its exact color/background-color/border-color/box-shadow/scale list.
   // Dropzone #56 adds transition-colors only.
+  // Stat #70 reuses the approved [border-color,box-shadow] selector; no Skeleton transition.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
@@ -1486,6 +1535,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Slottable',
       'Spinner',
       'Stack',
+      'Stat',
       'StatusDot',
       'Surface',
       'Switch',
@@ -1501,6 +1551,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'progressBarVariants',
       'radioGroupVariants',
       'sliderVariants',
+      'statVariants',
       'statusDotVariants',
       'surfaceVariants',
       'tooltipVariants'
@@ -1510,6 +1561,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(exported.Select?.$$typeof, Symbol.for('react.forward_ref'), 'Select forwards the native button ref');
   assert.equal(exported.Checkbox?.$$typeof, Symbol.for('react.forward_ref'), 'Checkbox must forward its button ref');
   assert.equal(typeof exported.Dropzone, 'function', 'Dropzone must be a plain function with no public ref API');
+  assert.equal(typeof exported.Stat, 'function', 'Stat must be a plain function with no public ref API');
+  assert.equal(typeof exported.statVariants, 'function', 'Stat card recipe must be public');
   assert.equal(typeof exported.dropzoneVariants, 'function', 'Dropzone recipe must be public');
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
   // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
@@ -1677,6 +1730,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SpinnerSize',
     'Stack',
     'StackProps',
+    'Stat',
+    'StatProps',
     'StatusDot',
     'StatusDotProps',
     'StatusDotState',
@@ -1710,11 +1765,23 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'progressBarVariants',
     'radioGroupVariants',
     'sliderVariants',
+    'statVariants',
     'statusDotVariants',
     'surfaceVariants',
     'tooltipVariants'
   ]);
-  for (const name of ['useSlider', 'sliderTrackVariants', 'sliderRangeVariants', 'sliderThumbVariants']) {
+  for (const name of [
+    'useSlider',
+    'sliderTrackVariants',
+    'sliderRangeVariants',
+    'sliderThumbVariants',
+    'useStat',
+    'StatSize',
+    'statLabelVariants',
+    'statUnavailableTextVariants',
+    'statValueVariants',
+    'statDeltaVariants'
+  ]) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
@@ -1789,6 +1856,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'StatusDotProps',
     'StatusDotState',
     'statusDotVariants',
+    'Stat',
+    'StatProps',
+    'statVariants',
     'Cluster',
     'ClusterProps',
     'LayoutAlignItems',
@@ -1824,6 +1894,27 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   );
   assert.match(dropzoneHtml, /aria-hidden="true"/);
   assert.doesNotMatch(dropzoneHtml, /name=|required=|onFiles=|aria-live=|is-over/);
+  const statHtml = renderToString(
+    createElement(exported.Stat, { label: 'Subs', value: 4, delta: '+1 10 s ago', highlighted: true, id: 'subs' })
+  );
+  const statLabelId = statHtml.match(/<span id="([^"]+)" class="eg-stat-label /)?.[1];
+  assert.ok(statLabelId, 'Stat label carries a generated id');
+  assert.match(
+    statHtml,
+    new RegExp(
+      `^<div id="subs" role="group" aria-labelledby="${statLabelId.replace(/[^\w]/g, '\\$&')}" data-state="highlighted" class="eg-stat `
+    )
+  );
+  assert.match(
+    statHtml,
+    />Subs<\/span><span class="eg-stat-value [^"]*text-display-stat[^"]*">4<\/span><span class="eg-stat-delta [^"]*">\+1 10 s ago<\/span><\/div>$/
+  );
+  const noDataHtml = renderToString(createElement(exported.Stat, { label: 'Superchats', value: null, size: 'sm' }));
+  assert.match(
+    noDataHtml,
+    /<span data-state="unavailable" class="eg-stat-value [^"]*text-display-stat-sm[^"]*"><span aria-hidden="true">—<\/span><span class="sr-only">No data<\/span><\/span><\/div>$/
+  );
+  assert.doesNotMatch(noDataHtml, /data-state="highlighted"|eg-stat-delta|aria-live|>0</);
   assert.equal(renderToString(createElement(exported.Portal, { children: 'Server layer' })), '');
   assert.equal(typeof exported.labelVariants, 'function', 'Label composition recipe must stay a public export');
   const labelHtml = renderToString(
