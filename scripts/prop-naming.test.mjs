@@ -12,6 +12,26 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  { conventionId: 'checked-change', source: 'packages/ui/src/atoms/checkbox/types.ts#CheckboxProps' },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/avatar/types.ts#AvatarProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/avatar/types.ts#AvatarProps' },
+  { conventionId: 'corner-badge-icon', source: 'packages/ui/src/atoms/avatar/types.ts#AvatarProps' },
+  { conventionId: 'paused-presentation', source: 'packages/ui/src/atoms/avatar/types.ts#AvatarProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/button/types.ts#ButtonProps' },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/button/types.ts#ButtonProps' },
+  { conventionId: 'leading-icon', source: 'packages/ui/src/atoms/button/types.ts#ButtonProps' },
+  { conventionId: 'icon-placement', source: 'packages/ui/src/atoms/button/types.ts#ButtonProps' },
+  { conventionId: 'pending-activity', source: 'packages/ui/src/atoms/button/types.ts#ButtonProps' },
+  { conventionId: 'slot-composition', source: 'packages/ui/src/atoms/button/types.ts#ButtonProps' },
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/atoms/badge/types.ts#BadgeProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/badge/types.ts#BadgeProps' },
+  { conventionId: 'leading-icon', source: 'packages/ui/src/atoms/badge/types.ts#BadgeProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'initial-uncontrolled-value', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'interactive-value-change', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'committed-value-change', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'measurement-text-equivalent', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
   {
     conventionId: 'aspect-ratio',
     source: 'packages/ui/src/primitives/aspect-ratio/types.ts#AspectRatioProps'
@@ -56,6 +76,24 @@ const postReceiptUsages = [
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'choice-options', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'initial-uncontrolled-value', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'interactive-value-change', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'layout-orientation', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'checked-change', source: 'packages/ui/src/atoms/switch/types.ts#SwitchProps' },
+  { conventionId: 'tooltip-content', source: 'packages/ui/src/atoms/tooltip/types.ts#TooltipProps' },
+  { conventionId: 'floating-side', source: 'packages/ui/src/atoms/tooltip/types.ts#TooltipProps' },
+  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  {
+    conventionId: 'measurement-text-equivalent',
+    source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps'
+  },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  { conventionId: 'container-edge-placement', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/textarea/types.ts#TextareaProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/input/types.ts#InputProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/input/types.ts#InputProps' },
@@ -69,6 +107,10 @@ const postReceiptUsages = [
   },
   { conventionId: 'signal-pulse', source: 'packages/ui/src/atoms/status-dot/types.ts#StatusDotProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/kbd/types.ts#KbdProps' },
+  { conventionId: 'slot-composition', source: 'packages/ui/src/atoms/link/types.ts#LinkProps' },
+  { conventionId: 'new-tab-navigation', source: 'packages/ui/src/atoms/link/types.ts#LinkProps' },
+  { conventionId: 'new-tab-notice', source: 'packages/ui/src/atoms/link/types.ts#LinkProps' },
+  { conventionId: 'trailing-arrow', source: 'packages/ui/src/atoms/link/types.ts#LinkProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/product-mark/types.ts#ProductMarkProps' },
   { conventionId: 'brand-monogram', source: 'packages/ui/src/atoms/product-mark/types.ts#ProductMarkProps' },
   { conventionId: 'primary-value', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' },
@@ -177,7 +219,8 @@ const receiptChain = [
   'docs/decisions/prop-naming-organism-specs-approval.json',
   'docs/decisions/prop-naming-template-specs-approval.json',
   'docs/decisions/prop-naming-isotipo3d-approval.json',
-  'docs/decisions/prop-naming-skeleton-v0.2-approval.json'
+  'docs/decisions/prop-naming-skeleton-v0.2-approval.json',
+  'docs/components/button/v0.1/prop-naming-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -233,6 +276,90 @@ function approveException(entry, exception) {
     props.exceptionHash(exception)
   );
 }
+
+const buttonReference = 'docs/components/button/v0.1/prop-naming-approval.json';
+test('Button alone permits trailing decorative icons through a bounded semantic amendment', () => {
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, buttonReference), 'utf8'));
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar excepción para Button');
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.equal(receipt.semanticAmendments.length, 1);
+  const [amendment] = receipt.semanticAmendments;
+  assert.equal(amendment.id, 'leading-icon');
+  assert.deepEqual(amendment.changedFields, ['meaning', 'whenToUse', 'avoid']);
+  const previousReceipt = JSON.parse(fs.readFileSync(resolve(root, amendment.previousReference), 'utf8'));
+  const previous = previousReceipt.entries.find(({ convention }) => convention.id === 'leading-icon');
+  assert.equal(previous.contentHash, amendment.previousContentHash);
+  assert.equal(previous.contentHash, props.conventionHash(previous.convention));
+  const current = actual.find(({ id }) => id === 'leading-icon');
+  const { approval, usages: _usages, ...convention } = current;
+  assert.deepEqual(receipt.entries, [
+    { scope: 'convention:leading-icon', contentHash: props.conventionHash(current), convention }
+  ]);
+  assert.deepEqual(approval, {
+    reference: buttonReference,
+    scope: 'convention:leading-icon',
+    contentHash: props.conventionHash(current)
+  });
+  assert.deepEqual(
+    current.exceptions,
+    [],
+    'Registry exceptions rename props; this same-name semantic exception uses an amendment'
+  );
+  for (const field of amendment.changedFields) {
+    assert.equal(amendment.before[field], previous.convention[field]);
+    assert.equal(amendment.after[field], current[field]);
+  }
+  assert.equal(
+    current.meaning,
+    previous.convention.meaning + ' Button alone may place this icon before or after its label, after it by default.'
+  );
+  assert.equal(
+    current.whenToUse,
+    previous.convention.whenToUse + ' Button alone also permits its iconPosition start/end slot, default end.'
+  );
+  assert.equal(
+    current.avoid,
+    previous.convention.avoid +
+      ' The trailing-icon exclusion has one exception: Button with iconPosition; no other component gains trailing-icon permission.'
+  );
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(digest(fs.readFileSync(resolve(root, prior.path))), prior.wholeFileSHA256, prior.path);
+  }
+  const changed = structuredClone(actual);
+  changed.find(({ id }) => id === 'leading-icon').avoid = 'Trailing icons are permitted everywhere.';
+  assert.throws(() => validate(changed), /approval/i);
+  const broadened = changed.find(({ id }) => id === 'leading-icon');
+  broadened.approval.contentHash = props.conventionHash(broadened);
+  assert.doesNotThrow(() => validate(changed), 'Schema validation is not semantic approval');
+  assert.notEqual(broadened.approval.contentHash, receipt.entries[0].contentHash);
+  assert.notDeepEqual(
+    broadened.avoid,
+    convention.avoid,
+    'A refreshed hash cannot authorize trailing icons for other components'
+  );
+  assert.deepEqual(
+    actual
+      .filter((entry) => entry.usages.some(({ component }) => component === 'Button'))
+      .map(({ id }) => id)
+      .sort(),
+    ['icon-placement', 'leading-icon', 'pending-activity', 'preset-dimensions', 'slot-composition', 'visual-treatment']
+  );
+  assert.equal(receipt.priorReceipts.length, 8);
+  const before = registryBeforeSemanticAmendments(
+    historicalRegistry(actual),
+    'docs/decisions/prop-naming-skeleton-v0.2-approval.json'
+  );
+  const restored = before.find(({ id }) => id === 'leading-icon');
+  assert.deepEqual(restored, {
+    ...previous.convention,
+    approval: { reference: amendment.previousReference, scope: previous.scope, contentHash: previous.contentHash },
+    usages: []
+  });
+});
 
 test('seed and component-specific types are valid; importing performs no CLI work', () => {
   const registry = seed();

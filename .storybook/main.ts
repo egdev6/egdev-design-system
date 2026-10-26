@@ -4,6 +4,9 @@ import tailwindcss from '@tailwindcss/vite';
 import { mergeConfig } from 'vite';
 
 const documentedNativeProps: Record<string, readonly string[]> = {
+  avatar: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  button: ['type', 'disabled', 'onClick', 'id', 'title', 'aria-describedby', 'className', 'name', 'value', 'tabIndex'],
+  checkbox: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid', 'className', 'form'],
   gauge: ['id', 'title', 'aria-describedby', 'className', 'style'],
   divider: ['id', 'title', 'dir', 'aria-label', 'aria-labelledby', 'className', 'style'],
   aspectRatio: ['id', 'title', 'aria-describedby', 'className', 'style', 'onClick'],
@@ -13,6 +16,11 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   logo: ['id', 'title', 'className', 'style', 'target', 'rel'],
   statusDot: ['id', 'title', 'className', 'style'],
   kbd: ['id', 'title', 'className'],
+  link: ['id', 'title', 'href', 'target', 'rel', 'onClick', 'aria-describedby', 'className', 'style'],
+  badge: ['id', 'title', 'aria-describedby', 'className'],
+  radioGroup: ['id', 'aria-labelledby', 'aria-describedby', 'className'],
+  switch: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className'],
+  progressBar: ['id', 'title', 'aria-describedby', 'className', 'style'],
   textarea: [
     'id',
     'name',
@@ -40,6 +48,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
     'onBlur',
     'form'
   ],
+  slider: ['id', 'title', 'aria-describedby', 'className'],
   // Native props re-exposed in autodocs per component, keyed by camelCase component name.
   // Gauge retains its approved passive measurement list; Label documents the native
   // association (htmlFor/id) and the approved class-merge surface. Nothing else from
