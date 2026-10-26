@@ -50,9 +50,14 @@ Se incluye la [licencia Apache-2.0 completa](LICENSES/Apache-2.0.txt). No se enc
 
 La revisión de origen de la primera adaptación no quedó registrada; no se inventa. Para este cierre se conservan tanto el aviso MIT de la documentación como los términos específicos Apache-2.0 de las skills identificadas en la revisión consultada. Esto documenta atribución y conservación de avisos, no una certificación jurídica ni autorización de publicación.
 
-## Lucide — Icon glyph paths
+## Lucide — system icon paths
 
-`packages/ui/src/atoms/icon/icon-paths.ts` contains SVG path data copied verbatim from Lucide, the family used by every system glyph. The 17 glyphs added in the Icon contract ([#58](https://github.com/egdev6/egdev-design-system/issues/58), decisions D2 and D8) come from `lucide-react` 1.55.0 (`grip` from `grip-vertical`, `flask` from `flask-conical`, `trash` from `trash-2`; the rest same-named). The 25 Foundation glyphs are copied verbatim from the EGDEV Foundation Icon preview, which uses the same Lucide-family paths. No Lucide package is a dependency of `@egdev/ui`. Lucide marks some of these glyphs (including `calendar`, `check`, `minus`, `plus`, `trash-2` and `upload`) as derived from Feather; its full license, including the Feather notice, is reproduced below.
+The system's Lucide-family SVG paths include:
+
+- `packages/ui/src/atoms/icon/icon-paths.ts`: the 17 glyphs added in the Icon contract ([#58](https://github.com/egdev6/egdev-design-system/issues/58), decisions D2 and D8) are copied verbatim from `lucide-react` 1.55.0 (`grip` from `grip-vertical`, `flask` from `flask-conical`, `trash` from `trash-2`; the rest same-named). The 25 Foundation glyphs are copied verbatim from the EGDEV Foundation Icon preview, which uses the same Lucide-family paths.
+- `packages/ui/src/atoms/spinner/Spinner.tsx`: the open arc is the Lucide `loader-circle` path, also used in the EGDEV Foundation Spinner design ([#69](https://github.com/egdev6/egdev-design-system/issues/69)).
+
+These notices cover the system icon paths, including Icon and Spinner; no Lucide package is a dependency of `@egdev/ui`. Lucide marks some glyphs (including `calendar`, `check`, `minus`, `plus`, `trash-2` and `upload`) as derived from Feather; its full license, including the Feather notice, is reproduced below.
 
 ```text
 ISC License

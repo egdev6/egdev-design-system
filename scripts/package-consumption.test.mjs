@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Label, Skeleton, Slot, Slottable, Stack, VisuallyHidden } from '@egdev/ui';
+import { AspectRatio, Cluster, Divider, Gauge, Icon, Label, Skeleton, Slot, Slottable, Stack, VisuallyHidden } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -38,6 +38,9 @@ import type {
   GaugeProps,
   GaugeState,
   GaugeSize,
+  IconName,
+  IconProps,
+  IconSize,
   LabelProps,
   LabelVariant,
   SkeletonProps,
@@ -152,6 +155,16 @@ export function LayoutSamples({ stackGap = 4 }: LayoutSampleProps) {
       createElement('button', { type: 'button' }, 'Action one'),
       createElement('button', { type: 'button' }, 'Action two')));
 }
+export const iconDefaults: IconProps = { name: 'plus' };
+const iconPreset: IconSize = 'lg';
+type IconSampleProps = { iconName?: IconName };
+export function IconSamples({ iconName = 'plus' }: IconSampleProps) {
+  return createElement('section', { 'aria-label': 'Glyphs' },
+    createElement(Icon, { ...iconDefaults, name: iconName, id: 'icon-decorative' }),
+    createElement('p', { id: 'icon-labelled-host' },
+      createElement(Icon, { name: 'search', label: 'Search status', size: 'sm', filled: true })),
+    createElement(Icon, { name: 'check', size: iconPreset, id: 'icon-override', className: 'size-4.5 text-fg-brand-default' }));
+}
 export const dividerDefaults: DividerProps = {};
 export const dividerSemanticVertical: DividerProps = {
   orientation: 'vertical', decorative: false, className: 'consumer-rule'
@@ -166,7 +179,7 @@ export function DividerSamples({ semantic }: { semantic?: boolean }) {
       ? { orientation: dividerOrientation, decorative: false, className: 'consumer-rule' }
       : { className: 'consumer-rule' }));
 }
-export function App({ gaugeValue, wideRatio, stackGap, dividerSemantic }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; dividerSemantic?: boolean } = {}) {
+export function App({ gaugeValue, wideRatio, stackGap, dividerSemantic, iconName }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; dividerSemantic?: boolean; iconName?: IconName } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
@@ -178,6 +191,7 @@ export function App({ gaugeValue, wideRatio, stackGap, dividerSemantic }: { gaug
     createElement(DividerSamples, { semantic: dividerSemantic }),
     createElement(LabelSamples),
     createElement(SkeletonSamples),
+    createElement(IconSamples, { iconName }),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -265,6 +279,20 @@ const slottedLabel: LabelProps = { children: 'Email address', htmlFor: 'consumer
 const arbitraryStackGap: StackProps = { gap: 9 };
 // @ts-expect-error Unsupported alignment choices are rejected by the union type.
 const invalidClusterAlignment: ClusterProps = { alignItems: 'around' };
+// @ts-expect-error The glyph set is closed; unknown names have no runtime fallback.
+const unknownGlyph: IconProps = { name: 'sparkles' };
+// @ts-expect-error Icon sizes are presets; containers use size-* utilities instead.
+const numericIconSize: IconProps = { name: 'plus', size: 18 };
+// @ts-expect-error Naming goes through label and AccessibleIcon, never a manual role.
+const iconRole: IconProps = { name: 'plus', role: 'img' };
+// @ts-expect-error Geometry attributes stay component-owned.
+const iconWidth: IconProps = { name: 'plus', width: 24 };
+// @ts-expect-error Paint attributes stay component-owned; color comes from currentColor.
+const iconFill: IconProps = { name: 'plus', fill: 'red' };
+// @ts-expect-error Icon draws only internal path data.
+const iconChildren: IconProps = { name: 'plus', children: null };
+// @ts-expect-error Icon exposes no ref on either React major.
+const referencedIcon: IconProps = { name: 'plus', ref: unsupportedGaugeRef };
 `;
 
 // Reused inside the installed fixture, against shipped CSS and both consumer build paths.
@@ -414,6 +442,34 @@ function assertLabelCSS(css) {
   assert.match(css, /font-weight:\s*var\(--text-body-default--font-weight\)/, 'Missing Label choice weight binding');
 }
 
+// Icon's static utilities must work in shipped CSS and both consumer build paths.
+function assertIconCSS(css) {
+  for (const [selector, declarations] of [
+    ['.inline-block', [/display:\s*inline-block\s*;/]],
+    ['.shrink-0', [/flex-shrink:\s*0\s*;/]],
+    ['.align-middle', [/vertical-align:\s*middle\s*;/]],
+    ['.stroke-current', [/stroke:\s*currentcolor\s*;/i]],
+    [String.raw`.stroke-\(length\:--icon-stroke\)`, [/stroke-width:\s*var\(--icon-stroke\)\s*;/]],
+    ['.fill-none', [/fill:\s*none\s*;/]],
+    ['.fill-current', [/fill:\s*currentcolor\s*;/i]],
+    ['.size-4', [/width:\s*var\(--space-4\)\s*;/, /height:\s*var\(--space-4\)\s*;/]],
+    [String.raw`.size-\(--icon-size\)`, [/width:\s*var\(--icon-size\)\s*;/, /height:\s*var\(--icon-size\)\s*;/]],
+    ['.size-7', [/width:\s*var\(--space-7\)\s*;/, /height:\s*var\(--space-7\)\s*;/]]
+  ]) {
+    const blocks = css
+      .split(selector + ' {')
+      .slice(1)
+      .map((rest) => rest.slice(0, rest.indexOf('}')));
+    assert.ok(blocks.length > 0, 'Missing Icon utility ' + selector);
+    for (const declaration of declarations) {
+      assert.ok(
+        blocks.some((block) => declaration.test(block)),
+        selector + ' must ship ' + declaration
+      );
+    }
+  }
+}
+
 // Skeleton ships token-backed silhouette utilities plus the approved pulse animation: no dynamic geometry.
 function assertSkeletonCSS(css) {
   for (const dimension of ['h-3', 'h-4', 'h-5', 'h-12', 'h-20', 'h-24', 'size-8', 'size-12', 'size-16']) {
@@ -472,6 +528,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Cluster',
   'Divider',
   'Gauge',
+  'Icon',
   'Label',
   'Portal',
   'Skeleton',
@@ -485,7 +542,9 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
 ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
+${assertIconCSS.toString()}
 assertGaugeCSS(shippedStyles);
+assertIconCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assertSkeletonCSS(shippedStyles);
 ${assertLabelCSS.toString()}
@@ -556,7 +615,7 @@ try {
   semanticDivider.window.close();
 }
 const html = renderToString(createElement(App));
-for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%', 'Email address', 'eg-stack', 'flex-col', 'flex-nowrap', 'gap-4', 'eg-cluster', 'flex-row', 'flex-wrap', 'gap-6', 'items-start', 'justify-between']) {
+for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%', 'Email address', 'eg-stack', 'flex-col', 'flex-nowrap', 'gap-4', 'eg-cluster', 'flex-row', 'flex-wrap', 'gap-6', 'items-start', 'justify-between', 'eg-icon', 'viewBox="0 0 24 24"', 'Search status']) {
   assert.ok(html.includes(text), 'SSR must render ' + text);
 }
 const dom = new JSDOM(html);
@@ -703,6 +762,27 @@ for (const frame of [square, wide]) {
     assert.equal(layout.hasAttribute('aria-live'), false);
     assert.ok(layout.className.includes('min-w-0'));
   }
+  const decorativeIcon = document.getElementById('icon-decorative');
+  assert.ok(decorativeIcon, 'SSR must render the decorative Icon');
+  assert.equal(decorativeIcon.tagName.toLowerCase(), 'svg');
+  assert.equal(decorativeIcon.getAttribute('aria-hidden'), 'true');
+  assert.equal(decorativeIcon.getAttribute('focusable'), 'false');
+  assert.equal(decorativeIcon.getAttribute('role'), null);
+  assert.ok(decorativeIcon.classList.contains('eg-icon') && decorativeIcon.classList.contains('size-(--icon-size)'));
+  assert.ok(decorativeIcon.classList.contains('fill-none') && decorativeIcon.classList.contains('stroke-current'));
+  assert.equal(decorativeIcon.querySelectorAll('path').length, 2, 'plus must render its two Lucide paths');
+  const labelledHost = document.getElementById('icon-labelled-host');
+  assert.ok(labelledHost, 'SSR must render the labelled Icon host');
+  const labelledIcon = labelledHost.querySelector('svg.eg-icon');
+  assert.ok(labelledIcon, 'SSR must render the labelled Icon');
+  assert.equal(labelledIcon.getAttribute('aria-hidden'), 'true', 'AccessibleIcon hides the svg itself');
+  assert.ok(labelledIcon.classList.contains('size-4') && labelledIcon.classList.contains('fill-current'));
+  assert.equal(labelledHost.textContent, 'Search status', 'AccessibleIcon must supply exactly one visually hidden name');
+  assert.equal(labelledHost.querySelector('title'), null);
+  const overrideIcon = document.getElementById('icon-override');
+  assert.ok(overrideIcon, 'SSR must render the consumer-sized Icon');
+  assert.ok(overrideIcon.classList.contains('size-4.5') && overrideIcon.classList.contains('text-fg-brand-default'));
+  assert.ok(!overrideIcon.classList.contains('size-7'), 'twMerge must let the consumer size-* win over the preset');
   // Native for/id named association and the approved typography recipe classes.
   const emailLabel = document.querySelector('label[for="consumer-email"]');
   assert.ok(emailLabel, 'Label must associate natively through for');
@@ -889,6 +969,16 @@ try {
   assert.ok(!layoutStack().classList.contains('gap-4'), 'twMerge must drop the replaced gap utility');
   assert.ok(layoutCluster().classList.contains('flex-wrap'), 'Cluster keeps wrapping behavior across renders');
   stage('layout:rerender:complete');
+  stage('icon:rerender:start');
+  const glyphRoot = () => document.getElementById('icon-decorative');
+  const glyphBefore = glyphRoot();
+  assert.ok(glyphBefore, 'CSR must mount the decorative Icon');
+  await act(async () => root.render(createElement(App, { iconName: 'minus' })));
+  assert.ok(glyphRoot() === glyphBefore, 'Glyph changes must keep the same svg root');
+  assert.equal(glyphRoot().querySelectorAll('path').length, 1, 'minus must replace the plus paths');
+  assert.equal(glyphRoot().querySelector('path')?.getAttribute('d'), 'M5 12h14');
+  assert.equal(glyphRoot().getAttribute('tabindex'), null, 'Default Icons never enter the tab order');
+  stage('icon:rerender:complete');
   console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery'] }));
   const slotRef = createRef();
   const childRef = createRef();
@@ -982,6 +1072,8 @@ const tailwindClasses = [
   'rounded-xl',
   'shadow-edge',
   'font-display',
+  'size-4.5',
+  'text-fg-brand-default',
   ...typographyNames.map((name) => `text-${name}`),
   ...spacingClasses
 ].join(' ');
@@ -1009,6 +1101,7 @@ assert.ok(!emitted.includes('@theme'), 'Native consumption must not need Tailwin
 ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
+${assertIconCSS.toString()}
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1017,6 +1110,7 @@ assert.match(
   'Native consumer build must emit the AspectRatio min-width guard without Tailwind'
 );
 assertSkeletonCSS(emitted);
+assertIconCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
@@ -1051,6 +1145,10 @@ assert.match(
   'Tailwind consumer must retain the AspectRatio min-width guard'
 );
 assertSkeletonCSS(twCss);
+assertIconCSS(twCss);
+assert.ok(twCss.includes('.size-4\\\\.5'), 'Tailwind consumer must emit the supported container size override');
+assert.match(twCss, /width:\\s*calc\\(var\\(--space-1\\)\\s*\\*\\s*4\\.5\\)/, 'Container size must use the spacing scale');
+assert.ok(twCss.includes('.text-fg-brand-default'), 'Tailwind consumer must emit the supported inherited color');
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
