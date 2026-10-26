@@ -1,4 +1,5 @@
 // Atoms
+export * from './atoms/dropzone';
 export * from './atoms/gauge';
 export * from './atoms/icon';
 export * from './atoms/input';

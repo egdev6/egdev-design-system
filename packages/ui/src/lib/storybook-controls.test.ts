@@ -13,6 +13,7 @@ const components = [
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Cluster', 'primitives/stack'],
   ['Gauge', 'atoms/gauge'],
+  ['Dropzone', 'atoms/dropzone'],
   ['Heading', 'primitives/text'],
   ['Icon', 'atoms/icon'],
   ['Stack', 'primitives/stack'],
@@ -81,6 +82,14 @@ const expected: Record<string, Record<string, string | false>> = {
   aspectratio: {
     ratio: 'number'
   },
+  dropzone: {
+    onFiles: false,
+    label: 'text',
+    dropLabel: 'text',
+    accept: 'text',
+    multiple: 'boolean',
+    variant: 'select'
+  },
   stack: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   cluster: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   text: {
@@ -132,6 +141,7 @@ const expected: Record<string, Record<string, string | false>> = {
 };
 const ownPropCounts: Record<string, number> = {
   aspectratio: 1,
+  dropzone: 6,
   gauge: 8,
   icon: 4,
   skeleton: 3,
@@ -349,6 +359,10 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
     ['Tooltip', { side: '"top"' }],
+    [
+      'Dropzone',
+      { label: '"Drag, paste or upload"', dropLabel: '"Drop here"', multiple: 'false', variant: '"default"' }
+    ],
     ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }],
     ['Textarea', { variant: '"default"' }],
     ['Icon', { size: '"md"', filled: 'false' }],
@@ -538,6 +552,24 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Dropzone file callback, exact variant choices and native disabled without injecting args', () => {
+    const { argTypes, args } = story('Dropzone');
+    expect(argTypes.onFiles?.control).toBe(false);
+    expect(argTypes.onFiles?.type).toMatchObject({ required: true });
+    expect(argTypes.onFiles?.table?.disable).toBeUndefined();
+    expect(argTypes.onFiles?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.accept?.table?.defaultValue).toBeUndefined();
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['default', 'inline']);
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'disabled', 'className', 'aria-describedby', 'onClick']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Dropzone', false).argTypes[prop]);
+    }
+    for (const prop of ['ref', 'asChild', 'type', 'children', 'onDrop', 'onPaste', 'onDragEnter', 'over']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

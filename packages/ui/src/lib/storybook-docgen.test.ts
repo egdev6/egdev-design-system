@@ -127,6 +127,7 @@ describe('Storybook TypeScript docgen contract', () => {
     );
     // Each primitive exports its type alias first and runtime component second; dedupe the specifiers.
     expect([...new Set(modules)].sort()).toEqual([
+      './atoms/dropzone',
       './atoms/gauge',
       './atoms/icon',
       './atoms/input',
@@ -155,6 +156,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'AspectRatio',
       'Cluster',
       'Divider',
+      'Dropzone',
       'Gauge',
       'Heading',
       'Icon',
@@ -177,6 +179,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Tooltip',
       'VisuallyHidden',
       'cn',
+      'dropzoneVariants',
       'labelVariants',
       'progressBarVariants',
       'statusDotVariants',
@@ -197,6 +200,66 @@ describe('Storybook TypeScript docgen contract', () => {
       source('primitives/surface/Surface.tsx')
     ]);
   }, 20_000);
+
+  it('extracts Dropzone owned metadata and preserves native button boundaries', () => {
+    const file = ast(source('atoms/dropzone/types.ts'));
+    const properties = ownProps(file, ['DropzoneProps']);
+    const expected: Record<string, string> = {
+      onFiles: 'false',
+      label: 'text',
+      dropLabel: 'text',
+      accept: 'text',
+      multiple: 'boolean',
+      variant: 'select'
+    };
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(expected));
+    for (const property of properties) {
+      const controls = ts.getJSDocTags(property).filter((tag) => tag.tagName.text === 'control');
+      expect(controls).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe(expected[property.name.getText(file)]);
+    }
+    const doc = parser.parse(source('atoms/dropzone/Dropzone.tsx')).find((item) => item.displayName === 'Dropzone');
+    expect(doc?.props.onFiles).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    expect(doc?.props.onFiles?.tags).toMatchObject({
+      controlReason: expect.stringMatching(/File objects.*Default and MultipleFiles/)
+    });
+    for (const [prop, value] of Object.entries({
+      label: 'Drag, paste or upload',
+      dropLabel: 'Drop here',
+      multiple: 'false',
+      variant: 'default'
+    })) {
+      expect(doc?.props[prop]).toMatchObject({ required: false, defaultValue: { value } });
+    }
+    expect(doc?.props.accept?.defaultValue).toBeNull();
+    for (const name of ['id', 'disabled', 'title', 'onClick', 'className', 'aria-describedby']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'type',
+      'ref',
+      'asChild',
+      'over',
+      'onDrop',
+      'onPaste',
+      'onDragEnter',
+      'onDragOver',
+      'onDragLeave'
+    ]) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const stories = ast(source('atoms/dropzone/Dropzone.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'Inline',
+      'Disabled',
+      'MultipleFiles',
+      'DragOver',
+      'ConsumerLayout'
+    ]);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+  });
 
   it('annotates each own VisuallyHidden prop without fabricating a content default', () => {
     const file = ast(source('primitives/visually-hidden/types.ts'));

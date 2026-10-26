@@ -79,6 +79,44 @@ test('UI publishes its stable declaration entry and reachable internal declarati
   context.diagnostic(`Checked ${visited.size} reachable declaration files`);
 });
 
+test('UI ships Dropzone token geometry, native resets and attribute-driven colors without preflight', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`));
+  for (const [selector, declaration] of [
+    ['.min-w-24', /min-width:\s*var\(--space-24\)/],
+    ['.min-h-24', /min-height:\s*var\(--space-24\)/],
+    ['.min-h-14', /min-height:\s*var\(--space-14\)/],
+    [String.raw`.gap-1\.5`, /gap:\s*calc\(var\(--space-1\)\s*\*\s*1\.5\)/],
+    [String.raw`.gap-2\.5`, /gap:\s*calc\(var\(--space-1\)\s*\*\s*2\.5\)/],
+    ['.border-dashed', /border-style:\s*dashed/],
+    ['.bg-none', /background-image:\s*none/],
+    [String.raw`.\[box-shadow\:none\]`, /box-shadow:\s*none/],
+    ['.transition-colors', /transition-property:[^;]*background-color[^;]*border-color[^;]*;/],
+    [
+      String.raw`.data-\[state\=over\]\:border-border-brand[data-state="over"]`,
+      /\[data-state=["']?over["']?\][\s\S]*border-color:\s*var\(--color-border-brand/
+    ],
+    [
+      String.raw`.data-\[state\=over\]\:bg-alpha-red-07[data-state="over"]`,
+      /background-color:\s*var\(--color-alpha-red-07/
+    ],
+    [String.raw`.data-\[state\=over\]\:text-fg-default[data-state="over"]`, /color:\s*var\(--color-fg-default/],
+    [
+      String.raw`.focus-visible\:shadow-focus:focus-visible`,
+      /--tw-shadow:\s*0 0 0 2px var\(--tw-shadow-color, #141518\), 0 0 0 4px var\(--tw-shadow-color, #FF0036\)/
+    ],
+    [String.raw`.disabled\:opacity-45:disabled`, /opacity:\s*(?:45%|0\.45)/],
+    [String.raw`.motion-reduce\:transition-none`, /transition-property:\s*none/]
+  ]) {
+    assert.match(rule(selector), declaration, selector);
+  }
+  assert.ok(utilities.includes('.flex-row') && utilities.includes('.flex-col'));
+  assert.ok(utilities.includes(String.raw`.disabled\:pointer-events-none`));
+  assert.ok(utilities.includes(String.raw`.disabled\:cursor-not-allowed`));
+});
+
 test('UI publishes its stable JavaScript entry', () => {
   assert.equal(ui.exports['.'].import, './dist/index.js');
   assert.equal(ui.main, ui.exports['.'].import);
@@ -226,8 +264,8 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
     'Reduced-motion preferences must stop the pulse'
   );
   // Pulse (Skeleton) and spin (Spinner, #69) are the only approved animation utilities. Transitions
-  // are limited to transition-none, the Tooltip opacity fade (#75 D10) and the ProgressBar fill transform
-  // (#65 AC-09); neither animated transition reaches the Skeleton.
+  // are limited to none, Tooltip opacity (#75), ProgressBar transform (#65), Input/Textarea's exact
+  // bracket recipe and Dropzone colors (#56). None of the animated transitions reaches Skeleton.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
@@ -235,8 +273,8 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   );
   assert.doesNotMatch(
     utilityLayer,
-    /\.transition-(?!none\b|opacity\b|transform\b)\w/,
-    'Only the approved Tooltip opacity and ProgressBar transform transitions may ship'
+    /\.transition-(?!none\b|opacity\b|transform\b|colors\b|\\\[border-color\\,box-shadow\\\])(?:\w|\\\[)/,
+    'Only none, opacity, transform, colors and the exact Input/Textarea bracket transition may ship'
   );
   assert.doesNotMatch(utilityLayer, /@keyframes/, 'The utilities layer must not define keyframes');
 });
@@ -835,6 +873,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'AspectRatio',
       'Cluster',
       'Divider',
+      'Dropzone',
       'Gauge',
       'Heading',
       'Icon',
@@ -857,6 +896,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Tooltip',
       'VisuallyHidden',
       'cn',
+      'dropzoneVariants',
       'labelVariants',
       'progressBarVariants',
       'statusDotVariants',
@@ -865,6 +905,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     ],
     'Only approved components and cn are public runtime exports'
   );
+  assert.equal(typeof exported.Dropzone, 'function', 'Dropzone must be a plain function with no public ref API');
+  assert.equal(typeof exported.dropzoneVariants, 'function', 'Dropzone recipe must be public');
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
   // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
@@ -935,6 +977,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Divider',
     'DividerOrientation',
     'DividerProps',
+    'Dropzone',
+    'DropzoneProps',
     'Gauge',
     'GaugeProps',
     'GaugeSize',
@@ -1005,6 +1049,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'cn',
+    'dropzoneVariants',
     'labelVariants',
     'progressBarVariants',
     'statusDotVariants',
@@ -1012,6 +1057,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'tooltipVariants'
   ]);
   for (const name of [
+    'Dropzone',
+    'DropzoneProps',
+    'dropzoneVariants',
     'Divider',
     'DividerOrientation',
     'DividerProps',
@@ -1091,6 +1139,16 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   }
   const { createElement } = await import('react');
   const { renderToString } = await import('react-dom/server');
+  const dropzoneHtml = renderToString(
+    createElement(exported.Dropzone, { onFiles: () => undefined, accept: 'image/*', multiple: true })
+  );
+  assert.match(dropzoneHtml, /^<button[^>]*type="button"[^>]*data-state="idle"/);
+  assert.match(
+    dropzoneHtml,
+    /Drag, paste or upload<\/span><\/button><input type="file" hidden="" tabindex="-1" accept="image\/\*" multiple=""\/>$/
+  );
+  assert.match(dropzoneHtml, /aria-hidden="true"/);
+  assert.doesNotMatch(dropzoneHtml, /name=|required=|onFiles=|aria-live=|is-over/);
   assert.equal(renderToString(createElement(exported.Portal, { children: 'Server layer' })), '');
   assert.equal(typeof exported.labelVariants, 'function', 'Label composition recipe must stay a public export');
   const labelHtml = renderToString(
