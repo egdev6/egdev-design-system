@@ -151,7 +151,7 @@
     "radix": "AccessibleIcon",
     "compone": "—",
     "accion": "mantener",
-    "notas": "Faltan 14 iconos (ver DECISIONES)."
+    "notas": "Implemented in @egdev/ui: one inline glyph from the closed 42-name set (25 Foundation plus 17 Lucide additions, including check, minus and plus) with sm/md/lg presets, optional currentColor fill and an optional label through Radix AccessibleIcon; decorative by default. No stylesheet; legacy `.eg-icon*` rules are unchanged. Contract: [#58](https://github.com/egdev6/egdev-design-system/issues/58)."
   },
   {
     "actual": "Field (input)",
