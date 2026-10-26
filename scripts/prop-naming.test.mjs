@@ -53,6 +53,12 @@ const postReceiptUsages = [
   { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
   { conventionId: 'files-received', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
   { conventionId: 'drop-target-label', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
+  ...['quotation-text', 'trailing-text-accent', 'quotation-source', 'visual-treatment', 'surface-material-tone'].map(
+    (conventionId) => ({
+      conventionId,
+      source: 'packages/ui/src/atoms/pull-quote/types.ts#PullQuoteProps'
+    })
+  ),
   {
     conventionId: 'aspect-ratio',
     source: 'packages/ui/src/primitives/aspect-ratio/types.ts#AspectRatioProps'

@@ -431,6 +431,16 @@
           "symbol": "DropzoneProps",
           "revision": "sha256:e5291d6462a6cbbb46e2b5a2ed7cb1d66437ff049d60e77229599395a1dced03"
         }
+      },
+      {
+        "component": "PullQuote",
+        "type": "PullQuoteVariant (pull|display)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/pull-quote/types.ts",
+          "symbol": "PullQuoteProps",
+          "revision": "sha256:a80b89c12589a3afe7dfc16fa86797bd860f12f839946ec189da60277e8f05d4"
+        }
       }
     ]
   },
@@ -487,6 +497,16 @@
           "path": "packages/ui/src/primitives/surface/types.ts",
           "symbol": "SurfaceProps",
           "revision": "sha256:26d0726b5034dceb74e0067c1c0df5108d351e948205bbf22b5e187b92d9c0b6"
+        }
+      },
+      {
+        "component": "PullQuote",
+        "type": "PullQuoteTone (canvas|raised)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/pull-quote/types.ts",
+          "symbol": "PullQuoteProps",
+          "revision": "sha256:a80b89c12589a3afe7dfc16fa86797bd860f12f839946ec189da60277e8f05d4"
         }
       }
     ]
@@ -2416,6 +2436,16 @@
           "symbol": "HeadingProps",
           "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
         }
+      },
+      {
+        "component": "PullQuote",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/pull-quote/types.ts",
+          "symbol": "PullQuoteProps",
+          "revision": "sha256:a80b89c12589a3afe7dfc16fa86797bd860f12f839946ec189da60277e8f05d4"
+        }
       }
     ]
   },
@@ -2433,7 +2463,18 @@
       "scope": "convention:quotation-text",
       "contentHash": "sha256:55c7384314a8f6363ee004e5cfa486ca220fdc32cd55d31fce65e8362c484dea"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "PullQuote",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/pull-quote/types.ts",
+          "symbol": "PullQuoteProps",
+          "revision": "sha256:a80b89c12589a3afe7dfc16fa86797bd860f12f839946ec189da60277e8f05d4"
+        }
+      }
+    ]
   },
   {
     "id": "quotation-source",
@@ -2449,7 +2490,18 @@
       "scope": "convention:quotation-source",
       "contentHash": "sha256:a0be51762732ed05c486336e61ea031fb22a3045c0c30cbe5df139a15414527f"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "PullQuote",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/pull-quote/types.ts",
+          "symbol": "PullQuoteProps",
+          "revision": "sha256:a80b89c12589a3afe7dfc16fa86797bd860f12f839946ec189da60277e8f05d4"
+        }
+      }
+    ]
   },
   {
     "id": "keyboard-shortcut-hint",
