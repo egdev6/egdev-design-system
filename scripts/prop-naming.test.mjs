@@ -38,7 +38,9 @@ const postReceiptUsages = [
   { conventionId: 'icon-glyph-name', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
   { conventionId: 'filled-glyph', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
-  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' }
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' }
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({

@@ -42,17 +42,27 @@ test('theme.css keeps the Tailwind color reset instead of a global reset', () =>
   assert.doesNotMatch(themeSource, globalReset, 'only the color namespace may be reset');
 });
 
-test('theme.css declares exactly 166 utility variables, 16 inline aliases, and 55 root variables', () => {
-  assert.equal(extractDeclarations(themeBlock).length, 166, 'utility namespace declaration count');
+test('theme.css declares exactly 167 utility variables, 16 inline aliases, and 55 root variables', () => {
+  assert.equal(extractDeclarations(themeBlock).length, 167, 'utility namespace declaration count');
   assert.equal(extractDeclarations(inlineBlock).length, 16, 'inline spacing alias count');
   assert.equal(extractDeclarations(rootBlock).length, 55, 'root declaration count');
-  assert.equal(extractDeclarations(themeSource).length, 237, 'total declaration count');
+  assert.equal(extractDeclarations(themeSource).length, 238, 'total declaration count');
 });
 
 test('theme.css declares the decorative pulse animation token with its keyframes', () => {
   const pulse = extractDeclarations(themeBlock).find(({ name }) => name === '--animate-pulse');
   assert.equal(pulse?.value, 'pulse 2s var(--ease-snappy) infinite', 'pulse animation token value');
   assert.match(themeBlock, /@keyframes\s+pulse\s*\{\s*50%\s*\{\s*opacity:\s*0\.5;\s*\}\s*\}/, 'pulse keyframes');
+});
+
+test('theme.css declares the indeterminate spin animation token with its keyframes', () => {
+  const spin = extractDeclarations(themeBlock).find(({ name }) => name === '--animate-spin');
+  assert.equal(spin?.value, 'spin 1s linear infinite', 'spin animation token value');
+  assert.match(
+    themeBlock,
+    /@keyframes\s+spin\s*\{\s*to\s*\{\s*transform:\s*rotate\(360deg\);\s*\}\s*\}/,
+    'spin keyframes'
+  );
 });
 
 test('theme.css preserves all 51 aliases and has no duplicates, missing targets, or cycles', () => {
@@ -89,14 +99,15 @@ test('package publishes compiled tokens and keeps backward CSS exports', () => {
   assert.ok(manifest.files.includes('dist'), 'compiled artifact must ship');
 });
 
-test('compiled dist/tokens.css exposes the 237 manual variables and preserves the original 168 values', () => {
+test('compiled dist/tokens.css exposes the 238 manual variables and preserves the original 168 values', () => {
   const artifactPath = at('../dist/tokens.css');
   assert.ok(existsSync(artifactPath), 'dist/tokens.css missing — run pnpm tokens before this test');
   const artifact = readFileSync(artifactPath, 'utf8');
   assert.doesNotMatch(artifact, /@theme/, 'compiled artifact must not keep the @theme at-rule');
   const compiled = toDeclarationMap(artifact);
-  assert.equal(compiled.size, 237, 'compiled artifact must expose 237 variables');
+  assert.equal(compiled.size, 238, 'compiled artifact must expose 238 variables');
   assert.match(artifact, /@keyframes\s+pulse\s*\{/, 'compiled artifact must ship the pulse keyframes');
+  assert.match(artifact, /@keyframes\s+spin\s*\{/, 'compiled artifact must ship the spin keyframes');
   const parity = compareParity(artifact, themeSource);
   assert.deepEqual(parity.missing, [], 'compiled artifact dropped tokens');
   assert.deepEqual(parity.extra, [], 'compiled artifact invented tokens');

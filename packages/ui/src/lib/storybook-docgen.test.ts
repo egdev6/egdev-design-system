@@ -129,6 +129,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect([...new Set(modules)].sort()).toEqual([
       './atoms/gauge',
       './atoms/icon',
+      './atoms/spinner',
       './lib/cn',
       './primitives/aspect-ratio',
       './primitives/divider',
@@ -151,6 +152,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Skeleton',
       'Slot',
       'Slottable',
+      'Spinner',
       'Stack',
       'VisuallyHidden',
       'cn',
@@ -691,4 +693,75 @@ describe('Icon glyph metadata contract', () => {
       expect(props[prop], prop).toBeUndefined();
     }
   });
+});
+
+describe('Spinner passive metadata contract', () => {
+  it('keeps the size union and annotates exactly label (text) and size (select)', () => {
+    const file = ast(source('atoms/spinner/types.ts'));
+    const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'SpinnerSize');
+    expect(alias && ts.isTypeAliasDeclaration(alias) ? alias.type.getText(file) : undefined).toBe("'sm' | 'md' | 'lg'");
+    const properties = ownProps(file, ['SpinnerProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['label', 'size']);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(property.questionToken, `Spinner.${name} stays optional`).toBeTruthy();
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `Spinner.${name} control`).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe(name === 'label' ? 'text' : 'select');
+      const defaultTag = tags.find((tag) => tag.tagName.text === 'default');
+      // An absent label is a derived decorative rule, not a fixed default value.
+      expect(ts.getTextOfJSDocComment(defaultTag?.comment)).toBe(name === 'label' ? undefined : 'md');
+    }
+  });
+
+  it('omits exactly the contract-owned span props and exposes no ref or asChild', () => {
+    const file = ast(source('atoms/spinner/types.ts'));
+    const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'SpinnerProps');
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing SpinnerProps declaration');
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const union = node.typeArguments[1];
+        if (union && ts.isUnionTypeNode(union)) {
+          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual(['children', 'role', 'aria-hidden', 'aria-live']);
+    expect(alias.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild/);
+  });
+
+  it('binds the CVA default size to the documented md preset', () => {
+    expect(defaults(source('atoms/spinner/types.ts'), true)).toEqual({ size: 'md' });
+  });
+
+  it('extracts optional label/size, the size choices, real defaults and documented native rows', () => {
+    const doc = parser.parse(source('atoms/spinner/Spinner.tsx')).find((item) => item.displayName === 'Spinner');
+    if (!doc) {
+      throw new Error('Missing docgen for Spinner');
+    }
+    const { props } = doc;
+    expect(props.label).toMatchObject({ required: false, tags: { control: 'text' } });
+    expect(props.label?.type.name).toBe('string');
+    expect(props.label?.defaultValue ?? null).toBeNull();
+    expect(props.label?.description).toMatch(/When omitted, empty or whitespace-only.*decorative/s);
+    expect(props.size).toMatchObject({ required: false, tags: { control: 'select' } });
+    expect(props.size?.type.value?.map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
+      'lg',
+      'md',
+      'sm'
+    ]);
+    expect(normalize(props.size?.defaultValue?.value)).toBe('md');
+    for (const prop of ['id', 'title', 'className', 'style']) {
+      expect(props[prop], `Spinner native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live', 'tone', 'color']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
 });

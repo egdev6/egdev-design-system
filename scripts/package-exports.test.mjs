@@ -225,11 +225,45 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
     /animation:\s*none\s*;/,
     'Reduced-motion preferences must stop the pulse'
   );
-  // The pulse is the only animation utility; transitions are limited to the pre-existing
-  // static Gauge transition-none (transition-property: none) and never reach the Skeleton.
-  assert.doesNotMatch(utilityLayer, /\.animate-(?!pulse)\w/, 'Only the approved pulse animation utility may ship');
+  // Pulse (Skeleton) and spin (Spinner, #69) are the only approved animation utilities; transitions
+  // are limited to the pre-existing static Gauge transition-none and never reach the Skeleton.
+  assert.doesNotMatch(
+    utilityLayer,
+    /\.animate-(?!pulse\b|spin\b|none\b)\w/,
+    'Only the approved pulse and spin animation utilities may ship'
+  );
   assert.doesNotMatch(utilityLayer, /\.transition-(?!none)\w/, 'No animated transition utility may ship');
   assert.doesNotMatch(utilityLayer, /@keyframes/, 'The utilities layer must not define keyframes');
+});
+
+test('UI ships the Spinner icon-scale, stroke and canonical spin utilities with their keyframes', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  for (const [selector, value] of [
+    ['.size-4', 'var\\(--space-4\\)'],
+    [String.raw`.size-\(--icon-size\)`, 'var\\(--icon-size\\)'],
+    ['.size-7', 'var\\(--space-7\\)']
+  ]) {
+    const body = rule(selector);
+    assert.match(body, new RegExp(`width:\\s*${value}\\s*;`), `${selector} width`);
+    assert.match(body, new RegExp(`height:\\s*${value}\\s*;`), `${selector} height`);
+  }
+  assert.match(rule('.size-full'), /width:\s*100%\s*;/);
+  assert.match(rule('.inline-flex'), /display:\s*inline-flex\s*;/);
+  assert.match(rule('.fill-none'), /fill:\s*none\s*;/);
+  assert.match(rule('.stroke-current'), /stroke:\s*currentcolor\s*;/i);
+  assert.match(rule(String.raw`.stroke-\(length\:--icon-stroke\)`), /stroke-width:\s*var\(--icon-stroke\)\s*;/);
+  // D3: one linear turn per second through the canonical token, with a native fallback.
+  assert.match(rule('.animate-spin'), /animation:\s*var\(--animate-spin,\s*spin 1s linear infinite\)\s*;/);
+  const reducedMotion = cssBlock(utilities, /@media \(prefers-reduced-motion: reduce\)\s*\{/);
+  assert.match(cssBlock(reducedMotion, /\.motion-reduce\\:animate-none\s*\{/), /animation:\s*none\s*;/);
+  // Keyframes ship outside the utilities layer so native consumers animate without Tailwind.
+  assert.match(css, /@keyframes spin\s*\{\s*to\s*\{\s*transform:\s*rotate\(360deg\);\s*\}\s*\}/);
+  assert.doesNotMatch(css, /\.eg-spinner[^{]*\{/, 'Spinner has no stylesheet: its marker carries no rule');
 });
 
 test('UI ships the approved Gauge geometry in the components layer', () => {
@@ -390,6 +424,7 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
       'Skeleton',
       'Slot',
       'Slottable',
+      'Spinner',
       'Stack',
       'VisuallyHidden',
       'cn',
@@ -401,6 +436,7 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
   // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
   assert.equal(typeof exported.Skeleton, 'function', 'Skeleton must be a named root export');
+  assert.equal(typeof exported.Spinner, 'function', 'Spinner must be a plain function component without a ref API');
   assert.equal(
     exported.VisuallyHidden?.$$typeof,
     Symbol.for('react.forward_ref'),
@@ -453,6 +489,9 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'Slot',
     'SlotProps',
     'Slottable',
+    'Spinner',
+    'SpinnerProps',
+    'SpinnerSize',
     'Stack',
     'StackProps',
     'VisuallyHidden',
@@ -487,6 +526,9 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'Slot',
     'SlotProps',
     'Slottable',
+    'Spinner',
+    'SpinnerProps',
+    'SpinnerSize',
     'Stack',
     'StackProps',
     'Cluster',
@@ -559,6 +601,31 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
   for (const ratio of [0, -1, Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
     const fallback = renderToString(createElement(exported.AspectRatio, { ratio }, 'Fallback'));
     assert.ok(fallback.includes('padding-bottom:100%'), `Invalid ratio ${ratio} must fall back to a square`);
+  }
+  // Spinner: labelled status region or decorative hidden arc, Icon-scale presets, no ref or state.
+  const status = renderToString(createElement(exported.Spinner, { label: 'Loading results', id: 'loading' }));
+  assert.match(
+    status,
+    /^<span id="loading" role="status" class="eg-spinner inline-flex shrink-0 size-\(--icon-size\)">/
+  );
+  assert.match(
+    status,
+    /<svg class="[^"]*animate-spin motion-reduce:animate-none" aria-hidden="true" focusable="false"/
+  );
+  assert.match(status, /<span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Loading results<\/span><\/span>$/);
+  assert.doesNotMatch(status, /aria-hidden="true" class="eg-spinner|aria-live=|tabindex=|data-state/);
+  for (const label of [undefined, '', '  ']) {
+    const decorative = renderToString(createElement(exported.Spinner, { label }));
+    assert.match(decorative, /^<span aria-hidden="true" class="eg-spinner /, 'Unlabelled spinners are decorative');
+    assert.doesNotMatch(decorative, /role=|clip:rect/, 'Decorative spinners have no status or hidden text');
+  }
+  for (const [size, utility] of [
+    ['sm', 'size-4'],
+    ['md', 'size-(--icon-size)'],
+    ['lg', 'size-7']
+  ]) {
+    const sized = renderToString(createElement(exported.Spinner, { size }));
+    assert.ok(sized.includes(`class="eg-spinner inline-flex shrink-0 ${utility}"`), `Spinner ${size} preset`);
   }
   const geometry = [
     ['line', 'sm', 'h-3', 'rounded-sm'],
