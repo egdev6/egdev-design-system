@@ -22,10 +22,11 @@ const components = [
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
   ['Input', 'atoms/input'],
-  ['Logo', 'atoms/logo'],
-  ['StatusDot', 'atoms/status-dot'],
   ['Kbd', 'atoms/kbd'],
+  ['Logo', 'atoms/logo'],
   ['ProductMark', 'atoms/product-mark'],
+  ['ProgressBar', 'atoms/progress-bar'],
+  ['StatusDot', 'atoms/status-dot'],
   ['Textarea', 'atoms/textarea']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
@@ -105,6 +106,14 @@ const expected: Record<string, Record<string, string | false>> = {
   logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
+  progressbar: {
+    value: 'number',
+    label: 'text',
+    valueText: 'text',
+    size: 'select',
+    variant: 'select',
+    edge: 'boolean'
+  },
   textarea: { variant: 'select' },
   input: { size: 'select', variant: 'select', type: 'select', icon: false },
   productmark: { monogram: 'text', label: 'text', href: 'text' },
@@ -128,6 +137,7 @@ const ownPropCounts: Record<string, number> = {
   logo: 4,
   statusdot: 2,
   kbd: 2,
+  progressbar: 6,
   textarea: 1,
   input: 4,
   productmark: 3,
@@ -335,6 +345,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
+    ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }],
     ['Textarea', { variant: '"default"' }],
     ['Icon', { size: '"md"', filled: 'false' }],
     ['Input', { size: '"md"', variant: '"default"', type: '"text"' }],
@@ -523,6 +534,27 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains ProgressBar rows, ordered presets and requiredness without injecting args', () => {
+    const { argTypes, args } = story('ProgressBar');
+    expect(argTypes.value?.type).toMatchObject({ name: 'number', required: true });
+    expect(argTypes.value?.control).toEqual({ type: 'number' });
+    expect(argTypes.value?.table?.defaultValue).toBeUndefined();
+    for (const prop of ['label', 'valueText']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'string', required: false });
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+    }
+    expect(argTypes.size?.options).toEqual(['sm', 'lg']);
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['default', 'muted']);
+    expect(argTypes.edge?.type).toMatchObject({ name: 'boolean', required: false });
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'aria-describedby', 'className', 'style']) {
+      expect(argTypes[prop], prop).toEqual(story('ProgressBar', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'role', 'max', 'getValueLabel', 'aria-label', 'aria-hidden']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

@@ -10,6 +10,7 @@
 @source "../packages/ui/src/atoms/kbd/Kbd.stories.tsx";
 @source "../packages/ui/src/atoms/logo/Logo.stories.tsx";
 @source "../packages/ui/src/atoms/product-mark/ProductMark.stories.tsx";
+@source "../packages/ui/src/atoms/progress-bar/ProgressBar.stories.tsx";
 @source "../packages/ui/src/atoms/spinner/Spinner.stories.tsx";
 @source "../packages/ui/src/atoms/status-dot/StatusDot.stories.tsx";
 @source "../packages/ui/src/atoms/textarea/Textarea.stories.tsx";

@@ -23,6 +23,16 @@
           "symbol": "GaugeProps",
           "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
         }
+      },
+      {
+        "component": "ProgressBar",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
       }
     ]
   },
@@ -114,6 +124,16 @@
         }
       },
       {
+        "component": "ProgressBar",
+        "type": "ProgressBarSize (sm|lg)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
+      },
+      {
         "component": "Input",
         "type": "InputSize (md|sm)",
         "status": "existing",
@@ -168,6 +188,16 @@
           "path": "packages/ui/src/primitives/label/types.ts",
           "symbol": "LabelProps",
           "revision": "sha256:afb762cb8e578348f234a11763dcdbda2c7303cfc02fdd3f385e9f4114ac93a3"
+        }
+      },
+      {
+        "component": "ProgressBar",
+        "type": "ProgressBarVariant (default|muted)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
         }
       },
       {
@@ -352,6 +382,16 @@
         }
       },
       {
+        "component": "ProgressBar",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
+      },
+      {
         "component": "Logo",
         "type": "string",
         "status": "existing",
@@ -460,6 +500,16 @@
           "path": "packages/ui/src/atoms/gauge/types.ts",
           "symbol": "GaugeProps",
           "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
+        }
+      },
+      {
+        "component": "ProgressBar",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
         }
       }
     ]
@@ -963,7 +1013,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "ProgressBar",
+        "type": "boolean (size='sm' only; false with size='lg')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
+      }
+    ]
   },
   {
     "id": "choice-options",

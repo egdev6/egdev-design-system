@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Input, Kbd, Label, Logo, ProductMark, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, Textarea, VisuallyHidden, surfaceVariants } from '@egdev/ui';
+import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Input, Kbd, Label, Logo, ProductMark, ProgressBar, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, Textarea, VisuallyHidden, progressBarVariants, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -52,6 +52,9 @@ import type {
   LogoSize,
   LogoVariant,
   ProductMarkProps,
+  ProgressBarProps,
+  ProgressBarSize,
+  ProgressBarVariant,
   SkeletonProps,
   SkeletonSize,
   SkeletonVariant,
@@ -199,6 +202,24 @@ export function KbdSamples() {
     createElement(Kbd, { children: 'Ctrl', id: 'kbd-ctrl' }), ' + ',
     createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
     createElement(Kbd, kbdNative));
+}
+export const progressAnnounced: ProgressBarProps = { label: 'Upload progress', value: 45, id: 'progress-upload' };
+export const progressNative: ProgressBarProps = {
+  value: 10, id: 'progress-native', title: 'Scroll position', className: 'w-full w-48 consumer-progress'
+};
+const progressGoalSize: ProgressBarSize = 'lg';
+const progressSeries: ProgressBarVariant = 'muted';
+export const progressEdgeRecipe: string = progressBarVariants({ size: 'sm', edge: true });
+export function ProgressBarSamples({ value = 45 }: { value?: number }) {
+  return createElement('section', { 'aria-label': 'Progress indicators' },
+    createElement(ProgressBar, { ...progressAnnounced, value }),
+    // Decorative: the visible counter carries the progress as text (D4).
+    createElement('p', { id: 'progress-counter' }, '03/12', createElement(ProgressBar, { value: 25, id: 'progress-decorative' })),
+    createElement(ProgressBar, { size: progressGoalSize, label: 'Subscriber goal', value: 74, valueText: '37 of 50 subscribers', id: 'progress-goal' }),
+    createElement(ProgressBar, { variant: progressSeries, label: 'Last week', value: 140, id: 'progress-muted' }),
+    createElement('span', { id: 'progress-edge-host', className: 'relative overflow-hidden' }, '03 Think',
+      createElement(ProgressBar, { edge: true, label: 'Section progress', value: 40, id: 'progress-edge' })),
+    createElement(ProgressBar, progressNative));
 }
 // Textarea: a bare native control; the consumer names it and owns value state (D1, D9).
 export const textareaRef = createRef<HTMLTextAreaElement>();
@@ -354,7 +375,7 @@ export function DividerSamples({ semantic }: { semantic?: boolean }) {
       ? { orientation: dividerOrientation, decorative: false, className: 'consumer-rule' }
       : { className: 'consumer-rule' }));
 }
-export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, headingLevel, iconName, spinnerLoading, statusDotPulse, inputValue }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; headingLevel?: HeadingLevel; iconName?: IconName; spinnerLoading?: boolean; statusDotPulse?: boolean; inputValue?: string } = {}) {
+export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, headingLevel, iconName, spinnerLoading, statusDotPulse, inputValue, progressValue }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; headingLevel?: HeadingLevel; iconName?: IconName; spinnerLoading?: boolean; statusDotPulse?: boolean; inputValue?: string; progressValue?: number } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
@@ -372,6 +393,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(StatusDotSamples, { pulse: statusDotPulse }),
     createElement(KbdSamples),
+    createElement(ProgressBarSamples, { value: progressValue }),
     createElement(TextareaSamples),
     createElement(InputSamples, { inputValue }),
     createElement(LogoSamples),
@@ -472,6 +494,30 @@ const referencedKbd: KbdProps = { children: 'K', ref: createRef<HTMLElement>() }
 const slottedKbd: KbdProps = { children: 'K', asChild: true };
 // @ts-expect-error Kbd has a single flat treatment; there are no variants (D4).
 const variantKbd: KbdProps = { children: 'K', variant: 'raised' };
+// @ts-expect-error ProgressBar value is required.
+const missingProgressValue: ProgressBarProps = { label: 'Upload' };
+// @ts-expect-error ProgressBar value is a number in percent, not text.
+const textProgressValue: ProgressBarProps = { value: '45' };
+// @ts-expect-error D7: the lg goal bar cannot be pinned to an edge.
+const edgeGoal: ProgressBarProps = { value: 45, size: 'lg', edge: true };
+// @ts-expect-error Only sm and lg presets exist.
+const mediumProgress: ProgressBarProps = { value: 45, size: 'md' };
+// @ts-expect-error Only default and muted treatments exist.
+const brandProgress: ProgressBarProps = { value: 45, variant: 'brand' };
+// @ts-expect-error D2: the scale is fixed to 0–100; there is no max prop.
+const maxProgress: ProgressBarProps = { value: 37, max: 50 };
+// @ts-expect-error ProgressBar renders its own fill; it accepts no children.
+const childProgress: ProgressBarProps = { value: 45, children: 'Fill' };
+// @ts-expect-error Radix owns the progressbar role.
+const roleProgress: ProgressBarProps = { value: 45, role: 'meter' };
+// @ts-expect-error Radix owns aria-valuenow; value drives it.
+const valueNowProgress: ProgressBarProps = { value: 45, 'aria-valuenow': 45 };
+// @ts-expect-error label owns the accessible name and decorative state (D4).
+const hiddenProgress: ProgressBarProps = { value: 45, 'aria-hidden': false };
+// @ts-expect-error ProgressBar has no public ref API.
+const referencedProgress: ProgressBarProps = { value: 45, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error ProgressBar cannot delegate its root to a child.
+const slottedProgress: ProgressBarProps = { value: 45, asChild: true };
 // @ts-expect-error Textarea renders its value, never children (D9).
 const childrenTextarea: TextareaProps = { children: 'Draft' };
 // @ts-expect-error Only default, code and prose treatments exist (D2).
@@ -913,6 +959,53 @@ function assertKbdCSS(css) {
   assert.match(css, /--tw-border-style:\s*solid/, 'The hairline border style must resolve without Tailwind');
 }
 
+// ProgressBar ships token tracks/fills, the static scale utility and token motion; no ProgressBar stylesheet.
+function assertProgressBarCSS(css) {
+  for (const utility of [
+    '.bg-border-subtle',
+    '.bg-surface-0',
+    '.shadow-well',
+    '.bg-bg-glass',
+    '.inset-x-0',
+    '.bottom-0',
+    '.pointer-events-none',
+    '.bg-fg-brand-default',
+    '.bg-fg-muted',
+    '.shadow-edge-strong',
+    '.origin-left',
+    '.transition-transform',
+    'motion-reduce\\:transition-none'
+  ]) {
+    assert.ok(css.includes(utility), 'Missing ProgressBar utility ' + utility);
+  }
+  assert.match(
+    css,
+    /\.h-0\\\.5\s*\{[^}]*height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*0\.5\)/,
+    'sm hairline height'
+  );
+  assert.match(css, /\.h-2\\\.5\s*\{[^}]*height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*2\.5\)/, 'lg goal height');
+  assert.match(
+    css,
+    /\.bg-\\\[image\\:var\\\(--gradient-progress\\\)\\\]\s*\{[^}]*background-image:\s*var\(--gradient-progress\)/,
+    'lg gradient fill'
+  );
+  assert.match(
+    css,
+    /\.scale-x-\\\[var\\\(--eg-progress-value\\\)\\\]\s*\{[^}]*--tw-scale-x:\s*var\(--eg-progress-value\)[^}]*scale:\s*var\(--tw-scale-x\)\s+var\(--tw-scale-y\)/,
+    'The fill scale must read --eg-progress-value'
+  );
+  assert.match(css, /--tw-scale-y:\s*1/, 'The y scale must resolve without Tailwind');
+  assert.match(
+    css,
+    /\.duration-\\\[var\\\(--duration-base\\\)\\\]\s*\{[^}]*transition-duration:\s*var\(--duration-base\)/
+  );
+  assert.match(css, /\.ease-\\\[var\\\(--ease-out\\\)\\\]\s*\{[^}]*transition-timing-function:\s*var\(--ease-out\)/);
+  assert.doesNotMatch(
+    css,
+    /\.eg-progress-fill[^{]*\{/,
+    'ProgressBar has no stylesheet: its fill marker carries no rule'
+  );
+}
 // Textarea ships its well, sheet and state utilities from the token theme; no Textarea stylesheet.
 function assertTextareaCSS(css) {
   for (const utility of [
@@ -1116,6 +1209,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Logo',
   'Portal',
   'ProductMark',
+  'ProgressBar',
   'Skeleton',
   'Slot',
   'Slottable',
@@ -1128,6 +1222,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'VisuallyHidden',
   'cn',
   'labelVariants',
+  'progressBarVariants',
   'statusDotVariants',
   'surfaceVariants'
 ]);
@@ -1139,6 +1234,7 @@ ${assertSpinnerCSS.toString()}
 ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertProgressBarCSS.toString()}
 ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertProductMarkCSS.toString()}
@@ -1150,6 +1246,7 @@ assertSpinnerCSS(shippedStyles);
 assertLogoCSS(shippedStyles);
 assertStatusDotCSS(shippedStyles);
 assertKbdCSS(shippedStyles);
+assertProgressBarCSS(shippedStyles);
 assertTextareaCSS(shippedStyles);
 assertInputCSS(shippedStyles);
 assertProductMarkCSS(shippedStyles);
@@ -1179,7 +1276,7 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, SlotSample } from './consumer.ts';
+import { App, SlotSample, progressEdgeRecipe } from './consumer.ts';
 const slotDocument = new JSDOM(renderToString(createElement(SlotSample)));
 try {
   const target = slotDocument.window.document.body;
@@ -1445,6 +1542,45 @@ for (const frame of [square, wide]) {
   assert.ok(nativeKbd.className.startsWith('eg-kbd '), 'The public marker leads the root classes');
   assert.ok(nativeKbd.className.endsWith(' ms-2 consumer-kbd'), 'Consumer layout classes merge last');
   assert.ok(!nativeKbd.className.split(' ').includes('ms-1'), 'Conflicting margin utilities resolve through cn()');
+  const bars = [...document.querySelectorAll('.eg-progress')];
+  assert.equal(bars.length, 6, 'SSR must render ProgressBar samples');
+  for (const bar of bars) {
+    assert.equal(bar.getAttribute('role'), 'progressbar', 'Radix owns the progressbar role');
+    assert.equal(bar.getAttribute('aria-valuemin'), '0');
+    assert.equal(bar.getAttribute('aria-valuemax'), '100');
+    assert.equal(bar.children.length, 1, 'One fill per bar');
+    assert.ok(bar.firstElementChild.classList.contains('eg-progress-fill'));
+    assert.equal(bar.hasAttribute('tabindex'), false);
+  }
+  const upload = document.getElementById('progress-upload');
+  assert.equal(upload.getAttribute('aria-label'), 'Upload progress');
+  assert.equal(upload.getAttribute('aria-valuenow'), '45');
+  assert.equal(upload.getAttribute('aria-valuetext'), '45%');
+  assert.equal(upload.getAttribute('data-state'), 'loading');
+  assert.equal(upload.hasAttribute('aria-hidden'), false);
+  assert.equal(upload.firstElementChild.getAttribute('style'), '--eg-progress-value:0.45', 'Only the geometry custom property is inline');
+  const decorativeBar = document.getElementById('progress-decorative');
+  assert.equal(decorativeBar.getAttribute('aria-hidden'), 'true', 'Without a label the bar is decorative');
+  assert.equal(decorativeBar.hasAttribute('aria-label'), false);
+  assert.equal(document.getElementById('progress-counter').textContent, '03/12');
+  const goal = document.getElementById('progress-goal');
+  assert.equal(goal.getAttribute('aria-valuetext'), '37 of 50 subscribers');
+  for (const name of ['h-2.5', 'rounded-full', 'bg-surface-0', 'shadow-well']) assert.ok(goal.classList.contains(name), 'lg well ' + name);
+  for (const name of ['bg-[image:var(--gradient-progress)]', 'shadow-edge-strong', 'rounded-[inherit]']) {
+    assert.ok(goal.firstElementChild.classList.contains(name), 'lg fill ' + name);
+  }
+  const mutedBar = document.getElementById('progress-muted');
+  assert.equal(mutedBar.getAttribute('aria-valuenow'), '100', 'Out-of-range values clamp to 100');
+  assert.equal(mutedBar.getAttribute('data-state'), 'complete');
+  assert.ok(mutedBar.firstElementChild.classList.contains('bg-fg-muted'));
+  assert.ok(!mutedBar.firstElementChild.classList.contains('bg-fg-brand-default'));
+  const edgeBar = document.getElementById('progress-edge');
+  assert.equal(edgeBar.className, progressEdgeRecipe, 'The edge strip renders the public recipe');
+  const nativeBar = document.getElementById('progress-native');
+  assert.equal(nativeBar.getAttribute('title'), 'Scroll position');
+  assert.ok(nativeBar.className.startsWith('eg-progress '), 'The public marker leads the root classes');
+  assert.ok(nativeBar.className.endsWith(' w-48 consumer-progress'), 'Consumer layout classes merge last');
+  assert.ok(!nativeBar.className.split(' ').includes('w-full'), 'Conflicting width utilities resolve through cn()');
   const notes = document.getElementById('textarea-notes');
   assert.ok(notes, 'SSR must render Textarea samples');
   assert.equal(notes.tagName, 'TEXTAREA', 'Textarea renders one native textarea root');
@@ -1851,6 +1987,24 @@ try {
   }
   assert.equal(document.getElementById('kbd-command').children[0].getAttribute('aria-hidden'), 'true');
   stage('kbd:passive:complete');
+  stage('progress:rerender:start');
+  const upload = () => document.getElementById('progress-upload');
+  assert.equal(document.querySelectorAll('.eg-progress').length, 6, 'Consumer ProgressBars must mount');
+  assert.equal(upload().tabIndex, -1, 'A passive progressbar must never become a Tab stop');
+  await act(async () => root.render(createElement(App, { gaugeValue: 42.5, progressValue: 100 })));
+  assert.equal(upload().getAttribute('aria-valuenow'), '100');
+  assert.equal(upload().getAttribute('data-state'), 'complete');
+  assert.equal(upload().firstElementChild.getAttribute('data-state'), 'complete', 'Radix mirrors state on the fill');
+  assert.equal(upload().firstElementChild.style.getPropertyValue('--eg-progress-value'), '1');
+  await act(async () => root.render(createElement(App, { gaugeValue: 42.5, progressValue: NaN })));
+  assert.equal(upload().getAttribute('data-state'), 'indeterminate', 'Non-finite values are indeterminate');
+  assert.equal(upload().hasAttribute('aria-valuenow'), false);
+  assert.equal(upload().hasAttribute('aria-valuetext'), false);
+  assert.equal(upload().firstElementChild.style.getPropertyValue('--eg-progress-value'), '0', 'Indeterminate fill stays empty');
+  await act(async () => root.render(createElement(App, { gaugeValue: 42.5, progressValue: -5 })));
+  assert.equal(upload().getAttribute('aria-valuenow'), '0', 'Negative values clamp to 0');
+  assert.equal(upload().getAttribute('data-state'), 'loading');
+  stage('progress:rerender:complete');
   stage('textarea:native:start');
   const notesNode = document.getElementById('textarea-notes');
   assert.ok(textareaRef.current === notesNode, 'Textarea must forward its HTMLTextAreaElement ref');
@@ -1980,7 +2134,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -2069,6 +2223,7 @@ ${assertSpinnerCSS.toString()}
 ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertProgressBarCSS.toString()}
 ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertProductMarkCSS.toString()}
@@ -2085,6 +2240,7 @@ assertSpinnerCSS(emitted);
 assertLogoCSS(emitted);
 assertStatusDotCSS(emitted);
 assertKbdCSS(emitted);
+assertProgressBarCSS(emitted);
 assertTextareaCSS(emitted);
 assertInputCSS(emitted);
 assertProductMarkCSS(emitted);
@@ -2132,6 +2288,7 @@ assertSpinnerCSS(twCss);
 assertLogoCSS(twCss);
 assertStatusDotCSS(twCss);
 assertKbdCSS(twCss);
+assertProgressBarCSS(twCss);
 assertTextareaCSS(twCss);
 assertInputCSS(twCss);
 assertProductMarkCSS(twCss);

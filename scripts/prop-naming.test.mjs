@@ -56,6 +56,15 @@ const postReceiptUsages = [
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
+  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  {
+    conventionId: 'measurement-text-equivalent',
+    source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps'
+  },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  { conventionId: 'container-edge-placement', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/textarea/types.ts#TextareaProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/input/types.ts#InputProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/input/types.ts#InputProps' },

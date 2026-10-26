@@ -11,6 +11,7 @@
 @source "../atoms/kbd/types.ts";
 @source "../atoms/logo/types.ts";
 @source "../atoms/product-mark/types.ts";
+@source "../atoms/progress-bar/types.ts";
 @source "../atoms/spinner/types.ts";
 @source "../atoms/status-dot/types.ts";
 @source "../atoms/textarea/types.ts";
