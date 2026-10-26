@@ -300,6 +300,16 @@
           "symbol": "KbdProps",
           "revision": "sha256:1c6757b44bd0bff150128b8ccd9d4ee6b930b3d432b42a4dafe8c992d63a3de9"
         }
+      },
+      {
+        "component": "ProductMark",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/product-mark/types.ts",
+          "symbol": "ProductMarkProps",
+          "revision": "sha256:91de5ae435b6a408065592d3b7b44085021c71a15230c868081efddb48d2a8c4"
+        }
       }
     ]
   },
@@ -845,7 +855,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "ProductMark",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/product-mark/types.ts",
+          "symbol": "ProductMarkProps",
+          "revision": "sha256:91de5ae435b6a408065592d3b7b44085021c71a15230c868081efddb48d2a8c4"
+        }
+      }
+    ]
   },
   {
     "id": "container-edge-placement",

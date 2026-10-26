@@ -21,7 +21,8 @@ const components = [
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
-  ['Kbd', 'atoms/kbd']
+  ['Kbd', 'atoms/kbd'],
+  ['ProductMark', 'atoms/product-mark']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -98,6 +99,7 @@ const expected: Record<string, Record<string, string | false>> = {
   icon: { name: 'select', size: 'select', filled: 'boolean', label: 'text' },
   spinner: { label: 'text', size: 'select' },
   kbd: { children: 'text', label: 'text' },
+  productmark: { monogram: 'text', label: 'text', href: 'text' },
   gauge: {
     label: 'text',
     value: 'number',
@@ -116,6 +118,7 @@ const ownPropCounts: Record<string, number> = {
   skeleton: 3,
   spinner: 2,
   kbd: 2,
+  productmark: 3,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,
@@ -459,6 +462,26 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains ProductMark required monogram/label and optional href text rows across both branches', () => {
+    const { argTypes, args } = story('ProductMark');
+    for (const prop of ['monogram', 'label']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'string', required: true });
+      expect(argTypes[prop]?.control, prop).toEqual({ type: 'text' });
+    }
+    expect(argTypes.href?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.href?.control).toEqual({ type: 'text' });
+    for (const prop of ['monogram', 'label', 'href']) {
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+    }
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'className', 'target', 'rel']) {
+      expect(argTypes[prop], prop).toEqual(story('ProductMark', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-label', 'aria-hidden', 'size', 'onClick']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });
