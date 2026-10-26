@@ -25,6 +25,7 @@
 @source "../atoms/select/types.ts";
 @source "../atoms/slider/types.ts";
 @source "../atoms/spinner/types.ts";
+@source "../atoms/stat/types.ts";
 @source "../atoms/status-dot/types.ts";
 @source "../atoms/switch/types.ts";
 @source "../atoms/textarea/types.ts";

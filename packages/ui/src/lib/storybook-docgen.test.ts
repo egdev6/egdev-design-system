@@ -184,6 +184,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/select',
       './atoms/slider',
       './atoms/spinner',
+      './atoms/stat',
       './atoms/status-dot',
       './atoms/switch',
       './atoms/textarea',
@@ -233,6 +234,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Slottable',
       'Spinner',
       'Stack',
+      'Stat',
       'StatusDot',
       'Surface',
       'Switch',
@@ -249,6 +251,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'progressBarVariants',
       'radioGroupVariants',
       'sliderVariants',
+      'statVariants',
       'statusDotVariants',
       'surfaceVariants',
       'tooltipVariants'
@@ -1349,6 +1352,90 @@ describe('Spinner passive metadata contract', () => {
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live', 'tone', 'color']) {
       expect(props[prop], prop).toBeUndefined();
     }
+  }, 20_000);
+});
+
+describe('Stat passive figure metadata contract', () => {
+  it('annotates the six own props in contract order with one control each', () => {
+    const file = ast(source('atoms/stat/types.ts'));
+    const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'StatSize');
+    expect(alias && ts.isTypeAliasDeclaration(alias) ? alias.type.getText(file) : undefined).toBe("'md' | 'sm'");
+    const expected: Record<string, string> = {
+      label: 'text',
+      value: 'false',
+      delta: 'text',
+      highlighted: 'boolean',
+      size: 'select',
+      unavailableText: 'text'
+    };
+    const properties = ownProps(file, ['StatProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(expected));
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(Boolean(property.questionToken), `Stat.${name} optionality`).toBe(!['label', 'value'].includes(name));
+      const controls = ts.getJSDocTags(property).filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `Stat.${name} control`).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe(expected[name]);
+    }
+  });
+
+  it('omits exactly children and role and exposes no ref or asChild', () => {
+    const file = ast(source('atoms/stat/types.ts'));
+    const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'StatProps');
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing StatProps declaration');
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const union = node.typeArguments[1];
+        if (union && ts.isUnionTypeNode(union)) {
+          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual(['children', 'role']);
+    expect(alias.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild/);
+  });
+
+  it('binds CVA and hook defaults to the documented constants', () => {
+    expect(defaults(source('atoms/stat/types.ts'), true)).toEqual({ size: 'md' });
+    expect(defaults(source('atoms/stat/useStat.ts'), false)).toEqual({
+      highlighted: 'false',
+      size: 'md',
+      unavailableText: 'No data'
+    });
+  });
+
+  it('extracts required label/value, the figure union reason, real defaults and native rows', () => {
+    const doc = parser.parse(source('atoms/stat/Stat.tsx')).find((item) => item.displayName === 'Stat');
+    if (!doc) {
+      throw new Error('Missing docgen for Stat');
+    }
+    const { props } = doc;
+    expect(props.label).toMatchObject({ required: true, tags: { control: 'text' } });
+    expect(props.value).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    expect(props.value?.tags).toMatchObject({ controlReason: expect.stringMatching(/union.*Default and NoData/) });
+    expect(props.delta).toMatchObject({ required: false, defaultValue: null });
+    expect(props.delta?.description).toMatch(/When\s+omitted, no delta element/);
+    for (const [prop, value] of Object.entries({ highlighted: 'false', size: 'md', unavailableText: 'No data' })) {
+      expect(normalize(props[prop]?.defaultValue?.value), prop).toBe(value);
+    }
+    expect(props.size?.type.value?.map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
+      'md',
+      'sm'
+    ]);
+    for (const prop of ['id', 'title', 'aria-describedby', 'className', 'style']) {
+      expect(props[prop], `Stat native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of ['children', 'role', 'ref', 'asChild', 'aria-live', 'aria-labelledby', 'glass', 'tone']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+    const stories = ast(source('atoms/stat/Stat.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual(['Default', 'Highlighted', 'NoData', 'Small', 'TotalsRow']);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
   }, 20_000);
 });
 

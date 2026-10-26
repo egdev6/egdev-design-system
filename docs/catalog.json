@@ -358,9 +358,9 @@
     "nivel": "atom",
     "destino": "ui",
     "radix": "—",
-    "compone": "Text",
+    "compone": "—",
     "accion": "mantener",
-    "notas": "Pierde `--glass` (usa Surface)."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/70): one live figure in a native div role=group named by its visible label (label → value → optional delta). Numbers and strings render unformatted; value={null} shows a hidden em dash with readable unavailableText. Consumer-timed highlighted emphasis (brand border and glow, light edge kept), md/sm figures on the --text-display-stat(-sm) tokens. Own Material elevated-card recipe with token utilities; Text is not composed (no matching recipe). Drops legacy --glass (D2). No Radix base, ref, asChild or stylesheet."
   },
   {
     "actual": "Mark",

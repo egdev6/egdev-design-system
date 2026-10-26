@@ -27,6 +27,7 @@ const components = [
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
+  ['Stat', 'atoms/stat'],
   ['Slider', 'atoms/slider'],
   ['RadioGroup', 'atoms/radio-group'],
   ['SearchTrigger', 'atoms/search-trigger'],
@@ -155,6 +156,14 @@ const expected: Record<string, Record<string, string | false>> = {
   icon: { name: 'select', size: 'select', filled: 'boolean', label: 'text' },
   iconbutton: { label: 'text', icon: false, variant: 'select', size: 'select', asChild: 'boolean', children: false },
   spinner: { label: 'text', size: 'select' },
+  stat: {
+    label: 'text',
+    value: false,
+    delta: 'text',
+    highlighted: 'boolean',
+    size: 'select',
+    unavailableText: 'text'
+  },
   logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
@@ -256,6 +265,7 @@ const ownPropCounts: Record<string, number> = {
   iconbutton: 6,
   skeleton: 3,
   spinner: 2,
+  stat: 6,
   logo: 4,
   statusdot: 2,
   kbd: 2,
@@ -492,6 +502,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['IconButton', { variant: '"ghost"', size: '"md"', asChild: 'false' }],
     ['Input', { size: '"md"', variant: '"default"', type: '"text"' }],
     ['Spinner', { size: '"md"' }],
+    ['Stat', { highlighted: 'false', size: '"md"', unavailableText: '"No data"' }],
     ['Select', { size: '"md"', required: 'false', disabled: 'false' }],
     ['Avatar', { size: '"md"', paused: 'false' }],
     ['Link', { asChild: 'false', external: 'false', arrow: 'true', newTabText: '"(opens in a new tab)"' }],
@@ -659,6 +670,26 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       'tabIndex',
       'contentEditable'
     ]) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Stat required label/value rows, the figure union reason and passive native rows', () => {
+    const { argTypes, args } = story('Stat');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.label?.control).toEqual({ type: 'text' });
+    expect(argTypes.value?.type).toMatchObject({ required: true });
+    expect(argTypes.value?.control).toBe(false);
+    expect(argTypes.value?.table?.disable).toBeUndefined();
+    expect(argTypes.value?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.delta?.table?.defaultValue).toBeUndefined();
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['md', 'sm']);
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'aria-describedby', 'className', 'style']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Stat', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'role', 'ref', 'asChild', 'aria-live', 'aria-labelledby']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

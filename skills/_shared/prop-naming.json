@@ -63,6 +63,16 @@
           "symbol": "SelectProps",
           "revision": "sha256:5fd68b9eeae5373ed7adeeaf90d002bf32eac62f584024114479b32bfd69f3f0"
         }
+      },
+      {
+        "component": "Stat",
+        "type": "string | number | null",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/stat/types.ts",
+          "symbol": "StatProps",
+          "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
+        }
       }
     ]
   },
@@ -293,6 +303,16 @@
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
           "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
+        }
+      },
+      {
+        "component": "Stat",
+        "type": "StatSize ('md' | 'sm')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/stat/types.ts",
+          "symbol": "StatProps",
+          "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
         }
       }
     ]
@@ -672,6 +692,16 @@
           "symbol": "SearchTriggerProps",
           "revision": "sha256:31b3eff9676b1a6646a39ed20eea22a30df4fa29741bae5d38bd89434b7d95fc"
         }
+      },
+      {
+        "component": "Stat",
+        "type": "string (visible label and group name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/stat/types.ts",
+          "symbol": "StatProps",
+          "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
+        }
       }
     ]
   },
@@ -836,6 +866,16 @@
           "path": "packages/ui/src/atoms/gauge/types.ts",
           "symbol": "GaugeProps",
           "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
+        }
+      },
+      {
+        "component": "Stat",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/stat/types.ts",
+          "symbol": "StatProps",
+          "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
         }
       }
     ]
@@ -1703,7 +1743,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Stat",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/stat/types.ts",
+          "symbol": "StatProps",
+          "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
+        }
+      }
+    ]
   },
   {
     "id": "transient-highlight",
@@ -1719,7 +1770,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Stat",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/stat/types.ts",
+          "symbol": "StatProps",
+          "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
+        }
+      }
+    ]
   },
   {
     "id": "signal-pulse",
