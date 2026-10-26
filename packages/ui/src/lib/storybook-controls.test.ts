@@ -21,6 +21,7 @@ const components = [
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
+  ['StatusDot', 'atoms/status-dot'],
   ['Kbd', 'atoms/kbd'],
   ['ProductMark', 'atoms/product-mark']
 ] as const;
@@ -98,6 +99,7 @@ const expected: Record<string, Record<string, string | false>> = {
   skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
   icon: { name: 'select', size: 'select', filled: 'boolean', label: 'text' },
   spinner: { label: 'text', size: 'select' },
+  statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
   productmark: { monogram: 'text', label: 'text', href: 'text' },
   gauge: {
@@ -117,6 +119,7 @@ const ownPropCounts: Record<string, number> = {
   icon: 4,
   skeleton: 3,
   spinner: 2,
+  statusdot: 2,
   kbd: 2,
   productmark: 3,
   visuallyhidden: 2,
@@ -324,7 +327,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
     ['Icon', { size: '"md"', filled: 'false' }],
-    ['Spinner', { size: '"md"' }]
+    ['Spinner', { size: '"md"' }],
+    ['StatusDot', { state: '"stopped"', pulse: 'true' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
     const { argTypes, args } = story(name);
     for (const [prop, summary] of Object.entries(defaults)) {
@@ -444,6 +448,29 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Spinner', false).argTypes[prop]);
     }
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains StatusDot state/pulse rows, the seven state choices and decorative native rows', () => {
+    const { argTypes } = story('StatusDot');
+    expect([...(argTypes.state?.options ?? [])].sort()).toEqual([
+      'error',
+      'idle',
+      'live',
+      'running',
+      'standby',
+      'stopped',
+      'warning'
+    ]);
+    expect(argTypes.state?.type).toMatchObject({ name: 'enum', required: false });
+    expect(argTypes.state?.control).toEqual({ type: 'select' });
+    expect(argTypes.pulse?.type).toMatchObject({ name: 'boolean', required: false });
+    expect(argTypes.pulse?.control).toEqual({ type: 'boolean' });
+    for (const prop of ['id', 'title', 'className', 'style']) {
+      expect(argTypes[prop], prop).toEqual(story('StatusDot', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-label', 'aria-labelledby']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

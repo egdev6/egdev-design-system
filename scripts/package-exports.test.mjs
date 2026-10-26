@@ -266,6 +266,50 @@ test('UI ships the Spinner icon-scale, stroke and canonical spin utilities with 
   assert.doesNotMatch(css, /\.eg-spinner[^{]*\{/, 'Spinner has no stylesheet: its marker carries no rule');
 });
 
+test('UI ships the StatusDot ring, glow and fill utilities with its motion-safe pulse keyframes', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // D4: 8px status dots and 10px signal dots on the spacing scale.
+  assert.match(rule('.size-2'), /width:\s*var\(--space-2\)\s*;/);
+  assert.match(rule(String.raw`.size-2\.5`), /width:\s*calc\(var\(--space-1\) \* 2\.5\)\s*;/);
+  assert.match(rule('.inline-block'), /display:\s*inline-block\s*;/);
+  assert.match(rule('.rounded-full'), /border-radius:\s*var\(--radius-full[,)]/);
+  // D5/D6: a 2px ring that always uses the surface token.
+  assert.match(rule('.ring-2'), /--tw-ring-shadow:[^;]*calc\(2px \+ var\(--tw-ring-offset-width\)\)/);
+  assert.match(rule('.ring-bg-surface'), /--tw-ring-color:\s*var\(--color-bg-surface[,)]/);
+  assert.match(rule('.shadow-glow-hot'), /--tw-shadow:[^;]*rgba\(255, 0, 54, 0\.75\)/);
+  for (const [utility, token] of [
+    ['.bg-status-success', '--color-status-success'],
+    ['.bg-status-info', '--color-status-info'],
+    ['.bg-status-warning', '--color-status-warning'],
+    ['.bg-status-danger', '--color-status-danger'],
+    ['.bg-primitive-neutral-600', '--color-primitive-neutral-600'],
+    ['.bg-fg-brand-default', '--color-fg-brand-default'],
+    ['.bg-primitive-white', '--color-primitive-white']
+  ]) {
+    assert.match(rule(utility), new RegExp(`background-color:\\s*var\\(${token}[,)]`), utility);
+  }
+  // D7/AC-04/AC-05: the pulse only runs without a reduced-motion preference.
+  const motionSafe = cssBlock(utilities, /@media \(prefers-reduced-motion: no-preference\)\s*\{/);
+  assert.match(
+    cssBlock(
+      motionSafe,
+      /\.motion-safe\\:animate-\\\[eg-status-dot-pulse_2\\\.4s_var\\\(--ease-out\\\)_infinite\\\]\s*\{/
+    ),
+    /animation:\s*eg-status-dot-pulse 2\.4s var\(--ease-out\) infinite\s*;/
+  );
+  // status-dot.css ships only top-level keyframes, never a selector for the marker.
+  assert.match(
+    css,
+    /@keyframes eg-status-dot-pulse\s*\{\s*0%, 100%\s*\{\s*transform:\s*scale\(1\);\s*opacity:\s*100%;\s*\}\s*50%\s*\{\s*transform:\s*scale\(0\.72\);\s*opacity:\s*75%;\s*\}\s*\}/
+  );
+  assert.doesNotMatch(utilities, /@keyframes eg-status-dot-pulse/);
+});
+
 test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet rule', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -578,11 +622,13 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Slottable',
       'Spinner',
       'Stack',
+      'StatusDot',
       'Surface',
       'Text',
       'VisuallyHidden',
       'cn',
       'labelVariants',
+      'statusDotVariants',
       'surfaceVariants'
     ],
     'Only approved components and cn are public runtime exports'
@@ -592,6 +638,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
   assert.equal(typeof exported.Skeleton, 'function', 'Skeleton must be a named root export');
   assert.equal(typeof exported.Spinner, 'function', 'Spinner must be a plain function component without a ref API');
+  assert.equal(typeof exported.StatusDot, 'function', 'StatusDot must be a plain function component without a ref API');
+  assert.equal(typeof exported.statusDotVariants, 'function', 'StatusDot composition recipe must be a public export');
   assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
   assert.equal(
     typeof exported.ProductMark,
@@ -671,6 +719,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SpinnerSize',
     'Stack',
     'StackProps',
+    'StatusDot',
+    'StatusDotProps',
+    'StatusDotState',
     'Surface',
     'SurfaceElevation',
     'SurfacePadding',
@@ -686,6 +737,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'VisuallyHiddenProps',
     'cn',
     'labelVariants',
+    'statusDotVariants',
     'surfaceVariants'
   ]);
   for (const name of [
@@ -724,6 +776,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SpinnerSize',
     'Stack',
     'StackProps',
+    'StatusDot',
+    'StatusDotProps',
+    'StatusDotState',
+    'statusDotVariants',
     'Cluster',
     'ClusterProps',
     'LayoutAlignItems',
@@ -865,6 +921,44 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     const sized = renderToString(createElement(exported.Spinner, { size }));
     assert.ok(sized.includes(`class="eg-spinner inline-flex shrink-0 ${utility}"`), `Spinner ${size} preset`);
   }
+  // StatusDot: always decorative, empty, data-state per state; ring vs glow geometry and the live pulse.
+  const pulse = 'motion-safe:animate-[eg-status-dot-pulse_2.4s_var(--ease-out)_infinite]';
+  assert.equal(
+    renderToString(createElement(exported.StatusDot)),
+    '<span aria-hidden="true" data-state="stopped" class="eg-status-dot inline-block shrink-0 rounded-full size-2 ring-2 ring-bg-surface bg-primitive-neutral-600"></span>'
+  );
+  for (const [state, fill] of [
+    ['running', 'bg-status-success'],
+    ['idle', 'bg-status-info'],
+    ['warning', 'bg-status-warning'],
+    ['error', 'bg-status-danger'],
+    ['stopped', 'bg-primitive-neutral-600']
+  ]) {
+    const dot = renderToString(createElement(exported.StatusDot, { state, pulse: true }));
+    assert.ok(dot.includes(`data-state="${state}"`), `StatusDot ${state} state`);
+    assert.ok(dot.includes(`size-2 ring-2 ring-bg-surface ${fill}`), `StatusDot ${state} ringed fill`);
+    assert.doesNotMatch(dot, /shadow-glow-hot|animate/, `StatusDot ${state} never glows or pulses`);
+  }
+  for (const [state, fill] of [
+    ['live', 'bg-fg-brand-default'],
+    ['standby', 'bg-primitive-white']
+  ]) {
+    const dot = renderToString(createElement(exported.StatusDot, { state }));
+    assert.ok(dot.includes(`size-2.5 shadow-glow-hot ${fill} ${pulse}`), `StatusDot ${state} glows and pulses`);
+    assert.doesNotMatch(dot, /ring-/, `StatusDot ${state} has no ring`);
+    const still = renderToString(createElement(exported.StatusDot, { state, pulse: false }));
+    assert.ok(still.includes(`shadow-glow-hot ${fill}"`), `StatusDot ${state} pulse:false keeps the glow`);
+    assert.doesNotMatch(still, /animate/, `StatusDot ${state} pulse:false is static`);
+  }
+  const placed = renderToString(
+    createElement(exported.StatusDot, { state: 'error', id: 'rail-dot', title: 'Error', className: 'absolute top-1' })
+  );
+  assert.match(
+    placed,
+    /^<span id="rail-dot" title="Error" aria-hidden="true" data-state="error" class="eg-status-dot /
+  );
+  assert.ok(placed.endsWith('bg-status-danger absolute top-1"></span>'), 'Consumer layout classes merge last');
+  assert.doesNotMatch(placed, /role=|aria-label|tabindex|\spulse=|\sstate=/);
   // Kbd: one native kbd per key; a label hides the glyph and adds hidden spoken text (D2).
   const plainKey = renderToString(createElement(exported.Kbd, { children: 'Esc', id: 'escape-key' }));
   assert.equal(
