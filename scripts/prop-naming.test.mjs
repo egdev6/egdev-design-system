@@ -12,6 +12,17 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...[
+    'accessible-name',
+    'initial-uncontrolled-pressed',
+    'leading-icon',
+    'preset-dimensions',
+    'pressed-change',
+    'pressed-state'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/toggle/types.ts#ToggleProps'
+  })),
   {
     conventionId: 'aspect-ratio',
     source: 'packages/ui/src/primitives/aspect-ratio/types.ts#AspectRatioProps'
@@ -167,7 +178,8 @@ const receiptChain = [
   'docs/decisions/prop-naming-organism-specs-approval.json',
   'docs/decisions/prop-naming-template-specs-approval.json',
   'docs/decisions/prop-naming-isotipo3d-approval.json',
-  'docs/decisions/prop-naming-skeleton-v0.2-approval.json'
+  'docs/decisions/prop-naming-skeleton-v0.2-approval.json',
+  'docs/components/toggle/v0.1/prop-naming-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -223,6 +235,84 @@ function approveException(entry, exception) {
     props.exceptionHash(exception)
   );
 }
+
+const toggleReference = 'docs/components/toggle/v0.1/prop-naming-approval.json';
+test('Toggle alone permits required icon-only content without widening other components or rewriting history', () => {
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, toggleReference), 'utf8'));
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar excepción para Toggle');
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.equal(receipt.semanticAmendments.length, 1);
+  const [amendment] = receipt.semanticAmendments;
+  assert.equal(amendment.id, 'leading-icon');
+  assert.deepEqual(amendment.changedFields, ['meaning', 'whenToUse', 'avoid']);
+  const previousReceipt = JSON.parse(fs.readFileSync(resolve(root, amendment.previousReference), 'utf8'));
+  const previous = previousReceipt.entries.find(({ convention }) => convention.id === amendment.id);
+  assert.equal(amendment.previousContentHash, previous.contentHash);
+  assert.equal(previous.contentHash, props.conventionHash(previous.convention));
+  const current = actual.find(({ id }) => id === amendment.id);
+  const { approval, usages: _usages, ...convention } = current;
+  assert.deepEqual(current.exceptions, [], 'Same-name semantic permissions are not alternative-name exceptions');
+  assert.deepEqual(receipt.entries, [
+    { scope: 'convention:leading-icon', contentHash: props.conventionHash(current), convention }
+  ]);
+  assert.deepEqual(approval, {
+    reference: toggleReference,
+    scope: 'convention:leading-icon',
+    contentHash: props.conventionHash(current)
+  });
+  const additions = {
+    meaning:
+      ' Toggle alone also accepts a required decorative icon as its sole visible content, with a required accessible label.',
+    whenToUse: ' Toggle alone permits its icon-only branch when icon and accessible label are both required.',
+    avoid:
+      ' The icon-only exclusion has one exception: Toggle with a required icon and accessible label; no other component gains icon-only permission. Trailing and interactive icons remain excluded.'
+  };
+  for (const field of amendment.changedFields) {
+    assert.equal(amendment.before[field], previous.convention[field]);
+    assert.equal(amendment.after[field], previous.convention[field] + additions[field]);
+    assert.equal(current[field], amendment.after[field]);
+  }
+  assert.equal(receipt.priorReceipts.length, 8);
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(digest(fs.readFileSync(resolve(root, prior.path))), prior.wholeFileSHA256, prior.path);
+  }
+  assert.deepEqual(
+    registryBeforeSemanticAmendments(historicalRegistry(actual), skeletonReference).find(
+      ({ id }) => id === amendment.id
+    ),
+    {
+      ...previous.convention,
+      approval: { reference: amendment.previousReference, scope: previous.scope, contentHash: previous.contentHash },
+      usages: []
+    }
+  );
+  const changed = structuredClone(actual);
+  const broadened = changed.find(({ id }) => id === amendment.id);
+  broadened.avoid = 'Icon-only controls are permitted everywhere.';
+  assert.throws(() => validate(changed), /approval/i);
+  broadened.approval.contentHash = props.conventionHash(broadened);
+  assert.doesNotThrow(() => validate(changed), 'Schema validation cannot prove owner consent');
+  assert.notEqual(broadened.approval.contentHash, receipt.entries[0].contentHash);
+  assert.notDeepEqual(broadened.avoid, convention.avoid);
+  assert.deepEqual(
+    actual
+      .filter((entry) => entry.usages.some(({ component }) => component === 'Toggle'))
+      .map(({ id }) => id)
+      .sort(),
+    [
+      'accessible-name',
+      'initial-uncontrolled-pressed',
+      'leading-icon',
+      'preset-dimensions',
+      'pressed-change',
+      'pressed-state'
+    ]
+  );
+});
 
 test('seed and component-specific types are valid; importing performs no CLI work', () => {
   const registry = seed();
