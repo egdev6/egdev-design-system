@@ -52,7 +52,7 @@
     "radix": "Slot",
     "compone": "—",
     "accion": "fusionar",
-    "notas": "Una primitiva tipográfica con variantes (`display`, `hero`, `section`, `eyebrow`, `show`, `inverse`)."
+    "notas": "Implemented in @egdev/ui: Text (paragraph eyebrow by default, or any title recipe with Slot `asChild`) and Heading (native h1–h6 from `level`, independent of its `section`/`hero`/`show`/`display`/`inverse` recipe), with an optional trailing accent and canvas/raised tone. No stylesheet; legacy `.eg-title`/`.eg-eyebrow` rules are unchanged. Contract: [#108](https://github.com/egdev6/egdev-design-system/issues/108)."
   },
   {
     "actual": "Divider",
@@ -151,7 +151,7 @@
     "radix": "AccessibleIcon",
     "compone": "—",
     "accion": "mantener",
-    "notas": "Faltan 14 iconos (ver DECISIONES)."
+    "notas": "Implemented in @egdev/ui: one inline glyph from the closed 42-name set (25 Foundation plus 17 Lucide additions, including check, minus and plus) with sm/md/lg presets, optional currentColor fill and an optional label through Radix AccessibleIcon; decorative by default. No stylesheet; legacy `.eg-icon*` rules are unchanged. Contract: [#58](https://github.com/egdev6/egdev-design-system/issues/58)."
   },
   {
     "actual": "Field (input)",
@@ -162,7 +162,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "extraer",
-    "notas": "Control nativo; sale de Field. Variante `mono` para código y URLs."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/59): bare native single-line text control in the Material well (md 44px, sm 36px), extracted from Field. `variant='code'` (not `mono`, D8) uses the mono font on the darker well; optional decorative leading icon. Native aria-invalid, onChange and forwarded ref; label, hint, error and counter stay in the future Field molecule. No stylesheet."
   },
   {
     "actual": "Field (textarea)",
@@ -173,7 +173,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "extraer",
-    "notas": "Variantes `code` y `prose` (antes Field --code y --prose)."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/73): bare native multi-line textarea with `variant` default (well), code (mono well on neutral-950) and prose (raised sheet), vertical-only resize above the variant minimum, native aria-invalid and a forwarded textarea ref. Label, hint, error and counter belong to Field. No stylesheet."
   },
   {
     "actual": "Field (select)",
@@ -272,7 +272,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "fusionar",
-    "notas": "LiveDot pasa a `StatusDot state='live'` (con pulso y `--static`)."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/71): decorative aria-hidden dot fusing StatusDot and LiveDot. Status states running/idle/warning/error/stopped (default) are 8px with a surface ring; live/standby are 10px with the hot glow and a motion-safe pulse (pulse={false} for static). Migration: LiveDot → state='live', LiveDot--static → pulse={false}, waiting → state='standby'. status-dot.css holds only the pulse keyframes."
   },
   {
     "actual": "Kbd",
@@ -305,7 +305,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "mantener",
-    "notas": ""
+    "notas": "Implemented React atom under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/62): V4 isotype (mark) or isotype with white name (wordmark) as inline SVG data with the --logo-red/--logo-red-shade token inks, 28/32/36px heights, named span image or native link with the focus ring. No asChild, ref or stylesheet; legacy eg-logo CSS untouched."
   },
   {
     "actual": "—",
@@ -316,7 +316,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "nuevo",
-    "notas": "Letra o marca de producto con `gradient-btn-primary` + `shadow-btn-primary` (M, C, L, Cr, Mt, Q). Hoy está copiada a mano en cada app."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/64): 40px product monogram tile (one or two characters) with the product-mark Material (`gradient-btn-primary` + `shadow-btn-primary`, black display text, radius-md). Passive role=img named by label; optional href renders a native link with the focus ring. Legacy `.eg-rail__brand` unchanged. No stylesheet."
   },
   {
     "actual": "Pixel",
@@ -338,7 +338,7 @@
     "radix": "Progress",
     "compone": "—",
     "accion": "mantener",
-    "notas": "Radix Progress da `role=progressbar` y los aria-value*."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/65): passive Radix Progress bar in percent (clamped 0–100; non-finite values are indeterminate with an empty fill). `label` announces the progressbar, otherwise it is decorative. `size` sm hairline or lg goal well with gradient fill and token bevel, `variant` muted for comparison series and sm-only `edge` strip. Fill scaled through `--eg-progress-value`. No stylesheet."
   },
   {
     "actual": "Gauge",
@@ -393,7 +393,7 @@
     "radix": "Tooltip",
     "compone": "Portal",
     "accion": "nuevo",
-    "notas": "Hace falta para IconButton, ModuleRail y Gauge. No existe."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/75): supplementary plain text for one asChild trigger on Radix Tooltip, with its own provider, Radix default delays and its own portal (no separate Portal primitive). Material overlay bubble with solid surface-2 under reduced transparency, opacity fade without transform. Needed by IconButton, ModuleRail and Gauge. No stylesheet."
   },
   {
     "actual": "—",

@@ -54,6 +54,14 @@ Legacy: `.eg-check--switch` stays untouched in `legacy/bundle.css` (`@layer comp
 | AC-10 | Six files, no stylesheet, CVA in `types.ts`. All 40 utilities compile from the token theme (scanned against `dist/styles.css`). They are verified by `package-exports` and by packed consumers on React 18.3.1 and 19.3.0 without and with Tailwind. |
 | AC-11 | Docgen and Controls tests: `checked`/`defaultChecked`/`disabled`/`required` are boolean, `name`/`value` text, and `onCheckedChange` has `@control false` with a reason. Constant defaults are documented and diagnostics are zero. Browser widget check: Not evaluated. |
 
+## Post-merge transition guard repair
+
+The built stylesheet contains the existing Switch track selector `.transition-\[background-color\,border-color\]`. The shared export guard omitted that exact pair; the escaped Input/Textarea border/shadow and Switch thumb pairs already matched. This was an inventory omission, not a runtime or appearance change.
+
+The guard now accepts only complete `transition-none`, `transition-opacity`, `transition-transform`, `transition-[background-color,border-color]`, `transition-[border-color,box-shadow]` and `transition-[translate,background-color]` utilities in their emitted escaped spelling. The existing `motion-reduce:transition-none` remains intact. Negative regression cases reject unrelated named/arbitrary transitions, additional properties and suffix extensions.
+
+Observed on the existing built artifact: the focused Skeleton/export guard failed before repair; the focused guard and two regression tests then passed (3 tests), followed by `pnpm test:package-exports` (33 tests, 68 reachable declarations). Commands were serialized with `flock /tmp/egdev-gates.lock`, a 900-second timeout and a 3 GB memory scope. No runtime source, API, token or dependency changed. No build, packed consumer or browser check was rerun for this guard-only repair.
+
 ## Notes
 
 - Visual conformity with VIS-01, browser computed styles, focus, reduced motion and Controls widgets are Not evaluated. They are pending the owner's Storybook review on `main`.

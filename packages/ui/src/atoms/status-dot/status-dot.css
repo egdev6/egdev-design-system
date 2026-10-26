@@ -1,0 +1,12 @@
+/* Live/standby pulse (D7); the animation is applied by a static motion-safe utility. */
+@keyframes eg-status-dot-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 100%;
+  }
+  50% {
+    transform: scale(0.72);
+    opacity: 75%;
+  }
+}
