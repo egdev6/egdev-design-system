@@ -380,9 +380,9 @@
     "nivel": "atom",
     "destino": "ui",
     "radix": "—",
-    "compone": "Icon, VisuallyHidden",
+    "compone": "Icon",
     "accion": "mantener",
-    "notas": "Input file nativo oculto con VisuallyHidden."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/56): native button with a hidden sibling file input and decorative upload Icon. Drag depth, focused paste and picker reset deliver files through onFiles; accept constrains the picker only, validation and announcements belong to the consumer. Square or inline dashed transparent target, no form file participation, ref, asChild or stylesheet. VisuallyHidden is not needed (D2)."
   },
   {
     "actual": "—",

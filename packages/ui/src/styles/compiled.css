@@ -9,6 +9,7 @@
 @source "../atoms/badge/types.ts";
 @source "../atoms/button/types.ts";
 @source "../atoms/checkbox/types.ts";
+@source "../atoms/dropzone/types.ts";
 @source "../atoms/gauge/types.ts";
 @source "../atoms/icon/types.ts";
 @source "../atoms/icon-button/types.ts";

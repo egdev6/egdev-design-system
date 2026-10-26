@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Cluster, Divider, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, RadioGroup, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Cluster, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, RadioGroup, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -45,6 +45,7 @@ import type {
   CheckboxProps,
   DividerOrientation,
   DividerProps,
+  DropzoneProps,
   GaugeProps,
   GaugeState,
   GaugeSize,
@@ -274,6 +275,35 @@ export function KbdSamples() {
     createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
     createElement(Kbd, kbdNative));
 }
+// Dropzone stays outside App so earlier components' focus harness remains unchanged.
+export const receivedFiles: File[][] = [];
+export const dropzoneRecipe: string = dropzoneVariants({ variant: 'inline' });
+export const dropzoneProps: DropzoneProps = {
+  onFiles: (files) => receivedFiles.push(files), accept: 'image/*', multiple: true,
+  label: 'Add media', dropLabel: 'Release media', variant: 'inline', id: 'file-target', className: 'mt-2'
+};
+export function DropzoneSamples({ disabled = false }: { disabled?: boolean }) {
+  return createElement(Dropzone, { ...dropzoneProps, disabled });
+}
+// @ts-expect-error onFiles is required; there is no uncontrolled form-file value.
+const missingFilesCallback: DropzoneProps = {};
+// @ts-expect-error Dropzone owns the button type.
+const submittingDropzone: DropzoneProps = { ...dropzoneProps, type: 'submit' };
+// @ts-expect-error No ref API on either React major.
+const referencedDropzone: DropzoneProps = { ...dropzoneProps, ref: createRef<HTMLButtonElement>() };
+// @ts-expect-error The button content is owned: upload icon and visible label.
+const childDropzone: DropzoneProps = { ...dropzoneProps, children: 'Upload' };
+// @ts-expect-error No asChild composition API.
+const composedDropzone: DropzoneProps = { ...dropzoneProps, asChild: true };
+// @ts-expect-error Drag state is internal, not a public over prop.
+const forcedDropzone: DropzoneProps = { ...dropzoneProps, over: true };
+// @ts-expect-error Drop handling is owned by the hook.
+const interceptedDropzone: DropzoneProps = { ...dropzoneProps, onDrop: () => undefined };
+// @ts-expect-error Paste handling is owned by the hook.
+const interceptedPaste: DropzoneProps = { ...dropzoneProps, onPaste: () => undefined };
+// @ts-expect-error No other visual treatments exist.
+const invalidDropzone: DropzoneProps = { ...dropzoneProps, variant: 'solid' };
+
 export const linkNativeRef = createRef<HTMLAnchorElement>();
 export const linkSlotRef = createRef<HTMLAnchorElement>();
 export const linkChildRef = createRef<HTMLAnchorElement>();
@@ -1775,6 +1805,35 @@ function assertInputCSS(css) {
 }
 
 // ProductMark ships the product-mark Material and link focus utilities from the token theme; no stylesheet.
+// Dropzone utilities ship for native CSS consumers without enabling Tailwind preflight.
+function assertDropzoneCSS(css) {
+  for (const selector of [
+    '.min-w-24',
+    '.min-h-24',
+    '.min-h-14',
+    '.border-dashed',
+    '.transition-colors',
+    String.raw`.gap-1\.5`,
+    String.raw`.gap-2\.5`,
+    String.raw`.data-\[state\=over\]\:bg-alpha-red-07`,
+    String.raw`.data-\[state\=over\]\:border-border-brand`,
+    String.raw`.data-\[state\=over\]\:text-fg-default`,
+    String.raw`.focus-visible\:shadow-focus`,
+    String.raw`.disabled\:opacity-45`,
+    String.raw`.disabled\:pointer-events-none`,
+    String.raw`.disabled\:cursor-not-allowed`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Dropzone utility ' + selector);
+  }
+  assert.match(css, /min-width:\s*var\(--space-24\)/);
+  assert.match(css, /min-height:\s*var\(--space-14\)/);
+  assert.match(css, /transition-property:[^;]*background-color[^;]*border-color[^;]*;/);
+  assert.match(css, /background-image:\s*none/);
+  assert.match(css, /box-shadow:\s*none/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+}
+
 function assertProductMarkCSS(css) {
   for (const utility of [
     '.size-10',
@@ -2019,6 +2078,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Checkbox',
   'Cluster',
   'Divider',
+  'Dropzone',
   'Gauge',
   'Heading',
   'Icon',
@@ -2049,6 +2109,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'VisuallyHidden',
   'badgeVariants',
   'cn',
+  'dropzoneVariants',
   'labelVariants',
   'progressBarVariants',
   'radioGroupVariants',
@@ -2079,7 +2140,9 @@ ${assertTooltipCSS.toString()}
 ${assertProgressBarCSS.toString()}
 ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
+${assertDropzoneCSS.toString()}
 ${assertProductMarkCSS.toString()}
+assertDropzoneCSS(shippedStyles);
 assertIconButtonCSS(shippedStyles);
 ${assertToggleCSS.toString()}
 ${assertSelectCSS.toString()}
@@ -2162,7 +2225,30 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, RadioGroupSamples, SlotSample, SwitchSamples, TooltipSamples, progressEdgeRecipe } from './consumer.ts';
+import { App, DropzoneSamples, RadioGroupSamples, SlotSample, SwitchSamples, TooltipSamples, progressEdgeRecipe } from './consumer.ts';
+const dropzoneDocument = new JSDOM(renderToString(createElement(DropzoneSamples)));
+try {
+  const body = dropzoneDocument.window.document.body;
+  const button = body.firstElementChild;
+  const input = button.nextElementSibling;
+  assert.equal(body.children.length, 2, 'Dropzone renders a fragment without a wrapper');
+  assert.equal(button.tagName, 'BUTTON');
+  assert.equal(button.type, 'button');
+  assert.equal(button.textContent, 'Add media');
+  assert.equal(button.getAttribute('data-state'), 'idle');
+  assert.ok(button.classList.contains('eg-dropzone') && button.classList.contains('flex-row'));
+  assert.equal(button.querySelector('svg').getAttribute('aria-hidden'), 'true');
+  assert.equal(input.tagName, 'INPUT');
+  assert.equal(input.type, 'file');
+  assert.equal(input.hidden, true);
+  assert.equal(input.tabIndex, -1);
+  assert.equal(input.accept, 'image/*');
+  assert.equal(input.multiple, true);
+  assert.equal(input.hasAttribute('name'), false);
+  assert.equal(input.hasAttribute('required'), false);
+} finally {
+  dropzoneDocument.window.close();
+}
 // RadioGroup SSR: named Radix radiogroups; without a DOM, Radix always emits each hidden radio input.
 const radioDocument = new JSDOM(renderToString(createElement(RadioGroupSamples)));
 try {
@@ -2945,7 +3031,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, RadioGroupSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
+const { App, DropzoneSamples, RadioGroupSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -3441,6 +3527,59 @@ try {
   await act(async () => root.render(null));
   assert.ok(document.querySelector('[role="tooltip"]') === null, 'Unmount removes the portaled bubble');
   stage('tooltip:focus:complete');
+  stage('dropzone:files:start');
+  await act(async () => root.render(createElement(DropzoneSamples)));
+  const fileTarget = document.getElementById('file-target');
+  const fileInput = fileTarget.nextElementSibling;
+  assert.equal(fileTarget.type, 'button');
+  assert.equal(fileInput.hidden, true);
+  let pickerClicks = 0;
+  fileInput.addEventListener('click', () => { pickerClicks += 1; });
+  await act(async () => fileTarget.click());
+  assert.equal(pickerClicks, 1, 'Native activation opens the sibling picker');
+  const rejectedByPicker = new window.File(['notes'], 'notes.txt', { type: 'text/plain' });
+  const acceptedImage = new window.File(['image'], 'photo.png', { type: 'image/png' });
+  const files = [rejectedByPicker, acceptedImage];
+  const sendFiles = async (kind, target = fileTarget) => {
+    const event = new Event(kind, { bubbles: true, cancelable: true });
+    Object.defineProperty(event, kind === 'paste' ? 'clipboardData' : 'dataTransfer', { value: { types: ['Files'], files } });
+    await act(async () => target.dispatchEvent(event));
+    return event;
+  };
+  await sendFiles('dragenter');
+  await sendFiles('dragenter', fileTarget.querySelector('span'));
+  await sendFiles('dragleave', fileTarget.querySelector('span'));
+  assert.equal(fileTarget.getAttribute('data-state'), 'over');
+  assert.equal(fileTarget.textContent, 'Release media');
+  assert.equal((await sendFiles('drop')).defaultPrevented, true);
+  assert.equal(receivedFiles.length, 1);
+  assert.ok(receivedFiles[0][0] === rejectedByPicker && receivedFiles[0][1] === acceptedImage, 'Drop does not filter by accept');
+  assert.equal(fileTarget.getAttribute('data-state'), 'idle');
+  await sendFiles('paste');
+  assert.equal(receivedFiles.length, 1, 'Unfocused synthetic paste is ignored');
+  fileTarget.focus();
+  assert.ok(document.activeElement === fileTarget, 'Native button receives focus');
+  assert.equal((await sendFiles('paste')).defaultPrevented, true);
+  assert.equal(receivedFiles.length, 2);
+  Object.defineProperty(fileInput, 'files', { configurable: true, value: files });
+  for (let pick = 0; pick < 2; pick += 1) {
+    await act(async () => fileInput.dispatchEvent(new Event('change', { bubbles: true })));
+    assert.equal(fileInput.value, '');
+  }
+  assert.equal(receivedFiles.length, 4, 'Repeated picker delivery remains possible after reset');
+  await act(async () => root.render(createElement(DropzoneSamples, { disabled: true })));
+  assert.ok(document.getElementById('file-target') === fileTarget, 'Disabled rerender keeps button identity');
+  assert.equal(fileTarget.disabled, true);
+  assert.equal(fileInput.disabled, true);
+  await sendFiles('dragenter');
+  await sendFiles('drop');
+  await sendFiles('paste');
+  await act(async () => fileTarget.click());
+  assert.equal(receivedFiles.length, 4, 'Disabled paths deliver no files');
+  assert.equal(pickerClicks, 1, 'Disabled activation opens no picker');
+  assert.equal(fileTarget.getAttribute('data-state'), 'idle');
+  await act(async () => root.render(null));
+  stage('dropzone:files:complete');
   // Native label activation: clicking the associated label focuses the named control.
   assert.ok(toggleRef.current === null, 'Toggle ref cleans up when App unmounts');
   // The Slot scene unmounted App, so remount it before exercising LabelSamples.
@@ -3562,7 +3701,7 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
-  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -3663,6 +3802,7 @@ ${assertTooltipCSS.toString()}
 ${assertProgressBarCSS.toString()}
 ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
+${assertDropzoneCSS.toString()}
 ${assertProductMarkCSS.toString()}
 assertIconButtonCSS(emitted);
 ${assertToggleCSS.toString()}
@@ -3692,6 +3832,7 @@ assertTooltipCSS(emitted);
 assertProgressBarCSS(emitted);
 assertTextareaCSS(emitted);
 assertInputCSS(emitted);
+assertDropzoneCSS(emitted);
 assertProductMarkCSS(emitted);
 assertToggleCSS(emitted);
 ${assertLabelCSS.toString()}
@@ -3752,6 +3893,7 @@ assertTooltipCSS(twCss);
 assertProgressBarCSS(twCss);
 assertTextareaCSS(twCss);
 assertInputCSS(twCss);
+assertDropzoneCSS(twCss);
 assertProductMarkCSS(twCss);
 assertToggleCSS(twCss);
 assertSelectCSS(twCss);
