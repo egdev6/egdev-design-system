@@ -266,6 +266,27 @@ test('UI ships the Spinner icon-scale, stroke and canonical spin utilities with 
   assert.doesNotMatch(css, /\.eg-spinner[^{]*\{/, 'Spinner has no stylesheet: its marker carries no rule');
 });
 
+test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  assert.match(rule('.inline-block'), /display:\s*inline-block\s*;/);
+  assert.match(rule('.whitespace-nowrap'), /white-space:\s*nowrap\s*;/);
+  assert.match(rule('.border'), /border-width:\s*1px\s*;/);
+  assert.match(rule('.border-border-subtle'), /border-color:\s*var\(--color-border-subtle[,)]/);
+  assert.match(rule(String.raw`.px-1\.5`), /padding-inline:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*1\.5\)\s*;/);
+  assert.match(rule(String.raw`.py-0\.5`), /padding-block:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*0\.5\)\s*;/);
+  // The hairline needs Tailwind's border-style initial value outside a Tailwind consumer.
+  assert.match(css, /@property --tw-border-style\s*\{[^}]*initial-value:\s*solid/);
+  // D6 no stylesheet: the only .eg-kbd rules are the retained legacy ones (components layer, below utilities).
+  const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
+  const kbdRules = (text) => (text.replace(/\/\*[\s\S]*?\*\//g, '').match(/\.eg-kbd[^{]*\{/g) ?? []).length;
+  assert.equal(kbdRules(css), kbdRules(legacy), 'Kbd has no stylesheet: its marker carries no new rule');
+});
+
 test('UI ships the approved Gauge geometry in the components layer', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const components = cssBlock(css, /@layer components\s*\{/);
@@ -307,6 +328,54 @@ test('UI ships the approved Label typography recipe without an application Tailw
     assert.ok(theme.includes(`${token}:`), `Choice/base weights must reference the existing token ${token}`);
     assert.doesNotMatch(css, new RegExp(`${token}\\s*:`), `UI must not redefine ${token}`);
   }
+});
+
+test('UI ships the Surface Material recipes as static token utilities', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (scope, selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(scope, new RegExp(`${escaped}\\s*\\{`));
+  };
+  for (const [selector, declaration] of [
+    ['.bg-surface-0', /background-color:\s*var\(--color-surface-0[,)]/],
+    ['.bg-surface-3', /background-color:\s*var\(--color-surface-3[,)]/],
+    ['.bg-surface-overlay', /background-color:\s*var\(--color-surface-overlay[,)]/],
+    [String.raw`.bg-\[image\:var\(--gradient-sheen\)\]`, /background-image:\s*var\(--gradient-sheen\)\s*;/],
+    ['.border-border-hairline', /border-color:\s*var\(--color-border-hairline[,)]/],
+    ['.border-border-hairline-strong', /border-color:\s*var\(--color-border-hairline-strong[,)]/],
+    ['.border-solid', /border-style:\s*solid\s*;/],
+    ['.box-border', /box-sizing:\s*border-box\s*;/],
+    [String.raw`.shadow-\[var\(--shadow-well\)\]`, /--tw-shadow:\s*var\(--shadow-well\)\s*;/],
+    [
+      String.raw`.shadow-\[var\(--shadow-edge\)\,var\(--shadow-elev-1\)\]`,
+      /--tw-shadow:\s*var\(--shadow-edge\),\s*var\(--shadow-elev-1\)\s*;/
+    ],
+    [
+      String.raw`.shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-elev-3\)\]`,
+      /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-elev-3\)\s*;/
+    ],
+    ['.backdrop-blur-overlay', /--tw-backdrop-blur:\s*blur\(var\(--blur-overlay[,)]/],
+    ['.rounded-xl', /border-radius:\s*var\(--radius-xl[,)]/],
+    ['.p-6', /padding:\s*var\(--space-6\)\s*;/]
+  ]) {
+    assert.match(rule(utilities, selector), declaration, `Surface recipe ${selector}`);
+  }
+  const reduced = cssBlock(utilities, /@media \(prefers-reduced-transparency:\s*reduce\)\s*\{(?=\s*\.\\\[\\@media)/);
+  assert.match(
+    rule(reduced, String.raw`.\[\@media\(prefers-reduced-transparency\:reduce\)\]\:bg-surface-2`),
+    /background-color:\s*var\(--color-surface-2[,)]/
+  );
+  assert.match(
+    rule(reduced, String.raw`.\[\@media\(prefers-reduced-transparency\:reduce\)\]\:backdrop-filter-none`),
+    /backdrop-filter:\s*none\s*;/
+  );
+  const unsupported = cssBlock(utilities, /@supports not \(backdrop-filter:[^{]+\{(?=\s*\.not-supports-)/);
+  assert.match(
+    rule(unsupported, String.raw`.not-supports-\[backdrop-filter\]\:bg-surface-2`),
+    /background-color:\s*var\(--color-surface-2[,)]/
+  );
+  assert.doesNotMatch(css, /\.eg-surface\s*[,{]/, 'Surface marker must not become a shipped CSS rule (no stylesheet)');
 });
 
 test('UI ships the approved Text and Heading title recipes without an application Tailwind compiler', () => {
@@ -370,7 +439,7 @@ test('UI JavaScript remains importable without a CSS loader', async () => {
   assert.match(hidden, /<span class="eg-visually-hidden"[^>]*clip:rect\(0, 0, 0, 0\)[^>]*>Hidden note<\/span>/);
 });
 
-test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot with passive SSR semantics', async () => {
+test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal and Slot with passive SSR semantics', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   assert.deepEqual(
     Object.keys(exported).sort(),
@@ -380,6 +449,7 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
       'Divider',
       'Gauge',
       'Heading',
+      'Kbd',
       'Label',
       'Portal',
       'Skeleton',
@@ -387,10 +457,12 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
       'Slottable',
       'Spinner',
       'Stack',
+      'Surface',
       'Text',
       'VisuallyHidden',
       'cn',
-      'labelVariants'
+      'labelVariants',
+      'surfaceVariants'
     ],
     'Only approved components and cn are public runtime exports'
   );
@@ -399,6 +471,7 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
   assert.equal(typeof exported.Skeleton, 'function', 'Skeleton must be a named root export');
   assert.equal(typeof exported.Spinner, 'function', 'Spinner must be a plain function component without a ref API');
+  assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
   assert.equal(
     exported.VisuallyHidden?.$$typeof,
     Symbol.for('react.forward_ref'),
@@ -412,6 +485,12 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     undefined,
     'Stack must not be a forwardRef component (D10: no public ref)'
   );
+  assert.equal(
+    exported.Surface?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'Surface must be a React 18-compatible forwardRef bridge with a public ref'
+  );
+  assert.equal(typeof exported.surfaceVariants, 'function', 'Surface composition recipe must stay a public export');
   for (const name of ['Text', 'Heading']) {
     assert.equal(typeof exported[name], 'function', `${name} must be a plain function component without a ref API`);
   }
@@ -436,6 +515,8 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'Heading',
     'HeadingLevel',
     'HeadingProps',
+    'Kbd',
+    'KbdProps',
     'Label',
     'LabelProps',
     'LabelVariant',
@@ -456,6 +537,12 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'SpinnerSize',
     'Stack',
     'StackProps',
+    'Surface',
+    'SurfaceElevation',
+    'SurfacePadding',
+    'SurfaceProps',
+    'SurfaceRadius',
+    'SurfaceTone',
     'Text',
     'TextProps',
     'TextTone',
@@ -464,7 +551,8 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'cn',
-    'labelVariants'
+    'labelVariants',
+    'surfaceVariants'
   ]);
   for (const name of [
     'Divider',
@@ -474,6 +562,8 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'GaugeProps',
     'GaugeState',
     'GaugeSize',
+    'Kbd',
+    'KbdProps',
     'AspectRatio',
     'AspectRatioProps',
 
@@ -499,6 +589,13 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'LayoutAlignItems',
     'LayoutGap',
     'LayoutJustifyContent',
+    'Surface',
+    'SurfaceElevation',
+    'SurfacePadding',
+    'SurfaceProps',
+    'SurfaceRadius',
+    'SurfaceTone',
+    'surfaceVariants',
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'labelVariants'
@@ -575,6 +672,24 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'Canvas hero accent glows inline'
   );
   assert.doesNotMatch(eyebrow + heading + hero, /aria-live=|tabindex=|role=|aria-level=/);
+  // Surface resolves its Material recipe as static CVA utilities on a passive div or slotted child.
+  const surface = renderToString(createElement(exported.Surface, null, 'Card'));
+  for (const text of [
+    '<div class="eg-surface',
+    'bg-surface-1',
+    'bg-[image:var(--gradient-sheen)]',
+    'p-6',
+    'rounded-xl'
+  ]) {
+    assert.ok(surface.includes(text), `Surface SSR must render ${text}`);
+  }
+  const overlay = renderToString(createElement(exported.Surface, { tone: 'overlay' }, 'Glass'));
+  assert.ok(overlay.includes('bg-surface-overlay') && overlay.includes('not-supports-[backdrop-filter]:bg-surface-2'));
+  const slotted = renderToString(
+    createElement(exported.Surface, { asChild: true, tone: 'well' }, createElement('section', { 'aria-label': 'Well' }))
+  );
+  assert.match(slotted, /^<section aria-label="Well" class="eg-surface [^"]*shadow-\[var\(--shadow-well\)\]/);
+  assert.doesNotMatch(surface + overlay + slotted, /aria-live=|tabindex=|role=|style=/);
   assert.ok(
     wide.includes('data-radix-aspect-ratio-wrapper'),
     'AspectRatio must render the inner generic div inside the Radix frame'
@@ -610,6 +725,22 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     const sized = renderToString(createElement(exported.Spinner, { size }));
     assert.ok(sized.includes(`class="eg-spinner inline-flex shrink-0 ${utility}"`), `Spinner ${size} preset`);
   }
+  // Kbd: one native kbd per key; a label hides the glyph and adds hidden spoken text (D2).
+  const plainKey = renderToString(createElement(exported.Kbd, { children: 'Esc', id: 'escape-key' }));
+  assert.equal(
+    plainKey,
+    '<kbd id="escape-key" class="eg-kbd inline-block whitespace-nowrap rounded-sm border border-border-subtle px-1.5 py-0.5 font-sans text-label-default text-fg-secondary">Esc</kbd>'
+  );
+  assert.equal(
+    renderToString(createElement(exported.Kbd, { children: 'Ctrl', label: '' })).includes('aria-hidden'),
+    false
+  );
+  const symbolKey = renderToString(createElement(exported.Kbd, { children: '⌘K', label: 'Command K' }));
+  assert.match(
+    symbolKey,
+    /^<kbd class="eg-kbd [^"]*"><span aria-hidden="true">⌘K<\/span><span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Command K<\/span><\/kbd>$/
+  );
+  assert.doesNotMatch(symbolKey, /role=|aria-label=|tabindex=|data-state/);
   const geometry = [
     ['line', 'sm', 'h-3', 'rounded-sm'],
     ['line', 'md', 'h-4', 'rounded-sm'],

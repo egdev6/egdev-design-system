@@ -10,6 +10,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   visuallyHidden: ['id', 'title', 'aria-describedby', 'className', 'style', 'lang'],
   skeleton: ['id', 'title', 'className', 'style'],
   spinner: ['id', 'title', 'className', 'style'],
+  kbd: ['id', 'title', 'className'],
   // Native props re-exposed in autodocs per component, keyed by camelCase component name.
   // Gauge retains its approved passive measurement list; Label documents the native
   // association (htmlFor/id) and the approved class-merge surface. Nothing else from
@@ -18,7 +19,8 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   stack: ['id', 'title', 'aria-describedby', 'className', 'style'],
   cluster: ['id', 'title', 'aria-describedby', 'className', 'style'],
   text: ['id', 'title', 'aria-describedby', 'className', 'style'],
-  heading: ['id', 'title', 'aria-describedby', 'className', 'style']
+  heading: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  surface: ['id', 'title', 'role', 'aria-label', 'aria-labelledby', 'className', 'style']
 };
 const camelCase = (name: string) => name.charAt(0).toLowerCase() + name.slice(1);
 

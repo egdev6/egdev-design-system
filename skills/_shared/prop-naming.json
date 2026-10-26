@@ -196,6 +196,16 @@
           "symbol": "HeadingProps",
           "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
         }
+      },
+      {
+        "component": "Surface",
+        "type": "SurfaceTone (surface-0|surface-1|surface-2|surface-3|well|overlay)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/surface/types.ts",
+          "symbol": "SurfaceProps",
+          "revision": "sha256:26d0726b5034dceb74e0067c1c0df5108d351e948205bbf22b5e187b92d9c0b6"
+        }
       }
     ]
   },
@@ -213,7 +223,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Surface",
+        "type": "SurfaceElevation (0|1|2|3); never on well and overlay",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/surface/types.ts",
+          "symbol": "SurfaceProps",
+          "revision": "sha256:26d0726b5034dceb74e0067c1c0df5108d351e948205bbf22b5e187b92d9c0b6"
+        }
+      }
+    ]
   },
   {
     "id": "accessible-name",
@@ -248,6 +269,16 @@
           "path": "packages/ui/src/atoms/spinner/types.ts",
           "symbol": "SpinnerProps",
           "revision": "sha256:15beb1c08eb7851cb4b7c233fe4b15331b4fb193d7a11677189089f6615c3717"
+        }
+      },
+      {
+        "component": "Kbd",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/kbd/types.ts",
+          "symbol": "KbdProps",
+          "revision": "sha256:1c6757b44bd0bff150128b8ccd9d4ee6b930b3d432b42a4dafe8c992d63a3de9"
         }
       }
     ]
@@ -552,6 +583,16 @@
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
           "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
+        }
+      },
+      {
+        "component": "Surface",
+        "type": "boolean (asChild)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/surface/types.ts",
+          "symbol": "SurfaceProps",
+          "revision": "sha256:26d0726b5034dceb74e0067c1c0df5108d351e948205bbf22b5e187b92d9c0b6"
         }
       }
     ]
@@ -1957,7 +1998,18 @@
       "scope": "convention:inner-padding",
       "contentHash": "sha256:81ad5c5f141961a62fc1a42b220a22b80d66ed464787407f544cdafdbba293a0"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Surface",
+        "type": "SurfacePadding (none|sm|md|lg)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/surface/types.ts",
+          "symbol": "SurfaceProps",
+          "revision": "sha256:26d0726b5034dceb74e0067c1c0df5108d351e948205bbf22b5e187b92d9c0b6"
+        }
+      }
+    ]
   },
   {
     "id": "corner-radius",
@@ -1973,7 +2025,18 @@
       "scope": "convention:corner-radius",
       "contentHash": "sha256:e09a3c41f5a7808c4e82d9dfc926f5c0747c227cbb67b43f53acdfa99c679f08"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Surface",
+        "type": "SurfaceRadius (none|md|lg|xl|full)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/surface/types.ts",
+          "symbol": "SurfaceProps",
+          "revision": "sha256:26d0726b5034dceb74e0067c1c0df5108d351e948205bbf22b5e187b92d9c0b6"
+        }
+      }
+    ]
   },
   {
     "id": "auto-dismiss-duration",

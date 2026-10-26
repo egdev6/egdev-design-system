@@ -16,9 +16,11 @@ const components = [
   ['Heading', 'primitives/text'],
   ['Stack', 'primitives/stack'],
   ['Text', 'primitives/text'],
+  ['Surface', 'primitives/surface'],
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
-  ['Spinner', 'atoms/spinner']
+  ['Spinner', 'atoms/spinner'],
+  ['Kbd', 'atoms/kbd']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -89,9 +91,11 @@ const expected: Record<string, Record<string, string | false>> = {
     children: false,
     level: 'select'
   },
+  surface: { tone: 'select', elevation: 'select', padding: 'select', radius: 'select', asChild: 'boolean' },
   visuallyhidden: { children: false, asChild: 'boolean' },
   skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
   spinner: { label: 'text', size: 'select' },
+  kbd: { children: 'text', label: 'text' },
   gauge: {
     label: 'text',
     value: 'number',
@@ -108,11 +112,13 @@ const ownPropCounts: Record<string, number> = {
   gauge: 8,
   skeleton: 3,
   spinner: 2,
+  kbd: 2,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,
   text: 6,
-  heading: 6
+  heading: 6,
+  surface: 5
 };
 const ownPropCount = (name: string): number => {
   const count = ownPropCounts[name.toLowerCase()];
@@ -280,7 +286,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         expect(composed.argTypes[prop]?.type?.name, `${name}.${prop} semantic type`).toBe('string');
       }
     }
-    if (!['VisuallyHidden', 'Stack', 'Cluster', 'Text'].includes(name)) {
+    if (!['VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface'].includes(name)) {
       expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     }
     expect(composed.args).toEqual({});
@@ -308,6 +314,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],
     ['Text', { variant: '"eyebrow"', tone: '"canvas"', accentBreak: 'true', asChild: 'false' }],
     ['Heading', { variant: '"section"', tone: '"canvas"', accentBreak: 'true', level: '2' }],
+    ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
     ['Spinner', { size: '"md"' }]
@@ -430,6 +437,24 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Spinner', false).argTypes[prop]);
     }
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Kbd required children and optional label text rows without defaults or extra rows', () => {
+    const { argTypes, args } = story('Kbd');
+    expect(argTypes.children?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.children?.control).toEqual({ type: 'text' });
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.label?.control).toEqual({ type: 'text' });
+    for (const prop of ['children', 'label']) {
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+    }
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'className']) {
+      expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
+    }
+    for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

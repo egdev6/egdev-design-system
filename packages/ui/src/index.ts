@@ -1,5 +1,6 @@
 // Atoms
 export * from './atoms/gauge';
+export * from './atoms/kbd';
 export * from './atoms/spinner';
 // Utilities
 export { cn } from './lib/cn';
@@ -23,6 +24,14 @@ export type {
   StackProps
 } from './primitives/stack';
 export { Cluster, Stack } from './primitives/stack';
+export type {
+  SurfaceElevation,
+  SurfacePadding,
+  SurfaceProps,
+  SurfaceRadius,
+  SurfaceTone
+} from './primitives/surface';
+export { Surface, surfaceVariants } from './primitives/surface';
 export type {
   HeadingLevel,
   HeadingProps,

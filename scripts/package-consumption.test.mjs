@@ -29,8 +29,8 @@ function run(cwd, command, args, timeout) {
 
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
-import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Heading, Label, Skeleton, Slot, Slottable, Spinner, Stack, Text, VisuallyHidden } from '@egdev/ui';
+import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
+import { AspectRatio, Cluster, Divider, Gauge, Heading, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -38,6 +38,7 @@ import type {
   GaugeProps,
   GaugeState,
   GaugeSize,
+  KbdProps,
   LabelProps,
   LabelVariant,
   SkeletonProps,
@@ -55,6 +56,11 @@ import type {
   TextTone,
   TextVariant,
   TitleVariant,
+  SurfaceElevation,
+  SurfacePadding,
+  SurfaceProps,
+  SurfaceRadius,
+  SurfaceTone,
   VisuallyHiddenProps
 } from '@egdev/ui';
 const slotProps: SlotProps = { 'aria-label': 'Composed documentation' };
@@ -154,6 +160,18 @@ export function SpinnerSamples({ loading = true }: { loading?: boolean }) {
       loading ? createElement(Spinner, { size: 'sm' }) : null, 'Saving draft'),
     createElement(Spinner, spinnerNative));
 }
+export const kbdSymbol: KbdProps = { children: '⌘K', label: 'Command K', id: 'kbd-command' };
+export const kbdNative: KbdProps = {
+  children: 'Esc', id: 'kbd-native', title: 'Close dialog', className: 'ms-1 ms-2 consumer-kbd'
+};
+export function KbdSamples() {
+  // One Kbd per key; the consumer composes combos with plain text separators (D3).
+  return createElement('p', { id: 'kbd-hint' },
+    'Press ', createElement(Kbd, kbdSymbol), ' or ',
+    createElement(Kbd, { children: 'Ctrl', id: 'kbd-ctrl' }), ' + ',
+    createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
+    createElement(Kbd, kbdNative));
+}
 export function VisuallyHiddenSamples() {
   return createElement('section', { 'aria-label': 'Hidden support content' },
     createElement(VisuallyHidden, { ...hiddenNote, ref: hiddenNoteRef }),
@@ -190,6 +208,30 @@ export function TypographySamples({ headingLevel = 1 }: TypographySampleProps) {
     createElement(Text, { variant: 'section', accent: 'inline', accentBreak: false, asChild: true,
       children: createElement('span', { id: 'title-slotted', className: 'consumer-span' }, 'Slotted ') }));
 }
+// Surface: a div ref by default; an HTMLElement ref on the actual slotted host with asChild.
+export const surfaceDivRef = createRef<HTMLDivElement>();
+export const surfaceSectionRef = createRef<HTMLElement>();
+export const surfaceArticleRef = createRef<HTMLElement>();
+export const surfaceArticleChildRef = createRef<HTMLElement>();
+const SurfaceArticle = forwardRef<HTMLElement, ComponentPropsWithoutRef<'article'>>((articleProps, ref) =>
+  createElement('article', { ...articleProps, ref })
+);
+const surfaceTone: SurfaceTone = 'surface-2';
+const surfacePadding: SurfacePadding = 'sm';
+const surfaceRadius: SurfaceRadius = 'none';
+export const surfaceBand: SurfaceProps = { tone: surfaceTone, elevation: 0, radius: surfaceRadius, padding: surfacePadding };
+export const surfaceBandRecipe: string = surfaceVariants({ tone: 'surface-2', elevation: 0, radius: 'none' });
+export function SurfaceSamples({ surfaceElevation = 1 }: { surfaceElevation?: SurfaceElevation }) {
+  return createElement('section', { 'aria-label': 'Material surfaces' },
+    createElement(Surface, { 'aria-label': 'Material card', elevation: surfaceElevation, ref: surfaceDivRef }, 'Card'),
+    createElement(Surface, { ...surfaceBand, 'aria-label': 'Header band', className: 'w-full' }, 'Band'),
+    createElement(Surface, { tone: 'overlay', 'aria-label': 'Glass panel' }, 'Glass'),
+    // The slotted branch requires its single element child in props, as for VisuallyHidden.
+    createElement(Surface, { tone: 'well', asChild: true, ref: surfaceSectionRef,
+      children: createElement('section', { 'aria-label': 'Recessed section' }, 'Well') }),
+    createElement(Surface, { tone: 'surface-3', asChild: true, ref: surfaceArticleRef,
+      children: createElement(SurfaceArticle, { 'aria-label': 'Article surface', ref: surfaceArticleChildRef }, 'Entry') }));
+}
 export const dividerDefaults: DividerProps = {};
 export const dividerSemanticVertical: DividerProps = {
   orientation: 'vertical', decorative: false, className: 'consumer-rule'
@@ -204,7 +246,7 @@ export function DividerSamples({ semantic }: { semantic?: boolean }) {
       ? { orientation: dividerOrientation, decorative: false, className: 'consumer-rule' }
       : { className: 'consumer-rule' }));
 }
-export function App({ gaugeValue, wideRatio, stackGap, dividerSemantic, headingLevel, spinnerLoading }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; dividerSemantic?: boolean; headingLevel?: HeadingLevel; spinnerLoading?: boolean } = {}) {
+export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, headingLevel, spinnerLoading }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; headingLevel?: HeadingLevel; spinnerLoading?: boolean } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
@@ -213,11 +255,13 @@ export function App({ gaugeValue, wideRatio, stackGap, dividerSemantic, headingL
     createElement(AspectSamples, { wideRatio }),
     createElement(LayoutSamples, { stackGap }),
     createElement(TypographySamples, { headingLevel }),
+    createElement(SurfaceSamples, { surfaceElevation }),
     createElement(VisuallyHiddenSamples),
     createElement(DividerSamples, { semantic: dividerSemantic }),
     createElement(LabelSamples),
     createElement(SkeletonSamples),
     createElement(SpinnerSamples, { loading: spinnerLoading }),
+    createElement(KbdSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -260,6 +304,18 @@ const numericSpinner: SpinnerProps = { size: 24 };
 const invalidSpinner: SpinnerProps = { size: 'xl' };
 // @ts-expect-error Color is inherited through currentColor; there is no tone prop (D5).
 const tonedSpinner: SpinnerProps = { tone: 'brand' };
+// @ts-expect-error Kbd key text is required.
+const missingKbdText: KbdProps = { label: 'Command K' };
+// @ts-expect-error Kbd children are plain text, not elements.
+const elementKbd: KbdProps = { children: createElement('span', null, 'K') };
+// @ts-expect-error Kbd never renders markup.
+const markupKbd: KbdProps = { children: 'K', dangerouslySetInnerHTML: { __html: '<b>K</b>' } };
+// @ts-expect-error Kbd has no public ref API (D5).
+const referencedKbd: KbdProps = { children: 'K', ref: createRef<HTMLElement>() };
+// @ts-expect-error Kbd cannot delegate its root to a child.
+const slottedKbd: KbdProps = { children: 'K', asChild: true };
+// @ts-expect-error Kbd has a single flat treatment; there are no variants (D4).
+const variantKbd: KbdProps = { children: 'K', variant: 'raised' };
 // @ts-expect-error Hidden content is required, not optional.
 const missingHiddenChildren: VisuallyHiddenProps = { id: 'orphan-hint' };
 // @ts-expect-error VisuallyHidden inherits span props; the anchor-only href is rejected.
@@ -337,7 +393,45 @@ const tonedInverse: HeadingProps = { children: 'Show', variant: 'inverse', tone:
 const injectedText: TextProps = { children: 'Copy', dangerouslySetInnerHTML: { __html: '<b>x</b>' } };
 // @ts-expect-error Heading owns its native level; aria-level is excluded.
 const ariaLevelHeading: HeadingProps = { children: 'Title', 'aria-level': 3 };
+// @ts-expect-error A well is always recessed; it rejects elevation.
+const elevatedWell: SurfaceProps = { tone: 'well', elevation: 2 };
+// @ts-expect-error An overlay always floats at level 3; it rejects elevation.
+const elevatedOverlay: SurfaceProps = { tone: 'overlay', elevation: 0 };
+// @ts-expect-error Material levels are the approved tones only.
+const brandSurface: SurfaceProps = { tone: 'brand' };
+// @ts-expect-error asChild needs exactly one element child, not text.
+const slottedSurfaceText: SurfaceProps = { asChild: true, children: 'Text' };
+// @ts-expect-error The default div promises only an HTMLDivElement ref.
+const wideSurfaceRef: ComponentProps<typeof Surface> = { ref: createRef<HTMLElement>() };
 `;
+
+// Surface ships no stylesheet: only token-backed CVA utilities, including fallback variants.
+function assertSurfaceCSS(css) {
+  for (const selector of [
+    '.bg-surface-0',
+    '.bg-surface-overlay',
+    '.border-border-hairline-strong',
+    '.backdrop-blur-overlay',
+    '.backdrop-saturate-150',
+    '.shadow-edge'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Surface utility ' + selector);
+  }
+  for (const value of [
+    'background-image: var(--gradient-sheen)',
+    '--tw-shadow: var(--shadow-well)',
+    '--tw-shadow: var(--shadow-edge), var(--shadow-elev-1)',
+    '--tw-shadow: var(--shadow-edge-strong), var(--shadow-elev-3)'
+  ]) {
+    assert.ok(css.includes(value), 'Surface recipe must emit ' + value);
+  }
+  assert.match(css, /prefers-reduced-transparency:\s*reduce\)\s*\{\s*\.\\\[\\@media[^{]*bg-surface-2\s*\{/);
+  assert.match(
+    css,
+    /@supports not \(backdrop-filter:[^{]+\{\s*\.not-supports-\\\[backdrop-filter\\\]\\:bg-surface-2\s*\{/
+  );
+  assert.doesNotMatch(css, /\.eg-surface\s*[,{]/, 'Surface marker must not become a shipped CSS rule');
+}
 
 // Reused inside the installed fixture, against shipped CSS and both consumer build paths.
 function assertGaugeCSS(css) {
@@ -512,6 +606,33 @@ function assertSkeletonCSS(css) {
   assert.doesNotMatch(css, /\.eg-skeleton[^{]*\{[^}]*(?:animation|transition):/, 'Skeleton marker must stay static');
 }
 
+// Kbd ships its flat token utilities and the hairline border-style initial value; no Kbd stylesheet.
+function assertKbdCSS(css) {
+  for (const utility of [
+    '.inline-block',
+    '.whitespace-nowrap',
+    '.rounded-sm',
+    '.border-border-subtle',
+    '.font-sans',
+    '.text-label-default',
+    '.text-fg-secondary'
+  ]) {
+    assert.ok(css.includes(utility), 'Missing Kbd utility ' + utility);
+  }
+  assert.match(css, /\.border\s*\{[^}]*border-width:\s*1px/, 'Kbd hairline must ship');
+  assert.match(
+    css,
+    /\.px-1\\\.5\s*\{[^}]*padding-inline:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*1\.5\)/,
+    'Kbd inline padding'
+  );
+  assert.match(
+    css,
+    /\.py-0\\\.5\s*\{[^}]*padding-block:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*0\.5\)/,
+    'Kbd block padding'
+  );
+  assert.match(css, /--tw-border-style:\s*solid/, 'The hairline border style must resolve without Tailwind');
+}
+
 // Spinner ships Icon-scale presets, inherited stroke utilities and the canonical spin token with keyframes.
 function assertSpinnerCSS(css) {
   for (const utility of [
@@ -572,12 +693,15 @@ for (const utility of ['.text-title-section', '.text-title-hero', '.text-title-s
   assert.ok(shippedStyles.includes(utility), 'Packed styles must retain typography utility ' + utility);
 }
 assert.doesNotMatch(shippedStyles, /\\.eg-(?:text|heading)\\s*[,{]/, 'Text/Heading markers must not become shipped CSS rules');
+${assertSurfaceCSS.toString()}
+assertSurfaceCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AspectRatio',
   'Cluster',
   'Divider',
   'Gauge',
   'Heading',
+  'Kbd',
   'Label',
   'Portal',
   'Skeleton',
@@ -585,19 +709,23 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Slottable',
   'Spinner',
   'Stack',
+  'Surface',
   'Text',
   'VisuallyHidden',
   'cn',
-  'labelVariants'
+  'labelVariants',
+  'surfaceVariants'
 ]);
 ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
+${assertKbdCSS.toString()}
 assertGaugeCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assertSkeletonCSS(shippedStyles);
 assertSpinnerCSS(shippedStyles);
+assertKbdCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -666,7 +794,7 @@ try {
   semanticDivider.window.close();
 }
 const html = renderToString(createElement(App));
-for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%', 'Email address', 'eg-stack', 'flex-col', 'flex-nowrap', 'gap-4', 'eg-cluster', 'flex-row', 'flex-wrap', 'gap-6', 'items-start', 'justify-between']) {
+for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%', 'Email address', 'eg-stack', 'flex-col', 'flex-nowrap', 'gap-4', 'eg-cluster', 'flex-row', 'flex-wrap', 'gap-6', 'items-start', 'justify-between', 'eg-surface', 'bg-surface-1', 'bg-surface-overlay', 'shadow-[var(--shadow-well)]']) {
   assert.ok(html.includes(text), 'SSR must render ' + text);
 }
 const dom = new JSDOM(html);
@@ -828,6 +956,34 @@ for (const frame of [square, wide]) {
   assert.equal(nativeSpinner.getAttribute('title'), 'Uploading');
   assert.equal(nativeSpinner.getAttribute('lang'), 'en');
   assert.ok(nativeSpinner.className.endsWith('ms-2 consumer-spinner'), 'Consumer layout classes merge last');
+  const kbdHint = document.getElementById('kbd-hint');
+  assert.ok(kbdHint, 'SSR must render Kbd samples');
+  const keys = [...kbdHint.querySelectorAll('kbd.eg-kbd')];
+  assert.equal(keys.length, 4, 'One native kbd per key');
+  assert.equal(kbdHint.textContent, 'Press ⌘KCommand K or Ctrl + K to search. Esc');
+  const commandKey = document.getElementById('kbd-command');
+  assert.equal(commandKey.children.length, 2, 'A labelled key renders a hidden glyph and hidden spoken text');
+  assert.equal(commandKey.children[0].getAttribute('aria-hidden'), 'true');
+  assert.equal(commandKey.children[0].textContent, '⌘K');
+  assert.equal(commandKey.children[1].textContent, 'Command K');
+  assert.equal(commandKey.children[1].hasAttribute('aria-hidden'), false);
+  assert.ok(commandKey.children[1].getAttribute('style').includes('clip:rect(0, 0, 0, 0)'), 'Spoken name is visually hidden');
+  for (const id of ['kbd-ctrl', 'kbd-k']) {
+    const plain = document.getElementById(id);
+    assert.equal(plain.children.length, 0, 'Plain and empty-label keys read their text as-is');
+    assert.equal(plain.querySelector('[aria-hidden]'), null);
+  }
+  for (const key of keys) {
+    assert.equal(key.getAttribute('role'), null);
+    assert.equal(key.getAttribute('aria-label'), null);
+    assert.equal(key.getAttribute('tabindex'), null);
+    assert.equal(key.hasAttribute('data-state'), false);
+  }
+  const nativeKbd = document.getElementById('kbd-native');
+  assert.equal(nativeKbd.getAttribute('title'), 'Close dialog');
+  assert.ok(nativeKbd.className.startsWith('eg-kbd '), 'The public marker leads the root classes');
+  assert.ok(nativeKbd.className.endsWith(' ms-2 consumer-kbd'), 'Consumer layout classes merge last');
+  assert.ok(!nativeKbd.className.split(' ').includes('ms-1'), 'Conflicting margin utilities resolve through cn()');
   const tokenStack = document.querySelector('.eg-stack[aria-label="Token sections"]');
   assert.ok(tokenStack, 'SSR must render Stack samples');
   assert.ok(tokenStack.classList.contains('flex-col') && tokenStack.classList.contains('flex-nowrap'));
@@ -838,6 +994,26 @@ for (const frame of [square, wide]) {
   assert.ok(tokenCluster, 'SSR must render Cluster samples');
   assert.ok(tokenCluster.classList.contains('flex-row') && tokenCluster.classList.contains('flex-wrap'));
   assert.ok(tokenCluster.classList.contains('gap-6') && tokenCluster.classList.contains('items-start') && tokenCluster.classList.contains('justify-between'));
+  const card = document.querySelector('.eg-surface[aria-label="Material card"]');
+  assert.ok(card, 'SSR must render the default Surface');
+  assert.equal(card.tagName, 'DIV');
+  for (const name of ['bg-surface-1', 'bg-[image:var(--gradient-sheen)]', 'p-6', 'rounded-xl', 'text-fg-default']) {
+    assert.ok(card.classList.contains(name), 'Default Surface must carry ' + name);
+  }
+  const band = document.querySelector('.eg-surface[aria-label="Header band"]');
+  assert.ok(band.classList.contains('shadow-edge') && band.classList.contains('rounded-none') && band.classList.contains('p-3'));
+  assert.ok(band.className.endsWith('w-full'), 'Layout className merges last on the Surface root');
+  const glass = document.querySelector('.eg-surface[aria-label="Glass panel"]');
+  assert.ok(glass.classList.contains('not-supports-[backdrop-filter]:bg-surface-2'), 'Overlay must keep its solid fallback');
+  const recessed = document.querySelector('section[aria-label="Recessed section"]');
+  assert.ok(recessed && recessed.classList.contains('eg-surface'), 'asChild must merge onto the section without a wrapper');
+  assert.equal(recessed.parentElement.getAttribute('aria-label'), 'Material surfaces');
+  assert.equal(document.querySelector('article[aria-label="Article surface"]')?.classList.contains('bg-surface-3'), true);
+  for (const surface of [card, band, glass, recessed]) {
+    assert.equal(surface.getAttribute('role'), null);
+    assert.equal(surface.hasAttribute('tabindex'), false);
+    assert.equal(surface.hasAttribute('style'), false);
+  }
   for (const layout of [tokenStack, tokenCluster]) {
     assert.equal(layout.getAttribute('role'), null);
     assert.equal(layout.hasAttribute('aria-live'), false);
@@ -925,7 +1101,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef } = await import('./consumer.ts');
+const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -1054,6 +1230,15 @@ try {
   assert.equal(busyHost().textContent, 'Saving draft');
   assert.equal(document.getElementById('spinner-status').getAttribute('role'), 'status', 'Status Spinner persists');
   stage('spinner:rerender:complete');
+  stage('kbd:passive:start');
+  const csrKeys = document.querySelectorAll('#kbd-hint kbd.eg-kbd');
+  assert.equal(csrKeys.length, 4, 'Consumer Kbds must mount');
+  for (const key of csrKeys) {
+    assert.equal(key.tabIndex, -1, 'A passive key must never become a Tab stop');
+    assert.equal(key.getAttribute('role'), null);
+  }
+  assert.equal(document.getElementById('kbd-command').children[0].getAttribute('aria-hidden'), 'true');
+  stage('kbd:passive:complete');
   stage('layout:rerender:start');
   const layoutStack = () => document.querySelector('.eg-stack[aria-label="Token sections"]');
   const layoutCluster = () => document.querySelector('.eg-cluster[aria-label="Token actions"]');
@@ -1074,6 +1259,19 @@ try {
   assert.ok(rerankedHero.classList.contains('text-title-hero'), 'Level updates must not resize the recipe');
   assert.equal(rerankedHero.textContent, 'Build in public');
   stage('typography:rerender:complete');
+  stage('surface:refs:start');
+  const surfaceCard = () => document.querySelector('.eg-surface[aria-label="Material card"]');
+  assert.equal(surfaceDivRef.current?.tagName, 'DIV', 'The default Surface ref must expose the div');
+  assert.ok(surfaceDivRef.current === surfaceCard(), 'The default ref must target the rendered card');
+  assert.equal(surfaceSectionRef.current?.tagName, 'SECTION', 'The slotted ref must expose the section host');
+  assert.ok(surfaceArticleRef.current === surfaceArticleChildRef.current, 'Surface and child refs must compose on the article');
+  assert.equal(surfaceArticleRef.current?.tagName, 'ARTICLE');
+  await act(async () => root.render(createElement(App, { gaugeValue: 42.5, stackGap: 8, surfaceElevation: 3 })));
+  assert.ok(surfaceDivRef.current === surfaceCard(), 'Elevation updates must preserve the same Surface root');
+  assert.ok(surfaceCard().classList.contains('shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)]'), 'Elevation 3 must resolve its recipe');
+  assert.ok(surfaceCard().classList.contains('border-border-hairline-strong'), 'Elevation 3 must use the strong hairline');
+  assert.ok(!surfaceCard().classList.contains('shadow-[var(--shadow-edge),var(--shadow-elev-1)]'), 'The replaced elevation recipe must be gone');
+  stage('surface:refs:complete');
   console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery'] }));
   const slotRef = createRef();
   const childRef = createRef();
@@ -1116,7 +1314,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Kbd passive keys outside the Tab order', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1199,6 +1397,7 @@ ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
+${assertKbdCSS.toString()}
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1208,8 +1407,11 @@ assert.match(
 );
 assertSkeletonCSS(emitted);
 assertSpinnerCSS(emitted);
+assertKbdCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
+${assertSurfaceCSS.toString()}
+assertSurfaceCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
 const shipped = readFileSync(new URL('./node_modules/@egdev/tokens/dist/tokens.css', import.meta.url), 'utf8');
 const names = shipped
@@ -1243,9 +1445,11 @@ assert.match(
 );
 assertSkeletonCSS(twCss);
 assertSpinnerCSS(twCss);
+assertKbdCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
+assertSurfaceCSS(twCss);
 assertLabelCSS(twCss);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) {
   assert.ok(twCss.includes(selector), 'Tailwind consumer must retain shipped UI selector ' + selector);
