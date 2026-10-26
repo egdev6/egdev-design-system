@@ -7,6 +7,8 @@ const tokenTypographySizes = [
   'display-hero',
   'display-show',
   'display-pro',
+  'display-stat',
+  'display-stat-sm',
   'heading-section',
   'heading-small',
   'body-large',
