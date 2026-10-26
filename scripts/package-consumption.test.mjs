@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Cluster, Divider, Gauge, Heading, Icon, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, RadioGroup, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Tooltip, VisuallyHidden, badgeVariants, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Cluster, Divider, Gauge, Heading, Icon, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, RadioGroup, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -90,6 +90,8 @@ import type {
   TextTone,
   TextVariant,
   TitleVariant,
+  ToggleProps,
+  ToggleSize,
   SurfaceElevation,
   SurfacePadding,
   SurfaceProps,
@@ -614,6 +616,27 @@ const childrenSelect: SelectProps = { options: selectOptions, children: 'Public'
 const slottedSelect: SelectProps = { options: selectOptions, asChild: true };
 // @ts-expect-error Select only supports md and sm.
 const largeSelect: SelectProps = { options: selectOptions, size: 'lg' };
+const toggleSize: ToggleSize = 'sm';
+export const toggleRef = createRef<HTMLButtonElement>();
+export const toggleDefaults: ToggleProps = { children: 'Show grid' };
+export function ToggleSamples() {
+  return createElement('section', { 'aria-label': 'Toggle samples' },
+    createElement(Toggle, { ...toggleDefaults, id: 'toggle-default', ref: toggleRef }),
+    createElement(Toggle, { id: 'toggle-controlled', pressed: true, children: 'Pin', icon: createElement(Icon, { name: 'bookmark' }) }),
+    createElement(Toggle, { id: 'toggle-disabled', size: toggleSize, defaultPressed: true, disabled: true, label: 'Pin layer', icon }));
+}
+// @ts-expect-error Icon-only content requires an accessible label.
+const unnamedToggle: ToggleProps = { icon };
+// @ts-expect-error Visible text and the icon-only label are mutually exclusive.
+const ambiguousToggle: ToggleProps = { children: 'Pin', label: 'Pin', icon };
+// @ts-expect-error Toggle always renders a button; asChild is not public.
+const slottedToggle: ToggleProps = { children: 'Pin', asChild: true };
+// @ts-expect-error aria-pressed is owned by Radix, not an incoming override.
+const overriddenToggle: ToggleProps = { children: 'Pin', 'aria-pressed': 'mixed' };
+// @ts-expect-error Only preset dimensions are public.
+const numericToggle: ToggleProps = { children: 'Pin', size: 40 };
+// @ts-expect-error Toggle does not expose private CVA recipes.
+import type { toggleVariants } from '@egdev/ui';
 export const dividerDefaults: DividerProps = {};
 export const dividerSemanticVertical: DividerProps = {
   orientation: 'vertical', decorative: false, className: 'consumer-rule'
@@ -658,6 +681,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(LogoSamples),
     createElement(ProductMarkSamples),
     createElement(SelectSamples),
+    createElement(ToggleSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -991,6 +1015,38 @@ const slottedSurfaceText: SurfaceProps = { asChild: true, children: 'Text' };
 // @ts-expect-error The default div promises only an HTMLDivElement ref.
 const wideSurfaceRef: ComponentProps<typeof Surface> = { ref: createRef<HTMLElement>() };
 `;
+
+function assertToggleCSS(css) {
+  for (const selector of [
+    String.raw`.data-\[state\=on\]\:bg-surface-3`,
+    String.raw`.data-\[state\=on\]\:bg-\[image\:var\(--gradient-sheen\)\]`,
+    String.raw`.data-\[state\=on\]\:border-border-hairline-strong`,
+    String.raw`.group-data-\[state\=on\]\/toggle\:text-fg-brand-raised`,
+    String.raw`.active\:scale-97`,
+    String.raw`.data-disabled\:opacity-45`,
+    String.raw`.motion-reduce\:active\:scale-100`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Toggle selector ' + selector);
+  }
+  for (const token of [
+    'gradient-sheen',
+    'shadow-edge-strong',
+    'shadow-elev-1',
+    'shadow-focus',
+    'duration-fast',
+    'duration-press',
+    'ease-out',
+    'ease-snappy'
+  ]) {
+    assert.ok(css.includes('var(--' + token + ')'), 'Missing Toggle token ' + token);
+  }
+  assert.match(css, /--tw-scale-x:\s*97%/);
+  assert.match(css, /--tw-scale-y:\s*97%/);
+  assert.match(css, /scale:\s*var\(--tw-scale-x\)\s+var\(--tw-scale-y\)/);
+  assert.match(css, /box-sizing:\s*border-box/);
+  assert.doesNotMatch(css, /\.eg-toggle\s*[,{]/);
+}
 
 // Checkbox ships only its fixed geometry and Radix-state token recipes, never a marker rule.
 function assertCheckboxCSS(css) {
@@ -1907,6 +1963,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Switch',
   'Text',
   'Textarea',
+  'Toggle',
   'Tooltip',
   'VisuallyHidden',
   'badgeVariants',
@@ -1941,6 +1998,7 @@ ${assertProgressBarCSS.toString()}
 ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertProductMarkCSS.toString()}
+${assertToggleCSS.toString()}
 ${assertSelectCSS.toString()}
 assertSelectCSS(shippedStyles);
 assertButtonCSS(shippedStyles);
@@ -1961,6 +2019,7 @@ assertProgressBarCSS(shippedStyles);
 assertTextareaCSS(shippedStyles);
 assertInputCSS(shippedStyles);
 assertProductMarkCSS(shippedStyles);
+assertToggleCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -2159,6 +2218,19 @@ try {
   semanticDivider.window.close();
 }
 const html = renderToString(createElement(App));
+const toggleDocument = new JSDOM(html);
+try {
+  const document = toggleDocument.window.document;
+  const toggle = document.getElementById('toggle-default');
+  assert.equal(toggle.tagName, 'BUTTON');
+  assert.ok(toggle.classList.contains('eg-toggle'));
+  assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+  assert.equal(document.getElementById('toggle-controlled').getAttribute('data-state'), 'on');
+  assert.equal(document.getElementById('toggle-disabled').textContent, 'Pin layer');
+  assert.ok(document.getElementById('toggle-disabled').disabled);
+} finally {
+  toggleDocument.window.close();
+}
 for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%', 'Email address', 'eg-stack', 'flex-col', 'flex-nowrap', 'gap-4', 'eg-cluster', 'flex-row', 'flex-wrap', 'gap-6', 'items-start', 'justify-between', 'eg-icon', 'viewBox="0 0 24 24"', 'Search status', 'eg-surface', 'bg-surface-1', 'bg-surface-overlay', 'shadow-[var(--shadow-well)]']) {
   assert.ok(html.includes(text), 'SSR must render ' + text);
 }
@@ -2774,7 +2846,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, RadioGroupSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, tooltipRecipe } = await import('./consumer.ts');
+const { App, RadioGroupSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -2788,9 +2860,24 @@ try {
   assert.ok(slottedHeadingRef.current instanceof HTMLElement);
   assert.equal(slottedHeadingRef.current?.tagName, 'H2', 'The slotted ref must expose the h2 host');
   const buttons = [...document.querySelectorAll('button:not(.eg-checkbox)')];
-  assert.equal(buttons.length, 10, 'Existing harness controls plus three Button hosts and three Select triggers');
+  assert.equal(buttons.length, 13, 'Existing harness controls plus three Button hosts, three Select triggers and three Toggle controls');
   assert.ok(buttonRef.current === document.getElementById('button-native'), 'Native Button ref reaches the button on both React majors');
   assert.ok(buttonLinkRef.current === document.getElementById('button-link'), 'Slotted Button ref reaches the anchor on both React majors');
+  const toggle = document.getElementById('toggle-default');
+  assert.ok(toggleRef.current === toggle, 'Toggle ref targets the actual button on this React major');
+  assert.equal(toggle.tagName, 'BUTTON');
+  assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+  await act(async () => toggle.click());
+  assert.equal(toggle.getAttribute('aria-pressed'), 'true');
+  assert.equal(toggle.getAttribute('data-state'), 'on');
+  const controlledToggle = document.getElementById('toggle-controlled');
+  await act(async () => controlledToggle.click());
+  assert.equal(controlledToggle.getAttribute('aria-pressed'), 'true', 'Controlled state needs incoming updates');
+  const disabledToggle = document.getElementById('toggle-disabled');
+  await act(async () => disabledToggle.click());
+  assert.equal(disabledToggle.getAttribute('aria-pressed'), 'true');
+  assert.ok(disabledToggle.disabled);
+  assert.equal(disabledToggle.textContent, 'Pin layer');
   buttons[0].focus();
   assert.ok(document.activeElement === buttons[0], 'First intrinsic button must receive focus');
   buttons[1].focus();
@@ -3239,6 +3326,7 @@ try {
   assert.ok(document.querySelector('[role="tooltip"]') === null, 'Unmount removes the portaled bubble');
   stage('tooltip:focus:complete');
   // Native label activation: clicking the associated label focuses the named control.
+  assert.ok(toggleRef.current === null, 'Toggle ref cleans up when App unmounts');
   // The Slot scene unmounted App, so remount it before exercising LabelSamples.
   await act(async () => root.render(createElement(App)));
   // The label click must activate the associated control: jsdom forwards the click
@@ -3358,7 +3446,7 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
-  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup'] }));
+  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -3459,6 +3547,7 @@ ${assertProgressBarCSS.toString()}
 ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertProductMarkCSS.toString()}
+${assertToggleCSS.toString()}
 ${assertSelectCSS.toString()}
 assertSelectCSS(emitted);
 ${assertCheckboxCSS.toString()}
@@ -3486,6 +3575,7 @@ assertProgressBarCSS(emitted);
 assertTextareaCSS(emitted);
 assertInputCSS(emitted);
 assertProductMarkCSS(emitted);
+assertToggleCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
@@ -3544,6 +3634,7 @@ assertProgressBarCSS(twCss);
 assertTextareaCSS(twCss);
 assertInputCSS(twCss);
 assertProductMarkCSS(twCss);
+assertToggleCSS(twCss);
 assertSelectCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);

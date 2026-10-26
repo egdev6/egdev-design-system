@@ -37,6 +37,7 @@ const components = [
   ['StatusDot', 'atoms/status-dot'],
   ['Switch', 'atoms/switch'],
   ['Textarea', 'atoms/textarea'],
+  ['Toggle', 'atoms/toggle'],
   ['Tooltip', 'atoms/tooltip']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
@@ -200,6 +201,15 @@ const expected: Record<string, Record<string, string | false>> = {
     required: 'boolean',
     disabled: 'boolean'
   },
+  toggle: {
+    pressed: 'boolean',
+    defaultPressed: 'boolean',
+    onPressedChange: false,
+    children: false,
+    icon: false,
+    label: 'text',
+    size: 'select'
+  },
   gauge: {
     label: 'text',
     value: 'number',
@@ -234,6 +244,7 @@ const ownPropCounts: Record<string, number> = {
   input: 4,
   productmark: 3,
   select: 9,
+  toggle: 7,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,

@@ -126,10 +126,10 @@
     "nombre": "Toggle",
     "nivel": "atom",
     "destino": "ui",
-    "radix": "Toggle",
+    "radix": "Toggle + AccessibleIcon",
     "compone": "Icon",
     "accion": "nuevo",
-    "notas": "Botón conmutado (mostrar/ocultar capa, silenciar). IconButton `pressed` puede apoyarse en él."
+    "notas": "Implemented in @egdev/ui: persistent pressed button with visible text and optional leading icon, or required icon and accessible label; sm/md/lg, controlled/uncontrolled Radix state and forwarded button ref. Selected Material treatment via token-backed CVA; no stylesheet or asChild. IconButton remains a distinct one-shot action. Contract: [#74](https://github.com/egdev6/egdev-design-system/issues/74)."
   },
   {
     "actual": "Link",

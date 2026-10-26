@@ -18,6 +18,7 @@ export * from './atoms/spinner';
 export * from './atoms/status-dot';
 export * from './atoms/switch';
 export * from './atoms/textarea';
+export * from './atoms/toggle';
 export * from './atoms/tooltip';
 // Utilities
 export { cn } from './lib/cn';

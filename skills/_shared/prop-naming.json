@@ -274,6 +274,16 @@
           "symbol": "SelectProps",
           "revision": "sha256:5fd68b9eeae5373ed7adeeaf90d002bf32eac62f584024114479b32bfd69f3f0"
         }
+      },
+      {
+        "component": "Toggle",
+        "type": "ToggleSize ('sm' | 'md' | 'lg')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/toggle/types.ts",
+          "symbol": "ToggleProps",
+          "revision": "sha256:6d0eec4fa75b1a67f055c67133945f948ab134db3a33589255414dfb6c006a1a"
+        }
       }
     ]
   },
@@ -592,6 +602,16 @@
           "symbol": "SliderProps",
           "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
         }
+      },
+      {
+        "component": "Toggle",
+        "type": "string (required only in the icon-only branch)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/toggle/types.ts",
+          "symbol": "ToggleProps",
+          "revision": "sha256:6d0eec4fa75b1a67f055c67133945f948ab134db3a33589255414dfb6c006a1a"
+        }
       }
     ]
   },
@@ -849,14 +869,14 @@
   {
     "id": "leading-icon",
     "name": "icon",
-    "meaning": "Optional decorative icon rendered beside a component's text label (before it by default) and hidden from assistive technology. Button alone may place this icon before or after its label, after it by default.",
-    "whenToUse": "A labelled component offers a leading pictogram that repeats or decorates meaning already present in its text. Button alone also permits its iconPosition start/end slot, default end.",
-    "avoid": "Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning. The trailing-icon exclusion has one exception: Button with iconPosition; no other component gains trailing-icon permission.",
+    "meaning": "Optional decorative icon rendered beside a component's text label (before it by default) and hidden from assistive technology. Button alone may place this icon before or after its label, after it by default. Toggle alone also accepts a required decorative icon as its sole visible content, with a required accessible label.",
+    "whenToUse": "A labelled component offers a leading pictogram that repeats or decorates meaning already present in its text. Button alone also permits its iconPosition start/end slot, default end. Toggle alone permits its icon-only branch when icon and accessible label are both required.",
+    "avoid": "Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning. Two scoped exceptions apply: Button with iconPosition may place the icon after its label, and Toggle with a required icon and accessible label may render icon-only. No other component gains trailing-icon or icon-only permission, and interactive icons remain excluded.",
     "status": "approved",
     "approval": {
-      "reference": "docs/components/button/v0.1/prop-naming-approval.json",
+      "reference": "docs/components/toggle/v0.1/prop-naming-approval-leading-icon-combined.json",
       "scope": "convention:leading-icon",
-      "contentHash": "sha256:6beeba4aea0a65b13367990fde8dd8439b07af12df9d8e9432c1a94b16997d4c"
+      "contentHash": "sha256:60969be2cb3bfeda5375f19bb3d66bd265ae2b61de0331e169828ae5eaceb19a"
     },
     "aliases": [],
     "exceptions": [],
@@ -879,6 +899,16 @@
           "path": "packages/ui/src/atoms/badge/types.ts",
           "symbol": "BadgeProps",
           "revision": "sha256:81d97cd46835e08a2ed5d846d352642ef9230661b4dcfe04d7e4be921c7d6f3e"
+        }
+      },
+      {
+        "component": "Toggle",
+        "type": "ReactElement (optional leading icon with text; required icon-only with required label)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/toggle/types.ts",
+          "symbol": "ToggleProps",
+          "revision": "sha256:6d0eec4fa75b1a67f055c67133945f948ab134db3a33589255414dfb6c006a1a"
         }
       },
       {
@@ -1085,7 +1115,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Toggle",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/toggle/types.ts",
+          "symbol": "ToggleProps",
+          "revision": "sha256:6d0eec4fa75b1a67f055c67133945f948ab134db3a33589255414dfb6c006a1a"
+        }
+      }
+    ]
   },
   {
     "id": "initial-uncontrolled-pressed",
@@ -1101,7 +1142,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Toggle",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/toggle/types.ts",
+          "symbol": "ToggleProps",
+          "revision": "sha256:6d0eec4fa75b1a67f055c67133945f948ab134db3a33589255414dfb6c006a1a"
+        }
+      }
+    ]
   },
   {
     "id": "pressed-change",
@@ -1117,7 +1169,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Toggle",
+        "type": "(pressed: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/toggle/types.ts",
+          "symbol": "ToggleProps",
+          "revision": "sha256:6d0eec4fa75b1a67f055c67133945f948ab134db3a33589255414dfb6c006a1a"
+        }
+      }
+    ]
   },
   {
     "id": "files-received",

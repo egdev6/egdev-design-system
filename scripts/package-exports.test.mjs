@@ -46,7 +46,7 @@ function cssBlock(css, opening) {
 
 // Match escaped emitted selectors, not unescaped CVA class names; allow only complete approved utilities.
 const unapprovedTransitionUtility =
-  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\])(?=\s*\{))[\w\\]/;
+  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\])(?=\s*\{))[\w\\]/;
 
 test('transition utility guard accepts only the exact approved emitted selectors', () => {
   for (const selector of [
@@ -60,6 +60,7 @@ test('transition utility guard accepts only the exact approved emitted selectors
     String.raw`.transition-\[translate\,background-color\]`,
     String.raw`.transition-\[border-color\,color\]`,
     String.raw`.transition-\[translate\]`,
+    String.raw`.transition-\[color\,background-color\,border-color\,box-shadow\,scale\]`,
     String.raw`.motion-reduce\:transition-none`
   ]) {
     assert.doesNotMatch(`${selector} { transition-property: none; }`, unapprovedTransitionUtility, selector);
@@ -83,7 +84,9 @@ test('transition utility guard rejects unrelated named and arbitrary transitions
     String.raw`.transition-\[border-color\,color\,width\]`,
     String.raw`.transition-\[border-color\,color\]extra`,
     String.raw`.transition-\[translate\,width\]`,
-    String.raw`.transition-\[translate\]extra`
+    String.raw`.transition-\[translate\]extra`,
+    String.raw`.transition-\[color\,background-color\,border-color\,box-shadow\,scale\,width\]`,
+    String.raw`.transition-\[color\,background-color\,border-color\,box-shadow\,scale\]extra`
   ]) {
     assert.throws(
       () => assert.doesNotMatch(`${selector} { transition-property: all; }`, unapprovedTransitionUtility),
@@ -91,6 +94,41 @@ test('transition utility guard rejects unrelated named and arbitrary transitions
       selector
     );
   }
+});
+
+test('Toggle ships its exact token-backed pressed, focus, reset and reduced-motion utilities', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  for (const selector of [
+    String.raw`.data-\[state\=on\]\:bg-surface-3`,
+    String.raw`.data-\[state\=on\]\:bg-\[image\:var\(--gradient-sheen\)\]`,
+    String.raw`.data-\[state\=on\]\:border-border-hairline-strong`,
+    String.raw`.group-data-\[state\=on\]\/toggle\:text-fg-brand-raised`,
+    String.raw`.active\:scale-97`,
+    String.raw`.data-disabled\:opacity-45`,
+    String.raw`.motion-reduce\:active\:scale-100`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(selector), `Missing Toggle utility ${selector}`);
+  }
+  for (const token of [
+    'gradient-sheen',
+    'shadow-edge-strong',
+    'shadow-elev-1',
+    'shadow-focus',
+    'duration-fast',
+    'duration-press',
+    'ease-out',
+    'ease-snappy'
+  ]) {
+    assert.ok(css.includes(`var(--${token})`), token);
+  }
+  const press = cssBlock(css, /\.active\\:scale-97:active\s*\{/);
+  assert.match(press, /--tw-scale-x:\s*97%/);
+  assert.match(press, /--tw-scale-y:\s*97%/);
+  assert.match(press, /scale:\s*var\(--tw-scale-x\)\s+var\(--tw-scale-y\)/);
+  assert.match(css, /box-sizing:\s*border-box/);
+  assert.match(css, /padding-block:\s*var\(--space-0\)/);
+  assert.doesNotMatch(css, /\.eg-toggle\s*[,{]/, 'Root marker is not a separate visual engine');
 });
 
 test('UI publishes its stable declaration entry and reachable internal declarations', (context) => {
@@ -341,6 +379,7 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   // and Switch thumb translate and background-color; Slider adds only box-shadow (#68 D8).
   // Link adds only border-color/color and translate (#61); none reach the Skeleton.
   // Select #67 adds transition-colors only; Skeleton remains static in its own DOM checks.
+  // Toggle #74 adds only its exact color/background-color/border-color/box-shadow/scale list.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
@@ -1342,6 +1381,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Switch',
       'Text',
       'Textarea',
+      'Toggle',
       'Tooltip',
       'VisuallyHidden',
       'badgeVariants',
@@ -1537,6 +1577,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'TextareaProps',
     'TextareaVariant',
     'TitleVariant',
+    'Toggle',
+    'ToggleProps',
+    'ToggleSize',
     'Tooltip',
     'TooltipProps',
     'VisuallyHidden',

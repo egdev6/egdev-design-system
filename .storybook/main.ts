@@ -49,6 +49,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
     'form'
   ],
   slider: ['id', 'title', 'aria-describedby', 'className'],
+  toggle: ['disabled', 'type', 'id', 'title', 'className', 'style', 'onClick', 'aria-describedby'],
   // Native props re-exposed in autodocs per component, keyed by camelCase component name.
   // Gauge retains its approved passive measurement list; Label documents the native
   // association (htmlFor/id) and the approved class-merge surface. Nothing else from
