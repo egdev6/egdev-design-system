@@ -249,6 +249,16 @@
           "symbol": "HeadingProps",
           "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
         }
+      },
+      {
+        "component": "Dropzone",
+        "type": "'default' | 'inline'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/dropzone/types.ts",
+          "symbol": "DropzoneProps",
+          "revision": "sha256:e5291d6462a6cbbb46e2b5a2ed7cb1d66437ff049d60e77229599395a1dced03"
+        }
       }
     ]
   },
@@ -409,6 +419,16 @@
           "path": "packages/ui/src/atoms/product-mark/types.ts",
           "symbol": "ProductMarkProps",
           "revision": "sha256:91de5ae435b6a408065592d3b7b44085021c71a15230c868081efddb48d2a8c4"
+        }
+      },
+      {
+        "component": "Dropzone",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/dropzone/types.ts",
+          "symbol": "DropzoneProps",
+          "revision": "sha256:e5291d6462a6cbbb46e2b5a2ed7cb1d66437ff049d60e77229599395a1dced03"
         }
       }
     ]
@@ -836,7 +856,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Dropzone",
+        "type": "(files: File[]) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/dropzone/types.ts",
+          "symbol": "DropzoneProps",
+          "revision": "sha256:e5291d6462a6cbbb46e2b5a2ed7cb1d66437ff049d60e77229599395a1dced03"
+        }
+      }
+    ]
   },
   {
     "id": "drop-target-label",
@@ -852,7 +883,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Dropzone",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/dropzone/types.ts",
+          "symbol": "DropzoneProps",
+          "revision": "sha256:e5291d6462a6cbbb46e2b5a2ed7cb1d66437ff049d60e77229599395a1dced03"
+        }
+      }
+    ]
   },
   {
     "id": "icon-glyph-name",
