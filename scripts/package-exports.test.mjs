@@ -270,6 +270,81 @@ test('UI ships the Spinner icon-scale, stroke and canonical spin utilities with 
   assert.doesNotMatch(css, /\.eg-spinner[^{]*\{/, 'Spinner has no stylesheet: its marker carries no rule');
 });
 
+test('UI ships the Logo heights, token inks and link focus ring over the legacy marker', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // Heights are --spacing multiples: 28/32px bound steps and the 9 × 4px calculated step.
+  assert.match(rule('.h-7'), /height:\s*var\(--space-7\)\s*;/);
+  assert.match(rule('.h-8'), /height:\s*var\(--space-8\)\s*;/);
+  assert.match(rule('.h-9'), /height:\s*calc\(var\(--space-1\) \* 9\)\s*;/);
+  assert.match(rule('.h-full'), /height:\s*100%\s*;/);
+  assert.match(rule('.w-auto'), /width:\s*auto\s*;/);
+  assert.match(rule('.inline-block'), /display:\s*inline-block\s*;/);
+  assert.match(rule('.leading-none'), /line-height:\s*1\s*;/);
+  assert.match(rule('.rounded-sm'), /border-radius:\s*var\(--radius-sm[,)]/);
+  // D3: the artwork is painted only by the logo tokens and the white primitive.
+  assert.match(rule(String.raw`.fill-\(--logo-red\)`), /fill:\s*var\(--logo-red\)\s*;/);
+  assert.match(rule(String.raw`.fill-\(--logo-red-shade\)`), /fill:\s*var\(--logo-red-shade\)\s*;/);
+  assert.match(rule('.fill-primitive-white'), /fill:\s*var\(--color-primitive-white[,)]/);
+  assert.match(rule(String.raw`.focus-visible\:outline-none:focus-visible`), /outline-style:\s*none\s*;/);
+  assert.match(
+    rule(String.raw`.focus-visible\:shadow-focus:focus-visible`),
+    /--tw-shadow:\s*0 0 0 2px var\(--tw-shadow-color, #141518\), 0 0 0 4px var\(--tw-shadow-color, #FF0036\)\s*;/
+  );
+  // The legacy .eg-logo rule stays in the components layer, so the utilities above win.
+  const components = cssBlock(css, /@layer components\s*\{/);
+  assert.match(components, /\.eg-logo\s*\{[^}]*height:\s*32px/);
+  assert.doesNotMatch(utilities, /\.eg-logo[^{]*\{/, 'Logo adds no marker rule of its own');
+});
+
+test('UI ships the StatusDot ring, glow and fill utilities with its motion-safe pulse keyframes', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // D4: 8px status dots and 10px signal dots on the spacing scale.
+  assert.match(rule('.size-2'), /width:\s*var\(--space-2\)\s*;/);
+  assert.match(rule(String.raw`.size-2\.5`), /width:\s*calc\(var\(--space-1\) \* 2\.5\)\s*;/);
+  assert.match(rule('.inline-block'), /display:\s*inline-block\s*;/);
+  assert.match(rule('.rounded-full'), /border-radius:\s*var\(--radius-full[,)]/);
+  // D5/D6: a 2px ring that always uses the surface token.
+  assert.match(rule('.ring-2'), /--tw-ring-shadow:[^;]*calc\(2px \+ var\(--tw-ring-offset-width\)\)/);
+  assert.match(rule('.ring-bg-surface'), /--tw-ring-color:\s*var\(--color-bg-surface[,)]/);
+  assert.match(rule('.shadow-glow-hot'), /--tw-shadow:[^;]*rgba\(255, 0, 54, 0\.75\)/);
+  for (const [utility, token] of [
+    ['.bg-status-success', '--color-status-success'],
+    ['.bg-status-info', '--color-status-info'],
+    ['.bg-status-warning', '--color-status-warning'],
+    ['.bg-status-danger', '--color-status-danger'],
+    ['.bg-primitive-neutral-600', '--color-primitive-neutral-600'],
+    ['.bg-fg-brand-default', '--color-fg-brand-default'],
+    ['.bg-primitive-white', '--color-primitive-white']
+  ]) {
+    assert.match(rule(utility), new RegExp(`background-color:\\s*var\\(${token}[,)]`), utility);
+  }
+  // D7/AC-04/AC-05: the pulse only runs without a reduced-motion preference.
+  const motionSafe = cssBlock(utilities, /@media \(prefers-reduced-motion: no-preference\)\s*\{/);
+  assert.match(
+    cssBlock(
+      motionSafe,
+      /\.motion-safe\\:animate-\\\[eg-status-dot-pulse_2\\\.4s_var\\\(--ease-out\\\)_infinite\\\]\s*\{/
+    ),
+    /animation:\s*eg-status-dot-pulse 2\.4s var\(--ease-out\) infinite\s*;/
+  );
+  // status-dot.css ships only top-level keyframes, never a selector for the marker.
+  assert.match(
+    css,
+    /@keyframes eg-status-dot-pulse\s*\{\s*0%, 100%\s*\{\s*transform:\s*scale\(1\);\s*opacity:\s*100%;\s*\}\s*50%\s*\{\s*transform:\s*scale\(0\.72\);\s*opacity:\s*75%;\s*\}\s*\}/
+  );
+  assert.doesNotMatch(utilities, /@keyframes eg-status-dot-pulse/);
+});
+
 test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet rule', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -289,6 +364,37 @@ test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet ru
   const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
   const kbdRules = (text) => (text.replace(/\/\*[\s\S]*?\*\//g, '').match(/\.eg-kbd[^{]*\{/g) ?? []).length;
   assert.equal(kbdRules(css), kbdRules(legacy), 'Kbd has no stylesheet: its marker carries no new rule');
+});
+
+test('UI ships the ProductMark Material utilities and link focus ring without a stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  assert.match(rule('.size-10'), /width:\s*var\(--space-10\)\s*;[^}]*height:\s*var\(--space-10\)/);
+  assert.match(rule('.rounded-md'), /border-radius:\s*var\(--radius-md[,)]/);
+  assert.match(
+    rule(String.raw`.bg-\(image\:--gradient-btn-primary\)`),
+    /background-image:\s*var\(--gradient-btn-primary\)\s*;/
+  );
+  // The primary bevel and halo resolve from the token theme with Tailwind's composed box-shadow.
+  assert.match(rule('.shadow-btn-primary'), /--tw-shadow:\s*inset 0 1px 0 [^;]*rgba\(255, 0, 54, 0\.7\)\)\s*;/);
+  assert.match(rule('.shadow-btn-primary'), /box-shadow:\s*var\(--tw-inset-shadow\)/);
+  assert.match(rule('.text-action-primary-solid-fg'), /color:\s*var\(--color-action-primary-solid-fg[,)]/);
+  assert.match(rule('.font-display'), /font-family:\s*var\(--font-display[,)]/);
+  assert.match(rule('.text-heading-small'), /font-size:\s*var\(--text-heading-small[,)]/);
+  assert.match(rule('.no-underline'), /text-decoration-line:\s*none\s*;/);
+  // Focus always wins in link mode: the ring replaces the material shadow on :focus-visible (D7).
+  assert.match(
+    rule(String.raw`.focus-visible\:shadow-focus:focus-visible`),
+    /--tw-shadow:\s*0 0 0 2px [^;]*0 0 0 4px [^;]*;[^}]*box-shadow:/
+  );
+  assert.match(rule(String.raw`.focus-visible\:outline-none:focus-visible`), /outline-style:\s*none\s*;/);
+  assert.match(css, /@property --tw-shadow\s*\{[^}]*initial-value:\s*0 0 #0000/);
+  // D10 no stylesheet: the marker carries no rule of its own.
+  assert.doesNotMatch(css, /\.eg-product-mark[^{]*\{/, 'ProductMark has no stylesheet: its marker carries no rule');
 });
 
 test('UI ships the approved Gauge geometry in the components layer', () => {
@@ -608,17 +714,21 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Icon',
       'Kbd',
       'Label',
+      'Logo',
       'Portal',
+      'ProductMark',
       'Skeleton',
       'Slot',
       'Slottable',
       'Spinner',
       'Stack',
+      'StatusDot',
       'Surface',
       'Text',
       'VisuallyHidden',
       'cn',
       'labelVariants',
+      'statusDotVariants',
       'surfaceVariants'
     ],
     'Only approved components and cn are public runtime exports'
@@ -628,7 +738,15 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
   assert.equal(typeof exported.Skeleton, 'function', 'Skeleton must be a named root export');
   assert.equal(typeof exported.Spinner, 'function', 'Spinner must be a plain function component without a ref API');
+  assert.equal(typeof exported.Logo, 'function', 'Logo must be a plain function component without a ref API (D8)');
+  assert.equal(typeof exported.StatusDot, 'function', 'StatusDot must be a plain function component without a ref API');
+  assert.equal(typeof exported.statusDotVariants, 'function', 'StatusDot composition recipe must be a public export');
   assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
+  assert.equal(
+    typeof exported.ProductMark,
+    'function',
+    'ProductMark must be a plain function component without a ref API (D9)'
+  );
   assert.equal(
     exported.VisuallyHidden?.$$typeof,
     Symbol.for('react.forward_ref'),
@@ -690,8 +808,14 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LayoutAlignItems',
     'LayoutGap',
     'LayoutJustifyContent',
+    'Logo',
+    'LogoProps',
+    'LogoSize',
+    'LogoVariant',
     'Portal',
     'PortalProps',
+    'ProductMark',
+    'ProductMarkProps',
     'Skeleton',
     'SkeletonProps',
     'SkeletonSize',
@@ -704,6 +828,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SpinnerSize',
     'Stack',
     'StackProps',
+    'StatusDot',
+    'StatusDotProps',
+    'StatusDotState',
     'Surface',
     'SurfaceElevation',
     'SurfacePadding',
@@ -719,6 +846,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'VisuallyHiddenProps',
     'cn',
     'labelVariants',
+    'statusDotVariants',
     'surfaceVariants'
   ]);
   for (const name of [
@@ -735,12 +863,18 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'IconSize',
     'Kbd',
     'KbdProps',
+    'ProductMark',
+    'ProductMarkProps',
     'AspectRatio',
     'AspectRatioProps',
 
     'Label',
     'LabelProps',
     'LabelVariant',
+    'Logo',
+    'LogoProps',
+    'LogoSize',
+    'LogoVariant',
     'Portal',
     'PortalProps',
     'Skeleton',
@@ -755,6 +889,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SpinnerSize',
     'Stack',
     'StackProps',
+    'StatusDot',
+    'StatusDotProps',
+    'StatusDotState',
+    'statusDotVariants',
     'Cluster',
     'ClusterProps',
     'LayoutAlignItems',
@@ -896,6 +1034,73 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     const sized = renderToString(createElement(exported.Spinner, { size }));
     assert.ok(sized.includes(`class="eg-spinner inline-flex shrink-0 ${utility}"`), `Spinner ${size} preset`);
   }
+  // Logo: named span image or named native link around hidden inline V4 artwork (#62).
+  const logo = renderToString(createElement(exported.Logo, { id: 'brand' }));
+  assert.match(
+    logo,
+    /^<span id="brand" role="img" aria-label="egdev" class="eg-logo inline-block shrink-0 leading-none rounded-sm h-8">/
+  );
+  assert.match(logo, /<svg class="block h-full w-auto" aria-hidden="true" focusable="false" viewBox="0 0 653 258">/);
+  assert.equal((logo.match(/<path /g) ?? []).length, 8, 'The wordmark ships its eight V4 paths');
+  assert.equal((logo.match(/class="fill-primitive-white"/g) ?? []).length, 1, 'One white name path');
+  assert.doesNotMatch(logo, /href=|tabindex=|<title|fill="|style=/);
+  const mark = renderToString(createElement(exported.Logo, { variant: 'mark' }));
+  assert.match(mark, /viewBox="0 0 638\.45 612\.37"/);
+  assert.equal((mark.match(/<polygon /g) ?? []).length, 7, 'The isotype ships its seven V4 polygons');
+  assert.equal((mark.match(/class="fill-\(--logo-red\)"/g) ?? []).length, 5);
+  assert.equal((mark.match(/class="fill-\(--logo-red-shade\)"/g) ?? []).length, 2);
+  const home = renderToString(createElement(exported.Logo, { href: '/', label: 'egdev, home', rel: 'home' }));
+  assert.match(
+    home,
+    /^<a rel="home" href="\/" aria-label="egdev, home" class="eg-logo [^"]*focus-visible:outline-none focus-visible:shadow-focus">/
+  );
+  assert.doesNotMatch(home, /role=/, 'The link keeps its native role');
+  for (const [size, utility] of [
+    ['sm', 'h-7'],
+    ['md', 'h-8'],
+    ['lg', 'h-9']
+  ]) {
+    const sized = renderToString(createElement(exported.Logo, { size }));
+    assert.ok(sized.includes(`rounded-sm ${utility}"`), `Logo ${size} preset`);
+  }
+  // StatusDot: always decorative, empty, data-state per state; ring vs glow geometry and the live pulse.
+  const pulse = 'motion-safe:animate-[eg-status-dot-pulse_2.4s_var(--ease-out)_infinite]';
+  assert.equal(
+    renderToString(createElement(exported.StatusDot)),
+    '<span aria-hidden="true" data-state="stopped" class="eg-status-dot inline-block shrink-0 rounded-full size-2 ring-2 ring-bg-surface bg-primitive-neutral-600"></span>'
+  );
+  for (const [state, fill] of [
+    ['running', 'bg-status-success'],
+    ['idle', 'bg-status-info'],
+    ['warning', 'bg-status-warning'],
+    ['error', 'bg-status-danger'],
+    ['stopped', 'bg-primitive-neutral-600']
+  ]) {
+    const dot = renderToString(createElement(exported.StatusDot, { state, pulse: true }));
+    assert.ok(dot.includes(`data-state="${state}"`), `StatusDot ${state} state`);
+    assert.ok(dot.includes(`size-2 ring-2 ring-bg-surface ${fill}`), `StatusDot ${state} ringed fill`);
+    assert.doesNotMatch(dot, /shadow-glow-hot|animate/, `StatusDot ${state} never glows or pulses`);
+  }
+  for (const [state, fill] of [
+    ['live', 'bg-fg-brand-default'],
+    ['standby', 'bg-primitive-white']
+  ]) {
+    const dot = renderToString(createElement(exported.StatusDot, { state }));
+    assert.ok(dot.includes(`size-2.5 shadow-glow-hot ${fill} ${pulse}`), `StatusDot ${state} glows and pulses`);
+    assert.doesNotMatch(dot, /ring-/, `StatusDot ${state} has no ring`);
+    const still = renderToString(createElement(exported.StatusDot, { state, pulse: false }));
+    assert.ok(still.includes(`shadow-glow-hot ${fill}"`), `StatusDot ${state} pulse:false keeps the glow`);
+    assert.doesNotMatch(still, /animate/, `StatusDot ${state} pulse:false is static`);
+  }
+  const placed = renderToString(
+    createElement(exported.StatusDot, { state: 'error', id: 'rail-dot', title: 'Error', className: 'absolute top-1' })
+  );
+  assert.match(
+    placed,
+    /^<span id="rail-dot" title="Error" aria-hidden="true" data-state="error" class="eg-status-dot /
+  );
+  assert.ok(placed.endsWith('bg-status-danger absolute top-1"></span>'), 'Consumer layout classes merge last');
+  assert.doesNotMatch(placed, /role=|aria-label|tabindex|\spulse=|\sstate=/);
   // Kbd: one native kbd per key; a label hides the glyph and adds hidden spoken text (D2).
   const plainKey = renderToString(createElement(exported.Kbd, { children: 'Esc', id: 'escape-key' }));
   assert.equal(
@@ -912,6 +1117,22 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     /^<kbd class="eg-kbd [^"]*"><span aria-hidden="true">⌘K<\/span><span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Command K<\/span><\/kbd>$/
   );
   assert.doesNotMatch(symbolKey, /role=|aria-label=|tabindex=|data-state/);
+  // ProductMark: passive role="img" tile by default, native named link with href; monogram hidden (D5, D6).
+  const markRecipe =
+    'eg-product-mark inline-flex size-10 shrink-0 items-center justify-center rounded-md bg-(image:--gradient-btn-primary) shadow-btn-primary text-action-primary-solid-fg font-display text-heading-small no-underline';
+  assert.equal(
+    renderToString(createElement(exported.ProductMark, { monogram: 'M', label: 'Mando', id: 'mando-mark' })),
+    `<span id="mando-mark" role="img" aria-label="Mando" class="${markRecipe}"><span aria-hidden="true">M</span></span>`
+  );
+  assert.equal(
+    renderToString(createElement(exported.ProductMark, { monogram: 'M', label: 'Mando home', href: '/' })),
+    `<a href="/" aria-label="Mando home" class="${markRecipe} focus-visible:outline-none focus-visible:shadow-focus"><span aria-hidden="true">M</span></a>`
+  );
+  const twoLetters = renderToString(
+    createElement(exported.ProductMark, { monogram: 'Cr', label: 'Criterio', className: 'mb-1 mb-3' })
+  );
+  assert.ok(twoLetters.includes(`class="${markRecipe} mb-3"`), 'Layout className merges last through cn()');
+  assert.doesNotMatch(twoLetters, /\s(?:monogram|label|href|tabindex)=|data-state|hover:|transition/);
   const geometry = [
     ['line', 'sm', 'h-3', 'rounded-sm'],
     ['line', 'md', 'h-4', 'rounded-sm'],

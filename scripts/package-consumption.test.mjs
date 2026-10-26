@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Button, Cluster, Divider, Gauge, Heading, Icon, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
+import { AspectRatio, Button, Cluster, Divider, Gauge, Heading, Icon, Kbd, Label, Logo, ProductMark, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   ButtonProps,
@@ -47,12 +47,18 @@ import type {
   KbdProps,
   LabelProps,
   LabelVariant,
+  LogoProps,
+  LogoSize,
+  LogoVariant,
+  ProductMarkProps,
   SkeletonProps,
   SkeletonSize,
   SkeletonVariant,
   SlotProps,
   SpinnerProps,
   SpinnerSize,
+  StatusDotProps,
+  StatusDotState,
   ClusterProps,
   LayoutGap,
   StackProps,
@@ -187,6 +193,19 @@ export function SpinnerSamples({ loading = true }: { loading?: boolean }) {
       loading ? createElement(Spinner, { size: 'sm' }) : null, 'Saving draft'),
     createElement(Spinner, spinnerNative));
 }
+export const statusDotPlaced: StatusDotProps = {
+  state: 'error', id: 'rail-dot', title: 'Error', lang: 'en', className: 'absolute top-1 consumer-dot'
+};
+export function StatusDotSamples({ pulse }: { pulse?: boolean }) {
+  const states: StatusDotState[] = ['running', 'idle', 'warning', 'error', 'stopped'];
+  // The dot is decorative: each state word stays in adjacent text.
+  return createElement('ul', { 'aria-label': 'Module states' },
+    states.map((state) => createElement('li', { key: state }, createElement(StatusDot, { state, id: 'dot-' + state }), state)),
+    createElement('li', null, createElement(StatusDot, { state: 'live', id: 'dot-live', pulse }), 'Live now'),
+    createElement('li', null, createElement(StatusDot, { state: 'standby', id: 'dot-standby', pulse: false }), 'Upcoming live'),
+    createElement('li', null, createElement(StatusDot, { id: 'dot-default' }), 'Default'),
+    createElement('li', { style: { position: 'relative' } }, createElement(StatusDot, statusDotPlaced), 'egdev-sync'));
+}
 export const kbdSymbol: KbdProps = { children: '⌘K', label: 'Command K', id: 'kbd-command' };
 export const kbdNative: KbdProps = {
   children: 'Esc', id: 'kbd-native', title: 'Close dialog', className: 'ms-1 ms-2 consumer-kbd'
@@ -198,6 +217,28 @@ export function KbdSamples() {
     createElement(Kbd, { children: 'Ctrl', id: 'kbd-ctrl' }), ' + ',
     createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
     createElement(Kbd, kbdNative));
+}
+export const logoHome: LogoProps = { href: '#home', label: 'egdev, home', id: 'logo-home', rel: 'home' };
+export const logoNative: LogoProps = { id: 'consumer-logo', title: 'egdev', lang: 'en', className: 'ms-2 consumer-logo' };
+export function LogoSamples() {
+  const sizes: LogoSize[] = ['sm', 'md', 'lg'];
+  const variant: LogoVariant = 'mark';
+  return createElement('section', { 'aria-label': 'Brand logos' },
+    createElement(Logo, { id: 'logo-default' }),
+    sizes.map((size) => createElement(Logo, { key: size, variant, size, id: 'logo-mark-' + size })),
+    createElement(Logo, logoHome),
+    createElement(Logo, logoNative));
+}
+export const productMarkImage: ProductMarkProps = { monogram: 'M', label: 'Mando', id: 'mark-mando' };
+export const productMarkLink: ProductMarkProps = {
+  monogram: 'M', label: 'Mando home', href: '#home', id: 'mark-home', target: '_self'
+};
+export function ProductMarkSamples() {
+  // Passive product images and one home link; router wrapping stays the consumer's (D5).
+  return createElement('nav', { 'aria-label': 'Product marks' },
+    createElement(ProductMark, productMarkImage),
+    createElement(ProductMark, { monogram: 'Cr', label: 'Criterio', id: 'mark-criterio', className: 'mb-1 mb-3 consumer-mark' }),
+    createElement(ProductMark, productMarkLink));
 }
 export function VisuallyHiddenSamples() {
   return createElement('section', { 'aria-label': 'Hidden support content' },
@@ -283,7 +324,7 @@ export function DividerSamples({ semantic }: { semantic?: boolean }) {
       ? { orientation: dividerOrientation, decorative: false, className: 'consumer-rule' }
       : { className: 'consumer-rule' }));
 }
-export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, headingLevel, iconName, spinnerLoading }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; headingLevel?: HeadingLevel; iconName?: IconName; spinnerLoading?: boolean } = {}) {
+export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, headingLevel, iconName, spinnerLoading, statusDotPulse }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; headingLevel?: HeadingLevel; iconName?: IconName; spinnerLoading?: boolean; statusDotPulse?: boolean } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
@@ -299,8 +340,11 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(SkeletonSamples),
     createElement(IconSamples, { iconName }),
     createElement(SpinnerSamples, { loading: spinnerLoading }),
+    createElement(StatusDotSamples, { pulse: statusDotPulse }),
     createElement(KbdSamples),
     createElement(ButtonSamples),
+    createElement(LogoSamples),
+    createElement(ProductMarkSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -343,6 +387,48 @@ const numericSpinner: SpinnerProps = { size: 24 };
 const invalidSpinner: SpinnerProps = { size: 'xl' };
 // @ts-expect-error Color is inherited through currentColor; there is no tone prop (D5).
 const tonedSpinner: SpinnerProps = { tone: 'brand' };
+// @ts-expect-error Logo artwork is component-owned: no children.
+const logoChildren: LogoProps = { children: 'egdev' };
+// @ts-expect-error The image role is component-owned.
+const logoRole: LogoProps = { role: 'presentation' };
+// @ts-expect-error The accessible name comes from label, not aria-label.
+const logoAriaLabel: LogoProps = { 'aria-label': 'egdev' };
+// @ts-expect-error The accessible name comes from label, not aria-labelledby.
+const logoLabelledBy: LogoProps = { href: '/', 'aria-labelledby': 'brand' };
+// @ts-expect-error The image is always exposed; it cannot be hidden.
+const logoHidden: LogoProps = { 'aria-hidden': true };
+// @ts-expect-error Anchor attributes exist only in link mode, with href.
+const logoTarget: LogoProps = { target: '_blank' };
+// @ts-expect-error Logo has no public ref API (D8).
+const referencedLogo: LogoProps = { ref: createRef<HTMLSpanElement>() };
+// @ts-expect-error Router links wrap an unlinked Logo; there is no asChild (D4).
+const slottedLogo: LogoProps = { href: '/', asChild: true };
+// @ts-expect-error Heights are sm, md and lg presets only.
+const numericLogo: LogoProps = { size: 32 };
+// @ts-expect-error Only the mark and wordmark artwork exist.
+const invalidLogo: LogoProps = { variant: 'icon' };
+// @ts-expect-error The artwork is never recolored: there is no tone prop (D3).
+const tonedLogo: LogoProps = { tone: 'brand' };
+// @ts-expect-error StatusDot is an empty decorative marker; it never accepts content.
+const statusDotChildren: StatusDotProps = { children: 'Running' };
+// @ts-expect-error StatusDot is always hidden; consumers cannot assign a role.
+const statusDotRole: StatusDotProps = { role: 'img' };
+// @ts-expect-error Hiddenness is component-owned (D8).
+const statusDotHidden: StatusDotProps = { 'aria-hidden': false };
+// @ts-expect-error The state word lives in adjacent text, not an aria-label (D8).
+const statusDotLabel: StatusDotProps = { 'aria-label': 'Running' };
+// @ts-expect-error The dot has no accessible name relationship.
+const statusDotLabelledBy: StatusDotProps = { 'aria-labelledby': 'module-name' };
+// @ts-expect-error StatusDot has no public ref API.
+const referencedStatusDot: StatusDotProps = { ref: createRef<HTMLSpanElement>() };
+// @ts-expect-error StatusDot cannot delegate its root to a child.
+const slottedStatusDot: StatusDotProps = { asChild: true };
+// @ts-expect-error Only the seven documented states exist.
+const invalidStatusDot: StatusDotProps = { state: 'paused' };
+// @ts-expect-error The free ring colour prop was dropped: the ring always uses the surface token (D5).
+const ringedStatusDot: StatusDotProps = { ring: 'red' };
+// @ts-expect-error pulse is a boolean switch, not a string.
+const stringPulseStatusDot: StatusDotProps = { pulse: 'false' };
 // @ts-expect-error Kbd key text is required.
 const missingKbdText: KbdProps = { label: 'Command K' };
 // @ts-expect-error Kbd children are plain text, not elements.
@@ -355,6 +441,22 @@ const referencedKbd: KbdProps = { children: 'K', ref: createRef<HTMLElement>() }
 const slottedKbd: KbdProps = { children: 'K', asChild: true };
 // @ts-expect-error Kbd has a single flat treatment; there are no variants (D4).
 const variantKbd: KbdProps = { children: 'K', variant: 'raised' };
+// @ts-expect-error ProductMark requires its accessible label (D6).
+const unnamedMark: ProductMarkProps = { monogram: 'M' };
+// @ts-expect-error ProductMark requires its visible monogram (D1).
+const emptyMark: ProductMarkProps = { label: 'Mando' };
+// @ts-expect-error The monogram prop is the only content; children are rejected.
+const childMark: ProductMarkProps = { monogram: 'M', label: 'Mando', children: 'M' };
+// @ts-expect-error The link is named by label, never by aria-label.
+const ariaNamedMark: ProductMarkProps = { monogram: 'M', label: 'Mando home', href: '/', 'aria-label': 'Home' };
+// @ts-expect-error The link is named by label, never by aria-labelledby.
+const labelledMark: ProductMarkProps = { monogram: 'M', label: 'Mando home', href: '/', 'aria-labelledby': 'home' };
+// @ts-expect-error ProductMark has no public ref API (D9).
+const referencedMark: ProductMarkProps = { monogram: 'M', label: 'Mando', ref: createRef<HTMLElement>() };
+// @ts-expect-error Router integration wraps the mark; there is no asChild.
+const slottedMark: ProductMarkProps = { monogram: 'M', label: 'Mando', asChild: true };
+// @ts-expect-error v0.1 has one 40px size (D2).
+const sizedMark: ProductMarkProps = { monogram: 'M', label: 'Mando', size: 'lg' };
 // @ts-expect-error Hidden content is required, not optional.
 const missingHiddenChildren: VisuallyHiddenProps = { id: 'orphan-hint' };
 // @ts-expect-error VisuallyHidden inherits span props; the anchor-only href is rejected.
@@ -720,6 +822,43 @@ function assertSkeletonCSS(css) {
   assert.doesNotMatch(css, /\.eg-skeleton[^{]*\{[^}]*(?:animation|transition):/, 'Skeleton marker must stay static');
 }
 
+// StatusDot ships ring/glow geometry, token fills and its motion-safe pulse with top-level keyframes.
+function assertStatusDotCSS(css) {
+  for (const utility of [
+    '.inline-block',
+    '.rounded-full',
+    '.size-2',
+    '.size-2\\.5',
+    '.ring-2',
+    '.ring-bg-surface',
+    '.shadow-glow-hot',
+    '.bg-status-success',
+    '.bg-status-info',
+    '.bg-status-warning',
+    '.bg-status-danger',
+    '.bg-primitive-neutral-600',
+    '.bg-fg-brand-default',
+    '.bg-primitive-white'
+  ]) {
+    assert.ok(css.includes(utility), 'Missing StatusDot utility ' + utility);
+  }
+  assert.match(
+    css,
+    /\.ring-bg-surface\s*\{[^}]*--tw-ring-color:\s*var\(--color-bg-surface[,)]/,
+    'Ring must use the surface token'
+  );
+  assert.match(
+    css,
+    /prefers-reduced-motion:\s*no-preference\)\s*\{\s*\.motion-safe\\:animate-\\\[eg-status-dot-pulse_2\\\.4s_var\\\(--ease-out\\\)_infinite\\\]\s*\{\s*animation:\s*eg-status-dot-pulse 2\.4s var\(--ease-out\) infinite/,
+    'The pulse must only run without a reduced-motion preference'
+  );
+  assert.match(
+    css,
+    /@keyframes eg-status-dot-pulse\s*\{[^@]*scale\(0?\.72\)[^@]*opacity:\s*(?:75%|0?\.75)/,
+    'StatusDot pulse keyframes must ship'
+  );
+}
+
 // Kbd ships its flat token utilities and the hairline border-style initial value; no Kbd stylesheet.
 function assertKbdCSS(css) {
   for (const utility of [
@@ -745,6 +884,30 @@ function assertKbdCSS(css) {
     'Kbd block padding'
   );
   assert.match(css, /--tw-border-style:\s*solid/, 'The hairline border style must resolve without Tailwind');
+}
+
+// ProductMark ships the product-mark Material and link focus utilities from the token theme; no stylesheet.
+function assertProductMarkCSS(css) {
+  for (const utility of [
+    '.size-10',
+    '.rounded-md',
+    '.shadow-btn-primary',
+    '.text-action-primary-solid-fg',
+    '.font-display',
+    '.text-heading-small',
+    '.no-underline',
+    '.focus-visible\\:outline-none',
+    '.focus-visible\\:shadow-focus'
+  ]) {
+    assert.ok(css.includes(utility), 'Missing ProductMark utility ' + utility);
+  }
+  assert.match(
+    css,
+    /\.bg-\\\(image\\:--gradient-btn-primary\\\)\s*\{[^}]*background-image:\s*var\(--gradient-btn-primary\)/,
+    'The product-mark fill must use the gradient-btn-primary token'
+  );
+  assert.match(css, /\.size-10\s*\{[^}]*width:\s*var\(--space-10\)/, 'The tile must be 40px through --space-10');
+  assert.doesNotMatch(css, /\.eg-product-mark[^{]*\{/, 'ProductMark has no stylesheet: its marker carries no rule');
 }
 
 // Spinner ships Icon-scale presets, inherited stroke utilities and the canonical spin token with keyframes.
@@ -774,6 +937,23 @@ function assertSpinnerCSS(css) {
   assert.match(css, /@keyframes spin\s*\{\s*to\s*\{\s*transform:\s*rotate\(360deg\)/, 'Spin keyframes must ship');
   assert.ok(css.includes('motion-reduce\\:animate-none'), 'Reduced motion must stop the rotation');
   assert.doesNotMatch(css, /\.eg-spinner[^{]*\{/, 'Spinner has no stylesheet: its marker carries no rule');
+}
+
+// Logo ships token heights, the logo-token inks and the link focus ring; its legacy marker stays in components.
+function assertLogoCSS(css) {
+  for (const utility of ['.inline-block', '.leading-none', '.rounded-sm', '.h-7', '.h-8', '.h-full', '.w-auto']) {
+    assert.ok(css.includes(utility), 'Missing Logo utility ' + utility);
+  }
+  assert.match(css, /\.h-9\s*\{[^}]*height:\s*calc\(var\(--space-1\)\s*\*\s*9\)/, 'lg must be 9 spacing steps');
+  assert.match(css, /\.fill-\\\(--logo-red\\\)\s*\{[^}]*fill:\s*var\(--logo-red\)/, 'Light face must use --logo-red');
+  assert.match(css, /\.fill-\\\(--logo-red-shade\\\)\s*\{[^}]*fill:\s*var\(--logo-red-shade\)/, 'Shade face token');
+  assert.match(css, /\.fill-primitive-white\s*\{[^}]*fill:\s*var\(--color-primitive-white/, 'White name primitive');
+  assert.match(css, /\.focus-visible\\:shadow-focus:focus-visible\s*\{[^}]*#ff0036/i, 'Link focus ring');
+  assert.match(
+    css,
+    /\.focus-visible\\:outline-none:focus-visible\s*\{[^}]*outline-style:\s*none/,
+    'Link outline reset'
+  );
 }
 
 const entries = `
@@ -819,17 +999,21 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Icon',
   'Kbd',
   'Label',
+  'Logo',
   'Portal',
+  'ProductMark',
   'Skeleton',
   'Slot',
   'Slottable',
   'Spinner',
   'Stack',
+  'StatusDot',
   'Surface',
   'Text',
   'VisuallyHidden',
   'cn',
   'labelVariants',
+  'statusDotVariants',
   'surfaceVariants'
 ]);
 ${assertButtonCSS.toString()}
@@ -838,14 +1022,20 @@ ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertIconCSS.toString()}
 ${assertSpinnerCSS.toString()}
+${assertLogoCSS.toString()}
+${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertProductMarkCSS.toString()}
 assertButtonCSS(shippedStyles);
 assertGaugeCSS(shippedStyles);
 assertIconCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assertSkeletonCSS(shippedStyles);
 assertSpinnerCSS(shippedStyles);
+assertLogoCSS(shippedStyles);
+assertStatusDotCSS(shippedStyles);
 assertKbdCSS(shippedStyles);
+assertProductMarkCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -1076,6 +1266,40 @@ for (const frame of [square, wide]) {
   assert.equal(nativeSpinner.getAttribute('title'), 'Uploading');
   assert.equal(nativeSpinner.getAttribute('lang'), 'en');
   assert.ok(nativeSpinner.className.endsWith('ms-2 consumer-spinner'), 'Consumer layout classes merge last');
+  const moduleStates = document.querySelector('ul[aria-label="Module states"]');
+  assert.ok(moduleStates, 'SSR must render StatusDot samples');
+  const dots = [...moduleStates.querySelectorAll('.eg-status-dot')];
+  assert.equal(dots.length, 9, 'Five status, live, standby, default and placed StatusDots must render');
+  for (const dot of dots) {
+    assert.equal(dot.tagName, 'SPAN');
+    assert.equal(dot.getAttribute('aria-hidden'), 'true', 'StatusDot is always decorative');
+    assert.equal(dot.childNodes.length, 0, 'StatusDot never renders content');
+    for (const attribute of ['role', 'aria-label', 'aria-labelledby', 'tabindex', 'state', 'pulse']) {
+      assert.equal(dot.hasAttribute(attribute), false, 'StatusDot must not render ' + attribute);
+    }
+  }
+  for (const [state, fill] of [['running', 'bg-status-success'], ['idle', 'bg-status-info'], ['warning', 'bg-status-warning'], ['error', 'bg-status-danger'], ['stopped', 'bg-primitive-neutral-600']]) {
+    const dot = document.getElementById('dot-' + state);
+    assert.equal(dot.getAttribute('data-state'), state);
+    for (const utility of ['size-2', 'ring-2', 'ring-bg-surface', fill]) {
+      assert.ok(dot.classList.contains(utility), 'StatusDot ' + state + ' must carry ' + utility);
+    }
+    assert.ok(!dot.className.includes('animate') && !dot.className.includes('shadow-glow-hot'), state + ' never glows or pulses');
+    assert.equal(dot.parentElement.textContent, state, 'The adjacent text carries the state word');
+  }
+  const liveDot = document.getElementById('dot-live');
+  assert.equal(liveDot.getAttribute('data-state'), 'live');
+  assert.ok(['size-2.5', 'shadow-glow-hot', 'bg-fg-brand-default'].every((utility) => liveDot.classList.contains(utility)));
+  assert.ok(liveDot.className.includes('motion-safe:animate-[eg-status-dot-pulse_2.4s_var(--ease-out)_infinite]'), 'Live pulses by default');
+  assert.ok(!liveDot.className.includes('ring-'), 'Signal dots have no ring');
+  const standbyDot = document.getElementById('dot-standby');
+  assert.ok(standbyDot.classList.contains('bg-primitive-white') && !standbyDot.className.includes('animate'), 'pulse:false standby is static');
+  assert.equal(document.getElementById('dot-default').getAttribute('data-state'), 'stopped');
+  const placedDot = document.getElementById('rail-dot');
+  assert.equal(placedDot.getAttribute('title'), 'Error');
+  assert.equal(placedDot.getAttribute('lang'), 'en');
+  assert.ok(placedDot.className.startsWith('eg-status-dot '), 'The public marker stays first');
+  assert.ok(placedDot.className.endsWith('absolute top-1 consumer-dot'), 'Consumer layout classes merge last');
   const kbdHint = document.getElementById('kbd-hint');
   assert.ok(kbdHint, 'SSR must render Kbd samples');
   const keys = [...kbdHint.querySelectorAll('kbd.eg-kbd')];
@@ -1091,7 +1315,7 @@ for (const frame of [square, wide]) {
   for (const id of ['kbd-ctrl', 'kbd-k']) {
     const plain = document.getElementById(id);
     assert.equal(plain.children.length, 0, 'Plain and empty-label keys read their text as-is');
-    assert.equal(plain.querySelector('[aria-hidden]'), null);
+    assert.ok(plain.querySelector('[aria-hidden]') === null);
   }
   for (const key of keys) {
     assert.equal(key.getAttribute('role'), null);
@@ -1119,6 +1343,64 @@ for (const frame of [square, wide]) {
   assert.ok(nativeKbd.className.startsWith('eg-kbd '), 'The public marker leads the root classes');
   assert.ok(nativeKbd.className.endsWith(' ms-2 consumer-kbd'), 'Consumer layout classes merge last');
   assert.ok(!nativeKbd.className.split(' ').includes('ms-1'), 'Conflicting margin utilities resolve through cn()');
+  const brand = document.querySelector('section[aria-label="Brand logos"]');
+  assert.ok(brand, 'SSR must render Logo samples');
+  const logos = [...brand.querySelectorAll('.eg-logo')];
+  assert.equal(logos.length, 6, 'Default, three mark presets, home link and native Logos must render');
+  const defaultLogo = document.getElementById('logo-default');
+  assert.equal(defaultLogo.tagName, 'SPAN');
+  assert.equal(defaultLogo.getAttribute('role'), 'img');
+  assert.equal(defaultLogo.getAttribute('aria-label'), 'egdev');
+  assert.ok(defaultLogo.className.split(' ').includes('h-8'), 'The default Logo is 32px high');
+  assert.equal(defaultLogo.querySelector('svg').getAttribute('viewBox'), '0 0 653 258', 'The default is the wordmark');
+  assert.equal(defaultLogo.querySelectorAll('path').length, 8);
+  for (const [size, utility] of [['sm', 'h-7'], ['md', 'h-8'], ['lg', 'h-9']]) {
+    const sized = document.getElementById('logo-mark-' + size);
+    assert.ok(sized.className.split(' ').includes(utility), 'Logo ' + size + ' must carry ' + utility);
+    assert.equal(sized.querySelectorAll('polygon').length, 7, 'The mark draws the seven V4 polygons');
+  }
+  const homeLogo = document.getElementById('logo-home');
+  assert.equal(homeLogo.tagName, 'A');
+  assert.equal(homeLogo.getAttribute('href'), '#home');
+  assert.equal(homeLogo.getAttribute('rel'), 'home');
+  assert.equal(homeLogo.getAttribute('aria-label'), 'egdev, home');
+  assert.equal(homeLogo.getAttribute('role'), null, 'The link keeps its native role');
+  for (const logo of logos) {
+    const art = logo.querySelector('svg');
+    assert.equal(art.getAttribute('aria-hidden'), 'true', 'Logo artwork is always hidden');
+    assert.equal(art.getAttribute('focusable'), 'false');
+    assert.equal(logo.textContent, '', 'The accessible name is the only name');
+    assert.equal(logo.hasAttribute('data-state'), false);
+  }
+  const nativeLogo = document.getElementById('consumer-logo');
+  assert.equal(nativeLogo.getAttribute('title'), 'egdev');
+  assert.equal(nativeLogo.getAttribute('lang'), 'en');
+  assert.ok(nativeLogo.className.endsWith('ms-2 consumer-logo'), 'Consumer layout classes merge last');
+  const markNav = document.querySelector('nav[aria-label="Product marks"]');
+  assert.ok(markNav, 'SSR must render ProductMark samples');
+  const mandoMark = document.getElementById('mark-mando');
+  assert.equal(mandoMark.tagName, 'SPAN');
+  assert.equal(mandoMark.getAttribute('role'), 'img', 'Image mode is a passive named image');
+  assert.equal(mandoMark.getAttribute('aria-label'), 'Mando');
+  assert.equal(mandoMark.children.length, 1);
+  assert.equal(mandoMark.children[0].getAttribute('aria-hidden'), 'true', 'The monogram is hidden from assistive technology');
+  assert.equal(mandoMark.textContent, 'M');
+  assert.ok(mandoMark.className.startsWith('eg-product-mark '), 'The public marker leads the root classes');
+  const criterioMark = document.getElementById('mark-criterio');
+  assert.equal(criterioMark.textContent, 'Cr');
+  assert.ok(criterioMark.className.endsWith(' mb-3 consumer-mark'), 'Consumer layout classes merge last');
+  assert.ok(!criterioMark.className.split(' ').includes('mb-1'), 'Conflicting margin utilities resolve through cn()');
+  const homeMark = document.getElementById('mark-home');
+  assert.equal(homeMark.tagName, 'A');
+  assert.equal(homeMark.getAttribute('href'), '#home');
+  assert.equal(homeMark.getAttribute('target'), '_self');
+  assert.equal(homeMark.getAttribute('aria-label'), 'Mando home');
+  assert.equal(homeMark.hasAttribute('role'), false, 'Link mode keeps native link semantics');
+  assert.ok(homeMark.className.includes(' focus-visible:shadow-focus'), 'Link focus replaces the material shadow');
+  for (const mark of markNav.querySelectorAll('.eg-product-mark')) {
+    assert.equal(mark.hasAttribute('data-state'), false);
+    assert.equal(mark.getAttribute('tabindex'), null);
+  }
   const tokenStack = document.querySelector('.eg-stack[aria-label="Token sections"]');
   assert.ok(tokenStack, 'SSR must render Stack samples');
   assert.ok(tokenStack.classList.contains('flex-col') && tokenStack.classList.contains('flex-nowrap'));
@@ -1198,7 +1480,7 @@ for (const frame of [square, wide]) {
   assert.equal(labelledIcon.getAttribute('aria-hidden'), 'true', 'AccessibleIcon hides the svg itself');
   assert.ok(labelledIcon.classList.contains('size-4') && labelledIcon.classList.contains('fill-current'));
   assert.equal(labelledHost.textContent, 'Search status', 'AccessibleIcon must supply exactly one visually hidden name');
-  assert.equal(labelledHost.querySelector('title'), null);
+  assert.ok(labelledHost.querySelector('title') === null);
   const overrideIcon = document.getElementById('icon-override');
   assert.ok(overrideIcon, 'SSR must render the consumer-sized Icon');
   assert.ok(overrideIcon.classList.contains('size-4.5') && overrideIcon.classList.contains('text-fg-brand-default'));
@@ -1367,7 +1649,7 @@ try {
   for (const shape of skeletons) {
     assert.equal(shape.getAttribute('aria-hidden'), 'true');
     assert.equal(shape.textContent, '');
-    assert.equal(shape.querySelector('button, a, input, [tabindex]'), null);
+    assert.ok(shape.querySelector('button, a, input, [tabindex]') === null);
   }
   // Class-string comparison only: never pass DOM nodes to deep equality.
   const csrPulseDefault = document.getElementById('pulse-default');
@@ -1384,10 +1666,21 @@ try {
   assert.equal(busyHost().querySelectorAll('.eg-spinner').length, 1);
   await act(async () => root.render(createElement(App, { gaugeValue: 42.5, spinnerLoading: false })));
   assert.equal(busyHost().getAttribute('aria-busy'), 'false');
-  assert.equal(busyHost().querySelector('.eg-spinner'), null, 'The decorative Spinner must unmount with loading');
+  assert.ok(busyHost().querySelector('.eg-spinner') === null, 'The decorative Spinner must unmount with loading');
   assert.equal(busyHost().textContent, 'Saving draft');
   assert.equal(document.getElementById('spinner-status').getAttribute('role'), 'status', 'Status Spinner persists');
   stage('spinner:rerender:complete');
+  stage('status-dot:rerender:start');
+  const liveDot = () => document.getElementById('dot-live');
+  assert.equal(document.querySelectorAll('.eg-status-dot').length, 9, 'Consumer StatusDots must mount');
+  assert.ok(liveDot().className.includes('motion-safe:animate-'), 'The CSR live dot must pulse by default');
+  const liveNode = liveDot();
+  await act(async () => root.render(createElement(App, { gaugeValue: 42.5, statusDotPulse: false })));
+  assert.ok(liveDot() === liveNode, 'Toggling pulse must keep the same dot node');
+  assert.ok(!liveDot().className.includes('animate'), 'pulse:false must stop the CSR live dot');
+  assert.equal(liveDot().getAttribute('aria-hidden'), 'true');
+  assert.equal(liveDot().getAttribute('data-state'), 'live');
+  stage('status-dot:rerender:complete');
   stage('kbd:passive:start');
   const csrKeys = document.querySelectorAll('#kbd-hint kbd.eg-kbd');
   assert.equal(csrKeys.length, 4, 'Consumer Kbds must mount');
@@ -1397,6 +1690,16 @@ try {
   }
   assert.equal(document.getElementById('kbd-command').children[0].getAttribute('aria-hidden'), 'true');
   stage('kbd:passive:complete');
+  const homeLink = document.getElementById('logo-home');
+  homeLink.focus();
+  assert.ok(document.activeElement === homeLink, 'The linked Logo must be a native tab stop');
+  assert.equal(document.querySelectorAll('[role="img"].eg-logo').length, 5, 'Unlinked Logos remain named images');
+  stage('product-mark:focus:start');
+  const linkedMark = document.getElementById('mark-home');
+  linkedMark.focus();
+  assert.ok(document.activeElement === linkedMark, 'The linked ProductMark must receive focus');
+  assert.equal(document.getElementById('mark-mando').tabIndex, -1, 'An image ProductMark must never become a Tab stop');
+  stage('product-mark:focus:complete');
   stage('layout:rerender:start');
   const layoutStack = () => document.querySelector('.eg-stack[aria-label="Token sections"]');
   const layoutCluster = () => document.querySelector('.eg-cluster[aria-label="Token actions"]');
@@ -1482,6 +1785,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
+  stage('button:activation:start');
   let buttonCalls = 0;
   const clickButton = () => { buttonCalls += 1; };
   await act(async () => root.render(createElement(Button, { onClick: clickButton, children: 'Save' })));
@@ -1502,7 +1806,8 @@ try {
   await act(async () => disabledLink.dispatchEvent(blockedEvent));
   assert.equal(blockedEvent.defaultPrevented, true);
   assert.equal(buttonCalls, 1, 'Disabled Slot blocks child and Button handlers');
-  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Kbd passive keys outside the Tab order', 'Label activation, forwarded ref and cleanup'] }));
+  stage('button:activation:complete');
+  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1589,7 +1894,10 @@ ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertIconCSS.toString()}
 ${assertSpinnerCSS.toString()}
+${assertLogoCSS.toString()}
+${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertProductMarkCSS.toString()}
 assertButtonCSS(emitted);
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
@@ -1601,7 +1909,10 @@ assert.match(
 assertSkeletonCSS(emitted);
 assertIconCSS(emitted);
 assertSpinnerCSS(emitted);
+assertLogoCSS(emitted);
+assertStatusDotCSS(emitted);
 assertKbdCSS(emitted);
+assertProductMarkCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
@@ -1630,6 +1941,7 @@ const tailwind = await build({ configFile: false, logLevel: 'error', plugins: [t
 const twAssets = [tailwind].flat().flatMap((bundle) => bundle.output).filter((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'));
 const twCss = twAssets.map((asset) => String(asset.source)).join(' ');
 assert.ok(twAssets.length > 0, 'Tailwind build must emit CSS');
+assertButtonCSS(twCss);
 assertGaugeCSS(twCss);
 assertDividerCSS(twCss, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1643,7 +1955,10 @@ assert.ok(twCss.includes('.size-4\\\\.5'), 'Tailwind consumer must emit the supp
 assert.match(twCss, /width:\\s*calc\\(var\\(--space-1\\)\\s*\\*\\s*4\\.5\\)/, 'Container size must use the spacing scale');
 assert.ok(twCss.includes('.text-fg-brand-default'), 'Tailwind consumer must emit the supported inherited color');
 assertSpinnerCSS(twCss);
+assertLogoCSS(twCss);
+assertStatusDotCSS(twCss);
 assertKbdCSS(twCss);
+assertProductMarkCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }

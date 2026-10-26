@@ -272,7 +272,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "fusionar",
-    "notas": "LiveDot pasa a `StatusDot state='live'` (con pulso y `--static`)."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/71): decorative aria-hidden dot fusing StatusDot and LiveDot. Status states running/idle/warning/error/stopped (default) are 8px with a surface ring; live/standby are 10px with the hot glow and a motion-safe pulse (pulse={false} for static). Migration: LiveDot → state='live', LiveDot--static → pulse={false}, waiting → state='standby'. status-dot.css holds only the pulse keyframes."
   },
   {
     "actual": "Kbd",
@@ -305,7 +305,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "mantener",
-    "notas": ""
+    "notas": "Implemented React atom under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/62): V4 isotype (mark) or isotype with white name (wordmark) as inline SVG data with the --logo-red/--logo-red-shade token inks, 28/32/36px heights, named span image or native link with the focus ring. No asChild, ref or stylesheet; legacy eg-logo CSS untouched."
   },
   {
     "actual": "—",
@@ -316,7 +316,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "nuevo",
-    "notas": "Letra o marca de producto con `gradient-btn-primary` + `shadow-btn-primary` (M, C, L, Cr, Mt, Q). Hoy está copiada a mano en cada app."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/64): 40px product monogram tile (one or two characters) with the product-mark Material (`gradient-btn-primary` + `shadow-btn-primary`, black display text, radius-md). Passive role=img named by label; optional href renders a native link with the focus ring. Legacy `.eg-rail__brand` unchanged. No stylesheet."
   },
   {
     "actual": "Pixel",
