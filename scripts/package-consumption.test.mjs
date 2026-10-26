@@ -29,8 +29,8 @@ function run(cwd, command, args, timeout) {
 
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
-import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, VisuallyHidden } from '@egdev/ui';
+import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
+import { AspectRatio, Cluster, Divider, Gauge, Input, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, Surface, VisuallyHidden, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -38,6 +38,10 @@ import type {
   GaugeProps,
   GaugeState,
   GaugeSize,
+  InputProps,
+  InputSize,
+  InputType,
+  InputVariant,
   KbdProps,
   LabelProps,
   LabelVariant,
@@ -166,6 +170,29 @@ export function KbdSamples() {
     createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
     createElement(Kbd, kbdNative));
 }
+export const inputRef = createRef<HTMLInputElement>();
+export const inputChanges: string[] = [];
+const inputSize: InputSize = 'sm';
+const inputVariant: InputVariant = 'code';
+const inputType: InputType = 'search';
+export const inputNative: InputProps = {
+  id: 'input-native', name: 'slug', placeholder: 'project-slug', autoComplete: 'off', required: true,
+  'aria-describedby': 'input-native-hint', className: 'w-64 w-80 consumer-input'
+};
+export function InputSamples({ inputValue = 'Launch notes' }: { inputValue?: string }) {
+  // Field-style composition: the consumer owns the label, hint and error text (D1, D7).
+  return createElement('section', { 'aria-label': 'Text entry' },
+    createElement('label', { htmlFor: 'input-title' }, 'Post title'),
+    createElement(Input, { id: 'input-title', ref: inputRef, value: inputValue,
+      onChange: (event: ChangeEvent<HTMLInputElement>) => { inputChanges.push(event.target.value); } }),
+    createElement(Input, inputNative),
+    createElement('p', { id: 'input-native-hint' }, 'Lowercase letters only.'),
+    createElement(Input, { id: 'input-search', 'aria-label': 'Search', type: inputType, size: inputSize, variant: inputVariant, icon }),
+    createElement(Input, { id: 'input-invalid', 'aria-label': 'Post text', 'aria-invalid': true, 'aria-describedby': 'input-error' }),
+    createElement('p', { id: 'input-error' }, 'Keep the post under 280 characters.'),
+    createElement(Input, { id: 'input-disabled', 'aria-label': 'Locked', disabled: true, defaultValue: 'fixed' }),
+    createElement(Input, { id: 'input-readonly', 'aria-label': 'Token', readOnly: true, defaultValue: 'abc123' }));
+}
 export function VisuallyHiddenSamples() {
   return createElement('section', { 'aria-label': 'Hidden support content' },
     createElement(VisuallyHidden, { ...hiddenNote, ref: hiddenNoteRef }),
@@ -224,7 +251,7 @@ export function DividerSamples({ semantic }: { semantic?: boolean }) {
       ? { orientation: dividerOrientation, decorative: false, className: 'consumer-rule' }
       : { className: 'consumer-rule' }));
 }
-export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, spinnerLoading }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; spinnerLoading?: boolean } = {}) {
+export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, spinnerLoading, inputValue }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; spinnerLoading?: boolean; inputValue?: string } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
@@ -239,6 +266,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(SkeletonSamples),
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(KbdSamples),
+    createElement(InputSamples, { inputValue }),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -293,6 +321,25 @@ const referencedKbd: KbdProps = { children: 'K', ref: createRef<HTMLElement>() }
 const slottedKbd: KbdProps = { children: 'K', asChild: true };
 // @ts-expect-error Kbd has a single flat treatment; there are no variants (D4).
 const variantKbd: KbdProps = { children: 'K', variant: 'raised' };
+// @ts-expect-error Choice, range and file inputs have their own components (D6).
+const checkboxInput: InputProps = { type: 'checkbox' };
+// @ts-expect-error The own size axis replaces the native size attribute (D5).
+const nativeSizeInput: InputProps = { size: 20 };
+// @ts-expect-error Only md and sm presets exist (D4).
+const largeInput: InputProps = { size: 'lg' };
+// @ts-expect-error The code treatment is named code, not mono (D8).
+const monoInput: InputProps = { variant: 'mono' };
+// @ts-expect-error Invalid is the native aria-invalid attribute, not an own prop (D7).
+const invalidPropInput: InputProps = { invalid: true };
+// @ts-expect-error Change notification is native onChange only (D11).
+const valueChangeInput: InputProps = { onValueChange: () => {} };
+// @ts-expect-error A void input element never accepts children.
+const childInput: InputProps = { children: 'Text' };
+// @ts-expect-error Input has no asChild delegation.
+const slottedInput: InputProps = { asChild: true };
+// @ts-expect-error The forwarded ref targets the native input, not a generic div (D12).
+const wrongInputRef: ComponentProps<typeof Input> = { ref: createRef<HTMLDivElement>() };
+export const inputElementRef: ComponentProps<typeof Input> = { ref: createRef<HTMLInputElement>() };
 // @ts-expect-error Hidden content is required, not optional.
 const missingHiddenChildren: VisuallyHiddenProps = { id: 'orphan-hint' };
 // @ts-expect-error VisuallyHidden inherits span props; the anchor-only href is rejected.
@@ -596,6 +643,45 @@ function assertKbdCSS(css) {
   assert.match(css, /--tw-border-style:\s*solid/, 'The hairline border style must resolve without Tailwind');
 }
 
+// Input ships its Material well, state variants and presets as token utilities; no Input stylesheet.
+function assertInputCSS(css) {
+  for (const utility of [
+    '.border-border-control',
+    '.bg-primitive-neutral-950',
+    '.font-mono',
+    '.text-code',
+    '.text-body-default',
+    '.placeholder\\:text-fg-muted',
+    '.hover\\:border-fg-muted',
+    '.focus-visible\\:border-border-brand-strong',
+    '.aria-invalid\\:border-status-danger',
+    '.read-only\\:hover\\:border-border-control',
+    '.disabled\\:cursor-not-allowed',
+    '.motion-reduce\\:transition-none'
+  ]) {
+    assert.ok(css.includes(utility), 'Missing Input utility ' + utility);
+  }
+  assert.match(css, /--tw-shadow:\s*var\(--shadow-well\),\s*var\(--shadow-ring-brand\)/, 'Input focus ring must ship');
+  assert.match(
+    css,
+    /\.min-h-11\s*\{[^}]*min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*11\)/,
+    'Input md height'
+  );
+  assert.match(
+    css,
+    /\.min-h-9\s*\{[^}]*min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)/,
+    'Input sm height'
+  );
+  assert.match(
+    css,
+    /\.pl-9\s*\{[^}]*padding-left:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)/,
+    'Input icon offset'
+  );
+  assert.match(css, /:has\(:is\(:disabled\)\)\s*\{[^}]*opacity:\s*45%/, 'Input disabled dimming');
+  assert.match(css, /transition-duration:\s*var\(--duration-fast\)/, 'Input transition duration token');
+  assert.doesNotMatch(css, /\.eg-input[^{]*\{/, 'Input has no stylesheet: its marker carries no rule');
+}
+
 // Spinner ships Icon-scale presets, inherited stroke utilities and the canonical spin token with keyframes.
 function assertSpinnerCSS(css) {
   for (const utility of [
@@ -659,6 +745,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Cluster',
   'Divider',
   'Gauge',
+  'Input',
   'Kbd',
   'Label',
   'Portal',
@@ -678,11 +765,13 @@ ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertInputCSS.toString()}
 assertGaugeCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assertSkeletonCSS(shippedStyles);
 assertSpinnerCSS(shippedStyles);
 assertKbdCSS(shippedStyles);
+assertInputCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -941,6 +1030,45 @@ for (const frame of [square, wide]) {
   assert.ok(nativeKbd.className.startsWith('eg-kbd '), 'The public marker leads the root classes');
   assert.ok(nativeKbd.className.endsWith(' ms-2 consumer-kbd'), 'Consumer layout classes merge last');
   assert.ok(!nativeKbd.className.split(' ').includes('ms-1'), 'Conflicting margin utilities resolve through cn()');
+  const titleInput = document.getElementById('input-title');
+  assert.ok(titleInput, 'SSR must render Input samples');
+  assert.equal(titleInput.tagName, 'INPUT');
+  assert.equal(titleInput.getAttribute('type'), 'text', 'Input defaults to type text');
+  assert.equal(titleInput.getAttribute('value'), 'Launch notes');
+  assert.equal(titleInput.parentElement.tagName, 'SPAN');
+  assert.ok(titleInput.parentElement.className.startsWith('eg-input '), 'The public marker leads the root classes');
+  assert.equal(titleInput.parentElement.children.length, 1, 'No icon wrapper without an icon');
+  assert.equal(document.querySelector('label[for="input-title"]').textContent, 'Post title');
+  for (const name of ['min-h-11', 'px-3', 'py-2', 'text-body-default', 'bg-surface-0', 'border-border-control', 'shadow-[var(--shadow-well)]']) {
+    assert.ok(titleInput.classList.contains(name), 'Default Input must carry ' + name);
+  }
+  const nativeInput = document.getElementById('input-native');
+  for (const [attribute, value] of [['name', 'slug'], ['placeholder', 'project-slug'], ['autocomplete', 'off'], ['aria-describedby', 'input-native-hint']]) {
+    assert.equal(nativeInput.getAttribute(attribute), value, 'Input must forward ' + attribute);
+  }
+  assert.equal(nativeInput.hasAttribute('required'), true);
+  assert.ok(nativeInput.parentElement.className.endsWith(' w-80 consumer-input'), 'Consumer layout classes merge last on the root');
+  assert.ok(!nativeInput.parentElement.classList.contains('w-64') && !nativeInput.parentElement.classList.contains('w-full'));
+  assert.ok(!nativeInput.classList.contains('w-80') && !nativeInput.classList.contains('consumer-input'), 'className never reaches the control');
+  const searchInput = document.getElementById('input-search');
+  assert.equal(searchInput.getAttribute('type'), 'search');
+  assert.equal(searchInput.hasAttribute('size'), false, 'The own size axis never reaches the native size attribute');
+  const searchIcon = searchInput.previousElementSibling;
+  assert.equal(searchIcon.getAttribute('aria-hidden'), 'true', 'The leading icon is decorative');
+  assert.equal(searchIcon.firstElementChild.tagName.toLowerCase(), 'svg');
+  for (const name of ['min-h-9', 'pl-9', 'font-mono', 'text-code', 'bg-primitive-neutral-950']) {
+    assert.ok(searchInput.classList.contains(name), 'sm/code/icon Input must carry ' + name);
+  }
+  for (const name of ['font-sans', 'bg-surface-0', 'text-label-default']) {
+    assert.ok(!searchInput.classList.contains(name), 'The code treatment must replace ' + name);
+  }
+  assert.equal(document.getElementById('input-invalid').getAttribute('aria-invalid'), 'true');
+  assert.equal(document.getElementById('input-disabled').hasAttribute('disabled'), true);
+  assert.equal(document.getElementById('input-readonly').hasAttribute('readonly'), true);
+  for (const control of document.querySelectorAll('.eg-input > input')) {
+    assert.equal(control.hasAttribute('data-state'), false, 'Input states stay native, never mirrored');
+    assert.equal(control.getAttribute('role'), null);
+  }
   const tokenStack = document.querySelector('.eg-stack[aria-label="Token sections"]');
   assert.ok(tokenStack, 'SSR must render Stack samples');
   assert.ok(tokenStack.classList.contains('flex-col') && tokenStack.classList.contains('flex-nowrap'));
@@ -1030,7 +1158,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
+const { App, aspectWideRef, hiddenNoteRef, inputChanges, inputRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -1168,6 +1296,24 @@ try {
   }
   assert.equal(document.getElementById('kbd-command').children[0].getAttribute('aria-hidden'), 'true');
   stage('kbd:passive:complete');
+  stage('input:controlled:start');
+  const titleControl = () => document.getElementById('input-title');
+  assert.ok(inputRef.current instanceof dom.window.HTMLInputElement, 'The forwarded ref must expose an HTMLInputElement');
+  assert.ok(inputRef.current === titleControl(), 'The ref must target the native input, not the root');
+  assert.equal(titleControl().value, 'Launch notes');
+  await act(async () => root.render(createElement(App, { gaugeValue: 42.5, inputValue: 'Release notes' })));
+  assert.ok(inputRef.current === titleControl(), 'Controlled updates must preserve the same input');
+  assert.equal(titleControl().value, 'Release notes', 'Controlled value must follow the consumer');
+  titleControl().focus();
+  assert.ok(document.activeElement === titleControl(), 'The text control must be focusable');
+  const disabledControl = document.getElementById('input-disabled');
+  disabledControl.focus();
+  assert.ok(document.activeElement !== disabledControl, 'A disabled Input must not take focus');
+  const readOnlyControl = document.getElementById('input-readonly');
+  readOnlyControl.focus();
+  assert.ok(document.activeElement === readOnlyControl, 'A read-only Input stays focusable');
+  assert.equal(inputChanges.length, 0, 'Rerendering a controlled value emits no change events');
+  stage('input:controlled:complete');
   stage('layout:rerender:start');
   const layoutStack = () => document.querySelector('.eg-stack[aria-label="Token sections"]');
   const layoutCluster = () => document.querySelector('.eg-cluster[aria-label="Token actions"]');
@@ -1236,7 +1382,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Kbd passive keys outside the Tab order', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Kbd passive keys outside the Tab order', 'Input forwarded ref, controlled value and native focus', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1316,6 +1462,7 @@ ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertInputCSS.toString()}
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1326,6 +1473,7 @@ assert.match(
 assertSkeletonCSS(emitted);
 assertSpinnerCSS(emitted);
 assertKbdCSS(emitted);
+assertInputCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
@@ -1364,6 +1512,7 @@ assert.match(
 assertSkeletonCSS(twCss);
 assertSpinnerCSS(twCss);
 assertKbdCSS(twCss);
+assertInputCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
