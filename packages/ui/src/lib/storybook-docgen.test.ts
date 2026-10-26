@@ -129,6 +129,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect([...new Set(modules)].sort()).toEqual([
       './atoms/gauge',
       './atoms/kbd',
+      './atoms/product-mark',
       './atoms/spinner',
       './lib/cn',
       './primitives/aspect-ratio',
@@ -150,6 +151,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Kbd',
       'Label',
       'Portal',
+      'ProductMark',
       'Skeleton',
       'Slot',
       'Slottable',
@@ -821,6 +823,94 @@ describe('Kbd passive metadata contract', () => {
       expect(props[prop], `Kbd native ${prop} must remain available in autodocs`).toBeDefined();
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick', 'variant', 'size']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('ProductMark mode metadata contract', () => {
+  const branches = ['ProductMarkLinkProps', 'ProductMarkImageProps'];
+
+  it('annotates monogram, label and href as text controls on every branch without defaults', () => {
+    const file = ast(source('atoms/product-mark/types.ts'));
+    const properties = ownProps(file, ['ProductMarkOwnProps', ...branches]);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['monogram', 'label', 'href', 'href']);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `ProductMark.${name} control`).toHaveLength(1);
+      // Union branches merge their tags in docgen: a differing directive per branch would be ambiguous.
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe('text');
+      expect(tags.find((tag) => tag.tagName.text === 'default')).toBeUndefined();
+    }
+    const [monogram, label, linkHref, imageHref] = properties;
+    expect(monogram?.questionToken).toBeUndefined();
+    expect(label?.questionToken).toBeUndefined();
+    expect(linkHref?.questionToken).toBeUndefined();
+    expect(linkHref?.type?.getText(file)).toBe('string');
+    expect(imageHref?.questionToken).toBeTruthy();
+    expect(imageHref?.type?.getText(file)).toBe('undefined');
+  });
+
+  it.each([
+    ['ProductMarkLinkProps', ['children', 'href', 'aria-label', 'aria-labelledby', 'dangerouslySetInnerHTML']],
+    [
+      'ProductMarkImageProps',
+      ['children', 'role', 'aria-label', 'aria-labelledby', 'aria-hidden', 'dangerouslySetInnerHTML']
+    ]
+  ] as const)('%s omits exactly the contract-owned naming and content props and exposes no ref', (name, expected) => {
+    const file = ast(source('atoms/product-mark/types.ts'));
+    const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === name);
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error(`Missing ${name} declaration`);
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const union = node.typeArguments[1];
+        if (union && ts.isUnionTypeNode(union)) {
+          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual(expected);
+    expect(alias.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild/);
+  });
+
+  it('extracts required monogram/label, optional href and only the documented native rows', () => {
+    const doc = parser
+      .parse(source('atoms/product-mark/ProductMark.tsx'))
+      .find((item) => item.displayName === 'ProductMark');
+    if (!doc) {
+      throw new Error('Missing docgen for ProductMark');
+    }
+    const { props } = doc;
+    for (const prop of ['monogram', 'label']) {
+      expect(props[prop], prop).toMatchObject({ required: true, tags: { control: 'text' } });
+      expect(props[prop]?.type.name, prop).toBe('string');
+      expect(props[prop]?.defaultValue ?? null, prop).toBeNull();
+    }
+    expect(props.href).toMatchObject({ required: false });
+    expect(props.href?.type.name).toBe('string');
+    // Both branches carry the same directive; docgen joins them and the enhancer normalizes to one.
+    expect(props.href).toMatchObject({ tags: { control: expect.stringMatching(/^text\s*\n\s*text$/) } });
+    expect(props.href?.description).toMatch(/When absent.*role="img"/s);
+    for (const prop of ['id', 'title', 'className', 'target', 'rel']) {
+      expect(props[prop], `ProductMark native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of [
+      'children',
+      'ref',
+      'asChild',
+      'role',
+      'aria-label',
+      'dangerouslySetInnerHTML',
+      'size',
+      'onClick'
+    ]) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);
