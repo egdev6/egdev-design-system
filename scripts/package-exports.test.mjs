@@ -225,14 +225,19 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
     /animation:\s*none\s*;/,
     'Reduced-motion preferences must stop the pulse'
   );
-  // Pulse (Skeleton) and spin (Spinner, #69) are the only approved animation utilities; transitions
-  // are limited to the pre-existing static Gauge transition-none and never reach the Skeleton.
+  // Pulse (Skeleton) and spin (Spinner, #69) are the only approved animation utilities. Transitions
+  // are limited to the static Gauge transition-none and the ProgressBar fill transform (#65 AC-09);
+  // neither reaches the Skeleton.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
     'Only the approved pulse and spin animation utilities may ship'
   );
-  assert.doesNotMatch(utilityLayer, /\.transition-(?!none)\w/, 'No animated transition utility may ship');
+  assert.doesNotMatch(
+    utilityLayer,
+    /\.transition-(?!none\b|transform\b)\w/,
+    'Only the approved ProgressBar transform transition may ship'
+  );
   assert.doesNotMatch(utilityLayer, /@keyframes/, 'The utilities layer must not define keyframes');
 });
 
@@ -285,6 +290,51 @@ test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet ru
   const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
   const kbdRules = (text) => (text.replace(/\/\*[\s\S]*?\*\//g, '').match(/\.eg-kbd[^{]*\{/g) ?? []).length;
   assert.equal(kbdRules(css), kbdRules(legacy), 'Kbd has no stylesheet: its marker carries no new rule');
+});
+
+test('UI ships the ProgressBar track, fill geometry and motion utilities without a ProgressBar stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // Tracks: sm hairline, lg Material well (D5) and the sm-only edge strip.
+  assert.match(rule(String.raw`.h-0\.5`), /height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*0\.5\)\s*;/);
+  assert.match(rule(String.raw`.h-2\.5`), /height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*2\.5\)\s*;/);
+  assert.match(rule(String.raw`.rounded-\[var\(--radius-sm\)\]`), /border-radius:\s*var\(--radius-sm\)\s*;/);
+  assert.match(rule('.bg-border-subtle'), /background-color:\s*var\(--color-border-subtle[,)]/);
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule('.shadow-well'), /--tw-shadow:\s*inset 0 1px 2px/);
+  assert.match(rule('.bg-bg-glass'), /background-color:\s*var\(--color-bg-glass[,)]/);
+  assert.match(rule('.inset-x-0'), /inset-inline:/);
+  // Fills: brand, gradient with the token bevel instead of the source halo (D6) and the muted series.
+  assert.match(rule('.bg-fg-brand-default'), /background-color:\s*var\(--color-fg-brand-default[,)]/);
+  assert.match(rule('.bg-fg-muted'), /background-color:\s*var\(--color-fg-muted[,)]/);
+  assert.match(
+    rule(String.raw`.bg-\[image\:var\(--gradient-progress\)\]`),
+    /background-image:\s*var\(--gradient-progress\)\s*;/
+  );
+  assert.match(rule('.shadow-edge-strong'), /--tw-shadow:\s*inset 0 1px 0/);
+  assert.match(rule(String.raw`.rounded-\[inherit\]`), /border-radius:\s*inherit\s*;/);
+  // D8 geometry: a static scale utility reading the numeric custom property, left origin and token motion.
+  assert.match(
+    rule(String.raw`.scale-x-\[var\(--eg-progress-value\)\]`),
+    /--tw-scale-x:\s*var\(--eg-progress-value\)\s*;[^}]*scale:\s*var\(--tw-scale-x\)\s+var\(--tw-scale-y\)/
+  );
+  assert.match(css, /@property --tw-scale-y\s*\{[^}]*initial-value:\s*1/);
+  assert.match(rule('.origin-left'), /transform-origin:/);
+  assert.match(rule('.transition-transform'), /transition-property:[^;]*\bscale\b/);
+  assert.match(rule(String.raw`.duration-\[var\(--duration-base\)\]`), /transition-duration:\s*var\(--duration-base\)/);
+  assert.match(rule(String.raw`.ease-\[var\(--ease-out\)\]`), /transition-timing-function:\s*var\(--ease-out\)/);
+  const reducedMotion = cssBlock(utilities, /@media \(prefers-reduced-motion: reduce\)\s*\{/);
+  assert.match(reducedMotion, /\.motion-reduce\\:transition-none\s*\{\s*transition-property:\s*none\s*;/);
+  // D10 no stylesheet: the fill marker carries no rule and .eg-progress keeps only its legacy rules.
+  assert.doesNotMatch(css, /\.eg-progress-fill[^{]*\{/);
+  const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
+  const progressRules = (text) =>
+    (text.replace(/\/\*[\s\S]*?\*\//g, '').match(/\.eg-progress(?![\w-])[^{]*\{/g) ?? []).length;
+  assert.equal(progressRules(css), progressRules(legacy), 'ProgressBar has no stylesheet: no new eg-progress rule');
 });
 
 test('UI ships the approved Gauge geometry in the components layer', () => {
@@ -402,6 +452,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Kbd',
       'Label',
       'Portal',
+      'ProgressBar',
       'Skeleton',
       'Slot',
       'Slottable',
@@ -411,6 +462,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'VisuallyHidden',
       'cn',
       'labelVariants',
+      'progressBarVariants',
       'surfaceVariants'
     ],
     'Only approved components and cn are public runtime exports'
@@ -421,6 +473,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(typeof exported.Skeleton, 'function', 'Skeleton must be a named root export');
   assert.equal(typeof exported.Spinner, 'function', 'Spinner must be a plain function component without a ref API');
   assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
+  assert.equal(
+    typeof exported.ProgressBar,
+    'function',
+    'ProgressBar must be a plain function component without a ref API'
+  );
+  assert.equal(typeof exported.progressBarVariants, 'function', 'ProgressBar track recipe must stay a public export');
   assert.equal(
     exported.VisuallyHidden?.$$typeof,
     Symbol.for('react.forward_ref'),
@@ -468,6 +526,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LayoutJustifyContent',
     'Portal',
     'PortalProps',
+    'ProgressBar',
+    'ProgressBarProps',
+    'ProgressBarSize',
+    'ProgressBarVariant',
     'Skeleton',
     'SkeletonProps',
     'SkeletonSize',
@@ -490,6 +552,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'VisuallyHiddenProps',
     'cn',
     'labelVariants',
+    'progressBarVariants',
     'surfaceVariants'
   ]);
   for (const name of [
@@ -502,6 +565,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'GaugeSize',
     'Kbd',
     'KbdProps',
+    'ProgressBar',
+    'ProgressBarProps',
+    'ProgressBarSize',
+    'ProgressBarVariant',
+    'progressBarVariants',
     'AspectRatio',
     'AspectRatioProps',
 
@@ -659,6 +727,42 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     /^<kbd class="eg-kbd [^"]*"><span aria-hidden="true">⌘K<\/span><span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Command K<\/span><\/kbd>$/
   );
   assert.doesNotMatch(symbolKey, /role=|aria-label=|tabindex=|data-state/);
+  // ProgressBar: Radix progressbar in percent, decorative without a label (D4), fill driven by one custom property (D8).
+  const announced = renderToString(
+    createElement(exported.ProgressBar, { label: 'Upload progress', value: 45, id: 'upload-progress' })
+  );
+  for (const text of [
+    'role="progressbar"',
+    'aria-valuemin="0"',
+    'aria-valuemax="100"',
+    'aria-valuenow="45"',
+    'aria-valuetext="45%"',
+    'aria-label="Upload progress"',
+    'data-state="loading"',
+    'id="upload-progress"',
+    'style="--eg-progress-value:0.45"'
+  ]) {
+    assert.ok(announced.includes(text), `ProgressBar SSR must render ${text}`);
+  }
+  assert.match(
+    announced,
+    /^<div [^>]*class="eg-progress [^"]*"[^>]*><div [^>]*class="eg-progress-fill [^"]*"[^>]*><\/div><\/div>$/
+  );
+  assert.doesNotMatch(announced, /aria-hidden|tabindex=/);
+  const decorative = renderToString(createElement(exported.ProgressBar, { value: 140 }));
+  assert.ok(decorative.includes('aria-hidden="true"') && decorative.includes('data-state="complete"'));
+  assert.ok(decorative.includes('aria-valuenow="100"') && decorative.includes('style="--eg-progress-value:1"'));
+  const unknown = renderToString(createElement(exported.ProgressBar, { label: 'Sync', value: Number.NaN }));
+  assert.ok(unknown.includes('data-state="indeterminate"') && unknown.includes('style="--eg-progress-value:0"'));
+  assert.doesNotMatch(unknown, /aria-valuenow|aria-valuetext/);
+  assert.match(
+    renderToString(createElement(exported.ProgressBar, { label: 'Goal', value: 74, valueText: '37 of 50' })),
+    /aria-valuetext="37 of 50"/
+  );
+  assert.equal(
+    exported.progressBarVariants({ size: 'sm', edge: true }),
+    'eg-progress block overflow-hidden h-0.5 absolute inset-x-0 bottom-0 w-auto rounded-none bg-bg-glass pointer-events-none'
+  );
   const geometry = [
     ['line', 'sm', 'h-3', 'rounded-sm'],
     ['line', 'md', 'h-4', 'rounded-sm'],
