@@ -92,6 +92,16 @@
           "symbol": "SkeletonProps",
           "revision": "sha256:6bb6a4c5aa02b761a881e7694b6434f30330a859909145100cf483a7277fdcbb"
         }
+      },
+      {
+        "component": "Spinner",
+        "type": "SpinnerSize",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/spinner/types.ts",
+          "symbol": "SpinnerProps",
+          "revision": "sha256:15beb1c08eb7851cb4b7c233fe4b15331b4fb193d7a11677189089f6615c3717"
+        }
       }
     ]
   },
@@ -228,6 +238,16 @@
           "path": "packages/ui/src/atoms/gauge/types.ts",
           "symbol": "GaugeProps",
           "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
+        }
+      },
+      {
+        "component": "Spinner",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/spinner/types.ts",
+          "symbol": "SpinnerProps",
+          "revision": "sha256:15beb1c08eb7851cb4b7c233fe4b15331b4fb193d7a11677189089f6615c3717"
         }
       }
     ]

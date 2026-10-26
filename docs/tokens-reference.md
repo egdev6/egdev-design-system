@@ -79,6 +79,15 @@ Se conservan `--space-0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24` en px. 
 
 Un override local de `--space-4: 24px` afecta a `p-4` en ese ámbito, sin cambiar los demás pasos. Un override de `--space-1: 6px` afecta a los pasos derivados (`p-0.5` = 3px, `p-9` = 54px); los pasos con alias propio conservan su token correspondiente. No se modifica el espaciado de componentes existentes por publicar estos alias.
 
+## Animation tokens
+
+Animation tokens live in the `@theme static` block of `packages/tokens/src/theme.css` together with their keyframes, so Tailwind compiles the matching `animate-*` utility and the native `tokens.css` artifact ships the keyframes. `@egdev/ui` only references the token theme: an `animate-*` utility without a token here is not emitted. Reduced motion is stopped at the usage site (`motion-reduce:animate-none`).
+
+| Token | Value | Keyframes | Use |
+| --- | --- | --- | --- |
+| `--animate-pulse` | `pulse 2s var(--ease-snappy) infinite` | `pulse`: 50% opacity 0.5 | Decorative opacity pulse for placeholders and signals (Skeleton v0.2, [#102](https://github.com/egdev6/egdev-design-system/issues/102)). |
+| `--animate-spin` | `spin 1s linear infinite` | `spin`: to rotate(360deg) | Indeterminate activity rotation, one linear turn per second (Spinner v0.1, [#69](https://github.com/egdev6/egdev-design-system/issues/69)). |
+
 ## Notas y muestras originales
 
 - **display-hero**: Typography / Display / Hero. Barlow Condensed 800 en MAYÚSCULAS. Penpot: 56 / 700 / 1.1. (Penpot: pendiente de sincronizar la familia.)

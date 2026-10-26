@@ -343,6 +343,14 @@
       opacity: 0.5;
     }
   }
+  /* --animate-spin — Indeterminate activity rotation (one linear turn per second); reduced motion is stopped at the usage site. */
+  --animate-spin: spin 1s linear infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 }
 
 :root {

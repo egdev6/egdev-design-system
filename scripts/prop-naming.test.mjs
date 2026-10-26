@@ -44,7 +44,9 @@ const postReceiptUsages = [
   { conventionId: 'trailing-text-accent', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
   { conventionId: 'trailing-text-accent', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
   { conventionId: 'accent-line-break', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
-  { conventionId: 'accent-line-break', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' }
+  { conventionId: 'accent-line-break', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' }
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({
