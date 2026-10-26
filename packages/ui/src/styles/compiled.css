@@ -14,6 +14,7 @@
 @source "../atoms/progress-bar/types.ts";
 @source "../atoms/spinner/types.ts";
 @source "../atoms/status-dot/types.ts";
+@source "../atoms/switch/types.ts";
 @source "../atoms/textarea/types.ts";
 @source "../atoms/tooltip/types.ts";
 @source "../primitives/aspect-ratio/types.ts";

@@ -13,6 +13,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   logo: ['id', 'title', 'className', 'style', 'target', 'rel'],
   statusDot: ['id', 'title', 'className', 'style'],
   kbd: ['id', 'title', 'className'],
+  switch: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className'],
   progressBar: ['id', 'title', 'aria-describedby', 'className', 'style'],
   textarea: [
     'id',

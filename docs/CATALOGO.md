@@ -60,7 +60,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Textarea** | Field (textarea) (átomo) | — | — | extraer | Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/73): bare native multi-line textarea with `variant` default (well), code (mono well on neutral-950) and prose (raised sheet), vertical-only resize above the variant minimum, native aria-invalid and a forwarded textarea ref. Label, hint, error and counter belong to Field. No stylesheet. |
 | **Select** | Field (select) (átomo) | Select | Icon | extraer | Select de Radix con el aspecto de Field. |
 | **Checkbox** | `.eg-check` (sin ficha) | Checkbox | Icon | extraer | Existía solo como clase. |
-| **Switch** | `.eg-check--switch` (sin ficha) | Switch | — | extraer |  |
+| **Switch** | `.eg-check--switch` (sin ficha) | Switch | — | extraer | Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/72): bare 36×20 on/off switch with immediate effect over Radix Switch (`role="switch"`, Space/Enter, hidden form input). Off is a recessed well with a grey thumb; on uses the primary gradient, `--shadow-btn-primary` and a black thumb moved 16px. `onCheckedChange` (`checked-change`), forwarded button ref, no own label or size axis. Legacy `.eg-check--switch` untouched. No stylesheet. |
 | **Slider** | Field --range (átomo) | Slider | — | extraer | Tamaño del anillo, umbrales, volumen. |
 | **RadioGroup** | — | RadioGroup | — | nuevo | Grupo de opciones exclusivas; base de SelectTile y de chips exclusivos. |
 | **Chip** | Chip (átomo) | Toggle / ToggleGroup.Item | Avatar | mantener | Siempre interactivo (filtro o selección). Los grupos van en ChipGroup. |

@@ -13,6 +13,7 @@
 @source "../packages/ui/src/atoms/progress-bar/ProgressBar.stories.tsx";
 @source "../packages/ui/src/atoms/spinner/Spinner.stories.tsx";
 @source "../packages/ui/src/atoms/status-dot/StatusDot.stories.tsx";
+@source "../packages/ui/src/atoms/switch/Switch.stories.tsx";
 @source "../packages/ui/src/atoms/textarea/Textarea.stories.tsx";
 @source "../packages/ui/src/atoms/tooltip/Tooltip.stories.tsx";
 @source "../packages/ui/src/primitives/aspect-ratio/AspectRatio.stories.tsx";
@@ -20,11 +21,11 @@
 @source "../packages/ui/src/primitives/label/Label.stories.tsx";
 
 @source "../packages/ui/src/primitives/skeleton/Skeleton.stories.tsx";
-@source "../packages/ui/src/primitives/stack/Stack.stories.tsx";
 @source "../packages/ui/src/primitives/stack/Cluster.stories.tsx";
-@source "../packages/ui/src/primitives/text/Text.stories.tsx";
-@source "../packages/ui/src/primitives/text/Heading.stories.tsx";
+@source "../packages/ui/src/primitives/stack/Stack.stories.tsx";
 @source "../packages/ui/src/primitives/surface/Surface.stories.tsx";
+@source "../packages/ui/src/primitives/text/Heading.stories.tsx";
+@source "../packages/ui/src/primitives/text/Text.stories.tsx";
 
 body {
   margin: 0;
