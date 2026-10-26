@@ -11,13 +11,15 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   skeleton: ['id', 'title', 'className', 'style'],
   spinner: ['id', 'title', 'className', 'style'],
   logo: ['id', 'title', 'className', 'style', 'target', 'rel'],
+  kbd: ['id', 'title', 'className'],
   // Native props re-exposed in autodocs per component, keyed by camelCase component name.
   // Gauge retains its approved passive measurement list; Label documents the native
   // association (htmlFor/id) and the approved class-merge surface. Nothing else from
   // node_modules declarations is admitted.
   label: ['htmlFor', 'id', 'className'],
   stack: ['id', 'title', 'aria-describedby', 'className', 'style'],
-  cluster: ['id', 'title', 'aria-describedby', 'className', 'style']
+  cluster: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  surface: ['id', 'title', 'role', 'aria-label', 'aria-labelledby', 'className', 'style']
 };
 const camelCase = (name: string) => name.charAt(0).toLowerCase() + name.slice(1);
 

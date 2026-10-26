@@ -118,7 +118,7 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
-  it('exposes the layout primitives, Gauge, AspectRatio, Portal, Slot and the cn utility through the barrel', () => {
+  it('exposes the layout primitives, Surface, Gauge, AspectRatio, Portal, Slot and cn through the barrel', () => {
     const file = ast(source('index.ts'));
     const modules = file.statements.flatMap((node) =>
       ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)
@@ -128,6 +128,7 @@ describe('Storybook TypeScript docgen contract', () => {
     // Each primitive exports its type alias first and runtime component second; dedupe the specifiers.
     expect([...new Set(modules)].sort()).toEqual([
       './atoms/gauge',
+      './atoms/kbd',
       './atoms/logo',
       './atoms/spinner',
       './lib/cn',
@@ -139,6 +140,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/skeleton',
       './primitives/slot',
       './primitives/stack',
+      './primitives/surface',
       './primitives/visually-hidden'
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
@@ -146,6 +148,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Cluster',
       'Divider',
       'Gauge',
+      'Kbd',
       'Label',
       'Logo',
       'Portal',
@@ -154,9 +157,11 @@ describe('Storybook TypeScript docgen contract', () => {
       'Slottable',
       'Spinner',
       'Stack',
+      'Surface',
       'VisuallyHidden',
       'cn',
-      'labelVariants'
+      'labelVariants',
+      'surfaceVariants'
     ]);
   });
 
@@ -166,7 +171,8 @@ describe('Storybook TypeScript docgen contract', () => {
       source('atoms/gauge/Gauge.tsx'),
       source('primitives/aspect-ratio/AspectRatio.tsx'),
       source('primitives/stack/Stack.tsx'),
-      source('primitives/stack/Cluster.tsx')
+      source('primitives/stack/Cluster.tsx'),
+      source('primitives/surface/Surface.tsx')
     ]);
   }, 20_000);
 
@@ -440,6 +446,76 @@ describe('Storybook TypeScript docgen contract', () => {
     }
   });
 
+  it('extracts Surface from both public branches with single constant defaults', () => {
+    const doc = docs.find((item) => item.displayName === 'Surface');
+    expect(doc, 'Surface must be discovered from its real component').toBeDefined();
+    if (!doc) {
+      throw new Error('Missing docgen for Surface');
+    }
+    const props = doc.props;
+    const values = (prop: string) =>
+      (props[prop]?.type.value ?? []).map((item: { value: string }) => normalize(item.value));
+    expect(values('tone')).toEqual(['surface-0', 'surface-1', 'surface-2', 'surface-3', 'well', 'overlay']);
+    expect(values('elevation')).toEqual(['0', '1', '2', '3']);
+    expect(values('padding')).toEqual(['none', 'sm', 'md', 'lg']);
+    expect(values('radius')).toEqual(['none', 'md', 'lg', 'xl', 'full']);
+    // Union branches merge JSDoc; @default lives on one branch so the value is never repeated.
+    for (const [prop, value] of [
+      ['tone', 'surface-1'],
+      ['elevation', '1'],
+      ['padding', 'md'],
+      ['radius', 'xl'],
+      ['asChild', 'false']
+    ] as const) {
+      expect(normalize(props[prop]?.defaultValue?.value), `Surface.${prop} default`).toBe(value);
+      expect(props[prop]?.required, `Surface.${prop} stays optional`).toBe(false);
+    }
+    // The default branch must stay visible: asChild is an optional boolean, not the slotted literal.
+    expect(props.asChild?.type.name).toBe('boolean');
+    for (const prop of ['id', 'title', 'aria-label', 'aria-labelledby', 'className']) {
+      expect.soft(props[prop]?.type.name, `Surface native ${prop} must remain available in autodocs`).toBe('string');
+    }
+    expect.soft(props.style?.type.name).toBe('CSSProperties');
+  });
+
+  it('documents controls on every Surface own prop and union branch', () => {
+    const file = ast(source('primitives/surface/types.ts'));
+    const properties = ownProps(file, [
+      'SurfaceRaisedToneProps',
+      'SurfaceFixedToneProps',
+      'SurfaceOwnProps',
+      'SurfaceDefaultProps',
+      'SurfaceSlottedProps'
+    ]);
+    const controls: Record<string, string> = {
+      tone: 'select',
+      elevation: 'select',
+      padding: 'select',
+      radius: 'select',
+      asChild: 'boolean',
+      children: 'false'
+    };
+    expect(properties).toHaveLength(10);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const control = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(
+        control.map((tag) => ts.getTextOfJSDocComment(tag.comment)?.trim()),
+        name
+      ).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        expect(tags.some((tag) => tag.tagName.text === 'controlReason' && tag.comment)).toBe(true);
+      }
+      if (!property.questionToken) {
+        expect(
+          tags.some((tag) => tag.tagName.text === 'default'),
+          `${name}: required declarations must not invent @default`
+        ).toBe(false);
+      }
+    }
+  });
+
   it('documents controls on every AspectRatio own prop through its real annotations', () => {
     const file = ast(source('primitives/aspect-ratio/types.ts'));
     const properties = ownProps(file, ['AspectRatioProps']);
@@ -458,7 +534,7 @@ describe('Storybook TypeScript docgen contract', () => {
   });
 
   it('limits real parser discovery to the current public React components', () => {
-    expect(docs.map((doc) => doc.displayName)).toEqual(['Gauge', 'AspectRatio', 'Stack', 'Cluster']);
+    expect(docs.map((doc) => doc.displayName)).toEqual(['Gauge', 'AspectRatio', 'Stack', 'Cluster', 'Surface']);
     expect(Object.keys(gaugeControls)).toHaveLength(8);
   });
 });
@@ -795,6 +871,67 @@ describe('Logo brand-artwork metadata contract', () => {
       expect(props[prop], `Logo native ${prop} must remain available in autodocs`).toBeDefined();
     }
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-label', 'aria-labelledby', 'aria-hidden', 'tone']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('Kbd passive metadata contract', () => {
+  it('annotates exactly required children and optional label as text controls without defaults', () => {
+    const file = ast(source('atoms/kbd/types.ts'));
+    const properties = ownProps(file, ['KbdProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['children', 'label']);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(Boolean(property.questionToken), `Kbd.${name} optionality`).toBe(name === 'label');
+      expect(property.type?.getText(file), `Kbd.${name} type`).toBe('string');
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `Kbd.${name} control`).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe('text');
+      // Absent label is a derived plain-text rule, not a fixed default value.
+      expect(tags.find((tag) => tag.tagName.text === 'default')).toBeUndefined();
+    }
+  });
+
+  it('omits exactly children and dangerouslySetInnerHTML and exposes no ref or asChild', () => {
+    const file = ast(source('atoms/kbd/types.ts'));
+    const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'KbdProps');
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing KbdProps declaration');
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const union = node.typeArguments[1];
+        if (union && ts.isUnionTypeNode(union)) {
+          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual(['children', 'dangerouslySetInnerHTML']);
+    expect(alias.type.getText(file)).toMatch(/ComponentPropsWithoutRef<'kbd'>/);
+    expect(alias.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild/);
+  });
+
+  it('extracts required children, optional label and only the documented native rows', () => {
+    const doc = parser.parse(source('atoms/kbd/Kbd.tsx')).find((item) => item.displayName === 'Kbd');
+    if (!doc) {
+      throw new Error('Missing docgen for Kbd');
+    }
+    const { props } = doc;
+    expect(props.children).toMatchObject({ required: true, tags: { control: 'text' } });
+    expect(props.children?.type.name).toBe('string');
+    expect(props.label).toMatchObject({ required: false, tags: { control: 'text' } });
+    expect(props.label?.type.name).toBe('string');
+    expect(props.label?.defaultValue ?? null).toBeNull();
+    expect(props.label?.description).toMatch(/When omitted or empty.*read as-is/s);
+    for (const prop of ['id', 'title', 'className']) {
+      expect(props[prop], `Kbd native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick', 'variant', 'size']) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);
