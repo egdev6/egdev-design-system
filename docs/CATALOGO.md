@@ -58,7 +58,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Icon** | Icon (átomo) | AccessibleIcon | — | mantener | Implemented in @egdev/ui: one inline glyph from the closed 42-name set (25 Foundation plus 17 Lucide additions, including check, minus and plus) with sm/md/lg presets, optional currentColor fill and an optional label through Radix AccessibleIcon; decorative by default. No stylesheet; legacy `.eg-icon*` rules are unchanged. Contract: [#58](https://github.com/egdev6/egdev-design-system/issues/58). |
 | **Input** | Field (input) (átomo) | — | — | extraer | Control nativo; sale de Field. Variante `mono` para código y URLs. |
 | **Textarea** | Field (textarea) (átomo) | — | — | extraer | Variantes `code` y `prose` (antes Field --code y --prose). |
-| **Select** | Field (select) (átomo) | Select | Icon | extraer | Select de Radix con el aspecto de Field. |
+| **Select** | Field (select) (átomo) | Select | Icon | extraer | Implemented single-choice React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/67): data-driven text options, controlled/uncontrolled values, native form participation, forwarded trigger button ref and Radix-owned portal/keyboard/focus/ARIA. Token-backed field well and overlay; md/sm sizes. Composes Icon chevron/check. No stylesheet, open-state API, asChild or public subcomponents. Legacy native select styles unchanged. |
 | **Checkbox** | `.eg-check` (sin ficha) | Checkbox | Icon | extraer | Existía solo como clase. |
 | **Switch** | `.eg-check--switch` (sin ficha) | Switch | — | extraer |  |
 | **Slider** | Field --range (átomo) | Slider | — | extraer | Tamaño del anillo, umbrales, volumen. |

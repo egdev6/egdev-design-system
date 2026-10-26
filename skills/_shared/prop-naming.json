@@ -23,6 +23,16 @@
           "symbol": "GaugeProps",
           "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
         }
+      },
+      {
+        "component": "Select",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/select/types.ts",
+          "symbol": "SelectProps",
+          "revision": "sha256:5fd68b9eeae5373ed7adeeaf90d002bf32eac62f584024114479b32bfd69f3f0"
+        }
       }
     ]
   },
@@ -40,7 +50,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Select",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/select/types.ts",
+          "symbol": "SelectProps",
+          "revision": "sha256:5fd68b9eeae5373ed7adeeaf90d002bf32eac62f584024114479b32bfd69f3f0"
+        }
+      }
+    ]
   },
   {
     "id": "interactive-value-change",
@@ -56,7 +77,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Select",
+        "type": "(value: string) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/select/types.ts",
+          "symbol": "SelectProps",
+          "revision": "sha256:5fd68b9eeae5373ed7adeeaf90d002bf32eac62f584024114479b32bfd69f3f0"
+        }
+      }
+    ]
   },
   {
     "id": "preset-dimensions",
@@ -121,6 +153,16 @@
           "path": "packages/ui/src/atoms/logo/types.ts",
           "symbol": "LogoProps",
           "revision": "sha256:c94a94db17133bd7b28dcd8763fdf00f40fb788379f2074432599c68c5a1ba31"
+        }
+      },
+      {
+        "component": "Select",
+        "type": "SelectSize ('md' | 'sm')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/select/types.ts",
+          "symbol": "SelectProps",
+          "revision": "sha256:5fd68b9eeae5373ed7adeeaf90d002bf32eac62f584024114479b32bfd69f3f0"
         }
       }
     ]
@@ -938,7 +980,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Select",
+        "type": "SelectOption[] (value: string; label: string; disabled?: boolean)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/select/types.ts",
+          "symbol": "SelectProps",
+          "revision": "sha256:5fd68b9eeae5373ed7adeeaf90d002bf32eac62f584024114479b32bfd69f3f0"
+        }
+      }
+    ]
   },
   {
     "id": "layout-orientation",
@@ -981,7 +1034,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Select",
+        "type": "string (hint only while unselected; not an accessible name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/select/types.ts",
+          "symbol": "SelectProps",
+          "revision": "sha256:5fd68b9eeae5373ed7adeeaf90d002bf32eac62f584024114479b32bfd69f3f0"
+        }
+      }
+    ]
   },
   {
     "id": "committed-value-change",

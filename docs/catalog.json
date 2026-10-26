@@ -184,7 +184,7 @@
     "radix": "Select",
     "compone": "Icon",
     "accion": "extraer",
-    "notas": "Select de Radix con el aspecto de Field."
+    "notas": "Implemented single-choice React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/67): data-driven text options, controlled/uncontrolled values, native form participation, forwarded trigger button ref and Radix-owned portal/keyboard/focus/ARIA. Token-backed field well and overlay; md/sm sizes. Composes Icon chevron/check. No stylesheet, open-state API, asChild or public subcomponents. Legacy native select styles unchanged."
   },
   {
     "actual": "`.eg-check`",
