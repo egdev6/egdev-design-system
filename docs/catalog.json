@@ -107,7 +107,7 @@
     "radix": "Slot",
     "compone": "Icon, Spinner",
     "accion": "mantener",
-    "notas": "Pierde `--icon` (pasa a IconButton). Mantiene `.eg-btn-split` como molécula ButtonGroup."
+    "notas": "Implemented React atom: labelled native action or Radix Slot child, four Material treatments, md/sm sizes, decorative start/end icon (Button-only naming exception) and focus-retaining loading Spinner. Native disabled or guarded disabled child; React 18-compatible forwardRef. No stylesheet or dependencies added; legacy classes unchanged. Icon-only actions and split/join API remain out of scope. Contract: [#53](https://github.com/egdev6/egdev-design-system/issues/53)."
   },
   {
     "actual": "IconButton",

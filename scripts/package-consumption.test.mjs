@@ -30,12 +30,15 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Badge, Cluster, Divider, Gauge, Heading, Icon, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, RadioGroup, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Tooltip, VisuallyHidden, badgeVariants, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Badge, Button, Cluster, Divider, Gauge, Heading, Icon, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, RadioGroup, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Tooltip, VisuallyHidden, badgeVariants, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   BadgeProps,
   BadgeTone,
   BadgeVariant,
+  ButtonProps,
+  ButtonSize,
+  ButtonVariant,
   DividerOrientation,
   DividerProps,
   GaugeProps,
@@ -91,6 +94,27 @@ import type {
   TooltipProps,
   VisuallyHiddenProps
 } from '@egdev/ui';
+const buttonVariant: ButtonVariant = 'secondary';
+const buttonSize: ButtonSize = 'sm';
+export const buttonRef = createRef<HTMLButtonElement>();
+export const buttonLinkRef = createRef<HTMLButtonElement>();
+export const buttonProps: ButtonProps = { children: 'Save draft', icon: createElement(Icon, { name: 'check' }), variant: buttonVariant, size: buttonSize };
+export function ButtonSamples() {
+  return createElement('section', { 'aria-label': 'Actions' },
+    createElement(Button, { ...buttonProps, id: 'button-native', ref: buttonRef }),
+    createElement(Button, { children: 'Saving draft', loading: true, id: 'button-loading' }),
+    createElement(Button, { children: 'Unavailable', disabled: true, id: 'button-disabled' }),
+    createElement(Button, { asChild: true, ref: buttonLinkRef, iconPosition: 'start', icon: createElement(Icon, { name: 'arrow-right' }),
+      children: createElement('a', { href: '#projects', id: 'button-link' }, 'View projects') }));
+}
+// @ts-expect-error Button requires a visible label.
+const missingButtonLabel: ButtonProps = {};
+// @ts-expect-error Navigation composes a child anchor, never a Button href prop.
+const buttonHref: ButtonProps = { children: 'Projects', href: '#projects' };
+// @ts-expect-error Icon-only size treatments belong to IconButton.
+const buttonIconVariant: ButtonProps = { children: 'Save', variant: 'icon' };
+// @ts-expect-error Button dimensions are only md and sm presets.
+const buttonNumericSize: ButtonProps = { children: 'Save', size: 48 };
 const slotProps: SlotProps = { 'aria-label': 'Composed documentation' };
 export function SlotSample() {
   return createElement(Slot, slotProps,
@@ -535,6 +559,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(StatusDotSamples, { pulse: statusDotPulse }),
     createElement(KbdSamples),
+    createElement(ButtonSamples),
     createElement(LinkSamples, { external: linkExternal }),
     createElement(BadgeSamples),
     createElement(SliderSamples),
@@ -876,6 +901,39 @@ const slottedSurfaceText: SurfaceProps = { asChild: true, children: 'Text' };
 // @ts-expect-error The default div promises only an HTMLDivElement ref.
 const wideSurfaceRef: ComponentProps<typeof Surface> = { ref: createRef<HTMLElement>() };
 `;
+
+function assertButtonCSS(css) {
+  for (const selector of [
+    '.box-border',
+    '.border-solid',
+    '.min-h-12',
+    '.min-h-10',
+    '.text-cta-label',
+    '.text-label-default'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Button utility ' + selector);
+  }
+  for (const token of [
+    'gradient-btn-primary',
+    'gradient-btn-primary-hover',
+    'gradient-btn-secondary',
+    'gradient-btn-secondary-hover',
+    'shadow-btn-primary',
+    'shadow-btn-primary-hover',
+    'shadow-btn-pressed',
+    'shadow-focus',
+    'duration-press',
+    'ease-snappy'
+  ]) {
+    assert.ok(css.includes('var(--' + token + ')'), 'Missing Button binding ' + token);
+  }
+  assert.ok(css.includes('data-state=loading') || css.includes('data-state="loading"'));
+  assert.match(css, /--tw-translate-y:\s*1px\s*;/);
+  assert.match(css, /translate:\s*var\(--tw-translate-x\) var\(--tw-translate-y\)/);
+  assert.match(css, /--tw-scale-x:\s*97%\s*;/);
+  assert.match(css, /scale:\s*var\(--tw-scale-x\) var\(--tw-scale-y\)/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+}
 
 // Surface ships no stylesheet: only token-backed CVA utilities, including fallback variants.
 function assertSurfaceCSS(css) {
@@ -1639,6 +1697,7 @@ assertLinkCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AspectRatio',
   'Badge',
+  'Button',
   'Cluster',
   'Divider',
   'Gauge',
@@ -1676,6 +1735,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'surfaceVariants',
   'tooltipVariants'
 ]);
+${assertButtonCSS.toString()}
 ${assertBadgeCSS.toString()}
 assertBadgeCSS(shippedStyles);
 ${assertGaugeCSS.toString()}
@@ -1694,6 +1754,7 @@ ${assertProgressBarCSS.toString()}
 ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertProductMarkCSS.toString()}
+assertButtonCSS(shippedStyles);
 assertGaugeCSS(shippedStyles);
 assertIconCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
@@ -2161,6 +2222,21 @@ for (const frame of [square, wide]) {
     assert.equal(key.getAttribute('tabindex'), null);
     assert.equal(key.hasAttribute('data-state'), false);
   }
+  const nativeButton = document.getElementById('button-native');
+  assert.equal(nativeButton.tagName, 'BUTTON');
+  assert.equal(nativeButton.getAttribute('type'), 'button');
+  assert.ok(nativeButton.classList.contains('eg-btn') && nativeButton.classList.contains('min-h-10'));
+  assert.equal(nativeButton.querySelector('.eg-btn__icon').getAttribute('aria-hidden'), 'true');
+  const loadingButton = document.getElementById('button-loading');
+  assert.equal(loadingButton.getAttribute('aria-busy'), 'true');
+  assert.equal(loadingButton.getAttribute('aria-disabled'), 'true');
+  assert.ok(!loadingButton.hasAttribute('disabled') && loadingButton.querySelector('.eg-spinner'));
+  assert.ok(document.getElementById('button-disabled').hasAttribute('disabled'));
+  const buttonLink = document.getElementById('button-link');
+  assert.equal(buttonLink.tagName, 'A');
+  assert.equal(buttonLink.getAttribute('href'), '#projects');
+  assert.equal(buttonLink.hasAttribute('type'), false);
+  assert.ok(buttonLink.firstElementChild.classList.contains('eg-btn__icon'));
   const nativeKbd = document.getElementById('kbd-native');
   assert.equal(nativeKbd.getAttribute('title'), 'Close dialog');
   assert.ok(nativeKbd.className.startsWith('eg-kbd '), 'The public marker leads the root classes');
@@ -2462,9 +2538,9 @@ globalThis.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
-const { Badge, Icon, Label, Link, Slot, Slottable } = await import('@egdev/ui');
+const { Badge, Button, Icon, Label, Link, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, RadioGroupSamples, SwitchSamples, TooltipSamples, aspectWideRef, hiddenNoteRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, tooltipRecipe } = await import('./consumer.ts');
+const { App, RadioGroupSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, hiddenNoteRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -2478,7 +2554,9 @@ try {
   assert.ok(slottedHeadingRef.current instanceof HTMLElement);
   assert.equal(slottedHeadingRef.current?.tagName, 'H2', 'The slotted ref must expose the h2 host');
   const buttons = [...document.querySelectorAll('button')];
-  assert.equal(buttons.length, 4, 'Only intrinsic consumer and Cluster harness controls may be focusable');
+  assert.equal(buttons.length, 7, 'Existing harness controls plus three Button hosts');
+  assert.ok(buttonRef.current === document.getElementById('button-native'), 'Native Button ref reaches the button on both React majors');
+  assert.ok(buttonLinkRef.current === document.getElementById('button-link'), 'Slotted Button ref reaches the anchor on both React majors');
   buttons[0].focus();
   assert.ok(document.activeElement === buttons[0], 'First intrinsic button must receive focus');
   buttons[1].focus();
@@ -2587,7 +2665,7 @@ try {
   assert.ok(!csrPulseStatic.className.includes('animate-pulse'), 'The CSR pulse:false Skeleton must stay static');
   stage('spinner:rerender:start');
   const busyHost = () => document.getElementById('busy-save');
-  assert.equal(document.querySelectorAll('.eg-spinner').length, 6, 'Consumer Spinners must mount');
+  assert.equal(document.querySelectorAll('section[aria-label="Activity indicators"] .eg-spinner').length, 6, 'Standalone consumer Spinners must mount; Button owns another decorative Spinner');
   assert.equal(busyHost().querySelectorAll('.eg-spinner').length, 1);
   await act(async () => root.render(createElement(App, { gaugeValue: 42.5, spinnerLoading: false })));
   assert.equal(busyHost().getAttribute('aria-busy'), 'false');
@@ -2861,6 +2939,28 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
+  stage('button:activation:start');
+  let buttonCalls = 0;
+  const clickButton = () => { buttonCalls += 1; };
+  await act(async () => root.render(createElement(Button, { onClick: clickButton, children: 'Save' })));
+  const actionButton = document.querySelector('.eg-btn');
+  actionButton.focus();
+  await act(async () => root.render(createElement(Button, { loading: true, onClick: clickButton, children: 'Save' })));
+  assert.ok(document.activeElement === actionButton, 'Loading keeps the native Button focus');
+  await act(async () => actionButton.click());
+  assert.equal(buttonCalls, 0, 'Loading blocks repeated activation');
+  await act(async () => root.render(createElement(Button, { onClick: clickButton, children: 'Save' })));
+  await act(async () => actionButton.click());
+  assert.equal(buttonCalls, 1, 'Activation returns when loading ends');
+  await act(async () => root.render(createElement(Button, { asChild: true, disabled: true, onClick: clickButton,
+    children: createElement('a', { href: '#save', onClick: clickButton }, 'Save') })));
+  const disabledLink = document.querySelector('a.eg-btn');
+  assert.equal(disabledLink.getAttribute('tabindex'), '-1');
+  const blockedEvent = new dom.window.MouseEvent('click', { bubbles: true, cancelable: true });
+  await act(async () => disabledLink.dispatchEvent(blockedEvent));
+  assert.equal(blockedEvent.defaultPrevented, true);
+  assert.equal(buttonCalls, 1, 'Disabled Slot blocks child and Button handlers');
+  stage('button:activation:complete');
   stage('radio-group:start');
   const radioCalls = [];
   const onFormatChange = (next) => radioCalls.push(next);
@@ -2928,7 +3028,7 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Tooltip focus, Escape, portal and unmount', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup'] }));
+  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Tooltip focus, Escape, portal and unmount', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -3009,6 +3109,7 @@ const assets = [result].flat().flatMap((bundle) => bundle.output).filter((asset)
 const emitted = assets.map((asset) => String(asset.source)).join('\\n');
 assert.ok(assets.length > 0, 'Vite must emit consumer CSS');
 assert.ok(!emitted.includes('@theme'), 'Native consumption must not need Tailwind to interpret @theme');
+${assertButtonCSS.toString()}
 ${assertBadgeCSS.toString()}
 assertBadgeCSS(emitted);
 ${assertGaugeCSS.toString()}
@@ -3027,6 +3128,7 @@ ${assertProgressBarCSS.toString()}
 ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertProductMarkCSS.toString()}
+assertButtonCSS(emitted);
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -3078,6 +3180,7 @@ const tailwind = await build({ configFile: false, logLevel: 'error', plugins: [t
 const twAssets = [tailwind].flat().flatMap((bundle) => bundle.output).filter((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'));
 const twCss = twAssets.map((asset) => String(asset.source)).join(' ');
 assert.ok(twAssets.length > 0, 'Tailwind build must emit CSS');
+assertButtonCSS(twCss);
 assertBadgeCSS(twCss);
 assertGaugeCSS(twCss);
 assertDividerCSS(twCss, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));

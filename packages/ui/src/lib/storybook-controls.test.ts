@@ -10,6 +10,7 @@ import config from '../../../../.storybook/main';
 import preview from '../../../../.storybook/preview';
 
 const components = [
+  ['Button', 'atoms/button'],
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Cluster', 'primitives/stack'],
   ['Gauge', 'atoms/gauge'],
@@ -83,6 +84,15 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  button: {
+    children: false,
+    variant: 'select',
+    size: 'select',
+    icon: false,
+    iconPosition: 'select',
+    loading: 'boolean',
+    asChild: 'boolean'
+  },
   aspectratio: {
     ratio: 'number'
   },
@@ -178,6 +188,7 @@ const expected: Record<string, Record<string, string | false>> = {
   }
 };
 const ownPropCounts: Record<string, number> = {
+  button: 7,
   aspectratio: 1,
   badge: 4,
   gauge: 8,
@@ -369,7 +380,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         expect(composed.argTypes[prop]?.type?.name, `${name}.${prop} semantic type`).toBe('string');
       }
     }
-    if (!['VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface', 'Link'].includes(name)) {
+    if (!['Button', 'VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface', 'Link'].includes(name)) {
       expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     }
     expect(composed.args).toEqual({});

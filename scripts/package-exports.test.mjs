@@ -1135,6 +1135,69 @@ test('UI JavaScript remains importable without a CSS loader', async () => {
   assert.match(hidden, /<span class="eg-visually-hidden"[^>]*clip:rect\(0, 0, 0, 0\)[^>]*>Hidden note<\/span>/);
 });
 
+test('Button emits every static CVA utility and its approved native resets and motion tokens', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/atoms/button/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      return;
+    }
+    if (ts.isStringLiteral(node)) {
+      for (const name of node.text.split(/\s+/)) {
+        classes.add(name);
+      }
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      for (const argument of node.arguments) {
+        collect(argument);
+      }
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  for (const name of classes) {
+    if (['eg-btn', 'eg-btn__icon', 'group/button'].includes(name)) {
+      continue;
+    }
+    const selector = '.' + name.replace(/[^\w-]/g, '\\$&');
+    assert.ok(css.includes(selector), `Missing Button utility ${name}`);
+  }
+  assert.ok(classes.size > 75, 'Scan the full root and icon-slot CVA recipes');
+  for (const token of [
+    '--gradient-btn-primary',
+    '--gradient-btn-primary-hover',
+    '--gradient-btn-secondary',
+    '--gradient-btn-secondary-hover',
+    '--shadow-btn-primary',
+    '--shadow-btn-primary-hover',
+    '--shadow-btn-pressed',
+    '--shadow-focus',
+    '--duration-press',
+    '--ease-snappy'
+  ]) {
+    assert.ok(css.includes(`var(${token})`), token);
+  }
+  assert.match(css, /--tw-translate-y:\s*1px\s*;/);
+  assert.match(css, /translate:\s*var\(--tw-translate-x\) var\(--tw-translate-y\)/);
+  assert.match(css, /--tw-scale-x:\s*97%\s*;/);
+  assert.match(css, /scale:\s*var\(--tw-scale-x\) var\(--tw-scale-y\)/);
+  assert.match(css, /box-sizing:\s*border-box/);
+  assert.match(css, /border-style:\s*solid/);
+  assert.match(css, /font-weight:\s*var\(--text-cta-label--font-weight/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+});
+
 test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal and Slot with passive SSR semantics', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   assert.deepEqual(
@@ -1142,6 +1205,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     [
       'AspectRatio',
       'Badge',
+      'Button',
       'Cluster',
       'Divider',
       'Gauge',
@@ -1266,6 +1330,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'BadgeProps',
     'BadgeTone',
     'BadgeVariant',
+    'Button',
+    'ButtonProps',
+    'ButtonSize',
+    'ButtonVariant',
     'Cluster',
     'ClusterProps',
     'Divider',

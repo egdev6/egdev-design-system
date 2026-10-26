@@ -128,6 +128,7 @@ describe('Storybook TypeScript docgen contract', () => {
     // Each primitive exports its type alias first and runtime component second; dedupe the specifiers.
     expect([...new Set(modules)].sort()).toEqual([
       './atoms/badge',
+      './atoms/button',
       './atoms/gauge',
       './atoms/icon',
       './atoms/input',
@@ -159,6 +160,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(Object.keys(publicAPI).sort()).toEqual([
       'AspectRatio',
       'Badge',
+      'Button',
       'Cluster',
       'Divider',
       'Gauge',
@@ -196,6 +198,55 @@ describe('Storybook TypeScript docgen contract', () => {
       'surfaceVariants',
       'tooltipVariants'
     ]);
+  });
+
+  it('extracts Button own metadata, real defaults and permitted native action props', () => {
+    const doc = parser.parse(source('atoms/button/Button.tsx')).find(({ displayName }) => displayName === 'Button');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    expect(props.children?.required).toBe(true);
+    const controls: Record<string, string> = {
+      children: 'false',
+      variant: 'select',
+      size: 'select',
+      icon: 'false',
+      iconPosition: 'select',
+      loading: 'boolean',
+      asChild: 'boolean'
+    };
+    const file = ast(source('atoms/button/types.ts'));
+    const own = ownProps(file, ['ButtonProps']);
+    expect(own).toHaveLength(7);
+    for (const declaration of own) {
+      const name = declaration.name.getText(file);
+      expect(ts.getJSDocTags(declaration).filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
+      expect(props[name]?.tags).toMatchObject({ control: controls[name] });
+      if (controls[name] === 'false') {
+        expect(props[name]?.tags).toMatchObject({ controlReason: expect.stringMatching(/ReactNode/) });
+      }
+    }
+    for (const [name, value] of Object.entries({
+      variant: 'primary',
+      size: 'md',
+      iconPosition: 'end',
+      loading: 'false',
+      asChild: 'false'
+    })) {
+      expect(normalize(props[name]?.defaultValue?.value)).toBe(value);
+    }
+    expect(props.children?.defaultValue).toBeNull();
+    expect(props.icon?.defaultValue).toBeNull();
+    expect(props.variant?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'primary',
+      'secondary',
+      'ghost',
+      'dark'
+    ]);
+    expect(props.size?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual(['md', 'sm']);
+    for (const name of ['type', 'disabled', 'onClick', 'className']) {
+      expect(props[name]).toBeDefined();
+    }
+    expect(props.href).toBeUndefined();
   });
 
   beforeAll(() => {

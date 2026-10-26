@@ -146,6 +146,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "Button",
+        "type": "ButtonSize ('md' | 'sm')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/button/types.ts",
+          "symbol": "ButtonProps",
+          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+        }
+      },
+      {
         "component": "Gauge",
         "type": "GaugeSize | number (GaugeSize = 'sm' | 'md' | 'lg'; numeric CSS pixels, e.g. 64)",
         "status": "existing",
@@ -232,6 +242,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Button",
+        "type": "ButtonVariant ('primary' | 'secondary' | 'ghost' | 'dark')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/button/types.ts",
+          "symbol": "ButtonProps",
+          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+        }
+      },
       {
         "component": "Skeleton",
         "type": "SkeletonVariant",
@@ -747,18 +767,28 @@
   {
     "id": "leading-icon",
     "name": "icon",
-    "meaning": "Optional decorative icon rendered beside a component's text label (before it by default) and hidden from assistive technology.",
-    "whenToUse": "A labelled component offers a leading pictogram that repeats or decorates meaning already present in its text.",
-    "avoid": "Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning.",
+    "meaning": "Optional decorative icon rendered beside a component's text label (before it by default) and hidden from assistive technology. Button alone may place this icon before or after its label, after it by default.",
+    "whenToUse": "A labelled component offers a leading pictogram that repeats or decorates meaning already present in its text. Button alone also permits its iconPosition start/end slot, default end.",
+    "avoid": "Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning. The trailing-icon exclusion has one exception: Button with iconPosition; no other component gains trailing-icon permission.",
     "status": "approved",
     "approval": {
-      "reference": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "reference": "docs/components/button/v0.1/prop-naming-approval.json",
       "scope": "convention:leading-icon",
-      "contentHash": "sha256:b680df32f87ea2cd2592faa56782bb458d91a8a941b413e7740121f84954e5dd"
+      "contentHash": "sha256:6beeba4aea0a65b13367990fde8dd8439b07af12df9d8e9432c1a94b16997d4c"
     },
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Button",
+        "type": "ReactNode (decorative start/end slot, default end; Button-only semantic exception)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/button/types.ts",
+          "symbol": "ButtonProps",
+          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+        }
+      },
       {
         "component": "Badge",
         "type": "ReactNode",
@@ -795,7 +825,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Button",
+        "type": "'start' | 'end' (default end)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/button/types.ts",
+          "symbol": "ButtonProps",
+          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+        }
+      }
+    ]
   },
   {
     "id": "pending-activity",
@@ -811,7 +852,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Button",
+        "type": "boolean (loading retains focus unless disabled)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/button/types.ts",
+          "symbol": "ButtonProps",
+          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+        }
+      }
+    ]
   },
   {
     "id": "slot-composition",
@@ -828,6 +880,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Button",
+        "type": "boolean (asChild)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/button/types.ts",
+          "symbol": "ButtonProps",
+          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+        }
+      },
       {
         "component": "VisuallyHidden",
         "type": "boolean",
