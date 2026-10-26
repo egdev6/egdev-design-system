@@ -1270,6 +1270,74 @@ test('UI ships the approved Text and Heading title recipes without an applicatio
   assert.doesNotMatch(css, /\.eg-(?:text|heading)\s*[,{]/, 'Text/Heading markers must not become shipped CSS rules');
 });
 
+test('UI ships every static IconButton CVA utility, native resets and scoped state recipes', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = readFileSync(resolve(root, 'packages/ui/src/atoms/icon-button/types.ts'), 'utf8');
+  const file = ts.createSourceFile('types.ts', source, ts.ScriptTarget.Latest, true);
+  const classes = new Set();
+  const add = (text) =>
+    text
+      .split(/\s+/)
+      .filter(Boolean)
+      .forEach((token) => classes.add(token));
+  const visit = (node) => {
+    if (ts.isCallExpression(node) && node.expression.getText(file) === 'cva') {
+      const [base, config] = node.arguments;
+      assert.ok(ts.isStringLiteral(base));
+      add(base.text);
+      const variants = config.properties.find((property) => property.name?.getText(file) === 'variants');
+      for (const axis of variants.initializer.properties) {
+        for (const value of axis.initializer.properties) {
+          assert.ok(ts.isStringLiteral(value.initializer));
+          add(value.initializer.text);
+        }
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(file);
+  assert.ok(classes.size > 50, 'Scan both root and icon recipes, not a hand-maintained subset');
+  for (const token of classes) {
+    if (token === 'eg-icon-btn' || token === 'group/icon-button') {
+      continue;
+    }
+    const escaped = '.' + token.replace(/([^a-zA-Z0-9_-])/g, '\\$1');
+    assert.ok(utilities.includes(escaped), `Missing IconButton utility ${token}`);
+  }
+  for (const token of [
+    '--gradient-btn-primary-hover',
+    '--gradient-btn-secondary-hover',
+    '--color-alpha-red-65',
+    '--duration-press',
+    '--ease-spring'
+  ]) {
+    assert.ok(utilities.includes(`var(${token}`), `IconButton must consume ${token}`);
+  }
+  assert.match(utilities, /box-sizing:\s*border-box/);
+  assert.match(utilities, /border-style:\s*solid/);
+  for (const axis of ['x', 'y']) {
+    assert.ok(new RegExp(`--tw-scale-${axis}:\\s*94%`).test(utilities), `Pressed ${axis} scale must be .94`);
+  }
+  assert.ok(/scale:\s*var\(--tw-scale-x\) var\(--tw-scale-y\)/.test(utilities));
+  assert.match(utilities, /prefers-reduced-motion:\s*no-preference/);
+  assert.match(utilities, /prefers-reduced-motion:\s*reduce/);
+  assert.match(utilities, /transition:\s*color var\(--duration-fast\) var\(--ease-out\)/);
+  assert.match(utilities, /translate:\s*var\(--tw-translate-x\)/, 'Tailwind v4 lift uses translate, not transform');
+  assert.doesNotMatch(utilities, /\.eg-icon-btn[^a-z-]/, 'No new marker recipe or stylesheet');
+  const { IconButton, Icon } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(
+    createElement(IconButton, { label: 'Search', icon: createElement(Icon, { name: 'search' }) })
+  );
+  assert.match(html, /^<button [^>]*type="button"/);
+  assert.match(html, /eg-icon-btn/);
+  assert.match(html, /aria-hidden="true"/);
+  assert.match(html, /<span style="[^"]*position:absolute[^>]*>Search<\/span>/);
+  assert.doesNotMatch(html, /aria-label=|aria-pressed=|data-state=|eg-icon-btn--/);
+});
+
 test('UI JavaScript remains importable without a CSS loader', async () => {
   const entry = artifact('ui', ui.exports['.'].import);
   const imports = ts.preProcessFile(readFileSync(entry, 'utf8'), true).importedFiles;
@@ -1360,6 +1428,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Gauge',
       'Heading',
       'Icon',
+      'IconButton',
       'Input',
       'Kbd',
       'Label',
@@ -1506,6 +1575,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'HeadingLevel',
     'HeadingProps',
     'Icon',
+    'IconButton',
+    'IconButtonProps',
+    'IconButtonSize',
+    'IconButtonVariant',
     'IconName',
     'IconProps',
     'IconSize',
@@ -1607,6 +1680,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'GaugeState',
     'GaugeSize',
     'Icon',
+    'IconButton',
+    'IconButtonProps',
+    'IconButtonSize',
+    'IconButtonVariant',
     'IconName',
     'IconProps',
     'IconSize',

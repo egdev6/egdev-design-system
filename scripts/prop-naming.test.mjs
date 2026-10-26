@@ -12,6 +12,12 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...['accessible-name', 'leading-icon', 'visual-treatment', 'preset-dimensions', 'slot-composition'].map(
+    (conventionId) => ({
+      conventionId,
+      source: 'packages/ui/src/atoms/icon-button/types.ts#IconButtonProps'
+    })
+  ),
   { conventionId: 'checked-change', source: 'packages/ui/src/atoms/checkbox/types.ts#CheckboxProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/avatar/types.ts#AvatarProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/avatar/types.ts#AvatarProps' },
@@ -232,7 +238,8 @@ const receiptChain = [
   'docs/decisions/prop-naming-isotipo3d-approval.json',
   'docs/decisions/prop-naming-skeleton-v0.2-approval.json',
   'docs/components/button/v0.1/prop-naming-approval.json',
-  'docs/components/toggle/v0.1/prop-naming-approval-leading-icon-combined.json'
+  'docs/components/toggle/v0.1/prop-naming-approval-leading-icon-combined.json',
+  'docs/components/icon-button/v0.1/prop-naming-approval-leading-icon-combined.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -292,6 +299,99 @@ function approveException(entry, exception) {
     props.exceptionHash(exception)
   );
 }
+
+const iconButtonReference = 'docs/components/icon-button/v0.1/prop-naming-approval.json';
+test('IconButton alone permits required decorative icon-only content without rewriting approval history', () => {
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, iconButtonReference), 'utf8'));
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar excepción para IconButton');
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.equal(receipt.semanticAmendments.length, 1);
+  const [amendment] = receipt.semanticAmendments;
+  assert.equal(amendment.id, 'leading-icon');
+  assert.deepEqual(amendment.changedFields, ['meaning', 'whenToUse', 'avoid']);
+  const previousReceipt = JSON.parse(fs.readFileSync(resolve(root, amendment.previousReference), 'utf8'));
+  const previous = previousReceipt.entries.find(({ convention }) => convention.id === amendment.id);
+  assert.equal(previous.contentHash, amendment.previousContentHash);
+  assert.equal(previous.contentHash, props.conventionHash(previous.convention));
+  // The combined receipt supersedes this parallel branch; check its recorded state, not the current text.
+  const current = {
+    ...actual.find(({ id }) => id === amendment.id),
+    ...receipt.entries[0].convention,
+    approval: {
+      reference: iconButtonReference,
+      scope: receipt.entries[0].scope,
+      contentHash: receipt.entries[0].contentHash
+    }
+  };
+  const { approval, usages: _usages, ...convention } = current;
+  assert.deepEqual(receipt.entries, [
+    { scope: 'convention:leading-icon', contentHash: props.conventionHash(current), convention }
+  ]);
+  assert.deepEqual(approval, {
+    reference: iconButtonReference,
+    scope: 'convention:leading-icon',
+    contentHash: props.conventionHash(current)
+  });
+  assert.deepEqual(current.exceptions, [], 'Same-name semantic amendments are not alternative-name exceptions');
+  for (const field of amendment.changedFields) {
+    assert.equal(amendment.before[field], previous.convention[field]);
+    assert.equal(amendment.after[field], current[field]);
+  }
+  assert.equal(
+    current.meaning,
+    previous.convention.meaning +
+      ' IconButton alone requires one decorative ReactElement icon, named separately by its required label.'
+  );
+  assert.equal(
+    current.whenToUse,
+    previous.convention.whenToUse +
+      ' IconButton alone also permits required decorative icon-only content with a separate required label.'
+  );
+  assert.equal(
+    current.avoid,
+    previous.convention.avoid +
+      ' The icon-only exclusion has one exception: IconButton.icon with required label; no other component gains icon-only permission.'
+  );
+  assert.equal(receipt.priorReceipts.length, 8);
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(digest(fs.readFileSync(resolve(root, prior.path))), prior.wholeFileSHA256, prior.path);
+  }
+  const before = registryBeforeSemanticAmendments(
+    historicalRegistry(actual),
+    'docs/decisions/prop-naming-skeleton-v0.2-approval.json'
+  );
+  assert.deepEqual(
+    before.find(({ id }) => id === amendment.id),
+    {
+      ...previous.convention,
+      approval: { reference: amendment.previousReference, scope: previous.scope, contentHash: previous.contentHash },
+      usages: []
+    }
+  );
+  assert.deepEqual(
+    actual
+      .filter((entry) => entry.usages.some(({ component }) => component === 'IconButton'))
+      .map(({ id }) => id)
+      .sort(),
+    ['accessible-name', 'leading-icon', 'preset-dimensions', 'slot-composition', 'visual-treatment']
+  );
+  const broadened = structuredClone(actual);
+  const icon = broadened.find(({ id }) => id === amendment.id);
+  icon.avoid = 'All components may use icon-only or trailing icons.';
+  assert.throws(() => validate(broadened), /approval/i);
+  icon.approval.contentHash = props.conventionHash(icon);
+  assert.doesNotThrow(() => validate(broadened), 'Schema validation cannot grant semantic approval');
+  assert.notEqual(
+    icon.approval.contentHash,
+    receipt.entries[0].contentHash,
+    'Rehashing cannot authorize other components'
+  );
+  assert.notDeepEqual(icon.avoid, convention.avoid);
+});
 
 const toggleReference = 'docs/components/toggle/v0.1/prop-naming-approval.json';
 test('Toggle alone permits required icon-only content without widening other components or rewriting history', () => {
@@ -489,7 +589,8 @@ test('combined leading-icon receipt keeps Button and Toggle grants scoped and pi
   assert.deepEqual(amendment.changedFields, ['meaning', 'whenToUse', 'avoid']);
   const previous = JSON.parse(fs.readFileSync(resolve(root, buttonReference), 'utf8')).entries[0];
   assert.equal(amendment.previousContentHash, previous.contentHash);
-  const current = actual.find(({ id }) => id === 'leading-icon');
+  // The IconButton combined receipt is a later linear amendment; project the registry back to this receipt.
+  const current = registryBeforeSemanticAmendments(actual, combinedReference).find(({ id }) => id === 'leading-icon');
   const { approval, usages: _usages, ...convention } = current;
   assert.deepEqual(receipt.entries, [
     { scope: 'convention:leading-icon', contentHash: props.conventionHash(current), convention }
@@ -514,6 +615,75 @@ test('combined leading-icon receipt keeps Button and Toggle grants scoped and pi
   assert.equal(
     current.avoid,
     'Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning. Two scoped exceptions apply: Button with iconPosition may place the icon after its label, and Toggle with a required icon and accessible label may render icon-only. No other component gains trailing-icon or icon-only permission, and interactive icons remain excluded.'
+  );
+  assert.deepEqual(current.exceptions, []);
+  const changed = structuredClone(actual);
+  const broadened = changed.find(({ id }) => id === 'leading-icon');
+  broadened.avoid = 'Trailing and icon-only icons are permitted everywhere.';
+  assert.throws(() => validate(changed), /approval/i);
+});
+
+const iconButtonCombinedReference = 'docs/components/icon-button/v0.1/prop-naming-approval-leading-icon-combined.json';
+test('IconButton combined leading-icon receipt keeps Button, Toggle and IconButton grants scoped and pins prior approvals', () => {
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, iconButtonCombinedReference), 'utf8'));
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(
+    receipt.evidence.channel,
+    'Interactive owner decision on 2026-10-26 in the parent session, forwarded by the parent task'
+  );
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobado tal cual');
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.ok(
+    laterReceipts(combinedReference).has(iconButtonCombinedReference),
+    'The IconButton combined receipt pins the Button and Toggle combined bytes'
+  );
+  assert.ok(
+    !receiptChain.includes(iconButtonReference),
+    'The parallel IconButton receipt is not spliced into the chain'
+  );
+  const pins = new Map(receipt.priorReceipts.map(({ path, wholeFileSHA256 }) => [path, wholeFileSHA256]));
+  assert.equal(pins.size, 12);
+  for (const [path, pin] of pins) {
+    assert.equal(digest(fs.readFileSync(resolve(root, path))), pin, path);
+  }
+  for (const reference of [buttonReference, toggleReference, combinedReference, iconButtonReference]) {
+    assert.ok(pins.has(reference), reference);
+  }
+  assert.equal(receipt.semanticAmendments.length, 1);
+  const [amendment] = receipt.semanticAmendments;
+  assert.equal(amendment.id, 'leading-icon');
+  assert.equal(amendment.previousReference, combinedReference);
+  assert.deepEqual(amendment.changedFields, ['meaning', 'whenToUse', 'avoid']);
+  const previous = JSON.parse(fs.readFileSync(resolve(root, combinedReference), 'utf8')).entries[0];
+  assert.equal(amendment.previousContentHash, previous.contentHash);
+  const current = actual.find(({ id }) => id === 'leading-icon');
+  const { approval, usages: _usages, ...convention } = current;
+  assert.deepEqual(receipt.entries, [
+    { scope: 'convention:leading-icon', contentHash: props.conventionHash(current), convention }
+  ]);
+  assert.deepEqual(approval, {
+    reference: iconButtonCombinedReference,
+    scope: 'convention:leading-icon',
+    contentHash: props.conventionHash(current)
+  });
+  for (const field of amendment.changedFields) {
+    assert.equal(amendment.before[field], previous.convention[field]);
+    assert.equal(amendment.after[field], current[field]);
+  }
+  assert.equal(
+    current.meaning,
+    "Optional decorative icon rendered beside a component's text label (before it by default) and hidden from assistive technology. Button alone may place this icon before or after its label, after it by default. Toggle alone also accepts a required decorative icon as its sole visible content, with a required accessible label. IconButton alone requires one decorative ReactElement icon, named separately by its required label."
+  );
+  assert.equal(
+    current.whenToUse,
+    'A labelled component offers a leading pictogram that repeats or decorates meaning already present in its text. Button alone also permits its iconPosition start/end slot, default end. Toggle alone permits its icon-only branch when icon and accessible label are both required. IconButton alone also permits required decorative icon-only content with a separate required label.'
+  );
+  assert.equal(
+    current.avoid,
+    'Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning. Three scoped exceptions apply: Button with iconPosition may place the icon after its label; Toggle with a required icon and accessible label may render icon-only; IconButton.icon with its required label is icon-only by design. No other component gains trailing-icon or icon-only permission, and interactive icons remain excluded.'
   );
   assert.deepEqual(current.exceptions, []);
   const changed = structuredClone(actual);

@@ -284,6 +284,16 @@
           "symbol": "ToggleProps",
           "revision": "sha256:6d0eec4fa75b1a67f055c67133945f948ab134db3a33589255414dfb6c006a1a"
         }
+      },
+      {
+        "component": "IconButton",
+        "type": "IconButtonSize ('sm' | 'md' | 'lg')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon-button/types.ts",
+          "symbol": "IconButtonProps",
+          "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
+        }
       }
     ]
   },
@@ -400,6 +410,16 @@
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
           "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
+        }
+      },
+      {
+        "component": "IconButton",
+        "type": "IconButtonVariant ('ghost' | 'outline' | 'primary' | 'secondary')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon-button/types.ts",
+          "symbol": "IconButtonProps",
+          "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
         }
       }
     ]
@@ -611,6 +631,16 @@
           "path": "packages/ui/src/atoms/toggle/types.ts",
           "symbol": "ToggleProps",
           "revision": "sha256:6d0eec4fa75b1a67f055c67133945f948ab134db3a33589255414dfb6c006a1a"
+        }
+      },
+      {
+        "component": "IconButton",
+        "type": "string (required non-empty accessible name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon-button/types.ts",
+          "symbol": "IconButtonProps",
+          "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
         }
       }
     ]
@@ -869,14 +899,14 @@
   {
     "id": "leading-icon",
     "name": "icon",
-    "meaning": "Optional decorative icon rendered beside a component's text label (before it by default) and hidden from assistive technology. Button alone may place this icon before or after its label, after it by default. Toggle alone also accepts a required decorative icon as its sole visible content, with a required accessible label.",
-    "whenToUse": "A labelled component offers a leading pictogram that repeats or decorates meaning already present in its text. Button alone also permits its iconPosition start/end slot, default end. Toggle alone permits its icon-only branch when icon and accessible label are both required.",
-    "avoid": "Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning. Two scoped exceptions apply: Button with iconPosition may place the icon after its label, and Toggle with a required icon and accessible label may render icon-only. No other component gains trailing-icon or icon-only permission, and interactive icons remain excluded.",
+    "meaning": "Optional decorative icon rendered beside a component's text label (before it by default) and hidden from assistive technology. Button alone may place this icon before or after its label, after it by default. Toggle alone also accepts a required decorative icon as its sole visible content, with a required accessible label. IconButton alone requires one decorative ReactElement icon, named separately by its required label.",
+    "whenToUse": "A labelled component offers a leading pictogram that repeats or decorates meaning already present in its text. Button alone also permits its iconPosition start/end slot, default end. Toggle alone permits its icon-only branch when icon and accessible label are both required. IconButton alone also permits required decorative icon-only content with a separate required label.",
+    "avoid": "Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning. Three scoped exceptions apply: Button with iconPosition may place the icon after its label; Toggle with a required icon and accessible label may render icon-only; IconButton.icon with its required label is icon-only by design. No other component gains trailing-icon or icon-only permission, and interactive icons remain excluded.",
     "status": "approved",
     "approval": {
-      "reference": "docs/components/toggle/v0.1/prop-naming-approval-leading-icon-combined.json",
+      "reference": "docs/components/icon-button/v0.1/prop-naming-approval-leading-icon-combined.json",
       "scope": "convention:leading-icon",
-      "contentHash": "sha256:60969be2cb3bfeda5375f19bb3d66bd265ae2b61de0331e169828ae5eaceb19a"
+      "contentHash": "sha256:08f3f6176bcde22086ae15a201168ca3c4712c364be20f8adb9c17b0bc1aadad"
     },
     "aliases": [],
     "exceptions": [],
@@ -909,6 +939,16 @@
           "path": "packages/ui/src/atoms/toggle/types.ts",
           "symbol": "ToggleProps",
           "revision": "sha256:6d0eec4fa75b1a67f055c67133945f948ab134db3a33589255414dfb6c006a1a"
+        }
+      },
+      {
+        "component": "IconButton",
+        "type": "ReactElement (required decorative icon, separately named by required label)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon-button/types.ts",
+          "symbol": "IconButtonProps",
+          "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
         }
       },
       {
@@ -1060,6 +1100,16 @@
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
           "revision": "sha256:2f74a408ef244c4b585206185ff137678a279cc1148ebd5d143958cc4d6a352a"
+        }
+      },
+      {
+        "component": "IconButton",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon-button/types.ts",
+          "symbol": "IconButtonProps",
+          "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
         }
       }
     ]

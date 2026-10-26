@@ -60,6 +60,19 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   text: ['id', 'title', 'aria-describedby', 'className', 'style'],
   heading: ['id', 'title', 'aria-describedby', 'className', 'style'],
   icon: ['id', 'aria-describedby', 'className', 'style'],
+  iconButton: [
+    'id',
+    'title',
+    'aria-describedby',
+    'className',
+    'type',
+    'disabled',
+    'onClick',
+    'onKeyDown',
+    'name',
+    'value',
+    'tabIndex'
+  ],
   surface: ['id', 'title', 'role', 'aria-label', 'aria-labelledby', 'className', 'style']
 };
 const camelCase = (name: string) => name.charAt(0).toLowerCase() + name.slice(1);
