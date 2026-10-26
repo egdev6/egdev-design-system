@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Kbd, Label, ProductMark, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
+import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Kbd, Label, Logo, ProductMark, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -44,6 +44,9 @@ import type {
   KbdProps,
   LabelProps,
   LabelVariant,
+  LogoProps,
+  LogoSize,
+  LogoVariant,
   ProductMarkProps,
   SkeletonProps,
   SkeletonSize,
@@ -191,6 +194,17 @@ export function KbdSamples() {
     createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
     createElement(Kbd, kbdNative));
 }
+export const logoHome: LogoProps = { href: '#home', label: 'egdev, home', id: 'logo-home', rel: 'home' };
+export const logoNative: LogoProps = { id: 'consumer-logo', title: 'egdev', lang: 'en', className: 'ms-2 consumer-logo' };
+export function LogoSamples() {
+  const sizes: LogoSize[] = ['sm', 'md', 'lg'];
+  const variant: LogoVariant = 'mark';
+  return createElement('section', { 'aria-label': 'Brand logos' },
+    createElement(Logo, { id: 'logo-default' }),
+    sizes.map((size) => createElement(Logo, { key: size, variant, size, id: 'logo-mark-' + size })),
+    createElement(Logo, logoHome),
+    createElement(Logo, logoNative));
+}
 export const productMarkImage: ProductMarkProps = { monogram: 'M', label: 'Mando', id: 'mark-mando' };
 export const productMarkLink: ProductMarkProps = {
   monogram: 'M', label: 'Mando home', href: '#home', id: 'mark-home', target: '_self'
@@ -304,6 +318,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(StatusDotSamples, { pulse: statusDotPulse }),
     createElement(KbdSamples),
+    createElement(LogoSamples),
     createElement(ProductMarkSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
@@ -347,6 +362,28 @@ const numericSpinner: SpinnerProps = { size: 24 };
 const invalidSpinner: SpinnerProps = { size: 'xl' };
 // @ts-expect-error Color is inherited through currentColor; there is no tone prop (D5).
 const tonedSpinner: SpinnerProps = { tone: 'brand' };
+// @ts-expect-error Logo artwork is component-owned: no children.
+const logoChildren: LogoProps = { children: 'egdev' };
+// @ts-expect-error The image role is component-owned.
+const logoRole: LogoProps = { role: 'presentation' };
+// @ts-expect-error The accessible name comes from label, not aria-label.
+const logoAriaLabel: LogoProps = { 'aria-label': 'egdev' };
+// @ts-expect-error The accessible name comes from label, not aria-labelledby.
+const logoLabelledBy: LogoProps = { href: '/', 'aria-labelledby': 'brand' };
+// @ts-expect-error The image is always exposed; it cannot be hidden.
+const logoHidden: LogoProps = { 'aria-hidden': true };
+// @ts-expect-error Anchor attributes exist only in link mode, with href.
+const logoTarget: LogoProps = { target: '_blank' };
+// @ts-expect-error Logo has no public ref API (D8).
+const referencedLogo: LogoProps = { ref: createRef<HTMLSpanElement>() };
+// @ts-expect-error Router links wrap an unlinked Logo; there is no asChild (D4).
+const slottedLogo: LogoProps = { href: '/', asChild: true };
+// @ts-expect-error Heights are sm, md and lg presets only.
+const numericLogo: LogoProps = { size: 32 };
+// @ts-expect-error Only the mark and wordmark artwork exist.
+const invalidLogo: LogoProps = { variant: 'icon' };
+// @ts-expect-error The artwork is never recolored: there is no tone prop (D3).
+const tonedLogo: LogoProps = { tone: 'brand' };
 // @ts-expect-error StatusDot is an empty decorative marker; it never accepts content.
 const statusDotChildren: StatusDotProps = { children: 'Running' };
 // @ts-expect-error StatusDot is always hidden; consumers cannot assign a role.
@@ -844,6 +881,23 @@ function assertSpinnerCSS(css) {
   assert.doesNotMatch(css, /\.eg-spinner[^{]*\{/, 'Spinner has no stylesheet: its marker carries no rule');
 }
 
+// Logo ships token heights, the logo-token inks and the link focus ring; its legacy marker stays in components.
+function assertLogoCSS(css) {
+  for (const utility of ['.inline-block', '.leading-none', '.rounded-sm', '.h-7', '.h-8', '.h-full', '.w-auto']) {
+    assert.ok(css.includes(utility), 'Missing Logo utility ' + utility);
+  }
+  assert.match(css, /\.h-9\s*\{[^}]*height:\s*calc\(var\(--space-1\)\s*\*\s*9\)/, 'lg must be 9 spacing steps');
+  assert.match(css, /\.fill-\\\(--logo-red\\\)\s*\{[^}]*fill:\s*var\(--logo-red\)/, 'Light face must use --logo-red');
+  assert.match(css, /\.fill-\\\(--logo-red-shade\\\)\s*\{[^}]*fill:\s*var\(--logo-red-shade\)/, 'Shade face token');
+  assert.match(css, /\.fill-primitive-white\s*\{[^}]*fill:\s*var\(--color-primitive-white/, 'White name primitive');
+  assert.match(css, /\.focus-visible\\:shadow-focus:focus-visible\s*\{[^}]*#ff0036/i, 'Link focus ring');
+  assert.match(
+    css,
+    /\.focus-visible\\:outline-none:focus-visible\s*\{[^}]*outline-style:\s*none/,
+    'Link outline reset'
+  );
+}
+
 const entries = `
 import assert from 'node:assert/strict';
 import { readFileSync, realpathSync } from 'node:fs';
@@ -886,6 +940,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Icon',
   'Kbd',
   'Label',
+  'Logo',
   'Portal',
   'ProductMark',
   'Skeleton',
@@ -907,6 +962,7 @@ ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertIconCSS.toString()}
 ${assertSpinnerCSS.toString()}
+${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
 ${assertProductMarkCSS.toString()}
@@ -915,6 +971,7 @@ assertIconCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assertSkeletonCSS(shippedStyles);
 assertSpinnerCSS(shippedStyles);
+assertLogoCSS(shippedStyles);
 assertStatusDotCSS(shippedStyles);
 assertKbdCSS(shippedStyles);
 assertProductMarkCSS(shippedStyles);
@@ -1197,7 +1254,7 @@ for (const frame of [square, wide]) {
   for (const id of ['kbd-ctrl', 'kbd-k']) {
     const plain = document.getElementById(id);
     assert.equal(plain.children.length, 0, 'Plain and empty-label keys read their text as-is');
-    assert.equal(plain.querySelector('[aria-hidden]'), null);
+    assert.ok(plain.querySelector('[aria-hidden]') === null);
   }
   for (const key of keys) {
     assert.equal(key.getAttribute('role'), null);
@@ -1210,6 +1267,39 @@ for (const frame of [square, wide]) {
   assert.ok(nativeKbd.className.startsWith('eg-kbd '), 'The public marker leads the root classes');
   assert.ok(nativeKbd.className.endsWith(' ms-2 consumer-kbd'), 'Consumer layout classes merge last');
   assert.ok(!nativeKbd.className.split(' ').includes('ms-1'), 'Conflicting margin utilities resolve through cn()');
+  const brand = document.querySelector('section[aria-label="Brand logos"]');
+  assert.ok(brand, 'SSR must render Logo samples');
+  const logos = [...brand.querySelectorAll('.eg-logo')];
+  assert.equal(logos.length, 6, 'Default, three mark presets, home link and native Logos must render');
+  const defaultLogo = document.getElementById('logo-default');
+  assert.equal(defaultLogo.tagName, 'SPAN');
+  assert.equal(defaultLogo.getAttribute('role'), 'img');
+  assert.equal(defaultLogo.getAttribute('aria-label'), 'egdev');
+  assert.ok(defaultLogo.className.split(' ').includes('h-8'), 'The default Logo is 32px high');
+  assert.equal(defaultLogo.querySelector('svg').getAttribute('viewBox'), '0 0 653 258', 'The default is the wordmark');
+  assert.equal(defaultLogo.querySelectorAll('path').length, 8);
+  for (const [size, utility] of [['sm', 'h-7'], ['md', 'h-8'], ['lg', 'h-9']]) {
+    const sized = document.getElementById('logo-mark-' + size);
+    assert.ok(sized.className.split(' ').includes(utility), 'Logo ' + size + ' must carry ' + utility);
+    assert.equal(sized.querySelectorAll('polygon').length, 7, 'The mark draws the seven V4 polygons');
+  }
+  const homeLogo = document.getElementById('logo-home');
+  assert.equal(homeLogo.tagName, 'A');
+  assert.equal(homeLogo.getAttribute('href'), '#home');
+  assert.equal(homeLogo.getAttribute('rel'), 'home');
+  assert.equal(homeLogo.getAttribute('aria-label'), 'egdev, home');
+  assert.equal(homeLogo.getAttribute('role'), null, 'The link keeps its native role');
+  for (const logo of logos) {
+    const art = logo.querySelector('svg');
+    assert.equal(art.getAttribute('aria-hidden'), 'true', 'Logo artwork is always hidden');
+    assert.equal(art.getAttribute('focusable'), 'false');
+    assert.equal(logo.textContent, '', 'The accessible name is the only name');
+    assert.equal(logo.hasAttribute('data-state'), false);
+  }
+  const nativeLogo = document.getElementById('consumer-logo');
+  assert.equal(nativeLogo.getAttribute('title'), 'egdev');
+  assert.equal(nativeLogo.getAttribute('lang'), 'en');
+  assert.ok(nativeLogo.className.endsWith('ms-2 consumer-logo'), 'Consumer layout classes merge last');
   const markNav = document.querySelector('nav[aria-label="Product marks"]');
   assert.ok(markNav, 'SSR must render ProductMark samples');
   const mandoMark = document.getElementById('mark-mando');
@@ -1314,7 +1404,7 @@ for (const frame of [square, wide]) {
   assert.equal(labelledIcon.getAttribute('aria-hidden'), 'true', 'AccessibleIcon hides the svg itself');
   assert.ok(labelledIcon.classList.contains('size-4') && labelledIcon.classList.contains('fill-current'));
   assert.equal(labelledHost.textContent, 'Search status', 'AccessibleIcon must supply exactly one visually hidden name');
-  assert.equal(labelledHost.querySelector('title'), null);
+  assert.ok(labelledHost.querySelector('title') === null);
   const overrideIcon = document.getElementById('icon-override');
   assert.ok(overrideIcon, 'SSR must render the consumer-sized Icon');
   assert.ok(overrideIcon.classList.contains('size-4.5') && overrideIcon.classList.contains('text-fg-brand-default'));
@@ -1481,7 +1571,7 @@ try {
   for (const shape of skeletons) {
     assert.equal(shape.getAttribute('aria-hidden'), 'true');
     assert.equal(shape.textContent, '');
-    assert.equal(shape.querySelector('button, a, input, [tabindex]'), null);
+    assert.ok(shape.querySelector('button, a, input, [tabindex]') === null);
   }
   // Class-string comparison only: never pass DOM nodes to deep equality.
   const csrPulseDefault = document.getElementById('pulse-default');
@@ -1498,7 +1588,7 @@ try {
   assert.equal(busyHost().querySelectorAll('.eg-spinner').length, 1);
   await act(async () => root.render(createElement(App, { gaugeValue: 42.5, spinnerLoading: false })));
   assert.equal(busyHost().getAttribute('aria-busy'), 'false');
-  assert.equal(busyHost().querySelector('.eg-spinner'), null, 'The decorative Spinner must unmount with loading');
+  assert.ok(busyHost().querySelector('.eg-spinner') === null, 'The decorative Spinner must unmount with loading');
   assert.equal(busyHost().textContent, 'Saving draft');
   assert.equal(document.getElementById('spinner-status').getAttribute('role'), 'status', 'Status Spinner persists');
   stage('spinner:rerender:complete');
@@ -1522,6 +1612,10 @@ try {
   }
   assert.equal(document.getElementById('kbd-command').children[0].getAttribute('aria-hidden'), 'true');
   stage('kbd:passive:complete');
+  const homeLink = document.getElementById('logo-home');
+  homeLink.focus();
+  assert.ok(document.activeElement === homeLink, 'The linked Logo must be a native tab stop');
+  assert.equal(document.querySelectorAll('[role="img"].eg-logo').length, 5, 'Unlinked Logos remain named images');
   stage('product-mark:focus:start');
   const linkedMark = document.getElementById('mark-home');
   linkedMark.focus();
@@ -1613,7 +1707,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'ProductMark link focus and passive image', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1699,6 +1793,7 @@ ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertIconCSS.toString()}
 ${assertSpinnerCSS.toString()}
+${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
 ${assertProductMarkCSS.toString()}
@@ -1712,6 +1807,7 @@ assert.match(
 assertSkeletonCSS(emitted);
 assertIconCSS(emitted);
 assertSpinnerCSS(emitted);
+assertLogoCSS(emitted);
 assertStatusDotCSS(emitted);
 assertKbdCSS(emitted);
 assertProductMarkCSS(emitted);
@@ -1756,6 +1852,7 @@ assert.ok(twCss.includes('.size-4\\\\.5'), 'Tailwind consumer must emit the supp
 assert.match(twCss, /width:\\s*calc\\(var\\(--space-1\\)\\s*\\*\\s*4\\.5\\)/, 'Container size must use the spacing scale');
 assert.ok(twCss.includes('.text-fg-brand-default'), 'Tailwind consumer must emit the supported inherited color');
 assertSpinnerCSS(twCss);
+assertLogoCSS(twCss);
 assertStatusDotCSS(twCss);
 assertKbdCSS(twCss);
 assertProductMarkCSS(twCss);
