@@ -196,6 +196,16 @@
   --text-display-pro--line-height: 0.95;
   --text-display-pro--font-weight: 800;
   --text-display-pro--letter-spacing: 0;
+  /* --text-display-stat — Stat figure (#70 D6): display family, tabular numerals; 36px/1. */
+  --text-display-stat: 36px;
+  --text-display-stat--line-height: 1;
+  --text-display-stat--font-weight: 800;
+  --text-display-stat--letter-spacing: 0;
+  /* --text-display-stat-sm — Compact Stat figure (#70 D6): display family, tabular numerals; 28px/1. */
+  --text-display-stat-sm: 28px;
+  --text-display-stat-sm--line-height: 1;
+  --text-display-stat-sm--font-weight: 800;
+  --text-display-stat-sm--letter-spacing: 0;
   /* --text-heading-section — Section headings: display family, uppercase; 40px/1.2. */
   --text-heading-section: 40px;
   --text-heading-section--line-height: 1.2;
@@ -273,6 +283,24 @@
   --text-title-display--letter-spacing: 0;
   /* --text-shadow-title-hero — Glyph glow of the canvas hero accent (#108 D9); text-shadow only, never a box shadow. */
   --text-shadow-title-hero: 0 0 40px var(--color-alpha-red-30);
+  /*
+   * Countdown digit recipes and spacing (#82, owner-approved 2026-10-26): the exact legacy
+   * .eg-countdown__value clamps, column gap and minimum digit measure, display family.
+   */
+  /* --text-countdown-md — Default countdown digits: clamp(52px, 6vw, 96px)/0.85. */
+  --text-countdown-md: clamp(52px, 6vw, 96px);
+  --text-countdown-md--line-height: 0.85;
+  --text-countdown-md--font-weight: 800;
+  --text-countdown-md--letter-spacing: 0;
+  /* --text-countdown-sm — Small countdown digits: clamp(36px, 4vw, 56px)/0.85. */
+  --text-countdown-sm: clamp(36px, 4vw, 56px);
+  --text-countdown-sm--line-height: 0.85;
+  --text-countdown-sm--font-weight: 800;
+  --text-countdown-sm--letter-spacing: 0;
+  /* --spacing-countdown-column — Responsive horizontal gap between countdown unit columns. */
+  --spacing-countdown-column: clamp(14px, 2.2vw, 32px);
+  /* --spacing-countdown-unit — Minimum digit measure, relative to the value element's font. */
+  --spacing-countdown-unit: 1.9ch;
   /*
    * Fluid quotation recipes for PullQuote (#98 D7): the exact legacy .eg-quote__text
    * clamps. Pull uses the sans family; display uses the display family, uppercase.

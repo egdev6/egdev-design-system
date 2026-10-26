@@ -13,6 +13,8 @@ const components = [
   ['Avatar', 'atoms/avatar'],
   ['Button', 'atoms/button'],
   ['Checkbox', 'atoms/checkbox'],
+  ['Chip', 'atoms/chip'],
+  ['Countdown', 'atoms/countdown'],
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Cluster', 'primitives/stack'],
   ['Gauge', 'atoms/gauge'],
@@ -26,8 +28,10 @@ const components = [
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
+  ['Stat', 'atoms/stat'],
   ['Slider', 'atoms/slider'],
   ['RadioGroup', 'atoms/radio-group'],
+  ['SearchTrigger', 'atoms/search-trigger'],
   ['Input', 'atoms/input'],
   ['Kbd', 'atoms/kbd'],
   ['Link', 'atoms/link'],
@@ -110,10 +114,30 @@ const expected: Record<string, Record<string, string | false>> = {
     name: 'text',
     value: 'text'
   },
+  chip: {
+    children: false,
+    pressed: 'boolean',
+    defaultPressed: 'boolean',
+    onPressedChange: false,
+    icon: false,
+    disabled: 'boolean'
+  },
   aspectratio: {
     ratio: 'number'
   },
   badge: { children: false, tone: 'select', variant: 'select', icon: false },
+  countdown: {
+    deadline: 'number',
+    deadlineText: 'text',
+    label: 'text',
+    units: false,
+    size: 'select',
+    tone: 'select',
+    onExpire: false,
+    initializingText: 'text',
+    expiredText: 'text',
+    unavailableText: 'text'
+  },
   dropzone: {
     onFiles: false,
     label: 'text',
@@ -146,6 +170,14 @@ const expected: Record<string, Record<string, string | false>> = {
   icon: { name: 'select', size: 'select', filled: 'boolean', label: 'text' },
   iconbutton: { label: 'text', icon: false, variant: 'select', size: 'select', asChild: 'boolean', children: false },
   spinner: { label: 'text', size: 'select' },
+  stat: {
+    label: 'text',
+    value: false,
+    delta: 'text',
+    highlighted: 'boolean',
+    size: 'select',
+    unavailableText: 'text'
+  },
   logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
@@ -200,6 +232,7 @@ const expected: Record<string, Record<string, string | false>> = {
     edge: 'boolean'
   },
   pullquote: { text: 'text', accent: 'text', source: 'text', variant: 'select', tone: 'select' },
+  searchtrigger: { label: 'text', shortcut: 'text', compact: 'boolean' },
   textarea: { variant: 'select' },
   input: { size: 'select', variant: 'select', type: 'select', icon: false },
   productmark: { monogram: 'text', label: 'text', href: 'text' },
@@ -238,6 +271,8 @@ const ownPropCounts: Record<string, number> = {
   avatar: 5,
   button: 7,
   checkbox: 7,
+  chip: 6,
+  countdown: 10,
   aspectratio: 1,
   badge: 4,
   dropzone: 6,
@@ -246,12 +281,14 @@ const ownPropCounts: Record<string, number> = {
   iconbutton: 6,
   skeleton: 3,
   spinner: 2,
+  stat: 6,
   logo: 4,
   statusdot: 2,
   kbd: 2,
   link: 6,
   slider: 11,
   radiogroup: 9,
+  searchtrigger: 3,
   switch: 7,
   tooltip: 4,
   progressbar: 6,
@@ -458,6 +495,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
   it.each([
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
     ['Checkbox', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }],
+    ['Chip', { defaultPressed: 'false', disabled: 'false' }],
     ['AspectRatio', { ratio: '1' }],
     ['Stack', { gap: '4', alignItems: '"stretch"', justifyContent: '"start"', asChild: 'false' }],
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],
@@ -476,11 +514,24 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ],
     ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }],
     ['PullQuote', { variant: '"pull"', tone: '"canvas"' }],
+    ['SearchTrigger', { label: '"Search…"', compact: 'false' }],
     ['Textarea', { variant: '"default"' }],
+    [
+      'Countdown',
+      {
+        label: '"Next event in"',
+        size: '"md"',
+        tone: '"inherit"',
+        initializingText: '"Calculating time remaining"',
+        expiredText: '"Time reached"',
+        unavailableText: '"Time unavailable"'
+      }
+    ],
     ['Icon', { size: '"md"', filled: 'false' }],
     ['IconButton', { variant: '"ghost"', size: '"md"', asChild: 'false' }],
     ['Input', { size: '"md"', variant: '"default"', type: '"text"' }],
     ['Spinner', { size: '"md"' }],
+    ['Stat', { highlighted: 'false', size: '"md"', unavailableText: '"No data"' }],
     ['Select', { size: '"md"', required: 'false', disabled: 'false' }],
     ['Avatar', { size: '"md"', paused: 'false' }],
     ['Link', { asChild: 'false', external: 'false', arrow: 'true', newTabText: '"(opens in a new tab)"' }],
@@ -648,6 +699,26 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       'tabIndex',
       'contentEditable'
     ]) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Stat required label/value rows, the figure union reason and passive native rows', () => {
+    const { argTypes, args } = story('Stat');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.label?.control).toEqual({ type: 'text' });
+    expect(argTypes.value?.type).toMatchObject({ required: true });
+    expect(argTypes.value?.control).toBe(false);
+    expect(argTypes.value?.table?.disable).toBeUndefined();
+    expect(argTypes.value?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.delta?.table?.defaultValue).toBeUndefined();
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['md', 'sm']);
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'aria-describedby', 'className', 'style']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Stat', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'role', 'ref', 'asChild', 'aria-live', 'aria-labelledby']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });
@@ -835,6 +906,29 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
   });
 
+  it('retains Countdown required deadline rows, disabled tuple/callback widgets and quiet native rows', () => {
+    const { argTypes, args } = story('Countdown');
+    expect(argTypes.deadline?.type).toMatchObject({ name: 'number', required: true });
+    expect(argTypes.deadlineText?.type).toMatchObject({ name: 'string', required: true });
+    for (const prop of ['deadline', 'deadlineText', 'units', 'onExpire']) {
+      expect(argTypes[prop]?.table?.defaultValue, `${prop} has no fixed default`).toBeUndefined();
+    }
+    for (const prop of ['units', 'onExpire']) {
+      expect(argTypes[prop]?.control, prop).toBe(false);
+      expect(argTypes[prop]?.table?.disable, prop).toBeUndefined();
+    }
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['md', 'sm']);
+    expect([...(argTypes.tone?.options ?? [])].sort()).toEqual(['canvas', 'inherit']);
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Countdown', false).argTypes[prop]);
+    }
+    for (const prop of ['ref', 'asChild', 'children', 'role', 'aria-label', 'aria-live', 'tabIndex', 'onTick', 'now']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
   it('retains Dropzone file callback, exact variant choices and native disabled without injecting args', () => {
     const { argTypes, args } = story('Dropzone');
     expect(argTypes.onFiles?.control).toBe(false);
@@ -849,6 +943,33 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Dropzone', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'type', 'children', 'onDrop', 'onPaste', 'onDragEnter', 'over']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains SearchTrigger text/boolean rows, the absent shortcut default and host integration native rows', () => {
+    const { argTypes, args } = story('SearchTrigger');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.shortcut?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.shortcut?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.shortcut?.description).toMatch(/Omitted unless the host supplies a\s+real binding/);
+    expect(args).toEqual({});
+    for (const prop of [
+      'id',
+      'title',
+      'disabled',
+      'onClick',
+      'aria-describedby',
+      'aria-keyshortcuts',
+      'aria-haspopup',
+      'aria-expanded',
+      'aria-controls',
+      'className'
+    ]) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('SearchTrigger', false).argTypes[prop]);
+    }
+    for (const prop of ['ref', 'asChild', 'type', 'role', 'children', 'aria-label', 'aria-labelledby', 'onOpen']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

@@ -49,10 +49,24 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/atoms/toggle/types.ts#ToggleProps'
   })),
+  ...['initial-uncontrolled-pressed', 'leading-icon', 'pressed-change', 'pressed-state'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/chip/types.ts#ChipProps'
+  })),
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
   { conventionId: 'files-received', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
   { conventionId: 'drop-target-label', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/stat/types.ts#StatProps' },
+  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/stat/types.ts#StatProps' },
+  { conventionId: 'value-context', source: 'packages/ui/src/atoms/stat/types.ts#StatProps' },
+  { conventionId: 'transient-highlight', source: 'packages/ui/src/atoms/stat/types.ts#StatProps' },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/stat/types.ts#StatProps' },
+  { conventionId: 'unavailable-measurement-message', source: 'packages/ui/src/atoms/stat/types.ts#StatProps' },
+  ...['accessible-name', 'keyboard-shortcut-hint', 'compact-presentation'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/search-trigger/types.ts#SearchTriggerProps'
+  })),
   ...['quotation-text', 'trailing-text-accent', 'quotation-source', 'visual-treatment', 'surface-material-tone'].map(
     (conventionId) => ({
       conventionId,
@@ -145,7 +159,22 @@ const postReceiptUsages = [
   { conventionId: 'interactive-value-change', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' },
   { conventionId: 'choice-options', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' },
-  { conventionId: 'selection-placeholder', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' }
+  { conventionId: 'selection-placeholder', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' },
+  ...[
+    'accessible-name',
+    'preset-dimensions',
+    'surface-material-tone',
+    'unavailable-measurement-message',
+    'deadline-instant',
+    'absolute-deadline-text',
+    'time-unit-labels',
+    'deadline-expiration',
+    'clock-initialization-message',
+    'expired-deadline-message'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/countdown/types.ts#CountdownProps'
+  }))
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({

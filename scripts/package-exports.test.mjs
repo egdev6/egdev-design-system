@@ -132,6 +132,59 @@ test('Toggle ships its exact token-backed pressed, focus, reset and reduced-moti
   assert.doesNotMatch(css, /\.eg-toggle\s*[,{]/, 'Root marker is not a separate visual engine');
 });
 
+test('Chip ships its exact token-backed pill, pressed, focus, press and reduced-motion utilities', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}[^{]*\\{`));
+  };
+  assert.match(
+    rule(String.raw`.\[background\:var\(--gradient-sheen\)\,var\(--color-surface-1\)\]`),
+    /background:\s*var\(--gradient-sheen\),\s*var\(--color-surface-1\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.hover\:\[background\:var\(--gradient-sheen\)\,var\(--color-surface-2\)\]`),
+    /background:\s*var\(--gradient-sheen\),\s*var\(--color-surface-2\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=on\]\:\[background\:var\(--gradient-chip-active\)\,var\(--color-surface-1\)\]`),
+    /background:\s*var\(--gradient-chip-active\),\s*var\(--color-surface-1\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=on\]\:shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-glow-base\)\]`),
+    /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-glow-base\)\s*;/
+  );
+  assert.match(rule(String.raw`.data-\[state\=on\]\:border-primitive-red-neon\/60`), /color-mix\(/);
+  assert.match(rule(String.raw`.active\:scale-\[\.97\]`), /scale:\s*\.97\s*;/);
+  // The on-state shadow is emitted after the plain focus ring, so the on+focus rule restores it.
+  const focus = css.indexOf(String.raw`.focus-visible\:shadow-focus:focus-visible`);
+  const on = css.indexOf(String.raw`.data-\[state\=on\]\:shadow-\[var\(--shadow-edge-strong\)`);
+  const onFocus = css.indexOf(String.raw`.data-\[state\=on\]\:focus-visible\:shadow-focus`);
+  assert.ok(focus > -1 && on > focus && onFocus > on, 'On+focus ring must follow the on-state shadow');
+  const reducedMotion = cssBlock(utilities, /@media \(prefers-reduced-motion: reduce\)\s*\{/);
+  assert.match(
+    cssBlock(reducedMotion, /\.motion-reduce\\:active\\:translate-none:active\s*\{/),
+    /translate:\s*none\s*;/
+  );
+  assert.match(cssBlock(reducedMotion, /\.motion-reduce\\:active\\:scale-none:active\s*\{/), /scale:\s*none\s*;/);
+  for (const selector of [
+    String.raw`.pointer-coarse\:min-h-11`,
+    String.raw`.active\:translate-y-px`,
+    String.raw`.active\:duration-\[var\(--duration-press\)\]`,
+    String.raw`.active\:ease-\[var\(--ease-snappy\)\]`,
+    String.raw`.duration-\[var\(--duration-fast\)\]`,
+    String.raw`.ease-\[var\(--ease-out\)\]`,
+    String.raw`.hover\:border-border-hairline-strong`,
+    String.raw`.disabled\:opacity-45`,
+    '.shadow-edge',
+    '.transition-colors'
+  ]) {
+    assert.ok(css.includes(selector), `Missing Chip utility ${selector}`);
+  }
+  assert.doesNotMatch(utilities, /\.eg-chip[^{]*\{/, 'Chip has no stylesheet: its marker adds no utility rule');
+});
+
 test('UI publishes its stable declaration entry and reachable internal declarations', (context) => {
   assert.equal(ui.exports['.'].types, './dist/index.d.ts');
   assert.equal(ui.types, ui.exports['.'].types);
@@ -264,6 +317,90 @@ test('UI ships Dropzone token geometry, native resets and attribute-driven color
   assert.ok(utilities.includes('.flex-row') && utilities.includes('.flex-col'));
   assert.ok(utilities.includes(String.raw`.disabled\:pointer-events-none`));
   assert.ok(utilities.includes(String.raw`.disabled\:cursor-not-allowed`));
+});
+
+test('UI ships the Stat Material card, figure recipes and highlight utilities without preflight', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`));
+  for (const [selector, declaration] of [
+    [
+      '.text-display-stat',
+      /font-size:\s*var\(--text-display-stat[,)][\s\S]*line-height:\s*var\(--tw-leading,\s*var\(--text-display-stat--line-height[,)]/
+    ],
+    ['.text-display-stat-sm', /font-size:\s*var\(--text-display-stat-sm[,)]/],
+    ['.tabular-nums', /font-variant-numeric:/],
+    ['.rounded-lg', /border-radius:\s*var\(--radius-lg[,)]/],
+    ['.bg-surface-1', /background-color:\s*var\(--color-surface-1[,)]/],
+    [String.raw`.bg-\[image\:var\(--gradient-sheen\)\]`, /background-image:\s*var\(--gradient-sheen\)/],
+    [
+      String.raw`.shadow-\[var\(--shadow-edge\)\,var\(--shadow-elev-1\)\]`,
+      /--tw-shadow:\s*var\(--shadow-edge\),\s*var\(--shadow-elev-1\)/
+    ],
+    [String.raw`.gap-1\.5`, /gap:\s*calc\(var\(--space-1\)\s*\*\s*1\.5\)/],
+    [String.raw`.py-2\.5`, /padding-block:\s*calc\(var\(--space-1\)\s*\*\s*2\.5\)/],
+    [String.raw`.transition-\[border-color\,box-shadow\]`, /transition-property:\s*border-color,\s*box-shadow/],
+    [String.raw`.duration-\[var\(--duration-base\)\]`, /transition-duration:\s*var\(--duration-base\)/],
+    [String.raw`.ease-\[var\(--ease-out\)\]`, /transition-timing-function:\s*var\(--ease-out\)/],
+    [
+      String.raw`.data-\[state\=highlighted\]\:border-border-brand[data-state="highlighted"]`,
+      /border-color:\s*var\(--color-border-brand[,)]/
+    ],
+    [
+      String.raw`.data-\[state\=highlighted\]\:shadow-\[var\(--shadow-edge\)\,var\(--shadow-glow-base\)\][data-state="highlighted"]`,
+      /--tw-shadow:\s*var\(--shadow-edge\),\s*var\(--shadow-glow-base\)/
+    ],
+    [
+      String.raw`.group-data-\[state\=highlighted\]\/stat\:text-fg-brand-raised:is(:where(.group\/stat)[data-state="highlighted"] *)`,
+      /color:\s*var\(--color-fg-brand-raised[,)]/
+    ],
+    [
+      String.raw`.data-\[state\=unavailable\]\:text-fg-muted[data-state="unavailable"]`,
+      /color:\s*var\(--color-fg-muted[,)]/
+    ],
+    [String.raw`.motion-reduce\:transition-none`, /transition-property:\s*none/]
+  ]) {
+    assert.match(rule(selector), declaration, selector);
+  }
+  assert.ok(utilities.includes('.sr-only'), 'Stat no-data text needs the sr-only utility');
+  assert.doesNotMatch(css, /\.eg-stat-(?:label|value|delta)\s*\{/, 'Stat part markers carry no stylesheet rules');
+});
+
+test('UI ships SearchTrigger token geometry, coarse targets and attribute-driven states without preflight', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`));
+  for (const [selector, declaration] of [
+    ['.min-w-48', /min-width:\s*calc\(var\(--space-1\)\s*\*\s*48\)/],
+    ['.min-h-10', /min-height:\s*var\(--space-10\)/],
+    ['.w-10', /width:\s*var\(--space-10\)/],
+    ['.h-auto', /height:\s*auto/],
+    ['.ps-3', /padding-inline-start:\s*var\(--space-3\)/],
+    ['.pe-2', /padding-inline-end:\s*var\(--space-2\)/],
+    ['.ms-auto', /margin-inline-start:\s*auto/],
+    [String.raw`.pointer-coarse\:min-h-11`, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*11\)/],
+    [String.raw`.pointer-coarse\:w-11`, /width:\s*calc\(var\(--space-1\)\s*\*\s*11\)/],
+    [String.raw`.transition-\[border-color\,color\]`, /transition-property:\s*border-color,\s*color\s*;/],
+    [String.raw`.enabled\:hover\:border-border-brand:enabled:hover`, /border-color:\s*var\(--color-border-brand/],
+    [String.raw`.enabled\:hover\:text-fg-secondary:enabled:hover`, /color:\s*var\(--color-fg-secondary/],
+    [
+      String.raw`.font-\[var\(--text-body-default--font-weight\)\]`,
+      /font-weight:\s*var\(--text-body-default--font-weight\)/
+    ],
+    [String.raw`.disabled\:opacity-45:disabled`, /opacity:\s*(?:45%|0\.45)/],
+    [String.raw`.motion-reduce\:transition-none`, /transition-property:\s*none/]
+  ]) {
+    assert.match(rule(selector), declaration, selector);
+  }
+  const coarse = cssBlock(utilities, /@media\s*\(pointer:\s*coarse\)\s*\{/);
+  assert.ok(
+    coarse.includes(String.raw`.pointer-coarse\:min-h-11`) && coarse.includes(String.raw`.pointer-coarse\:w-11`)
+  );
+  assert.ok(utilities.includes(String.raw`.focus-visible\:shadow-focus:focus-visible`));
+  // Legacy .eg-search keeps its components-layer defaults; utilities win by layer order.
+  assert.ok(css.indexOf('.eg-search{') < css.indexOf('@layer utilities'));
 });
 
 test('UI ships PullQuote quote recipes, logical filet and measure without preflight', () => {
@@ -456,6 +593,8 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   // Select #67 adds transition-colors only; Skeleton remains static in its own DOM checks.
   // Toggle #74 adds only its exact color/background-color/border-color/box-shadow/scale list.
   // Dropzone #56 adds transition-colors only.
+  // Stat #70 reuses the approved [border-color,box-shadow] selector; no Skeleton transition.
+  // SearchTrigger #99 reuses the approved transition-[border-color,color] selector only.
   // PullQuote #98 adds no transition or animation utility.
   assert.doesNotMatch(
     utilityLayer,
@@ -594,6 +733,49 @@ test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet ru
   const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
   const kbdRules = (text) => (text.replace(/\/\*[\s\S]*?\*\//g, '').match(/\.eg-kbd[^{]*\{/g) ?? []).length;
   assert.equal(kbdRules(css), kbdRules(legacy), 'Kbd has no stylesheet: its marker carries no new rule');
+});
+
+test('UI ships the Countdown digit, spacing and label token utilities without a Countdown stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // #82 owner-approved recipes resolve through tokens, with the exact source values as fallbacks.
+  for (const [size, clamp] of [
+    ['md', String.raw`clamp\(52px, 6vw, 96px\)`],
+    ['sm', String.raw`clamp\(36px, 4vw, 56px\)`]
+  ]) {
+    const body = rule(`.text-countdown-${size}`);
+    assert.match(body, new RegExp(`font-size:\\s*var\\(--text-countdown-${size},\\s*${clamp}\\)\\s*;`));
+    assert.match(body, new RegExp(`line-height:[^;]*--text-countdown-${size}--line-height,\\s*0\\.85`));
+    assert.match(body, new RegExp(`font-weight:[^;]*--text-countdown-${size}--font-weight,\\s*800`));
+  }
+  assert.match(
+    rule('.gap-x-countdown-column'),
+    /column-gap:\s*var\(--spacing-countdown-column,\s*clamp\(14px, 2\.2vw, 32px\)\)\s*;/
+  );
+  assert.match(rule('.min-w-countdown-unit'), /min-width:\s*var\(--spacing-countdown-unit,\s*1\.9ch\)\s*;/);
+  assert.match(rule('.gap-y-2'), /row-gap:\s*var\(--space-2\)\s*;/);
+  assert.match(rule(String.raw`.mt-2\.5`), /margin-top:\s*calc\(var\(--space-1\)\s*\*\s*2\.5\)\s*;/);
+  assert.match(rule('.mt-3'), /margin-top:\s*var\(--space-3\)\s*;/);
+  assert.match(rule('.min-w-0'), /min-width:\s*var\(--space-0\)\s*;/);
+  assert.match(rule('.flex-wrap'), /flex-wrap:\s*wrap\s*;/);
+  assert.match(rule('.tabular-nums'), /font-variant-numeric:[^;]*--tw-numeric-spacing/);
+  assert.match(rule('.not-italic'), /font-style:\s*normal\s*;/);
+  assert.match(rule('.text-inherit'), /color:\s*inherit\s*;/);
+  assert.match(rule('.text-label-eyebrow'), /font-size:\s*var\(--text-label-eyebrow,\s*14px\)/);
+  assert.match(rule('.text-fg-secondary'), /color:\s*var\(--color-fg-secondary[,)]/);
+  // D11 no stylesheet: the only .eg-countdown rules are the retained legacy ones (components layer).
+  const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
+  const countdownRules = (text) => (text.replace(/\/\*[\s\S]*?\*\//g, '').match(/\.eg-countdown[^{]*\{/g) ?? []).length;
+  assert.equal(
+    countdownRules(css),
+    countdownRules(legacy),
+    'Countdown has no stylesheet: its markers carry no new rule'
+  );
+  assert.doesNotMatch(utilities, /\.eg-countdown/, 'Countdown markers never become utilities');
 });
 
 test('UI ships every static Badge CVA utility and all twelve token treatments without a stylesheet', () => {
@@ -1500,7 +1682,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Badge',
       'Button',
       'Checkbox',
+      'Chip',
       'Cluster',
+      'Countdown',
       'Divider',
       'Dropzone',
       'Gauge',
@@ -1517,6 +1701,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'ProgressBar',
       'PullQuote',
       'RadioGroup',
+      'SearchTrigger',
       'Select',
       'Skeleton',
       'Slider',
@@ -1524,6 +1709,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Slottable',
       'Spinner',
       'Stack',
+      'Stat',
       'StatusDot',
       'Surface',
       'Switch',
@@ -1533,22 +1719,38 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Tooltip',
       'VisuallyHidden',
       'badgeVariants',
+      'chipVariants',
       'cn',
       'dropzoneVariants',
       'labelVariants',
       'progressBarVariants',
       'radioGroupVariants',
       'sliderVariants',
+      'statVariants',
       'statusDotVariants',
       'surfaceVariants',
       'tooltipVariants'
     ],
     'Only approved components and cn are public runtime exports'
   );
+  assert.equal(
+    typeof exported.Countdown,
+    'function',
+    'Countdown must be a plain function with no public ref API (D12)'
+  );
   assert.equal(exported.Select?.$$typeof, Symbol.for('react.forward_ref'), 'Select forwards the native button ref');
   assert.equal(exported.Checkbox?.$$typeof, Symbol.for('react.forward_ref'), 'Checkbox must forward its button ref');
   assert.equal(typeof exported.Dropzone, 'function', 'Dropzone must be a plain function with no public ref API');
+  assert.equal(typeof exported.Stat, 'function', 'Stat must be a plain function with no public ref API');
+  assert.equal(typeof exported.statVariants, 'function', 'Stat card recipe must be public');
   assert.equal(typeof exported.dropzoneVariants, 'function', 'Dropzone recipe must be public');
+  assert.equal(
+    exported.SearchTrigger?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'SearchTrigger forwards the native button ref'
+  );
+  assert.equal(typeof exported.Chip, 'function', 'Chip must be a plain function component with no public ref API');
+  assert.equal(typeof exported.chipVariants, 'function', 'Chip recipe must stay public for ChipGroup');
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
   // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
@@ -1644,8 +1846,15 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Checkbox',
     'CheckboxCheckedState',
     'CheckboxProps',
+    'Chip',
+    'ChipProps',
     'Cluster',
     'ClusterProps',
+    'Countdown',
+    'CountdownProps',
+    'CountdownSize',
+    'CountdownTone',
+    'CountdownUnits',
     'Divider',
     'DividerOrientation',
     'DividerProps',
@@ -1701,6 +1910,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'RadioGroupOption',
     'RadioGroupOrientation',
     'RadioGroupProps',
+    'SearchTrigger',
+    'SearchTriggerProps',
     'Select',
     'SelectOption',
     'SelectProps',
@@ -1719,6 +1930,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SpinnerSize',
     'Stack',
     'StackProps',
+    'Stat',
+    'StatProps',
     'StatusDot',
     'StatusDotProps',
     'StatusDotState',
@@ -1746,16 +1959,28 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'badgeVariants',
+    'chipVariants',
     'cn',
     'dropzoneVariants',
     'labelVariants',
     'progressBarVariants',
     'radioGroupVariants',
     'sliderVariants',
+    'statVariants',
     'statusDotVariants',
     'surfaceVariants',
     'tooltipVariants'
   ]);
+  for (const name of [
+    'useCountdown',
+    'countdownRootVariants',
+    'countdownValueVariants',
+    'countdownLabelVariants',
+    'CountdownState'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
   for (const name of [
     'useSlider',
     'sliderTrackVariants',
@@ -1766,15 +1991,42 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'pullQuoteQuotationVariants',
     'pullQuotePassageVariants',
     'pullQuoteAccentVariants',
-    'pullQuoteSourceVariants'
+    'pullQuoteSourceVariants',
+    'useStat',
+    'StatSize',
+    'statLabelVariants',
+    'statUnavailableTextVariants',
+    'statValueVariants',
+    'statDeltaVariants',
+    'useChip',
+    'chipIconVariants'
   ]) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'useSearchTrigger',
+    'searchTriggerVariants',
+    'searchTriggerLabelVariants',
+    'searchTriggerHintVariants'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must stay internal to SearchTrigger`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
+  for (const name of [
+    'Chip',
+    'ChipProps',
+    'chipVariants',
+    'Countdown',
+    'CountdownProps',
+    'CountdownSize',
+    'CountdownTone',
+    'CountdownUnits',
     'Dropzone',
     'DropzoneProps',
     'dropzoneVariants',
+    'SearchTrigger',
+    'SearchTriggerProps',
     'Divider',
     'DividerOrientation',
     'DividerProps',
@@ -1846,6 +2098,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'StatusDotProps',
     'StatusDotState',
     'statusDotVariants',
+    'Stat',
+    'StatProps',
+    'statVariants',
     'Cluster',
     'ClusterProps',
     'LayoutAlignItems',
@@ -1881,6 +2136,62 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   );
   assert.match(dropzoneHtml, /aria-hidden="true"/);
   assert.doesNotMatch(dropzoneHtml, /name=|required=|onFiles=|aria-live=|is-over/);
+  // Countdown SSR is the deterministic initializing placeholder: no digits, clock or live region (D3/D8).
+  const countdownHtml = renderToString(
+    createElement(exported.Countdown, {
+      deadline: Date.UTC(2030, 0, 2, 1, 1, 1),
+      deadlineText: 'Jan 2, 2030, 01:01:01 UTC',
+      id: 'launch',
+      tone: 'canvas'
+    })
+  );
+  assert.match(countdownHtml, /^<div id="launch" role="timer" aria-labelledby="[^"]+" aria-live="off"/);
+  assert.match(countdownHtml, /data-state="initializing"/);
+  assert.match(countdownHtml, /class="eg-countdown min-w-0 text-fg-default"/);
+  assert.match(countdownHtml, /<time id="[^"]+" dateTime="2030-01-02T01:01:01.000Z"/i);
+  assert.match(countdownHtml, />Calculating time remaining<\/p><\/div>$/);
+  assert.doesNotMatch(countdownHtml, /eg-countdown__row|eg-countdown--|aria-hidden|role="status"/);
+  const invalidCountdownHtml = renderToString(
+    createElement(exported.Countdown, { deadline: Number.NaN, deadlineText: 'Unknown' })
+  );
+  assert.match(invalidCountdownHtml, /data-state="unavailable"/);
+  assert.match(invalidCountdownHtml, />Time unavailable<\/p><\/div>$/);
+  assert.doesNotMatch(invalidCountdownHtml, /<time/);
+  const statHtml = renderToString(
+    createElement(exported.Stat, { label: 'Subs', value: 4, delta: '+1 10 s ago', highlighted: true, id: 'subs' })
+  );
+  const statLabelId = statHtml.match(/<span id="([^"]+)" class="eg-stat-label /)?.[1];
+  assert.ok(statLabelId, 'Stat label carries a generated id');
+  assert.match(
+    statHtml,
+    new RegExp(
+      `^<div id="subs" role="group" aria-labelledby="${statLabelId.replace(/[^\w]/g, '\\$&')}" data-state="highlighted" class="eg-stat `
+    )
+  );
+  assert.match(
+    statHtml,
+    />Subs<\/span><span class="eg-stat-value [^"]*text-display-stat[^"]*">4<\/span><span class="eg-stat-delta [^"]*">\+1 10 s ago<\/span><\/div>$/
+  );
+  const noDataHtml = renderToString(createElement(exported.Stat, { label: 'Superchats', value: null, size: 'sm' }));
+  assert.match(
+    noDataHtml,
+    /<span data-state="unavailable" class="eg-stat-value [^"]*text-display-stat-sm[^"]*"><span aria-hidden="true">—<\/span><span class="sr-only">No data<\/span><\/span><\/div>$/
+  );
+  assert.doesNotMatch(noDataHtml, /data-state="highlighted"|eg-stat-delta|aria-live|>0</);
+  const searchHtml = renderToString(createElement(exported.SearchTrigger, { shortcut: 'Ctrl K' }));
+  assert.match(searchHtml, /^<button[^>]*type="button"[^>]*aria-label="Search…"[^>]*class="eg-surface[^"]*eg-search/);
+  assert.match(searchHtml, /<svg class="eg-icon[^"]*size-4[^"]*"[^>]*aria-hidden="true"/);
+  assert.match(
+    searchHtml,
+    /<span class="whitespace-nowrap">Search…<\/span><span class="ms-auto" aria-hidden="true"><kbd class="eg-kbd[^"]*">Ctrl K<\/kbd><\/span><\/button>$/
+  );
+  assert.doesNotMatch(
+    searchHtml,
+    /aria-haspopup|aria-expanded|aria-controls|aria-keyshortcuts|data-state|eg-search--|eg-search__/
+  );
+  const compactHtml = renderToString(createElement(exported.SearchTrigger, { compact: true, shortcut: 'Ctrl K' }));
+  assert.match(compactHtml, /aria-label="Search…"/);
+  assert.doesNotMatch(compactHtml, /<span|<kbd|min-w-48/);
   assert.equal(typeof exported.PullQuote, 'function', 'PullQuote must be a plain function with no public ref API');
   const pullQuoteHtml = renderToString(
     createElement(exported.PullQuote, {
