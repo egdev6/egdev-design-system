@@ -128,6 +128,7 @@ describe('Storybook TypeScript docgen contract', () => {
     // Each primitive exports its type alias first and runtime component second; dedupe the specifiers.
     expect([...new Set(modules)].sort()).toEqual([
       './atoms/gauge',
+      './atoms/icon',
       './lib/cn',
       './primitives/aspect-ratio',
       './primitives/divider',
@@ -144,6 +145,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Cluster',
       'Divider',
       'Gauge',
+      'Icon',
       'Label',
       'Portal',
       'Skeleton',
