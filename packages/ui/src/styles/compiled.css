@@ -10,6 +10,7 @@
 
 @source "../primitives/skeleton/types.ts";
 @source "../primitives/stack/types.ts";
+@source "../primitives/surface/types.ts";
 @layer utilities {
   @tailwind utilities source(none);
 }
