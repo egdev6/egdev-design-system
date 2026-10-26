@@ -15,7 +15,8 @@ const components = [
   ['Gauge', 'atoms/gauge'],
   ['Stack', 'primitives/stack'],
   ['VisuallyHidden', 'primitives/visually-hidden'],
-  ['Skeleton', 'primitives/skeleton']
+  ['Skeleton', 'primitives/skeleton'],
+  ['Spinner', 'atoms/spinner']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -72,6 +73,7 @@ const expected: Record<string, Record<string, string | false>> = {
   cluster: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   visuallyhidden: { children: false, asChild: 'boolean' },
   skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
+  spinner: { label: 'text', size: 'select' },
   gauge: {
     label: 'text',
     value: 'number',
@@ -87,6 +89,7 @@ const ownPropCounts: Record<string, number> = {
   aspectratio: 1,
   gauge: 8,
   skeleton: 3,
+  spinner: 2,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4
@@ -284,7 +287,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Stack', { gap: '4', alignItems: '"stretch"', justifyContent: '"start"', asChild: 'false' }],
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
-    ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }]
+    ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
+    ['Spinner', { size: '"md"' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
     const { argTypes, args } = story(name);
     for (const [prop, summary] of Object.entries(defaults)) {
@@ -388,6 +392,22 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       'tabIndex',
       'contentEditable'
     ]) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Spinner label/size rows without a fixed label default or semantic native rows', () => {
+    const { argTypes } = story('Spinner');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.label?.control).toEqual({ type: 'text' });
+    expect(argTypes.label?.table?.defaultValue).toBeUndefined();
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['lg', 'md', 'sm']);
+    expect(argTypes.size?.type).toMatchObject({ name: 'enum', required: false });
+    expect(argTypes.size?.control).toEqual({ type: 'select' });
+    for (const prop of ['id', 'title', 'className', 'style']) {
+      expect(argTypes[prop], prop).toEqual(story('Spinner', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });
