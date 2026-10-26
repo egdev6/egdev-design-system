@@ -34,7 +34,17 @@ const postReceiptUsages = [
   { conventionId: 'main-axis-distribution', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
   { conventionId: 'main-axis-distribution', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
-  { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' }
+  { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
+  { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
+  { conventionId: 'heading-level', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
+  { conventionId: 'trailing-text-accent', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
+  { conventionId: 'trailing-text-accent', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
+  { conventionId: 'accent-line-break', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
+  { conventionId: 'accent-line-break', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' }
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({

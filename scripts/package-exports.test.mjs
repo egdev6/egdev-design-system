@@ -275,6 +275,55 @@ test('UI ships the approved Label typography recipe without an application Tailw
   }
 });
 
+test('UI ships the approved Text and Heading title recipes without an application Tailwind compiler', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // The four fluid title recipes resolve to their token size, leading and weight.
+  for (const size of ['section', 'hero', 'show', 'display']) {
+    const recipe = rule(`.text-title-${size}`);
+    assert.match(recipe, new RegExp(`font-size:\\s*var\\(--text-title-${size}(?:,[^;]+)?\\)\\s*;`));
+    assert.match(recipe, new RegExp(`line-height:\\s*var\\(--tw-leading,\\s*var\\(--text-title-${size}--line-height`));
+    assert.match(
+      recipe,
+      new RegExp(`font-weight:\\s*var\\(--tw-font-weight,\\s*var\\(--text-title-${size}--font-weight`)
+    );
+  }
+  // Hero canvas glow uses the glyph text-shadow token; other accents reset it.
+  assert.match(
+    rule(String.raw`.\[text-shadow\:var\(--text-shadow-title-hero\)\]`),
+    /text-shadow:\s*var\(--text-shadow-title-hero\)\s*;/
+  );
+  assert.match(rule(String.raw`.\[text-shadow\:none\]`), /text-shadow:\s*none\s*;/);
+  for (const [selector, token] of [
+    ['.text-fg-brand-default', '--color-fg-brand-default'],
+    ['.text-fg-brand-raised', '--color-fg-brand-raised'],
+    ['.text-fg-on-flood', '--color-fg-on-flood']
+  ]) {
+    assert.match(rule(selector), new RegExp(`color:\\s*var\\(${token}`));
+  }
+  assert.match(rule('.text-label-eyebrow'), /font-size:\s*var\(--text-label-eyebrow/);
+  assert.match(rule('.font-display'), /font-family:\s*var\(--font-display/);
+  assert.match(rule('.uppercase'), /text-transform:\s*uppercase\s*;/);
+  // The eyebrow diamond is an empty decorative pseudo-element, emitted from static CVA utilities.
+  for (const selector of [
+    String.raw`.before\:rotate-45`,
+    String.raw`.before\:size-2`,
+    String.raw`.before\:bg-fg-brand-default`
+  ]) {
+    assert.ok(utilities.includes(selector), `Packed styles must retain eyebrow diamond utility ${selector}`);
+  }
+  const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
+  for (const token of ['--text-title-hero', '--text-shadow-title-hero']) {
+    assert.ok(theme.includes(`${token}:`), `Title recipes must reference the existing token ${token}`);
+    assert.doesNotMatch(css, new RegExp(`${token}\\s*:`), `UI must not redefine ${token}`);
+  }
+  assert.doesNotMatch(css, /\.eg-(?:text|heading)\s*[,{]/, 'Text/Heading markers must not become shipped CSS rules');
+});
+
 test('UI JavaScript remains importable without a CSS loader', async () => {
   const entry = artifact('ui', ui.exports['.'].import);
   const imports = ts.preProcessFile(readFileSync(entry, 'utf8'), true).importedFiles;
@@ -296,12 +345,14 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
       'Cluster',
       'Divider',
       'Gauge',
+      'Heading',
       'Label',
       'Portal',
       'Skeleton',
       'Slot',
       'Slottable',
       'Stack',
+      'Text',
       'VisuallyHidden',
       'cn',
       'labelVariants'
@@ -325,6 +376,9 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     undefined,
     'Stack must not be a forwardRef component (D10: no public ref)'
   );
+  for (const name of ['Text', 'Heading']) {
+    assert.equal(typeof exported[name], 'function', `${name} must be a plain function component without a ref API`);
+  }
   assert.equal(exported.default, undefined, 'UI must not introduce a default export');
   const declaration = artifact('ui', ui.exports['.'].types);
   const program = ts.createProgram([declaration], { moduleResolution: ts.ModuleResolutionKind.Bundler });
@@ -343,6 +397,9 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'GaugeProps',
     'GaugeSize',
     'GaugeState',
+    'Heading',
+    'HeadingLevel',
+    'HeadingProps',
     'Label',
     'LabelProps',
     'LabelVariant',
@@ -360,6 +417,11 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'Slottable',
     'Stack',
     'StackProps',
+    'Text',
+    'TextProps',
+    'TextTone',
+    'TextVariant',
+    'TitleVariant',
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'cn',
@@ -451,6 +513,26 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'Cluster must carry its marker and wrapping row classes'
   );
   assert.doesNotMatch(stacked + clustered, /aria-live=|tabindex=|role=/);
+  // Text defaults to a paragraph eyebrow; Heading to a native h2 section title with its level independent of size.
+  const eyebrow = renderToString(createElement(exported.Text, null, 'Weekly stream'));
+  assert.match(eyebrow, /^<p class="[^"]*eg-text[^"]*text-label-eyebrow[^"]*">Weekly stream<\/p>$/);
+  const heading = renderToString(createElement(exported.Heading, { accent: 'ideas' }, 'Big '));
+  assert.match(
+    heading,
+    /^<h2 class="[^"]*eg-heading[^"]*text-title-section[^"]*">Big <span class="[^"]*eg-heading__accent[^"]*">ideas<\/span><\/h2>$/
+  );
+  const hero = renderToString(
+    createElement(exported.Heading, { level: 4, variant: 'hero', accent: '.', accentBreak: false }, 'Talk')
+  );
+  assert.ok(
+    hero.startsWith('<h4') && hero.includes('text-title-hero') && hero.includes('Talk<span'),
+    'Level must not resize; no space is injected'
+  );
+  assert.ok(
+    hero.includes('[text-shadow:var(--text-shadow-title-hero)]') && hero.includes('inline'),
+    'Canvas hero accent glows inline'
+  );
+  assert.doesNotMatch(eyebrow + heading + hero, /aria-live=|tabindex=|role=|aria-level=/);
   assert.ok(
     wide.includes('data-radix-aspect-ratio-wrapper'),
     'AspectRatio must render the inner generic div inside the Radix frame'
