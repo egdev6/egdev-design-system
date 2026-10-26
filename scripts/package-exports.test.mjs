@@ -266,6 +266,42 @@ test('UI ships Dropzone token geometry, native resets and attribute-driven color
   assert.ok(utilities.includes(String.raw`.disabled\:cursor-not-allowed`));
 });
 
+test('UI ships SearchTrigger token geometry, coarse targets and attribute-driven states without preflight', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`));
+  for (const [selector, declaration] of [
+    ['.min-w-48', /min-width:\s*calc\(var\(--space-1\)\s*\*\s*48\)/],
+    ['.min-h-10', /min-height:\s*var\(--space-10\)/],
+    ['.w-10', /width:\s*var\(--space-10\)/],
+    ['.h-auto', /height:\s*auto/],
+    ['.ps-3', /padding-inline-start:\s*var\(--space-3\)/],
+    ['.pe-2', /padding-inline-end:\s*var\(--space-2\)/],
+    ['.ms-auto', /margin-inline-start:\s*auto/],
+    [String.raw`.pointer-coarse\:min-h-11`, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*11\)/],
+    [String.raw`.pointer-coarse\:w-11`, /width:\s*calc\(var\(--space-1\)\s*\*\s*11\)/],
+    [String.raw`.transition-\[border-color\,color\]`, /transition-property:\s*border-color,\s*color\s*;/],
+    [String.raw`.enabled\:hover\:border-border-brand:enabled:hover`, /border-color:\s*var\(--color-border-brand/],
+    [String.raw`.enabled\:hover\:text-fg-secondary:enabled:hover`, /color:\s*var\(--color-fg-secondary/],
+    [
+      String.raw`.font-\[var\(--text-body-default--font-weight\)\]`,
+      /font-weight:\s*var\(--text-body-default--font-weight\)/
+    ],
+    [String.raw`.disabled\:opacity-45:disabled`, /opacity:\s*(?:45%|0\.45)/],
+    [String.raw`.motion-reduce\:transition-none`, /transition-property:\s*none/]
+  ]) {
+    assert.match(rule(selector), declaration, selector);
+  }
+  const coarse = cssBlock(utilities, /@media\s*\(pointer:\s*coarse\)\s*\{/);
+  assert.ok(
+    coarse.includes(String.raw`.pointer-coarse\:min-h-11`) && coarse.includes(String.raw`.pointer-coarse\:w-11`)
+  );
+  assert.ok(utilities.includes(String.raw`.focus-visible\:shadow-focus:focus-visible`));
+  // Legacy .eg-search keeps its components-layer defaults; utilities win by layer order.
+  assert.ok(css.indexOf('.eg-search{') < css.indexOf('@layer utilities'));
+});
+
 test('UI publishes its stable JavaScript entry', () => {
   assert.equal(ui.exports['.'].import, './dist/index.js');
   assert.equal(ui.main, ui.exports['.'].import);
@@ -420,6 +456,7 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   // Select #67 adds transition-colors only; Skeleton remains static in its own DOM checks.
   // Toggle #74 adds only its exact color/background-color/border-color/box-shadow/scale list.
   // Dropzone #56 adds transition-colors only.
+  // SearchTrigger #99 reuses the approved transition-[border-color,color] selector only.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
@@ -1479,6 +1516,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'ProductMark',
       'ProgressBar',
       'RadioGroup',
+      'SearchTrigger',
       'Select',
       'Skeleton',
       'Slider',
@@ -1511,6 +1549,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(exported.Checkbox?.$$typeof, Symbol.for('react.forward_ref'), 'Checkbox must forward its button ref');
   assert.equal(typeof exported.Dropzone, 'function', 'Dropzone must be a plain function with no public ref API');
   assert.equal(typeof exported.dropzoneVariants, 'function', 'Dropzone recipe must be public');
+  assert.equal(
+    exported.SearchTrigger?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'SearchTrigger forwards the native button ref'
+  );
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
   // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
@@ -1659,6 +1702,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'RadioGroupOption',
     'RadioGroupOrientation',
     'RadioGroupProps',
+    'SearchTrigger',
+    'SearchTriggerProps',
     'Select',
     'SelectOption',
     'SelectProps',
@@ -1719,9 +1764,20 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'useSearchTrigger',
+    'searchTriggerVariants',
+    'searchTriggerLabelVariants',
+    'searchTriggerHintVariants'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must stay internal to SearchTrigger`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
+  for (const name of [
     'Dropzone',
     'DropzoneProps',
     'dropzoneVariants',
+    'SearchTrigger',
+    'SearchTriggerProps',
     'Divider',
     'DividerOrientation',
     'DividerProps',
@@ -1824,6 +1880,20 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   );
   assert.match(dropzoneHtml, /aria-hidden="true"/);
   assert.doesNotMatch(dropzoneHtml, /name=|required=|onFiles=|aria-live=|is-over/);
+  const searchHtml = renderToString(createElement(exported.SearchTrigger, { shortcut: 'Ctrl K' }));
+  assert.match(searchHtml, /^<button[^>]*type="button"[^>]*aria-label="Search…"[^>]*class="eg-surface[^"]*eg-search/);
+  assert.match(searchHtml, /<svg class="eg-icon[^"]*size-4[^"]*"[^>]*aria-hidden="true"/);
+  assert.match(
+    searchHtml,
+    /<span class="whitespace-nowrap">Search…<\/span><span class="ms-auto" aria-hidden="true"><kbd class="eg-kbd[^"]*">Ctrl K<\/kbd><\/span><\/button>$/
+  );
+  assert.doesNotMatch(
+    searchHtml,
+    /aria-haspopup|aria-expanded|aria-controls|aria-keyshortcuts|data-state|eg-search--|eg-search__/
+  );
+  const compactHtml = renderToString(createElement(exported.SearchTrigger, { compact: true, shortcut: 'Ctrl K' }));
+  assert.match(compactHtml, /aria-label="Search…"/);
+  assert.doesNotMatch(compactHtml, /<span|<kbd|min-w-48/);
   assert.equal(renderToString(createElement(exported.Portal, { children: 'Server layer' })), '');
   assert.equal(typeof exported.labelVariants, 'function', 'Label composition recipe must stay a public export');
   const labelHtml = renderToString(
