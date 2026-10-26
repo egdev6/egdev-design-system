@@ -21,6 +21,7 @@ const components = [
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
+  ['Input', 'atoms/input'],
   ['Logo', 'atoms/logo'],
   ['StatusDot', 'atoms/status-dot'],
   ['Kbd', 'atoms/kbd'],
@@ -103,6 +104,7 @@ const expected: Record<string, Record<string, string | false>> = {
   logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
+  input: { size: 'select', variant: 'select', type: 'select', icon: false },
   productmark: { monogram: 'text', label: 'text', href: 'text' },
   gauge: {
     label: 'text',
@@ -124,6 +126,7 @@ const ownPropCounts: Record<string, number> = {
   logo: 4,
   statusdot: 2,
   kbd: 2,
+  input: 4,
   productmark: 3,
   visuallyhidden: 2,
   stack: 4,
@@ -330,6 +333,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
     ['Icon', { size: '"md"', filled: 'false' }],
+    ['Input', { size: '"md"', variant: '"default"', type: '"text"' }],
     ['Spinner', { size: '"md"' }],
     ['Logo', { variant: '"wordmark"', size: '"md"', label: '"egdev"' }],
     ['StatusDot', { state: '"stopped"', pulse: 'true' }]
@@ -515,6 +519,35 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Input select rows, the icon row without a widget and only documented native rows', () => {
+    const { argTypes, args } = story('Input');
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['md', 'sm']);
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['code', 'default']);
+    expect([...(argTypes.type?.options ?? [])].sort()).toEqual([
+      'email',
+      'number',
+      'password',
+      'search',
+      'tel',
+      'text',
+      'url'
+    ]);
+    for (const prop of ['size', 'variant', 'type']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'enum', required: false });
+      expect(argTypes[prop]?.control, prop).toEqual({ type: 'select' });
+    }
+    expect(argTypes.icon?.control).toBe(false);
+    expect(argTypes.icon?.table?.disable).toBeUndefined();
+    expect(argTypes.icon?.table?.defaultValue).toBeUndefined();
+    expect(args).toEqual({});
+    for (const prop of ['id', 'name', 'placeholder', 'disabled', 'readOnly', 'required', 'className']) {
+      expect(argTypes[prop], prop).toEqual(story('Input', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'asChild', 'ref', 'onChange', 'style', 'invalid']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

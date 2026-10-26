@@ -114,6 +114,16 @@
         }
       },
       {
+        "component": "Input",
+        "type": "InputSize (md|sm)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/input/types.ts",
+          "symbol": "InputProps",
+          "revision": "sha256:e972763e1f269e87d3b1306727a45e576aaaa1497833f48447af9fc86f7d182f"
+        }
+      },
+      {
         "component": "Logo",
         "type": "LogoSize",
         "status": "existing",
@@ -158,6 +168,16 @@
           "path": "packages/ui/src/primitives/label/types.ts",
           "symbol": "LabelProps",
           "revision": "sha256:afb762cb8e578348f234a11763dcdbda2c7303cfc02fdd3f385e9f4114ac93a3"
+        }
+      },
+      {
+        "component": "Input",
+        "type": "InputVariant (default|code)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/input/types.ts",
+          "symbol": "InputProps",
+          "revision": "sha256:e972763e1f269e87d3b1306727a45e576aaaa1497833f48447af9fc86f7d182f"
         }
       },
       {
@@ -566,7 +586,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Input",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/input/types.ts",
+          "symbol": "InputProps",
+          "revision": "sha256:e972763e1f269e87d3b1306727a45e576aaaa1497833f48447af9fc86f7d182f"
+        }
+      }
+    ]
   },
   {
     "id": "icon-placement",

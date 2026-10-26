@@ -13,6 +13,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   logo: ['id', 'title', 'className', 'style', 'target', 'rel'],
   statusDot: ['id', 'title', 'className', 'style'],
   kbd: ['id', 'title', 'className'],
+  input: ['id', 'name', 'placeholder', 'disabled', 'readOnly', 'required', 'className'],
   productMark: ['id', 'title', 'className', 'target', 'rel'],
   // Native props re-exposed in autodocs per component, keyed by camelCase component name.
   // Gauge retains its approved passive measurement list; Label documents the native
