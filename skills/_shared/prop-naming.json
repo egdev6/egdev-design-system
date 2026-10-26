@@ -314,6 +314,16 @@
           "symbol": "StatProps",
           "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
         }
+      },
+      {
+        "component": "Countdown",
+        "type": "CountdownSize (md|sm)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/countdown/types.ts",
+          "symbol": "CountdownProps",
+          "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
+        }
       }
     ]
   },
@@ -507,6 +517,16 @@
           "path": "packages/ui/src/primitives/surface/types.ts",
           "symbol": "SurfaceProps",
           "revision": "sha256:26d0726b5034dceb74e0067c1c0df5108d351e948205bbf22b5e187b92d9c0b6"
+        }
+      },
+      {
+        "component": "Countdown",
+        "type": "CountdownTone (inherit|canvas)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/countdown/types.ts",
+          "symbol": "CountdownProps",
+          "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
         }
       }
     ]
@@ -702,6 +722,16 @@
           "symbol": "StatProps",
           "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
         }
+      },
+      {
+        "component": "Countdown",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/countdown/types.ts",
+          "symbol": "CountdownProps",
+          "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
+        }
       }
     ]
   },
@@ -876,6 +906,16 @@
           "path": "packages/ui/src/atoms/stat/types.ts",
           "symbol": "StatProps",
           "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
+        }
+      },
+      {
+        "component": "Countdown",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/countdown/types.ts",
+          "symbol": "CountdownProps",
+          "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
         }
       }
     ]
@@ -1963,7 +2003,18 @@
       "scope": "convention:deadline-instant",
       "contentHash": "sha256:f6c3348ca89ee03685647a92361ab72e2bb89c6112633fbeb82639f274cf1fd6"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Countdown",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/countdown/types.ts",
+          "symbol": "CountdownProps",
+          "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
+        }
+      }
+    ]
   },
   {
     "id": "absolute-deadline-text",
@@ -1979,7 +2030,18 @@
       "scope": "convention:absolute-deadline-text",
       "contentHash": "sha256:aca8ce3f801884207275fb3553059e06a9069ddedc8c2d7157196cdf3bc8d2c3"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Countdown",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/countdown/types.ts",
+          "symbol": "CountdownProps",
+          "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
+        }
+      }
+    ]
   },
   {
     "id": "time-unit-labels",
@@ -1995,7 +2057,18 @@
       "scope": "convention:time-unit-labels",
       "contentHash": "sha256:ff17a5baf945adc4ecc69bf9e3e1d3dd13e21aed8cc6bbd967b0201da538fdc0"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Countdown",
+        "type": "CountdownUnits ([days, hours, minutes, seconds])",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/countdown/types.ts",
+          "symbol": "CountdownProps",
+          "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
+        }
+      }
+    ]
   },
   {
     "id": "deadline-expiration",
@@ -2011,7 +2084,18 @@
       "scope": "convention:deadline-expiration",
       "contentHash": "sha256:4cfd772a5cf1576b23a3c8c92bc48c80c786bb097fc3ca31c9054cf8e143f117"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Countdown",
+        "type": "(deadline: number) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/countdown/types.ts",
+          "symbol": "CountdownProps",
+          "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
+        }
+      }
+    ]
   },
   {
     "id": "clock-initialization-message",
@@ -2027,7 +2111,18 @@
       "scope": "convention:clock-initialization-message",
       "contentHash": "sha256:ce2e98958f8fa3708021e180ab159434c90e8de7c91dbba5beda4bc838057e07"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Countdown",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/countdown/types.ts",
+          "symbol": "CountdownProps",
+          "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
+        }
+      }
+    ]
   },
   {
     "id": "expired-deadline-message",
@@ -2043,7 +2138,18 @@
       "scope": "convention:expired-deadline-message",
       "contentHash": "sha256:82f8fc94bc238e8611407a1dbf0cb1a25911a05802c2bcb204eba9fb29814db0"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Countdown",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/countdown/types.ts",
+          "symbol": "CountdownProps",
+          "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
+        }
+      }
+    ]
   },
   {
     "id": "decorative-separation",

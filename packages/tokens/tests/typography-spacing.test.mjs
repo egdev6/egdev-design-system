@@ -54,6 +54,18 @@ const STAT_TYPOGRAPHY = [
   { name: 'display-stat-sm', size: '28px', lineHeight: '1', fontWeight: '800', letterSpacing: '0' }
 ];
 
+// Countdown digit recipes approved by the owner for #82 (2026-10-26): exact source clamps.
+const COUNTDOWN_TYPOGRAPHY = [
+  { name: 'countdown-md', size: 'clamp(52px, 6vw, 96px)', lineHeight: '0.85', fontWeight: '800', letterSpacing: '0' },
+  { name: 'countdown-sm', size: 'clamp(36px, 4vw, 56px)', lineHeight: '0.85', fontWeight: '800', letterSpacing: '0' }
+];
+
+// Countdown spacing approved with the recipes above: responsive column gap and minimum digit measure.
+const COUNTDOWN_SPACING = [
+  ['--spacing-countdown-column', 'clamp(14px, 2.2vw, 32px)'],
+  ['--spacing-countdown-unit', '1.9ch']
+];
+
 const SPACING_STEPS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '10', '12', '14', '16', '20', '24'];
 
 const findRecipeDrift = (css, recipes) => {
@@ -110,6 +122,41 @@ test('static theme publishes the two fixed Stat figure recipes (#70 D6)', () => 
   assert.deepEqual(findRecipeDrift(staticBlock, STAT_TYPOGRAPHY), [], 'Stat recipes must match the approved values');
 });
 
+test('static theme publishes the two Countdown digit recipes and their spacing (#82)', () => {
+  assert.deepEqual(
+    findRecipeDrift(staticBlock, COUNTDOWN_TYPOGRAPHY),
+    [],
+    'Countdown recipes must match the approved clamps'
+  );
+  const declarations = toDeclarationMap(staticBlock);
+  for (const [name, value] of COUNTDOWN_SPACING) {
+    assert.equal(declarations.get(name), value, `${name} must keep its approved value`);
+  }
+  for (const [name] of COUNTDOWN_SPACING) {
+    assert.equal(
+      toDeclarationMap(blockOf(themeSource, '@theme inline static')).has(name),
+      false,
+      `${name} stays static`
+    );
+  }
+});
+
+test('altered Countdown recipes and spacing are detected as drift', () => {
+  const altered = themeSource.replace(
+    '--text-countdown-sm--line-height: 0.85;',
+    '--text-countdown-sm--line-height: 0.9;'
+  );
+  assert.deepEqual(findRecipeDrift(blockOf(altered, '@theme static'), COUNTDOWN_TYPOGRAPHY), [
+    '--text-countdown-sm--line-height: 0.9 != 0.85'
+  ]);
+  const shifted = themeSource.replace('--spacing-countdown-unit: 1.9ch;', '--spacing-countdown-unit: 2ch;');
+  assert.equal(toDeclarationMap(blockOf(shifted, '@theme static')).get('--spacing-countdown-unit'), '2ch');
+  assert.notEqual(
+    toDeclarationMap(blockOf(shifted, '@theme static')).get('--spacing-countdown-unit'),
+    COUNTDOWN_SPACING[1][1]
+  );
+});
+
 test('typography recipes keep the approved tracking strings', () => {
   const declarations = toDeclarationMap(staticBlock);
   assert.equal(declarations.get('--text-label-eyebrow--letter-spacing'), '0.12em', 'label-eyebrow tracking');
@@ -125,7 +172,9 @@ test('typography recipes introduce no family or casing tokens', () => {
     '--font-display',
     '--font-mono',
     '--font-sans',
-    ...[...TYPOGRAPHY, ...TITLE_TYPOGRAPHY, ...STAT_TYPOGRAPHY].map(({ name }) => `--text-${name}--font-weight`)
+    ...[...TYPOGRAPHY, ...TITLE_TYPOGRAPHY, ...STAT_TYPOGRAPHY, ...COUNTDOWN_TYPOGRAPHY].map(
+      ({ name }) => `--text-${name}--font-weight`
+    )
   ].sort();
   assert.deepEqual(
     names.filter((name) => name.includes('font')).sort(),

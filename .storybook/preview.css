@@ -9,6 +9,7 @@
 @source "../packages/ui/src/atoms/button/Button.stories.tsx";
 @source "../packages/ui/src/atoms/checkbox/Checkbox.stories.tsx";
 @source "../packages/ui/src/atoms/chip/Chip.stories.tsx";
+@source "../packages/ui/src/atoms/countdown/Countdown.stories.tsx";
 @source "../packages/ui/src/atoms/dropzone/Dropzone.stories.tsx";
 @source "../packages/ui/src/atoms/gauge/Gauge.stories.tsx";
 @source "../packages/ui/src/atoms/icon/Icon.stories.tsx";

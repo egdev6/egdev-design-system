@@ -169,6 +169,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/button',
       './atoms/checkbox',
       './atoms/chip',
+      './atoms/countdown',
       './atoms/dropzone',
       './atoms/gauge',
       './atoms/icon',
@@ -211,6 +212,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Checkbox',
       'Chip',
       'Cluster',
+      'Countdown',
       'Divider',
       'Dropzone',
       'Gauge',
@@ -479,6 +481,81 @@ describe('Storybook TypeScript docgen contract', () => {
       'Solid',
       'WithIcon'
     ]);
+  });
+
+  it('extracts Countdown owned metadata, real defaults and protected timer boundaries', () => {
+    const file = ast(source('atoms/countdown/types.ts'));
+    const properties = ownProps(file, ['CountdownProps']);
+    const expected: Record<string, string> = {
+      deadline: 'number',
+      deadlineText: 'text',
+      label: 'text',
+      units: 'false',
+      size: 'select',
+      tone: 'select',
+      onExpire: 'false',
+      initializingText: 'text',
+      expiredText: 'text',
+      unavailableText: 'text'
+    };
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(expected));
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const controls = ts.getJSDocTags(property).filter((tag) => tag.tagName.text === 'control');
+      expect(controls, name).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment), name).toBe(expected[name]);
+      expect(Boolean(property.questionToken), `${name} optionality`).toBe(!['deadline', 'deadlineText'].includes(name));
+    }
+    const doc = parser.parse(source('atoms/countdown/Countdown.tsx')).find((item) => item.displayName === 'Countdown');
+    for (const prop of ['deadline', 'deadlineText']) {
+      expect(doc?.props[prop], prop).toMatchObject({ required: true, defaultValue: null });
+    }
+    expect(doc?.props.units?.tags).toMatchObject({ controlReason: expect.stringMatching(/four-string.*Localized/) });
+    expect(doc?.props.onExpire?.tags).toMatchObject({
+      controlReason: expect.stringMatching(/Callback.*WithExpiration/)
+    });
+    for (const prop of ['units', 'onExpire']) {
+      expect(doc?.props[prop]?.defaultValue, prop).toBeNull();
+    }
+    for (const [prop, value] of Object.entries({
+      label: 'Next event in',
+      size: 'md',
+      tone: 'inherit',
+      initializingText: 'Calculating time remaining',
+      expiredText: 'Time reached',
+      unavailableText: 'Time unavailable'
+    })) {
+      expect(doc?.props[prop], prop).toMatchObject({ required: false, defaultValue: { value } });
+    }
+    for (const name of ['id', 'title', 'dir', 'lang', 'className', 'aria-describedby']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'aria-live',
+      'tabIndex',
+      'ref',
+      'asChild'
+    ]) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const stories = ast(source('atoms/countdown/Countdown.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'Sizes',
+      'Tones',
+      'Expired',
+      'InvalidDeadline',
+      'Localized',
+      'LongDuration',
+      'DeadlineChanges',
+      'WithExpiration'
+    ]);
+    expect(stories.getText()).toContain("title: 'Atoms/Countdown'");
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
   });
 
   it('extracts Dropzone owned metadata and preserves native button boundaries', () => {

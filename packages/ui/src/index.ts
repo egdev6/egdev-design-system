@@ -4,6 +4,7 @@ export * from './atoms/badge';
 export * from './atoms/button';
 export * from './atoms/checkbox';
 export * from './atoms/chip';
+export * from './atoms/countdown';
 export * from './atoms/dropzone';
 export * from './atoms/gauge';
 export * from './atoms/icon';

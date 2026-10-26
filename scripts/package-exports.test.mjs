@@ -698,6 +698,49 @@ test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet ru
   assert.equal(kbdRules(css), kbdRules(legacy), 'Kbd has no stylesheet: its marker carries no new rule');
 });
 
+test('UI ships the Countdown digit, spacing and label token utilities without a Countdown stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // #82 owner-approved recipes resolve through tokens, with the exact source values as fallbacks.
+  for (const [size, clamp] of [
+    ['md', String.raw`clamp\(52px, 6vw, 96px\)`],
+    ['sm', String.raw`clamp\(36px, 4vw, 56px\)`]
+  ]) {
+    const body = rule(`.text-countdown-${size}`);
+    assert.match(body, new RegExp(`font-size:\\s*var\\(--text-countdown-${size},\\s*${clamp}\\)\\s*;`));
+    assert.match(body, new RegExp(`line-height:[^;]*--text-countdown-${size}--line-height,\\s*0\\.85`));
+    assert.match(body, new RegExp(`font-weight:[^;]*--text-countdown-${size}--font-weight,\\s*800`));
+  }
+  assert.match(
+    rule('.gap-x-countdown-column'),
+    /column-gap:\s*var\(--spacing-countdown-column,\s*clamp\(14px, 2\.2vw, 32px\)\)\s*;/
+  );
+  assert.match(rule('.min-w-countdown-unit'), /min-width:\s*var\(--spacing-countdown-unit,\s*1\.9ch\)\s*;/);
+  assert.match(rule('.gap-y-2'), /row-gap:\s*var\(--space-2\)\s*;/);
+  assert.match(rule(String.raw`.mt-2\.5`), /margin-top:\s*calc\(var\(--space-1\)\s*\*\s*2\.5\)\s*;/);
+  assert.match(rule('.mt-3'), /margin-top:\s*var\(--space-3\)\s*;/);
+  assert.match(rule('.min-w-0'), /min-width:\s*var\(--space-0\)\s*;/);
+  assert.match(rule('.flex-wrap'), /flex-wrap:\s*wrap\s*;/);
+  assert.match(rule('.tabular-nums'), /font-variant-numeric:[^;]*--tw-numeric-spacing/);
+  assert.match(rule('.not-italic'), /font-style:\s*normal\s*;/);
+  assert.match(rule('.text-inherit'), /color:\s*inherit\s*;/);
+  assert.match(rule('.text-label-eyebrow'), /font-size:\s*var\(--text-label-eyebrow,\s*14px\)/);
+  assert.match(rule('.text-fg-secondary'), /color:\s*var\(--color-fg-secondary[,)]/);
+  // D11 no stylesheet: the only .eg-countdown rules are the retained legacy ones (components layer).
+  const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
+  const countdownRules = (text) => (text.replace(/\/\*[\s\S]*?\*\//g, '').match(/\.eg-countdown[^{]*\{/g) ?? []).length;
+  assert.equal(
+    countdownRules(css),
+    countdownRules(legacy),
+    'Countdown has no stylesheet: its markers carry no new rule'
+  );
+  assert.doesNotMatch(utilities, /\.eg-countdown/, 'Countdown markers never become utilities');
+});
+
 test('UI ships every static Badge CVA utility and all twelve token treatments without a stylesheet', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -1604,6 +1647,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Checkbox',
       'Chip',
       'Cluster',
+      'Countdown',
       'Divider',
       'Dropzone',
       'Gauge',
@@ -1650,6 +1694,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'tooltipVariants'
     ],
     'Only approved components and cn are public runtime exports'
+  );
+  assert.equal(
+    typeof exported.Countdown,
+    'function',
+    'Countdown must be a plain function with no public ref API (D12)'
   );
   assert.equal(exported.Select?.$$typeof, Symbol.for('react.forward_ref'), 'Select forwards the native button ref');
   assert.equal(exported.Checkbox?.$$typeof, Symbol.for('react.forward_ref'), 'Checkbox must forward its button ref');
@@ -1763,6 +1812,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ChipProps',
     'Cluster',
     'ClusterProps',
+    'Countdown',
+    'CountdownProps',
+    'CountdownSize',
+    'CountdownTone',
+    'CountdownUnits',
     'Divider',
     'DividerOrientation',
     'DividerProps',
@@ -1876,6 +1930,16 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'tooltipVariants'
   ]);
   for (const name of [
+    'useCountdown',
+    'countdownRootVariants',
+    'countdownValueVariants',
+    'countdownLabelVariants',
+    'CountdownState'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
+  for (const name of [
     'useSlider',
     'sliderTrackVariants',
     'sliderRangeVariants',
@@ -1905,6 +1969,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Chip',
     'ChipProps',
     'chipVariants',
+    'Countdown',
+    'CountdownProps',
+    'CountdownSize',
+    'CountdownTone',
+    'CountdownUnits',
     'Dropzone',
     'DropzoneProps',
     'dropzoneVariants',
@@ -2015,6 +2084,27 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   );
   assert.match(dropzoneHtml, /aria-hidden="true"/);
   assert.doesNotMatch(dropzoneHtml, /name=|required=|onFiles=|aria-live=|is-over/);
+  // Countdown SSR is the deterministic initializing placeholder: no digits, clock or live region (D3/D8).
+  const countdownHtml = renderToString(
+    createElement(exported.Countdown, {
+      deadline: Date.UTC(2030, 0, 2, 1, 1, 1),
+      deadlineText: 'Jan 2, 2030, 01:01:01 UTC',
+      id: 'launch',
+      tone: 'canvas'
+    })
+  );
+  assert.match(countdownHtml, /^<div id="launch" role="timer" aria-labelledby="[^"]+" aria-live="off"/);
+  assert.match(countdownHtml, /data-state="initializing"/);
+  assert.match(countdownHtml, /class="eg-countdown min-w-0 text-fg-default"/);
+  assert.match(countdownHtml, /<time id="[^"]+" dateTime="2030-01-02T01:01:01.000Z"/i);
+  assert.match(countdownHtml, />Calculating time remaining<\/p><\/div>$/);
+  assert.doesNotMatch(countdownHtml, /eg-countdown__row|eg-countdown--|aria-hidden|role="status"/);
+  const invalidCountdownHtml = renderToString(
+    createElement(exported.Countdown, { deadline: Number.NaN, deadlineText: 'Unknown' })
+  );
+  assert.match(invalidCountdownHtml, /data-state="unavailable"/);
+  assert.match(invalidCountdownHtml, />Time unavailable<\/p><\/div>$/);
+  assert.doesNotMatch(invalidCountdownHtml, /<time/);
   const statHtml = renderToString(
     createElement(exported.Stat, { label: 'Subs', value: 4, delta: '+1 10 s ago', highlighted: true, id: 'subs' })
   );

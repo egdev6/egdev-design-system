@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -44,6 +44,10 @@ import type {
   CheckboxCheckedState,
   CheckboxProps,
   ChipProps,
+  CountdownProps,
+  CountdownSize,
+  CountdownTone,
+  CountdownUnits,
   DividerOrientation,
   DividerProps,
   DropzoneProps,
@@ -306,6 +310,47 @@ const interceptedDropzone: DropzoneProps = { ...dropzoneProps, onDrop: () => und
 const interceptedPaste: DropzoneProps = { ...dropzoneProps, onPaste: () => undefined };
 // @ts-expect-error No other visual treatments exist.
 const invalidDropzone: DropzoneProps = { ...dropzoneProps, variant: 'solid' };
+// Countdown stays outside App: it owns a client clock and adds no focusable parts.
+export const countdownExpirations: number[] = [];
+export const countdownUnits: CountdownUnits = ['días', 'horas', 'min', 's'];
+const countdownSize: CountdownSize = 'sm';
+const countdownTone: CountdownTone = 'canvas';
+export const countdownProps: CountdownProps = {
+  deadline: Date.UTC(2030, 0, 2, 1, 1, 1), deadlineText: 'Jan 2, 2030, 01:01:01 UTC', id: 'launch-timer',
+  label: 'Directo en', units: countdownUnits, size: countdownSize, tone: countdownTone,
+  onExpire: (deadline) => { countdownExpirations.push(deadline); }, 'aria-describedby': 'launch-hint', className: 'mt-2'
+};
+export function CountdownSamples({ deadline = countdownProps.deadline }: { deadline?: number }) {
+  return createElement('div', null,
+    createElement('p', { id: 'launch-hint' }, 'Times are UTC.'),
+    createElement(Countdown, { ...countdownProps, deadline }));
+}
+// @ts-expect-error deadline and deadlineText are required.
+const missingDeadline: CountdownProps = { deadlineText: 'Soon' };
+// @ts-expect-error No ISO-string coercion: the deadline is Unix epoch milliseconds.
+const isoDeadline: CountdownProps = { ...countdownProps, deadline: '2030-01-02T00:00:00Z' };
+// @ts-expect-error No Date coercion either.
+const dateDeadline: CountdownProps = { ...countdownProps, deadline: new Date() };
+// @ts-expect-error units is a fixed four-label tuple.
+const shortUnits: CountdownProps = { ...countdownProps, units: ['d', 'h'] };
+// @ts-expect-error The timer role is owned.
+const alertCountdown: CountdownProps = { ...countdownProps, role: 'alert' };
+// @ts-expect-error The live policy is owned: aria-live stays off.
+const politeCountdown: CountdownProps = { ...countdownProps, 'aria-live': 'polite' };
+// @ts-expect-error The visible label names the timer.
+const renamedCountdown: CountdownProps = { ...countdownProps, 'aria-label': 'Timer' };
+// @ts-expect-error Content is generated; there are no children.
+const childCountdown: CountdownProps = { ...countdownProps, children: 'Soon' };
+// @ts-expect-error No ref API on either React major.
+const referencedCountdown: CountdownProps = { ...countdownProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error A passive readout has no tab stop.
+const focusableCountdown: CountdownProps = { ...countdownProps, tabIndex: 0 };
+// @ts-expect-error Only md and sm digit presets exist.
+const largeCountdown: CountdownProps = { ...countdownProps, size: 'lg' };
+// @ts-expect-error Only inherit and canvas tones exist; there is no legacy onDark flag.
+const darkCountdown: CountdownProps = { ...countdownProps, tone: 'onDark' };
+// @ts-expect-error There is no tick callback.
+const tickingCountdown: CountdownProps = { ...countdownProps, onTick: () => undefined };
 // SearchTrigger stays outside App so the intrinsic button count and focus harness remain unchanged.
 export const searchTriggerRef = createRef<HTMLButtonElement>();
 export const searchTriggerRefTarget: ComponentRef<typeof SearchTrigger> | null = searchTriggerRef.current;
@@ -1937,6 +1982,26 @@ function assertInputCSS(css) {
   assert.doesNotMatch(css, /\.eg-input[^{]*\{/, 'Input has no stylesheet: its marker carries no rule');
 }
 
+// Countdown ships its owner-approved digit and spacing recipes as token utilities; no stylesheet.
+function assertCountdownCSS(css) {
+  for (const selector of [
+    '.text-countdown-md',
+    '.text-countdown-sm',
+    '.gap-x-countdown-column',
+    '.min-w-countdown-unit',
+    '.tabular-nums',
+    '.not-italic',
+    '.text-inherit',
+    String.raw`.mt-2\.5`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Countdown utility ' + selector);
+  }
+  assert.match(css, /font-size:\s*var\(--text-countdown-md[,)]/);
+  assert.match(css, /font-size:\s*var\(--text-countdown-sm[,)]/);
+  assert.match(css, /column-gap:\s*var\(--spacing-countdown-column[,)]/);
+  assert.match(css, /min-width:\s*var\(--spacing-countdown-unit[,)]/);
+}
+
 // SearchTrigger utilities ship token geometry, coarse targets and native-state colors without preflight.
 function assertSearchTriggerCSS(css) {
   for (const selector of [
@@ -2272,6 +2337,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Checkbox',
   'Chip',
   'Cluster',
+  'Countdown',
   'Divider',
   'Dropzone',
   'Gauge',
@@ -2343,6 +2409,8 @@ ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertProductMarkCSS.toString()}
+${assertCountdownCSS.toString()}
+assertCountdownCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
 assertStatCSS(shippedStyles);
 assertSearchTriggerCSS(shippedStyles);
@@ -2430,7 +2498,32 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, DefaultSearchTrigger, DropzoneSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+// Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
+const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
+try {
+  const timer = countdownDocument.window.document.getElementById('launch-timer');
+  assert.equal(timer.getAttribute('role'), 'timer');
+  assert.equal(timer.getAttribute('aria-live'), 'off');
+  assert.equal(timer.getAttribute('data-state'), 'initializing');
+  const label = countdownDocument.window.document.getElementById(timer.getAttribute('aria-labelledby'));
+  assert.equal(label.textContent, 'Directo en');
+  const described = timer.getAttribute('aria-describedby').split(' ');
+  assert.equal(described[0], 'launch-hint', 'Consumer descriptions are kept first');
+  const time = timer.querySelector('time');
+  assert.equal(time.getAttribute('datetime'), '2030-01-02T01:01:01.000Z');
+  assert.equal(time.textContent, 'Jan 2, 2030, 01:01:01 UTC');
+  assert.deepEqual(described.slice(1), [time.id, timer.lastElementChild.id]);
+  assert.equal(timer.lastElementChild.textContent, 'Calculating time remaining');
+  assert.ok(timer.classList.contains('eg-countdown') && timer.classList.contains('mt-2'));
+  assert.equal(timer.querySelector('.eg-countdown__row'), null, 'No digits before a client sample');
+  assert.equal(timer.hasAttribute('tabindex'), false);
+} finally {
+  countdownDocument.window.close();
+}
+const unavailableCountdown = renderToString(createElement(CountdownSamples, { deadline: Number.NaN }));
+assert.ok(unavailableCountdown.includes('data-state="unavailable"') && unavailableCountdown.includes('Time unavailable'));
+assert.doesNotMatch(unavailableCountdown, /<time|eg-countdown__row/);
 // Stat SSR: a labelled group per figure, unformatted values and the hidden no-data dash.
 const statDocument = new JSDOM(renderToString(createElement(StatSamples, { highlighted: true, value: '1,200' })));
 try {
@@ -3296,7 +3389,7 @@ for (const value of [NaN, Infinity, -Infinity]) {
   assert.ok(rendered.includes('Disconnected capacity') && rendered.includes('Data unavailable'));
   assert.doesNotMatch(rendered, /role="meter"|aria-value(?:now|min|max|text)=|eg-gauge-arc|--eg-gauge-value|Hidden condition|Hidden center|aria-live=|<button|tabindex=/);
 }
-console.log(JSON.stringify({ ssr: ['Gauge finite, bounded and unavailable', 'decorative centers', 'visible conditions', 'Checkbox binary/mixed ARIA, Icon indicator and form input', 'Badge defaults and twelve passive tone/treatment combinations with decorative icons', 'Slider bounds, formatted name and Radix server-hidden thumb'], bytes: html.length }));
+console.log(JSON.stringify({ ssr: ['Gauge finite, bounded and unavailable', 'decorative centers', 'visible conditions', 'Checkbox binary/mixed ARIA, Icon indicator and form input', 'Badge defaults and twelve passive tone/treatment combinations with decorative icons', 'Slider bounds, formatted name and Radix server-hidden thumb', 'Countdown deterministic initializing and unavailable placeholders'], bytes: html.length }));
 `;
 
 const csr = `
@@ -3321,7 +3414,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, DropzoneSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, CountdownSamples, DropzoneSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -3887,6 +3980,33 @@ try {
   assert.equal(fileTarget.getAttribute('data-state'), 'idle');
   await act(async () => root.render(null));
   stage('dropzone:files:complete');
+  stage('countdown:clock:start');
+  // A past deadline expires at the first client sample and notifies once per episode.
+  const pastDeadline = Date.now() - 1000;
+  await act(async () => root.render(createElement(CountdownSamples, { deadline: pastDeadline })));
+  const countdownTimer = document.getElementById('launch-timer');
+  assert.equal(countdownTimer.getAttribute('data-state'), 'expired');
+  assert.deepEqual([...countdownTimer.querySelectorAll('.eg-countdown__value')].map((node) => node.textContent), ['0', '00', '00', '00']);
+  assert.deepEqual([...countdownTimer.querySelectorAll('.eg-countdown__name')].map((node) => node.textContent), ['días', 'horas', 'min', 's']);
+  assert.equal(countdownTimer.lastElementChild.textContent, 'Time reached');
+  assert.deepEqual(countdownExpirations, [pastDeadline]);
+  await act(async () => root.render(createElement(CountdownSamples, { deadline: pastDeadline })));
+  await act(async () => document.dispatchEvent(new Event('visibilitychange')));
+  assert.deepEqual(countdownExpirations, [pastDeadline], 'Rerenders and visibility events do not rearm');
+  assert.ok(document.getElementById('launch-timer') === countdownTimer, 'Rerender keeps the timer identity');
+  // A future deadline is a new episode: running digits, no notification.
+  await act(async () => root.render(createElement(CountdownSamples, { deadline: Date.now() + 3 * 86_400_000 })));
+  assert.equal(countdownTimer.getAttribute('data-state'), 'running');
+  const digits = [...countdownTimer.querySelectorAll('.eg-countdown__value')].map((node) => node.textContent);
+  assert.match(digits[0], /^[23]$/);
+  for (const field of digits.slice(1)) assert.match(field, /^[0-5][0-9]$/);
+  assert.ok(countdownTimer.querySelector('.eg-countdown__value').classList.contains('text-countdown-sm'));
+  await act(async () => root.render(createElement(CountdownSamples, { deadline: Number.NaN })));
+  assert.equal(countdownTimer.getAttribute('data-state'), 'unavailable');
+  assert.equal(countdownTimer.querySelector('time'), null);
+  assert.deepEqual(countdownExpirations, [pastDeadline]);
+  await act(async () => root.render(null));
+  stage('countdown:clock:complete');
   stage('stat:passive:start');
   await act(async () => root.render(createElement(StatSamples)));
   const subsStat = document.getElementById('subs-total');
@@ -4085,7 +4205,7 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
-  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'Stat passive group, highlight and no-data rerenders with stable identity', 'SearchTrigger native activation, inert displayed shortcut, compact identity, disabled guard, host Slot trigger and ref cleanup', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup', 'Chip pressed state, change events, controlled/disabled behavior and public recipe'] }));
+  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'Countdown client sampling, expiry episode, running rerender and unavailable recovery', 'Stat passive group, highlight and no-data rerenders with stable identity', 'SearchTrigger native activation, inert displayed shortcut, compact identity, disabled guard, host Slot trigger and ref cleanup', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup', 'Chip pressed state, change events, controlled/disabled behavior and public recipe'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -4114,7 +4234,9 @@ const typographyNames = [
   'title-section',
   'title-hero',
   'title-show',
-  'title-display'
+  'title-display',
+  'countdown-md',
+  'countdown-sm'
 ];
 const spacingClasses = [
   'p-0',
@@ -4222,6 +4344,8 @@ assertProgressBarCSS(emitted);
 assertTextareaCSS(emitted);
 assertInputCSS(emitted);
 assertDropzoneCSS(emitted);
+${assertCountdownCSS.toString()}
+assertCountdownCSS(emitted);
 assertStatCSS(emitted);
 assertSearchTriggerCSS(emitted);
 assertProductMarkCSS(emitted);
@@ -4245,7 +4369,8 @@ const names = shipped
   });
 const typography = ${JSON.stringify(typographyNames)};
 // #70 Stat adds --text-display-stat and --text-display-stat-sm with three companions each: 255 + 8 = 263.
-assert.equal(names.length, 263, 'Packed native artifact must expose 263 variables');
+// #82 Countdown adds 10 tokens: 263 + 10 = 273.
+assert.equal(names.length, 273, 'Packed native artifact must expose 273 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
@@ -4287,6 +4412,7 @@ assertProgressBarCSS(twCss);
 assertTextareaCSS(twCss);
 assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
+assertCountdownCSS(twCss);
 assertStatCSS(twCss);
 assertSearchTriggerCSS(twCss);
 assertProductMarkCSS(twCss);

@@ -677,9 +677,9 @@
     "nivel": "atom",
     "destino": "ui",
     "radix": "—",
-    "compone": "Text",
+    "compone": "—",
     "accion": "mantener",
-    "notas": "Approved six-row catalogue correction: one time-remaining display concept; Text is a supporting piece. See [classification rules](CATALOGACION.md). API unchanged; no implementation implied."
+    "notas": "Implemented React atom under [approved v0.2 contract](https://github.com/egdev6/egdev-design-system/issues/82): passive role=timer readout (aria-live=off) of days/hours/minutes/seconds to a Unix-ms deadline, with readable deadlineText in a native time element. Deterministic SSR initializing text, client-only clock sampling, ceil rounding, latched expiry and onExpire once per deadline episode. Native elements with token recipes (`text-countdown-md/sm`, countdown spacing); Text is not composed (D11). No Radix, stylesheet, ref or asChild."
   },
   {
     "actual": "TerminalCard",
