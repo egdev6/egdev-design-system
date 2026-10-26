@@ -18,7 +18,8 @@ const components = [
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
-  ['Kbd', 'atoms/kbd']
+  ['Kbd', 'atoms/kbd'],
+  ['Switch', 'atoms/switch']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -78,6 +79,15 @@ const expected: Record<string, Record<string, string | false>> = {
   skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
   spinner: { label: 'text', size: 'select' },
   kbd: { children: 'text', label: 'text' },
+  switch: {
+    checked: 'boolean',
+    defaultChecked: 'boolean',
+    onCheckedChange: false,
+    disabled: 'boolean',
+    required: 'boolean',
+    name: 'text',
+    value: 'text'
+  },
   gauge: {
     label: 'text',
     value: 'number',
@@ -95,6 +105,7 @@ const ownPropCounts: Record<string, number> = {
   skeleton: 3,
   spinner: 2,
   kbd: 2,
+  switch: 7,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,
@@ -295,7 +306,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
-    ['Spinner', { size: '"md"' }]
+    ['Spinner', { size: '"md"' }],
+    ['Switch', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
     const { argTypes, args } = story(name);
     for (const [prop, summary] of Object.entries(defaults)) {
@@ -433,6 +445,26 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Switch boolean state rows, the handler row without a widget and documented native rows', () => {
+    const { argTypes, args } = story('Switch');
+    for (const prop of ['checked', 'defaultChecked', 'disabled', 'required']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'boolean', required: false });
+      expect(argTypes[prop]?.control, prop).toEqual({ type: 'boolean' });
+    }
+    expect(argTypes.checked?.table?.defaultValue, 'checked has no fixed default').toBeUndefined();
+    expect(argTypes.name?.table?.defaultValue, 'name is absent by default').toBeUndefined();
+    expect(argTypes.onCheckedChange?.control).toBe(false);
+    expect(argTypes.onCheckedChange?.table?.disable).toBeUndefined();
+    expect(argTypes.onCheckedChange?.description).toBeTruthy();
+    expect(args).toEqual({});
+    for (const prop of ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className']) {
+      expect(argTypes[prop], prop).toEqual(story('Switch', false).argTypes[prop]);
+    }
+    for (const prop of ['ref', 'asChild', 'children', 'type', 'onChange', 'onClick', 'size', 'variant']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

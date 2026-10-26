@@ -21,7 +21,7 @@ C = [
 ("Field (textarea)","átomo","Textarea","atom","ui","—","—","extraer","Variantes `code` y `prose` (antes Field --code y --prose)."),
 ("Field (select)","átomo","Select","atom","ui","Select","Icon","extraer","Select de Radix con el aspecto de Field."),
 ("`.eg-check`","sin ficha","Checkbox","atom","ui","Checkbox","Icon","extraer","Existía solo como clase."),
-("`.eg-check--switch`","sin ficha","Switch","atom","ui","Switch","—","extraer",""),
+("`.eg-check--switch`","sin ficha","Switch","atom","ui","Switch","—","extraer","Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/72): bare 36×20 on/off switch with immediate effect over Radix Switch (`role=\"switch\"`, Space/Enter, hidden form input). Off is a recessed well with a grey thumb; on uses the primary gradient, `--shadow-btn-primary` and a black thumb moved 16px. `onCheckedChange` (`checked-change`), forwarded button ref, no own label or size axis. Legacy `.eg-check--switch` untouched. No stylesheet."),
 ("Field --range","átomo","Slider","atom","ui","Slider","—","extraer","Tamaño del anillo, umbrales, volumen."),
 ("—","—","RadioGroup","atom","ui","RadioGroup","—","nuevo","Grupo de opciones exclusivas; base de SelectTile y de chips exclusivos."),
 ("Chip","átomo","Chip","atom","ui","Toggle / ToggleGroup.Item","Avatar","mantener","Siempre interactivo (filtro o selección). Los grupos van en ChipGroup."),
