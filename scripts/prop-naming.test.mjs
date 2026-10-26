@@ -60,6 +60,9 @@ const postReceiptUsages = [
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/logo/types.ts#LogoProps' },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/logo/types.ts#LogoProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/logo/types.ts#LogoProps' },
   {
     conventionId: 'consumer-selected-condition',
     source: 'packages/ui/src/atoms/status-dot/types.ts#StatusDotProps'

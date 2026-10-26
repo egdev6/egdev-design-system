@@ -266,6 +266,37 @@ test('UI ships the Spinner icon-scale, stroke and canonical spin utilities with 
   assert.doesNotMatch(css, /\.eg-spinner[^{]*\{/, 'Spinner has no stylesheet: its marker carries no rule');
 });
 
+test('UI ships the Logo heights, token inks and link focus ring over the legacy marker', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // Heights are --spacing multiples: 28/32px bound steps and the 9 × 4px calculated step.
+  assert.match(rule('.h-7'), /height:\s*var\(--space-7\)\s*;/);
+  assert.match(rule('.h-8'), /height:\s*var\(--space-8\)\s*;/);
+  assert.match(rule('.h-9'), /height:\s*calc\(var\(--space-1\) \* 9\)\s*;/);
+  assert.match(rule('.h-full'), /height:\s*100%\s*;/);
+  assert.match(rule('.w-auto'), /width:\s*auto\s*;/);
+  assert.match(rule('.inline-block'), /display:\s*inline-block\s*;/);
+  assert.match(rule('.leading-none'), /line-height:\s*1\s*;/);
+  assert.match(rule('.rounded-sm'), /border-radius:\s*var\(--radius-sm[,)]/);
+  // D3: the artwork is painted only by the logo tokens and the white primitive.
+  assert.match(rule(String.raw`.fill-\(--logo-red\)`), /fill:\s*var\(--logo-red\)\s*;/);
+  assert.match(rule(String.raw`.fill-\(--logo-red-shade\)`), /fill:\s*var\(--logo-red-shade\)\s*;/);
+  assert.match(rule('.fill-primitive-white'), /fill:\s*var\(--color-primitive-white[,)]/);
+  assert.match(rule(String.raw`.focus-visible\:outline-none:focus-visible`), /outline-style:\s*none\s*;/);
+  assert.match(
+    rule(String.raw`.focus-visible\:shadow-focus:focus-visible`),
+    /--tw-shadow:\s*0 0 0 2px var\(--tw-shadow-color, #141518\), 0 0 0 4px var\(--tw-shadow-color, #FF0036\)\s*;/
+  );
+  // The legacy .eg-logo rule stays in the components layer, so the utilities above win.
+  const components = cssBlock(css, /@layer components\s*\{/);
+  assert.match(components, /\.eg-logo\s*\{[^}]*height:\s*32px/);
+  assert.doesNotMatch(utilities, /\.eg-logo[^{]*\{/, 'Logo adds no marker rule of its own');
+});
+
 test('UI ships the StatusDot ring, glow and fill utilities with its motion-safe pulse keyframes', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -661,6 +692,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Icon',
       'Kbd',
       'Label',
+      'Logo',
       'Portal',
       'ProductMark',
       'Skeleton',
@@ -684,6 +716,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
   assert.equal(typeof exported.Skeleton, 'function', 'Skeleton must be a named root export');
   assert.equal(typeof exported.Spinner, 'function', 'Spinner must be a plain function component without a ref API');
+  assert.equal(typeof exported.Logo, 'function', 'Logo must be a plain function component without a ref API (D8)');
   assert.equal(typeof exported.StatusDot, 'function', 'StatusDot must be a plain function component without a ref API');
   assert.equal(typeof exported.statusDotVariants, 'function', 'StatusDot composition recipe must be a public export');
   assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
@@ -752,6 +785,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LayoutAlignItems',
     'LayoutGap',
     'LayoutJustifyContent',
+    'Logo',
+    'LogoProps',
+    'LogoSize',
+    'LogoVariant',
     'Portal',
     'PortalProps',
     'ProductMark',
@@ -811,6 +848,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Label',
     'LabelProps',
     'LabelVariant',
+    'Logo',
+    'LogoProps',
+    'LogoSize',
+    'LogoVariant',
     'Portal',
     'PortalProps',
     'Skeleton',
@@ -969,6 +1010,35 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   ]) {
     const sized = renderToString(createElement(exported.Spinner, { size }));
     assert.ok(sized.includes(`class="eg-spinner inline-flex shrink-0 ${utility}"`), `Spinner ${size} preset`);
+  }
+  // Logo: named span image or named native link around hidden inline V4 artwork (#62).
+  const logo = renderToString(createElement(exported.Logo, { id: 'brand' }));
+  assert.match(
+    logo,
+    /^<span id="brand" role="img" aria-label="egdev" class="eg-logo inline-block shrink-0 leading-none rounded-sm h-8">/
+  );
+  assert.match(logo, /<svg class="block h-full w-auto" aria-hidden="true" focusable="false" viewBox="0 0 653 258">/);
+  assert.equal((logo.match(/<path /g) ?? []).length, 8, 'The wordmark ships its eight V4 paths');
+  assert.equal((logo.match(/class="fill-primitive-white"/g) ?? []).length, 1, 'One white name path');
+  assert.doesNotMatch(logo, /href=|tabindex=|<title|fill="|style=/);
+  const mark = renderToString(createElement(exported.Logo, { variant: 'mark' }));
+  assert.match(mark, /viewBox="0 0 638\.45 612\.37"/);
+  assert.equal((mark.match(/<polygon /g) ?? []).length, 7, 'The isotype ships its seven V4 polygons');
+  assert.equal((mark.match(/class="fill-\(--logo-red\)"/g) ?? []).length, 5);
+  assert.equal((mark.match(/class="fill-\(--logo-red-shade\)"/g) ?? []).length, 2);
+  const home = renderToString(createElement(exported.Logo, { href: '/', label: 'egdev, home', rel: 'home' }));
+  assert.match(
+    home,
+    /^<a rel="home" href="\/" aria-label="egdev, home" class="eg-logo [^"]*focus-visible:outline-none focus-visible:shadow-focus">/
+  );
+  assert.doesNotMatch(home, /role=/, 'The link keeps its native role');
+  for (const [size, utility] of [
+    ['sm', 'h-7'],
+    ['md', 'h-8'],
+    ['lg', 'h-9']
+  ]) {
+    const sized = renderToString(createElement(exported.Logo, { size }));
+    assert.ok(sized.includes(`rounded-sm ${utility}"`), `Logo ${size} preset`);
   }
   // StatusDot: always decorative, empty, data-state per state; ring vs glow geometry and the live pulse.
   const pulse = 'motion-safe:animate-[eg-status-dot-pulse_2.4s_var(--ease-out)_infinite]';
