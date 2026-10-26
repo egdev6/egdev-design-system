@@ -128,6 +128,7 @@ describe('Storybook TypeScript docgen contract', () => {
     // Each primitive exports its type alias first and runtime component second; dedupe the specifiers.
     expect([...new Set(modules)].sort()).toEqual([
       './atoms/gauge',
+      './atoms/kbd',
       './atoms/spinner',
       './lib/cn',
       './primitives/aspect-ratio',
@@ -145,6 +146,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Cluster',
       'Divider',
       'Gauge',
+      'Kbd',
       'Label',
       'Portal',
       'Skeleton',
@@ -684,6 +686,67 @@ describe('Spinner passive metadata contract', () => {
       expect(props[prop], `Spinner native ${prop} must remain available in autodocs`).toBeDefined();
     }
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live', 'tone', 'color']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('Kbd passive metadata contract', () => {
+  it('annotates exactly required children and optional label as text controls without defaults', () => {
+    const file = ast(source('atoms/kbd/types.ts'));
+    const properties = ownProps(file, ['KbdProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['children', 'label']);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(Boolean(property.questionToken), `Kbd.${name} optionality`).toBe(name === 'label');
+      expect(property.type?.getText(file), `Kbd.${name} type`).toBe('string');
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `Kbd.${name} control`).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe('text');
+      // Absent label is a derived plain-text rule, not a fixed default value.
+      expect(tags.find((tag) => tag.tagName.text === 'default')).toBeUndefined();
+    }
+  });
+
+  it('omits exactly children and dangerouslySetInnerHTML and exposes no ref or asChild', () => {
+    const file = ast(source('atoms/kbd/types.ts'));
+    const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'KbdProps');
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing KbdProps declaration');
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const union = node.typeArguments[1];
+        if (union && ts.isUnionTypeNode(union)) {
+          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual(['children', 'dangerouslySetInnerHTML']);
+    expect(alias.type.getText(file)).toMatch(/ComponentPropsWithoutRef<'kbd'>/);
+    expect(alias.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild/);
+  });
+
+  it('extracts required children, optional label and only the documented native rows', () => {
+    const doc = parser.parse(source('atoms/kbd/Kbd.tsx')).find((item) => item.displayName === 'Kbd');
+    if (!doc) {
+      throw new Error('Missing docgen for Kbd');
+    }
+    const { props } = doc;
+    expect(props.children).toMatchObject({ required: true, tags: { control: 'text' } });
+    expect(props.children?.type.name).toBe('string');
+    expect(props.label).toMatchObject({ required: false, tags: { control: 'text' } });
+    expect(props.label?.type.name).toBe('string');
+    expect(props.label?.defaultValue ?? null).toBeNull();
+    expect(props.label?.description).toMatch(/When omitted or empty.*read as-is/s);
+    for (const prop of ['id', 'title', 'className']) {
+      expect(props[prop], `Kbd native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick', 'variant', 'size']) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);

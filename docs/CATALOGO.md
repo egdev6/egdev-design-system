@@ -66,7 +66,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Chip** | Chip (átomo) | Toggle / ToggleGroup.Item | Avatar | mantener | Siempre interactivo (filtro o selección). Los grupos van en ChipGroup. |
 | **Badge** | Tag + StatusBadge (átomo) | — | Icon | fusionar | Etiqueta estática con `tone` (neutral, info, success, warning, danger, brand) e icono opcional; `solid`. |
 | **StatusDot** | StatusDot + LiveDot (átomo) | — | — | fusionar | LiveDot pasa a `StatusDot state='live'` (con pulso y `--static`). |
-| **Kbd** | Kbd (átomo) | — | — | mantener |  |
+| **Kbd** | Kbd (átomo) | — | — | mantener | Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/60): one key or shortcut glyph as native inline kbd text with a flat hairline treatment (label-default recipe, secondary text). Optional label gives symbol keys a spoken name through Radix VisuallyHidden and hides the glyph. Combos are consumer composition. No stylesheet. |
 | **Avatar** | Avatar (átomo) | Avatar | — | mantener | Radix Avatar da el fallback a iniciales mientras carga la imagen. |
 | **Logo** | Logo (átomo) | — | — | mantener |  |
 | **ProductMark** | — | — | — | nuevo | Letra o marca de producto con `gradient-btn-primary` + `shadow-btn-primary` (M, C, L, Cr, Mt, Q). Hoy está copiada a mano en cada app. |
