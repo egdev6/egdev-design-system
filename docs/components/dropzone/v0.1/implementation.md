@@ -149,7 +149,7 @@ The 674-unit result on base `1cae07e` and the 285-focused result for Switch main
 - Catalog composition is corrected from Icon + VisuallyHidden to Icon under approved D2; no primitive is retired.
 - CodeGraph reported not initialized. Initialization would write outside the delegated edit surfaces, so scoped filesystem inspection was used instead. No sibling checkout or persistent memory was read.
 - Visual conformity, computed browser styles, real picker/clipboard integration and browser Controls widgets: **Not evaluated**. Owner review on main remains separate.
-- No Git mutation. The pre-existing untracked `odd/tasks/particles-build.md` is preserved unchanged and is not part of this change.
+- The writer performed no Git mutations. The parent created the complete-file work-unit commits and integration merges. The pre-existing untracked `odd/tasks/particles-build.md` is not part of this change.
 
 ## Proposed complete-file commit units (parent only)
 
@@ -158,6 +158,21 @@ The 674-unit result on base `1cae07e` and the 285-focused result for Switch main
 3. `docs(ui): register Dropzone contract evidence` — registry JSON, generated naming view, naming regression test, catalog source and both generated catalog outputs, plus this implementation evidence. Historical receipts remain byte-identical.
 
 These were suggested review units, not commits performed by the writer. The parent subsequently reported the three complete-file commits recorded in the integration section above.
+
+## Parent full verification
+
+After the picker snapshot correction and both additive integrations, the parent verified merged tree `064b9fd` against RadioGroup main `f4d4202`. These results supersede the historical full-gate counts for delivery; the earlier observations remain recorded above.
+
+| Check | Observed result |
+| --- | --- |
+| Lint / typecheck / build | Passed; build preceded tests |
+| Full unit and metadata suite | 732 passed |
+| Naming check / naming tests | Valid / 82 passed |
+| Package exports | 35 passed |
+| Token suite | 22 passed |
+| Packed consumers | 12/12 passed, React 18.3.1 and 19.3.0 |
+
+The parent used the shared gate and packed locks, timeouts and memory caps. Native assessment was unavailable because untracked files required an explicit declaration; its returned plan retained writer self-verification, not an independent-review verdict. Browser, visual, real picker/clipboard and Controls-widget checks remain **Not evaluated**. No CI run is claimed.
 
 ## Ready PR body
 
@@ -173,7 +188,7 @@ These were suggested review units, not commits performed by the writer. The pare
 - Bounded picker correction RED: 2 failed / 13 passed; GREEN: 15 passed, with focused typecheck/lint verification. Selected File objects are snapshotted before reset; consumers still run after reset.
 - Before that correction, all eight gates passed: 674 unit tests, 82 naming tests, 31 export tests and 12 packed-matrix tests. Parent reruns full gates after current-main integration; do not treat the earlier build/packed results as post-correction evidence.
 - Historical Switch-main integration (cb3a26e): 12 focused files / 285 tests, lint (287 files), typecheck, naming check and 82 naming tests passed.
-- Current RadioGroup-main integration (f4d4202): 13 focused files / 314 tests, lint (293 files), typecheck, naming check and 82 naming tests pass. Full merged-tree build/export/packed/full-suite gates remain with the parent.
+- RadioGroup-main integration (f4d4202): 13 focused files / 314 tests, lint (293 files), typecheck, naming check and 82 naming tests passed. Parent full merged-tree verification then passed: 732 unit tests, 82 naming tests, 35 export tests, 22 token tests and 12 packed-matrix tests, with lint/typecheck/build/naming check also passing.
 - Browser/visual/Controls checks: Not evaluated; owner reviews Storybook on main. No CI run claimed.
 - Existing packed ProgressBar nesting warnings are reported and left unchanged.
 
