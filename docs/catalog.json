@@ -292,9 +292,9 @@
     "nivel": "atom",
     "destino": "ui",
     "radix": "Avatar",
-    "compone": "—",
+    "compone": "Icon",
     "accion": "mantener",
-    "notas": "Radix Avatar da el fallback a iniciales mientras carga la imagen."
+    "notas": "Implemented in @egdev/ui under the approved v0.1 contract: passive identity disc with Radix-managed photo loading and immediate user-icon fallback, sm/md/lg/xl sizes, an optional decorative network badge and paused presentation. Root label owns the accessible name; decorative without it. No initials, interaction, ref, asChild or stylesheet. Contract: [#51](https://github.com/egdev6/egdev-design-system/issues/51)."
   },
   {
     "actual": "Logo",

@@ -74,6 +74,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "Avatar",
+        "type": "AvatarSize ('sm' | 'md' | 'lg' | 'xl')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/avatar/types.ts",
+          "symbol": "AvatarProps",
+          "revision": "sha256:b0a6b163639218e7177cd7254c78a4724ef73658ed0861d18cc96e5e6735c3cb"
+        }
+      },
+      {
         "component": "Gauge",
         "type": "GaugeSize | number (GaugeSize = 'sm' | 'md' | 'lg'; numeric CSS pixels, e.g. 64)",
         "status": "existing",
@@ -261,6 +271,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Avatar",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/avatar/types.ts",
+          "symbol": "AvatarProps",
+          "revision": "sha256:b0a6b163639218e7177cd7254c78a4724ef73658ed0861d18cc96e5e6735c3cb"
+        }
+      },
       {
         "component": "Gauge",
         "type": "string",
@@ -484,7 +504,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Avatar",
+        "type": "IconName",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/avatar/types.ts",
+          "symbol": "AvatarProps",
+          "revision": "sha256:b0a6b163639218e7177cd7254c78a4724ef73658ed0861d18cc96e5e6735c3cb"
+        }
+      }
+    ]
   },
   {
     "id": "paused-presentation",
@@ -500,7 +531,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Avatar",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/avatar/types.ts",
+          "symbol": "AvatarProps",
+          "revision": "sha256:b0a6b163639218e7177cd7254c78a4724ef73658ed0861d18cc96e5e6735c3cb"
+        }
+      }
+    ]
   },
   {
     "id": "leading-icon",

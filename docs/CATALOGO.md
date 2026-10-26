@@ -67,7 +67,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Badge** | Tag + StatusBadge (átomo) | — | Icon | fusionar | Etiqueta estática con `tone` (neutral, info, success, warning, danger, brand) e icono opcional; `solid`. |
 | **StatusDot** | StatusDot + LiveDot (átomo) | — | — | fusionar | LiveDot pasa a `StatusDot state='live'` (con pulso y `--static`). |
 | **Kbd** | Kbd (átomo) | — | — | mantener | Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/60): one key or shortcut glyph as native inline kbd text with a flat hairline treatment (label-default recipe, secondary text). Optional label gives symbol keys a spoken name through Radix VisuallyHidden and hides the glyph. Combos are consumer composition. No stylesheet. |
-| **Avatar** | Avatar (átomo) | Avatar | — | mantener | Radix Avatar da el fallback a iniciales mientras carga la imagen. |
+| **Avatar** | Avatar (átomo) | Avatar | Icon | mantener | Implemented in @egdev/ui under the approved v0.1 contract: passive identity disc with Radix-managed photo loading and immediate user-icon fallback, sm/md/lg/xl sizes, an optional decorative network badge and paused presentation. Root label owns the accessible name; decorative without it. No initials, interaction, ref, asChild or stylesheet. Contract: [#51](https://github.com/egdev6/egdev-design-system/issues/51). |
 | **Logo** | Logo (átomo) | — | — | mantener |  |
 | **ProductMark** | — | — | — | nuevo | Letra o marca de producto con `gradient-btn-primary` + `shadow-btn-primary` (M, C, L, Cr, Mt, Q). Hoy está copiada a mano en cada app. |
 | **ProgressBar** | ProgressBar (átomo) | Progress | — | mantener | Radix Progress da `role=progressbar` y los aria-value*. |
