@@ -287,6 +287,79 @@ test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet ru
   assert.equal(kbdRules(css), kbdRules(legacy), 'Kbd has no stylesheet: its marker carries no new rule');
 });
 
+test('UI ships every static Badge CVA utility and all twelve token treatments without a stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (utility) => {
+    const selector = `.${utility.replace(/[^a-zA-Z0-9_-]/g, (character) => `\\${character}`)}`;
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/atoms/badge/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  const collect = (node) => {
+    if (node && ts.isStringLiteral(node)) {
+      for (const value of node.text.split(/\s+/).filter(Boolean)) {
+        classes.add(value);
+      }
+    }
+  };
+  const visit = (node) => {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      collect(node.arguments[0]);
+    }
+    if (ts.isPropertyAssignment(node) && ['className', 'soft', 'solid'].includes(node.name.getText(source))) {
+      collect(node.initializer);
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  assert.ok(classes.size > 30, 'Scan the real base, decorative part and compound variants');
+  for (const utility of classes) {
+    if (utility !== 'eg-badge') {
+      rule(utility);
+    }
+  }
+  for (const tone of ['fg-secondary', 'status-info', 'status-success', 'status-warning', 'status-danger']) {
+    assert.ok(rule(`text-${tone}`).includes(`var(--color-${tone}`));
+    assert.match(rule(`border-${tone}/30`), /30%/);
+    assert.match(rule(`bg-${tone}/8`), /8%/);
+    assert.ok(rule(`bg-${tone}`).includes(`var(--color-${tone}`));
+  }
+  for (const [utility, token] of [
+    ['text-primitive-red-200', 'color-primitive-red-200'],
+    ['border-alpha-red-22', 'color-alpha-red-22'],
+    ['bg-alpha-red-12', 'color-alpha-red-12'],
+    ['bg-action-primary-solid-bg', 'color-action-primary-solid-bg'],
+    ['text-action-primary-solid-fg', 'color-action-primary-solid-fg'],
+    ['text-fg-on-status', 'color-fg-on-status']
+  ]) {
+    assert.ok(rule(utility).includes(`var(--${token}`), utility);
+  }
+  for (const [utility, factor] of [
+    ['size-3.5', '3.5'],
+    ['gap-1.5', '1.5'],
+    ['py-1.5', '1.5'],
+    ['px-2.5', '2.5']
+  ]) {
+    assert.ok(rule(utility).includes(`calc(var(--space-1) * ${factor})`), utility);
+  }
+  // Tailwind expands named shadow tokens and inserts its optional color override.
+  const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
+  const edge = /--shadow-edge:\s*([^;]+);/.exec(theme)?.[1];
+  assert.ok(edge);
+  assert.ok(
+    rule('shadow-edge').includes(`--tw-shadow: ${edge.replace(/(rgba\([^)]+\))/, 'var(--tw-shadow-color, $1)')};`)
+  );
+  assert.match(rule('shadow-none'), /--tw-shadow:\s*0 0 #0000\s*;/);
+  assert.doesNotMatch(css, /\.eg-badge\s*[,{]/, 'Badge has no stylesheet');
+});
+
 test('UI ships the approved Gauge geometry in the components layer', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const components = cssBlock(css, /@layer components\s*\{/);
@@ -533,6 +606,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     Object.keys(exported).sort(),
     [
       'AspectRatio',
+      'Badge',
       'Cluster',
       'Divider',
       'Gauge',
@@ -549,6 +623,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Surface',
       'Text',
       'VisuallyHidden',
+      'badgeVariants',
       'cn',
       'labelVariants',
       'surfaceVariants'
@@ -594,6 +669,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.deepEqual([...names].sort(), [
     'AspectRatio',
     'AspectRatioProps',
+    'Badge',
+    'BadgeProps',
+    'BadgeTone',
+    'BadgeVariant',
     'Cluster',
     'ClusterProps',
     'Divider',
@@ -645,6 +724,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'TitleVariant',
     'VisuallyHidden',
     'VisuallyHiddenProps',
+    'badgeVariants',
     'cn',
     'labelVariants',
     'surfaceVariants'
