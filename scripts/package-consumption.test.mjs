@@ -30,9 +30,11 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Kbd, Label, Logo, ProductMark, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
+import { AspectRatio, Checkbox, Cluster, Divider, Gauge, Heading, Icon, Kbd, Label, Logo, ProductMark, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
+  CheckboxCheckedState,
+  CheckboxProps,
   DividerOrientation,
   DividerProps,
   GaugeProps,
@@ -117,6 +119,31 @@ export const labelReference = createElement(Label, { ...labelDefaults, ref: crea
 export function LabelSamples() {
   return createElement('div', { 'aria-label': 'Label samples' }, createElement(Label, labelDefaults), createElement(Label, labelChoice));
 }
+export const checkboxRef = createRef<HTMLButtonElement>();
+export const checkboxDefaults: CheckboxProps = { 'aria-label': 'Notify subscribers' };
+export function CheckboxSamples() {
+  const mixed: CheckboxCheckedState = 'indeterminate';
+  return createElement('section', { 'aria-label': 'Form options' },
+    createElement(Checkbox, { ...checkboxDefaults, ref: checkboxRef, id: 'checkbox-default' }),
+    createElement(Checkbox, { checked: mixed, id: 'checkbox-mixed', 'aria-label': 'Select all' }),
+    createElement(Checkbox, { defaultChecked: true, disabled: true, id: 'checkbox-disabled', 'aria-label': 'Unavailable option' }),
+    createElement('form', { id: 'checkbox-form' },
+      createElement(Checkbox, { id: 'checkbox-form-control', name: 'notify', value: 'yes', required: true, 'aria-describedby': 'checkbox-hint', className: 'ms-1 ms-2' }),
+      createElement('label', { htmlFor: 'checkbox-form-control' }, 'Email notifications'),
+      createElement('p', { id: 'checkbox-hint' }, 'Saved with the form')));
+}
+// @ts-expect-error Checkbox has no asChild composition API.
+const slottedCheckbox: CheckboxProps = { asChild: true };
+// @ts-expect-error Checkbox owns its internal indicator; children are not public.
+const checkboxChildren: CheckboxProps = { children: 'Option' };
+// @ts-expect-error Checkbox is a fixed 18px control, with no size axis.
+const checkboxSize: CheckboxProps = { size: 'sm' };
+// @ts-expect-error Mixed state is indeterminate, never the ARIA string mixed.
+const invalidCheckboxState: CheckboxProps = { checked: 'mixed' };
+// @ts-expect-error Native onChange is replaced by checked-change notification.
+const checkboxChange: CheckboxProps = { onChange: () => undefined };
+// @ts-expect-error Button type is owned by Radix Checkbox.
+const checkboxType: CheckboxProps = { type: 'submit' };
 export const gaugeDefaults: GaugeProps = { label: 'Capacity', value: 42.5 };
 export const gaugeWarning: GaugeProps = {
   label: 'Warning capacity', value: 42.5, state: gaugeState, stateText: 'Review capacity',
@@ -315,6 +342,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(LabelSamples),
     createElement(SkeletonSamples),
     createElement(IconSamples, { iconName }),
+    createElement(CheckboxSamples),
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(StatusDotSamples, { pulse: statusDotPulse }),
     createElement(KbdSamples),
@@ -534,6 +562,35 @@ const slottedSurfaceText: SurfaceProps = { asChild: true, children: 'Text' };
 // @ts-expect-error The default div promises only an HTMLDivElement ref.
 const wideSurfaceRef: ComponentProps<typeof Surface> = { ref: createRef<HTMLElement>() };
 `;
+
+// Checkbox ships only its fixed geometry and Radix-state token recipes, never a marker rule.
+function assertCheckboxCSS(css) {
+  for (const selector of [
+    String.raw`.size-4\.5`,
+    '.size-3',
+    '.inline-grid',
+    '.place-items-center',
+    String.raw`.disabled\:opacity-45`,
+    String.raw`.aria-invalid\:data-\[state\=unchecked\]\:border-status-danger`,
+    String.raw`.data-\[state\=checked\]\:\[\&\>svg\:last-child\]\:hidden`,
+    String.raw`.data-\[state\=indeterminate\]\:\[\&\>svg\:first-child\]\:hidden`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Checkbox utility ' + selector);
+  }
+  for (const state of ['checked', 'indeterminate']) {
+    const prefix = `.data-\\[state\\=${state}\\]\\:`;
+    for (const suffix of [
+      String.raw`bg-\[image\:var\(--gradient-btn-primary\)\]`,
+      String.raw`shadow-\[var\(--shadow-btn-primary\)\]`,
+      String.raw`focus-visible\:shadow-\[var\(--shadow-focus\)\]`
+    ]) {
+      assert.ok(css.includes(prefix + suffix), 'Missing Checkbox state utility ' + prefix + suffix);
+    }
+  }
+  assert.match(css, /\.size-4\\\.5\s*\{[^}]*width:\s*calc\(var\(--space-1\)\s*\*\s*4\.5\)/);
+  assert.match(css, /\.inline-grid\s*\{[^}]*display:\s*inline-grid/);
+  assert.doesNotMatch(css, /\.eg-checkbox\s*[,{]/, 'Checkbox has no hand-authored stylesheet');
+}
 
 // Surface ships no stylesheet: only token-backed CVA utilities, including fallback variants.
 function assertSurfaceCSS(css) {
@@ -933,6 +990,7 @@ ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AspectRatio',
+  'Checkbox',
   'Cluster',
   'Divider',
   'Gauge',
@@ -957,6 +1015,8 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'statusDotVariants',
   'surfaceVariants'
 ]);
+${assertCheckboxCSS.toString()}
+assertCheckboxCSS(shippedStyles);
 ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
@@ -1049,6 +1109,16 @@ for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"',
 const dom = new JSDOM(html);
 try {
   const document = dom.window.document;
+  const checkbox = document.getElementById('checkbox-default');
+  assert.ok(checkbox?.classList.contains('eg-checkbox'), 'SSR must retain Checkbox');
+  assert.equal(checkbox.tagName, 'BUTTON');
+  assert.equal(checkbox.getAttribute('role'), 'checkbox');
+  assert.equal(checkbox.getAttribute('aria-checked'), 'false');
+  const mixedCheckbox = document.getElementById('checkbox-mixed');
+  assert.equal(mixedCheckbox.getAttribute('aria-checked'), 'mixed');
+  assert.equal(mixedCheckbox.querySelector('span').getAttribute('data-state'), 'indeterminate');
+  assert.equal(mixedCheckbox.querySelectorAll('svg[aria-hidden="true"]').length, 2);
+  assert.equal(document.getElementById('checkbox-form').querySelector('input').getAttribute('name'), 'notify');
   const normal = document.querySelector('.eg-gauge[aria-label="Capacity"]');
   assert.equal(normal.getAttribute('role'), 'meter');
   assert.equal(normal.getAttribute('data-state'), 'normal');
@@ -1443,7 +1513,7 @@ for (const value of [NaN, Infinity, -Infinity]) {
   assert.ok(rendered.includes('Disconnected capacity') && rendered.includes('Data unavailable'));
   assert.doesNotMatch(rendered, /role="meter"|aria-value(?:now|min|max|text)=|eg-gauge-arc|--eg-gauge-value|Hidden condition|Hidden center|aria-live=|<button|tabindex=/);
 }
-console.log(JSON.stringify({ ssr: ['Gauge finite, bounded and unavailable', 'decorative centers', 'visible conditions'], bytes: html.length }));
+console.log(JSON.stringify({ ssr: ['Gauge finite, bounded and unavailable', 'decorative centers', 'visible conditions', 'Checkbox binary/mixed ARIA, Icon indicator and form input'], bytes: html.length }));
 `;
 
 const csr = `
@@ -1452,18 +1522,24 @@ import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 const stage = (csrStage) => console.log(JSON.stringify({ csrStage }));
 stage('setup:start');
 const dom = new JSDOM('<div id="app"></div>', { url: 'http://localhost/', pretendToBeVisual: true });
-for (const name of ['window', 'document', 'navigator', 'HTMLElement', 'Element', 'Node', 'Event', 'CustomEvent', 'MutationObserver']) {
+for (const name of ['window', 'document', 'navigator', 'HTMLElement', 'HTMLFormElement', 'Element', 'Node', 'Event', 'CustomEvent', 'MutationObserver']) {
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 }
 for (const name of ['getComputedStyle', 'requestAnimationFrame', 'cancelAnimationFrame']) {
   globalThis[name] = dom.window[name].bind(dom.window);
 }
+// jsdom lacks ResizeObserver; no browser layout or computed-style result is claimed.
+globalThis.ResizeObserver = class {
+  observe() { /* Hidden-input geometry only. */ }
+  unobserve() { /* No real observer registered. */ }
+  disconnect() { /* No real observer registered. */ }
+};
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
+const { App, aspectWideRef, checkboxRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -1474,12 +1550,36 @@ try {
   assert.equal(hiddenNoteRef.current?.tagName, 'SPAN');
   assert.ok(slottedHeadingRef.current instanceof HTMLElement);
   assert.equal(slottedHeadingRef.current?.tagName, 'H2', 'The slotted ref must expose the h2 host');
-  const buttons = [...document.querySelectorAll('button')];
-  assert.equal(buttons.length, 4, 'Only intrinsic consumer and Cluster harness controls may be focusable');
+  const buttons = [...document.querySelectorAll('button:not(.eg-checkbox)')];
+  assert.equal(buttons.length, 4, 'Retain the intrinsic consumer and Cluster harness controls separately from Checkbox');
   buttons[0].focus();
   assert.ok(document.activeElement === buttons[0], 'First intrinsic button must receive focus');
   buttons[1].focus();
   assert.ok(document.activeElement === buttons[1], 'Last intrinsic button must receive focus');
+  stage('checkbox:interaction:start');
+  const checkbox = document.getElementById('checkbox-default');
+  assert.ok(checkboxRef.current === checkbox, 'Checkbox ref must target the button on both React majors');
+  assert.equal(checkbox.tagName, 'BUTTON');
+  assert.equal(checkbox.getAttribute('aria-checked'), 'false');
+  await act(async () => checkbox.click());
+  assert.equal(checkbox.getAttribute('aria-checked'), 'true');
+  assert.equal(checkbox.querySelector('span').getAttribute('data-state'), 'checked');
+  assert.equal(document.getElementById('checkbox-mixed').getAttribute('aria-checked'), 'mixed');
+  const disabledCheckbox = document.getElementById('checkbox-disabled');
+  await act(async () => disabledCheckbox.click());
+  assert.equal(disabledCheckbox.getAttribute('aria-checked'), 'true');
+  assert.equal(disabledCheckbox.disabled, true);
+  const form = document.getElementById('checkbox-form');
+  const field = document.getElementById('checkbox-form-control');
+  assert.equal(form.querySelector('input').required, true);
+  assert.equal(new dom.window.FormData(form).get('notify'), null);
+  await act(async () => form.querySelector('label').click());
+  assert.equal(field.getAttribute('aria-checked'), 'true');
+  assert.equal(new dom.window.FormData(form).get('notify'), 'yes');
+  assert.ok(field.classList.contains('ms-2') && !field.classList.contains('ms-1'));
+  await act(async () => form.reset());
+  assert.equal(field.getAttribute('aria-checked'), 'false');
+  stage('checkbox:interaction:complete');
   stage('gauge:rerender:start');
   const measurement = () => document.querySelector('section[aria-label="Measurements"] > .eg-gauge');
   assert.equal(measurement().getAttribute('aria-valuenow'), '42.5');
@@ -1707,6 +1807,8 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
+  assert.ok(checkboxRef.current === null, 'Checkbox ref must be cleaned up after the App unmounts');
+  console.log(JSON.stringify({ checkbox: ['button ref and cleanup', 'uncontrolled click', 'controlled mixed state', 'disabled activation', 'label activation', 'required and checked-only FormData', 'form reset', 'layout merge'] }));
   console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
@@ -1797,6 +1899,8 @@ ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
 ${assertProductMarkCSS.toString()}
+${assertCheckboxCSS.toString()}
+assertCheckboxCSS(emitted);
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1839,6 +1943,7 @@ const tailwind = await build({ configFile: false, logLevel: 'error', plugins: [t
 const twAssets = [tailwind].flat().flatMap((bundle) => bundle.output).filter((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'));
 const twCss = twAssets.map((asset) => String(asset.source)).join(' ');
 assert.ok(twAssets.length > 0, 'Tailwind build must emit CSS');
+assertCheckboxCSS(twCss);
 assertGaugeCSS(twCss);
 assertDividerCSS(twCss, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(

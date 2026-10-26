@@ -4,6 +4,7 @@
 @import "./palette.css";
 
 /* Example layout utilities belong to Storybook, not the production UI stylesheet. */
+@source "../packages/ui/src/atoms/checkbox/Checkbox.stories.tsx";
 @source "../packages/ui/src/atoms/gauge/Gauge.stories.tsx";
 @source "../packages/ui/src/atoms/icon/Icon.stories.tsx";
 @source "../packages/ui/src/atoms/kbd/Kbd.stories.tsx";
