@@ -79,6 +79,67 @@ test('UI publishes its stable declaration entry and reachable internal declarati
   context.diagnostic(`Checked ${visited.size} reachable declaration files`);
 });
 
+test('UI ships Select token recipes, Radix geometry and precise state utilities', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`));
+  for (const [selector, declaration] of [
+    ['.min-h-11', /min-height:\s*calc\(var\(--space-1\) \* 11\)/],
+    ['.min-h-9', /min-height:\s*calc\(var\(--space-1\) \* 9\)/],
+    ['.pl-3', /padding-left:\s*var\(--space-3\)/],
+    ['.pr-10', /padding-right:\s*var\(--space-10\)/],
+    [String.raw`.py-1\.5`, /padding-block:\s*calc\(var\(--space-1\) \* 1\.5\)/],
+    ['.border-solid', /border-style:\s*solid/],
+    [String.raw`.border-\(length\:--border-width\)`, /border-width:\s*var\(--border-width\)/],
+    [String.raw`.min-w-\[var\(--radix-select-trigger-width\)\]`, /min-width:\s*var\(--radix-select-trigger-width\)/],
+    [
+      String.raw`.max-h-\[var\(--radix-select-content-available-height\)\]`,
+      /max-height:\s*var\(--radix-select-content-available-height\)/
+    ],
+    ['.transition-colors', /transition-property:\s*color, background-color, border-color/],
+    [String.raw`.duration-\[var\(--duration-fast\)\]`, /transition-duration:\s*var\(--duration-fast\)/],
+    [
+      String.raw`.font-\(weight\:--text-body-default--font-weight\)`,
+      /font-weight:\s*var\(--text-body-default--font-weight\)/
+    ]
+  ]) {
+    assert.match(rule(selector), declaration, selector);
+  }
+  for (const text of [
+    'var(--shadow-well)',
+    'var(--shadow-ring-brand)',
+    'var(--shadow-edge-strong)',
+    'var(--shadow-elev-3)',
+    'var(--blur-overlay)',
+    'var(--focus-width)',
+    'var(--color-focus-ring-inverse',
+    'data-highlighted',
+    'data-disabled',
+    'data-placeholder',
+    'data-state="open"',
+    'backdrop-filter: none',
+    'color-mix(in oklab, var(--color-fg-default',
+    '6%',
+    'saturate(150%)'
+  ]) {
+    assert.ok(css.includes(text), `Missing Select CSS ${text}`);
+  }
+  assert.match(utilities, /prefers-reduced-transparency:\s*reduce/);
+  const reduce = cssBlock(utilities, /@media \(prefers-reduced-motion: reduce\)\s*\{/);
+  assert.match(reduce, /motion-reduce\\:transition-none/);
+  assert.doesNotMatch(utilities, /\.eg-select(?:-content)?\s*\{/, 'Select has no stylesheet');
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  assert.ok(exported.Select, 'Select must be public');
+  for (const name of ['selectTriggerVariants', 'selectContentVariants', 'selectItemVariants', 'useSelect']) {
+    assert.equal(exported[name], undefined, `${name} must remain private`);
+  }
+  const types = readFileSync(resolve(root, 'packages/ui/dist/atoms/select/types.d.ts'), 'utf8');
+  for (const name of ['SelectProps', 'SelectOption', 'SelectSize']) {
+    assert.ok(types.includes(`type ${name}`), `${name} must be declared`);
+  }
+});
+
 test('UI publishes its stable JavaScript entry', () => {
   assert.equal(ui.exports['.'].import, './dist/index.js');
   assert.equal(ui.main, ui.exports['.'].import);
@@ -225,14 +286,18 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
     /animation:\s*none\s*;/,
     'Reduced-motion preferences must stop the pulse'
   );
-  // Pulse (Skeleton) and spin (Spinner, #69) are the only approved animation utilities; transitions
-  // are limited to the pre-existing static Gauge transition-none and never reach the Skeleton.
+  // Pulse (Skeleton) and spin (Spinner, #69) are the only approved animation utilities.
+  // Select #67 adds transition-colors only; Skeleton remains static in its own DOM checks.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
     'Only the approved pulse and spin animation utilities may ship'
   );
-  assert.doesNotMatch(utilityLayer, /\.transition-(?!none)\w/, 'No animated transition utility may ship');
+  assert.doesNotMatch(
+    utilityLayer,
+    /\.transition-(?!(?:none|colors)\s*\{)[\w-]+/,
+    'Only Select transition-colors and static transition-none may ship'
+  );
   assert.doesNotMatch(utilityLayer, /@keyframes/, 'The utilities layer must not define keyframes');
 });
 
@@ -649,6 +714,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Logo',
       'Portal',
       'ProductMark',
+      'Select',
       'Skeleton',
       'Slot',
       'Slottable',
@@ -665,6 +731,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     ],
     'Only approved components and cn are public runtime exports'
   );
+  assert.equal(exported.Select?.$$typeof, Symbol.for('react.forward_ref'), 'Select forwards the native button ref');
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
   // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
@@ -744,6 +811,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'PortalProps',
     'ProductMark',
     'ProductMarkProps',
+    'Select',
+    'SelectOption',
+    'SelectProps',
+    'SelectSize',
     'Skeleton',
     'SkeletonProps',
     'SkeletonSize',

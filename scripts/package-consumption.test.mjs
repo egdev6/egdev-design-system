@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Kbd, Label, Logo, ProductMark, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
+import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Kbd, Label, Logo, ProductMark, Select, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -48,6 +48,9 @@ import type {
   LogoSize,
   LogoVariant,
   ProductMarkProps,
+  SelectProps,
+  SelectOption,
+  SelectSize,
   SkeletonProps,
   SkeletonSize,
   SkeletonVariant,
@@ -286,6 +289,36 @@ export function SurfaceSamples({ surfaceElevation = 1 }: { surfaceElevation?: Su
     createElement(Surface, { tone: 'surface-3', asChild: true, ref: surfaceArticleRef,
       children: createElement(SurfaceArticle, { 'aria-label': 'Article surface', ref: surfaceArticleChildRef }, 'Entry') }));
 }
+const selectOptions: SelectOption[] = [
+  { value: 'public', label: 'Public' },
+  { value: 'private', label: 'Private' },
+  { value: 'archived', label: 'Archived', disabled: true }
+];
+const selectSize: SelectSize = 'sm';
+export const selectRef = createRef<HTMLButtonElement>();
+export const selectDefaults: SelectProps = { options: selectOptions, 'aria-label': 'Visibility' };
+export function SelectSamples() {
+  return createElement('form', { id: 'visibility-form' },
+    createElement('label', { htmlFor: 'select-default' }, 'Visibility'),
+    createElement(Select, { ...selectDefaults, id: 'select-default', name: 'visibility', required: true,
+      defaultValue: 'public', ref: selectRef, className: 'w-auto mb-1 mb-3' }),
+    createElement(Select, { options: selectOptions, id: 'select-compact', size: selectSize,
+      'aria-label': 'Compact visibility', placeholder: 'Choose visibility' }),
+    createElement(Select, { options: selectOptions, id: 'select-disabled', disabled: true, name: 'disabled-visibility',
+      'aria-label': 'Disabled visibility', defaultValue: 'private' }));
+}
+// @ts-expect-error Select requires its options data.
+const missingSelectOptions: SelectProps = {};
+// @ts-expect-error Select accepts string option labels, not React elements.
+const richSelectOption: SelectOption = { value: 'rich', label: createElement('span', null, 'Rich') };
+// @ts-expect-error Select has no public open-state API.
+const openSelect: SelectProps = { options: selectOptions, open: true };
+// @ts-expect-error Select has no compound-child API.
+const childrenSelect: SelectProps = { options: selectOptions, children: 'Public' };
+// @ts-expect-error Select has no asChild API.
+const slottedSelect: SelectProps = { options: selectOptions, asChild: true };
+// @ts-expect-error Select only supports md and sm.
+const largeSelect: SelectProps = { options: selectOptions, size: 'lg' };
 export const dividerDefaults: DividerProps = {};
 export const dividerSemanticVertical: DividerProps = {
   orientation: 'vertical', decorative: false, className: 'consumer-rule'
@@ -320,6 +353,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(KbdSamples),
     createElement(LogoSamples),
     createElement(ProductMarkSamples),
+    createElement(SelectSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -536,6 +570,44 @@ const wideSurfaceRef: ComponentProps<typeof Surface> = { ref: createRef<HTMLElem
 `;
 
 // Surface ships no stylesheet: only token-backed CVA utilities, including fallback variants.
+function assertSelectCSS(css) {
+  for (const utility of [
+    String.raw`.min-h-11`,
+    String.raw`.min-h-9`,
+    String.raw`.py-1\.5`,
+    String.raw`.border-\(length\:--border-width\)`,
+    String.raw`.min-w-\[var\(--radix-select-trigger-width\)\]`,
+    String.raw`.max-h-\[var\(--radix-select-content-available-height\)\]`,
+    String.raw`.data-\[state\=open\]\:shadow-\[var\(--shadow-well\)\,var\(--shadow-ring-brand\)\]`,
+    String.raw`.data-highlighted\:bg-fg-default\/6`,
+    String.raw`.data-disabled\:opacity-45`,
+    String.raw`.data-placeholder\:text-fg-muted`,
+    String.raw`.focus-visible\:ring-\[length\:var\(--focus-width\)\]`,
+    String.raw`.focus-visible\:ring-focus-ring-inverse`,
+    String.raw`.aria-invalid\:border-status-danger`,
+    String.raw`.transition-colors`
+  ]) {
+    assert.ok(css.includes(utility), 'Missing Select utility ' + utility);
+  }
+  for (const token of [
+    '--shadow-well',
+    '--shadow-ring-brand',
+    '--shadow-edge-strong',
+    '--shadow-elev-3',
+    '--blur-overlay',
+    '--focus-width'
+  ]) {
+    assert.ok(css.includes('var(' + token + ')'), 'Select must consume ' + token);
+  }
+  assert.match(css, /min-height:\s*calc\(var\(--space-1\) \* 11\)/);
+  assert.match(css, /min-height:\s*calc\(var\(--space-1\) \* 9\)/);
+  assert.match(css, /prefers-reduced-transparency:\s*reduce/);
+  assert.match(css, /backdrop-filter:\s*none/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+  assert.ok(css.includes(String.raw`.motion-reduce\:transition-none`));
+  assert.doesNotMatch(css, /\.eg-select(?:-content)?\s*\{/, 'Select has no stylesheet');
+}
+
 function assertSurfaceCSS(css) {
   for (const selector of [
     '.bg-surface-0',
@@ -943,6 +1015,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Logo',
   'Portal',
   'ProductMark',
+  'Select',
   'Skeleton',
   'Slot',
   'Slottable',
@@ -966,6 +1039,8 @@ ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
 ${assertProductMarkCSS.toString()}
+${assertSelectCSS.toString()}
+assertSelectCSS(shippedStyles);
 assertGaugeCSS(shippedStyles);
 assertIconCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
@@ -1049,6 +1124,17 @@ for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"',
 const dom = new JSDOM(html);
 try {
   const document = dom.window.document;
+  const select = document.getElementById('select-default');
+  assert.equal(select.tagName, 'BUTTON');
+  assert.equal(select.getAttribute('role'), 'combobox');
+  assert.equal(select.getAttribute('aria-expanded'), 'false');
+  assert.ok(select.classList.contains('eg-select') && select.classList.contains('min-h-11'));
+  assert.ok(select.classList.contains('w-auto') && select.classList.contains('mb-3'));
+  assert.ok(!select.classList.contains('w-full') && !select.classList.contains('mb-1'));
+  assert.ok(select.querySelector('svg.eg-icon[aria-hidden="true"]'), 'Select composes the decorative Icon');
+  assert.ok(document.getElementById('select-compact').textContent.includes('Choose visibility'));
+  assert.ok(document.getElementById('select-compact').classList.contains('min-h-9'));
+  assert.ok(document.getElementById('select-disabled').disabled);
   const normal = document.querySelector('.eg-gauge[aria-label="Capacity"]');
   assert.equal(normal.getAttribute('role'), 'meter');
   assert.equal(normal.getAttribute('data-state'), 'normal');
@@ -1452,18 +1538,22 @@ import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 const stage = (csrStage) => console.log(JSON.stringify({ csrStage }));
 stage('setup:start');
 const dom = new JSDOM('<div id="app"></div>', { url: 'http://localhost/', pretendToBeVisual: true });
-for (const name of ['window', 'document', 'navigator', 'HTMLElement', 'Element', 'Node', 'Event', 'CustomEvent', 'MutationObserver']) {
+for (const name of ['window', 'document', 'navigator', 'HTMLElement', 'HTMLFormElement', 'HTMLSelectElement', 'HTMLInputElement', 'DocumentFragment', 'NodeFilter', 'Element', 'Node', 'Event', 'KeyboardEvent', 'CustomEvent', 'MutationObserver']) {
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 }
 for (const name of ['getComputedStyle', 'requestAnimationFrame', 'cancelAnimationFrame']) {
   globalThis[name] = dom.window[name].bind(dom.window);
 }
+// Geometry-only jsdom shims; real Radix interaction remains installed and unmocked.
+globalThis.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} };
+HTMLElement.prototype.scrollIntoView = () => {};
+HTMLElement.prototype.hasPointerCapture = () => false;
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
+const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, selectRef } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -1475,7 +1565,7 @@ try {
   assert.ok(slottedHeadingRef.current instanceof HTMLElement);
   assert.equal(slottedHeadingRef.current?.tagName, 'H2', 'The slotted ref must expose the h2 host');
   const buttons = [...document.querySelectorAll('button')];
-  assert.equal(buttons.length, 4, 'Only intrinsic consumer and Cluster harness controls may be focusable');
+  assert.equal(buttons.length, 7, 'Intrinsic/Cluster harness controls and three Select triggers must render');
   buttons[0].focus();
   assert.ok(document.activeElement === buttons[0], 'First intrinsic button must receive focus');
   buttons[1].focus();
@@ -1652,6 +1742,40 @@ try {
   assert.equal(glyphRoot().querySelector('path')?.getAttribute('d'), 'M5 12h14');
   assert.equal(glyphRoot().getAttribute('tabindex'), null, 'Default Icons never enter the tab order');
   stage('icon:rerender:complete');
+  stage('select:interaction:start');
+  const selectTrigger = document.getElementById('select-default');
+  assert.ok(selectRef.current === selectTrigger, 'Select forwards the HTMLButtonElement ref');
+  assert.equal(selectTrigger.textContent, 'Public');
+  assert.equal(new dom.window.FormData(document.getElementById('visibility-form')).get('visibility'), 'public');
+  assert.equal(new dom.window.FormData(document.getElementById('visibility-form')).has('disabled-visibility'), false);
+  assert.equal(document.getElementById('select-disabled').disabled, true);
+  assert.ok(selectTrigger.classList.contains('mb-3') && !selectTrigger.classList.contains('mb-1'));
+  const key = async (target, key) => {
+    await act(async () => {
+      target.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+    });
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 20)); });
+  };
+  selectTrigger.focus();
+  await key(selectTrigger, 'Enter');
+  const listbox = document.querySelector('[role="listbox"]');
+  assert.ok(listbox?.classList.contains('eg-select-content'), 'Select opens its portalled listbox');
+  assert.ok(!document.getElementById('app').contains(listbox), 'Popup must be outside the application root');
+  const archivedOption = document.querySelector('[role="option"][aria-disabled="true"]');
+  assert.equal(archivedOption.textContent, 'Archived');
+  await key(document.activeElement, 'End');
+  assert.equal(document.activeElement.textContent, 'Private', 'End skips the disabled final option');
+  await key(document.activeElement, 'Enter');
+  assert.ok(!document.querySelector('[role="listbox"]'), 'Selection closes the popup');
+  assert.ok(document.activeElement === selectTrigger, 'Selection restores trigger focus');
+  assert.equal(selectTrigger.textContent, 'Private');
+  assert.equal(new dom.window.FormData(document.getElementById('visibility-form')).get('visibility'), 'private');
+  await key(selectTrigger, 'Enter');
+  assert.ok(document.querySelector('[role="option"][data-state="checked"] svg[aria-hidden="true"]'), 'Selection has a non-color check');
+  await key(document.activeElement, 'Escape');
+  assert.ok(!document.querySelector('[role="listbox"]'));
+  assert.equal(selectTrigger.textContent, 'Private');
+  stage('select:interaction:complete');
   stage('surface:refs:start');
   const surfaceCard = () => document.querySelector('.eg-surface[aria-label="Material card"]');
   assert.equal(surfaceDivRef.current?.tagName, 'DIV', 'The default Surface ref must expose the div');
@@ -1682,6 +1806,7 @@ try {
   assert.equal(target.hasAttribute('class'), false);
   assert.ok(slotRef.current === target, 'Slot ref must target the slotted anchor');
   assert.ok(childRef.current === target, 'Child ref must target the slotted anchor');
+  assert.ok(selectRef.current === null, 'Select cleans its trigger ref up on unmount');
   await act(async () => target.click());
   assert.deepEqual(calls, ['child', 'slot']);
   await act(async () => root.render(null));
@@ -1707,7 +1832,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1797,6 +1922,8 @@ ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
 ${assertProductMarkCSS.toString()}
+${assertSelectCSS.toString()}
+assertSelectCSS(emitted);
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1856,6 +1983,7 @@ assertLogoCSS(twCss);
 assertStatusDotCSS(twCss);
 assertKbdCSS(twCss);
 assertProductMarkCSS(twCss);
+assertSelectCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
