@@ -48,6 +48,18 @@ const TITLE_TYPOGRAPHY = [
   }
 ];
 
+// Fluid quotation recipes approved for PullQuote (#98 D7): exact legacy .eg-quote__text clamps.
+const QUOTE_TYPOGRAPHY = [
+  { name: 'quote-pull', size: 'clamp(19px, 1.7vw, 23px)', lineHeight: '1.4', fontWeight: '500', letterSpacing: '0' },
+  {
+    name: 'quote-display',
+    size: 'clamp(48px, 6.2vw, 100px)',
+    lineHeight: '0.86',
+    fontWeight: '800',
+    letterSpacing: '0'
+  }
+];
+
 const SPACING_STEPS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '10', '12', '14', '16', '20', '24'];
 
 const findRecipeDrift = (css, recipes) => {
@@ -100,6 +112,11 @@ test('static theme publishes the four fluid Title recipes and the hero glyph glo
   );
 });
 
+test('static theme publishes the two fluid quote recipes and the pull measure (#98 D7/D8)', () => {
+  assert.deepEqual(findRecipeDrift(staticBlock, QUOTE_TYPOGRAPHY), [], 'Quote recipes must match the approved clamps');
+  assert.equal(toDeclarationMap(staticBlock).get('--container-quote-pull'), '40ch', 'pull quote measure');
+});
+
 test('typography recipes keep the approved tracking strings', () => {
   const declarations = toDeclarationMap(staticBlock);
   assert.equal(declarations.get('--text-label-eyebrow--letter-spacing'), '0.12em', 'label-eyebrow tracking');
@@ -115,7 +132,7 @@ test('typography recipes introduce no family or casing tokens', () => {
     '--font-display',
     '--font-mono',
     '--font-sans',
-    ...[...TYPOGRAPHY, ...TITLE_TYPOGRAPHY].map(({ name }) => `--text-${name}--font-weight`)
+    ...[...TYPOGRAPHY, ...TITLE_TYPOGRAPHY, ...QUOTE_TYPOGRAPHY].map(({ name }) => `--text-${name}--font-weight`)
   ].sort();
   assert.deepEqual(
     names.filter((name) => name.includes('font')).sort(),

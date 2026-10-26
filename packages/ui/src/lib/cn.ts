@@ -20,7 +20,9 @@ const tokenTypographySizes = [
   'title-section',
   'title-hero',
   'title-show',
-  'title-display'
+  'title-display',
+  'quote-pull',
+  'quote-display'
 ];
 
 const mergeClasses = extendTailwindMerge({

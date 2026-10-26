@@ -273,6 +273,22 @@
   --text-title-display--letter-spacing: 0;
   /* --text-shadow-title-hero — Glyph glow of the canvas hero accent (#108 D9); text-shadow only, never a box shadow. */
   --text-shadow-title-hero: 0 0 40px var(--color-alpha-red-30);
+  /*
+   * Fluid quotation recipes for PullQuote (#98 D7): the exact legacy .eg-quote__text
+   * clamps. Pull uses the sans family; display uses the display family, uppercase.
+   */
+  /* --text-quote-pull — Pull quotation: clamp(19px, 1.7vw, 23px)/1.4. */
+  --text-quote-pull: clamp(19px, 1.7vw, 23px);
+  --text-quote-pull--line-height: 1.4;
+  --text-quote-pull--font-weight: 500;
+  --text-quote-pull--letter-spacing: 0;
+  /* --text-quote-display — Display quotation: clamp(48px, 6.2vw, 100px)/0.86. */
+  --text-quote-display: clamp(48px, 6.2vw, 100px);
+  --text-quote-display--line-height: 0.86;
+  --text-quote-display--font-weight: 800;
+  --text-quote-display--letter-spacing: 0;
+  /* --container-quote-pull — Pull quotation measure (#98 D8), relative to the quote's own font metrics. */
+  --container-quote-pull: 40ch;
   /* --radius-none — Sin redondeo. */
   --radius-none: 0px;
   /* --radius-sm — Asignación a componentes sin definir. */
