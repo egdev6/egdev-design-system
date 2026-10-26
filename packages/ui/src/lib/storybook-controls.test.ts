@@ -26,7 +26,8 @@ const components = [
   ['Logo', 'atoms/logo'],
   ['StatusDot', 'atoms/status-dot'],
   ['Kbd', 'atoms/kbd'],
-  ['ProductMark', 'atoms/product-mark']
+  ['ProductMark', 'atoms/product-mark'],
+  ['Textarea', 'atoms/textarea']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -114,6 +115,7 @@ const expected: Record<string, Record<string, string | false>> = {
   logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
+  textarea: { variant: 'select' },
   input: { size: 'select', variant: 'select', type: 'select', icon: false },
   productmark: { monogram: 'text', label: 'text', href: 'text' },
   gauge: {
@@ -137,6 +139,7 @@ const ownPropCounts: Record<string, number> = {
   logo: 4,
   statusdot: 2,
   kbd: 2,
+  textarea: 1,
   input: 4,
   productmark: 3,
   visuallyhidden: 2,
@@ -344,6 +347,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
+    ['Textarea', { variant: '"default"' }],
     ['Icon', { size: '"md"', filled: 'false' }],
     ['Input', { size: '"md"', variant: '"default"', type: '"text"' }],
     ['Spinner', { size: '"md"' }],
@@ -559,6 +563,34 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains the Textarea variant select and only the documented native form rows', () => {
+    const { argTypes, args } = story('Textarea');
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['code', 'default', 'prose']);
+    expect(argTypes.variant?.type).toMatchObject({ name: 'enum', required: false });
+    expect(argTypes.variant?.control).toEqual({ type: 'select' });
+    expect(args).toEqual({});
+    const documented = [
+      'id',
+      'name',
+      'rows',
+      'placeholder',
+      'disabled',
+      'readOnly',
+      'required',
+      'maxLength',
+      'aria-invalid',
+      'aria-describedby',
+      'className'
+    ];
+    for (const prop of documented) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Textarea', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'style', 'onClick']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

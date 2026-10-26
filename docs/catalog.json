@@ -173,7 +173,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "extraer",
-    "notas": "Variantes `code` y `prose` (antes Field --code y --prose)."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/73): bare native multi-line textarea with `variant` default (well), code (mono well on neutral-950) and prose (raised sheet), vertical-only resize above the variant minimum, native aria-invalid and a forwarded textarea ref. Label, hint, error and counter belong to Field. No stylesheet."
   },
   {
     "actual": "Field (select)",
