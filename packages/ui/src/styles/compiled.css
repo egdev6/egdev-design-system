@@ -4,6 +4,7 @@
 
 /* Compile only production CVA classes, never incidental story/test classes. */
 @source "../atoms/gauge/types.ts";
+@source "../atoms/icon/types.ts";
 @source "../atoms/kbd/types.ts";
 @source "../atoms/spinner/types.ts";
 @source "../primitives/aspect-ratio/types.ts";
@@ -13,6 +14,7 @@
 @source "../primitives/skeleton/types.ts";
 @source "../primitives/stack/types.ts";
 @source "../primitives/surface/types.ts";
+@source "../primitives/text/types.ts";
 @layer utilities {
   @tailwind utilities source(none);
 }

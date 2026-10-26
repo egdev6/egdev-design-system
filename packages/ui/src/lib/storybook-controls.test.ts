@@ -13,7 +13,10 @@ const components = [
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Cluster', 'primitives/stack'],
   ['Gauge', 'atoms/gauge'],
+  ['Heading', 'primitives/text'],
+  ['Icon', 'atoms/icon'],
   ['Stack', 'primitives/stack'],
+  ['Text', 'primitives/text'],
   ['Surface', 'primitives/surface'],
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
@@ -73,9 +76,26 @@ const expected: Record<string, Record<string, string | false>> = {
   },
   stack: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   cluster: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
+  text: {
+    variant: 'select',
+    tone: 'select',
+    accent: 'text',
+    accentBreak: 'boolean',
+    children: false,
+    asChild: 'boolean'
+  },
+  heading: {
+    variant: 'select',
+    tone: 'select',
+    accent: 'text',
+    accentBreak: 'boolean',
+    children: false,
+    level: 'select'
+  },
   surface: { tone: 'select', elevation: 'select', padding: 'select', radius: 'select', asChild: 'boolean' },
   visuallyhidden: { children: false, asChild: 'boolean' },
   skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
+  icon: { name: 'select', size: 'select', filled: 'boolean', label: 'text' },
   spinner: { label: 'text', size: 'select' },
   kbd: { children: 'text', label: 'text' },
   gauge: {
@@ -92,12 +112,15 @@ const expected: Record<string, Record<string, string | false>> = {
 const ownPropCounts: Record<string, number> = {
   aspectratio: 1,
   gauge: 8,
+  icon: 4,
   skeleton: 3,
   spinner: 2,
   kbd: 2,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,
+  text: 6,
+  heading: 6,
   surface: 5
 };
 const ownPropCount = (name: string): number => {
@@ -266,7 +289,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         expect(composed.argTypes[prop]?.type?.name, `${name}.${prop} semantic type`).toBe('string');
       }
     }
-    if (!['VisuallyHidden', 'Stack', 'Cluster', 'Surface'].includes(name)) {
+    if (!['VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface'].includes(name)) {
       expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     }
     expect(composed.args).toEqual({});
@@ -292,9 +315,12 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['AspectRatio', { ratio: '1' }],
     ['Stack', { gap: '4', alignItems: '"stretch"', justifyContent: '"start"', asChild: 'false' }],
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],
+    ['Text', { variant: '"eyebrow"', tone: '"canvas"', accentBreak: 'true', asChild: 'false' }],
+    ['Heading', { variant: '"section"', tone: '"canvas"', accentBreak: 'true', level: '2' }],
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
+    ['Icon', { size: '"md"', filled: 'false' }],
     ['Spinner', { size: '"md"' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
     const { argTypes, args } = story(name);

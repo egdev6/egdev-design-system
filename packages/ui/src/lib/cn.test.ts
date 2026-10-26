@@ -4,7 +4,8 @@ import { describe, expect, it } from 'vitest';
 import { cn } from './cn';
 
 const theme = readFileSync(new URL('../../../tokens/src/theme.css', import.meta.url), 'utf8');
-const typographySizes = [...theme.matchAll(/--text-([a-z0-9]+(?:-[a-z0-9]+)*):/g)].map((match) => match[1]);
+// Tailwind's --text-shadow-* namespace is a glyph shadow, not a font size.
+const typographySizes = [...theme.matchAll(/--text-(?!shadow-)([a-z0-9]+(?:-[a-z0-9]+)*):/g)].map((match) => match[1]);
 const source = readFileSync(new URL('./cn.ts', import.meta.url), 'utf8');
 
 describe('cn', () => {
