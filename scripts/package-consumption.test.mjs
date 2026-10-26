@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Label, Skeleton, Slot, Slottable, Stack, VisuallyHidden } from '@egdev/ui';
+import { AspectRatio, Cluster, Divider, Gauge, Label, Skeleton, Slot, Slottable, Spinner, Stack, VisuallyHidden } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -44,6 +44,8 @@ import type {
   SkeletonSize,
   SkeletonVariant,
   SlotProps,
+  SpinnerProps,
+  SpinnerSize,
   ClusterProps,
   LayoutGap,
   StackProps,
@@ -132,6 +134,20 @@ export function SkeletonSamples() {
     createElement(Skeleton, { variant: 'line', size: 'md', id: 'pulse-static', pulse: false }),
     createElement(Skeleton, skeletonNative));
 }
+export const spinnerStatus: SpinnerProps = { label: 'Loading results', id: 'spinner-status' };
+export const spinnerNative: SpinnerProps = {
+  id: 'consumer-spinner', title: 'Uploading', lang: 'en', className: 'ms-2 consumer-spinner'
+};
+export function SpinnerSamples({ loading = true }: { loading?: boolean }) {
+  const sizes: SpinnerSize[] = ['sm', 'md', 'lg'];
+  return createElement('section', { 'aria-label': 'Activity indicators' },
+    createElement(Spinner, spinnerStatus),
+    sizes.map((size) => createElement(Spinner, { key: size, size, id: 'spinner-' + size })),
+    // The host owns busy state; its spinner stays decorative and unmounts with loading.
+    createElement('p', { id: 'busy-save', 'aria-busy': loading },
+      loading ? createElement(Spinner, { size: 'sm' }) : null, 'Saving draft'),
+    createElement(Spinner, spinnerNative));
+}
 export function VisuallyHiddenSamples() {
   return createElement('section', { 'aria-label': 'Hidden support content' },
     createElement(VisuallyHidden, { ...hiddenNote, ref: hiddenNoteRef }),
@@ -166,7 +182,7 @@ export function DividerSamples({ semantic }: { semantic?: boolean }) {
       ? { orientation: dividerOrientation, decorative: false, className: 'consumer-rule' }
       : { className: 'consumer-rule' }));
 }
-export function App({ gaugeValue, wideRatio, stackGap, dividerSemantic }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; dividerSemantic?: boolean } = {}) {
+export function App({ gaugeValue, wideRatio, stackGap, dividerSemantic, spinnerLoading }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; dividerSemantic?: boolean; spinnerLoading?: boolean } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
@@ -178,6 +194,7 @@ export function App({ gaugeValue, wideRatio, stackGap, dividerSemantic }: { gaug
     createElement(DividerSamples, { semantic: dividerSemantic }),
     createElement(LabelSamples),
     createElement(SkeletonSamples),
+    createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -202,6 +219,24 @@ const numericSkeleton: SkeletonProps = { variant: 'circle', size: 16 };
 const skeletonPulsePreset: SkeletonProps = { pulse: 'false' };
 // @ts-expect-error Arbitrary silhouettes and presets are not part of Skeleton's API.
 const invalidSkeleton: SkeletonProps = { variant: 'xl', size: 'xl' };
+// @ts-expect-error Spinner content is component-owned: the arc and optional label only.
+const spinnerChildren: SpinnerProps = { children: 'Loading' };
+// @ts-expect-error Spinner derives status or decorative semantics from label.
+const spinnerRole: SpinnerProps = { role: 'alert' };
+// @ts-expect-error Hiddenness follows the label; consumers cannot override it.
+const spinnerHidden: SpinnerProps = { 'aria-hidden': false };
+// @ts-expect-error The status region is polite by role; live politeness is not configurable.
+const spinnerLive: SpinnerProps = { 'aria-live': 'assertive' };
+// @ts-expect-error Spinner has no public ref API (D10).
+const referencedSpinner: SpinnerProps = { ref: createRef<HTMLSpanElement>() };
+// @ts-expect-error Spinner cannot delegate its root to a child.
+const slottedSpinner: SpinnerProps = { asChild: true };
+// @ts-expect-error Sizes are Icon-scale presets; numeric sizes are not supported.
+const numericSpinner: SpinnerProps = { size: 24 };
+// @ts-expect-error Only sm, md and lg presets exist.
+const invalidSpinner: SpinnerProps = { size: 'xl' };
+// @ts-expect-error Color is inherited through currentColor; there is no tone prop (D5).
+const tonedSpinner: SpinnerProps = { tone: 'brand' };
 // @ts-expect-error Hidden content is required, not optional.
 const missingHiddenChildren: VisuallyHiddenProps = { id: 'orphan-hint' };
 // @ts-expect-error VisuallyHidden inherits span props; the anchor-only href is rejected.
@@ -440,6 +475,35 @@ function assertSkeletonCSS(css) {
   assert.doesNotMatch(css, /\.eg-skeleton[^{]*\{[^}]*(?:animation|transition):/, 'Skeleton marker must stay static');
 }
 
+// Spinner ships Icon-scale presets, inherited stroke utilities and the canonical spin token with keyframes.
+function assertSpinnerCSS(css) {
+  for (const utility of [
+    '.inline-flex',
+    '.shrink-0',
+    '.size-4',
+    '.size-7',
+    '.size-full',
+    '.fill-none',
+    '.stroke-current'
+  ]) {
+    assert.ok(css.includes(utility), 'Missing Spinner utility ' + utility);
+  }
+  assert.match(css, /\.size-\\\(--icon-size\\\)\s*\{[^}]*width:\s*var\(--icon-size\)/, 'md must use --icon-size');
+  assert.match(
+    css,
+    /\.stroke-\\\(length\\:--icon-stroke\\\)\s*\{[^}]*stroke-width:\s*var\(--icon-stroke\)/,
+    'Arc stroke must use --icon-stroke'
+  );
+  assert.match(
+    css,
+    /\.animate-spin\s*\{[^}]*animation:\s*var\(--animate-spin[,)]/,
+    'Missing the spin utility bound to the canonical --animate-spin token'
+  );
+  assert.match(css, /@keyframes spin\s*\{\s*to\s*\{\s*transform:\s*rotate\(360deg\)/, 'Spin keyframes must ship');
+  assert.ok(css.includes('motion-reduce\\:animate-none'), 'Reduced motion must stop the rotation');
+  assert.doesNotMatch(css, /\.eg-spinner[^{]*\{/, 'Spinner has no stylesheet: its marker carries no rule');
+}
+
 const entries = `
 import assert from 'node:assert/strict';
 import { readFileSync, realpathSync } from 'node:fs';
@@ -477,6 +541,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Skeleton',
   'Slot',
   'Slottable',
+  'Spinner',
   'Stack',
   'VisuallyHidden',
   'cn',
@@ -485,9 +550,11 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
 ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
+${assertSpinnerCSS.toString()}
 assertGaugeCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assertSkeletonCSS(shippedStyles);
+assertSpinnerCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -688,6 +755,36 @@ for (const frame of [square, wide]) {
   assert.equal(nativeSkeleton.getAttribute('title'), 'Decorative placeholder');
   assert.ok(nativeSkeleton.className.includes('consumer-skeleton'), 'Native span class merge must survive');
   assert.equal(nativeSkeleton.getAttribute('lang'), 'en');
+  const indicators = document.querySelector('section[aria-label="Activity indicators"]');
+  assert.ok(indicators, 'SSR must render Spinner samples');
+  const spinners = [...indicators.querySelectorAll('.eg-spinner')];
+  assert.equal(spinners.length, 6, 'Status, three presets, busy-host and native Spinners must render');
+  const spinnerStatus = document.getElementById('spinner-status');
+  assert.equal(spinnerStatus.getAttribute('role'), 'status');
+  assert.equal(spinnerStatus.hasAttribute('aria-hidden'), false);
+  assert.equal(spinnerStatus.textContent, 'Loading results', 'The label is the only text of the status');
+  assert.equal(indicators.querySelectorAll('[role="status"]').length, 1, 'Only the labelled Spinner is a live region');
+  for (const [size, utility] of [['sm', 'size-4'], ['md', 'size-(--icon-size)'], ['lg', 'size-7']]) {
+    const sized = document.getElementById('spinner-' + size);
+    assert.ok(sized.className.split(' ').includes(utility), 'Spinner ' + size + ' must carry ' + utility);
+    assert.equal(sized.getAttribute('aria-hidden'), 'true', 'Unlabelled Spinners are decorative');
+    assert.equal(sized.getAttribute('role'), null);
+  }
+  for (const spinner of spinners) {
+    const arc = spinner.querySelector('svg');
+    assert.equal(arc.getAttribute('aria-hidden'), 'true');
+    assert.ok(arc.getAttribute('class').includes('animate-spin motion-reduce:animate-none'), 'Arc must rotate via the token');
+    assert.equal(spinner.getAttribute('tabindex'), null);
+    assert.equal(spinner.hasAttribute('aria-live'), false);
+    assert.equal(spinner.hasAttribute('data-state'), false);
+  }
+  const busyHost = document.getElementById('busy-save');
+  assert.equal(busyHost.getAttribute('aria-busy'), 'true', 'The host owns busy state');
+  assert.equal(busyHost.querySelector('.eg-spinner').getAttribute('aria-hidden'), 'true');
+  const nativeSpinner = document.getElementById('consumer-spinner');
+  assert.equal(nativeSpinner.getAttribute('title'), 'Uploading');
+  assert.equal(nativeSpinner.getAttribute('lang'), 'en');
+  assert.ok(nativeSpinner.className.endsWith('ms-2 consumer-spinner'), 'Consumer layout classes merge last');
   const tokenStack = document.querySelector('.eg-stack[aria-label="Token sections"]');
   assert.ok(tokenStack, 'SSR must render Stack samples');
   assert.ok(tokenStack.classList.contains('flex-col') && tokenStack.classList.contains('flex-nowrap'));
@@ -876,6 +973,16 @@ try {
     'The CSR default Skeleton must pulse'
   );
   assert.ok(!csrPulseStatic.className.includes('animate-pulse'), 'The CSR pulse:false Skeleton must stay static');
+  stage('spinner:rerender:start');
+  const busyHost = () => document.getElementById('busy-save');
+  assert.equal(document.querySelectorAll('.eg-spinner').length, 6, 'Consumer Spinners must mount');
+  assert.equal(busyHost().querySelectorAll('.eg-spinner').length, 1);
+  await act(async () => root.render(createElement(App, { gaugeValue: 42.5, spinnerLoading: false })));
+  assert.equal(busyHost().getAttribute('aria-busy'), 'false');
+  assert.equal(busyHost().querySelector('.eg-spinner'), null, 'The decorative Spinner must unmount with loading');
+  assert.equal(busyHost().textContent, 'Saving draft');
+  assert.equal(document.getElementById('spinner-status').getAttribute('role'), 'status', 'Status Spinner persists');
+  stage('spinner:rerender:complete');
   stage('layout:rerender:start');
   const layoutStack = () => document.querySelector('.eg-stack[aria-label="Token sections"]');
   const layoutCluster = () => document.querySelector('.eg-cluster[aria-label="Token actions"]');
@@ -931,7 +1038,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1009,6 +1116,7 @@ assert.ok(!emitted.includes('@theme'), 'Native consumption must not need Tailwin
 ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
+${assertSpinnerCSS.toString()}
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1017,6 +1125,7 @@ assert.match(
   'Native consumer build must emit the AspectRatio min-width guard without Tailwind'
 );
 assertSkeletonCSS(emitted);
+assertSpinnerCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
@@ -1051,6 +1160,7 @@ assert.match(
   'Tailwind consumer must retain the AspectRatio min-width guard'
 );
 assertSkeletonCSS(twCss);
+assertSpinnerCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
