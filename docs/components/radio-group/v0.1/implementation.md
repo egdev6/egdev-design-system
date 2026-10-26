@@ -69,6 +69,14 @@ Full gates ran one at a time under `flock /tmp/egdev-gates.lock`, with `timeout 
 | `pnpm test:package-exports` | 20 passed; 40 reachable declaration files. |
 | `pnpm test:package-consumption` | 12 passed across React 18.3.1 / 19.3.0 (entries, types, SSR, CSR, CSS). |
 
+## Main integration validation
+
+The in-progress integration of main `cb3a26e` preserves the approved RadioGroup contract alongside Switch, Tooltip, ProgressBar, Textarea, Input and the other incoming components. Shared exports, docgen/Controls inventories and defaults, production/story sources and package checks use the additive union. Registry changes preserve the existing approval records and source revisions; historical receipt reconstruction still excludes only the exact reviewed convention/source pairs. No approval, token, dependency or component recipe was changed in this resolution.
+
+The packed fixture has one React type import and independently closed RadioGroup and incoming component samples. RadioGroup and Switch keep their separate SSR and CSR scenes, including form submission/reset; both use the shared form/observer setup without RadioGroup removing globals before Switch runs. CSS helper definitions, serialization and all three assertion call sites are retained. The transition guard remains main's exact six-selector inventory with complete-selector boundaries and all eleven negative cases: RadioGroup uses the already-approved `transition-[border-color,box-shadow]`, so no allowance was added.
+
+This integration pass observed 310 passing tests in 13 files using the focused RadioGroup/Switch/Tooltip/lib command (`timeout 300`, `MemoryMax=2G`, `--maxWorkers=2`). Capped `pnpm lint` passed (287 files, no fixes), `pnpm typecheck` passed, `pnpm props:check` passed and `pnpm test:props` passed all 82 tests, including immutable receipt/hash checks. Both documentation generators completed successfully (107 catalogue rows). Strict TDD was not activated for this conflict-resolution pass; no RED/GREEN lifecycle or browser evidence is claimed. Build, package-export and full packed-consumer validation of this merged union remain parent-owned and were not run by this writer. The earlier validation table above describes the previous implementation, not a new run against this union.
+
 ## Remaining review
 
 Visual conformity, browser Controls widgets, browser computed styles, touch-target measurements and assistive-technology announcements are **Not evaluated**. They remain for the owner's S3 Storybook review on main; no server or browser was started. All recorded functional checks are local. Workflows are intentionally disabled while private; no CI run, independent review, commit, push or PR publication is claimed.

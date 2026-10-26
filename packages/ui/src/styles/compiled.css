@@ -1,12 +1,23 @@
 /* Keep legacy styles; reference token context without shipping its declarations. */
 @import "./index.css";
+/* StatusDot pulse keyframes only (#71 D7/D9); top-level so native consumers animate. */
+@import "../atoms/status-dot/status-dot.css";
 @reference "@egdev/tokens/theme.css";
 
 /* Compile only production CVA classes, never incidental story/test classes. */
 @source "../atoms/gauge/types.ts";
+@source "../atoms/icon/types.ts";
+@source "../atoms/input/types.ts";
 @source "../atoms/kbd/types.ts";
+@source "../atoms/logo/types.ts";
+@source "../atoms/product-mark/types.ts";
+@source "../atoms/progress-bar/types.ts";
 @source "../atoms/radio-group/types.ts";
 @source "../atoms/spinner/types.ts";
+@source "../atoms/status-dot/types.ts";
+@source "../atoms/switch/types.ts";
+@source "../atoms/textarea/types.ts";
+@source "../atoms/tooltip/types.ts";
 @source "../primitives/aspect-ratio/types.ts";
 @source "../primitives/divider/types.ts";
 @source "../primitives/label/types.ts";
@@ -14,6 +25,7 @@
 @source "../primitives/skeleton/types.ts";
 @source "../primitives/stack/types.ts";
 @source "../primitives/surface/types.ts";
+@source "../primitives/text/types.ts";
 @layer utilities {
   @tailwind utilities source(none);
 }
