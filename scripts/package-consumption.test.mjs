@@ -29,8 +29,8 @@ function run(cwd, command, args, timeout) {
 
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
-import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, VisuallyHidden } from '@egdev/ui';
+import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
+import { AspectRatio, Cluster, Divider, Gauge, Kbd, Label, ProductMark, Skeleton, Slot, Slottable, Spinner, Stack, Surface, VisuallyHidden, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -41,6 +41,7 @@ import type {
   KbdProps,
   LabelProps,
   LabelVariant,
+  ProductMarkProps,
   SkeletonProps,
   SkeletonSize,
   SkeletonVariant,
@@ -166,6 +167,17 @@ export function KbdSamples() {
     createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
     createElement(Kbd, kbdNative));
 }
+export const productMarkImage: ProductMarkProps = { monogram: 'M', label: 'Mando', id: 'mark-mando' };
+export const productMarkLink: ProductMarkProps = {
+  monogram: 'M', label: 'Mando home', href: '#home', id: 'mark-home', target: '_self'
+};
+export function ProductMarkSamples() {
+  // Passive product images and one home link; router wrapping stays the consumer's (D5).
+  return createElement('nav', { 'aria-label': 'Product marks' },
+    createElement(ProductMark, productMarkImage),
+    createElement(ProductMark, { monogram: 'Cr', label: 'Criterio', id: 'mark-criterio', className: 'mb-1 mb-3 consumer-mark' }),
+    createElement(ProductMark, productMarkLink));
+}
 export function VisuallyHiddenSamples() {
   return createElement('section', { 'aria-label': 'Hidden support content' },
     createElement(VisuallyHidden, { ...hiddenNote, ref: hiddenNoteRef }),
@@ -239,6 +251,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(SkeletonSamples),
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(KbdSamples),
+    createElement(ProductMarkSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -293,6 +306,22 @@ const referencedKbd: KbdProps = { children: 'K', ref: createRef<HTMLElement>() }
 const slottedKbd: KbdProps = { children: 'K', asChild: true };
 // @ts-expect-error Kbd has a single flat treatment; there are no variants (D4).
 const variantKbd: KbdProps = { children: 'K', variant: 'raised' };
+// @ts-expect-error ProductMark requires its accessible label (D6).
+const unnamedMark: ProductMarkProps = { monogram: 'M' };
+// @ts-expect-error ProductMark requires its visible monogram (D1).
+const emptyMark: ProductMarkProps = { label: 'Mando' };
+// @ts-expect-error The monogram prop is the only content; children are rejected.
+const childMark: ProductMarkProps = { monogram: 'M', label: 'Mando', children: 'M' };
+// @ts-expect-error The link is named by label, never by aria-label.
+const ariaNamedMark: ProductMarkProps = { monogram: 'M', label: 'Mando home', href: '/', 'aria-label': 'Home' };
+// @ts-expect-error The link is named by label, never by aria-labelledby.
+const labelledMark: ProductMarkProps = { monogram: 'M', label: 'Mando home', href: '/', 'aria-labelledby': 'home' };
+// @ts-expect-error ProductMark has no public ref API (D9).
+const referencedMark: ProductMarkProps = { monogram: 'M', label: 'Mando', ref: createRef<HTMLElement>() };
+// @ts-expect-error Router integration wraps the mark; there is no asChild.
+const slottedMark: ProductMarkProps = { monogram: 'M', label: 'Mando', asChild: true };
+// @ts-expect-error v0.1 has one 40px size (D2).
+const sizedMark: ProductMarkProps = { monogram: 'M', label: 'Mando', size: 'lg' };
 // @ts-expect-error Hidden content is required, not optional.
 const missingHiddenChildren: VisuallyHiddenProps = { id: 'orphan-hint' };
 // @ts-expect-error VisuallyHidden inherits span props; the anchor-only href is rejected.
@@ -596,6 +625,30 @@ function assertKbdCSS(css) {
   assert.match(css, /--tw-border-style:\s*solid/, 'The hairline border style must resolve without Tailwind');
 }
 
+// ProductMark ships the product-mark Material and link focus utilities from the token theme; no stylesheet.
+function assertProductMarkCSS(css) {
+  for (const utility of [
+    '.size-10',
+    '.rounded-md',
+    '.shadow-btn-primary',
+    '.text-action-primary-solid-fg',
+    '.font-display',
+    '.text-heading-small',
+    '.no-underline',
+    '.focus-visible\\:outline-none',
+    '.focus-visible\\:shadow-focus'
+  ]) {
+    assert.ok(css.includes(utility), 'Missing ProductMark utility ' + utility);
+  }
+  assert.match(
+    css,
+    /\.bg-\\\(image\\:--gradient-btn-primary\\\)\s*\{[^}]*background-image:\s*var\(--gradient-btn-primary\)/,
+    'The product-mark fill must use the gradient-btn-primary token'
+  );
+  assert.match(css, /\.size-10\s*\{[^}]*width:\s*var\(--space-10\)/, 'The tile must be 40px through --space-10');
+  assert.doesNotMatch(css, /\.eg-product-mark[^{]*\{/, 'ProductMark has no stylesheet: its marker carries no rule');
+}
+
 // Spinner ships Icon-scale presets, inherited stroke utilities and the canonical spin token with keyframes.
 function assertSpinnerCSS(css) {
   for (const utility of [
@@ -662,6 +715,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Kbd',
   'Label',
   'Portal',
+  'ProductMark',
   'Skeleton',
   'Slot',
   'Slottable',
@@ -678,11 +732,13 @@ ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertProductMarkCSS.toString()}
 assertGaugeCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assertSkeletonCSS(shippedStyles);
 assertSpinnerCSS(shippedStyles);
 assertKbdCSS(shippedStyles);
+assertProductMarkCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -941,6 +997,31 @@ for (const frame of [square, wide]) {
   assert.ok(nativeKbd.className.startsWith('eg-kbd '), 'The public marker leads the root classes');
   assert.ok(nativeKbd.className.endsWith(' ms-2 consumer-kbd'), 'Consumer layout classes merge last');
   assert.ok(!nativeKbd.className.split(' ').includes('ms-1'), 'Conflicting margin utilities resolve through cn()');
+  const markNav = document.querySelector('nav[aria-label="Product marks"]');
+  assert.ok(markNav, 'SSR must render ProductMark samples');
+  const mandoMark = document.getElementById('mark-mando');
+  assert.equal(mandoMark.tagName, 'SPAN');
+  assert.equal(mandoMark.getAttribute('role'), 'img', 'Image mode is a passive named image');
+  assert.equal(mandoMark.getAttribute('aria-label'), 'Mando');
+  assert.equal(mandoMark.children.length, 1);
+  assert.equal(mandoMark.children[0].getAttribute('aria-hidden'), 'true', 'The monogram is hidden from assistive technology');
+  assert.equal(mandoMark.textContent, 'M');
+  assert.ok(mandoMark.className.startsWith('eg-product-mark '), 'The public marker leads the root classes');
+  const criterioMark = document.getElementById('mark-criterio');
+  assert.equal(criterioMark.textContent, 'Cr');
+  assert.ok(criterioMark.className.endsWith(' mb-3 consumer-mark'), 'Consumer layout classes merge last');
+  assert.ok(!criterioMark.className.split(' ').includes('mb-1'), 'Conflicting margin utilities resolve through cn()');
+  const homeMark = document.getElementById('mark-home');
+  assert.equal(homeMark.tagName, 'A');
+  assert.equal(homeMark.getAttribute('href'), '#home');
+  assert.equal(homeMark.getAttribute('target'), '_self');
+  assert.equal(homeMark.getAttribute('aria-label'), 'Mando home');
+  assert.equal(homeMark.hasAttribute('role'), false, 'Link mode keeps native link semantics');
+  assert.ok(homeMark.className.includes(' focus-visible:shadow-focus'), 'Link focus replaces the material shadow');
+  for (const mark of markNav.querySelectorAll('.eg-product-mark')) {
+    assert.equal(mark.hasAttribute('data-state'), false);
+    assert.equal(mark.getAttribute('tabindex'), null);
+  }
   const tokenStack = document.querySelector('.eg-stack[aria-label="Token sections"]');
   assert.ok(tokenStack, 'SSR must render Stack samples');
   assert.ok(tokenStack.classList.contains('flex-col') && tokenStack.classList.contains('flex-nowrap'));
@@ -1168,6 +1249,12 @@ try {
   }
   assert.equal(document.getElementById('kbd-command').children[0].getAttribute('aria-hidden'), 'true');
   stage('kbd:passive:complete');
+  stage('product-mark:focus:start');
+  const linkedMark = document.getElementById('mark-home');
+  linkedMark.focus();
+  assert.ok(document.activeElement === linkedMark, 'The linked ProductMark must receive focus');
+  assert.equal(document.getElementById('mark-mando').tabIndex, -1, 'An image ProductMark must never become a Tab stop');
+  stage('product-mark:focus:complete');
   stage('layout:rerender:start');
   const layoutStack = () => document.querySelector('.eg-stack[aria-label="Token sections"]');
   const layoutCluster = () => document.querySelector('.eg-cluster[aria-label="Token actions"]');
@@ -1236,7 +1323,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Kbd passive keys outside the Tab order', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Kbd passive keys outside the Tab order', 'ProductMark link focus and passive image', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1316,6 +1403,7 @@ ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertProductMarkCSS.toString()}
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1326,6 +1414,7 @@ assert.match(
 assertSkeletonCSS(emitted);
 assertSpinnerCSS(emitted);
 assertKbdCSS(emitted);
+assertProductMarkCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
@@ -1364,6 +1453,7 @@ assert.match(
 assertSkeletonCSS(twCss);
 assertSpinnerCSS(twCss);
 assertKbdCSS(twCss);
+assertProductMarkCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }

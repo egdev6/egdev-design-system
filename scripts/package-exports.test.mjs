@@ -287,6 +287,37 @@ test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet ru
   assert.equal(kbdRules(css), kbdRules(legacy), 'Kbd has no stylesheet: its marker carries no new rule');
 });
 
+test('UI ships the ProductMark Material utilities and link focus ring without a stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  assert.match(rule('.size-10'), /width:\s*var\(--space-10\)\s*;[^}]*height:\s*var\(--space-10\)/);
+  assert.match(rule('.rounded-md'), /border-radius:\s*var\(--radius-md[,)]/);
+  assert.match(
+    rule(String.raw`.bg-\(image\:--gradient-btn-primary\)`),
+    /background-image:\s*var\(--gradient-btn-primary\)\s*;/
+  );
+  // The primary bevel and halo resolve from the token theme with Tailwind's composed box-shadow.
+  assert.match(rule('.shadow-btn-primary'), /--tw-shadow:\s*inset 0 1px 0 [^;]*rgba\(255, 0, 54, 0\.7\)\)\s*;/);
+  assert.match(rule('.shadow-btn-primary'), /box-shadow:\s*var\(--tw-inset-shadow\)/);
+  assert.match(rule('.text-action-primary-solid-fg'), /color:\s*var\(--color-action-primary-solid-fg[,)]/);
+  assert.match(rule('.font-display'), /font-family:\s*var\(--font-display[,)]/);
+  assert.match(rule('.text-heading-small'), /font-size:\s*var\(--text-heading-small[,)]/);
+  assert.match(rule('.no-underline'), /text-decoration-line:\s*none\s*;/);
+  // Focus always wins in link mode: the ring replaces the material shadow on :focus-visible (D7).
+  assert.match(
+    rule(String.raw`.focus-visible\:shadow-focus:focus-visible`),
+    /--tw-shadow:\s*0 0 0 2px [^;]*0 0 0 4px [^;]*;[^}]*box-shadow:/
+  );
+  assert.match(rule(String.raw`.focus-visible\:outline-none:focus-visible`), /outline-style:\s*none\s*;/);
+  assert.match(css, /@property --tw-shadow\s*\{[^}]*initial-value:\s*0 0 #0000/);
+  // D10 no stylesheet: the marker carries no rule of its own.
+  assert.doesNotMatch(css, /\.eg-product-mark[^{]*\{/, 'ProductMark has no stylesheet: its marker carries no rule');
+});
+
 test('UI ships the approved Gauge geometry in the components layer', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const components = cssBlock(css, /@layer components\s*\{/);
@@ -402,6 +433,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Kbd',
       'Label',
       'Portal',
+      'ProductMark',
       'Skeleton',
       'Slot',
       'Slottable',
@@ -421,6 +453,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(typeof exported.Skeleton, 'function', 'Skeleton must be a named root export');
   assert.equal(typeof exported.Spinner, 'function', 'Spinner must be a plain function component without a ref API');
   assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
+  assert.equal(
+    typeof exported.ProductMark,
+    'function',
+    'ProductMark must be a plain function component without a ref API (D9)'
+  );
   assert.equal(
     exported.VisuallyHidden?.$$typeof,
     Symbol.for('react.forward_ref'),
@@ -468,6 +505,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LayoutJustifyContent',
     'Portal',
     'PortalProps',
+    'ProductMark',
+    'ProductMarkProps',
     'Skeleton',
     'SkeletonProps',
     'SkeletonSize',
@@ -502,6 +541,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'GaugeSize',
     'Kbd',
     'KbdProps',
+    'ProductMark',
+    'ProductMarkProps',
     'AspectRatio',
     'AspectRatioProps',
 
@@ -659,6 +700,22 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     /^<kbd class="eg-kbd [^"]*"><span aria-hidden="true">⌘K<\/span><span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Command K<\/span><\/kbd>$/
   );
   assert.doesNotMatch(symbolKey, /role=|aria-label=|tabindex=|data-state/);
+  // ProductMark: passive role="img" tile by default, native named link with href; monogram hidden (D5, D6).
+  const markRecipe =
+    'eg-product-mark inline-flex size-10 shrink-0 items-center justify-center rounded-md bg-(image:--gradient-btn-primary) shadow-btn-primary text-action-primary-solid-fg font-display text-heading-small no-underline';
+  assert.equal(
+    renderToString(createElement(exported.ProductMark, { monogram: 'M', label: 'Mando', id: 'mando-mark' })),
+    `<span id="mando-mark" role="img" aria-label="Mando" class="${markRecipe}"><span aria-hidden="true">M</span></span>`
+  );
+  assert.equal(
+    renderToString(createElement(exported.ProductMark, { monogram: 'M', label: 'Mando home', href: '/' })),
+    `<a href="/" aria-label="Mando home" class="${markRecipe} focus-visible:outline-none focus-visible:shadow-focus"><span aria-hidden="true">M</span></a>`
+  );
+  const twoLetters = renderToString(
+    createElement(exported.ProductMark, { monogram: 'Cr', label: 'Criterio', className: 'mb-1 mb-3' })
+  );
+  assert.ok(twoLetters.includes(`class="${markRecipe} mb-3"`), 'Layout className merges last through cn()');
+  assert.doesNotMatch(twoLetters, /\s(?:monogram|label|href|tabindex)=|data-state|hover:|transition/);
   const geometry = [
     ['line', 'sm', 'h-3', 'rounded-sm'],
     ['line', 'md', 'h-4', 'rounded-sm'],
