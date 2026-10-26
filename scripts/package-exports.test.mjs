@@ -266,6 +266,81 @@ test('UI ships the Spinner icon-scale, stroke and canonical spin utilities with 
   assert.doesNotMatch(css, /\.eg-spinner[^{]*\{/, 'Spinner has no stylesheet: its marker carries no rule');
 });
 
+test('UI ships the Logo heights, token inks and link focus ring over the legacy marker', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // Heights are --spacing multiples: 28/32px bound steps and the 9 × 4px calculated step.
+  assert.match(rule('.h-7'), /height:\s*var\(--space-7\)\s*;/);
+  assert.match(rule('.h-8'), /height:\s*var\(--space-8\)\s*;/);
+  assert.match(rule('.h-9'), /height:\s*calc\(var\(--space-1\) \* 9\)\s*;/);
+  assert.match(rule('.h-full'), /height:\s*100%\s*;/);
+  assert.match(rule('.w-auto'), /width:\s*auto\s*;/);
+  assert.match(rule('.inline-block'), /display:\s*inline-block\s*;/);
+  assert.match(rule('.leading-none'), /line-height:\s*1\s*;/);
+  assert.match(rule('.rounded-sm'), /border-radius:\s*var\(--radius-sm[,)]/);
+  // D3: the artwork is painted only by the logo tokens and the white primitive.
+  assert.match(rule(String.raw`.fill-\(--logo-red\)`), /fill:\s*var\(--logo-red\)\s*;/);
+  assert.match(rule(String.raw`.fill-\(--logo-red-shade\)`), /fill:\s*var\(--logo-red-shade\)\s*;/);
+  assert.match(rule('.fill-primitive-white'), /fill:\s*var\(--color-primitive-white[,)]/);
+  assert.match(rule(String.raw`.focus-visible\:outline-none:focus-visible`), /outline-style:\s*none\s*;/);
+  assert.match(
+    rule(String.raw`.focus-visible\:shadow-focus:focus-visible`),
+    /--tw-shadow:\s*0 0 0 2px var\(--tw-shadow-color, #141518\), 0 0 0 4px var\(--tw-shadow-color, #FF0036\)\s*;/
+  );
+  // The legacy .eg-logo rule stays in the components layer, so the utilities above win.
+  const components = cssBlock(css, /@layer components\s*\{/);
+  assert.match(components, /\.eg-logo\s*\{[^}]*height:\s*32px/);
+  assert.doesNotMatch(utilities, /\.eg-logo[^{]*\{/, 'Logo adds no marker rule of its own');
+});
+
+test('UI ships the StatusDot ring, glow and fill utilities with its motion-safe pulse keyframes', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // D4: 8px status dots and 10px signal dots on the spacing scale.
+  assert.match(rule('.size-2'), /width:\s*var\(--space-2\)\s*;/);
+  assert.match(rule(String.raw`.size-2\.5`), /width:\s*calc\(var\(--space-1\) \* 2\.5\)\s*;/);
+  assert.match(rule('.inline-block'), /display:\s*inline-block\s*;/);
+  assert.match(rule('.rounded-full'), /border-radius:\s*var\(--radius-full[,)]/);
+  // D5/D6: a 2px ring that always uses the surface token.
+  assert.match(rule('.ring-2'), /--tw-ring-shadow:[^;]*calc\(2px \+ var\(--tw-ring-offset-width\)\)/);
+  assert.match(rule('.ring-bg-surface'), /--tw-ring-color:\s*var\(--color-bg-surface[,)]/);
+  assert.match(rule('.shadow-glow-hot'), /--tw-shadow:[^;]*rgba\(255, 0, 54, 0\.75\)/);
+  for (const [utility, token] of [
+    ['.bg-status-success', '--color-status-success'],
+    ['.bg-status-info', '--color-status-info'],
+    ['.bg-status-warning', '--color-status-warning'],
+    ['.bg-status-danger', '--color-status-danger'],
+    ['.bg-primitive-neutral-600', '--color-primitive-neutral-600'],
+    ['.bg-fg-brand-default', '--color-fg-brand-default'],
+    ['.bg-primitive-white', '--color-primitive-white']
+  ]) {
+    assert.match(rule(utility), new RegExp(`background-color:\\s*var\\(${token}[,)]`), utility);
+  }
+  // D7/AC-04/AC-05: the pulse only runs without a reduced-motion preference.
+  const motionSafe = cssBlock(utilities, /@media \(prefers-reduced-motion: no-preference\)\s*\{/);
+  assert.match(
+    cssBlock(
+      motionSafe,
+      /\.motion-safe\\:animate-\\\[eg-status-dot-pulse_2\\\.4s_var\\\(--ease-out\\\)_infinite\\\]\s*\{/
+    ),
+    /animation:\s*eg-status-dot-pulse 2\.4s var\(--ease-out\) infinite\s*;/
+  );
+  // status-dot.css ships only top-level keyframes, never a selector for the marker.
+  assert.match(
+    css,
+    /@keyframes eg-status-dot-pulse\s*\{\s*0%, 100%\s*\{\s*transform:\s*scale\(1\);\s*opacity:\s*100%;\s*\}\s*50%\s*\{\s*transform:\s*scale\(0\.72\);\s*opacity:\s*75%;\s*\}\s*\}/
+  );
+  assert.doesNotMatch(utilities, /@keyframes eg-status-dot-pulse/);
+});
+
 test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet rule', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -339,6 +414,80 @@ test('UI ships the Textarea well, sheet and state utilities without a Textarea-s
   assert.doesNotMatch(css, /\.eg-textarea[^{]*\{/, 'Textarea has no stylesheet: its marker carries no rule');
 });
 
+test('UI ships the Input well, state and preset utilities without an Input-specific stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule('.bg-primitive-neutral-950'), /background-color:\s*var\(--color-primitive-neutral-950[,)]/);
+  assert.match(rule('.border-border-control'), /border-color:\s*var\(--color-border-control[,)]/);
+  assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)/);
+  assert.match(rule('.min-h-11'), /min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*11\)/);
+  assert.match(rule('.min-h-9'), /min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)/);
+  assert.match(rule('.pl-9'), /padding-left:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)/);
+  assert.match(rule('.text-code'), /font-size:\s*var\(--text-code[,)]/);
+  assert.match(rule('.font-mono'), /font-family:\s*var\(--font-mono[,)]/);
+  assert.match(rule(String.raw`.hover\:border-fg-muted:hover`), /border-color:\s*var\(--color-fg-muted[,)]/);
+  assert.match(
+    rule(String.raw`.focus-visible\:border-border-brand-strong:focus-visible`),
+    /border-color:\s*var\(--color-border-brand-strong[,)]/
+  );
+  assert.match(
+    rule(String.raw`.focus-visible\:shadow-\[var\(--shadow-well\)\,var\(--shadow-ring-brand\)\]:focus-visible`),
+    /--tw-shadow:\s*var\(--shadow-well\),\s*var\(--shadow-ring-brand\)/
+  );
+  assert.match(
+    rule(String.raw`.aria-invalid\:border-status-danger[aria-invalid="true"]`),
+    /border-color:\s*var\(--color-status-danger[,)]/
+  );
+  assert.match(rule(String.raw`.has-\[\:disabled\]\:opacity-45:has(:is(:disabled))`), /opacity:\s*45%/);
+  assert.match(rule('.ease-out'), /transition-timing-function:\s*var\(--ease-out[,)]/);
+  assert.match(rule(String.raw`.duration-\[var\(--duration-fast\)\]`), /transition-duration:\s*var\(--duration-fast\)/);
+  // Invalid wins over hover and focus at equal specificity because its rule is emitted later.
+  const at = (selector) => utilities.indexOf(selector);
+  assert.ok(at(String.raw`.aria-invalid\:border-status-danger`) > at(String.raw`.hover\:border-fg-muted`));
+  assert.ok(
+    at(String.raw`.aria-invalid\:border-status-danger`) > at(String.raw`.focus-visible\:border-border-brand-strong`)
+  );
+  // The icon offset must follow the symmetric padding so padding-left survives the cascade.
+  assert.ok(at('.pl-9 {') > at('.px-3 {'));
+  assert.doesNotMatch(css, /\.eg-input[^{]*\{/, 'Input has no stylesheet: its marker carries no rule (D14)');
+});
+
+test('UI ships the ProductMark Material utilities and link focus ring without a stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  assert.match(rule('.size-10'), /width:\s*var\(--space-10\)\s*;[^}]*height:\s*var\(--space-10\)/);
+  assert.match(rule('.rounded-md'), /border-radius:\s*var\(--radius-md[,)]/);
+  assert.match(
+    rule(String.raw`.bg-\(image\:--gradient-btn-primary\)`),
+    /background-image:\s*var\(--gradient-btn-primary\)\s*;/
+  );
+  // The primary bevel and halo resolve from the token theme with Tailwind's composed box-shadow.
+  assert.match(rule('.shadow-btn-primary'), /--tw-shadow:\s*inset 0 1px 0 [^;]*rgba\(255, 0, 54, 0\.7\)\)\s*;/);
+  assert.match(rule('.shadow-btn-primary'), /box-shadow:\s*var\(--tw-inset-shadow\)/);
+  assert.match(rule('.text-action-primary-solid-fg'), /color:\s*var\(--color-action-primary-solid-fg[,)]/);
+  assert.match(rule('.font-display'), /font-family:\s*var\(--font-display[,)]/);
+  assert.match(rule('.text-heading-small'), /font-size:\s*var\(--text-heading-small[,)]/);
+  assert.match(rule('.no-underline'), /text-decoration-line:\s*none\s*;/);
+  // Focus always wins in link mode: the ring replaces the material shadow on :focus-visible (D7).
+  assert.match(
+    rule(String.raw`.focus-visible\:shadow-focus:focus-visible`),
+    /--tw-shadow:\s*0 0 0 2px [^;]*0 0 0 4px [^;]*;[^}]*box-shadow:/
+  );
+  assert.match(rule(String.raw`.focus-visible\:outline-none:focus-visible`), /outline-style:\s*none\s*;/);
+  assert.match(css, /@property --tw-shadow\s*\{[^}]*initial-value:\s*0 0 #0000/);
+  // D10 no stylesheet: the marker carries no rule of its own.
+  assert.doesNotMatch(css, /\.eg-product-mark[^{]*\{/, 'ProductMark has no stylesheet: its marker carries no rule');
+});
+
 test('UI ships the approved Gauge geometry in the components layer', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const components = cssBlock(css, /@layer components\s*\{/);
@@ -380,6 +529,94 @@ test('UI ships the approved Label typography recipe without an application Tailw
     assert.ok(theme.includes(`${token}:`), `Choice/base weights must reference the existing token ${token}`);
     assert.doesNotMatch(css, new RegExp(`${token}\\s*:`), `UI must not redefine ${token}`);
   }
+});
+
+test('UI ships the static Icon preset, fill and stroke utilities without an application Tailwind compiler', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  for (const [selector, declarations] of [
+    ['.inline-block', [/display:\s*inline-block\s*;/]],
+    ['.shrink-0', [/flex-shrink:\s*0\s*;/]],
+    ['.align-middle', [/vertical-align:\s*middle\s*;/]],
+    ['.stroke-current', [/stroke:\s*currentcolor\s*;/i]],
+    [String.raw`.stroke-\(length\:--icon-stroke\)`, [/stroke-width:\s*var\(--icon-stroke\)\s*;/]],
+    ['.fill-none', [/fill:\s*none\s*;/]],
+    ['.fill-current', [/fill:\s*currentcolor\s*;/i]],
+    ['.size-4', [/width:\s*var\(--space-4\)\s*;/, /height:\s*var\(--space-4\)\s*;/]],
+    [String.raw`.size-\(--icon-size\)`, [/width:\s*var\(--icon-size\)\s*;/, /height:\s*var\(--icon-size\)\s*;/]],
+    ['.size-7', [/width:\s*var\(--space-7\)\s*;/, /height:\s*var\(--space-7\)\s*;/]]
+  ]) {
+    const body = rule(selector);
+    for (const declaration of declarations) {
+      assert.match(body, declaration, `${selector} must ship ${declaration}`);
+    }
+  }
+  const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
+  for (const [token, value] of [
+    ['--icon-size', '20px'],
+    ['--icon-stroke', '1.75'],
+    ['--space-4', '16px'],
+    ['--space-7', '28px']
+  ]) {
+    assert.match(theme, new RegExp(`${token}:\\s*${value.replace('.', '\\.')};`), `${token} must stay ${value}`);
+    assert.doesNotMatch(css, new RegExp(`${token}\\s*:`), `UI must not redefine ${token}`);
+  }
+});
+
+test('UI preserves Lucide notices for the system icon paths', () => {
+  const notices = readFileSync(resolve(root, 'THIRD_PARTY_NOTICES.md'), 'utf8');
+  for (const source of ['packages/ui/src/atoms/icon/icon-paths.ts', 'packages/ui/src/atoms/spinner/Spinner.tsx']) {
+    assert.ok(notices.includes(source), `Lucide attribution must cover ${source}`);
+  }
+  assert.match(notices, /loader-circle/, 'Spinner uses the Lucide loader-circle path');
+  assert.match(notices, /ISC License/);
+  assert.match(notices, /Copyright \(c\) 2026 Lucide Icons and Contributors/);
+  assert.match(notices, /Copyright \(c\) 2013-present Cole Bemis/);
+});
+
+test('UI Icon renders decorative and labelled svg glyphs on the server', async () => {
+  const { Icon } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const decorative = renderToString(createElement(Icon, { name: 'plus', id: 'add-icon' }));
+  assert.match(decorative, /^<svg /, 'Decorative Icon must render the bare svg');
+  for (const text of [
+    'id="add-icon"',
+    'viewBox="0 0 24 24"',
+    'aria-hidden="true"',
+    'focusable="false"',
+    'stroke-linecap="round"',
+    'stroke-linejoin="round"',
+    '<path d="M5 12h14"></path><path d="M12 5v14"></path>'
+  ]) {
+    assert.ok(decorative.includes(text), `Decorative Icon SSR must render ${text}`);
+  }
+  const classes = new Set((decorative.match(/\bclass="([^"]+)"/)?.[1] ?? '').split(/\s+/));
+  for (const marker of [
+    'eg-icon',
+    'size-(--icon-size)',
+    'fill-none',
+    'stroke-current',
+    'stroke-(length:--icon-stroke)'
+  ]) {
+    assert.ok(classes.has(marker), `Decorative Icon must keep ${marker}`);
+  }
+  assert.ok(!classes.has('fill-current'), 'Default Icon must remain stroke-only');
+  assert.doesNotMatch(decorative, /role=|aria-label|<title|tabindex=|width=|height=|style=/);
+  const labelled = renderToString(createElement(Icon, { name: 'search', label: 'Search', size: 'sm', filled: true }));
+  assert.match(labelled, /^<svg [^>]*aria-hidden="true"[^>]*>.*<\/svg><span [^>]*>Search<\/span>$/);
+  assert.ok(labelled.includes('size-4') && labelled.includes('fill-current'), 'Labelled Icon keeps its presets');
+  assert.match(
+    labelled,
+    /<span [^>]*style="[^"]*position:absolute/,
+    'Radix AccessibleIcon must hide the label visually'
+  );
+  assert.doesNotMatch(labelled, /role=|<title|label="/);
+  assert.doesNotMatch(renderToString(createElement(Icon, { name: 'search', label: '' })), /<span/);
 });
 
 test('UI ships the Surface Material recipes as static token utilities', () => {
@@ -430,6 +667,55 @@ test('UI ships the Surface Material recipes as static token utilities', () => {
   assert.doesNotMatch(css, /\.eg-surface\s*[,{]/, 'Surface marker must not become a shipped CSS rule (no stylesheet)');
 });
 
+test('UI ships the approved Text and Heading title recipes without an application Tailwind compiler', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // The four fluid title recipes resolve to their token size, leading and weight.
+  for (const size of ['section', 'hero', 'show', 'display']) {
+    const recipe = rule(`.text-title-${size}`);
+    assert.match(recipe, new RegExp(`font-size:\\s*var\\(--text-title-${size}(?:,[^;]+)?\\)\\s*;`));
+    assert.match(recipe, new RegExp(`line-height:\\s*var\\(--tw-leading,\\s*var\\(--text-title-${size}--line-height`));
+    assert.match(
+      recipe,
+      new RegExp(`font-weight:\\s*var\\(--tw-font-weight,\\s*var\\(--text-title-${size}--font-weight`)
+    );
+  }
+  // Hero canvas glow uses the glyph text-shadow token; other accents reset it.
+  assert.match(
+    rule(String.raw`.\[text-shadow\:var\(--text-shadow-title-hero\)\]`),
+    /text-shadow:\s*var\(--text-shadow-title-hero\)\s*;/
+  );
+  assert.match(rule(String.raw`.\[text-shadow\:none\]`), /text-shadow:\s*none\s*;/);
+  for (const [selector, token] of [
+    ['.text-fg-brand-default', '--color-fg-brand-default'],
+    ['.text-fg-brand-raised', '--color-fg-brand-raised'],
+    ['.text-fg-on-flood', '--color-fg-on-flood']
+  ]) {
+    assert.match(rule(selector), new RegExp(`color:\\s*var\\(${token}`));
+  }
+  assert.match(rule('.text-label-eyebrow'), /font-size:\s*var\(--text-label-eyebrow/);
+  assert.match(rule('.font-display'), /font-family:\s*var\(--font-display/);
+  assert.match(rule('.uppercase'), /text-transform:\s*uppercase\s*;/);
+  // The eyebrow diamond is an empty decorative pseudo-element, emitted from static CVA utilities.
+  for (const selector of [
+    String.raw`.before\:rotate-45`,
+    String.raw`.before\:size-2`,
+    String.raw`.before\:bg-fg-brand-default`
+  ]) {
+    assert.ok(utilities.includes(selector), `Packed styles must retain eyebrow diamond utility ${selector}`);
+  }
+  const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
+  for (const token of ['--text-title-hero', '--text-shadow-title-hero']) {
+    assert.ok(theme.includes(`${token}:`), `Title recipes must reference the existing token ${token}`);
+    assert.doesNotMatch(css, new RegExp(`${token}\\s*:`), `UI must not redefine ${token}`);
+  }
+  assert.doesNotMatch(css, /\.eg-(?:text|heading)\s*[,{]/, 'Text/Heading markers must not become shipped CSS rules');
+});
+
 test('UI JavaScript remains importable without a CSS loader', async () => {
   const entry = artifact('ui', ui.exports['.'].import);
   const imports = ts.preProcessFile(readFileSync(entry, 'utf8'), true).importedFiles;
@@ -451,19 +737,27 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Cluster',
       'Divider',
       'Gauge',
+      'Heading',
+      'Icon',
+      'Input',
       'Kbd',
       'Label',
+      'Logo',
       'Portal',
+      'ProductMark',
       'Skeleton',
       'Slot',
       'Slottable',
       'Spinner',
       'Stack',
+      'StatusDot',
       'Surface',
+      'Text',
       'Textarea',
       'VisuallyHidden',
       'cn',
       'labelVariants',
+      'statusDotVariants',
       'surfaceVariants'
     ],
     'Only approved components and cn are public runtime exports'
@@ -473,11 +767,24 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
   assert.equal(typeof exported.Skeleton, 'function', 'Skeleton must be a named root export');
   assert.equal(typeof exported.Spinner, 'function', 'Spinner must be a plain function component without a ref API');
+  assert.equal(typeof exported.Logo, 'function', 'Logo must be a plain function component without a ref API (D8)');
+  assert.equal(typeof exported.StatusDot, 'function', 'StatusDot must be a plain function component without a ref API');
+  assert.equal(typeof exported.statusDotVariants, 'function', 'StatusDot composition recipe must be a public export');
   assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
   assert.equal(
     exported.Textarea?.$$typeof,
     Symbol.for('react.forward_ref'),
     'Textarea must be a forwardRef component whose ref targets the native textarea (D9)'
+  );
+  assert.equal(
+    exported.Input?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'Input must be a React 18-compatible forwardRef component targeting the native input (D12)'
+  );
+  assert.equal(
+    typeof exported.ProductMark,
+    'function',
+    'ProductMark must be a plain function component without a ref API (D9)'
   );
   assert.equal(
     exported.VisuallyHidden?.$$typeof,
@@ -492,12 +799,17 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     undefined,
     'Stack must not be a forwardRef component (D10: no public ref)'
   );
+  assert.equal(typeof exported.Icon, 'function', 'Icon must be a plain function component without a ref API');
+  assert.equal(exported.Icon.prototype?.render, undefined, 'Icon must not be a forwardRef component (D6: no ref)');
   assert.equal(
     exported.Surface?.$$typeof,
     Symbol.for('react.forward_ref'),
     'Surface must be a React 18-compatible forwardRef bridge with a public ref'
   );
   assert.equal(typeof exported.surfaceVariants, 'function', 'Surface composition recipe must stay a public export');
+  for (const name of ['Text', 'Heading']) {
+    assert.equal(typeof exported[name], 'function', `${name} must be a plain function component without a ref API`);
+  }
   assert.equal(exported.default, undefined, 'UI must not introduce a default export');
   const declaration = artifact('ui', ui.exports['.'].types);
   const program = ts.createProgram([declaration], { moduleResolution: ts.ModuleResolutionKind.Bundler });
@@ -516,6 +828,18 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'GaugeProps',
     'GaugeSize',
     'GaugeState',
+    'Heading',
+    'HeadingLevel',
+    'HeadingProps',
+    'Icon',
+    'IconName',
+    'IconProps',
+    'IconSize',
+    'Input',
+    'InputProps',
+    'InputSize',
+    'InputType',
+    'InputVariant',
     'Kbd',
     'KbdProps',
     'Label',
@@ -524,8 +848,14 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LayoutAlignItems',
     'LayoutGap',
     'LayoutJustifyContent',
+    'Logo',
+    'LogoProps',
+    'LogoSize',
+    'LogoVariant',
     'Portal',
     'PortalProps',
+    'ProductMark',
+    'ProductMarkProps',
     'Skeleton',
     'SkeletonProps',
     'SkeletonSize',
@@ -538,19 +868,28 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SpinnerSize',
     'Stack',
     'StackProps',
+    'StatusDot',
+    'StatusDotProps',
+    'StatusDotState',
     'Surface',
     'SurfaceElevation',
     'SurfacePadding',
     'SurfaceProps',
     'SurfaceRadius',
     'SurfaceTone',
+    'Text',
+    'TextProps',
+    'TextTone',
+    'TextVariant',
     'Textarea',
     'TextareaProps',
     'TextareaVariant',
+    'TitleVariant',
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'cn',
     'labelVariants',
+    'statusDotVariants',
     'surfaceVariants'
   ]);
   for (const name of [
@@ -561,17 +900,32 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'GaugeProps',
     'GaugeState',
     'GaugeSize',
+    'Icon',
+    'IconName',
+    'IconProps',
+    'IconSize',
     'Kbd',
     'KbdProps',
     'Textarea',
     'TextareaProps',
     'TextareaVariant',
+    'Input',
+    'InputProps',
+    'InputSize',
+    'InputType',
+    'InputVariant',
+    'ProductMark',
+    'ProductMarkProps',
     'AspectRatio',
     'AspectRatioProps',
 
     'Label',
     'LabelProps',
     'LabelVariant',
+    'Logo',
+    'LogoProps',
+    'LogoSize',
+    'LogoVariant',
     'Portal',
     'PortalProps',
     'Skeleton',
@@ -586,6 +940,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SpinnerSize',
     'Stack',
     'StackProps',
+    'StatusDot',
+    'StatusDotProps',
+    'StatusDotState',
+    'statusDotVariants',
     'Cluster',
     'ClusterProps',
     'LayoutAlignItems',
@@ -654,6 +1012,26 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Cluster must carry its marker and wrapping row classes'
   );
   assert.doesNotMatch(stacked + clustered, /aria-live=|tabindex=|role=/);
+  // Text defaults to a paragraph eyebrow; Heading to a native h2 section title with its level independent of size.
+  const eyebrow = renderToString(createElement(exported.Text, null, 'Weekly stream'));
+  assert.match(eyebrow, /^<p class="[^"]*eg-text[^"]*text-label-eyebrow[^"]*">Weekly stream<\/p>$/);
+  const heading = renderToString(createElement(exported.Heading, { accent: 'ideas' }, 'Big '));
+  assert.match(
+    heading,
+    /^<h2 class="[^"]*eg-heading[^"]*text-title-section[^"]*">Big <span class="[^"]*eg-heading__accent[^"]*">ideas<\/span><\/h2>$/
+  );
+  const hero = renderToString(
+    createElement(exported.Heading, { level: 4, variant: 'hero', accent: '.', accentBreak: false }, 'Talk')
+  );
+  assert.ok(
+    hero.startsWith('<h4') && hero.includes('text-title-hero') && hero.includes('Talk<span'),
+    'Level must not resize; no space is injected'
+  );
+  assert.ok(
+    hero.includes('[text-shadow:var(--text-shadow-title-hero)]') && hero.includes('inline'),
+    'Canvas hero accent glows inline'
+  );
+  assert.doesNotMatch(eyebrow + heading + hero, /aria-live=|tabindex=|role=|aria-level=/);
   // Surface resolves its Material recipe as static CVA utilities on a passive div or slotted child.
   const surface = renderToString(createElement(exported.Surface, null, 'Card'));
   for (const text of [
@@ -707,6 +1085,73 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     const sized = renderToString(createElement(exported.Spinner, { size }));
     assert.ok(sized.includes(`class="eg-spinner inline-flex shrink-0 ${utility}"`), `Spinner ${size} preset`);
   }
+  // Logo: named span image or named native link around hidden inline V4 artwork (#62).
+  const logo = renderToString(createElement(exported.Logo, { id: 'brand' }));
+  assert.match(
+    logo,
+    /^<span id="brand" role="img" aria-label="egdev" class="eg-logo inline-block shrink-0 leading-none rounded-sm h-8">/
+  );
+  assert.match(logo, /<svg class="block h-full w-auto" aria-hidden="true" focusable="false" viewBox="0 0 653 258">/);
+  assert.equal((logo.match(/<path /g) ?? []).length, 8, 'The wordmark ships its eight V4 paths');
+  assert.equal((logo.match(/class="fill-primitive-white"/g) ?? []).length, 1, 'One white name path');
+  assert.doesNotMatch(logo, /href=|tabindex=|<title|fill="|style=/);
+  const mark = renderToString(createElement(exported.Logo, { variant: 'mark' }));
+  assert.match(mark, /viewBox="0 0 638\.45 612\.37"/);
+  assert.equal((mark.match(/<polygon /g) ?? []).length, 7, 'The isotype ships its seven V4 polygons');
+  assert.equal((mark.match(/class="fill-\(--logo-red\)"/g) ?? []).length, 5);
+  assert.equal((mark.match(/class="fill-\(--logo-red-shade\)"/g) ?? []).length, 2);
+  const home = renderToString(createElement(exported.Logo, { href: '/', label: 'egdev, home', rel: 'home' }));
+  assert.match(
+    home,
+    /^<a rel="home" href="\/" aria-label="egdev, home" class="eg-logo [^"]*focus-visible:outline-none focus-visible:shadow-focus">/
+  );
+  assert.doesNotMatch(home, /role=/, 'The link keeps its native role');
+  for (const [size, utility] of [
+    ['sm', 'h-7'],
+    ['md', 'h-8'],
+    ['lg', 'h-9']
+  ]) {
+    const sized = renderToString(createElement(exported.Logo, { size }));
+    assert.ok(sized.includes(`rounded-sm ${utility}"`), `Logo ${size} preset`);
+  }
+  // StatusDot: always decorative, empty, data-state per state; ring vs glow geometry and the live pulse.
+  const pulse = 'motion-safe:animate-[eg-status-dot-pulse_2.4s_var(--ease-out)_infinite]';
+  assert.equal(
+    renderToString(createElement(exported.StatusDot)),
+    '<span aria-hidden="true" data-state="stopped" class="eg-status-dot inline-block shrink-0 rounded-full size-2 ring-2 ring-bg-surface bg-primitive-neutral-600"></span>'
+  );
+  for (const [state, fill] of [
+    ['running', 'bg-status-success'],
+    ['idle', 'bg-status-info'],
+    ['warning', 'bg-status-warning'],
+    ['error', 'bg-status-danger'],
+    ['stopped', 'bg-primitive-neutral-600']
+  ]) {
+    const dot = renderToString(createElement(exported.StatusDot, { state, pulse: true }));
+    assert.ok(dot.includes(`data-state="${state}"`), `StatusDot ${state} state`);
+    assert.ok(dot.includes(`size-2 ring-2 ring-bg-surface ${fill}`), `StatusDot ${state} ringed fill`);
+    assert.doesNotMatch(dot, /shadow-glow-hot|animate/, `StatusDot ${state} never glows or pulses`);
+  }
+  for (const [state, fill] of [
+    ['live', 'bg-fg-brand-default'],
+    ['standby', 'bg-primitive-white']
+  ]) {
+    const dot = renderToString(createElement(exported.StatusDot, { state }));
+    assert.ok(dot.includes(`size-2.5 shadow-glow-hot ${fill} ${pulse}`), `StatusDot ${state} glows and pulses`);
+    assert.doesNotMatch(dot, /ring-/, `StatusDot ${state} has no ring`);
+    const still = renderToString(createElement(exported.StatusDot, { state, pulse: false }));
+    assert.ok(still.includes(`shadow-glow-hot ${fill}"`), `StatusDot ${state} pulse:false keeps the glow`);
+    assert.doesNotMatch(still, /animate/, `StatusDot ${state} pulse:false is static`);
+  }
+  const placed = renderToString(
+    createElement(exported.StatusDot, { state: 'error', id: 'rail-dot', title: 'Error', className: 'absolute top-1' })
+  );
+  assert.match(
+    placed,
+    /^<span id="rail-dot" title="Error" aria-hidden="true" data-state="error" class="eg-status-dot /
+  );
+  assert.ok(placed.endsWith('bg-status-danger absolute top-1"></span>'), 'Consumer layout classes merge last');
+  assert.doesNotMatch(placed, /role=|aria-label|tabindex|\spulse=|\sstate=/);
   // Kbd: one native kbd per key; a label hides the glyph and adds hidden spoken text (D2).
   const plainKey = renderToString(createElement(exported.Kbd, { children: 'Esc', id: 'escape-key' }));
   assert.equal(
@@ -747,6 +1192,62 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     const variantHtml = renderToString(createElement(exported.Textarea, { 'aria-label': variant, variant }));
     assert.ok(variantHtml.includes(utility), `Textarea ${variant} must render ${utility}`);
   }
+  // Input: span.eg-input root, native input with forwarded attributes, className on the root only (D3).
+  const field = renderToString(
+    createElement(exported.Input, { 'aria-label': 'Title', name: 'title', placeholder: 'Untitled', className: 'w-64' })
+  );
+  assert.match(
+    field,
+    /^<span class="eg-input relative flex items-center [^"]*w-64"><input [^>]*class="box-border w-full [^"]*"[^>]*\/><\/span>$/
+  );
+  for (const attribute of ['aria-label="Title"', 'name="title"', 'placeholder="Untitled"', 'type="text"']) {
+    assert.ok(field.split('<input')[1].includes(attribute), `Input must forward ${attribute} to the native input`);
+  }
+  assert.ok(!field.split('<input')[0].includes('w-full'), 'Consumer width replaces the root full width');
+  for (const utility of [
+    'min-h-11',
+    'px-3',
+    'py-2',
+    'text-body-default',
+    'bg-surface-0',
+    'shadow-[var(--shadow-well)]'
+  ]) {
+    assert.ok(field.includes(utility), `Input md/default must render ${utility}`);
+  }
+  assert.doesNotMatch(field, /aria-hidden|data-state|role=|\ssize=/);
+  const search = renderToString(
+    createElement(exported.Input, {
+      'aria-label': 'Search',
+      type: 'search',
+      size: 'sm',
+      variant: 'code',
+      icon: createElement('svg', { viewBox: '0 0 16 16' })
+    })
+  );
+  assert.match(search, /^<span class="eg-input [^"]*"><span aria-hidden="true" class="[^"]*absolute left-3[^"]*"><svg/);
+  assert.match(search, /type="search"/);
+  for (const utility of ['min-h-9', 'pl-9', 'font-mono', 'text-code', 'bg-primitive-neutral-950']) {
+    assert.ok(search.includes(utility), `Input sm/code/icon must render ${utility}`);
+  }
+  for (const utility of ['font-sans', 'bg-surface-0', 'text-label-default', 'font-[var(']) {
+    assert.ok(!search.includes(` ${utility}`), `Input code must replace ${utility}`);
+  }
+  // ProductMark: passive role="img" tile by default, native named link with href; monogram hidden (D5, D6).
+  const markRecipe =
+    'eg-product-mark inline-flex size-10 shrink-0 items-center justify-center rounded-md bg-(image:--gradient-btn-primary) shadow-btn-primary text-action-primary-solid-fg font-display text-heading-small no-underline';
+  assert.equal(
+    renderToString(createElement(exported.ProductMark, { monogram: 'M', label: 'Mando', id: 'mando-mark' })),
+    `<span id="mando-mark" role="img" aria-label="Mando" class="${markRecipe}"><span aria-hidden="true">M</span></span>`
+  );
+  assert.equal(
+    renderToString(createElement(exported.ProductMark, { monogram: 'M', label: 'Mando home', href: '/' })),
+    `<a href="/" aria-label="Mando home" class="${markRecipe} focus-visible:outline-none focus-visible:shadow-focus"><span aria-hidden="true">M</span></a>`
+  );
+  const twoLetters = renderToString(
+    createElement(exported.ProductMark, { monogram: 'Cr', label: 'Criterio', className: 'mb-1 mb-3' })
+  );
+  assert.ok(twoLetters.includes(`class="${markRecipe} mb-3"`), 'Layout className merges last through cn()');
+  assert.doesNotMatch(twoLetters, /\s(?:monogram|label|href|tabindex)=|data-state|hover:|transition/);
   const geometry = [
     ['line', 'sm', 'h-3', 'rounded-sm'],
     ['line', 'md', 'h-4', 'rounded-sm'],

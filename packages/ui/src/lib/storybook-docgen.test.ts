@@ -128,8 +128,13 @@ describe('Storybook TypeScript docgen contract', () => {
     // Each primitive exports its type alias first and runtime component second; dedupe the specifiers.
     expect([...new Set(modules)].sort()).toEqual([
       './atoms/gauge',
+      './atoms/icon',
+      './atoms/input',
       './atoms/kbd',
+      './atoms/logo',
+      './atoms/product-mark',
       './atoms/spinner',
+      './atoms/status-dot',
       './atoms/textarea',
       './lib/cn',
       './primitives/aspect-ratio',
@@ -141,6 +146,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/slot',
       './primitives/stack',
       './primitives/surface',
+      './primitives/text',
       './primitives/visually-hidden'
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
@@ -148,19 +154,27 @@ describe('Storybook TypeScript docgen contract', () => {
       'Cluster',
       'Divider',
       'Gauge',
+      'Heading',
+      'Icon',
+      'Input',
       'Kbd',
       'Label',
+      'Logo',
       'Portal',
+      'ProductMark',
       'Skeleton',
       'Slot',
       'Slottable',
       'Spinner',
       'Stack',
+      'StatusDot',
       'Surface',
+      'Text',
       'Textarea',
       'VisuallyHidden',
       'cn',
       'labelVariants',
+      'statusDotVariants',
       'surfaceVariants'
     ]);
   });
@@ -172,6 +186,8 @@ describe('Storybook TypeScript docgen contract', () => {
       source('primitives/aspect-ratio/AspectRatio.tsx'),
       source('primitives/stack/Stack.tsx'),
       source('primitives/stack/Cluster.tsx'),
+      source('primitives/text/Text.tsx'),
+      source('primitives/text/Heading.tsx'),
       source('primitives/surface/Surface.tsx')
     ]);
   }, 20_000);
@@ -446,6 +462,88 @@ describe('Storybook TypeScript docgen contract', () => {
     }
   });
 
+  it('extracts the real Text and Heading typography contracts with their own defaults', () => {
+    for (const [name, variants, variantDefault, extra] of [
+      ['Text', ['display', 'eyebrow', 'hero', 'inverse', 'section', 'show'], 'eyebrow', 'asChild'],
+      ['Heading', ['display', 'hero', 'inverse', 'section', 'show'], 'section', 'level']
+    ] as const) {
+      const doc = docs.find((item) => item.displayName === name);
+      if (!doc) {
+        throw new Error(`Missing docgen for ${name}`);
+      }
+      const props = doc.props;
+      const values = (prop: string) =>
+        (props[prop]?.type.value ?? []).map((item: { value: string }) => normalize(item.value)).sort();
+      expect(props.variant?.type.name).toBe('enum');
+      expect(values('variant')).toEqual(variants);
+      expect(normalize(props.variant?.defaultValue?.value)).toBe(variantDefault);
+      expect(values('tone')).toEqual(['canvas', 'raised']);
+      expect(normalize(props.tone?.defaultValue?.value)).toBe('canvas');
+      expect(props.accent?.type.name).toBe('string');
+      expect(props.accent?.defaultValue, `${name}.accent absence is described, not a fixed default`).toBeNull();
+      expect(props.accent?.description).toMatch(/whitespace-only text renders no\s+accent/);
+      expect(normalize(props.accentBreak?.defaultValue?.value)).toBe('true');
+      expect(props.children?.required, `${name}.children must stay required`).toBe(true);
+      expect(props.children?.defaultValue).toBeNull();
+      expect(props.children?.tags).toMatchObject({ control: 'false' });
+      expect(props[extra], `${name}.${extra}`).toBeDefined();
+      for (const prop of ['id', 'title', 'aria-describedby', 'className']) {
+        expect.soft(props[prop]?.type.name, `${name} native ${prop} must remain in autodocs`).toBe('string');
+      }
+      for (const prop of ['role', 'dangerouslySetInnerHTML', 'aria-level', 'ref', 'tabIndex']) {
+        expect(props[prop], `${name} must not document ${prop}`).toBeUndefined();
+      }
+    }
+    const heading = docs.find((item) => item.displayName === 'Heading')?.props;
+    expect(heading?.asChild).toBeUndefined();
+    expect((heading?.level?.type.value ?? []).map((item: { value: string }) => item.value)).toEqual([
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6'
+    ]);
+    expect(normalize(heading?.level?.defaultValue?.value)).toBe('2');
+    expect(docs.find((item) => item.displayName === 'Text')?.props.level).toBeUndefined();
+  });
+
+  it('annotates every Text and Heading own declaration, including each union branch', () => {
+    const file = ast(source('primitives/text/types.ts'));
+    const properties = ownProps(file, [
+      'TitleAccentProps',
+      'TextVisualProps',
+      'HeadingVisualProps',
+      'TextProps',
+      'HeadingProps'
+    ]);
+    const allowed: Record<string, string> = {
+      variant: 'select',
+      tone: 'select',
+      accent: 'text',
+      accentBreak: 'boolean',
+      asChild: 'boolean',
+      children: 'false',
+      level: 'select'
+    };
+    // Two accent props, Text's three branches (4 + 2 + 2), Heading's two branches (2 + 2), two own extras each.
+    expect(properties).toHaveLength(18);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const values = (tagName: string) =>
+        tags.filter((tag) => tag.tagName.text === tagName).map((tag) => ts.getTextOfJSDocComment(tag.comment)?.trim());
+      expect(values('control'), `${name} @control`).toEqual([allowed[name]]);
+      if (allowed[name] === 'false') {
+        expect(values('controlReason')[0], `${name} @controlReason`).toMatch(/ReactNode.*stories/);
+      }
+      if (!property.questionToken) {
+        expect(values('default'), `required ${name} must not invent @default`).toEqual([]);
+      }
+      expect(ts.getTextOfJSDocComment(ts.getJSDocCommentsAndTags(property)[0]?.comment), name).toBeTruthy();
+    }
+  });
+
   it('extracts Surface from both public branches with single constant defaults', () => {
     const doc = docs.find((item) => item.displayName === 'Surface');
     expect(doc, 'Surface must be discovered from its real component').toBeDefined();
@@ -534,7 +632,15 @@ describe('Storybook TypeScript docgen contract', () => {
   });
 
   it('limits real parser discovery to the current public React components', () => {
-    expect(docs.map((doc) => doc.displayName)).toEqual(['Gauge', 'AspectRatio', 'Stack', 'Cluster', 'Surface']);
+    expect(docs.map((doc) => doc.displayName)).toEqual([
+      'Gauge',
+      'AspectRatio',
+      'Stack',
+      'Cluster',
+      'Text',
+      'Heading',
+      'Surface'
+    ]);
     expect(Object.keys(gaugeControls)).toHaveLength(8);
   });
 });
@@ -696,6 +802,81 @@ describe('Skeleton decorative metadata contract', () => {
   });
 });
 
+describe('Icon glyph metadata contract', () => {
+  const iconControls: Record<string, string> = { name: 'select', size: 'select', filled: 'boolean', label: 'text' };
+  let iconDocs: ReturnType<typeof parser.parse>;
+
+  beforeAll(() => {
+    iconDocs = parser.parse(source('atoms/icon/Icon.tsx'));
+  }, 20_000);
+
+  it('annotates each own Icon prop with one control and constant-only defaults', () => {
+    const file = ast(source('atoms/icon/types.ts'));
+    const properties = ownProps(file, ['IconProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['name', 'size', 'filled', 'label']);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `Icon.${name} control`).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment), `Icon.${name} @control`).toBe(iconControls[name]);
+      const fixed = tags.find((tag) => tag.tagName.text === 'default');
+      expect(fixed ? ts.getTextOfJSDocComment(fixed.comment) : undefined, `Icon.${name} @default`).toBe(
+        { size: 'md', filled: 'false' }[name]
+      );
+    }
+    expect(defaults(source('atoms/icon/types.ts'), true)).toEqual({ size: 'md', filled: 'false' });
+    expect(defaults(source('atoms/icon/useIcon.ts'), false)).toEqual({ filled: 'false' });
+  });
+
+  it('extracts the closed glyph enum, presets, fill and label from the real component', () => {
+    expect(iconDocs.map((doc) => doc.displayName)).toEqual(['Icon']);
+    const props = iconDocs[0]?.props;
+    if (!props) {
+      throw new Error('Missing docgen for Icon');
+    }
+    expect(props.name).toMatchObject({ required: true, defaultValue: null, tags: { control: 'select' } });
+    expect(props.name?.type.name).toBe('enum');
+    const glyphs = (props.name?.type.value ?? []).map((item: { value: string }) => normalize(item.value));
+    expect(glyphs).toHaveLength(42);
+    expect(glyphs).toEqual(expect.arrayContaining(['check', 'minus', 'plus', 'chevron-down']));
+    expect(props.size?.type.value?.map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
+      'lg',
+      'md',
+      'sm'
+    ]);
+    expect(normalize(props.size?.defaultValue?.value)).toBe('md');
+    expect(props.filled).toMatchObject({ required: false, type: { name: 'boolean' }, tags: { control: 'boolean' } });
+    expect(normalize(props.filled?.defaultValue?.value)).toBe('false');
+    expect(props.label).toMatchObject({ required: false, type: { name: 'string' }, tags: { control: 'text' } });
+    expect(props.label?.defaultValue).toBeNull();
+    expect(props.label?.description).toMatch(/When\s+omitted or empty, the icon is decorative/);
+    for (const prop of ['id', 'aria-describedby', 'className']) {
+      expect.soft(props[prop]?.type.name, `Icon native ${prop} must remain available in autodocs`).toBe('string');
+    }
+    expect.soft(props.style?.type.name).toBe('CSSProperties');
+    for (const prop of [
+      'children',
+      'viewBox',
+      'role',
+      'aria-hidden',
+      'aria-label',
+      'aria-labelledby',
+      'focusable',
+      'fill',
+      'stroke',
+      'strokeWidth',
+      'width',
+      'height',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild'
+    ]) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  });
+});
+
 describe('Spinner passive metadata contract', () => {
   it('keeps the size union and annotates exactly label (text) and size (select)', () => {
     const file = ast(source('atoms/spinner/types.ts'));
@@ -762,6 +943,196 @@ describe('Spinner passive metadata contract', () => {
       expect(props[prop], `Spinner native ${prop} must remain available in autodocs`).toBeDefined();
     }
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live', 'tone', 'color']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('Logo brand-artwork metadata contract', () => {
+  it('keeps the variant/size unions and annotates own props on both mode branches', () => {
+    const file = ast(source('atoms/logo/types.ts'));
+    const union = (name: string) => {
+      const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === name);
+      return alias && ts.isTypeAliasDeclaration(alias) ? alias.type.getText(file) : undefined;
+    };
+    expect(union('LogoVariant')).toBe("'mark' | 'wordmark'");
+    expect(union('LogoSize')).toBe("'sm' | 'md' | 'lg'");
+    const own = ownProps(file, ['LogoOwnProps', 'LogoLinkProps', 'LogoImageProps']);
+    expect(own.map((property) => property.name.getText(file))).toEqual(['variant', 'size', 'label', 'href', 'href']);
+    const expected: Record<string, [string, string | undefined]> = {
+      variant: ['select', 'wordmark'],
+      size: ['select', 'md'],
+      label: ['text', 'egdev'],
+      href: ['text', undefined]
+    };
+    for (const property of own) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const values = (tagName: string) =>
+        tags.filter((tag) => tag.tagName.text === tagName).map((tag) => ts.getTextOfJSDocComment(tag.comment));
+      expect(values('control'), `Logo.${name} control`).toEqual([expected[name]?.[0]]);
+      // An absent href is the derived image mode, never a fixed default.
+      expect(values('default')[0], `Logo.${name} default`).toBe(expected[name]?.[1]);
+    }
+    const [linkHref, imageHref] = own.slice(3);
+    expect(linkHref?.questionToken, 'the link branch requires href').toBeUndefined();
+    expect(imageHref?.questionToken, 'the image branch leaves href absent').toBeTruthy();
+    expect(imageHref?.type?.getText(file)).toBe('undefined');
+  });
+
+  it('omits exactly the contract-owned naming and content props per mode and exposes no ref or asChild', () => {
+    const file = ast(source('atoms/logo/types.ts'));
+    const omitted = (name: string) => {
+      const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === name);
+      if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+        throw new Error(`Missing ${name} declaration`);
+      }
+      const keys: string[] = [];
+      const visit = (node: ts.Node): void => {
+        if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+          const [base, union] = node.typeArguments;
+          keys.push(normalize(base?.getText(file)));
+          if (union && ts.isUnionTypeNode(union)) {
+            keys.push(...union.types.map((member) => normalize(member.getText(file))));
+          }
+        }
+        ts.forEachChild(node, visit);
+      };
+      visit(alias.type);
+      expect(alias.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild/);
+      return keys;
+    };
+    expect(omitted('LogoLinkProps')).toEqual([
+      "ComponentPropsWithoutRef<'a'>",
+      'children',
+      'href',
+      'aria-label',
+      'aria-labelledby',
+      'dangerouslySetInnerHTML'
+    ]);
+    expect(omitted('LogoImageProps')).toEqual([
+      "ComponentPropsWithoutRef<'span'>",
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'aria-hidden',
+      'dangerouslySetInnerHTML'
+    ]);
+  });
+
+  it('binds the CVA default size and the hook default variant to the documented presets', () => {
+    expect(defaults(source('atoms/logo/types.ts'), true)).toEqual({ size: 'md', link: 'false' });
+    expect(defaults(source('atoms/logo/useLogo.ts'), false)).toEqual({ variant: 'wordmark' });
+    expect(readFileSync(source('atoms/logo/useLogo.ts'), 'utf8')).toMatch(/const DEFAULT_LABEL = 'egdev';/);
+  });
+
+  it('extracts the own rows, choices, real defaults and documented native rows', () => {
+    const doc = parser.parse(source('atoms/logo/Logo.tsx')).find((item) => item.displayName === 'Logo');
+    if (!doc) {
+      throw new Error('Missing docgen for Logo');
+    }
+    const { props } = doc;
+    const choices = (prop: string) =>
+      props[prop]?.type.value?.map((item: { value: string }) => normalize(item.value)).sort();
+    expect(props.variant).toMatchObject({ required: false, tags: { control: 'select' } });
+    expect(choices('variant')).toEqual(['mark', 'wordmark']);
+    expect(normalize(props.variant?.defaultValue?.value)).toBe('wordmark');
+    expect(props.size).toMatchObject({ required: false, tags: { control: 'select' } });
+    expect(choices('size')).toEqual(['lg', 'md', 'sm']);
+    expect(normalize(props.size?.defaultValue?.value)).toBe('md');
+    expect(props.label).toMatchObject({ required: false, tags: { control: 'text' } });
+    expect(props.label?.type.name).toBe('string');
+    expect(normalize(props.label?.defaultValue?.value)).toBe('egdev');
+    // Both mode branches merge into one optional href row whose identical directives normalize.
+    expect(props.href).toMatchObject({ required: false, tags: { control: 'text\ntext' } });
+    expect(props.href?.type.name).toBe('string');
+    expect(props.href?.defaultValue ?? null).toBeNull();
+    for (const prop of ['id', 'title', 'className', 'style', 'target', 'rel']) {
+      expect(props[prop], `Logo native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-label', 'aria-labelledby', 'aria-hidden', 'tone']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('StatusDot decorative metadata contract', () => {
+  it('keeps the state union and annotates exactly state (select) and pulse (boolean)', () => {
+    const file = ast(source('atoms/status-dot/types.ts'));
+    const alias = file.statements.find(
+      (node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'StatusDotState'
+    );
+    expect(alias && ts.isTypeAliasDeclaration(alias) ? alias.type.getText(file) : undefined).toBe(
+      "'running' | 'idle' | 'warning' | 'error' | 'stopped' | 'live' | 'standby'"
+    );
+    const properties = ownProps(file, ['StatusDotProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['state', 'pulse']);
+    const expectedTags: Record<string, [string, string]> = { state: ['select', 'stopped'], pulse: ['boolean', 'true'] };
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(property.questionToken, `StatusDot.${name} stays optional`).toBeTruthy();
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `StatusDot.${name} control`).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe(expectedTags[name]?.[0]);
+      const defaultTag = tags.find((tag) => tag.tagName.text === 'default');
+      expect(ts.getTextOfJSDocComment(defaultTag?.comment)).toBe(expectedTags[name]?.[1]);
+    }
+  });
+
+  it('omits exactly the contract-owned span props and exposes no ref or asChild', () => {
+    const file = ast(source('atoms/status-dot/types.ts'));
+    const alias = file.statements.find(
+      (node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'StatusDotProps'
+    );
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing StatusDotProps declaration');
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const union = node.typeArguments[1];
+        if (union && ts.isUnionTypeNode(union)) {
+          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual(['children', 'role', 'aria-hidden', 'aria-label', 'aria-labelledby']);
+    expect(alias.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild/);
+  });
+
+  it('binds the CVA and hook defaults to the documented stopped state with pulse on', () => {
+    expect(defaults(source('atoms/status-dot/types.ts'), true)).toEqual({ state: 'stopped', pulse: 'true' });
+    expect(defaults(source('atoms/status-dot/useStatusDot.ts'), false)).toEqual({ state: 'stopped', pulse: 'true' });
+  });
+
+  it('extracts optional state/pulse, the state choices, real defaults and documented native rows', () => {
+    const doc = parser.parse(source('atoms/status-dot/StatusDot.tsx')).find((item) => item.displayName === 'StatusDot');
+    if (!doc) {
+      throw new Error('Missing docgen for StatusDot');
+    }
+    const { props } = doc;
+    expect(props.state).toMatchObject({ required: false, tags: { control: 'select' } });
+    expect(props.state?.type.value?.map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
+      'error',
+      'idle',
+      'live',
+      'running',
+      'standby',
+      'stopped',
+      'warning'
+    ]);
+    expect(normalize(props.state?.defaultValue?.value)).toBe('stopped');
+    expect(props.pulse).toMatchObject({ required: false, tags: { control: 'boolean' } });
+    expect(normalize(props.pulse?.defaultValue?.value)).toBe('true');
+    expect(props.pulse?.description).toMatch(/no effect on status states.*reduced-motion/s);
+    for (const prop of ['id', 'title', 'className', 'style']) {
+      expect(props[prop], `StatusDot native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-label', 'aria-labelledby', 'ring']) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);
@@ -891,6 +1262,192 @@ describe('Textarea native control metadata contract', () => {
       expect(props[prop], `Textarea native ${prop} must remain available in autodocs`).toBeDefined();
     }
     for (const prop of ['children', 'ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick', 'size']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('Input text-control metadata contract', () => {
+  it('keeps the public unions and annotates exactly size, variant, type (select) and icon (false)', () => {
+    const file = ast(source('atoms/input/types.ts'));
+    const union = (name: string) => {
+      const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === name);
+      return alias && ts.isTypeAliasDeclaration(alias) ? alias.type.getText(file) : undefined;
+    };
+    expect(union('InputSize')).toBe("'md' | 'sm'");
+    expect(union('InputVariant')).toBe("'default' | 'code'");
+    expect(union('InputType')).toBe("'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'number'");
+    const properties = ownProps(file, ['InputProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['size', 'variant', 'type', 'icon']);
+    const constants: Record<string, string | undefined> = {
+      size: 'md',
+      variant: 'default',
+      type: 'text',
+      icon: undefined
+    };
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(property.questionToken, `Input.${name} stays optional`).toBeTruthy();
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `Input.${name} control`).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe(name === 'icon' ? 'false' : 'select');
+      // An absent icon renders nothing: an absence rule, not a fixed default value.
+      const defaultTag = tags.find((tag) => tag.tagName.text === 'default');
+      expect(ts.getTextOfJSDocComment(defaultTag?.comment), `Input.${name} @default`).toBe(constants[name]);
+    }
+    const iconReason = ts
+      .getJSDocTags(properties[3] as ts.PropertySignature)
+      .find((tag) => tag.tagName.text === 'controlReason');
+    expect(ts.getTextOfJSDocComment(iconReason?.comment)).toMatch(/Non-serializable ReactNode.*WithIcon/);
+    expect(exportedStoryNames(ast(source('atoms/input/Input.stories.tsx')))).toContain('WithIcon');
+  });
+
+  it('omits exactly the native size, type and children from the forwarded input props', () => {
+    const file = ast(source('atoms/input/types.ts'));
+    const alias = file.statements.find(
+      (node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'InputNativeProps'
+    );
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing InputNativeProps declaration');
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const members = node.typeArguments[1];
+        if (members && ts.isUnionTypeNode(members)) {
+          omitted.push(...members.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual(['size', 'type', 'children']);
+    expect(alias.type.getText(file)).toMatch(/ComponentPropsWithoutRef<'input'>/);
+    expect(alias.type.getText(file)).not.toMatch(/asChild/);
+  });
+
+  it('binds the CVA defaults to the documented md/default presets', () => {
+    expect(defaults(source('atoms/input/types.ts'), true)).toEqual({ size: 'md', variant: 'default', icon: 'false' });
+    expect(defaults(source('atoms/input/useInput.ts'), false)).toEqual({
+      size: 'md',
+      variant: 'default',
+      type: 'text'
+    });
+  });
+
+  it('extracts the select choices, real defaults, the icon row and only the documented native rows', () => {
+    const doc = parser.parse(source('atoms/input/Input.tsx')).find((item) => item.displayName === 'Input');
+    if (!doc) {
+      throw new Error('Missing docgen for Input');
+    }
+    const { props } = doc;
+    const choices = (prop: string) =>
+      props[prop]?.type.value?.map((item: { value: string }) => normalize(item.value)).sort();
+    expect(props.size).toMatchObject({ required: false, tags: { control: 'select' } });
+    expect(choices('size')).toEqual(['md', 'sm']);
+    expect(normalize(props.size?.defaultValue?.value)).toBe('md');
+    expect(props.variant).toMatchObject({ required: false, tags: { control: 'select' } });
+    expect(choices('variant')).toEqual(['code', 'default']);
+    expect(normalize(props.variant?.defaultValue?.value)).toBe('default');
+    expect(props.type).toMatchObject({ required: false, tags: { control: 'select' } });
+    expect(choices('type')).toEqual(['email', 'number', 'password', 'search', 'tel', 'text', 'url']);
+    expect(normalize(props.type?.defaultValue?.value)).toBe('text');
+    expect(props.icon).toMatchObject({ required: false, tags: { control: 'false' } });
+    expect(props.icon?.defaultValue ?? null).toBeNull();
+    expect(props.icon?.description).toMatch(/No icon is rendered when omitted/);
+    for (const prop of ['id', 'name', 'placeholder', 'disabled', 'readOnly', 'required', 'className']) {
+      expect(props[prop], `Input native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of ['children', 'asChild', 'onChange', 'style', 'tone', 'invalid', 'onValueChange']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('ProductMark mode metadata contract', () => {
+  const branches = ['ProductMarkLinkProps', 'ProductMarkImageProps'];
+
+  it('annotates monogram, label and href as text controls on every branch without defaults', () => {
+    const file = ast(source('atoms/product-mark/types.ts'));
+    const properties = ownProps(file, ['ProductMarkOwnProps', ...branches]);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['monogram', 'label', 'href', 'href']);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `ProductMark.${name} control`).toHaveLength(1);
+      // Union branches merge their tags in docgen: a differing directive per branch would be ambiguous.
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe('text');
+      expect(tags.find((tag) => tag.tagName.text === 'default')).toBeUndefined();
+    }
+    const [monogram, label, linkHref, imageHref] = properties;
+    expect(monogram?.questionToken).toBeUndefined();
+    expect(label?.questionToken).toBeUndefined();
+    expect(linkHref?.questionToken).toBeUndefined();
+    expect(linkHref?.type?.getText(file)).toBe('string');
+    expect(imageHref?.questionToken).toBeTruthy();
+    expect(imageHref?.type?.getText(file)).toBe('undefined');
+  });
+
+  it.each([
+    ['ProductMarkLinkProps', ['children', 'href', 'aria-label', 'aria-labelledby', 'dangerouslySetInnerHTML']],
+    [
+      'ProductMarkImageProps',
+      ['children', 'role', 'aria-label', 'aria-labelledby', 'aria-hidden', 'dangerouslySetInnerHTML']
+    ]
+  ] as const)('%s omits exactly the contract-owned naming and content props and exposes no ref', (name, expected) => {
+    const file = ast(source('atoms/product-mark/types.ts'));
+    const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === name);
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error(`Missing ${name} declaration`);
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const union = node.typeArguments[1];
+        if (union && ts.isUnionTypeNode(union)) {
+          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual(expected);
+    expect(alias.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild/);
+  });
+
+  it('extracts required monogram/label, optional href and only the documented native rows', () => {
+    const doc = parser
+      .parse(source('atoms/product-mark/ProductMark.tsx'))
+      .find((item) => item.displayName === 'ProductMark');
+    if (!doc) {
+      throw new Error('Missing docgen for ProductMark');
+    }
+    const { props } = doc;
+    for (const prop of ['monogram', 'label']) {
+      expect(props[prop], prop).toMatchObject({ required: true, tags: { control: 'text' } });
+      expect(props[prop]?.type.name, prop).toBe('string');
+      expect(props[prop]?.defaultValue ?? null, prop).toBeNull();
+    }
+    expect(props.href).toMatchObject({ required: false });
+    expect(props.href?.type.name).toBe('string');
+    // Both branches carry the same directive; docgen joins them and the enhancer normalizes to one.
+    expect(props.href).toMatchObject({ tags: { control: expect.stringMatching(/^text\s*\n\s*text$/) } });
+    expect(props.href?.description).toMatch(/When absent.*role="img"/s);
+    for (const prop of ['id', 'title', 'className', 'target', 'rel']) {
+      expect(props[prop], `ProductMark native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of [
+      'children',
+      'ref',
+      'asChild',
+      'role',
+      'aria-label',
+      'dangerouslySetInnerHTML',
+      'size',
+      'onClick'
+    ]) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);
