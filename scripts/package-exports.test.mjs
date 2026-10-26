@@ -44,6 +44,54 @@ function cssBlock(css, opening) {
   assert.fail(`Unclosed emitted CSS block ${opening}`);
 }
 
+// Match escaped emitted selectors, not unescaped CVA class names; allow only complete approved utilities.
+const unapprovedTransitionUtility =
+  /\.transition-(?!(?:none|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\])(?=\s*\{))[\w\\]/;
+
+test('transition utility guard accepts only the exact approved emitted selectors', () => {
+  for (const selector of [
+    '.transition-none',
+    '.transition-opacity',
+    '.transition-transform',
+    '.transition-shadow',
+    String.raw`.transition-\[background-color\,border-color\]`,
+    String.raw`.transition-\[border-color\,box-shadow\]`,
+    String.raw`.transition-\[translate\,background-color\]`,
+    String.raw`.transition-\[border-color\,color\]`,
+    String.raw`.transition-\[translate\]`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.doesNotMatch(`${selector} { transition-property: none; }`, unapprovedTransitionUtility, selector);
+  }
+});
+
+test('transition utility guard rejects unrelated named and arbitrary transitions', () => {
+  for (const selector of [
+    '.transition-all',
+    '.transition-colors',
+    '.transition-opacity-extra',
+    '.transition-none-extra',
+    '.transition-transform-extra',
+    '.transition-shadow-extra',
+    String.raw`.transition-\[all\]`,
+    String.raw`.transition-\[width\]`,
+    String.raw`.transition-\[background-color\,border-color\,opacity\]`,
+    String.raw`.transition-\[border-color\,box-shadow\,opacity\]`,
+    String.raw`.transition-\[translate\,background-color\,width\]`,
+    String.raw`.transition-\[translate\,background-color\]extra`,
+    String.raw`.transition-\[border-color\,color\,width\]`,
+    String.raw`.transition-\[border-color\,color\]extra`,
+    String.raw`.transition-\[translate\,width\]`,
+    String.raw`.transition-\[translate\]extra`
+  ]) {
+    assert.throws(
+      () => assert.doesNotMatch(`${selector} { transition-property: all; }`, unapprovedTransitionUtility),
+      { code: 'ERR_ASSERTION' },
+      selector
+    );
+  }
+});
+
 test('UI publishes its stable declaration entry and reachable internal declarations', (context) => {
   assert.equal(ui.exports['.'].types, './dist/index.d.ts');
   assert.equal(ui.types, ui.exports['.'].types);
@@ -225,8 +273,11 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
     /animation:\s*none\s*;/,
     'Reduced-motion preferences must stop the pulse'
   );
-  // Pulse (Skeleton) and spin (Spinner, #69) are the only approved animation utilities; transitions
-  // are limited to Gauge's transition-none and Button's exact translate transition utility.
+  // Pulse (Skeleton) and spin (Spinner, #69) are the only approved animation utilities.
+  // Transitions are limited to none, Tooltip opacity (#75 D10), ProgressBar transform (#65 AC-09),
+  // Input/Textarea border-color and box-shadow, Switch track background-color and border-color,
+  // and Switch thumb translate and background-color; Slider adds only box-shadow (#68 D8).
+  // Link adds only border-color/color and translate (#61); none reach the Skeleton.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
@@ -234,8 +285,8 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   );
   assert.doesNotMatch(
     utilityLayer,
-    /\.transition-(?!none\b|\\\[translate\\\])/,
-    'Only Button translate and existing transition-none utilities may ship'
+    unapprovedTransitionUtility,
+    'Only the exact approved component transition utilities may ship'
   );
   assert.doesNotMatch(utilityLayer, /@keyframes/, 'The utilities layer must not define keyframes');
 });
@@ -366,6 +417,384 @@ test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet ru
   assert.equal(kbdRules(css), kbdRules(legacy), 'Kbd has no stylesheet: its marker carries no new rule');
 });
 
+test('UI ships every static Badge CVA utility and all twelve token treatments without a stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (utility) => {
+    const selector = `.${utility.replace(/[^a-zA-Z0-9_-]/g, (character) => `\\${character}`)}`;
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/atoms/badge/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  const collect = (node) => {
+    if (node && ts.isStringLiteral(node)) {
+      for (const value of node.text.split(/\s+/).filter(Boolean)) {
+        classes.add(value);
+      }
+    }
+  };
+  const visit = (node) => {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      collect(node.arguments[0]);
+    }
+    if (ts.isPropertyAssignment(node) && ['className', 'soft', 'solid'].includes(node.name.getText(source))) {
+      collect(node.initializer);
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  assert.ok(classes.size > 30, 'Scan the real base, decorative part and compound variants');
+  for (const utility of classes) {
+    if (utility !== 'eg-badge') {
+      rule(utility);
+    }
+  }
+  for (const tone of ['fg-secondary', 'status-info', 'status-success', 'status-warning', 'status-danger']) {
+    assert.ok(rule(`text-${tone}`).includes(`var(--color-${tone}`));
+    assert.match(rule(`border-${tone}/30`), /30%/);
+    assert.match(rule(`bg-${tone}/8`), /8%/);
+    assert.ok(rule(`bg-${tone}`).includes(`var(--color-${tone}`));
+  }
+  for (const [utility, token] of [
+    ['text-primitive-red-200', 'color-primitive-red-200'],
+    ['border-alpha-red-22', 'color-alpha-red-22'],
+    ['bg-alpha-red-12', 'color-alpha-red-12'],
+    ['bg-action-primary-solid-bg', 'color-action-primary-solid-bg'],
+    ['text-action-primary-solid-fg', 'color-action-primary-solid-fg'],
+    ['text-fg-on-status', 'color-fg-on-status']
+  ]) {
+    assert.ok(rule(utility).includes(`var(--${token}`), utility);
+  }
+  for (const [utility, factor] of [
+    ['size-3.5', '3.5'],
+    ['gap-1.5', '1.5'],
+    ['py-1.5', '1.5'],
+    ['px-2.5', '2.5']
+  ]) {
+    assert.ok(rule(utility).includes(`calc(var(--space-1) * ${factor})`), utility);
+  }
+  // Tailwind expands named shadow tokens and inserts its optional color override.
+  const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
+  const edge = /--shadow-edge:\s*([^;]+);/.exec(theme)?.[1];
+  assert.ok(edge);
+  assert.ok(
+    rule('shadow-edge').includes(`--tw-shadow: ${edge.replace(/(rgba\([^)]+\))/, 'var(--tw-shadow-color, $1)')};`)
+  );
+  assert.match(rule('shadow-none'), /--tw-shadow:\s*0 0 #0000\s*;/);
+  assert.doesNotMatch(css, /\.eg-badge\s*[,{]/, 'Badge has no stylesheet');
+});
+
+test('UI ships the RadioGroup row, radio and indicator utilities without a RadioGroup stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // Layout by orientation and the 40px option row on the --spacing scale (D5, D7).
+  assert.match(rule('.gap-1'), /gap:\s*var\(--space-1\)\s*;/);
+  assert.match(rule('.gap-x-6'), /column-gap:\s*var\(--space-6\)\s*;/);
+  assert.match(rule('.gap-y-1'), /row-gap:\s*var\(--space-1\)\s*;/);
+  assert.match(rule('.min-h-10'), /min-height:\s*var\(--space-10\)\s*;/);
+  assert.match(
+    rule(String.raw`.has-\[\[data-state\=checked\]\]\:text-fg-default:has(:is([data-state=checked]))`),
+    /color:\s*var\(--color-fg-default[,)]/
+  );
+  assert.match(
+    rule(String.raw`.has-\[\[data-disabled\]\]\:opacity-45:has(:is([data-disabled]))`),
+    /opacity:\s*45%\s*;/
+  );
+  // Radio circle: 20px border-box well, raised primary recipe when checked (D6).
+  assert.match(rule('.size-5'), /width:\s*var\(--space-5\)\s*;\s*height:\s*var\(--space-5\)\s*;/);
+  assert.match(rule('.place-items-center'), /place-items:\s*center\s*;/);
+  assert.match(rule('.box-border'), /box-sizing:\s*border-box\s*;/);
+  assert.match(rule('.border-border-control'), /border-color:\s*var\(--color-border-control[,)]/);
+  assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)\s*;/);
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:border-action-primary-solid-bg[data-state="checked"]`),
+    /border-color:\s*var\(--color-action-primary-solid-bg[,)]/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:bg-\[image\:var\(--gradient-btn-primary\)\][data-state="checked"]`),
+    /background-image:\s*var\(--gradient-btn-primary\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:shadow-\[var\(--shadow-btn-primary\)\][data-state="checked"]`),
+    /--tw-shadow:\s*var\(--shadow-btn-primary\)\s*;/
+  );
+  // Checked border wins over hover because the checked rule is emitted later at equal specificity.
+  assert.ok(
+    utilities.indexOf(String.raw`.hover\:border-fg-muted:hover`) <
+      utilities.indexOf(String.raw`.data-\[state\=checked\]\:border-action-primary-solid-bg[data-state="checked"]`),
+    'The checked border must follow the hover border'
+  );
+  // Focus ring wins over the checked halo through the higher-specificity checked+focus rule (AC-06).
+  assert.match(
+    rule(
+      String.raw`.data-\[state\=checked\]\:focus-visible\:shadow-\[var\(--shadow-focus\)\][data-state="checked"]:focus-visible`
+    ),
+    /--tw-shadow:\s*var\(--shadow-focus\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.transition-\[border-color\,box-shadow\]`),
+    /transition-property:\s*border-color,\s*box-shadow\s*;/
+  );
+  assert.match(rule(String.raw`.disabled\:pointer-events-none:disabled`), /pointer-events:\s*none\s*;/);
+  // Indicator: 8px black dot.
+  assert.match(rule('.size-2'), /width:\s*var\(--space-2\)\s*;/);
+  assert.match(rule('.bg-action-primary-solid-fg'), /background-color:\s*var\(--color-action-primary-solid-fg[,)]/);
+  // D9 no stylesheet: the marker carries no rule.
+  assert.doesNotMatch(css, /\.eg-radio-group[^{]*\{/, 'RadioGroup has no stylesheet: its marker carries no rule');
+});
+
+test('UI ships the Tooltip overlay recipe, fallbacks and fade as token utilities without a stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector, scope = utilities) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(scope, new RegExp(`${escaped}\\s*\\{`));
+  };
+  assert.match(rule('.bg-surface-overlay'), /background-color:\s*var\(--color-surface-overlay[,)]/);
+  assert.match(
+    rule(String.raw`.backdrop-blur-\[var\(--blur-overlay\)\]`),
+    /--tw-backdrop-blur:\s*blur\(var\(--blur-overlay\)\)/
+  );
+  assert.match(rule('.backdrop-saturate-150'), /--tw-backdrop-saturate:\s*saturate\(150%\)/);
+  assert.match(rule('.border-border-hairline-strong'), /border-color:\s*var\(--color-border-hairline-strong[,)]/);
+  assert.match(
+    rule(String.raw`.shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-elev-3\)\]`),
+    /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-elev-3\)/
+  );
+  assert.match(rule('.rounded-sm'), /border-radius:\s*var\(--radius-sm[,)]/);
+  // D9: --space-1 x --space-2 through the token spacing scale.
+  assert.match(rule('.px-2'), /padding-inline:\s*var\(--space-2\)\s*;/);
+  assert.match(rule('.py-1'), /padding-block:\s*var\(--space-1\)\s*;/);
+  assert.match(rule('.text-fg-default'), /color:\s*var\(--color-fg-default[,)]/);
+  assert.match(
+    rule(String.raw`.max-w-\[var\(--radix-tooltip-content-available-width\)\]`),
+    /max-width:\s*var\(--radix-tooltip-content-available-width\)/
+  );
+  assert.match(rule('.transition-opacity'), /transition-property:\s*opacity/);
+  assert.match(rule(String.raw`.duration-\[var\(--duration-fast\)\]`), /transition-duration:\s*var\(--duration-fast\)/);
+  assert.match(rule(String.raw`.ease-\[var\(--ease-out\)\]`), /transition-timing-function:\s*var\(--ease-out\)/);
+  // D10: the enter fade starts from transparent through @starting-style; reduced motion drops the transition.
+  assert.match(
+    rule(String.raw`.starting\:opacity-0`, cssBlock(utilities, /@starting-style\s*\{/)),
+    /opacity:\s*0%?\s*;/
+  );
+  const reducedMotion = cssBlock(utilities, /@media \(prefers-reduced-motion: reduce\)\s*\{/);
+  assert.match(rule(String.raw`.motion-reduce\:transition-none`, reducedMotion), /transition-property:\s*none/);
+  // D8: solid surface-2 without blur or saturation under reduced transparency.
+  const reduced = [...utilities.matchAll(/@media \(prefers-reduced-transparency:\s*reduce\)\s*\{/g)]
+    .map((match) => cssBlock(utilities.slice(match.index), /@media[^{]*\{/))
+    .join('\n');
+  const fallback = (name) => rule(String.raw`.\[\@media\(prefers-reduced-transparency\:reduce\)\]\:` + name, reduced);
+  assert.match(fallback('bg-surface-2'), /background-color:\s*var\(--color-surface-2[,)]/);
+  assert.match(fallback('backdrop-blur-none'), /--tw-backdrop-blur:\s*;/);
+  assert.match(fallback('backdrop-saturate-100'), /--tw-backdrop-saturate:\s*saturate\(100%\)/);
+  // D12/D14: no z-index, no transform and no stylesheet rule for the public marker.
+  assert.doesNotMatch(css, /\.eg-tooltip[^{]*\{/, 'Tooltip has no stylesheet: its marker carries no rule');
+});
+
+test('UI ships the Switch track, thumb and state utilities without a Switch stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // Track geometry: 36×20 border-box pill on the --spacing scale (AC-05).
+  assert.match(rule('.w-9'), /width:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)\s*;/);
+  assert.match(rule('.h-5'), /height:\s*var\(--space-5\)\s*;/);
+  assert.match(rule('.box-border'), /box-sizing:\s*border-box\s*;/);
+  assert.match(rule('.border-border-control'), /border-color:\s*var\(--color-border-control[,)]/);
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)\s*;/);
+  // Checked: primary gradient, bevel/halo token and the black thumb moved 16px (D4).
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:bg-\[image\:var\(--gradient-btn-primary\)\][data-state="checked"]`),
+    /background-image:\s*var\(--gradient-btn-primary\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:shadow-\[var\(--shadow-btn-primary\)\][data-state="checked"]`),
+    /--tw-shadow:\s*var\(--shadow-btn-primary\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:translate-x-4[data-state="checked"]`),
+    /--tw-translate-x:\s*var\(--(?:space-4|spacing-4)\)\s*;\s*translate:/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:bg-action-primary-solid-fg[data-state="checked"]`),
+    /background-color:\s*var\(--color-action-primary-solid-fg[,)]/
+  );
+  assert.match(rule(String.raw`.size-3\.5`), /width:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*3\.5\)\s*;/);
+  // Thumb travel animates the translate property; reduced motion removes every transition (D6).
+  assert.match(
+    rule(String.raw`.transition-\[translate\,background-color\]`),
+    /transition-property:\s*translate,\s*background-color\s*;/
+  );
+  assert.match(css, /@property --tw-translate-y\s*\{[^}]*initial-value:\s*0/);
+  const reducedMotion = cssBlock(utilities, /@media \(prefers-reduced-motion: reduce\)\s*\{/);
+  assert.match(reducedMotion, /\.motion-reduce\\:transition-none\s*\{\s*transition-property:\s*none\s*;/);
+  // Focus ring wins over the checked halo through the higher-specificity checked+focus rule (AC-06).
+  assert.match(
+    rule(
+      String.raw`.data-\[state\=checked\]\:focus-visible\:shadow-\[var\(--shadow-focus\)\][data-state="checked"]:focus-visible`
+    ),
+    /--tw-shadow:\s*var\(--shadow-focus\)\s*;/
+  );
+  assert.match(rule(String.raw`.disabled\:opacity-45:disabled`), /opacity:\s*45%\s*;/);
+  // D11 no stylesheet: the marker carries no rule; legacy .eg-check--switch stays untouched.
+  assert.doesNotMatch(css, /\.eg-switch[^{]*\{/, 'Switch has no stylesheet: its marker carries no rule');
+  assert.match(css, /\.eg-check--switch input\s*\{/, 'Legacy switch styles remain until an approved migration');
+});
+
+test('UI ships the ProgressBar track, fill geometry and motion utilities without a ProgressBar stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // Tracks: sm hairline, lg Material well (D5) and the sm-only edge strip.
+  assert.match(rule(String.raw`.h-0\.5`), /height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*0\.5\)\s*;/);
+  assert.match(rule(String.raw`.h-2\.5`), /height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*2\.5\)\s*;/);
+  assert.match(rule(String.raw`.rounded-\[var\(--radius-sm\)\]`), /border-radius:\s*var\(--radius-sm\)\s*;/);
+  assert.match(rule('.bg-border-subtle'), /background-color:\s*var\(--color-border-subtle[,)]/);
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule('.shadow-well'), /--tw-shadow:\s*inset 0 1px 2px/);
+  assert.match(rule('.bg-bg-glass'), /background-color:\s*var\(--color-bg-glass[,)]/);
+  assert.match(rule('.inset-x-0'), /inset-inline:/);
+  // Fills: brand, gradient with the token bevel instead of the source halo (D6) and the muted series.
+  assert.match(rule('.bg-fg-brand-default'), /background-color:\s*var\(--color-fg-brand-default[,)]/);
+  assert.match(rule('.bg-fg-muted'), /background-color:\s*var\(--color-fg-muted[,)]/);
+  assert.match(
+    rule(String.raw`.bg-\[image\:var\(--gradient-progress\)\]`),
+    /background-image:\s*var\(--gradient-progress\)\s*;/
+  );
+  assert.match(rule('.shadow-edge-strong'), /--tw-shadow:\s*inset 0 1px 0/);
+  assert.match(rule(String.raw`.rounded-\[inherit\]`), /border-radius:\s*inherit\s*;/);
+  // D8 geometry: a static scale utility reading the numeric custom property, left origin and token motion.
+  assert.match(
+    rule(String.raw`.scale-x-\[var\(--eg-progress-value\)\]`),
+    /--tw-scale-x:\s*var\(--eg-progress-value\)\s*;[^}]*scale:\s*var\(--tw-scale-x\)\s+var\(--tw-scale-y\)/
+  );
+  assert.match(css, /@property --tw-scale-y\s*\{[^}]*initial-value:\s*1/);
+  assert.match(rule('.origin-left'), /transform-origin:/);
+  assert.match(rule('.transition-transform'), /transition-property:[^;]*\bscale\b/);
+  assert.match(rule(String.raw`.duration-\[var\(--duration-base\)\]`), /transition-duration:\s*var\(--duration-base\)/);
+  assert.match(rule(String.raw`.ease-\[var\(--ease-out\)\]`), /transition-timing-function:\s*var\(--ease-out\)/);
+  const reducedMotion = cssBlock(utilities, /@media \(prefers-reduced-motion: reduce\)\s*\{/);
+  assert.match(reducedMotion, /\.motion-reduce\\:transition-none\s*\{\s*transition-property:\s*none\s*;/);
+  // D10 no stylesheet: the fill marker carries no rule and .eg-progress keeps only its legacy rules.
+  assert.doesNotMatch(css, /\.eg-progress-fill[^{]*\{/);
+  const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
+  const progressRules = (text) =>
+    (text.replace(/\/\*[\s\S]*?\*\//g, '').match(/\.eg-progress(?![\w-])[^{]*\{/g) ?? []).length;
+  assert.equal(progressRules(css), progressRules(legacy), 'ProgressBar has no stylesheet: no new eg-progress rule');
+});
+
+test('UI ships the Textarea well, sheet and state utilities without a Textarea-specific stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  assert.match(rule('.min-h-30'), /min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*30\)\s*;/);
+  assert.match(rule('.min-h-70'), /min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*70\)\s*;/);
+  assert.match(rule('.resize-y'), /resize:\s*vertical\s*;/);
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule('.bg-primitive-neutral-950'), /background-color:\s*var\(--color-primitive-neutral-950[,)]/);
+  assert.match(
+    rule(String.raw`.bg-\[image\:var\(--gradient-sheen\)\]`),
+    /background-image:\s*var\(--gradient-sheen\)\s*;/
+  );
+  assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)\s*;/);
+  assert.match(rule('.text-code'), /font-size:\s*var\(--text-code[,)]/);
+  assert.match(rule('.ease-out'), /transition-timing-function:\s*var\(--ease-out[,)]/);
+  assert.match(
+    rule(String.raw`.duration-\[var\(--duration-fast\)\]`),
+    /transition-duration:\s*var\(--duration-fast\)\s*;/
+  );
+  assert.match(rule(String.raw`.disabled\:opacity-45:disabled`), /opacity:\s*45%\s*;/);
+  assert.match(
+    cssBlock(utilities, /@media \(prefers-reduced-motion: reduce\)\s*\{(?=[^@]*\.motion-reduce\\:transition-none)/),
+    /\.motion-reduce\\:transition-none\s*\{\s*transition-property:\s*none\s*;/
+  );
+  // Invalid wins over the hover, read-only hover and focus border because it is emitted later (D7).
+  const at = (selector) => {
+    const index = utilities.indexOf(selector);
+    assert.ok(index >= 0, `Missing Textarea utility ${selector}`);
+    return index;
+  };
+  const invalid = at(String.raw`.aria-invalid\:border-status-danger[aria-invalid="true"]`);
+  const invalidHover = at(String.raw`.aria-invalid\:hover\:border-status-danger[aria-invalid="true"]:hover`);
+  const invalidFocus = at(
+    String.raw`.aria-invalid\:focus-visible\:border-status-danger[aria-invalid="true"]:focus-visible`
+  );
+  const readOnlyHover = at(String.raw`.read-only\:hover\:border-border-control:read-only:hover`);
+  for (const earlier of [
+    at(String.raw`.hover\:border-fg-muted:hover`),
+    at(String.raw`.focus-visible\:border-border-brand-strong:focus-visible`)
+  ]) {
+    assert.ok(earlier < invalid, 'Invalid border must follow hover and focus borders');
+  }
+  assert.ok(readOnlyHover < invalidHover, 'Invalid hover must follow the read-only hover reset');
+  assert.ok(invalid < invalidFocus, 'Focused invalid keeps the danger border');
+  // D11 no stylesheet: the marker carries no rule of its own.
+  assert.doesNotMatch(css, /\.eg-textarea[^{]*\{/, 'Textarea has no stylesheet: its marker carries no rule');
+});
+
+test('UI ships the Input well, state and preset utilities without an Input-specific stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule('.bg-primitive-neutral-950'), /background-color:\s*var\(--color-primitive-neutral-950[,)]/);
+  assert.match(rule('.border-border-control'), /border-color:\s*var\(--color-border-control[,)]/);
+  assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)/);
+  assert.match(rule('.min-h-11'), /min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*11\)/);
+  assert.match(rule('.min-h-9'), /min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)/);
+  assert.match(rule('.pl-9'), /padding-left:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)/);
+  assert.match(rule('.text-code'), /font-size:\s*var\(--text-code[,)]/);
+  assert.match(rule('.font-mono'), /font-family:\s*var\(--font-mono[,)]/);
+  assert.match(rule(String.raw`.hover\:border-fg-muted:hover`), /border-color:\s*var\(--color-fg-muted[,)]/);
+  assert.match(
+    rule(String.raw`.focus-visible\:border-border-brand-strong:focus-visible`),
+    /border-color:\s*var\(--color-border-brand-strong[,)]/
+  );
+  assert.match(
+    rule(String.raw`.focus-visible\:shadow-\[var\(--shadow-well\)\,var\(--shadow-ring-brand\)\]:focus-visible`),
+    /--tw-shadow:\s*var\(--shadow-well\),\s*var\(--shadow-ring-brand\)/
+  );
+  assert.match(
+    rule(String.raw`.aria-invalid\:border-status-danger[aria-invalid="true"]`),
+    /border-color:\s*var\(--color-status-danger[,)]/
+  );
+  assert.match(rule(String.raw`.has-\[\:disabled\]\:opacity-45:has(:is(:disabled))`), /opacity:\s*45%/);
+  assert.match(rule('.ease-out'), /transition-timing-function:\s*var\(--ease-out[,)]/);
+  assert.match(rule(String.raw`.duration-\[var\(--duration-fast\)\]`), /transition-duration:\s*var\(--duration-fast\)/);
+  // Invalid wins over hover and focus at equal specificity because its rule is emitted later.
+  const at = (selector) => utilities.indexOf(selector);
+  assert.ok(at(String.raw`.aria-invalid\:border-status-danger`) > at(String.raw`.hover\:border-fg-muted`));
+  assert.ok(
+    at(String.raw`.aria-invalid\:border-status-danger`) > at(String.raw`.focus-visible\:border-border-brand-strong`)
+  );
+  // The icon offset must follow the symmetric padding so padding-left survives the cascade.
+  assert.ok(at('.pl-9 {') > at('.px-3 {'));
+  assert.doesNotMatch(css, /\.eg-input[^{]*\{/, 'Input has no stylesheet: its marker carries no rule (D14)');
+});
+
 test('UI ships the ProductMark Material utilities and link focus ring without a stylesheet rule', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -474,6 +903,75 @@ test('UI ships the static Icon preset, fill and stroke utilities without an appl
     assert.match(theme, new RegExp(`${token}:\\s*${value.replace('.', '\\.')};`), `${token} must stay ${value}`);
     assert.doesNotMatch(css, new RegExp(`${token}\\s*:`), `UI must not redefine ${token}`);
   }
+});
+
+test('UI ships Link token recipes, scoped motion and legacy resets without a new stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  for (const [selector, declaration] of [
+    ['.border-b', /border-bottom-width:\s*1px\s*;/],
+    ['.border-border-brand', /border-color:\s*var\(--color-border-brand[,)]/],
+    [String.raw`.pb-0\.5`, /padding-bottom:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*0\.5\)/],
+    ['.no-underline', /text-decoration-line:\s*none/],
+    ['.cursor-pointer', /cursor:\s*pointer/],
+    ['.transform-none', /transform:\s*none/],
+    [String.raw`.transition-\[border-color\,color\]`, /transition-property:\s*border-color,\s*color/],
+    [String.raw`.transition-\[translate\]`, /transition-property:\s*translate/],
+    [String.raw`.duration-\(--duration-fast\)`, /(?:--tw-duration|transition-duration):\s*var\(--duration-fast\)/],
+    [String.raw`.duration-\(--duration-base\)`, /(?:--tw-duration|transition-duration):\s*var\(--duration-base\)/]
+  ]) {
+    assert.match(rule(selector), declaration, selector);
+  }
+  for (const selector of [
+    String.raw`.hover\:border-fg-brand-default`,
+    String.raw`.hover\:text-primitive-red-200`,
+    String.raw`.group-hover\/link\:translate-x-0\.5`,
+    String.raw`.group-hover\/link\:-translate-y-0\.5`,
+    String.raw`.motion-reduce\:translate-none`,
+    String.raw`.motion-reduce\:transition-none`,
+    String.raw`.focus-visible\:outline-none`,
+    String.raw`.focus-visible\:\[box-shadow\:var\(--shadow-focus\)\]`,
+    String.raw`.focus-visible\:rounded-sm`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing Link utility ${selector}`);
+  }
+  assert.match(rule(String.raw`.motion-reduce\:translate-none`), /translate:\s*none/);
+  assert.match(rule(String.raw`.motion-reduce\:transition-none`), /transition-property:\s*none/);
+  assert.match(
+    rule(String.raw`.focus-visible\:\[box-shadow\:var\(--shadow-focus\)\]:focus-visible`),
+    /box-shadow:\s*var\(--shadow-focus\)/
+  );
+  const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
+  const markerRules = (text) => (text.replace(/\/\*[\s\S]*?\*\//g, '').match(/\.eg-link[^{]*\{/g) ?? []).length;
+  assert.equal(markerRules(css), markerRules(legacy), 'Link adds no marker stylesheet rules');
+});
+
+test('UI Link exports safe native and slotted navigation with decorative small Icons', async () => {
+  const { Link } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(Link?.$$typeof, Symbol.for('react.forward_ref'));
+  const html = renderToString(createElement(Link, { href: '#docs', external: true, rel: 'author' }, 'Docs'));
+  for (const text of [
+    'eg-link',
+    'text-label-default',
+    'size-4',
+    'aria-hidden="true"',
+    'target="_blank"',
+    'author noopener noreferrer',
+    '(opens in a new tab)'
+  ]) {
+    assert.ok(html.includes(text), `Link SSR must render ${text}`);
+  }
+  const slotted = renderToString(
+    createElement(Link, { asChild: true, arrow: false, children: createElement('a', { href: '#router' }, 'Router') })
+  );
+  assert.match(slotted, /^<a [^>]*href="#router"/);
+  assert.doesNotMatch(slotted, /<svg|asChild=|external=|arrow=/);
 });
 
 test('UI preserves Lucide notices for the system icon paths', () => {
@@ -706,30 +1204,44 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     Object.keys(exported).sort(),
     [
       'AspectRatio',
+      'Badge',
       'Button',
       'Cluster',
       'Divider',
       'Gauge',
       'Heading',
       'Icon',
+      'Input',
       'Kbd',
       'Label',
+      'Link',
       'Logo',
       'Portal',
       'ProductMark',
+      'ProgressBar',
+      'RadioGroup',
       'Skeleton',
+      'Slider',
       'Slot',
       'Slottable',
       'Spinner',
       'Stack',
       'StatusDot',
       'Surface',
+      'Switch',
       'Text',
+      'Textarea',
+      'Tooltip',
       'VisuallyHidden',
+      'badgeVariants',
       'cn',
       'labelVariants',
+      'progressBarVariants',
+      'radioGroupVariants',
+      'sliderVariants',
       'statusDotVariants',
-      'surfaceVariants'
+      'surfaceVariants',
+      'tooltipVariants'
     ],
     'Only approved components and cn are public runtime exports'
   );
@@ -742,10 +1254,44 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(typeof exported.StatusDot, 'function', 'StatusDot must be a plain function component without a ref API');
   assert.equal(typeof exported.statusDotVariants, 'function', 'StatusDot composition recipe must be a public export');
   assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
+  assert.equal(typeof exported.sliderVariants, 'function', 'Slider root recipe must stay a public export');
+  assert.equal(typeof exported.Tooltip, 'function', 'Tooltip must be a plain function component without a ref API');
+  assert.equal(typeof exported.tooltipVariants, 'function', 'Tooltip overlay recipe must stay a public export');
+  assert.equal(
+    typeof exported.ProgressBar,
+    'function',
+    'ProgressBar must be a plain function component without a ref API'
+  );
+  assert.equal(typeof exported.progressBarVariants, 'function', 'ProgressBar track recipe must stay a public export');
+  assert.equal(
+    exported.Textarea?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'Textarea must be a forwardRef component whose ref targets the native textarea (D9)'
+  );
+  assert.equal(
+    exported.Input?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'Input must be a React 18-compatible forwardRef component targeting the native input (D12)'
+  );
   assert.equal(
     typeof exported.ProductMark,
     'function',
     'ProductMark must be a plain function component without a ref API (D9)'
+  );
+  assert.equal(
+    exported.Switch?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'Switch must be a forwardRef component whose ref targets the root button (D9)'
+  );
+  assert.equal(
+    typeof exported.RadioGroup,
+    'function',
+    'RadioGroup must be a plain function component without a ref API'
+  );
+  assert.deepEqual(
+    Object.keys(exported.radioGroupVariants).sort(),
+    ['indicator', 'item', 'label', 'root', 'row'],
+    'RadioGroup per-part recipes stay public for SelectTile parity'
   );
   assert.equal(
     exported.VisuallyHidden?.$$typeof,
@@ -780,6 +1326,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.deepEqual([...names].sort(), [
     'AspectRatio',
     'AspectRatioProps',
+    'Badge',
+    'BadgeProps',
+    'BadgeTone',
+    'BadgeVariant',
     'Button',
     'ButtonProps',
     'ButtonSize',
@@ -800,6 +1350,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'IconName',
     'IconProps',
     'IconSize',
+    'Input',
+    'InputProps',
+    'InputSize',
+    'InputType',
+    'InputVariant',
     'Kbd',
     'KbdProps',
     'Label',
@@ -808,6 +1363,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LayoutAlignItems',
     'LayoutGap',
     'LayoutJustifyContent',
+    'Link',
+    'LinkProps',
     'Logo',
     'LogoProps',
     'LogoSize',
@@ -816,10 +1373,20 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'PortalProps',
     'ProductMark',
     'ProductMarkProps',
+    'ProgressBar',
+    'ProgressBarProps',
+    'ProgressBarSize',
+    'ProgressBarVariant',
+    'RadioGroup',
+    'RadioGroupOption',
+    'RadioGroupOrientation',
+    'RadioGroupProps',
     'Skeleton',
     'SkeletonProps',
     'SkeletonSize',
     'SkeletonVariant',
+    'Slider',
+    'SliderProps',
     'Slot',
     'SlotProps',
     'Slottable',
@@ -837,18 +1404,34 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SurfaceProps',
     'SurfaceRadius',
     'SurfaceTone',
+    'Switch',
+    'SwitchProps',
     'Text',
     'TextProps',
     'TextTone',
     'TextVariant',
+    'Textarea',
+    'TextareaProps',
+    'TextareaVariant',
     'TitleVariant',
+    'Tooltip',
+    'TooltipProps',
     'VisuallyHidden',
     'VisuallyHiddenProps',
+    'badgeVariants',
     'cn',
     'labelVariants',
+    'progressBarVariants',
+    'radioGroupVariants',
+    'sliderVariants',
     'statusDotVariants',
-    'surfaceVariants'
+    'surfaceVariants',
+    'tooltipVariants'
   ]);
+  for (const name of ['useSlider', 'sliderTrackVariants', 'sliderRangeVariants', 'sliderThumbVariants']) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
   for (const name of [
     'Divider',
     'DividerOrientation',
@@ -863,6 +1446,21 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'IconSize',
     'Kbd',
     'KbdProps',
+    'Link',
+    'LinkProps',
+    'ProgressBar',
+    'ProgressBarProps',
+    'ProgressBarSize',
+    'ProgressBarVariant',
+    'progressBarVariants',
+    'Textarea',
+    'TextareaProps',
+    'TextareaVariant',
+    'Input',
+    'InputProps',
+    'InputSize',
+    'InputType',
+    'InputVariant',
     'ProductMark',
     'ProductMarkProps',
     'AspectRatio',
@@ -877,6 +1475,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LogoVariant',
     'Portal',
     'PortalProps',
+    'RadioGroup',
+    'RadioGroupOption',
+    'RadioGroupOrientation',
+    'RadioGroupProps',
+    'radioGroupVariants',
     'Skeleton',
     'SkeletonProps',
     'SkeletonSize',
@@ -905,6 +1508,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SurfaceRadius',
     'SurfaceTone',
     'surfaceVariants',
+    'Switch',
+    'SwitchProps',
+    'Tooltip',
+    'TooltipProps',
+    'tooltipVariants',
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'labelVariants'
@@ -1117,6 +1725,183 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     /^<kbd class="eg-kbd [^"]*"><span aria-hidden="true">⌘K<\/span><span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Command K<\/span><\/kbd>$/
   );
   assert.doesNotMatch(symbolKey, /role=|aria-label=|tabindex=|data-state/);
+  // RadioGroup: a named Radix radiogroup with one row per option (AC-01). Without a DOM, Radix cannot
+  // detect a form ancestor during SSR, so each radio is followed by its hidden radio input (AC-07).
+  const radioGroup = renderToString(
+    createElement(exported.RadioGroup, {
+      label: 'Visibility',
+      id: 'visibility',
+      name: 'visibility',
+      defaultValue: 'public',
+      options: [
+        { value: 'public', label: 'Public' },
+        { value: 'private', label: 'Private', disabled: true }
+      ]
+    })
+  );
+  assert.match(radioGroup, /^<div role="radiogroup" aria-required="false" aria-orientation="vertical"[^>]*>/);
+  assert.match(radioGroup, /id="visibility"/);
+  assert.match(radioGroup, /aria-label="Visibility"/);
+  assert.match(radioGroup, /class="eg-radio-group flex flex-col gap-1"/);
+  assert.equal(radioGroup.match(/<button type="button" role="radio"/g)?.length, 2, 'One radio per option');
+  assert.equal(radioGroup.match(/<input type="radio" aria-hidden="true"[^>]*name="visibility"/g)?.length, 2);
+  assert.match(
+    radioGroup,
+    /aria-checked="true" data-state="checked" value="public" id="([^"]+)"[^>]*><span data-state="checked" class="size-2 rounded-full bg-action-primary-solid-fg"><\/span><\/button><input [^>]*checked="" value="public"\/><label for="\1" class="cursor-pointer">Public<\/label>/
+  );
+  assert.match(
+    radioGroup,
+    /aria-checked="false" data-state="unchecked" data-disabled="" disabled="" value="private" id="([^"]+)"[^>]*><\/button><input [^>]*disabled=""[^>]*value="private"\/><label for="\1" class="cursor-pointer">Private<\/label>/
+  );
+  const horizontalGroup = renderToString(
+    createElement(exported.RadioGroup, {
+      label: 'Format',
+      orientation: 'horizontal',
+      required: true,
+      disabled: true,
+      options: [{ value: 'video', label: 'Video' }]
+    })
+  );
+  assert.match(horizontalGroup, /aria-required="true" aria-orientation="horizontal" data-disabled=""/);
+  assert.match(horizontalGroup, /class="eg-radio-group flex flex-wrap gap-x-6 gap-y-1"/);
+  // Switch: one Radix switch button with its thumb (AC-01). Without a DOM, Radix cannot detect a form
+  // ancestor during SSR, so it always emits its hidden bubble input after the button (AC-08).
+  const offSwitch = renderToString(createElement(exported.Switch, { 'aria-label': 'Stream alerts', id: 'alerts' }));
+  assert.match(offSwitch, /^<button type="button" role="switch" aria-checked="false"[^>]*>/);
+  assert.match(offSwitch, /data-state="unchecked"/);
+  assert.match(offSwitch, /value="on"/);
+  assert.match(offSwitch, /id="alerts"/);
+  assert.match(offSwitch, /aria-label="Stream alerts"/);
+  assert.match(offSwitch, /class="eg-switch /);
+  assert.match(
+    offSwitch,
+    /<span data-state="unchecked" class="absolute top-0\.5 left-0\.5 size-3\.5 [^"]*"><\/span><\/button><input type="checkbox" aria-hidden="true" tabindex="-1" [^>]*value="on"\/>$/
+  );
+  assert.doesNotMatch(offSwitch, /disabled=""|data-disabled|checked=""/);
+  const onSwitch = renderToString(
+    createElement(exported.Switch, { 'aria-label': 'Overlay', defaultChecked: true, disabled: true })
+  );
+  assert.match(onSwitch, /aria-checked="true"/);
+  assert.match(onSwitch, /disabled=""/);
+  assert.match(onSwitch, /data-disabled=""/);
+  assert.equal(onSwitch.match(/data-state="checked"/g)?.length, 2, 'Root and thumb expose the checked state');
+  const formSwitch = renderToString(
+    createElement('form', null, createElement(exported.Switch, { 'aria-label': 'Alerts', name: 'alerts' }))
+  );
+  assert.match(
+    formSwitch,
+    /<input type="checkbox" aria-hidden="true"[^>]*name="alerts"/,
+    'Form switches add Radix bubble input'
+  );
+  // Tooltip: closed on the server; only the consumer trigger renders, with Radix's closed state (D2, D7).
+  const tooltipHtml = renderToString(
+    createElement(exported.Tooltip, {
+      content: 'Search the catalogue',
+      children: createElement('button', { type: 'button', 'aria-label': 'Search' }, '⌕')
+    })
+  );
+  assert.equal(tooltipHtml, '<button type="button" aria-label="Search" data-state="closed">⌕</button>');
+  assert.doesNotMatch(tooltipHtml, /role="tooltip"|eg-tooltip|aria-describedby|Search the catalogue/);
+  // ProgressBar: Radix progressbar in percent, decorative without a label (D4), fill driven by one custom property (D8).
+  const announced = renderToString(
+    createElement(exported.ProgressBar, { label: 'Upload progress', value: 45, id: 'upload-progress' })
+  );
+  for (const text of [
+    'role="progressbar"',
+    'aria-valuemin="0"',
+    'aria-valuemax="100"',
+    'aria-valuenow="45"',
+    'aria-valuetext="45%"',
+    'aria-label="Upload progress"',
+    'data-state="loading"',
+    'id="upload-progress"',
+    'style="--eg-progress-value:0.45"'
+  ]) {
+    assert.ok(announced.includes(text), `ProgressBar SSR must render ${text}`);
+  }
+  assert.match(
+    announced,
+    /^<div [^>]*class="eg-progress [^"]*"[^>]*><div [^>]*class="eg-progress-fill [^"]*"[^>]*><\/div><\/div>$/
+  );
+  assert.doesNotMatch(announced, /aria-hidden|tabindex=/);
+  const decorative = renderToString(createElement(exported.ProgressBar, { value: 140 }));
+  assert.ok(decorative.includes('aria-hidden="true"') && decorative.includes('data-state="complete"'));
+  assert.ok(decorative.includes('aria-valuenow="100"') && decorative.includes('style="--eg-progress-value:1"'));
+  const unknown = renderToString(createElement(exported.ProgressBar, { label: 'Sync', value: Number.NaN }));
+  assert.ok(unknown.includes('data-state="indeterminate"') && unknown.includes('style="--eg-progress-value:0"'));
+  assert.doesNotMatch(unknown, /aria-valuenow|aria-valuetext/);
+  assert.match(
+    renderToString(createElement(exported.ProgressBar, { label: 'Goal', value: 74, valueText: '37 of 50' })),
+    /aria-valuetext="37 of 50"/
+  );
+  assert.equal(
+    exported.progressBarVariants({ size: 'sm', edge: true }),
+    'eg-progress block overflow-hidden h-0.5 absolute inset-x-0 bottom-0 w-auto rounded-none bg-bg-glass pointer-events-none'
+  );
+  // Textarea: one native textarea root with the public marker first and layout classes last (D9).
+  const textareaHtml = renderToString(
+    createElement(exported.Textarea, {
+      'aria-label': 'Notes',
+      'aria-invalid': true,
+      rows: 3,
+      maxLength: 1250,
+      defaultValue: 'Draft',
+      className: 'mt-2 mt-4'
+    })
+  );
+  assert.match(textareaHtml, /^<textarea [^>]*class="eg-textarea [^"]* mt-4"[^>]*>Draft<\/textarea>$/);
+  for (const text of ['aria-label="Notes"', 'aria-invalid="true"', 'rows="3"', 'maxLength="1250"']) {
+    assert.ok(textareaHtml.includes(text), `Textarea SSR must forward ${text}`);
+  }
+  assert.doesNotMatch(textareaHtml, / mt-2 |variant=|data-state|role=|tabindex=/);
+  for (const [variant, utility] of [
+    ['default', 'bg-surface-0'],
+    ['code', 'bg-primitive-neutral-950'],
+    ['prose', 'bg-surface-1']
+  ]) {
+    const variantHtml = renderToString(createElement(exported.Textarea, { 'aria-label': variant, variant }));
+    assert.ok(variantHtml.includes(utility), `Textarea ${variant} must render ${utility}`);
+  }
+  // Input: span.eg-input root, native input with forwarded attributes, className on the root only (D3).
+  const field = renderToString(
+    createElement(exported.Input, { 'aria-label': 'Title', name: 'title', placeholder: 'Untitled', className: 'w-64' })
+  );
+  assert.match(
+    field,
+    /^<span class="eg-input relative flex items-center [^"]*w-64"><input [^>]*class="box-border w-full [^"]*"[^>]*\/><\/span>$/
+  );
+  for (const attribute of ['aria-label="Title"', 'name="title"', 'placeholder="Untitled"', 'type="text"']) {
+    assert.ok(field.split('<input')[1].includes(attribute), `Input must forward ${attribute} to the native input`);
+  }
+  assert.ok(!field.split('<input')[0].includes('w-full'), 'Consumer width replaces the root full width');
+  for (const utility of [
+    'min-h-11',
+    'px-3',
+    'py-2',
+    'text-body-default',
+    'bg-surface-0',
+    'shadow-[var(--shadow-well)]'
+  ]) {
+    assert.ok(field.includes(utility), `Input md/default must render ${utility}`);
+  }
+  assert.doesNotMatch(field, /aria-hidden|data-state|role=|\ssize=/);
+  const search = renderToString(
+    createElement(exported.Input, {
+      'aria-label': 'Search',
+      type: 'search',
+      size: 'sm',
+      variant: 'code',
+      icon: createElement('svg', { viewBox: '0 0 16 16' })
+    })
+  );
+  assert.match(search, /^<span class="eg-input [^"]*"><span aria-hidden="true" class="[^"]*absolute left-3[^"]*"><svg/);
+  assert.match(search, /type="search"/);
+  for (const utility of ['min-h-9', 'pl-9', 'font-mono', 'text-code', 'bg-primitive-neutral-950']) {
+    assert.ok(search.includes(utility), `Input sm/code/icon must render ${utility}`);
+  }
+  for (const utility of ['font-sans', 'bg-surface-0', 'text-label-default', 'font-[var(']) {
+    assert.ok(!search.includes(` ${utility}`), `Input code must replace ${utility}`);
+  }
   // ProductMark: passive role="img" tile by default, native named link with href; monogram hidden (D5, D6).
   const markRecipe =
     'eg-product-mark inline-flex size-10 shrink-0 items-center justify-center rounded-md bg-(image:--gradient-btn-primary) shadow-btn-primary text-action-primary-solid-fg font-display text-heading-small no-underline';
@@ -1228,4 +2013,74 @@ test('Tokens retires the JSON export and its source file', () => {
     false,
     'tokens.json source must be removed, not just unexported'
   );
+});
+
+test('UI ships the Slider well, range and raised thumb utilities without a Slider-specific stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}(?::[a-z-]+|\\[data-disabled\\])?\\s*\\{`));
+  };
+  assert.match(rule('.touch-none'), /touch-action:\s*none\s*;/);
+  assert.match(rule('.select-none'), /user-select:\s*none\s*;/);
+  assert.match(rule('.h-6'), /height:\s*var\(--space-6\)\s*;/);
+  assert.match(rule('.h-1'), /height:\s*var\(--space-1\)\s*;/);
+  assert.match(rule('.size-4'), /width:\s*var\(--space-4\)\s*;\s*height:\s*var\(--space-4\)\s*;/);
+  assert.match(rule('.grow'), /flex-grow:\s*1\s*;/);
+  assert.match(rule(String.raw`.data-\[disabled\]\:opacity-45`), /opacity:\s*45%\s*;/);
+  assert.match(rule(String.raw`.data-\[disabled\]\:pointer-events-none`), /pointer-events:\s*none\s*;/);
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule('.bg-fg-brand-default'), /background-color:\s*var\(--color-fg-brand-default[,)]/);
+  assert.match(rule('.bg-fg-default'), /background-color:\s*var\(--color-fg-default[,)]/);
+  // Material shadows stay token references instead of copied literal values.
+  for (const token of ['shadow-well', 'shadow-elev-1']) {
+    assert.match(rule(`.shadow-\\[var\\(--${token}\\)\\]`), new RegExp(`--tw-shadow:\\s*var\\(--${token}\\)\\s*;`));
+  }
+  assert.match(
+    rule(String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`),
+    /--tw-shadow:\s*var\(--shadow-focus\)\s*;/
+  );
+  assert.match(rule('.transition-shadow'), /transition-property:\s*box-shadow\s*;/);
+  assert.match(
+    rule(String.raw`.duration-\[var\(--duration-fast\)\]`),
+    /transition-duration:\s*var\(--duration-fast\)\s*;/
+  );
+  assert.match(rule(String.raw`.ease-\[var\(--ease-out\)\]`), /transition-timing-function:\s*var\(--ease-out\)\s*;/);
+  assert.match(rule('.cursor-grab'), /cursor:\s*grab\s*;/);
+  assert.match(rule(String.raw`.active\:cursor-grabbing`), /cursor:\s*grabbing\s*;/);
+  // The 44px touch target applies only on coarse pointers (D9); reduced motion drops the transition.
+  assert.match(
+    utilities,
+    /@media \(pointer: coarse\)\s*\{\s*\.pointer-coarse\\:h-11\s*\{\s*height:\s*calc\(var\(--space-1\)\s*\*\s*11\)\s*;/
+  );
+  assert.match(
+    utilities,
+    /@media \(prefers-reduced-motion: reduce\)\s*\{[^@]*\.motion-reduce\\:transition-none\s*\{\s*transition-property:\s*none\s*;/
+  );
+  assert.match(css, /@property --tw-shadow\s*\{[^}]*initial-value:\s*0 0 #0000/);
+  // Scan the real static CVA calls as well: every production part class must ship, not just a sample.
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/atoms/slider/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  let parts = 0;
+  const visit = (node) => {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      const base = node.arguments[0];
+      assert.ok(base && ts.isStringLiteral(base), 'Slider CVA bases must be static strings');
+      parts++;
+      for (const name of base.text.split(/\s+/).filter((name) => name !== 'eg-slider')) {
+        const selector = `.${name.replace(/([^a-zA-Z0-9_-])/g, '\\$1')}`;
+        assert.ok(utilities.includes(selector), `Missing Slider CVA utility ${name}`);
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  assert.equal(parts, 4, 'Root, track, range and thumb must all be scanned');
+  // D11 no stylesheet: the marker carries no rule of its own.
+  assert.doesNotMatch(css, /\.eg-slider[^{]*\{/, 'Slider has no stylesheet: its marker carries no rule');
 });
