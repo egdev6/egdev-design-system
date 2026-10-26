@@ -30,7 +30,7 @@ C = [
 ("StatusDot + LiveDot","átomo","StatusDot","atom","ui","—","—","fusionar","LiveDot pasa a `StatusDot state='live'` (con pulso y `--static`)."),
 ("Kbd","átomo","Kbd","atom","ui","—","—","mantener",""),
 ("Avatar","átomo","Avatar","atom","ui","Avatar","—","mantener","Radix Avatar da el fallback a iniciales mientras carga la imagen."),
-("Logo","átomo","Logo","atom","ui","—","—","mantener",""),
+("Logo","átomo","Logo","atom","ui","—","—","mantener","Implemented React atom under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/62): V4 isotype (mark) or isotype with white name (wordmark) as inline SVG data with the --logo-red/--logo-red-shade token inks, 28/32/36px heights, named span image or native link with the focus ring. No asChild, ref or stylesheet; legacy eg-logo CSS untouched."),
 ("—","—","ProductMark","atom","ui","—","—","nuevo","Letra o marca de producto con `gradient-btn-primary` + `shadow-btn-primary` (M, C, L, Cr, Mt, Q). Hoy está copiada a mano en cada app."),
 ("Pixel","átomo","Pixel","atom","web","—","—","mover","Recurso gráfico de la web; revisar si alguna app lo usa."),
 ("ProgressBar","átomo","ProgressBar","atom","ui","Progress","—","mantener","Radix Progress da `role=progressbar` y los aria-value*."),
