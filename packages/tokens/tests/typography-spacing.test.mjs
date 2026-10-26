@@ -34,6 +34,20 @@ const TYPOGRAPHY = [
   { name: 'code', size: '14px', lineHeight: '1.6', fontWeight: '400', letterSpacing: '0' }
 ];
 
+// Fluid Title recipes approved for Text/Heading (#108 D8): exact legacy .eg-title clamps.
+const TITLE_TYPOGRAPHY = [
+  { name: 'title-section', size: 'clamp(40px, 5.6vw, 64px)', lineHeight: '0.9', fontWeight: '800', letterSpacing: '0' },
+  { name: 'title-hero', size: 'clamp(60px, 9vw, 140px)', lineHeight: '0.86', fontWeight: '800', letterSpacing: '0' },
+  { name: 'title-show', size: 'clamp(56px, 8.2vw, 132px)', lineHeight: '0.86', fontWeight: '800', letterSpacing: '0' },
+  {
+    name: 'title-display',
+    size: 'clamp(64px, 9.6vw, 164px)',
+    lineHeight: '0.82',
+    fontWeight: '800',
+    letterSpacing: '0'
+  }
+];
+
 const SPACING_STEPS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '10', '12', '14', '16', '20', '24'];
 
 const findRecipeDrift = (css, recipes) => {
@@ -77,6 +91,15 @@ test('static theme publishes the 13 typography recipes with Tailwind companion f
   );
 });
 
+test('static theme publishes the four fluid Title recipes and the hero glyph glow (#108 D8/D9)', () => {
+  assert.deepEqual(findRecipeDrift(staticBlock, TITLE_TYPOGRAPHY), [], 'Title recipes must match the approved clamps');
+  assert.equal(
+    toDeclarationMap(staticBlock).get('--text-shadow-title-hero'),
+    '0 0 40px var(--color-alpha-red-30)',
+    'hero accent glow must be a text-shadow token, never a box-shadow reuse'
+  );
+});
+
 test('typography recipes keep the approved tracking strings', () => {
   const declarations = toDeclarationMap(staticBlock);
   assert.equal(declarations.get('--text-label-eyebrow--letter-spacing'), '0.12em', 'label-eyebrow tracking');
@@ -92,7 +115,7 @@ test('typography recipes introduce no family or casing tokens', () => {
     '--font-display',
     '--font-mono',
     '--font-sans',
-    ...TYPOGRAPHY.map(({ name }) => `--text-${name}--font-weight`)
+    ...[...TYPOGRAPHY, ...TITLE_TYPOGRAPHY].map(({ name }) => `--text-${name}--font-weight`)
   ].sort();
   assert.deepEqual(
     names.filter((name) => name.includes('font')).sort(),

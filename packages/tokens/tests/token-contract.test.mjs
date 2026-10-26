@@ -42,11 +42,11 @@ test('theme.css keeps the Tailwind color reset instead of a global reset', () =>
   assert.doesNotMatch(themeSource, globalReset, 'only the color namespace may be reset');
 });
 
-test('theme.css declares exactly 166 utility variables, 16 inline aliases, and 55 root variables', () => {
-  assert.equal(extractDeclarations(themeBlock).length, 166, 'utility namespace declaration count');
+test('theme.css declares exactly 183 utility variables, 16 inline aliases, and 55 root variables', () => {
+  assert.equal(extractDeclarations(themeBlock).length, 183, 'utility namespace declaration count');
   assert.equal(extractDeclarations(inlineBlock).length, 16, 'inline spacing alias count');
   assert.equal(extractDeclarations(rootBlock).length, 55, 'root declaration count');
-  assert.equal(extractDeclarations(themeSource).length, 237, 'total declaration count');
+  assert.equal(extractDeclarations(themeSource).length, 254, 'total declaration count');
 });
 
 test('theme.css declares the decorative pulse animation token with its keyframes', () => {
@@ -55,9 +55,9 @@ test('theme.css declares the decorative pulse animation token with its keyframes
   assert.match(themeBlock, /@keyframes\s+pulse\s*\{\s*50%\s*\{\s*opacity:\s*0\.5;\s*\}\s*\}/, 'pulse keyframes');
 });
 
-test('theme.css preserves all 51 aliases and has no duplicates, missing targets, or cycles', () => {
+test('theme.css preserves all 52 aliases and has no duplicates, missing targets, or cycles', () => {
   const declarations = extractDeclarations(themeSource);
-  assert.equal(declarations.filter(({ value }) => value.includes('var(')).length, 51, 'alias count');
+  assert.equal(declarations.filter(({ value }) => value.includes('var(')).length, 52, 'alias count');
   assert.deepEqual(findDuplicates(declarations), [], 'duplicate declarations');
   assert.deepEqual(findUnresolvedAliases(declarations), [], 'unresolved aliases');
   assert.deepEqual(findAliasCycles(declarations), [], 'alias cycles');
@@ -89,13 +89,13 @@ test('package publishes compiled tokens and keeps backward CSS exports', () => {
   assert.ok(manifest.files.includes('dist'), 'compiled artifact must ship');
 });
 
-test('compiled dist/tokens.css exposes the 237 manual variables and preserves the original 168 values', () => {
+test('compiled dist/tokens.css exposes the 254 manual variables and preserves the original 168 values', () => {
   const artifactPath = at('../dist/tokens.css');
   assert.ok(existsSync(artifactPath), 'dist/tokens.css missing — run pnpm tokens before this test');
   const artifact = readFileSync(artifactPath, 'utf8');
   assert.doesNotMatch(artifact, /@theme/, 'compiled artifact must not keep the @theme at-rule');
   const compiled = toDeclarationMap(artifact);
-  assert.equal(compiled.size, 237, 'compiled artifact must expose 237 variables');
+  assert.equal(compiled.size, 254, 'compiled artifact must expose 254 variables');
   assert.match(artifact, /@keyframes\s+pulse\s*\{/, 'compiled artifact must ship the pulse keyframes');
   const parity = compareParity(artifact, themeSource);
   assert.deepEqual(parity.missing, [], 'compiled artifact dropped tokens');

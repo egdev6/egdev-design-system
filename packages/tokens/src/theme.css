@@ -246,6 +246,33 @@
   --text-code--line-height: 1.6;
   --text-code--font-weight: 400;
   --text-code--letter-spacing: 0;
+  /*
+   * Fluid Title recipes for Text/Heading (#108 D8): the exact legacy .eg-title clamps
+   * and tight leading, display family, uppercase. Not interchangeable with the fixed
+   * --text-display-* / --text-heading-section recipes above.
+   */
+  /* --text-title-section — Section title: clamp(40px, 5.6vw, 64px)/0.9. */
+  --text-title-section: clamp(40px, 5.6vw, 64px);
+  --text-title-section--line-height: 0.9;
+  --text-title-section--font-weight: 800;
+  --text-title-section--letter-spacing: 0;
+  /* --text-title-hero — Hero title: clamp(60px, 9vw, 140px)/0.86. */
+  --text-title-hero: clamp(60px, 9vw, 140px);
+  --text-title-hero--line-height: 0.86;
+  --text-title-hero--font-weight: 800;
+  --text-title-hero--letter-spacing: 0;
+  /* --text-title-show — Show register title: clamp(56px, 8.2vw, 132px)/0.86. */
+  --text-title-show: clamp(56px, 8.2vw, 132px);
+  --text-title-show--line-height: 0.86;
+  --text-title-show--font-weight: 800;
+  --text-title-show--letter-spacing: 0;
+  /* --text-title-display — Display and inverse title: clamp(64px, 9.6vw, 164px)/0.82. */
+  --text-title-display: clamp(64px, 9.6vw, 164px);
+  --text-title-display--line-height: 0.82;
+  --text-title-display--font-weight: 800;
+  --text-title-display--letter-spacing: 0;
+  /* --text-shadow-title-hero — Glyph glow of the canvas hero accent (#108 D9); text-shadow only, never a box shadow. */
+  --text-shadow-title-hero: 0 0 40px var(--color-alpha-red-30);
   /* --radius-none — Sin redondeo. */
   --radius-none: 0px;
   /* --radius-sm — Asignación a componentes sin definir. */

@@ -16,7 +16,11 @@ const tokenTypographySizes = [
   'label-eyebrow',
   'meta',
   'cta-label',
-  'code'
+  'code',
+  'title-section',
+  'title-hero',
+  'title-show',
+  'title-display'
 ];
 
 const mergeClasses = extendTailwindMerge({
