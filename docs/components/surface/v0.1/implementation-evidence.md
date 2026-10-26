@@ -101,3 +101,18 @@ Stories: `Primitives/Surface` — Default, Tones, Elevations, SurfaceZeroElevati
 Browser computed styles, emulated `prefers-reduced-transparency` (AC-05 in a browser), actual Controls
 widgets and VIS-01 visual conformity remain **Not evaluated** here. This agent does not launch Storybook;
 the owner reviews on `main`.
+
+## Post-merge validation
+
+After merging `origin/main` (Spinner #143, merge commit `3b57aad`), every gate was rerun on the merged tree, serialized under a shared lock with timeouts and memory caps. The real token extractor reports 167 utility, 16 inline alias and 55 root declarations (238 total), matching the packed pin.
+
+| Gate | Result |
+| --- | --- |
+| `pnpm lint` | Passed (208 files) |
+| `pnpm typecheck` | Passed |
+| `pnpm test` | 365 passed (22 files) |
+| `pnpm props:check` | Passed |
+| `pnpm test:props` | 82 passed |
+| `pnpm build` | Passed |
+| `pnpm test:package-exports` | 18 passed |
+| `pnpm test:package-consumption` | 12 passed, React 18 / 19 |
