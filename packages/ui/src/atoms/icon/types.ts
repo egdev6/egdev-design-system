@@ -48,9 +48,14 @@ export type IconName =
 
 export type IconSize = 'sm' | 'md' | 'lg';
 
-/** Geometry, paint and naming attributes stay component-owned so presets and accessibility hold. */
+/**
+ * Geometry, paint and naming attributes stay component-owned so presets and accessibility hold.
+ * The native svg `name` attribute is omitted too: the own `name` already narrows it to IconName,
+ * and omitting it keeps docgen from reporting the inherited optional string instead.
+ */
 type IconNativeProps = Omit<
   ComponentPropsWithoutRef<'svg'>,
+  | 'name'
   | 'children'
   | 'viewBox'
   | 'role'

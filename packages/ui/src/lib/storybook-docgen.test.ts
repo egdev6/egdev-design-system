@@ -617,3 +617,78 @@ describe('Skeleton decorative metadata contract', () => {
     });
   });
 });
+
+describe('Icon glyph metadata contract', () => {
+  const iconControls: Record<string, string> = { name: 'select', size: 'select', filled: 'boolean', label: 'text' };
+  let iconDocs: ReturnType<typeof parser.parse>;
+
+  beforeAll(() => {
+    iconDocs = parser.parse(source('atoms/icon/Icon.tsx'));
+  }, 20_000);
+
+  it('annotates each own Icon prop with one control and constant-only defaults', () => {
+    const file = ast(source('atoms/icon/types.ts'));
+    const properties = ownProps(file, ['IconProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['name', 'size', 'filled', 'label']);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `Icon.${name} control`).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment), `Icon.${name} @control`).toBe(iconControls[name]);
+      const fixed = tags.find((tag) => tag.tagName.text === 'default');
+      expect(fixed ? ts.getTextOfJSDocComment(fixed.comment) : undefined, `Icon.${name} @default`).toBe(
+        { size: 'md', filled: 'false' }[name]
+      );
+    }
+    expect(defaults(source('atoms/icon/types.ts'), true)).toEqual({ size: 'md', filled: 'false' });
+    expect(defaults(source('atoms/icon/useIcon.ts'), false)).toEqual({ filled: 'false' });
+  });
+
+  it('extracts the closed glyph enum, presets, fill and label from the real component', () => {
+    expect(iconDocs.map((doc) => doc.displayName)).toEqual(['Icon']);
+    const props = iconDocs[0]?.props;
+    if (!props) {
+      throw new Error('Missing docgen for Icon');
+    }
+    expect(props.name).toMatchObject({ required: true, defaultValue: null, tags: { control: 'select' } });
+    expect(props.name?.type.name).toBe('enum');
+    const glyphs = (props.name?.type.value ?? []).map((item: { value: string }) => normalize(item.value));
+    expect(glyphs).toHaveLength(42);
+    expect(glyphs).toEqual(expect.arrayContaining(['check', 'minus', 'plus', 'chevron-down']));
+    expect(props.size?.type.value?.map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
+      'lg',
+      'md',
+      'sm'
+    ]);
+    expect(normalize(props.size?.defaultValue?.value)).toBe('md');
+    expect(props.filled).toMatchObject({ required: false, type: { name: 'boolean' }, tags: { control: 'boolean' } });
+    expect(normalize(props.filled?.defaultValue?.value)).toBe('false');
+    expect(props.label).toMatchObject({ required: false, type: { name: 'string' }, tags: { control: 'text' } });
+    expect(props.label?.defaultValue).toBeNull();
+    expect(props.label?.description).toMatch(/When\s+omitted or empty, the icon is decorative/);
+    for (const prop of ['id', 'aria-describedby', 'className']) {
+      expect.soft(props[prop]?.type.name, `Icon native ${prop} must remain available in autodocs`).toBe('string');
+    }
+    expect.soft(props.style?.type.name).toBe('CSSProperties');
+    for (const prop of [
+      'children',
+      'viewBox',
+      'role',
+      'aria-hidden',
+      'aria-label',
+      'aria-labelledby',
+      'focusable',
+      'fill',
+      'stroke',
+      'strokeWidth',
+      'width',
+      'height',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild'
+    ]) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  });
+});
