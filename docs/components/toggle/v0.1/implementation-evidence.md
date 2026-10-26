@@ -99,6 +99,16 @@ Observed correction checks, each under the shared gate lock, `timeout 900` and a
 
 The existing parent-built artifact was used without rebuilding. Full gates and packed consumers after this correction remain parent-owned; no new browser verification is claimed.
 
+## Main integration with Select (`dbbaa61`, #164)
+
+Conflicts were resolved as a union of both parents; runtime, API, recipes, tokens and dependencies are unchanged.
+
+- Export guard: main's exact complete-selector transition guard is retained. It gains only Toggle's `transition-[color,background-color,border-color,box-shadow,scale]`, with a positive case plus superset (`…,scale,width]`) and suffix (`…,scale]extra`) negatives. The earlier exact-list assertion is superseded by main's guard.
+- Packed fixture: the CSR count of `button:not(.eg-checkbox)` hosts is 13: 4 harness, 3 Button, 3 Select triggers and 3 Toggle controls.
+- Naming: the owner approved combined `leading-icon` text on 2026-10-26, recorded in [a new receipt](prop-naming-approval-leading-icon-combined.json). It is linearly chained after Button's receipt and pins the [Toggle receipt](prop-naming-approval.json) bytes as a parallel historical record. Both earlier receipts are byte-identical, and neither grant is widened.
+
+Observed focused checks: Toggle/Select/lib Vitest (12 files, 321 tests), `pnpm lint`, `pnpm typecheck`, `pnpm props:check` and `pnpm test:props` (85 tests). Build, export and packed-consumer gates are parent-owned and not claimed here.
+
 ## Deferred browser review
 
 The approved expected-design [VIS-01 specimen](../../../design/foundation-boards/v2026-10-17/specimens/toggle--specimen.png), SHA-256 `2da6461061708bb7f76444d37ecd778801cec5e6a4be6e0c1a63098a1710a821`, and its HTML were inspected as reference evidence, not implementation verification. Compare under the approved dark Chromium 1280×900, DPR 1 conditions, using the pinned capture metadata. Stories cover sizes, text/icon-only, initial/controlled state, selected/off and disabled controls; hover and focus must be exercised rather than simulated through mirrored classes.
