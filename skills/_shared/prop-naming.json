@@ -94,6 +94,16 @@
         }
       },
       {
+        "component": "Icon",
+        "type": "IconSize ('sm' | 'md' | 'lg')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon/types.ts",
+          "symbol": "IconProps",
+          "revision": "sha256:1ea0dd7b8a4e42f90f6bd352edf968b9765eea9745ff8ff0ff6b5b9d0957ec13"
+        }
+      },
+      {
         "component": "Spinner",
         "type": "SpinnerSize",
         "status": "existing",
@@ -219,6 +229,16 @@
           "path": "packages/ui/src/atoms/gauge/types.ts",
           "symbol": "GaugeProps",
           "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
+        }
+      },
+      {
+        "component": "Icon",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon/types.ts",
+          "symbol": "IconProps",
+          "revision": "sha256:1ea0dd7b8a4e42f90f6bd352edf968b9765eea9745ff8ff0ff6b5b9d0957ec13"
         }
       },
       {
@@ -657,7 +677,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Icon",
+        "type": "IconName (closed 42-name glyph set)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon/types.ts",
+          "symbol": "IconProps",
+          "revision": "sha256:1ea0dd7b8a4e42f90f6bd352edf968b9765eea9745ff8ff0ff6b5b9d0957ec13"
+        }
+      }
+    ]
   },
   {
     "id": "filled-glyph",
@@ -673,7 +704,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Icon",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon/types.ts",
+          "symbol": "IconProps",
+          "revision": "sha256:1ea0dd7b8a4e42f90f6bd352edf968b9765eea9745ff8ff0ff6b5b9d0957ec13"
+        }
+      }
+    ]
   },
   {
     "id": "new-tab-navigation",

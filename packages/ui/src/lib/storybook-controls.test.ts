@@ -13,6 +13,7 @@ const components = [
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Cluster', 'primitives/stack'],
   ['Gauge', 'atoms/gauge'],
+  ['Icon', 'atoms/icon'],
   ['Stack', 'primitives/stack'],
   ['Surface', 'primitives/surface'],
   ['VisuallyHidden', 'primitives/visually-hidden'],
@@ -76,6 +77,7 @@ const expected: Record<string, Record<string, string | false>> = {
   surface: { tone: 'select', elevation: 'select', padding: 'select', radius: 'select', asChild: 'boolean' },
   visuallyhidden: { children: false, asChild: 'boolean' },
   skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
+  icon: { name: 'select', size: 'select', filled: 'boolean', label: 'text' },
   spinner: { label: 'text', size: 'select' },
   kbd: { children: 'text', label: 'text' },
   gauge: {
@@ -92,6 +94,7 @@ const expected: Record<string, Record<string, string | false>> = {
 const ownPropCounts: Record<string, number> = {
   aspectratio: 1,
   gauge: 8,
+  icon: 4,
   skeleton: 3,
   spinner: 2,
   kbd: 2,
@@ -295,6 +298,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
+    ['Icon', { size: '"md"', filled: 'false' }],
     ['Spinner', { size: '"md"' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
     const { argTypes, args } = story(name);
