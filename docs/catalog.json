@@ -236,10 +236,10 @@
     "nombre": "Chip",
     "nivel": "atom",
     "destino": "ui",
-    "radix": "Toggle / ToggleGroup.Item",
-    "compone": "Avatar",
+    "radix": "Toggle",
+    "compone": "—",
     "accion": "mantener",
-    "notas": "Siempre interactivo (filtro o selección). Los grupos van en ChipGroup."
+    "notas": "Implemented in @egdev/ui under the approved v0.1 contract: always-pressable pill on Radix Toggle with controlled/uncontrolled pressed state, an optional decorative leading icon and the sheen/edge raised recipe with red-tinted glow when on. Public chipVariants for the future ChipGroup (ToggleGroup.Item). No ref, asChild, size axis or stylesheet; the Avatar variant (D5) is deferred and legacy `.eg-chip` is unchanged. Contract: [#55](https://github.com/egdev6/egdev-design-system/issues/55)."
   },
   {
     "actual": "Tag + StatusBadge",
@@ -358,9 +358,9 @@
     "nivel": "atom",
     "destino": "ui",
     "radix": "—",
-    "compone": "Text",
+    "compone": "—",
     "accion": "mantener",
-    "notas": "Pierde `--glass` (usa Surface)."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/70): one live figure in a native div role=group named by its visible label (label → value → optional delta). Numbers and strings render unformatted; value={null} shows a hidden em dash with readable unavailableText. Consumer-timed highlighted emphasis (brand border and glow, light edge kept), md/sm figures on the --text-display-stat(-sm) tokens. Own Material elevated-card recipe with token utilities; Text is not composed (no matching recipe). Drops legacy --glass (D2). No Radix base, ref, asChild or stylesheet."
   },
   {
     "actual": "Mark",
@@ -633,9 +633,9 @@
     "nivel": "atom",
     "destino": "ui",
     "radix": "—",
-    "compone": "Button, Kbd",
+    "compone": "Icon, Kbd, Surface",
     "accion": "mantener",
-    "notas": "Approved six-row catalogue correction: one search-launch action with an optional shortcut hint; the consumer owns the palette and shortcut binding. See [classification rules](CATALOGACION.md). API unchanged; no implementation implied."
+    "notas": "Implemented React atom under [approved v0.2 contract](https://github.com/egdev6/egdev-design-system/issues/99): native type=button launcher on the Surface well recipe with a decorative 16px search Icon, visible label that is also the accessible name and an optional aria-hidden Kbd hint; compact keeps the name. Native onClick and forwarded ref let a host Dialog Trigger wrap it; the host owns the palette, shortcut binding and focus. Button is not composed (D1). Keeps eg-search; no stylesheet."
   },
   {
     "actual": "SocialLinks",

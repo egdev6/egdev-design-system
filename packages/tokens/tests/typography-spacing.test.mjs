@@ -48,6 +48,12 @@ const TITLE_TYPOGRAPHY = [
   }
 ];
 
+// Fixed Stat figure recipes approved for Stat (#70 D6): legacy .eg-stat__value 36px and --sm 28px.
+const STAT_TYPOGRAPHY = [
+  { name: 'display-stat', size: '36px', lineHeight: '1', fontWeight: '800', letterSpacing: '0' },
+  { name: 'display-stat-sm', size: '28px', lineHeight: '1', fontWeight: '800', letterSpacing: '0' }
+];
+
 // Countdown digit recipes approved by the owner for #82 (2026-10-26): exact source clamps.
 const COUNTDOWN_TYPOGRAPHY = [
   { name: 'countdown-md', size: 'clamp(52px, 6vw, 96px)', lineHeight: '0.85', fontWeight: '800', letterSpacing: '0' },
@@ -112,6 +118,10 @@ test('static theme publishes the four fluid Title recipes and the hero glyph glo
   );
 });
 
+test('static theme publishes the two fixed Stat figure recipes (#70 D6)', () => {
+  assert.deepEqual(findRecipeDrift(staticBlock, STAT_TYPOGRAPHY), [], 'Stat recipes must match the approved values');
+});
+
 test('static theme publishes the two Countdown digit recipes and their spacing (#82)', () => {
   assert.deepEqual(
     findRecipeDrift(staticBlock, COUNTDOWN_TYPOGRAPHY),
@@ -162,7 +172,9 @@ test('typography recipes introduce no family or casing tokens', () => {
     '--font-display',
     '--font-mono',
     '--font-sans',
-    ...[...TYPOGRAPHY, ...TITLE_TYPOGRAPHY, ...COUNTDOWN_TYPOGRAPHY].map(({ name }) => `--text-${name}--font-weight`)
+    ...[...TYPOGRAPHY, ...TITLE_TYPOGRAPHY, ...STAT_TYPOGRAPHY, ...COUNTDOWN_TYPOGRAPHY].map(
+      ({ name }) => `--text-${name}--font-weight`
+    )
   ].sort();
   assert.deepEqual(
     names.filter((name) => name.includes('font')).sort(),

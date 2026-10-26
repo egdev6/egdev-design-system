@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, RadioGroup, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -43,6 +43,7 @@ import type {
   ButtonVariant,
   CheckboxCheckedState,
   CheckboxProps,
+  ChipProps,
   CountdownProps,
   CountdownSize,
   CountdownTone,
@@ -78,6 +79,7 @@ import type {
   RadioGroupOption,
   RadioGroupOrientation,
   RadioGroupProps,
+  SearchTriggerProps,
   SelectProps,
   SelectOption,
   SelectSize,
@@ -87,6 +89,7 @@ import type {
   SlotProps,
   SpinnerProps,
   SpinnerSize,
+  StatProps,
   StatusDotProps,
   StatusDotState,
   ClusterProps,
@@ -348,6 +351,73 @@ const largeCountdown: CountdownProps = { ...countdownProps, size: 'lg' };
 const darkCountdown: CountdownProps = { ...countdownProps, tone: 'onDark' };
 // @ts-expect-error There is no tick callback.
 const tickingCountdown: CountdownProps = { ...countdownProps, onTick: () => undefined };
+// SearchTrigger stays outside App so the intrinsic button count and focus harness remain unchanged.
+export const searchTriggerRef = createRef<HTMLButtonElement>();
+export const searchTriggerRefTarget: ComponentRef<typeof SearchTrigger> | null = searchTriggerRef.current;
+export const searchActivations: string[] = [];
+export const searchTriggerProps: SearchTriggerProps = {
+  label: 'Search docs…', shortcut: 'Ctrl K', 'aria-keyshortcuts': 'Control+K', id: 'search-launcher', className: 'w-full',
+  onClick: (event) => searchActivations.push(event.currentTarget.id)
+};
+export function SearchTriggerSamples({ compact = false, disabled = false }: { compact?: boolean; disabled?: boolean }) {
+  return createElement(SearchTrigger, { ...searchTriggerProps, compact, disabled, ref: searchTriggerRef });
+}
+export function DefaultSearchTrigger() {
+  return createElement(SearchTrigger);
+}
+// @ts-expect-error SearchTrigger owns the native button type.
+const submittingSearch: SearchTriggerProps = { type: 'submit' };
+// @ts-expect-error Content is owned: search icon, label and hint.
+const childSearch: SearchTriggerProps = { children: 'Search' };
+// @ts-expect-error The accessible name comes from label, never aria-label.
+const ariaNamedSearch: SearchTriggerProps = { 'aria-label': 'Find' };
+// @ts-expect-error No aria-labelledby naming route either.
+const labelledSearch: SearchTriggerProps = { 'aria-labelledby': 'heading' };
+// @ts-expect-error The native button role is fixed.
+const linkSearch: SearchTriggerProps = { role: 'link' };
+// @ts-expect-error A launcher is not a pressed toggle.
+const pressedSearch: SearchTriggerProps = { 'aria-pressed': true };
+// @ts-expect-error No asChild composition API; hosts wrap it in their own Trigger.
+const composedSearch: SearchTriggerProps = { asChild: true };
+// @ts-expect-error No onOpen callback; activation is native onClick.
+const openingSearch: SearchTriggerProps = { onOpen: () => undefined };
+// @ts-expect-error No open state is owned by the launcher.
+const openSearch: SearchTriggerProps = { open: true };
+// @ts-expect-error compact is a boolean presentation flag.
+const stringCompact: SearchTriggerProps = { compact: 'yes' };
+// @ts-expect-error shortcut is display text only.
+const numericShortcut: SearchTriggerProps = { shortcut: 75 };
+
+// Stat stays outside App: it is passive, adds no buttons and leaves the focus harness unchanged.
+export const statRecipe: string = statVariants({ size: 'sm' });
+export const statProps: StatProps = {
+  label: 'Subs', value: 4, delta: '+1 10 s ago', id: 'subs-total', title: 'Subscriptions', className: 'col-span-2'
+};
+export function StatSamples({ highlighted = false, value = 4 }: { highlighted?: boolean; value?: StatProps['value'] }) {
+  return createElement('div', { id: 'totals' },
+    createElement(Stat, { ...statProps, value, highlighted }),
+    createElement(Stat, { label: 'Superchats', value: null, size: 'sm', unavailableText: 'Unavailable', id: 'superchats-total' }));
+}
+// @ts-expect-error label is required: it is the visible label and the group name.
+const unlabelledStat: StatProps = { value: 4 };
+// @ts-expect-error value is required; null is the explicit no-data figure.
+const valuelessStat: StatProps = { label: 'Subs' };
+// @ts-expect-error The group content is owned: label, figure and delta.
+const childStat: StatProps = { ...statProps, children: 'Subs 4' };
+// @ts-expect-error Stat owns role="group".
+const regionStat: StatProps = { ...statProps, role: 'region' };
+// @ts-expect-error No ref API on either React major.
+const referencedStat: StatProps = { ...statProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error No asChild composition API.
+const composedStat: StatProps = { ...statProps, asChild: true };
+// @ts-expect-error Only the md and sm figure scales exist.
+const largeStat: StatProps = { ...statProps, size: 'lg' };
+// @ts-expect-error The legacy glass treatment is not part of Stat.
+const glassStat: StatProps = { ...statProps, glass: true };
+// @ts-expect-error Figures are text or numbers, never structured objects.
+const objectStat: StatProps = { ...statProps, value: { amount: 4 } };
+// @ts-expect-error highlighted is a boolean, not a timer duration.
+const timedStat: StatProps = { ...statProps, highlighted: 3000 };
 
 export const linkNativeRef = createRef<HTMLAnchorElement>();
 export const linkSlotRef = createRef<HTMLAnchorElement>();
@@ -757,6 +827,34 @@ const overriddenToggle: ToggleProps = { children: 'Pin', 'aria-pressed': 'mixed'
 const numericToggle: ToggleProps = { children: 'Pin', size: 40 };
 // @ts-expect-error Toggle does not expose private CVA recipes.
 import type { toggleVariants } from '@egdev/ui';
+export const chipChanges: boolean[] = [];
+export const chipDefaults: ChipProps = { children: 'Design' };
+export const chipRecipe: string = chipVariants();
+export function ChipSamples() {
+  return createElement('section', { 'aria-label': 'Chip samples' },
+    createElement(Chip, { ...chipDefaults, id: 'chip-default', onPressedChange: (next) => chipChanges.push(next) }),
+    createElement(Chip, { id: 'chip-controlled', pressed: true, children: 'Saved',
+      icon: createElement(Icon, { name: 'bookmark', className: 'size-3.5' }) }),
+    createElement(Chip, { id: 'chip-disabled', defaultPressed: true, disabled: true, children: 'Archived' }));
+}
+// @ts-expect-error Chip always requires its visible label.
+const unlabelledChip: ChipProps = {};
+// @ts-expect-error Chip always renders a button; asChild is not public.
+const slottedChip: ChipProps = { children: 'Design', asChild: true };
+// @ts-expect-error aria-pressed is owned by Radix, not an incoming override.
+const overriddenChip: ChipProps = { children: 'Design', 'aria-pressed': true };
+// @ts-expect-error The Chip button type is always button.
+const submitChip: ChipProps = { children: 'Design', type: 'submit' };
+// @ts-expect-error Pressed state is boolean, not value selection.
+const valuedChip: ChipProps = { children: 'Design', value: 'design' };
+// @ts-expect-error Chip has no size axis in v0.1.
+const sizedChip: ChipProps = { children: 'Design', size: 'sm' };
+// @ts-expect-error Chip has no public ref API in v0.1.
+const referencedChip: ChipProps = { children: 'Design', ref: createRef<HTMLButtonElement>() };
+// @ts-expect-error pressed is a boolean, not a string state.
+const stringPressedChip: ChipProps = { children: 'Design', pressed: 'on' };
+// @ts-expect-error Chip does not expose its private icon recipe.
+import type { chipIconVariants } from '@egdev/ui';
 export const dividerDefaults: DividerProps = {};
 export const dividerSemanticVertical: DividerProps = {
   orientation: 'vertical', decorative: false, className: 'consumer-rule'
@@ -803,6 +901,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(ProductMarkSamples),
     createElement(SelectSamples),
     createElement(ToggleSamples),
+    createElement(ChipSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -1167,6 +1266,40 @@ function assertToggleCSS(css) {
   assert.match(css, /scale:\s*var\(--tw-scale-x\)\s+var\(--tw-scale-y\)/);
   assert.match(css, /box-sizing:\s*border-box/);
   assert.doesNotMatch(css, /\.eg-toggle\s*[,{]/);
+}
+
+// Chip ships its sheen/edge pill, red-tinted on state, focus and reduced-motion press resets.
+function assertChipCSS(css) {
+  for (const selector of [
+    String.raw`.\[background\:var\(--gradient-sheen\)\,var\(--color-surface-1\)\]`,
+    String.raw`.hover\:\[background\:var\(--gradient-sheen\)\,var\(--color-surface-2\)\]`,
+    String.raw`.data-\[state\=on\]\:\[background\:var\(--gradient-chip-active\)\,var\(--color-surface-1\)\]`,
+    String.raw`.data-\[state\=on\]\:shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-glow-base\)\]`,
+    String.raw`.data-\[state\=on\]\:border-primitive-red-neon\/60`,
+    String.raw`.data-\[state\=on\]\:focus-visible\:shadow-focus`,
+    String.raw`.active\:scale-\[\.97\]`,
+    String.raw`.active\:translate-y-px`,
+    String.raw`.motion-reduce\:active\:translate-none`,
+    String.raw`.motion-reduce\:active\:scale-none`,
+    String.raw`.pointer-coarse\:min-h-11`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Chip selector ' + selector);
+  }
+  for (const token of [
+    'gradient-sheen',
+    'gradient-chip-active',
+    'color-surface-1',
+    'color-surface-2',
+    'shadow-edge-strong',
+    'shadow-glow-base',
+    'duration-press',
+    'ease-snappy'
+  ]) {
+    assert.ok(css.includes('var(--' + token + ')'), 'Missing Chip token ' + token);
+  }
+  assert.match(css, /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-glow-base\)/);
+  assert.match(css, /translate:\s*none/);
+  assert.match(css, /scale:\s*none/);
 }
 
 // Checkbox ships only its fixed geometry and Radix-state token recipes, never a marker rule.
@@ -1869,7 +2002,68 @@ function assertCountdownCSS(css) {
   assert.match(css, /min-width:\s*var\(--spacing-countdown-unit[,)]/);
 }
 
+// SearchTrigger utilities ship token geometry, coarse targets and native-state colors without preflight.
+function assertSearchTriggerCSS(css) {
+  for (const selector of [
+    '.min-w-48',
+    '.min-h-10',
+    '.w-10',
+    '.h-auto',
+    '.ps-3',
+    '.pe-2',
+    '.ms-auto',
+    String.raw`.pointer-coarse\:min-h-11`,
+    String.raw`.pointer-coarse\:w-11`,
+    String.raw`.transition-\[border-color\,color\]`,
+    String.raw`.enabled\:hover\:border-border-brand`,
+    String.raw`.enabled\:hover\:text-fg-secondary`,
+    String.raw`.font-\[var\(--text-body-default--font-weight\)\]`,
+    String.raw`.focus-visible\:shadow-focus`,
+    String.raw`.disabled\:opacity-45`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing SearchTrigger utility ' + selector);
+  }
+  assert.match(css, /min-width:\s*calc\(var\(--space-1\)\s*\*\s*48\)/);
+  assert.match(css, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*11\)/);
+  assert.match(css, /padding-inline-start:\s*var\(--space-3\)/);
+  assert.match(css, /margin-inline-start:\s*auto/);
+  assert.match(css, /transition-property:\s*border-color,\s*color/);
+  assert.match(css, /@media\s*\(pointer:\s*coarse\)/);
+  assert.match(css, /font-weight:\s*var\(--text-body-default--font-weight\)/);
+}
+
 // ProductMark ships the product-mark Material and link focus utilities from the token theme; no stylesheet.
+// Stat ships its Material card, figure recipes and highlight utilities; part markers carry no rules.
+function assertStatCSS(css) {
+  for (const selector of [
+    '.text-display-stat',
+    '.text-display-stat-sm',
+    '.tabular-nums',
+    '.sr-only',
+    String.raw`.bg-\[image\:var\(--gradient-sheen\)\]`,
+    String.raw`.shadow-\[var\(--shadow-edge\)\,var\(--shadow-elev-1\)\]`,
+    String.raw`.transition-\[border-color\,box-shadow\]`,
+    String.raw`.duration-\[var\(--duration-base\)\]`,
+    String.raw`.data-\[state\=highlighted\]\:border-border-brand`,
+    String.raw`.data-\[state\=highlighted\]\:shadow-\[var\(--shadow-edge\)\,var\(--shadow-glow-base\)\]`,
+    String.raw`.group-data-\[state\=highlighted\]\/stat\:text-fg-brand-raised`,
+    String.raw`.data-\[state\=unavailable\]\:text-fg-muted`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Stat utility ' + selector);
+  }
+  assert.match(css, /font-size:\s*var\(--text-display-stat[,)]/, 'Stat md figure uses its token recipe');
+  assert.match(css, /font-size:\s*var\(--text-display-stat-sm[,)]/, 'Stat sm figure uses its token recipe');
+  assert.match(
+    css,
+    /--tw-shadow:\s*var\(--shadow-edge\),\s*var\(--shadow-glow-base\)/,
+    'Highlight keeps the light edge'
+  );
+  assert.match(css, /transition-property:\s*border-color,\s*box-shadow/, 'Stat highlight transition list');
+  assert.doesNotMatch(css, /\.eg-stat-(?:label|value|delta)\s*\{/, 'Stat part markers carry no stylesheet rules');
+}
+
 // Dropzone utilities ship for native CSS consumers without enabling Tailwind preflight.
 function assertDropzoneCSS(css) {
   for (const selector of [
@@ -2141,6 +2335,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Badge',
   'Button',
   'Checkbox',
+  'Chip',
   'Cluster',
   'Countdown',
   'Divider',
@@ -2158,6 +2353,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ProductMark',
   'ProgressBar',
   'RadioGroup',
+  'SearchTrigger',
   'Select',
   'Skeleton',
   'Slider',
@@ -2165,6 +2361,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Slottable',
   'Spinner',
   'Stack',
+  'Stat',
   'StatusDot',
   'Surface',
   'Switch',
@@ -2174,12 +2371,14 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Tooltip',
   'VisuallyHidden',
   'badgeVariants',
+  'chipVariants',
   'cn',
   'dropzoneVariants',
   'labelVariants',
   'progressBarVariants',
   'radioGroupVariants',
   'sliderVariants',
+  'statVariants',
   'statusDotVariants',
   'surfaceVariants',
   'tooltipVariants'
@@ -2207,12 +2406,17 @@ ${assertProgressBarCSS.toString()}
 ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
+${assertStatCSS.toString()}
+${assertSearchTriggerCSS.toString()}
 ${assertProductMarkCSS.toString()}
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
+assertStatCSS(shippedStyles);
+assertSearchTriggerCSS(shippedStyles);
 assertIconButtonCSS(shippedStyles);
 ${assertToggleCSS.toString()}
+${assertChipCSS.toString()}
 ${assertSelectCSS.toString()}
 assertSelectCSS(shippedStyles);
 assertButtonCSS(shippedStyles);
@@ -2234,6 +2438,7 @@ assertTextareaCSS(shippedStyles);
 assertInputCSS(shippedStyles);
 assertProductMarkCSS(shippedStyles);
 assertToggleCSS(shippedStyles);
+assertChipCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -2293,7 +2498,7 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, CountdownSamples, DropzoneSamples, RadioGroupSamples, SlotSample, SwitchSamples, TooltipSamples, progressEdgeRecipe } from './consumer.ts';
+import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
@@ -2319,6 +2524,70 @@ try {
 const unavailableCountdown = renderToString(createElement(CountdownSamples, { deadline: Number.NaN }));
 assert.ok(unavailableCountdown.includes('data-state="unavailable"') && unavailableCountdown.includes('Time unavailable'));
 assert.doesNotMatch(unavailableCountdown, /<time|eg-countdown__row/);
+// Stat SSR: a labelled group per figure, unformatted values and the hidden no-data dash.
+const statDocument = new JSDOM(renderToString(createElement(StatSamples, { highlighted: true, value: '1,200' })));
+try {
+  const document = statDocument.window.document;
+  const subs = document.getElementById('subs-total');
+  assert.equal(subs.getAttribute('role'), 'group');
+  assert.equal(subs.getAttribute('data-state'), 'highlighted');
+  assert.equal(subs.title, 'Subscriptions');
+  assert.ok(subs.classList.contains('eg-stat') && subs.classList.contains('col-span-2'));
+  const label = document.getElementById(subs.getAttribute('aria-labelledby'));
+  assert.ok(label !== null && label.parentElement === subs, 'Stat group is named by its own visible label');
+  assert.equal(label.textContent, 'Subs');
+  assert.deepEqual([...subs.children].map((child) => child.className.split(' ')[0]), ['eg-stat-label', 'eg-stat-value', 'eg-stat-delta']);
+  assert.equal(subs.querySelector('.eg-stat-value').textContent, '1,200');
+  assert.equal(subs.querySelector('.eg-stat-delta').textContent, '+1 10 s ago');
+  const superchats = document.getElementById('superchats-total');
+  assert.equal(superchats.hasAttribute('data-state'), false);
+  assert.equal(superchats.querySelector('.eg-stat-delta'), null);
+  const figure = superchats.querySelector('.eg-stat-value');
+  assert.equal(figure.getAttribute('data-state'), 'unavailable');
+  assert.equal(figure.firstElementChild.getAttribute('aria-hidden'), 'true');
+  assert.equal(figure.firstElementChild.textContent, '—');
+  assert.equal(figure.lastElementChild.className, 'sr-only');
+  assert.equal(figure.lastElementChild.textContent, 'Unavailable');
+  assert.ok(figure.classList.contains('text-display-stat-sm'));
+  assert.notEqual(label.id, document.getElementById(superchats.getAttribute('aria-labelledby')).id);
+  assert.ok(statRecipe.includes('px-3') && statRecipe.startsWith('eg-stat '));
+} finally {
+  statDocument.window.close();
+}
+// SearchTrigger SSR: deterministic native launcher, decorative icon/hint and no fabricated popup claims.
+const searchDocument = new JSDOM(
+  renderToString(createElement(DefaultSearchTrigger)) +
+    renderToString(createElement(SearchTriggerSamples)) +
+    renderToString(createElement(SearchTriggerSamples, { compact: true }))
+);
+try {
+  assert.equal(renderToString(createElement(SearchTriggerSamples)), renderToString(createElement(SearchTriggerSamples)));
+  const [plain, full, compact] = searchDocument.window.document.body.children;
+  for (const button of [plain, full, compact]) {
+    assert.equal(button.tagName, 'BUTTON');
+    assert.equal(button.getAttribute('type'), 'button');
+    assert.ok(button.classList.contains('eg-search') && button.classList.contains('eg-surface'));
+    assert.equal(button.querySelector('svg').getAttribute('aria-hidden'), 'true');
+    for (const name of ['aria-haspopup', 'aria-expanded', 'aria-controls', 'data-state', 'role']) {
+      assert.equal(button.hasAttribute(name), false, name);
+    }
+  }
+  assert.equal(plain.getAttribute('aria-label'), 'Search…');
+  assert.equal(plain.textContent, 'Search…');
+  assert.equal(plain.querySelector('kbd'), null);
+  assert.equal(plain.hasAttribute('aria-keyshortcuts'), false);
+  assert.equal(full.getAttribute('aria-label'), 'Search docs…');
+  assert.equal(full.getAttribute('aria-keyshortcuts'), 'Control+K');
+  assert.equal(full.querySelector('kbd').textContent, 'Ctrl K');
+  assert.equal(full.querySelector('kbd').parentElement.getAttribute('aria-hidden'), 'true');
+  assert.ok(full.classList.contains('min-w-48') && full.classList.contains('w-full'));
+  assert.equal(compact.getAttribute('aria-label'), 'Search docs…');
+  assert.equal(compact.textContent, '');
+  assert.equal(compact.querySelector('kbd'), null);
+  assert.ok(compact.classList.contains('min-w-0') && !compact.classList.contains('min-w-48'));
+} finally {
+  searchDocument.window.close();
+}
 const dropzoneDocument = new JSDOM(renderToString(createElement(DropzoneSamples)));
 try {
   const body = dropzoneDocument.window.document.body;
@@ -2492,6 +2761,27 @@ try {
   assert.ok(document.getElementById('toggle-disabled').disabled);
 } finally {
   toggleDocument.window.close();
+}
+const chipDocument = new JSDOM(html);
+try {
+  const document = chipDocument.window.document;
+  const chip = document.getElementById('chip-default');
+  assert.equal(chip.tagName, 'BUTTON');
+  assert.equal(chip.getAttribute('type'), 'button');
+  assert.ok(chip.classList.contains('eg-chip'));
+  assert.equal(chip.getAttribute('aria-pressed'), 'false');
+  assert.equal(chip.getAttribute('data-state'), 'off');
+  const saved = document.getElementById('chip-controlled');
+  assert.equal(saved.getAttribute('data-state'), 'on');
+  assert.equal(saved.firstElementChild.tagName, 'SPAN');
+  assert.equal(saved.firstElementChild.getAttribute('aria-hidden'), 'true', 'The leading icon is decorative');
+  assert.equal(saved.textContent, 'Saved');
+  const archived = document.getElementById('chip-disabled');
+  assert.ok(archived.disabled);
+  assert.ok(archived.hasAttribute('data-disabled'));
+  assert.equal(archived.getAttribute('aria-pressed'), 'true');
+} finally {
+  chipDocument.window.close();
 }
 for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%', 'Email address', 'eg-stack', 'flex-col', 'flex-nowrap', 'gap-4', 'eg-cluster', 'flex-row', 'flex-wrap', 'gap-6', 'items-start', 'justify-between', 'eg-icon', 'viewBox="0 0 24 24"', 'Search status', 'eg-surface', 'bg-surface-1', 'bg-surface-overlay', 'shadow-[var(--shadow-well)]']) {
   assert.ok(html.includes(text), 'SSR must render ' + text);
@@ -3122,9 +3412,9 @@ HTMLElement.prototype.hasPointerCapture = () => false;
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
-const { Avatar, Badge, Button, Icon, Label, Link, Slot, Slottable } = await import('@egdev/ui');
+const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, CountdownSamples, DropzoneSamples, RadioGroupSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
+const { App, CountdownSamples, DropzoneSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -3138,7 +3428,8 @@ try {
   assert.ok(slottedHeadingRef.current instanceof HTMLElement);
   assert.equal(slottedHeadingRef.current?.tagName, 'H2', 'The slotted ref must expose the h2 host');
   const buttons = [...document.querySelectorAll('button:not(.eg-checkbox)')];
-  assert.equal(buttons.length, 26, 'Existing harness controls plus three Button hosts, three Select triggers, three Toggle controls and thirteen native IconButton hosts');
+  // 26 on main + 3 Chip buttons (default, controlled, disabled) = 29.
+  assert.equal(buttons.length, 29, 'Existing harness controls plus three Button hosts, three Select triggers, three Toggle controls, three Chip controls and thirteen native IconButton hosts');
   assert.ok(buttonRef.current === document.getElementById('button-native'), 'Native Button ref reaches the button on both React majors');
   assert.ok(buttonLinkRef.current === document.getElementById('button-link'), 'Slotted Button ref reaches the anchor on both React majors');
   const toggle = document.getElementById('toggle-default');
@@ -3156,6 +3447,22 @@ try {
   assert.equal(disabledToggle.getAttribute('aria-pressed'), 'true');
   assert.ok(disabledToggle.disabled);
   assert.equal(disabledToggle.textContent, 'Pin layer');
+  const chip = document.getElementById('chip-default');
+  assert.equal(chip.getAttribute('aria-pressed'), 'false');
+  await act(async () => chip.click());
+  assert.equal(chip.getAttribute('aria-pressed'), 'true');
+  assert.equal(chip.getAttribute('data-state'), 'on');
+  await act(async () => chip.click());
+  assert.equal(chip.getAttribute('data-state'), 'off');
+  assert.deepEqual(chipChanges, [true, false], 'Chip reports each next boolean');
+  const controlledChip = document.getElementById('chip-controlled');
+  await act(async () => controlledChip.click());
+  assert.equal(controlledChip.getAttribute('aria-pressed'), 'true', 'Controlled Chip keeps its pressed prop');
+  const disabledChip = document.getElementById('chip-disabled');
+  await act(async () => disabledChip.click());
+  assert.equal(disabledChip.getAttribute('aria-pressed'), 'true');
+  assert.ok(disabledChip.disabled);
+  assert.ok(chipRecipe.split(' ').includes('eg-chip'), 'Public chipVariants resolves the stable root marker');
   buttons[0].focus();
   assert.ok(document.activeElement === buttons[0], 'First intrinsic button must receive focus');
   buttons[1].focus();
@@ -3700,6 +4007,83 @@ try {
   assert.deepEqual(countdownExpirations, [pastDeadline]);
   await act(async () => root.render(null));
   stage('countdown:clock:complete');
+  stage('stat:passive:start');
+  await act(async () => root.render(createElement(StatSamples)));
+  const subsStat = document.getElementById('subs-total');
+  const subsFigure = subsStat.querySelector('.eg-stat-value');
+  assert.equal(subsStat.getAttribute('role'), 'group');
+  assert.equal(subsStat.hasAttribute('data-state'), false);
+  assert.equal(subsFigure.textContent, '4');
+  assert.equal(subsStat.tabIndex, -1, 'Stat is not focusable');
+  assert.equal(subsStat.hasAttribute('aria-live'), false, 'Stat owns no live region');
+  await act(async () => root.render(createElement(StatSamples, { highlighted: true, value: 5 })));
+  assert.ok(document.getElementById('subs-total') === subsStat, 'Highlight rerender keeps group identity');
+  assert.ok(subsStat.querySelector('.eg-stat-value') === subsFigure, 'Value rerender keeps figure identity');
+  assert.equal(subsStat.getAttribute('data-state'), 'highlighted');
+  assert.equal(subsFigure.textContent, '5');
+  await act(async () => root.render(createElement(StatSamples, { value: null })));
+  assert.equal(subsStat.hasAttribute('data-state'), false, 'Consumer ends the highlight');
+  assert.equal(subsFigure.getAttribute('data-state'), 'unavailable');
+  assert.equal(subsFigure.textContent, '—No data');
+  assert.equal(subsFigure.firstElementChild.getAttribute('aria-hidden'), 'true');
+  await act(async () => root.render(createElement(StatSamples, { value: 0 })));
+  assert.equal(subsFigure.hasAttribute('data-state'), false);
+  assert.equal(subsFigure.textContent, '0', 'A real zero renders after no data');
+  await act(async () => root.render(null));
+  assert.equal(document.getElementById('totals'), null);
+  stage('stat:passive:complete');
+  stage('search-trigger:start');
+  const documentListeners = [];
+  const addDocumentListener = document.addEventListener;
+  document.addEventListener = function (type, ...rest) {
+    documentListeners.push(type);
+    return addDocumentListener.call(this, type, ...rest);
+  };
+  try {
+    await act(async () => root.render(createElement(SearchTriggerSamples)));
+    const launcher = document.getElementById('search-launcher');
+    assert.ok(searchTriggerRef.current === launcher, 'SearchTrigger ref targets the native button');
+    assert.equal(launcher.type, 'button');
+    assert.equal(launcher.getAttribute('aria-label'), 'Search docs…');
+    await act(async () => launcher.click());
+    assert.deepEqual(searchActivations, ['search-launcher']);
+    launcher.focus();
+    assert.ok(document.activeElement === launcher, 'Native launcher receives focus');
+    for (const init of [{ key: 'k', ctrlKey: true }, { key: 'k', metaKey: true }]) {
+      await act(async () => document.dispatchEvent(new KeyboardEvent('keydown', { ...init, bubbles: true })));
+    }
+    assert.equal(searchActivations.length, 1, 'Displayed shortcut binds nothing');
+    await act(async () => root.render(createElement(SearchTriggerSamples, { compact: true })));
+    assert.ok(document.getElementById('search-launcher') === launcher, 'Compact rerender keeps button identity');
+    assert.ok(document.activeElement === launcher, 'Compact rerender keeps focus');
+    assert.equal(launcher.getAttribute('aria-label'), 'Search docs…');
+    assert.equal(launcher.querySelector('kbd'), null);
+    await act(async () => root.render(createElement(SearchTriggerSamples, { disabled: true })));
+    assert.equal(launcher.disabled, true);
+    await act(async () => launcher.click());
+    assert.equal(searchActivations.length, 1, 'Disabled launcher does not activate');
+    const slotRef = createRef();
+    const opened = [];
+    await act(async () => root.render(createElement(Slot, {
+      ref: slotRef, 'aria-haspopup': 'dialog', 'aria-expanded': false, 'aria-controls': 'palette', 'data-state': 'closed',
+      onClick: () => opened.push('open')
+    }, createElement(SearchTrigger, { ...searchTriggerProps, ref: searchTriggerRef }))));
+    const slotted = document.getElementById('search-launcher');
+    assert.ok(slotRef.current === slotted && searchTriggerRef.current === slotted, 'Host trigger and consumer refs share one button');
+    assert.equal(document.querySelectorAll('#app button').length, 1, 'Host trigger adds no second button');
+    assert.equal(slotted.getAttribute('aria-haspopup'), 'dialog');
+    assert.equal(slotted.getAttribute('aria-expanded'), 'false');
+    assert.equal(slotted.getAttribute('data-state'), 'closed');
+    await act(async () => slotted.click());
+    assert.deepEqual(opened, ['open']);
+    assert.equal(searchActivations.length, 2, 'Composed handlers each run once');
+    await act(async () => root.render(null));
+    assert.ok(searchTriggerRef.current === null, 'SearchTrigger ref cleans up on unmount');
+  } finally {
+    document.addEventListener = addDocumentListener;
+  }
+  assert.equal(documentListeners.filter((type) => type.startsWith('key')).length, 0, 'SearchTrigger registers no key listeners');
+  stage('search-trigger:complete');
   // Native label activation: clicking the associated label focuses the named control.
   assert.ok(toggleRef.current === null, 'Toggle ref cleans up when App unmounts');
   // The Slot scene unmounted App, so remount it before exercising LabelSamples.
@@ -3821,7 +4205,7 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
-  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'Countdown client sampling, expiry episode, running rerender and unavailable recovery', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'Countdown client sampling, expiry episode, running rerender and unavailable recovery', 'Stat passive group, highlight and no-data rerenders with stable identity', 'SearchTrigger native activation, inert displayed shortcut, compact identity, disabled guard, host Slot trigger and ref cleanup', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup', 'Chip pressed state, change events, controlled/disabled behavior and public recipe'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -3835,6 +4219,8 @@ const typographyNames = [
   'display-hero',
   'display-show',
   'display-pro',
+  'display-stat',
+  'display-stat-sm',
   'heading-section',
   'heading-small',
   'body-large',
@@ -3925,9 +4311,12 @@ ${assertProgressBarCSS.toString()}
 ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
+${assertStatCSS.toString()}
+${assertSearchTriggerCSS.toString()}
 ${assertProductMarkCSS.toString()}
 assertIconButtonCSS(emitted);
 ${assertToggleCSS.toString()}
+${assertChipCSS.toString()}
 ${assertSelectCSS.toString()}
 assertSelectCSS(emitted);
 ${assertCheckboxCSS.toString()}
@@ -3957,8 +4346,11 @@ assertInputCSS(emitted);
 assertDropzoneCSS(emitted);
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(emitted);
+assertStatCSS(emitted);
+assertSearchTriggerCSS(emitted);
 assertProductMarkCSS(emitted);
 assertToggleCSS(emitted);
+assertChipCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
@@ -3976,8 +4368,9 @@ const names = shipped
     return name.startsWith('--') ? [name] : [];
   });
 const typography = ${JSON.stringify(typographyNames)};
-// #82 Countdown adds 10 tokens: 255 + 10 = 265.
-assert.equal(names.length, 265, 'Packed native artifact must expose 265 variables');
+// #70 Stat adds --text-display-stat and --text-display-stat-sm with three companions each: 255 + 8 = 263.
+// #82 Countdown adds 10 tokens: 263 + 10 = 273.
+assert.equal(names.length, 273, 'Packed native artifact must expose 273 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
@@ -4020,8 +4413,11 @@ assertTextareaCSS(twCss);
 assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
 assertCountdownCSS(twCss);
+assertStatCSS(twCss);
+assertSearchTriggerCSS(twCss);
 assertProductMarkCSS(twCss);
 assertToggleCSS(twCss);
+assertChipCSS(twCss);
 assertSelectCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);

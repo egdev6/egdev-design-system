@@ -63,6 +63,16 @@
           "symbol": "SelectProps",
           "revision": "sha256:5fd68b9eeae5373ed7adeeaf90d002bf32eac62f584024114479b32bfd69f3f0"
         }
+      },
+      {
+        "component": "Stat",
+        "type": "string | number | null",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/stat/types.ts",
+          "symbol": "StatProps",
+          "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
+        }
       }
     ]
   },
@@ -293,6 +303,16 @@
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
           "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
+        }
+      },
+      {
+        "component": "Stat",
+        "type": "StatSize ('md' | 'sm')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/stat/types.ts",
+          "symbol": "StatProps",
+          "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
         }
       },
       {
@@ -684,6 +704,26 @@
         }
       },
       {
+        "component": "SearchTrigger",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/search-trigger/types.ts",
+          "symbol": "SearchTriggerProps",
+          "revision": "sha256:31b3eff9676b1a6646a39ed20eea22a30df4fa29741bae5d38bd89434b7d95fc"
+        }
+      },
+      {
+        "component": "Stat",
+        "type": "string (visible label and group name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/stat/types.ts",
+          "symbol": "StatProps",
+          "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
+        }
+      },
+      {
         "component": "Countdown",
         "type": "string",
         "status": "existing",
@@ -859,6 +899,16 @@
         }
       },
       {
+        "component": "Stat",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/stat/types.ts",
+          "symbol": "StatProps",
+          "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
+        }
+      },
+      {
         "component": "Countdown",
         "type": "string",
         "status": "existing",
@@ -1019,6 +1069,16 @@
           "path": "packages/ui/src/atoms/input/types.ts",
           "symbol": "InputProps",
           "revision": "sha256:e972763e1f269e87d3b1306727a45e576aaaa1497833f48447af9fc86f7d182f"
+        }
+      },
+      {
+        "component": "Chip",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/chip/types.ts",
+          "symbol": "ChipProps",
+          "revision": "sha256:c44e0513a5421d113afbb1efd7a4125ce05554770e08b6dff5cdeee3fa4961a7"
         }
       }
     ]
@@ -1235,6 +1295,16 @@
           "symbol": "ToggleProps",
           "revision": "sha256:6d0eec4fa75b1a67f055c67133945f948ab134db3a33589255414dfb6c006a1a"
         }
+      },
+      {
+        "component": "Chip",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/chip/types.ts",
+          "symbol": "ChipProps",
+          "revision": "sha256:c44e0513a5421d113afbb1efd7a4125ce05554770e08b6dff5cdeee3fa4961a7"
+        }
       }
     ]
   },
@@ -1262,6 +1332,16 @@
           "symbol": "ToggleProps",
           "revision": "sha256:6d0eec4fa75b1a67f055c67133945f948ab134db3a33589255414dfb6c006a1a"
         }
+      },
+      {
+        "component": "Chip",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/chip/types.ts",
+          "symbol": "ChipProps",
+          "revision": "sha256:c44e0513a5421d113afbb1efd7a4125ce05554770e08b6dff5cdeee3fa4961a7"
+        }
       }
     ]
   },
@@ -1288,6 +1368,16 @@
           "path": "packages/ui/src/atoms/toggle/types.ts",
           "symbol": "ToggleProps",
           "revision": "sha256:6d0eec4fa75b1a67f055c67133945f948ab134db3a33589255414dfb6c006a1a"
+        }
+      },
+      {
+        "component": "Chip",
+        "type": "(pressed: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/chip/types.ts",
+          "symbol": "ChipProps",
+          "revision": "sha256:c44e0513a5421d113afbb1efd7a4125ce05554770e08b6dff5cdeee3fa4961a7"
         }
       }
     ]
@@ -1693,7 +1783,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Stat",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/stat/types.ts",
+          "symbol": "StatProps",
+          "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
+        }
+      }
+    ]
   },
   {
     "id": "transient-highlight",
@@ -1709,7 +1810,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Stat",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/stat/types.ts",
+          "symbol": "StatProps",
+          "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
+        }
+      }
+    ]
   },
   {
     "id": "signal-pulse",
@@ -2571,7 +2683,18 @@
       "scope": "convention:keyboard-shortcut-hint",
       "contentHash": "sha256:4f922985284399a34fe26994e80533c2a8db49066e01a3e9d00544c2fbbc1339"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SearchTrigger",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/search-trigger/types.ts",
+          "symbol": "SearchTriggerProps",
+          "revision": "sha256:31b3eff9676b1a6646a39ed20eea22a30df4fa29741bae5d38bd89434b7d95fc"
+        }
+      }
+    ]
   },
   {
     "id": "compact-presentation",
@@ -2587,7 +2710,18 @@
       "scope": "convention:compact-presentation",
       "contentHash": "sha256:e9534ccfb215dce2fbca692466ba2003c296145b07601c31479862833d52387f"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SearchTrigger",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/search-trigger/types.ts",
+          "symbol": "SearchTriggerProps",
+          "revision": "sha256:31b3eff9676b1a6646a39ed20eea22a30df4fa29741bae5d38bd89434b7d95fc"
+        }
+      }
+    ]
   },
   {
     "id": "accent-line-break",

@@ -196,6 +196,16 @@
   --text-display-pro--line-height: 0.95;
   --text-display-pro--font-weight: 800;
   --text-display-pro--letter-spacing: 0;
+  /* --text-display-stat — Stat figure (#70 D6): display family, tabular numerals; 36px/1. */
+  --text-display-stat: 36px;
+  --text-display-stat--line-height: 1;
+  --text-display-stat--font-weight: 800;
+  --text-display-stat--letter-spacing: 0;
+  /* --text-display-stat-sm — Compact Stat figure (#70 D6): display family, tabular numerals; 28px/1. */
+  --text-display-stat-sm: 28px;
+  --text-display-stat-sm--line-height: 1;
+  --text-display-stat-sm--font-weight: 800;
+  --text-display-stat-sm--letter-spacing: 0;
   /* --text-heading-section — Section headings: display family, uppercase; 40px/1.2. */
   --text-heading-section: 40px;
   --text-heading-section--line-height: 1.2;

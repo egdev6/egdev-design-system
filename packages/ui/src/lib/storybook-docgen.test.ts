@@ -168,6 +168,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/badge',
       './atoms/button',
       './atoms/checkbox',
+      './atoms/chip',
       './atoms/countdown',
       './atoms/dropzone',
       './atoms/gauge',
@@ -180,9 +181,11 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/product-mark',
       './atoms/progress-bar',
       './atoms/radio-group',
+      './atoms/search-trigger',
       './atoms/select',
       './atoms/slider',
       './atoms/spinner',
+      './atoms/stat',
       './atoms/status-dot',
       './atoms/switch',
       './atoms/textarea',
@@ -207,6 +210,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Badge',
       'Button',
       'Checkbox',
+      'Chip',
       'Cluster',
       'Countdown',
       'Divider',
@@ -224,6 +228,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'ProductMark',
       'ProgressBar',
       'RadioGroup',
+      'SearchTrigger',
       'Select',
       'Skeleton',
       'Slider',
@@ -231,6 +236,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Slottable',
       'Spinner',
       'Stack',
+      'Stat',
       'StatusDot',
       'Surface',
       'Switch',
@@ -240,12 +246,14 @@ describe('Storybook TypeScript docgen contract', () => {
       'Tooltip',
       'VisuallyHidden',
       'badgeVariants',
+      'chipVariants',
       'cn',
       'dropzoneVariants',
       'labelVariants',
       'progressBarVariants',
       'radioGroupVariants',
       'sliderVariants',
+      'statVariants',
       'statusDotVariants',
       'surfaceVariants',
       'tooltipVariants'
@@ -608,6 +616,62 @@ describe('Storybook TypeScript docgen contract', () => {
       'ConsumerLayout'
     ]);
     expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+  });
+
+  it('extracts SearchTrigger owned metadata and keeps the native button boundary', () => {
+    const file = ast(source('atoms/search-trigger/types.ts'));
+    const properties = ownProps(file, ['SearchTriggerProps']);
+    const expected: Record<string, string> = { label: 'text', shortcut: 'text', compact: 'boolean' };
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(expected));
+    for (const property of properties) {
+      const controls = ts.getJSDocTags(property).filter((tag) => tag.tagName.text === 'control');
+      expect(controls).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe(expected[property.name.getText(file)]);
+    }
+    const doc = parser
+      .parse(source('atoms/search-trigger/SearchTrigger.tsx'))
+      .find((item) => item.displayName === 'SearchTrigger');
+    expect(doc?.props.label).toMatchObject({ required: false, defaultValue: { value: 'Search…' } });
+    expect(doc?.props.compact).toMatchObject({ required: false, defaultValue: { value: 'false' } });
+    expect(doc?.props.shortcut).toMatchObject({ required: false, defaultValue: null });
+    for (const name of [
+      'id',
+      'disabled',
+      'onClick',
+      'className',
+      'aria-describedby',
+      'aria-keyshortcuts',
+      'aria-haspopup',
+      'aria-expanded',
+      'aria-controls'
+    ]) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'type',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'aria-pressed',
+      'asChild',
+      'onOpen'
+    ]) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const stories = ast(source('atoms/search-trigger/SearchTrigger.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'MacHint',
+      'WindowsHint',
+      'Compact',
+      'CustomLabel',
+      'Disabled',
+      'FullWidth',
+      'Activation'
+    ]);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+    expect(stories.getText()).toMatch(/title: 'Atoms\/SearchTrigger'/);
   });
 
   it('annotates each own VisuallyHidden prop without fabricating a content default', () => {
@@ -1365,6 +1429,90 @@ describe('Spinner passive metadata contract', () => {
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live', 'tone', 'color']) {
       expect(props[prop], prop).toBeUndefined();
     }
+  }, 20_000);
+});
+
+describe('Stat passive figure metadata contract', () => {
+  it('annotates the six own props in contract order with one control each', () => {
+    const file = ast(source('atoms/stat/types.ts'));
+    const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'StatSize');
+    expect(alias && ts.isTypeAliasDeclaration(alias) ? alias.type.getText(file) : undefined).toBe("'md' | 'sm'");
+    const expected: Record<string, string> = {
+      label: 'text',
+      value: 'false',
+      delta: 'text',
+      highlighted: 'boolean',
+      size: 'select',
+      unavailableText: 'text'
+    };
+    const properties = ownProps(file, ['StatProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(expected));
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(Boolean(property.questionToken), `Stat.${name} optionality`).toBe(!['label', 'value'].includes(name));
+      const controls = ts.getJSDocTags(property).filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `Stat.${name} control`).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe(expected[name]);
+    }
+  });
+
+  it('omits exactly children and role and exposes no ref or asChild', () => {
+    const file = ast(source('atoms/stat/types.ts'));
+    const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'StatProps');
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing StatProps declaration');
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const union = node.typeArguments[1];
+        if (union && ts.isUnionTypeNode(union)) {
+          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual(['children', 'role']);
+    expect(alias.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild/);
+  });
+
+  it('binds CVA and hook defaults to the documented constants', () => {
+    expect(defaults(source('atoms/stat/types.ts'), true)).toEqual({ size: 'md' });
+    expect(defaults(source('atoms/stat/useStat.ts'), false)).toEqual({
+      highlighted: 'false',
+      size: 'md',
+      unavailableText: 'No data'
+    });
+  });
+
+  it('extracts required label/value, the figure union reason, real defaults and native rows', () => {
+    const doc = parser.parse(source('atoms/stat/Stat.tsx')).find((item) => item.displayName === 'Stat');
+    if (!doc) {
+      throw new Error('Missing docgen for Stat');
+    }
+    const { props } = doc;
+    expect(props.label).toMatchObject({ required: true, tags: { control: 'text' } });
+    expect(props.value).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    expect(props.value?.tags).toMatchObject({ controlReason: expect.stringMatching(/union.*Default and NoData/) });
+    expect(props.delta).toMatchObject({ required: false, defaultValue: null });
+    expect(props.delta?.description).toMatch(/When\s+omitted, no delta element/);
+    for (const [prop, value] of Object.entries({ highlighted: 'false', size: 'md', unavailableText: 'No data' })) {
+      expect(normalize(props[prop]?.defaultValue?.value), prop).toBe(value);
+    }
+    expect(props.size?.type.value?.map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
+      'md',
+      'sm'
+    ]);
+    for (const prop of ['id', 'title', 'aria-describedby', 'className', 'style']) {
+      expect(props[prop], `Stat native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of ['children', 'role', 'ref', 'asChild', 'aria-live', 'aria-labelledby', 'glass', 'tone']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+    const stories = ast(source('atoms/stat/Stat.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual(['Default', 'Highlighted', 'NoData', 'Small', 'TotalsRow']);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
   }, 20_000);
 });
 
@@ -2593,4 +2741,69 @@ describe('Slider interactive metadata contract', () => {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);
+});
+
+describe('Chip metadata contract', () => {
+  const chipControls: Record<string, string> = {
+    children: 'false',
+    pressed: 'boolean',
+    defaultPressed: 'boolean',
+    onPressedChange: 'false',
+    icon: 'false',
+    disabled: 'boolean'
+  };
+  const chipDefaults: Record<string, string> = { defaultPressed: 'false', disabled: 'false' };
+
+  it('annotates every own prop with one control, concrete reasons and only actual constant defaults', () => {
+    const file = ast(source('atoms/chip/types.ts'));
+    const properties = ownProps(file, ['ChipProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(chipControls));
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(Boolean(property.questionToken), `Chip.${name} optionality`).toBe(name !== 'children');
+      const tags = ts.getJSDocTags(property);
+      const values = (tagName: string) =>
+        tags.filter((tag) => tag.tagName.text === tagName).map((tag) => ts.getTextOfJSDocComment(tag.comment));
+      expect(values('control'), `Chip.${name} control`).toEqual([chipControls[name]]);
+      expect(values('default'), `Chip.${name} default`).toEqual(chipDefaults[name] ? [chipDefaults[name]] : []);
+      if (chipControls[name] === 'false') {
+        expect(values('controlReason')[0], `Chip.${name} reason`).toMatch(/Non-serializable.*stor(?:y|ies)\.$/);
+      }
+    }
+  });
+
+  it('binds the documented defaults to the hook and Radix', () => {
+    expect(defaults(source('atoms/chip/useChip.ts'), false)).toEqual({ defaultPressed: 'false' });
+  });
+
+  it('extracts own rows, real defaults and only the documented native rows', () => {
+    const doc = parser.parse(source('atoms/chip/Chip.tsx')).find((item) => item.displayName === 'Chip');
+    if (!doc) {
+      throw new Error('Missing docgen for Chip');
+    }
+    const { props } = doc;
+    for (const [prop, control] of Object.entries(chipControls)) {
+      expect(props[prop], `Chip.${prop}`).toMatchObject({ required: prop === 'children', tags: { control } });
+      expect(normalize(props[prop]?.defaultValue?.value ?? ''), `Chip.${prop} default`).toBe(chipDefaults[prop] ?? '');
+    }
+    for (const prop of ['pressed', 'defaultPressed', 'disabled']) {
+      expect(props[prop]?.type.name, prop).toBe('boolean');
+    }
+    expect(Object.keys(props).sort()).toEqual(
+      [...Object.keys(chipControls), 'id', 'title', 'name', 'onClick', 'aria-describedby', 'className'].sort()
+    );
+    for (const prop of ['type', 'value', 'asChild', 'aria-pressed', 'chipVariants', 'chipIconVariants']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+
+  it('exports exactly the contract stories', () => {
+    expect(exportedStoryNames(ast(source('atoms/chip/Chip.stories.tsx')))).toEqual([
+      'Default',
+      'WithIcon',
+      'Pressed',
+      'Controlled',
+      'Disabled'
+    ]);
+  });
 });

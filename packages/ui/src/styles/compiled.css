@@ -9,6 +9,7 @@
 @source "../atoms/badge/types.ts";
 @source "../atoms/button/types.ts";
 @source "../atoms/checkbox/types.ts";
+@source "../atoms/chip/types.ts";
 @source "../atoms/countdown/types.ts";
 @source "../atoms/dropzone/types.ts";
 @source "../atoms/gauge/types.ts";
@@ -21,9 +22,11 @@
 @source "../atoms/product-mark/types.ts";
 @source "../atoms/progress-bar/types.ts";
 @source "../atoms/radio-group/types.ts";
+@source "../atoms/search-trigger/types.ts";
 @source "../atoms/select/types.ts";
 @source "../atoms/slider/types.ts";
 @source "../atoms/spinner/types.ts";
+@source "../atoms/stat/types.ts";
 @source "../atoms/status-dot/types.ts";
 @source "../atoms/switch/types.ts";
 @source "../atoms/textarea/types.ts";
