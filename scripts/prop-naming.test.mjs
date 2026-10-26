@@ -12,6 +12,12 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'initial-uncontrolled-value', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'interactive-value-change', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'committed-value-change', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'measurement-text-equivalent', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
   {
     conventionId: 'aspect-ratio',
     source: 'packages/ui/src/primitives/aspect-ratio/types.ts#AspectRatioProps'

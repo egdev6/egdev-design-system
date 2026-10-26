@@ -21,6 +21,7 @@ const components = [
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
+  ['Slider', 'atoms/slider'],
   ['RadioGroup', 'atoms/radio-group'],
   ['Input', 'atoms/input'],
   ['Kbd', 'atoms/kbd'],
@@ -109,6 +110,19 @@ const expected: Record<string, Record<string, string | false>> = {
   logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
+  slider: {
+    label: 'text',
+    value: 'number',
+    defaultValue: 'number',
+    onValueChange: false,
+    onValueCommit: false,
+    min: 'number',
+    max: 'number',
+    step: 'number',
+    valueText: false,
+    disabled: 'boolean',
+    name: 'text'
+  },
   radiogroup: {
     label: 'text',
     options: false,
@@ -161,6 +175,7 @@ const ownPropCounts: Record<string, number> = {
   logo: 4,
   statusdot: 2,
   kbd: 2,
+  slider: 11,
   radiogroup: 9,
   switch: 7,
   tooltip: 4,
@@ -372,6 +387,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
+    ['Slider', { min: '0', max: '100', step: '1', disabled: 'false' }],
     ['RadioGroup', { orientation: '"vertical"', disabled: 'false', required: 'false' }],
     ['Switch', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }],
     ['Tooltip', { side: '"top"' }],
@@ -564,6 +580,32 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Slider rows: required label, numeric bounds, false-control callbacks and routed native rows', () => {
+    const { argTypes, args } = story('Slider');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.label?.table?.defaultValue).toBeUndefined();
+    for (const prop of ['value', 'defaultValue', 'min', 'max', 'step']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'number', required: false });
+    }
+    // Absent value and defaultValue are derived rules (uncontrolled, falls back to min), not constants.
+    for (const prop of ['value', 'defaultValue', 'valueText', 'name', 'onValueChange', 'onValueCommit']) {
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+    }
+    expect(argTypes.defaultValue?.description).toMatch(/Falls back to min when omitted/);
+    for (const prop of ['onValueChange', 'onValueCommit', 'valueText']) {
+      expect(argTypes[prop]?.control, prop).toBe(false);
+      expect(argTypes[prop]?.table?.disable, prop).not.toBe(true);
+      expect(argTypes[prop]?.description, prop).toBeTruthy();
+    }
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'aria-describedby', 'className']) {
+      expect(argTypes[prop], prop).toEqual(story('Slider', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'dir', 'onChange', 'orientation', 'inverted', 'style']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

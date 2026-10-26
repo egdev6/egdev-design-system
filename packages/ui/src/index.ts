@@ -7,6 +7,7 @@ export * from './atoms/logo';
 export * from './atoms/product-mark';
 export * from './atoms/progress-bar';
 export * from './atoms/radio-group';
+export * from './atoms/slider';
 export * from './atoms/spinner';
 export * from './atoms/status-dot';
 export * from './atoms/switch';

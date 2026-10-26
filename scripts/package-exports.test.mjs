@@ -46,13 +46,14 @@ function cssBlock(css, opening) {
 
 // Match escaped emitted selectors, not unescaped CVA class names; allow only complete approved utilities.
 const unapprovedTransitionUtility =
-  /\.transition-(?!(?:none|opacity|transform|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[translate\\,background-color\\\])(?=\s*\{))[\w\\]/;
+  /\.transition-(?!(?:none|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[translate\\,background-color\\\])(?=\s*\{))[\w\\]/;
 
 test('transition utility guard accepts only the exact approved emitted selectors', () => {
   for (const selector of [
     '.transition-none',
     '.transition-opacity',
     '.transition-transform',
+    '.transition-shadow',
     String.raw`.transition-\[background-color\,border-color\]`,
     String.raw`.transition-\[border-color\,box-shadow\]`,
     String.raw`.transition-\[translate\,background-color\]`,
@@ -69,6 +70,7 @@ test('transition utility guard rejects unrelated named and arbitrary transitions
     '.transition-opacity-extra',
     '.transition-none-extra',
     '.transition-transform-extra',
+    '.transition-shadow-extra',
     String.raw`.transition-\[all\]`,
     String.raw`.transition-\[width\]`,
     String.raw`.transition-\[background-color\,border-color\,opacity\]`,
@@ -268,7 +270,7 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   // Pulse (Skeleton) and spin (Spinner, #69) are the only approved animation utilities.
   // Transitions are limited to none, Tooltip opacity (#75 D10), ProgressBar transform (#65 AC-09),
   // Input/Textarea border-color and box-shadow, Switch track background-color and border-color,
-  // and Switch thumb translate and background-color.
+  // and Switch thumb translate and background-color; Slider adds only box-shadow (#68 D8).
   // None of the animated transitions reach the Skeleton.
   assert.doesNotMatch(
     utilityLayer,
@@ -1005,6 +1007,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'ProgressBar',
       'RadioGroup',
       'Skeleton',
+      'Slider',
       'Slot',
       'Slottable',
       'Spinner',
@@ -1020,6 +1023,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'labelVariants',
       'progressBarVariants',
       'radioGroupVariants',
+      'sliderVariants',
       'statusDotVariants',
       'surfaceVariants',
       'tooltipVariants'
@@ -1035,6 +1039,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(typeof exported.StatusDot, 'function', 'StatusDot must be a plain function component without a ref API');
   assert.equal(typeof exported.statusDotVariants, 'function', 'StatusDot composition recipe must be a public export');
   assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
+  assert.equal(typeof exported.sliderVariants, 'function', 'Slider root recipe must stay a public export');
   assert.equal(typeof exported.Tooltip, 'function', 'Tooltip must be a plain function component without a ref API');
   assert.equal(typeof exported.tooltipVariants, 'function', 'Tooltip overlay recipe must stay a public export');
   assert.equal(
@@ -1155,6 +1160,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SkeletonProps',
     'SkeletonSize',
     'SkeletonVariant',
+    'Slider',
+    'SliderProps',
     'Slot',
     'SlotProps',
     'Slottable',
@@ -1190,10 +1197,15 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'labelVariants',
     'progressBarVariants',
     'radioGroupVariants',
+    'sliderVariants',
     'statusDotVariants',
     'surfaceVariants',
     'tooltipVariants'
   ]);
+  for (const name of ['useSlider', 'sliderTrackVariants', 'sliderRangeVariants', 'sliderThumbVariants']) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
   for (const name of [
     'Divider',
     'DividerOrientation',
@@ -1773,4 +1785,74 @@ test('Tokens retires the JSON export and its source file', () => {
     false,
     'tokens.json source must be removed, not just unexported'
   );
+});
+
+test('UI ships the Slider well, range and raised thumb utilities without a Slider-specific stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}(?::[a-z-]+|\\[data-disabled\\])?\\s*\\{`));
+  };
+  assert.match(rule('.touch-none'), /touch-action:\s*none\s*;/);
+  assert.match(rule('.select-none'), /user-select:\s*none\s*;/);
+  assert.match(rule('.h-6'), /height:\s*var\(--space-6\)\s*;/);
+  assert.match(rule('.h-1'), /height:\s*var\(--space-1\)\s*;/);
+  assert.match(rule('.size-4'), /width:\s*var\(--space-4\)\s*;\s*height:\s*var\(--space-4\)\s*;/);
+  assert.match(rule('.grow'), /flex-grow:\s*1\s*;/);
+  assert.match(rule(String.raw`.data-\[disabled\]\:opacity-45`), /opacity:\s*45%\s*;/);
+  assert.match(rule(String.raw`.data-\[disabled\]\:pointer-events-none`), /pointer-events:\s*none\s*;/);
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule('.bg-fg-brand-default'), /background-color:\s*var\(--color-fg-brand-default[,)]/);
+  assert.match(rule('.bg-fg-default'), /background-color:\s*var\(--color-fg-default[,)]/);
+  // Material shadows stay token references instead of copied literal values.
+  for (const token of ['shadow-well', 'shadow-elev-1']) {
+    assert.match(rule(`.shadow-\\[var\\(--${token}\\)\\]`), new RegExp(`--tw-shadow:\\s*var\\(--${token}\\)\\s*;`));
+  }
+  assert.match(
+    rule(String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`),
+    /--tw-shadow:\s*var\(--shadow-focus\)\s*;/
+  );
+  assert.match(rule('.transition-shadow'), /transition-property:\s*box-shadow\s*;/);
+  assert.match(
+    rule(String.raw`.duration-\[var\(--duration-fast\)\]`),
+    /transition-duration:\s*var\(--duration-fast\)\s*;/
+  );
+  assert.match(rule(String.raw`.ease-\[var\(--ease-out\)\]`), /transition-timing-function:\s*var\(--ease-out\)\s*;/);
+  assert.match(rule('.cursor-grab'), /cursor:\s*grab\s*;/);
+  assert.match(rule(String.raw`.active\:cursor-grabbing`), /cursor:\s*grabbing\s*;/);
+  // The 44px touch target applies only on coarse pointers (D9); reduced motion drops the transition.
+  assert.match(
+    utilities,
+    /@media \(pointer: coarse\)\s*\{\s*\.pointer-coarse\\:h-11\s*\{\s*height:\s*calc\(var\(--space-1\)\s*\*\s*11\)\s*;/
+  );
+  assert.match(
+    utilities,
+    /@media \(prefers-reduced-motion: reduce\)\s*\{[^@]*\.motion-reduce\\:transition-none\s*\{\s*transition-property:\s*none\s*;/
+  );
+  assert.match(css, /@property --tw-shadow\s*\{[^}]*initial-value:\s*0 0 #0000/);
+  // Scan the real static CVA calls as well: every production part class must ship, not just a sample.
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/atoms/slider/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  let parts = 0;
+  const visit = (node) => {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      const base = node.arguments[0];
+      assert.ok(base && ts.isStringLiteral(base), 'Slider CVA bases must be static strings');
+      parts++;
+      for (const name of base.text.split(/\s+/).filter((name) => name !== 'eg-slider')) {
+        const selector = `.${name.replace(/([^a-zA-Z0-9_-])/g, '\\$1')}`;
+        assert.ok(utilities.includes(selector), `Missing Slider CVA utility ${name}`);
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  assert.equal(parts, 4, 'Root, track, range and thumb must all be scanned');
+  // D11 no stylesheet: the marker carries no rule of its own.
+  assert.doesNotMatch(css, /\.eg-slider[^{]*\{/, 'Slider has no stylesheet: its marker carries no rule');
 });

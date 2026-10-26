@@ -43,6 +43,16 @@
           "symbol": "ProgressBarProps",
           "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
         }
+      },
+      {
+        "component": "Slider",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/slider/types.ts",
+          "symbol": "SliderProps",
+          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+        }
       }
     ]
   },
@@ -70,6 +80,16 @@
           "symbol": "RadioGroupProps",
           "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
         }
+      },
+      {
+        "component": "Slider",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/slider/types.ts",
+          "symbol": "SliderProps",
+          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+        }
       }
     ]
   },
@@ -96,6 +116,16 @@
           "path": "packages/ui/src/atoms/radio-group/types.ts",
           "symbol": "RadioGroupProps",
           "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
+        }
+      },
+      {
+        "component": "Slider",
+        "type": "(value: number) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/slider/types.ts",
+          "symbol": "SliderProps",
+          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
         }
       }
     ]
@@ -452,6 +482,16 @@
           "symbol": "ProductMarkProps",
           "revision": "sha256:91de5ae435b6a408065592d3b7b44085021c71a15230c868081efddb48d2a8c4"
         }
+      },
+      {
+        "component": "Slider",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/slider/types.ts",
+          "symbol": "SliderProps",
+          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+        }
       }
     ]
   },
@@ -552,6 +592,16 @@
           "path": "packages/ui/src/atoms/progress-bar/types.ts",
           "symbol": "ProgressBarProps",
           "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
+      },
+      {
+        "component": "Slider",
+        "type": "(value: number) => string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/slider/types.ts",
+          "symbol": "SliderProps",
+          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
         }
       }
     ]
@@ -1173,7 +1223,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Slider",
+        "type": "(value: number) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/slider/types.ts",
+          "symbol": "SliderProps",
+          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+        }
+      }
+    ]
   },
   {
     "id": "value-context",

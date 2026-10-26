@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Input, Kbd, Label, Logo, ProductMark, ProgressBar, RadioGroup, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Tooltip, VisuallyHidden, progressBarVariants, radioGroupVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Input, Kbd, Label, Logo, ProductMark, ProgressBar, RadioGroup, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Tooltip, VisuallyHidden, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -48,6 +48,7 @@ import type {
   KbdProps,
   LabelProps,
   LabelVariant,
+  SliderProps,
   LogoProps,
   LogoSize,
   LogoVariant,
@@ -208,6 +209,25 @@ export function KbdSamples() {
     createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
     createElement(Kbd, kbdNative));
 }
+export const sliderSample: SliderProps = {
+  label: 'Volume', defaultValue: 40, name: 'volume', id: 'packed-slider',
+  'aria-describedby': 'slider-hint', className: 'w-48 w-64 consumer-slider',
+  valueText: (value) => value + ' percent'
+};
+export const sliderRecipe: string = sliderVariants();
+export const sliderEvents: number[] = [];
+export const sliderCommits: number[] = [];
+export function SliderSamples() {
+  return createElement('form', { id: 'slider-form' },
+    createElement('p', { id: 'slider-hint' }, 'Applies to overlays'),
+    createElement(Slider, { ...sliderSample,
+      onValueChange: (value) => sliderEvents.push(value),
+      onValueCommit: (value) => sliderCommits.push(value) }),
+    createElement(Slider, { label: 'Fixed threshold', value: 120, id: 'packed-controlled-slider' }),
+    createElement(Slider, { label: 'Disabled volume', disabled: true, defaultValue: 25, id: 'packed-disabled-slider',
+      onValueChange: (value) => sliderEvents.push(value) }));
+}
+
 // RadioGroup: data-driven options named by label, inside a form for submission (D2-D5, AC-07).
 export const radioOptions: RadioGroupOption[] = [
   { value: 'public', label: 'Public' },
@@ -458,6 +478,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(StatusDotSamples, { pulse: statusDotPulse }),
     createElement(KbdSamples),
+    createElement(SliderSamples),
     createElement(ProgressBarSamples, { value: progressValue }),
     createElement(TextareaSamples),
     createElement(InputSamples, { inputValue }),
@@ -559,6 +580,22 @@ const referencedKbd: KbdProps = { children: 'K', ref: createRef<HTMLElement>() }
 const slottedKbd: KbdProps = { children: 'K', asChild: true };
 // @ts-expect-error Kbd has a single flat treatment; there are no variants (D4).
 const variantKbd: KbdProps = { children: 'K', variant: 'raised' };
+// @ts-expect-error Slider requires a thumb accessible name.
+const unnamedSlider: SliderProps = { value: 30 };
+// @ts-expect-error The public API is scalar, not Radix's array shape.
+const rangeSlider: SliderProps = { label: 'Range', value: [20, 80] };
+// @ts-expect-error Slider has no vertical orientation API.
+const verticalSlider: SliderProps = { label: 'Volume', orientation: 'vertical' };
+// @ts-expect-error Slider has no asChild API.
+const slottedSlider: SliderProps = { label: 'Volume', asChild: true };
+// @ts-expect-error Slider exposes no ref API on either React major.
+const referencedSlider: SliderProps = { label: 'Volume', ref: createRef<HTMLSpanElement>() };
+// @ts-expect-error Track, range and thumb content are internal.
+const childSlider: SliderProps = { label: 'Volume', children: 'Not permitted' };
+// @ts-expect-error Direction is not public in v0.1.
+const directedSlider: SliderProps = { label: 'Volume', dir: 'rtl' };
+// @ts-expect-error Use onValueChange, not native onChange.
+const nativeChangeSlider: SliderProps = { label: 'Volume', onChange: () => {} };
 // @ts-expect-error RadioGroup requires its accessible group name (D4).
 const unnamedRadio: RadioGroupProps = { options: radioOptions };
 // @ts-expect-error RadioGroup renders its options from data; children are not accepted (D2).
@@ -1010,6 +1047,33 @@ function assertSkeletonCSS(css) {
   assert.doesNotMatch(css, /\.eg-skeleton[^{]*\{[^}]*(?:animation|transition):/, 'Skeleton marker must stay static');
 }
 
+// All Slider parts ship token-backed utilities, with no extra stylesheet or app Tailwind requirement.
+function assertSliderCSS(css) {
+  for (const utility of [
+    '.touch-none',
+    '.select-none',
+    '.h-6',
+    '.h-1',
+    '.grow',
+    '.size-4',
+    '.bg-surface-0',
+    '.bg-fg-brand-default',
+    '.bg-fg-default',
+    '.transition-shadow',
+    String.raw`.pointer-coarse\:h-11`,
+    String.raw`.data-\[disabled\]\:opacity-45`,
+    String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`,
+    String.raw`.shadow-\[var\(--shadow-well\)\]`,
+    String.raw`.shadow-\[var\(--shadow-elev-1\)\]`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(utility), 'Missing Slider utility ' + utility);
+  }
+  assert.match(css, /@media\s*\(pointer:\s*coarse\)/, 'Slider touch target needs a coarse-pointer query');
+  assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/, 'Slider respects reduced motion');
+  assert.doesNotMatch(css, /\.eg-slider[^{]*\{/, 'Slider marker must not introduce an appearance rule');
+}
+
 // StatusDot ships ring/glow geometry, token fills and its motion-safe pulse with top-level keyframes.
 function assertStatusDotCSS(css) {
   for (const utility of [
@@ -1426,6 +1490,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ProgressBar',
   'RadioGroup',
   'Skeleton',
+  'Slider',
   'Slot',
   'Slottable',
   'Spinner',
@@ -1441,6 +1506,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'labelVariants',
   'progressBarVariants',
   'radioGroupVariants',
+  'sliderVariants',
   'statusDotVariants',
   'surfaceVariants',
   'tooltipVariants'
@@ -1453,6 +1519,7 @@ ${assertSpinnerCSS.toString()}
 ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertSliderCSS.toString()}
 ${assertRadioGroupCSS.toString()}
 ${assertSwitchCSS.toString()}
 ${assertTooltipCSS.toString()}
@@ -1468,6 +1535,7 @@ assertSpinnerCSS(shippedStyles);
 assertLogoCSS(shippedStyles);
 assertStatusDotCSS(shippedStyles);
 assertKbdCSS(shippedStyles);
+assertSliderCSS(shippedStyles);
 assertRadioGroupCSS(shippedStyles);
 assertSwitchCSS(shippedStyles);
 assertTooltipCSS(shippedStyles);
@@ -1594,7 +1662,7 @@ try {
   assert.equal(search.getAttribute('aria-label'), 'Search', 'The trigger keeps its own name');
   assert.equal(search.getAttribute('data-state'), 'closed');
   assert.equal(search.hasAttribute('aria-describedby'), false);
-  assert.equal(tooltipDocument.window.document.querySelector('[role="tooltip"], .eg-tooltip'), null);
+  assert.ok(tooltipDocument.window.document.querySelector('[role="tooltip"], .eg-tooltip') === null);
   assert.ok(!tooltipDocument.serialize().includes('Search the catalogue'), 'Closed content is not server-rendered');
 } finally {
   tooltipDocument.window.close();
@@ -1802,6 +1870,18 @@ for (const frame of [square, wide]) {
   assert.equal(nativeSpinner.getAttribute('title'), 'Uploading');
   assert.equal(nativeSpinner.getAttribute('lang'), 'en');
   assert.ok(nativeSpinner.className.endsWith('ms-2 consumer-spinner'), 'Consumer layout classes merge last');
+  const sliderRoot = document.getElementById('packed-slider');
+  assert.ok(sliderRoot, 'SSR renders Slider root');
+  const sliderThumb = sliderRoot.querySelector('[role="slider"]');
+  assert.equal(sliderThumb.getAttribute('aria-label'), 'Volume');
+  assert.equal(sliderThumb.getAttribute('aria-valuemin'), '0');
+  assert.equal(sliderThumb.getAttribute('aria-valuemax'), '100');
+  assert.equal(sliderThumb.getAttribute('aria-valuetext'), '40 percent');
+  assert.equal(sliderThumb.getAttribute('aria-describedby'), 'slider-hint');
+  assert.equal(sliderRoot.hasAttribute('aria-describedby'), false);
+  assert.equal(sliderThumb.style.display, 'none', 'Radix reveals the thumb after its collection mounts');
+  assert.equal(sliderRoot.querySelector('input').name, 'volume');
+  assert.ok(sliderRoot.classList.contains('w-64') && !sliderRoot.classList.contains('w-full'));
   const moduleStates = document.querySelector('ul[aria-label="Module states"]');
   assert.ok(moduleStates, 'SSR must render StatusDot samples');
   const dots = [...moduleStates.querySelectorAll('.eg-status-dot')];
@@ -2140,7 +2220,7 @@ for (const value of [NaN, Infinity, -Infinity]) {
   assert.ok(rendered.includes('Disconnected capacity') && rendered.includes('Data unavailable'));
   assert.doesNotMatch(rendered, /role="meter"|aria-value(?:now|min|max|text)=|eg-gauge-arc|--eg-gauge-value|Hidden condition|Hidden center|aria-live=|<button|tabindex=/);
 }
-console.log(JSON.stringify({ ssr: ['Gauge finite, bounded and unavailable', 'decorative centers', 'visible conditions'], bytes: html.length }));
+console.log(JSON.stringify({ ssr: ['Gauge finite, bounded and unavailable', 'decorative centers', 'visible conditions', 'Slider bounds, formatted name and Radix server-hidden thumb'], bytes: html.length }));
 `;
 
 const csr = `
@@ -2149,20 +2229,20 @@ import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 const stage = (csrStage) => console.log(JSON.stringify({ csrStage }));
 stage('setup:start');
 const dom = new JSDOM('<div id="app"></div>', { url: 'http://localhost/', pretendToBeVisual: true });
-for (const name of ['window', 'document', 'navigator', 'HTMLElement', 'HTMLFormElement', 'Element', 'Node', 'Event', 'CustomEvent', 'KeyboardEvent', 'MutationObserver']) {
+for (const name of ['window', 'document', 'navigator', 'HTMLElement', 'Element', 'Node', 'Event', 'CustomEvent', 'MutationObserver', 'HTMLFormElement', 'HTMLInputElement', 'KeyboardEvent', 'FormData', 'File']) {
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 }
 for (const name of ['getComputedStyle', 'requestAnimationFrame', 'cancelAnimationFrame']) {
   globalThis[name] = dom.window[name].bind(dom.window);
 }
-// jsdom has no layout observers; Radix Popper (Tooltip) measures through ResizeObserver.
+// jsdom has no layout observers; Radix Slider and Tooltip measure through ResizeObserver.
 globalThis.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} };
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, RadioGroupSamples, SwitchSamples, TooltipSamples, aspectWideRef, hiddenNoteRef, inputChanges, inputRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, textareaChanges, textareaRef, tooltipRecipe } = await import('./consumer.ts');
+const { App, RadioGroupSamples, SwitchSamples, TooltipSamples, aspectWideRef, hiddenNoteRef, inputChanges, inputRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -2311,6 +2391,36 @@ try {
   }
   assert.equal(document.getElementById('kbd-command').children[0].getAttribute('aria-hidden'), 'true');
   stage('kbd:passive:complete');
+  stage('slider:keyboard:start');
+  const sliderRoot = document.getElementById('packed-slider');
+  const sliderThumb = sliderRoot.querySelector('[role="slider"]');
+  assert.equal(sliderThumb.getAttribute('aria-label'), 'Volume');
+  assert.equal(sliderThumb.getAttribute('aria-describedby'), 'slider-hint');
+  assert.equal(sliderRoot.hasAttribute('aria-describedby'), false);
+  assert.equal(sliderThumb.getAttribute('aria-valuenow'), '40');
+  assert.equal(sliderThumb.getAttribute('aria-valuetext'), '40 percent');
+  assert.equal(sliderThumb.tabIndex, 0);
+  assert.ok(sliderRoot.classList.contains('eg-slider') && sliderRoot.classList.contains('w-64'));
+  assert.ok(!sliderRoot.classList.contains('w-full') && !sliderRoot.classList.contains('w-48'));
+  await act(async () => {
+    sliderThumb.focus();
+    sliderThumb.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+  });
+  assert.ok(document.activeElement === sliderThumb, 'Radix keeps focus on the thumb');
+  assert.equal(sliderThumb.getAttribute('aria-valuenow'), '41');
+  assert.equal(sliderThumb.getAttribute('aria-valuetext'), '41 percent');
+  assert.deepEqual(sliderEvents, [41], 'The callback is scalar on both React majors');
+  assert.deepEqual(sliderCommits, [41]);
+  assert.equal(new dom.window.FormData(document.getElementById('slider-form')).get('volume'), '41');
+  const fixedSlider = document.querySelector('#packed-controlled-slider [role="slider"]');
+  assert.equal(fixedSlider.getAttribute('aria-valuenow'), '100', 'Controlled values clamp without incoming callbacks');
+  const disabledSlider = document.querySelector('#packed-disabled-slider [role="slider"]');
+  assert.equal(disabledSlider.hasAttribute('tabindex'), false);
+  assert.equal(disabledSlider.hasAttribute('data-disabled'), true);
+  await act(async () => disabledSlider.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true })));
+  assert.equal(disabledSlider.getAttribute('aria-valuenow'), '25');
+  assert.deepEqual(sliderEvents, [41], 'Disabled interaction must not emit');
+  stage('slider:keyboard:complete');
   stage('progress:rerender:start');
   const upload = () => document.getElementById('progress-upload');
   assert.equal(document.querySelectorAll('.eg-progress').length, 6, 'Consumer ProgressBars must mount');
@@ -2453,7 +2563,7 @@ try {
   assert.ok(bubble.className.startsWith('eg-tooltip '), 'The public marker leads the bubble classes');
   assert.equal(bubble.className, tooltipRecipe, 'The bubble carries the public overlay recipe');
   await act(async () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
-  assert.equal(document.querySelector('[role="tooltip"]'), null, 'Escape closes the tooltip');
+  assert.ok(document.querySelector('[role="tooltip"]') === null, 'Escape closes the tooltip');
   assert.ok(document.activeElement === tooltipTrigger, 'Focus stays on the trigger');
   const moduleTrigger = document.getElementById('tooltip-module');
   await act(async () => moduleTrigger.focus());
@@ -2461,7 +2571,7 @@ try {
   assert.equal(moduleBubble.textContent, 'egdev-publish, running');
   assert.ok(moduleBubble.className.endsWith(' text-center consumer-tooltip'), 'Consumer layout classes merge last');
   await act(async () => root.render(null));
-  assert.equal(document.querySelector('[role="tooltip"]'), null, 'Unmount removes the portaled bubble');
+  assert.ok(document.querySelector('[role="tooltip"]') === null, 'Unmount removes the portaled bubble');
   stage('tooltip:focus:complete');
   // Native label activation: clicking the associated label focuses the named control.
   // The Slot scene unmounted App, so remount it before exercising LabelSamples.
@@ -2550,7 +2660,7 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Tooltip focus, Escape, portal and unmount', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Tooltip focus, Escape, portal and unmount', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -2639,6 +2749,7 @@ ${assertSpinnerCSS.toString()}
 ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertSliderCSS.toString()}
 ${assertRadioGroupCSS.toString()}
 ${assertSwitchCSS.toString()}
 ${assertTooltipCSS.toString()}
@@ -2659,6 +2770,7 @@ assertSpinnerCSS(emitted);
 assertLogoCSS(emitted);
 assertStatusDotCSS(emitted);
 assertKbdCSS(emitted);
+assertSliderCSS(emitted);
 assertRadioGroupCSS(emitted);
 assertSwitchCSS(emitted);
 assertTooltipCSS(emitted);
@@ -2710,6 +2822,7 @@ assertSpinnerCSS(twCss);
 assertLogoCSS(twCss);
 assertStatusDotCSS(twCss);
 assertKbdCSS(twCss);
+assertSliderCSS(twCss);
 assertRadioGroupCSS(twCss);
 assertSwitchCSS(twCss);
 assertTooltipCSS(twCss);
