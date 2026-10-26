@@ -29,8 +29,8 @@ function run(cwd, command, args, timeout) {
 
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
-import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, VisuallyHidden } from '@egdev/ui';
+import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
+import { AspectRatio, Cluster, Divider, Gauge, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, Surface, Tooltip, VisuallyHidden, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -55,6 +55,7 @@ import type {
   SurfaceProps,
   SurfaceRadius,
   SurfaceTone,
+  TooltipProps,
   VisuallyHiddenProps
 } from '@egdev/ui';
 const slotProps: SlotProps = { 'aria-label': 'Composed documentation' };
@@ -165,6 +166,18 @@ export function KbdSamples() {
     createElement(Kbd, { children: 'Ctrl', id: 'kbd-ctrl' }), ' + ',
     createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
     createElement(Kbd, kbdNative));
+}
+// Tooltip wraps one consumer trigger; samples render outside App so its focus harness stays unchanged.
+export const tooltipRecipe: string = tooltipVariants();
+export const tooltipSearch: TooltipProps = {
+  content: 'Search the catalogue',
+  children: createElement('button', { type: 'button', 'aria-label': 'Search', id: 'tooltip-search' }, '⌕')
+};
+export function TooltipSamples() {
+  return createElement('div', { id: 'tooltip-host' },
+    createElement(Tooltip, tooltipSearch),
+    createElement(Tooltip, { content: 'egdev-publish, running', side: 'right', className: 'text-center consumer-tooltip',
+      children: createElement('button', { type: 'button', id: 'tooltip-module' }, 'Publish') }));
 }
 export function VisuallyHiddenSamples() {
   return createElement('section', { 'aria-label': 'Hidden support content' },
@@ -293,6 +306,20 @@ const referencedKbd: KbdProps = { children: 'K', ref: createRef<HTMLElement>() }
 const slottedKbd: KbdProps = { children: 'K', asChild: true };
 // @ts-expect-error Kbd has a single flat treatment; there are no variants (D4).
 const variantKbd: KbdProps = { children: 'K', variant: 'raised' };
+// @ts-expect-error Tooltip content is required.
+const missingTooltipContent: TooltipProps = { children: createElement('button') };
+// @ts-expect-error Tooltip content is plain text, not rich content (D4).
+const richTooltip: TooltipProps = { content: createElement('kbd', null, 'K'), children: createElement('button') };
+// @ts-expect-error The trigger is one element, not text (D2).
+const textTrigger: TooltipProps = { content: 'Hint', children: 'Trigger' };
+// @ts-expect-error Visibility is uncontrolled in v0.1 (D7).
+const controlledTooltip: TooltipProps = { content: 'Hint', children: createElement('button'), open: true };
+// @ts-expect-error Radix default delays are fixed; there are no delay props (D6).
+const delayedTooltip: TooltipProps = { content: 'Hint', children: createElement('button'), delayDuration: 0 };
+// @ts-expect-error Only the four sides are supported; align is fixed to center (D5).
+const cornerTooltip: TooltipProps = { content: 'Hint', children: createElement('button'), side: 'top-start' };
+// @ts-expect-error Tooltip exposes no ref or asChild of its own.
+const slottedTooltip: TooltipProps = { content: 'Hint', children: createElement('button'), asChild: true };
 // @ts-expect-error Hidden content is required, not optional.
 const missingHiddenChildren: VisuallyHiddenProps = { id: 'orphan-hint' };
 // @ts-expect-error VisuallyHidden inherits span props; the anchor-only href is rejected.
@@ -596,6 +623,36 @@ function assertKbdCSS(css) {
   assert.match(css, /--tw-border-style:\s*solid/, 'The hairline border style must resolve without Tailwind');
 }
 
+// Tooltip ships the Material overlay recipe, its fallbacks and the enter fade as utilities; no Tooltip stylesheet.
+function assertTooltipCSS(css) {
+  for (const utility of [
+    '.bg-surface-overlay',
+    '.backdrop-saturate-150',
+    '.border-border-hairline-strong',
+    '.text-fg-default',
+    '.transition-opacity',
+    '.starting\\:opacity-0',
+    '.motion-reduce\\:transition-none'
+  ]) {
+    assert.ok(css.includes(utility), 'Missing Tooltip utility ' + utility);
+  }
+  assert.match(
+    css,
+    /backdrop-blur-\\\[var\\\(--blur-overlay\\\)\\\]\s*\{[^}]*blur\(var\(--blur-overlay\)\)/,
+    'Tooltip blur'
+  );
+  assert.match(css, /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-elev-3\)/, 'Tooltip two-layer shadow');
+  assert.match(css, /max-width:\s*var\(--radix-tooltip-content-available-width\)/, 'Tooltip width follows Radix');
+  assert.match(css, /transition-duration:\s*var\(--duration-fast\)/, 'Tooltip fade duration token');
+  assert.match(css, /@starting-style\s*\{\s*\.starting\\:opacity-0\s*\{\s*opacity:\s*0%?/, 'Tooltip enter fade');
+  assert.match(
+    css,
+    /prefers-reduced-transparency\\:reduce\\\)\\\]\\:bg-surface-2\s*\{[^}]*background-color:\s*var\(--color-surface-2/,
+    'Tooltip solid fallback'
+  );
+  assert.doesNotMatch(css, /\.eg-tooltip[^{]*\{/, 'Tooltip marker must not become a shipped CSS rule');
+}
+
 // Spinner ships Icon-scale presets, inherited stroke utilities and the canonical spin token with keyframes.
 function assertSpinnerCSS(css) {
   for (const utility of [
@@ -668,21 +725,25 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Spinner',
   'Stack',
   'Surface',
+  'Tooltip',
   'VisuallyHidden',
   'cn',
   'labelVariants',
-  'surfaceVariants'
+  'surfaceVariants',
+  'tooltipVariants'
 ]);
 ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertTooltipCSS.toString()}
 assertGaugeCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assertSkeletonCSS(shippedStyles);
 assertSpinnerCSS(shippedStyles);
 assertKbdCSS(shippedStyles);
+assertTooltipCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -709,7 +770,21 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, SlotSample } from './consumer.ts';
+import { App, SlotSample, TooltipSamples } from './consumer.ts';
+// Tooltips are closed on the server: only the consumer triggers render, with Radix's closed state.
+const tooltipDocument = new JSDOM(renderToString(createElement(TooltipSamples)));
+try {
+  const host = tooltipDocument.window.document.getElementById('tooltip-host');
+  assert.equal(host.children.length, 2, 'Each Tooltip renders only its trigger, without a wrapper');
+  const search = tooltipDocument.window.document.getElementById('tooltip-search');
+  assert.equal(search.getAttribute('aria-label'), 'Search', 'The trigger keeps its own name');
+  assert.equal(search.getAttribute('data-state'), 'closed');
+  assert.equal(search.hasAttribute('aria-describedby'), false);
+  assert.equal(tooltipDocument.window.document.querySelector('[role="tooltip"], .eg-tooltip'), null);
+  assert.ok(!tooltipDocument.serialize().includes('Search the catalogue'), 'Closed content is not server-rendered');
+} finally {
+  tooltipDocument.window.close();
+}
 const slotDocument = new JSDOM(renderToString(createElement(SlotSample)));
 try {
   const target = slotDocument.window.document.body;
@@ -1019,18 +1094,20 @@ import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 const stage = (csrStage) => console.log(JSON.stringify({ csrStage }));
 stage('setup:start');
 const dom = new JSDOM('<div id="app"></div>', { url: 'http://localhost/', pretendToBeVisual: true });
-for (const name of ['window', 'document', 'navigator', 'HTMLElement', 'Element', 'Node', 'Event', 'CustomEvent', 'MutationObserver']) {
+for (const name of ['window', 'document', 'navigator', 'HTMLElement', 'Element', 'Node', 'Event', 'CustomEvent', 'KeyboardEvent', 'MutationObserver']) {
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 }
 for (const name of ['getComputedStyle', 'requestAnimationFrame', 'cancelAnimationFrame']) {
   globalThis[name] = dom.window[name].bind(dom.window);
 }
+// jsdom has no layout observers; Radix Popper (Tooltip) measures through ResizeObserver.
+globalThis.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} };
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
+const { App, TooltipSamples, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -1216,6 +1293,31 @@ try {
   await act(async () => root.render(null));
   assert.ok(slotRef.current === null, 'Slot ref must be cleaned up on unmount');
   assert.ok(childRef.current === null, 'Child ref must be cleaned up on unmount');
+  stage('tooltip:focus:start');
+  await act(async () => root.render(createElement(TooltipSamples)));
+  const tooltipTrigger = document.getElementById('tooltip-search');
+  await act(async () => tooltipTrigger.focus());
+  const bubble = document.querySelector('[role="tooltip"]');
+  assert.ok(bubble, 'Keyboard focus must open the tooltip without a provider');
+  assert.equal(bubble.textContent, 'Search the catalogue');
+  assert.equal(bubble.getAttribute('data-state'), 'instant-open');
+  assert.equal(tooltipTrigger.getAttribute('aria-describedby'), bubble.id, 'The trigger is described by the tooltip');
+  assert.equal(tooltipTrigger.getAttribute('aria-label'), 'Search', 'The trigger keeps its own name');
+  assert.ok(!document.getElementById('app').contains(bubble), 'The bubble renders in a portal');
+  assert.ok(bubble.closest('[data-radix-popper-content-wrapper]').parentElement === document.body);
+  assert.ok(bubble.className.startsWith('eg-tooltip '), 'The public marker leads the bubble classes');
+  assert.equal(bubble.className, tooltipRecipe, 'The bubble carries the public overlay recipe');
+  await act(async () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+  assert.equal(document.querySelector('[role="tooltip"]'), null, 'Escape closes the tooltip');
+  assert.ok(document.activeElement === tooltipTrigger, 'Focus stays on the trigger');
+  const moduleTrigger = document.getElementById('tooltip-module');
+  await act(async () => moduleTrigger.focus());
+  const moduleBubble = document.querySelector('[role="tooltip"]');
+  assert.equal(moduleBubble.textContent, 'egdev-publish, running');
+  assert.ok(moduleBubble.className.endsWith(' text-center consumer-tooltip'), 'Consumer layout classes merge last');
+  await act(async () => root.render(null));
+  assert.equal(document.querySelector('[role="tooltip"]'), null, 'Unmount removes the portaled bubble');
+  stage('tooltip:focus:complete');
   // Native label activation: clicking the associated label focuses the named control.
   // The Slot scene unmounted App, so remount it before exercising LabelSamples.
   await act(async () => root.render(createElement(App)));
@@ -1236,7 +1338,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Kbd passive keys outside the Tab order', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Kbd passive keys outside the Tab order', 'Tooltip focus, Escape, portal and unmount', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1316,6 +1418,7 @@ ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertTooltipCSS.toString()}
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1326,6 +1429,7 @@ assert.match(
 assertSkeletonCSS(emitted);
 assertSpinnerCSS(emitted);
 assertKbdCSS(emitted);
+assertTooltipCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
@@ -1364,6 +1468,7 @@ assert.match(
 assertSkeletonCSS(twCss);
 assertSpinnerCSS(twCss);
 assertKbdCSS(twCss);
+assertTooltipCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
