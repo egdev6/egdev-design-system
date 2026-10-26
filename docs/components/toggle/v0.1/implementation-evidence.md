@@ -63,7 +63,7 @@ The amendment changes only `meaning`, `whenToUse` and `avoid`, retaining the can
 
 No contract/API deviations beyond the explicitly approved naming amendment. Non-empty, constant names and non-interactive short text/icon content remain consumer responsibilities; no arbitrary runtime content validation or new fallback policy was added.
 
-## Required gates
+## Initial implementation gates (before main integration)
 
 All full gates run serially under `/tmp/egdev-gates.lock`, `timeout 900`, a 3 GB memory scope; unit tests use four workers. Build ran before tests reading compiled tokens. Packed consumption additionally holds `/tmp/egdev-packed.lock`, with `timeout 1500` and a 2 GB cap. Focused Vitest uses `timeout 300`, 2 GB and two workers.
 
@@ -79,6 +79,25 @@ All full gates run serially under `/tmp/egdev-gates.lock`, `timeout 900`, a 3 GB
 | `pnpm test:package-consumption` | 12 passed: React 18.3.1 and 19.3.0, strict positive/negative types, SSR, CSR/ref cleanup, native/Tailwind CSS and React deduplication |
 
 The packed fixture retains the single React type import, all previous component imports/examples, Surface/surfaceVariants/ComponentProps, Icon and Text/Heading checks. DOM identity uses boolean assertions, never node:assert equality on DOM objects. No CI run is claimed.
+
+## Main integration export-guard correction
+
+After integration with main `c83dee0`, the parent reported lint, typecheck, build, 620 unit tests and 83 naming tests passing, followed by an export-guard failure. The focused guard failure was reproduced locally: the built utilities additionally contain `transition-[border-color,box-shadow]`, required by both main's `inputControlVariants` and `textareaVariants`. Main's former `/\.transition-(?!none)\w/` check did not match escaped arbitrary-property selectors; Toggle's stricter exact-list guard exposed the missing approved entry.
+
+Only the export guard was corrected; runtime, API, tokens, dependencies and recipes remain unchanged. The exact allowed utility set is now:
+
+- `transition-none` (retained static/reset utility).
+- `transition-[border-color,box-shadow]` (existing Input/Textarea recipes on main).
+- `transition-[color,background-color,border-color,box-shadow,scale]` (unchanged approved Toggle recipe).
+
+The same guard rejects injected `transition-all` and `transition-[opacity]` rules in negative regressions. Existing animation/keyframe guards remain unchanged. No blanket transition permission was introduced.
+
+Observed correction checks, each under the shared gate lock, `timeout 900` and a 3 GB memory scope:
+
+- `node --test --test-name-pattern='UI ships the approved Skeleton silhouette utilities with the canonical v0.2 pulse' scripts/package-exports.test.mjs`: RED, one failure identifying the additional Input/Textarea selector; GREEN, one passing test including both negative regressions.
+- `pnpm test:package-exports`: 29 passed; 62 reachable declaration files.
+
+The existing parent-built artifact was used without rebuilding. Full gates and packed consumers after this correction remain parent-owned; no new browser verification is claimed.
 
 ## Deferred browser review
 
