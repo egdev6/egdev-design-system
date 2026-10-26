@@ -49,6 +49,10 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/atoms/toggle/types.ts#ToggleProps'
   })),
+  ...['initial-uncontrolled-pressed', 'leading-icon', 'pressed-change', 'pressed-state'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/chip/types.ts#ChipProps'
+  })),
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
   { conventionId: 'files-received', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
@@ -59,6 +63,10 @@ const postReceiptUsages = [
   { conventionId: 'transient-highlight', source: 'packages/ui/src/atoms/stat/types.ts#StatProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/stat/types.ts#StatProps' },
   { conventionId: 'unavailable-measurement-message', source: 'packages/ui/src/atoms/stat/types.ts#StatProps' },
+  ...['accessible-name', 'keyboard-shortcut-hint', 'compact-presentation'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/search-trigger/types.ts#SearchTriggerProps'
+  })),
   {
     conventionId: 'aspect-ratio',
     source: 'packages/ui/src/primitives/aspect-ratio/types.ts#AspectRatioProps'

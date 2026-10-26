@@ -684,6 +684,16 @@
         }
       },
       {
+        "component": "SearchTrigger",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/search-trigger/types.ts",
+          "symbol": "SearchTriggerProps",
+          "revision": "sha256:31b3eff9676b1a6646a39ed20eea22a30df4fa29741bae5d38bd89434b7d95fc"
+        }
+      },
+      {
         "component": "Stat",
         "type": "string (visible label and group name)",
         "status": "existing",
@@ -1020,6 +1030,16 @@
           "symbol": "InputProps",
           "revision": "sha256:e972763e1f269e87d3b1306727a45e576aaaa1497833f48447af9fc86f7d182f"
         }
+      },
+      {
+        "component": "Chip",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/chip/types.ts",
+          "symbol": "ChipProps",
+          "revision": "sha256:c44e0513a5421d113afbb1efd7a4125ce05554770e08b6dff5cdeee3fa4961a7"
+        }
       }
     ]
   },
@@ -1235,6 +1255,16 @@
           "symbol": "ToggleProps",
           "revision": "sha256:6d0eec4fa75b1a67f055c67133945f948ab134db3a33589255414dfb6c006a1a"
         }
+      },
+      {
+        "component": "Chip",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/chip/types.ts",
+          "symbol": "ChipProps",
+          "revision": "sha256:c44e0513a5421d113afbb1efd7a4125ce05554770e08b6dff5cdeee3fa4961a7"
+        }
       }
     ]
   },
@@ -1262,6 +1292,16 @@
           "symbol": "ToggleProps",
           "revision": "sha256:6d0eec4fa75b1a67f055c67133945f948ab134db3a33589255414dfb6c006a1a"
         }
+      },
+      {
+        "component": "Chip",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/chip/types.ts",
+          "symbol": "ChipProps",
+          "revision": "sha256:c44e0513a5421d113afbb1efd7a4125ce05554770e08b6dff5cdeee3fa4961a7"
+        }
       }
     ]
   },
@@ -1288,6 +1328,16 @@
           "path": "packages/ui/src/atoms/toggle/types.ts",
           "symbol": "ToggleProps",
           "revision": "sha256:6d0eec4fa75b1a67f055c67133945f948ab134db3a33589255414dfb6c006a1a"
+        }
+      },
+      {
+        "component": "Chip",
+        "type": "(pressed: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/chip/types.ts",
+          "symbol": "ChipProps",
+          "revision": "sha256:c44e0513a5421d113afbb1efd7a4125ce05554770e08b6dff5cdeee3fa4961a7"
         }
       }
     ]
@@ -2527,7 +2577,18 @@
       "scope": "convention:keyboard-shortcut-hint",
       "contentHash": "sha256:4f922985284399a34fe26994e80533c2a8db49066e01a3e9d00544c2fbbc1339"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SearchTrigger",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/search-trigger/types.ts",
+          "symbol": "SearchTriggerProps",
+          "revision": "sha256:31b3eff9676b1a6646a39ed20eea22a30df4fa29741bae5d38bd89434b7d95fc"
+        }
+      }
+    ]
   },
   {
     "id": "compact-presentation",
@@ -2543,7 +2604,18 @@
       "scope": "convention:compact-presentation",
       "contentHash": "sha256:e9534ccfb215dce2fbca692466ba2003c296145b07601c31479862833d52387f"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SearchTrigger",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/search-trigger/types.ts",
+          "symbol": "SearchTriggerProps",
+          "revision": "sha256:31b3eff9676b1a6646a39ed20eea22a30df4fa29741bae5d38bd89434b7d95fc"
+        }
+      }
+    ]
   },
   {
     "id": "accent-line-break",

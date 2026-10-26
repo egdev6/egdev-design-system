@@ -168,6 +168,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/badge',
       './atoms/button',
       './atoms/checkbox',
+      './atoms/chip',
       './atoms/dropzone',
       './atoms/gauge',
       './atoms/icon',
@@ -179,6 +180,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/product-mark',
       './atoms/progress-bar',
       './atoms/radio-group',
+      './atoms/search-trigger',
       './atoms/select',
       './atoms/slider',
       './atoms/spinner',
@@ -207,6 +209,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Badge',
       'Button',
       'Checkbox',
+      'Chip',
       'Cluster',
       'Divider',
       'Dropzone',
@@ -223,6 +226,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'ProductMark',
       'ProgressBar',
       'RadioGroup',
+      'SearchTrigger',
       'Select',
       'Skeleton',
       'Slider',
@@ -240,6 +244,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Tooltip',
       'VisuallyHidden',
       'badgeVariants',
+      'chipVariants',
       'cn',
       'dropzoneVariants',
       'labelVariants',
@@ -534,6 +539,62 @@ describe('Storybook TypeScript docgen contract', () => {
       'ConsumerLayout'
     ]);
     expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+  });
+
+  it('extracts SearchTrigger owned metadata and keeps the native button boundary', () => {
+    const file = ast(source('atoms/search-trigger/types.ts'));
+    const properties = ownProps(file, ['SearchTriggerProps']);
+    const expected: Record<string, string> = { label: 'text', shortcut: 'text', compact: 'boolean' };
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(expected));
+    for (const property of properties) {
+      const controls = ts.getJSDocTags(property).filter((tag) => tag.tagName.text === 'control');
+      expect(controls).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe(expected[property.name.getText(file)]);
+    }
+    const doc = parser
+      .parse(source('atoms/search-trigger/SearchTrigger.tsx'))
+      .find((item) => item.displayName === 'SearchTrigger');
+    expect(doc?.props.label).toMatchObject({ required: false, defaultValue: { value: 'Search…' } });
+    expect(doc?.props.compact).toMatchObject({ required: false, defaultValue: { value: 'false' } });
+    expect(doc?.props.shortcut).toMatchObject({ required: false, defaultValue: null });
+    for (const name of [
+      'id',
+      'disabled',
+      'onClick',
+      'className',
+      'aria-describedby',
+      'aria-keyshortcuts',
+      'aria-haspopup',
+      'aria-expanded',
+      'aria-controls'
+    ]) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'type',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'aria-pressed',
+      'asChild',
+      'onOpen'
+    ]) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const stories = ast(source('atoms/search-trigger/SearchTrigger.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'MacHint',
+      'WindowsHint',
+      'Compact',
+      'CustomLabel',
+      'Disabled',
+      'FullWidth',
+      'Activation'
+    ]);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+    expect(stories.getText()).toMatch(/title: 'Atoms\/SearchTrigger'/);
   });
 
   it('annotates each own VisuallyHidden prop without fabricating a content default', () => {
@@ -2603,4 +2664,69 @@ describe('Slider interactive metadata contract', () => {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);
+});
+
+describe('Chip metadata contract', () => {
+  const chipControls: Record<string, string> = {
+    children: 'false',
+    pressed: 'boolean',
+    defaultPressed: 'boolean',
+    onPressedChange: 'false',
+    icon: 'false',
+    disabled: 'boolean'
+  };
+  const chipDefaults: Record<string, string> = { defaultPressed: 'false', disabled: 'false' };
+
+  it('annotates every own prop with one control, concrete reasons and only actual constant defaults', () => {
+    const file = ast(source('atoms/chip/types.ts'));
+    const properties = ownProps(file, ['ChipProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(chipControls));
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(Boolean(property.questionToken), `Chip.${name} optionality`).toBe(name !== 'children');
+      const tags = ts.getJSDocTags(property);
+      const values = (tagName: string) =>
+        tags.filter((tag) => tag.tagName.text === tagName).map((tag) => ts.getTextOfJSDocComment(tag.comment));
+      expect(values('control'), `Chip.${name} control`).toEqual([chipControls[name]]);
+      expect(values('default'), `Chip.${name} default`).toEqual(chipDefaults[name] ? [chipDefaults[name]] : []);
+      if (chipControls[name] === 'false') {
+        expect(values('controlReason')[0], `Chip.${name} reason`).toMatch(/Non-serializable.*stor(?:y|ies)\.$/);
+      }
+    }
+  });
+
+  it('binds the documented defaults to the hook and Radix', () => {
+    expect(defaults(source('atoms/chip/useChip.ts'), false)).toEqual({ defaultPressed: 'false' });
+  });
+
+  it('extracts own rows, real defaults and only the documented native rows', () => {
+    const doc = parser.parse(source('atoms/chip/Chip.tsx')).find((item) => item.displayName === 'Chip');
+    if (!doc) {
+      throw new Error('Missing docgen for Chip');
+    }
+    const { props } = doc;
+    for (const [prop, control] of Object.entries(chipControls)) {
+      expect(props[prop], `Chip.${prop}`).toMatchObject({ required: prop === 'children', tags: { control } });
+      expect(normalize(props[prop]?.defaultValue?.value ?? ''), `Chip.${prop} default`).toBe(chipDefaults[prop] ?? '');
+    }
+    for (const prop of ['pressed', 'defaultPressed', 'disabled']) {
+      expect(props[prop]?.type.name, prop).toBe('boolean');
+    }
+    expect(Object.keys(props).sort()).toEqual(
+      [...Object.keys(chipControls), 'id', 'title', 'name', 'onClick', 'aria-describedby', 'className'].sort()
+    );
+    for (const prop of ['type', 'value', 'asChild', 'aria-pressed', 'chipVariants', 'chipIconVariants']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+
+  it('exports exactly the contract stories', () => {
+    expect(exportedStoryNames(ast(source('atoms/chip/Chip.stories.tsx')))).toEqual([
+      'Default',
+      'WithIcon',
+      'Pressed',
+      'Controlled',
+      'Disabled'
+    ]);
+  });
 });

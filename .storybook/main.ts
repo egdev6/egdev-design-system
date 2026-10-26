@@ -7,6 +7,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   avatar: ['id', 'title', 'aria-describedby', 'className', 'style'],
   button: ['type', 'disabled', 'onClick', 'id', 'title', 'aria-describedby', 'className', 'name', 'value', 'tabIndex'],
   checkbox: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid', 'className', 'form'],
+  chip: ['id', 'title', 'name', 'onClick', 'aria-describedby', 'className'],
   dropzone: ['id', 'title', 'disabled', 'className', 'aria-describedby', 'onClick'],
   gauge: ['id', 'title', 'aria-describedby', 'className', 'style'],
   divider: ['id', 'title', 'dir', 'aria-label', 'aria-labelledby', 'className', 'style'],
@@ -38,6 +39,18 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   ],
   input: ['id', 'name', 'placeholder', 'disabled', 'readOnly', 'required', 'className'],
   productMark: ['id', 'title', 'className', 'target', 'rel'],
+  searchTrigger: [
+    'id',
+    'title',
+    'disabled',
+    'onClick',
+    'aria-describedby',
+    'aria-keyshortcuts',
+    'aria-haspopup',
+    'aria-expanded',
+    'aria-controls',
+    'className'
+  ],
   select: [
     'id',
     'title',
