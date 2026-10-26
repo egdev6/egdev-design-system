@@ -16,7 +16,8 @@ const components = [
   ['Stack', 'primitives/stack'],
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
-  ['Spinner', 'atoms/spinner']
+  ['Spinner', 'atoms/spinner'],
+  ['StatusDot', 'atoms/status-dot']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -74,6 +75,7 @@ const expected: Record<string, Record<string, string | false>> = {
   visuallyhidden: { children: false, asChild: 'boolean' },
   skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
   spinner: { label: 'text', size: 'select' },
+  statusdot: { state: 'select', pulse: 'boolean' },
   gauge: {
     label: 'text',
     value: 'number',
@@ -90,6 +92,7 @@ const ownPropCounts: Record<string, number> = {
   gauge: 8,
   skeleton: 3,
   spinner: 2,
+  statusdot: 2,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4
@@ -288,7 +291,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
-    ['Spinner', { size: '"md"' }]
+    ['Spinner', { size: '"md"' }],
+    ['StatusDot', { state: '"stopped"', pulse: 'true' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
     const { argTypes, args } = story(name);
     for (const [prop, summary] of Object.entries(defaults)) {
@@ -408,6 +412,29 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Spinner', false).argTypes[prop]);
     }
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains StatusDot state/pulse rows, the seven state choices and decorative native rows', () => {
+    const { argTypes } = story('StatusDot');
+    expect([...(argTypes.state?.options ?? [])].sort()).toEqual([
+      'error',
+      'idle',
+      'live',
+      'running',
+      'standby',
+      'stopped',
+      'warning'
+    ]);
+    expect(argTypes.state?.type).toMatchObject({ name: 'enum', required: false });
+    expect(argTypes.state?.control).toEqual({ type: 'select' });
+    expect(argTypes.pulse?.type).toMatchObject({ name: 'boolean', required: false });
+    expect(argTypes.pulse?.control).toEqual({ type: 'boolean' });
+    for (const prop of ['id', 'title', 'className', 'style']) {
+      expect(argTypes[prop], prop).toEqual(story('StatusDot', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-label', 'aria-labelledby']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

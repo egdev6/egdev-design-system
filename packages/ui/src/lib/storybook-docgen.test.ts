@@ -129,6 +129,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect([...new Set(modules)].sort()).toEqual([
       './atoms/gauge',
       './atoms/spinner',
+      './atoms/status-dot',
       './lib/cn',
       './primitives/aspect-ratio',
       './primitives/divider',
@@ -152,9 +153,11 @@ describe('Storybook TypeScript docgen contract', () => {
       'Slottable',
       'Spinner',
       'Stack',
+      'StatusDot',
       'VisuallyHidden',
       'cn',
-      'labelVariants'
+      'labelVariants',
+      'statusDotVariants'
     ]);
   });
 
@@ -684,6 +687,87 @@ describe('Spinner passive metadata contract', () => {
       expect(props[prop], `Spinner native ${prop} must remain available in autodocs`).toBeDefined();
     }
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live', 'tone', 'color']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('StatusDot decorative metadata contract', () => {
+  it('keeps the state union and annotates exactly state (select) and pulse (boolean)', () => {
+    const file = ast(source('atoms/status-dot/types.ts'));
+    const alias = file.statements.find(
+      (node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'StatusDotState'
+    );
+    expect(alias && ts.isTypeAliasDeclaration(alias) ? alias.type.getText(file) : undefined).toBe(
+      "'running' | 'idle' | 'warning' | 'error' | 'stopped' | 'live' | 'standby'"
+    );
+    const properties = ownProps(file, ['StatusDotProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['state', 'pulse']);
+    const expectedTags: Record<string, [string, string]> = { state: ['select', 'stopped'], pulse: ['boolean', 'true'] };
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(property.questionToken, `StatusDot.${name} stays optional`).toBeTruthy();
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `StatusDot.${name} control`).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe(expectedTags[name]?.[0]);
+      const defaultTag = tags.find((tag) => tag.tagName.text === 'default');
+      expect(ts.getTextOfJSDocComment(defaultTag?.comment)).toBe(expectedTags[name]?.[1]);
+    }
+  });
+
+  it('omits exactly the contract-owned span props and exposes no ref or asChild', () => {
+    const file = ast(source('atoms/status-dot/types.ts'));
+    const alias = file.statements.find(
+      (node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'StatusDotProps'
+    );
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing StatusDotProps declaration');
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const union = node.typeArguments[1];
+        if (union && ts.isUnionTypeNode(union)) {
+          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual(['children', 'role', 'aria-hidden', 'aria-label', 'aria-labelledby']);
+    expect(alias.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild/);
+  });
+
+  it('binds the CVA and hook defaults to the documented stopped state with pulse on', () => {
+    expect(defaults(source('atoms/status-dot/types.ts'), true)).toEqual({ state: 'stopped', pulse: 'true' });
+    expect(defaults(source('atoms/status-dot/useStatusDot.ts'), false)).toEqual({ state: 'stopped', pulse: 'true' });
+  });
+
+  it('extracts optional state/pulse, the state choices, real defaults and documented native rows', () => {
+    const doc = parser.parse(source('atoms/status-dot/StatusDot.tsx')).find((item) => item.displayName === 'StatusDot');
+    if (!doc) {
+      throw new Error('Missing docgen for StatusDot');
+    }
+    const { props } = doc;
+    expect(props.state).toMatchObject({ required: false, tags: { control: 'select' } });
+    expect(props.state?.type.value?.map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
+      'error',
+      'idle',
+      'live',
+      'running',
+      'standby',
+      'stopped',
+      'warning'
+    ]);
+    expect(normalize(props.state?.defaultValue?.value)).toBe('stopped');
+    expect(props.pulse).toMatchObject({ required: false, tags: { control: 'boolean' } });
+    expect(normalize(props.pulse?.defaultValue?.value)).toBe('true');
+    expect(props.pulse?.description).toMatch(/no effect on status states.*reduced-motion/s);
+    for (const prop of ['id', 'title', 'className', 'style']) {
+      expect(props[prop], `StatusDot native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-label', 'aria-labelledby', 'ring']) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);

@@ -1,6 +1,7 @@
 // Atoms
 export * from './atoms/gauge';
 export * from './atoms/spinner';
+export * from './atoms/status-dot';
 // Utilities
 export { cn } from './lib/cn';
 // Primitives
