@@ -49,6 +49,10 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/atoms/toggle/types.ts#ToggleProps'
   })),
+  ...['initial-uncontrolled-pressed', 'leading-icon', 'pressed-change', 'pressed-state'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/chip/types.ts#ChipProps'
+  })),
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
   { conventionId: 'files-received', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
