@@ -1,0 +1,89 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "sourceRegistry": "skills/_shared/prop-naming.json",
+  "decision": "Permit required decorative ReactElement content named icon only for IconButton, named separately by required label. No other component gains permission.",
+  "evidence": {
+    "channel": "Interactive owner choice forwarded in the parent task",
+    "ownerChoice": "Aprobar excepción para IconButton",
+    "question": "Approve an IconButton-only semantic exception for its required icon prop?",
+    "interpretation": "Assistant record of forwarded explicit interactive owner selection, not native, signed, independent or per-payload serialized review. Hashes bind recorded content, not proof of consent. Toggle and Button approvals are separate and are not authority for this amendment."
+  },
+  "limits": [
+    "Only IconButton.icon: required decorative ReactElement, named separately by required label.",
+    "All other components retain the previous leading-icon restrictions. No general icon-only, trailing-icon or interactive-icon permission.",
+    "The exceptions array only represents alternative prop names; this same-name semantic exception uses a bounded semantic amendment.",
+    "Historical receipts and hashes remain immutable. Full-contract approval and the separately parent-approved bounded implementation plan remain distinct."
+  ],
+  "priorReceipts": [
+    {
+      "path": "docs/decisions/prop-naming-gauge-approval.json",
+      "wholeFileSHA256": "sha256:97374db3519c5cd1b0c7c05e5c73974138c47ce38c4326e702f613f800b69911"
+    },
+    {
+      "path": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "wholeFileSHA256": "sha256:a615c560018e7d142a9e627d85ba101c57c35a5289abf2fa48bf1cec0b69903b"
+    },
+    {
+      "path": "docs/decisions/prop-naming-ambient-background-approval.json",
+      "wholeFileSHA256": "sha256:bf7574a50d0d52f0bc2fc2a2c224d200b0dd84537c3ec565f193b3cd93190e71"
+    },
+    {
+      "path": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "wholeFileSHA256": "sha256:2ef1fd8192f5004da741b83570a08b4a2e517cee6e714cd6154e37d67b53e838"
+    },
+    {
+      "path": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "wholeFileSHA256": "sha256:c8bdcbb7e3ef9ef2621440b97128b8468b7c5f10b2e5e9b2de528abee4d9dea4"
+    },
+    {
+      "path": "docs/decisions/prop-naming-template-specs-approval.json",
+      "wholeFileSHA256": "sha256:4bf0cffbbb2403aedd4830b4983519c863ebd851705f7050f4b7f104327a550a"
+    },
+    {
+      "path": "docs/decisions/prop-naming-isotipo3d-approval.json",
+      "wholeFileSHA256": "sha256:7b2518dfd984374f3eb2b632040ff4faab8015c42be4617c26ed03803e338b60"
+    },
+    {
+      "path": "docs/decisions/prop-naming-skeleton-v0.2-approval.json",
+      "wholeFileSHA256": "sha256:240998bec68a5603cb3fbe4300dcc1862e812cb48b6b0bd5ffbec18d17d4b321"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [
+    {
+      "id": "leading-icon",
+      "previousReference": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "previousContentHash": "sha256:b680df32f87ea2cd2592faa56782bb458d91a8a941b413e7740121f84954e5dd",
+      "changedFields": ["meaning", "whenToUse", "avoid"],
+      "before": {
+        "meaning": "Optional decorative icon rendered beside a component's text label (before it by default) and hidden from assistive technology.",
+        "whenToUse": "A labelled component offers a leading pictogram that repeats or decorates meaning already present in its text.",
+        "avoid": "Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning."
+      },
+      "after": {
+        "meaning": "Optional decorative icon rendered beside a component's text label (before it by default) and hidden from assistive technology. IconButton alone requires one decorative ReactElement icon, named separately by its required label.",
+        "whenToUse": "A labelled component offers a leading pictogram that repeats or decorates meaning already present in its text. IconButton alone also permits required decorative icon-only content with a separate required label.",
+        "avoid": "Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning. The icon-only exclusion has one exception: IconButton.icon with required label; no other component gains icon-only permission."
+      },
+      "boundary": "IconButton only. Canonical name, aliases, exceptions and status are unchanged. Button and Toggle grants must remain independently recoverable; no global widening."
+    }
+  ],
+  "entries": [
+    {
+      "scope": "convention:leading-icon",
+      "contentHash": "sha256:29561623f1153d6b3eeaf4b5ca560059d3ee442d6ef3e23088d2978effe9367a",
+      "convention": {
+        "id": "leading-icon",
+        "name": "icon",
+        "meaning": "Optional decorative icon rendered beside a component's text label (before it by default) and hidden from assistive technology. IconButton alone requires one decorative ReactElement icon, named separately by its required label.",
+        "whenToUse": "A labelled component offers a leading pictogram that repeats or decorates meaning already present in its text. IconButton alone also permits required decorative icon-only content with a separate required label.",
+        "avoid": "Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning. The icon-only exclusion has one exception: IconButton.icon with required label; no other component gains icon-only permission.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

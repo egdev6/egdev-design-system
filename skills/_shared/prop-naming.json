@@ -122,6 +122,16 @@
           "symbol": "LogoProps",
           "revision": "sha256:c94a94db17133bd7b28dcd8763fdf00f40fb788379f2074432599c68c5a1ba31"
         }
+      },
+      {
+        "component": "IconButton",
+        "type": "IconButtonSize ('sm' | 'md' | 'lg')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon-button/types.ts",
+          "symbol": "IconButtonProps",
+          "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
+        }
       }
     ]
   },
@@ -188,6 +198,16 @@
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
           "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
+        }
+      },
+      {
+        "component": "IconButton",
+        "type": "IconButtonVariant ('ghost' | 'outline' | 'primary' | 'secondary')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon-button/types.ts",
+          "symbol": "IconButtonProps",
+          "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
         }
       }
     ]
@@ -339,6 +359,16 @@
           "path": "packages/ui/src/atoms/product-mark/types.ts",
           "symbol": "ProductMarkProps",
           "revision": "sha256:91de5ae435b6a408065592d3b7b44085021c71a15230c868081efddb48d2a8c4"
+        }
+      },
+      {
+        "component": "IconButton",
+        "type": "string (required non-empty accessible name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon-button/types.ts",
+          "symbol": "IconButtonProps",
+          "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
         }
       }
     ]
@@ -555,18 +585,29 @@
   {
     "id": "leading-icon",
     "name": "icon",
-    "meaning": "Optional decorative icon rendered beside a component's text label (before it by default) and hidden from assistive technology.",
-    "whenToUse": "A labelled component offers a leading pictogram that repeats or decorates meaning already present in its text.",
-    "avoid": "Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning.",
+    "meaning": "Optional decorative icon rendered beside a component's text label (before it by default) and hidden from assistive technology. IconButton alone requires one decorative ReactElement icon, named separately by its required label.",
+    "whenToUse": "A labelled component offers a leading pictogram that repeats or decorates meaning already present in its text. IconButton alone also permits required decorative icon-only content with a separate required label.",
+    "avoid": "Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning. The icon-only exclusion has one exception: IconButton.icon with required label; no other component gains icon-only permission.",
     "status": "approved",
     "approval": {
-      "reference": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "reference": "docs/components/icon-button/v0.1/prop-naming-approval.json",
       "scope": "convention:leading-icon",
-      "contentHash": "sha256:b680df32f87ea2cd2592faa56782bb458d91a8a941b413e7740121f84954e5dd"
+      "contentHash": "sha256:29561623f1153d6b3eeaf4b5ca560059d3ee442d6ef3e23088d2978effe9367a"
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "IconButton",
+        "type": "ReactElement (required decorative icon, separately named by required label)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon-button/types.ts",
+          "symbol": "IconButtonProps",
+          "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
+        }
+      }
+    ]
   },
   {
     "id": "icon-placement",
@@ -663,6 +704,16 @@
           "path": "packages/ui/src/primitives/surface/types.ts",
           "symbol": "SurfaceProps",
           "revision": "sha256:26d0726b5034dceb74e0067c1c0df5108d351e948205bbf22b5e187b92d9c0b6"
+        }
+      },
+      {
+        "component": "IconButton",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon-button/types.ts",
+          "symbol": "IconButtonProps",
+          "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
         }
       }
     ]
