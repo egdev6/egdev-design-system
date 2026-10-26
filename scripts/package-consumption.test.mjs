@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Badge, Cluster, Divider, Gauge, Heading, Icon, Input, Kbd, Label, Logo, ProductMark, ProgressBar, RadioGroup, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Tooltip, VisuallyHidden, badgeVariants, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Badge, Cluster, Divider, Gauge, Heading, Icon, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, RadioGroup, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Tooltip, VisuallyHidden, badgeVariants, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   BadgeProps,
@@ -51,6 +51,7 @@ import type {
   KbdProps,
   LabelProps,
   LabelVariant,
+  LinkProps,
   SliderProps,
   LogoProps,
   LogoSize,
@@ -212,6 +213,34 @@ export function KbdSamples() {
     createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
     createElement(Kbd, kbdNative));
 }
+export const linkNativeRef = createRef<HTMLAnchorElement>();
+export const linkSlotRef = createRef<HTMLAnchorElement>();
+export const linkChildRef = createRef<HTMLAnchorElement>();
+const RouterLink = forwardRef<HTMLAnchorElement, ComponentPropsWithoutRef<'a'>>((props, ref) =>
+  createElement('a', { ...props, ref })
+);
+export const linkDefaults: LinkProps = { href: '#docs', children: 'Documentation' };
+export function LinkSamples({ external = true }: { external?: boolean }) {
+  return createElement('section', { 'aria-label': 'Text navigation' },
+    createElement(Link, { ...linkDefaults, id: 'link-native', ref: linkNativeRef, className: 'mt-2 mt-4 self-start' }),
+    createElement(Link, { href: '#external', external, rel: 'author noopener', id: 'link-external', children: 'Repository' }),
+    createElement(Link, { href: '#legal', arrow: false, id: 'link-plain', children: 'Legal information' }),
+    createElement(Link, { asChild: true, external, rel: 'author', ref: linkSlotRef, newTabText: '(new window)',
+      children: createElement(RouterLink, { href: '#router', id: 'link-router', ref: linkChildRef, target: '_self', rel: 'help' }, 'Router documentation') }));
+}
+// @ts-expect-error A native link requires its destination.
+const missingLinkDestination: LinkProps = { children: 'Docs' };
+// @ts-expect-error asChild delegates href to the child, never to Link.
+const slottedLinkDestination: LinkProps = { asChild: true, href: '#docs', children: createElement('a', { href: '#docs' }) };
+// @ts-expect-error Descriptive children remain required.
+const missingLinkContent: LinkProps = { href: '#docs' };
+// @ts-expect-error Disabled links are not supported; use plain text without a destination.
+const disabledLink: LinkProps = { href: '#docs', children: 'Docs', disabled: true };
+// @ts-expect-error Link v0.1 has no visual variants.
+const variantLink: LinkProps = { href: '#docs', children: 'Docs', variant: 'primary' };
+// @ts-expect-error The public ref is an anchor ref, never a button ref.
+const wrongLinkRef: ComponentProps<typeof Link> = { href: '#docs', children: 'Docs', ref: createRef<HTMLButtonElement>() };
+
 const badgeTones: BadgeTone[] = ['neutral', 'info', 'success', 'warning', 'danger', 'brand'];
 const badgeTreatments: BadgeVariant[] = ['soft', 'solid'];
 export const badgeDefaults: BadgeProps = { children: 'Draft' };
@@ -488,7 +517,7 @@ export function DividerSamples({ semantic }: { semantic?: boolean }) {
       ? { orientation: dividerOrientation, decorative: false, className: 'consumer-rule' }
       : { className: 'consumer-rule' }));
 }
-export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, headingLevel, iconName, spinnerLoading, statusDotPulse, inputValue, progressValue }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; headingLevel?: HeadingLevel; iconName?: IconName; spinnerLoading?: boolean; statusDotPulse?: boolean; inputValue?: string; progressValue?: number } = {}) {
+export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, headingLevel, iconName, spinnerLoading, linkExternal, statusDotPulse, inputValue, progressValue }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; headingLevel?: HeadingLevel; iconName?: IconName; spinnerLoading?: boolean; linkExternal?: boolean; statusDotPulse?: boolean; inputValue?: string; progressValue?: number } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
@@ -506,6 +535,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(StatusDotSamples, { pulse: statusDotPulse }),
     createElement(KbdSamples),
+    createElement(LinkSamples, { external: linkExternal }),
     createElement(BadgeSamples),
     createElement(SliderSamples),
     createElement(ProgressBarSamples, { value: progressValue }),
@@ -1604,6 +1634,8 @@ for (const utility of ['.text-title-section', '.text-title-hero', '.text-title-s
 assert.doesNotMatch(shippedStyles, /\\.eg-(?:text|heading)\\s*[,{]/, 'Text/Heading markers must not become shipped CSS rules');
 ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(shippedStyles);
+${assertLinkCSS.toString()}
+assertLinkCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AspectRatio',
   'Badge',
@@ -1615,6 +1647,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Input',
   'Kbd',
   'Label',
+  'Link',
   'Logo',
   'Portal',
   'ProductMark',
@@ -1696,6 +1729,39 @@ for (const source of map.sources) {
 }
 console.log(JSON.stringify({ ui: ui.version, react: (await import('react')).version, dedup: ['react', 'react-dom'], externalReact: true }));
 `;
+
+function assertLinkCSS(css) {
+  for (const selector of [
+    '.border-b',
+    '.border-border-brand',
+    '.text-label-default',
+    '.no-underline',
+    '.cursor-pointer',
+    '.transform-none',
+    String.raw`.pb-0\.5`,
+    String.raw`.transition-\[border-color\,color\]`,
+    String.raw`.transition-\[translate\]`,
+    String.raw`.duration-\(--duration-fast\)`,
+    String.raw`.duration-\(--duration-base\)`,
+    String.raw`.hover\:border-fg-brand-default`,
+    String.raw`.hover\:text-primitive-red-200`,
+    String.raw`.group-hover\/link\:translate-x-0\.5`,
+    String.raw`.group-hover\/link\:-translate-y-0\.5`,
+    String.raw`.motion-reduce\:translate-none`,
+    String.raw`.motion-reduce\:transition-none`,
+    String.raw`.focus-visible\:\[box-shadow\:var\(--shadow-focus\)\]`,
+    String.raw`.focus-visible\:rounded-sm`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Link utility ' + selector);
+  }
+  assert.match(css, /\.transform-none\s*\{[^}]*transform:\s*none/);
+  assert.match(css, /translate:\s*var\(--tw-translate-x\) var\(--tw-translate-y\)/);
+  assert.match(css, /transition-property:\s*border-color,\s*color/);
+  assert.match(css, /transition-property:\s*translate/);
+  assert.match(css, /transition-duration:\s*var\(--duration-fast\)/);
+  assert.match(css, /transition-duration:\s*var\(--duration-base\)/);
+  assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);
+}
 
 const ssr = `
 import assert from 'node:assert/strict';
@@ -1848,6 +1914,26 @@ for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"',
 const dom = new JSDOM(html);
 try {
   const document = dom.window.document;
+  const link = document.getElementById('link-native');
+  assert.equal(link.tagName, 'A');
+  assert.equal(link.getAttribute('href'), '#docs');
+  assert.ok(link.classList.contains('eg-link') && link.classList.contains('mt-4') && !link.classList.contains('mt-2'));
+  assert.equal(link.textContent, 'Documentation');
+  assert.equal(link.querySelector('svg').getAttribute('aria-hidden'), 'true');
+  assert.ok(link.querySelector('svg').classList.contains('size-4'));
+  assert.ok(link.querySelector('svg').classList.contains('transform-none'));
+  assert.ok(document.getElementById('link-plain').querySelector('svg') === null);
+  for (const id of ['link-external', 'link-router']) {
+    const external = document.getElementById(id);
+    assert.equal(external.tagName, 'A');
+    assert.equal(external.getAttribute('target'), '_blank');
+    assert.ok(external.rel.split(' ').includes('noopener') && external.rel.split(' ').includes('noreferrer'));
+    assert.ok(external.rel.split(' ').includes('author'));
+    assert.equal(external.querySelector('span').style.position, 'absolute');
+    assert.equal(external.querySelector('span').textContent, id === 'link-router' ? '(new window)' : '(opens in a new tab)');
+    assert.ok(external.querySelector('svg').innerHTML.includes('M7 17 17 7'));
+  }
+  assert.equal(document.getElementById('link-router').getAttribute('href'), '#router');
   ${assertBadgeDOM.toString()}
   assertBadgeDOM(document);
   const normal = document.querySelector('.eg-gauge[aria-label="Capacity"]');
@@ -2376,9 +2462,9 @@ globalThis.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
-const { Badge, Icon, Label, Slot, Slottable } = await import('@egdev/ui');
+const { Badge, Icon, Label, Link, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, RadioGroupSamples, SwitchSamples, TooltipSamples, aspectWideRef, hiddenNoteRef, inputChanges, inputRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, tooltipRecipe } = await import('./consumer.ts');
+const { App, RadioGroupSamples, SwitchSamples, TooltipSamples, aspectWideRef, hiddenNoteRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -2664,6 +2750,17 @@ try {
   assert.ok(surfaceCard().classList.contains('border-border-hairline-strong'), 'Elevation 3 must use the strong hairline');
   assert.ok(!surfaceCard().classList.contains('shadow-[var(--shadow-edge),var(--shadow-elev-1)]'), 'The replaced elevation recipe must be gone');
   stage('surface:refs:complete');
+  stage('link:refs:start');
+  assert.ok(linkNativeRef.current === document.getElementById('link-native'), 'Native Link ref targets the anchor');
+  assert.ok(linkSlotRef.current === document.getElementById('link-router'), 'Slotted Link ref targets the child anchor');
+  assert.ok(linkChildRef.current === linkSlotRef.current, 'Link and child refs compose on the same anchor');
+  await act(async () => root.render(createElement(App, { linkExternal: false })));
+  assert.equal(document.getElementById('link-external').hasAttribute('target'), false);
+  assert.ok(document.getElementById('link-external').querySelector('span') === null);
+  assert.equal(document.getElementById('link-router').getAttribute('target'), '_self');
+  assert.equal(document.getElementById('link-router').getAttribute('rel'), 'help');
+  assert.ok(document.getElementById('link-router').querySelector('span') === null);
+  stage('link:refs:complete');
   console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery'] }));
   const slotRef = createRef();
   const childRef = createRef();
@@ -2686,6 +2783,30 @@ try {
   await act(async () => root.render(null));
   assert.ok(slotRef.current === null, 'Slot ref must be cleaned up on unmount');
   assert.ok(childRef.current === null, 'Child ref must be cleaned up on unmount');
+  assert.ok(linkNativeRef.current === null && linkSlotRef.current === null && linkChildRef.current === null, 'All Link refs clean up when App unmounts');
+  const nativeLinkRef = createRef();
+  const slottedLinkRef = createRef();
+  const linkEvents = [];
+  await act(async () => root.render(createElement(Link, { href: '#native', ref: nativeLinkRef,
+    onClick: (event) => { event.preventDefault(); linkEvents.push('native'); } }, 'Native docs')));
+  const nativeLink = document.querySelector('a');
+  assert.ok(nativeLinkRef.current === nativeLink);
+  nativeLink.focus();
+  assert.ok(document.activeElement === nativeLink, 'Native Link can receive focus');
+  await act(async () => nativeLink.click());
+  assert.deepEqual(linkEvents, ['native']);
+  await act(async () => root.render(createElement(Link, { asChild: true, external: true, ref: slottedLinkRef,
+    onClick: () => linkEvents.push('parent'), children: createElement('a', {
+      href: '#router', target: '_self', rel: 'help', onClick: (event) => { event.preventDefault(); linkEvents.push('child'); }
+    }, 'Router docs') })));
+  const routerLink = document.querySelector('a');
+  assert.ok(slottedLinkRef.current === routerLink);
+  assert.equal(routerLink.getAttribute('target'), '_blank');
+  assert.equal(routerLink.getAttribute('rel'), 'help noopener noreferrer');
+  await act(async () => routerLink.click());
+  assert.deepEqual(linkEvents, ['native', 'child', 'parent']);
+  await act(async () => root.render(null));
+  assert.ok(nativeLinkRef.current === null && slottedLinkRef.current === null, 'Native and slotted Link refs clean up');
   stage('tooltip:focus:start');
   await act(async () => root.render(createElement(TooltipSamples)));
   const tooltipTrigger = document.getElementById('tooltip-search');
@@ -2807,7 +2928,7 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Tooltip focus, Escape, portal and unmount', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Tooltip focus, Escape, portal and unmount', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -2931,6 +3052,8 @@ ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(emitted);
+${assertLinkCSS.toString()}
+assertLinkCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
 const shipped = readFileSync(new URL('./node_modules/@egdev/tokens/dist/tokens.css', import.meta.url), 'utf8');
 const names = shipped
@@ -2984,6 +3107,7 @@ for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
 assertSurfaceCSS(twCss);
+assertLinkCSS(twCss);
 assertLabelCSS(twCss);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) {
   assert.ok(twCss.includes(selector), 'Tailwind consumer must retain shipped UI selector ' + selector);

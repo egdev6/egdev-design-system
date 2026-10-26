@@ -96,6 +96,10 @@ const postReceiptUsages = [
   },
   { conventionId: 'signal-pulse', source: 'packages/ui/src/atoms/status-dot/types.ts#StatusDotProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/kbd/types.ts#KbdProps' },
+  { conventionId: 'slot-composition', source: 'packages/ui/src/atoms/link/types.ts#LinkProps' },
+  { conventionId: 'new-tab-navigation', source: 'packages/ui/src/atoms/link/types.ts#LinkProps' },
+  { conventionId: 'new-tab-notice', source: 'packages/ui/src/atoms/link/types.ts#LinkProps' },
+  { conventionId: 'trailing-arrow', source: 'packages/ui/src/atoms/link/types.ts#LinkProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/product-mark/types.ts#ProductMarkProps' },
   { conventionId: 'brand-monogram', source: 'packages/ui/src/atoms/product-mark/types.ts#ProductMarkProps' }
 ];

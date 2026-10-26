@@ -46,7 +46,7 @@ function cssBlock(css, opening) {
 
 // Match escaped emitted selectors, not unescaped CVA class names; allow only complete approved utilities.
 const unapprovedTransitionUtility =
-  /\.transition-(?!(?:none|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[translate\\,background-color\\\])(?=\s*\{))[\w\\]/;
+  /\.transition-(?!(?:none|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\])(?=\s*\{))[\w\\]/;
 
 test('transition utility guard accepts only the exact approved emitted selectors', () => {
   for (const selector of [
@@ -57,6 +57,8 @@ test('transition utility guard accepts only the exact approved emitted selectors
     String.raw`.transition-\[background-color\,border-color\]`,
     String.raw`.transition-\[border-color\,box-shadow\]`,
     String.raw`.transition-\[translate\,background-color\]`,
+    String.raw`.transition-\[border-color\,color\]`,
+    String.raw`.transition-\[translate\]`,
     String.raw`.motion-reduce\:transition-none`
   ]) {
     assert.doesNotMatch(`${selector} { transition-property: none; }`, unapprovedTransitionUtility, selector);
@@ -76,7 +78,11 @@ test('transition utility guard rejects unrelated named and arbitrary transitions
     String.raw`.transition-\[background-color\,border-color\,opacity\]`,
     String.raw`.transition-\[border-color\,box-shadow\,opacity\]`,
     String.raw`.transition-\[translate\,background-color\,width\]`,
-    String.raw`.transition-\[translate\,background-color\]extra`
+    String.raw`.transition-\[translate\,background-color\]extra`,
+    String.raw`.transition-\[border-color\,color\,width\]`,
+    String.raw`.transition-\[border-color\,color\]extra`,
+    String.raw`.transition-\[translate\,width\]`,
+    String.raw`.transition-\[translate\]extra`
   ]) {
     assert.throws(
       () => assert.doesNotMatch(`${selector} { transition-property: all; }`, unapprovedTransitionUtility),
@@ -271,7 +277,7 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   // Transitions are limited to none, Tooltip opacity (#75 D10), ProgressBar transform (#65 AC-09),
   // Input/Textarea border-color and box-shadow, Switch track background-color and border-color,
   // and Switch thumb translate and background-color; Slider adds only box-shadow (#68 D8).
-  // None of the animated transitions reach the Skeleton.
+  // Link adds only border-color/color and translate (#61); none reach the Skeleton.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
@@ -899,6 +905,75 @@ test('UI ships the static Icon preset, fill and stroke utilities without an appl
   }
 });
 
+test('UI ships Link token recipes, scoped motion and legacy resets without a new stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  for (const [selector, declaration] of [
+    ['.border-b', /border-bottom-width:\s*1px\s*;/],
+    ['.border-border-brand', /border-color:\s*var\(--color-border-brand[,)]/],
+    [String.raw`.pb-0\.5`, /padding-bottom:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*0\.5\)/],
+    ['.no-underline', /text-decoration-line:\s*none/],
+    ['.cursor-pointer', /cursor:\s*pointer/],
+    ['.transform-none', /transform:\s*none/],
+    [String.raw`.transition-\[border-color\,color\]`, /transition-property:\s*border-color,\s*color/],
+    [String.raw`.transition-\[translate\]`, /transition-property:\s*translate/],
+    [String.raw`.duration-\(--duration-fast\)`, /(?:--tw-duration|transition-duration):\s*var\(--duration-fast\)/],
+    [String.raw`.duration-\(--duration-base\)`, /(?:--tw-duration|transition-duration):\s*var\(--duration-base\)/]
+  ]) {
+    assert.match(rule(selector), declaration, selector);
+  }
+  for (const selector of [
+    String.raw`.hover\:border-fg-brand-default`,
+    String.raw`.hover\:text-primitive-red-200`,
+    String.raw`.group-hover\/link\:translate-x-0\.5`,
+    String.raw`.group-hover\/link\:-translate-y-0\.5`,
+    String.raw`.motion-reduce\:translate-none`,
+    String.raw`.motion-reduce\:transition-none`,
+    String.raw`.focus-visible\:outline-none`,
+    String.raw`.focus-visible\:\[box-shadow\:var\(--shadow-focus\)\]`,
+    String.raw`.focus-visible\:rounded-sm`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing Link utility ${selector}`);
+  }
+  assert.match(rule(String.raw`.motion-reduce\:translate-none`), /translate:\s*none/);
+  assert.match(rule(String.raw`.motion-reduce\:transition-none`), /transition-property:\s*none/);
+  assert.match(
+    rule(String.raw`.focus-visible\:\[box-shadow\:var\(--shadow-focus\)\]:focus-visible`),
+    /box-shadow:\s*var\(--shadow-focus\)/
+  );
+  const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
+  const markerRules = (text) => (text.replace(/\/\*[\s\S]*?\*\//g, '').match(/\.eg-link[^{]*\{/g) ?? []).length;
+  assert.equal(markerRules(css), markerRules(legacy), 'Link adds no marker stylesheet rules');
+});
+
+test('UI Link exports safe native and slotted navigation with decorative small Icons', async () => {
+  const { Link } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(Link?.$$typeof, Symbol.for('react.forward_ref'));
+  const html = renderToString(createElement(Link, { href: '#docs', external: true, rel: 'author' }, 'Docs'));
+  for (const text of [
+    'eg-link',
+    'text-label-default',
+    'size-4',
+    'aria-hidden="true"',
+    'target="_blank"',
+    'author noopener noreferrer',
+    '(opens in a new tab)'
+  ]) {
+    assert.ok(html.includes(text), `Link SSR must render ${text}`);
+  }
+  const slotted = renderToString(
+    createElement(Link, { asChild: true, arrow: false, children: createElement('a', { href: '#router' }, 'Router') })
+  );
+  assert.match(slotted, /^<a [^>]*href="#router"/);
+  assert.doesNotMatch(slotted, /<svg|asChild=|external=|arrow=/);
+});
+
 test('UI preserves Lucide notices for the system icon paths', () => {
   const notices = readFileSync(resolve(root, 'THIRD_PARTY_NOTICES.md'), 'utf8');
   for (const source of ['packages/ui/src/atoms/icon/icon-paths.ts', 'packages/ui/src/atoms/spinner/Spinner.tsx']) {
@@ -1075,6 +1150,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Input',
       'Kbd',
       'Label',
+      'Link',
       'Logo',
       'Portal',
       'ProductMark',
@@ -1219,6 +1295,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LayoutAlignItems',
     'LayoutGap',
     'LayoutJustifyContent',
+    'Link',
+    'LinkProps',
     'Logo',
     'LogoProps',
     'LogoSize',
@@ -1300,6 +1378,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'IconSize',
     'Kbd',
     'KbdProps',
+    'Link',
+    'LinkProps',
     'ProgressBar',
     'ProgressBarProps',
     'ProgressBarSize',

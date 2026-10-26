@@ -25,6 +25,7 @@ const components = [
   ['RadioGroup', 'atoms/radio-group'],
   ['Input', 'atoms/input'],
   ['Kbd', 'atoms/kbd'],
+  ['Link', 'atoms/link'],
   ['Badge', 'atoms/badge'],
   ['Logo', 'atoms/logo'],
   ['ProductMark', 'atoms/product-mark'],
@@ -112,6 +113,14 @@ const expected: Record<string, Record<string, string | false>> = {
   logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
+  link: {
+    children: false,
+    asChild: 'boolean',
+    href: 'text',
+    external: 'boolean',
+    newTabText: 'text',
+    arrow: 'boolean'
+  },
   slider: {
     label: 'text',
     value: 'number',
@@ -178,6 +187,7 @@ const ownPropCounts: Record<string, number> = {
   logo: 4,
   statusdot: 2,
   kbd: 2,
+  link: 6,
   slider: 11,
   radiogroup: 9,
   switch: 7,
@@ -359,7 +369,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         expect(composed.argTypes[prop]?.type?.name, `${name}.${prop} semantic type`).toBe('string');
       }
     }
-    if (!['VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface'].includes(name)) {
+    if (!['VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface', 'Link'].includes(name)) {
       expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     }
     expect(composed.args).toEqual({});
@@ -399,6 +409,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Icon', { size: '"md"', filled: 'false' }],
     ['Input', { size: '"md"', variant: '"default"', type: '"text"' }],
     ['Spinner', { size: '"md"' }],
+    ['Link', { asChild: 'false', external: 'false', arrow: 'true', newTabText: '"(opens in a new tab)"' }],
     ['Logo', { variant: '"wordmark"', size: '"md"', label: '"egdev"' }],
     ['StatusDot', { state: '"stopped"', pulse: 'true' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
@@ -522,6 +533,23 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
+  });
+
+  it('retains Link union controls, required content, conditional href and native navigation rows', () => {
+    const { argTypes, args } = story('Link');
+    expect(argTypes.children?.type).toMatchObject({ required: true });
+    expect(argTypes.children?.control).toBe(false);
+    expect(argTypes.children?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.href?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.href?.table?.defaultValue).toBeUndefined();
+    for (const prop of ['asChild', 'external', 'arrow']) {
+      expect(argTypes[prop]?.control, prop).toEqual({ type: 'boolean' });
+    }
+    for (const prop of ['id', 'title', 'target', 'rel', 'onClick', 'aria-describedby', 'className', 'style']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Link', false).argTypes[prop]);
+    }
+    expect(args).toEqual({});
   });
 
   it('retains Badge choices, required content and optional icon without fabricated args or defaults', () => {
