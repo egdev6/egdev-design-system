@@ -42,7 +42,13 @@ const postReceiptUsages = [
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
-  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/kbd/types.ts#KbdProps' }
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/kbd/types.ts#KbdProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'choice-options', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'initial-uncontrolled-value', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'interactive-value-change', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'layout-orientation', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' }
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({

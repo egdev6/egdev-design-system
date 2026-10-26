@@ -23,6 +23,16 @@
           "symbol": "GaugeProps",
           "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
         }
+      },
+      {
+        "component": "RadioGroup",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/radio-group/types.ts",
+          "symbol": "RadioGroupProps",
+          "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
+        }
       }
     ]
   },
@@ -40,7 +50,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "RadioGroup",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/radio-group/types.ts",
+          "symbol": "RadioGroupProps",
+          "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
+        }
+      }
+    ]
   },
   {
     "id": "interactive-value-change",
@@ -56,7 +77,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "RadioGroup",
+        "type": "(value: string) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/radio-group/types.ts",
+          "symbol": "RadioGroupProps",
+          "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
+        }
+      }
+    ]
   },
   {
     "id": "preset-dimensions",
@@ -239,6 +271,16 @@
           "path": "packages/ui/src/atoms/kbd/types.ts",
           "symbol": "KbdProps",
           "revision": "sha256:1c6757b44bd0bff150128b8ccd9d4ee6b930b3d432b42a4dafe8c992d63a3de9"
+        }
+      },
+      {
+        "component": "RadioGroup",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/radio-group/types.ts",
+          "symbol": "RadioGroupProps",
+          "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
         }
       }
     ]
@@ -785,7 +827,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "RadioGroup",
+        "type": "RadioGroupOption[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/radio-group/types.ts",
+          "symbol": "RadioGroupProps",
+          "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
+        }
+      }
+    ]
   },
   {
     "id": "layout-orientation",
@@ -810,6 +863,16 @@
           "path": "packages/ui/src/primitives/divider/types.ts",
           "symbol": "DividerProps",
           "revision": "sha256:34e4dece18b59fe810f9bf76aa3d799ee6ae759348776fa1513de7425413d152"
+        }
+      },
+      {
+        "component": "RadioGroup",
+        "type": "RadioGroupOrientation",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/radio-group/types.ts",
+          "symbol": "RadioGroupProps",
+          "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
         }
       }
     ]
