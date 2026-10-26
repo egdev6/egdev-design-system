@@ -141,6 +141,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/slot',
       './primitives/stack',
       './primitives/surface',
+      './primitives/text',
       './primitives/visually-hidden'
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
@@ -148,6 +149,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Cluster',
       'Divider',
       'Gauge',
+      'Heading',
       'Icon',
       'Kbd',
       'Label',
@@ -158,6 +160,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Spinner',
       'Stack',
       'Surface',
+      'Text',
       'VisuallyHidden',
       'cn',
       'labelVariants',
@@ -172,6 +175,8 @@ describe('Storybook TypeScript docgen contract', () => {
       source('primitives/aspect-ratio/AspectRatio.tsx'),
       source('primitives/stack/Stack.tsx'),
       source('primitives/stack/Cluster.tsx'),
+      source('primitives/text/Text.tsx'),
+      source('primitives/text/Heading.tsx'),
       source('primitives/surface/Surface.tsx')
     ]);
   }, 20_000);
@@ -446,6 +451,88 @@ describe('Storybook TypeScript docgen contract', () => {
     }
   });
 
+  it('extracts the real Text and Heading typography contracts with their own defaults', () => {
+    for (const [name, variants, variantDefault, extra] of [
+      ['Text', ['display', 'eyebrow', 'hero', 'inverse', 'section', 'show'], 'eyebrow', 'asChild'],
+      ['Heading', ['display', 'hero', 'inverse', 'section', 'show'], 'section', 'level']
+    ] as const) {
+      const doc = docs.find((item) => item.displayName === name);
+      if (!doc) {
+        throw new Error(`Missing docgen for ${name}`);
+      }
+      const props = doc.props;
+      const values = (prop: string) =>
+        (props[prop]?.type.value ?? []).map((item: { value: string }) => normalize(item.value)).sort();
+      expect(props.variant?.type.name).toBe('enum');
+      expect(values('variant')).toEqual(variants);
+      expect(normalize(props.variant?.defaultValue?.value)).toBe(variantDefault);
+      expect(values('tone')).toEqual(['canvas', 'raised']);
+      expect(normalize(props.tone?.defaultValue?.value)).toBe('canvas');
+      expect(props.accent?.type.name).toBe('string');
+      expect(props.accent?.defaultValue, `${name}.accent absence is described, not a fixed default`).toBeNull();
+      expect(props.accent?.description).toMatch(/whitespace-only text renders no\s+accent/);
+      expect(normalize(props.accentBreak?.defaultValue?.value)).toBe('true');
+      expect(props.children?.required, `${name}.children must stay required`).toBe(true);
+      expect(props.children?.defaultValue).toBeNull();
+      expect(props.children?.tags).toMatchObject({ control: 'false' });
+      expect(props[extra], `${name}.${extra}`).toBeDefined();
+      for (const prop of ['id', 'title', 'aria-describedby', 'className']) {
+        expect.soft(props[prop]?.type.name, `${name} native ${prop} must remain in autodocs`).toBe('string');
+      }
+      for (const prop of ['role', 'dangerouslySetInnerHTML', 'aria-level', 'ref', 'tabIndex']) {
+        expect(props[prop], `${name} must not document ${prop}`).toBeUndefined();
+      }
+    }
+    const heading = docs.find((item) => item.displayName === 'Heading')?.props;
+    expect(heading?.asChild).toBeUndefined();
+    expect((heading?.level?.type.value ?? []).map((item: { value: string }) => item.value)).toEqual([
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6'
+    ]);
+    expect(normalize(heading?.level?.defaultValue?.value)).toBe('2');
+    expect(docs.find((item) => item.displayName === 'Text')?.props.level).toBeUndefined();
+  });
+
+  it('annotates every Text and Heading own declaration, including each union branch', () => {
+    const file = ast(source('primitives/text/types.ts'));
+    const properties = ownProps(file, [
+      'TitleAccentProps',
+      'TextVisualProps',
+      'HeadingVisualProps',
+      'TextProps',
+      'HeadingProps'
+    ]);
+    const allowed: Record<string, string> = {
+      variant: 'select',
+      tone: 'select',
+      accent: 'text',
+      accentBreak: 'boolean',
+      asChild: 'boolean',
+      children: 'false',
+      level: 'select'
+    };
+    // Two accent props, Text's three branches (4 + 2 + 2), Heading's two branches (2 + 2), two own extras each.
+    expect(properties).toHaveLength(18);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const values = (tagName: string) =>
+        tags.filter((tag) => tag.tagName.text === tagName).map((tag) => ts.getTextOfJSDocComment(tag.comment)?.trim());
+      expect(values('control'), `${name} @control`).toEqual([allowed[name]]);
+      if (allowed[name] === 'false') {
+        expect(values('controlReason')[0], `${name} @controlReason`).toMatch(/ReactNode.*stories/);
+      }
+      if (!property.questionToken) {
+        expect(values('default'), `required ${name} must not invent @default`).toEqual([]);
+      }
+      expect(ts.getTextOfJSDocComment(ts.getJSDocCommentsAndTags(property)[0]?.comment), name).toBeTruthy();
+    }
+  });
+
   it('extracts Surface from both public branches with single constant defaults', () => {
     const doc = docs.find((item) => item.displayName === 'Surface');
     expect(doc, 'Surface must be discovered from its real component').toBeDefined();
@@ -534,7 +621,15 @@ describe('Storybook TypeScript docgen contract', () => {
   });
 
   it('limits real parser discovery to the current public React components', () => {
-    expect(docs.map((doc) => doc.displayName)).toEqual(['Gauge', 'AspectRatio', 'Stack', 'Cluster', 'Surface']);
+    expect(docs.map((doc) => doc.displayName)).toEqual([
+      'Gauge',
+      'AspectRatio',
+      'Stack',
+      'Cluster',
+      'Text',
+      'Heading',
+      'Surface'
+    ]);
     expect(Object.keys(gaugeControls)).toHaveLength(8);
   });
 });
