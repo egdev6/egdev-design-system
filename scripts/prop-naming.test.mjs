@@ -34,7 +34,11 @@ const postReceiptUsages = [
   { conventionId: 'main-axis-distribution', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
   { conventionId: 'main-axis-distribution', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
-  { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' }
+  { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
+  { conventionId: 'icon-glyph-name', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
+  { conventionId: 'filled-glyph', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' }
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({

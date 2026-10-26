@@ -16,7 +16,7 @@ C = [
 ("IconButton","átomo","IconButton","atom","ui","Slot + AccessibleIcon","Icon","mantener","Provisional future icon-only action concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md); Gauge's current finish follows the [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md)."),
 ("—","—","Toggle","atom","ui","Toggle","Icon","nuevo","Botón conmutado (mostrar/ocultar capa, silenciar). IconButton `pressed` puede apoyarse en él."),
 ("Link","átomo","Link","atom","ui","Slot","—","mantener",""),
-("Icon","átomo","Icon","atom","ui","AccessibleIcon","—","mantener","Faltan 14 iconos (ver DECISIONES)."),
+("Icon","átomo","Icon","atom","ui","AccessibleIcon","—","mantener","Implemented in @egdev/ui: one inline glyph from the closed 42-name set (25 Foundation plus 17 Lucide additions, including check, minus and plus) with sm/md/lg presets, optional currentColor fill and an optional label through Radix AccessibleIcon; decorative by default. No stylesheet; legacy `.eg-icon*` rules are unchanged. Contract: [#58](https://github.com/egdev6/egdev-design-system/issues/58)."),
 ("Field (input)","átomo","Input","atom","ui","—","—","extraer","Control nativo; sale de Field. Variante `mono` para código y URLs."),
 ("Field (textarea)","átomo","Textarea","atom","ui","—","—","extraer","Variantes `code` y `prose` (antes Field --code y --prose)."),
 ("Field (select)","átomo","Select","atom","ui","Select","Icon","extraer","Select de Radix con el aspecto de Field."),
