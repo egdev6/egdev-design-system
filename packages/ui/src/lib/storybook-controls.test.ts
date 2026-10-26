@@ -13,6 +13,7 @@ const components = [
   ['Avatar', 'atoms/avatar'],
   ['Button', 'atoms/button'],
   ['Checkbox', 'atoms/checkbox'],
+  ['Countdown', 'atoms/countdown'],
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Cluster', 'primitives/stack'],
   ['Gauge', 'atoms/gauge'],
@@ -113,6 +114,18 @@ const expected: Record<string, Record<string, string | false>> = {
     ratio: 'number'
   },
   badge: { children: false, tone: 'select', variant: 'select', icon: false },
+  countdown: {
+    deadline: 'number',
+    deadlineText: 'text',
+    label: 'text',
+    units: false,
+    size: 'select',
+    tone: 'select',
+    onExpire: false,
+    initializingText: 'text',
+    expiredText: 'text',
+    unavailableText: 'text'
+  },
   dropzone: {
     onFiles: false,
     label: 'text',
@@ -236,6 +249,7 @@ const ownPropCounts: Record<string, number> = {
   avatar: 5,
   button: 7,
   checkbox: 7,
+  countdown: 10,
   aspectratio: 1,
   badge: 4,
   dropzone: 6,
@@ -473,6 +487,17 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ],
     ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }],
     ['Textarea', { variant: '"default"' }],
+    [
+      'Countdown',
+      {
+        label: '"Next event in"',
+        size: '"md"',
+        tone: '"inherit"',
+        initializingText: '"Calculating time remaining"',
+        expiredText: '"Time reached"',
+        unavailableText: '"Time unavailable"'
+      }
+    ],
     ['Icon', { size: '"md"', filled: 'false' }],
     ['IconButton', { variant: '"ghost"', size: '"md"', asChild: 'false' }],
     ['Input', { size: '"md"', variant: '"default"', type: '"text"' }],
@@ -827,6 +852,29 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Slider', false).argTypes[prop]);
     }
     for (const prop of ['children', 'ref', 'asChild', 'dir', 'onChange', 'orientation', 'inverted', 'style']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Countdown required deadline rows, disabled tuple/callback widgets and quiet native rows', () => {
+    const { argTypes, args } = story('Countdown');
+    expect(argTypes.deadline?.type).toMatchObject({ name: 'number', required: true });
+    expect(argTypes.deadlineText?.type).toMatchObject({ name: 'string', required: true });
+    for (const prop of ['deadline', 'deadlineText', 'units', 'onExpire']) {
+      expect(argTypes[prop]?.table?.defaultValue, `${prop} has no fixed default`).toBeUndefined();
+    }
+    for (const prop of ['units', 'onExpire']) {
+      expect(argTypes[prop]?.control, prop).toBe(false);
+      expect(argTypes[prop]?.table?.disable, prop).toBeUndefined();
+    }
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['md', 'sm']);
+    expect([...(argTypes.tone?.options ?? [])].sort()).toEqual(['canvas', 'inherit']);
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Countdown', false).argTypes[prop]);
+    }
+    for (const prop of ['ref', 'asChild', 'children', 'role', 'aria-label', 'aria-live', 'tabIndex', 'onTick', 'now']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });
