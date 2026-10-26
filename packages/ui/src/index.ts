@@ -2,6 +2,7 @@
 export * from './atoms/gauge';
 export * from './atoms/kbd';
 export * from './atoms/spinner';
+export * from './atoms/textarea';
 // Utilities
 export { cn } from './lib/cn';
 // Primitives

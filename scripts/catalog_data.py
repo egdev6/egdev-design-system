@@ -18,7 +18,7 @@ C = [
 ("Link","átomo","Link","atom","ui","Slot","—","mantener",""),
 ("Icon","átomo","Icon","atom","ui","AccessibleIcon","—","mantener","Faltan 14 iconos (ver DECISIONES)."),
 ("Field (input)","átomo","Input","atom","ui","—","—","extraer","Control nativo; sale de Field. Variante `mono` para código y URLs."),
-("Field (textarea)","átomo","Textarea","atom","ui","—","—","extraer","Variantes `code` y `prose` (antes Field --code y --prose)."),
+("Field (textarea)","átomo","Textarea","atom","ui","—","—","extraer","Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/73): bare native multi-line textarea with `variant` default (well), code (mono well on neutral-950) and prose (raised sheet), vertical-only resize above the variant minimum, native aria-invalid and a forwarded textarea ref. Label, hint, error and counter belong to Field. No stylesheet."),
 ("Field (select)","átomo","Select","atom","ui","Select","Icon","extraer","Select de Radix con el aspecto de Field."),
 ("`.eg-check`","sin ficha","Checkbox","atom","ui","Checkbox","Icon","extraer","Existía solo como clase."),
 ("`.eg-check--switch`","sin ficha","Switch","atom","ui","Switch","—","extraer",""),

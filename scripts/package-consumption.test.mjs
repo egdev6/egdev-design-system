@@ -29,8 +29,8 @@ function run(cwd, command, args, timeout) {
 
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
-import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, VisuallyHidden } from '@egdev/ui';
+import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
+import { AspectRatio, Cluster, Divider, Gauge, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, Surface, Textarea, VisuallyHidden, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -55,6 +55,8 @@ import type {
   SurfaceProps,
   SurfaceRadius,
   SurfaceTone,
+  TextareaProps,
+  TextareaVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
 const slotProps: SlotProps = { 'aria-label': 'Composed documentation' };
@@ -166,6 +168,31 @@ export function KbdSamples() {
     createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
     createElement(Kbd, kbdNative));
 }
+// Textarea: a bare native control; the consumer names it and owns value state (D1, D9).
+export const textareaRef = createRef<HTMLTextAreaElement>();
+export const textareaChanges: string[] = [];
+const textareaVariant: TextareaVariant = 'code';
+const recordTextareaChange: TextareaProps['onChange'] = (event) => {
+  textareaChanges.push(event.target.value);
+};
+export const textareaNative: TextareaProps = {
+  id: 'textarea-notes', name: 'notes', rows: 3, maxLength: 1250, placeholder: 'Write a note',
+  'aria-describedby': 'textarea-hint', className: 'mt-2 mt-4 consumer-textarea'
+};
+export function TextareaSamples() {
+  return createElement('section', { 'aria-label': 'Text entry' },
+    createElement('label', { htmlFor: 'textarea-notes' }, 'First comment'),
+    createElement(Textarea, {
+      ...textareaNative, ref: textareaRef, defaultValue: 'Draft',
+      onChange: recordTextareaChange
+    }),
+    createElement('p', { id: 'textarea-hint' }, 'Shown below the post'),
+    createElement(Textarea, { id: 'textarea-code', 'aria-label': 'Custom CSS', variant: textareaVariant }),
+    createElement(Textarea, { id: 'textarea-prose', 'aria-label': 'Long-form draft', variant: 'prose' }),
+    createElement(Textarea, { id: 'textarea-invalid', 'aria-label': 'Invalid notes', 'aria-invalid': true }),
+    createElement(Textarea, { id: 'textarea-disabled', 'aria-label': 'Archived notes', disabled: true }),
+    createElement(Textarea, { id: 'textarea-readonly', 'aria-label': 'Published notes', readOnly: true, defaultValue: 'Published' }));
+}
 export function VisuallyHiddenSamples() {
   return createElement('section', { 'aria-label': 'Hidden support content' },
     createElement(VisuallyHidden, { ...hiddenNote, ref: hiddenNoteRef }),
@@ -239,6 +266,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(SkeletonSamples),
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(KbdSamples),
+    createElement(TextareaSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -293,6 +321,16 @@ const referencedKbd: KbdProps = { children: 'K', ref: createRef<HTMLElement>() }
 const slottedKbd: KbdProps = { children: 'K', asChild: true };
 // @ts-expect-error Kbd has a single flat treatment; there are no variants (D4).
 const variantKbd: KbdProps = { children: 'K', variant: 'raised' };
+// @ts-expect-error Textarea renders its value, never children (D9).
+const childrenTextarea: TextareaProps = { children: 'Draft' };
+// @ts-expect-error Only default, code and prose treatments exist (D2).
+const richTextarea: TextareaProps = { variant: 'rich' };
+// @ts-expect-error There is no size axis in v0.1 (D4).
+const sizedTextarea: TextareaProps = { size: 'sm' };
+// @ts-expect-error Textarea cannot delegate its native root to a child.
+const slottedTextarea: TextareaProps = { asChild: true };
+// @ts-expect-error The forwarded ref targets an HTMLTextAreaElement, not a div.
+const divTextareaRef: ComponentProps<typeof Textarea> = { ref: createRef<HTMLDivElement>() };
 // @ts-expect-error Hidden content is required, not optional.
 const missingHiddenChildren: VisuallyHiddenProps = { id: 'orphan-hint' };
 // @ts-expect-error VisuallyHidden inherits span props; the anchor-only href is rejected.
@@ -596,6 +634,54 @@ function assertKbdCSS(css) {
   assert.match(css, /--tw-border-style:\s*solid/, 'The hairline border style must resolve without Tailwind');
 }
 
+// Textarea ships its well, sheet and state utilities from the token theme; no Textarea stylesheet.
+function assertTextareaCSS(css) {
+  for (const utility of [
+    '.resize-y',
+    '.box-border',
+    '.rounded-md',
+    '.bg-surface-0',
+    '.bg-surface-1',
+    '.bg-primitive-neutral-950',
+    '.border-border-control',
+    '.border-border-hairline',
+    '.font-mono',
+    '.text-code',
+    '.text-body-default',
+    '.text-fg-default'
+  ]) {
+    assert.ok(css.includes(utility), 'Missing Textarea utility ' + utility);
+  }
+  assert.match(
+    css,
+    /\.min-h-30\s*\{[^}]*min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*30\)/,
+    'Textarea well minimum'
+  );
+  assert.match(
+    css,
+    /\.min-h-70\s*\{[^}]*min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*70\)/,
+    'Textarea prose minimum'
+  );
+  assert.match(
+    css,
+    /\.shadow-\\\[var\\\(--shadow-well\\\)\\\]\s*\{[^}]*--tw-shadow:\s*var\(--shadow-well\)/,
+    'Textarea well shadow'
+  );
+  assert.match(
+    css,
+    /\.bg-\\\[image\\:var\\\(--gradient-sheen\\\)\\\]\s*\{[^}]*background-image:\s*var\(--gradient-sheen\)/,
+    'Prose sheen'
+  );
+  assert.match(
+    css,
+    /\.aria-invalid\\:border-status-danger\[aria-invalid="true"\]\s*\{[^}]*border-color:\s*var\(--color-status-danger/,
+    'Invalid border'
+  );
+  assert.match(css, /\.disabled\\:opacity-45:disabled\s*\{[^}]*opacity:\s*45%/, 'Disabled opacity');
+  assert.ok(css.includes('.motion-reduce\\:transition-none'), 'Reduced motion removes the transition');
+  assert.doesNotMatch(css, /\.eg-textarea[^{]*\{/, 'Textarea marker must not become a shipped CSS rule');
+}
+
 // Spinner ships Icon-scale presets, inherited stroke utilities and the canonical spin token with keyframes.
 function assertSpinnerCSS(css) {
   for (const utility of [
@@ -668,6 +754,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Spinner',
   'Stack',
   'Surface',
+  'Textarea',
   'VisuallyHidden',
   'cn',
   'labelVariants',
@@ -678,11 +765,13 @@ ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertTextareaCSS.toString()}
 assertGaugeCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assertSkeletonCSS(shippedStyles);
 assertSpinnerCSS(shippedStyles);
 assertKbdCSS(shippedStyles);
+assertTextareaCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -941,6 +1030,28 @@ for (const frame of [square, wide]) {
   assert.ok(nativeKbd.className.startsWith('eg-kbd '), 'The public marker leads the root classes');
   assert.ok(nativeKbd.className.endsWith(' ms-2 consumer-kbd'), 'Consumer layout classes merge last');
   assert.ok(!nativeKbd.className.split(' ').includes('ms-1'), 'Conflicting margin utilities resolve through cn()');
+  const notes = document.getElementById('textarea-notes');
+  assert.ok(notes, 'SSR must render Textarea samples');
+  assert.equal(notes.tagName, 'TEXTAREA', 'Textarea renders one native textarea root');
+  assert.equal(notes.value, 'Draft');
+  assert.equal(notes.getAttribute('rows'), '3');
+  assert.equal(notes.getAttribute('maxlength'), '1250');
+  assert.equal(notes.getAttribute('aria-describedby'), 'textarea-hint');
+  assert.ok(notes.className.startsWith('eg-textarea '), 'The public marker leads the root classes');
+  assert.ok(notes.className.endsWith(' mt-4 consumer-textarea'), 'Consumer layout classes merge last');
+  assert.ok(!notes.className.split(' ').includes('mt-2'), 'Conflicting margin utilities resolve through cn()');
+  assert.equal(document.querySelector('label[for="textarea-notes"]').textContent, 'First comment');
+  for (const [id, utility] of [['textarea-notes', 'bg-surface-0'], ['textarea-code', 'bg-primitive-neutral-950'], ['textarea-prose', 'bg-surface-1']]) {
+    assert.ok(document.getElementById(id).classList.contains(utility), id + ' must render ' + utility);
+  }
+  assert.equal(document.getElementById('textarea-invalid').getAttribute('aria-invalid'), 'true');
+  assert.equal(document.getElementById('textarea-disabled').hasAttribute('disabled'), true);
+  assert.equal(document.getElementById('textarea-readonly').hasAttribute('readonly'), true);
+  for (const node of document.querySelectorAll('textarea.eg-textarea')) {
+    assert.equal(node.hasAttribute('variant'), false);
+    assert.equal(node.hasAttribute('data-state'), false);
+    assert.equal(node.getAttribute('role'), null);
+  }
   const tokenStack = document.querySelector('.eg-stack[aria-label="Token sections"]');
   assert.ok(tokenStack, 'SSR must render Stack samples');
   assert.ok(tokenStack.classList.contains('flex-col') && tokenStack.classList.contains('flex-nowrap'));
@@ -1030,7 +1141,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
+const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, textareaChanges, textareaRef } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -1168,6 +1279,22 @@ try {
   }
   assert.equal(document.getElementById('kbd-command').children[0].getAttribute('aria-hidden'), 'true');
   stage('kbd:passive:complete');
+  stage('textarea:native:start');
+  const notesNode = document.getElementById('textarea-notes');
+  assert.ok(textareaRef.current === notesNode, 'Textarea must forward its HTMLTextAreaElement ref');
+  notesNode.focus();
+  assert.ok(document.activeElement === notesNode, 'Textarea must be focusable');
+  const setValue = Object.getOwnPropertyDescriptor(dom.window.HTMLTextAreaElement.prototype, 'value').set;
+  await act(async () => {
+    setValue.call(notesNode, 'Draft\\nSecond line');
+    notesNode.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  assert.deepEqual(textareaChanges, ['Draft\\nSecond line'], 'Native onChange must report the multi-line value');
+  assert.equal(document.getElementById('textarea-disabled').disabled, true, 'Disabled Textarea leaves the Tab order');
+  const readOnlyNode = document.getElementById('textarea-readonly');
+  readOnlyNode.focus();
+  assert.ok(document.activeElement === readOnlyNode, 'Read-only Textarea stays focusable');
+  stage('textarea:native:complete');
   stage('layout:rerender:start');
   const layoutStack = () => document.querySelector('.eg-stack[aria-label="Token sections"]');
   const layoutCluster = () => document.querySelector('.eg-cluster[aria-label="Token actions"]');
@@ -1236,7 +1363,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Kbd passive keys outside the Tab order', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Kbd passive keys outside the Tab order', 'Textarea forwarded ref, focus and native onChange', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1316,6 +1443,7 @@ ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertTextareaCSS.toString()}
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1326,6 +1454,7 @@ assert.match(
 assertSkeletonCSS(emitted);
 assertSpinnerCSS(emitted);
 assertKbdCSS(emitted);
+assertTextareaCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
@@ -1364,6 +1493,7 @@ assert.match(
 assertSkeletonCSS(twCss);
 assertSpinnerCSS(twCss);
 assertKbdCSS(twCss);
+assertTextareaCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
