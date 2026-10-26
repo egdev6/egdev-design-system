@@ -1,5 +1,7 @@
 /* Keep legacy styles; reference token context without shipping its declarations. */
 @import "./index.css";
+/* StatusDot pulse keyframes only (#71 D7/D9); top-level so native consumers animate. */
+@import "../atoms/status-dot/status-dot.css";
 @reference "@egdev/tokens/theme.css";
 
 /* Compile only production CVA classes, never incidental story/test classes. */
@@ -7,7 +9,9 @@
 @source "../atoms/icon/types.ts";
 @source "../atoms/kbd/types.ts";
 @source "../atoms/link/types.ts";
+@source "../atoms/product-mark/types.ts";
 @source "../atoms/spinner/types.ts";
+@source "../atoms/status-dot/types.ts";
 @source "../primitives/aspect-ratio/types.ts";
 @source "../primitives/divider/types.ts";
 @source "../primitives/label/types.ts";

@@ -56,11 +56,18 @@ const postReceiptUsages = [
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
+  {
+    conventionId: 'consumer-selected-condition',
+    source: 'packages/ui/src/atoms/status-dot/types.ts#StatusDotProps'
+  },
+  { conventionId: 'signal-pulse', source: 'packages/ui/src/atoms/status-dot/types.ts#StatusDotProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/kbd/types.ts#KbdProps' },
   { conventionId: 'slot-composition', source: 'packages/ui/src/atoms/link/types.ts#LinkProps' },
   { conventionId: 'new-tab-navigation', source: 'packages/ui/src/atoms/link/types.ts#LinkProps' },
   { conventionId: 'new-tab-notice', source: 'packages/ui/src/atoms/link/types.ts#LinkProps' },
-  { conventionId: 'trailing-arrow', source: 'packages/ui/src/atoms/link/types.ts#LinkProps' }
+  { conventionId: 'trailing-arrow', source: 'packages/ui/src/atoms/link/types.ts#LinkProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/product-mark/types.ts#ProductMarkProps' },
+  { conventionId: 'brand-monogram', source: 'packages/ui/src/atoms/product-mark/types.ts#ProductMarkProps' }
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({
@@ -836,7 +843,12 @@ test('Skeleton v0.2 naming receipt records the owner published-spec approval and
         revision: digest(fs.readFileSync(resolve(root, 'packages/ui/src/primitives/skeleton/types.ts')))
       }
     };
-    assert.deepEqual(usages, [implementationUsage]);
+    assert.deepEqual(
+      usages.filter(({ source }) => source.path === implementationUsage.source.path),
+      [implementationUsage]
+    );
+    // Later implementations (StatusDot, #71) append only reviewed post-receipt usages.
+    assert.deepEqual(historicalRegistry([entry])[0].usages, []);
     assert.equal(entry.id, 'signal-pulse');
     assert.equal(entry.name, 'pulse');
     assert.equal(entry.status, 'approved');
@@ -844,7 +856,10 @@ test('Skeleton v0.2 naming receipt records the owner published-spec approval and
     assert.deepEqual(entry.exceptions, []);
   }
   // The implementation commit records exactly one Skeleton usage under signal-pulse.
-  assert.equal(actual.find(({ id }) => id === 'signal-pulse').usages.length, 1);
+  assert.equal(
+    actual.find(({ id }) => id === 'signal-pulse').usages.filter(({ component }) => component === 'Skeleton').length,
+    1
+  );
 });
 
 test('promoting observed usage to existing does not approve or change its proposed convention', () => {

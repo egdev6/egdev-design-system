@@ -3,7 +3,9 @@ export * from './atoms/gauge';
 export * from './atoms/icon';
 export * from './atoms/kbd';
 export * from './atoms/link';
+export * from './atoms/product-mark';
 export * from './atoms/spinner';
+export * from './atoms/status-dot';
 // Utilities
 export { cn } from './lib/cn';
 // Primitives
