@@ -39,8 +39,14 @@ const postReceiptUsages = [
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
   { conventionId: 'filled-glyph', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
+  { conventionId: 'surface-elevation', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
+  { conventionId: 'inner-padding', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
+  { conventionId: 'corner-radius', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
+  { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
-  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' }
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/kbd/types.ts#KbdProps' }
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({
