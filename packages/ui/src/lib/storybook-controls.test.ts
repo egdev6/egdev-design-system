@@ -10,6 +10,7 @@ import config from '../../../../.storybook/main';
 import preview from '../../../../.storybook/preview';
 
 const components = [
+  ['Avatar', 'atoms/avatar'],
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Cluster', 'primitives/stack'],
   ['Gauge', 'atoms/gauge'],
@@ -71,6 +72,7 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  avatar: { src: 'text', label: 'text', size: 'select', badgeIcon: 'select', paused: 'boolean' },
   aspectratio: {
     ratio: 'number'
   },
@@ -110,6 +112,7 @@ const expected: Record<string, Record<string, string | false>> = {
   }
 };
 const ownPropCounts: Record<string, number> = {
+  avatar: 5,
   aspectratio: 1,
   gauge: 8,
   icon: 4,
@@ -321,7 +324,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
     ['Icon', { size: '"md"', filled: 'false' }],
-    ['Spinner', { size: '"md"' }]
+    ['Spinner', { size: '"md"' }],
+    ['Avatar', { size: '"md"', paused: 'false' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
     const { argTypes, args } = story(name);
     for (const [prop, summary] of Object.entries(defaults)) {

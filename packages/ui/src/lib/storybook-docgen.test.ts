@@ -127,6 +127,7 @@ describe('Storybook TypeScript docgen contract', () => {
     );
     // Each primitive exports its type alias first and runtime component second; dedupe the specifiers.
     expect([...new Set(modules)].sort()).toEqual([
+      './atoms/avatar',
       './atoms/gauge',
       './atoms/icon',
       './atoms/kbd',
@@ -146,6 +147,7 @@ describe('Storybook TypeScript docgen contract', () => {
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
       'AspectRatio',
+      'Avatar',
       'Cluster',
       'Divider',
       'Gauge',
@@ -932,6 +934,69 @@ describe('Spinner passive metadata contract', () => {
       expect(props[prop], `Spinner native ${prop} must remain available in autodocs`).toBeDefined();
     }
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live', 'tone', 'color']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('Avatar identity metadata contract', () => {
+  it('annotates all five optional own props with constant-only defaults', () => {
+    const file = ast(source('atoms/avatar/types.ts'));
+    const properties = ownProps(file, ['AvatarProps']);
+    const controls: Record<string, string> = {
+      src: 'text',
+      label: 'text',
+      size: 'select',
+      badgeIcon: 'select',
+      paused: 'boolean'
+    };
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(controls));
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(property.questionToken, name).toBeDefined();
+      const tags = ts.getJSDocTags(property);
+      expect(
+        tags.filter((tag) => tag.tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment))
+      ).toEqual([controls[name]]);
+      const fixed = tags.find((tag) => tag.tagName.text === 'default');
+      expect(fixed ? ts.getTextOfJSDocComment(fixed.comment) : undefined).toBe({ size: 'md', paused: 'false' }[name]);
+    }
+    expect(defaults(source('atoms/avatar/useAvatar.ts'), false)).toEqual({ size: 'md', paused: 'false' });
+  });
+
+  it('extracts actual Avatar enums, naming and native rows without ref or composition', () => {
+    const doc = parser.parse(source('atoms/avatar/Avatar.tsx')).find((item) => item.displayName === 'Avatar');
+    if (!doc) {
+      throw new Error('Missing Avatar docgen');
+    }
+    const { props } = doc;
+    for (const prop of ['src', 'label']) {
+      expect(props[prop]).toMatchObject({ required: false, type: { name: 'string' }, tags: { control: 'text' } });
+      expect(props[prop]?.defaultValue).toBeNull();
+    }
+    const values = (prop: string) =>
+      (props[prop]?.type.value ?? []).map((item: { value: string }) => normalize(item.value));
+    expect(values('size').sort()).toEqual(['lg', 'md', 'sm', 'xl']);
+    expect(normalize(props.size?.defaultValue?.value)).toBe('md');
+    expect(values('badgeIcon')).toHaveLength(42);
+    expect(values('badgeIcon')).toContain('user');
+    expect(values('badgeIcon')).toContain('linkedin');
+    expect(props.badgeIcon?.defaultValue).toBeNull();
+    expect(props.paused).toMatchObject({ required: false, type: { name: 'boolean' }, tags: { control: 'boolean' } });
+    expect(normalize(props.paused?.defaultValue?.value)).toBe('false');
+    for (const prop of ['id', 'title', 'aria-describedby', 'className', 'style']) {
+      expect(props[prop], prop).toBeDefined();
+    }
+    for (const prop of [
+      'ref',
+      'asChild',
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'aria-hidden',
+      'dangerouslySetInnerHTML'
+    ]) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);

@@ -30,9 +30,11 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Cluster, Divider, Gauge, Heading, Icon, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
+  AvatarProps,
+  AvatarSize,
   DividerOrientation,
   DividerProps,
   GaugeProps,
@@ -211,6 +213,31 @@ export function TypographySamples({ headingLevel = 1 }: TypographySampleProps) {
     createElement(Text, { variant: 'section', accent: 'inline', accentBreak: false, asChild: true,
       children: createElement('span', { id: 'title-slotted', className: 'consumer-span' }, 'Slotted ') }));
 }
+export const avatarDefaults: AvatarProps = { label: 'Example channel' };
+export function AvatarSamples() {
+  const sizes: AvatarSize[] = ['sm', 'md', 'lg', 'xl'];
+  return createElement('section', { 'aria-label': 'Identities' },
+    sizes.map((size) => createElement(Avatar, { ...avatarDefaults, key: size, size, id: 'avatar-' + size })),
+    createElement(Avatar, { id: 'avatar-decorative' }),
+    createElement(Avatar, { label: 'Channel on LinkedIn, paused', id: 'avatar-paused', size: 'xl',
+      paused: true, badgeIcon: 'linkedin', className: 'ms-1 ms-2 [--eg-avatar-ring:var(--color-bg-canvas)]' }));
+}
+// @ts-expect-error Avatar owns its internal content.
+const avatarChildren: AvatarProps = { children: 'AB' };
+// @ts-expect-error Avatar has no public ref API.
+const avatarRef: AvatarProps = { ref: createRef<HTMLSpanElement>() };
+// @ts-expect-error Avatar has no asChild API.
+const avatarSlotted: AvatarProps = { asChild: true };
+// @ts-expect-error Naming is through label, not a native role override.
+const avatarRole: AvatarProps = { role: 'button' };
+// @ts-expect-error Naming attributes are component-owned.
+const avatarLabel: AvatarProps = { 'aria-label': 'Wrong' };
+// @ts-expect-error The image part has an empty alt; name the root through label.
+const avatarAlt: AvatarProps = { alt: 'Wrong' };
+// @ts-expect-error No arbitrary dimensions.
+const avatarSize: AvatarProps = { size: 30 };
+// @ts-expect-error Badges use the closed IconName set.
+const avatarBadge: AvatarProps = { badgeIcon: 'unknown' };
 export const iconDefaults: IconProps = { name: 'plus' };
 const iconPreset: IconSize = 'lg';
 type IconSampleProps = { iconName?: IconName };
@@ -274,6 +301,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(LabelSamples),
     createElement(SkeletonSamples),
     createElement(IconSamples, { iconName }),
+    createElement(AvatarSamples),
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(KbdSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
@@ -608,6 +636,30 @@ function assertLabelCSS(css) {
   assert.match(css, /font-weight:\s*var\(--text-body-default--font-weight\)/, 'Missing Label choice weight binding');
 }
 
+// Avatar's additive utilities must work without changing prior component guards.
+function assertAvatarCSS(css) {
+  for (const selector of [
+    '.inline-grid',
+    '.bg-linear-135',
+    '.from-bg-deep',
+    '.to-primitive-red-neon',
+    '.object-cover',
+    String.raw`.size-2\.75`,
+    String.raw`.size-3\.25`,
+    String.raw`.size-5\.5`,
+    String.raw`.size-7\.5`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Avatar utility ' + selector);
+  }
+  assert.match(css, /--tw-gradient-position:\s*135deg/);
+  assert.match(css, /--tw-gradient-from:\s*var\(--color-bg-deep[,)]/);
+  assert.match(css, /--tw-gradient-to:\s*var\(--color-primitive-red-neon[,)]/);
+  assert.match(css, /--tw-ring-color:\s*var\(--eg-avatar-ring,\s*var\(--color-bg-surface\)\)/);
+  assert.match(css, /opacity-60\[data-state="paused"\]\s*\{\s*opacity:\s*60%/);
+  assert.match(css, /grayscale\[data-state="paused"\]\s*\{\s*--tw-grayscale:\s*grayscale\(100%\)/);
+  assert.match(css, /object-fit:\s*cover/);
+}
+
 // Icon's static utilities must work in shipped CSS and both consumer build paths.
 function assertIconCSS(css) {
   for (const [selector, declarations] of [
@@ -753,6 +805,7 @@ ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AspectRatio',
+  'Avatar',
   'Cluster',
   'Divider',
   'Gauge',
@@ -779,6 +832,8 @@ ${assertSkeletonCSS.toString()}
 ${assertIconCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertAvatarCSS.toString()}
+assertAvatarCSS(shippedStyles);
 assertGaugeCSS(shippedStyles);
 assertIconCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
@@ -1106,6 +1161,26 @@ for (const frame of [square, wide]) {
     assert.equal(node.getAttribute('role'), null);
     assert.equal(node.hasAttribute('tabindex') || node.hasAttribute('aria-live') || node.hasAttribute('aria-level'), false);
   }
+  for (const [size, disc, glyph] of [
+    ['sm', 'size-6', 'size-3.25'], ['md', 'size-7.5', 'size-4'],
+    ['lg', 'size-10', 'size-(--icon-size)'], ['xl', 'size-12', 'size-6']
+  ]) {
+    const identity = document.getElementById('avatar-' + size);
+    assert.equal(identity.getAttribute('role'), 'img');
+    assert.equal(identity.getAttribute('aria-label'), 'Example channel');
+    assert.ok(identity.classList.contains(disc));
+    assert.ok(identity.querySelector('svg').classList.contains(glyph));
+    assert.equal(identity.querySelector('img') === null, true, 'SSR must render fallback, not an unloaded image');
+  }
+  const decorativeAvatar = document.getElementById('avatar-decorative');
+  assert.equal(decorativeAvatar.getAttribute('aria-hidden'), 'true');
+  assert.equal(decorativeAvatar.getAttribute('role'), null);
+  const pausedAvatar = document.getElementById('avatar-paused');
+  assert.equal(pausedAvatar.getAttribute('data-state'), 'paused');
+  assert.equal(pausedAvatar.getAttribute('aria-label'), 'Channel on LinkedIn, paused');
+  assert.equal(pausedAvatar.querySelector('.eg-avatar__badge').getAttribute('aria-hidden'), 'true');
+  assert.equal(pausedAvatar.querySelector('.eg-avatar__badge svg').getAttribute('aria-hidden'), 'true');
+  assert.equal(pausedAvatar.hasAttribute('tabindex'), false);
   const decorativeIcon = document.getElementById('icon-decorative');
   assert.ok(decorativeIcon, 'SSR must render the decorative Icon');
   assert.equal(decorativeIcon.tagName.toLowerCase(), 'svg');
@@ -1179,7 +1254,7 @@ for (const name of ['getComputedStyle', 'requestAnimationFrame', 'cancelAnimatio
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
-const { Label, Slot, Slottable } = await import('@egdev/ui');
+const { Avatar, Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
 const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
 stage('imports:complete');
@@ -1362,6 +1437,41 @@ try {
   assert.ok(surfaceCard().classList.contains('border-border-hairline-strong'), 'Elevation 3 must use the strong hairline');
   assert.ok(!surfaceCard().classList.contains('shadow-[var(--shadow-edge),var(--shadow-elev-1)]'), 'The replaced elevation recipe must be gone');
   stage('surface:refs:complete');
+  const avatar = document.getElementById('avatar-paused');
+  assert.equal(avatar.getAttribute('data-state'), 'paused');
+  assert.equal(avatar.querySelector('.eg-avatar__badge').getAttribute('aria-hidden'), 'true');
+  assert.ok(avatar.classList.contains('ms-2') && !avatar.classList.contains('ms-1'));
+  const preloads = [];
+  const BrowserImage = window.Image;
+  window.Image = function () {
+    const image = document.createElement('img');
+    preloads.push(image);
+    return image;
+  };
+  try {
+    await act(async () => root.render(createElement(Avatar, { label: 'Loaded identity', src: 'portrait.png' })));
+    const identity = document.querySelector('.eg-avatar');
+    assert.ok(identity.querySelector('svg'), 'Radix fallback must show while loading');
+    const image = preloads.at(-1);
+    Object.defineProperties(image, { complete: { value: true }, naturalWidth: { value: 100 } });
+    await act(async () => image.dispatchEvent(new window.Event('load')));
+    assert.equal(identity.querySelector('img').getAttribute('alt'), '');
+    assert.equal(identity.querySelector('img').getAttribute('src'), 'portrait.png');
+    assert.equal(identity.querySelector('svg') === null, true);
+    assert.equal(identity.getAttribute('aria-label'), 'Loaded identity');
+    await act(async () => root.render(createElement(Avatar, { label: 'Paused identity', src: 'broken.png', paused: true })));
+    await act(async () => preloads.at(-1).dispatchEvent(new window.Event('error')));
+    assert.ok(identity.querySelector('svg'), 'Radix fallback must recover after a changed src fails');
+    assert.equal(identity.getAttribute('data-state'), 'paused');
+    await act(async () => root.render(createElement(Avatar)));
+    assert.equal(identity.getAttribute('aria-hidden'), 'true');
+    assert.equal(identity.getAttribute('role'), null);
+    assert.equal(identity.getAttribute('aria-label'), null);
+    assert.equal(identity.getAttribute('data-state'), 'active');
+    assert.equal(identity.getAttribute('tabindex'), null);
+  } finally {
+    window.Image = BrowserImage;
+  }
   console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery'] }));
   const slotRef = createRef();
   const childRef = createRef();
@@ -1491,6 +1601,8 @@ ${assertSkeletonCSS.toString()}
 ${assertIconCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertAvatarCSS.toString()}
+assertAvatarCSS(emitted);
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1530,6 +1642,7 @@ const tailwind = await build({ configFile: false, logLevel: 'error', plugins: [t
 const twAssets = [tailwind].flat().flatMap((bundle) => bundle.output).filter((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'));
 const twCss = twAssets.map((asset) => String(asset.source)).join(' ');
 assert.ok(twAssets.length > 0, 'Tailwind build must emit CSS');
+assertAvatarCSS(twCss);
 assertGaugeCSS(twCss);
 assertDividerCSS(twCss, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
