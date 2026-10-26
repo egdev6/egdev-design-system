@@ -1,6 +1,7 @@
 // Atoms
 export * from './atoms/gauge';
 export * from './atoms/kbd';
+export * from './atoms/slider';
 export * from './atoms/spinner';
 // Utilities
 export { cn } from './lib/cn';
