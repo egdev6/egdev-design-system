@@ -11,6 +11,7 @@ import preview from '../../../../.storybook/preview';
 
 const components = [
   ['Avatar', 'atoms/avatar'],
+  ['Button', 'atoms/button'],
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Cluster', 'primitives/stack'],
   ['Gauge', 'atoms/gauge'],
@@ -22,10 +23,19 @@ const components = [
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
-  ['Logo', 'atoms/logo'],
-  ['StatusDot', 'atoms/status-dot'],
+  ['Slider', 'atoms/slider'],
+  ['RadioGroup', 'atoms/radio-group'],
+  ['Input', 'atoms/input'],
   ['Kbd', 'atoms/kbd'],
-  ['ProductMark', 'atoms/product-mark']
+  ['Link', 'atoms/link'],
+  ['Badge', 'atoms/badge'],
+  ['Logo', 'atoms/logo'],
+  ['ProductMark', 'atoms/product-mark'],
+  ['ProgressBar', 'atoms/progress-bar'],
+  ['StatusDot', 'atoms/status-dot'],
+  ['Switch', 'atoms/switch'],
+  ['Textarea', 'atoms/textarea'],
+  ['Tooltip', 'atoms/tooltip']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -76,9 +86,19 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 
 const expected: Record<string, Record<string, string | false>> = {
   avatar: { src: 'text', label: 'text', size: 'select', badgeIcon: 'select', paused: 'boolean' },
+  button: {
+    children: false,
+    variant: 'select',
+    size: 'select',
+    icon: false,
+    iconPosition: 'select',
+    loading: 'boolean',
+    asChild: 'boolean'
+  },
   aspectratio: {
     ratio: 'number'
   },
+  badge: { children: false, tone: 'select', variant: 'select', icon: false },
   stack: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   cluster: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   text: {
@@ -105,6 +125,58 @@ const expected: Record<string, Record<string, string | false>> = {
   logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
+  link: {
+    children: false,
+    asChild: 'boolean',
+    href: 'text',
+    external: 'boolean',
+    newTabText: 'text',
+    arrow: 'boolean'
+  },
+  slider: {
+    label: 'text',
+    value: 'number',
+    defaultValue: 'number',
+    onValueChange: false,
+    onValueCommit: false,
+    min: 'number',
+    max: 'number',
+    step: 'number',
+    valueText: false,
+    disabled: 'boolean',
+    name: 'text'
+  },
+  radiogroup: {
+    label: 'text',
+    options: false,
+    value: 'text',
+    defaultValue: 'text',
+    onValueChange: false,
+    orientation: 'select',
+    disabled: 'boolean',
+    required: 'boolean',
+    name: 'text'
+  },
+  switch: {
+    checked: 'boolean',
+    defaultChecked: 'boolean',
+    onCheckedChange: false,
+    disabled: 'boolean',
+    required: 'boolean',
+    name: 'text',
+    value: 'text'
+  },
+  tooltip: { content: 'text', children: false, side: 'select', className: 'text' },
+  progressbar: {
+    value: 'number',
+    label: 'text',
+    valueText: 'text',
+    size: 'select',
+    variant: 'select',
+    edge: 'boolean'
+  },
+  textarea: { variant: 'select' },
+  input: { size: 'select', variant: 'select', type: 'select', icon: false },
   productmark: { monogram: 'text', label: 'text', href: 'text' },
   gauge: {
     label: 'text',
@@ -119,7 +191,9 @@ const expected: Record<string, Record<string, string | false>> = {
 };
 const ownPropCounts: Record<string, number> = {
   avatar: 5,
+  button: 7,
   aspectratio: 1,
+  badge: 4,
   gauge: 8,
   icon: 4,
   skeleton: 3,
@@ -127,6 +201,14 @@ const ownPropCounts: Record<string, number> = {
   logo: 4,
   statusdot: 2,
   kbd: 2,
+  link: 6,
+  slider: 11,
+  radiogroup: 9,
+  switch: 7,
+  tooltip: 4,
+  progressbar: 6,
+  textarea: 1,
+  input: 4,
   productmark: 3,
   visuallyhidden: 2,
   stack: 4,
@@ -301,7 +383,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         expect(composed.argTypes[prop]?.type?.name, `${name}.${prop} semantic type`).toBe('string');
       }
     }
-    if (!['VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface'].includes(name)) {
+    if (!['Button', 'VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface', 'Link'].includes(name)) {
       expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     }
     expect(composed.args).toEqual({});
@@ -332,9 +414,17 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
+    ['Slider', { min: '0', max: '100', step: '1', disabled: 'false' }],
+    ['RadioGroup', { orientation: '"vertical"', disabled: 'false', required: 'false' }],
+    ['Switch', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }],
+    ['Tooltip', { side: '"top"' }],
+    ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }],
+    ['Textarea', { variant: '"default"' }],
     ['Icon', { size: '"md"', filled: 'false' }],
+    ['Input', { size: '"md"', variant: '"default"', type: '"text"' }],
     ['Spinner', { size: '"md"' }],
     ['Avatar', { size: '"md"', paused: 'false' }],
+    ['Link', { asChild: 'false', external: 'false', arrow: 'true', newTabText: '"(opens in a new tab)"' }],
     ['Logo', { variant: '"wordmark"', size: '"md"', label: '"egdev"' }],
     ['StatusDot', { state: '"stopped"', pulse: 'true' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
@@ -460,6 +550,56 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
   });
 
+  it('retains Link union controls, required content, conditional href and native navigation rows', () => {
+    const { argTypes, args } = story('Link');
+    expect(argTypes.children?.type).toMatchObject({ required: true });
+    expect(argTypes.children?.control).toBe(false);
+    expect(argTypes.children?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.href?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.href?.table?.defaultValue).toBeUndefined();
+    for (const prop of ['asChild', 'external', 'arrow']) {
+      expect(argTypes[prop]?.control, prop).toEqual({ type: 'boolean' });
+    }
+    for (const prop of ['id', 'title', 'target', 'rel', 'onClick', 'aria-describedby', 'className', 'style']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Link', false).argTypes[prop]);
+    }
+    expect(args).toEqual({});
+  });
+
+  it('retains Badge choices, required content and optional icon without fabricated args or defaults', () => {
+    const { argTypes, args } = story('Badge');
+    // TypeScript can intern shared literals in earlier components; preserve extracted order, not an invented sort.
+    expect([...(argTypes.tone?.options ?? [])].sort()).toEqual([
+      'brand',
+      'danger',
+      'info',
+      'neutral',
+      'success',
+      'warning'
+    ]);
+    const toneMetadata = component('Badge').__docgenInfo.props.tone;
+    expect(argTypes.tone?.options).toEqual(
+      toneMetadata?.type.value.map((item: { value: string }) => JSON.parse(item.value))
+    );
+    expect(argTypes.variant?.options).toEqual(['soft', 'solid']);
+    expect(argTypes.tone?.table?.defaultValue?.summary).toBe('"neutral"');
+    expect(argTypes.variant?.table?.defaultValue?.summary).toBe('"soft"');
+    expect(argTypes.children?.type?.required).toBe(true);
+    for (const prop of ['children', 'icon']) {
+      expect(argTypes[prop]?.control).toBe(false);
+      expect(argTypes[prop]?.table?.disable).toBeUndefined();
+      expect(argTypes[prop]?.table?.defaultValue).toBeUndefined();
+    }
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'aria-describedby', 'className']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Badge', false).argTypes[prop]);
+    }
+    expect(argTypes.ref).toBeUndefined();
+    expect(argTypes.asChild).toBeUndefined();
+  });
+
   it('retains Logo variant/size/label/href rows, the image/link native rows and no naming overrides', () => {
     const { argTypes } = story('Logo');
     for (const prop of ['variant', 'size']) {
@@ -519,6 +659,172 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Slider rows: required label, numeric bounds, false-control callbacks and routed native rows', () => {
+    const { argTypes, args } = story('Slider');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.label?.table?.defaultValue).toBeUndefined();
+    for (const prop of ['value', 'defaultValue', 'min', 'max', 'step']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'number', required: false });
+    }
+    // Absent value and defaultValue are derived rules (uncontrolled, falls back to min), not constants.
+    for (const prop of ['value', 'defaultValue', 'valueText', 'name', 'onValueChange', 'onValueCommit']) {
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+    }
+    expect(argTypes.defaultValue?.description).toMatch(/Falls back to min when omitted/);
+    for (const prop of ['onValueChange', 'onValueCommit', 'valueText']) {
+      expect(argTypes[prop]?.control, prop).toBe(false);
+      expect(argTypes[prop]?.table?.disable, prop).not.toBe(true);
+      expect(argTypes[prop]?.description, prop).toBeTruthy();
+    }
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'aria-describedby', 'className']) {
+      expect(argTypes[prop], prop).toEqual(story('Slider', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'dir', 'onChange', 'orientation', 'inverted', 'style']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains RadioGroup required rows, handler and options rows without widgets and documented native rows', () => {
+    const { argTypes, args } = story('RadioGroup');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.options?.type).toMatchObject({ required: true });
+    for (const prop of ['options', 'onValueChange']) {
+      expect(argTypes[prop]?.control, prop).toBe(false);
+      expect(argTypes[prop]?.table?.disable, prop).toBeUndefined();
+      expect(argTypes[prop]?.description, prop).toBeTruthy();
+    }
+    // Options keep the extracted literal order, which TypeScript resolves alphabetically.
+    expect(argTypes.orientation?.options).toEqual(['horizontal', 'vertical']);
+    for (const prop of ['label', 'options', 'value', 'defaultValue', 'name']) {
+      expect(argTypes[prop]?.table?.defaultValue, `${prop} has no fixed default`).toBeUndefined();
+    }
+    expect(args).toEqual({});
+    for (const prop of ['id', 'aria-labelledby', 'aria-describedby', 'className']) {
+      expect(argTypes[prop], prop).toEqual(story('RadioGroup', false).argTypes[prop]);
+    }
+    for (const prop of ['ref', 'asChild', 'children', 'aria-label', 'role', 'dir', 'onChange', 'onClick', 'size']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Switch boolean state rows, the handler row without a widget and documented native rows', () => {
+    const { argTypes, args } = story('Switch');
+    for (const prop of ['checked', 'defaultChecked', 'disabled', 'required']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'boolean', required: false });
+      expect(argTypes[prop]?.control, prop).toEqual({ type: 'boolean' });
+    }
+    expect(argTypes.checked?.table?.defaultValue, 'checked has no fixed default').toBeUndefined();
+    expect(argTypes.name?.table?.defaultValue, 'name is absent by default').toBeUndefined();
+    expect(argTypes.onCheckedChange?.control).toBe(false);
+    expect(argTypes.onCheckedChange?.table?.disable).toBeUndefined();
+    expect(argTypes.onCheckedChange?.description).toBeTruthy();
+    expect(args).toEqual({});
+    for (const prop of ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className']) {
+      expect(argTypes[prop], prop).toEqual(story('Switch', false).argTypes[prop]);
+    }
+    for (const prop of ['ref', 'asChild', 'children', 'type', 'onChange', 'onClick', 'size', 'variant']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Tooltip required content/children rows, the side choices and no native or open-state rows', () => {
+    const { argTypes, args } = story('Tooltip');
+    expect(argTypes.content?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.content?.control).toEqual({ type: 'text' });
+    expect(argTypes.children?.type).toMatchObject({ required: true });
+    expect(argTypes.children?.control).toBe(false);
+    expect(argTypes.children?.table?.disable).toBeUndefined();
+    expect(argTypes.side?.options).toEqual(['top', 'right', 'bottom', 'left']);
+    expect(argTypes.side?.control).toEqual({ type: 'select' });
+    expect(argTypes.className?.control).toEqual({ type: 'text' });
+    for (const prop of ['content', 'children', 'className']) {
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+    }
+    expect(args).toEqual({});
+    for (const prop of ['ref', 'asChild', 'open', 'defaultOpen', 'onOpenChange', 'delayDuration', 'align', 'id']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains ProgressBar rows, ordered presets and requiredness without injecting args', () => {
+    const { argTypes, args } = story('ProgressBar');
+    expect(argTypes.value?.type).toMatchObject({ name: 'number', required: true });
+    expect(argTypes.value?.control).toEqual({ type: 'number' });
+    expect(argTypes.value?.table?.defaultValue).toBeUndefined();
+    for (const prop of ['label', 'valueText']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'string', required: false });
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+    }
+    expect(argTypes.size?.options).toEqual(['sm', 'lg']);
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['default', 'muted']);
+    expect(argTypes.edge?.type).toMatchObject({ name: 'boolean', required: false });
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'aria-describedby', 'className', 'style']) {
+      expect(argTypes[prop], prop).toEqual(story('ProgressBar', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'role', 'max', 'getValueLabel', 'aria-label', 'aria-hidden']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains the Textarea variant select and only the documented native form rows', () => {
+    const { argTypes, args } = story('Textarea');
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['code', 'default', 'prose']);
+    expect(argTypes.variant?.type).toMatchObject({ name: 'enum', required: false });
+    expect(argTypes.variant?.control).toEqual({ type: 'select' });
+    expect(args).toEqual({});
+    const documented = [
+      'id',
+      'name',
+      'rows',
+      'placeholder',
+      'disabled',
+      'readOnly',
+      'required',
+      'maxLength',
+      'aria-invalid',
+      'aria-describedby',
+      'className'
+    ];
+    for (const prop of documented) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Textarea', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'style', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Input select rows, the icon row without a widget and only documented native rows', () => {
+    const { argTypes, args } = story('Input');
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['md', 'sm']);
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['code', 'default']);
+    expect([...(argTypes.type?.options ?? [])].sort()).toEqual([
+      'email',
+      'number',
+      'password',
+      'search',
+      'tel',
+      'text',
+      'url'
+    ]);
+    for (const prop of ['size', 'variant', 'type']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'enum', required: false });
+      expect(argTypes[prop]?.control, prop).toEqual({ type: 'select' });
+    }
+    expect(argTypes.icon?.control).toBe(false);
+    expect(argTypes.icon?.table?.disable).toBeUndefined();
+    expect(argTypes.icon?.table?.defaultValue).toBeUndefined();
+    expect(args).toEqual({});
+    for (const prop of ['id', 'name', 'placeholder', 'disabled', 'readOnly', 'required', 'className']) {
+      expect(argTypes[prop], prop).toEqual(story('Input', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'asChild', 'ref', 'onChange', 'style', 'invalid']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

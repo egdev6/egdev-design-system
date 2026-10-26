@@ -23,6 +23,36 @@
           "symbol": "GaugeProps",
           "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
         }
+      },
+      {
+        "component": "RadioGroup",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/radio-group/types.ts",
+          "symbol": "RadioGroupProps",
+          "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
+        }
+      },
+      {
+        "component": "ProgressBar",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
+      },
+      {
+        "component": "Slider",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/slider/types.ts",
+          "symbol": "SliderProps",
+          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+        }
       }
     ]
   },
@@ -40,7 +70,28 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "RadioGroup",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/radio-group/types.ts",
+          "symbol": "RadioGroupProps",
+          "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
+        }
+      },
+      {
+        "component": "Slider",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/slider/types.ts",
+          "symbol": "SliderProps",
+          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+        }
+      }
+    ]
   },
   {
     "id": "interactive-value-change",
@@ -56,7 +107,28 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "RadioGroup",
+        "type": "(value: string) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/radio-group/types.ts",
+          "symbol": "RadioGroupProps",
+          "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
+        }
+      },
+      {
+        "component": "Slider",
+        "type": "(value: number) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/slider/types.ts",
+          "symbol": "SliderProps",
+          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+        }
+      }
+    ]
   },
   {
     "id": "preset-dimensions",
@@ -81,6 +153,16 @@
           "path": "packages/ui/src/atoms/avatar/types.ts",
           "symbol": "AvatarProps",
           "revision": "sha256:b0a6b163639218e7177cd7254c78a4724ef73658ed0861d18cc96e5e6735c3cb"
+        }
+      },
+      {
+        "component": "Button",
+        "type": "ButtonSize ('md' | 'sm')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/button/types.ts",
+          "symbol": "ButtonProps",
+          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
         }
       },
       {
@@ -124,6 +206,26 @@
         }
       },
       {
+        "component": "ProgressBar",
+        "type": "ProgressBarSize (sm|lg)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
+      },
+      {
+        "component": "Input",
+        "type": "InputSize (md|sm)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/input/types.ts",
+          "symbol": "InputProps",
+          "revision": "sha256:e972763e1f269e87d3b1306727a45e576aaaa1497833f48447af9fc86f7d182f"
+        }
+      },
+      {
         "component": "Logo",
         "type": "LogoSize",
         "status": "existing",
@@ -151,6 +253,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "Button",
+        "type": "ButtonVariant ('primary' | 'secondary' | 'ghost' | 'dark')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/button/types.ts",
+          "symbol": "ButtonProps",
+          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+        }
+      },
+      {
         "component": "Skeleton",
         "type": "SkeletonVariant",
         "status": "existing",
@@ -161,6 +273,16 @@
         }
       },
       {
+        "component": "Badge",
+        "type": "BadgeVariant ('soft' | 'solid')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/badge/types.ts",
+          "symbol": "BadgeProps",
+          "revision": "sha256:81d97cd46835e08a2ed5d846d352642ef9230661b4dcfe04d7e4be921c7d6f3e"
+        }
+      },
+      {
         "component": "Label",
         "type": "LabelVariant (field|choice)",
         "status": "existing",
@@ -168,6 +290,36 @@
           "path": "packages/ui/src/primitives/label/types.ts",
           "symbol": "LabelProps",
           "revision": "sha256:afb762cb8e578348f234a11763dcdbda2c7303cfc02fdd3f385e9f4114ac93a3"
+        }
+      },
+      {
+        "component": "ProgressBar",
+        "type": "ProgressBarVariant (default|muted)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
+      },
+      {
+        "component": "Textarea",
+        "type": "TextareaVariant (default|code|prose)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/textarea/types.ts",
+          "symbol": "TextareaProps",
+          "revision": "sha256:9c34b2b174e78bfb667ce1b0f27dc41b8b4432e88099b65699928a5782a667c7"
+        }
+      },
+      {
+        "component": "Input",
+        "type": "InputVariant (default|code)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/input/types.ts",
+          "symbol": "InputProps",
+          "revision": "sha256:e972763e1f269e87d3b1306727a45e576aaaa1497833f48447af9fc86f7d182f"
         }
       },
       {
@@ -217,6 +369,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Badge",
+        "type": "BadgeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger' | 'brand')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/badge/types.ts",
+          "symbol": "BadgeProps",
+          "revision": "sha256:81d97cd46835e08a2ed5d846d352642ef9230661b4dcfe04d7e4be921c7d6f3e"
+        }
+      },
       {
         "component": "Text",
         "type": "TextTone (canvas|raised)",
@@ -342,6 +504,26 @@
         }
       },
       {
+        "component": "RadioGroup",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/radio-group/types.ts",
+          "symbol": "RadioGroupProps",
+          "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
+        }
+      },
+      {
+        "component": "ProgressBar",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
+      },
+      {
         "component": "Logo",
         "type": "string",
         "status": "existing",
@@ -359,6 +541,16 @@
           "path": "packages/ui/src/atoms/product-mark/types.ts",
           "symbol": "ProductMarkProps",
           "revision": "sha256:91de5ae435b6a408065592d3b7b44085021c71a15230c868081efddb48d2a8c4"
+        }
+      },
+      {
+        "component": "Slider",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/slider/types.ts",
+          "symbol": "SliderProps",
+          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
         }
       }
     ]
@@ -450,6 +642,26 @@
           "path": "packages/ui/src/atoms/gauge/types.ts",
           "symbol": "GaugeProps",
           "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
+        }
+      },
+      {
+        "component": "ProgressBar",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
+      },
+      {
+        "component": "Slider",
+        "type": "(value: number) => string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/slider/types.ts",
+          "symbol": "SliderProps",
+          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
         }
       }
     ]
@@ -597,18 +809,49 @@
   {
     "id": "leading-icon",
     "name": "icon",
-    "meaning": "Optional decorative icon rendered beside a component's text label (before it by default) and hidden from assistive technology.",
-    "whenToUse": "A labelled component offers a leading pictogram that repeats or decorates meaning already present in its text.",
-    "avoid": "Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning.",
+    "meaning": "Optional decorative icon rendered beside a component's text label (before it by default) and hidden from assistive technology. Button alone may place this icon before or after its label, after it by default.",
+    "whenToUse": "A labelled component offers a leading pictogram that repeats or decorates meaning already present in its text. Button alone also permits its iconPosition start/end slot, default end.",
+    "avoid": "Icon-only controls (their accessible name is a separate required prop), trailing or interactive icons, or the sole carrier of meaning. The trailing-icon exclusion has one exception: Button with iconPosition; no other component gains trailing-icon permission.",
     "status": "approved",
     "approval": {
-      "reference": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "reference": "docs/components/button/v0.1/prop-naming-approval.json",
       "scope": "convention:leading-icon",
-      "contentHash": "sha256:b680df32f87ea2cd2592faa56782bb458d91a8a941b413e7740121f84954e5dd"
+      "contentHash": "sha256:6beeba4aea0a65b13367990fde8dd8439b07af12df9d8e9432c1a94b16997d4c"
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Button",
+        "type": "ReactNode (decorative start/end slot, default end; Button-only semantic exception)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/button/types.ts",
+          "symbol": "ButtonProps",
+          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+        }
+      },
+      {
+        "component": "Badge",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/badge/types.ts",
+          "symbol": "BadgeProps",
+          "revision": "sha256:81d97cd46835e08a2ed5d846d352642ef9230661b4dcfe04d7e4be921c7d6f3e"
+        }
+      },
+      {
+        "component": "Input",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/input/types.ts",
+          "symbol": "InputProps",
+          "revision": "sha256:e972763e1f269e87d3b1306727a45e576aaaa1497833f48447af9fc86f7d182f"
+        }
+      }
+    ]
   },
   {
     "id": "icon-placement",
@@ -624,7 +867,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Button",
+        "type": "'start' | 'end' (default end)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/button/types.ts",
+          "symbol": "ButtonProps",
+          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+        }
+      }
+    ]
   },
   {
     "id": "pending-activity",
@@ -640,7 +894,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Button",
+        "type": "boolean (loading retains focus unless disabled)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/button/types.ts",
+          "symbol": "ButtonProps",
+          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+        }
+      }
+    ]
   },
   {
     "id": "slot-composition",
@@ -657,6 +922,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Button",
+        "type": "boolean (asChild)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/button/types.ts",
+          "symbol": "ButtonProps",
+          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+        }
+      },
       {
         "component": "VisuallyHidden",
         "type": "boolean",
@@ -706,6 +981,16 @@
           "symbol": "SurfaceProps",
           "revision": "sha256:26d0726b5034dceb74e0067c1c0df5108d351e948205bbf22b5e187b92d9c0b6"
         }
+      },
+      {
+        "component": "Link",
+        "type": "boolean (discriminates native required href from child-owned href)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/link/types.ts",
+          "symbol": "LinkProps",
+          "revision": "sha256:2f74a408ef244c4b585206185ff137678a279cc1148ebd5d143958cc4d6a352a"
+        }
       }
     ]
   },
@@ -723,7 +1008,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Switch",
+        "type": "(checked: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/switch/types.ts",
+          "symbol": "SwitchProps",
+          "revision": "sha256:52991e3a2a1eec3558bc639541b69018f2590a904261e240c4b8fc1313699bf2"
+        }
+      }
+    ]
   },
   {
     "id": "pressed-state",
@@ -873,7 +1169,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Link",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/link/types.ts",
+          "symbol": "LinkProps",
+          "revision": "sha256:2f74a408ef244c4b585206185ff137678a279cc1148ebd5d143958cc4d6a352a"
+        }
+      }
+    ]
   },
   {
     "id": "new-tab-notice",
@@ -889,7 +1196,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Link",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/link/types.ts",
+          "symbol": "LinkProps",
+          "revision": "sha256:2f74a408ef244c4b585206185ff137678a279cc1148ebd5d143958cc4d6a352a"
+        }
+      }
+    ]
   },
   {
     "id": "trailing-arrow",
@@ -905,7 +1223,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Link",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/link/types.ts",
+          "symbol": "LinkProps",
+          "revision": "sha256:2f74a408ef244c4b585206185ff137678a279cc1148ebd5d143958cc4d6a352a"
+        }
+      }
+    ]
   },
   {
     "id": "rule-reference",
@@ -964,7 +1293,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "ProgressBar",
+        "type": "boolean (size='sm' only; false with size='lg')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
+      }
+    ]
   },
   {
     "id": "choice-options",
@@ -980,7 +1320,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "RadioGroup",
+        "type": "RadioGroupOption[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/radio-group/types.ts",
+          "symbol": "RadioGroupProps",
+          "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
+        }
+      }
+    ]
   },
   {
     "id": "layout-orientation",
@@ -1005,6 +1356,16 @@
           "path": "packages/ui/src/primitives/divider/types.ts",
           "symbol": "DividerProps",
           "revision": "sha256:34e4dece18b59fe810f9bf76aa3d799ee6ae759348776fa1513de7425413d152"
+        }
+      },
+      {
+        "component": "RadioGroup",
+        "type": "RadioGroupOrientation",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/radio-group/types.ts",
+          "symbol": "RadioGroupProps",
+          "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
         }
       }
     ]
@@ -1039,7 +1400,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Slider",
+        "type": "(value: number) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/slider/types.ts",
+          "symbol": "SliderProps",
+          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+        }
+      }
+    ]
   },
   {
     "id": "value-context",
@@ -1124,7 +1496,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Tooltip",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/tooltip/types.ts",
+          "symbol": "TooltipProps",
+          "revision": "sha256:ceeb8d9d26860fa35de0e75f7a2979709d8bdd7195c58a389d2cccc5d6965eaf"
+        }
+      }
+    ]
   },
   {
     "id": "floating-side",
@@ -1140,7 +1523,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Tooltip",
+        "type": "'top' | 'right' | 'bottom' | 'left'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/tooltip/types.ts",
+          "symbol": "TooltipProps",
+          "revision": "sha256:ceeb8d9d26860fa35de0e75f7a2979709d8bdd7195c58a389d2cccc5d6965eaf"
+        }
+      }
+    ]
   },
   {
     "id": "aspect-ratio",

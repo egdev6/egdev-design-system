@@ -107,7 +107,7 @@
     "radix": "Slot",
     "compone": "Icon, Spinner",
     "accion": "mantener",
-    "notas": "Pierde `--icon` (pasa a IconButton). Mantiene `.eg-btn-split` como molécula ButtonGroup."
+    "notas": "Implemented React atom: labelled native action or Radix Slot child, four Material treatments, md/sm sizes, decorative start/end icon (Button-only naming exception) and focus-retaining loading Spinner. Native disabled or guarded disabled child; React 18-compatible forwardRef. No stylesheet or dependencies added; legacy classes unchanged. Icon-only actions and split/join API remain out of scope. Contract: [#53](https://github.com/egdev6/egdev-design-system/issues/53)."
   },
   {
     "actual": "IconButton",
@@ -137,10 +137,10 @@
     "nombre": "Link",
     "nivel": "atom",
     "destino": "ui",
-    "radix": "Slot",
-    "compone": "—",
+    "radix": "Slot + VisuallyHidden",
+    "compone": "Icon",
     "accion": "mantener",
-    "notas": ""
+    "notas": "Implemented in @egdev/ui: standalone native anchor with a decorative 16px Icon arrow, safe external new-tab semantics and a localizable hidden notice. Slot/Slottable support router anchors and forwarded refs. No stylesheet; legacy `.eg-link` remains unchanged. Contract: [#61](https://github.com/egdev6/egdev-design-system/issues/61)."
   },
   {
     "actual": "Icon",
@@ -162,7 +162,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "extraer",
-    "notas": "Control nativo; sale de Field. Variante `mono` para código y URLs."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/59): bare native single-line text control in the Material well (md 44px, sm 36px), extracted from Field. `variant='code'` (not `mono`, D8) uses the mono font on the darker well; optional decorative leading icon. Native aria-invalid, onChange and forwarded ref; label, hint, error and counter stay in the future Field molecule. No stylesheet."
   },
   {
     "actual": "Field (textarea)",
@@ -173,7 +173,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "extraer",
-    "notas": "Variantes `code` y `prose` (antes Field --code y --prose)."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/73): bare native multi-line textarea with `variant` default (well), code (mono well on neutral-950) and prose (raised sheet), vertical-only resize above the variant minimum, native aria-invalid and a forwarded textarea ref. Label, hint, error and counter belong to Field. No stylesheet."
   },
   {
     "actual": "Field (select)",
@@ -206,7 +206,7 @@
     "radix": "Switch",
     "compone": "—",
     "accion": "extraer",
-    "notas": ""
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/72): bare 36×20 on/off switch with immediate effect over Radix Switch (`role=\"switch\"`, Space/Enter, hidden form input). Off is a recessed well with a grey thumb; on uses the primary gradient, `--shadow-btn-primary` and a black thumb moved 16px. `onCheckedChange` (`checked-change`), forwarded button ref, no own label or size axis. Legacy `.eg-check--switch` untouched. No stylesheet."
   },
   {
     "actual": "Field --range",
@@ -217,7 +217,7 @@
     "radix": "Slider",
     "compone": "—",
     "accion": "extraer",
-    "notas": "Tamaño del anillo, umbrales, volumen."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/68): single-value horizontal range control over Radix Slider (ring size, thresholds, volume). Required label names the thumb; optional valueText sets aria-valuetext and aria-describedby reaches the thumb. Material well track, brand range and raised thumb with the focus ring; 44px hit area on coarse pointers. Visible label and readout belong to Field. No stylesheet."
   },
   {
     "actual": "—",
@@ -228,7 +228,7 @@
     "radix": "RadioGroup",
     "compone": "—",
     "accion": "nuevo",
-    "notas": "Grupo de opciones exclusivas; base de SelectTile y de chips exclusivos."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/66): exclusive choice among short text options from a data-driven `options` array over Radix RadioGroup, named by `label`, vertical or horizontal arrow axis, form `name`/`required`. Unchecked circles are Material wells; the checked one takes the primary gradient, bevel and halo with a black dot. `radioGroupVariants` exposes per-part recipes for SelectTile parity. No stylesheet."
   },
   {
     "actual": "Chip",
@@ -248,9 +248,9 @@
     "nivel": "atom",
     "destino": "ui",
     "radix": "—",
-    "compone": "Icon",
+    "compone": "— (consumer-supplied decorative icon)",
     "accion": "fusionar",
-    "notas": "Etiqueta estática con `tone` (neutral, info, success, warning, danger, brand) e icono opcional; `solid`."
+    "notas": "Implemented in @egdev/ui: passive span label with six tone families, soft/solid treatments, a decorative ReactNode icon slot and the label-default pill recipe. No automatic Icon dependency, ref, asChild or stylesheet. Legacy `.eg-tag` and `.eg-status` remain unchanged. Contract: [#52](https://github.com/egdev6/egdev-design-system/issues/52), v0.1 D7."
   },
   {
     "actual": "PermissionLevel",
@@ -338,7 +338,7 @@
     "radix": "Progress",
     "compone": "—",
     "accion": "mantener",
-    "notas": "Radix Progress da `role=progressbar` y los aria-value*."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/65): passive Radix Progress bar in percent (clamped 0–100; non-finite values are indeterminate with an empty fill). `label` announces the progressbar, otherwise it is decorative. `size` sm hairline or lg goal well with gradient fill and token bevel, `variant` muted for comparison series and sm-only `edge` strip. Fill scaled through `--eg-progress-value`. No stylesheet."
   },
   {
     "actual": "Gauge",
@@ -393,7 +393,7 @@
     "radix": "Tooltip",
     "compone": "Portal",
     "accion": "nuevo",
-    "notas": "Hace falta para IconButton, ModuleRail y Gauge. No existe."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/75): supplementary plain text for one asChild trigger on Radix Tooltip, with its own provider, Radix default delays and its own portal (no separate Portal primitive). Material overlay bubble with solid surface-2 under reduced transparency, opacity fade without transform. Needed by IconButton, ModuleRail and Gauge. No stylesheet."
   },
   {
     "actual": "—",
