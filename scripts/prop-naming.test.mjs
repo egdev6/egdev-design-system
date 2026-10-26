@@ -53,6 +53,10 @@ const postReceiptUsages = [
   { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
   { conventionId: 'files-received', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
   { conventionId: 'drop-target-label', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
+  ...['accessible-name', 'keyboard-shortcut-hint', 'compact-presentation'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/search-trigger/types.ts#SearchTriggerProps'
+  })),
   {
     conventionId: 'aspect-ratio',
     source: 'packages/ui/src/primitives/aspect-ratio/types.ts#AspectRatioProps'
