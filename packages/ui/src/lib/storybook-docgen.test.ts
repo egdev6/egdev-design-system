@@ -130,6 +130,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/checkbox',
       './atoms/gauge',
       './atoms/icon',
+      './atoms/input',
       './atoms/kbd',
       './atoms/logo',
       './atoms/product-mark',
@@ -156,6 +157,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Gauge',
       'Heading',
       'Icon',
+      'Input',
       'Kbd',
       'Label',
       'Logo',
@@ -1249,6 +1251,104 @@ describe('Kbd passive metadata contract', () => {
       expect(props[prop], `Kbd native ${prop} must remain available in autodocs`).toBeDefined();
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick', 'variant', 'size']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('Input text-control metadata contract', () => {
+  it('keeps the public unions and annotates exactly size, variant, type (select) and icon (false)', () => {
+    const file = ast(source('atoms/input/types.ts'));
+    const union = (name: string) => {
+      const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === name);
+      return alias && ts.isTypeAliasDeclaration(alias) ? alias.type.getText(file) : undefined;
+    };
+    expect(union('InputSize')).toBe("'md' | 'sm'");
+    expect(union('InputVariant')).toBe("'default' | 'code'");
+    expect(union('InputType')).toBe("'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'number'");
+    const properties = ownProps(file, ['InputProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['size', 'variant', 'type', 'icon']);
+    const constants: Record<string, string | undefined> = {
+      size: 'md',
+      variant: 'default',
+      type: 'text',
+      icon: undefined
+    };
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(property.questionToken, `Input.${name} stays optional`).toBeTruthy();
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `Input.${name} control`).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe(name === 'icon' ? 'false' : 'select');
+      // An absent icon renders nothing: an absence rule, not a fixed default value.
+      const defaultTag = tags.find((tag) => tag.tagName.text === 'default');
+      expect(ts.getTextOfJSDocComment(defaultTag?.comment), `Input.${name} @default`).toBe(constants[name]);
+    }
+    const iconReason = ts
+      .getJSDocTags(properties[3] as ts.PropertySignature)
+      .find((tag) => tag.tagName.text === 'controlReason');
+    expect(ts.getTextOfJSDocComment(iconReason?.comment)).toMatch(/Non-serializable ReactNode.*WithIcon/);
+    expect(exportedStoryNames(ast(source('atoms/input/Input.stories.tsx')))).toContain('WithIcon');
+  });
+
+  it('omits exactly the native size, type and children from the forwarded input props', () => {
+    const file = ast(source('atoms/input/types.ts'));
+    const alias = file.statements.find(
+      (node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'InputNativeProps'
+    );
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing InputNativeProps declaration');
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const members = node.typeArguments[1];
+        if (members && ts.isUnionTypeNode(members)) {
+          omitted.push(...members.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual(['size', 'type', 'children']);
+    expect(alias.type.getText(file)).toMatch(/ComponentPropsWithoutRef<'input'>/);
+    expect(alias.type.getText(file)).not.toMatch(/asChild/);
+  });
+
+  it('binds the CVA defaults to the documented md/default presets', () => {
+    expect(defaults(source('atoms/input/types.ts'), true)).toEqual({ size: 'md', variant: 'default', icon: 'false' });
+    expect(defaults(source('atoms/input/useInput.ts'), false)).toEqual({
+      size: 'md',
+      variant: 'default',
+      type: 'text'
+    });
+  });
+
+  it('extracts the select choices, real defaults, the icon row and only the documented native rows', () => {
+    const doc = parser.parse(source('atoms/input/Input.tsx')).find((item) => item.displayName === 'Input');
+    if (!doc) {
+      throw new Error('Missing docgen for Input');
+    }
+    const { props } = doc;
+    const choices = (prop: string) =>
+      props[prop]?.type.value?.map((item: { value: string }) => normalize(item.value)).sort();
+    expect(props.size).toMatchObject({ required: false, tags: { control: 'select' } });
+    expect(choices('size')).toEqual(['md', 'sm']);
+    expect(normalize(props.size?.defaultValue?.value)).toBe('md');
+    expect(props.variant).toMatchObject({ required: false, tags: { control: 'select' } });
+    expect(choices('variant')).toEqual(['code', 'default']);
+    expect(normalize(props.variant?.defaultValue?.value)).toBe('default');
+    expect(props.type).toMatchObject({ required: false, tags: { control: 'select' } });
+    expect(choices('type')).toEqual(['email', 'number', 'password', 'search', 'tel', 'text', 'url']);
+    expect(normalize(props.type?.defaultValue?.value)).toBe('text');
+    expect(props.icon).toMatchObject({ required: false, tags: { control: 'false' } });
+    expect(props.icon?.defaultValue ?? null).toBeNull();
+    expect(props.icon?.description).toMatch(/No icon is rendered when omitted/);
+    for (const prop of ['id', 'name', 'placeholder', 'disabled', 'readOnly', 'required', 'className']) {
+      expect(props[prop], `Input native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of ['children', 'asChild', 'onChange', 'style', 'tone', 'invalid', 'onValueChange']) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);

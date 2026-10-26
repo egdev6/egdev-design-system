@@ -8,6 +8,7 @@
 @source "../atoms/checkbox/types.ts";
 @source "../atoms/gauge/types.ts";
 @source "../atoms/icon/types.ts";
+@source "../atoms/input/types.ts";
 @source "../atoms/kbd/types.ts";
 @source "../atoms/logo/types.ts";
 @source "../atoms/product-mark/types.ts";
