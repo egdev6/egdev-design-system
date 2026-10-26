@@ -287,6 +287,59 @@ test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet ru
   assert.equal(kbdRules(css), kbdRules(legacy), 'Kbd has no stylesheet: its marker carries no new rule');
 });
 
+test('UI ships the Switch track, thumb and state utilities without a Switch stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // Track geometry: 36×20 border-box pill on the --spacing scale (AC-05).
+  assert.match(rule('.w-9'), /width:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)\s*;/);
+  assert.match(rule('.h-5'), /height:\s*var\(--space-5\)\s*;/);
+  assert.match(rule('.box-border'), /box-sizing:\s*border-box\s*;/);
+  assert.match(rule('.border-border-control'), /border-color:\s*var\(--color-border-control[,)]/);
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)\s*;/);
+  // Checked: primary gradient, bevel/halo token and the black thumb moved 16px (D4).
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:bg-\[image\:var\(--gradient-btn-primary\)\][data-state="checked"]`),
+    /background-image:\s*var\(--gradient-btn-primary\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:shadow-\[var\(--shadow-btn-primary\)\][data-state="checked"]`),
+    /--tw-shadow:\s*var\(--shadow-btn-primary\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:translate-x-4[data-state="checked"]`),
+    /--tw-translate-x:\s*var\(--(?:space-4|spacing-4)\)\s*;\s*translate:/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:bg-action-primary-solid-fg[data-state="checked"]`),
+    /background-color:\s*var\(--color-action-primary-solid-fg[,)]/
+  );
+  assert.match(rule(String.raw`.size-3\.5`), /width:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*3\.5\)\s*;/);
+  // Thumb travel animates the translate property; reduced motion removes every transition (D6).
+  assert.match(
+    rule(String.raw`.transition-\[translate\,background-color\]`),
+    /transition-property:\s*translate,\s*background-color\s*;/
+  );
+  assert.match(css, /@property --tw-translate-y\s*\{[^}]*initial-value:\s*0/);
+  const reducedMotion = cssBlock(utilities, /@media \(prefers-reduced-motion: reduce\)\s*\{/);
+  assert.match(reducedMotion, /\.motion-reduce\\:transition-none\s*\{\s*transition-property:\s*none\s*;/);
+  // Focus ring wins over the checked halo through the higher-specificity checked+focus rule (AC-06).
+  assert.match(
+    rule(
+      String.raw`.data-\[state\=checked\]\:focus-visible\:shadow-\[var\(--shadow-focus\)\][data-state="checked"]:focus-visible`
+    ),
+    /--tw-shadow:\s*var\(--shadow-focus\)\s*;/
+  );
+  assert.match(rule(String.raw`.disabled\:opacity-45:disabled`), /opacity:\s*45%\s*;/);
+  // D11 no stylesheet: the marker carries no rule; legacy .eg-check--switch stays untouched.
+  assert.doesNotMatch(css, /\.eg-switch[^{]*\{/, 'Switch has no stylesheet: its marker carries no rule');
+  assert.match(css, /\.eg-check--switch input\s*\{/, 'Legacy switch styles remain until an approved migration');
+});
+
 test('UI ships the approved Gauge geometry in the components layer', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const components = cssBlock(css, /@layer components\s*\{/);
@@ -408,6 +461,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Spinner',
       'Stack',
       'Surface',
+      'Switch',
       'VisuallyHidden',
       'cn',
       'labelVariants',
@@ -421,6 +475,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(typeof exported.Skeleton, 'function', 'Skeleton must be a named root export');
   assert.equal(typeof exported.Spinner, 'function', 'Spinner must be a plain function component without a ref API');
   assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
+  assert.equal(
+    exported.Switch?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'Switch must be a forwardRef component whose ref targets the root button (D9)'
+  );
   assert.equal(
     exported.VisuallyHidden?.$$typeof,
     Symbol.for('react.forward_ref'),
@@ -486,6 +545,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SurfaceProps',
     'SurfaceRadius',
     'SurfaceTone',
+    'Switch',
+    'SwitchProps',
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'cn',
@@ -534,6 +595,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SurfaceRadius',
     'SurfaceTone',
     'surfaceVariants',
+    'Switch',
+    'SwitchProps',
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'labelVariants'
@@ -659,6 +722,35 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     /^<kbd class="eg-kbd [^"]*"><span aria-hidden="true">⌘K<\/span><span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Command K<\/span><\/kbd>$/
   );
   assert.doesNotMatch(symbolKey, /role=|aria-label=|tabindex=|data-state/);
+  // Switch: one Radix switch button with its thumb (AC-01). Without a DOM, Radix cannot detect a form
+  // ancestor during SSR, so it always emits its hidden bubble input after the button (AC-08).
+  const offSwitch = renderToString(createElement(exported.Switch, { 'aria-label': 'Stream alerts', id: 'alerts' }));
+  assert.match(offSwitch, /^<button type="button" role="switch" aria-checked="false"[^>]*>/);
+  assert.match(offSwitch, /data-state="unchecked"/);
+  assert.match(offSwitch, /value="on"/);
+  assert.match(offSwitch, /id="alerts"/);
+  assert.match(offSwitch, /aria-label="Stream alerts"/);
+  assert.match(offSwitch, /class="eg-switch /);
+  assert.match(
+    offSwitch,
+    /<span data-state="unchecked" class="absolute top-0\.5 left-0\.5 size-3\.5 [^"]*"><\/span><\/button><input type="checkbox" aria-hidden="true" tabindex="-1" [^>]*value="on"\/>$/
+  );
+  assert.doesNotMatch(offSwitch, /disabled=""|data-disabled|checked=""/);
+  const onSwitch = renderToString(
+    createElement(exported.Switch, { 'aria-label': 'Overlay', defaultChecked: true, disabled: true })
+  );
+  assert.match(onSwitch, /aria-checked="true"/);
+  assert.match(onSwitch, /disabled=""/);
+  assert.match(onSwitch, /data-disabled=""/);
+  assert.equal(onSwitch.match(/data-state="checked"/g)?.length, 2, 'Root and thumb expose the checked state');
+  const formSwitch = renderToString(
+    createElement('form', null, createElement(exported.Switch, { 'aria-label': 'Alerts', name: 'alerts' }))
+  );
+  assert.match(
+    formSwitch,
+    /<input type="checkbox" aria-hidden="true"[^>]*name="alerts"/,
+    'Form switches add Radix bubble input'
+  );
   const geometry = [
     ['line', 'sm', 'h-3', 'rounded-sm'],
     ['line', 'md', 'h-4', 'rounded-sm'],

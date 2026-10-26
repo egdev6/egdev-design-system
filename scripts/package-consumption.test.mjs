@@ -29,8 +29,8 @@ function run(cwd, command, args, timeout) {
 
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
-import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, VisuallyHidden } from '@egdev/ui';
+import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
+import { AspectRatio, Cluster, Divider, Gauge, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, Surface, Switch, VisuallyHidden, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -55,6 +55,7 @@ import type {
   SurfaceProps,
   SurfaceRadius,
   SurfaceTone,
+  SwitchProps,
   VisuallyHiddenProps
 } from '@egdev/ui';
 const slotProps: SlotProps = { 'aria-label': 'Composed documentation' };
@@ -166,6 +167,29 @@ export function KbdSamples() {
     createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
     createElement(Kbd, kbdNative));
 }
+// Switch: bare track named by a native label or aria-label, inside a form for submission (D2, AC-08).
+export const switchRef = createRef<HTMLButtonElement>();
+export const switchNative: SwitchProps = {
+  id: 'switch-native', 'aria-label': 'Native switch', 'aria-describedby': 'switch-hint', className: 'ms-1 ms-2 consumer-switch'
+};
+type SwitchSampleProps = { overlay?: boolean; onOverlayChange?: (checked: boolean) => void };
+export function SwitchSamples({ overlay = true, onOverlayChange }: SwitchSampleProps) {
+  return createElement('form', { id: 'switch-form' },
+    createElement('label', { htmlFor: 'switch-alerts' }, 'Stream alerts'),
+    createElement(Switch, { id: 'switch-alerts', name: 'alerts', required: true, ref: switchRef }),
+    createElement(Switch, {
+      id: 'switch-overlay', 'aria-label': 'Overlay visible', name: 'overlay', value: 'visible',
+      checked: overlay, onCheckedChange: onOverlayChange
+    }),
+    createElement(Switch, { id: 'switch-locked', 'aria-label': 'Locked', disabled: true, defaultChecked: true }),
+    createElement('p', { id: 'switch-hint' }, 'Applies immediately.'),
+    createElement(Switch, switchNative));
+}
+export function verifySwitchRefType(host: ComponentRef<typeof Switch>) {
+  const button: HTMLButtonElement = host;
+  return button;
+}
+export const switchRefProps: ComponentProps<typeof Switch> = { ref: createRef<HTMLButtonElement>(), 'aria-label': 'Ref' };
 export function VisuallyHiddenSamples() {
   return createElement('section', { 'aria-label': 'Hidden support content' },
     createElement(VisuallyHidden, { ...hiddenNote, ref: hiddenNoteRef }),
@@ -293,6 +317,22 @@ const referencedKbd: KbdProps = { children: 'K', ref: createRef<HTMLElement>() }
 const slottedKbd: KbdProps = { children: 'K', asChild: true };
 // @ts-expect-error Kbd has a single flat treatment; there are no variants (D4).
 const variantKbd: KbdProps = { children: 'K', variant: 'raised' };
+// @ts-expect-error Switch is a bare track; the visible text is a consumer label (D2).
+const labelledSwitch: SwitchProps = { label: 'Stream alerts' };
+// @ts-expect-error Switch renders only its thumb; children are not accepted.
+const childSwitch: SwitchProps = { children: 'On' };
+// @ts-expect-error Switch has a single 36x20 size in v0.1 (D5).
+const sizedSwitch: SwitchProps = { size: 'sm' };
+// @ts-expect-error Switch cannot delegate its root to a child.
+const slottedSwitch: SwitchProps = { asChild: true };
+// @ts-expect-error Changes are reported through onCheckedChange, not onChange (D3).
+const changeSwitch: SwitchProps = { onChange: () => undefined };
+// @ts-expect-error The submitted value is a string.
+const numericSwitch: SwitchProps = { value: 1 };
+// @ts-expect-error onCheckedChange receives the next boolean, not a string.
+const stringChangeSwitch: SwitchProps = { onCheckedChange: (checked: 'on') => checked };
+// @ts-expect-error The ref targets the root button, not a div (D9).
+const divRefSwitch: ComponentProps<typeof Switch> = { ref: createRef<HTMLDivElement>() };
 // @ts-expect-error Hidden content is required, not optional.
 const missingHiddenChildren: VisuallyHiddenProps = { id: 'orphan-hint' };
 // @ts-expect-error VisuallyHidden inherits span props; the anchor-only href is rejected.
@@ -596,6 +636,44 @@ function assertKbdCSS(css) {
   assert.match(css, /--tw-border-style:\s*solid/, 'The hairline border style must resolve without Tailwind');
 }
 
+// Switch ships its well/checked/thumb token utilities and Tailwind's translate initial values; no Switch stylesheet.
+function assertSwitchCSS(css) {
+  for (const utility of [
+    '.box-border',
+    '.border-border-control',
+    '.bg-surface-0',
+    '.bg-fg-secondary',
+    '.rounded-full',
+    '.shadow-\\[var\\(--shadow-well\\)\\]',
+    '.data-\\[state\\=checked\\]\\:bg-\\[image\\:var\\(--gradient-btn-primary\\)\\]',
+    '.data-\\[state\\=checked\\]\\:shadow-\\[var\\(--shadow-btn-primary\\)\\]',
+    '.data-\\[state\\=checked\\]\\:bg-action-primary-solid-fg',
+    '.data-\\[state\\=checked\\]\\:focus-visible\\:shadow-\\[var\\(--shadow-focus\\)\\]',
+    '.disabled\\:opacity-45',
+    '.motion-reduce\\:transition-none'
+  ]) {
+    assert.ok(css.includes(utility), 'Missing Switch utility ' + utility);
+  }
+  assert.match(css, /\.w-9\s*\{[^}]*width:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)/, 'Switch track width');
+  assert.match(
+    css,
+    /\.size-3\\\.5\s*\{[^}]*width:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*3\.5\)/,
+    'Switch thumb size'
+  );
+  assert.match(
+    css,
+    /\.data-\\\[state\\=checked\\\]\\:translate-x-4\[data-state="checked"\]\s*\{[^}]*translate:\s*var\(--tw-translate-x\)/,
+    'Switch thumb travel'
+  );
+  assert.match(
+    css,
+    /transition-property:\s*translate,\s*background-color/,
+    'The thumb animates the translate property'
+  );
+  assert.match(css, /--tw-translate-y:\s*0/, 'The translate pair must resolve without Tailwind');
+  assert.doesNotMatch(css, /\.eg-switch[^{]*\{/, 'Switch has no stylesheet: its marker carries no rule');
+}
+
 // Spinner ships Icon-scale presets, inherited stroke utilities and the canonical spin token with keyframes.
 function assertSpinnerCSS(css) {
   for (const utility of [
@@ -668,6 +746,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Spinner',
   'Stack',
   'Surface',
+  'Switch',
   'VisuallyHidden',
   'cn',
   'labelVariants',
@@ -678,11 +757,13 @@ ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertSwitchCSS.toString()}
 assertGaugeCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assertSkeletonCSS(shippedStyles);
 assertSpinnerCSS(shippedStyles);
 assertKbdCSS(shippedStyles);
+assertSwitchCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -709,7 +790,45 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, SlotSample } from './consumer.ts';
+import { App, SlotSample, SwitchSamples } from './consumer.ts';
+// Switch SSR: Radix switch buttons with thumbs; without a DOM, Radix always emits its hidden form input.
+const switchDocument = new JSDOM(renderToString(createElement(SwitchSamples)));
+try {
+  const switchForm = switchDocument.window.document.getElementById('switch-form');
+  const switches = [...switchForm.querySelectorAll('button.eg-switch')];
+  assert.equal(switches.length, 4, 'One root button per Switch');
+  for (const control of switches) {
+    assert.equal(control.getAttribute('role'), 'switch');
+    assert.equal(control.getAttribute('type'), 'button');
+    assert.equal(control.children.length, 1, 'Each Switch renders exactly its thumb');
+    assert.equal(control.firstElementChild.tagName, 'SPAN');
+    assert.equal(control.firstElementChild.getAttribute('data-state'), control.getAttribute('data-state'));
+    assert.equal(control.nextElementSibling?.getAttribute('type'), 'checkbox', 'Radix bubble input follows the button');
+    assert.equal(control.nextElementSibling?.getAttribute('aria-hidden'), 'true');
+  }
+  const alerts = switchDocument.window.document.getElementById('switch-alerts');
+  assert.equal(alerts.getAttribute('aria-checked'), 'false');
+  assert.equal(alerts.getAttribute('aria-required'), 'true');
+  assert.equal(alerts.getAttribute('value'), 'on');
+  assert.equal(alerts.nextElementSibling.getAttribute('name'), 'alerts');
+  assert.equal(switchForm.querySelector('label').getAttribute('for'), 'switch-alerts');
+  const overlay = switchDocument.window.document.getElementById('switch-overlay');
+  assert.equal(overlay.getAttribute('aria-checked'), 'true');
+  assert.equal(overlay.getAttribute('data-state'), 'checked');
+  assert.equal(overlay.nextElementSibling.getAttribute('value'), 'visible');
+  const locked = switchDocument.window.document.getElementById('switch-locked');
+  assert.equal(locked.hasAttribute('disabled'), true);
+  assert.equal(locked.hasAttribute('data-disabled'), true);
+  assert.equal(locked.getAttribute('aria-checked'), 'true');
+  const nativeSwitch = switchDocument.window.document.getElementById('switch-native');
+  assert.equal(nativeSwitch.getAttribute('aria-describedby'), 'switch-hint');
+  assert.ok(nativeSwitch.className.startsWith('eg-switch '), 'The public marker leads the root classes');
+  assert.ok(nativeSwitch.className.endsWith(' ms-2 consumer-switch'), 'Consumer layout classes merge last');
+  assert.ok(!nativeSwitch.className.split(' ').includes('ms-1'), 'Conflicting margin utilities resolve through cn()');
+  assert.ok(!nativeSwitch.firstElementChild.className.includes('consumer-switch'), 'The thumb takes no consumer classes');
+} finally {
+  switchDocument.window.close();
+}
 const slotDocument = new JSDOM(renderToString(createElement(SlotSample)));
 try {
   const target = slotDocument.window.document.body;
@@ -1030,7 +1149,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
+const { App, SwitchSamples, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -1236,7 +1355,51 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Kbd passive keys outside the Tab order', 'Label activation, forwarded ref and cleanup'] }));
+  stage('switch:start');
+  // Radix measures its hidden form input and listens for form resets through browser globals
+  // the harness does not expose by default: jsdom lacks ResizeObserver, real browsers have both.
+  globalThis.HTMLFormElement = dom.window.HTMLFormElement;
+  globalThis.ResizeObserver = class {
+    observe() { return undefined; }
+    unobserve() { return undefined; }
+    disconnect() { return undefined; }
+  };
+  const switchCalls = [];
+  const onOverlayChange = (next) => switchCalls.push(next);
+  await act(async () => root.render(createElement(SwitchSamples, { overlay: true, onOverlayChange })));
+  const switchForm = document.getElementById('switch-form');
+  const alertsSwitch = document.getElementById('switch-alerts');
+  assert.ok(switchRef.current === alertsSwitch, 'Switch must forward its ref to the root button');
+  assert.equal(alertsSwitch.getAttribute('aria-checked'), 'false');
+  assert.equal(new dom.window.FormData(switchForm).get('alerts'), null, 'An off switch submits nothing');
+  await act(async () => document.querySelector('label[for="switch-alerts"]').click());
+  assert.equal(alertsSwitch.getAttribute('aria-checked'), 'true', 'The associated label toggles the switch');
+  assert.equal(alertsSwitch.firstElementChild.getAttribute('data-state'), 'checked');
+  assert.equal(new dom.window.FormData(switchForm).get('alerts'), 'on', 'An on switch submits its default value');
+  await act(async () => switchForm.reset());
+  assert.equal(alertsSwitch.getAttribute('aria-checked'), 'false', 'A form reset restores the initial state');
+  assert.equal(new dom.window.FormData(switchForm).get('alerts'), null);
+  const overlaySwitch = document.getElementById('switch-overlay');
+  const overlayRecipe = overlaySwitch.className;
+  await act(async () => overlaySwitch.click());
+  assert.deepEqual(switchCalls, [false], 'onCheckedChange receives the next boolean');
+  assert.equal(overlaySwitch.getAttribute('aria-checked'), 'true', 'A controlled switch waits for its consumer');
+  await act(async () => root.render(createElement(SwitchSamples, { overlay: false, onOverlayChange })));
+  assert.ok(document.getElementById('switch-overlay') === overlaySwitch, 'Controlled updates preserve the root');
+  assert.equal(overlaySwitch.getAttribute('aria-checked'), 'false');
+  assert.equal(overlaySwitch.className, overlayRecipe, 'Radix state never mirrors into classes');
+  assert.equal(new dom.window.FormData(switchForm).get('overlay'), null);
+  const lockedSwitch = document.getElementById('switch-locked');
+  await act(async () => lockedSwitch.click());
+  assert.equal(lockedSwitch.disabled, true);
+  assert.equal(lockedSwitch.getAttribute('aria-checked'), 'true', 'A disabled switch cannot toggle');
+  assert.deepEqual(switchCalls, [false], 'A disabled switch emits nothing');
+  await act(async () => root.render(null));
+  assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
+  delete globalThis.ResizeObserver;
+  delete globalThis.HTMLFormElement;
+  stage('switch:complete');
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Kbd passive keys outside the Tab order', 'Label activation, forwarded ref and cleanup', 'Switch label toggle, controlled updates, form submission, disabled and ref cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1316,6 +1479,7 @@ ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertSwitchCSS.toString()}
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1326,6 +1490,7 @@ assert.match(
 assertSkeletonCSS(emitted);
 assertSpinnerCSS(emitted);
 assertKbdCSS(emitted);
+assertSwitchCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
@@ -1364,6 +1529,7 @@ assert.match(
 assertSkeletonCSS(twCss);
 assertSpinnerCSS(twCss);
 assertKbdCSS(twCss);
+assertSwitchCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
