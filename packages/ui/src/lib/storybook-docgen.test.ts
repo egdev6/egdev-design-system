@@ -137,6 +137,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/spinner',
       './atoms/status-dot',
       './atoms/textarea',
+      './atoms/tooltip',
       './lib/cn',
       './primitives/aspect-ratio',
       './primitives/divider',
@@ -173,12 +174,14 @@ describe('Storybook TypeScript docgen contract', () => {
       'Surface',
       'Text',
       'Textarea',
+      'Tooltip',
       'VisuallyHidden',
       'cn',
       'labelVariants',
       'progressBarVariants',
       'statusDotVariants',
-      'surfaceVariants'
+      'surfaceVariants',
+      'tooltipVariants'
     ]);
   });
 
@@ -1199,6 +1202,66 @@ describe('Kbd passive metadata contract', () => {
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick', 'variant', 'size']) {
       expect(props[prop], prop).toBeUndefined();
     }
+  }, 20_000);
+});
+
+describe('Tooltip metadata contract', () => {
+  const controls: Record<string, string> = { content: 'text', children: 'false', side: 'select', className: 'text' };
+
+  it('annotates exactly content, children, side and className with one control each', () => {
+    const file = ast(source('atoms/tooltip/types.ts'));
+    const properties = ownProps(file, ['TooltipProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(controls));
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(Boolean(property.questionToken), `Tooltip.${name} optionality`).toBe(
+        name === 'side' || name === 'className'
+      );
+      const tags = ts.getJSDocTags(property);
+      const values = (tagName: string) =>
+        tags.filter((tag) => tag.tagName.text === tagName).map((tag) => ts.getTextOfJSDocComment(tag.comment));
+      expect(values('control'), `Tooltip.${name} control`).toEqual([controls[name]]);
+      expect(values('default'), `Tooltip.${name} default`).toEqual(name === 'side' ? ['top'] : []);
+      if (name === 'children') {
+        expect(values('controlReason')[0]).toMatch(/ReactElement trigger is not serializable.*Default.*Sides/);
+      }
+    }
+  });
+
+  it('declares a standalone props type without native inheritance, ref or asChild', () => {
+    const file = ast(source('atoms/tooltip/types.ts'));
+    const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'TooltipProps');
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing TooltipProps declaration');
+    }
+    // A plain type literal: no inherited native or Radix props, so no ref, asChild or open state.
+    expect(ts.isTypeLiteralNode(alias.type)).toBe(true);
+    const members = ts.isTypeLiteralNode(alias.type)
+      ? alias.type.members.map((member) => member.name?.getText(file))
+      : [];
+    expect(members).toEqual(Object.keys(controls));
+  });
+
+  it('extracts required content/children, the ordered side choices and its top default', () => {
+    const doc = parser.parse(source('atoms/tooltip/Tooltip.tsx')).find((item) => item.displayName === 'Tooltip');
+    if (!doc) {
+      throw new Error('Missing docgen for Tooltip');
+    }
+    const { props } = doc;
+    expect(Object.keys(props).sort()).toEqual(['children', 'className', 'content', 'side']);
+    expect(props.content).toMatchObject({ required: true, tags: { control: 'text' } });
+    expect(props.content?.type.name).toBe('string');
+    expect(props.children).toMatchObject({ required: true, tags: { control: 'false' } });
+    expect(props.side).toMatchObject({ required: false, tags: { control: 'select' } });
+    expect(props.side?.type.value?.map((item: { value: string }) => normalize(item.value))).toEqual([
+      'top',
+      'right',
+      'bottom',
+      'left'
+    ]);
+    expect(normalize(props.side?.defaultValue?.value)).toBe('top');
+    expect(props.className).toMatchObject({ required: false, tags: { control: 'text' } });
+    expect(props.className?.description).toMatch(/Appearance overrides are unsupported/);
   }, 20_000);
 });
 

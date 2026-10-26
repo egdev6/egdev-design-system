@@ -393,7 +393,7 @@
     "radix": "Tooltip",
     "compone": "Portal",
     "accion": "nuevo",
-    "notas": "Hace falta para IconButton, ModuleRail y Gauge. No existe."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/75): supplementary plain text for one asChild trigger on Radix Tooltip, with its own provider, Radix default delays and its own portal (no separate Portal primitive). Material overlay bubble with solid surface-2 under reduced transparency, opacity fade without transform. Needed by IconButton, ModuleRail and Gauge. No stylesheet."
   },
   {
     "actual": "—",

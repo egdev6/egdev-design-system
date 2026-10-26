@@ -27,7 +27,8 @@ const components = [
   ['ProductMark', 'atoms/product-mark'],
   ['ProgressBar', 'atoms/progress-bar'],
   ['StatusDot', 'atoms/status-dot'],
-  ['Textarea', 'atoms/textarea']
+  ['Textarea', 'atoms/textarea'],
+  ['Tooltip', 'atoms/tooltip']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -106,6 +107,7 @@ const expected: Record<string, Record<string, string | false>> = {
   logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
+  tooltip: { content: 'text', children: false, side: 'select', className: 'text' },
   progressbar: {
     value: 'number',
     label: 'text',
@@ -137,6 +139,7 @@ const ownPropCounts: Record<string, number> = {
   logo: 4,
   statusdot: 2,
   kbd: 2,
+  tooltip: 4,
   progressbar: 6,
   textarea: 1,
   input: 4,
@@ -345,6 +348,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
+    ['Tooltip', { side: '"top"' }],
     ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }],
     ['Textarea', { variant: '"default"' }],
     ['Icon', { size: '"md"', filled: 'false' }],
@@ -534,6 +538,25 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Tooltip required content/children rows, the side choices and no native or open-state rows', () => {
+    const { argTypes, args } = story('Tooltip');
+    expect(argTypes.content?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.content?.control).toEqual({ type: 'text' });
+    expect(argTypes.children?.type).toMatchObject({ required: true });
+    expect(argTypes.children?.control).toBe(false);
+    expect(argTypes.children?.table?.disable).toBeUndefined();
+    expect(argTypes.side?.options).toEqual(['top', 'right', 'bottom', 'left']);
+    expect(argTypes.side?.control).toEqual({ type: 'select' });
+    expect(argTypes.className?.control).toEqual({ type: 'text' });
+    for (const prop of ['content', 'children', 'className']) {
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+    }
+    expect(args).toEqual({});
+    for (const prop of ['ref', 'asChild', 'open', 'defaultOpen', 'onOpenChange', 'delayDuration', 'align', 'id']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

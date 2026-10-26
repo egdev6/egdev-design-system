@@ -226,8 +226,8 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
     'Reduced-motion preferences must stop the pulse'
   );
   // Pulse (Skeleton) and spin (Spinner, #69) are the only approved animation utilities. Transitions
-  // are limited to the static Gauge transition-none and the ProgressBar fill transform (#65 AC-09);
-  // neither reaches the Skeleton.
+  // are limited to transition-none, the Tooltip opacity fade (#75 D10) and the ProgressBar fill transform
+  // (#65 AC-09); neither animated transition reaches the Skeleton.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
@@ -235,8 +235,8 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   );
   assert.doesNotMatch(
     utilityLayer,
-    /\.transition-(?!none\b|transform\b)\w/,
-    'Only the approved ProgressBar transform transition may ship'
+    /\.transition-(?!none\b|opacity\b|transform\b)\w/,
+    'Only the approved Tooltip opacity and ProgressBar transform transitions may ship'
   );
   assert.doesNotMatch(utilityLayer, /@keyframes/, 'The utilities layer must not define keyframes');
 });
@@ -365,6 +365,55 @@ test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet ru
   const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
   const kbdRules = (text) => (text.replace(/\/\*[\s\S]*?\*\//g, '').match(/\.eg-kbd[^{]*\{/g) ?? []).length;
   assert.equal(kbdRules(css), kbdRules(legacy), 'Kbd has no stylesheet: its marker carries no new rule');
+});
+
+test('UI ships the Tooltip overlay recipe, fallbacks and fade as token utilities without a stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector, scope = utilities) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(scope, new RegExp(`${escaped}\\s*\\{`));
+  };
+  assert.match(rule('.bg-surface-overlay'), /background-color:\s*var\(--color-surface-overlay[,)]/);
+  assert.match(
+    rule(String.raw`.backdrop-blur-\[var\(--blur-overlay\)\]`),
+    /--tw-backdrop-blur:\s*blur\(var\(--blur-overlay\)\)/
+  );
+  assert.match(rule('.backdrop-saturate-150'), /--tw-backdrop-saturate:\s*saturate\(150%\)/);
+  assert.match(rule('.border-border-hairline-strong'), /border-color:\s*var\(--color-border-hairline-strong[,)]/);
+  assert.match(
+    rule(String.raw`.shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-elev-3\)\]`),
+    /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-elev-3\)/
+  );
+  assert.match(rule('.rounded-sm'), /border-radius:\s*var\(--radius-sm[,)]/);
+  // D9: --space-1 x --space-2 through the token spacing scale.
+  assert.match(rule('.px-2'), /padding-inline:\s*var\(--space-2\)\s*;/);
+  assert.match(rule('.py-1'), /padding-block:\s*var\(--space-1\)\s*;/);
+  assert.match(rule('.text-fg-default'), /color:\s*var\(--color-fg-default[,)]/);
+  assert.match(
+    rule(String.raw`.max-w-\[var\(--radix-tooltip-content-available-width\)\]`),
+    /max-width:\s*var\(--radix-tooltip-content-available-width\)/
+  );
+  assert.match(rule('.transition-opacity'), /transition-property:\s*opacity/);
+  assert.match(rule(String.raw`.duration-\[var\(--duration-fast\)\]`), /transition-duration:\s*var\(--duration-fast\)/);
+  assert.match(rule(String.raw`.ease-\[var\(--ease-out\)\]`), /transition-timing-function:\s*var\(--ease-out\)/);
+  // D10: the enter fade starts from transparent through @starting-style; reduced motion drops the transition.
+  assert.match(
+    rule(String.raw`.starting\:opacity-0`, cssBlock(utilities, /@starting-style\s*\{/)),
+    /opacity:\s*0%?\s*;/
+  );
+  const reducedMotion = cssBlock(utilities, /@media \(prefers-reduced-motion: reduce\)\s*\{/);
+  assert.match(rule(String.raw`.motion-reduce\:transition-none`, reducedMotion), /transition-property:\s*none/);
+  // D8: solid surface-2 without blur or saturation under reduced transparency.
+  const reduced = [...utilities.matchAll(/@media \(prefers-reduced-transparency:\s*reduce\)\s*\{/g)]
+    .map((match) => cssBlock(utilities.slice(match.index), /@media[^{]*\{/))
+    .join('\n');
+  const fallback = (name) => rule(String.raw`.\[\@media\(prefers-reduced-transparency\:reduce\)\]\:` + name, reduced);
+  assert.match(fallback('bg-surface-2'), /background-color:\s*var\(--color-surface-2[,)]/);
+  assert.match(fallback('backdrop-blur-none'), /--tw-backdrop-blur:\s*;/);
+  assert.match(fallback('backdrop-saturate-100'), /--tw-backdrop-saturate:\s*saturate\(100%\)/);
+  // D12/D14: no z-index, no transform and no stylesheet rule for the public marker.
+  assert.doesNotMatch(css, /\.eg-tooltip[^{]*\{/, 'Tooltip has no stylesheet: its marker carries no rule');
 });
 
 test('UI ships the ProgressBar track, fill geometry and motion utilities without a ProgressBar stylesheet', () => {
@@ -805,12 +854,14 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Surface',
       'Text',
       'Textarea',
+      'Tooltip',
       'VisuallyHidden',
       'cn',
       'labelVariants',
       'progressBarVariants',
       'statusDotVariants',
-      'surfaceVariants'
+      'surfaceVariants',
+      'tooltipVariants'
     ],
     'Only approved components and cn are public runtime exports'
   );
@@ -823,6 +874,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(typeof exported.StatusDot, 'function', 'StatusDot must be a plain function component without a ref API');
   assert.equal(typeof exported.statusDotVariants, 'function', 'StatusDot composition recipe must be a public export');
   assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
+  assert.equal(typeof exported.Tooltip, 'function', 'Tooltip must be a plain function component without a ref API');
+  assert.equal(typeof exported.tooltipVariants, 'function', 'Tooltip overlay recipe must stay a public export');
   assert.equal(
     typeof exported.ProgressBar,
     'function',
@@ -947,13 +1000,16 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'TextareaProps',
     'TextareaVariant',
     'TitleVariant',
+    'Tooltip',
+    'TooltipProps',
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'cn',
     'labelVariants',
     'progressBarVariants',
     'statusDotVariants',
-    'surfaceVariants'
+    'surfaceVariants',
+    'tooltipVariants'
   ]);
   for (const name of [
     'Divider',
@@ -1024,6 +1080,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SurfaceRadius',
     'SurfaceTone',
     'surfaceVariants',
+    'Tooltip',
+    'TooltipProps',
+    'tooltipVariants',
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'labelVariants'
@@ -1236,6 +1295,15 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     /^<kbd class="eg-kbd [^"]*"><span aria-hidden="true">⌘K<\/span><span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Command K<\/span><\/kbd>$/
   );
   assert.doesNotMatch(symbolKey, /role=|aria-label=|tabindex=|data-state/);
+  // Tooltip: closed on the server; only the consumer trigger renders, with Radix's closed state (D2, D7).
+  const tooltipHtml = renderToString(
+    createElement(exported.Tooltip, {
+      content: 'Search the catalogue',
+      children: createElement('button', { type: 'button', 'aria-label': 'Search' }, '⌕')
+    })
+  );
+  assert.equal(tooltipHtml, '<button type="button" aria-label="Search" data-state="closed">⌕</button>');
+  assert.doesNotMatch(tooltipHtml, /role="tooltip"|eg-tooltip|aria-describedby|Search the catalogue/);
   // ProgressBar: Radix progressbar in percent, decorative without a label (D4), fill driven by one custom property (D8).
   const announced = renderToString(
     createElement(exported.ProgressBar, { label: 'Upload progress', value: 45, id: 'upload-progress' })

@@ -9,6 +9,7 @@ export * from './atoms/progress-bar';
 export * from './atoms/spinner';
 export * from './atoms/status-dot';
 export * from './atoms/textarea';
+export * from './atoms/tooltip';
 // Utilities
 export { cn } from './lib/cn';
 // Primitives
