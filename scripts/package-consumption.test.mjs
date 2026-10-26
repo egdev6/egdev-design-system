@@ -1030,7 +1030,7 @@ const names = shipped
     return name.startsWith('--') ? [name] : [];
   });
 const typography = ${JSON.stringify(typographyNames)};
-assert.equal(names.length, 237, 'Packed native artifact must expose 237 variables');
+assert.equal(names.length, 238, 'Packed native artifact must expose 238 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
