@@ -974,6 +974,51 @@ test('UI Link exports safe native and slotted navigation with decorative small I
   assert.doesNotMatch(slotted, /<svg|asChild=|external=|arrow=/);
 });
 
+test('UI ships exactly the approved Avatar utility recipe without new marker rules', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  for (const [selector, declaration] of [
+    ['.inline-grid', /display:\s*inline-grid\s*;/],
+    ['.bg-linear-135', /--tw-gradient-position:\s*135deg/],
+    ['.from-bg-deep', /--tw-gradient-from:\s*var\(--color-bg-deep[,)]/],
+    ['.to-primitive-red-neon', /--tw-gradient-to:\s*var\(--color-primitive-red-neon[,)]/],
+    ['.object-cover', /object-fit:\s*cover\s*;/],
+    [
+      String.raw`.ring-\[var\(--eg-avatar-ring\,var\(--color-bg-surface\)\)\]`,
+      /--tw-ring-color:\s*var\(--eg-avatar-ring,\s*var\(--color-bg-surface\)\)/
+    ]
+  ]) {
+    assert.match(rule(selector), declaration, selector);
+  }
+  for (const size of ['2.75', '3.25', '4.5', '5.5', '7.5']) {
+    const body = rule('.size-' + size.replace('.', '\\.'));
+    for (const property of ['width', 'height']) {
+      assert.match(body, new RegExp(`${property}:\\s*calc\\(var\\(--space-1\\) \\* ${size.replace('.', '\\.')}\\)`));
+    }
+  }
+  assert.match(utilities, /opacity-60\[data-state="paused"\]\s*\{\s*opacity:\s*60%/);
+  assert.match(utilities, /grayscale\[data-state="paused"\]\s*\{\s*--tw-grayscale:\s*grayscale\(100%\)/);
+  const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
+  const markers = (text) => (text.replace(/\/\*[\s\S]*?\*\//g, '').match(/\.eg-avatar[^{}]*\{/g) ?? []).length;
+  assert.equal(markers(css), markers(legacy), 'No stylesheet: legacy Avatar rules stay unchanged');
+  const { Avatar } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(
+    createElement(Avatar, { label: 'Channel on LinkedIn, paused', badgeIcon: 'linkedin', paused: true })
+  );
+  assert.match(html, /role="img"/);
+  assert.match(html, /aria-label="Channel on LinkedIn, paused"/);
+  assert.match(html, /data-state="paused"/);
+  assert.match(html, /eg-avatar__badge/);
+  assert.equal((html.match(/aria-label=/g) ?? []).length, 1);
+  assert.doesNotMatch(html, /<img|tabindex=|style=|is-paused/);
+});
+
 test('UI preserves Lucide notices for the system icon paths', () => {
   const notices = readFileSync(resolve(root, 'THIRD_PARTY_NOTICES.md'), 'utf8');
   for (const source of ['packages/ui/src/atoms/icon/icon-paths.ts', 'packages/ui/src/atoms/spinner/Spinner.tsx']) {
@@ -1204,6 +1249,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     Object.keys(exported).sort(),
     [
       'AspectRatio',
+      'Avatar',
       'Badge',
       'Button',
       'Cluster',
@@ -1326,6 +1372,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.deepEqual([...names].sort(), [
     'AspectRatio',
     'AspectRatioProps',
+    'Avatar',
+    'AvatarProps',
+    'AvatarSize',
     'Badge',
     'BadgeProps',
     'BadgeTone',
