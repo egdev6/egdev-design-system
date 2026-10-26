@@ -29,6 +29,7 @@ const components = [
   ['Spinner', 'atoms/spinner'],
   ['Slider', 'atoms/slider'],
   ['RadioGroup', 'atoms/radio-group'],
+  ['SearchTrigger', 'atoms/search-trigger'],
   ['Input', 'atoms/input'],
   ['Kbd', 'atoms/kbd'],
   ['Link', 'atoms/link'],
@@ -207,6 +208,7 @@ const expected: Record<string, Record<string, string | false>> = {
     variant: 'select',
     edge: 'boolean'
   },
+  searchtrigger: { label: 'text', shortcut: 'text', compact: 'boolean' },
   textarea: { variant: 'select' },
   input: { size: 'select', variant: 'select', type: 'select', icon: false },
   productmark: { monogram: 'text', label: 'text', href: 'text' },
@@ -260,6 +262,7 @@ const ownPropCounts: Record<string, number> = {
   link: 6,
   slider: 11,
   radiogroup: 9,
+  searchtrigger: 3,
   switch: 7,
   tooltip: 4,
   progressbar: 6,
@@ -483,6 +486,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       { label: '"Drag, paste or upload"', dropLabel: '"Drop here"', multiple: 'false', variant: '"default"' }
     ],
     ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }],
+    ['SearchTrigger', { label: '"Search…"', compact: 'false' }],
     ['Textarea', { variant: '"default"' }],
     ['Icon', { size: '"md"', filled: 'false' }],
     ['IconButton', { variant: '"ghost"', size: '"md"', asChild: 'false' }],
@@ -856,6 +860,33 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Dropzone', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'type', 'children', 'onDrop', 'onPaste', 'onDragEnter', 'over']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains SearchTrigger text/boolean rows, the absent shortcut default and host integration native rows', () => {
+    const { argTypes, args } = story('SearchTrigger');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.shortcut?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.shortcut?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.shortcut?.description).toMatch(/Omitted unless the host supplies a\s+real binding/);
+    expect(args).toEqual({});
+    for (const prop of [
+      'id',
+      'title',
+      'disabled',
+      'onClick',
+      'aria-describedby',
+      'aria-keyshortcuts',
+      'aria-haspopup',
+      'aria-expanded',
+      'aria-controls',
+      'className'
+    ]) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('SearchTrigger', false).argTypes[prop]);
+    }
+    for (const prop of ['ref', 'asChild', 'type', 'role', 'children', 'aria-label', 'aria-labelledby', 'onOpen']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

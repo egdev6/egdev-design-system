@@ -180,6 +180,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/product-mark',
       './atoms/progress-bar',
       './atoms/radio-group',
+      './atoms/search-trigger',
       './atoms/select',
       './atoms/slider',
       './atoms/spinner',
@@ -224,6 +225,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'ProductMark',
       'ProgressBar',
       'RadioGroup',
+      'SearchTrigger',
       'Select',
       'Skeleton',
       'Slider',
@@ -534,6 +536,62 @@ describe('Storybook TypeScript docgen contract', () => {
       'ConsumerLayout'
     ]);
     expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+  });
+
+  it('extracts SearchTrigger owned metadata and keeps the native button boundary', () => {
+    const file = ast(source('atoms/search-trigger/types.ts'));
+    const properties = ownProps(file, ['SearchTriggerProps']);
+    const expected: Record<string, string> = { label: 'text', shortcut: 'text', compact: 'boolean' };
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(expected));
+    for (const property of properties) {
+      const controls = ts.getJSDocTags(property).filter((tag) => tag.tagName.text === 'control');
+      expect(controls).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe(expected[property.name.getText(file)]);
+    }
+    const doc = parser
+      .parse(source('atoms/search-trigger/SearchTrigger.tsx'))
+      .find((item) => item.displayName === 'SearchTrigger');
+    expect(doc?.props.label).toMatchObject({ required: false, defaultValue: { value: 'Search…' } });
+    expect(doc?.props.compact).toMatchObject({ required: false, defaultValue: { value: 'false' } });
+    expect(doc?.props.shortcut).toMatchObject({ required: false, defaultValue: null });
+    for (const name of [
+      'id',
+      'disabled',
+      'onClick',
+      'className',
+      'aria-describedby',
+      'aria-keyshortcuts',
+      'aria-haspopup',
+      'aria-expanded',
+      'aria-controls'
+    ]) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'type',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'aria-pressed',
+      'asChild',
+      'onOpen'
+    ]) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const stories = ast(source('atoms/search-trigger/SearchTrigger.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'MacHint',
+      'WindowsHint',
+      'Compact',
+      'CustomLabel',
+      'Disabled',
+      'FullWidth',
+      'Activation'
+    ]);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+    expect(stories.getText()).toMatch(/title: 'Atoms\/SearchTrigger'/);
   });
 
   it('annotates each own VisuallyHidden prop without fabricating a content default', () => {
