@@ -44,6 +44,47 @@ function cssBlock(css, opening) {
   assert.fail(`Unclosed emitted CSS block ${opening}`);
 }
 
+// Match escaped emitted selectors, not unescaped CVA class names; allow only complete approved utilities.
+const unapprovedTransitionUtility =
+  /\.transition-(?!(?:none|opacity|transform|colors|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[translate\\,background-color\\\])(?=\s*\{))[\w\\]/;
+
+test('transition utility guard accepts only the exact approved emitted selectors', () => {
+  for (const selector of [
+    '.transition-none',
+    '.transition-opacity',
+    '.transition-transform',
+    '.transition-colors',
+    String.raw`.transition-\[background-color\,border-color\]`,
+    String.raw`.transition-\[border-color\,box-shadow\]`,
+    String.raw`.transition-\[translate\,background-color\]`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.doesNotMatch(`${selector} { transition-property: none; }`, unapprovedTransitionUtility, selector);
+  }
+});
+
+test('transition utility guard rejects unrelated named and arbitrary transitions', () => {
+  for (const selector of [
+    '.transition-all',
+    '.transition-width',
+    '.transition-opacity-extra',
+    '.transition-none-extra',
+    '.transition-transform-extra',
+    String.raw`.transition-\[all\]`,
+    String.raw`.transition-\[width\]`,
+    String.raw`.transition-\[background-color\,border-color\,opacity\]`,
+    String.raw`.transition-\[border-color\,box-shadow\,opacity\]`,
+    String.raw`.transition-\[translate\,background-color\,width\]`,
+    String.raw`.transition-\[translate\,background-color\]extra`
+  ]) {
+    assert.throws(
+      () => assert.doesNotMatch(`${selector} { transition-property: all; }`, unapprovedTransitionUtility),
+      { code: 'ERR_ASSERTION' },
+      selector
+    );
+  }
+});
+
 test('UI publishes its stable declaration entry and reachable internal declarations', (context) => {
   assert.equal(ui.exports['.'].types, './dist/index.d.ts');
   assert.equal(ui.types, ui.exports['.'].types);
@@ -263,9 +304,11 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
     /animation:\s*none\s*;/,
     'Reduced-motion preferences must stop the pulse'
   );
-  // Pulse (Skeleton) and spin (Spinner, #69) are the only approved animation utilities. Transitions
-  // are limited to none, Tooltip opacity (#75), ProgressBar transform (#65), Input/Textarea's exact
-  // bracket recipe and Dropzone colors (#56). None of the animated transitions reaches Skeleton.
+  // Pulse (Skeleton) and spin (Spinner, #69) are the only approved animation utilities.
+  // Transitions are limited to none, Tooltip opacity (#75 D10), ProgressBar transform (#65 AC-09),
+  // Input/Textarea border-color and box-shadow, Switch track background-color and border-color,
+  // Switch thumb translate and background-color, and Dropzone colors (#56).
+  // None of the animated transitions reach the Skeleton.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
@@ -273,8 +316,8 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   );
   assert.doesNotMatch(
     utilityLayer,
-    /\.transition-(?!none\b|opacity\b|transform\b|colors\b|\\\[border-color\\,box-shadow\\\])(?:\w|\\\[)/,
-    'Only none, opacity, transform, colors and the exact Input/Textarea bracket transition may ship'
+    unapprovedTransitionUtility,
+    'Only the exact approved component transition utilities may ship'
   );
   assert.doesNotMatch(utilityLayer, /@keyframes/, 'The utilities layer must not define keyframes');
 });
@@ -452,6 +495,59 @@ test('UI ships the Tooltip overlay recipe, fallbacks and fade as token utilities
   assert.match(fallback('backdrop-saturate-100'), /--tw-backdrop-saturate:\s*saturate\(100%\)/);
   // D12/D14: no z-index, no transform and no stylesheet rule for the public marker.
   assert.doesNotMatch(css, /\.eg-tooltip[^{]*\{/, 'Tooltip has no stylesheet: its marker carries no rule');
+});
+
+test('UI ships the Switch track, thumb and state utilities without a Switch stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // Track geometry: 36×20 border-box pill on the --spacing scale (AC-05).
+  assert.match(rule('.w-9'), /width:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)\s*;/);
+  assert.match(rule('.h-5'), /height:\s*var\(--space-5\)\s*;/);
+  assert.match(rule('.box-border'), /box-sizing:\s*border-box\s*;/);
+  assert.match(rule('.border-border-control'), /border-color:\s*var\(--color-border-control[,)]/);
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)\s*;/);
+  // Checked: primary gradient, bevel/halo token and the black thumb moved 16px (D4).
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:bg-\[image\:var\(--gradient-btn-primary\)\][data-state="checked"]`),
+    /background-image:\s*var\(--gradient-btn-primary\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:shadow-\[var\(--shadow-btn-primary\)\][data-state="checked"]`),
+    /--tw-shadow:\s*var\(--shadow-btn-primary\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:translate-x-4[data-state="checked"]`),
+    /--tw-translate-x:\s*var\(--(?:space-4|spacing-4)\)\s*;\s*translate:/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:bg-action-primary-solid-fg[data-state="checked"]`),
+    /background-color:\s*var\(--color-action-primary-solid-fg[,)]/
+  );
+  assert.match(rule(String.raw`.size-3\.5`), /width:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*3\.5\)\s*;/);
+  // Thumb travel animates the translate property; reduced motion removes every transition (D6).
+  assert.match(
+    rule(String.raw`.transition-\[translate\,background-color\]`),
+    /transition-property:\s*translate,\s*background-color\s*;/
+  );
+  assert.match(css, /@property --tw-translate-y\s*\{[^}]*initial-value:\s*0/);
+  const reducedMotion = cssBlock(utilities, /@media \(prefers-reduced-motion: reduce\)\s*\{/);
+  assert.match(reducedMotion, /\.motion-reduce\\:transition-none\s*\{\s*transition-property:\s*none\s*;/);
+  // Focus ring wins over the checked halo through the higher-specificity checked+focus rule (AC-06).
+  assert.match(
+    rule(
+      String.raw`.data-\[state\=checked\]\:focus-visible\:shadow-\[var\(--shadow-focus\)\][data-state="checked"]:focus-visible`
+    ),
+    /--tw-shadow:\s*var\(--shadow-focus\)\s*;/
+  );
+  assert.match(rule(String.raw`.disabled\:opacity-45:disabled`), /opacity:\s*45%\s*;/);
+  // D11 no stylesheet: the marker carries no rule; legacy .eg-check--switch stays untouched.
+  assert.doesNotMatch(css, /\.eg-switch[^{]*\{/, 'Switch has no stylesheet: its marker carries no rule');
+  assert.match(css, /\.eg-check--switch input\s*\{/, 'Legacy switch styles remain until an approved migration');
 });
 
 test('UI ships the ProgressBar track, fill geometry and motion utilities without a ProgressBar stylesheet', () => {
@@ -891,6 +987,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Stack',
       'StatusDot',
       'Surface',
+      'Switch',
       'Text',
       'Textarea',
       'Tooltip',
@@ -938,6 +1035,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     typeof exported.ProductMark,
     'function',
     'ProductMark must be a plain function component without a ref API (D9)'
+  );
+  assert.equal(
+    exported.Switch?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'Switch must be a forwardRef component whose ref targets the root button (D9)'
   );
   assert.equal(
     exported.VisuallyHidden?.$$typeof,
@@ -1036,6 +1138,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SurfaceProps',
     'SurfaceRadius',
     'SurfaceTone',
+    'Switch',
+    'SwitchProps',
     'Text',
     'TextProps',
     'TextTone',
@@ -1128,6 +1232,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SurfaceRadius',
     'SurfaceTone',
     'surfaceVariants',
+    'Switch',
+    'SwitchProps',
     'Tooltip',
     'TooltipProps',
     'tooltipVariants',
@@ -1353,6 +1459,35 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     /^<kbd class="eg-kbd [^"]*"><span aria-hidden="true">⌘K<\/span><span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Command K<\/span><\/kbd>$/
   );
   assert.doesNotMatch(symbolKey, /role=|aria-label=|tabindex=|data-state/);
+  // Switch: one Radix switch button with its thumb (AC-01). Without a DOM, Radix cannot detect a form
+  // ancestor during SSR, so it always emits its hidden bubble input after the button (AC-08).
+  const offSwitch = renderToString(createElement(exported.Switch, { 'aria-label': 'Stream alerts', id: 'alerts' }));
+  assert.match(offSwitch, /^<button type="button" role="switch" aria-checked="false"[^>]*>/);
+  assert.match(offSwitch, /data-state="unchecked"/);
+  assert.match(offSwitch, /value="on"/);
+  assert.match(offSwitch, /id="alerts"/);
+  assert.match(offSwitch, /aria-label="Stream alerts"/);
+  assert.match(offSwitch, /class="eg-switch /);
+  assert.match(
+    offSwitch,
+    /<span data-state="unchecked" class="absolute top-0\.5 left-0\.5 size-3\.5 [^"]*"><\/span><\/button><input type="checkbox" aria-hidden="true" tabindex="-1" [^>]*value="on"\/>$/
+  );
+  assert.doesNotMatch(offSwitch, /disabled=""|data-disabled|checked=""/);
+  const onSwitch = renderToString(
+    createElement(exported.Switch, { 'aria-label': 'Overlay', defaultChecked: true, disabled: true })
+  );
+  assert.match(onSwitch, /aria-checked="true"/);
+  assert.match(onSwitch, /disabled=""/);
+  assert.match(onSwitch, /data-disabled=""/);
+  assert.equal(onSwitch.match(/data-state="checked"/g)?.length, 2, 'Root and thumb expose the checked state');
+  const formSwitch = renderToString(
+    createElement('form', null, createElement(exported.Switch, { 'aria-label': 'Alerts', name: 'alerts' }))
+  );
+  assert.match(
+    formSwitch,
+    /<input type="checkbox" aria-hidden="true"[^>]*name="alerts"/,
+    'Form switches add Radix bubble input'
+  );
   // Tooltip: closed on the server; only the consumer trigger renders, with Radix's closed state (D2, D7).
   const tooltipHtml = renderToString(
     createElement(exported.Tooltip, {

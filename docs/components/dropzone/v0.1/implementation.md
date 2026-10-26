@@ -95,6 +95,29 @@ Follow-up commands:
 
 No full build, full suite or packed rerun was authorized for this follow-up; the parent owns those after current-main integration. Browser/visual/native picker behavior remains Not evaluated. Writer self-verification is the evidence here; the parent reported native assessment unavailable for the untracked explicit selection, not an independent review pass.
 
+## Switch-main additive integration
+
+The parent reported complete-file commits `34ce94b`, `1c32f68` and `d9f8db5`, then merged `origin/main` at `cb3a26e` (Switch #156). Its frozen-install job 58 completed successfully. Those Git/install actions belong to the parent; the writer performed no Git mutation or installation.
+
+The writer resolved text conflicts only in `packages/ui/src/lib/storybook-controls.test.ts`, `scripts/package-consumption.test.mjs` and `scripts/package-exports.test.mjs`, plus this evidence update. Generated naming/catalog documents were already merged; `props:check` reports the naming view current, so no regeneration or generated-document edit was needed.
+
+- Controls retain independent complete Dropzone and Switch assertions, both component registrations, all native/default rows, and own metadata counts 6 and 7 respectively.
+- Packed fixtures retain one React type import, both complete samples and strict negative cases, the previous App props/scenes, both runtime exports, and both CSS helper definitions/serializations with entry/native-Vite/Tailwind calls. Both SSR scenes and CSR stages/summary entries are retained. Dropzone constructs files through window.File and Switch constructs FormData through dom.window.FormData; the shared DOM realm stays alive until the final root unmount and window.close, after the Switch scene. No DOM node is compared with deep equality. The existing 255-token assertion is unchanged.
+- The transition guard uses main's complete-selector boundaries and exact inventory: none, opacity, transform, [background-color,border-color], [border-color,box-shadow], [translate,background-color], plus only the approved Dropzone colors recipe. transition-colors moves into the positive inventory; transition-width replaces it among the 11 negative cases. Suffix extensions and arbitrary property supersets remain rejected by the complete-selector boundary. These package-script cases are retained source coverage, not an executed export/packed gate in this integration pass.
+- Dropzone's hardened hook/test files were not edited: its 15-test behavior, snapshot-before-reset correction and source evidence remain intact. Registry approval receipts and regressions were not rewritten; the naming suite passes.
+
+Observed integration validation:
+
+| Exact command | Result |
+| --- | --- |
+| `timeout 300 systemd-run --user --scope -q -p MemoryMax=2G pnpm exec vitest run packages/ui/src/atoms/dropzone packages/ui/src/atoms/switch packages/ui/src/lib --maxWorkers=2` | 12 files / 285 tests passed. |
+| `flock /tmp/egdev-gates.lock timeout 900 systemd-run --user --scope -q -p MemoryMax=3G pnpm lint` | Passed; 287 files checked. |
+| `flock /tmp/egdev-gates.lock timeout 900 systemd-run --user --scope -q -p MemoryMax=3G pnpm typecheck` | Passed; root and UI checks. |
+| `flock /tmp/egdev-gates.lock timeout 900 systemd-run --user --scope -q -p MemoryMax=3G pnpm props:check` | Passed; registry valid and generated view current. |
+| `flock /tmp/egdev-gates.lock timeout 900 systemd-run --user --scope -q -p MemoryMax=3G pnpm test:props` | 82 passed. |
+
+Strict TDD was not activated for this merge-resolution task; no new RED/GREEN lifecycle is claimed. The earlier 674-unit/eight-gate record remains historical, not verification of the merged tree. Full build/export/packed/full-suite gates remain the parent's next step. Browser, visual and Controls-widget checks remain Not evaluated.
+
 ## Deviations and limits
 
 - No contract behavior/API deviation. Narrow native paint resets are documented above. The DragOver story is an interactive scenario rather than a fabricated static internal-state prop.
@@ -109,7 +132,7 @@ No full build, full suite or packed rerun was authorized for this follow-up; the
 2. `test(ui): integrate Dropzone metadata and packed consumers` — package root export, compiled CSS source, `.storybook/main.ts`, `.storybook/preview.css`, both complete Storybook test files, and both complete package test scripts (approximately 320 changed lines). Retain every earlier API and fixture.
 3. `docs(ui): register Dropzone contract evidence` — registry JSON, generated naming view, naming regression test, catalog source and both generated catalog outputs, plus this implementation evidence. Historical receipts remain byte-identical.
 
-These are suggested review units, not commits performed by the writer.
+These were suggested review units, not commits performed by the writer. The parent subsequently reported the three complete-file commits recorded in the integration section above.
 
 ## Ready PR body
 
@@ -124,6 +147,7 @@ These are suggested review units, not commits performed by the writer.
 - Initial behavioral RED: 7 failed / 4 passed; GREEN: 11 passed. Initial focused component/metadata: 164 passed.
 - Bounded picker correction RED: 2 failed / 13 passed; GREEN: 15 passed, with focused typecheck/lint verification. Selected File objects are snapshotted before reset; consumers still run after reset.
 - Before that correction, all eight gates passed: 674 unit tests, 82 naming tests, 31 export tests and 12 packed-matrix tests. Parent reruns full gates after current-main integration; do not treat the earlier build/packed results as post-correction evidence.
+- Switch-main integration: 12 focused files / 285 tests, lint (287 files), typecheck, naming check and 82 naming tests pass. Full merged-tree build/export/packed/full-suite gates remain with the parent.
 - Browser/visual/Controls checks: Not evaluated; owner reviews Storybook on main. No CI run claimed.
 - Existing packed ProgressBar nesting warnings are reported and left unchanged.
 

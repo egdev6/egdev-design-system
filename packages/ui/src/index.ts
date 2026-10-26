@@ -9,6 +9,7 @@ export * from './atoms/product-mark';
 export * from './atoms/progress-bar';
 export * from './atoms/spinner';
 export * from './atoms/status-dot';
+export * from './atoms/switch';
 export * from './atoms/textarea';
 export * from './atoms/tooltip';
 // Utilities

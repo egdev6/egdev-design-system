@@ -137,6 +137,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/progress-bar',
       './atoms/spinner',
       './atoms/status-dot',
+      './atoms/switch',
       './atoms/textarea',
       './atoms/tooltip',
       './lib/cn',
@@ -174,6 +175,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Stack',
       'StatusDot',
       'Surface',
+      'Switch',
       'Text',
       'Textarea',
       'Tooltip',
@@ -1265,6 +1267,94 @@ describe('Kbd passive metadata contract', () => {
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick', 'variant', 'size']) {
       expect(props[prop], prop).toBeUndefined();
     }
+  }, 20_000);
+});
+
+describe('Switch metadata contract', () => {
+  const switchControls: Record<string, string> = {
+    checked: 'boolean',
+    defaultChecked: 'boolean',
+    onCheckedChange: 'false',
+    disabled: 'boolean',
+    required: 'boolean',
+    name: 'text',
+    value: 'text'
+  };
+  const switchDefaults: Record<string, string> = {
+    defaultChecked: 'false',
+    disabled: 'false',
+    required: 'false',
+    value: 'on'
+  };
+
+  it('annotates every own prop with one control and only actual constant defaults (AC-11)', () => {
+    const file = ast(source('atoms/switch/types.ts'));
+    const properties = ownProps(file, ['SwitchProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(switchControls));
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(property.questionToken, `Switch.${name} stays optional`).toBeTruthy();
+      const tags = ts.getJSDocTags(property);
+      const values = (tagName: string) =>
+        tags.filter((tag) => tag.tagName.text === tagName).map((tag) => ts.getTextOfJSDocComment(tag.comment));
+      expect(values('control'), `Switch.${name} control`).toEqual([switchControls[name]]);
+      expect(values('default'), `Switch.${name} default`).toEqual(switchDefaults[name] ? [switchDefaults[name]] : []);
+      if (name === 'onCheckedChange') {
+        expect(values('controlReason')[0]).toMatch(/Event handler.*Controlled story/);
+      }
+    }
+  });
+
+  it('binds the documented defaults to the hook destructuring', () => {
+    expect(defaults(source('atoms/switch/useSwitch.ts'), false)).toEqual(switchDefaults);
+  });
+
+  it('omits the Radix-owned and re-declared button props and exposes no asChild', () => {
+    const file = ast(source('atoms/switch/types.ts'));
+    const alias = file.statements.find(
+      (node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'SwitchNativeProps'
+    );
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing SwitchNativeProps declaration');
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const union = node.typeArguments[1];
+        if (union && ts.isUnionTypeNode(union)) {
+          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual(['checked', 'defaultChecked', 'onChange', 'value', 'type', 'children', 'disabled', 'name']);
+    expect(alias.type.getText(file)).toMatch(/ComponentPropsWithoutRef<'button'>/);
+    expect(file.getText()).not.toMatch(/asChild/);
+  });
+
+  it('extracts the own rows, real defaults and only the documented native rows', () => {
+    const doc = parser.parse(source('atoms/switch/Switch.tsx')).find((item) => item.displayName === 'Switch');
+    if (!doc) {
+      throw new Error('Missing docgen for Switch');
+    }
+    const { props } = doc;
+    for (const [prop, control] of Object.entries(switchControls)) {
+      expect(props[prop], `Switch.${prop}`).toMatchObject({ required: false, tags: { control } });
+      expect(normalize(props[prop]?.defaultValue?.value ?? ''), `Switch.${prop} default`).toBe(
+        switchDefaults[prop] ?? ''
+      );
+    }
+    for (const prop of ['checked', 'defaultChecked', 'disabled', 'required']) {
+      expect(props[prop]?.type.name, prop).toBe('boolean');
+    }
+    for (const prop of ['name', 'value']) {
+      expect(props[prop]?.type.name, prop).toBe('string');
+    }
+    expect(props.checked?.description).toMatch(/When omitted the switch is uncontrolled/);
+    expect(Object.keys(props).sort()).toEqual(
+      [...Object.keys(switchControls), 'id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className'].sort()
+    );
   }, 20_000);
 });
 

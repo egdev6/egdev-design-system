@@ -792,7 +792,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Switch",
+        "type": "(checked: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/switch/types.ts",
+          "symbol": "SwitchProps",
+          "revision": "sha256:52991e3a2a1eec3558bc639541b69018f2590a904261e240c4b8fc1313699bf2"
+        }
+      }
+    ]
   },
   {
     "id": "pressed-state",

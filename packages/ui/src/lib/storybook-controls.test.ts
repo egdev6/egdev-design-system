@@ -28,6 +28,7 @@ const components = [
   ['ProductMark', 'atoms/product-mark'],
   ['ProgressBar', 'atoms/progress-bar'],
   ['StatusDot', 'atoms/status-dot'],
+  ['Switch', 'atoms/switch'],
   ['Textarea', 'atoms/textarea'],
   ['Tooltip', 'atoms/tooltip']
 ] as const;
@@ -116,6 +117,15 @@ const expected: Record<string, Record<string, string | false>> = {
   logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
+  switch: {
+    checked: 'boolean',
+    defaultChecked: 'boolean',
+    onCheckedChange: false,
+    disabled: 'boolean',
+    required: 'boolean',
+    name: 'text',
+    value: 'text'
+  },
   tooltip: { content: 'text', children: false, side: 'select', className: 'text' },
   progressbar: {
     value: 'number',
@@ -149,6 +159,7 @@ const ownPropCounts: Record<string, number> = {
   logo: 4,
   statusdot: 2,
   kbd: 2,
+  switch: 7,
   tooltip: 4,
   progressbar: 6,
   textarea: 1,
@@ -358,6 +369,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
+    ['Switch', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }],
     ['Tooltip', { side: '"top"' }],
     [
       'Dropzone',
@@ -570,6 +582,26 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Dropzone', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'type', 'children', 'onDrop', 'onPaste', 'onDragEnter', 'over']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Switch boolean state rows, the handler row without a widget and documented native rows', () => {
+    const { argTypes, args } = story('Switch');
+    for (const prop of ['checked', 'defaultChecked', 'disabled', 'required']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'boolean', required: false });
+      expect(argTypes[prop]?.control, prop).toEqual({ type: 'boolean' });
+    }
+    expect(argTypes.checked?.table?.defaultValue, 'checked has no fixed default').toBeUndefined();
+    expect(argTypes.name?.table?.defaultValue, 'name is absent by default').toBeUndefined();
+    expect(argTypes.onCheckedChange?.control).toBe(false);
+    expect(argTypes.onCheckedChange?.table?.disable).toBeUndefined();
+    expect(argTypes.onCheckedChange?.description).toBeTruthy();
+    expect(args).toEqual({});
+    for (const prop of ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className']) {
+      expect(argTypes[prop], prop).toEqual(story('Switch', false).argTypes[prop]);
+    }
+    for (const prop of ['ref', 'asChild', 'children', 'type', 'onChange', 'onClick', 'size', 'variant']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });
