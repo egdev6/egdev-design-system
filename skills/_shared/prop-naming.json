@@ -23,6 +23,16 @@
           "symbol": "GaugeProps",
           "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
         }
+      },
+      {
+        "component": "ProgressBar",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
       }
     ]
   },
@@ -114,6 +124,26 @@
         }
       },
       {
+        "component": "ProgressBar",
+        "type": "ProgressBarSize (sm|lg)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
+      },
+      {
+        "component": "Input",
+        "type": "InputSize (md|sm)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/input/types.ts",
+          "symbol": "InputProps",
+          "revision": "sha256:e972763e1f269e87d3b1306727a45e576aaaa1497833f48447af9fc86f7d182f"
+        }
+      },
+      {
         "component": "Logo",
         "type": "LogoSize",
         "status": "existing",
@@ -168,6 +198,36 @@
           "path": "packages/ui/src/primitives/label/types.ts",
           "symbol": "LabelProps",
           "revision": "sha256:afb762cb8e578348f234a11763dcdbda2c7303cfc02fdd3f385e9f4114ac93a3"
+        }
+      },
+      {
+        "component": "ProgressBar",
+        "type": "ProgressBarVariant (default|muted)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
+      },
+      {
+        "component": "Textarea",
+        "type": "TextareaVariant (default|code|prose)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/textarea/types.ts",
+          "symbol": "TextareaProps",
+          "revision": "sha256:9c34b2b174e78bfb667ce1b0f27dc41b8b4432e88099b65699928a5782a667c7"
+        }
+      },
+      {
+        "component": "Input",
+        "type": "InputVariant (default|code)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/input/types.ts",
+          "symbol": "InputProps",
+          "revision": "sha256:e972763e1f269e87d3b1306727a45e576aaaa1497833f48447af9fc86f7d182f"
         }
       },
       {
@@ -342,6 +402,16 @@
         }
       },
       {
+        "component": "ProgressBar",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
+      },
+      {
         "component": "Logo",
         "type": "string",
         "status": "existing",
@@ -460,6 +530,16 @@
           "path": "packages/ui/src/atoms/gauge/types.ts",
           "symbol": "GaugeProps",
           "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
+        }
+      },
+      {
+        "component": "ProgressBar",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
         }
       }
     ]
@@ -605,6 +685,16 @@
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
           "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
+        }
+      },
+      {
+        "component": "Input",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/input/types.ts",
+          "symbol": "InputProps",
+          "revision": "sha256:e972763e1f269e87d3b1306727a45e576aaaa1497833f48447af9fc86f7d182f"
         }
       }
     ]
@@ -973,7 +1063,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "ProgressBar",
+        "type": "boolean (size='sm' only; false with size='lg')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/progress-bar/types.ts",
+          "symbol": "ProgressBarProps",
+          "revision": "sha256:24333aa44912ecce88ce5e0bf27f04ccf838a6ee0c1b723b01574cbbf4c67a6b"
+        }
+      }
+    ]
   },
   {
     "id": "choice-options",

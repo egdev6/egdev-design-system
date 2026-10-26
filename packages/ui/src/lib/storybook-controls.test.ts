@@ -16,16 +16,19 @@ const components = [
   ['Heading', 'primitives/text'],
   ['Icon', 'atoms/icon'],
   ['IconButton', 'atoms/icon-button'],
-  ['Stack', 'primitives/stack'],
-  ['Text', 'primitives/text'],
-  ['Surface', 'primitives/surface'],
-  ['VisuallyHidden', 'primitives/visually-hidden'],
+  ['Input', 'atoms/input'],
+  ['Kbd', 'atoms/kbd'],
+  ['Logo', 'atoms/logo'],
+  ['ProductMark', 'atoms/product-mark'],
+  ['ProgressBar', 'atoms/progress-bar'],
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
-  ['Logo', 'atoms/logo'],
+  ['Stack', 'primitives/stack'],
   ['StatusDot', 'atoms/status-dot'],
-  ['Kbd', 'atoms/kbd'],
-  ['ProductMark', 'atoms/product-mark']
+  ['Surface', 'primitives/surface'],
+  ['Text', 'primitives/text'],
+  ['Textarea', 'atoms/textarea'],
+  ['VisuallyHidden', 'primitives/visually-hidden']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -105,6 +108,16 @@ const expected: Record<string, Record<string, string | false>> = {
   logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
+  progressbar: {
+    value: 'number',
+    label: 'text',
+    valueText: 'text',
+    size: 'select',
+    variant: 'select',
+    edge: 'boolean'
+  },
+  textarea: { variant: 'select' },
+  input: { size: 'select', variant: 'select', type: 'select', icon: false },
   productmark: { monogram: 'text', label: 'text', href: 'text' },
   gauge: {
     label: 'text',
@@ -127,6 +140,9 @@ const ownPropCounts: Record<string, number> = {
   logo: 4,
   statusdot: 2,
   kbd: 2,
+  progressbar: 6,
+  textarea: 1,
+  input: 4,
   productmark: 3,
   visuallyhidden: 2,
   stack: 4,
@@ -332,8 +348,11 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
+    ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }],
+    ['Textarea', { variant: '"default"' }],
     ['Icon', { size: '"md"', filled: 'false' }],
     ['IconButton', { variant: '"ghost"', size: '"md"', asChild: 'false' }],
+    ['Input', { size: '"md"', variant: '"default"', type: '"text"' }],
     ['Spinner', { size: '"md"' }],
     ['Logo', { variant: '"wordmark"', size: '"md"', label: '"egdev"' }],
     ['StatusDot', { state: '"stopped"', pulse: 'true' }]
@@ -550,6 +569,84 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains ProgressBar rows, ordered presets and requiredness without injecting args', () => {
+    const { argTypes, args } = story('ProgressBar');
+    expect(argTypes.value?.type).toMatchObject({ name: 'number', required: true });
+    expect(argTypes.value?.control).toEqual({ type: 'number' });
+    expect(argTypes.value?.table?.defaultValue).toBeUndefined();
+    for (const prop of ['label', 'valueText']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'string', required: false });
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+    }
+    expect(argTypes.size?.options).toEqual(['sm', 'lg']);
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['default', 'muted']);
+    expect(argTypes.edge?.type).toMatchObject({ name: 'boolean', required: false });
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'aria-describedby', 'className', 'style']) {
+      expect(argTypes[prop], prop).toEqual(story('ProgressBar', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'role', 'max', 'getValueLabel', 'aria-label', 'aria-hidden']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains the Textarea variant select and only the documented native form rows', () => {
+    const { argTypes, args } = story('Textarea');
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['code', 'default', 'prose']);
+    expect(argTypes.variant?.type).toMatchObject({ name: 'enum', required: false });
+    expect(argTypes.variant?.control).toEqual({ type: 'select' });
+    expect(args).toEqual({});
+    const documented = [
+      'id',
+      'name',
+      'rows',
+      'placeholder',
+      'disabled',
+      'readOnly',
+      'required',
+      'maxLength',
+      'aria-invalid',
+      'aria-describedby',
+      'className'
+    ];
+    for (const prop of documented) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Textarea', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'style', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Input select rows, the icon row without a widget and only documented native rows', () => {
+    const { argTypes, args } = story('Input');
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['md', 'sm']);
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['code', 'default']);
+    expect([...(argTypes.type?.options ?? [])].sort()).toEqual([
+      'email',
+      'number',
+      'password',
+      'search',
+      'tel',
+      'text',
+      'url'
+    ]);
+    for (const prop of ['size', 'variant', 'type']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'enum', required: false });
+      expect(argTypes[prop]?.control, prop).toEqual({ type: 'select' });
+    }
+    expect(argTypes.icon?.control).toBe(false);
+    expect(argTypes.icon?.table?.disable).toBeUndefined();
+    expect(argTypes.icon?.table?.defaultValue).toBeUndefined();
+    expect(args).toEqual({});
+    for (const prop of ['id', 'name', 'placeholder', 'disabled', 'readOnly', 'required', 'className']) {
+      expect(argTypes[prop], prop).toEqual(story('Input', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'asChild', 'ref', 'onChange', 'style', 'invalid']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });
