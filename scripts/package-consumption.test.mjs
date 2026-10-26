@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Cluster, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, RadioGroup, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Cluster, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, PullQuote, RadioGroup, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -105,6 +105,9 @@ import type {
   TextareaProps,
   TextareaVariant,
   TooltipProps,
+  PullQuoteProps,
+  PullQuoteTone,
+  PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
 const buttonVariant: ButtonVariant = 'secondary';
@@ -303,6 +306,34 @@ const interceptedDropzone: DropzoneProps = { ...dropzoneProps, onDrop: () => und
 const interceptedPaste: DropzoneProps = { ...dropzoneProps, onPaste: () => undefined };
 // @ts-expect-error No other visual treatments exist.
 const invalidDropzone: DropzoneProps = { ...dropzoneProps, variant: 'solid' };
+// PullQuote stays outside App so earlier components' focus harness remains unchanged.
+const pullQuoteVariant: PullQuoteVariant = 'display';
+const pullQuoteTone: PullQuoteTone = 'raised';
+export const pullQuoteProps: PullQuoteProps = {
+  text: 'Build ', accent: 'carefully.', source: 'Field notes', cite: 'https://example.com/notes',
+  id: 'consumer-quote', lang: 'en', className: 'mt-2'
+};
+export function PullQuoteSamples({ text = pullQuoteProps.text, display = false }: { text?: string; display?: boolean }) {
+  return createElement(PullQuote, { ...pullQuoteProps, text, ...(display ? { variant: pullQuoteVariant, tone: pullQuoteTone } : {}) });
+}
+// @ts-expect-error text is required.
+const missingQuoteText: PullQuoteProps = {};
+// @ts-expect-error Content is plain text/accent/source strings, not children.
+const childQuote: PullQuoteProps = { ...pullQuoteProps, children: 'Child' };
+// @ts-expect-error The figure role is owned: display never becomes a heading.
+const headingQuote: PullQuoteProps = { ...pullQuoteProps, role: 'heading' };
+// @ts-expect-error No HTML injection.
+const injectedQuote: PullQuoteProps = { ...pullQuoteProps, dangerouslySetInnerHTML: { __html: '<em>x</em>' } };
+// @ts-expect-error No ref API on either React major.
+const referencedQuote: PullQuoteProps = { ...pullQuoteProps, ref: createRef<HTMLElement>() };
+// @ts-expect-error No asChild composition API.
+const composedQuote: PullQuoteProps = { ...pullQuoteProps, asChild: true };
+// @ts-expect-error Only pull and display presentations exist.
+const heroQuote: PullQuoteProps = { ...pullQuoteProps, variant: 'hero' };
+// @ts-expect-error Only canvas and raised accent tones exist.
+const floodQuote: PullQuoteProps = { ...pullQuoteProps, tone: 'flood' };
+// @ts-expect-error The source caption is plain text, never a link element.
+const linkedSource: PullQuoteProps = { ...pullQuoteProps, source: createElement('a', { href: '/' }, 'Home') };
 
 export const linkNativeRef = createRef<HTMLAnchorElement>();
 export const linkSlotRef = createRef<HTMLAnchorElement>();
@@ -1804,6 +1835,29 @@ function assertInputCSS(css) {
   assert.doesNotMatch(css, /\.eg-input[^{]*\{/, 'Input has no stylesheet: its marker carries no rule');
 }
 
+// PullQuote quote recipes, logical filet and measure ship without preflight or a stylesheet.
+function assertPullQuoteCSS(css) {
+  for (const selector of [
+    '.text-quote-pull',
+    '.text-quote-display',
+    '.max-w-quote-pull',
+    '.border-fg-brand-default',
+    '.text-fg-brand-raised',
+    '.uppercase',
+    String.raw`.border-s-\[length\:calc\(var\(--border-width\)\*2\)\]`,
+    String.raw`.ps-4\.5`,
+    String.raw`.py-0\.5`,
+    String.raw`.gap-5\.5`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing PullQuote utility ' + selector);
+  }
+  assert.match(css, /max-width:\s*var\(--container-quote-pull/);
+  assert.match(css, /font-size:\s*var\(--text-quote-pull/);
+  assert.match(css, /font-size:\s*var\(--text-quote-display/);
+  assert.match(css, /border-inline-start-width:\s*calc\(var\(--border-width\)\s*\*\s*2\)/);
+  assert.match(css, /padding-inline-start:\s*calc\(var\(--space-1\)\s*\*\s*4\.5\)/);
+}
+
 // ProductMark ships the product-mark Material and link focus utilities from the token theme; no stylesheet.
 // Dropzone utilities ship for native CSS consumers without enabling Tailwind preflight.
 function assertDropzoneCSS(css) {
@@ -2091,6 +2145,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Portal',
   'ProductMark',
   'ProgressBar',
+  'PullQuote',
   'RadioGroup',
   'Select',
   'Skeleton',
@@ -2141,8 +2196,10 @@ ${assertProgressBarCSS.toString()}
 ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
+${assertPullQuoteCSS.toString()}
 ${assertProductMarkCSS.toString()}
 assertDropzoneCSS(shippedStyles);
+assertPullQuoteCSS(shippedStyles);
 assertIconButtonCSS(shippedStyles);
 ${assertToggleCSS.toString()}
 ${assertSelectCSS.toString()}
@@ -2225,7 +2282,7 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, DropzoneSamples, RadioGroupSamples, SlotSample, SwitchSamples, TooltipSamples, progressEdgeRecipe } from './consumer.ts';
+import { App, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SlotSample, SwitchSamples, TooltipSamples, progressEdgeRecipe } from './consumer.ts';
 const dropzoneDocument = new JSDOM(renderToString(createElement(DropzoneSamples)));
 try {
   const body = dropzoneDocument.window.document.body;
@@ -2249,6 +2306,31 @@ try {
 } finally {
   dropzoneDocument.window.close();
 }
+// PullQuote SSR: native figure > blockquote > p plus figcaption, cite on the blockquote only.
+const quoteDocument = new JSDOM(renderToString(createElement(PullQuoteSamples)));
+try {
+  const body = quoteDocument.window.document.body;
+  const figure = body.firstElementChild;
+  assert.equal(body.children.length, 1, 'PullQuote renders one figure');
+  assert.equal(figure.tagName, 'FIGURE');
+  assert.equal(figure.id, 'consumer-quote');
+  assert.equal(figure.lang, 'en');
+  assert.ok(['eg-quote', 'max-w-quote-pull', 'mt-2'].every((name) => figure.classList.contains(name)));
+  assert.equal(figure.hasAttribute('cite'), false);
+  assert.equal(figure.hasAttribute('role'), false);
+  const quotation = figure.firstElementChild;
+  assert.equal(quotation.tagName, 'BLOCKQUOTE');
+  assert.equal(quotation.getAttribute('cite'), 'https://example.com/notes');
+  assert.equal(quotation.querySelector('p').textContent, 'Build carefully.');
+  assert.ok(quotation.querySelector('p > .eg-quote__accent').classList.contains('inline'));
+  const caption = figure.lastElementChild;
+  assert.equal(caption.tagName, 'FIGCAPTION');
+  assert.equal(caption.textContent, 'Field notes');
+  assert.ok(figure.querySelector('cite, a, h1, h2, h3, h4, h5, h6, [aria-live]') === null, 'No cite, link, heading or live region');
+} finally {
+  quoteDocument.window.close();
+}
+assert.equal(renderToString(createElement(PullQuoteSamples, { text: ' ' })), '', 'Blank text renders nothing on the server');
 // RadioGroup SSR: named Radix radiogroups; without a DOM, Radix always emits each hidden radio input.
 const radioDocument = new JSDOM(renderToString(createElement(RadioGroupSamples)));
 try {
@@ -3031,7 +3113,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, DropzoneSamples, RadioGroupSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
+const { App, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -3580,6 +3662,32 @@ try {
   assert.equal(fileTarget.getAttribute('data-state'), 'idle');
   await act(async () => root.render(null));
   stage('dropzone:files:complete');
+  stage('pull-quote:start');
+  const quoteWarnings = [];
+  const originalWarn = console.warn;
+  console.warn = (...args) => { quoteWarnings.push(args.join(' ')); };
+  try {
+    await act(async () => root.render(createElement(PullQuoteSamples)));
+    const quote = document.getElementById('consumer-quote');
+    assert.equal(quote.tagName, 'FIGURE');
+    assert.equal(quote.querySelector('blockquote').getAttribute('cite'), 'https://example.com/notes');
+    assert.ok(quote.querySelector('[tabindex], button, a') === null, 'Passive quotation adds no focus stop');
+    await act(async () => root.render(createElement(PullQuoteSamples, { display: true })));
+    assert.ok(document.getElementById('consumer-quote') === quote, 'Variant rerender keeps figure identity');
+    const quoteAccent = quote.querySelector('.eg-quote__accent');
+    assert.ok(quoteAccent.classList.contains('block') && quoteAccent.classList.contains('text-fg-brand-raised'));
+    assert.ok(quote.querySelector('blockquote').classList.contains('uppercase'), 'Display casing is CSS only');
+    assert.equal(quote.querySelector('p').textContent, 'Build carefully.');
+    await act(async () => root.render(createElement(PullQuoteSamples, { text: '   ' })));
+    assert.ok(document.getElementById('consumer-quote') === null, 'Blank text renders no figure');
+    assert.ok(document.querySelector('figcaption') === null, 'Blank text leaves no orphan caption');
+    const expectedWarnings = process.env.NODE_ENV === 'production' ? 0 : 1;
+    assert.equal(quoteWarnings.filter((line) => line.includes('PullQuote')).length, expectedWarnings);
+  } finally {
+    console.warn = originalWarn;
+  }
+  await act(async () => root.render(null));
+  stage('pull-quote:complete');
   // Native label activation: clicking the associated label focuses the named control.
   assert.ok(toggleRef.current === null, 'Toggle ref cleans up when App unmounts');
   // The Slot scene unmounted App, so remount it before exercising LabelSamples.
@@ -3701,7 +3809,7 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
-  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'PullQuote figure identity, variant/tone rerender, blank-text removal and development warning', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -3803,6 +3911,7 @@ ${assertProgressBarCSS.toString()}
 ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
+${assertPullQuoteCSS.toString()}
 ${assertProductMarkCSS.toString()}
 assertIconButtonCSS(emitted);
 ${assertToggleCSS.toString()}
@@ -3833,6 +3942,7 @@ assertProgressBarCSS(emitted);
 assertTextareaCSS(emitted);
 assertInputCSS(emitted);
 assertDropzoneCSS(emitted);
+assertPullQuoteCSS(emitted);
 assertProductMarkCSS(emitted);
 assertToggleCSS(emitted);
 ${assertLabelCSS.toString()}
@@ -3852,7 +3962,7 @@ const names = shipped
     return name.startsWith('--') ? [name] : [];
   });
 const typography = ${JSON.stringify(typographyNames)};
-assert.equal(names.length, 255, 'Packed native artifact must expose 255 variables');
+assert.equal(names.length, 264, 'Packed native artifact must expose 264 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
@@ -3894,6 +4004,7 @@ assertProgressBarCSS(twCss);
 assertTextareaCSS(twCss);
 assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
+assertPullQuoteCSS(twCss);
 assertProductMarkCSS(twCss);
 assertToggleCSS(twCss);
 assertSelectCSS(twCss);

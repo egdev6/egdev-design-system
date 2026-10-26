@@ -178,6 +178,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/logo',
       './atoms/product-mark',
       './atoms/progress-bar',
+      './atoms/pull-quote',
       './atoms/radio-group',
       './atoms/select',
       './atoms/slider',
@@ -221,6 +222,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Portal',
       'ProductMark',
       'ProgressBar',
+      'PullQuote',
       'RadioGroup',
       'Select',
       'Skeleton',
@@ -1673,6 +1675,83 @@ describe('Kbd passive metadata contract', () => {
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick', 'variant', 'size']) {
       expect(props[prop], prop).toBeUndefined();
     }
+  }, 20_000);
+});
+
+describe('PullQuote quotation metadata contract', () => {
+  it('annotates exactly five own props with constant-only variant and tone defaults', () => {
+    const file = ast(source('atoms/pull-quote/types.ts'));
+    const properties = ownProps(file, ['PullQuoteProps']);
+    const expected: Record<string, string> = {
+      text: 'text',
+      accent: 'text',
+      source: 'text',
+      variant: 'select',
+      tone: 'select'
+    };
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(expected));
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(Boolean(property.questionToken), `PullQuote.${name} optionality`).toBe(name !== 'text');
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `PullQuote.${name} control`).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe(expected[name]);
+      const fixed = tags.find((tag) => tag.tagName.text === 'default');
+      expect(fixed === undefined, `PullQuote.${name} default`).toBe(!['variant', 'tone'].includes(name));
+    }
+  });
+
+  it('omits children, role and HTML injection and picks only the native blockquote cite', () => {
+    const file = ast(source('atoms/pull-quote/types.ts'));
+    const native = file.statements.find(
+      (node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'PullQuoteNativeProps'
+    );
+    const props = file.statements.find(
+      (node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'PullQuoteProps'
+    );
+    if (!native || !ts.isTypeAliasDeclaration(native) || !props || !ts.isTypeAliasDeclaration(props)) {
+      throw new Error('Missing PullQuote declarations');
+    }
+    expect(native.type.getText(file)).toBe(
+      "Omit<ComponentPropsWithoutRef<'figure'>, 'children' | 'role' | 'dangerouslySetInnerHTML'>"
+    );
+    expect(props.type.getText(file)).toMatch(/Pick<ComponentPropsWithoutRef<'blockquote'>, 'cite'>/);
+    expect(props.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild|children/);
+  });
+
+  it('extracts required text, real defaults and inherited native cite without redeclaration', () => {
+    const doc = parser.parse(source('atoms/pull-quote/PullQuote.tsx')).find((item) => item.displayName === 'PullQuote');
+    if (!doc) {
+      throw new Error('Missing docgen for PullQuote');
+    }
+    const { props } = doc;
+    expect(props.text).toMatchObject({ required: true, defaultValue: null, tags: { control: 'text' } });
+    for (const prop of ['accent', 'source']) {
+      expect(props[prop], prop).toMatchObject({ required: false, tags: { control: 'text' } });
+      expect(props[prop]?.defaultValue ?? null, prop).toBeNull();
+    }
+    expect(props.variant).toMatchObject({ required: false, defaultValue: { value: 'pull' } });
+    expect(props.tone).toMatchObject({ required: false, defaultValue: { value: 'canvas' } });
+    expect(props.cite?.tags ?? {}).toEqual({});
+    for (const prop of ['cite', 'id', 'title', 'lang', 'dir', 'aria-describedby', 'className']) {
+      expect(props[prop], `PullQuote native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of ['ref', 'asChild', 'children', 'role', 'dangerouslySetInnerHTML', 'level', 'style']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+    const stories = ast(source('atoms/pull-quote/PullQuote.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'WithSource',
+      'SourceMetadata',
+      'Display',
+      'Accents',
+      'Raised',
+      'RTL',
+      'LongContent'
+    ]);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
   }, 20_000);
 });
 

@@ -13,6 +13,7 @@ export * from './atoms/link';
 export * from './atoms/logo';
 export * from './atoms/product-mark';
 export * from './atoms/progress-bar';
+export * from './atoms/pull-quote';
 export * from './atoms/radio-group';
 export * from './atoms/select';
 export * from './atoms/slider';

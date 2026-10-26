@@ -22,6 +22,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   radioGroup: ['id', 'aria-labelledby', 'aria-describedby', 'className'],
   switch: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className'],
   progressBar: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  pullQuote: ['cite', 'id', 'title', 'lang', 'dir', 'aria-describedby', 'className'],
   textarea: [
     'id',
     'name',

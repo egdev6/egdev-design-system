@@ -266,6 +266,42 @@ test('UI ships Dropzone token geometry, native resets and attribute-driven color
   assert.ok(utilities.includes(String.raw`.disabled\:cursor-not-allowed`));
 });
 
+test('UI ships PullQuote quote recipes, logical filet and measure without preflight', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`));
+  for (const [selector, declaration] of [
+    [
+      '.text-quote-pull',
+      /font-size:\s*var\(--text-quote-pull[,)][\s\S]*line-height:[^;]*--text-quote-pull--line-height/
+    ],
+    [
+      '.text-quote-display',
+      /font-size:\s*var\(--text-quote-display[,)][\s\S]*line-height:[^;]*--text-quote-display--line-height/
+    ],
+    ['.max-w-quote-pull', /max-width:\s*var\(--container-quote-pull[,)]/],
+    ['.max-w-none', /max-width:\s*none/],
+    [
+      String.raw`.border-s-\[length\:calc\(var\(--border-width\)\*2\)\]`,
+      /border-inline-start-width:\s*calc\(var\(--border-width\)\s*\*\s*2\)/
+    ],
+    ['.border-fg-brand-default', /border-color:\s*var\(--color-fg-brand-default/],
+    [String.raw`.ps-4\.5`, /padding-inline-start:\s*calc\(var\(--space-1\)\s*\*\s*4\.5\)/],
+    [String.raw`.py-0\.5`, /padding-block:\s*calc\(var\(--space-1\)\s*\*\s*0\.5\)/],
+    ['.gap-3', /gap:\s*var\(--space-3\)/],
+    [String.raw`.gap-5\.5`, /gap:\s*calc\(var\(--space-1\)\s*\*\s*5\.5\)/],
+    ['.text-fg-brand-raised', /color:\s*var\(--color-fg-brand-raised/],
+    ['.uppercase', /text-transform:\s*uppercase/]
+  ]) {
+    assert.match(rule(selector), declaration, selector);
+  }
+  // Physical left filet/inset utilities would keep a second border in RTL.
+  for (const selector of [String.raw`.border-l-\[length\:calc`, String.raw`.pl-4\.5`]) {
+    assert.equal(utilities.includes(selector), false, `${selector} must not ship`);
+  }
+});
+
 test('UI publishes its stable JavaScript entry', () => {
   assert.equal(ui.exports['.'].import, './dist/index.js');
   assert.equal(ui.main, ui.exports['.'].import);
@@ -420,6 +456,7 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   // Select #67 adds transition-colors only; Skeleton remains static in its own DOM checks.
   // Toggle #74 adds only its exact color/background-color/border-color/box-shadow/scale list.
   // Dropzone #56 adds transition-colors only.
+  // PullQuote #98 adds no transition or animation utility.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
@@ -1478,6 +1515,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Portal',
       'ProductMark',
       'ProgressBar',
+      'PullQuote',
       'RadioGroup',
       'Select',
       'Skeleton',
@@ -1655,6 +1693,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ProgressBarProps',
     'ProgressBarSize',
     'ProgressBarVariant',
+    'PullQuote',
+    'PullQuoteProps',
+    'PullQuoteTone',
+    'PullQuoteVariant',
     'RadioGroup',
     'RadioGroupOption',
     'RadioGroupOrientation',
@@ -1714,7 +1756,18 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'surfaceVariants',
     'tooltipVariants'
   ]);
-  for (const name of ['useSlider', 'sliderTrackVariants', 'sliderRangeVariants', 'sliderThumbVariants']) {
+  for (const name of [
+    'useSlider',
+    'sliderTrackVariants',
+    'sliderRangeVariants',
+    'sliderThumbVariants',
+    'usePullQuote',
+    'pullQuoteVariants',
+    'pullQuoteQuotationVariants',
+    'pullQuotePassageVariants',
+    'pullQuoteAccentVariants',
+    'pullQuoteSourceVariants'
+  ]) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
@@ -1746,6 +1799,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ProgressBarSize',
     'ProgressBarVariant',
     'progressBarVariants',
+    'PullQuote',
+    'PullQuoteProps',
+    'PullQuoteTone',
+    'PullQuoteVariant',
     'Textarea',
     'TextareaProps',
     'TextareaVariant',
@@ -1824,6 +1881,22 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   );
   assert.match(dropzoneHtml, /aria-hidden="true"/);
   assert.doesNotMatch(dropzoneHtml, /name=|required=|onFiles=|aria-live=|is-over/);
+  assert.equal(typeof exported.PullQuote, 'function', 'PullQuote must be a plain function with no public ref API');
+  const pullQuoteHtml = renderToString(
+    createElement(exported.PullQuote, {
+      text: 'Build ',
+      accent: 'carefully.',
+      source: 'Field notes',
+      cite: 'https://example.com/notes',
+      id: 'quote'
+    })
+  );
+  assert.match(
+    pullQuoteHtml,
+    /^<figure id="quote" class="eg-quote [^"]*max-w-quote-pull[^"]*"><blockquote cite="https:\/\/example\.com\/notes" class="eg-quote__text [^"]*text-quote-pull[^"]*"><p class="[^"]*">Build <span class="eg-quote__accent [^"]*inline[^"]*">carefully\.<\/span><\/p><\/blockquote><figcaption class="eg-quote__source [^"]*">Field notes<\/figcaption><\/figure>$/
+  );
+  assert.doesNotMatch(pullQuoteHtml, /role=|<h[1-6]|<cite|<a |aria-live=|eg-quote--display/);
+  assert.equal(renderToString(createElement(exported.PullQuote, { text: '  ', source: 'Orphan' })), '');
   assert.equal(renderToString(createElement(exported.Portal, { children: 'Server layer' })), '');
   assert.equal(typeof exported.labelVariants, 'function', 'Label composition recipe must stay a public export');
   const labelHtml = renderToString(
