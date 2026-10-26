@@ -118,6 +118,43 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts the Toggle union, boolean defaults, native button props and every own directive', () => {
+    const doc = parser.parse(source('atoms/toggle/Toggle.tsx')).find((item) => item.displayName === 'Toggle');
+    expect(doc).toBeDefined();
+    expect(doc?.props.size).toMatchObject({ tags: { control: 'select' }, defaultValue: { value: 'md' } });
+    expect(doc?.props.size?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'sm',
+      'md',
+      'lg'
+    ]);
+    expect(doc?.props.defaultPressed).toMatchObject({ tags: { control: 'boolean' }, defaultValue: { value: 'false' } });
+    expect(doc?.props.pressed).toMatchObject({ tags: { control: 'boolean' }, defaultValue: null });
+    expect(doc?.props.label?.type.name).toBe('string');
+    expect(doc?.props.children?.required).toBe(false);
+    expect(doc?.props.icon?.required).toBe(false);
+    expect(doc?.props.label?.required).toBe(false);
+    for (const name of ['icon', 'children', 'onPressedChange']) {
+      const tags = doc?.props[name]?.tags as Record<string, string> | undefined;
+      expect(tags?.control?.split('\n').every((tag) => tag === 'false')).toBe(true);
+      expect(tags?.controlReason).toBeTruthy();
+    }
+    for (const name of ['disabled', 'type', 'id', 'title', 'className', 'onClick', 'aria-describedby']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of ['asChild', 'aria-pressed', 'toggleVariants', 'toggleIconVariants']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const file = ast(source('atoms/toggle/types.ts'));
+    const properties = ownProps(file, ['ToggleContentProps', 'ToggleProps']);
+    expect(properties).toHaveLength(10);
+    for (const property of properties) {
+      const tags = ts.getJSDocTags(property);
+      expect(tags.filter((tag) => tag.tagName.text === 'control')).toHaveLength(1);
+      if (!property.questionToken) {
+        expect(tags.some((tag) => tag.tagName.text === 'default')).toBe(false);
+      }
+    }
+  });
   it('exposes the layout primitives, Surface, Gauge, AspectRatio, Portal, Slot and cn through the barrel', () => {
     const file = ast(source('index.ts'));
     const modules = file.statements.flatMap((node) =>
@@ -134,6 +171,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/product-mark',
       './atoms/spinner',
       './atoms/status-dot',
+      './atoms/toggle',
       './lib/cn',
       './primitives/aspect-ratio',
       './primitives/divider',
@@ -167,6 +205,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'StatusDot',
       'Surface',
       'Text',
+      'Toggle',
       'VisuallyHidden',
       'cn',
       'labelVariants',

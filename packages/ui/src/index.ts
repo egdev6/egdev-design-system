@@ -6,6 +6,7 @@ export * from './atoms/logo';
 export * from './atoms/product-mark';
 export * from './atoms/spinner';
 export * from './atoms/status-dot';
+export * from './atoms/toggle';
 // Utilities
 export { cn } from './lib/cn';
 // Primitives

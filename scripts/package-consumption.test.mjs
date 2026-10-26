@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Kbd, Label, Logo, ProductMark, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
+import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Kbd, Label, Logo, ProductMark, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, Toggle, VisuallyHidden, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -65,6 +65,8 @@ import type {
   TextTone,
   TextVariant,
   TitleVariant,
+  ToggleProps,
+  ToggleSize,
   SurfaceElevation,
   SurfacePadding,
   SurfaceProps,
@@ -286,6 +288,27 @@ export function SurfaceSamples({ surfaceElevation = 1 }: { surfaceElevation?: Su
     createElement(Surface, { tone: 'surface-3', asChild: true, ref: surfaceArticleRef,
       children: createElement(SurfaceArticle, { 'aria-label': 'Article surface', ref: surfaceArticleChildRef }, 'Entry') }));
 }
+const toggleSize: ToggleSize = 'sm';
+export const toggleRef = createRef<HTMLButtonElement>();
+export const toggleDefaults: ToggleProps = { children: 'Show grid' };
+export function ToggleSamples() {
+  return createElement('section', { 'aria-label': 'Toggle samples' },
+    createElement(Toggle, { ...toggleDefaults, id: 'toggle-default', ref: toggleRef }),
+    createElement(Toggle, { id: 'toggle-controlled', pressed: true, children: 'Pin', icon: createElement(Icon, { name: 'bookmark' }) }),
+    createElement(Toggle, { id: 'toggle-disabled', size: toggleSize, defaultPressed: true, disabled: true, label: 'Pin layer', icon }));
+}
+// @ts-expect-error Icon-only content requires an accessible label.
+const unnamedToggle: ToggleProps = { icon };
+// @ts-expect-error Visible text and the icon-only label are mutually exclusive.
+const ambiguousToggle: ToggleProps = { children: 'Pin', label: 'Pin', icon };
+// @ts-expect-error Toggle always renders a button; asChild is not public.
+const slottedToggle: ToggleProps = { children: 'Pin', asChild: true };
+// @ts-expect-error aria-pressed is owned by Radix, not an incoming override.
+const overriddenToggle: ToggleProps = { children: 'Pin', 'aria-pressed': 'mixed' };
+// @ts-expect-error Only preset dimensions are public.
+const numericToggle: ToggleProps = { children: 'Pin', size: 40 };
+// @ts-expect-error Toggle does not expose private CVA recipes.
+import type { toggleVariants } from '@egdev/ui';
 export const dividerDefaults: DividerProps = {};
 export const dividerSemanticVertical: DividerProps = {
   orientation: 'vertical', decorative: false, className: 'consumer-rule'
@@ -320,6 +343,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(KbdSamples),
     createElement(LogoSamples),
     createElement(ProductMarkSamples),
+    createElement(ToggleSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -534,6 +558,38 @@ const slottedSurfaceText: SurfaceProps = { asChild: true, children: 'Text' };
 // @ts-expect-error The default div promises only an HTMLDivElement ref.
 const wideSurfaceRef: ComponentProps<typeof Surface> = { ref: createRef<HTMLElement>() };
 `;
+
+function assertToggleCSS(css) {
+  for (const selector of [
+    String.raw`.data-\[state\=on\]\:bg-surface-3`,
+    String.raw`.data-\[state\=on\]\:bg-\[image\:var\(--gradient-sheen\)\]`,
+    String.raw`.data-\[state\=on\]\:border-border-hairline-strong`,
+    String.raw`.group-data-\[state\=on\]\/toggle\:text-fg-brand-raised`,
+    String.raw`.active\:scale-97`,
+    String.raw`.data-disabled\:opacity-45`,
+    String.raw`.motion-reduce\:active\:scale-100`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Toggle selector ' + selector);
+  }
+  for (const token of [
+    'gradient-sheen',
+    'shadow-edge-strong',
+    'shadow-elev-1',
+    'shadow-focus',
+    'duration-fast',
+    'duration-press',
+    'ease-out',
+    'ease-snappy'
+  ]) {
+    assert.ok(css.includes('var(--' + token + ')'), 'Missing Toggle token ' + token);
+  }
+  assert.match(css, /--tw-scale-x:\s*97%/);
+  assert.match(css, /--tw-scale-y:\s*97%/);
+  assert.match(css, /scale:\s*var\(--tw-scale-x\)\s+var\(--tw-scale-y\)/);
+  assert.match(css, /box-sizing:\s*border-box/);
+  assert.doesNotMatch(css, /\.eg-toggle\s*[,{]/);
+}
 
 // Surface ships no stylesheet: only token-backed CVA utilities, including fallback variants.
 function assertSurfaceCSS(css) {
@@ -951,6 +1007,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'StatusDot',
   'Surface',
   'Text',
+  'Toggle',
   'VisuallyHidden',
   'cn',
   'labelVariants',
@@ -966,6 +1023,7 @@ ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
 ${assertProductMarkCSS.toString()}
+${assertToggleCSS.toString()}
 assertGaugeCSS(shippedStyles);
 assertIconCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
@@ -975,6 +1033,7 @@ assertLogoCSS(shippedStyles);
 assertStatusDotCSS(shippedStyles);
 assertKbdCSS(shippedStyles);
 assertProductMarkCSS(shippedStyles);
+assertToggleCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -1043,6 +1102,19 @@ try {
   semanticDivider.window.close();
 }
 const html = renderToString(createElement(App));
+const toggleDocument = new JSDOM(html);
+try {
+  const document = toggleDocument.window.document;
+  const toggle = document.getElementById('toggle-default');
+  assert.equal(toggle.tagName, 'BUTTON');
+  assert.ok(toggle.classList.contains('eg-toggle'));
+  assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+  assert.equal(document.getElementById('toggle-controlled').getAttribute('data-state'), 'on');
+  assert.equal(document.getElementById('toggle-disabled').textContent, 'Pin layer');
+  assert.ok(document.getElementById('toggle-disabled').disabled);
+} finally {
+  toggleDocument.window.close();
+}
 for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%', 'Email address', 'eg-stack', 'flex-col', 'flex-nowrap', 'gap-4', 'eg-cluster', 'flex-row', 'flex-wrap', 'gap-6', 'items-start', 'justify-between', 'eg-icon', 'viewBox="0 0 24 24"', 'Search status', 'eg-surface', 'bg-surface-1', 'bg-surface-overlay', 'shadow-[var(--shadow-well)]']) {
   assert.ok(html.includes(text), 'SSR must render ' + text);
 }
@@ -1463,7 +1535,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
+const { App, toggleRef, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -1475,7 +1547,22 @@ try {
   assert.ok(slottedHeadingRef.current instanceof HTMLElement);
   assert.equal(slottedHeadingRef.current?.tagName, 'H2', 'The slotted ref must expose the h2 host');
   const buttons = [...document.querySelectorAll('button')];
-  assert.equal(buttons.length, 4, 'Only intrinsic consumer and Cluster harness controls may be focusable');
+  assert.equal(buttons.length, 7, 'Four consumer/Cluster harness buttons plus three Toggle controls');
+  const toggle = document.getElementById('toggle-default');
+  assert.ok(toggleRef.current === toggle, 'Toggle ref targets the actual button on this React major');
+  assert.equal(toggle.tagName, 'BUTTON');
+  assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+  await act(async () => toggle.click());
+  assert.equal(toggle.getAttribute('aria-pressed'), 'true');
+  assert.equal(toggle.getAttribute('data-state'), 'on');
+  const controlledToggle = document.getElementById('toggle-controlled');
+  await act(async () => controlledToggle.click());
+  assert.equal(controlledToggle.getAttribute('aria-pressed'), 'true', 'Controlled state needs incoming updates');
+  const disabledToggle = document.getElementById('toggle-disabled');
+  await act(async () => disabledToggle.click());
+  assert.equal(disabledToggle.getAttribute('aria-pressed'), 'true');
+  assert.ok(disabledToggle.disabled);
+  assert.equal(disabledToggle.textContent, 'Pin layer');
   buttons[0].focus();
   assert.ok(document.activeElement === buttons[0], 'First intrinsic button must receive focus');
   buttons[1].focus();
@@ -1688,6 +1775,7 @@ try {
   assert.ok(slotRef.current === null, 'Slot ref must be cleaned up on unmount');
   assert.ok(childRef.current === null, 'Child ref must be cleaned up on unmount');
   // Native label activation: clicking the associated label focuses the named control.
+  assert.ok(toggleRef.current === null, 'Toggle ref cleans up when App unmounts');
   // The Slot scene unmounted App, so remount it before exercising LabelSamples.
   await act(async () => root.render(createElement(App)));
   // The label click must activate the associated control: jsdom forwards the click
@@ -1707,7 +1795,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Label activation, forwarded ref and cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1797,6 +1885,7 @@ ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
 ${assertProductMarkCSS.toString()}
+${assertToggleCSS.toString()}
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1811,6 +1900,7 @@ assertLogoCSS(emitted);
 assertStatusDotCSS(emitted);
 assertKbdCSS(emitted);
 assertProductMarkCSS(emitted);
+assertToggleCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
@@ -1856,6 +1946,7 @@ assertLogoCSS(twCss);
 assertStatusDotCSS(twCss);
 assertKbdCSS(twCss);
 assertProductMarkCSS(twCss);
+assertToggleCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }

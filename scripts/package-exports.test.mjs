@@ -44,6 +44,41 @@ function cssBlock(css, opening) {
   assert.fail(`Unclosed emitted CSS block ${opening}`);
 }
 
+test('Toggle ships its exact token-backed pressed, focus, reset and reduced-motion utilities', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  for (const selector of [
+    String.raw`.data-\[state\=on\]\:bg-surface-3`,
+    String.raw`.data-\[state\=on\]\:bg-\[image\:var\(--gradient-sheen\)\]`,
+    String.raw`.data-\[state\=on\]\:border-border-hairline-strong`,
+    String.raw`.group-data-\[state\=on\]\/toggle\:text-fg-brand-raised`,
+    String.raw`.active\:scale-97`,
+    String.raw`.data-disabled\:opacity-45`,
+    String.raw`.motion-reduce\:active\:scale-100`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(selector), `Missing Toggle utility ${selector}`);
+  }
+  for (const token of [
+    'gradient-sheen',
+    'shadow-edge-strong',
+    'shadow-elev-1',
+    'shadow-focus',
+    'duration-fast',
+    'duration-press',
+    'ease-out',
+    'ease-snappy'
+  ]) {
+    assert.ok(css.includes(`var(--${token})`), token);
+  }
+  const press = cssBlock(css, /\.active\\:scale-97:active\s*\{/);
+  assert.match(press, /--tw-scale-x:\s*97%/);
+  assert.match(press, /--tw-scale-y:\s*97%/);
+  assert.match(press, /scale:\s*var\(--tw-scale-x\)\s+var\(--tw-scale-y\)/);
+  assert.match(css, /box-sizing:\s*border-box/);
+  assert.match(css, /padding-block:\s*var\(--space-0\)/);
+  assert.doesNotMatch(css, /\.eg-toggle\s*[,{]/, 'Root marker is not a separate visual engine');
+});
+
 test('UI publishes its stable declaration entry and reachable internal declarations', (context) => {
   assert.equal(ui.exports['.'].types, './dist/index.d.ts');
   assert.equal(ui.types, ui.exports['.'].types);
@@ -225,14 +260,18 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
     /animation:\s*none\s*;/,
     'Reduced-motion preferences must stop the pulse'
   );
-  // Pulse (Skeleton) and spin (Spinner, #69) are the only approved animation utilities; transitions
-  // are limited to the pre-existing static Gauge transition-none and never reach the Skeleton.
+  // Pulse and spin remain the only animation utilities. Toggle alone adds this precise
+  // transition property list; Skeleton still receives no transition utility.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
     'Only the approved pulse and spin animation utilities may ship'
   );
-  assert.doesNotMatch(utilityLayer, /\.transition-(?!none)\w/, 'No animated transition utility may ship');
+  assert.deepEqual(
+    [...utilityLayer.matchAll(/\.transition-([^\s{]+)\s*\{/g)].map((match) => match[1]).sort(),
+    [String.raw`\[color\,background-color\,border-color\,box-shadow\,scale\]`, 'none'],
+    'Only Gauge transition-none and the exact approved Toggle transition may ship'
+  );
   assert.doesNotMatch(utilityLayer, /@keyframes/, 'The utilities layer must not define keyframes');
 });
 
@@ -657,6 +696,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'StatusDot',
       'Surface',
       'Text',
+      'Toggle',
       'VisuallyHidden',
       'cn',
       'labelVariants',
@@ -770,6 +810,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'TextTone',
     'TextVariant',
     'TitleVariant',
+    'Toggle',
+    'ToggleProps',
+    'ToggleSize',
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'cn',
