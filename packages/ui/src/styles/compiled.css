@@ -4,6 +4,7 @@
 
 /* Compile only production CVA classes, never incidental story/test classes. */
 @source "../atoms/gauge/types.ts";
+@source "../atoms/input/types.ts";
 @source "../atoms/kbd/types.ts";
 @source "../atoms/spinner/types.ts";
 @source "../primitives/aspect-ratio/types.ts";

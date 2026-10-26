@@ -42,7 +42,10 @@ const postReceiptUsages = [
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
-  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/kbd/types.ts#KbdProps' }
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/kbd/types.ts#KbdProps' },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/input/types.ts#InputProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/input/types.ts#InputProps' },
+  { conventionId: 'leading-icon', source: 'packages/ui/src/atoms/input/types.ts#InputProps' }
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({
