@@ -134,6 +134,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/logo',
       './atoms/product-mark',
       './atoms/progress-bar',
+      './atoms/radio-group',
       './atoms/spinner',
       './atoms/status-dot',
       './atoms/switch',
@@ -166,6 +167,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Portal',
       'ProductMark',
       'ProgressBar',
+      'RadioGroup',
       'Skeleton',
       'Slot',
       'Slottable',
@@ -181,6 +183,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'cn',
       'labelVariants',
       'progressBarVariants',
+      'radioGroupVariants',
       'statusDotVariants',
       'surfaceVariants',
       'tooltipVariants'
@@ -1204,6 +1207,118 @@ describe('Kbd passive metadata contract', () => {
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick', 'variant', 'size']) {
       expect(props[prop], prop).toBeUndefined();
     }
+  }, 20_000);
+});
+
+describe('RadioGroup metadata contract', () => {
+  const radioGroupControls: Record<string, string> = {
+    label: 'text',
+    options: 'false',
+    value: 'text',
+    defaultValue: 'text',
+    onValueChange: 'false',
+    orientation: 'select',
+    disabled: 'boolean',
+    required: 'boolean',
+    name: 'text'
+  };
+  const radioGroupDefaults: Record<string, string> = {
+    orientation: 'vertical',
+    disabled: 'false',
+    required: 'false'
+  };
+  const radioGroupReasons: Record<string, RegExp> = {
+    options: /Array of option objects.*Default and DisabledOption stories/,
+    onValueChange: /Event handler.*Controlled story/
+  };
+
+  it('annotates every own prop with one control, concrete reasons and only actual constant defaults', () => {
+    const file = ast(source('atoms/radio-group/types.ts'));
+    const properties = ownProps(file, ['RadioGroupProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(radioGroupControls));
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(Boolean(property.questionToken), `RadioGroup.${name} optionality`).toBe(
+        !['label', 'options'].includes(name)
+      );
+      const tags = ts.getJSDocTags(property);
+      const values = (tagName: string) =>
+        tags.filter((tag) => tag.tagName.text === tagName).map((tag) => ts.getTextOfJSDocComment(tag.comment));
+      expect(values('control'), `RadioGroup.${name} control`).toEqual([radioGroupControls[name]]);
+      expect(values('default'), `RadioGroup.${name} default`).toEqual(
+        radioGroupDefaults[name] ? [radioGroupDefaults[name]] : []
+      );
+      const reason = radioGroupReasons[name];
+      if (reason) {
+        expect(values('controlReason')[0]).toMatch(reason);
+      }
+    }
+    const stories = exportedStoryNames(ast(source('atoms/radio-group/RadioGroup.stories.tsx')));
+    expect(stories).toEqual(['Default', 'Controlled', 'Horizontal', 'DisabledOption', 'DisabledGroup']);
+  });
+
+  it('binds the documented defaults to the hook destructuring and the root CVA', () => {
+    expect(defaults(source('atoms/radio-group/useRadioGroup.ts'), false)).toEqual(radioGroupDefaults);
+    expect(defaults(source('atoms/radio-group/types.ts'), true)).toEqual({ orientation: 'vertical' });
+  });
+
+  it('omits exactly the Radix-owned div props and exposes no ref or asChild', () => {
+    const file = ast(source('atoms/radio-group/types.ts'));
+    const alias = file.statements.find(
+      (node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'RadioGroupProps'
+    );
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing RadioGroupProps declaration');
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const union = node.typeArguments[1];
+        if (union && ts.isUnionTypeNode(union)) {
+          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual(['children', 'defaultValue', 'dir', 'onChange', 'role', 'aria-label']);
+    expect(alias.type.getText(file)).toMatch(/ComponentPropsWithoutRef<'div'>/);
+    expect(file.getText()).not.toMatch(/asChild|ComponentPropsWithRef/);
+  });
+
+  it('extracts the own rows, real defaults and only the documented native rows', () => {
+    const doc = parser
+      .parse(source('atoms/radio-group/RadioGroup.tsx'))
+      .find((item) => item.displayName === 'RadioGroup');
+    if (!doc) {
+      throw new Error('Missing docgen for RadioGroup');
+    }
+    const { props } = doc;
+    for (const [prop, control] of Object.entries(radioGroupControls)) {
+      expect(props[prop], `RadioGroup.${prop}`).toMatchObject({
+        required: ['label', 'options'].includes(prop),
+        tags: { control }
+      });
+      expect(normalize(props[prop]?.defaultValue?.value ?? ''), `RadioGroup.${prop} default`).toBe(
+        radioGroupDefaults[prop] ?? ''
+      );
+    }
+    for (const prop of ['label', 'value', 'defaultValue', 'name']) {
+      expect(props[prop]?.type.name, prop).toBe('string');
+    }
+    for (const prop of ['disabled', 'required']) {
+      expect(props[prop]?.type.name, prop).toBe('boolean');
+    }
+    // The checker resolves the literal union alphabetically; the AST keeps the declared order.
+    expect(props.orientation?.type.value?.map((item: { value: string }) => normalize(item.value))).toEqual([
+      'horizontal',
+      'vertical'
+    ]);
+    expect(props.value?.description).toMatch(/When omitted the group is uncontrolled/);
+    expect(props.defaultValue?.description).toMatch(/Nothing is selected when omitted/);
+    expect(Object.keys(props).sort()).toEqual(
+      [...Object.keys(radioGroupControls), 'id', 'aria-labelledby', 'aria-describedby', 'className'].sort()
+    );
   }, 20_000);
 });
 
