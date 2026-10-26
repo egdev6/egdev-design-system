@@ -14,6 +14,7 @@ const components = [
   ['Cluster', 'primitives/stack'],
   ['Gauge', 'atoms/gauge'],
   ['Stack', 'primitives/stack'],
+  ['Surface', 'primitives/surface'],
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
@@ -72,6 +73,7 @@ const expected: Record<string, Record<string, string | false>> = {
   },
   stack: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   cluster: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
+  surface: { tone: 'select', elevation: 'select', padding: 'select', radius: 'select', asChild: 'boolean' },
   visuallyhidden: { children: false, asChild: 'boolean' },
   skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
   spinner: { label: 'text', size: 'select' },
@@ -95,7 +97,8 @@ const ownPropCounts: Record<string, number> = {
   kbd: 2,
   visuallyhidden: 2,
   stack: 4,
-  cluster: 4
+  cluster: 4,
+  surface: 5
 };
 const ownPropCount = (name: string): number => {
   const count = ownPropCounts[name.toLowerCase()];
@@ -263,7 +266,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         expect(composed.argTypes[prop]?.type?.name, `${name}.${prop} semantic type`).toBe('string');
       }
     }
-    if (!['VisuallyHidden', 'Stack', 'Cluster'].includes(name)) {
+    if (!['VisuallyHidden', 'Stack', 'Cluster', 'Surface'].includes(name)) {
       expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     }
     expect(composed.args).toEqual({});
@@ -289,6 +292,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['AspectRatio', { ratio: '1' }],
     ['Stack', { gap: '4', alignItems: '"stretch"', justifyContent: '"start"', asChild: 'false' }],
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],
+    ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
     ['Spinner', { size: '"md"' }]

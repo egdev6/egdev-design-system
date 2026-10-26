@@ -24,4 +24,12 @@ export type {
   StackProps
 } from './primitives/stack';
 export { Cluster, Stack } from './primitives/stack';
+export type {
+  SurfaceElevation,
+  SurfacePadding,
+  SurfaceProps,
+  SurfaceRadius,
+  SurfaceTone
+} from './primitives/surface';
+export { Surface, surfaceVariants } from './primitives/surface';
 export * from './primitives/visually-hidden';
