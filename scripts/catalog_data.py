@@ -22,7 +22,7 @@ C = [
 ("Field (select)","átomo","Select","atom","ui","Select","Icon","extraer","Select de Radix con el aspecto de Field."),
 ("`.eg-check`","sin ficha","Checkbox","atom","ui","Checkbox","Icon","extraer","Existía solo como clase."),
 ("`.eg-check--switch`","sin ficha","Switch","atom","ui","Switch","—","extraer",""),
-("Field --range","átomo","Slider","atom","ui","Slider","—","extraer","Tamaño del anillo, umbrales, volumen."),
+("Field --range","átomo","Slider","atom","ui","Slider","—","extraer","Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/68): single-value horizontal range control over Radix Slider (ring size, thresholds, volume). Required label names the thumb; optional valueText sets aria-valuetext and aria-describedby reaches the thumb. Material well track, brand range and raised thumb with the focus ring; 44px hit area on coarse pointers. Visible label and readout belong to Field. No stylesheet."),
 ("—","—","RadioGroup","atom","ui","RadioGroup","—","nuevo","Grupo de opciones exclusivas; base de SelectTile y de chips exclusivos."),
 ("Chip","átomo","Chip","atom","ui","Toggle / ToggleGroup.Item","Avatar","mantener","Siempre interactivo (filtro o selección). Los grupos van en ChipGroup."),
 ("Tag + StatusBadge","átomo","Badge","atom","ui","—","Icon","fusionar","Etiqueta estática con `tone` (neutral, info, success, warning, danger, brand) e icono opcional; `solid`."),

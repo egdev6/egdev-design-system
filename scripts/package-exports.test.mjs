@@ -226,13 +226,17 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
     'Reduced-motion preferences must stop the pulse'
   );
   // Pulse (Skeleton) and spin (Spinner, #69) are the only approved animation utilities; transitions
-  // are limited to the pre-existing static Gauge transition-none and never reach the Skeleton.
+  // belong to Slider (shadow) and the static Gauge reset, never the Skeleton.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
     'Only the approved pulse and spin animation utilities may ship'
   );
-  assert.doesNotMatch(utilityLayer, /\.transition-(?!none)\w/, 'No animated transition utility may ship');
+  assert.doesNotMatch(
+    utilityLayer,
+    /\.transition-(?!(?:none|shadow)\b)\w/,
+    'Only the approved Slider shadow transition may ship'
+  );
   assert.doesNotMatch(utilityLayer, /@keyframes/, 'The utilities layer must not define keyframes');
 });
 
@@ -285,6 +289,76 @@ test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet ru
   const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
   const kbdRules = (text) => (text.replace(/\/\*[\s\S]*?\*\//g, '').match(/\.eg-kbd[^{]*\{/g) ?? []).length;
   assert.equal(kbdRules(css), kbdRules(legacy), 'Kbd has no stylesheet: its marker carries no new rule');
+});
+
+test('UI ships the Slider well, range and raised thumb utilities without a Slider-specific stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}(?::[a-z-]+|\\[data-disabled\\])?\\s*\\{`));
+  };
+  assert.match(rule('.touch-none'), /touch-action:\s*none\s*;/);
+  assert.match(rule('.select-none'), /user-select:\s*none\s*;/);
+  assert.match(rule('.h-6'), /height:\s*var\(--space-6\)\s*;/);
+  assert.match(rule('.h-1'), /height:\s*var\(--space-1\)\s*;/);
+  assert.match(rule('.size-4'), /width:\s*var\(--space-4\)\s*;\s*height:\s*var\(--space-4\)\s*;/);
+  assert.match(rule('.grow'), /flex-grow:\s*1\s*;/);
+  assert.match(rule(String.raw`.data-\[disabled\]\:opacity-45`), /opacity:\s*45%\s*;/);
+  assert.match(rule(String.raw`.data-\[disabled\]\:pointer-events-none`), /pointer-events:\s*none\s*;/);
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule('.bg-fg-brand-default'), /background-color:\s*var\(--color-fg-brand-default[,)]/);
+  assert.match(rule('.bg-fg-default'), /background-color:\s*var\(--color-fg-default[,)]/);
+  // Material shadows stay token references instead of copied literal values.
+  for (const token of ['shadow-well', 'shadow-elev-1']) {
+    assert.match(rule(`.shadow-\\[var\\(--${token}\\)\\]`), new RegExp(`--tw-shadow:\\s*var\\(--${token}\\)\\s*;`));
+  }
+  assert.match(
+    rule(String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`),
+    /--tw-shadow:\s*var\(--shadow-focus\)\s*;/
+  );
+  assert.match(rule('.transition-shadow'), /transition-property:\s*box-shadow\s*;/);
+  assert.match(
+    rule(String.raw`.duration-\[var\(--duration-fast\)\]`),
+    /transition-duration:\s*var\(--duration-fast\)\s*;/
+  );
+  assert.match(rule(String.raw`.ease-\[var\(--ease-out\)\]`), /transition-timing-function:\s*var\(--ease-out\)\s*;/);
+  assert.match(rule('.cursor-grab'), /cursor:\s*grab\s*;/);
+  assert.match(rule(String.raw`.active\:cursor-grabbing`), /cursor:\s*grabbing\s*;/);
+  // The 44px touch target applies only on coarse pointers (D9); reduced motion drops the transition.
+  assert.match(
+    utilities,
+    /@media \(pointer: coarse\)\s*\{\s*\.pointer-coarse\\:h-11\s*\{\s*height:\s*calc\(var\(--space-1\)\s*\*\s*11\)\s*;/
+  );
+  assert.match(
+    utilities,
+    /@media \(prefers-reduced-motion: reduce\)\s*\{[^@]*\.motion-reduce\\:transition-none\s*\{\s*transition-property:\s*none\s*;/
+  );
+  assert.match(css, /@property --tw-shadow\s*\{[^}]*initial-value:\s*0 0 #0000/);
+  // Scan the real static CVA calls as well: every production part class must ship, not just a sample.
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/atoms/slider/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  let parts = 0;
+  const visit = (node) => {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      const base = node.arguments[0];
+      assert.ok(base && ts.isStringLiteral(base), 'Slider CVA bases must be static strings');
+      parts++;
+      for (const name of base.text.split(/\s+/).filter((name) => name !== 'eg-slider')) {
+        const selector = `.${name.replace(/([^a-zA-Z0-9_-])/g, '\\$1')}`;
+        assert.ok(utilities.includes(selector), `Missing Slider CVA utility ${name}`);
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  assert.equal(parts, 4, 'Root, track, range and thumb must all be scanned');
+  // D11 no stylesheet: the marker carries no rule of its own.
+  assert.doesNotMatch(css, /\.eg-slider[^{]*\{/, 'Slider has no stylesheet: its marker carries no rule');
 });
 
 test('UI ships the approved Gauge geometry in the components layer', () => {
@@ -403,6 +477,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Label',
       'Portal',
       'Skeleton',
+      'Slider',
       'Slot',
       'Slottable',
       'Spinner',
@@ -411,6 +486,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'VisuallyHidden',
       'cn',
       'labelVariants',
+      'sliderVariants',
       'surfaceVariants'
     ],
     'Only approved components and cn are public runtime exports'
@@ -421,6 +497,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(typeof exported.Skeleton, 'function', 'Skeleton must be a named root export');
   assert.equal(typeof exported.Spinner, 'function', 'Spinner must be a plain function component without a ref API');
   assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
+  assert.equal(typeof exported.Slider, 'function', 'Slider must be a plain function component without a ref API');
+  assert.equal(typeof exported.sliderVariants, 'function', 'Slider root recipe is exported for Field parity');
   assert.equal(
     exported.VisuallyHidden?.$$typeof,
     Symbol.for('react.forward_ref'),
@@ -472,6 +550,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SkeletonProps',
     'SkeletonSize',
     'SkeletonVariant',
+    'Slider',
+    'SliderProps',
     'Slot',
     'SlotProps',
     'Slottable',
@@ -490,6 +570,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'VisuallyHiddenProps',
     'cn',
     'labelVariants',
+    'sliderVariants',
     'surfaceVariants'
   ]);
   for (const name of [
@@ -502,6 +583,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'GaugeSize',
     'Kbd',
     'KbdProps',
+    'Slider',
+    'SliderProps',
+    'sliderVariants',
     'AspectRatio',
     'AspectRatioProps',
 
@@ -659,6 +743,32 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     /^<kbd class="eg-kbd [^"]*"><span aria-hidden="true">⌘K<\/span><span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Command K<\/span><\/kbd>$/
   );
   assert.doesNotMatch(symbolKey, /role=|aria-label=|tabindex=|data-state/);
+  // Slider: Radix markup with the scalar API; the thumb is measured, so it stays hidden until hydration.
+  const slider = renderToString(
+    createElement(exported.Slider, {
+      label: 'Volume',
+      defaultValue: 40,
+      valueText: (value) => `${value}%`,
+      'aria-describedby': 'volume-hint',
+      id: 'volume',
+      className: 'w-64'
+    })
+  );
+  assert.match(
+    slider,
+    /^<span dir="ltr" data-orientation="horizontal" aria-disabled="false" id="volume" class="eg-slider [^"]* w-64"/
+  );
+  assert.ok(!slider.includes(' w-full'), 'Consumer width replaces the default full width');
+  assert.match(slider, /class="absolute h-full bg-fg-brand-default" style="left:0%;right:60%"/);
+  assert.match(
+    slider,
+    /<span role="slider" aria-label="Volume" aria-valuemin="0" aria-valuemax="100" aria-orientation="horizontal"[^>]* tabindex="0" aria-valuetext="40%" aria-describedby="volume-hint" class="block size-4 /
+  );
+  assert.equal((slider.match(/aria-describedby=/g) ?? []).length, 1, 'aria-describedby is routed to the thumb only');
+  assert.doesNotMatch(slider, /data-state|data-disabled/);
+  const disabledSlider = renderToString(createElement(exported.Slider, { label: 'Volume', disabled: true }));
+  assert.match(disabledSlider, /aria-disabled="true" data-disabled=""/);
+  assert.doesNotMatch(disabledSlider, /tabindex=/, 'A disabled thumb is never a Tab stop');
   const geometry = [
     ['line', 'sm', 'h-3', 'rounded-sm'],
     ['line', 'md', 'h-4', 'rounded-sm'],

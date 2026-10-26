@@ -29,8 +29,8 @@ function run(cwd, command, args, timeout) {
 
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
-import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, VisuallyHidden } from '@egdev/ui';
+import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
+import { AspectRatio, Cluster, Divider, Gauge, Kbd, Label, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Surface, VisuallyHidden, sliderVariants, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -41,6 +41,7 @@ import type {
   KbdProps,
   LabelProps,
   LabelVariant,
+  SliderProps,
   SkeletonProps,
   SkeletonSize,
   SkeletonVariant,
@@ -166,6 +167,24 @@ export function KbdSamples() {
     createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
     createElement(Kbd, kbdNative));
 }
+export const sliderSample: SliderProps = {
+  label: 'Volume', defaultValue: 40, name: 'volume', id: 'packed-slider',
+  'aria-describedby': 'slider-hint', className: 'w-48 w-64 consumer-slider',
+  valueText: (value) => value + ' percent'
+};
+export const sliderRecipe: string = sliderVariants();
+export const sliderEvents: number[] = [];
+export const sliderCommits: number[] = [];
+export function SliderSamples() {
+  return createElement('form', { id: 'slider-form' },
+    createElement('p', { id: 'slider-hint' }, 'Applies to overlays'),
+    createElement(Slider, { ...sliderSample,
+      onValueChange: (value) => sliderEvents.push(value),
+      onValueCommit: (value) => sliderCommits.push(value) }),
+    createElement(Slider, { label: 'Fixed threshold', value: 120, id: 'packed-controlled-slider' }),
+    createElement(Slider, { label: 'Disabled volume', disabled: true, defaultValue: 25, id: 'packed-disabled-slider',
+      onValueChange: (value) => sliderEvents.push(value) }));
+}
 export function VisuallyHiddenSamples() {
   return createElement('section', { 'aria-label': 'Hidden support content' },
     createElement(VisuallyHidden, { ...hiddenNote, ref: hiddenNoteRef }),
@@ -239,6 +258,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(SkeletonSamples),
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(KbdSamples),
+    createElement(SliderSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -293,6 +313,22 @@ const referencedKbd: KbdProps = { children: 'K', ref: createRef<HTMLElement>() }
 const slottedKbd: KbdProps = { children: 'K', asChild: true };
 // @ts-expect-error Kbd has a single flat treatment; there are no variants (D4).
 const variantKbd: KbdProps = { children: 'K', variant: 'raised' };
+// @ts-expect-error Slider requires a thumb accessible name.
+const unnamedSlider: SliderProps = { value: 30 };
+// @ts-expect-error The public API is scalar, not Radix's array shape.
+const rangeSlider: SliderProps = { label: 'Range', value: [20, 80] };
+// @ts-expect-error Slider has no vertical orientation API.
+const verticalSlider: SliderProps = { label: 'Volume', orientation: 'vertical' };
+// @ts-expect-error Slider has no asChild API.
+const slottedSlider: SliderProps = { label: 'Volume', asChild: true };
+// @ts-expect-error Slider exposes no ref API on either React major.
+const referencedSlider: SliderProps = { label: 'Volume', ref: createRef<HTMLSpanElement>() };
+// @ts-expect-error Track, range and thumb content are internal.
+const childSlider: SliderProps = { label: 'Volume', children: 'Not permitted' };
+// @ts-expect-error Direction is not public in v0.1.
+const directedSlider: SliderProps = { label: 'Volume', dir: 'rtl' };
+// @ts-expect-error Use onValueChange, not native onChange.
+const nativeChangeSlider: SliderProps = { label: 'Volume', onChange: () => {} };
 // @ts-expect-error Hidden content is required, not optional.
 const missingHiddenChildren: VisuallyHiddenProps = { id: 'orphan-hint' };
 // @ts-expect-error VisuallyHidden inherits span props; the anchor-only href is rejected.
@@ -569,6 +605,33 @@ function assertSkeletonCSS(css) {
   assert.doesNotMatch(css, /\.eg-skeleton[^{]*\{[^}]*(?:animation|transition):/, 'Skeleton marker must stay static');
 }
 
+// All Slider parts ship token-backed utilities, with no extra stylesheet or app Tailwind requirement.
+function assertSliderCSS(css) {
+  for (const utility of [
+    '.touch-none',
+    '.select-none',
+    '.h-6',
+    '.h-1',
+    '.grow',
+    '.size-4',
+    '.bg-surface-0',
+    '.bg-fg-brand-default',
+    '.bg-fg-default',
+    '.transition-shadow',
+    String.raw`.pointer-coarse\:h-11`,
+    String.raw`.data-\[disabled\]\:opacity-45`,
+    String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`,
+    String.raw`.shadow-\[var\(--shadow-well\)\]`,
+    String.raw`.shadow-\[var\(--shadow-elev-1\)\]`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(utility), 'Missing Slider utility ' + utility);
+  }
+  assert.match(css, /@media\s*\(pointer:\s*coarse\)/, 'Slider touch target needs a coarse-pointer query');
+  assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/, 'Slider respects reduced motion');
+  assert.doesNotMatch(css, /\.eg-slider[^{]*\{/, 'Slider marker must not introduce an appearance rule');
+}
+
 // Kbd ships its flat token utilities and the hairline border-style initial value; no Kbd stylesheet.
 function assertKbdCSS(css) {
   for (const utility of [
@@ -663,6 +726,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Label',
   'Portal',
   'Skeleton',
+  'Slider',
   'Slot',
   'Slottable',
   'Spinner',
@@ -671,6 +735,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'VisuallyHidden',
   'cn',
   'labelVariants',
+  'sliderVariants',
   'surfaceVariants'
 ]);
 ${assertGaugeCSS.toString()}
@@ -678,11 +743,13 @@ ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertSliderCSS.toString()}
 assertGaugeCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assertSkeletonCSS(shippedStyles);
 assertSpinnerCSS(shippedStyles);
 assertKbdCSS(shippedStyles);
+assertSliderCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -913,6 +980,18 @@ for (const frame of [square, wide]) {
   assert.equal(nativeSpinner.getAttribute('title'), 'Uploading');
   assert.equal(nativeSpinner.getAttribute('lang'), 'en');
   assert.ok(nativeSpinner.className.endsWith('ms-2 consumer-spinner'), 'Consumer layout classes merge last');
+  const sliderRoot = document.getElementById('packed-slider');
+  assert.ok(sliderRoot, 'SSR renders Slider root');
+  const sliderThumb = sliderRoot.querySelector('[role="slider"]');
+  assert.equal(sliderThumb.getAttribute('aria-label'), 'Volume');
+  assert.equal(sliderThumb.getAttribute('aria-valuemin'), '0');
+  assert.equal(sliderThumb.getAttribute('aria-valuemax'), '100');
+  assert.equal(sliderThumb.getAttribute('aria-valuetext'), '40 percent');
+  assert.equal(sliderThumb.getAttribute('aria-describedby'), 'slider-hint');
+  assert.equal(sliderRoot.hasAttribute('aria-describedby'), false);
+  assert.equal(sliderThumb.style.display, 'none', 'Radix reveals the thumb after its collection mounts');
+  assert.equal(sliderRoot.querySelector('input').name, 'volume');
+  assert.ok(sliderRoot.classList.contains('w-64') && !sliderRoot.classList.contains('w-full'));
   const kbdHint = document.getElementById('kbd-hint');
   assert.ok(kbdHint, 'SSR must render Kbd samples');
   const keys = [...kbdHint.querySelectorAll('kbd.eg-kbd')];
@@ -1019,18 +1098,20 @@ import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 const stage = (csrStage) => console.log(JSON.stringify({ csrStage }));
 stage('setup:start');
 const dom = new JSDOM('<div id="app"></div>', { url: 'http://localhost/', pretendToBeVisual: true });
-for (const name of ['window', 'document', 'navigator', 'HTMLElement', 'Element', 'Node', 'Event', 'CustomEvent', 'MutationObserver']) {
+for (const name of ['window', 'document', 'navigator', 'HTMLElement', 'Element', 'Node', 'Event', 'CustomEvent', 'MutationObserver', 'HTMLFormElement', 'HTMLInputElement', 'KeyboardEvent']) {
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 }
 for (const name of ['getComputedStyle', 'requestAnimationFrame', 'cancelAnimationFrame']) {
   globalThis[name] = dom.window[name].bind(dom.window);
 }
+// Radix measures thumb dimensions; jsdom has no layout observer.
+globalThis.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} };
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
+const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -1117,13 +1198,13 @@ try {
   assert.equal(rerenderRule.getAttribute('role'), 'none');
   assert.equal(rerenderRule.getAttribute('data-orientation'), 'horizontal');
   await act(async () => root.render(createElement(App, { dividerSemantic: true })));
-  assert.equal(separations.children[2], rerenderRule, 'Rerender must preserve the divider host');
+  assert.ok(separations.children[2] === rerenderRule, 'Rerender must preserve the divider host');
   assert.equal(rerenderRule.getAttribute('role'), 'separator', 'Semantic rerender must delegate to Radix');
   assert.equal(rerenderRule.getAttribute('aria-orientation'), 'vertical');
   assert.equal(rerenderRule.getAttribute('data-orientation'), 'vertical');
   assert.equal(rerenderRule.className, rerenderRecipe, 'Orientation semantics must never mirror into classes');
   await act(async () => root.render(createElement(App)));
-  assert.equal(separations.children[2], rerenderRule);
+  assert.ok(separations.children[2] === rerenderRule);
   assert.equal(rerenderRule.getAttribute('role'), 'none');
   assert.equal(rerenderRule.hasAttribute('aria-orientation'), false);
   assert.equal(rerenderRule.getAttribute('data-orientation'), 'horizontal');
@@ -1168,6 +1249,36 @@ try {
   }
   assert.equal(document.getElementById('kbd-command').children[0].getAttribute('aria-hidden'), 'true');
   stage('kbd:passive:complete');
+  stage('slider:keyboard:start');
+  const sliderRoot = document.getElementById('packed-slider');
+  const sliderThumb = sliderRoot.querySelector('[role="slider"]');
+  assert.equal(sliderThumb.getAttribute('aria-label'), 'Volume');
+  assert.equal(sliderThumb.getAttribute('aria-describedby'), 'slider-hint');
+  assert.equal(sliderRoot.hasAttribute('aria-describedby'), false);
+  assert.equal(sliderThumb.getAttribute('aria-valuenow'), '40');
+  assert.equal(sliderThumb.getAttribute('aria-valuetext'), '40 percent');
+  assert.equal(sliderThumb.tabIndex, 0);
+  assert.ok(sliderRoot.classList.contains('eg-slider') && sliderRoot.classList.contains('w-64'));
+  assert.ok(!sliderRoot.classList.contains('w-full') && !sliderRoot.classList.contains('w-48'));
+  await act(async () => {
+    sliderThumb.focus();
+    sliderThumb.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+  });
+  assert.ok(document.activeElement === sliderThumb, 'Radix keeps focus on the thumb');
+  assert.equal(sliderThumb.getAttribute('aria-valuenow'), '41');
+  assert.equal(sliderThumb.getAttribute('aria-valuetext'), '41 percent');
+  assert.deepEqual(sliderEvents, [41], 'The callback is scalar on both React majors');
+  assert.deepEqual(sliderCommits, [41]);
+  assert.equal(new dom.window.FormData(document.getElementById('slider-form')).get('volume'), '41');
+  const fixedSlider = document.querySelector('#packed-controlled-slider [role="slider"]');
+  assert.equal(fixedSlider.getAttribute('aria-valuenow'), '100', 'Controlled values clamp without incoming callbacks');
+  const disabledSlider = document.querySelector('#packed-disabled-slider [role="slider"]');
+  assert.equal(disabledSlider.hasAttribute('tabindex'), false);
+  assert.equal(disabledSlider.hasAttribute('data-disabled'), true);
+  await act(async () => disabledSlider.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true })));
+  assert.equal(disabledSlider.getAttribute('aria-valuenow'), '25');
+  assert.deepEqual(sliderEvents, [41], 'Disabled interaction must not emit');
+  stage('slider:keyboard:complete');
   stage('layout:rerender:start');
   const layoutStack = () => document.querySelector('.eg-stack[aria-label="Token sections"]');
   const layoutCluster = () => document.querySelector('.eg-cluster[aria-label="Token actions"]');
@@ -1316,6 +1427,7 @@ ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertSliderCSS.toString()}
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1326,6 +1438,7 @@ assert.match(
 assertSkeletonCSS(emitted);
 assertSpinnerCSS(emitted);
 assertKbdCSS(emitted);
+assertSliderCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
@@ -1364,6 +1477,7 @@ assert.match(
 assertSkeletonCSS(twCss);
 assertSpinnerCSS(twCss);
 assertKbdCSS(twCss);
+assertSliderCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
