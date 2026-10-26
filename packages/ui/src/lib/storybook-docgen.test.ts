@@ -118,7 +118,7 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
-  it('exposes the layout primitives, Gauge, AspectRatio, Portal, Slot and the cn utility through the barrel', () => {
+  it('exposes the layout primitives, Surface, Gauge, AspectRatio, Portal, Slot and cn through the barrel', () => {
     const file = ast(source('index.ts'));
     const modules = file.statements.flatMap((node) =>
       ts.isExportDeclaration(node) && node.moduleSpecifier && ts.isStringLiteral(node.moduleSpecifier)
@@ -138,6 +138,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/skeleton',
       './primitives/slot',
       './primitives/stack',
+      './primitives/surface',
       './primitives/visually-hidden'
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
@@ -152,9 +153,11 @@ describe('Storybook TypeScript docgen contract', () => {
       'Slottable',
       'Spinner',
       'Stack',
+      'Surface',
       'VisuallyHidden',
       'cn',
-      'labelVariants'
+      'labelVariants',
+      'surfaceVariants'
     ]);
   });
 
@@ -164,7 +167,8 @@ describe('Storybook TypeScript docgen contract', () => {
       source('atoms/gauge/Gauge.tsx'),
       source('primitives/aspect-ratio/AspectRatio.tsx'),
       source('primitives/stack/Stack.tsx'),
-      source('primitives/stack/Cluster.tsx')
+      source('primitives/stack/Cluster.tsx'),
+      source('primitives/surface/Surface.tsx')
     ]);
   }, 20_000);
 
@@ -438,6 +442,76 @@ describe('Storybook TypeScript docgen contract', () => {
     }
   });
 
+  it('extracts Surface from both public branches with single constant defaults', () => {
+    const doc = docs.find((item) => item.displayName === 'Surface');
+    expect(doc, 'Surface must be discovered from its real component').toBeDefined();
+    if (!doc) {
+      throw new Error('Missing docgen for Surface');
+    }
+    const props = doc.props;
+    const values = (prop: string) =>
+      (props[prop]?.type.value ?? []).map((item: { value: string }) => normalize(item.value));
+    expect(values('tone')).toEqual(['surface-0', 'surface-1', 'surface-2', 'surface-3', 'well', 'overlay']);
+    expect(values('elevation')).toEqual(['0', '1', '2', '3']);
+    expect(values('padding')).toEqual(['none', 'sm', 'md', 'lg']);
+    expect(values('radius')).toEqual(['none', 'md', 'lg', 'xl', 'full']);
+    // Union branches merge JSDoc; @default lives on one branch so the value is never repeated.
+    for (const [prop, value] of [
+      ['tone', 'surface-1'],
+      ['elevation', '1'],
+      ['padding', 'md'],
+      ['radius', 'xl'],
+      ['asChild', 'false']
+    ] as const) {
+      expect(normalize(props[prop]?.defaultValue?.value), `Surface.${prop} default`).toBe(value);
+      expect(props[prop]?.required, `Surface.${prop} stays optional`).toBe(false);
+    }
+    // The default branch must stay visible: asChild is an optional boolean, not the slotted literal.
+    expect(props.asChild?.type.name).toBe('boolean');
+    for (const prop of ['id', 'title', 'aria-label', 'aria-labelledby', 'className']) {
+      expect.soft(props[prop]?.type.name, `Surface native ${prop} must remain available in autodocs`).toBe('string');
+    }
+    expect.soft(props.style?.type.name).toBe('CSSProperties');
+  });
+
+  it('documents controls on every Surface own prop and union branch', () => {
+    const file = ast(source('primitives/surface/types.ts'));
+    const properties = ownProps(file, [
+      'SurfaceRaisedToneProps',
+      'SurfaceFixedToneProps',
+      'SurfaceOwnProps',
+      'SurfaceDefaultProps',
+      'SurfaceSlottedProps'
+    ]);
+    const controls: Record<string, string> = {
+      tone: 'select',
+      elevation: 'select',
+      padding: 'select',
+      radius: 'select',
+      asChild: 'boolean',
+      children: 'false'
+    };
+    expect(properties).toHaveLength(10);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const control = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(
+        control.map((tag) => ts.getTextOfJSDocComment(tag.comment)?.trim()),
+        name
+      ).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        expect(tags.some((tag) => tag.tagName.text === 'controlReason' && tag.comment)).toBe(true);
+      }
+      if (!property.questionToken) {
+        expect(
+          tags.some((tag) => tag.tagName.text === 'default'),
+          `${name}: required declarations must not invent @default`
+        ).toBe(false);
+      }
+    }
+  });
+
   it('documents controls on every AspectRatio own prop through its real annotations', () => {
     const file = ast(source('primitives/aspect-ratio/types.ts'));
     const properties = ownProps(file, ['AspectRatioProps']);
@@ -456,7 +530,7 @@ describe('Storybook TypeScript docgen contract', () => {
   });
 
   it('limits real parser discovery to the current public React components', () => {
-    expect(docs.map((doc) => doc.displayName)).toEqual(['Gauge', 'AspectRatio', 'Stack', 'Cluster']);
+    expect(docs.map((doc) => doc.displayName)).toEqual(['Gauge', 'AspectRatio', 'Stack', 'Cluster', 'Surface']);
     expect(Object.keys(gaugeControls)).toHaveLength(8);
   });
 });

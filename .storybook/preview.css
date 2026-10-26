@@ -13,6 +13,7 @@
 @source "../packages/ui/src/primitives/skeleton/Skeleton.stories.tsx";
 @source "../packages/ui/src/primitives/stack/Stack.stories.tsx";
 @source "../packages/ui/src/primitives/stack/Cluster.stories.tsx";
+@source "../packages/ui/src/primitives/surface/Surface.stories.tsx";
 
 body {
   margin: 0;
