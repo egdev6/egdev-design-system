@@ -1,6 +1,8 @@
 // Atoms
 export * from './atoms/gauge';
+export * from './atoms/icon';
 export * from './atoms/kbd';
+export * from './atoms/product-mark';
 export * from './atoms/spinner';
 export * from './atoms/status-dot';
 // Utilities
@@ -33,4 +35,13 @@ export type {
   SurfaceTone
 } from './primitives/surface';
 export { Surface, surfaceVariants } from './primitives/surface';
+export type {
+  HeadingLevel,
+  HeadingProps,
+  TextProps,
+  TextTone,
+  TextVariant,
+  TitleVariant
+} from './primitives/text';
+export { Heading, Text } from './primitives/text';
 export * from './primitives/visually-hidden';

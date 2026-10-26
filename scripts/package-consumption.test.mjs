@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Kbd, Label, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, surfaceVariants, VisuallyHidden } from '@egdev/ui';
+import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Kbd, Label, ProductMark, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -38,9 +38,13 @@ import type {
   GaugeProps,
   GaugeState,
   GaugeSize,
+  IconName,
+  IconProps,
+  IconSize,
   KbdProps,
   LabelProps,
   LabelVariant,
+  ProductMarkProps,
   SkeletonProps,
   SkeletonSize,
   SkeletonVariant,
@@ -52,6 +56,12 @@ import type {
   ClusterProps,
   LayoutGap,
   StackProps,
+  HeadingLevel,
+  HeadingProps,
+  TextProps,
+  TextTone,
+  TextVariant,
+  TitleVariant,
   SurfaceElevation,
   SurfacePadding,
   SurfaceProps,
@@ -181,6 +191,17 @@ export function KbdSamples() {
     createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
     createElement(Kbd, kbdNative));
 }
+export const productMarkImage: ProductMarkProps = { monogram: 'M', label: 'Mando', id: 'mark-mando' };
+export const productMarkLink: ProductMarkProps = {
+  monogram: 'M', label: 'Mando home', href: '#home', id: 'mark-home', target: '_self'
+};
+export function ProductMarkSamples() {
+  // Passive product images and one home link; router wrapping stays the consumer's (D5).
+  return createElement('nav', { 'aria-label': 'Product marks' },
+    createElement(ProductMark, productMarkImage),
+    createElement(ProductMark, { monogram: 'Cr', label: 'Criterio', id: 'mark-criterio', className: 'mb-1 mb-3 consumer-mark' }),
+    createElement(ProductMark, productMarkLink));
+}
 export function VisuallyHiddenSamples() {
   return createElement('section', { 'aria-label': 'Hidden support content' },
     createElement(VisuallyHidden, { ...hiddenNote, ref: hiddenNoteRef }),
@@ -200,6 +221,32 @@ export function LayoutSamples({ stackGap = 4 }: LayoutSampleProps) {
     createElement(Cluster, { ...clusterRow, 'aria-label': 'Token actions' },
       createElement('button', { type: 'button' }, 'Action one'),
       createElement('button', { type: 'button' }, 'Action two')));
+}
+const titleVariant: TitleVariant = 'hero';
+const textVariant = 'eyebrow' satisfies TextVariant;
+const raisedTone: TextTone = 'raised';
+export const headingHero: HeadingProps = { children: 'Build ', variant: titleVariant, accent: 'in public', id: 'title-hero' };
+export const textRaised: TextProps = { children: 'Ship ', variant: 'section', tone: raisedTone, accent: 'today', accentBreak: false };
+type TypographySampleProps = { headingLevel?: HeadingLevel };
+export function TypographySamples({ headingLevel = 1 }: TypographySampleProps) {
+  return createElement('section', { 'aria-labelledby': 'title-hero' },
+    createElement(Text, { variant: textVariant, id: 'title-eyebrow', children: 'Weekly stream' }),
+    createElement(Heading, { ...headingHero, level: headingLevel }),
+    createElement(Heading, { variant: 'display', accent: '.', accentBreak: false, id: 'title-punctuation', children: 'Talk' }),
+    createElement(Heading, { variant: 'inverse', accent: 'time', id: 'title-inverse', children: 'Show ' }),
+    createElement(Text, { ...textRaised, id: 'title-raised' }),
+    createElement(Text, { variant: 'section', accent: 'inline', accentBreak: false, asChild: true,
+      children: createElement('span', { id: 'title-slotted', className: 'consumer-span' }, 'Slotted ') }));
+}
+export const iconDefaults: IconProps = { name: 'plus' };
+const iconPreset: IconSize = 'lg';
+type IconSampleProps = { iconName?: IconName };
+export function IconSamples({ iconName = 'plus' }: IconSampleProps) {
+  return createElement('section', { 'aria-label': 'Glyphs' },
+    createElement(Icon, { ...iconDefaults, name: iconName, id: 'icon-decorative' }),
+    createElement('p', { id: 'icon-labelled-host' },
+      createElement(Icon, { name: 'search', label: 'Search status', size: 'sm', filled: true })),
+    createElement(Icon, { name: 'check', size: iconPreset, id: 'icon-override', className: 'size-4.5 text-fg-brand-default' }));
 }
 // Surface: a div ref by default; an HTMLElement ref on the actual slotted host with asChild.
 export const surfaceDivRef = createRef<HTMLDivElement>();
@@ -239,7 +286,7 @@ export function DividerSamples({ semantic }: { semantic?: boolean }) {
       ? { orientation: dividerOrientation, decorative: false, className: 'consumer-rule' }
       : { className: 'consumer-rule' }));
 }
-export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, spinnerLoading, statusDotPulse }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; spinnerLoading?: boolean; statusDotPulse?: boolean } = {}) {
+export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, headingLevel, iconName, spinnerLoading, statusDotPulse }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; headingLevel?: HeadingLevel; iconName?: IconName; spinnerLoading?: boolean; statusDotPulse?: boolean } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
@@ -247,14 +294,17 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(GaugeSamples, { value: gaugeValue }),
     createElement(AspectSamples, { wideRatio }),
     createElement(LayoutSamples, { stackGap }),
+    createElement(TypographySamples, { headingLevel }),
     createElement(SurfaceSamples, { surfaceElevation }),
     createElement(VisuallyHiddenSamples),
     createElement(DividerSamples, { semantic: dividerSemantic }),
     createElement(LabelSamples),
     createElement(SkeletonSamples),
+    createElement(IconSamples, { iconName }),
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(StatusDotSamples, { pulse: statusDotPulse }),
     createElement(KbdSamples),
+    createElement(ProductMarkSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -329,6 +379,22 @@ const referencedKbd: KbdProps = { children: 'K', ref: createRef<HTMLElement>() }
 const slottedKbd: KbdProps = { children: 'K', asChild: true };
 // @ts-expect-error Kbd has a single flat treatment; there are no variants (D4).
 const variantKbd: KbdProps = { children: 'K', variant: 'raised' };
+// @ts-expect-error ProductMark requires its accessible label (D6).
+const unnamedMark: ProductMarkProps = { monogram: 'M' };
+// @ts-expect-error ProductMark requires its visible monogram (D1).
+const emptyMark: ProductMarkProps = { label: 'Mando' };
+// @ts-expect-error The monogram prop is the only content; children are rejected.
+const childMark: ProductMarkProps = { monogram: 'M', label: 'Mando', children: 'M' };
+// @ts-expect-error The link is named by label, never by aria-label.
+const ariaNamedMark: ProductMarkProps = { monogram: 'M', label: 'Mando home', href: '/', 'aria-label': 'Home' };
+// @ts-expect-error The link is named by label, never by aria-labelledby.
+const labelledMark: ProductMarkProps = { monogram: 'M', label: 'Mando home', href: '/', 'aria-labelledby': 'home' };
+// @ts-expect-error ProductMark has no public ref API (D9).
+const referencedMark: ProductMarkProps = { monogram: 'M', label: 'Mando', ref: createRef<HTMLElement>() };
+// @ts-expect-error Router integration wraps the mark; there is no asChild.
+const slottedMark: ProductMarkProps = { monogram: 'M', label: 'Mando', asChild: true };
+// @ts-expect-error v0.1 has one 40px size (D2).
+const sizedMark: ProductMarkProps = { monogram: 'M', label: 'Mando', size: 'lg' };
 // @ts-expect-error Hidden content is required, not optional.
 const missingHiddenChildren: VisuallyHiddenProps = { id: 'orphan-hint' };
 // @ts-expect-error VisuallyHidden inherits span props; the anchor-only href is rejected.
@@ -392,6 +458,34 @@ const slottedLabel: LabelProps = { children: 'Email address', htmlFor: 'consumer
 const arbitraryStackGap: StackProps = { gap: 9 };
 // @ts-expect-error Unsupported alignment choices are rejected by the union type.
 const invalidClusterAlignment: ClusterProps = { alignItems: 'around' };
+// @ts-expect-error Eyebrow is not a heading recipe.
+const eyebrowHeading: HeadingProps = { children: 'Not a heading', variant: 'eyebrow' };
+// @ts-expect-error Heading semantics come from level only, never asChild.
+const slottedHeading: HeadingProps = { children: 'Slotted', asChild: true };
+// @ts-expect-error Text never takes a heading level.
+const leveledText: TextProps = { children: 'Copy', level: 2 };
+// @ts-expect-error The eyebrow has no accent.
+const accentedEyebrow: TextProps = { children: 'Weekly', accent: 'stream' };
+// @ts-expect-error Inverse has no tone choice.
+const tonedInverse: HeadingProps = { children: 'Show', variant: 'inverse', tone: 'raised' };
+// @ts-expect-error Neither export accepts HTML injection.
+const injectedText: TextProps = { children: 'Copy', dangerouslySetInnerHTML: { __html: '<b>x</b>' } };
+// @ts-expect-error Heading owns its native level; aria-level is excluded.
+const ariaLevelHeading: HeadingProps = { children: 'Title', 'aria-level': 3 };
+// @ts-expect-error The glyph set is closed; unknown names have no runtime fallback.
+const unknownGlyph: IconProps = { name: 'sparkles' };
+// @ts-expect-error Icon sizes are presets; containers use size-* utilities instead.
+const numericIconSize: IconProps = { name: 'plus', size: 18 };
+// @ts-expect-error Naming goes through label and AccessibleIcon, never a manual role.
+const iconRole: IconProps = { name: 'plus', role: 'img' };
+// @ts-expect-error Geometry attributes stay component-owned.
+const iconWidth: IconProps = { name: 'plus', width: 24 };
+// @ts-expect-error Paint attributes stay component-owned; color comes from currentColor.
+const iconFill: IconProps = { name: 'plus', fill: 'red' };
+// @ts-expect-error Icon draws only internal path data.
+const iconChildren: IconProps = { name: 'plus', children: null };
+// @ts-expect-error Icon exposes no ref on either React major.
+const referencedIcon: IconProps = { name: 'plus', ref: unsupportedGaugeRef };
 // @ts-expect-error A well is always recessed; it rejects elevation.
 const elevatedWell: SurfaceProps = { tone: 'well', elevation: 2 };
 // @ts-expect-error An overlay always floats at level 3; it rejects elevation.
@@ -579,6 +673,34 @@ function assertLabelCSS(css) {
   assert.match(css, /font-weight:\s*var\(--text-body-default--font-weight\)/, 'Missing Label choice weight binding');
 }
 
+// Icon's static utilities must work in shipped CSS and both consumer build paths.
+function assertIconCSS(css) {
+  for (const [selector, declarations] of [
+    ['.inline-block', [/display:\s*inline-block\s*;/]],
+    ['.shrink-0', [/flex-shrink:\s*0\s*;/]],
+    ['.align-middle', [/vertical-align:\s*middle\s*;/]],
+    ['.stroke-current', [/stroke:\s*currentcolor\s*;/i]],
+    [String.raw`.stroke-\(length\:--icon-stroke\)`, [/stroke-width:\s*var\(--icon-stroke\)\s*;/]],
+    ['.fill-none', [/fill:\s*none\s*;/]],
+    ['.fill-current', [/fill:\s*currentcolor\s*;/i]],
+    ['.size-4', [/width:\s*var\(--space-4\)\s*;/, /height:\s*var\(--space-4\)\s*;/]],
+    [String.raw`.size-\(--icon-size\)`, [/width:\s*var\(--icon-size\)\s*;/, /height:\s*var\(--icon-size\)\s*;/]],
+    ['.size-7', [/width:\s*var\(--space-7\)\s*;/, /height:\s*var\(--space-7\)\s*;/]]
+  ]) {
+    const blocks = css
+      .split(selector + ' {')
+      .slice(1)
+      .map((rest) => rest.slice(0, rest.indexOf('}')));
+    assert.ok(blocks.length > 0, 'Missing Icon utility ' + selector);
+    for (const declaration of declarations) {
+      assert.ok(
+        blocks.some((block) => declaration.test(block)),
+        selector + ' must ship ' + declaration
+      );
+    }
+  }
+}
+
 // Skeleton ships token-backed silhouette utilities plus the approved pulse animation: no dynamic geometry.
 function assertSkeletonCSS(css) {
   for (const dimension of ['h-3', 'h-4', 'h-5', 'h-12', 'h-20', 'h-24', 'size-8', 'size-12', 'size-16']) {
@@ -669,6 +791,30 @@ function assertKbdCSS(css) {
   assert.match(css, /--tw-border-style:\s*solid/, 'The hairline border style must resolve without Tailwind');
 }
 
+// ProductMark ships the product-mark Material and link focus utilities from the token theme; no stylesheet.
+function assertProductMarkCSS(css) {
+  for (const utility of [
+    '.size-10',
+    '.rounded-md',
+    '.shadow-btn-primary',
+    '.text-action-primary-solid-fg',
+    '.font-display',
+    '.text-heading-small',
+    '.no-underline',
+    '.focus-visible\\:outline-none',
+    '.focus-visible\\:shadow-focus'
+  ]) {
+    assert.ok(css.includes(utility), 'Missing ProductMark utility ' + utility);
+  }
+  assert.match(
+    css,
+    /\.bg-\\\(image\\:--gradient-btn-primary\\\)\s*\{[^}]*background-image:\s*var\(--gradient-btn-primary\)/,
+    'The product-mark fill must use the gradient-btn-primary token'
+  );
+  assert.match(css, /\.size-10\s*\{[^}]*width:\s*var\(--space-10\)/, 'The tile must be 40px through --space-10');
+  assert.doesNotMatch(css, /\.eg-product-mark[^{]*\{/, 'ProductMark has no stylesheet: its marker carries no rule');
+}
+
 // Spinner ships Icon-scale presets, inherited stroke utilities and the canonical spin token with keyframes.
 function assertSpinnerCSS(css) {
   for (const utility of [
@@ -725,6 +871,10 @@ assert.ok(!shippedStyles.includes('.eg-visually-hidden'), 'VisuallyHidden must n
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(shippedStyles.includes(utility), 'Packed styles must retain layout utility ' + utility);
 }
+for (const utility of ['.text-title-section', '.text-title-hero', '.text-title-show', '.text-title-display', '.text-fg-brand-raised', '.text-fg-on-flood', 'text-shadow: var(--text-shadow-title-hero)', '.before\\\\:rotate-45']) {
+  assert.ok(shippedStyles.includes(utility), 'Packed styles must retain typography utility ' + utility);
+}
+assert.doesNotMatch(shippedStyles, /\\.eg-(?:text|heading)\\s*[,{]/, 'Text/Heading markers must not become shipped CSS rules');
 ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
@@ -732,9 +882,12 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Cluster',
   'Divider',
   'Gauge',
+  'Heading',
+  'Icon',
   'Kbd',
   'Label',
   'Portal',
+  'ProductMark',
   'Skeleton',
   'Slot',
   'Slottable',
@@ -742,6 +895,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Stack',
   'StatusDot',
   'Surface',
+  'Text',
   'VisuallyHidden',
   'cn',
   'labelVariants',
@@ -751,15 +905,19 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
 ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
+${assertIconCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertProductMarkCSS.toString()}
 assertGaugeCSS(shippedStyles);
+assertIconCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assertSkeletonCSS(shippedStyles);
 assertSpinnerCSS(shippedStyles);
 assertStatusDotCSS(shippedStyles);
 assertKbdCSS(shippedStyles);
+assertProductMarkCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -828,7 +986,7 @@ try {
   semanticDivider.window.close();
 }
 const html = renderToString(createElement(App));
-for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%', 'Email address', 'eg-stack', 'flex-col', 'flex-nowrap', 'gap-4', 'eg-cluster', 'flex-row', 'flex-wrap', 'gap-6', 'items-start', 'justify-between', 'eg-surface', 'bg-surface-1', 'bg-surface-overlay', 'shadow-[var(--shadow-well)]']) {
+for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%', 'Email address', 'eg-stack', 'flex-col', 'flex-nowrap', 'gap-4', 'eg-cluster', 'flex-row', 'flex-wrap', 'gap-6', 'items-start', 'justify-between', 'eg-icon', 'viewBox="0 0 24 24"', 'Search status', 'eg-surface', 'bg-surface-1', 'bg-surface-overlay', 'shadow-[var(--shadow-well)]']) {
   assert.ok(html.includes(text), 'SSR must render ' + text);
 }
 const dom = new JSDOM(html);
@@ -1052,6 +1210,31 @@ for (const frame of [square, wide]) {
   assert.ok(nativeKbd.className.startsWith('eg-kbd '), 'The public marker leads the root classes');
   assert.ok(nativeKbd.className.endsWith(' ms-2 consumer-kbd'), 'Consumer layout classes merge last');
   assert.ok(!nativeKbd.className.split(' ').includes('ms-1'), 'Conflicting margin utilities resolve through cn()');
+  const markNav = document.querySelector('nav[aria-label="Product marks"]');
+  assert.ok(markNav, 'SSR must render ProductMark samples');
+  const mandoMark = document.getElementById('mark-mando');
+  assert.equal(mandoMark.tagName, 'SPAN');
+  assert.equal(mandoMark.getAttribute('role'), 'img', 'Image mode is a passive named image');
+  assert.equal(mandoMark.getAttribute('aria-label'), 'Mando');
+  assert.equal(mandoMark.children.length, 1);
+  assert.equal(mandoMark.children[0].getAttribute('aria-hidden'), 'true', 'The monogram is hidden from assistive technology');
+  assert.equal(mandoMark.textContent, 'M');
+  assert.ok(mandoMark.className.startsWith('eg-product-mark '), 'The public marker leads the root classes');
+  const criterioMark = document.getElementById('mark-criterio');
+  assert.equal(criterioMark.textContent, 'Cr');
+  assert.ok(criterioMark.className.endsWith(' mb-3 consumer-mark'), 'Consumer layout classes merge last');
+  assert.ok(!criterioMark.className.split(' ').includes('mb-1'), 'Conflicting margin utilities resolve through cn()');
+  const homeMark = document.getElementById('mark-home');
+  assert.equal(homeMark.tagName, 'A');
+  assert.equal(homeMark.getAttribute('href'), '#home');
+  assert.equal(homeMark.getAttribute('target'), '_self');
+  assert.equal(homeMark.getAttribute('aria-label'), 'Mando home');
+  assert.equal(homeMark.hasAttribute('role'), false, 'Link mode keeps native link semantics');
+  assert.ok(homeMark.className.includes(' focus-visible:shadow-focus'), 'Link focus replaces the material shadow');
+  for (const mark of markNav.querySelectorAll('.eg-product-mark')) {
+    assert.equal(mark.hasAttribute('data-state'), false);
+    assert.equal(mark.getAttribute('tabindex'), null);
+  }
   const tokenStack = document.querySelector('.eg-stack[aria-label="Token sections"]');
   assert.ok(tokenStack, 'SSR must render Stack samples');
   assert.ok(tokenStack.classList.contains('flex-col') && tokenStack.classList.contains('flex-nowrap'));
@@ -1087,6 +1270,55 @@ for (const frame of [square, wide]) {
     assert.equal(layout.hasAttribute('aria-live'), false);
     assert.ok(layout.className.includes('min-w-0'));
   }
+  // Text/Heading: native semantics, level independent of recipe, accent placement and tone.
+  const eyebrow = document.getElementById('title-eyebrow');
+  assert.equal(eyebrow.tagName, 'P');
+  assert.ok(eyebrow.classList.contains('eg-text') && eyebrow.classList.contains('text-label-eyebrow'));
+  const hero = document.getElementById('title-hero');
+  assert.equal(hero.tagName, 'H1', 'Heading level must select the native element');
+  assert.ok(hero.classList.contains('eg-heading') && hero.classList.contains('text-title-hero'));
+  assert.equal(hero.textContent, 'Build in public', 'Accent must stay in the accessible text, in order');
+  const heroAccent = hero.querySelector('.eg-heading__accent');
+  assert.ok(heroAccent.classList.contains('block') && heroAccent.className.includes('[text-shadow:var(--text-shadow-title-hero)]'));
+  assert.equal(heroAccent.getAttribute('aria-hidden'), null);
+  assert.equal(document.getElementById('title-punctuation').textContent, 'Talk.', 'No separator is injected');
+  const inverse = document.getElementById('title-inverse');
+  assert.equal(inverse.tagName, 'H2', 'Heading defaults to h2');
+  assert.ok(inverse.classList.contains('text-title-display') && inverse.classList.contains('text-fg-on-flood'));
+  assert.ok(inverse.querySelector('.eg-heading__accent').classList.contains('text-fg-on-flood'));
+  const raised = document.getElementById('title-raised').querySelector('.eg-text__accent');
+  assert.ok(raised.classList.contains('text-fg-brand-raised') && raised.classList.contains('inline'));
+  assert.ok(raised.className.includes('[text-shadow:none]'));
+  const slotted = document.getElementById('title-slotted');
+  assert.equal(slotted.tagName, 'SPAN', 'asChild must render the single slotted element');
+  assert.ok(slotted.classList.contains('eg-text') && slotted.classList.contains('consumer-span'));
+  assert.equal(slotted.lastElementChild.className.includes('eg-text__accent'), true, 'Accent must land inside the slotted root');
+  assert.equal(slotted.textContent, 'Slotted inline');
+  for (const node of [eyebrow, hero, inverse, slotted]) {
+    assert.equal(node.getAttribute('role'), null);
+    assert.equal(node.hasAttribute('tabindex') || node.hasAttribute('aria-live') || node.hasAttribute('aria-level'), false);
+  }
+  const decorativeIcon = document.getElementById('icon-decorative');
+  assert.ok(decorativeIcon, 'SSR must render the decorative Icon');
+  assert.equal(decorativeIcon.tagName.toLowerCase(), 'svg');
+  assert.equal(decorativeIcon.getAttribute('aria-hidden'), 'true');
+  assert.equal(decorativeIcon.getAttribute('focusable'), 'false');
+  assert.equal(decorativeIcon.getAttribute('role'), null);
+  assert.ok(decorativeIcon.classList.contains('eg-icon') && decorativeIcon.classList.contains('size-(--icon-size)'));
+  assert.ok(decorativeIcon.classList.contains('fill-none') && decorativeIcon.classList.contains('stroke-current'));
+  assert.equal(decorativeIcon.querySelectorAll('path').length, 2, 'plus must render its two Lucide paths');
+  const labelledHost = document.getElementById('icon-labelled-host');
+  assert.ok(labelledHost, 'SSR must render the labelled Icon host');
+  const labelledIcon = labelledHost.querySelector('svg.eg-icon');
+  assert.ok(labelledIcon, 'SSR must render the labelled Icon');
+  assert.equal(labelledIcon.getAttribute('aria-hidden'), 'true', 'AccessibleIcon hides the svg itself');
+  assert.ok(labelledIcon.classList.contains('size-4') && labelledIcon.classList.contains('fill-current'));
+  assert.equal(labelledHost.textContent, 'Search status', 'AccessibleIcon must supply exactly one visually hidden name');
+  assert.equal(labelledHost.querySelector('title'), null);
+  const overrideIcon = document.getElementById('icon-override');
+  assert.ok(overrideIcon, 'SSR must render the consumer-sized Icon');
+  assert.ok(overrideIcon.classList.contains('size-4.5') && overrideIcon.classList.contains('text-fg-brand-default'));
+  assert.ok(!overrideIcon.classList.contains('size-7'), 'twMerge must let the consumer size-* win over the preset');
   // Native for/id named association and the approved typography recipe classes.
   const emailLabel = document.querySelector('label[for="consumer-email"]');
   assert.ok(emailLabel, 'Label must associate natively through for');
@@ -1228,13 +1460,13 @@ try {
   assert.equal(rerenderRule.getAttribute('role'), 'none');
   assert.equal(rerenderRule.getAttribute('data-orientation'), 'horizontal');
   await act(async () => root.render(createElement(App, { dividerSemantic: true })));
-  assert.equal(separations.children[2], rerenderRule, 'Rerender must preserve the divider host');
+  assert.ok(separations.children[2] === rerenderRule, 'Rerender must preserve the divider host');
   assert.equal(rerenderRule.getAttribute('role'), 'separator', 'Semantic rerender must delegate to Radix');
   assert.equal(rerenderRule.getAttribute('aria-orientation'), 'vertical');
   assert.equal(rerenderRule.getAttribute('data-orientation'), 'vertical');
   assert.equal(rerenderRule.className, rerenderRecipe, 'Orientation semantics must never mirror into classes');
   await act(async () => root.render(createElement(App)));
-  assert.equal(separations.children[2], rerenderRule);
+  assert.ok(separations.children[2] === rerenderRule, 'Restoring defaults must preserve the divider host');
   assert.equal(rerenderRule.getAttribute('role'), 'none');
   assert.equal(rerenderRule.hasAttribute('aria-orientation'), false);
   assert.equal(rerenderRule.getAttribute('data-orientation'), 'horizontal');
@@ -1290,6 +1522,12 @@ try {
   }
   assert.equal(document.getElementById('kbd-command').children[0].getAttribute('aria-hidden'), 'true');
   stage('kbd:passive:complete');
+  stage('product-mark:focus:start');
+  const linkedMark = document.getElementById('mark-home');
+  linkedMark.focus();
+  assert.ok(document.activeElement === linkedMark, 'The linked ProductMark must receive focus');
+  assert.equal(document.getElementById('mark-mando').tabIndex, -1, 'An image ProductMark must never become a Tab stop');
+  stage('product-mark:focus:complete');
   stage('layout:rerender:start');
   const layoutStack = () => document.querySelector('.eg-stack[aria-label="Token sections"]');
   const layoutCluster = () => document.querySelector('.eg-cluster[aria-label="Token actions"]');
@@ -1303,6 +1541,23 @@ try {
   assert.ok(!layoutStack().classList.contains('gap-4'), 'twMerge must drop the replaced gap utility');
   assert.ok(layoutCluster().classList.contains('flex-wrap'), 'Cluster keeps wrapping behavior across renders');
   stage('layout:rerender:complete');
+  stage('typography:rerender:start');
+  await act(async () => root.render(createElement(App, { gaugeValue: 42.5, headingLevel: 3 })));
+  const rerankedHero = document.getElementById('title-hero');
+  assert.equal(rerankedHero.tagName, 'H3', 'Level updates must swap the native heading element');
+  assert.ok(rerankedHero.classList.contains('text-title-hero'), 'Level updates must not resize the recipe');
+  assert.equal(rerankedHero.textContent, 'Build in public');
+  stage('typography:rerender:complete');
+  stage('icon:rerender:start');
+  const glyphRoot = () => document.getElementById('icon-decorative');
+  const glyphBefore = glyphRoot();
+  assert.ok(glyphBefore, 'CSR must mount the decorative Icon');
+  await act(async () => root.render(createElement(App, { iconName: 'minus' })));
+  assert.ok(glyphRoot() === glyphBefore, 'Glyph changes must keep the same svg root');
+  assert.equal(glyphRoot().querySelectorAll('path').length, 1, 'minus must replace the plus paths');
+  assert.equal(glyphRoot().querySelector('path')?.getAttribute('d'), 'M5 12h14');
+  assert.equal(glyphRoot().getAttribute('tabindex'), null, 'Default Icons never enter the tab order');
+  stage('icon:rerender:complete');
   stage('surface:refs:start');
   const surfaceCard = () => document.querySelector('.eg-surface[aria-label="Material card"]');
   assert.equal(surfaceDivRef.current?.tagName, 'DIV', 'The default Surface ref must expose the div');
@@ -1358,7 +1613,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'ProductMark link focus and passive image', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1381,7 +1636,11 @@ const typographyNames = [
   'label-eyebrow',
   'meta',
   'cta-label',
-  'code'
+  'code',
+  'title-section',
+  'title-hero',
+  'title-show',
+  'title-display'
 ];
 const spacingClasses = [
   'p-0',
@@ -1409,6 +1668,8 @@ const tailwindClasses = [
   'rounded-xl',
   'shadow-edge',
   'font-display',
+  'size-4.5',
+  'text-fg-brand-default',
   ...typographyNames.map((name) => `text-${name}`),
   ...spacingClasses
 ].join(' ');
@@ -1436,9 +1697,11 @@ assert.ok(!emitted.includes('@theme'), 'Native consumption must not need Tailwin
 ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
+${assertIconCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertProductMarkCSS.toString()}
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1447,9 +1710,11 @@ assert.match(
   'Native consumer build must emit the AspectRatio min-width guard without Tailwind'
 );
 assertSkeletonCSS(emitted);
+assertIconCSS(emitted);
 assertSpinnerCSS(emitted);
 assertStatusDotCSS(emitted);
 assertKbdCSS(emitted);
+assertProductMarkCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
@@ -1465,7 +1730,7 @@ const names = shipped
     return name.startsWith('--') ? [name] : [];
   });
 const typography = ${JSON.stringify(typographyNames)};
-assert.equal(names.length, 238, 'Packed native artifact must expose 238 variables');
+assert.equal(names.length, 255, 'Packed native artifact must expose 255 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
@@ -1486,9 +1751,14 @@ assert.match(
   'Tailwind consumer must retain the AspectRatio min-width guard'
 );
 assertSkeletonCSS(twCss);
+assertIconCSS(twCss);
+assert.ok(twCss.includes('.size-4\\\\.5'), 'Tailwind consumer must emit the supported container size override');
+assert.match(twCss, /width:\\s*calc\\(var\\(--space-1\\)\\s*\\*\\s*4\\.5\\)/, 'Container size must use the spacing scale');
+assert.ok(twCss.includes('.text-fg-brand-default'), 'Tailwind consumer must emit the supported inherited color');
 assertSpinnerCSS(twCss);
 assertStatusDotCSS(twCss);
 assertKbdCSS(twCss);
+assertProductMarkCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }

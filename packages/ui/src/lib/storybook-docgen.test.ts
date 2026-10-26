@@ -128,7 +128,9 @@ describe('Storybook TypeScript docgen contract', () => {
     // Each primitive exports its type alias first and runtime component second; dedupe the specifiers.
     expect([...new Set(modules)].sort()).toEqual([
       './atoms/gauge',
+      './atoms/icon',
       './atoms/kbd',
+      './atoms/product-mark',
       './atoms/spinner',
       './atoms/status-dot',
       './lib/cn',
@@ -141,6 +143,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/slot',
       './primitives/stack',
       './primitives/surface',
+      './primitives/text',
       './primitives/visually-hidden'
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
@@ -148,9 +151,12 @@ describe('Storybook TypeScript docgen contract', () => {
       'Cluster',
       'Divider',
       'Gauge',
+      'Heading',
+      'Icon',
       'Kbd',
       'Label',
       'Portal',
+      'ProductMark',
       'Skeleton',
       'Slot',
       'Slottable',
@@ -158,6 +164,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Stack',
       'StatusDot',
       'Surface',
+      'Text',
       'VisuallyHidden',
       'cn',
       'labelVariants',
@@ -173,6 +180,8 @@ describe('Storybook TypeScript docgen contract', () => {
       source('primitives/aspect-ratio/AspectRatio.tsx'),
       source('primitives/stack/Stack.tsx'),
       source('primitives/stack/Cluster.tsx'),
+      source('primitives/text/Text.tsx'),
+      source('primitives/text/Heading.tsx'),
       source('primitives/surface/Surface.tsx')
     ]);
   }, 20_000);
@@ -447,6 +456,88 @@ describe('Storybook TypeScript docgen contract', () => {
     }
   });
 
+  it('extracts the real Text and Heading typography contracts with their own defaults', () => {
+    for (const [name, variants, variantDefault, extra] of [
+      ['Text', ['display', 'eyebrow', 'hero', 'inverse', 'section', 'show'], 'eyebrow', 'asChild'],
+      ['Heading', ['display', 'hero', 'inverse', 'section', 'show'], 'section', 'level']
+    ] as const) {
+      const doc = docs.find((item) => item.displayName === name);
+      if (!doc) {
+        throw new Error(`Missing docgen for ${name}`);
+      }
+      const props = doc.props;
+      const values = (prop: string) =>
+        (props[prop]?.type.value ?? []).map((item: { value: string }) => normalize(item.value)).sort();
+      expect(props.variant?.type.name).toBe('enum');
+      expect(values('variant')).toEqual(variants);
+      expect(normalize(props.variant?.defaultValue?.value)).toBe(variantDefault);
+      expect(values('tone')).toEqual(['canvas', 'raised']);
+      expect(normalize(props.tone?.defaultValue?.value)).toBe('canvas');
+      expect(props.accent?.type.name).toBe('string');
+      expect(props.accent?.defaultValue, `${name}.accent absence is described, not a fixed default`).toBeNull();
+      expect(props.accent?.description).toMatch(/whitespace-only text renders no\s+accent/);
+      expect(normalize(props.accentBreak?.defaultValue?.value)).toBe('true');
+      expect(props.children?.required, `${name}.children must stay required`).toBe(true);
+      expect(props.children?.defaultValue).toBeNull();
+      expect(props.children?.tags).toMatchObject({ control: 'false' });
+      expect(props[extra], `${name}.${extra}`).toBeDefined();
+      for (const prop of ['id', 'title', 'aria-describedby', 'className']) {
+        expect.soft(props[prop]?.type.name, `${name} native ${prop} must remain in autodocs`).toBe('string');
+      }
+      for (const prop of ['role', 'dangerouslySetInnerHTML', 'aria-level', 'ref', 'tabIndex']) {
+        expect(props[prop], `${name} must not document ${prop}`).toBeUndefined();
+      }
+    }
+    const heading = docs.find((item) => item.displayName === 'Heading')?.props;
+    expect(heading?.asChild).toBeUndefined();
+    expect((heading?.level?.type.value ?? []).map((item: { value: string }) => item.value)).toEqual([
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6'
+    ]);
+    expect(normalize(heading?.level?.defaultValue?.value)).toBe('2');
+    expect(docs.find((item) => item.displayName === 'Text')?.props.level).toBeUndefined();
+  });
+
+  it('annotates every Text and Heading own declaration, including each union branch', () => {
+    const file = ast(source('primitives/text/types.ts'));
+    const properties = ownProps(file, [
+      'TitleAccentProps',
+      'TextVisualProps',
+      'HeadingVisualProps',
+      'TextProps',
+      'HeadingProps'
+    ]);
+    const allowed: Record<string, string> = {
+      variant: 'select',
+      tone: 'select',
+      accent: 'text',
+      accentBreak: 'boolean',
+      asChild: 'boolean',
+      children: 'false',
+      level: 'select'
+    };
+    // Two accent props, Text's three branches (4 + 2 + 2), Heading's two branches (2 + 2), two own extras each.
+    expect(properties).toHaveLength(18);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const values = (tagName: string) =>
+        tags.filter((tag) => tag.tagName.text === tagName).map((tag) => ts.getTextOfJSDocComment(tag.comment)?.trim());
+      expect(values('control'), `${name} @control`).toEqual([allowed[name]]);
+      if (allowed[name] === 'false') {
+        expect(values('controlReason')[0], `${name} @controlReason`).toMatch(/ReactNode.*stories/);
+      }
+      if (!property.questionToken) {
+        expect(values('default'), `required ${name} must not invent @default`).toEqual([]);
+      }
+      expect(ts.getTextOfJSDocComment(ts.getJSDocCommentsAndTags(property)[0]?.comment), name).toBeTruthy();
+    }
+  });
+
   it('extracts Surface from both public branches with single constant defaults', () => {
     const doc = docs.find((item) => item.displayName === 'Surface');
     expect(doc, 'Surface must be discovered from its real component').toBeDefined();
@@ -535,7 +626,15 @@ describe('Storybook TypeScript docgen contract', () => {
   });
 
   it('limits real parser discovery to the current public React components', () => {
-    expect(docs.map((doc) => doc.displayName)).toEqual(['Gauge', 'AspectRatio', 'Stack', 'Cluster', 'Surface']);
+    expect(docs.map((doc) => doc.displayName)).toEqual([
+      'Gauge',
+      'AspectRatio',
+      'Stack',
+      'Cluster',
+      'Text',
+      'Heading',
+      'Surface'
+    ]);
     expect(Object.keys(gaugeControls)).toHaveLength(8);
   });
 });
@@ -694,6 +793,81 @@ describe('Skeleton decorative metadata contract', () => {
         expect(props[prop], prop).toBeUndefined();
       }
     });
+  });
+});
+
+describe('Icon glyph metadata contract', () => {
+  const iconControls: Record<string, string> = { name: 'select', size: 'select', filled: 'boolean', label: 'text' };
+  let iconDocs: ReturnType<typeof parser.parse>;
+
+  beforeAll(() => {
+    iconDocs = parser.parse(source('atoms/icon/Icon.tsx'));
+  }, 20_000);
+
+  it('annotates each own Icon prop with one control and constant-only defaults', () => {
+    const file = ast(source('atoms/icon/types.ts'));
+    const properties = ownProps(file, ['IconProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['name', 'size', 'filled', 'label']);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `Icon.${name} control`).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment), `Icon.${name} @control`).toBe(iconControls[name]);
+      const fixed = tags.find((tag) => tag.tagName.text === 'default');
+      expect(fixed ? ts.getTextOfJSDocComment(fixed.comment) : undefined, `Icon.${name} @default`).toBe(
+        { size: 'md', filled: 'false' }[name]
+      );
+    }
+    expect(defaults(source('atoms/icon/types.ts'), true)).toEqual({ size: 'md', filled: 'false' });
+    expect(defaults(source('atoms/icon/useIcon.ts'), false)).toEqual({ filled: 'false' });
+  });
+
+  it('extracts the closed glyph enum, presets, fill and label from the real component', () => {
+    expect(iconDocs.map((doc) => doc.displayName)).toEqual(['Icon']);
+    const props = iconDocs[0]?.props;
+    if (!props) {
+      throw new Error('Missing docgen for Icon');
+    }
+    expect(props.name).toMatchObject({ required: true, defaultValue: null, tags: { control: 'select' } });
+    expect(props.name?.type.name).toBe('enum');
+    const glyphs = (props.name?.type.value ?? []).map((item: { value: string }) => normalize(item.value));
+    expect(glyphs).toHaveLength(42);
+    expect(glyphs).toEqual(expect.arrayContaining(['check', 'minus', 'plus', 'chevron-down']));
+    expect(props.size?.type.value?.map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
+      'lg',
+      'md',
+      'sm'
+    ]);
+    expect(normalize(props.size?.defaultValue?.value)).toBe('md');
+    expect(props.filled).toMatchObject({ required: false, type: { name: 'boolean' }, tags: { control: 'boolean' } });
+    expect(normalize(props.filled?.defaultValue?.value)).toBe('false');
+    expect(props.label).toMatchObject({ required: false, type: { name: 'string' }, tags: { control: 'text' } });
+    expect(props.label?.defaultValue).toBeNull();
+    expect(props.label?.description).toMatch(/When\s+omitted or empty, the icon is decorative/);
+    for (const prop of ['id', 'aria-describedby', 'className']) {
+      expect.soft(props[prop]?.type.name, `Icon native ${prop} must remain available in autodocs`).toBe('string');
+    }
+    expect.soft(props.style?.type.name).toBe('CSSProperties');
+    for (const prop of [
+      'children',
+      'viewBox',
+      'role',
+      'aria-hidden',
+      'aria-label',
+      'aria-labelledby',
+      'focusable',
+      'fill',
+      'stroke',
+      'strokeWidth',
+      'width',
+      'height',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild'
+    ]) {
+      expect(props[prop], prop).toBeUndefined();
+    }
   });
 });
 
@@ -905,6 +1079,94 @@ describe('Kbd passive metadata contract', () => {
       expect(props[prop], `Kbd native ${prop} must remain available in autodocs`).toBeDefined();
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick', 'variant', 'size']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('ProductMark mode metadata contract', () => {
+  const branches = ['ProductMarkLinkProps', 'ProductMarkImageProps'];
+
+  it('annotates monogram, label and href as text controls on every branch without defaults', () => {
+    const file = ast(source('atoms/product-mark/types.ts'));
+    const properties = ownProps(file, ['ProductMarkOwnProps', ...branches]);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['monogram', 'label', 'href', 'href']);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, `ProductMark.${name} control`).toHaveLength(1);
+      // Union branches merge their tags in docgen: a differing directive per branch would be ambiguous.
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe('text');
+      expect(tags.find((tag) => tag.tagName.text === 'default')).toBeUndefined();
+    }
+    const [monogram, label, linkHref, imageHref] = properties;
+    expect(monogram?.questionToken).toBeUndefined();
+    expect(label?.questionToken).toBeUndefined();
+    expect(linkHref?.questionToken).toBeUndefined();
+    expect(linkHref?.type?.getText(file)).toBe('string');
+    expect(imageHref?.questionToken).toBeTruthy();
+    expect(imageHref?.type?.getText(file)).toBe('undefined');
+  });
+
+  it.each([
+    ['ProductMarkLinkProps', ['children', 'href', 'aria-label', 'aria-labelledby', 'dangerouslySetInnerHTML']],
+    [
+      'ProductMarkImageProps',
+      ['children', 'role', 'aria-label', 'aria-labelledby', 'aria-hidden', 'dangerouslySetInnerHTML']
+    ]
+  ] as const)('%s omits exactly the contract-owned naming and content props and exposes no ref', (name, expected) => {
+    const file = ast(source('atoms/product-mark/types.ts'));
+    const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === name);
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error(`Missing ${name} declaration`);
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const union = node.typeArguments[1];
+        if (union && ts.isUnionTypeNode(union)) {
+          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual(expected);
+    expect(alias.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild/);
+  });
+
+  it('extracts required monogram/label, optional href and only the documented native rows', () => {
+    const doc = parser
+      .parse(source('atoms/product-mark/ProductMark.tsx'))
+      .find((item) => item.displayName === 'ProductMark');
+    if (!doc) {
+      throw new Error('Missing docgen for ProductMark');
+    }
+    const { props } = doc;
+    for (const prop of ['monogram', 'label']) {
+      expect(props[prop], prop).toMatchObject({ required: true, tags: { control: 'text' } });
+      expect(props[prop]?.type.name, prop).toBe('string');
+      expect(props[prop]?.defaultValue ?? null, prop).toBeNull();
+    }
+    expect(props.href).toMatchObject({ required: false });
+    expect(props.href?.type.name).toBe('string');
+    // Both branches carry the same directive; docgen joins them and the enhancer normalizes to one.
+    expect(props.href).toMatchObject({ tags: { control: expect.stringMatching(/^text\s*\n\s*text$/) } });
+    expect(props.href?.description).toMatch(/When absent.*role="img"/s);
+    for (const prop of ['id', 'title', 'className', 'target', 'rel']) {
+      expect(props[prop], `ProductMark native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of [
+      'children',
+      'ref',
+      'asChild',
+      'role',
+      'aria-label',
+      'dangerouslySetInnerHTML',
+      'size',
+      'onClick'
+    ]) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);

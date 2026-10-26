@@ -35,6 +35,20 @@ const postReceiptUsages = [
   { conventionId: 'main-axis-distribution', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
+  { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
+  { conventionId: 'heading-level', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
+  { conventionId: 'trailing-text-accent', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
+  { conventionId: 'trailing-text-accent', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
+  { conventionId: 'accent-line-break', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
+  { conventionId: 'accent-line-break', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
+  { conventionId: 'icon-glyph-name', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
+  { conventionId: 'filled-glyph', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
   { conventionId: 'surface-material-tone', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
   { conventionId: 'surface-elevation', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
   { conventionId: 'inner-padding', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
@@ -47,7 +61,9 @@ const postReceiptUsages = [
     source: 'packages/ui/src/atoms/status-dot/types.ts#StatusDotProps'
   },
   { conventionId: 'signal-pulse', source: 'packages/ui/src/atoms/status-dot/types.ts#StatusDotProps' },
-  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/kbd/types.ts#KbdProps' }
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/kbd/types.ts#KbdProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/product-mark/types.ts#ProductMarkProps' },
+  { conventionId: 'brand-monogram', source: 'packages/ui/src/atoms/product-mark/types.ts#ProductMarkProps' }
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({
