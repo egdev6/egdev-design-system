@@ -141,6 +141,16 @@
         }
       },
       {
+        "component": "Badge",
+        "type": "BadgeVariant ('soft' | 'solid')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/badge/types.ts",
+          "symbol": "BadgeProps",
+          "revision": "sha256:81d97cd46835e08a2ed5d846d352642ef9230661b4dcfe04d7e4be921c7d6f3e"
+        }
+      },
+      {
         "component": "Label",
         "type": "LabelVariant (field|choice)",
         "status": "existing",
@@ -187,6 +197,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Badge",
+        "type": "BadgeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger' | 'brand')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/badge/types.ts",
+          "symbol": "BadgeProps",
+          "revision": "sha256:81d97cd46835e08a2ed5d846d352642ef9230661b4dcfe04d7e4be921c7d6f3e"
+        }
+      },
       {
         "component": "Text",
         "type": "TextTone (canvas|raised)",
@@ -516,7 +536,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Badge",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/badge/types.ts",
+          "symbol": "BadgeProps",
+          "revision": "sha256:81d97cd46835e08a2ed5d846d352642ef9230661b4dcfe04d7e4be921c7d6f3e"
+        }
+      }
+    ]
   },
   {
     "id": "icon-placement",

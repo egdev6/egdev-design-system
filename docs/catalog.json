@@ -248,9 +248,9 @@
     "nivel": "atom",
     "destino": "ui",
     "radix": "—",
-    "compone": "Icon",
+    "compone": "— (consumer-supplied decorative icon)",
     "accion": "fusionar",
-    "notas": "Etiqueta estática con `tone` (neutral, info, success, warning, danger, brand) e icono opcional; `solid`."
+    "notas": "Implemented in @egdev/ui: passive span label with six tone families, soft/solid treatments, a decorative ReactNode icon slot and the label-default pill recipe. No automatic Icon dependency, ref, asChild or stylesheet. Legacy `.eg-tag` and `.eg-status` remain unchanged. Contract: [#52](https://github.com/egdev6/egdev-design-system/issues/52), v0.1 D7."
   },
   {
     "actual": "PermissionLevel",

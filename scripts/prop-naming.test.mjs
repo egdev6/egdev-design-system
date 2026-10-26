@@ -12,6 +12,9 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/atoms/badge/types.ts#BadgeProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/badge/types.ts#BadgeProps' },
+  { conventionId: 'leading-icon', source: 'packages/ui/src/atoms/badge/types.ts#BadgeProps' },
   {
     conventionId: 'aspect-ratio',
     source: 'packages/ui/src/primitives/aspect-ratio/types.ts#AspectRatioProps'

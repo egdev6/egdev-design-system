@@ -64,7 +64,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Slider** | Field --range (átomo) | Slider | — | extraer | Tamaño del anillo, umbrales, volumen. |
 | **RadioGroup** | — | RadioGroup | — | nuevo | Grupo de opciones exclusivas; base de SelectTile y de chips exclusivos. |
 | **Chip** | Chip (átomo) | Toggle / ToggleGroup.Item | Avatar | mantener | Siempre interactivo (filtro o selección). Los grupos van en ChipGroup. |
-| **Badge** | Tag + StatusBadge (átomo) | — | Icon | fusionar | Etiqueta estática con `tone` (neutral, info, success, warning, danger, brand) e icono opcional; `solid`. |
+| **Badge** | Tag + StatusBadge (átomo) | — | — (consumer-supplied decorative icon) | fusionar | Implemented in @egdev/ui: passive span label with six tone families, soft/solid treatments, a decorative ReactNode icon slot and the label-default pill recipe. No automatic Icon dependency, ref, asChild or stylesheet. Legacy `.eg-tag` and `.eg-status` remain unchanged. Contract: [#52](https://github.com/egdev6/egdev-design-system/issues/52), v0.1 D7. |
 | **StatusDot** | StatusDot + LiveDot (átomo) | — | — | fusionar | LiveDot pasa a `StatusDot state='live'` (con pulso y `--static`). |
 | **Kbd** | Kbd (átomo) | — | — | mantener | Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/60): one key or shortcut glyph as native inline kbd text with a flat hairline treatment (label-default recipe, secondary text). Optional label gives symbol keys a spoken name through Radix VisuallyHidden and hides the glyph. Combos are consumer composition. No stylesheet. |
 | **Avatar** | Avatar (átomo) | Avatar | — | mantener | Radix Avatar da el fallback a iniciales mientras carga la imagen. |
