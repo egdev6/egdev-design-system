@@ -29,8 +29,8 @@ function run(cwd, command, args, timeout) {
 
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
-import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Label, Skeleton, Slot, Slottable, Stack, VisuallyHidden } from '@egdev/ui';
+import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
+import { AspectRatio, Cluster, Divider, Gauge, Label, Skeleton, Slot, Slottable, Stack, Surface, VisuallyHidden, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -47,6 +47,11 @@ import type {
   ClusterProps,
   LayoutGap,
   StackProps,
+  SurfaceElevation,
+  SurfacePadding,
+  SurfaceProps,
+  SurfaceRadius,
+  SurfaceTone,
   VisuallyHiddenProps
 } from '@egdev/ui';
 const slotProps: SlotProps = { 'aria-label': 'Composed documentation' };
@@ -152,6 +157,30 @@ export function LayoutSamples({ stackGap = 4 }: LayoutSampleProps) {
       createElement('button', { type: 'button' }, 'Action one'),
       createElement('button', { type: 'button' }, 'Action two')));
 }
+// Surface: a div ref by default; an HTMLElement ref on the actual slotted host with asChild.
+export const surfaceDivRef = createRef<HTMLDivElement>();
+export const surfaceSectionRef = createRef<HTMLElement>();
+export const surfaceArticleRef = createRef<HTMLElement>();
+export const surfaceArticleChildRef = createRef<HTMLElement>();
+const SurfaceArticle = forwardRef<HTMLElement, ComponentPropsWithoutRef<'article'>>((articleProps, ref) =>
+  createElement('article', { ...articleProps, ref })
+);
+const surfaceTone: SurfaceTone = 'surface-2';
+const surfacePadding: SurfacePadding = 'sm';
+const surfaceRadius: SurfaceRadius = 'none';
+export const surfaceBand: SurfaceProps = { tone: surfaceTone, elevation: 0, radius: surfaceRadius, padding: surfacePadding };
+export const surfaceBandRecipe: string = surfaceVariants({ tone: 'surface-2', elevation: 0, radius: 'none' });
+export function SurfaceSamples({ surfaceElevation = 1 }: { surfaceElevation?: SurfaceElevation }) {
+  return createElement('section', { 'aria-label': 'Material surfaces' },
+    createElement(Surface, { 'aria-label': 'Material card', elevation: surfaceElevation, ref: surfaceDivRef }, 'Card'),
+    createElement(Surface, { ...surfaceBand, 'aria-label': 'Header band', className: 'w-full' }, 'Band'),
+    createElement(Surface, { tone: 'overlay', 'aria-label': 'Glass panel' }, 'Glass'),
+    // The slotted branch requires its single element child in props, as for VisuallyHidden.
+    createElement(Surface, { tone: 'well', asChild: true, ref: surfaceSectionRef,
+      children: createElement('section', { 'aria-label': 'Recessed section' }, 'Well') }),
+    createElement(Surface, { tone: 'surface-3', asChild: true, ref: surfaceArticleRef,
+      children: createElement(SurfaceArticle, { 'aria-label': 'Article surface', ref: surfaceArticleChildRef }, 'Entry') }));
+}
 export const dividerDefaults: DividerProps = {};
 export const dividerSemanticVertical: DividerProps = {
   orientation: 'vertical', decorative: false, className: 'consumer-rule'
@@ -166,7 +195,7 @@ export function DividerSamples({ semantic }: { semantic?: boolean }) {
       ? { orientation: dividerOrientation, decorative: false, className: 'consumer-rule' }
       : { className: 'consumer-rule' }));
 }
-export function App({ gaugeValue, wideRatio, stackGap, dividerSemantic }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; dividerSemantic?: boolean } = {}) {
+export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
@@ -174,6 +203,7 @@ export function App({ gaugeValue, wideRatio, stackGap, dividerSemantic }: { gaug
     createElement(GaugeSamples, { value: gaugeValue }),
     createElement(AspectSamples, { wideRatio }),
     createElement(LayoutSamples, { stackGap }),
+    createElement(SurfaceSamples, { surfaceElevation }),
     createElement(VisuallyHiddenSamples),
     createElement(DividerSamples, { semantic: dividerSemantic }),
     createElement(LabelSamples),
@@ -265,7 +295,45 @@ const slottedLabel: LabelProps = { children: 'Email address', htmlFor: 'consumer
 const arbitraryStackGap: StackProps = { gap: 9 };
 // @ts-expect-error Unsupported alignment choices are rejected by the union type.
 const invalidClusterAlignment: ClusterProps = { alignItems: 'around' };
+// @ts-expect-error A well is always recessed; it rejects elevation.
+const elevatedWell: SurfaceProps = { tone: 'well', elevation: 2 };
+// @ts-expect-error An overlay always floats at level 3; it rejects elevation.
+const elevatedOverlay: SurfaceProps = { tone: 'overlay', elevation: 0 };
+// @ts-expect-error Material levels are the approved tones only.
+const brandSurface: SurfaceProps = { tone: 'brand' };
+// @ts-expect-error asChild needs exactly one element child, not text.
+const slottedSurfaceText: SurfaceProps = { asChild: true, children: 'Text' };
+// @ts-expect-error The default div promises only an HTMLDivElement ref.
+const wideSurfaceRef: ComponentProps<typeof Surface> = { ref: createRef<HTMLElement>() };
 `;
+
+// Surface ships no stylesheet: only token-backed CVA utilities, including fallback variants.
+function assertSurfaceCSS(css) {
+  for (const selector of [
+    '.bg-surface-0',
+    '.bg-surface-overlay',
+    '.border-border-hairline-strong',
+    '.backdrop-blur-overlay',
+    '.backdrop-saturate-150',
+    '.shadow-edge'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Surface utility ' + selector);
+  }
+  for (const value of [
+    'background-image: var(--gradient-sheen)',
+    '--tw-shadow: var(--shadow-well)',
+    '--tw-shadow: var(--shadow-edge), var(--shadow-elev-1)',
+    '--tw-shadow: var(--shadow-edge-strong), var(--shadow-elev-3)'
+  ]) {
+    assert.ok(css.includes(value), 'Surface recipe must emit ' + value);
+  }
+  assert.match(css, /prefers-reduced-transparency:\s*reduce\)\s*\{\s*\.\\\[\\@media[^{]*bg-surface-2\s*\{/);
+  assert.match(
+    css,
+    /@supports not \(backdrop-filter:[^{]+\{\s*\.not-supports-\\\[backdrop-filter\\\]\\:bg-surface-2\s*\{/
+  );
+  assert.doesNotMatch(css, /\.eg-surface\s*[,{]/, 'Surface marker must not become a shipped CSS rule');
+}
 
 // Reused inside the installed fixture, against shipped CSS and both consumer build paths.
 function assertGaugeCSS(css) {
@@ -467,6 +535,8 @@ assert.ok(!shippedStyles.includes('.eg-visually-hidden'), 'VisuallyHidden must n
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(shippedStyles.includes(utility), 'Packed styles must retain layout utility ' + utility);
 }
+${assertSurfaceCSS.toString()}
+assertSurfaceCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AspectRatio',
   'Cluster',
@@ -478,9 +548,11 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Slot',
   'Slottable',
   'Stack',
+  'Surface',
   'VisuallyHidden',
   'cn',
-  'labelVariants'
+  'labelVariants',
+  'surfaceVariants'
 ]);
 ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
@@ -556,7 +628,7 @@ try {
   semanticDivider.window.close();
 }
 const html = renderToString(createElement(App));
-for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%', 'Email address', 'eg-stack', 'flex-col', 'flex-nowrap', 'gap-4', 'eg-cluster', 'flex-row', 'flex-wrap', 'gap-6', 'items-start', 'justify-between']) {
+for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%', 'Email address', 'eg-stack', 'flex-col', 'flex-nowrap', 'gap-4', 'eg-cluster', 'flex-row', 'flex-wrap', 'gap-6', 'items-start', 'justify-between', 'eg-surface', 'bg-surface-1', 'bg-surface-overlay', 'shadow-[var(--shadow-well)]']) {
   assert.ok(html.includes(text), 'SSR must render ' + text);
 }
 const dom = new JSDOM(html);
@@ -698,6 +770,26 @@ for (const frame of [square, wide]) {
   assert.ok(tokenCluster, 'SSR must render Cluster samples');
   assert.ok(tokenCluster.classList.contains('flex-row') && tokenCluster.classList.contains('flex-wrap'));
   assert.ok(tokenCluster.classList.contains('gap-6') && tokenCluster.classList.contains('items-start') && tokenCluster.classList.contains('justify-between'));
+  const card = document.querySelector('.eg-surface[aria-label="Material card"]');
+  assert.ok(card, 'SSR must render the default Surface');
+  assert.equal(card.tagName, 'DIV');
+  for (const name of ['bg-surface-1', 'bg-[image:var(--gradient-sheen)]', 'p-6', 'rounded-xl', 'text-fg-default']) {
+    assert.ok(card.classList.contains(name), 'Default Surface must carry ' + name);
+  }
+  const band = document.querySelector('.eg-surface[aria-label="Header band"]');
+  assert.ok(band.classList.contains('shadow-edge') && band.classList.contains('rounded-none') && band.classList.contains('p-3'));
+  assert.ok(band.className.endsWith('w-full'), 'Layout className merges last on the Surface root');
+  const glass = document.querySelector('.eg-surface[aria-label="Glass panel"]');
+  assert.ok(glass.classList.contains('not-supports-[backdrop-filter]:bg-surface-2'), 'Overlay must keep its solid fallback');
+  const recessed = document.querySelector('section[aria-label="Recessed section"]');
+  assert.ok(recessed && recessed.classList.contains('eg-surface'), 'asChild must merge onto the section without a wrapper');
+  assert.equal(recessed.parentElement.getAttribute('aria-label'), 'Material surfaces');
+  assert.equal(document.querySelector('article[aria-label="Article surface"]')?.classList.contains('bg-surface-3'), true);
+  for (const surface of [card, band, glass, recessed]) {
+    assert.equal(surface.getAttribute('role'), null);
+    assert.equal(surface.hasAttribute('tabindex'), false);
+    assert.equal(surface.hasAttribute('style'), false);
+  }
   for (const layout of [tokenStack, tokenCluster]) {
     assert.equal(layout.getAttribute('role'), null);
     assert.equal(layout.hasAttribute('aria-live'), false);
@@ -757,7 +849,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef } = await import('./consumer.ts');
+const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -889,6 +981,19 @@ try {
   assert.ok(!layoutStack().classList.contains('gap-4'), 'twMerge must drop the replaced gap utility');
   assert.ok(layoutCluster().classList.contains('flex-wrap'), 'Cluster keeps wrapping behavior across renders');
   stage('layout:rerender:complete');
+  stage('surface:refs:start');
+  const surfaceCard = () => document.querySelector('.eg-surface[aria-label="Material card"]');
+  assert.equal(surfaceDivRef.current?.tagName, 'DIV', 'The default Surface ref must expose the div');
+  assert.ok(surfaceDivRef.current === surfaceCard(), 'The default ref must target the rendered card');
+  assert.equal(surfaceSectionRef.current?.tagName, 'SECTION', 'The slotted ref must expose the section host');
+  assert.ok(surfaceArticleRef.current === surfaceArticleChildRef.current, 'Surface and child refs must compose on the article');
+  assert.equal(surfaceArticleRef.current?.tagName, 'ARTICLE');
+  await act(async () => root.render(createElement(App, { gaugeValue: 42.5, stackGap: 8, surfaceElevation: 3 })));
+  assert.ok(surfaceDivRef.current === surfaceCard(), 'Elevation updates must preserve the same Surface root');
+  assert.ok(surfaceCard().classList.contains('shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)]'), 'Elevation 3 must resolve its recipe');
+  assert.ok(surfaceCard().classList.contains('border-border-hairline-strong'), 'Elevation 3 must use the strong hairline');
+  assert.ok(!surfaceCard().classList.contains('shadow-[var(--shadow-edge),var(--shadow-elev-1)]'), 'The replaced elevation recipe must be gone');
+  stage('surface:refs:complete');
   console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery'] }));
   const slotRef = createRef();
   const childRef = createRef();
@@ -1019,6 +1124,8 @@ assert.match(
 assertSkeletonCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
+${assertSurfaceCSS.toString()}
+assertSurfaceCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
 const shipped = readFileSync(new URL('./node_modules/@egdev/tokens/dist/tokens.css', import.meta.url), 'utf8');
 const names = shipped
@@ -1054,6 +1161,7 @@ assertSkeletonCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
+assertSurfaceCSS(twCss);
 assertLabelCSS(twCss);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) {
   assert.ok(twCss.includes(selector), 'Tailwind consumer must retain shipped UI selector ' + selector);

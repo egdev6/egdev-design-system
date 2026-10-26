@@ -275,6 +275,54 @@ test('UI ships the approved Label typography recipe without an application Tailw
   }
 });
 
+test('UI ships the Surface Material recipes as static token utilities', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (scope, selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(scope, new RegExp(`${escaped}\\s*\\{`));
+  };
+  for (const [selector, declaration] of [
+    ['.bg-surface-0', /background-color:\s*var\(--color-surface-0[,)]/],
+    ['.bg-surface-3', /background-color:\s*var\(--color-surface-3[,)]/],
+    ['.bg-surface-overlay', /background-color:\s*var\(--color-surface-overlay[,)]/],
+    [String.raw`.bg-\[image\:var\(--gradient-sheen\)\]`, /background-image:\s*var\(--gradient-sheen\)\s*;/],
+    ['.border-border-hairline', /border-color:\s*var\(--color-border-hairline[,)]/],
+    ['.border-border-hairline-strong', /border-color:\s*var\(--color-border-hairline-strong[,)]/],
+    ['.border-solid', /border-style:\s*solid\s*;/],
+    ['.box-border', /box-sizing:\s*border-box\s*;/],
+    [String.raw`.shadow-\[var\(--shadow-well\)\]`, /--tw-shadow:\s*var\(--shadow-well\)\s*;/],
+    [
+      String.raw`.shadow-\[var\(--shadow-edge\)\,var\(--shadow-elev-1\)\]`,
+      /--tw-shadow:\s*var\(--shadow-edge\),\s*var\(--shadow-elev-1\)\s*;/
+    ],
+    [
+      String.raw`.shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-elev-3\)\]`,
+      /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-elev-3\)\s*;/
+    ],
+    ['.backdrop-blur-overlay', /--tw-backdrop-blur:\s*blur\(var\(--blur-overlay[,)]/],
+    ['.rounded-xl', /border-radius:\s*var\(--radius-xl[,)]/],
+    ['.p-6', /padding:\s*var\(--space-6\)\s*;/]
+  ]) {
+    assert.match(rule(utilities, selector), declaration, `Surface recipe ${selector}`);
+  }
+  const reduced = cssBlock(utilities, /@media \(prefers-reduced-transparency:\s*reduce\)\s*\{(?=\s*\.\\\[\\@media)/);
+  assert.match(
+    rule(reduced, String.raw`.\[\@media\(prefers-reduced-transparency\:reduce\)\]\:bg-surface-2`),
+    /background-color:\s*var\(--color-surface-2[,)]/
+  );
+  assert.match(
+    rule(reduced, String.raw`.\[\@media\(prefers-reduced-transparency\:reduce\)\]\:backdrop-filter-none`),
+    /backdrop-filter:\s*none\s*;/
+  );
+  const unsupported = cssBlock(utilities, /@supports not \(backdrop-filter:[^{]+\{(?=\s*\.not-supports-)/);
+  assert.match(
+    rule(unsupported, String.raw`.not-supports-\[backdrop-filter\]\:bg-surface-2`),
+    /background-color:\s*var\(--color-surface-2[,)]/
+  );
+  assert.doesNotMatch(css, /\.eg-surface\s*[,{]/, 'Surface marker must not become a shipped CSS rule (no stylesheet)');
+});
+
 test('UI JavaScript remains importable without a CSS loader', async () => {
   const entry = artifact('ui', ui.exports['.'].import);
   const imports = ts.preProcessFile(readFileSync(entry, 'utf8'), true).importedFiles;
@@ -287,7 +335,7 @@ test('UI JavaScript remains importable without a CSS loader', async () => {
   assert.match(hidden, /<span class="eg-visually-hidden"[^>]*clip:rect\(0, 0, 0, 0\)[^>]*>Hidden note<\/span>/);
 });
 
-test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot with passive SSR semantics', async () => {
+test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal and Slot with passive SSR semantics', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   assert.deepEqual(
     Object.keys(exported).sort(),
@@ -302,9 +350,11 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
       'Slot',
       'Slottable',
       'Stack',
+      'Surface',
       'VisuallyHidden',
       'cn',
-      'labelVariants'
+      'labelVariants',
+      'surfaceVariants'
     ],
     'Only approved components and cn are public runtime exports'
   );
@@ -325,6 +375,12 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     undefined,
     'Stack must not be a forwardRef component (D10: no public ref)'
   );
+  assert.equal(
+    exported.Surface?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'Surface must be a React 18-compatible forwardRef bridge with a public ref'
+  );
+  assert.equal(typeof exported.surfaceVariants, 'function', 'Surface composition recipe must stay a public export');
   assert.equal(exported.default, undefined, 'UI must not introduce a default export');
   const declaration = artifact('ui', ui.exports['.'].types);
   const program = ts.createProgram([declaration], { moduleResolution: ts.ModuleResolutionKind.Bundler });
@@ -360,10 +416,17 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'Slottable',
     'Stack',
     'StackProps',
+    'Surface',
+    'SurfaceElevation',
+    'SurfacePadding',
+    'SurfaceProps',
+    'SurfaceRadius',
+    'SurfaceTone',
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'cn',
-    'labelVariants'
+    'labelVariants',
+    'surfaceVariants'
   ]);
   for (const name of [
     'Divider',
@@ -395,6 +458,13 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'LayoutAlignItems',
     'LayoutGap',
     'LayoutJustifyContent',
+    'Surface',
+    'SurfaceElevation',
+    'SurfacePadding',
+    'SurfaceProps',
+    'SurfaceRadius',
+    'SurfaceTone',
+    'surfaceVariants',
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'labelVariants'
@@ -451,6 +521,24 @@ test('UI root exports the layout primitives, Gauge, AspectRatio, Portal and Slot
     'Cluster must carry its marker and wrapping row classes'
   );
   assert.doesNotMatch(stacked + clustered, /aria-live=|tabindex=|role=/);
+  // Surface resolves its Material recipe as static CVA utilities on a passive div or slotted child.
+  const surface = renderToString(createElement(exported.Surface, null, 'Card'));
+  for (const text of [
+    '<div class="eg-surface',
+    'bg-surface-1',
+    'bg-[image:var(--gradient-sheen)]',
+    'p-6',
+    'rounded-xl'
+  ]) {
+    assert.ok(surface.includes(text), `Surface SSR must render ${text}`);
+  }
+  const overlay = renderToString(createElement(exported.Surface, { tone: 'overlay' }, 'Glass'));
+  assert.ok(overlay.includes('bg-surface-overlay') && overlay.includes('not-supports-[backdrop-filter]:bg-surface-2'));
+  const slotted = renderToString(
+    createElement(exported.Surface, { asChild: true, tone: 'well' }, createElement('section', { 'aria-label': 'Well' }))
+  );
+  assert.match(slotted, /^<section aria-label="Well" class="eg-surface [^"]*shadow-\[var\(--shadow-well\)\]/);
+  assert.doesNotMatch(surface + overlay + slotted, /aria-live=|tabindex=|role=|style=/);
   assert.ok(
     wide.includes('data-radix-aspect-ratio-wrapper'),
     'AspectRatio must render the inner generic div inside the Radix frame'

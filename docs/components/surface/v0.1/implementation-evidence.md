@@ -80,6 +80,20 @@ Usages bound to `packages/ui/src/primitives/surface/types.ts#SurfaceProps`
 `surface-material-tone`, `surface-elevation`, `inner-padding`, `corner-radius` and `slot-composition`,
 all already approved conventions. `postReceiptUsages` gained the five pairs.
 
+## Packed consumer status
+
+- `pnpm test:package-exports`: the shipped stylesheet carries every Surface recipe as token `var()`
+  utilities, including the `prefers-reduced-transparency` media block and the
+  `@supports not (backdrop-filter…)` fallback; `.eg-surface` is never a CSS rule. Root runtime and
+  declaration exports include `Surface`, `surfaceVariants` and the five public types; `Surface` is a
+  `forwardRef` object; SSR renders the default div, the overlay fallback class and a slotted section.
+- `pnpm test:package-consumption` (serialized under the lock with the 2 GB cap) passes on React
+  18.3.1 and 19.3.0: consumer type rejections (well/overlay elevation, unknown tone, text child with
+  `asChild`, `HTMLElement` ref on the default div), SSR markup without role/tabindex/style, CSR refs
+  (div by default, section host, composed article child ref), an elevation rerender on the same root,
+  and Surface utilities in both the native and the Tailwind consumer builds. Like VisuallyHidden, the
+  slotted branch requires its single child in props, not as a `createElement` vararg.
+
 ## Visual review handoff
 
 Stories: `Primitives/Surface` — Default, Tones, Elevations, SurfaceZeroElevations, Well, Overlay, AsChild.
