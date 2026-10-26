@@ -95,7 +95,7 @@ Follow-up commands:
 
 No full build, full suite or packed rerun was authorized for this follow-up; the parent owns those after current-main integration. Browser/visual/native picker behavior remains Not evaluated. Writer self-verification is the evidence here; the parent reported native assessment unavailable for the untracked explicit selection, not an independent review pass.
 
-## Switch-main additive integration
+## Switch-main additive integration (historical cb3a26e)
 
 The parent reported complete-file commits `34ce94b`, `1c32f68` and `d9f8db5`, then merged `origin/main` at `cb3a26e` (Switch #156). Its frozen-install job 58 completed successfully. Those Git/install actions belong to the parent; the writer performed no Git mutation or installation.
 
@@ -117,6 +117,31 @@ Observed integration validation:
 | `flock /tmp/egdev-gates.lock timeout 900 systemd-run --user --scope -q -p MemoryMax=3G pnpm test:props` | 82 passed. |
 
 Strict TDD was not activated for this merge-resolution task; no new RED/GREEN lifecycle is claimed. The earlier 674-unit/eight-gate record remains historical, not verification of the merged tree. Full build/export/packed/full-suite gates remain the parent's next step. Browser, visual and Controls-widget checks remain Not evaluated.
+
+## RadioGroup-main additive integration (f4d4202)
+
+The parent reported intermediate Switch merge `3e4386c`, then merged `origin/main` at `f4d4202` (RadioGroup #157). Its frozen-install job 62 passed. Read-only Git inspection confirmed exactly three conflicted paths: `docs/prop-naming.md`, `packages/ui/src/lib/storybook-controls.test.ts` and `scripts/package-consumption.test.mjs`. The writer resolved their additive union and updated this evidence file; no Git mutation or installation was performed.
+
+- Regenerated `docs/prop-naming.md` using `node scripts/prop-naming.mjs --write` from the already-merged registry. The source registry needed no writer edits, convention widening, history repinning or approval/source-revision changes. Dropzone's four usages, RadioGroup's six usages and Switch's checked-change usage are preserved. Source hashes still match the reviewed files: Dropzone `e5291d6462a6cbbb46e2b5a2ed7cb1d66437ff049d60e77229599395a1dced03`, RadioGroup `4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf`, Switch `52991e3a2a1eec3558bc639541b69018f2590a904261e240c4b8fc1313699bf2`. Approval receipts remain unchanged; naming/source freshness regressions pass. No catalog regeneration or unrelated promotion was needed.
+- Controls retain independently closed Dropzone, RadioGroup and Switch bodies, all three registrations, native/default rows and own metadata counts 6/9/7. The focused suite exercises their installed metadata pipeline.
+- Packed source retains one React type import, all public imports/types, previous App props/render calls, independently closed samples, strict negative cases, both helper serialization locations and all three entry/native-Vite/Tailwind calls for each component. Separate SSR scenes and CSR stages/summary entries cover Dropzone file delivery, RadioGroup selection/FormData/reset, and Switch controlled state/FormData/reset/ref cleanup.
+- The shared CSR DOM and ResizeObserver remain available across Dropzone, RadioGroup and Switch scenes. Files use window.File; both form scenes use dom.window.FormData. There is no early global restoration or window.close before their reset tests. DOM identities use boolean assertions. The 255-token pin is unchanged.
+- `scripts/package-exports.test.mjs` auto-merged correctly and was not edited by the writer. Its exact six main transition selectors plus Dropzone colors, complete-selector boundaries, positive cases and 11 negative cases (including width instead of now-approved colors) remain intact. RadioGroup uses the already-approved border/shadow recipe; no guard expansion was made. Export/packed source preservation is readback evidence, not an executed package gate in this pass.
+- Dropzone hook, types, stories and hardened 15-test file were not edited. No API, token, dependency, recipe or naming-semantic change was introduced.
+
+Current integration validation:
+
+| Exact command | Result |
+| --- | --- |
+| `node scripts/prop-naming.mjs --write` | Generated naming view successfully. |
+| `timeout 300 systemd-run --user --scope -q -p MemoryMax=2G pnpm exec vitest run packages/ui/src/atoms/dropzone packages/ui/src/atoms/radio-group packages/ui/src/atoms/switch packages/ui/src/lib --maxWorkers=2` | 13 files / 314 tests passed. |
+| `flock /tmp/egdev-gates.lock timeout 900 systemd-run --user --scope -q -p MemoryMax=3G pnpm lint` | Passed; 293 files checked. |
+| `flock /tmp/egdev-gates.lock timeout 900 systemd-run --user --scope -q -p MemoryMax=3G pnpm typecheck` | Passed; root and UI checks. |
+| `flock /tmp/egdev-gates.lock timeout 900 systemd-run --user --scope -q -p MemoryMax=3G pnpm props:check` | Passed; registry valid and generated view current. |
+| `flock /tmp/egdev-gates.lock timeout 900 systemd-run --user --scope -q -p MemoryMax=3G pnpm test:props` | 82 passed. |
+| `git diff --check` | Passed; no text conflict markers remain in the three resolved paths. |
+
+The 674-unit result on base `1cae07e` and the 285-focused result for Switch main `cb3a26e` remain historical records, not current-tree gate results. No new RED/GREEN lifecycle or browser result is claimed for this merge resolution. Full build/export/packed/full-suite gates remain with the parent after readback. The index stays unmerged until the parent stages the resolved files.
 
 ## Deviations and limits
 
@@ -147,7 +172,8 @@ These were suggested review units, not commits performed by the writer. The pare
 - Initial behavioral RED: 7 failed / 4 passed; GREEN: 11 passed. Initial focused component/metadata: 164 passed.
 - Bounded picker correction RED: 2 failed / 13 passed; GREEN: 15 passed, with focused typecheck/lint verification. Selected File objects are snapshotted before reset; consumers still run after reset.
 - Before that correction, all eight gates passed: 674 unit tests, 82 naming tests, 31 export tests and 12 packed-matrix tests. Parent reruns full gates after current-main integration; do not treat the earlier build/packed results as post-correction evidence.
-- Switch-main integration: 12 focused files / 285 tests, lint (287 files), typecheck, naming check and 82 naming tests pass. Full merged-tree build/export/packed/full-suite gates remain with the parent.
+- Historical Switch-main integration (cb3a26e): 12 focused files / 285 tests, lint (287 files), typecheck, naming check and 82 naming tests passed.
+- Current RadioGroup-main integration (f4d4202): 13 focused files / 314 tests, lint (293 files), typecheck, naming check and 82 naming tests pass. Full merged-tree build/export/packed/full-suite gates remain with the parent.
 - Browser/visual/Controls checks: Not evaluated; owner reviews Storybook on main. No CI run claimed.
 - Existing packed ProgressBar nesting warnings are reported and left unchanged.
 

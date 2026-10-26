@@ -22,6 +22,7 @@ const components = [
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
+  ['RadioGroup', 'atoms/radio-group'],
   ['Input', 'atoms/input'],
   ['Kbd', 'atoms/kbd'],
   ['Logo', 'atoms/logo'],
@@ -117,6 +118,17 @@ const expected: Record<string, Record<string, string | false>> = {
   logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
+  radiogroup: {
+    label: 'text',
+    options: false,
+    value: 'text',
+    defaultValue: 'text',
+    onValueChange: false,
+    orientation: 'select',
+    disabled: 'boolean',
+    required: 'boolean',
+    name: 'text'
+  },
   switch: {
     checked: 'boolean',
     defaultChecked: 'boolean',
@@ -159,6 +171,7 @@ const ownPropCounts: Record<string, number> = {
   logo: 4,
   statusdot: 2,
   kbd: 2,
+  radiogroup: 9,
   switch: 7,
   tooltip: 4,
   progressbar: 6,
@@ -369,6 +382,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
+    ['RadioGroup', { orientation: '"vertical"', disabled: 'false', required: 'false' }],
     ['Switch', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }],
     ['Tooltip', { side: '"top"' }],
     [
@@ -582,6 +596,29 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Dropzone', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'type', 'children', 'onDrop', 'onPaste', 'onDragEnter', 'over']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains RadioGroup required rows, handler and options rows without widgets and documented native rows', () => {
+    const { argTypes, args } = story('RadioGroup');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.options?.type).toMatchObject({ required: true });
+    for (const prop of ['options', 'onValueChange']) {
+      expect(argTypes[prop]?.control, prop).toBe(false);
+      expect(argTypes[prop]?.table?.disable, prop).toBeUndefined();
+      expect(argTypes[prop]?.description, prop).toBeTruthy();
+    }
+    // Options keep the extracted literal order, which TypeScript resolves alphabetically.
+    expect(argTypes.orientation?.options).toEqual(['horizontal', 'vertical']);
+    for (const prop of ['label', 'options', 'value', 'defaultValue', 'name']) {
+      expect(argTypes[prop]?.table?.defaultValue, `${prop} has no fixed default`).toBeUndefined();
+    }
+    expect(args).toEqual({});
+    for (const prop of ['id', 'aria-labelledby', 'aria-describedby', 'className']) {
+      expect(argTypes[prop], prop).toEqual(story('RadioGroup', false).argTypes[prop]);
+    }
+    for (const prop of ['ref', 'asChild', 'children', 'aria-label', 'role', 'dir', 'onChange', 'onClick', 'size']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

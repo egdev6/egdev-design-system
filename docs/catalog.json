@@ -228,7 +228,7 @@
     "radix": "RadioGroup",
     "compone": "—",
     "accion": "nuevo",
-    "notas": "Grupo de opciones exclusivas; base de SelectTile y de chips exclusivos."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/66): exclusive choice among short text options from a data-driven `options` array over Radix RadioGroup, named by `label`, vertical or horizontal arrow axis, form `name`/`required`. Unchecked circles are Material wells; the checked one takes the primary gradient, bevel and halo with a black dot. `radioGroupVariants` exposes per-part recipes for SelectTile parity. No stylesheet."
   },
   {
     "actual": "Chip",

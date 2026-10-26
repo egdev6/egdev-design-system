@@ -448,6 +448,69 @@ test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet ru
   assert.equal(kbdRules(css), kbdRules(legacy), 'Kbd has no stylesheet: its marker carries no new rule');
 });
 
+test('UI ships the RadioGroup row, radio and indicator utilities without a RadioGroup stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // Layout by orientation and the 40px option row on the --spacing scale (D5, D7).
+  assert.match(rule('.gap-1'), /gap:\s*var\(--space-1\)\s*;/);
+  assert.match(rule('.gap-x-6'), /column-gap:\s*var\(--space-6\)\s*;/);
+  assert.match(rule('.gap-y-1'), /row-gap:\s*var\(--space-1\)\s*;/);
+  assert.match(rule('.min-h-10'), /min-height:\s*var\(--space-10\)\s*;/);
+  assert.match(
+    rule(String.raw`.has-\[\[data-state\=checked\]\]\:text-fg-default:has(:is([data-state=checked]))`),
+    /color:\s*var\(--color-fg-default[,)]/
+  );
+  assert.match(
+    rule(String.raw`.has-\[\[data-disabled\]\]\:opacity-45:has(:is([data-disabled]))`),
+    /opacity:\s*45%\s*;/
+  );
+  // Radio circle: 20px border-box well, raised primary recipe when checked (D6).
+  assert.match(rule('.size-5'), /width:\s*var\(--space-5\)\s*;\s*height:\s*var\(--space-5\)\s*;/);
+  assert.match(rule('.place-items-center'), /place-items:\s*center\s*;/);
+  assert.match(rule('.box-border'), /box-sizing:\s*border-box\s*;/);
+  assert.match(rule('.border-border-control'), /border-color:\s*var\(--color-border-control[,)]/);
+  assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)\s*;/);
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:border-action-primary-solid-bg[data-state="checked"]`),
+    /border-color:\s*var\(--color-action-primary-solid-bg[,)]/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:bg-\[image\:var\(--gradient-btn-primary\)\][data-state="checked"]`),
+    /background-image:\s*var\(--gradient-btn-primary\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:shadow-\[var\(--shadow-btn-primary\)\][data-state="checked"]`),
+    /--tw-shadow:\s*var\(--shadow-btn-primary\)\s*;/
+  );
+  // Checked border wins over hover because the checked rule is emitted later at equal specificity.
+  assert.ok(
+    utilities.indexOf(String.raw`.hover\:border-fg-muted:hover`) <
+      utilities.indexOf(String.raw`.data-\[state\=checked\]\:border-action-primary-solid-bg[data-state="checked"]`),
+    'The checked border must follow the hover border'
+  );
+  // Focus ring wins over the checked halo through the higher-specificity checked+focus rule (AC-06).
+  assert.match(
+    rule(
+      String.raw`.data-\[state\=checked\]\:focus-visible\:shadow-\[var\(--shadow-focus\)\][data-state="checked"]:focus-visible`
+    ),
+    /--tw-shadow:\s*var\(--shadow-focus\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.transition-\[border-color\,box-shadow\]`),
+    /transition-property:\s*border-color,\s*box-shadow\s*;/
+  );
+  assert.match(rule(String.raw`.disabled\:pointer-events-none:disabled`), /pointer-events:\s*none\s*;/);
+  // Indicator: 8px black dot.
+  assert.match(rule('.size-2'), /width:\s*var\(--space-2\)\s*;/);
+  assert.match(rule('.bg-action-primary-solid-fg'), /background-color:\s*var\(--color-action-primary-solid-fg[,)]/);
+  // D9 no stylesheet: the marker carries no rule.
+  assert.doesNotMatch(css, /\.eg-radio-group[^{]*\{/, 'RadioGroup has no stylesheet: its marker carries no rule');
+});
+
 test('UI ships the Tooltip overlay recipe, fallbacks and fade as token utilities without a stylesheet rule', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -980,6 +1043,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Portal',
       'ProductMark',
       'ProgressBar',
+      'RadioGroup',
       'Skeleton',
       'Slot',
       'Slottable',
@@ -996,6 +1060,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'dropzoneVariants',
       'labelVariants',
       'progressBarVariants',
+      'radioGroupVariants',
       'statusDotVariants',
       'surfaceVariants',
       'tooltipVariants'
@@ -1040,6 +1105,16 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     exported.Switch?.$$typeof,
     Symbol.for('react.forward_ref'),
     'Switch must be a forwardRef component whose ref targets the root button (D9)'
+  );
+  assert.equal(
+    typeof exported.RadioGroup,
+    'function',
+    'RadioGroup must be a plain function component without a ref API'
+  );
+  assert.deepEqual(
+    Object.keys(exported.radioGroupVariants).sort(),
+    ['indicator', 'item', 'label', 'root', 'row'],
+    'RadioGroup per-part recipes stay public for SelectTile parity'
   );
   assert.equal(
     exported.VisuallyHidden?.$$typeof,
@@ -1117,6 +1192,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ProgressBarProps',
     'ProgressBarSize',
     'ProgressBarVariant',
+    'RadioGroup',
+    'RadioGroupOption',
+    'RadioGroupOrientation',
+    'RadioGroupProps',
     'Skeleton',
     'SkeletonProps',
     'SkeletonSize',
@@ -1156,6 +1235,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'dropzoneVariants',
     'labelVariants',
     'progressBarVariants',
+    'radioGroupVariants',
     'statusDotVariants',
     'surfaceVariants',
     'tooltipVariants'
@@ -1204,6 +1284,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LogoVariant',
     'Portal',
     'PortalProps',
+    'RadioGroup',
+    'RadioGroupOption',
+    'RadioGroupOrientation',
+    'RadioGroupProps',
+    'radioGroupVariants',
     'Skeleton',
     'SkeletonProps',
     'SkeletonSize',
@@ -1459,6 +1544,45 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     /^<kbd class="eg-kbd [^"]*"><span aria-hidden="true">⌘K<\/span><span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Command K<\/span><\/kbd>$/
   );
   assert.doesNotMatch(symbolKey, /role=|aria-label=|tabindex=|data-state/);
+  // RadioGroup: a named Radix radiogroup with one row per option (AC-01). Without a DOM, Radix cannot
+  // detect a form ancestor during SSR, so each radio is followed by its hidden radio input (AC-07).
+  const radioGroup = renderToString(
+    createElement(exported.RadioGroup, {
+      label: 'Visibility',
+      id: 'visibility',
+      name: 'visibility',
+      defaultValue: 'public',
+      options: [
+        { value: 'public', label: 'Public' },
+        { value: 'private', label: 'Private', disabled: true }
+      ]
+    })
+  );
+  assert.match(radioGroup, /^<div role="radiogroup" aria-required="false" aria-orientation="vertical"[^>]*>/);
+  assert.match(radioGroup, /id="visibility"/);
+  assert.match(radioGroup, /aria-label="Visibility"/);
+  assert.match(radioGroup, /class="eg-radio-group flex flex-col gap-1"/);
+  assert.equal(radioGroup.match(/<button type="button" role="radio"/g)?.length, 2, 'One radio per option');
+  assert.equal(radioGroup.match(/<input type="radio" aria-hidden="true"[^>]*name="visibility"/g)?.length, 2);
+  assert.match(
+    radioGroup,
+    /aria-checked="true" data-state="checked" value="public" id="([^"]+)"[^>]*><span data-state="checked" class="size-2 rounded-full bg-action-primary-solid-fg"><\/span><\/button><input [^>]*checked="" value="public"\/><label for="\1" class="cursor-pointer">Public<\/label>/
+  );
+  assert.match(
+    radioGroup,
+    /aria-checked="false" data-state="unchecked" data-disabled="" disabled="" value="private" id="([^"]+)"[^>]*><\/button><input [^>]*disabled=""[^>]*value="private"\/><label for="\1" class="cursor-pointer">Private<\/label>/
+  );
+  const horizontalGroup = renderToString(
+    createElement(exported.RadioGroup, {
+      label: 'Format',
+      orientation: 'horizontal',
+      required: true,
+      disabled: true,
+      options: [{ value: 'video', label: 'Video' }]
+    })
+  );
+  assert.match(horizontalGroup, /aria-required="true" aria-orientation="horizontal" data-disabled=""/);
+  assert.match(horizontalGroup, /class="eg-radio-group flex flex-wrap gap-x-6 gap-y-1"/);
   // Switch: one Radix switch button with its thumb (AC-01). Without a DOM, Radix cannot detect a form
   // ancestor during SSR, so it always emits its hidden bubble input after the button (AC-08).
   const offSwitch = renderToString(createElement(exported.Switch, { 'aria-label': 'Stream alerts', id: 'alerts' }));

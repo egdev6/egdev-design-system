@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Dropzone, Gauge, Heading, Icon, Input, Kbd, Label, Logo, ProductMark, ProgressBar, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Tooltip, VisuallyHidden, dropzoneVariants, progressBarVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Cluster, Divider, Dropzone, Gauge, Heading, Icon, Input, Kbd, Label, Logo, ProductMark, ProgressBar, RadioGroup, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Tooltip, VisuallyHidden, dropzoneVariants, progressBarVariants, radioGroupVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -56,6 +56,9 @@ import type {
   ProgressBarProps,
   ProgressBarSize,
   ProgressBarVariant,
+  RadioGroupOption,
+  RadioGroupOrientation,
+  RadioGroupProps,
   SkeletonProps,
   SkeletonSize,
   SkeletonVariant,
@@ -234,6 +237,31 @@ const interceptedDropzone: DropzoneProps = { ...dropzoneProps, onDrop: () => und
 const interceptedPaste: DropzoneProps = { ...dropzoneProps, onPaste: () => undefined };
 // @ts-expect-error No other visual treatments exist.
 const invalidDropzone: DropzoneProps = { ...dropzoneProps, variant: 'solid' };
+// RadioGroup: data-driven options named by label, inside a form for submission (D2-D5, AC-07).
+export const radioOptions: RadioGroupOption[] = [
+  { value: 'public', label: 'Public' },
+  { value: 'unlisted', label: 'Unlisted' },
+  { value: 'private', label: 'Private', disabled: true }
+];
+const radioOrientation: RadioGroupOrientation = 'horizontal';
+export const radioNative: RadioGroupProps = {
+  label: 'Native visibility', options: radioOptions, id: 'radio-native', 'aria-describedby': 'radio-hint',
+  className: 'ms-1 ms-2 consumer-radio'
+};
+export const radioItemRecipe: string = radioGroupVariants.item();
+type RadioSampleProps = { format?: string; onFormatChange?: (value: string) => void };
+export function RadioGroupSamples({ format = 'video', onFormatChange }: RadioSampleProps) {
+  return createElement('form', { id: 'radio-form' },
+    createElement(RadioGroup, { label: 'Visibility', options: radioOptions, name: 'visibility', required: true, id: 'radio-visibility' }),
+    createElement(RadioGroup, {
+      label: 'Format', id: 'radio-format', name: 'format', orientation: radioOrientation, value: format,
+      onValueChange: onFormatChange,
+      options: [{ value: 'video', label: 'Video' }, { value: 'live', label: 'Live' }]
+    }),
+    createElement(RadioGroup, { label: 'Locked', id: 'radio-locked', options: radioOptions, defaultValue: 'public', disabled: true }),
+    createElement('p', { id: 'radio-hint' }, 'Applies to new uploads.'),
+    createElement(RadioGroup, radioNative));
+}
 // Switch: bare track named by a native label or aria-label, inside a form for submission (D2, AC-08).
 export const switchRef = createRef<HTMLButtonElement>();
 export const switchNative: SwitchProps = {
@@ -560,6 +588,26 @@ const referencedKbd: KbdProps = { children: 'K', ref: createRef<HTMLElement>() }
 const slottedKbd: KbdProps = { children: 'K', asChild: true };
 // @ts-expect-error Kbd has a single flat treatment; there are no variants (D4).
 const variantKbd: KbdProps = { children: 'K', variant: 'raised' };
+// @ts-expect-error RadioGroup requires its accessible group name (D4).
+const unnamedRadio: RadioGroupProps = { options: radioOptions };
+// @ts-expect-error RadioGroup renders its options from data; children are not accepted (D2).
+const childRadio: RadioGroupProps = { label: 'Visibility', options: radioOptions, children: 'Public' };
+// @ts-expect-error Options carry text labels only in v0.1 (D3).
+const richRadio: RadioGroupProps = { label: 'Visibility', options: [{ value: 'a', label: createElement('b', null, 'A') }] };
+// @ts-expect-error Options have no per-option description in v0.1 (D3).
+const describedRadio: RadioGroupProps = { label: 'Visibility', options: [{ value: 'a', label: 'A', description: 'Hint' }] };
+// @ts-expect-error Orientation is vertical or horizontal only (D5).
+const diagonalRadio: RadioGroupProps = { label: 'Visibility', options: radioOptions, orientation: 'diagonal' };
+// @ts-expect-error RadioGroup has no size axis in v0.1 (D8).
+const sizedRadio: RadioGroupProps = { label: 'Visibility', options: radioOptions, size: 'sm' };
+// @ts-expect-error Selection is reported through onValueChange, not onChange.
+const changeRadio: RadioGroupProps = { label: 'Visibility', options: radioOptions, onChange: () => undefined };
+// @ts-expect-error The group name comes from label; aria-label is owned.
+const ariaRadio: RadioGroupProps = { label: 'Visibility', options: radioOptions, 'aria-label': 'Other' };
+// @ts-expect-error RadioGroup cannot delegate its root to a child.
+const slottedRadio: RadioGroupProps = { label: 'Visibility', options: radioOptions, asChild: true };
+// @ts-expect-error RadioGroup makes no ref promise.
+const referencedRadio: ComponentProps<typeof RadioGroup> = { label: 'Visibility', options: radioOptions, ref: createRef<HTMLDivElement>() };
 // @ts-expect-error Switch is a bare track; the visible text is a consumer label (D2).
 const labelledSwitch: SwitchProps = { label: 'Stream alerts' };
 // @ts-expect-error Switch renders only its thumb; children are not accepted.
@@ -1339,6 +1387,37 @@ function assertSpinnerCSS(css) {
   assert.doesNotMatch(css, /\.eg-spinner[^{]*\{/, 'Spinner has no stylesheet: its marker carries no rule');
 }
 
+// RadioGroup ships its row, well/checked radio and indicator token utilities; no RadioGroup stylesheet.
+function assertRadioGroupCSS(css) {
+  for (const utility of [
+    '.min-h-10',
+    '.size-5',
+    '.size-2',
+    '.gap-x-6',
+    '.gap-y-1',
+    '.place-items-center',
+    '.border-border-control',
+    '.bg-surface-0',
+    '.bg-action-primary-solid-fg',
+    '.shadow-\\[var\\(--shadow-well\\)\\]',
+    '.has-\\[\\[data-state\\=checked\\]\\]\\:text-fg-default',
+    '.has-\\[\\[data-disabled\\]\\]\\:opacity-45',
+    '.hover\\:border-fg-muted',
+    '.data-\\[state\\=checked\\]\\:border-action-primary-solid-bg',
+    '.data-\\[state\\=checked\\]\\:bg-\\[image\\:var\\(--gradient-btn-primary\\)\\]',
+    '.data-\\[state\\=checked\\]\\:shadow-\\[var\\(--shadow-btn-primary\\)\\]',
+    '.data-\\[state\\=checked\\]\\:focus-visible\\:shadow-\\[var\\(--shadow-focus\\)\\]',
+    '.disabled\\:pointer-events-none',
+    '.cursor-pointer'
+  ]) {
+    assert.ok(css.includes(utility), 'Missing RadioGroup utility ' + utility);
+  }
+  assert.match(css, /\.min-h-10\s*\{[^}]*min-height:\s*var\(--space-10\)/, 'RadioGroup 40px row');
+  assert.match(css, /\.size-5\s*\{[^}]*width:\s*var\(--space-5\)/, 'RadioGroup 20px radio');
+  assert.match(css, /transition-property:\s*border-color,\s*box-shadow/, 'The radio animates border and shadow only');
+  assert.doesNotMatch(css, /\.eg-radio-group[^{]*\{/, 'RadioGroup has no stylesheet: its marker carries no rule');
+}
+
 // Logo ships token heights, the logo-token inks and the link focus ring; its legacy marker stays in components.
 function assertLogoCSS(css) {
   for (const utility of ['.inline-block', '.leading-none', '.rounded-sm', '.h-7', '.h-8', '.h-full', '.w-auto']) {
@@ -1404,6 +1483,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Portal',
   'ProductMark',
   'ProgressBar',
+  'RadioGroup',
   'Skeleton',
   'Slot',
   'Slottable',
@@ -1420,6 +1500,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'dropzoneVariants',
   'labelVariants',
   'progressBarVariants',
+  'radioGroupVariants',
   'statusDotVariants',
   'surfaceVariants',
   'tooltipVariants'
@@ -1432,6 +1513,7 @@ ${assertSpinnerCSS.toString()}
 ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertRadioGroupCSS.toString()}
 ${assertSwitchCSS.toString()}
 ${assertTooltipCSS.toString()}
 ${assertProgressBarCSS.toString()}
@@ -1448,6 +1530,7 @@ assertSpinnerCSS(shippedStyles);
 assertLogoCSS(shippedStyles);
 assertStatusDotCSS(shippedStyles);
 assertKbdCSS(shippedStyles);
+assertRadioGroupCSS(shippedStyles);
 assertSwitchCSS(shippedStyles);
 assertTooltipCSS(shippedStyles);
 assertProgressBarCSS(shippedStyles);
@@ -1480,7 +1563,7 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, DropzoneSamples, SlotSample, SwitchSamples, TooltipSamples, progressEdgeRecipe } from './consumer.ts';
+import { App, DropzoneSamples, RadioGroupSamples, SlotSample, SwitchSamples, TooltipSamples, progressEdgeRecipe } from './consumer.ts';
 const dropzoneDocument = new JSDOM(renderToString(createElement(DropzoneSamples)));
 try {
   const body = dropzoneDocument.window.document.body;
@@ -1504,6 +1587,50 @@ try {
 } finally {
   dropzoneDocument.window.close();
 }
+// RadioGroup SSR: named Radix radiogroups; without a DOM, Radix always emits each hidden radio input.
+const radioDocument = new JSDOM(renderToString(createElement(RadioGroupSamples)));
+try {
+  const radioForm = radioDocument.window.document.getElementById('radio-form');
+  const groups = [...radioForm.querySelectorAll('div.eg-radio-group')];
+  assert.equal(groups.length, 4, 'One root per RadioGroup');
+  for (const group of groups) {
+    assert.equal(group.getAttribute('role'), 'radiogroup');
+    assert.ok(group.getAttribute('aria-label'), 'Each group is named by its label');
+    for (const control of group.querySelectorAll('button[role="radio"]')) {
+      assert.equal(control.getAttribute('type'), 'button');
+      assert.equal(control.nextElementSibling?.getAttribute('type'), 'radio', 'Radix hidden input follows the radio');
+      const label = control.nextElementSibling.nextElementSibling;
+      assert.equal(label?.tagName, 'LABEL');
+      assert.equal(label.getAttribute('for'), control.id, 'The visible label names its radio');
+    }
+  }
+  const visibility = radioDocument.window.document.getElementById('radio-visibility');
+  assert.equal(visibility.getAttribute('aria-label'), 'Visibility');
+  assert.equal(visibility.getAttribute('aria-required'), 'true');
+  assert.equal(visibility.getAttribute('aria-orientation'), 'vertical');
+  assert.equal(visibility.querySelectorAll('input[name="visibility"][required]').length, 3);
+  assert.equal(visibility.querySelector('button[value="private"]').hasAttribute('disabled'), true);
+  const format = radioDocument.window.document.getElementById('radio-format');
+  assert.equal(format.getAttribute('aria-orientation'), 'horizontal');
+  assert.ok(format.className.includes('flex-wrap'), 'Horizontal groups wrap');
+  assert.equal(format.querySelector('button[value="video"]').getAttribute('aria-checked'), 'true');
+  assert.equal(format.querySelector('button[value="video"]').children.length, 1, 'The checked radio shows its indicator');
+  assert.equal(format.querySelector('button[value="live"]').children.length, 0);
+  const locked = radioDocument.window.document.getElementById('radio-locked');
+  assert.equal(locked.hasAttribute('data-disabled'), true);
+  assert.equal(locked.querySelectorAll('button[disabled]').length, 3);
+  const nativeGroup = radioDocument.window.document.getElementById('radio-native');
+  assert.equal(nativeGroup.getAttribute('aria-describedby'), 'radio-hint');
+  assert.ok(nativeGroup.className.startsWith('eg-radio-group '), 'The public marker leads the root classes');
+  assert.ok(nativeGroup.className.endsWith(' ms-2 consumer-radio'), 'Consumer layout classes merge last');
+  assert.ok(!nativeGroup.className.split(' ').includes('ms-1'), 'Conflicting margin utilities resolve through cn()');
+  assert.ok(!nativeGroup.querySelector('.consumer-radio'), 'Rows and radios take no consumer classes');
+  const ids = [...radioForm.querySelectorAll('button[role="radio"]')].map((control) => control.id);
+  assert.equal(new Set(ids).size, ids.length, 'Item ids are unique across instances');
+} finally {
+  radioDocument.window.close();
+}
+
 // Switch SSR: Radix switch buttons with thumbs; without a DOM, Radix always emits its hidden form input.
 const switchDocument = new JSDOM(renderToString(createElement(SwitchSamples)));
 try {
@@ -2120,7 +2247,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, DropzoneSamples, SwitchSamples, TooltipSamples, aspectWideRef, hiddenNoteRef, inputChanges, inputRef, receivedFiles, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, textareaChanges, textareaRef, tooltipRecipe } = await import('./consumer.ts');
+const { App, DropzoneSamples, RadioGroupSamples, SwitchSamples, TooltipSamples, aspectWideRef, hiddenNoteRef, inputChanges, inputRef, receivedFiles, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, textareaChanges, textareaRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -2494,6 +2621,39 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
+  stage('radio-group:start');
+  const radioCalls = [];
+  const onFormatChange = (next) => radioCalls.push(next);
+  await act(async () => root.render(createElement(RadioGroupSamples, { format: 'video', onFormatChange })));
+  const radioForm = document.getElementById('radio-form');
+  const visibilityGroup = document.getElementById('radio-visibility');
+  const unlisted = visibilityGroup.querySelector('button[value="unlisted"]');
+  assert.equal(new dom.window.FormData(radioForm).get('visibility'), null, 'Nothing is submitted before a choice');
+  await act(async () => document.querySelector('label[for="' + unlisted.id + '"]').click());
+  assert.equal(unlisted.getAttribute('aria-checked'), 'true', 'The associated label selects its radio');
+  assert.equal(unlisted.firstElementChild?.getAttribute('data-state'), 'checked', 'The indicator appears when checked');
+  assert.equal(new dom.window.FormData(radioForm).get('visibility'), 'unlisted', 'The checked value is submitted');
+  await act(async () => visibilityGroup.querySelector('button[value="private"]').click());
+  assert.equal(unlisted.getAttribute('aria-checked'), 'true', 'A disabled option cannot be selected');
+  await act(async () => radioForm.reset());
+  assert.equal(unlisted.getAttribute('aria-checked'), 'false', 'A form reset restores the initial value');
+  assert.equal(new dom.window.FormData(radioForm).get('visibility'), null);
+  const live = document.getElementById('radio-format').querySelector('button[value="live"]');
+  const liveRecipe = live.className;
+  await act(async () => live.click());
+  assert.deepEqual(radioCalls, ['live'], 'onValueChange receives the selected value');
+  assert.equal(live.getAttribute('aria-checked'), 'false', 'A controlled group waits for its consumer');
+  await act(async () => root.render(createElement(RadioGroupSamples, { format: 'live', onFormatChange })));
+  assert.ok(document.getElementById('radio-format').querySelector('button[value="live"]') === live, 'Controlled updates preserve the radio');
+  assert.equal(live.getAttribute('aria-checked'), 'true');
+  assert.equal(live.className, liveRecipe, 'Radix state never mirrors into classes');
+  assert.equal(new dom.window.FormData(radioForm).get('format'), 'live');
+  const lockedPrivate = document.getElementById('radio-locked').querySelector('button[value="unlisted"]');
+  await act(async () => lockedPrivate.click());
+  assert.equal(lockedPrivate.disabled, true);
+  assert.equal(lockedPrivate.getAttribute('aria-checked'), 'false', 'A disabled group cannot change');
+  await act(async () => root.render(null));
+  stage('radio-group:complete');
   stage('switch:start');
   const switchCalls = [];
   const onOverlayChange = (next) => switchCalls.push(next);
@@ -2528,7 +2688,7 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'Label activation, forwarded ref and cleanup', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -2617,6 +2777,7 @@ ${assertSpinnerCSS.toString()}
 ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertRadioGroupCSS.toString()}
 ${assertSwitchCSS.toString()}
 ${assertTooltipCSS.toString()}
 ${assertProgressBarCSS.toString()}
@@ -2637,6 +2798,7 @@ assertSpinnerCSS(emitted);
 assertLogoCSS(emitted);
 assertStatusDotCSS(emitted);
 assertKbdCSS(emitted);
+assertRadioGroupCSS(emitted);
 assertSwitchCSS(emitted);
 assertTooltipCSS(emitted);
 assertProgressBarCSS(emitted);
@@ -2688,6 +2850,7 @@ assertSpinnerCSS(twCss);
 assertLogoCSS(twCss);
 assertStatusDotCSS(twCss);
 assertKbdCSS(twCss);
+assertRadioGroupCSS(twCss);
 assertSwitchCSS(twCss);
 assertTooltipCSS(twCss);
 assertProgressBarCSS(twCss);
