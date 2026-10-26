@@ -129,6 +129,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect([...new Set(modules)].sort()).toEqual([
       './atoms/gauge',
       './atoms/icon',
+      './atoms/icon-button',
       './atoms/kbd',
       './atoms/logo',
       './atoms/product-mark',
@@ -154,6 +155,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Gauge',
       'Heading',
       'Icon',
+      'IconButton',
       'Kbd',
       'Label',
       'Logo',
@@ -179,6 +181,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(config.typescript?.reactDocgen).toBe('react-docgen-typescript');
     docs = parser.parse([
       source('atoms/gauge/Gauge.tsx'),
+      source('atoms/icon-button/IconButton.tsx'),
       source('primitives/aspect-ratio/AspectRatio.tsx'),
       source('primitives/stack/Stack.tsx'),
       source('primitives/stack/Cluster.tsx'),
@@ -187,6 +190,59 @@ describe('Storybook TypeScript docgen contract', () => {
       source('primitives/surface/Surface.tsx')
     ]);
   }, 20_000);
+
+  it('documents every own IconButton prop and extracts required hidden naming without fake defaults', () => {
+    const file = ast(source('atoms/icon-button/types.ts'));
+    const properties = ownProps(file, ['IconButtonProps']);
+    const expected: Record<string, string> = {
+      label: 'text',
+      icon: 'false',
+      variant: 'select',
+      size: 'select',
+      asChild: 'boolean',
+      children: 'false'
+    };
+    expect(properties).toHaveLength(6);
+    const doc = docs.find((item) => item.displayName === 'IconButton');
+    expect(doc).toBeDefined();
+    for (const prop of properties) {
+      const name = prop.name.getText(file);
+      const tags = ts.getJSDocTags(prop);
+      expect(
+        tags.filter((tag) => tag.tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment))
+      ).toEqual([expected[name]]);
+      expect(doc?.props[name]?.tags, name).toMatchObject({ control: expected[name] });
+      if (expected[name] === 'false') {
+        expect(doc?.props[name]?.tags, name).toMatchObject({
+          controlReason: expect.stringMatching(/ReactElement.*(?:Variants|AsChildLink)/)
+        });
+      }
+      expect(doc?.props[name]?.required, name).toBe(!prop.questionToken);
+    }
+    for (const prop of ['label', 'icon', 'children']) {
+      expect(doc?.props[prop]?.defaultValue, prop).toBeNull();
+    }
+    for (const [prop, value] of Object.entries({ variant: 'ghost', size: 'md', asChild: 'false' })) {
+      expect(normalize(doc?.props[prop]?.defaultValue?.value)).toBe(value);
+    }
+    expect(doc?.props['aria-label']).toBeUndefined();
+    for (const prop of ['disabled', 'type', 'onClick', 'id', 'name', 'value', 'className']) {
+      expect(doc?.props[prop], prop).toBeDefined();
+    }
+    const stories = ast(source('atoms/icon-button/IconButton.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'Variants',
+      'Sizes',
+      'Disabled',
+      'States',
+      'AsChildLink',
+      'RawSvg'
+    ]);
+    expect(readFileSync(source('atoms/icon-button/IconButton.stories.tsx'), 'utf8')).not.toMatch(/argTypes:|\bplay:/);
+    const barrel = readFileSync(source('atoms/icon-button/index.ts'), 'utf8');
+    expect(barrel).not.toMatch(/iconButtonVariants|iconButtonIconVariants|useIconButton/);
+  });
 
   it('annotates each own VisuallyHidden prop without fabricating a content default', () => {
     const file = ast(source('primitives/visually-hidden/types.ts'));
@@ -630,6 +686,7 @@ describe('Storybook TypeScript docgen contract', () => {
   it('limits real parser discovery to the current public React components', () => {
     expect(docs.map((doc) => doc.displayName)).toEqual([
       'Gauge',
+      'IconButton',
       'AspectRatio',
       'Stack',
       'Cluster',

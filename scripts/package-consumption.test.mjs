@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Kbd, Label, Logo, ProductMark, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
+import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, IconButton, Kbd, Label, Logo, ProductMark, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Text, VisuallyHidden, surfaceVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -38,6 +38,9 @@ import type {
   GaugeProps,
   GaugeState,
   GaugeSize,
+  IconButtonProps,
+  IconButtonVariant,
+  IconButtonSize,
   IconName,
   IconProps,
   IconSize,
@@ -263,6 +266,48 @@ export function IconSamples({ iconName = 'plus' }: IconSampleProps) {
     createElement(Icon, { name: 'check', size: iconPreset, id: 'icon-override', className: 'size-4.5 text-fg-brand-default' }));
 }
 // Surface: a div ref by default; an HTMLElement ref on the actual slotted host with asChild.
+export const iconButtonRef = createRef<HTMLButtonElement>();
+export const iconButtonLinkRef = createRef<HTMLButtonElement>();
+export const iconButtonCalls: string[] = [];
+const iconButtonBase: IconButtonProps = { label: 'Search', icon: createElement(Icon, { name: 'search' }) };
+export function IconButtonSamples() {
+  const variants: IconButtonVariant[] = ['ghost', 'outline', 'primary', 'secondary'];
+  const sizes: IconButtonSize[] = ['sm', 'md', 'lg'];
+  return createElement('section', { 'aria-label': 'Icon actions' },
+    variants.flatMap((variant) => sizes.map((size) => createElement(IconButton, {
+      ...iconButtonBase, key: variant + size, variant, size, id: 'icon-button-' + variant + '-' + size,
+      ref: variant === 'ghost' && size === 'md' ? iconButtonRef : undefined,
+      onClick: () => iconButtonCalls.push('button')
+    }))),
+    createElement(IconButton, { ...iconButtonBase, id: 'icon-button-disabled', disabled: true,
+      onClick: () => iconButtonCalls.push('disabled') }),
+    createElement(IconButton, { ...iconButtonBase, asChild: true, ref: iconButtonLinkRef,
+      onClick: (event) => { event.preventDefault(); iconButtonCalls.push('root'); },
+      children: createElement('a', { id: 'icon-button-link', href: '#search', target: '_blank', rel: 'noreferrer',
+        onClick: () => iconButtonCalls.push('child') }) }),
+    createElement(IconButton, { ...iconButtonBase, asChild: true, disabled: true,
+      onClick: () => iconButtonCalls.push('disabled-root'),
+      children: createElement('a', { id: 'icon-button-disabled-link', href: '#search', tabIndex: 0,
+        onClick: () => iconButtonCalls.push('disabled-child') }) }));
+}
+// @ts-expect-error IconButton always requires a non-empty naming input through label.
+const unnamedIconButton: IconButtonProps = { icon: createElement(Icon, { name: 'search' }) };
+// @ts-expect-error A label does not replace the required decorative ReactElement.
+const missingIconButtonGlyph: IconButtonProps = { label: 'Search' };
+// @ts-expect-error IconButton icon must be one ReactElement, not text.
+const textIconButton: IconButtonProps = { ...iconButtonBase, icon: 'Search' };
+// @ts-expect-error AccessibleIcon supplies hidden text; duplicate aria-label naming is excluded.
+const ariaNamedIconButton: IconButtonProps = { ...iconButtonBase, 'aria-label': 'Search' };
+// @ts-expect-error IconButton has no pressed API; use Toggle.
+const pressedIconButton: IconButtonProps = { ...iconButtonBase, pressed: true };
+// @ts-expect-error IconButton has no loading API; use Button with visible text.
+const loadingIconButton: IconButtonProps = { ...iconButtonBase, loading: true };
+// @ts-expect-error IconButton links compose with asChild; href belongs to the child.
+const linkedIconButton: IconButtonProps = { ...iconButtonBase, href: '#search' };
+// @ts-expect-error IconButton has no dark treatment.
+const darkIconButton: IconButtonProps = { ...iconButtonBase, variant: 'dark' };
+// @ts-expect-error IconButton geometry is preset-only.
+const numericIconButton: IconButtonProps = { ...iconButtonBase, size: 44 };
 export const surfaceDivRef = createRef<HTMLDivElement>();
 export const surfaceSectionRef = createRef<HTMLElement>();
 export const surfaceArticleRef = createRef<HTMLElement>();
@@ -315,6 +360,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(LabelSamples),
     createElement(SkeletonSamples),
     createElement(IconSamples, { iconName }),
+    createElement(IconButtonSamples),
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(StatusDotSamples, { pulse: statusDotPulse }),
     createElement(KbdSamples),
@@ -711,6 +757,40 @@ function assertLabelCSS(css) {
 }
 
 // Icon's static utilities must work in shipped CSS and both consumer build paths.
+function assertIconButtonCSS(css) {
+  for (const selector of [
+    '.inline-grid',
+    '.place-items-center',
+    '.size-8',
+    '.size-10',
+    '.size-12',
+    '.border-solid',
+    '.p-0',
+    '.transition-colors'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing IconButton selector ' + selector);
+  }
+  for (const token of [
+    '--gradient-btn-primary-hover',
+    '--gradient-btn-secondary-hover',
+    '--gradient-sheen',
+    '--color-alpha-red-65',
+    '--duration-press',
+    '--ease-spring'
+  ]) {
+    assert.ok(css.includes('var(' + token), 'IconButton must consume ' + token);
+  }
+  assert.ok(
+    /--tw-scale-x:\s*94%/.test(css) && /--tw-scale-y:\s*94%/.test(css),
+    'Pressed icon actions must scale to .94 on both axes'
+  );
+  assert.ok(/scale:\s*var\(--tw-scale-x\) var\(--tw-scale-y\)/.test(css), 'Tailwind composes individual scale axes');
+  assert.match(css, /prefers-reduced-motion:\s*no-preference/, 'Transforms only run when motion is safe');
+  assert.match(css, /prefers-reduced-motion:\s*reduce/, 'Reduced motion has explicit resets');
+  assert.ok(css.includes('data-disabled'), 'Disabled styles must follow the attribute');
+  assert.ok(css.includes('focus-visible'), 'Icon actions ship a visible focus treatment');
+}
+
 function assertIconCSS(css) {
   for (const [selector, declarations] of [
     ['.inline-block', [/display:\s*inline-block\s*;/]],
@@ -938,6 +1018,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Gauge',
   'Heading',
   'Icon',
+  'IconButton',
   'Kbd',
   'Label',
   'Logo',
@@ -961,11 +1042,13 @@ ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertIconCSS.toString()}
+${assertIconButtonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
 ${assertProductMarkCSS.toString()}
+assertIconButtonCSS(shippedStyles);
 assertGaugeCSS(shippedStyles);
 assertIconCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
@@ -1049,6 +1132,22 @@ for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"',
 const dom = new JSDOM(html);
 try {
   const document = dom.window.document;
+  const iconButtons = document.querySelectorAll('.eg-icon-btn');
+  assert.equal(iconButtons.length, 15, 'All IconButton treatments/sizes, disabled button and two slotted links render');
+  for (const button of iconButtons) {
+    assert.equal(button.textContent, 'Search');
+    assert.equal(button.hasAttribute('aria-label'), false, 'AccessibleIcon hidden text supplies the name');
+    assert.equal(button.querySelector('svg').getAttribute('aria-hidden'), 'true');
+    assert.equal(button.querySelector('svg').getAttribute('focusable'), 'false');
+    assert.equal(button.querySelector('span').style.position, 'absolute', 'Radix owns the hidden label');
+    assert.equal(button.hasAttribute('aria-pressed'), false);
+    if (button.tagName === 'BUTTON') assert.equal(button.getAttribute('type'), 'button');
+  }
+  const iconLink = document.getElementById('icon-button-link');
+  assert.equal(iconLink.tagName, 'A');
+  assert.equal(iconLink.getAttribute('href'), '#search');
+  assert.equal(iconLink.hasAttribute('type'), false);
+  assert.equal(document.getElementById('icon-button-disabled-link').getAttribute('tabindex'), '-1');
   const normal = document.querySelector('.eg-gauge[aria-label="Capacity"]');
   assert.equal(normal.getAttribute('role'), 'meter');
   assert.equal(normal.getAttribute('data-state'), 'normal');
@@ -1463,7 +1562,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, aspectWideRef, hiddenNoteRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
+const { App, aspectWideRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -1474,12 +1573,29 @@ try {
   assert.equal(hiddenNoteRef.current?.tagName, 'SPAN');
   assert.ok(slottedHeadingRef.current instanceof HTMLElement);
   assert.equal(slottedHeadingRef.current?.tagName, 'H2', 'The slotted ref must expose the h2 host');
-  const buttons = [...document.querySelectorAll('button')];
-  assert.equal(buttons.length, 4, 'Only intrinsic consumer and Cluster harness controls may be focusable');
+  const buttons = [...document.querySelectorAll('button:not(.eg-icon-btn)')];
+  assert.equal(buttons.length, 4, 'Preserve all intrinsic consumer and Cluster harness controls alongside IconButton');
   buttons[0].focus();
   assert.ok(document.activeElement === buttons[0], 'First intrinsic button must receive focus');
   buttons[1].focus();
   assert.ok(document.activeElement === buttons[1], 'Last intrinsic button must receive focus');
+  stage('icon-button:activation:start');
+  const iconAction = document.getElementById('icon-button-ghost-md');
+  const iconLink = document.getElementById('icon-button-link');
+  assert.ok(iconButtonRef.current === iconAction, 'IconButton native ref must reach the button on each React major');
+  assert.ok(iconButtonLinkRef.current === iconLink, 'IconButton asChild ref must reach the anchor');
+  iconAction.focus();
+  assert.ok(document.activeElement === iconAction, 'Native icon action accepts focus');
+  await act(async () => { iconAction.click(); iconLink.click(); document.getElementById('icon-button-disabled').click(); });
+  assert.deepEqual(iconButtonCalls, ['button', 'child', 'root']);
+  const disabledIconLink = document.getElementById('icon-button-disabled-link');
+  assert.equal(disabledIconLink.tabIndex, -1);
+  assert.equal(disabledIconLink.getAttribute('aria-disabled'), 'true');
+  const disabledClick = new dom.window.MouseEvent('click', { bubbles: true, cancelable: true });
+  await act(async () => disabledIconLink.dispatchEvent(disabledClick));
+  assert.equal(disabledClick.defaultPrevented, true, 'Disabled anchor blocks navigation');
+  assert.deepEqual(iconButtonCalls, ['button', 'child', 'root'], 'Neither disabled root nor child may activate');
+  stage('icon-button:activation:complete');
   stage('gauge:rerender:start');
   const measurement = () => document.querySelector('section[aria-label="Measurements"] > .eg-gauge');
   assert.equal(measurement().getAttribute('aria-valuenow'), '42.5');
@@ -1707,7 +1823,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1792,11 +1908,13 @@ ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertIconCSS.toString()}
+${assertIconButtonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
 ${assertProductMarkCSS.toString()}
+assertIconButtonCSS(emitted);
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1848,6 +1966,7 @@ assert.match(
 );
 assertSkeletonCSS(twCss);
 assertIconCSS(twCss);
+assertIconButtonCSS(twCss);
 assert.ok(twCss.includes('.size-4\\\\.5'), 'Tailwind consumer must emit the supported container size override');
 assert.match(twCss, /width:\\s*calc\\(var\\(--space-1\\)\\s*\\*\\s*4\\.5\\)/, 'Container size must use the spacing scale');
 assert.ok(twCss.includes('.text-fg-brand-default'), 'Tailwind consumer must emit the supported inherited color');

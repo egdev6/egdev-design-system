@@ -1,6 +1,7 @@
 // Atoms
 export * from './atoms/gauge';
 export * from './atoms/icon';
+export * from './atoms/icon-button';
 export * from './atoms/kbd';
 export * from './atoms/logo';
 export * from './atoms/product-mark';

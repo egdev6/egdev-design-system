@@ -15,6 +15,7 @@ const components = [
   ['Gauge', 'atoms/gauge'],
   ['Heading', 'primitives/text'],
   ['Icon', 'atoms/icon'],
+  ['IconButton', 'atoms/icon-button'],
   ['Stack', 'primitives/stack'],
   ['Text', 'primitives/text'],
   ['Surface', 'primitives/surface'],
@@ -99,6 +100,7 @@ const expected: Record<string, Record<string, string | false>> = {
   visuallyhidden: { children: false, asChild: 'boolean' },
   skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
   icon: { name: 'select', size: 'select', filled: 'boolean', label: 'text' },
+  iconbutton: { label: 'text', icon: false, variant: 'select', size: 'select', asChild: 'boolean', children: false },
   spinner: { label: 'text', size: 'select' },
   logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
   statusdot: { state: 'select', pulse: 'boolean' },
@@ -119,6 +121,7 @@ const ownPropCounts: Record<string, number> = {
   aspectratio: 1,
   gauge: 8,
   icon: 4,
+  iconbutton: 6,
   skeleton: 3,
   spinner: 2,
   logo: 4,
@@ -298,7 +301,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         expect(composed.argTypes[prop]?.type?.name, `${name}.${prop} semantic type`).toBe('string');
       }
     }
-    if (!['VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface'].includes(name)) {
+    if (!['VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface', 'IconButton'].includes(name)) {
       expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     }
     expect(composed.args).toEqual({});
@@ -330,6 +333,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
     ['Icon', { size: '"md"', filled: 'false' }],
+    ['IconButton', { variant: '"ghost"', size: '"md"', asChild: 'false' }],
     ['Spinner', { size: '"md"' }],
     ['Logo', { variant: '"wordmark"', size: '"md"', label: '"egdev"' }],
     ['StatusDot', { state: '"stopped"', pulse: 'true' }]
@@ -378,6 +382,37 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(jsdocControlsEnhancer.secondPass).toBeUndefined();
     expect(preview.parameters?.backgrounds).toEqual({ disable: true });
     expect(preview.parameters?.layout).toBe('padded');
+  });
+
+  it('retains IconButton required hidden naming, full choices and native button rows', () => {
+    const { argTypes } = story('IconButton');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.icon?.type?.required).toBe(true);
+    for (const prop of ['label', 'icon', 'children']) {
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+    }
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['ghost', 'outline', 'primary', 'secondary']);
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['lg', 'md', 'sm']);
+    for (const prop of ['icon', 'children']) {
+      expect(argTypes[prop]?.control).toBe(false);
+      expect(argTypes[prop]?.table?.disable).toBeUndefined();
+    }
+    for (const prop of [
+      'id',
+      'title',
+      'className',
+      'disabled',
+      'type',
+      'onClick',
+      'name',
+      'value',
+      'tabIndex',
+      'aria-describedby'
+    ]) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('IconButton', false).argTypes[prop]);
+    }
+    expect(argTypes['aria-label']).toBeUndefined();
   });
 
   it('retains Gauge rows, full public types, requiredness, defaults and ordered state choices', () => {
