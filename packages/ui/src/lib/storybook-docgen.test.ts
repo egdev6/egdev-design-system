@@ -132,6 +132,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/kbd',
       './atoms/logo',
       './atoms/product-mark',
+      './atoms/select',
       './atoms/spinner',
       './atoms/status-dot',
       './lib/cn',
@@ -159,6 +160,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Logo',
       'Portal',
       'ProductMark',
+      'Select',
       'Skeleton',
       'Slot',
       'Slottable',
@@ -1190,6 +1192,90 @@ describe('Kbd passive metadata contract', () => {
       expect(props[prop], `Kbd native ${prop} must remain available in autodocs`).toBeDefined();
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick', 'variant', 'size']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('Select form metadata contract', () => {
+  it('annotates all own props and option members with constant-only defaults', () => {
+    const file = ast(source('atoms/select/types.ts'));
+    const controls: Record<string, string> = {
+      options: 'false',
+      value: 'text',
+      defaultValue: 'text',
+      onValueChange: 'false',
+      placeholder: 'text',
+      size: 'select',
+      name: 'text',
+      required: 'boolean',
+      disabled: 'boolean',
+      label: 'text'
+    };
+    const props = ownProps(file, ['SelectProps', 'SelectOption']);
+    expect(props).toHaveLength(12);
+    for (const prop of props) {
+      const name = prop.name.getText(file);
+      const tags = ts.getJSDocTags(prop);
+      const values = (tagName: string) =>
+        tags.filter((tag) => tag.tagName.text === tagName).map((tag) => ts.getTextOfJSDocComment(tag.comment));
+      expect(values('control'), name).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        expect(values('controlReason')[0], name).toMatch(/stories|story/);
+      }
+      if (!prop.questionToken) {
+        expect(values('default'), name).toEqual([]);
+      }
+    }
+    expect(defaults(source('atoms/select/types.ts'), true)).toEqual({ size: 'md' });
+    expect(defaults(source('atoms/select/useSelect.ts'), false)).toEqual({
+      size: 'md',
+      required: 'false',
+      disabled: 'false'
+    });
+  });
+
+  it('extracts required options, full enums, actual defaults and native trigger rows', () => {
+    const doc = parser.parse(source('atoms/select/Select.tsx')).find((item) => item.displayName === 'Select');
+    if (!doc) {
+      throw new Error('Missing docgen for Select');
+    }
+    const { props } = doc;
+    expect(props.options).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    expect(props.options?.type.name).toBe('SelectOption[]');
+    expect(props.onValueChange).toMatchObject({ required: false, tags: { control: 'false' } });
+    expect(props.placeholder).toMatchObject({
+      type: { name: 'string' },
+      defaultValue: null,
+      tags: { control: 'text' }
+    });
+    expect(props.size?.type.value?.map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
+      'md',
+      'sm'
+    ]);
+    for (const [prop, value] of [
+      ['size', 'md'],
+      ['required', 'false'],
+      ['disabled', 'false']
+    ]) {
+      expect(normalize(props[prop ?? '']?.defaultValue?.value)).toBe(value);
+    }
+    for (const prop of ['value', 'defaultValue', 'placeholder', 'onValueChange', 'name']) {
+      expect(props[prop]?.defaultValue, prop).toBeNull();
+    }
+    for (const prop of [
+      'id',
+      'aria-label',
+      'aria-labelledby',
+      'aria-describedby',
+      'aria-invalid',
+      'className',
+      'onFocus',
+      'onBlur'
+    ]) {
+      expect(props[prop], prop).toBeDefined();
+    }
+    for (const prop of ['open', 'defaultOpen', 'onOpenChange', 'asChild', 'children', 'type', 'dir', 'onChange']) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);

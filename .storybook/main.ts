@@ -14,6 +14,18 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   statusDot: ['id', 'title', 'className', 'style'],
   kbd: ['id', 'title', 'className'],
   productMark: ['id', 'title', 'className', 'target', 'rel'],
+  select: [
+    'id',
+    'title',
+    'aria-label',
+    'aria-labelledby',
+    'aria-describedby',
+    'aria-invalid',
+    'className',
+    'onFocus',
+    'onBlur',
+    'form'
+  ],
   // Native props re-exposed in autodocs per component, keyed by camelCase component name.
   // Gauge retains its approved passive measurement list; Label documents the native
   // association (htmlFor/id) and the approved class-merge surface. Nothing else from

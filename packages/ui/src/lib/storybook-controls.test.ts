@@ -24,7 +24,8 @@ const components = [
   ['Logo', 'atoms/logo'],
   ['StatusDot', 'atoms/status-dot'],
   ['Kbd', 'atoms/kbd'],
-  ['ProductMark', 'atoms/product-mark']
+  ['ProductMark', 'atoms/product-mark'],
+  ['Select', 'atoms/select']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -104,6 +105,17 @@ const expected: Record<string, Record<string, string | false>> = {
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
   productmark: { monogram: 'text', label: 'text', href: 'text' },
+  select: {
+    options: false,
+    value: 'text',
+    defaultValue: 'text',
+    onValueChange: false,
+    placeholder: 'text',
+    size: 'select',
+    name: 'text',
+    required: 'boolean',
+    disabled: 'boolean'
+  },
   gauge: {
     label: 'text',
     value: 'number',
@@ -125,6 +137,7 @@ const ownPropCounts: Record<string, number> = {
   statusdot: 2,
   kbd: 2,
   productmark: 3,
+  select: 9,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,
@@ -331,6 +344,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
     ['Icon', { size: '"md"', filled: 'false' }],
     ['Spinner', { size: '"md"' }],
+    ['Select', { size: '"md"', required: 'false', disabled: 'false' }],
     ['Logo', { variant: '"wordmark"', size: '"md"', label: '"egdev"' }],
     ['StatusDot', { state: '"stopped"', pulse: 'true' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
@@ -515,6 +529,34 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Select structured options, callback rows and native naming without inventing defaults', () => {
+    const { argTypes } = story('Select');
+    expect(argTypes.options?.type).toMatchObject({ required: true });
+    expect(argTypes.options?.control).toBe(false);
+    expect(argTypes.onValueChange?.control).toBe(false);
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['md', 'sm']);
+    for (const prop of ['options', 'onValueChange', 'value', 'defaultValue', 'placeholder', 'name']) {
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+      expect(argTypes[prop]?.table?.disable, prop).not.toBe(true);
+    }
+    for (const prop of [
+      'id',
+      'aria-label',
+      'aria-labelledby',
+      'aria-describedby',
+      'aria-invalid',
+      'className',
+      'onFocus',
+      'onBlur'
+    ]) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Select', false).argTypes[prop]);
+    }
+    for (const prop of ['asChild', 'open', 'defaultOpen', 'onOpenChange', 'children', 'dir', 'type', 'onChange']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });
