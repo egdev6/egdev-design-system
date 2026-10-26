@@ -94,6 +94,16 @@
         }
       },
       {
+        "component": "Icon",
+        "type": "IconSize ('sm' | 'md' | 'lg')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon/types.ts",
+          "symbol": "IconProps",
+          "revision": "sha256:1ea0dd7b8a4e42f90f6bd352edf968b9765eea9745ff8ff0ff6b5b9d0957ec13"
+        }
+      },
+      {
         "component": "Spinner",
         "type": "SpinnerSize",
         "status": "existing",
@@ -159,6 +169,26 @@
           "symbol": "LogoProps",
           "revision": "sha256:c94a94db17133bd7b28dcd8763fdf00f40fb788379f2074432599c68c5a1ba31"
         }
+      },
+      {
+        "component": "Text",
+        "type": "TextVariant (display|hero|section|eyebrow|show|inverse)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/text/types.ts",
+          "symbol": "TextProps",
+          "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
+        }
+      },
+      {
+        "component": "Heading",
+        "type": "TitleVariant (display|hero|section|show|inverse)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/text/types.ts",
+          "symbol": "HeadingProps",
+          "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
+        }
       }
     ]
   },
@@ -177,6 +207,26 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Text",
+        "type": "TextTone (canvas|raised)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/text/types.ts",
+          "symbol": "TextProps",
+          "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
+        }
+      },
+      {
+        "component": "Heading",
+        "type": "TextTone (canvas|raised)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/text/types.ts",
+          "symbol": "HeadingProps",
+          "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
+        }
+      },
       {
         "component": "Surface",
         "type": "SurfaceTone (surface-0|surface-1|surface-2|surface-3|well|overlay)",
@@ -242,6 +292,16 @@
         }
       },
       {
+        "component": "Icon",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon/types.ts",
+          "symbol": "IconProps",
+          "revision": "sha256:1ea0dd7b8a4e42f90f6bd352edf968b9765eea9745ff8ff0ff6b5b9d0957ec13"
+        }
+      },
+      {
         "component": "Spinner",
         "type": "string",
         "status": "existing",
@@ -270,6 +330,16 @@
           "symbol": "LogoProps",
           "revision": "sha256:c94a94db17133bd7b28dcd8763fdf00f40fb788379f2074432599c68c5a1ba31"
         }
+      },
+      {
+        "component": "ProductMark",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/product-mark/types.ts",
+          "symbol": "ProductMarkProps",
+          "revision": "sha256:91de5ae435b6a408065592d3b7b44085021c71a15230c868081efddb48d2a8c4"
+        }
       }
     ]
   },
@@ -296,6 +366,16 @@
           "path": "packages/ui/src/atoms/gauge/types.ts",
           "symbol": "GaugeProps",
           "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
+        }
+      },
+      {
+        "component": "StatusDot",
+        "type": "StatusDotState = 'running' | 'idle' | 'warning' | 'error' | 'stopped' | 'live' | 'standby'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/status-dot/types.ts",
+          "symbol": "StatusDotProps",
+          "revision": "sha256:4d3db595cffe56d87931b3000d57fa0226a2c812d35950308f6d4309c89e4ecb"
         }
       }
     ]
@@ -566,6 +646,16 @@
         }
       },
       {
+        "component": "Text",
+        "type": "boolean (asChild)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/text/types.ts",
+          "symbol": "TextProps",
+          "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
+        }
+      },
+      {
         "component": "Surface",
         "type": "boolean (asChild)",
         "status": "existing",
@@ -687,7 +777,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Icon",
+        "type": "IconName (closed 42-name glyph set)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon/types.ts",
+          "symbol": "IconProps",
+          "revision": "sha256:1ea0dd7b8a4e42f90f6bd352edf968b9765eea9745ff8ff0ff6b5b9d0957ec13"
+        }
+      }
+    ]
   },
   {
     "id": "filled-glyph",
@@ -703,7 +804,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Icon",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/icon/types.ts",
+          "symbol": "IconProps",
+          "revision": "sha256:1ea0dd7b8a4e42f90f6bd352edf968b9765eea9745ff8ff0ff6b5b9d0957ec13"
+        }
+      }
+    ]
   },
   {
     "id": "new-tab-navigation",
@@ -783,7 +895,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "ProductMark",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/product-mark/types.ts",
+          "symbol": "ProductMarkProps",
+          "revision": "sha256:91de5ae435b6a408065592d3b7b44085021c71a15230c868081efddb48d2a8c4"
+        }
+      }
+    ]
   },
   {
     "id": "container-edge-placement",
@@ -931,6 +1054,16 @@
           "path": "packages/ui/src/primitives/skeleton/types.ts",
           "symbol": "SkeletonProps",
           "revision": "sha256:6bb6a4c5aa02b761a881e7694b6434f30330a859909145100cf483a7277fdcbb"
+        }
+      },
+      {
+        "component": "StatusDot",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/status-dot/types.ts",
+          "symbol": "StatusDotProps",
+          "revision": "sha256:4d3db595cffe56d87931b3000d57fa0226a2c812d35950308f6d4309c89e4ecb"
         }
       }
     ]
@@ -1435,7 +1568,18 @@
       "scope": "convention:heading-level",
       "contentHash": "sha256:3235f5126f7405ae3956b969186d33c48c302b42c2a40d169c9d2f11e1d12ead"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Heading",
+        "type": "HeadingLevel (1|2|3|4|5|6)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/text/types.ts",
+          "symbol": "HeadingProps",
+          "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
+        }
+      }
+    ]
   },
   {
     "id": "trailing-actions",
@@ -1590,7 +1734,28 @@
       "scope": "convention:trailing-text-accent",
       "contentHash": "sha256:6ad8880449dfe520919a4dcd2b6cfeb8f16c20a842553c86c89acb3180f40d6b"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Text",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/text/types.ts",
+          "symbol": "TextProps",
+          "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
+        }
+      },
+      {
+        "component": "Heading",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/text/types.ts",
+          "symbol": "HeadingProps",
+          "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
+        }
+      }
+    ]
   },
   {
     "id": "quotation-text",
@@ -1670,7 +1835,28 @@
       "scope": "convention:accent-line-break",
       "contentHash": "sha256:4fea0ecdd89cde650ecfc3583ca8b1dd2d8a2937c4c628602af288bf1bbe5dfe"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Text",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/text/types.ts",
+          "symbol": "TextProps",
+          "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
+        }
+      },
+      {
+        "component": "Heading",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/primitives/text/types.ts",
+          "symbol": "HeadingProps",
+          "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
+        }
+      }
+    ]
   },
   {
     "id": "section-lede",
