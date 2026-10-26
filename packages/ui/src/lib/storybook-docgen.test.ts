@@ -168,6 +168,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/badge',
       './atoms/button',
       './atoms/checkbox',
+      './atoms/chip',
       './atoms/dropzone',
       './atoms/gauge',
       './atoms/icon',
@@ -207,6 +208,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Badge',
       'Button',
       'Checkbox',
+      'Chip',
       'Cluster',
       'Divider',
       'Dropzone',
@@ -240,6 +242,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Tooltip',
       'VisuallyHidden',
       'badgeVariants',
+      'chipVariants',
       'cn',
       'dropzoneVariants',
       'labelVariants',
@@ -2574,4 +2577,69 @@ describe('Slider interactive metadata contract', () => {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);
+});
+
+describe('Chip metadata contract', () => {
+  const chipControls: Record<string, string> = {
+    children: 'false',
+    pressed: 'boolean',
+    defaultPressed: 'boolean',
+    onPressedChange: 'false',
+    icon: 'false',
+    disabled: 'boolean'
+  };
+  const chipDefaults: Record<string, string> = { defaultPressed: 'false', disabled: 'false' };
+
+  it('annotates every own prop with one control, concrete reasons and only actual constant defaults', () => {
+    const file = ast(source('atoms/chip/types.ts'));
+    const properties = ownProps(file, ['ChipProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(chipControls));
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(Boolean(property.questionToken), `Chip.${name} optionality`).toBe(name !== 'children');
+      const tags = ts.getJSDocTags(property);
+      const values = (tagName: string) =>
+        tags.filter((tag) => tag.tagName.text === tagName).map((tag) => ts.getTextOfJSDocComment(tag.comment));
+      expect(values('control'), `Chip.${name} control`).toEqual([chipControls[name]]);
+      expect(values('default'), `Chip.${name} default`).toEqual(chipDefaults[name] ? [chipDefaults[name]] : []);
+      if (chipControls[name] === 'false') {
+        expect(values('controlReason')[0], `Chip.${name} reason`).toMatch(/Non-serializable.*stor(?:y|ies)\.$/);
+      }
+    }
+  });
+
+  it('binds the documented defaults to the hook and Radix', () => {
+    expect(defaults(source('atoms/chip/useChip.ts'), false)).toEqual({ defaultPressed: 'false' });
+  });
+
+  it('extracts own rows, real defaults and only the documented native rows', () => {
+    const doc = parser.parse(source('atoms/chip/Chip.tsx')).find((item) => item.displayName === 'Chip');
+    if (!doc) {
+      throw new Error('Missing docgen for Chip');
+    }
+    const { props } = doc;
+    for (const [prop, control] of Object.entries(chipControls)) {
+      expect(props[prop], `Chip.${prop}`).toMatchObject({ required: prop === 'children', tags: { control } });
+      expect(normalize(props[prop]?.defaultValue?.value ?? ''), `Chip.${prop} default`).toBe(chipDefaults[prop] ?? '');
+    }
+    for (const prop of ['pressed', 'defaultPressed', 'disabled']) {
+      expect(props[prop]?.type.name, prop).toBe('boolean');
+    }
+    expect(Object.keys(props).sort()).toEqual(
+      [...Object.keys(chipControls), 'id', 'title', 'name', 'onClick', 'aria-describedby', 'className'].sort()
+    );
+    for (const prop of ['type', 'value', 'asChild', 'aria-pressed', 'chipVariants', 'chipIconVariants']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+
+  it('exports exactly the contract stories', () => {
+    expect(exportedStoryNames(ast(source('atoms/chip/Chip.stories.tsx')))).toEqual([
+      'Default',
+      'WithIcon',
+      'Pressed',
+      'Controlled',
+      'Disabled'
+    ]);
+  });
 });

@@ -13,6 +13,7 @@ const components = [
   ['Avatar', 'atoms/avatar'],
   ['Button', 'atoms/button'],
   ['Checkbox', 'atoms/checkbox'],
+  ['Chip', 'atoms/chip'],
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Cluster', 'primitives/stack'],
   ['Gauge', 'atoms/gauge'],
@@ -109,6 +110,14 @@ const expected: Record<string, Record<string, string | false>> = {
     required: 'boolean',
     name: 'text',
     value: 'text'
+  },
+  chip: {
+    children: false,
+    pressed: 'boolean',
+    defaultPressed: 'boolean',
+    onPressedChange: false,
+    icon: false,
+    disabled: 'boolean'
   },
   aspectratio: {
     ratio: 'number'
@@ -238,6 +247,7 @@ const ownPropCounts: Record<string, number> = {
   avatar: 5,
   button: 7,
   checkbox: 7,
+  chip: 6,
   aspectratio: 1,
   badge: 4,
   dropzone: 6,
@@ -458,6 +468,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
   it.each([
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
     ['Checkbox', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }],
+    ['Chip', { defaultPressed: 'false', disabled: 'false' }],
     ['AspectRatio', { ratio: '1' }],
     ['Stack', { gap: '4', alignItems: '"stretch"', justifyContent: '"start"', asChild: 'false' }],
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],

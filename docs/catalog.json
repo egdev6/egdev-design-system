@@ -236,10 +236,10 @@
     "nombre": "Chip",
     "nivel": "atom",
     "destino": "ui",
-    "radix": "Toggle / ToggleGroup.Item",
-    "compone": "Avatar",
+    "radix": "Toggle",
+    "compone": "—",
     "accion": "mantener",
-    "notas": "Siempre interactivo (filtro o selección). Los grupos van en ChipGroup."
+    "notas": "Implemented in @egdev/ui under the approved v0.1 contract: always-pressable pill on Radix Toggle with controlled/uncontrolled pressed state, an optional decorative leading icon and the sheen/edge raised recipe with red-tinted glow when on. Public chipVariants for the future ChipGroup (ToggleGroup.Item). No ref, asChild, size axis or stylesheet; the Avatar variant (D5) is deferred and legacy `.eg-chip` is unchanged. Contract: [#55](https://github.com/egdev6/egdev-design-system/issues/55)."
   },
   {
     "actual": "Tag + StatusBadge",
