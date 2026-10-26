@@ -3,6 +3,7 @@ export * from './atoms/badge';
 export * from './atoms/gauge';
 export * from './atoms/icon';
 export * from './atoms/kbd';
+export * from './atoms/logo';
 export * from './atoms/product-mark';
 export * from './atoms/spinner';
 export * from './atoms/status-dot';

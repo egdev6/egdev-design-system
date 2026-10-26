@@ -112,6 +112,16 @@
           "symbol": "SpinnerProps",
           "revision": "sha256:15beb1c08eb7851cb4b7c233fe4b15331b4fb193d7a11677189089f6615c3717"
         }
+      },
+      {
+        "component": "Logo",
+        "type": "LogoSize",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/logo/types.ts",
+          "symbol": "LogoProps",
+          "revision": "sha256:c94a94db17133bd7b28dcd8763fdf00f40fb788379f2074432599c68c5a1ba31"
+        }
       }
     ]
   },
@@ -158,6 +168,16 @@
           "path": "packages/ui/src/primitives/label/types.ts",
           "symbol": "LabelProps",
           "revision": "sha256:afb762cb8e578348f234a11763dcdbda2c7303cfc02fdd3f385e9f4114ac93a3"
+        }
+      },
+      {
+        "component": "Logo",
+        "type": "LogoVariant",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/logo/types.ts",
+          "symbol": "LogoProps",
+          "revision": "sha256:c94a94db17133bd7b28dcd8763fdf00f40fb788379f2074432599c68c5a1ba31"
         }
       },
       {
@@ -319,6 +339,16 @@
           "path": "packages/ui/src/atoms/kbd/types.ts",
           "symbol": "KbdProps",
           "revision": "sha256:1c6757b44bd0bff150128b8ccd9d4ee6b930b3d432b42a4dafe8c992d63a3de9"
+        }
+      },
+      {
+        "component": "Logo",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/logo/types.ts",
+          "symbol": "LogoProps",
+          "revision": "sha256:c94a94db17133bd7b28dcd8763fdf00f40fb788379f2074432599c68c5a1ba31"
         }
       },
       {
