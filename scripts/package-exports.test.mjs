@@ -361,6 +361,94 @@ test('UI ships the approved Label typography recipe without an application Tailw
   }
 });
 
+test('UI ships the static Icon preset, fill and stroke utilities without an application Tailwind compiler', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  for (const [selector, declarations] of [
+    ['.inline-block', [/display:\s*inline-block\s*;/]],
+    ['.shrink-0', [/flex-shrink:\s*0\s*;/]],
+    ['.align-middle', [/vertical-align:\s*middle\s*;/]],
+    ['.stroke-current', [/stroke:\s*currentcolor\s*;/i]],
+    [String.raw`.stroke-\(length\:--icon-stroke\)`, [/stroke-width:\s*var\(--icon-stroke\)\s*;/]],
+    ['.fill-none', [/fill:\s*none\s*;/]],
+    ['.fill-current', [/fill:\s*currentcolor\s*;/i]],
+    ['.size-4', [/width:\s*var\(--space-4\)\s*;/, /height:\s*var\(--space-4\)\s*;/]],
+    [String.raw`.size-\(--icon-size\)`, [/width:\s*var\(--icon-size\)\s*;/, /height:\s*var\(--icon-size\)\s*;/]],
+    ['.size-7', [/width:\s*var\(--space-7\)\s*;/, /height:\s*var\(--space-7\)\s*;/]]
+  ]) {
+    const body = rule(selector);
+    for (const declaration of declarations) {
+      assert.match(body, declaration, `${selector} must ship ${declaration}`);
+    }
+  }
+  const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
+  for (const [token, value] of [
+    ['--icon-size', '20px'],
+    ['--icon-stroke', '1.75'],
+    ['--space-4', '16px'],
+    ['--space-7', '28px']
+  ]) {
+    assert.match(theme, new RegExp(`${token}:\\s*${value.replace('.', '\\.')};`), `${token} must stay ${value}`);
+    assert.doesNotMatch(css, new RegExp(`${token}\\s*:`), `UI must not redefine ${token}`);
+  }
+});
+
+test('UI preserves Lucide notices for the system icon paths', () => {
+  const notices = readFileSync(resolve(root, 'THIRD_PARTY_NOTICES.md'), 'utf8');
+  for (const source of ['packages/ui/src/atoms/icon/icon-paths.ts', 'packages/ui/src/atoms/spinner/Spinner.tsx']) {
+    assert.ok(notices.includes(source), `Lucide attribution must cover ${source}`);
+  }
+  assert.match(notices, /loader-circle/, 'Spinner uses the Lucide loader-circle path');
+  assert.match(notices, /ISC License/);
+  assert.match(notices, /Copyright \(c\) 2026 Lucide Icons and Contributors/);
+  assert.match(notices, /Copyright \(c\) 2013-present Cole Bemis/);
+});
+
+test('UI Icon renders decorative and labelled svg glyphs on the server', async () => {
+  const { Icon } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const decorative = renderToString(createElement(Icon, { name: 'plus', id: 'add-icon' }));
+  assert.match(decorative, /^<svg /, 'Decorative Icon must render the bare svg');
+  for (const text of [
+    'id="add-icon"',
+    'viewBox="0 0 24 24"',
+    'aria-hidden="true"',
+    'focusable="false"',
+    'stroke-linecap="round"',
+    'stroke-linejoin="round"',
+    '<path d="M5 12h14"></path><path d="M12 5v14"></path>'
+  ]) {
+    assert.ok(decorative.includes(text), `Decorative Icon SSR must render ${text}`);
+  }
+  const classes = new Set((decorative.match(/\bclass="([^"]+)"/)?.[1] ?? '').split(/\s+/));
+  for (const marker of [
+    'eg-icon',
+    'size-(--icon-size)',
+    'fill-none',
+    'stroke-current',
+    'stroke-(length:--icon-stroke)'
+  ]) {
+    assert.ok(classes.has(marker), `Decorative Icon must keep ${marker}`);
+  }
+  assert.ok(!classes.has('fill-current'), 'Default Icon must remain stroke-only');
+  assert.doesNotMatch(decorative, /role=|aria-label|<title|tabindex=|width=|height=|style=/);
+  const labelled = renderToString(createElement(Icon, { name: 'search', label: 'Search', size: 'sm', filled: true }));
+  assert.match(labelled, /^<svg [^>]*aria-hidden="true"[^>]*>.*<\/svg><span [^>]*>Search<\/span>$/);
+  assert.ok(labelled.includes('size-4') && labelled.includes('fill-current'), 'Labelled Icon keeps its presets');
+  assert.match(
+    labelled,
+    /<span [^>]*style="[^"]*position:absolute/,
+    'Radix AccessibleIcon must hide the label visually'
+  );
+  assert.doesNotMatch(labelled, /role=|<title|label="/);
+  assert.doesNotMatch(renderToString(createElement(Icon, { name: 'search', label: '' })), /<span/);
+});
+
 test('UI ships the Surface Material recipes as static token utilities', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -409,6 +497,55 @@ test('UI ships the Surface Material recipes as static token utilities', () => {
   assert.doesNotMatch(css, /\.eg-surface\s*[,{]/, 'Surface marker must not become a shipped CSS rule (no stylesheet)');
 });
 
+test('UI ships the approved Text and Heading title recipes without an application Tailwind compiler', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  // The four fluid title recipes resolve to their token size, leading and weight.
+  for (const size of ['section', 'hero', 'show', 'display']) {
+    const recipe = rule(`.text-title-${size}`);
+    assert.match(recipe, new RegExp(`font-size:\\s*var\\(--text-title-${size}(?:,[^;]+)?\\)\\s*;`));
+    assert.match(recipe, new RegExp(`line-height:\\s*var\\(--tw-leading,\\s*var\\(--text-title-${size}--line-height`));
+    assert.match(
+      recipe,
+      new RegExp(`font-weight:\\s*var\\(--tw-font-weight,\\s*var\\(--text-title-${size}--font-weight`)
+    );
+  }
+  // Hero canvas glow uses the glyph text-shadow token; other accents reset it.
+  assert.match(
+    rule(String.raw`.\[text-shadow\:var\(--text-shadow-title-hero\)\]`),
+    /text-shadow:\s*var\(--text-shadow-title-hero\)\s*;/
+  );
+  assert.match(rule(String.raw`.\[text-shadow\:none\]`), /text-shadow:\s*none\s*;/);
+  for (const [selector, token] of [
+    ['.text-fg-brand-default', '--color-fg-brand-default'],
+    ['.text-fg-brand-raised', '--color-fg-brand-raised'],
+    ['.text-fg-on-flood', '--color-fg-on-flood']
+  ]) {
+    assert.match(rule(selector), new RegExp(`color:\\s*var\\(${token}`));
+  }
+  assert.match(rule('.text-label-eyebrow'), /font-size:\s*var\(--text-label-eyebrow/);
+  assert.match(rule('.font-display'), /font-family:\s*var\(--font-display/);
+  assert.match(rule('.uppercase'), /text-transform:\s*uppercase\s*;/);
+  // The eyebrow diamond is an empty decorative pseudo-element, emitted from static CVA utilities.
+  for (const selector of [
+    String.raw`.before\:rotate-45`,
+    String.raw`.before\:size-2`,
+    String.raw`.before\:bg-fg-brand-default`
+  ]) {
+    assert.ok(utilities.includes(selector), `Packed styles must retain eyebrow diamond utility ${selector}`);
+  }
+  const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
+  for (const token of ['--text-title-hero', '--text-shadow-title-hero']) {
+    assert.ok(theme.includes(`${token}:`), `Title recipes must reference the existing token ${token}`);
+    assert.doesNotMatch(css, new RegExp(`${token}\\s*:`), `UI must not redefine ${token}`);
+  }
+  assert.doesNotMatch(css, /\.eg-(?:text|heading)\s*[,{]/, 'Text/Heading markers must not become shipped CSS rules');
+});
+
 test('UI JavaScript remains importable without a CSS loader', async () => {
   const entry = artifact('ui', ui.exports['.'].import);
   const imports = ts.preProcessFile(readFileSync(entry, 'utf8'), true).importedFiles;
@@ -430,6 +567,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Cluster',
       'Divider',
       'Gauge',
+      'Heading',
+      'Icon',
       'Kbd',
       'Label',
       'Portal',
@@ -440,6 +579,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Spinner',
       'Stack',
       'Surface',
+      'Text',
       'VisuallyHidden',
       'cn',
       'labelVariants',
@@ -471,12 +611,17 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     undefined,
     'Stack must not be a forwardRef component (D10: no public ref)'
   );
+  assert.equal(typeof exported.Icon, 'function', 'Icon must be a plain function component without a ref API');
+  assert.equal(exported.Icon.prototype?.render, undefined, 'Icon must not be a forwardRef component (D6: no ref)');
   assert.equal(
     exported.Surface?.$$typeof,
     Symbol.for('react.forward_ref'),
     'Surface must be a React 18-compatible forwardRef bridge with a public ref'
   );
   assert.equal(typeof exported.surfaceVariants, 'function', 'Surface composition recipe must stay a public export');
+  for (const name of ['Text', 'Heading']) {
+    assert.equal(typeof exported[name], 'function', `${name} must be a plain function component without a ref API`);
+  }
   assert.equal(exported.default, undefined, 'UI must not introduce a default export');
   const declaration = artifact('ui', ui.exports['.'].types);
   const program = ts.createProgram([declaration], { moduleResolution: ts.ModuleResolutionKind.Bundler });
@@ -495,6 +640,13 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'GaugeProps',
     'GaugeSize',
     'GaugeState',
+    'Heading',
+    'HeadingLevel',
+    'HeadingProps',
+    'Icon',
+    'IconName',
+    'IconProps',
+    'IconSize',
     'Kbd',
     'KbdProps',
     'Label',
@@ -525,6 +677,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SurfaceProps',
     'SurfaceRadius',
     'SurfaceTone',
+    'Text',
+    'TextProps',
+    'TextTone',
+    'TextVariant',
+    'TitleVariant',
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'cn',
@@ -539,6 +696,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'GaugeProps',
     'GaugeState',
     'GaugeSize',
+    'Icon',
+    'IconName',
+    'IconProps',
+    'IconSize',
     'Kbd',
     'KbdProps',
     'ProductMark',
@@ -631,6 +792,26 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Cluster must carry its marker and wrapping row classes'
   );
   assert.doesNotMatch(stacked + clustered, /aria-live=|tabindex=|role=/);
+  // Text defaults to a paragraph eyebrow; Heading to a native h2 section title with its level independent of size.
+  const eyebrow = renderToString(createElement(exported.Text, null, 'Weekly stream'));
+  assert.match(eyebrow, /^<p class="[^"]*eg-text[^"]*text-label-eyebrow[^"]*">Weekly stream<\/p>$/);
+  const heading = renderToString(createElement(exported.Heading, { accent: 'ideas' }, 'Big '));
+  assert.match(
+    heading,
+    /^<h2 class="[^"]*eg-heading[^"]*text-title-section[^"]*">Big <span class="[^"]*eg-heading__accent[^"]*">ideas<\/span><\/h2>$/
+  );
+  const hero = renderToString(
+    createElement(exported.Heading, { level: 4, variant: 'hero', accent: '.', accentBreak: false }, 'Talk')
+  );
+  assert.ok(
+    hero.startsWith('<h4') && hero.includes('text-title-hero') && hero.includes('Talk<span'),
+    'Level must not resize; no space is injected'
+  );
+  assert.ok(
+    hero.includes('[text-shadow:var(--text-shadow-title-hero)]') && hero.includes('inline'),
+    'Canvas hero accent glows inline'
+  );
+  assert.doesNotMatch(eyebrow + heading + hero, /aria-live=|tabindex=|role=|aria-level=/);
   // Surface resolves its Material recipe as static CVA utilities on a passive div or slotted child.
   const surface = renderToString(createElement(exported.Surface, null, 'Card'));
   for (const text of [
