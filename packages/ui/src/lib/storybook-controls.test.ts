@@ -18,7 +18,8 @@ const components = [
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
-  ['Kbd', 'atoms/kbd']
+  ['Kbd', 'atoms/kbd'],
+  ['Tooltip', 'atoms/tooltip']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -78,6 +79,7 @@ const expected: Record<string, Record<string, string | false>> = {
   skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
   spinner: { label: 'text', size: 'select' },
   kbd: { children: 'text', label: 'text' },
+  tooltip: { content: 'text', children: false, side: 'select', className: 'text' },
   gauge: {
     label: 'text',
     value: 'number',
@@ -95,6 +97,7 @@ const ownPropCounts: Record<string, number> = {
   skeleton: 3,
   spinner: 2,
   kbd: 2,
+  tooltip: 4,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,
@@ -295,7 +298,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
-    ['Spinner', { size: '"md"' }]
+    ['Spinner', { size: '"md"' }],
+    ['Tooltip', { side: '"top"' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
     const { argTypes, args } = story(name);
     for (const [prop, summary] of Object.entries(defaults)) {
@@ -433,6 +437,25 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Tooltip required content/children rows, the side choices and no native or open-state rows', () => {
+    const { argTypes, args } = story('Tooltip');
+    expect(argTypes.content?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.content?.control).toEqual({ type: 'text' });
+    expect(argTypes.children?.type).toMatchObject({ required: true });
+    expect(argTypes.children?.control).toBe(false);
+    expect(argTypes.children?.table?.disable).toBeUndefined();
+    expect(argTypes.side?.options).toEqual(['top', 'right', 'bottom', 'left']);
+    expect(argTypes.side?.control).toEqual({ type: 'select' });
+    expect(argTypes.className?.control).toEqual({ type: 'text' });
+    for (const prop of ['content', 'children', 'className']) {
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+    }
+    expect(args).toEqual({});
+    for (const prop of ['ref', 'asChild', 'open', 'defaultOpen', 'onOpenChange', 'delayDuration', 'align', 'id']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

@@ -919,7 +919,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Tooltip",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/tooltip/types.ts",
+          "symbol": "TooltipProps",
+          "revision": "sha256:ceeb8d9d26860fa35de0e75f7a2979709d8bdd7195c58a389d2cccc5d6965eaf"
+        }
+      }
+    ]
   },
   {
     "id": "floating-side",
@@ -935,7 +946,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Tooltip",
+        "type": "'top' | 'right' | 'bottom' | 'left'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/tooltip/types.ts",
+          "symbol": "TooltipProps",
+          "revision": "sha256:ceeb8d9d26860fa35de0e75f7a2979709d8bdd7195c58a389d2cccc5d6965eaf"
+        }
+      }
+    ]
   },
   {
     "id": "aspect-ratio",
