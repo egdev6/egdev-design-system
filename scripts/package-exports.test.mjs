@@ -132,6 +132,59 @@ test('Toggle ships its exact token-backed pressed, focus, reset and reduced-moti
   assert.doesNotMatch(css, /\.eg-toggle\s*[,{]/, 'Root marker is not a separate visual engine');
 });
 
+test('Chip ships its exact token-backed pill, pressed, focus, press and reduced-motion utilities', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}[^{]*\\{`));
+  };
+  assert.match(
+    rule(String.raw`.\[background\:var\(--gradient-sheen\)\,var\(--color-surface-1\)\]`),
+    /background:\s*var\(--gradient-sheen\),\s*var\(--color-surface-1\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.hover\:\[background\:var\(--gradient-sheen\)\,var\(--color-surface-2\)\]`),
+    /background:\s*var\(--gradient-sheen\),\s*var\(--color-surface-2\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=on\]\:\[background\:var\(--gradient-chip-active\)\,var\(--color-surface-1\)\]`),
+    /background:\s*var\(--gradient-chip-active\),\s*var\(--color-surface-1\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=on\]\:shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-glow-base\)\]`),
+    /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-glow-base\)\s*;/
+  );
+  assert.match(rule(String.raw`.data-\[state\=on\]\:border-primitive-red-neon\/60`), /color-mix\(/);
+  assert.match(rule(String.raw`.active\:scale-\[\.97\]`), /scale:\s*\.97\s*;/);
+  // The on-state shadow is emitted after the plain focus ring, so the on+focus rule restores it.
+  const focus = css.indexOf(String.raw`.focus-visible\:shadow-focus:focus-visible`);
+  const on = css.indexOf(String.raw`.data-\[state\=on\]\:shadow-\[var\(--shadow-edge-strong\)`);
+  const onFocus = css.indexOf(String.raw`.data-\[state\=on\]\:focus-visible\:shadow-focus`);
+  assert.ok(focus > -1 && on > focus && onFocus > on, 'On+focus ring must follow the on-state shadow');
+  const reducedMotion = cssBlock(utilities, /@media \(prefers-reduced-motion: reduce\)\s*\{/);
+  assert.match(
+    cssBlock(reducedMotion, /\.motion-reduce\\:active\\:translate-none:active\s*\{/),
+    /translate:\s*none\s*;/
+  );
+  assert.match(cssBlock(reducedMotion, /\.motion-reduce\\:active\\:scale-none:active\s*\{/), /scale:\s*none\s*;/);
+  for (const selector of [
+    String.raw`.pointer-coarse\:min-h-11`,
+    String.raw`.active\:translate-y-px`,
+    String.raw`.active\:duration-\[var\(--duration-press\)\]`,
+    String.raw`.active\:ease-\[var\(--ease-snappy\)\]`,
+    String.raw`.duration-\[var\(--duration-fast\)\]`,
+    String.raw`.ease-\[var\(--ease-out\)\]`,
+    String.raw`.hover\:border-border-hairline-strong`,
+    String.raw`.disabled\:opacity-45`,
+    '.shadow-edge',
+    '.transition-colors'
+  ]) {
+    assert.ok(css.includes(selector), `Missing Chip utility ${selector}`);
+  }
+  assert.doesNotMatch(utilities, /\.eg-chip[^{]*\{/, 'Chip has no stylesheet: its marker adds no utility rule');
+});
+
 test('UI publishes its stable declaration entry and reachable internal declarations', (context) => {
   assert.equal(ui.exports['.'].types, './dist/index.d.ts');
   assert.equal(ui.types, ui.exports['.'].types);
@@ -1463,6 +1516,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Badge',
       'Button',
       'Checkbox',
+      'Chip',
       'Cluster',
       'Divider',
       'Dropzone',
@@ -1495,6 +1549,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Tooltip',
       'VisuallyHidden',
       'badgeVariants',
+      'chipVariants',
       'cn',
       'dropzoneVariants',
       'labelVariants',
@@ -1511,6 +1566,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(exported.Checkbox?.$$typeof, Symbol.for('react.forward_ref'), 'Checkbox must forward its button ref');
   assert.equal(typeof exported.Dropzone, 'function', 'Dropzone must be a plain function with no public ref API');
   assert.equal(typeof exported.dropzoneVariants, 'function', 'Dropzone recipe must be public');
+  assert.equal(typeof exported.Chip, 'function', 'Chip must be a plain function component with no public ref API');
+  assert.equal(typeof exported.chipVariants, 'function', 'Chip recipe must stay public for ChipGroup');
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
   // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
@@ -1606,6 +1663,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Checkbox',
     'CheckboxCheckedState',
     'CheckboxProps',
+    'Chip',
+    'ChipProps',
     'Cluster',
     'ClusterProps',
     'Divider',
@@ -1704,6 +1763,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'badgeVariants',
+    'chipVariants',
     'cn',
     'dropzoneVariants',
     'labelVariants',
@@ -1714,11 +1774,21 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'surfaceVariants',
     'tooltipVariants'
   ]);
-  for (const name of ['useSlider', 'sliderTrackVariants', 'sliderRangeVariants', 'sliderThumbVariants']) {
+  for (const name of [
+    'useSlider',
+    'sliderTrackVariants',
+    'sliderRangeVariants',
+    'sliderThumbVariants',
+    'useChip',
+    'chipIconVariants'
+  ]) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'Chip',
+    'ChipProps',
+    'chipVariants',
     'Dropzone',
     'DropzoneProps',
     'dropzoneVariants',

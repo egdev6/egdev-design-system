@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Cluster, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, RadioGroup, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, RadioGroup, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -43,6 +43,7 @@ import type {
   ButtonVariant,
   CheckboxCheckedState,
   CheckboxProps,
+  ChipProps,
   DividerOrientation,
   DividerProps,
   DropzoneProps,
@@ -712,6 +713,34 @@ const overriddenToggle: ToggleProps = { children: 'Pin', 'aria-pressed': 'mixed'
 const numericToggle: ToggleProps = { children: 'Pin', size: 40 };
 // @ts-expect-error Toggle does not expose private CVA recipes.
 import type { toggleVariants } from '@egdev/ui';
+export const chipChanges: boolean[] = [];
+export const chipDefaults: ChipProps = { children: 'Design' };
+export const chipRecipe: string = chipVariants();
+export function ChipSamples() {
+  return createElement('section', { 'aria-label': 'Chip samples' },
+    createElement(Chip, { ...chipDefaults, id: 'chip-default', onPressedChange: (next) => chipChanges.push(next) }),
+    createElement(Chip, { id: 'chip-controlled', pressed: true, children: 'Saved',
+      icon: createElement(Icon, { name: 'bookmark', className: 'size-3.5' }) }),
+    createElement(Chip, { id: 'chip-disabled', defaultPressed: true, disabled: true, children: 'Archived' }));
+}
+// @ts-expect-error Chip always requires its visible label.
+const unlabelledChip: ChipProps = {};
+// @ts-expect-error Chip always renders a button; asChild is not public.
+const slottedChip: ChipProps = { children: 'Design', asChild: true };
+// @ts-expect-error aria-pressed is owned by Radix, not an incoming override.
+const overriddenChip: ChipProps = { children: 'Design', 'aria-pressed': true };
+// @ts-expect-error The Chip button type is always button.
+const submitChip: ChipProps = { children: 'Design', type: 'submit' };
+// @ts-expect-error Pressed state is boolean, not value selection.
+const valuedChip: ChipProps = { children: 'Design', value: 'design' };
+// @ts-expect-error Chip has no size axis in v0.1.
+const sizedChip: ChipProps = { children: 'Design', size: 'sm' };
+// @ts-expect-error Chip has no public ref API in v0.1.
+const referencedChip: ChipProps = { children: 'Design', ref: createRef<HTMLButtonElement>() };
+// @ts-expect-error pressed is a boolean, not a string state.
+const stringPressedChip: ChipProps = { children: 'Design', pressed: 'on' };
+// @ts-expect-error Chip does not expose its private icon recipe.
+import type { chipIconVariants } from '@egdev/ui';
 export const dividerDefaults: DividerProps = {};
 export const dividerSemanticVertical: DividerProps = {
   orientation: 'vertical', decorative: false, className: 'consumer-rule'
@@ -758,6 +787,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(ProductMarkSamples),
     createElement(SelectSamples),
     createElement(ToggleSamples),
+    createElement(ChipSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -1122,6 +1152,40 @@ function assertToggleCSS(css) {
   assert.match(css, /scale:\s*var\(--tw-scale-x\)\s+var\(--tw-scale-y\)/);
   assert.match(css, /box-sizing:\s*border-box/);
   assert.doesNotMatch(css, /\.eg-toggle\s*[,{]/);
+}
+
+// Chip ships its sheen/edge pill, red-tinted on state, focus and reduced-motion press resets.
+function assertChipCSS(css) {
+  for (const selector of [
+    String.raw`.\[background\:var\(--gradient-sheen\)\,var\(--color-surface-1\)\]`,
+    String.raw`.hover\:\[background\:var\(--gradient-sheen\)\,var\(--color-surface-2\)\]`,
+    String.raw`.data-\[state\=on\]\:\[background\:var\(--gradient-chip-active\)\,var\(--color-surface-1\)\]`,
+    String.raw`.data-\[state\=on\]\:shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-glow-base\)\]`,
+    String.raw`.data-\[state\=on\]\:border-primitive-red-neon\/60`,
+    String.raw`.data-\[state\=on\]\:focus-visible\:shadow-focus`,
+    String.raw`.active\:scale-\[\.97\]`,
+    String.raw`.active\:translate-y-px`,
+    String.raw`.motion-reduce\:active\:translate-none`,
+    String.raw`.motion-reduce\:active\:scale-none`,
+    String.raw`.pointer-coarse\:min-h-11`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Chip selector ' + selector);
+  }
+  for (const token of [
+    'gradient-sheen',
+    'gradient-chip-active',
+    'color-surface-1',
+    'color-surface-2',
+    'shadow-edge-strong',
+    'shadow-glow-base',
+    'duration-press',
+    'ease-snappy'
+  ]) {
+    assert.ok(css.includes('var(--' + token + ')'), 'Missing Chip token ' + token);
+  }
+  assert.match(css, /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-glow-base\)/);
+  assert.match(css, /translate:\s*none/);
+  assert.match(css, /scale:\s*none/);
 }
 
 // Checkbox ships only its fixed geometry and Radix-state token recipes, never a marker rule.
@@ -2076,6 +2140,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Badge',
   'Button',
   'Checkbox',
+  'Chip',
   'Cluster',
   'Divider',
   'Dropzone',
@@ -2108,6 +2173,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Tooltip',
   'VisuallyHidden',
   'badgeVariants',
+  'chipVariants',
   'cn',
   'dropzoneVariants',
   'labelVariants',
@@ -2145,6 +2211,7 @@ ${assertProductMarkCSS.toString()}
 assertDropzoneCSS(shippedStyles);
 assertIconButtonCSS(shippedStyles);
 ${assertToggleCSS.toString()}
+${assertChipCSS.toString()}
 ${assertSelectCSS.toString()}
 assertSelectCSS(shippedStyles);
 assertButtonCSS(shippedStyles);
@@ -2166,6 +2233,7 @@ assertTextareaCSS(shippedStyles);
 assertInputCSS(shippedStyles);
 assertProductMarkCSS(shippedStyles);
 assertToggleCSS(shippedStyles);
+assertChipCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -2399,6 +2467,27 @@ try {
   assert.ok(document.getElementById('toggle-disabled').disabled);
 } finally {
   toggleDocument.window.close();
+}
+const chipDocument = new JSDOM(html);
+try {
+  const document = chipDocument.window.document;
+  const chip = document.getElementById('chip-default');
+  assert.equal(chip.tagName, 'BUTTON');
+  assert.equal(chip.getAttribute('type'), 'button');
+  assert.ok(chip.classList.contains('eg-chip'));
+  assert.equal(chip.getAttribute('aria-pressed'), 'false');
+  assert.equal(chip.getAttribute('data-state'), 'off');
+  const saved = document.getElementById('chip-controlled');
+  assert.equal(saved.getAttribute('data-state'), 'on');
+  assert.equal(saved.firstElementChild.tagName, 'SPAN');
+  assert.equal(saved.firstElementChild.getAttribute('aria-hidden'), 'true', 'The leading icon is decorative');
+  assert.equal(saved.textContent, 'Saved');
+  const archived = document.getElementById('chip-disabled');
+  assert.ok(archived.disabled);
+  assert.ok(archived.hasAttribute('data-disabled'));
+  assert.equal(archived.getAttribute('aria-pressed'), 'true');
+} finally {
+  chipDocument.window.close();
 }
 for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%', 'Email address', 'eg-stack', 'flex-col', 'flex-nowrap', 'gap-4', 'eg-cluster', 'flex-row', 'flex-wrap', 'gap-6', 'items-start', 'justify-between', 'eg-icon', 'viewBox="0 0 24 24"', 'Search status', 'eg-surface', 'bg-surface-1', 'bg-surface-overlay', 'shadow-[var(--shadow-well)]']) {
   assert.ok(html.includes(text), 'SSR must render ' + text);
@@ -3031,7 +3120,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, DropzoneSamples, RadioGroupSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
+const { App, DropzoneSamples, RadioGroupSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -3045,7 +3134,8 @@ try {
   assert.ok(slottedHeadingRef.current instanceof HTMLElement);
   assert.equal(slottedHeadingRef.current?.tagName, 'H2', 'The slotted ref must expose the h2 host');
   const buttons = [...document.querySelectorAll('button:not(.eg-checkbox)')];
-  assert.equal(buttons.length, 26, 'Existing harness controls plus three Button hosts, three Select triggers, three Toggle controls and thirteen native IconButton hosts');
+  // 26 on main + 3 Chip buttons (default, controlled, disabled) = 29.
+  assert.equal(buttons.length, 29, 'Existing harness controls plus three Button hosts, three Select triggers, three Toggle controls, three Chip controls and thirteen native IconButton hosts');
   assert.ok(buttonRef.current === document.getElementById('button-native'), 'Native Button ref reaches the button on both React majors');
   assert.ok(buttonLinkRef.current === document.getElementById('button-link'), 'Slotted Button ref reaches the anchor on both React majors');
   const toggle = document.getElementById('toggle-default');
@@ -3063,6 +3153,22 @@ try {
   assert.equal(disabledToggle.getAttribute('aria-pressed'), 'true');
   assert.ok(disabledToggle.disabled);
   assert.equal(disabledToggle.textContent, 'Pin layer');
+  const chip = document.getElementById('chip-default');
+  assert.equal(chip.getAttribute('aria-pressed'), 'false');
+  await act(async () => chip.click());
+  assert.equal(chip.getAttribute('aria-pressed'), 'true');
+  assert.equal(chip.getAttribute('data-state'), 'on');
+  await act(async () => chip.click());
+  assert.equal(chip.getAttribute('data-state'), 'off');
+  assert.deepEqual(chipChanges, [true, false], 'Chip reports each next boolean');
+  const controlledChip = document.getElementById('chip-controlled');
+  await act(async () => controlledChip.click());
+  assert.equal(controlledChip.getAttribute('aria-pressed'), 'true', 'Controlled Chip keeps its pressed prop');
+  const disabledChip = document.getElementById('chip-disabled');
+  await act(async () => disabledChip.click());
+  assert.equal(disabledChip.getAttribute('aria-pressed'), 'true');
+  assert.ok(disabledChip.disabled);
+  assert.ok(chipRecipe.split(' ').includes('eg-chip'), 'Public chipVariants resolves the stable root marker');
   buttons[0].focus();
   assert.ok(document.activeElement === buttons[0], 'First intrinsic button must receive focus');
   buttons[1].focus();
@@ -3701,7 +3807,7 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
-  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup', 'Chip pressed state, change events, controlled/disabled behavior and public recipe'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -3806,6 +3912,7 @@ ${assertDropzoneCSS.toString()}
 ${assertProductMarkCSS.toString()}
 assertIconButtonCSS(emitted);
 ${assertToggleCSS.toString()}
+${assertChipCSS.toString()}
 ${assertSelectCSS.toString()}
 assertSelectCSS(emitted);
 ${assertCheckboxCSS.toString()}
@@ -3835,6 +3942,7 @@ assertInputCSS(emitted);
 assertDropzoneCSS(emitted);
 assertProductMarkCSS(emitted);
 assertToggleCSS(emitted);
+assertChipCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
@@ -3896,6 +4004,7 @@ assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
 assertProductMarkCSS(twCss);
 assertToggleCSS(twCss);
+assertChipCSS(twCss);
 assertSelectCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
