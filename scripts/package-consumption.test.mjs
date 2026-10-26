@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -30,15 +30,28 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Dropzone, Gauge, Heading, Icon, Input, Kbd, Label, Logo, ProductMark, ProgressBar, RadioGroup, Skeleton, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Tooltip, VisuallyHidden, dropzoneVariants, progressBarVariants, radioGroupVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Cluster, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, RadioGroup, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
+  AvatarProps,
+  AvatarSize,
+  BadgeProps,
+  BadgeTone,
+  BadgeVariant,
+  ButtonProps,
+  ButtonSize,
+  ButtonVariant,
+  CheckboxCheckedState,
+  CheckboxProps,
   DividerOrientation,
   DividerProps,
   DropzoneProps,
   GaugeProps,
   GaugeState,
   GaugeSize,
+  IconButtonProps,
+  IconButtonVariant,
+  IconButtonSize,
   IconName,
   IconProps,
   IconSize,
@@ -49,6 +62,8 @@ import type {
   KbdProps,
   LabelProps,
   LabelVariant,
+  LinkProps,
+  SliderProps,
   LogoProps,
   LogoSize,
   LogoVariant,
@@ -59,6 +74,9 @@ import type {
   RadioGroupOption,
   RadioGroupOrientation,
   RadioGroupProps,
+  SelectProps,
+  SelectOption,
+  SelectSize,
   SkeletonProps,
   SkeletonSize,
   SkeletonVariant,
@@ -76,6 +94,8 @@ import type {
   TextTone,
   TextVariant,
   TitleVariant,
+  ToggleProps,
+  ToggleSize,
   SurfaceElevation,
   SurfacePadding,
   SurfaceProps,
@@ -87,6 +107,27 @@ import type {
   TooltipProps,
   VisuallyHiddenProps
 } from '@egdev/ui';
+const buttonVariant: ButtonVariant = 'secondary';
+const buttonSize: ButtonSize = 'sm';
+export const buttonRef = createRef<HTMLButtonElement>();
+export const buttonLinkRef = createRef<HTMLButtonElement>();
+export const buttonProps: ButtonProps = { children: 'Save draft', icon: createElement(Icon, { name: 'check' }), variant: buttonVariant, size: buttonSize };
+export function ButtonSamples() {
+  return createElement('section', { 'aria-label': 'Actions' },
+    createElement(Button, { ...buttonProps, id: 'button-native', ref: buttonRef }),
+    createElement(Button, { children: 'Saving draft', loading: true, id: 'button-loading' }),
+    createElement(Button, { children: 'Unavailable', disabled: true, id: 'button-disabled' }),
+    createElement(Button, { asChild: true, ref: buttonLinkRef, iconPosition: 'start', icon: createElement(Icon, { name: 'arrow-right' }),
+      children: createElement('a', { href: '#projects', id: 'button-link' }, 'View projects') }));
+}
+// @ts-expect-error Button requires a visible label.
+const missingButtonLabel: ButtonProps = {};
+// @ts-expect-error Navigation composes a child anchor, never a Button href prop.
+const buttonHref: ButtonProps = { children: 'Projects', href: '#projects' };
+// @ts-expect-error Icon-only size treatments belong to IconButton.
+const buttonIconVariant: ButtonProps = { children: 'Save', variant: 'icon' };
+// @ts-expect-error Button dimensions are only md and sm presets.
+const buttonNumericSize: ButtonProps = { children: 'Save', size: 48 };
 const slotProps: SlotProps = { 'aria-label': 'Composed documentation' };
 export function SlotSample() {
   return createElement(Slot, slotProps,
@@ -132,6 +173,31 @@ export const labelReference = createElement(Label, { ...labelDefaults, ref: crea
 export function LabelSamples() {
   return createElement('div', { 'aria-label': 'Label samples' }, createElement(Label, labelDefaults), createElement(Label, labelChoice));
 }
+export const checkboxRef = createRef<HTMLButtonElement>();
+export const checkboxDefaults: CheckboxProps = { 'aria-label': 'Notify subscribers' };
+export function CheckboxSamples() {
+  const mixed: CheckboxCheckedState = 'indeterminate';
+  return createElement('section', { 'aria-label': 'Form options' },
+    createElement(Checkbox, { ...checkboxDefaults, ref: checkboxRef, id: 'checkbox-default' }),
+    createElement(Checkbox, { checked: mixed, id: 'checkbox-mixed', 'aria-label': 'Select all' }),
+    createElement(Checkbox, { defaultChecked: true, disabled: true, id: 'checkbox-disabled', 'aria-label': 'Unavailable option' }),
+    createElement('form', { id: 'checkbox-form' },
+      createElement(Checkbox, { id: 'checkbox-form-control', name: 'notify', value: 'yes', required: true, 'aria-describedby': 'checkbox-hint', className: 'ms-1 ms-2' }),
+      createElement('label', { htmlFor: 'checkbox-form-control' }, 'Email notifications'),
+      createElement('p', { id: 'checkbox-hint' }, 'Saved with the form')));
+}
+// @ts-expect-error Checkbox has no asChild composition API.
+const slottedCheckbox: CheckboxProps = { asChild: true };
+// @ts-expect-error Checkbox owns its internal indicator; children are not public.
+const checkboxChildren: CheckboxProps = { children: 'Option' };
+// @ts-expect-error Checkbox is a fixed 18px control, with no size axis.
+const checkboxSize: CheckboxProps = { size: 'sm' };
+// @ts-expect-error Mixed state is indeterminate, never the ARIA string mixed.
+const invalidCheckboxState: CheckboxProps = { checked: 'mixed' };
+// @ts-expect-error Native onChange is replaced by checked-change notification.
+const checkboxChange: CheckboxProps = { onChange: () => undefined };
+// @ts-expect-error Button type is owned by Radix Checkbox.
+const checkboxType: CheckboxProps = { type: 'submit' };
 export const gaugeDefaults: GaugeProps = { label: 'Capacity', value: 42.5 };
 export const gaugeWarning: GaugeProps = {
   label: 'Warning capacity', value: 42.5, state: gaugeState, stateText: 'Review capacity',
@@ -237,6 +303,79 @@ const interceptedDropzone: DropzoneProps = { ...dropzoneProps, onDrop: () => und
 const interceptedPaste: DropzoneProps = { ...dropzoneProps, onPaste: () => undefined };
 // @ts-expect-error No other visual treatments exist.
 const invalidDropzone: DropzoneProps = { ...dropzoneProps, variant: 'solid' };
+
+export const linkNativeRef = createRef<HTMLAnchorElement>();
+export const linkSlotRef = createRef<HTMLAnchorElement>();
+export const linkChildRef = createRef<HTMLAnchorElement>();
+const RouterLink = forwardRef<HTMLAnchorElement, ComponentPropsWithoutRef<'a'>>((props, ref) =>
+  createElement('a', { ...props, ref })
+);
+export const linkDefaults: LinkProps = { href: '#docs', children: 'Documentation' };
+export function LinkSamples({ external = true }: { external?: boolean }) {
+  return createElement('section', { 'aria-label': 'Text navigation' },
+    createElement(Link, { ...linkDefaults, id: 'link-native', ref: linkNativeRef, className: 'mt-2 mt-4 self-start' }),
+    createElement(Link, { href: '#external', external, rel: 'author noopener', id: 'link-external', children: 'Repository' }),
+    createElement(Link, { href: '#legal', arrow: false, id: 'link-plain', children: 'Legal information' }),
+    createElement(Link, { asChild: true, external, rel: 'author', ref: linkSlotRef, newTabText: '(new window)',
+      children: createElement(RouterLink, { href: '#router', id: 'link-router', ref: linkChildRef, target: '_self', rel: 'help' }, 'Router documentation') }));
+}
+// @ts-expect-error A native link requires its destination.
+const missingLinkDestination: LinkProps = { children: 'Docs' };
+// @ts-expect-error asChild delegates href to the child, never to Link.
+const slottedLinkDestination: LinkProps = { asChild: true, href: '#docs', children: createElement('a', { href: '#docs' }) };
+// @ts-expect-error Descriptive children remain required.
+const missingLinkContent: LinkProps = { href: '#docs' };
+// @ts-expect-error Disabled links are not supported; use plain text without a destination.
+const disabledLink: LinkProps = { href: '#docs', children: 'Docs', disabled: true };
+// @ts-expect-error Link v0.1 has no visual variants.
+const variantLink: LinkProps = { href: '#docs', children: 'Docs', variant: 'primary' };
+// @ts-expect-error The public ref is an anchor ref, never a button ref.
+const wrongLinkRef: ComponentProps<typeof Link> = { href: '#docs', children: 'Docs', ref: createRef<HTMLButtonElement>() };
+
+const badgeTones: BadgeTone[] = ['neutral', 'info', 'success', 'warning', 'danger', 'brand'];
+const badgeTreatments: BadgeVariant[] = ['soft', 'solid'];
+export const badgeDefaults: BadgeProps = { children: 'Draft' };
+export const badgeRecipe: string = badgeVariants({ tone: 'brand', variant: 'solid' });
+export function BadgeSamples() {
+  return createElement('section', { 'aria-label': 'Static labels' },
+    createElement(Badge, { ...badgeDefaults, id: 'badge-default', title: 'Publication', className: 'mt-1 mt-2 consumer-badge' }),
+    badgeTones.flatMap((tone) => badgeTreatments.map((variant) => createElement(Badge, {
+      key: tone + '-' + variant, tone, variant, id: 'badge-' + tone + '-' + variant,
+      icon: createElement(Icon, { name: 'check', className: 'size-3.5' }), children: 'Published'
+    }))));
+}
+// @ts-expect-error Badge requires visible text content.
+const missingBadgeText: BadgeProps = {};
+// @ts-expect-error Badge has no ref API on either React major.
+const referencedBadge: BadgeProps = { children: 'Draft', ref: createRef<HTMLSpanElement>() };
+// @ts-expect-error Badge is not polymorphic.
+const slottedBadge: BadgeProps = { children: 'Draft', asChild: true };
+// @ts-expect-error The tone family is closed.
+const invalidBadgeTone: BadgeProps = { children: 'Draft', tone: 'critical' };
+// @ts-expect-error Only soft and solid treatments exist.
+const invalidBadgeVariant: BadgeProps = { children: 'Draft', variant: 'outline' };
+// @ts-expect-error Badge has no size axis in v0.1.
+const sizedBadge: BadgeProps = { children: 'Draft', size: 'sm' };
+
+export const sliderSample: SliderProps = {
+  label: 'Volume', defaultValue: 40, name: 'volume', id: 'packed-slider',
+  'aria-describedby': 'slider-hint', className: 'w-48 w-64 consumer-slider',
+  valueText: (value) => value + ' percent'
+};
+export const sliderRecipe: string = sliderVariants();
+export const sliderEvents: number[] = [];
+export const sliderCommits: number[] = [];
+export function SliderSamples() {
+  return createElement('form', { id: 'slider-form' },
+    createElement('p', { id: 'slider-hint' }, 'Applies to overlays'),
+    createElement(Slider, { ...sliderSample,
+      onValueChange: (value) => sliderEvents.push(value),
+      onValueCommit: (value) => sliderCommits.push(value) }),
+    createElement(Slider, { label: 'Fixed threshold', value: 120, id: 'packed-controlled-slider' }),
+    createElement(Slider, { label: 'Disabled volume', disabled: true, defaultValue: 25, id: 'packed-disabled-slider',
+      onValueChange: (value) => sliderEvents.push(value) }));
+}
+
 // RadioGroup: data-driven options named by label, inside a form for submission (D2-D5, AC-07).
 export const radioOptions: RadioGroupOption[] = [
   { value: 'public', label: 'Public' },
@@ -421,6 +560,31 @@ export function TypographySamples({ headingLevel = 1 }: TypographySampleProps) {
     createElement(Text, { variant: 'section', accent: 'inline', accentBreak: false, asChild: true,
       children: createElement('span', { id: 'title-slotted', className: 'consumer-span' }, 'Slotted ') }));
 }
+export const avatarDefaults: AvatarProps = { label: 'Example channel' };
+export function AvatarSamples() {
+  const sizes: AvatarSize[] = ['sm', 'md', 'lg', 'xl'];
+  return createElement('section', { 'aria-label': 'Identities' },
+    sizes.map((size) => createElement(Avatar, { ...avatarDefaults, key: size, size, id: 'avatar-' + size })),
+    createElement(Avatar, { id: 'avatar-decorative' }),
+    createElement(Avatar, { label: 'Channel on LinkedIn, paused', id: 'avatar-paused', size: 'xl',
+      paused: true, badgeIcon: 'linkedin', className: 'ms-1 ms-2 [--eg-avatar-ring:var(--color-bg-canvas)]' }));
+}
+// @ts-expect-error Avatar owns its internal content.
+const avatarChildren: AvatarProps = { children: 'AB' };
+// @ts-expect-error Avatar has no public ref API.
+const avatarRef: AvatarProps = { ref: createRef<HTMLSpanElement>() };
+// @ts-expect-error Avatar has no asChild API.
+const avatarSlotted: AvatarProps = { asChild: true };
+// @ts-expect-error Naming is through label, not a native role override.
+const avatarRole: AvatarProps = { role: 'button' };
+// @ts-expect-error Naming attributes are component-owned.
+const avatarLabel: AvatarProps = { 'aria-label': 'Wrong' };
+// @ts-expect-error The image part has an empty alt; name the root through label.
+const avatarAlt: AvatarProps = { alt: 'Wrong' };
+// @ts-expect-error No arbitrary dimensions.
+const avatarSize: AvatarProps = { size: 30 };
+// @ts-expect-error Badges use the closed IconName set.
+const avatarBadge: AvatarProps = { badgeIcon: 'unknown' };
 export const iconDefaults: IconProps = { name: 'plus' };
 const iconPreset: IconSize = 'lg';
 type IconSampleProps = { iconName?: IconName };
@@ -432,6 +596,48 @@ export function IconSamples({ iconName = 'plus' }: IconSampleProps) {
     createElement(Icon, { name: 'check', size: iconPreset, id: 'icon-override', className: 'size-4.5 text-fg-brand-default' }));
 }
 // Surface: a div ref by default; an HTMLElement ref on the actual slotted host with asChild.
+export const iconButtonRef = createRef<HTMLButtonElement>();
+export const iconButtonLinkRef = createRef<HTMLButtonElement>();
+export const iconButtonCalls: string[] = [];
+const iconButtonBase: IconButtonProps = { label: 'Search', icon: createElement(Icon, { name: 'search' }) };
+export function IconButtonSamples() {
+  const variants: IconButtonVariant[] = ['ghost', 'outline', 'primary', 'secondary'];
+  const sizes: IconButtonSize[] = ['sm', 'md', 'lg'];
+  return createElement('section', { 'aria-label': 'Icon actions' },
+    variants.flatMap((variant) => sizes.map((size) => createElement(IconButton, {
+      ...iconButtonBase, key: variant + size, variant, size, id: 'icon-button-' + variant + '-' + size,
+      ref: variant === 'ghost' && size === 'md' ? iconButtonRef : undefined,
+      onClick: () => iconButtonCalls.push('button')
+    }))),
+    createElement(IconButton, { ...iconButtonBase, id: 'icon-button-disabled', disabled: true,
+      onClick: () => iconButtonCalls.push('disabled') }),
+    createElement(IconButton, { ...iconButtonBase, asChild: true, ref: iconButtonLinkRef,
+      onClick: (event) => { event.preventDefault(); iconButtonCalls.push('root'); },
+      children: createElement('a', { id: 'icon-button-link', href: '#search', target: '_blank', rel: 'noreferrer',
+        onClick: () => iconButtonCalls.push('child') }) }),
+    createElement(IconButton, { ...iconButtonBase, asChild: true, disabled: true,
+      onClick: () => iconButtonCalls.push('disabled-root'),
+      children: createElement('a', { id: 'icon-button-disabled-link', href: '#search', tabIndex: 0,
+        onClick: () => iconButtonCalls.push('disabled-child') }) }));
+}
+// @ts-expect-error IconButton always requires a non-empty naming input through label.
+const unnamedIconButton: IconButtonProps = { icon: createElement(Icon, { name: 'search' }) };
+// @ts-expect-error A label does not replace the required decorative ReactElement.
+const missingIconButtonGlyph: IconButtonProps = { label: 'Search' };
+// @ts-expect-error IconButton icon must be one ReactElement, not text.
+const textIconButton: IconButtonProps = { ...iconButtonBase, icon: 'Search' };
+// @ts-expect-error AccessibleIcon supplies hidden text; duplicate aria-label naming is excluded.
+const ariaNamedIconButton: IconButtonProps = { ...iconButtonBase, 'aria-label': 'Search' };
+// @ts-expect-error IconButton has no pressed API; use Toggle.
+const pressedIconButton: IconButtonProps = { ...iconButtonBase, pressed: true };
+// @ts-expect-error IconButton has no loading API; use Button with visible text.
+const loadingIconButton: IconButtonProps = { ...iconButtonBase, loading: true };
+// @ts-expect-error IconButton links compose with asChild; href belongs to the child.
+const linkedIconButton: IconButtonProps = { ...iconButtonBase, href: '#search' };
+// @ts-expect-error IconButton has no dark treatment.
+const darkIconButton: IconButtonProps = { ...iconButtonBase, variant: 'dark' };
+// @ts-expect-error IconButton geometry is preset-only.
+const numericIconButton: IconButtonProps = { ...iconButtonBase, size: 44 };
 export const surfaceDivRef = createRef<HTMLDivElement>();
 export const surfaceSectionRef = createRef<HTMLElement>();
 export const surfaceArticleRef = createRef<HTMLElement>();
@@ -455,6 +661,57 @@ export function SurfaceSamples({ surfaceElevation = 1 }: { surfaceElevation?: Su
     createElement(Surface, { tone: 'surface-3', asChild: true, ref: surfaceArticleRef,
       children: createElement(SurfaceArticle, { 'aria-label': 'Article surface', ref: surfaceArticleChildRef }, 'Entry') }));
 }
+const selectOptions: SelectOption[] = [
+  { value: 'public', label: 'Public' },
+  { value: 'private', label: 'Private' },
+  { value: 'archived', label: 'Archived', disabled: true }
+];
+const selectSize: SelectSize = 'sm';
+export const selectRef = createRef<HTMLButtonElement>();
+export const selectDefaults: SelectProps = { options: selectOptions, 'aria-label': 'Visibility' };
+export function SelectSamples() {
+  return createElement('form', { id: 'visibility-form' },
+    createElement('label', { htmlFor: 'select-default' }, 'Visibility'),
+    createElement(Select, { ...selectDefaults, id: 'select-default', name: 'visibility', required: true,
+      defaultValue: 'public', ref: selectRef, className: 'w-auto mb-1 mb-3' }),
+    createElement(Select, { options: selectOptions, id: 'select-compact', size: selectSize,
+      'aria-label': 'Compact visibility', placeholder: 'Choose visibility' }),
+    createElement(Select, { options: selectOptions, id: 'select-disabled', disabled: true, name: 'disabled-visibility',
+      'aria-label': 'Disabled visibility', defaultValue: 'private' }));
+}
+// @ts-expect-error Select requires its options data.
+const missingSelectOptions: SelectProps = {};
+// @ts-expect-error Select accepts string option labels, not React elements.
+const richSelectOption: SelectOption = { value: 'rich', label: createElement('span', null, 'Rich') };
+// @ts-expect-error Select has no public open-state API.
+const openSelect: SelectProps = { options: selectOptions, open: true };
+// @ts-expect-error Select has no compound-child API.
+const childrenSelect: SelectProps = { options: selectOptions, children: 'Public' };
+// @ts-expect-error Select has no asChild API.
+const slottedSelect: SelectProps = { options: selectOptions, asChild: true };
+// @ts-expect-error Select only supports md and sm.
+const largeSelect: SelectProps = { options: selectOptions, size: 'lg' };
+const toggleSize: ToggleSize = 'sm';
+export const toggleRef = createRef<HTMLButtonElement>();
+export const toggleDefaults: ToggleProps = { children: 'Show grid' };
+export function ToggleSamples() {
+  return createElement('section', { 'aria-label': 'Toggle samples' },
+    createElement(Toggle, { ...toggleDefaults, id: 'toggle-default', ref: toggleRef }),
+    createElement(Toggle, { id: 'toggle-controlled', pressed: true, children: 'Pin', icon: createElement(Icon, { name: 'bookmark' }) }),
+    createElement(Toggle, { id: 'toggle-disabled', size: toggleSize, defaultPressed: true, disabled: true, label: 'Pin layer', icon }));
+}
+// @ts-expect-error Icon-only content requires an accessible label.
+const unnamedToggle: ToggleProps = { icon };
+// @ts-expect-error Visible text and the icon-only label are mutually exclusive.
+const ambiguousToggle: ToggleProps = { children: 'Pin', label: 'Pin', icon };
+// @ts-expect-error Toggle always renders a button; asChild is not public.
+const slottedToggle: ToggleProps = { children: 'Pin', asChild: true };
+// @ts-expect-error aria-pressed is owned by Radix, not an incoming override.
+const overriddenToggle: ToggleProps = { children: 'Pin', 'aria-pressed': 'mixed' };
+// @ts-expect-error Only preset dimensions are public.
+const numericToggle: ToggleProps = { children: 'Pin', size: 40 };
+// @ts-expect-error Toggle does not expose private CVA recipes.
+import type { toggleVariants } from '@egdev/ui';
 export const dividerDefaults: DividerProps = {};
 export const dividerSemanticVertical: DividerProps = {
   orientation: 'vertical', decorative: false, className: 'consumer-rule'
@@ -469,7 +726,7 @@ export function DividerSamples({ semantic }: { semantic?: boolean }) {
       ? { orientation: dividerOrientation, decorative: false, className: 'consumer-rule' }
       : { className: 'consumer-rule' }));
 }
-export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, headingLevel, iconName, spinnerLoading, statusDotPulse, inputValue, progressValue }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; headingLevel?: HeadingLevel; iconName?: IconName; spinnerLoading?: boolean; statusDotPulse?: boolean; inputValue?: string; progressValue?: number } = {}) {
+export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, headingLevel, iconName, spinnerLoading, linkExternal, statusDotPulse, inputValue, progressValue }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; headingLevel?: HeadingLevel; iconName?: IconName; spinnerLoading?: boolean; linkExternal?: boolean; statusDotPulse?: boolean; inputValue?: string; progressValue?: number } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
     createElement('button', { type: 'button' }, 'Before measurements'),
@@ -484,14 +741,23 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(LabelSamples),
     createElement(SkeletonSamples),
     createElement(IconSamples, { iconName }),
+    createElement(IconButtonSamples),
+    createElement(CheckboxSamples),
+    createElement(AvatarSamples),
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(StatusDotSamples, { pulse: statusDotPulse }),
     createElement(KbdSamples),
+    createElement(ButtonSamples),
+    createElement(LinkSamples, { external: linkExternal }),
+    createElement(BadgeSamples),
+    createElement(SliderSamples),
     createElement(ProgressBarSamples, { value: progressValue }),
     createElement(TextareaSamples),
     createElement(InputSamples, { inputValue }),
     createElement(LogoSamples),
     createElement(ProductMarkSamples),
+    createElement(SelectSamples),
+    createElement(ToggleSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -588,6 +854,22 @@ const referencedKbd: KbdProps = { children: 'K', ref: createRef<HTMLElement>() }
 const slottedKbd: KbdProps = { children: 'K', asChild: true };
 // @ts-expect-error Kbd has a single flat treatment; there are no variants (D4).
 const variantKbd: KbdProps = { children: 'K', variant: 'raised' };
+// @ts-expect-error Slider requires a thumb accessible name.
+const unnamedSlider: SliderProps = { value: 30 };
+// @ts-expect-error The public API is scalar, not Radix's array shape.
+const rangeSlider: SliderProps = { label: 'Range', value: [20, 80] };
+// @ts-expect-error Slider has no vertical orientation API.
+const verticalSlider: SliderProps = { label: 'Volume', orientation: 'vertical' };
+// @ts-expect-error Slider has no asChild API.
+const slottedSlider: SliderProps = { label: 'Volume', asChild: true };
+// @ts-expect-error Slider exposes no ref API on either React major.
+const referencedSlider: SliderProps = { label: 'Volume', ref: createRef<HTMLSpanElement>() };
+// @ts-expect-error Track, range and thumb content are internal.
+const childSlider: SliderProps = { label: 'Volume', children: 'Not permitted' };
+// @ts-expect-error Direction is not public in v0.1.
+const directedSlider: SliderProps = { label: 'Volume', dir: 'rtl' };
+// @ts-expect-error Use onValueChange, not native onChange.
+const nativeChangeSlider: SliderProps = { label: 'Volume', onChange: () => {} };
 // @ts-expect-error RadioGroup requires its accessible group name (D4).
 const unnamedRadio: RadioGroupProps = { options: radioOptions };
 // @ts-expect-error RadioGroup renders its options from data; children are not accepted (D2).
@@ -810,7 +1092,139 @@ const slottedSurfaceText: SurfaceProps = { asChild: true, children: 'Text' };
 const wideSurfaceRef: ComponentProps<typeof Surface> = { ref: createRef<HTMLElement>() };
 `;
 
+function assertToggleCSS(css) {
+  for (const selector of [
+    String.raw`.data-\[state\=on\]\:bg-surface-3`,
+    String.raw`.data-\[state\=on\]\:bg-\[image\:var\(--gradient-sheen\)\]`,
+    String.raw`.data-\[state\=on\]\:border-border-hairline-strong`,
+    String.raw`.group-data-\[state\=on\]\/toggle\:text-fg-brand-raised`,
+    String.raw`.active\:scale-97`,
+    String.raw`.data-disabled\:opacity-45`,
+    String.raw`.motion-reduce\:active\:scale-100`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Toggle selector ' + selector);
+  }
+  for (const token of [
+    'gradient-sheen',
+    'shadow-edge-strong',
+    'shadow-elev-1',
+    'shadow-focus',
+    'duration-fast',
+    'duration-press',
+    'ease-out',
+    'ease-snappy'
+  ]) {
+    assert.ok(css.includes('var(--' + token + ')'), 'Missing Toggle token ' + token);
+  }
+  assert.match(css, /--tw-scale-x:\s*97%/);
+  assert.match(css, /--tw-scale-y:\s*97%/);
+  assert.match(css, /scale:\s*var\(--tw-scale-x\)\s+var\(--tw-scale-y\)/);
+  assert.match(css, /box-sizing:\s*border-box/);
+  assert.doesNotMatch(css, /\.eg-toggle\s*[,{]/);
+}
+
+// Checkbox ships only its fixed geometry and Radix-state token recipes, never a marker rule.
+function assertCheckboxCSS(css) {
+  for (const selector of [
+    String.raw`.size-4\.5`,
+    '.size-3',
+    '.inline-grid',
+    '.place-items-center',
+    String.raw`.disabled\:opacity-45`,
+    String.raw`.aria-invalid\:data-\[state\=unchecked\]\:border-status-danger`,
+    String.raw`.data-\[state\=checked\]\:\[\&\>svg\:last-child\]\:hidden`,
+    String.raw`.data-\[state\=indeterminate\]\:\[\&\>svg\:first-child\]\:hidden`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Checkbox utility ' + selector);
+  }
+  for (const state of ['checked', 'indeterminate']) {
+    const prefix = `.data-\\[state\\=${state}\\]\\:`;
+    for (const suffix of [
+      String.raw`bg-\[image\:var\(--gradient-btn-primary\)\]`,
+      String.raw`shadow-\[var\(--shadow-btn-primary\)\]`,
+      String.raw`focus-visible\:shadow-\[var\(--shadow-focus\)\]`
+    ]) {
+      assert.ok(css.includes(prefix + suffix), 'Missing Checkbox state utility ' + prefix + suffix);
+    }
+  }
+  assert.match(css, /\.size-4\\\.5\s*\{[^}]*width:\s*calc\(var\(--space-1\)\s*\*\s*4\.5\)/);
+  assert.match(css, /\.inline-grid\s*\{[^}]*display:\s*inline-grid/);
+  assert.doesNotMatch(css, /\.eg-checkbox\s*[,{]/, 'Checkbox has no hand-authored stylesheet');
+}
+
+function assertButtonCSS(css) {
+  for (const selector of [
+    '.box-border',
+    '.border-solid',
+    '.min-h-12',
+    '.min-h-10',
+    '.text-cta-label',
+    '.text-label-default'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Button utility ' + selector);
+  }
+  for (const token of [
+    'gradient-btn-primary',
+    'gradient-btn-primary-hover',
+    'gradient-btn-secondary',
+    'gradient-btn-secondary-hover',
+    'shadow-btn-primary',
+    'shadow-btn-primary-hover',
+    'shadow-btn-pressed',
+    'shadow-focus',
+    'duration-press',
+    'ease-snappy'
+  ]) {
+    assert.ok(css.includes('var(--' + token + ')'), 'Missing Button binding ' + token);
+  }
+  assert.ok(css.includes('data-state=loading') || css.includes('data-state="loading"'));
+  assert.match(css, /--tw-translate-y:\s*1px\s*;/);
+  assert.match(css, /translate:\s*var\(--tw-translate-x\) var\(--tw-translate-y\)/);
+  assert.match(css, /--tw-scale-x:\s*97%\s*;/);
+  assert.match(css, /scale:\s*var\(--tw-scale-x\) var\(--tw-scale-y\)/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+}
+
 // Surface ships no stylesheet: only token-backed CVA utilities, including fallback variants.
+function assertSelectCSS(css) {
+  for (const utility of [
+    String.raw`.min-h-11`,
+    String.raw`.min-h-9`,
+    String.raw`.py-1\.5`,
+    String.raw`.border-\(length\:--border-width\)`,
+    String.raw`.min-w-\[var\(--radix-select-trigger-width\)\]`,
+    String.raw`.max-h-\[var\(--radix-select-content-available-height\)\]`,
+    String.raw`.data-\[state\=open\]\:shadow-\[var\(--shadow-well\)\,var\(--shadow-ring-brand\)\]`,
+    String.raw`.data-highlighted\:bg-fg-default\/6`,
+    String.raw`.data-disabled\:opacity-45`,
+    String.raw`.data-placeholder\:text-fg-muted`,
+    String.raw`.focus-visible\:ring-\[length\:var\(--focus-width\)\]`,
+    String.raw`.focus-visible\:ring-focus-ring-inverse`,
+    String.raw`.aria-invalid\:border-status-danger`,
+    String.raw`.transition-colors`
+  ]) {
+    assert.ok(css.includes(utility), 'Missing Select utility ' + utility);
+  }
+  for (const token of [
+    '--shadow-well',
+    '--shadow-ring-brand',
+    '--shadow-edge-strong',
+    '--shadow-elev-3',
+    '--blur-overlay',
+    '--focus-width'
+  ]) {
+    assert.ok(css.includes('var(' + token + ')'), 'Select must consume ' + token);
+  }
+  assert.match(css, /min-height:\s*calc\(var\(--space-1\) \* 11\)/);
+  assert.match(css, /min-height:\s*calc\(var\(--space-1\) \* 9\)/);
+  assert.match(css, /prefers-reduced-transparency:\s*reduce/);
+  assert.match(css, /backdrop-filter:\s*none/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+  assert.ok(css.includes(String.raw`.motion-reduce\:transition-none`));
+  assert.doesNotMatch(css, /\.eg-select(?:-content)?\s*\{/, 'Select has no stylesheet');
+}
+
 function assertSurfaceCSS(css) {
   for (const selector of [
     '.bg-surface-0',
@@ -985,7 +1399,65 @@ function assertLabelCSS(css) {
   assert.match(css, /font-weight:\s*var\(--text-body-default--font-weight\)/, 'Missing Label choice weight binding');
 }
 
+// Avatar's additive utilities must work without changing prior component guards.
+function assertAvatarCSS(css) {
+  for (const selector of [
+    '.inline-grid',
+    '.bg-linear-135',
+    '.from-bg-deep',
+    '.to-primitive-red-neon',
+    '.object-cover',
+    String.raw`.size-2\.75`,
+    String.raw`.size-3\.25`,
+    String.raw`.size-5\.5`,
+    String.raw`.size-7\.5`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Avatar utility ' + selector);
+  }
+  assert.match(css, /--tw-gradient-position:\s*135deg/);
+  assert.match(css, /--tw-gradient-from:\s*var\(--color-bg-deep[,)]/);
+  assert.match(css, /--tw-gradient-to:\s*var\(--color-primitive-red-neon[,)]/);
+  assert.match(css, /--tw-ring-color:\s*var\(--eg-avatar-ring,\s*var\(--color-bg-surface\)\)/);
+  assert.match(css, /opacity-60\[data-state="paused"\]\s*\{\s*opacity:\s*60%/);
+  assert.match(css, /grayscale\[data-state="paused"\]\s*\{\s*--tw-grayscale:\s*grayscale\(100%\)/);
+  assert.match(css, /object-fit:\s*cover/);
+}
+
 // Icon's static utilities must work in shipped CSS and both consumer build paths.
+function assertIconButtonCSS(css) {
+  for (const selector of [
+    '.inline-grid',
+    '.place-items-center',
+    '.size-8',
+    '.size-10',
+    '.size-12',
+    '.border-solid',
+    '.p-0',
+    '.transition-colors'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing IconButton selector ' + selector);
+  }
+  for (const token of [
+    '--gradient-btn-primary-hover',
+    '--gradient-btn-secondary-hover',
+    '--gradient-sheen',
+    '--color-alpha-red-65',
+    '--duration-press',
+    '--ease-spring'
+  ]) {
+    assert.ok(css.includes('var(' + token), 'IconButton must consume ' + token);
+  }
+  assert.ok(
+    /--tw-scale-x:\s*94%/.test(css) && /--tw-scale-y:\s*94%/.test(css),
+    'Pressed icon actions must scale to .94 on both axes'
+  );
+  assert.ok(/scale:\s*var\(--tw-scale-x\) var\(--tw-scale-y\)/.test(css), 'Tailwind composes individual scale axes');
+  assert.match(css, /prefers-reduced-motion:\s*no-preference/, 'Transforms only run when motion is safe');
+  assert.match(css, /prefers-reduced-motion:\s*reduce/, 'Reduced motion has explicit resets');
+  assert.ok(css.includes('data-disabled'), 'Disabled styles must follow the attribute');
+  assert.ok(css.includes('focus-visible'), 'Icon actions ship a visible focus treatment');
+}
+
 function assertIconCSS(css) {
   for (const [selector, declarations] of [
     ['.inline-block', [/display:\s*inline-block\s*;/]],
@@ -1037,6 +1509,33 @@ function assertSkeletonCSS(css) {
   assert.ok(css.includes('motion-reduce\\:animate-none'), 'Missing the reduced-motion static override utility');
   // The eg-skeleton marker itself never carries an animation rule; the utility class does.
   assert.doesNotMatch(css, /\.eg-skeleton[^{]*\{[^}]*(?:animation|transition):/, 'Skeleton marker must stay static');
+}
+
+// All Slider parts ship token-backed utilities, with no extra stylesheet or app Tailwind requirement.
+function assertSliderCSS(css) {
+  for (const utility of [
+    '.touch-none',
+    '.select-none',
+    '.h-6',
+    '.h-1',
+    '.grow',
+    '.size-4',
+    '.bg-surface-0',
+    '.bg-fg-brand-default',
+    '.bg-fg-default',
+    '.transition-shadow',
+    String.raw`.pointer-coarse\:h-11`,
+    String.raw`.data-\[disabled\]\:opacity-45`,
+    String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`,
+    String.raw`.shadow-\[var\(--shadow-well\)\]`,
+    String.raw`.shadow-\[var\(--shadow-elev-1\)\]`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(utility), 'Missing Slider utility ' + utility);
+  }
+  assert.match(css, /@media\s*\(pointer:\s*coarse\)/, 'Slider touch target needs a coarse-pointer query');
+  assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/, 'Slider respects reduced motion');
+  assert.doesNotMatch(css, /\.eg-slider[^{]*\{/, 'Slider marker must not introduce an appearance rule');
 }
 
 // StatusDot ships ring/glow geometry, token fills and its motion-safe pulse with top-level keyframes.
@@ -1387,6 +1886,107 @@ function assertSpinnerCSS(css) {
   assert.doesNotMatch(css, /\.eg-spinner[^{]*\{/, 'Spinner has no stylesheet: its marker carries no rule');
 }
 
+// Assert the same static recipe in packed native and Tailwind consumer builds.
+function assertBadgeCSS(css) {
+  const rule = (utility) => {
+    const selector = `.${utility.replace(/[^a-zA-Z0-9_-]/g, (character) => `\\${character}`)}`;
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const match = new RegExp(`${escaped}\\s*\\{([^}]+)`).exec(css);
+    assert.ok(match, `Missing Badge utility ${utility}`);
+    return match[1];
+  };
+  for (const tone of ['fg-secondary', 'status-info', 'status-success', 'status-warning', 'status-danger']) {
+    assert.ok(rule(`text-${tone}`).includes(`var(--color-${tone}`));
+    assert.ok(rule(`bg-${tone}`).includes(`var(--color-${tone}`));
+    for (const [prefix, opacity] of [
+      ['border', '30%'],
+      ['bg', '8%']
+    ]) {
+      const body = rule(`${prefix}-${tone}/${prefix === 'border' ? 30 : 8}`);
+      assert.ok(body.includes(`var(--color-${tone}`) && body.includes(opacity), `${tone} ${opacity}`);
+    }
+  }
+  for (const [utility, token] of [
+    ['text-primitive-red-200', 'color-primitive-red-200'],
+    ['border-alpha-red-22', 'color-alpha-red-22'],
+    ['bg-alpha-red-12', 'color-alpha-red-12'],
+    ['bg-action-primary-solid-bg', 'color-action-primary-solid-bg'],
+    ['text-action-primary-solid-fg', 'color-action-primary-solid-fg'],
+    ['text-fg-on-status', 'color-fg-on-status']
+  ]) {
+    assert.ok(rule(utility).includes(`var(--${token}`), utility);
+  }
+  for (const [utility, factor] of [
+    ['size-3.5', '3.5'],
+    ['gap-1.5', '1.5'],
+    ['py-1.5', '1.5'],
+    ['px-2.5', '2.5']
+  ]) {
+    assert.ok(rule(utility).includes(`calc(var(--space-1) * ${factor})`), utility);
+  }
+  for (const utility of [
+    'inline-flex',
+    'items-center',
+    'shrink-0',
+    'rounded-full',
+    'border',
+    'border-transparent',
+    'whitespace-nowrap',
+    'font-sans',
+    'text-label-default',
+    'shadow-none'
+  ]) {
+    rule(utility);
+  }
+  const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
+  const edge = /--shadow-edge:\s*([^;]+);/.exec(theme)?.[1];
+  assert.ok(edge);
+  assert.ok(
+    rule('shadow-edge').includes(`--tw-shadow: ${edge.replace(/(rgba\([^)]+\))/, 'var(--tw-shadow-color, $1)')};`)
+  );
+  assert.match(rule('shadow-none'), /--tw-shadow:\s*0 0 #0000\s*;/);
+  assert.doesNotMatch(css, /\.eg-badge\s*[,{]/, 'Badge has no stylesheet');
+}
+
+function assertBadgeDOM(document) {
+  const badges = [...document.querySelectorAll('section[aria-label="Static labels"] > .eg-badge')];
+  assert.equal(badges.length, 13, 'Default plus twelve tone/treatment combinations');
+  const plain = document.getElementById('badge-default');
+  assert.equal(plain.textContent, 'Draft');
+  assert.equal(plain.childElementCount, 0, 'No automatic icon');
+  assert.equal(plain.getAttribute('data-tone'), 'neutral');
+  assert.equal(plain.getAttribute('data-variant'), 'soft');
+  assert.equal(plain.getAttribute('title'), 'Publication');
+  assert.ok(plain.classList.contains('mt-2') && !plain.classList.contains('mt-1'));
+  for (const badge of badges) {
+    assert.equal(badge.tagName, 'SPAN');
+    for (const attribute of ['role', 'tabindex', 'aria-live', 'data-state', 'tone', 'variant', 'icon']) {
+      assert.equal(badge.hasAttribute(attribute), false, attribute);
+    }
+    assert.ok(badge.classList.contains('text-label-default'), 'Typography survives foreground merging');
+    const tone = badge.getAttribute('data-tone');
+    const solid = badge.getAttribute('data-variant') === 'solid';
+    const color = tone === 'neutral' ? 'fg-secondary' : 'status-' + tone;
+    assert.ok(badge.classList.contains(solid ? 'shadow-none' : 'shadow-edge'));
+    if (solid) {
+      assert.ok(badge.classList.contains('border-transparent'));
+      assert.ok(badge.classList.contains(tone === 'brand' ? 'bg-action-primary-solid-bg' : 'bg-' + color));
+      assert.ok(badge.classList.contains(tone === 'brand' ? 'text-action-primary-solid-fg' : 'text-fg-on-status'));
+    } else {
+      assert.ok(badge.classList.contains(tone === 'brand' ? 'bg-alpha-red-12' : 'bg-' + color + '/8'));
+      assert.ok(badge.classList.contains(tone === 'brand' ? 'border-alpha-red-22' : 'border-' + color + '/30'));
+      assert.ok(badge.classList.contains(tone === 'brand' ? 'text-primitive-red-200' : 'text-' + color));
+    }
+    if (badge !== plain) {
+      const wrapper = badge.firstElementChild;
+      assert.equal(wrapper.getAttribute('aria-hidden'), 'true');
+      assert.ok(wrapper.classList.contains('size-3.5') && wrapper.classList.contains('shrink-0'));
+      assert.ok(wrapper.querySelector('svg.eg-icon').classList.contains('size-3.5'));
+      assert.equal(badge.lastChild.textContent, 'Published');
+    }
+  }
+}
+
 // RadioGroup ships its row, well/checked radio and indicator token utilities; no RadioGroup stylesheet.
 function assertRadioGroupCSS(css) {
   for (const utility of [
@@ -1468,23 +2068,33 @@ for (const utility of ['.text-title-section', '.text-title-hero', '.text-title-s
 assert.doesNotMatch(shippedStyles, /\\.eg-(?:text|heading)\\s*[,{]/, 'Text/Heading markers must not become shipped CSS rules');
 ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(shippedStyles);
+${assertLinkCSS.toString()}
+assertLinkCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AspectRatio',
+  'Avatar',
+  'Badge',
+  'Button',
+  'Checkbox',
   'Cluster',
   'Divider',
   'Dropzone',
   'Gauge',
   'Heading',
   'Icon',
+  'IconButton',
   'Input',
   'Kbd',
   'Label',
+  'Link',
   'Logo',
   'Portal',
   'ProductMark',
   'ProgressBar',
   'RadioGroup',
+  'Select',
   'Skeleton',
+  'Slider',
   'Slot',
   'Slottable',
   'Spinner',
@@ -1494,25 +2104,36 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Switch',
   'Text',
   'Textarea',
+  'Toggle',
   'Tooltip',
   'VisuallyHidden',
+  'badgeVariants',
   'cn',
   'dropzoneVariants',
   'labelVariants',
   'progressBarVariants',
   'radioGroupVariants',
+  'sliderVariants',
   'statusDotVariants',
   'surfaceVariants',
   'tooltipVariants'
 ]);
+${assertCheckboxCSS.toString()}
+assertCheckboxCSS(shippedStyles);
+${assertButtonCSS.toString()}
+${assertBadgeCSS.toString()}
+assertBadgeCSS(shippedStyles);
 ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertIconCSS.toString()}
+${assertIconButtonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertAvatarCSS.toString()}
+${assertSliderCSS.toString()}
 ${assertRadioGroupCSS.toString()}
 ${assertSwitchCSS.toString()}
 ${assertTooltipCSS.toString()}
@@ -1522,6 +2143,12 @@ ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertProductMarkCSS.toString()}
 assertDropzoneCSS(shippedStyles);
+assertIconButtonCSS(shippedStyles);
+${assertToggleCSS.toString()}
+${assertSelectCSS.toString()}
+assertSelectCSS(shippedStyles);
+assertButtonCSS(shippedStyles);
+assertAvatarCSS(shippedStyles);
 assertGaugeCSS(shippedStyles);
 assertIconCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
@@ -1530,6 +2157,7 @@ assertSpinnerCSS(shippedStyles);
 assertLogoCSS(shippedStyles);
 assertStatusDotCSS(shippedStyles);
 assertKbdCSS(shippedStyles);
+assertSliderCSS(shippedStyles);
 assertRadioGroupCSS(shippedStyles);
 assertSwitchCSS(shippedStyles);
 assertTooltipCSS(shippedStyles);
@@ -1537,6 +2165,7 @@ assertProgressBarCSS(shippedStyles);
 assertTextareaCSS(shippedStyles);
 assertInputCSS(shippedStyles);
 assertProductMarkCSS(shippedStyles);
+assertToggleCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -1556,6 +2185,39 @@ for (const source of map.sources) {
 }
 console.log(JSON.stringify({ ui: ui.version, react: (await import('react')).version, dedup: ['react', 'react-dom'], externalReact: true }));
 `;
+
+function assertLinkCSS(css) {
+  for (const selector of [
+    '.border-b',
+    '.border-border-brand',
+    '.text-label-default',
+    '.no-underline',
+    '.cursor-pointer',
+    '.transform-none',
+    String.raw`.pb-0\.5`,
+    String.raw`.transition-\[border-color\,color\]`,
+    String.raw`.transition-\[translate\]`,
+    String.raw`.duration-\(--duration-fast\)`,
+    String.raw`.duration-\(--duration-base\)`,
+    String.raw`.hover\:border-fg-brand-default`,
+    String.raw`.hover\:text-primitive-red-200`,
+    String.raw`.group-hover\/link\:translate-x-0\.5`,
+    String.raw`.group-hover\/link\:-translate-y-0\.5`,
+    String.raw`.motion-reduce\:translate-none`,
+    String.raw`.motion-reduce\:transition-none`,
+    String.raw`.focus-visible\:\[box-shadow\:var\(--shadow-focus\)\]`,
+    String.raw`.focus-visible\:rounded-sm`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Link utility ' + selector);
+  }
+  assert.match(css, /\.transform-none\s*\{[^}]*transform:\s*none/);
+  assert.match(css, /translate:\s*var\(--tw-translate-x\) var\(--tw-translate-y\)/);
+  assert.match(css, /transition-property:\s*border-color,\s*color/);
+  assert.match(css, /transition-property:\s*translate/);
+  assert.match(css, /transition-duration:\s*var\(--duration-fast\)/);
+  assert.match(css, /transition-duration:\s*var\(--duration-base\)/);
+  assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);
+}
 
 const ssr = `
 import assert from 'node:assert/strict';
@@ -1679,7 +2341,7 @@ try {
   assert.equal(search.getAttribute('aria-label'), 'Search', 'The trigger keeps its own name');
   assert.equal(search.getAttribute('data-state'), 'closed');
   assert.equal(search.hasAttribute('aria-describedby'), false);
-  assert.equal(tooltipDocument.window.document.querySelector('[role="tooltip"], .eg-tooltip'), null);
+  assert.ok(tooltipDocument.window.document.querySelector('[role="tooltip"], .eg-tooltip') === null);
   assert.ok(!tooltipDocument.serialize().includes('Search the catalogue'), 'Closed content is not server-rendered');
 } finally {
   tooltipDocument.window.close();
@@ -1725,12 +2387,84 @@ try {
   semanticDivider.window.close();
 }
 const html = renderToString(createElement(App));
+const toggleDocument = new JSDOM(html);
+try {
+  const document = toggleDocument.window.document;
+  const toggle = document.getElementById('toggle-default');
+  assert.equal(toggle.tagName, 'BUTTON');
+  assert.ok(toggle.classList.contains('eg-toggle'));
+  assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+  assert.equal(document.getElementById('toggle-controlled').getAttribute('data-state'), 'on');
+  assert.equal(document.getElementById('toggle-disabled').textContent, 'Pin layer');
+  assert.ok(document.getElementById('toggle-disabled').disabled);
+} finally {
+  toggleDocument.window.close();
+}
 for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"', 'Review capacity', 'eg-aspect-ratio', 'min-w-0', 'padding-bottom:100%', 'Email address', 'eg-stack', 'flex-col', 'flex-nowrap', 'gap-4', 'eg-cluster', 'flex-row', 'flex-wrap', 'gap-6', 'items-start', 'justify-between', 'eg-icon', 'viewBox="0 0 24 24"', 'Search status', 'eg-surface', 'bg-surface-1', 'bg-surface-overlay', 'shadow-[var(--shadow-well)]']) {
   assert.ok(html.includes(text), 'SSR must render ' + text);
 }
 const dom = new JSDOM(html);
 try {
   const document = dom.window.document;
+  const iconButtons = document.querySelectorAll('.eg-icon-btn');
+  assert.equal(iconButtons.length, 15, 'All IconButton treatments/sizes, disabled button and two slotted links render');
+  for (const button of iconButtons) {
+    assert.equal(button.textContent, 'Search');
+    assert.equal(button.hasAttribute('aria-label'), false, 'AccessibleIcon hidden text supplies the name');
+    assert.equal(button.querySelector('svg').getAttribute('aria-hidden'), 'true');
+    assert.equal(button.querySelector('svg').getAttribute('focusable'), 'false');
+    assert.equal(button.querySelector('span').style.position, 'absolute', 'Radix owns the hidden label');
+    assert.equal(button.hasAttribute('aria-pressed'), false);
+    if (button.tagName === 'BUTTON') assert.equal(button.getAttribute('type'), 'button');
+  }
+  const iconLink = document.getElementById('icon-button-link');
+  assert.equal(iconLink.tagName, 'A');
+  assert.equal(iconLink.getAttribute('href'), '#search');
+  assert.equal(iconLink.hasAttribute('type'), false);
+  assert.equal(document.getElementById('icon-button-disabled-link').getAttribute('tabindex'), '-1');
+  const select = document.getElementById('select-default');
+  assert.equal(select.tagName, 'BUTTON');
+  assert.equal(select.getAttribute('role'), 'combobox');
+  assert.equal(select.getAttribute('aria-expanded'), 'false');
+  assert.ok(select.classList.contains('eg-select') && select.classList.contains('min-h-11'));
+  assert.ok(select.classList.contains('w-auto') && select.classList.contains('mb-3'));
+  assert.ok(!select.classList.contains('w-full') && !select.classList.contains('mb-1'));
+  assert.ok(select.querySelector('svg.eg-icon[aria-hidden="true"]'), 'Select composes the decorative Icon');
+  assert.ok(document.getElementById('select-compact').textContent.includes('Choose visibility'));
+  assert.ok(document.getElementById('select-compact').classList.contains('min-h-9'));
+  assert.ok(document.getElementById('select-disabled').disabled);
+  const checkbox = document.getElementById('checkbox-default');
+  assert.ok(checkbox?.classList.contains('eg-checkbox'), 'SSR must retain Checkbox');
+  assert.equal(checkbox.tagName, 'BUTTON');
+  assert.equal(checkbox.getAttribute('role'), 'checkbox');
+  assert.equal(checkbox.getAttribute('aria-checked'), 'false');
+  const mixedCheckbox = document.getElementById('checkbox-mixed');
+  assert.equal(mixedCheckbox.getAttribute('aria-checked'), 'mixed');
+  assert.equal(mixedCheckbox.querySelector('span').getAttribute('data-state'), 'indeterminate');
+  assert.equal(mixedCheckbox.querySelectorAll('svg[aria-hidden="true"]').length, 2);
+  assert.equal(document.getElementById('checkbox-form').querySelector('input').getAttribute('name'), 'notify');
+  const link = document.getElementById('link-native');
+  assert.equal(link.tagName, 'A');
+  assert.equal(link.getAttribute('href'), '#docs');
+  assert.ok(link.classList.contains('eg-link') && link.classList.contains('mt-4') && !link.classList.contains('mt-2'));
+  assert.equal(link.textContent, 'Documentation');
+  assert.equal(link.querySelector('svg').getAttribute('aria-hidden'), 'true');
+  assert.ok(link.querySelector('svg').classList.contains('size-4'));
+  assert.ok(link.querySelector('svg').classList.contains('transform-none'));
+  assert.ok(document.getElementById('link-plain').querySelector('svg') === null);
+  for (const id of ['link-external', 'link-router']) {
+    const external = document.getElementById(id);
+    assert.equal(external.tagName, 'A');
+    assert.equal(external.getAttribute('target'), '_blank');
+    assert.ok(external.rel.split(' ').includes('noopener') && external.rel.split(' ').includes('noreferrer'));
+    assert.ok(external.rel.split(' ').includes('author'));
+    assert.equal(external.querySelector('span').style.position, 'absolute');
+    assert.equal(external.querySelector('span').textContent, id === 'link-router' ? '(new window)' : '(opens in a new tab)');
+    assert.ok(external.querySelector('svg').innerHTML.includes('M7 17 17 7'));
+  }
+  assert.equal(document.getElementById('link-router').getAttribute('href'), '#router');
+  ${assertBadgeDOM.toString()}
+  assertBadgeDOM(document);
   const normal = document.querySelector('.eg-gauge[aria-label="Capacity"]');
   assert.equal(normal.getAttribute('role'), 'meter');
   assert.equal(normal.getAttribute('data-state'), 'normal');
@@ -1887,6 +2621,18 @@ for (const frame of [square, wide]) {
   assert.equal(nativeSpinner.getAttribute('title'), 'Uploading');
   assert.equal(nativeSpinner.getAttribute('lang'), 'en');
   assert.ok(nativeSpinner.className.endsWith('ms-2 consumer-spinner'), 'Consumer layout classes merge last');
+  const sliderRoot = document.getElementById('packed-slider');
+  assert.ok(sliderRoot, 'SSR renders Slider root');
+  const sliderThumb = sliderRoot.querySelector('[role="slider"]');
+  assert.equal(sliderThumb.getAttribute('aria-label'), 'Volume');
+  assert.equal(sliderThumb.getAttribute('aria-valuemin'), '0');
+  assert.equal(sliderThumb.getAttribute('aria-valuemax'), '100');
+  assert.equal(sliderThumb.getAttribute('aria-valuetext'), '40 percent');
+  assert.equal(sliderThumb.getAttribute('aria-describedby'), 'slider-hint');
+  assert.equal(sliderRoot.hasAttribute('aria-describedby'), false);
+  assert.equal(sliderThumb.style.display, 'none', 'Radix reveals the thumb after its collection mounts');
+  assert.equal(sliderRoot.querySelector('input').name, 'volume');
+  assert.ok(sliderRoot.classList.contains('w-64') && !sliderRoot.classList.contains('w-full'));
   const moduleStates = document.querySelector('ul[aria-label="Module states"]');
   assert.ok(moduleStates, 'SSR must render StatusDot samples');
   const dots = [...moduleStates.querySelectorAll('.eg-status-dot')];
@@ -1944,6 +2690,21 @@ for (const frame of [square, wide]) {
     assert.equal(key.getAttribute('tabindex'), null);
     assert.equal(key.hasAttribute('data-state'), false);
   }
+  const nativeButton = document.getElementById('button-native');
+  assert.equal(nativeButton.tagName, 'BUTTON');
+  assert.equal(nativeButton.getAttribute('type'), 'button');
+  assert.ok(nativeButton.classList.contains('eg-btn') && nativeButton.classList.contains('min-h-10'));
+  assert.equal(nativeButton.querySelector('.eg-btn__icon').getAttribute('aria-hidden'), 'true');
+  const loadingButton = document.getElementById('button-loading');
+  assert.equal(loadingButton.getAttribute('aria-busy'), 'true');
+  assert.equal(loadingButton.getAttribute('aria-disabled'), 'true');
+  assert.ok(!loadingButton.hasAttribute('disabled') && loadingButton.querySelector('.eg-spinner'));
+  assert.ok(document.getElementById('button-disabled').hasAttribute('disabled'));
+  const buttonLink = document.getElementById('button-link');
+  assert.equal(buttonLink.tagName, 'A');
+  assert.equal(buttonLink.getAttribute('href'), '#projects');
+  assert.equal(buttonLink.hasAttribute('type'), false);
+  assert.ok(buttonLink.firstElementChild.classList.contains('eg-btn__icon'));
   const nativeKbd = document.getElementById('kbd-native');
   assert.equal(nativeKbd.getAttribute('title'), 'Close dialog');
   assert.ok(nativeKbd.className.startsWith('eg-kbd '), 'The public marker leads the root classes');
@@ -2170,6 +2931,26 @@ for (const frame of [square, wide]) {
     assert.equal(node.getAttribute('role'), null);
     assert.equal(node.hasAttribute('tabindex') || node.hasAttribute('aria-live') || node.hasAttribute('aria-level'), false);
   }
+  for (const [size, disc, glyph] of [
+    ['sm', 'size-6', 'size-3.25'], ['md', 'size-7.5', 'size-4'],
+    ['lg', 'size-10', 'size-(--icon-size)'], ['xl', 'size-12', 'size-6']
+  ]) {
+    const identity = document.getElementById('avatar-' + size);
+    assert.equal(identity.getAttribute('role'), 'img');
+    assert.equal(identity.getAttribute('aria-label'), 'Example channel');
+    assert.ok(identity.classList.contains(disc));
+    assert.ok(identity.querySelector('svg').classList.contains(glyph));
+    assert.equal(identity.querySelector('img') === null, true, 'SSR must render fallback, not an unloaded image');
+  }
+  const decorativeAvatar = document.getElementById('avatar-decorative');
+  assert.equal(decorativeAvatar.getAttribute('aria-hidden'), 'true');
+  assert.equal(decorativeAvatar.getAttribute('role'), null);
+  const pausedAvatar = document.getElementById('avatar-paused');
+  assert.equal(pausedAvatar.getAttribute('data-state'), 'paused');
+  assert.equal(pausedAvatar.getAttribute('aria-label'), 'Channel on LinkedIn, paused');
+  assert.equal(pausedAvatar.querySelector('.eg-avatar__badge').getAttribute('aria-hidden'), 'true');
+  assert.equal(pausedAvatar.querySelector('.eg-avatar__badge svg').getAttribute('aria-hidden'), 'true');
+  assert.equal(pausedAvatar.hasAttribute('tabindex'), false);
   const decorativeIcon = document.getElementById('icon-decorative');
   assert.ok(decorativeIcon, 'SSR must render the decorative Icon');
   assert.equal(decorativeIcon.tagName.toLowerCase(), 'svg');
@@ -2225,7 +3006,7 @@ for (const value of [NaN, Infinity, -Infinity]) {
   assert.ok(rendered.includes('Disconnected capacity') && rendered.includes('Data unavailable'));
   assert.doesNotMatch(rendered, /role="meter"|aria-value(?:now|min|max|text)=|eg-gauge-arc|--eg-gauge-value|Hidden condition|Hidden center|aria-live=|<button|tabindex=/);
 }
-console.log(JSON.stringify({ ssr: ['Gauge finite, bounded and unavailable', 'decorative centers', 'visible conditions'], bytes: html.length }));
+console.log(JSON.stringify({ ssr: ['Gauge finite, bounded and unavailable', 'decorative centers', 'visible conditions', 'Checkbox binary/mixed ARIA, Icon indicator and form input', 'Badge defaults and twelve passive tone/treatment combinations with decorative icons', 'Slider bounds, formatted name and Radix server-hidden thumb'], bytes: html.length }));
 `;
 
 const csr = `
@@ -2234,36 +3015,99 @@ import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 const stage = (csrStage) => console.log(JSON.stringify({ csrStage }));
 stage('setup:start');
 const dom = new JSDOM('<div id="app"></div>', { url: 'http://localhost/', pretendToBeVisual: true });
-for (const name of ['window', 'document', 'navigator', 'HTMLElement', 'HTMLFormElement', 'Element', 'Node', 'Event', 'CustomEvent', 'KeyboardEvent', 'MutationObserver']) {
+for (const name of ['window', 'document', 'navigator', 'HTMLElement', 'Element', 'Node', 'Event', 'CustomEvent', 'MutationObserver', 'HTMLFormElement', 'HTMLSelectElement', 'HTMLInputElement', 'DocumentFragment', 'NodeFilter', 'KeyboardEvent', 'FormData', 'File']) {
   Object.defineProperty(globalThis, name, { configurable: true, value: dom.window[name] });
 }
 for (const name of ['getComputedStyle', 'requestAnimationFrame', 'cancelAnimationFrame']) {
   globalThis[name] = dom.window[name].bind(dom.window);
 }
-// jsdom has no layout observers; Radix Popper (Tooltip) measures through ResizeObserver.
+// jsdom has no layout observers; Radix Slider and Tooltip measure through ResizeObserver.
 globalThis.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} };
+// Geometry-only jsdom shims; real Radix interaction remains installed and unmocked.
+HTMLElement.prototype.scrollIntoView = () => {};
+HTMLElement.prototype.hasPointerCapture = () => false;
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
-const { Label, Slot, Slottable } = await import('@egdev/ui');
+const { Avatar, Badge, Button, Icon, Label, Link, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, DropzoneSamples, RadioGroupSamples, SwitchSamples, TooltipSamples, aspectWideRef, hiddenNoteRef, inputChanges, inputRef, receivedFiles, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, textareaChanges, textareaRef, tooltipRecipe } = await import('./consumer.ts');
+const { App, DropzoneSamples, RadioGroupSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
   stage('mount:start');
   await act(async () => root.render(createElement(App)));
   stage('mount:complete');
+  ${assertBadgeDOM.toString()}
+  assertBadgeDOM(document);
   assert.ok(hiddenNoteRef.current instanceof HTMLElement, 'The public ref must expose an HTMLElement');
   assert.equal(hiddenNoteRef.current?.tagName, 'SPAN');
   assert.ok(slottedHeadingRef.current instanceof HTMLElement);
   assert.equal(slottedHeadingRef.current?.tagName, 'H2', 'The slotted ref must expose the h2 host');
-  const buttons = [...document.querySelectorAll('button')];
-  assert.equal(buttons.length, 4, 'Only intrinsic consumer and Cluster harness controls may be focusable');
+  const buttons = [...document.querySelectorAll('button:not(.eg-checkbox)')];
+  assert.equal(buttons.length, 26, 'Existing harness controls plus three Button hosts, three Select triggers, three Toggle controls and thirteen native IconButton hosts');
+  assert.ok(buttonRef.current === document.getElementById('button-native'), 'Native Button ref reaches the button on both React majors');
+  assert.ok(buttonLinkRef.current === document.getElementById('button-link'), 'Slotted Button ref reaches the anchor on both React majors');
+  const toggle = document.getElementById('toggle-default');
+  assert.ok(toggleRef.current === toggle, 'Toggle ref targets the actual button on this React major');
+  assert.equal(toggle.tagName, 'BUTTON');
+  assert.equal(toggle.getAttribute('aria-pressed'), 'false');
+  await act(async () => toggle.click());
+  assert.equal(toggle.getAttribute('aria-pressed'), 'true');
+  assert.equal(toggle.getAttribute('data-state'), 'on');
+  const controlledToggle = document.getElementById('toggle-controlled');
+  await act(async () => controlledToggle.click());
+  assert.equal(controlledToggle.getAttribute('aria-pressed'), 'true', 'Controlled state needs incoming updates');
+  const disabledToggle = document.getElementById('toggle-disabled');
+  await act(async () => disabledToggle.click());
+  assert.equal(disabledToggle.getAttribute('aria-pressed'), 'true');
+  assert.ok(disabledToggle.disabled);
+  assert.equal(disabledToggle.textContent, 'Pin layer');
   buttons[0].focus();
   assert.ok(document.activeElement === buttons[0], 'First intrinsic button must receive focus');
   buttons[1].focus();
   assert.ok(document.activeElement === buttons[1], 'Last intrinsic button must receive focus');
+  stage('icon-button:activation:start');
+  const iconAction = document.getElementById('icon-button-ghost-md');
+  const iconLink = document.getElementById('icon-button-link');
+  assert.ok(iconButtonRef.current === iconAction, 'IconButton native ref must reach the button on each React major');
+  assert.ok(iconButtonLinkRef.current === iconLink, 'IconButton asChild ref must reach the anchor');
+  iconAction.focus();
+  assert.ok(document.activeElement === iconAction, 'Native icon action accepts focus');
+  await act(async () => { iconAction.click(); iconLink.click(); document.getElementById('icon-button-disabled').click(); });
+  assert.deepEqual(iconButtonCalls, ['button', 'child', 'root']);
+  const disabledIconLink = document.getElementById('icon-button-disabled-link');
+  assert.equal(disabledIconLink.tabIndex, -1);
+  assert.equal(disabledIconLink.getAttribute('aria-disabled'), 'true');
+  const disabledClick = new dom.window.MouseEvent('click', { bubbles: true, cancelable: true });
+  await act(async () => disabledIconLink.dispatchEvent(disabledClick));
+  assert.equal(disabledClick.defaultPrevented, true, 'Disabled anchor blocks navigation');
+  assert.deepEqual(iconButtonCalls, ['button', 'child', 'root'], 'Neither disabled root nor child may activate');
+  stage('icon-button:activation:complete');
+  stage('checkbox:interaction:start');
+  const checkbox = document.getElementById('checkbox-default');
+  assert.ok(checkboxRef.current === checkbox, 'Checkbox ref must target the button on both React majors');
+  assert.equal(checkbox.tagName, 'BUTTON');
+  assert.equal(checkbox.getAttribute('aria-checked'), 'false');
+  await act(async () => checkbox.click());
+  assert.equal(checkbox.getAttribute('aria-checked'), 'true');
+  assert.equal(checkbox.querySelector('span').getAttribute('data-state'), 'checked');
+  assert.equal(document.getElementById('checkbox-mixed').getAttribute('aria-checked'), 'mixed');
+  const disabledCheckbox = document.getElementById('checkbox-disabled');
+  await act(async () => disabledCheckbox.click());
+  assert.equal(disabledCheckbox.getAttribute('aria-checked'), 'true');
+  assert.equal(disabledCheckbox.disabled, true);
+  const form = document.getElementById('checkbox-form');
+  const field = document.getElementById('checkbox-form-control');
+  assert.equal(form.querySelector('input').required, true);
+  assert.equal(new dom.window.FormData(form).get('notify'), null);
+  await act(async () => form.querySelector('label').click());
+  assert.equal(field.getAttribute('aria-checked'), 'true');
+  assert.equal(new dom.window.FormData(form).get('notify'), 'yes');
+  assert.ok(field.classList.contains('ms-2') && !field.classList.contains('ms-1'));
+  await act(async () => form.reset());
+  assert.equal(field.getAttribute('aria-checked'), 'false');
+  stage('checkbox:interaction:complete');
   stage('gauge:rerender:start');
   const measurement = () => document.querySelector('section[aria-label="Measurements"] > .eg-gauge');
   assert.equal(measurement().getAttribute('aria-valuenow'), '42.5');
@@ -2368,7 +3212,7 @@ try {
   assert.ok(!csrPulseStatic.className.includes('animate-pulse'), 'The CSR pulse:false Skeleton must stay static');
   stage('spinner:rerender:start');
   const busyHost = () => document.getElementById('busy-save');
-  assert.equal(document.querySelectorAll('.eg-spinner').length, 6, 'Consumer Spinners must mount');
+  assert.equal(document.querySelectorAll('section[aria-label="Activity indicators"] .eg-spinner').length, 6, 'Standalone consumer Spinners must mount; Button owns another decorative Spinner');
   assert.equal(busyHost().querySelectorAll('.eg-spinner').length, 1);
   await act(async () => root.render(createElement(App, { gaugeValue: 42.5, spinnerLoading: false })));
   assert.equal(busyHost().getAttribute('aria-busy'), 'false');
@@ -2396,6 +3240,36 @@ try {
   }
   assert.equal(document.getElementById('kbd-command').children[0].getAttribute('aria-hidden'), 'true');
   stage('kbd:passive:complete');
+  stage('slider:keyboard:start');
+  const sliderRoot = document.getElementById('packed-slider');
+  const sliderThumb = sliderRoot.querySelector('[role="slider"]');
+  assert.equal(sliderThumb.getAttribute('aria-label'), 'Volume');
+  assert.equal(sliderThumb.getAttribute('aria-describedby'), 'slider-hint');
+  assert.equal(sliderRoot.hasAttribute('aria-describedby'), false);
+  assert.equal(sliderThumb.getAttribute('aria-valuenow'), '40');
+  assert.equal(sliderThumb.getAttribute('aria-valuetext'), '40 percent');
+  assert.equal(sliderThumb.tabIndex, 0);
+  assert.ok(sliderRoot.classList.contains('eg-slider') && sliderRoot.classList.contains('w-64'));
+  assert.ok(!sliderRoot.classList.contains('w-full') && !sliderRoot.classList.contains('w-48'));
+  await act(async () => {
+    sliderThumb.focus();
+    sliderThumb.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+  });
+  assert.ok(document.activeElement === sliderThumb, 'Radix keeps focus on the thumb');
+  assert.equal(sliderThumb.getAttribute('aria-valuenow'), '41');
+  assert.equal(sliderThumb.getAttribute('aria-valuetext'), '41 percent');
+  assert.deepEqual(sliderEvents, [41], 'The callback is scalar on both React majors');
+  assert.deepEqual(sliderCommits, [41]);
+  assert.equal(new dom.window.FormData(document.getElementById('slider-form')).get('volume'), '41');
+  const fixedSlider = document.querySelector('#packed-controlled-slider [role="slider"]');
+  assert.equal(fixedSlider.getAttribute('aria-valuenow'), '100', 'Controlled values clamp without incoming callbacks');
+  const disabledSlider = document.querySelector('#packed-disabled-slider [role="slider"]');
+  assert.equal(disabledSlider.hasAttribute('tabindex'), false);
+  assert.equal(disabledSlider.hasAttribute('data-disabled'), true);
+  await act(async () => disabledSlider.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true })));
+  assert.equal(disabledSlider.getAttribute('aria-valuenow'), '25');
+  assert.deepEqual(sliderEvents, [41], 'Disabled interaction must not emit');
+  stage('slider:keyboard:complete');
   stage('progress:rerender:start');
   const upload = () => document.getElementById('progress-upload');
   assert.equal(document.querySelectorAll('.eg-progress').length, 6, 'Consumer ProgressBars must mount');
@@ -2488,6 +3362,40 @@ try {
   assert.equal(glyphRoot().querySelector('path')?.getAttribute('d'), 'M5 12h14');
   assert.equal(glyphRoot().getAttribute('tabindex'), null, 'Default Icons never enter the tab order');
   stage('icon:rerender:complete');
+  stage('select:interaction:start');
+  const selectTrigger = document.getElementById('select-default');
+  assert.ok(selectRef.current === selectTrigger, 'Select forwards the HTMLButtonElement ref');
+  assert.equal(selectTrigger.textContent, 'Public');
+  assert.equal(new dom.window.FormData(document.getElementById('visibility-form')).get('visibility'), 'public');
+  assert.equal(new dom.window.FormData(document.getElementById('visibility-form')).has('disabled-visibility'), false);
+  assert.equal(document.getElementById('select-disabled').disabled, true);
+  assert.ok(selectTrigger.classList.contains('mb-3') && !selectTrigger.classList.contains('mb-1'));
+  const key = async (target, key) => {
+    await act(async () => {
+      target.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+    });
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 20)); });
+  };
+  selectTrigger.focus();
+  await key(selectTrigger, 'Enter');
+  const listbox = document.querySelector('[role="listbox"]');
+  assert.ok(listbox?.classList.contains('eg-select-content'), 'Select opens its portalled listbox');
+  assert.ok(!document.getElementById('app').contains(listbox), 'Popup must be outside the application root');
+  const archivedOption = document.querySelector('[role="option"][aria-disabled="true"]');
+  assert.equal(archivedOption.textContent, 'Archived');
+  await key(document.activeElement, 'End');
+  assert.equal(document.activeElement.textContent, 'Private', 'End skips the disabled final option');
+  await key(document.activeElement, 'Enter');
+  assert.ok(!document.querySelector('[role="listbox"]'), 'Selection closes the popup');
+  assert.ok(document.activeElement === selectTrigger, 'Selection restores trigger focus');
+  assert.equal(selectTrigger.textContent, 'Private');
+  assert.equal(new dom.window.FormData(document.getElementById('visibility-form')).get('visibility'), 'private');
+  await key(selectTrigger, 'Enter');
+  assert.ok(document.querySelector('[role="option"][data-state="checked"] svg[aria-hidden="true"]'), 'Selection has a non-color check');
+  await key(document.activeElement, 'Escape');
+  assert.ok(!document.querySelector('[role="listbox"]'));
+  assert.equal(selectTrigger.textContent, 'Private');
+  stage('select:interaction:complete');
   stage('surface:refs:start');
   const surfaceCard = () => document.querySelector('.eg-surface[aria-label="Material card"]');
   assert.equal(surfaceDivRef.current?.tagName, 'DIV', 'The default Surface ref must expose the div');
@@ -2501,6 +3409,52 @@ try {
   assert.ok(surfaceCard().classList.contains('border-border-hairline-strong'), 'Elevation 3 must use the strong hairline');
   assert.ok(!surfaceCard().classList.contains('shadow-[var(--shadow-edge),var(--shadow-elev-1)]'), 'The replaced elevation recipe must be gone');
   stage('surface:refs:complete');
+  stage('link:refs:start');
+  assert.ok(linkNativeRef.current === document.getElementById('link-native'), 'Native Link ref targets the anchor');
+  assert.ok(linkSlotRef.current === document.getElementById('link-router'), 'Slotted Link ref targets the child anchor');
+  assert.ok(linkChildRef.current === linkSlotRef.current, 'Link and child refs compose on the same anchor');
+  await act(async () => root.render(createElement(App, { linkExternal: false })));
+  assert.equal(document.getElementById('link-external').hasAttribute('target'), false);
+  assert.ok(document.getElementById('link-external').querySelector('span') === null);
+  assert.equal(document.getElementById('link-router').getAttribute('target'), '_self');
+  assert.equal(document.getElementById('link-router').getAttribute('rel'), 'help');
+  assert.ok(document.getElementById('link-router').querySelector('span') === null);
+  stage('link:refs:complete');
+  const avatar = document.getElementById('avatar-paused');
+  assert.equal(avatar.getAttribute('data-state'), 'paused');
+  assert.equal(avatar.querySelector('.eg-avatar__badge').getAttribute('aria-hidden'), 'true');
+  assert.ok(avatar.classList.contains('ms-2') && !avatar.classList.contains('ms-1'));
+  const preloads = [];
+  const BrowserImage = window.Image;
+  window.Image = function () {
+    const image = document.createElement('img');
+    preloads.push(image);
+    return image;
+  };
+  try {
+    await act(async () => root.render(createElement(Avatar, { label: 'Loaded identity', src: 'portrait.png' })));
+    const identity = document.querySelector('.eg-avatar');
+    assert.ok(identity.querySelector('svg'), 'Radix fallback must show while loading');
+    const image = preloads.at(-1);
+    Object.defineProperties(image, { complete: { value: true }, naturalWidth: { value: 100 } });
+    await act(async () => image.dispatchEvent(new window.Event('load')));
+    assert.equal(identity.querySelector('img').getAttribute('alt'), '');
+    assert.equal(identity.querySelector('img').getAttribute('src'), 'portrait.png');
+    assert.equal(identity.querySelector('svg') === null, true);
+    assert.equal(identity.getAttribute('aria-label'), 'Loaded identity');
+    await act(async () => root.render(createElement(Avatar, { label: 'Paused identity', src: 'broken.png', paused: true })));
+    await act(async () => preloads.at(-1).dispatchEvent(new window.Event('error')));
+    assert.ok(identity.querySelector('svg'), 'Radix fallback must recover after a changed src fails');
+    assert.equal(identity.getAttribute('data-state'), 'paused');
+    await act(async () => root.render(createElement(Avatar)));
+    assert.equal(identity.getAttribute('aria-hidden'), 'true');
+    assert.equal(identity.getAttribute('role'), null);
+    assert.equal(identity.getAttribute('aria-label'), null);
+    assert.equal(identity.getAttribute('data-state'), 'active');
+    assert.equal(identity.getAttribute('tabindex'), null);
+  } finally {
+    window.Image = BrowserImage;
+  }
   console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery'] }));
   const slotRef = createRef();
   const childRef = createRef();
@@ -2518,11 +3472,36 @@ try {
   assert.equal(target.hasAttribute('class'), false);
   assert.ok(slotRef.current === target, 'Slot ref must target the slotted anchor');
   assert.ok(childRef.current === target, 'Child ref must target the slotted anchor');
+  assert.ok(selectRef.current === null, 'Select cleans its trigger ref up on unmount');
   await act(async () => target.click());
   assert.deepEqual(calls, ['child', 'slot']);
   await act(async () => root.render(null));
   assert.ok(slotRef.current === null, 'Slot ref must be cleaned up on unmount');
   assert.ok(childRef.current === null, 'Child ref must be cleaned up on unmount');
+  assert.ok(linkNativeRef.current === null && linkSlotRef.current === null && linkChildRef.current === null, 'All Link refs clean up when App unmounts');
+  const nativeLinkRef = createRef();
+  const slottedLinkRef = createRef();
+  const linkEvents = [];
+  await act(async () => root.render(createElement(Link, { href: '#native', ref: nativeLinkRef,
+    onClick: (event) => { event.preventDefault(); linkEvents.push('native'); } }, 'Native docs')));
+  const nativeLink = document.querySelector('a');
+  assert.ok(nativeLinkRef.current === nativeLink);
+  nativeLink.focus();
+  assert.ok(document.activeElement === nativeLink, 'Native Link can receive focus');
+  await act(async () => nativeLink.click());
+  assert.deepEqual(linkEvents, ['native']);
+  await act(async () => root.render(createElement(Link, { asChild: true, external: true, ref: slottedLinkRef,
+    onClick: () => linkEvents.push('parent'), children: createElement('a', {
+      href: '#router', target: '_self', rel: 'help', onClick: (event) => { event.preventDefault(); linkEvents.push('child'); }
+    }, 'Router docs') })));
+  const routerLink = document.querySelector('a');
+  assert.ok(slottedLinkRef.current === routerLink);
+  assert.equal(routerLink.getAttribute('target'), '_blank');
+  assert.equal(routerLink.getAttribute('rel'), 'help noopener noreferrer');
+  await act(async () => routerLink.click());
+  assert.deepEqual(linkEvents, ['native', 'child', 'parent']);
+  await act(async () => root.render(null));
+  assert.ok(nativeLinkRef.current === null && slottedLinkRef.current === null, 'Native and slotted Link refs clean up');
   stage('tooltip:focus:start');
   await act(async () => root.render(createElement(TooltipSamples)));
   const tooltipTrigger = document.getElementById('tooltip-search');
@@ -2538,7 +3517,7 @@ try {
   assert.ok(bubble.className.startsWith('eg-tooltip '), 'The public marker leads the bubble classes');
   assert.equal(bubble.className, tooltipRecipe, 'The bubble carries the public overlay recipe');
   await act(async () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
-  assert.equal(document.querySelector('[role="tooltip"]'), null, 'Escape closes the tooltip');
+  assert.ok(document.querySelector('[role="tooltip"]') === null, 'Escape closes the tooltip');
   assert.ok(document.activeElement === tooltipTrigger, 'Focus stays on the trigger');
   const moduleTrigger = document.getElementById('tooltip-module');
   await act(async () => moduleTrigger.focus());
@@ -2546,7 +3525,7 @@ try {
   assert.equal(moduleBubble.textContent, 'egdev-publish, running');
   assert.ok(moduleBubble.className.endsWith(' text-center consumer-tooltip'), 'Consumer layout classes merge last');
   await act(async () => root.render(null));
-  assert.equal(document.querySelector('[role="tooltip"]'), null, 'Unmount removes the portaled bubble');
+  assert.ok(document.querySelector('[role="tooltip"]') === null, 'Unmount removes the portaled bubble');
   stage('tooltip:focus:complete');
   stage('dropzone:files:start');
   await act(async () => root.render(createElement(DropzoneSamples)));
@@ -2602,6 +3581,7 @@ try {
   await act(async () => root.render(null));
   stage('dropzone:files:complete');
   // Native label activation: clicking the associated label focuses the named control.
+  assert.ok(toggleRef.current === null, 'Toggle ref cleans up when App unmounts');
   // The Slot scene unmounted App, so remount it before exercising LabelSamples.
   await act(async () => root.render(createElement(App)));
   // The label click must activate the associated control: jsdom forwards the click
@@ -2613,6 +3593,15 @@ try {
   });
   await act(async () => document.querySelector('label[for="consumer-email"]').click());
   assert.equal(activated, 1, 'Label click must activate the associated input exactly once');
+  // Badge changes remain passive; the host owns any announcement of new text.
+  await act(async () => root.render(createElement(Badge, { tone: 'danger', variant: 'solid', icon: createElement(Icon, { name: 'alert', className: 'size-3.5' }) }, 'Failed')));
+  assert.ok(document.querySelector('.eg-badge').classList.contains('bg-status-danger'));
+  await act(async () => root.render(createElement(Badge, null, 'Draft')));
+  const badge = document.querySelector('.eg-badge');
+  assert.equal(badge.getAttribute('data-tone'), 'neutral');
+  assert.ok(badge.classList.contains('bg-fg-secondary/8') && !badge.classList.contains('bg-status-danger'));
+  assert.equal(badge.childElementCount, 0, 'Removed decorative icon leaves no stale wrapper');
+  assert.equal(badge.hasAttribute('aria-live'), false);
   // Label forwards its HTMLLabelElement ref and cleans it up on unmount.
   const labelRef = createRef();
   await act(async () => root.render(createElement(Label, { htmlFor: 'consumer-email', ref: labelRef }, 'Email address')));
@@ -2621,6 +3610,30 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
+  assert.ok(checkboxRef.current === null, 'Checkbox ref must be cleaned up after the App unmounts');
+  console.log(JSON.stringify({ checkbox: ['button ref and cleanup', 'uncontrolled click', 'controlled mixed state', 'disabled activation', 'label activation', 'required and checked-only FormData', 'form reset', 'layout merge'] }));
+  stage('button:activation:start');
+  let buttonCalls = 0;
+  const clickButton = () => { buttonCalls += 1; };
+  await act(async () => root.render(createElement(Button, { onClick: clickButton, children: 'Save' })));
+  const actionButton = document.querySelector('.eg-btn');
+  actionButton.focus();
+  await act(async () => root.render(createElement(Button, { loading: true, onClick: clickButton, children: 'Save' })));
+  assert.ok(document.activeElement === actionButton, 'Loading keeps the native Button focus');
+  await act(async () => actionButton.click());
+  assert.equal(buttonCalls, 0, 'Loading blocks repeated activation');
+  await act(async () => root.render(createElement(Button, { onClick: clickButton, children: 'Save' })));
+  await act(async () => actionButton.click());
+  assert.equal(buttonCalls, 1, 'Activation returns when loading ends');
+  await act(async () => root.render(createElement(Button, { asChild: true, disabled: true, onClick: clickButton,
+    children: createElement('a', { href: '#save', onClick: clickButton }, 'Save') })));
+  const disabledLink = document.querySelector('a.eg-btn');
+  assert.equal(disabledLink.getAttribute('tabindex'), '-1');
+  const blockedEvent = new dom.window.MouseEvent('click', { bubbles: true, cancelable: true });
+  await act(async () => disabledLink.dispatchEvent(blockedEvent));
+  assert.equal(blockedEvent.defaultPrevented, true);
+  assert.equal(buttonCalls, 1, 'Disabled Slot blocks child and Button handlers');
+  stage('button:activation:complete');
   stage('radio-group:start');
   const radioCalls = [];
   const onFormatChange = (next) => radioCalls.push(next);
@@ -2688,7 +3701,7 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup'] }));
+  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -2769,14 +3782,20 @@ const assets = [result].flat().flatMap((bundle) => bundle.output).filter((asset)
 const emitted = assets.map((asset) => String(asset.source)).join('\\n');
 assert.ok(assets.length > 0, 'Vite must emit consumer CSS');
 assert.ok(!emitted.includes('@theme'), 'Native consumption must not need Tailwind to interpret @theme');
+${assertButtonCSS.toString()}
+${assertBadgeCSS.toString()}
+assertBadgeCSS(emitted);
 ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertIconCSS.toString()}
+${assertIconButtonCSS.toString()}
 ${assertSpinnerCSS.toString()}
 ${assertLogoCSS.toString()}
 ${assertStatusDotCSS.toString()}
 ${assertKbdCSS.toString()}
+${assertAvatarCSS.toString()}
+${assertSliderCSS.toString()}
 ${assertRadioGroupCSS.toString()}
 ${assertSwitchCSS.toString()}
 ${assertTooltipCSS.toString()}
@@ -2785,6 +3804,14 @@ ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertProductMarkCSS.toString()}
+assertIconButtonCSS(emitted);
+${assertToggleCSS.toString()}
+${assertSelectCSS.toString()}
+assertSelectCSS(emitted);
+${assertCheckboxCSS.toString()}
+assertCheckboxCSS(emitted);
+assertButtonCSS(emitted);
+assertAvatarCSS(emitted);
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -2798,6 +3825,7 @@ assertSpinnerCSS(emitted);
 assertLogoCSS(emitted);
 assertStatusDotCSS(emitted);
 assertKbdCSS(emitted);
+assertSliderCSS(emitted);
 assertRadioGroupCSS(emitted);
 assertSwitchCSS(emitted);
 assertTooltipCSS(emitted);
@@ -2806,10 +3834,13 @@ assertTextareaCSS(emitted);
 assertInputCSS(emitted);
 assertDropzoneCSS(emitted);
 assertProductMarkCSS(emitted);
+assertToggleCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(emitted);
+${assertLinkCSS.toString()}
+assertLinkCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
 const shipped = readFileSync(new URL('./node_modules/@egdev/tokens/dist/tokens.css', import.meta.url), 'utf8');
 const names = shipped
@@ -2834,6 +3865,10 @@ const tailwind = await build({ configFile: false, logLevel: 'error', plugins: [t
 const twAssets = [tailwind].flat().flatMap((bundle) => bundle.output).filter((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'));
 const twCss = twAssets.map((asset) => String(asset.source)).join(' ');
 assert.ok(twAssets.length > 0, 'Tailwind build must emit CSS');
+assertCheckboxCSS(twCss);
+assertButtonCSS(twCss);
+assertBadgeCSS(twCss);
+assertAvatarCSS(twCss);
 assertGaugeCSS(twCss);
 assertDividerCSS(twCss, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -2843,6 +3878,7 @@ assert.match(
 );
 assertSkeletonCSS(twCss);
 assertIconCSS(twCss);
+assertIconButtonCSS(twCss);
 assert.ok(twCss.includes('.size-4\\\\.5'), 'Tailwind consumer must emit the supported container size override');
 assert.match(twCss, /width:\\s*calc\\(var\\(--space-1\\)\\s*\\*\\s*4\\.5\\)/, 'Container size must use the spacing scale');
 assert.ok(twCss.includes('.text-fg-brand-default'), 'Tailwind consumer must emit the supported inherited color');
@@ -2850,6 +3886,7 @@ assertSpinnerCSS(twCss);
 assertLogoCSS(twCss);
 assertStatusDotCSS(twCss);
 assertKbdCSS(twCss);
+assertSliderCSS(twCss);
 assertRadioGroupCSS(twCss);
 assertSwitchCSS(twCss);
 assertTooltipCSS(twCss);
@@ -2858,10 +3895,13 @@ assertTextareaCSS(twCss);
 assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
 assertProductMarkCSS(twCss);
+assertToggleCSS(twCss);
+assertSelectCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
 assertSurfaceCSS(twCss);
+assertLinkCSS(twCss);
 assertLabelCSS(twCss);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) {
   assert.ok(twCss.includes(selector), 'Tailwind consumer must retain shipped UI selector ' + selector);
