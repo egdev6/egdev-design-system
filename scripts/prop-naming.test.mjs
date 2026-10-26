@@ -35,13 +35,19 @@ const postReceiptUsages = [
   { conventionId: 'main-axis-distribution', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
+  { conventionId: 'surface-elevation', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
+  { conventionId: 'inner-padding', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
+  { conventionId: 'corner-radius', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
+  { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
   {
     conventionId: 'consumer-selected-condition',
     source: 'packages/ui/src/atoms/status-dot/types.ts#StatusDotProps'
   },
-  { conventionId: 'signal-pulse', source: 'packages/ui/src/atoms/status-dot/types.ts#StatusDotProps' }
+  { conventionId: 'signal-pulse', source: 'packages/ui/src/atoms/status-dot/types.ts#StatusDotProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/kbd/types.ts#KbdProps' }
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({
