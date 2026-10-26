@@ -129,6 +129,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect([...new Set(modules)].sort()).toEqual([
       './atoms/gauge',
       './atoms/kbd',
+      './atoms/progress-bar',
       './atoms/spinner',
       './lib/cn',
       './primitives/aspect-ratio',
@@ -150,6 +151,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Kbd',
       'Label',
       'Portal',
+      'ProgressBar',
       'Skeleton',
       'Slot',
       'Slottable',
@@ -159,6 +161,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'VisuallyHidden',
       'cn',
       'labelVariants',
+      'progressBarVariants',
       'surfaceVariants'
     ]);
   });
@@ -821,6 +824,133 @@ describe('Kbd passive metadata contract', () => {
       expect(props[prop], `Kbd native ${prop} must remain available in autodocs`).toBeDefined();
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick', 'variant', 'size']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('ProgressBar passive metadata contract', () => {
+  const controls: Record<string, string> = {
+    size: 'select',
+    edge: 'boolean',
+    value: 'number',
+    label: 'text',
+    valueText: 'text',
+    variant: 'select'
+  };
+
+  it('annotates every own declaration, including both size/edge union branches, with one control', () => {
+    const file = ast(source('atoms/progress-bar/types.ts'));
+    const properties = ownProps(file, ['ProgressBarProps', 'ProgressBarSizeProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual([
+      'size',
+      'edge',
+      'size',
+      'edge',
+      'value',
+      'label',
+      'valueText',
+      'variant'
+    ]);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const directives = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(directives, `ProgressBar.${name} control`).toHaveLength(1);
+      expect(ts.getTextOfJSDocComment(directives[0]?.comment)).toBe(controls[name]);
+      if (!property.questionToken) {
+        expect(
+          tags.some((tag) => tag.tagName.text === 'default'),
+          `${name}: required must not invent @default`
+        ).toBe(false);
+      }
+    }
+    // D7: the lg branch requires size="lg" and narrows edge to false.
+    const lg = properties.filter((property) => property.name.getText(file) === 'size')[1];
+    expect(lg?.questionToken).toBeUndefined();
+    expect(lg?.type?.getText(file)).toBe("'lg'");
+    expect(properties.filter((property) => property.name.getText(file) === 'edge')[1]?.type?.getText(file)).toBe(
+      'false'
+    );
+  });
+
+  it('omits exactly the Radix- and contract-owned div props and exposes no ref or asChild', () => {
+    const file = ast(source('atoms/progress-bar/types.ts'));
+    const alias = file.statements.find(
+      (node) => ts.isTypeAliasDeclaration(node) && node.name.text === 'ProgressBarNativeProps'
+    );
+    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
+      throw new Error('Missing ProgressBarNativeProps declaration');
+    }
+    const omitted: string[] = [];
+    const visit = (node: ts.Node): void => {
+      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
+        const union = node.typeArguments[1];
+        if (union && ts.isUnionTypeNode(union)) {
+          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(alias.type);
+    expect(omitted).toEqual([
+      'children',
+      'role',
+      'aria-valuemin',
+      'aria-valuemax',
+      'aria-valuenow',
+      'aria-valuetext',
+      'aria-label',
+      'aria-labelledby',
+      'aria-hidden',
+      'dangerouslySetInnerHTML'
+    ]);
+    expect(alias.type.getText(file)).toMatch(/ComponentPropsWithoutRef<'div'>/);
+    expect(alias.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild/);
+  });
+
+  it('binds the CVA defaults to the documented sm, default and non-edge presets', () => {
+    // Track and fill defaults merge into one map; size is sm in both configs.
+    expect(defaults(source('atoms/progress-bar/types.ts'), true)).toEqual({
+      size: 'sm',
+      edge: 'false',
+      variant: 'default'
+    });
+  });
+
+  it('extracts the required value, optional own rows, real defaults and documented native rows', () => {
+    const doc = parser
+      .parse(source('atoms/progress-bar/ProgressBar.tsx'))
+      .find((item) => item.displayName === 'ProgressBar');
+    if (!doc) {
+      throw new Error('Missing docgen for ProgressBar');
+    }
+    const { props } = doc;
+    expect(props.value).toMatchObject({ required: true, tags: { control: 'number' } });
+    expect(props.value?.defaultValue ?? null).toBeNull();
+    expect(props.value?.description).toMatch(/clamp to 0–100.*non-finite values are indeterminate/s);
+    for (const prop of ['label', 'valueText']) {
+      expect(props[prop], prop).toMatchObject({ required: false, tags: { control: 'text' } });
+      expect(props[prop]?.type.name, prop).toBe('string');
+      expect(props[prop]?.defaultValue ?? null, prop).toBeNull();
+    }
+    expect(props.label?.description).toMatch(/When omitted, empty or\s+whitespace-only.*decorative/s);
+    expect(props.valueText?.description).toMatch(/When omitted.*"45%"/s);
+    expect(props.size).toMatchObject({ required: false, tags: { control: 'select\nselect', default: 'sm' } });
+    expect(props.size?.type.value?.map((item: { value: string }) => normalize(item.value))).toEqual(['sm', 'lg']);
+    expect(props.size?.defaultValue?.value).toBe('sm');
+    expect(props.variant).toMatchObject({ required: false, tags: { control: 'select', default: 'default' } });
+    expect(props.variant?.type.value?.map((item: { value: string }) => normalize(item.value))).toEqual([
+      'default',
+      'muted'
+    ]);
+    expect(props.edge).toMatchObject({ required: false, tags: { control: 'boolean\nboolean', default: 'false' } });
+    expect(props.edge?.type.name).toBe('boolean');
+    expect(props.edge?.defaultValue?.value).toBe('false');
+    for (const prop of ['id', 'title', 'aria-describedby', 'className', 'style']) {
+      expect(props[prop], `ProgressBar native ${prop} must remain available in autodocs`).toBeDefined();
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'role', 'max', 'getValueLabel', 'aria-label', 'aria-hidden']) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);

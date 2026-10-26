@@ -18,7 +18,8 @@ const components = [
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
-  ['Kbd', 'atoms/kbd']
+  ['Kbd', 'atoms/kbd'],
+  ['ProgressBar', 'atoms/progress-bar']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -78,6 +79,14 @@ const expected: Record<string, Record<string, string | false>> = {
   skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
   spinner: { label: 'text', size: 'select' },
   kbd: { children: 'text', label: 'text' },
+  progressbar: {
+    value: 'number',
+    label: 'text',
+    valueText: 'text',
+    size: 'select',
+    variant: 'select',
+    edge: 'boolean'
+  },
   gauge: {
     label: 'text',
     value: 'number',
@@ -95,6 +104,7 @@ const ownPropCounts: Record<string, number> = {
   skeleton: 3,
   spinner: 2,
   kbd: 2,
+  progressbar: 6,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,
@@ -295,7 +305,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
-    ['Spinner', { size: '"md"' }]
+    ['Spinner', { size: '"md"' }],
+    ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
     const { argTypes, args } = story(name);
     for (const [prop, summary] of Object.entries(defaults)) {
@@ -433,6 +444,27 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains ProgressBar rows, ordered presets and requiredness without injecting args', () => {
+    const { argTypes, args } = story('ProgressBar');
+    expect(argTypes.value?.type).toMatchObject({ name: 'number', required: true });
+    expect(argTypes.value?.control).toEqual({ type: 'number' });
+    expect(argTypes.value?.table?.defaultValue).toBeUndefined();
+    for (const prop of ['label', 'valueText']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'string', required: false });
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+    }
+    expect(argTypes.size?.options).toEqual(['sm', 'lg']);
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['default', 'muted']);
+    expect(argTypes.edge?.type).toMatchObject({ name: 'boolean', required: false });
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'aria-describedby', 'className', 'style']) {
+      expect(argTypes[prop], prop).toEqual(story('ProgressBar', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'role', 'max', 'getValueLabel', 'aria-label', 'aria-hidden']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

@@ -338,7 +338,7 @@
     "radix": "Progress",
     "compone": "—",
     "accion": "mantener",
-    "notas": "Radix Progress da `role=progressbar` y los aria-value*."
+    "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/65): passive Radix Progress bar in percent (clamped 0–100; non-finite values are indeterminate with an empty fill). `label` announces the progressbar, otherwise it is decorative. `size` sm hairline or lg goal well with gradient fill and token bevel, `variant` muted for comparison series and sm-only `edge` strip. Fill scaled through `--eg-progress-value`. No stylesheet."
   },
   {
     "actual": "Gauge",
