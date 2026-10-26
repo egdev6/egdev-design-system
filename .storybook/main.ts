@@ -15,7 +15,9 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   // node_modules declarations is admitted.
   label: ['htmlFor', 'id', 'className'],
   stack: ['id', 'title', 'aria-describedby', 'className', 'style'],
-  cluster: ['id', 'title', 'aria-describedby', 'className', 'style']
+  cluster: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  text: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  heading: ['id', 'title', 'aria-describedby', 'className', 'style']
 };
 const camelCase = (name: string) => name.charAt(0).toLowerCase() + name.slice(1);
 

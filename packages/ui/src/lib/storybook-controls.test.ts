@@ -13,7 +13,9 @@ const components = [
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Cluster', 'primitives/stack'],
   ['Gauge', 'atoms/gauge'],
+  ['Heading', 'primitives/text'],
   ['Stack', 'primitives/stack'],
+  ['Text', 'primitives/text'],
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton']
 ] as const;
@@ -70,6 +72,22 @@ const expected: Record<string, Record<string, string | false>> = {
   },
   stack: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   cluster: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
+  text: {
+    variant: 'select',
+    tone: 'select',
+    accent: 'text',
+    accentBreak: 'boolean',
+    children: false,
+    asChild: 'boolean'
+  },
+  heading: {
+    variant: 'select',
+    tone: 'select',
+    accent: 'text',
+    accentBreak: 'boolean',
+    children: false,
+    level: 'select'
+  },
   visuallyhidden: { children: false, asChild: 'boolean' },
   skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
   gauge: {
@@ -89,7 +107,9 @@ const ownPropCounts: Record<string, number> = {
   skeleton: 3,
   visuallyhidden: 2,
   stack: 4,
-  cluster: 4
+  cluster: 4,
+  text: 6,
+  heading: 6
 };
 const ownPropCount = (name: string): number => {
   const count = ownPropCounts[name.toLowerCase()];
@@ -257,7 +277,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         expect(composed.argTypes[prop]?.type?.name, `${name}.${prop} semantic type`).toBe('string');
       }
     }
-    if (!['VisuallyHidden', 'Stack', 'Cluster'].includes(name)) {
+    if (!['VisuallyHidden', 'Stack', 'Cluster', 'Text'].includes(name)) {
       expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     }
     expect(composed.args).toEqual({});
@@ -283,6 +303,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['AspectRatio', { ratio: '1' }],
     ['Stack', { gap: '4', alignItems: '"stretch"', justifyContent: '"start"', asChild: 'false' }],
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],
+    ['Text', { variant: '"eyebrow"', tone: '"canvas"', accentBreak: 'true', asChild: 'false' }],
+    ['Heading', { variant: '"section"', tone: '"canvas"', accentBreak: 'true', level: '2' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
