@@ -17,6 +17,7 @@
 @source "../packages/ui/src/atoms/product-mark/ProductMark.stories.tsx";
 @source "../packages/ui/src/atoms/progress-bar/ProgressBar.stories.tsx";
 @source "../packages/ui/src/atoms/radio-group/RadioGroup.stories.tsx";
+@source "../packages/ui/src/atoms/select/Select.stories.tsx";
 @source "../packages/ui/src/atoms/slider/Slider.stories.tsx";
 @source "../packages/ui/src/atoms/spinner/Spinner.stories.tsx";
 @source "../packages/ui/src/atoms/status-dot/StatusDot.stories.tsx";

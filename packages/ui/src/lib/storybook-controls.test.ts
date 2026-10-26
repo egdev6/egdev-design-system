@@ -33,6 +33,7 @@ const components = [
   ['Logo', 'atoms/logo'],
   ['ProductMark', 'atoms/product-mark'],
   ['ProgressBar', 'atoms/progress-bar'],
+  ['Select', 'atoms/select'],
   ['StatusDot', 'atoms/status-dot'],
   ['Switch', 'atoms/switch'],
   ['Textarea', 'atoms/textarea'],
@@ -188,6 +189,17 @@ const expected: Record<string, Record<string, string | false>> = {
   textarea: { variant: 'select' },
   input: { size: 'select', variant: 'select', type: 'select', icon: false },
   productmark: { monogram: 'text', label: 'text', href: 'text' },
+  select: {
+    options: false,
+    value: 'text',
+    defaultValue: 'text',
+    onValueChange: false,
+    placeholder: 'text',
+    size: 'select',
+    name: 'text',
+    required: 'boolean',
+    disabled: 'boolean'
+  },
   gauge: {
     label: 'text',
     value: 'number',
@@ -221,6 +233,7 @@ const ownPropCounts: Record<string, number> = {
   textarea: 1,
   input: 4,
   productmark: 3,
+  select: 9,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,
@@ -435,6 +448,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Icon', { size: '"md"', filled: 'false' }],
     ['Input', { size: '"md"', variant: '"default"', type: '"text"' }],
     ['Spinner', { size: '"md"' }],
+    ['Select', { size: '"md"', required: 'false', disabled: 'false' }],
     ['Avatar', { size: '"md"', paused: 'false' }],
     ['Link', { asChild: 'false', external: 'false', arrow: 'true', newTabText: '"(opens in a new tab)"' }],
     ['Logo', { variant: '"wordmark"', size: '"md"', label: '"egdev"' }],
@@ -699,6 +713,34 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Select structured options, callback rows and native naming without inventing defaults', () => {
+    const { argTypes } = story('Select');
+    expect(argTypes.options?.type).toMatchObject({ required: true });
+    expect(argTypes.options?.control).toBe(false);
+    expect(argTypes.onValueChange?.control).toBe(false);
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['md', 'sm']);
+    for (const prop of ['options', 'onValueChange', 'value', 'defaultValue', 'placeholder', 'name']) {
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+      expect(argTypes[prop]?.table?.disable, prop).not.toBe(true);
+    }
+    for (const prop of [
+      'id',
+      'aria-label',
+      'aria-labelledby',
+      'aria-describedby',
+      'aria-invalid',
+      'className',
+      'onFocus',
+      'onBlur'
+    ]) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Select', false).argTypes[prop]);
+    }
+    for (const prop of ['asChild', 'open', 'defaultOpen', 'onOpenChange', 'children', 'dir', 'type', 'onChange']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

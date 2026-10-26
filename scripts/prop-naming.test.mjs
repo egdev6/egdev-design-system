@@ -112,7 +112,13 @@ const postReceiptUsages = [
   { conventionId: 'new-tab-notice', source: 'packages/ui/src/atoms/link/types.ts#LinkProps' },
   { conventionId: 'trailing-arrow', source: 'packages/ui/src/atoms/link/types.ts#LinkProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/product-mark/types.ts#ProductMarkProps' },
-  { conventionId: 'brand-monogram', source: 'packages/ui/src/atoms/product-mark/types.ts#ProductMarkProps' }
+  { conventionId: 'brand-monogram', source: 'packages/ui/src/atoms/product-mark/types.ts#ProductMarkProps' },
+  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' },
+  { conventionId: 'initial-uncontrolled-value', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' },
+  { conventionId: 'interactive-value-change', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' },
+  { conventionId: 'choice-options', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' },
+  { conventionId: 'selection-placeholder', source: 'packages/ui/src/atoms/select/types.ts#SelectProps' }
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({

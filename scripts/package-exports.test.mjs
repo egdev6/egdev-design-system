@@ -46,11 +46,12 @@ function cssBlock(css, opening) {
 
 // Match escaped emitted selectors, not unescaped CVA class names; allow only complete approved utilities.
 const unapprovedTransitionUtility =
-  /\.transition-(?!(?:none|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\])(?=\s*\{))[\w\\]/;
+  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\])(?=\s*\{))[\w\\]/;
 
 test('transition utility guard accepts only the exact approved emitted selectors', () => {
   for (const selector of [
     '.transition-none',
+    '.transition-colors',
     '.transition-opacity',
     '.transition-transform',
     '.transition-shadow',
@@ -68,7 +69,7 @@ test('transition utility guard accepts only the exact approved emitted selectors
 test('transition utility guard rejects unrelated named and arbitrary transitions', () => {
   for (const selector of [
     '.transition-all',
-    '.transition-colors',
+    '.transition-colors-extra',
     '.transition-opacity-extra',
     '.transition-none-extra',
     '.transition-transform-extra',
@@ -125,6 +126,67 @@ test('UI publishes its stable declaration entry and reachable internal declarati
   }
   assert.ok(visited.size > 1, 'Public entry must link to component declarations');
   context.diagnostic(`Checked ${visited.size} reachable declaration files`);
+});
+
+test('UI ships Select token recipes, Radix geometry and precise state utilities', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`));
+  for (const [selector, declaration] of [
+    ['.min-h-11', /min-height:\s*calc\(var\(--space-1\) \* 11\)/],
+    ['.min-h-9', /min-height:\s*calc\(var\(--space-1\) \* 9\)/],
+    ['.pl-3', /padding-left:\s*var\(--space-3\)/],
+    ['.pr-10', /padding-right:\s*var\(--space-10\)/],
+    [String.raw`.py-1\.5`, /padding-block:\s*calc\(var\(--space-1\) \* 1\.5\)/],
+    ['.border-solid', /border-style:\s*solid/],
+    [String.raw`.border-\(length\:--border-width\)`, /border-width:\s*var\(--border-width\)/],
+    [String.raw`.min-w-\[var\(--radix-select-trigger-width\)\]`, /min-width:\s*var\(--radix-select-trigger-width\)/],
+    [
+      String.raw`.max-h-\[var\(--radix-select-content-available-height\)\]`,
+      /max-height:\s*var\(--radix-select-content-available-height\)/
+    ],
+    ['.transition-colors', /transition-property:\s*color, background-color, border-color/],
+    [String.raw`.duration-\[var\(--duration-fast\)\]`, /transition-duration:\s*var\(--duration-fast\)/],
+    [
+      String.raw`.font-\(weight\:--text-body-default--font-weight\)`,
+      /font-weight:\s*var\(--text-body-default--font-weight\)/
+    ]
+  ]) {
+    assert.match(rule(selector), declaration, selector);
+  }
+  for (const text of [
+    'var(--shadow-well)',
+    'var(--shadow-ring-brand)',
+    'var(--shadow-edge-strong)',
+    'var(--shadow-elev-3)',
+    'var(--blur-overlay)',
+    'var(--focus-width)',
+    'var(--color-focus-ring-inverse',
+    'data-highlighted',
+    'data-disabled',
+    'data-placeholder',
+    'data-state="open"',
+    'backdrop-filter: none',
+    'color-mix(in oklab, var(--color-fg-default',
+    '6%',
+    'saturate(150%)'
+  ]) {
+    assert.ok(css.includes(text), `Missing Select CSS ${text}`);
+  }
+  assert.match(utilities, /prefers-reduced-transparency:\s*reduce/);
+  const reduce = cssBlock(utilities, /@media \(prefers-reduced-motion: reduce\)\s*\{/);
+  assert.match(reduce, /motion-reduce\\:transition-none/);
+  assert.doesNotMatch(utilities, /\.eg-select(?:-content)?\s*\{/, 'Select has no stylesheet');
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  assert.ok(exported.Select, 'Select must be public');
+  for (const name of ['selectTriggerVariants', 'selectContentVariants', 'selectItemVariants', 'useSelect']) {
+    assert.equal(exported[name], undefined, `${name} must remain private`);
+  }
+  const types = readFileSync(resolve(root, 'packages/ui/dist/atoms/select/types.d.ts'), 'utf8');
+  for (const name of ['SelectProps', 'SelectOption', 'SelectSize']) {
+    assert.ok(types.includes(`type ${name}`), `${name} must be declared`);
+  }
 });
 
 test('UI publishes its stable JavaScript entry', () => {
@@ -278,6 +340,7 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   // Input/Textarea border-color and box-shadow, Switch track background-color and border-color,
   // and Switch thumb translate and background-color; Slider adds only box-shadow (#68 D8).
   // Link adds only border-color/color and translate (#61); none reach the Skeleton.
+  // Select #67 adds transition-colors only; Skeleton remains static in its own DOM checks.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
@@ -1267,6 +1330,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'ProductMark',
       'ProgressBar',
       'RadioGroup',
+      'Select',
       'Skeleton',
       'Slider',
       'Slot',
@@ -1292,6 +1356,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     ],
     'Only approved components and cn are public runtime exports'
   );
+  assert.equal(exported.Select?.$$typeof, Symbol.for('react.forward_ref'), 'Select forwards the native button ref');
   assert.equal(exported.Checkbox?.$$typeof, Symbol.for('react.forward_ref'), 'Checkbox must forward its button ref');
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
   // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
@@ -1435,6 +1500,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'RadioGroupOption',
     'RadioGroupOrientation',
     'RadioGroupProps',
+    'Select',
+    'SelectOption',
+    'SelectProps',
+    'SelectSize',
     'Skeleton',
     'SkeletonProps',
     'SkeletonSize',

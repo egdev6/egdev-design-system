@@ -36,6 +36,18 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   ],
   input: ['id', 'name', 'placeholder', 'disabled', 'readOnly', 'required', 'className'],
   productMark: ['id', 'title', 'className', 'target', 'rel'],
+  select: [
+    'id',
+    'title',
+    'aria-label',
+    'aria-labelledby',
+    'aria-describedby',
+    'aria-invalid',
+    'className',
+    'onFocus',
+    'onBlur',
+    'form'
+  ],
   slider: ['id', 'title', 'aria-describedby', 'className'],
   // Native props re-exposed in autodocs per component, keyed by camelCase component name.
   // Gauge retains its approved passive measurement list; Label documents the native

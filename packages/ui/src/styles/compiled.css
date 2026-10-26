@@ -18,6 +18,7 @@
 @source "../atoms/product-mark/types.ts";
 @source "../atoms/progress-bar/types.ts";
 @source "../atoms/radio-group/types.ts";
+@source "../atoms/select/types.ts";
 @source "../atoms/slider/types.ts";
 @source "../atoms/spinner/types.ts";
 @source "../atoms/status-dot/types.ts";
