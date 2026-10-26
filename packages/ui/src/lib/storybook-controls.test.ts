@@ -24,7 +24,8 @@ const components = [
   ['Logo', 'atoms/logo'],
   ['StatusDot', 'atoms/status-dot'],
   ['Kbd', 'atoms/kbd'],
-  ['ProductMark', 'atoms/product-mark']
+  ['ProductMark', 'atoms/product-mark'],
+  ['Toggle', 'atoms/toggle']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -104,6 +105,15 @@ const expected: Record<string, Record<string, string | false>> = {
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
   productmark: { monogram: 'text', label: 'text', href: 'text' },
+  toggle: {
+    pressed: 'boolean',
+    defaultPressed: 'boolean',
+    onPressedChange: false,
+    children: false,
+    icon: false,
+    label: 'text',
+    size: 'select'
+  },
   gauge: {
     label: 'text',
     value: 'number',
@@ -125,6 +135,7 @@ const ownPropCounts: Record<string, number> = {
   statusdot: 2,
   kbd: 2,
   productmark: 3,
+  toggle: 7,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,
