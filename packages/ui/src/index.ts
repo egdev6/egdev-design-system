@@ -1,4 +1,5 @@
 // Atoms
+export * from './atoms/button';
 export * from './atoms/gauge';
 export * from './atoms/icon';
 export * from './atoms/kbd';

@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { mergeConfig } from 'vite';
 
 const documentedNativeProps: Record<string, readonly string[]> = {
+  button: ['type', 'disabled', 'onClick', 'id', 'title', 'aria-describedby', 'className', 'name', 'value', 'tabIndex'],
   gauge: ['id', 'title', 'aria-describedby', 'className', 'style'],
   divider: ['id', 'title', 'dir', 'aria-label', 'aria-labelledby', 'className', 'style'],
   aspectRatio: ['id', 'title', 'aria-describedby', 'className', 'style', 'onClick'],

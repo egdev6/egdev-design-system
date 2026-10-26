@@ -3,6 +3,7 @@
 @reference "@egdev/tokens/theme.css";
 
 /* Compile only production CVA classes, never incidental story/test classes. */
+@source "../atoms/button/types.ts";
 @source "../atoms/gauge/types.ts";
 @source "../atoms/icon/types.ts";
 @source "../atoms/kbd/types.ts";
