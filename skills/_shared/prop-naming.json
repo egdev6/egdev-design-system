@@ -681,7 +681,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Checkbox",
+        "type": "(checked: CheckboxCheckedState) => void; CheckboxCheckedState = boolean | 'indeterminate'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/checkbox/types.ts",
+          "symbol": "CheckboxProps",
+          "revision": "sha256:df486dfebaa84cf2584057b59c693549876a81c56537497ee365a6661f393e55"
+        }
+      }
+    ]
   },
   {
     "id": "pressed-state",
