@@ -24,7 +24,9 @@ const tokenTypographySizes = [
   'title-show',
   'title-display',
   'countdown-md',
-  'countdown-sm'
+  'countdown-sm',
+  'quote-pull',
+  'quote-display'
 ];
 
 const mergeClasses = extendTailwindMerge({

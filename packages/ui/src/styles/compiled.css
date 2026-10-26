@@ -21,6 +21,7 @@
 @source "../atoms/logo/types.ts";
 @source "../atoms/product-mark/types.ts";
 @source "../atoms/progress-bar/types.ts";
+@source "../atoms/pull-quote/types.ts";
 @source "../atoms/radio-group/types.ts";
 @source "../atoms/search-trigger/types.ts";
 @source "../atoms/select/types.ts";

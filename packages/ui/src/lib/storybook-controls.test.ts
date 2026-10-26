@@ -39,6 +39,7 @@ const components = [
   ['Logo', 'atoms/logo'],
   ['ProductMark', 'atoms/product-mark'],
   ['ProgressBar', 'atoms/progress-bar'],
+  ['PullQuote', 'atoms/pull-quote'],
   ['Select', 'atoms/select'],
   ['StatusDot', 'atoms/status-dot'],
   ['Switch', 'atoms/switch'],
@@ -230,6 +231,7 @@ const expected: Record<string, Record<string, string | false>> = {
     variant: 'select',
     edge: 'boolean'
   },
+  pullquote: { text: 'text', accent: 'text', source: 'text', variant: 'select', tone: 'select' },
   searchtrigger: { label: 'text', shortcut: 'text', compact: 'boolean' },
   textarea: { variant: 'select' },
   input: { size: 'select', variant: 'select', type: 'select', icon: false },
@@ -290,6 +292,7 @@ const ownPropCounts: Record<string, number> = {
   switch: 7,
   tooltip: 4,
   progressbar: 6,
+  pullquote: 5,
   textarea: 1,
   input: 4,
   productmark: 3,
@@ -510,6 +513,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       { label: '"Drag, paste or upload"', dropLabel: '"Drop here"', multiple: 'false', variant: '"default"' }
     ],
     ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }],
+    ['PullQuote', { variant: '"pull"', tone: '"canvas"' }],
     ['SearchTrigger', { label: '"Search…"', compact: 'false' }],
     ['Textarea', { variant: '"default"' }],
     [
@@ -1028,6 +1032,26 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
     expect(args).toEqual({});
     for (const prop of ['ref', 'asChild', 'open', 'defaultOpen', 'onOpenChange', 'delayDuration', 'align', 'id']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains PullQuote required text, exact choices and inherited native cite without injecting args', () => {
+    const { argTypes, args } = story('PullQuote');
+    expect(argTypes.text?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.text?.table?.defaultValue).toBeUndefined();
+    for (const prop of ['accent', 'source']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'string', required: false });
+      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
+    }
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['display', 'pull']);
+    expect([...(argTypes.tone?.options ?? [])].sort()).toEqual(['canvas', 'raised']);
+    expect(args).toEqual({});
+    for (const prop of ['cite', 'id', 'title', 'lang', 'dir', 'aria-describedby', 'className']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('PullQuote', false).argTypes[prop]);
+    }
+    for (const prop of ['ref', 'asChild', 'children', 'role', 'dangerouslySetInnerHTML', 'level']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });
