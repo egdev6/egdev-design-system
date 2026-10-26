@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
@@ -30,9 +30,12 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Heading, Icon, Input, Kbd, Label, Logo, ProductMark, ProgressBar, RadioGroup, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Tooltip, VisuallyHidden, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Badge, Cluster, Divider, Gauge, Heading, Icon, Input, Kbd, Label, Logo, ProductMark, ProgressBar, RadioGroup, Skeleton, Slider, Slot, Slottable, Spinner, Stack, StatusDot, Surface, Switch, Text, Textarea, Tooltip, VisuallyHidden, badgeVariants, progressBarVariants, radioGroupVariants, sliderVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
+  BadgeProps,
+  BadgeTone,
+  BadgeVariant,
   DividerOrientation,
   DividerProps,
   GaugeProps,
@@ -209,6 +212,31 @@ export function KbdSamples() {
     createElement(Kbd, { children: 'K', label: '', id: 'kbd-k' }), ' to search. ',
     createElement(Kbd, kbdNative));
 }
+const badgeTones: BadgeTone[] = ['neutral', 'info', 'success', 'warning', 'danger', 'brand'];
+const badgeTreatments: BadgeVariant[] = ['soft', 'solid'];
+export const badgeDefaults: BadgeProps = { children: 'Draft' };
+export const badgeRecipe: string = badgeVariants({ tone: 'brand', variant: 'solid' });
+export function BadgeSamples() {
+  return createElement('section', { 'aria-label': 'Static labels' },
+    createElement(Badge, { ...badgeDefaults, id: 'badge-default', title: 'Publication', className: 'mt-1 mt-2 consumer-badge' }),
+    badgeTones.flatMap((tone) => badgeTreatments.map((variant) => createElement(Badge, {
+      key: tone + '-' + variant, tone, variant, id: 'badge-' + tone + '-' + variant,
+      icon: createElement(Icon, { name: 'check', className: 'size-3.5' }), children: 'Published'
+    }))));
+}
+// @ts-expect-error Badge requires visible text content.
+const missingBadgeText: BadgeProps = {};
+// @ts-expect-error Badge has no ref API on either React major.
+const referencedBadge: BadgeProps = { children: 'Draft', ref: createRef<HTMLSpanElement>() };
+// @ts-expect-error Badge is not polymorphic.
+const slottedBadge: BadgeProps = { children: 'Draft', asChild: true };
+// @ts-expect-error The tone family is closed.
+const invalidBadgeTone: BadgeProps = { children: 'Draft', tone: 'critical' };
+// @ts-expect-error Only soft and solid treatments exist.
+const invalidBadgeVariant: BadgeProps = { children: 'Draft', variant: 'outline' };
+// @ts-expect-error Badge has no size axis in v0.1.
+const sizedBadge: BadgeProps = { children: 'Draft', size: 'sm' };
+
 export const sliderSample: SliderProps = {
   label: 'Volume', defaultValue: 40, name: 'volume', id: 'packed-slider',
   'aria-describedby': 'slider-hint', className: 'w-48 w-64 consumer-slider',
@@ -478,6 +506,7 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(SpinnerSamples, { loading: spinnerLoading }),
     createElement(StatusDotSamples, { pulse: statusDotPulse }),
     createElement(KbdSamples),
+    createElement(BadgeSamples),
     createElement(SliderSamples),
     createElement(ProgressBarSamples, { value: progressValue }),
     createElement(TextareaSamples),
@@ -1393,6 +1422,107 @@ function assertSpinnerCSS(css) {
   assert.doesNotMatch(css, /\.eg-spinner[^{]*\{/, 'Spinner has no stylesheet: its marker carries no rule');
 }
 
+// Assert the same static recipe in packed native and Tailwind consumer builds.
+function assertBadgeCSS(css) {
+  const rule = (utility) => {
+    const selector = `.${utility.replace(/[^a-zA-Z0-9_-]/g, (character) => `\\${character}`)}`;
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const match = new RegExp(`${escaped}\\s*\\{([^}]+)`).exec(css);
+    assert.ok(match, `Missing Badge utility ${utility}`);
+    return match[1];
+  };
+  for (const tone of ['fg-secondary', 'status-info', 'status-success', 'status-warning', 'status-danger']) {
+    assert.ok(rule(`text-${tone}`).includes(`var(--color-${tone}`));
+    assert.ok(rule(`bg-${tone}`).includes(`var(--color-${tone}`));
+    for (const [prefix, opacity] of [
+      ['border', '30%'],
+      ['bg', '8%']
+    ]) {
+      const body = rule(`${prefix}-${tone}/${prefix === 'border' ? 30 : 8}`);
+      assert.ok(body.includes(`var(--color-${tone}`) && body.includes(opacity), `${tone} ${opacity}`);
+    }
+  }
+  for (const [utility, token] of [
+    ['text-primitive-red-200', 'color-primitive-red-200'],
+    ['border-alpha-red-22', 'color-alpha-red-22'],
+    ['bg-alpha-red-12', 'color-alpha-red-12'],
+    ['bg-action-primary-solid-bg', 'color-action-primary-solid-bg'],
+    ['text-action-primary-solid-fg', 'color-action-primary-solid-fg'],
+    ['text-fg-on-status', 'color-fg-on-status']
+  ]) {
+    assert.ok(rule(utility).includes(`var(--${token}`), utility);
+  }
+  for (const [utility, factor] of [
+    ['size-3.5', '3.5'],
+    ['gap-1.5', '1.5'],
+    ['py-1.5', '1.5'],
+    ['px-2.5', '2.5']
+  ]) {
+    assert.ok(rule(utility).includes(`calc(var(--space-1) * ${factor})`), utility);
+  }
+  for (const utility of [
+    'inline-flex',
+    'items-center',
+    'shrink-0',
+    'rounded-full',
+    'border',
+    'border-transparent',
+    'whitespace-nowrap',
+    'font-sans',
+    'text-label-default',
+    'shadow-none'
+  ]) {
+    rule(utility);
+  }
+  const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
+  const edge = /--shadow-edge:\s*([^;]+);/.exec(theme)?.[1];
+  assert.ok(edge);
+  assert.ok(
+    rule('shadow-edge').includes(`--tw-shadow: ${edge.replace(/(rgba\([^)]+\))/, 'var(--tw-shadow-color, $1)')};`)
+  );
+  assert.match(rule('shadow-none'), /--tw-shadow:\s*0 0 #0000\s*;/);
+  assert.doesNotMatch(css, /\.eg-badge\s*[,{]/, 'Badge has no stylesheet');
+}
+
+function assertBadgeDOM(document) {
+  const badges = [...document.querySelectorAll('section[aria-label="Static labels"] > .eg-badge')];
+  assert.equal(badges.length, 13, 'Default plus twelve tone/treatment combinations');
+  const plain = document.getElementById('badge-default');
+  assert.equal(plain.textContent, 'Draft');
+  assert.equal(plain.childElementCount, 0, 'No automatic icon');
+  assert.equal(plain.getAttribute('data-tone'), 'neutral');
+  assert.equal(plain.getAttribute('data-variant'), 'soft');
+  assert.equal(plain.getAttribute('title'), 'Publication');
+  assert.ok(plain.classList.contains('mt-2') && !plain.classList.contains('mt-1'));
+  for (const badge of badges) {
+    assert.equal(badge.tagName, 'SPAN');
+    for (const attribute of ['role', 'tabindex', 'aria-live', 'data-state', 'tone', 'variant', 'icon']) {
+      assert.equal(badge.hasAttribute(attribute), false, attribute);
+    }
+    assert.ok(badge.classList.contains('text-label-default'), 'Typography survives foreground merging');
+    const tone = badge.getAttribute('data-tone');
+    const solid = badge.getAttribute('data-variant') === 'solid';
+    const color = tone === 'neutral' ? 'fg-secondary' : 'status-' + tone;
+    assert.ok(badge.classList.contains(solid ? 'shadow-none' : 'shadow-edge'));
+    if (solid) {
+      assert.ok(badge.classList.contains('border-transparent'));
+      assert.ok(badge.classList.contains(tone === 'brand' ? 'bg-action-primary-solid-bg' : 'bg-' + color));
+      assert.ok(badge.classList.contains(tone === 'brand' ? 'text-action-primary-solid-fg' : 'text-fg-on-status'));
+    } else {
+      assert.ok(badge.classList.contains(tone === 'brand' ? 'bg-alpha-red-12' : 'bg-' + color + '/8'));
+      assert.ok(badge.classList.contains(tone === 'brand' ? 'border-alpha-red-22' : 'border-' + color + '/30'));
+      assert.ok(badge.classList.contains(tone === 'brand' ? 'text-primitive-red-200' : 'text-' + color));
+    }
+    if (badge !== plain) {
+      const wrapper = badge.firstElementChild;
+      assert.equal(wrapper.getAttribute('aria-hidden'), 'true');
+      assert.ok(wrapper.classList.contains('size-3.5') && wrapper.classList.contains('shrink-0'));
+      assert.ok(wrapper.querySelector('svg.eg-icon').classList.contains('size-3.5'));
+      assert.equal(badge.lastChild.textContent, 'Published');
+    }
+  }
+}
+
 // RadioGroup ships its row, well/checked radio and indicator token utilities; no RadioGroup stylesheet.
 function assertRadioGroupCSS(css) {
   for (const utility of [
@@ -1476,6 +1606,7 @@ ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AspectRatio',
+  'Badge',
   'Cluster',
   'Divider',
   'Gauge',
@@ -1502,6 +1633,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Textarea',
   'Tooltip',
   'VisuallyHidden',
+  'badgeVariants',
   'cn',
   'labelVariants',
   'progressBarVariants',
@@ -1511,6 +1643,8 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'surfaceVariants',
   'tooltipVariants'
 ]);
+${assertBadgeCSS.toString()}
+assertBadgeCSS(shippedStyles);
 ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
@@ -1714,6 +1848,8 @@ for (const text of ['eg-gauge', '<svg', 'role="meter"', 'aria-label="Capacity"',
 const dom = new JSDOM(html);
 try {
   const document = dom.window.document;
+  ${assertBadgeDOM.toString()}
+  assertBadgeDOM(document);
   const normal = document.querySelector('.eg-gauge[aria-label="Capacity"]');
   assert.equal(normal.getAttribute('role'), 'meter');
   assert.equal(normal.getAttribute('data-state'), 'normal');
@@ -2220,7 +2356,7 @@ for (const value of [NaN, Infinity, -Infinity]) {
   assert.ok(rendered.includes('Disconnected capacity') && rendered.includes('Data unavailable'));
   assert.doesNotMatch(rendered, /role="meter"|aria-value(?:now|min|max|text)=|eg-gauge-arc|--eg-gauge-value|Hidden condition|Hidden center|aria-live=|<button|tabindex=/);
 }
-console.log(JSON.stringify({ ssr: ['Gauge finite, bounded and unavailable', 'decorative centers', 'visible conditions', 'Slider bounds, formatted name and Radix server-hidden thumb'], bytes: html.length }));
+console.log(JSON.stringify({ ssr: ['Gauge finite, bounded and unavailable', 'decorative centers', 'visible conditions', 'Badge defaults and twelve passive tone/treatment combinations with decorative icons', 'Slider bounds, formatted name and Radix server-hidden thumb'], bytes: html.length }));
 `;
 
 const csr = `
@@ -2240,7 +2376,7 @@ globalThis.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
-const { Label, Slot, Slottable } = await import('@egdev/ui');
+const { Badge, Icon, Label, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
 const { App, RadioGroupSamples, SwitchSamples, TooltipSamples, aspectWideRef, hiddenNoteRef, inputChanges, inputRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
@@ -2249,6 +2385,8 @@ try {
   stage('mount:start');
   await act(async () => root.render(createElement(App)));
   stage('mount:complete');
+  ${assertBadgeDOM.toString()}
+  assertBadgeDOM(document);
   assert.ok(hiddenNoteRef.current instanceof HTMLElement, 'The public ref must expose an HTMLElement');
   assert.equal(hiddenNoteRef.current?.tagName, 'SPAN');
   assert.ok(slottedHeadingRef.current instanceof HTMLElement);
@@ -2585,6 +2723,15 @@ try {
   });
   await act(async () => document.querySelector('label[for="consumer-email"]').click());
   assert.equal(activated, 1, 'Label click must activate the associated input exactly once');
+  // Badge changes remain passive; the host owns any announcement of new text.
+  await act(async () => root.render(createElement(Badge, { tone: 'danger', variant: 'solid', icon: createElement(Icon, { name: 'alert', className: 'size-3.5' }) }, 'Failed')));
+  assert.ok(document.querySelector('.eg-badge').classList.contains('bg-status-danger'));
+  await act(async () => root.render(createElement(Badge, null, 'Draft')));
+  const badge = document.querySelector('.eg-badge');
+  assert.equal(badge.getAttribute('data-tone'), 'neutral');
+  assert.ok(badge.classList.contains('bg-fg-secondary/8') && !badge.classList.contains('bg-status-danger'));
+  assert.equal(badge.childElementCount, 0, 'Removed decorative icon leaves no stale wrapper');
+  assert.equal(badge.hasAttribute('aria-live'), false);
   // Label forwards its HTMLLabelElement ref and cleans it up on unmount.
   const labelRef = createRef();
   await act(async () => root.render(createElement(Label, { htmlFor: 'consumer-email', ref: labelRef }, 'Email address')));
@@ -2660,7 +2807,7 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Tooltip focus, Escape, portal and unmount', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Tooltip focus, Escape, portal and unmount', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -2741,6 +2888,8 @@ const assets = [result].flat().flatMap((bundle) => bundle.output).filter((asset)
 const emitted = assets.map((asset) => String(asset.source)).join('\\n');
 assert.ok(assets.length > 0, 'Vite must emit consumer CSS');
 assert.ok(!emitted.includes('@theme'), 'Native consumption must not need Tailwind to interpret @theme');
+${assertBadgeCSS.toString()}
+assertBadgeCSS(emitted);
 ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
@@ -2806,6 +2955,7 @@ const tailwind = await build({ configFile: false, logLevel: 'error', plugins: [t
 const twAssets = [tailwind].flat().flatMap((bundle) => bundle.output).filter((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'));
 const twCss = twAssets.map((asset) => String(asset.source)).join(' ');
 assert.ok(twAssets.length > 0, 'Tailwind build must emit CSS');
+assertBadgeCSS(twCss);
 assertGaugeCSS(twCss);
 assertDividerCSS(twCss, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(

@@ -127,6 +127,7 @@ describe('Storybook TypeScript docgen contract', () => {
     );
     // Each primitive exports its type alias first and runtime component second; dedupe the specifiers.
     expect([...new Set(modules)].sort()).toEqual([
+      './atoms/badge',
       './atoms/gauge',
       './atoms/icon',
       './atoms/input',
@@ -156,6 +157,7 @@ describe('Storybook TypeScript docgen contract', () => {
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
       'AspectRatio',
+      'Badge',
       'Cluster',
       'Divider',
       'Gauge',
@@ -182,6 +184,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Textarea',
       'Tooltip',
       'VisuallyHidden',
+      'badgeVariants',
       'cn',
       'labelVariants',
       'progressBarVariants',
@@ -205,6 +208,57 @@ describe('Storybook TypeScript docgen contract', () => {
       source('primitives/surface/Surface.tsx')
     ]);
   }, 20_000);
+
+  it('extracts every Badge own prop, defaults, native attributes and finite choices from the real source', () => {
+    const file = ast(source('atoms/badge/types.ts'));
+    const properties = ownProps(file, ['BadgeProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['children', 'tone', 'variant', 'icon']);
+    const controls: Record<string, string> = { children: 'false', tone: 'select', variant: 'select', icon: 'false' };
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      expect(
+        tags.filter((tag) => tag.tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment))
+      ).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        expect(
+          tags.some(
+            (tag) =>
+              tag.tagName.text === 'controlReason' &&
+              /ReactNode.*(?:WithIcon|Default)/.test(ts.getTextOfJSDocComment(tag.comment) ?? '')
+          )
+        ).toBe(true);
+      }
+    }
+    const doc = parser.parse(source('atoms/badge/Badge.tsx')).find((item) => item.displayName === 'Badge');
+    expect(doc).toBeDefined();
+    expect(doc?.props.children).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    expect(doc?.props.icon).toMatchObject({ required: false, defaultValue: null, tags: { control: 'false' } });
+    for (const [name, values] of [
+      ['tone', ['neutral', 'info', 'success', 'warning', 'danger', 'brand']],
+      ['variant', ['soft', 'solid']]
+    ] as const) {
+      expect(doc?.props[name]?.type.value.map((item: { value: string }) => normalize(item.value))).toEqual(values);
+      expect(doc?.props[name]).toMatchObject({
+        required: false,
+        defaultValue: { value: values[0] },
+        tags: { control: 'select' }
+      });
+      expect(defaults(source('atoms/badge/types.ts'), true)[name]).toBe(values[0]);
+      expect(defaults(source('atoms/badge/useBadge.ts'), false)[name]).toBe(values[0]);
+    }
+    for (const name of ['id', 'title', 'aria-describedby', 'className']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    expect(doc?.props.ref).toBeUndefined();
+    expect(doc?.props.asChild).toBeUndefined();
+    expect(exportedStoryNames(ast(source('atoms/badge/Badge.stories.tsx')))).toEqual([
+      'Default',
+      'Tones',
+      'Solid',
+      'WithIcon'
+    ]);
+  });
 
   it('annotates each own VisuallyHidden prop without fabricating a content default', () => {
     const file = ast(source('primitives/visually-hidden/types.ts'));

@@ -25,6 +25,7 @@ const components = [
   ['RadioGroup', 'atoms/radio-group'],
   ['Input', 'atoms/input'],
   ['Kbd', 'atoms/kbd'],
+  ['Badge', 'atoms/badge'],
   ['Logo', 'atoms/logo'],
   ['ProductMark', 'atoms/product-mark'],
   ['ProgressBar', 'atoms/progress-bar'],
@@ -84,6 +85,7 @@ const expected: Record<string, Record<string, string | false>> = {
   aspectratio: {
     ratio: 'number'
   },
+  badge: { children: false, tone: 'select', variant: 'select', icon: false },
   stack: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   cluster: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   text: {
@@ -168,6 +170,7 @@ const expected: Record<string, Record<string, string | false>> = {
 };
 const ownPropCounts: Record<string, number> = {
   aspectratio: 1,
+  badge: 4,
   gauge: 8,
   icon: 4,
   skeleton: 3,
@@ -519,6 +522,39 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
+  });
+
+  it('retains Badge choices, required content and optional icon without fabricated args or defaults', () => {
+    const { argTypes, args } = story('Badge');
+    // TypeScript can intern shared literals in earlier components; preserve extracted order, not an invented sort.
+    expect([...(argTypes.tone?.options ?? [])].sort()).toEqual([
+      'brand',
+      'danger',
+      'info',
+      'neutral',
+      'success',
+      'warning'
+    ]);
+    const toneMetadata = component('Badge').__docgenInfo.props.tone;
+    expect(argTypes.tone?.options).toEqual(
+      toneMetadata?.type.value.map((item: { value: string }) => JSON.parse(item.value))
+    );
+    expect(argTypes.variant?.options).toEqual(['soft', 'solid']);
+    expect(argTypes.tone?.table?.defaultValue?.summary).toBe('"neutral"');
+    expect(argTypes.variant?.table?.defaultValue?.summary).toBe('"soft"');
+    expect(argTypes.children?.type?.required).toBe(true);
+    for (const prop of ['children', 'icon']) {
+      expect(argTypes[prop]?.control).toBe(false);
+      expect(argTypes[prop]?.table?.disable).toBeUndefined();
+      expect(argTypes[prop]?.table?.defaultValue).toBeUndefined();
+    }
+    expect(args).toEqual({});
+    for (const prop of ['id', 'title', 'aria-describedby', 'className']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Badge', false).argTypes[prop]);
+    }
+    expect(argTypes.ref).toBeUndefined();
+    expect(argTypes.asChild).toBeUndefined();
   });
 
   it('retains Logo variant/size/label/href rows, the image/link native rows and no naming overrides', () => {
