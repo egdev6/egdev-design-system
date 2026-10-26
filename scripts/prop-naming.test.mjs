@@ -12,6 +12,12 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'initial-uncontrolled-value', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'interactive-value-change', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'committed-value-change', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'measurement-text-equivalent', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
   {
     conventionId: 'aspect-ratio',
     source: 'packages/ui/src/primitives/aspect-ratio/types.ts#AspectRatioProps'
@@ -35,6 +41,20 @@ const postReceiptUsages = [
   { conventionId: 'main-axis-distribution', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#StackProps' },
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/stack/types.ts#ClusterProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
+  { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
+  { conventionId: 'heading-level', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
+  { conventionId: 'trailing-text-accent', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
+  { conventionId: 'trailing-text-accent', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
+  { conventionId: 'accent-line-break', source: 'packages/ui/src/primitives/text/types.ts#TextProps' },
+  { conventionId: 'accent-line-break', source: 'packages/ui/src/primitives/text/types.ts#HeadingProps' },
+  { conventionId: 'icon-glyph-name', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
+  { conventionId: 'filled-glyph', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/icon/types.ts#IconProps' },
   { conventionId: 'surface-material-tone', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
   { conventionId: 'surface-elevation', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
   { conventionId: 'inner-padding', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
@@ -42,13 +62,39 @@ const postReceiptUsages = [
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'choice-options', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'initial-uncontrolled-value', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'interactive-value-change', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'layout-orientation', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'checked-change', source: 'packages/ui/src/atoms/switch/types.ts#SwitchProps' },
+  { conventionId: 'tooltip-content', source: 'packages/ui/src/atoms/tooltip/types.ts#TooltipProps' },
+  { conventionId: 'floating-side', source: 'packages/ui/src/atoms/tooltip/types.ts#TooltipProps' },
+  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  {
+    conventionId: 'measurement-text-equivalent',
+    source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps'
+  },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  { conventionId: 'container-edge-placement', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/textarea/types.ts#TextareaProps' },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/input/types.ts#InputProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/input/types.ts#InputProps' },
+  { conventionId: 'leading-icon', source: 'packages/ui/src/atoms/input/types.ts#InputProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/logo/types.ts#LogoProps' },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/logo/types.ts#LogoProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/logo/types.ts#LogoProps' },
+  {
+    conventionId: 'consumer-selected-condition',
+    source: 'packages/ui/src/atoms/status-dot/types.ts#StatusDotProps'
+  },
+  { conventionId: 'signal-pulse', source: 'packages/ui/src/atoms/status-dot/types.ts#StatusDotProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/kbd/types.ts#KbdProps' },
-  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
-  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
-  { conventionId: 'initial-uncontrolled-value', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
-  { conventionId: 'interactive-value-change', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
-  { conventionId: 'committed-value-change', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
-  { conventionId: 'measurement-text-equivalent', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' }
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/product-mark/types.ts#ProductMarkProps' },
+  { conventionId: 'brand-monogram', source: 'packages/ui/src/atoms/product-mark/types.ts#ProductMarkProps' }
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return registry.map((entry) => ({
@@ -824,7 +870,12 @@ test('Skeleton v0.2 naming receipt records the owner published-spec approval and
         revision: digest(fs.readFileSync(resolve(root, 'packages/ui/src/primitives/skeleton/types.ts')))
       }
     };
-    assert.deepEqual(usages, [implementationUsage]);
+    assert.deepEqual(
+      usages.filter(({ source }) => source.path === implementationUsage.source.path),
+      [implementationUsage]
+    );
+    // Later implementations (StatusDot, #71) append only reviewed post-receipt usages.
+    assert.deepEqual(historicalRegistry([entry])[0].usages, []);
     assert.equal(entry.id, 'signal-pulse');
     assert.equal(entry.name, 'pulse');
     assert.equal(entry.status, 'approved');
@@ -832,7 +883,10 @@ test('Skeleton v0.2 naming receipt records the owner published-spec approval and
     assert.deepEqual(entry.exceptions, []);
   }
   // The implementation commit records exactly one Skeleton usage under signal-pulse.
-  assert.equal(actual.find(({ id }) => id === 'signal-pulse').usages.length, 1);
+  assert.equal(
+    actual.find(({ id }) => id === 'signal-pulse').usages.filter(({ component }) => component === 'Skeleton').length,
+    1
+  );
 });
 
 test('promoting observed usage to existing does not approve or change its proposed convention', () => {

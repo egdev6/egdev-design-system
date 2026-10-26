@@ -24,6 +24,19 @@ Baseline anterior a T1: commit `13cb1252e205c080ea831666aa2ee29f432b4af4`, esque
 | CTA | cta-label | sans | 16px | 1.2 | 700 | 0 |
 | Code | code | mono | 14px | 1.6 | 400 | 0 |
 
+## Fluid Title recipes (Text/Heading #108)
+
+Owner-approved additions for the Text/Heading primitives ([#108](https://github.com/egdev6/egdev-design-system/issues/108) D8/D9). They preserve the exact legacy `.eg-title--*` clamps and tight leading; they do not replace the fixed `display-*` or `heading-section` recipes above. Family (`font-display`) and casing (`uppercase`) stay separate utilities.
+
+| Group | Name | Family | Size | Line height | Weight | Tracking |
+| --- | --- | --- | --- | --- | --- | --- |
+| Title | title-section | display | `clamp(40px, 5.6vw, 64px)` | 0.9 | 800 | 0 |
+| Title | title-hero | display | `clamp(60px, 9vw, 140px)` | 0.86 | 800 | 0 |
+| Title | title-show | display | `clamp(56px, 8.2vw, 132px)` | 0.86 | 800 | 0 |
+| Title | title-display | display | `clamp(64px, 9.6vw, 164px)` | 0.82 | 800 | 0 |
+
+Glyph glow: `--text-shadow-title-hero: 0 0 40px var(--color-alpha-red-30)`, used only by the canvas hero accent through `[text-shadow:var(--text-shadow-title-hero)]`. It is a text shadow, never a box-shadow token. `cn()` registers the four `title-*` sizes in its font-size merge group so they are not mistaken for text colors.
+
 ## Consumir una receta
 
 Para cada nombre `R`, el contrato publica `--text-R`, `--text-R--line-height`, `--text-R--font-weight` y `--text-R--letter-spacing`. Tailwind compila `text-R` con esos cuatro valores; **no añade automáticamente la familia ni las mayúsculas**.

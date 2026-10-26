@@ -45,7 +45,25 @@ Naming usages reuse the existing approved entries: `accessible-name`, `primary-v
 
 Storybook: Default, Controlled, Stepped, WithValueText, Disabled. The real docgen/extraction/enhancer pipeline checks all 11 own props, requiredness, numeric/boolean/text controls, justified false controls, constant defaults and zero owned-metadata diagnostics. Browser Controls widgets: Not evaluated.
 
-## Validation
+## Main integration repair
+
+The bounded PR #158 integration with `origin/main` at `f4d4202` preserves Slider and every implemented main component, including RadioGroup, Switch, Tooltip, ProgressBar, Input, Textarea and the typography/brand atoms. Storybook native-prop filters, source inventories, metadata tests, public exports, production CSS sources, catalogue notes and naming usages are additive unions. Registry convention/exception approvals, receipt pins and reviewed source revisions are unchanged; the generated naming view and catalogue were regenerated from their sources.
+
+The packed fixture keeps one React type import, independent sample functions and strict negative declarations. It retains Slider SSR/keyboard/form scenes alongside main's RadioGroup/Switch submission and reset, Tooltip focus/Escape/portal, ProgressBar rerenders and native input handlers. Shared jsdom FormData, File and ResizeObserver globals remain available through the final Switch scene. The native token inventory remains pinned to 255; DOM identities use boolean assertions only.
+
+The complete-selector transition guard retains its six main permissions and eleven negative cases. The unchanged Slider thumb recipe requires only one additional exact selector, `.transition-shadow`; a suffix negative protects that boundary. No runtime appearance, API, token or dependency was changed to satisfy the guard. Skeleton's no-animation marker rules and reduced-motion checks remain intact.
+
+Repair validation: capped focused Vitest passes **317 tests in 13 files** (Slider, RadioGroup, Switch and library tests); lint, typecheck and registry freshness pass; naming tests pass **82/82**. Full build, export-artifact tests and the packed consumer matrix remain the parent's integration gates, not results of this repair execution. This is not a new TDD lifecycle or browser/visual claim.
+
+### Export-inventory follow-up
+
+Parent job 64 reported passing lint, typecheck, build, **735 unit tests** and **82 naming tests**, followed by an export-test failure; the integrated packed matrix had not executed. Reproducing against those existing artifacts observed **34/35** export tests passing. The failing root-export test omitted the already-approved `sliderVariants` from its expected runtime inventory; inspection found the same omission in its declaration inventory. The emitted package and Slider recipe were correct, including all CSS/transition artifact checks.
+
+The correction adds `sliderVariants` to both exact inventories and checks that the public root recipe remains callable. Negative assertions retain the hook and three private part recipes outside both runtime and declaration exports. The transition guard is unchanged: six main permissions plus exact `transition-shadow`, with all twelve negative selectors preserved. No runtime, appearance, token, dependency, fixture, registry or immutable evidence changes were needed.
+
+Observed follow-up validation: the focused root-export test passes **1/1**, then the complete export suite passes **35/35**, checking 74 reachable declaration files, against the unchanged existing build. These are reproduction/correction results, not a new strict-TDD or browser claim. The integrated packed matrix remains **not executed** and parent-owned; this does not claim all integration gates are green.
+
+## Historical pre-integration validation
 
 The earlier interrupted execution observed RED from missing Slider modules before implementation. The resumed execution observed GREEN: 115 focused tests across Slider and Storybook metadata (15 Slider tests), then 399 tests across 24 full-suite files. Build precedes tests that read artifacts. Export checks pass 20/20; naming checks pass 82/82; the packed matrix passes 12/12. Typecheck and registry freshness pass. All full gates use the parent’s shared lock, timeout and memory cap; packed additionally uses its matrix lock and 2GB cap. Gate receipts and the final lint result are reported in the handoff.
 
