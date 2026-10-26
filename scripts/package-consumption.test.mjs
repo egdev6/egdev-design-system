@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Cluster, Divider, Gauge, Label, Skeleton, Slot, Slottable, Spinner, Stack, VisuallyHidden } from '@egdev/ui';
+import { AspectRatio, Cluster, Divider, Gauge, Label, Logo, Skeleton, Slot, Slottable, Spinner, Stack, VisuallyHidden } from '@egdev/ui';
 import type {
   AspectRatioProps,
   DividerOrientation,
@@ -40,6 +40,9 @@ import type {
   GaugeSize,
   LabelProps,
   LabelVariant,
+  LogoProps,
+  LogoSize,
+  LogoVariant,
   SkeletonProps,
   SkeletonSize,
   SkeletonVariant,
@@ -148,6 +151,17 @@ export function SpinnerSamples({ loading = true }: { loading?: boolean }) {
       loading ? createElement(Spinner, { size: 'sm' }) : null, 'Saving draft'),
     createElement(Spinner, spinnerNative));
 }
+export const logoHome: LogoProps = { href: '#home', label: 'egdev, home', id: 'logo-home', rel: 'home' };
+export const logoNative: LogoProps = { id: 'consumer-logo', title: 'egdev', lang: 'en', className: 'ms-2 consumer-logo' };
+export function LogoSamples() {
+  const sizes: LogoSize[] = ['sm', 'md', 'lg'];
+  const variant: LogoVariant = 'mark';
+  return createElement('section', { 'aria-label': 'Brand logos' },
+    createElement(Logo, { id: 'logo-default' }),
+    sizes.map((size) => createElement(Logo, { key: size, variant, size, id: 'logo-mark-' + size })),
+    createElement(Logo, logoHome),
+    createElement(Logo, logoNative));
+}
 export function VisuallyHiddenSamples() {
   return createElement('section', { 'aria-label': 'Hidden support content' },
     createElement(VisuallyHidden, { ...hiddenNote, ref: hiddenNoteRef }),
@@ -195,6 +209,7 @@ export function App({ gaugeValue, wideRatio, stackGap, dividerSemantic, spinnerL
     createElement(LabelSamples),
     createElement(SkeletonSamples),
     createElement(SpinnerSamples, { loading: spinnerLoading }),
+    createElement(LogoSamples),
     createElement('button', { type: 'button' }, 'After measurements'));
 }
 // @ts-expect-error Skeleton is decorative: it never accepts content.
@@ -237,6 +252,28 @@ const numericSpinner: SpinnerProps = { size: 24 };
 const invalidSpinner: SpinnerProps = { size: 'xl' };
 // @ts-expect-error Color is inherited through currentColor; there is no tone prop (D5).
 const tonedSpinner: SpinnerProps = { tone: 'brand' };
+// @ts-expect-error Logo artwork is component-owned: no children.
+const logoChildren: LogoProps = { children: 'egdev' };
+// @ts-expect-error The image role is component-owned.
+const logoRole: LogoProps = { role: 'presentation' };
+// @ts-expect-error The accessible name comes from label, not aria-label.
+const logoAriaLabel: LogoProps = { 'aria-label': 'egdev' };
+// @ts-expect-error The accessible name comes from label, not aria-labelledby.
+const logoLabelledBy: LogoProps = { href: '/', 'aria-labelledby': 'brand' };
+// @ts-expect-error The image is always exposed; it cannot be hidden.
+const logoHidden: LogoProps = { 'aria-hidden': true };
+// @ts-expect-error Anchor attributes exist only in link mode, with href.
+const logoTarget: LogoProps = { target: '_blank' };
+// @ts-expect-error Logo has no public ref API (D8).
+const referencedLogo: LogoProps = { ref: createRef<HTMLSpanElement>() };
+// @ts-expect-error Router links wrap an unlinked Logo; there is no asChild (D4).
+const slottedLogo: LogoProps = { href: '/', asChild: true };
+// @ts-expect-error Heights are sm, md and lg presets only.
+const numericLogo: LogoProps = { size: 32 };
+// @ts-expect-error Only the mark and wordmark artwork exist.
+const invalidLogo: LogoProps = { variant: 'icon' };
+// @ts-expect-error The artwork is never recolored: there is no tone prop (D3).
+const tonedLogo: LogoProps = { tone: 'brand' };
 // @ts-expect-error Hidden content is required, not optional.
 const missingHiddenChildren: VisuallyHiddenProps = { id: 'orphan-hint' };
 // @ts-expect-error VisuallyHidden inherits span props; the anchor-only href is rejected.
@@ -504,6 +541,23 @@ function assertSpinnerCSS(css) {
   assert.doesNotMatch(css, /\.eg-spinner[^{]*\{/, 'Spinner has no stylesheet: its marker carries no rule');
 }
 
+// Logo ships token heights, the logo-token inks and the link focus ring; its legacy marker stays in components.
+function assertLogoCSS(css) {
+  for (const utility of ['.inline-block', '.leading-none', '.rounded-sm', '.h-7', '.h-8', '.h-full', '.w-auto']) {
+    assert.ok(css.includes(utility), 'Missing Logo utility ' + utility);
+  }
+  assert.match(css, /\.h-9\s*\{[^}]*height:\s*calc\(var\(--space-1\)\s*\*\s*9\)/, 'lg must be 9 spacing steps');
+  assert.match(css, /\.fill-\\\(--logo-red\\\)\s*\{[^}]*fill:\s*var\(--logo-red\)/, 'Light face must use --logo-red');
+  assert.match(css, /\.fill-\\\(--logo-red-shade\\\)\s*\{[^}]*fill:\s*var\(--logo-red-shade\)/, 'Shade face token');
+  assert.match(css, /\.fill-primitive-white\s*\{[^}]*fill:\s*var\(--color-primitive-white/, 'White name primitive');
+  assert.match(css, /\.focus-visible\\:shadow-focus:focus-visible\s*\{[^}]*#ff0036/i, 'Link focus ring');
+  assert.match(
+    css,
+    /\.focus-visible\\:outline-none:focus-visible\s*\{[^}]*outline-style:\s*none/,
+    'Link outline reset'
+  );
+}
+
 const entries = `
 import assert from 'node:assert/strict';
 import { readFileSync, realpathSync } from 'node:fs';
@@ -537,6 +591,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Divider',
   'Gauge',
   'Label',
+  'Logo',
   'Portal',
   'Skeleton',
   'Slot',
@@ -551,10 +606,12 @@ ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
+${assertLogoCSS.toString()}
 assertGaugeCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assertSkeletonCSS(shippedStyles);
 assertSpinnerCSS(shippedStyles);
+assertLogoCSS(shippedStyles);
 ${assertLabelCSS.toString()}
 assertLabelCSS(shippedStyles);
 const theme = readFileSync(fileURLToPath(import.meta.resolve('@egdev/tokens/theme.css')), 'utf8');
@@ -785,6 +842,39 @@ for (const frame of [square, wide]) {
   assert.equal(nativeSpinner.getAttribute('title'), 'Uploading');
   assert.equal(nativeSpinner.getAttribute('lang'), 'en');
   assert.ok(nativeSpinner.className.endsWith('ms-2 consumer-spinner'), 'Consumer layout classes merge last');
+  const brand = document.querySelector('section[aria-label="Brand logos"]');
+  assert.ok(brand, 'SSR must render Logo samples');
+  const logos = [...brand.querySelectorAll('.eg-logo')];
+  assert.equal(logos.length, 6, 'Default, three mark presets, home link and native Logos must render');
+  const defaultLogo = document.getElementById('logo-default');
+  assert.equal(defaultLogo.tagName, 'SPAN');
+  assert.equal(defaultLogo.getAttribute('role'), 'img');
+  assert.equal(defaultLogo.getAttribute('aria-label'), 'egdev');
+  assert.ok(defaultLogo.className.split(' ').includes('h-8'), 'The default Logo is 32px high');
+  assert.equal(defaultLogo.querySelector('svg').getAttribute('viewBox'), '0 0 653 258', 'The default is the wordmark');
+  assert.equal(defaultLogo.querySelectorAll('path').length, 8);
+  for (const [size, utility] of [['sm', 'h-7'], ['md', 'h-8'], ['lg', 'h-9']]) {
+    const sized = document.getElementById('logo-mark-' + size);
+    assert.ok(sized.className.split(' ').includes(utility), 'Logo ' + size + ' must carry ' + utility);
+    assert.equal(sized.querySelectorAll('polygon').length, 7, 'The mark draws the seven V4 polygons');
+  }
+  const homeLogo = document.getElementById('logo-home');
+  assert.equal(homeLogo.tagName, 'A');
+  assert.equal(homeLogo.getAttribute('href'), '#home');
+  assert.equal(homeLogo.getAttribute('rel'), 'home');
+  assert.equal(homeLogo.getAttribute('aria-label'), 'egdev, home');
+  assert.equal(homeLogo.getAttribute('role'), null, 'The link keeps its native role');
+  for (const logo of logos) {
+    const art = logo.querySelector('svg');
+    assert.equal(art.getAttribute('aria-hidden'), 'true', 'Logo artwork is always hidden');
+    assert.equal(art.getAttribute('focusable'), 'false');
+    assert.equal(logo.textContent, '', 'The accessible name is the only name');
+    assert.equal(logo.hasAttribute('data-state'), false);
+  }
+  const nativeLogo = document.getElementById('consumer-logo');
+  assert.equal(nativeLogo.getAttribute('title'), 'egdev');
+  assert.equal(nativeLogo.getAttribute('lang'), 'en');
+  assert.ok(nativeLogo.className.endsWith('ms-2 consumer-logo'), 'Consumer layout classes merge last');
   const tokenStack = document.querySelector('.eg-stack[aria-label="Token sections"]');
   assert.ok(tokenStack, 'SSR must render Stack samples');
   assert.ok(tokenStack.classList.contains('flex-col') && tokenStack.classList.contains('flex-nowrap'));
@@ -983,6 +1073,10 @@ try {
   assert.equal(busyHost().textContent, 'Saving draft');
   assert.equal(document.getElementById('spinner-status').getAttribute('role'), 'status', 'Status Spinner persists');
   stage('spinner:rerender:complete');
+  const homeLink = document.getElementById('logo-home');
+  homeLink.focus();
+  assert.ok(document.activeElement === homeLink, 'The linked Logo must be a native tab stop');
+  assert.equal(document.querySelectorAll('[role="img"].eg-logo').length, 5, 'Unlinked Logos remain named images');
   stage('layout:rerender:start');
   const layoutStack = () => document.querySelector('.eg-stack[aria-label="Token sections"]');
   const layoutCluster = () => document.querySelector('.eg-cluster[aria-label="Token actions"]');
@@ -1038,7 +1132,7 @@ try {
   assert.ok(labelRef.current === labelNode, 'Label must forward its HTMLLabelElement ref');
   await act(async () => root.render(null));
   assert.ok(labelRef.current === null, 'Label ref must be cleaned up on unmount');
-  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Label activation, forwarded ref and cleanup'] }));
+  console.log(JSON.stringify({ csr: ['intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'Logo image/link semantics and native link focus', 'Label activation, forwarded ref and cleanup'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -1117,6 +1211,7 @@ ${assertGaugeCSS.toString()}
 ${assertDividerCSS.toString()}
 ${assertSkeletonCSS.toString()}
 ${assertSpinnerCSS.toString()}
+${assertLogoCSS.toString()}
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -1126,6 +1221,7 @@ assert.match(
 );
 assertSkeletonCSS(emitted);
 assertSpinnerCSS(emitted);
+assertLogoCSS(emitted);
 ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
@@ -1161,6 +1257,7 @@ assert.match(
 );
 assertSkeletonCSS(twCss);
 assertSpinnerCSS(twCss);
+assertLogoCSS(twCss);
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.gap-8', '.items-stretch', '.items-start', '.justify-between']) {
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }

@@ -16,7 +16,8 @@ const components = [
   ['Stack', 'primitives/stack'],
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
-  ['Spinner', 'atoms/spinner']
+  ['Spinner', 'atoms/spinner'],
+  ['Logo', 'atoms/logo']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -74,6 +75,7 @@ const expected: Record<string, Record<string, string | false>> = {
   visuallyhidden: { children: false, asChild: 'boolean' },
   skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
   spinner: { label: 'text', size: 'select' },
+  logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
   gauge: {
     label: 'text',
     value: 'number',
@@ -90,6 +92,7 @@ const ownPropCounts: Record<string, number> = {
   gauge: 8,
   skeleton: 3,
   spinner: 2,
+  logo: 4,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4
@@ -288,7 +291,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
-    ['Spinner', { size: '"md"' }]
+    ['Spinner', { size: '"md"' }],
+    ['Logo', { variant: '"wordmark"', size: '"md"', label: '"egdev"' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
     const { argTypes, args } = story(name);
     for (const [prop, summary] of Object.entries(defaults)) {
@@ -408,6 +412,28 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Spinner', false).argTypes[prop]);
     }
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Logo variant/size/label/href rows, the image/link native rows and no naming overrides', () => {
+    const { argTypes } = story('Logo');
+    for (const prop of ['variant', 'size']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'enum', required: false });
+      expect(argTypes[prop]?.control, prop).toEqual({ type: 'select' });
+    }
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['mark', 'wordmark']);
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['lg', 'md', 'sm']);
+    for (const prop of ['label', 'href']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'string', required: false });
+      expect(argTypes[prop]?.control, prop).toEqual({ type: 'text' });
+    }
+    // An absent href is a derived image mode, not a fixed default value.
+    expect(argTypes.href?.table?.defaultValue).toBeUndefined();
+    for (const prop of ['id', 'title', 'className', 'style', 'target', 'rel']) {
+      expect(argTypes[prop], prop).toEqual(story('Logo', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-label', 'aria-labelledby', 'aria-hidden']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });
