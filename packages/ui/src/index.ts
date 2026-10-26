@@ -1,5 +1,6 @@
 // Atoms
 export * from './atoms/gauge';
+export * from './atoms/input';
 export * from './atoms/kbd';
 export * from './atoms/spinner';
 // Utilities

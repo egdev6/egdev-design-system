@@ -287,6 +287,49 @@ test('UI ships the flat Kbd token utilities without a Kbd-specific stylesheet ru
   assert.equal(kbdRules(css), kbdRules(legacy), 'Kbd has no stylesheet: its marker carries no new rule');
 });
 
+test('UI ships the Input well, state and preset utilities without an Input-specific stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule('.bg-primitive-neutral-950'), /background-color:\s*var\(--color-primitive-neutral-950[,)]/);
+  assert.match(rule('.border-border-control'), /border-color:\s*var\(--color-border-control[,)]/);
+  assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)/);
+  assert.match(rule('.min-h-11'), /min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*11\)/);
+  assert.match(rule('.min-h-9'), /min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)/);
+  assert.match(rule('.pl-9'), /padding-left:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)/);
+  assert.match(rule('.text-code'), /font-size:\s*var\(--text-code[,)]/);
+  assert.match(rule('.font-mono'), /font-family:\s*var\(--font-mono[,)]/);
+  assert.match(rule(String.raw`.hover\:border-fg-muted:hover`), /border-color:\s*var\(--color-fg-muted[,)]/);
+  assert.match(
+    rule(String.raw`.focus-visible\:border-border-brand-strong:focus-visible`),
+    /border-color:\s*var\(--color-border-brand-strong[,)]/
+  );
+  assert.match(
+    rule(String.raw`.focus-visible\:shadow-\[var\(--shadow-well\)\,var\(--shadow-ring-brand\)\]:focus-visible`),
+    /--tw-shadow:\s*var\(--shadow-well\),\s*var\(--shadow-ring-brand\)/
+  );
+  assert.match(
+    rule(String.raw`.aria-invalid\:border-status-danger[aria-invalid="true"]`),
+    /border-color:\s*var\(--color-status-danger[,)]/
+  );
+  assert.match(rule(String.raw`.has-\[\:disabled\]\:opacity-45:has(:is(:disabled))`), /opacity:\s*45%/);
+  assert.match(rule('.ease-out'), /transition-timing-function:\s*var\(--ease-out[,)]/);
+  assert.match(rule(String.raw`.duration-\[var\(--duration-fast\)\]`), /transition-duration:\s*var\(--duration-fast\)/);
+  // Invalid wins over hover and focus at equal specificity because its rule is emitted later.
+  const at = (selector) => utilities.indexOf(selector);
+  assert.ok(at(String.raw`.aria-invalid\:border-status-danger`) > at(String.raw`.hover\:border-fg-muted`));
+  assert.ok(
+    at(String.raw`.aria-invalid\:border-status-danger`) > at(String.raw`.focus-visible\:border-border-brand-strong`)
+  );
+  // The icon offset must follow the symmetric padding so padding-left survives the cascade.
+  assert.ok(at('.pl-9 {') > at('.px-3 {'));
+  assert.doesNotMatch(css, /\.eg-input[^{]*\{/, 'Input has no stylesheet: its marker carries no rule (D14)');
+});
+
 test('UI ships the approved Gauge geometry in the components layer', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const components = cssBlock(css, /@layer components\s*\{/);
@@ -399,6 +442,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Cluster',
       'Divider',
       'Gauge',
+      'Input',
       'Kbd',
       'Label',
       'Portal',
@@ -421,6 +465,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(typeof exported.Skeleton, 'function', 'Skeleton must be a named root export');
   assert.equal(typeof exported.Spinner, 'function', 'Spinner must be a plain function component without a ref API');
   assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
+  assert.equal(
+    exported.Input?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'Input must be a React 18-compatible forwardRef component targeting the native input (D12)'
+  );
   assert.equal(
     exported.VisuallyHidden?.$$typeof,
     Symbol.for('react.forward_ref'),
@@ -458,6 +507,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'GaugeProps',
     'GaugeSize',
     'GaugeState',
+    'Input',
+    'InputProps',
+    'InputSize',
+    'InputType',
+    'InputVariant',
     'Kbd',
     'KbdProps',
     'Label',
@@ -502,6 +556,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'GaugeSize',
     'Kbd',
     'KbdProps',
+    'Input',
+    'InputProps',
+    'InputSize',
+    'InputType',
+    'InputVariant',
     'AspectRatio',
     'AspectRatioProps',
 
@@ -659,6 +718,46 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     /^<kbd class="eg-kbd [^"]*"><span aria-hidden="true">⌘K<\/span><span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Command K<\/span><\/kbd>$/
   );
   assert.doesNotMatch(symbolKey, /role=|aria-label=|tabindex=|data-state/);
+  // Input: span.eg-input root, native input with forwarded attributes, className on the root only (D3).
+  const field = renderToString(
+    createElement(exported.Input, { 'aria-label': 'Title', name: 'title', placeholder: 'Untitled', className: 'w-64' })
+  );
+  assert.match(
+    field,
+    /^<span class="eg-input relative flex items-center [^"]*w-64"><input [^>]*class="box-border w-full [^"]*"[^>]*\/><\/span>$/
+  );
+  for (const attribute of ['aria-label="Title"', 'name="title"', 'placeholder="Untitled"', 'type="text"']) {
+    assert.ok(field.split('<input')[1].includes(attribute), `Input must forward ${attribute} to the native input`);
+  }
+  assert.ok(!field.split('<input')[0].includes('w-full'), 'Consumer width replaces the root full width');
+  for (const utility of [
+    'min-h-11',
+    'px-3',
+    'py-2',
+    'text-body-default',
+    'bg-surface-0',
+    'shadow-[var(--shadow-well)]'
+  ]) {
+    assert.ok(field.includes(utility), `Input md/default must render ${utility}`);
+  }
+  assert.doesNotMatch(field, /aria-hidden|data-state|role=|\ssize=/);
+  const search = renderToString(
+    createElement(exported.Input, {
+      'aria-label': 'Search',
+      type: 'search',
+      size: 'sm',
+      variant: 'code',
+      icon: createElement('svg', { viewBox: '0 0 16 16' })
+    })
+  );
+  assert.match(search, /^<span class="eg-input [^"]*"><span aria-hidden="true" class="[^"]*absolute left-3[^"]*"><svg/);
+  assert.match(search, /type="search"/);
+  for (const utility of ['min-h-9', 'pl-9', 'font-mono', 'text-code', 'bg-primitive-neutral-950']) {
+    assert.ok(search.includes(utility), `Input sm/code/icon must render ${utility}`);
+  }
+  for (const utility of ['font-sans', 'bg-surface-0', 'text-label-default', 'font-[var(']) {
+    assert.ok(!search.includes(` ${utility}`), `Input code must replace ${utility}`);
+  }
   const geometry = [
     ['line', 'sm', 'h-3', 'rounded-sm'],
     ['line', 'md', 'h-4', 'rounded-sm'],

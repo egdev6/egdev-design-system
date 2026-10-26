@@ -18,7 +18,8 @@ const components = [
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
-  ['Kbd', 'atoms/kbd']
+  ['Kbd', 'atoms/kbd'],
+  ['Input', 'atoms/input']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -78,6 +79,7 @@ const expected: Record<string, Record<string, string | false>> = {
   skeleton: { variant: 'select', size: 'select', pulse: 'boolean' },
   spinner: { label: 'text', size: 'select' },
   kbd: { children: 'text', label: 'text' },
+  input: { size: 'select', variant: 'select', type: 'select', icon: false },
   gauge: {
     label: 'text',
     value: 'number',
@@ -95,6 +97,7 @@ const ownPropCounts: Record<string, number> = {
   skeleton: 3,
   spinner: 2,
   kbd: 2,
+  input: 4,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,
@@ -295,7 +298,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
-    ['Spinner', { size: '"md"' }]
+    ['Spinner', { size: '"md"' }],
+    ['Input', { size: '"md"', variant: '"default"', type: '"text"' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
     const { argTypes, args } = story(name);
     for (const [prop, summary] of Object.entries(defaults)) {
@@ -433,6 +437,35 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Kbd', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'role', 'onClick']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains Input select rows, the icon row without a widget and only documented native rows', () => {
+    const { argTypes, args } = story('Input');
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['md', 'sm']);
+    expect([...(argTypes.variant?.options ?? [])].sort()).toEqual(['code', 'default']);
+    expect([...(argTypes.type?.options ?? [])].sort()).toEqual([
+      'email',
+      'number',
+      'password',
+      'search',
+      'tel',
+      'text',
+      'url'
+    ]);
+    for (const prop of ['size', 'variant', 'type']) {
+      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'enum', required: false });
+      expect(argTypes[prop]?.control, prop).toEqual({ type: 'select' });
+    }
+    expect(argTypes.icon?.control).toBe(false);
+    expect(argTypes.icon?.table?.disable).toBeUndefined();
+    expect(argTypes.icon?.table?.defaultValue).toBeUndefined();
+    expect(args).toEqual({});
+    for (const prop of ['id', 'name', 'placeholder', 'disabled', 'readOnly', 'required', 'className']) {
+      expect(argTypes[prop], prop).toEqual(story('Input', false).argTypes[prop]);
+    }
+    for (const prop of ['children', 'asChild', 'ref', 'onChange', 'style', 'invalid']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

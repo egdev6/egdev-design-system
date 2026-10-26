@@ -17,7 +17,7 @@ C = [
 ("—","—","Toggle","atom","ui","Toggle","Icon","nuevo","Botón conmutado (mostrar/ocultar capa, silenciar). IconButton `pressed` puede apoyarse en él."),
 ("Link","átomo","Link","atom","ui","Slot","—","mantener",""),
 ("Icon","átomo","Icon","atom","ui","AccessibleIcon","—","mantener","Faltan 14 iconos (ver DECISIONES)."),
-("Field (input)","átomo","Input","atom","ui","—","—","extraer","Control nativo; sale de Field. Variante `mono` para código y URLs."),
+("Field (input)","átomo","Input","atom","ui","—","—","extraer","Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/59): bare native single-line text control in the Material well (md 44px, sm 36px), extracted from Field. `variant='code'` (not `mono`, D8) uses the mono font on the darker well; optional decorative leading icon. Native aria-invalid, onChange and forwarded ref; label, hint, error and counter stay in the future Field molecule. No stylesheet."),
 ("Field (textarea)","átomo","Textarea","atom","ui","—","—","extraer","Variantes `code` y `prose` (antes Field --code y --prose)."),
 ("Field (select)","átomo","Select","atom","ui","Select","Icon","extraer","Select de Radix con el aspecto de Field."),
 ("`.eg-check`","sin ficha","Checkbox","atom","ui","Checkbox","Icon","extraer","Existía solo como clase."),
