@@ -11,6 +11,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   skeleton: ['id', 'title', 'className', 'style'],
   spinner: ['id', 'title', 'className', 'style'],
   kbd: ['id', 'title', 'className'],
+  link: ['id', 'title', 'href', 'target', 'rel', 'onClick', 'aria-describedby', 'className', 'style'],
   // Native props re-exposed in autodocs per component, keyed by camelCase component name.
   // Gauge retains its approved passive measurement list; Label documents the native
   // association (htmlFor/id) and the approved class-merge surface. Nothing else from

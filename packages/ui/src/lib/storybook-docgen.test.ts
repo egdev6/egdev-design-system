@@ -130,6 +130,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/gauge',
       './atoms/icon',
       './atoms/kbd',
+      './atoms/link',
       './atoms/spinner',
       './lib/cn',
       './primitives/aspect-ratio',
@@ -153,6 +154,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Icon',
       'Kbd',
       'Label',
+      'Link',
       'Portal',
       'Skeleton',
       'Slot',
@@ -933,6 +935,77 @@ describe('Spinner passive metadata contract', () => {
     }
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live', 'tone', 'color']) {
       expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('Link navigation metadata contract', () => {
+  it('annotates every own declaration and union branch with meaningful controls', () => {
+    const file = ast(source('atoms/link/types.ts'));
+    const properties = ownProps(file, ['LinkTargetProps', 'LinkProps']);
+    const controls: Record<string, string> = {
+      asChild: 'boolean',
+      href: 'text',
+      children: 'false',
+      external: 'boolean',
+      newTabText: 'text',
+      arrow: 'boolean'
+    };
+    expect(properties.map((property) => property.name.getText(file))).toEqual([
+      'asChild',
+      'href',
+      'asChild',
+      'href',
+      'children',
+      'external',
+      'newTabText',
+      'arrow'
+    ]);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      expect(
+        tags.filter((tag) => tag.tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment))
+      ).toEqual([controls[name]]);
+      if (name === 'children') {
+        expect(tags.find((tag) => tag.tagName.text === 'controlReason')?.comment).toMatch(
+          /ReactNode.*Default and AsChild/
+        );
+      }
+      if (!property.questionToken) {
+        expect(tags.some((tag) => tag.tagName.text === 'default')).toBe(false);
+      }
+    }
+  });
+
+  it('extracts real Link defaults, the conditional destination and native navigation props', () => {
+    const doc = parser.parse(source('atoms/link/Link.tsx')).find((item) => item.displayName === 'Link');
+    if (!doc) {
+      throw new Error('Missing docgen for Link');
+    }
+    const { props } = doc;
+    expect(props.children).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    // Docgen flattens the union: href is optional overall; the packed negative types enforce each branch.
+    expect(props.href).toMatchObject({ required: false, type: { name: 'string' }, defaultValue: null });
+    expect(props.asChild?.tags).toMatchObject({ control: 'boolean\nboolean' });
+    const bindings = defaults(source('atoms/link/useLink.ts'), false);
+    for (const [prop, value] of [
+      ['asChild', 'false'],
+      ['external', 'false'],
+      ['arrow', 'true'],
+      ['newTabText', '(opens in a new tab)']
+    ] as const) {
+      expect(bindings[prop], prop).toBe(value);
+      expect(normalize(props[prop]?.defaultValue?.value), prop).toBe(value);
+    }
+    for (const prop of ['id', 'title', 'target', 'rel', 'onClick', 'aria-describedby', 'className', 'style']) {
+      expect(props[prop], `Link native ${prop}`).toBeDefined();
+    }
+    expect(props.newTabText?.tags).toMatchObject({ control: 'text' });
+    expect(props.external?.tags).toMatchObject({ control: 'boolean' });
+    expect(props.arrow?.tags).toMatchObject({ control: 'boolean' });
+    for (const prop of ['disabled', 'size', 'variant']) {
+      expect(props[prop]).toBeUndefined();
     }
   }, 20_000);
 });

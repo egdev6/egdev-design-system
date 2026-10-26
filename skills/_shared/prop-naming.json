@@ -614,6 +614,16 @@
           "symbol": "SurfaceProps",
           "revision": "sha256:26d0726b5034dceb74e0067c1c0df5108d351e948205bbf22b5e187b92d9c0b6"
         }
+      },
+      {
+        "component": "Link",
+        "type": "boolean (discriminates native required href from child-owned href)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/link/types.ts",
+          "symbol": "LinkProps",
+          "revision": "sha256:2f74a408ef244c4b585206185ff137678a279cc1148ebd5d143958cc4d6a352a"
+        }
       }
     ]
   },
@@ -781,7 +791,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Link",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/link/types.ts",
+          "symbol": "LinkProps",
+          "revision": "sha256:2f74a408ef244c4b585206185ff137678a279cc1148ebd5d143958cc4d6a352a"
+        }
+      }
+    ]
   },
   {
     "id": "new-tab-notice",
@@ -797,7 +818,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Link",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/link/types.ts",
+          "symbol": "LinkProps",
+          "revision": "sha256:2f74a408ef244c4b585206185ff137678a279cc1148ebd5d143958cc4d6a352a"
+        }
+      }
+    ]
   },
   {
     "id": "trailing-arrow",
@@ -813,7 +845,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Link",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/link/types.ts",
+          "symbol": "LinkProps",
+          "revision": "sha256:2f74a408ef244c4b585206185ff137678a279cc1148ebd5d143958cc4d6a352a"
+        }
+      }
+    ]
   },
   {
     "id": "rule-reference",

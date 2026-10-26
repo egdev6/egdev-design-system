@@ -225,14 +225,17 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
     /animation:\s*none\s*;/,
     'Reduced-motion preferences must stop the pulse'
   );
-  // Pulse (Skeleton) and spin (Spinner, #69) are the only approved animation utilities; transitions
-  // are limited to the pre-existing static Gauge transition-none and never reach the Skeleton.
+  // Pulse (Skeleton) and spin (Spinner, #69) remain the only animation utilities.
+  // Link #61 adds only border-color/color and translate transitions; Skeleton remains unchanged.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
     'Only the approved pulse and spin animation utilities may ship'
   );
-  assert.doesNotMatch(utilityLayer, /\.transition-(?!none)\w/, 'No animated transition utility may ship');
+  const approvedTransitions = new Set(['none', String.raw`\[border-color\,color\]`, String.raw`\[translate\]`]);
+  for (const [, transition] of utilityLayer.matchAll(/\.transition-((?:\\.|[\w-])+)/g)) {
+    assert.ok(approvedTransitions.has(transition), `Unapproved transition utility ${transition}`);
+  }
   assert.doesNotMatch(utilityLayer, /@keyframes/, 'The utilities layer must not define keyframes');
 });
 
@@ -364,6 +367,75 @@ test('UI ships the static Icon preset, fill and stroke utilities without an appl
     assert.match(theme, new RegExp(`${token}:\\s*${value.replace('.', '\\.')};`), `${token} must stay ${value}`);
     assert.doesNotMatch(css, new RegExp(`${token}\\s*:`), `UI must not redefine ${token}`);
   }
+});
+
+test('UI ships Link token recipes, scoped motion and legacy resets without a new stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  for (const [selector, declaration] of [
+    ['.border-b', /border-bottom-width:\s*1px\s*;/],
+    ['.border-border-brand', /border-color:\s*var\(--color-border-brand[,)]/],
+    [String.raw`.pb-0\.5`, /padding-bottom:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*0\.5\)/],
+    ['.no-underline', /text-decoration-line:\s*none/],
+    ['.cursor-pointer', /cursor:\s*pointer/],
+    ['.transform-none', /transform:\s*none/],
+    [String.raw`.transition-\[border-color\,color\]`, /transition-property:\s*border-color,\s*color/],
+    [String.raw`.transition-\[translate\]`, /transition-property:\s*translate/],
+    [String.raw`.duration-\(--duration-fast\)`, /(?:--tw-duration|transition-duration):\s*var\(--duration-fast\)/],
+    [String.raw`.duration-\(--duration-base\)`, /(?:--tw-duration|transition-duration):\s*var\(--duration-base\)/]
+  ]) {
+    assert.match(rule(selector), declaration, selector);
+  }
+  for (const selector of [
+    String.raw`.hover\:border-fg-brand-default`,
+    String.raw`.hover\:text-primitive-red-200`,
+    String.raw`.group-hover\/link\:translate-x-0\.5`,
+    String.raw`.group-hover\/link\:-translate-y-0\.5`,
+    String.raw`.motion-reduce\:translate-none`,
+    String.raw`.motion-reduce\:transition-none`,
+    String.raw`.focus-visible\:outline-none`,
+    String.raw`.focus-visible\:\[box-shadow\:var\(--shadow-focus\)\]`,
+    String.raw`.focus-visible\:rounded-sm`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing Link utility ${selector}`);
+  }
+  assert.match(rule(String.raw`.motion-reduce\:translate-none`), /translate:\s*none/);
+  assert.match(rule(String.raw`.motion-reduce\:transition-none`), /transition-property:\s*none/);
+  assert.match(
+    rule(String.raw`.focus-visible\:\[box-shadow\:var\(--shadow-focus\)\]:focus-visible`),
+    /box-shadow:\s*var\(--shadow-focus\)/
+  );
+  const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
+  const markerRules = (text) => (text.replace(/\/\*[\s\S]*?\*\//g, '').match(/\.eg-link[^{]*\{/g) ?? []).length;
+  assert.equal(markerRules(css), markerRules(legacy), 'Link adds no marker stylesheet rules');
+});
+
+test('UI Link exports safe native and slotted navigation with decorative small Icons', async () => {
+  const { Link } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(Link?.$$typeof, Symbol.for('react.forward_ref'));
+  const html = renderToString(createElement(Link, { href: '#docs', external: true, rel: 'author' }, 'Docs'));
+  for (const text of [
+    'eg-link',
+    'text-label-default',
+    'size-4',
+    'aria-hidden="true"',
+    'target="_blank"',
+    'author noopener noreferrer',
+    '(opens in a new tab)'
+  ]) {
+    assert.ok(html.includes(text), `Link SSR must render ${text}`);
+  }
+  const slotted = renderToString(
+    createElement(Link, { asChild: true, arrow: false, children: createElement('a', { href: '#router' }, 'Router') })
+  );
+  assert.match(slotted, /^<a [^>]*href="#router"/);
+  assert.doesNotMatch(slotted, /<svg|asChild=|external=|arrow=/);
 });
 
 test('UI preserves Lucide notices for the system icon paths', () => {
@@ -540,6 +612,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Icon',
       'Kbd',
       'Label',
+      'Link',
       'Portal',
       'Skeleton',
       'Slot',
@@ -618,6 +691,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LayoutAlignItems',
     'LayoutGap',
     'LayoutJustifyContent',
+    'Link',
+    'LinkProps',
     'Portal',
     'PortalProps',
     'Skeleton',
@@ -663,6 +738,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'IconSize',
     'Kbd',
     'KbdProps',
+    'Link',
+    'LinkProps',
     'AspectRatio',
     'AspectRatioProps',
 

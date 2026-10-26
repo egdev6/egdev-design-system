@@ -137,10 +137,10 @@
     "nombre": "Link",
     "nivel": "atom",
     "destino": "ui",
-    "radix": "Slot",
-    "compone": "—",
+    "radix": "Slot + VisuallyHidden",
+    "compone": "Icon",
     "accion": "mantener",
-    "notas": ""
+    "notas": "Implemented in @egdev/ui: standalone native anchor with a decorative 16px Icon arrow, safe external new-tab semantics and a localizable hidden notice. Slot/Slottable support router anchors and forwarded refs. No stylesheet; legacy `.eg-link` remains unchanged. Contract: [#61](https://github.com/egdev6/egdev-design-system/issues/61)."
   },
   {
     "actual": "Icon",

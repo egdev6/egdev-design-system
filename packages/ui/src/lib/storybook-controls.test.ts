@@ -21,7 +21,8 @@ const components = [
   ['VisuallyHidden', 'primitives/visually-hidden'],
   ['Skeleton', 'primitives/skeleton'],
   ['Spinner', 'atoms/spinner'],
-  ['Kbd', 'atoms/kbd']
+  ['Kbd', 'atoms/kbd'],
+  ['Link', 'atoms/link']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -98,6 +99,14 @@ const expected: Record<string, Record<string, string | false>> = {
   icon: { name: 'select', size: 'select', filled: 'boolean', label: 'text' },
   spinner: { label: 'text', size: 'select' },
   kbd: { children: 'text', label: 'text' },
+  link: {
+    children: false,
+    asChild: 'boolean',
+    href: 'text',
+    external: 'boolean',
+    newTabText: 'text',
+    arrow: 'boolean'
+  },
   gauge: {
     label: 'text',
     value: 'number',
@@ -116,6 +125,7 @@ const ownPropCounts: Record<string, number> = {
   skeleton: 3,
   spinner: 2,
   kbd: 2,
+  link: 6,
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,
@@ -289,7 +299,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         expect(composed.argTypes[prop]?.type?.name, `${name}.${prop} semantic type`).toBe('string');
       }
     }
-    if (!['VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface'].includes(name)) {
+    if (!['VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface', 'Link'].includes(name)) {
       expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     }
     expect(composed.args).toEqual({});
@@ -321,7 +331,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
     ['Icon', { size: '"md"', filled: 'false' }],
-    ['Spinner', { size: '"md"' }]
+    ['Spinner', { size: '"md"' }],
+    ['Link', { asChild: 'false', external: 'false', arrow: 'true', newTabText: '"(opens in a new tab)"' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
     const { argTypes, args } = story(name);
     for (const [prop, summary] of Object.entries(defaults)) {
@@ -443,6 +454,23 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-hidden', 'aria-live']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
+  });
+
+  it('retains Link union controls, required content, conditional href and native navigation rows', () => {
+    const { argTypes, args } = story('Link');
+    expect(argTypes.children?.type).toMatchObject({ required: true });
+    expect(argTypes.children?.control).toBe(false);
+    expect(argTypes.children?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.href?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.href?.table?.defaultValue).toBeUndefined();
+    for (const prop of ['asChild', 'external', 'arrow']) {
+      expect(argTypes[prop]?.control, prop).toEqual({ type: 'boolean' });
+    }
+    for (const prop of ['id', 'title', 'target', 'rel', 'onClick', 'aria-describedby', 'className', 'style']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('Link', false).argTypes[prop]);
+    }
+    expect(args).toEqual({});
   });
 
   it('retains Kbd required children and optional label text rows without defaults or extra rows', () => {
