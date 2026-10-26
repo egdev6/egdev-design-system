@@ -12,6 +12,15 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/atoms/badge/types.ts#BadgeProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/badge/types.ts#BadgeProps' },
+  { conventionId: 'leading-icon', source: 'packages/ui/src/atoms/badge/types.ts#BadgeProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'initial-uncontrolled-value', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'interactive-value-change', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'committed-value-change', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
+  { conventionId: 'measurement-text-equivalent', source: 'packages/ui/src/atoms/slider/types.ts#SliderProps' },
   {
     conventionId: 'aspect-ratio',
     source: 'packages/ui/src/primitives/aspect-ratio/types.ts#AspectRatioProps'
@@ -56,6 +65,28 @@ const postReceiptUsages = [
   { conventionId: 'slot-composition', source: 'packages/ui/src/primitives/surface/types.ts#SurfaceProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/spinner/types.ts#SpinnerProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'choice-options', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'initial-uncontrolled-value', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'interactive-value-change', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'layout-orientation', source: 'packages/ui/src/atoms/radio-group/types.ts#RadioGroupProps' },
+  { conventionId: 'checked-change', source: 'packages/ui/src/atoms/switch/types.ts#SwitchProps' },
+  { conventionId: 'tooltip-content', source: 'packages/ui/src/atoms/tooltip/types.ts#TooltipProps' },
+  { conventionId: 'floating-side', source: 'packages/ui/src/atoms/tooltip/types.ts#TooltipProps' },
+  { conventionId: 'primary-value', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  {
+    conventionId: 'measurement-text-equivalent',
+    source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps'
+  },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  { conventionId: 'container-edge-placement', source: 'packages/ui/src/atoms/progress-bar/types.ts#ProgressBarProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/textarea/types.ts#TextareaProps' },
+  { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/input/types.ts#InputProps' },
+  { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/input/types.ts#InputProps' },
+  { conventionId: 'leading-icon', source: 'packages/ui/src/atoms/input/types.ts#InputProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/logo/types.ts#LogoProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/logo/types.ts#LogoProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/logo/types.ts#LogoProps' },
