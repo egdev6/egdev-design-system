@@ -13,6 +13,23 @@ const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
   ...[
+    'collection-items',
+    'accessible-name',
+    'group-caption',
+    'inline-caption-layout',
+    'visual-treatment',
+    'preset-dimensions',
+    'layout-gap',
+    'new-tab-notice'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/social-links/types.ts#SocialLinksProps'
+  })),
+  ...['accessible-name', 'leading-icon', 'new-tab-navigation'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/social-links/types.ts#SocialLinkItem'
+  })),
+  ...[
     'heading-title',
     'heading-eyebrow',
     'trailing-text-accent',

@@ -43,6 +43,7 @@ export type {
   SectionHeaderVariant
 } from './molecules/section-header';
 export { SectionHeader } from './molecules/section-header';
+export * from './molecules/social-links';
 export type { TabsItem, TabsProps, TabsSize, TabsTone, TabsVariant } from './molecules/tabs';
 export { Tabs, tabsVariants } from './molecules/tabs';
 // Primitives

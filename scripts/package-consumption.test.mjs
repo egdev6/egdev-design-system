@@ -32,7 +32,7 @@ import { Menu, menuVariants } from '@egdev/ui';
 import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorItem, MenuLabelItem, MenuSubmenuItem, MenuTone, MenuAlign, MenuSide } from '@egdev/ui';
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, Notice, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, Notice, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -93,6 +93,11 @@ import type {
   RadioGroupOrientation,
   RadioGroupProps,
   SearchTriggerProps,
+  SocialLinkItem,
+  SocialLinksGap,
+  SocialLinksProps,
+  SocialLinksSize,
+  SocialLinksVariant,
   SectionHeaderProps,
   SectionHeaderVariant,
   SectionHeaderLevel,
@@ -476,6 +481,39 @@ const largeCountdown: CountdownProps = { ...countdownProps, size: 'lg' };
 const darkCountdown: CountdownProps = { ...countdownProps, tone: 'onDark' };
 // @ts-expect-error There is no tick callback.
 const tickingCountdown: CountdownProps = { ...countdownProps, onTick: () => undefined };
+const socialVariant: SocialLinksVariant = 'outline';
+const socialSize: SocialLinksSize = 'lg';
+const socialGap: SocialLinksGap = 2;
+export const socialItems: SocialLinkItem[] = [
+  { id: 'github', href: 'https://example.org/github', label: 'Project GitHub', icon: createElement(Icon, { name: 'github' }) },
+  { id: 'youtube', href: 'https://example.org/youtube', label: 'Project videos', icon: createElement(Icon, { name: 'youtube' }), external: true, rel: 'me NOOPENER me' }
+];
+export const socialProps: SocialLinksProps = { items: socialItems, variant: socialVariant, size: socialSize, gap: socialGap };
+export function SocialLinksSamples(props: Partial<SocialLinksProps> = {}) {
+  return createElement(SocialLinks, { ...socialProps, id: 'social-profiles', ...props });
+}
+// @ts-expect-error The collection requires explicit data, never fabricated profiles.
+const missingSocialItems: SocialLinksProps = {};
+// @ts-expect-error No root asChild composition is exposed.
+const slottedSocial: SocialLinksProps = { items: socialItems, asChild: true };
+// @ts-expect-error Free children cannot replace the generated collection.
+const socialChildren: SocialLinksProps = { items: socialItems, children: 'Profiles' };
+// @ts-expect-error The accessible list name is label, not a root aria-label.
+const socialAria: SocialLinksProps = { items: socialItems, 'aria-label': 'Profiles' };
+// @ts-expect-error Root roles are owned by the generated native composition.
+const socialRole: SocialLinksProps = { items: socialItems, role: 'navigation' };
+// @ts-expect-error Only md and lg atom presets are supported.
+const socialSmall: SocialLinksProps = { items: socialItems, size: 'sm' };
+// @ts-expect-error The list gap is a token key, limited to 1 or 2.
+const socialWideGap: SocialLinksProps = { items: socialItems, gap: 8 };
+// @ts-expect-error No public ref API is exposed.
+const socialRef = createElement(SocialLinks, { items: socialItems, ref: createRef<HTMLDivElement>() });
+// @ts-expect-error Each entry requires its own accessible destination label.
+const socialUnnamed: SocialLinkItem = { id: 'missing', href: 'https://example.org', icon: createElement(Icon, { name: 'github' }) };
+// @ts-expect-error Per-item external owns target; a raw target escape is not public.
+const socialRawTarget: SocialLinkItem = { ...socialItems[0], target: '_blank' };
+// @ts-expect-error Glyphs are decorative ReactElements, not network-name strings.
+const socialStringIcon: SocialLinkItem = { ...socialItems[0], icon: 'github' };
 // Notice stays outside App to preserve the existing generic focus/count harness.
 export const noticeTone: NoticeTone = 'warning';
 export const noticeRecipe: string = noticeVariants({ tone: noticeTone, size: 'sm' });
@@ -2337,6 +2375,26 @@ function assertCountdownCSS(css) {
   assert.match(css, /min-width:\s*var\(--spacing-countdown-unit[,)]/);
 }
 
+// SocialLinks adds only static list resets/typography; atoms and layouts retain their recipes.
+function assertSocialLinksCSS(css) {
+  for (const selector of [
+    '.list-none',
+    '.shrink-0',
+    '.text-label-eyebrow',
+    '.font-display',
+    '.text-fg-secondary',
+    '.flex-wrap'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing SocialLinks utility ' + selector);
+  }
+  assert.match(css, /font-size:\s*var\(--text-label-eyebrow[,)]/);
+  assert.match(css, /letter-spacing:\s*(?:var\(--tw-tracking,\s*)?var\(--text-label-eyebrow--letter-spacing[,)]/);
+  for (const gap of [1, 2, 3, 4]) {
+    assert.ok(css.includes('.gap-' + gap));
+    assert.ok(css.includes('var(--space-' + gap + ')'));
+  }
+}
+
 // SectionHeader ships only local arrangement; Heading, Text and Divider own their recipes.
 function assertSectionHeaderCSS(css) {
   for (const name of [
@@ -2824,6 +2882,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Slider',
   'Slot',
   'Slottable',
+  'SocialLinks',
   'Spinner',
   'Stack',
   'Stat',
@@ -2878,6 +2937,7 @@ ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertSectionHeaderCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
+${assertSocialLinksCSS.toString()}
 ${assertMenuCSS.toString()}
 assertMenuCSS(shippedStyles);
 ${assertTabsCSS.toString()}
@@ -2896,6 +2956,7 @@ assertSectionHeaderCSS(shippedStyles);
 ${assertListItemCSS.toString()}
 assertListItemCSS(shippedStyles);
 assertSearchTriggerCSS(shippedStyles);
+assertSocialLinksCSS(shippedStyles);
 assertTabsCSS(shippedStyles);
 assertPullQuoteCSS(shippedStyles);
 assertIconButtonCSS(shippedStyles);
@@ -2994,7 +3055,7 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, ButtonGroupSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, ListItemSamples, MeterRowSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
+import { App, ButtonGroupSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, ListItemSamples, MeterRowSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
 // MeterRow SSR has one semantic owner, coherent text and generated description references.
 for (const value of [42.5, Number.NaN]) {
   const dom = new JSDOM(renderToString(createElement(MeterRowSamples, { value })));
@@ -3141,6 +3202,31 @@ try {
 const unavailableCountdown = renderToString(createElement(CountdownSamples, { deadline: Number.NaN }));
 assert.ok(unavailableCountdown.includes('data-state="unavailable"') && unavailableCountdown.includes('Time unavailable'));
 assert.doesNotMatch(unavailableCountdown, /<time|eg-countdown__row/);
+// SocialLinks SSR: genuine anchors, one hidden name and explicit opt-in new browsing contexts.
+const socialDocument = new JSDOM(renderToString(createElement(SocialLinksSamples)));
+try {
+  const document = socialDocument.window.document;
+  const list = document.querySelector('ul[role="list"]');
+  assert.equal(list.getAttribute('aria-label'), 'Social profiles');
+  assert.equal(list.children.length, 2);
+  assert.ok([...list.children].every((item) => item.tagName === 'LI'));
+  const [same, external] = list.querySelectorAll('a');
+  assert.equal(same.textContent, 'Project GitHub');
+  assert.equal(same.hasAttribute('target'), false);
+  assert.equal(external.textContent, 'Project videos (opens in a new tab)');
+  assert.equal(external.getAttribute('target'), '_blank');
+  assert.equal(external.getAttribute('rel'), 'me NOOPENER noreferrer');
+  assert.equal(external.hasAttribute('aria-label'), false);
+  assert.equal(document.querySelectorAll('button,[role="button"]').length, 0);
+  assert.ok(same.classList.contains('size-12'));
+  assert.equal(document.querySelectorAll('.eg-social__label').length, 1);
+  assert.equal(renderToString(createElement(SocialLinksSamples, { items: [] })), '');
+  const ghost = renderToString(createElement(SocialLinksSamples, { caption: null, variant: 'ghost', size: 'md', inline: true, gap: 1 }));
+  assert.ok(ghost.includes('size-10') && ghost.includes('gap-1') && ghost.includes('flex-wrap'));
+  assert.ok(!ghost.includes('eg-social__label'));
+} finally {
+  socialDocument.window.close();
+}
 // Stat SSR: a labelled group per figure, unformatted values and the hidden no-data dash.
 const statDocument = new JSDOM(renderToString(createElement(StatSamples, { highlighted: true, value: '1,200' })));
 try {
@@ -4066,7 +4152,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, ButtonGroupSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, ListItemSamples, MeterRowSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
+const { App, ButtonGroupSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, ListItemSamples, MeterRowSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4653,6 +4739,21 @@ try {
   assert.deepEqual(countdownExpirations, [pastDeadline]);
   await act(async () => root.render(null));
   stage('countdown:clock:complete');
+  stage('social-links:native:start');
+  await act(async () => root.render(createElement(SocialLinksSamples)));
+  const socialLink = document.querySelector('#social-profiles a');
+  socialLink.focus();
+  assert.equal(document.activeElement, socialLink);
+  const socialSpace = new window.KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true });
+  assert.equal(socialLink.dispatchEvent(socialSpace), true);
+  await act(async () => root.render(createElement(SocialLinksSamples, { caption: null, dir: 'rtl' })));
+  assert.equal(document.querySelector('#social-profiles a'), socialLink);
+  assert.equal(document.activeElement, socialLink);
+  assert.equal(document.querySelector('#social-profiles .eg-social__label'), null);
+  assert.equal(document.getElementById('social-profiles').getAttribute('dir'), 'rtl');
+  await act(async () => root.render(createElement(SocialLinksSamples, { items: [] })));
+  assert.equal(document.getElementById('social-profiles'), null);
+  stage('social-links:native:complete');
   stage('meter-row:passive:start');
   await act(async () => root.render(createElement(MeterRowSamples, { value: 142 })));
   const taskRow = document.getElementById('consumer-meter-row');
@@ -5158,6 +5259,7 @@ ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertSectionHeaderCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
+${assertSocialLinksCSS.toString()}
 ${assertMenuCSS.toString()}
 assertMenuCSS(emitted);
 ${assertTabsCSS.toString()}
@@ -5203,6 +5305,7 @@ assertSectionHeaderCSS(emitted);
 ${assertListItemCSS.toString()}
 assertListItemCSS(emitted);
 assertSearchTriggerCSS(emitted);
+assertSocialLinksCSS(emitted);
 assertTabsCSS(emitted);
 ${assertNoticeCSS.toString()}
 assertNoticeCSS(emitted);
@@ -5279,6 +5382,7 @@ assertStatCSS(twCss);
 assertSectionHeaderCSS(twCss);
 assertListItemCSS(twCss);
 assertSearchTriggerCSS(twCss);
+assertSocialLinksCSS(twCss);
 assertMenuCSS(twCss);
 assertTabsCSS(twCss);
 assertPullQuoteCSS(twCss);

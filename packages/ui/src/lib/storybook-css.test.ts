@@ -174,6 +174,23 @@ describe('Storybook preview CSS', () => {
     css = String(stylesheet.source).replace(/\/\*[\s\S]*?\*\//g, '');
   }, 30_000);
 
+  it('compiles SocialLinks resets, caption typography and delegated wrapping layouts alongside legacy styles', () => {
+    expect(rule('.list-none')).toMatch(/list-style-type:\s*none/);
+    expect(rule('.shrink-0')).toMatch(/flex-shrink:\s*0/);
+    expect(rule('.text-label-eyebrow')).toMatch(/font-size:\s*var\(--text-label-eyebrow[,)]/);
+    expect(rule('.text-label-eyebrow')).toMatch(
+      /letter-spacing:\s*(?:var\(--tw-tracking,\s*)?var\(--text-label-eyebrow--letter-spacing[,)]/
+    );
+    expect(rule('.text-fg-secondary')).toMatch(/color:\s*var\(--color-fg-secondary[,)]/);
+    expect(rule('.font-display')).toMatch(/font-family:\s*var\(--font-display[,)]/);
+    for (const gap of [1, 2, 3, 4]) {
+      expect(rule(`.gap-${gap}`)).toMatch(new RegExp(`gap:\\s*var\\(--space-${gap}[,)]`));
+    }
+    expect(rule('.flex-wrap')).toMatch(/flex-wrap:\s*wrap/);
+    expect(rule('.flex-row')).toMatch(/flex-direction:\s*row/);
+    expect(css).toMatch(/\.eg-social__list>li|\.eg-social__list\s*>\s*li/);
+  });
+
   it('compiles MeterRow wrapping, typography and key utilities from its production CVA source', () => {
     expect(rule('.gap-x-3')).toMatch(/column-gap:\s*var\(--space-3[,)]/);
     expect(rule('.gap-y-1')).toMatch(/row-gap:\s*var\(--space-1[,)]/);

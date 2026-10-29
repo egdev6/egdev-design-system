@@ -34,6 +34,7 @@ const components = [
   ['Slider', 'atoms/slider'],
   ['RadioGroup', 'atoms/radio-group'],
   ['SearchTrigger', 'atoms/search-trigger'],
+  ['SocialLinks', 'molecules/social-links'],
   ['SectionHeader', 'molecules/section-header'],
   ['Notice', 'molecules/notice'],
   ['Input', 'atoms/input'],
@@ -284,6 +285,16 @@ const expected: Record<string, Record<string, string | false>> = {
   },
   pullquote: { text: 'text', accent: 'text', source: 'text', variant: 'select', tone: 'select' },
   searchtrigger: { label: 'text', shortcut: 'text', compact: 'boolean' },
+  sociallinks: {
+    items: false,
+    label: 'text',
+    caption: false,
+    inline: 'boolean',
+    variant: 'select',
+    size: 'select',
+    gap: 'select',
+    newTabText: 'text'
+  },
   listitem: { status: 'select', variant: 'select', asChild: 'boolean', children: false },
   notice: {
     summary: 'text',
@@ -353,6 +364,7 @@ const ownPropCounts: Record<string, number> = {
   slider: 11,
   radiogroup: 9,
   searchtrigger: 3,
+  sociallinks: 8,
   sectionheader: 9,
   notice: 7,
   switch: 7,
@@ -587,6 +599,18 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }],
     ['PullQuote', { variant: '"pull"', tone: '"canvas"' }],
     ['SearchTrigger', { label: '"Search…"', compact: 'false' }],
+    [
+      'SocialLinks',
+      {
+        label: '"Social profiles"',
+        caption: 'Follow me',
+        inline: 'false',
+        variant: '"outline"',
+        size: '"lg"',
+        gap: '2',
+        newTabText: '"(opens in a new tab)"'
+      }
+    ],
     ['SectionHeader', { variant: '"stack"', tone: '"canvas"', level: '2', accentBreak: 'false' }],
     ['Notice', { tone: '"neutral"', size: '"md"' }],
     ['ButtonGroup', { variant: '"spaced"' }],
