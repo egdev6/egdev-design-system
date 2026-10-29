@@ -18,6 +18,10 @@ const postReceiptUsages = [
       source: 'packages/ui/src/molecules/notice/types.ts#NoticeProps'
     })
   ),
+  ...['accessible-name', 'visual-treatment'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/button-group/types.ts#ButtonGroupProps'
+  })),
   ...['accessible-name', 'leading-icon', 'visual-treatment', 'preset-dimensions', 'slot-composition'].map(
     (conventionId) => ({
       conventionId,

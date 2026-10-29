@@ -29,6 +29,7 @@ export * from './atoms/tooltip';
 // Utilities
 export { cn } from './lib/cn';
 // Molecules
+export * from './molecules/button-group';
 export * from './molecules/notice';
 // Primitives
 export type { AspectRatioProps } from './primitives/aspect-ratio';

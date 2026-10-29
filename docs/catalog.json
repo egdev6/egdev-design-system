@@ -446,9 +446,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "—",
-    "compone": "Button, IconButton, Menu",
+    "compone": "Button, IconButton (consumer children)",
     "accion": "extraer",
-    "notas": "Botón dividido (`--join-start/--join-end`) y grupos de botones."
+    "notas": "Implemented under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/79): passive div role=group with optional label, spaced wrapping or attached logical inner corners and focus stacking. Children own Material, sizing, refs and interaction; no built-in Menu or arrow navigation. No stylesheet; legacy split/join rules remain. Browser visual conformity not evaluated."
   },
   {
     "actual": "—",
