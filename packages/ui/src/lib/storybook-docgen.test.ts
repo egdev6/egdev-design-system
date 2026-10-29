@@ -118,6 +118,79 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts SelectTile mode-dependent metadata under A1 and annotates every own branch', () => {
+    const doc = parser
+      .parse(source('molecules/select-tile/SelectTile.tsx'))
+      .find((item) => item.displayName === 'SelectTile');
+    expect(doc).toBeDefined();
+    for (const name of ['type', 'label', 'options']) {
+      expect(doc?.props[name], name).toMatchObject({ required: true, defaultValue: null });
+    }
+    for (const name of ['value', 'defaultValue']) {
+      const tags = doc?.props[name]?.tags as Record<string, string> | undefined;
+      expect(new Set(tags?.control?.split('\n'))).toEqual(new Set(['false']));
+      expect(tags?.controlReason).toMatch(/Mode-dependent string \/ string\[\].*Single, Multiple and Controlled/);
+    }
+    for (const [name, value] of [
+      ['ratio', 'landscape'],
+      ['dir', 'ltr'],
+      ['disabled', 'false']
+    ]) {
+      expect(doc?.props[name ?? '']?.defaultValue?.value).toBe(value);
+    }
+    for (const name of ['id', 'title', 'className', 'aria-describedby', 'name', 'required']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'ref',
+      'asChild',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'tabIndex',
+      'onChange'
+    ]) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const file = ast(source('molecules/select-tile/types.ts'));
+    const properties = ownProps(file, [
+      'SelectTileThumbnail',
+      'SelectTileOption',
+      'SelectTileCommonProps',
+      'SelectTileProps'
+    ]);
+    expect(properties).toHaveLength(27);
+    for (const property of properties) {
+      const tags = ts.getJSDocTags(property);
+      expect(
+        tags.filter((tag) => tag.tagName.text === 'control'),
+        property.name.getText(file)
+      ).toHaveLength(1);
+      if (!property.questionToken) {
+        expect(tags.some((tag) => tag.tagName.text === 'default')).toBe(false);
+      }
+      if (tags.some((tag) => tag.tagName.text === 'control' && ts.getTextOfJSDocComment(tag.comment) === 'false')) {
+        expect(tags.some((tag) => tag.tagName.text === 'controlReason' && ts.getTextOfJSDocComment(tag.comment))).toBe(
+          true
+        );
+      }
+    }
+    expect(exportedStoryNames(ast(source('molecules/select-tile/SelectTile.stories.tsx')))).toEqual([
+      'Single',
+      'Multiple',
+      'LiveAndSelected',
+      'Ratios',
+      'MissingThumbnail',
+      'FailedThumbnail',
+      'Disabled',
+      'Controlled',
+      'RequiredForm',
+      'RTL',
+      'Narrow',
+      'Empty'
+    ]);
+  });
   it('extracts the Toggle union, boolean defaults, native button props and every own directive', () => {
     const doc = parser.parse(source('atoms/toggle/Toggle.tsx')).find((item) => item.displayName === 'Toggle');
     expect(doc).toBeDefined();
@@ -192,6 +265,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/toggle',
       './atoms/tooltip',
       './lib/cn',
+      './molecules/select-tile',
       './primitives/aspect-ratio',
       './primitives/divider',
 
@@ -230,6 +304,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'RadioGroup',
       'SearchTrigger',
       'Select',
+      'SelectTile',
       'Skeleton',
       'Slider',
       'Slot',
