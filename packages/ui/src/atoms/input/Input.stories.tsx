@@ -7,11 +7,12 @@ import { Input } from './Input';
  * ## Description
  * Bare single-line text control in the Material well: titles, URLs, search and settings.
  * The visible label, hint, error text and counter belong to the consumer (the future Field
- * molecule); Input renders only the control and an optional decorative leading icon.
+ * molecule); Input renders the control, an optional decorative leading icon and a trailing loading Spinner.
  *
  * ## Dependencies
  * No Radix primitive: the native `<input>` provides keyboard, focus, selection and form
- * semantics. No stylesheet is required; every state uses token-backed utilities.
+ * semantics. Spinner supplies the decorative loading indicator. No stylesheet is required;
+ * every state uses token-backed utilities.
  *
  * ## Usage guidelines
  * Always supply an accessible name through a `<label htmlFor>`, `aria-labelledby` or
@@ -19,7 +20,8 @@ import { Input } from './Input';
  * to point at the error text, so invalid is not color-only. `md` (44px) meets the touch
  * minimum; keep `sm` (36px) for dense pointer UIs. The ref and every native attribute reach
  * the `<input>`; className reaches the `eg-input` root for layout only (width, margin,
- * placement).
+ * placement). loading sets aria-busy but stays editable unless disabled or readOnly;
+ * consumers own status announcements, as with Button.
  */
 const meta: Meta<typeof Input> = {
   title: 'Atoms/Input',
@@ -67,6 +69,21 @@ export const Code: Story = {
 /** A small search control with a decorative leading icon, hidden from assistive technology. */
 export const WithIcon: Story = {
   args: { 'aria-label': 'Search', type: 'search', size: 'sm', placeholder: 'Search', icon: <SearchGlyph /> }
+};
+
+/** Loading preserves editable text and native change events; the Spinner is decorative, not a live region. */
+export const Loading: Story = {
+  args: { 'aria-label': 'Search', type: 'search', placeholder: 'Search', loading: true, onChange: action('change') }
+};
+
+/** Loading and a leading icon reserve independent space at both height presets. */
+export const LoadingWithIcon: Story = {
+  render: () => (
+    <div className='flex max-w-80 flex-col gap-4'>
+      <Input aria-label='Search projects' icon={<SearchGlyph />} loading={true} placeholder='Search projects' />
+      <Input aria-label='Search commands' size='sm' variant='code' icon={<SearchGlyph />} loading={true} />
+    </div>
+  )
 };
 
 /** Controlled value through native value and onChange, mirrored below the control. */

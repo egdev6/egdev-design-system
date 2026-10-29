@@ -1,8 +1,9 @@
 import { forwardRef } from 'react';
+import { Spinner } from '../spinner';
 import type { InputProps } from './types';
 import { useInput } from './useInput';
 
-/** Bare single-line text control in the Material well; the ref targets the native input. */
+/** Native text control with optional decorative slots; loading stays editable and announcements are consumer-owned. */
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref) {
   const input = useInput(props);
   return (
@@ -13,6 +14,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(pro
         </span>
       ) : null}
       <input {...input.controlProps} ref={ref} />
+      {input.loading ? (
+        <span aria-hidden='true' className={input.spinnerClassName}>
+          <Spinner size='sm' />
+        </span>
+      ) : null}
     </span>
   );
 });
