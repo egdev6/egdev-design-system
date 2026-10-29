@@ -5,7 +5,6 @@
 @reference "@egdev/tokens/theme.css";
 
 /* Compile only production CVA classes, never incidental story/test classes. */
-@source "../molecules/**/types.ts";
 @source "../atoms/avatar/types.ts";
 @source "../atoms/badge/types.ts";
 @source "../atoms/button/types.ts";
@@ -33,6 +32,14 @@
 @source "../atoms/textarea/types.ts";
 @source "../atoms/toggle/types.ts";
 @source "../atoms/tooltip/types.ts";
+@source "../molecules/social-links/types.ts";
+@source "../molecules/section-header/types.ts";
+@source "../molecules/meter-row/types.ts";
+@source "../molecules/chip-group/types.ts";
+@source "../molecules/list-item/types.ts";
+@source "../molecules/menu/types.ts";
+@source "../molecules/tabs/types.ts";
+@source "../molecules/**/types.ts";
 @source "../primitives/aspect-ratio/types.ts";
 @source "../primitives/divider/types.ts";
 @source "../primitives/label/types.ts";
