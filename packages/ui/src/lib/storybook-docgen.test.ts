@@ -178,7 +178,6 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/kbd',
       './atoms/link',
       './atoms/logo',
-      './atoms/product-mark',
       './atoms/progress-bar',
       './atoms/pull-quote',
       './atoms/radio-group',
@@ -226,7 +225,6 @@ describe('Storybook TypeScript docgen contract', () => {
       'Link',
       'Logo',
       'Portal',
-      'ProductMark',
       'ProgressBar',
       'PullQuote',
       'RadioGroup',
@@ -2520,7 +2518,7 @@ describe('Textarea native control metadata contract', () => {
 });
 
 describe('Input text-control metadata contract', () => {
-  it('keeps the public unions and annotates exactly size, variant, type (select) and icon (false)', () => {
+  it('keeps public unions and annotates selects, decorative icon and loading boolean', () => {
     const file = ast(source('atoms/input/types.ts'));
     const union = (name: string) => {
       const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === name);
@@ -2530,12 +2528,19 @@ describe('Input text-control metadata contract', () => {
     expect(union('InputVariant')).toBe("'default' | 'code'");
     expect(union('InputType')).toBe("'text' | 'email' | 'password' | 'search' | 'tel' | 'url' | 'number'");
     const properties = ownProps(file, ['InputProps']);
-    expect(properties.map((property) => property.name.getText(file))).toEqual(['size', 'variant', 'type', 'icon']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual([
+      'size',
+      'variant',
+      'type',
+      'icon',
+      'loading'
+    ]);
     const constants: Record<string, string | undefined> = {
       size: 'md',
       variant: 'default',
       type: 'text',
-      icon: undefined
+      icon: undefined,
+      loading: 'false'
     };
     for (const property of properties) {
       const name = property.name.getText(file);
@@ -2543,7 +2548,9 @@ describe('Input text-control metadata contract', () => {
       const tags = ts.getJSDocTags(property);
       const controls = tags.filter((tag) => tag.tagName.text === 'control');
       expect(controls, `Input.${name} control`).toHaveLength(1);
-      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe(name === 'icon' ? 'false' : 'select');
+      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe(
+        name === 'icon' ? 'false' : name === 'loading' ? 'boolean' : 'select'
+      );
       // An absent icon renders nothing: an absence rule, not a fixed default value.
       const defaultTag = tags.find((tag) => tag.tagName.text === 'default');
       expect(ts.getTextOfJSDocComment(defaultTag?.comment), `Input.${name} @default`).toBe(constants[name]);
@@ -2580,11 +2587,17 @@ describe('Input text-control metadata contract', () => {
   });
 
   it('binds the CVA defaults to the documented md/default presets', () => {
-    expect(defaults(source('atoms/input/types.ts'), true)).toEqual({ size: 'md', variant: 'default', icon: 'false' });
+    expect(defaults(source('atoms/input/types.ts'), true)).toEqual({
+      size: 'md',
+      variant: 'default',
+      icon: 'false',
+      loading: 'false'
+    });
     expect(defaults(source('atoms/input/useInput.ts'), false)).toEqual({
       size: 'md',
       variant: 'default',
-      type: 'text'
+      type: 'text',
+      loading: 'false'
     });
   });
 
@@ -2608,98 +2621,14 @@ describe('Input text-control metadata contract', () => {
     expect(props.icon).toMatchObject({ required: false, tags: { control: 'false' } });
     expect(props.icon?.defaultValue ?? null).toBeNull();
     expect(props.icon?.description).toMatch(/No icon is rendered when omitted/);
+    expect(props.loading).toMatchObject({ required: false, tags: { control: 'boolean', default: 'false' } });
+    expect(props.loading?.type.name).toBe('boolean');
+    expect(normalize(props.loading?.defaultValue?.value)).toBe('false');
+    expect(props.loading?.description).toMatch(/stays editable.*consumer owns status announcements/s);
     for (const prop of ['id', 'name', 'placeholder', 'disabled', 'readOnly', 'required', 'className']) {
       expect(props[prop], `Input native ${prop} must remain available in autodocs`).toBeDefined();
     }
     for (const prop of ['children', 'asChild', 'onChange', 'style', 'tone', 'invalid', 'onValueChange']) {
-      expect(props[prop], prop).toBeUndefined();
-    }
-  }, 20_000);
-});
-
-describe('ProductMark mode metadata contract', () => {
-  const branches = ['ProductMarkLinkProps', 'ProductMarkImageProps'];
-
-  it('annotates monogram, label and href as text controls on every branch without defaults', () => {
-    const file = ast(source('atoms/product-mark/types.ts'));
-    const properties = ownProps(file, ['ProductMarkOwnProps', ...branches]);
-    expect(properties.map((property) => property.name.getText(file))).toEqual(['monogram', 'label', 'href', 'href']);
-    for (const property of properties) {
-      const name = property.name.getText(file);
-      const tags = ts.getJSDocTags(property);
-      const controls = tags.filter((tag) => tag.tagName.text === 'control');
-      expect(controls, `ProductMark.${name} control`).toHaveLength(1);
-      // Union branches merge their tags in docgen: a differing directive per branch would be ambiguous.
-      expect(ts.getTextOfJSDocComment(controls[0]?.comment)).toBe('text');
-      expect(tags.find((tag) => tag.tagName.text === 'default')).toBeUndefined();
-    }
-    const [monogram, label, linkHref, imageHref] = properties;
-    expect(monogram?.questionToken).toBeUndefined();
-    expect(label?.questionToken).toBeUndefined();
-    expect(linkHref?.questionToken).toBeUndefined();
-    expect(linkHref?.type?.getText(file)).toBe('string');
-    expect(imageHref?.questionToken).toBeTruthy();
-    expect(imageHref?.type?.getText(file)).toBe('undefined');
-  });
-
-  it.each([
-    ['ProductMarkLinkProps', ['children', 'href', 'aria-label', 'aria-labelledby', 'dangerouslySetInnerHTML']],
-    [
-      'ProductMarkImageProps',
-      ['children', 'role', 'aria-label', 'aria-labelledby', 'aria-hidden', 'dangerouslySetInnerHTML']
-    ]
-  ] as const)('%s omits exactly the contract-owned naming and content props and exposes no ref', (name, expected) => {
-    const file = ast(source('atoms/product-mark/types.ts'));
-    const alias = file.statements.find((node) => ts.isTypeAliasDeclaration(node) && node.name.text === name);
-    if (!alias || !ts.isTypeAliasDeclaration(alias)) {
-      throw new Error(`Missing ${name} declaration`);
-    }
-    const omitted: string[] = [];
-    const visit = (node: ts.Node): void => {
-      if (ts.isTypeReferenceNode(node) && node.typeName.getText(file) === 'Omit' && node.typeArguments) {
-        const union = node.typeArguments[1];
-        if (union && ts.isUnionTypeNode(union)) {
-          omitted.push(...union.types.map((member) => normalize(member.getText(file))));
-        }
-      }
-      ts.forEachChild(node, visit);
-    };
-    visit(alias.type);
-    expect(omitted).toEqual(expected);
-    expect(alias.type.getText(file)).not.toMatch(/\bref\b|ComponentPropsWithRef|asChild/);
-  });
-
-  it('extracts required monogram/label, optional href and only the documented native rows', () => {
-    const doc = parser
-      .parse(source('atoms/product-mark/ProductMark.tsx'))
-      .find((item) => item.displayName === 'ProductMark');
-    if (!doc) {
-      throw new Error('Missing docgen for ProductMark');
-    }
-    const { props } = doc;
-    for (const prop of ['monogram', 'label']) {
-      expect(props[prop], prop).toMatchObject({ required: true, tags: { control: 'text' } });
-      expect(props[prop]?.type.name, prop).toBe('string');
-      expect(props[prop]?.defaultValue ?? null, prop).toBeNull();
-    }
-    expect(props.href).toMatchObject({ required: false });
-    expect(props.href?.type.name).toBe('string');
-    // Both branches carry the same directive; docgen joins them and the enhancer normalizes to one.
-    expect(props.href).toMatchObject({ tags: { control: expect.stringMatching(/^text\s*\n\s*text$/) } });
-    expect(props.href?.description).toMatch(/When absent.*role="img"/s);
-    for (const prop of ['id', 'title', 'className', 'target', 'rel']) {
-      expect(props[prop], `ProductMark native ${prop} must remain available in autodocs`).toBeDefined();
-    }
-    for (const prop of [
-      'children',
-      'ref',
-      'asChild',
-      'role',
-      'aria-label',
-      'dangerouslySetInnerHTML',
-      'size',
-      'onClick'
-    ]) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);

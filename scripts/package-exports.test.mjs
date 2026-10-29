@@ -1153,38 +1153,10 @@ test('UI ships the Input well, state and preset utilities without an Input-speci
   );
   // The icon offset must follow the symmetric padding so padding-left survives the cascade.
   assert.ok(at('.pl-9 {') > at('.px-3 {'));
+  assert.ok(at('.pr-9 {') > at('.px-3 {'));
+  assert.match(rule('.pr-9'), /padding-right:\s*calc\(var\(--space-1\)\s*\*\s*9\)/);
+  assert.match(rule('.right-3'), /right:\s*var\(--space-3\)/);
   assert.doesNotMatch(css, /\.eg-input[^{]*\{/, 'Input has no stylesheet: its marker carries no rule (D14)');
-});
-
-test('UI ships the ProductMark Material utilities and link focus ring without a stylesheet rule', () => {
-  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-  const utilities = cssBlock(css, /@layer utilities\s*\{/);
-  const rule = (selector) => {
-    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
-  };
-  assert.match(rule('.size-10'), /width:\s*var\(--space-10\)\s*;[^}]*height:\s*var\(--space-10\)/);
-  assert.match(rule('.rounded-md'), /border-radius:\s*var\(--radius-md[,)]/);
-  assert.match(
-    rule(String.raw`.bg-\(image\:--gradient-btn-primary\)`),
-    /background-image:\s*var\(--gradient-btn-primary\)\s*;/
-  );
-  // The primary bevel and halo resolve from the token theme with Tailwind's composed box-shadow.
-  assert.match(rule('.shadow-btn-primary'), /--tw-shadow:\s*inset 0 1px 0 [^;]*rgba\(255, 0, 54, 0\.7\)\)\s*;/);
-  assert.match(rule('.shadow-btn-primary'), /box-shadow:\s*var\(--tw-inset-shadow\)/);
-  assert.match(rule('.text-action-primary-solid-fg'), /color:\s*var\(--color-action-primary-solid-fg[,)]/);
-  assert.match(rule('.font-display'), /font-family:\s*var\(--font-display[,)]/);
-  assert.match(rule('.text-heading-small'), /font-size:\s*var\(--text-heading-small[,)]/);
-  assert.match(rule('.no-underline'), /text-decoration-line:\s*none\s*;/);
-  // Focus always wins in link mode: the ring replaces the material shadow on :focus-visible (D7).
-  assert.match(
-    rule(String.raw`.focus-visible\:shadow-focus:focus-visible`),
-    /--tw-shadow:\s*0 0 0 2px [^;]*0 0 0 4px [^;]*;[^}]*box-shadow:/
-  );
-  assert.match(rule(String.raw`.focus-visible\:outline-none:focus-visible`), /outline-style:\s*none\s*;/);
-  assert.match(css, /@property --tw-shadow\s*\{[^}]*initial-value:\s*0 0 #0000/);
-  // D10 no stylesheet: the marker carries no rule of its own.
-  assert.doesNotMatch(css, /\.eg-product-mark[^{]*\{/, 'ProductMark has no stylesheet: its marker carries no rule');
 });
 
 test('UI ships the approved Gauge geometry in the components layer', () => {
@@ -1274,24 +1246,22 @@ test('UI ships Link token recipes, scoped motion and legacy resets without a new
     return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
   };
   for (const [selector, declaration] of [
-    ['.border-b', /border-bottom-width:\s*1px\s*;/],
-    ['.border-border-brand', /border-color:\s*var\(--color-border-brand[,)]/],
-    [String.raw`.pb-0\.5`, /padding-bottom:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*0\.5\)/],
+    ['.border-0', /border-width:\s*0(?:px)?\s*;/],
+    ['.text-fg-brand-raised', /color:\s*var\(--color-fg-brand-raised[,)]/],
+    ['.pb-0', /padding-bottom:\s*var\(--space-0\)/],
     ['.no-underline', /text-decoration-line:\s*none/],
     ['.cursor-pointer', /cursor:\s*pointer/],
     ['.transform-none', /transform:\s*none/],
-    [String.raw`.transition-\[border-color\,color\]`, /transition-property:\s*border-color,\s*color/],
+    ['.transition-colors', /transition-property:[^;]*color/],
     [String.raw`.transition-\[translate\]`, /transition-property:\s*translate/],
     [String.raw`.duration-\(--duration-fast\)`, /(?:--tw-duration|transition-duration):\s*var\(--duration-fast\)/],
-    [String.raw`.duration-\(--duration-base\)`, /(?:--tw-duration|transition-duration):\s*var\(--duration-base\)/]
+    [String.raw`.ease-\(--ease-out\)`, /transition-timing-function:\s*var\(--ease-out\)/]
   ]) {
     assert.match(rule(selector), declaration, selector);
   }
   for (const selector of [
-    String.raw`.hover\:border-fg-brand-default`,
     String.raw`.hover\:text-primitive-red-200`,
-    String.raw`.group-hover\/link\:translate-x-0\.5`,
-    String.raw`.group-hover\/link\:-translate-y-0\.5`,
+    String.raw`.motion-safe\:group-hover\/link\:translate-x-1`,
     String.raw`.motion-reduce\:translate-none`,
     String.raw`.motion-reduce\:transition-none`,
     String.raw`.focus-visible\:outline-none`,
@@ -1300,6 +1270,7 @@ test('UI ships Link token recipes, scoped motion and legacy resets without a new
   ]) {
     assert.ok(utilities.includes(selector), `Missing Link utility ${selector}`);
   }
+  assert.match(utilities, /@media \(prefers-reduced-motion:\s*no-preference\)/);
   assert.match(rule(String.raw`.motion-reduce\:translate-none`), /translate:\s*none/);
   assert.match(rule(String.raw`.motion-reduce\:transition-none`), /transition-property:\s*none/);
   assert.match(
@@ -1697,7 +1668,6 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Link',
       'Logo',
       'Portal',
-      'ProductMark',
       'ProgressBar',
       'PullQuote',
       'RadioGroup',
@@ -1778,11 +1748,6 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     exported.Input?.$$typeof,
     Symbol.for('react.forward_ref'),
     'Input must be a React 18-compatible forwardRef component targeting the native input (D12)'
-  );
-  assert.equal(
-    typeof exported.ProductMark,
-    'function',
-    'ProductMark must be a plain function component without a ref API (D9)'
   );
   assert.equal(
     exported.Switch?.$$typeof,
@@ -1896,8 +1861,6 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LogoVariant',
     'Portal',
     'PortalProps',
-    'ProductMark',
-    'ProductMarkProps',
     'ProgressBar',
     'ProgressBarProps',
     'ProgressBarSize',
@@ -2063,8 +2026,6 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'InputSize',
     'InputType',
     'InputVariant',
-    'ProductMark',
-    'ProductMarkProps',
     'AspectRatio',
     'AspectRatioProps',
 
@@ -2589,22 +2550,6 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   for (const utility of ['font-sans', 'bg-surface-0', 'text-label-default', 'font-[var(']) {
     assert.ok(!search.includes(` ${utility}`), `Input code must replace ${utility}`);
   }
-  // ProductMark: passive role="img" tile by default, native named link with href; monogram hidden (D5, D6).
-  const markRecipe =
-    'eg-product-mark inline-flex size-10 shrink-0 items-center justify-center rounded-md bg-(image:--gradient-btn-primary) shadow-btn-primary text-action-primary-solid-fg font-display text-heading-small no-underline';
-  assert.equal(
-    renderToString(createElement(exported.ProductMark, { monogram: 'M', label: 'Mando', id: 'mando-mark' })),
-    `<span id="mando-mark" role="img" aria-label="Mando" class="${markRecipe}"><span aria-hidden="true">M</span></span>`
-  );
-  assert.equal(
-    renderToString(createElement(exported.ProductMark, { monogram: 'M', label: 'Mando home', href: '/' })),
-    `<a href="/" aria-label="Mando home" class="${markRecipe} focus-visible:outline-none focus-visible:shadow-focus"><span aria-hidden="true">M</span></a>`
-  );
-  const twoLetters = renderToString(
-    createElement(exported.ProductMark, { monogram: 'Cr', label: 'Criterio', className: 'mb-1 mb-3' })
-  );
-  assert.ok(twoLetters.includes(`class="${markRecipe} mb-3"`), 'Layout className merges last through cn()');
-  assert.doesNotMatch(twoLetters, /\s(?:monogram|label|href|tabindex)=|data-state|hover:|transition/);
   const geometry = [
     ['line', 'sm', 'h-3', 'rounded-sm'],
     ['line', 'md', 'h-4', 'rounded-sm'],

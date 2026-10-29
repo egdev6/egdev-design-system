@@ -4,7 +4,7 @@ import { Logo } from './Logo';
 /**
  * ## Description
  * The egdev brand logo: the isometric isotype (`mark`) or the isotype with the white name
- * (`wordmark`), 28, 32 or 36px high. Use ProductMark for other apps and Isotipo3D for large artwork.
+ * (`wordmark`), 28, 32 or 36px high. Use an image for other apps' artwork and Isotipo3D for large artwork.
  *
  * ## Dependencies
  * No Radix primitive applies: the root is a named image (`span` with `role="img"`) or a native

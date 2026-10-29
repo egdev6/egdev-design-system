@@ -37,7 +37,6 @@ const components = [
   ['Link', 'atoms/link'],
   ['Badge', 'atoms/badge'],
   ['Logo', 'atoms/logo'],
-  ['ProductMark', 'atoms/product-mark'],
   ['ProgressBar', 'atoms/progress-bar'],
   ['PullQuote', 'atoms/pull-quote'],
   ['Select', 'atoms/select'],
@@ -234,8 +233,7 @@ const expected: Record<string, Record<string, string | false>> = {
   pullquote: { text: 'text', accent: 'text', source: 'text', variant: 'select', tone: 'select' },
   searchtrigger: { label: 'text', shortcut: 'text', compact: 'boolean' },
   textarea: { variant: 'select' },
-  input: { size: 'select', variant: 'select', type: 'select', icon: false },
-  productmark: { monogram: 'text', label: 'text', href: 'text' },
+  input: { size: 'select', variant: 'select', type: 'select', icon: false, loading: 'boolean' },
   select: {
     options: false,
     value: 'text',
@@ -294,8 +292,7 @@ const ownPropCounts: Record<string, number> = {
   progressbar: 6,
   pullquote: 5,
   textarea: 1,
-  input: 4,
-  productmark: 3,
+  input: 5,
   select: 9,
   toggle: 7,
   visuallyhidden: 2,
@@ -1125,31 +1122,14 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(argTypes.icon?.control).toBe(false);
     expect(argTypes.icon?.table?.disable).toBeUndefined();
     expect(argTypes.icon?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.loading?.type).toMatchObject({ name: 'boolean', required: false });
+    expect(argTypes.loading?.control).toEqual({ type: 'boolean' });
+    expect(argTypes.loading?.table?.defaultValue?.summary).toBe('false');
     expect(args).toEqual({});
     for (const prop of ['id', 'name', 'placeholder', 'disabled', 'readOnly', 'required', 'className']) {
       expect(argTypes[prop], prop).toEqual(story('Input', false).argTypes[prop]);
     }
     for (const prop of ['children', 'asChild', 'ref', 'onChange', 'style', 'invalid']) {
-      expect(argTypes[prop], prop).toBeUndefined();
-    }
-  });
-
-  it('retains ProductMark required monogram/label and optional href text rows across both branches', () => {
-    const { argTypes, args } = story('ProductMark');
-    for (const prop of ['monogram', 'label']) {
-      expect(argTypes[prop]?.type, prop).toMatchObject({ name: 'string', required: true });
-      expect(argTypes[prop]?.control, prop).toEqual({ type: 'text' });
-    }
-    expect(argTypes.href?.type).toMatchObject({ name: 'string', required: false });
-    expect(argTypes.href?.control).toEqual({ type: 'text' });
-    for (const prop of ['monogram', 'label', 'href']) {
-      expect(argTypes[prop]?.table?.defaultValue, prop).toBeUndefined();
-    }
-    expect(args).toEqual({});
-    for (const prop of ['id', 'title', 'className', 'target', 'rel']) {
-      expect(argTypes[prop], prop).toEqual(story('ProductMark', false).argTypes[prop]);
-    }
-    for (const prop of ['children', 'ref', 'asChild', 'role', 'aria-label', 'aria-hidden', 'size', 'onClick']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

@@ -18,7 +18,6 @@
 @source "../packages/ui/src/atoms/kbd/Kbd.stories.tsx";
 @source "../packages/ui/src/atoms/link/Link.stories.tsx";
 @source "../packages/ui/src/atoms/logo/Logo.stories.tsx";
-@source "../packages/ui/src/atoms/product-mark/ProductMark.stories.tsx";
 @source "../packages/ui/src/atoms/progress-bar/ProgressBar.stories.tsx";
 @source "../packages/ui/src/atoms/pull-quote/PullQuote.stories.tsx";
 @source "../packages/ui/src/atoms/radio-group/RadioGroup.stories.tsx";

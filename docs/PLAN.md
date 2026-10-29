@@ -25,7 +25,7 @@ Sin estas, todo lo demás vuelve a llevar estilos en línea.
 
 ## Fase 2 · Átomos de acción y estado
 
-Button, IconButton ✓, Toggle, Link, Icon, Badge (Tag + StatusBadge), StatusDot (+ LiveDot), Kbd, Avatar, Logo, ProductMark, Spinner, Tooltip.
+Button, IconButton ✓, Toggle, Link, Icon, Badge (Tag + StatusBadge), StatusDot (+ LiveDot), Kbd, Avatar, Logo, Spinner, Tooltip.
 
 ## Fase 3 · Formularios
 
@@ -35,7 +35,7 @@ Es la fase que más rompe: Field deja de ser un átomo que lo hace todo.
 
 ## Fase 4 · Navegación y AppShell
 
-Menu, NavList, Tabs ✓, ProductMark, Sidebar, ModuleRail, TabBar y la plantilla AppShell.
+Menu, NavList, Tabs ✓, Logo, Sidebar, ModuleRail, TabBar and the AppShell template.
 
 Con esto, cualquier app (Mando, Cadencia, egdev-live, Criterio, media-tool, Quorb) puede montar su esqueleto.
 
@@ -62,7 +62,7 @@ Aquí entran las dos dependencias que hay que confirmar: `cmdk` y `@dnd-kit`.
 
 - 14 iconos que faltan en Icon.
 - Vista Mes de CalendarGrid.
-- Sistema de marcas de producto (seis apps con letra sobre neón). Mientras tanto, ProductMark usa `--gradient-btn-primary` + `--shadow-btn-primary`.
+- Product branding: use Logo for egdev or a consumer-owned image for other products; the monogram-tile component has been removed.
 - Logos de terceros dentro de Gauge (monocromo para todos o no).
 - Overlays y widgets de egdev-live en registro Show.
 - Penpot: dar de alta los tokens de Material v2.

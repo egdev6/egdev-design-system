@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProductMark, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -72,7 +72,6 @@ import type {
   LogoProps,
   LogoSize,
   LogoVariant,
-  ProductMarkProps,
   ProgressBarProps,
   ProgressBarSize,
   ProgressBarVariant,
@@ -643,6 +642,7 @@ export function InputSamples({ inputValue = 'Launch notes' }: { inputValue?: str
     createElement(Input, inputNative),
     createElement('p', { id: 'input-native-hint' }, 'Lowercase letters only.'),
     createElement(Input, { id: 'input-search', 'aria-label': 'Search', type: inputType, size: inputSize, variant: inputVariant, icon }),
+    createElement(Input, { id: 'input-loading', 'aria-label': 'Pending search', loading: true, icon }),
     createElement(Input, { id: 'input-invalid', 'aria-label': 'Post text', 'aria-invalid': true, 'aria-describedby': 'input-error' }),
     createElement('p', { id: 'input-error' }, 'Keep the post under 280 characters.'),
     createElement(Input, { id: 'input-disabled', 'aria-label': 'Locked', disabled: true, defaultValue: 'fixed' }),
@@ -658,17 +658,6 @@ export function LogoSamples() {
     sizes.map((size) => createElement(Logo, { key: size, variant, size, id: 'logo-mark-' + size })),
     createElement(Logo, logoHome),
     createElement(Logo, logoNative));
-}
-export const productMarkImage: ProductMarkProps = { monogram: 'M', label: 'Mando', id: 'mark-mando' };
-export const productMarkLink: ProductMarkProps = {
-  monogram: 'M', label: 'Mando home', href: '#home', id: 'mark-home', target: '_self'
-};
-export function ProductMarkSamples() {
-  // Passive product images and one home link; router wrapping stays the consumer's (D5).
-  return createElement('nav', { 'aria-label': 'Product marks' },
-    createElement(ProductMark, productMarkImage),
-    createElement(ProductMark, { monogram: 'Cr', label: 'Criterio', id: 'mark-criterio', className: 'mb-1 mb-3 consumer-mark' }),
-    createElement(ProductMark, productMarkLink));
 }
 export function VisuallyHiddenSamples() {
   return createElement('section', { 'aria-label': 'Hidden support content' },
@@ -929,7 +918,6 @@ export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, divider
     createElement(TextareaSamples),
     createElement(InputSamples, { inputValue }),
     createElement(LogoSamples),
-    createElement(ProductMarkSamples),
     createElement(SelectSamples),
     createElement(ToggleSamples),
     createElement(ChipSamples),
@@ -1148,22 +1136,6 @@ const slottedInput: InputProps = { asChild: true };
 // @ts-expect-error The forwarded ref targets the native input, not a generic div (D12).
 const wrongInputRef: ComponentProps<typeof Input> = { ref: createRef<HTMLDivElement>() };
 export const inputElementRef: ComponentProps<typeof Input> = { ref: createRef<HTMLInputElement>() };
-// @ts-expect-error ProductMark requires its accessible label (D6).
-const unnamedMark: ProductMarkProps = { monogram: 'M' };
-// @ts-expect-error ProductMark requires its visible monogram (D1).
-const emptyMark: ProductMarkProps = { label: 'Mando' };
-// @ts-expect-error The monogram prop is the only content; children are rejected.
-const childMark: ProductMarkProps = { monogram: 'M', label: 'Mando', children: 'M' };
-// @ts-expect-error The link is named by label, never by aria-label.
-const ariaNamedMark: ProductMarkProps = { monogram: 'M', label: 'Mando home', href: '/', 'aria-label': 'Home' };
-// @ts-expect-error The link is named by label, never by aria-labelledby.
-const labelledMark: ProductMarkProps = { monogram: 'M', label: 'Mando home', href: '/', 'aria-labelledby': 'home' };
-// @ts-expect-error ProductMark has no public ref API (D9).
-const referencedMark: ProductMarkProps = { monogram: 'M', label: 'Mando', ref: createRef<HTMLElement>() };
-// @ts-expect-error Router integration wraps the mark; there is no asChild.
-const slottedMark: ProductMarkProps = { monogram: 'M', label: 'Mando', asChild: true };
-// @ts-expect-error v0.1 has one 40px size (D2).
-const sizedMark: ProductMarkProps = { monogram: 'M', label: 'Mando', size: 'lg' };
 // @ts-expect-error Hidden content is required, not optional.
 const missingHiddenChildren: VisuallyHiddenProps = { id: 'orphan-hint' };
 // @ts-expect-error VisuallyHidden inherits span props; the anchor-only href is rejected.
@@ -2008,6 +1980,8 @@ function assertInputCSS(css) {
     /\.pl-9\s*\{[^}]*padding-left:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)/,
     'Input icon offset'
   );
+  assert.match(css, /\.pr-9\s*\{[^}]*padding-right:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)/);
+  assert.match(css, /\.right-3\s*\{[^}]*right:\s*var\(--space-3\)/);
   assert.match(css, /:has\(:is\(:disabled\)\)\s*\{[^}]*opacity:\s*45%/, 'Input disabled dimming');
   assert.match(css, /transition-duration:\s*var\(--duration-fast\)/, 'Input transition duration token');
   assert.doesNotMatch(css, /\.eg-input[^{]*\{/, 'Input has no stylesheet: its marker carries no rule');
@@ -2087,7 +2061,6 @@ function assertPullQuoteCSS(css) {
   assert.match(css, /padding-inline-start:\s*calc\(var\(--space-1\)\s*\*\s*4\.5\)/);
 }
 
-// ProductMark ships the product-mark Material and link focus utilities from the token theme; no stylesheet.
 // Stat ships its Material card, figure recipes and highlight utilities; part markers carry no rules.
 function assertStatCSS(css) {
   for (const selector of [
@@ -2145,29 +2118,6 @@ function assertDropzoneCSS(css) {
   assert.match(css, /background-image:\s*none/);
   assert.match(css, /box-shadow:\s*none/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
-}
-
-function assertProductMarkCSS(css) {
-  for (const utility of [
-    '.size-10',
-    '.rounded-md',
-    '.shadow-btn-primary',
-    '.text-action-primary-solid-fg',
-    '.font-display',
-    '.text-heading-small',
-    '.no-underline',
-    '.focus-visible\\:outline-none',
-    '.focus-visible\\:shadow-focus'
-  ]) {
-    assert.ok(css.includes(utility), 'Missing ProductMark utility ' + utility);
-  }
-  assert.match(
-    css,
-    /\.bg-\\\(image\\:--gradient-btn-primary\\\)\s*\{[^}]*background-image:\s*var\(--gradient-btn-primary\)/,
-    'The product-mark fill must use the gradient-btn-primary token'
-  );
-  assert.match(css, /\.size-10\s*\{[^}]*width:\s*var\(--space-10\)/, 'The tile must be 40px through --space-10');
-  assert.doesNotMatch(css, /\.eg-product-mark[^{]*\{/, 'ProductMark has no stylesheet: its marker carries no rule');
 }
 
 // Spinner ships Icon-scale presets, inherited stroke utilities and the canonical spin token with keyframes.
@@ -2404,7 +2354,6 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Link',
   'Logo',
   'Portal',
-  'ProductMark',
   'ProgressBar',
   'PullQuote',
   'RadioGroup',
@@ -2464,7 +2413,6 @@ ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertPullQuoteCSS.toString()}
-${assertProductMarkCSS.toString()}
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
@@ -2493,7 +2441,6 @@ assertTooltipCSS(shippedStyles);
 assertProgressBarCSS(shippedStyles);
 assertTextareaCSS(shippedStyles);
 assertInputCSS(shippedStyles);
-assertProductMarkCSS(shippedStyles);
 assertToggleCSS(shippedStyles);
 assertChipCSS(shippedStyles);
 ${assertLabelCSS.toString()}
@@ -2518,21 +2465,19 @@ console.log(JSON.stringify({ ui: ui.version, react: (await import('react')).vers
 
 function assertLinkCSS(css) {
   for (const selector of [
-    '.border-b',
-    '.border-border-brand',
+    '.border-0',
+    '.text-fg-brand-raised',
     '.text-label-default',
     '.no-underline',
     '.cursor-pointer',
     '.transform-none',
-    String.raw`.pb-0\.5`,
-    String.raw`.transition-\[border-color\,color\]`,
+    '.pb-0',
+    '.transition-colors',
     String.raw`.transition-\[translate\]`,
     String.raw`.duration-\(--duration-fast\)`,
-    String.raw`.duration-\(--duration-base\)`,
-    String.raw`.hover\:border-fg-brand-default`,
+    String.raw`.ease-\(--ease-out\)`,
     String.raw`.hover\:text-primitive-red-200`,
-    String.raw`.group-hover\/link\:translate-x-0\.5`,
-    String.raw`.group-hover\/link\:-translate-y-0\.5`,
+    String.raw`.motion-safe\:group-hover\/link\:translate-x-1`,
     String.raw`.motion-reduce\:translate-none`,
     String.raw`.motion-reduce\:transition-none`,
     String.raw`.focus-visible\:\[box-shadow\:var\(--shadow-focus\)\]`,
@@ -2542,10 +2487,9 @@ function assertLinkCSS(css) {
   }
   assert.match(css, /\.transform-none\s*\{[^}]*transform:\s*none/);
   assert.match(css, /translate:\s*var\(--tw-translate-x\) var\(--tw-translate-y\)/);
-  assert.match(css, /transition-property:\s*border-color,\s*color/);
   assert.match(css, /transition-property:\s*translate/);
   assert.match(css, /transition-duration:\s*var\(--duration-fast\)/);
-  assert.match(css, /transition-duration:\s*var\(--duration-base\)/);
+  assert.match(css, /@media \(prefers-reduced-motion:\s*no-preference\)/);
   assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);
 }
 
@@ -2913,6 +2857,9 @@ try {
   assert.equal(link.getAttribute('href'), '#docs');
   assert.ok(link.classList.contains('eg-link') && link.classList.contains('mt-4') && !link.classList.contains('mt-2'));
   assert.equal(link.textContent, 'Documentation');
+  assert.ok(link.classList.contains('text-fg-brand-raised'));
+  assert.ok(link.classList.contains('border-0'));
+  assert.ok(!link.classList.contains('border-b'));
   assert.equal(link.querySelector('svg').getAttribute('aria-hidden'), 'true');
   assert.ok(link.querySelector('svg').classList.contains('size-4'));
   assert.ok(link.querySelector('svg').classList.contains('transform-none'));
@@ -2925,7 +2872,7 @@ try {
     assert.ok(external.rel.split(' ').includes('author'));
     assert.equal(external.querySelector('span').style.position, 'absolute');
     assert.equal(external.querySelector('span').textContent, id === 'link-router' ? '(new window)' : '(opens in a new tab)');
-    assert.ok(external.querySelector('svg').innerHTML.includes('M7 17 17 7'));
+    assert.ok(external.querySelector('svg').innerHTML.includes('M5 12h14'));
   }
   assert.equal(document.getElementById('link-router').getAttribute('href'), '#router');
   ${assertBadgeDOM.toString()}
@@ -3271,6 +3218,14 @@ for (const frame of [square, wide]) {
   assert.equal(document.getElementById('input-invalid').getAttribute('aria-invalid'), 'true');
   assert.equal(document.getElementById('input-disabled').hasAttribute('disabled'), true);
   assert.equal(document.getElementById('input-readonly').hasAttribute('readonly'), true);
+  const pendingInput = document.getElementById('input-loading');
+  assert.equal(pendingInput.getAttribute('aria-busy'), 'true');
+  assert.equal(pendingInput.hasAttribute('disabled'), false);
+  assert.equal(pendingInput.hasAttribute('readonly'), false);
+  assert.equal(pendingInput.hasAttribute('loading'), false);
+  assert.ok(pendingInput.classList.contains('pl-9') && pendingInput.classList.contains('pr-9'));
+  assert.equal(pendingInput.parentElement.querySelector('.eg-spinner').getAttribute('aria-hidden'), 'true');
+  assert.equal(pendingInput.parentElement.querySelector('[role="status"]'), null);
   for (const control of document.querySelectorAll('.eg-input > input')) {
     assert.equal(control.hasAttribute('data-state'), false, 'Input states stay native, never mirrored');
     assert.equal(control.getAttribute('role'), null);
@@ -3308,31 +3263,6 @@ for (const frame of [square, wide]) {
   assert.equal(nativeLogo.getAttribute('title'), 'egdev');
   assert.equal(nativeLogo.getAttribute('lang'), 'en');
   assert.ok(nativeLogo.className.endsWith('ms-2 consumer-logo'), 'Consumer layout classes merge last');
-  const markNav = document.querySelector('nav[aria-label="Product marks"]');
-  assert.ok(markNav, 'SSR must render ProductMark samples');
-  const mandoMark = document.getElementById('mark-mando');
-  assert.equal(mandoMark.tagName, 'SPAN');
-  assert.equal(mandoMark.getAttribute('role'), 'img', 'Image mode is a passive named image');
-  assert.equal(mandoMark.getAttribute('aria-label'), 'Mando');
-  assert.equal(mandoMark.children.length, 1);
-  assert.equal(mandoMark.children[0].getAttribute('aria-hidden'), 'true', 'The monogram is hidden from assistive technology');
-  assert.equal(mandoMark.textContent, 'M');
-  assert.ok(mandoMark.className.startsWith('eg-product-mark '), 'The public marker leads the root classes');
-  const criterioMark = document.getElementById('mark-criterio');
-  assert.equal(criterioMark.textContent, 'Cr');
-  assert.ok(criterioMark.className.endsWith(' mb-3 consumer-mark'), 'Consumer layout classes merge last');
-  assert.ok(!criterioMark.className.split(' ').includes('mb-1'), 'Conflicting margin utilities resolve through cn()');
-  const homeMark = document.getElementById('mark-home');
-  assert.equal(homeMark.tagName, 'A');
-  assert.equal(homeMark.getAttribute('href'), '#home');
-  assert.equal(homeMark.getAttribute('target'), '_self');
-  assert.equal(homeMark.getAttribute('aria-label'), 'Mando home');
-  assert.equal(homeMark.hasAttribute('role'), false, 'Link mode keeps native link semantics');
-  assert.ok(homeMark.className.includes(' focus-visible:shadow-focus'), 'Link focus replaces the material shadow');
-  for (const mark of markNav.querySelectorAll('.eg-product-mark')) {
-    assert.equal(mark.hasAttribute('data-state'), false);
-    assert.equal(mark.getAttribute('tabindex'), null);
-  }
   const tokenStack = document.querySelector('.eg-stack[aria-label="Token sections"]');
   assert.ok(tokenStack, 'SSR must render Stack samples');
   assert.ok(tokenStack.classList.contains('flex-col') && tokenStack.classList.contains('flex-nowrap'));
@@ -3808,12 +3738,6 @@ try {
   homeLink.focus();
   assert.ok(document.activeElement === homeLink, 'The linked Logo must be a native tab stop');
   assert.equal(document.querySelectorAll('[role="img"].eg-logo').length, 5, 'Unlinked Logos remain named images');
-  stage('product-mark:focus:start');
-  const linkedMark = document.getElementById('mark-home');
-  linkedMark.focus();
-  assert.ok(document.activeElement === linkedMark, 'The linked ProductMark must receive focus');
-  assert.equal(document.getElementById('mark-mando').tabIndex, -1, 'An image ProductMark must never become a Tab stop');
-  stage('product-mark:focus:complete');
   stage('layout:rerender:start');
   const layoutStack = () => document.querySelector('.eg-stack[aria-label="Token sections"]');
   const layoutCluster = () => document.querySelector('.eg-cluster[aria-label="Token actions"]');
@@ -4313,7 +4237,7 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
-  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'ProductMark link focus and passive image', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'PullQuote figure identity, variant/tone rerender, blank-text removal and development warning', 'Countdown client sampling, expiry episode, running rerender and unavailable recovery', 'Stat passive group, highlight and no-data rerenders with stable identity', 'SearchTrigger native activation, inert displayed shortcut, compact identity, disabled guard, host Slot trigger and ref cleanup', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup', 'Chip pressed state, change events, controlled/disabled behavior and public recipe'] }));
+  console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'PullQuote figure identity, variant/tone rerender, blank-text removal and development warning', 'Countdown client sampling, expiry episode, running rerender and unavailable recovery', 'Stat passive group, highlight and no-data rerenders with stable identity', 'SearchTrigger native activation, inert displayed shortcut, compact identity, disabled guard, host Slot trigger and ref cleanup', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup', 'Chip pressed state, change events, controlled/disabled behavior and public recipe'] }));
 } finally {
   stage('unmount:start');
   await act(async () => root.unmount());
@@ -4422,7 +4346,6 @@ ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertPullQuoteCSS.toString()}
-${assertProductMarkCSS.toString()}
 assertIconButtonCSS(emitted);
 ${assertToggleCSS.toString()}
 ${assertChipCSS.toString()}
@@ -4458,7 +4381,6 @@ assertCountdownCSS(emitted);
 assertStatCSS(emitted);
 assertSearchTriggerCSS(emitted);
 assertPullQuoteCSS(emitted);
-assertProductMarkCSS(emitted);
 assertToggleCSS(emitted);
 assertChipCSS(emitted);
 ${assertLabelCSS.toString()}
@@ -4527,7 +4449,6 @@ assertCountdownCSS(twCss);
 assertStatCSS(twCss);
 assertSearchTriggerCSS(twCss);
 assertPullQuoteCSS(twCss);
-assertProductMarkCSS(twCss);
 assertToggleCSS(twCss);
 assertChipCSS(twCss);
 assertSelectCSS(twCss);
