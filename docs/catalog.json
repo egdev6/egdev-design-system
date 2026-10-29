@@ -589,9 +589,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "ScrollArea",
-    "compone": "Avatar, Badge, Text",
+    "compone": "Avatar, Badge, Icon, VisuallyHidden; Surface well recipe",
     "accion": "mantener",
-    "notas": "`--chat` para el chat en vivo."
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/109): read-only named events region or chat log, native ordered list, stable consumer ids and supplied order. Radix ScrollArea owns bounded vertical scrolling (sm/md/lg); no auto-follow, sorting, command parsing or secondary announcer. Visible Moderator/Command Badges, readable platform text and optional decorative sm Avatar. Host-owned highlighting and live-off history updates; unpainted content, externally hosted Material, scrollbar well composed from surfaceVariants. No stylesheet, ref or asChild."
   },
   {
     "actual": "—",
