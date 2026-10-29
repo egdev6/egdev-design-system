@@ -440,15 +440,15 @@
     "notas": "Draft molecule #84 coordinates label/control/descriptions/counter. Proposed #179 amendment replaces native hint/error text with FieldMessage while preserving error-over-hint precedence, Slot wiring and the non-live default. No Field implementation or amendment approval implied."
   },
   {
-    "actual": "`.eg-btn-split`",
-    "nivelActual": "sin ficha",
-    "nombre": "ButtonGroup",
+    "actual": "MenuList (popup)",
+    "nivelActual": "molécula",
+    "nombre": "Menu",
     "nivel": "molecule",
     "destino": "ui",
-    "radix": "—",
-    "compone": "Button, IconButton, Menu",
-    "accion": "extraer",
-    "notas": "Botón dividido (`--join-start/--join-end`) y grupos de botones."
+    "radix": "DropdownMenu",
+    "compone": "Icon, Kbd, Surface recipe",
+    "accion": "separar",
+    "notas": "Implemented data-driven action menu under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/89) plus A1/A2: action/link/separator/label entries, one submenu level, optional non-interactive header and controlled/uncontrolled visibility. Radix owns trigger keys, focus, ARIA, portals and collision handling; Escape closes the entire menu. Shared Surface overlay recipe, decorative Icon and display-only Kbd. No stylesheet, native forwarding, ref or public subcomponents; legacy menu styles unchanged."
   },
   {
     "actual": "—",
@@ -457,9 +457,20 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "ToggleGroup",
-    "compone": "Chip",
+    "compone": "Chip (chipVariants recipe)",
     "accion": "nuevo",
-    "notas": "Filtros (múltiple) y selección exclusiva (borde de la pantalla en Quorb)."
+    "notas": "Implemented React molecule under [approved v0.1 + A1](https://github.com/egdev6/egdev-design-system/issues/81): named single/multiple filter pills, Radix-owned selection and horizontal looping roving focus. Reuses chipVariants without nesting Chip; selected labels add a token underline. Unpainted wrapping root; no form API, ref, asChild, stylesheet or extra internal modules. A1 changes Storybook value/defaultValue metadata only."
+  },
+  {
+    "actual": "`.eg-btn-split`",
+    "nivelActual": "sin ficha",
+    "nombre": "ButtonGroup",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "—",
+    "compone": "Button, IconButton (consumer children)",
+    "accion": "extraer",
+    "notas": "Implemented under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/79): passive div role=group with optional label, spaced wrapping or attached logical inner corners and focus stacking. Children own Material, sizing, refs and interaction; no built-in Menu or arrow navigation. No stylesheet; legacy split/join rules remain. Browser visual conformity not evaluated."
   },
   {
     "actual": "Tabs",
@@ -468,20 +479,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "Tabs",
-    "compone": "Badge (contador)",
+    "compone": "Surface well recipe; own counter part",
     "accion": "mantener",
-    "notas": "Provisional future tab-selection concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md); Gauge's current finish follows the [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md)."
-  },
-  {
-    "actual": "MenuList (popup)",
-    "nivelActual": "molécula",
-    "nombre": "Menu",
-    "nivel": "molecule",
-    "destino": "ui",
-    "radix": "DropdownMenu",
-    "compone": "Icon, Kbd",
-    "accion": "separar",
-    "notas": "Menú desplegable con items, separadores, `--danger` y submenús."
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/107): data-driven horizontal sibling views with Radix-owned automatic activation, keyboard/focus/ARIA and controlled/uncontrolled selection. Underline md/sm or single-height segmented list composing the existing Surface well recipe; raw neutral/danger counters are owned parts, not Badge overrides. Inactive contents unmount while hidden panel wrappers preserve relationships. No public parts, ref, asChild or stylesheet; legacy `.eg-tabs*` remains unchanged."
   },
   {
     "actual": "MenuList --nav",
@@ -508,24 +508,24 @@
   {
     "actual": "—",
     "nivelActual": "—",
-    "nombre": "Popover",
-    "nivel": "molecule",
-    "destino": "ui",
-    "radix": "Popover",
-    "compone": "Surface, Portal",
-    "accion": "nuevo",
-    "notas": "Panel flotante al hacer clic."
-  },
-  {
-    "actual": "—",
-    "nivelActual": "—",
     "nombre": "HoverCard",
     "nivel": "molecule",
     "destino": "ui",
     "radix": "HoverCard",
-    "compone": "Surface glass, Portal",
+    "compone": "Surface overlay; internal Radix Portal",
     "accion": "nuevo",
-    "notas": "El panel de detalle de Quorb al pasar por un Gauge."
+    "notas": "Implemented in @egdev/ui under [approved v0.1 + A1](https://github.com/egdev6/egdev-design-system/issues/86): supplementary read-only rich link preview with controlled/uncontrolled Radix state, native hover/focus timers and collision bounds. Surface owns overlay Material; Gauge remains passive inside a separate named anchor. A1 retains Radix touch cancellation: usage requires a separate persistent details link outside the trigger for touch users. No stylesheet, public content ref, presence or delay API."
+  },
+  {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "Popover",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "Popover",
+    "compone": "Surface; Radix-owned Portal",
+    "accion": "nuevo",
+    "notas": "Implemented under [approved v0.1 plus A1/A2](https://github.com/egdev6/egdev-design-system/issues/96): named click-open dialog with Root, Trigger, internally portalled Content and Close. Radix owns state, ids, focus, dismissal and placement; modality-only context derives aria-modal. Content composes Surface overlay without copying its recipe. Native/slotted button refs; Button Trigger retains idle/loading state and exposes visibility through aria-expanded (A2). No custom Content id, stylesheet or extra public helpers. Visual conformity remains Not evaluated."
   },
   {
     "actual": "Notice",
@@ -534,9 +534,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "—",
-    "compone": "Icon, Button; shared FieldMessage recipes",
+    "compone": "Surface recipe, Icon; consumer Button/Link actions",
     "accion": "mantener",
-    "notas": "Draft #93 retains its status/alert owner, summary/actions and compact size. Proposed #179 amendment shares marker-free tone/icon/text recipes from FieldMessage, not its root or live semantics. No implementation or peer amendment performed."
+    "notas": "Implemented React molecule under [approved v0.1 + A1 contract](https://github.com/egdev6/egdev-design-system/issues/93#issuecomment-6503388441): persistent single-owner status/alert, required summary, five tones, md/sm sizes and optional actions. Shared noticeVariants inherits eg-surface only; Notice adds eg-notice separately. No stylesheet, dismissal, ref or asChild. Proposed FieldMessage #179 sharing remains unimplemented."
   },
   {
     "actual": "—",
@@ -556,9 +556,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "Slot",
-    "compone": "Surface, Text, Badge, Button",
+    "compone": "Surface recipe; consumer Badge, Button, IconButton, Icon, Link",
     "accion": "renombrar",
-    "notas": "Fila/tarjeta genérica con estados (`new`, `failed`, `done`, `empty`, `dragging`, `off`) y `--row`."
+    "notas": "Implemented compound React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/88): generic card/compact/row with Body, Content, Media, Footer, Meta and Actions. Host-selected status snapshots include new, failed, done, empty, dragging and off; visible status words and domain transitions belong to the consumer. Surface recipes supply the elevated frame and passive thumbnail well. Empty is one slotted native action; no drag engine, ref API or stylesheet. Legacy PostCard CSS remains unchanged."
   },
   {
     "actual": "PostCard (Cadencia)",
@@ -578,9 +578,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "RadioGroup.Item / ToggleGroup.Item",
-    "compone": "AspectRatio, Text",
+    "compone": "Surface recipes, AspectRatio, Badge",
     "accion": "mantener",
-    "notas": "Proporciones como variantes (portrait, story, square, wide, banner)."
+    "notas": "Implemented React molecule under [approved v0.1 contract and metadata amendment A1](https://github.com/egdev6/egdev-design-system/issues/101): data-driven single radio or multiple toggle selection, six media ratios, decorative thumbnail fallback, independent live badge and sibling stretched native controls. Surface recipes own card/well Material; Badge remains unmodified. Single supports native form name/required; multiple consumers serialize values. Root layout-only className, no ref/asChild/renderer, no stylesheet. Legacy .eg-tile remains unchanged; visual conformity Not evaluated."
   },
   {
     "actual": "Timeline",
@@ -611,9 +611,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "—",
-    "compone": "Text",
+    "compone": "Heading, Text, Divider",
     "accion": "mantener",
-    "notas": "Cabecera de sección en registro Show; valorar unificar con PageHeader por `register`."
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/100): passive editorial header with stack/split/inline arrangements, section-scale Heading, optional eyebrow/accent/lede and a decorative inline Divider. Split starts at the approved 860px breakpoint; missing lede/eyebrow collapses split/inline to stack. Distinct from PageHeader: no actions or register axis. Keeps eg-section-head and eg-section-head__lede; no stylesheet."
   },
   {
     "actual": "—",
@@ -621,10 +621,10 @@
     "nombre": "MeterRow",
     "nivel": "molecule",
     "destino": "ui",
-    "radix": "Progress",
-    "compone": "ProgressBar, Text, Gauge key",
+    "radix": "Progress (via ProgressBar)",
+    "compone": "ProgressBar; native label/readout/help and decorative key",
     "accion": "nuevo",
-    "notas": "Etiqueta + valor + barra + ayuda (Quorb, egdev-live, Criterio)."
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/90): labelled task/goal completion only, never capacity, usage or arbitrary measurements. Composes one lg ProgressBar with brand/muted family, normalized decimal percent or coherent valueText, indeterminate messages and optional persistent help. Structural unpainted div, hidden visible header, useId descriptions; no Gauge, Text, Field or Surface composition. No stylesheet, ref, actions, live region or new dependency."
   },
   {
     "actual": "ModuleCard",
@@ -676,10 +676,10 @@
     "nombre": "SocialLinks",
     "nivel": "molecule",
     "destino": "ui",
-    "radix": "—",
-    "compone": "IconButton, Cluster",
+    "radix": "— (native anchors; atom-owned Slot + AccessibleIcon)",
+    "compone": "IconButton, Icon, Stack, Cluster",
     "accion": "mantener",
-    "notas": ""
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/104): named native list of validated HTTPS profile links, optional independent caption, stacked or wrapping inline layout, outline/ghost atom treatments and md/lg presets (lg touch-sized default). Per-item opt-in new context merges secure rel tokens and a localized hidden notice once. Empty/all-invalid data renders nothing; no truncation, selection, ref or asChild. Six meaningful files, no stylesheet; legacy markers/styles preserved. Visual conformity: Not evaluated."
   },
   {
     "actual": "PhotoFrame",
@@ -863,10 +863,10 @@
     "nombre": "Carousel",
     "nivel": "molecule",
     "destino": "ui",
-    "radix": "— (roving focus propio)",
-    "compone": "IconButton, ProgressBar",
+    "radix": "— (native scroll and bounded roving focus)",
+    "compone": "IconButton, Icon, ProgressBar, VisuallyHidden",
     "accion": "extraer",
-    "notas": "Sale de TipsSlider: contador, anterior/siguiente, arrastre y teclado."
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/80): manually navigated read-only slides with stable string identities, bounded direction-aware keyboard navigation, native scrolling and background/media mouse dragging. Controlled requests wait for acceptance; settled user changes coordinate focus and polite status. Structural layout only; consumer Surface content owns Material. No autoplay, stylesheet, new dependencies or legacy TipsSlider migration."
   },
   {
     "actual": "Dialog",

@@ -6,26 +6,44 @@ import { mergeConfig } from 'vite';
 const documentedNativeProps: Record<string, readonly string[]> = {
   timeline: ['id', 'title', 'aria-describedby', 'aria-busy', 'className', 'style', 'onClick'],
   avatar: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  carousel: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onKeyDown', 'onFocus', 'onBlur'],
   button: ['type', 'disabled', 'onClick', 'id', 'title', 'aria-describedby', 'className', 'name', 'value', 'tabIndex'],
+  buttonGroup: ['id', 'title', 'dir', 'aria-labelledby', 'aria-describedby', 'className'],
   checkbox: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid', 'className', 'form'],
   chip: ['id', 'title', 'name', 'onClick', 'aria-describedby', 'className'],
+  chipGroup: ['id', 'title', 'onClick', 'aria-describedby', 'className', 'style'],
   countdown: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],
   dropzone: ['id', 'title', 'disabled', 'className', 'aria-describedby', 'onClick'],
   gauge: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  hoverCardTrigger: ['href', 'id', 'title', 'target', 'rel', 'onClick', 'aria-label', 'className', 'style'],
+  hoverCardContent: ['id', 'title', 'aria-label', 'aria-describedby', 'className', 'style'],
+  notice: ['id', 'title', 'role', 'aria-describedby', 'className', 'style'],
   divider: ['id', 'title', 'dir', 'aria-label', 'aria-labelledby', 'className', 'style'],
   aspectRatio: ['id', 'title', 'aria-describedby', 'className', 'style', 'onClick'],
   visuallyHidden: ['id', 'title', 'aria-describedby', 'className', 'style', 'lang'],
   skeleton: ['id', 'title', 'className', 'style'],
   spinner: ['id', 'title', 'className', 'style'],
   stat: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  socialLinks: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick'],
+  tabs: ['id', 'title', 'aria-describedby', 'className', 'style'],
   logo: ['id', 'title', 'className', 'style', 'target', 'rel'],
   statusDot: ['id', 'title', 'className', 'style'],
   kbd: ['id', 'title', 'className'],
   link: ['id', 'title', 'href', 'target', 'rel', 'onClick', 'aria-describedby', 'className', 'style'],
+  listItem: ['id', 'title', 'aria-describedby', 'aria-labelledby', 'className', 'style', 'onClick'],
+  listItemBody: ['id', 'title', 'aria-describedby', 'className'],
+  listItemContent: ['id', 'title', 'aria-describedby', 'className'],
+  listItemMedia: ['id', 'title', 'aria-describedby', 'className'],
+  listItemFooter: ['id', 'title', 'aria-describedby', 'className'],
+  listItemMeta: ['id', 'title', 'aria-describedby', 'className'],
+  listItemActions: ['id', 'title', 'aria-describedby', 'className'],
   badge: ['id', 'title', 'aria-describedby', 'className'],
   radioGroup: ['id', 'aria-labelledby', 'aria-describedby', 'className'],
+  selectTile: ['id', 'title', 'aria-describedby', 'className', 'style'],
+
   switch: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className'],
   progressBar: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  meterRow: ['id', 'title', 'dir', 'lang', 'className', 'style'],
   pullQuote: ['cite', 'id', 'title', 'lang', 'dir', 'aria-describedby', 'className'],
   textarea: [
     'id',
@@ -41,6 +59,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
     'className'
   ],
   input: ['id', 'name', 'placeholder', 'disabled', 'readOnly', 'required', 'className'],
+  sectionHeader: ['id', 'dir', 'lang', 'aria-describedby', 'aria-labelledby', 'className', 'style', 'onClick'],
   searchTrigger: [
     'id',
     'title',
@@ -90,6 +109,9 @@ const documentedNativeProps: Record<string, readonly string[]> = {
     'value',
     'tabIndex'
   ],
+  popoverTrigger: ['disabled', 'id', 'title', 'onClick', 'aria-label', 'aria-describedby', 'className'],
+  popoverClose: ['disabled', 'id', 'title', 'onClick', 'aria-label', 'aria-describedby', 'className'],
+  popoverContent: ['title', 'aria-describedby', 'className', 'onClick'],
   surface: ['id', 'title', 'role', 'aria-label', 'aria-labelledby', 'className', 'style']
 };
 const camelCase = (name: string) => name.charAt(0).toLowerCase() + name.slice(1);
