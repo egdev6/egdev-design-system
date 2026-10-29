@@ -240,6 +240,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/tooltip',
       './lib/cn',
       './molecules/button-group',
+      './molecules/notice',
       './primitives/aspect-ratio',
       './primitives/divider',
 
@@ -273,6 +274,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Label',
       'Link',
       'Logo',
+      'Notice',
       'Portal',
       'ProgressBar',
       'PullQuote',
@@ -299,6 +301,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'cn',
       'dropzoneVariants',
       'labelVariants',
+      'noticeVariants',
       'progressBarVariants',
       'radioGroupVariants',
       'sliderVariants',
@@ -306,6 +309,59 @@ describe('Storybook TypeScript docgen contract', () => {
       'statusDotVariants',
       'surfaceVariants',
       'tooltipVariants'
+    ]);
+  });
+
+  it('extracts Notice required lead, native role, constant defaults and every own directive', () => {
+    const doc = parser.parse(source('molecules/notice/Notice.tsx')).find(({ displayName }) => displayName === 'Notice');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    expect(props.summary).toMatchObject({ required: true, type: { name: 'string' }, defaultValue: null });
+    expect(props.tone).toMatchObject({ defaultValue: { value: 'neutral' }, tags: { control: 'select' } });
+    expect(props.size).toMatchObject({ defaultValue: { value: 'md' }, tags: { control: 'select' } });
+    expect(props.tone?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'neutral',
+      'info',
+      'success',
+      'warning',
+      'danger'
+    ]);
+    expect(props.role?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()).toEqual([
+      'alert',
+      'status'
+    ]);
+    expect(props.role?.defaultValue).toBeNull();
+    const file = ast(source('molecules/notice/types.ts'));
+    const own = ownProps(file, ['NoticeProps']);
+    expect(own).toHaveLength(7);
+    for (const property of own) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      expect(tags.filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
+      const metadata = props[name]?.tags as Record<string, string> | undefined;
+      expect(metadata?.control).toBe(
+        ['icon', 'actions', 'children'].includes(name) ? 'false' : name === 'summary' ? 'text' : 'select'
+      );
+      if (['icon', 'actions', 'children'].includes(name)) {
+        expect(metadata?.controlReason).toMatch(/ReactNode.*serializable/);
+        expect(props[name]?.defaultValue).toBeNull();
+      }
+    }
+    for (const name of ['id', 'title', 'role', 'aria-describedby', 'className', 'style']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of ['ref', 'asChild', 'onDismiss', 'noticeVariants']) {
+      expect(props[name], name).toBeUndefined();
+    }
+    expect(exportedStoryNames(ast(source('molecules/notice/Notice.stories.tsx')))).toEqual([
+      'Default',
+      'Tones',
+      'Small',
+      'WithActions',
+      'CustomIcon',
+      'MountedStatusUpdates',
+      'InitialStatus',
+      'InsertedAlert'
     ]);
   });
 

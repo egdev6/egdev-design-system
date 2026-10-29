@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, Notice, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -81,6 +81,8 @@ import type {
   RadioGroupOrientation,
   RadioGroupProps,
   SearchTriggerProps,
+  NoticeProps,
+  NoticeTone,
   SelectProps,
   SelectOption,
   SelectSize,
@@ -382,6 +384,38 @@ const largeCountdown: CountdownProps = { ...countdownProps, size: 'lg' };
 const darkCountdown: CountdownProps = { ...countdownProps, tone: 'onDark' };
 // @ts-expect-error There is no tick callback.
 const tickingCountdown: CountdownProps = { ...countdownProps, onTick: () => undefined };
+// Notice stays outside App to preserve the existing generic focus/count harness.
+export const noticeTone: NoticeTone = 'warning';
+export const noticeRecipe: string = noticeVariants({ tone: noticeTone, size: 'sm' });
+export const noticeActivations: string[] = [];
+export function NoticeSamples({ summary = 'Queue ready.', tone = 'neutral', size = 'md', role, actions = false }: {
+  summary?: string; tone?: NoticeTone; size?: 'md' | 'sm'; role?: 'status' | 'alert'; actions?: boolean;
+}) {
+  const props: NoticeProps = {
+    summary, tone, size, role, id: 'queue-notice', className: 'mt-4', children: 'Review queue details.',
+    actions: actions ? createElement(Button, {
+      size: 'sm', variant: 'secondary', onClick: () => noticeActivations.push('resume'), children: 'Resume'
+    }) : undefined
+  };
+  return createElement(Notice, props);
+}
+// @ts-expect-error Notice requires a lead sentence.
+const missingNoticeSummary: NoticeProps = {};
+// @ts-expect-error The lead sentence is a string, not arbitrary React content.
+const richNoticeSummary: NoticeProps = { summary: createElement('strong', null, 'Ready') };
+// @ts-expect-error Brand is not a status family.
+const brandNotice: NoticeProps = { summary: 'Ready.', tone: 'brand' };
+// @ts-expect-error Only md and sm presets exist.
+const largeNotice: NoticeProps = { summary: 'Ready.', size: 'lg' };
+// @ts-expect-error Native role is restricted to status or alert.
+const dialogNotice: NoticeProps = { summary: 'Ready.', role: 'dialog' };
+// @ts-expect-error Notice has no public ref API.
+const refNotice: NoticeProps = { summary: 'Ready.', ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Notice owns the root and does not expose asChild.
+const slottedNotice: NoticeProps = { summary: 'Ready.', asChild: true };
+// @ts-expect-error Persistent Notice has no dismiss callback.
+const dismissibleNotice: NoticeProps = { summary: 'Ready.', onDismiss: () => undefined };
+
 // SearchTrigger stays outside App so the intrinsic button count and focus harness remain unchanged.
 export const searchTriggerRef = createRef<HTMLButtonElement>();
 export const searchTriggerRefTarget: ComponentRef<typeof SearchTrigger> | null = searchTriggerRef.current;
@@ -2036,6 +2070,24 @@ function assertCountdownCSS(css) {
   assert.match(css, /min-width:\s*var\(--spacing-countdown-unit[,)]/);
 }
 
+// Notice's molecule source must be scanned for native and Tailwind consumers alike.
+function assertNoticeCSS(css) {
+  for (const color of ['fg-secondary', 'status-info', 'status-success', 'status-warning', 'status-danger']) {
+    for (const [prefix, opacity] of [
+      ['border', 30],
+      ['from', 11],
+      ['to', 4]
+    ]) {
+      assert.ok(css.includes(`.${prefix}-${color}\\/${opacity}`), `Missing Notice ${prefix}-${color}/${opacity}`);
+    }
+  }
+  assert.ok(css.includes('.bg-linear-to-b'));
+  assert.ok(css.includes(String.raw`.basis-\[calc\(var\(--space-24\)\*2\.5\)\]`));
+  assert.match(css, /flex-wrap:\s*wrap/);
+  assert.match(css, /font-size:\s*var\(--text-body-default[,)]/);
+  assert.match(css, /font-size:\s*var\(--text-label-default[,)]/);
+}
+
 // Static grouping utilities must ship even when the consumer has no Tailwind compiler.
 function assertButtonGroupCSS(css) {
   for (const selector of [
@@ -2404,6 +2456,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Label',
   'Link',
   'Logo',
+  'Notice',
   'Portal',
   'ProgressBar',
   'PullQuote',
@@ -2430,6 +2483,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'cn',
   'dropzoneVariants',
   'labelVariants',
+  'noticeVariants',
   'progressBarVariants',
   'radioGroupVariants',
   'sliderVariants',
@@ -2463,6 +2517,8 @@ ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
+${assertNoticeCSS.toString()}
+assertNoticeCSS(shippedStyles);
 ${assertPullQuoteCSS.toString()}
 ${assertButtonGroupCSS.toString()}
 assertButtonGroupCSS(shippedStyles);
@@ -2552,7 +2608,21 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, ButtonGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, ButtonGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe } from './consumer.ts';
+const noticeDocument = new JSDOM(renderToString(createElement(NoticeSamples, { tone: 'danger', size: 'sm' })));
+try {
+  const notice = noticeDocument.window.document.getElementById('queue-notice');
+  assert.equal(notice.getAttribute('role'), 'alert');
+  assert.equal(notice.getAttribute('data-size'), 'sm');
+  assert.equal(notice.querySelector('strong').textContent, 'Queue ready.');
+  assert.equal(notice.querySelector('svg').parentElement.getAttribute('aria-hidden'), 'true');
+  assert.equal(notice.querySelector('[role], [aria-live], .eg-notice__actions'), null);
+  assert.ok(notice.classList.contains('eg-notice') && notice.classList.contains('eg-surface'));
+  assert.ok(noticeRecipe.split(' ').includes('eg-surface'));
+  assert.doesNotMatch(noticeRecipe, /eg-notice|eg-toast|role=|aria-/);
+} finally {
+  noticeDocument.window.close();
+}
 const groupDocument = new JSDOM(renderToString(createElement(ButtonGroupSamples)));
 try {
   const group = groupDocument.window.document.getElementById('grouped-actions');
@@ -3497,6 +3567,7 @@ const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
 const { App, ButtonGroupSamples, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { NoticeSamples, noticeActivations } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4108,6 +4179,26 @@ try {
   await act(async () => root.render(null));
   assert.equal(document.getElementById('totals'), null);
   stage('stat:passive:complete');
+  stage('notice:start');
+  await act(async () => root.render(createElement(NoticeSamples, { role: 'status', actions: true })));
+  const notice = document.getElementById('queue-notice');
+  const noticeAction = notice.querySelector('button');
+  noticeAction.focus();
+  await act(async () => noticeAction.click());
+  assert.deepEqual(noticeActivations, ['resume']);
+  await act(async () => root.render(createElement(NoticeSamples, {
+    summary: 'Queue paused.', tone: 'warning', role: 'status', actions: true
+  })));
+  assert.ok(document.getElementById('queue-notice') === notice, 'Polite updates retain the single root');
+  assert.ok(document.activeElement === noticeAction, 'Notice never moves focus to announce');
+  assert.equal(notice.querySelector('strong').textContent, 'Queue paused.');
+  assert.equal(notice.getAttribute('role'), 'status');
+  assert.equal(notice.querySelector('[role], [aria-live]'), null);
+  await act(async () => root.render(createElement(NoticeSamples, { tone: 'danger' })));
+  assert.equal(notice.getAttribute('role'), 'alert');
+  assert.equal(notice.querySelector('.eg-notice__actions'), null);
+  await act(async () => root.render(null));
+  stage('notice:complete');
   stage('button-group:start');
   await act(async () => root.render(createElement(ButtonGroupSamples)));
   const actionGroup = document.getElementById('grouped-actions');
@@ -4467,6 +4558,8 @@ ${assertCountdownCSS.toString()}
 assertCountdownCSS(emitted);
 assertStatCSS(emitted);
 assertSearchTriggerCSS(emitted);
+${assertNoticeCSS.toString()}
+assertNoticeCSS(emitted);
 assertPullQuoteCSS(emitted);
 assertToggleCSS(emitted);
 assertChipCSS(emitted);

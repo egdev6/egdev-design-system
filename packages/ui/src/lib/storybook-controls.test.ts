@@ -33,6 +33,7 @@ const components = [
   ['Slider', 'atoms/slider'],
   ['RadioGroup', 'atoms/radio-group'],
   ['SearchTrigger', 'atoms/search-trigger'],
+  ['Notice', 'molecules/notice'],
   ['Input', 'atoms/input'],
   ['Kbd', 'atoms/kbd'],
   ['Link', 'atoms/link'],
@@ -234,6 +235,15 @@ const expected: Record<string, Record<string, string | false>> = {
   },
   pullquote: { text: 'text', accent: 'text', source: 'text', variant: 'select', tone: 'select' },
   searchtrigger: { label: 'text', shortcut: 'text', compact: 'boolean' },
+  notice: {
+    summary: 'text',
+    children: false,
+    tone: 'select',
+    size: 'select',
+    icon: false,
+    actions: false,
+    role: 'select'
+  },
   textarea: { variant: 'select' },
   input: { size: 'select', variant: 'select', type: 'select', icon: false, loading: 'boolean' },
   select: {
@@ -290,6 +300,7 @@ const ownPropCounts: Record<string, number> = {
   slider: 11,
   radiogroup: 9,
   searchtrigger: 3,
+  notice: 7,
   switch: 7,
   tooltip: 4,
   progressbar: 6,
@@ -515,6 +526,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }],
     ['PullQuote', { variant: '"pull"', tone: '"canvas"' }],
     ['SearchTrigger', { label: '"Search…"', compact: 'false' }],
+    ['Notice', { tone: '"neutral"', size: '"md"' }],
     ['ButtonGroup', { variant: '"spaced"' }],
     ['Textarea', { variant: '"default"' }],
     [

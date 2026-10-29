@@ -48,6 +48,30 @@ function cssBlock(css, opening) {
 const unapprovedTransitionUtility =
   /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\])(?=\s*\{))[\w\\]/;
 
+test('Notice ships static molecule tint, wrapping and compact typography utilities', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const color of ['fg-secondary', 'status-info', 'status-success', 'status-warning', 'status-danger']) {
+    for (const [prefix, opacity] of [
+      ['border', 30],
+      ['from', 11],
+      ['to', 4]
+    ]) {
+      assert.ok(utilities.includes(`.${prefix}-${color}\\/${opacity}`), `Missing Notice ${prefix}-${color}/${opacity}`);
+    }
+  }
+  for (const selector of [
+    '.bg-linear-to-b',
+    '.text-body-default',
+    '.text-label-default',
+    '.flex-wrap',
+    String.raw`.basis-\[calc\(var\(--space-24\)\*2\.5\)\]`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing Notice utility ${selector}`);
+  }
+  assert.doesNotMatch(utilities, /\.eg-notice(?:__\w+)?\s*\{/, 'Notice markers have no new visual stylesheet');
+});
+
 test('transition utility guard accepts only the exact approved emitted selectors', () => {
   for (const selector of [
     '.transition-none',
@@ -1708,6 +1732,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Label',
       'Link',
       'Logo',
+      'Notice',
       'Portal',
       'ProgressBar',
       'PullQuote',
@@ -1734,6 +1759,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'cn',
       'dropzoneVariants',
       'labelVariants',
+      'noticeVariants',
       'progressBarVariants',
       'radioGroupVariants',
       'sliderVariants',
@@ -1904,6 +1930,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LogoProps',
     'LogoSize',
     'LogoVariant',
+    'Notice',
+    'NoticeProps',
+    'NoticeTone',
     'Portal',
     'PortalProps',
     'ProgressBar',
@@ -1971,6 +2000,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'cn',
     'dropzoneVariants',
     'labelVariants',
+    'noticeVariants',
     'progressBarVariants',
     'radioGroupVariants',
     'sliderVariants',
@@ -1990,6 +2020,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'useNotice',
+    'noticeAppearanceVariants',
+    'noticeIconVariants',
+    'noticeTextVariants',
+    'noticeActionsVariants',
     'useButtonGroup',
     'buttonGroupVariants',
     'useSlider',
@@ -2038,6 +2073,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Dropzone',
     'DropzoneProps',
     'dropzoneVariants',
+    'Notice',
+    'NoticeProps',
+    'NoticeTone',
+    'noticeVariants',
     'SearchTrigger',
     'SearchTriggerProps',
     'Divider',
@@ -2211,6 +2250,24 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     /<span data-state="unavailable" class="eg-stat-value [^"]*text-display-stat-sm[^"]*"><span aria-hidden="true">—<\/span><span class="sr-only">No data<\/span><\/span><\/div>$/
   );
   assert.doesNotMatch(noDataHtml, /data-state="highlighted"|eg-stat-delta|aria-live|>0</);
+  assert.equal(typeof exported.Notice, 'function', 'Notice has no public ref API');
+  const sharedNotice = exported.noticeVariants({ tone: 'danger', size: 'sm' });
+  assert.ok(sharedNotice.split(' ').includes('eg-surface'), 'A1 permits inherited Surface identity');
+  assert.doesNotMatch(sharedNotice, /eg-notice|eg-toast|aria-|role=/);
+  const noticeHtml = renderToString(
+    createElement(exported.Notice, {
+      summary: 'Sign in required.',
+      tone: 'danger',
+      id: 'connection',
+      children: 'Reconnect to continue.'
+    })
+  );
+  assert.match(noticeHtml, /role="alert"/);
+  assert.match(noticeHtml, /data-tone="danger"/);
+  assert.match(noticeHtml, /class="eg-notice eg-surface /);
+  assert.match(noticeHtml, /<strong>Sign in required\.<\/strong> (?:<!-- -->)?Reconnect to continue\./);
+  assert.match(noticeHtml, /aria-hidden="true"><svg/);
+  assert.doesNotMatch(noticeHtml, /aria-live=|tabindex=|eg-notice__actions/);
   const searchHtml = renderToString(createElement(exported.SearchTrigger, { shortcut: 'Ctrl K' }));
   assert.match(searchHtml, /^<button[^>]*type="button"[^>]*aria-label="Search…"[^>]*class="eg-surface[^"]*eg-search/);
   assert.match(searchHtml, /<svg class="eg-icon[^"]*size-4[^"]*"[^>]*aria-hidden="true"/);

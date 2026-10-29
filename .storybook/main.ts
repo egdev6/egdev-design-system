@@ -12,6 +12,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   countdown: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],
   dropzone: ['id', 'title', 'disabled', 'className', 'aria-describedby', 'onClick'],
   gauge: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  notice: ['id', 'title', 'role', 'aria-describedby', 'className', 'style'],
   divider: ['id', 'title', 'dir', 'aria-label', 'aria-labelledby', 'className', 'style'],
   aspectRatio: ['id', 'title', 'aria-describedby', 'className', 'style', 'onClick'],
   visuallyHidden: ['id', 'title', 'aria-describedby', 'className', 'style', 'lang'],
