@@ -742,6 +742,16 @@
           "symbol": "CountdownProps",
           "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
         }
+      },
+      {
+        "component": "GaugeDock",
+        "type": "string (required non-empty toolbar name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/gauge-dock/types.ts",
+          "symbol": "GaugeDockProps",
+          "revision": "sha256:892044d2ba68a86b7ebcd73a966662f0b611eac20e8388b6ae90056b267c2a35"
+        }
       }
     ]
   },
@@ -1720,6 +1730,16 @@
           "path": "packages/ui/src/atoms/radio-group/types.ts",
           "symbol": "RadioGroupProps",
           "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
+        }
+      },
+      {
+        "component": "GaugeDock",
+        "type": "'horizontal' | 'vertical'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/gauge-dock/types.ts",
+          "symbol": "GaugeDockProps",
+          "revision": "sha256:892044d2ba68a86b7ebcd73a966662f0b611eac20e8388b6ae90056b267c2a35"
         }
       }
     ]

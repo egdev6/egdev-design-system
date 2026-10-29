@@ -93,7 +93,7 @@ C = [
 ("Table","organismo","Table","molecule","ui","ScrollArea","Checkbox, Switch, Badge, ButtonGroup","mantener","Coordinates tabular data and local sorting and selection as one reusable unit, not a structural page region. Retains the native table with sorting and selection in the hook. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval."),
 ("CalendarGrid","organismo","CalendarGrid","organism","ui","— (arrastre: dnd-kit, a confirmar)","ListItem, Text","mantener","`.eg-day` y `.eg-post-row` pasan a partes internas. Falta vista Mes."),
 ("StageFrame","organismo","PreviewFrame","organism","ui","AspectRatio + Toolbar","IconButton, Chip","renombrar","Vista previa a tamaño fijo con zonas seguras."),
-("GaugeStrip","parte de Gauge","GaugeDock","molecule","ui","Toolbar","Surface glass, Gauge","extraer","La tira es un `role=toolbar` con foco itinerante; Radix Toolbar lo da hecho."),
+("GaugeStrip","parte de Gauge","GaugeDock","molecule","ui","Toolbar","Surface overlay, Gauge, Button/IconButton","extraer","Implemented in @egdev/ui under #85 v0.1: independent passive measurements beside separate native actions; Radix owns bounded roving focus. No aggregation, selection, stylesheet or legacy GaugeStrip migration."),
 ("AgentPanel","organismo (agente)","AgentPanel","organism","mando","ScrollArea","ChatMessage, ToolCallChip, ConfirmCard, Composer","mover",""),
 ("TopBar","organismo","TopBar","organism","web","NavigationMenu","Logo, SearchTrigger, UserMenu","mover",""),
 ("MobileMenu","organismo","MobileMenu","organism","web","Dialog (sheet)","NavList, SocialLinks","mover",""),

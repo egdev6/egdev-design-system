@@ -974,9 +974,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "Toolbar",
-    "compone": "Surface glass, Gauge",
+    "compone": "Surface overlay, Gauge, Button/IconButton",
     "accion": "extraer",
-    "notas": "La tira es un `role=toolbar` con foco itinerante; Radix Toolbar lo da hecho."
+    "notas": "Implemented in @egdev/ui under #85 v0.1: independent passive measurements beside separate native actions; Radix owns bounded roving focus. No aggregation, selection, stylesheet or legacy GaugeStrip migration."
   },
   {
     "actual": "AgentPanel",
