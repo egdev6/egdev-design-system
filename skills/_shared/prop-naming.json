@@ -343,6 +343,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "ModuleCard",
+        "type": "ModuleCardVariant (default|banded; stopped accepts default only)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/module-card/types.ts",
+          "symbol": "ModuleCardProps",
+          "revision": "sha256:ed7adc13e5eb72795fbfdd83ee8108b291cefd94708e6b4f3642293357139c53"
+        }
+      },
+      {
         "component": "Button",
         "type": "ButtonVariant ('primary' | 'secondary' | 'ghost' | 'dark')",
         "status": "existing",
@@ -489,6 +499,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "ModuleCard",
+        "type": "ModuleCardTone (surface-1|overlay; stopped accepts surface-1 only)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/module-card/types.ts",
+          "symbol": "ModuleCardProps",
+          "revision": "sha256:ed7adc13e5eb72795fbfdd83ee8108b291cefd94708e6b4f3642293357139c53"
+        }
+      },
       {
         "component": "Badge",
         "type": "BadgeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger' | 'brand')",
@@ -1031,6 +1051,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "ModuleCard",
+        "type": "ReactNode (optional decorative pictogram)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/module-card/types.ts",
+          "symbol": "ModuleCardProps",
+          "revision": "sha256:ed7adc13e5eb72795fbfdd83ee8108b291cefd94708e6b4f3642293357139c53"
+        }
+      },
       {
         "component": "Button",
         "type": "ReactNode (decorative start/end slot, default end; Button-only semantic exception)",
@@ -1980,7 +2010,18 @@
       "scope": "convention:localized-messages",
       "contentHash": "sha256:555c4e48e004651531f1588e18a8f71781afd8054c2ae113959b2831d86736cd"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "ModuleCard",
+        "type": "Partial<ModuleCardMessages> (defaultStatus, errorStatus, stoppedStatus)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/module-card/types.ts",
+          "symbol": "ModuleCardProps",
+          "revision": "sha256:ed7adc13e5eb72795fbfdd83ee8108b291cefd94708e6b4f3642293357139c53"
+        }
+      }
+    ]
   },
   {
     "id": "selection-cardinality",
@@ -2361,7 +2402,18 @@
       "scope": "convention:item-presentation-status",
       "contentHash": "sha256:8402ef1355689cbd78c154bdc729ea1443566f5401d9a8bb1e18868a77a8d89a"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "ModuleCard",
+        "type": "ModuleCardStatus (default|error|stopped; actions required for error/stopped)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/module-card/types.ts",
+          "symbol": "ModuleCardProps",
+          "revision": "sha256:ed7adc13e5eb72795fbfdd83ee8108b291cefd94708e6b4f3642293357139c53"
+        }
+      }
+    ]
   },
   {
     "id": "menu-entry-kind",
@@ -2441,7 +2493,18 @@
       "scope": "convention:heading-title",
       "contentHash": "sha256:3b7c8409a2f43bbc296608d65ee61e78aebbe31118f1f65e955ff65078e8c2d3"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "ModuleCard",
+        "type": "string (required non-empty heading)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/module-card/types.ts",
+          "symbol": "ModuleCardProps",
+          "revision": "sha256:ed7adc13e5eb72795fbfdd83ee8108b291cefd94708e6b4f3642293357139c53"
+        }
+      }
+    ]
   },
   {
     "id": "heading-level",
@@ -2458,6 +2521,16 @@
       "contentHash": "sha256:3235f5126f7405ae3956b969186d33c48c302b42c2a40d169c9d2f11e1d12ead"
     },
     "usages": [
+      {
+        "component": "ModuleCard",
+        "type": "ModuleCardLevel (1|2|3|4|5|6)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/module-card/types.ts",
+          "symbol": "ModuleCardProps",
+          "revision": "sha256:ed7adc13e5eb72795fbfdd83ee8108b291cefd94708e6b4f3642293357139c53"
+        }
+      },
       {
         "component": "Heading",
         "type": "HeadingLevel (1|2|3|4|5|6)",
@@ -2484,7 +2557,18 @@
       "scope": "convention:trailing-actions",
       "contentHash": "sha256:b00c5b3d1006ee97caa5d258e4ce04a046acb3d8d752d734e37bf96c92356550"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "ModuleCard",
+        "type": "ReactNode (one or two supplied Button/Link controls; required for error/stopped)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/module-card/types.ts",
+          "symbol": "ModuleCardProps",
+          "revision": "sha256:ed7adc13e5eb72795fbfdd83ee8108b291cefd94708e6b4f3642293357139c53"
+        }
+      }
+    ]
   },
   {
     "id": "panel-footer",
@@ -2500,7 +2584,18 @@
       "scope": "convention:panel-footer",
       "contentHash": "sha256:2a42776342fb15a34c5ab7d86abd1cdd8683044d2e37f30504f2bfd59d2f6a71"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "ModuleCard",
+        "type": "ReactNode (supplementary metadata and at most one utility control)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/module-card/types.ts",
+          "symbol": "ModuleCardProps",
+          "revision": "sha256:ed7adc13e5eb72795fbfdd83ee8108b291cefd94708e6b4f3642293357139c53"
+        }
+      }
+    ]
   },
   {
     "id": "message-summary",
