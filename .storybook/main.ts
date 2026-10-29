@@ -5,6 +5,7 @@ import { mergeConfig } from 'vite';
 
 const documentedNativeProps: Record<string, readonly string[]> = {
   avatar: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  navList: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   button: ['type', 'disabled', 'onClick', 'id', 'title', 'aria-describedby', 'className', 'name', 'value', 'tabIndex'],
   checkbox: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid', 'className', 'form'],
   chip: ['id', 'title', 'name', 'onClick', 'aria-describedby', 'className'],
