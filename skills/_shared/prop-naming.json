@@ -61,7 +61,7 @@
         "source": {
           "path": "packages/ui/src/atoms/select/types.ts",
           "symbol": "SelectProps",
-          "revision": "sha256:5fd68b9eeae5373ed7adeeaf90d002bf32eac62f584024114479b32bfd69f3f0"
+          "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
         }
       },
       {
@@ -118,7 +118,7 @@
         "source": {
           "path": "packages/ui/src/atoms/select/types.ts",
           "symbol": "SelectProps",
-          "revision": "sha256:5fd68b9eeae5373ed7adeeaf90d002bf32eac62f584024114479b32bfd69f3f0"
+          "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
         }
       }
     ]
@@ -165,7 +165,7 @@
         "source": {
           "path": "packages/ui/src/atoms/select/types.ts",
           "symbol": "SelectProps",
-          "revision": "sha256:5fd68b9eeae5373ed7adeeaf90d002bf32eac62f584024114479b32bfd69f3f0"
+          "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
         }
       }
     ]
@@ -202,7 +202,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
         }
       },
       {
@@ -282,7 +282,7 @@
         "source": {
           "path": "packages/ui/src/atoms/select/types.ts",
           "symbol": "SelectProps",
-          "revision": "sha256:5fd68b9eeae5373ed7adeeaf90d002bf32eac62f584024114479b32bfd69f3f0"
+          "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
         }
       },
       {
@@ -349,7 +349,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
         }
       },
       {
@@ -1048,7 +1048,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
         }
       },
       {
@@ -1098,7 +1098,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:c44e0513a5421d113afbb1efd7a4125ce05554770e08b6dff5cdeee3fa4961a7"
+          "revision": "sha256:ba72c0a83957b4990e1d69a971c8214cd5ba1debe375d1c14f987290650ad765"
         }
       }
     ]
@@ -1125,7 +1125,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
         }
       }
     ]
@@ -1152,7 +1152,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
         }
       }
     ]
@@ -1179,7 +1179,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:2b9f84179dd5a55e4eebba6a76882fdc3f4c968e81896afc6a13a52a277de74e"
+          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
         }
       },
       {
@@ -1323,7 +1323,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:c44e0513a5421d113afbb1efd7a4125ce05554770e08b6dff5cdeee3fa4961a7"
+          "revision": "sha256:ba72c0a83957b4990e1d69a971c8214cd5ba1debe375d1c14f987290650ad765"
         }
       }
     ]
@@ -1360,7 +1360,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:c44e0513a5421d113afbb1efd7a4125ce05554770e08b6dff5cdeee3fa4961a7"
+          "revision": "sha256:ba72c0a83957b4990e1d69a971c8214cd5ba1debe375d1c14f987290650ad765"
         }
       }
     ]
@@ -1397,7 +1397,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:c44e0513a5421d113afbb1efd7a4125ce05554770e08b6dff5cdeee3fa4961a7"
+          "revision": "sha256:ba72c0a83957b4990e1d69a971c8214cd5ba1debe375d1c14f987290650ad765"
         }
       }
     ]
@@ -1693,7 +1693,7 @@
         "source": {
           "path": "packages/ui/src/atoms/select/types.ts",
           "symbol": "SelectProps",
-          "revision": "sha256:5fd68b9eeae5373ed7adeeaf90d002bf32eac62f584024114479b32bfd69f3f0"
+          "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
         }
       }
     ]
@@ -1757,7 +1757,7 @@
         "source": {
           "path": "packages/ui/src/atoms/select/types.ts",
           "symbol": "SelectProps",
-          "revision": "sha256:5fd68b9eeae5373ed7adeeaf90d002bf32eac62f584024114479b32bfd69f3f0"
+          "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
         }
       }
     ]
