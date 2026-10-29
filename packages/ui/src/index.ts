@@ -51,6 +51,7 @@ export * from './molecules/select-tile';
 export * from './molecules/social-links';
 export type { TabsItem, TabsProps, TabsSize, TabsTone, TabsVariant } from './molecules/tabs';
 export { Tabs, tabsVariants } from './molecules/tabs';
+export * from './molecules/timeline';
 // Primitives
 export type { AspectRatioProps } from './primitives/aspect-ratio';
 export { AspectRatio } from './primitives/aspect-ratio';

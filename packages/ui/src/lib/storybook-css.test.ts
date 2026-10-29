@@ -174,6 +174,20 @@ describe('Storybook preview CSS', () => {
     css = String(stylesheet.source).replace(/\/\*[\s\S]*?\*\//g, '');
   }, 30_000);
 
+  it('compiles Timeline viewport caps, legacy geometry resets and inset focus from static CVA', () => {
+    for (const multiplier of [2, 3, 4]) {
+      expect(rule(`.max-h-\\[calc\\(var\\(--space-24\\)\\*${multiplier}\\)\\]`)).toMatch(
+        new RegExp(String.raw`max-height:\s*calc\(var\(--space-24\)\s*\*\s*${multiplier}\)`)
+      );
+    }
+    expect(rule('.block')).toMatch(/display:\s*block/);
+    expect(rule('.whitespace-normal')).toMatch(/white-space:\s*normal/);
+    expect(rule('.\\[overflow-wrap\\:anywhere\\]')).toMatch(/overflow-wrap:\s*anywhere/);
+    expect(rule('.focus-visible\\:-outline-offset-\\(--focus-width\\):focus-visible')).toMatch(
+      /outline-offset:\s*calc\(var\(--focus-width\)\s*\*\s*-1\)/
+    );
+  });
+
   it('compiles the first molecule source with Radix available-space bounds and opacity entry', () => {
     expect(rule(String.raw`.max-w-\[var\(--radix-hover-card-content-available-width\)\]`)).toMatch(
       /max-width:\s*var\(--radix-hover-card-content-available-width\)/

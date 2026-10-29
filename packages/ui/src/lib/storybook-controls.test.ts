@@ -10,6 +10,7 @@ import config from '../../../../.storybook/main';
 import preview from '../../../../.storybook/preview';
 
 const components = [
+  ['Timeline', 'molecules/timeline'],
   ['Avatar', 'atoms/avatar'],
   ['Button', 'atoms/button'],
   ['Carousel', 'molecules/carousel'],
@@ -105,6 +106,15 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  timeline: {
+    label: 'text',
+    size: 'select',
+    variant: 'select',
+    items: false,
+    messages: false,
+    dir: 'select',
+    'aria-live': 'select'
+  },
   selecttile: {
     type: 'select',
     label: 'text',
@@ -355,6 +365,7 @@ const expected: Record<string, Record<string, string | false>> = {
   }
 };
 const ownPropCounts: Record<string, number> = {
+  timeline: 7,
   selecttile: 11,
   carousel: 6,
   avatar: 5,

@@ -32,6 +32,7 @@
 @source "../atoms/textarea/types.ts";
 @source "../atoms/toggle/types.ts";
 @source "../atoms/tooltip/types.ts";
+@source "../molecules/timeline/types.ts";
 @source "../molecules/social-links/types.ts";
 @source "../molecules/section-header/types.ts";
 @source "../molecules/meter-row/types.ts";

@@ -346,6 +346,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "Timeline",
+        "type": "TimelineSize ('sm' | 'md' | 'lg')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineProps",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
+      {
         "component": "SocialLinks",
         "type": "SocialLinksSize ('md' | 'lg')",
         "status": "existing",
@@ -532,6 +542,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Timeline",
+        "type": "TimelineVariant ('events' | 'chat')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineProps",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
       {
         "component": "SocialLinks",
         "type": "SocialLinksVariant ('outline' | 'ghost')",
@@ -740,6 +760,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "Timeline",
+        "type": "'neutral' | 'brand' (event category)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineEvent",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
+      {
         "component": "SectionHeader",
         "type": "SectionHeaderTone (canvas|raised)",
         "status": "existing",
@@ -883,6 +913,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Timeline",
+        "type": "string (required non-empty collection name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineProps",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
       {
         "component": "SelectTile",
         "type": "string (required collection name)",
@@ -1451,6 +1491,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Timeline",
+        "type": "ReactNode (optional decorative event-category glyph)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineEvent",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
       {
         "component": "SocialLinkItem",
         "type": "ReactElement (decorative input delegated to IconButton.icon with required label)",
@@ -2361,6 +2411,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "Timeline",
+        "type": "boolean (TimelineEvent and TimelineChatItem emphasis)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineEvent",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
+      {
         "component": "Stat",
         "type": "boolean",
         "status": "existing",
@@ -2546,6 +2606,16 @@
     },
     "usages": [
       {
+        "component": "Timeline",
+        "type": "TimelineEvent[] | TimelineChatItem[] (variant-discriminated)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineProps",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
+      {
         "component": "Carousel",
         "type": "CarouselItem[]",
         "status": "existing",
@@ -2612,6 +2682,16 @@
       "contentHash": "sha256:555c4e48e004651531f1588e18a8f71781afd8054c2ae113959b2831d86736cd"
     },
     "usages": [
+      {
+        "component": "Timeline",
+        "type": "Partial<TimelineMessages>",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineProps",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
       {
         "component": "Carousel",
         "type": "Partial<CarouselMessages>",

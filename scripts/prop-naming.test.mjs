@@ -12,6 +12,13 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...['accessible-name', 'visual-treatment', 'preset-dimensions', 'collection-items', 'localized-messages'].map(
+    (conventionId) => ({ conventionId, source: 'packages/ui/src/molecules/timeline/types.ts#TimelineProps' })
+  ),
+  ...['transient-highlight', 'surface-material-tone', 'leading-icon'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/timeline/types.ts#TimelineEvent'
+  })),
   ...[
     'accessible-name',
     'choice-options',
