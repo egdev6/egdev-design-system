@@ -192,6 +192,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/toggle',
       './atoms/tooltip',
       './lib/cn',
+      './molecules/meter-row',
       './primitives/aspect-ratio',
       './primitives/divider',
 
@@ -224,6 +225,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Label',
       'Link',
       'Logo',
+      'MeterRow',
       'Portal',
       'ProgressBar',
       'PullQuote',

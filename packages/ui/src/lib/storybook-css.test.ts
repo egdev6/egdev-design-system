@@ -174,6 +174,21 @@ describe('Storybook preview CSS', () => {
     css = String(stylesheet.source).replace(/\/\*[\s\S]*?\*\//g, '');
   }, 30_000);
 
+  it('compiles MeterRow wrapping, typography and key utilities from its production CVA source', () => {
+    expect(rule('.gap-x-3')).toMatch(/column-gap:\s*var\(--space-3[,)]/);
+    expect(rule('.gap-y-1')).toMatch(/row-gap:\s*var\(--space-1[,)]/);
+    expect(rule(String.raw`.\[overflow-wrap\:anywhere\]`)).toMatch(/overflow-wrap:\s*anywhere/);
+    expect(rule('.text-label-default')).toMatch(/font-size:\s*var\(--text-label-default[,)]/);
+    expect(rule(String.raw`.leading-\[var\(--text-body-default--line-height\)\]`)).toMatch(
+      /line-height:\s*var\(--text-body-default--line-height[,)]/
+    );
+    expect(rule(String.raw`.font-\[var\(--text-body-muted--font-weight\)\]`)).toMatch(
+      /font-weight:\s*var\(--text-body-muted--font-weight[,)]/
+    );
+    expect(rule('.bg-fg-brand-default')).toMatch(/background-color:\s*var\(--color-fg-brand-default[,)]/);
+    expect(rule('.bg-fg-muted')).toMatch(/background-color:\s*var\(--color-fg-muted[,)]/);
+  });
+
   it('compiles Gauge geometry and the static utilities that make its ring valid', () => {
     expect(rule('.inline-flex')).toMatch(/display:\s*inline-flex\s*;/);
     expect(rule('.w-auto')).toMatch(/width:\s*auto\s*;/);

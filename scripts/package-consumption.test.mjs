@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, MeterRow, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -72,6 +72,9 @@ import type {
   LogoProps,
   LogoSize,
   LogoVariant,
+  MeterRowMessages,
+  MeterRowProps,
+  MeterRowVariant,
   ProgressBarProps,
   ProgressBarSize,
   ProgressBarVariant,
@@ -389,6 +392,42 @@ const openSearch: SearchTriggerProps = { open: true };
 const stringCompact: SearchTriggerProps = { compact: 'yes' };
 // @ts-expect-error shortcut is display text only.
 const numericShortcut: SearchTriggerProps = { shortcut: 75 };
+
+// Task-progress samples stay outside App to preserve the existing focus harness.
+const meterRowVariant: MeterRowVariant = 'muted';
+const meterRowMessages: MeterRowMessages = { indeterminate: 'Preparing import' };
+const meterRowProps: MeterRowProps = { label: 'Import files', value: 60, variant: meterRowVariant, help: 'Keep this tab open', messages: meterRowMessages, id: 'consumer-meter-row' };
+export function MeterRowSamples({ value = 60, help = 'Keep this tab open' }: { value?: number; help?: string }) {
+  return createElement(MeterRow, { ...meterRowProps, value, help });
+}
+// @ts-expect-error The task name is required.
+const unlabelledMeterRow: MeterRowProps = { value: 60 };
+// @ts-expect-error Completion percent is required.
+const valuelessMeterRow: MeterRowProps = { label: 'Import files' };
+// @ts-expect-error Row content is generated, never caller children.
+const childMeterRow: MeterRowProps = { ...meterRowProps, children: 'Progress' };
+// @ts-expect-error Sole progress semantics belong to the composed atom.
+const roleMeterRow: MeterRowProps = { ...meterRowProps, role: 'meter' };
+// @ts-expect-error There is no row ref API on either React major.
+const refMeterRow: MeterRowProps = { ...meterRowProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error No asChild composition API.
+const slottedMeterRow: MeterRowProps = { ...meterRowProps, asChild: true };
+// @ts-expect-error The bar size is fixed at lg.
+const sizedMeterRow: MeterRowProps = { ...meterRowProps, size: 'sm' };
+// @ts-expect-error Edge placement belongs to the sm atom, not this row.
+const edgeMeterRow: MeterRowProps = { ...meterRowProps, edge: true };
+// @ts-expect-error The indicator owns descriptions internally.
+const describedMeterRow: MeterRowProps = { ...meterRowProps, 'aria-describedby': 'other' };
+// @ts-expect-error No automatic live-announcement API.
+const liveMeterRow: MeterRowProps = { ...meterRowProps, 'aria-live': 'polite' };
+// @ts-expect-error No focus stop is exposed.
+const focusableMeterRow: MeterRowProps = { ...meterRowProps, tabIndex: 0 };
+// @ts-expect-error Help is persistent plain text, not rich content.
+const richMeterRow: MeterRowProps = { ...meterRowProps, help: createElement('a', null, 'Help') };
+// @ts-expect-error No arbitrary measurement bounds API.
+const boundedMeterRow: MeterRowProps = { ...meterRowProps, min: 20 };
+// @ts-expect-error No completion event API.
+const eventMeterRow: MeterRowProps = { ...meterRowProps, onValueChange: () => undefined };
 
 // Stat stays outside App: it is passive, adds no buttons and leaves the focus harness unchanged.
 export const statRecipe: string = statVariants({ size: 'sm' });
@@ -2061,6 +2100,22 @@ function assertPullQuoteCSS(css) {
   assert.match(css, /padding-inline-start:\s*calc\(var\(--space-1\)\s*\*\s*4\.5\)/);
 }
 
+// The row ships its own reflow/help utilities; ProgressBar retains its separate CSS assertions.
+function assertMeterRowCSS(css) {
+  for (const selector of [
+    '.gap-x-3',
+    '.gap-y-1',
+    '.text-label-default',
+    String.raw`.\[overflow-wrap\:anywhere\]`,
+    String.raw`.leading-\[var\(--text-body-default--line-height\)\]`,
+    String.raw`.font-\[var\(--text-body-muted--font-weight\)\]`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing MeterRow utility ' + selector);
+  }
+  assert.match(css, /line-height:\s*var\(--text-body-default--line-height[,)]/);
+  assert.match(css, /font-weight:\s*var\(--text-body-muted--font-weight[,)]/);
+}
+
 // Stat ships its Material card, figure recipes and highlight utilities; part markers carry no rules.
 function assertStatCSS(css) {
   for (const selector of [
@@ -2353,6 +2408,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Label',
   'Link',
   'Logo',
+  'MeterRow',
   'Portal',
   'ProgressBar',
   'PullQuote',
@@ -2414,6 +2470,8 @@ ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertPullQuoteCSS.toString()}
 ${assertCountdownCSS.toString()}
+${assertMeterRowCSS.toString()}
+assertMeterRowCSS(shippedStyles);
 assertCountdownCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
 assertStatCSS(shippedStyles);
@@ -2499,7 +2557,26 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, MeterRowSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+// MeterRow SSR has one semantic owner, coherent text and generated description references.
+for (const value of [42.5, Number.NaN]) {
+  const dom = new JSDOM(renderToString(createElement(MeterRowSamples, { value })));
+  try {
+    const document = dom.window.document;
+    const row = document.getElementById('consumer-meter-row');
+    const bar = row.querySelector('[role="progressbar"]');
+    assert.equal(row.hasAttribute('role'), false);
+    assert.equal(row.querySelectorAll('[role="progressbar"]').length, 1);
+    assert.equal(bar.getAttribute('aria-label'), 'Import files');
+    assert.equal(bar.getAttribute('aria-valuenow'), Number.isFinite(value) ? '42.5' : null);
+    assert.equal(bar.getAttribute('aria-valuetext'), Number.isFinite(value) ? '42.5%' : null);
+    const ids = bar.getAttribute('aria-describedby').split(' ');
+    assert.equal(ids.map((id) => document.getElementById(id).textContent).join(' '), Number.isFinite(value) ? 'Keep this tab open' : 'Preparing import Keep this tab open');
+    assert.equal(row.querySelector('output, meter, [aria-live]'), null);
+  } finally {
+    dom.window.close();
+  }
+}
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
@@ -3426,7 +3503,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, MeterRowSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4013,6 +4090,25 @@ try {
   assert.deepEqual(countdownExpirations, [pastDeadline]);
   await act(async () => root.render(null));
   stage('countdown:clock:complete');
+  stage('meter-row:passive:start');
+  await act(async () => root.render(createElement(MeterRowSamples, { value: 142 })));
+  const taskRow = document.getElementById('consumer-meter-row');
+  const taskBar = taskRow.querySelector('[role="progressbar"]');
+  assert.equal(taskBar.getAttribute('aria-valuenow'), '100');
+  assert.equal(taskBar.getAttribute('aria-valuetext'), '100%');
+  assert.equal(taskRow.tabIndex, -1);
+  await act(async () => root.render(createElement(MeterRowSamples, { value: Number.NaN })));
+  assert.equal(taskRow.querySelector('[role="progressbar"]'), taskBar);
+  assert.equal(taskBar.hasAttribute('aria-valuenow'), false);
+  assert.equal(taskBar.hasAttribute('aria-valuetext'), false);
+  const taskDescriptions = taskBar.getAttribute('aria-describedby').split(' ');
+  assert.equal(taskDescriptions.map((id) => document.getElementById(id).textContent).join(' '), 'Preparing import Keep this tab open');
+  await act(async () => root.render(createElement(MeterRowSamples, { value: 42.5, help: ' ' })));
+  assert.equal(taskBar.getAttribute('aria-valuetext'), '42.5%');
+  assert.equal(taskBar.hasAttribute('aria-describedby'), false);
+  assert.equal(taskRow.querySelector('p, [aria-live], output, meter'), null);
+  await act(async () => root.render(null));
+  stage('meter-row:passive:complete');
   stage('stat:passive:start');
   await act(async () => root.render(createElement(StatSamples)));
   const subsStat = document.getElementById('subs-total');
@@ -4378,6 +4474,8 @@ assertInputCSS(emitted);
 assertDropzoneCSS(emitted);
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(emitted);
+${assertMeterRowCSS.toString()}
+assertMeterRowCSS(emitted);
 assertStatCSS(emitted);
 assertSearchTriggerCSS(emitted);
 assertPullQuoteCSS(emitted);
@@ -4446,6 +4544,7 @@ assertTextareaCSS(twCss);
 assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
 assertCountdownCSS(twCss);
+assertMeterRowCSS(twCss);
 assertStatCSS(twCss);
 assertSearchTriggerCSS(twCss);
 assertPullQuoteCSS(twCss);

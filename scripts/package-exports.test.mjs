@@ -48,6 +48,58 @@ function cssBlock(css, opening) {
 const unapprovedTransitionUtility =
   /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\])(?=\s*\{))[\w\\]/;
 
+test('MeterRow ships wrapping and token typography with real one-owner progress SSR', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const [selector, declaration] of [
+    ['.gap-x-3', /column-gap:\s*var\(--space-3[,)]/],
+    ['.gap-y-1', /row-gap:\s*var\(--space-1[,)]/],
+    [String.raw`.\[overflow-wrap\:anywhere\]`, /overflow-wrap:\s*anywhere/],
+    [
+      String.raw`.leading-\[var\(--text-body-default--line-height\)\]`,
+      /line-height:\s*var\(--text-body-default--line-height[,)]/
+    ],
+    [
+      String.raw`.font-\[var\(--text-body-muted--font-weight\)\]`,
+      /font-weight:\s*var\(--text-body-muted--font-weight[,)]/
+    ]
+  ]) {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    assert.match(cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`)), declaration);
+  }
+  assert.doesNotMatch(utilities, /\.eg-meter-row[^{}]*\{/, 'Markers are not another visual engine');
+  const { MeterRow } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  for (const value of [42.5, NaN]) {
+    const dom = new JSDOM(
+      renderToString(createElement(MeterRow, { label: 'Import files', value, help: 'Keep this tab open' }))
+    );
+    try {
+      const document = dom.window.document;
+      const row = document.querySelector('.eg-meter-row');
+      const bar = document.querySelector('[role="progressbar"]');
+      assert.ok(row && bar);
+      assert.equal(document.querySelectorAll('[role="progressbar"]').length, 1);
+      assert.equal(row.hasAttribute('role'), false);
+      assert.equal(bar.getAttribute('aria-label'), 'Import files');
+      assert.equal(row.firstElementChild.getAttribute('aria-hidden'), 'true');
+      assert.equal(document.querySelector('output, meter, [aria-live]'), null);
+      const ids = bar.getAttribute('aria-describedby').split(' ');
+      assert.equal(new Set(ids).size, ids.length);
+      assert.equal(
+        ids.map((id) => document.getElementById(id).textContent).join(' '),
+        Number.isFinite(value) ? 'Keep this tab open' : 'In progress Keep this tab open'
+      );
+      assert.equal(bar.getAttribute('aria-valuenow'), Number.isFinite(value) ? '42.5' : null);
+      assert.equal(bar.getAttribute('aria-valuetext'), Number.isFinite(value) ? '42.5%' : null);
+    } finally {
+      dom.window.close();
+    }
+  }
+});
+
 test('transition utility guard accepts only the exact approved emitted selectors', () => {
   for (const selector of [
     '.transition-none',
@@ -1667,6 +1719,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Label',
       'Link',
       'Logo',
+      'MeterRow',
       'Portal',
       'ProgressBar',
       'PullQuote',
@@ -1859,6 +1912,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LogoProps',
     'LogoSize',
     'LogoVariant',
+    'MeterRow',
+    'MeterRowMessages',
+    'MeterRowProps',
+    'MeterRowVariant',
     'Portal',
     'PortalProps',
     'ProgressBar',
@@ -1968,6 +2025,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'useMeterRow',
+    'meterRowVariants',
+    'MeterRowNativeProps',
     'useSearchTrigger',
     'searchTriggerVariants',
     'searchTriggerLabelVariants',
@@ -2036,6 +2096,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LogoProps',
     'LogoSize',
     'LogoVariant',
+    'MeterRow',
+    'MeterRowMessages',
+    'MeterRowProps',
+    'MeterRowVariant',
     'Portal',
     'PortalProps',
     'RadioGroup',
