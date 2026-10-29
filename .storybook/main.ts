@@ -23,6 +23,8 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   link: ['id', 'title', 'href', 'target', 'rel', 'onClick', 'aria-describedby', 'className', 'style'],
   badge: ['id', 'title', 'aria-describedby', 'className'],
   radioGroup: ['id', 'aria-labelledby', 'aria-describedby', 'className'],
+  selectTile: ['id', 'title', 'aria-describedby', 'className', 'style'],
+
   switch: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className'],
   progressBar: ['id', 'title', 'aria-describedby', 'className', 'style'],
   pullQuote: ['cite', 'id', 'title', 'lang', 'dir', 'aria-describedby', 'className'],

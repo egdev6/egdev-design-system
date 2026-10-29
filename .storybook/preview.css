@@ -41,6 +41,7 @@
 @source "../packages/ui/src/primitives/surface/Surface.stories.tsx";
 @source "../packages/ui/src/primitives/text/Heading.stories.tsx";
 @source "../packages/ui/src/primitives/text/Text.stories.tsx";
+@source "../packages/ui/src/molecules/select-tile/SelectTile.stories.tsx";
 
 body {
   margin: 0;

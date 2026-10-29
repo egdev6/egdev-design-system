@@ -40,6 +40,7 @@
 @source "../primitives/stack/types.ts";
 @source "../primitives/surface/types.ts";
 @source "../primitives/text/types.ts";
+@source "../molecules/**/types.ts";
 @layer utilities {
   @tailwind utilities source(none);
 }
