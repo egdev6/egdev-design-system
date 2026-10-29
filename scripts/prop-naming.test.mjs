@@ -12,6 +12,10 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...['accessible-name', 'layout-orientation'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/gauge-dock/types.ts#GaugeDockProps'
+  })),
   ...['accessible-name', 'collection-items', 'navigation-intent'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/nav-list/types.ts#NavListProps'

@@ -33,6 +33,7 @@ export * from './molecules/button-group';
 export * from './molecules/carousel';
 export type { ChipGroupOption, ChipGroupProps, ChipGroupType } from './molecules/chip-group';
 export { ChipGroup } from './molecules/chip-group';
+export * from './molecules/gauge-dock';
 export type { HoverCardContentProps, HoverCardProps, HoverCardTriggerProps } from './molecules/hover-card';
 export { HoverCard, HoverCardContent, HoverCardTrigger } from './molecules/hover-card';
 export * from './molecules/list-item';

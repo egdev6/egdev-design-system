@@ -2267,6 +2267,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Divider',
       'Dropzone',
       'Gauge',
+      'GaugeDock',
+      'GaugeDockItem',
+      'GaugeDockSeparator',
       'Heading',
       'HoverCard',
       'HoverCardContent',
@@ -2474,6 +2477,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Dropzone',
     'DropzoneProps',
     'Gauge',
+    'GaugeDock',
+    'GaugeDockItem',
+    'GaugeDockItemProps',
+    'GaugeDockProps',
+    'GaugeDockSeparator',
+    'GaugeDockSeparatorProps',
     'GaugeProps',
     'GaugeSize',
     'GaugeState',
@@ -3545,6 +3554,61 @@ test('UI Checkbox SSR retains binary/mixed semantics, private recipes and form i
   }
   for (const name of ['checkboxVariants', 'checkboxIndicatorVariants', 'checkboxIconVariants', 'useCheckbox']) {
     assert.equal(exported[name], undefined, `${name} stays private`);
+  }
+});
+
+test('GaugeDock ships scanned layout utilities and independent passive SSR semantics', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const html = renderToStaticMarkup(
+    h(exported.GaugeDock, {
+      label: 'Usage detail actions',
+      children: [
+        h(exported.GaugeDockItem, {
+          key: 'pair',
+          children: [
+            h(exported.Gauge, { key: 'meter', label: 'Provider A session', value: 0 }),
+            h(exported.Button, { key: 'action', children: 'Open Provider A details' })
+          ]
+        }),
+        h(exported.GaugeDockSeparator, { key: 'separator' })
+      ]
+    })
+  );
+  assert.match(html, /role="toolbar"/);
+  assert.match(html, /aria-label="Usage detail actions"/);
+  assert.match(html, /role="meter"[^>]*aria-label="Provider A session"[^>]*aria-valuenow="0"/);
+  assert.match(html, /<\/div><button[^>]*type="button"/);
+  assert.match(html, /data-orientation="vertical"[^>]*aria-hidden="true"/);
+  assert.doesNotMatch(html, /eg-gauge-strip/);
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/gauge-dock/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  let parts = 0;
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      const base = node.arguments[0];
+      assert.ok(base && ts.isStringLiteral(base));
+      parts++;
+      for (const name of base.text.split(/\s+/).filter((name) => !name.startsWith('eg-') && name !== 'group')) {
+        const selector = `.${name.replace(/([^a-zA-Z0-9_-])/g, '\\$1')}`;
+        assert.ok(utilities.includes(selector), `Missing GaugeDock utility ${name}`);
+      }
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(source);
+  assert.equal(parts, 3);
+  assert.match(css, /background-color:\s*var\(--color-border-hairline[,)]/);
+  assert.doesNotMatch(css, /\.eg-gauge-dock(?:-item|-separator)?\s*\{/);
+  for (const name of ['useGaugeDock', 'gaugeDockVariants', 'gaugeDockItemVariants', 'gaugeDockSeparatorVariants']) {
+    assert.equal(exported[name], undefined, `${name} stays internal`);
   }
 });
 
