@@ -508,6 +508,17 @@
   {
     "actual": "—",
     "nivelActual": "—",
+    "nombre": "HoverCard",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "HoverCard",
+    "compone": "Surface overlay; internal Radix Portal",
+    "accion": "nuevo",
+    "notas": "Implemented in @egdev/ui under [approved v0.1 + A1](https://github.com/egdev6/egdev-design-system/issues/86): supplementary read-only rich link preview with controlled/uncontrolled Radix state, native hover/focus timers and collision bounds. Surface owns overlay Material; Gauge remains passive inside a separate named anchor. A1 retains Radix touch cancellation: usage requires a separate persistent details link outside the trigger for touch users. No stylesheet, public content ref, presence or delay API."
+  },
+  {
+    "actual": "—",
+    "nivelActual": "—",
     "nombre": "Popover",
     "nivel": "molecule",
     "destino": "ui",
@@ -515,17 +526,6 @@
     "compone": "Surface; Radix-owned Portal",
     "accion": "nuevo",
     "notas": "Implemented under [approved v0.1 plus A1/A2](https://github.com/egdev6/egdev-design-system/issues/96): named click-open dialog with Root, Trigger, internally portalled Content and Close. Radix owns state, ids, focus, dismissal and placement; modality-only context derives aria-modal. Content composes Surface overlay without copying its recipe. Native/slotted button refs; Button Trigger retains idle/loading state and exposes visibility through aria-expanded (A2). No custom Content id, stylesheet or extra public helpers. Visual conformity remains Not evaluated."
-  },
-  {
-    "actual": "—",
-    "nivelActual": "—",
-    "nombre": "HoverCard",
-    "nivel": "molecule",
-    "destino": "ui",
-    "radix": "HoverCard",
-    "compone": "Surface glass, Portal",
-    "accion": "nuevo",
-    "notas": "El panel de detalle de Quorb al pasar por un Gauge."
   },
   {
     "actual": "Notice",

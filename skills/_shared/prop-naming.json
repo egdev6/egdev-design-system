@@ -1663,6 +1663,16 @@
         }
       },
       {
+        "component": "HoverCardTrigger",
+        "type": "boolean (discriminates native required href from child-owned href)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardTriggerProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      },
+      {
         "component": "PopoverTrigger",
         "type": "boolean (button composition union)",
         "status": "existing",
@@ -2372,6 +2382,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "HoverCardContent",
+        "type": "'top' | 'right' | 'bottom' | 'left'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardContentProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      },
+      {
         "component": "Menu",
         "type": "MenuSide ('top' | 'right' | 'bottom' | 'left')",
         "status": "existing",
@@ -2862,6 +2882,16 @@
     },
     "usages": [
       {
+        "component": "HoverCardContent",
+        "type": "'start' | 'center' | 'end'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardContentProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      },
+      {
         "component": "PopoverContent",
         "type": "'start' | 'center' | 'end'",
         "status": "existing",
@@ -2898,6 +2928,16 @@
       "contentHash": "sha256:6007292c57d0dfee10a01b1cc199795b014e40bd09a8b55fd2af3f8fa0274631"
     },
     "usages": [
+      {
+        "component": "HoverCard",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      },
       {
         "component": "Popover",
         "type": "boolean",
@@ -2936,6 +2976,16 @@
     },
     "usages": [
       {
+        "component": "HoverCard",
+        "type": "boolean (default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      },
+      {
         "component": "Popover",
         "type": "boolean",
         "status": "existing",
@@ -2972,6 +3022,16 @@
       "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
     },
     "usages": [
+      {
+        "component": "HoverCard",
+        "type": "(open: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      },
       {
         "component": "Popover",
         "type": "(open: boolean) => void",
