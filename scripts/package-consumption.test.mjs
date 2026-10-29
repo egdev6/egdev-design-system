@@ -120,7 +120,7 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
-const itemStatus: ListItemStatus = 'off';
+const itemStatus: Exclude<ListItemStatus, 'empty'> = 'off';
 const itemVariant: ListItemVariant = 'row';
 const itemPartProps: ListItemPartProps = { title: 'Item context' };
 export const itemChildRef = createRef<HTMLLIElement>();
