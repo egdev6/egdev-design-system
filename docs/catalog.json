@@ -621,10 +621,10 @@
     "nombre": "MeterRow",
     "nivel": "molecule",
     "destino": "ui",
-    "radix": "Progress",
-    "compone": "ProgressBar, Text, Gauge key",
+    "radix": "Progress (via ProgressBar)",
+    "compone": "ProgressBar; native label/readout/help and decorative key",
     "accion": "nuevo",
-    "notas": "Etiqueta + valor + barra + ayuda (Quorb, egdev-live, Criterio)."
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/90): labelled task/goal completion only, never capacity, usage or arbitrary measurements. Composes one lg ProgressBar with brand/muted family, normalized decimal percent or coherent valueText, indeterminate messages and optional persistent help. Structural unpainted div, hidden visible header, useId descriptions; no Gauge, Text, Field or Surface composition. No stylesheet, ref, actions, live region or new dependency."
   },
   {
     "actual": "ModuleCard",

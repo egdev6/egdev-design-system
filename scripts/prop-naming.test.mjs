@@ -13,6 +13,17 @@ const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
   ...[
+    'accessible-name',
+    'primary-value',
+    'measurement-text-equivalent',
+    'visual-treatment',
+    'localized-messages',
+    'numeric-display-help'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/meter-row/types.ts#MeterRowProps'
+  })),
+  ...[
     'floating-side',
     'collection-items',
     'floating-align',

@@ -34,6 +34,7 @@ export type { ChipGroupOption, ChipGroupProps, ChipGroupType } from './molecules
 export { ChipGroup } from './molecules/chip-group';
 export * from './molecules/list-item';
 export * from './molecules/menu';
+export * from './molecules/meter-row';
 export * from './molecules/notice';
 export type { TabsItem, TabsProps, TabsSize, TabsTone, TabsVariant } from './molecules/tabs';
 export { Tabs, tabsVariants } from './molecules/tabs';

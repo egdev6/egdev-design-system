@@ -41,6 +41,7 @@ const components = [
   ['ListItem', 'molecules/list-item'],
   ['Badge', 'atoms/badge'],
   ['Logo', 'atoms/logo'],
+  ['MeterRow', 'molecules/meter-row'],
   ['ProgressBar', 'atoms/progress-bar'],
   ['PullQuote', 'atoms/pull-quote'],
   ['Select', 'atoms/select'],
@@ -195,6 +196,7 @@ const expected: Record<string, Record<string, string | false>> = {
     unavailableText: 'text'
   },
   logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
+  meterrow: { label: 'text', value: 'number', valueText: 'text', help: 'text', variant: 'select', messages: false },
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
   link: {
@@ -331,6 +333,7 @@ const ownPropCounts: Record<string, number> = {
   spinner: 2,
   stat: 6,
   logo: 4,
+  meterrow: 6,
   statusdot: 2,
   kbd: 2,
   link: 6,
