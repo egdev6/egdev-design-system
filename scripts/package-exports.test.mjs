@@ -515,7 +515,8 @@ test('UI ships plain layered CSS without canonical token definitions or unrelate
   }
   assert.match(css, /prefers-reduced-transparency:\s*reduce/);
   // Only approved component CVA sources are scanned, not stories, tests or the default palette.
-  assert.doesNotMatch(css, /\.(p-4|bg-red-500)\s*[,\{]/);
+  // (`p-4` is no longer a sentinel: ListItem's approved CVA ships it.)
+  assert.doesNotMatch(css, /\.bg-red-500\s*[,\{]/);
 });
 
 test('UI ships functional static Gauge utilities without an application Tailwind compiler', () => {
