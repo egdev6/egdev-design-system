@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Field, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -51,6 +51,9 @@ import type {
   DividerOrientation,
   DividerProps,
   DropzoneProps,
+  FieldProps,
+  FieldLayout,
+  FieldCounter,
   GaugeProps,
   GaugeState,
   GaugeSize,
@@ -389,6 +392,39 @@ const openSearch: SearchTriggerProps = { open: true };
 const stringCompact: SearchTriggerProps = { compact: 'yes' };
 // @ts-expect-error shortcut is display text only.
 const numericShortcut: SearchTriggerProps = { shortcut: 75 };
+
+// Field samples stay outside App so existing control counts and focus harnesses remain unchanged.
+const fieldLayout: FieldLayout = 'stacked';
+const fieldCounter: FieldCounter = { value: 294, max: 280 };
+export const fieldControlRef = createRef<HTMLInputElement>();
+export const fieldProps: FieldProps = {
+  label: 'Post', layout: fieldLayout, hint: 'Keep it short', error: 'Shorten the post',
+  counter: fieldCounter, readout: '294 characters', id: 'post-field', className: 'col-span-full',
+  children: createElement(Input, { id: 'post-control', ref: fieldControlRef, 'aria-describedby': 'post-external' })
+};
+export function FieldSamples({ invalid = true }: { invalid?: boolean }) {
+  return createElement('section', null,
+    createElement('p', { id: 'post-external' }, 'External guidance'),
+    createElement(Field, { ...fieldProps, error: invalid ? fieldProps.error : '' }),
+    createElement(Field, { label: 'Notifications', layout: 'choice', hint: 'Receive updates', id: 'choice-field', children: createElement(Checkbox) }),
+    createElement(Field, { label: 'Ring size', readout: '56 px', error: 'Size is too large', id: 'slider-field', children: createElement(Slider, { label: 'Ring size', defaultValue: 56 }) }));
+}
+// @ts-expect-error Field requires its label even when hidden.
+const unnamedField: FieldProps = { children: createElement(Input), hideLabel: true };
+// @ts-expect-error Field requires one element control.
+const emptyField: FieldProps = { label: 'Title' };
+// @ts-expect-error Text is not a compatible control element.
+const textField: FieldProps = { label: 'Title', children: 'Input' };
+// @ts-expect-error Field has no own ref API.
+const referencedField: FieldProps = { ...fieldProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Field has no asChild API.
+const slottedField: FieldProps = { ...fieldProps, asChild: true };
+// @ts-expect-error Layout is a closed stacked/choice axis.
+const horizontalField: FieldProps = { ...fieldProps, layout: 'horizontal' };
+// @ts-expect-error Control size belongs to the atom, not Field.
+const smallField: FieldProps = { ...fieldProps, size: 'sm' };
+// @ts-expect-error Counter requires both value and max.
+const partialCounterField: FieldProps = { ...fieldProps, counter: { value: 1 } };
 
 // Stat stays outside App: it is passive, adds no buttons and leaves the focus harness unchanged.
 export const statRecipe: string = statVariants({ size: 'sm' });
@@ -2007,6 +2043,22 @@ function assertCountdownCSS(css) {
   assert.match(css, /min-width:\s*var\(--spacing-countdown-unit[,)]/);
 }
 
+// Field's layout and attribute-driven state utilities must ship without a consumer Tailwind compiler.
+function assertFieldCSS(css) {
+  for (const selector of [
+    String.raw`.grid-cols-\[auto_1fr\]`,
+    String.raw`.group-has-\[\:disabled\]\:opacity-45`,
+    String.raw`.group-has-\[\[data-disabled\]\]\:opacity-45`,
+    String.raw`.data-\[state\=over\]\:text-status-danger`,
+    String.raw`.pointer-coarse\:min-h-11`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Field utility ' + selector);
+  }
+  assert.match(css, /grid-template-columns:\s*auto 1fr/);
+  assert.match(css, /font-weight:\s*var\(--text-body-muted--font-weight[,)]/);
+  assert.match(css, /@media\s*\(pointer:\s*coarse\)/);
+}
+
 // SearchTrigger utilities ship token geometry, coarse targets and native-state colors without preflight.
 function assertSearchTriggerCSS(css) {
   for (const selector of [
@@ -2344,6 +2396,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Countdown',
   'Divider',
   'Dropzone',
+  'Field',
   'Gauge',
   'Heading',
   'Icon',
@@ -2414,6 +2467,8 @@ ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertPullQuoteCSS.toString()}
 ${assertCountdownCSS.toString()}
+${assertFieldCSS.toString()}
+assertFieldCSS(shippedStyles);
 assertCountdownCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
 assertStatCSS(shippedStyles);
@@ -2499,7 +2554,7 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
@@ -2525,6 +2580,29 @@ try {
 const unavailableCountdown = renderToString(createElement(CountdownSamples, { deadline: Number.NaN }));
 assert.ok(unavailableCountdown.includes('data-state="unavailable"') && unavailableCountdown.includes('Time unavailable'));
 assert.doesNotMatch(unavailableCountdown, /<time|eg-countdown__row/);
+// Field SSR uses real public types/controls; DOM text assertions tolerate React's text separators.
+const fieldDocument = new JSDOM(renderToString(createElement(FieldSamples)));
+try {
+  const document = fieldDocument.window.document;
+  const field = document.getElementById('post-field');
+  const input = document.getElementById('post-control');
+  assert.ok(field.classList.contains('eg-field') && field.classList.contains('col-span-full'));
+  assert.equal(field.getAttribute('data-state'), 'invalid');
+  assert.equal(field.querySelector('label').htmlFor, input.id);
+  assert.equal(input.getAttribute('aria-invalid'), 'true');
+  const descriptions = input.getAttribute('aria-describedby').split(' ').map((id) => document.getElementById(id).textContent);
+  assert.deepEqual(descriptions, ['External guidance', 'Shorten the post', '294 / 280']);
+  assert.equal(field.querySelector('output').getAttribute('for'), input.id);
+  assert.equal(field.querySelector('[data-state="over"]').textContent, '294 / 280');
+  assert.equal(field.querySelector('[aria-live], [role="alert"]'), null);
+  const choice = document.getElementById('choice-field');
+  assert.equal(choice.firstElementChild.getAttribute('role'), 'checkbox');
+  const slider = document.getElementById('slider-field').querySelector('[role="slider"]');
+  assert.equal(slider.getAttribute('aria-invalid'), 'true');
+  assert.equal(document.getElementById(slider.getAttribute('aria-describedby')).textContent, 'Size is too large');
+} finally {
+  fieldDocument.window.close();
+}
 // Stat SSR: a labelled group per figure, unformatted values and the hidden no-data dash.
 const statDocument = new JSDOM(renderToString(createElement(StatSamples, { highlighted: true, value: '1,200' })));
 try {
@@ -3426,10 +3504,25 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, CountdownSamples, DropzoneSamples, FieldSamples, fieldControlRef, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
+  await act(async () => root.render(createElement(FieldSamples)));
+  const fieldInput = document.getElementById('post-control');
+  assert.equal(fieldControlRef.current, fieldInput);
+  assert.equal(fieldInput.getAttribute('aria-invalid'), 'true');
+  const fieldChoice = document.querySelector('#choice-field [role="checkbox"]');
+  await act(async () => document.querySelector('#choice-field label').click());
+  assert.equal(fieldChoice.getAttribute('aria-checked'), 'true');
+  await act(async () => root.render(createElement(FieldSamples, { invalid: false })));
+  assert.equal(fieldControlRef.current, fieldInput);
+  assert.equal(fieldInput.hasAttribute('aria-invalid'), false);
+  const fieldDescriptions = fieldInput.getAttribute('aria-describedby').split(' ').map((id) => document.getElementById(id).textContent);
+  assert.deepEqual(fieldDescriptions, ['External guidance', 'Keep it short', '294 / 280']);
+  assert.equal(document.querySelector('#slider-field [role="slider"]').getAttribute('aria-invalid'), 'true');
+  await act(async () => root.render(null));
+  assert.equal(fieldControlRef.current, null);
   stage('mount:start');
   await act(async () => root.render(createElement(App)));
   stage('mount:complete');
@@ -4377,6 +4470,8 @@ assertTextareaCSS(emitted);
 assertInputCSS(emitted);
 assertDropzoneCSS(emitted);
 ${assertCountdownCSS.toString()}
+${assertFieldCSS.toString()}
+assertFieldCSS(emitted);
 assertCountdownCSS(emitted);
 assertStatCSS(emitted);
 assertSearchTriggerCSS(emitted);
@@ -4446,6 +4541,7 @@ assertTextareaCSS(twCss);
 assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
 assertCountdownCSS(twCss);
+assertFieldCSS(twCss);
 assertStatCSS(twCss);
 assertSearchTriggerCSS(twCss);
 assertPullQuoteCSS(twCss);

@@ -118,6 +118,53 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts Field required controls, constant defaults, native rows and all own directives', () => {
+    const doc = parser.parse(source('molecules/field/Field.tsx')).find((item) => item.displayName === 'Field');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    const controls: Record<string, string> = {
+      label: 'text',
+      children: 'false',
+      hint: 'text',
+      error: 'text',
+      counter: 'false',
+      readout: 'text',
+      hideLabel: 'boolean',
+      layout: 'select'
+    };
+    const file = ast(source('molecules/field/types.ts'));
+    const declarations = ownProps(file, ['FieldProps']);
+    expect(declarations).toHaveLength(8);
+    for (const declaration of declarations) {
+      const name = declaration.name.getText(file);
+      expect(ts.getJSDocTags(declaration).filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
+      const tags = props[name]?.tags as Record<string, string> | undefined;
+      expect(tags?.control, name).toBe(controls[name]);
+      expect(props[name]?.required, name).toBe(name === 'label' || name === 'children');
+      if (controls[name] === 'false') {
+        expect(tags?.controlReason).toMatch(/ReactElement|FieldCounter/);
+      }
+      if (name !== 'hideLabel' && name !== 'layout') {
+        expect(props[name]?.defaultValue, name).toBeNull();
+      }
+    }
+    expect(props.hideLabel?.defaultValue?.value).toBe('false');
+    expect(props.layout?.defaultValue?.value).toBe('stacked');
+    expect(props.layout?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'stacked',
+      'choice'
+    ]);
+    for (const name of ['id', 'title', 'className', 'aria-describedby', 'style']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of ['ref', 'asChild', 'size', 'icon', 'fieldVariants']) {
+      expect(props[name], name).toBeUndefined();
+    }
+    expect(ownProps(file, ['FieldCounter'])).toHaveLength(2);
+    for (const declaration of ownProps(file, ['FieldCounter'])) {
+      expect(ts.getJSDocTags(declaration).find(({ tagName }) => tagName.text === 'control')?.comment).toBe('number');
+    }
+  });
   it('extracts the Toggle union, boolean defaults, native button props and every own directive', () => {
     const doc = parser.parse(source('atoms/toggle/Toggle.tsx')).find((item) => item.displayName === 'Toggle');
     expect(doc).toBeDefined();
@@ -192,6 +239,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/toggle',
       './atoms/tooltip',
       './lib/cn',
+      './molecules/field',
       './primitives/aspect-ratio',
       './primitives/divider',
 
@@ -215,6 +263,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Countdown',
       'Divider',
       'Dropzone',
+      'Field',
       'Gauge',
       'Heading',
       'Icon',
