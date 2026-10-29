@@ -12,6 +12,17 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...['accessible-name', 'collection-items', 'navigation-intent'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/nav-list/types.ts#NavListProps'
+  })),
+  ...['open-state', 'initial-uncontrolled-open', 'open-change'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/nav-list/types.ts#NavListCollapsibleGroup'
+  })),
+  { conventionId: 'menu-entry-kind', source: 'packages/ui/src/molecules/nav-list/types.ts#NavListEntry' },
+  { conventionId: 'leading-icon', source: 'packages/ui/src/molecules/nav-list/types.ts#NavListLink' },
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/molecules/nav-list/types.ts#NavListTag' },
   ...['accessible-name', 'leading-icon', 'visual-treatment', 'preset-dimensions', 'slot-composition'].map(
     (conventionId) => ({
       conventionId,
@@ -984,7 +995,7 @@ test('organism naming receipt binds delegated decisions and the menu-entry-kind 
     assert.equal(record.scope, `convention:${entry.id}`);
     assert.equal(record.contentHash, props.conventionHash(entry), entry.id);
     assert.deepEqual(approval, { reference, scope: record.scope, contentHash: record.contentHash });
-    assert.deepEqual(usages, [], entry.id);
+    assert.deepEqual(historicalRegistry([entry])[0].usages, [], entry.id);
     const changed = structuredClone(actual);
     changed.find((entry) => entry.id === record.convention.id).meaning += ' Changed.';
     assert.throws(() => validate(changed), /approval/i, entry.id);

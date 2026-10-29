@@ -490,6 +490,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "NavList",
+        "type": "NavListTag.tone ('neutral' | 'brand', default neutral)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListTag",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
+      {
         "component": "Badge",
         "type": "BadgeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger' | 'brand')",
         "status": "existing",
@@ -593,6 +603,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "NavList",
+        "type": "string (required non-empty landmark name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListProps",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
       {
         "component": "Avatar",
         "type": "string",
@@ -1031,6 +1051,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "NavList",
+        "type": "NavListLink.icon (optional decorative IconName)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListLink",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
       {
         "component": "Button",
         "type": "ReactNode (decorative start/end slot, default end; Button-only semantic exception)",
@@ -1964,7 +1994,18 @@
       "scope": "convention:collection-items",
       "contentHash": "sha256:304ac895a943454d04d057e18518794a315958b70252df2e696e00dc65b36f40"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "NavList",
+        "type": "NavListEntry[]; NavListGroupBase.items narrows to NavListLink[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListProps",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      }
+    ]
   },
   {
     "id": "localized-messages",
@@ -2313,7 +2354,18 @@
       "scope": "convention:open-state",
       "contentHash": "sha256:6007292c57d0dfee10a01b1cc199795b014e40bd09a8b55fd2af3f8fa0274631"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "NavList",
+        "type": "NavListCollapsibleGroup.open (optional controlled boolean)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListCollapsibleGroup",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      }
+    ]
   },
   {
     "id": "initial-uncontrolled-open",
@@ -2329,7 +2381,18 @@
       "scope": "convention:initial-uncontrolled-open",
       "contentHash": "sha256:2a8c4a933020f41d26f1efdb80320bb0eaf25326cf49c0384abc92416010606f"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "NavList",
+        "type": "NavListCollapsibleGroup.defaultOpen (boolean, default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListCollapsibleGroup",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      }
+    ]
   },
   {
     "id": "open-change",
@@ -2345,7 +2408,18 @@
       "scope": "convention:open-change",
       "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "NavList",
+        "type": "NavListCollapsibleGroup.onOpenChange ((open: boolean) => void)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListCollapsibleGroup",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      }
+    ]
   },
   {
     "id": "item-presentation-status",
@@ -2377,7 +2451,18 @@
       "scope": "convention:menu-entry-kind",
       "contentHash": "sha256:0b0cb903110a56f70e453b35f949a782f3ad4da9820ba6a6d0b4bb4fdab95308"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "NavList",
+        "type": "NavListEntry.kind ('link' | 'group' | 'collapsible-group'); link kind is optional",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListEntry",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      }
+    ]
   },
   {
     "id": "panel-header",
@@ -2409,7 +2494,18 @@
       "scope": "convention:navigation-intent",
       "contentHash": "sha256:7fb068ceea0357c786c87878c1080e7737b18da24f7feb48010b643ba4d1e197"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "NavList",
+        "type": "(item: NavListLink, event: MouseEvent<HTMLAnchorElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListProps",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      }
+    ]
   },
   {
     "id": "numeric-display-help",

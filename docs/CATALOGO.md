@@ -91,7 +91,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **ChipGroup** | — | ToggleGroup | Chip | nuevo | Filtros (múltiple) y selección exclusiva (borde de la pantalla en Quorb). |
 | **Tabs** | Tabs (molécula) | Tabs | Badge (contador) | mantener | Provisional future tab-selection concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md); Gauge's current finish follows the [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md). |
 | **Menu** | MenuList (popup) (molécula) | DropdownMenu | Icon, Kbd | separar | Menú desplegable con items, separadores, `--danger` y submenús. |
-| **NavList** | MenuList --nav (molécula) | Accordion (grupos) / Collapsible | Icon, Badge, StatusDot | separar | Navegación lateral con grupos plegables, contadores y etiquetas `__tag`. |
+| **NavList** | MenuList --nav (molécula) | Collapsible | Icon, Badge, StatusDot, VisuallyHidden, Surface recipe | separar | Implemented named in-flow navigation under [approved v0.2 contract](https://github.com/egdev6/egdev-design-system/issues/92): native links, consumer-supplied aria-current, static groups and independent Radix disclosures, raw counters, readable tags/signals/warnings. Current rows compose surfaceVariants; the host owns the panel and routing. Entry discriminant kind; no stylesheet, ref, asChild, tree/menu semantics or route inference. Legacy MenuList navigation remains unchanged. |
 | **Popover** | — | Popover | Surface, Portal | nuevo | Panel flotante al hacer clic. |
 | **HoverCard** | — | HoverCard | Surface glass, Portal | nuevo | El panel de detalle de Quorb al pasar por un Gauge. |
 | **Notice** | Notice (molécula) | — | Icon, Button; shared FieldMessage recipes | mantener | Draft #93 retains its status/alert owner, summary/actions and compact size. Proposed #179 amendment shares marker-free tone/icon/text recipes from FieldMessage, not its root or live semantics. No implementation or peer amendment performed. |
@@ -239,6 +239,6 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 
 ## Primitivas de Radix que se usan
 
-`AccessibleIcon`, `Accordion`, `AlertDialog`, `AspectRatio`, `Avatar`, `Checkbox`, `Collapsible`, `Dialog`, `DropdownMenu`, `HoverCard`, `Label`, `NavigationMenu`, `Popover`, `Portal`, `Progress`, `RadioGroup`, `ScrollArea`, `Select`, `Separator`, `Slider`, `Slot`, `Switch`, `Tabs`, `Toast`, `Toggle`, `ToggleGroup`, `Toolbar`, `Tooltip`, `VisuallyHidden`
+`AccessibleIcon`, `AlertDialog`, `AspectRatio`, `Avatar`, `Checkbox`, `Collapsible`, `Dialog`, `DropdownMenu`, `HoverCard`, `Label`, `NavigationMenu`, `Popover`, `Portal`, `Progress`, `RadioGroup`, `ScrollArea`, `Select`, `Separator`, `Slider`, `Slot`, `Switch`, `Tabs`, `Toast`, `Toggle`, `ToggleGroup`, `Toolbar`, `Tooltip`, `VisuallyHidden`
 
 Todas vienen del paquete unificado `radix-ui` (`import { Tabs } from 'radix-ui'`).
