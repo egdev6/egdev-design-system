@@ -246,6 +246,25 @@ describe('Carousel public contract v0.1', () => {
     expect(current()).toHaveFocus();
   });
 
+  it('repairs focus without relying on a global HTMLButtonElement constructor', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(<Carousel label='Highlights' items={items} value='b' />);
+    const next = screen.getByRole('button', { name: 'Next slide' }) as HTMLButtonElement;
+    await user.click(next);
+    next.disabled = true;
+    document.body.tabIndex = -1;
+    document.body.focus();
+    document.body.removeAttribute('tabindex');
+    // Consumers may run in realms (packed SSR/CSR harnesses, iframes) without this global.
+    vi.stubGlobal('HTMLButtonElement', undefined);
+    try {
+      rerender(<Carousel label='Highlights' items={items} value='c' />);
+      expect(current()).toHaveFocus();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
   it('does not repair intentionally blurred slide focus when that slide is later removed', () => {
     const { rerender } = render(<Carousel label='Highlights' items={items} />);
     const slide = current() as HTMLElement;

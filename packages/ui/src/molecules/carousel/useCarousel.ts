@@ -85,6 +85,10 @@ function localize(messages: CarouselProps['messages']): CarouselMessages {
 }
 
 /** Coordinate accepted identities, bounded input, physical scroll geometry and focus repair. */
+/** Realm-safe check: avoids the global HTMLButtonElement constructor, absent in some consumer realms. */
+const isDisabledButton = (node: unknown): boolean =>
+  !!node && (node as Element).tagName === 'BUTTON' && (node as HTMLButtonElement).disabled;
+
 export function useCarousel({
   items,
   label,
@@ -251,12 +255,9 @@ export function useCarousel({
     const strandedBodyFocus =
       remembered &&
       active === document.body &&
-      (!remembered.isConnected ||
-        (remembered instanceof HTMLButtonElement && remembered.disabled && root.current?.contains(remembered)));
+      (!remembered.isConnected || (isDisabledButton(remembered) && root.current?.contains(remembered)));
     const stranded =
-      (inside &&
-        ((oldSlide !== node && !!oldSlide?.contains(active)) ||
-          (active instanceof HTMLButtonElement && active.disabled))) ||
+      (inside && ((oldSlide !== node && !!oldSlide?.contains(active)) || isDisabledButton(active))) ||
       strandedBodyFocus;
     const committed = accepted !== lastAccepted.current;
     const userRequest = committed && pending.current?.value === accepted ? pending.current : null;
@@ -365,8 +366,7 @@ export function useCarousel({
       onBlurCapture: (event) => {
         const target = event.target as HTMLElement;
         const related = event.relatedTarget as Node | null;
-        const disabledBlur =
-          target instanceof HTMLButtonElement && target.disabled && (!related || related === document.body);
+        const disabledBlur = isDisabledButton(target) && (!related || related === document.body);
         const removedBlur = !target.isConnected && !related;
         if (!event.currentTarget.contains(related) && !disabledBlur && !removedBlur) {
           focused.current = null;
