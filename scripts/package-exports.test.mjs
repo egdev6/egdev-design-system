@@ -2059,6 +2059,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Menu',
       'MeterRow',
       'Notice',
+      'Popover',
+      'PopoverClose',
+      'PopoverContent',
+      'PopoverTrigger',
       'Portal',
       'ProgressBar',
       'PullQuote',
@@ -2299,6 +2303,14 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Notice',
     'NoticeProps',
     'NoticeTone',
+    'Popover',
+    'PopoverClose',
+    'PopoverCloseProps',
+    'PopoverContent',
+    'PopoverContentProps',
+    'PopoverProps',
+    'PopoverTrigger',
+    'PopoverTriggerProps',
     'Portal',
     'PortalProps',
     'ProgressBar',
@@ -3362,6 +3374,66 @@ test('UI ships the Slider well, range and raised thumb utilities without a Slide
   assert.equal(parts, 4, 'Root, track, range and thumb must all be scanned');
   // D11 no stylesheet: the marker carries no rule of its own.
   assert.doesNotMatch(css, /\.eg-slider[^{]*\{/, 'Slider has no stylesheet: its marker carries no rule');
+});
+
+test('Popover ships every static CVA utility, Radix bounds and Surface composition without a stylesheet', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/popover/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  let parts = 0;
+  const visit = (node) => {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      const base = node.arguments[0];
+      assert.ok(ts.isArrayLiteralExpression(base), 'Popover CVA bases are static string arrays');
+      parts++;
+      for (const item of base.elements) {
+        assert.ok(ts.isStringLiteral(item));
+        for (const name of item.text.split(/\s+/).filter((name) => name !== 'eg-popover')) {
+          const selector = `.${name.replace(/([^a-zA-Z0-9_-])/g, '\\$1')}`;
+          assert.ok(utilities.includes(selector), `Missing Popover CVA utility ${name}`);
+        }
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  assert.equal(parts, 2);
+  assert.match(utilities, /width:\s*calc\(var\(--space-24\)\s*\*\s*4\)/);
+  assert.match(utilities, /max-width:\s*var\(--radix-popover-content-available-width\)/);
+  assert.match(utilities, /max-height:\s*var\(--radix-popover-content-available-height\)/);
+  assert.match(utilities, /outline-color:\s*var\(--color-focus-ring[,)]/);
+  assert.doesNotMatch(css, /\.eg-popover\s*[,{]/);
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  for (const name of [
+    'usePopover',
+    'usePopoverContent',
+    'PopoverModalityContext',
+    'popoverButtonVariants',
+    'popoverContentVariants',
+    'UserMenu'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} is not public`);
+  }
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(
+    createElement(exported.Popover, {
+      children: [
+        createElement(exported.PopoverTrigger, { key: 'trigger', children: 'Display settings' }),
+        createElement(exported.PopoverContent, { key: 'content', label: 'Display settings', children: 'Details' })
+      ]
+    })
+  );
+  assert.match(html, /<button[^>]*type="button"/);
+  assert.match(html, /aria-haspopup="dialog"/);
+  assert.match(html, /aria-expanded="false"/);
+  assert.match(html, />Display settings<\/button>/);
+  assert.doesNotMatch(html, /role="dialog"|Details|eg-popover/);
 });
 
 test('Carousel ships static layout, snap, drag, focus and token geometry without a stylesheet', () => {

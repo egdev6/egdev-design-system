@@ -32,7 +32,7 @@ import { Menu, menuVariants } from '@egdev/ui';
 import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorItem, MenuLabelItem, MenuSubmenuItem, MenuTone, MenuAlign, MenuSide } from '@egdev/ui';
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, Notice, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, Notice, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -86,6 +86,10 @@ import type {
   LogoProps,
   LogoSize,
   LogoVariant,
+  PopoverProps,
+  PopoverTriggerProps,
+  PopoverContentProps,
+  PopoverCloseProps,
   MeterRowMessages,
   MeterRowProps,
   MeterRowVariant,
@@ -149,6 +153,43 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+export const popoverTriggerRef = createRef<HTMLButtonElement>();
+export const popoverCloseRef = createRef<HTMLButtonElement>();
+const popoverTriggerProps: PopoverTriggerProps = {
+  asChild: true, children: createElement(Button, { children: 'Packed settings' }), id: 'popover-trigger'
+};
+const popoverCloseProps: PopoverCloseProps = {
+  asChild: true, children: createElement(IconButton, { label: 'Close packed settings', icon: createElement(Icon, { name: 'close' }) })
+};
+const popoverContentProps: PopoverContentProps = {
+  label: 'Packed settings', side: 'bottom', align: 'start', className: 'max-w-full',
+  children: [
+    createElement('input', { key: 'field', 'aria-label': 'Display name', defaultValue: 'Desk' }),
+    createElement(PopoverClose, { ...popoverCloseProps, key: 'close', ref: popoverCloseRef })
+  ]
+};
+export function PopoverSamples({ open, onOpenChange, modal = false }: Omit<PopoverProps, 'children'>) {
+  return createElement(Popover, { open, onOpenChange, modal, children: [
+    createElement(PopoverTrigger, { ...popoverTriggerProps, key: 'trigger', ref: popoverTriggerRef }),
+    createElement(PopoverContent, { ...popoverContentProps, key: 'content' })
+  ] });
+}
+// @ts-expect-error A1 reserves the Content id for Radix relationship integrity.
+const customPopoverId: PopoverContentProps = { label: 'Settings', children: 'Details', id: 'custom' };
+// @ts-expect-error Content requires its dialog name.
+const unnamedPopoverContent: PopoverContentProps = { children: 'Details' };
+// @ts-expect-error Content does not expose forceMount.
+const forcedPopoverContent: PopoverContentProps = { label: 'Settings', children: 'Details', forceMount: true };
+// @ts-expect-error Content does not expose an appearance style override.
+const styledPopoverContent: PopoverContentProps = { label: 'Settings', children: 'Details', style: { color: 'red' } };
+// @ts-expect-error Only Trigger and Close expose refs, not Content.
+const refPopoverContent = createElement(PopoverContent, { ...popoverContentProps, ref: createRef<HTMLDivElement>() });
+// @ts-expect-error A slotted Trigger requires an element, not text.
+const textPopoverTrigger: PopoverTriggerProps = { asChild: true, children: 'Settings' };
+// @ts-expect-error Native Trigger always uses type=button.
+const submitPopoverTrigger: PopoverTriggerProps = { children: 'Settings', type: 'submit' };
+// @ts-expect-error Close requires consumer-supplied named content.
+const emptyPopoverClose: PopoverCloseProps = {};
 export const menuSelections: string[] = [];
 export const menuRecipe: string = menuVariants();
 const menuTone: MenuTone = 'danger';
@@ -1806,6 +1847,22 @@ function assertSelectCSS(css) {
   assert.doesNotMatch(css, /\.eg-select(?:-content)?\s*\{/, 'Select has no stylesheet');
 }
 
+function assertPopoverCSS(css) {
+  for (const selector of [
+    String.raw`.w-\[calc\(var\(--space-24\)\*4\)\]`,
+    String.raw`.max-w-\[var\(--radix-popover-content-available-width\)\]`,
+    String.raw`.max-h-\[var\(--radix-popover-content-available-height\)\]`,
+    String.raw`.data-\[state\=open\]\:starting\:opacity-0`,
+    String.raw`.pointer-coarse\:min-h-\[var\(--space-12\)\]`,
+    String.raw`.focus-visible\:outline-focus-ring`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Popover utility ' + selector);
+  }
+  assert.match(css, /outline-color:\s*var\(--color-focus-ring[,)]/);
+  assert.match(css, /max-height:\s*var\(--radix-popover-content-available-height\)/);
+  assert.doesNotMatch(css, /\.eg-popover\s*[,{]/, 'Popover has no authored stylesheet');
+}
+
 function assertSurfaceCSS(css) {
   for (const selector of [
     '.bg-surface-0',
@@ -2869,6 +2926,8 @@ for (const utility of ['.text-title-section', '.text-title-hero', '.text-title-s
 assert.doesNotMatch(shippedStyles, /\\.eg-(?:text|heading)\\s*[,{]/, 'Text/Heading markers must not become shipped CSS rules');
 ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(shippedStyles);
+${assertPopoverCSS.toString()}
+assertPopoverCSS(shippedStyles);
 ${assertLinkCSS.toString()}
 assertLinkCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
@@ -2904,6 +2963,10 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Menu',
   'MeterRow',
   'Notice',
+  'Popover',
+  'PopoverClose',
+  'PopoverContent',
+  'PopoverTrigger',
   'Portal',
   'ProgressBar',
   'PullQuote',
@@ -3106,7 +3169,20 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, ListItemSamples, MeterRowSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
+import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, ListItemSamples, MeterRowSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
+// Popover SSR renders only the named button: the dialog is an internal client portal.
+const popoverDocument = new JSDOM(renderToString(createElement(PopoverSamples)));
+try {
+  const trigger = popoverDocument.window.document.getElementById('popover-trigger');
+  assert.equal(trigger.tagName, 'BUTTON');
+  assert.equal(trigger.type, 'button');
+  assert.equal(trigger.textContent, 'Packed settings');
+  assert.equal(trigger.getAttribute('aria-haspopup'), 'dialog');
+  assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+  assert.equal(popoverDocument.window.document.querySelector('[role="dialog"]'), null);
+} finally {
+  popoverDocument.window.close();
+}
 const carouselDocument = new JSDOM(renderToString(createElement(CarouselSamples)));
 try {
   const document = carouselDocument.window.document;
@@ -4217,7 +4293,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, ListItemSamples, MeterRowSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, carouselChanges, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
+const { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, ListItemSamples, MeterRowSamples, NoticeSamples, PopoverSamples, popoverTriggerRef, popoverCloseRef, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, carouselChanges, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4923,6 +4999,60 @@ try {
   await act(async () => root.render(null));
   assert.equal(document.getElementById('totals'), null);
   stage('stat:passive:complete');
+  stage('popover:start');
+  for (const modal of [false, true]) {
+    await act(async () => root.render(createElement(PopoverSamples, { modal })));
+    const trigger = document.getElementById('popover-trigger');
+    assert.equal(popoverTriggerRef.current, trigger, 'Slotted Trigger forwards its actual button ref');
+    assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+    assert.equal(trigger.getAttribute('data-state'), 'idle', 'A2 keeps Button-owned state');
+    assert.equal(document.querySelector('[role="dialog"]'), null);
+    await act(async () => trigger.click());
+    const dialog = document.querySelector('[role="dialog"][aria-label="Packed settings"]');
+    assert.ok(dialog && !document.getElementById('app').contains(dialog), 'Content is portalled outside App');
+    assert.equal(trigger.getAttribute('aria-controls'), dialog.id, 'Radix owns the relationship (A1)');
+    assert.equal(trigger.getAttribute('aria-expanded'), 'true');
+    assert.equal(trigger.getAttribute('data-state'), 'idle', 'Button does not mirror Popover visibility (A2)');
+    assert.equal(dialog.getAttribute('data-state'), 'open');
+    assert.equal(dialog.getAttribute('aria-modal'), modal ? 'true' : null);
+    assert.ok(dialog.classList.contains('eg-popover') && dialog.classList.contains('eg-surface'));
+    assert.ok(dialog.classList.contains('bg-surface-overlay') && dialog.classList.contains('max-w-full'));
+    assert.equal(document.activeElement, dialog.querySelector('input'), 'First eligible control receives focus');
+    const close = dialog.querySelector('button');
+    assert.equal(popoverCloseRef.current, close, 'Slotted Close forwards its actual button ref');
+    assert.equal(close.textContent, 'Close packed settings', 'AccessibleIcon hidden text supplies the Close name');
+    assert.equal(close.hasAttribute('aria-label'), false, 'IconButton does not replace its hidden-text name');
+    assert.equal(close.querySelector('svg').getAttribute('aria-hidden'), 'true');
+    assert.equal(document.querySelector('button button'), null);
+    if (modal) {
+      assert.equal(document.getElementById('app').getAttribute('aria-hidden'), 'true');
+      assert.equal(document.body.style.pointerEvents, 'none');
+    }
+    await act(async () => {
+      close.click();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    assert.equal(document.querySelector('[role="dialog"]'), null);
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 0)); });
+    assert.equal(document.activeElement, trigger, 'Explicit Close restores the stable trigger');
+    assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+    assert.equal(trigger.getAttribute('data-state'), 'idle');
+    assert.equal(trigger.hasAttribute('aria-controls'), false);
+    await act(async () => root.render(null));
+  }
+  const popoverRequests = [];
+  const onPopoverChange = (open) => popoverRequests.push(open);
+  await act(async () => root.render(createElement(PopoverSamples, { open: false, onOpenChange: onPopoverChange })));
+  await act(async () => document.getElementById('popover-trigger').click());
+  assert.deepEqual(popoverRequests, [true]);
+  assert.equal(document.querySelector('[role="dialog"]'), null, 'Controlled requests need acknowledgement');
+  await act(async () => root.render(createElement(PopoverSamples, { open: true, onOpenChange: onPopoverChange })));
+  assert.deepEqual(popoverRequests, [true], 'Incoming controlled updates do not echo callbacks');
+  await act(async () => popoverCloseRef.current.click());
+  assert.deepEqual(popoverRequests, [true, false]);
+  assert.ok(document.querySelector('[role="dialog"]'), 'Owner has not accepted the close request');
+  await act(async () => root.render(null));
+  stage('popover:complete');
   stage('section-header:start');
   for (const variant of ['split', 'inline']) {
     await act(async () => root.render(createElement(SectionHeaderSamples, { variant })));
@@ -5410,6 +5540,8 @@ ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(emitted);
+${assertPopoverCSS.toString()}
+assertPopoverCSS(emitted);
 ${assertLinkCSS.toString()}
 assertLinkCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
@@ -5488,6 +5620,7 @@ for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
 assertSurfaceCSS(twCss);
+assertPopoverCSS(twCss);
 assertLinkCSS(twCss);
 assertLabelCSS(twCss);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) {

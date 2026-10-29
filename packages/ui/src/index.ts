@@ -37,6 +37,7 @@ export * from './molecules/list-item';
 export * from './molecules/menu';
 export * from './molecules/meter-row';
 export * from './molecules/notice';
+export * from './molecules/popover';
 export type {
   SectionHeaderLevel,
   SectionHeaderProps,

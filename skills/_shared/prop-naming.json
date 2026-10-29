@@ -1044,6 +1044,16 @@
         }
       },
       {
+        "component": "PopoverContent",
+        "type": "string (required non-empty dialog name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverContentProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+        }
+      },
+      {
         "component": "Carousel",
         "type": "string",
         "status": "existing",
@@ -1650,6 +1660,26 @@
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
           "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
+        }
+      },
+      {
+        "component": "PopoverTrigger",
+        "type": "boolean (button composition union)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverTriggerProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+        }
+      },
+      {
+        "component": "PopoverClose",
+        "type": "boolean (button composition union)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverCloseProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
         }
       }
     ]
@@ -2360,6 +2390,16 @@
           "symbol": "TooltipProps",
           "revision": "sha256:ceeb8d9d26860fa35de0e75f7a2979709d8bdd7195c58a389d2cccc5d6965eaf"
         }
+      },
+      {
+        "component": "PopoverContent",
+        "type": "'top' | 'right' | 'bottom' | 'left'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverContentProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+        }
       }
     ]
   },
@@ -2822,6 +2862,16 @@
     },
     "usages": [
       {
+        "component": "PopoverContent",
+        "type": "'start' | 'center' | 'end'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverContentProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+        }
+      },
+      {
         "component": "Menu",
         "type": "MenuAlign ('start' | 'center' | 'end')",
         "status": "existing",
@@ -2848,6 +2898,16 @@
       "contentHash": "sha256:6007292c57d0dfee10a01b1cc199795b014e40bd09a8b55fd2af3f8fa0274631"
     },
     "usages": [
+      {
+        "component": "Popover",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+        }
+      },
       {
         "component": "Menu",
         "type": "boolean",
@@ -2876,6 +2936,16 @@
     },
     "usages": [
       {
+        "component": "Popover",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+        }
+      },
+      {
         "component": "Menu",
         "type": "boolean",
         "status": "existing",
@@ -2902,6 +2972,16 @@
       "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
     },
     "usages": [
+      {
+        "component": "Popover",
+        "type": "(open: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+        }
+      },
       {
         "component": "Menu",
         "type": "(open: boolean) => void",
@@ -3256,7 +3336,18 @@
       "scope": "convention:interaction-modality",
       "contentHash": "sha256:a1b17de345877cfc32c4b0ec4ff757373f2beff70bcc1add9358ac04920150d1"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Popover",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+        }
+      }
+    ]
   },
   {
     "id": "portal-container",

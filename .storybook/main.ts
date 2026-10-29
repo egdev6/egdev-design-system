@@ -104,6 +104,9 @@ const documentedNativeProps: Record<string, readonly string[]> = {
     'value',
     'tabIndex'
   ],
+  popoverTrigger: ['disabled', 'id', 'title', 'onClick', 'aria-label', 'aria-describedby', 'className'],
+  popoverClose: ['disabled', 'id', 'title', 'onClick', 'aria-label', 'aria-describedby', 'className'],
+  popoverContent: ['title', 'aria-describedby', 'className', 'onClick'],
   surface: ['id', 'title', 'role', 'aria-label', 'aria-labelledby', 'className', 'style']
 };
 const camelCase = (name: string) => name.charAt(0).toLowerCase() + name.slice(1);

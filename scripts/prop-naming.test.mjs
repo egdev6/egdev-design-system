@@ -12,6 +12,18 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...['open-state', 'initial-uncontrolled-open', 'open-change', 'interaction-modality'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/popover/types.ts#PopoverProps'
+  })),
+  ...['accessible-name', 'floating-side', 'floating-align'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/popover/types.ts#PopoverContentProps'
+  })),
+  ...['PopoverTriggerProps', 'PopoverCloseProps'].map((symbol) => ({
+    conventionId: 'slot-composition',
+    source: `packages/ui/src/molecules/popover/types.ts#${symbol}`
+  })),
   ...[
     'collection-items',
     'accessible-name',
