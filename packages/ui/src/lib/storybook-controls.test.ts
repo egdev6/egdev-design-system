@@ -32,6 +32,7 @@ const components = [
   ['Slider', 'atoms/slider'],
   ['RadioGroup', 'atoms/radio-group'],
   ['SearchTrigger', 'atoms/search-trigger'],
+  ['SocialLinks', 'molecules/social-links'],
   ['Input', 'atoms/input'],
   ['Kbd', 'atoms/kbd'],
   ['Link', 'atoms/link'],
@@ -232,6 +233,16 @@ const expected: Record<string, Record<string, string | false>> = {
   },
   pullquote: { text: 'text', accent: 'text', source: 'text', variant: 'select', tone: 'select' },
   searchtrigger: { label: 'text', shortcut: 'text', compact: 'boolean' },
+  sociallinks: {
+    items: false,
+    label: 'text',
+    caption: false,
+    inline: 'boolean',
+    variant: 'select',
+    size: 'select',
+    gap: 'select',
+    newTabText: 'text'
+  },
   textarea: { variant: 'select' },
   input: { size: 'select', variant: 'select', type: 'select', icon: false, loading: 'boolean' },
   select: {
@@ -287,6 +298,7 @@ const ownPropCounts: Record<string, number> = {
   slider: 11,
   radiogroup: 9,
   searchtrigger: 3,
+  sociallinks: 8,
   switch: 7,
   tooltip: 4,
   progressbar: 6,
@@ -512,6 +524,18 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }],
     ['PullQuote', { variant: '"pull"', tone: '"canvas"' }],
     ['SearchTrigger', { label: '"Search…"', compact: 'false' }],
+    [
+      'SocialLinks',
+      {
+        label: '"Social profiles"',
+        caption: 'Follow me',
+        inline: 'false',
+        variant: '"outline"',
+        size: '"lg"',
+        gap: '2',
+        newTabText: '"(opens in a new tab)"'
+      }
+    ],
     ['Textarea', { variant: '"default"' }],
     [
       'Countdown',

@@ -185,6 +185,44 @@ test('Chip ships its exact token-backed pill, pressed, focus, press and reduced-
   assert.doesNotMatch(utilities, /\.eg-chip[^{]*\{/, 'Chip has no stylesheet: its marker adds no utility rule');
 });
 
+test('SocialLinks ships static collection utilities and native SSR composition without a second visual engine', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of ['.list-none', '.shrink-0', '.text-label-eyebrow', '.font-display', '.text-fg-secondary']) {
+    assert.ok(utilities.includes(selector), `Missing SocialLinks utility ${selector}`);
+  }
+  assert.match(utilities, /font-size:\s*var\(--text-label-eyebrow[,)]/);
+  for (const gap of [1, 2, 3, 4]) {
+    assert.match(utilities, new RegExp(`gap:\\s*var\\(--space-${gap}[,)]`));
+  }
+  assert.doesNotMatch(utilities, /\.eg-social(?:__\w+)?\s*\{/);
+  const { SocialLinks, Icon } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const items = [
+    {
+      id: 'github',
+      href: 'https://example.org/profile',
+      label: 'Project GitHub',
+      icon: createElement(Icon, { name: 'github' }),
+      external: true,
+      rel: 'me NOOPENER me'
+    }
+  ];
+  const html = renderToString(createElement(SocialLinks, { items, inline: true, gap: 1 }));
+  assert.match(html, /eg-social/);
+  assert.match(html, /<ul[^>]*role="list"[^>]*aria-label="Social profiles"/);
+  assert.match(html, /<li[^>]*><a[^>]*href="https:\/\/example.org\/profile"/);
+  assert.match(html, /target="_blank"/);
+  assert.match(html, /rel="me NOOPENER noreferrer"/);
+  assert.match(html, /Project GitHub \(opens in a new tab\)/);
+  assert.doesNotMatch(html, /<button|role="button"|aria-label="Project GitHub"/);
+  assert.equal(renderToString(createElement(SocialLinks, { items: [] })), '');
+  const ghost = renderToString(createElement(SocialLinks, { items, variant: 'ghost', size: 'md', caption: null }));
+  assert.doesNotMatch(ghost, /eg-social__label/);
+  assert.match(ghost, /size-10/);
+});
+
 test('UI publishes its stable declaration entry and reachable internal declarations', (context) => {
   assert.equal(ui.exports['.'].types, './dist/index.d.ts');
   assert.equal(ui.types, ui.exports['.'].types);
@@ -1677,6 +1715,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Slider',
       'Slot',
       'Slottable',
+      'SocialLinks',
       'Spinner',
       'Stack',
       'Stat',
@@ -1888,6 +1927,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Slot',
     'SlotProps',
     'Slottable',
+    'SocialLinkItem',
+    'SocialLinks',
+    'SocialLinksGap',
+    'SocialLinksProps',
+    'SocialLinksSize',
+    'SocialLinksVariant',
     'Spinner',
     'SpinnerProps',
     'SpinnerSize',
@@ -1968,6 +2013,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'useSocialLinks',
+    'socialLinksVariants',
+    'socialLinksCaptionVariants',
+    'socialLinksListVariants',
+    'socialLinksItemVariants',
+    'SocialLinksNativeProps',
     'useSearchTrigger',
     'searchTriggerVariants',
     'searchTriggerLabelVariants',

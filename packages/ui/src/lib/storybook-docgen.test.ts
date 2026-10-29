@@ -118,6 +118,80 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts SocialLinks collections, nullable captions, exact presets and native root boundaries', () => {
+    const doc = parser
+      .parse(source('molecules/social-links/SocialLinks.tsx'))
+      .find((item) => item.displayName === 'SocialLinks');
+    expect(doc).toBeDefined();
+    expect(doc?.props.items).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    const itemTags = doc?.props.items?.tags as Record<string, string> | undefined;
+    const captionTags = doc?.props.caption?.tags as Record<string, string> | undefined;
+    expect(itemTags?.controlReason).toMatch(/ReactElement.*MixedTargets.*InvalidItems/);
+    expect(captionTags?.controlReason).toMatch(/Nullable string.*WithoutCaption/);
+    for (const [prop, value] of Object.entries({
+      label: 'Social profiles',
+      caption: 'Follow me',
+      inline: 'false',
+      variant: 'outline',
+      size: 'lg',
+      gap: '2',
+      newTabText: '(opens in a new tab)'
+    })) {
+      expect(doc?.props[prop]?.defaultValue?.value, prop).toBe(value);
+      expect(doc?.props[prop]?.required, prop).toBe(false);
+    }
+    for (const [prop, values] of Object.entries({
+      variant: ['outline', 'ghost'],
+      size: ['md', 'lg'],
+      gap: ['1', '2']
+    })) {
+      expect(doc?.props[prop]?.type.name, prop).toBe('enum');
+      expect(
+        doc?.props[prop]?.type.value.map(({ value }: { value: string }) => normalize(value)),
+        prop
+      ).toEqual(values);
+    }
+    for (const prop of ['id', 'title', 'dir', 'lang', 'className', 'style', 'aria-describedby', 'onClick']) {
+      expect(doc?.props[prop], prop).toBeDefined();
+    }
+    for (const prop of ['children', 'role', 'aria-label', 'aria-labelledby', 'asChild', 'ref', 'target', 'external']) {
+      expect(doc?.props[prop], prop).toBeUndefined();
+    }
+    const file = ast(source('molecules/social-links/types.ts'));
+    const properties = ownProps(file, ['SocialLinksProps', 'SocialLinkItem']);
+    expect(properties).toHaveLength(14);
+    for (const property of properties) {
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, property.name.getText(file)).toHaveLength(1);
+      if (ts.getTextOfJSDocComment(controls[0]?.comment) === 'false') {
+        expect(tags.some((tag) => tag.tagName.text === 'controlReason' && ts.getTextOfJSDocComment(tag.comment))).toBe(
+          true
+        );
+      }
+      if (!property.questionToken) {
+        expect(tags.some((tag) => tag.tagName.text === 'default')).toBe(false);
+      }
+    }
+    const storyFile = ast(source('molecules/social-links/SocialLinks.stories.tsx'));
+    expect(exportedStoryNames(storyFile)).toEqual([
+      'Default',
+      'Inline',
+      'Ghost',
+      'WithoutCaption',
+      'MixedTargets',
+      'Constrained',
+      'Sizes',
+      'RTL',
+      'InvalidItems'
+    ]);
+    expect(storyFile.text).not.toMatch(/argTypes\s*:|play\s*:/);
+    expect(publicAPI.SocialLinks).toBeDefined();
+    for (const name of ['useSocialLinks', 'socialLinksVariants', 'socialLinksListVariants', 'SocialLinksNativeProps']) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+  });
+
   it('extracts the Toggle union, boolean defaults, native button props and every own directive', () => {
     const doc = parser.parse(source('atoms/toggle/Toggle.tsx')).find((item) => item.displayName === 'Toggle');
     expect(doc).toBeDefined();
@@ -192,6 +266,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/toggle',
       './atoms/tooltip',
       './lib/cn',
+      './molecules/social-links',
       './primitives/aspect-ratio',
       './primitives/divider',
 
@@ -234,6 +309,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Slider',
       'Slot',
       'Slottable',
+      'SocialLinks',
       'Spinner',
       'Stack',
       'Stat',
