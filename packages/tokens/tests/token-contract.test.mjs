@@ -45,11 +45,17 @@ test('theme.css keeps the Tailwind color reset instead of a global reset', () =>
 // #70 Stat adds two typography recipes of four declarations each: 184 + 8 = 192 utility, 255 + 8 = 263 total.
 // #82 Countdown adds 10 static declarations: 2 recipes x 4 fields + 2 spacing tokens (192 + 10 = 202; 263 + 10 = 273).
 // #98 PullQuote adds 9 static declarations: 2 recipes x 4 fields + 1 container token (202 + 9 = 211; 273 + 9 = 282).
-test('theme.css declares exactly 211 utility variables, 16 inline aliases, and 55 root variables', () => {
-  assert.equal(extractDeclarations(themeBlock).length, 211, 'utility namespace declaration count');
+// #100 D7 adds 1 static breakpoint: 211 + 1 = 212 utility; 282 + 1 = 283 total.
+test('theme.css declares exactly 212 utility variables, 16 inline aliases, and 55 root variables', () => {
+  assert.equal(extractDeclarations(themeBlock).length, 212, 'utility namespace declaration count');
   assert.equal(extractDeclarations(inlineBlock).length, 16, 'inline spacing alias count');
   assert.equal(extractDeclarations(rootBlock).length, 55, 'root declaration count');
-  assert.equal(extractDeclarations(themeSource).length, 282, 'total declaration count');
+  assert.equal(extractDeclarations(themeSource).length, 283, 'total declaration count');
+});
+
+test('theme.css declares the approved SectionHeader split breakpoint in the static namespace', () => {
+  const breakpoint = extractDeclarations(themeBlock).find(({ name }) => name === '--breakpoint-section-header-split');
+  assert.equal(breakpoint?.value, '860px', '#100 D7 minimum-width breakpoint');
 });
 
 test('theme.css declares the decorative pulse animation token with its keyframes', () => {
@@ -102,13 +108,13 @@ test('package publishes compiled tokens and keeps backward CSS exports', () => {
   assert.ok(manifest.files.includes('dist'), 'compiled artifact must ship');
 });
 
-test('compiled dist/tokens.css exposes the 282 manual variables and preserves the original 168 values', () => {
+test('compiled dist/tokens.css exposes the 283 manual variables and preserves the original 168 values', () => {
   const artifactPath = at('../dist/tokens.css');
   assert.ok(existsSync(artifactPath), 'dist/tokens.css missing — run pnpm tokens before this test');
   const artifact = readFileSync(artifactPath, 'utf8');
   assert.doesNotMatch(artifact, /@theme/, 'compiled artifact must not keep the @theme at-rule');
   const compiled = toDeclarationMap(artifact);
-  assert.equal(compiled.size, 282, 'compiled artifact must expose 282 variables');
+  assert.equal(compiled.size, 283, 'compiled artifact must expose 283 variables');
   assert.match(artifact, /@keyframes\s+pulse\s*\{/, 'compiled artifact must ship the pulse keyframes');
   assert.match(artifact, /@keyframes\s+spin\s*\{/, 'compiled artifact must ship the spin keyframes');
   const parity = compareParity(artifact, themeSource);

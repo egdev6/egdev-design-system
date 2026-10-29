@@ -32,6 +32,7 @@
 @source "../atoms/textarea/types.ts";
 @source "../atoms/toggle/types.ts";
 @source "../atoms/tooltip/types.ts";
+@source "../molecules/section-header/types.ts";
 @source "../molecules/meter-row/types.ts";
 @source "../molecules/chip-group/types.ts";
 @source "../molecules/list-item/types.ts";

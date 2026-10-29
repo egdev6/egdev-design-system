@@ -443,6 +443,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "SectionHeader",
+        "type": "SectionHeaderVariant (stack|split|inline)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      },
+      {
         "component": "ListItem",
         "type": "ListItemVariant ('card' | 'compact' | 'row'); empty accepts card only",
         "status": "existing",
@@ -629,6 +639,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "SectionHeader",
+        "type": "SectionHeaderTone (canvas|raised)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      },
       {
         "component": "MenuEntry",
         "type": "MenuTone ('default' | 'primary' | 'danger'; action/link branches)",
@@ -2883,7 +2903,18 @@
       "scope": "convention:heading-title",
       "contentHash": "sha256:3b7c8409a2f43bbc296608d65ee61e78aebbe31118f1f65e955ff65078e8c2d3"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SectionHeader",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      }
+    ]
   },
   {
     "id": "heading-level",
@@ -2900,6 +2931,16 @@
       "contentHash": "sha256:3235f5126f7405ae3956b969186d33c48c302b42c2a40d169c9d2f11e1d12ead"
     },
     "usages": [
+      {
+        "component": "SectionHeader",
+        "type": "SectionHeaderLevel (1|2|3|4|5|6)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      },
       {
         "component": "Heading",
         "type": "HeadingLevel (1|2|3|4|5|6)",
@@ -2996,7 +3037,18 @@
       "scope": "convention:heading-eyebrow",
       "contentHash": "sha256:131bf821957930e7334f9f0efbd400f99c09bf13c6bc752d5e8e229603d4e96c"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SectionHeader",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      }
+    ]
   },
   {
     "id": "image-caption",
@@ -3088,6 +3140,16 @@
       "contentHash": "sha256:6ad8880449dfe520919a4dcd2b6cfeb8f16c20a842553c86c89acb3180f40d6b"
     },
     "usages": [
+      {
+        "component": "SectionHeader",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      },
       {
         "component": "Text",
         "type": "string",
@@ -3254,6 +3316,16 @@
     },
     "usages": [
       {
+        "component": "SectionHeader",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      },
+      {
         "component": "Text",
         "type": "boolean",
         "status": "existing",
@@ -3289,7 +3361,18 @@
       "scope": "convention:section-lede",
       "contentHash": "sha256:ef61567892d3f63443d04376c139f0c65a817818da8a3ef4b69f9aa80e1e9235"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SectionHeader",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      }
+    ]
   },
   {
     "id": "heading-id",
@@ -3305,7 +3388,18 @@
       "scope": "convention:heading-id",
       "contentHash": "sha256:b2205b336988b3c2767d2cfbd2457f6f9d3033a0191e6d8c17a049237d0750f6"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SectionHeader",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      }
+    ]
   },
   {
     "id": "option-metadata",

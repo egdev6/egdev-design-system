@@ -34,6 +34,7 @@ const components = [
   ['Slider', 'atoms/slider'],
   ['RadioGroup', 'atoms/radio-group'],
   ['SearchTrigger', 'atoms/search-trigger'],
+  ['SectionHeader', 'molecules/section-header'],
   ['Notice', 'molecules/notice'],
   ['Input', 'atoms/input'],
   ['Kbd', 'atoms/kbd'],
@@ -101,6 +102,17 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  sectionheader: {
+    title: 'text',
+    eyebrow: 'text',
+    accent: 'text',
+    accentBreak: 'boolean',
+    lede: 'text',
+    variant: 'select',
+    level: 'select',
+    titleId: 'text',
+    tone: 'select'
+  },
   avatar: { src: 'text', label: 'text', size: 'select', badgeIcon: 'select', paused: 'boolean' },
   button: {
     children: false,
@@ -341,6 +353,7 @@ const ownPropCounts: Record<string, number> = {
   slider: 11,
   radiogroup: 9,
   searchtrigger: 3,
+  sectionheader: 9,
   notice: 7,
   switch: 7,
   tooltip: 4,
@@ -574,6 +587,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }],
     ['PullQuote', { variant: '"pull"', tone: '"canvas"' }],
     ['SearchTrigger', { label: '"Search…"', compact: 'false' }],
+    ['SectionHeader', { variant: '"stack"', tone: '"canvas"', level: '2', accentBreak: 'false' }],
     ['Notice', { tone: '"neutral"', size: '"md"' }],
     ['ButtonGroup', { variant: '"spaced"' }],
     ['Textarea', { variant: '"default"' }],
@@ -1006,6 +1020,25 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     for (const prop of ['ref', 'asChild', 'type', 'children', 'onDrop', 'onPaste', 'onDragEnter', 'over']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
+  });
+
+  it('retains SectionHeader required copy, derived absences and exact enum controls without args', () => {
+    const { argTypes, args } = story('SectionHeader');
+    expect(argTypes.title?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.variant?.options).toEqual(['inline', 'stack', 'split']);
+    expect([...(argTypes.level?.options ?? [])].sort()).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(argTypes.tone?.options).toEqual(['canvas', 'raised']);
+    for (const name of ['title', 'eyebrow', 'accent', 'lede', 'titleId']) {
+      expect(argTypes[name]?.table?.defaultValue).toBeUndefined();
+    }
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'aria-labelledby', 'className', 'style', 'onClick']) {
+      expect(argTypes[name]).toBeDefined();
+      expect(argTypes[name]).toEqual(story('SectionHeader', false).argTypes[name]);
+    }
+    for (const name of ['children', 'dangerouslySetInnerHTML', 'ref', 'asChild', 'actions', 'layout']) {
+      expect(argTypes[name]).toBeUndefined();
+    }
+    expect(args).toEqual({});
   });
 
   it('retains ButtonGroup naming, required children and finite variant choices without filling optional args', () => {

@@ -36,6 +36,13 @@ export * from './molecules/list-item';
 export * from './molecules/menu';
 export * from './molecules/meter-row';
 export * from './molecules/notice';
+export type {
+  SectionHeaderLevel,
+  SectionHeaderProps,
+  SectionHeaderTone,
+  SectionHeaderVariant
+} from './molecules/section-header';
+export { SectionHeader } from './molecules/section-header';
 export type { TabsItem, TabsProps, TabsSize, TabsTone, TabsVariant } from './molecules/tabs';
 export { Tabs, tabsVariants } from './molecules/tabs';
 // Primitives
