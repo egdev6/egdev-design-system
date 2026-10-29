@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { mergeConfig } from 'vite';
 
 const documentedNativeProps: Record<string, readonly string[]> = {
+  moduleCard: ['id', 'dir', 'aria-describedby', 'aria-busy', 'onClick', 'className', 'style'],
   timeline: ['id', 'title', 'aria-describedby', 'aria-busy', 'className', 'style', 'onClick'],
   avatar: ['id', 'title', 'aria-describedby', 'className', 'style'],
   navList: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],

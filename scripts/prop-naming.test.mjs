@@ -13,6 +13,20 @@ const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
   ...[
+    'heading-title',
+    'heading-level',
+    'item-presentation-status',
+    'trailing-actions',
+    'localized-messages',
+    'panel-footer',
+    'visual-treatment',
+    'surface-material-tone',
+    'leading-icon'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/module-card/types.ts#ModuleCardProps'
+  })),
+  ...[
     'accessible-name',
     'field-hint',
     'field-error',

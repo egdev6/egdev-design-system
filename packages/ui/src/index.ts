@@ -40,6 +40,7 @@ export { HoverCard, HoverCardContent, HoverCardTrigger } from './molecules/hover
 export * from './molecules/list-item';
 export * from './molecules/menu';
 export * from './molecules/meter-row';
+export * from './molecules/module-card';
 export * from './molecules/nav-list';
 export * from './molecules/notice';
 export * from './molecules/popover';

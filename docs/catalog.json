@@ -605,6 +605,17 @@
     "notas": "Eyebrow + título + acciones. Repetido a mano en todas las apps."
   },
   {
+    "actual": "ModuleCard",
+    "nivelActual": "molécula",
+    "nombre": "ModuleCard",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "—",
+    "compone": "Surface recipes, Badge, Icon; consumer Button/Link/IconButton",
+    "accion": "mantener",
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/91): passive article named by its generated h1–h6, readable status Badge, free body and independent actions/footer. Solid/overlay Material and tonal bands compose Surface recipes; error retains Material with a danger border, stopped is an unpainted dashed frame. Wide is parent grid placement. No Panel composition (#180 remains unapproved), stylesheet, ref, asChild, process state or whole-card activation. Legacy styles unchanged; visual conformity not evaluated."
+  },
+  {
     "actual": "SectionHeader",
     "nivelActual": "molécula",
     "nombre": "SectionHeader",
@@ -625,17 +636,6 @@
     "compone": "ProgressBar; native label/readout/help and decorative key",
     "accion": "nuevo",
     "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/90): labelled task/goal completion only, never capacity, usage or arbitrary measurements. Composes one lg ProgressBar with brand/muted family, normalized decimal percent or coherent valueText, indeterminate messages and optional persistent help. Structural unpainted div, hidden visible header, useId descriptions; no Gauge, Text, Field or Surface composition. No stylesheet, ref, actions, live region or new dependency."
-  },
-  {
-    "actual": "ModuleCard",
-    "nivelActual": "molécula",
-    "nombre": "ModuleCard",
-    "nivel": "molecule",
-    "destino": "ui",
-    "radix": "—",
-    "compone": "Panel, Badge, Button; specialized Surface frame",
-    "accion": "mantener",
-    "notas": "Draft #91 amendment proposed by #180: normal/banded states compose Panel; error/stopped retain specialized frames and share Panel zone recipes. Public title/status/actions/footer, wide layout and legacy markers remain; no amendment approval or implementation implied."
   },
   {
     "actual": "ModuleCard frame",

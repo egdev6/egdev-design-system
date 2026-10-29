@@ -4,6 +4,7 @@
 @import "./palette.css";
 
 /* Example layout utilities belong to Storybook, not the production UI stylesheet. */
+@source "../packages/ui/src/molecules/**/*.stories.tsx";
 @source "../packages/ui/src/atoms/avatar/Avatar.stories.tsx";
 @source "../packages/ui/src/atoms/badge/Badge.stories.tsx";
 @source "../packages/ui/src/atoms/button/Button.stories.tsx";

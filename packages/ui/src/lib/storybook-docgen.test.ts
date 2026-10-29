@@ -118,6 +118,103 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts every ModuleCard union declaration, constants and native article boundaries (AC-15)', () => {
+    const doc = parser
+      .parse(source('molecules/module-card/ModuleCard.tsx'))
+      .find(({ displayName }) => displayName === 'ModuleCard');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    const controls: Record<string, string> = {
+      title: 'text',
+      level: 'select',
+      icon: 'false',
+      children: 'false',
+      footer: 'false',
+      messages: 'false',
+      status: 'select',
+      variant: 'select',
+      tone: 'select',
+      actions: 'false'
+    };
+    const own = ownProps(ast(source('molecules/module-card/types.ts')), ['ModuleCardProps']);
+    expect(own).toHaveLength(18);
+    for (const declaration of own) {
+      const name = declaration.name.getText();
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment))
+      ).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        expect(
+          tags.some(
+            ({ tagName, comment }) => tagName.text === 'controlReason' && Boolean(ts.getTextOfJSDocComment(comment))
+          )
+        ).toBe(true);
+      }
+      if (!declaration.questionToken) {
+        expect(tags.some(({ tagName }) => tagName.text === 'default')).toBe(false);
+      }
+      const extractedTags = props[name]?.tags as Record<string, string> | undefined;
+      expect(extractedTags?.control?.split('\n').every((value) => value === controls[name])).toBe(true);
+    }
+    expect(props.title?.required).toBe(true);
+    expect(props.children?.required).toBe(true);
+    for (const [name, value] of Object.entries({
+      level: '2',
+      status: 'default',
+      variant: 'default',
+      tone: 'surface-1'
+    })) {
+      expect(normalize(props[name]?.defaultValue?.value), name).toBe(value);
+    }
+    for (const [name, values] of Object.entries({
+      level: ['1', '2', '3', '4', '5', '6'],
+      status: ['default', 'error', 'stopped'],
+      variant: ['default', 'banded'],
+      tone: ['surface-1', 'overlay']
+    })) {
+      expect(
+        [...new Set(props[name]?.type.value.map(({ value }: { value: string }) => normalize(value)))],
+        name
+      ).toEqual(values);
+    }
+    for (const name of ['id', 'dir', 'aria-describedby', 'aria-busy', 'className', 'style', 'onClick']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'ref',
+      'asChild',
+      'role',
+      'tabIndex',
+      'aria-label',
+      'aria-labelledby',
+      'aria-live',
+      'wide',
+      'glass',
+      'banded'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    const stories = ast(source('molecules/module-card/ModuleCard.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual(
+      expect.arrayContaining([
+        'Default',
+        'WithIcon',
+        'Error',
+        'Stopped',
+        'WithActions',
+        'WithFooter',
+        'Localized',
+        'OverlayBanded',
+        'WideBanded',
+        'Narrow',
+        'RTL'
+      ])
+    );
+    expect(readFileSync(source('molecules/module-card/ModuleCard.stories.tsx'), 'utf8')).not.toMatch(
+      /\b(?:argTypes|play)\s*:/
+    );
+  });
   it('extracts Field required controls, constant defaults, native rows and all own directives', () => {
     const doc = parser.parse(source('molecules/field/Field.tsx')).find((item) => item.displayName === 'Field');
     expect(doc).toBeDefined();
@@ -486,6 +583,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/list-item',
       './molecules/menu',
       './molecules/meter-row',
+      './molecules/module-card',
       './molecules/nav-list',
       './molecules/notice',
       './molecules/popover',
@@ -544,6 +642,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Logo',
       'Menu',
       'MeterRow',
+      'ModuleCard',
       'NavList',
       'Notice',
       'Popover',
