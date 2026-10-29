@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Toggle, Tooltip, VisuallyHidden, tabsVariants, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -108,6 +108,11 @@ import type {
   SurfaceRadius,
   SurfaceTone,
   SwitchProps,
+  TabsProps,
+  TabsItem,
+  TabsTone,
+  TabsVariant,
+  TabsSize,
   TextareaProps,
   TextareaVariant,
   TooltipProps,
@@ -389,6 +394,50 @@ const openSearch: SearchTriggerProps = { open: true };
 const stringCompact: SearchTriggerProps = { compact: 'yes' };
 // @ts-expect-error shortcut is display text only.
 const numericShortcut: SearchTriggerProps = { shortcut: 75 };
+
+// Tabs is a separate scene: earlier App control/focus counts must remain unchanged.
+const tabsTone: TabsTone = 'danger';
+const tabsSize: TabsSize = 'sm';
+const tabsVariant: TabsVariant = 'segmented';
+export const tabsItems: TabsItem[] = [
+  { value: 'queue', label: 'Queue', count: 0, content: createElement('p', null, 'Queued posts') },
+  { value: 'drafts', label: 'Drafts', count: 312, tone: tabsTone, content: createElement('p', null, 'Draft posts') },
+  { value: 'blocked', label: 'Unavailable', disabled: true, content: 'Unavailable posts' }
+];
+export const tabsProps: TabsProps = { items: tabsItems, label: 'Post views', id: 'consumer-tabs', className: 'mt-2 mt-4' };
+export const tabsChanges: string[] = [];
+export const tabsRecipe: string = tabsVariants();
+export function TabsSamples({ value, segmented = false }: { value?: string; segmented?: boolean }) {
+  return createElement(Tabs, { ...tabsProps, value, ...(segmented ? { variant: tabsVariant, size: tabsSize } : {}), onValueChange: (next) => tabsChanges.push(next) });
+}
+// @ts-expect-error A named tablist is required.
+const unlabelledTabs: TabsProps = { items: tabsItems };
+// @ts-expect-error Views must be supplied through items.
+const missingTabsItems: TabsProps = { label: 'Views' };
+// @ts-expect-error Every item needs its panel content, even when it is null.
+const panellessTab: TabsItem = { value: 'queue', label: 'Queue' };
+// @ts-expect-error Item identities are strings, not indices.
+const numericTab: TabsItem = { value: 1, label: 'Queue', content: null };
+// @ts-expect-error No public ref API on either React major.
+const referencedTabs: TabsProps = { ...tabsProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error The data-driven component owns its children.
+const childTabs: TabsProps = { ...tabsProps, children: 'Panel' };
+// @ts-expect-error Horizontal-only; no public orientation axis.
+const verticalTabs: TabsProps = { ...tabsProps, orientation: 'vertical' };
+// @ts-expect-error Automatic activation is fixed.
+const manualTabs: TabsProps = { ...tabsProps, activationMode: 'manual' };
+// @ts-expect-error No asChild API.
+const slottedTabs: TabsProps = { ...tabsProps, asChild: true };
+// @ts-expect-error onChange is replaced by onValueChange.
+const legacyTabsChange: TabsProps = { ...tabsProps, onChange: () => undefined };
+// @ts-expect-error No direction prop in v0.1.
+const directedTabs: TabsProps = { ...tabsProps, dir: 'rtl' };
+// @ts-expect-error Counts are raw numbers, not formatted strings.
+const formattedTab: TabsItem = { value: 'queue', label: 'Queue', content: null, count: '99+' };
+// @ts-expect-error Only underline/segmented treatments exist.
+const pillTabs: TabsProps = { ...tabsProps, variant: 'pill' };
+// @ts-expect-error Only md/sm underline sizes exist.
+const largeTabs: TabsProps = { ...tabsProps, size: 'lg' };
 
 // Stat stays outside App: it is passive, adds no buttons and leaves the focus harness unchanged.
 export const statRecipe: string = statVariants({ size: 'sm' });
@@ -2038,6 +2087,27 @@ function assertSearchTriggerCSS(css) {
   assert.match(css, /font-weight:\s*var\(--text-body-default--font-weight\)/);
 }
 
+// Tabs molecule utilities must reach both native and Tailwind consumers.
+function assertTabsCSS(css) {
+  for (const selector of [
+    String.raw`.p-0\.75`,
+    String.raw`.min-h-8\.5`,
+    String.raw`.rounded-\[calc\(var\(--radius-md\)---spacing\(0\.75\)\)\]`,
+    String.raw`.\[scrollbar-width\:none\]`,
+    String.raw`.data-\[state\=active\]\:after\:shadow-glow-base`,
+    String.raw`.data-\[state\=active\]\:focus-visible\:shadow-focus`,
+    String.raw`.focus-visible\:inset-ring-focus-ring`,
+    String.raw`.motion-reduce\:after\:transition-none`,
+    String.raw`.bg-status-danger\/14`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Tabs utility ' + selector);
+  }
+  assert.match(css, /padding:\s*calc\(var\(--space-1\)\s*\*\s*0\.75\)/);
+  assert.match(css, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*8\.5\)/);
+  assert.match(css, /border-radius:\s*calc\(var\(--radius-md\)\s*-\s*[^;]+\)/);
+  assert.match(css, /scrollbar-width:\s*none/);
+}
+
 // PullQuote quote recipes, logical filet and measure ship without preflight or a stylesheet.
 function assertPullQuoteCSS(css) {
   for (const selector of [
@@ -2369,6 +2439,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'StatusDot',
   'Surface',
   'Switch',
+  'Tabs',
   'Text',
   'Textarea',
   'Toggle',
@@ -2385,6 +2456,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'statVariants',
   'statusDotVariants',
   'surfaceVariants',
+  'tabsVariants',
   'tooltipVariants'
 ]);
 ${assertCheckboxCSS.toString()}
@@ -2412,12 +2484,14 @@ ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
+${assertTabsCSS.toString()}
 ${assertPullQuoteCSS.toString()}
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
 assertStatCSS(shippedStyles);
 assertSearchTriggerCSS(shippedStyles);
+assertTabsCSS(shippedStyles);
 assertPullQuoteCSS(shippedStyles);
 assertIconButtonCSS(shippedStyles);
 ${assertToggleCSS.toString()}
@@ -2499,8 +2573,32 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
+const tabsDocument = new JSDOM(renderToString(createElement(TabsSamples, { segmented: true })));
+try {
+  const document = tabsDocument.window.document;
+  const root = document.getElementById('consumer-tabs');
+  assert.ok(root.classList.contains('eg-tabs') && root.classList.contains('mt-4'));
+  assert.ok(!root.classList.contains('mt-2'));
+  const list = root.querySelector('[role="tablist"]');
+  assert.equal(list.getAttribute('aria-label'), 'Post views');
+  assert.ok(list.classList.contains('eg-surface') && list.classList.contains('p-0.75'));
+  assert.ok(!list.classList.contains('p-0') && !list.classList.contains('p-6'));
+  const triggers = [...list.querySelectorAll('[role="tab"]')];
+  assert.deepEqual(triggers.map((tab) => tab.textContent), ['Queue 0', 'Drafts 312', 'Unavailable']);
+  for (const trigger of triggers) {
+    const panel = document.getElementById(trigger.getAttribute('aria-controls'));
+    assert.equal(panel.getAttribute('aria-labelledby'), trigger.id);
+    assert.equal(panel.getAttribute('role'), 'tabpanel');
+    assert.equal(panel.hidden, trigger.getAttribute('aria-selected') !== 'true');
+  }
+  assert.equal(root.querySelector('[role="tabpanel"]:not([hidden])').textContent, 'Queued posts');
+  assert.ok(!root.textContent.includes('Draft posts'));
+  assert.ok(tabsRecipe.includes('eg-tabs'));
+} finally {
+  tabsDocument.window.close();
+}
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
   const timer = countdownDocument.window.document.getElementById('launch-timer');
@@ -3426,7 +3524,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TabsSamples, tabsChanges, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4013,6 +4111,37 @@ try {
   assert.deepEqual(countdownExpirations, [pastDeadline]);
   await act(async () => root.render(null));
   stage('countdown:clock:complete');
+  stage('tabs:interaction:start');
+  await act(async () => root.render(createElement(TabsSamples)));
+  const tabsRoot = document.getElementById('consumer-tabs');
+  const tabTriggers = [...tabsRoot.querySelectorAll('[role="tab"]')];
+  assert.equal(tabTriggers[0].getAttribute('aria-selected'), 'true');
+  await act(async () => tabTriggers[1].dispatchEvent(new dom.window.MouseEvent('mousedown', { bubbles: true, button: 0 })));
+  assert.equal(tabTriggers[1].getAttribute('aria-selected'), 'true');
+  assert.deepEqual(tabsChanges, ['drafts']);
+  assert.equal(tabsRoot.querySelector('[role="tabpanel"]:not([hidden])').textContent, 'Draft posts');
+  assert.equal(document.getElementById(tabTriggers[0].getAttribute('aria-controls')).textContent, '');
+  await act(async () => {
+    tabTriggers[1].focus();
+    tabTriggers[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  });
+  assert.ok(document.activeElement === tabTriggers[0], 'Arrows loop and skip the disabled final item');
+  assert.equal(tabTriggers[0].getAttribute('aria-selected'), 'true');
+  await act(async () => tabTriggers[2].dispatchEvent(new dom.window.MouseEvent('mousedown', { bubbles: true, button: 0 })));
+  assert.equal(tabTriggers[2].getAttribute('aria-selected'), 'false');
+  await act(async () => root.render(null));
+  tabsChanges.length = 0;
+  await act(async () => root.render(createElement(TabsSamples, { value: 'queue', segmented: true })));
+  const controlledTabs = [...document.querySelectorAll('#consumer-tabs [role="tab"]')];
+  await act(async () => controlledTabs[1].dispatchEvent(new dom.window.MouseEvent('mousedown', { bubbles: true, button: 0 })));
+  assert.equal(controlledTabs[0].getAttribute('aria-selected'), 'true', 'Controlled selection waits for its owner');
+  assert.deepEqual(tabsChanges, ['drafts']);
+  await act(async () => root.render(createElement(TabsSamples, { value: 'drafts', segmented: true })));
+  assert.equal(controlledTabs[1].getAttribute('aria-selected'), 'true');
+  assert.deepEqual(tabsChanges, ['drafts'], 'Prop acknowledgement emits no new selection request');
+  await act(async () => root.render(null));
+  stage('tabs:interaction:complete');
   stage('stat:passive:start');
   await act(async () => root.render(createElement(StatSamples)));
   const subsStat = document.getElementById('subs-total');
@@ -4345,6 +4474,7 @@ ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
+${assertTabsCSS.toString()}
 ${assertPullQuoteCSS.toString()}
 assertIconButtonCSS(emitted);
 ${assertToggleCSS.toString()}
@@ -4380,6 +4510,7 @@ ${assertCountdownCSS.toString()}
 assertCountdownCSS(emitted);
 assertStatCSS(emitted);
 assertSearchTriggerCSS(emitted);
+assertTabsCSS(emitted);
 assertPullQuoteCSS(emitted);
 assertToggleCSS(emitted);
 assertChipCSS(emitted);
@@ -4448,6 +4579,7 @@ assertDropzoneCSS(twCss);
 assertCountdownCSS(twCss);
 assertStatCSS(twCss);
 assertSearchTriggerCSS(twCss);
+assertTabsCSS(twCss);
 assertPullQuoteCSS(twCss);
 assertToggleCSS(twCss);
 assertChipCSS(twCss);

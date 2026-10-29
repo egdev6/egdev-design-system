@@ -185,6 +185,48 @@ test('Chip ships its exact token-backed pill, pressed, focus, press and reduced-
   assert.doesNotMatch(utilities, /\.eg-chip[^{]*\{/, 'Chip has no stylesheet: its marker adds no utility rule');
 });
 
+test('Tabs publishes only its approved API and ships static molecule utilities', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  assert.equal(typeof exported.Tabs, 'function');
+  assert.match(exported.tabsVariants(), /\beg-tabs\b/);
+  for (const name of [
+    'useTabs',
+    'TabsList',
+    'TabsTrigger',
+    'TabsContent',
+    'tabsListVariants',
+    'tabsTriggerVariants',
+    'tabsCountVariants',
+    'tabsPanelVariants'
+  ]) {
+    assert.equal(exported[name], undefined, name);
+  }
+  const entry = readFileSync(artifact('ui', ui.exports['.'].types), 'utf8');
+  assert.match(entry, /TabsItem/);
+  assert.match(entry, /TabsProps/);
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    String.raw`.p-0\.75`,
+    String.raw`.min-h-8\.5`,
+    String.raw`.\[scrollbar-width\:none\]`,
+    String.raw`.rounded-\[calc\(var\(--radius-md\)---spacing\(0\.75\)\)\]`,
+    String.raw`.data-\[state\=active\]\:after\:bg-fg-brand-default`,
+    String.raw`.data-\[state\=active\]\:after\:shadow-glow-base`,
+    String.raw`.motion-reduce\:after\:transition-none`,
+    String.raw`.focus-visible\:inset-ring-focus-ring`,
+    String.raw`.bg-status-danger\/14`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing Tabs utility ${selector}`);
+  }
+  assert.match(utilities, /scrollbar-width:\s*none/);
+  assert.match(utilities, /border-radius:\s*calc\(var\(--radius-md\)\s*-\s*[^;]+\)/);
+  const active = css.indexOf(String.raw`.data-\[state\=active\]\:shadow-\[var\(--shadow-edge-strong\)`);
+  const activeFocus = css.indexOf(String.raw`.data-\[state\=active\]\:focus-visible\:shadow-focus`);
+  assert.ok(active > -1 && activeFocus > active, 'Focused active segment must retain the focus shadow');
+  assert.doesNotMatch(utilities, /\.eg-tabs[^\s]*\s*\{/, 'No Tabs stylesheet or legacy part recipes in utilities');
+});
+
 test('UI publishes its stable declaration entry and reachable internal declarations', (context) => {
   assert.equal(ui.exports['.'].types, './dist/index.d.ts');
   assert.equal(ui.types, ui.exports['.'].types);

@@ -44,7 +44,8 @@ const components = [
   ['Switch', 'atoms/switch'],
   ['Textarea', 'atoms/textarea'],
   ['Toggle', 'atoms/toggle'],
-  ['Tooltip', 'atoms/tooltip']
+  ['Tooltip', 'atoms/tooltip'],
+  ['Tabs', 'molecules/tabs']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -222,6 +223,15 @@ const expected: Record<string, Record<string, string | false>> = {
     value: 'text'
   },
   tooltip: { content: 'text', children: false, side: 'select', className: 'text' },
+  tabs: {
+    items: false,
+    label: 'text',
+    value: 'text',
+    defaultValue: 'text',
+    onValueChange: false,
+    variant: 'select',
+    size: 'select'
+  },
   progressbar: {
     value: 'number',
     label: 'text',
@@ -289,6 +299,7 @@ const ownPropCounts: Record<string, number> = {
   searchtrigger: 3,
   switch: 7,
   tooltip: 4,
+  tabs: 7,
   progressbar: 6,
   pullquote: 5,
   textarea: 1,
