@@ -33,6 +33,7 @@
 @source "../atoms/toggle/types.ts";
 @source "../atoms/tooltip/types.ts";
 @source "../molecules/tabs/types.ts";
+@source "../molecules/**/types.ts";
 @source "../primitives/aspect-ratio/types.ts";
 @source "../primitives/divider/types.ts";
 @source "../primitives/label/types.ts";

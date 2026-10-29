@@ -28,6 +28,8 @@ export * from './atoms/toggle';
 export * from './atoms/tooltip';
 // Utilities
 export { cn } from './lib/cn';
+export * from './molecules/button-group';
+export * from './molecules/notice';
 // Molecules
 export type { TabsItem, TabsProps, TabsSize, TabsTone, TabsVariant } from './molecules/tabs';
 export { Tabs, tabsVariants } from './molecules/tabs';

@@ -446,9 +446,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "—",
-    "compone": "Button, IconButton, Menu",
+    "compone": "Button, IconButton (consumer children)",
     "accion": "extraer",
-    "notas": "Botón dividido (`--join-start/--join-end`) y grupos de botones."
+    "notas": "Implemented under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/79): passive div role=group with optional label, spaced wrapping or attached logical inner corners and focus stacking. Children own Material, sizing, refs and interaction; no built-in Menu or arrow navigation. No stylesheet; legacy split/join rules remain. Browser visual conformity not evaluated."
   },
   {
     "actual": "—",
@@ -534,9 +534,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "—",
-    "compone": "Icon, Button; shared FieldMessage recipes",
+    "compone": "Surface recipe, Icon; consumer Button/Link actions",
     "accion": "mantener",
-    "notas": "Draft #93 retains its status/alert owner, summary/actions and compact size. Proposed #179 amendment shares marker-free tone/icon/text recipes from FieldMessage, not its root or live semantics. No implementation or peer amendment performed."
+    "notas": "Implemented React molecule under [approved v0.1 + A1 contract](https://github.com/egdev6/egdev-design-system/issues/93#issuecomment-6503388441): persistent single-owner status/alert, required summary, five tones, md/sm sizes and optional actions. Shared noticeVariants inherits eg-surface only; Notice adds eg-notice separately. No stylesheet, dismissal, ref or asChild. Proposed FieldMessage #179 sharing remains unimplemented."
   },
   {
     "actual": "—",
