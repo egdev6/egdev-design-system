@@ -15,6 +15,26 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "ChipGroup",
+        "type": "string (single) | string[] (multiple)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
+        "component": "ChipGroupOption",
+        "type": "string (unique non-empty selection value)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupOption",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
         "component": "Gauge",
         "type": "number",
         "status": "existing",
@@ -92,6 +112,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "ChipGroup",
+        "type": "string (single) | string[] (multiple)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
         "component": "RadioGroup",
         "type": "string",
         "status": "existing",
@@ -138,6 +168,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "ChipGroup",
+        "type": "((value: string) => void) (single) | ((value: string[]) => void) (multiple)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
       {
         "component": "RadioGroup",
         "type": "(value: string) => void",
@@ -594,6 +634,26 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "ChipGroup",
+        "type": "string (required non-empty group name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
+        "component": "ChipGroupOption",
+        "type": "string (visible label and accessible item name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupOption",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
         "component": "Avatar",
         "type": "string",
         "status": "existing",
@@ -1031,6 +1091,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "ChipGroupOption",
+        "type": "ReactNode (decorative leading content)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupOption",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
       {
         "component": "Button",
         "type": "ReactNode (decorative start/end slot, default end; Button-only semantic exception)",
@@ -1666,6 +1736,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "ChipGroup",
+        "type": "ChipGroupOption[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
         "component": "RadioGroup",
         "type": "RadioGroupOption[]",
         "status": "existing",
@@ -1996,7 +2076,18 @@
       "scope": "convention:selection-cardinality",
       "contentHash": "sha256:f64c90bbbb7a034e76d20b15147113520b24c71e2c8061534800eb8e557a9da9"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "ChipGroup",
+        "type": "ChipGroupType ('single' | 'multiple')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      }
+    ]
   },
   {
     "id": "deadline-instant",

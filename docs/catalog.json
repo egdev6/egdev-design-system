@@ -457,9 +457,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "ToggleGroup",
-    "compone": "Chip",
+    "compone": "Chip (chipVariants recipe)",
     "accion": "nuevo",
-    "notas": "Filtros (múltiple) y selección exclusiva (borde de la pantalla en Quorb)."
+    "notas": "Implemented React molecule under [approved v0.1 + A1](https://github.com/egdev6/egdev-design-system/issues/81): named single/multiple filter pills, Radix-owned selection and horizontal looping roving focus. Reuses chipVariants without nesting Chip; selected labels add a token underline. Unpainted wrapping root; no form API, ref, asChild, stylesheet or extra internal modules. A1 changes Storybook value/defaultValue metadata only."
   },
   {
     "actual": "Tabs",
