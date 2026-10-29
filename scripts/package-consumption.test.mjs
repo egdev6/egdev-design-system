@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -38,6 +38,8 @@ import type {
   BadgeProps,
   BadgeTone,
   BadgeVariant,
+  ButtonGroupProps,
+  ButtonGroupVariant,
   ButtonProps,
   ButtonSize,
   ButtonVariant,
@@ -116,6 +118,33 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+// Keep grouped samples outside App so the existing button-count/focus harness stays unchanged.
+const groupVariant: ButtonGroupVariant = 'attached';
+export const groupProps: ButtonGroupProps = {
+  variant: groupVariant, label: 'Save options', className: 'ms-auto',
+  children: [createElement(Button, { key: 'save', size: 'sm', children: 'Save' }),
+    createElement(IconButton, { key: 'options', label: 'More save options', size: 'md', variant: 'primary',
+      icon: createElement(Icon, { name: 'chevron-down' }) })]
+};
+export function ButtonGroupSamples() {
+  return createElement(ButtonGroup, { ...groupProps, id: 'grouped-actions', 'aria-describedby': 'group-help' });
+}
+// @ts-expect-error A group requires its action children.
+const emptyGroup: ButtonGroupProps = {};
+// @ts-expect-error Group role is fixed, not an arrow-key toolbar.
+const toolbarGroup: ButtonGroupProps = { ...groupProps, role: 'toolbar' };
+// @ts-expect-error label owns aria-label; aria-labelledby remains available.
+const ariaNamedGroup: ButtonGroupProps = { ...groupProps, 'aria-label': 'Actions' };
+// @ts-expect-error No group ref is exported.
+const referencedGroup: ButtonGroupProps = { ...groupProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error The approved group axis is horizontal only.
+const verticalGroup: ButtonGroupProps = { ...groupProps, orientation: 'vertical' };
+// @ts-expect-error Children own sizing; no propagation API.
+const sizedGroup: ButtonGroupProps = { ...groupProps, size: 'sm' };
+// @ts-expect-error No root Slot composition API.
+const slottedGroup: ButtonGroupProps = { ...groupProps, asChild: true };
+// @ts-expect-error Only spaced and attached treatments are supported.
+const segmentedGroup: ButtonGroupProps = { ...groupProps, variant: 'segmented' };
 const buttonVariant: ButtonVariant = 'secondary';
 const buttonSize: ButtonSize = 'sm';
 export const buttonRef = createRef<HTMLButtonElement>();
@@ -2007,6 +2036,27 @@ function assertCountdownCSS(css) {
   assert.match(css, /min-width:\s*var\(--spacing-countdown-unit[,)]/);
 }
 
+// Static grouping utilities must ship even when the consumer has no Tailwind compiler.
+function assertButtonGroupCSS(css) {
+  for (const selector of [
+    '.inline-flex',
+    '.flex-wrap',
+    '.flex-nowrap',
+    '.items-stretch',
+    '.gap-3',
+    String.raw`.gap-0\.5`,
+    String.raw`.\*\:not-first\:rounded-s-sm`,
+    String.raw`.\*\:not-last\:rounded-e-sm`,
+    String.raw`.\*\:focus-visible\:relative`,
+    String.raw`.\*\:focus-visible\:z-10`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing ButtonGroup utility ' + selector);
+  }
+  assert.match(css, /border-start-start-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.match(css, /border-end-end-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.doesNotMatch(css, /\.eg-button-group\s*[,{]/);
+}
+
 // SearchTrigger utilities ship token geometry, coarse targets and native-state colors without preflight.
 function assertSearchTriggerCSS(css) {
   for (const selector of [
@@ -2338,6 +2388,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Avatar',
   'Badge',
   'Button',
+  'ButtonGroup',
   'Checkbox',
   'Chip',
   'Cluster',
@@ -2413,6 +2464,8 @@ ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertPullQuoteCSS.toString()}
+${assertButtonGroupCSS.toString()}
+assertButtonGroupCSS(shippedStyles);
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
@@ -2499,7 +2552,24 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, ButtonGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+const groupDocument = new JSDOM(renderToString(createElement(ButtonGroupSamples)));
+try {
+  const group = groupDocument.window.document.getElementById('grouped-actions');
+  assert.equal(group.tagName, 'DIV');
+  assert.equal(group.getAttribute('role'), 'group');
+  assert.equal(group.getAttribute('aria-label'), 'Save options');
+  assert.equal(group.getAttribute('aria-describedby'), 'group-help');
+  assert.ok(group.classList.contains('eg-button-group'));
+  assert.ok(group.classList.contains('gap-0.5'));
+  assert.ok(group.classList.contains('flex-nowrap'));
+  assert.ok(group.classList.contains('*:not-first:rounded-s-sm'));
+  assert.equal(group.children.length, 2);
+  assert.ok([...group.children].every((item) => item.tagName === 'BUTTON'));
+  assert.equal(group.querySelector('[aria-haspopup], [aria-expanded]'), null);
+} finally {
+  groupDocument.window.close();
+}
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
@@ -3426,7 +3496,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, ButtonGroupSamples, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4038,6 +4108,21 @@ try {
   await act(async () => root.render(null));
   assert.equal(document.getElementById('totals'), null);
   stage('stat:passive:complete');
+  stage('button-group:start');
+  await act(async () => root.render(createElement(ButtonGroupSamples)));
+  const actionGroup = document.getElementById('grouped-actions');
+  assert.equal(actionGroup.getAttribute('role'), 'group');
+  assert.equal(actionGroup.getAttribute('aria-label'), 'Save options');
+  assert.equal(actionGroup.getAttribute('tabindex'), null);
+  const groupedButtons = actionGroup.querySelectorAll('button');
+  assert.equal(groupedButtons.length, 2);
+  assert.ok([...groupedButtons].every((button) => button.parentElement === actionGroup));
+  await act(async () => groupedButtons[0].focus());
+  assert.ok(document.activeElement === groupedButtons[0]);
+  await act(async () => groupedButtons[0].dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
+  assert.ok(document.activeElement === groupedButtons[0], 'Group adds no roving focus');
+  assert.equal(actionGroup.querySelector('[aria-expanded], [aria-haspopup]'), null);
+  stage('button-group:complete');
   stage('search-trigger:start');
   const documentListeners = [];
   const addDocumentListener = document.addEventListener;
@@ -4376,6 +4461,8 @@ assertProgressBarCSS(emitted);
 assertTextareaCSS(emitted);
 assertInputCSS(emitted);
 assertDropzoneCSS(emitted);
+${assertButtonGroupCSS.toString()}
+assertButtonGroupCSS(emitted);
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(emitted);
 assertStatCSS(emitted);
@@ -4445,6 +4532,7 @@ assertProgressBarCSS(twCss);
 assertTextareaCSS(twCss);
 assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
+assertButtonGroupCSS(twCss);
 assertCountdownCSS(twCss);
 assertStatCSS(twCss);
 assertSearchTriggerCSS(twCss);

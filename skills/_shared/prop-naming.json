@@ -343,6 +343,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "ButtonGroup",
+        "type": "ButtonGroupVariant ('spaced' | 'attached')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/button-group/types.ts",
+          "symbol": "ButtonGroupProps",
+          "revision": "sha256:2ecb19299d2410ef130ed830d62b410b17c8adc04bb73625de6bd0940ed94e51"
+        }
+      },
+      {
         "component": "Button",
         "type": "ButtonVariant ('primary' | 'secondary' | 'ghost' | 'dark')",
         "status": "existing",
@@ -593,6 +603,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "ButtonGroup",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/button-group/types.ts",
+          "symbol": "ButtonGroupProps",
+          "revision": "sha256:2ecb19299d2410ef130ed830d62b410b17c8adc04bb73625de6bd0940ed94e51"
+        }
+      },
       {
         "component": "Avatar",
         "type": "string",
