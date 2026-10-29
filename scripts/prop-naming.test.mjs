@@ -12,6 +12,18 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...[
+    'accessible-name',
+    'field-hint',
+    'field-error',
+    'character-counter',
+    'value-readout',
+    'visually-hidden-label',
+    'label-layout'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/field/types.ts#FieldProps'
+  })),
   ...['accessible-name', 'leading-icon', 'visual-treatment', 'preset-dimensions', 'slot-composition'].map(
     (conventionId) => ({
       conventionId,

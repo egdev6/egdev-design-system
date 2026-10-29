@@ -435,9 +435,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "Label + Slot",
-    "compone": "Label, Input|Textarea|Select|Slider, FieldMessage",
+    "compone": "Label, VisuallyHidden, Input|Textarea|Select|Slider|Checkbox|Switch",
     "accion": "separar",
-    "notas": "Draft molecule #84 coordinates label/control/descriptions/counter. Proposed #179 amendment replaces native hint/error text with FieldMessage while preserving error-over-hint precedence, Slot wiring and the non-live default. No Field implementation or amendment approval implied."
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/84): coordinates one control with a required visible/hidden label, hint or replacing error, optional counter and Slider readout. Stacked/choice layouts, child-first Slot descriptions, compatible-child invalid semantics and single disabled opacity per owned part. Controls own value, interaction and Material; native p/span messages, no live region, stylesheet, ref or asChild. FieldMessage #179 remains unapproved and is not composed."
   },
   {
     "actual": "`.eg-btn-split`",

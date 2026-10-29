@@ -742,6 +742,16 @@
           "symbol": "CountdownProps",
           "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
         }
+      },
+      {
+        "component": "Field",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/field/types.ts",
+          "symbol": "FieldProps",
+          "revision": "sha256:5bd6ba99dfd49dfcfe2273cd75bf631ae77448d44bcd33e9c36544ea399f14c0"
+        }
       }
     ]
   },
@@ -2201,7 +2211,18 @@
       "scope": "convention:field-hint",
       "contentHash": "sha256:6f36bc40d087a41d2c6d4d232cbd6f6c045a0b36df871f59e2776ff473f01332"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Field",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/field/types.ts",
+          "symbol": "FieldProps",
+          "revision": "sha256:5bd6ba99dfd49dfcfe2273cd75bf631ae77448d44bcd33e9c36544ea399f14c0"
+        }
+      }
+    ]
   },
   {
     "id": "field-error",
@@ -2217,7 +2238,18 @@
       "scope": "convention:field-error",
       "contentHash": "sha256:b9da121be1a4f488289f4943aaff2291467679e2040b24ece21792c72fa9f74c"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Field",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/field/types.ts",
+          "symbol": "FieldProps",
+          "revision": "sha256:5bd6ba99dfd49dfcfe2273cd75bf631ae77448d44bcd33e9c36544ea399f14c0"
+        }
+      }
+    ]
   },
   {
     "id": "character-counter",
@@ -2233,7 +2265,18 @@
       "scope": "convention:character-counter",
       "contentHash": "sha256:5f5f7f0203e6cd22f415e8f994957c788a1da96858f46c70c4018bc82f005f19"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Field",
+        "type": "FieldCounter = { value: number; max: number }",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/field/types.ts",
+          "symbol": "FieldProps",
+          "revision": "sha256:5bd6ba99dfd49dfcfe2273cd75bf631ae77448d44bcd33e9c36544ea399f14c0"
+        }
+      }
+    ]
   },
   {
     "id": "value-readout",
@@ -2249,7 +2292,18 @@
       "scope": "convention:value-readout",
       "contentHash": "sha256:542a4f8e79a608cedb5e1e403f8ddfa2728092293856e497141cd9cc7189fbc6"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Field",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/field/types.ts",
+          "symbol": "FieldProps",
+          "revision": "sha256:5bd6ba99dfd49dfcfe2273cd75bf631ae77448d44bcd33e9c36544ea399f14c0"
+        }
+      }
+    ]
   },
   {
     "id": "visually-hidden-label",
@@ -2265,7 +2319,18 @@
       "scope": "convention:visually-hidden-label",
       "contentHash": "sha256:593cade986ef68d1228a388e9bf9968dc66c0289705ab639774dac5e96030660"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Field",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/field/types.ts",
+          "symbol": "FieldProps",
+          "revision": "sha256:5bd6ba99dfd49dfcfe2273cd75bf631ae77448d44bcd33e9c36544ea399f14c0"
+        }
+      }
+    ]
   },
   {
     "id": "label-layout",
@@ -2281,7 +2346,18 @@
       "scope": "convention:label-layout",
       "contentHash": "sha256:47912f850d9eafb0e3b8f2a521c7e4b9c861ff436b90da5eb67e482de04a05d2"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Field",
+        "type": "FieldLayout = 'stacked' | 'choice'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/field/types.ts",
+          "symbol": "FieldProps",
+          "revision": "sha256:5bd6ba99dfd49dfcfe2273cd75bf631ae77448d44bcd33e9c36544ea399f14c0"
+        }
+      }
+    ]
   },
   {
     "id": "floating-align",
