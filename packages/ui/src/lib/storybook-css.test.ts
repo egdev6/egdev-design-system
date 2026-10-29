@@ -174,6 +174,27 @@ describe('Storybook preview CSS', () => {
     css = String(stylesheet.source).replace(/\/\*[\s\S]*?\*\//g, '');
   }, 30_000);
 
+  it('compiles Notice tint opacity, token typography and responsive basis from molecule sources', () => {
+    for (const color of ['fg-secondary', 'status-info', 'status-success', 'status-warning', 'status-danger']) {
+      for (const [prefix, opacity] of [
+        ['border', 30],
+        ['from', 11],
+        ['to', 4]
+      ] as const) {
+        const emitted = rule(`.${prefix}-${color}\\/${opacity}`);
+        expect(emitted).toContain(`var(--color-${color}`);
+        expect(emitted).toContain(`${opacity}%, transparent)`);
+      }
+    }
+    expect(rule('.bg-linear-to-b')).toMatch(/background-image:\s*linear-gradient/);
+    expect(rule(String.raw`.basis-\[calc\(var\(--space-24\)\*2\.5\)\]`)).toMatch(
+      /flex-basis:\s*calc\(var\(--space-24\)\s*\*\s*2\.5\)/
+    );
+    expect(rule('.text-body-default')).toContain('var(--text-body-default');
+    expect(rule('.text-label-default')).toContain('var(--text-label-default');
+    expect(rule('.flex-wrap')).toMatch(/flex-wrap:\s*wrap/);
+  });
+
   it('compiles Gauge geometry and the static utilities that make its ring valid', () => {
     expect(rule('.inline-flex')).toMatch(/display:\s*inline-flex\s*;/);
     expect(rule('.w-auto')).toMatch(/width:\s*auto\s*;/);
