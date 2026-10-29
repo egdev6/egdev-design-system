@@ -5,6 +5,7 @@
 @reference "@egdev/tokens/theme.css";
 
 /* Compile only production CVA classes, never incidental story/test classes. */
+@source "../molecules/**/types.ts";
 @source "../atoms/avatar/types.ts";
 @source "../atoms/badge/types.ts";
 @source "../atoms/button/types.ts";

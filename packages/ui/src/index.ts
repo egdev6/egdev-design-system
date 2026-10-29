@@ -28,6 +28,9 @@ export * from './atoms/toggle';
 export * from './atoms/tooltip';
 // Utilities
 export { cn } from './lib/cn';
+// Molecules
+export type { HoverCardContentProps, HoverCardProps, HoverCardTriggerProps } from './molecules/hover-card';
+export { HoverCard, HoverCardContent, HoverCardTrigger } from './molecules/hover-card';
 // Primitives
 export type { AspectRatioProps } from './primitives/aspect-ratio';
 export { AspectRatio } from './primitives/aspect-ratio';
