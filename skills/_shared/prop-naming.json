@@ -73,6 +73,16 @@
           "symbol": "StatProps",
           "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
         }
+      },
+      {
+        "component": "Tabs",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
       }
     ]
   },
@@ -120,6 +130,16 @@
           "symbol": "SelectProps",
           "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
         }
+      },
+      {
+        "component": "Tabs",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
       }
     ]
   },
@@ -166,6 +186,16 @@
           "path": "packages/ui/src/atoms/select/types.ts",
           "symbol": "SelectProps",
           "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "(value: string) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
       }
     ]
@@ -334,6 +364,16 @@
           "symbol": "CountdownProps",
           "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
         }
+      },
+      {
+        "component": "Tabs",
+        "type": "TabsSize ('md' | 'sm'); underline only",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
       }
     ]
   },
@@ -491,6 +531,16 @@
           "symbol": "PullQuoteProps",
           "revision": "sha256:a80b89c12589a3afe7dfc16fa86797bd860f12f839946ec189da60277e8f05d4"
         }
+      },
+      {
+        "component": "Tabs",
+        "type": "TabsVariant ('underline' | 'segmented')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
       }
     ]
   },
@@ -577,6 +627,16 @@
           "path": "packages/ui/src/atoms/pull-quote/types.ts",
           "symbol": "PullQuoteProps",
           "revision": "sha256:a80b89c12589a3afe7dfc16fa86797bd860f12f839946ec189da60277e8f05d4"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "TabsTone ('neutral' | 'danger'); TabsItem counter only",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsItem",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
       }
     ]
@@ -781,6 +841,16 @@
           "path": "packages/ui/src/atoms/countdown/types.ts",
           "symbol": "CountdownProps",
           "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "string (accessible tablist name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
       }
     ]
@@ -2014,7 +2084,18 @@
       "scope": "convention:collection-items",
       "contentHash": "sha256:304ac895a943454d04d057e18518794a315958b70252df2e696e00dc65b36f40"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Tabs",
+        "type": "TabsItem[] (value, label, optional count/tone/disabled, required content)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
+      }
+    ]
   },
   {
     "id": "localized-messages",

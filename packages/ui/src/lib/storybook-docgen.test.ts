@@ -241,9 +241,9 @@ describe('Storybook TypeScript docgen contract', () => {
       './lib/cn',
       './molecules/button-group',
       './molecules/notice',
+      './molecules/tabs',
       './primitives/aspect-ratio',
       './primitives/divider',
-
       './primitives/label',
       './primitives/portal',
       './primitives/skeleton',
@@ -291,6 +291,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'StatusDot',
       'Surface',
       'Switch',
+      'Tabs',
       'Text',
       'Textarea',
       'Toggle',
@@ -308,6 +309,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'statVariants',
       'statusDotVariants',
       'surfaceVariants',
+      'tabsVariants',
       'tooltipVariants'
     ]);
   });
