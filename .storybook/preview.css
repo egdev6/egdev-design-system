@@ -31,6 +31,7 @@
 @source "../packages/ui/src/atoms/textarea/Textarea.stories.tsx";
 @source "../packages/ui/src/atoms/toggle/Toggle.stories.tsx";
 @source "../packages/ui/src/atoms/tooltip/Tooltip.stories.tsx";
+@source "../packages/ui/src/molecules/meter-row/MeterRow.stories.tsx";
 @source "../packages/ui/src/primitives/aspect-ratio/AspectRatio.stories.tsx";
 @source "../packages/ui/src/primitives/divider/Divider.stories.tsx";
 @source "../packages/ui/src/primitives/label/Label.stories.tsx";
