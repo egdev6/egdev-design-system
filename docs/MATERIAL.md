@@ -94,7 +94,7 @@ Approval and the accepted pilot are not evidence that all retirement/test/build/
 ## En el código
 
 - **Future composition concepts, not current APIs:** Surface treatments (`default`, `glass`, `brand`, `well`, `ghost`; conceptual elevations `flat`, `low`, `high`) and segmented Tabs remain provisional. They require their own approved contracts/plans before becoming usable React components; do not import them from `@egdev/ui` or retain a hidden Surface helper. Gauge's transparent frame is the bounded exception above, not a general substitute.
-- **Marcas de producto** (ProductMark, pendiente de portar): `--gradient-btn-primary` + `--shadow-btn-primary`.
+- **Product branding:** use Logo for egdev artwork or a consumer-owned image for other product identities; no monogram-tile component is provided.
 - **Foco** sigue siendo `--shadow-focus` y gana siempre a las sombras de material.
 - **Deshabilitado** sigue siendo opacidad `.45`.
 - Legacy Material v2 remains evidence, not proof of target compliance. Preserve its visual semantics and public markers; do not silently migrate consumers/styles.

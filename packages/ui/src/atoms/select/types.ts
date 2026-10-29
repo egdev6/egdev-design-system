@@ -91,6 +91,8 @@ export const selectItemVariants = cva(
   'relative flex items-center gap-3 rounded-md px-3 py-2 pr-8 font-sans text-body-default text-fg-secondary cursor-pointer outline-none data-highlighted:bg-fg-default/6 data-highlighted:text-fg-default focus-visible:ring-[length:var(--focus-width)] focus-visible:ring-inset focus-visible:ring-focus-ring-inverse data-[state=checked]:text-fg-default data-disabled:opacity-45 data-disabled:pointer-events-none transition-colors ease-out duration-[var(--duration-fast)] motion-reduce:transition-none'
 );
 
-export const selectChevronVariants = cva('absolute right-3 size-4 text-fg-muted');
+export const selectChevronVariants = cva(
+  'absolute right-3 inline-flex items-center justify-center size-4 text-fg-muted [&>svg]:block [&>svg]:size-full'
+);
 export const selectIndicatorVariants = cva('absolute right-3 size-4 text-fg-brand-default');
 export const selectViewportVariants = cva('max-h-[var(--radix-select-content-available-height)]');

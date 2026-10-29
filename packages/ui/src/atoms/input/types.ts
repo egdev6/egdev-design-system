@@ -44,6 +44,13 @@ export type InputProps = InputNativeProps & {
    * @controlReason Non-serializable ReactNode content; see the WithIcon story.
    */
   icon?: ReactNode;
+  /**
+   * Show a decorative trailing Spinner and set aria-busy on the native input. The input
+   * stays editable unless disabled or readOnly; the consumer owns status announcements.
+   * @control boolean
+   * @default false
+   */
+  loading?: boolean;
 };
 
 /** Layout wrapper: public marker, icon positioning context and disabled dimming. */
@@ -67,17 +74,26 @@ export const inputControlVariants = cva(
       icon: {
         true: 'pl-9',
         false: ''
+      },
+      loading: {
+        true: 'pr-9',
+        false: ''
       }
     },
     compoundVariants: [
       // The sm sans text keeps the label size and line height with the body weight (D9).
       { size: 'sm', variant: 'default', className: 'font-[var(--text-body-default--font-weight)]' }
     ],
-    defaultVariants: { size: 'md', variant: 'default', icon: false }
+    defaultVariants: { size: 'md', variant: 'default', icon: false, loading: false }
   }
 );
 
 /** Decorative leading icon slot, vertically centered inside the well. */
 export const inputIconVariants = cva(
   'pointer-events-none absolute left-3 flex size-4 items-center justify-center text-fg-muted'
+);
+
+/** Decorative trailing Spinner slot, vertically centered without intercepting input events. */
+export const inputSpinnerVariants = cva(
+  'pointer-events-none absolute right-3 flex size-4 items-center justify-center text-fg-muted'
 );

@@ -14,11 +14,12 @@ function root(container: HTMLElement) {
   return wrapper;
 }
 
-function Controlled({ onChange }: { onChange: (value: string) => void }) {
+function Controlled({ onChange, loading = false }: { onChange: (value: string) => void; loading?: boolean }) {
   const [value, setValue] = useState('');
   return (
     <Input
       aria-label='Title'
+      loading={loading}
       value={value}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value);
@@ -41,6 +42,70 @@ function Labelled() {
 }
 
 describe('Input', () => {
+  it('composes a decorative trailing Spinner while loading and stays editable', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const { container, rerender } = render(
+      <Input aria-label='Search' loading={true} icon={<svg />} onChange={onChange} />
+    );
+    const control = screen.getByRole('textbox', { name: 'Search' });
+    expect(control).toHaveAttribute('aria-busy', 'true');
+    expect(control).not.toBeDisabled();
+    expect(control).not.toHaveAttribute('readonly');
+    expect(control).not.toHaveAttribute('loading');
+    expect(control).toHaveClass('pl-9', 'pr-9');
+    const spinner = root(container).querySelector('.eg-spinner');
+    expect(spinner).toHaveAttribute('aria-hidden', 'true');
+    expect(spinner).toHaveClass('size-4');
+    expect(spinner?.parentElement).toHaveClass('absolute', 'right-3', 'pointer-events-none');
+    expect(control.nextElementSibling).toBe(spinner?.parentElement);
+    expect(screen.queryByRole('status')).toBeNull();
+    await user.type(control, 'abc');
+    expect(control).toHaveValue('abc');
+    expect(onChange).toHaveBeenCalledTimes(3);
+    rerender(<Input aria-label='Search' loading={false} />);
+    expect(control).not.toHaveAttribute('aria-busy');
+    expect(control).not.toHaveClass('pr-9');
+    expect(root(container).querySelector('.eg-spinner')).toBeNull();
+  });
+
+  it('preserves consumer busy semantics when idle and native restrictions when loading', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(<Input aria-label='Title' aria-busy={true} />);
+    expect(screen.getByRole('textbox')).toHaveAttribute('aria-busy', 'true');
+    rerender(<Input aria-label='Title' loading={true} aria-busy={false} readOnly={true} defaultValue='fixed' />);
+    const control = screen.getByRole('textbox');
+    expect(control).toHaveAttribute('aria-busy', 'true');
+    await user.type(control, 'x');
+    expect(control).toHaveValue('fixed');
+    rerender(<Input aria-label='Title' loading={true} disabled={true} />);
+    expect(control).toBeDisabled();
+    expect(control).toHaveAttribute('aria-busy', 'true');
+  });
+
+  it.each(['md', 'sm'] as const)('reserves trailing space without a leading icon at size %s', (size) => {
+    const { container } = render(<Input aria-label='Title' loading={true} size={size} variant='code' />);
+    expect(screen.getByRole('textbox')).toHaveClass('pr-9');
+    expect(screen.getByRole('textbox')).not.toHaveClass('pl-9');
+    expect(root(container).querySelectorAll('.eg-spinner')).toHaveLength(1);
+  });
+
+  it('retains controlled value, focus and native input identity when loading ends', async () => {
+    const user = userEvent.setup();
+    const values = vi.fn();
+    const { rerender } = render(<Controlled onChange={values} loading={true} />);
+    const control = screen.getByRole('textbox', { name: 'Title' });
+    await user.type(control, 'draft');
+    expect(control).toHaveValue('draft');
+    expect(values).toHaveBeenCalledTimes(5);
+    rerender(<Controlled onChange={values} loading={false} />);
+    expect(screen.getByRole('textbox', { name: 'Title' })).toBe(control);
+    expect(control).toHaveFocus();
+    expect(control).toHaveValue('draft');
+    expect(control).not.toHaveAttribute('aria-busy');
+    expect(values).toHaveBeenCalledTimes(5);
+  });
+
   it('renders a span.eg-input root around a native text input and forwards the ref (AC-01)', () => {
     const ref = createRef<HTMLInputElement>();
     const { container } = render(<Input aria-label='Title' ref={ref} />);
@@ -192,6 +257,8 @@ describe('Input', () => {
     expect(result.current.size).toBe('md');
     expect(result.current.variant).toBe('default');
     expect(result.current.hasIcon).toBe(false);
+    expect(result.current.loading).toBe(false);
+    expect(result.current.controlProps).not.toHaveProperty('loading');
     expect(result.current.controlProps).toMatchObject({ id: 'x', type: 'text', 'aria-label': 'Title' });
     expect(result.current.controlProps).not.toHaveProperty('icon');
     expect(result.current.controlProps).not.toHaveProperty('size');

@@ -39,7 +39,7 @@ export type LinkProps = Omit<ComponentPropsWithoutRef<'a'>, 'href' | 'children'>
      */
     children: ReactNode;
     /**
-     * Open in a new tab with safe rel tokens, an up-right arrow and a hidden notice.
+     * Open in a new tab with safe rel tokens and a hidden notice; the arrow still points right.
      * @control boolean
      * @default false
      */
@@ -51,7 +51,7 @@ export type LinkProps = Omit<ComponentPropsWithoutRef<'a'>, 'href' | 'children'>
      */
     newTabText?: string;
     /**
-     * Show the trailing decorative direction arrow, derived from external.
+     * Show the trailing decorative right arrow, independent of external.
      * @control boolean
      * @default true
      */
@@ -59,11 +59,11 @@ export type LinkProps = Omit<ComponentPropsWithoutRef<'a'>, 'href' | 'children'>
   };
 
 export const linkVariants = cva(
-  'eg-link group/link inline-flex items-center gap-2 pb-0.5 border-b border-solid border-border-brand font-sans text-label-default text-fg-default no-underline cursor-pointer transition-[border-color,color] duration-(--duration-fast) ease-out hover:border-fg-brand-default hover:text-primitive-red-200 focus-visible:outline-none focus-visible:[box-shadow:var(--shadow-focus)] focus-visible:rounded-sm motion-reduce:transition-none'
+  'eg-link group/link inline-flex items-center gap-2 pb-0 border-0 font-sans text-label-default text-fg-brand-raised no-underline cursor-pointer transition-colors duration-(--duration-fast) ease-(--ease-out) hover:text-primitive-red-200 focus-visible:outline-none focus-visible:[box-shadow:var(--shadow-focus)] focus-visible:rounded-sm motion-reduce:transition-none'
 );
 
 // Utilities override retained legacy width/height and transform, avoiding double movement from
 // CSS translate plus the old transform. The named group scopes motion to this link only.
 export const linkArrowVariants = cva(
-  'transform-none transition-[translate] duration-(--duration-base) ease-out group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 motion-reduce:translate-none motion-reduce:transition-none'
+  'self-center shrink-0 transform-none transition-[translate] duration-(--duration-fast) ease-(--ease-out) motion-safe:group-hover/link:translate-x-1 motion-reduce:translate-none motion-reduce:transition-none'
 );

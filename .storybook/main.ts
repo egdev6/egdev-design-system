@@ -40,7 +40,6 @@ const documentedNativeProps: Record<string, readonly string[]> = {
     'className'
   ],
   input: ['id', 'name', 'placeholder', 'disabled', 'readOnly', 'required', 'className'],
-  productMark: ['id', 'title', 'className', 'target', 'rel'],
   searchTrigger: [
     'id',
     'title',

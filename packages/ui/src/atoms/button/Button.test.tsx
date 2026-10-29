@@ -30,6 +30,53 @@ describe('Button contract', () => {
     }
   );
 
+  it.each(['primary', 'secondary'] as const)(
+    'keeps the %s resting Material image and shadow free of competing resets after merging',
+    (variant) => {
+      const { rerender } = render(<Button variant={variant}>Save</Button>);
+      const button = screen.getByRole('button', { name: 'Save' });
+      for (const size of ['md', 'sm'] as const) {
+        rerender(
+          <Button variant={variant} size={size} className='w-full ms-1 ms-2'>
+            Save
+          </Button>
+        );
+        expect(button).toHaveClass(`[background-image:var(--gradient-btn-${variant})]`);
+        expect(button).toHaveClass(
+          variant === 'primary'
+            ? '[box-shadow:var(--shadow-btn-primary)]'
+            : '[box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1)]'
+        );
+        expect(button).not.toHaveClass('bg-none');
+        expect(button).not.toHaveClass('shadow-none');
+        expect(button).toHaveClass('w-full', 'ms-2', 'focus-visible:[box-shadow:var(--shadow-focus)]');
+        expect(button).toHaveClass('data-disabled:shadow-none');
+        expect(button).toHaveClass('[&:not([aria-disabled=true]):active]:bg-none');
+      }
+    }
+  );
+
+  it.each(['ghost', 'dark'] as const)('keeps explicit no-image and no-shadow resets for %s at rest', (variant) => {
+    render(<Button variant={variant}>Save</Button>);
+    const button = screen.getByRole('button', { name: 'Save' });
+    expect(button).toHaveClass('bg-none', 'shadow-none');
+    expect(button).toHaveClass(variant === 'ghost' ? 'bg-transparent' : 'bg-primitive-black');
+  });
+
+  it.each(['start', 'end'] as const)('centers the %s icon without an inline SVG line box', (iconPosition) => {
+    render(
+      <Button icon={<Icon name='check' />} iconPosition={iconPosition}>
+        Save
+      </Button>
+    );
+    const button = screen.getByRole('button', { name: 'Save' });
+    const slot = button.querySelector('.eg-btn__icon');
+    expect(slot).toHaveClass('inline-flex', 'items-center', 'justify-center', '[&>svg]:block', '[&>svg]:size-full');
+    expect(slot).toHaveAttribute('aria-hidden', 'true');
+    expect(slot?.querySelector('svg')).toHaveClass('eg-icon');
+    expect(iconPosition === 'start' ? button.firstChild === slot : button.lastChild === slot).toBe(true);
+  });
+
   it('preserves capture handlers when enabled and blocks them during pending activation', async () => {
     const user = userEvent.setup();
     const capture = vi.fn();

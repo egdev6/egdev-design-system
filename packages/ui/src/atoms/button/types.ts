@@ -59,7 +59,7 @@ export type ButtonProps = Omit<ComponentPropsWithoutRef<'button'>, 'children'> &
 
 export const buttonVariants = cva(
   [
-    'eg-btn group/button box-border m-0 inline-flex items-center justify-center border border-solid border-transparent rounded-md font-sans no-underline whitespace-nowrap cursor-pointer bg-transparent bg-none text-fg-default shadow-none [text-shadow:none] transform-none translate-none scale-100',
+    'eg-btn group/button box-border m-0 inline-flex items-center justify-center border border-solid border-transparent rounded-md font-sans no-underline whitespace-nowrap cursor-pointer bg-transparent text-fg-default [text-shadow:none] transform-none translate-none scale-100',
     '[transition-property:background,color,box-shadow,border-color,translate,scale] [transition-duration:var(--duration-fast),var(--duration-fast),var(--duration-base),var(--duration-base),var(--duration-fast),var(--duration-fast)] [transition-timing-function:var(--ease-out),var(--ease-out),var(--ease-out),var(--ease-out),var(--ease-spring),var(--ease-spring)]',
     '[&:not([aria-disabled=true]):active]:translate-y-px [&:not([aria-disabled=true]):active]:scale-97 [&:not([aria-disabled=true]):active]:duration-(--duration-press) [&:not([aria-disabled=true]):active]:ease-(--ease-snappy)',
     'focus-visible:outline-none focus-visible:[box-shadow:var(--shadow-focus)] focus-visible:ring-0',
@@ -76,8 +76,8 @@ export const buttonVariants = cva(
         secondary:
           'bg-surface-1 [background-image:var(--gradient-btn-secondary)] border-border-brand text-action-primary-fg [box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1)] [&:not([aria-disabled=true]):not(:active):hover]:[background-image:var(--gradient-btn-secondary-hover)] [&:not([aria-disabled=true]):not(:active):hover]:border-primitive-red-neon [&:not([aria-disabled=true]):not(:active):not(:focus-visible):hover]:[box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1),var(--shadow-glow-base)] [&:not([aria-disabled=true]):not(:active):hover]:-translate-y-px [&:not([aria-disabled=true]):active]:bg-alpha-red-15 [&:not([aria-disabled=true]):active]:bg-none [&:not([aria-disabled=true]):not(:focus-visible):active]:[box-shadow:var(--shadow-btn-pressed)]',
         ghost:
-          'text-fg-secondary [&:not([aria-disabled=true]):hover]:bg-surface-2 [&:not([aria-disabled=true]):hover]:[background-image:var(--gradient-sheen)] [&:not([aria-disabled=true]):not(:focus-visible):hover]:shadow-(--shadow-edge) [&:not([aria-disabled=true]):not(:focus-visible):hover]:ring [&:not([aria-disabled=true]):not(:focus-visible):hover]:ring-border-hairline [&:not([aria-disabled=true]):hover]:text-fg-default',
-        dark: 'bg-primitive-black text-primitive-white [&:not([aria-disabled=true]):hover]:bg-primitive-neutral-900 [&:not([aria-disabled=true]):not(:active):hover]:-translate-y-0.5'
+          'bg-none shadow-none text-fg-secondary [&:not([aria-disabled=true]):hover]:bg-surface-2 [&:not([aria-disabled=true]):hover]:[background-image:var(--gradient-sheen)] [&:not([aria-disabled=true]):not(:focus-visible):hover]:shadow-(--shadow-edge) [&:not([aria-disabled=true]):not(:focus-visible):hover]:ring [&:not([aria-disabled=true]):not(:focus-visible):hover]:ring-border-hairline [&:not([aria-disabled=true]):hover]:text-fg-default',
+        dark: 'bg-none shadow-none bg-primitive-black text-primitive-white [&:not([aria-disabled=true]):hover]:bg-primitive-neutral-900 [&:not([aria-disabled=true]):not(:active):hover]:-translate-y-0.5'
       },
       size: {
         md: 'min-h-12 py-3 px-5.5 gap-2.5 text-cta-label',
@@ -89,6 +89,6 @@ export const buttonVariants = cva(
 );
 
 export const buttonIconVariants = cva(
-  'eg-btn__icon inline-flex flex-none items-center justify-center fill-none stroke-current stroke-(length:--icon-stroke) [stroke-linecap:round] [stroke-linejoin:round] transform-none translate-none transition-[translate] duration-(--duration-base) ease-(--ease-out) group-[:not([aria-disabled=true]):hover]/button:translate-x-0.5 motion-reduce:transition-none motion-reduce:transform-none motion-reduce:translate-none motion-reduce:group-[:not([aria-disabled=true]):hover]/button:translate-none [&>svg]:size-full',
+  'eg-btn__icon inline-flex flex-none items-center justify-center fill-none stroke-current stroke-(length:--icon-stroke) [stroke-linecap:round] [stroke-linejoin:round] transform-none translate-none transition-[translate] duration-(--duration-base) ease-(--ease-out) group-[:not([aria-disabled=true]):hover]/button:translate-x-0.5 motion-reduce:transition-none motion-reduce:transform-none motion-reduce:translate-none motion-reduce:group-[:not([aria-disabled=true]):hover]/button:translate-none [&>svg]:block [&>svg]:size-full',
   { variants: { size: { md: 'size-(--icon-size)', sm: 'size-4' } }, defaultVariants: { size: 'md' } }
 );

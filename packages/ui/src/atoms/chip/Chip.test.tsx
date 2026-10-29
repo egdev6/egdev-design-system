@@ -10,7 +10,10 @@ describe('Chip public contract', () => {
     const { result } = renderHook(() => useChip({ children: 'Design' }));
     expect(result.current.rootProps.defaultPressed).toBe(false);
     expect(result.current.rootProps.className).toContain('eg-chip');
-    expect(result.current.iconProps).toEqual({ className: 'size-3.5 shrink-0', 'aria-hidden': true });
+    expect(result.current.iconProps['aria-hidden']).toBe(true);
+    expect(result.current.iconProps.className.split(' ')).toEqual(
+      expect.arrayContaining(['size-3.5', 'shrink-0', 'inline-flex', 'items-center', 'justify-center', '[&>svg]:block'])
+    );
     expect(result.current.showIcon).toBe(false);
   });
 
@@ -90,7 +93,15 @@ describe('Chip public contract', () => {
     const wrapper = chip.firstElementChild;
     expect(wrapper?.tagName).toBe('SPAN');
     expect(wrapper).toHaveAttribute('aria-hidden', 'true');
-    expect(wrapper).toHaveClass('size-3.5', 'shrink-0');
+    expect(wrapper).toHaveClass(
+      'size-3.5',
+      'shrink-0',
+      'inline-flex',
+      'items-center',
+      'justify-center',
+      '[&>svg]:block',
+      '[&>svg]:size-full'
+    );
     expect(wrapper?.querySelector('svg')).not.toBeNull();
     expect(chip).toHaveTextContent(/^Saved$/);
   });

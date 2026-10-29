@@ -9,7 +9,7 @@ type LinkResult = {
   rootProps: ComponentPropsWithoutRef<'a'>;
   children: ReactNode;
   external: boolean;
-  arrowName: 'arrow-right' | 'arrow-up-right';
+  arrowName: 'arrow-right';
   showArrow: boolean;
   newTabText: string;
   arrowClassName: string;
@@ -51,7 +51,7 @@ export function useLink({
     },
     children: content,
     external,
-    arrowName: external ? 'arrow-up-right' : 'arrow-right',
+    arrowName: 'arrow-right',
     showArrow: arrow,
     newTabText,
     arrowClassName: cn(linkArrowVariants())
