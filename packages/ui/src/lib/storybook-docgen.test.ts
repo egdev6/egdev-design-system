@@ -118,6 +118,73 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts PageHeader own controls, semantic rank, native rows and bounded exports', () => {
+    const file = ast(source('molecules/page-header/types.ts'));
+    const properties = ownProps(file, ['PageHeaderProps']);
+    const expected: Record<string, string> = { title: 'text', eyebrow: 'text', level: 'select', actions: 'false' };
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(expected));
+    const doc = parser
+      .parse(source('molecules/page-header/PageHeader.tsx'))
+      .find((item) => item.displayName === 'PageHeader');
+    expect(doc).toBeDefined();
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(
+        ts
+          .getJSDocTags(property)
+          .filter((tag) => tag.tagName.text === 'control')
+          .map((tag) => tag.comment)
+      ).toEqual([expected[name]]);
+      expect(doc?.props[name]?.tags).toMatchObject({ control: expected[name] });
+      if (name !== 'level') {
+        expect(doc?.props[name]?.defaultValue).toBeNull();
+      }
+    }
+    expect(doc?.props.title).toMatchObject({ required: true, type: { name: 'string' } });
+    expect(doc?.props.eyebrow).toMatchObject({ required: false, type: { name: 'string' } });
+    expect(doc?.props.level?.defaultValue).toEqual({ value: '1' });
+    expect(doc?.props.level?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6'
+    ]);
+    expect(doc?.props.actions?.tags).toMatchObject({
+      controlReason: expect.stringMatching(/ReactElement\/boolean.*SingleAction.*WithActions/)
+    });
+    expect(defaults(source('molecules/page-header/usePageHeader.ts'), false)).toEqual({ level: '1' });
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild',
+      'variant',
+      'register',
+      'size',
+      'headingClassName'
+    ]) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const stories = ast(source('molecules/page-header/PageHeader.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'SingleAction',
+      'WithActions',
+      'WithEyebrow',
+      'LongTitle',
+      'Constrained',
+      'HeadingLevels',
+      'RTL',
+      'ChildStates'
+    ]);
+    expect(stories.getText()).toMatch(/title: 'Molecules\/PageHeader'/);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+  });
   it('extracts every ModuleCard union declaration, constants and native article boundaries (AC-15)', () => {
     const doc = parser
       .parse(source('molecules/module-card/ModuleCard.tsx'))
@@ -586,6 +653,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/module-card',
       './molecules/nav-list',
       './molecules/notice',
+      './molecules/page-header',
       './molecules/popover',
       './molecules/section-header',
       './molecules/select-tile',
@@ -645,6 +713,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'ModuleCard',
       'NavList',
       'Notice',
+      'PageHeader',
       'Popover',
       'PopoverClose',
       'PopoverContent',

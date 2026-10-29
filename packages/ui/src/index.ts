@@ -43,6 +43,7 @@ export * from './molecules/meter-row';
 export * from './molecules/module-card';
 export * from './molecules/nav-list';
 export * from './molecules/notice';
+export * from './molecules/page-header';
 export * from './molecules/popover';
 export type {
   SectionHeaderLevel,

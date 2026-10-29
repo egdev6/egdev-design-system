@@ -31,8 +31,8 @@ const consumer = `
 import { Menu, menuVariants } from '@egdev/ui';
 import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorItem, MenuLabelItem, MenuSubmenuItem, MenuTone, MenuAlign, MenuSide } from '@egdev/ui';
 import { createElement, createRef, forwardRef } from 'react';
-import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, Gauge, GaugeDock, GaugeDockItem, GaugeDockSeparator, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, Gauge, GaugeDock, GaugeDockItem, GaugeDockSeparator, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -92,6 +92,8 @@ import type {
   LogoProps,
   LogoSize,
   LogoVariant,
+  PageHeaderProps,
+  PageHeaderLevel,
   ModuleCardProps,
   ModuleCardStatus,
   ModuleCardVariant,
@@ -188,6 +190,40 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+// Keep PageHeader samples outside App so the existing button-count/focus harness stays unchanged.
+const pageHeaderLevel: PageHeaderLevel = 2;
+export const pageHeaderProps: PageHeaderProps = { title: 'Projects', eyebrow: 'Workspace', level: pageHeaderLevel };
+// createElement erases the exotic Button target identity; restore only this known factory target.
+const pageLinkAction = createElement(Button, { asChild: true, children: createElement('a', { href: '#new' }, 'New project') }) as ReactElement<ButtonProps, typeof Button>;
+export function PageHeaderSamples({ title = 'Projects' }: { title?: string }) {
+  return createElement('main', null,
+    createElement(PageHeader, { title: 'Minimal', id: 'page-minimal' }),
+    createElement(PageHeader, { ...pageHeaderProps, title, id: 'page-single', dir: 'rtl', actions: pageLinkAction }),
+    createElement(PageHeader, { title: 'Grouped', id: 'page-grouped', actions: createElement(ButtonGroup, { variant: 'spaced', label: 'Project actions', children: [
+      createElement(Button, { key: 'import', variant: 'secondary', disabled: true, children: 'Import' }),
+      createElement(Button, { key: 'new', children: 'New project' })
+    ] }) }));
+}
+// @ts-expect-error A visible title is required.
+const missingPageTitle: PageHeaderProps = {};
+// @ts-expect-error Heading rank is semantic h1-h6, never a visual size.
+const invalidPageLevel: PageHeaderProps = { title: 'Projects', level: 7 };
+// @ts-expect-error Plain strings only, not rich headings.
+const richPageTitle: PageHeaderProps = { title: createElement('em', null, 'Projects') };
+// @ts-expect-error Arrays are not one supported action element.
+const arrayPageActions: PageHeaderProps = { title: 'Projects', actions: [createElement(Button, { children: 'New' })] };
+// @ts-expect-error Text is not a supported action element.
+const textPageActions: PageHeaderProps = { title: 'Projects', actions: 'New' };
+// @ts-expect-error No arbitrary children slot.
+const pageChildren: PageHeaderProps = { title: 'Projects', children: 'Extra' };
+// @ts-expect-error No root ref API.
+const pageRef: PageHeaderProps = { title: 'Projects', ref: createRef<HTMLElement>() };
+// @ts-expect-error No root Slot API.
+const pageSlot: PageHeaderProps = { title: 'Projects', asChild: true };
+// @ts-expect-error No editorial register axis.
+const pageRegister: PageHeaderProps = { title: 'Projects', register: 'show' };
+// @ts-expect-error Generated heading content cannot be replaced with HTML.
+const pageHtml: PageHeaderProps = { title: 'Projects', dangerouslySetInnerHTML: { __html: 'Other' } };
 const timelineVariant: TimelineVariant = 'chat';
 const timelineSize: TimelineSize = 'sm';
 const timelineTime: TimelineTime = { text: '12:30', dateTime: '2026-10-29T12:30:00Z' };
@@ -2785,6 +2821,23 @@ function assertCountdownCSS(css) {
   assert.match(css, /min-width:\s*var\(--spacing-countdown-unit[,)]/);
 }
 
+function assertPageHeaderCSS(css) {
+  for (const selector of [
+    String.raw`.basis-\[calc\(var\(--space-24\)\*3\)\]`,
+    '.gap-x-6',
+    '.gap-y-4',
+    '.text-heading-small',
+    '.text-label-eyebrow',
+    '.wrap-anywhere'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing PageHeader utility ' + selector);
+  }
+  assert.match(css, /flex-basis:\s*calc\(var\(--space-24\)\s*\*\s*3\)/);
+  assert.match(css, /font-size:\s*var\(--text-heading-small[,)]/);
+  assert.match(css, /font-size:\s*var\(--text-label-eyebrow[,)]/);
+  assert.doesNotMatch(css, /\.eg-page-header\s*[,{]/);
+}
+
 // Field's layout and attribute-driven state utilities must ship without a consumer Tailwind compiler.
 function assertFieldCSS(css) {
   for (const selector of [
@@ -3350,6 +3403,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ModuleCard',
   'NavList',
   'Notice',
+  'PageHeader',
   'Popover',
   'PopoverClose',
   'PopoverContent',
@@ -3431,6 +3485,8 @@ ${assertTabsCSS.toString()}
 ${assertNoticeCSS.toString()}
 assertNoticeCSS(shippedStyles);
 ${assertPullQuoteCSS.toString()}
+${assertPageHeaderCSS.toString()}
+assertPageHeaderCSS(shippedStyles);
 ${assertButtonGroupCSS.toString()}
 assertButtonGroupCSS(shippedStyles);
 ${assertCountdownCSS.toString()}
@@ -3615,6 +3671,32 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
+import { PageHeaderSamples } from './consumer.ts';
+const pageDocument = new JSDOM(renderToString(createElement(PageHeaderSamples)));
+try {
+  const doc = pageDocument.window.document;
+  const minimal = doc.getElementById('page-minimal');
+  assert.equal(minimal.tagName, 'HEADER');
+  assert.equal(minimal.children.length, 1);
+  assert.equal(minimal.querySelector('h1').textContent, 'Minimal');
+  assert.equal(minimal.hasAttribute('title'), false);
+  const single = doc.getElementById('page-single');
+  assert.equal(single.querySelector('h2').textContent, 'Projects');
+  assert.equal(single.querySelector('p').textContent, 'Workspace');
+  assert.equal(single.querySelector('[role="group"]'), null);
+  assert.equal(single.querySelector('a').getAttribute('href'), '#new');
+  const grouped = doc.getElementById('page-grouped');
+  assert.equal(grouped.querySelectorAll('[role="group"]').length, 1);
+  assert.equal(grouped.querySelectorAll('button').length, 2);
+  assert.equal(grouped.querySelector('button').disabled, true);
+  for (const root of doc.querySelectorAll('header')) {
+    assert.equal(root.hasAttribute('role'), false);
+    assert.equal(root.hasAttribute('tabindex'), false);
+    assert.equal(root.hasAttribute('aria-live'), false);
+  }
+} finally {
+  pageDocument.window.close();
+}
 import { ModuleCardSamples } from './consumer.ts';
 const moduleDocument = new JSDOM(renderToString(createElement(ModuleCardSamples, { status: 'error' })));
 try {
@@ -4854,6 +4936,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
+const { PageHeaderSamples } = await import('./consumer.ts');
 const { ModuleCardSamples, moduleCardClicks } = await import('./consumer.ts');
 const { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, FieldSamples, fieldControlRef, HoverCardSamples, hoverCardRef, hoverCardSlotRef, hoverCardChanges, ListItemSamples, MeterRowSamples, NavListSamples, navRequests, navNavigations, NoticeSamples, PopoverSamples, popoverTriggerRef, popoverCloseRef, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, carouselChanges, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
@@ -5699,6 +5782,23 @@ try {
   await act(async () => root.render(null));
   assert.equal(document.getElementById('totals'), null);
   stage('stat:passive:complete');
+  stage('page-header:start');
+  await act(async () => root.render(createElement(PageHeaderSamples)));
+  const pageSingle = document.getElementById('page-single');
+  const pageLink = pageSingle.querySelector('a');
+  await act(async () => pageLink.focus());
+  assert.ok(document.activeElement === pageLink);
+  await act(async () => root.render(createElement(PageHeaderSamples, { title: 'Updated projects' })));
+  assert.equal(pageSingle.querySelector('h2').textContent, 'Updated projects');
+  assert.ok(pageSingle.querySelector('a') === pageLink, 'Supplied action identity survives passive updates');
+  assert.ok(document.activeElement === pageLink, 'PageHeader never moves action focus');
+  assert.equal(pageSingle.querySelector('[role="group"]'), null);
+  assert.equal(pageSingle.hasAttribute('data-state'), false);
+  const pageGrouped = document.getElementById('page-grouped');
+  assert.equal(pageGrouped.querySelectorAll('[role="group"]').length, 1);
+  assert.equal(pageGrouped.querySelectorAll('button').length, 2);
+  await act(async () => root.render(null));
+  stage('page-header:complete');
   stage('timeline:start');
   await act(async () => root.render(createElement(TimelineSamples, { silent: true })));
   const transcript = document.querySelector('[role="log"]');
@@ -6270,6 +6370,8 @@ assertProgressBarCSS(emitted);
 assertTextareaCSS(emitted);
 assertInputCSS(emitted);
 assertDropzoneCSS(emitted);
+${assertPageHeaderCSS.toString()}
+assertPageHeaderCSS(emitted);
 ${assertButtonGroupCSS.toString()}
 assertButtonGroupCSS(emitted);
 ${assertCountdownCSS.toString()}
@@ -6362,6 +6464,7 @@ assertTextareaCSS(twCss);
 assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
 assertButtonGroupCSS(twCss);
+assertPageHeaderCSS(twCss);
 assertCountdownCSS(twCss);
 assertFieldCSS(twCss);
 assertMeterRowCSS(twCss);

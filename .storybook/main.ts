@@ -11,6 +11,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   carousel: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onKeyDown', 'onFocus', 'onBlur'],
   button: ['type', 'disabled', 'onClick', 'id', 'title', 'aria-describedby', 'className', 'name', 'value', 'tabIndex'],
   buttonGroup: ['id', 'title', 'dir', 'aria-labelledby', 'aria-describedby', 'className'],
+  pageHeader: ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick'],
   checkbox: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid', 'className', 'form'],
   chip: ['id', 'title', 'name', 'onClick', 'aria-describedby', 'className'],
   chipGroup: ['id', 'title', 'onClick', 'aria-describedby', 'className', 'style'],

@@ -149,6 +149,20 @@ function rule(selector: string) {
 }
 
 describe('Storybook preview CSS', () => {
+  it('emits PageHeader intrinsic geometry, token typography and constrained story layout', () => {
+    expect(rule(String.raw`.basis-\[calc\(var\(--space-24\)\*3\)\]`)).toMatch(
+      /flex-basis:\s*calc\(var\(--space-24\)\s*\*\s*3\)/
+    );
+    expect(rule(String.raw`.max-w-\[calc\(var\(--space-24\)\*3\)\]`)).toMatch(
+      /max-width:\s*calc\(var\(--space-24\)\s*\*\s*3\)/
+    );
+    expect(rule('.gap-x-6')).toMatch(/column-gap:\s*var\(--space-6[,)]/);
+    expect(rule('.gap-y-4')).toMatch(/row-gap:\s*var\(--space-4[,)]/);
+    expect(rule('.text-heading-small')).toMatch(/font-size:\s*var\(--text-heading-small[,)]/);
+    expect(rule('.text-label-eyebrow')).toMatch(/font-size:\s*var\(--text-label-eyebrow[,)]/);
+    expect(rule('.wrap-anywhere')).toMatch(/overflow-wrap:\s*anywhere/);
+    expect(css).not.toMatch(/\.eg-page-header\s*[,{]/);
+  });
   beforeAll(async () => {
     const result = await build({
       configFile: false,

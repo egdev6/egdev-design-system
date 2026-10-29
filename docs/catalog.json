@@ -600,9 +600,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "—",
-    "compone": "Text, ButtonGroup",
+    "compone": "Stack, Button, ButtonGroup",
     "accion": "nuevo",
-    "notas": "Eyebrow + título + acciones. Repetido a mano en todas las apps."
+    "notas": "Implemented compact product heading (#94 v0.1): native h1–h6, optional eyebrow and unchanged supplied actions; intrinsic wrapping, no paint or stylesheet. Separate from editorial SectionHeader."
   },
   {
     "actual": "ModuleCard",
