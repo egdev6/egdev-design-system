@@ -253,6 +253,28 @@
     "notas": "Implemented in @egdev/ui: passive span label with six tone families, soft/solid treatments, a decorative ReactNode icon slot and the label-default pill recipe. No automatic Icon dependency, ref, asChild or stylesheet. Legacy `.eg-tag` and `.eg-status` remain unchanged. Contract: [#52](https://github.com/egdev6/egdev-design-system/issues/52), v0.1 D7."
   },
   {
+    "actual": "Avatar corner badge",
+    "nivelActual": "internal part",
+    "nombre": "Indicator",
+    "nivel": "atom",
+    "destino": "ui",
+    "radix": "—",
+    "compone": "Icon",
+    "accion": "extraer",
+    "notas": "Draft v0.1 only: anchored dot/count/network-icon marker and positioning wrapper. Avatar #51 migration is a separate amendment; Badge #52 stays unchanged. Contract: [#178](https://github.com/egdev6/egdev-design-system/issues/178), [local draft](components/indicator/v0.1/spec.md). No implementation approval."
+  },
+  {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "FieldMessage",
+    "nivel": "atom",
+    "destino": "ui",
+    "radix": "—",
+    "compone": "Icon",
+    "accion": "nuevo",
+    "notas": "Draft v0.1 only: hint/error icon plus text, control description id and explicit live policy. Field #84 composes it with live off to preserve its default; Notice #93 shares marker-free tone/icon/text recipes. Contract: [#179](https://github.com/egdev6/egdev-design-system/issues/179), [local draft](components/field-message/v0.1/spec.md)."
+  },
+  {
     "actual": "PermissionLevel",
     "nivelActual": "átomo (agente)",
     "nombre": "Badge preset",
@@ -292,9 +314,9 @@
     "nivel": "atom",
     "destino": "ui",
     "radix": "Avatar",
-    "compone": "Icon",
+    "compone": "Icon; proposed Indicator migration (#178)",
     "accion": "mantener",
-    "notas": "Implemented in @egdev/ui under the approved v0.1 contract: passive identity disc with Radix-managed photo loading and immediate user-icon fallback, sm/md/lg/xl sizes, an optional decorative network badge and paused presentation. Root label owns the accessible name; decorative without it. No initials, interaction, ref, asChild or stylesheet. Contract: [#51](https://github.com/egdev6/egdev-design-system/issues/51)."
+    "notas": "Implemented in @egdev/ui under the approved v0.1 contract: passive identity disc with Radix-managed photo loading and immediate user-icon fallback, sm/md/lg/xl sizes, an optional decorative network badge and paused presentation. Root label owns the accessible name; decorative without it. No initials, interaction, ref, asChild or stylesheet. Contract: [#51](https://github.com/egdev6/egdev-design-system/issues/51). Proposed Indicator extraction preserves badgeIcon, geometry and legacy marker; amendment and plan approval remain separate, with no migration performed."
   },
   {
     "actual": "Logo",
@@ -412,10 +434,10 @@
     "nombre": "Field",
     "nivel": "molecule",
     "destino": "ui",
-    "radix": "Form.Field / Label",
-    "compone": "Label, Input|Textarea|Select|Slider, Text",
+    "radix": "Label + Slot",
+    "compone": "Label, Input|Textarea|Select|Slider, FieldMessage",
     "accion": "separar",
-    "notas": "Pasa a molécula: etiqueta + control + ayuda + error + contador. El control es un átomo aparte."
+    "notas": "Draft molecule #84 coordinates label/control/descriptions/counter. Proposed #179 amendment replaces native hint/error text with FieldMessage while preserving error-over-hint precedence, Slot wiring and the non-live default. No Field implementation or amendment approval implied."
   },
   {
     "actual": "`.eg-btn-split`",
@@ -512,9 +534,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "—",
-    "compone": "Icon, Button",
+    "compone": "Icon, Button; shared FieldMessage recipes",
     "accion": "mantener",
-    "notas": "`role=status` o `alert`. Mantiene `--sm`."
+    "notas": "Draft #93 retains its status/alert owner, summary/actions and compact size. Proposed #179 amendment shares marker-free tone/icon/text recipes from FieldMessage, not its root or live semantics. No implementation or peer amendment performed."
   },
   {
     "actual": "—",
@@ -611,9 +633,31 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "—",
-    "compone": "Surface, Badge, Button",
+    "compone": "Panel, Badge, Button; specialized Surface frame",
     "accion": "mantener",
-    "notas": "`--error`, `--stopped`, `--wide`, `--banded` (cabecera y pie en banda tonal, Grafito); `--glass` pasa a Surface."
+    "notas": "Draft #91 amendment proposed by #180: normal/banded states compose Panel; error/stopped retain specialized frames and share Panel zone recipes. Public title/status/actions/footer, wide layout and legacy markers remain; no amendment approval or implementation implied."
+  },
+  {
+    "actual": "ModuleCard frame",
+    "nivelActual": "design anatomy",
+    "nombre": "Panel",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "—",
+    "compone": "Surface",
+    "accion": "extraer",
+    "notas": "Draft v0.1 only: static host-agnostic Header/Body/Footer composition, default/banded variants and explicit frame ownership. Popover #96, Dialog #119 or a page own opening/semantics. Contract: [#180](https://github.com/egdev6/egdev-design-system/issues/180), [local draft](components/panel/v0.1/spec.md)."
+  },
+  {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "Collapsible",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "Collapsible",
+    "compone": "Surface, Button recipe, Icon",
+    "accion": "nuevo",
+    "notas": "Draft v0.1 only: independent disclosure over @radix-ui/react-collapsible, pending owner confirmation before dependency addition. Accordion is not justified or requested; NavList #92 unchanged. Contract: [#181](https://github.com/egdev6/egdev-design-system/issues/181), [local draft](components/collapsible/v0.1/spec.md)."
   },
   {
     "actual": "SearchTrigger",

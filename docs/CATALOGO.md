@@ -11,8 +11,8 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 |---|---|
 | mover | 35 |
 | mantener | 30 |
-| nuevo | 21 |
-| extraer | 9 |
+| nuevo | 23 |
+| extraer | 11 |
 | fusionar | 3 |
 | separar | 3 |
 | componer | 2 |
@@ -21,7 +21,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 
 | Destino | Componentes |
 |---|---|
-| @egdev/ui | 69 |
+| @egdev/ui | 73 |
 | @egdev/effects | 2 |
 | Mando | 6 |
 | Cadencia | 1 |
@@ -65,9 +65,11 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **RadioGroup** | — | RadioGroup | — | nuevo | Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/66): exclusive choice among short text options from a data-driven `options` array over Radix RadioGroup, named by `label`, vertical or horizontal arrow axis, form `name`/`required`. Unchecked circles are Material wells; the checked one takes the primary gradient, bevel and halo with a black dot. `radioGroupVariants` exposes per-part recipes for SelectTile parity. No stylesheet. |
 | **Chip** | Chip (átomo) | Toggle | — | mantener | Implemented in @egdev/ui under the approved v0.1 contract: always-pressable pill on Radix Toggle with controlled/uncontrolled pressed state, an optional decorative leading icon and the sheen/edge raised recipe with red-tinted glow when on. Public chipVariants for the future ChipGroup (ToggleGroup.Item). No ref, asChild, size axis or stylesheet; the Avatar variant (D5) is deferred and legacy `.eg-chip` is unchanged. Contract: [#55](https://github.com/egdev6/egdev-design-system/issues/55). |
 | **Badge** | Tag + StatusBadge (átomo) | — | — (consumer-supplied decorative icon) | fusionar | Implemented in @egdev/ui: passive span label with six tone families, soft/solid treatments, a decorative ReactNode icon slot and the label-default pill recipe. No automatic Icon dependency, ref, asChild or stylesheet. Legacy `.eg-tag` and `.eg-status` remain unchanged. Contract: [#52](https://github.com/egdev6/egdev-design-system/issues/52), v0.1 D7. |
+| **Indicator** | Avatar corner badge (internal part) | — | Icon | extraer | Draft v0.1 only: anchored dot/count/network-icon marker and positioning wrapper. Avatar #51 migration is a separate amendment; Badge #52 stays unchanged. Contract: [#178](https://github.com/egdev6/egdev-design-system/issues/178), [local draft](components/indicator/v0.1/spec.md). No implementation approval. |
+| **FieldMessage** | — | — | Icon | nuevo | Draft v0.1 only: hint/error icon plus text, control description id and explicit live policy. Field #84 composes it with live off to preserve its default; Notice #93 shares marker-free tone/icon/text recipes. Contract: [#179](https://github.com/egdev6/egdev-design-system/issues/179), [local draft](components/field-message/v0.1/spec.md). |
 | **StatusDot** | StatusDot + LiveDot (átomo) | — | — | fusionar | Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/71): decorative aria-hidden dot fusing StatusDot and LiveDot. Status states running/idle/warning/error/stopped (default) are 8px with a surface ring; live/standby are 10px with the hot glow and a motion-safe pulse (pulse={false} for static). Migration: LiveDot → state='live', LiveDot--static → pulse={false}, waiting → state='standby'. status-dot.css holds only the pulse keyframes. |
 | **Kbd** | Kbd (átomo) | — | — | mantener | Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/60): one key or shortcut glyph as native inline kbd text with a flat hairline treatment (label-default recipe, secondary text). Optional label gives symbol keys a spoken name through Radix VisuallyHidden and hides the glyph. Combos are consumer composition. No stylesheet. |
-| **Avatar** | Avatar (átomo) | Avatar | Icon | mantener | Implemented in @egdev/ui under the approved v0.1 contract: passive identity disc with Radix-managed photo loading and immediate user-icon fallback, sm/md/lg/xl sizes, an optional decorative network badge and paused presentation. Root label owns the accessible name; decorative without it. No initials, interaction, ref, asChild or stylesheet. Contract: [#51](https://github.com/egdev6/egdev-design-system/issues/51). |
+| **Avatar** | Avatar (átomo) | Avatar | Icon; proposed Indicator migration (#178) | mantener | Implemented in @egdev/ui under the approved v0.1 contract: passive identity disc with Radix-managed photo loading and immediate user-icon fallback, sm/md/lg/xl sizes, an optional decorative network badge and paused presentation. Root label owns the accessible name; decorative without it. No initials, interaction, ref, asChild or stylesheet. Contract: [#51](https://github.com/egdev6/egdev-design-system/issues/51). Proposed Indicator extraction preserves badgeIcon, geometry and legacy marker; amendment and plan approval remain separate, with no migration performed. |
 | **Logo** | Logo (átomo) | — | — | mantener | Implemented React atom under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/62): V4 isotype (mark) or isotype with white name (wordmark) as inline SVG data with the --logo-red/--logo-red-shade token inks, 28/32/36px heights, named span image or native link with the focus ring. No asChild, ref or stylesheet; legacy eg-logo CSS untouched. |
 | **ProgressBar** | ProgressBar (átomo) | Progress | — | mantener | Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/65): passive Radix Progress bar in percent (clamped 0–100; non-finite values are indeterminate with an empty fill). `label` announces the progressbar, otherwise it is decorative. `size` sm hairline or lg goal well with gradient fill and token bevel, `variant` muted for comparison series and sm-only `edge` strip. Fill scaled through `--eg-progress-value`. No stylesheet. |
 | **Gauge** | Gauge (átomo) | — (native role=meter) | Native transparent geometry frame | mantener | Currently implemented React component: one passive circular 0–100 measurement with optional decorative center and consumer-selected normal, warning, critical or muted state. Own transparent native frame uses existing tokens, not Surface. Effective contract: [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md), [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) and [base](specs/gauge.md). Not task progress, multiple rings or a dock API; no Radix dependency. |
@@ -84,7 +86,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
-| **Field** | Field (átomo) | Form.Field / Label | Label, Input\|Textarea\|Select\|Slider, Text | separar | Pasa a molécula: etiqueta + control + ayuda + error + contador. El control es un átomo aparte. |
+| **Field** | Field (átomo) | Label + Slot | Label, Input\|Textarea\|Select\|Slider, FieldMessage | separar | Draft molecule #84 coordinates label/control/descriptions/counter. Proposed #179 amendment replaces native hint/error text with FieldMessage while preserving error-over-hint precedence, Slot wiring and the non-live default. No Field implementation or amendment approval implied. |
 | **ButtonGroup** | `.eg-btn-split` (sin ficha) | — | Button, IconButton, Menu | extraer | Botón dividido (`--join-start/--join-end`) y grupos de botones. |
 | **ChipGroup** | — | ToggleGroup | Chip | nuevo | Filtros (múltiple) y selección exclusiva (borde de la pantalla en Quorb). |
 | **Tabs** | Tabs (molécula) | Tabs | Badge (contador) | mantener | Provisional future tab-selection concept; not an implemented or importable React API. The previous reference was retired under the [Gauge v0.9 amendment](components/gauge/v0.9/composition-amendment.md); Gauge's current finish follows the [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md). |
@@ -92,7 +94,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **NavList** | MenuList --nav (molécula) | Accordion (grupos) / Collapsible | Icon, Badge, StatusDot | separar | Navegación lateral con grupos plegables, contadores y etiquetas `__tag`. |
 | **Popover** | — | Popover | Surface, Portal | nuevo | Panel flotante al hacer clic. |
 | **HoverCard** | — | HoverCard | Surface glass, Portal | nuevo | El panel de detalle de Quorb al pasar por un Gauge. |
-| **Notice** | Notice (molécula) | — | Icon, Button | mantener | `role=status` o `alert`. Mantiene `--sm`. |
+| **Notice** | Notice (molécula) | — | Icon, Button; shared FieldMessage recipes | mantener | Draft #93 retains its status/alert owner, summary/actions and compact size. Proposed #179 amendment shares marker-free tone/icon/text recipes from FieldMessage, not its root or live semantics. No implementation or peer amendment performed. |
 | **Toast** | — | Toast | Notice | nuevo | Avisos efímeros (publicado, copiado). No existe. |
 | **ListItem** | PostCard (molécula) | Slot | Surface, Text, Badge, Button | renombrar | Fila/tarjeta genérica con estados (`new`, `failed`, `done`, `empty`, `dragging`, `off`) y `--row`. |
 | **SelectTile** | SelectTile (molécula) | RadioGroup.Item / ToggleGroup.Item | AspectRatio, Text | mantener | Proporciones como variantes (portrait, story, square, wide, banner). |
@@ -100,7 +102,9 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **PageHeader** | — | — | Text, ButtonGroup | nuevo | Eyebrow + título + acciones. Repetido a mano en todas las apps. |
 | **SectionHeader** | SectionHeader (molécula) | — | Text | mantener | Cabecera de sección en registro Show; valorar unificar con PageHeader por `register`. |
 | **MeterRow** | — | Progress | ProgressBar, Text, Gauge key | nuevo | Etiqueta + valor + barra + ayuda (Quorb, egdev-live, Criterio). |
-| **ModuleCard** | ModuleCard (molécula) | — | Surface, Badge, Button | mantener | `--error`, `--stopped`, `--wide`, `--banded` (cabecera y pie en banda tonal, Grafito); `--glass` pasa a Surface. |
+| **ModuleCard** | ModuleCard (molécula) | — | Panel, Badge, Button; specialized Surface frame | mantener | Draft #91 amendment proposed by #180: normal/banded states compose Panel; error/stopped retain specialized frames and share Panel zone recipes. Public title/status/actions/footer, wide layout and legacy markers remain; no amendment approval or implementation implied. |
+| **Panel** | ModuleCard frame (design anatomy) | — | Surface | extraer | Draft v0.1 only: static host-agnostic Header/Body/Footer composition, default/banded variants and explicit frame ownership. Popover #96, Dialog #119 or a page own opening/semantics. Contract: [#180](https://github.com/egdev6/egdev-design-system/issues/180), [local draft](components/panel/v0.1/spec.md). |
+| **Collapsible** | — | Collapsible | Surface, Button recipe, Icon | nuevo | Draft v0.1 only: independent disclosure over @radix-ui/react-collapsible, pending owner confirmation before dependency addition. Accordion is not justified or requested; NavList #92 unchanged. Contract: [#181](https://github.com/egdev6/egdev-design-system/issues/181), [local draft](components/collapsible/v0.1/spec.md). |
 | **SocialLinks** | SocialLinks (molécula) | — | IconButton, Cluster | mantener |  |
 | **Carousel** | — | — (roving focus propio) | IconButton, ProgressBar | extraer | Sale de TipsSlider: contador, anterior/siguiente, arrastre y teclado. |
 | **Dialog** | Dialog (organismo) | Dialog | Surface, ButtonGroup, Portal | mantener | Coordinates dialog content and actions as one reusable overlay interaction, not a structural page region. Retains the `sheet` variant for side panels (MobileMenu). See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval. |
@@ -235,6 +239,6 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 
 ## Primitivas de Radix que se usan
 
-`AccessibleIcon`, `Accordion`, `AlertDialog`, `AspectRatio`, `Avatar`, `Checkbox`, `Collapsible`, `Dialog`, `DropdownMenu`, `Form.Field`, `HoverCard`, `Label`, `NavigationMenu`, `Popover`, `Portal`, `Progress`, `RadioGroup`, `ScrollArea`, `Select`, `Separator`, `Slider`, `Slot`, `Switch`, `Tabs`, `Toast`, `Toggle`, `ToggleGroup`, `Toolbar`, `Tooltip`, `VisuallyHidden`
+`AccessibleIcon`, `Accordion`, `AlertDialog`, `AspectRatio`, `Avatar`, `Checkbox`, `Collapsible`, `Dialog`, `DropdownMenu`, `HoverCard`, `Label`, `NavigationMenu`, `Popover`, `Portal`, `Progress`, `RadioGroup`, `ScrollArea`, `Select`, `Separator`, `Slider`, `Slot`, `Switch`, `Tabs`, `Toast`, `Toggle`, `ToggleGroup`, `Toolbar`, `Tooltip`, `VisuallyHidden`
 
 Todas vienen del paquete unificado `radix-ui` (`import { Tabs } from 'radix-ui'`).
