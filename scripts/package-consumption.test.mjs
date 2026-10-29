@@ -128,13 +128,20 @@ const tileOptions: SelectTileOption[] = [
   { value: 'camera', label: 'Camera', meta: 'Two layers', live: true, badge: 'Live', thumb: tileThumb },
   { value: 'slides', label: 'Slides' }
 ];
-const singleTile: SelectTileProps = { type: tileType, label: 'Scenes', options: tileOptions, ratio: tileRatio, name: 'scene', required: true };
-const multipleTile: SelectTileProps = { type: 'multiple', label: 'Outputs', options: tileOptions, defaultValue: ['slides'] };
+const singleTile: Extract<SelectTileProps, { type: 'single' }> = { type: tileType, label: 'Scenes', options: tileOptions, ratio: tileRatio, name: 'scene', required: true };
+const multipleTile: Extract<SelectTileProps, { type: 'multiple' }> = { type: 'multiple', label: 'Outputs', options: tileOptions, defaultValue: ['slides'] };
 export const tileRequests: (string | string[])[] = [];
 export function SelectTileSamples({ multiple = false, value }: { multiple?: boolean; value?: string }) {
-  return multiple
-    ? createElement(SelectTile, { ...multipleTile, onValueChange: (next) => tileRequests.push(next) })
-    : createElement(SelectTile, { ...singleTile, value, onValueChange: (next) => tileRequests.push(next) });
+  if (multiple) {
+    const props: Extract<SelectTileProps, { type: 'multiple' }> = {
+      ...multipleTile, onValueChange: (next) => tileRequests.push(next)
+    };
+    return createElement(SelectTile, props);
+  }
+  const props: Extract<SelectTileProps, { type: 'single' }> = {
+    ...singleTile, value, onValueChange: (next) => tileRequests.push(next)
+  };
+  return createElement(SelectTile, props);
 }
 // @ts-expect-error Single values are scalar strings, never arrays.
 const tileSingleArray: SelectTileProps = { type: 'single', label: 'Scenes', options: [], value: [] };

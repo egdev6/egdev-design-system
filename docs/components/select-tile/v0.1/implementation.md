@@ -26,7 +26,7 @@ Consumers own non-empty names/unique values, valid selections, at most one live 
 - Package exports: SelectTile plus SelectTileProps, SelectTileType, SelectTileRatio, SelectTileOption and SelectTileThumbnail only.
 - Production scanning adds the additive molecules `types.ts` source glob. The existing recursive Storybook stories glob already discovers molecules; native-prop filtering and preview story layout scanning are extended.
 - Storybook title: `Molecules/SelectTile`. Twelve contract scenarios, no manual argTypes or play functions. Real docgen and registered extraction/enhancer/inference regressions cover A1 and zero owned diagnostics.
-- Both exact package export inventories and the packed runtime-key list are extended. Packed fixtures import real public types, include negative API assertions and exercise SSR/client selection, passive media and error fallback. Packed execution belongs to the parent.
+- Both exact package export inventories and the packed runtime-key list are extended. Packed fixtures import real public types, include negative API assertions and exercise SSR/client selection, passive media and error fallback. Packed execution was initially parent-owned; the delivery repair below records the subsequently authorized writer validation.
 - Registry usages reuse accessible-name, choice-options, primary-value, initial-uncontrolled-value, interactive-value-change, selection-cardinality, aspect-ratio, option-metadata, preview-thumbnail, live-presentation and thumbnail-badge. Option value/label usages bind SelectTileOption separately. No convention, approval or exception changes. Native-equivalent fields require no new convention.
 - Reviewed naming evidence: whole-file `types.ts` SHA-256 `211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92`. Generated naming and catalogue views are regenerated from their sources.
 
@@ -48,6 +48,14 @@ ToggleGroup 1.2.1 defaults its multiple root to toolbar (`packages/ui/node_modul
 
 Radix's radio focus task runs asynchronously while an arrow is held: tests press, allow its focus task, then release. The only browser-API stub is ResizeObserver for Radix's hidden-input measurement in jsdom; keyboard, selection, focus and ARIA are not mocked. Radix may emit single-mode bubble inputs during SSR before knowing whether the button is inside a form; they remain Radix-owned.
 
+## Packed-consumer delivery repair
+
+The parent authorized a bounded packed-suite reproduction after committing the implementation. `pnpm build` passed. Run 1 of the authorized command below reproduced failures in both React 18.3.1 and 19.3.0 type stages: `TS7006` on callback parameters and `TS2769` comparing the single value with the multiple array branch. Entries, SSR, CSR and CSS passed.
+
+Root cause: fixture constants annotated with the full `SelectTileProps` union were spread inside a closure and passed directly to `createElement`; branch-specific value/callback inference was lost. The fixtures and local call props now use `Extract<SelectTileProps, { type: 'single' }>` or its multiple counterpart. This uses the real public types, restores contextual callback typing and retains every negative assertion. Production code and public API are unchanged.
+
+`flock /tmp/egdev-packed.lock timeout 900 systemd-run --user --scope -q -p MemoryMax=2G pnpm test:package-consumption > /tmp/st-packed.log 2>&1`: run 1 failed the two type stages; run 2 passed all 12 tests across React 18.3.1 and 19.3.0. No third run was needed. The suite still logs unrelated ProgressBar fixture warnings about a div nested inside a paragraph; those fixtures were not changed.
+
 ## Remaining evidence
 
-Visual conformity against VIS-01/VIS-02: **Not evaluated**. No browser/Storybook server, screenshots, screen-reader assessment, computed cross-browser cascade, contrast, zoom/coarse-pointer checks or actual Controls-widget inspection were run. CSS/export checks establish emitted utilities and legacy layer ordering, not visual parity. React 18/19 packed-consumer execution and full delivery gates remain with the parent. No Git terminal actions or PR publication were performed.
+Visual conformity against VIS-01/VIS-02: **Not evaluated**. No browser/Storybook server, screenshots, screen-reader assessment, computed cross-browser cascade, contrast, zoom/coarse-pointer checks or actual Controls-widget inspection were run. CSS/export checks establish emitted utilities and legacy layer ordering, not visual parity. Packed React 18/19 consumption passed as recorded above; full delivery orchestration remains with the parent. The writer performed no commits or PR publication.
