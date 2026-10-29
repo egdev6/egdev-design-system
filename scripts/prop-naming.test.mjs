@@ -16,6 +16,208 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/molecules/page-header/types.ts#PageHeaderProps'
   })),
+  ...[
+    'heading-title',
+    'heading-level',
+    'item-presentation-status',
+    'trailing-actions',
+    'localized-messages',
+    'panel-footer',
+    'visual-treatment',
+    'surface-material-tone',
+    'leading-icon'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/module-card/types.ts#ModuleCardProps'
+  })),
+  ...[
+    'accessible-name',
+    'field-hint',
+    'field-error',
+    'character-counter',
+    'value-readout',
+    'visually-hidden-label',
+    'label-layout'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/field/types.ts#FieldProps'
+  })),
+  ...['accessible-name', 'layout-orientation'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/gauge-dock/types.ts#GaugeDockProps'
+  })),
+  ...['accessible-name', 'collection-items', 'navigation-intent'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/nav-list/types.ts#NavListProps'
+  })),
+  ...['open-state', 'initial-uncontrolled-open', 'open-change'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/nav-list/types.ts#NavListCollapsibleGroup'
+  })),
+  { conventionId: 'menu-entry-kind', source: 'packages/ui/src/molecules/nav-list/types.ts#NavListEntry' },
+  { conventionId: 'leading-icon', source: 'packages/ui/src/molecules/nav-list/types.ts#NavListLink' },
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/molecules/nav-list/types.ts#NavListTag' },
+  ...['accessible-name', 'visual-treatment', 'preset-dimensions', 'collection-items', 'localized-messages'].map(
+    (conventionId) => ({ conventionId, source: 'packages/ui/src/molecules/timeline/types.ts#TimelineProps' })
+  ),
+  ...['transient-highlight', 'surface-material-tone', 'leading-icon'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/timeline/types.ts#TimelineEvent'
+  })),
+  ...[
+    'accessible-name',
+    'choice-options',
+    'primary-value',
+    'initial-uncontrolled-value',
+    'interactive-value-change',
+    'selection-cardinality',
+    'aspect-ratio'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/select-tile/types.ts#SelectTileProps'
+  })),
+  ...[
+    'accessible-name',
+    'primary-value',
+    'option-metadata',
+    'preview-thumbnail',
+    'live-presentation',
+    'thumbnail-badge'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/select-tile/types.ts#SelectTileOption'
+  })),
+  ...['open-state', 'initial-uncontrolled-open', 'open-change'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/hover-card/types.ts#HoverCardProps'
+  })),
+  { conventionId: 'slot-composition', source: 'packages/ui/src/molecules/hover-card/types.ts#HoverCardTriggerProps' },
+  ...['floating-side', 'floating-align'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/hover-card/types.ts#HoverCardContentProps'
+  })),
+  ...['open-state', 'initial-uncontrolled-open', 'open-change', 'interaction-modality'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/popover/types.ts#PopoverProps'
+  })),
+  ...['accessible-name', 'floating-side', 'floating-align'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/popover/types.ts#PopoverContentProps'
+  })),
+  ...['PopoverTriggerProps', 'PopoverCloseProps'].map((symbol) => ({
+    conventionId: 'slot-composition',
+    source: `packages/ui/src/molecules/popover/types.ts#${symbol}`
+  })),
+  ...[
+    'collection-items',
+    'accessible-name',
+    'group-caption',
+    'inline-caption-layout',
+    'visual-treatment',
+    'preset-dimensions',
+    'layout-gap',
+    'new-tab-notice'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/social-links/types.ts#SocialLinksProps'
+  })),
+  ...['accessible-name', 'leading-icon', 'new-tab-navigation'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/social-links/types.ts#SocialLinkItem'
+  })),
+  ...[
+    'heading-title',
+    'heading-eyebrow',
+    'trailing-text-accent',
+    'accent-line-break',
+    'section-lede',
+    'visual-treatment',
+    'heading-level',
+    'heading-id',
+    'surface-material-tone'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/section-header/types.ts#SectionHeaderProps'
+  })),
+  ...[
+    'accessible-name',
+    'primary-value',
+    'measurement-text-equivalent',
+    'visual-treatment',
+    'localized-messages',
+    'numeric-display-help'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/meter-row/types.ts#MeterRowProps'
+  })),
+  ...[
+    'floating-side',
+    'collection-items',
+    'floating-align',
+    'open-state',
+    'initial-uncontrolled-open',
+    'open-change',
+    'panel-header',
+    'navigation-intent'
+  ].map((conventionId) => ({ conventionId, source: 'packages/ui/src/molecules/menu/types.ts#MenuProps' })),
+  ...['menu-entry-kind', 'leading-icon', 'surface-material-tone', 'keyboard-shortcut-hint'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/menu/types.ts#MenuEntry'
+  })),
+  { conventionId: 'collection-items', source: 'packages/ui/src/molecules/menu/types.ts#MenuSubmenuItem' },
+  ...[
+    'accessible-name',
+    'primary-value',
+    'initial-uncontrolled-value',
+    'interactive-value-change',
+    'collection-items',
+    'localized-messages'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/carousel/types.ts#CarouselProps'
+  })),
+  ...['accessible-name', 'primary-value'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/carousel/types.ts#CarouselItem'
+  })),
+  ...[
+    'accessible-name',
+    'primary-value',
+    'initial-uncontrolled-value',
+    'interactive-value-change',
+    'choice-options',
+    'selection-cardinality'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/chip-group/types.ts#ChipGroupProps'
+  })),
+  ...['accessible-name', 'primary-value', 'leading-icon'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/chip-group/types.ts#ChipGroupOption'
+  })),
+  ...['visual-treatment', 'slot-composition', 'item-presentation-status'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/list-item/types.ts#ListItemProps'
+  })),
+  ...[
+    'accessible-name',
+    'collection-items',
+    'primary-value',
+    'initial-uncontrolled-value',
+    'interactive-value-change',
+    'visual-treatment',
+    'preset-dimensions'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/tabs/types.ts#TabsProps'
+  })),
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/molecules/tabs/types.ts#TabsItem' },
+  ...['surface-material-tone', 'preset-dimensions', 'leading-icon', 'message-summary', 'trailing-actions'].map(
+    (conventionId) => ({
+      conventionId,
+      source: 'packages/ui/src/molecules/notice/types.ts#NoticeProps'
+    })
+  ),
   ...['accessible-name', 'visual-treatment'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/button-group/types.ts#ButtonGroupProps'
@@ -956,8 +1158,9 @@ test('molecule naming receipt binds delegated decisions without speculative impl
 test('organism naming receipt binds delegated decisions and the menu-entry-kind widening', () => {
   const reference = 'docs/decisions/prop-naming-organism-specs-approval.json';
   const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
-  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
-  validate(actual);
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(registry);
+  const actual = historicalRegistry(registry);
   assert.equal(receipt.kind, 'human-approval-record');
   assert.equal(receipt.nativeReviewApproval, false);
   assert.equal(receipt.authority, 'assistant-observed-human-delegation');
@@ -992,7 +1195,7 @@ test('organism naming receipt binds delegated decisions and the menu-entry-kind 
     assert.equal(record.scope, `convention:${entry.id}`);
     assert.equal(record.contentHash, props.conventionHash(entry), entry.id);
     assert.deepEqual(approval, { reference, scope: record.scope, contentHash: record.contentHash });
-    assert.deepEqual(usages, [], entry.id);
+    assert.deepEqual(historicalRegistry([entry])[0].usages, [], entry.id);
     const changed = structuredClone(actual);
     changed.find((entry) => entry.id === record.convention.id).meaning += ' Changed.';
     assert.throws(() => validate(changed), /approval/i, entry.id);
