@@ -118,6 +118,50 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts GaugeDock composition, protected native semantics and own Controls metadata', () => {
+    const entries = parser.parse(source('molecules/gauge-dock/GaugeDock.tsx'));
+    const root = entries.find(({ displayName }) => displayName === 'GaugeDock');
+    const item = entries.find(({ displayName }) => displayName === 'GaugeDockItem');
+    const separator = entries.find(({ displayName }) => displayName === 'GaugeDockSeparator');
+    expect(root?.props.label).toMatchObject({ required: true, tags: { control: 'text' } });
+    expect(root?.props.orientation).toMatchObject({
+      defaultValue: { value: 'horizontal' },
+      tags: { control: 'select' }
+    });
+    expect(root?.props.orientation?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'horizontal',
+      'vertical'
+    ]);
+    for (const doc of [root, item]) {
+      expect(doc?.props.children).toMatchObject({
+        required: true,
+        tags: { control: 'false', controlReason: expect.stringMatching(/serializable/) }
+      });
+    }
+    expect(item?.props.children?.type.name).toMatch(/ReactElement/);
+    expect(root?.props.dir?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual(['ltr', 'rtl']);
+    for (const doc of [root, item, separator]) {
+      expect(doc).toBeDefined();
+      for (const prop of ['id', 'title', 'className', 'style']) {
+        expect(doc?.props[prop], prop).toBeDefined();
+      }
+      for (const prop of ['role', 'tabIndex', 'asChild', 'ref', 'dangerouslySetInnerHTML']) {
+        expect(doc?.props[prop], prop).toBeUndefined();
+      }
+    }
+    expect(separator?.props.children).toBeUndefined();
+    expect(separator?.props.orientation).toBeUndefined();
+    expect(separator?.props['aria-hidden']).toBeUndefined();
+    const properties = ownProps(ast(source('molecules/gauge-dock/types.ts')), ['GaugeDockProps', 'GaugeDockItemProps']);
+    expect(properties).toHaveLength(4);
+    for (const property of properties) {
+      const tags = ts.getJSDocTags(property);
+      expect(tags.filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
+      if (!property.questionToken) {
+        expect(tags.some(({ tagName }) => tagName.text === 'default')).toBe(false);
+      }
+    }
+  });
   it('extracts the Toggle union, boolean defaults, native button props and every own directive', () => {
     const doc = parser.parse(source('atoms/toggle/Toggle.tsx')).find((item) => item.displayName === 'Toggle');
     expect(doc).toBeDefined();
@@ -192,6 +236,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/toggle',
       './atoms/tooltip',
       './lib/cn',
+      './molecules/gauge-dock',
       './primitives/aspect-ratio',
       './primitives/divider',
 
@@ -216,6 +261,9 @@ describe('Storybook TypeScript docgen contract', () => {
       'Divider',
       'Dropzone',
       'Gauge',
+      'GaugeDock',
+      'GaugeDockItem',
+      'GaugeDockSeparator',
       'Heading',
       'Icon',
       'IconButton',

@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, GaugeDock, GaugeDockItem, GaugeDockSeparator, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -52,6 +52,9 @@ import type {
   DividerProps,
   DropzoneProps,
   GaugeProps,
+  GaugeDockProps,
+  GaugeDockItemProps,
+  GaugeDockSeparatorProps,
   GaugeState,
   GaugeSize,
   IconButtonProps,
@@ -207,6 +210,44 @@ const invalidCheckboxState: CheckboxProps = { checked: 'mixed' };
 const checkboxChange: CheckboxProps = { onChange: () => undefined };
 // @ts-expect-error Button type is owned by Radix Checkbox.
 const checkboxType: CheckboxProps = { type: 'submit' };
+export const gaugeDockActionRef = createRef<HTMLButtonElement>();
+export const gaugeDockCalls: string[] = [];
+export function GaugeDockSamples({ value = 0, orientation = 'horizontal', dir = 'ltr' }: { value?: number; orientation?: GaugeDockProps['orientation']; dir?: GaugeDockProps['dir'] } = {}) {
+  const first: GaugeDockItemProps = { children: [
+    createElement(Gauge, { key: 'meter', label: 'Packed session usage', value, size: 'sm' }),
+    createElement(Button, { key: 'action', ref: gaugeDockActionRef, onClick: () => gaugeDockCalls.push('session'), children: 'Open packed session details' })
+  ] };
+  const disabled: GaugeDockItemProps = { children: [
+    createElement(Gauge, { key: 'meter', label: 'Packed daily usage', value: 75 }),
+    createElement(Button, { key: 'action', disabled: true, children: 'Open packed daily details' })
+  ] };
+  const unavailable: GaugeDockItemProps = { children: [
+    createElement(Gauge, { key: 'meter', label: 'Packed unavailable usage', value: NaN, unavailableText: 'Packed reading offline' }),
+    createElement(IconButton, { key: 'action', label: 'Open packed offline details', size: 'lg', icon: createElement(Icon, { name: 'arrow-right' }) })
+  ] };
+  const separator: GaugeDockSeparatorProps = { id: 'packed-dock-separator' };
+  const props: GaugeDockProps = { label: 'Packed usage detail actions', id: 'packed-gauge-dock', orientation, dir, children: [
+    createElement(GaugeDockItem, { ...first, key: 'first' }),
+    createElement(GaugeDockSeparator, { ...separator, key: 'separator' }),
+    createElement(GaugeDockItem, { ...disabled, key: 'disabled' }),
+    createElement(GaugeDockItem, { ...unavailable, key: 'offline' })
+  ] };
+  return createElement(GaugeDock, props);
+}
+// @ts-expect-error GaugeDock requires an explicit accessible toolbar name.
+const unnamedDock: GaugeDockProps = { children: null };
+// @ts-expect-error Native automatic direction is not supported by Radix Toolbar.
+const autoDock: GaugeDockProps = { label: 'Usage', children: null, dir: 'auto' };
+// @ts-expect-error Dock has no aggregate value or selection API.
+const valuedDock: GaugeDockProps = { label: 'Usage', children: null, value: 42 };
+// @ts-expect-error Root semantics belong to Radix Toolbar.
+const roleDock: GaugeDockProps = { label: 'Usage', children: null, role: 'group' };
+// @ts-expect-error No public ref is exposed by GaugeDock.
+const refDock: GaugeDockProps = { label: 'Usage', children: null, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Exactly two elements are required, not a single Gauge.
+const incompleteDockItem: GaugeDockItemProps = { children: [createElement(Gauge, { label: 'Usage', value: 0 })] };
+// @ts-expect-error Decorative separator cannot be given an independent orientation.
+const orientedDockSeparator: GaugeDockSeparatorProps = { orientation: 'vertical' };
 export const gaugeDefaults: GaugeProps = { label: 'Capacity', value: 42.5 };
 export const gaugeWarning: GaugeProps = {
   label: 'Warning capacity', value: 42.5, state: gaugeState, stateText: 'Review capacity',
@@ -2345,6 +2386,9 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Divider',
   'Dropzone',
   'Gauge',
+  'GaugeDock',
+  'GaugeDockItem',
+  'GaugeDockSeparator',
   'Heading',
   'Icon',
   'IconButton',
@@ -2493,6 +2537,22 @@ function assertLinkCSS(css) {
   assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);
 }
 
+function assertGaugeDockCSS(css) {
+  for (const selector of [
+    '.max-w-full',
+    '.max-h-full',
+    '.flex-nowrap',
+    '.overflow-auto',
+    String.raw`.data-\[orientation\=vertical\]\:flex-col`,
+    String.raw`.data-\[orientation\=vertical\]\:h-6`,
+    String.raw`.data-\[orientation\=horizontal\]\:w-6`
+  ]) {
+    assert.ok(css.includes(selector), `GaugeDock layout must ship ${selector}`);
+  }
+  assert.match(css, /background-color:\s*var\(--color-border-hairline[,)]/);
+  assert.doesNotMatch(css, /\.eg-gauge-dock(?:-item|-separator)?\s*\{/);
+}
+
 const ssr = `
 import assert from 'node:assert/strict';
 import { createElement } from 'react';
@@ -2500,6 +2560,20 @@ import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
 import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+const { GaugeDockSamples } = await import('./consumer.ts');
+const dockDOM = new JSDOM(renderToString(createElement(GaugeDockSamples)));
+try {
+  const root = dockDOM.window.document.getElementById('packed-gauge-dock');
+  assert.equal(root.getAttribute('role'), 'toolbar');
+  assert.equal(root.getAttribute('aria-label'), 'Packed usage detail actions');
+  assert.equal(root.querySelectorAll('[role="meter"]').length, 2);
+  assert.equal(root.querySelectorAll('button').length, 3);
+  assert.equal(root.querySelector('button [role="meter"]'), null);
+  assert.equal(root.querySelector('[role="meter"]').getAttribute('aria-valuenow'), '0');
+  assert.equal(root.querySelector('#packed-dock-separator').getAttribute('data-orientation'), 'vertical');
+  assert.equal(root.querySelector('#packed-dock-separator').getAttribute('aria-hidden'), 'true');
+  assert.ok(root.textContent.includes('Packed reading offline'));
+} finally { dockDOM.window.close(); }
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
@@ -4237,6 +4311,38 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
+  const { GaugeDockSamples, gaugeDockActionRef, gaugeDockCalls } = await import('./consumer.ts');
+  await act(async () => root.render(createElement(GaugeDockSamples)));
+  const dock = document.getElementById('packed-gauge-dock');
+  const dockButtons = [...dock.querySelectorAll('button')];
+  assert.equal(gaugeDockActionRef.current, dockButtons[0]);
+  assert.equal(dockButtons[1].disabled, true);
+  assert.ok(dockButtons[2].textContent.includes('Open packed offline details'), 'AccessibleIcon hidden text names the action');
+  await act(async () => dock.focus());
+  assert.equal(document.activeElement, dockButtons[0]);
+  const dockKey = async (key) => {
+    await act(async () => {
+      document.activeElement.dispatchEvent(new window.KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    });
+  };
+  await dockKey('ArrowRight');
+  assert.equal(document.activeElement, dockButtons[2], 'Disabled action is skipped');
+  await dockKey('ArrowRight');
+  assert.equal(document.activeElement, dockButtons[2], 'Dock never loops');
+  await dockKey('Home');
+  assert.equal(document.activeElement, dockButtons[0]);
+  await act(async () => dockButtons[0].click());
+  assert.deepEqual(gaugeDockCalls, ['session']);
+  await act(async () => root.render(createElement(GaugeDockSamples, { value: 42.5, orientation: 'vertical' })));
+  assert.equal(document.activeElement, dockButtons[0], 'Measurement updates retain action focus');
+  assert.equal(dock.querySelector('[role="meter"]').getAttribute('aria-valuenow'), '42.5');
+  assert.equal(dock.getAttribute('data-orientation'), 'vertical');
+  await dockKey('ArrowDown');
+  assert.equal(document.activeElement, dockButtons[2]);
+  await act(async () => root.render(null));
+  assert.equal(gaugeDockActionRef.current, null);
+  stage('gauge-dock:complete');
   console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'PullQuote figure identity, variant/tone rerender, blank-text removal and development warning', 'Countdown client sampling, expiry episode, running rerender and unavailable recovery', 'Stat passive group, highlight and no-data rerenders with stable identity', 'SearchTrigger native activation, inert displayed shortcut, compact identity, disabled guard, host Slot trigger and ref cleanup', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup', 'Chip pressed state, change events, controlled/disabled behavior and public recipe'] }));
 } finally {
   stage('unmount:start');
@@ -4322,6 +4428,8 @@ const assets = [result].flat().flatMap((bundle) => bundle.output).filter((asset)
 const emitted = assets.map((asset) => String(asset.source)).join('\\n');
 assert.ok(assets.length > 0, 'Vite must emit consumer CSS');
 assert.ok(!emitted.includes('@theme'), 'Native consumption must not need Tailwind to interpret @theme');
+${assertGaugeDockCSS.toString()}
+assertGaugeDockCSS(emitted);
 ${assertButtonCSS.toString()}
 ${assertBadgeCSS.toString()}
 assertBadgeCSS(emitted);
@@ -4416,6 +4524,7 @@ const tailwind = await build({ configFile: false, logLevel: 'error', plugins: [t
 const twAssets = [tailwind].flat().flatMap((bundle) => bundle.output).filter((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'));
 const twCss = twAssets.map((asset) => String(asset.source)).join(' ');
 assert.ok(twAssets.length > 0, 'Tailwind build must emit CSS');
+assertGaugeDockCSS(twCss);
 assertCheckboxCSS(twCss);
 assertButtonCSS(twCss);
 assertBadgeCSS(twCss);

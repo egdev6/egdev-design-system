@@ -242,6 +242,23 @@ describe('Storybook preview CSS', () => {
     expect(gaugeCircleVariants().split(/\s+/)).toContain(utility);
   });
 
+  it('compiles GaugeDock axis, overflow and perpendicular separator utilities without a custom stylesheet', () => {
+    expect(rule('.max-w-full')).toMatch(/max-width:\s*100%/);
+    expect(rule('.max-h-full')).toMatch(/max-height:\s*100%/);
+    expect(rule('.overflow-auto')).toMatch(/overflow:\s*auto/);
+    expect(rule(String.raw`.data-\[orientation\=vertical\]\:flex-col[data-orientation="vertical"]`)).toMatch(
+      /flex-direction:\s*column/
+    );
+    expect(rule(String.raw`.data-\[orientation\=vertical\]\:h-6[data-orientation="vertical"]`)).toMatch(
+      /height:\s*var\(--space-6\)/
+    );
+    expect(rule(String.raw`.data-\[orientation\=horizontal\]\:w-6[data-orientation="horizontal"]`)).toMatch(
+      /width:\s*var\(--space-6\)/
+    );
+    expect(css).not.toMatch(/\.eg-gauge-dock(?:-item|-separator)?\s*\{/);
+    expect(rule('.max-w-80')).toMatch(/max-width:/);
+  });
+
   it('keeps Gauge independent of Surface imports and class identities', () => {
     for (const file of ['Gauge.tsx', 'types.ts', 'useGauge.ts']) {
       const source = readFileSync(new URL(`../atoms/gauge/${file}`, import.meta.url), 'utf8');
