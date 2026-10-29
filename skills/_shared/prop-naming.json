@@ -15,6 +15,26 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "SelectTile",
+        "type": "string | string[] (mode-dependent)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileProps",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
+      {
+        "component": "SelectTileOption",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileOption",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
+      {
         "component": "Gauge",
         "type": "number",
         "status": "existing",
@@ -92,6 +112,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "SelectTile",
+        "type": "string | string[] (mode-dependent)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileProps",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
+      {
         "component": "RadioGroup",
         "type": "string",
         "status": "existing",
@@ -138,6 +168,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "SelectTile",
+        "type": "((value: string) => void) | ((value: string[]) => void) (mode-dependent)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileProps",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
       {
         "component": "RadioGroup",
         "type": "(value: string) => void",
@@ -593,6 +633,26 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "SelectTile",
+        "type": "string (required collection name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileProps",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
+      {
+        "component": "SelectTileOption",
+        "type": "string (visible control name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileOption",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
       {
         "component": "Avatar",
         "type": "string",
@@ -1666,6 +1726,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "SelectTile",
+        "type": "SelectTileOption[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileProps",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
+      {
         "component": "RadioGroup",
         "type": "RadioGroupOption[]",
         "status": "existing",
@@ -1939,6 +2009,16 @@
     },
     "usages": [
       {
+        "component": "SelectTile",
+        "type": "SelectTileRatio = 'landscape' | 'portrait' | 'story' | 'square' | 'wide' | 'banner'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileProps",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
+      {
         "component": "AspectRatio",
         "type": "number",
         "status": "existing",
@@ -1996,7 +2076,18 @@
       "scope": "convention:selection-cardinality",
       "contentHash": "sha256:f64c90bbbb7a034e76d20b15147113520b24c71e2c8061534800eb8e557a9da9"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SelectTile",
+        "type": "SelectTileType = 'single' | 'multiple'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileProps",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      }
+    ]
   },
   {
     "id": "deadline-instant",
@@ -2847,7 +2938,18 @@
       "scope": "convention:option-metadata",
       "contentHash": "sha256:34ae867cd35b9609ef3b293c6953f965e3889d64c2b7030170666e27f9bd99e5"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SelectTileOption",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileOption",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      }
+    ]
   },
   {
     "id": "preview-thumbnail",
@@ -2863,7 +2965,18 @@
       "scope": "convention:preview-thumbnail",
       "contentHash": "sha256:ea9f56de34a4533555362e81a233937ffccc7379b423153c1824bc79d78291d3"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SelectTileOption",
+        "type": "SelectTileThumbnail = { src: string }",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileOption",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      }
+    ]
   },
   {
     "id": "live-presentation",
@@ -2879,7 +2992,18 @@
       "scope": "convention:live-presentation",
       "contentHash": "sha256:a5add4e971a9ab337f10f9c0c081fe4c28aa9ebba5bac220b623fe837853cdde"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SelectTileOption",
+        "type": "boolean (live: true requires badge)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileOption",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      }
+    ]
   },
   {
     "id": "thumbnail-badge",
@@ -2895,7 +3019,18 @@
       "scope": "convention:thumbnail-badge",
       "contentHash": "sha256:70917ec0755d7f42a11f600c3a201b349c173df0c884d5869637e9c7d6e744b1"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SelectTileOption",
+        "type": "string (required when live: true)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileOption",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      }
+    ]
   },
   {
     "id": "layout-gap",
