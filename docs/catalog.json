@@ -440,6 +440,17 @@
     "notas": "Draft molecule #84 coordinates label/control/descriptions/counter. Proposed #179 amendment replaces native hint/error text with FieldMessage while preserving error-over-hint precedence, Slot wiring and the non-live default. No Field implementation or amendment approval implied."
   },
   {
+    "actual": "MenuList (popup)",
+    "nivelActual": "molécula",
+    "nombre": "Menu",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "DropdownMenu",
+    "compone": "Icon, Kbd, Surface recipe",
+    "accion": "separar",
+    "notas": "Implemented data-driven action menu under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/89) plus A1/A2: action/link/separator/label entries, one submenu level, optional non-interactive header and controlled/uncontrolled visibility. Radix owns trigger keys, focus, ARIA, portals and collision handling; Escape closes the entire menu. Shared Surface overlay recipe, decorative Icon and display-only Kbd. No stylesheet, native forwarding, ref or public subcomponents; legacy menu styles unchanged."
+  },
+  {
     "actual": "—",
     "nivelActual": "—",
     "nombre": "ChipGroup",
@@ -471,17 +482,6 @@
     "compone": "Surface well recipe; own counter part",
     "accion": "mantener",
     "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/107): data-driven horizontal sibling views with Radix-owned automatic activation, keyboard/focus/ARIA and controlled/uncontrolled selection. Underline md/sm or single-height segmented list composing the existing Surface well recipe; raw neutral/danger counters are owned parts, not Badge overrides. Inactive contents unmount while hidden panel wrappers preserve relationships. No public parts, ref, asChild or stylesheet; legacy `.eg-tabs*` remains unchanged."
-  },
-  {
-    "actual": "MenuList (popup)",
-    "nivelActual": "molécula",
-    "nombre": "Menu",
-    "nivel": "molecule",
-    "destino": "ui",
-    "radix": "DropdownMenu",
-    "compone": "Icon, Kbd",
-    "accion": "separar",
-    "notas": "Menú desplegable con items, separadores, `--danger` y submenús."
   },
   {
     "actual": "MenuList --nav",

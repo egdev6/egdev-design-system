@@ -610,6 +610,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "MenuEntry",
+        "type": "MenuTone ('default' | 'primary' | 'danger'; action/link branches)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuEntry",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
+      {
         "component": "Notice",
         "type": "NoticeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger')",
         "status": "existing",
@@ -1211,6 +1221,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "MenuEntry",
+        "type": "IconName (optional decorative glyph on action/link/submenu branches)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuEntry",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
       {
         "component": "ChipGroupOption",
         "type": "ReactNode (decorative leading content)",
@@ -2132,6 +2152,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "Menu",
+        "type": "MenuSide ('top' | 'right' | 'bottom' | 'left')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
+      {
         "component": "Tooltip",
         "type": "'top' | 'right' | 'bottom' | 'left'",
         "status": "existing",
@@ -2185,6 +2215,26 @@
       "contentHash": "sha256:304ac895a943454d04d057e18518794a315958b70252df2e696e00dc65b36f40"
     },
     "usages": [
+      {
+        "component": "Menu",
+        "type": "MenuEntry[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
+      {
+        "component": "MenuSubmenuItem",
+        "type": "(MenuActionItem | MenuLinkItem | MenuSeparatorItem | MenuLabelItem)[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuSubmenuItem",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
       {
         "component": "Tabs",
         "type": "TabsItem[] (value, label, optional count/tone/disabled, required content)",
@@ -2539,7 +2589,18 @@
       "scope": "convention:floating-align",
       "contentHash": "sha256:ec3c51a76edd89a67049d49001e9017d43707075312a605d895739c79f949dd2"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Menu",
+        "type": "MenuAlign ('start' | 'center' | 'end')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "open-state",
@@ -2555,7 +2616,18 @@
       "scope": "convention:open-state",
       "contentHash": "sha256:6007292c57d0dfee10a01b1cc199795b014e40bd09a8b55fd2af3f8fa0274631"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Menu",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "initial-uncontrolled-open",
@@ -2571,7 +2643,18 @@
       "scope": "convention:initial-uncontrolled-open",
       "contentHash": "sha256:2a8c4a933020f41d26f1efdb80320bb0eaf25326cf49c0384abc92416010606f"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Menu",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "open-change",
@@ -2587,7 +2670,18 @@
       "scope": "convention:open-change",
       "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Menu",
+        "type": "(open: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "item-presentation-status",
@@ -2630,7 +2724,18 @@
       "scope": "convention:menu-entry-kind",
       "contentHash": "sha256:0b0cb903110a56f70e453b35f949a782f3ad4da9820ba6a6d0b4bb4fdab95308"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "MenuEntry",
+        "type": "'item' | 'link' | 'separator' | 'label' | 'submenu' (optional only on MenuActionItem)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuEntry",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "panel-header",
@@ -2646,7 +2751,18 @@
       "scope": "convention:panel-header",
       "contentHash": "sha256:d0e5fa1ca4fc22a01baadd487e235b17b52c43da13ffa3af81826f5085295714"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Menu",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "navigation-intent",
@@ -2662,7 +2778,18 @@
       "scope": "convention:navigation-intent",
       "contentHash": "sha256:7fb068ceea0357c786c87878c1080e7737b18da24f7feb48010b643ba4d1e197"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Menu",
+        "type": "(item: MenuLinkItem, event: MouseEvent<HTMLAnchorElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "numeric-display-help",
@@ -3000,6 +3127,16 @@
       "contentHash": "sha256:4f922985284399a34fe26994e80533c2a8db49066e01a3e9d00544c2fbbc1339"
     },
     "usages": [
+      {
+        "component": "MenuEntry",
+        "type": "string (action branch only; display-only)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuEntry",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
       {
         "component": "SearchTrigger",
         "type": "string",

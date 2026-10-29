@@ -34,6 +34,7 @@
 @source "../atoms/tooltip/types.ts";
 @source "../molecules/chip-group/types.ts";
 @source "../molecules/list-item/types.ts";
+@source "../molecules/menu/types.ts";
 @source "../molecules/tabs/types.ts";
 @source "../molecules/**/types.ts";
 @source "../primitives/aspect-ratio/types.ts";

@@ -49,6 +49,7 @@ const components = [
   ['Textarea', 'atoms/textarea'],
   ['Toggle', 'atoms/toggle'],
   ['Tooltip', 'atoms/tooltip'],
+  ['Menu', 'molecules/menu'],
   ['Tabs', 'molecules/tabs']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
@@ -238,6 +239,18 @@ const expected: Record<string, Record<string, string | false>> = {
     value: 'text'
   },
   tooltip: { content: 'text', children: false, side: 'select', className: 'text' },
+  menu: {
+    children: false,
+    items: false,
+    header: false,
+    side: 'select',
+    align: 'select',
+    open: 'boolean',
+    defaultOpen: 'boolean',
+    onOpenChange: false,
+    onNavigate: false,
+    className: 'text'
+  },
   tabs: {
     items: false,
     label: 'text',
@@ -328,6 +341,7 @@ const ownPropCounts: Record<string, number> = {
   notice: 7,
   switch: 7,
   tooltip: 4,
+  menu: 10,
   tabs: 7,
   progressbar: 6,
   pullquote: 5,
@@ -536,6 +550,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
   it.each([
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
     ['Checkbox', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }],
+    ['Menu', { side: '"bottom"', align: '"start"', defaultOpen: 'false' }],
     ['Chip', { defaultPressed: 'false', disabled: 'false' }],
     ['AspectRatio', { ratio: '1' }],
     ['Stack', { gap: '4', alignItems: '"stretch"', justifyContent: '"start"', asChild: 'false' }],
