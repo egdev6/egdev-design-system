@@ -1725,6 +1725,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'StatusDot',
       'Surface',
       'Switch',
+      'Tabs',
       'Text',
       'Textarea',
       'Toggle',
@@ -1741,6 +1742,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'statVariants',
       'statusDotVariants',
       'surfaceVariants',
+      'tabsVariants',
       'tooltipVariants'
     ],
     'Only approved components and cn are public runtime exports'
@@ -1948,6 +1950,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SurfaceTone',
     'Switch',
     'SwitchProps',
+    'Tabs',
+    'TabsItem',
+    'TabsProps',
+    'TabsSize',
+    'TabsTone',
+    'TabsVariant',
     'Text',
     'TextProps',
     'TextTone',
@@ -1974,6 +1982,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'statVariants',
     'statusDotVariants',
     'surfaceVariants',
+    'tabsVariants',
     'tooltipVariants'
   ]);
   for (const name of [
