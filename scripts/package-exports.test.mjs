@@ -48,6 +48,30 @@ function cssBlock(css, opening) {
 const unapprovedTransitionUtility =
   /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\])(?=\s*\{))[\w\\]/;
 
+test('Notice ships static molecule tint, wrapping and compact typography utilities', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const color of ['fg-secondary', 'status-info', 'status-success', 'status-warning', 'status-danger']) {
+    for (const [prefix, opacity] of [
+      ['border', 30],
+      ['from', 11],
+      ['to', 4]
+    ]) {
+      assert.ok(utilities.includes(`.${prefix}-${color}\\/${opacity}`), `Missing Notice ${prefix}-${color}/${opacity}`);
+    }
+  }
+  for (const selector of [
+    '.bg-linear-to-b',
+    '.text-body-default',
+    '.text-label-default',
+    '.flex-wrap',
+    String.raw`.basis-\[calc\(var\(--space-24\)\*2\.5\)\]`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing Notice utility ${selector}`);
+  }
+  assert.doesNotMatch(utilities, /\.eg-notice(?:__\w+)?\s*\{/, 'Notice markers have no new visual stylesheet');
+});
+
 test('transition utility guard accepts only the exact approved emitted selectors', () => {
   for (const selector of [
     '.transition-none',
@@ -186,6 +210,71 @@ test('Chip ships its exact token-backed pill, pressed, focus, press and reduced-
     assert.ok(css.includes(selector), `Missing Chip utility ${selector}`);
   }
   assert.doesNotMatch(utilities, /\.eg-chip[^{]*\{/, 'Chip has no stylesheet: its marker adds no utility rule');
+});
+
+test('ChipGroup ships wrapping layout, token underline and disabled/motion guards from its CVA source', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  assert.match(cssBlock(utilities, /\.flex-wrap\s*\{/), /flex-wrap:\s*wrap/);
+  assert.match(cssBlock(utilities, /\.gap-2\s*\{/), /gap:\s*var\(--space-2\)/);
+  for (const selector of [
+    String.raw`.data-\[state\=on\]\:underline`,
+    String.raw`.decoration-\[length\:var\(--border-width\)\]`,
+    String.raw`.underline-offset-\[var\(--space-1\)\]`,
+    String.raw`.disabled\:cursor-not-allowed`,
+    String.raw`.disabled\:active\:translate-none`,
+    String.raw`.disabled\:active\:scale-none`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing ChipGroup utility ${selector}`);
+  }
+  assert.match(utilities, /text-decoration-thickness:\s*var\(--border-width\)/);
+  assert.match(utilities, /text-underline-offset:\s*var\(--space-1\)/);
+  assert.doesNotMatch(css, /\.eg-chip-group[^{]*\{/, 'Root marker adds no painted panel');
+  const source = readFileSync(resolve(root, 'packages/ui/src/styles/compiled.css'), 'utf8');
+  assert.ok(source.includes('@source "../molecules/chip-group/types.ts";'));
+});
+
+test('Tabs publishes only its approved API and ships static molecule utilities', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  assert.equal(typeof exported.Tabs, 'function');
+  assert.match(exported.tabsVariants(), /\beg-tabs\b/);
+  for (const name of [
+    'useTabs',
+    'TabsList',
+    'TabsTrigger',
+    'TabsContent',
+    'tabsListVariants',
+    'tabsTriggerVariants',
+    'tabsCountVariants',
+    'tabsPanelVariants'
+  ]) {
+    assert.equal(exported[name], undefined, name);
+  }
+  const entry = readFileSync(artifact('ui', ui.exports['.'].types), 'utf8');
+  assert.match(entry, /TabsItem/);
+  assert.match(entry, /TabsProps/);
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    String.raw`.p-0\.75`,
+    String.raw`.min-h-8\.5`,
+    String.raw`.\[scrollbar-width\:none\]`,
+    String.raw`.rounded-\[calc\(var\(--radius-md\)---spacing\(0\.75\)\)\]`,
+    String.raw`.data-\[state\=active\]\:after\:bg-fg-brand-default`,
+    String.raw`.data-\[state\=active\]\:after\:shadow-glow-base`,
+    String.raw`.motion-reduce\:after\:transition-none`,
+    String.raw`.focus-visible\:inset-ring-focus-ring`,
+    String.raw`.bg-status-danger\/14`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing Tabs utility ${selector}`);
+  }
+  assert.match(utilities, /scrollbar-width:\s*none/);
+  assert.match(utilities, /border-radius:\s*calc\(var\(--radius-md\)\s*-\s*[^;]+\)/);
+  const active = css.indexOf(String.raw`.data-\[state\=active\]\:shadow-\[var\(--shadow-edge-strong\)`);
+  const activeFocus = css.indexOf(String.raw`.data-\[state\=active\]\:focus-visible\:shadow-focus`);
+  assert.ok(active > -1 && activeFocus > active, 'Focused active segment must retain the focus shadow');
+  assert.doesNotMatch(utilities, /\.eg-tabs[^\s]*\s*\{/, 'No Tabs stylesheet or legacy part recipes in utilities');
 });
 
 test('UI publishes its stable declaration entry and reachable internal declarations', (context) => {
@@ -370,6 +459,85 @@ test('UI ships the Stat Material card, figure recipes and highlight utilities wi
   assert.doesNotMatch(css, /\.eg-stat-(?:label|value|delta)\s*\{/, 'Stat part markers carry no stylesheet rules');
 });
 
+test('ListItem ships compound layout, state Material and native empty focus utilities', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  for (const name of [
+    'ListItem',
+    'ListItemActions',
+    'ListItemBody',
+    'ListItemContent',
+    'ListItemFooter',
+    'ListItemMedia',
+    'ListItemMeta'
+  ]) {
+    assert.equal(typeof exported[name], 'function', `${name} is a plain component without a ref API`);
+  }
+  assert.equal(exported.listItemVariants, undefined, 'ListItem recipes remain internal');
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const selectors = [
+    String.raw`.data-\[state\=new\]\:bg-\[image\:var\(--gradient-post-new\)\]`,
+    String.raw`.data-\[state\=failed\]\:border-status-danger\/40`,
+    String.raw`.data-\[state\=dragging\]\:border-dashed`,
+    String.raw`.group-data-\[state\=dragging\]\/list-item\:opacity-50`,
+    String.raw`.group-data-\[state\=done\]\/list-item\:text-fg-muted`,
+    String.raw`.group-data-\[state\=off\]\/list-item\:text-fg-secondary`,
+    String.raw`.data-\[state\=empty\]\:focus-visible\:shadow-focus`,
+    String.raw`.data-\[state\=empty\]\:disabled\:opacity-45`,
+    String.raw`.data-\[variant\=row\]\:flex-wrap`,
+    String.raw`.group-data-\[variant\=compact\]\/list-item\:text-label-default`
+  ];
+  for (const state of ['done', 'off', 'empty']) {
+    for (const reset of ['bg-transparent', 'bg-none', 'shadow-none']) {
+      selectors.push(`.data-\\[state\\=${state}\\]\\:${reset}`);
+    }
+  }
+  for (const selector of selectors) {
+    assert.ok(css.includes(selector), `Missing ListItem utility ${selector}`);
+  }
+  assert.match(css, /calc\(var\(--space-20\)\s*\+\s*var\(--space-2\)\)/);
+  assert.doesNotMatch(css, /\.eg-list-item(?:__[a-z]+)?\s*[{,]/, 'Markers are not a separate visual engine');
+});
+
+test('ButtonGroup ships static spacing, wrapping, logical child corners and focus stacking', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = readFileSync(resolve(root, 'packages/ui/src/styles/compiled.css'), 'utf8');
+  assert.match(source, /@source "\.\.\/molecules\/\*\*\/types\.ts"/);
+  for (const selector of [
+    '.inline-flex',
+    '.items-stretch',
+    '.flex-wrap',
+    '.flex-nowrap',
+    '.gap-3',
+    String.raw`.gap-0\.5`,
+    String.raw`.\*\:not-first\:rounded-s-sm`,
+    String.raw`.\*\:not-last\:rounded-e-sm`,
+    String.raw`.\*\:focus-visible\:relative`,
+    String.raw`.\*\:focus-visible\:z-10`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing ButtonGroup utility ${selector}`);
+  }
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^\\{]*\\{`));
+  assert.match(rule('.gap-3'), /gap:\s*var\(--space-3\)/);
+  assert.match(rule(String.raw`.gap-0\.5`), /gap:\s*calc\(var\(--space-1\)\s*\*\s*0\.5\)/);
+  const start = rule(String.raw`.\*\:not-first\:rounded-s-sm`);
+  const end = rule(String.raw`.\*\:not-last\:rounded-e-sm`);
+  assert.match(start, /border-start-start-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.match(start, /border-end-start-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.match(end, /border-start-end-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.match(end, /border-end-end-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.match(start, /:not\(:first-child\)/);
+  assert.match(end, /:not\(:last-child\)/);
+  assert.match(rule(String.raw`.\*\:focus-visible\:relative`), /position:\s*relative/);
+  assert.match(rule(String.raw`.\*\:focus-visible\:z-10`), /z-index:\s*10/);
+  assert.ok(
+    utilities.indexOf(String.raw`.\*\:not-first\:rounded-s-sm`) > utilities.indexOf('.rounded-md'),
+    'Parent child-corner utilities must follow the atom radius utility'
+  );
+  assert.doesNotMatch(css, /\.eg-button-group\s*[,{]/, 'No separate visual engine');
+});
+
 test('UI ships SearchTrigger token geometry, coarse targets and attribute-driven states without preflight', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -528,7 +696,8 @@ test('UI ships plain layered CSS without canonical token definitions or unrelate
   }
   assert.match(css, /prefers-reduced-transparency:\s*reduce/);
   // Only approved component CVA sources are scanned, not stories, tests or the default palette.
-  assert.doesNotMatch(css, /\.(p-4|bg-red-500)\s*[,\{]/);
+  // (`p-4` is no longer a sentinel: ListItem's approved CVA ships it.)
+  assert.doesNotMatch(css, /\.bg-red-500\s*[,\{]/);
 });
 
 test('UI ships functional static Gauge utilities without an application Tailwind compiler', () => {
@@ -1704,8 +1873,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Avatar',
       'Badge',
       'Button',
+      'ButtonGroup',
       'Checkbox',
       'Chip',
+      'ChipGroup',
       'Cluster',
       'Countdown',
       'Divider',
@@ -1718,8 +1889,16 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Kbd',
       'Label',
       'Link',
+      'ListItem',
+      'ListItemActions',
+      'ListItemBody',
+      'ListItemContent',
+      'ListItemFooter',
+      'ListItemMedia',
+      'ListItemMeta',
       'Logo',
       'Menu',
+      'Notice',
       'Portal',
       'ProgressBar',
       'PullQuote',
@@ -1736,6 +1915,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'StatusDot',
       'Surface',
       'Switch',
+      'Tabs',
       'Text',
       'Textarea',
       'Toggle',
@@ -1747,12 +1927,14 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'dropzoneVariants',
       'labelVariants',
       'menuVariants',
+      'noticeVariants',
       'progressBarVariants',
       'radioGroupVariants',
       'sliderVariants',
       'statVariants',
       'statusDotVariants',
       'surfaceVariants',
+      'tabsVariants',
       'tooltipVariants'
     ],
     'Only approved components and cn are public runtime exports'
@@ -1764,6 +1946,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   );
   assert.equal(exported.Select?.$$typeof, Symbol.for('react.forward_ref'), 'Select forwards the native button ref');
   assert.equal(exported.Checkbox?.$$typeof, Symbol.for('react.forward_ref'), 'Checkbox must forward its button ref');
+  assert.equal(typeof exported.ButtonGroup, 'function', 'ButtonGroup has no public root ref API');
   assert.equal(typeof exported.Dropzone, 'function', 'Dropzone must be a plain function with no public ref API');
   assert.equal(typeof exported.Stat, 'function', 'Stat must be a plain function with no public ref API');
   assert.equal(typeof exported.statVariants, 'function', 'Stat card recipe must be public');
@@ -1775,6 +1958,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   );
   assert.equal(typeof exported.Chip, 'function', 'Chip must be a plain function component with no public ref API');
   assert.equal(typeof exported.chipVariants, 'function', 'Chip recipe must stay public for ChipGroup');
+  assert.equal(typeof exported.ChipGroup, 'function', 'ChipGroup has no public ref API');
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
   // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
@@ -1859,6 +2043,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'BadgeTone',
     'BadgeVariant',
     'Button',
+    'ButtonGroup',
+    'ButtonGroupProps',
+    'ButtonGroupVariant',
     'ButtonProps',
     'ButtonSize',
     'ButtonVariant',
@@ -1866,6 +2053,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'CheckboxCheckedState',
     'CheckboxProps',
     'Chip',
+    'ChipGroup',
+    'ChipGroupOption',
+    'ChipGroupProps',
+    'ChipGroupType',
     'ChipProps',
     'Cluster',
     'ClusterProps',
@@ -1909,6 +2100,17 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LayoutJustifyContent',
     'Link',
     'LinkProps',
+    'ListItem',
+    'ListItemActions',
+    'ListItemBody',
+    'ListItemContent',
+    'ListItemFooter',
+    'ListItemMedia',
+    'ListItemMeta',
+    'ListItemPartProps',
+    'ListItemProps',
+    'ListItemStatus',
+    'ListItemVariant',
     'Logo',
     'LogoProps',
     'LogoSize',
@@ -1924,6 +2126,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'MenuSide',
     'MenuSubmenuItem',
     'MenuTone',
+    'Notice',
+    'NoticeProps',
+    'NoticeTone',
     'Portal',
     'PortalProps',
     'ProgressBar',
@@ -1971,6 +2176,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SurfaceTone',
     'Switch',
     'SwitchProps',
+    'Tabs',
+    'TabsItem',
+    'TabsProps',
+    'TabsSize',
+    'TabsTone',
+    'TabsVariant',
     'Text',
     'TextProps',
     'TextTone',
@@ -1992,12 +2203,14 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'dropzoneVariants',
     'labelVariants',
     'menuVariants',
+    'noticeVariants',
     'progressBarVariants',
     'radioGroupVariants',
     'sliderVariants',
     'statVariants',
     'statusDotVariants',
     'surfaceVariants',
+    'tabsVariants',
     'tooltipVariants'
   ]);
   for (const name of [
@@ -2011,6 +2224,13 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'useNotice',
+    'noticeAppearanceVariants',
+    'noticeIconVariants',
+    'noticeTextVariants',
+    'noticeActionsVariants',
+    'useButtonGroup',
+    'buttonGroupVariants',
     'useSlider',
     'sliderTrackVariants',
     'sliderRangeVariants',
@@ -2028,6 +2248,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'statValueVariants',
     'statDeltaVariants',
     'useChip',
+    'useChipGroup',
+    'chipGroupVariants',
+    'chipGroupItemVariants',
+    'chipGroupIconVariants',
     'chipIconVariants'
   ]) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
@@ -2043,6 +2267,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'ButtonGroup',
+    'ButtonGroupProps',
+    'ButtonGroupVariant',
     'Chip',
     'ChipProps',
     'chipVariants',
@@ -2054,6 +2281,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Dropzone',
     'DropzoneProps',
     'dropzoneVariants',
+    'Notice',
+    'NoticeProps',
+    'NoticeTone',
+    'noticeVariants',
     'SearchTrigger',
     'SearchTriggerProps',
     'Divider',
@@ -2153,6 +2384,28 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   }
   const { createElement } = await import('react');
   const { renderToString } = await import('react-dom/server');
+  const buttonGroupHtml = renderToString(
+    createElement(exported.ButtonGroup, {
+      variant: 'attached',
+      label: 'Save options',
+      className: 'ms-auto',
+      children: [
+        createElement(exported.Button, { key: 'save' }, 'Save'),
+        createElement(exported.IconButton, {
+          key: 'options',
+          label: 'More save options',
+          size: 'lg',
+          icon: createElement(exported.Icon, { name: 'chevron-down' })
+        })
+      ]
+    })
+  );
+  assert.match(buttonGroupHtml, /^<div role="group" aria-label="Save options" class="eg-button-group /);
+  assert.match(buttonGroupHtml, /\*:not-first:rounded-s-sm/);
+  assert.match(buttonGroupHtml, /ms-auto/);
+  assert.match(buttonGroupHtml, /More save options/);
+  assert.equal((buttonGroupHtml.match(/<button /g) ?? []).length, 2);
+  assert.doesNotMatch(buttonGroupHtml, /aria-haspopup|aria-expanded|eg-btn--join|eg-btn-split/);
   const dropzoneHtml = renderToString(
     createElement(exported.Dropzone, { onFiles: () => undefined, accept: 'image/*', multiple: true })
   );
@@ -2205,6 +2458,43 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     /<span data-state="unavailable" class="eg-stat-value [^"]*text-display-stat-sm[^"]*"><span aria-hidden="true">—<\/span><span class="sr-only">No data<\/span><\/span><\/div>$/
   );
   assert.doesNotMatch(noDataHtml, /data-state="highlighted"|eg-stat-delta|aria-live|>0</);
+  const chipGroupOptions = [
+    { value: 'react', label: 'React' },
+    { value: 'css', label: 'CSS' }
+  ];
+  for (const type of ['single', 'multiple']) {
+    const html = renderToString(
+      createElement(exported.ChipGroup, {
+        type,
+        label: 'Topics',
+        options: chipGroupOptions,
+        defaultValue: type === 'single' ? 'react' : ['react']
+      })
+    );
+    assert.match(html, /role="group"/);
+    assert.match(html, /aria-label="Topics"/);
+    assert.match(html, /class="eg-chip-group flex flex-wrap items-center gap-2"/);
+    assert.match(html, type === 'single' ? /role="radio" aria-checked="true"/ : /aria-pressed="true"/);
+    assert.doesNotMatch(html, /<input|is-active|eg-surface/);
+  }
+  assert.equal(typeof exported.Notice, 'function', 'Notice has no public ref API');
+  const sharedNotice = exported.noticeVariants({ tone: 'danger', size: 'sm' });
+  assert.ok(sharedNotice.split(' ').includes('eg-surface'), 'A1 permits inherited Surface identity');
+  assert.doesNotMatch(sharedNotice, /eg-notice|eg-toast|aria-|role=/);
+  const noticeHtml = renderToString(
+    createElement(exported.Notice, {
+      summary: 'Sign in required.',
+      tone: 'danger',
+      id: 'connection',
+      children: 'Reconnect to continue.'
+    })
+  );
+  assert.match(noticeHtml, /role="alert"/);
+  assert.match(noticeHtml, /data-tone="danger"/);
+  assert.match(noticeHtml, /class="eg-notice eg-surface /);
+  assert.match(noticeHtml, /<strong>Sign in required\.<\/strong> (?:<!-- -->)?Reconnect to continue\./);
+  assert.match(noticeHtml, /aria-hidden="true"><svg/);
+  assert.doesNotMatch(noticeHtml, /aria-live=|tabindex=|eg-notice__actions/);
   const searchHtml = renderToString(createElement(exported.SearchTrigger, { shortcut: 'Ctrl K' }));
   assert.match(searchHtml, /^<button[^>]*type="button"[^>]*aria-label="Search…"[^>]*class="eg-surface[^"]*eg-search/);
   assert.match(searchHtml, /<svg class="eg-icon[^"]*size-4[^"]*"[^>]*aria-hidden="true"/);

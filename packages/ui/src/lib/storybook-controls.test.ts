@@ -12,8 +12,10 @@ import preview from '../../../../.storybook/preview';
 const components = [
   ['Avatar', 'atoms/avatar'],
   ['Button', 'atoms/button'],
+  ['ButtonGroup', 'molecules/button-group'],
   ['Checkbox', 'atoms/checkbox'],
   ['Chip', 'atoms/chip'],
+  ['ChipGroup', 'molecules/chip-group'],
   ['Countdown', 'atoms/countdown'],
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Cluster', 'primitives/stack'],
@@ -32,9 +34,11 @@ const components = [
   ['Slider', 'atoms/slider'],
   ['RadioGroup', 'atoms/radio-group'],
   ['SearchTrigger', 'atoms/search-trigger'],
+  ['Notice', 'molecules/notice'],
   ['Input', 'atoms/input'],
   ['Kbd', 'atoms/kbd'],
   ['Link', 'atoms/link'],
+  ['ListItem', 'molecules/list-item'],
   ['Badge', 'atoms/badge'],
   ['Logo', 'atoms/logo'],
   ['ProgressBar', 'atoms/progress-bar'],
@@ -45,7 +49,8 @@ const components = [
   ['Textarea', 'atoms/textarea'],
   ['Toggle', 'atoms/toggle'],
   ['Tooltip', 'atoms/tooltip'],
-  ['Menu', 'molecules/menu']
+  ['Menu', 'molecules/menu'],
+  ['Tabs', 'molecules/tabs']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -105,6 +110,7 @@ const expected: Record<string, Record<string, string | false>> = {
     loading: 'boolean',
     asChild: 'boolean'
   },
+  buttongroup: { label: 'text', variant: 'select', children: false },
   checkbox: {
     checked: false,
     defaultChecked: false,
@@ -113,6 +119,16 @@ const expected: Record<string, Record<string, string | false>> = {
     required: 'boolean',
     name: 'text',
     value: 'text'
+  },
+  chipgroup: {
+    type: 'select',
+    label: 'text',
+    options: false,
+    disabled: 'boolean',
+    dir: 'select',
+    value: false,
+    defaultValue: false,
+    onValueChange: false
   },
   chip: {
     children: false,
@@ -235,6 +251,15 @@ const expected: Record<string, Record<string, string | false>> = {
     onNavigate: false,
     className: 'text'
   },
+  tabs: {
+    items: false,
+    label: 'text',
+    value: 'text',
+    defaultValue: 'text',
+    onValueChange: false,
+    variant: 'select',
+    size: 'select'
+  },
   progressbar: {
     value: 'number',
     label: 'text',
@@ -245,6 +270,16 @@ const expected: Record<string, Record<string, string | false>> = {
   },
   pullquote: { text: 'text', accent: 'text', source: 'text', variant: 'select', tone: 'select' },
   searchtrigger: { label: 'text', shortcut: 'text', compact: 'boolean' },
+  listitem: { status: 'select', variant: 'select', asChild: 'boolean', children: false },
+  notice: {
+    summary: 'text',
+    children: false,
+    tone: 'select',
+    size: 'select',
+    icon: false,
+    actions: false,
+    role: 'select'
+  },
   textarea: { variant: 'select' },
   input: { size: 'select', variant: 'select', type: 'select', icon: false, loading: 'boolean' },
   select: {
@@ -283,9 +318,11 @@ const ownPropCounts: Record<string, number> = {
   button: 7,
   checkbox: 7,
   chip: 6,
+  chipgroup: 8,
   countdown: 10,
   aspectratio: 1,
   badge: 4,
+  buttongroup: 3,
   dropzone: 6,
   gauge: 8,
   icon: 4,
@@ -297,12 +334,15 @@ const ownPropCounts: Record<string, number> = {
   statusdot: 2,
   kbd: 2,
   link: 6,
+  listitem: 4,
   slider: 11,
   radiogroup: 9,
   searchtrigger: 3,
+  notice: 7,
   switch: 7,
   tooltip: 4,
   menu: 10,
+  tabs: 7,
   progressbar: 6,
   pullquote: 5,
   textarea: 1,
@@ -482,7 +522,11 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         expect(composed.argTypes[prop]?.type?.name, `${name}.${prop} semantic type`).toBe('string');
       }
     }
-    if (!['Button', 'VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface', 'Link', 'IconButton'].includes(name)) {
+    if (
+      !['Button', 'VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface', 'Link', 'IconButton', 'ListItem'].includes(
+        name
+      )
+    ) {
       expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     }
     expect(composed.args).toEqual({});
@@ -527,6 +571,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }],
     ['PullQuote', { variant: '"pull"', tone: '"canvas"' }],
     ['SearchTrigger', { label: '"Search…"', compact: 'false' }],
+    ['Notice', { tone: '"neutral"', size: '"md"' }],
+    ['ButtonGroup', { variant: '"spaced"' }],
     ['Textarea', { variant: '"default"' }],
     [
       'Countdown',
@@ -955,6 +1001,25 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Dropzone', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'type', 'children', 'onDrop', 'onPaste', 'onDragEnter', 'over']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains ButtonGroup naming, required children and finite variant choices without filling optional args', () => {
+    const { argTypes, args } = story('ButtonGroup');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.label?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.variant?.options).toEqual(['spaced', 'attached']);
+    expect(argTypes.children?.type).toMatchObject({ required: true });
+    expect(argTypes.children?.control).toBe(false);
+    expect(argTypes.children?.table?.disable).toBeUndefined();
+    expect(args).not.toHaveProperty('label');
+    expect(args).not.toHaveProperty('variant');
+    for (const prop of ['id', 'title', 'dir', 'aria-labelledby', 'aria-describedby', 'className']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('ButtonGroup', false).argTypes[prop]);
+    }
+    for (const prop of ['ref', 'role', 'aria-label', 'asChild', 'orientation', 'size']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });

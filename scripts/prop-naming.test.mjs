@@ -27,6 +27,48 @@ const postReceiptUsages = [
     source: 'packages/ui/src/molecules/menu/types.ts#MenuEntry'
   })),
   { conventionId: 'collection-items', source: 'packages/ui/src/molecules/menu/types.ts#MenuSubmenuItem' },
+  ...[
+    'accessible-name',
+    'primary-value',
+    'initial-uncontrolled-value',
+    'interactive-value-change',
+    'choice-options',
+    'selection-cardinality'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/chip-group/types.ts#ChipGroupProps'
+  })),
+  ...['accessible-name', 'primary-value', 'leading-icon'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/chip-group/types.ts#ChipGroupOption'
+  })),
+  ...['visual-treatment', 'slot-composition', 'item-presentation-status'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/list-item/types.ts#ListItemProps'
+  })),
+  ...[
+    'accessible-name',
+    'collection-items',
+    'primary-value',
+    'initial-uncontrolled-value',
+    'interactive-value-change',
+    'visual-treatment',
+    'preset-dimensions'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/tabs/types.ts#TabsProps'
+  })),
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/molecules/tabs/types.ts#TabsItem' },
+  ...['surface-material-tone', 'preset-dimensions', 'leading-icon', 'message-summary', 'trailing-actions'].map(
+    (conventionId) => ({
+      conventionId,
+      source: 'packages/ui/src/molecules/notice/types.ts#NoticeProps'
+    })
+  ),
+  ...['accessible-name', 'visual-treatment'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/button-group/types.ts#ButtonGroupProps'
+  })),
   ...['accessible-name', 'leading-icon', 'visual-treatment', 'preset-dimensions', 'slot-composition'].map(
     (conventionId) => ({
       conventionId,
