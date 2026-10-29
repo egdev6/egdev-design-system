@@ -29,6 +29,13 @@ export * from './atoms/tooltip';
 // Utilities
 export { cn } from './lib/cn';
 // Molecules
+export * from './molecules/button-group';
+export type { ChipGroupOption, ChipGroupProps, ChipGroupType } from './molecules/chip-group';
+export { ChipGroup } from './molecules/chip-group';
+export * from './molecules/list-item';
+export * from './molecules/menu';
+export * from './molecules/meter-row';
+export * from './molecules/notice';
 export type {
   SectionHeaderLevel,
   SectionHeaderProps,
@@ -36,6 +43,8 @@ export type {
   SectionHeaderVariant
 } from './molecules/section-header';
 export { SectionHeader } from './molecules/section-header';
+export type { TabsItem, TabsProps, TabsSize, TabsTone, TabsVariant } from './molecules/tabs';
+export { Tabs, tabsVariants } from './molecules/tabs';
 // Primitives
 export type { AspectRatioProps } from './primitives/aspect-ratio';
 export { AspectRatio } from './primitives/aspect-ratio';

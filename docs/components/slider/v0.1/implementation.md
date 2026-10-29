@@ -68,3 +68,11 @@ Observed follow-up validation: the focused root-export test passes **1/1**, then
 The earlier interrupted execution observed RED from missing Slider modules before implementation. The resumed execution observed GREEN: 115 focused tests across Slider and Storybook metadata (15 Slider tests), then 399 tests across 24 full-suite files. Build precedes tests that read artifacts. Export checks pass 20/20; naming checks pass 82/82; the packed matrix passes 12/12. Typecheck and registry freshness pass. All full gates use the parent’s shared lock, timeout and memory cap; packed additionally uses its matrix lock and 2GB cap. Gate receipts and the final lint result are reported in the handoff.
 
 Visual conformity with VIS-01, real browser focus/touch behavior, accessibility-tree behavior and actual Controls widgets remain **Not evaluated**, pending the owner’s Storybook review. No server was started and no CI execution is asserted.
+
+## Amendment A1 — aria-invalid on the thumb (2026-10-29)
+
+Owner-approved prerequisite for Field #84 ("Corregir Slider antes"), recorded on #68. Field wires `aria-invalid` and `aria-describedby` onto its control through Slot, and the contract requires the control to expose both on its focusable element. Slider already routed `aria-describedby` to the thumb but left `aria-invalid` on the non-focusable root span, so a Field error would not be exposed on the slider role.
+
+`useSlider` now routes `aria-invalid` to the thumb alongside `aria-describedby`; the root no longer receives it, and the thumb omits it when it is not supplied. `id` and every other native attribute still reach the root. No API, appearance, token or dependency change. The `SliderProps` JSDoc wording changed, so the naming registry evidence revision for `slider/types.ts` was refreshed.
+
+Validation: test-first RED (1 failing new test) then GREEN, Slider suite 17/17; typecheck, `props:check` and `test:props` 87/87 pass. Full gates are the parent's integration step. Browser and assistive-technology behavior: Not evaluated.

@@ -279,6 +279,24 @@ describe('Slider', () => {
     expect(thumb).not.toHaveAttribute('id');
   });
 
+  it('routes aria-invalid to the focusable thumb so a Field error is exposed (amendment A1)', () => {
+    const { container } = render(
+      <Slider label='Volume' id='volume' aria-invalid={true} aria-describedby='volume-error' />
+    );
+    const { slider, thumb } = parts(container);
+    expect(thumb).toHaveAttribute('aria-invalid', 'true');
+    expect(thumb).toHaveAttribute('aria-describedby', 'volume-error');
+    expect(slider).not.toHaveAttribute('aria-invalid');
+    expect(slider).toHaveAttribute('id', 'volume');
+  });
+
+  it('leaves aria-invalid off the thumb when it is not supplied (amendment A1)', () => {
+    const { container } = render(<Slider label='Volume' />);
+    const { slider, thumb } = parts(container);
+    expect(thumb).not.toHaveAttribute('aria-invalid');
+    expect(slider).not.toHaveAttribute('aria-invalid');
+  });
+
   it('resolves the documented token utilities per part (AC-06)', () => {
     const { container } = render(<Slider label='Volume' defaultValue={40} />);
     const { slider, track, range, thumb } = parts(container);
