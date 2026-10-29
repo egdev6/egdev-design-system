@@ -1251,6 +1251,16 @@
           "symbol": "IconButtonProps",
           "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
         }
+      },
+      {
+        "component": "HoverCardTrigger",
+        "type": "boolean (discriminates native required href from child-owned href)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardTriggerProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
       }
     ]
   },
@@ -1912,6 +1922,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "HoverCardContent",
+        "type": "'top' | 'right' | 'bottom' | 'left'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardContentProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      },
+      {
         "component": "Tooltip",
         "type": "'top' | 'right' | 'bottom' | 'left'",
         "status": "existing",
@@ -2297,7 +2317,18 @@
       "scope": "convention:floating-align",
       "contentHash": "sha256:ec3c51a76edd89a67049d49001e9017d43707075312a605d895739c79f949dd2"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "HoverCardContent",
+        "type": "'start' | 'center' | 'end'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardContentProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      }
+    ]
   },
   {
     "id": "open-state",
@@ -2313,7 +2344,18 @@
       "scope": "convention:open-state",
       "contentHash": "sha256:6007292c57d0dfee10a01b1cc199795b014e40bd09a8b55fd2af3f8fa0274631"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "HoverCard",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      }
+    ]
   },
   {
     "id": "initial-uncontrolled-open",
@@ -2329,7 +2371,18 @@
       "scope": "convention:initial-uncontrolled-open",
       "contentHash": "sha256:2a8c4a933020f41d26f1efdb80320bb0eaf25326cf49c0384abc92416010606f"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "HoverCard",
+        "type": "boolean (default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      }
+    ]
   },
   {
     "id": "open-change",
@@ -2345,7 +2398,18 @@
       "scope": "convention:open-change",
       "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "HoverCard",
+        "type": "(open: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      }
+    ]
   },
   {
     "id": "item-presentation-status",
