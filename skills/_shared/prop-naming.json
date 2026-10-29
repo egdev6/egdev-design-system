@@ -186,6 +186,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "SocialLinks",
+        "type": "SocialLinksSize ('md' | 'lg')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
+      {
         "component": "Avatar",
         "type": "AvatarSize ('sm' | 'md' | 'lg' | 'xl')",
         "status": "existing",
@@ -342,6 +352,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "SocialLinks",
+        "type": "SocialLinksVariant ('outline' | 'ghost')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
       {
         "component": "Button",
         "type": "ButtonVariant ('primary' | 'secondary' | 'ghost' | 'dark')",
@@ -593,6 +613,26 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "SocialLinks",
+        "type": "string (accessible list name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
+      {
+        "component": "SocialLinkItem",
+        "type": "string (required destination name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinkItem",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
       {
         "component": "Avatar",
         "type": "string",
@@ -1031,6 +1071,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "SocialLinkItem",
+        "type": "ReactElement (decorative input delegated to IconButton.icon with required label)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinkItem",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
       {
         "component": "Button",
         "type": "ReactNode (decorative start/end slot, default end; Button-only semantic exception)",
@@ -1526,6 +1576,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "SocialLinkItem",
+        "type": "boolean (opt-in new context, default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinkItem",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
+      {
         "component": "Link",
         "type": "boolean",
         "status": "existing",
@@ -1552,6 +1612,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "SocialLinks",
+        "type": "string (localized new-context notice)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
       {
         "component": "Link",
         "type": "string",
@@ -1964,7 +2034,18 @@
       "scope": "convention:collection-items",
       "contentHash": "sha256:304ac895a943454d04d057e18518794a315958b70252df2e696e00dc65b36f40"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SocialLinks",
+        "type": "SocialLinkItem[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      }
+    ]
   },
   {
     "id": "localized-messages",
@@ -2913,6 +2994,16 @@
     },
     "usages": [
       {
+        "component": "SocialLinks",
+        "type": "SocialLinksGap (1 | 2)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
+      {
         "component": "Stack",
         "type": "LayoutGap (0|1|2|3|4|5|6|7|8|10|12|14|16|20|24)",
         "status": "existing",
@@ -2948,7 +3039,18 @@
       "scope": "convention:group-caption",
       "contentHash": "sha256:d2efc7f6e50156598324373e8cb3cecd2e72a10db3f30df7f9d2cc638c574d93"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SocialLinks",
+        "type": "string | null",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      }
+    ]
   },
   {
     "id": "inline-caption-layout",
@@ -2964,7 +3066,18 @@
       "scope": "convention:inline-caption-layout",
       "contentHash": "sha256:e381bc3821dfcca9f868d6d2058f835037875063a134376245b4cc6b9e746d8e"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SocialLinks",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      }
+    ]
   },
   {
     "id": "cross-axis-alignment",

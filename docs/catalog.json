@@ -676,10 +676,10 @@
     "nombre": "SocialLinks",
     "nivel": "molecule",
     "destino": "ui",
-    "radix": "—",
-    "compone": "IconButton, Cluster",
+    "radix": "— (native anchors; atom-owned Slot + AccessibleIcon)",
+    "compone": "IconButton, Icon, Stack, Cluster",
     "accion": "mantener",
-    "notas": ""
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/104): named native list of validated HTTPS profile links, optional independent caption, stacked or wrapping inline layout, outline/ghost atom treatments and md/lg presets (lg touch-sized default). Per-item opt-in new context merges secure rel tokens and a localized hidden notice once. Empty/all-invalid data renders nothing; no truncation, selection, ref or asChild. Six meaningful files, no stylesheet; legacy markers/styles preserved. Visual conformity: Not evaluated."
   },
   {
     "actual": "PhotoFrame",
