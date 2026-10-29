@@ -545,9 +545,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "Toast",
-    "compone": "Notice",
+    "compone": "Notice recipe, Portal, Icon, IconButton; consumer Button action",
     "accion": "nuevo",
-    "notas": "Avisos efímeros (publicado, copiado). No existe."
+    "notas": "Implemented React molecule under [approved v0.1 + A1 contract](https://github.com/egdev6/egdev-design-system/issues/110): declarative ToastProvider and Toast with five tones, localized announcements, native Radix timers/pause/swipe/F8 and viewport focus after focused dismissal. Shared noticeVariants preserves inherited eg-surface without eg-notice; opaque floating elevation, 48px close and supported Button md action. No stylesheet, imperative queue, ref or asChild. Browser visual conformity not evaluated."
   },
   {
     "actual": "PostCard",

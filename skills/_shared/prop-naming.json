@@ -510,6 +510,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "Toast",
+        "type": "NoticeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/toast/types.ts",
+          "symbol": "ToastProps",
+          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+        }
+      },
+      {
         "component": "Notice",
         "type": "NoticeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger')",
         "status": "existing",
@@ -623,6 +633,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "ToastProvider",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/toast/types.ts",
+          "symbol": "ToastProviderProps",
+          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+        }
+      },
       {
         "component": "ButtonGroup",
         "type": "string",
@@ -1071,6 +1091,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Toast",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/toast/types.ts",
+          "symbol": "ToastProps",
+          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+        }
+      },
       {
         "component": "Notice",
         "type": "ReactNode",
@@ -2363,7 +2393,18 @@
       "scope": "convention:open-state",
       "contentHash": "sha256:6007292c57d0dfee10a01b1cc199795b014e40bd09a8b55fd2af3f8fa0274631"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Toast",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/toast/types.ts",
+          "symbol": "ToastProps",
+          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+        }
+      }
+    ]
   },
   {
     "id": "initial-uncontrolled-open",
@@ -2379,7 +2420,18 @@
       "scope": "convention:initial-uncontrolled-open",
       "contentHash": "sha256:2a8c4a933020f41d26f1efdb80320bb0eaf25326cf49c0384abc92416010606f"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Toast",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/toast/types.ts",
+          "symbol": "ToastProps",
+          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+        }
+      }
+    ]
   },
   {
     "id": "open-change",
@@ -2395,7 +2447,18 @@
       "scope": "convention:open-change",
       "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Toast",
+        "type": "(open: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/toast/types.ts",
+          "symbol": "ToastProps",
+          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+        }
+      }
+    ]
   },
   {
     "id": "item-presentation-status",
@@ -2536,6 +2599,16 @@
     },
     "usages": [
       {
+        "component": "Toast",
+        "type": "ReactElement (requires actionAltText)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/toast/types.ts",
+          "symbol": "ToastProps",
+          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+        }
+      },
+      {
         "component": "Notice",
         "type": "ReactNode",
         "status": "existing",
@@ -2578,6 +2651,16 @@
       "contentHash": "sha256:975bcd3e71864c8c5033aa82310d14454013767fe690f531b87ba297497743cd"
     },
     "usages": [
+      {
+        "component": "Toast",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/toast/types.ts",
+          "symbol": "ToastProps",
+          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+        }
+      },
       {
         "component": "Notice",
         "type": "string",
@@ -3180,7 +3263,18 @@
       "scope": "convention:auto-dismiss-duration",
       "contentHash": "sha256:b3ca83682e8ce6d4eb40289923c084ded07cf40f7d2df483b1287a48ec4a3d9f"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Toast",
+        "type": "number (Infinity disables auto-dismissal)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/toast/types.ts",
+          "symbol": "ToastProps",
+          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+        }
+      }
+    ]
   },
   {
     "id": "dismiss-label",
@@ -3196,7 +3290,18 @@
       "scope": "convention:dismiss-label",
       "contentHash": "sha256:4ce74a25f27e385b54732b3ef46e52d4f452cddbf2b1c17608aadc48c0ef1d7c"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Toast",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/toast/types.ts",
+          "symbol": "ToastProps",
+          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+        }
+      }
+    ]
   },
   {
     "id": "action-alternative-text",
@@ -3212,7 +3317,18 @@
       "scope": "convention:action-alternative-text",
       "contentHash": "sha256:551982e0a68924713a4df488dc452b38bf41ba6f8ca94f8b7479fd54257e5e1b"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Toast",
+        "type": "string (required with actions, otherwise never)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/toast/types.ts",
+          "symbol": "ToastProps",
+          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+        }
+      }
+    ]
   },
   {
     "id": "announcement-label",
@@ -3228,7 +3344,18 @@
       "scope": "convention:announcement-label",
       "contentHash": "sha256:75da8f2d77b24d66fbcb0e1498f2572937d15319dcb081283bb0e06026596b59"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "ToastProvider",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/toast/types.ts",
+          "symbol": "ToastProviderProps",
+          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+        }
+      }
+    ]
   },
   {
     "id": "dialog-description",
