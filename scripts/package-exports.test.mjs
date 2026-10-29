@@ -46,7 +46,7 @@ function cssBlock(css, opening) {
 
 // Match escaped emitted selectors, not unescaped CVA class names; allow only complete approved utilities.
 const unapprovedTransitionUtility =
-  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\])(?=\s*\{))[\w\\]/;
+  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\])(?=\s*\{))[\w\\]/;
 
 test('transition utility guard accepts only the exact approved emitted selectors', () => {
   for (const selector of [
@@ -60,6 +60,7 @@ test('transition utility guard accepts only the exact approved emitted selectors
     String.raw`.transition-\[translate\,background-color\]`,
     String.raw`.transition-\[border-color\,color\]`,
     String.raw`.transition-\[translate\]`,
+    String.raw`.transition-\[opacity\,translate\]`,
     String.raw`.transition-\[color\,background-color\,border-color\,box-shadow\,scale\]`,
     String.raw`.motion-reduce\:transition-none`
   ]) {
@@ -86,6 +87,8 @@ test('transition utility guard rejects unrelated named and arbitrary transitions
     String.raw`.transition-\[border-color\,color\]extra`,
     String.raw`.transition-\[translate\,width\]`,
     String.raw`.transition-\[translate\]extra`,
+    String.raw`.transition-\[opacity\,translate\,width\]`,
+    String.raw`.transition-\[opacity\,translate\]extra`,
     String.raw`.transition-\[color\,background-color\,border-color\,box-shadow\,scale\,width\]`,
     String.raw`.transition-\[color\,background-color\,border-color\,box-shadow\,scale\]extra`
   ]) {
@@ -437,6 +440,55 @@ test('UI ships PullQuote quote recipes, logical filet and measure without prefli
   for (const selector of [String.raw`.border-l-\[length\:calc`, String.raw`.pl-4\.5`]) {
     assert.equal(utilities.includes(selector), false, `${selector} must not ship`);
   }
+});
+
+test('Menu ships its public declarations, shared overlay and owned geometry utilities', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  assert.equal(typeof exported.Menu, 'function');
+  assert.equal(typeof exported.menuVariants, 'function');
+  for (const name of ['useMenu', 'menuItemVariants', 'menuIconVariants', 'Entries', 'EntryContent']) {
+    assert.equal(exported[name], undefined, `${name} stays internal`);
+  }
+  const declarations = readFileSync(artifact('ui', './dist/molecules/menu/types.d.ts'), 'utf8');
+  for (const name of [
+    'MenuProps',
+    'MenuEntry',
+    'MenuActionItem',
+    'MenuLinkItem',
+    'MenuSeparatorItem',
+    'MenuLabelItem',
+    'MenuSubmenuItem',
+    'MenuTone',
+    'MenuAlign',
+    'MenuSide'
+  ]) {
+    assert.match(declarations, new RegExp(`export (?:declare )?type ${name}\\b`));
+  }
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    String.raw`.min-w-57\.5`,
+    String.raw`.max-h-\[var\(--radix-dropdown-menu-content-available-height\)\]`,
+    String.raw`.py-2\.25`,
+    String.raw`.data-highlighted\:bg-status-danger\/10`,
+    String.raw`.group-data-highlighted\:text-fg-brand-default`,
+    String.raw`.focus-visible\:inset-ring-2`,
+    String.raw`.focus-visible\:inset-ring-focus-ring-inverse`,
+    String.raw`.pointer-coarse\:min-h-11`,
+    String.raw`.starting\:opacity-0`,
+    String.raw`.motion-safe\:starting\:-translate-y-1\.5`,
+    String.raw`.motion-reduce\:transition-none`,
+    String.raw`.transition-\[opacity\,translate\]`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing Menu utility ${selector}`);
+  }
+  assert.match(utilities, /@starting-style/);
+  assert.match(utilities, /transition-property:\s*opacity,\s*translate/);
+  assert.match(utilities, /var\(--radix-dropdown-menu-content-available-height\)/);
+  assert.match(utilities, /var\(--color-surface-overlay\)/);
+  assert.match(utilities, /prefers-reduced-transparency:\s*reduce/);
+  assert.match(utilities, /not \(backdrop-filter:/);
+  assert.doesNotMatch(utilities, /\.eg-menu\s*\{/, 'Menu has no stylesheet recipe');
 });
 
 test('UI publishes its stable JavaScript entry', () => {

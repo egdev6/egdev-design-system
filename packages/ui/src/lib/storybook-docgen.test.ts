@@ -192,6 +192,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/toggle',
       './atoms/tooltip',
       './lib/cn',
+      './molecules/menu',
       './primitives/aspect-ratio',
       './primitives/divider',
 
@@ -224,6 +225,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Label',
       'Link',
       'Logo',
+      'Menu',
       'Portal',
       'ProgressBar',
       'PullQuote',
@@ -250,6 +252,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'cn',
       'dropzoneVariants',
       'labelVariants',
+      'menuVariants',
       'progressBarVariants',
       'radioGroupVariants',
       'sliderVariants',

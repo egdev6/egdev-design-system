@@ -28,6 +28,8 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
+import { Menu, menuVariants } from '@egdev/ui';
+import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorItem, MenuLabelItem, MenuSubmenuItem, MenuTone, MenuAlign, MenuSide } from '@egdev/ui';
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
 import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
@@ -116,6 +118,33 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+export const menuSelections: string[] = [];
+export const menuRecipe: string = menuVariants();
+const menuTone: MenuTone = 'danger';
+const menuAlign: MenuAlign = 'end';
+const menuSide: MenuSide = 'bottom';
+const menuAction: MenuActionItem = { id: 'edit', label: 'Edit', icon: 'pencil', shortcut: '⌘E', onSelect: () => menuSelections.push('edit') };
+const menuLink: MenuLinkItem = { kind: 'link', id: 'docs', label: 'Documentation', href: '#menu-docs' };
+const menuSeparator: MenuSeparatorItem = { kind: 'separator', id: 'separator' };
+const menuLabel: MenuLabelItem = { kind: 'label', id: 'label', label: 'Actions' };
+const menuSubmenu: MenuSubmenuItem = { kind: 'submenu', id: 'more', label: 'More', items: [menuAction, menuLink] };
+export const menuEntries: MenuEntry[] = [menuLabel, menuAction, menuLink, menuSubmenu, menuSeparator, { id: 'delete', label: 'Delete', tone: menuTone }];
+export const menuProps: MenuProps = { children: createElement(Button, { children: 'Menu actions', id: 'menu-trigger' }), items: menuEntries, align: menuAlign, side: menuSide };
+export function MenuSample({ open }: { open?: boolean }) {
+  return createElement(Menu, { ...menuProps, open, onNavigate: (_entry, event) => event.preventDefault() });
+}
+// @ts-expect-error Link entries require href.
+const invalidMenuLink: MenuEntry = { kind: 'link', id: 'link', label: 'Missing destination' };
+// @ts-expect-error Nested submenus are outside v0.1.
+const invalidMenuDepth: MenuSubmenuItem = { kind: 'submenu', id: 'sub', label: 'Sub', items: [menuSubmenu] };
+// @ts-expect-error The old type discriminator is not an alias.
+const invalidMenuType: MenuEntry = { type: 'item', id: 'old', label: 'Old' };
+// @ts-expect-error Menu forwards no native props.
+const nativeMenu: MenuProps = { ...menuProps, id: 'unsupported' };
+// @ts-expect-error Menu has no public ref API.
+const refMenu: ComponentProps<typeof Menu> = { ...menuProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Menu requires one trigger element.
+const missingMenuTrigger: MenuProps = { items: [] };
 const buttonVariant: ButtonVariant = 'secondary';
 const buttonSize: ButtonSize = 'sm';
 export const buttonRef = createRef<HTMLButtonElement>();
@@ -2007,6 +2036,27 @@ function assertCountdownCSS(css) {
   assert.match(css, /min-width:\s*var\(--spacing-countdown-unit[,)]/);
 }
 
+// Menu owns geometry and entry treatments, while the shared Surface recipe supplies Material.
+function assertMenuCSS(css) {
+  for (const selector of [
+    String.raw`.min-w-57\.5`,
+    String.raw`.py-2\.25`,
+    String.raw`.max-h-\[var\(--radix-dropdown-menu-content-available-height\)\]`,
+    String.raw`.data-highlighted\:bg-status-danger\/10`,
+    String.raw`.group-data-highlighted\:text-fg-brand-default`,
+    String.raw`.focus-visible\:inset-ring-focus-ring-inverse`,
+    String.raw`.starting\:opacity-0`,
+    String.raw`.motion-safe\:starting\:-translate-y-1\.5`,
+    String.raw`.transition-\[opacity\,translate\]`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Menu utility ' + selector);
+  }
+  assert.match(css, /var\(--radix-dropdown-menu-content-available-height\)/);
+  assert.match(css, /var\(--color-surface-overlay\)/);
+  assert.match(css, /prefers-reduced-transparency:\s*reduce/);
+  assert.match(css, /@starting-style/);
+}
+
 // SearchTrigger utilities ship token geometry, coarse targets and native-state colors without preflight.
 function assertSearchTriggerCSS(css) {
   for (const selector of [
@@ -2353,6 +2403,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Label',
   'Link',
   'Logo',
+  'Menu',
   'Portal',
   'ProgressBar',
   'PullQuote',
@@ -2379,6 +2430,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'cn',
   'dropzoneVariants',
   'labelVariants',
+  'menuVariants',
   'progressBarVariants',
   'radioGroupVariants',
   'sliderVariants',
@@ -2412,6 +2464,8 @@ ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
+${assertMenuCSS.toString()}
+assertMenuCSS(shippedStyles);
 ${assertPullQuoteCSS.toString()}
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(shippedStyles);
@@ -2500,6 +2554,18 @@ import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
 import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+// Menu's body portal is client-only; SSR exposes only the consumer-owned trigger.
+const { MenuSample } = await import('./consumer.ts');
+const menuDocument = new JSDOM(renderToString(createElement(MenuSample)));
+try {
+  const menuTrigger = menuDocument.window.document.querySelector('#menu-trigger');
+  assert.equal(menuTrigger.tagName, 'BUTTON');
+  assert.equal(menuTrigger.getAttribute('aria-haspopup'), 'menu');
+  assert.equal(menuTrigger.getAttribute('aria-expanded'), 'false');
+  assert.equal(menuDocument.window.document.querySelector('[role="menu"]'), null);
+} finally {
+  menuDocument.window.close();
+}
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
@@ -4038,6 +4104,33 @@ try {
   await act(async () => root.render(null));
   assert.equal(document.getElementById('totals'), null);
   stage('stat:passive:complete');
+  stage('menu:start');
+  const { MenuSample, menuSelections } = await import('./consumer.ts');
+  await act(async () => root.render(createElement(MenuSample)));
+  const menuTrigger = document.getElementById('menu-trigger');
+  menuTrigger.focus();
+  await act(async () => menuTrigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true })));
+  assert.equal(document.querySelector('[role="menu"]'), null, 'A1 keeps closed-trigger ArrowUp inert');
+  await act(async () => {
+    menuTrigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 30));
+  });
+  const menuPanel = document.querySelector('[role="menu"]');
+  assert.ok(menuPanel && !document.getElementById('app').contains(menuPanel), 'Content is portalled');
+  assert.ok(menuPanel.classList.contains('eg-menu') && menuPanel.classList.contains('eg-surface'));
+  assert.ok(menuPanel.classList.contains('p-2') && !menuPanel.classList.contains('p-0'));
+  assert.equal(menuPanel.querySelector('[kind]'), null);
+  const editMenuItem = [...menuPanel.querySelectorAll('[role="menuitem"]')].find((item) => item.textContent === 'Edit⌘E');
+  assert.ok(editMenuItem.querySelector('kbd') && editMenuItem.querySelector('svg[aria-hidden="true"]'));
+  await act(async () => {
+    editMenuItem.click();
+    await new Promise((resolve) => setTimeout(resolve, 30));
+  });
+  assert.deepEqual(menuSelections, ['edit']);
+  assert.equal(document.querySelector('[role="menu"]'), null);
+  assert.ok(document.activeElement === menuTrigger, 'Selection restores trigger focus');
+  await act(async () => root.render(null));
+  stage('menu:complete');
   stage('search-trigger:start');
   const documentListeners = [];
   const addDocumentListener = document.addEventListener;
@@ -4345,6 +4438,8 @@ ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
+${assertMenuCSS.toString()}
+assertMenuCSS(emitted);
 ${assertPullQuoteCSS.toString()}
 assertIconButtonCSS(emitted);
 ${assertToggleCSS.toString()}
@@ -4448,6 +4543,7 @@ assertDropzoneCSS(twCss);
 assertCountdownCSS(twCss);
 assertStatCSS(twCss);
 assertSearchTriggerCSS(twCss);
+assertMenuCSS(twCss);
 assertPullQuoteCSS(twCss);
 assertToggleCSS(twCss);
 assertChipCSS(twCss);
