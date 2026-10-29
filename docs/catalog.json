@@ -512,9 +512,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "Popover",
-    "compone": "Surface, Portal",
+    "compone": "Surface; Radix-owned Portal",
     "accion": "nuevo",
-    "notas": "Panel flotante al hacer clic."
+    "notas": "Implemented under [approved v0.1 plus A1/A2](https://github.com/egdev6/egdev-design-system/issues/96): named click-open dialog with Root, Trigger, internally portalled Content and Close. Radix owns state, ids, focus, dismissal and placement; modality-only context derives aria-modal. Content composes Surface overlay without copying its recipe. Native/slotted button refs; Button Trigger retains idle/loading state and exposes visibility through aria-expanded (A2). No custom Content id, stylesheet or extra public helpers. Visual conformity remains Not evaluated."
   },
   {
     "actual": "—",
