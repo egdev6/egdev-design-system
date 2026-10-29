@@ -9,6 +9,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   buttonGroup: ['id', 'title', 'dir', 'aria-labelledby', 'aria-describedby', 'className'],
   checkbox: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid', 'className', 'form'],
   chip: ['id', 'title', 'name', 'onClick', 'aria-describedby', 'className'],
+  chipGroup: ['id', 'title', 'onClick', 'aria-describedby', 'className', 'style'],
   countdown: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],
   dropzone: ['id', 'title', 'disabled', 'className', 'aria-describedby', 'onClick'],
   gauge: ['id', 'title', 'aria-describedby', 'className', 'style'],

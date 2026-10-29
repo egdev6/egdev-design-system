@@ -15,6 +15,7 @@ const components = [
   ['ButtonGroup', 'molecules/button-group'],
   ['Checkbox', 'atoms/checkbox'],
   ['Chip', 'atoms/chip'],
+  ['ChipGroup', 'molecules/chip-group'],
   ['Countdown', 'atoms/countdown'],
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Cluster', 'primitives/stack'],
@@ -117,6 +118,16 @@ const expected: Record<string, Record<string, string | false>> = {
     required: 'boolean',
     name: 'text',
     value: 'text'
+  },
+  chipgroup: {
+    type: 'select',
+    label: 'text',
+    options: false,
+    disabled: 'boolean',
+    dir: 'select',
+    value: false,
+    defaultValue: false,
+    onValueChange: false
   },
   chip: {
     children: false,
@@ -294,6 +305,7 @@ const ownPropCounts: Record<string, number> = {
   button: 7,
   checkbox: 7,
   chip: 6,
+  chipgroup: 8,
   countdown: 10,
   aspectratio: 1,
   badge: 4,

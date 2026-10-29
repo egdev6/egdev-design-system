@@ -209,6 +209,29 @@ test('Chip ships its exact token-backed pill, pressed, focus, press and reduced-
   assert.doesNotMatch(utilities, /\.eg-chip[^{]*\{/, 'Chip has no stylesheet: its marker adds no utility rule');
 });
 
+test('ChipGroup ships wrapping layout, token underline and disabled/motion guards from its CVA source', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  assert.match(cssBlock(utilities, /\.flex-wrap\s*\{/), /flex-wrap:\s*wrap/);
+  assert.match(cssBlock(utilities, /\.gap-2\s*\{/), /gap:\s*var\(--space-2\)/);
+  for (const selector of [
+    String.raw`.data-\[state\=on\]\:underline`,
+    String.raw`.decoration-\[length\:var\(--border-width\)\]`,
+    String.raw`.underline-offset-\[var\(--space-1\)\]`,
+    String.raw`.disabled\:cursor-not-allowed`,
+    String.raw`.disabled\:active\:translate-none`,
+    String.raw`.disabled\:active\:scale-none`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing ChipGroup utility ${selector}`);
+  }
+  assert.match(utilities, /text-decoration-thickness:\s*var\(--border-width\)/);
+  assert.match(utilities, /text-underline-offset:\s*var\(--space-1\)/);
+  assert.doesNotMatch(css, /\.eg-chip-group[^{]*\{/, 'Root marker adds no painted panel');
+  const source = readFileSync(resolve(root, 'packages/ui/src/styles/compiled.css'), 'utf8');
+  assert.ok(source.includes('@source "../molecules/chip-group/types.ts";'));
+});
+
 test('Tabs publishes only its approved API and ships static molecule utilities', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   assert.equal(typeof exported.Tabs, 'function');
@@ -1801,6 +1824,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'ButtonGroup',
       'Checkbox',
       'Chip',
+      'ChipGroup',
       'Cluster',
       'Countdown',
       'Divider',
@@ -1880,6 +1904,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   );
   assert.equal(typeof exported.Chip, 'function', 'Chip must be a plain function component with no public ref API');
   assert.equal(typeof exported.chipVariants, 'function', 'Chip recipe must stay public for ChipGroup');
+  assert.equal(typeof exported.ChipGroup, 'function', 'ChipGroup has no public ref API');
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
   // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
@@ -1974,6 +1999,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'CheckboxCheckedState',
     'CheckboxProps',
     'Chip',
+    'ChipGroup',
+    'ChipGroupOption',
+    'ChipGroupProps',
+    'ChipGroupType',
     'ChipProps',
     'Cluster',
     'ClusterProps',
@@ -2153,6 +2182,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'statValueVariants',
     'statDeltaVariants',
     'useChip',
+    'useChipGroup',
+    'chipGroupVariants',
+    'chipGroupItemVariants',
+    'chipGroupIconVariants',
     'chipIconVariants'
   ]) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
@@ -2359,6 +2392,25 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     /<span data-state="unavailable" class="eg-stat-value [^"]*text-display-stat-sm[^"]*"><span aria-hidden="true">—<\/span><span class="sr-only">No data<\/span><\/span><\/div>$/
   );
   assert.doesNotMatch(noDataHtml, /data-state="highlighted"|eg-stat-delta|aria-live|>0</);
+  const chipGroupOptions = [
+    { value: 'react', label: 'React' },
+    { value: 'css', label: 'CSS' }
+  ];
+  for (const type of ['single', 'multiple']) {
+    const html = renderToString(
+      createElement(exported.ChipGroup, {
+        type,
+        label: 'Topics',
+        options: chipGroupOptions,
+        defaultValue: type === 'single' ? 'react' : ['react']
+      })
+    );
+    assert.match(html, /role="group"/);
+    assert.match(html, /aria-label="Topics"/);
+    assert.match(html, /class="eg-chip-group flex flex-wrap items-center gap-2"/);
+    assert.match(html, type === 'single' ? /role="radio" aria-checked="true"/ : /aria-pressed="true"/);
+    assert.doesNotMatch(html, /<input|is-active|eg-surface/);
+  }
   assert.equal(typeof exported.Notice, 'function', 'Notice has no public ref API');
   const sharedNotice = exported.noticeVariants({ tone: 'danger', size: 'sm' });
   assert.ok(sharedNotice.split(' ').includes('eg-surface'), 'A1 permits inherited Surface identity');
