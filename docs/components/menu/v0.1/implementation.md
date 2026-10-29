@@ -82,6 +82,16 @@ All Vitest commands below used `timeout 600 systemd-run --user --scope -q -p Mem
 | `node --test --test-name-pattern='transition utility guard' scripts/package-exports.test.mjs` | 2 passed |
 | `git diff --check` | Passed |
 
+## Packed CSR focus timing follow-up
+
+The parent's packed CSR run exposed a harness race, not a Menu focus adapter/ref bug. Radix FocusScope schedules unmount autofocus with `setTimeout(..., 0)` from effect cleanup. DropdownMenu's close-autofocus callback then focuses its composed trigger; Menu supplies no close-autofocus override. Sleeping inside the selecting `act()` is insufficient: React can commit the unmount only after that callback returns, so the autofocus timer starts after the sleep. The existing unit tests normally yield through userEvent/waitFor and therefore do not expose the premature packed assertion.
+
+`menu-packed-focus.test.tsx` deterministically holds only the timeout queue while using real Radix, Menu, Button, createRoot, keyboard events and DOM focus. RED: after selection commits, the menu is gone but activeElement is body, so the premature trigger-focus assertion fails. GREEN: advancing Radix's pending timeout after that commit restores the actual composed trigger. No focus, ARIA or Radix callback is mocked.
+
+The packed harness retains keyboard Enter selection, asserts that opening really focused the first enabled item, and waits through bounded post-commit event-loop turns before the original trigger-focus assertion. It never manually focuses the item or trigger to satisfy those checks. No component source changed, and a package rebuild is unnecessary for this harness-only correction.
+
+Focused follow-up: 21 tests passed across `menu-packed-focus.test.tsx` and the existing Menu suite. The corrected packed matrix still requires parent execution; no new packed result is claimed in this follow-up.
+
 ## Remaining parent verification
 
 Package export and packed-consumer suites are updated (public declarations and runtime keys, native/SSR/client samples, negative types, production/native/Tailwind consumer CSS), **not run here**. Full build, packed React 18/19 consumers, serialized parent gates, browser Controls and owner visual review remain separate. No Storybook server, package installation, commit, push or CI run was performed.

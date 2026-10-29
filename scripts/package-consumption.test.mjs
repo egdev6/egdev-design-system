@@ -4105,6 +4105,15 @@ try {
   assert.equal(document.getElementById('totals'), null);
   stage('stat:passive:complete');
   stage('menu:start');
+  // FocusScope schedules unmount autofocus with setTimeout(0) during the commit.
+  // A delay inside the selecting act() can finish before that commit even happens.
+  // Yield after act() has flushed it; never focus the trigger from the harness.
+  const waitForMenuFocus = async (target) => {
+    for (let turn = 0; turn < 100; turn++) {
+      await act(async () => new Promise((resolve) => setTimeout(resolve, 10)));
+      if (document.activeElement === target) return;
+    }
+  };
   const { MenuSample, menuSelections } = await import('./consumer.ts');
   await act(async () => root.render(createElement(MenuSample)));
   const menuTrigger = document.getElementById('menu-trigger');
@@ -4122,12 +4131,14 @@ try {
   assert.equal(menuPanel.querySelector('[kind]'), null);
   const editMenuItem = [...menuPanel.querySelectorAll('[role="menuitem"]')].find((item) => item.textContent === 'Edit⌘E');
   assert.ok(editMenuItem.querySelector('kbd') && editMenuItem.querySelector('svg[aria-hidden="true"]'));
+  await waitForMenuFocus(editMenuItem);
+  assert.ok(document.activeElement === editMenuItem, 'Keyboard opening focuses the first enabled item');
   await act(async () => {
-    editMenuItem.click();
-    await new Promise((resolve) => setTimeout(resolve, 30));
+    editMenuItem.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
   });
   assert.deepEqual(menuSelections, ['edit']);
   assert.equal(document.querySelector('[role="menu"]'), null);
+  await waitForMenuFocus(menuTrigger);
   assert.ok(document.activeElement === menuTrigger, 'Selection restores trigger focus');
   await act(async () => root.render(null));
   stage('menu:complete');
