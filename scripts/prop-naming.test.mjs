@@ -16,6 +16,29 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/molecules/list-item/types.ts#ListItemProps'
   })),
+  ...[
+    'accessible-name',
+    'collection-items',
+    'primary-value',
+    'initial-uncontrolled-value',
+    'interactive-value-change',
+    'visual-treatment',
+    'preset-dimensions'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/tabs/types.ts#TabsProps'
+  })),
+  { conventionId: 'surface-material-tone', source: 'packages/ui/src/molecules/tabs/types.ts#TabsItem' },
+  ...['surface-material-tone', 'preset-dimensions', 'leading-icon', 'message-summary', 'trailing-actions'].map(
+    (conventionId) => ({
+      conventionId,
+      source: 'packages/ui/src/molecules/notice/types.ts#NoticeProps'
+    })
+  ),
+  ...['accessible-name', 'visual-treatment'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/button-group/types.ts#ButtonGroupProps'
+  })),
   ...['accessible-name', 'leading-icon', 'visual-treatment', 'preset-dimensions', 'slot-composition'].map(
     (conventionId) => ({
       conventionId,
