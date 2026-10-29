@@ -1643,6 +1643,74 @@ test('Button emits every static CVA utility and its approved native resets and m
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
 });
 
+test('SectionHeader emits every local CVA utility and its exact static breakpoint without a stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/section-header/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      return;
+    }
+    if (ts.isStringLiteral(node)) {
+      for (const name of node.text.split(/\s+/).filter(Boolean)) {
+        classes.add(name);
+      }
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      for (const argument of node.arguments) {
+        collect(argument);
+      }
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.ok(classes.size > 20, 'Scan every local root and part recipe');
+  for (const name of classes) {
+    if (name.startsWith('eg-')) {
+      continue;
+    }
+    assert.ok(css.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing SectionHeader utility ${name}`);
+  }
+  const wide = cssBlock(css, /@media \(width >= 860px\)\s*\{/);
+  assert.match(wide, /grid-template-columns:\s*minmax\(0,\s*1fr\)\s+minmax\(0,\s*0\.8fr\)/);
+  assert.match(wide, /justify-self:\s*(?:flex-)?end/);
+  const lede = cssBlock(css, /\.text-body-muted\s*\{/);
+  assert.match(lede, /font-size:\s*var\(--text-body-muted,\s*20px\)/);
+  assert.match(lede, /line-height:\s*var\(--tw-leading,\s*var\(--text-body-muted--line-height,\s*1\.6\)\)/);
+  assert.match(lede, /font-weight:\s*var\(--tw-font-weight,\s*var\(--text-body-muted--font-weight,\s*400\)\)/);
+  assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/section-header/section-header.css')));
+});
+
+test('SectionHeader ships native passive SSR composition with decorative rule and fallbacks', async () => {
+  const { SectionHeader } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const render = (props) =>
+    renderToString(createElement(SectionHeader, { title: 'Build ', accent: 'together.', ...props }));
+  const html = render({ variant: 'inline', eyebrow: 'Our work', titleId: 'section-title', id: 'root' });
+  assert.match(html, /^<header/);
+  assert.match(html, /id="root"/);
+  assert.match(html, /<h2[^>]*id="section-title"/);
+  assert.match(html, /role="none"/);
+  assert.doesNotMatch(html, /role="separator"|aria-live|tabindex|eg-section-head--inline/);
+  assert.equal(html, render({ variant: 'inline', eyebrow: 'Our work', titleId: 'section-title', id: 'root' }));
+  for (const variant of ['split', 'inline']) {
+    const fallback = render({ variant });
+    assert.match(fallback, /flex flex-col items-start gap-5/);
+    assert.doesNotMatch(fallback, /eg-divider|eg-section-head__lede/);
+  }
+});
+
 test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal and Slot with passive SSR semantics', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   assert.deepEqual(
@@ -1672,6 +1740,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'PullQuote',
       'RadioGroup',
       'SearchTrigger',
+      'SectionHeader',
       'Select',
       'Skeleton',
       'Slider',
@@ -1875,6 +1944,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'RadioGroupProps',
     'SearchTrigger',
     'SearchTriggerProps',
+    'SectionHeader',
+    'SectionHeaderLevel',
+    'SectionHeaderProps',
+    'SectionHeaderTone',
+    'SectionHeaderVariant',
     'Select',
     'SelectOption',
     'SelectProps',
@@ -1968,6 +2042,13 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'useSectionHeader',
+    'sectionHeaderVariants',
+    'sectionHeaderEyebrowVariants',
+    'sectionHeaderHeadingVariants',
+    'sectionHeaderLedeVariants',
+    'sectionHeaderRuleVariants',
+    'SectionHeaderNativeProps',
     'useSearchTrigger',
     'searchTriggerVariants',
     'searchTriggerLabelVariants',
@@ -1990,6 +2071,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'dropzoneVariants',
     'SearchTrigger',
     'SearchTriggerProps',
+    'SectionHeader',
+    'SectionHeaderLevel',
+    'SectionHeaderProps',
+    'SectionHeaderTone',
+    'SectionHeaderVariant',
     'Divider',
     'DividerOrientation',
     'DividerProps',

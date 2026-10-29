@@ -192,6 +192,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/toggle',
       './atoms/tooltip',
       './lib/cn',
+      './molecules/section-header',
       './primitives/aspect-ratio',
       './primitives/divider',
 
@@ -229,6 +230,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'PullQuote',
       'RadioGroup',
       'SearchTrigger',
+      'SectionHeader',
       'Select',
       'Skeleton',
       'Slider',
@@ -258,6 +260,76 @@ describe('Storybook TypeScript docgen contract', () => {
       'surfaceVariants',
       'tooltipVariants'
     ]);
+  });
+
+  it('extracts SectionHeader own controls, defaults, native boundary and documented stories', () => {
+    const file = ast(source('molecules/section-header/types.ts'));
+    const properties = ownProps(file, ['SectionHeaderProps']);
+    const controls: Record<string, string> = {
+      title: 'text',
+      eyebrow: 'text',
+      accent: 'text',
+      accentBreak: 'boolean',
+      lede: 'text',
+      variant: 'select',
+      level: 'select',
+      titleId: 'text',
+      tone: 'select'
+    };
+    const doc = parser
+      .parse(source('molecules/section-header/SectionHeader.tsx'))
+      .find((item) => item.displayName === 'SectionHeader');
+    expect(properties).toHaveLength(9);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(ts.getJSDocTags(property).filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
+      expect(doc?.props[name]?.tags).toMatchObject({ control: controls[name] });
+    }
+    expect(doc?.props.title?.required).toBe(true);
+    for (const name of ['title', 'eyebrow', 'accent', 'lede', 'titleId']) {
+      expect(doc?.props[name]?.defaultValue).toBeNull();
+      expect(doc?.props[name]?.type.name).toBe('string');
+    }
+    for (const [name, value] of Object.entries({
+      accentBreak: 'false',
+      variant: 'stack',
+      level: '2',
+      tone: 'canvas'
+    })) {
+      expect(doc?.props[name]?.defaultValue).toEqual({ value });
+    }
+    const choices = (name: string) =>
+      doc?.props[name]?.type.value.map(({ value }: { value: string }) => normalize(value));
+    expect(choices('variant')).toEqual(['inline', 'stack', 'split']);
+    expect(choices('level')).toEqual(['1', '2', '3', '4', '5', '6']);
+    expect(choices('tone')).toEqual(['canvas', 'raised']);
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'aria-labelledby', 'className', 'style', 'onClick']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of ['children', 'dangerouslySetInnerHTML', 'ref', 'asChild', 'actions', 'layout']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const stories = ast(source('molecules/section-header/SectionHeader.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'Stack',
+      'Split',
+      'Inline',
+      'AccentBreak',
+      'MissingOptionalParts',
+      'HeadingLevels',
+      'Raised',
+      'RTL',
+      'LongContent'
+    ]);
+    expect(stories.getText()).toMatch(/title: 'Molecules\/SectionHeader'/);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+    expect(defaults(source('molecules/section-header/useSectionHeader.ts'), false)).toMatchObject({
+      accentBreak: 'false',
+      variant: 'stack',
+      level: '2',
+      tone: 'canvas'
+    });
   });
 
   it('extracts Button own metadata, real defaults and permitted native action props', () => {

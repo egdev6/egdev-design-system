@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -79,6 +79,10 @@ import type {
   RadioGroupOrientation,
   RadioGroupProps,
   SearchTriggerProps,
+  SectionHeaderProps,
+  SectionHeaderVariant,
+  SectionHeaderLevel,
+  SectionHeaderTone,
   SelectProps,
   SelectOption,
   SelectSize,
@@ -389,6 +393,44 @@ const openSearch: SearchTriggerProps = { open: true };
 const stringCompact: SearchTriggerProps = { compact: 'yes' };
 // @ts-expect-error shortcut is display text only.
 const numericShortcut: SearchTriggerProps = { shortcut: 75 };
+
+// SectionHeader stays outside App so the intrinsic focus harness remains unchanged.
+const sectionVariant: SectionHeaderVariant = 'split';
+const sectionLevel: SectionHeaderLevel = 3;
+const sectionTone: SectionHeaderTone = 'raised';
+export const sectionHeaderProps: SectionHeaderProps = {
+  title: 'Build ', accent: 'together.', eyebrow: 'Our work', lede: 'Thoughtful tools.',
+  titleId: 'consumer-section-title', id: 'consumer-section-header', className: 'mt-6'
+};
+export function SectionHeaderSamples({ variant = sectionVariant, optional = true }: { variant?: SectionHeaderVariant; optional?: boolean }) {
+  return createElement(SectionHeader, {
+    ...sectionHeaderProps, variant, level: sectionLevel, tone: sectionTone,
+    eyebrow: optional ? sectionHeaderProps.eyebrow : undefined,
+    lede: optional ? sectionHeaderProps.lede : undefined
+  });
+}
+// @ts-expect-error Visible title is required.
+const missingSectionTitle: SectionHeaderProps = {};
+// @ts-expect-error Content is owned, not arbitrary children.
+const childSection: SectionHeaderProps = { title: 'Build', children: 'Injected' };
+// @ts-expect-error No HTML injection API.
+const injectedSection: SectionHeaderProps = { title: 'Build', dangerouslySetInnerHTML: { __html: '<em>x</em>' } };
+// @ts-expect-error No public ref API on either React major.
+const referencedSection: SectionHeaderProps = { title: 'Build', ref: createRef<HTMLElement>() };
+// @ts-expect-error No asChild composition API.
+const composedSection: SectionHeaderProps = { title: 'Build', asChild: true };
+// @ts-expect-error The source layout alias is not public.
+const layoutSection: SectionHeaderProps = { title: 'Build', layout: 'split' };
+// @ts-expect-error Actions belong in PageHeader, not this editorial molecule.
+const actionSection: SectionHeaderProps = { title: 'Build', actions: 'Go' };
+// @ts-expect-error Only stack, split and inline are supported.
+const heroSection: SectionHeaderProps = { title: 'Build', variant: 'hero' };
+// @ts-expect-error Heading ranks stop at six.
+const seventhSection: SectionHeaderProps = { title: 'Build', level: 7 };
+// @ts-expect-error The raised/canvas host context has no flood treatment.
+const floodSection: SectionHeaderProps = { title: 'Build', tone: 'flood' };
+// @ts-expect-error titleId is plain text.
+const numericSectionId: SectionHeaderProps = { title: 'Build', titleId: 1 };
 
 // Stat stays outside App: it is passive, adds no buttons and leaves the focus harness unchanged.
 export const statRecipe: string = statVariants({ size: 'sm' });
@@ -2007,6 +2049,27 @@ function assertCountdownCSS(css) {
   assert.match(css, /min-width:\s*var\(--spacing-countdown-unit[,)]/);
 }
 
+// SectionHeader ships only local arrangement; Heading, Text and Divider own their recipes.
+function assertSectionHeaderCSS(css) {
+  for (const name of [
+    'grid-cols-[minmax(0,auto)_minmax(0,1fr)]',
+    'section-header-split:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)]',
+    'section-header-split:justify-self-end',
+    'data-[orientation=horizontal]:min-w-0',
+    'max-w-[var(--bp-sm)]',
+    'gap-y-6',
+    'gap-x-12',
+    'col-span-full',
+    'text-body-muted'
+  ]) {
+    assert.ok(css.includes('.' + name.replace(/[^\w-]/g, '\\$&')), 'Missing SectionHeader utility ' + name);
+  }
+  assert.match(css, /@media\s*\(width >= 860px\)/);
+  assert.match(css, /grid-template-columns:\s*minmax\(0,\s*1fr\)\s+minmax\(0,\s*0\.8fr\)/);
+  assert.match(css, /font-size:\s*var\(--text-body-muted[,)]/);
+  assert.match(css, /max-width:\s*var\(--bp-sm\)/);
+}
+
 // SearchTrigger utilities ship token geometry, coarse targets and native-state colors without preflight.
 function assertSearchTriggerCSS(css) {
   for (const selector of [
@@ -2358,6 +2421,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'PullQuote',
   'RadioGroup',
   'SearchTrigger',
+  'SectionHeader',
   'Select',
   'Skeleton',
   'Slider',
@@ -2411,12 +2475,14 @@ ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
+${assertSectionHeaderCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertPullQuoteCSS.toString()}
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
 assertStatCSS(shippedStyles);
+assertSectionHeaderCSS(shippedStyles);
 assertSearchTriggerCSS(shippedStyles);
 assertPullQuoteCSS(shippedStyles);
 assertIconButtonCSS(shippedStyles);
@@ -2499,7 +2565,7 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
@@ -2554,6 +2620,30 @@ try {
   assert.ok(statRecipe.includes('px-3') && statRecipe.startsWith('eg-stat '));
 } finally {
   statDocument.window.close();
+}
+// SectionHeader SSR: native heading/IDs, complete phrase and a presentational inline rule.
+for (const variant of ['stack', 'split', 'inline']) {
+  const markup = renderToString(createElement(SectionHeaderSamples, { variant }));
+  assert.equal(markup, renderToString(createElement(SectionHeaderSamples, { variant })));
+  const dom = new JSDOM(markup);
+  try {
+    const header = dom.window.document.querySelector('header.eg-section-head');
+    const heading = header.querySelector('h3');
+    assert.equal(header.id, 'consumer-section-header');
+    assert.equal(header.hasAttribute('title'), false);
+    assert.equal(heading.id, 'consumer-section-title');
+    assert.equal(heading.textContent, 'Build together.');
+    assert.ok(heading.classList.contains('text-title-section'));
+    assert.ok(heading.lastElementChild.classList.contains('inline'));
+    assert.ok(heading.lastElementChild.classList.contains('text-fg-brand-raised'));
+    assert.equal(header.querySelector('.eg-divider')?.getAttribute('role') ?? null, variant === 'inline' ? 'none' : null);
+    assert.equal(header.querySelector('[tabindex], [aria-live], [data-state], [role="separator"]'), null);
+  } finally {
+    dom.window.close();
+  }
+  const fallback = renderToString(createElement(SectionHeaderSamples, { variant, optional: false }));
+  assert.ok(fallback.includes('flex flex-col items-start gap-5'));
+  assert.ok(!fallback.includes('eg-divider') && !fallback.includes('eg-section-head__lede'));
 }
 // SearchTrigger SSR: deterministic native launcher, decorative icon/hint and no fabricated popup claims.
 const searchDocument = new JSDOM(
@@ -3426,7 +3516,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SectionHeaderSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4038,6 +4128,18 @@ try {
   await act(async () => root.render(null));
   assert.equal(document.getElementById('totals'), null);
   stage('stat:passive:complete');
+  stage('section-header:start');
+  for (const variant of ['split', 'inline']) {
+    await act(async () => root.render(createElement(SectionHeaderSamples, { variant })));
+    const header = document.getElementById('consumer-section-header');
+    assert.equal(header.querySelector('h3').textContent, 'Build together.');
+    assert.equal(header.querySelector('.eg-divider')?.getAttribute('role') ?? null, variant === 'inline' ? 'none' : null);
+    await act(async () => root.render(createElement(SectionHeaderSamples, { variant, optional: false })));
+    assert.ok(header.classList.contains('flex') && header.classList.contains('gap-5'));
+    assert.equal(header.children.length, 1, 'No optional placeholders survive rerender');
+    assert.equal(header.querySelector('[tabindex], [aria-live], [data-state]'), null);
+  }
+  stage('section-header:complete');
   stage('search-trigger:start');
   const documentListeners = [];
   const addDocumentListener = document.addEventListener;
@@ -4344,6 +4446,7 @@ ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
+${assertSectionHeaderCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertPullQuoteCSS.toString()}
 assertIconButtonCSS(emitted);
@@ -4379,6 +4482,7 @@ assertDropzoneCSS(emitted);
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(emitted);
 assertStatCSS(emitted);
+assertSectionHeaderCSS(emitted);
 assertSearchTriggerCSS(emitted);
 assertPullQuoteCSS(emitted);
 assertToggleCSS(emitted);
@@ -4403,7 +4507,8 @@ const typography = ${JSON.stringify(typographyNames)};
 // #70 Stat adds --text-display-stat and --text-display-stat-sm with three companions each: 255 + 8 = 263.
 // #82 Countdown adds 10 tokens: 263 + 10 = 273.
 // #98 PullQuote adds 9 tokens: 273 + 9 = 282.
-assert.equal(names.length, 282, 'Packed native artifact must expose 282 variables');
+// #100 D7 adds 1 static breakpoint: 282 + 1 = 283.
+assert.equal(names.length, 283, 'Packed native artifact must expose 283 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
@@ -4447,6 +4552,7 @@ assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
 assertCountdownCSS(twCss);
 assertStatCSS(twCss);
+assertSectionHeaderCSS(twCss);
 assertSearchTriggerCSS(twCss);
 assertPullQuoteCSS(twCss);
 assertToggleCSS(twCss);
