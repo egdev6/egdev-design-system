@@ -2193,7 +2193,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.match(noticeHtml, /role="alert"/);
   assert.match(noticeHtml, /data-tone="danger"/);
   assert.match(noticeHtml, /class="eg-notice eg-surface /);
-  assert.match(noticeHtml, /<strong>Sign in required\.<\/strong> Reconnect to continue\./);
+  assert.match(noticeHtml, /<strong>Sign in required\.<\/strong> (?:<!-- -->)?Reconnect to continue\./);
   assert.match(noticeHtml, /aria-hidden="true"><svg/);
   assert.doesNotMatch(noticeHtml, /aria-live=|tabindex=|eg-notice__actions/);
   const searchHtml = renderToString(createElement(exported.SearchTrigger, { shortcut: 'Ctrl K' }));
