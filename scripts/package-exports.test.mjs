@@ -485,7 +485,7 @@ test('Menu ships its public declarations, shared overlay and owned geometry util
   assert.match(utilities, /@starting-style/);
   assert.match(utilities, /transition-property:\s*opacity,\s*translate/);
   assert.match(utilities, /var\(--radix-dropdown-menu-content-available-height\)/);
-  assert.match(utilities, /var\(--color-surface-overlay\)/);
+  assert.match(utilities, /var\(--color-surface-overlay[,)]/);
   assert.match(utilities, /prefers-reduced-transparency:\s*reduce/);
   assert.match(utilities, /not \(backdrop-filter:/);
   assert.doesNotMatch(utilities, /\.eg-menu\s*\{/, 'Menu has no stylesheet recipe');
@@ -1719,6 +1719,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Label',
       'Link',
       'Logo',
+      'Menu',
       'Portal',
       'ProgressBar',
       'PullQuote',
@@ -1745,6 +1746,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'cn',
       'dropzoneVariants',
       'labelVariants',
+      'menuVariants',
       'progressBarVariants',
       'radioGroupVariants',
       'sliderVariants',
@@ -1911,6 +1913,17 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LogoProps',
     'LogoSize',
     'LogoVariant',
+    'Menu',
+    'MenuActionItem',
+    'MenuAlign',
+    'MenuEntry',
+    'MenuLabelItem',
+    'MenuLinkItem',
+    'MenuProps',
+    'MenuSeparatorItem',
+    'MenuSide',
+    'MenuSubmenuItem',
+    'MenuTone',
     'Portal',
     'PortalProps',
     'ProgressBar',
@@ -1978,6 +1991,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'cn',
     'dropzoneVariants',
     'labelVariants',
+    'menuVariants',
     'progressBarVariants',
     'radioGroupVariants',
     'sliderVariants',
