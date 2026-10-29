@@ -73,6 +73,16 @@
           "symbol": "StatProps",
           "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
         }
+      },
+      {
+        "component": "MeterRow",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/meter-row/types.ts",
+          "symbol": "MeterRowProps",
+          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+        }
       }
     ]
   },
@@ -471,6 +481,16 @@
           "symbol": "PullQuoteProps",
           "revision": "sha256:a80b89c12589a3afe7dfc16fa86797bd860f12f839946ec189da60277e8f05d4"
         }
+      },
+      {
+        "component": "MeterRow",
+        "type": "MeterRowVariant ('default' | 'muted')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/meter-row/types.ts",
+          "symbol": "MeterRowProps",
+          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+        }
       }
     ]
   },
@@ -742,6 +762,16 @@
           "symbol": "CountdownProps",
           "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
         }
+      },
+      {
+        "component": "MeterRow",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/meter-row/types.ts",
+          "symbol": "MeterRowProps",
+          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+        }
       }
     ]
   },
@@ -852,6 +882,16 @@
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
           "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+        }
+      },
+      {
+        "component": "MeterRow",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/meter-row/types.ts",
+          "symbol": "MeterRowProps",
+          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
         }
       }
     ]
@@ -1980,7 +2020,18 @@
       "scope": "convention:localized-messages",
       "contentHash": "sha256:555c4e48e004651531f1588e18a8f71781afd8054c2ae113959b2831d86736cd"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "MeterRow",
+        "type": "Partial<MeterRowMessages>",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/meter-row/types.ts",
+          "symbol": "MeterRowProps",
+          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+        }
+      }
+    ]
   },
   {
     "id": "selection-cardinality",
@@ -2425,7 +2476,18 @@
       "scope": "convention:numeric-display-help",
       "contentHash": "sha256:8ee4e7bb40cdfd35b548ebf473ec7775f8e0fbe658d85747c2d0cd64de5b9ec7"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "MeterRow",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/meter-row/types.ts",
+          "symbol": "MeterRowProps",
+          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+        }
+      }
+    ]
   },
   {
     "id": "heading-title",
