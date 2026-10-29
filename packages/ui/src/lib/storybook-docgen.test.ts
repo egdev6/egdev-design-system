@@ -192,6 +192,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/toggle',
       './atoms/tooltip',
       './lib/cn',
+      './molecules/popover',
       './primitives/aspect-ratio',
       './primitives/divider',
 
@@ -224,6 +225,10 @@ describe('Storybook TypeScript docgen contract', () => {
       'Label',
       'Link',
       'Logo',
+      'Popover',
+      'PopoverClose',
+      'PopoverContent',
+      'PopoverTrigger',
       'Portal',
       'ProgressBar',
       'PullQuote',
