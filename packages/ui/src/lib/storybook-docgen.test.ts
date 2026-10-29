@@ -239,12 +239,11 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/toggle',
       './atoms/tooltip',
       './lib/cn',
-      './molecules/tabs',
       './molecules/button-group',
       './molecules/notice',
+      './molecules/tabs',
       './primitives/aspect-ratio',
       './primitives/divider',
-
       './primitives/label',
       './primitives/portal',
       './primitives/skeleton',
