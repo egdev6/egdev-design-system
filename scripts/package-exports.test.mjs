@@ -46,7 +46,309 @@ function cssBlock(css, opening) {
 
 // Match escaped emitted selectors, not unescaped CVA class names; allow only complete approved utilities.
 const unapprovedTransitionUtility =
-  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\])(?=\s*\{))[\w\\]/;
+  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\])(?=\s*\{))[\w\\]/;
+
+test('Notice ships static molecule tint, wrapping and compact typography utilities', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const color of ['fg-secondary', 'status-info', 'status-success', 'status-warning', 'status-danger']) {
+    for (const [prefix, opacity] of [
+      ['border', 30],
+      ['from', 11],
+      ['to', 4]
+    ]) {
+      assert.ok(utilities.includes(`.${prefix}-${color}\\/${opacity}`), `Missing Notice ${prefix}-${color}/${opacity}`);
+    }
+  }
+  for (const selector of [
+    '.bg-linear-to-b',
+    '.text-body-default',
+    '.text-label-default',
+    '.flex-wrap',
+    String.raw`.basis-\[calc\(var\(--space-24\)\*2\.5\)\]`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing Notice utility ${selector}`);
+  }
+  assert.doesNotMatch(utilities, /\.eg-notice(?:__\w+)?\s*\{/, 'Notice markers have no new visual stylesheet');
+});
+
+test('MeterRow ships wrapping and token typography with real one-owner progress SSR', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const [selector, declaration] of [
+    ['.gap-x-3', /column-gap:\s*var\(--space-3[,)]/],
+    ['.gap-y-1', /row-gap:\s*var\(--space-1[,)]/],
+    [String.raw`.\[overflow-wrap\:anywhere\]`, /overflow-wrap:\s*anywhere/],
+    [
+      String.raw`.leading-\[var\(--text-body-default--line-height\)\]`,
+      /line-height:\s*var\(--text-body-default--line-height[,)]/
+    ],
+    [
+      String.raw`.font-\[var\(--text-body-muted--font-weight\)\]`,
+      /font-weight:\s*var\(--text-body-muted--font-weight[,)]/
+    ]
+  ]) {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    assert.match(cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`)), declaration);
+  }
+  assert.doesNotMatch(utilities, /\.eg-meter-row[^{}]*\{/, 'Markers are not another visual engine');
+  const { MeterRow } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  for (const value of [42.5, NaN]) {
+    const dom = new JSDOM(
+      renderToString(createElement(MeterRow, { label: 'Import files', value, help: 'Keep this tab open' }))
+    );
+    try {
+      const document = dom.window.document;
+      const row = document.querySelector('.eg-meter-row');
+      const bar = document.querySelector('[role="progressbar"]');
+      assert.ok(row && bar);
+      assert.equal(document.querySelectorAll('[role="progressbar"]').length, 1);
+      assert.equal(row.hasAttribute('role'), false);
+      assert.equal(bar.getAttribute('aria-label'), 'Import files');
+      assert.equal(row.firstElementChild.getAttribute('aria-hidden'), 'true');
+      assert.equal(document.querySelector('output, meter, [aria-live]'), null);
+      const ids = bar.getAttribute('aria-describedby').split(' ');
+      assert.equal(new Set(ids).size, ids.length);
+      assert.equal(
+        ids.map((id) => document.getElementById(id).textContent).join(' '),
+        Number.isFinite(value) ? 'Keep this tab open' : 'In progress Keep this tab open'
+      );
+      assert.equal(bar.getAttribute('aria-valuenow'), Number.isFinite(value) ? '42.5' : null);
+      assert.equal(bar.getAttribute('aria-valuetext'), Number.isFinite(value) ? '42.5%' : null);
+    } finally {
+      dom.window.close();
+    }
+  }
+});
+
+test('SelectTile ships shared Material, state priority, stretched geometry and native SSR semantics', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^{}]*\\{`));
+  for (const state of ['checked', 'on']) {
+    const selected = String.raw`.has-\[\[data-state\=${state}\]\]`;
+    const fill = rule(`${selected}\\:bg-surface-3`);
+    assert.match(fill, new RegExp(`:has\\(:is\\(\\[data-state=["']?${state}["']?\\]\\)\\)`));
+    assert.match(fill, /background-color:\s*var\(--color-surface-3[,)]/);
+    const live = rule(`${String.raw`.data-\[state\=live\]\:`}${selected.slice(1)}\\:border-fg-brand-default`);
+    assert.match(live, /\[data-state[=\s]+["']?live/);
+    assert.match(live, /border-color:\s*var\(--color-fg-brand-default[,)]/);
+    const selectedShadow = rule(`${selected}\\:shadow-\\[var\\(--shadow-edge-strong\\)\\,var\\(--shadow-elev-1\\)\\]`);
+    const hoverShadow = rule(String.raw`.hover\:shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-elev-2\)\]`);
+    assert.ok(
+      utilities.indexOf(selectedShadow) > utilities.indexOf(hoverShadow),
+      'Selected shadow wins over hover at equal specificity'
+    );
+    assert.ok(
+      utilities.indexOf(live) > utilities.indexOf(fill),
+      'Live+selected extension follows the selection recipe'
+    );
+  }
+  for (const token of [
+    'gradient-post-new',
+    'shadow-edge-strong',
+    'shadow-elev-1',
+    'shadow-elev-2',
+    'shadow-glow-base',
+    'shadow-well',
+    'shadow-focus'
+  ]) {
+    assert.match(utilities, new RegExp(`var\\(--${token}[,)]`));
+  }
+  for (const selector of [
+    String.raw`.focus-visible\:shadow-focus`,
+    String.raw`.data-disabled\:opacity-45`,
+    String.raw`.motion-reduce\:transition-none`,
+    '.absolute',
+    '.inset-0',
+    '.min-h-11',
+    '.object-cover',
+    '.wrap-anywhere'
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing SelectTile utility ${selector}`);
+  }
+  const layers = /@layer\s+theme,\s*base,\s*components,\s*utilities/.exec(css);
+  assert.ok(layers, 'Utilities must outrank legacy component rules, including .eg-tile:hover');
+  assert.ok(cssBlock(css, /@layer components\s*\{/).includes('.eg-tile:hover'), 'Keep the original legacy recipe');
+  assert.doesNotMatch(utilities, /\.eg-tile[\s:{]/, 'No new marker-based visual engine');
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  assert.equal(typeof exported.SelectTile, 'function');
+  assert.equal(exported.selectTileVariants, undefined);
+  assert.equal(exported.useSelectTile, undefined);
+  for (const type of ['single', 'multiple']) {
+    const document = new JSDOM(
+      renderToStaticMarkup(
+        createElement(exported.SelectTile, {
+          type,
+          label: 'Scenes',
+          options: [{ value: 'camera', label: 'Camera', meta: 'Two layers', live: true, badge: 'Live' }],
+          defaultValue: type === 'single' ? 'camera' : ['camera']
+        })
+      )
+    );
+    try {
+      const group = document.window.document.querySelector('.eg-select-tile');
+      assert.equal(group.getAttribute('role'), type === 'single' ? 'radiogroup' : 'group');
+      const button = group.querySelector('button');
+      assert.equal(button.children.length, 0);
+      assert.equal(button.getAttribute(type === 'single' ? 'aria-checked' : 'aria-pressed'), 'true');
+      assert.equal(
+        document.window.document.getElementById(button.getAttribute('aria-labelledby')).textContent,
+        'Camera'
+      );
+      assert.equal(
+        button
+          .getAttribute('aria-describedby')
+          .split(' ')
+          .map((id) => document.window.document.getElementById(id).textContent)
+          .join(' '),
+        'Two layers Live'
+      );
+      assert.equal(button.parentElement.getAttribute('data-state'), 'live');
+      assert.ok(button.parentElement.matches(`:has([data-state="${type === 'single' ? 'checked' : 'on'}"])`));
+    } finally {
+      document.window.close();
+    }
+  }
+});
+
+test('Timeline ships bounded geometry, attribute states, legacy resets and passive SSR semantics', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  for (const multiplier of [2, 3, 4]) {
+    assert.match(css, new RegExp(String.raw`max-height:\s*calc\(var\(--space-24\)\s*\*\s*${multiplier}\)`));
+  }
+  for (const selector of [
+    String.raw`.data-\[state\=highlighted\]\:bg-bg-brand-subtle`,
+    String.raw`.not-data-\[state\=highlighted\]\:data-\[kind\=command\]\:bg-fg-default\/3`,
+    String.raw`.data-\[role\=moderator\]\:text-status-success`,
+    String.raw`.focus-visible\:-outline-offset-\(--focus-width\)`
+  ]) {
+    assert.ok(css.includes(selector), `Missing Timeline utility ${selector}`);
+  }
+  assert.match(css, /outline-color:\s*var\(--color-focus-ring[,)]/);
+  assert.match(css, /overflow-wrap:\s*anywhere/);
+  assert.match(css, /grid-template-columns:\s*var\(--space-14\)\s+minmax\(0,\s*auto\)\s+minmax\(0,\s*1fr\)/);
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const event = { id: 'event', time: { text: '01:13', dateTime: 'PT1M13S' }, category: 'Release', body: 'Published' };
+  const html = renderToString(createElement(exported.Timeline, { label: 'Events', items: [event] }));
+  assert.match(html, /role="region"/);
+  assert.match(html, /aria-live="off"/);
+  assert.match(html, /<ol[^>]*role="list"/);
+  assert.match(html, /dateTime="PT1M13S"/i);
+  const chat = {
+    id: 'chat',
+    time: event.time,
+    platform: { name: 'Community', icon: 'twitch' },
+    author: { name: 'Alex', moderator: true, avatar: {} },
+    message: '<b>!help</b>',
+    command: true
+  };
+  const transcript = renderToString(
+    createElement(exported.Timeline, { variant: 'chat', label: 'Chat', items: [chat] })
+  );
+  assert.match(transcript, /role="log"/);
+  assert.match(transcript, /aria-live="polite"/);
+  assert.match(transcript, /aria-relevant="additions"/);
+  assert.match(transcript, /aria-atomic="false"/);
+  assert.match(transcript, /&lt;b&gt;!help&lt;\/b&gt;/);
+  assert.match(transcript, /Moderator/);
+  assert.match(transcript, /Command/);
+  for (const name of ['timelineVariants', 'useTimeline', 'timelineItemVariants']) {
+    assert.equal(Object.hasOwn(exported, name), false);
+  }
+});
+
+test('NavList ships every static CVA utility and native disclosure/current-page SSR', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/nav-list/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      for (const name of node.text.split(/\s+/)) {
+        classes.add(name);
+      }
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      for (const argument of node.arguments) {
+        collect(argument);
+      }
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.ok(classes.size > 45, 'Scan every NavList part recipe');
+  for (const name of classes) {
+    if (name === 'eg-nav-list' || name.startsWith('group/')) {
+      continue;
+    }
+    const selector = '.' + name.replace(/[^\w-]/g, '\\$&');
+    assert.ok(css.includes(selector), `Missing NavList utility ${name}`);
+  }
+  assert.match(css, /outline-color:\s*var\(--color-focus-ring-inverse[,)]/);
+  assert.match(css, /outline-width:\s*var\(--focus-width[,)]/);
+  assert.match(css, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*11\)/);
+  assert.doesNotMatch(css, /\.eg-nav-list\s*\{/);
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const home = { id: 'home', label: 'Home', href: '#home', 'aria-current': 'page', count: 0 };
+  const html = renderToString(
+    createElement(exported.NavList, {
+      label: 'Workspace',
+      items: [
+        home,
+        { kind: 'group', id: 'tools', label: 'Tools', items: [] },
+        {
+          kind: 'collapsible-group',
+          id: 'closed',
+          label: 'Closed',
+          count: 4,
+          signal: { state: 'live', text: 'Voting live' },
+          items: [{ id: 'secret', label: 'Secret', href: '#secret' }]
+        },
+        {
+          kind: 'collapsible-group',
+          id: 'open',
+          label: 'Open',
+          defaultOpen: true,
+          items: [{ id: 'draft', label: 'Draft', href: '#draft', tag: { children: 'New' }, warning: 'Needs attention' }]
+        }
+      ]
+    })
+  );
+  assert.match(html, /^<nav aria-label="Workspace" class="eg-nav-list /);
+  assert.match(html, /<a href="#home" aria-current="page" class="eg-surface [^"]*bg-surface-3/);
+  assert.match(html, /aria-labelledby="[^"]+-caption-1"/);
+  assert.match(html, /aria-expanded="false"/);
+  assert.match(html, /aria-controls="[^"]+" aria-expanded="true"/);
+  assert.match(html, /eg-status-dot/);
+  assert.match(html, /Voting live/);
+  assert.match(html, /eg-badge/);
+  assert.match(html, /Needs attention/);
+  assert.doesNotMatch(html, /Secret|role="(?:menu|tree|tab)|eg-menu|aria-selected/);
+  for (const name of ['useNavList', 'navListLinkVariants', 'navListTriggerVariants']) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} stays internal`);
+  }
+});
 
 test('transition utility guard accepts only the exact approved emitted selectors', () => {
   for (const selector of [
@@ -60,6 +362,7 @@ test('transition utility guard accepts only the exact approved emitted selectors
     String.raw`.transition-\[translate\,background-color\]`,
     String.raw`.transition-\[border-color\,color\]`,
     String.raw`.transition-\[translate\]`,
+    String.raw`.transition-\[opacity\,translate\]`,
     String.raw`.transition-\[color\,background-color\,border-color\,box-shadow\,scale\]`,
     String.raw`.motion-reduce\:transition-none`
   ]) {
@@ -86,6 +389,8 @@ test('transition utility guard rejects unrelated named and arbitrary transitions
     String.raw`.transition-\[border-color\,color\]extra`,
     String.raw`.transition-\[translate\,width\]`,
     String.raw`.transition-\[translate\]extra`,
+    String.raw`.transition-\[opacity\,translate\,width\]`,
+    String.raw`.transition-\[opacity\,translate\]extra`,
     String.raw`.transition-\[color\,background-color\,border-color\,box-shadow\,scale\,width\]`,
     String.raw`.transition-\[color\,background-color\,border-color\,box-shadow\,scale\]extra`
   ]) {
@@ -183,6 +488,109 @@ test('Chip ships its exact token-backed pill, pressed, focus, press and reduced-
     assert.ok(css.includes(selector), `Missing Chip utility ${selector}`);
   }
   assert.doesNotMatch(utilities, /\.eg-chip[^{]*\{/, 'Chip has no stylesheet: its marker adds no utility rule');
+});
+
+test('SocialLinks ships static collection utilities and native SSR composition without a second visual engine', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of ['.list-none', '.shrink-0', '.text-label-eyebrow', '.font-display', '.text-fg-secondary']) {
+    assert.ok(utilities.includes(selector), `Missing SocialLinks utility ${selector}`);
+  }
+  assert.match(utilities, /font-size:\s*var\(--text-label-eyebrow[,)]/);
+  for (const gap of [1, 2, 3, 4]) {
+    assert.match(utilities, new RegExp(`gap:\\s*var\\(--space-${gap}[,)]`));
+  }
+  assert.doesNotMatch(utilities, /\.eg-social(?:__\w+)?\s*\{/);
+  const { SocialLinks, Icon } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const items = [
+    {
+      id: 'github',
+      href: 'https://example.org/profile',
+      label: 'Project GitHub',
+      icon: createElement(Icon, { name: 'github' }),
+      external: true,
+      rel: 'me NOOPENER me'
+    }
+  ];
+  const html = renderToString(createElement(SocialLinks, { items, inline: true, gap: 1 }));
+  assert.match(html, /eg-social/);
+  assert.match(html, /<ul[^>]*role="list"[^>]*aria-label="Social profiles"/);
+  assert.match(html, /<li[^>]*><a[^>]*href="https:\/\/example.org\/profile"/);
+  assert.match(html, /target="_blank"/);
+  assert.match(html, /rel="me NOOPENER noreferrer"/);
+  assert.match(html, /Project GitHub \(opens in a new tab\)/);
+  assert.doesNotMatch(html, /<button|role="button"|aria-label="Project GitHub"/);
+  assert.equal(renderToString(createElement(SocialLinks, { items: [] })), '');
+  const ghost = renderToString(createElement(SocialLinks, { items, variant: 'ghost', size: 'md', caption: null }));
+  assert.doesNotMatch(ghost, /eg-social__label/);
+  assert.match(ghost, /size-10/);
+});
+
+test('ChipGroup ships wrapping layout, token underline and disabled/motion guards from its CVA source', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  assert.match(cssBlock(utilities, /\.flex-wrap\s*\{/), /flex-wrap:\s*wrap/);
+  assert.match(cssBlock(utilities, /\.gap-2\s*\{/), /gap:\s*var\(--space-2\)/);
+  for (const selector of [
+    String.raw`.data-\[state\=on\]\:underline`,
+    String.raw`.decoration-\[length\:var\(--border-width\)\]`,
+    String.raw`.underline-offset-\[var\(--space-1\)\]`,
+    String.raw`.disabled\:cursor-not-allowed`,
+    String.raw`.disabled\:active\:translate-none`,
+    String.raw`.disabled\:active\:scale-none`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing ChipGroup utility ${selector}`);
+  }
+  assert.match(utilities, /text-decoration-thickness:\s*var\(--border-width\)/);
+  assert.match(utilities, /text-underline-offset:\s*var\(--space-1\)/);
+  assert.doesNotMatch(css, /\.eg-chip-group[^{]*\{/, 'Root marker adds no painted panel');
+  const source = readFileSync(resolve(root, 'packages/ui/src/styles/compiled.css'), 'utf8');
+  assert.ok(source.includes('@source "../molecules/chip-group/types.ts";'));
+});
+
+test('Tabs publishes only its approved API and ships static molecule utilities', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  assert.equal(typeof exported.Tabs, 'function');
+  assert.match(exported.tabsVariants(), /\beg-tabs\b/);
+  for (const name of [
+    'useTabs',
+    'TabsList',
+    'TabsTrigger',
+    'TabsContent',
+    'tabsListVariants',
+    'tabsTriggerVariants',
+    'tabsCountVariants',
+    'tabsPanelVariants'
+  ]) {
+    assert.equal(exported[name], undefined, name);
+  }
+  const entry = readFileSync(artifact('ui', ui.exports['.'].types), 'utf8');
+  assert.match(entry, /TabsItem/);
+  assert.match(entry, /TabsProps/);
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    String.raw`.p-0\.75`,
+    String.raw`.min-h-8\.5`,
+    String.raw`.\[scrollbar-width\:none\]`,
+    String.raw`.rounded-\[calc\(var\(--radius-md\)---spacing\(0\.75\)\)\]`,
+    String.raw`.data-\[state\=active\]\:after\:bg-fg-brand-default`,
+    String.raw`.data-\[state\=active\]\:after\:shadow-glow-base`,
+    String.raw`.motion-reduce\:after\:transition-none`,
+    String.raw`.focus-visible\:inset-ring-focus-ring`,
+    String.raw`.bg-status-danger\/14`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing Tabs utility ${selector}`);
+  }
+  assert.match(utilities, /scrollbar-width:\s*none/);
+  assert.match(utilities, /border-radius:\s*calc\(var\(--radius-md\)\s*-\s*[^;]+\)/);
+  const active = css.indexOf(String.raw`.data-\[state\=active\]\:shadow-\[var\(--shadow-edge-strong\)`);
+  const activeFocus = css.indexOf(String.raw`.data-\[state\=active\]\:focus-visible\:shadow-focus`);
+  assert.ok(active > -1 && activeFocus > active, 'Focused active segment must retain the focus shadow');
+  assert.doesNotMatch(utilities, /\.eg-tabs[^\s]*\s*\{/, 'No Tabs stylesheet or legacy part recipes in utilities');
 });
 
 test('UI publishes its stable declaration entry and reachable internal declarations', (context) => {
@@ -319,6 +727,86 @@ test('UI ships Dropzone token geometry, native resets and attribute-driven color
   assert.ok(utilities.includes(String.raw`.disabled\:cursor-not-allowed`));
 });
 
+test('Field public build renders linked descriptions and Slider invalid semantics without Tailwind', async () => {
+  const { Field, Input, Slider } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const html = renderToString(
+    createElement(Field, {
+      label: 'Post',
+      hint: 'Hint',
+      error: 'Shorten the post',
+      counter: { value: 294, max: 280 },
+      readout: '294 characters',
+      children: createElement(Input, { id: 'post', 'aria-describedby': 'external external' })
+    })
+  );
+  const dom = new JSDOM(`<p id="external">External guidance</p>${html}`);
+  try {
+    const document = dom.window.document;
+    const field = document.querySelector('.eg-field');
+    const input = document.getElementById('post');
+    assert.equal(field.tagName, 'DIV');
+    assert.equal(field.getAttribute('data-state'), 'invalid');
+    assert.equal(field.querySelector('label').htmlFor, input.id);
+    assert.equal(field.querySelector('output').getAttribute('for'), input.id);
+    assert.equal(input.getAttribute('aria-invalid'), 'true');
+    assert.deepEqual(
+      input
+        .getAttribute('aria-describedby')
+        .split(' ')
+        .map((id) => document.getElementById(id).textContent),
+      ['External guidance', 'Shorten the post', '294 / 280']
+    );
+    assert.equal(field.querySelector('[aria-live], [role="alert"]'), null);
+  } finally {
+    dom.window.close();
+  }
+  const sliderDOM = new JSDOM(
+    renderToString(
+      createElement(Field, {
+        label: 'Ring size',
+        error: 'Too large',
+        children: createElement(Slider, { label: 'Ring size', defaultValue: 56 })
+      })
+    )
+  );
+  try {
+    const document = sliderDOM.window.document;
+    const slider = document.querySelector('[role="slider"]');
+    assert.equal(slider.getAttribute('aria-invalid'), 'true');
+    assert.equal(document.getElementById(slider.getAttribute('aria-describedby')).textContent, 'Too large');
+  } finally {
+    sliderDOM.window.close();
+  }
+});
+
+test('UI ships Field layout, description tones and single-opacity disabled selectors', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^\\{]*\\{`));
+  assert.match(rule(String.raw`.grid-cols-\[auto_1fr\]`), /grid-template-columns:\s*auto 1fr/);
+  assert.match(rule('.gap-1\\.5'), /gap:\s*calc\(var\(--space-1\)\s*\*\s*1\.5\)/);
+  for (const selector of [
+    String.raw`.group-has-\[\:disabled\]\:opacity-45`,
+    String.raw`.group-has-\[\[data-disabled\]\]\:opacity-45`
+  ]) {
+    const body = rule(selector);
+    assert.match(body, /:has\(/);
+    assert.match(body, /opacity:\s*(?:\.45|45%)/);
+  }
+  assert.match(rule(String.raw`.data-\[state\=over\]\:text-status-danger`), /color:\s*var\(--color-status-danger[,)]/);
+  assert.match(
+    rule(String.raw`.font-\[var\(--text-body-muted--font-weight\)\]`),
+    /font-weight:\s*var\(--text-body-muted--font-weight[,)]/
+  );
+  assert.ok(utilities.includes(String.raw`.pointer-coarse\:min-h-11`));
+  assert.match(utilities, /@media\s*\(pointer:\s*coarse\)/);
+  assert.doesNotMatch(utilities, /\.eg-field[^\{]*\{/, 'Field marker is not a second visual engine');
+});
+
 test('UI ships the Stat Material card, figure recipes and highlight utilities without preflight', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -365,6 +853,85 @@ test('UI ships the Stat Material card, figure recipes and highlight utilities wi
   }
   assert.ok(utilities.includes('.sr-only'), 'Stat no-data text needs the sr-only utility');
   assert.doesNotMatch(css, /\.eg-stat-(?:label|value|delta)\s*\{/, 'Stat part markers carry no stylesheet rules');
+});
+
+test('ListItem ships compound layout, state Material and native empty focus utilities', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  for (const name of [
+    'ListItem',
+    'ListItemActions',
+    'ListItemBody',
+    'ListItemContent',
+    'ListItemFooter',
+    'ListItemMedia',
+    'ListItemMeta'
+  ]) {
+    assert.equal(typeof exported[name], 'function', `${name} is a plain component without a ref API`);
+  }
+  assert.equal(exported.listItemVariants, undefined, 'ListItem recipes remain internal');
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const selectors = [
+    String.raw`.data-\[state\=new\]\:bg-\[image\:var\(--gradient-post-new\)\]`,
+    String.raw`.data-\[state\=failed\]\:border-status-danger\/40`,
+    String.raw`.data-\[state\=dragging\]\:border-dashed`,
+    String.raw`.group-data-\[state\=dragging\]\/list-item\:opacity-50`,
+    String.raw`.group-data-\[state\=done\]\/list-item\:text-fg-muted`,
+    String.raw`.group-data-\[state\=off\]\/list-item\:text-fg-secondary`,
+    String.raw`.data-\[state\=empty\]\:focus-visible\:shadow-focus`,
+    String.raw`.data-\[state\=empty\]\:disabled\:opacity-45`,
+    String.raw`.data-\[variant\=row\]\:flex-wrap`,
+    String.raw`.group-data-\[variant\=compact\]\/list-item\:text-label-default`
+  ];
+  for (const state of ['done', 'off', 'empty']) {
+    for (const reset of ['bg-transparent', 'bg-none', 'shadow-none']) {
+      selectors.push(`.data-\\[state\\=${state}\\]\\:${reset}`);
+    }
+  }
+  for (const selector of selectors) {
+    assert.ok(css.includes(selector), `Missing ListItem utility ${selector}`);
+  }
+  assert.match(css, /calc\(var\(--space-20\)\s*\+\s*var\(--space-2\)\)/);
+  assert.doesNotMatch(css, /\.eg-list-item(?:__[a-z]+)?\s*[{,]/, 'Markers are not a separate visual engine');
+});
+
+test('ButtonGroup ships static spacing, wrapping, logical child corners and focus stacking', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = readFileSync(resolve(root, 'packages/ui/src/styles/compiled.css'), 'utf8');
+  assert.match(source, /@source "\.\.\/molecules\/\*\*\/types\.ts"/);
+  for (const selector of [
+    '.inline-flex',
+    '.items-stretch',
+    '.flex-wrap',
+    '.flex-nowrap',
+    '.gap-3',
+    String.raw`.gap-0\.5`,
+    String.raw`.\*\:not-first\:rounded-s-sm`,
+    String.raw`.\*\:not-last\:rounded-e-sm`,
+    String.raw`.\*\:focus-visible\:relative`,
+    String.raw`.\*\:focus-visible\:z-10`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing ButtonGroup utility ${selector}`);
+  }
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^\\{]*\\{`));
+  assert.match(rule('.gap-3'), /gap:\s*var\(--space-3\)/);
+  assert.match(rule(String.raw`.gap-0\.5`), /gap:\s*calc\(var\(--space-1\)\s*\*\s*0\.5\)/);
+  const start = rule(String.raw`.\*\:not-first\:rounded-s-sm`);
+  const end = rule(String.raw`.\*\:not-last\:rounded-e-sm`);
+  assert.match(start, /border-start-start-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.match(start, /border-end-start-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.match(end, /border-start-end-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.match(end, /border-end-end-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.match(start, /:not\(:first-child\)/);
+  assert.match(end, /:not\(:last-child\)/);
+  assert.match(rule(String.raw`.\*\:focus-visible\:relative`), /position:\s*relative/);
+  assert.match(rule(String.raw`.\*\:focus-visible\:z-10`), /z-index:\s*10/);
+  assert.ok(
+    utilities.indexOf(String.raw`.\*\:not-first\:rounded-s-sm`) > utilities.indexOf('.rounded-md'),
+    'Parent child-corner utilities must follow the atom radius utility'
+  );
+  assert.doesNotMatch(css, /\.eg-button-group\s*[,{]/, 'No separate visual engine');
 });
 
 test('UI ships SearchTrigger token geometry, coarse targets and attribute-driven states without preflight', () => {
@@ -439,6 +1006,55 @@ test('UI ships PullQuote quote recipes, logical filet and measure without prefli
   }
 });
 
+test('Menu ships its public declarations, shared overlay and owned geometry utilities', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  assert.equal(typeof exported.Menu, 'function');
+  assert.equal(typeof exported.menuVariants, 'function');
+  for (const name of ['useMenu', 'menuItemVariants', 'menuIconVariants', 'Entries', 'EntryContent']) {
+    assert.equal(exported[name], undefined, `${name} stays internal`);
+  }
+  const declarations = readFileSync(artifact('ui', './dist/molecules/menu/types.d.ts'), 'utf8');
+  for (const name of [
+    'MenuProps',
+    'MenuEntry',
+    'MenuActionItem',
+    'MenuLinkItem',
+    'MenuSeparatorItem',
+    'MenuLabelItem',
+    'MenuSubmenuItem',
+    'MenuTone',
+    'MenuAlign',
+    'MenuSide'
+  ]) {
+    assert.match(declarations, new RegExp(`export (?:declare )?type ${name}\\b`));
+  }
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    String.raw`.min-w-57\.5`,
+    String.raw`.max-h-\[var\(--radix-dropdown-menu-content-available-height\)\]`,
+    String.raw`.py-2\.25`,
+    String.raw`.data-highlighted\:bg-status-danger\/10`,
+    String.raw`.group-data-highlighted\:text-fg-brand-default`,
+    String.raw`.focus-visible\:inset-ring-2`,
+    String.raw`.focus-visible\:inset-ring-focus-ring-inverse`,
+    String.raw`.pointer-coarse\:min-h-11`,
+    String.raw`.starting\:opacity-0`,
+    String.raw`.motion-safe\:starting\:-translate-y-1\.5`,
+    String.raw`.motion-reduce\:transition-none`,
+    String.raw`.transition-\[opacity\,translate\]`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing Menu utility ${selector}`);
+  }
+  assert.match(utilities, /@starting-style/);
+  assert.match(utilities, /transition-property:\s*opacity,\s*translate/);
+  assert.match(utilities, /var\(--radix-dropdown-menu-content-available-height\)/);
+  assert.match(utilities, /var\(--color-surface-overlay[,)]/);
+  assert.match(utilities, /prefers-reduced-transparency:\s*reduce/);
+  assert.match(utilities, /not \(backdrop-filter:/);
+  assert.doesNotMatch(utilities, /\.eg-menu\s*\{/, 'Menu has no stylesheet recipe');
+});
+
 test('UI publishes its stable JavaScript entry', () => {
   assert.equal(ui.exports['.'].import, './dist/index.js');
   assert.equal(ui.main, ui.exports['.'].import);
@@ -476,7 +1092,8 @@ test('UI ships plain layered CSS without canonical token definitions or unrelate
   }
   assert.match(css, /prefers-reduced-transparency:\s*reduce/);
   // Only approved component CVA sources are scanned, not stories, tests or the default palette.
-  assert.doesNotMatch(css, /\.(p-4|bg-red-500)\s*[,\{]/);
+  // (`p-4` is no longer a sentinel: ListItem's approved CVA ships it.)
+  assert.doesNotMatch(css, /\.bg-red-500\s*[,\{]/);
 });
 
 test('UI ships functional static Gauge utilities without an application Tailwind compiler', () => {
@@ -1726,6 +2343,74 @@ test('ModuleCard ships scanned state, band, layout and legacy-reset utilities wi
   assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/module-card/module-card.css')));
 });
 
+test('SectionHeader emits every local CVA utility and its exact static breakpoint without a stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/section-header/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      return;
+    }
+    if (ts.isStringLiteral(node)) {
+      for (const name of node.text.split(/\s+/).filter(Boolean)) {
+        classes.add(name);
+      }
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      for (const argument of node.arguments) {
+        collect(argument);
+      }
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.ok(classes.size > 20, 'Scan every local root and part recipe');
+  for (const name of classes) {
+    if (name.startsWith('eg-')) {
+      continue;
+    }
+    assert.ok(css.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing SectionHeader utility ${name}`);
+  }
+  const wide = cssBlock(css, /@media \(width >= 860px\)\s*\{(?=\s*\.section-header-split\\:)/);
+  assert.match(wide, /grid-template-columns:\s*minmax\(0,\s*1fr\)\s+minmax\(0,\s*0\.8fr\)/);
+  assert.match(wide, /justify-self:\s*(?:flex-)?end/);
+  const lede = cssBlock(css, /\.text-body-muted\s*\{/);
+  assert.match(lede, /font-size:\s*var\(--text-body-muted,\s*20px\)/);
+  assert.match(lede, /line-height:\s*var\(--tw-leading,\s*var\(--text-body-muted--line-height,\s*1\.6\)\)/);
+  assert.match(lede, /font-weight:\s*var\(--tw-font-weight,\s*var\(--text-body-muted--font-weight,\s*400\)\)/);
+  assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/section-header/section-header.css')));
+});
+
+test('SectionHeader ships native passive SSR composition with decorative rule and fallbacks', async () => {
+  const { SectionHeader } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const render = (props) =>
+    renderToString(createElement(SectionHeader, { title: 'Build ', accent: 'together.', ...props }));
+  const html = render({ variant: 'inline', eyebrow: 'Our work', titleId: 'section-title', id: 'root' });
+  assert.match(html, /^<header/);
+  assert.match(html, /id="root"/);
+  assert.match(html, /<h2[^>]*id="section-title"/);
+  assert.match(html, /role="none"/);
+  assert.doesNotMatch(html, /role="separator"|aria-live|tabindex|eg-section-head--inline/);
+  assert.equal(html, render({ variant: 'inline', eyebrow: 'Our work', titleId: 'section-title', id: 'root' }));
+  for (const variant of ['split', 'inline']) {
+    const fallback = render({ variant });
+    assert.match(fallback, /flex flex-col items-start gap-5/);
+    assert.doesNotMatch(fallback, /eg-divider|eg-section-head__lede/);
+  }
+});
+
 test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal and Slot with passive SSR semantics', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   assert.deepEqual(
@@ -1735,40 +2420,70 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Avatar',
       'Badge',
       'Button',
+      'ButtonGroup',
+      'Carousel',
       'Checkbox',
       'Chip',
+      'ChipGroup',
       'Cluster',
       'Countdown',
       'Divider',
       'Dropzone',
+      'Field',
       'Gauge',
+      'GaugeDock',
+      'GaugeDockItem',
+      'GaugeDockSeparator',
       'Heading',
+      'HoverCard',
+      'HoverCardContent',
+      'HoverCardTrigger',
       'Icon',
       'IconButton',
       'Input',
       'Kbd',
       'Label',
       'Link',
+      'ListItem',
+      'ListItemActions',
+      'ListItemBody',
+      'ListItemContent',
+      'ListItemFooter',
+      'ListItemMedia',
+      'ListItemMeta',
       'Logo',
+      'Menu',
+      'MeterRow',
       'ModuleCard',
+      'NavList',
+      'Notice',
+      'Popover',
+      'PopoverClose',
+      'PopoverContent',
+      'PopoverTrigger',
       'Portal',
       'ProgressBar',
       'PullQuote',
       'RadioGroup',
       'SearchTrigger',
+      'SectionHeader',
       'Select',
+      'SelectTile',
       'Skeleton',
       'Slider',
       'Slot',
       'Slottable',
+      'SocialLinks',
       'Spinner',
       'Stack',
       'Stat',
       'StatusDot',
       'Surface',
       'Switch',
+      'Tabs',
       'Text',
       'Textarea',
+      'Timeline',
       'Toggle',
       'Tooltip',
       'VisuallyHidden',
@@ -1777,12 +2492,16 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'cn',
       'dropzoneVariants',
       'labelVariants',
+      'menuVariants',
+      'navListVariants',
+      'noticeVariants',
       'progressBarVariants',
       'radioGroupVariants',
       'sliderVariants',
       'statVariants',
       'statusDotVariants',
       'surfaceVariants',
+      'tabsVariants',
       'tooltipVariants'
     ],
     'Only approved components and cn are public runtime exports'
@@ -1794,7 +2513,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   );
   assert.equal(exported.Select?.$$typeof, Symbol.for('react.forward_ref'), 'Select forwards the native button ref');
   assert.equal(exported.Checkbox?.$$typeof, Symbol.for('react.forward_ref'), 'Checkbox must forward its button ref');
+  assert.equal(typeof exported.ButtonGroup, 'function', 'ButtonGroup has no public root ref API');
   assert.equal(typeof exported.Dropzone, 'function', 'Dropzone must be a plain function with no public ref API');
+  assert.equal(typeof exported.Field, 'function', 'Field has no public ref API');
   assert.equal(typeof exported.Stat, 'function', 'Stat must be a plain function with no public ref API');
   assert.equal(typeof exported.statVariants, 'function', 'Stat card recipe must be public');
   assert.equal(typeof exported.dropzoneVariants, 'function', 'Dropzone recipe must be public');
@@ -1805,6 +2526,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   );
   assert.equal(typeof exported.Chip, 'function', 'Chip must be a plain function component with no public ref API');
   assert.equal(typeof exported.chipVariants, 'function', 'Chip recipe must stay public for ChipGroup');
+  assert.equal(typeof exported.ChipGroup, 'function', 'ChipGroup has no public ref API');
   assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
   // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
   assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
@@ -1889,13 +2611,24 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'BadgeTone',
     'BadgeVariant',
     'Button',
+    'ButtonGroup',
+    'ButtonGroupProps',
+    'ButtonGroupVariant',
     'ButtonProps',
     'ButtonSize',
     'ButtonVariant',
+    'Carousel',
+    'CarouselItem',
+    'CarouselMessages',
+    'CarouselProps',
     'Checkbox',
     'CheckboxCheckedState',
     'CheckboxProps',
     'Chip',
+    'ChipGroup',
+    'ChipGroupOption',
+    'ChipGroupProps',
+    'ChipGroupType',
     'ChipProps',
     'Cluster',
     'ClusterProps',
@@ -1909,13 +2642,29 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'DividerProps',
     'Dropzone',
     'DropzoneProps',
+    'Field',
+    'FieldCounter',
+    'FieldLayout',
+    'FieldProps',
     'Gauge',
+    'GaugeDock',
+    'GaugeDockItem',
+    'GaugeDockItemProps',
+    'GaugeDockProps',
+    'GaugeDockSeparator',
+    'GaugeDockSeparatorProps',
     'GaugeProps',
     'GaugeSize',
     'GaugeState',
     'Heading',
     'HeadingLevel',
     'HeadingProps',
+    'HoverCard',
+    'HoverCardContent',
+    'HoverCardContentProps',
+    'HoverCardProps',
+    'HoverCardTrigger',
+    'HoverCardTriggerProps',
     'Icon',
     'IconButton',
     'IconButtonProps',
@@ -1939,10 +2688,36 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LayoutJustifyContent',
     'Link',
     'LinkProps',
+    'ListItem',
+    'ListItemActions',
+    'ListItemBody',
+    'ListItemContent',
+    'ListItemFooter',
+    'ListItemMedia',
+    'ListItemMeta',
+    'ListItemPartProps',
+    'ListItemProps',
+    'ListItemStatus',
+    'ListItemVariant',
     'Logo',
     'LogoProps',
     'LogoSize',
     'LogoVariant',
+    'Menu',
+    'MenuActionItem',
+    'MenuAlign',
+    'MenuEntry',
+    'MenuLabelItem',
+    'MenuLinkItem',
+    'MenuProps',
+    'MenuSeparatorItem',
+    'MenuSide',
+    'MenuSubmenuItem',
+    'MenuTone',
+    'MeterRow',
+    'MeterRowMessages',
+    'MeterRowProps',
+    'MeterRowVariant',
     'ModuleCard',
     'ModuleCardLevel',
     'ModuleCardMessages',
@@ -1950,6 +2725,26 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ModuleCardStatus',
     'ModuleCardTone',
     'ModuleCardVariant',
+    'NavList',
+    'NavListCollapsibleGroup',
+    'NavListEntry',
+    'NavListGroupBase',
+    'NavListLink',
+    'NavListProps',
+    'NavListSignal',
+    'NavListStaticGroup',
+    'NavListTag',
+    'Notice',
+    'NoticeProps',
+    'NoticeTone',
+    'Popover',
+    'PopoverClose',
+    'PopoverCloseProps',
+    'PopoverContent',
+    'PopoverContentProps',
+    'PopoverProps',
+    'PopoverTrigger',
+    'PopoverTriggerProps',
     'Portal',
     'PortalProps',
     'ProgressBar',
@@ -1966,10 +2761,21 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'RadioGroupProps',
     'SearchTrigger',
     'SearchTriggerProps',
+    'SectionHeader',
+    'SectionHeaderLevel',
+    'SectionHeaderProps',
+    'SectionHeaderTone',
+    'SectionHeaderVariant',
     'Select',
     'SelectOption',
     'SelectProps',
     'SelectSize',
+    'SelectTile',
+    'SelectTileOption',
+    'SelectTileProps',
+    'SelectTileRatio',
+    'SelectTileThumbnail',
+    'SelectTileType',
     'Skeleton',
     'SkeletonProps',
     'SkeletonSize',
@@ -1979,6 +2785,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Slot',
     'SlotProps',
     'Slottable',
+    'SocialLinkItem',
+    'SocialLinks',
+    'SocialLinksGap',
+    'SocialLinksProps',
+    'SocialLinksSize',
+    'SocialLinksVariant',
     'Spinner',
     'SpinnerProps',
     'SpinnerSize',
@@ -1997,6 +2809,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SurfaceTone',
     'Switch',
     'SwitchProps',
+    'Tabs',
+    'TabsItem',
+    'TabsProps',
+    'TabsSize',
+    'TabsTone',
+    'TabsVariant',
     'Text',
     'TextProps',
     'TextTone',
@@ -2004,6 +2822,14 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Textarea',
     'TextareaProps',
     'TextareaVariant',
+    'Timeline',
+    'TimelineChatItem',
+    'TimelineEvent',
+    'TimelineMessages',
+    'TimelineProps',
+    'TimelineSize',
+    'TimelineTime',
+    'TimelineVariant',
     'TitleVariant',
     'Toggle',
     'ToggleProps',
@@ -2017,12 +2843,16 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'cn',
     'dropzoneVariants',
     'labelVariants',
+    'menuVariants',
+    'navListVariants',
+    'noticeVariants',
     'progressBarVariants',
     'radioGroupVariants',
     'sliderVariants',
     'statVariants',
     'statusDotVariants',
     'surfaceVariants',
+    'tabsVariants',
     'tooltipVariants'
   ]);
   for (const name of [
@@ -2036,6 +2866,19 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'useField',
+    'fieldVariants',
+    'fieldLabelRowVariants',
+    'fieldMessageVariants',
+    'fieldCounterVariants',
+    'fieldReadoutVariants',
+    'useNotice',
+    'noticeAppearanceVariants',
+    'noticeIconVariants',
+    'noticeTextVariants',
+    'noticeActionsVariants',
+    'useButtonGroup',
+    'buttonGroupVariants',
     'useSlider',
     'sliderTrackVariants',
     'sliderRangeVariants',
@@ -2053,12 +2896,32 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'statValueVariants',
     'statDeltaVariants',
     'useChip',
+    'useChipGroup',
+    'chipGroupVariants',
+    'chipGroupItemVariants',
+    'chipGroupIconVariants',
     'chipIconVariants'
   ]) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'useSocialLinks',
+    'socialLinksVariants',
+    'socialLinksCaptionVariants',
+    'socialLinksListVariants',
+    'socialLinksItemVariants',
+    'SocialLinksNativeProps',
+    'useSectionHeader',
+    'sectionHeaderVariants',
+    'sectionHeaderEyebrowVariants',
+    'sectionHeaderHeadingVariants',
+    'sectionHeaderLedeVariants',
+    'sectionHeaderRuleVariants',
+    'SectionHeaderNativeProps',
+    'useMeterRow',
+    'meterRowVariants',
+    'MeterRowNativeProps',
     'useSearchTrigger',
     'searchTriggerVariants',
     'searchTriggerLabelVariants',
@@ -2068,6 +2931,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'ButtonGroup',
+    'ButtonGroupProps',
+    'ButtonGroupVariant',
     'Chip',
     'ChipProps',
     'chipVariants',
@@ -2079,8 +2945,17 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Dropzone',
     'DropzoneProps',
     'dropzoneVariants',
+    'Notice',
+    'NoticeProps',
+    'NoticeTone',
+    'noticeVariants',
     'SearchTrigger',
     'SearchTriggerProps',
+    'SectionHeader',
+    'SectionHeaderLevel',
+    'SectionHeaderProps',
+    'SectionHeaderTone',
+    'SectionHeaderVariant',
     'Divider',
     'DividerOrientation',
     'DividerProps',
@@ -2127,6 +3002,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LogoProps',
     'LogoSize',
     'LogoVariant',
+    'MeterRow',
+    'MeterRowMessages',
+    'MeterRowProps',
+    'MeterRowVariant',
     'Portal',
     'PortalProps',
     'RadioGroup',
@@ -2178,6 +3057,28 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   }
   const { createElement } = await import('react');
   const { renderToString } = await import('react-dom/server');
+  const buttonGroupHtml = renderToString(
+    createElement(exported.ButtonGroup, {
+      variant: 'attached',
+      label: 'Save options',
+      className: 'ms-auto',
+      children: [
+        createElement(exported.Button, { key: 'save' }, 'Save'),
+        createElement(exported.IconButton, {
+          key: 'options',
+          label: 'More save options',
+          size: 'lg',
+          icon: createElement(exported.Icon, { name: 'chevron-down' })
+        })
+      ]
+    })
+  );
+  assert.match(buttonGroupHtml, /^<div role="group" aria-label="Save options" class="eg-button-group /);
+  assert.match(buttonGroupHtml, /\*:not-first:rounded-s-sm/);
+  assert.match(buttonGroupHtml, /ms-auto/);
+  assert.match(buttonGroupHtml, /More save options/);
+  assert.equal((buttonGroupHtml.match(/<button /g) ?? []).length, 2);
+  assert.doesNotMatch(buttonGroupHtml, /aria-haspopup|aria-expanded|eg-btn--join|eg-btn-split/);
   const dropzoneHtml = renderToString(
     createElement(exported.Dropzone, { onFiles: () => undefined, accept: 'image/*', multiple: true })
   );
@@ -2230,6 +3131,43 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     /<span data-state="unavailable" class="eg-stat-value [^"]*text-display-stat-sm[^"]*"><span aria-hidden="true">—<\/span><span class="sr-only">No data<\/span><\/span><\/div>$/
   );
   assert.doesNotMatch(noDataHtml, /data-state="highlighted"|eg-stat-delta|aria-live|>0</);
+  const chipGroupOptions = [
+    { value: 'react', label: 'React' },
+    { value: 'css', label: 'CSS' }
+  ];
+  for (const type of ['single', 'multiple']) {
+    const html = renderToString(
+      createElement(exported.ChipGroup, {
+        type,
+        label: 'Topics',
+        options: chipGroupOptions,
+        defaultValue: type === 'single' ? 'react' : ['react']
+      })
+    );
+    assert.match(html, /role="group"/);
+    assert.match(html, /aria-label="Topics"/);
+    assert.match(html, /class="eg-chip-group flex flex-wrap items-center gap-2"/);
+    assert.match(html, type === 'single' ? /role="radio" aria-checked="true"/ : /aria-pressed="true"/);
+    assert.doesNotMatch(html, /<input|is-active|eg-surface/);
+  }
+  assert.equal(typeof exported.Notice, 'function', 'Notice has no public ref API');
+  const sharedNotice = exported.noticeVariants({ tone: 'danger', size: 'sm' });
+  assert.ok(sharedNotice.split(' ').includes('eg-surface'), 'A1 permits inherited Surface identity');
+  assert.doesNotMatch(sharedNotice, /eg-notice|eg-toast|aria-|role=/);
+  const noticeHtml = renderToString(
+    createElement(exported.Notice, {
+      summary: 'Sign in required.',
+      tone: 'danger',
+      id: 'connection',
+      children: 'Reconnect to continue.'
+    })
+  );
+  assert.match(noticeHtml, /role="alert"/);
+  assert.match(noticeHtml, /data-tone="danger"/);
+  assert.match(noticeHtml, /class="eg-notice eg-surface /);
+  assert.match(noticeHtml, /<strong>Sign in required\.<\/strong> (?:<!-- -->)?Reconnect to continue\./);
+  assert.match(noticeHtml, /aria-hidden="true"><svg/);
+  assert.doesNotMatch(noticeHtml, /aria-live=|tabindex=|eg-notice__actions/);
   const searchHtml = renderToString(createElement(exported.SearchTrigger, { shortcut: 'Ctrl K' }));
   assert.match(searchHtml, /^<button[^>]*type="button"[^>]*aria-label="Search…"[^>]*class="eg-surface[^"]*eg-search/);
   assert.match(searchHtml, /<svg class="eg-icon[^"]*size-4[^"]*"[^>]*aria-hidden="true"/);
@@ -2802,6 +3740,143 @@ test('UI Checkbox SSR retains binary/mixed semantics, private recipes and form i
   }
 });
 
+test('GaugeDock ships scanned layout utilities and independent passive SSR semantics', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const html = renderToStaticMarkup(
+    h(exported.GaugeDock, {
+      label: 'Usage detail actions',
+      children: [
+        h(exported.GaugeDockItem, {
+          key: 'pair',
+          children: [
+            h(exported.Gauge, { key: 'meter', label: 'Provider A session', value: 0 }),
+            h(exported.Button, { key: 'action', children: 'Open Provider A details' })
+          ]
+        }),
+        h(exported.GaugeDockSeparator, { key: 'separator' })
+      ]
+    })
+  );
+  assert.match(html, /role="toolbar"/);
+  assert.match(html, /aria-label="Usage detail actions"/);
+  assert.match(html, /role="meter"[^>]*aria-label="Provider A session"[^>]*aria-valuenow="0"/);
+  assert.match(html, /<\/div><button[^>]*type="button"/);
+  assert.match(html, /data-orientation="vertical"[^>]*aria-hidden="true"/);
+  assert.doesNotMatch(html, /eg-gauge-strip/);
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/gauge-dock/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  let parts = 0;
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      const base = node.arguments[0];
+      assert.ok(base && ts.isStringLiteral(base));
+      parts++;
+      for (const name of base.text.split(/\s+/).filter((name) => !name.startsWith('eg-') && name !== 'group')) {
+        const selector = `.${name.replace(/([^a-zA-Z0-9_-])/g, '\\$1')}`;
+        assert.ok(utilities.includes(selector), `Missing GaugeDock utility ${name}`);
+      }
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(source);
+  assert.equal(parts, 3);
+  assert.match(css, /background-color:\s*var\(--color-border-hairline[,)]/);
+  assert.doesNotMatch(css, /\.eg-gauge-dock(?:-item|-separator)?\s*\{/);
+  for (const name of ['useGaugeDock', 'gaugeDockVariants', 'gaugeDockItemVariants', 'gaugeDockSeparatorVariants']) {
+    assert.equal(exported[name], undefined, `${name} stays internal`);
+  }
+});
+
+test('HoverCard ships every static CVA utility, Radix bounds and opacity-only entry', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/hover-card/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  let parts = 0;
+  const visit = (node) => {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      parts++;
+      const collect = (value) => {
+        if (ts.isStringLiteral(value)) {
+          for (const name of value.text.split(/\s+/).filter(Boolean)) {
+            if (name === 'eg-hover-card') {
+              continue;
+            }
+            const selector = `.${name.replace(/([^a-zA-Z0-9_-])/g, '\\$1')}`;
+            assert.ok(css.includes(selector), `Missing HoverCard utility ${name}`);
+          }
+        } else {
+          ts.forEachChild(value, collect);
+        }
+      };
+      collect(node.arguments[0]);
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  assert.equal(parts, 2, 'Trigger and Content recipes must both ship');
+  assert.match(css, /width:\s*calc\([^;]*var\(--space-24\)[^;]*\)/);
+  assert.match(css, /max-width:\s*var\(--radix-hover-card-content-available-width\)/);
+  assert.match(css, /max-height:\s*var\(--radix-hover-card-content-available-height\)/);
+  assert.match(css, /overflow-y:\s*auto/);
+  assert.match(css, /overflow-wrap:\s*break-word/);
+  assert.match(css, /@starting-style/);
+  assert.match(css, /transition-duration:\s*var\(--duration-fast\)/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+  assert.doesNotMatch(css, /\.eg-hover-card\s*[,{]/, 'No HoverCard stylesheet or local Material recipe');
+});
+
+test('HoverCard exports its bounded composition with native link SSR and private helpers', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(typeof exported.HoverCard, 'function');
+  assert.equal(typeof exported.HoverCardContent, 'function');
+  assert.equal(exported.HoverCardTrigger.$$typeof, Symbol.for('react.forward_ref'));
+  const html = renderToString(
+    createElement(
+      exported.HoverCard,
+      { defaultOpen: true },
+      createElement(exported.HoverCardTrigger, { href: '#details', id: 'preview' }, 'Usage preview'),
+      createElement(exported.HoverCardContent, null, 'Read-only usage')
+    )
+  );
+  assert.match(html, /^<a /, 'Root adds no DOM');
+  assert.match(html, /href="#details"/);
+  assert.match(html, /data-state="open"/);
+  assert.match(html, />Usage preview<\/a>$/);
+  assert.doesNotMatch(html, /Read-only usage|aria-expanded|aria-controls|aria-describedby|role="(?:dialog|tooltip)"/);
+  const slotted = renderToString(
+    createElement(
+      exported.HoverCard,
+      null,
+      createElement(exported.HoverCardTrigger, { asChild: true }, createElement('a', { href: '#details' }, 'Details'))
+    )
+  );
+  assert.equal((slotted.match(/<a /g) ?? []).length, 1);
+  assert.match(slotted, /href="#details"/);
+  for (const name of [
+    'useHoverCard',
+    'useHoverCardContent',
+    'useHoverCardTrigger',
+    'hoverCardContentVariants',
+    'hoverCardTriggerVariants'
+  ]) {
+    assert.equal(exported[name], undefined, `${name} stays internal`);
+  }
+});
+
 for (const subpath of ['./tokens.css', './theme.css', './native.css']) {
   test(`Tokens ${subpath} export resolves to a nonempty file`, () => {
     artifact('tokens', tokens.exports[subpath]);
@@ -2891,4 +3966,110 @@ test('UI ships the Slider well, range and raised thumb utilities without a Slide
   assert.equal(parts, 4, 'Root, track, range and thumb must all be scanned');
   // D11 no stylesheet: the marker carries no rule of its own.
   assert.doesNotMatch(css, /\.eg-slider[^{]*\{/, 'Slider has no stylesheet: its marker carries no rule');
+});
+
+test('Popover ships every static CVA utility, Radix bounds and Surface composition without a stylesheet', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/popover/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  let parts = 0;
+  const visit = (node) => {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      const base = node.arguments[0];
+      assert.ok(ts.isArrayLiteralExpression(base), 'Popover CVA bases are static string arrays');
+      parts++;
+      for (const item of base.elements) {
+        assert.ok(ts.isStringLiteral(item));
+        for (const name of item.text.split(/\s+/).filter((name) => name !== 'eg-popover')) {
+          const selector = `.${name.replace(/([^a-zA-Z0-9_-])/g, '\\$1')}`;
+          assert.ok(utilities.includes(selector), `Missing Popover CVA utility ${name}`);
+        }
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  assert.equal(parts, 2);
+  assert.match(utilities, /width:\s*calc\(var\(--space-24\)\s*\*\s*4\)/);
+  assert.match(utilities, /max-width:\s*var\(--radix-popover-content-available-width\)/);
+  assert.match(utilities, /max-height:\s*var\(--radix-popover-content-available-height\)/);
+  assert.match(utilities, /outline-color:\s*var\(--color-focus-ring[,)]/);
+  assert.doesNotMatch(css, /\.eg-popover\s*[,{]/);
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  for (const name of [
+    'usePopover',
+    'usePopoverContent',
+    'PopoverModalityContext',
+    'popoverButtonVariants',
+    'popoverContentVariants',
+    'UserMenu'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} is not public`);
+  }
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(
+    createElement(exported.Popover, {
+      children: [
+        createElement(exported.PopoverTrigger, { key: 'trigger', children: 'Display settings' }),
+        createElement(exported.PopoverContent, { key: 'content', label: 'Display settings', children: 'Details' })
+      ]
+    })
+  );
+  assert.match(html, /<button[^>]*type="button"/);
+  assert.match(html, /aria-haspopup="dialog"/);
+  assert.match(html, /aria-expanded="false"/);
+  assert.match(html, />Display settings<\/button>/);
+  assert.doesNotMatch(html, /role="dialog"|Details|eg-popover/);
+});
+
+test('Carousel ships static layout, snap, drag, focus and token geometry without a stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  for (const selector of [
+    '.basis-full',
+    '.snap-x',
+    '.snap-mandatory',
+    '.snap-center',
+    '.scroll-auto',
+    String.raw`.group-data-\[state\=dragging\]\:snap-none`,
+    String.raw`.group-data-\[state\=dragging\]\:cursor-grabbing`,
+    String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`,
+    String.raw`.max-w-\[calc\(var\(--space-20\)\*4\)\]`
+  ]) {
+    assert.ok(css.includes(selector), `Missing Carousel utility ${selector}`);
+  }
+  assert.match(cssBlock(css, /\.gap-7\s*\{/), /gap:\s*var\(--space-7[,)]/);
+  assert.doesNotMatch(css, /\.eg-carousel[^{]*\{/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/carousel/carousel.css')), false);
+});
+
+test('Carousel public exports preserve deterministic named groups and composed atoms in SSR', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(
+    createElement(exported.Carousel, {
+      label: 'Highlights',
+      items: [
+        { value: 'alpha', label: 'Alpha', children: 'First information' },
+        { value: 'beta', label: 'Beta', children: 'Second information' }
+      ]
+    })
+  );
+  assert.match(html, /eg-carousel/);
+  assert.match(html, /aria-roledescription="carousel"/);
+  assert.match(html, /aria-label="1 of 2: Alpha"/);
+  assert.match(html, /aria-label="2 of 2: Beta"/);
+  assert.match(html, /eg-icon-btn/);
+  assert.match(html, /eg-progress/);
+  assert.match(html.replace(/<!-- -->/g, '').replace(/<[^>]*>/g, ''), /01 \/ 02/);
+  assert.equal((html.match(/tabindex="0"/g) ?? []).length, 1);
+  for (const name of ['useCarousel', 'carouselVariants', 'defaultCarouselMessages']) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} remains internal`);
+  }
 });
