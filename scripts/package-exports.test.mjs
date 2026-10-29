@@ -367,6 +367,45 @@ test('UI ships the Stat Material card, figure recipes and highlight utilities wi
   assert.doesNotMatch(css, /\.eg-stat-(?:label|value|delta)\s*\{/, 'Stat part markers carry no stylesheet rules');
 });
 
+test('ListItem ships compound layout, state Material and native empty focus utilities', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  for (const name of [
+    'ListItem',
+    'ListItemActions',
+    'ListItemBody',
+    'ListItemContent',
+    'ListItemFooter',
+    'ListItemMedia',
+    'ListItemMeta'
+  ]) {
+    assert.equal(typeof exported[name], 'function', `${name} is a plain component without a ref API`);
+  }
+  assert.equal(exported.listItemVariants, undefined, 'ListItem recipes remain internal');
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const selectors = [
+    String.raw`.data-\[state\=new\]\:bg-\[image\:var\(--gradient-post-new\)\]`,
+    String.raw`.data-\[state\=failed\]\:border-status-danger\/40`,
+    String.raw`.data-\[state\=dragging\]\:border-dashed`,
+    String.raw`.group-data-\[state\=dragging\]\/list-item\:opacity-50`,
+    String.raw`.group-data-\[state\=done\]\/list-item\:text-fg-muted`,
+    String.raw`.group-data-\[state\=off\]\/list-item\:text-fg-secondary`,
+    String.raw`.data-\[state\=empty\]\:focus-visible\:shadow-focus`,
+    String.raw`.data-\[state\=empty\]\:disabled\:opacity-45`,
+    String.raw`.data-\[variant\=row\]\:flex-wrap`,
+    String.raw`.group-data-\[variant\=compact\]\/list-item\:text-label-default`
+  ];
+  for (const state of ['done', 'off', 'empty']) {
+    for (const reset of ['bg-transparent', 'bg-none', 'shadow-none']) {
+      selectors.push(`.data-\\[state\\=${state}\\]\\:${reset}`);
+    }
+  }
+  for (const selector of selectors) {
+    assert.ok(css.includes(selector), `Missing ListItem utility ${selector}`);
+  }
+  assert.match(css, /calc\(var\(--space-20\)\s*\+\s*var\(--space-2\)\)/);
+  assert.doesNotMatch(css, /\.eg-list-item(?:__[a-z]+)?\s*[{,]/, 'Markers are not a separate visual engine');
+});
+
 test('UI ships SearchTrigger token geometry, coarse targets and attribute-driven states without preflight', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -1666,6 +1705,13 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Kbd',
       'Label',
       'Link',
+      'ListItem',
+      'ListItemActions',
+      'ListItemBody',
+      'ListItemContent',
+      'ListItemFooter',
+      'ListItemMedia',
+      'ListItemMeta',
       'Logo',
       'Portal',
       'ProgressBar',
@@ -1855,6 +1901,17 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LayoutJustifyContent',
     'Link',
     'LinkProps',
+    'ListItem',
+    'ListItemActions',
+    'ListItemBody',
+    'ListItemContent',
+    'ListItemFooter',
+    'ListItemMedia',
+    'ListItemMeta',
+    'ListItemPartProps',
+    'ListItemProps',
+    'ListItemStatus',
+    'ListItemVariant',
     'Logo',
     'LogoProps',
     'LogoSize',

@@ -35,6 +35,7 @@ const components = [
   ['Input', 'atoms/input'],
   ['Kbd', 'atoms/kbd'],
   ['Link', 'atoms/link'],
+  ['ListItem', 'molecules/list-item'],
   ['Badge', 'atoms/badge'],
   ['Logo', 'atoms/logo'],
   ['ProgressBar', 'atoms/progress-bar'],
@@ -232,6 +233,7 @@ const expected: Record<string, Record<string, string | false>> = {
   },
   pullquote: { text: 'text', accent: 'text', source: 'text', variant: 'select', tone: 'select' },
   searchtrigger: { label: 'text', shortcut: 'text', compact: 'boolean' },
+  listitem: { status: 'select', variant: 'select', asChild: 'boolean', children: false },
   textarea: { variant: 'select' },
   input: { size: 'select', variant: 'select', type: 'select', icon: false, loading: 'boolean' },
   select: {
@@ -284,6 +286,7 @@ const ownPropCounts: Record<string, number> = {
   statusdot: 2,
   kbd: 2,
   link: 6,
+  listitem: 4,
   slider: 11,
   radiogroup: 9,
   searchtrigger: 3,
@@ -468,7 +471,11 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         expect(composed.argTypes[prop]?.type?.name, `${name}.${prop} semantic type`).toBe('string');
       }
     }
-    if (!['Button', 'VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface', 'Link', 'IconButton'].includes(name)) {
+    if (
+      !['Button', 'VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface', 'Link', 'IconButton', 'ListItem'].includes(
+        name
+      )
+    ) {
       expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     }
     expect(composed.args).toEqual({});
