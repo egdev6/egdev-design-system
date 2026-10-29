@@ -12,6 +12,10 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...['heading-title', 'heading-eyebrow', 'heading-level', 'trailing-actions'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/page-header/types.ts#PageHeaderProps'
+  })),
   ...['accessible-name', 'visual-treatment'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/button-group/types.ts#ButtonGroupProps'

@@ -2461,7 +2461,18 @@
       "scope": "convention:heading-title",
       "contentHash": "sha256:3b7c8409a2f43bbc296608d65ee61e78aebbe31118f1f65e955ff65078e8c2d3"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "PageHeader",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/page-header/types.ts",
+          "symbol": "PageHeaderProps",
+          "revision": "sha256:65e419324a9415188c20755942f710f92fd24f062bb3b7fab886d51ec0c612a3"
+        }
+      }
+    ]
   },
   {
     "id": "heading-level",
@@ -2487,6 +2498,16 @@
           "symbol": "HeadingProps",
           "revision": "sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9"
         }
+      },
+      {
+        "component": "PageHeader",
+        "type": "PageHeaderLevel (1|2|3|4|5|6)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/page-header/types.ts",
+          "symbol": "PageHeaderProps",
+          "revision": "sha256:65e419324a9415188c20755942f710f92fd24f062bb3b7fab886d51ec0c612a3"
+        }
       }
     ]
   },
@@ -2504,7 +2525,18 @@
       "scope": "convention:trailing-actions",
       "contentHash": "sha256:b00c5b3d1006ee97caa5d258e4ce04a046acb3d8d752d734e37bf96c92356550"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "PageHeader",
+        "type": "PageHeaderActions | null | boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/page-header/types.ts",
+          "symbol": "PageHeaderProps",
+          "revision": "sha256:65e419324a9415188c20755942f710f92fd24f062bb3b7fab886d51ec0c612a3"
+        }
+      }
+    ]
   },
   {
     "id": "panel-footer",
@@ -2552,7 +2584,18 @@
       "scope": "convention:heading-eyebrow",
       "contentHash": "sha256:131bf821957930e7334f9f0efbd400f99c09bf13c6bc752d5e8e229603d4e96c"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "PageHeader",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/page-header/types.ts",
+          "symbol": "PageHeaderProps",
+          "revision": "sha256:65e419324a9415188c20755942f710f92fd24f062bb3b7fab886d51ec0c612a3"
+        }
+      }
+    ]
   },
   {
     "id": "image-caption",

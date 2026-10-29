@@ -58,7 +58,7 @@ C = [
 ("PostCard (Cadencia)","molécula","PostCard","molecule","cadencia","—","ListItem, Avatar, Chip","mover","Composición de dominio en Cadencia sobre ListItem."),
 ("SelectTile","molécula","SelectTile","molecule","ui","RadioGroup.Item / ToggleGroup.Item","AspectRatio, Text","mantener","Proporciones como variantes (portrait, story, square, wide, banner)."),
 ("Timeline","molécula","Timeline","molecule","ui","ScrollArea","Avatar, Badge, Text","mantener","`--chat` para el chat en vivo."),
-("—","—","PageHeader","molecule","ui","—","Text, ButtonGroup","nuevo","Eyebrow + título + acciones. Repetido a mano en todas las apps."),
+("—","—","PageHeader","molecule","ui","—","Stack, Button, ButtonGroup","nuevo","Implemented compact product heading (#94 v0.1): native h1–h6, optional eyebrow and unchanged supplied actions; intrinsic wrapping, no paint or stylesheet. Separate from editorial SectionHeader."),
 ("SectionHeader","molécula","SectionHeader","molecule","ui","—","Text","mantener","Cabecera de sección en registro Show; valorar unificar con PageHeader por `register`."),
 ("—","—","MeterRow","molecule","ui","Progress","ProgressBar, Text, Gauge key","nuevo","Etiqueta + valor + barra + ayuda (Quorb, egdev-live, Criterio)."),
 ("ModuleCard","molécula","ModuleCard","molecule","ui","—","Panel, Badge, Button; specialized Surface frame","mantener","Draft #91 amendment proposed by #180: normal/banded states compose Panel; error/stopped retain specialized frames and share Panel zone recipes. Public title/status/actions/footer, wide layout and legacy markers remain; no amendment approval or implementation implied."),

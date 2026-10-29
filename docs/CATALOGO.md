@@ -99,7 +99,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **ListItem** | PostCard (molécula) | Slot | Surface, Text, Badge, Button | renombrar | Fila/tarjeta genérica con estados (`new`, `failed`, `done`, `empty`, `dragging`, `off`) y `--row`. |
 | **SelectTile** | SelectTile (molécula) | RadioGroup.Item / ToggleGroup.Item | AspectRatio, Text | mantener | Proporciones como variantes (portrait, story, square, wide, banner). |
 | **Timeline** | Timeline (molécula) | ScrollArea | Avatar, Badge, Text | mantener | `--chat` para el chat en vivo. |
-| **PageHeader** | — | — | Text, ButtonGroup | nuevo | Eyebrow + título + acciones. Repetido a mano en todas las apps. |
+| **PageHeader** | — | — | Stack, Button, ButtonGroup | nuevo | Implemented compact product heading (#94 v0.1): native h1–h6, optional eyebrow and unchanged supplied actions; intrinsic wrapping, no paint or stylesheet. Separate from editorial SectionHeader. |
 | **SectionHeader** | SectionHeader (molécula) | — | Text | mantener | Cabecera de sección en registro Show; valorar unificar con PageHeader por `register`. |
 | **MeterRow** | — | Progress | ProgressBar, Text, Gauge key | nuevo | Etiqueta + valor + barra + ayuda (Quorb, egdev-live, Criterio). |
 | **ModuleCard** | ModuleCard (molécula) | — | Panel, Badge, Button; specialized Surface frame | mantener | Draft #91 amendment proposed by #180: normal/banded states compose Panel; error/stopped retain specialized frames and share Panel zone recipes. Public title/status/actions/footer, wide layout and legacy markers remain; no amendment approval or implementation implied. |
