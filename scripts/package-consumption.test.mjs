@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ModuleCard, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -72,6 +72,12 @@ import type {
   LogoProps,
   LogoSize,
   LogoVariant,
+  ModuleCardProps,
+  ModuleCardStatus,
+  ModuleCardVariant,
+  ModuleCardTone,
+  ModuleCardLevel,
+  ModuleCardMessages,
   ProgressBarProps,
   ProgressBarSize,
   ProgressBarVariant,
@@ -390,6 +396,56 @@ const stringCompact: SearchTriggerProps = { compact: 'yes' };
 // @ts-expect-error shortcut is display text only.
 const numericShortcut: SearchTriggerProps = { shortcut: 75 };
 
+// ModuleCard stays outside App so the existing aggregate control-count/focus harness is unchanged.
+const moduleCardLevel: ModuleCardLevel = 3;
+const moduleCardVariant: ModuleCardVariant = 'banded';
+const moduleCardTone: ModuleCardTone = 'overlay';
+const moduleCardMessages: Partial<ModuleCardMessages> = { errorStatus: 'Review connection' };
+export const moduleCardClicks: string[] = [];
+const moduleCardAction = createElement(Button, { children: 'Review capability', onClick: () => moduleCardClicks.push('review') });
+const moduleCardDefault: Extract<ModuleCardProps, { status?: 'default' }> = {
+  title: 'Packed capability', children: 'Reusable capability details.', level: moduleCardLevel,
+  variant: moduleCardVariant, tone: moduleCardTone, actions: moduleCardAction,
+  footer: 'Updated recently', messages: moduleCardMessages, id: 'packed-module',
+  className: 'col-span-full', 'aria-describedby': 'module-description'
+};
+const moduleCardError: Extract<ModuleCardProps, { status: 'error' }> = {
+  ...moduleCardDefault, status: 'error', children: 'Check the connection before trying again.', actions: moduleCardAction
+};
+const moduleCardStopped: Extract<ModuleCardProps, { status: 'stopped' }> = {
+  title: 'Packed capability', children: 'Enable this capability to continue.', level: moduleCardLevel,
+  status: 'stopped', actions: moduleCardAction, id: 'packed-module'
+};
+export function ModuleCardSamples({ status = 'default' }: { status?: ModuleCardStatus }) {
+  const card = status === 'stopped' ? createElement(ModuleCard, moduleCardStopped)
+    : status === 'error' ? createElement(ModuleCard, moduleCardError) : createElement(ModuleCard, moduleCardDefault);
+  return createElement('div', null, card,
+    createElement(ModuleCard, { title: 'Second capability', children: 'Another independent summary.', id: 'second-module' }));
+}
+// @ts-expect-error A visible heading is required.
+const unnamedModule: ModuleCardProps = { children: 'Body' };
+// @ts-expect-error Meaningful body content is required.
+const bodylessModule: ModuleCardProps = { title: 'Capability' };
+// @ts-expect-error Error requires consumer-owned recovery actions.
+const actionlessErrorModule: ModuleCardProps = { title: 'Capability', children: 'Problem', status: 'error' };
+// @ts-expect-error Stopped requires consumer-owned Start/enable/details actions.
+const actionlessStoppedModule: ModuleCardProps = { title: 'Capability', children: 'Paused', status: 'stopped' };
+// @ts-expect-error Stopped rejects tonal bands.
+const bandedStoppedModule: ModuleCardProps = { ...moduleCardStopped, variant: 'banded' };
+// @ts-expect-error Stopped rejects overlay input.
+const overlayStoppedModule: ModuleCardProps = { ...moduleCardStopped, tone: 'overlay' };
+// @ts-expect-error Root naming/semantics belong to the article.
+const relabelledModule: ModuleCardProps = { ...moduleCardDefault, 'aria-label': 'Other' };
+// @ts-expect-error Passive articles have no root tab stop API.
+const focusableModule: ModuleCardProps = { ...moduleCardDefault, tabIndex: 0 };
+// @ts-expect-error There is no public ref API on either supported React major.
+const referencedModule: ModuleCardProps = { ...moduleCardDefault, ref: createRef<HTMLElement>() };
+// @ts-expect-error ModuleCard is not polymorphic.
+const slottedModule: ModuleCardProps = { ...moduleCardDefault, asChild: true };
+// @ts-expect-error Wide is parent grid placement, not an own prop.
+const wideModule: ModuleCardProps = { ...moduleCardDefault, wide: true };
+// @ts-expect-error Material uses tone, never a glass boolean.
+const glassModule: ModuleCardProps = { ...moduleCardDefault, glass: true };
 // Stat stays outside App: it is passive, adds no buttons and leaves the focus harness unchanged.
 export const statRecipe: string = statVariants({ size: 'sm' });
 export const statProps: StatProps = {
@@ -2061,6 +2117,32 @@ function assertPullQuoteCSS(css) {
   assert.match(css, /padding-inline-start:\s*calc\(var\(--space-1\)\s*\*\s*4\.5\)/);
 }
 
+function assertModuleCardCSS(css) {
+  for (const selector of [
+    String.raw`.data-\[state\=stopped\]\:bg-transparent`,
+    String.raw`.data-\[state\=stopped\]\:bg-none`,
+    String.raw`.data-\[state\=stopped\]\:shadow-none`,
+    String.raw`.data-\[state\=stopped\]\:border-dashed`,
+    String.raw`.data-\[state\=error\]\:border-status-danger\/40`,
+    String.raw`.data-\[tone\=overlay\]\:bg-none`,
+    String.raw`.group-data-\[tone\=overlay\]\/module-card\:px-5`,
+    '.col-span-full',
+    '.border-x-0',
+    '.border-b-0',
+    '.border-t-0',
+    '.overflow-visible',
+    '.transform-none',
+    '.transition-none',
+    '.rounded-t-xl',
+    '.rounded-b-xl'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing ModuleCard utility ' + selector);
+  }
+  assert.match(css, /grid-column:\s*1\s*\/\s*-1/);
+  assert.match(css, /background-color:\s*var\(--color-surface-3[,)]/);
+  assert.match(css, /prefers-reduced-transparency:\s*reduce/);
+}
+
 // Stat ships its Material card, figure recipes and highlight utilities; part markers carry no rules.
 function assertStatCSS(css) {
   for (const selector of [
@@ -2353,6 +2435,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Label',
   'Link',
   'Logo',
+  'ModuleCard',
   'Portal',
   'ProgressBar',
   'PullQuote',
@@ -2414,6 +2497,8 @@ ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertPullQuoteCSS.toString()}
 ${assertCountdownCSS.toString()}
+${assertModuleCardCSS.toString()}
+assertModuleCardCSS(shippedStyles);
 assertCountdownCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
 assertStatCSS(shippedStyles);
@@ -2499,7 +2584,28 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, ModuleCardSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+const moduleDocument = new JSDOM(renderToString(createElement(ModuleCardSamples, { status: 'error' })));
+try {
+  const document = moduleDocument.window.document;
+  const card = document.getElementById('packed-module');
+  const heading = document.getElementById(card.getAttribute('aria-labelledby'));
+  assert.equal(card.tagName, 'ARTICLE');
+  assert.equal(heading.tagName, 'H3');
+  assert.equal(heading.textContent, 'Packed capability');
+  assert.equal(card.hasAttribute('title'), false);
+  assert.equal(card.getAttribute('data-state'), 'error');
+  assert.equal(card.getAttribute('data-variant'), 'banded');
+  assert.equal(card.getAttribute('data-tone'), 'overlay');
+  assert.equal(card.querySelector('.eg-badge').textContent, 'Review connection');
+  assert.equal(card.querySelector('button').textContent, 'Review capability');
+  assert.equal(card.querySelector('.eg-module-card__foot').textContent, 'Updated recently');
+  assert.ok(card.querySelector('.eg-module-card__head').classList.contains('bg-surface-3'));
+  assert.notEqual(heading.id, document.getElementById('second-module').getAttribute('aria-labelledby'));
+  assert.equal(card.hasAttribute('aria-live'), false);
+} finally {
+  moduleDocument.window.close();
+}
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
@@ -3426,7 +3532,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, CountdownSamples, DropzoneSamples, ModuleCardSamples, moduleCardClicks, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4013,6 +4119,31 @@ try {
   assert.deepEqual(countdownExpirations, [pastDeadline]);
   await act(async () => root.render(null));
   stage('countdown:clock:complete');
+  stage('module-card:start');
+  await act(async () => root.render(createElement(ModuleCardSamples, { status: 'error' })));
+  const moduleCard = document.getElementById('packed-module');
+  const moduleAction = moduleCard.querySelector('button');
+  assert.equal(moduleCard.tagName, 'ARTICLE');
+  assert.equal(moduleCard.getAttribute('data-state'), 'error');
+  assert.equal(moduleCard.querySelector('.eg-badge').textContent, 'Review connection');
+  assert.equal(moduleCard.tabIndex, -1);
+  assert.equal(moduleCard.hasAttribute('aria-live'), false);
+  moduleAction.focus();
+  await act(async () => moduleAction.click());
+  assert.deepEqual(moduleCardClicks, ['review']);
+  await act(async () => root.render(createElement(ModuleCardSamples, { status: 'stopped' })));
+  assert.ok(document.getElementById('packed-module') === moduleCard);
+  assert.ok(moduleCard.querySelector('button') === moduleAction);
+  assert.ok(document.activeElement === moduleAction, 'Status changes keep stable child focus');
+  assert.equal(moduleCard.getAttribute('data-state'), 'stopped');
+  assert.equal(moduleCard.getAttribute('data-variant'), 'default');
+  assert.equal(moduleCard.getAttribute('data-tone'), 'surface-1');
+  assert.equal(moduleCard.querySelector('.eg-badge').textContent, 'Stopped');
+  assert.equal(moduleCard.querySelector('.eg-module-card__foot'), null);
+  assert.equal(moduleAction.disabled, false);
+  assert.equal(moduleAction.getAttribute('data-state'), 'idle');
+  await act(async () => root.render(null));
+  stage('module-card:complete');
   stage('stat:passive:start');
   await act(async () => root.render(createElement(StatSamples)));
   const subsStat = document.getElementById('subs-total');
@@ -4346,6 +4477,8 @@ ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertPullQuoteCSS.toString()}
+${assertModuleCardCSS.toString()}
+assertModuleCardCSS(emitted);
 assertIconButtonCSS(emitted);
 ${assertToggleCSS.toString()}
 ${assertChipCSS.toString()}
@@ -4447,6 +4580,7 @@ assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
 assertCountdownCSS(twCss);
 assertStatCSS(twCss);
+assertModuleCardCSS(twCss);
 assertSearchTriggerCSS(twCss);
 assertPullQuoteCSS(twCss);
 assertToggleCSS(twCss);

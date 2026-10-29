@@ -1643,6 +1643,89 @@ test('Button emits every static CVA utility and its approved native resets and m
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
 });
 
+test('ModuleCard ships named article SSR and keeps its composition recipes private', async () => {
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const html = renderToStaticMarkup(
+    createElement(exported.ModuleCard, {
+      title: 'Capability',
+      status: 'error',
+      variant: 'banded',
+      tone: 'overlay',
+      actions: createElement(exported.Button, null, 'Retry'),
+      footer: 'Updated today',
+      children: 'Check the connection.',
+      className: 'col-span-full'
+    })
+  );
+  const heading = /<h2[^>]*id="([^"]+)"/.exec(html);
+  assert.ok(heading, 'The card generates one native h2');
+  assert.ok(html.includes(`aria-labelledby="${heading[1]}"`));
+  assert.match(html, /^<article\b/);
+  assert.match(html, /data-state="error"/);
+  assert.match(html, /data-variant="banded"/);
+  assert.match(html, /data-tone="overlay"/);
+  assert.ok(html.includes('Needs attention'));
+  for (const marker of [
+    'eg-module-card',
+    'eg-module-card__head',
+    'eg-module-card__name',
+    'eg-module-card__body',
+    'eg-module-card__actions',
+    'eg-module-card__foot',
+    'eg-badge',
+    'eg-icon',
+    'eg-surface',
+    'col-span-full'
+  ]) {
+    assert.ok(html.includes(marker), marker);
+  }
+  assert.doesNotMatch(html, /role="(?:alert|status)"|aria-live=|tabindex=/);
+  for (const name of ['useModuleCard', 'moduleCardVariants', 'moduleCardHeadVariants', 'ModuleCardNativeProps']) {
+    assert.equal(Object.hasOwn(exported, name), false, name);
+  }
+});
+
+test('ModuleCard ships scanned state, band, layout and legacy-reset utilities without a new stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}[^{]*\\{`));
+  };
+  for (const selector of [
+    String.raw`.data-\[state\=error\]\:border-status-danger\/40`,
+    String.raw`.data-\[state\=stopped\]\:bg-transparent`,
+    String.raw`.data-\[state\=stopped\]\:bg-none`,
+    String.raw`.data-\[state\=stopped\]\:shadow-none`,
+    String.raw`.data-\[state\=stopped\]\:border-dashed`,
+    String.raw`.data-\[state\=stopped\]\:border-border-control`,
+    String.raw`.data-\[tone\=overlay\]\:bg-none`,
+    String.raw`.group-data-\[tone\=overlay\]\/module-card\:px-5`,
+    String.raw`.last\:rounded-b-xl`,
+    String.raw`.\[\&\>\:last-child\:not\(\:first-child\)\]\:ml-0`,
+    String.raw`.\[\&\>\:last-child\:not\(\:first-child\)\]\:ms-auto`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing ModuleCard utility ${selector}`);
+  }
+  assert.match(rule('.col-span-full'), /grid-column:\s*1\s*\/\s*-1/);
+  assert.match(rule('.transform-none'), /transform:\s*none/);
+  assert.match(rule('.transition-none'), /transition-property:\s*none/);
+  assert.match(rule('.overflow-visible'), /overflow:\s*visible/);
+  assert.match(rule('.border-x-0'), /border-inline-(?:width|style):/);
+  assert.match(rule('.text-cta-label'), /font-weight:[^;]*var\(--text-cta-label--font-weight[,)]/);
+  assert.match(rule('.text-heading-small'), /font-size:\s*var\(--text-heading-small[,)]/);
+  assert.match(rule('.bg-surface-3'), /background-color:\s*var\(--color-surface-3[,)]/);
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.doesNotMatch(utilities, /\.eg-module-card[^{}]*\{/);
+  assert.ok(css.includes('.eg-module-card:hover'), 'Legacy consumers remain untouched in the components layer');
+  const source = readFileSync(resolve(root, 'packages/ui/src/molecules/module-card/useModuleCard.ts'), 'utf8');
+  assert.match(source, /surfaceVariants\(/);
+  assert.doesNotMatch(source, /Panel|PageHeader|Notice|background:|backdrop-filter:/);
+  assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/module-card/module-card.css')));
+});
+
 test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal and Slot with passive SSR semantics', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   assert.deepEqual(
@@ -1667,6 +1750,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Label',
       'Link',
       'Logo',
+      'ModuleCard',
       'Portal',
       'ProgressBar',
       'PullQuote',
@@ -1859,6 +1943,13 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LogoProps',
     'LogoSize',
     'LogoVariant',
+    'ModuleCard',
+    'ModuleCardLevel',
+    'ModuleCardMessages',
+    'ModuleCardProps',
+    'ModuleCardStatus',
+    'ModuleCardTone',
+    'ModuleCardVariant',
     'Portal',
     'PortalProps',
     'ProgressBar',

@@ -10,6 +10,7 @@ import config from '../../../../.storybook/main';
 import preview from '../../../../.storybook/preview';
 
 const components = [
+  ['ModuleCard', 'molecules/module-card'],
   ['Avatar', 'atoms/avatar'],
   ['Button', 'atoms/button'],
   ['Checkbox', 'atoms/checkbox'],
@@ -94,6 +95,18 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  modulecard: {
+    title: 'text',
+    level: 'select',
+    icon: false,
+    children: false,
+    footer: false,
+    messages: false,
+    status: 'select',
+    variant: 'select',
+    tone: 'select',
+    actions: false
+  },
   avatar: { src: 'text', label: 'text', size: 'select', badgeIcon: 'select', paused: 'boolean' },
   button: {
     children: false,
@@ -266,6 +279,7 @@ const expected: Record<string, Record<string, string | false>> = {
   }
 };
 const ownPropCounts: Record<string, number> = {
+  modulecard: 10,
   avatar: 5,
   button: 7,
   checkbox: 7,

@@ -255,6 +255,25 @@ describe('Storybook preview CSS', () => {
     expect(arc).toMatch(/(?:black|#000(?:000)?) calc\(100% - var\(--eg-gauge-stroke\) \+ 0?\.5px\)/);
   });
 
+  it('compiles ModuleCard production states and molecule story layout without a stylesheet', () => {
+    expect(rule('.col-span-full')).toMatch(/grid-column:\s*1\s*\/\s*-1/);
+    expect(rule('.grid-cols-2')).toMatch(/grid-template-columns:/);
+    expect(rule('.transform-none')).toMatch(/transform:\s*none/);
+    expect(rule('.overflow-visible')).toMatch(/overflow:\s*visible/);
+    for (const selector of [
+      String.raw`.data-\[state\=stopped\]\:bg-transparent`,
+      String.raw`.data-\[state\=stopped\]\:bg-none`,
+      String.raw`.data-\[state\=stopped\]\:shadow-none`,
+      String.raw`.data-\[state\=stopped\]\:border-dashed`,
+      String.raw`.data-\[tone\=overlay\]\:bg-none`,
+      String.raw`.group-data-\[tone\=overlay\]\/module-card\:px-5`
+    ]) {
+      expect(css, selector).toContain(selector);
+    }
+    const preview = readFileSync(new URL('../../../../.storybook/preview.css', import.meta.url), 'utf8');
+    expect(preview).toContain('@source "../packages/ui/src/molecules/**/*.stories.tsx";');
+  });
+
   it('compiles the Gauge story example layouts without requiring production story scanning', () => {
     expect(rule('.flex')).toMatch(/display:\s*flex\s*;/);
     expect(rule('.flex-wrap')).toMatch(/flex-wrap:\s*wrap\s*;/);
