@@ -32,6 +32,7 @@
 @source "../atoms/textarea/types.ts";
 @source "../atoms/toggle/types.ts";
 @source "../atoms/tooltip/types.ts";
+@source "../molecules/tabs/types.ts";
 @source "../primitives/aspect-ratio/types.ts";
 @source "../primitives/divider/types.ts";
 @source "../primitives/label/types.ts";

@@ -17,6 +17,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   skeleton: ['id', 'title', 'className', 'style'],
   spinner: ['id', 'title', 'className', 'style'],
   stat: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  tabs: ['id', 'title', 'aria-describedby', 'className', 'style'],
   logo: ['id', 'title', 'className', 'style', 'target', 'rel'],
   statusDot: ['id', 'title', 'className', 'style'],
   kbd: ['id', 'title', 'className'],
