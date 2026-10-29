@@ -30,8 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Toggle, Tooltip, VisuallyHidden, tabsVariants, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, Notice, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, Notice, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -2683,8 +2682,7 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
-import { App, ButtonGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, ButtonGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
 const noticeDocument = new JSDOM(renderToString(createElement(NoticeSamples, { tone: 'danger', size: 'sm' })));
 try {
   const notice = noticeDocument.window.document.getElementById('queue-notice');
@@ -3666,8 +3664,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TabsSamples, tabsChanges, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
-const { App, ButtonGroupSamples, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, ButtonGroupSamples, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TabsSamples, tabsChanges, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 const { NoticeSamples, noticeActivations } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
