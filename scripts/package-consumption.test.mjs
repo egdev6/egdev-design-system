@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -44,6 +44,9 @@ import type {
   CheckboxCheckedState,
   CheckboxProps,
   ChipProps,
+  ChipGroupOption,
+  ChipGroupProps,
+  ChipGroupType,
   CountdownProps,
   CountdownSize,
   CountdownTone,
@@ -847,6 +850,50 @@ const overriddenToggle: ToggleProps = { children: 'Pin', 'aria-pressed': 'mixed'
 const numericToggle: ToggleProps = { children: 'Pin', size: 40 };
 // @ts-expect-error Toggle does not expose private CVA recipes.
 import type { toggleVariants } from '@egdev/ui';
+const chipGroupType: ChipGroupType = 'single';
+const chipGroupOptions: ChipGroupOption[] = [
+  { value: 'react', label: 'React', icon: '→' },
+  { value: 'css', label: 'CSS' },
+  { value: 'locked', label: 'Locked', disabled: true }
+];
+export const chipGroupSingleChanges: string[] = [];
+export const chipGroupMultipleChanges: string[][] = [];
+const chipGroupSingle: Extract<ChipGroupProps, { type: 'single' }> = { type: chipGroupType, label: 'Topic', options: chipGroupOptions, defaultValue: 'react' };
+const chipGroupMultiple: Extract<ChipGroupProps, { type: 'multiple' }> = { type: 'multiple', label: 'Topics', options: chipGroupOptions, defaultValue: ['react'] };
+// Separate mount avoids changing the existing App's focus and button-count harness.
+export function ChipGroupSamples() {
+  return createElement('form', { id: 'chip-group-form' },
+    createElement(ChipGroup, { ...chipGroupSingle, id: 'chip-group-single', onValueChange: (next: string) => chipGroupSingleChanges.push(next) }),
+    createElement(ChipGroup, { ...chipGroupMultiple, id: 'chip-group-multiple', onValueChange: (next: string[]) => chipGroupMultipleChanges.push(next) }));
+}
+// @ts-expect-error A mode discriminator is required.
+const missingChipGroupType: ChipGroupProps = { label: 'Topics', options: [] };
+// @ts-expect-error A group requires its accessible name.
+const missingChipGroupLabel: ChipGroupProps = { type: 'single', options: [] };
+// @ts-expect-error Choices are required, though they may be empty.
+const missingChipGroupOptions: ChipGroupProps = { type: 'single', label: 'Topics' };
+// @ts-expect-error Single values are strings, not arrays.
+const arraySingleChipGroup: ChipGroupProps = { type: 'single', label: 'Topics', options: [], value: [] };
+// @ts-expect-error Multiple defaults are arrays, not strings.
+const stringMultipleChipGroup: ChipGroupProps = { type: 'multiple', label: 'Topics', options: [], defaultValue: 'react' };
+// @ts-expect-error Callback payload must match the chosen mode.
+const wrongChipGroupCallback: ChipGroupProps = { type: 'multiple', label: 'Topics', options: [], onValueChange: (next: string) => console.log(next) };
+// @ts-expect-error ChipGroup has no form name API.
+const namedChipGroup: ChipGroupProps = { ...chipGroupSingle, name: 'topics' };
+// @ts-expect-error ChipGroup is not a mandatory form choice.
+const requiredChipGroup: ChipGroupProps = { ...chipGroupSingle, required: true };
+// @ts-expect-error No ref API is exposed.
+const referencedChipGroup: ChipGroupProps = { ...chipGroupSingle, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error No asChild composition is exposed.
+const slottedChipGroup: ChipGroupProps = { ...chipGroupSingle, asChild: true };
+// @ts-expect-error Standard option anatomy owns children.
+const childChipGroup: ChipGroupProps = { ...chipGroupSingle, children: 'Injected' };
+// @ts-expect-error Group owns its role and naming.
+const roleChipGroup: ChipGroupProps = { ...chipGroupSingle, role: 'radiogroup' };
+// @ts-expect-error Horizontal wrapping is fixed, not a public axis.
+const verticalChipGroup: ChipGroupProps = { ...chipGroupSingle, orientation: 'vertical' };
+// @ts-expect-error Group recipes stay internal.
+import type { chipGroupVariants } from '@egdev/ui';
 export const chipChanges: boolean[] = [];
 export const chipDefaults: ChipProps = { children: 'Design' };
 export const chipRecipe: string = chipVariants();
@@ -1273,6 +1320,21 @@ function assertToggleCSS(css) {
 
 // Chip ships its sheen/edge pill, red-tinted on state, focus and reduced-motion press resets.
 function assertChipCSS(css) {
+  // ChipGroup shares this recipe and adds only wrapping layout and a token underline.
+  for (const selector of [
+    '.flex-wrap',
+    '.gap-2',
+    String.raw`.data-\[state\=on\]\:underline`,
+    String.raw`.decoration-\[length\:var\(--border-width\)\]`,
+    String.raw`.underline-offset-\[var\(--space-1\)\]`,
+    String.raw`.disabled\:cursor-not-allowed`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing ChipGroup selector ' + selector);
+  }
+  assert.match(css, /text-decoration-thickness:\s*var\(--border-width\)/);
+  assert.match(css, /text-underline-offset:\s*var\(--space-1\)/);
+  assert.doesNotMatch(css, /\.eg-chip-group[^{]*\{/);
   for (const selector of [
     String.raw`.\[background\:var\(--gradient-sheen\)\,var\(--color-surface-1\)\]`,
     String.raw`.hover\:\[background\:var\(--gradient-sheen\)\,var\(--color-surface-2\)\]`,
@@ -2340,6 +2402,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Button',
   'Checkbox',
   'Chip',
+  'ChipGroup',
   'Cluster',
   'Countdown',
   'Divider',
@@ -2499,7 +2562,27 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+// ChipGroup SSR preserves both mode-specific semantics, data order and shared Chip anatomy.
+const chipGroupDocument = new JSDOM(renderToString(createElement(ChipGroupSamples)));
+try {
+  const document = chipGroupDocument.window.document;
+  const single = document.getElementById('chip-group-single');
+  const multiple = document.getElementById('chip-group-multiple');
+  for (const group of [single, multiple]) {
+    assert.equal(group.getAttribute('role'), 'group');
+    assert.ok(group.classList.contains('eg-chip-group'));
+    assert.equal(group.querySelectorAll('button.eg-chip').length, 3);
+    assert.equal(group.querySelector('[aria-hidden="true"]').textContent, '→');
+    assert.ok(group.querySelector('button:last-child').disabled);
+  }
+  assert.equal(single.getAttribute('aria-label'), 'Topic');
+  assert.equal(single.querySelector('[role="radio"]').getAttribute('aria-checked'), 'true');
+  assert.equal(multiple.querySelector('button').getAttribute('aria-pressed'), 'true');
+  assert.equal(document.querySelectorAll('input').length, 0, 'ToggleGroup has no hidden form inputs');
+} finally {
+  chipGroupDocument.window.close();
+}
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
@@ -3426,7 +3509,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, ChipGroupSamples, chipGroupSingleChanges, chipGroupMultipleChanges, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4237,6 +4320,26 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
+  await act(async () => root.render(createElement(ChipGroupSamples)));
+  const singleGroup = document.getElementById('chip-group-single');
+  const multipleGroup = document.getElementById('chip-group-multiple');
+  const singleItems = [...singleGroup.querySelectorAll('button')];
+  const multipleItems = [...multipleGroup.querySelectorAll('button')];
+  await act(async () => singleItems[1].click());
+  assert.equal(singleItems[1].getAttribute('aria-checked'), 'true');
+  await act(async () => singleItems[1].click());
+  assert.deepEqual(chipGroupSingleChanges, ['css', '']);
+  await act(async () => multipleItems[1].click());
+  await act(async () => multipleItems[0].click());
+  await act(async () => multipleItems[2].click());
+  assert.deepEqual(chipGroupMultipleChanges, [['react', 'css'], ['css']]);
+  await act(async () => singleItems[0].focus());
+  await act(async () => singleItems[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 0)));
+  assert.equal(document.activeElement, singleItems[1]);
+  assert.deepEqual(chipGroupSingleChanges, ['css', ''], 'Arrows move focus without selecting');
+  assert.equal(document.querySelectorAll('input').length, 0);
+  stage('chip-group:complete');
   console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'PullQuote figure identity, variant/tone rerender, blank-text removal and development warning', 'Countdown client sampling, expiry episode, running rerender and unavailable recovery', 'Stat passive group, highlight and no-data rerenders with stable identity', 'SearchTrigger native activation, inert displayed shortcut, compact identity, disabled guard, host Slot trigger and ref cleanup', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup', 'Chip pressed state, change events, controlled/disabled behavior and public recipe'] }));
 } finally {
   stage('unmount:start');

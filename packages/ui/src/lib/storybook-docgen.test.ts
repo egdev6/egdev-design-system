@@ -192,6 +192,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/toggle',
       './atoms/tooltip',
       './lib/cn',
+      './molecules/chip-group',
       './primitives/aspect-ratio',
       './primitives/divider',
 
@@ -211,6 +212,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Button',
       'Checkbox',
       'Chip',
+      'ChipGroup',
       'Cluster',
       'Countdown',
       'Divider',
