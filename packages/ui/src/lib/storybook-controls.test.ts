@@ -13,6 +13,7 @@ const components = [
   ['Avatar', 'atoms/avatar'],
   ['Button', 'atoms/button'],
   ['ButtonGroup', 'molecules/button-group'],
+  ['PageHeader', 'molecules/page-header'],
   ['Checkbox', 'atoms/checkbox'],
   ['Chip', 'atoms/chip'],
   ['Countdown', 'atoms/countdown'],
@@ -106,6 +107,7 @@ const expected: Record<string, Record<string, string | false>> = {
     asChild: 'boolean'
   },
   buttongroup: { label: 'text', variant: 'select', children: false },
+  pageheader: { title: 'text', eyebrow: 'text', level: 'select', actions: false },
   checkbox: {
     checked: false,
     defaultChecked: false,
@@ -276,6 +278,7 @@ const ownPropCounts: Record<string, number> = {
   aspectratio: 1,
   badge: 4,
   buttongroup: 3,
+  pageheader: 4,
   dropzone: 6,
   gauge: 8,
   icon: 4,

@@ -29,8 +29,8 @@ function run(cwd, command, args, timeout) {
 
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
-import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, PageHeader, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -74,6 +74,8 @@ import type {
   LogoProps,
   LogoSize,
   LogoVariant,
+  PageHeaderProps,
+  PageHeaderLevel,
   ProgressBarProps,
   ProgressBarSize,
   ProgressBarVariant,
@@ -118,6 +120,40 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+// Keep PageHeader samples outside App so the existing button-count/focus harness stays unchanged.
+const pageHeaderLevel: PageHeaderLevel = 2;
+export const pageHeaderProps: PageHeaderProps = { title: 'Projects', eyebrow: 'Workspace', level: pageHeaderLevel };
+// createElement erases the exotic Button target identity; restore only this known factory target.
+const pageLinkAction = createElement(Button, { asChild: true, children: createElement('a', { href: '#new' }, 'New project') }) as ReactElement<ButtonProps, typeof Button>;
+export function PageHeaderSamples({ title = 'Projects' }: { title?: string }) {
+  return createElement('main', null,
+    createElement(PageHeader, { title: 'Minimal', id: 'page-minimal' }),
+    createElement(PageHeader, { ...pageHeaderProps, title, id: 'page-single', dir: 'rtl', actions: pageLinkAction }),
+    createElement(PageHeader, { title: 'Grouped', id: 'page-grouped', actions: createElement(ButtonGroup, { variant: 'spaced', label: 'Project actions', children: [
+      createElement(Button, { key: 'import', variant: 'secondary', disabled: true, children: 'Import' }),
+      createElement(Button, { key: 'new', children: 'New project' })
+    ] }) }));
+}
+// @ts-expect-error A visible title is required.
+const missingPageTitle: PageHeaderProps = {};
+// @ts-expect-error Heading rank is semantic h1-h6, never a visual size.
+const invalidPageLevel: PageHeaderProps = { title: 'Projects', level: 7 };
+// @ts-expect-error Plain strings only, not rich headings.
+const richPageTitle: PageHeaderProps = { title: createElement('em', null, 'Projects') };
+// @ts-expect-error Arrays are not one supported action element.
+const arrayPageActions: PageHeaderProps = { title: 'Projects', actions: [createElement(Button, { children: 'New' })] };
+// @ts-expect-error Text is not a supported action element.
+const textPageActions: PageHeaderProps = { title: 'Projects', actions: 'New' };
+// @ts-expect-error No arbitrary children slot.
+const pageChildren: PageHeaderProps = { title: 'Projects', children: 'Extra' };
+// @ts-expect-error No root ref API.
+const pageRef: PageHeaderProps = { title: 'Projects', ref: createRef<HTMLElement>() };
+// @ts-expect-error No root Slot API.
+const pageSlot: PageHeaderProps = { title: 'Projects', asChild: true };
+// @ts-expect-error No editorial register axis.
+const pageRegister: PageHeaderProps = { title: 'Projects', register: 'show' };
+// @ts-expect-error Generated heading content cannot be replaced with HTML.
+const pageHtml: PageHeaderProps = { title: 'Projects', dangerouslySetInnerHTML: { __html: 'Other' } };
 // Keep grouped samples outside App so the existing button-count/focus harness stays unchanged.
 const groupVariant: ButtonGroupVariant = 'attached';
 export const groupProps: ButtonGroupProps = {
@@ -2036,6 +2072,23 @@ function assertCountdownCSS(css) {
   assert.match(css, /min-width:\s*var\(--spacing-countdown-unit[,)]/);
 }
 
+function assertPageHeaderCSS(css) {
+  for (const selector of [
+    String.raw`.basis-\[calc\(var\(--space-24\)\*3\)\]`,
+    '.gap-x-6',
+    '.gap-y-4',
+    '.text-heading-small',
+    '.text-label-eyebrow',
+    '.wrap-anywhere'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing PageHeader utility ' + selector);
+  }
+  assert.match(css, /flex-basis:\s*calc\(var\(--space-24\)\s*\*\s*3\)/);
+  assert.match(css, /font-size:\s*var\(--text-heading-small[,)]/);
+  assert.match(css, /font-size:\s*var\(--text-label-eyebrow[,)]/);
+  assert.doesNotMatch(css, /\.eg-page-header\s*[,{]/);
+}
+
 // Static grouping utilities must ship even when the consumer has no Tailwind compiler.
 function assertButtonGroupCSS(css) {
   for (const selector of [
@@ -2404,6 +2457,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Label',
   'Link',
   'Logo',
+  'PageHeader',
   'Portal',
   'ProgressBar',
   'PullQuote',
@@ -2464,6 +2518,8 @@ ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertPullQuoteCSS.toString()}
+${assertPageHeaderCSS.toString()}
+assertPageHeaderCSS(shippedStyles);
 ${assertButtonGroupCSS.toString()}
 assertButtonGroupCSS(shippedStyles);
 ${assertCountdownCSS.toString()}
@@ -2552,7 +2608,32 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, ButtonGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, PageHeaderSamples, ButtonGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+const pageDocument = new JSDOM(renderToString(createElement(PageHeaderSamples)));
+try {
+  const doc = pageDocument.window.document;
+  const minimal = doc.getElementById('page-minimal');
+  assert.equal(minimal.tagName, 'HEADER');
+  assert.equal(minimal.children.length, 1);
+  assert.equal(minimal.querySelector('h1').textContent, 'Minimal');
+  assert.equal(minimal.hasAttribute('title'), false);
+  const single = doc.getElementById('page-single');
+  assert.equal(single.querySelector('h2').textContent, 'Projects');
+  assert.equal(single.querySelector('p').textContent, 'Workspace');
+  assert.equal(single.querySelector('[role="group"]'), null);
+  assert.equal(single.querySelector('a').getAttribute('href'), '#new');
+  const grouped = doc.getElementById('page-grouped');
+  assert.equal(grouped.querySelectorAll('[role="group"]').length, 1);
+  assert.equal(grouped.querySelectorAll('button').length, 2);
+  assert.equal(grouped.querySelector('button').disabled, true);
+  for (const root of doc.querySelectorAll('header')) {
+    assert.equal(root.hasAttribute('role'), false);
+    assert.equal(root.hasAttribute('tabindex'), false);
+    assert.equal(root.hasAttribute('aria-live'), false);
+  }
+} finally {
+  pageDocument.window.close();
+}
 const groupDocument = new JSDOM(renderToString(createElement(ButtonGroupSamples)));
 try {
   const group = groupDocument.window.document.getElementById('grouped-actions');
@@ -3496,7 +3577,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, ButtonGroupSamples, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, PageHeaderSamples, ButtonGroupSamples, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4108,6 +4189,23 @@ try {
   await act(async () => root.render(null));
   assert.equal(document.getElementById('totals'), null);
   stage('stat:passive:complete');
+  stage('page-header:start');
+  await act(async () => root.render(createElement(PageHeaderSamples)));
+  const pageSingle = document.getElementById('page-single');
+  const pageLink = pageSingle.querySelector('a');
+  await act(async () => pageLink.focus());
+  assert.ok(document.activeElement === pageLink);
+  await act(async () => root.render(createElement(PageHeaderSamples, { title: 'Updated projects' })));
+  assert.equal(pageSingle.querySelector('h2').textContent, 'Updated projects');
+  assert.ok(pageSingle.querySelector('a') === pageLink, 'Supplied action identity survives passive updates');
+  assert.ok(document.activeElement === pageLink, 'PageHeader never moves action focus');
+  assert.equal(pageSingle.querySelector('[role="group"]'), null);
+  assert.equal(pageSingle.hasAttribute('data-state'), false);
+  const pageGrouped = document.getElementById('page-grouped');
+  assert.equal(pageGrouped.querySelectorAll('[role="group"]').length, 1);
+  assert.equal(pageGrouped.querySelectorAll('button').length, 2);
+  await act(async () => root.render(null));
+  stage('page-header:complete');
   stage('button-group:start');
   await act(async () => root.render(createElement(ButtonGroupSamples)));
   const actionGroup = document.getElementById('grouped-actions');
@@ -4461,6 +4559,8 @@ assertProgressBarCSS(emitted);
 assertTextareaCSS(emitted);
 assertInputCSS(emitted);
 assertDropzoneCSS(emitted);
+${assertPageHeaderCSS.toString()}
+assertPageHeaderCSS(emitted);
 ${assertButtonGroupCSS.toString()}
 assertButtonGroupCSS(emitted);
 ${assertCountdownCSS.toString()}
@@ -4533,6 +4633,7 @@ assertTextareaCSS(twCss);
 assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
 assertButtonGroupCSS(twCss);
+assertPageHeaderCSS(twCss);
 assertCountdownCSS(twCss);
 assertStatCSS(twCss);
 assertSearchTriggerCSS(twCss);

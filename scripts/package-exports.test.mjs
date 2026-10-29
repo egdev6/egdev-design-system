@@ -367,6 +367,61 @@ test('UI ships the Stat Material card, figure recipes and highlight utilities wi
   assert.doesNotMatch(css, /\.eg-stat-(?:label|value|delta)\s*\{/, 'Stat part markers carry no stylesheet rules');
 });
 
+test('PageHeader ships compact typography and intrinsic layout without marker paint', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{`));
+  assert.match(
+    rule(String.raw`.basis-\[calc\(var\(--space-24\)\*3\)\]`),
+    /flex-basis:\s*calc\(var\(--space-24\)\s*\*\s*3\)/
+  );
+  assert.match(rule('.text-heading-small'), /font-size:\s*var\(--text-heading-small[,)]/);
+  assert.match(
+    rule('.text-heading-small'),
+    /font-weight:\s*var\(--tw-font-weight,\s*var\(--text-heading-small--font-weight[,)]/
+  );
+  assert.match(
+    rule('.text-label-eyebrow'),
+    /letter-spacing:\s*var\(--tw-tracking,\s*var\(--text-label-eyebrow--letter-spacing[,)]/
+  );
+  assert.match(rule('.gap-x-6'), /column-gap:\s*var\(--space-6[,)]/);
+  assert.match(rule('.gap-y-4'), /row-gap:\s*var\(--space-4[,)]/);
+  assert.match(rule('.wrap-anywhere'), /overflow-wrap:\s*anywhere/);
+  assert.doesNotMatch(utilities, /\.eg-page-header\s*[,{]/);
+  const { PageHeader, Button, ButtonGroup } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const minimal = renderToString(createElement(PageHeader, { title: 'Projects' }));
+  assert.match(minimal, /<header[^>]*eg-page-header/);
+  assert.match(minimal, /<h1[^>]*>Projects<\/h1>/);
+  assert.doesNotMatch(minimal, /title=|role=|tabindex=|aria-live=|<p\b|eg-button-group/);
+  const grouped = renderToString(
+    createElement(PageHeader, {
+      title: 'Projects',
+      eyebrow: 'Workspace',
+      level: 2,
+      actions: createElement(ButtonGroup, {
+        variant: 'spaced',
+        children: [
+          createElement(Button, { key: 'import', children: 'Import' }),
+          createElement(Button, { key: 'new', children: 'New project' })
+        ]
+      })
+    })
+  );
+  assert.match(grouped, /<p[^>]*>Workspace<\/p><h2[^>]*>Projects<\/h2>/);
+  assert.equal((grouped.match(/role="group"/g) ?? []).length, 1);
+  const single = renderToString(
+    createElement(PageHeader, {
+      title: 'Projects',
+      actions: createElement(Button, { asChild: true, children: createElement('a', { href: '#new' }, 'New project') })
+    })
+  );
+  assert.match(single, /<a[^>]*href="#new"/);
+  assert.doesNotMatch(single, /role="group"/);
+});
+
 test('ButtonGroup ships static spacing, wrapping, logical child corners and focus stacking', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -1708,6 +1763,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Label',
       'Link',
       'Logo',
+      'PageHeader',
       'Portal',
       'ProgressBar',
       'PullQuote',
@@ -1904,6 +1960,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LogoProps',
     'LogoSize',
     'LogoVariant',
+    'PageHeader',
+    'PageHeaderLevel',
+    'PageHeaderProps',
     'Portal',
     'PortalProps',
     'ProgressBar',
@@ -1990,6 +2049,14 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'usePageHeader',
+    'PageHeaderActions',
+    'PageHeaderNativeProps',
+    'pageHeaderVariants',
+    'pageHeaderTextVariants',
+    'pageHeaderHeadingVariants',
+    'pageHeaderEyebrowVariants',
+    'pageHeaderActionsVariants',
     'useButtonGroup',
     'buttonGroupVariants',
     'useSlider',
