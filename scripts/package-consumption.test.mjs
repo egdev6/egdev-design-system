@@ -28,9 +28,11 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
+import { Menu, menuVariants } from '@egdev/ui';
+import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorItem, MenuLabelItem, MenuSubmenuItem, MenuTone, MenuAlign, MenuSide } from '@egdev/ui';
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, GaugeDock, GaugeDockItem, GaugeDockSeparator, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Gauge, GaugeDock, GaugeDockItem, GaugeDockSeparator, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, NavList, Notice, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -38,12 +40,20 @@ import type {
   BadgeProps,
   BadgeTone,
   BadgeVariant,
+  ButtonGroupProps,
+  ButtonGroupVariant,
   ButtonProps,
   ButtonSize,
   ButtonVariant,
+  CarouselItem,
+  CarouselMessages,
+  CarouselProps,
   CheckboxCheckedState,
   CheckboxProps,
   ChipProps,
+  ChipGroupOption,
+  ChipGroupProps,
+  ChipGroupType,
   CountdownProps,
   CountdownSize,
   CountdownTone,
@@ -71,10 +81,29 @@ import type {
   LabelProps,
   LabelVariant,
   LinkProps,
+  ListItemProps,
+  ListItemPartProps,
+  ListItemStatus,
+  ListItemVariant,
   SliderProps,
   LogoProps,
   LogoSize,
   LogoVariant,
+  NavListCollapsibleGroup,
+  NavListEntry,
+  NavListGroupBase,
+  NavListLink,
+  NavListProps,
+  NavListSignal,
+  NavListStaticGroup,
+  NavListTag,
+  PopoverProps,
+  PopoverTriggerProps,
+  PopoverContentProps,
+  PopoverCloseProps,
+  MeterRowMessages,
+  MeterRowProps,
+  MeterRowVariant,
   ProgressBarProps,
   ProgressBarSize,
   ProgressBarVariant,
@@ -82,9 +111,25 @@ import type {
   RadioGroupOrientation,
   RadioGroupProps,
   SearchTriggerProps,
+  SocialLinkItem,
+  SocialLinksGap,
+  SocialLinksProps,
+  SocialLinksSize,
+  SocialLinksVariant,
+  SectionHeaderProps,
+  SectionHeaderVariant,
+  SectionHeaderLevel,
+  SectionHeaderTone,
+  NoticeProps,
+  NoticeTone,
   SelectProps,
   SelectOption,
   SelectSize,
+  SelectTileProps,
+  SelectTileOption,
+  SelectTileRatio,
+  SelectTileThumbnail,
+  SelectTileType,
   SkeletonProps,
   SkeletonSize,
   SkeletonVariant,
@@ -99,6 +144,9 @@ import type {
   StackProps,
   HeadingLevel,
   HeadingProps,
+  HoverCardProps,
+  HoverCardTriggerProps,
+  HoverCardContentProps,
   TextProps,
   TextTone,
   TextVariant,
@@ -111,14 +159,285 @@ import type {
   SurfaceRadius,
   SurfaceTone,
   SwitchProps,
+  TabsProps,
+  TabsItem,
+  TabsTone,
+  TabsVariant,
+  TabsSize,
   TextareaProps,
   TextareaVariant,
+  TimelineProps,
+  TimelineVariant,
+  TimelineSize,
+  TimelineTime,
+  TimelineEvent,
+  TimelineChatItem,
+  TimelineMessages,
   TooltipProps,
   PullQuoteProps,
   PullQuoteTone,
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+const timelineVariant: TimelineVariant = 'chat';
+const timelineSize: TimelineSize = 'sm';
+const timelineTime: TimelineTime = { text: '12:30', dateTime: '2026-10-29T12:30:00Z' };
+const timelineEvent: TimelineEvent = { id: 'release', time: timelineTime, category: 'Release', body: createElement('b', null, 'Published') };
+const timelineMessage: TimelineChatItem = { id: 'first', time: timelineTime, platform: { name: 'Community', icon: 'twitch' }, author: { name: 'Alex', avatar: {}, moderator: true }, message: '<b>!help</b>', command: true };
+const timelineMessages: Partial<TimelineMessages> = { command: 'Instruction' };
+export const timelineProps: TimelineProps = { variant: timelineVariant, size: timelineSize, label: 'Chat, oldest first', items: [timelineMessage], messages: timelineMessages };
+export function TimelineSamples({ appended = false, silent = false }: { appended?: boolean; silent?: boolean }) {
+  return createElement(Timeline, { ...timelineProps, variant: 'chat', 'aria-live': silent ? 'off' : 'polite', items: appended ? [timelineMessage, { ...timelineMessage, id: 'second', message: 'Next' }] : [timelineMessage] });
+}
+export function TimelineEvents() {
+  return createElement(Timeline, { label: 'Events', items: [timelineEvent] });
+}
+// @ts-expect-error Stable ids are required data, never generated from array positions.
+const unidentifiedEvent: TimelineEvent = { time: timelineTime, category: 'Release', body: 'Published' };
+// @ts-expect-error Both visible time and machine-readable datetime are required.
+const incompleteTime: TimelineTime = { text: '12:30' };
+// @ts-expect-error Chat messages are plain text, never arbitrary ReactNode content.
+const richChat: TimelineChatItem = { ...timelineMessage, message: createElement('b', null, 'Hello') };
+// @ts-expect-error A collection requires a non-empty accessible-name input.
+const unnamedTimeline: TimelineProps = { items: [] };
+// @ts-expect-error Items are required even for an empty collection.
+const missingTimelineItems: TimelineProps = { label: 'Events' };
+// @ts-expect-error Event anatomy rejects chat entries without the chat discriminant.
+const mixedTimeline: TimelineProps = { label: 'Events', items: [timelineMessage] };
+// @ts-expect-error Chat cannot receive event entries.
+const eventChat: TimelineProps = { variant: 'chat', label: 'Chat', items: [timelineEvent] };
+// @ts-expect-error Events are always live-off.
+const speakingEvents: TimelineProps = { label: 'Events', items: [], 'aria-live': 'polite' };
+// @ts-expect-error Assertive priority is unsupported in chat.
+const assertiveChat: TimelineProps = { variant: 'chat', label: 'Chat', items: [], 'aria-live': 'assertive' };
+// @ts-expect-error Native role is protected.
+const menuTimeline: TimelineProps = { label: 'Events', items: [], role: 'menu' };
+// @ts-expect-error Caller children cannot replace the collection.
+const childrenTimeline: TimelineProps = { label: 'Events', items: [], children: 'Other' };
+// @ts-expect-error No public viewport or root ref API.
+const refTimeline: TimelineProps = { label: 'Events', items: [], ref: createRef<HTMLDivElement>() };
+// @ts-expect-error No slotted composition API.
+const slottedTimeline: TimelineProps = { label: 'Events', items: [], asChild: true };
+// @ts-expect-error Viewport dimensions use the closed preset set.
+const numericTimeline: TimelineProps = { label: 'Events', items: [], size: 200 };
+const tileType: SelectTileType = 'single';
+const tileRatio: SelectTileRatio = 'portrait';
+const tileThumb: SelectTileThumbnail = { src: 'preview.png' };
+const tileOptions: SelectTileOption[] = [
+  { value: 'camera', label: 'Camera', meta: 'Two layers', live: true, badge: 'Live', thumb: tileThumb },
+  { value: 'slides', label: 'Slides' }
+];
+const singleTile: Extract<SelectTileProps, { type: 'single' }> = { type: tileType, label: 'Scenes', options: tileOptions, ratio: tileRatio, name: 'scene', required: true };
+const multipleTile: Extract<SelectTileProps, { type: 'multiple' }> = { type: 'multiple', label: 'Outputs', options: tileOptions, defaultValue: ['slides'] };
+export const tileRequests: (string | string[])[] = [];
+export function SelectTileSamples({ multiple = false, value }: { multiple?: boolean; value?: string }) {
+  if (multiple) {
+    const props: Extract<SelectTileProps, { type: 'multiple' }> = {
+      ...multipleTile, onValueChange: (next) => tileRequests.push(next)
+    };
+    return createElement(SelectTile, props);
+  }
+  const props: Extract<SelectTileProps, { type: 'single' }> = {
+    ...singleTile, value, onValueChange: (next) => tileRequests.push(next)
+  };
+  return createElement(SelectTile, props);
+}
+// @ts-expect-error Single values are scalar strings, never arrays.
+const tileSingleArray: SelectTileProps = { type: 'single', label: 'Scenes', options: [], value: [] };
+// @ts-expect-error Multiple groups do not submit native form fields.
+const tileMultipleName: SelectTileProps = { type: 'multiple', label: 'Scenes', options: [], name: 'scene' };
+// @ts-expect-error Multiple groups cannot require native form validity.
+const tileMultipleRequired: SelectTileProps = { type: 'multiple', label: 'Scenes', options: [], required: true };
+// @ts-expect-error Live choices require readable badge copy.
+const tileUndescribedLive: SelectTileOption = { value: 'camera', label: 'Camera', live: true };
+// @ts-expect-error Media proportions accept only the six approved presets.
+const tileNumericRatio: SelectTileProps = { ...singleTile, ratio: 1.5 };
+// @ts-expect-error SelectTile exposes no public ref API.
+const tileRef: SelectTileProps = { ...singleTile, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error There is no custom children renderer.
+const tileChildren: SelectTileProps = { ...singleTile, children: 'Custom tile' };
+// @ts-expect-error There is no asChild composition API.
+const tileAsChild: SelectTileProps = { ...singleTile, asChild: true };
+export const hoverCardRef = createRef<HTMLAnchorElement>();
+export const hoverCardSlotRef = createRef<HTMLAnchorElement>();
+export const hoverCardChanges: boolean[] = [];
+const previewContent: HoverCardContentProps = { children: 'Usage: 42%. Reset: tomorrow.', id: 'hover-preview' };
+const previewTrigger: HoverCardTriggerProps = { children: 'Usage preview', href: '#hover-details', id: 'hover-trigger' };
+export function HoverCardSamples({ open, defaultOpen = false, slotted = false }: { open?: boolean; defaultOpen?: boolean; slotted?: boolean }) {
+  const trigger = slotted
+    ? createElement(HoverCardTrigger, { key: 'trigger', asChild: true, ref: hoverCardSlotRef, children: createElement('a', { href: '#hover-details', id: 'hover-trigger' }, 'Usage preview') })
+    : createElement(HoverCardTrigger, { ...previewTrigger, key: 'trigger', ref: hoverCardRef });
+  const props: HoverCardProps = { open, defaultOpen, onOpenChange: (next) => hoverCardChanges.push(next),
+    children: [trigger, createElement(HoverCardContent, { ...previewContent, key: 'content' })] };
+  return createElement('section', null, createElement(HoverCard, props),
+    createElement('a', { href: '#hover-details', id: 'hover-persistent' }, 'Read all usage details'),
+    createElement('p', { id: 'hover-details' }, 'Usage: 42%. Reset: tomorrow.'));
+}
+// @ts-expect-error Default native anchor requires href.
+const missingHoverDestination: HoverCardTriggerProps = { children: 'Usage' };
+// @ts-expect-error A slotted trigger takes one element, never text.
+const hoverTextChild: HoverCardTriggerProps = { asChild: true, children: 'Usage' };
+// @ts-expect-error The child owns the destination when asChild is true.
+const hoverWrapperHref: HoverCardTriggerProps = { asChild: true, href: '#details', children: createElement('a', { href: '#details' }, 'Details') };
+// @ts-expect-error Root requires composition children.
+const missingHoverPair: HoverCardProps = { open: true };
+// @ts-expect-error Radix default delays are not public configuration.
+const hoverDelay: HoverCardProps = { children: null, openDelay: 0 };
+// @ts-expect-error Content cannot acquire dialog semantics.
+const hoverRole: HoverCardContentProps = { children: 'Usage', role: 'dialog' };
+// @ts-expect-error Content is not focusable.
+const hoverTabStop: HoverCardContentProps = { children: 'Usage', tabIndex: 0 };
+// @ts-expect-error No live preview announcements.
+const hoverLive: HoverCardContentProps = { children: 'Usage', 'aria-live': 'polite' };
+// @ts-expect-error Content must remain read-only.
+const hoverEditable: HoverCardContentProps = { children: 'Usage', contentEditable: true };
+// @ts-expect-error No raw HTML bypass for content.
+const hoverHtml: HoverCardContentProps = { children: 'Usage', dangerouslySetInnerHTML: { __html: 'Usage' } };
+// @ts-expect-error Content is internally portalled, not slotted by consumers.
+const hoverContentSlot: HoverCardContentProps = { children: 'Usage', asChild: true };
+// @ts-expect-error Presence is Radix-owned, without public forceMount.
+const hoverPresence: HoverCardContentProps = { children: 'Usage', forceMount: true };
+// @ts-expect-error Content has no public ref API.
+const hoverContentRef: HoverCardContentProps = { children: 'Usage', ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Positioning numbers are fixed internally.
+const hoverOffset: HoverCardContentProps = { children: 'Usage', sideOffset: 0 };
+// @ts-expect-error Placement accepts only four sides.
+const hoverBadSide: HoverCardContentProps = { children: 'Usage', side: 'up' };
+export const popoverTriggerRef = createRef<HTMLButtonElement>();
+export const popoverCloseRef = createRef<HTMLButtonElement>();
+const popoverTriggerProps: PopoverTriggerProps = {
+  asChild: true, children: createElement(Button, { children: 'Packed settings' }), id: 'popover-trigger'
+};
+const popoverCloseProps: PopoverCloseProps = {
+  asChild: true, children: createElement(IconButton, { label: 'Close packed settings', icon: createElement(Icon, { name: 'close' }) })
+};
+const popoverContentProps: PopoverContentProps = {
+  label: 'Packed settings', side: 'bottom', align: 'start', className: 'max-w-full',
+  children: [
+    createElement('input', { key: 'field', 'aria-label': 'Display name', defaultValue: 'Desk' }),
+    createElement(PopoverClose, { ...popoverCloseProps, key: 'close', ref: popoverCloseRef })
+  ]
+};
+export function PopoverSamples({ open, onOpenChange, modal = false }: Omit<PopoverProps, 'children'>) {
+  return createElement(Popover, { open, onOpenChange, modal, children: [
+    createElement(PopoverTrigger, { ...popoverTriggerProps, key: 'trigger', ref: popoverTriggerRef }),
+    createElement(PopoverContent, { ...popoverContentProps, key: 'content' })
+  ] });
+}
+// @ts-expect-error A1 reserves the Content id for Radix relationship integrity.
+const customPopoverId: PopoverContentProps = { label: 'Settings', children: 'Details', id: 'custom' };
+// @ts-expect-error Content requires its dialog name.
+const unnamedPopoverContent: PopoverContentProps = { children: 'Details' };
+// @ts-expect-error Content does not expose forceMount.
+const forcedPopoverContent: PopoverContentProps = { label: 'Settings', children: 'Details', forceMount: true };
+// @ts-expect-error Content does not expose an appearance style override.
+const styledPopoverContent: PopoverContentProps = { label: 'Settings', children: 'Details', style: { color: 'red' } };
+// @ts-expect-error Only Trigger and Close expose refs, not Content.
+const refPopoverContent = createElement(PopoverContent, { ...popoverContentProps, ref: createRef<HTMLDivElement>() });
+// @ts-expect-error A slotted Trigger requires an element, not text.
+const textPopoverTrigger: PopoverTriggerProps = { asChild: true, children: 'Settings' };
+// @ts-expect-error Native Trigger always uses type=button.
+const submitPopoverTrigger: PopoverTriggerProps = { children: 'Settings', type: 'submit' };
+// @ts-expect-error Close requires consumer-supplied named content.
+const emptyPopoverClose: PopoverCloseProps = {};
+export const menuSelections: string[] = [];
+export const menuRecipe: string = menuVariants();
+const menuTone: MenuTone = 'danger';
+const menuAlign: MenuAlign = 'end';
+const menuSide: MenuSide = 'bottom';
+const menuAction: MenuActionItem = { id: 'edit', label: 'Edit', icon: 'pencil', shortcut: '⌘E', onSelect: () => menuSelections.push('edit') };
+const menuLink: MenuLinkItem = { kind: 'link', id: 'docs', label: 'Documentation', href: '#menu-docs' };
+const menuSeparator: MenuSeparatorItem = { kind: 'separator', id: 'separator' };
+const menuLabel: MenuLabelItem = { kind: 'label', id: 'label', label: 'Actions' };
+const menuSubmenu: MenuSubmenuItem = { kind: 'submenu', id: 'more', label: 'More', items: [menuAction, menuLink] };
+export const menuEntries: MenuEntry[] = [menuLabel, menuAction, menuLink, menuSubmenu, menuSeparator, { id: 'delete', label: 'Delete', tone: menuTone }];
+export const menuProps: MenuProps = { children: createElement(Button, { children: 'Menu actions', id: 'menu-trigger' }), items: menuEntries, align: menuAlign, side: menuSide };
+export function MenuSample({ open }: { open?: boolean }) {
+  return createElement(Menu, { ...menuProps, open, onNavigate: (_entry, event) => event.preventDefault() });
+}
+// @ts-expect-error Link entries require href.
+const invalidMenuLink: MenuEntry = { kind: 'link', id: 'link', label: 'Missing destination' };
+// @ts-expect-error Nested submenus are outside v0.1.
+const invalidMenuDepth: MenuSubmenuItem = { kind: 'submenu', id: 'sub', label: 'Sub', items: [menuSubmenu] };
+// @ts-expect-error The old type discriminator is not an alias.
+const invalidMenuType: MenuEntry = { type: 'item', id: 'old', label: 'Old' };
+// @ts-expect-error Menu forwards no native props.
+const nativeMenu: MenuProps = { ...menuProps, id: 'unsupported' };
+// @ts-expect-error Menu has no public ref API.
+const refMenu: ComponentProps<typeof Menu> = { ...menuProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Menu requires one trigger element.
+const missingMenuTrigger: MenuProps = { items: [] };
+const itemStatus: Exclude<ListItemStatus, 'empty'> = 'off';
+const itemVariant: ListItemVariant = 'row';
+const itemPartProps: ListItemPartProps = { title: 'Item context' };
+export const itemChildRef = createRef<HTMLLIElement>();
+export const itemActivations: string[] = [];
+export function ListItemSamples({ status = itemStatus }: { status?: Exclude<ListItemStatus, 'empty'> }) {
+  return createElement('ul', null, createElement(ListItem, {
+    asChild: true, status, variant: itemVariant,
+    children: createElement('li', { ref: itemChildRef, id: 'consumer-item' },
+      createElement(ListItemBody, null,
+        createElement(ListItemContent, null, 'Release notes'),
+        createElement(ListItemMedia, null, createElement('img', { src: 'artwork.png', alt: 'Release artwork' }))),
+      createElement(ListItemMeta, itemPartProps, status),
+      createElement(ListItemActions, null, createElement(Button, {
+        onClick: () => itemActivations.push('show'), children: 'Show'
+      }))) }));
+}
+export const itemCard: ListItemProps = { children: createElement(ListItemFooter, null, 'Context') };
+export const emptyItem: ListItemProps = {
+  status: 'empty', asChild: true,
+  children: createElement('button', { type: 'button' }, 'Create item')
+};
+// @ts-expect-error Root children are required.
+const missingItemChildren: ListItemProps = {};
+// @ts-expect-error Empty requires Slot composition with a native action.
+const emptyContainer: ListItemProps = { status: 'empty', children: 'Create item' };
+// @ts-expect-error Empty supports card only.
+const compactEmpty: ListItemProps = { status: 'empty', variant: 'compact', asChild: true, children: createElement('button') };
+// @ts-expect-error Slot requires one element, not plain text.
+const textSlot: ListItemProps = { asChild: true, children: 'Item' };
+// @ts-expect-error Root exposes no ref; the Slot child may retain its own.
+const itemRef: ListItemProps = { children: 'Item', ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Parts expose no ref.
+const itemPartRef: ListItemPartProps = { ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Populated root is not an interactive role.
+const itemRole: ListItemProps = { children: 'Item', role: 'button' };
+// @ts-expect-error Populated root exposes no tab stop.
+const itemTab: ListItemProps = { children: 'Item', tabIndex: 0 };
+// @ts-expect-error Off is presentation, never disabled semantics.
+const itemDisabled: ListItemProps = { children: 'Item', 'aria-disabled': true };
+// @ts-expect-error Item has no domain create callback.
+const itemCreate: ListItemProps = { children: 'Item', onCreate: () => undefined };
+// @ts-expect-error The presentation status set is closed.
+const unknownItemStatus: ListItemProps = { children: 'Item', status: 'published' };
+// Keep grouped samples outside App so the existing button-count/focus harness stays unchanged.
+const groupVariant: ButtonGroupVariant = 'attached';
+export const groupProps: ButtonGroupProps = {
+  variant: groupVariant, label: 'Save options', className: 'ms-auto',
+  children: [createElement(Button, { key: 'save', size: 'sm', children: 'Save' }),
+    createElement(IconButton, { key: 'options', label: 'More save options', size: 'md', variant: 'primary',
+      icon: createElement(Icon, { name: 'chevron-down' }) })]
+};
+export function ButtonGroupSamples() {
+  return createElement(ButtonGroup, { ...groupProps, id: 'grouped-actions', 'aria-describedby': 'group-help' });
+}
+// @ts-expect-error A group requires its action children.
+const emptyGroup: ButtonGroupProps = {};
+// @ts-expect-error Group role is fixed, not an arrow-key toolbar.
+const toolbarGroup: ButtonGroupProps = { ...groupProps, role: 'toolbar' };
+// @ts-expect-error label owns aria-label; aria-labelledby remains available.
+const ariaNamedGroup: ButtonGroupProps = { ...groupProps, 'aria-label': 'Actions' };
+// @ts-expect-error No group ref is exported.
+const referencedGroup: ButtonGroupProps = { ...groupProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error The approved group axis is horizontal only.
+const verticalGroup: ButtonGroupProps = { ...groupProps, orientation: 'vertical' };
+// @ts-expect-error Children own sizing; no propagation API.
+const sizedGroup: ButtonGroupProps = { ...groupProps, size: 'sm' };
+// @ts-expect-error No root Slot composition API.
+const slottedGroup: ButtonGroupProps = { ...groupProps, asChild: true };
+// @ts-expect-error Only spaced and attached treatments are supported.
+const segmentedGroup: ButtonGroupProps = { ...groupProps, variant: 'segmented' };
 const buttonVariant: ButtonVariant = 'secondary';
 const buttonSize: ButtonSize = 'sm';
 export const buttonRef = createRef<HTMLButtonElement>();
@@ -394,6 +713,100 @@ const largeCountdown: CountdownProps = { ...countdownProps, size: 'lg' };
 const darkCountdown: CountdownProps = { ...countdownProps, tone: 'onDark' };
 // @ts-expect-error There is no tick callback.
 const tickingCountdown: CountdownProps = { ...countdownProps, onTick: () => undefined };
+// Carousel stays outside App to preserve the existing intrinsic focus harness.
+export const carouselChanges: string[] = [];
+const carouselItems: CarouselItem[] = [
+  { value: 'alpha', label: 'Alpha', children: createElement(Surface, null, 'First information') },
+  { value: 'beta', label: 'Beta', children: createElement(Surface, null, 'Second information') },
+  { value: 'gamma', label: 'Gamma', children: createElement(Surface, null, 'Third information') }
+];
+const carouselMessages: Partial<CarouselMessages> = { nextSlide: 'Next card' };
+const carouselProps: CarouselProps = { label: 'Highlights', items: carouselItems, messages: carouselMessages };
+export function CarouselSamples({ value, empty = false }: { value?: string; empty?: boolean }) {
+  return createElement(Carousel, { ...carouselProps, value, items: empty ? [] : carouselItems,
+    onValueChange: (next: string) => carouselChanges.push(next) });
+}
+// @ts-expect-error Carousel requires a visible collection label.
+const unlabelledCarousel: CarouselProps = { items: carouselItems };
+// @ts-expect-error Carousel accepts stable string identities, not indexes.
+const indexedCarousel: CarouselProps = { ...carouselProps, value: 1 };
+// @ts-expect-error Carousel has no autoplay API.
+const rotatingCarousel: CarouselProps = { ...carouselProps, autoplay: true };
+// @ts-expect-error Carousel owns root semantics.
+const selectedCarousel: CarouselProps = { ...carouselProps, role: 'tablist' };
+// @ts-expect-error Carousel has no public ref.
+const referencedCarousel: CarouselProps = { ...carouselProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Carousel slide entries require accessible names.
+const unnamedSlide: CarouselItem = { value: 'missing', children: 'Information' };
+// @ts-expect-error Carousel content is supplied through named items, not free root children.
+const childCarousel: CarouselProps = { ...carouselProps, children: 'Information' };
+// @ts-expect-error Internal helpers are not public composition APIs.
+import type { carouselVariants } from '@egdev/ui';
+const socialVariant: SocialLinksVariant = 'outline';
+const socialSize: SocialLinksSize = 'lg';
+const socialGap: SocialLinksGap = 2;
+export const socialItems: SocialLinkItem[] = [
+  { id: 'github', href: 'https://example.org/github', label: 'Project GitHub', icon: createElement(Icon, { name: 'github' }) },
+  { id: 'youtube', href: 'https://example.org/youtube', label: 'Project videos', icon: createElement(Icon, { name: 'youtube' }), external: true, rel: 'me NOOPENER me' }
+];
+export const socialProps: SocialLinksProps = { items: socialItems, variant: socialVariant, size: socialSize, gap: socialGap };
+export function SocialLinksSamples(props: Partial<SocialLinksProps> = {}) {
+  return createElement(SocialLinks, { ...socialProps, id: 'social-profiles', ...props });
+}
+// @ts-expect-error The collection requires explicit data, never fabricated profiles.
+const missingSocialItems: SocialLinksProps = {};
+// @ts-expect-error No root asChild composition is exposed.
+const slottedSocial: SocialLinksProps = { items: socialItems, asChild: true };
+// @ts-expect-error Free children cannot replace the generated collection.
+const socialChildren: SocialLinksProps = { items: socialItems, children: 'Profiles' };
+// @ts-expect-error The accessible list name is label, not a root aria-label.
+const socialAria: SocialLinksProps = { items: socialItems, 'aria-label': 'Profiles' };
+// @ts-expect-error Root roles are owned by the generated native composition.
+const socialRole: SocialLinksProps = { items: socialItems, role: 'navigation' };
+// @ts-expect-error Only md and lg atom presets are supported.
+const socialSmall: SocialLinksProps = { items: socialItems, size: 'sm' };
+// @ts-expect-error The list gap is a token key, limited to 1 or 2.
+const socialWideGap: SocialLinksProps = { items: socialItems, gap: 8 };
+// @ts-expect-error No public ref API is exposed.
+const socialRef = createElement(SocialLinks, { items: socialItems, ref: createRef<HTMLDivElement>() });
+// @ts-expect-error Each entry requires its own accessible destination label.
+const socialUnnamed: SocialLinkItem = { id: 'missing', href: 'https://example.org', icon: createElement(Icon, { name: 'github' }) };
+// @ts-expect-error Per-item external owns target; a raw target escape is not public.
+const socialRawTarget: SocialLinkItem = { ...socialItems[0], target: '_blank' };
+// @ts-expect-error Glyphs are decorative ReactElements, not network-name strings.
+const socialStringIcon: SocialLinkItem = { ...socialItems[0], icon: 'github' };
+// Notice stays outside App to preserve the existing generic focus/count harness.
+export const noticeTone: NoticeTone = 'warning';
+export const noticeRecipe: string = noticeVariants({ tone: noticeTone, size: 'sm' });
+export const noticeActivations: string[] = [];
+export function NoticeSamples({ summary = 'Queue ready.', tone = 'neutral', size = 'md', role, actions = false }: {
+  summary?: string; tone?: NoticeTone; size?: 'md' | 'sm'; role?: 'status' | 'alert'; actions?: boolean;
+}) {
+  const props: NoticeProps = {
+    summary, tone, size, role, id: 'queue-notice', className: 'mt-4', children: 'Review queue details.',
+    actions: actions ? createElement(Button, {
+      size: 'sm', variant: 'secondary', onClick: () => noticeActivations.push('resume'), children: 'Resume'
+    }) : undefined
+  };
+  return createElement(Notice, props);
+}
+// @ts-expect-error Notice requires a lead sentence.
+const missingNoticeSummary: NoticeProps = {};
+// @ts-expect-error The lead sentence is a string, not arbitrary React content.
+const richNoticeSummary: NoticeProps = { summary: createElement('strong', null, 'Ready') };
+// @ts-expect-error Brand is not a status family.
+const brandNotice: NoticeProps = { summary: 'Ready.', tone: 'brand' };
+// @ts-expect-error Only md and sm presets exist.
+const largeNotice: NoticeProps = { summary: 'Ready.', size: 'lg' };
+// @ts-expect-error Native role is restricted to status or alert.
+const dialogNotice: NoticeProps = { summary: 'Ready.', role: 'dialog' };
+// @ts-expect-error Notice has no public ref API.
+const refNotice: NoticeProps = { summary: 'Ready.', ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Notice owns the root and does not expose asChild.
+const slottedNotice: NoticeProps = { summary: 'Ready.', asChild: true };
+// @ts-expect-error Persistent Notice has no dismiss callback.
+const dismissibleNotice: NoticeProps = { summary: 'Ready.', onDismiss: () => undefined };
+
 // SearchTrigger stays outside App so the intrinsic button count and focus harness remain unchanged.
 export const searchTriggerRef = createRef<HTMLButtonElement>();
 export const searchTriggerRefTarget: ComponentRef<typeof SearchTrigger> | null = searchTriggerRef.current;
@@ -430,6 +843,164 @@ const openSearch: SearchTriggerProps = { open: true };
 const stringCompact: SearchTriggerProps = { compact: 'yes' };
 // @ts-expect-error shortcut is display text only.
 const numericShortcut: SearchTriggerProps = { shortcut: 75 };
+
+// Navigation samples stay outside App so its existing button/focus inventories remain unchanged.
+const navTag: NavListTag = { children: 'New', tone: 'brand' };
+const navSignal: NavListSignal = { state: 'live', text: 'Voting live' };
+const navHome: NavListLink = { id: 'home', label: 'Home', href: '#home', 'aria-current': 'page', count: 0, tag: navTag };
+const navBase: NavListGroupBase = { id: 'tools', label: 'Tools', items: [navHome] };
+const navStatic: NavListStaticGroup = { ...navBase, kind: 'group', items: [] };
+export const navRequests: boolean[] = [];
+export const navNavigations: string[] = [];
+const navDisclosure: NavListCollapsibleGroup = {
+  id: 'content', kind: 'collapsible-group', label: 'Content', count: 4, signal: navSignal,
+  onOpenChange: (next) => navRequests.push(next),
+  items: [{ id: 'drafts', label: 'Drafts', href: '#drafts', warning: 'Needs attention' }]
+};
+const navEntries: NavListEntry[] = [navHome, navStatic, navDisclosure];
+export const navProps: NavListProps = {
+  label: 'Workspace', items: navEntries, id: 'consumer-nav',
+  onNavigate: (item, event) => { event.preventDefault(); navNavigations.push(item.id); }
+};
+export const navRecipe: string = navListVariants();
+export function NavListSamples({ open = false }: { open?: boolean } = {}) {
+  return createElement(NavList, { ...navProps, items: [navHome, navStatic, { ...navDisclosure, open }] });
+}
+// @ts-expect-error NavList requires a landmark name.
+const unnamedNav: NavListProps = { items: [] };
+// @ts-expect-error NavList owns its data-rendered children.
+const navChildren: NavListProps = { label: 'Workspace', items: [], children: 'Wrong' };
+// @ts-expect-error NavList cannot be changed into a menu.
+const navRole: NavListProps = { label: 'Workspace', items: [], role: 'menu' };
+// @ts-expect-error Groups contain links only, never nested groups.
+const nestedNav: NavListStaticGroup = { ...navStatic, items: [navStatic] };
+// @ts-expect-error The approved discriminant is kind, not the historical type field.
+const legacyNavKind: NavListLink = { ...navHome, type: 'link' };
+// @ts-expect-error No disabled destination policy is exposed.
+const disabledNavLink: NavListLink = { ...navHome, disabled: true };
+// @ts-expect-error Signals use only StatusDot's live and standby states.
+const invalidNavSignal: NavListSignal = { state: 'running', text: 'Running' };
+// @ts-expect-error Navigation tags expose only neutral and brand tones.
+const invalidNavTag: NavListTag = { children: 'New', tone: 'danger' };
+// @ts-expect-error NavList exposes no ref API.
+const navRef: ComponentProps<typeof NavList> = { ...navProps, ref: createRef<HTMLElement>() };
+// @ts-expect-error NavList exposes no asChild API.
+const slottedNav: NavListProps = { ...navProps, asChild: true };
+// SectionHeader stays outside App so the intrinsic focus harness remains unchanged.
+const sectionVariant: SectionHeaderVariant = 'split';
+const sectionLevel: SectionHeaderLevel = 3;
+const sectionTone: SectionHeaderTone = 'raised';
+export const sectionHeaderProps: SectionHeaderProps = {
+  title: 'Build ', accent: 'together.', eyebrow: 'Our work', lede: 'Thoughtful tools.',
+  titleId: 'consumer-section-title', id: 'consumer-section-header', className: 'mt-6'
+};
+export function SectionHeaderSamples({ variant = sectionVariant, optional = true }: { variant?: SectionHeaderVariant; optional?: boolean }) {
+  return createElement(SectionHeader, {
+    ...sectionHeaderProps, variant, level: sectionLevel, tone: sectionTone,
+    eyebrow: optional ? sectionHeaderProps.eyebrow : undefined,
+    lede: optional ? sectionHeaderProps.lede : undefined
+  });
+}
+// @ts-expect-error Visible title is required.
+const missingSectionTitle: SectionHeaderProps = {};
+// @ts-expect-error Content is owned, not arbitrary children.
+const childSection: SectionHeaderProps = { title: 'Build', children: 'Injected' };
+// @ts-expect-error No HTML injection API.
+const injectedSection: SectionHeaderProps = { title: 'Build', dangerouslySetInnerHTML: { __html: '<em>x</em>' } };
+// @ts-expect-error No public ref API on either React major.
+const referencedSection: SectionHeaderProps = { title: 'Build', ref: createRef<HTMLElement>() };
+// @ts-expect-error No asChild composition API.
+const composedSection: SectionHeaderProps = { title: 'Build', asChild: true };
+// @ts-expect-error The source layout alias is not public.
+const layoutSection: SectionHeaderProps = { title: 'Build', layout: 'split' };
+// @ts-expect-error Actions belong in PageHeader, not this editorial molecule.
+const actionSection: SectionHeaderProps = { title: 'Build', actions: 'Go' };
+// @ts-expect-error Only stack, split and inline are supported.
+const heroSection: SectionHeaderProps = { title: 'Build', variant: 'hero' };
+// @ts-expect-error Heading ranks stop at six.
+const seventhSection: SectionHeaderProps = { title: 'Build', level: 7 };
+// @ts-expect-error The raised/canvas host context has no flood treatment.
+const floodSection: SectionHeaderProps = { title: 'Build', tone: 'flood' };
+// @ts-expect-error titleId is plain text.
+const numericSectionId: SectionHeaderProps = { title: 'Build', titleId: 1 };
+// Task-progress samples stay outside App to preserve the existing focus harness.
+const meterRowVariant: MeterRowVariant = 'muted';
+const meterRowMessages: MeterRowMessages = { indeterminate: 'Preparing import' };
+const meterRowProps: MeterRowProps = { label: 'Import files', value: 60, variant: meterRowVariant, help: 'Keep this tab open', messages: meterRowMessages, id: 'consumer-meter-row' };
+export function MeterRowSamples({ value = 60, help = 'Keep this tab open' }: { value?: number; help?: string }) {
+  return createElement(MeterRow, { ...meterRowProps, value, help });
+}
+// @ts-expect-error The task name is required.
+const unlabelledMeterRow: MeterRowProps = { value: 60 };
+// @ts-expect-error Completion percent is required.
+const valuelessMeterRow: MeterRowProps = { label: 'Import files' };
+// @ts-expect-error Row content is generated, never caller children.
+const childMeterRow: MeterRowProps = { ...meterRowProps, children: 'Progress' };
+// @ts-expect-error Sole progress semantics belong to the composed atom.
+const roleMeterRow: MeterRowProps = { ...meterRowProps, role: 'meter' };
+// @ts-expect-error There is no row ref API on either React major.
+const refMeterRow: MeterRowProps = { ...meterRowProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error No asChild composition API.
+const slottedMeterRow: MeterRowProps = { ...meterRowProps, asChild: true };
+// @ts-expect-error The bar size is fixed at lg.
+const sizedMeterRow: MeterRowProps = { ...meterRowProps, size: 'sm' };
+// @ts-expect-error Edge placement belongs to the sm atom, not this row.
+const edgeMeterRow: MeterRowProps = { ...meterRowProps, edge: true };
+// @ts-expect-error The indicator owns descriptions internally.
+const describedMeterRow: MeterRowProps = { ...meterRowProps, 'aria-describedby': 'other' };
+// @ts-expect-error No automatic live-announcement API.
+const liveMeterRow: MeterRowProps = { ...meterRowProps, 'aria-live': 'polite' };
+// @ts-expect-error No focus stop is exposed.
+const focusableMeterRow: MeterRowProps = { ...meterRowProps, tabIndex: 0 };
+// @ts-expect-error Help is persistent plain text, not rich content.
+const richMeterRow: MeterRowProps = { ...meterRowProps, help: createElement('a', null, 'Help') };
+// @ts-expect-error No arbitrary measurement bounds API.
+const boundedMeterRow: MeterRowProps = { ...meterRowProps, min: 20 };
+// @ts-expect-error No completion event API.
+const eventMeterRow: MeterRowProps = { ...meterRowProps, onValueChange: () => undefined };
+// Tabs is a separate scene: earlier App control/focus counts must remain unchanged.
+const tabsTone: TabsTone = 'danger';
+const tabsSize: TabsSize = 'sm';
+const tabsVariant: TabsVariant = 'segmented';
+export const tabsItems: TabsItem[] = [
+  { value: 'queue', label: 'Queue', count: 0, content: createElement('p', null, 'Queued posts') },
+  { value: 'drafts', label: 'Drafts', count: 312, tone: tabsTone, content: createElement('p', null, 'Draft posts') },
+  { value: 'blocked', label: 'Unavailable', disabled: true, content: 'Unavailable posts' }
+];
+export const tabsProps: TabsProps = { items: tabsItems, label: 'Post views', id: 'consumer-tabs', className: 'mt-2 mt-4' };
+export const tabsChanges: string[] = [];
+export const tabsRecipe: string = tabsVariants();
+export function TabsSamples({ value, segmented = false }: { value?: string; segmented?: boolean }) {
+  return createElement(Tabs, { ...tabsProps, value, ...(segmented ? { variant: tabsVariant, size: tabsSize } : {}), onValueChange: (next) => tabsChanges.push(next) });
+}
+// @ts-expect-error A named tablist is required.
+const unlabelledTabs: TabsProps = { items: tabsItems };
+// @ts-expect-error Views must be supplied through items.
+const missingTabsItems: TabsProps = { label: 'Views' };
+// @ts-expect-error Every item needs its panel content, even when it is null.
+const panellessTab: TabsItem = { value: 'queue', label: 'Queue' };
+// @ts-expect-error Item identities are strings, not indices.
+const numericTab: TabsItem = { value: 1, label: 'Queue', content: null };
+// @ts-expect-error No public ref API on either React major.
+const referencedTabs: TabsProps = { ...tabsProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error The data-driven component owns its children.
+const childTabs: TabsProps = { ...tabsProps, children: 'Panel' };
+// @ts-expect-error Horizontal-only; no public orientation axis.
+const verticalTabs: TabsProps = { ...tabsProps, orientation: 'vertical' };
+// @ts-expect-error Automatic activation is fixed.
+const manualTabs: TabsProps = { ...tabsProps, activationMode: 'manual' };
+// @ts-expect-error No asChild API.
+const slottedTabs: TabsProps = { ...tabsProps, asChild: true };
+// @ts-expect-error onChange is replaced by onValueChange.
+const legacyTabsChange: TabsProps = { ...tabsProps, onChange: () => undefined };
+// @ts-expect-error No direction prop in v0.1.
+const directedTabs: TabsProps = { ...tabsProps, dir: 'rtl' };
+// @ts-expect-error Counts are raw numbers, not formatted strings.
+const formattedTab: TabsItem = { value: 'queue', label: 'Queue', content: null, count: '99+' };
+// @ts-expect-error Only underline/segmented treatments exist.
+const pillTabs: TabsProps = { ...tabsProps, variant: 'pill' };
+// @ts-expect-error Only md/sm underline sizes exist.
+const largeTabs: TabsProps = { ...tabsProps, size: 'lg' };
 
 // Stat stays outside App: it is passive, adds no buttons and leaves the focus harness unchanged.
 export const statRecipe: string = statVariants({ size: 'sm' });
@@ -888,6 +1459,50 @@ const overriddenToggle: ToggleProps = { children: 'Pin', 'aria-pressed': 'mixed'
 const numericToggle: ToggleProps = { children: 'Pin', size: 40 };
 // @ts-expect-error Toggle does not expose private CVA recipes.
 import type { toggleVariants } from '@egdev/ui';
+const chipGroupType: ChipGroupType = 'single';
+const chipGroupOptions: ChipGroupOption[] = [
+  { value: 'react', label: 'React', icon: '→' },
+  { value: 'css', label: 'CSS' },
+  { value: 'locked', label: 'Locked', disabled: true }
+];
+export const chipGroupSingleChanges: string[] = [];
+export const chipGroupMultipleChanges: string[][] = [];
+const chipGroupSingle: Extract<ChipGroupProps, { type: 'single' }> = { type: chipGroupType, label: 'Topic', options: chipGroupOptions, defaultValue: 'react' };
+const chipGroupMultiple: Extract<ChipGroupProps, { type: 'multiple' }> = { type: 'multiple', label: 'Topics', options: chipGroupOptions, defaultValue: ['react'] };
+// Separate mount avoids changing the existing App's focus and button-count harness.
+export function ChipGroupSamples() {
+  return createElement('form', { id: 'chip-group-form' },
+    createElement(ChipGroup, { ...chipGroupSingle, id: 'chip-group-single', onValueChange: (next: string) => chipGroupSingleChanges.push(next) }),
+    createElement(ChipGroup, { ...chipGroupMultiple, id: 'chip-group-multiple', onValueChange: (next: string[]) => chipGroupMultipleChanges.push(next) }));
+}
+// @ts-expect-error A mode discriminator is required.
+const missingChipGroupType: ChipGroupProps = { label: 'Topics', options: [] };
+// @ts-expect-error A group requires its accessible name.
+const missingChipGroupLabel: ChipGroupProps = { type: 'single', options: [] };
+// @ts-expect-error Choices are required, though they may be empty.
+const missingChipGroupOptions: ChipGroupProps = { type: 'single', label: 'Topics' };
+// @ts-expect-error Single values are strings, not arrays.
+const arraySingleChipGroup: ChipGroupProps = { type: 'single', label: 'Topics', options: [], value: [] };
+// @ts-expect-error Multiple defaults are arrays, not strings.
+const stringMultipleChipGroup: ChipGroupProps = { type: 'multiple', label: 'Topics', options: [], defaultValue: 'react' };
+// @ts-expect-error Callback payload must match the chosen mode.
+const wrongChipGroupCallback: ChipGroupProps = { type: 'multiple', label: 'Topics', options: [], onValueChange: (next: string) => console.log(next) };
+// @ts-expect-error ChipGroup has no form name API.
+const namedChipGroup: ChipGroupProps = { ...chipGroupSingle, name: 'topics' };
+// @ts-expect-error ChipGroup is not a mandatory form choice.
+const requiredChipGroup: ChipGroupProps = { ...chipGroupSingle, required: true };
+// @ts-expect-error No ref API is exposed.
+const referencedChipGroup: ChipGroupProps = { ...chipGroupSingle, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error No asChild composition is exposed.
+const slottedChipGroup: ChipGroupProps = { ...chipGroupSingle, asChild: true };
+// @ts-expect-error Standard option anatomy owns children.
+const childChipGroup: ChipGroupProps = { ...chipGroupSingle, children: 'Injected' };
+// @ts-expect-error Group owns its role and naming.
+const roleChipGroup: ChipGroupProps = { ...chipGroupSingle, role: 'radiogroup' };
+// @ts-expect-error Horizontal wrapping is fixed, not a public axis.
+const verticalChipGroup: ChipGroupProps = { ...chipGroupSingle, orientation: 'vertical' };
+// @ts-expect-error Group recipes stay internal.
+import type { chipGroupVariants } from '@egdev/ui';
 export const chipChanges: boolean[] = [];
 export const chipDefaults: ChipProps = { children: 'Design' };
 export const chipRecipe: string = chipVariants();
@@ -1314,6 +1929,21 @@ function assertToggleCSS(css) {
 
 // Chip ships its sheen/edge pill, red-tinted on state, focus and reduced-motion press resets.
 function assertChipCSS(css) {
+  // ChipGroup shares this recipe and adds only wrapping layout and a token underline.
+  for (const selector of [
+    '.flex-wrap',
+    '.gap-2',
+    String.raw`.data-\[state\=on\]\:underline`,
+    String.raw`.decoration-\[length\:var\(--border-width\)\]`,
+    String.raw`.underline-offset-\[var\(--space-1\)\]`,
+    String.raw`.disabled\:cursor-not-allowed`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing ChipGroup selector ' + selector);
+  }
+  assert.match(css, /text-decoration-thickness:\s*var\(--border-width\)/);
+  assert.match(css, /text-underline-offset:\s*var\(--space-1\)/);
+  assert.doesNotMatch(css, /\.eg-chip-group[^{]*\{/);
   for (const selector of [
     String.raw`.\[background\:var\(--gradient-sheen\)\,var\(--color-surface-1\)\]`,
     String.raw`.hover\:\[background\:var\(--gradient-sheen\)\,var\(--color-surface-2\)\]`,
@@ -1445,6 +2075,22 @@ function assertSelectCSS(css) {
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.ok(css.includes(String.raw`.motion-reduce\:transition-none`));
   assert.doesNotMatch(css, /\.eg-select(?:-content)?\s*\{/, 'Select has no stylesheet');
+}
+
+function assertPopoverCSS(css) {
+  for (const selector of [
+    String.raw`.w-\[calc\(var\(--space-24\)\*4\)\]`,
+    String.raw`.max-w-\[var\(--radix-popover-content-available-width\)\]`,
+    String.raw`.max-h-\[var\(--radix-popover-content-available-height\)\]`,
+    String.raw`.data-\[state\=open\]\:starting\:opacity-0`,
+    String.raw`.pointer-coarse\:min-h-\[var\(--space-12\)\]`,
+    String.raw`.focus-visible\:outline-focus-ring`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Popover utility ' + selector);
+  }
+  assert.match(css, /outline-color:\s*var\(--color-focus-ring[,)]/);
+  assert.match(css, /max-height:\s*var\(--radix-popover-content-available-height\)/);
+  assert.doesNotMatch(css, /\.eg-popover\s*[,{]/, 'Popover has no authored stylesheet');
 }
 
 function assertSurfaceCSS(css) {
@@ -2048,6 +2694,118 @@ function assertCountdownCSS(css) {
   assert.match(css, /min-width:\s*var\(--spacing-countdown-unit[,)]/);
 }
 
+// Timeline ships static CVA geometry and states without a consumer Tailwind compiler.
+function assertTimelineCSS(css) {
+  for (const multiplier of [2, 3, 4]) {
+    assert.match(css, new RegExp(String.raw`max-height:\s*calc\(var\(--space-24\)\s*\*\s*${multiplier}\)`));
+  }
+  assert.match(css, /outline-color:\s*var\(--color-focus-ring[,)]/);
+  assert.match(css, /overflow-wrap:\s*anywhere/);
+  assert.ok(css.includes(String.raw`.data-\[state\=highlighted\]\:bg-bg-brand-subtle`));
+  assert.ok(css.includes(String.raw`.not-data-\[state\=highlighted\]\:data-\[kind\=command\]\:bg-fg-default\/3`));
+}
+
+// SocialLinks adds only static list resets/typography; atoms and layouts retain their recipes.
+function assertSocialLinksCSS(css) {
+  for (const selector of [
+    '.list-none',
+    '.shrink-0',
+    '.text-label-eyebrow',
+    '.font-display',
+    '.text-fg-secondary',
+    '.flex-wrap'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing SocialLinks utility ' + selector);
+  }
+  assert.match(css, /font-size:\s*var\(--text-label-eyebrow[,)]/);
+  assert.match(css, /letter-spacing:\s*(?:var\(--tw-tracking,\s*)?var\(--text-label-eyebrow--letter-spacing[,)]/);
+  for (const gap of [1, 2, 3, 4]) {
+    assert.ok(css.includes('.gap-' + gap));
+    assert.ok(css.includes('var(--space-' + gap + ')'));
+  }
+}
+
+// SectionHeader ships only local arrangement; Heading, Text and Divider own their recipes.
+function assertSectionHeaderCSS(css) {
+  for (const name of [
+    'grid-cols-[minmax(0,auto)_minmax(0,1fr)]',
+    'section-header-split:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)]',
+    'section-header-split:justify-self-end',
+    'data-[orientation=horizontal]:min-w-0',
+    'max-w-[var(--bp-sm)]',
+    'gap-y-6',
+    'gap-x-12',
+    'col-span-full',
+    'text-body-muted'
+  ]) {
+    assert.ok(css.includes('.' + name.replace(/[^\w-]/g, '\\$&')), 'Missing SectionHeader utility ' + name);
+  }
+  assert.match(css, /@media\s*\(width >= 860px\)/);
+  assert.match(css, /grid-template-columns:\s*minmax\(0,\s*1fr\)\s+minmax\(0,\s*0\.8fr\)/);
+  assert.match(css, /font-size:\s*var\(--text-body-muted[,)]/);
+  assert.match(css, /max-width:\s*var\(--bp-sm\)/);
+}
+
+// Menu owns geometry and entry treatments, while the shared Surface recipe supplies Material.
+function assertMenuCSS(css) {
+  for (const selector of [
+    String.raw`.min-w-57\.5`,
+    String.raw`.py-2\.25`,
+    String.raw`.max-h-\[var\(--radix-dropdown-menu-content-available-height\)\]`,
+    String.raw`.data-highlighted\:bg-status-danger\/10`,
+    String.raw`.group-data-highlighted\:text-fg-brand-default`,
+    String.raw`.focus-visible\:inset-ring-focus-ring-inverse`,
+    String.raw`.starting\:opacity-0`,
+    String.raw`.motion-safe\:starting\:-translate-y-1\.5`,
+    String.raw`.transition-\[opacity\,translate\]`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Menu utility ' + selector);
+  }
+  assert.match(css, /var\(--radix-dropdown-menu-content-available-height\)/);
+  assert.match(css, /var\(--color-surface-overlay\)/);
+  assert.match(css, /prefers-reduced-transparency:\s*reduce/);
+  assert.match(css, /@starting-style/);
+}
+
+// Notice's molecule source must be scanned for native and Tailwind consumers alike.
+function assertNoticeCSS(css) {
+  for (const color of ['fg-secondary', 'status-info', 'status-success', 'status-warning', 'status-danger']) {
+    for (const [prefix, opacity] of [
+      ['border', 30],
+      ['from', 11],
+      ['to', 4]
+    ]) {
+      assert.ok(css.includes(`.${prefix}-${color}\\/${opacity}`), `Missing Notice ${prefix}-${color}/${opacity}`);
+    }
+  }
+  assert.ok(css.includes('.bg-linear-to-b'));
+  assert.ok(css.includes(String.raw`.basis-\[calc\(var\(--space-24\)\*2\.5\)\]`));
+  assert.match(css, /flex-wrap:\s*wrap/);
+  assert.match(css, /font-size:\s*var\(--text-body-default[,)]/);
+  assert.match(css, /font-size:\s*var\(--text-label-default[,)]/);
+}
+
+// Static grouping utilities must ship even when the consumer has no Tailwind compiler.
+function assertButtonGroupCSS(css) {
+  for (const selector of [
+    '.inline-flex',
+    '.flex-wrap',
+    '.flex-nowrap',
+    '.items-stretch',
+    '.gap-3',
+    String.raw`.gap-0\.5`,
+    String.raw`.\*\:not-first\:rounded-s-sm`,
+    String.raw`.\*\:not-last\:rounded-e-sm`,
+    String.raw`.\*\:focus-visible\:relative`,
+    String.raw`.\*\:focus-visible\:z-10`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing ButtonGroup utility ' + selector);
+  }
+  assert.match(css, /border-start-start-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.match(css, /border-end-end-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.doesNotMatch(css, /\.eg-button-group\s*[,{]/);
+}
+
 // SearchTrigger utilities ship token geometry, coarse targets and native-state colors without preflight.
 function assertSearchTriggerCSS(css) {
   for (const selector of [
@@ -2079,6 +2837,27 @@ function assertSearchTriggerCSS(css) {
   assert.match(css, /font-weight:\s*var\(--text-body-default--font-weight\)/);
 }
 
+// Tabs molecule utilities must reach both native and Tailwind consumers.
+function assertTabsCSS(css) {
+  for (const selector of [
+    String.raw`.p-0\.75`,
+    String.raw`.min-h-8\.5`,
+    String.raw`.rounded-\[calc\(var\(--radius-md\)---spacing\(0\.75\)\)\]`,
+    String.raw`.\[scrollbar-width\:none\]`,
+    String.raw`.data-\[state\=active\]\:after\:shadow-glow-base`,
+    String.raw`.data-\[state\=active\]\:focus-visible\:shadow-focus`,
+    String.raw`.focus-visible\:inset-ring-focus-ring`,
+    String.raw`.motion-reduce\:after\:transition-none`,
+    String.raw`.bg-status-danger\/14`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Tabs utility ' + selector);
+  }
+  assert.match(css, /padding:\s*calc\(var\(--space-1\)\s*\*\s*0\.75\)/);
+  assert.match(css, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*8\.5\)/);
+  assert.match(css, /border-radius:\s*calc\(var\(--radius-md\)\s*-\s*[^;]+\)/);
+  assert.match(css, /scrollbar-width:\s*none/);
+}
+
 // PullQuote quote recipes, logical filet and measure ship without preflight or a stylesheet.
 function assertPullQuoteCSS(css) {
   for (const selector of [
@@ -2100,6 +2879,22 @@ function assertPullQuoteCSS(css) {
   assert.match(css, /font-size:\s*var\(--text-quote-display/);
   assert.match(css, /border-inline-start-width:\s*calc\(var\(--border-width\)\s*\*\s*2\)/);
   assert.match(css, /padding-inline-start:\s*calc\(var\(--space-1\)\s*\*\s*4\.5\)/);
+}
+
+// The row ships its own reflow/help utilities; ProgressBar retains its separate CSS assertions.
+function assertMeterRowCSS(css) {
+  for (const selector of [
+    '.gap-x-3',
+    '.gap-y-1',
+    '.text-label-default',
+    String.raw`.\[overflow-wrap\:anywhere\]`,
+    String.raw`.leading-\[var\(--text-body-default--line-height\)\]`,
+    String.raw`.font-\[var\(--text-body-muted--font-weight\)\]`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing MeterRow utility ' + selector);
+  }
+  assert.match(css, /line-height:\s*var\(--text-body-default--line-height[,)]/);
+  assert.match(css, /font-weight:\s*var\(--text-body-muted--font-weight[,)]/);
 }
 
 // Stat ships its Material card, figure recipes and highlight utilities; part markers carry no rules.
@@ -2372,15 +3167,24 @@ for (const utility of ['.text-title-section', '.text-title-hero', '.text-title-s
 assert.doesNotMatch(shippedStyles, /\\.eg-(?:text|heading)\\s*[,{]/, 'Text/Heading markers must not become shipped CSS rules');
 ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(shippedStyles);
+${assertPopoverCSS.toString()}
+assertPopoverCSS(shippedStyles);
 ${assertLinkCSS.toString()}
 assertLinkCSS(shippedStyles);
+${assertNavListCSS.toString()}
+assertNavListCSS(shippedStyles);
+${assertHoverCardCSS.toString()}
+assertHoverCardCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AspectRatio',
   'Avatar',
   'Badge',
   'Button',
+  'ButtonGroup',
+  'Carousel',
   'Checkbox',
   'Chip',
+  'ChipGroup',
   'Cluster',
   'Countdown',
   'Divider',
@@ -2390,31 +3194,54 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'GaugeDockItem',
   'GaugeDockSeparator',
   'Heading',
+  'HoverCard',
+  'HoverCardContent',
+  'HoverCardTrigger',
   'Icon',
   'IconButton',
   'Input',
   'Kbd',
   'Label',
   'Link',
+  'ListItem',
+  'ListItemActions',
+  'ListItemBody',
+  'ListItemContent',
+  'ListItemFooter',
+  'ListItemMedia',
+  'ListItemMeta',
   'Logo',
+  'Menu',
+  'MeterRow',
+  'NavList',
+  'Notice',
+  'Popover',
+  'PopoverClose',
+  'PopoverContent',
+  'PopoverTrigger',
   'Portal',
   'ProgressBar',
   'PullQuote',
   'RadioGroup',
   'SearchTrigger',
+  'SectionHeader',
   'Select',
+  'SelectTile',
   'Skeleton',
   'Slider',
   'Slot',
   'Slottable',
+  'SocialLinks',
   'Spinner',
   'Stack',
   'Stat',
   'StatusDot',
   'Surface',
   'Switch',
+  'Tabs',
   'Text',
   'Textarea',
+  'Timeline',
   'Toggle',
   'Tooltip',
   'VisuallyHidden',
@@ -2423,12 +3250,16 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'cn',
   'dropzoneVariants',
   'labelVariants',
+  'menuVariants',
+  'navListVariants',
+  'noticeVariants',
   'progressBarVariants',
   'radioGroupVariants',
   'sliderVariants',
   'statVariants',
   'statusDotVariants',
   'surfaceVariants',
+  'tabsVariants',
   'tooltipVariants'
 ]);
 ${assertCheckboxCSS.toString()}
@@ -2455,13 +3286,33 @@ ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
+${assertTimelineCSS.toString()}
+${assertSectionHeaderCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
+${assertSocialLinksCSS.toString()}
+${assertMenuCSS.toString()}
+assertMenuCSS(shippedStyles);
+${assertTabsCSS.toString()}
+${assertNoticeCSS.toString()}
+assertNoticeCSS(shippedStyles);
 ${assertPullQuoteCSS.toString()}
+${assertButtonGroupCSS.toString()}
+assertButtonGroupCSS(shippedStyles);
 ${assertCountdownCSS.toString()}
+${assertMeterRowCSS.toString()}
+assertMeterRowCSS(shippedStyles);
 assertCountdownCSS(shippedStyles);
+${assertCarouselCSS.toString()}
+assertCarouselCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
 assertStatCSS(shippedStyles);
+assertSectionHeaderCSS(shippedStyles);
+${assertListItemCSS.toString()}
+assertListItemCSS(shippedStyles);
 assertSearchTriggerCSS(shippedStyles);
+assertTimelineCSS(shippedStyles);
+assertSocialLinksCSS(shippedStyles);
+assertTabsCSS(shippedStyles);
 assertPullQuoteCSS(shippedStyles);
 assertIconButtonCSS(shippedStyles);
 ${assertToggleCSS.toString()}
@@ -2506,6 +3357,56 @@ for (const source of map.sources) {
 }
 console.log(JSON.stringify({ ui: ui.version, react: (await import('react')).version, dedup: ['react', 'react-dom'], externalReact: true }));
 `;
+
+function assertNavListCSS(css) {
+  for (const selector of [
+    '.min-h-11',
+    String.raw`.group-data-\[state\=closed\]\/nav-trigger\:-rotate-90`,
+    String.raw`.aria-\[current\=page\]\:hover\:bg-surface-3`,
+    String.raw`.focus-visible\:outline-\[var\(--color-focus-ring-inverse\)\]`,
+    String.raw`.motion-reduce\:transform-none`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing NavList utility ' + selector);
+  }
+  assert.match(css, /outline-color:\s*var\(--color-focus-ring-inverse[,)]/);
+  assert.match(css, /outline-width:\s*var\(--focus-width[,)]/);
+  assert.match(css, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*11\)/);
+  assert.doesNotMatch(css, /\.eg-nav-list\s*\{/);
+}
+
+function assertHoverCardCSS(css) {
+  for (const selector of [
+    String.raw`.w-\[calc\(var\(--space-24\)\*4\)\]`,
+    String.raw`.max-w-\[var\(--radix-hover-card-content-available-width\)\]`,
+    String.raw`.max-h-\[var\(--radix-hover-card-content-available-height\)\]`,
+    String.raw`.pointer-coarse\:min-h-\[var\(--space-12\)\]`,
+    String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`,
+    String.raw`.data-\[state\=open\]\:starting\:opacity-0`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing HoverCard utility ' + selector);
+  }
+  assert.match(css, /max-width:\s*var\(--radix-hover-card-content-available-width\)/);
+  assert.match(css, /max-height:\s*var\(--radix-hover-card-content-available-height\)/);
+  assert.match(css, /@starting-style/);
+  assert.doesNotMatch(css, /\.eg-hover-card\s*[,{]/);
+}
+
+function assertCarouselCSS(css) {
+  for (const selector of [
+    '.basis-full',
+    '.snap-x',
+    '.snap-mandatory',
+    '.snap-center',
+    '.scroll-auto',
+    String.raw`.group-data-\[state\=dragging\]\:snap-none`,
+    String.raw`.group-data-\[state\=dragging\]\:cursor-grabbing`,
+    String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Carousel utility ' + selector);
+  }
+  assert.match(css, /gap:\s*var\(--space-7[,)]/);
+}
 
 function assertLinkCSS(css) {
   for (const selector of [
@@ -2553,13 +3454,28 @@ function assertGaugeDockCSS(css) {
   assert.doesNotMatch(css, /\.eg-gauge-dock(?:-item|-separator)?\s*\{/);
 }
 
+function assertListItemCSS(css) {
+  for (const selector of [
+    String.raw`.data-\[state\=new\]\:bg-\[image\:var\(--gradient-post-new\)\]`,
+    String.raw`.data-\[state\=failed\]\:border-status-danger\/40`,
+    String.raw`.data-\[state\=done\]\:bg-none`,
+    String.raw`.data-\[state\=off\]\:shadow-none`,
+    String.raw`.data-\[state\=empty\]\:focus-visible\:shadow-focus`,
+    String.raw`.data-\[state\=empty\]\:disabled\:opacity-45`,
+    String.raw`.group-data-\[state\=dragging\]\/list-item\:opacity-50`,
+    String.raw`.data-\[variant\=row\]\:flex-wrap`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing packed ListItem utility ' + selector);
+  }
+  assert.match(css, /calc\(var\(--space-20\)\s*\+\s*var\(--space-2\)\)/);
+}
+
 const ssr = `
 import assert from 'node:assert/strict';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
 const { GaugeDockSamples } = await import('./consumer.ts');
 const dockDOM = new JSDOM(renderToString(createElement(GaugeDockSamples)));
 try {
@@ -2574,7 +3490,199 @@ try {
   assert.equal(root.querySelector('#packed-dock-separator').getAttribute('aria-hidden'), 'true');
   assert.ok(root.textContent.includes('Packed reading offline'));
 } finally { dockDOM.window.close(); }
+import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, HoverCardSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
+// Navigation SSR covers native semantics and a fully controlled open group on both React majors.
+const navDocument = new JSDOM(renderToString(createElement(NavListSamples, { open: true })));
+try {
+  const nav = navDocument.window.document.querySelector('nav');
+  assert.equal(nav.getAttribute('aria-label'), 'Workspace');
+  assert.ok(nav.classList.contains('eg-nav-list'));
+  assert.equal(nav.querySelector('a').getAttribute('aria-current'), 'page');
+  assert.ok(nav.querySelector('a').classList.contains('eg-surface'));
+  assert.equal(nav.querySelector('button').getAttribute('aria-expanded'), 'true');
+  assert.ok(nav.querySelector('[href="#drafts"]').textContent.includes('Needs attention'));
+  assert.ok(nav.querySelector('ul[aria-labelledby]'));
+  assert.equal(nav.querySelector('[role="menu"]'), null);
+} finally {
+  navDocument.window.close();
+}
+const { SelectTileSamples } = await import('./consumer.ts');
+for (const multiple of [false, true]) {
+  const tiles = new JSDOM(renderToString(createElement(SelectTileSamples, { multiple })));
+  try {
+    const group = tiles.window.document.querySelector('.eg-select-tile');
+    assert.equal(group.getAttribute('role'), multiple ? 'group' : 'radiogroup');
+    const buttons = group.querySelectorAll('button');
+    assert.equal(buttons.length, 2);
+    assert.equal(buttons[0].children.length, 0);
+    assert.equal(tiles.window.document.getElementById(buttons[0].getAttribute('aria-labelledby')).textContent, 'Camera');
+    assert.equal(buttons[1].getAttribute(multiple ? 'aria-pressed' : 'aria-checked'), multiple ? 'true' : 'false');
+    assert.equal(group.querySelector('img').getAttribute('alt'), '');
+    assert.equal(group.querySelector('[data-radix-aspect-ratio-wrapper]').style.paddingBottom, multiple ? '56.25%' : '125%');
+    assert.equal(group.querySelectorAll('input').length, multiple ? 0 : 2, 'Single SSR inputs remain Radix-owned');
+  } finally {
+    tiles.window.close();
+  }
+}
+const hoverDocument = new JSDOM(renderToString(createElement(HoverCardSamples, { defaultOpen: true })));
+try {
+  const doc = hoverDocument.window.document;
+  assert.equal(doc.querySelectorAll('a').length, 2);
+  assert.equal(doc.getElementById('hover-trigger').getAttribute('data-state'), 'open');
+  assert.equal(doc.getElementById('hover-trigger').getAttribute('href'), '#hover-details');
+  assert.equal(doc.getElementById('hover-persistent').getAttribute('href'), '#hover-details');
+  assert.ok(!doc.querySelector('.eg-hover-card'), 'Portal content is client-only even with defaultOpen');
+  assert.ok(!doc.querySelector('[aria-controls], [aria-expanded], [role="tooltip"], [role="dialog"]'));
+} finally { hoverDocument.window.close(); }
+// Popover SSR renders only the named button: the dialog is an internal client portal.
+const popoverDocument = new JSDOM(renderToString(createElement(PopoverSamples)));
+try {
+  const trigger = popoverDocument.window.document.getElementById('popover-trigger');
+  assert.equal(trigger.tagName, 'BUTTON');
+  assert.equal(trigger.type, 'button');
+  assert.equal(trigger.textContent, 'Packed settings');
+  assert.equal(trigger.getAttribute('aria-haspopup'), 'dialog');
+  assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+  assert.equal(popoverDocument.window.document.querySelector('[role="dialog"]'), null);
+} finally {
+  popoverDocument.window.close();
+}
+const carouselDocument = new JSDOM(renderToString(createElement(CarouselSamples)));
+try {
+  const document = carouselDocument.window.document;
+  const root = document.querySelector('.eg-carousel');
+  assert.equal(root.getAttribute('aria-roledescription'), 'carousel');
+  assert.equal(document.getElementById(root.getAttribute('aria-labelledby')).textContent, 'Highlights');
+  assert.equal(root.querySelectorAll('[aria-roledescription="slide"]').length, 3);
+  assert.equal(root.querySelectorAll('[tabindex="0"]').length, 1);
+  assert.equal(root.querySelector('[aria-current="true"]').getAttribute('aria-label'), '1 of 3: Alpha');
+  assert.equal(root.querySelector('[role="status"]').textContent, '');
+  assert.equal(root.querySelector('.eg-progress').getAttribute('aria-hidden'), 'true');
+  assert.ok(root.textContent.includes('01 / 03'));
+} finally { carouselDocument.window.close(); }
+assert.ok(renderToString(createElement(CarouselSamples, { empty: true })).includes('No slides'));
+// MeterRow SSR has one semantic owner, coherent text and generated description references.
+for (const value of [42.5, Number.NaN]) {
+  const dom = new JSDOM(renderToString(createElement(MeterRowSamples, { value })));
+  try {
+    const document = dom.window.document;
+    const row = document.getElementById('consumer-meter-row');
+    const bar = row.querySelector('[role="progressbar"]');
+    assert.equal(row.hasAttribute('role'), false);
+    assert.equal(row.querySelectorAll('[role="progressbar"]').length, 1);
+    assert.equal(bar.getAttribute('aria-label'), 'Import files');
+    assert.equal(bar.getAttribute('aria-valuenow'), Number.isFinite(value) ? '42.5' : null);
+    assert.equal(bar.getAttribute('aria-valuetext'), Number.isFinite(value) ? '42.5%' : null);
+    const ids = bar.getAttribute('aria-describedby').split(' ');
+    assert.equal(ids.map((id) => document.getElementById(id).textContent).join(' '), Number.isFinite(value) ? 'Keep this tab open' : 'Preparing import Keep this tab open');
+    assert.equal(row.querySelector('output, meter, [aria-live]'), null);
+  } finally {
+    dom.window.close();
+  }
+}
+// Menu's body portal is client-only; SSR exposes only the consumer-owned trigger.
+const { MenuSample } = await import('./consumer.ts');
+const menuDocument = new JSDOM(renderToString(createElement(MenuSample)));
+try {
+  const menuTrigger = menuDocument.window.document.querySelector('#menu-trigger');
+  assert.equal(menuTrigger.tagName, 'BUTTON');
+  assert.equal(menuTrigger.getAttribute('aria-haspopup'), 'menu');
+  assert.equal(menuTrigger.getAttribute('aria-expanded'), 'false');
+  assert.equal(menuDocument.window.document.querySelector('[role="menu"]'), null);
+} finally {
+  menuDocument.window.close();
+}
+
+// ChipGroup SSR preserves both mode-specific semantics, data order and shared Chip anatomy.
+const chipGroupDocument = new JSDOM(renderToString(createElement(ChipGroupSamples)));
+try {
+  const document = chipGroupDocument.window.document;
+  const single = document.getElementById('chip-group-single');
+  const multiple = document.getElementById('chip-group-multiple');
+  for (const group of [single, multiple]) {
+    assert.equal(group.getAttribute('role'), 'group');
+    assert.ok(group.classList.contains('eg-chip-group'));
+    assert.equal(group.querySelectorAll('button.eg-chip').length, 3);
+    assert.equal(group.querySelector('[aria-hidden="true"]').textContent, '→');
+    assert.ok(group.querySelector('button:last-child').disabled);
+  }
+  assert.equal(single.getAttribute('aria-label'), 'Topic');
+  assert.equal(single.querySelector('[role="radio"]').getAttribute('aria-checked'), 'true');
+  assert.equal(multiple.querySelector('button').getAttribute('aria-pressed'), 'true');
+  assert.equal(document.querySelectorAll('input').length, 0, 'ToggleGroup has no hidden form inputs');
+} finally {
+  chipGroupDocument.window.close();
+}
+const itemDocument = new JSDOM(renderToString(createElement(ListItemSamples)));
+try {
+  const item = itemDocument.window.document.getElementById('consumer-item');
+  assert.equal(item.tagName, 'LI');
+  assert.equal(item.getAttribute('data-state'), 'off');
+  assert.equal(item.getAttribute('data-variant'), 'row');
+  assert.equal(item.querySelector('button').textContent, 'Show');
+  assert.equal(item.querySelector('img').alt, 'Release artwork');
+  for (const name of ['role', 'tabindex', 'aria-disabled', 'aria-selected', 'draggable']) {
+    assert.equal(item.hasAttribute(name), false);
+  }
+} finally {
+  itemDocument.window.close();
+}
+const noticeDocument = new JSDOM(renderToString(createElement(NoticeSamples, { tone: 'danger', size: 'sm' })));
+try {
+  const notice = noticeDocument.window.document.getElementById('queue-notice');
+  assert.equal(notice.getAttribute('role'), 'alert');
+  assert.equal(notice.getAttribute('data-size'), 'sm');
+  assert.equal(notice.querySelector('strong').textContent, 'Queue ready.');
+  assert.equal(notice.querySelector('svg').parentElement.getAttribute('aria-hidden'), 'true');
+  assert.equal(notice.querySelector('[role], [aria-live], .eg-notice__actions'), null);
+  assert.ok(notice.classList.contains('eg-notice') && notice.classList.contains('eg-surface'));
+  assert.ok(noticeRecipe.split(' ').includes('eg-surface'));
+  assert.doesNotMatch(noticeRecipe, /eg-notice|eg-toast|role=|aria-/);
+} finally {
+  noticeDocument.window.close();
+}
+const groupDocument = new JSDOM(renderToString(createElement(ButtonGroupSamples)));
+try {
+  const group = groupDocument.window.document.getElementById('grouped-actions');
+  assert.equal(group.tagName, 'DIV');
+  assert.equal(group.getAttribute('role'), 'group');
+  assert.equal(group.getAttribute('aria-label'), 'Save options');
+  assert.equal(group.getAttribute('aria-describedby'), 'group-help');
+  assert.ok(group.classList.contains('eg-button-group'));
+  assert.ok(group.classList.contains('gap-0.5'));
+  assert.ok(group.classList.contains('flex-nowrap'));
+  assert.ok(group.classList.contains('*:not-first:rounded-s-sm'));
+  assert.equal(group.children.length, 2);
+  assert.ok([...group.children].every((item) => item.tagName === 'BUTTON'));
+  assert.equal(group.querySelector('[aria-haspopup], [aria-expanded]'), null);
+} finally {
+  groupDocument.window.close();
+}
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
+const tabsDocument = new JSDOM(renderToString(createElement(TabsSamples, { segmented: true })));
+try {
+  const document = tabsDocument.window.document;
+  const root = document.getElementById('consumer-tabs');
+  assert.ok(root.classList.contains('eg-tabs') && root.classList.contains('mt-4'));
+  assert.ok(!root.classList.contains('mt-2'));
+  const list = root.querySelector('[role="tablist"]');
+  assert.equal(list.getAttribute('aria-label'), 'Post views');
+  assert.ok(list.classList.contains('eg-surface') && list.classList.contains('p-0.75'));
+  assert.ok(!list.classList.contains('p-0') && !list.classList.contains('p-6'));
+  const triggers = [...list.querySelectorAll('[role="tab"]')];
+  assert.deepEqual(triggers.map((tab) => tab.textContent), ['Queue 0', 'Drafts 312', 'Unavailable']);
+  for (const trigger of triggers) {
+    const panel = document.getElementById(trigger.getAttribute('aria-controls'));
+    assert.equal(panel.getAttribute('aria-labelledby'), trigger.id);
+    assert.equal(panel.getAttribute('role'), 'tabpanel');
+    assert.equal(panel.hidden, trigger.getAttribute('aria-selected') !== 'true');
+  }
+  assert.equal(root.querySelector('[role="tabpanel"]:not([hidden])').textContent, 'Queued posts');
+  assert.ok(!root.textContent.includes('Draft posts'));
+  assert.ok(tabsRecipe.includes('eg-tabs'));
+} finally {
+  tabsDocument.window.close();
+}
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
   const timer = countdownDocument.window.document.getElementById('launch-timer');
@@ -2599,7 +3707,45 @@ try {
 const unavailableCountdown = renderToString(createElement(CountdownSamples, { deadline: Number.NaN }));
 assert.ok(unavailableCountdown.includes('data-state="unavailable"') && unavailableCountdown.includes('Time unavailable'));
 assert.doesNotMatch(unavailableCountdown, /<time|eg-countdown__row/);
+// SocialLinks SSR: genuine anchors, one hidden name and explicit opt-in new browsing contexts.
+const socialDocument = new JSDOM(renderToString(createElement(SocialLinksSamples)));
+try {
+  const document = socialDocument.window.document;
+  const list = document.querySelector('ul[role="list"]');
+  assert.equal(list.getAttribute('aria-label'), 'Social profiles');
+  assert.equal(list.children.length, 2);
+  assert.ok([...list.children].every((item) => item.tagName === 'LI'));
+  const [same, external] = list.querySelectorAll('a');
+  assert.equal(same.textContent, 'Project GitHub');
+  assert.equal(same.hasAttribute('target'), false);
+  assert.equal(external.textContent, 'Project videos (opens in a new tab)');
+  assert.equal(external.getAttribute('target'), '_blank');
+  assert.equal(external.getAttribute('rel'), 'me NOOPENER noreferrer');
+  assert.equal(external.hasAttribute('aria-label'), false);
+  assert.equal(document.querySelectorAll('button,[role="button"]').length, 0);
+  assert.ok(same.classList.contains('size-12'));
+  assert.equal(document.querySelectorAll('.eg-social__label').length, 1);
+  assert.equal(renderToString(createElement(SocialLinksSamples, { items: [] })), '');
+  const ghost = renderToString(createElement(SocialLinksSamples, { caption: null, variant: 'ghost', size: 'md', inline: true, gap: 1 }));
+  assert.ok(ghost.includes('size-10') && ghost.includes('gap-1') && ghost.includes('flex-wrap'));
+  assert.ok(!ghost.includes('eg-social__label'));
+} finally {
+  socialDocument.window.close();
+}
 // Stat SSR: a labelled group per figure, unformatted values and the hidden no-data dash.
+const timelineDocument = new JSDOM(renderToString(createElement(TimelineSamples)) + renderToString(createElement(TimelineEvents)));
+try {
+  const log = timelineDocument.window.document.querySelector('[role="log"]');
+  assert.equal(log.getAttribute('aria-live'), 'polite');
+  assert.equal(log.getAttribute('aria-relevant'), 'additions');
+  assert.equal(log.getAttribute('aria-atomic'), 'false');
+  assert.equal(log.querySelectorAll('ol[role="list"] > li').length, 1);
+  assert.ok(log.textContent.includes('Community') && log.textContent.includes('Moderator') && log.textContent.includes('Instruction'));
+  assert.equal(log.querySelector('.eg-timeline__cmd').textContent, '<b>!help</b>');
+  assert.equal(log.querySelector('.eg-avatar').getAttribute('aria-hidden'), 'true');
+  assert.equal(log.querySelector('[role="group"]').tabIndex, 0);
+  assert.equal(timelineDocument.window.document.querySelector('[role="region"]').getAttribute('aria-live'), 'off');
+} finally { timelineDocument.window.close(); }
 const statDocument = new JSDOM(renderToString(createElement(StatSamples, { highlighted: true, value: '1,200' })));
 try {
   const document = statDocument.window.document;
@@ -2628,6 +3774,30 @@ try {
   assert.ok(statRecipe.includes('px-3') && statRecipe.startsWith('eg-stat '));
 } finally {
   statDocument.window.close();
+}
+// SectionHeader SSR: native heading/IDs, complete phrase and a presentational inline rule.
+for (const variant of ['stack', 'split', 'inline']) {
+  const markup = renderToString(createElement(SectionHeaderSamples, { variant }));
+  assert.equal(markup, renderToString(createElement(SectionHeaderSamples, { variant })));
+  const dom = new JSDOM(markup);
+  try {
+    const header = dom.window.document.querySelector('header.eg-section-head');
+    const heading = header.querySelector('h3');
+    assert.equal(header.id, 'consumer-section-header');
+    assert.equal(header.hasAttribute('title'), false);
+    assert.equal(heading.id, 'consumer-section-title');
+    assert.equal(heading.textContent, 'Build together.');
+    assert.ok(heading.classList.contains('text-title-section'));
+    assert.ok(heading.lastElementChild.classList.contains('inline'));
+    assert.ok(heading.lastElementChild.classList.contains('text-fg-brand-raised'));
+    assert.equal(header.querySelector('.eg-divider')?.getAttribute('role') ?? null, variant === 'inline' ? 'none' : null);
+    assert.equal(header.querySelector('[tabindex], [aria-live], [data-state], [role="separator"]'), null);
+  } finally {
+    dom.window.close();
+  }
+  const fallback = renderToString(createElement(SectionHeaderSamples, { variant, optional: false }));
+  assert.ok(fallback.includes('flex flex-col items-start gap-5'));
+  assert.ok(!fallback.includes('eg-divider') && !fallback.includes('eg-section-head__lede'));
 }
 // SearchTrigger SSR: deterministic native launcher, decorative icon/hint and no fabricated popup claims.
 const searchDocument = new JSDOM(
@@ -3500,10 +4670,32 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, HoverCardSamples, hoverCardRef, hoverCardSlotRef, hoverCardChanges, ListItemSamples, MeterRowSamples, NavListSamples, navRequests, navNavigations, NoticeSamples, PopoverSamples, popoverTriggerRef, popoverCloseRef, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, carouselChanges, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
+  const { SelectTileSamples, tileRequests } = await import('./consumer.ts');
+  await act(async () => root.render(createElement(SelectTileSamples, { value: 'slides' })));
+  let tiles = document.querySelector('.eg-select-tile');
+  assert.equal(tiles.getAttribute('role'), 'radiogroup');
+  await act(async () => tiles.querySelector('button').click());
+  assert.deepEqual(tileRequests.splice(0), ['camera']);
+  assert.equal(tiles.querySelectorAll('button')[1].getAttribute('aria-checked'), 'true', 'Controlled owner remains authoritative');
+  await act(async () => root.render(createElement(SelectTileSamples, { value: 'camera' })));
+  assert.equal(tileRequests.length, 0, 'Acknowledgement emits no callback');
+  assert.equal(document.querySelector('.eg-tile').getAttribute('data-state'), 'live');
+  // Remount when changing cardinality; switching type during a mount is unsupported.
+  await act(async () => root.render(null));
+  await act(async () => root.render(createElement(SelectTileSamples, { multiple: true })));
+  tiles = document.querySelector('.eg-select-tile');
+  await act(async () => tiles.querySelector('button').click());
+  assert.deepEqual(tileRequests.splice(0), [['slides', 'camera']]);
+  assert.equal(tiles.querySelector('input'), null);
+  const image = tiles.querySelector('img');
+  await act(async () => image.dispatchEvent(new window.Event('error')));
+  assert.equal(tiles.querySelector('img'), null);
+  assert.equal(tiles.querySelector('.eg-tile [aria-hidden="true"]').textContent, 'Camera');
+  await act(async () => root.render(null));
   stage('mount:start');
   await act(async () => root.render(createElement(App)));
   stage('mount:complete');
@@ -3982,6 +5174,56 @@ try {
   assert.deepEqual(linkEvents, ['native', 'child', 'parent']);
   await act(async () => root.render(null));
   assert.ok(nativeLinkRef.current === null && slottedLinkRef.current === null, 'Native and slotted Link refs clean up');
+  stage('hover-card:focus:start');
+  hoverCardChanges.length = 0;
+  await act(async () => root.render(createElement(HoverCardSamples)));
+  const hoverTrigger = document.getElementById('hover-trigger');
+  assert.ok(hoverCardRef.current === hoverTrigger, 'Native trigger forwards its anchor ref');
+  assert.equal(hoverTrigger.getAttribute('href'), '#hover-details');
+  assert.equal(hoverCardChanges.length, 0, 'Mount emits no notification');
+  await act(async () => hoverTrigger.focus());
+  assert.ok(document.querySelector('.eg-hover-card') === null, 'Focus follows the open delay');
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 750)));
+  const hoverPanel = document.querySelector('.eg-hover-card');
+  assert.ok(hoverPanel && hoverPanel.classList.contains('eg-surface'));
+  assert.equal(hoverPanel.textContent, 'Usage: 42%. Reset: tomorrow.');
+  assert.equal(hoverPanel.id, 'hover-preview', 'Content id remains a compatible native prop');
+  assert.ok(!document.getElementById('app').contains(hoverPanel), 'Content is internally portalled');
+  assert.ok(hoverPanel.closest('[data-radix-popper-content-wrapper]').parentElement === document.body);
+  assert.ok(document.activeElement === hoverTrigger, 'Preview does not move focus');
+  for (const attr of ['aria-describedby', 'aria-controls', 'aria-expanded']) {
+    assert.equal(hoverTrigger.hasAttribute(attr), false);
+  }
+  assert.ok(!hoverPanel.querySelector('a, button, input, [tabindex], [aria-live]'));
+  await act(async () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+  assert.ok(document.querySelector('.eg-hover-card') === null);
+  assert.ok(document.activeElement === hoverTrigger);
+  const touch = new Event('touchstart', { bubbles: true, cancelable: true });
+  let cancelRequests = 0;
+  touch.preventDefault = () => { cancelRequests += 1; };
+  await act(async () => hoverTrigger.dispatchEvent(touch));
+  assert.equal(cancelRequests, 1, 'A1 retains Radix touch cancellation, not a HoverCard-owned handler');
+  assert.equal(document.getElementById('hover-persistent').getAttribute('href'), '#hover-details');
+  await act(async () => root.render(null));
+  assert.ok(hoverCardRef.current === null);
+  hoverCardChanges.length = 0;
+  await act(async () => root.render(createElement(HoverCardSamples, { open: false })));
+  await act(async () => document.getElementById('hover-trigger').focus());
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 750)));
+  assert.ok(hoverCardChanges.includes(true), 'Controlled owner receives the open request');
+  assert.ok(document.querySelector('.eg-hover-card') === null, 'Owner acknowledgement is required');
+  const requestCount = hoverCardChanges.length;
+  await act(async () => root.render(createElement(HoverCardSamples, { open: true })));
+  assert.ok(document.querySelector('.eg-hover-card'));
+  assert.equal(hoverCardChanges.length, requestCount, 'Acknowledgement does not echo a request');
+  await act(async () => root.render(null));
+  await act(async () => root.render(createElement(HoverCardSamples, { defaultOpen: true, slotted: true })));
+  assert.ok(hoverCardSlotRef.current === document.getElementById('hover-trigger'));
+  assert.equal(document.querySelectorAll('#hover-trigger').length, 1, 'Slotted link has no duplicate anchor');
+  await act(async () => root.render(null));
+  assert.ok(hoverCardSlotRef.current === null);
+  assert.ok(document.querySelector('.eg-hover-card') === null);
+  stage('hover-card:focus:complete');
   stage('tooltip:focus:start');
   await act(async () => root.render(createElement(TooltipSamples)));
   const tooltipTrigger = document.getElementById('tooltip-search');
@@ -4087,6 +5329,126 @@ try {
   assert.deepEqual(countdownExpirations, [pastDeadline]);
   await act(async () => root.render(null));
   stage('countdown:clock:complete');
+  stage('nav-list:disclosure:start');
+  await act(async () => root.render(createElement(NavListSamples)));
+  const navigation = document.getElementById('consumer-nav');
+  const navTrigger = navigation.querySelector('button');
+  assert.equal(navTrigger.tagName, 'BUTTON');
+  assert.equal(navTrigger.getAttribute('aria-expanded'), 'false');
+  assert.equal(navigation.querySelector('[href="#drafts"]'), null);
+  navTrigger.focus();
+  await act(async () => navTrigger.click());
+  assert.deepEqual(navRequests, [true]);
+  assert.equal(navTrigger.getAttribute('aria-expanded'), 'false', 'Controlled state waits for acknowledgement');
+  await act(async () => root.render(createElement(NavListSamples, { open: true })));
+  assert.equal(navTrigger.getAttribute('aria-expanded'), 'true');
+  assert.equal(document.activeElement, navTrigger);
+  assert.ok(document.getElementById(navTrigger.getAttribute('aria-controls')));
+  assert.deepEqual(navRequests, [true], 'Incoming state does not echo requests');
+  const navEvent = new window.MouseEvent('click', { bubbles: true, cancelable: true });
+  await act(async () => navigation.querySelector('[href="#drafts"]').dispatchEvent(navEvent));
+  assert.equal(navEvent.defaultPrevented, true);
+  assert.deepEqual(navNavigations, ['drafts']);
+  await act(async () => root.render(createElement(NavListSamples, { open: false })));
+  assert.equal(navigation.querySelector('[href="#drafts"]'), null);
+  assert.ok(navTrigger.textContent.includes('Voting live'));
+  assert.deepEqual(navRequests, [true]);
+  await act(async () => root.render(null));
+  stage('nav-list:disclosure:complete');
+  stage('carousel:start');
+  await act(async () => root.render(createElement(CarouselSamples)));
+  const carousel = document.querySelector('.eg-carousel');
+  const carouselButtons = carousel.querySelectorAll('button');
+  const activeSlide = () => carousel.querySelector('[aria-current="true"]');
+  assert.equal(carouselButtons[0].disabled, true);
+  await act(async () => { carouselButtons[1].focus(); carouselButtons[1].click(); });
+  assert.equal(activeSlide().getAttribute('aria-label'), '2 of 3: Beta');
+  assert.equal(document.activeElement, carouselButtons[1]);
+  assert.equal(carousel.querySelector('[role="status"]').textContent, '2 of 3: Beta');
+  await act(async () => carouselButtons[1].click());
+  assert.equal(activeSlide().getAttribute('aria-label'), '3 of 3: Gamma');
+  assert.equal(document.activeElement, activeSlide());
+  assert.equal(carousel.querySelector('[role="status"]').textContent, '');
+  assert.deepEqual(carouselChanges, ['beta', 'gamma']);
+  await act(async () => root.render(null));
+  carouselChanges.length = 0;
+  await act(async () => root.render(createElement(CarouselSamples, { value: 'alpha' })));
+  const controlledCarousel = document.querySelector('.eg-carousel');
+  await act(async () => controlledCarousel.querySelectorAll('button')[1].click());
+  assert.equal(controlledCarousel.querySelector('[aria-current="true"]').getAttribute('aria-label'), '1 of 3: Alpha');
+  assert.deepEqual(carouselChanges, ['beta']);
+  await act(async () => root.render(createElement(CarouselSamples, { value: 'beta' })));
+  assert.equal(controlledCarousel.querySelector('[aria-current="true"]').getAttribute('aria-label'), '2 of 3: Beta');
+  assert.deepEqual(carouselChanges, ['beta']);
+  await act(async () => root.render(null));
+  stage('carousel:complete');
+  stage('social-links:native:start');
+  await act(async () => root.render(createElement(SocialLinksSamples)));
+  const socialLink = document.querySelector('#social-profiles a');
+  socialLink.focus();
+  assert.equal(document.activeElement, socialLink);
+  const socialSpace = new window.KeyboardEvent('keydown', { key: ' ', bubbles: true, cancelable: true });
+  assert.equal(socialLink.dispatchEvent(socialSpace), true);
+  await act(async () => root.render(createElement(SocialLinksSamples, { caption: null, dir: 'rtl' })));
+  assert.equal(document.querySelector('#social-profiles a'), socialLink);
+  assert.equal(document.activeElement, socialLink);
+  assert.equal(document.querySelector('#social-profiles .eg-social__label'), null);
+  assert.equal(document.getElementById('social-profiles').getAttribute('dir'), 'rtl');
+  await act(async () => root.render(createElement(SocialLinksSamples, { items: [] })));
+  assert.equal(document.getElementById('social-profiles'), null);
+  stage('social-links:native:complete');
+  stage('meter-row:passive:start');
+  await act(async () => root.render(createElement(MeterRowSamples, { value: 142 })));
+  const taskRow = document.getElementById('consumer-meter-row');
+  const taskBar = taskRow.querySelector('[role="progressbar"]');
+  assert.equal(taskBar.getAttribute('aria-valuenow'), '100');
+  assert.equal(taskBar.getAttribute('aria-valuetext'), '100%');
+  assert.equal(taskRow.tabIndex, -1);
+  await act(async () => root.render(createElement(MeterRowSamples, { value: Number.NaN })));
+  assert.equal(taskRow.querySelector('[role="progressbar"]'), taskBar);
+  assert.equal(taskBar.hasAttribute('aria-valuenow'), false);
+  assert.equal(taskBar.hasAttribute('aria-valuetext'), false);
+  const taskDescriptions = taskBar.getAttribute('aria-describedby').split(' ');
+  assert.equal(taskDescriptions.map((id) => document.getElementById(id).textContent).join(' '), 'Preparing import Keep this tab open');
+  await act(async () => root.render(createElement(MeterRowSamples, { value: 42.5, help: ' ' })));
+  assert.equal(taskBar.getAttribute('aria-valuetext'), '42.5%');
+  assert.equal(taskBar.hasAttribute('aria-describedby'), false);
+  assert.equal(taskRow.querySelector('p, [aria-live], output, meter'), null);
+  await act(async () => root.render(null));
+  stage('meter-row:passive:complete');
+  stage('tabs:interaction:start');
+  await act(async () => root.render(createElement(TabsSamples)));
+  const tabsRoot = document.getElementById('consumer-tabs');
+  const tabTriggers = [...tabsRoot.querySelectorAll('[role="tab"]')];
+  assert.equal(tabTriggers[0].getAttribute('aria-selected'), 'true');
+  await act(async () => tabTriggers[1].dispatchEvent(new dom.window.MouseEvent('mousedown', { bubbles: true, button: 0 })));
+  assert.equal(tabTriggers[1].getAttribute('aria-selected'), 'true');
+  assert.deepEqual(tabsChanges, ['drafts']);
+  assert.equal(tabsRoot.querySelector('[role="tabpanel"]:not([hidden])').textContent, 'Draft posts');
+  assert.equal(document.getElementById(tabTriggers[0].getAttribute('aria-controls')).textContent, '');
+  await act(async () => {
+    tabTriggers[1].focus();
+    tabTriggers[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  });
+  assert.ok(document.activeElement === tabTriggers[0], 'Arrows loop and skip the disabled final item');
+  assert.equal(tabTriggers[0].getAttribute('aria-selected'), 'true');
+  await act(async () => tabTriggers[2].dispatchEvent(new dom.window.MouseEvent('mousedown', { bubbles: true, button: 0 })));
+  assert.equal(tabTriggers[2].getAttribute('aria-selected'), 'false');
+  await act(async () => root.render(null));
+  tabsChanges.length = 0;
+  await act(async () => root.render(createElement(TabsSamples, { value: 'queue', segmented: true })));
+  const controlledTabs = [...document.querySelectorAll('#consumer-tabs [role="tab"]')];
+  await act(async () => controlledTabs[1].dispatchEvent(new dom.window.MouseEvent('mousedown', { bubbles: true, button: 0 })));
+  assert.equal(controlledTabs[0].getAttribute('aria-selected'), 'true', 'Controlled selection waits for its owner');
+  // Radix may request the same selection more than once while its owner has not acknowledged it.
+  assert.ok(tabsChanges.length > 0 && tabsChanges.every((change) => change === 'drafts'));
+  const requestsBeforeAcknowledgement = tabsChanges.length;
+  await act(async () => root.render(createElement(TabsSamples, { value: 'drafts', segmented: true })));
+  assert.equal(controlledTabs[1].getAttribute('aria-selected'), 'true');
+  assert.equal(tabsChanges.length, requestsBeforeAcknowledgement, 'Prop acknowledgement emits no new selection request');
+  await act(async () => root.render(null));
+  stage('tabs:interaction:complete');
   stage('stat:passive:start');
   await act(async () => root.render(createElement(StatSamples)));
   const subsStat = document.getElementById('subs-total');
@@ -4112,6 +5474,177 @@ try {
   await act(async () => root.render(null));
   assert.equal(document.getElementById('totals'), null);
   stage('stat:passive:complete');
+  stage('timeline:start');
+  await act(async () => root.render(createElement(TimelineSamples, { silent: true })));
+  const transcript = document.querySelector('[role="log"]');
+  const transcriptViewport = transcript.querySelector('[role="group"]');
+  const firstMessage = transcript.querySelector('li');
+  assert.equal(transcript.getAttribute('aria-live'), 'off');
+  transcriptViewport.focus();
+  transcriptViewport.scrollTop = 11;
+  await act(async () => root.render(createElement(TimelineSamples, { appended: true })));
+  assert.equal(transcript.getAttribute('aria-live'), 'polite');
+  assert.equal(transcript.querySelectorAll('li').length, 2);
+  assert.ok(transcript.querySelector('li') === firstMessage);
+  assert.ok(document.activeElement === transcriptViewport);
+  assert.equal(transcriptViewport.scrollTop, 11);
+  assert.equal(transcript.querySelectorAll('[aria-live]').length, 0);
+  await act(async () => root.render(null));
+  stage('timeline:complete');
+  stage('popover:start');
+  for (const modal of [false, true]) {
+    await act(async () => root.render(createElement(PopoverSamples, { modal })));
+    const trigger = document.getElementById('popover-trigger');
+    assert.equal(popoverTriggerRef.current, trigger, 'Slotted Trigger forwards its actual button ref');
+    assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+    assert.equal(trigger.getAttribute('data-state'), 'idle', 'A2 keeps Button-owned state');
+    assert.equal(document.querySelector('[role="dialog"]'), null);
+    await act(async () => trigger.click());
+    const dialog = document.querySelector('[role="dialog"][aria-label="Packed settings"]');
+    assert.ok(dialog && !document.getElementById('app').contains(dialog), 'Content is portalled outside App');
+    assert.equal(trigger.getAttribute('aria-controls'), dialog.id, 'Radix owns the relationship (A1)');
+    assert.equal(trigger.getAttribute('aria-expanded'), 'true');
+    assert.equal(trigger.getAttribute('data-state'), 'idle', 'Button does not mirror Popover visibility (A2)');
+    assert.equal(dialog.getAttribute('data-state'), 'open');
+    assert.equal(dialog.getAttribute('aria-modal'), modal ? 'true' : null);
+    assert.ok(dialog.classList.contains('eg-popover') && dialog.classList.contains('eg-surface'));
+    assert.ok(dialog.classList.contains('bg-surface-overlay') && dialog.classList.contains('max-w-full'));
+    assert.equal(document.activeElement, dialog.querySelector('input'), 'First eligible control receives focus');
+    const close = dialog.querySelector('button');
+    assert.equal(popoverCloseRef.current, close, 'Slotted Close forwards its actual button ref');
+    assert.equal(close.textContent, 'Close packed settings', 'AccessibleIcon hidden text supplies the Close name');
+    assert.equal(close.hasAttribute('aria-label'), false, 'IconButton does not replace its hidden-text name');
+    assert.equal(close.querySelector('svg').getAttribute('aria-hidden'), 'true');
+    assert.equal(document.querySelector('button button'), null);
+    if (modal) {
+      assert.equal(document.getElementById('app').getAttribute('aria-hidden'), 'true');
+      assert.equal(document.body.style.pointerEvents, 'none');
+    }
+    await act(async () => {
+      close.click();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    assert.equal(document.querySelector('[role="dialog"]'), null);
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 0)); });
+    assert.equal(document.activeElement, trigger, 'Explicit Close restores the stable trigger');
+    assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+    assert.equal(trigger.getAttribute('data-state'), 'idle');
+    assert.equal(trigger.hasAttribute('aria-controls'), false);
+    await act(async () => root.render(null));
+  }
+  const popoverRequests = [];
+  const onPopoverChange = (open) => popoverRequests.push(open);
+  await act(async () => root.render(createElement(PopoverSamples, { open: false, onOpenChange: onPopoverChange })));
+  await act(async () => document.getElementById('popover-trigger').click());
+  assert.deepEqual(popoverRequests, [true]);
+  assert.equal(document.querySelector('[role="dialog"]'), null, 'Controlled requests need acknowledgement');
+  await act(async () => root.render(createElement(PopoverSamples, { open: true, onOpenChange: onPopoverChange })));
+  assert.deepEqual(popoverRequests, [true], 'Incoming controlled updates do not echo callbacks');
+  await act(async () => popoverCloseRef.current.click());
+  assert.deepEqual(popoverRequests, [true, false]);
+  assert.ok(document.querySelector('[role="dialog"]'), 'Owner has not accepted the close request');
+  await act(async () => root.render(null));
+  stage('popover:complete');
+  stage('section-header:start');
+  for (const variant of ['split', 'inline']) {
+    await act(async () => root.render(createElement(SectionHeaderSamples, { variant })));
+    const header = document.getElementById('consumer-section-header');
+    assert.equal(header.querySelector('h3').textContent, 'Build together.');
+    assert.equal(header.querySelector('.eg-divider')?.getAttribute('role') ?? null, variant === 'inline' ? 'none' : null);
+    await act(async () => root.render(createElement(SectionHeaderSamples, { variant, optional: false })));
+    assert.ok(header.classList.contains('flex') && header.classList.contains('gap-5'));
+    assert.equal(header.children.length, 1, 'No optional placeholders survive rerender');
+    assert.equal(header.querySelector('[tabindex], [aria-live], [data-state]'), null);
+  }
+  stage('section-header:complete');
+  stage('menu:start');
+  // FocusScope schedules unmount autofocus with setTimeout(0) during the commit.
+  // A delay inside the selecting act() can finish before that commit even happens.
+  // Yield after act() has flushed it; never focus the trigger from the harness.
+  const waitForMenuFocus = async (target) => {
+    for (let turn = 0; turn < 100; turn++) {
+      await act(async () => new Promise((resolve) => setTimeout(resolve, 10)));
+      if (document.activeElement === target) return;
+    }
+  };
+  const { MenuSample, menuSelections } = await import('./consumer.ts');
+  await act(async () => root.render(createElement(MenuSample)));
+  const menuTrigger = document.getElementById('menu-trigger');
+  menuTrigger.focus();
+  await act(async () => menuTrigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true })));
+  assert.equal(document.querySelector('[role="menu"]'), null, 'A1 keeps closed-trigger ArrowUp inert');
+  await act(async () => {
+    menuTrigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 30));
+  });
+  const menuPanel = document.querySelector('[role="menu"]');
+  assert.ok(menuPanel && !document.getElementById('app').contains(menuPanel), 'Content is portalled');
+  assert.ok(menuPanel.classList.contains('eg-menu') && menuPanel.classList.contains('eg-surface'));
+  assert.ok(menuPanel.classList.contains('p-2') && !menuPanel.classList.contains('p-0'));
+  assert.equal(menuPanel.querySelector('[kind]'), null);
+  const editMenuItem = [...menuPanel.querySelectorAll('[role="menuitem"]')].find((item) => item.textContent === 'Edit⌘E');
+  assert.ok(editMenuItem.querySelector('kbd') && editMenuItem.querySelector('svg[aria-hidden="true"]'));
+  await waitForMenuFocus(editMenuItem);
+  assert.ok(document.activeElement === editMenuItem, 'Keyboard opening focuses the first enabled item');
+  await act(async () => {
+    editMenuItem.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+  });
+  assert.deepEqual(menuSelections, ['edit']);
+  assert.equal(document.querySelector('[role="menu"]'), null);
+  await waitForMenuFocus(menuTrigger);
+  assert.ok(document.activeElement === menuTrigger, 'Selection restores trigger focus');
+  await act(async () => root.render(null));
+  stage('menu:complete');
+  stage('list-item:start');
+  await act(async () => root.render(createElement(ListItemSamples)));
+  const item = document.getElementById('consumer-item');
+  assert.ok(itemChildRef.current === item, 'Slot preserves the child-owned ref');
+  const itemAction = item.querySelector('button');
+  itemAction.focus();
+  await act(async () => itemAction.click());
+  assert.deepEqual(itemActivations, ['show']);
+  await act(async () => root.render(createElement(ListItemSamples, { status: 'dragging' })));
+  assert.ok(document.getElementById('consumer-item') === item);
+  assert.equal(item.getAttribute('data-state'), 'dragging');
+  assert.ok(document.activeElement === itemAction, 'Presentation update preserves action focus');
+  await act(async () => root.render(null));
+  assert.equal(itemChildRef.current, null);
+  stage('list-item:complete');
+  stage('notice:start');
+  await act(async () => root.render(createElement(NoticeSamples, { role: 'status', actions: true })));
+  const notice = document.getElementById('queue-notice');
+  const noticeAction = notice.querySelector('button');
+  noticeAction.focus();
+  await act(async () => noticeAction.click());
+  assert.deepEqual(noticeActivations, ['resume']);
+  await act(async () => root.render(createElement(NoticeSamples, {
+    summary: 'Queue paused.', tone: 'warning', role: 'status', actions: true
+  })));
+  assert.ok(document.getElementById('queue-notice') === notice, 'Polite updates retain the single root');
+  assert.ok(document.activeElement === noticeAction, 'Notice never moves focus to announce');
+  assert.equal(notice.querySelector('strong').textContent, 'Queue paused.');
+  assert.equal(notice.getAttribute('role'), 'status');
+  assert.equal(notice.querySelector('[role], [aria-live]'), null);
+  await act(async () => root.render(createElement(NoticeSamples, { tone: 'danger' })));
+  assert.equal(notice.getAttribute('role'), 'alert');
+  assert.equal(notice.querySelector('.eg-notice__actions'), null);
+  await act(async () => root.render(null));
+  stage('notice:complete');
+  stage('button-group:start');
+  await act(async () => root.render(createElement(ButtonGroupSamples)));
+  const actionGroup = document.getElementById('grouped-actions');
+  assert.equal(actionGroup.getAttribute('role'), 'group');
+  assert.equal(actionGroup.getAttribute('aria-label'), 'Save options');
+  assert.equal(actionGroup.getAttribute('tabindex'), null);
+  const groupedButtons = actionGroup.querySelectorAll('button');
+  assert.equal(groupedButtons.length, 2);
+  assert.ok([...groupedButtons].every((button) => button.parentElement === actionGroup));
+  await act(async () => groupedButtons[0].focus());
+  assert.ok(document.activeElement === groupedButtons[0]);
+  await act(async () => groupedButtons[0].dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
+  assert.ok(document.activeElement === groupedButtons[0], 'Group adds no roving focus');
+  assert.equal(actionGroup.querySelector('[aria-expanded], [aria-haspopup]'), null);
+  stage('button-group:complete');
   stage('search-trigger:start');
   const documentListeners = [];
   const addDocumentListener = document.addEventListener;
@@ -4343,6 +5876,26 @@ try {
   await act(async () => root.render(null));
   assert.equal(gaugeDockActionRef.current, null);
   stage('gauge-dock:complete');
+  await act(async () => root.render(createElement(ChipGroupSamples)));
+  const singleGroup = document.getElementById('chip-group-single');
+  const multipleGroup = document.getElementById('chip-group-multiple');
+  const singleItems = [...singleGroup.querySelectorAll('button')];
+  const multipleItems = [...multipleGroup.querySelectorAll('button')];
+  await act(async () => singleItems[1].click());
+  assert.equal(singleItems[1].getAttribute('aria-checked'), 'true');
+  await act(async () => singleItems[1].click());
+  assert.deepEqual(chipGroupSingleChanges, ['css', '']);
+  await act(async () => multipleItems[1].click());
+  await act(async () => multipleItems[0].click());
+  await act(async () => multipleItems[2].click());
+  assert.deepEqual(chipGroupMultipleChanges, [['react', 'css'], ['css']]);
+  await act(async () => singleItems[0].focus());
+  await act(async () => singleItems[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 0)));
+  assert.equal(document.activeElement, singleItems[1]);
+  assert.deepEqual(chipGroupSingleChanges, ['css', ''], 'Arrows move focus without selecting');
+  assert.equal(document.querySelectorAll('input').length, 0);
+  stage('chip-group:complete');
   console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'PullQuote figure identity, variant/tone rerender, blank-text removal and development warning', 'Countdown client sampling, expiry episode, running rerender and unavailable recovery', 'Stat passive group, highlight and no-data rerenders with stable identity', 'SearchTrigger native activation, inert displayed shortcut, compact identity, disabled guard, host Slot trigger and ref cleanup', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup', 'Chip pressed state, change events, controlled/disabled behavior and public recipe'] }));
 } finally {
   stage('unmount:start');
@@ -4452,7 +6005,13 @@ ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
+${assertTimelineCSS.toString()}
+${assertSectionHeaderCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
+${assertSocialLinksCSS.toString()}
+${assertMenuCSS.toString()}
+assertMenuCSS(emitted);
+${assertTabsCSS.toString()}
 ${assertPullQuoteCSS.toString()}
 assertIconButtonCSS(emitted);
 ${assertToggleCSS.toString()}
@@ -4484,10 +6043,24 @@ assertProgressBarCSS(emitted);
 assertTextareaCSS(emitted);
 assertInputCSS(emitted);
 assertDropzoneCSS(emitted);
+${assertButtonGroupCSS.toString()}
+assertButtonGroupCSS(emitted);
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(emitted);
+${assertCarouselCSS.toString()}
+assertCarouselCSS(emitted);
+${assertMeterRowCSS.toString()}
+assertMeterRowCSS(emitted);
 assertStatCSS(emitted);
+assertSectionHeaderCSS(emitted);
+${assertListItemCSS.toString()}
+assertListItemCSS(emitted);
 assertSearchTriggerCSS(emitted);
+assertTimelineCSS(emitted);
+assertSocialLinksCSS(emitted);
+assertTabsCSS(emitted);
+${assertNoticeCSS.toString()}
+assertNoticeCSS(emitted);
 assertPullQuoteCSS(emitted);
 assertToggleCSS(emitted);
 assertChipCSS(emitted);
@@ -4495,8 +6068,12 @@ ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(emitted);
+${assertPopoverCSS.toString()}
+assertPopoverCSS(emitted);
 ${assertLinkCSS.toString()}
 assertLinkCSS(emitted);
+${assertNavListCSS.toString()}
+assertNavListCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
 const shipped = readFileSync(new URL('./node_modules/@egdev/tokens/dist/tokens.css', import.meta.url), 'utf8');
 const names = shipped
@@ -4511,7 +6088,8 @@ const typography = ${JSON.stringify(typographyNames)};
 // #70 Stat adds --text-display-stat and --text-display-stat-sm with three companions each: 255 + 8 = 263.
 // #82 Countdown adds 10 tokens: 263 + 10 = 273.
 // #98 PullQuote adds 9 tokens: 273 + 9 = 282.
-assert.equal(names.length, 282, 'Packed native artifact must expose 282 variables');
+// #100 D7 adds 1 static breakpoint: 282 + 1 = 283.
+assert.equal(names.length, 283, 'Packed native artifact must expose 283 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
@@ -4554,9 +6132,18 @@ assertProgressBarCSS(twCss);
 assertTextareaCSS(twCss);
 assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
+assertButtonGroupCSS(twCss);
 assertCountdownCSS(twCss);
+assertMeterRowCSS(twCss);
 assertStatCSS(twCss);
+assertSectionHeaderCSS(twCss);
+assertListItemCSS(twCss);
 assertSearchTriggerCSS(twCss);
+assertTimelineCSS(twCss);
+assertCarouselCSS(twCss);
+assertSocialLinksCSS(twCss);
+assertMenuCSS(twCss);
+assertTabsCSS(twCss);
 assertPullQuoteCSS(twCss);
 assertToggleCSS(twCss);
 assertChipCSS(twCss);
@@ -4565,7 +6152,9 @@ for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
 assertSurfaceCSS(twCss);
+assertPopoverCSS(twCss);
 assertLinkCSS(twCss);
+assertNavListCSS(twCss);
 assertLabelCSS(twCss);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) {
   assert.ok(twCss.includes(selector), 'Tailwind consumer must retain shipped UI selector ' + selector);

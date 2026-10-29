@@ -15,6 +15,46 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "SelectTile",
+        "type": "string | string[] (mode-dependent)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileProps",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
+      {
+        "component": "SelectTileOption",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileOption",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
+      {
+        "component": "ChipGroup",
+        "type": "string (single) | string[] (multiple)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
+        "component": "ChipGroupOption",
+        "type": "string (unique non-empty selection value)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupOption",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
         "component": "Gauge",
         "type": "number",
         "status": "existing",
@@ -51,7 +91,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       },
       {
@@ -73,6 +113,46 @@
           "symbol": "StatProps",
           "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
         }
+      },
+      {
+        "component": "Carousel",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselProps",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+        }
+      },
+      {
+        "component": "CarouselItem",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselItem",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+        }
+      },
+      {
+        "component": "MeterRow",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/meter-row/types.ts",
+          "symbol": "MeterRowProps",
+          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
       }
     ]
   },
@@ -92,6 +172,26 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "SelectTile",
+        "type": "string | string[] (mode-dependent)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileProps",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
+      {
+        "component": "ChipGroup",
+        "type": "string (single) | string[] (multiple)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
         "component": "RadioGroup",
         "type": "string",
         "status": "existing",
@@ -108,7 +208,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       },
       {
@@ -119,6 +219,26 @@
           "path": "packages/ui/src/atoms/select/types.ts",
           "symbol": "SelectProps",
           "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
+        }
+      },
+      {
+        "component": "Carousel",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselProps",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
       }
     ]
@@ -139,6 +259,26 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "SelectTile",
+        "type": "((value: string) => void) | ((value: string[]) => void) (mode-dependent)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileProps",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
+      {
+        "component": "ChipGroup",
+        "type": "((value: string) => void) (single) | ((value: string[]) => void) (multiple)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
         "component": "RadioGroup",
         "type": "(value: string) => void",
         "status": "existing",
@@ -155,7 +295,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       },
       {
@@ -166,6 +306,26 @@
           "path": "packages/ui/src/atoms/select/types.ts",
           "symbol": "SelectProps",
           "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
+        }
+      },
+      {
+        "component": "Carousel",
+        "type": "(value: string) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselProps",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "(value: string) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
       }
     ]
@@ -185,6 +345,36 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Timeline",
+        "type": "TimelineSize ('sm' | 'md' | 'lg')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineProps",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
+      {
+        "component": "SocialLinks",
+        "type": "SocialLinksSize ('md' | 'lg')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
+      {
+        "component": "Notice",
+        "type": "'md' | 'sm'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      },
       {
         "component": "Avatar",
         "type": "AvatarSize ('sm' | 'md' | 'lg' | 'xl')",
@@ -324,6 +514,16 @@
           "symbol": "CountdownProps",
           "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
         }
+      },
+      {
+        "component": "Tabs",
+        "type": "TabsSize ('md' | 'sm'); underline only",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
       }
     ]
   },
@@ -342,6 +542,56 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Timeline",
+        "type": "TimelineVariant ('events' | 'chat')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineProps",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
+      {
+        "component": "SocialLinks",
+        "type": "SocialLinksVariant ('outline' | 'ghost')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
+      {
+        "component": "SectionHeader",
+        "type": "SectionHeaderVariant (stack|split|inline)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      },
+      {
+        "component": "ListItem",
+        "type": "ListItemVariant ('card' | 'compact' | 'row'); empty accepts card only",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/list-item/types.ts",
+          "symbol": "ListItemProps",
+          "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
+        }
+      },
+      {
+        "component": "ButtonGroup",
+        "type": "ButtonGroupVariant ('spaced' | 'attached')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/button-group/types.ts",
+          "symbol": "ButtonGroupProps",
+          "revision": "sha256:2ecb19299d2410ef130ed830d62b410b17c8adc04bb73625de6bd0940ed94e51"
+        }
+      },
       {
         "component": "Button",
         "type": "ButtonVariant ('primary' | 'secondary' | 'ghost' | 'dark')",
@@ -471,6 +721,26 @@
           "symbol": "PullQuoteProps",
           "revision": "sha256:a80b89c12589a3afe7dfc16fa86797bd860f12f839946ec189da60277e8f05d4"
         }
+      },
+      {
+        "component": "MeterRow",
+        "type": "MeterRowVariant ('default' | 'muted')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/meter-row/types.ts",
+          "symbol": "MeterRowProps",
+          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "TabsVariant ('underline' | 'segmented')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
       }
     ]
   },
@@ -489,6 +759,56 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "NavList",
+        "type": "NavListTag.tone ('neutral' | 'brand', default neutral)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListTag",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
+      {
+        "component": "Timeline",
+        "type": "'neutral' | 'brand' (event category)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineEvent",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
+      {
+        "component": "SectionHeader",
+        "type": "SectionHeaderTone (canvas|raised)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      },
+      {
+        "component": "MenuEntry",
+        "type": "MenuTone ('default' | 'primary' | 'danger'; action/link branches)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuEntry",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
+      {
+        "component": "Notice",
+        "type": "NoticeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      },
       {
         "component": "Badge",
         "type": "BadgeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger' | 'brand')",
@@ -548,6 +868,16 @@
           "symbol": "PullQuoteProps",
           "revision": "sha256:a80b89c12589a3afe7dfc16fa86797bd860f12f839946ec189da60277e8f05d4"
         }
+      },
+      {
+        "component": "Tabs",
+        "type": "TabsTone ('neutral' | 'danger'); TabsItem counter only",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsItem",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
       }
     ]
   },
@@ -593,6 +923,96 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "NavList",
+        "type": "string (required non-empty landmark name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListProps",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
+      {
+        "component": "Timeline",
+        "type": "string (required non-empty collection name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineProps",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
+      {
+        "component": "SelectTile",
+        "type": "string (required collection name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileProps",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
+      {
+        "component": "SelectTileOption",
+        "type": "string (visible control name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileOption",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
+      {
+        "component": "SocialLinks",
+        "type": "string (accessible list name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
+      {
+        "component": "SocialLinkItem",
+        "type": "string (required destination name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinkItem",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
+      {
+        "component": "ChipGroup",
+        "type": "string (required non-empty group name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
+        "component": "ChipGroupOption",
+        "type": "string (visible label and accessible item name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupOption",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
+        "component": "ButtonGroup",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/button-group/types.ts",
+          "symbol": "ButtonGroupProps",
+          "revision": "sha256:2ecb19299d2410ef130ed830d62b410b17c8adc04bb73625de6bd0940ed94e51"
+        }
+      },
       {
         "component": "Avatar",
         "type": "string",
@@ -680,7 +1100,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       },
       {
@@ -751,6 +1171,56 @@
           "path": "packages/ui/src/molecules/gauge-dock/types.ts",
           "symbol": "GaugeDockProps",
           "revision": "sha256:892044d2ba68a86b7ebcd73a966662f0b611eac20e8388b6ae90056b267c2a35"
+        }
+      },
+      {
+        "component": "PopoverContent",
+        "type": "string (required non-empty dialog name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverContentProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+        }
+      },
+      {
+        "component": "Carousel",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselProps",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+        }
+      },
+      {
+        "component": "CarouselItem",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselItem",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+        }
+      },
+      {
+        "component": "MeterRow",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/meter-row/types.ts",
+          "symbol": "MeterRowProps",
+          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "string (accessible tablist name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
       }
     ]
@@ -861,7 +1331,17 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
+        }
+      },
+      {
+        "component": "MeterRow",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/meter-row/types.ts",
+          "symbol": "MeterRowProps",
+          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
         }
       }
     ]
@@ -1042,6 +1522,66 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "NavList",
+        "type": "NavListLink.icon (optional decorative IconName)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListLink",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
+      {
+        "component": "Timeline",
+        "type": "ReactNode (optional decorative event-category glyph)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineEvent",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
+      {
+        "component": "SocialLinkItem",
+        "type": "ReactElement (decorative input delegated to IconButton.icon with required label)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinkItem",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
+      {
+        "component": "MenuEntry",
+        "type": "IconName (optional decorative glyph on action/link/submenu branches)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuEntry",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
+      {
+        "component": "ChipGroupOption",
+        "type": "ReactNode (decorative leading content)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupOption",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
+        "component": "Notice",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      },
+      {
         "component": "Button",
         "type": "ReactNode (decorative start/end slot, default end; Button-only semantic exception)",
         "status": "existing",
@@ -1183,6 +1723,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "ListItem",
+        "type": "boolean; required true for empty presentation",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/list-item/types.ts",
+          "symbol": "ListItemProps",
+          "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
+        }
+      },
+      {
         "component": "Button",
         "type": "boolean (asChild)",
         "status": "existing",
@@ -1260,6 +1810,36 @@
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
           "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
+        }
+      },
+      {
+        "component": "HoverCardTrigger",
+        "type": "boolean (discriminates native required href from child-owned href)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardTriggerProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      },
+      {
+        "component": "PopoverTrigger",
+        "type": "boolean (button composition union)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverTriggerProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+        }
+      },
+      {
+        "component": "PopoverClose",
+        "type": "boolean (button composition union)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverCloseProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
         }
       }
     ]
@@ -1536,6 +2116,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "SocialLinkItem",
+        "type": "boolean (opt-in new context, default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinkItem",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
+      {
         "component": "Link",
         "type": "boolean",
         "status": "existing",
@@ -1562,6 +2152,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "SocialLinks",
+        "type": "string (localized new-context notice)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
       {
         "component": "Link",
         "type": "string",
@@ -1675,6 +2275,26 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "SelectTile",
+        "type": "SelectTileOption[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileProps",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
+      {
+        "component": "ChipGroup",
+        "type": "ChipGroupOption[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
       {
         "component": "RadioGroup",
         "type": "RadioGroupOption[]",
@@ -1793,7 +2413,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       }
     ]
@@ -1840,6 +2460,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Timeline",
+        "type": "boolean (TimelineEvent and TimelineChatItem emphasis)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineEvent",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
       {
         "component": "Stat",
         "type": "boolean",
@@ -1932,6 +2562,26 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "HoverCardContent",
+        "type": "'top' | 'right' | 'bottom' | 'left'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardContentProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      },
+      {
+        "component": "Menu",
+        "type": "MenuSide ('top' | 'right' | 'bottom' | 'left')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
+      {
         "component": "Tooltip",
         "type": "'top' | 'right' | 'bottom' | 'left'",
         "status": "existing",
@@ -1939,6 +2589,16 @@
           "path": "packages/ui/src/atoms/tooltip/types.ts",
           "symbol": "TooltipProps",
           "revision": "sha256:ceeb8d9d26860fa35de0e75f7a2979709d8bdd7195c58a389d2cccc5d6965eaf"
+        }
+      },
+      {
+        "component": "PopoverContent",
+        "type": "'top' | 'right' | 'bottom' | 'left'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverContentProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
         }
       }
     ]
@@ -1958,6 +2618,16 @@
       "contentHash": "sha256:bbef626ac769aef5d57f18e67b323715be50d20e75f467c5fca95879c183b0ff"
     },
     "usages": [
+      {
+        "component": "SelectTile",
+        "type": "SelectTileRatio = 'landscape' | 'portrait' | 'story' | 'square' | 'wide' | 'banner'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileProps",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
       {
         "component": "AspectRatio",
         "type": "number",
@@ -1984,7 +2654,78 @@
       "scope": "convention:collection-items",
       "contentHash": "sha256:304ac895a943454d04d057e18518794a315958b70252df2e696e00dc65b36f40"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "NavList",
+        "type": "NavListEntry[]; NavListGroupBase.items narrows to NavListLink[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListProps",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
+      {
+        "component": "Timeline",
+        "type": "TimelineEvent[] | TimelineChatItem[] (variant-discriminated)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineProps",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
+      {
+        "component": "Carousel",
+        "type": "CarouselItem[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselProps",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+        }
+      },
+      {
+        "component": "SocialLinks",
+        "type": "SocialLinkItem[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
+      {
+        "component": "Menu",
+        "type": "MenuEntry[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
+      {
+        "component": "MenuSubmenuItem",
+        "type": "(MenuActionItem | MenuLinkItem | MenuSeparatorItem | MenuLabelItem)[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuSubmenuItem",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "TabsItem[] (value, label, optional count/tone/disabled, required content)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
+      }
+    ]
   },
   {
     "id": "localized-messages",
@@ -2000,7 +2741,38 @@
       "scope": "convention:localized-messages",
       "contentHash": "sha256:555c4e48e004651531f1588e18a8f71781afd8054c2ae113959b2831d86736cd"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Timeline",
+        "type": "Partial<TimelineMessages>",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/timeline/types.ts",
+          "symbol": "TimelineProps",
+          "revision": "sha256:322b483929080991da7e4eede32cd70dff48bf8353f4eeef5a965aec3ecc4e20"
+        }
+      },
+      {
+        "component": "Carousel",
+        "type": "Partial<CarouselMessages>",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselProps",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+        }
+      },
+      {
+        "component": "MeterRow",
+        "type": "Partial<MeterRowMessages>",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/meter-row/types.ts",
+          "symbol": "MeterRowProps",
+          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+        }
+      }
+    ]
   },
   {
     "id": "selection-cardinality",
@@ -2016,7 +2788,28 @@
       "scope": "convention:selection-cardinality",
       "contentHash": "sha256:f64c90bbbb7a034e76d20b15147113520b24c71e2c8061534800eb8e557a9da9"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SelectTile",
+        "type": "SelectTileType = 'single' | 'multiple'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileProps",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      },
+      {
+        "component": "ChipGroup",
+        "type": "ChipGroupType ('single' | 'multiple')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      }
+    ]
   },
   {
     "id": "deadline-instant",
@@ -2317,7 +3110,38 @@
       "scope": "convention:floating-align",
       "contentHash": "sha256:ec3c51a76edd89a67049d49001e9017d43707075312a605d895739c79f949dd2"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "HoverCardContent",
+        "type": "'start' | 'center' | 'end'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardContentProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      },
+      {
+        "component": "PopoverContent",
+        "type": "'start' | 'center' | 'end'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverContentProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+        }
+      },
+      {
+        "component": "Menu",
+        "type": "MenuAlign ('start' | 'center' | 'end')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "open-state",
@@ -2333,7 +3157,48 @@
       "scope": "convention:open-state",
       "contentHash": "sha256:6007292c57d0dfee10a01b1cc199795b014e40bd09a8b55fd2af3f8fa0274631"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "NavList",
+        "type": "NavListCollapsibleGroup.open (optional controlled boolean)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListCollapsibleGroup",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
+      {
+        "component": "HoverCard",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      },
+      {
+        "component": "Popover",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+        }
+      },
+      {
+        "component": "Menu",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "initial-uncontrolled-open",
@@ -2349,7 +3214,48 @@
       "scope": "convention:initial-uncontrolled-open",
       "contentHash": "sha256:2a8c4a933020f41d26f1efdb80320bb0eaf25326cf49c0384abc92416010606f"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "NavList",
+        "type": "NavListCollapsibleGroup.defaultOpen (boolean, default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListCollapsibleGroup",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
+      {
+        "component": "HoverCard",
+        "type": "boolean (default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      },
+      {
+        "component": "Popover",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+        }
+      },
+      {
+        "component": "Menu",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "open-change",
@@ -2365,7 +3271,48 @@
       "scope": "convention:open-change",
       "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "NavList",
+        "type": "NavListCollapsibleGroup.onOpenChange ((open: boolean) => void)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListCollapsibleGroup",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
+      {
+        "component": "HoverCard",
+        "type": "(open: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/hover-card/types.ts",
+          "symbol": "HoverCardProps",
+          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
+        }
+      },
+      {
+        "component": "Popover",
+        "type": "(open: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+        }
+      },
+      {
+        "component": "Menu",
+        "type": "(open: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "item-presentation-status",
@@ -2381,7 +3328,18 @@
       "scope": "convention:item-presentation-status",
       "contentHash": "sha256:8402ef1355689cbd78c154bdc729ea1443566f5401d9a8bb1e18868a77a8d89a"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "ListItem",
+        "type": "ListItemStatus ('default' | 'new' | 'failed' | 'done' | 'empty' | 'dragging' | 'off')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/list-item/types.ts",
+          "symbol": "ListItemProps",
+          "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
+        }
+      }
+    ]
   },
   {
     "id": "menu-entry-kind",
@@ -2397,7 +3355,28 @@
       "scope": "convention:menu-entry-kind",
       "contentHash": "sha256:0b0cb903110a56f70e453b35f949a782f3ad4da9820ba6a6d0b4bb4fdab95308"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "NavList",
+        "type": "NavListEntry.kind ('link' | 'group' | 'collapsible-group'); link kind is optional",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListEntry",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
+      {
+        "component": "MenuEntry",
+        "type": "'item' | 'link' | 'separator' | 'label' | 'submenu' (optional only on MenuActionItem)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuEntry",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "panel-header",
@@ -2413,7 +3392,18 @@
       "scope": "convention:panel-header",
       "contentHash": "sha256:d0e5fa1ca4fc22a01baadd487e235b17b52c43da13ffa3af81826f5085295714"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Menu",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "navigation-intent",
@@ -2429,7 +3419,28 @@
       "scope": "convention:navigation-intent",
       "contentHash": "sha256:7fb068ceea0357c786c87878c1080e7737b18da24f7feb48010b643ba4d1e197"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "NavList",
+        "type": "(item: NavListLink, event: MouseEvent<HTMLAnchorElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListProps",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
+      {
+        "component": "Menu",
+        "type": "(item: MenuLinkItem, event: MouseEvent<HTMLAnchorElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "numeric-display-help",
@@ -2445,7 +3456,18 @@
       "scope": "convention:numeric-display-help",
       "contentHash": "sha256:8ee4e7bb40cdfd35b548ebf473ec7775f8e0fbe658d85747c2d0cd64de5b9ec7"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "MeterRow",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/meter-row/types.ts",
+          "symbol": "MeterRowProps",
+          "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+        }
+      }
+    ]
   },
   {
     "id": "heading-title",
@@ -2461,7 +3483,18 @@
       "scope": "convention:heading-title",
       "contentHash": "sha256:3b7c8409a2f43bbc296608d65ee61e78aebbe31118f1f65e955ff65078e8c2d3"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SectionHeader",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      }
+    ]
   },
   {
     "id": "heading-level",
@@ -2478,6 +3511,16 @@
       "contentHash": "sha256:3235f5126f7405ae3956b969186d33c48c302b42c2a40d169c9d2f11e1d12ead"
     },
     "usages": [
+      {
+        "component": "SectionHeader",
+        "type": "SectionHeaderLevel (1|2|3|4|5|6)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      },
       {
         "component": "Heading",
         "type": "HeadingLevel (1|2|3|4|5|6)",
@@ -2504,7 +3547,18 @@
       "scope": "convention:trailing-actions",
       "contentHash": "sha256:b00c5b3d1006ee97caa5d258e4ce04a046acb3d8d752d734e37bf96c92356550"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Notice",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      }
+    ]
   },
   {
     "id": "panel-footer",
@@ -2536,7 +3590,18 @@
       "scope": "convention:message-summary",
       "contentHash": "sha256:975bcd3e71864c8c5033aa82310d14454013767fe690f531b87ba297497743cd"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Notice",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      }
+    ]
   },
   {
     "id": "heading-eyebrow",
@@ -2552,7 +3617,18 @@
       "scope": "convention:heading-eyebrow",
       "contentHash": "sha256:131bf821957930e7334f9f0efbd400f99c09bf13c6bc752d5e8e229603d4e96c"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SectionHeader",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      }
+    ]
   },
   {
     "id": "image-caption",
@@ -2600,7 +3676,18 @@
       "scope": "convention:interaction-modality",
       "contentHash": "sha256:a1b17de345877cfc32c4b0ec4ff757373f2beff70bcc1add9358ac04920150d1"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Popover",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverProps",
+          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+        }
+      }
+    ]
   },
   {
     "id": "portal-container",
@@ -2644,6 +3731,16 @@
       "contentHash": "sha256:6ad8880449dfe520919a4dcd2b6cfeb8f16c20a842553c86c89acb3180f40d6b"
     },
     "usages": [
+      {
+        "component": "SectionHeader",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      },
       {
         "component": "Text",
         "type": "string",
@@ -2746,6 +3843,16 @@
     },
     "usages": [
       {
+        "component": "MenuEntry",
+        "type": "string (action branch only; display-only)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuEntry",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
+      {
         "component": "SearchTrigger",
         "type": "string",
         "status": "existing",
@@ -2800,6 +3907,16 @@
     },
     "usages": [
       {
+        "component": "SectionHeader",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      },
+      {
         "component": "Text",
         "type": "boolean",
         "status": "existing",
@@ -2835,7 +3952,18 @@
       "scope": "convention:section-lede",
       "contentHash": "sha256:ef61567892d3f63443d04376c139f0c65a817818da8a3ef4b69f9aa80e1e9235"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SectionHeader",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      }
+    ]
   },
   {
     "id": "heading-id",
@@ -2851,7 +3979,18 @@
       "scope": "convention:heading-id",
       "contentHash": "sha256:b2205b336988b3c2767d2cfbd2457f6f9d3033a0191e6d8c17a049237d0750f6"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SectionHeader",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/section-header/types.ts",
+          "symbol": "SectionHeaderProps",
+          "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      }
+    ]
   },
   {
     "id": "option-metadata",
@@ -2867,7 +4006,18 @@
       "scope": "convention:option-metadata",
       "contentHash": "sha256:34ae867cd35b9609ef3b293c6953f965e3889d64c2b7030170666e27f9bd99e5"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SelectTileOption",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileOption",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      }
+    ]
   },
   {
     "id": "preview-thumbnail",
@@ -2883,7 +4033,18 @@
       "scope": "convention:preview-thumbnail",
       "contentHash": "sha256:ea9f56de34a4533555362e81a233937ffccc7379b423153c1824bc79d78291d3"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SelectTileOption",
+        "type": "SelectTileThumbnail = { src: string }",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileOption",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      }
+    ]
   },
   {
     "id": "live-presentation",
@@ -2899,7 +4060,18 @@
       "scope": "convention:live-presentation",
       "contentHash": "sha256:a5add4e971a9ab337f10f9c0c081fe4c28aa9ebba5bac220b623fe837853cdde"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SelectTileOption",
+        "type": "boolean (live: true requires badge)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileOption",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      }
+    ]
   },
   {
     "id": "thumbnail-badge",
@@ -2915,7 +4087,18 @@
       "scope": "convention:thumbnail-badge",
       "contentHash": "sha256:70917ec0755d7f42a11f600c3a201b349c173df0c884d5869637e9c7d6e744b1"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SelectTileOption",
+        "type": "string (required when live: true)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileOption",
+          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+        }
+      }
+    ]
   },
   {
     "id": "layout-gap",
@@ -2932,6 +4115,16 @@
       "contentHash": "sha256:1f1267aaafd194a30f1e21ec4d00eecbd8f12ff58f91634a874b4ac2457c1893"
     },
     "usages": [
+      {
+        "component": "SocialLinks",
+        "type": "SocialLinksGap (1 | 2)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      },
       {
         "component": "Stack",
         "type": "LayoutGap (0|1|2|3|4|5|6|7|8|10|12|14|16|20|24)",
@@ -2968,7 +4161,18 @@
       "scope": "convention:group-caption",
       "contentHash": "sha256:d2efc7f6e50156598324373e8cb3cecd2e72a10db3f30df7f9d2cc638c574d93"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SocialLinks",
+        "type": "string | null",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      }
+    ]
   },
   {
     "id": "inline-caption-layout",
@@ -2984,7 +4188,18 @@
       "scope": "convention:inline-caption-layout",
       "contentHash": "sha256:e381bc3821dfcca9f868d6d2058f835037875063a134376245b4cc6b9e746d8e"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "SocialLinks",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/social-links/types.ts",
+          "symbol": "SocialLinksProps",
+          "revision": "sha256:dafd4d7a0ec76696e85d2ad1856998720c6a68ceb5f805c0a584c59ae7bef417"
+        }
+      }
+    ]
   },
   {
     "id": "cross-axis-alignment",

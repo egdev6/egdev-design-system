@@ -8,6 +8,8 @@
  */
 
 @theme static {
+  /* #100 D7 — SectionHeader split layout starts at 860px. */
+  --breakpoint-section-header-split: 860px;
   /* Reinicia el espacio de nombres de color de Tailwind: solo los tokens EGDEV. */
   --color-*: initial;
   /* Único tema de color: EGDDEV Foundation (oscuro). No se añade un tema claro. */

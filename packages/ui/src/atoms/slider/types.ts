@@ -3,7 +3,7 @@ import type { ComponentPropsWithoutRef } from 'react';
 
 /**
  * Single-value horizontal range control over Radix Slider. Native span attributes reach the
- * root, except aria-describedby, which the hook routes to the focusable thumb.
+ * root, except aria-describedby and aria-invalid, which the hook routes to the focusable thumb.
  */
 export type SliderProps = Omit<ComponentPropsWithoutRef<'span'>, 'children' | 'defaultValue' | 'dir' | 'onChange'> & {
   /**
