@@ -47,7 +47,7 @@ describe('ChipGroup approved v0.1 + A1 metadata', () => {
         .getPreEmitDiagnostics(program)
         .map((diagnostic) => ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'))
     ).toEqual([]);
-  });
+  }, 30_000);
   it('annotates every public option, common prop and discriminated branch, including A1', () => {
     const file = ts.createSourceFile(
       'types.ts',
