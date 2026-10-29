@@ -12,6 +12,12 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...['surface-material-tone', 'preset-dimensions', 'leading-icon', 'message-summary', 'trailing-actions'].map(
+    (conventionId) => ({
+      conventionId,
+      source: 'packages/ui/src/molecules/notice/types.ts#NoticeProps'
+    })
+  ),
   ...['accessible-name', 'leading-icon', 'visual-treatment', 'preset-dimensions', 'slot-composition'].map(
     (conventionId) => ({
       conventionId,

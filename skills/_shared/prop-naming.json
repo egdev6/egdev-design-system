@@ -186,6 +186,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "Notice",
+        "type": "'md' | 'sm'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      },
+      {
         "component": "Avatar",
         "type": "AvatarSize ('sm' | 'md' | 'lg' | 'xl')",
         "status": "existing",
@@ -489,6 +499,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Notice",
+        "type": "NoticeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      },
       {
         "component": "Badge",
         "type": "BadgeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger' | 'brand')",
@@ -1031,6 +1051,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Notice",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      },
       {
         "component": "Button",
         "type": "ReactNode (decorative start/end slot, default end; Button-only semantic exception)",
@@ -2484,7 +2514,18 @@
       "scope": "convention:trailing-actions",
       "contentHash": "sha256:b00c5b3d1006ee97caa5d258e4ce04a046acb3d8d752d734e37bf96c92356550"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Notice",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      }
+    ]
   },
   {
     "id": "panel-footer",
@@ -2516,7 +2557,18 @@
       "scope": "convention:message-summary",
       "contentHash": "sha256:975bcd3e71864c8c5033aa82310d14454013767fe690f531b87ba297497743cd"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Notice",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      }
+    ]
   },
   {
     "id": "heading-eyebrow",
