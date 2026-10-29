@@ -192,6 +192,53 @@ describe('Storybook TypeScript docgen contract', () => {
     }
   });
 
+  it('extracts ButtonGroup own directives, required children and only supported native rows', () => {
+    const file = ast(source('molecules/button-group/types.ts'));
+    const properties = ownProps(file, ['ButtonGroupProps']);
+    const expected: Record<string, string> = { label: 'text', variant: 'select', children: 'false' };
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(expected));
+    for (const property of properties) {
+      const tags = ts.getJSDocTags(property);
+      expect(tags.filter((tag) => tag.tagName.text === 'control').map((tag) => tag.comment)).toEqual([
+        expected[property.name.getText(file)]
+      ]);
+      if (!property.questionToken) {
+        expect(tags.some((tag) => tag.tagName.text === 'default')).toBe(false);
+      }
+    }
+    const doc = parser
+      .parse(source('molecules/button-group/ButtonGroup.tsx'))
+      .find((item) => item.displayName === 'ButtonGroup');
+    expect(doc).toBeDefined();
+    expect(doc?.props.label).toMatchObject({ required: false, defaultValue: null, type: { name: 'string' } });
+    expect(doc?.props.variant).toMatchObject({ required: false, defaultValue: { value: 'spaced' } });
+    expect(doc?.props.variant?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'spaced',
+      'attached'
+    ]);
+    expect(doc?.props.children).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    const childrenTags = doc?.props.children?.tags as Record<string, string> | undefined;
+    expect(childrenTags?.controlReason).toMatch(/Non-serializable ReactNode.*Spaced.*SplitButton.*AttachedThree/);
+    expect(defaults(source('molecules/button-group/types.ts'), true)).toEqual({ variant: 'spaced' });
+    expect(defaults(source('molecules/button-group/useButtonGroup.ts'), false)).toEqual({ variant: 'spaced' });
+    for (const name of ['id', 'title', 'dir', 'aria-labelledby', 'aria-describedby', 'className']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of ['role', 'aria-label', 'ref', 'asChild', 'size', 'orientation', 'buttonGroupVariants']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const stories = ast(source('molecules/button-group/ButtonGroup.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Spaced',
+      'SplitButton',
+      'SmallSplitButton',
+      'AttachedThree',
+      'WithDisabledItem',
+      'RightToLeft'
+    ]);
+    expect(stories.getText()).toMatch(/title: 'Molecules\/ButtonGroup'/);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+  });
   it('extracts the Toggle union, boolean defaults, native button props and every own directive', () => {
     const doc = parser.parse(source('atoms/toggle/Toggle.tsx')).find((item) => item.displayName === 'Toggle');
     expect(doc).toBeDefined();
@@ -266,10 +313,17 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/toggle',
       './atoms/tooltip',
       './lib/cn',
+      './molecules/button-group',
+      './molecules/chip-group',
+      './molecules/list-item',
+      './molecules/menu',
+      './molecules/meter-row',
+      './molecules/notice',
+      './molecules/section-header',
       './molecules/social-links',
+      './molecules/tabs',
       './primitives/aspect-ratio',
       './primitives/divider',
-
       './primitives/label',
       './primitives/portal',
       './primitives/skeleton',
@@ -284,8 +338,10 @@ describe('Storybook TypeScript docgen contract', () => {
       'Avatar',
       'Badge',
       'Button',
+      'ButtonGroup',
       'Checkbox',
       'Chip',
+      'ChipGroup',
       'Cluster',
       'Countdown',
       'Divider',
@@ -298,12 +354,23 @@ describe('Storybook TypeScript docgen contract', () => {
       'Kbd',
       'Label',
       'Link',
+      'ListItem',
+      'ListItemActions',
+      'ListItemBody',
+      'ListItemContent',
+      'ListItemFooter',
+      'ListItemMedia',
+      'ListItemMeta',
       'Logo',
+      'Menu',
+      'MeterRow',
+      'Notice',
       'Portal',
       'ProgressBar',
       'PullQuote',
       'RadioGroup',
       'SearchTrigger',
+      'SectionHeader',
       'Select',
       'Skeleton',
       'Slider',
@@ -316,6 +383,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'StatusDot',
       'Surface',
       'Switch',
+      'Tabs',
       'Text',
       'Textarea',
       'Toggle',
@@ -326,13 +394,139 @@ describe('Storybook TypeScript docgen contract', () => {
       'cn',
       'dropzoneVariants',
       'labelVariants',
+      'menuVariants',
+      'noticeVariants',
       'progressBarVariants',
       'radioGroupVariants',
       'sliderVariants',
       'statVariants',
       'statusDotVariants',
       'surfaceVariants',
+      'tabsVariants',
       'tooltipVariants'
+    ]);
+  });
+
+  it('extracts SectionHeader own controls, defaults, native boundary and documented stories', () => {
+    const file = ast(source('molecules/section-header/types.ts'));
+    const properties = ownProps(file, ['SectionHeaderProps']);
+    const controls: Record<string, string> = {
+      title: 'text',
+      eyebrow: 'text',
+      accent: 'text',
+      accentBreak: 'boolean',
+      lede: 'text',
+      variant: 'select',
+      level: 'select',
+      titleId: 'text',
+      tone: 'select'
+    };
+    const doc = parser
+      .parse(source('molecules/section-header/SectionHeader.tsx'))
+      .find((item) => item.displayName === 'SectionHeader');
+    expect(properties).toHaveLength(9);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(ts.getJSDocTags(property).filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
+      expect(doc?.props[name]?.tags).toMatchObject({ control: controls[name] });
+    }
+    expect(doc?.props.title?.required).toBe(true);
+    for (const name of ['title', 'eyebrow', 'accent', 'lede', 'titleId']) {
+      expect(doc?.props[name]?.defaultValue).toBeNull();
+      expect(doc?.props[name]?.type.name).toBe('string');
+    }
+    for (const [name, value] of Object.entries({
+      accentBreak: 'false',
+      variant: 'stack',
+      level: '2',
+      tone: 'canvas'
+    })) {
+      expect(doc?.props[name]?.defaultValue).toEqual({ value });
+    }
+    const choices = (name: string) =>
+      doc?.props[name]?.type.value.map(({ value }: { value: string }) => normalize(value));
+    expect(choices('variant')).toEqual(['inline', 'stack', 'split']);
+    expect(choices('level')).toEqual(['1', '2', '3', '4', '5', '6']);
+    expect(choices('tone')).toEqual(['canvas', 'raised']);
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'aria-labelledby', 'className', 'style', 'onClick']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of ['children', 'dangerouslySetInnerHTML', 'ref', 'asChild', 'actions', 'layout']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const stories = ast(source('molecules/section-header/SectionHeader.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'Stack',
+      'Split',
+      'Inline',
+      'AccentBreak',
+      'MissingOptionalParts',
+      'HeadingLevels',
+      'Raised',
+      'RTL',
+      'LongContent'
+    ]);
+    expect(stories.getText()).toMatch(/title: 'Molecules\/SectionHeader'/);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+    expect(defaults(source('molecules/section-header/useSectionHeader.ts'), false)).toMatchObject({
+      accentBreak: 'false',
+      variant: 'stack',
+      level: '2',
+      tone: 'canvas'
+    });
+  });
+
+  it('extracts Notice required lead, native role, constant defaults and every own directive', () => {
+    const doc = parser.parse(source('molecules/notice/Notice.tsx')).find(({ displayName }) => displayName === 'Notice');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    expect(props.summary).toMatchObject({ required: true, type: { name: 'string' }, defaultValue: null });
+    expect(props.tone).toMatchObject({ defaultValue: { value: 'neutral' }, tags: { control: 'select' } });
+    expect(props.size).toMatchObject({ defaultValue: { value: 'md' }, tags: { control: 'select' } });
+    expect(props.tone?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'neutral',
+      'info',
+      'success',
+      'warning',
+      'danger'
+    ]);
+    expect(props.role?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()).toEqual([
+      'alert',
+      'status'
+    ]);
+    expect(props.role?.defaultValue).toBeNull();
+    const file = ast(source('molecules/notice/types.ts'));
+    const own = ownProps(file, ['NoticeProps']);
+    expect(own).toHaveLength(7);
+    for (const property of own) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      expect(tags.filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
+      const metadata = props[name]?.tags as Record<string, string> | undefined;
+      expect(metadata?.control).toBe(
+        ['icon', 'actions', 'children'].includes(name) ? 'false' : name === 'summary' ? 'text' : 'select'
+      );
+      if (['icon', 'actions', 'children'].includes(name)) {
+        expect(metadata?.controlReason).toMatch(/ReactNode.*serializable/);
+        expect(props[name]?.defaultValue).toBeNull();
+      }
+    }
+    for (const name of ['id', 'title', 'role', 'aria-describedby', 'className', 'style']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of ['ref', 'asChild', 'onDismiss', 'noticeVariants']) {
+      expect(props[name], name).toBeUndefined();
+    }
+    expect(exportedStoryNames(ast(source('molecules/notice/Notice.stories.tsx')))).toEqual([
+      'Default',
+      'Tones',
+      'Small',
+      'WithActions',
+      'CustomIcon',
+      'MountedStatusUpdates',
+      'InitialStatus',
+      'InsertedAlert'
     ]);
   });
 

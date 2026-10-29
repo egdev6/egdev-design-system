@@ -28,9 +28,11 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
+import { Menu, menuVariants } from '@egdev/ui';
+import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorItem, MenuLabelItem, MenuSubmenuItem, MenuTone, MenuAlign, MenuSide } from '@egdev/ui';
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, Notice, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -38,12 +40,17 @@ import type {
   BadgeProps,
   BadgeTone,
   BadgeVariant,
+  ButtonGroupProps,
+  ButtonGroupVariant,
   ButtonProps,
   ButtonSize,
   ButtonVariant,
   CheckboxCheckedState,
   CheckboxProps,
   ChipProps,
+  ChipGroupOption,
+  ChipGroupProps,
+  ChipGroupType,
   CountdownProps,
   CountdownSize,
   CountdownTone,
@@ -68,10 +75,17 @@ import type {
   LabelProps,
   LabelVariant,
   LinkProps,
+  ListItemProps,
+  ListItemPartProps,
+  ListItemStatus,
+  ListItemVariant,
   SliderProps,
   LogoProps,
   LogoSize,
   LogoVariant,
+  MeterRowMessages,
+  MeterRowProps,
+  MeterRowVariant,
   ProgressBarProps,
   ProgressBarSize,
   ProgressBarVariant,
@@ -84,6 +98,12 @@ import type {
   SocialLinksProps,
   SocialLinksSize,
   SocialLinksVariant,
+  SectionHeaderProps,
+  SectionHeaderVariant,
+  SectionHeaderLevel,
+  SectionHeaderTone,
+  NoticeProps,
+  NoticeTone,
   SelectProps,
   SelectOption,
   SelectSize,
@@ -113,6 +133,11 @@ import type {
   SurfaceRadius,
   SurfaceTone,
   SwitchProps,
+  TabsProps,
+  TabsItem,
+  TabsTone,
+  TabsVariant,
+  TabsSize,
   TextareaProps,
   TextareaVariant,
   TooltipProps,
@@ -121,6 +146,104 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+export const menuSelections: string[] = [];
+export const menuRecipe: string = menuVariants();
+const menuTone: MenuTone = 'danger';
+const menuAlign: MenuAlign = 'end';
+const menuSide: MenuSide = 'bottom';
+const menuAction: MenuActionItem = { id: 'edit', label: 'Edit', icon: 'pencil', shortcut: '⌘E', onSelect: () => menuSelections.push('edit') };
+const menuLink: MenuLinkItem = { kind: 'link', id: 'docs', label: 'Documentation', href: '#menu-docs' };
+const menuSeparator: MenuSeparatorItem = { kind: 'separator', id: 'separator' };
+const menuLabel: MenuLabelItem = { kind: 'label', id: 'label', label: 'Actions' };
+const menuSubmenu: MenuSubmenuItem = { kind: 'submenu', id: 'more', label: 'More', items: [menuAction, menuLink] };
+export const menuEntries: MenuEntry[] = [menuLabel, menuAction, menuLink, menuSubmenu, menuSeparator, { id: 'delete', label: 'Delete', tone: menuTone }];
+export const menuProps: MenuProps = { children: createElement(Button, { children: 'Menu actions', id: 'menu-trigger' }), items: menuEntries, align: menuAlign, side: menuSide };
+export function MenuSample({ open }: { open?: boolean }) {
+  return createElement(Menu, { ...menuProps, open, onNavigate: (_entry, event) => event.preventDefault() });
+}
+// @ts-expect-error Link entries require href.
+const invalidMenuLink: MenuEntry = { kind: 'link', id: 'link', label: 'Missing destination' };
+// @ts-expect-error Nested submenus are outside v0.1.
+const invalidMenuDepth: MenuSubmenuItem = { kind: 'submenu', id: 'sub', label: 'Sub', items: [menuSubmenu] };
+// @ts-expect-error The old type discriminator is not an alias.
+const invalidMenuType: MenuEntry = { type: 'item', id: 'old', label: 'Old' };
+// @ts-expect-error Menu forwards no native props.
+const nativeMenu: MenuProps = { ...menuProps, id: 'unsupported' };
+// @ts-expect-error Menu has no public ref API.
+const refMenu: ComponentProps<typeof Menu> = { ...menuProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Menu requires one trigger element.
+const missingMenuTrigger: MenuProps = { items: [] };
+const itemStatus: Exclude<ListItemStatus, 'empty'> = 'off';
+const itemVariant: ListItemVariant = 'row';
+const itemPartProps: ListItemPartProps = { title: 'Item context' };
+export const itemChildRef = createRef<HTMLLIElement>();
+export const itemActivations: string[] = [];
+export function ListItemSamples({ status = itemStatus }: { status?: Exclude<ListItemStatus, 'empty'> }) {
+  return createElement('ul', null, createElement(ListItem, {
+    asChild: true, status, variant: itemVariant,
+    children: createElement('li', { ref: itemChildRef, id: 'consumer-item' },
+      createElement(ListItemBody, null,
+        createElement(ListItemContent, null, 'Release notes'),
+        createElement(ListItemMedia, null, createElement('img', { src: 'artwork.png', alt: 'Release artwork' }))),
+      createElement(ListItemMeta, itemPartProps, status),
+      createElement(ListItemActions, null, createElement(Button, {
+        onClick: () => itemActivations.push('show'), children: 'Show'
+      }))) }));
+}
+export const itemCard: ListItemProps = { children: createElement(ListItemFooter, null, 'Context') };
+export const emptyItem: ListItemProps = {
+  status: 'empty', asChild: true,
+  children: createElement('button', { type: 'button' }, 'Create item')
+};
+// @ts-expect-error Root children are required.
+const missingItemChildren: ListItemProps = {};
+// @ts-expect-error Empty requires Slot composition with a native action.
+const emptyContainer: ListItemProps = { status: 'empty', children: 'Create item' };
+// @ts-expect-error Empty supports card only.
+const compactEmpty: ListItemProps = { status: 'empty', variant: 'compact', asChild: true, children: createElement('button') };
+// @ts-expect-error Slot requires one element, not plain text.
+const textSlot: ListItemProps = { asChild: true, children: 'Item' };
+// @ts-expect-error Root exposes no ref; the Slot child may retain its own.
+const itemRef: ListItemProps = { children: 'Item', ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Parts expose no ref.
+const itemPartRef: ListItemPartProps = { ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Populated root is not an interactive role.
+const itemRole: ListItemProps = { children: 'Item', role: 'button' };
+// @ts-expect-error Populated root exposes no tab stop.
+const itemTab: ListItemProps = { children: 'Item', tabIndex: 0 };
+// @ts-expect-error Off is presentation, never disabled semantics.
+const itemDisabled: ListItemProps = { children: 'Item', 'aria-disabled': true };
+// @ts-expect-error Item has no domain create callback.
+const itemCreate: ListItemProps = { children: 'Item', onCreate: () => undefined };
+// @ts-expect-error The presentation status set is closed.
+const unknownItemStatus: ListItemProps = { children: 'Item', status: 'published' };
+// Keep grouped samples outside App so the existing button-count/focus harness stays unchanged.
+const groupVariant: ButtonGroupVariant = 'attached';
+export const groupProps: ButtonGroupProps = {
+  variant: groupVariant, label: 'Save options', className: 'ms-auto',
+  children: [createElement(Button, { key: 'save', size: 'sm', children: 'Save' }),
+    createElement(IconButton, { key: 'options', label: 'More save options', size: 'md', variant: 'primary',
+      icon: createElement(Icon, { name: 'chevron-down' }) })]
+};
+export function ButtonGroupSamples() {
+  return createElement(ButtonGroup, { ...groupProps, id: 'grouped-actions', 'aria-describedby': 'group-help' });
+}
+// @ts-expect-error A group requires its action children.
+const emptyGroup: ButtonGroupProps = {};
+// @ts-expect-error Group role is fixed, not an arrow-key toolbar.
+const toolbarGroup: ButtonGroupProps = { ...groupProps, role: 'toolbar' };
+// @ts-expect-error label owns aria-label; aria-labelledby remains available.
+const ariaNamedGroup: ButtonGroupProps = { ...groupProps, 'aria-label': 'Actions' };
+// @ts-expect-error No group ref is exported.
+const referencedGroup: ButtonGroupProps = { ...groupProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error The approved group axis is horizontal only.
+const verticalGroup: ButtonGroupProps = { ...groupProps, orientation: 'vertical' };
+// @ts-expect-error Children own sizing; no propagation API.
+const sizedGroup: ButtonGroupProps = { ...groupProps, size: 'sm' };
+// @ts-expect-error No root Slot composition API.
+const slottedGroup: ButtonGroupProps = { ...groupProps, asChild: true };
+// @ts-expect-error Only spaced and attached treatments are supported.
+const segmentedGroup: ButtonGroupProps = { ...groupProps, variant: 'segmented' };
 const buttonVariant: ButtonVariant = 'secondary';
 const buttonSize: ButtonSize = 'sm';
 export const buttonRef = createRef<HTMLButtonElement>();
@@ -391,6 +514,37 @@ const socialUnnamed: SocialLinkItem = { id: 'missing', href: 'https://example.or
 const socialRawTarget: SocialLinkItem = { ...socialItems[0], target: '_blank' };
 // @ts-expect-error Glyphs are decorative ReactElements, not network-name strings.
 const socialStringIcon: SocialLinkItem = { ...socialItems[0], icon: 'github' };
+// Notice stays outside App to preserve the existing generic focus/count harness.
+export const noticeTone: NoticeTone = 'warning';
+export const noticeRecipe: string = noticeVariants({ tone: noticeTone, size: 'sm' });
+export const noticeActivations: string[] = [];
+export function NoticeSamples({ summary = 'Queue ready.', tone = 'neutral', size = 'md', role, actions = false }: {
+  summary?: string; tone?: NoticeTone; size?: 'md' | 'sm'; role?: 'status' | 'alert'; actions?: boolean;
+}) {
+  const props: NoticeProps = {
+    summary, tone, size, role, id: 'queue-notice', className: 'mt-4', children: 'Review queue details.',
+    actions: actions ? createElement(Button, {
+      size: 'sm', variant: 'secondary', onClick: () => noticeActivations.push('resume'), children: 'Resume'
+    }) : undefined
+  };
+  return createElement(Notice, props);
+}
+// @ts-expect-error Notice requires a lead sentence.
+const missingNoticeSummary: NoticeProps = {};
+// @ts-expect-error The lead sentence is a string, not arbitrary React content.
+const richNoticeSummary: NoticeProps = { summary: createElement('strong', null, 'Ready') };
+// @ts-expect-error Brand is not a status family.
+const brandNotice: NoticeProps = { summary: 'Ready.', tone: 'brand' };
+// @ts-expect-error Only md and sm presets exist.
+const largeNotice: NoticeProps = { summary: 'Ready.', size: 'lg' };
+// @ts-expect-error Native role is restricted to status or alert.
+const dialogNotice: NoticeProps = { summary: 'Ready.', role: 'dialog' };
+// @ts-expect-error Notice has no public ref API.
+const refNotice: NoticeProps = { summary: 'Ready.', ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Notice owns the root and does not expose asChild.
+const slottedNotice: NoticeProps = { summary: 'Ready.', asChild: true };
+// @ts-expect-error Persistent Notice has no dismiss callback.
+const dismissibleNotice: NoticeProps = { summary: 'Ready.', onDismiss: () => undefined };
 
 // SearchTrigger stays outside App so the intrinsic button count and focus harness remain unchanged.
 export const searchTriggerRef = createRef<HTMLButtonElement>();
@@ -428,6 +582,122 @@ const openSearch: SearchTriggerProps = { open: true };
 const stringCompact: SearchTriggerProps = { compact: 'yes' };
 // @ts-expect-error shortcut is display text only.
 const numericShortcut: SearchTriggerProps = { shortcut: 75 };
+
+// SectionHeader stays outside App so the intrinsic focus harness remains unchanged.
+const sectionVariant: SectionHeaderVariant = 'split';
+const sectionLevel: SectionHeaderLevel = 3;
+const sectionTone: SectionHeaderTone = 'raised';
+export const sectionHeaderProps: SectionHeaderProps = {
+  title: 'Build ', accent: 'together.', eyebrow: 'Our work', lede: 'Thoughtful tools.',
+  titleId: 'consumer-section-title', id: 'consumer-section-header', className: 'mt-6'
+};
+export function SectionHeaderSamples({ variant = sectionVariant, optional = true }: { variant?: SectionHeaderVariant; optional?: boolean }) {
+  return createElement(SectionHeader, {
+    ...sectionHeaderProps, variant, level: sectionLevel, tone: sectionTone,
+    eyebrow: optional ? sectionHeaderProps.eyebrow : undefined,
+    lede: optional ? sectionHeaderProps.lede : undefined
+  });
+}
+// @ts-expect-error Visible title is required.
+const missingSectionTitle: SectionHeaderProps = {};
+// @ts-expect-error Content is owned, not arbitrary children.
+const childSection: SectionHeaderProps = { title: 'Build', children: 'Injected' };
+// @ts-expect-error No HTML injection API.
+const injectedSection: SectionHeaderProps = { title: 'Build', dangerouslySetInnerHTML: { __html: '<em>x</em>' } };
+// @ts-expect-error No public ref API on either React major.
+const referencedSection: SectionHeaderProps = { title: 'Build', ref: createRef<HTMLElement>() };
+// @ts-expect-error No asChild composition API.
+const composedSection: SectionHeaderProps = { title: 'Build', asChild: true };
+// @ts-expect-error The source layout alias is not public.
+const layoutSection: SectionHeaderProps = { title: 'Build', layout: 'split' };
+// @ts-expect-error Actions belong in PageHeader, not this editorial molecule.
+const actionSection: SectionHeaderProps = { title: 'Build', actions: 'Go' };
+// @ts-expect-error Only stack, split and inline are supported.
+const heroSection: SectionHeaderProps = { title: 'Build', variant: 'hero' };
+// @ts-expect-error Heading ranks stop at six.
+const seventhSection: SectionHeaderProps = { title: 'Build', level: 7 };
+// @ts-expect-error The raised/canvas host context has no flood treatment.
+const floodSection: SectionHeaderProps = { title: 'Build', tone: 'flood' };
+// @ts-expect-error titleId is plain text.
+const numericSectionId: SectionHeaderProps = { title: 'Build', titleId: 1 };
+// Task-progress samples stay outside App to preserve the existing focus harness.
+const meterRowVariant: MeterRowVariant = 'muted';
+const meterRowMessages: MeterRowMessages = { indeterminate: 'Preparing import' };
+const meterRowProps: MeterRowProps = { label: 'Import files', value: 60, variant: meterRowVariant, help: 'Keep this tab open', messages: meterRowMessages, id: 'consumer-meter-row' };
+export function MeterRowSamples({ value = 60, help = 'Keep this tab open' }: { value?: number; help?: string }) {
+  return createElement(MeterRow, { ...meterRowProps, value, help });
+}
+// @ts-expect-error The task name is required.
+const unlabelledMeterRow: MeterRowProps = { value: 60 };
+// @ts-expect-error Completion percent is required.
+const valuelessMeterRow: MeterRowProps = { label: 'Import files' };
+// @ts-expect-error Row content is generated, never caller children.
+const childMeterRow: MeterRowProps = { ...meterRowProps, children: 'Progress' };
+// @ts-expect-error Sole progress semantics belong to the composed atom.
+const roleMeterRow: MeterRowProps = { ...meterRowProps, role: 'meter' };
+// @ts-expect-error There is no row ref API on either React major.
+const refMeterRow: MeterRowProps = { ...meterRowProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error No asChild composition API.
+const slottedMeterRow: MeterRowProps = { ...meterRowProps, asChild: true };
+// @ts-expect-error The bar size is fixed at lg.
+const sizedMeterRow: MeterRowProps = { ...meterRowProps, size: 'sm' };
+// @ts-expect-error Edge placement belongs to the sm atom, not this row.
+const edgeMeterRow: MeterRowProps = { ...meterRowProps, edge: true };
+// @ts-expect-error The indicator owns descriptions internally.
+const describedMeterRow: MeterRowProps = { ...meterRowProps, 'aria-describedby': 'other' };
+// @ts-expect-error No automatic live-announcement API.
+const liveMeterRow: MeterRowProps = { ...meterRowProps, 'aria-live': 'polite' };
+// @ts-expect-error No focus stop is exposed.
+const focusableMeterRow: MeterRowProps = { ...meterRowProps, tabIndex: 0 };
+// @ts-expect-error Help is persistent plain text, not rich content.
+const richMeterRow: MeterRowProps = { ...meterRowProps, help: createElement('a', null, 'Help') };
+// @ts-expect-error No arbitrary measurement bounds API.
+const boundedMeterRow: MeterRowProps = { ...meterRowProps, min: 20 };
+// @ts-expect-error No completion event API.
+const eventMeterRow: MeterRowProps = { ...meterRowProps, onValueChange: () => undefined };
+// Tabs is a separate scene: earlier App control/focus counts must remain unchanged.
+const tabsTone: TabsTone = 'danger';
+const tabsSize: TabsSize = 'sm';
+const tabsVariant: TabsVariant = 'segmented';
+export const tabsItems: TabsItem[] = [
+  { value: 'queue', label: 'Queue', count: 0, content: createElement('p', null, 'Queued posts') },
+  { value: 'drafts', label: 'Drafts', count: 312, tone: tabsTone, content: createElement('p', null, 'Draft posts') },
+  { value: 'blocked', label: 'Unavailable', disabled: true, content: 'Unavailable posts' }
+];
+export const tabsProps: TabsProps = { items: tabsItems, label: 'Post views', id: 'consumer-tabs', className: 'mt-2 mt-4' };
+export const tabsChanges: string[] = [];
+export const tabsRecipe: string = tabsVariants();
+export function TabsSamples({ value, segmented = false }: { value?: string; segmented?: boolean }) {
+  return createElement(Tabs, { ...tabsProps, value, ...(segmented ? { variant: tabsVariant, size: tabsSize } : {}), onValueChange: (next) => tabsChanges.push(next) });
+}
+// @ts-expect-error A named tablist is required.
+const unlabelledTabs: TabsProps = { items: tabsItems };
+// @ts-expect-error Views must be supplied through items.
+const missingTabsItems: TabsProps = { label: 'Views' };
+// @ts-expect-error Every item needs its panel content, even when it is null.
+const panellessTab: TabsItem = { value: 'queue', label: 'Queue' };
+// @ts-expect-error Item identities are strings, not indices.
+const numericTab: TabsItem = { value: 1, label: 'Queue', content: null };
+// @ts-expect-error No public ref API on either React major.
+const referencedTabs: TabsProps = { ...tabsProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error The data-driven component owns its children.
+const childTabs: TabsProps = { ...tabsProps, children: 'Panel' };
+// @ts-expect-error Horizontal-only; no public orientation axis.
+const verticalTabs: TabsProps = { ...tabsProps, orientation: 'vertical' };
+// @ts-expect-error Automatic activation is fixed.
+const manualTabs: TabsProps = { ...tabsProps, activationMode: 'manual' };
+// @ts-expect-error No asChild API.
+const slottedTabs: TabsProps = { ...tabsProps, asChild: true };
+// @ts-expect-error onChange is replaced by onValueChange.
+const legacyTabsChange: TabsProps = { ...tabsProps, onChange: () => undefined };
+// @ts-expect-error No direction prop in v0.1.
+const directedTabs: TabsProps = { ...tabsProps, dir: 'rtl' };
+// @ts-expect-error Counts are raw numbers, not formatted strings.
+const formattedTab: TabsItem = { value: 'queue', label: 'Queue', content: null, count: '99+' };
+// @ts-expect-error Only underline/segmented treatments exist.
+const pillTabs: TabsProps = { ...tabsProps, variant: 'pill' };
+// @ts-expect-error Only md/sm underline sizes exist.
+const largeTabs: TabsProps = { ...tabsProps, size: 'lg' };
 
 // Stat stays outside App: it is passive, adds no buttons and leaves the focus harness unchanged.
 export const statRecipe: string = statVariants({ size: 'sm' });
@@ -886,6 +1156,50 @@ const overriddenToggle: ToggleProps = { children: 'Pin', 'aria-pressed': 'mixed'
 const numericToggle: ToggleProps = { children: 'Pin', size: 40 };
 // @ts-expect-error Toggle does not expose private CVA recipes.
 import type { toggleVariants } from '@egdev/ui';
+const chipGroupType: ChipGroupType = 'single';
+const chipGroupOptions: ChipGroupOption[] = [
+  { value: 'react', label: 'React', icon: '→' },
+  { value: 'css', label: 'CSS' },
+  { value: 'locked', label: 'Locked', disabled: true }
+];
+export const chipGroupSingleChanges: string[] = [];
+export const chipGroupMultipleChanges: string[][] = [];
+const chipGroupSingle: Extract<ChipGroupProps, { type: 'single' }> = { type: chipGroupType, label: 'Topic', options: chipGroupOptions, defaultValue: 'react' };
+const chipGroupMultiple: Extract<ChipGroupProps, { type: 'multiple' }> = { type: 'multiple', label: 'Topics', options: chipGroupOptions, defaultValue: ['react'] };
+// Separate mount avoids changing the existing App's focus and button-count harness.
+export function ChipGroupSamples() {
+  return createElement('form', { id: 'chip-group-form' },
+    createElement(ChipGroup, { ...chipGroupSingle, id: 'chip-group-single', onValueChange: (next: string) => chipGroupSingleChanges.push(next) }),
+    createElement(ChipGroup, { ...chipGroupMultiple, id: 'chip-group-multiple', onValueChange: (next: string[]) => chipGroupMultipleChanges.push(next) }));
+}
+// @ts-expect-error A mode discriminator is required.
+const missingChipGroupType: ChipGroupProps = { label: 'Topics', options: [] };
+// @ts-expect-error A group requires its accessible name.
+const missingChipGroupLabel: ChipGroupProps = { type: 'single', options: [] };
+// @ts-expect-error Choices are required, though they may be empty.
+const missingChipGroupOptions: ChipGroupProps = { type: 'single', label: 'Topics' };
+// @ts-expect-error Single values are strings, not arrays.
+const arraySingleChipGroup: ChipGroupProps = { type: 'single', label: 'Topics', options: [], value: [] };
+// @ts-expect-error Multiple defaults are arrays, not strings.
+const stringMultipleChipGroup: ChipGroupProps = { type: 'multiple', label: 'Topics', options: [], defaultValue: 'react' };
+// @ts-expect-error Callback payload must match the chosen mode.
+const wrongChipGroupCallback: ChipGroupProps = { type: 'multiple', label: 'Topics', options: [], onValueChange: (next: string) => console.log(next) };
+// @ts-expect-error ChipGroup has no form name API.
+const namedChipGroup: ChipGroupProps = { ...chipGroupSingle, name: 'topics' };
+// @ts-expect-error ChipGroup is not a mandatory form choice.
+const requiredChipGroup: ChipGroupProps = { ...chipGroupSingle, required: true };
+// @ts-expect-error No ref API is exposed.
+const referencedChipGroup: ChipGroupProps = { ...chipGroupSingle, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error No asChild composition is exposed.
+const slottedChipGroup: ChipGroupProps = { ...chipGroupSingle, asChild: true };
+// @ts-expect-error Standard option anatomy owns children.
+const childChipGroup: ChipGroupProps = { ...chipGroupSingle, children: 'Injected' };
+// @ts-expect-error Group owns its role and naming.
+const roleChipGroup: ChipGroupProps = { ...chipGroupSingle, role: 'radiogroup' };
+// @ts-expect-error Horizontal wrapping is fixed, not a public axis.
+const verticalChipGroup: ChipGroupProps = { ...chipGroupSingle, orientation: 'vertical' };
+// @ts-expect-error Group recipes stay internal.
+import type { chipGroupVariants } from '@egdev/ui';
 export const chipChanges: boolean[] = [];
 export const chipDefaults: ChipProps = { children: 'Design' };
 export const chipRecipe: string = chipVariants();
@@ -1312,6 +1626,21 @@ function assertToggleCSS(css) {
 
 // Chip ships its sheen/edge pill, red-tinted on state, focus and reduced-motion press resets.
 function assertChipCSS(css) {
+  // ChipGroup shares this recipe and adds only wrapping layout and a token underline.
+  for (const selector of [
+    '.flex-wrap',
+    '.gap-2',
+    String.raw`.data-\[state\=on\]\:underline`,
+    String.raw`.decoration-\[length\:var\(--border-width\)\]`,
+    String.raw`.underline-offset-\[var\(--space-1\)\]`,
+    String.raw`.disabled\:cursor-not-allowed`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing ChipGroup selector ' + selector);
+  }
+  assert.match(css, /text-decoration-thickness:\s*var\(--border-width\)/);
+  assert.match(css, /text-underline-offset:\s*var\(--space-1\)/);
+  assert.doesNotMatch(css, /\.eg-chip-group[^{]*\{/);
   for (const selector of [
     String.raw`.\[background\:var\(--gradient-sheen\)\,var\(--color-surface-1\)\]`,
     String.raw`.hover\:\[background\:var\(--gradient-sheen\)\,var\(--color-surface-2\)\]`,
@@ -2066,6 +2395,87 @@ function assertSocialLinksCSS(css) {
   }
 }
 
+// SectionHeader ships only local arrangement; Heading, Text and Divider own their recipes.
+function assertSectionHeaderCSS(css) {
+  for (const name of [
+    'grid-cols-[minmax(0,auto)_minmax(0,1fr)]',
+    'section-header-split:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)]',
+    'section-header-split:justify-self-end',
+    'data-[orientation=horizontal]:min-w-0',
+    'max-w-[var(--bp-sm)]',
+    'gap-y-6',
+    'gap-x-12',
+    'col-span-full',
+    'text-body-muted'
+  ]) {
+    assert.ok(css.includes('.' + name.replace(/[^\w-]/g, '\\$&')), 'Missing SectionHeader utility ' + name);
+  }
+  assert.match(css, /@media\s*\(width >= 860px\)/);
+  assert.match(css, /grid-template-columns:\s*minmax\(0,\s*1fr\)\s+minmax\(0,\s*0\.8fr\)/);
+  assert.match(css, /font-size:\s*var\(--text-body-muted[,)]/);
+  assert.match(css, /max-width:\s*var\(--bp-sm\)/);
+}
+
+// Menu owns geometry and entry treatments, while the shared Surface recipe supplies Material.
+function assertMenuCSS(css) {
+  for (const selector of [
+    String.raw`.min-w-57\.5`,
+    String.raw`.py-2\.25`,
+    String.raw`.max-h-\[var\(--radix-dropdown-menu-content-available-height\)\]`,
+    String.raw`.data-highlighted\:bg-status-danger\/10`,
+    String.raw`.group-data-highlighted\:text-fg-brand-default`,
+    String.raw`.focus-visible\:inset-ring-focus-ring-inverse`,
+    String.raw`.starting\:opacity-0`,
+    String.raw`.motion-safe\:starting\:-translate-y-1\.5`,
+    String.raw`.transition-\[opacity\,translate\]`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Menu utility ' + selector);
+  }
+  assert.match(css, /var\(--radix-dropdown-menu-content-available-height\)/);
+  assert.match(css, /var\(--color-surface-overlay\)/);
+  assert.match(css, /prefers-reduced-transparency:\s*reduce/);
+  assert.match(css, /@starting-style/);
+}
+
+// Notice's molecule source must be scanned for native and Tailwind consumers alike.
+function assertNoticeCSS(css) {
+  for (const color of ['fg-secondary', 'status-info', 'status-success', 'status-warning', 'status-danger']) {
+    for (const [prefix, opacity] of [
+      ['border', 30],
+      ['from', 11],
+      ['to', 4]
+    ]) {
+      assert.ok(css.includes(`.${prefix}-${color}\\/${opacity}`), `Missing Notice ${prefix}-${color}/${opacity}`);
+    }
+  }
+  assert.ok(css.includes('.bg-linear-to-b'));
+  assert.ok(css.includes(String.raw`.basis-\[calc\(var\(--space-24\)\*2\.5\)\]`));
+  assert.match(css, /flex-wrap:\s*wrap/);
+  assert.match(css, /font-size:\s*var\(--text-body-default[,)]/);
+  assert.match(css, /font-size:\s*var\(--text-label-default[,)]/);
+}
+
+// Static grouping utilities must ship even when the consumer has no Tailwind compiler.
+function assertButtonGroupCSS(css) {
+  for (const selector of [
+    '.inline-flex',
+    '.flex-wrap',
+    '.flex-nowrap',
+    '.items-stretch',
+    '.gap-3',
+    String.raw`.gap-0\.5`,
+    String.raw`.\*\:not-first\:rounded-s-sm`,
+    String.raw`.\*\:not-last\:rounded-e-sm`,
+    String.raw`.\*\:focus-visible\:relative`,
+    String.raw`.\*\:focus-visible\:z-10`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing ButtonGroup utility ' + selector);
+  }
+  assert.match(css, /border-start-start-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.match(css, /border-end-end-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.doesNotMatch(css, /\.eg-button-group\s*[,{]/);
+}
+
 // SearchTrigger utilities ship token geometry, coarse targets and native-state colors without preflight.
 function assertSearchTriggerCSS(css) {
   for (const selector of [
@@ -2097,6 +2507,27 @@ function assertSearchTriggerCSS(css) {
   assert.match(css, /font-weight:\s*var\(--text-body-default--font-weight\)/);
 }
 
+// Tabs molecule utilities must reach both native and Tailwind consumers.
+function assertTabsCSS(css) {
+  for (const selector of [
+    String.raw`.p-0\.75`,
+    String.raw`.min-h-8\.5`,
+    String.raw`.rounded-\[calc\(var\(--radius-md\)---spacing\(0\.75\)\)\]`,
+    String.raw`.\[scrollbar-width\:none\]`,
+    String.raw`.data-\[state\=active\]\:after\:shadow-glow-base`,
+    String.raw`.data-\[state\=active\]\:focus-visible\:shadow-focus`,
+    String.raw`.focus-visible\:inset-ring-focus-ring`,
+    String.raw`.motion-reduce\:after\:transition-none`,
+    String.raw`.bg-status-danger\/14`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Tabs utility ' + selector);
+  }
+  assert.match(css, /padding:\s*calc\(var\(--space-1\)\s*\*\s*0\.75\)/);
+  assert.match(css, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*8\.5\)/);
+  assert.match(css, /border-radius:\s*calc\(var\(--radius-md\)\s*-\s*[^;]+\)/);
+  assert.match(css, /scrollbar-width:\s*none/);
+}
+
 // PullQuote quote recipes, logical filet and measure ship without preflight or a stylesheet.
 function assertPullQuoteCSS(css) {
   for (const selector of [
@@ -2118,6 +2549,22 @@ function assertPullQuoteCSS(css) {
   assert.match(css, /font-size:\s*var\(--text-quote-display/);
   assert.match(css, /border-inline-start-width:\s*calc\(var\(--border-width\)\s*\*\s*2\)/);
   assert.match(css, /padding-inline-start:\s*calc\(var\(--space-1\)\s*\*\s*4\.5\)/);
+}
+
+// The row ships its own reflow/help utilities; ProgressBar retains its separate CSS assertions.
+function assertMeterRowCSS(css) {
+  for (const selector of [
+    '.gap-x-3',
+    '.gap-y-1',
+    '.text-label-default',
+    String.raw`.\[overflow-wrap\:anywhere\]`,
+    String.raw`.leading-\[var\(--text-body-default--line-height\)\]`,
+    String.raw`.font-\[var\(--text-body-muted--font-weight\)\]`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing MeterRow utility ' + selector);
+  }
+  assert.match(css, /line-height:\s*var\(--text-body-default--line-height[,)]/);
+  assert.match(css, /font-weight:\s*var\(--text-body-muted--font-weight[,)]/);
 }
 
 // Stat ships its Material card, figure recipes and highlight utilities; part markers carry no rules.
@@ -2397,8 +2844,10 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Avatar',
   'Badge',
   'Button',
+  'ButtonGroup',
   'Checkbox',
   'Chip',
+  'ChipGroup',
   'Cluster',
   'Countdown',
   'Divider',
@@ -2411,12 +2860,23 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Kbd',
   'Label',
   'Link',
+  'ListItem',
+  'ListItemActions',
+  'ListItemBody',
+  'ListItemContent',
+  'ListItemFooter',
+  'ListItemMedia',
+  'ListItemMeta',
   'Logo',
+  'Menu',
+  'MeterRow',
+  'Notice',
   'Portal',
   'ProgressBar',
   'PullQuote',
   'RadioGroup',
   'SearchTrigger',
+  'SectionHeader',
   'Select',
   'Skeleton',
   'Slider',
@@ -2429,6 +2889,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'StatusDot',
   'Surface',
   'Switch',
+  'Tabs',
   'Text',
   'Textarea',
   'Toggle',
@@ -2439,12 +2900,15 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'cn',
   'dropzoneVariants',
   'labelVariants',
+  'menuVariants',
+  'noticeVariants',
   'progressBarVariants',
   'radioGroupVariants',
   'sliderVariants',
   'statVariants',
   'statusDotVariants',
   'surfaceVariants',
+  'tabsVariants',
   'tooltipVariants'
 ]);
 ${assertCheckboxCSS.toString()}
@@ -2471,15 +2935,29 @@ ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
+${assertSectionHeaderCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertSocialLinksCSS.toString()}
+${assertMenuCSS.toString()}
+assertMenuCSS(shippedStyles);
+${assertTabsCSS.toString()}
+${assertNoticeCSS.toString()}
+assertNoticeCSS(shippedStyles);
 ${assertPullQuoteCSS.toString()}
+${assertButtonGroupCSS.toString()}
+assertButtonGroupCSS(shippedStyles);
 ${assertCountdownCSS.toString()}
+${assertMeterRowCSS.toString()}
+assertMeterRowCSS(shippedStyles);
 assertCountdownCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
 assertStatCSS(shippedStyles);
+assertSectionHeaderCSS(shippedStyles);
+${assertListItemCSS.toString()}
+assertListItemCSS(shippedStyles);
 assertSearchTriggerCSS(shippedStyles);
 assertSocialLinksCSS(shippedStyles);
+assertTabsCSS(shippedStyles);
 assertPullQuoteCSS(shippedStyles);
 assertIconButtonCSS(shippedStyles);
 ${assertToggleCSS.toString()}
@@ -2555,14 +3033,151 @@ function assertLinkCSS(css) {
   assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);
 }
 
+function assertListItemCSS(css) {
+  for (const selector of [
+    String.raw`.data-\[state\=new\]\:bg-\[image\:var\(--gradient-post-new\)\]`,
+    String.raw`.data-\[state\=failed\]\:border-status-danger\/40`,
+    String.raw`.data-\[state\=done\]\:bg-none`,
+    String.raw`.data-\[state\=off\]\:shadow-none`,
+    String.raw`.data-\[state\=empty\]\:focus-visible\:shadow-focus`,
+    String.raw`.data-\[state\=empty\]\:disabled\:opacity-45`,
+    String.raw`.group-data-\[state\=dragging\]\/list-item\:opacity-50`,
+    String.raw`.data-\[variant\=row\]\:flex-wrap`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing packed ListItem utility ' + selector);
+  }
+  assert.match(css, /calc\(var\(--space-20\)\s*\+\s*var\(--space-2\)\)/);
+}
+
 const ssr = `
 import assert from 'node:assert/strict';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, ButtonGroupSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, ListItemSamples, MeterRowSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
+// MeterRow SSR has one semantic owner, coherent text and generated description references.
+for (const value of [42.5, Number.NaN]) {
+  const dom = new JSDOM(renderToString(createElement(MeterRowSamples, { value })));
+  try {
+    const document = dom.window.document;
+    const row = document.getElementById('consumer-meter-row');
+    const bar = row.querySelector('[role="progressbar"]');
+    assert.equal(row.hasAttribute('role'), false);
+    assert.equal(row.querySelectorAll('[role="progressbar"]').length, 1);
+    assert.equal(bar.getAttribute('aria-label'), 'Import files');
+    assert.equal(bar.getAttribute('aria-valuenow'), Number.isFinite(value) ? '42.5' : null);
+    assert.equal(bar.getAttribute('aria-valuetext'), Number.isFinite(value) ? '42.5%' : null);
+    const ids = bar.getAttribute('aria-describedby').split(' ');
+    assert.equal(ids.map((id) => document.getElementById(id).textContent).join(' '), Number.isFinite(value) ? 'Keep this tab open' : 'Preparing import Keep this tab open');
+    assert.equal(row.querySelector('output, meter, [aria-live]'), null);
+  } finally {
+    dom.window.close();
+  }
+}
+// Menu's body portal is client-only; SSR exposes only the consumer-owned trigger.
+const { MenuSample } = await import('./consumer.ts');
+const menuDocument = new JSDOM(renderToString(createElement(MenuSample)));
+try {
+  const menuTrigger = menuDocument.window.document.querySelector('#menu-trigger');
+  assert.equal(menuTrigger.tagName, 'BUTTON');
+  assert.equal(menuTrigger.getAttribute('aria-haspopup'), 'menu');
+  assert.equal(menuTrigger.getAttribute('aria-expanded'), 'false');
+  assert.equal(menuDocument.window.document.querySelector('[role="menu"]'), null);
+} finally {
+  menuDocument.window.close();
+}
+
+// ChipGroup SSR preserves both mode-specific semantics, data order and shared Chip anatomy.
+const chipGroupDocument = new JSDOM(renderToString(createElement(ChipGroupSamples)));
+try {
+  const document = chipGroupDocument.window.document;
+  const single = document.getElementById('chip-group-single');
+  const multiple = document.getElementById('chip-group-multiple');
+  for (const group of [single, multiple]) {
+    assert.equal(group.getAttribute('role'), 'group');
+    assert.ok(group.classList.contains('eg-chip-group'));
+    assert.equal(group.querySelectorAll('button.eg-chip').length, 3);
+    assert.equal(group.querySelector('[aria-hidden="true"]').textContent, '→');
+    assert.ok(group.querySelector('button:last-child').disabled);
+  }
+  assert.equal(single.getAttribute('aria-label'), 'Topic');
+  assert.equal(single.querySelector('[role="radio"]').getAttribute('aria-checked'), 'true');
+  assert.equal(multiple.querySelector('button').getAttribute('aria-pressed'), 'true');
+  assert.equal(document.querySelectorAll('input').length, 0, 'ToggleGroup has no hidden form inputs');
+} finally {
+  chipGroupDocument.window.close();
+}
+const itemDocument = new JSDOM(renderToString(createElement(ListItemSamples)));
+try {
+  const item = itemDocument.window.document.getElementById('consumer-item');
+  assert.equal(item.tagName, 'LI');
+  assert.equal(item.getAttribute('data-state'), 'off');
+  assert.equal(item.getAttribute('data-variant'), 'row');
+  assert.equal(item.querySelector('button').textContent, 'Show');
+  assert.equal(item.querySelector('img').alt, 'Release artwork');
+  for (const name of ['role', 'tabindex', 'aria-disabled', 'aria-selected', 'draggable']) {
+    assert.equal(item.hasAttribute(name), false);
+  }
+} finally {
+  itemDocument.window.close();
+}
+const noticeDocument = new JSDOM(renderToString(createElement(NoticeSamples, { tone: 'danger', size: 'sm' })));
+try {
+  const notice = noticeDocument.window.document.getElementById('queue-notice');
+  assert.equal(notice.getAttribute('role'), 'alert');
+  assert.equal(notice.getAttribute('data-size'), 'sm');
+  assert.equal(notice.querySelector('strong').textContent, 'Queue ready.');
+  assert.equal(notice.querySelector('svg').parentElement.getAttribute('aria-hidden'), 'true');
+  assert.equal(notice.querySelector('[role], [aria-live], .eg-notice__actions'), null);
+  assert.ok(notice.classList.contains('eg-notice') && notice.classList.contains('eg-surface'));
+  assert.ok(noticeRecipe.split(' ').includes('eg-surface'));
+  assert.doesNotMatch(noticeRecipe, /eg-notice|eg-toast|role=|aria-/);
+} finally {
+  noticeDocument.window.close();
+}
+const groupDocument = new JSDOM(renderToString(createElement(ButtonGroupSamples)));
+try {
+  const group = groupDocument.window.document.getElementById('grouped-actions');
+  assert.equal(group.tagName, 'DIV');
+  assert.equal(group.getAttribute('role'), 'group');
+  assert.equal(group.getAttribute('aria-label'), 'Save options');
+  assert.equal(group.getAttribute('aria-describedby'), 'group-help');
+  assert.ok(group.classList.contains('eg-button-group'));
+  assert.ok(group.classList.contains('gap-0.5'));
+  assert.ok(group.classList.contains('flex-nowrap'));
+  assert.ok(group.classList.contains('*:not-first:rounded-s-sm'));
+  assert.equal(group.children.length, 2);
+  assert.ok([...group.children].every((item) => item.tagName === 'BUTTON'));
+  assert.equal(group.querySelector('[aria-haspopup], [aria-expanded]'), null);
+} finally {
+  groupDocument.window.close();
+}
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
+const tabsDocument = new JSDOM(renderToString(createElement(TabsSamples, { segmented: true })));
+try {
+  const document = tabsDocument.window.document;
+  const root = document.getElementById('consumer-tabs');
+  assert.ok(root.classList.contains('eg-tabs') && root.classList.contains('mt-4'));
+  assert.ok(!root.classList.contains('mt-2'));
+  const list = root.querySelector('[role="tablist"]');
+  assert.equal(list.getAttribute('aria-label'), 'Post views');
+  assert.ok(list.classList.contains('eg-surface') && list.classList.contains('p-0.75'));
+  assert.ok(!list.classList.contains('p-0') && !list.classList.contains('p-6'));
+  const triggers = [...list.querySelectorAll('[role="tab"]')];
+  assert.deepEqual(triggers.map((tab) => tab.textContent), ['Queue 0', 'Drafts 312', 'Unavailable']);
+  for (const trigger of triggers) {
+    const panel = document.getElementById(trigger.getAttribute('aria-controls'));
+    assert.equal(panel.getAttribute('aria-labelledby'), trigger.id);
+    assert.equal(panel.getAttribute('role'), 'tabpanel');
+    assert.equal(panel.hidden, trigger.getAttribute('aria-selected') !== 'true');
+  }
+  assert.equal(root.querySelector('[role="tabpanel"]:not([hidden])').textContent, 'Queued posts');
+  assert.ok(!root.textContent.includes('Draft posts'));
+  assert.ok(tabsRecipe.includes('eg-tabs'));
+} finally {
+  tabsDocument.window.close();
+}
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
   const timer = countdownDocument.window.document.getElementById('launch-timer');
@@ -2641,6 +3256,30 @@ try {
   assert.ok(statRecipe.includes('px-3') && statRecipe.startsWith('eg-stat '));
 } finally {
   statDocument.window.close();
+}
+// SectionHeader SSR: native heading/IDs, complete phrase and a presentational inline rule.
+for (const variant of ['stack', 'split', 'inline']) {
+  const markup = renderToString(createElement(SectionHeaderSamples, { variant }));
+  assert.equal(markup, renderToString(createElement(SectionHeaderSamples, { variant })));
+  const dom = new JSDOM(markup);
+  try {
+    const header = dom.window.document.querySelector('header.eg-section-head');
+    const heading = header.querySelector('h3');
+    assert.equal(header.id, 'consumer-section-header');
+    assert.equal(header.hasAttribute('title'), false);
+    assert.equal(heading.id, 'consumer-section-title');
+    assert.equal(heading.textContent, 'Build together.');
+    assert.ok(heading.classList.contains('text-title-section'));
+    assert.ok(heading.lastElementChild.classList.contains('inline'));
+    assert.ok(heading.lastElementChild.classList.contains('text-fg-brand-raised'));
+    assert.equal(header.querySelector('.eg-divider')?.getAttribute('role') ?? null, variant === 'inline' ? 'none' : null);
+    assert.equal(header.querySelector('[tabindex], [aria-live], [data-state], [role="separator"]'), null);
+  } finally {
+    dom.window.close();
+  }
+  const fallback = renderToString(createElement(SectionHeaderSamples, { variant, optional: false }));
+  assert.ok(fallback.includes('flex flex-col items-start gap-5'));
+  assert.ok(!fallback.includes('eg-divider') && !fallback.includes('eg-section-head__lede'));
 }
 // SearchTrigger SSR: deterministic native launcher, decorative icon/hint and no fabricated popup claims.
 const searchDocument = new JSDOM(
@@ -3513,7 +4152,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SocialLinksSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, ButtonGroupSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, ListItemSamples, MeterRowSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4115,6 +4754,58 @@ try {
   await act(async () => root.render(createElement(SocialLinksSamples, { items: [] })));
   assert.equal(document.getElementById('social-profiles'), null);
   stage('social-links:native:complete');
+  stage('meter-row:passive:start');
+  await act(async () => root.render(createElement(MeterRowSamples, { value: 142 })));
+  const taskRow = document.getElementById('consumer-meter-row');
+  const taskBar = taskRow.querySelector('[role="progressbar"]');
+  assert.equal(taskBar.getAttribute('aria-valuenow'), '100');
+  assert.equal(taskBar.getAttribute('aria-valuetext'), '100%');
+  assert.equal(taskRow.tabIndex, -1);
+  await act(async () => root.render(createElement(MeterRowSamples, { value: Number.NaN })));
+  assert.equal(taskRow.querySelector('[role="progressbar"]'), taskBar);
+  assert.equal(taskBar.hasAttribute('aria-valuenow'), false);
+  assert.equal(taskBar.hasAttribute('aria-valuetext'), false);
+  const taskDescriptions = taskBar.getAttribute('aria-describedby').split(' ');
+  assert.equal(taskDescriptions.map((id) => document.getElementById(id).textContent).join(' '), 'Preparing import Keep this tab open');
+  await act(async () => root.render(createElement(MeterRowSamples, { value: 42.5, help: ' ' })));
+  assert.equal(taskBar.getAttribute('aria-valuetext'), '42.5%');
+  assert.equal(taskBar.hasAttribute('aria-describedby'), false);
+  assert.equal(taskRow.querySelector('p, [aria-live], output, meter'), null);
+  await act(async () => root.render(null));
+  stage('meter-row:passive:complete');
+  stage('tabs:interaction:start');
+  await act(async () => root.render(createElement(TabsSamples)));
+  const tabsRoot = document.getElementById('consumer-tabs');
+  const tabTriggers = [...tabsRoot.querySelectorAll('[role="tab"]')];
+  assert.equal(tabTriggers[0].getAttribute('aria-selected'), 'true');
+  await act(async () => tabTriggers[1].dispatchEvent(new dom.window.MouseEvent('mousedown', { bubbles: true, button: 0 })));
+  assert.equal(tabTriggers[1].getAttribute('aria-selected'), 'true');
+  assert.deepEqual(tabsChanges, ['drafts']);
+  assert.equal(tabsRoot.querySelector('[role="tabpanel"]:not([hidden])').textContent, 'Draft posts');
+  assert.equal(document.getElementById(tabTriggers[0].getAttribute('aria-controls')).textContent, '');
+  await act(async () => {
+    tabTriggers[1].focus();
+    tabTriggers[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  });
+  assert.ok(document.activeElement === tabTriggers[0], 'Arrows loop and skip the disabled final item');
+  assert.equal(tabTriggers[0].getAttribute('aria-selected'), 'true');
+  await act(async () => tabTriggers[2].dispatchEvent(new dom.window.MouseEvent('mousedown', { bubbles: true, button: 0 })));
+  assert.equal(tabTriggers[2].getAttribute('aria-selected'), 'false');
+  await act(async () => root.render(null));
+  tabsChanges.length = 0;
+  await act(async () => root.render(createElement(TabsSamples, { value: 'queue', segmented: true })));
+  const controlledTabs = [...document.querySelectorAll('#consumer-tabs [role="tab"]')];
+  await act(async () => controlledTabs[1].dispatchEvent(new dom.window.MouseEvent('mousedown', { bubbles: true, button: 0 })));
+  assert.equal(controlledTabs[0].getAttribute('aria-selected'), 'true', 'Controlled selection waits for its owner');
+  // Radix may request the same selection more than once while its owner has not acknowledged it.
+  assert.ok(tabsChanges.length > 0 && tabsChanges.every((change) => change === 'drafts'));
+  const requestsBeforeAcknowledgement = tabsChanges.length;
+  await act(async () => root.render(createElement(TabsSamples, { value: 'drafts', segmented: true })));
+  assert.equal(controlledTabs[1].getAttribute('aria-selected'), 'true');
+  assert.equal(tabsChanges.length, requestsBeforeAcknowledgement, 'Prop acknowledgement emits no new selection request');
+  await act(async () => root.render(null));
+  stage('tabs:interaction:complete');
   stage('stat:passive:start');
   await act(async () => root.render(createElement(StatSamples)));
   const subsStat = document.getElementById('subs-total');
@@ -4140,6 +4831,106 @@ try {
   await act(async () => root.render(null));
   assert.equal(document.getElementById('totals'), null);
   stage('stat:passive:complete');
+  stage('section-header:start');
+  for (const variant of ['split', 'inline']) {
+    await act(async () => root.render(createElement(SectionHeaderSamples, { variant })));
+    const header = document.getElementById('consumer-section-header');
+    assert.equal(header.querySelector('h3').textContent, 'Build together.');
+    assert.equal(header.querySelector('.eg-divider')?.getAttribute('role') ?? null, variant === 'inline' ? 'none' : null);
+    await act(async () => root.render(createElement(SectionHeaderSamples, { variant, optional: false })));
+    assert.ok(header.classList.contains('flex') && header.classList.contains('gap-5'));
+    assert.equal(header.children.length, 1, 'No optional placeholders survive rerender');
+    assert.equal(header.querySelector('[tabindex], [aria-live], [data-state]'), null);
+  }
+  stage('section-header:complete');
+  stage('menu:start');
+  // FocusScope schedules unmount autofocus with setTimeout(0) during the commit.
+  // A delay inside the selecting act() can finish before that commit even happens.
+  // Yield after act() has flushed it; never focus the trigger from the harness.
+  const waitForMenuFocus = async (target) => {
+    for (let turn = 0; turn < 100; turn++) {
+      await act(async () => new Promise((resolve) => setTimeout(resolve, 10)));
+      if (document.activeElement === target) return;
+    }
+  };
+  const { MenuSample, menuSelections } = await import('./consumer.ts');
+  await act(async () => root.render(createElement(MenuSample)));
+  const menuTrigger = document.getElementById('menu-trigger');
+  menuTrigger.focus();
+  await act(async () => menuTrigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true })));
+  assert.equal(document.querySelector('[role="menu"]'), null, 'A1 keeps closed-trigger ArrowUp inert');
+  await act(async () => {
+    menuTrigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 30));
+  });
+  const menuPanel = document.querySelector('[role="menu"]');
+  assert.ok(menuPanel && !document.getElementById('app').contains(menuPanel), 'Content is portalled');
+  assert.ok(menuPanel.classList.contains('eg-menu') && menuPanel.classList.contains('eg-surface'));
+  assert.ok(menuPanel.classList.contains('p-2') && !menuPanel.classList.contains('p-0'));
+  assert.equal(menuPanel.querySelector('[kind]'), null);
+  const editMenuItem = [...menuPanel.querySelectorAll('[role="menuitem"]')].find((item) => item.textContent === 'Edit⌘E');
+  assert.ok(editMenuItem.querySelector('kbd') && editMenuItem.querySelector('svg[aria-hidden="true"]'));
+  await waitForMenuFocus(editMenuItem);
+  assert.ok(document.activeElement === editMenuItem, 'Keyboard opening focuses the first enabled item');
+  await act(async () => {
+    editMenuItem.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+  });
+  assert.deepEqual(menuSelections, ['edit']);
+  assert.equal(document.querySelector('[role="menu"]'), null);
+  await waitForMenuFocus(menuTrigger);
+  assert.ok(document.activeElement === menuTrigger, 'Selection restores trigger focus');
+  await act(async () => root.render(null));
+  stage('menu:complete');
+  stage('list-item:start');
+  await act(async () => root.render(createElement(ListItemSamples)));
+  const item = document.getElementById('consumer-item');
+  assert.ok(itemChildRef.current === item, 'Slot preserves the child-owned ref');
+  const itemAction = item.querySelector('button');
+  itemAction.focus();
+  await act(async () => itemAction.click());
+  assert.deepEqual(itemActivations, ['show']);
+  await act(async () => root.render(createElement(ListItemSamples, { status: 'dragging' })));
+  assert.ok(document.getElementById('consumer-item') === item);
+  assert.equal(item.getAttribute('data-state'), 'dragging');
+  assert.ok(document.activeElement === itemAction, 'Presentation update preserves action focus');
+  await act(async () => root.render(null));
+  assert.equal(itemChildRef.current, null);
+  stage('list-item:complete');
+  stage('notice:start');
+  await act(async () => root.render(createElement(NoticeSamples, { role: 'status', actions: true })));
+  const notice = document.getElementById('queue-notice');
+  const noticeAction = notice.querySelector('button');
+  noticeAction.focus();
+  await act(async () => noticeAction.click());
+  assert.deepEqual(noticeActivations, ['resume']);
+  await act(async () => root.render(createElement(NoticeSamples, {
+    summary: 'Queue paused.', tone: 'warning', role: 'status', actions: true
+  })));
+  assert.ok(document.getElementById('queue-notice') === notice, 'Polite updates retain the single root');
+  assert.ok(document.activeElement === noticeAction, 'Notice never moves focus to announce');
+  assert.equal(notice.querySelector('strong').textContent, 'Queue paused.');
+  assert.equal(notice.getAttribute('role'), 'status');
+  assert.equal(notice.querySelector('[role], [aria-live]'), null);
+  await act(async () => root.render(createElement(NoticeSamples, { tone: 'danger' })));
+  assert.equal(notice.getAttribute('role'), 'alert');
+  assert.equal(notice.querySelector('.eg-notice__actions'), null);
+  await act(async () => root.render(null));
+  stage('notice:complete');
+  stage('button-group:start');
+  await act(async () => root.render(createElement(ButtonGroupSamples)));
+  const actionGroup = document.getElementById('grouped-actions');
+  assert.equal(actionGroup.getAttribute('role'), 'group');
+  assert.equal(actionGroup.getAttribute('aria-label'), 'Save options');
+  assert.equal(actionGroup.getAttribute('tabindex'), null);
+  const groupedButtons = actionGroup.querySelectorAll('button');
+  assert.equal(groupedButtons.length, 2);
+  assert.ok([...groupedButtons].every((button) => button.parentElement === actionGroup));
+  await act(async () => groupedButtons[0].focus());
+  assert.ok(document.activeElement === groupedButtons[0]);
+  await act(async () => groupedButtons[0].dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
+  assert.ok(document.activeElement === groupedButtons[0], 'Group adds no roving focus');
+  assert.equal(actionGroup.querySelector('[aria-expanded], [aria-haspopup]'), null);
+  stage('button-group:complete');
   stage('search-trigger:start');
   const documentListeners = [];
   const addDocumentListener = document.addEventListener;
@@ -4339,6 +5130,26 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
+  await act(async () => root.render(createElement(ChipGroupSamples)));
+  const singleGroup = document.getElementById('chip-group-single');
+  const multipleGroup = document.getElementById('chip-group-multiple');
+  const singleItems = [...singleGroup.querySelectorAll('button')];
+  const multipleItems = [...multipleGroup.querySelectorAll('button')];
+  await act(async () => singleItems[1].click());
+  assert.equal(singleItems[1].getAttribute('aria-checked'), 'true');
+  await act(async () => singleItems[1].click());
+  assert.deepEqual(chipGroupSingleChanges, ['css', '']);
+  await act(async () => multipleItems[1].click());
+  await act(async () => multipleItems[0].click());
+  await act(async () => multipleItems[2].click());
+  assert.deepEqual(chipGroupMultipleChanges, [['react', 'css'], ['css']]);
+  await act(async () => singleItems[0].focus());
+  await act(async () => singleItems[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 0)));
+  assert.equal(document.activeElement, singleItems[1]);
+  assert.deepEqual(chipGroupSingleChanges, ['css', ''], 'Arrows move focus without selecting');
+  assert.equal(document.querySelectorAll('input').length, 0);
+  stage('chip-group:complete');
   console.log(JSON.stringify({ csr: ['Button refs, focus retention, loading recovery and disabled Slot activation', 'intrinsic consumer focus harness', 'Gauge rerender, passivity and non-finite recovery', 'Slot/Slottable target, composed refs, child-first events and ref cleanup', 'VisuallyHidden HTMLElement refs', 'Skeleton passive placeholders and AspectRatio rerender', 'Spinner status/decorative semantics and host-owned unmount', 'StatusDot decorative states and pulse toggle', 'Kbd passive keys outside the Tab order', 'Avatar image loading/error recovery and naming modes', 'Link native/slotted refs, external safety, child-first events and cleanup', 'Badge defaults, twelve combinations and passive icon/tone reset', 'Slider keyboard scalar change/commit, form submission, controlled clamp and disabled inactivity', 'ProgressBar clamped, complete and indeterminate rerenders', 'Textarea forwarded ref, focus and native onChange', 'Input forwarded ref, controlled value and native focus', 'Logo image/link semantics and native link focus', 'Select portal, keyboard selection, disabled option, native forms, focus and ref cleanup', 'Tooltip focus, Escape, portal and unmount', 'Dropzone native picker, drag depth, accept bypass, focused paste, reset and disabled paths', 'PullQuote figure identity, variant/tone rerender, blank-text removal and development warning', 'Countdown client sampling, expiry episode, running rerender and unavailable recovery', 'Stat passive group, highlight and no-data rerenders with stable identity', 'SearchTrigger native activation, inert displayed shortcut, compact identity, disabled guard, host Slot trigger and ref cleanup', 'IconButton native/slotted refs, focus, child-first activation and disabled navigation guards', 'Label activation, forwarded ref and cleanup', 'RadioGroup label selection, disabled options, controlled updates, form submission and reset', 'Switch label toggle, controlled updates, form submission, disabled, form reset and ref cleanup', 'Toggle pressed state, controlled/disabled behavior, button refs and cleanup', 'Chip pressed state, change events, controlled/disabled behavior and public recipe'] }));
 } finally {
   stage('unmount:start');
@@ -4446,8 +5257,12 @@ ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
+${assertSectionHeaderCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertSocialLinksCSS.toString()}
+${assertMenuCSS.toString()}
+assertMenuCSS(emitted);
+${assertTabsCSS.toString()}
 ${assertPullQuoteCSS.toString()}
 assertIconButtonCSS(emitted);
 ${assertToggleCSS.toString()}
@@ -4479,11 +5294,21 @@ assertProgressBarCSS(emitted);
 assertTextareaCSS(emitted);
 assertInputCSS(emitted);
 assertDropzoneCSS(emitted);
+${assertButtonGroupCSS.toString()}
+assertButtonGroupCSS(emitted);
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(emitted);
+${assertMeterRowCSS.toString()}
+assertMeterRowCSS(emitted);
 assertStatCSS(emitted);
+assertSectionHeaderCSS(emitted);
+${assertListItemCSS.toString()}
+assertListItemCSS(emitted);
 assertSearchTriggerCSS(emitted);
 assertSocialLinksCSS(emitted);
+assertTabsCSS(emitted);
+${assertNoticeCSS.toString()}
+assertNoticeCSS(emitted);
 assertPullQuoteCSS(emitted);
 assertToggleCSS(emitted);
 assertChipCSS(emitted);
@@ -4507,7 +5332,8 @@ const typography = ${JSON.stringify(typographyNames)};
 // #70 Stat adds --text-display-stat and --text-display-stat-sm with three companions each: 255 + 8 = 263.
 // #82 Countdown adds 10 tokens: 263 + 10 = 273.
 // #98 PullQuote adds 9 tokens: 273 + 9 = 282.
-assert.equal(names.length, 282, 'Packed native artifact must expose 282 variables');
+// #100 D7 adds 1 static breakpoint: 282 + 1 = 283.
+assert.equal(names.length, 283, 'Packed native artifact must expose 283 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
@@ -4549,10 +5375,16 @@ assertProgressBarCSS(twCss);
 assertTextareaCSS(twCss);
 assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
+assertButtonGroupCSS(twCss);
 assertCountdownCSS(twCss);
+assertMeterRowCSS(twCss);
 assertStatCSS(twCss);
+assertSectionHeaderCSS(twCss);
+assertListItemCSS(twCss);
 assertSearchTriggerCSS(twCss);
 assertSocialLinksCSS(twCss);
+assertMenuCSS(twCss);
+assertTabsCSS(twCss);
 assertPullQuoteCSS(twCss);
 assertToggleCSS(twCss);
 assertChipCSS(twCss);

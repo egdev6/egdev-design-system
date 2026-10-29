@@ -191,6 +191,42 @@ describe('Storybook preview CSS', () => {
     expect(css).toMatch(/\.eg-social__list>li|\.eg-social__list\s*>\s*li/);
   });
 
+  it('compiles MeterRow wrapping, typography and key utilities from its production CVA source', () => {
+    expect(rule('.gap-x-3')).toMatch(/column-gap:\s*var\(--space-3[,)]/);
+    expect(rule('.gap-y-1')).toMatch(/row-gap:\s*var\(--space-1[,)]/);
+    expect(rule(String.raw`.\[overflow-wrap\:anywhere\]`)).toMatch(/overflow-wrap:\s*anywhere/);
+    expect(rule('.text-label-default')).toMatch(/font-size:\s*var\(--text-label-default[,)]/);
+    expect(rule(String.raw`.leading-\[var\(--text-body-default--line-height\)\]`)).toMatch(
+      /line-height:\s*var\(--text-body-default--line-height[,)]/
+    );
+    expect(rule(String.raw`.font-\[var\(--text-body-muted--font-weight\)\]`)).toMatch(
+      /font-weight:\s*var\(--text-body-muted--font-weight[,)]/
+    );
+    expect(rule('.bg-fg-brand-default')).toMatch(/background-color:\s*var\(--color-fg-brand-default[,)]/);
+    expect(rule('.bg-fg-muted')).toMatch(/background-color:\s*var\(--color-fg-muted[,)]/);
+  });
+
+  it('compiles Notice tint opacity, token typography and responsive basis from molecule sources', () => {
+    for (const color of ['fg-secondary', 'status-info', 'status-success', 'status-warning', 'status-danger']) {
+      for (const [prefix, opacity] of [
+        ['border', 30],
+        ['from', 11],
+        ['to', 4]
+      ] as const) {
+        const emitted = rule(`.${prefix}-${color}\\/${opacity}`);
+        expect(emitted).toContain(`var(--color-${color}`);
+        expect(emitted).toContain(`${opacity}%, transparent)`);
+      }
+    }
+    expect(rule('.bg-linear-to-b')).toMatch(/background-image:\s*linear-gradient/);
+    expect(rule(String.raw`.basis-\[calc\(var\(--space-24\)\*2\.5\)\]`)).toMatch(
+      /flex-basis:\s*calc\(var\(--space-24\)\s*\*\s*2\.5\)/
+    );
+    expect(rule('.text-body-default')).toContain('var(--text-body-default');
+    expect(rule('.text-label-default')).toContain('var(--text-label-default');
+    expect(rule('.flex-wrap')).toMatch(/flex-wrap:\s*wrap/);
+  });
+
   it('compiles Gauge geometry and the static utilities that make its ring valid', () => {
     expect(rule('.inline-flex')).toMatch(/display:\s*inline-flex\s*;/);
     expect(rule('.w-auto')).toMatch(/width:\s*auto\s*;/);
