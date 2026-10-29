@@ -174,6 +174,19 @@ describe('Storybook preview CSS', () => {
     css = String(stylesheet.source).replace(/\/\*[\s\S]*?\*\//g, '');
   }, 30_000);
 
+  it('compiles the first molecule source with Radix available-space bounds and opacity entry', () => {
+    expect(rule(String.raw`.max-w-\[var\(--radix-hover-card-content-available-width\)\]`)).toMatch(
+      /max-width:\s*var\(--radix-hover-card-content-available-width\)/
+    );
+    expect(rule(String.raw`.max-h-\[var\(--radix-hover-card-content-available-height\)\]`)).toMatch(
+      /max-height:\s*var\(--radix-hover-card-content-available-height\)/
+    );
+    expect(rule(String.raw`.w-\[calc\(var\(--space-24\)\*4\)\]`)).toMatch(/width:\s*calc\(/);
+    expect(css).toContain(String.raw`.data-\[state\=open\]\:starting\:opacity-0`);
+    expect(css).toMatch(/@starting-style/);
+    expect(css).not.toMatch(/\.eg-hover-card\s*[,{]/);
+  });
+
   it('compiles Gauge geometry and the static utilities that make its ring valid', () => {
     expect(rule('.inline-flex')).toMatch(/display:\s*inline-flex\s*;/);
     expect(rule('.w-auto')).toMatch(/width:\s*auto\s*;/);

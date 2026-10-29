@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -96,6 +96,9 @@ import type {
   StackProps,
   HeadingLevel,
   HeadingProps,
+  HoverCardProps,
+  HoverCardTriggerProps,
+  HoverCardContentProps,
   TextProps,
   TextTone,
   TextVariant,
@@ -116,6 +119,51 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+export const hoverCardRef = createRef<HTMLAnchorElement>();
+export const hoverCardSlotRef = createRef<HTMLAnchorElement>();
+export const hoverCardChanges: boolean[] = [];
+const previewContent: HoverCardContentProps = { children: 'Usage: 42%. Reset: tomorrow.', id: 'hover-preview' };
+const previewTrigger: HoverCardTriggerProps = { children: 'Usage preview', href: '#hover-details', id: 'hover-trigger' };
+export function HoverCardSamples({ open, defaultOpen = false, slotted = false }: { open?: boolean; defaultOpen?: boolean; slotted?: boolean }) {
+  const trigger = slotted
+    ? createElement(HoverCardTrigger, { key: 'trigger', asChild: true, ref: hoverCardSlotRef, children: createElement('a', { href: '#hover-details', id: 'hover-trigger' }, 'Usage preview') })
+    : createElement(HoverCardTrigger, { ...previewTrigger, key: 'trigger', ref: hoverCardRef });
+  const props: HoverCardProps = { open, defaultOpen, onOpenChange: (next) => hoverCardChanges.push(next),
+    children: [trigger, createElement(HoverCardContent, { ...previewContent, key: 'content' })] };
+  return createElement('section', null, createElement(HoverCard, props),
+    createElement('a', { href: '#hover-details', id: 'hover-persistent' }, 'Read all usage details'),
+    createElement('p', { id: 'hover-details' }, 'Usage: 42%. Reset: tomorrow.'));
+}
+// @ts-expect-error Default native anchor requires href.
+const missingHoverDestination: HoverCardTriggerProps = { children: 'Usage' };
+// @ts-expect-error A slotted trigger takes one element, never text.
+const hoverTextChild: HoverCardTriggerProps = { asChild: true, children: 'Usage' };
+// @ts-expect-error The child owns the destination when asChild is true.
+const hoverWrapperHref: HoverCardTriggerProps = { asChild: true, href: '#details', children: createElement('a', { href: '#details' }, 'Details') };
+// @ts-expect-error Root requires composition children.
+const missingHoverPair: HoverCardProps = { open: true };
+// @ts-expect-error Radix default delays are not public configuration.
+const hoverDelay: HoverCardProps = { children: null, openDelay: 0 };
+// @ts-expect-error Content cannot acquire dialog semantics.
+const hoverRole: HoverCardContentProps = { children: 'Usage', role: 'dialog' };
+// @ts-expect-error Content is not focusable.
+const hoverTabStop: HoverCardContentProps = { children: 'Usage', tabIndex: 0 };
+// @ts-expect-error No live preview announcements.
+const hoverLive: HoverCardContentProps = { children: 'Usage', 'aria-live': 'polite' };
+// @ts-expect-error Content must remain read-only.
+const hoverEditable: HoverCardContentProps = { children: 'Usage', contentEditable: true };
+// @ts-expect-error No raw HTML bypass for content.
+const hoverHtml: HoverCardContentProps = { children: 'Usage', dangerouslySetInnerHTML: { __html: 'Usage' } };
+// @ts-expect-error Content is internally portalled, not slotted by consumers.
+const hoverContentSlot: HoverCardContentProps = { children: 'Usage', asChild: true };
+// @ts-expect-error Presence is Radix-owned, without public forceMount.
+const hoverPresence: HoverCardContentProps = { children: 'Usage', forceMount: true };
+// @ts-expect-error Content has no public ref API.
+const hoverContentRef: HoverCardContentProps = { children: 'Usage', ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Positioning numbers are fixed internally.
+const hoverOffset: HoverCardContentProps = { children: 'Usage', sideOffset: 0 };
+// @ts-expect-error Placement accepts only four sides.
+const hoverBadSide: HoverCardContentProps = { children: 'Usage', side: 'up' };
 const buttonVariant: ButtonVariant = 'secondary';
 const buttonSize: ButtonSize = 'sm';
 export const buttonRef = createRef<HTMLButtonElement>();
@@ -2333,6 +2381,8 @@ ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(shippedStyles);
 ${assertLinkCSS.toString()}
 assertLinkCSS(shippedStyles);
+${assertHoverCardCSS.toString()}
+assertHoverCardCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AspectRatio',
   'Avatar',
@@ -2346,6 +2396,9 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Dropzone',
   'Gauge',
   'Heading',
+  'HoverCard',
+  'HoverCardContent',
+  'HoverCardTrigger',
   'Icon',
   'IconButton',
   'Input',
@@ -2463,6 +2516,24 @@ for (const source of map.sources) {
 console.log(JSON.stringify({ ui: ui.version, react: (await import('react')).version, dedup: ['react', 'react-dom'], externalReact: true }));
 `;
 
+function assertHoverCardCSS(css) {
+  for (const selector of [
+    String.raw`.w-\[calc\(var\(--space-24\)\*4\)\]`,
+    String.raw`.max-w-\[var\(--radix-hover-card-content-available-width\)\]`,
+    String.raw`.max-h-\[var\(--radix-hover-card-content-available-height\)\]`,
+    String.raw`.pointer-coarse\:min-h-\[var\(--space-12\)\]`,
+    String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`,
+    String.raw`.data-\[state\=open\]\:starting\:opacity-0`,
+    String.raw`.motion-reduce\:transition-none`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing HoverCard utility ' + selector);
+  }
+  assert.match(css, /max-width:\s*var\(--radix-hover-card-content-available-width\)/);
+  assert.match(css, /max-height:\s*var\(--radix-hover-card-content-available-height\)/);
+  assert.match(css, /@starting-style/);
+  assert.doesNotMatch(css, /\.eg-hover-card\s*[,{]/);
+}
+
 function assertLinkCSS(css) {
   for (const selector of [
     '.border-0',
@@ -2499,7 +2570,17 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, HoverCardSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+const hoverDocument = new JSDOM(renderToString(createElement(HoverCardSamples, { defaultOpen: true })));
+try {
+  const doc = hoverDocument.window.document;
+  assert.equal(doc.querySelectorAll('a').length, 2);
+  assert.equal(doc.getElementById('hover-trigger').getAttribute('data-state'), 'open');
+  assert.equal(doc.getElementById('hover-trigger').getAttribute('href'), '#hover-details');
+  assert.equal(doc.getElementById('hover-persistent').getAttribute('href'), '#hover-details');
+  assert.ok(!doc.querySelector('.eg-hover-card'), 'Portal content is client-only even with defaultOpen');
+  assert.ok(!doc.querySelector('[aria-controls], [aria-expanded], [role="tooltip"], [role="dialog"]'));
+} finally { hoverDocument.window.close(); }
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
@@ -3426,7 +3507,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, CountdownSamples, DropzoneSamples, HoverCardSamples, hoverCardRef, hoverCardSlotRef, hoverCardChanges, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -3908,6 +3989,56 @@ try {
   assert.deepEqual(linkEvents, ['native', 'child', 'parent']);
   await act(async () => root.render(null));
   assert.ok(nativeLinkRef.current === null && slottedLinkRef.current === null, 'Native and slotted Link refs clean up');
+  stage('hover-card:focus:start');
+  hoverCardChanges.length = 0;
+  await act(async () => root.render(createElement(HoverCardSamples)));
+  const hoverTrigger = document.getElementById('hover-trigger');
+  assert.ok(hoverCardRef.current === hoverTrigger, 'Native trigger forwards its anchor ref');
+  assert.equal(hoverTrigger.getAttribute('href'), '#hover-details');
+  assert.equal(hoverCardChanges.length, 0, 'Mount emits no notification');
+  await act(async () => hoverTrigger.focus());
+  assert.ok(document.querySelector('.eg-hover-card') === null, 'Focus follows the open delay');
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 750)));
+  const hoverPanel = document.querySelector('.eg-hover-card');
+  assert.ok(hoverPanel && hoverPanel.classList.contains('eg-surface'));
+  assert.equal(hoverPanel.textContent, 'Usage: 42%. Reset: tomorrow.');
+  assert.equal(hoverPanel.id, 'hover-preview', 'Content id remains a compatible native prop');
+  assert.ok(!document.getElementById('app').contains(hoverPanel), 'Content is internally portalled');
+  assert.ok(hoverPanel.closest('[data-radix-popper-content-wrapper]').parentElement === document.body);
+  assert.ok(document.activeElement === hoverTrigger, 'Preview does not move focus');
+  for (const attr of ['aria-describedby', 'aria-controls', 'aria-expanded']) {
+    assert.equal(hoverTrigger.hasAttribute(attr), false);
+  }
+  assert.ok(!hoverPanel.querySelector('a, button, input, [tabindex], [aria-live]'));
+  await act(async () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+  assert.ok(document.querySelector('.eg-hover-card') === null);
+  assert.ok(document.activeElement === hoverTrigger);
+  const touch = new Event('touchstart', { bubbles: true, cancelable: true });
+  let cancelRequests = 0;
+  touch.preventDefault = () => { cancelRequests += 1; };
+  await act(async () => hoverTrigger.dispatchEvent(touch));
+  assert.equal(cancelRequests, 1, 'A1 retains Radix touch cancellation, not a HoverCard-owned handler');
+  assert.equal(document.getElementById('hover-persistent').getAttribute('href'), '#hover-details');
+  await act(async () => root.render(null));
+  assert.ok(hoverCardRef.current === null);
+  hoverCardChanges.length = 0;
+  await act(async () => root.render(createElement(HoverCardSamples, { open: false })));
+  await act(async () => document.getElementById('hover-trigger').focus());
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 750)));
+  assert.ok(hoverCardChanges.includes(true), 'Controlled owner receives the open request');
+  assert.ok(document.querySelector('.eg-hover-card') === null, 'Owner acknowledgement is required');
+  const requestCount = hoverCardChanges.length;
+  await act(async () => root.render(createElement(HoverCardSamples, { open: true })));
+  assert.ok(document.querySelector('.eg-hover-card'));
+  assert.equal(hoverCardChanges.length, requestCount, 'Acknowledgement does not echo a request');
+  await act(async () => root.render(null));
+  await act(async () => root.render(createElement(HoverCardSamples, { defaultOpen: true, slotted: true })));
+  assert.ok(hoverCardSlotRef.current === document.getElementById('hover-trigger'));
+  assert.equal(document.querySelectorAll('#hover-trigger').length, 1, 'Slotted link has no duplicate anchor');
+  await act(async () => root.render(null));
+  assert.ok(hoverCardSlotRef.current === null);
+  assert.ok(document.querySelector('.eg-hover-card') === null);
+  stage('hover-card:focus:complete');
   stage('tooltip:focus:start');
   await act(async () => root.render(createElement(TooltipSamples)));
   const tooltipTrigger = document.getElementById('tooltip-search');

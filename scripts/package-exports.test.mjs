@@ -1660,6 +1660,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Dropzone',
       'Gauge',
       'Heading',
+      'HoverCard',
+      'HoverCardContent',
+      'HoverCardTrigger',
       'Icon',
       'IconButton',
       'Input',
@@ -1832,6 +1835,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Heading',
     'HeadingLevel',
     'HeadingProps',
+    'HoverCard',
+    'HoverCardContent',
+    'HoverCardContentProps',
+    'HoverCardProps',
+    'HoverCardTrigger',
+    'HoverCardTriggerProps',
     'Icon',
     'IconButton',
     'IconButtonProps',
@@ -2708,6 +2717,88 @@ test('UI Checkbox SSR retains binary/mixed semantics, private recipes and form i
   }
   for (const name of ['checkboxVariants', 'checkboxIndicatorVariants', 'checkboxIconVariants', 'useCheckbox']) {
     assert.equal(exported[name], undefined, `${name} stays private`);
+  }
+});
+
+test('HoverCard ships every static CVA utility, Radix bounds and opacity-only entry', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/hover-card/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  let parts = 0;
+  const visit = (node) => {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      parts++;
+      const collect = (value) => {
+        if (ts.isStringLiteral(value)) {
+          for (const name of value.text.split(/\s+/).filter(Boolean)) {
+            if (name === 'eg-hover-card') {
+              continue;
+            }
+            const selector = `.${name.replace(/([^a-zA-Z0-9_-])/g, '\\$1')}`;
+            assert.ok(css.includes(selector), `Missing HoverCard utility ${name}`);
+          }
+        } else {
+          ts.forEachChild(value, collect);
+        }
+      };
+      collect(node.arguments[0]);
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  assert.equal(parts, 2, 'Trigger and Content recipes must both ship');
+  assert.match(css, /width:\s*calc\([^;]*var\(--space-24\)[^;]*\)/);
+  assert.match(css, /max-width:\s*var\(--radix-hover-card-content-available-width\)/);
+  assert.match(css, /max-height:\s*var\(--radix-hover-card-content-available-height\)/);
+  assert.match(css, /overflow-y:\s*auto/);
+  assert.match(css, /overflow-wrap:\s*break-word/);
+  assert.match(css, /@starting-style/);
+  assert.match(css, /transition-duration:\s*var\(--duration-fast\)/);
+  assert.match(css, /prefers-reduced-motion:\s*reduce/);
+  assert.doesNotMatch(css, /\.eg-hover-card\s*[,{]/, 'No HoverCard stylesheet or local Material recipe');
+});
+
+test('HoverCard exports its bounded composition with native link SSR and private helpers', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(typeof exported.HoverCard, 'function');
+  assert.equal(typeof exported.HoverCardContent, 'function');
+  assert.equal(exported.HoverCardTrigger.$$typeof, Symbol.for('react.forward_ref'));
+  const html = renderToString(
+    createElement(
+      exported.HoverCard,
+      { defaultOpen: true },
+      createElement(exported.HoverCardTrigger, { href: '#details', id: 'preview' }, 'Usage preview'),
+      createElement(exported.HoverCardContent, null, 'Read-only usage')
+    )
+  );
+  assert.match(html, /^<a /, 'Root adds no DOM');
+  assert.match(html, /href="#details"/);
+  assert.match(html, /data-state="open"/);
+  assert.match(html, />Usage preview<\/a>$/);
+  assert.doesNotMatch(html, /Read-only usage|aria-expanded|aria-controls|aria-describedby|role="(?:dialog|tooltip)"/);
+  const slotted = renderToString(
+    createElement(
+      exported.HoverCard,
+      null,
+      createElement(exported.HoverCardTrigger, { asChild: true }, createElement('a', { href: '#details' }, 'Details'))
+    )
+  );
+  assert.equal((slotted.match(/<a /g) ?? []).length, 1);
+  assert.match(slotted, /href="#details"/);
+  for (const name of [
+    'useHoverCard',
+    'useHoverCardContent',
+    'useHoverCardTrigger',
+    'hoverCardContentVariants',
+    'hoverCardTriggerVariants'
+  ]) {
+    assert.equal(exported[name], undefined, `${name} stays internal`);
   }
 });
 
