@@ -50,4 +50,6 @@ export const chipVariants = cva(
 );
 
 /** Internal decorative part; not a public class override surface. */
-export const chipIconVariants = cva('size-3.5 shrink-0');
+export const chipIconVariants = cva(
+  'inline-flex items-center justify-center size-3.5 shrink-0 [&>svg]:block [&>svg]:size-full'
+);

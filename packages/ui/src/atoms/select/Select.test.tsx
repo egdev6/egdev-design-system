@@ -98,6 +98,24 @@ describe('Select public contract', () => {
     expect(trigger().querySelector('svg')).toHaveClass('eg-icon', 'size-4');
   });
 
+  it.each(['md', 'sm'] as const)('centers the %s trigger chevron independently of inline SVG baselines', (size) => {
+    render(<Select options={options} aria-label='Visibility' size={size} placeholder='Choose visibility' />);
+    const chevron = trigger().querySelector('svg')?.parentElement;
+    expect(chevron).toHaveAttribute('aria-hidden', 'true');
+    expect(chevron).toHaveClass(
+      'absolute',
+      'right-3',
+      'size-4',
+      'inline-flex',
+      'items-center',
+      'justify-center',
+      '[&>svg]:block',
+      '[&>svg]:size-full'
+    );
+    expect(trigger()).toHaveClass('items-center');
+    expect(trigger()).toHaveTextContent('Choose visibility');
+  });
+
   it('shows a placeholder separately from its accessible name and associates label and description', () => {
     render(
       <>
