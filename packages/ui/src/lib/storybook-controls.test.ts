@@ -48,6 +48,7 @@ const components = [
   ['ProgressBar', 'atoms/progress-bar'],
   ['PullQuote', 'atoms/pull-quote'],
   ['Select', 'atoms/select'],
+  ['SelectTile', 'molecules/select-tile'],
   ['StatusDot', 'atoms/status-dot'],
   ['Switch', 'atoms/switch'],
   ['Textarea', 'atoms/textarea'],
@@ -104,6 +105,19 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  selecttile: {
+    type: 'select',
+    label: 'text',
+    options: false,
+    ratio: 'select',
+    disabled: 'boolean',
+    dir: 'select',
+    value: false,
+    defaultValue: false,
+    onValueChange: false,
+    name: 'text',
+    required: 'boolean'
+  },
   carousel: { items: false, label: 'text', value: 'text', defaultValue: 'text', onValueChange: false, messages: false },
   sectionheader: {
     title: 'text',
@@ -341,6 +355,7 @@ const expected: Record<string, Record<string, string | false>> = {
   }
 };
 const ownPropCounts: Record<string, number> = {
+  selecttile: 11,
   carousel: 6,
   avatar: 5,
   button: 7,
@@ -803,6 +818,26 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ]) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
+  });
+
+  it('retains SelectTile cardinality, ratio presets and A1 whole-type disabled controls', () => {
+    const { argTypes } = story('SelectTile');
+    expect(argTypes.type?.control).toEqual({ type: 'select' });
+    expect(new Set(argTypes.type?.options)).toEqual(new Set(['single', 'multiple']));
+    expect(argTypes.ratio?.control).toEqual({ type: 'select' });
+    expect(new Set(argTypes.ratio?.options)).toEqual(
+      new Set(['landscape', 'portrait', 'story', 'square', 'wide', 'banner'])
+    );
+    for (const prop of ['value', 'defaultValue']) {
+      expect(argTypes[prop]?.control).toBe(false);
+      expect(argTypes[prop]?.table?.disable).toBeUndefined();
+      expect(argTypes[prop]?.table?.defaultValue?.summary).toBeUndefined();
+    }
+    for (const prop of ['type', 'label', 'options']) {
+      expect(argTypes[prop]?.type?.required).toBe(true);
+    }
+    expect(argTypes.ratio?.table?.defaultValue?.summary).toBe('"landscape"');
+    expect(argTypes.dir?.table?.defaultValue?.summary).toBe('"ltr"');
   });
 
   it('retains Stat required label/value rows, the figure union reason and passive native rows', () => {

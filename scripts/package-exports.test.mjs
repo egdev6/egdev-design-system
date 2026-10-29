@@ -124,6 +124,101 @@ test('MeterRow ships wrapping and token typography with real one-owner progress 
   }
 });
 
+test('SelectTile ships shared Material, state priority, stretched geometry and native SSR semantics', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^{}]*\\{`));
+  for (const state of ['checked', 'on']) {
+    const selected = String.raw`.has-\[\[data-state\=${state}\]\]`;
+    const fill = rule(`${selected}\\:bg-surface-3`);
+    assert.match(fill, new RegExp(`:has\\(:is\\(\\[data-state=["']?${state}["']?\\]\\)\\)`));
+    assert.match(fill, /background-color:\s*var\(--color-surface-3[,)]/);
+    const live = rule(`${String.raw`.data-\[state\=live\]\:`}${selected.slice(1)}\\:border-fg-brand-default`);
+    assert.match(live, /\[data-state[=\s]+["']?live/);
+    assert.match(live, /border-color:\s*var\(--color-fg-brand-default[,)]/);
+    const selectedShadow = rule(`${selected}\\:shadow-\\[var\\(--shadow-edge-strong\\)\\,var\\(--shadow-elev-1\\)\\]`);
+    const hoverShadow = rule(String.raw`.hover\:shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-elev-2\)\]`);
+    assert.ok(
+      utilities.indexOf(selectedShadow) > utilities.indexOf(hoverShadow),
+      'Selected shadow wins over hover at equal specificity'
+    );
+    assert.ok(
+      utilities.indexOf(live) > utilities.indexOf(fill),
+      'Live+selected extension follows the selection recipe'
+    );
+  }
+  for (const token of [
+    'gradient-post-new',
+    'shadow-edge-strong',
+    'shadow-elev-1',
+    'shadow-elev-2',
+    'shadow-glow-base',
+    'shadow-well',
+    'shadow-focus'
+  ]) {
+    assert.match(utilities, new RegExp(`var\\(--${token}[,)]`));
+  }
+  for (const selector of [
+    String.raw`.focus-visible\:shadow-focus`,
+    String.raw`.data-disabled\:opacity-45`,
+    String.raw`.motion-reduce\:transition-none`,
+    '.absolute',
+    '.inset-0',
+    '.min-h-11',
+    '.object-cover',
+    '.wrap-anywhere'
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing SelectTile utility ${selector}`);
+  }
+  const layers = /@layer\s+theme,\s*base,\s*components,\s*utilities/.exec(css);
+  assert.ok(layers, 'Utilities must outrank legacy component rules, including .eg-tile:hover');
+  assert.ok(cssBlock(css, /@layer components\s*\{/).includes('.eg-tile:hover'), 'Keep the original legacy recipe');
+  assert.doesNotMatch(utilities, /\.eg-tile[\s:{]/, 'No new marker-based visual engine');
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  assert.equal(typeof exported.SelectTile, 'function');
+  assert.equal(exported.selectTileVariants, undefined);
+  assert.equal(exported.useSelectTile, undefined);
+  for (const type of ['single', 'multiple']) {
+    const document = new JSDOM(
+      renderToStaticMarkup(
+        createElement(exported.SelectTile, {
+          type,
+          label: 'Scenes',
+          options: [{ value: 'camera', label: 'Camera', meta: 'Two layers', live: true, badge: 'Live' }],
+          defaultValue: type === 'single' ? 'camera' : ['camera']
+        })
+      )
+    );
+    try {
+      const group = document.window.document.querySelector('.eg-select-tile');
+      assert.equal(group.getAttribute('role'), type === 'single' ? 'radiogroup' : 'group');
+      const button = group.querySelector('button');
+      assert.equal(button.children.length, 0);
+      assert.equal(button.getAttribute(type === 'single' ? 'aria-checked' : 'aria-pressed'), 'true');
+      assert.equal(
+        document.window.document.getElementById(button.getAttribute('aria-labelledby')).textContent,
+        'Camera'
+      );
+      assert.equal(
+        button
+          .getAttribute('aria-describedby')
+          .split(' ')
+          .map((id) => document.window.document.getElementById(id).textContent)
+          .join(' '),
+        'Two layers Live'
+      );
+      assert.equal(button.parentElement.getAttribute('data-state'), 'live');
+      assert.ok(button.parentElement.matches(`:has([data-state="${type === 'single' ? 'checked' : 'on'}"])`));
+    } finally {
+      document.window.close();
+    }
+  }
+});
+
 test('transition utility guard accepts only the exact approved emitted selectors', () => {
   for (const selector of [
     '.transition-none',
@@ -2073,6 +2168,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'SearchTrigger',
       'SectionHeader',
       'Select',
+      'SelectTile',
       'Skeleton',
       'Slider',
       'Slot',
@@ -2345,6 +2441,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SelectOption',
     'SelectProps',
     'SelectSize',
+    'SelectTile',
+    'SelectTileOption',
+    'SelectTileProps',
+    'SelectTileRatio',
+    'SelectTileThumbnail',
+    'SelectTileType',
     'Skeleton',
     'SkeletonProps',
     'SkeletonSize',

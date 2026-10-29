@@ -12,6 +12,29 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...[
+    'accessible-name',
+    'choice-options',
+    'primary-value',
+    'initial-uncontrolled-value',
+    'interactive-value-change',
+    'selection-cardinality',
+    'aspect-ratio'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/select-tile/types.ts#SelectTileProps'
+  })),
+  ...[
+    'accessible-name',
+    'primary-value',
+    'option-metadata',
+    'preview-thumbnail',
+    'live-presentation',
+    'thumbnail-badge'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/select-tile/types.ts#SelectTileOption'
+  })),
   ...['open-state', 'initial-uncontrolled-open', 'open-change'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/hover-card/types.ts#HoverCardProps'

@@ -38,6 +38,8 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   listItemActions: ['id', 'title', 'aria-describedby', 'className'],
   badge: ['id', 'title', 'aria-describedby', 'className'],
   radioGroup: ['id', 'aria-labelledby', 'aria-describedby', 'className'],
+  selectTile: ['id', 'title', 'aria-describedby', 'className', 'style'],
+
   switch: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className'],
   progressBar: ['id', 'title', 'aria-describedby', 'className', 'style'],
   meterRow: ['id', 'title', 'dir', 'lang', 'className', 'style'],

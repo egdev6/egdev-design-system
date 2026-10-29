@@ -32,7 +32,7 @@ import { Menu, menuVariants } from '@egdev/ui';
 import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorItem, MenuLabelItem, MenuSubmenuItem, MenuTone, MenuAlign, MenuSide } from '@egdev/ui';
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, Notice, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, Notice, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -114,6 +114,11 @@ import type {
   SelectProps,
   SelectOption,
   SelectSize,
+  SelectTileProps,
+  SelectTileOption,
+  SelectTileRatio,
+  SelectTileThumbnail,
+  SelectTileType,
   SkeletonProps,
   SkeletonSize,
   SkeletonVariant,
@@ -156,6 +161,44 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+const tileType: SelectTileType = 'single';
+const tileRatio: SelectTileRatio = 'portrait';
+const tileThumb: SelectTileThumbnail = { src: 'preview.png' };
+const tileOptions: SelectTileOption[] = [
+  { value: 'camera', label: 'Camera', meta: 'Two layers', live: true, badge: 'Live', thumb: tileThumb },
+  { value: 'slides', label: 'Slides' }
+];
+const singleTile: Extract<SelectTileProps, { type: 'single' }> = { type: tileType, label: 'Scenes', options: tileOptions, ratio: tileRatio, name: 'scene', required: true };
+const multipleTile: Extract<SelectTileProps, { type: 'multiple' }> = { type: 'multiple', label: 'Outputs', options: tileOptions, defaultValue: ['slides'] };
+export const tileRequests: (string | string[])[] = [];
+export function SelectTileSamples({ multiple = false, value }: { multiple?: boolean; value?: string }) {
+  if (multiple) {
+    const props: Extract<SelectTileProps, { type: 'multiple' }> = {
+      ...multipleTile, onValueChange: (next) => tileRequests.push(next)
+    };
+    return createElement(SelectTile, props);
+  }
+  const props: Extract<SelectTileProps, { type: 'single' }> = {
+    ...singleTile, value, onValueChange: (next) => tileRequests.push(next)
+  };
+  return createElement(SelectTile, props);
+}
+// @ts-expect-error Single values are scalar strings, never arrays.
+const tileSingleArray: SelectTileProps = { type: 'single', label: 'Scenes', options: [], value: [] };
+// @ts-expect-error Multiple groups do not submit native form fields.
+const tileMultipleName: SelectTileProps = { type: 'multiple', label: 'Scenes', options: [], name: 'scene' };
+// @ts-expect-error Multiple groups cannot require native form validity.
+const tileMultipleRequired: SelectTileProps = { type: 'multiple', label: 'Scenes', options: [], required: true };
+// @ts-expect-error Live choices require readable badge copy.
+const tileUndescribedLive: SelectTileOption = { value: 'camera', label: 'Camera', live: true };
+// @ts-expect-error Media proportions accept only the six approved presets.
+const tileNumericRatio: SelectTileProps = { ...singleTile, ratio: 1.5 };
+// @ts-expect-error SelectTile exposes no public ref API.
+const tileRef: SelectTileProps = { ...singleTile, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error There is no custom children renderer.
+const tileChildren: SelectTileProps = { ...singleTile, children: 'Custom tile' };
+// @ts-expect-error There is no asChild composition API.
+const tileAsChild: SelectTileProps = { ...singleTile, asChild: true };
 export const hoverCardRef = createRef<HTMLAnchorElement>();
 export const hoverCardSlotRef = createRef<HTMLAnchorElement>();
 export const hoverCardChanges: boolean[] = [];
@@ -3027,6 +3070,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'SearchTrigger',
   'SectionHeader',
   'Select',
+  'SelectTile',
   'Skeleton',
   'Slider',
   'Slot',
@@ -3240,6 +3284,24 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
+const { SelectTileSamples } = await import('./consumer.ts');
+for (const multiple of [false, true]) {
+  const tiles = new JSDOM(renderToString(createElement(SelectTileSamples, { multiple })));
+  try {
+    const group = tiles.window.document.querySelector('.eg-select-tile');
+    assert.equal(group.getAttribute('role'), multiple ? 'group' : 'radiogroup');
+    const buttons = group.querySelectorAll('button');
+    assert.equal(buttons.length, 2);
+    assert.equal(buttons[0].children.length, 0);
+    assert.equal(tiles.window.document.getElementById(buttons[0].getAttribute('aria-labelledby')).textContent, 'Camera');
+    assert.equal(buttons[1].getAttribute(multiple ? 'aria-pressed' : 'aria-checked'), multiple ? 'true' : 'false');
+    assert.equal(group.querySelector('img').getAttribute('alt'), '');
+    assert.equal(group.querySelector('[data-radix-aspect-ratio-wrapper]').style.paddingBottom, multiple ? '56.25%' : '125%');
+    assert.equal(group.querySelectorAll('input').length, multiple ? 0 : 2, 'Single SSR inputs remain Radix-owned');
+  } finally {
+    tiles.window.close();
+  }
+}
 const hoverDocument = new JSDOM(renderToString(createElement(HoverCardSamples, { defaultOpen: true })));
 try {
   const doc = hoverDocument.window.document;
@@ -4378,6 +4440,28 @@ const { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSam
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
+  const { SelectTileSamples, tileRequests } = await import('./consumer.ts');
+  await act(async () => root.render(createElement(SelectTileSamples, { value: 'slides' })));
+  let tiles = document.querySelector('.eg-select-tile');
+  assert.equal(tiles.getAttribute('role'), 'radiogroup');
+  await act(async () => tiles.querySelector('button').click());
+  assert.deepEqual(tileRequests.splice(0), ['camera']);
+  assert.equal(tiles.querySelectorAll('button')[1].getAttribute('aria-checked'), 'true', 'Controlled owner remains authoritative');
+  await act(async () => root.render(createElement(SelectTileSamples, { value: 'camera' })));
+  assert.equal(tileRequests.length, 0, 'Acknowledgement emits no callback');
+  assert.equal(document.querySelector('.eg-tile').getAttribute('data-state'), 'live');
+  // Remount when changing cardinality; switching type during a mount is unsupported.
+  await act(async () => root.render(null));
+  await act(async () => root.render(createElement(SelectTileSamples, { multiple: true })));
+  tiles = document.querySelector('.eg-select-tile');
+  await act(async () => tiles.querySelector('button').click());
+  assert.deepEqual(tileRequests.splice(0), [['slides', 'camera']]);
+  assert.equal(tiles.querySelector('input'), null);
+  const image = tiles.querySelector('img');
+  await act(async () => image.dispatchEvent(new window.Event('error')));
+  assert.equal(tiles.querySelector('img'), null);
+  assert.equal(tiles.querySelector('.eg-tile [aria-hidden="true"]').textContent, 'Camera');
+  await act(async () => root.render(null));
   stage('mount:start');
   await act(async () => root.render(createElement(App)));
   stage('mount:complete');
