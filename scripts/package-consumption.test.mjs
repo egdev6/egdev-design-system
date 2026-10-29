@@ -32,7 +32,7 @@ import { Menu, menuVariants } from '@egdev/ui';
 import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorItem, MenuLabelItem, MenuSubmenuItem, MenuTone, MenuAlign, MenuSide } from '@egdev/ui';
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Gauge, GaugeDock, GaugeDockItem, GaugeDockSeparator, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, NavList, Notice, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, Gauge, GaugeDock, GaugeDockItem, GaugeDockSeparator, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, NavList, Notice, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -61,6 +61,9 @@ import type {
   DividerOrientation,
   DividerProps,
   DropzoneProps,
+  FieldProps,
+  FieldLayout,
+  FieldCounter,
   GaugeProps,
   GaugeDockProps,
   GaugeDockItemProps,
@@ -844,6 +847,38 @@ const stringCompact: SearchTriggerProps = { compact: 'yes' };
 // @ts-expect-error shortcut is display text only.
 const numericShortcut: SearchTriggerProps = { shortcut: 75 };
 
+// Field samples stay outside App so existing control counts and focus harnesses remain unchanged.
+const fieldLayout: FieldLayout = 'stacked';
+const fieldCounter: FieldCounter = { value: 294, max: 280 };
+export const fieldControlRef = createRef<HTMLInputElement>();
+export const fieldProps: FieldProps = {
+  label: 'Post', layout: fieldLayout, hint: 'Keep it short', error: 'Shorten the post',
+  counter: fieldCounter, readout: '294 characters', id: 'post-field', className: 'col-span-full',
+  children: createElement(Input, { id: 'post-control', ref: fieldControlRef, 'aria-describedby': 'post-external' })
+};
+export function FieldSamples({ invalid = true }: { invalid?: boolean }) {
+  return createElement('section', null,
+    createElement('p', { id: 'post-external' }, 'External guidance'),
+    createElement(Field, { ...fieldProps, error: invalid ? fieldProps.error : '' }),
+    createElement(Field, { label: 'Notifications', layout: 'choice', hint: 'Receive updates', id: 'choice-field', children: createElement(Checkbox) }),
+    createElement(Field, { label: 'Ring size', readout: '56 px', error: 'Size is too large', id: 'slider-field', children: createElement(Slider, { label: 'Ring size', defaultValue: 56 }) }));
+}
+// @ts-expect-error Field requires its label even when hidden.
+const unnamedField: FieldProps = { children: createElement(Input), hideLabel: true };
+// @ts-expect-error Field requires one element control.
+const emptyField: FieldProps = { label: 'Title' };
+// @ts-expect-error Text is not a compatible control element.
+const textField: FieldProps = { label: 'Title', children: 'Input' };
+// @ts-expect-error Field has no own ref API.
+const referencedField: FieldProps = { ...fieldProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Field has no asChild API.
+const slottedField: FieldProps = { ...fieldProps, asChild: true };
+// @ts-expect-error Layout is a closed stacked/choice axis.
+const horizontalField: FieldProps = { ...fieldProps, layout: 'horizontal' };
+// @ts-expect-error Control size belongs to the atom, not Field.
+const smallField: FieldProps = { ...fieldProps, size: 'sm' };
+// @ts-expect-error Counter requires both value and max.
+const partialCounterField: FieldProps = { ...fieldProps, counter: { value: 1 } };
 // Navigation samples stay outside App so its existing button/focus inventories remain unchanged.
 const navTag: NavListTag = { children: 'New', tone: 'brand' };
 const navSignal: NavListSignal = { state: 'live', text: 'Voting live' };
@@ -2694,6 +2729,22 @@ function assertCountdownCSS(css) {
   assert.match(css, /min-width:\s*var\(--spacing-countdown-unit[,)]/);
 }
 
+// Field's layout and attribute-driven state utilities must ship without a consumer Tailwind compiler.
+function assertFieldCSS(css) {
+  for (const selector of [
+    String.raw`.grid-cols-\[auto_1fr\]`,
+    String.raw`.group-has-\[\:disabled\]\:opacity-45`,
+    String.raw`.group-has-\[\[data-disabled\]\]\:opacity-45`,
+    String.raw`.data-\[state\=over\]\:text-status-danger`,
+    String.raw`.pointer-coarse\:min-h-11`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Field utility ' + selector);
+  }
+  assert.match(css, /grid-template-columns:\s*auto 1fr/);
+  assert.match(css, /font-weight:\s*var\(--text-body-muted--font-weight[,)]/);
+  assert.match(css, /@media\s*\(pointer:\s*coarse\)/);
+}
+
 // Timeline ships static CVA geometry and states without a consumer Tailwind compiler.
 function assertTimelineCSS(css) {
   for (const multiplier of [2, 3, 4]) {
@@ -3189,6 +3240,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Countdown',
   'Divider',
   'Dropzone',
+  'Field',
   'Gauge',
   'GaugeDock',
   'GaugeDockItem',
@@ -3299,6 +3351,8 @@ ${assertPullQuoteCSS.toString()}
 ${assertButtonGroupCSS.toString()}
 assertButtonGroupCSS(shippedStyles);
 ${assertCountdownCSS.toString()}
+${assertFieldCSS.toString()}
+assertFieldCSS(shippedStyles);
 ${assertMeterRowCSS.toString()}
 assertMeterRowCSS(shippedStyles);
 assertCountdownCSS(shippedStyles);
@@ -3490,7 +3544,7 @@ try {
   assert.equal(root.querySelector('#packed-dock-separator').getAttribute('aria-hidden'), 'true');
   assert.ok(root.textContent.includes('Packed reading offline'));
 } finally { dockDOM.window.close(); }
-import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, HoverCardSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
+import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, HoverCardSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
 // Navigation SSR covers native semantics and a fully controlled open group on both React majors.
 const navDocument = new JSDOM(renderToString(createElement(NavListSamples, { open: true })));
 try {
@@ -3707,6 +3761,29 @@ try {
 const unavailableCountdown = renderToString(createElement(CountdownSamples, { deadline: Number.NaN }));
 assert.ok(unavailableCountdown.includes('data-state="unavailable"') && unavailableCountdown.includes('Time unavailable'));
 assert.doesNotMatch(unavailableCountdown, /<time|eg-countdown__row/);
+// Field SSR uses real public types/controls; DOM text assertions tolerate React's text separators.
+const fieldDocument = new JSDOM(renderToString(createElement(FieldSamples)));
+try {
+  const document = fieldDocument.window.document;
+  const field = document.getElementById('post-field');
+  const input = document.getElementById('post-control');
+  assert.ok(field.classList.contains('eg-field') && field.classList.contains('col-span-full'));
+  assert.equal(field.getAttribute('data-state'), 'invalid');
+  assert.equal(field.querySelector('label').htmlFor, input.id);
+  assert.equal(input.getAttribute('aria-invalid'), 'true');
+  const descriptions = input.getAttribute('aria-describedby').split(' ').map((id) => document.getElementById(id).textContent);
+  assert.deepEqual(descriptions, ['External guidance', 'Shorten the post', '294 / 280']);
+  assert.equal(field.querySelector('output').getAttribute('for'), input.id);
+  assert.equal(field.querySelector('[data-state="over"]').textContent, '294 / 280');
+  assert.equal(field.querySelector('[aria-live], [role="alert"]'), null);
+  const choice = document.getElementById('choice-field');
+  assert.equal(choice.firstElementChild.getAttribute('role'), 'checkbox');
+  const slider = document.getElementById('slider-field').querySelector('[role="slider"]');
+  assert.equal(slider.getAttribute('aria-invalid'), 'true');
+  assert.equal(document.getElementById(slider.getAttribute('aria-describedby')).textContent, 'Size is too large');
+} finally {
+  fieldDocument.window.close();
+}
 // SocialLinks SSR: genuine anchors, one hidden name and explicit opt-in new browsing contexts.
 const socialDocument = new JSDOM(renderToString(createElement(SocialLinksSamples)));
 try {
@@ -4670,10 +4747,25 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, HoverCardSamples, hoverCardRef, hoverCardSlotRef, hoverCardChanges, ListItemSamples, MeterRowSamples, NavListSamples, navRequests, navNavigations, NoticeSamples, PopoverSamples, popoverTriggerRef, popoverCloseRef, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, carouselChanges, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
+const { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, FieldSamples, fieldControlRef, HoverCardSamples, hoverCardRef, hoverCardSlotRef, hoverCardChanges, ListItemSamples, MeterRowSamples, NavListSamples, navRequests, navNavigations, NoticeSamples, PopoverSamples, popoverTriggerRef, popoverCloseRef, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, carouselChanges, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
+  await act(async () => root.render(createElement(FieldSamples)));
+  const fieldInput = document.getElementById('post-control');
+  assert.equal(fieldControlRef.current, fieldInput);
+  assert.equal(fieldInput.getAttribute('aria-invalid'), 'true');
+  const fieldChoice = document.querySelector('#choice-field [role="checkbox"]');
+  await act(async () => document.querySelector('#choice-field label').click());
+  assert.equal(fieldChoice.getAttribute('aria-checked'), 'true');
+  await act(async () => root.render(createElement(FieldSamples, { invalid: false })));
+  assert.equal(fieldControlRef.current, fieldInput);
+  assert.equal(fieldInput.hasAttribute('aria-invalid'), false);
+  const fieldDescriptions = fieldInput.getAttribute('aria-describedby').split(' ').map((id) => document.getElementById(id).textContent);
+  assert.deepEqual(fieldDescriptions, ['External guidance', 'Keep it short', '294 / 280']);
+  assert.equal(document.querySelector('#slider-field [role="slider"]').getAttribute('aria-invalid'), 'true');
+  await act(async () => root.render(null));
+  assert.equal(fieldControlRef.current, null);
   const { SelectTileSamples, tileRequests } = await import('./consumer.ts');
   await act(async () => root.render(createElement(SelectTileSamples, { value: 'slides' })));
   let tiles = document.querySelector('.eg-select-tile');
@@ -6046,6 +6138,8 @@ assertDropzoneCSS(emitted);
 ${assertButtonGroupCSS.toString()}
 assertButtonGroupCSS(emitted);
 ${assertCountdownCSS.toString()}
+${assertFieldCSS.toString()}
+assertFieldCSS(emitted);
 assertCountdownCSS(emitted);
 ${assertCarouselCSS.toString()}
 assertCarouselCSS(emitted);
@@ -6134,6 +6228,7 @@ assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
 assertButtonGroupCSS(twCss);
 assertCountdownCSS(twCss);
+assertFieldCSS(twCss);
 assertMeterRowCSS(twCss);
 assertStatCSS(twCss);
 assertSectionHeaderCSS(twCss);

@@ -23,6 +23,7 @@ const components = [
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Cluster', 'primitives/stack'],
   ['Gauge', 'atoms/gauge'],
+  ['Field', 'molecules/field'],
   ['GaugeDock', 'molecules/gauge-dock'],
   ['Dropzone', 'atoms/dropzone'],
   ['Heading', 'primitives/text'],
@@ -108,6 +109,16 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  field: {
+    label: 'text',
+    children: false,
+    hint: 'text',
+    error: 'text',
+    counter: false,
+    readout: 'text',
+    hideLabel: 'boolean',
+    layout: 'select'
+  },
   timeline: {
     label: 'text',
     size: 'select',
@@ -383,6 +394,7 @@ const ownPropCounts: Record<string, number> = {
   buttongroup: 3,
   dropzone: 6,
   gauge: 8,
+  field: 8,
   gaugedock: 3,
   icon: 4,
   iconbutton: 6,
@@ -556,6 +568,24 @@ describe('pure JSDoc Controls metadata mapping', () => {
 });
 
 describe('registered JSDoc Controls through installed Storybook extraction and inference', () => {
+  it('retains Field required content, stacked defaults, choices and supported native rows', () => {
+    const { argTypes, args } = story('Field');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.children?.type?.required).toBe(true);
+    expect(argTypes.children?.control).toBe(false);
+    expect(argTypes.counter?.control).toBe(false);
+    expect(argTypes.layout?.options).toEqual(['stacked', 'choice']);
+    expect(argTypes.layout?.table?.defaultValue?.summary).toBe('"stacked"');
+    expect(argTypes.hideLabel?.table?.defaultValue?.summary).toBe('false');
+    expect(args).toEqual({});
+    for (const name of ['id', 'title', 'className', 'aria-describedby', 'style']) {
+      expect(argTypes[name], name).toBeDefined();
+      expect(argTypes[name], name).toEqual(story('Field', false).argTypes[name]);
+    }
+    for (const name of ['ref', 'asChild', 'size', 'icon']) {
+      expect(argTypes[name], name).toBeUndefined();
+    }
+  });
   beforeAll(() => {
     // Parse only implemented components: pending files fail their own tests, never their siblings.
     docs = parser.parse(

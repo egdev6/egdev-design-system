@@ -727,6 +727,86 @@ test('UI ships Dropzone token geometry, native resets and attribute-driven color
   assert.ok(utilities.includes(String.raw`.disabled\:cursor-not-allowed`));
 });
 
+test('Field public build renders linked descriptions and Slider invalid semantics without Tailwind', async () => {
+  const { Field, Input, Slider } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const html = renderToString(
+    createElement(Field, {
+      label: 'Post',
+      hint: 'Hint',
+      error: 'Shorten the post',
+      counter: { value: 294, max: 280 },
+      readout: '294 characters',
+      children: createElement(Input, { id: 'post', 'aria-describedby': 'external external' })
+    })
+  );
+  const dom = new JSDOM(`<p id="external">External guidance</p>${html}`);
+  try {
+    const document = dom.window.document;
+    const field = document.querySelector('.eg-field');
+    const input = document.getElementById('post');
+    assert.equal(field.tagName, 'DIV');
+    assert.equal(field.getAttribute('data-state'), 'invalid');
+    assert.equal(field.querySelector('label').htmlFor, input.id);
+    assert.equal(field.querySelector('output').getAttribute('for'), input.id);
+    assert.equal(input.getAttribute('aria-invalid'), 'true');
+    assert.deepEqual(
+      input
+        .getAttribute('aria-describedby')
+        .split(' ')
+        .map((id) => document.getElementById(id).textContent),
+      ['External guidance', 'Shorten the post', '294 / 280']
+    );
+    assert.equal(field.querySelector('[aria-live], [role="alert"]'), null);
+  } finally {
+    dom.window.close();
+  }
+  const sliderDOM = new JSDOM(
+    renderToString(
+      createElement(Field, {
+        label: 'Ring size',
+        error: 'Too large',
+        children: createElement(Slider, { label: 'Ring size', defaultValue: 56 })
+      })
+    )
+  );
+  try {
+    const document = sliderDOM.window.document;
+    const slider = document.querySelector('[role="slider"]');
+    assert.equal(slider.getAttribute('aria-invalid'), 'true');
+    assert.equal(document.getElementById(slider.getAttribute('aria-describedby')).textContent, 'Too large');
+  } finally {
+    sliderDOM.window.close();
+  }
+});
+
+test('UI ships Field layout, description tones and single-opacity disabled selectors', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) =>
+    cssBlock(utilities, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^\\{]*\\{`));
+  assert.match(rule(String.raw`.grid-cols-\[auto_1fr\]`), /grid-template-columns:\s*auto 1fr/);
+  assert.match(rule('.gap-1\\.5'), /gap:\s*calc\(var\(--space-1\)\s*\*\s*1\.5\)/);
+  for (const selector of [
+    String.raw`.group-has-\[\:disabled\]\:opacity-45`,
+    String.raw`.group-has-\[\[data-disabled\]\]\:opacity-45`
+  ]) {
+    const body = rule(selector);
+    assert.match(body, /:has\(/);
+    assert.match(body, /opacity:\s*(?:\.45|45%)/);
+  }
+  assert.match(rule(String.raw`.data-\[state\=over\]\:text-status-danger`), /color:\s*var\(--color-status-danger[,)]/);
+  assert.match(
+    rule(String.raw`.font-\[var\(--text-body-muted--font-weight\)\]`),
+    /font-weight:\s*var\(--text-body-muted--font-weight[,)]/
+  );
+  assert.ok(utilities.includes(String.raw`.pointer-coarse\:min-h-11`));
+  assert.match(utilities, /@media\s*\(pointer:\s*coarse\)/);
+  assert.doesNotMatch(utilities, /\.eg-field[^\{]*\{/, 'Field marker is not a second visual engine');
+});
+
 test('UI ships the Stat Material card, figure recipes and highlight utilities without preflight', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -2266,6 +2346,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Countdown',
       'Divider',
       'Dropzone',
+      'Field',
       'Gauge',
       'GaugeDock',
       'GaugeDockItem',
@@ -2350,6 +2431,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(exported.Checkbox?.$$typeof, Symbol.for('react.forward_ref'), 'Checkbox must forward its button ref');
   assert.equal(typeof exported.ButtonGroup, 'function', 'ButtonGroup has no public root ref API');
   assert.equal(typeof exported.Dropzone, 'function', 'Dropzone must be a plain function with no public ref API');
+  assert.equal(typeof exported.Field, 'function', 'Field has no public ref API');
   assert.equal(typeof exported.Stat, 'function', 'Stat must be a plain function with no public ref API');
   assert.equal(typeof exported.statVariants, 'function', 'Stat card recipe must be public');
   assert.equal(typeof exported.dropzoneVariants, 'function', 'Dropzone recipe must be public');
@@ -2476,6 +2558,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'DividerProps',
     'Dropzone',
     'DropzoneProps',
+    'Field',
+    'FieldCounter',
+    'FieldLayout',
+    'FieldProps',
     'Gauge',
     'GaugeDock',
     'GaugeDockItem',
@@ -2689,6 +2775,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'useField',
+    'fieldVariants',
+    'fieldLabelRowVariants',
+    'fieldMessageVariants',
+    'fieldCounterVariants',
+    'fieldReadoutVariants',
     'useNotice',
     'noticeAppearanceVariants',
     'noticeIconVariants',

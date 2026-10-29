@@ -16,6 +16,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   countdown: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],
   dropzone: ['id', 'title', 'disabled', 'className', 'aria-describedby', 'onClick'],
   gauge: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  field: ['id', 'title', 'aria-describedby', 'className', 'style'],
   gaugeDock: ['id', 'title', 'dir', 'aria-describedby', 'className', 'style'],
   gaugeDockItem: ['id', 'title', 'aria-describedby', 'className', 'style'],
   gaugeDockSeparator: ['id', 'title', 'className', 'style'],
