@@ -10,7 +10,7 @@ const RouterLink = forwardRef<HTMLAnchorElement, ComponentPropsWithoutRef<'a'>>(
 
 /**
  * ## Description
- * Standalone text navigation with a trailing direction arrow. Use for secondary links in a block,
+ * Borderless brand-colored text navigation with a centered right arrow. Use for secondary links in a block,
  * not primary actions, icon-only navigation or inline prose.
  *
  * ## Dependencies
@@ -37,7 +37,7 @@ export const Default: Story = {
   args: { href: '#articles', children: 'All articles' }
 };
 
-/** New-tab semantics include safe rel values, an up-right arrow and the default hidden notice. */
+/** New-tab semantics retain safe rel values and a hidden notice; the arrow still points right. */
 export const External: Story = {
   args: { href: 'https://example.com/repository', children: 'View repository', external: true, rel: 'author' }
 };
@@ -47,7 +47,7 @@ export const CustomNotice: Story = {
   args: { href: 'https://example.com', children: 'Read documentation', external: true, newTabText: '(new window)' }
 };
 
-/** Dense footer navigation can omit the decorative arrow without losing its underline or text. */
+/** Dense footer navigation can omit the decorative arrow while retaining its brand-colored text. */
 export const WithoutArrow: Story = {
   args: { href: '#legal', children: 'Legal information', arrow: false }
 };
@@ -61,7 +61,7 @@ export const AsChild: Story = {
   }
 };
 
-/** Pointer/keyboard inspection target: Tab to focus, hover to move the arrow, emulate reduced motion. */
+/** Tab to inspect the focus ring; hover moves the arrow right by one space token, unless motion is reduced. */
 export const States: Story = {
   args: { href: '#states', children: 'Explore states', className: 'self-start mt-4', onClick: action('navigate') }
 };

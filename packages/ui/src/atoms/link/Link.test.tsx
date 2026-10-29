@@ -17,7 +17,15 @@ describe('Link navigation contract', () => {
     const link = screen.getByRole('link', { name: 'All articles' });
     expect(link.tagName).toBe('A');
     expect(link).toHaveAttribute('href', '#articles');
-    expect(link).toHaveClass('eg-link', 'text-label-default');
+    expect(link).toHaveClass(
+      'eg-link',
+      'text-label-default',
+      'text-fg-brand-raised',
+      'items-center',
+      'border-0',
+      'pb-0'
+    );
+    expect(link).not.toHaveClass('border-b', 'border-border-brand', 'text-fg-default');
     expect(link).not.toHaveAttribute('target');
     expect(link).not.toHaveAttribute('rel');
     const arrow = link.querySelector('svg');
@@ -38,7 +46,7 @@ describe('Link navigation contract', () => {
     expect(result.current.rootProps.rel).toBe('author noopener author');
     expect(result.current.rootProps.target).toBeUndefined();
     rerender({ external: true });
-    expect(result.current.arrowName).toBe('arrow-up-right');
+    expect(result.current.arrowName).toBe('arrow-right');
     expect(result.current.rootProps.target).toBe('_blank');
     expect(result.current.rootProps.rel).toBe('author noopener noreferrer');
     expect(result.current.newTabText).toBe('(opens in a new tab)');
@@ -53,7 +61,7 @@ describe('Link navigation contract', () => {
     const link = screen.getByRole('link', { name: 'Repository (opens in a new tab)' });
     expect(link).toHaveAttribute('target', '_blank');
     expect(new Set(link.getAttribute('rel')?.split(' '))).toEqual(new Set(['author', 'noopener', 'noreferrer']));
-    expect(link.querySelector('svg')?.innerHTML).toContain('M7 17 17 7');
+    expect(link.querySelector('svg')?.innerHTML).toContain('M5 12h14');
     const notice = screen.getByText('(opens in a new tab)');
     expect(notice).not.toHaveAttribute('aria-hidden');
     expect(notice.style.position).toBe('absolute');
@@ -144,7 +152,7 @@ describe('Link navigation contract', () => {
     expect(new Set(link.getAttribute('rel')?.split(' '))).toEqual(
       new Set(['author', 'help', 'noopener', 'noreferrer'])
     );
-    expect(link.querySelector('svg')?.innerHTML).toContain('M7 17 17 7');
+    expect(link.querySelector('svg')?.innerHTML).toContain('M5 12h14');
   });
 
   it('leaves ordinary native and slotted targets/rel untouched when external is false', () => {
@@ -189,8 +197,11 @@ describe('Link navigation contract', () => {
     expect(result.current.rootProps.className).toContain('focus-visible:[box-shadow:var(--shadow-focus)]');
     expect(result.current.rootProps.className).toContain('motion-reduce:transition-none');
     expect(result.current.arrowClassName).toContain('transform-none');
-    expect(result.current.arrowClassName).toContain('group-hover/link:translate-x-0.5');
-    expect(result.current.arrowClassName).toContain('group-hover/link:-translate-y-0.5');
+    expect(result.current.arrowClassName).toContain('motion-safe:group-hover/link:translate-x-1');
+    expect(result.current.arrowClassName).not.toContain('translate-y');
+    expect(result.current.arrowClassName).toContain('self-center');
+    expect(result.current.arrowClassName).toContain('duration-(--duration-fast)');
+    expect(result.current.arrowClassName).toContain('ease-(--ease-out)');
     expect(result.current.arrowClassName).toContain('motion-reduce:translate-none');
     expect(result.current.arrowClassName).toContain('motion-reduce:transition-none');
   });
