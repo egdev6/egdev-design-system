@@ -241,6 +241,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './lib/cn',
       './molecules/button-group',
       './molecules/notice',
+      './molecules/toast',
       './primitives/aspect-ratio',
       './primitives/divider',
 
@@ -293,6 +294,8 @@ describe('Storybook TypeScript docgen contract', () => {
       'Switch',
       'Text',
       'Textarea',
+      'Toast',
+      'ToastProvider',
       'Toggle',
       'Tooltip',
       'VisuallyHidden',
@@ -310,6 +313,77 @@ describe('Storybook TypeScript docgen contract', () => {
       'surfaceVariants',
       'tooltipVariants'
     ]);
+  });
+
+  it('extracts Toast and Provider metadata, action branches and the bounded public API', () => {
+    const extracted = parser.parse(source('molecules/toast/Toast.tsx'));
+    const toast = extracted.find(({ displayName }) => displayName === 'Toast');
+    const provider = extracted.find(({ displayName }) => displayName === 'ToastProvider');
+    expect(toast).toBeDefined();
+    expect(provider).toBeDefined();
+    expect(toast?.props.summary).toMatchObject({ required: true, defaultValue: null, type: { name: 'string' } });
+    for (const [name, value] of Object.entries({
+      tone: 'neutral',
+      duration: '5000',
+      defaultOpen: 'true',
+      dismissLabel: 'Dismiss'
+    })) {
+      expect(toast?.props[name]?.defaultValue?.value, name).toBe(value);
+    }
+    expect(toast?.props.tone?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'neutral',
+      'info',
+      'success',
+      'warning',
+      'danger'
+    ]);
+    expect(provider?.props.children?.required).toBe(true);
+    expect(provider?.props.label?.defaultValue?.value).toBe('Notifications ({hotkey})');
+    expect(provider?.props.announcementLabel?.defaultValue?.value).toBe('Notification');
+    for (const name of ['ref', 'asChild', 'type', 'toastVariants']) {
+      expect(toast?.props[name], name).toBeUndefined();
+    }
+    for (const name of [
+      'id',
+      'title',
+      'aria-describedby',
+      'className',
+      'forceMount',
+      'onEscapeKeyDown',
+      'onPause',
+      'onResume',
+      'onSwipeStart',
+      'onSwipeMove',
+      'onSwipeCancel',
+      'onSwipeEnd'
+    ]) {
+      expect(toast?.props[name], name).toBeDefined();
+    }
+    const file = ast(source('molecules/toast/types.ts'));
+    const properties = ownProps(file, ['ToastProps', 'ToastActionProps', 'ToastProviderProps']);
+    expect(properties).toHaveLength(16);
+    for (const property of properties) {
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter(({ tagName }) => tagName.text === 'control');
+      expect(controls, property.name.getText(file)).toHaveLength(1);
+      if (controls[0]?.comment === 'false') {
+        expect(tags.find(({ tagName }) => tagName.text === 'controlReason')?.comment).toMatch(/Non-serializable.*see/);
+      }
+      if (!property.questionToken) {
+        expect(tags.some(({ tagName }) => tagName.text === 'default')).toBe(false);
+      }
+    }
+    expect(exportedStoryNames(ast(source('molecules/toast/Toast.stories.tsx')))).toEqual([
+      'Default',
+      'Tones',
+      'WithAction',
+      'Persistent',
+      'Stack',
+      'DismissTargets',
+      'Controlled',
+      'CustomIcon'
+    ]);
+    expect(readFileSync(source('molecules/toast/Toast.stories.tsx'), 'utf8')).not.toMatch(/argTypes:|\bplay:/);
   });
 
   it('extracts Notice required lead, native role, constant defaults and every own directive', () => {

@@ -48,6 +48,46 @@ function cssBlock(css, opening) {
 const unapprovedTransitionUtility =
   /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\])(?=\s*\{))[\w\\]/;
 
+test('Toast ships floating elevation, viewport, swipe, fade and reduced-motion utilities', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    String.raw`.shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-elev-3\)\]`,
+    String.raw`.w-\[min\(calc\(100vw-2\*var\(--space-6\)\)\,calc\(var\(--space-24\)\*4\)\)\]`,
+    String.raw`.data-\[swipe\=move\]\:translate-x-\[var\(--radix-toast-swipe-move-x\)\]`,
+    String.raw`.data-\[swipe\=cancel\]\:translate-x-0`,
+    String.raw`.data-\[swipe\=cancel\]\:transition-transform`,
+    String.raw`.starting\:opacity-0`,
+    String.raw`.motion-reduce\:transition-none`,
+    String.raw`.motion-reduce\:data-\[swipe\=cancel\]\:transition-none`,
+    '.bottom-6',
+    '.end-6'
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing Toast utility ${selector}`);
+  }
+  assert.match(utilities, /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-elev-3\)/);
+  assert.match(utilities, /@starting-style/);
+  assert.match(utilities, /prefers-reduced-motion:\s*reduce/);
+  assert.doesNotMatch(utilities, /\.eg-toast(?:-viewport)?\s*\{/, 'Toast markers are not a CSS engine');
+});
+
+test('Toast provider preserves application SSR without rendering portal content on the server', async () => {
+  const { Toast, ToastProvider } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(typeof Toast, 'function');
+  assert.equal(typeof ToastProvider, 'function');
+  const html = renderToString(
+    createElement(ToastProvider, {
+      children: [
+        createElement('main', { key: 'app' }, 'Application'),
+        createElement(Toast, { key: 'toast', summary: 'Link copied' })
+      ]
+    })
+  );
+  assert.equal(html, '<main>Application</main>');
+});
+
 test('Notice ships static molecule tint, wrapping and compact typography utilities', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -1751,6 +1791,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Switch',
       'Text',
       'Textarea',
+      'Toast',
+      'ToastProvider',
       'Toggle',
       'Tooltip',
       'VisuallyHidden',
@@ -1988,6 +2030,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'TextareaProps',
     'TextareaVariant',
     'TitleVariant',
+    'Toast',
+    'ToastProps',
+    'ToastProvider',
+    'ToastProviderProps',
     'Toggle',
     'ToggleProps',
     'ToggleSize',
@@ -2020,6 +2066,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'useToast',
+    'useToastProvider',
+    'toastVariants',
+    'toastViewportVariants',
+    'ToastActionProps',
     'useNotice',
     'noticeAppearanceVariants',
     'noticeIconVariants',
@@ -2077,6 +2128,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'NoticeProps',
     'NoticeTone',
     'noticeVariants',
+    'Toast',
+    'ToastProps',
+    'ToastProvider',
+    'ToastProviderProps',
     'SearchTrigger',
     'SearchTriggerProps',
     'Divider',

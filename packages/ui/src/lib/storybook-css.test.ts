@@ -174,6 +174,28 @@ describe('Storybook preview CSS', () => {
     css = String(stylesheet.source).replace(/\/\*[\s\S]*?\*\//g, '');
   }, 30_000);
 
+  it('compiles Toast floating elevation, viewport sizing, swipe and reduced-motion utilities', () => {
+    expect(rule(String.raw`.shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-elev-3\)\]`)).toMatch(
+      /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-elev-3\)/
+    );
+    expect(rule(String.raw`.w-\[min\(calc\(100vw-2\*var\(--space-6\)\)\,calc\(var\(--space-24\)\*4\)\)\]`)).toMatch(
+      /width:\s*min\(calc\(100vw\s*-\s*2\s*\*\s*var\(--space-6\)\)/
+    );
+    for (const selector of [
+      String.raw`.starting\:opacity-0`,
+      String.raw`.data-\[swipe\=move\]\:translate-x-\[var\(--radix-toast-swipe-move-x\)\]`,
+      String.raw`.data-\[swipe\=cancel\]\:translate-x-0`,
+      String.raw`.data-\[swipe\=cancel\]\:transition-transform`,
+      String.raw`.motion-reduce\:transition-none`,
+      String.raw`.motion-reduce\:data-\[swipe\=cancel\]\:transition-none`
+    ]) {
+      expect(css).toContain(selector);
+    }
+    expect(css).toContain('@starting-style');
+    expect(rule('.bottom-6')).toMatch(/bottom:\s*var\(--space-6[,)]/);
+    expect(rule('.end-6')).toMatch(/inset-inline-end:\s*var\(--space-6[,)]/);
+  });
+
   it('compiles Notice tint opacity, token typography and responsive basis from molecule sources', () => {
     for (const color of ['fg-secondary', 'status-info', 'status-success', 'status-warning', 'status-danger']) {
       for (const [prefix, opacity] of [
