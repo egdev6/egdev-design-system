@@ -12,6 +12,7 @@ import preview from '../../../../.storybook/preview';
 const components = [
   ['Avatar', 'atoms/avatar'],
   ['Button', 'atoms/button'],
+  ['Carousel', 'molecules/carousel'],
   ['Checkbox', 'atoms/checkbox'],
   ['Chip', 'atoms/chip'],
   ['Countdown', 'atoms/countdown'],
@@ -94,6 +95,7 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  carousel: { items: false, label: 'text', value: 'text', defaultValue: 'text', onValueChange: false, messages: false },
   avatar: { src: 'text', label: 'text', size: 'select', badgeIcon: 'select', paused: 'boolean' },
   button: {
     children: false,
@@ -266,6 +268,7 @@ const expected: Record<string, Record<string, string | false>> = {
   }
 };
 const ownPropCounts: Record<string, number> = {
+  carousel: 6,
   avatar: 5,
   button: 7,
   checkbox: 7,

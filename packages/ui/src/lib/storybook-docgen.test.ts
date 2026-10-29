@@ -192,6 +192,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/toggle',
       './atoms/tooltip',
       './lib/cn',
+      './molecules/carousel',
       './primitives/aspect-ratio',
       './primitives/divider',
 
@@ -209,6 +210,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Avatar',
       'Badge',
       'Button',
+      'Carousel',
       'Checkbox',
       'Chip',
       'Cluster',

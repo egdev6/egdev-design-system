@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Carousel, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -41,6 +41,9 @@ import type {
   ButtonProps,
   ButtonSize,
   ButtonVariant,
+  CarouselItem,
+  CarouselMessages,
+  CarouselProps,
   CheckboxCheckedState,
   CheckboxProps,
   ChipProps,
@@ -353,6 +356,36 @@ const largeCountdown: CountdownProps = { ...countdownProps, size: 'lg' };
 const darkCountdown: CountdownProps = { ...countdownProps, tone: 'onDark' };
 // @ts-expect-error There is no tick callback.
 const tickingCountdown: CountdownProps = { ...countdownProps, onTick: () => undefined };
+// Carousel stays outside App to preserve the existing intrinsic focus harness.
+export const carouselChanges: string[] = [];
+const carouselItems: CarouselItem[] = [
+  { value: 'alpha', label: 'Alpha', children: createElement(Surface, null, 'First information') },
+  { value: 'beta', label: 'Beta', children: createElement(Surface, null, 'Second information') },
+  { value: 'gamma', label: 'Gamma', children: createElement(Surface, null, 'Third information') }
+];
+const carouselMessages: Partial<CarouselMessages> = { nextSlide: 'Next card' };
+const carouselProps: CarouselProps = { label: 'Highlights', items: carouselItems, messages: carouselMessages };
+export function CarouselSamples({ value, empty = false }: { value?: string; empty?: boolean }) {
+  return createElement(Carousel, { ...carouselProps, value, items: empty ? [] : carouselItems,
+    onValueChange: (next: string) => carouselChanges.push(next) });
+}
+// @ts-expect-error Carousel requires a visible collection label.
+const unlabelledCarousel: CarouselProps = { items: carouselItems };
+// @ts-expect-error Carousel accepts stable string identities, not indexes.
+const indexedCarousel: CarouselProps = { ...carouselProps, value: 1 };
+// @ts-expect-error Carousel has no autoplay API.
+const rotatingCarousel: CarouselProps = { ...carouselProps, autoplay: true };
+// @ts-expect-error Carousel owns root semantics.
+const selectedCarousel: CarouselProps = { ...carouselProps, role: 'tablist' };
+// @ts-expect-error Carousel has no public ref.
+const referencedCarousel: CarouselProps = { ...carouselProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Carousel slide entries require accessible names.
+const unnamedSlide: CarouselItem = { value: 'missing', children: 'Information' };
+// @ts-expect-error Carousel content is supplied through named items, not free root children.
+const childCarousel: CarouselProps = { ...carouselProps, children: 'Information' };
+// @ts-expect-error Internal helpers are not public composition APIs.
+import type { carouselVariants } from '@egdev/ui';
+
 // SearchTrigger stays outside App so the intrinsic button count and focus harness remain unchanged.
 export const searchTriggerRef = createRef<HTMLButtonElement>();
 export const searchTriggerRefTarget: ComponentRef<typeof SearchTrigger> | null = searchTriggerRef.current;
@@ -2338,6 +2371,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Avatar',
   'Badge',
   'Button',
+  'Carousel',
   'Checkbox',
   'Chip',
   'Cluster',
@@ -2415,6 +2449,8 @@ ${assertSearchTriggerCSS.toString()}
 ${assertPullQuoteCSS.toString()}
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(shippedStyles);
+${assertCarouselCSS.toString()}
+assertCarouselCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
 assertStatCSS(shippedStyles);
 assertSearchTriggerCSS(shippedStyles);
@@ -2463,6 +2499,22 @@ for (const source of map.sources) {
 console.log(JSON.stringify({ ui: ui.version, react: (await import('react')).version, dedup: ['react', 'react-dom'], externalReact: true }));
 `;
 
+function assertCarouselCSS(css) {
+  for (const selector of [
+    '.basis-full',
+    '.snap-x',
+    '.snap-mandatory',
+    '.snap-center',
+    '.scroll-auto',
+    String.raw`.group-data-\[state\=dragging\]\:snap-none`,
+    String.raw`.group-data-\[state\=dragging\]\:cursor-grabbing`,
+    String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Carousel utility ' + selector);
+  }
+  assert.match(css, /gap:\s*var\(--space-7[,)]/);
+}
+
 function assertLinkCSS(css) {
   for (const selector of [
     '.border-0',
@@ -2499,7 +2551,21 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, CarouselSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+const carouselDocument = new JSDOM(renderToString(createElement(CarouselSamples)));
+try {
+  const document = carouselDocument.window.document;
+  const root = document.querySelector('.eg-carousel');
+  assert.equal(root.getAttribute('aria-roledescription'), 'carousel');
+  assert.equal(document.getElementById(root.getAttribute('aria-labelledby')).textContent, 'Highlights');
+  assert.equal(root.querySelectorAll('[aria-roledescription="slide"]').length, 3);
+  assert.equal(root.querySelectorAll('[tabindex="0"]').length, 1);
+  assert.equal(root.querySelector('[aria-current="true"]').getAttribute('aria-label'), '1 of 3: Alpha');
+  assert.equal(root.querySelector('[role="status"]').textContent, '');
+  assert.equal(root.querySelector('.eg-progress').getAttribute('aria-hidden'), 'true');
+  assert.ok(root.textContent.includes('01 / 03'));
+} finally { carouselDocument.window.close(); }
+assert.ok(renderToString(createElement(CarouselSamples, { empty: true })).includes('No slides'));
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
@@ -3426,7 +3492,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, CarouselSamples, carouselChanges, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4013,6 +4079,33 @@ try {
   assert.deepEqual(countdownExpirations, [pastDeadline]);
   await act(async () => root.render(null));
   stage('countdown:clock:complete');
+  stage('carousel:start');
+  await act(async () => root.render(createElement(CarouselSamples)));
+  const carousel = document.querySelector('.eg-carousel');
+  const carouselButtons = carousel.querySelectorAll('button');
+  const activeSlide = () => carousel.querySelector('[aria-current="true"]');
+  assert.equal(carouselButtons[0].disabled, true);
+  await act(async () => { carouselButtons[1].focus(); carouselButtons[1].click(); });
+  assert.equal(activeSlide().getAttribute('aria-label'), '2 of 3: Beta');
+  assert.equal(document.activeElement, carouselButtons[1]);
+  assert.equal(carousel.querySelector('[role="status"]').textContent, '2 of 3: Beta');
+  await act(async () => carouselButtons[1].click());
+  assert.equal(activeSlide().getAttribute('aria-label'), '3 of 3: Gamma');
+  assert.equal(document.activeElement, activeSlide());
+  assert.equal(carousel.querySelector('[role="status"]').textContent, '');
+  assert.deepEqual(carouselChanges, ['beta', 'gamma']);
+  await act(async () => root.render(null));
+  carouselChanges.length = 0;
+  await act(async () => root.render(createElement(CarouselSamples, { value: 'alpha' })));
+  const controlledCarousel = document.querySelector('.eg-carousel');
+  await act(async () => controlledCarousel.querySelectorAll('button')[1].click());
+  assert.equal(controlledCarousel.querySelector('[aria-current="true"]').getAttribute('aria-label'), '1 of 3: Alpha');
+  assert.deepEqual(carouselChanges, ['beta']);
+  await act(async () => root.render(createElement(CarouselSamples, { value: 'beta' })));
+  assert.equal(controlledCarousel.querySelector('[aria-current="true"]').getAttribute('aria-label'), '2 of 3: Beta');
+  assert.deepEqual(carouselChanges, ['beta']);
+  await act(async () => root.render(null));
+  stage('carousel:complete');
   stage('stat:passive:start');
   await act(async () => root.render(createElement(StatSamples)));
   const subsStat = document.getElementById('subs-total');
@@ -4378,6 +4471,8 @@ assertInputCSS(emitted);
 assertDropzoneCSS(emitted);
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(emitted);
+${assertCarouselCSS.toString()}
+assertCarouselCSS(emitted);
 assertStatCSS(emitted);
 assertSearchTriggerCSS(emitted);
 assertPullQuoteCSS(emitted);
@@ -4448,6 +4543,7 @@ assertDropzoneCSS(twCss);
 assertCountdownCSS(twCss);
 assertStatCSS(twCss);
 assertSearchTriggerCSS(twCss);
+assertCarouselCSS(twCss);
 assertPullQuoteCSS(twCss);
 assertToggleCSS(twCss);
 assertChipCSS(twCss);
