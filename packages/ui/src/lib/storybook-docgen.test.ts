@@ -118,6 +118,408 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts PageHeader own controls, semantic rank, native rows and bounded exports', () => {
+    const file = ast(source('molecules/page-header/types.ts'));
+    const properties = ownProps(file, ['PageHeaderProps']);
+    const expected: Record<string, string> = { title: 'text', eyebrow: 'text', level: 'select', actions: 'false' };
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(expected));
+    const doc = parser
+      .parse(source('molecules/page-header/PageHeader.tsx'))
+      .find((item) => item.displayName === 'PageHeader');
+    expect(doc).toBeDefined();
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(
+        ts
+          .getJSDocTags(property)
+          .filter((tag) => tag.tagName.text === 'control')
+          .map((tag) => tag.comment)
+      ).toEqual([expected[name]]);
+      expect(doc?.props[name]?.tags).toMatchObject({ control: expected[name] });
+      if (name !== 'level') {
+        expect(doc?.props[name]?.defaultValue).toBeNull();
+      }
+    }
+    expect(doc?.props.title).toMatchObject({ required: true, type: { name: 'string' } });
+    expect(doc?.props.eyebrow).toMatchObject({ required: false, type: { name: 'string' } });
+    expect(doc?.props.level?.defaultValue).toEqual({ value: '1' });
+    expect(doc?.props.level?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6'
+    ]);
+    expect(doc?.props.actions?.tags).toMatchObject({
+      controlReason: expect.stringMatching(/ReactElement\/boolean.*SingleAction.*WithActions/)
+    });
+    expect(defaults(source('molecules/page-header/usePageHeader.ts'), false)).toEqual({ level: '1' });
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild',
+      'variant',
+      'register',
+      'size',
+      'headingClassName'
+    ]) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const stories = ast(source('molecules/page-header/PageHeader.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'SingleAction',
+      'WithActions',
+      'WithEyebrow',
+      'LongTitle',
+      'Constrained',
+      'HeadingLevels',
+      'RTL',
+      'ChildStates'
+    ]);
+    expect(stories.getText()).toMatch(/title: 'Molecules\/PageHeader'/);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+  });
+  it('extracts every ModuleCard union declaration, constants and native article boundaries (AC-15)', () => {
+    const doc = parser
+      .parse(source('molecules/module-card/ModuleCard.tsx'))
+      .find(({ displayName }) => displayName === 'ModuleCard');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    const controls: Record<string, string> = {
+      title: 'text',
+      level: 'select',
+      icon: 'false',
+      children: 'false',
+      footer: 'false',
+      messages: 'false',
+      status: 'select',
+      variant: 'select',
+      tone: 'select',
+      actions: 'false'
+    };
+    const own = ownProps(ast(source('molecules/module-card/types.ts')), ['ModuleCardProps']);
+    expect(own).toHaveLength(18);
+    for (const declaration of own) {
+      const name = declaration.name.getText();
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment))
+      ).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        expect(
+          tags.some(
+            ({ tagName, comment }) => tagName.text === 'controlReason' && Boolean(ts.getTextOfJSDocComment(comment))
+          )
+        ).toBe(true);
+      }
+      if (!declaration.questionToken) {
+        expect(tags.some(({ tagName }) => tagName.text === 'default')).toBe(false);
+      }
+      const extractedTags = props[name]?.tags as Record<string, string> | undefined;
+      expect(extractedTags?.control?.split('\n').every((value) => value === controls[name])).toBe(true);
+    }
+    expect(props.title?.required).toBe(true);
+    expect(props.children?.required).toBe(true);
+    for (const [name, value] of Object.entries({
+      level: '2',
+      status: 'default',
+      variant: 'default',
+      tone: 'surface-1'
+    })) {
+      expect(normalize(props[name]?.defaultValue?.value), name).toBe(value);
+    }
+    for (const [name, values] of Object.entries({
+      level: ['1', '2', '3', '4', '5', '6'],
+      status: ['default', 'error', 'stopped'],
+      variant: ['default', 'banded'],
+      tone: ['surface-1', 'overlay']
+    })) {
+      expect(
+        [...new Set(props[name]?.type.value.map(({ value }: { value: string }) => normalize(value)))],
+        name
+      ).toEqual(values);
+    }
+    for (const name of ['id', 'dir', 'aria-describedby', 'aria-busy', 'className', 'style', 'onClick']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'ref',
+      'asChild',
+      'role',
+      'tabIndex',
+      'aria-label',
+      'aria-labelledby',
+      'aria-live',
+      'wide',
+      'glass',
+      'banded'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    const stories = ast(source('molecules/module-card/ModuleCard.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual(
+      expect.arrayContaining([
+        'Default',
+        'WithIcon',
+        'Error',
+        'Stopped',
+        'WithActions',
+        'WithFooter',
+        'Localized',
+        'OverlayBanded',
+        'WideBanded',
+        'Narrow',
+        'RTL'
+      ])
+    );
+    expect(readFileSync(source('molecules/module-card/ModuleCard.stories.tsx'), 'utf8')).not.toMatch(
+      /\b(?:argTypes|play)\s*:/
+    );
+  });
+  it('extracts Field required controls, constant defaults, native rows and all own directives', () => {
+    const doc = parser.parse(source('molecules/field/Field.tsx')).find((item) => item.displayName === 'Field');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    const controls: Record<string, string> = {
+      label: 'text',
+      children: 'false',
+      hint: 'text',
+      error: 'text',
+      counter: 'false',
+      readout: 'text',
+      hideLabel: 'boolean',
+      layout: 'select'
+    };
+    const file = ast(source('molecules/field/types.ts'));
+    const declarations = ownProps(file, ['FieldProps']);
+    expect(declarations).toHaveLength(8);
+    for (const declaration of declarations) {
+      const name = declaration.name.getText(file);
+      expect(ts.getJSDocTags(declaration).filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
+      const tags = props[name]?.tags as Record<string, string> | undefined;
+      expect(tags?.control, name).toBe(controls[name]);
+      expect(props[name]?.required, name).toBe(name === 'label' || name === 'children');
+      if (controls[name] === 'false') {
+        expect(tags?.controlReason).toMatch(/ReactElement|FieldCounter/);
+      }
+      if (name !== 'hideLabel' && name !== 'layout') {
+        expect(props[name]?.defaultValue, name).toBeNull();
+      }
+    }
+    expect(props.hideLabel?.defaultValue?.value).toBe('false');
+    expect(props.layout?.defaultValue?.value).toBe('stacked');
+    expect(props.layout?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'stacked',
+      'choice'
+    ]);
+    for (const name of ['id', 'title', 'className', 'aria-describedby', 'style']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of ['ref', 'asChild', 'size', 'icon', 'fieldVariants']) {
+      expect(props[name], name).toBeUndefined();
+    }
+    expect(ownProps(file, ['FieldCounter'])).toHaveLength(2);
+    for (const declaration of ownProps(file, ['FieldCounter'])) {
+      expect(ts.getJSDocTags(declaration).find(({ tagName }) => tagName.text === 'control')?.comment).toBe('number');
+    }
+  });
+  it('extracts GaugeDock composition, protected native semantics and own Controls metadata', () => {
+    const entries = parser.parse(source('molecules/gauge-dock/GaugeDock.tsx'));
+    const root = entries.find(({ displayName }) => displayName === 'GaugeDock');
+    const item = entries.find(({ displayName }) => displayName === 'GaugeDockItem');
+    const separator = entries.find(({ displayName }) => displayName === 'GaugeDockSeparator');
+    expect(root?.props.label).toMatchObject({ required: true, tags: { control: 'text' } });
+    expect(root?.props.orientation).toMatchObject({
+      defaultValue: { value: 'horizontal' },
+      tags: { control: 'select' }
+    });
+    expect(root?.props.orientation?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'horizontal',
+      'vertical'
+    ]);
+    for (const doc of [root, item]) {
+      expect(doc?.props.children).toMatchObject({
+        required: true,
+        tags: { control: 'false', controlReason: expect.stringMatching(/serializable/) }
+      });
+    }
+    expect(item?.props.children?.type.name).toMatch(/ReactElement/);
+    expect(root?.props.dir?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual(['ltr', 'rtl']);
+    for (const doc of [root, item, separator]) {
+      expect(doc).toBeDefined();
+      for (const prop of ['id', 'title', 'className', 'style']) {
+        expect(doc?.props[prop], prop).toBeDefined();
+      }
+      for (const prop of ['role', 'tabIndex', 'asChild', 'ref', 'dangerouslySetInnerHTML']) {
+        expect(doc?.props[prop], prop).toBeUndefined();
+      }
+    }
+    expect(separator?.props.children).toBeUndefined();
+    expect(separator?.props.orientation).toBeUndefined();
+    expect(separator?.props['aria-hidden']).toBeUndefined();
+    const properties = ownProps(ast(source('molecules/gauge-dock/types.ts')), ['GaugeDockProps', 'GaugeDockItemProps']);
+    expect(properties).toHaveLength(4);
+    for (const property of properties) {
+      const tags = ts.getJSDocTags(property);
+      expect(tags.filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
+      if (!property.questionToken) {
+        expect(tags.some(({ tagName }) => tagName.text === 'default')).toBe(false);
+      }
+    }
+  });
+  it('extracts SelectTile mode-dependent metadata under A1 and annotates every own branch', () => {
+    const doc = parser
+      .parse(source('molecules/select-tile/SelectTile.tsx'))
+      .find((item) => item.displayName === 'SelectTile');
+    expect(doc).toBeDefined();
+    for (const name of ['type', 'label', 'options']) {
+      expect(doc?.props[name], name).toMatchObject({ required: true, defaultValue: null });
+    }
+    for (const name of ['value', 'defaultValue']) {
+      const tags = doc?.props[name]?.tags as Record<string, string> | undefined;
+      expect(new Set(tags?.control?.split('\n'))).toEqual(new Set(['false']));
+      expect(tags?.controlReason).toMatch(/Mode-dependent string \/ string\[\].*Single, Multiple and Controlled/);
+    }
+    for (const [name, value] of [
+      ['ratio', 'landscape'],
+      ['dir', 'ltr'],
+      ['disabled', 'false']
+    ]) {
+      expect(doc?.props[name ?? '']?.defaultValue?.value).toBe(value);
+    }
+    for (const name of ['id', 'title', 'className', 'aria-describedby', 'name', 'required']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'ref',
+      'asChild',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'tabIndex',
+      'onChange'
+    ]) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const file = ast(source('molecules/select-tile/types.ts'));
+    const properties = ownProps(file, [
+      'SelectTileThumbnail',
+      'SelectTileOption',
+      'SelectTileCommonProps',
+      'SelectTileProps'
+    ]);
+    expect(properties).toHaveLength(27);
+    for (const property of properties) {
+      const tags = ts.getJSDocTags(property);
+      expect(
+        tags.filter((tag) => tag.tagName.text === 'control'),
+        property.name.getText(file)
+      ).toHaveLength(1);
+      if (!property.questionToken) {
+        expect(tags.some((tag) => tag.tagName.text === 'default')).toBe(false);
+      }
+      if (tags.some((tag) => tag.tagName.text === 'control' && ts.getTextOfJSDocComment(tag.comment) === 'false')) {
+        expect(tags.some((tag) => tag.tagName.text === 'controlReason' && ts.getTextOfJSDocComment(tag.comment))).toBe(
+          true
+        );
+      }
+    }
+    expect(exportedStoryNames(ast(source('molecules/select-tile/SelectTile.stories.tsx')))).toEqual([
+      'Single',
+      'Multiple',
+      'LiveAndSelected',
+      'Ratios',
+      'MissingThumbnail',
+      'FailedThumbnail',
+      'Disabled',
+      'Controlled',
+      'RequiredForm',
+      'RTL',
+      'Narrow',
+      'Empty'
+    ]);
+  });
+  it('extracts SocialLinks collections, nullable captions, exact presets and native root boundaries', () => {
+    const doc = parser
+      .parse(source('molecules/social-links/SocialLinks.tsx'))
+      .find((item) => item.displayName === 'SocialLinks');
+    expect(doc).toBeDefined();
+    expect(doc?.props.items).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    const itemTags = doc?.props.items?.tags as Record<string, string> | undefined;
+    const captionTags = doc?.props.caption?.tags as Record<string, string> | undefined;
+    expect(itemTags?.controlReason).toMatch(/ReactElement.*MixedTargets.*InvalidItems/);
+    expect(captionTags?.controlReason).toMatch(/Nullable string.*WithoutCaption/);
+    for (const [prop, value] of Object.entries({
+      label: 'Social profiles',
+      caption: 'Follow me',
+      inline: 'false',
+      variant: 'outline',
+      size: 'lg',
+      gap: '2',
+      newTabText: '(opens in a new tab)'
+    })) {
+      expect(doc?.props[prop]?.defaultValue?.value, prop).toBe(value);
+      expect(doc?.props[prop]?.required, prop).toBe(false);
+    }
+    for (const [prop, values] of Object.entries({
+      variant: ['outline', 'ghost'],
+      size: ['md', 'lg'],
+      gap: ['1', '2']
+    })) {
+      expect(doc?.props[prop]?.type.name, prop).toBe('enum');
+      expect(
+        doc?.props[prop]?.type.value.map(({ value }: { value: string }) => normalize(value)),
+        prop
+      ).toEqual(values);
+    }
+    for (const prop of ['id', 'title', 'dir', 'lang', 'className', 'style', 'aria-describedby', 'onClick']) {
+      expect(doc?.props[prop], prop).toBeDefined();
+    }
+    for (const prop of ['children', 'role', 'aria-label', 'aria-labelledby', 'asChild', 'ref', 'target', 'external']) {
+      expect(doc?.props[prop], prop).toBeUndefined();
+    }
+    const file = ast(source('molecules/social-links/types.ts'));
+    const properties = ownProps(file, ['SocialLinksProps', 'SocialLinkItem']);
+    expect(properties).toHaveLength(14);
+    for (const property of properties) {
+      const tags = ts.getJSDocTags(property);
+      const controls = tags.filter((tag) => tag.tagName.text === 'control');
+      expect(controls, property.name.getText(file)).toHaveLength(1);
+      if (ts.getTextOfJSDocComment(controls[0]?.comment) === 'false') {
+        expect(tags.some((tag) => tag.tagName.text === 'controlReason' && ts.getTextOfJSDocComment(tag.comment))).toBe(
+          true
+        );
+      }
+      if (!property.questionToken) {
+        expect(tags.some((tag) => tag.tagName.text === 'default')).toBe(false);
+      }
+    }
+    const storyFile = ast(source('molecules/social-links/SocialLinks.stories.tsx'));
+    expect(exportedStoryNames(storyFile)).toEqual([
+      'Default',
+      'Inline',
+      'Ghost',
+      'WithoutCaption',
+      'MixedTargets',
+      'Constrained',
+      'Sizes',
+      'RTL',
+      'InvalidItems'
+    ]);
+    expect(storyFile.text).not.toMatch(/argTypes\s*:|play\s*:/);
+    expect(publicAPI.SocialLinks).toBeDefined();
+    for (const name of ['useSocialLinks', 'socialLinksVariants', 'socialLinksListVariants', 'SocialLinksNativeProps']) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+  });
+
   it('extracts ButtonGroup own directives, required children and only supported native rows', () => {
     const file = ast(source('molecules/button-group/types.ts'));
     const properties = ownProps(file, ['ButtonGroupProps']);
@@ -240,11 +642,27 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/tooltip',
       './lib/cn',
       './molecules/button-group',
+      './molecules/carousel',
+      './molecules/chip-group',
+      './molecules/field',
+      './molecules/gauge-dock',
+      './molecules/hover-card',
+      './molecules/list-item',
+      './molecules/menu',
+      './molecules/meter-row',
+      './molecules/module-card',
+      './molecules/nav-list',
       './molecules/notice',
+      './molecules/page-header',
+      './molecules/popover',
+      './molecules/section-header',
+      './molecules/select-tile',
+      './molecules/social-links',
+      './molecules/tabs',
+      './molecules/timeline',
       './molecules/toast',
       './primitives/aspect-ratio',
       './primitives/divider',
-
       './primitives/label',
       './primitives/portal',
       './primitives/skeleton',
@@ -260,40 +678,70 @@ describe('Storybook TypeScript docgen contract', () => {
       'Badge',
       'Button',
       'ButtonGroup',
+      'Carousel',
       'Checkbox',
       'Chip',
+      'ChipGroup',
       'Cluster',
       'Countdown',
       'Divider',
       'Dropzone',
+      'Field',
       'Gauge',
+      'GaugeDock',
+      'GaugeDockItem',
+      'GaugeDockSeparator',
       'Heading',
+      'HoverCard',
+      'HoverCardContent',
+      'HoverCardTrigger',
       'Icon',
       'IconButton',
       'Input',
       'Kbd',
       'Label',
       'Link',
+      'ListItem',
+      'ListItemActions',
+      'ListItemBody',
+      'ListItemContent',
+      'ListItemFooter',
+      'ListItemMedia',
+      'ListItemMeta',
       'Logo',
+      'Menu',
+      'MeterRow',
+      'ModuleCard',
+      'NavList',
       'Notice',
+      'PageHeader',
+      'Popover',
+      'PopoverClose',
+      'PopoverContent',
+      'PopoverTrigger',
       'Portal',
       'ProgressBar',
       'PullQuote',
       'RadioGroup',
       'SearchTrigger',
+      'SectionHeader',
       'Select',
+      'SelectTile',
       'Skeleton',
       'Slider',
       'Slot',
       'Slottable',
+      'SocialLinks',
       'Spinner',
       'Stack',
       'Stat',
       'StatusDot',
       'Surface',
       'Switch',
+      'Tabs',
       'Text',
       'Textarea',
+      'Timeline',
       'Toast',
       'ToastProvider',
       'Toggle',
@@ -304,6 +752,8 @@ describe('Storybook TypeScript docgen contract', () => {
       'cn',
       'dropzoneVariants',
       'labelVariants',
+      'menuVariants',
+      'navListVariants',
       'noticeVariants',
       'progressBarVariants',
       'radioGroupVariants',
@@ -311,6 +761,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'statVariants',
       'statusDotVariants',
       'surfaceVariants',
+      'tabsVariants',
       'tooltipVariants'
     ]);
   });
@@ -384,6 +835,76 @@ describe('Storybook TypeScript docgen contract', () => {
       'CustomIcon'
     ]);
     expect(readFileSync(source('molecules/toast/Toast.stories.tsx'), 'utf8')).not.toMatch(/argTypes:|\bplay:/);
+  });
+
+  it('extracts SectionHeader own controls, defaults, native boundary and documented stories', () => {
+    const file = ast(source('molecules/section-header/types.ts'));
+    const properties = ownProps(file, ['SectionHeaderProps']);
+    const controls: Record<string, string> = {
+      title: 'text',
+      eyebrow: 'text',
+      accent: 'text',
+      accentBreak: 'boolean',
+      lede: 'text',
+      variant: 'select',
+      level: 'select',
+      titleId: 'text',
+      tone: 'select'
+    };
+    const doc = parser
+      .parse(source('molecules/section-header/SectionHeader.tsx'))
+      .find((item) => item.displayName === 'SectionHeader');
+    expect(properties).toHaveLength(9);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      expect(ts.getJSDocTags(property).filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
+      expect(doc?.props[name]?.tags).toMatchObject({ control: controls[name] });
+    }
+    expect(doc?.props.title?.required).toBe(true);
+    for (const name of ['title', 'eyebrow', 'accent', 'lede', 'titleId']) {
+      expect(doc?.props[name]?.defaultValue).toBeNull();
+      expect(doc?.props[name]?.type.name).toBe('string');
+    }
+    for (const [name, value] of Object.entries({
+      accentBreak: 'false',
+      variant: 'stack',
+      level: '2',
+      tone: 'canvas'
+    })) {
+      expect(doc?.props[name]?.defaultValue).toEqual({ value });
+    }
+    const choices = (name: string) =>
+      doc?.props[name]?.type.value.map(({ value }: { value: string }) => normalize(value));
+    expect(choices('variant')).toEqual(['inline', 'stack', 'split']);
+    expect(choices('level')).toEqual(['1', '2', '3', '4', '5', '6']);
+    expect(choices('tone')).toEqual(['canvas', 'raised']);
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'aria-labelledby', 'className', 'style', 'onClick']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of ['children', 'dangerouslySetInnerHTML', 'ref', 'asChild', 'actions', 'layout']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const stories = ast(source('molecules/section-header/SectionHeader.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'Stack',
+      'Split',
+      'Inline',
+      'AccentBreak',
+      'MissingOptionalParts',
+      'HeadingLevels',
+      'Raised',
+      'RTL',
+      'LongContent'
+    ]);
+    expect(stories.getText()).toMatch(/title: 'Molecules\/SectionHeader'/);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+    expect(defaults(source('molecules/section-header/useSectionHeader.ts'), false)).toMatchObject({
+      accentBreak: 'false',
+      variant: 'stack',
+      level: '2',
+      tone: 'canvas'
+    });
   });
 
   it('extracts Notice required lead, native role, constant defaults and every own directive', () => {

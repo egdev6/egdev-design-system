@@ -149,6 +149,20 @@ function rule(selector: string) {
 }
 
 describe('Storybook preview CSS', () => {
+  it('emits PageHeader intrinsic geometry, token typography and constrained story layout', () => {
+    expect(rule(String.raw`.basis-\[calc\(var\(--space-24\)\*3\)\]`)).toMatch(
+      /flex-basis:\s*calc\(var\(--space-24\)\s*\*\s*3\)/
+    );
+    expect(rule(String.raw`.max-w-\[calc\(var\(--space-24\)\*3\)\]`)).toMatch(
+      /max-width:\s*calc\(var\(--space-24\)\s*\*\s*3\)/
+    );
+    expect(rule('.gap-x-6')).toMatch(/column-gap:\s*var\(--space-6[,)]/);
+    expect(rule('.gap-y-4')).toMatch(/row-gap:\s*var\(--space-4[,)]/);
+    expect(rule('.text-heading-small')).toMatch(/font-size:\s*var\(--text-heading-small[,)]/);
+    expect(rule('.text-label-eyebrow')).toMatch(/font-size:\s*var\(--text-label-eyebrow[,)]/);
+    expect(rule('.wrap-anywhere')).toMatch(/overflow-wrap:\s*anywhere/);
+    expect(css).not.toMatch(/\.eg-page-header\s*[,{]/);
+  });
   beforeAll(async () => {
     const result = await build({
       configFile: false,
@@ -194,6 +208,65 @@ describe('Storybook preview CSS', () => {
     expect(css).toContain('@starting-style');
     expect(rule('.bottom-6')).toMatch(/bottom:\s*var\(--space-6[,)]/);
     expect(rule('.end-6')).toMatch(/inset-inline-end:\s*var\(--space-6[,)]/);
+  });
+
+  it('compiles Timeline viewport caps, legacy geometry resets and inset focus from static CVA', () => {
+    for (const multiplier of [2, 3, 4]) {
+      expect(rule(`.max-h-\\[calc\\(var\\(--space-24\\)\\*${multiplier}\\)\\]`)).toMatch(
+        new RegExp(String.raw`max-height:\s*calc\(var\(--space-24\)\s*\*\s*${multiplier}\)`)
+      );
+    }
+    expect(rule('.block')).toMatch(/display:\s*block/);
+    expect(rule('.whitespace-normal')).toMatch(/white-space:\s*normal/);
+    expect(rule('.\\[overflow-wrap\\:anywhere\\]')).toMatch(/overflow-wrap:\s*anywhere/);
+    expect(rule('.focus-visible\\:-outline-offset-\\(--focus-width\\):focus-visible')).toMatch(
+      /outline-offset:\s*calc\(var\(--focus-width\)\s*\*\s*-1\)/
+    );
+  });
+
+  it('compiles the first molecule source with Radix available-space bounds and opacity entry', () => {
+    expect(rule(String.raw`.max-w-\[var\(--radix-hover-card-content-available-width\)\]`)).toMatch(
+      /max-width:\s*var\(--radix-hover-card-content-available-width\)/
+    );
+    expect(rule(String.raw`.max-h-\[var\(--radix-hover-card-content-available-height\)\]`)).toMatch(
+      /max-height:\s*var\(--radix-hover-card-content-available-height\)/
+    );
+    expect(rule(String.raw`.w-\[calc\(var\(--space-24\)\*4\)\]`)).toMatch(/width:\s*calc\(/);
+    expect(css).toContain(String.raw`.data-\[state\=open\]\:starting\:opacity-0`);
+    expect(css).toMatch(/@starting-style/);
+    expect(css).not.toMatch(/\.eg-hover-card\s*[,{]/);
+  });
+
+  it('compiles SocialLinks resets, caption typography and delegated wrapping layouts alongside legacy styles', () => {
+    expect(rule('.list-none')).toMatch(/list-style-type:\s*none/);
+    expect(rule('.shrink-0')).toMatch(/flex-shrink:\s*0/);
+    expect(rule('.text-label-eyebrow')).toMatch(/font-size:\s*var\(--text-label-eyebrow[,)]/);
+    expect(rule('.text-label-eyebrow')).toMatch(
+      /letter-spacing:\s*(?:var\(--tw-tracking,\s*)?var\(--text-label-eyebrow--letter-spacing[,)]/
+    );
+    expect(rule('.text-fg-secondary')).toMatch(/color:\s*var\(--color-fg-secondary[,)]/);
+    expect(rule('.font-display')).toMatch(/font-family:\s*var\(--font-display[,)]/);
+    for (const gap of [1, 2, 3, 4]) {
+      expect(rule(`.gap-${gap}`)).toMatch(new RegExp(`gap:\\s*var\\(--space-${gap}[,)]`));
+    }
+    expect(rule('.flex-wrap')).toMatch(/flex-wrap:\s*wrap/);
+    expect(rule('.flex-row')).toMatch(/flex-direction:\s*row/);
+    expect(css).toMatch(/\.eg-social__list>li|\.eg-social__list\s*>\s*li/);
+  });
+
+  it('compiles MeterRow wrapping, typography and key utilities from its production CVA source', () => {
+    expect(rule('.gap-x-3')).toMatch(/column-gap:\s*var\(--space-3[,)]/);
+    expect(rule('.gap-y-1')).toMatch(/row-gap:\s*var\(--space-1[,)]/);
+    expect(rule(String.raw`.\[overflow-wrap\:anywhere\]`)).toMatch(/overflow-wrap:\s*anywhere/);
+    expect(rule('.text-label-default')).toMatch(/font-size:\s*var\(--text-label-default[,)]/);
+    expect(rule(String.raw`.leading-\[var\(--text-body-default--line-height\)\]`)).toMatch(
+      /line-height:\s*var\(--text-body-default--line-height[,)]/
+    );
+    expect(rule(String.raw`.font-\[var\(--text-body-muted--font-weight\)\]`)).toMatch(
+      /font-weight:\s*var\(--text-body-muted--font-weight[,)]/
+    );
+    expect(rule('.bg-fg-brand-default')).toMatch(/background-color:\s*var\(--color-fg-brand-default[,)]/);
+    expect(rule('.bg-fg-muted')).toMatch(/background-color:\s*var\(--color-fg-muted[,)]/);
   });
 
   it('compiles Notice tint opacity, token typography and responsive basis from molecule sources', () => {
@@ -285,6 +358,23 @@ describe('Storybook preview CSS', () => {
     expect(gaugeCircleVariants().split(/\s+/)).toContain(utility);
   });
 
+  it('compiles GaugeDock axis, overflow and perpendicular separator utilities without a custom stylesheet', () => {
+    expect(rule('.max-w-full')).toMatch(/max-width:\s*100%/);
+    expect(rule('.max-h-full')).toMatch(/max-height:\s*100%/);
+    expect(rule('.overflow-auto')).toMatch(/overflow:\s*auto/);
+    expect(rule(String.raw`.data-\[orientation\=vertical\]\:flex-col[data-orientation="vertical"]`)).toMatch(
+      /flex-direction:\s*column/
+    );
+    expect(rule(String.raw`.data-\[orientation\=vertical\]\:h-6[data-orientation="vertical"]`)).toMatch(
+      /height:\s*var\(--space-6\)/
+    );
+    expect(rule(String.raw`.data-\[orientation\=horizontal\]\:w-6[data-orientation="horizontal"]`)).toMatch(
+      /width:\s*var\(--space-6\)/
+    );
+    expect(css).not.toMatch(/\.eg-gauge-dock(?:-item|-separator)?\s*\{/);
+    expect(rule('.max-w-80')).toMatch(/max-width:/);
+  });
+
   it('keeps Gauge independent of Surface imports and class identities', () => {
     for (const file of ['Gauge.tsx', 'types.ts', 'useGauge.ts']) {
       const source = readFileSync(new URL(`../atoms/gauge/${file}`, import.meta.url), 'utf8');
@@ -298,12 +388,42 @@ describe('Storybook preview CSS', () => {
     expect(arc).toMatch(/(?:black|#000(?:000)?) calc\(100% - var\(--eg-gauge-stroke\) \+ 0?\.5px\)/);
   });
 
+  it('compiles ModuleCard production states and molecule story layout without a stylesheet', () => {
+    expect(rule('.col-span-full')).toMatch(/grid-column:\s*1\s*\/\s*-1/);
+    expect(rule('.grid-cols-2')).toMatch(/grid-template-columns:/);
+    expect(rule('.transform-none')).toMatch(/transform:\s*none/);
+    expect(rule('.overflow-visible')).toMatch(/overflow:\s*visible/);
+    for (const selector of [
+      String.raw`.data-\[state\=stopped\]\:bg-transparent`,
+      String.raw`.data-\[state\=stopped\]\:bg-none`,
+      String.raw`.data-\[state\=stopped\]\:shadow-none`,
+      String.raw`.data-\[state\=stopped\]\:border-dashed`,
+      String.raw`.data-\[tone\=overlay\]\:bg-none`,
+      String.raw`.group-data-\[tone\=overlay\]\/module-card\:px-5`
+    ]) {
+      expect(css, selector).toContain(selector);
+    }
+    const preview = readFileSync(new URL('../../../../.storybook/preview.css', import.meta.url), 'utf8');
+    expect(preview).toContain('@source "../packages/ui/src/molecules/**/*.stories.tsx";');
+  });
+
   it('compiles the Gauge story example layouts without requiring production story scanning', () => {
     expect(rule('.flex')).toMatch(/display:\s*flex\s*;/);
     expect(rule('.flex-wrap')).toMatch(/flex-wrap:\s*wrap\s*;/);
     expect(rule('.items-start')).toMatch(/align-items:\s*flex-start\s*;/);
     expect(rule('.gap-4')).toMatch(/gap:\s*var\(--space-4\)\s*;/);
     expect(css).not.toMatch(/@(reference|source|tailwind)\b/);
+  });
+
+  it('compiles the first molecule source with snap, dragging, token gap and slide-focus utilities', () => {
+    expect(rule('.basis-full')).toMatch(/flex-basis:\s*100%/);
+    expect(rule('.snap-center')).toMatch(/scroll-snap-align:\s*center/);
+    expect(rule('.scroll-auto')).toMatch(/scroll-behavior:\s*auto/);
+    expect(rule('.gap-7')).toMatch(/gap:\s*var\(--space-7[,)]/);
+    expect(css).toContain(String.raw`.group-data-\[state\=dragging\]\:snap-none`);
+    expect(css).toContain(String.raw`.group-data-\[state\=dragging\]\:cursor-grabbing`);
+    expect(css).toContain(String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`);
+    expect(css).not.toMatch(/\.eg-carousel[^{]*\{/);
   });
 
   it('preserves the external font import in a valid position and the existing body token bindings', () => {
