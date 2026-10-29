@@ -29,7 +29,32 @@ export * from './atoms/tooltip';
 // Utilities
 export { cn } from './lib/cn';
 // Molecules
+export * from './molecules/button-group';
+export * from './molecules/carousel';
+export type { ChipGroupOption, ChipGroupProps, ChipGroupType } from './molecules/chip-group';
+export { ChipGroup } from './molecules/chip-group';
 export * from './molecules/field';
+export * from './molecules/gauge-dock';
+export type { HoverCardContentProps, HoverCardProps, HoverCardTriggerProps } from './molecules/hover-card';
+export { HoverCard, HoverCardContent, HoverCardTrigger } from './molecules/hover-card';
+export * from './molecules/list-item';
+export * from './molecules/menu';
+export * from './molecules/meter-row';
+export * from './molecules/nav-list';
+export * from './molecules/notice';
+export * from './molecules/popover';
+export type {
+  SectionHeaderLevel,
+  SectionHeaderProps,
+  SectionHeaderTone,
+  SectionHeaderVariant
+} from './molecules/section-header';
+export { SectionHeader } from './molecules/section-header';
+export * from './molecules/select-tile';
+export * from './molecules/social-links';
+export type { TabsItem, TabsProps, TabsSize, TabsTone, TabsVariant } from './molecules/tabs';
+export { Tabs, tabsVariants } from './molecules/tabs';
+export * from './molecules/timeline';
 // Primitives
 export type { AspectRatioProps } from './primitives/aspect-ratio';
 export { AspectRatio } from './primitives/aspect-ratio';

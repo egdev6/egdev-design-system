@@ -10,15 +10,21 @@ import config from '../../../../.storybook/main';
 import preview from '../../../../.storybook/preview';
 
 const components = [
+  ['Timeline', 'molecules/timeline'],
   ['Avatar', 'atoms/avatar'],
+  ['NavList', 'molecules/nav-list'],
   ['Button', 'atoms/button'],
+  ['Carousel', 'molecules/carousel'],
+  ['ButtonGroup', 'molecules/button-group'],
   ['Checkbox', 'atoms/checkbox'],
   ['Chip', 'atoms/chip'],
+  ['ChipGroup', 'molecules/chip-group'],
   ['Countdown', 'atoms/countdown'],
   ['AspectRatio', 'primitives/aspect-ratio'],
   ['Cluster', 'primitives/stack'],
   ['Gauge', 'atoms/gauge'],
   ['Field', 'molecules/field'],
+  ['GaugeDock', 'molecules/gauge-dock'],
   ['Dropzone', 'atoms/dropzone'],
   ['Heading', 'primitives/text'],
   ['Icon', 'atoms/icon'],
@@ -33,19 +39,27 @@ const components = [
   ['Slider', 'atoms/slider'],
   ['RadioGroup', 'atoms/radio-group'],
   ['SearchTrigger', 'atoms/search-trigger'],
+  ['SocialLinks', 'molecules/social-links'],
+  ['SectionHeader', 'molecules/section-header'],
+  ['Notice', 'molecules/notice'],
   ['Input', 'atoms/input'],
   ['Kbd', 'atoms/kbd'],
   ['Link', 'atoms/link'],
+  ['ListItem', 'molecules/list-item'],
   ['Badge', 'atoms/badge'],
   ['Logo', 'atoms/logo'],
+  ['MeterRow', 'molecules/meter-row'],
   ['ProgressBar', 'atoms/progress-bar'],
   ['PullQuote', 'atoms/pull-quote'],
   ['Select', 'atoms/select'],
+  ['SelectTile', 'molecules/select-tile'],
   ['StatusDot', 'atoms/status-dot'],
   ['Switch', 'atoms/switch'],
   ['Textarea', 'atoms/textarea'],
   ['Toggle', 'atoms/toggle'],
-  ['Tooltip', 'atoms/tooltip']
+  ['Tooltip', 'atoms/tooltip'],
+  ['Menu', 'molecules/menu'],
+  ['Tabs', 'molecules/tabs']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -105,7 +119,42 @@ const expected: Record<string, Record<string, string | false>> = {
     hideLabel: 'boolean',
     layout: 'select'
   },
+  timeline: {
+    label: 'text',
+    size: 'select',
+    variant: 'select',
+    items: false,
+    messages: false,
+    dir: 'select',
+    'aria-live': 'select'
+  },
+  selecttile: {
+    type: 'select',
+    label: 'text',
+    options: false,
+    ratio: 'select',
+    disabled: 'boolean',
+    dir: 'select',
+    value: false,
+    defaultValue: false,
+    onValueChange: false,
+    name: 'text',
+    required: 'boolean'
+  },
+  carousel: { items: false, label: 'text', value: 'text', defaultValue: 'text', onValueChange: false, messages: false },
+  sectionheader: {
+    title: 'text',
+    eyebrow: 'text',
+    accent: 'text',
+    accentBreak: 'boolean',
+    lede: 'text',
+    variant: 'select',
+    level: 'select',
+    titleId: 'text',
+    tone: 'select'
+  },
   avatar: { src: 'text', label: 'text', size: 'select', badgeIcon: 'select', paused: 'boolean' },
+  navlist: { label: 'text', items: false, onNavigate: false },
   button: {
     children: false,
     variant: 'select',
@@ -115,6 +164,7 @@ const expected: Record<string, Record<string, string | false>> = {
     loading: 'boolean',
     asChild: 'boolean'
   },
+  buttongroup: { label: 'text', variant: 'select', children: false },
   checkbox: {
     checked: false,
     defaultChecked: false,
@@ -123,6 +173,16 @@ const expected: Record<string, Record<string, string | false>> = {
     required: 'boolean',
     name: 'text',
     value: 'text'
+  },
+  chipgroup: {
+    type: 'select',
+    label: 'text',
+    options: false,
+    disabled: 'boolean',
+    dir: 'select',
+    value: false,
+    defaultValue: false,
+    onValueChange: false
   },
   chip: {
     children: false,
@@ -189,6 +249,7 @@ const expected: Record<string, Record<string, string | false>> = {
     unavailableText: 'text'
   },
   logo: { variant: 'select', size: 'select', label: 'text', href: 'text' },
+  meterrow: { label: 'text', value: 'number', valueText: 'text', help: 'text', variant: 'select', messages: false },
   statusdot: { state: 'select', pulse: 'boolean' },
   kbd: { children: 'text', label: 'text' },
   link: {
@@ -233,6 +294,27 @@ const expected: Record<string, Record<string, string | false>> = {
     value: 'text'
   },
   tooltip: { content: 'text', children: false, side: 'select', className: 'text' },
+  menu: {
+    children: false,
+    items: false,
+    header: false,
+    side: 'select',
+    align: 'select',
+    open: 'boolean',
+    defaultOpen: 'boolean',
+    onOpenChange: false,
+    onNavigate: false,
+    className: 'text'
+  },
+  tabs: {
+    items: false,
+    label: 'text',
+    value: 'text',
+    defaultValue: 'text',
+    onValueChange: false,
+    variant: 'select',
+    size: 'select'
+  },
   progressbar: {
     value: 'number',
     label: 'text',
@@ -243,6 +325,26 @@ const expected: Record<string, Record<string, string | false>> = {
   },
   pullquote: { text: 'text', accent: 'text', source: 'text', variant: 'select', tone: 'select' },
   searchtrigger: { label: 'text', shortcut: 'text', compact: 'boolean' },
+  sociallinks: {
+    items: false,
+    label: 'text',
+    caption: false,
+    inline: 'boolean',
+    variant: 'select',
+    size: 'select',
+    gap: 'select',
+    newTabText: 'text'
+  },
+  listitem: { status: 'select', variant: 'select', asChild: 'boolean', children: false },
+  notice: {
+    summary: 'text',
+    children: false,
+    tone: 'select',
+    size: 'select',
+    icon: false,
+    actions: false,
+    role: 'select'
+  },
   textarea: { variant: 'select' },
   input: { size: 'select', variant: 'select', type: 'select', icon: false, loading: 'boolean' },
   select: {
@@ -265,6 +367,7 @@ const expected: Record<string, Record<string, string | false>> = {
     label: 'text',
     size: 'select'
   },
+  gaugedock: { label: 'text', orientation: 'select', children: false },
   gauge: {
     label: 'text',
     value: 'number',
@@ -277,30 +380,44 @@ const expected: Record<string, Record<string, string | false>> = {
   }
 };
 const ownPropCounts: Record<string, number> = {
+  timeline: 7,
+  selecttile: 11,
+  carousel: 6,
   avatar: 5,
   button: 7,
   checkbox: 7,
   chip: 6,
+  chipgroup: 8,
   countdown: 10,
   aspectratio: 1,
   badge: 4,
+  buttongroup: 3,
   dropzone: 6,
   gauge: 8,
   field: 8,
+  gaugedock: 3,
   icon: 4,
   iconbutton: 6,
   skeleton: 3,
   spinner: 2,
   stat: 6,
   logo: 4,
+  meterrow: 6,
   statusdot: 2,
   kbd: 2,
   link: 6,
+  listitem: 4,
   slider: 11,
   radiogroup: 9,
   searchtrigger: 3,
+  navlist: 3,
+  sociallinks: 8,
+  sectionheader: 9,
+  notice: 7,
   switch: 7,
   tooltip: 4,
+  menu: 10,
+  tabs: 7,
   progressbar: 6,
   pullquote: 5,
   textarea: 1,
@@ -487,6 +604,17 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(argTypes.state?.table?.jsDocTags).toBeUndefined();
   });
 
+  it('retains GaugeDockItem tuple documentation with no serializable content controller', () => {
+    const composed = story('GaugeDockItem');
+    expect(composed.argTypes.children?.control).toBe(false);
+    expect(composed.argTypes.children?.type?.required).toBe(true);
+    expect(composed.argTypes.children?.table?.disable).toBeUndefined();
+    expect(composed.argTypes.orientation).toBeUndefined();
+    expect(story('GaugeDock').argTypes.orientation?.table?.defaultValue?.summary).toBe('"horizontal"');
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    expect(mapJSDocControls(extract(component('GaugeDockItem')), component('GaugeDockItem')).diagnostics).toEqual([]);
+  });
+
   it.each(components)('%s maps every annotated own prop after real extraction and inference', (name) => {
     const composed = story(name);
     expect(Object.keys(expected[name.toLowerCase()] ?? {})).toHaveLength(ownPropCount(name));
@@ -498,7 +626,11 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         expect(composed.argTypes[prop]?.type?.name, `${name}.${prop} semantic type`).toBe('string');
       }
     }
-    if (!['Button', 'VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface', 'Link', 'IconButton'].includes(name)) {
+    if (
+      !['Button', 'VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface', 'Link', 'IconButton', 'ListItem'].includes(
+        name
+      )
+    ) {
       expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     }
     expect(composed.args).toEqual({});
@@ -522,6 +654,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
   it.each([
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
     ['Checkbox', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }],
+    ['Menu', { side: '"bottom"', align: '"start"', defaultOpen: 'false' }],
     ['Chip', { defaultPressed: 'false', disabled: 'false' }],
     ['AspectRatio', { ratio: '1' }],
     ['Stack', { gap: '4', alignItems: '"stretch"', justifyContent: '"start"', asChild: 'false' }],
@@ -542,6 +675,21 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['ProgressBar', { size: '"sm"', variant: '"default"', edge: 'false' }],
     ['PullQuote', { variant: '"pull"', tone: '"canvas"' }],
     ['SearchTrigger', { label: '"Search…"', compact: 'false' }],
+    [
+      'SocialLinks',
+      {
+        label: '"Social profiles"',
+        caption: 'Follow me',
+        inline: 'false',
+        variant: '"outline"',
+        size: '"lg"',
+        gap: '2',
+        newTabText: '"(opens in a new tab)"'
+      }
+    ],
+    ['SectionHeader', { variant: '"stack"', tone: '"canvas"', level: '2', accentBreak: 'false' }],
+    ['Notice', { tone: '"neutral"', size: '"md"' }],
+    ['ButtonGroup', { variant: '"spaced"' }],
     ['Textarea', { variant: '"default"' }],
     [
       'Countdown',
@@ -728,6 +876,26 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ]) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
+  });
+
+  it('retains SelectTile cardinality, ratio presets and A1 whole-type disabled controls', () => {
+    const { argTypes } = story('SelectTile');
+    expect(argTypes.type?.control).toEqual({ type: 'select' });
+    expect(new Set(argTypes.type?.options)).toEqual(new Set(['single', 'multiple']));
+    expect(argTypes.ratio?.control).toEqual({ type: 'select' });
+    expect(new Set(argTypes.ratio?.options)).toEqual(
+      new Set(['landscape', 'portrait', 'story', 'square', 'wide', 'banner'])
+    );
+    for (const prop of ['value', 'defaultValue']) {
+      expect(argTypes[prop]?.control).toBe(false);
+      expect(argTypes[prop]?.table?.disable).toBeUndefined();
+      expect(argTypes[prop]?.table?.defaultValue?.summary).toBeUndefined();
+    }
+    for (const prop of ['type', 'label', 'options']) {
+      expect(argTypes[prop]?.type?.required).toBe(true);
+    }
+    expect(argTypes.ratio?.table?.defaultValue?.summary).toBe('"landscape"');
+    expect(argTypes.dir?.table?.defaultValue?.summary).toBe('"ltr"');
   });
 
   it('retains Stat required label/value rows, the figure union reason and passive native rows', () => {
@@ -970,6 +1138,44 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       expect(argTypes[prop], prop).toEqual(story('Dropzone', false).argTypes[prop]);
     }
     for (const prop of ['ref', 'asChild', 'type', 'children', 'onDrop', 'onPaste', 'onDragEnter', 'over']) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+  });
+
+  it('retains SectionHeader required copy, derived absences and exact enum controls without args', () => {
+    const { argTypes, args } = story('SectionHeader');
+    expect(argTypes.title?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.variant?.options).toEqual(['inline', 'stack', 'split']);
+    expect([...(argTypes.level?.options ?? [])].sort()).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(argTypes.tone?.options).toEqual(['canvas', 'raised']);
+    for (const name of ['title', 'eyebrow', 'accent', 'lede', 'titleId']) {
+      expect(argTypes[name]?.table?.defaultValue).toBeUndefined();
+    }
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'aria-labelledby', 'className', 'style', 'onClick']) {
+      expect(argTypes[name]).toBeDefined();
+      expect(argTypes[name]).toEqual(story('SectionHeader', false).argTypes[name]);
+    }
+    for (const name of ['children', 'dangerouslySetInnerHTML', 'ref', 'asChild', 'actions', 'layout']) {
+      expect(argTypes[name]).toBeUndefined();
+    }
+    expect(args).toEqual({});
+  });
+
+  it('retains ButtonGroup naming, required children and finite variant choices without filling optional args', () => {
+    const { argTypes, args } = story('ButtonGroup');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.label?.table?.defaultValue).toBeUndefined();
+    expect(argTypes.variant?.options).toEqual(['spaced', 'attached']);
+    expect(argTypes.children?.type).toMatchObject({ required: true });
+    expect(argTypes.children?.control).toBe(false);
+    expect(argTypes.children?.table?.disable).toBeUndefined();
+    expect(args).not.toHaveProperty('label');
+    expect(args).not.toHaveProperty('variant');
+    for (const prop of ['id', 'title', 'dir', 'aria-labelledby', 'aria-describedby', 'className']) {
+      expect(argTypes[prop], prop).toBeDefined();
+      expect(argTypes[prop], prop).toEqual(story('ButtonGroup', false).argTypes[prop]);
+    }
+    for (const prop of ['ref', 'role', 'aria-label', 'asChild', 'orientation', 'size']) {
       expect(argTypes[prop], prop).toBeUndefined();
     }
   });
