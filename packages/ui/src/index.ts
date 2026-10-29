@@ -28,6 +28,14 @@ export * from './atoms/toggle';
 export * from './atoms/tooltip';
 // Utilities
 export { cn } from './lib/cn';
+// Molecules
+export type {
+  SectionHeaderLevel,
+  SectionHeaderProps,
+  SectionHeaderTone,
+  SectionHeaderVariant
+} from './molecules/section-header';
+export { SectionHeader } from './molecules/section-header';
 // Primitives
 export type { AspectRatioProps } from './primitives/aspect-ratio';
 export { AspectRatio } from './primitives/aspect-ratio';
