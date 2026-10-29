@@ -28,6 +28,9 @@ export * from './atoms/toggle';
 export * from './atoms/tooltip';
 // Utilities
 export { cn } from './lib/cn';
+export type { ChipGroupOption, ChipGroupProps, ChipGroupType } from './molecules/chip-group';
+// Molecules
+export { ChipGroup } from './molecules/chip-group';
 // Primitives
 export type { AspectRatioProps } from './primitives/aspect-ratio';
 export { AspectRatio } from './primitives/aspect-ratio';
