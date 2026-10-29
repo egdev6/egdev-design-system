@@ -12,6 +12,25 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...[
+    'surface-material-tone',
+    'leading-icon',
+    'message-summary',
+    'trailing-actions',
+    'open-state',
+    'initial-uncontrolled-open',
+    'open-change',
+    'auto-dismiss-duration',
+    'dismiss-label',
+    'action-alternative-text'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/toast/types.ts#ToastProps'
+  })),
+  ...['accessible-name', 'announcement-label'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/toast/types.ts#ToastProviderProps'
+  })),
   ...['heading-title', 'heading-eyebrow', 'heading-level', 'trailing-actions'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/page-header/types.ts#PageHeaderProps'
