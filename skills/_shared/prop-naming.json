@@ -760,6 +760,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "NavList",
+        "type": "NavListTag.tone ('neutral' | 'brand', default neutral)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListTag",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
+      {
         "component": "Timeline",
         "type": "'neutral' | 'brand' (event category)",
         "status": "existing",
@@ -913,6 +923,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "NavList",
+        "type": "string (required non-empty landmark name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListProps",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
       {
         "component": "Timeline",
         "type": "string (required non-empty collection name)",
@@ -1491,6 +1511,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "NavList",
+        "type": "NavListLink.icon (optional decorative IconName)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListLink",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
       {
         "component": "Timeline",
         "type": "ReactNode (optional decorative event-category glyph)",
@@ -2606,6 +2636,16 @@
     },
     "usages": [
       {
+        "component": "NavList",
+        "type": "NavListEntry[]; NavListGroupBase.items narrows to NavListLink[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListProps",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
+      {
         "component": "Timeline",
         "type": "TimelineEvent[] | TimelineChatItem[] (variant-discriminated)",
         "status": "existing",
@@ -3099,6 +3139,16 @@
     },
     "usages": [
       {
+        "component": "NavList",
+        "type": "NavListCollapsibleGroup.open (optional controlled boolean)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListCollapsibleGroup",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
+      {
         "component": "HoverCard",
         "type": "boolean",
         "status": "existing",
@@ -3146,6 +3196,16 @@
     },
     "usages": [
       {
+        "component": "NavList",
+        "type": "NavListCollapsibleGroup.defaultOpen (boolean, default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListCollapsibleGroup",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
+      {
         "component": "HoverCard",
         "type": "boolean (default false)",
         "status": "existing",
@@ -3192,6 +3252,16 @@
       "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
     },
     "usages": [
+      {
+        "component": "NavList",
+        "type": "NavListCollapsibleGroup.onOpenChange ((open: boolean) => void)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListCollapsibleGroup",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
       {
         "component": "HoverCard",
         "type": "(open: boolean) => void",
@@ -3267,6 +3337,16 @@
     },
     "usages": [
       {
+        "component": "NavList",
+        "type": "NavListEntry.kind ('link' | 'group' | 'collapsible-group'); link kind is optional",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListEntry",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
+      {
         "component": "MenuEntry",
         "type": "'item' | 'link' | 'separator' | 'label' | 'submenu' (optional only on MenuActionItem)",
         "status": "existing",
@@ -3320,6 +3400,16 @@
       "contentHash": "sha256:7fb068ceea0357c786c87878c1080e7737b18da24f7feb48010b643ba4d1e197"
     },
     "usages": [
+      {
+        "component": "NavList",
+        "type": "(item: NavListLink, event: MouseEvent<HTMLAnchorElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/nav-list/types.ts",
+          "symbol": "NavListProps",
+          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+        }
+      },
       {
         "component": "Menu",
         "type": "(item: MenuLinkItem, event: MouseEvent<HTMLAnchorElement>) => void",

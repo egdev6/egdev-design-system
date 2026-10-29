@@ -12,6 +12,7 @@ import preview from '../../../../.storybook/preview';
 const components = [
   ['Timeline', 'molecules/timeline'],
   ['Avatar', 'atoms/avatar'],
+  ['NavList', 'molecules/nav-list'],
   ['Button', 'atoms/button'],
   ['Carousel', 'molecules/carousel'],
   ['ButtonGroup', 'molecules/button-group'],
@@ -141,6 +142,7 @@ const expected: Record<string, Record<string, string | false>> = {
     tone: 'select'
   },
   avatar: { src: 'text', label: 'text', size: 'select', badgeIcon: 'select', paused: 'boolean' },
+  navlist: { label: 'text', items: false, onNavigate: false },
   button: {
     children: false,
     variant: 'select',
@@ -393,6 +395,7 @@ const ownPropCounts: Record<string, number> = {
   slider: 11,
   radiogroup: 9,
   searchtrigger: 3,
+  navlist: 3,
   sociallinks: 8,
   sectionheader: 9,
   notice: 7,

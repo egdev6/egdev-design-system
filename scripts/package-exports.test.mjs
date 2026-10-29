@@ -267,6 +267,89 @@ test('Timeline ships bounded geometry, attribute states, legacy resets and passi
   }
 });
 
+test('NavList ships every static CVA utility and native disclosure/current-page SSR', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/nav-list/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      for (const name of node.text.split(/\s+/)) {
+        classes.add(name);
+      }
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      for (const argument of node.arguments) {
+        collect(argument);
+      }
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.ok(classes.size > 45, 'Scan every NavList part recipe');
+  for (const name of classes) {
+    if (name === 'eg-nav-list' || name.startsWith('group/')) {
+      continue;
+    }
+    const selector = '.' + name.replace(/[^\w-]/g, '\\$&');
+    assert.ok(css.includes(selector), `Missing NavList utility ${name}`);
+  }
+  assert.match(css, /outline-color:\s*var\(--color-focus-ring-inverse[,)]/);
+  assert.match(css, /outline-width:\s*var\(--focus-width[,)]/);
+  assert.match(css, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*11\)/);
+  assert.doesNotMatch(css, /\.eg-nav-list\s*\{/);
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const home = { id: 'home', label: 'Home', href: '#home', 'aria-current': 'page', count: 0 };
+  const html = renderToString(
+    createElement(exported.NavList, {
+      label: 'Workspace',
+      items: [
+        home,
+        { kind: 'group', id: 'tools', label: 'Tools', items: [] },
+        {
+          kind: 'collapsible-group',
+          id: 'closed',
+          label: 'Closed',
+          count: 4,
+          signal: { state: 'live', text: 'Voting live' },
+          items: [{ id: 'secret', label: 'Secret', href: '#secret' }]
+        },
+        {
+          kind: 'collapsible-group',
+          id: 'open',
+          label: 'Open',
+          defaultOpen: true,
+          items: [{ id: 'draft', label: 'Draft', href: '#draft', tag: { children: 'New' }, warning: 'Needs attention' }]
+        }
+      ]
+    })
+  );
+  assert.match(html, /^<nav aria-label="Workspace" class="eg-nav-list /);
+  assert.match(html, /<a href="#home" aria-current="page" class="eg-surface [^"]*bg-surface-3/);
+  assert.match(html, /aria-labelledby="[^"]+-caption-1"/);
+  assert.match(html, /aria-expanded="false"/);
+  assert.match(html, /aria-controls="[^"]+" aria-expanded="true"/);
+  assert.match(html, /eg-status-dot/);
+  assert.match(html, /Voting live/);
+  assert.match(html, /eg-badge/);
+  assert.match(html, /Needs attention/);
+  assert.doesNotMatch(html, /Secret|role="(?:menu|tree|tab)|eg-menu|aria-selected/);
+  for (const name of ['useNavList', 'navListLinkVariants', 'navListTriggerVariants']) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} stays internal`);
+  }
+});
+
 test('transition utility guard accepts only the exact approved emitted selectors', () => {
   for (const selector of [
     '.transition-none',
@@ -2204,6 +2287,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Logo',
       'Menu',
       'MeterRow',
+      'NavList',
       'Notice',
       'Popover',
       'PopoverClose',
@@ -2241,6 +2325,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'dropzoneVariants',
       'labelVariants',
       'menuVariants',
+      'navListVariants',
       'noticeVariants',
       'progressBarVariants',
       'radioGroupVariants',
@@ -2454,6 +2539,15 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'MeterRowMessages',
     'MeterRowProps',
     'MeterRowVariant',
+    'NavList',
+    'NavListCollapsibleGroup',
+    'NavListEntry',
+    'NavListGroupBase',
+    'NavListLink',
+    'NavListProps',
+    'NavListSignal',
+    'NavListStaticGroup',
+    'NavListTag',
     'Notice',
     'NoticeProps',
     'NoticeTone',
@@ -2564,6 +2658,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'dropzoneVariants',
     'labelVariants',
     'menuVariants',
+    'navListVariants',
     'noticeVariants',
     'progressBarVariants',
     'radioGroupVariants',

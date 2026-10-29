@@ -489,10 +489,10 @@
     "nombre": "NavList",
     "nivel": "molecule",
     "destino": "ui",
-    "radix": "Accordion (grupos) / Collapsible",
-    "compone": "Icon, Badge, StatusDot",
+    "radix": "Collapsible",
+    "compone": "Icon, Badge, StatusDot, VisuallyHidden, Surface recipe",
     "accion": "separar",
-    "notas": "Navegación lateral con grupos plegables, contadores y etiquetas `__tag`."
+    "notas": "Implemented named in-flow navigation under [approved v0.2 contract](https://github.com/egdev6/egdev-design-system/issues/92): native links, consumer-supplied aria-current, static groups and independent Radix disclosures, raw counters, readable tags/signals/warnings. Current rows compose surfaceVariants; the host owns the panel and routing. Entry discriminant kind; no stylesheet, ref, asChild, tree/menu semantics or route inference. Legacy MenuList navigation remains unchanged."
   },
   {
     "actual": "UserMenu",

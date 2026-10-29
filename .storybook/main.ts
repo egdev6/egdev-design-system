@@ -6,6 +6,7 @@ import { mergeConfig } from 'vite';
 const documentedNativeProps: Record<string, readonly string[]> = {
   timeline: ['id', 'title', 'aria-describedby', 'aria-busy', 'className', 'style', 'onClick'],
   avatar: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  navList: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   carousel: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onKeyDown', 'onFocus', 'onBlur'],
   button: ['type', 'disabled', 'onClick', 'id', 'title', 'aria-describedby', 'className', 'name', 'value', 'tabIndex'],
   buttonGroup: ['id', 'title', 'dir', 'aria-labelledby', 'aria-describedby', 'className'],
