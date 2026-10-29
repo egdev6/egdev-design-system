@@ -192,6 +192,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/toggle',
       './atoms/tooltip',
       './lib/cn',
+      './molecules/timeline',
       './primitives/aspect-ratio',
       './primitives/divider',
 
@@ -242,6 +243,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Switch',
       'Text',
       'Textarea',
+      'Timeline',
       'Toggle',
       'Tooltip',
       'VisuallyHidden',

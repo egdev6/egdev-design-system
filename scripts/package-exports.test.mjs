@@ -48,6 +48,54 @@ function cssBlock(css, opening) {
 const unapprovedTransitionUtility =
   /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\])(?=\s*\{))[\w\\]/;
 
+test('Timeline ships bounded geometry, attribute states, legacy resets and passive SSR semantics', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  for (const multiplier of [2, 3, 4]) {
+    assert.match(css, new RegExp(String.raw`max-height:\s*calc\(var\(--space-24\)\s*\*\s*${multiplier}\)`));
+  }
+  for (const selector of [
+    String.raw`.data-\[state\=highlighted\]\:bg-bg-brand-subtle`,
+    String.raw`.not-data-\[state\=highlighted\]\:data-\[kind\=command\]\:bg-fg-default\/3`,
+    String.raw`.data-\[role\=moderator\]\:text-status-success`,
+    String.raw`.focus-visible\:-outline-offset-\(--focus-width\)`
+  ]) {
+    assert.ok(css.includes(selector), `Missing Timeline utility ${selector}`);
+  }
+  assert.match(css, /outline-color:\s*var\(--color-focus-ring[,)]/);
+  assert.match(css, /overflow-wrap:\s*anywhere/);
+  assert.match(css, /grid-template-columns:\s*var\(--space-14\)\s+minmax\(0,\s*auto\)\s+minmax\(0,\s*1fr\)/);
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const event = { id: 'event', time: { text: '01:13', dateTime: 'PT1M13S' }, category: 'Release', body: 'Published' };
+  const html = renderToString(createElement(exported.Timeline, { label: 'Events', items: [event] }));
+  assert.match(html, /role="region"/);
+  assert.match(html, /aria-live="off"/);
+  assert.match(html, /<ol[^>]*role="list"/);
+  assert.match(html, /dateTime="PT1M13S"/i);
+  const chat = {
+    id: 'chat',
+    time: event.time,
+    platform: { name: 'Community', icon: 'twitch' },
+    author: { name: 'Alex', moderator: true, avatar: {} },
+    message: '<b>!help</b>',
+    command: true
+  };
+  const transcript = renderToString(
+    createElement(exported.Timeline, { variant: 'chat', label: 'Chat', items: [chat] })
+  );
+  assert.match(transcript, /role="log"/);
+  assert.match(transcript, /aria-live="polite"/);
+  assert.match(transcript, /aria-relevant="additions"/);
+  assert.match(transcript, /aria-atomic="false"/);
+  assert.match(transcript, /&lt;b&gt;!help&lt;\/b&gt;/);
+  assert.match(transcript, /Moderator/);
+  assert.match(transcript, /Command/);
+  for (const name of ['timelineVariants', 'useTimeline', 'timelineItemVariants']) {
+    assert.equal(Object.hasOwn(exported, name), false);
+  }
+});
+
 test('transition utility guard accepts only the exact approved emitted selectors', () => {
   for (const selector of [
     '.transition-none',
@@ -1685,6 +1733,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Switch',
       'Text',
       'Textarea',
+      'Timeline',
       'Toggle',
       'Tooltip',
       'VisuallyHidden',
@@ -1913,6 +1962,14 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Textarea',
     'TextareaProps',
     'TextareaVariant',
+    'Timeline',
+    'TimelineChatItem',
+    'TimelineEvent',
+    'TimelineMessages',
+    'TimelineProps',
+    'TimelineSize',
+    'TimelineTime',
+    'TimelineVariant',
     'TitleVariant',
     'Toggle',
     'ToggleProps',

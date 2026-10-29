@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -110,12 +110,60 @@ import type {
   SwitchProps,
   TextareaProps,
   TextareaVariant,
+  TimelineProps,
+  TimelineVariant,
+  TimelineSize,
+  TimelineTime,
+  TimelineEvent,
+  TimelineChatItem,
+  TimelineMessages,
   TooltipProps,
   PullQuoteProps,
   PullQuoteTone,
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+const timelineVariant: TimelineVariant = 'chat';
+const timelineSize: TimelineSize = 'sm';
+const timelineTime: TimelineTime = { text: '12:30', dateTime: '2026-10-29T12:30:00Z' };
+const timelineEvent: TimelineEvent = { id: 'release', time: timelineTime, category: 'Release', body: createElement('b', null, 'Published') };
+const timelineMessage: TimelineChatItem = { id: 'first', time: timelineTime, platform: { name: 'Community', icon: 'twitch' }, author: { name: 'Alex', avatar: {}, moderator: true }, message: '<b>!help</b>', command: true };
+const timelineMessages: Partial<TimelineMessages> = { command: 'Instruction' };
+export const timelineProps: TimelineProps = { variant: timelineVariant, size: timelineSize, label: 'Chat, oldest first', items: [timelineMessage], messages: timelineMessages };
+export function TimelineSamples({ appended = false, silent = false }: { appended?: boolean; silent?: boolean }) {
+  return createElement(Timeline, { ...timelineProps, variant: 'chat', 'aria-live': silent ? 'off' : 'polite', items: appended ? [timelineMessage, { ...timelineMessage, id: 'second', message: 'Next' }] : [timelineMessage] });
+}
+export function TimelineEvents() {
+  return createElement(Timeline, { label: 'Events', items: [timelineEvent] });
+}
+// @ts-expect-error Stable ids are required data, never generated from array positions.
+const unidentifiedEvent: TimelineEvent = { time: timelineTime, category: 'Release', body: 'Published' };
+// @ts-expect-error Both visible time and machine-readable datetime are required.
+const incompleteTime: TimelineTime = { text: '12:30' };
+// @ts-expect-error Chat messages are plain text, never arbitrary ReactNode content.
+const richChat: TimelineChatItem = { ...timelineMessage, message: createElement('b', null, 'Hello') };
+// @ts-expect-error A collection requires a non-empty accessible-name input.
+const unnamedTimeline: TimelineProps = { items: [] };
+// @ts-expect-error Items are required even for an empty collection.
+const missingTimelineItems: TimelineProps = { label: 'Events' };
+// @ts-expect-error Event anatomy rejects chat entries without the chat discriminant.
+const mixedTimeline: TimelineProps = { label: 'Events', items: [timelineMessage] };
+// @ts-expect-error Chat cannot receive event entries.
+const eventChat: TimelineProps = { variant: 'chat', label: 'Chat', items: [timelineEvent] };
+// @ts-expect-error Events are always live-off.
+const speakingEvents: TimelineProps = { label: 'Events', items: [], 'aria-live': 'polite' };
+// @ts-expect-error Assertive priority is unsupported in chat.
+const assertiveChat: TimelineProps = { variant: 'chat', label: 'Chat', items: [], 'aria-live': 'assertive' };
+// @ts-expect-error Native role is protected.
+const menuTimeline: TimelineProps = { label: 'Events', items: [], role: 'menu' };
+// @ts-expect-error Caller children cannot replace the collection.
+const childrenTimeline: TimelineProps = { label: 'Events', items: [], children: 'Other' };
+// @ts-expect-error No public viewport or root ref API.
+const refTimeline: TimelineProps = { label: 'Events', items: [], ref: createRef<HTMLDivElement>() };
+// @ts-expect-error No slotted composition API.
+const slottedTimeline: TimelineProps = { label: 'Events', items: [], asChild: true };
+// @ts-expect-error Viewport dimensions use the closed preset set.
+const numericTimeline: TimelineProps = { label: 'Events', items: [], size: 200 };
 const buttonVariant: ButtonVariant = 'secondary';
 const buttonSize: ButtonSize = 'sm';
 export const buttonRef = createRef<HTMLButtonElement>();
@@ -2007,6 +2055,17 @@ function assertCountdownCSS(css) {
   assert.match(css, /min-width:\s*var\(--spacing-countdown-unit[,)]/);
 }
 
+// Timeline ships static CVA geometry and states without a consumer Tailwind compiler.
+function assertTimelineCSS(css) {
+  for (const multiplier of [2, 3, 4]) {
+    assert.match(css, new RegExp(String.raw`max-height:\s*calc\(var\(--space-24\)\s*\*\s*${multiplier}\)`));
+  }
+  assert.match(css, /outline-color:\s*var\(--color-focus-ring[,)]/);
+  assert.match(css, /overflow-wrap:\s*anywhere/);
+  assert.ok(css.includes(String.raw`.data-\[state\=highlighted\]\:bg-bg-brand-subtle`));
+  assert.ok(css.includes(String.raw`.not-data-\[state\=highlighted\]\:data-\[kind\=command\]\:bg-fg-default\/3`));
+}
+
 // SearchTrigger utilities ship token geometry, coarse targets and native-state colors without preflight.
 function assertSearchTriggerCSS(css) {
   for (const selector of [
@@ -2371,6 +2430,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Switch',
   'Text',
   'Textarea',
+  'Timeline',
   'Toggle',
   'Tooltip',
   'VisuallyHidden',
@@ -2411,6 +2471,7 @@ ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
+${assertTimelineCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertPullQuoteCSS.toString()}
 ${assertCountdownCSS.toString()}
@@ -2418,6 +2479,7 @@ assertCountdownCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
 assertStatCSS(shippedStyles);
 assertSearchTriggerCSS(shippedStyles);
+assertTimelineCSS(shippedStyles);
 assertPullQuoteCSS(shippedStyles);
 assertIconButtonCSS(shippedStyles);
 ${assertToggleCSS.toString()}
@@ -2499,7 +2561,7 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TimelineSamples, TimelineEvents, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
@@ -2526,6 +2588,19 @@ const unavailableCountdown = renderToString(createElement(CountdownSamples, { de
 assert.ok(unavailableCountdown.includes('data-state="unavailable"') && unavailableCountdown.includes('Time unavailable'));
 assert.doesNotMatch(unavailableCountdown, /<time|eg-countdown__row/);
 // Stat SSR: a labelled group per figure, unformatted values and the hidden no-data dash.
+const timelineDocument = new JSDOM(renderToString(createElement(TimelineSamples)) + renderToString(createElement(TimelineEvents)));
+try {
+  const log = timelineDocument.window.document.querySelector('[role="log"]');
+  assert.equal(log.getAttribute('aria-live'), 'polite');
+  assert.equal(log.getAttribute('aria-relevant'), 'additions');
+  assert.equal(log.getAttribute('aria-atomic'), 'false');
+  assert.equal(log.querySelectorAll('ol[role="list"] > li').length, 1);
+  assert.ok(log.textContent.includes('Community') && log.textContent.includes('Moderator') && log.textContent.includes('Instruction'));
+  assert.equal(log.querySelector('.eg-timeline__cmd').textContent, '<b>!help</b>');
+  assert.equal(log.querySelector('.eg-avatar').getAttribute('aria-hidden'), 'true');
+  assert.equal(log.querySelector('[role="group"]').tabIndex, 0);
+  assert.equal(timelineDocument.window.document.querySelector('[role="region"]').getAttribute('aria-live'), 'off');
+} finally { timelineDocument.window.close(); }
 const statDocument = new JSDOM(renderToString(createElement(StatSamples, { highlighted: true, value: '1,200' })));
 try {
   const document = statDocument.window.document;
@@ -3426,7 +3501,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TimelineSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4038,6 +4113,23 @@ try {
   await act(async () => root.render(null));
   assert.equal(document.getElementById('totals'), null);
   stage('stat:passive:complete');
+  stage('timeline:start');
+  await act(async () => root.render(createElement(TimelineSamples, { silent: true })));
+  const transcript = document.querySelector('[role="log"]');
+  const transcriptViewport = transcript.querySelector('[role="group"]');
+  const firstMessage = transcript.querySelector('li');
+  assert.equal(transcript.getAttribute('aria-live'), 'off');
+  transcriptViewport.focus();
+  transcriptViewport.scrollTop = 11;
+  await act(async () => root.render(createElement(TimelineSamples, { appended: true })));
+  assert.equal(transcript.getAttribute('aria-live'), 'polite');
+  assert.equal(transcript.querySelectorAll('li').length, 2);
+  assert.ok(transcript.querySelector('li') === firstMessage);
+  assert.ok(document.activeElement === transcriptViewport);
+  assert.equal(transcriptViewport.scrollTop, 11);
+  assert.equal(transcript.querySelectorAll('[aria-live]').length, 0);
+  await act(async () => root.render(null));
+  stage('timeline:complete');
   stage('search-trigger:start');
   const documentListeners = [];
   const addDocumentListener = document.addEventListener;
@@ -4344,6 +4436,7 @@ ${assertTextareaCSS.toString()}
 ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
+${assertTimelineCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
 ${assertPullQuoteCSS.toString()}
 assertIconButtonCSS(emitted);
@@ -4380,6 +4473,7 @@ ${assertCountdownCSS.toString()}
 assertCountdownCSS(emitted);
 assertStatCSS(emitted);
 assertSearchTriggerCSS(emitted);
+assertTimelineCSS(emitted);
 assertPullQuoteCSS(emitted);
 assertToggleCSS(emitted);
 assertChipCSS(emitted);
@@ -4448,6 +4542,7 @@ assertDropzoneCSS(twCss);
 assertCountdownCSS(twCss);
 assertStatCSS(twCss);
 assertSearchTriggerCSS(twCss);
+assertTimelineCSS(twCss);
 assertPullQuoteCSS(twCss);
 assertToggleCSS(twCss);
 assertChipCSS(twCss);
