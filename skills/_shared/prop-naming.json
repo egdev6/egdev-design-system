@@ -15,6 +15,26 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "ChipGroup",
+        "type": "string (single) | string[] (multiple)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
+        "component": "ChipGroupOption",
+        "type": "string (unique non-empty selection value)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupOption",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
         "component": "Gauge",
         "type": "number",
         "status": "existing",
@@ -51,7 +71,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       },
       {
@@ -83,6 +103,16 @@
           "symbol": "MeterRowProps",
           "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
         }
+      },
+      {
+        "component": "Tabs",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
       }
     ]
   },
@@ -102,6 +132,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "ChipGroup",
+        "type": "string (single) | string[] (multiple)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
         "component": "RadioGroup",
         "type": "string",
         "status": "existing",
@@ -118,7 +158,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       },
       {
@@ -129,6 +169,16 @@
           "path": "packages/ui/src/atoms/select/types.ts",
           "symbol": "SelectProps",
           "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
       }
     ]
@@ -149,6 +199,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "ChipGroup",
+        "type": "((value: string) => void) (single) | ((value: string[]) => void) (multiple)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
         "component": "RadioGroup",
         "type": "(value: string) => void",
         "status": "existing",
@@ -165,7 +225,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       },
       {
@@ -176,6 +236,16 @@
           "path": "packages/ui/src/atoms/select/types.ts",
           "symbol": "SelectProps",
           "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "(value: string) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
       }
     ]
@@ -195,6 +265,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Notice",
+        "type": "'md' | 'sm'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      },
       {
         "component": "Avatar",
         "type": "AvatarSize ('sm' | 'md' | 'lg' | 'xl')",
@@ -334,6 +414,16 @@
           "symbol": "CountdownProps",
           "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
         }
+      },
+      {
+        "component": "Tabs",
+        "type": "TabsSize ('md' | 'sm'); underline only",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
       }
     ]
   },
@@ -352,6 +442,26 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "ListItem",
+        "type": "ListItemVariant ('card' | 'compact' | 'row'); empty accepts card only",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/list-item/types.ts",
+          "symbol": "ListItemProps",
+          "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
+        }
+      },
+      {
+        "component": "ButtonGroup",
+        "type": "ButtonGroupVariant ('spaced' | 'attached')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/button-group/types.ts",
+          "symbol": "ButtonGroupProps",
+          "revision": "sha256:2ecb19299d2410ef130ed830d62b410b17c8adc04bb73625de6bd0940ed94e51"
+        }
+      },
       {
         "component": "Button",
         "type": "ButtonVariant ('primary' | 'secondary' | 'ghost' | 'dark')",
@@ -491,6 +601,16 @@
           "symbol": "MeterRowProps",
           "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
         }
+      },
+      {
+        "component": "Tabs",
+        "type": "TabsVariant ('underline' | 'segmented')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
       }
     ]
   },
@@ -509,6 +629,26 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "MenuEntry",
+        "type": "MenuTone ('default' | 'primary' | 'danger'; action/link branches)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuEntry",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
+      {
+        "component": "Notice",
+        "type": "NoticeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      },
       {
         "component": "Badge",
         "type": "BadgeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger' | 'brand')",
@@ -568,6 +708,16 @@
           "symbol": "PullQuoteProps",
           "revision": "sha256:a80b89c12589a3afe7dfc16fa86797bd860f12f839946ec189da60277e8f05d4"
         }
+      },
+      {
+        "component": "Tabs",
+        "type": "TabsTone ('neutral' | 'danger'); TabsItem counter only",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsItem",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
       }
     ]
   },
@@ -613,6 +763,36 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "ChipGroup",
+        "type": "string (required non-empty group name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
+        "component": "ChipGroupOption",
+        "type": "string (visible label and accessible item name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupOption",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
+        "component": "ButtonGroup",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/button-group/types.ts",
+          "symbol": "ButtonGroupProps",
+          "revision": "sha256:2ecb19299d2410ef130ed830d62b410b17c8adc04bb73625de6bd0940ed94e51"
+        }
+      },
       {
         "component": "Avatar",
         "type": "string",
@@ -700,7 +880,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       },
       {
@@ -771,6 +951,16 @@
           "path": "packages/ui/src/molecules/meter-row/types.ts",
           "symbol": "MeterRowProps",
           "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "string (accessible tablist name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
       }
     ]
@@ -881,7 +1071,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       },
       {
@@ -1072,6 +1262,36 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "MenuEntry",
+        "type": "IconName (optional decorative glyph on action/link/submenu branches)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuEntry",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
+      {
+        "component": "ChipGroupOption",
+        "type": "ReactNode (decorative leading content)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupOption",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
+        "component": "Notice",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      },
+      {
         "component": "Button",
         "type": "ReactNode (decorative start/end slot, default end; Button-only semantic exception)",
         "status": "existing",
@@ -1212,6 +1432,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "ListItem",
+        "type": "boolean; required true for empty presentation",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/list-item/types.ts",
+          "symbol": "ListItemProps",
+          "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
+        }
+      },
       {
         "component": "Button",
         "type": "boolean (asChild)",
@@ -1706,6 +1936,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "ChipGroup",
+        "type": "ChipGroupOption[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
         "component": "RadioGroup",
         "type": "RadioGroupOption[]",
         "status": "existing",
@@ -1813,7 +2053,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       }
     ]
@@ -1952,6 +2192,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "Menu",
+        "type": "MenuSide ('top' | 'right' | 'bottom' | 'left')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
+      {
         "component": "Tooltip",
         "type": "'top' | 'right' | 'bottom' | 'left'",
         "status": "existing",
@@ -2004,7 +2254,38 @@
       "scope": "convention:collection-items",
       "contentHash": "sha256:304ac895a943454d04d057e18518794a315958b70252df2e696e00dc65b36f40"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Menu",
+        "type": "MenuEntry[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
+      {
+        "component": "MenuSubmenuItem",
+        "type": "(MenuActionItem | MenuLinkItem | MenuSeparatorItem | MenuLabelItem)[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuSubmenuItem",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "TabsItem[] (value, label, optional count/tone/disabled, required content)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
+      }
+    ]
   },
   {
     "id": "localized-messages",
@@ -2047,7 +2328,18 @@
       "scope": "convention:selection-cardinality",
       "contentHash": "sha256:f64c90bbbb7a034e76d20b15147113520b24c71e2c8061534800eb8e557a9da9"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "ChipGroup",
+        "type": "ChipGroupType ('single' | 'multiple')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/chip-group/types.ts",
+          "symbol": "ChipGroupProps",
+          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      }
+    ]
   },
   {
     "id": "deadline-instant",
@@ -2348,7 +2640,18 @@
       "scope": "convention:floating-align",
       "contentHash": "sha256:ec3c51a76edd89a67049d49001e9017d43707075312a605d895739c79f949dd2"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Menu",
+        "type": "MenuAlign ('start' | 'center' | 'end')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "open-state",
@@ -2364,7 +2667,18 @@
       "scope": "convention:open-state",
       "contentHash": "sha256:6007292c57d0dfee10a01b1cc199795b014e40bd09a8b55fd2af3f8fa0274631"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Menu",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "initial-uncontrolled-open",
@@ -2380,7 +2694,18 @@
       "scope": "convention:initial-uncontrolled-open",
       "contentHash": "sha256:2a8c4a933020f41d26f1efdb80320bb0eaf25326cf49c0384abc92416010606f"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Menu",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "open-change",
@@ -2396,7 +2721,18 @@
       "scope": "convention:open-change",
       "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Menu",
+        "type": "(open: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "item-presentation-status",
@@ -2412,7 +2748,18 @@
       "scope": "convention:item-presentation-status",
       "contentHash": "sha256:8402ef1355689cbd78c154bdc729ea1443566f5401d9a8bb1e18868a77a8d89a"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "ListItem",
+        "type": "ListItemStatus ('default' | 'new' | 'failed' | 'done' | 'empty' | 'dragging' | 'off')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/list-item/types.ts",
+          "symbol": "ListItemProps",
+          "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
+        }
+      }
+    ]
   },
   {
     "id": "menu-entry-kind",
@@ -2428,7 +2775,18 @@
       "scope": "convention:menu-entry-kind",
       "contentHash": "sha256:0b0cb903110a56f70e453b35f949a782f3ad4da9820ba6a6d0b4bb4fdab95308"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "MenuEntry",
+        "type": "'item' | 'link' | 'separator' | 'label' | 'submenu' (optional only on MenuActionItem)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuEntry",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "panel-header",
@@ -2444,7 +2802,18 @@
       "scope": "convention:panel-header",
       "contentHash": "sha256:d0e5fa1ca4fc22a01baadd487e235b17b52c43da13ffa3af81826f5085295714"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Menu",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "navigation-intent",
@@ -2460,7 +2829,18 @@
       "scope": "convention:navigation-intent",
       "contentHash": "sha256:7fb068ceea0357c786c87878c1080e7737b18da24f7feb48010b643ba4d1e197"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Menu",
+        "type": "(item: MenuLinkItem, event: MouseEvent<HTMLAnchorElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuProps",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      }
+    ]
   },
   {
     "id": "numeric-display-help",
@@ -2546,7 +2926,18 @@
       "scope": "convention:trailing-actions",
       "contentHash": "sha256:b00c5b3d1006ee97caa5d258e4ce04a046acb3d8d752d734e37bf96c92356550"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Notice",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      }
+    ]
   },
   {
     "id": "panel-footer",
@@ -2578,7 +2969,18 @@
       "scope": "convention:message-summary",
       "contentHash": "sha256:975bcd3e71864c8c5033aa82310d14454013767fe690f531b87ba297497743cd"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Notice",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      }
+    ]
   },
   {
     "id": "heading-eyebrow",
@@ -2787,6 +3189,16 @@
       "contentHash": "sha256:4f922985284399a34fe26994e80533c2a8db49066e01a3e9d00544c2fbbc1339"
     },
     "usages": [
+      {
+        "component": "MenuEntry",
+        "type": "string (action branch only; display-only)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/menu/types.ts",
+          "symbol": "MenuEntry",
+          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+        }
+      },
       {
         "component": "SearchTrigger",
         "type": "string",

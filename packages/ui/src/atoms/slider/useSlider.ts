@@ -13,6 +13,7 @@ export type UseSliderResult = {
     'aria-label': string;
     'aria-valuetext'?: string;
     'aria-describedby'?: string;
+    'aria-invalid'?: SliderProps['aria-invalid'];
     className: string;
   };
 };
@@ -21,7 +22,8 @@ const clamp = (value: number, min: number, max: number): number => Math.min(Math
 
 /**
  * Maps the scalar API onto Radix's single-thumb array shape: clamps incoming values, unwraps
- * callbacks, mirrors the current value for valueText and routes aria-describedby to the thumb.
+ * callbacks, mirrors the current value for valueText and routes aria-describedby and aria-invalid
+ * to the thumb.
  * Radix keeps owning value state, keyboard, pointer and ARIA.
  */
 export function useSlider({
@@ -37,6 +39,7 @@ export function useSlider({
   disabled = false,
   className,
   'aria-describedby': describedBy,
+  'aria-invalid': invalid,
   ...rest
 }: SliderProps): UseSliderResult {
   // Radix does not expose its uncontrolled value; mirror it so valueText reflects the thumb.
@@ -72,6 +75,7 @@ export function useSlider({
       'aria-label': label,
       ...(text === undefined ? {} : { 'aria-valuetext': text }),
       ...(describedBy === undefined ? {} : { 'aria-describedby': describedBy }),
+      ...(invalid === undefined ? {} : { 'aria-invalid': invalid }),
       className: cn(sliderThumbVariants())
     }
   };
