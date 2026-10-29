@@ -12,6 +12,20 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...[
+    'heading-title',
+    'heading-eyebrow',
+    'trailing-text-accent',
+    'accent-line-break',
+    'section-lede',
+    'visual-treatment',
+    'heading-level',
+    'heading-id',
+    'surface-material-tone'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/section-header/types.ts#SectionHeaderProps'
+  })),
   ...['accessible-name', 'leading-icon', 'visual-treatment', 'preset-dimensions', 'slot-composition'].map(
     (conventionId) => ({
       conventionId,

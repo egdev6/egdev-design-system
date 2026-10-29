@@ -611,9 +611,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "—",
-    "compone": "Text",
+    "compone": "Heading, Text, Divider",
     "accion": "mantener",
-    "notas": "Cabecera de sección en registro Show; valorar unificar con PageHeader por `register`."
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/100): passive editorial header with stack/split/inline arrangements, section-scale Heading, optional eyebrow/accent/lede and a decorative inline Divider. Split starts at the approved 860px breakpoint; missing lede/eyebrow collapses split/inline to stack. Distinct from PageHeader: no actions or register axis. Keeps eg-section-head and eg-section-head__lede; no stylesheet."
   },
   {
     "actual": "—",
