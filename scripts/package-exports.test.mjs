@@ -2032,6 +2032,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Badge',
       'Button',
       'ButtonGroup',
+      'Carousel',
       'Checkbox',
       'Chip',
       'ChipGroup',
@@ -2210,6 +2211,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ButtonProps',
     'ButtonSize',
     'ButtonVariant',
+    'Carousel',
+    'CarouselItem',
+    'CarouselMessages',
+    'CarouselProps',
     'Checkbox',
     'CheckboxCheckedState',
     'CheckboxProps',
@@ -3357,4 +3362,50 @@ test('UI ships the Slider well, range and raised thumb utilities without a Slide
   assert.equal(parts, 4, 'Root, track, range and thumb must all be scanned');
   // D11 no stylesheet: the marker carries no rule of its own.
   assert.doesNotMatch(css, /\.eg-slider[^{]*\{/, 'Slider has no stylesheet: its marker carries no rule');
+});
+
+test('Carousel ships static layout, snap, drag, focus and token geometry without a stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  for (const selector of [
+    '.basis-full',
+    '.snap-x',
+    '.snap-mandatory',
+    '.snap-center',
+    '.scroll-auto',
+    String.raw`.group-data-\[state\=dragging\]\:snap-none`,
+    String.raw`.group-data-\[state\=dragging\]\:cursor-grabbing`,
+    String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`,
+    String.raw`.max-w-\[calc\(var\(--space-20\)\*4\)\]`
+  ]) {
+    assert.ok(css.includes(selector), `Missing Carousel utility ${selector}`);
+  }
+  assert.match(cssBlock(css, /\.gap-7\s*\{/), /gap:\s*var\(--space-7[,)]/);
+  assert.doesNotMatch(css, /\.eg-carousel[^{]*\{/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/carousel/carousel.css')), false);
+});
+
+test('Carousel public exports preserve deterministic named groups and composed atoms in SSR', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(
+    createElement(exported.Carousel, {
+      label: 'Highlights',
+      items: [
+        { value: 'alpha', label: 'Alpha', children: 'First information' },
+        { value: 'beta', label: 'Beta', children: 'Second information' }
+      ]
+    })
+  );
+  assert.match(html, /eg-carousel/);
+  assert.match(html, /aria-roledescription="carousel"/);
+  assert.match(html, /aria-label="1 of 2: Alpha"/);
+  assert.match(html, /aria-label="2 of 2: Beta"/);
+  assert.match(html, /eg-icon-btn/);
+  assert.match(html, /eg-progress/);
+  assert.match(html.replace(/<!-- -->/g, '').replace(/<[^>]*>/g, ''), /01 \/ 02/);
+  assert.equal((html.match(/tabindex="0"/g) ?? []).length, 1);
+  for (const name of ['useCarousel', 'carouselVariants', 'defaultCarouselMessages']) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} remains internal`);
+  }
 });

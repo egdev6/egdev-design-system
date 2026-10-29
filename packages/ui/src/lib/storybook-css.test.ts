@@ -316,6 +316,17 @@ describe('Storybook preview CSS', () => {
     expect(css).not.toMatch(/@(reference|source|tailwind)\b/);
   });
 
+  it('compiles the first molecule source with snap, dragging, token gap and slide-focus utilities', () => {
+    expect(rule('.basis-full')).toMatch(/flex-basis:\s*100%/);
+    expect(rule('.snap-center')).toMatch(/scroll-snap-align:\s*center/);
+    expect(rule('.scroll-auto')).toMatch(/scroll-behavior:\s*auto/);
+    expect(rule('.gap-7')).toMatch(/gap:\s*var\(--space-7[,)]/);
+    expect(css).toContain(String.raw`.group-data-\[state\=dragging\]\:snap-none`);
+    expect(css).toContain(String.raw`.group-data-\[state\=dragging\]\:cursor-grabbing`);
+    expect(css).toContain(String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`);
+    expect(css).not.toMatch(/\.eg-carousel[^{]*\{/);
+  });
+
   it('preserves the external font import in a valid position and the existing body token bindings', () => {
     const fonts = /@import\s+(?:url\()?['"]https:\/\/fonts\.googleapis\.com\/css2\?[^'"]+['"]\)?\s*;/.exec(css);
     expect(fonts, 'Google Fonts must remain imported, not silently dropped by compilation').not.toBeNull();

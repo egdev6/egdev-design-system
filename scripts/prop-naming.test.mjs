@@ -74,6 +74,21 @@ const postReceiptUsages = [
     'primary-value',
     'initial-uncontrolled-value',
     'interactive-value-change',
+    'collection-items',
+    'localized-messages'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/carousel/types.ts#CarouselProps'
+  })),
+  ...['accessible-name', 'primary-value'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/carousel/types.ts#CarouselItem'
+  })),
+  ...[
+    'accessible-name',
+    'primary-value',
+    'initial-uncontrolled-value',
+    'interactive-value-change',
     'choice-options',
     'selection-cardinality'
   ].map((conventionId) => ({

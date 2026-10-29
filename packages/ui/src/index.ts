@@ -30,6 +30,7 @@ export * from './atoms/tooltip';
 export { cn } from './lib/cn';
 // Molecules
 export * from './molecules/button-group';
+export * from './molecules/carousel';
 export type { ChipGroupOption, ChipGroupProps, ChipGroupType } from './molecules/chip-group';
 export { ChipGroup } from './molecules/chip-group';
 export * from './molecules/list-item';
