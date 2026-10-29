@@ -12,6 +12,21 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...[
+    'accessible-name',
+    'primary-value',
+    'initial-uncontrolled-value',
+    'interactive-value-change',
+    'collection-items',
+    'localized-messages'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/carousel/types.ts#CarouselProps'
+  })),
+  ...['accessible-name', 'primary-value'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/carousel/types.ts#CarouselItem'
+  })),
   ...['accessible-name', 'leading-icon', 'visual-treatment', 'preset-dimensions', 'slot-composition'].map(
     (conventionId) => ({
       conventionId,

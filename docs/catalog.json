@@ -863,10 +863,10 @@
     "nombre": "Carousel",
     "nivel": "molecule",
     "destino": "ui",
-    "radix": "— (roving focus propio)",
-    "compone": "IconButton, ProgressBar",
+    "radix": "— (native scroll and bounded roving focus)",
+    "compone": "IconButton, Icon, ProgressBar, VisuallyHidden",
     "accion": "extraer",
-    "notas": "Sale de TipsSlider: contador, anterior/siguiente, arrastre y teclado."
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/80): manually navigated read-only slides with stable string identities, bounded direction-aware keyboard navigation, native scrolling and background/media mouse dragging. Controlled requests wait for acceptance; settled user changes coordinate focus and polite status. Structural layout only; consumer Surface content owns Material. No autoplay, stylesheet, new dependencies or legacy TipsSlider migration."
   },
   {
     "actual": "Dialog",

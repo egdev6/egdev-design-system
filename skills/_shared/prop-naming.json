@@ -73,6 +73,26 @@
           "symbol": "StatProps",
           "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
         }
+      },
+      {
+        "component": "Carousel",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselProps",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+        }
+      },
+      {
+        "component": "CarouselItem",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselItem",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+        }
       }
     ]
   },
@@ -120,6 +140,16 @@
           "symbol": "SelectProps",
           "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
         }
+      },
+      {
+        "component": "Carousel",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselProps",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+        }
       }
     ]
   },
@@ -166,6 +196,16 @@
           "path": "packages/ui/src/atoms/select/types.ts",
           "symbol": "SelectProps",
           "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
+        }
+      },
+      {
+        "component": "Carousel",
+        "type": "(value: string) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselProps",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
         }
       }
     ]
@@ -741,6 +781,26 @@
           "path": "packages/ui/src/atoms/countdown/types.ts",
           "symbol": "CountdownProps",
           "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
+        }
+      },
+      {
+        "component": "Carousel",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselProps",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+        }
+      },
+      {
+        "component": "CarouselItem",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselItem",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
         }
       }
     ]
@@ -1964,7 +2024,18 @@
       "scope": "convention:collection-items",
       "contentHash": "sha256:304ac895a943454d04d057e18518794a315958b70252df2e696e00dc65b36f40"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Carousel",
+        "type": "CarouselItem[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselProps",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+        }
+      }
+    ]
   },
   {
     "id": "localized-messages",
@@ -1980,7 +2051,18 @@
       "scope": "convention:localized-messages",
       "contentHash": "sha256:555c4e48e004651531f1588e18a8f71781afd8054c2ae113959b2831d86736cd"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Carousel",
+        "type": "Partial<CarouselMessages>",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselProps",
+          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+        }
+      }
+    ]
   },
   {
     "id": "selection-cardinality",
