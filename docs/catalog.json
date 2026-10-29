@@ -479,9 +479,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "DropdownMenu",
-    "compone": "Icon, Kbd",
+    "compone": "Icon, Kbd, Surface recipe",
     "accion": "separar",
-    "notas": "Menú desplegable con items, separadores, `--danger` y submenús."
+    "notas": "Implemented data-driven action menu under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/89) plus A1/A2: action/link/separator/label entries, one submenu level, optional non-interactive header and controlled/uncontrolled visibility. Radix owns trigger keys, focus, ARIA, portals and collision handling; Escape closes the entire menu. Shared Surface overlay recipe, decorative Icon and display-only Kbd. No stylesheet, native forwarding, ref or public subcomponents; legacy menu styles unchanged."
   },
   {
     "actual": "MenuList --nav",

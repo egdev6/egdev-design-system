@@ -12,6 +12,21 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...[
+    'floating-side',
+    'collection-items',
+    'floating-align',
+    'open-state',
+    'initial-uncontrolled-open',
+    'open-change',
+    'panel-header',
+    'navigation-intent'
+  ].map((conventionId) => ({ conventionId, source: 'packages/ui/src/molecules/menu/types.ts#MenuProps' })),
+  ...['menu-entry-kind', 'leading-icon', 'surface-material-tone', 'keyboard-shortcut-hint'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/menu/types.ts#MenuEntry'
+  })),
+  { conventionId: 'collection-items', source: 'packages/ui/src/molecules/menu/types.ts#MenuSubmenuItem' },
   ...['accessible-name', 'leading-icon', 'visual-treatment', 'preset-dimensions', 'slot-composition'].map(
     (conventionId) => ({
       conventionId,
@@ -948,8 +963,9 @@ test('molecule naming receipt binds delegated decisions without speculative impl
 test('organism naming receipt binds delegated decisions and the menu-entry-kind widening', () => {
   const reference = 'docs/decisions/prop-naming-organism-specs-approval.json';
   const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
-  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
-  validate(actual);
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(registry);
+  const actual = historicalRegistry(registry);
   assert.equal(receipt.kind, 'human-approval-record');
   assert.equal(receipt.nativeReviewApproval, false);
   assert.equal(receipt.authority, 'assistant-observed-human-delegation');
