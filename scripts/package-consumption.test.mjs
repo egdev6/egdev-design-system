@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, Notice, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, Notice, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -70,6 +70,10 @@ import type {
   LabelProps,
   LabelVariant,
   LinkProps,
+  ListItemProps,
+  ListItemPartProps,
+  ListItemStatus,
+  ListItemVariant,
   SliderProps,
   LogoProps,
   LogoSize,
@@ -125,6 +129,50 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+const itemStatus: Exclude<ListItemStatus, 'empty'> = 'off';
+const itemVariant: ListItemVariant = 'row';
+const itemPartProps: ListItemPartProps = { title: 'Item context' };
+export const itemChildRef = createRef<HTMLLIElement>();
+export const itemActivations: string[] = [];
+export function ListItemSamples({ status = itemStatus }: { status?: Exclude<ListItemStatus, 'empty'> }) {
+  return createElement('ul', null, createElement(ListItem, {
+    asChild: true, status, variant: itemVariant,
+    children: createElement('li', { ref: itemChildRef, id: 'consumer-item' },
+      createElement(ListItemBody, null,
+        createElement(ListItemContent, null, 'Release notes'),
+        createElement(ListItemMedia, null, createElement('img', { src: 'artwork.png', alt: 'Release artwork' }))),
+      createElement(ListItemMeta, itemPartProps, status),
+      createElement(ListItemActions, null, createElement(Button, {
+        onClick: () => itemActivations.push('show'), children: 'Show'
+      }))) }));
+}
+export const itemCard: ListItemProps = { children: createElement(ListItemFooter, null, 'Context') };
+export const emptyItem: ListItemProps = {
+  status: 'empty', asChild: true,
+  children: createElement('button', { type: 'button' }, 'Create item')
+};
+// @ts-expect-error Root children are required.
+const missingItemChildren: ListItemProps = {};
+// @ts-expect-error Empty requires Slot composition with a native action.
+const emptyContainer: ListItemProps = { status: 'empty', children: 'Create item' };
+// @ts-expect-error Empty supports card only.
+const compactEmpty: ListItemProps = { status: 'empty', variant: 'compact', asChild: true, children: createElement('button') };
+// @ts-expect-error Slot requires one element, not plain text.
+const textSlot: ListItemProps = { asChild: true, children: 'Item' };
+// @ts-expect-error Root exposes no ref; the Slot child may retain its own.
+const itemRef: ListItemProps = { children: 'Item', ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Parts expose no ref.
+const itemPartRef: ListItemPartProps = { ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Populated root is not an interactive role.
+const itemRole: ListItemProps = { children: 'Item', role: 'button' };
+// @ts-expect-error Populated root exposes no tab stop.
+const itemTab: ListItemProps = { children: 'Item', tabIndex: 0 };
+// @ts-expect-error Off is presentation, never disabled semantics.
+const itemDisabled: ListItemProps = { children: 'Item', 'aria-disabled': true };
+// @ts-expect-error Item has no domain create callback.
+const itemCreate: ListItemProps = { children: 'Item', onCreate: () => undefined };
+// @ts-expect-error The presentation status set is closed.
+const unknownItemStatus: ListItemProps = { children: 'Item', status: 'published' };
 // Keep grouped samples outside App so the existing button-count/focus harness stays unchanged.
 const groupVariant: ButtonGroupVariant = 'attached';
 export const groupProps: ButtonGroupProps = {
@@ -2525,6 +2573,13 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Kbd',
   'Label',
   'Link',
+  'ListItem',
+  'ListItemActions',
+  'ListItemBody',
+  'ListItemContent',
+  'ListItemFooter',
+  'ListItemMedia',
+  'ListItemMeta',
   'Logo',
   'Notice',
   'Portal',
@@ -2599,6 +2654,8 @@ ${assertCountdownCSS.toString()}
 assertCountdownCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
 assertStatCSS(shippedStyles);
+${assertListItemCSS.toString()}
+assertListItemCSS(shippedStyles);
 assertSearchTriggerCSS(shippedStyles);
 assertTabsCSS(shippedStyles);
 assertPullQuoteCSS(shippedStyles);
@@ -2676,13 +2733,43 @@ function assertLinkCSS(css) {
   assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);
 }
 
+function assertListItemCSS(css) {
+  for (const selector of [
+    String.raw`.data-\[state\=new\]\:bg-\[image\:var\(--gradient-post-new\)\]`,
+    String.raw`.data-\[state\=failed\]\:border-status-danger\/40`,
+    String.raw`.data-\[state\=done\]\:bg-none`,
+    String.raw`.data-\[state\=off\]\:shadow-none`,
+    String.raw`.data-\[state\=empty\]\:focus-visible\:shadow-focus`,
+    String.raw`.data-\[state\=empty\]\:disabled\:opacity-45`,
+    String.raw`.group-data-\[state\=dragging\]\/list-item\:opacity-50`,
+    String.raw`.data-\[variant\=row\]\:flex-wrap`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing packed ListItem utility ' + selector);
+  }
+  assert.match(css, /calc\(var\(--space-20\)\s*\+\s*var\(--space-2\)\)/);
+}
+
 const ssr = `
 import assert from 'node:assert/strict';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, ButtonGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
+import { App, ButtonGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, ListItemSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
+const itemDocument = new JSDOM(renderToString(createElement(ListItemSamples)));
+try {
+  const item = itemDocument.window.document.getElementById('consumer-item');
+  assert.equal(item.tagName, 'LI');
+  assert.equal(item.getAttribute('data-state'), 'off');
+  assert.equal(item.getAttribute('data-variant'), 'row');
+  assert.equal(item.querySelector('button').textContent, 'Show');
+  assert.equal(item.querySelector('img').alt, 'Release artwork');
+  for (const name of ['role', 'tabindex', 'aria-disabled', 'aria-selected', 'draggable']) {
+    assert.equal(item.hasAttribute(name), false);
+  }
+} finally {
+  itemDocument.window.close();
+}
 const noticeDocument = new JSDOM(renderToString(createElement(NoticeSamples, { tone: 'danger', size: 'sm' })));
 try {
   const notice = noticeDocument.window.document.getElementById('queue-notice');
@@ -3664,8 +3751,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, ButtonGroupSamples, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TabsSamples, tabsChanges, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
-const { NoticeSamples, noticeActivations } = await import('./consumer.ts');
+const { App, ButtonGroupSamples, CountdownSamples, DropzoneSamples, ListItemSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, checkboxRef, chipChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4310,6 +4396,21 @@ try {
   await act(async () => root.render(null));
   assert.equal(document.getElementById('totals'), null);
   stage('stat:passive:complete');
+  stage('list-item:start');
+  await act(async () => root.render(createElement(ListItemSamples)));
+  const item = document.getElementById('consumer-item');
+  assert.ok(itemChildRef.current === item, 'Slot preserves the child-owned ref');
+  const itemAction = item.querySelector('button');
+  itemAction.focus();
+  await act(async () => itemAction.click());
+  assert.deepEqual(itemActivations, ['show']);
+  await act(async () => root.render(createElement(ListItemSamples, { status: 'dragging' })));
+  assert.ok(document.getElementById('consumer-item') === item);
+  assert.equal(item.getAttribute('data-state'), 'dragging');
+  assert.ok(document.activeElement === itemAction, 'Presentation update preserves action focus');
+  await act(async () => root.render(null));
+  assert.equal(itemChildRef.current, null);
+  stage('list-item:complete');
   stage('notice:start');
   await act(async () => root.render(createElement(NoticeSamples, { role: 'status', actions: true })));
   const notice = document.getElementById('queue-notice');
@@ -4689,6 +4790,8 @@ assertButtonGroupCSS(emitted);
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(emitted);
 assertStatCSS(emitted);
+${assertListItemCSS.toString()}
+assertListItemCSS(emitted);
 assertSearchTriggerCSS(emitted);
 assertTabsCSS(emitted);
 ${assertNoticeCSS.toString()}
@@ -4761,6 +4864,7 @@ assertDropzoneCSS(twCss);
 assertButtonGroupCSS(twCss);
 assertCountdownCSS(twCss);
 assertStatCSS(twCss);
+assertListItemCSS(twCss);
 assertSearchTriggerCSS(twCss);
 assertTabsCSS(twCss);
 assertPullQuoteCSS(twCss);

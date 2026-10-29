@@ -393,6 +393,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "ListItem",
+        "type": "ListItemVariant ('card' | 'compact' | 'row'); empty accepts card only",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/list-item/types.ts",
+          "symbol": "ListItemProps",
+          "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
+        }
+      },
+      {
         "component": "ButtonGroup",
         "type": "ButtonGroupVariant ('spaced' | 'attached')",
         "status": "existing",
@@ -1292,6 +1302,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "ListItem",
+        "type": "boolean; required true for empty presentation",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/list-item/types.ts",
+          "symbol": "ListItemProps",
+          "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
+        }
+      },
       {
         "component": "Button",
         "type": "boolean (asChild)",
@@ -2492,7 +2512,18 @@
       "scope": "convention:item-presentation-status",
       "contentHash": "sha256:8402ef1355689cbd78c154bdc729ea1443566f5401d9a8bb1e18868a77a8d89a"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "ListItem",
+        "type": "ListItemStatus ('default' | 'new' | 'failed' | 'done' | 'empty' | 'dragging' | 'off')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/list-item/types.ts",
+          "symbol": "ListItemProps",
+          "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
+        }
+      }
+    ]
   },
   {
     "id": "menu-entry-kind",

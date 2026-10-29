@@ -556,9 +556,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "Slot",
-    "compone": "Surface, Text, Badge, Button",
+    "compone": "Surface recipe; consumer Badge, Button, IconButton, Icon, Link",
     "accion": "renombrar",
-    "notas": "Fila/tarjeta genérica con estados (`new`, `failed`, `done`, `empty`, `dragging`, `off`) y `--row`."
+    "notas": "Implemented compound React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/88): generic card/compact/row with Body, Content, Media, Footer, Meta and Actions. Host-selected status snapshots include new, failed, done, empty, dragging and off; visible status words and domain transitions belong to the consumer. Surface recipes supply the elevated frame and passive thumbnail well. Empty is one slotted native action; no drag engine, ref API or stylesheet. Legacy PostCard CSS remains unchanged."
   },
   {
     "actual": "PostCard (Cadencia)",
