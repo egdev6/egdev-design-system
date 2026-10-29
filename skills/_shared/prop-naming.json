@@ -71,7 +71,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       },
       {
@@ -92,6 +92,16 @@
           "path": "packages/ui/src/atoms/stat/types.ts",
           "symbol": "StatProps",
           "revision": "sha256:15b16279287380b30f698fd06fd4c04c5bbaacf748de76ca2168ae37c4d18f29"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
       }
     ]
@@ -138,7 +148,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       },
       {
@@ -149,6 +159,16 @@
           "path": "packages/ui/src/atoms/select/types.ts",
           "symbol": "SelectProps",
           "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
       }
     ]
@@ -195,7 +215,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       },
       {
@@ -206,6 +226,16 @@
           "path": "packages/ui/src/atoms/select/types.ts",
           "symbol": "SelectProps",
           "revision": "sha256:f2852f7cfb2b26fb04da5c649beab267e890d2ce48abfd3be52ed64ccfafc640"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "(value: string) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
       }
     ]
@@ -225,6 +255,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Notice",
+        "type": "'md' | 'sm'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      },
       {
         "component": "Avatar",
         "type": "AvatarSize ('sm' | 'md' | 'lg' | 'xl')",
@@ -364,6 +404,16 @@
           "symbol": "CountdownProps",
           "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
         }
+      },
+      {
+        "component": "Tabs",
+        "type": "TabsSize ('md' | 'sm'); underline only",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
       }
     ]
   },
@@ -382,6 +432,26 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "ListItem",
+        "type": "ListItemVariant ('card' | 'compact' | 'row'); empty accepts card only",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/list-item/types.ts",
+          "symbol": "ListItemProps",
+          "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
+        }
+      },
+      {
+        "component": "ButtonGroup",
+        "type": "ButtonGroupVariant ('spaced' | 'attached')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/button-group/types.ts",
+          "symbol": "ButtonGroupProps",
+          "revision": "sha256:2ecb19299d2410ef130ed830d62b410b17c8adc04bb73625de6bd0940ed94e51"
+        }
+      },
       {
         "component": "Button",
         "type": "ButtonVariant ('primary' | 'secondary' | 'ghost' | 'dark')",
@@ -511,6 +581,16 @@
           "symbol": "PullQuoteProps",
           "revision": "sha256:a80b89c12589a3afe7dfc16fa86797bd860f12f839946ec189da60277e8f05d4"
         }
+      },
+      {
+        "component": "Tabs",
+        "type": "TabsVariant ('underline' | 'segmented')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
       }
     ]
   },
@@ -529,6 +609,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "Notice",
+        "type": "NoticeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      },
       {
         "component": "Badge",
         "type": "BadgeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger' | 'brand')",
@@ -587,6 +677,16 @@
           "path": "packages/ui/src/atoms/pull-quote/types.ts",
           "symbol": "PullQuoteProps",
           "revision": "sha256:a80b89c12589a3afe7dfc16fa86797bd860f12f839946ec189da60277e8f05d4"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "TabsTone ('neutral' | 'danger'); TabsItem counter only",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsItem",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
       }
     ]
@@ -651,6 +751,16 @@
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupOption",
           "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+        }
+      },
+      {
+        "component": "ButtonGroup",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/button-group/types.ts",
+          "symbol": "ButtonGroupProps",
+          "revision": "sha256:2ecb19299d2410ef130ed830d62b410b17c8adc04bb73625de6bd0940ed94e51"
         }
       },
       {
@@ -740,7 +850,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       },
       {
@@ -801,6 +911,16 @@
           "path": "packages/ui/src/atoms/countdown/types.ts",
           "symbol": "CountdownProps",
           "revision": "sha256:35d8c209c7aa249f4a78bb3c0c8c1154dd34affed22529cff4af8e134b97908e"
+        }
+      },
+      {
+        "component": "Tabs",
+        "type": "string (accessible tablist name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
       }
     ]
@@ -911,7 +1031,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       }
     ]
@@ -1102,6 +1222,16 @@
         }
       },
       {
+        "component": "Notice",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      },
+      {
         "component": "Button",
         "type": "ReactNode (decorative start/end slot, default end; Button-only semantic exception)",
         "status": "existing",
@@ -1242,6 +1372,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "ListItem",
+        "type": "boolean; required true for empty presentation",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/list-item/types.ts",
+          "symbol": "ListItemProps",
+          "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
+        }
+      },
       {
         "component": "Button",
         "type": "boolean (asChild)",
@@ -1853,7 +1993,7 @@
         "source": {
           "path": "packages/ui/src/atoms/slider/types.ts",
           "symbol": "SliderProps",
-          "revision": "sha256:f4d9c995eb95223290846a986c4d1a09022e1352c3b930addf05e4f7035a01de"
+          "revision": "sha256:0dca3d8616e7541b2153dd81061227255bf9ff91f1eee1fd29b4e28fe18a016d"
         }
       }
     ]
@@ -2044,7 +2184,18 @@
       "scope": "convention:collection-items",
       "contentHash": "sha256:304ac895a943454d04d057e18518794a315958b70252df2e696e00dc65b36f40"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Tabs",
+        "type": "TabsItem[] (value, label, optional count/tone/disabled, required content)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
+      }
+    ]
   },
   {
     "id": "localized-messages",
@@ -2452,7 +2603,18 @@
       "scope": "convention:item-presentation-status",
       "contentHash": "sha256:8402ef1355689cbd78c154bdc729ea1443566f5401d9a8bb1e18868a77a8d89a"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "ListItem",
+        "type": "ListItemStatus ('default' | 'new' | 'failed' | 'done' | 'empty' | 'dragging' | 'off')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/list-item/types.ts",
+          "symbol": "ListItemProps",
+          "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
+        }
+      }
+    ]
   },
   {
     "id": "menu-entry-kind",
@@ -2575,7 +2737,18 @@
       "scope": "convention:trailing-actions",
       "contentHash": "sha256:b00c5b3d1006ee97caa5d258e4ce04a046acb3d8d752d734e37bf96c92356550"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Notice",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      }
+    ]
   },
   {
     "id": "panel-footer",
@@ -2607,7 +2780,18 @@
       "scope": "convention:message-summary",
       "contentHash": "sha256:975bcd3e71864c8c5033aa82310d14454013767fe690f531b87ba297497743cd"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Notice",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/notice/types.ts",
+          "symbol": "NoticeProps",
+          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+        }
+      }
+    ]
   },
   {
     "id": "heading-eyebrow",

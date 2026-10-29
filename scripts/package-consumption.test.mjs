@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, Notice, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -38,6 +38,8 @@ import type {
   BadgeProps,
   BadgeTone,
   BadgeVariant,
+  ButtonGroupProps,
+  ButtonGroupVariant,
   ButtonProps,
   ButtonSize,
   ButtonVariant,
@@ -71,6 +73,10 @@ import type {
   LabelProps,
   LabelVariant,
   LinkProps,
+  ListItemProps,
+  ListItemPartProps,
+  ListItemStatus,
+  ListItemVariant,
   SliderProps,
   LogoProps,
   LogoSize,
@@ -82,6 +88,8 @@ import type {
   RadioGroupOrientation,
   RadioGroupProps,
   SearchTriggerProps,
+  NoticeProps,
+  NoticeTone,
   SelectProps,
   SelectOption,
   SelectSize,
@@ -111,6 +119,11 @@ import type {
   SurfaceRadius,
   SurfaceTone,
   SwitchProps,
+  TabsProps,
+  TabsItem,
+  TabsTone,
+  TabsVariant,
+  TabsSize,
   TextareaProps,
   TextareaVariant,
   TooltipProps,
@@ -119,6 +132,77 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+const itemStatus: Exclude<ListItemStatus, 'empty'> = 'off';
+const itemVariant: ListItemVariant = 'row';
+const itemPartProps: ListItemPartProps = { title: 'Item context' };
+export const itemChildRef = createRef<HTMLLIElement>();
+export const itemActivations: string[] = [];
+export function ListItemSamples({ status = itemStatus }: { status?: Exclude<ListItemStatus, 'empty'> }) {
+  return createElement('ul', null, createElement(ListItem, {
+    asChild: true, status, variant: itemVariant,
+    children: createElement('li', { ref: itemChildRef, id: 'consumer-item' },
+      createElement(ListItemBody, null,
+        createElement(ListItemContent, null, 'Release notes'),
+        createElement(ListItemMedia, null, createElement('img', { src: 'artwork.png', alt: 'Release artwork' }))),
+      createElement(ListItemMeta, itemPartProps, status),
+      createElement(ListItemActions, null, createElement(Button, {
+        onClick: () => itemActivations.push('show'), children: 'Show'
+      }))) }));
+}
+export const itemCard: ListItemProps = { children: createElement(ListItemFooter, null, 'Context') };
+export const emptyItem: ListItemProps = {
+  status: 'empty', asChild: true,
+  children: createElement('button', { type: 'button' }, 'Create item')
+};
+// @ts-expect-error Root children are required.
+const missingItemChildren: ListItemProps = {};
+// @ts-expect-error Empty requires Slot composition with a native action.
+const emptyContainer: ListItemProps = { status: 'empty', children: 'Create item' };
+// @ts-expect-error Empty supports card only.
+const compactEmpty: ListItemProps = { status: 'empty', variant: 'compact', asChild: true, children: createElement('button') };
+// @ts-expect-error Slot requires one element, not plain text.
+const textSlot: ListItemProps = { asChild: true, children: 'Item' };
+// @ts-expect-error Root exposes no ref; the Slot child may retain its own.
+const itemRef: ListItemProps = { children: 'Item', ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Parts expose no ref.
+const itemPartRef: ListItemPartProps = { ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Populated root is not an interactive role.
+const itemRole: ListItemProps = { children: 'Item', role: 'button' };
+// @ts-expect-error Populated root exposes no tab stop.
+const itemTab: ListItemProps = { children: 'Item', tabIndex: 0 };
+// @ts-expect-error Off is presentation, never disabled semantics.
+const itemDisabled: ListItemProps = { children: 'Item', 'aria-disabled': true };
+// @ts-expect-error Item has no domain create callback.
+const itemCreate: ListItemProps = { children: 'Item', onCreate: () => undefined };
+// @ts-expect-error The presentation status set is closed.
+const unknownItemStatus: ListItemProps = { children: 'Item', status: 'published' };
+// Keep grouped samples outside App so the existing button-count/focus harness stays unchanged.
+const groupVariant: ButtonGroupVariant = 'attached';
+export const groupProps: ButtonGroupProps = {
+  variant: groupVariant, label: 'Save options', className: 'ms-auto',
+  children: [createElement(Button, { key: 'save', size: 'sm', children: 'Save' }),
+    createElement(IconButton, { key: 'options', label: 'More save options', size: 'md', variant: 'primary',
+      icon: createElement(Icon, { name: 'chevron-down' }) })]
+};
+export function ButtonGroupSamples() {
+  return createElement(ButtonGroup, { ...groupProps, id: 'grouped-actions', 'aria-describedby': 'group-help' });
+}
+// @ts-expect-error A group requires its action children.
+const emptyGroup: ButtonGroupProps = {};
+// @ts-expect-error Group role is fixed, not an arrow-key toolbar.
+const toolbarGroup: ButtonGroupProps = { ...groupProps, role: 'toolbar' };
+// @ts-expect-error label owns aria-label; aria-labelledby remains available.
+const ariaNamedGroup: ButtonGroupProps = { ...groupProps, 'aria-label': 'Actions' };
+// @ts-expect-error No group ref is exported.
+const referencedGroup: ButtonGroupProps = { ...groupProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error The approved group axis is horizontal only.
+const verticalGroup: ButtonGroupProps = { ...groupProps, orientation: 'vertical' };
+// @ts-expect-error Children own sizing; no propagation API.
+const sizedGroup: ButtonGroupProps = { ...groupProps, size: 'sm' };
+// @ts-expect-error No root Slot composition API.
+const slottedGroup: ButtonGroupProps = { ...groupProps, asChild: true };
+// @ts-expect-error Only spaced and attached treatments are supported.
+const segmentedGroup: ButtonGroupProps = { ...groupProps, variant: 'segmented' };
 const buttonVariant: ButtonVariant = 'secondary';
 const buttonSize: ButtonSize = 'sm';
 export const buttonRef = createRef<HTMLButtonElement>();
@@ -356,6 +440,38 @@ const largeCountdown: CountdownProps = { ...countdownProps, size: 'lg' };
 const darkCountdown: CountdownProps = { ...countdownProps, tone: 'onDark' };
 // @ts-expect-error There is no tick callback.
 const tickingCountdown: CountdownProps = { ...countdownProps, onTick: () => undefined };
+// Notice stays outside App to preserve the existing generic focus/count harness.
+export const noticeTone: NoticeTone = 'warning';
+export const noticeRecipe: string = noticeVariants({ tone: noticeTone, size: 'sm' });
+export const noticeActivations: string[] = [];
+export function NoticeSamples({ summary = 'Queue ready.', tone = 'neutral', size = 'md', role, actions = false }: {
+  summary?: string; tone?: NoticeTone; size?: 'md' | 'sm'; role?: 'status' | 'alert'; actions?: boolean;
+}) {
+  const props: NoticeProps = {
+    summary, tone, size, role, id: 'queue-notice', className: 'mt-4', children: 'Review queue details.',
+    actions: actions ? createElement(Button, {
+      size: 'sm', variant: 'secondary', onClick: () => noticeActivations.push('resume'), children: 'Resume'
+    }) : undefined
+  };
+  return createElement(Notice, props);
+}
+// @ts-expect-error Notice requires a lead sentence.
+const missingNoticeSummary: NoticeProps = {};
+// @ts-expect-error The lead sentence is a string, not arbitrary React content.
+const richNoticeSummary: NoticeProps = { summary: createElement('strong', null, 'Ready') };
+// @ts-expect-error Brand is not a status family.
+const brandNotice: NoticeProps = { summary: 'Ready.', tone: 'brand' };
+// @ts-expect-error Only md and sm presets exist.
+const largeNotice: NoticeProps = { summary: 'Ready.', size: 'lg' };
+// @ts-expect-error Native role is restricted to status or alert.
+const dialogNotice: NoticeProps = { summary: 'Ready.', role: 'dialog' };
+// @ts-expect-error Notice has no public ref API.
+const refNotice: NoticeProps = { summary: 'Ready.', ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Notice owns the root and does not expose asChild.
+const slottedNotice: NoticeProps = { summary: 'Ready.', asChild: true };
+// @ts-expect-error Persistent Notice has no dismiss callback.
+const dismissibleNotice: NoticeProps = { summary: 'Ready.', onDismiss: () => undefined };
+
 // SearchTrigger stays outside App so the intrinsic button count and focus harness remain unchanged.
 export const searchTriggerRef = createRef<HTMLButtonElement>();
 export const searchTriggerRefTarget: ComponentRef<typeof SearchTrigger> | null = searchTriggerRef.current;
@@ -392,6 +508,50 @@ const openSearch: SearchTriggerProps = { open: true };
 const stringCompact: SearchTriggerProps = { compact: 'yes' };
 // @ts-expect-error shortcut is display text only.
 const numericShortcut: SearchTriggerProps = { shortcut: 75 };
+
+// Tabs is a separate scene: earlier App control/focus counts must remain unchanged.
+const tabsTone: TabsTone = 'danger';
+const tabsSize: TabsSize = 'sm';
+const tabsVariant: TabsVariant = 'segmented';
+export const tabsItems: TabsItem[] = [
+  { value: 'queue', label: 'Queue', count: 0, content: createElement('p', null, 'Queued posts') },
+  { value: 'drafts', label: 'Drafts', count: 312, tone: tabsTone, content: createElement('p', null, 'Draft posts') },
+  { value: 'blocked', label: 'Unavailable', disabled: true, content: 'Unavailable posts' }
+];
+export const tabsProps: TabsProps = { items: tabsItems, label: 'Post views', id: 'consumer-tabs', className: 'mt-2 mt-4' };
+export const tabsChanges: string[] = [];
+export const tabsRecipe: string = tabsVariants();
+export function TabsSamples({ value, segmented = false }: { value?: string; segmented?: boolean }) {
+  return createElement(Tabs, { ...tabsProps, value, ...(segmented ? { variant: tabsVariant, size: tabsSize } : {}), onValueChange: (next) => tabsChanges.push(next) });
+}
+// @ts-expect-error A named tablist is required.
+const unlabelledTabs: TabsProps = { items: tabsItems };
+// @ts-expect-error Views must be supplied through items.
+const missingTabsItems: TabsProps = { label: 'Views' };
+// @ts-expect-error Every item needs its panel content, even when it is null.
+const panellessTab: TabsItem = { value: 'queue', label: 'Queue' };
+// @ts-expect-error Item identities are strings, not indices.
+const numericTab: TabsItem = { value: 1, label: 'Queue', content: null };
+// @ts-expect-error No public ref API on either React major.
+const referencedTabs: TabsProps = { ...tabsProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error The data-driven component owns its children.
+const childTabs: TabsProps = { ...tabsProps, children: 'Panel' };
+// @ts-expect-error Horizontal-only; no public orientation axis.
+const verticalTabs: TabsProps = { ...tabsProps, orientation: 'vertical' };
+// @ts-expect-error Automatic activation is fixed.
+const manualTabs: TabsProps = { ...tabsProps, activationMode: 'manual' };
+// @ts-expect-error No asChild API.
+const slottedTabs: TabsProps = { ...tabsProps, asChild: true };
+// @ts-expect-error onChange is replaced by onValueChange.
+const legacyTabsChange: TabsProps = { ...tabsProps, onChange: () => undefined };
+// @ts-expect-error No direction prop in v0.1.
+const directedTabs: TabsProps = { ...tabsProps, dir: 'rtl' };
+// @ts-expect-error Counts are raw numbers, not formatted strings.
+const formattedTab: TabsItem = { value: 'queue', label: 'Queue', content: null, count: '99+' };
+// @ts-expect-error Only underline/segmented treatments exist.
+const pillTabs: TabsProps = { ...tabsProps, variant: 'pill' };
+// @ts-expect-error Only md/sm underline sizes exist.
+const largeTabs: TabsProps = { ...tabsProps, size: 'lg' };
 
 // Stat stays outside App: it is passive, adds no buttons and leaves the focus harness unchanged.
 export const statRecipe: string = statVariants({ size: 'sm' });
@@ -2069,6 +2229,45 @@ function assertCountdownCSS(css) {
   assert.match(css, /min-width:\s*var\(--spacing-countdown-unit[,)]/);
 }
 
+// Notice's molecule source must be scanned for native and Tailwind consumers alike.
+function assertNoticeCSS(css) {
+  for (const color of ['fg-secondary', 'status-info', 'status-success', 'status-warning', 'status-danger']) {
+    for (const [prefix, opacity] of [
+      ['border', 30],
+      ['from', 11],
+      ['to', 4]
+    ]) {
+      assert.ok(css.includes(`.${prefix}-${color}\\/${opacity}`), `Missing Notice ${prefix}-${color}/${opacity}`);
+    }
+  }
+  assert.ok(css.includes('.bg-linear-to-b'));
+  assert.ok(css.includes(String.raw`.basis-\[calc\(var\(--space-24\)\*2\.5\)\]`));
+  assert.match(css, /flex-wrap:\s*wrap/);
+  assert.match(css, /font-size:\s*var\(--text-body-default[,)]/);
+  assert.match(css, /font-size:\s*var\(--text-label-default[,)]/);
+}
+
+// Static grouping utilities must ship even when the consumer has no Tailwind compiler.
+function assertButtonGroupCSS(css) {
+  for (const selector of [
+    '.inline-flex',
+    '.flex-wrap',
+    '.flex-nowrap',
+    '.items-stretch',
+    '.gap-3',
+    String.raw`.gap-0\.5`,
+    String.raw`.\*\:not-first\:rounded-s-sm`,
+    String.raw`.\*\:not-last\:rounded-e-sm`,
+    String.raw`.\*\:focus-visible\:relative`,
+    String.raw`.\*\:focus-visible\:z-10`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing ButtonGroup utility ' + selector);
+  }
+  assert.match(css, /border-start-start-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.match(css, /border-end-end-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.doesNotMatch(css, /\.eg-button-group\s*[,{]/);
+}
+
 // SearchTrigger utilities ship token geometry, coarse targets and native-state colors without preflight.
 function assertSearchTriggerCSS(css) {
   for (const selector of [
@@ -2098,6 +2297,27 @@ function assertSearchTriggerCSS(css) {
   assert.match(css, /transition-property:\s*border-color,\s*color/);
   assert.match(css, /@media\s*\(pointer:\s*coarse\)/);
   assert.match(css, /font-weight:\s*var\(--text-body-default--font-weight\)/);
+}
+
+// Tabs molecule utilities must reach both native and Tailwind consumers.
+function assertTabsCSS(css) {
+  for (const selector of [
+    String.raw`.p-0\.75`,
+    String.raw`.min-h-8\.5`,
+    String.raw`.rounded-\[calc\(var\(--radius-md\)---spacing\(0\.75\)\)\]`,
+    String.raw`.\[scrollbar-width\:none\]`,
+    String.raw`.data-\[state\=active\]\:after\:shadow-glow-base`,
+    String.raw`.data-\[state\=active\]\:focus-visible\:shadow-focus`,
+    String.raw`.focus-visible\:inset-ring-focus-ring`,
+    String.raw`.motion-reduce\:after\:transition-none`,
+    String.raw`.bg-status-danger\/14`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing Tabs utility ' + selector);
+  }
+  assert.match(css, /padding:\s*calc\(var\(--space-1\)\s*\*\s*0\.75\)/);
+  assert.match(css, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*8\.5\)/);
+  assert.match(css, /border-radius:\s*calc\(var\(--radius-md\)\s*-\s*[^;]+\)/);
+  assert.match(css, /scrollbar-width:\s*none/);
 }
 
 // PullQuote quote recipes, logical filet and measure ship without preflight or a stylesheet.
@@ -2400,6 +2620,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Avatar',
   'Badge',
   'Button',
+  'ButtonGroup',
   'Checkbox',
   'Chip',
   'ChipGroup',
@@ -2415,7 +2636,15 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Kbd',
   'Label',
   'Link',
+  'ListItem',
+  'ListItemActions',
+  'ListItemBody',
+  'ListItemContent',
+  'ListItemFooter',
+  'ListItemMedia',
+  'ListItemMeta',
   'Logo',
+  'Notice',
   'Portal',
   'ProgressBar',
   'PullQuote',
@@ -2432,6 +2661,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'StatusDot',
   'Surface',
   'Switch',
+  'Tabs',
   'Text',
   'Textarea',
   'Toggle',
@@ -2442,12 +2672,14 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'cn',
   'dropzoneVariants',
   'labelVariants',
+  'noticeVariants',
   'progressBarVariants',
   'radioGroupVariants',
   'sliderVariants',
   'statVariants',
   'statusDotVariants',
   'surfaceVariants',
+  'tabsVariants',
   'tooltipVariants'
 ]);
 ${assertCheckboxCSS.toString()}
@@ -2475,12 +2707,20 @@ ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
+${assertTabsCSS.toString()}
+${assertNoticeCSS.toString()}
+assertNoticeCSS(shippedStyles);
 ${assertPullQuoteCSS.toString()}
+${assertButtonGroupCSS.toString()}
+assertButtonGroupCSS(shippedStyles);
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(shippedStyles);
 assertDropzoneCSS(shippedStyles);
 assertStatCSS(shippedStyles);
+${assertListItemCSS.toString()}
+assertListItemCSS(shippedStyles);
 assertSearchTriggerCSS(shippedStyles);
+assertTabsCSS(shippedStyles);
 assertPullQuoteCSS(shippedStyles);
 assertIconButtonCSS(shippedStyles);
 ${assertToggleCSS.toString()}
@@ -2556,13 +2796,29 @@ function assertLinkCSS(css) {
   assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);
 }
 
+function assertListItemCSS(css) {
+  for (const selector of [
+    String.raw`.data-\[state\=new\]\:bg-\[image\:var\(--gradient-post-new\)\]`,
+    String.raw`.data-\[state\=failed\]\:border-status-danger\/40`,
+    String.raw`.data-\[state\=done\]\:bg-none`,
+    String.raw`.data-\[state\=off\]\:shadow-none`,
+    String.raw`.data-\[state\=empty\]\:focus-visible\:shadow-focus`,
+    String.raw`.data-\[state\=empty\]\:disabled\:opacity-45`,
+    String.raw`.group-data-\[state\=dragging\]\/list-item\:opacity-50`,
+    String.raw`.data-\[variant\=row\]\:flex-wrap`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing packed ListItem utility ' + selector);
+  }
+  assert.match(css, /calc\(var\(--space-20\)\s*\+\s*var\(--space-2\)\)/);
+}
+
 const ssr = `
 import assert from 'node:assert/strict';
 import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, ButtonGroupSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, ListItemSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
 // ChipGroup SSR preserves both mode-specific semantics, data order and shared Chip anatomy.
 const chipGroupDocument = new JSDOM(renderToString(createElement(ChipGroupSamples)));
 try {
@@ -2583,7 +2839,76 @@ try {
 } finally {
   chipGroupDocument.window.close();
 }
+const itemDocument = new JSDOM(renderToString(createElement(ListItemSamples)));
+try {
+  const item = itemDocument.window.document.getElementById('consumer-item');
+  assert.equal(item.tagName, 'LI');
+  assert.equal(item.getAttribute('data-state'), 'off');
+  assert.equal(item.getAttribute('data-variant'), 'row');
+  assert.equal(item.querySelector('button').textContent, 'Show');
+  assert.equal(item.querySelector('img').alt, 'Release artwork');
+  for (const name of ['role', 'tabindex', 'aria-disabled', 'aria-selected', 'draggable']) {
+    assert.equal(item.hasAttribute(name), false);
+  }
+} finally {
+  itemDocument.window.close();
+}
+const noticeDocument = new JSDOM(renderToString(createElement(NoticeSamples, { tone: 'danger', size: 'sm' })));
+try {
+  const notice = noticeDocument.window.document.getElementById('queue-notice');
+  assert.equal(notice.getAttribute('role'), 'alert');
+  assert.equal(notice.getAttribute('data-size'), 'sm');
+  assert.equal(notice.querySelector('strong').textContent, 'Queue ready.');
+  assert.equal(notice.querySelector('svg').parentElement.getAttribute('aria-hidden'), 'true');
+  assert.equal(notice.querySelector('[role], [aria-live], .eg-notice__actions'), null);
+  assert.ok(notice.classList.contains('eg-notice') && notice.classList.contains('eg-surface'));
+  assert.ok(noticeRecipe.split(' ').includes('eg-surface'));
+  assert.doesNotMatch(noticeRecipe, /eg-notice|eg-toast|role=|aria-/);
+} finally {
+  noticeDocument.window.close();
+}
+const groupDocument = new JSDOM(renderToString(createElement(ButtonGroupSamples)));
+try {
+  const group = groupDocument.window.document.getElementById('grouped-actions');
+  assert.equal(group.tagName, 'DIV');
+  assert.equal(group.getAttribute('role'), 'group');
+  assert.equal(group.getAttribute('aria-label'), 'Save options');
+  assert.equal(group.getAttribute('aria-describedby'), 'group-help');
+  assert.ok(group.classList.contains('eg-button-group'));
+  assert.ok(group.classList.contains('gap-0.5'));
+  assert.ok(group.classList.contains('flex-nowrap'));
+  assert.ok(group.classList.contains('*:not-first:rounded-s-sm'));
+  assert.equal(group.children.length, 2);
+  assert.ok([...group.children].every((item) => item.tagName === 'BUTTON'));
+  assert.equal(group.querySelector('[aria-haspopup], [aria-expanded]'), null);
+} finally {
+  groupDocument.window.close();
+}
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
+const tabsDocument = new JSDOM(renderToString(createElement(TabsSamples, { segmented: true })));
+try {
+  const document = tabsDocument.window.document;
+  const root = document.getElementById('consumer-tabs');
+  assert.ok(root.classList.contains('eg-tabs') && root.classList.contains('mt-4'));
+  assert.ok(!root.classList.contains('mt-2'));
+  const list = root.querySelector('[role="tablist"]');
+  assert.equal(list.getAttribute('aria-label'), 'Post views');
+  assert.ok(list.classList.contains('eg-surface') && list.classList.contains('p-0.75'));
+  assert.ok(!list.classList.contains('p-0') && !list.classList.contains('p-6'));
+  const triggers = [...list.querySelectorAll('[role="tab"]')];
+  assert.deepEqual(triggers.map((tab) => tab.textContent), ['Queue 0', 'Drafts 312', 'Unavailable']);
+  for (const trigger of triggers) {
+    const panel = document.getElementById(trigger.getAttribute('aria-controls'));
+    assert.equal(panel.getAttribute('aria-labelledby'), trigger.id);
+    assert.equal(panel.getAttribute('role'), 'tabpanel');
+    assert.equal(panel.hidden, trigger.getAttribute('aria-selected') !== 'true');
+  }
+  assert.equal(root.querySelector('[role="tabpanel"]:not([hidden])').textContent, 'Queued posts');
+  assert.ok(!root.textContent.includes('Draft posts'));
+  assert.ok(tabsRecipe.includes('eg-tabs'));
+} finally {
+  tabsDocument.window.close();
+}
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
   const timer = countdownDocument.window.document.getElementById('launch-timer');
@@ -3509,7 +3834,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, ChipGroupSamples, chipGroupSingleChanges, chipGroupMultipleChanges, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, ButtonGroupSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, ListItemSamples, NoticeSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, StatSamples, SwitchSamples, TabsSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4096,6 +4421,39 @@ try {
   assert.deepEqual(countdownExpirations, [pastDeadline]);
   await act(async () => root.render(null));
   stage('countdown:clock:complete');
+  stage('tabs:interaction:start');
+  await act(async () => root.render(createElement(TabsSamples)));
+  const tabsRoot = document.getElementById('consumer-tabs');
+  const tabTriggers = [...tabsRoot.querySelectorAll('[role="tab"]')];
+  assert.equal(tabTriggers[0].getAttribute('aria-selected'), 'true');
+  await act(async () => tabTriggers[1].dispatchEvent(new dom.window.MouseEvent('mousedown', { bubbles: true, button: 0 })));
+  assert.equal(tabTriggers[1].getAttribute('aria-selected'), 'true');
+  assert.deepEqual(tabsChanges, ['drafts']);
+  assert.equal(tabsRoot.querySelector('[role="tabpanel"]:not([hidden])').textContent, 'Draft posts');
+  assert.equal(document.getElementById(tabTriggers[0].getAttribute('aria-controls')).textContent, '');
+  await act(async () => {
+    tabTriggers[1].focus();
+    tabTriggers[1].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  });
+  assert.ok(document.activeElement === tabTriggers[0], 'Arrows loop and skip the disabled final item');
+  assert.equal(tabTriggers[0].getAttribute('aria-selected'), 'true');
+  await act(async () => tabTriggers[2].dispatchEvent(new dom.window.MouseEvent('mousedown', { bubbles: true, button: 0 })));
+  assert.equal(tabTriggers[2].getAttribute('aria-selected'), 'false');
+  await act(async () => root.render(null));
+  tabsChanges.length = 0;
+  await act(async () => root.render(createElement(TabsSamples, { value: 'queue', segmented: true })));
+  const controlledTabs = [...document.querySelectorAll('#consumer-tabs [role="tab"]')];
+  await act(async () => controlledTabs[1].dispatchEvent(new dom.window.MouseEvent('mousedown', { bubbles: true, button: 0 })));
+  assert.equal(controlledTabs[0].getAttribute('aria-selected'), 'true', 'Controlled selection waits for its owner');
+  // Radix may request the same selection more than once while its owner has not acknowledged it.
+  assert.ok(tabsChanges.length > 0 && tabsChanges.every((change) => change === 'drafts'));
+  const requestsBeforeAcknowledgement = tabsChanges.length;
+  await act(async () => root.render(createElement(TabsSamples, { value: 'drafts', segmented: true })));
+  assert.equal(controlledTabs[1].getAttribute('aria-selected'), 'true');
+  assert.equal(tabsChanges.length, requestsBeforeAcknowledgement, 'Prop acknowledgement emits no new selection request');
+  await act(async () => root.render(null));
+  stage('tabs:interaction:complete');
   stage('stat:passive:start');
   await act(async () => root.render(createElement(StatSamples)));
   const subsStat = document.getElementById('subs-total');
@@ -4121,6 +4479,56 @@ try {
   await act(async () => root.render(null));
   assert.equal(document.getElementById('totals'), null);
   stage('stat:passive:complete');
+  stage('list-item:start');
+  await act(async () => root.render(createElement(ListItemSamples)));
+  const item = document.getElementById('consumer-item');
+  assert.ok(itemChildRef.current === item, 'Slot preserves the child-owned ref');
+  const itemAction = item.querySelector('button');
+  itemAction.focus();
+  await act(async () => itemAction.click());
+  assert.deepEqual(itemActivations, ['show']);
+  await act(async () => root.render(createElement(ListItemSamples, { status: 'dragging' })));
+  assert.ok(document.getElementById('consumer-item') === item);
+  assert.equal(item.getAttribute('data-state'), 'dragging');
+  assert.ok(document.activeElement === itemAction, 'Presentation update preserves action focus');
+  await act(async () => root.render(null));
+  assert.equal(itemChildRef.current, null);
+  stage('list-item:complete');
+  stage('notice:start');
+  await act(async () => root.render(createElement(NoticeSamples, { role: 'status', actions: true })));
+  const notice = document.getElementById('queue-notice');
+  const noticeAction = notice.querySelector('button');
+  noticeAction.focus();
+  await act(async () => noticeAction.click());
+  assert.deepEqual(noticeActivations, ['resume']);
+  await act(async () => root.render(createElement(NoticeSamples, {
+    summary: 'Queue paused.', tone: 'warning', role: 'status', actions: true
+  })));
+  assert.ok(document.getElementById('queue-notice') === notice, 'Polite updates retain the single root');
+  assert.ok(document.activeElement === noticeAction, 'Notice never moves focus to announce');
+  assert.equal(notice.querySelector('strong').textContent, 'Queue paused.');
+  assert.equal(notice.getAttribute('role'), 'status');
+  assert.equal(notice.querySelector('[role], [aria-live]'), null);
+  await act(async () => root.render(createElement(NoticeSamples, { tone: 'danger' })));
+  assert.equal(notice.getAttribute('role'), 'alert');
+  assert.equal(notice.querySelector('.eg-notice__actions'), null);
+  await act(async () => root.render(null));
+  stage('notice:complete');
+  stage('button-group:start');
+  await act(async () => root.render(createElement(ButtonGroupSamples)));
+  const actionGroup = document.getElementById('grouped-actions');
+  assert.equal(actionGroup.getAttribute('role'), 'group');
+  assert.equal(actionGroup.getAttribute('aria-label'), 'Save options');
+  assert.equal(actionGroup.getAttribute('tabindex'), null);
+  const groupedButtons = actionGroup.querySelectorAll('button');
+  assert.equal(groupedButtons.length, 2);
+  assert.ok([...groupedButtons].every((button) => button.parentElement === actionGroup));
+  await act(async () => groupedButtons[0].focus());
+  assert.ok(document.activeElement === groupedButtons[0]);
+  await act(async () => groupedButtons[0].dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })));
+  assert.ok(document.activeElement === groupedButtons[0], 'Group adds no roving focus');
+  assert.equal(actionGroup.querySelector('[aria-expanded], [aria-haspopup]'), null);
+  stage('button-group:complete');
   stage('search-trigger:start');
   const documentListeners = [];
   const addDocumentListener = document.addEventListener;
@@ -4448,6 +4856,7 @@ ${assertInputCSS.toString()}
 ${assertDropzoneCSS.toString()}
 ${assertStatCSS.toString()}
 ${assertSearchTriggerCSS.toString()}
+${assertTabsCSS.toString()}
 ${assertPullQuoteCSS.toString()}
 assertIconButtonCSS(emitted);
 ${assertToggleCSS.toString()}
@@ -4479,10 +4888,17 @@ assertProgressBarCSS(emitted);
 assertTextareaCSS(emitted);
 assertInputCSS(emitted);
 assertDropzoneCSS(emitted);
+${assertButtonGroupCSS.toString()}
+assertButtonGroupCSS(emitted);
 ${assertCountdownCSS.toString()}
 assertCountdownCSS(emitted);
 assertStatCSS(emitted);
+${assertListItemCSS.toString()}
+assertListItemCSS(emitted);
 assertSearchTriggerCSS(emitted);
+assertTabsCSS(emitted);
+${assertNoticeCSS.toString()}
+assertNoticeCSS(emitted);
 assertPullQuoteCSS(emitted);
 assertToggleCSS(emitted);
 assertChipCSS(emitted);
@@ -4548,9 +4964,12 @@ assertProgressBarCSS(twCss);
 assertTextareaCSS(twCss);
 assertInputCSS(twCss);
 assertDropzoneCSS(twCss);
+assertButtonGroupCSS(twCss);
 assertCountdownCSS(twCss);
 assertStatCSS(twCss);
+assertListItemCSS(twCss);
 assertSearchTriggerCSS(twCss);
+assertTabsCSS(twCss);
 assertPullQuoteCSS(twCss);
 assertToggleCSS(twCss);
 assertChipCSS(twCss);
