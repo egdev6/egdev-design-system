@@ -11,6 +11,7 @@ import preview from '../../../../.storybook/preview';
 
 const components = [
   ['Avatar', 'atoms/avatar'],
+  ['NavList', 'molecules/nav-list'],
   ['Button', 'atoms/button'],
   ['Checkbox', 'atoms/checkbox'],
   ['Chip', 'atoms/chip'],
@@ -95,6 +96,7 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 
 const expected: Record<string, Record<string, string | false>> = {
   avatar: { src: 'text', label: 'text', size: 'select', badgeIcon: 'select', paused: 'boolean' },
+  navlist: { label: 'text', items: false, onNavigate: false },
   button: {
     children: false,
     variant: 'select',
@@ -287,6 +289,7 @@ const ownPropCounts: Record<string, number> = {
   slider: 11,
   radiogroup: 9,
   searchtrigger: 3,
+  navlist: 3,
   switch: 7,
   tooltip: 4,
   progressbar: 6,

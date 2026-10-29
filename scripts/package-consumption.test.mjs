@@ -30,7 +30,7 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { createElement, createRef, forwardRef } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef } from 'react';
-import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, Checkbox, Chip, Cluster, Countdown, Divider, Dropzone, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, Logo, NavList, ProgressBar, PullQuote, RadioGroup, SearchTrigger, Select, Skeleton, Slider, Slot, Slottable, Spinner, Stack, Stat, StatusDot, Surface, Switch, Text, Textarea, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -72,6 +72,14 @@ import type {
   LogoProps,
   LogoSize,
   LogoVariant,
+  NavListCollapsibleGroup,
+  NavListEntry,
+  NavListGroupBase,
+  NavListLink,
+  NavListProps,
+  NavListSignal,
+  NavListStaticGroup,
+  NavListTag,
   ProgressBarProps,
   ProgressBarSize,
   ProgressBarVariant,
@@ -389,6 +397,49 @@ const openSearch: SearchTriggerProps = { open: true };
 const stringCompact: SearchTriggerProps = { compact: 'yes' };
 // @ts-expect-error shortcut is display text only.
 const numericShortcut: SearchTriggerProps = { shortcut: 75 };
+
+// Navigation samples stay outside App so its existing button/focus inventories remain unchanged.
+const navTag: NavListTag = { children: 'New', tone: 'brand' };
+const navSignal: NavListSignal = { state: 'live', text: 'Voting live' };
+const navHome: NavListLink = { id: 'home', label: 'Home', href: '#home', 'aria-current': 'page', count: 0, tag: navTag };
+const navBase: NavListGroupBase = { id: 'tools', label: 'Tools', items: [navHome] };
+const navStatic: NavListStaticGroup = { ...navBase, kind: 'group', items: [] };
+export const navRequests: boolean[] = [];
+export const navNavigations: string[] = [];
+const navDisclosure: NavListCollapsibleGroup = {
+  id: 'content', kind: 'collapsible-group', label: 'Content', count: 4, signal: navSignal,
+  onOpenChange: (next) => navRequests.push(next),
+  items: [{ id: 'drafts', label: 'Drafts', href: '#drafts', warning: 'Needs attention' }]
+};
+const navEntries: NavListEntry[] = [navHome, navStatic, navDisclosure];
+export const navProps: NavListProps = {
+  label: 'Workspace', items: navEntries, id: 'consumer-nav',
+  onNavigate: (item, event) => { event.preventDefault(); navNavigations.push(item.id); }
+};
+export const navRecipe: string = navListVariants();
+export function NavListSamples({ open = false }: { open?: boolean } = {}) {
+  return createElement(NavList, { ...navProps, items: [navHome, navStatic, { ...navDisclosure, open }] });
+}
+// @ts-expect-error NavList requires a landmark name.
+const unnamedNav: NavListProps = { items: [] };
+// @ts-expect-error NavList owns its data-rendered children.
+const navChildren: NavListProps = { label: 'Workspace', items: [], children: 'Wrong' };
+// @ts-expect-error NavList cannot be changed into a menu.
+const navRole: NavListProps = { label: 'Workspace', items: [], role: 'menu' };
+// @ts-expect-error Groups contain links only, never nested groups.
+const nestedNav: NavListStaticGroup = { ...navStatic, items: [navStatic] };
+// @ts-expect-error The approved discriminant is kind, not the historical type field.
+const legacyNavKind: NavListLink = { ...navHome, type: 'link' };
+// @ts-expect-error No disabled destination policy is exposed.
+const disabledNavLink: NavListLink = { ...navHome, disabled: true };
+// @ts-expect-error Signals use only StatusDot's live and standby states.
+const invalidNavSignal: NavListSignal = { state: 'running', text: 'Running' };
+// @ts-expect-error Navigation tags expose only neutral and brand tones.
+const invalidNavTag: NavListTag = { children: 'New', tone: 'danger' };
+// @ts-expect-error NavList exposes no ref API.
+const navRef: ComponentProps<typeof NavList> = { ...navProps, ref: createRef<HTMLElement>() };
+// @ts-expect-error NavList exposes no asChild API.
+const slottedNav: NavListProps = { ...navProps, asChild: true };
 
 // Stat stays outside App: it is passive, adds no buttons and leaves the focus harness unchanged.
 export const statRecipe: string = statVariants({ size: 'sm' });
@@ -2333,6 +2384,8 @@ ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(shippedStyles);
 ${assertLinkCSS.toString()}
 assertLinkCSS(shippedStyles);
+${assertNavListCSS.toString()}
+assertNavListCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AspectRatio',
   'Avatar',
@@ -2353,6 +2406,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Label',
   'Link',
   'Logo',
+  'NavList',
   'Portal',
   'ProgressBar',
   'PullQuote',
@@ -2379,6 +2433,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'cn',
   'dropzoneVariants',
   'labelVariants',
+  'navListVariants',
   'progressBarVariants',
   'radioGroupVariants',
   'sliderVariants',
@@ -2463,6 +2518,22 @@ for (const source of map.sources) {
 console.log(JSON.stringify({ ui: ui.version, react: (await import('react')).version, dedup: ['react', 'react-dom'], externalReact: true }));
 `;
 
+function assertNavListCSS(css) {
+  for (const selector of [
+    '.min-h-11',
+    String.raw`.group-data-\[state\=closed\]\/nav-trigger\:-rotate-90`,
+    String.raw`.aria-\[current\=page\]\:hover\:bg-surface-3`,
+    String.raw`.focus-visible\:outline-\[var\(--color-focus-ring-inverse\)\]`,
+    String.raw`.motion-reduce\:transform-none`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing NavList utility ' + selector);
+  }
+  assert.match(css, /outline-color:\s*var\(--color-focus-ring-inverse[,)]/);
+  assert.match(css, /outline-width:\s*var\(--focus-width[,)]/);
+  assert.match(css, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*11\)/);
+  assert.doesNotMatch(css, /\.eg-nav-list\s*\{/);
+}
+
 function assertLinkCSS(css) {
   for (const selector of [
     '.border-0',
@@ -2499,7 +2570,22 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
-import { App, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+import { App, NavListSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SlotSample, StatSamples, SwitchSamples, TooltipSamples, progressEdgeRecipe, statRecipe } from './consumer.ts';
+// Navigation SSR covers native semantics and a fully controlled open group on both React majors.
+const navDocument = new JSDOM(renderToString(createElement(NavListSamples, { open: true })));
+try {
+  const nav = navDocument.window.document.querySelector('nav');
+  assert.equal(nav.getAttribute('aria-label'), 'Workspace');
+  assert.ok(nav.classList.contains('eg-nav-list'));
+  assert.equal(nav.querySelector('a').getAttribute('aria-current'), 'page');
+  assert.ok(nav.querySelector('a').classList.contains('eg-surface'));
+  assert.equal(nav.querySelector('button').getAttribute('aria-expanded'), 'true');
+  assert.ok(nav.querySelector('[href="#drafts"]').textContent.includes('Needs attention'));
+  assert.ok(nav.querySelector('ul[aria-labelledby]'));
+  assert.equal(nav.querySelector('[role="menu"]'), null);
+} finally {
+  navDocument.window.close();
+}
 // Countdown SSR is the deterministic initializing placeholder: no digits, clock read or live region.
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {
@@ -3426,7 +3512,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { App, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
+const { App, NavListSamples, navRequests, navNavigations, CountdownSamples, DropzoneSamples, PullQuoteSamples, RadioGroupSamples, StatSamples, SearchTriggerSamples, SwitchSamples, TooltipSamples, buttonRef, buttonLinkRef, aspectWideRef, checkboxRef, hiddenNoteRef, iconButtonCalls, iconButtonRef, iconButtonLinkRef, inputChanges, inputRef, linkNativeRef, linkSlotRef, linkChildRef, receivedFiles, countdownExpirations, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, sliderEvents, sliderCommits, switchRef, textareaChanges, textareaRef, toggleRef, tooltipRecipe, chipChanges, chipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -4013,6 +4099,32 @@ try {
   assert.deepEqual(countdownExpirations, [pastDeadline]);
   await act(async () => root.render(null));
   stage('countdown:clock:complete');
+  stage('nav-list:disclosure:start');
+  await act(async () => root.render(createElement(NavListSamples)));
+  const navigation = document.getElementById('consumer-nav');
+  const navTrigger = navigation.querySelector('button');
+  assert.equal(navTrigger.tagName, 'BUTTON');
+  assert.equal(navTrigger.getAttribute('aria-expanded'), 'false');
+  assert.equal(navigation.querySelector('[href="#drafts"]'), null);
+  navTrigger.focus();
+  await act(async () => navTrigger.click());
+  assert.deepEqual(navRequests, [true]);
+  assert.equal(navTrigger.getAttribute('aria-expanded'), 'false', 'Controlled state waits for acknowledgement');
+  await act(async () => root.render(createElement(NavListSamples, { open: true })));
+  assert.equal(navTrigger.getAttribute('aria-expanded'), 'true');
+  assert.equal(document.activeElement, navTrigger);
+  assert.ok(document.getElementById(navTrigger.getAttribute('aria-controls')));
+  assert.deepEqual(navRequests, [true], 'Incoming state does not echo requests');
+  const navEvent = new window.MouseEvent('click', { bubbles: true, cancelable: true });
+  await act(async () => navigation.querySelector('[href="#drafts"]').dispatchEvent(navEvent));
+  assert.equal(navEvent.defaultPrevented, true);
+  assert.deepEqual(navNavigations, ['drafts']);
+  await act(async () => root.render(createElement(NavListSamples, { open: false })));
+  assert.equal(navigation.querySelector('[href="#drafts"]'), null);
+  assert.ok(navTrigger.textContent.includes('Voting live'));
+  assert.deepEqual(navRequests, [true]);
+  await act(async () => root.render(null));
+  stage('nav-list:disclosure:complete');
   stage('stat:passive:start');
   await act(async () => root.render(createElement(StatSamples)));
   const subsStat = document.getElementById('subs-total');
@@ -4389,6 +4501,8 @@ ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(emitted);
 ${assertLinkCSS.toString()}
 assertLinkCSS(emitted);
+${assertNavListCSS.toString()}
+assertNavListCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
 const shipped = readFileSync(new URL('./node_modules/@egdev/tokens/dist/tokens.css', import.meta.url), 'utf8');
 const names = shipped
@@ -4457,6 +4571,7 @@ for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '
 }
 assertSurfaceCSS(twCss);
 assertLinkCSS(twCss);
+assertNavListCSS(twCss);
 assertLabelCSS(twCss);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) {
   assert.ok(twCss.includes(selector), 'Tailwind consumer must retain shipped UI selector ' + selector);
