@@ -66,7 +66,13 @@ Storybook title: `Molecules/Popover`. Examples cover the closed default, keyboar
 - Final `pnpm build`: **passed**, including tokens, UI JavaScript/declarations and compiled CSS. Rebuilt after the A2 declaration documentation change.
 - Final `pnpm test:package-exports`: **51/51 passed**, including both exact export inventories, 116 reachable declaration files, all static Popover CVA utilities, token/Radix geometry, private-helper boundaries and closed SSR.
 - All final tests, lint, typecheck and builds ran in foreground `systemd-run --user --scope -q -p MemoryMax=2G` scopes with explicit timeouts. No watch or Storybook server was started.
-- Packed-consumer fixtures include positive/negative public types (including A1), runtime inventories, closed SSR, client button refs, portals, modality, focus restoration and controlled ownership, plus native/Tailwind-free shipped CSS checks. **Execution is reserved for the parent**, not claimed here.
+- Packed-consumer fixtures cover positive/negative public types (including A1), runtime inventories, closed SSR, client button refs, portals, modality, focus restoration and controlled ownership, plus native/Tailwind-free shipped CSS checks. After the parent reported a naming assertion failure, one explicitly authorized worker rerun **passed 12/12 on React 18.3.1 and 19.3.0**, including both Popover CSR stages. Log: `/tmp/pop-packed.log`.
+
+### Packed-consumer naming assertion repair
+
+The parent-provided failing log showed `close.getAttribute('aria-label')` returning null instead of `Close packed settings`. This was an incorrect harness assumption: IconButton composes Radix AccessibleIcon, which supplies visually hidden naming text rather than an `aria-label` attribute. Existing IconButton SSR fixtures already verify this distinction.
+
+The packed assertion now checks the exact hidden naming text, absence of a replacement `aria-label` and `aria-hidden=true` on the decorative SVG. The component regression additionally verifies the actual accessible name via Testing Library. No Popover/IconButton behavior, DOM constructor checks, deferred timers, dismissal assertions or focus-restoration checks were changed. The focused component suite passed **27/27**, followed by a successful memory-capped build and the first packed rerun (**1 of 3 permitted runs used**). The packed matrix still emits unrelated ProgressBar fixture `<div>`-inside-`<p>` nesting warnings; these were left unchanged.
 
 ### Dependency-source gotchas
 
@@ -80,4 +86,4 @@ TypeScript may normalize the order of an interned literal union. Controls tests 
 
 ## Evidence limits
 
-**Visual conformity: Not evaluated.** No Storybook/watch server, browser capture, actual Controls widgets, screen-reader session, narrow-viewport collision measurement, OS preference emulation or nested-overlay guarantee is claimed. VIS-01's approved static specimen is not runtime accessibility evidence. The owner reviews Storybook; the parent owns packed React 18/19 compatibility checks, full gates and Git/PR actions. No CI execution or commit is claimed.
+**Visual conformity: Not evaluated.** No Storybook/watch server, browser capture, actual Controls widgets, screen-reader session, narrow-viewport collision measurement, OS preference emulation or nested-overlay guarantee is claimed. VIS-01's approved static specimen is not runtime accessibility evidence. The owner reviews Storybook. The bounded packed React 18/19 matrix above is observed evidence, not browser or assistive-technology certification; the parent owns remaining full gates and Git/PR actions. No CI execution or commit is claimed.

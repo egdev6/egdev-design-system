@@ -4135,7 +4135,9 @@ try {
     assert.equal(document.activeElement, dialog.querySelector('input'), 'First eligible control receives focus');
     const close = dialog.querySelector('button');
     assert.equal(popoverCloseRef.current, close, 'Slotted Close forwards its actual button ref');
-    assert.equal(close.getAttribute('aria-label'), 'Close packed settings');
+    assert.equal(close.textContent, 'Close packed settings', 'AccessibleIcon hidden text supplies the Close name');
+    assert.equal(close.hasAttribute('aria-label'), false, 'IconButton does not replace its hidden-text name');
+    assert.equal(close.querySelector('svg').getAttribute('aria-hidden'), 'true');
     assert.equal(document.querySelector('button button'), null);
     if (modal) {
       assert.equal(document.getElementById('app').getAttribute('aria-hidden'), 'true');

@@ -249,6 +249,9 @@ describe('Popover public contract', () => {
     await user.click(trigger);
     const close = screen.getByRole('button', { name: 'Close settings' });
     expect(closeRef.current).toBe(close);
+    expect(close).toHaveAccessibleName('Close settings');
+    expect(close).not.toHaveAttribute('aria-label');
+    expect(close.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
     expect(document.querySelector('button button')).toBeNull();
     await user.click(close);
     await waitFor(() => expect(trigger).toHaveFocus());
