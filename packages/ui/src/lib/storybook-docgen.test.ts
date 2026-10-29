@@ -118,6 +118,53 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts ButtonGroup own directives, required children and only supported native rows', () => {
+    const file = ast(source('molecules/button-group/types.ts'));
+    const properties = ownProps(file, ['ButtonGroupProps']);
+    const expected: Record<string, string> = { label: 'text', variant: 'select', children: 'false' };
+    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(expected));
+    for (const property of properties) {
+      const tags = ts.getJSDocTags(property);
+      expect(tags.filter((tag) => tag.tagName.text === 'control').map((tag) => tag.comment)).toEqual([
+        expected[property.name.getText(file)]
+      ]);
+      if (!property.questionToken) {
+        expect(tags.some((tag) => tag.tagName.text === 'default')).toBe(false);
+      }
+    }
+    const doc = parser
+      .parse(source('molecules/button-group/ButtonGroup.tsx'))
+      .find((item) => item.displayName === 'ButtonGroup');
+    expect(doc).toBeDefined();
+    expect(doc?.props.label).toMatchObject({ required: false, defaultValue: null, type: { name: 'string' } });
+    expect(doc?.props.variant).toMatchObject({ required: false, defaultValue: { value: 'spaced' } });
+    expect(doc?.props.variant?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'spaced',
+      'attached'
+    ]);
+    expect(doc?.props.children).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    const childrenTags = doc?.props.children?.tags as Record<string, string> | undefined;
+    expect(childrenTags?.controlReason).toMatch(/Non-serializable ReactNode.*Spaced.*SplitButton.*AttachedThree/);
+    expect(defaults(source('molecules/button-group/types.ts'), true)).toEqual({ variant: 'spaced' });
+    expect(defaults(source('molecules/button-group/useButtonGroup.ts'), false)).toEqual({ variant: 'spaced' });
+    for (const name of ['id', 'title', 'dir', 'aria-labelledby', 'aria-describedby', 'className']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of ['role', 'aria-label', 'ref', 'asChild', 'size', 'orientation', 'buttonGroupVariants']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const stories = ast(source('molecules/button-group/ButtonGroup.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Spaced',
+      'SplitButton',
+      'SmallSplitButton',
+      'AttachedThree',
+      'WithDisabledItem',
+      'RightToLeft'
+    ]);
+    expect(stories.getText()).toMatch(/title: 'Molecules\/ButtonGroup'/);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
+  });
   it('extracts the Toggle union, boolean defaults, native button props and every own directive', () => {
     const doc = parser.parse(source('atoms/toggle/Toggle.tsx')).find((item) => item.displayName === 'Toggle');
     expect(doc).toBeDefined();
@@ -192,6 +239,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/toggle',
       './atoms/tooltip',
       './lib/cn',
+      './molecules/button-group',
       './primitives/aspect-ratio',
       './primitives/divider',
 
@@ -209,6 +257,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Avatar',
       'Badge',
       'Button',
+      'ButtonGroup',
       'Checkbox',
       'Chip',
       'Cluster',
