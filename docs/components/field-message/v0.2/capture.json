@@ -1,0 +1,43 @@
+{
+  "status": "Owner-adopted visual direction, not production conformity",
+  "source": "Owner-authorized local static HTML specimen, not React implementation",
+  "url": "http://127.0.0.1:4319/",
+  "image": "field-message-five-tones.png",
+  "sha256": "e062352f2575b76979b04899decb3acb218ac6b6fd85e7e1c2a656271f7a6b56",
+  "imageSize": {
+    "width": 1036,
+    "height": 859
+  },
+  "viewport": {
+    "width": 1100,
+    "height": 950
+  },
+  "crop": "#specimen element",
+  "tool": "Playwright MCP, page.locator screenshot, css scale",
+  "date": "2026-10-30T07:20:28.245445+00:00",
+  "previewBrowserProbe": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+    "deviceScaleFactor": 1.0000000149011612,
+    "reducedMotion": false,
+    "reducedTransparency": false,
+    "canvas": "rgb(20, 21, 24)",
+    "description": "rgb(161, 162, 168)",
+    "messageFontSize": "14px",
+    "messageFontWeight": "400",
+    "fontFamily": "Barlow, system-ui, sans-serif; Barlow is not supplied by this preview, actual font file unverified",
+    "horizontalOverflowAt1100": false
+  },
+  "sourceHashes": {
+    "index.html": "67fc4d73ffb0925c34e295f3fcfd08ec081dd7f86a24afdb45be6c4a287a3aba",
+    "tokens.css": "1fc1edda6b1a7cdc475add0f4c971d7297687b123b1db43a58ddf442562adf22"
+  },
+  "limits": [
+    "Owner source Image#1 provenance only; no original asset file/hash known",
+    "SVG preview sketches for circle-alert, circle-check and info, not existing Icon runtime exports",
+    "Control borders intentionally neutral and outside FieldMessage scope",
+    "No AT, React behavior, mobile or production visual conformity claims",
+    "Initial screenshot retrieval failed because browser host paths are Windows; subsequent PNG obtained via screenshot buffer after explicit navigation"
+  ],
+  "localPreviewOnly": true,
+  "remotePublication": "Not performed"
+}

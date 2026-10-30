@@ -7,7 +7,7 @@ const names = Object.keys(iconPaths) as IconName[];
 
 /**
  * ## Description
- * One inline glyph from the closed 42-name system set: 1.75 stroke, round caps and joins,
+ * One inline glyph from the closed 45-name system set: 1.75 stroke, round caps and joins,
  * no fill unless filled, and color inherited from the surrounding text (currentColor).
  *
  * ## Dependencies

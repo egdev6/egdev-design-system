@@ -25,9 +25,20 @@ const svgOf = (container: HTMLElement) => {
 };
 
 describe('Icon glyph set', () => {
-  it('ships the closed 42-name set, including the marks needed by sibling atoms and organisms', () => {
-    expect(names).toHaveLength(42);
-    for (const name of ['check', 'minus', 'plus', 'chevron-down', 'grip', 'flask', 'trash'] as const) {
+  it('ships the closed 45-name set, including the approved message status glyphs', () => {
+    expect(names).toHaveLength(45);
+    for (const name of [
+      'check',
+      'minus',
+      'plus',
+      'chevron-down',
+      'grip',
+      'flask',
+      'trash',
+      'circle-alert',
+      'circle-check',
+      'info'
+    ] as const) {
       expect(names).toContain(name);
     }
   });

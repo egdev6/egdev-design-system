@@ -2525,6 +2525,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Divider',
       'Dropzone',
       'Field',
+      'FieldMessage',
       'Gauge',
       'GaugeDock',
       'GaugeDockItem',
@@ -2743,6 +2744,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Field',
     'FieldCounter',
     'FieldLayout',
+    'FieldMessage',
+    'FieldMessageProps',
+    'FieldMessageTone',
     'FieldProps',
     'Gauge',
     'GaugeDock',
@@ -4193,5 +4197,54 @@ test('Carousel public exports preserve deterministic named groups and composed a
   assert.equal((html.match(/tabindex="0"/g) ?? []).length, 1);
   for (const name of ['useCarousel', 'carouselVariants', 'defaultCarouselMessages']) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} remains internal`);
+  }
+});
+
+test('FieldMessage public build preserves independent tone, glyph and announcement semantics', async () => {
+  const { FieldMessage, Field, Input } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(renderToString(createElement(FieldMessage, { children: '', tone: 'error', role: 'alert' })), '');
+  for (const [tone, color, hasIcon] of [
+    ['description', 'text-fg-muted', false],
+    ['info', 'text-status-info', true],
+    ['warning', 'text-status-warning', true],
+    ['success', 'text-status-success', true],
+    ['error', 'text-status-danger', true]
+  ]) {
+    const dom = new JSDOM(
+      renderToString(createElement(FieldMessage, { children: 'Readable guidance', tone, id: 'guidance' }))
+    );
+    try {
+      const root = dom.window.document.getElementById('guidance');
+      assert.equal(root.tagName, 'P');
+      assert.ok(root.classList.contains('eg-field-message') && root.classList.contains(color));
+      assert.equal(root.textContent, 'Readable guidance');
+      assert.equal(root.querySelector('svg') !== null, hasIcon);
+      if (hasIcon) {
+        assert.equal(root.querySelector('svg').getAttribute('aria-hidden'), 'true');
+      }
+      assert.equal(root.getAttribute('role'), null);
+      assert.equal(root.getAttribute('aria-live'), null);
+    } finally {
+      dom.window.close();
+    }
+  }
+  for (const hintTone of ['description', 'info', 'warning', 'success']) {
+    const dom = new JSDOM(
+      renderToString(
+        createElement(Field, { label: 'Name', hint: 'Helpful guidance', hintTone, children: createElement(Input) })
+      )
+    );
+    try {
+      const control = dom.window.document.querySelector('input');
+      const message = dom.window.document.getElementById(control.getAttribute('aria-describedby'));
+      assert.equal(message.textContent, 'Helpful guidance');
+      assert.equal(control.getAttribute('aria-invalid'), null);
+      assert.equal(dom.window.document.querySelector('.eg-field').getAttribute('data-state'), null);
+    } finally {
+      dom.window.close();
+    }
   }
 });

@@ -1,0 +1,219 @@
+{
+  "kind": "observed-browser-verification-not-approval",
+  "source": "Storybook development preview at localhost6011, Playwright MCP",
+  "canonicalTones": {
+    "canonicalRedFromPublishedTokens": "#FF6680",
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+    "viewport": {
+      "width": 1100,
+      "height": 950
+    },
+    "results": [
+      {
+        "tone": "description",
+        "hostColor": "rgb(161, 162, 168)",
+        "canonical": {
+          "text": "Additional context for this value.",
+          "color": "rgb(161, 162, 168)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "role": null,
+          "live": null,
+          "svg": false
+        }
+      },
+      {
+        "tone": "info",
+        "hostColor": "rgb(138, 180, 255)",
+        "canonical": {
+          "text": "Use your primary email.",
+          "color": "rgb(138, 180, 255)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "role": null,
+          "live": null,
+          "svg": true,
+          "iconHidden": "true"
+        }
+      },
+      {
+        "tone": "warning",
+        "hostColor": "rgb(255, 178, 36)",
+        "canonical": {
+          "text": "Double-check this value.",
+          "color": "rgb(255, 178, 36)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "role": null,
+          "live": null,
+          "svg": true,
+          "iconHidden": "true"
+        }
+      },
+      {
+        "tone": "success",
+        "hostColor": "rgb(45, 226, 196)",
+        "canonical": {
+          "text": "Looks good.",
+          "color": "rgb(45, 226, 196)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "role": null,
+          "live": null,
+          "svg": true,
+          "iconHidden": "true"
+        }
+      },
+      {
+        "tone": "error",
+        "hostColor": "rgb(255, 0, 54)",
+        "canonical": {
+          "text": "This field is required.",
+          "color": "rgb(255, 102, 128)",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "role": null,
+          "live": null,
+          "svg": true,
+          "iconHidden": "true"
+        }
+      }
+    ]
+  },
+  "fieldComposition": [
+    {
+      "story": "informational-hint",
+      "text": "Use your primary email.",
+      "descriptionIds": "_r_1_",
+      "messageId": "_r_1_",
+      "invalid": null,
+      "rootState": null,
+      "role": null,
+      "live": null,
+      "color": "rgb(138, 180, 255)",
+      "rootOpacity": "1",
+      "messageOpacity": "1",
+      "wrapperOpacity": "1",
+      "column": "auto",
+      "disabled": false
+    },
+    {
+      "story": "warning-hint",
+      "text": "Double-check this value.",
+      "descriptionIds": "_r_1_",
+      "messageId": "_r_1_",
+      "invalid": null,
+      "rootState": null,
+      "role": null,
+      "live": null,
+      "color": "rgb(255, 178, 36)",
+      "rootOpacity": "1",
+      "messageOpacity": "1",
+      "wrapperOpacity": "1",
+      "column": "auto",
+      "disabled": false
+    },
+    {
+      "story": "success-hint",
+      "text": "Looks good.",
+      "descriptionIds": "_r_1_",
+      "messageId": "_r_1_",
+      "invalid": null,
+      "rootState": null,
+      "role": null,
+      "live": null,
+      "color": "rgb(45, 226, 196)",
+      "rootOpacity": "1",
+      "messageOpacity": "1",
+      "wrapperOpacity": "1",
+      "column": "auto",
+      "disabled": false
+    },
+    {
+      "story": "invalid",
+      "text": "Shorten the post to 280 characters.",
+      "descriptionIds": "_r_1_ _r_2_",
+      "messageId": "_r_1_",
+      "invalid": "true",
+      "rootState": "invalid",
+      "role": null,
+      "live": null,
+      "color": "rgb(255, 0, 54)",
+      "rootOpacity": "1",
+      "messageOpacity": "1",
+      "wrapperOpacity": "1",
+      "column": "auto",
+      "disabled": false
+    },
+    {
+      "story": "choice-checkbox",
+      "text": "Only on a private device.",
+      "descriptionIds": "_r_1_",
+      "messageId": "_r_1_",
+      "invalid": null,
+      "rootState": null,
+      "role": null,
+      "live": null,
+      "color": "rgb(161, 162, 168)",
+      "rootOpacity": "1",
+      "messageOpacity": "1",
+      "wrapperOpacity": "1",
+      "column": "2",
+      "disabled": false,
+      "checked": "true"
+    },
+    {
+      "story": "disabled",
+      "text": "Editing is unavailable.",
+      "descriptionIds": "_r_1_ _r_2_",
+      "messageId": "_r_1_",
+      "invalid": null,
+      "rootState": null,
+      "role": null,
+      "live": null,
+      "color": "rgb(161, 162, 168)",
+      "rootOpacity": "1",
+      "messageOpacity": "1",
+      "wrapperOpacity": "0.45",
+      "column": "auto",
+      "disabled": true
+    }
+  ],
+  "actualControls": {
+    "fieldMessageToneOptions": ["Choose option...", "description", "info", "warning", "success", "error"],
+    "iconOptions": 45,
+    "toneAndIconControlsChangedRenderedStory": true,
+    "fieldHintToneOptions": ["Choose option...", "description", "info", "warning", "success"]
+  },
+  "capture": {
+    "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+    "viewport": {
+      "width": 526,
+      "height": 360
+    },
+    "dpr": 1.0000000149011612,
+    "crop": {
+      "x": 16,
+      "y": 16,
+      "width": 494.3999938964844,
+      "height": 112.4000015258789,
+      "top": 16,
+      "right": 510.3999938964844,
+      "bottom": 128.4000015258789,
+      "left": 16
+    },
+    "messageColor": "rgb(255, 102, 128)",
+    "font": "14px / 16.8px Barlow, system-ui, sans-serif",
+    "fontFamily": "Barlow, system-ui, sans-serif",
+    "focusMatchesLabel": true,
+    "file": "field-invalid.png",
+    "sha256": "sha256:08eadad0e5cc9381ce47f8d4346e328f6ec16b0449d18b40560fc5f92bcd4288",
+    "themeAdjustment": "Browser-only --color-primitive-red-300 from published tokens; existing Storybook palette override left unchanged in source"
+  },
+  "limits": [
+    "Assistive-technology speech not evaluated",
+    "No universal pixel-parity claim: specimen viewport1100x950 vs observed field viewport526x360; fonts not proven identical",
+    "Five-tone values/typography/glyph presence checked in both Storybook and canonical token contexts; error is neon only in the existing Storybook theme",
+    "LSP retains old module-resolution findings on the test despite full TypeScript CLI and functional gates passing"
+  ]
+}

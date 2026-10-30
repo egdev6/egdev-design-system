@@ -1,5 +1,6 @@
 import { type ComponentPropsWithoutRef, Fragment, isValidElement, type ReactElement, useId } from 'react';
 import { cn } from '@/lib/cn';
+import type { FieldMessageTone } from '../../atoms/field-message';
 import type { LabelProps } from '../../primitives/label';
 import {
   type FieldProps,
@@ -22,7 +23,8 @@ export type UseFieldResult = {
   choice: boolean;
   labelRowProps: { className: string };
   message: string | undefined;
-  messageProps: { id: string; className: string };
+  messageProps: { id: string; tone: FieldMessageTone };
+  messageWrapperProps: { className: string };
   counter: FieldProps['counter'];
   counterProps: { id: string; className: string; 'data-state': 'over' | undefined };
   readout: string | undefined;
@@ -34,6 +36,7 @@ export function useField({
   label,
   children,
   hint,
+  hintTone = 'description',
   error,
   counter,
   readout,
@@ -69,7 +72,8 @@ export function useField({
     choice,
     labelRowProps: { className: cn(fieldLabelRowVariants({ layout })) },
     message,
-    messageProps: { id: messageId, className: cn(fieldMessageVariants({ layout, invalid })) },
+    messageProps: { id: messageId, tone: invalid ? 'error' : hintTone },
+    messageWrapperProps: { className: cn(fieldMessageVariants({ layout })) },
     counter: visibleCounter,
     counterProps: {
       id: counterId,
