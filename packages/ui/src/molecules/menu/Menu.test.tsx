@@ -3,10 +3,14 @@ import userEvent from '@testing-library/user-event';
 import type { MouseEvent } from 'react';
 import { createRef } from 'react';
 import { describe, expect, expectTypeOf, it, vi } from 'vitest';
+import { Avatar } from '../../atoms/avatar';
 import { Button } from '../../atoms/button';
+import { Icon } from '../../atoms/icon';
+import { cn } from '../../lib/cn';
 import { surfaceVariants } from '../../primitives/surface';
 import type { MenuEntry, MenuLinkItem, MenuProps, MenuSubmenuItem } from './index';
 import { Menu } from './index';
+import { accountMenuRecipeVariants } from './types';
 import { useMenu } from './useMenu';
 
 const entries: MenuEntry[] = [
@@ -381,5 +385,121 @@ describe('Menu public contract v0.1 + A1 + A2', () => {
     // @ts-expect-error Menu has no public ref API.
     const ref: MenuProps = { children: trigger, items: [], ref: createRef<HTMLDivElement>() };
     void [missingHref, oldType, deep, native, ref];
+  });
+});
+
+describe('Account menu recipe', () => {
+  function accountTrigger() {
+    return (
+      <button type='button' aria-label='Account menu' className={cn(accountMenuRecipeVariants({ part: 'trigger' }))}>
+        <Avatar size='md' />
+        <Icon name='chevron-down' className={cn(accountMenuRecipeVariants({ part: 'caret' }))} />
+      </button>
+    );
+  }
+
+  const header = (
+    <>
+      <Avatar size='lg' />
+      <span className={cn(accountMenuRecipeVariants({ part: 'identity' }))}>
+        <span className={cn(accountMenuRecipeVariants({ part: 'name' }))}>Guest</span>
+        <span className={cn(accountMenuRecipeVariants({ part: 'description' }))}>Sign in to save content</span>
+      </span>
+    </>
+  );
+
+  it.each(['{Enter}', ' ', '{ArrowDown}', 'pointer'])(
+    'opens from a decorative-avatar native trigger with %s',
+    async (key) => {
+      const { container } = render(
+        <div className={cn(accountMenuRecipeVariants({ part: 'wrapper' }))}>
+          <Menu header={header} items={entries} side='bottom' align='end' className='min-w-62.5'>
+            {accountTrigger()}
+          </Menu>
+        </div>
+      );
+      const user = userEvent.setup();
+      const button = screen.getByRole('button', { name: 'Account menu' });
+      expect(button).toHaveAttribute('type', 'button');
+      expect(button).toHaveAttribute('aria-expanded', 'false');
+      expect(container.querySelector('.eg-user-menu')).toBeInTheDocument();
+      expect(button.querySelector('.eg-avatar')).toHaveAttribute('aria-hidden', 'true');
+      expect(button.querySelector('.eg-icon')).toHaveAttribute('aria-hidden', 'true');
+      expect(within(button).queryByRole('button')).not.toBeInTheDocument();
+      button.focus();
+      if (key === 'pointer') {
+        await user.click(button);
+      } else {
+        await user.keyboard(key);
+      }
+      const menu = await screen.findByRole('menu', { name: 'Account menu' });
+      expect(container).not.toContainElement(menu);
+      expect(menu).toHaveClass('eg-menu', 'min-w-62.5');
+      expect(menu).toHaveAttribute('data-side', 'bottom');
+      expect(menu).toHaveAttribute('data-align', 'end');
+      expect(button).toHaveAttribute('aria-controls', menu.id);
+      expect(button).toHaveAttribute('aria-expanded', 'true');
+      expect(screen.getByText('Guest')).not.toHaveAttribute('role', 'menuitem');
+      expect(screen.getByText('Sign in to save content')).toBeInTheDocument();
+      if (key !== 'pointer') {
+        expect(screen.getByRole('menuitem', { name: 'Edit⌘E' })).toHaveFocus();
+      }
+      await user.keyboard('{Escape}');
+      await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
+      expect(button).toHaveFocus();
+    }
+  );
+
+  it('keeps controlled requests separate from actual expanded state and routes app-owned entries', async () => {
+    const change = vi.fn();
+    const navigate = vi.fn((_entry: MenuLinkItem, event: MouseEvent<HTMLAnchorElement>) => event.preventDefault());
+    const link: MenuLinkItem = { kind: 'link', id: 'profile', label: 'Profile', href: '#profile' };
+    const props = { items: [link], header, onOpenChange: change, onNavigate: navigate };
+    const { rerender } = render(
+      <Menu {...props} open={false}>
+        {accountTrigger()}
+      </Menu>
+    );
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: 'Account menu' }));
+    expect(change).toHaveBeenLastCalledWith(true);
+    expect(screen.getByRole('button', { name: 'Account menu' })).toHaveAttribute('aria-expanded', 'false');
+    rerender(
+      <Menu {...props} open={true}>
+        {accountTrigger()}
+      </Menu>
+    );
+    await user.click(await screen.findByRole('menuitem', { name: 'Profile' }));
+    expect(navigate).toHaveBeenCalledOnce();
+    expect(navigate.mock.calls[0]?.[0]).toBe(link);
+    expect(change).toHaveBeenLastCalledWith(false);
+    expect(screen.getByRole('menu')).toBeInTheDocument();
+    rerender(
+      <Menu {...props} open={false}>
+        {accountTrigger()}
+      </Menu>
+    );
+    await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
+  });
+
+  it('retains the Surface sheen/elevation while focus and native expanded variants own trigger styling', () => {
+    const classes = cn(accountMenuRecipeVariants({ part: 'trigger' })).split(' ');
+    for (const token of [
+      'eg-surface',
+      'bg-surface-1',
+      'bg-[image:var(--gradient-sheen)]',
+      'shadow-[var(--shadow-edge),var(--shadow-elev-1)]',
+      'rounded-full',
+      'border-border-hairline-strong',
+      'focus-visible:shadow-focus',
+      'aria-expanded:bg-surface-2',
+      'pointer-coarse:min-h-11'
+    ]) {
+      expect(classes).toContain(token);
+    }
+    expect(classes).not.toContain('border-border-hairline');
+    expect(classes).not.toContain('text-fg-default');
+    expect(cn(accountMenuRecipeVariants({ part: 'caret' }))).toContain('motion-safe:group-aria-expanded:rotate-180');
+    expect(cn(accountMenuRecipeVariants({ part: 'caret' }))).toContain('motion-reduce:transition-none');
   });
 });

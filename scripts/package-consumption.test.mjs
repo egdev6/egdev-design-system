@@ -28,9 +28,9 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
-import { Menu, menuVariants } from '@egdev/ui';
+import { Menu, menuVariants, cn } from '@egdev/ui';
 import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorItem, MenuLabelItem, MenuSubmenuItem, MenuTone, MenuAlign, MenuSide } from '@egdev/ui';
-import { createElement, createRef, forwardRef } from 'react';
+import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
 import { Toast, ToastProvider } from '@egdev/ui';
 import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, Gauge, GaugeDock, GaugeDockItem, GaugeDockSeparator, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
@@ -400,6 +400,26 @@ const menuLabel: MenuLabelItem = { kind: 'label', id: 'label', label: 'Actions' 
 const menuSubmenu: MenuSubmenuItem = { kind: 'submenu', id: 'more', label: 'More', items: [menuAction, menuLink] };
 export const menuEntries: MenuEntry[] = [menuLabel, menuAction, menuLink, menuSubmenu, menuSeparator, { id: 'delete', label: 'Delete', tone: menuTone }];
 export const menuProps: MenuProps = { children: createElement(Button, { children: 'Menu actions', id: 'menu-trigger' }), items: menuEntries, align: menuAlign, side: menuSide };
+// This consumer copies the documented static recipe; it never imports the internal helper.
+const accountTriggerClass = cn(
+  surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'full' }),
+  'group inline-flex items-center gap-1 min-h-10 pointer-coarse:min-h-11 pl-1 pr-1.5 border-border-hairline-strong text-fg-secondary cursor-pointer hover:bg-surface-2 hover:border-border-brand hover:text-fg-default aria-expanded:bg-surface-2 aria-expanded:border-border-brand aria-expanded:text-fg-default focus-visible:outline-none focus-visible:shadow-focus transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] motion-reduce:transition-none'
+);
+export function AccountMenuSample() {
+  return createElement('div', { className: cn('eg-user-menu inline-flex') }, createElement(Menu, {
+    children: createElement('button', { type: 'button', id: 'account-trigger', 'aria-label': 'Account menu', className: accountTriggerClass },
+      createElement(Avatar, { size: 'md' }),
+      createElement(Icon, { name: 'chevron-down', className: cn('size-4 transition-transform duration-[var(--duration-fast)] ease-[var(--ease-out)] motion-safe:group-aria-expanded:rotate-180 motion-reduce:transition-none') })),
+    header: createElement(Fragment, null, createElement(Avatar, { size: 'lg' }),
+      createElement('span', { className: cn('min-w-0') },
+      createElement('span', { className: cn('block font-sans text-label-default text-fg-default') }, 'Guest'),
+      createElement('span', { className: cn('block font-sans text-label-default text-fg-muted') }, 'Sign in to save content'))),
+    items: [{ kind: 'link', id: 'profile', label: 'Profile', href: '#profile' },
+      { kind: 'separator', id: 'account-separator' }, { id: 'sign-in', label: 'Sign in', tone: 'primary' }],
+    side: 'bottom', align: 'end', className: 'min-w-62.5',
+    onNavigate: (_entry, event) => event.preventDefault()
+  }));
+}
 export function MenuSample({ open }: { open?: boolean }) {
   return createElement(Menu, { ...menuProps, open, onNavigate: (_entry, event) => event.preventDefault() });
 }
@@ -2962,6 +2982,10 @@ function assertSectionHeaderCSS(css) {
 function assertMenuCSS(css) {
   for (const selector of [
     String.raw`.min-w-57\.5`,
+    String.raw`.min-w-62\.5`,
+    String.raw`.aria-expanded\:bg-surface-2`,
+    String.raw`.aria-expanded\:border-border-brand`,
+    String.raw`.motion-safe\:group-aria-expanded\:rotate-180`,
     String.raw`.py-2\.25`,
     String.raw`.max-h-\[var\(--radix-dropdown-menu-content-available-height\)\]`,
     String.raw`.data-highlighted\:bg-status-danger\/10`,
@@ -3882,6 +3906,15 @@ for (const value of [42.5, Number.NaN]) {
   }
 }
 // Menu's body portal is client-only; SSR exposes only the consumer-owned trigger.
+const { AccountMenuSample: SSRAccountMenuSample } = await import('./consumer.ts');
+const accountDocument = new JSDOM(renderToString(createElement(SSRAccountMenuSample)));
+try {
+  const trigger = accountDocument.window.document.querySelector('#account-trigger');
+  assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+  assert.equal(trigger.getAttribute('aria-label'), 'Account menu');
+  assert.ok(trigger.closest('.eg-user-menu'));
+  assert.equal(accountDocument.window.document.querySelector('[role="menu"]'), null);
+} finally { accountDocument.window.close(); }
 const { MenuSample } = await import('./consumer.ts');
 const menuDocument = new JSDOM(renderToString(createElement(MenuSample)));
 try {
@@ -5979,6 +6012,35 @@ try {
   assert.ok(document.activeElement === menuTrigger, 'Selection restores trigger focus');
   await act(async () => root.render(null));
   stage('menu:complete');
+  stage('account-menu:start');
+  const { AccountMenuSample } = await import('./consumer.ts');
+  await act(async () => root.render(createElement(AccountMenuSample)));
+  const accountTrigger = document.getElementById('account-trigger');
+  assert.equal(accountTrigger.getAttribute('aria-label'), 'Account menu');
+  assert.equal(accountTrigger.type, 'button');
+  assert.ok(accountTrigger.closest('.eg-user-menu'));
+  assert.ok(accountTrigger.classList.contains('eg-surface'));
+  assert.equal(accountTrigger.querySelector('.eg-avatar').getAttribute('aria-hidden'), 'true');
+  assert.equal(accountTrigger.querySelector('svg').getAttribute('aria-hidden'), 'true');
+  accountTrigger.focus();
+  await act(async () => accountTrigger.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })));
+  const accountPanel = document.querySelector('[role="menu"]');
+  assert.ok(accountPanel && !document.getElementById('app').contains(accountPanel));
+  assert.equal(accountTrigger.getAttribute('aria-controls'), accountPanel.id);
+  assert.equal(accountTrigger.getAttribute('aria-expanded'), 'true');
+  assert.equal(accountPanel.getAttribute('data-align'), 'end');
+  assert.ok(accountPanel.classList.contains('min-w-62.5'));
+  assert.match(accountPanel.textContent, /Guest/);
+  const profileItem = accountPanel.querySelector('[role="menuitem"]');
+  await waitForMenuFocus(profileItem);
+  assert.equal(profileItem.textContent, 'Profile');
+  await act(async () => profileItem.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+  assert.equal(document.querySelector('[role="menu"]'), null);
+  await waitForMenuFocus(accountTrigger);
+  assert.equal(accountTrigger.getAttribute('aria-expanded'), 'false');
+  await act(async () => root.render(null));
+  stage('account-menu:complete');
+
   stage('list-item:start');
   await act(async () => root.render(createElement(ListItemSamples)));
   const item = document.getElementById('consumer-item');
