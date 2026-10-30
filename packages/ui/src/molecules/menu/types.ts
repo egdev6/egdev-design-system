@@ -1,6 +1,8 @@
 import { cva } from 'class-variance-authority';
 import type { MouseEvent, ReactElement, ReactNode } from 'react';
 import type { IconName } from '../../atoms/icon';
+import { cn } from '../../lib/cn';
+import { surfaceVariants } from '../../primitives/surface';
 
 /** Entry color treatment; the label always carries the meaning. */
 export type MenuTone = 'default' | 'primary' | 'danger';
@@ -266,3 +268,22 @@ export const menuChevronVariants = cva('ml-auto size-4 -rotate-90');
 export const menuSeparatorVariants = cva('h-px my-1.5 mx-1 bg-border-subtle');
 export const menuLabelVariants = cva('px-3 pt-2 pb-1 font-display text-meta uppercase text-fg-muted');
 export const menuHeaderVariants = cva('flex items-center gap-3 p-2.5 pb-3 mb-1.5 border-b border-border-subtle');
+
+/** Internal account recipe parts; intentionally absent from Menu's public barrel. */
+export const accountMenuRecipeVariants = cva('', {
+  variants: {
+    part: {
+      wrapper: 'eg-user-menu inline-flex',
+      panel: 'min-w-62.5',
+      trigger: cn(
+        surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'full' }),
+        'group inline-flex items-center gap-1 min-h-10 pointer-coarse:min-h-11 pl-1 pr-1.5 border-border-hairline-strong text-fg-secondary cursor-pointer hover:bg-surface-2 hover:border-border-brand hover:text-fg-default aria-expanded:bg-surface-2 aria-expanded:border-border-brand aria-expanded:text-fg-default focus-visible:outline-none focus-visible:shadow-focus transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] motion-reduce:transition-none'
+      ),
+      caret:
+        'size-4 transition-transform duration-[var(--duration-fast)] ease-[var(--ease-out)] motion-safe:group-aria-expanded:rotate-180 motion-reduce:transition-none',
+      identity: 'min-w-0',
+      name: 'block font-sans text-label-default text-fg-default',
+      description: 'block font-sans text-label-default text-fg-muted'
+    }
+  }
+});

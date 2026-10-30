@@ -111,7 +111,9 @@ describe('Menu public metadata and static composition', () => {
       'Links',
       'Header',
       'Controlled',
-      'Disabled'
+      'Disabled',
+      'AccountMenu',
+      'AccountMenuControlled'
     ]);
     expect(stories.getText()).toContain("title: 'Molecules/Menu'");
     expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);

@@ -826,7 +826,7 @@
         "source": {
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuEntry",
-          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+          "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
       },
       {
@@ -1628,7 +1628,7 @@
         "source": {
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuEntry",
-          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+          "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
       },
       {
@@ -2648,7 +2648,7 @@
         "source": {
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuProps",
-          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+          "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
       },
       {
@@ -2772,7 +2772,7 @@
         "source": {
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuProps",
-          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+          "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
       },
       {
@@ -2782,7 +2782,7 @@
         "source": {
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuSubmenuItem",
-          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+          "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
       },
       {
@@ -3284,7 +3284,7 @@
         "source": {
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuProps",
-          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+          "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
       }
     ]
@@ -3351,7 +3351,7 @@
         "source": {
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuProps",
-          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+          "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
       }
     ]
@@ -3418,7 +3418,7 @@
         "source": {
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuProps",
-          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+          "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
       }
     ]
@@ -3485,7 +3485,7 @@
         "source": {
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuProps",
-          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+          "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
       }
     ]
@@ -3559,7 +3559,7 @@
         "source": {
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuEntry",
-          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+          "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
       }
     ]
@@ -3586,7 +3586,7 @@
         "source": {
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuProps",
-          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+          "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
       }
     ]
@@ -3623,7 +3623,7 @@
         "source": {
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuProps",
-          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+          "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
       }
     ]
@@ -4136,7 +4136,7 @@
         "source": {
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuEntry",
-          "revision": "sha256:5a7bc589984fe83ab17566aa8029a499b9dddd8cb99bba0ffa9d6136a9e810f5"
+          "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
       },
       {

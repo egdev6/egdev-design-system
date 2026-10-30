@@ -3,8 +3,10 @@ import { useState } from 'react';
 import { action } from 'storybook/actions';
 import { Avatar } from '../../atoms/avatar';
 import { Button } from '../../atoms/button';
+import { Icon } from '../../atoms/icon';
+import { cn } from '../../lib/cn';
 import { Menu } from './Menu';
-import type { MenuActionItem, MenuProps } from './types';
+import { accountMenuRecipeVariants, type MenuActionItem, type MenuEntry, type MenuProps } from './types';
 
 const actions: MenuActionItem[] = [
   { id: 'edit', label: 'Edit', onSelect: action('edit') },
@@ -139,4 +141,64 @@ export const Disabled: Story = {
       { kind: 'submenu', id: 'disabled-submenu', label: 'Unavailable submenu', disabled: true, items: actions }
     ]
   }
+};
+
+const accountItems: MenuEntry[] = [
+  { kind: 'link', id: 'profile', label: 'Profile', icon: 'user', href: '#profile' },
+  { kind: 'link', id: 'saved', label: 'Saved', icon: 'bookmark', href: '#saved' },
+  { kind: 'link', id: 'notifications', label: 'Notifications', icon: 'bell', href: '#notifications' },
+  { kind: 'link', id: 'settings', label: 'Settings', icon: 'settings', href: '#settings' },
+  { kind: 'separator', id: 'account-separator' },
+  { id: 'sign-in', label: 'Sign in', icon: 'log-out', tone: 'primary', onSelect: action('sign in') }
+];
+
+const accountArgs = {
+  children: (
+    <button type='button' aria-label='Account menu' className={cn(accountMenuRecipeVariants({ part: 'trigger' }))}>
+      <Avatar size='md' />
+      <Icon name='chevron-down' className={cn(accountMenuRecipeVariants({ part: 'caret' }))} />
+    </button>
+  ),
+  header: (
+    <>
+      <Avatar size='lg' />
+      <span className={cn(accountMenuRecipeVariants({ part: 'identity' }))}>
+        <span className={cn(accountMenuRecipeVariants({ part: 'name' }))}>Guest</span>
+        <span className={cn(accountMenuRecipeVariants({ part: 'description' }))}>Sign in to save content</span>
+      </span>
+    </>
+  ),
+  items: accountItems,
+  side: 'bottom',
+  align: 'end',
+  className: cn(accountMenuRecipeVariants({ part: 'panel' })),
+  onNavigate: (entry, event) => {
+    event.preventDefault();
+    action('account navigation')(entry);
+  }
+} satisfies MenuProps;
+
+/**
+ * Account access is a Menu recipe, not a UserMenu export. Copy, routes and authentication
+ * remain application-owned. Copy these static part classes when composing in an application;
+ * accountMenuRecipeVariants is internal and is not a supported package import.
+ * Menu/Radix alone own expanded state, focus, dismissal and the portaled panel.
+ */
+export const AccountMenu: Story = {
+  args: accountArgs,
+  render: (args) => (
+    <div className={cn(accountMenuRecipeVariants({ part: 'wrapper' }))}>
+      <Menu {...args} />
+    </div>
+  )
+};
+
+/** A host applies visibility requests; the trigger caret follows native aria-expanded only. */
+export const AccountMenuControlled: Story = {
+  args: accountArgs,
+  render: (args) => (
+    <div className={cn(accountMenuRecipeVariants({ part: 'wrapper' }))}>
+      <ControlledMenu {...args} />
+    </div>
+  )
 };
