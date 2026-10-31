@@ -1644,7 +1644,18 @@
       "scope": "convention:effect-profile",
       "contentHash": "sha256:293194eade9734f78ff66b5f2174df11e8984d0dc312fa5d0d6eb924c3d694b6"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "AmbientBackground",
+        "type": "AmbientBackgroundProfile ('base' | 'read' | 'live')",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/ambient-background/types.ts",
+          "symbol": "AmbientBackgroundProps",
+          "revision": "sha256:029a277aec8c2814ce057223b47f7581dad7707725eb00547fb1b037ab420174"
+        }
+      }
+    ]
   },
   {
     "id": "layer-opacity",
@@ -1660,7 +1671,18 @@
       "scope": "convention:layer-opacity",
       "contentHash": "sha256:02d11f63a0d25c145b57398f0db20b29f0b2e1199ae00205410224951880814c"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "AmbientBackground",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/ambient-background/types.ts",
+          "symbol": "AmbientBackgroundProps",
+          "revision": "sha256:029a277aec8c2814ce057223b47f7581dad7707725eb00547fb1b037ab420174"
+        }
+      }
+    ]
   },
   {
     "id": "corner-badge-icon",

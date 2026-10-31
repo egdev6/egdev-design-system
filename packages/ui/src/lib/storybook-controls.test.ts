@@ -654,6 +654,27 @@ describe('pure JSDoc Controls metadata mapping', () => {
 });
 
 describe('registered JSDoc Controls through installed Storybook extraction and inference', () => {
+  it('maps AmbientBackground effects metadata through the registered enhancer', () => {
+    const root = new URL('../../../effects/', import.meta.url);
+    const effectsParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', root)), {
+      ...config.typescript?.reactDocgenTypescriptOptions
+    });
+    const doc = effectsParser
+      .parse(fileURLToPath(new URL('src/ambient-background/AmbientBackground.tsx', root)))
+      .find((item) => item.displayName === 'AmbientBackground');
+    expect(doc).toBeDefined();
+    const metadata = Object.assign((_props: Record<string, unknown>) => null, { __docgenInfo: doc });
+    const composed = composeStory({}, { title: 'Metadata/AmbientBackground', component: metadata }, preview, 'Default');
+    expect(composed.argTypes.profile?.control).toEqual({ type: 'select' });
+    expect([...(composed.argTypes.profile?.options ?? [])].sort()).toEqual(['base', 'live', 'read']);
+    expect(composed.argTypes.opacity?.control).toEqual({ type: 'number' });
+    expect(composed.args).toEqual({});
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style']) {
+      expect(composed.argTypes[name], name).toBeDefined();
+    }
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+  });
   it('retains Field required content, stacked defaults, choices and supported native rows', () => {
     const { argTypes, args } = story('Field');
     expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });

@@ -1174,7 +1174,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "mover",
-    "notas": "One decorative particle-background effect rendered with canvas; it does not coordinate independent UI concepts or define a structural region. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval."
+    "notas": "Working-tree React effect under the approved v0.4 contract and implementation plan: decorative canvas particles with profile and opacity, reduced-motion fallback and a forwarded root ref. No component stylesheet or director choreography. Browser visual conformity and packed-consumer validation remain pending. Contract: [#45](https://github.com/egdev6/egdev-design-system/issues/45)."
   },
   {
     "actual": "Isotipo3D",

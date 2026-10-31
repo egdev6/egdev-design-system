@@ -3,17 +3,41 @@
   "version": "0.1.0",
   "type": "module",
   "description": "Capas de efecto de EGDEV (AmbientBackground, Isotipo3D). Dependen de canvas y three.js.",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
   "files": [
-    "src",
-    "reference"
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
   ],
   "scripts": {
-    "build": "echo 'pendiente: portar reference/ a componentes'",
-    "typecheck": "echo 'pendiente'"
+    "build": "vite build && vite build --config vite.styles.config.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "peerDependencies": {
     "@egdev/tokens": "workspace:*",
-    "react": ">=18.0.0"
+    "react": ">=18.0.0",
+    "three": "0.160.0",
+    "react-dom": ">=18.0.0"
+  },
+  "dependencies": {
+    "@egdev/ui": "workspace:*",
+    "class-variance-authority": "0.7.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/three": "0.160.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "three": "0.160.0"
   }
 }

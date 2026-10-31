@@ -57,6 +57,10 @@ function indicatorProposalHash(entry) {
 }
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...['effect-profile', 'layer-opacity'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/effects/src/ambient-background/types.ts#AmbientBackgroundProps'
+  })),
   ...['accessible-name', 'collection-items', 'preset-dimensions', 'decorative-center-content'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/gauge-group/types.ts#GaugeGroupProps'
