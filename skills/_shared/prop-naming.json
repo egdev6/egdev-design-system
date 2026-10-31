@@ -422,7 +422,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon/types.ts",
           "symbol": "IconProps",
-          "revision": "sha256:1ea0dd7b8a4e42f90f6bd352edf968b9765eea9745ff8ff0ff6b5b9d0957ec13"
+          "revision": "sha256:673126c6aea8fc04533a323869695bf96abc5ccc732433c446c834d5be577292"
         }
       },
       {
@@ -940,6 +940,16 @@
         }
       },
       {
+        "component": "FieldMessage",
+        "type": "FieldMessageTone ('description' | 'info' | 'warning' | 'success' | 'error')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/field-message/types.ts",
+          "symbol": "FieldMessageProps",
+          "revision": "sha256:e5c3ba8c39dbd45a5aa7e4701ddf65b82e9c85284b15bd0a8d09a211da6f93fe"
+        }
+      },
+      {
         "component": "Indicator",
         "type": "IndicatorTone ('neutral' | 'info' | 'success' | 'warning' | 'danger' | 'brand')",
         "status": "existing",
@@ -1130,7 +1140,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon/types.ts",
           "symbol": "IconProps",
-          "revision": "sha256:1ea0dd7b8a4e42f90f6bd352edf968b9765eea9745ff8ff0ff6b5b9d0957ec13"
+          "revision": "sha256:673126c6aea8fc04533a323869695bf96abc5ccc732433c446c834d5be577292"
         }
       },
       {
@@ -1260,7 +1270,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:5bd6ba99dfd49dfcfe2273cd75bf631ae77448d44bcd33e9c36544ea399f14c0"
+          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
         }
       },
       {
@@ -1770,6 +1780,16 @@
           "symbol": "ChipProps",
           "revision": "sha256:ba72c0a83957b4990e1d69a971c8214cd5ba1debe375d1c14f987290650ad765"
         }
+      },
+      {
+        "component": "FieldMessage",
+        "type": "IconName (override; semantic tones derive a default glyph)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/field-message/types.ts",
+          "symbol": "FieldMessageProps",
+          "revision": "sha256:e5c3ba8c39dbd45a5aa7e4701ddf65b82e9c85284b15bd0a8d09a211da6f93fe"
+        }
       }
     ]
   },
@@ -2198,7 +2218,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon/types.ts",
           "symbol": "IconProps",
-          "revision": "sha256:1ea0dd7b8a4e42f90f6bd352edf968b9765eea9745ff8ff0ff6b5b9d0957ec13"
+          "revision": "sha256:673126c6aea8fc04533a323869695bf96abc5ccc732433c446c834d5be577292"
         }
       }
     ]
@@ -2225,7 +2245,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon/types.ts",
           "symbol": "IconProps",
-          "revision": "sha256:1ea0dd7b8a4e42f90f6bd352edf968b9765eea9745ff8ff0ff6b5b9d0957ec13"
+          "revision": "sha256:673126c6aea8fc04533a323869695bf96abc5ccc732433c446c834d5be577292"
         }
       }
     ]
@@ -3162,7 +3182,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:5bd6ba99dfd49dfcfe2273cd75bf631ae77448d44bcd33e9c36544ea399f14c0"
+          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
         }
       }
     ]
@@ -3189,7 +3209,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:5bd6ba99dfd49dfcfe2273cd75bf631ae77448d44bcd33e9c36544ea399f14c0"
+          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
         }
       }
     ]
@@ -3216,7 +3236,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:5bd6ba99dfd49dfcfe2273cd75bf631ae77448d44bcd33e9c36544ea399f14c0"
+          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
         }
       }
     ]
@@ -3243,7 +3263,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:5bd6ba99dfd49dfcfe2273cd75bf631ae77448d44bcd33e9c36544ea399f14c0"
+          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
         }
       }
     ]
@@ -3270,7 +3290,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:5bd6ba99dfd49dfcfe2273cd75bf631ae77448d44bcd33e9c36544ea399f14c0"
+          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
         }
       }
     ]
@@ -3297,7 +3317,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:5bd6ba99dfd49dfcfe2273cd75bf631ae77448d44bcd33e9c36544ea399f14c0"
+          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
         }
       }
     ]
@@ -5215,6 +5235,29 @@
     "usages": []
   },
   {
+    "id": "field-message-content",
+    "name": "children",
+    "meaning": "Consumer-authored plain text shown as one form-control annotation, without interactive or rich content.",
+    "whenToUse": "A dedicated FieldMessage displays descriptive guidance or a semantic condition for a control; the parent owns labeling, relationships and validation.",
+    "avoid": "General React children, notification summaries, control labels, validation functions or interactive message actions.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "FieldMessage",
+        "type": "string (required; empty string omits the message)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/field-message/types.ts",
+          "symbol": "FieldMessageProps",
+          "revision": "sha256:e5c3ba8c39dbd45a5aa7e4701ddf65b82e9c85284b15bd0a8d09a211da6f93fe"
+        }
+      }
+    ]
+  },
+  {
     "id": "anchor-corner-position",
     "name": "position",
     "meaning": "Physical corner of a non-floating anchor where a passive supplementary marker is placed.",
@@ -5237,6 +5280,29 @@
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
           "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+        }
+      }
+    ]
+  },
+  {
+    "id": "field-guidance-tone",
+    "name": "hintTone",
+    "meaning": "Consumer-selected semantic treatment of a Field hint subordinate to the existing error-message precedence and invalidity contract.",
+    "whenToUse": "Field keeps a hint string and separate error string; the consumer chooses description, info, warning or success presentation for the hint only.",
+    "avoid": "Root/control appearance, standalone message tone (use tone), validation status, an error-message tone override or announcement priority.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Field",
+        "type": "Exclude<FieldMessageTone, 'error'> (description | info | warning | success; default description)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/field/types.ts",
+          "symbol": "FieldProps",
+          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
         }
       }
     ]

@@ -264,15 +264,15 @@
     "notas": "Implemented public working-tree React atom under the [approved v0.2 contract](components/indicator/v0.2/spec.md): passive dot/count/icon marker on a direct-children anchor, physical corners, safe-integer counts and overflow text. Marker semantics stay decorative and consumer content owns meaning. Compact token Material; no stylesheet, ref or asChild. Parent unit, metadata, build and packed React 18.3.1/19.3.0 checks passed; runtime browser/AT conformity remains pending. Badge is unchanged."
   },
   {
-    "actual": "—",
-    "nivelActual": "—",
+    "actual": "Field message",
+    "nivelActual": "internal part",
     "nombre": "FieldMessage",
     "nivel": "atom",
     "destino": "ui",
     "radix": "—",
     "compone": "Icon",
-    "accion": "nuevo",
-    "notas": "Draft v0.1 only: hint/error icon plus text, control description id and explicit live policy. Field #84 composes it with live off to preserve its default; Notice #93 shares marker-free tone/icon/text recipes. Contract: [#179](https://github.com/egdev6/egdev-design-system/issues/179), [local draft](components/field-message/v0.1/spec.md)."
+    "accion": "extraer",
+    "notas": "React atom extracted from Field: plain text, description/info/warning/success/error tones, derived decorative status glyphs and native announcement opt-in only. No validation, ref/asChild, surface or stylesheet. Field retains hint/error and adds hintTone. Contract: [#179](https://github.com/egdev6/egdev-design-system/issues/179), [v0.2](components/field-message/v0.2/spec.md)."
   },
   {
     "actual": "PermissionLevel",
@@ -435,9 +435,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "Label + Slot",
-    "compone": "Label, VisuallyHidden, Input|Textarea|Select|Slider|Checkbox|Switch",
+    "compone": "Label, VisuallyHidden, FieldMessage, Input|Textarea|Select|Slider|Checkbox|Switch",
     "accion": "separar",
-    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/84): coordinates one control with a required visible/hidden label, hint or replacing error, optional counter and Slider readout. Stacked/choice layouts, child-first Slot descriptions, compatible-child invalid semantics and single disabled opacity per owned part. Controls own value, interaction and Material; native p/span messages, no live region, stylesheet, ref or asChild. FieldMessage #179 remains unapproved and is not composed."
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/84): coordinates one control with a required visible/hidden label, FieldMessage hint or replacing error, non-error hintTone, optional counter and Slider readout. Stacked/choice layouts, child-first Slot descriptions, compatible-child invalid semantics and single disabled opacity per owned part. Controls own value, interaction and Material; FieldMessage annotation paragraphs, no implicit live region, stylesheet, ref or asChild. The [v0.2 amendment](components/field/v0.2/message-amendment.md) preserves existing hint/error inputs."
   },
   {
     "actual": "MenuList (popup)",
@@ -536,7 +536,7 @@
     "radix": "—",
     "compone": "Surface recipe, Icon; consumer Button/Link actions",
     "accion": "mantener",
-    "notas": "Implemented React molecule under [approved v0.1 + A1 contract](https://github.com/egdev6/egdev-design-system/issues/93#issuecomment-6503388441): persistent single-owner status/alert, required summary, five tones, md/sm sizes and optional actions. Shared noticeVariants inherits eg-surface only; Notice adds eg-notice separately. No stylesheet, dismissal, ref or asChild. Proposed FieldMessage #179 sharing remains unimplemented."
+    "notas": "Implemented React molecule under [approved v0.1 + A1 contract](https://github.com/egdev6/egdev-design-system/issues/93#issuecomment-6503388441): persistent single-owner status/alert, required summary, five tones, md/sm sizes and optional actions. Shared noticeVariants inherits eg-surface only; Notice adds eg-notice separately. No stylesheet, dismissal, ref or asChild. FieldMessage #179 independently reuses semantic tokens; Notice/Toast runtime recipes remain unchanged."
   },
   {
     "actual": "—",

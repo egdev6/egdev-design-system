@@ -1,5 +1,6 @@
 import * as SlotPrimitive from '@radix-ui/react-slot';
 import type { FC } from 'react';
+import { FieldMessage } from '../../atoms/field-message';
 import { Label } from '../../primitives/label';
 import { VisuallyHidden } from '../../primitives/visually-hidden';
 import type { FieldProps } from './types';
@@ -22,7 +23,11 @@ export const Field: FC<FieldProps> = (props) => {
         {field.readout !== undefined ? <output {...field.readoutProps}>{field.readout}</output> : null}
       </div>
       {field.choice ? null : <SlotPrimitive.Root {...field.controlProps}>{field.children}</SlotPrimitive.Root>}
-      {field.message ? <p {...field.messageProps}>{field.message}</p> : null}
+      {field.message ? (
+        <div {...field.messageWrapperProps}>
+          <FieldMessage {...field.messageProps}>{field.message}</FieldMessage>
+        </div>
+      ) : null}
       {field.counter ? (
         <span {...field.counterProps}>
           {field.counter.value} / {field.counter.max}

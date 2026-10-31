@@ -1,0 +1,42 @@
+{
+  "kind": "assistant-recorded-owner-decisions",
+  "nativeReviewApproval": false,
+  "canonicalIssues": [179, 84],
+  "baseline": "f88b36e44b3d5ec6d7725350959f9cdfdfeb5b23",
+  "evidence": [
+    {
+      "quote": "conservamos",
+      "scope": "FieldMessage name, no separate Hint"
+    },
+    {
+      "quote": "si",
+      "scope": "Compatible API: Field keeps hint/error; hintTone description/info/warning; four-tone standalone message; no derived announcements/focus"
+    },
+    {
+      "quote": "si, puedes tomar este como referencia [Image#1]",
+      "scope": "Staged plan and local preview/browser specimen capture; user-supplied visual direction"
+    },
+    {
+      "quote": "si, description sería en color blanco/gris",
+      "scope": "Add success; description white/gray, existing neutral token"
+    },
+    {
+      "quote": "apruebo",
+      "scope": "Presented five-tone specimen, add circle-alert/circle-check/info and semantic icon defaults; description no default icon"
+    }
+  ],
+  "specimen": {
+    "path": "docs/components/field-message/v0.2/field-message-five-tones.png",
+    "sha256": "sha256:e062352f2575b76979b04899decb3acb218ac6b6fd85e7e1c2a656271f7a6b56"
+  },
+  "limits": [
+    "Manual assistant record of direct interactive statements, not a native or independent verdict",
+    "Consolidated document hashes identify authored bytes, not a claim of fresh per-payload human review",
+    "No new tokens/dependencies, control-border changes, commit/push/PR/merge or remote publication authority",
+    "field-message-content and field-guidance-tone remain proposed; no global naming approval"
+  ],
+  "documents": {
+    "docs/components/field-message/v0.2/spec.md": "sha256:f1f03100a4dde56b8819f2741f37c21644db6276be951b349833d04068897631",
+    "docs/components/field/v0.2/message-amendment.md": "sha256:4df7d1ee9599c54dc788a4c5287d09bb95818d5ea067dddda2267c822e46a94a"
+  }
+}

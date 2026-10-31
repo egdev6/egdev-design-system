@@ -282,6 +282,48 @@ describe('Storybook TypeScript docgen contract', () => {
       /\b(?:argTypes|play)\s*:/
     );
   });
+  it('extracts FieldMessage plain content, five tones and native-only opt-in announcements', () => {
+    const doc = parser
+      .parse(source('atoms/field-message/FieldMessage.tsx'))
+      .find((item) => item.displayName === 'FieldMessage');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    expect(props.children).toMatchObject({ required: true, defaultValue: null, tags: { control: 'text' } });
+    expect(props.tone).toMatchObject({ defaultValue: { value: 'description' }, tags: { control: 'select' } });
+    expect(props.tone?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'description',
+      'info',
+      'warning',
+      'success',
+      'error'
+    ]);
+    expect(props.icon).toMatchObject({ defaultValue: null, tags: { control: 'select' } });
+    expect(props.icon?.type.value).toHaveLength(45);
+    expect(props.role?.defaultValue).toBeNull();
+    expect(props['aria-live']?.defaultValue).toBeNull();
+    for (const name of ['id', 'className', 'role', 'aria-live']) {
+      expect(props[name]).toBeDefined();
+    }
+    for (const name of ['ref', 'asChild']) {
+      expect(props[name]).toBeUndefined();
+    }
+    const file = ast(source('atoms/field-message/types.ts'));
+    const own = ownProps(file, ['FieldMessageProps']);
+    expect(own).toHaveLength(3);
+    for (const prop of own) {
+      expect(ts.getJSDocTags(prop).filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
+    }
+    expect(exportedStoryNames(ast(source('atoms/field-message/FieldMessage.stories.tsx')))).toEqual([
+      'Default',
+      'Info',
+      'Warning',
+      'Success',
+      'ErrorMessage',
+      'IconOverride',
+      'Wrapping',
+      'Announcement'
+    ]);
+  });
   it('extracts Field required controls, constant defaults, native rows and all own directives', () => {
     const doc = parser.parse(source('molecules/field/Field.tsx')).find((item) => item.displayName === 'Field');
     expect(doc).toBeDefined();
@@ -290,6 +332,7 @@ describe('Storybook TypeScript docgen contract', () => {
       label: 'text',
       children: 'false',
       hint: 'text',
+      hintTone: 'select',
       error: 'text',
       counter: 'false',
       readout: 'text',
@@ -298,7 +341,7 @@ describe('Storybook TypeScript docgen contract', () => {
     };
     const file = ast(source('molecules/field/types.ts'));
     const declarations = ownProps(file, ['FieldProps']);
-    expect(declarations).toHaveLength(8);
+    expect(declarations).toHaveLength(9);
     for (const declaration of declarations) {
       const name = declaration.name.getText(file);
       expect(ts.getJSDocTags(declaration).filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
@@ -308,10 +351,17 @@ describe('Storybook TypeScript docgen contract', () => {
       if (controls[name] === 'false') {
         expect(tags?.controlReason).toMatch(/ReactElement|FieldCounter/);
       }
-      if (name !== 'hideLabel' && name !== 'layout') {
+      if (name !== 'hideLabel' && name !== 'layout' && name !== 'hintTone') {
         expect(props[name]?.defaultValue, name).toBeNull();
       }
     }
+    expect(props.hintTone?.defaultValue?.value).toBe('description');
+    expect(props.hintTone?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'description',
+      'info',
+      'warning',
+      'success'
+    ]);
     expect(props.hideLabel?.defaultValue?.value).toBe('false');
     expect(props.layout?.defaultValue?.value).toBe('stacked');
     expect(props.layout?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
@@ -620,6 +670,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/chip',
       './atoms/countdown',
       './atoms/dropzone',
+      './atoms/field-message',
       './atoms/gauge',
       './atoms/icon',
       './atoms/icon-button',
@@ -693,6 +744,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Divider',
       'Dropzone',
       'Field',
+      'FieldMessage',
       'Gauge',
       'GaugeDock',
       'GaugeDockItem',
@@ -2033,7 +2085,7 @@ describe('Icon glyph metadata contract', () => {
     expect(props.name).toMatchObject({ required: true, defaultValue: null, tags: { control: 'select' } });
     expect(props.name?.type.name).toBe('enum');
     const glyphs = (props.name?.type.value ?? []).map((item: { value: string }) => normalize(item.value));
-    expect(glyphs).toHaveLength(42);
+    expect(glyphs).toHaveLength(45);
     expect(glyphs).toEqual(expect.arrayContaining(['check', 'minus', 'plus', 'chevron-down']));
     expect(props.size?.type.value?.map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
       'lg',
@@ -2266,7 +2318,7 @@ describe('Avatar identity metadata contract', () => {
       (props[prop]?.type.value ?? []).map((item: { value: string }) => normalize(item.value));
     expect(values('size').sort()).toEqual(['lg', 'md', 'sm', 'xl']);
     expect(normalize(props.size?.defaultValue?.value)).toBe('md');
-    expect(values('badgeIcon')).toHaveLength(42);
+    expect(values('badgeIcon')).toHaveLength(45);
     expect(values('badgeIcon')).toContain('user');
     expect(values('badgeIcon')).toContain('linkedin');
     expect(props.badgeIcon?.defaultValue).toBeNull();

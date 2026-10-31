@@ -33,7 +33,7 @@ import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorI
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
 import { Toast, ToastProvider } from '@egdev/ui';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, Gauge, GaugeDock, GaugeDockItem, GaugeDockSeparator, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, GaugeDock, GaugeDockItem, GaugeDockSeparator, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -63,6 +63,8 @@ import type {
   DividerProps,
   DropzoneProps,
   FieldProps,
+  FieldMessageProps,
+  FieldMessageTone,
   FieldLayout,
   FieldCounter,
   GaugeProps,
@@ -998,6 +1000,22 @@ const slottedModule: ModuleCardProps = { ...moduleCardDefault, asChild: true };
 const wideModule: ModuleCardProps = { ...moduleCardDefault, wide: true };
 // @ts-expect-error Material uses tone, never a glass boolean.
 const glassModule: ModuleCardProps = { ...moduleCardDefault, glass: true };
+// The standalone annotation and Field share public APIs, no workspace aliases.
+export const messageTones: FieldMessageTone[] = ['description', 'info', 'warning', 'success', 'error'];
+export const messageProps: FieldMessageProps = { children: 'Message text', tone: 'description' };
+export function FieldMessageSamples({ tone = 'description' }: { tone?: FieldMessageTone }) {
+  return createElement(Fragment, null,
+    createElement('input', { id: 'message-control', 'aria-label': 'Message control', 'aria-describedby': 'standalone-message' }),
+    createElement(FieldMessage, { ...messageProps, id: 'standalone-message', tone }),
+    createElement(Field, { label: 'Checked name', hint: 'Looks good.', hintTone: 'success', children: createElement(Input, { id: 'message-field-control' }) }));
+}
+// @ts-expect-error Error presentation belongs to the separate Field.error validation path.
+const invalidHintTone: FieldProps = { label: 'Name', children: createElement(Input), hintTone: 'error' };
+// @ts-expect-error An annotation requires text, not a button action.
+const interactiveMessage: FieldMessageProps = { children: createElement('button', null, 'Action') };
+// @ts-expect-error FieldMessage does not expose ref forwarding.
+const messageRef: FieldMessageProps = { children: 'Text', ref: createRef<HTMLParagraphElement>() };
+
 // Field samples stay outside App so existing control counts and focus harnesses remain unchanged.
 const fieldLayout: FieldLayout = 'stacked';
 const fieldCounter: FieldCounter = { value: 294, max: 280 };
@@ -3083,6 +3101,16 @@ function assertSectionHeaderCSS(css) {
 }
 
 // Menu owns geometry and entry treatments, while the shared Surface recipe supplies Material.
+function assertFieldMessageCSS(css) {
+  for (const name of ['fg-muted', 'status-info', 'status-warning', 'status-success', 'status-danger']) {
+    assert.ok(css.includes('.text-' + name), 'Missing FieldMessage text utility ' + name);
+    assert.ok(css.includes('--color-' + name), 'Missing FieldMessage token ' + name);
+  }
+  assert.ok(css.includes('.items-start'));
+  assert.ok(css.includes('.gap-1\\.5'));
+  assert.ok(css.includes('var(--text-body-muted--font-weight)'));
+}
+
 function assertMenuCSS(css) {
   for (const selector of [
     String.raw`.min-w-57\.5`,
@@ -3601,6 +3629,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Divider',
   'Dropzone',
   'Field',
+  'FieldMessage',
   'Gauge',
   'GaugeDock',
   'GaugeDockItem',
@@ -3713,6 +3742,8 @@ ${assertSearchTriggerCSS.toString()}
 ${assertSocialLinksCSS.toString()}
 ${assertMenuCSS.toString()}
 assertMenuCSS(shippedStyles);
+${assertFieldMessageCSS.toString()}
+assertFieldMessageCSS(shippedStyles);
 ${assertTabsCSS.toString()}
 ${assertNoticeCSS.toString()}
 assertNoticeCSS(shippedStyles);
@@ -4245,6 +4276,25 @@ const unavailableCountdown = renderToString(createElement(CountdownSamples, { de
 assert.ok(unavailableCountdown.includes('data-state="unavailable"') && unavailableCountdown.includes('Time unavailable'));
 assert.doesNotMatch(unavailableCountdown, /<time|eg-countdown__row/);
 // Field SSR uses real public types/controls; DOM text assertions tolerate React's text separators.
+const { FieldMessageSamples: SSRFieldMessageSamples } = await import('./consumer.ts');
+for (const tone of ['description', 'info', 'warning', 'success', 'error']) {
+  const dom = new JSDOM(renderToString(createElement(SSRFieldMessageSamples, { tone })));
+  try {
+    const document = dom.window.document;
+    const message = document.getElementById('standalone-message');
+    assert.equal(message.tagName, 'P');
+    assert.equal(message.textContent, 'Message text');
+    assert.ok(message.classList.contains('eg-field-message'));
+    assert.equal(message.querySelector('svg') === null, tone === 'description');
+    assert.equal(document.querySelector('[role="alert"], [role="status"], [aria-live]'), null);
+    assert.equal(document.getElementById('message-control').getAttribute('aria-invalid'), null);
+    const fieldControl = document.getElementById('message-field-control');
+    const guidance = document.getElementById(fieldControl.getAttribute('aria-describedby'));
+    assert.equal(guidance.textContent, 'Looks good.');
+    assert.ok(guidance.classList.contains('text-status-success'));
+    assert.equal(fieldControl.getAttribute('aria-invalid'), null);
+  } finally { dom.window.close(); }
+}
 const fieldDocument = new JSDOM(renderToString(createElement(FieldSamples)));
 try {
   const document = fieldDocument.window.document;
@@ -5373,6 +5423,25 @@ try {
   assert.equal(document.querySelector('#slider-field [role="slider"]').getAttribute('aria-invalid'), 'true');
   await act(async () => root.render(null));
   assert.equal(fieldControlRef.current, null);
+  stage('field-message:start');
+  const { FieldMessageSamples, messageTones } = await import('./consumer.ts');
+  await act(async () => root.render(createElement(FieldMessageSamples)));
+  const messageControl = document.getElementById('message-control');
+  const messageRoot = document.getElementById('standalone-message');
+  await act(async () => messageControl.focus());
+  for (const tone of messageTones) {
+    await act(async () => root.render(createElement(FieldMessageSamples, { tone })));
+    assert.equal(document.getElementById('standalone-message'), messageRoot);
+    assert.equal(document.activeElement, messageControl);
+    assert.equal(messageControl.getAttribute('aria-invalid'), null);
+    assert.equal(messageRoot.querySelector('svg') === null, tone === 'description');
+    if (tone !== 'description') assert.equal(messageRoot.querySelector('svg').getAttribute('aria-hidden'), 'true');
+    assert.equal(messageRoot.getAttribute('role'), null);
+    assert.equal(messageRoot.getAttribute('aria-live'), null);
+  }
+  await act(async () => root.render(null));
+  stage('field-message:complete');
+
   const { SelectTileSamples, tileRequests } = await import('./consumer.ts');
   await act(async () => root.render(createElement(SelectTileSamples, { value: 'slides' })));
   let tiles = document.querySelector('.eg-select-tile');

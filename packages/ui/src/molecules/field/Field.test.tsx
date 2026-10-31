@@ -130,7 +130,7 @@ describe('Field public contract', () => {
     );
     const { rerender } = render(renderField('external external'));
     const input = screen.getByRole('textbox', { name: 'Title' });
-    const messageId = screen.getByText('Short title').id;
+    const messageId = screen.getByText('Short title').closest('.eg-field-message')?.id;
     const counterId = screen.getByText('3 / 10').id;
     expect(input).toHaveAttribute('aria-describedby', `external ${messageId} ${counterId}`);
     rerender(renderField(` external ${messageId} external ${counterId} `));
@@ -240,7 +240,7 @@ describe('Field public contract', () => {
     const label = screen.getByText('Notifications');
     expect(label).toHaveClass('font-[var(--text-body-default--font-weight)]');
     expect(label.parentElement).toHaveClass('cursor-pointer');
-    expect(screen.getByText('Receive updates')).toHaveClass('col-start-2');
+    expect(screen.getByText('Receive updates').closest('.eg-field-message')?.parentElement).toHaveClass('col-start-2');
     expect(screen.queryByText('Ignored')).not.toBeInTheDocument();
     expect(screen.queryByText('1 / 2')).not.toBeInTheDocument();
     await user.click(label);
@@ -258,10 +258,19 @@ describe('Field public contract', () => {
     );
     const input = screen.getByRole('textbox', { name: 'Title' });
     const label = screen.getByText('Title');
-    for (const part of [label.parentElement, screen.getByText('Unavailable'), screen.getByText('0 / 10')]) {
+    for (const part of [
+      label.parentElement,
+      screen.getByText('Unavailable').closest('.eg-field-message')?.parentElement,
+      screen.getByText('0 / 10')
+    ]) {
       expect(part).toHaveClass('group-has-[:disabled]:opacity-45', 'group-has-[[data-disabled]]:opacity-45');
     }
-    for (const part of [rootFor(input), label, screen.getByText('Read only')]) {
+    for (const part of [
+      rootFor(input),
+      label,
+      screen.getByText('Read only'),
+      screen.getByText('Unavailable').closest('.eg-field-message')
+    ]) {
       expect(part?.className).not.toContain('opacity-45');
     }
     expect(label).toHaveClass('eg-label');
@@ -298,5 +307,51 @@ describe('Field public contract', () => {
     } finally {
       error.mockRestore();
     }
+  });
+});
+
+describe('FieldMessage composition', () => {
+  it.each([
+    ['description', 'text-fg-muted'],
+    ['info', 'text-status-info'],
+    ['warning', 'text-status-warning'],
+    ['success', 'text-status-success']
+  ] as const)('uses %s guidance without changing validity or announcements', (hintTone, color) => {
+    const { container } = render(
+      <Field label='Title' hint='Check this value' hintTone={hintTone}>
+        <Input />
+      </Field>
+    );
+    const control = screen.getByRole('textbox', { name: 'Title', description: 'Check this value' });
+    const message = container.querySelector('.eg-field-message');
+    expect(message).toHaveClass(color);
+    expect(message?.id).toBe(control.getAttribute('aria-describedby'));
+    expect(control).not.toHaveAttribute('aria-invalid');
+    expect(rootFor(control)).not.toHaveAttribute('data-state');
+    expect(rootFor(control)).not.toHaveAttribute('hintTone');
+    expect(container.querySelector('[role="alert"], [role="status"], [aria-live]')).toBeNull();
+    expect(message?.querySelector('svg') === null).toBe(hintTone === 'description');
+  });
+
+  it('keeps error precedence, identity and focus while hint tone changes and recovers', () => {
+    const view = (error: string, hintTone: 'info' | 'success') => (
+      <Field label='Title' hint='Available name' error={error} hintTone={hintTone}>
+        <Input />
+      </Field>
+    );
+    const { container, rerender } = render(view('Required', 'info'));
+    const control = screen.getByRole('textbox', { name: 'Title' });
+    const id = control.getAttribute('aria-describedby');
+    control.focus();
+    rerender(view('Required', 'success'));
+    expect(container.querySelector('.eg-field-message')).toHaveClass('text-status-danger');
+    expect(control).toHaveAccessibleDescription('Required');
+    expect(control).toHaveAttribute('aria-invalid', 'true');
+    expect(control).toHaveFocus();
+    rerender(view('', 'success'));
+    expect(control).toHaveAccessibleDescription('Available name');
+    expect(control).toHaveAttribute('aria-describedby', id);
+    expect(control).not.toHaveAttribute('aria-invalid');
+    expect(container.querySelector('.eg-field-message')).toHaveClass('text-status-success');
   });
 });

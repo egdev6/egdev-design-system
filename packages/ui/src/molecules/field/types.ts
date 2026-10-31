@@ -1,5 +1,6 @@
 import { cva } from 'class-variance-authority';
 import type { ComponentPropsWithoutRef, ReactElement } from 'react';
+import type { FieldMessageTone } from '../../atoms/field-message';
 
 /** Placement of one control relative to its label; not a keyboard orientation. */
 export type FieldLayout = 'stacked' | 'choice';
@@ -39,6 +40,12 @@ export type FieldProps = Omit<ComponentPropsWithoutRef<'div'>, 'children'> & {
    * @control text
    */
   hint?: string;
+  /** Presentation of the hint only; a non-empty error always takes precedence.
+   * No tone changes control validity or creates a live region.
+   * @default description
+   * @control select
+   */
+  hintTone?: Exclude<FieldMessageTone, 'error'>;
   /** Consumer validation message; a non-empty string marks the compatible control invalid.
    * No live announcement or validation logic; an empty string is treated as absent.
    * @control text
@@ -85,17 +92,11 @@ export const fieldLabelRowVariants = cva(['flex justify-between gap-2', disabled
   defaultVariants: { layout: 'stacked' }
 });
 
-/** Hint/error share a single description slot, with no live region. */
-export const fieldMessageVariants = cva(
-  ['text-label-default font-[var(--text-body-muted--font-weight)]', disabledPart],
-  {
-    variants: {
-      layout: { stacked: '', choice: 'col-start-2' },
-      invalid: { false: 'text-fg-muted', true: 'text-status-danger' }
-    },
-    defaultVariants: { layout: 'stacked', invalid: false }
-  }
-);
+/** Field owns layout and disabled dimming; FieldMessage owns paragraph appearance. */
+export const fieldMessageVariants = cva(disabledPart, {
+  variants: { layout: { stacked: '', choice: 'col-start-2' } },
+  defaultVariants: { layout: 'stacked' }
+});
 
 /** Over-limit tone does not create error semantics. */
 export const fieldCounterVariants = cva([

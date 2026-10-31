@@ -4,14 +4,15 @@ import { Field } from './Field';
 
 /**
  * ## Description
- * A label, hint or error and optional counter/readout for one consumer-owned form control.
+ * A label, FieldMessage hint or error and optional counter/readout for one consumer-owned form control.
  *
  * ## Dependencies
- * Label and VisuallyHidden provide naming and hidden text. Radix Slot merges attributes onto
+ * Label and VisuallyHidden provide naming and hidden text. FieldMessage owns message appearance. Radix Slot merges attributes onto
  * Input, Textarea, Select, Slider, Checkbox or Switch without duplicating their recipes.
  *
  * ## Usage guidelines
  * Validation and value state belong to the consumer. Error replaces hint, without a live region.
+ * hintTone changes only guidance presentation; semantic messages include decorative icons.
  * With an error, the child must omit aria-invalid entirely or supply true/'true'; explicit
  * undefined, null, false and other conflicts are unsupported and retain Slot child precedence.
  * Slider needs its own matching label. Choice omits readout/counter; groups need a fieldset.
@@ -103,3 +104,10 @@ export const Disabled: Story = {
     children: <Input disabled={true} />
   }
 };
+
+/** Informational guidance never marks the control invalid. */
+export const InformationalHint: Story = { args: { label: 'Email', hint: 'Use your primary email.', hintTone: 'info' } };
+/** Warning appearance is not a validation error. */
+export const WarningHint: Story = { args: { hint: 'Double-check this value.', hintTone: 'warning' } };
+/** Success guidance is consumer-authored, not inferred from a value. */
+export const SuccessHint: Story = { args: { hint: 'Looks good.', hintTone: 'success' } };
