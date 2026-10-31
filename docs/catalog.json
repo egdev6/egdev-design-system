@@ -688,9 +688,9 @@
     "nivel": "atom",
     "destino": "ui",
     "radix": "AspectRatio",
-    "compone": "—",
+    "compone": "Surface",
     "accion": "mantener",
-    "notas": "Approved six-row catalogue correction: one framed-image concept; AspectRatio is a supporting primitive. See [classification rules](CATALOGACION.md). API unchanged; no implementation implied."
+    "notas": "Implemented passive framed image with native figure and caption; approved v0.2 contract and v0.3 plan. Visual review pending."
   },
   {
     "actual": "PullQuote",

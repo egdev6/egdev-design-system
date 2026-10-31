@@ -73,7 +73,8 @@ const components = [
   ['PanelFooter', 'molecules/panel'],
   ['Collapsible', 'molecules/collapsible'],
   ['CollapsibleTrigger', 'molecules/collapsible'],
-  ['CollapsibleContent', 'molecules/collapsible']
+  ['CollapsibleContent', 'molecules/collapsible'],
+  ['PhotoFrame', 'atoms/photo-frame']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -123,6 +124,14 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  photoframe: {
+    src: 'text',
+    alt: 'text',
+    ratio: 'select',
+    variant: 'select',
+    focalPoint: 'select',
+    imageCaption: 'text'
+  },
   indicator: {
     children: false,
     tone: 'select',
@@ -440,6 +449,7 @@ const expected: Record<string, Record<string, string | false>> = {
   }
 };
 const ownPropCounts: Record<string, number> = {
+  photoframe: 6,
   indicator: 8,
   panel: 3,
   panelheader: 1,

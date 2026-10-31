@@ -30,6 +30,8 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { AmbientBackground } from '@egdev/effects';
 import type { AmbientBackgroundProfile, AmbientBackgroundProps } from '@egdev/effects';
+import { PhotoFrame } from '@egdev/ui';
+import type { PhotoFrameProps, PhotoFrameRatio, PhotoFrameVariant, PhotoFrameFocalPoint } from '@egdev/ui';
 import { Menu, menuVariants, cn } from '@egdev/ui';
 import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorItem, MenuLabelItem, MenuSubmenuItem, MenuTone, MenuAlign, MenuSide } from '@egdev/ui';
 import { createElement, createRef, forwardRef, Fragment } from 'react';
@@ -1249,6 +1251,19 @@ const glassStat: StatProps = { ...statProps, glass: true };
 const objectStat: StatProps = { ...statProps, value: { amount: 4 } };
 // @ts-expect-error highlighted is a boolean, not a timer duration.
 const timedStat: StatProps = { ...statProps, highlighted: 3000 };
+const photoFrameRatio: PhotoFrameRatio = 'portrait';
+const photoFrameVariant: PhotoFrameVariant = 'framed';
+const photoFrameFocalPoint: PhotoFrameFocalPoint = 'left';
+export const photoFrameProps: PhotoFrameProps = { src: '/grid.svg', alt: 'Grid', ratio: photoFrameRatio, variant: photoFrameVariant, focalPoint: photoFrameFocalPoint, imageCaption: 'Grid caption', id: 'consumer-photo-frame' };
+export function photoFrameSamples({ src = photoFrameProps.src }: { src?: string }) {
+  return createElement(PhotoFrame, { ...photoFrameProps, src });
+}
+// @ts-expect-error PhotoFrame requires image inputs.
+const photoFrameMissing: PhotoFrameProps = {};
+// @ts-expect-error PhotoFrame is passive and has no children API.
+const photoFrameChildren: PhotoFrameProps = { ...photoFrameProps, children: 'child' };
+// @ts-expect-error PhotoFrame has no ref API.
+const photoFrameRef: PhotoFrameProps = { ...photoFrameProps, ref: createRef<HTMLElement>() };
 // PullQuote stays outside App so earlier components' focus harness remains unchanged.
 const pullQuoteVariant: PullQuoteVariant = 'display';
 const pullQuoteTone: PullQuoteTone = 'raised';
@@ -3689,6 +3704,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'PanelBody',
   'PanelFooter',
   'PanelHeader',
+  'PhotoFrame',
   'Popover',
   'PopoverClose',
   'PopoverContent',
@@ -4090,6 +4106,16 @@ try {
   assert.ok(root.textContent.includes('Packed reading offline'));
 } finally { dockDOM.window.close(); }
 import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, HoverCardSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
+import { photoFrameSamples } from './consumer.ts';
+const photoFrameDocument = new JSDOM(renderToString(createElement(photoFrameSamples)));
+try {
+  const photoFrameFigure = photoFrameDocument.window.document.querySelector('figure');
+  assert.equal(photoFrameFigure.id, 'consumer-photo-frame');
+  assert.equal(photoFrameFigure.querySelector('img').getAttribute('alt'), 'Grid');
+  assert.equal(photoFrameFigure.querySelector('img').getAttribute('loading'), 'lazy');
+  assert.equal(photoFrameFigure.querySelector('figcaption').textContent, 'Grid caption');
+  assert.equal(photoFrameFigure.hasAttribute('role'), false);
+} finally { photoFrameDocument.window.close(); }
 // Navigation SSR covers native semantics and a fully controlled open group on both React majors.
 const navDocument = new JSDOM(renderToString(createElement(NavListSamples, { open: true })));
 try {
@@ -5322,6 +5348,7 @@ const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable
 const { createRoot } = await import('react-dom/client');
 const { ToastSamples, toastChanges, toastActions } = await import('./consumer.ts');
 const { PageHeaderSamples } = await import('./consumer.ts');
+const { photoFrameSamples } = await import('./consumer.ts');
 const { ModuleCardSamples, moduleCardClicks } = await import('./consumer.ts');
 const { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, FieldSamples, fieldControlRef, HoverCardSamples, hoverCardRef, hoverCardSlotRef, hoverCardChanges, ListItemSamples, MeterRowSamples, NavListSamples, navRequests, navNavigations, NoticeSamples, PopoverSamples, popoverTriggerRef, popoverCloseRef, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, carouselChanges, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
@@ -6644,6 +6671,15 @@ try {
   }
   assert.equal(documentListeners.filter((type) => type.startsWith('key')).length, 0, 'SearchTrigger registers no key listeners');
   stage('search-trigger:complete');
+  stage('photo-frame:start');
+  await act(async () => root.render(createElement(photoFrameSamples)));
+  const photoFrameFigure = document.getElementById('consumer-photo-frame');
+  assert.equal(photoFrameFigure.querySelector('img').getAttribute('src'), '/grid.svg');
+  assert.equal(photoFrameFigure.querySelector('figcaption').textContent, 'Grid caption');
+  await act(async () => root.render(createElement(photoFrameSamples, { src: '/grid.svg?next' })));
+  assert.equal(photoFrameFigure.querySelector('img').getAttribute('src'), '/grid.svg?next');
+  await act(async () => root.render(null));
+  stage('photo-frame:complete');
   stage('pull-quote:start');
   const quoteWarnings = [];
   const originalWarn = console.warn;
