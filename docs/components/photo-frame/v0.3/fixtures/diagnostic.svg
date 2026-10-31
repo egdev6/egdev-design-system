@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000" role="img" aria-labelledby="title description">
+  <title id="title">Square crop diagnostic grid</title>
+  <desc id="description">A labelled square test image. North and south edge bands, west and east side bands, four numbered interior quadrants and a central crosshair reveal cover-crop alignment. This is diagnostic artwork, not photography.</desc>
+  <!-- Self-contained image data. Palette provenance and exact bytes are bound in provenance.json.
+       Fixed image coordinates, label sizes and generic label font are diagnostic content only. -->
+  <rect width="1000" height="1000" fill="#141518"/>
+  <rect width="1000" height="180" fill="#FF0036"/>
+  <rect y="820" width="1000" height="180" fill="#FF6680"/>
+  <rect y="180" width="180" height="640" fill="#CCCCCC"/>
+  <rect x="820" y="180" width="180" height="640" fill="#2D2E33"/>
+  <rect x="180" y="180" width="320" height="320" fill="#2D2E33"/>
+  <rect x="500" y="180" width="320" height="320" fill="#141518"/>
+  <rect x="180" y="500" width="320" height="320" fill="#141518"/>
+  <rect x="500" y="500" width="320" height="320" fill="#2D2E33"/>
+  <g fill="none" stroke="#FFFFFF" stroke-width="4">
+    <rect x="20" y="20" width="960" height="960"/>
+    <rect x="180" y="180" width="640" height="640"/>
+    <path d="M500 180V820M180 500H820"/>
+    <circle cx="500" cy="500" r="72"/>
+    <path d="M500 400V600M400 500H600"/>
+  </g>
+  <g font-family="monospace" font-size="42" font-weight="bold" text-anchor="middle">
+    <g fill="#141518">
+      <text x="500" y="75">NORTH</text>
+      <text x="500" y="135">TOP EDGE</text>
+      <text x="500" y="885">SOUTH</text>
+      <text x="500" y="950">BOTTOM EDGE</text>
+      <text x="90" y="470">WEST</text>
+      <text x="90" y="530">LEFT</text>
+    </g>
+    <g fill="#FFFFFF">
+      <text x="910" y="470">EAST</text>
+      <text x="910" y="530">RIGHT</text>
+      <text x="340" y="330">Q1</text>
+      <text x="660" y="330">Q2</text>
+      <text x="340" y="690">Q3</text>
+      <text x="660" y="690">Q4</text>
+      <text x="500" y="800" font-size="24">DIAGNOSTIC IMAGE - NOT A PHOTO</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>PhotoFrame — diagnostic static preparation</title>
+  <link rel="stylesheet" href="/tokens.css">
+  <style>
+    /* Preview-only CSS; runtime must consume Surface recipes and actual AspectRatio.
+       The three native CSS aspect ratios below illustrate geometry, not a Radix port.
+       Component appearance consumes existing tokens; literal diagnostic image data
+       is isolated in fixtures/diagnostic.svg and documented in fixtures/provenance.json. */
+    * { box-sizing: border-box; }
+    body {
+      margin: var(--space-0);
+      background: var(--color-bg-canvas);
+      color: var(--color-fg-default);
+      font-family: var(--font-sans);
+      font-size: var(--text-body-default);
+      line-height: var(--text-body-default--line-height);
+      font-weight: var(--text-body-default--font-weight);
+      letter-spacing: var(--text-body-default--letter-spacing);
+    }
+    main { max-width: var(--content-max); margin-inline: auto; padding: var(--gutter); }
+    h1, h2, h3, p { margin: var(--space-0); }
+    h1, h2, h3 {
+      font-family: var(--font-sans);
+      font-size: var(--text-heading-small);
+      line-height: var(--text-heading-small--line-height);
+      font-weight: var(--text-heading-small--font-weight);
+      letter-spacing: var(--text-heading-small--letter-spacing);
+    }
+    .page-head { display: grid; gap: var(--space-3); margin-block-end: var(--space-8); }
+    .scenario { display: grid; gap: var(--space-6); margin-block-end: var(--space-10); }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--space-24) * 3)), 1fr));
+      gap: var(--space-8);
+      align-items: start;
+    }
+    .study { display: grid; min-width: var(--space-0); gap: var(--space-4); }
+    .note { color: var(--color-fg-muted); }
+    .study-label {
+      font-size: var(--text-label-default);
+      line-height: var(--text-label-default--line-height);
+      font-weight: var(--text-label-default--font-weight);
+      letter-spacing: var(--text-label-default--letter-spacing);
+    }
+    .eg-photo {
+      position: relative;
+      margin: var(--space-0);
+      min-width: var(--space-0);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      overflow: visible;
+      border-radius: var(--radius-none);
+      background: transparent;
+      box-shadow: none;
+      transform: none;
+      transition: none;
+    }
+    .eg-photo::after { content: none; }
+    .photo-media {
+      padding: var(--space-0);
+      border: var(--border-width) solid var(--color-border-hairline);
+      border-radius: var(--radius-xl);
+      background-color: var(--color-surface-1);
+      background-image: var(--gradient-sheen);
+      box-shadow: var(--shadow-edge), var(--shadow-elev-1);
+      transform: none;
+      transition: none;
+    }
+    .photo-framed { gap: var(--space-10); }
+    .photo-framed-media {
+      padding: calc(var(--space-1) * 1.5);
+      border-color: var(--color-border-hairline-strong);
+      background-color: var(--color-surface-0);
+      box-shadow: var(--shadow-edge-strong), var(--shadow-elev-2);
+      transform: rotate(calc(var(--tilt-max) / 3));
+    }
+    .illustrated-reduced-motion { transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .photo-media { transform: none; transition: none; }
+    }
+    .preview-viewport { overflow: hidden; border-radius: var(--radius-xl); }
+    .preview-inner-framed { border-radius: var(--radius-lg); }
+    .ratio-square { aspect-ratio: 1; }
+    .ratio-portrait { aspect-ratio: 4 / 5; }
+    .ratio-landscape { aspect-ratio: 4 / 3; }
+    .eg-photo__img {
+      position: static;
+      inset: auto;
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      object-fit: cover;
+      object-position: center;
+      filter: none;
+    }
+    .focal-top { object-position: top; }
+    .focal-bottom { object-position: bottom; }
+    .focal-left { object-position: left; }
+    .focal-right { object-position: right; }
+    .eg-photo__cap {
+      position: relative;
+      inset: auto;
+      z-index: auto;
+      display: block;
+      pointer-events: auto;
+      overflow-wrap: anywhere;
+    }
+    .eg-photo__label {
+      display: block;
+      min-width: var(--space-0);
+      font-family: var(--font-display);
+      font-size: var(--text-label-eyebrow);
+      line-height: var(--text-label-eyebrow--line-height);
+      font-weight: var(--text-label-eyebrow--font-weight);
+      letter-spacing: var(--text-label-eyebrow--letter-spacing);
+      text-transform: uppercase;
+      color: inherit;
+    }
+    .eg-photo__label::before { content: none; }
+    .flood-host { padding: var(--space-6); border-radius: var(--radius-xl); background: var(--color-bg-flood); color: var(--color-fg-on-flood); }
+    .raised-host { padding: var(--space-6); border-radius: var(--radius-xl); background-color: var(--color-surface-2); background-image: var(--gradient-sheen); border: var(--border-width) solid var(--color-border-hairline); box-shadow: var(--shadow-edge), var(--shadow-elev-1); }
+  </style>
+</head>
+<body>
+<main>
+  <div class="page-head">
+    <p class="study-label">Issue #95 · v0.3 preparation Draft · approved runtime contract v0.2 retained</p>
+    <h1>PhotoFrame: diagnostic geometry, not photography</h1>
+    <p>Locally authored static design input. Native images use one readable, provenance-bound square SVG. These are not PhotoFrame React output, browser verification, owner-adopted new visuals or photo-quality claims.</p>
+    <p class="note">Only /tokens.css and the local diagnostic.svg are requested. Parent supplies compiled canonical tokens and records actual fonts/browser conditions. Loading, failure and source-change routing are later native-image/runtime checks, not simulated component states here.</p>
+  </div>
+
+  <section class="scenario" data-capture="ratios-and-crops">
+    <h2>P-VIS-03 · Reserved ratios and cover alignment</h2>
+    <p class="note">The ratio belongs to the untransformed image viewport, excluding frame border/inset and caption. Square source: portrait reveals horizontal crop changes; landscape reveals vertical crop changes. Center is the default.</p>
+    <div class="board">
+      <div class="study">
+        <h3>Square · center · 1:1</h3>
+        <figure class="eg-photo">
+          <div class="photo-media"><div class="preview-viewport ratio-square"><img class="eg-photo__img" src="fixtures/diagnostic.svg" width="1000" height="1000" loading="lazy" decoding="async" alt="Diagnostic grid with north, south, west and east edge labels, numbered quadrants and a central crosshair."></div></div>
+          <figcaption class="eg-photo__cap"><span class="eg-photo__label">Full diagnostic source; no crop overflow expected.</span></figcaption>
+        </figure>
+      </div>
+      <div class="study">
+        <h3>Portrait · center · 4:5</h3>
+        <figure class="eg-photo">
+          <div class="photo-media"><div class="preview-viewport ratio-portrait"><img class="eg-photo__img" src="fixtures/diagnostic.svg" width="1000" height="1000" loading="lazy" decoding="async" alt="Square diagnostic crop grid with four labelled edges and a centered crosshair."></div></div>
+          <figcaption class="eg-photo__cap"><span class="eg-photo__label">Centered horizontal source window, not a new image ratio.</span></figcaption>
+        </figure>
+      </div>
+      <div class="study">
+        <h3>Landscape · center · 4:3</h3>
+        <figure class="eg-photo">
+          <div class="photo-media"><div class="preview-viewport ratio-landscape"><img class="eg-photo__img" src="fixtures/diagnostic.svg" width="1000" height="1000" loading="lazy" decoding="async" alt="Square diagnostic crop grid with four labelled edges and a centered crosshair."></div></div>
+          <figcaption class="eg-photo__cap"><span class="eg-photo__label">Default landscape viewport; resource metadata remains square.</span></figcaption>
+        </figure>
+      </div>
+      <div class="study">
+        <h3>Portrait · left</h3>
+        <figure class="eg-photo"><div class="photo-media"><div class="preview-viewport ratio-portrait"><img class="eg-photo__img focal-left" src="fixtures/diagnostic.svg" width="1000" height="1000" loading="lazy" decoding="async" alt="Diagnostic grid with west and east side landmarks for horizontal crop comparison."></div></div></figure>
+      </div>
+      <div class="study">
+        <h3>Portrait · right</h3>
+        <figure class="eg-photo"><div class="photo-media"><div class="preview-viewport ratio-portrait"><img class="eg-photo__img focal-right" src="fixtures/diagnostic.svg" width="1000" height="1000" loading="lazy" decoding="async" alt="Diagnostic grid with west and east side landmarks for horizontal crop comparison."></div></div></figure>
+      </div>
+      <div class="study">
+        <h3>Landscape · top</h3>
+        <figure class="eg-photo"><div class="photo-media"><div class="preview-viewport ratio-landscape"><img class="eg-photo__img focal-top" src="fixtures/diagnostic.svg" width="1000" height="1000" loading="lazy" decoding="async" alt="Diagnostic grid with north and south edge bands for vertical crop comparison."></div></div></figure>
+      </div>
+      <div class="study">
+        <h3>Landscape · bottom</h3>
+        <figure class="eg-photo"><div class="photo-media"><div class="preview-viewport ratio-landscape"><img class="eg-photo__img focal-bottom" src="fixtures/diagnostic.svg" width="1000" height="1000" loading="lazy" decoding="async" alt="Diagnostic grid with north and south edge bands for vertical crop comparison."></div></div></figure>
+      </div>
+    </div>
+    <p class="note">Expected crop windows in provenance.json are analytical calculations, not observed measurements. Axis choices without overflow should coincide; runtime tests must protect those negative cases too.</p>
+  </section>
+
+  <section class="scenario" data-capture="frame-and-motion">
+    <h2>P-VIS-04 · Frame-only tilt, upright caption</h2>
+    <p class="note">The flood is host context, not PhotoFrame paint. The framed media uses elevated surface-0 with sheen, strong light edge, two-layer shadow and token inset. No hover transform, image filter, vignette or overlaid caption.</p>
+    <div class="board">
+      <div class="study flood-host">
+        <h3>Normal preference candidate</h3>
+        <figure class="eg-photo photo-framed">
+          <div class="photo-media photo-framed-media"><div class="preview-viewport preview-inner-framed ratio-landscape"><img class="eg-photo__img" src="fixtures/diagnostic.svg" width="1000" height="1000" loading="lazy" decoding="async" alt="Square diagnostic grid used to inspect a tilted frame without photographic content."></div></div>
+          <figcaption class="eg-photo__cap"><span class="eg-photo__label">Upright caption inherits host foreground, not frame rotation.</span></figcaption>
+        </figure>
+      </div>
+      <div class="study flood-host">
+        <h3>Authored unrotated illustration</h3>
+        <figure class="eg-photo photo-framed">
+          <div class="photo-media photo-framed-media illustrated-reduced-motion"><div class="preview-viewport preview-inner-framed ratio-landscape"><img class="eg-photo__img" src="fixtures/diagnostic.svg" width="1000" height="1000" loading="lazy" decoding="async" alt="Diagnostic grid inside an authored unrotated frame illustration."></div></div>
+          <figcaption class="eg-photo__cap"><span class="eg-photo__label">Illustration only, not an emulated reduced-motion result.</span></figcaption>
+        </figure>
+      </div>
+    </div>
+    <p class="note">The real preview media query also removes tilt under reduced motion; parent must capture that actual condition separately. Hover has no authored effect. Host layout must leave room for frame/shadow outsets at the chosen width.</p>
+  </section>
+
+  <section class="scenario" data-capture="caption-and-decorative">
+    <h2>P-VIS-05 · Caption absence, wrapping and deliberate decorative alt</h2>
+    <div class="board">
+      <div class="study raised-host">
+        <h3>Caption below, not cropped</h3>
+        <figure class="eg-photo">
+          <div class="photo-media"><div class="preview-viewport ratio-landscape"><img class="eg-photo__img" src="fixtures/diagnostic.svg" width="1000" height="1000" loading="lazy" decoding="async" alt="Square diagnostic crop grid with edge labels and numbered interior regions."></div></div>
+          <figcaption class="eg-photo__cap"><span class="eg-photo__label">Diagnostic artwork, not a photograph. This deliberately longer contextual caption should wrap outside the media viewport and remain upright, selectable and readable on a known token-backed raised host.</span></figcaption>
+        </figure>
+      </div>
+      <div class="study raised-host">
+        <h3>No caption, no caption gap</h3>
+        <figure class="eg-photo"><div class="photo-media"><div class="preview-viewport ratio-landscape"><img class="eg-photo__img" src="fixtures/diagnostic.svg" width="1000" height="1000" loading="lazy" decoding="async" alt="Diagnostic crop grid with north, south, west and east labels."></div></div></figure>
+        <p class="study-label">This label is comparison-board content, not a generated caption.</p>
+      </div>
+      <div class="study raised-host">
+        <h3>Explicit decorative alt</h3>
+        <p class="study-label">A repeated diagnostic grid is decorative in this labelled comparison; empty alt is deliberate.</p>
+        <figure class="eg-photo"><div class="photo-media"><div class="preview-viewport ratio-landscape"><img class="eg-photo__img" src="fixtures/diagnostic.svg" width="1000" height="1000" loading="lazy" decoding="async" alt=""></div></div></figure>
+      </div>
+    </div>
+  </section>
+  <p class="note">No image error placeholder or loading UI is proposed. Parent-owned future native-image checks hold/release these exact SVG bytes or return 404, leaving native alt and reserved geometry intact. This static specimen does not prove those outcomes, PhotoFrame attribute routing, Radix behavior, AT behavior or visual conformity.</p>
+</main>
+</body>
+</html>

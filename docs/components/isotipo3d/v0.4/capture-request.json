@@ -1,0 +1,265 @@
+{
+  "kind": "adopted-source-reuse-and-future-runtime-comparison-request",
+  "component": "Isotipo3D",
+  "preparationVersion": "0.4",
+  "status": "Preparation reconciled to selected utility A and conditional dist-only direction; no new capture, runtime result, dependency install or exact final-plan approval",
+  "baselineCommit": "f88b36e44b3d5ec6d7725350959f9cdfdfeb5b23",
+  "approvedContract": {
+    "version": "0.3",
+    "canonicalSHA256": "sha256:990682be7ad0bddfcbbf88f44b53d87769edcbc1cfdd10541af6ebc75028a09a",
+    "fullSnapshot": "https://github.com/egdev6/egdev-design-system/issues/47#issuecomment-6251412989",
+    "wholeSnapshotSHA256": "sha256:ec6f8ac43f559f75daa5e90756d5a77a950039c45fb01edd3864a8990aecaa81",
+    "finalApproval": "https://github.com/egdev6/egdev-design-system/issues/47#issuecomment-6251414388",
+    "approvalBodySHA256": "sha256:c348773990ffbacbb52167e4cd7d6bbbede741b58a9cdd870add76bbc1d78b30",
+    "suppliedRecoverySource": "/tmp/egdev-remaining-odd/47.json",
+    "suppliedRecoverySourceSHA256": "sha256:b1f9fa8394511186bfbcee0e516c507f7f521d15216670972339d26d85d94ba7",
+    "recovery": "Complete full amendment read and verified from unique actual whole-line section-1 heading, never first inline heading mention. Seven blocks and AC-01 through AC-20 retained.",
+    "reapprovalRequested": false,
+    "runtimePlanApproval": null
+  },
+  "preparationIdentities": [
+    {
+      "path": "docs/components/isotipo3d/v0.4/contract-recovery.md",
+      "heading": "## 1. Purpose and scope",
+      "payloadSHA256": "sha256:2d39fdd3b4c17b87abb66400fa8de7e39cfb5a8cd3c45ca161f25a70de8042a6"
+    },
+    {
+      "path": "docs/components/isotipo3d/v0.4/implementation-plan.md",
+      "heading": "## 1. Plan gate and scope",
+      "payloadSHA256": "sha256:a0b2e146df64848ef66681f8f4675d29273700d9dbafc6e837f8d47804625f02"
+    },
+    {
+      "path": "docs/components/isotipo3d/v0.4/dependency-build-plan.md",
+      "heading": "## 1. Observed dependency boundary",
+      "payloadSHA256": "sha256:fca7235c00170e4d49339a6ee102a3df6a617efb140a41e715dc87af2d9f172a"
+    }
+  ],
+  "preparationHashRule": "UTF-8 LF bytes from each actual anchored whole-line heading through EOF, final LF included; tracking metadata excluded. These preparation identities do not replace approved v0.3.",
+  "scopedOwnerDecisions": {
+    "repositoryPath": "docs/components/remaining-components/v0.1/effects-owner-decisions.md",
+    "readOnlyCrossWorktreePath": "../../../../../indicator/docs/components/remaining-components/v0.1/effects-owner-decisions.md",
+    "canonicalSHA256": "sha256:636e5a37c41e3896920f9a728349978a09cb1e5e11d5a03498f88b540602cb61",
+    "hashRule": "UTF-8 LF bytes from the actual whole-line ## Decisions heading through EOF including final LF; metadata excluded",
+    "utility": {
+      "selected": "A",
+      "runtimeDependencies": { "class-variance-authority": "0.7.1", "@egdev/ui": "workspace:*" },
+      "cnImport": "Public @egdev/ui root only",
+      "uiCSSImport": false,
+      "acceptedCosts": "Effects-to-UI/Radix/ReactDOM installation and build-order coupling; tokens then UI then effects; no tree-shaking benefit assumed",
+      "routeBSelected": false,
+      "effectsCnHelpersAuthorized": false,
+      "directEffectsClsxOrTailwindMergeEdges": false
+    },
+    "threeScopeUnchanged": {
+      "requiredPeer": "0.160.0",
+      "developmentThree": "0.160.0",
+      "developmentTypesThree": "0.160.0"
+    },
+    "publication": {
+      "selectedDirection": "dist-only with compatibility review",
+      "conditionalOutput": "Complete emitted JS/lazy chunks/declarations/CSS/required assets under dist; keep reference history in repository",
+      "compatibilityBoundary": "Current source main/files without an export map permit source/reference/deep paths; empty React barrel does not prove no compatibility surface or consumers",
+      "inventoryOwner": "W3 and parent; this writer has not performed that inventory",
+      "remainingReview": "Consume actual tracked/documented-consumer and published-package evidence, coverage limits and unknown external consumers; review migration/release disposition and exact final export map before applying",
+      "compatibilityCertified": false,
+      "exportMapExecutionApproved": false
+    },
+    "authorityLimit": "Scoped questionnaire choices only, not exact reconciled final-plan approval, runtime assignment, installation, Git action or native verdict",
+    "coordination": "W1 reconciles common/Ambient proposal; W3 inventories consumers. Parent refreshes common/index bindings after concurrent handoffs. Frozen recovery remains unchanged; its earlier utility alternatives are historical, not executable choices."
+  },
+  "existingEvidence": {
+    "deliveryIssue": "https://github.com/egdev6/egdev-design-system/issues/131",
+    "deliveryCommit": "4173cca876078c0d10dfa109629a818fc43d984f",
+    "deliveryHistory": "Committed source evidence/naming unit #132 is present in current baseline; #131 is not another component or missing full-contract approval.",
+    "metadataPath": "docs/components/isotipo3d/v0.3/capture.json",
+    "metadataWholeFileSHA256": "sha256:aec9a733c55c27f73bc17a08d755a110585cba369424b7a353244a9c19a73a4b",
+    "namingReceiptPath": "docs/decisions/prop-naming-isotipo3d-approval.json",
+    "namingReceiptSHA256": "sha256:7b2518dfd984374f3eb2b632040ff4faab8015c42be4617c26ed03803e338b60",
+    "writerObservation": "Viewed all three existing PNGs, recomputed matching hashes, read complete capture/adoption record and receipt/current registry. No new screenshot/network verification, duplicate registration or remote issue mutation.",
+    "historicalPendingFields": "Retained unchanged as history; final #47 full approval supersedes old Draft/publication/approval status, not actual image scopes/conditions. This writer does not fill null captured fields with guesses."
+  },
+  "adoptedSources": [
+    {
+      "id": "VIS-01",
+      "path": "docs/components/isotipo3d/v0.3/hero--progress-1--1280--dark.png",
+      "sha256": "sha256:48a0c0c425d6b7b33c0c53711c062767472ea090be3f1614e9445d11c9bb8ff1",
+      "immutableURL": "https://raw.githubusercontent.com/egdev6/egdev-design-system/4173cca876078c0d10dfa109629a818fc43d984f/docs/components/isotipo3d/v0.3/hero--progress-1--1280--dark.png",
+      "sourceVersion": "0.3",
+      "alt": "Assembled red extruded EGDEV isotype at hero progress one with shaded edges and excluded legacy stage framing.",
+      "scope": "Geometry/palette/assembled hero pose only, no stage chrome or target-pixel/React parity approval",
+      "originalPNGPixels": [619, 559],
+      "originalRootCSSPixels": [618.1875, 558],
+      "originalState": {
+        "scene": "hero",
+        "progress": 1,
+        "motion": "no-preference",
+        "webgl": true,
+        "backend": "ANGLE Vulkan SwiftShader software rendering"
+      }
+    },
+    {
+      "id": "VIS-02",
+      "path": "docs/components/isotipo3d/v0.3/lab--progress-0.50--1280--dark.png",
+      "sha256": "sha256:ce33c7d90e8fbe42a3cb3d207bee6715a443e7136bf3bfc4792b2772529642e4",
+      "immutableURL": "https://raw.githubusercontent.com/egdev6/egdev-design-system/4173cca876078c0d10dfa109629a818fc43d984f/docs/components/isotipo3d/v0.3/lab--progress-0.50--1280--dark.png",
+      "sourceVersion": "0.3",
+      "alt": "Lab pieces and brand-shaped debris at progress one half, with large pieces visibly clipped at source crop edges.",
+      "scope": "Retain clipped full-explosion plateau ex=1; fit90% is assembled geometry only, not containment or a source fix. Stage chrome excluded.",
+      "originalPNGPixels": [619, 559],
+      "originalRootCSSPixels": [618.1875, 558],
+      "originalState": {
+        "scene": "lab",
+        "progress": 0.5,
+        "motion": "no-preference",
+        "webgl": true,
+        "sourceLowTier": false,
+        "backend": null
+      },
+      "comparisonLimit": "Source uses viewport tier despite root below760. Target must use root tier, so a matching-size target correctly has44 debris rather than source100. Do not hide this expected difference."
+    },
+    {
+      "id": "VIS-03",
+      "path": "docs/components/isotipo3d/v0.3/assembled--source-fallback--1280--dark.png",
+      "sha256": "sha256:cb2412989d99da261e3a869061397bb283bbc31b1c5fce669743a809bcbd0aaf",
+      "immutableURL": "https://raw.githubusercontent.com/egdev6/egdev-design-system/4173cca876078c0d10dfa109629a818fc43d984f/docs/components/isotipo3d/v0.3/assembled--source-fallback--1280--dark.png",
+      "sourceVersion": "0.3",
+      "alt": "Assembled two-tone source isotype with three detached brand pixels and excluded legacy glow.",
+      "scope": "GEOMETRY/PALETTE ONLY; target is stationary/decorative/non-glowing in every scene. Not forced engine failure or target-pixel evidence.",
+      "originalPNGPixels": [249, 249],
+      "originalRootCSSPixels": [247.90625, 247.90625],
+      "originalState": {
+        "standaloneAssembledSVG": true,
+        "motion": "reduce",
+        "legacyGlow": true,
+        "forcedFailure": false
+      }
+    }
+  ],
+  "originalConditionsRetained": {
+    "viewportCSSPixels": [1280, 900],
+    "deviceScaleFactor": 1,
+    "browser": "Chrome148 from actual recorded user agent, not current tooling",
+    "theme": "Original dark Foundation tokens/bundle; sampled canvas black differs from current Grafito host",
+    "reducedTransparency": "no-preference",
+    "fonts": [
+      "Barlow400/500/600",
+      "Barlow600 duplicate entry retained in original metadata",
+      "Barlow Condensed600",
+      "JetBrains Mono400"
+    ],
+    "neutralPointer": [1, 1],
+    "normalSceneWaitAfterControlsMs": 3200,
+    "exactScreenshotTimestamps": null,
+    "loadedStylesheetResponseSHA256": null,
+    "limits": "Normal idle movement was not frozen, measured timestamps slightly precede screenshots, stage framing remains in crops, source tier differs from target. Preserve factual unknowns; no pixel-stability/tolerance is invented."
+  },
+  "futureRuntimeComparisons": {
+    "status": "Planned only after compatibility/inventory review, exact reconciled final-plan approval, fresh assignment, parent install and implementation; utility A already selected",
+    "owner": "Parent",
+    "serverURL": null,
+    "runtimeSourceSHA256": null,
+    "compiledTokensSHA256": null,
+    "effectsStylesheetSHA256": null,
+    "proposedConditions": {
+      "browser": "Real Playwright Chromium; record exact actual browser/OS/WebGL backend",
+      "viewportCSSPixels": [1280, 900],
+      "deviceScaleFactor": 1,
+      "hosts": [
+        {
+          "name": "low",
+          "width": "calc(var(--space-24)*6)",
+          "height": "calc(var(--space-24)*5)",
+          "expectedTier": "low after actual measurement"
+        },
+        {
+          "name": "high",
+          "width": "calc(var(--space-24)*10)",
+          "height": "calc(var(--space-24)*6)",
+          "expectedTier": "high only if measured width>760 and pointer not coarse"
+        }
+      ],
+      "hostBoundary": "Token-backed external story/layout host, never inline component dimensions or invented component size props; record actual root CSS pixels and backing-store dimensions.",
+      "theme": "Loaded canonical current dark tokens; host paint outside transparent effect. Record differences from black source stage.",
+      "pointer": "Record neutral out-of-root position for source comparisons; separately exercise bounded mouse/touch/pen/blur behavior.",
+      "motion": ["no-preference", "actual live reduced-motion toggle"],
+      "crop": "Real component-zone PNGs; root clip, no copied stage framing. Record actual elapsed active time/intro completion, never claim exact source pixel stability.",
+      "toolDateVersionFonts": null
+    },
+    "scenarios": [
+      {
+        "id": "CMP-HERO",
+        "source": "VIS-01",
+        "props": { "scene": "hero", "progress": 1, "opacity": 1, "pointerTilt": false },
+        "checks": [
+          "assembled pose/palette/source geometry",
+          "transparent no-chrome root",
+          "first successful frame before fallback hides"
+        ],
+        "acceptance": ["AC-04", "AC-05", "AC-19"],
+        "newImageSHA256": null
+      },
+      {
+        "id": "CMP-LAB",
+        "source": "VIS-02",
+        "props": { "scene": "lab", "progress": 0.5, "opacity": 1, "pointerTilt": false },
+        "checks": [
+          "full-explosion plateau/clipping, no containment fix",
+          "both root tiers with44/100 active debris",
+          "deterministic geometry, not frozen idle pixels"
+        ],
+        "acceptance": ["AC-05", "AC-09", "AC-10", "AC-19"],
+        "newImageSHA256": null
+      },
+      {
+        "id": "CMP-FALLBACK",
+        "source": "VIS-03",
+        "conditions": [
+          "supported lazy chunk rejection",
+          "unavailable WebGL",
+          "partial boot/render failure",
+          "context lost",
+          "all four scenes"
+        ],
+        "checks": [
+          "same original assembled polygons/padded viewBox",
+          "no glow/float/status/focus semantics",
+          "terminal selection; no retry on props/context restoration"
+        ],
+        "acceptance": ["AC-03", "AC-11", "AC-19"],
+        "newImageSHA256": null
+      },
+      {
+        "id": "CMP-REDUCED",
+        "source": null,
+        "conditions": [
+          "each fixed approved scene pose",
+          "mount and live preference toggle",
+          "hidden/native hidden/opacity0/zero-size precedence"
+        ],
+        "checks": [
+          "one eligible static draw, no intro/pointer/idle",
+          "no draw while stopped",
+          "resume without catch-up/intro replay"
+        ],
+        "acceptance": ["AC-06", "AC-07"],
+        "newImageSHA256": null
+      }
+    ],
+    "nonvisualEvidenceRequired": [
+      "Actual React18/19 SSR/hydration/root refs and no eager three request on entry/SSR/suspended mounts",
+      "Required exact peer provisioned and supported built bundler; absent-peer bundling is not fallback support",
+      "Scheduler/generation/listener/GPU ownership/disposer-failure isolation and repeated remounts; screenshot cannot prove cleanup",
+      "Native safe prop filtering, computed opacity/clip/pointer/fill CSS, real Controls and forced-colors/surrounding-content checks"
+    ],
+    "createdAssets": [],
+    "independentOrNativeReceipt": null,
+    "visualConformity": "Not evaluated"
+  },
+  "ownerDecisionsRemaining": [
+    "Review W3/parent inventory coverage, source/reference/deep-import compatibility and migration/release disposition for the selected dist-only direction; state unknown external consumers honestly.",
+    "Approve exact reconciled physical placement/runtime/build/exports plan and supply a fresh bounded runtime/integration assignment; prior full v0.3/scoped visuals remain approved and utility A is selected, not another choice.",
+    "Parent only then schedules reviewed manifest/lock/install work under retained exact three/@types permission and selected A scope; questionnaire answers alone grant no execution.",
+    "Parent refreshes old index/common bindings after concurrent writers and inventory handoffs return; new hashes do not constitute approval."
+  ],
+  "noNewAuthority": "No new API/token, CDN/range/optional-peer policy, source screenshot recreation, duplicate #131 delivery, HomeTemplate/director code, Git/GitHub mutation, installation, server, browser or fresh screenshot is authorized/performed by these preparation files."
+}

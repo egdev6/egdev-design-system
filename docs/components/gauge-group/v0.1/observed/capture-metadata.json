@@ -1,0 +1,443 @@
+{
+  "recordedAt": "2026-10-30T13:41:39.109161+00:00",
+  "kind": "Observed authored static endpoint-border silhouettes; not GaugeGroup React/conic engine",
+  "adoption": "Supplemental target adoption Pending; historical VIS-01/02 scope unchanged",
+  "source": {
+    "specimenSha256": "fe089bd4964c230b13e568d2aeb5419304f427ac289252cccf072d5315bfb471",
+    "requestSha256": "4a3a302ad8896e97f19dbf6e363bf6f2a2a09d8cc4021778297cf3e4d815ec44",
+    "tokensSha256": "1fc1edda6b1a7cdc475add0f4c971d7297687b123b1db43a58ddf442562adf22"
+  },
+  "captures": [
+    {
+      "id": "PREP-01",
+      "path": "prep-01--static--desktop--dark.png",
+      "sha256": "3ad482c413d5859cd051edf79af1014aaf009017e94ac77c83c5bd6fc5140638",
+      "alt": "Two independent position-labelled readings alongside empty outer and full inner endpoint silhouettes.",
+      "selector": "#two-rings",
+      "pngDimensions": {
+        "width": 1185,
+        "height": 168
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/gauge-group/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 1280,
+          "height": 1200
+        },
+        "dpr": 1.0000000149011612,
+        "scrollY": 0,
+        "locale": "es-ES",
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": false,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 40,
+          "y": 227.1999969482422,
+          "width": 1184.800048828125,
+          "height": 167.1999969482422,
+          "top": 227.1999969482422,
+          "right": 1224.800048828125,
+          "bottom": 394.3999938964844,
+          "left": 40
+        },
+        "captureOnlyOverride": "html { scrollbar-gutter: stable; }",
+        "meters": 2,
+        "diagrams": [
+          {
+            "width": 80,
+            "height": 80,
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "rings": [
+              {
+                "width": 80,
+                "stroke": "4px",
+                "state": "normal",
+                "endpoint": "0",
+                "opacity": "0.1"
+              },
+              {
+                "width": 64,
+                "stroke": "4px",
+                "state": "normal",
+                "endpoint": "100",
+                "opacity": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "parentImageInspection": "completed",
+      "adoption": "Pending"
+    },
+    {
+      "id": "PREP-02",
+      "path": "prep-02--static--desktop--dark.png",
+      "sha256": "d3141786f05cc361c6f4bd9fefb7e732bc58a6ed868358e4d8aa679d6e64a627",
+      "alt": "Three concentric endpoint silhouettes at the smallest group preset with Outer, Middle and Inner readings kept visible outside the diagram.",
+      "selector": "#three-rings",
+      "pngDimensions": {
+        "width": 1185,
+        "height": 221
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/gauge-group/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 1280,
+          "height": 1200
+        },
+        "dpr": 1.0000000149011612,
+        "scrollY": 0,
+        "locale": "es-ES",
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": false,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 40,
+          "y": 426.3999938964844,
+          "width": 1184.800048828125,
+          "height": 220,
+          "top": 426.3999938964844,
+          "right": 1224.800048828125,
+          "bottom": 646.3999938964844,
+          "left": 40
+        },
+        "captureOnlyOverride": "html { scrollbar-gutter: stable; }",
+        "meters": 3,
+        "diagrams": [
+          {
+            "width": 56,
+            "height": 56,
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "rings": [
+              {
+                "width": 56,
+                "stroke": "4px",
+                "state": "normal",
+                "endpoint": "0",
+                "opacity": "0.1"
+              },
+              {
+                "width": 40,
+                "stroke": "4px",
+                "state": "normal",
+                "endpoint": "100",
+                "opacity": "1"
+              },
+              {
+                "width": 24,
+                "stroke": "4px",
+                "state": "normal",
+                "endpoint": "0",
+                "opacity": "0.1"
+              }
+            ]
+          }
+        ]
+      },
+      "parentImageInspection": "completed",
+      "adoption": "Pending"
+    },
+    {
+      "id": "PREP-03",
+      "path": "prep-03--static--desktop--dark.png",
+      "sha256": "721d30374903d3b5ec4781a1e6f814bede6b91eac018d84562b3d35ff78e67f8",
+      "alt": "A reserved blank middle slot between critical outer and muted inner readings, with per-reading text and icons and a decorative shared center.",
+      "selector": "#mixed-unavailable",
+      "pngDimensions": {
+        "width": 1185,
+        "height": 308
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/gauge-group/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 1280,
+          "height": 1200
+        },
+        "dpr": 1.0000000149011612,
+        "scrollY": 0,
+        "locale": "es-ES",
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": false,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 40,
+          "y": 678.4000244140625,
+          "width": 1184.800048828125,
+          "height": 307.20001220703125,
+          "top": 678.4000244140625,
+          "right": 1224.800048828125,
+          "bottom": 985.6000366210938,
+          "left": 40
+        },
+        "captureOnlyOverride": "html { scrollbar-gutter: stable; }",
+        "meters": 2,
+        "diagrams": [
+          {
+            "width": 96,
+            "height": 96,
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "rings": [
+              {
+                "width": 96,
+                "stroke": "4px",
+                "state": "critical",
+                "endpoint": "100",
+                "opacity": "1"
+              },
+              {
+                "width": 64,
+                "stroke": "4px",
+                "state": "muted",
+                "endpoint": "0",
+                "opacity": "0.1"
+              }
+            ]
+          }
+        ]
+      },
+      "parentImageInspection": "completed",
+      "adoption": "Pending"
+    },
+    {
+      "id": "PREP-04",
+      "path": "prep-04--static--desktop--dark.png",
+      "sha256": "1320b83c4aaa525b070941670822026a04d671f4a5ccc7d2a76c70487a702228",
+      "alt": "Two labelled unavailable rows next to an intentionally empty retained diagram footprint, without fabricated zero values.",
+      "selector": "#all-unavailable",
+      "pngDimensions": {
+        "width": 1185,
+        "height": 168
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/gauge-group/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 1280,
+          "height": 1200
+        },
+        "dpr": 1.0000000149011612,
+        "scrollY": 0,
+        "locale": "es-ES",
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": false,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 40,
+          "y": 1017.6000366210938,
+          "width": 1184.800048828125,
+          "height": 167.1999969482422,
+          "top": 1017.6000366210938,
+          "right": 1224.800048828125,
+          "bottom": 1184.800033569336,
+          "left": 40
+        },
+        "captureOnlyOverride": "html { scrollbar-gutter: stable; }",
+        "meters": 0,
+        "diagrams": [
+          {
+            "width": 80,
+            "height": 80,
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "rings": []
+          }
+        ]
+      },
+      "parentImageInspection": "completed",
+      "adoption": "Pending"
+    },
+    {
+      "id": "PREP-05",
+      "path": "prep-05--static--desktop--dark.png",
+      "sha256": "13b75e590c27b86e2772fb327c771e380856a0b57ee7a192e38179664a4a3d0b",
+      "alt": "Identical empty/full endpoint silhouettes showing their actual host through both holes on two existing token backgrounds.",
+      "selector": "#transparent-hosts",
+      "pngDimensions": {
+        "width": 1185,
+        "height": 200
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/gauge-group/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 1280,
+          "height": 1200
+        },
+        "dpr": 1.0000000149011612,
+        "scrollY": 562.4000244140625,
+        "locale": "es-ES",
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": false,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 40,
+          "y": 654.4000244140625,
+          "width": 1184.800048828125,
+          "height": 198.40000915527344,
+          "top": 654.4000244140625,
+          "right": 1224.800048828125,
+          "bottom": 852.8000335693359,
+          "left": 40
+        },
+        "captureOnlyOverride": "html { scrollbar-gutter: stable; }",
+        "meters": 0,
+        "diagrams": [
+          {
+            "width": 80,
+            "height": 80,
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "rings": [
+              {
+                "width": 80,
+                "stroke": "4px",
+                "state": "normal",
+                "endpoint": "0",
+                "opacity": "0.1"
+              },
+              {
+                "width": 64,
+                "stroke": "4px",
+                "state": "normal",
+                "endpoint": "100",
+                "opacity": "1"
+              }
+            ]
+          },
+          {
+            "width": 80,
+            "height": 80,
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "rings": [
+              {
+                "width": 80,
+                "stroke": "4px",
+                "state": "normal",
+                "endpoint": "0",
+                "opacity": "0.1"
+              },
+              {
+                "width": 64,
+                "stroke": "4px",
+                "state": "normal",
+                "endpoint": "100",
+                "opacity": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "parentImageInspection": "completed",
+      "adoption": "Pending"
+    },
+    {
+      "id": "PREP-06",
+      "path": "prep-06--static--narrow--dark.png",
+      "sha256": "2bfb23aff67d2d4a982825af0688ea7a7cba11ffe6d2b35a7bc9515e32905fd7",
+      "alt": "Long independent reading labels and a visible warning description reflowing outside the diagram at a narrow viewport.",
+      "selector": "#long-labels",
+      "pngDimensions": {
+        "width": 344,
+        "height": 383
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/gauge-group/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "dpr": 1.0000000149011612,
+        "scrollY": 1892,
+        "locale": "es-ES",
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": false,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 16,
+          "y": 230.40000915527344,
+          "width": 343.20001220703125,
+          "height": 382.3999938964844,
+          "top": 230.40000915527344,
+          "right": 359.20001220703125,
+          "bottom": 612.8000030517578,
+          "left": 16
+        },
+        "captureOnlyOverride": "html { scrollbar-gutter: stable; }",
+        "meters": 2,
+        "diagrams": [
+          {
+            "width": 80,
+            "height": 80,
+            "background": "rgba(0, 0, 0, 0)",
+            "image": "none",
+            "shadow": "none",
+            "rings": [
+              {
+                "width": 80,
+                "stroke": "4px",
+                "state": "warning",
+                "endpoint": "0",
+                "opacity": "0.1"
+              },
+              {
+                "width": 64,
+                "stroke": "4px",
+                "state": "normal",
+                "endpoint": "100",
+                "opacity": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "parentImageInspection": "completed",
+      "adoption": "Pending"
+    }
+  ],
+  "captureGeometryCheck": "Before/after DOM sizes stable within .01 CSSpx; PNG dimensions in outward-raster envelope floor(size)..ceil(size)+1; all six PNGs visually inspected. Not a visual-parity tolerance.",
+  "limitations": [
+    "All captures inject only html { scrollbar-gutter: stable; } to prevent screenshot-induced scrollbar reflow; authored source is unchanged.",
+    "These endpoint border silhouettes do not execute production conic/mask geometry, fractional values, +0.5px smoothing, runtime IDs/updates/validation or Gauge helper sharing.",
+    "Installed Barlow identity unverified; document.fonts lists no web faces.",
+    "No actual browser zoom/enlarged text, RTL, reduced-transparency/motion, AT or cross-browser claim. The authored narrow-caption zoom instruction describes requested future work, not observed execution.",
+    "Observed meter counts and diagram dimensions describe this static HTML only; no contract/recipe/private-module/plan approval inferred."
+  ]
+}
