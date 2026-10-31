@@ -1,0 +1,1896 @@
+[
+  {
+    "story": "default",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 49.60000228881836,
+          "top": 16,
+          "right": 1264,
+          "bottom": 65.60000228881836,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 1263.2000255584717,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "initially-open",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 110.4000015258789,
+          "top": 16,
+          "right": 1264,
+          "bottom": 126.4000015258789,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history",
+        "expanded": "true",
+        "controls": "radix-_r_0_",
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 1263.2000255584717,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "open",
+        "hidden": false,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 1,
+        "text": "Recent consumption readings are available here."
+      }
+    ]
+  },
+  {
+    "story": "controlled",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 49.60000228881836,
+          "top": 16,
+          "right": 1264,
+          "bottom": 65.60000228881836,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 1263.2000255584717,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "canceled-activation",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 49.60000228881836,
+          "top": 16,
+          "right": 1264,
+          "bottom": 65.60000228881836,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Locked history disclosure",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 1263.2000255584717,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "disabled-closed",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 49.60000228881836,
+          "top": 16,
+          "right": 1264,
+          "bottom": 65.60000228881836,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history",
+        "expanded": "false",
+        "controls": null,
+        "disabled": true,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 1263.2000255584717,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "disabled-open",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 110.5999984741211,
+          "top": 16,
+          "right": 1264,
+          "bottom": 126.5999984741211,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "History unavailable to toggle",
+        "expanded": "true",
+        "controls": "radix-_r_0_",
+        "disabled": true,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 1263.2000255584717,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "open",
+        "hidden": false,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 1,
+        "text": "History note "
+      }
+    ]
+  },
+  {
+    "story": "keyboard",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 49.60000228881836,
+          "top": 16,
+          "right": 1264,
+          "bottom": 65.60000228881836,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Keyboard-accessible history",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 1263.2000255584717,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "external-close",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 49.60000228881836,
+          "top": 16,
+          "right": 1264,
+          "bottom": 65.60000228881836,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "History",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 1263.2000255584717,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "button-ref",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 38.60000228881836,
+          "width": 1248,
+          "height": 49.60000228881836,
+          "top": 38.60000228881836,
+          "right": 1264,
+          "bottom": 88.20000457763672,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "History",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 39.400001525878906,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 39.400001525878906,
+          "right": 1263.2000255584717,
+          "bottom": 87.4000015258789,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "remount",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 110.5999984741211,
+          "top": 16,
+          "right": 1264,
+          "bottom": 126.5999984741211,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Temporary counter",
+        "expanded": "true",
+        "controls": "radix-_r_0_",
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 1263.2000255584717,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "open",
+        "hidden": false,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 1,
+        "text": "Local count: 0"
+      }
+    ]
+  },
+  {
+    "story": "with-form-content",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 110.5999984741211,
+          "top": 16,
+          "right": 1264,
+          "bottom": 126.5999984741211,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Temporary history filter",
+        "expanded": "true",
+        "controls": "radix-_r_0_",
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 1263.2000255584717,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "open",
+        "hidden": false,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 1,
+        "text": "Search "
+      }
+    ]
+  },
+  {
+    "story": "independent-sections",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 49.60000228881836,
+          "top": 16,
+          "right": 1264,
+          "bottom": 65.60000228881836,
+          "left": 16
+        },
+        "role": null
+      },
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 81.5999984741211,
+          "width": 1248,
+          "height": 110.4000015258789,
+          "top": 81.5999984741211,
+          "right": 1264,
+          "bottom": 192,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 1263.2000255584717,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      },
+      {
+        "text": "History",
+        "expanded": "true",
+        "controls": "radix-_r_1_",
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 82.4000015258789,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 82.4000015258789,
+          "right": 1263.2000255584717,
+          "bottom": 130.4000015258789,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      },
+      {
+        "id": "radix-_r_1_",
+        "state": "open",
+        "hidden": false,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 1,
+        "text": "Previously recorded readings."
+      }
+    ]
+  },
+  {
+    "story": "nested",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 134.40000915527344,
+          "top": 16,
+          "right": 1264,
+          "bottom": 150.40000915527344,
+          "left": 16
+        },
+        "role": null
+      },
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 35.20000076293945,
+          "y": 81.5999984741211,
+          "width": 1209.5999755859375,
+          "height": 49.60000228881836,
+          "top": 81.5999984741211,
+          "right": 1244.799976348877,
+          "bottom": 131.20000076293945,
+          "left": 35.20000076293945
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "History",
+        "expanded": "true",
+        "controls": "radix-_r_0_",
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 1263.2000255584717,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      },
+      {
+        "text": "Earlier readings",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 36,
+          "y": 82.4000015258789,
+          "width": 1208,
+          "height": 48,
+          "top": 82.4000015258789,
+          "right": 1244,
+          "bottom": 130.4000015258789,
+          "left": 36
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "open",
+        "hidden": false,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 1,
+        "text": "Earlier readings"
+      },
+      {
+        "id": "radix-_r_1_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "heading",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 89.42500305175781,
+          "top": 16,
+          "right": 1264,
+          "bottom": 105.42500305175781,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 36.712501525878906,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 36.712501525878906,
+          "right": 1263.2000255584717,
+          "bottom": 84.7125015258789,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "named-region",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 110.4000015258789,
+          "top": 16,
+          "right": 1264,
+          "bottom": 126.4000015258789,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history",
+        "expanded": "true",
+        "controls": "radix-_r_2_",
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 1263.2000255584717,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_2_",
+        "state": "open",
+        "hidden": false,
+        "role": "region",
+        "labelledby": "_r_1_",
+        "childNodes": 1,
+        "text": "Detailed consumption readings for the selected period."
+      }
+    ]
+  },
+  {
+    "story": "long-label",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 49.60000228881836,
+          "top": 16,
+          "right": 1264,
+          "bottom": 65.60000228881836,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history for the selected measurement period and uninterrupted-label-without-ordinary-breaking-spaces-to-check-narrow-layout",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 1263.2000255584717,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "reduced-motion",
+    "width": 1280,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 110.4000015258789,
+          "top": 16,
+          "right": 1264,
+          "bottom": 126.4000015258789,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history",
+        "expanded": "true",
+        "controls": "radix-_r_0_",
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 1246.4000244140625,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 1263.2000255584717,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "open",
+        "hidden": false,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 1,
+        "text": "Recent consumption readings are available here."
+      }
+    ]
+  },
+  {
+    "story": "default",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 49.60000228881836,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 65.60000228881836,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 373.60001945495605,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "initially-open",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 136,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 152,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history",
+        "expanded": "true",
+        "controls": "radix-_r_0_",
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 373.60001945495605,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "open",
+        "hidden": false,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 1,
+        "text": "Recent consumption readings are available here."
+      }
+    ]
+  },
+  {
+    "story": "controlled",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 49.60000228881836,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 65.60000228881836,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 373.60001945495605,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "canceled-activation",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 49.60000228881836,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 65.60000228881836,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Locked history disclosure",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 373.60001945495605,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "disabled-closed",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 49.60000228881836,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 65.60000228881836,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history",
+        "expanded": "false",
+        "controls": null,
+        "disabled": true,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 373.60001945495605,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "disabled-open",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 110.5999984741211,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 126.5999984741211,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "History unavailable to toggle",
+        "expanded": "true",
+        "controls": "radix-_r_0_",
+        "disabled": true,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 373.60001945495605,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "open",
+        "hidden": false,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 1,
+        "text": "History note "
+      }
+    ]
+  },
+  {
+    "story": "keyboard",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 49.60000228881836,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 65.60000228881836,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Keyboard-accessible history",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 373.60001945495605,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "external-close",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 49.60000228881836,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 65.60000228881836,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "History",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 373.60001945495605,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "button-ref",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 38.60000228881836,
+          "width": 358.3999938964844,
+          "height": 49.60000228881836,
+          "top": 38.60000228881836,
+          "right": 374.3999938964844,
+          "bottom": 88.20000457763672,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "History",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 39.400001525878906,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 39.400001525878906,
+          "right": 373.60001945495605,
+          "bottom": 87.4000015258789,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "remount",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 110.5999984741211,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 126.5999984741211,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Temporary counter",
+        "expanded": "true",
+        "controls": "radix-_r_0_",
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 373.60001945495605,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "open",
+        "hidden": false,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 1,
+        "text": "Local count: 0"
+      }
+    ]
+  },
+  {
+    "story": "with-form-content",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 110.5999984741211,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 126.5999984741211,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Temporary history filter",
+        "expanded": "true",
+        "controls": "radix-_r_0_",
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 373.60001945495605,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "open",
+        "hidden": false,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 1,
+        "text": "Search "
+      }
+    ]
+  },
+  {
+    "story": "independent-sections",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 49.60000228881836,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 65.60000228881836,
+          "left": 16
+        },
+        "role": null
+      },
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 81.5999984741211,
+          "width": 358.3999938964844,
+          "height": 110.4000015258789,
+          "top": 81.5999984741211,
+          "right": 374.3999938964844,
+          "bottom": 192,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 373.60001945495605,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      },
+      {
+        "text": "History",
+        "expanded": "true",
+        "controls": "radix-_r_1_",
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 82.4000015258789,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 82.4000015258789,
+          "right": 373.60001945495605,
+          "bottom": 130.4000015258789,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      },
+      {
+        "id": "radix-_r_1_",
+        "state": "open",
+        "hidden": false,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 1,
+        "text": "Previously recorded readings."
+      }
+    ]
+  },
+  {
+    "story": "nested",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 134.40000915527344,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 150.40000915527344,
+          "left": 16
+        },
+        "role": null
+      },
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 35.20000076293945,
+          "y": 81.5999984741211,
+          "width": 320,
+          "height": 49.60000228881836,
+          "top": 81.5999984741211,
+          "right": 355.20000076293945,
+          "bottom": 131.20000076293945,
+          "left": 35.20000076293945
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "History",
+        "expanded": "true",
+        "controls": "radix-_r_0_",
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 373.60001945495605,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      },
+      {
+        "text": "Earlier readings",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 36,
+          "y": 82.4000015258789,
+          "width": 318.3999938964844,
+          "height": 48,
+          "top": 82.4000015258789,
+          "right": 354.3999938964844,
+          "bottom": 130.4000015258789,
+          "left": 36
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "open",
+        "hidden": false,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 1,
+        "text": "Earlier readings"
+      },
+      {
+        "id": "radix-_r_1_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "heading",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 89.42500305175781,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 105.42500305175781,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 36.712501525878906,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 36.712501525878906,
+          "right": 373.60001945495605,
+          "bottom": 84.7125015258789,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "named-region",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 136,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 152,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history",
+        "expanded": "true",
+        "controls": "radix-_r_2_",
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 373.60001945495605,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_2_",
+        "state": "open",
+        "hidden": false,
+        "role": "region",
+        "labelledby": "_r_1_",
+        "childNodes": 1,
+        "text": "Detailed consumption readings for the selected period."
+      }
+    ]
+  },
+  {
+    "story": "long-label",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "closed",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 123.20000457763672,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 139.20000457763672,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history for the selected measurement period and uninterrupted-label-without-ordinary-breaking-spaces-to-check-narrow-layout",
+        "expanded": "false",
+        "controls": null,
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 356.8000183105469,
+          "height": 121.5999984741211,
+          "top": 16.80000114440918,
+          "right": 373.60001945495605,
+          "bottom": 138.39999961853027,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "closed",
+        "hidden": true,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 0,
+        "text": ""
+      }
+    ]
+  },
+  {
+    "story": "reduced-motion",
+    "width": 390,
+    "overflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "state": "open",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 136,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 152,
+          "left": 16
+        },
+        "role": null
+      }
+    ],
+    "triggers": [
+      {
+        "text": "Consumption history",
+        "expanded": "true",
+        "controls": "radix-_r_0_",
+        "disabled": false,
+        "rect": {
+          "x": 16.80000114440918,
+          "y": 16.80000114440918,
+          "width": 356.8000183105469,
+          "height": 48,
+          "top": 16.80000114440918,
+          "right": 373.60001945495605,
+          "bottom": 64.80000114440918,
+          "left": 16.80000114440918
+        }
+      }
+    ],
+    "contents": [
+      {
+        "id": "radix-_r_0_",
+        "state": "open",
+        "hidden": false,
+        "role": null,
+        "labelledby": null,
+        "childNodes": 1,
+        "text": "Recent consumption readings are available here."
+      }
+    ]
+  }
+]

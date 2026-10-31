@@ -3413,6 +3413,16 @@
           "symbol": "MenuProps",
           "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
+      },
+      {
+        "component": "Collapsible",
+        "type": "boolean (controlled branch; onOpenChange required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/collapsible/types.ts",
+          "symbol": "CollapsibleProps",
+          "revision": "sha256:10240b3b86416357ccf485e8a095e34c20e3fd411a82b4c7e2dc7d2bad1f0438"
+        }
       }
     ]
   },
@@ -3480,6 +3490,16 @@
           "symbol": "MenuProps",
           "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
+      },
+      {
+        "component": "Collapsible",
+        "type": "boolean (uncontrolled branch only; default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/collapsible/types.ts",
+          "symbol": "CollapsibleProps",
+          "revision": "sha256:10240b3b86416357ccf485e8a095e34c20e3fd411a82b4c7e2dc7d2bad1f0438"
+        }
       }
     ]
   },
@@ -3546,6 +3566,16 @@
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuProps",
           "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
+        }
+      },
+      {
+        "component": "Collapsible",
+        "type": "(open: boolean) => void (required controlled; optional uncontrolled)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/collapsible/types.ts",
+          "symbol": "CollapsibleProps",
+          "revision": "sha256:10240b3b86416357ccf485e8a095e34c20e3fd411a82b4c7e2dc7d2bad1f0438"
         }
       }
     ]

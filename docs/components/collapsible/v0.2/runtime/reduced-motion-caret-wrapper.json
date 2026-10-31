@@ -1,0 +1,49 @@
+{
+  "note": "Actual rotate/transition target is wrapper span, not inner SVG. Earlier SVG-only trace is preserved and proves no rotation claim alone. Font32 root probe did not prove actual trigger text enlargement; fixed pixel font requires true browser zoom or actual text scaling validation.",
+  "normal": {
+    "reduce": false,
+    "parts": [
+      {
+        "tag": "SPAN",
+        "classes": "min-w-0 [overflow-wrap:anywhere]",
+        "rotate": "none",
+        "transform": "none",
+        "transition": "all",
+        "duration": "0s",
+        "font": "700 16px / 19.2px Barlow, system-ui, sans-serif"
+      },
+      {
+        "tag": "SPAN",
+        "classes": "inline-flex shrink-0 transition-transform duration-(--duration-fast) ease-(--ease-out) group-data-[state=open]/collapsible:rotate-180 motion-reduce:transition-none motion-reduce:transform-none motion-reduce:rotate-0 motion-reduce:group-data-[state=open]/collapsible:rotate-0",
+        "rotate": "180deg",
+        "transform": "none",
+        "transition": "transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), translate 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), scale 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), rotate 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)",
+        "duration": "0.2s",
+        "font": "700 16px / 19.2px Barlow, system-ui, sans-serif"
+      }
+    ]
+  },
+  "reduced": {
+    "reduce": true,
+    "parts": [
+      {
+        "tag": "SPAN",
+        "classes": "min-w-0 [overflow-wrap:anywhere]",
+        "rotate": "none",
+        "transform": "none",
+        "transition": "all",
+        "duration": "0s",
+        "font": "700 16px / 19.2px Barlow, system-ui, sans-serif"
+      },
+      {
+        "tag": "SPAN",
+        "classes": "inline-flex shrink-0 transition-transform duration-(--duration-fast) ease-(--ease-out) group-data-[state=open]/collapsible:rotate-180 motion-reduce:transition-none motion-reduce:transform-none motion-reduce:rotate-0 motion-reduce:group-data-[state=open]/collapsible:rotate-0",
+        "rotate": "0deg",
+        "transform": "none",
+        "transition": "none 0.2s cubic-bezier(0.2, 0.8, 0.2, 1)",
+        "duration": "0.2s",
+        "font": "700 16px / 19.2px Barlow, system-ui, sans-serif"
+      }
+    ]
+  }
+}

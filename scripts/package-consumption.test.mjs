@@ -1798,6 +1798,43 @@ const panelWavePartStyle: PanelBodyProps = { children: 'Body', style: { color: '
 // @ts-expect-error Tone is a closed frame-ownership union.
 const panelWaveToneError: PanelProps = { children: 'Body', tone: 'brand' };
 
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@egdev/ui';
+import type { CollapsibleProps, CollapsibleTriggerProps, CollapsibleContentProps } from '@egdev/ui';
+// @ts-expect-error State/class preparation helpers are private.
+import type { useCollapsible } from '@egdev/ui';
+export const collapsibleConsumerChanges: boolean[] = [];
+export const collapsibleConsumerRef = createRef<HTMLButtonElement>();
+const collapsibleWaveTrigger: CollapsibleTriggerProps = { children: 'Packed disclosure' };
+const collapsibleWaveContent: CollapsibleContentProps = { children: createElement('input', { 'aria-label': 'Disclosure field', defaultValue: 'Initial' }) };
+export function CollapsibleConsumerSamples({ open, disabled = false, initial = false }: { open?: boolean; disabled?: boolean; initial?: boolean } = {}) {
+  const children = [
+    createElement(CollapsibleTrigger, { ...collapsibleWaveTrigger, key: 'trigger', ref: collapsibleConsumerRef }),
+    createElement(CollapsibleContent, { ...collapsibleWaveContent, key: 'content' })
+  ];
+  const props: CollapsibleProps = open === undefined
+    ? { children, defaultOpen: initial, disabled, onOpenChange: next => collapsibleConsumerChanges.push(next) }
+    : { children, open, disabled, onOpenChange: next => collapsibleConsumerChanges.push(next) };
+  return createElement(Collapsible, { ...props, id: 'packed-collapsible-wave' });
+}
+// @ts-expect-error Controlled visibility requires callback.
+const collapsibleWaveMissingChange: CollapsibleProps = { children: 'Pair', open: true };
+// @ts-expect-error Modes cannot be combined.
+const collapsibleWaveMixed: CollapsibleProps = { children: 'Pair', open: true, defaultOpen: false, onOpenChange: () => {} };
+// @ts-expect-error Content id is native-owned.
+const collapsibleWaveId: CollapsibleContentProps = { children: 'Body', id: 'foreign' };
+// @ts-expect-error Presence is native-owned.
+const collapsibleWaveForce: CollapsibleContentProps = { children: 'Body', forceMount: true };
+// @ts-expect-error Hidden shell state is native-owned.
+const collapsibleWaveHidden: CollapsibleContentProps = { children: 'Body', hidden: false };
+// @ts-expect-error Only Root owns disabled.
+const collapsibleWaveDisabled: CollapsibleTriggerProps = { children: 'Label', disabled: true };
+// @ts-expect-error Native trigger type is fixed.
+const collapsibleWaveSubmit: CollapsibleTriggerProps = { children: 'Label', type: 'submit' };
+// @ts-expect-error Root exposes no ref.
+const collapsibleWaveRootRef: ComponentProps<typeof Collapsible> = { children: 'Pair', ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Content exposes no ref.
+const collapsibleWaveContentRef: ComponentProps<typeof CollapsibleContent> = { children: 'Body', ref: createRef<HTMLDivElement>() };
+
 export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, headingLevel, iconName, spinnerLoading, linkExternal, statusDotPulse, inputValue, progressValue }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; headingLevel?: HeadingLevel; iconName?: IconName; spinnerLoading?: boolean; linkExternal?: boolean; statusDotPulse?: boolean; inputValue?: string; progressValue?: number } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
@@ -3489,6 +3526,16 @@ function assertPanelConsumerCSS(css) {
   }
 }
 
+function assertCollapsibleConsumerCSS(css) {
+  for (const selector of [
+    '.whitespace-normal',
+    '.group-data-\\[state\\=open\\]\\/collapsible\\:rotate-180',
+    '.motion-reduce\\:group-data-\\[state\\=open\\]\\/collapsible\\:rotate-0'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing collapsible packed CSS utility ' + selector);
+  }
+}
+
 const entries = `
 import assert from 'node:assert/strict';
 import { readFileSync, realpathSync } from 'node:fs';
@@ -3532,6 +3579,8 @@ ${assertIndicatorConsumerCSS.toString()}
 assertIndicatorConsumerCSS(shippedStyles);
 ${assertPanelConsumerCSS.toString()}
 assertPanelConsumerCSS(shippedStyles);
+${assertCollapsibleConsumerCSS.toString()}
+assertCollapsibleConsumerCSS(shippedStyles);
 ${assertHoverCardCSS.toString()}
 assertHoverCardCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
@@ -3545,6 +3594,9 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Chip',
   'ChipGroup',
   'Cluster',
+  'Collapsible',
+  'CollapsibleContent',
+  'CollapsibleTrigger',
   'Countdown',
   'Divider',
   'Dropzone',
@@ -3887,6 +3939,22 @@ try {
   assert.equal(panelWave.querySelectorAll('button').length, 1);
   assert.equal(panelWave.hasAttribute('role'), false);
 } finally { panelWaveDOM.window.close(); }
+
+import { CollapsibleConsumerSamples } from './consumer.ts';
+const collapsibleWaveHTML = renderToString(createElement(CollapsibleConsumerSamples));
+writeFileSync(new URL('./collapsible-wave-hydration.html', import.meta.url), collapsibleWaveHTML);
+const collapsibleWaveDOM = new JSDOM(collapsibleWaveHTML);
+try {
+  const doc = collapsibleWaveDOM.window.document;
+  const collapsibleWave = doc.getElementById('packed-collapsible-wave');
+  const trigger = collapsibleWave.querySelector('button');
+  const content = collapsibleWave.querySelector('.eg-collapsible__content');
+  assert.equal(trigger.getAttribute('type'), 'button');
+  assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+  assert.equal(trigger.hasAttribute('aria-controls'), false);
+  assert.ok(content.id && content.hidden);
+  assert.equal(content.querySelector('input'), null);
+} finally { collapsibleWaveDOM.window.close(); }
 
 import { PageHeaderSamples } from './consumer.ts';
 const pageDocument = new JSDOM(renderToString(createElement(PageHeaderSamples)));
@@ -5238,6 +5306,58 @@ try {
 
   await act(async () => root.render(null));
   stage('first-wave:panel:complete');
+  const { CollapsibleConsumerSamples, collapsibleConsumerChanges } = await import('./consumer.ts');
+  const collapsibleWaveHost = document.createElement('section');
+  collapsibleWaveHost.innerHTML = readWaveFile(new URL('./collapsible-wave-hydration.html', import.meta.url), 'utf8');
+  document.body.append(collapsibleWaveHost);
+  const collapsibleWaveServerNode = collapsibleWaveHost.querySelector('#packed-collapsible-wave');
+  const collapsibleWaveRecoveries = [];
+  let collapsibleWaveHydrated;
+  await act(async () => {
+    collapsibleWaveHydrated = hydrateRoot(collapsibleWaveHost, createElement(CollapsibleConsumerSamples), { onRecoverableError: error => collapsibleWaveRecoveries.push(error) });
+  });
+  assert.deepEqual(collapsibleWaveRecoveries, [], 'First-wave SSR hydrates without recovery');
+  assert.equal(collapsibleWaveHost.querySelector('#packed-collapsible-wave'), collapsibleWaveServerNode, 'Hydration retains the server root');
+  await act(async () => collapsibleWaveHydrated.unmount());
+  collapsibleWaveHost.remove();
+  await act(async () => root.render(createElement(CollapsibleConsumerSamples)));
+
+  const { collapsibleConsumerRef } = await import('./consumer.ts');
+  let collapsibleWave = document.getElementById('packed-collapsible-wave');
+  let collapsibleWaveTrigger = collapsibleWave.querySelector('button');
+  let collapsibleWaveContent = collapsibleWave.querySelector('.eg-collapsible__content');
+  assert.equal(collapsibleConsumerRef.current, collapsibleWaveTrigger);
+  assert.equal(collapsibleWaveTrigger.hasAttribute('aria-controls'), false);
+  const collapsibleWaveContentId = collapsibleWaveContent.id;
+  collapsibleWaveTrigger.focus();
+  await act(async () => collapsibleWaveTrigger.click());
+  assert.deepEqual(collapsibleConsumerChanges, [true]);
+  assert.equal(collapsibleWaveTrigger.getAttribute('aria-controls'), collapsibleWaveContentId);
+  assert.equal(document.activeElement, collapsibleWaveTrigger);
+  collapsibleWaveContent.querySelector('input').value = 'Edited';
+  await act(async () => collapsibleWaveTrigger.click());
+  assert.equal(collapsibleWaveContent.hidden, true);
+  assert.equal(collapsibleWaveContent.querySelector('input'), null);
+  assert.equal(collapsibleWaveTrigger.hasAttribute('aria-controls'), false);
+  await act(async () => collapsibleWaveTrigger.click());
+  assert.equal(collapsibleWaveContent.querySelector('input').value, 'Initial');
+  await act(async () => root.render(null));
+  assert.equal(collapsibleConsumerRef.current, null);
+  collapsibleConsumerChanges.length = 0;
+  await act(async () => root.render(createElement(CollapsibleConsumerSamples, { open: false })));
+  collapsibleWave = document.getElementById('packed-collapsible-wave');
+  collapsibleWaveTrigger = collapsibleWave.querySelector('button');
+  await act(async () => collapsibleWaveTrigger.click());
+  assert.deepEqual(collapsibleConsumerChanges, [true]);
+  assert.equal(collapsibleWaveTrigger.getAttribute('aria-expanded'), 'false');
+  await act(async () => root.render(createElement(CollapsibleConsumerSamples, { open: true, disabled: true })));
+  assert.equal(collapsibleWaveTrigger.disabled, true);
+  assert.equal(collapsibleWaveTrigger.getAttribute('aria-expanded'), 'true');
+  assert.equal(collapsibleWave.querySelector('input').disabled, false);
+  assert.deepEqual(collapsibleConsumerChanges, [true]);
+
+  await act(async () => root.render(null));
+  stage('first-wave:collapsible:complete');
   await act(async () => root.render(createElement(FieldSamples)));
   const fieldInput = document.getElementById('post-control');
   assert.equal(fieldControlRef.current, fieldInput);
@@ -6767,6 +6887,8 @@ ${assertNavListCSS.toString()}
 assertNavListCSS(emitted);
 ${assertPanelConsumerCSS.toString()}
 assertPanelConsumerCSS(emitted);
+${assertCollapsibleConsumerCSS.toString()}
+assertCollapsibleConsumerCSS(emitted);
 ${assertIndicatorConsumerCSS.toString()}
 assertIndicatorConsumerCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
@@ -6855,6 +6977,7 @@ assertPopoverCSS(twCss);
 assertLinkCSS(twCss);
 assertNavListCSS(twCss);
 assertPanelConsumerCSS(twCss);
+assertCollapsibleConsumerCSS(twCss);
 assertIndicatorConsumerCSS(twCss);
 assertLabelCSS(twCss);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) {

@@ -41,6 +41,8 @@ export * from './molecules/button-group';
 export * from './molecules/carousel';
 export type { ChipGroupOption, ChipGroupProps, ChipGroupType } from './molecules/chip-group';
 export { ChipGroup } from './molecules/chip-group';
+export type { CollapsibleContentProps, CollapsibleProps, CollapsibleTriggerProps } from './molecules/collapsible';
+export { Collapsible, CollapsibleContent, CollapsibleTrigger } from './molecules/collapsible';
 export * from './molecules/field';
 export * from './molecules/gauge-dock';
 export type { HoverCardContentProps, HoverCardProps, HoverCardTriggerProps } from './molecules/hover-card';

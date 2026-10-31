@@ -1,0 +1,455 @@
+{
+  "status": "partial execution evidence; not approval, native receipt or delivery authority",
+  "baseline": "f88b36e44b3d5ec6d7725350959f9cdfdfeb5b23",
+  "hashKind": "SHA-256 of actual complete file read_bytes(), NOT canonical Markdown payload hashes",
+  "pending": [
+    "Trigger inherited-handler Docs type diagnosis",
+    "true browser zoom and AT",
+    "final repository evidence/index consolidation"
+  ],
+  "worktrees": {
+    "indicator": [
+      {
+        "path": "packages/ui/src/index.ts",
+        "bytes": 3684,
+        "sha256": "a9172eaf7a0637f20fdabf4baa8d733346c1b289ae176cee56d26aa833e76664"
+      },
+      {
+        "path": ".storybook/main.ts",
+        "bytes": 7918,
+        "sha256": "6f8fb65feb391cf388978a439ed8303ac3c9eeb1494da7d9efaa027d5da22ab6"
+      },
+      {
+        "path": "packages/ui/src/lib/storybook-controls.test.ts",
+        "bytes": 59035,
+        "sha256": "432a8b6604f076236aa629e5856366bfbd8ed693c15dd095cbf90e8f1da2fe55"
+      },
+      {
+        "path": "packages/ui/src/lib/storybook-docgen.test.ts",
+        "bytes": 156114,
+        "sha256": "c9e686a17bb5e7387d32d12f532bfbc0f7719a0c107ee506225c33a106503ad8"
+      },
+      {
+        "path": "skills/_shared/prop-naming.json",
+        "bytes": 212697,
+        "sha256": "5571f9b17c73ce6616b493b3ad097f70b5419db3e9d6f1f16bc4dc70dae1706d"
+      },
+      {
+        "path": "docs/prop-naming.md",
+        "bytes": 149226,
+        "sha256": "8c604291d46e6a7d98d1835428f6ffbefda398eefcc51b1a24c912b0aa1a48f8"
+      },
+      {
+        "path": "scripts/prop-naming.test.mjs",
+        "bytes": 101522,
+        "sha256": "1d9a05fa1bea7e280066b6cd3d2d2ed7bc113cce82d7eb3f98a04d86a5b1d422"
+      },
+      {
+        "path": "scripts/package-exports.test.mjs",
+        "bytes": 200534,
+        "sha256": "c1113fd7e89043e3bf3abe4009fdc282505278dac3676ed2a68cc290840c904d"
+      },
+      {
+        "path": "scripts/package-consumption.test.mjs",
+        "bytes": 404956,
+        "sha256": "dc0a940479b031296c578d2f465b5a997ac96c9a6a96207b1f0239381950a7de"
+      },
+      {
+        "path": "scripts/catalog_data.py",
+        "bytes": 41517,
+        "sha256": "206a995d13f4a0fe3168928006d6b5851d8d2a9412353fd1fd92ab59cbe876e9"
+      },
+      {
+        "path": "docs/catalog.json",
+        "bytes": 56892,
+        "sha256": "72db4efbb276683f398466328d7b21702fa01813aeee25d677f2fe0b7f464e94"
+      },
+      {
+        "path": "docs/CATALOGO.md",
+        "bytes": 42981,
+        "sha256": "731d4693787a260a160db7535707c750f62f6d4e913b816378ee067a2f33d6cd"
+      },
+      {
+        "path": "packages/ui/src/atoms/indicator/Indicator.stories.tsx",
+        "bytes": 5677,
+        "sha256": "afbbc64cb54d81226febcad7fb985b4a67eb80ab0b1300e9327fa08409b2a125"
+      },
+      {
+        "path": "packages/ui/src/atoms/indicator/Indicator.test.tsx",
+        "bytes": 15427,
+        "sha256": "8d9d8ecae2f950e0c6f3929a22c4f3ea11219d8f19f9dbae4ceac3b4c7af791f"
+      },
+      {
+        "path": "packages/ui/src/atoms/indicator/Indicator.tsx",
+        "bytes": 592,
+        "sha256": "988cb8de5282a9dac03e2e940fa460f61477f801f103b38e44544c3430687fd8"
+      },
+      {
+        "path": "packages/ui/src/atoms/indicator/index.ts",
+        "bytes": 165,
+        "sha256": "65b21b0cd3772ea0e71a8298866d1c5ce5ded955c7423358fab95afe76c1d063"
+      },
+      {
+        "path": "packages/ui/src/atoms/indicator/types.ts",
+        "bytes": 6469,
+        "sha256": "729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+      },
+      {
+        "path": "packages/ui/src/atoms/indicator/useIndicator.ts",
+        "bytes": 2679,
+        "sha256": "2502b21f3bdcaab86123c1113ed1631fec2c2caa9cee4909e2bd86734182c4b3"
+      },
+      {
+        "path": ".storybook/preview.css",
+        "bytes": 3940,
+        "sha256": "2dcc1d12df5bd30104f68baeda38f00aadfcbfb0c1fb296f29e18f665e8cc6b9"
+      },
+      {
+        "path": "packages/ui/src/styles/compiled.css",
+        "bytes": 2254,
+        "sha256": "97422162d19111b5a64fe37480e952d642272bda39b1cd8c7a5b090a5f8bbf93"
+      },
+      {
+        "path": "packages/ui/src/atoms/avatar/types.ts",
+        "bytes": 3241,
+        "sha256": "8ffd965e1e0baf15dbc4495f1780b62a9f5a654738ff78ad88f0775e16d0212b"
+      },
+      {
+        "path": "packages/ui/src/atoms/avatar/Avatar.test.tsx",
+        "bytes": 11446,
+        "sha256": "4e3dba817507e8e354bf306dcae9c7e0710c634835c4043decc2ef266b4af749"
+      },
+      {
+        "path": "packages/ui/src/atoms/avatar/Avatar.tsx",
+        "bytes": 1025,
+        "sha256": "33934e7166ddba0c64578bdb71912517c150b61a659673a6d9b3c9292f54d325"
+      },
+      {
+        "path": "packages/ui/src/atoms/avatar/useAvatar.ts",
+        "bytes": 1478,
+        "sha256": "904de1e3f10d8f456689caf067739b23a7753be5dd9384d9d143fc1ce9e4f1c0"
+      },
+      {
+        "path": "packages/ui/src/atoms/avatar/Avatar.stories.tsx",
+        "bytes": 3047,
+        "sha256": "f7d0bfabe14db085236f91852c2a16bd884fdc0aa6666f60eb3cb502e4cbd282"
+      }
+    ],
+    "panel": [
+      {
+        "path": "packages/ui/src/index.ts",
+        "bytes": 3725,
+        "sha256": "bcb11a79e76d3353d7c4056123c6d1b9a43d04203026fa3a597ccebcf9daf5f5"
+      },
+      {
+        "path": ".storybook/main.ts",
+        "bytes": 8083,
+        "sha256": "fc8758acea05ce1885bc93f19bb7e38a3112fa74647318bf96b564733b8451cf"
+      },
+      {
+        "path": "packages/ui/src/lib/storybook-controls.test.ts",
+        "bytes": 59027,
+        "sha256": "5d82c8151475acdea278b01b80bfc13b4e22e728a81ef4a7eecb73d9608ba484"
+      },
+      {
+        "path": "packages/ui/src/lib/storybook-docgen.test.ts",
+        "bytes": 156244,
+        "sha256": "3eb899cd29088beb169a9836014795be232233b318e65ce33f981303b6991d6a"
+      },
+      {
+        "path": "skills/_shared/prop-naming.json",
+        "bytes": 207737,
+        "sha256": "5d8421b5b52ec2e201406a0affdfd894ce4848fbd6e187c49c36d34d641caa29"
+      },
+      {
+        "path": "docs/prop-naming.md",
+        "bytes": 145529,
+        "sha256": "8b4afb8182ea791e194b2b38e6f3bfab71a156d66e2c4f468936657dd22ca3b6"
+      },
+      {
+        "path": "scripts/prop-naming.test.mjs",
+        "bytes": 96536,
+        "sha256": "3e51944507e158332cfc737513324fe73ba00a50e596d81d2c039633717d20ed"
+      },
+      {
+        "path": "scripts/package-exports.test.mjs",
+        "bytes": 200778,
+        "sha256": "1fbd5a64a440761a94102702f04de4a3c2b247a0c48f3b721e0e7fe8f758fd54"
+      },
+      {
+        "path": "scripts/package-consumption.test.mjs",
+        "bytes": 405159,
+        "sha256": "4b00b8b4450d8e5e1500d8ad381b092773bff9083ee07234a6cc2ad86d3a71c9"
+      },
+      {
+        "path": "scripts/catalog_data.py",
+        "bytes": 41404,
+        "sha256": "cc62b6c1928f221193c9df3956d573cbf128d496348187bd4eb1541817055c06"
+      },
+      {
+        "path": "docs/catalog.json",
+        "bytes": 56779,
+        "sha256": "90779553ee3fea475f6f0eba51258609e03e503dc6ef41bd4e941c9a8aa11a19"
+      },
+      {
+        "path": "docs/CATALOGO.md",
+        "bytes": 42868,
+        "sha256": "e26b53f11d75885267418f140222c2aac1c9d272380b7e765c8bc6d0ce0f4f27"
+      },
+      {
+        "path": "packages/ui/src/molecules/panel/Panel.stories.tsx",
+        "bytes": 7656,
+        "sha256": "4e2dfa1521e96f42065f871e5d2cbd03eb30a11a9e15ff56e459c15092405600"
+      },
+      {
+        "path": "packages/ui/src/molecules/panel/Panel.test.tsx",
+        "bytes": 22777,
+        "sha256": "0a2f197be94b0631519949a33def9ea4f3cbc94bf790c42fd7599b522b115b53"
+      },
+      {
+        "path": "packages/ui/src/molecules/panel/Panel.tsx",
+        "bytes": 1428,
+        "sha256": "8ed6f9099e4be120511759743066ca3d873805412b413f978ee27aafc4ae7527"
+      },
+      {
+        "path": "packages/ui/src/molecules/panel/index.ts",
+        "bytes": 190,
+        "sha256": "b30e2676fe520eb30acd86d86f261ddceffacfe241046465093e0af2382eadd6"
+      },
+      {
+        "path": "packages/ui/src/molecules/panel/types.ts",
+        "bytes": 4316,
+        "sha256": "5aa2753d3af82b96e29f8df01eda0af56e750d5f4b7d321664a74bc4c4432cd8"
+      },
+      {
+        "path": "packages/ui/src/molecules/panel/usePanel.ts",
+        "bytes": 4305,
+        "sha256": "941368560688af0b54cd7559004209d42757ab6a0357180ccb7f5024ab876ffb"
+      }
+    ],
+    "collapsible": [
+      {
+        "path": "packages/ui/src/index.ts",
+        "bytes": 3713,
+        "sha256": "1b8f920999de1810ea2c3251a6bd9b7bcf40db110aa73bf256fadf61db43af1c"
+      },
+      {
+        "path": ".storybook/main.ts",
+        "bytes": 8194,
+        "sha256": "6bd5551cb27d0fc5539bc50d685cbc78c70648633d7fc0a23432d77197cf8293"
+      },
+      {
+        "path": "packages/ui/src/lib/storybook-controls.test.ts",
+        "bytes": 59071,
+        "sha256": "e102bcca24c905c41389bb88b72944a5faedfab39ea98685b007a257eb0de675"
+      },
+      {
+        "path": "packages/ui/src/lib/storybook-docgen.test.ts",
+        "bytes": 156650,
+        "sha256": "dc64a2cf94719de52e82a3d1ffc7baa29b8f6e11672eba841c6492fa8cc8f566"
+      },
+      {
+        "path": "skills/_shared/prop-naming.json",
+        "bytes": 208195,
+        "sha256": "5ec5ebe18b2d1baf96409d6ac464947f2105651edac02ecf94d5c3e63830d898"
+      },
+      {
+        "path": "docs/prop-naming.md",
+        "bytes": 145829,
+        "sha256": "4cd7bd4e651ddfb06058575d09ef852017238f8b057dca3c9a2b342b7e666998"
+      },
+      {
+        "path": "scripts/prop-naming.test.mjs",
+        "bytes": 96561,
+        "sha256": "9264be2537ce585aaf5010c549f19a95304121b139a0e21d435355f13f0f8f91"
+      },
+      {
+        "path": "scripts/package-exports.test.mjs",
+        "bytes": 200496,
+        "sha256": "b1bc71f242e0c16a87f27edeaab37c08101a0b45fb29e0400e834532757f949f"
+      },
+      {
+        "path": "scripts/package-consumption.test.mjs",
+        "bytes": 406478,
+        "sha256": "0e77d3eadbab10495bdd171916bcf0763f89c62cf881c640d628b8182ea5e7d3"
+      },
+      {
+        "path": "scripts/catalog_data.py",
+        "bytes": 41557,
+        "sha256": "2f093637e2f8b718517cc1d7a86a274ddd5362a87aa4054c7e3278339fdccda9"
+      },
+      {
+        "path": "docs/catalog.json",
+        "bytes": 56932,
+        "sha256": "7428173e9f45d55049be972ef7c33cbc8f2a72e8471a88fc3499e119658271d7"
+      },
+      {
+        "path": "docs/CATALOGO.md",
+        "bytes": 43021,
+        "sha256": "e392f5c3184d508f1be9b181d81578549f31a170197e89598c1f61a3f20e6d83"
+      },
+      {
+        "path": "packages/ui/src/molecules/collapsible/Collapsible.stories.tsx",
+        "bytes": 10050,
+        "sha256": "0b090a8404a781a36ab2a8f3a9ab685f6be4e8a83a1a032dfc998943601b84d3"
+      },
+      {
+        "path": "packages/ui/src/molecules/collapsible/Collapsible.test.tsx",
+        "bytes": 27739,
+        "sha256": "97e547d3e13b6dff5a11e909852d593520c5f2432d80b9908894dbac5d58e04f"
+      },
+      {
+        "path": "packages/ui/src/molecules/collapsible/Collapsible.tsx",
+        "bytes": 1767,
+        "sha256": "7b27ccc35f27796a10210540d63de52e0e3da3b66eb2b3603c216ea15d990ac7"
+      },
+      {
+        "path": "packages/ui/src/molecules/collapsible/index.ts",
+        "bytes": 184,
+        "sha256": "baeb70f063ce716ef0a7e284f58792f4b5d4e26a857a3b0c7e91efce31afef14"
+      },
+      {
+        "path": "packages/ui/src/molecules/collapsible/types.ts",
+        "bytes": 4485,
+        "sha256": "10240b3b86416357ccf485e8a095e34c20e3fd411a82b4c7e2dc7d2bad1f0438"
+      },
+      {
+        "path": "packages/ui/src/molecules/collapsible/useCollapsible.ts",
+        "bytes": 3387,
+        "sha256": "add40a89522964971c62db5e61e10f541b0af682864f6cf0b9efbbae0b9c9845"
+      }
+    ]
+  },
+  "observedArtifacts": [
+    {
+      "path": "collapsible/actual-controls-docs.json",
+      "bytes": 6007,
+      "sha256": "807251b5c031cf350c18aea67499121613bfa73f9fc774e0bcbe4b48fc40cdca"
+    },
+    {
+      "path": "collapsible/actual-controls-first.json",
+      "bytes": 1436,
+      "sha256": "06884a41b213843502aea16a03c92fcc5f75a458b9a6084a753fab3540c47f19"
+    },
+    {
+      "path": "collapsible/browser-matrix.json",
+      "bytes": 42826,
+      "sha256": "b38290a30f83ff473bfd502cc02da4b1b8026a87c460ce890573bfb177359ca7"
+    },
+    {
+      "path": "collapsible/controls-checkbox-red.json",
+      "bytes": 456,
+      "sha256": "252e04a1c1686fc4944d342db9724cdd63532cd5b1cb644d5d1fadde3766df9e"
+    },
+    {
+      "path": "collapsible/functional-browser.json",
+      "bytes": 1320,
+      "sha256": "53bd7d95ba0ee80eb6d328451cdcec89a7ee4c293d4144891681e72be9bc521c"
+    },
+    {
+      "path": "collapsible/long-label-rootfont32-probe.png",
+      "bytes": 14449,
+      "sha256": "8a0864c16329a63abc7f2ea7d52d97c28c24374e8932d26552591ce151e289a8"
+    },
+    {
+      "path": "collapsible/reduced-motion-caret-wrapper.json",
+      "bytes": 2203,
+      "sha256": "2a7583537f7164eb204ffa44398e8ad63b8fed0631aac0ed57155425a837cb2e"
+    },
+    {
+      "path": "collapsible/reduced-motion-text-enlargement.json",
+      "bytes": 2974,
+      "sha256": "f4557d0250c42937de954fba9143b65fa1ce9879e58a79e2adb105f2a0cad582"
+    },
+    {
+      "path": "indicator/actual-controls-position.json",
+      "bytes": 561,
+      "sha256": "c2aa0fee764e47704f5e00f862e69fe9f5f9bf335eb3ce4d4b26a310008d63e4"
+    },
+    {
+      "path": "indicator/actual-controls.json",
+      "bytes": 11026,
+      "sha256": "0ccfbaebf3ccb3a622330631411b86966202bbd5ab5b1c75b72beefb330ac6da"
+    },
+    {
+      "path": "indicator/actual-docs.json",
+      "bytes": 3713,
+      "sha256": "34f0703d58cd51bb61faa4abc86dc30243ef7909e653b15726b83224350ef142"
+    },
+    {
+      "path": "indicator/avatar-before-after.json",
+      "bytes": 49468,
+      "sha256": "7855a21874184f9f9913aa00371a80ea06f49ddff82a7bfc4dd3799905f75758"
+    },
+    {
+      "path": "indicator/avatar-media-decorative-ab.json",
+      "bytes": 3434,
+      "sha256": "f150ed93e9ec8720538ff99afc646f9689d2a0b0709545a65df7fc916a82e6fa"
+    },
+    {
+      "path": "indicator/avatar-network-badge-before-after-identical.png",
+      "bytes": 4759,
+      "sha256": "462c1d44ea4cd7188b580729afa3ad69cac64fd343f5b199c23b28f718e6e727"
+    },
+    {
+      "path": "indicator/branches-canonical.png",
+      "bytes": 15269,
+      "sha256": "fe6ecdd08a16096bf1fd4d67c282d0cefa271d70b8a77bc2dc926a7ea3272010"
+    },
+    {
+      "path": "indicator/browser-matrix.json",
+      "bytes": 29173,
+      "sha256": "b2522978c76bf98573ba29777f36d67b0376365b5e8d3a5c4bc910fc7b6c4015"
+    },
+    {
+      "path": "indicator/canonical-capture-conditions.json",
+      "bytes": 239,
+      "sha256": "220d191a8d3872442755d9e64609c7cb19bef795ca46f3e46df6fb94caf06bfe"
+    },
+    {
+      "path": "indicator/default-as-is.png",
+      "bytes": 4680,
+      "sha256": "b4ebc7fc756bfe9475ab9624118401513002b973418136782c777f9e9d3e7d69"
+    },
+    {
+      "path": "indicator/narrow-text-enlargement.json",
+      "bytes": 7127,
+      "sha256": "1c723d1b18f01b14297a717320f5f1e48ac7bffa27a654afe5ca5ef92145caee"
+    },
+    {
+      "path": "indicator/pointer-keyboard.json",
+      "bytes": 579,
+      "sha256": "98a086f9dc16e5d4e4818dde5aaed698e91275da3aab923618a8947d2371f34d"
+    },
+    {
+      "path": "panel/actual-controls-docs.json",
+      "bytes": 2847,
+      "sha256": "4b18ca196cdd1c058fa9659df9731a6429cbc8271f06b341524a765c3c31bcff"
+    },
+    {
+      "path": "panel/actual-subcomponent-docs.json",
+      "bytes": 1774,
+      "sha256": "302cc7a9fdcce588c6abf0a82f329c0d31b9ef05fa6c9653632f0244ad4737e5"
+    },
+    {
+      "path": "panel/banded-canonical-390.png",
+      "bytes": 20510,
+      "sha256": "0c0857f2a12a9e05dccefcc452b8bfcfc32e6cc46bec99f971553d785b1cb428"
+    },
+    {
+      "path": "panel/browser-matrix.json",
+      "bytes": 68648,
+      "sha256": "359383b84253b5095146a2fd333e625babee824a6d68cf23ccf1e6435f45383d"
+    },
+    {
+      "path": "panel/keyboard-popover.json",
+      "bytes": 7746,
+      "sha256": "d3fbbb7e5cb6b386cb6de999b0e2e6c42a5e247e2da7c6d161a00497a65bdb33"
+    },
+    {
+      "path": "panel/popover-focus-restoration-followup.json",
+      "bytes": 397,
+      "sha256": "cc5bace881b3e18e030410bbb382f32a442537525698e741aa1ad374cf6bf349"
+    }
+  ]
+}

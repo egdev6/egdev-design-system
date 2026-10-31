@@ -657,7 +657,7 @@
     "radix": "Collapsible",
     "compone": "Surface, Button recipe, Icon",
     "accion": "nuevo",
-    "notas": "Draft v0.1 only: independent disclosure over @radix-ui/react-collapsible, pending owner confirmation before dependency addition. Accordion is not justified or requested; NavList #92 unchanged. Contract: [#181](https://github.com/egdev6/egdev-design-system/issues/181), [local draft](components/collapsible/v0.1/spec.md)."
+    "notas": "Implemented public working-tree React disclosure over the already-declared Radix Collapsible 1.2.1 under the [v0.2 base](components/collapsible/v0.2/spec.md) and [approved v0.3 relationship amendment](components/collapsible/v0.3/radix-relationship-amendment.md). Fixed Surface frame, ghost/md button recipe, native state/presence and Trigger-only button ref. Closed Trigger omits aria-controls; the hidden Content shell/id remains while children unmount. No stylesheet, custom key/focus engine or dependency change; NavList is unchanged. Parent unit, metadata, build and packed React 18.3.1/19.3.0 checks passed; runtime browser/AT conformity remains pending."
   },
   {
     "actual": "SearchTrigger",

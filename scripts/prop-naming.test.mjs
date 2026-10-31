@@ -65,6 +65,10 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/molecules/panel/types.ts#PanelProps'
   })),
+  ...['open-state', 'initial-uncontrolled-open', 'open-change'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/collapsible/types.ts#CollapsibleProps'
+  })),
   ...[
     'surface-material-tone',
     'leading-icon',

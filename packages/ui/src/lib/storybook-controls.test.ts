@@ -69,7 +69,10 @@ const components = [
   ['Panel', 'molecules/panel'],
   ['PanelHeader', 'molecules/panel'],
   ['PanelBody', 'molecules/panel'],
-  ['PanelFooter', 'molecules/panel']
+  ['PanelFooter', 'molecules/panel'],
+  ['Collapsible', 'molecules/collapsible'],
+  ['CollapsibleTrigger', 'molecules/collapsible'],
+  ['CollapsibleContent', 'molecules/collapsible']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -133,6 +136,9 @@ const expected: Record<string, Record<string, string | false>> = {
   panelheader: { children: false },
   panelbody: { children: false },
   panelfooter: { children: false },
+  collapsible: { open: 'boolean', defaultOpen: 'boolean', onOpenChange: false, children: false, disabled: 'boolean' },
+  collapsibletrigger: { children: false },
+  collapsiblecontent: { children: false },
   modulecard: {
     title: 'text',
     level: 'select',
@@ -436,6 +442,9 @@ const ownPropCounts: Record<string, number> = {
   panelheader: 1,
   panelbody: 1,
   panelfooter: 1,
+  collapsible: 5,
+  collapsibletrigger: 1,
+  collapsiblecontent: 1,
   modulecard: 10,
   timeline: 7,
   selecttile: 11,
@@ -714,6 +723,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
   it.each([
     ['Indicator', { variant: '"dot"', tone: '"danger"', size: '"sm"', position: '"top-right"', max: '99' }],
     ['Panel', { variant: '"default"', tone: '"surface-1"' }],
+    ['Collapsible', { defaultOpen: 'false', disabled: 'false' }],
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
     ['Checkbox', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }],
     ['Menu', { side: '"bottom"', align: '"start"', defaultOpen: 'false' }],

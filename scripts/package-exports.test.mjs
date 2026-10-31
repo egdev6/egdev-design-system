@@ -48,6 +48,74 @@ function cssBlock(css, opening) {
 const unapprovedTransitionUtility =
   /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\])(?=\s*\{))[\w\\]/;
 
+test('Collapsible ships native group-state caret motion and reduced-motion resets', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    '.whitespace-normal',
+    '.text-start',
+    '.transition-transform',
+    String.raw`.group-data-\[state\=open\]\/collapsible\:rotate-180`,
+    String.raw`.motion-reduce\:group-data-\[state\=open\]\/collapsible\:rotate-0`,
+    String.raw`.motion-reduce\:transform-none`
+  ]) {
+    assert.ok(utilities.includes(selector), 'Missing Collapsible utility ' + selector);
+  }
+  assert.match(utilities, /prefers-reduced-motion:\s*reduce/);
+  assert.doesNotMatch(utilities, /\.eg-collapsible[^{}]*\{/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/collapsible/collapsible.css')), false);
+});
+test('Collapsible package preserves amended native closed/open relationships and private helpers in SSR', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.Collapsible, 'function');
+  assert.equal(typeof exported.CollapsibleContent, 'function');
+  assert.equal(exported.CollapsibleTrigger.$$typeof, Symbol.for('react.forward_ref'));
+  for (const name of [
+    'useCollapsible',
+    'useCollapsibleTrigger',
+    'useCollapsibleContent',
+    'collapsibleVariants',
+    'collapsibleTriggerVariants',
+    'collapsibleContentVariants',
+    'collapsibleCaretVariants'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, name + ' is private');
+  }
+  for (const open of [false, true]) {
+    const dom = new JSDOM(
+      renderToString(
+        createElement(exported.Collapsible, {
+          defaultOpen: open,
+          children: [
+            createElement(exported.CollapsibleTrigger, { key: 'trigger', children: 'Details' }),
+            createElement(exported.CollapsibleContent, {
+              key: 'content',
+              children: createElement('input', { 'aria-label': 'Body field' })
+            })
+          ]
+        })
+      )
+    );
+    try {
+      const doc = dom.window.document;
+      const trigger = doc.querySelector('button');
+      const content = doc.querySelector('.eg-collapsible__content');
+      assert.ok(trigger && content?.id);
+      assert.equal(trigger.getAttribute('type'), 'button');
+      assert.equal(trigger.getAttribute('aria-expanded'), String(open));
+      assert.equal(trigger.getAttribute('aria-controls'), open ? content.id : null);
+      assert.equal(content.hasAttribute('hidden'), !open);
+      assert.equal(Boolean(content.querySelector('input')), open);
+      assert.equal(doc.querySelectorAll('.eg-surface').length, 1);
+    } finally {
+      dom.window.close();
+    }
+  }
+});
+
 test('Panel ships band resets and direct-zone corner utilities without a new marker engine', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -2599,6 +2667,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Chip',
       'ChipGroup',
       'Cluster',
+      'Collapsible',
+      'CollapsibleContent',
+      'CollapsibleTrigger',
       'Countdown',
       'Divider',
       'Dropzone',
@@ -2813,6 +2884,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ChipProps',
     'Cluster',
     'ClusterProps',
+    'Collapsible',
+    'CollapsibleContent',
+    'CollapsibleContentProps',
+    'CollapsibleProps',
+    'CollapsibleTrigger',
+    'CollapsibleTriggerProps',
     'Countdown',
     'CountdownProps',
     'CountdownSize',

@@ -1,0 +1,74 @@
+[
+  {
+    "case": "keyboard-native-relationship",
+    "closed": {
+      "id": "radix-_r_0_",
+      "hidden": "",
+      "controls": null
+    },
+    "open": {
+      "controls": "radix-_r_0_",
+      "id": "radix-_r_0_"
+    },
+    "inputFocused": true,
+    "buttonFocused": true,
+    "reclosed": {
+      "id": "radix-_r_0_",
+      "controls": null,
+      "nodes": 0
+    },
+    "reopenedControls": "radix-_r_0_"
+  },
+  {
+    "case": "canceled",
+    "expanded": "false"
+  },
+  {
+    "case": "disabled-open",
+    "triggerDisabled": true,
+    "inputValue": "Changed while disabled-open",
+    "contentOpacity": "1"
+  },
+  {
+    "case": "controlled-accept",
+    "expanded": "true"
+  },
+  {
+    "case": "consumer-external-close",
+    "focusTrigger": true,
+    "expanded": "false"
+  },
+  {
+    "case": "native-button-ref",
+    "focused": true
+  },
+  {
+    "case": "child-state-remount",
+    "reset": true
+  },
+  {
+    "case": "uncontrolled-form-remount",
+    "value": "Recent"
+  },
+  {
+    "case": "independent",
+    "triggers": [
+      {
+        "expanded": "true",
+        "controls": "radix-_r_0_"
+      },
+      {
+        "expanded": "true",
+        "controls": "radix-_r_1_"
+      }
+    ]
+  },
+  {
+    "case": "nested-parent-close",
+    "innerUnmounted": true
+  },
+  {
+    "case": "consumer-region",
+    "namedRegion": 1
+  }
+]

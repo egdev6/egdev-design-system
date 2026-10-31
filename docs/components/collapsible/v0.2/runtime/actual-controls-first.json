@@ -1,0 +1,55 @@
+{
+  "rows": [
+    {
+      "name": "title",
+      "buttons": ["Set string"],
+      "inputs": []
+    },
+    {
+      "name": "className",
+      "buttons": ["Set string"],
+      "inputs": []
+    },
+    {
+      "name": "dir",
+      "buttons": ["Set string"],
+      "inputs": []
+    },
+    {
+      "name": "id",
+      "buttons": ["Set string"],
+      "inputs": []
+    },
+    {
+      "name": "aria-describedby",
+      "buttons": ["Set string"],
+      "inputs": []
+    },
+    {
+      "name": "open",
+      "buttons": ["Set boolean"],
+      "inputs": []
+    },
+    {
+      "name": "defaultOpen",
+      "buttons": ["Set boolean"],
+      "inputs": []
+    },
+    {
+      "name": "onOpenChange",
+      "buttons": [],
+      "inputs": []
+    },
+    {
+      "name": "children*",
+      "buttons": [],
+      "inputs": []
+    },
+    {
+      "name": "disabled",
+      "buttons": ["Set boolean"],
+      "inputs": []
+    }
+  ],
+  "disabledRow": "<tr class=\"css-eaulyu\"><td class=\"css-4lbn0a\"><span class=\"css-in3yi3\">disabled</span></td><td><label aria-disabled=\"false\" for=\"control-disabled\" aria-label=\"disabled\" class=\"css-3n4n59\"><input id=\"control-disabled\" type=\"checkbox\" role=\"switch\" name=\"disabled\"><span aria-hidden=\"true\">False</span><span aria-hidden=\"true\">True</span></label></td></tr>"
+}

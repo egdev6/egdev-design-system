@@ -645,6 +645,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/button-group',
       './molecules/carousel',
       './molecules/chip-group',
+      './molecules/collapsible',
       './molecules/field',
       './molecules/gauge-dock',
       './molecules/hover-card',
@@ -685,6 +686,9 @@ describe('Storybook TypeScript docgen contract', () => {
       'Chip',
       'ChipGroup',
       'Cluster',
+      'Collapsible',
+      'CollapsibleContent',
+      'CollapsibleTrigger',
       'Countdown',
       'Divider',
       'Dropzone',
@@ -3620,6 +3624,116 @@ describe('Panel first-wave metadata contract', () => {
         }
       }
       if (name === 'Panel') {
+        for (const prop of own) {
+          expect(normalize(doc.props[prop]?.defaultValue?.value ?? ''), name + '.' + prop).toBe(constants[prop] ?? '');
+        }
+      }
+    }
+  }, 20_000);
+});
+
+describe('Collapsible first-wave metadata contract', () => {
+  const controls: Record<string, string> = {
+    open: 'boolean',
+    defaultOpen: 'boolean',
+    onOpenChange: 'false',
+    children: 'false',
+    disabled: 'boolean'
+  };
+  const constants: Record<string, string> = { defaultOpen: 'false', disabled: 'false' };
+  const parts: { name: string; native: string[]; own: string[] }[] = [
+    {
+      name: 'Collapsible',
+      native: ['id', 'title', 'dir', 'aria-describedby', 'className'],
+      own: ['open', 'defaultOpen', 'onOpenChange', 'children', 'disabled']
+    },
+    {
+      name: 'CollapsibleTrigger',
+      native: [
+        'id',
+        'title',
+        'dir',
+        'aria-describedby',
+        'className',
+        'onClick',
+        'onKeyDown',
+        'onFocus',
+        'onBlur',
+        'aria-label',
+        'aria-labelledby'
+      ],
+      own: ['children']
+    },
+    {
+      name: 'CollapsibleContent',
+      native: ['title', 'dir', 'aria-describedby', 'className', 'role', 'aria-label', 'aria-labelledby'],
+      own: ['children']
+    }
+  ];
+
+  it('annotates every own union declaration and binds false-control reasons to real stories', () => {
+    const file = ast(source('molecules/collapsible/types.ts'));
+    const properties = ownProps(file, [
+      'ControlledDisclosure',
+      'UncontrolledDisclosure',
+      'CollapsibleProps',
+      'CollapsibleTriggerProps',
+      'CollapsibleContentProps'
+    ]);
+    expect(properties).toHaveLength(10);
+    expect([...new Set(properties.map((property) => property.name.getText(file)))].sort()).toEqual(
+      Object.keys(controls).sort()
+    );
+    const stories = ast(source('molecules/collapsible/Collapsible.stories.tsx'));
+    const names = exportedStoryNames(stories);
+    const observedDefaults: Record<string, string> = {};
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const values = (tag: string) =>
+        tags.filter((item) => item.tagName.text === tag).map((item) => ts.getTextOfJSDocComment(item.comment));
+      expect(values('control'), name).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        const reason = values('controlReason')[0] ?? '';
+        expect(reason, name).not.toBe('');
+        expect(
+          names.some((story) => reason.includes(story)),
+          name
+        ).toBe(true);
+      }
+      for (const value of values('default')) {
+        expect(value, name).toBe(constants[name]);
+        if (value !== undefined) {
+          observedDefaults[name] = value;
+        }
+      }
+    }
+    expect(observedDefaults).toEqual(constants);
+    expect(stories.getText()).not.toMatch(/\bargTypes\s*:|\bplay\s*:/);
+  });
+
+  it('extracts exact public and approved native rows without leaking internal or forbidden props', () => {
+    const extracted = parser.parse(source('molecules/collapsible/Collapsible.tsx'));
+    for (const { name, native, own } of parts) {
+      const doc = extracted.find((item) => item.displayName === name);
+      if (!doc) {
+        throw new Error('Missing real docgen for ' + name);
+      }
+      expect(Object.keys(doc.props).sort(), name).toEqual([...own, ...native].sort());
+      expect(doc.props.children, name).toMatchObject({ required: true });
+      for (const prop of own) {
+        const tags: Record<string, unknown> = doc.props[prop]?.tags ?? {};
+        const directives = String(tags.control ?? '')
+          .split(/\r?\n/)
+          .map((value) => value.trim())
+          .filter(Boolean);
+        expect([...new Set(directives)], name + '.' + prop).toEqual([controls[prop]]);
+        if (controls[prop] === 'false') {
+          expect(typeof tags.controlReason).toBe('string');
+          expect(tags.controlReason).toBeTruthy();
+        }
+      }
+      if (name === 'Collapsible') {
         for (const prop of own) {
           expect(normalize(doc.props[prop]?.defaultValue?.value ?? ''), name + '.' + prop).toBe(constants[prop] ?? '');
         }

@@ -1,0 +1,121 @@
+{
+  "note": "Actual reduced-motion media preference; root-font32px enlargement is not true browser zoom.",
+  "normal": {
+    "reduce": false,
+    "expanded": "true",
+    "caret": [
+      {
+        "tag": "svg",
+        "rotate": "none",
+        "transform": "none",
+        "transition": "all"
+      }
+    ]
+  },
+  "reduced": {
+    "reduce": true,
+    "expanded": "true",
+    "caret": [
+      {
+        "tag": "svg",
+        "rotate": "none",
+        "transform": "none",
+        "transition": "all"
+      }
+    ]
+  },
+  "enlarged": [
+    {
+      "font": "16px",
+      "overflow": false,
+      "trigger": {
+        "x": 16.80000114440918,
+        "y": 16.80000114440918,
+        "width": 356.8000183105469,
+        "height": 121.5999984741211,
+        "top": 16.80000114440918,
+        "right": 373.60001945495605,
+        "bottom": 138.39999961853027,
+        "left": 16.80000114440918
+      },
+      "parts": [
+        {
+          "tag": "SPAN",
+          "rect": {
+            "x": 39.60000228881836,
+            "y": 29.600000381469727,
+            "width": 285.20001220703125,
+            "height": 96,
+            "top": 29.600000381469727,
+            "right": 324.8000144958496,
+            "bottom": 125.60000038146973,
+            "left": 39.60000228881836
+          },
+          "wrap": "anywhere",
+          "shrink": "1"
+        },
+        {
+          "tag": "SPAN",
+          "rect": {
+            "x": 334.8000183105469,
+            "y": 69.5999984741211,
+            "width": 16,
+            "height": 16,
+            "top": 69.5999984741211,
+            "right": 350.8000183105469,
+            "bottom": 85.5999984741211,
+            "left": 334.8000183105469
+          },
+          "wrap": "normal",
+          "shrink": "0"
+        }
+      ]
+    },
+    {
+      "font": "32px",
+      "overflow": false,
+      "trigger": {
+        "x": 32.79999923706055,
+        "y": 36,
+        "width": 324.8000183105469,
+        "height": 121.5999984741211,
+        "top": 36,
+        "right": 357.6000175476074,
+        "bottom": 157.5999984741211,
+        "left": 32.79999923706055
+      },
+      "parts": [
+        {
+          "tag": "SPAN",
+          "rect": {
+            "x": 55.60000228881836,
+            "y": 48.79999923706055,
+            "width": 253.1999969482422,
+            "height": 96,
+            "top": 48.79999923706055,
+            "right": 308.79999923706055,
+            "bottom": 144.79999923706055,
+            "left": 55.60000228881836
+          },
+          "wrap": "anywhere",
+          "shrink": "1"
+        },
+        {
+          "tag": "SPAN",
+          "rect": {
+            "x": 318.8000183105469,
+            "y": 88.80000305175781,
+            "width": 16,
+            "height": 16,
+            "top": 88.80000305175781,
+            "right": 334.8000183105469,
+            "bottom": 104.80000305175781,
+            "left": 318.8000183105469
+          },
+          "wrap": "normal",
+          "shrink": "0"
+        }
+      ]
+    }
+  ]
+}
