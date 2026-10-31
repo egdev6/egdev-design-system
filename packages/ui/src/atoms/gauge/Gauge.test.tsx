@@ -3,10 +3,33 @@ import userEvent from '@testing-library/user-event';
 import type { ComponentPropsWithoutRef } from 'react';
 import { describe, expect, expectTypeOf, it } from 'vitest';
 import { Gauge } from './Gauge';
+import { normalizeGaugeMeasurement } from './gauge-model';
 import type { GaugeProps, GaugeState } from './types';
 import { useGauge } from './useGauge';
 
 const base = { label: 'Capacity', value: 42.5 };
+
+describe('private measurement parity', () => {
+  it.each([
+    [42.25, undefined, undefined, true, 42.25, '42.25 / 100', false],
+    [-0, '', ' ', true, 0, '', true],
+    [-1, undefined, '', true, 0, '0 / 100', false],
+    [101, 'Full', 'Condition', true, 100, 'Full', true],
+    [NaN, 'Ignored', 'Condition', false, undefined, undefined, false],
+    [Infinity, undefined, undefined, false, undefined, undefined, false],
+    [-Infinity, undefined, undefined, false, undefined, undefined, false]
+  ])(
+    'preserves measurement %s and cue semantics',
+    (value, valueText, stateText, available, normalized, text, showCue) => {
+      expect(normalizeGaugeMeasurement({ value, valueText, stateText })).toEqual({
+        available,
+        normalized,
+        valueText: text,
+        showCue
+      });
+    }
+  );
+});
 
 describe('Gauge contract', () => {
   it('owns a transparent native geometry frame without Surface identity', () => {

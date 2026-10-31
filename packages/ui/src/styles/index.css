@@ -12,3 +12,4 @@
 @import "./legacy/bundle.css" layer(components);
 
 @import "../atoms/gauge/gauge.css";
+@import "../molecules/gauge-group/gauge-group.css";

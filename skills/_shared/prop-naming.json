@@ -15,6 +15,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "GaugeGroupRing",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/gauge-group/types.ts",
+          "symbol": "GaugeGroupRing",
+          "revision": "sha256:a7cb32f082fd1cf5f46a173656ad1e36f4636e14626501ee6648b4c9f4086dc9"
+        }
+      },
+      {
         "component": "SelectTile",
         "type": "string | string[] (mode-dependent)",
         "status": "existing",
@@ -345,6 +355,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "GaugeGroup",
+        "type": "GaugeGroupSize ('sm' | 'md' | 'lg')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/gauge-group/types.ts",
+          "symbol": "GaugeGroupProps",
+          "revision": "sha256:a7cb32f082fd1cf5f46a173656ad1e36f4636e14626501ee6648b4c9f4086dc9"
+        }
+      },
       {
         "component": "Timeline",
         "type": "TimelineSize ('sm' | 'md' | 'lg')",
@@ -1024,6 +1044,26 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "GaugeGroup",
+        "type": "string (required collection name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/gauge-group/types.ts",
+          "symbol": "GaugeGroupProps",
+          "revision": "sha256:a7cb32f082fd1cf5f46a173656ad1e36f4636e14626501ee6648b4c9f4086dc9"
+        }
+      },
+      {
+        "component": "GaugeGroupRing",
+        "type": "string (required magnitude name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/gauge-group/types.ts",
+          "symbol": "GaugeGroupRing",
+          "revision": "sha256:a7cb32f082fd1cf5f46a173656ad1e36f4636e14626501ee6648b4c9f4086dc9"
+        }
+      },
+      {
         "component": "ToastProvider",
         "type": "string",
         "status": "existing",
@@ -1361,6 +1401,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "GaugeGroupRing",
+        "type": "GaugeState (conditional union)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/gauge-group/types.ts",
+          "symbol": "GaugeGroupRing",
+          "revision": "sha256:a7cb32f082fd1cf5f46a173656ad1e36f4636e14626501ee6648b4c9f4086dc9"
+        }
+      },
+      {
         "component": "Gauge",
         "type": "GaugeState = 'normal' | 'warning' | 'critical' | 'muted' (GaugeStateProps union)",
         "status": "existing",
@@ -1398,6 +1448,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "GaugeGroupRing",
+        "type": "string (conditional requiredness)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/gauge-group/types.ts",
+          "symbol": "GaugeGroupRing",
+          "revision": "sha256:a7cb32f082fd1cf5f46a173656ad1e36f4636e14626501ee6648b4c9f4086dc9"
+        }
+      },
+      {
         "component": "Gauge",
         "type": "string (conditional requiredness in GaugeStateProps)",
         "status": "existing",
@@ -1424,6 +1484,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "GaugeGroupRing",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/gauge-group/types.ts",
+          "symbol": "GaugeGroupRing",
+          "revision": "sha256:a7cb32f082fd1cf5f46a173656ad1e36f4636e14626501ee6648b4c9f4086dc9"
+        }
+      },
       {
         "component": "Gauge",
         "type": "string",
@@ -1482,6 +1552,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "GaugeGroup",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/gauge-group/types.ts",
+          "symbol": "GaugeGroupProps",
+          "revision": "sha256:a7cb32f082fd1cf5f46a173656ad1e36f4636e14626501ee6648b4c9f4086dc9"
+        }
+      },
+      {
         "component": "Gauge",
         "type": "ReactNode",
         "status": "existing",
@@ -1508,6 +1588,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "GaugeGroupRing",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/gauge-group/types.ts",
+          "symbol": "GaugeGroupRing",
+          "revision": "sha256:a7cb32f082fd1cf5f46a173656ad1e36f4636e14626501ee6648b4c9f4086dc9"
+        }
+      },
       {
         "component": "Gauge",
         "type": "string",
@@ -2847,6 +2937,16 @@
       "contentHash": "sha256:304ac895a943454d04d057e18518794a315958b70252df2e696e00dc65b36f40"
     },
     "usages": [
+      {
+        "component": "GaugeGroup",
+        "type": "GaugeGroupItems (readonly tuple of two or three readings)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/gauge-group/types.ts",
+          "symbol": "GaugeGroupProps",
+          "revision": "sha256:a7cb32f082fd1cf5f46a173656ad1e36f4636e14626501ee6648b4c9f4086dc9"
+        }
+      },
       {
         "component": "NavList",
         "type": "NavListEntry[]; NavListGroupBase.items narrows to NavListLink[]",

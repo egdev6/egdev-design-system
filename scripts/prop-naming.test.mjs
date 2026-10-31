@@ -61,6 +61,21 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/effects/src/ambient-background/types.ts#AmbientBackgroundProps'
   })),
+  ...['accessible-name', 'collection-items', 'preset-dimensions', 'decorative-center-content'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/gauge-group/types.ts#GaugeGroupProps'
+  })),
+  ...[
+    'accessible-name',
+    'primary-value',
+    'measurement-text-equivalent',
+    'consumer-selected-condition',
+    'condition-description',
+    'unavailable-measurement-message'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/gauge-group/types.ts#GaugeGroupRing'
+  })),
   ...['aspect-ratio', 'visual-treatment', 'image-focal-point', 'image-caption'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/atoms/photo-frame/types.ts#PhotoFrameProps'

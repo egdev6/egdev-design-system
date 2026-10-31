@@ -30,6 +30,8 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { AmbientBackground } from '@egdev/effects';
 import type { AmbientBackgroundProfile, AmbientBackgroundProps } from '@egdev/effects';
+import { GaugeGroup } from '@egdev/ui';
+import type { GaugeGroupItems, GaugeGroupProps, GaugeGroupRing, GaugeGroupSize } from '@egdev/ui';
 import { PhotoFrame } from '@egdev/ui';
 import type { PhotoFrameProps, PhotoFrameRatio, PhotoFrameVariant, PhotoFrameFocalPoint } from '@egdev/ui';
 import { Menu, menuVariants, cn } from '@egdev/ui';
@@ -652,6 +654,19 @@ const refDock: GaugeDockProps = { label: 'Usage', children: null, ref: createRef
 const incompleteDockItem: GaugeDockItemProps = { children: [createElement(Gauge, { label: 'Usage', value: 0 })] };
 // @ts-expect-error Decorative separator cannot be given an independent orientation.
 const orientedDockSeparator: GaugeDockSeparatorProps = { orientation: 'vertical' };
+const gaugeGroupRing: GaugeGroupRing = { label: 'Session quota', value: 42.5, state: 'warning', stateText: 'Review session' };
+const gaugeGroupItems: GaugeGroupItems = [gaugeGroupRing, { label: 'Weekly quota', value: NaN }];
+const gaugeGroupSize: GaugeGroupSize = 'sm';
+export const gaugeGroupProps: GaugeGroupProps = { id: 'gaugeGroup-root', label: 'Packed usage limits', items: gaugeGroupItems, size: gaugeGroupSize };
+export function gaugeGroupSample({ value = 42.5 }: { value?: number } = {}) {
+  return createElement(GaugeGroup, { ...gaugeGroupProps, items: [{ ...gaugeGroupRing, value }, gaugeGroupItems[1]] });
+}
+// @ts-expect-error A non-normal ring requires condition text.
+const gaugeGroupInvalidRing: GaugeGroupRing = { label: 'Session', value: 1, state: 'warning' };
+// @ts-expect-error GaugeGroup requires two or three readings.
+const gaugeGroupInvalidItems: GaugeGroupItems = [gaugeGroupRing];
+// @ts-expect-error GaugeGroup accepts preset sizes only.
+const gaugeGroupInvalidSize: GaugeGroupProps = { label: 'Usage', items: gaugeGroupItems, size: 64 };
 export const gaugeDefaults: GaugeProps = { label: 'Capacity', value: 42.5 };
 export const gaugeWarning: GaugeProps = {
   label: 'Warning capacity', value: 42.5, state: gaugeState, stateText: 'Review capacity',
@@ -2458,6 +2473,11 @@ function assertSurfaceCSS(css) {
 
 // Reused inside the installed fixture, against shipped CSS and both consumer build paths.
 function assertGaugeCSS(css) {
+  assert.match(css, /\.eg-gauge-group-slot\s*\{[^}]*inset:\s*var\(--eg-gauge-group-slot-inset\)/);
+  assert.match(css, /\.eg-gauge-group-center\s*\{[^}]*inset:\s*var\(--eg-gauge-group-center-inset\)/);
+  assert.match(css, /--eg-gauge-group-slot-inset:\s*var\(--space-0\)/);
+  assert.match(css, /--eg-gauge-group-slot-inset:\s*calc\(var\(--space-1\)\s*\+\s*var\(--space-1\)\)/);
+  assert.match(css, /--eg-gauge-group-slot-inset:\s*calc\(\(var\(--space-1\)\s*\+\s*var\(--space-1\)\)\s*\*\s*2\)/);
   for (const selector of ['.eg-gauge-arc', '.eg-gauge-center', '.inline-flex', '.gap-2', '.text-label-default']) {
     assert.ok(css.includes(selector), 'Missing Gauge selector ' + selector);
   }
@@ -3675,6 +3695,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'GaugeDock',
   'GaugeDockItem',
   'GaugeDockSeparator',
+  'GaugeGroup',
   'Heading',
   'HoverCard',
   'HoverCardContent',
@@ -3996,6 +4017,22 @@ try {
   assert.equal(ambientRoot.firstElementChild.tagName, 'CANVAS');
   assert.equal(ambientRoot.hasAttribute('tabindex'), false);
 } finally { ambientDOM.window.close(); }
+const { gaugeGroupSample } = await import('./consumer.ts');
+const gaugeGroupHTML = renderToString(createElement(gaugeGroupSample));
+writeFileSync(new URL('./gauge-group-hydration.html', import.meta.url), gaugeGroupHTML);
+const gaugeGroupDOM = new JSDOM(gaugeGroupHTML);
+try {
+  const gaugeGroupRoot = gaugeGroupDOM.window.document.getElementById('gaugeGroup-root');
+  const gaugeGroupMeter = gaugeGroupRoot.querySelector('[role="meter"]');
+  assert.equal(gaugeGroupRoot.getAttribute('role'), 'group');
+  assert.equal(gaugeGroupRoot.getAttribute('aria-label'), 'Packed usage limits');
+  assert.equal(gaugeGroupRoot.querySelectorAll('[role="meter"]').length, 1);
+  assert.equal(gaugeGroupMeter.getAttribute('aria-valuenow'), '42.5');
+  assert.equal(gaugeGroupMeter.getAttribute('aria-valuetext'), '42.5 / 100');
+  assert.equal(gaugeGroupDOM.window.document.getElementById(gaugeGroupMeter.getAttribute('aria-describedby')).textContent, 'Review session');
+  assert.equal(gaugeGroupRoot.querySelectorAll('.eg-gauge-arc').length, 1);
+  assert.ok(gaugeGroupRoot.textContent.includes('Data unavailable'));
+} finally { gaugeGroupDOM.window.close(); }
 const waveHTML = renderToString(createElement(IndicatorConsumerSamples));
 writeFileSync(new URL('./first-wave-hydration.html', import.meta.url), waveHTML);
 const waveDOM = new JSDOM(waveHTML);
@@ -5392,6 +5429,30 @@ try {
   assert.equal(ambientRef.current, null);
   globalThis.getComputedStyle = ambientOriginalComputedStyle;
   dom.window.HTMLCanvasElement.prototype.getContext = ambientOriginalGetContext;
+  const { gaugeGroupSample } = await import('./consumer.ts');
+  const gaugeGroupHost = document.createElement('section');
+  gaugeGroupHost.innerHTML = readWaveFile(new URL('./gauge-group-hydration.html', import.meta.url), 'utf8');
+  document.body.append(gaugeGroupHost);
+  const gaugeGroupServerNode = gaugeGroupHost.querySelector('#gaugeGroup-root');
+  const gaugeGroupServerCue = gaugeGroupServerNode.querySelector('[role="meter"]').getAttribute('aria-describedby');
+  const gaugeGroupRecoveries = [];
+  let gaugeGroupHydrated;
+  await act(async () => {
+    gaugeGroupHydrated = hydrateRoot(gaugeGroupHost, createElement(gaugeGroupSample), { onRecoverableError: error => gaugeGroupRecoveries.push(error) });
+  });
+  assert.deepEqual(gaugeGroupRecoveries, []);
+  assert.equal(gaugeGroupHost.querySelector('#gaugeGroup-root'), gaugeGroupServerNode);
+  assert.equal(gaugeGroupServerNode.querySelector('[role="meter"]').getAttribute('aria-describedby'), gaugeGroupServerCue);
+  await act(async () => gaugeGroupHydrated.render(createElement(gaugeGroupSample, { value: NaN })));
+  assert.equal(gaugeGroupServerNode.querySelectorAll('[role="meter"]').length, 0);
+  assert.equal(gaugeGroupServerNode.querySelectorAll('.eg-gauge-arc').length, 0);
+  await act(async () => gaugeGroupHydrated.render(createElement(gaugeGroupSample, { value: 22.5 })));
+  const gaugeGroupRecoveredMeter = gaugeGroupServerNode.querySelector('[role="meter"]');
+  assert.equal(gaugeGroupRecoveredMeter.getAttribute('aria-valuenow'), '22.5');
+  assert.equal(gaugeGroupRecoveredMeter.getAttribute('aria-describedby'), gaugeGroupServerCue);
+  assert.equal(gaugeGroupServerNode.querySelectorAll('.eg-gauge-arc').length, 1);
+  await act(async () => gaugeGroupHydrated.unmount());
+  gaugeGroupHost.remove();
   const waveHost = document.createElement('section');
   waveHost.innerHTML = readWaveFile(new URL('./first-wave-hydration.html', import.meta.url), 'utf8');
   document.body.append(waveHost);

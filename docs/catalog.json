@@ -869,6 +869,17 @@
     "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/80): manually navigated read-only slides with stable string identities, bounded direction-aware keyboard navigation, native scrolling and background/media mouse dragging. Controlled requests wait for acceptance; settled user changes coordinate focus and polite status. Structural layout only; consumer Surface content owns Material. No autoplay, stylesheet, new dependencies or legacy TipsSlider migration."
   },
   {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "GaugeGroup",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "— (native group and meters)",
+    "compone": "Shared private Gauge geometry",
+    "accion": "nuevo",
+    "notas": "Implemented in @egdev/ui under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/31): two or three independent passive readings with a decorative transparent concentric diagram and ordered visible list. No aggregate or GaugeDock extension."
+  },
+  {
     "actual": "Dialog",
     "nivelActual": "organismo",
     "nombre": "Dialog",

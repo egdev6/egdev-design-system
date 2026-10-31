@@ -1384,6 +1384,30 @@ test('UI ships plain layered CSS without canonical token definitions or unrelate
   assert.doesNotMatch(css, /\.bg-red-500\s*[,\{]/);
 });
 
+test('UI ships GaugeGroup slot and center geometry and static insets', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  assert.match(css, /\.eg-gauge-group-slot\s*\{[^}]*inset:\s*var\(--eg-gauge-group-slot-inset\)/);
+  assert.match(css, /\.eg-gauge-group-center\s*\{[^}]*inset:\s*var\(--eg-gauge-group-center-inset\)/);
+  assert.match(css, /--eg-gauge-group-slot-inset:\s*var\(--space-0\)/);
+  assert.match(css, /--eg-gauge-group-slot-inset:\s*calc\(var\(--space-1\)\s*\+\s*var\(--space-1\)\)/);
+  assert.match(css, /--eg-gauge-group-slot-inset:\s*calc\(\(var\(--space-1\)\s*\+\s*var\(--space-1\)\)\s*\*\s*2\)/);
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(
+    createElement(exported.GaugeGroup, {
+      label: 'Packed usage',
+      items: [
+        { label: 'Session', value: 42.5 },
+        { label: 'Week', value: NaN }
+      ]
+    })
+  );
+  assert.match(html, /role="group"/);
+  assert.match(html, /role="meter"/);
+  assert.match(html, /Data unavailable/);
+});
+
 test('UI ships functional static Gauge utilities without an application Tailwind compiler', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -2726,6 +2750,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'GaugeDock',
       'GaugeDockItem',
       'GaugeDockSeparator',
+      'GaugeGroup',
       'Heading',
       'HoverCard',
       'HoverCardContent',
@@ -2963,6 +2988,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'GaugeDockProps',
     'GaugeDockSeparator',
     'GaugeDockSeparatorProps',
+    'GaugeGroup',
+    'GaugeGroupItems',
+    'GaugeGroupProps',
+    'GaugeGroupRing',
+    'GaugeGroupSize',
     'GaugeProps',
     'GaugeSize',
     'GaugeState',
