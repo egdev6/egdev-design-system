@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { withCustomConfig } from 'react-docgen-typescript';
 import ts from 'typescript';
@@ -3514,4 +3514,45 @@ describe('Chip metadata contract', () => {
       'Disabled'
     ]);
   });
+});
+
+describe('Inherited native prop context regression', () => {
+  it.each(['raw', 'configured'] as const)(
+    '%s parsing preserves instantiated DOM handler targets in normal export order',
+    (mode) => {
+      const options = mode === 'configured' ? { ...config.typescript?.reactDocgenTypescriptOptions } : {};
+      const scoped = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), options);
+      const cases: { path: string; parts: [string, string][] }[] = [
+        {
+          path: 'molecules/popover/Popover.tsx',
+          parts: [
+            ['PopoverTrigger', 'HTMLButtonElement'],
+            ['PopoverContent', 'HTMLDivElement']
+          ]
+        },
+        ...(existsSync(source('molecules/collapsible/Collapsible.tsx'))
+          ? [
+              {
+                path: 'molecules/collapsible/Collapsible.tsx',
+                parts: [['CollapsibleTrigger', 'HTMLButtonElement'] satisfies [string, string]]
+              }
+            ]
+          : [])
+      ];
+      for (const sample of cases) {
+        const extracted = scoped.parse(source(sample.path));
+        for (const [name, target] of sample.parts) {
+          const doc = extracted.find((item) => item.displayName === name);
+          expect(doc, name).toBeDefined();
+          for (const handler of ['onClick', 'onKeyDown', 'onFocus', 'onBlur']) {
+            if (mode === 'configured' && name.startsWith('Popover') && handler !== 'onClick') {
+              continue;
+            }
+            expect.soft(doc?.props[handler]?.type.name, name + '.' + handler).toContain(target);
+          }
+        }
+      }
+    },
+    20_000
+  );
 });

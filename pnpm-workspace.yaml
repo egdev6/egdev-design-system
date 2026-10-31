@@ -5,3 +5,5 @@ allowBuilds:
   esbuild: true
   # Hook installation is explicit via pnpm hooks:install, not a dependency lifecycle side effect.
   lefthook: false
+patchedDependencies:
+  react-docgen-typescript@2.4.0: patches/react-docgen-typescript@2.4.0.patch

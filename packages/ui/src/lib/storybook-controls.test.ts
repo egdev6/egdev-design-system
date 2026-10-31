@@ -1405,3 +1405,47 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
   });
 });
+
+describe('Inherited native Storybook summary regression', () => {
+  it('preserves correct mixed-native handler targets through extraction and the own-prop enhancer', () => {
+    const scoped = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
+      ...config.typescript?.reactDocgenTypescriptOptions
+    });
+    const cases = [
+      {
+        directory: 'popover',
+        parts: [
+          ['PopoverTrigger', 'HTMLButtonElement'],
+          ['PopoverContent', 'HTMLDivElement']
+        ]
+      },
+      ...(existsSync(fileURLToPath(new URL('../molecules/collapsible/Collapsible.tsx', import.meta.url)))
+        ? [{ directory: 'collapsible', parts: [['CollapsibleTrigger', 'HTMLButtonElement']] }]
+        : [])
+    ];
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    expect(typeof extract).toBe('function');
+    for (const sample of cases) {
+      const file = sample.directory === 'popover' ? 'Popover' : 'Collapsible';
+      const extracted = scoped.parse(
+        fileURLToPath(new URL('../molecules/' + sample.directory + '/' + file + '.tsx', import.meta.url))
+      );
+      for (const [name, target] of sample.parts) {
+        const doc = extracted.find((item) => item.displayName === name);
+        if (!doc) {
+          throw new Error('Missing normal-order docgen for ' + name);
+        }
+        const actual = Object.assign(() => null, { __docgenInfo: doc });
+        const rows: StrictArgTypes = extract(actual);
+        const mapped = mapJSDocControls(rows, actual);
+        expect(mapped.diagnostics).toEqual([]);
+        for (const handler of name === 'CollapsibleTrigger'
+          ? ['onClick', 'onKeyDown', 'onFocus', 'onBlur']
+          : ['onClick']) {
+          expect.soft(rows[handler]?.table?.type?.summary, name + '.' + handler).toContain(target);
+          expect(mapped.argTypes[handler]).toEqual(rows[handler]);
+        }
+      }
+    }
+  }, 20_000);
+});
