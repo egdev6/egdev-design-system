@@ -1681,6 +1681,16 @@
           "symbol": "AmbientBackgroundProps",
           "revision": "sha256:029a277aec8c2814ce057223b47f7581dad7707725eb00547fb1b037ab420174"
         }
+      },
+      {
+        "component": "Isotipo3D",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/atoms/isotipo3d/types.ts",
+          "symbol": "Isotipo3DProps",
+          "revision": "sha256:b4b93ae799297801ed9d148f88ee50b56a1d786cab173e0a38eecb403e592b66"
+        }
       }
     ]
   },
@@ -5364,7 +5374,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Isotipo3D",
+        "type": "'hero' | 'chapter' | 'lab' | 'outro'",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/atoms/isotipo3d/types.ts",
+          "symbol": "Isotipo3DProps",
+          "revision": "sha256:b4b93ae799297801ed9d148f88ee50b56a1d786cab173e0a38eecb403e592b66"
+        }
+      }
+    ]
   },
   {
     "id": "effect-progress",
@@ -5380,7 +5401,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Isotipo3D",
+        "type": "number",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/atoms/isotipo3d/types.ts",
+          "symbol": "Isotipo3DProps",
+          "revision": "sha256:b4b93ae799297801ed9d148f88ee50b56a1d786cab173e0a38eecb403e592b66"
+        }
+      }
+    ]
   },
   {
     "id": "pointer-tilt",
@@ -5396,7 +5428,18 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "Isotipo3D",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/atoms/isotipo3d/types.ts",
+          "symbol": "Isotipo3DProps",
+          "revision": "sha256:b4b93ae799297801ed9d148f88ee50b56a1d786cab173e0a38eecb403e592b66"
+        }
+      }
+    ]
   },
   {
     "id": "field-message-content",

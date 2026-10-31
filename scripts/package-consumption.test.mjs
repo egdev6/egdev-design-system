@@ -28,6 +28,8 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
+import { Isotipo3D } from '@egdev/effects';
+import type { Isotipo3DProps } from '@egdev/effects';
 import { AmbientBackground } from '@egdev/effects';
 import type { AmbientBackgroundProfile, AmbientBackgroundProps } from '@egdev/effects';
 import { GaugeGroup } from '@egdev/ui';
@@ -201,6 +203,13 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+export const isotipoRef = createRef<HTMLDivElement>();
+export const isotipoProps: Isotipo3DProps = { id: 'isotipo-packed', scene: 'lab', progress: 0.5, opacity: 0.5, pointerTilt: false };
+export function IsotipoSamples() { return createElement(Isotipo3D, { ...isotipoProps, ref: isotipoRef }); }
+// @ts-expect-error Decorative effects do not accept children.
+const isotipoChildren: Isotipo3DProps = { children: 'Unsupported' };
+// @ts-expect-error Only approved scenes are supported.
+const isotipoInvalidScene: Isotipo3DProps = { scene: 'unknown' };
 export const ambientRef = createRef<HTMLDivElement>();
 const ambientProfile: AmbientBackgroundProfile = 'read';
 export const ambientProps: AmbientBackgroundProps = { profile: ambientProfile, opacity: 0.5, id: 'ambient-packed', title: 'Ambient layer' };
@@ -3629,6 +3638,8 @@ assert.equal(ambientManifest.peerDependencies.three, '0.160.0');
 assert.equal(ambientManifest.exports['.'].types, './dist/index.d.ts');
 assert.ok(readFileSync(resolve(dirname(ambientEntry), 'index.d.ts'), 'utf8').trim());
 assert.ok((await import('@egdev/effects')).AmbientBackground);
+assert.ok((await import('@egdev/effects')).Isotipo3D);
+assert.throws(() => import.meta.resolve('@egdev/effects/atoms/isotipo3d/isotipoScene'));
 assert.throws(() => import.meta.resolve('@egdev/effects/ambient-background/particleStreaks'));
 const ambientStyles = readFileSync(fileURLToPath(import.meta.resolve('@egdev/effects/styles.css')), 'utf8');
 for (const ambientValue of ['--eg-ambient-opacity', '--color-ambient-bg', 'forced-colors']) {
@@ -4003,7 +4014,19 @@ const { ToastSamples } = await import('./consumer.ts');
 assert.equal(renderToString(createElement(ToastSamples)), '<main>Toast host</main>', 'Toast content mounts client-side through Portal');
 import { IndicatorConsumerSamples } from './consumer.ts';
 import { writeFileSync } from 'node:fs';
-import { AmbientSamples } from './consumer.ts';
+import { AmbientSamples, IsotipoSamples } from './consumer.ts';
+const isotipoHTML = renderToString(createElement(IsotipoSamples));
+writeFileSync(new URL('./isotipo-hydration.html', import.meta.url), isotipoHTML);
+const isotipoDOM = new JSDOM(isotipoHTML);
+try {
+  const isotipoRoot = isotipoDOM.window.document.getElementById('isotipo-packed');
+  assert.ok(isotipoRoot.classList.contains('eg-isotipo-3d'));
+  assert.equal(isotipoRoot.getAttribute('aria-hidden'), 'true');
+  assert.equal(isotipoRoot.getAttribute('data-state'), 'loading');
+  assert.equal(isotipoRoot.style.getPropertyValue('--eg-iso3d-opacity'), '0.5');
+  assert.ok(isotipoRoot.querySelector('canvas[hidden]'));
+  assert.ok(isotipoRoot.querySelector('svg:not([hidden])'));
+} finally { isotipoDOM.window.close(); }
 const ambientHTML = renderToString(createElement(AmbientSamples));
 writeFileSync(new URL('./ambient-hydration.html', import.meta.url), ambientHTML);
 const ambientDOM = new JSDOM(ambientHTML);
@@ -5394,6 +5417,28 @@ try {
   const { IndicatorConsumerSamples, indicatorConsumerChanges } = await import('./consumer.ts');
   const { readFileSync: readWaveFile } = await import('node:fs');
   const { hydrateRoot } = await import('react-dom/client');
+  const { IsotipoSamples, isotipoRef } = await import('./consumer.ts');
+  const isotipoHost = document.createElement('section');
+  isotipoHost.innerHTML = readWaveFile(new URL('./isotipo-hydration.html', import.meta.url), 'utf8');
+  document.body.append(isotipoHost);
+  const isotipoServerNode = isotipoHost.querySelector('#isotipo-packed');
+  const isotipoRecoveries = [];
+  let isotipoHydrated;
+  await act(async () => { isotipoHydrated = hydrateRoot(isotipoHost, createElement(IsotipoSamples), { onRecoverableError: error => isotipoRecoveries.push(error) }); });
+  assert.deepEqual(isotipoRecoveries, []);
+  assert.equal(isotipoHost.querySelector('#isotipo-packed'), isotipoServerNode);
+  assert.equal(isotipoRef.current, isotipoServerNode);
+  assert.ok(isotipoServerNode.querySelector('svg:not([hidden])'));
+  await act(async () => isotipoHydrated.unmount());
+  assert.equal(isotipoRef.current, null);
+  isotipoHost.remove();
+  await act(async () => root.render(createElement(IsotipoSamples)));
+  const isotipoMounted = document.getElementById('isotipo-packed');
+  assert.equal(isotipoRef.current, isotipoMounted);
+  assert.equal(isotipoMounted.getAttribute('aria-hidden'), 'true');
+  assert.ok(isotipoMounted.querySelector('svg:not([hidden])'));
+  await act(async () => root.render(null));
+  assert.equal(isotipoRef.current, null);
   const { AmbientSamples, ambientRef } = await import('./consumer.ts');
   const ambientOriginalComputedStyle = globalThis.getComputedStyle;
   const ambientOriginalGetContext = dom.window.HTMLCanvasElement.prototype.getContext;
@@ -7308,7 +7353,7 @@ for (const [react, [types, domTypes]] of Object.entries(versions)) {
       );
       write(
         'main.ts',
-        `import '@egdev/tokens/tokens.css';\nimport '@egdev/ui/styles.css';\nimport '@egdev/effects/styles.css';\nimport { createElement, Fragment } from 'react';\nimport { createRoot } from 'react-dom/client';\nimport { App, AmbientSamples } from './consumer';\ncreateRoot(document.getElementById('app')!).render(createElement(Fragment, null, createElement(App), createElement(AmbientSamples)));\n`
+        `import '@egdev/tokens/tokens.css';\nimport '@egdev/ui/styles.css';\nimport '@egdev/effects/styles.css';\nimport { createElement, Fragment } from 'react';\nimport { createRoot } from 'react-dom/client';\nimport { App, AmbientSamples, IsotipoSamples } from './consumer';\ncreateRoot(document.getElementById('app')!).render(createElement(Fragment, null, createElement(App), createElement(AmbientSamples), createElement(IsotipoSamples)));\n`
       );
       // Keep temporary consumers on the repository's managed pnpm, not the global version/store.
       const expectedPnpmVersion = manifest.packageManager.match(/^pnpm@([^+]+)(?:\+.*)?$/)?.[1];

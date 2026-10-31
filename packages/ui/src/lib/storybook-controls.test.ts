@@ -654,6 +654,35 @@ describe('pure JSDoc Controls metadata mapping', () => {
 });
 
 describe('registered JSDoc Controls through installed Storybook extraction and inference', () => {
+  it('maps Isotipo3D effects metadata through the registered enhancer', () => {
+    const isotipoRoot = new URL('../../../effects/', import.meta.url);
+    const isotipoParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', isotipoRoot)), {
+      ...config.typescript?.reactDocgenTypescriptOptions
+    });
+    const isotipoDoc = isotipoParser
+      .parse(fileURLToPath(new URL('src/atoms/isotipo3d/Isotipo3D.tsx', isotipoRoot)))
+      .find((item) => item.displayName === 'Isotipo3D');
+    expect(isotipoDoc).toBeDefined();
+    const isotipoMetadata = Object.assign((_props: Record<string, unknown>) => null, { __docgenInfo: isotipoDoc });
+    const isotipoStory = composeStory(
+      {},
+      { title: 'Metadata/Isotipo3D', component: isotipoMetadata },
+      preview,
+      'Default'
+    );
+    expect(isotipoStory.argTypes.scene?.control).toEqual({ type: 'select' });
+    expect([...(isotipoStory.argTypes.scene?.options ?? [])].sort()).toEqual(['chapter', 'hero', 'lab', 'outro']);
+    for (const name of ['progress', 'opacity']) {
+      expect(isotipoStory.argTypes[name]?.control).toEqual({ type: 'number' });
+    }
+    expect(isotipoStory.argTypes.pointerTilt?.control).toEqual({ type: 'boolean' });
+    expect(isotipoStory.args).toEqual({});
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className']) {
+      expect(isotipoStory.argTypes[name], name).toBeDefined();
+    }
+    const isotipoExtract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    expect(mapJSDocControls(isotipoExtract(isotipoMetadata), isotipoMetadata).diagnostics).toEqual([]);
+  });
   it('maps AmbientBackground effects metadata through the registered enhancer', () => {
     const root = new URL('../../../effects/', import.meta.url);
     const effectsParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', root)), {
