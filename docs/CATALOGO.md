@@ -141,7 +141,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
-| **AmbientBackground** | AmbientBackground (organismo (efecto)) | — | — | mover | One decorative particle-background effect rendered with canvas; it does not coordinate independent UI concepts or define a structural region. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval. |
+| **AmbientBackground** | AmbientBackground (organismo (efecto)) | — | — | mover | Working-tree React effect under the approved v0.4 contract and implementation plan: decorative canvas particles with profile and opacity, reduced-motion fallback and a forwarded root ref. No component stylesheet or director choreography. Browser visual conformity and packed-consumer validation remain pending. Contract: [#45](https://github.com/egdev6/egdev-design-system/issues/45). |
 | **Isotipo3D** | Isotipo3D (organismo (efecto)) | — | — | mover | One rendered brand-mark effect using three.js with an SVG fallback; rendering complexity does not make it a structural region or coordinate independent UI concepts. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation or dependency approval. |
 
 ## Mando

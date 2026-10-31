@@ -118,6 +118,30 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts AmbientBackground own metadata and supported native rows from the effects project', () => {
+    const effectsRoot = new URL('../../../effects/', import.meta.url);
+    const effectsParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', effectsRoot)), {
+      ...config.typescript?.reactDocgenTypescriptOptions
+    });
+    const doc = effectsParser
+      .parse(fileURLToPath(new URL('src/ambient-background/AmbientBackground.tsx', effectsRoot)))
+      .find((item) => item.displayName === 'AmbientBackground');
+    expect(doc).toBeDefined();
+    expect(doc?.props.profile).toMatchObject({
+      required: false,
+      tags: { control: 'select' },
+      defaultValue: { value: 'base' }
+    });
+    expect(doc?.props.opacity).toMatchObject({
+      required: false,
+      tags: { control: 'number' },
+      defaultValue: { value: '1' }
+    });
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    expect(doc?.props.children).toBeUndefined();
+  });
   it('extracts PageHeader own controls, semantic rank, native rows and bounded exports', () => {
     const file = ast(source('molecules/page-header/types.ts'));
     const properties = ownProps(file, ['PageHeaderProps']);

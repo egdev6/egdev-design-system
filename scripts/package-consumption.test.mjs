@@ -28,6 +28,8 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
+import { AmbientBackground } from '@egdev/effects';
+import type { AmbientBackgroundProfile, AmbientBackgroundProps } from '@egdev/effects';
 import { Menu, menuVariants, cn } from '@egdev/ui';
 import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorItem, MenuLabelItem, MenuSubmenuItem, MenuTone, MenuAlign, MenuSide } from '@egdev/ui';
 import { createElement, createRef, forwardRef, Fragment } from 'react';
@@ -195,6 +197,17 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+export const ambientRef = createRef<HTMLDivElement>();
+const ambientProfile: AmbientBackgroundProfile = 'read';
+export const ambientProps: AmbientBackgroundProps = { profile: ambientProfile, opacity: 0.5, id: 'ambient-packed', title: 'Ambient layer' };
+export function AmbientSamples() {
+  return createElement(AmbientBackground, { ...ambientProps, ref: ambientRef });
+}
+// @ts-expect-error The decorative layer does not accept children.
+const ambientChildren: AmbientBackgroundProps = { children: 'Unsupported' };
+// @ts-expect-error Only the approved profiles are supported.
+const ambientInvalidProfile: AmbientBackgroundProps = { profile: 'unknown' };
+
 // Keep PageHeader samples outside App so the existing button-count/focus harness stays unchanged.
 const pageHeaderLevel: PageHeaderLevel = 2;
 export const pageHeaderProps: PageHeaderProps = { title: 'Projects', eyebrow: 'Workspace', level: pageHeaderLevel };
@@ -3574,6 +3587,19 @@ import ts from 'typescript';
 const entry = fileURLToPath(import.meta.resolve('@egdev/ui'));
 assert.ok(!realpathSync(entry).startsWith(${JSON.stringify(root)}), 'UI must be installed outside the workspace');
 const ui = JSON.parse(readFileSync(resolve(dirname(entry), '../package.json'), 'utf8'));
+const ambientEntry = fileURLToPath(import.meta.resolve('@egdev/effects'));
+assert.ok(!realpathSync(ambientEntry).startsWith(${JSON.stringify(root)}), 'Effects must be installed outside the workspace');
+const ambientManifest = JSON.parse(readFileSync(resolve(dirname(ambientEntry), '../package.json'), 'utf8'));
+assert.equal(ambientManifest.peerDependencies.three, '0.160.0');
+assert.equal(ambientManifest.exports['.'].types, './dist/index.d.ts');
+assert.ok(readFileSync(resolve(dirname(ambientEntry), 'index.d.ts'), 'utf8').trim());
+assert.ok((await import('@egdev/effects')).AmbientBackground);
+assert.throws(() => import.meta.resolve('@egdev/effects/ambient-background/particleStreaks'));
+const ambientStyles = readFileSync(fileURLToPath(import.meta.resolve('@egdev/effects/styles.css')), 'utf8');
+for (const ambientValue of ['--eg-ambient-opacity', '--color-ambient-bg', 'forced-colors']) {
+  assert.ok(ambientStyles.includes(ambientValue), 'Missing ambient CSS: ' + ambientValue);
+}
+assert.doesNotMatch(ambientStyles, /@(import|reference|source|tailwind|theme|custom-variant|apply)\\b/);
 assert.equal(ui.exports['.'].import, './dist/index.js');
 assert.equal(ui.exports['.'].types, './dist/index.d.ts');
 assert.equal(ui.types, ui.exports['.'].types);
@@ -3940,6 +3966,20 @@ const { ToastSamples } = await import('./consumer.ts');
 assert.equal(renderToString(createElement(ToastSamples)), '<main>Toast host</main>', 'Toast content mounts client-side through Portal');
 import { IndicatorConsumerSamples } from './consumer.ts';
 import { writeFileSync } from 'node:fs';
+import { AmbientSamples } from './consumer.ts';
+const ambientHTML = renderToString(createElement(AmbientSamples));
+writeFileSync(new URL('./ambient-hydration.html', import.meta.url), ambientHTML);
+const ambientDOM = new JSDOM(ambientHTML);
+try {
+  const ambientRoot = ambientDOM.window.document.getElementById('ambient-packed');
+  assert.ok(ambientRoot.classList.contains('eg-ambient-background'));
+  assert.equal(ambientRoot.getAttribute('aria-hidden'), 'true');
+  assert.equal(ambientRoot.getAttribute('data-state'), 'stopped');
+  assert.equal(ambientRoot.style.getPropertyValue('--eg-ambient-opacity'), '0.5');
+  assert.equal(ambientRoot.children.length, 1);
+  assert.equal(ambientRoot.firstElementChild.tagName, 'CANVAS');
+  assert.equal(ambientRoot.hasAttribute('tabindex'), false);
+} finally { ambientDOM.window.close(); }
 const waveHTML = renderToString(createElement(IndicatorConsumerSamples));
 writeFileSync(new URL('./first-wave-hydration.html', import.meta.url), waveHTML);
 const waveDOM = new JSDOM(waveHTML);
@@ -5290,6 +5330,41 @@ try {
   const { IndicatorConsumerSamples, indicatorConsumerChanges } = await import('./consumer.ts');
   const { readFileSync: readWaveFile } = await import('node:fs');
   const { hydrateRoot } = await import('react-dom/client');
+  const { AmbientSamples, ambientRef } = await import('./consumer.ts');
+  const ambientOriginalComputedStyle = globalThis.getComputedStyle;
+  const ambientOriginalGetContext = dom.window.HTMLCanvasElement.prototype.getContext;
+  globalThis.getComputedStyle = (element, ...rest) => element.classList.contains('eg-ambient-background')
+    ? { getPropertyValue: () => '#123456' }
+    : ambientOriginalComputedStyle(element, ...rest);
+  let ambientContextCalls = 0;
+  dom.window.HTMLCanvasElement.prototype.getContext = () => { ambientContextCalls++; return null; };
+  const ambientHost = document.createElement('section');
+  ambientHost.innerHTML = readWaveFile(new URL('./ambient-hydration.html', import.meta.url), 'utf8');
+  document.body.append(ambientHost);
+  const ambientServerNode = ambientHost.querySelector('#ambient-packed');
+  const ambientRecoveries = [];
+  let ambientHydrated;
+  await act(async () => {
+    ambientHydrated = hydrateRoot(ambientHost, createElement(AmbientSamples), { onRecoverableError: error => ambientRecoveries.push(error) });
+  });
+  assert.deepEqual(ambientRecoveries, []);
+  assert.equal(ambientHost.querySelector('#ambient-packed'), ambientServerNode);
+  assert.equal(ambientRef.current, ambientServerNode);
+  assert.equal(ambientServerNode.getAttribute('data-state'), 'stopped');
+  assert.ok(ambientContextCalls > 0, 'Canvas fallback is exercised on hydration');
+  await act(async () => ambientHydrated.unmount());
+  assert.equal(ambientRef.current, null);
+  ambientHost.remove();
+  await act(async () => root.render(createElement(AmbientSamples)));
+  const ambientMounted = document.getElementById('ambient-packed');
+  assert.equal(ambientRef.current, ambientMounted);
+  assert.equal(ambientMounted.getAttribute('aria-hidden'), 'true');
+  assert.equal(ambientMounted.getAttribute('data-state'), 'stopped');
+  assert.ok(ambientMounted.querySelector('canvas'));
+  await act(async () => root.render(null));
+  assert.equal(ambientRef.current, null);
+  globalThis.getComputedStyle = ambientOriginalComputedStyle;
+  dom.window.HTMLCanvasElement.prototype.getContext = ambientOriginalGetContext;
   const waveHost = document.createElement('section');
   waveHost.innerHTML = readWaveFile(new URL('./first-wave-hydration.html', import.meta.url), 'utf8');
   document.body.append(waveHost);
@@ -6853,6 +6928,9 @@ const assets = [result].flat().flatMap((bundle) => bundle.output).filter((asset)
 const emitted = assets.map((asset) => String(asset.source)).join('\\n');
 assert.ok(assets.length > 0, 'Vite must emit consumer CSS');
 assert.ok(!emitted.includes('@theme'), 'Native consumption must not need Tailwind to interpret @theme');
+for (const ambientValue of ['--eg-ambient-opacity', '--color-ambient-bg', 'forced-colors']) {
+  assert.ok(emitted.includes(ambientValue), 'Native consumer is missing ambient CSS: ' + ambientValue);
+}
 ${assertGaugeDockCSS.toString()}
 assertGaugeDockCSS(emitted);
 ${assertButtonCSS.toString()}
@@ -7074,7 +7152,7 @@ for (const [react, [types, domTypes]] of Object.entries(versions)) {
     const temporary = mkdtempSync(join(tmpdir(), 'egdev-package-consumption-'));
     try {
       const tarballs = {};
-      for (const name of ['tokens', 'ui']) {
+      for (const name of ['tokens', 'ui', 'effects']) {
         run(join(root, 'packages', name), 'pnpm', ['pack', '--pack-destination', temporary], 30_000);
         const file = readdirSync(temporary).find(
           (entry) => entry.startsWith(`egdev-${name}-`) && entry.endsWith('.tgz')
@@ -7093,6 +7171,8 @@ for (const [react, [types, domTypes]] of Object.entries(versions)) {
         dependencies: {
           '@egdev/ui': tarballs.ui,
           '@egdev/tokens': tarballs.tokens,
+          '@egdev/effects': tarballs.effects,
+          three: '0.160.0',
           '@tailwindcss/vite': manifest.devDependencies['@tailwindcss/vite'],
           tailwindcss: manifest.devDependencies.tailwindcss,
           react,
@@ -7103,7 +7183,10 @@ for (const [react, [types, domTypes]] of Object.entries(versions)) {
           vite: manifest.devDependencies.vite
         }
       });
-      write('pnpm-workspace.yaml', `overrides:\n  '@egdev/tokens': ${JSON.stringify(tarballs.tokens)}\n`);
+      write(
+        'pnpm-workspace.yaml',
+        `overrides:\n  '@egdev/tokens': ${JSON.stringify(tarballs.tokens)}\n  '@egdev/ui': ${JSON.stringify(tarballs.ui)}\n`
+      );
       writeJSON('tsconfig.json', {
         compilerOptions: {
           strict: true,
@@ -7124,11 +7207,11 @@ for (const [react, [types, domTypes]] of Object.entries(versions)) {
       write('tailwind.classes.html', `<div class="${tailwindClasses}"></div>`);
       write(
         'tailwind.css',
-        '@import "tailwindcss";\n@import "@egdev/tokens/theme.css";\n@import "@egdev/ui/styles.css";\n@source "./tailwind.classes.html";\n'
+        '@import "tailwindcss";\n@import "@egdev/tokens/theme.css";\n@import "@egdev/ui/styles.css";\n@import "@egdev/effects/styles.css";\n@source "./tailwind.classes.html";\n'
       );
       write(
         'main.ts',
-        `import '@egdev/tokens/tokens.css';\nimport '@egdev/ui/styles.css';\nimport { createElement } from 'react';\nimport { createRoot } from 'react-dom/client';\nimport { App } from './consumer';\ncreateRoot(document.getElementById('app')!).render(createElement(App));\n`
+        `import '@egdev/tokens/tokens.css';\nimport '@egdev/ui/styles.css';\nimport '@egdev/effects/styles.css';\nimport { createElement, Fragment } from 'react';\nimport { createRoot } from 'react-dom/client';\nimport { App, AmbientSamples } from './consumer';\ncreateRoot(document.getElementById('app')!).render(createElement(Fragment, null, createElement(App), createElement(AmbientSamples)));\n`
       );
       // Keep temporary consumers on the repository's managed pnpm, not the global version/store.
       const expectedPnpmVersion = manifest.packageManager.match(/^pnpm@([^+]+)(?:\+.*)?$/)?.[1];

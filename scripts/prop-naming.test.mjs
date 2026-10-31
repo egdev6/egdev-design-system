@@ -57,6 +57,10 @@ function indicatorProposalHash(entry) {
 }
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...['effect-profile', 'layer-opacity'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/effects/src/ambient-background/types.ts#AmbientBackgroundProps'
+  })),
   ...['surface-material-tone', 'leading-icon'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/atoms/field-message/types.ts#FieldMessageProps'

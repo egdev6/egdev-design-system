@@ -10,6 +10,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const manifest = (name) => JSON.parse(readFileSync(resolve(root, `packages/${name}/package.json`), 'utf8'));
 const ui = manifest('ui');
 const tokens = manifest('tokens');
+const effects = manifest('effects');
 function artifact(name, target) {
   assert.equal(typeof target, 'string', `${name} export must have a file target`);
   assert.ok(target.startsWith('./'), `${name} export must be package-relative`);
@@ -18,6 +19,28 @@ function artifact(name, target) {
   assert.ok(statSync(path).isFile() && statSync(path).size > 0, `Export must be a nonempty file: ${path}`);
   return path;
 }
+
+test('ambient package exposes the decorative component and its stylesheet without private engines', async () => {
+  assert.equal(effects.exports['.'].import, './dist/index.js');
+  assert.equal(effects.exports['.'].types, './dist/index.d.ts');
+  assert.equal(effects.exports['./styles.css'], './dist/styles.css');
+  const exported = await import(artifact('effects', effects.exports['.'].import));
+  assert.ok(exported.AmbientBackground);
+  for (const name of ['useAmbientBackground', 'ambientRootVariants', 'createParticleStreaks']) {
+    assert.equal(Object.hasOwn(exported, name), false, name);
+  }
+  const css = readFileSync(artifact('effects', effects.exports['./styles.css']), 'utf8');
+  for (const value of ['--eg-ambient-opacity', '--color-ambient-bg', 'forced-colors']) {
+    assert.ok(css.includes(value), `Missing AmbientBackground CSS ${value}`);
+  }
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(createElement(exported.AmbientBackground));
+  assert.match(html, /eg-ambient-background/);
+  assert.match(html, /aria-hidden="true"/);
+  assert.match(html, /data-state="stopped"/);
+  assert.match(html, /<canvas/);
+});
 
 // Read a complete emitted block, including nested supports/media rules and quoted values.
 function cssBlock(css, opening) {

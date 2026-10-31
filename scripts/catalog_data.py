@@ -110,7 +110,7 @@ C = [
 ("LiveBand","organismo","LiveBand","organism","web","—","Countdown, PhotoFrame, StreamItem","mover",""),
 ("CommunityGrid","organismo","CommunityGrid","organism","web","—","CommunityCard","mover",""),
 ("TipsSlider","organismo","TipsSlider","organism","web","—","Carousel, TipCard","mover","El carrusel genérico sube a ui."),
-("AmbientBackground","organismo (efecto)","AmbientBackground","atom","effects","—","—","mover","One decorative particle-background effect rendered with canvas; it does not coordinate independent UI concepts or define a structural region. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval."),
+("AmbientBackground","organismo (efecto)","AmbientBackground","atom","effects","—","—","mover","Working-tree React effect under the approved v0.4 contract and implementation plan: decorative canvas particles with profile and opacity, reduced-motion fallback and a forwarded root ref. No component stylesheet or director choreography. Browser visual conformity and packed-consumer validation remain pending. Contract: [#45](https://github.com/egdev6/egdev-design-system/issues/45)."),
 ("Isotipo3D","organismo (efecto)","Isotipo3D","atom","effects","—","—","mover","One rendered brand-mark effect using three.js with an SVG fallback; rendering complexity does not make it a structural region or coordinate independent UI concepts. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation or dependency approval."),
 # ---------- PLANTILLAS ----------
 ("—","—","AppShell","template","ui","—","Sidebar, ModuleRail, TabBar","nuevo","Barra lateral + contenido; móvil con TabBar. Hoy se repite en las seis apps."),

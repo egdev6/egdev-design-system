@@ -1,0 +1,7 @@
+@reference "@egdev/tokens/theme.css";
+@source "../ambient-background/types.ts";
+@source "../atoms/isotipo3d/types.ts";
+
+@layer utilities {
+  @tailwind utilities source(none);
+}
