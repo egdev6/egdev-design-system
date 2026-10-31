@@ -1731,6 +1731,41 @@ export function DividerSamples({ semantic }: { semantic?: boolean }) {
       ? { orientation: dividerOrientation, decorative: false, className: 'consumer-rule' }
       : { className: 'consumer-rule' }));
 }
+
+import { Indicator } from '@egdev/ui';
+import type { IndicatorProps, IndicatorVariant, IndicatorTone, IndicatorSize, IndicatorPosition } from '@egdev/ui';
+// @ts-expect-error Geometry is private, not a package-root API.
+import type { indicatorMarkerGeometryVariants } from '@egdev/ui';
+export const indicatorConsumerChanges: string[] = [];
+const waveVariant = 'count' satisfies IndicatorVariant;
+const waveTone: IndicatorTone = 'danger';
+const waveSize: IndicatorSize = 'sm';
+const wavePosition: IndicatorPosition = 'bottom-left';
+const waveDot: IndicatorProps = { children: 'Updated' };
+const waveIcon: IndicatorProps = { variant: 'icon', badgeIcon: 'linkedin', children: 'Channel on LinkedIn' };
+export function IndicatorConsumerSamples({ count = 100 }: { count?: number } = {}) {
+  return createElement('section', null,
+    createElement(Indicator, { id: 'packed-wave', variant: waveVariant, tone: waveTone, size: waveSize, position: wavePosition, dir: 'rtl', count, max: 99,
+      children: createElement('button', { id: 'packed-wave-action', type: 'button', 'aria-label': 'Inbox, ' + count + ' unread', onClick: () => indicatorConsumerChanges.push('activate') }, 'Inbox') }),
+    createElement(Indicator, waveDot), createElement(Indicator, waveIcon));
+}
+// @ts-expect-error Count mode requires count.
+const waveMissingCount: IndicatorProps = { children: 'Anchor', variant: 'count' };
+// @ts-expect-error Dot mode cannot carry a count.
+const waveDotCount: IndicatorProps = { children: 'Anchor', count: 2 };
+// @ts-expect-error Icon mode requires its closed glyph name.
+const waveMissingIcon: IndicatorProps = { children: 'Anchor', variant: 'icon' };
+// @ts-expect-error max belongs only to count mode.
+const waveDotMax: IndicatorProps = { children: 'Anchor', max: 2 };
+// @ts-expect-error Root semantics remain passive.
+const waveRole: IndicatorProps = { children: 'Anchor', role: 'status' };
+// @ts-expect-error Inline paint is forbidden.
+const waveStyle: IndicatorProps = { children: 'Anchor', style: { color: 'red' } };
+// @ts-expect-error No public Root ref.
+const waveRef: ComponentProps<typeof Indicator> = { children: 'Anchor', ref: createRef<HTMLDivElement>() };
+// @ts-expect-error No cloning/composition API.
+const waveSlot: IndicatorProps = { children: 'Anchor', asChild: true };
+
 export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, headingLevel, iconName, spinnerLoading, linkExternal, statusDotPulse, inputValue, progressValue }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; headingLevel?: HeadingLevel; iconName?: IconName; spinnerLoading?: boolean; linkExternal?: boolean; statusDotPulse?: boolean; inputValue?: string; progressValue?: number } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
@@ -3396,6 +3431,20 @@ function assertLogoCSS(css) {
   );
 }
 
+function assertIndicatorConsumerCSS(css) {
+  for (const selector of [
+    '.-top-1',
+    '.-right-1',
+    '.-bottom-1',
+    '.-left-1',
+    '.outline-bg-surface',
+    '.min-w-4\\.5',
+    '.outline-\\[length\\:var\\(--focus-width\\)\\]'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing indicator packed CSS utility ' + selector);
+  }
+}
+
 const entries = `
 import assert from 'node:assert/strict';
 import { readFileSync, realpathSync } from 'node:fs';
@@ -3435,6 +3484,8 @@ ${assertLinkCSS.toString()}
 assertLinkCSS(shippedStyles);
 ${assertNavListCSS.toString()}
 assertNavListCSS(shippedStyles);
+${assertIndicatorConsumerCSS.toString()}
+assertIndicatorConsumerCSS(shippedStyles);
 ${assertHoverCardCSS.toString()}
 assertHoverCardCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
@@ -3462,6 +3513,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'HoverCardTrigger',
   'Icon',
   'IconButton',
+  'Indicator',
   'Input',
   'Kbd',
   'Label',
@@ -3753,6 +3805,24 @@ import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
 const { ToastSamples } = await import('./consumer.ts');
 assert.equal(renderToString(createElement(ToastSamples)), '<main>Toast host</main>', 'Toast content mounts client-side through Portal');
+import { IndicatorConsumerSamples } from './consumer.ts';
+import { writeFileSync } from 'node:fs';
+const waveHTML = renderToString(createElement(IndicatorConsumerSamples));
+writeFileSync(new URL('./first-wave-hydration.html', import.meta.url), waveHTML);
+const waveDOM = new JSDOM(waveHTML);
+try {
+  const doc = waveDOM.window.document;
+
+  const wave = doc.getElementById('packed-wave');
+  assert.equal(wave.firstElementChild.tagName, 'BUTTON');
+  assert.equal(wave.lastElementChild.textContent, '99+');
+  assert.equal(wave.lastElementChild.getAttribute('aria-hidden'), 'true');
+  assert.ok(wave.lastElementChild.classList.contains('-left-1'));
+  assert.equal(wave.hasAttribute('role'), false);
+  assert.equal(wave.hasAttribute('aria-live'), false);
+
+} finally { waveDOM.window.close(); }
+
 import { PageHeaderSamples } from './consumer.ts';
 const pageDocument = new JSDOM(renderToString(createElement(PageHeaderSamples)));
 try {
@@ -5034,6 +5104,40 @@ const { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSam
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
+  const { IndicatorConsumerSamples, indicatorConsumerChanges } = await import('./consumer.ts');
+  const { readFileSync: readWaveFile } = await import('node:fs');
+  const { hydrateRoot } = await import('react-dom/client');
+  const waveHost = document.createElement('section');
+  waveHost.innerHTML = readWaveFile(new URL('./first-wave-hydration.html', import.meta.url), 'utf8');
+  document.body.append(waveHost);
+  const waveServerNode = waveHost.querySelector('#packed-wave');
+  const waveRecoveries = [];
+  let waveHydrated;
+  await act(async () => {
+    waveHydrated = hydrateRoot(waveHost, createElement(IndicatorConsumerSamples), { onRecoverableError: error => waveRecoveries.push(error) });
+  });
+  assert.deepEqual(waveRecoveries, [], 'First-wave SSR hydrates without recovery');
+  assert.equal(waveHost.querySelector('#packed-wave'), waveServerNode, 'Hydration retains the server root');
+  await act(async () => waveHydrated.unmount());
+  waveHost.remove();
+  await act(async () => root.render(createElement(IndicatorConsumerSamples)));
+
+  const wave = document.getElementById('packed-wave');
+  const waveAction = document.getElementById('packed-wave-action');
+  waveAction.focus();
+  await act(async () => waveAction.click());
+  assert.deepEqual(indicatorConsumerChanges, ['activate']);
+  await act(async () => root.render(createElement(IndicatorConsumerSamples, { count: 0 })));
+  assert.equal(document.getElementById('packed-wave-action'), waveAction);
+  assert.equal(document.activeElement, waveAction);
+  assert.equal(wave.children.length, 1);
+  await act(async () => root.render(createElement(IndicatorConsumerSamples, { count: 101 })));
+  assert.equal(wave.lastElementChild.textContent, '99+');
+  assert.equal(wave.lastElementChild.getAttribute('aria-hidden'), 'true');
+  assert.equal(document.activeElement, waveAction);
+
+  await act(async () => root.render(null));
+  stage('first-wave:indicator:complete');
   await act(async () => root.render(createElement(FieldSamples)));
   const fieldInput = document.getElementById('post-control');
   assert.equal(fieldControlRef.current, fieldInput);
@@ -6561,6 +6665,8 @@ ${assertLinkCSS.toString()}
 assertLinkCSS(emitted);
 ${assertNavListCSS.toString()}
 assertNavListCSS(emitted);
+${assertIndicatorConsumerCSS.toString()}
+assertIndicatorConsumerCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
 const shipped = readFileSync(new URL('./node_modules/@egdev/tokens/dist/tokens.css', import.meta.url), 'utf8');
 const names = shipped
@@ -6646,6 +6752,7 @@ assertSurfaceCSS(twCss);
 assertPopoverCSS(twCss);
 assertLinkCSS(twCss);
 assertNavListCSS(twCss);
+assertIndicatorConsumerCSS(twCss);
 assertLabelCSS(twCss);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) {
   assert.ok(twCss.includes(selector), 'Tailwind consumer must retain shipped UI selector ' + selector);

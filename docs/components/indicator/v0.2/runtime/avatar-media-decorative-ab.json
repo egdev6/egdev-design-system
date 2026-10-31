@@ -1,0 +1,176 @@
+{
+  "rows": [
+    {
+      "port": 6029,
+      "story": "with-image",
+      "role": "img",
+      "label": "Example illustrated channel",
+      "hidden": null,
+      "state": "active",
+      "root": {
+        "x": 16,
+        "y": 16,
+        "width": 30,
+        "height": 30,
+        "top": 16,
+        "right": 46,
+        "bottom": 46,
+        "left": 16
+      },
+      "image": {
+        "complete": true,
+        "naturalWidth": 225,
+        "naturalHeight": 150,
+        "alt": "",
+        "fit": "cover",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 30,
+          "height": 30,
+          "top": 16,
+          "right": 46,
+          "bottom": 46,
+          "left": 16
+        }
+      },
+      "fallbackGlyph": false,
+      "focusable": 0
+    },
+    {
+      "port": 6029,
+      "story": "broken-image",
+      "role": "img",
+      "label": "Unavailable channel image",
+      "hidden": null,
+      "state": "active",
+      "root": {
+        "x": 16,
+        "y": 16,
+        "width": 30,
+        "height": 30,
+        "top": 16,
+        "right": 46,
+        "bottom": 46,
+        "left": 16
+      },
+      "image": null,
+      "fallbackGlyph": true,
+      "focusable": 0
+    },
+    {
+      "port": 6029,
+      "story": "decorative",
+      "role": null,
+      "label": null,
+      "hidden": "true",
+      "state": "active",
+      "root": {
+        "x": 16,
+        "y": 16,
+        "width": 30,
+        "height": 30,
+        "top": 16,
+        "right": 46,
+        "bottom": 46,
+        "left": 16
+      },
+      "image": null,
+      "fallbackGlyph": true,
+      "focusable": 0
+    },
+    {
+      "port": 6028,
+      "story": "with-image",
+      "role": "img",
+      "label": "Example illustrated channel",
+      "hidden": null,
+      "state": "active",
+      "root": {
+        "x": 16,
+        "y": 16,
+        "width": 30,
+        "height": 30,
+        "top": 16,
+        "right": 46,
+        "bottom": 46,
+        "left": 16
+      },
+      "image": {
+        "complete": true,
+        "naturalWidth": 225,
+        "naturalHeight": 150,
+        "alt": "",
+        "fit": "cover",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 30,
+          "height": 30,
+          "top": 16,
+          "right": 46,
+          "bottom": 46,
+          "left": 16
+        }
+      },
+      "fallbackGlyph": false,
+      "focusable": 0
+    },
+    {
+      "port": 6028,
+      "story": "broken-image",
+      "role": "img",
+      "label": "Unavailable channel image",
+      "hidden": null,
+      "state": "active",
+      "root": {
+        "x": 16,
+        "y": 16,
+        "width": 30,
+        "height": 30,
+        "top": 16,
+        "right": 46,
+        "bottom": 46,
+        "left": 16
+      },
+      "image": null,
+      "fallbackGlyph": true,
+      "focusable": 0
+    },
+    {
+      "port": 6028,
+      "story": "decorative",
+      "role": null,
+      "label": null,
+      "hidden": "true",
+      "state": "active",
+      "root": {
+        "x": 16,
+        "y": 16,
+        "width": 30,
+        "height": 30,
+        "top": 16,
+        "right": 46,
+        "bottom": 46,
+        "left": 16
+      },
+      "image": null,
+      "fallbackGlyph": true,
+      "focusable": 0
+    }
+  ],
+  "comparisons": [
+    {
+      "story": "with-image",
+      "exact": true
+    },
+    {
+      "story": "broken-image",
+      "exact": true
+    },
+    {
+      "story": "decorative",
+      "exact": true
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "point": {
+    "x": 120.85000514984131,
+    "y": 53.19999980926514,
+    "hitButton": true,
+    "markerPointer": "none"
+  },
+  "focused": true,
+  "state": {
+    "clicks": [3, 0],
+    "buttons": [
+      {
+        "disabled": false,
+        "tabIndex": 0
+      },
+      {
+        "disabled": true,
+        "tabIndex": 0
+      }
+    ],
+    "rootRoles": [
+      {
+        "role": null,
+        "tabIndex": null
+      },
+      {
+        "role": null,
+        "tabIndex": null
+      }
+    ]
+  },
+  "tabEnd": {
+    "focusedDisabled": false,
+    "tag": "BODY"
+  }
+}

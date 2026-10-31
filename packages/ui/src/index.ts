@@ -9,6 +9,14 @@ export * from './atoms/dropzone';
 export * from './atoms/gauge';
 export * from './atoms/icon';
 export * from './atoms/icon-button';
+export type {
+  IndicatorPosition,
+  IndicatorProps,
+  IndicatorSize,
+  IndicatorTone,
+  IndicatorVariant
+} from './atoms/indicator';
+export { Indicator } from './atoms/indicator';
 export * from './atoms/input';
 export * from './atoms/kbd';
 export * from './atoms/link';

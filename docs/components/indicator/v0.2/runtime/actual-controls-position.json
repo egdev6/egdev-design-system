@@ -1,0 +1,7 @@
+{
+  "note": "Waited for iframe arg update; prior immediate read raced manager/iframe delivery and was not a position pass.",
+  "result": {
+    "position": "bottom-left",
+    "classes": "absolute grid place-items-center rounded-full size-2 -bottom-1 -left-1 box-border pointer-events-none select-none border-[length:var(--border-width)] border-solid border-border-hairline bg-[image:var(--gradient-sheen)] outline-[length:var(--focus-width)] outline-solid outline-bg-surface outline-offset-0 bg-status-danger text-fg-on-status shadow-[var(--shadow-edge)]"
+  }
+}

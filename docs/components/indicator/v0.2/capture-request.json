@@ -1,0 +1,125 @@
+{
+  "component": "Indicator",
+  "specVersion": "0.2",
+  "status": "proposed-capture-request-not-a-capture-record",
+  "canonicalIssue": "https://github.com/egdev6/egdev-design-system/issues/178",
+  "sourceBaseline": "f88b36e44b3d5ec6d7725350959f9cdfdfeb5b23",
+  "planRevisionNote": "The current plan adds only future parent-owned Indicator Storybook story-scanner responsibility and emitted/browser verification; spec, specimen and Indicator/Avatar promises are unchanged. Parent observed/capture-metadata.json remains read-only with capture-time plan identity 6cef2b7bc26e8bbed812baeb5c9f3a410053150f5311bd67d93a332a91fbb241; no recapture, visual adoption or runtime approval is implied.",
+  "specPath": "docs/components/indicator/v0.2/spec.md",
+  "amendmentPath": "docs/components/avatar/v0.2/indicator-amendment.md",
+  "source": {
+    "path": "docs/components/indicator/v0.2/specimen.html",
+    "sha256": "f017ff45ed6ed0f25019441853e3ee7c894a04dceac2809a3af7ad19b9c1c74e",
+    "kind": "locally-authored-static-design-proposal",
+    "productionImplementation": false,
+    "approvedExpectedDesign": false,
+    "hostingOwner": "parent",
+    "hostedURL": null,
+    "tokenStylesheetURL": "/tokens.css",
+    "canonicalTokenSource": "packages/tokens/src/theme.css",
+    "canonicalTokenSourceSHA256": "62d10992ae654e34e83d9d11bcf35da29e56c905648015f2415ebdca59bf6ab8",
+    "compiledTokenStylesheetSHA256": null,
+    "compiledTokenStylesheetProvidedBy": "parent; actual canonical compiled bytes, not raw @theme CSS",
+    "glyphSource": "packages/ui/src/atoms/icon/icon-paths.ts",
+    "glyphSourceSHA256": "c590c71332c08921102517bada473f7d032ffb792dd95e3c38b8f07b3edc6f94",
+    "glyphs": ["user", "linkedin"],
+    "glyphUse": "Existing descriptors copied for static illustrations only; no runtime icon additions. Existing source provenance and THIRD_PARTY_NOTICES.md remain applicable.",
+    "specCanonicalSHA256": "5a7f18f79329d4cc3fc37ca4ad4ce823cc11e321cdc11936b1f032d7947c4eb6",
+    "planCanonicalSHA256": "0e2a477066f7ce162fcbcdff3713822e1a5eae6f3e12ebe44471476d97f3793e",
+    "amendmentCanonicalSHA256": "c46c02566fb2dec680f69231e5ee96236a1cfaf28011086923985bfa03c6b1da",
+    "canonicalHashBoundary": "Actual anchored whole Markdown section heading through EOF, not its inline mention in tracking metadata. Parent reverified; no promise payload change."
+  },
+  "proposedConditions": {
+    "theme": "existing Foundation dark Grafito only",
+    "viewports": [
+      {
+        "name": "desktop",
+        "width": 1280,
+        "height": 1000,
+        "deviceScaleFactor": 1
+      },
+      {
+        "name": "narrow",
+        "width": 390,
+        "height": 844,
+        "deviceScaleFactor": 1
+      }
+    ],
+    "browser": "parent real Chromium through available Playwright tooling; record exact version",
+    "fonts": "Wait for document.fonts.ready. Record resolved --font-sans face. Barlow if locally available; otherwise explicitly record the token fallback, not a loaded-Barlow claim. No external font fetch required.",
+    "media": {
+      "prefersColorScheme": "dark",
+      "prefersReducedMotion": "reduce",
+      "prefersReducedTransparency": "reduce where supported; record support/result"
+    },
+    "zoom": "100% primary; parent additionally inspect text zoom 200% without claiming a runtime pass",
+    "crop": "component zones including marker outlines/shadows, readable scenario captions and before/after labels; board/full page optional supplement",
+    "layoutStability": "Confirm tokens stylesheet loaded, fonts settled, no missing variables, no clipped markers; no animation or wait-for-interaction script needed"
+  },
+  "scenarios": [
+    {
+      "visualID": "VIS-01",
+      "selector": "#branches",
+      "principal": true,
+      "description": "Danger default sm dot, md dot; counts 1/99/99+, zero-or-invalid suppression; neutral sm and default-danger md origin icon",
+      "altText": "Static proposed dot, count and LinkedIn origin markers attached to labelled anchors in two sizes.",
+      "acceptanceIDs": ["IN-01", "IN-03", "IN-05"],
+      "suggestedOutputName": "branches--static--desktop--dark.png",
+      "actualPNG": null,
+      "actualSHA256": null
+    },
+    {
+      "visualID": "VIS-02",
+      "selectors": ["#corners", "#tones"],
+      "principal": false,
+      "description": "Separate component-zone images for physical corners in LTR/RTL and six tone families; retain one visual group ID with per-image hashes",
+      "altText": "Static proposed physical corner markers in both directions and six supplementary tone families.",
+      "acceptanceIDs": ["IN-01", "IN-05"],
+      "suggestedOutputNames": ["corners--static--desktop--dark.png", "tones--static--desktop--dark.png"],
+      "actualPNGs": [],
+      "actualHashes": []
+    },
+    {
+      "visualID": "VIS-03",
+      "selector": "#avatar-comparison",
+      "principal": false,
+      "description": "Paired authored Avatar before/proposed-after for sm/md/lg/xl, paused md, and canvas token ring override. Capture whole pairs with captions; no intended visual change.",
+      "altText": "Source-reconstructed Avatar pairs showing identical intended badge geometry and paint before and after proposed geometry sharing.",
+      "acceptanceIDs": ["IN-06"],
+      "suggestedOutputName": "avatar--compatibility-proposal--desktop--dark.png",
+      "actualPNG": null,
+      "actualSHA256": null
+    },
+    {
+      "visualID": "VIS-04",
+      "selector": "#contexts",
+      "principal": false,
+      "description": "Inert authored focused and disabled child paint, marker independently visible, and wide 9999+ count; capture desktop and narrow",
+      "altText": "Static proposed count markers beside illustrated child focus, child disabled paint, and a larger display threshold.",
+      "acceptanceIDs": ["IN-03", "IN-04", "IN-05"],
+      "suggestedOutputNames": ["contexts--static--desktop--dark.png", "contexts--static--narrow--dark.png"],
+      "actualPNGs": [],
+      "actualHashes": []
+    }
+  ],
+  "knownLimits": [
+    "No browser navigation, PNG, screenshot inspection, actual font result, compiled CSS hash, contrast measurement or owner adoption has occurred in writer preparation.",
+    "The specimen is HTML/CSS, not React or an implementation of the proposed union, normalization, native filtering or events.",
+    "The focused/disabled illustrations are inert spans. They do not prove keyboard, focus-visible, disabled semantics, hit-testing, child preservation or accessibility.",
+    "Avatar both sides are authored reconstructions; no actual migration exists. Outline approximates the current token-width Tailwind ring without hand-authoring a shadow. True box-shadow/cascade parity requires a later real baseline/runtime comparison.",
+    "The Avatar token-stop gradient reconstructs existing source utilities, not a new gradient recipe. There is no photo fixture, decoding/fallback transport or fabricated broken-image result.",
+    "Capped count 9999+ illustrates width growth but does not cover MAX_SAFE_INTEGER text or every zoom/host clipping combination.",
+    "No production CVA build, packed consumer, runtime test, AT evaluation, native review or actual Controls result is implied.",
+    "Existing upstream/historical references are not newly inspected or owner-adopted here. Proposed filenames are requests, not links to existing assets."
+  ],
+  "parentRecordAfterCapture": [
+    "Actual source URL, capture timestamp/tool and exact browser version",
+    "Specimen whole-file SHA-256, exact canonical compiled tokens CSS SHA-256 and baseline identity",
+    "Viewport, DPR, theme, resolved fonts, actual motion/transparency settings/support and zoom",
+    "Component-zone crop bounds, actual PNG paths, inspected image result and per-image SHA-256",
+    "Comparison limits and recoverable owner adoption reference binding exact spec and visual hashes",
+    "Separate GitHub-visible asset authorization and verified access/hash before remote image links"
+  ],
+  "approvalReference": null,
+  "visualConformity": "not-evaluated"
+}

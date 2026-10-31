@@ -1,0 +1,9 @@
+{
+  "route": "branches",
+  "override": "Capture-only appended actual /tokens/tokens.css after Storybook palette; no source/token edits",
+  "before": "#FF0036",
+  "after": {
+    "red300": "#FF6680",
+    "danger": "rgb(255, 102, 128)"
+  }
+}

@@ -623,6 +623,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/gauge',
       './atoms/icon',
       './atoms/icon-button',
+      './atoms/indicator',
       './atoms/input',
       './atoms/kbd',
       './atoms/link',
@@ -697,6 +698,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'HoverCardTrigger',
       'Icon',
       'IconButton',
+      'Indicator',
       'Input',
       'Kbd',
       'Label',
@@ -3447,6 +3449,97 @@ describe('Slider interactive metadata contract', () => {
       'onClick'
     ]) {
       expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('Indicator first-wave metadata contract', () => {
+  const controls: Record<string, string> = {
+    children: 'false',
+    tone: 'select',
+    size: 'select',
+    position: 'select',
+    variant: 'select',
+    count: 'number',
+    max: 'number',
+    badgeIcon: 'select'
+  };
+  const constants: Record<string, string> = {
+    variant: 'dot',
+    tone: 'danger',
+    size: 'sm',
+    position: 'top-right',
+    max: '99'
+  };
+  const parts: { name: string; native: string[]; own: string[] }[] = [
+    {
+      name: 'Indicator',
+      native: ['id', 'title', 'dir', 'aria-describedby', 'className', 'onClick', 'onKeyDown', 'onFocus', 'onBlur'],
+      own: ['children', 'tone', 'size', 'position', 'variant', 'count', 'max', 'badgeIcon']
+    }
+  ];
+
+  it('annotates every own union declaration and binds false-control reasons to real stories', () => {
+    const file = ast(source('atoms/indicator/types.ts'));
+    const properties = ownProps(file, ['IndicatorBranch', 'IndicatorProps']);
+    expect(properties).toHaveLength(16);
+    expect([...new Set(properties.map((property) => property.name.getText(file)))].sort()).toEqual(
+      Object.keys(controls).sort()
+    );
+    const stories = ast(source('atoms/indicator/Indicator.stories.tsx'));
+    const names = exportedStoryNames(stories);
+    const observedDefaults: Record<string, string> = {};
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const values = (tag: string) =>
+        tags.filter((item) => item.tagName.text === tag).map((item) => ts.getTextOfJSDocComment(item.comment));
+      expect(values('control'), name).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        const reason = values('controlReason')[0] ?? '';
+        expect(reason, name).not.toBe('');
+        expect(
+          names.some((story) => reason.includes(story)),
+          name
+        ).toBe(true);
+      }
+      for (const value of values('default')) {
+        expect(value, name).toBe(constants[name]);
+        if (value !== undefined) {
+          observedDefaults[name] = value;
+        }
+      }
+    }
+    expect(observedDefaults).toEqual(constants);
+    expect(stories.getText()).not.toMatch(/\bargTypes\s*:|\bplay\s*:/);
+  });
+
+  it('extracts exact public and approved native rows without leaking internal or forbidden props', () => {
+    const extracted = parser.parse(source('atoms/indicator/Indicator.tsx'));
+    for (const { name, native, own } of parts) {
+      const doc = extracted.find((item) => item.displayName === name);
+      if (!doc) {
+        throw new Error('Missing real docgen for ' + name);
+      }
+      expect(Object.keys(doc.props).sort(), name).toEqual([...own, ...native].sort());
+      expect(doc.props.children, name).toMatchObject({ required: true });
+      for (const prop of own) {
+        const tags: Record<string, unknown> = doc.props[prop]?.tags ?? {};
+        const directives = String(tags.control ?? '')
+          .split(/\r?\n/)
+          .map((value) => value.trim())
+          .filter(Boolean);
+        expect([...new Set(directives)], name + '.' + prop).toEqual([controls[prop]]);
+        if (controls[prop] === 'false') {
+          expect(typeof tags.controlReason).toBe('string');
+          expect(tags.controlReason).toBeTruthy();
+        }
+      }
+      if (name === 'Indicator') {
+        for (const prop of own) {
+          expect(normalize(doc.props[prop]?.defaultValue?.value ?? ''), name + '.' + prop).toBe(constants[prop] ?? '');
+        }
+      }
     }
   }, 20_000);
 });

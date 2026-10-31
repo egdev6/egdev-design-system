@@ -63,7 +63,9 @@ const components = [
   ['Toggle', 'atoms/toggle'],
   ['Tooltip', 'atoms/tooltip'],
   ['Menu', 'molecules/menu'],
-  ['Tabs', 'molecules/tabs']
+  ['Tabs', 'molecules/tabs'],
+  // Preserve the existing query prefix: TypeScript enum ordering depends on literal interning.
+  ['Indicator', 'atoms/indicator']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -113,6 +115,16 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  indicator: {
+    children: false,
+    tone: 'select',
+    size: 'select',
+    position: 'select',
+    variant: 'select',
+    count: 'number',
+    max: 'number',
+    badgeIcon: 'select'
+  },
   modulecard: {
     title: 'text',
     level: 'select',
@@ -411,6 +423,7 @@ const expected: Record<string, Record<string, string | false>> = {
   }
 };
 const ownPropCounts: Record<string, number> = {
+  indicator: 8,
   modulecard: 10,
   timeline: 7,
   selecttile: 11,
@@ -687,6 +700,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
   });
 
   it.each([
+    ['Indicator', { variant: '"dot"', tone: '"danger"', size: '"sm"', position: '"top-right"', max: '99' }],
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
     ['Checkbox', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }],
     ['Menu', { side: '"bottom"', align: '"start"', defaultOpen: 'false' }],

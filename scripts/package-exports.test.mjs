@@ -2535,6 +2535,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'HoverCardTrigger',
       'Icon',
       'IconButton',
+      'Indicator',
       'Input',
       'Kbd',
       'Label',
@@ -2771,6 +2772,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'IconName',
     'IconProps',
     'IconSize',
+    'Indicator',
+    'IndicatorPosition',
+    'IndicatorProps',
+    'IndicatorSize',
+    'IndicatorTone',
+    'IndicatorVariant',
     'Input',
     'InputProps',
     'InputSize',
@@ -4193,5 +4200,90 @@ test('Carousel public exports preserve deterministic named groups and composed a
   assert.equal((html.match(/tabindex="0"/g) ?? []).length, 1);
   for (const name of ['useCarousel', 'carouselVariants', 'defaultCarouselMessages']) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} remains internal`);
+  }
+});
+
+test('Indicator ships physical corners, compact Material and no utility-layer marker engine', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    '.-top-1',
+    '.-right-1',
+    '.-bottom-1',
+    '.-left-1',
+    '.size-2',
+    String.raw`.size-2\.5`,
+    String.raw`.min-w-4\.5`,
+    String.raw`.min-h-5\.5`,
+    '.pointer-events-none',
+    '.select-none',
+    '.outline-bg-surface',
+    String.raw`.outline-\[length\:var\(--focus-width\)\]`,
+    String.raw`.shadow-\[var\(--shadow-edge\)\,var\(--shadow-elev-1\)\]`
+  ]) {
+    assert.ok(utilities.includes(selector), 'Missing Indicator utility ' + selector);
+  }
+  for (const token of [
+    '--color-status-info',
+    '--color-status-success',
+    '--color-status-warning',
+    '--color-status-danger',
+    '--gradient-sheen',
+    '--focus-width'
+  ]) {
+    assert.ok(utilities.includes('var(' + token), 'Missing Indicator token reference ' + token);
+  }
+  assert.doesNotMatch(utilities, /\.eg-indicator[^{}]*\{/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/atoms/indicator/indicator.css')), false);
+});
+test('Indicator package preserves a passive wrapper and suppresses only invalid-count markers in SSR', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.Indicator, 'function');
+  for (const name of [
+    'useIndicator',
+    'indicatorRootVariants',
+    'indicatorPositionVariants',
+    'indicatorMarkerGeometryVariants',
+    'indicatorGlyphVariants',
+    'indicatorMarkerPaintVariants'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, name + ' is private');
+  }
+  for (const [count, expected] of [
+    [100, '99+'],
+    [0, null],
+    [NaN, null]
+  ]) {
+    const dom = new JSDOM(
+      renderToString(
+        createElement(exported.Indicator, {
+          variant: 'count',
+          count,
+          position: 'bottom-left',
+          children: createElement('button', { type: 'button', children: 'Inbox, actual total supplied by consumer' })
+        })
+      )
+    );
+    try {
+      const wrapper = dom.window.document.querySelector('.eg-indicator');
+      assert.ok(wrapper);
+      assert.equal(wrapper.firstElementChild.tagName, 'BUTTON');
+      for (const attr of ['role', 'tabindex', 'aria-label', 'aria-live']) {
+        assert.equal(wrapper.hasAttribute(attr), false);
+      }
+      const marker = wrapper.querySelector(':scope > span');
+      if (expected === null) {
+        assert.equal(marker, null);
+      } else {
+        assert.equal(marker.textContent, expected);
+        assert.equal(marker.getAttribute('aria-hidden'), 'true');
+        assert.ok(marker.classList.contains('-bottom-1') && marker.classList.contains('-left-1'));
+      }
+    } finally {
+      dom.window.close();
+    }
   }
 });

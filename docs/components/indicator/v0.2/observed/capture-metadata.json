@@ -1,0 +1,203 @@
+{
+  "recordedAt": "2026-10-30T13:06:42.954981+00:00",
+  "kind": "Observed browser captures of authored static design proposals; not React implementation evidence",
+  "adoption": "Pending explicit owner adoption; no runtime authorization inferred",
+  "source": {
+    "specimenPath": "specimen.html",
+    "specimenSha256": "f017ff45ed6ed0f25019441853e3ee7c894a04dceac2809a3af7ad19b9c1c74e",
+    "tokensSha256": "1fc1edda6b1a7cdc475add0f4c971d7297687b123b1db43a58ddf442562adf22",
+    "canonicalDocumentIdentities": {
+      "spec.md": "5a7f18f79329d4cc3fc37ca4ad4ce823cc11e321cdc11936b1f032d7947c4eb6",
+      "implementation-plan.md": "6cef2b7bc26e8bbed812baeb5c9f3a410053150f5311bd67d93a332a91fbb241",
+      "specimen.html": "f017ff45ed6ed0f25019441853e3ee7c894a04dceac2809a3af7ad19b9c1c74e"
+    }
+  },
+  "captures": [
+    {
+      "path": "branches--static--desktop--dark.png",
+      "sha256": "cc6ec72b4ee7b4c753a024f577c4f392fc37e938ca054603870a8f1305b58232",
+      "selector": "#branches",
+      "requestedViewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/indicator/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 1280,
+          "height": 1000
+        },
+        "dpr": 1.0000000149011612,
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": true,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 40,
+          "y": 209.60000610351562,
+          "width": 1184.800048828125,
+          "height": 294.3999938964844,
+          "top": 209.60000610351562,
+          "right": 1224.800048828125,
+          "bottom": 504,
+          "left": 40
+        }
+      },
+      "parentImageInspection": "completed"
+    },
+    {
+      "path": "avatar--compatibility-proposal--desktop--dark.png",
+      "sha256": "f9117e3e21523be9baa71e95efdc0ae7bc3b11bd1b8b1347353c323e0ba128d4",
+      "selector": "#avatar-comparison",
+      "requestedViewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/indicator/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 1280,
+          "height": 1000
+        },
+        "dpr": 1.0000000149011612,
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": true,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 40,
+          "y": 1189.5999755859375,
+          "width": 1184.800048828125,
+          "height": 444.3999938964844,
+          "top": 1189.5999755859375,
+          "right": 1224.800048828125,
+          "bottom": 1633.9999694824219,
+          "left": 40
+        }
+      },
+      "parentImageInspection": "completed"
+    },
+    {
+      "path": "corners--static--desktop--dark.png",
+      "sha256": "8dc9fa6e4023854ac0e9b9a8caffa8de2513a6b666c12001e0ff1a5d443fcdd5",
+      "selector": "#corners",
+      "requestedViewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/indicator/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 1280,
+          "height": 1000
+        },
+        "dpr": 1.0000000149011612,
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": true,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 40,
+          "y": 536,
+          "width": 1184.800048828125,
+          "height": 369.6000061035156,
+          "top": 536,
+          "right": 1224.800048828125,
+          "bottom": 905.6000061035156,
+          "left": 40
+        }
+      },
+      "parentImageInspection": "completed"
+    },
+    {
+      "path": "tones--static--desktop--dark.png",
+      "sha256": "458d86f31e793677528e5308c6e5fe0c86e4371ab77756d92a11915b48153e0a",
+      "selector": "#tones",
+      "requestedViewport": {
+        "width": 1280,
+        "height": 1000
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/indicator/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 1280,
+          "height": 1000
+        },
+        "dpr": 1.0000000149011612,
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": true,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 40,
+          "y": 937.6000366210938,
+          "width": 1184.800048828125,
+          "height": 220,
+          "top": 937.6000366210938,
+          "right": 1224.800048828125,
+          "bottom": 1157.6000366210938,
+          "left": 40
+        }
+      },
+      "parentImageInspection": "completed"
+    },
+    {
+      "path": "contexts--static--narrow--dark.png",
+      "sha256": "23115359597005f5f834d1320fbfab8b554991cda1c908e0aa397e453de29fdd",
+      "selector": "#contexts",
+      "requestedViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/indicator/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "dpr": 1.0000000149011612,
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": true,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 16,
+          "y": 3486,
+          "width": 343.20001220703125,
+          "height": 528.7999877929688,
+          "top": 3486,
+          "right": 359.20001220703125,
+          "bottom": 4014.7999877929688,
+          "left": 16
+        }
+      },
+      "parentImageInspection": "completed"
+    }
+  ],
+  "limitations": [
+    "CSS font-family was observed, but installed Barlow availability and exact rendered font are not verified; no web font faces were loaded.",
+    "These static illustrations are not runtime, keyboard, focus, Radix, hydration, AT, or full pixel-parity verification.",
+    "No 200% browser-zoom, forced reduced-transparency, unsupported-backdrop-filter or cross-browser coverage is claimed.",
+    "Avatar before/after pairs are authored reconstructions, not observed migrated React comparisons."
+  ]
+}
