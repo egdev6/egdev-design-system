@@ -11,7 +11,7 @@ The effective approved contract/plan is the unchanged v0.2 spec `b3d9f158d45661b
 - Closed: native aria-expanded=false, no Trigger aria-controls; native Content shell/id remains hidden, children unmounted.
 - Open/reopen: native aria-expanded=true and aria-controls matching that Content id, with children mounted.
 - No manual relationship/state/id override, forceMount, dependency/version/API/layout/visual/focus or presence-policy change.
-- The owner authorizes resuming the same six-file Collapsible runtime scope and planned validation under [UI-O](../../../../../indicator/docs/components/remaining-components/v0.1/ui-first-wave-owner-approvals.md), canonical `bbc9ec9834515877bd416af040179b0e5916d75ca0d699fbad35a292b73eceb7`.
+- The owner authorizes resuming the same six-file Collapsible runtime scope and planned validation under [UI-O](../../remaining-components/v0.1/ui-first-wave-owner-approvals.md), canonical `bbc9ec9834515877bd416af040179b0e5916d75ca0d699fbad35a292b73eceb7`.
 
 This approval does not claim tests, browser/AT or native review passed. No new dependencies/tokens, commit, push, PR, merge or publication is authorized. Parent must issue a fresh bounded resumption; prior unavailable native ASSESS is not a verdict.
 

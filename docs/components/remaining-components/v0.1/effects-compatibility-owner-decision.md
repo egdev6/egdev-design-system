@@ -21,7 +21,7 @@ The selected preview bound the decision to [FX-D](effects-compatibility-disposit
 
 ### Evidence and provenance limits
 
-FX-D binds the reviewed [compatibility inventory](../../../../../collapsible/docs/components/remaining-components/v0.1/effects-compatibility-inventory.md), canonical `1f952925e4e46e83e714805a77d305ca6720c3a9d85cb6131603fdb1f3cbe3b5`, and the common effects proposal. The parent checked the six-file baseline package closure, byte identities and bounded external evidence. No tracked application consumer was found; archives and a recorded inlining harness are observable consumption surfaces.
+FX-D binds the reviewed [compatibility inventory](effects-compatibility-inventory.md), canonical `1f952925e4e46e83e714805a77d305ca6720c3a9d85cb6131603fdb1f3cbe3b5`, and the common effects proposal. The parent checked the six-file baseline package closure, byte identities and bounded external evidence. No tracked application consumer was found; archives and a recorded inlining harness are observable consumption surfaces.
 
 Public npm 404 and the account-scoped limited GitHub query do not prove absence of historical/private/global consumers. The owner accepted that stated residual risk, not a universal absence finding or certification of future artifacts.
 
