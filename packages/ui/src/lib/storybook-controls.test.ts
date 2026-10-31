@@ -74,6 +74,7 @@ const components = [
   ['Collapsible', 'molecules/collapsible'],
   ['CollapsibleTrigger', 'molecules/collapsible'],
   ['CollapsibleContent', 'molecules/collapsible'],
+  ['GaugeGroup', 'molecules/gauge-group'],
   ['PhotoFrame', 'atoms/photo-frame']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
@@ -124,6 +125,7 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  gaugegroup: { label: 'text', items: false, size: 'select', center: false },
   photoframe: {
     src: 'text',
     alt: 'text',
@@ -449,6 +451,7 @@ const expected: Record<string, Record<string, string | false>> = {
   }
 };
 const ownPropCounts: Record<string, number> = {
+  gaugegroup: 4,
   photoframe: 6,
   indicator: 8,
   panel: 3,
@@ -685,6 +688,20 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(argTypes.center?.control).toEqual({ type: 'object' });
     expect(argTypes.size?.control).toEqual({ type: 'object' });
     expect(argTypes.state?.table?.jsDocTags).toBeUndefined();
+  });
+
+  it('retains GaugeGroup root metadata and passive native rows', () => {
+    const { argTypes } = story('GaugeGroup');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.items?.control).toBe(false);
+    expect(argTypes.center?.control).toBe(false);
+    expect(argTypes.size?.control).toEqual({ type: 'select' });
+    for (const name of ['id', 'title', 'aria-describedby', 'className']) {
+      expect(argTypes[name], name).toBeDefined();
+    }
+    for (const name of ['style', 'role', 'children', 'onClick', 'ref']) {
+      expect(argTypes[name], name).toBeUndefined();
+    }
   });
 
   it('retains GaugeDockItem tuple documentation with no serializable content controller', () => {

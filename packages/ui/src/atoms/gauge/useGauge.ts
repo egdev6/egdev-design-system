@@ -1,5 +1,6 @@
 import { type ComponentPropsWithoutRef, type CSSProperties, type ReactNode, useId } from 'react';
 import { cn } from '@/lib/cn';
+import { gaugeConditionIconPaths, normalizeGaugeMeasurement } from './gauge-model';
 import {
   type GaugeProps,
   type GaugeState,
@@ -30,13 +31,6 @@ type UseGaugeReturn = {
   label: string;
   unavailableText: string;
 };
-const iconPaths: Record<GaugeState, string> = {
-  normal: 'M4 12l5 5L20 6',
-  warning: 'M12 3L2 21h20L12 3Zm0 5v6m0 3v1',
-  critical: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 5v7m0 3v1',
-  muted: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20ZM7 12h10'
-};
-
 export const useGauge = ({
   label,
   value,
@@ -52,11 +46,18 @@ export const useGauge = ({
   ...rest
 }: GaugeProps): UseGaugeReturn => {
   const cueId = useId();
-  const available = Number.isFinite(value);
-  const normalized = available ? Math.min(100, Math.max(0, value)) : undefined;
+  const {
+    available,
+    normalized,
+    valueText: resolvedValueText,
+    showCue
+  } = normalizeGaugeMeasurement({
+    value,
+    valueText,
+    stateText
+  });
   const customSize = typeof size === 'number' && Number.isFinite(size) && size > 0;
   const preset = typeof size === 'number' ? 'md' : size;
-  const showCue = available && Boolean(stateText);
   const descriptions = [...new Set(`${describedBy ?? ''} ${showCue ? cueId : ''}`.split(/\s+/).filter(Boolean))];
   const geometry: GaugeStyle = {
     ...style,
@@ -71,7 +72,7 @@ export const useGauge = ({
       'aria-valuemin': available ? 0 : undefined,
       'aria-valuemax': available ? 100 : undefined,
       'aria-valuenow': normalized,
-      'aria-valuetext': available ? (valueText ?? `${normalized} / 100`) : undefined,
+      'aria-valuetext': resolvedValueText,
       'aria-describedby': descriptions.join(' ') || undefined,
       'data-state': state,
       'aria-labelledby': undefined,
@@ -100,7 +101,7 @@ export const useGauge = ({
     stateText,
     state,
     cueId,
-    iconPath: iconPaths[state],
+    iconPath: gaugeConditionIconPaths[state],
     label,
     unavailableText
   };
