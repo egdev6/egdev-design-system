@@ -1,0 +1,167 @@
+{
+  "recordedAt": "2026-10-30T13:06:42.956732+00:00",
+  "kind": "Observed browser captures of authored static design proposals; not React implementation evidence",
+  "adoption": "Pending explicit owner adoption; no runtime authorization inferred",
+  "source": {
+    "specimenPath": "specimen.html",
+    "specimenSha256": "65b93e46c4bfc94a11121f78ab6d30946f479075321a0f424a9192f62fdceb68",
+    "tokensSha256": "1fc1edda6b1a7cdc475add0f4c971d7297687b123b1db43a58ddf442562adf22",
+    "canonicalDocumentIdentities": {
+      "spec.md": "b3d9f158d45661b151dbff249b645ab6f97b036e872d187eb6f4be39d35b2017",
+      "implementation-plan.md": "136dc06ca4e2bdc55cdd31ab07a023aaa13443642bde467541eefcbf271df42f",
+      "specimen.html": "65b93e46c4bfc94a11121f78ab6d30946f479075321a0f424a9192f62fdceb68"
+    }
+  },
+  "captures": [
+    {
+      "path": "independent--static--desktop--dark.png",
+      "sha256": "2c87ccaf1b9ba300d413497778a01063635cf9267b8a1fc876b50b78b22c391f",
+      "selector": "#independent",
+      "requestedViewport": {
+        "width": 1280,
+        "height": 1200
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/collapsible/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 1280,
+          "height": 1200
+        },
+        "dpr": 1.0000000149011612,
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": false,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 40,
+          "y": 235.1999969482422,
+          "width": 1184.800048828125,
+          "height": 532,
+          "top": 235.1999969482422,
+          "right": 1224.800048828125,
+          "bottom": 767.1999969482422,
+          "left": 40
+        }
+      },
+      "parentImageInspection": "completed"
+    },
+    {
+      "path": "states--static--desktop--dark.png",
+      "sha256": "f089d96638c7a1a4bdf7e86e1d0109448898955516ddc2ebc02aed5df45f58fa",
+      "selector": "#states",
+      "requestedViewport": {
+        "width": 1280,
+        "height": 1200
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/collapsible/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 1280,
+          "height": 1200
+        },
+        "dpr": 1.0000000149011612,
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": false,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 40,
+          "y": 799.2000122070312,
+          "width": 1184.800048828125,
+          "height": 408.8000183105469,
+          "top": 799.2000122070312,
+          "right": 1224.800048828125,
+          "bottom": 1208.0000305175781,
+          "left": 40
+        }
+      },
+      "parentImageInspection": "completed"
+    },
+    {
+      "path": "long-label--static--narrow--dark.png",
+      "sha256": "1e3efbe5c72b4befca25234191ccc0f8bdbf4f1e5d9dc4ee691b1d4b5b3eaa16",
+      "selector": "#long-label",
+      "requestedViewport": {
+        "width": 390,
+        "height": 844
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/collapsible/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "dpr": 1.0000000149011612,
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": false,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 16,
+          "y": 1656.800048828125,
+          "width": 343.20001220703125,
+          "height": 280.3999938964844,
+          "top": 1656.800048828125,
+          "right": 359.20001220703125,
+          "bottom": 1937.2000427246094,
+          "left": 16
+        }
+      },
+      "parentImageInspection": "completed"
+    },
+    {
+      "path": "independent--reduced-motion--desktop--dark.png",
+      "sha256": "cc25e55c3774eb6acf8bc3eb3fef7628ce43a2b90a4001124068a95cadfe9c03",
+      "selector": "#independent",
+      "requestedViewport": {
+        "width": 1280,
+        "height": 1200
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/collapsible/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 1280,
+          "height": 1200
+        },
+        "dpr": 1.0000000149011612,
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": true,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 40,
+          "y": 235.1999969482422,
+          "width": 1184.800048828125,
+          "height": 532,
+          "top": 235.1999969482422,
+          "right": 1224.800048828125,
+          "bottom": 767.1999969482422,
+          "left": 40
+        }
+      },
+      "parentImageInspection": "completed"
+    }
+  ],
+  "limitations": [
+    "CSS font-family was observed, but installed Barlow availability and exact rendered font are not verified; no web font faces were loaded.",
+    "These static illustrations are not runtime, keyboard, focus, Radix, hydration, AT, or full pixel-parity verification.",
+    "No 200% browser-zoom, forced reduced-transparency, unsupported-backdrop-filter or cross-browser coverage is claimed.",
+    "Avatar before/after pairs are authored reconstructions, not observed migrated React comparisons."
+  ]
+}

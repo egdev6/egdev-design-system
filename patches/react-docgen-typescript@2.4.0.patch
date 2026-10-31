@@ -1,0 +1,87 @@
+diff --git a/lib/parser.js b/lib/parser.js
+index 3e83fdc9f6cb975b025aa6875723f7cd5652376e..1b8e5da26a3b390601b695923417d0c9d0dc6df5 100644
+--- a/lib/parser.js
++++ b/lib/parser.js
+@@ -503,49 +503,41 @@ var Parser = /** @class */ (function () {
+         propertiesOfProps.forEach(function (prop) {
+             var propName = prop.getName();
+             var parent = getParentType(prop);
+-            var cacheKey = (parent === null || parent === void 0 ? void 0 : parent.fileName) + "_" + propName;
+-            if (_this.propertiesOfPropsCache.has(cacheKey)) {
+-                result[propName] = _this.propertiesOfPropsCache.get(cacheKey);
++            // A declaration file/name does not identify its instantiated DOM generic.
++            // Resolve every prop in its own component context instead of sharing native rows.
++            var propType = _this.checker.getTypeOfSymbolAtLocation(prop, propsObj.valueDeclaration);
++            var jsDocComment = _this.findDocComment(prop);
++            var hasCodeBasedDefault = defaultProps[propName] !== undefined;
++            var defaultValue = null;
++            if (hasCodeBasedDefault) {
++                defaultValue = { value: defaultProps[propName] };
+             }
+-            else {
+-                // Find type of prop by looking in context of the props object itself.
+-                var propType = _this.checker.getTypeOfSymbolAtLocation(prop, propsObj.valueDeclaration);
+-                var jsDocComment = _this.findDocComment(prop);
+-                var hasCodeBasedDefault = defaultProps[propName] !== undefined;
+-                var defaultValue = null;
+-                if (hasCodeBasedDefault) {
+-                    defaultValue = { value: defaultProps[propName] };
+-                }
+-                else if (jsDocComment.tags.default) {
+-                    defaultValue = { value: jsDocComment.tags.default };
+-                }
+-                var parents = getDeclarations(prop);
+-                var declarations = prop.declarations || [];
+-                var baseProp = baseProps.find(function (p) { return p.getName() === propName; });
+-                var required = !isOptional(prop) &&
+-                    !hasCodeBasedDefault &&
+-                    // If in a intersection or union check original declaration for "?"
+-                    // @ts-ignore
+-                    declarations.every(function (d) { return !d.questionToken; }) &&
+-                    (!baseProp || !isOptional(baseProp));
+-                var type = jsDocComment.tags.type
+-                    ? {
+-                        name: jsDocComment.tags.type
+-                    }
+-                    : _this.getDocgenType(propType, required);
+-                var propTags = _this.shouldIncludePropTagMap
+-                    ? { tags: jsDocComment.tags }
+-                    : {};
+-                var description = _this.shouldIncludePropTagMap
+-                    ? jsDocComment.description.replace(/\r\n/g, '\n')
+-                    : jsDocComment.fullComment.replace(/\r\n/g, '\n');
+-                var propItem = __assign({ defaultValue: defaultValue, description: description, name: propName, parent: parent, declarations: parents, required: required,
+-                    type: type }, propTags);
+-                if (parent === null || parent === void 0 ? void 0 : parent.fileName.includes('node_modules')) {
+-                    _this.propertiesOfPropsCache.set(parent.fileName + "_" + propName, propItem);
+-                }
+-                result[propName] = propItem;
++            else if (jsDocComment.tags.default) {
++                defaultValue = { value: jsDocComment.tags.default };
+             }
++            var parents = getDeclarations(prop);
++            var declarations = prop.declarations || [];
++            var baseProp = baseProps.find(function (p) { return p.getName() === propName; });
++            var required = !isOptional(prop) &&
++                !hasCodeBasedDefault &&
++                // If in a intersection or union check original declaration for "?"
++                // @ts-ignore
++                declarations.every(function (d) { return !d.questionToken; }) &&
++                (!baseProp || !isOptional(baseProp));
++            var type = jsDocComment.tags.type
++                ? {
++                    name: jsDocComment.tags.type
++                }
++                : _this.getDocgenType(propType, required);
++            var propTags = _this.shouldIncludePropTagMap
++                ? { tags: jsDocComment.tags }
++                : {};
++            var description = _this.shouldIncludePropTagMap
++                ? jsDocComment.description.replace(/\r\n/g, '\n')
++                : jsDocComment.fullComment.replace(/\r\n/g, '\n');
++            var propItem = __assign({ defaultValue: defaultValue, description: description, name: propName, parent: parent, declarations: parents, required: required,
++                type: type }, propTags);
++            result[propName] = propItem;
+         });
+         return result;
+     };

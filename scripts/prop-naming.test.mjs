@@ -10,11 +10,68 @@ import * as props from './prop-naming.mjs';
 const { renderRegistry, runCli, validateRegistry } = props;
 const root = fileURLToPath(new URL('../', import.meta.url));
 const sourcePath = 'scripts/prop-naming.test.mjs';
+const indicatorReference = 'docs/components/remaining-components/v0.1/ui-first-wave-owner-approvals.md';
+const indicatorConventions = [
+  [
+    'anchor-corner-position',
+    '0bdb30bd41f9447f7318b3e211518a65959318a7ef4244b2c85a428cfa2bf378',
+    '26f3ae6a441f8bf0776bd794896e38d2ec3ce7b207dd7fe2e577c0c140a5e13f'
+  ],
+  [
+    'indicator-count',
+    'd4ffee5fc649db1a92475f63d514e28e75757679d53b09a2a6cf4a86a3b23a0d',
+    '85f28d95c3bd673ec6628e13b6094ae89f0edaa83d84125d7fa430578ac29ea3'
+  ],
+  [
+    'indicator-count-cap',
+    '7d727f7e689ec2d0ac91c72f70a1442f9ddc72d01e18384934ad6e10466ec535',
+    'a2efb834d4b4185b2e0b41dc8e6e6a051731570603b415e3c850d27d83f8d241'
+  ]
+];
+// These introductions postdate every frozen delegated receipt. Their separate owner binding is tested below.
+function beforeIndicatorConventions(registry) {
+  return registry.filter(
+    (entry) => !indicatorConventions.some(([id]) => id === entry.id && entry.approval?.reference === indicatorReference)
+  );
+}
+function indicatorProposalHash(entry) {
+  // Reconstruct the exact ten-field proposed JSON order/format authorized by I-N, not registry serialization.
+  return digest(
+    JSON.stringify(
+      {
+        id: entry.id,
+        name: entry.name,
+        meaning: entry.meaning,
+        whenToUse: entry.whenToUse,
+        avoid: entry.avoid,
+        status: 'proposed',
+        approval: null,
+        aliases: entry.aliases,
+        exceptions: entry.exceptions,
+        usages: []
+      },
+      null,
+      2
+    ) + '\n'
+  );
+}
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
   ...['surface-material-tone', 'leading-icon'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/atoms/field-message/types.ts#FieldMessageProps'
+  })),
+  ...['visual-treatment', 'surface-material-tone', 'preset-dimensions', 'corner-badge-icon'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/indicator/types.ts#IndicatorProps'
+  })),
+  ...['visual-treatment', 'surface-material-tone'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/panel/types.ts#PanelProps'
+  })),
+  ...['open-state', 'initial-uncontrolled-open', 'open-change'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/collapsible/types.ts#CollapsibleProps'
   })),
   ...[
     'surface-material-tone',
@@ -411,7 +468,7 @@ const postReceiptUsages = [
 // These newly proposed conventions are not part of any immutable approval receipt.
 const postReceiptProposals = ['field-message-content', 'field-guidance-tone'];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
-  return registry
+  return beforeIndicatorConventions(registry)
     .filter(({ id }) => !postReceiptProposals.includes(id))
     .map((entry) => ({
       ...entry,
@@ -465,6 +522,78 @@ test('historical registry removes only exact reviewed convention and source pair
   assert.deepEqual(historicalRegistry(fixture, []), fixture);
 });
 const digest = (bytes) => `sha256:${createHash('sha256').update(bytes).digest('hex')}`;
+test('Indicator conventions bind exact owner-approved proposal bytes and actual reviewed usages', () => {
+  const bytes = fs.readFileSync(resolve(root, indicatorReference));
+  const text = bytes.toString('utf8');
+  const heading = /^## Approved scopes\n/m.exec(text);
+  assert.ok(heading);
+  assert.equal(
+    digest(Buffer.from(text.slice(heading.index))),
+    'sha256:bbc9ec9834515877bd416af040179b0e5916d75ca0d699fbad35a292b73eceb7'
+  );
+  assert.ok(text.includes('218403be9baee574e213cf1b06db1f7bd4d3951b20c7e24e593e90ef011fb062'));
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  assert.equal(actual.length, 133);
+  assert.equal(beforeIndicatorConventions(actual).length, 130);
+  const source = 'packages/ui/src/atoms/indicator/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, source)));
+  for (const [id, proposed, approved] of indicatorConventions) {
+    const entry = actual.find((entry) => entry.id === id);
+    assert.ok(entry, id);
+    assert.equal(entry.status, 'approved', id);
+    assert.equal(indicatorProposalHash(entry), 'sha256:' + proposed, id);
+    assert.equal(props.conventionHash(entry), 'sha256:' + approved, id);
+    assert.deepEqual(entry.approval, {
+      reference: indicatorReference,
+      scope: 'convention:' + id,
+      contentHash: 'sha256:' + approved
+    });
+    assert.deepEqual(entry.aliases, []);
+    assert.deepEqual(entry.exceptions, []);
+    assert.equal(entry.usages.length, 1);
+    assert.equal(entry.usages[0].component, 'Indicator');
+    assert.equal(entry.usages[0].status, 'existing');
+    assert.deepEqual(entry.usages[0].source, { path: source, symbol: 'IndicatorProps', revision });
+    const broadened = structuredClone(entry);
+    broadened.meaning += ' Broadened.';
+    broadened.approval.contentHash = props.conventionHash(broadened);
+    assert.notEqual(
+      indicatorProposalHash(broadened),
+      'sha256:' + proposed,
+      'Rehashing cannot grant different semantics'
+    );
+  }
+  assert.deepEqual(
+    actual
+      .filter((entry) => entry.usages.some((usage) => usage.component === 'Indicator'))
+      .map(({ id }) => id)
+      .sort(),
+    [
+      'anchor-corner-position',
+      'corner-badge-icon',
+      'indicator-count',
+      'indicator-count-cap',
+      'preset-dimensions',
+      'surface-material-tone',
+      'visual-treatment'
+    ]
+  );
+  const avatar = actual.flatMap((entry) =>
+    entry.usages.filter((usage) => usage.source.path === 'packages/ui/src/atoms/avatar/types.ts')
+  );
+  assert.equal(avatar.length, 4);
+  for (const usage of avatar) {
+    assert.equal(usage.source.symbol, 'AvatarProps');
+    assert.equal(usage.source.revision, digest(fs.readFileSync(resolve(root, usage.source.path))));
+  }
+});
+test('pre-Indicator projection removes only exact introduced IDs and approval reference', () => {
+  const introduced = { id: 'indicator-count', approval: { reference: indicatorReference } };
+  const otherReference = { id: 'indicator-count', approval: { reference: 'docs/other.md' } };
+  const otherId = { id: 'unreviewed-convention', approval: { reference: indicatorReference } };
+  assert.deepEqual(beforeIndicatorConventions([introduced, otherReference, otherId]), [otherReference, otherId]);
+});
 const source = () => ({
   path: sourcePath,
   symbol: 'seed',
@@ -1363,7 +1492,7 @@ test('Isotipo3D naming receipt preserves 125 entries and binds three scoped appr
   const receipt = JSON.parse(fs.readFileSync(resolve(root, isotipoReference), 'utf8'));
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   validate(actual);
-  assert.equal(actual.length, 130);
+  assert.equal(historicalRegistry(actual).length, 128);
   assert.equal(receipt.kind, 'human-approval-record');
   assert.equal(receipt.nativeReviewApproval, false);
   assert.equal(receipt.authority, 'assistant-observed-human-delegation');
@@ -1490,7 +1619,7 @@ test('Skeleton v0.2 naming receipt records the owner published-spec approval and
   const receipt = JSON.parse(fs.readFileSync(resolve(root, skeletonReference), 'utf8'));
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   validate(actual);
-  assert.equal(actual.length, 130);
+  assert.equal(historicalRegistry(actual).length, 128);
   assert.equal(receipt.kind, 'human-approval-record');
   assert.equal(receipt.nativeReviewApproval, false);
   assert.equal(receipt.authority, 'assistant-observed-human-delegation');

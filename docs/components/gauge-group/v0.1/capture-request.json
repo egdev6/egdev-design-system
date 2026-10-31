@@ -1,0 +1,136 @@
+{
+  "component": "GaugeGroup",
+  "contractVersion": "0.1",
+  "contractStatus": "Approved full contract; exact private-refactor/recipe amendment and implementation plan remain pending",
+  "canonicalIssue": "https://github.com/egdev6/egdev-design-system/issues/31",
+  "contractComment": "https://github.com/egdev6/egdev-design-system/issues/31#issuecomment-6243614452",
+  "approvalReference": "https://github.com/egdev6/egdev-design-system/issues/31#issuecomment-6251409960",
+  "contractCanonicalSHA256": "9154316e52cbf60c52617e3a50a3cba4839c8dd938687547253b2d309107f416",
+  "sourceBaseline": "f88b36e44b3d5ec6d7725350959f9cdfdfeb5b23",
+  "status": "Supplemental static capture request only; no new capture, runtime result or visual adoption",
+  "preparationIdentities": {
+    "contractRecoveryCanonicalSHA256": "d235dc78831aefd0f74e35635d7a977cc5bd5845dd14c8d040e88952259e11c7",
+    "amendmentCanonicalSHA256": "31d24a2a0808da1ee60c12dc9d63a4b3b5104269e6d1cef77e46f974a7f92864",
+    "implementationPlanCanonicalSHA256": "88827e8d32d8fbe82f7fc6499073630fd2827c207f6c51d2e37d6c027f2628ca",
+    "specimenWholeFileSHA256": "fe089bd4964c230b13e568d2aeb5419304f427ac289252cccf072d5315bfb471"
+  },
+  "preservedApprovedVisuals": [
+    {
+      "id": "VIS-01",
+      "path": "docs/design/foundation-boards/v2026-10-18/Gauge.png",
+      "sha256": "edece4df541e7cfc9e9c36005d623a194b973139fa9074d59e2025ae1381f2f9",
+      "scope": "Original concentric anatomy/top origin/shared-center concept only; excludes positional colors, fixed logo, glows, toolbar and source dimensions",
+      "observedHere": "Existing PNG read and byte hash matched approval; no fresh browser capture"
+    },
+    {
+      "id": "VIS-02",
+      "path": "docs/design/foundation-boards/v2026-10-18/specimens/gauge-group--specimen.png",
+      "sha256": "be0ca0d4c3e6f05d2e56612095b7e92c3ca957e8d02f9f8d9d453eac0ed1002c",
+      "scope": "Independent position-labelled rows, static zero endpoints, condition/unavailable distinctions and transparent host intent; not partial runtime arcs",
+      "observedHere": "Existing PNG read and byte hash matched approval; no fresh browser capture"
+    }
+  ],
+  "source": {
+    "path": "docs/components/gauge-group/v0.1/specimen.html",
+    "kind": "Locally authored static endpoint-border silhouettes; NOT a conic/mask engine, production CSS or React implementation",
+    "previewURL": null,
+    "tokenStylesheet": "/tokens.css",
+    "tokenSource": "packages/tokens/src/theme.css",
+    "tokenSourceSHA256": "62d10992ae654e34e83d9d11bcf35da29e56c905648015f2415ebdca59bf6ab8",
+    "compiledTokenSHA256": null,
+    "cueGlyphSource": "packages/ui/src/atoms/gauge/useGauge.ts — existing warning/critical/muted iconPaths, unchanged 24x24 viewBox and stroke width 2",
+    "cueGlyphSourceSHA256": "6a761cb87791d90cd13ec09952f9753d5e461abad638f0488c4892c54c5d4cba"
+  },
+  "ownership": {
+    "tokensHostingAndCapture": "Parent only; writer launches no server/browser and generates no compiled tokens or PNG",
+    "newExpectedDesignAdoption": "Owner decision only if supplemental captures are proposed as additional targets; existing scoped VIS-01/02 approval is not reopened or replaced",
+    "runtime": "Separate amendment, plan and edit-surface approval required before code",
+    "publication": "No external asset/Git/GitHub operation granted"
+  },
+  "proposedConditions": {
+    "theme": "Canonical existing dark theme only",
+    "browser": "Parent-authorized Chromium/Playwright MCP; record actual version, OS and tool",
+    "deviceScaleFactor": 1,
+    "defaultViewport": { "width": 1280, "height": 1200 },
+    "narrowViewport": { "width": 390, "height": 844 },
+    "locale": "en-US",
+    "direction": "ltr baseline; supplementary rtl inspection without editing source",
+    "zoom": "100% baseline; inspect 200% actual browser zoom and enlarged text on PREP-06",
+    "fonts": "Wait for document.fonts.ready; record actual loaded Barlow/fallback. Specimen imports no network fonts. Parent supplies authorized canonical fonts where available; fallback is not matching-typography proof.",
+    "motion": "no-preference baseline; supplementary reduce inspection expects no animation/transition/transform",
+    "transparency": "no-preference baseline; supplementary reduce inspection does not add Group paint or change host ownership",
+    "crop": "Use scenario element crops listed below. Full-board image is supplementary, not a substitute for component zones.",
+    "stability": "Verify /tokens.css loaded and referenced variables resolve; fonts settled. Record actual conditions and limits instead of capturing unstyled output as an approved design."
+  },
+  "scenarios": [
+    {
+      "id": "PREP-01",
+      "selector": "#two-rings",
+      "viewport": "defaultViewport",
+      "states": "md, normal outer=0 and inner=100, no center",
+      "alt": "Two independent position-labelled readings alongside empty outer and full inner endpoint silhouettes.",
+      "acceptanceIds": ["AC-01", "AC-02", "AC-06"]
+    },
+    {
+      "id": "PREP-02",
+      "selector": "#three-rings",
+      "viewport": "defaultViewport",
+      "states": "sm, three normal slots at 0/100/0, no center",
+      "alt": "Three concentric endpoint silhouettes at the smallest group preset with Outer, Middle and Inner readings kept visible outside the diagram.",
+      "acceptanceIds": ["AC-01", "AC-06", "AC-08"]
+    },
+    {
+      "id": "PREP-03",
+      "selector": "#mixed-unavailable",
+      "viewport": "defaultViewport",
+      "states": "lg, critical outer=100, unavailable middle, muted inner=0, decorative C",
+      "alt": "A reserved blank middle slot between critical outer and muted inner readings, with per-reading text and icons and a decorative shared center.",
+      "acceptanceIds": ["AC-03", "AC-04", "AC-08"]
+    },
+    {
+      "id": "PREP-04",
+      "selector": "#all-unavailable",
+      "viewport": "defaultViewport",
+      "states": "md, both unavailable, blank retained diagram footprint, no center/meters",
+      "alt": "Two labelled unavailable rows next to an intentionally empty retained diagram footprint, without fabricated zero values.",
+      "acceptanceIds": ["AC-03", "AC-08"]
+    },
+    {
+      "id": "PREP-05",
+      "selector": "#transparent-hosts",
+      "viewport": "defaultViewport",
+      "states": "Same md endpoints on canvas and surface-2 diagnostic host patches",
+      "alt": "Identical empty/full endpoint silhouettes showing their actual host through both holes on two existing token backgrounds.",
+      "acceptanceIds": ["AC-06"]
+    },
+    {
+      "id": "PREP-06",
+      "selector": "#long-labels",
+      "viewport": "narrowViewport",
+      "states": "md, warning outer=0 and normal inner=100, long labels/contextual value/condition text; repeat at 200% zoom and rtl",
+      "alt": "Long independent reading labels and a visible warning description reflowing outside the diagram at a narrow viewport.",
+      "acceptanceIds": ["AC-04", "AC-05", "AC-11"]
+    }
+  ],
+  "resultMetadataRequired": [
+    "actual source URL, source HTML SHA-256 and canonical token CSS SHA-256",
+    "PREP ID, output path, PNG SHA-256, English alt and any requested target-adoption scope",
+    "actual timestamp, tool, browser/version, OS, viewport, DPR, zoom, direction, locale and crop bounds",
+    "loaded fonts or fallback, theme, motion/transparency preferences and token-load status",
+    "observed differences and source-version mismatch limits; separate actual runtime results later",
+    "owner adoption reference if additional target scope is approved, otherwise Pending"
+  ],
+  "knownLimits": [
+    "No new browser run, screenshot, computed style, runtime/AT result or adoption exists in this preparation.",
+    "Border-based endpoint silhouettes illustrate geometry/reading intent only; they do not execute or reproduce the approved shared conic/mask engine, smoothing or fractional arcs.",
+    "The 10% opacity applies only to static empty-track silhouettes, never to a whole group or reading row. Actual runtime arc alpha remains the existing token/CVA definition.",
+    "Static semantics and fixture IDs do not verify unique useId relationships, validation, rerender independence or unavailable recovery.",
+    "Existing historical visual approvals are scoped; supplementary PREP captures do not silently replace VIS-01/02 or grant private-refactor/recipe permissions.",
+    "Center content is decorative and consumer-constrained. No fit/scaling guarantee is inferred for arbitrary content in the 16px smallest hole.",
+    "Parent supplies compiled tokens/fonts and capture tooling; no dependency installation, token mutation, production renderer or server is included.",
+    "Later runtime must verify -1/0/42.5/100/101, NaN and both infinities independently; endpoint illustrations cannot prove decimal/clamp/non-finite behavior."
+  ],
+  "newCaptureResults": [],
+  "newVisualHashes": null,
+  "newVisualAdoptionReference": null
+}

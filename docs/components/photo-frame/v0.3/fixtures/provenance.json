@@ -1,0 +1,66 @@
+{
+  "kind": "locally-authored-diagnostic-image-provenance",
+  "status": "Proposed fixture; owner adoption and real browser verification pending",
+  "component": "PhotoFrame",
+  "task": "odd/tasks/remaining-components.md T4 / issue #95 preparation",
+  "authorization": "Parent relayed the owner's separate permission to author a local diagnostic SVG/image resource; this is not approval of the fixture bytes or an implementation plan.",
+  "authoring": {
+    "method": "Authored directly as readable SVG markup by the W2 preparation coding assistant in this task",
+    "purpose": "Deterministic native img resource for cover-crop, intrinsic size, load, delayed response, source-change and failure checks after approval",
+    "externalInputs": "No photographs, stock assets, private blobs, image-generation service or copied third-party artwork",
+    "photographer": null,
+    "photographicRightsCertificate": null,
+    "licenseAssertion": null,
+    "copyrightOrRightsVerification": "Not performed; no photographer, attribution, photo quality or rights certification is claimed"
+  },
+  "asset": {
+    "path": "docs/components/photo-frame/v0.3/fixtures/diagnostic.svg",
+    "mediaType": "image/svg+xml",
+    "sha256": "sha256:1027f0f62e322fa73f9c7e6ce6960f1f00207c0c37ec592409fe073af1e00b59",
+    "width": 1000,
+    "height": 1000,
+    "viewBox": "0 0 1000 1000",
+    "scripts": false,
+    "externalResources": false,
+    "embeddedRasterData": false,
+    "labelFont": "Generic monospace within diagnostic image data only; no downloaded/embedded font and no component typography permission",
+    "renderingLimit": "Coordinates, palette and labels are fixed; glyph rasterization and native img/error rendering vary by browser/system font. Native decode and visual suitability have not been tested."
+  },
+  "palette": {
+    "source": "packages/tokens/src/theme.css",
+    "sourceSHA256": "sha256:62d10992ae654e34e83d9d11bcf35da29e56c905648015f2415ebdca59bf6ab8",
+    "resolvedPrimitiveValues": [
+      { "token": "--color-primitive-graphite-950", "value": "#141518" },
+      { "token": "--color-primitive-graphite-750", "value": "#2D2E33" },
+      { "token": "--color-primitive-neutral-200", "value": "#CCCCCC" },
+      { "token": "--color-primitive-white", "value": "#FFFFFF" },
+      { "token": "--color-primitive-red-neon", "value": "#FF0036" },
+      { "token": "--color-primitive-red-300", "value": "#FF6680" }
+    ],
+    "whyLiteralImageData": "An external SVG img does not inherit the page's token custom properties. Existing primitive values are pinned inside the self-contained diagnostic resource, not added as component style values or new tokens."
+  },
+  "diagnostics": {
+    "landmarks": "NORTH/TOP EDGE and SOUTH/BOTTOM EDGE bands; WEST/LEFT and EAST/RIGHT bands; Q1-Q4 quadrants; central crosshair",
+    "square": "1:1 source in square viewport retains the full grid; all five focal choices coincide because no cover overflow is expected.",
+    "portrait": "4:5 viewport crops horizontally: left/center/right choices expose different side landmarks. Top/bottom should coincide when there is no vertical overflow.",
+    "landscape": "4:3 viewport crops vertically: top/center/bottom choices expose different edge landmarks. Left/right should coincide when there is no horizontal overflow.",
+    "expectedVisibleSourceWindows": {
+      "square": { "width": 1000, "height": 1000 },
+      "portrait": { "width": 800, "height": 1000, "leftOrigins": { "left": 0, "center": 100, "right": 200 } },
+      "landscape": { "width": 1000, "height": 750, "topOrigins": { "top": 0, "center": 125, "bottom": 250 } }
+    },
+    "geometryStatus": "Analytical cover-fit expectations only, not observed browser measurements. Border, frame inset, rotation and caption are excluded from the viewport ratio.",
+    "informativeAltCandidate": "Diagnostic grid with labelled north, south, west and east edges, four numbered quadrants and a central crosshair.",
+    "captionCandidate": "Diagnostic crop fixture, not a photograph.",
+    "failureProcedure": "Parent-owned browser routing may return an explicit 404 for the same approved resource request. Do not replace the image with this diagnostic artwork as a runtime fallback.",
+    "loadingProcedure": "Parent-owned browser routing may hold and then release these exact bytes. Browser/native callback and reserved geometry checks belong to later approved runtime validation.",
+    "sourceChangeProcedure": "Use cache-distinct same-origin query URLs serving identical pinned bytes to test source-change routing; do not invent a second photography asset."
+  },
+  "observed": {
+    "svgXMLAndHashChecks": "Reported separately in writer handoff",
+    "browserDecode": null,
+    "capture": null,
+    "photoFrameRuntime": null,
+    "ownerAdoption": null
+  }
+}

@@ -1,0 +1,453 @@
+{
+  "widgets": [
+    {
+      "name": "title",
+      "selects": [],
+      "inputs": [],
+      "buttons": ["Set string"]
+    },
+    {
+      "name": "className",
+      "selects": [],
+      "inputs": [],
+      "buttons": ["Set string"]
+    },
+    {
+      "name": "dir",
+      "selects": [],
+      "inputs": [],
+      "buttons": ["Set string"]
+    },
+    {
+      "name": "id",
+      "selects": [],
+      "inputs": [],
+      "buttons": ["Set string"]
+    },
+    {
+      "name": "aria-describedby",
+      "selects": [],
+      "inputs": [],
+      "buttons": ["Set string"]
+    },
+    {
+      "name": "onFocus",
+      "selects": [],
+      "inputs": [],
+      "buttons": ["Set object"]
+    },
+    {
+      "name": "onBlur",
+      "selects": [],
+      "inputs": [],
+      "buttons": ["Set object"]
+    },
+    {
+      "name": "onKeyDown",
+      "selects": [],
+      "inputs": [],
+      "buttons": ["Set object"]
+    },
+    {
+      "name": "onClick",
+      "selects": [],
+      "inputs": [],
+      "buttons": ["Set object"]
+    },
+    {
+      "name": "children*",
+      "selects": [],
+      "inputs": [],
+      "buttons": []
+    },
+    {
+      "name": "tone",
+      "selects": [
+        {
+          "name": null,
+          "options": [
+            {
+              "value": "Choose option...",
+              "label": "Choose option...",
+              "selected": true
+            },
+            {
+              "value": "neutral",
+              "label": "neutral",
+              "selected": false
+            },
+            {
+              "value": "info",
+              "label": "info",
+              "selected": false
+            },
+            {
+              "value": "success",
+              "label": "success",
+              "selected": false
+            },
+            {
+              "value": "warning",
+              "label": "warning",
+              "selected": false
+            },
+            {
+              "value": "danger",
+              "label": "danger",
+              "selected": false
+            },
+            {
+              "value": "brand",
+              "label": "brand",
+              "selected": false
+            }
+          ]
+        }
+      ],
+      "inputs": [],
+      "buttons": []
+    },
+    {
+      "name": "size",
+      "selects": [
+        {
+          "name": null,
+          "options": [
+            {
+              "value": "Choose option...",
+              "label": "Choose option...",
+              "selected": true
+            },
+            {
+              "value": "sm",
+              "label": "sm",
+              "selected": false
+            },
+            {
+              "value": "md",
+              "label": "md",
+              "selected": false
+            }
+          ]
+        }
+      ],
+      "inputs": [],
+      "buttons": []
+    },
+    {
+      "name": "position",
+      "selects": [
+        {
+          "name": null,
+          "options": [
+            {
+              "value": "Choose option...",
+              "label": "Choose option...",
+              "selected": true
+            },
+            {
+              "value": "top-left",
+              "label": "top-left",
+              "selected": false
+            },
+            {
+              "value": "top-right",
+              "label": "top-right",
+              "selected": false
+            },
+            {
+              "value": "bottom-left",
+              "label": "bottom-left",
+              "selected": false
+            },
+            {
+              "value": "bottom-right",
+              "label": "bottom-right",
+              "selected": false
+            }
+          ]
+        }
+      ],
+      "inputs": [],
+      "buttons": []
+    },
+    {
+      "name": "variant",
+      "selects": [
+        {
+          "name": null,
+          "options": [
+            {
+              "value": "Choose option...",
+              "label": "Choose option...",
+              "selected": true
+            },
+            {
+              "value": "dot",
+              "label": "dot",
+              "selected": false
+            },
+            {
+              "value": "count",
+              "label": "count",
+              "selected": false
+            },
+            {
+              "value": "icon",
+              "label": "icon",
+              "selected": false
+            }
+          ]
+        }
+      ],
+      "inputs": [],
+      "buttons": []
+    },
+    {
+      "name": "count",
+      "selects": [],
+      "inputs": [],
+      "buttons": ["Set number"]
+    },
+    {
+      "name": "max",
+      "selects": [],
+      "inputs": [],
+      "buttons": ["Set number"]
+    },
+    {
+      "name": "badgeIcon",
+      "selects": [
+        {
+          "name": null,
+          "options": [
+            {
+              "value": "Choose option...",
+              "label": "Choose option...",
+              "selected": true
+            },
+            {
+              "value": "menu",
+              "label": "menu",
+              "selected": false
+            },
+            {
+              "value": "search",
+              "label": "search",
+              "selected": false
+            },
+            {
+              "value": "github",
+              "label": "github",
+              "selected": false
+            },
+            {
+              "value": "youtube",
+              "label": "youtube",
+              "selected": false
+            },
+            {
+              "value": "twitch",
+              "label": "twitch",
+              "selected": false
+            },
+            {
+              "value": "x",
+              "label": "x",
+              "selected": false
+            },
+            {
+              "value": "linkedin",
+              "label": "linkedin",
+              "selected": false
+            },
+            {
+              "value": "instagram",
+              "label": "instagram",
+              "selected": false
+            },
+            {
+              "value": "arrow-right",
+              "label": "arrow-right",
+              "selected": false
+            },
+            {
+              "value": "arrow-up-right",
+              "label": "arrow-up-right",
+              "selected": false
+            },
+            {
+              "value": "arrow-down",
+              "label": "arrow-down",
+              "selected": false
+            },
+            {
+              "value": "play",
+              "label": "play",
+              "selected": false
+            },
+            {
+              "value": "users",
+              "label": "users",
+              "selected": false
+            },
+            {
+              "value": "radio",
+              "label": "radio",
+              "selected": false
+            },
+            {
+              "value": "terminal",
+              "label": "terminal",
+              "selected": false
+            },
+            {
+              "value": "hammer",
+              "label": "hammer",
+              "selected": false
+            },
+            {
+              "value": "compass",
+              "label": "compass",
+              "selected": false
+            },
+            {
+              "value": "alert",
+              "label": "alert",
+              "selected": false
+            },
+            {
+              "value": "close",
+              "label": "close",
+              "selected": false
+            },
+            {
+              "value": "user",
+              "label": "user",
+              "selected": false
+            },
+            {
+              "value": "bookmark",
+              "label": "bookmark",
+              "selected": false
+            },
+            {
+              "value": "bell",
+              "label": "bell",
+              "selected": false
+            },
+            {
+              "value": "settings",
+              "label": "settings",
+              "selected": false
+            },
+            {
+              "value": "log-out",
+              "label": "log-out",
+              "selected": false
+            },
+            {
+              "value": "chevron-down",
+              "label": "chevron-down",
+              "selected": false
+            },
+            {
+              "value": "calendar",
+              "label": "calendar",
+              "selected": false
+            },
+            {
+              "value": "inbox",
+              "label": "inbox",
+              "selected": false
+            },
+            {
+              "value": "lightbulb",
+              "label": "lightbulb",
+              "selected": false
+            },
+            {
+              "value": "shuffle",
+              "label": "shuffle",
+              "selected": false
+            },
+            {
+              "value": "pause",
+              "label": "pause",
+              "selected": false
+            },
+            {
+              "value": "pencil",
+              "label": "pencil",
+              "selected": false
+            },
+            {
+              "value": "send",
+              "label": "send",
+              "selected": false
+            },
+            {
+              "value": "grip",
+              "label": "grip",
+              "selected": false
+            },
+            {
+              "value": "upload",
+              "label": "upload",
+              "selected": false
+            },
+            {
+              "value": "flask",
+              "label": "flask",
+              "selected": false
+            },
+            {
+              "value": "plug",
+              "label": "plug",
+              "selected": false
+            },
+            {
+              "value": "bot",
+              "label": "bot",
+              "selected": false
+            },
+            {
+              "value": "trash",
+              "label": "trash",
+              "selected": false
+            },
+            {
+              "value": "copy",
+              "label": "copy",
+              "selected": false
+            },
+            {
+              "value": "check",
+              "label": "check",
+              "selected": false
+            },
+            {
+              "value": "minus",
+              "label": "minus",
+              "selected": false
+            },
+            {
+              "value": "plus",
+              "label": "plus",
+              "selected": false
+            }
+          ]
+        }
+      ],
+      "inputs": [],
+      "buttons": []
+    }
+  ],
+  "result": {
+    "variant": "count",
+    "position": "top-right",
+    "text": "9+",
+    "classes": "absolute grid place-items-center rounded-full min-h-4.5 min-w-4.5 -top-1 -right-1 box-border pointer-events-none select-none border-[length:var(--border-width)] border-solid border-border-hairline bg-[image:var(--gradient-sheen)] outline-[length:var(--focus-width)] outline-solid outline-bg-surface outline-offset-0 bg-status-danger text-fg-on-status w-auto px-1 py-0 whitespace-nowrap font-sans text-label-default tabular-nums shadow-[var(--shadow-edge),var(--shadow-elev-1)]",
+    "sameChild": true
+  }
+}

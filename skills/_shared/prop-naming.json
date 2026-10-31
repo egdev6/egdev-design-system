@@ -382,7 +382,7 @@
         "source": {
           "path": "packages/ui/src/atoms/avatar/types.ts",
           "symbol": "AvatarProps",
-          "revision": "sha256:b0a6b163639218e7177cd7254c78a4724ef73658ed0861d18cc96e5e6735c3cb"
+          "revision": "sha256:8ffd965e1e0baf15dbc4495f1780b62a9f5a654738ff78ad88f0775e16d0212b"
         }
       },
       {
@@ -523,6 +523,16 @@
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
           "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
+      },
+      {
+        "component": "Indicator",
+        "type": "IndicatorSize ('sm' | 'md'; marker only)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/indicator/types.ts",
+          "symbol": "IndicatorProps",
+          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
         }
       }
     ]
@@ -751,6 +761,26 @@
           "symbol": "TabsProps",
           "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
+      },
+      {
+        "component": "Indicator",
+        "type": "IndicatorVariant ('dot' | 'count' | 'icon')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/indicator/types.ts",
+          "symbol": "IndicatorProps",
+          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+        }
+      },
+      {
+        "component": "Panel",
+        "type": "PanelVariant ('default' | 'banded')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/panel/types.ts",
+          "symbol": "PanelProps",
+          "revision": "sha256:5aa2753d3af82b96e29f8df01eda0af56e750d5f4b7d321664a74bc4c4432cd8"
+        }
       }
     ]
   },
@@ -918,6 +948,26 @@
           "symbol": "FieldMessageProps",
           "revision": "sha256:e5c3ba8c39dbd45a5aa7e4701ddf65b82e9c85284b15bd0a8d09a211da6f93fe"
         }
+      },
+      {
+        "component": "Indicator",
+        "type": "IndicatorTone ('neutral' | 'info' | 'success' | 'warning' | 'danger' | 'brand')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/indicator/types.ts",
+          "symbol": "IndicatorProps",
+          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+        }
+      },
+      {
+        "component": "Panel",
+        "type": "PanelTone ('surface-1' | 'overlay' | 'inherit')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/panel/types.ts",
+          "symbol": "PanelProps",
+          "revision": "sha256:5aa2753d3af82b96e29f8df01eda0af56e750d5f4b7d321664a74bc4c4432cd8"
+        }
       }
     ]
   },
@@ -1070,7 +1120,7 @@
         "source": {
           "path": "packages/ui/src/atoms/avatar/types.ts",
           "symbol": "AvatarProps",
-          "revision": "sha256:b0a6b163639218e7177cd7254c78a4724ef73658ed0861d18cc96e5e6735c3cb"
+          "revision": "sha256:8ffd965e1e0baf15dbc4495f1780b62a9f5a654738ff78ad88f0775e16d0212b"
         }
       },
       {
@@ -1534,7 +1584,17 @@
         "source": {
           "path": "packages/ui/src/atoms/avatar/types.ts",
           "symbol": "AvatarProps",
-          "revision": "sha256:b0a6b163639218e7177cd7254c78a4724ef73658ed0861d18cc96e5e6735c3cb"
+          "revision": "sha256:8ffd965e1e0baf15dbc4495f1780b62a9f5a654738ff78ad88f0775e16d0212b"
+        }
+      },
+      {
+        "component": "Indicator",
+        "type": "IconName (icon branch only)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/indicator/types.ts",
+          "symbol": "IndicatorProps",
+          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
         }
       }
     ]
@@ -1561,7 +1621,7 @@
         "source": {
           "path": "packages/ui/src/atoms/avatar/types.ts",
           "symbol": "AvatarProps",
-          "revision": "sha256:b0a6b163639218e7177cd7254c78a4724ef73658ed0861d18cc96e5e6735c3cb"
+          "revision": "sha256:8ffd965e1e0baf15dbc4495f1780b62a9f5a654738ff78ad88f0775e16d0212b"
         }
       }
     ]
@@ -3373,6 +3433,16 @@
           "symbol": "MenuProps",
           "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
+      },
+      {
+        "component": "Collapsible",
+        "type": "boolean (controlled branch; onOpenChange required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/collapsible/types.ts",
+          "symbol": "CollapsibleProps",
+          "revision": "sha256:10240b3b86416357ccf485e8a095e34c20e3fd411a82b4c7e2dc7d2bad1f0438"
+        }
       }
     ]
   },
@@ -3440,6 +3510,16 @@
           "symbol": "MenuProps",
           "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
+      },
+      {
+        "component": "Collapsible",
+        "type": "boolean (uncontrolled branch only; default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/collapsible/types.ts",
+          "symbol": "CollapsibleProps",
+          "revision": "sha256:10240b3b86416357ccf485e8a095e34c20e3fd411a82b4c7e2dc7d2bad1f0438"
+        }
       }
     ]
   },
@@ -3506,6 +3586,16 @@
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuProps",
           "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
+        }
+      },
+      {
+        "component": "Collapsible",
+        "type": "(open: boolean) => void (required controlled; optional uncontrolled)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/collapsible/types.ts",
+          "symbol": "CollapsibleProps",
+          "revision": "sha256:10240b3b86416357ccf485e8a095e34c20e3fd411a82b4c7e2dc7d2bad1f0438"
         }
       }
     ]
@@ -5168,6 +5258,33 @@
     ]
   },
   {
+    "id": "anchor-corner-position",
+    "name": "position",
+    "meaning": "Physical corner of a non-floating anchor where a passive supplementary marker is placed.",
+    "whenToUse": "A passive anchored marker selects top-left, top-right, bottom-left or bottom-right without automatic RTL mirroring; Indicator uses IndicatorPosition with default top-right.",
+    "avoid": "Floating content side or collision handling (use floating-side/side), logical start/end placement, automatic RTL flipping, icon placement beside a label, or positioning an interactive overlay.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/remaining-components/v0.1/ui-first-wave-owner-approvals.md",
+      "scope": "convention:anchor-corner-position",
+      "contentHash": "sha256:26f3ae6a441f8bf0776bd794896e38d2ec3ce7b207dd7fe2e577c0c140a5e13f"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Indicator",
+        "type": "IndicatorPosition ('top-left' | 'top-right' | 'bottom-left' | 'bottom-right')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/indicator/types.ts",
+          "symbol": "IndicatorProps",
+          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+        }
+      }
+    ]
+  },
+  {
     "id": "field-guidance-tone",
     "name": "hintTone",
     "meaning": "Consumer-selected semantic treatment of a Field hint subordinate to the existing error-message precedence and invalidity contract.",
@@ -5186,6 +5303,60 @@
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
           "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
+        }
+      }
+    ]
+  },
+  {
+    "id": "indicator-count",
+    "name": "count",
+    "meaning": "Supplementary item total represented by a passive marker anchored to consumer content.",
+    "whenToUse": "An anchored count marker displays a positive number satisfying Number.isSafeInteger. Indicator suppresses only the marker for zero (including -0), negative, fractional, non-finite, unsafe or non-number input, preserving its anchor and children.",
+    "avoid": "Primary measurements or selection values (use primary-value/value), text-length counters, count coercion or rounding, automatic live announcements, or treating the decorative marker as the accessible count description.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/remaining-components/v0.1/ui-first-wave-owner-approvals.md",
+      "scope": "convention:indicator-count",
+      "contentHash": "sha256:85f28d95c3bd673ec6628e13b6094ae89f0edaa83d84125d7fa430578ac29ea3"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Indicator",
+        "type": "number (count branch only; positive safe integer)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/indicator/types.ts",
+          "symbol": "IndicatorProps",
+          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+        }
+      }
+    ]
+  },
+  {
+    "id": "indicator-count-cap",
+    "name": "max",
+    "meaning": "Display overflow threshold for a passive supplementary item-count marker, not a validation limit on the underlying count.",
+    "whenToUse": "A count marker displays the actual decimal count through a positive safe-integer threshold and the decimal threshold followed by + above it. Indicator defaults to 99 and falls back to 99 for zero, negative, fractional, non-finite, unsafe or non-number max input.",
+    "avoid": "Rejecting or clamping valid counts above the display threshold, data-storage or validation limits, primary numeric bounds, parsing or rounding invalid thresholds, or changing the underlying accessible count wording.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/remaining-components/v0.1/ui-first-wave-owner-approvals.md",
+      "scope": "convention:indicator-count-cap",
+      "contentHash": "sha256:a2efb834d4b4185b2e0b41dc8e6e6a051731570603b415e3c850d27d83f8d241"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Indicator",
+        "type": "number (count branch only; display threshold, default 99)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/indicator/types.ts",
+          "symbol": "IndicatorProps",
+          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
         }
       }
     ]

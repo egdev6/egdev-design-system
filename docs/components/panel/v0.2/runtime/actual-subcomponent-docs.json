@@ -1,0 +1,35 @@
+[
+  {
+    "name": "panelHeader",
+    "rows": [
+      ["title", "string", "-"],
+      ["className", "string", "-"],
+      ["dir", "string", "-"],
+      ["id", "string", "-"],
+      ["aria-describedby", "Identifies the element (or elements) that describes the object.string", "-"],
+      ["children*", "Meaningful supplied header content. Omit the part itself when it is not needed.ReactNode", "-"]
+    ]
+  },
+  {
+    "name": "panelBody",
+    "rows": [
+      ["title", "string", "-"],
+      ["className", "string", "-"],
+      ["dir", "string", "-"],
+      ["id", "string", "-"],
+      ["aria-describedby", "Identifies the element (or elements) that describes the object.string", "-"],
+      ["children*", "Free flow content and independently labelled consumer controls.ReactNode", "-"]
+    ]
+  },
+  {
+    "name": "panelFooter",
+    "rows": [
+      ["title", "string", "-"],
+      ["className", "string", "-"],
+      ["dir", "string", "-"],
+      ["id", "string", "-"],
+      ["aria-describedby", "Identifies the element (or elements) that describes the object.string", "-"],
+      ["children*", "Supplied metadata and related utility controls. Omit the part when absent.ReactNode", "-"]
+    ]
+  }
+]

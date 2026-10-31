@@ -1,0 +1,74 @@
+[
+  {
+    "id": "molecules-collapsible--docs",
+    "docgen": {
+      "root:Collapsible": {
+        "onClick": null,
+        "onKeyDown": null,
+        "onFocus": null,
+        "onBlur": null
+      },
+      "trigger:CollapsibleTrigger": {
+        "onClick": "MouseEventHandler<HTMLButtonElement>",
+        "onKeyDown": "KeyboardEventHandler<HTMLButtonElement>",
+        "onFocus": "FocusEventHandler<HTMLButtonElement>",
+        "onBlur": "FocusEventHandler<HTMLButtonElement>"
+      },
+      "content:CollapsibleContent": {
+        "onClick": null,
+        "onKeyDown": null,
+        "onFocus": null,
+        "onBlur": null
+      }
+    },
+    "visible": {
+      "Collapsible": [],
+      "trigger": [
+        "onFocus | FocusEventHandler<HTMLButtonElement>",
+        "onBlur | FocusEventHandler<HTMLButtonElement>",
+        "onKeyDown | KeyboardEventHandler<HTMLButtonElement>",
+        "onClick | MouseEventHandler<HTMLButtonElement>"
+      ],
+      "content": []
+    },
+    "tabs": null,
+    "tabButtons": ["Collapsible", "trigger", "content"]
+  },
+  {
+    "id": "molecules-popover--docs",
+    "docgen": {
+      "root:Popover": {
+        "onClick": null,
+        "onKeyDown": null,
+        "onFocus": null,
+        "onBlur": null
+      },
+      "popoverTrigger:PopoverTrigger": {
+        "onClick": "MouseEventHandler<HTMLButtonElement>",
+        "onKeyDown": null,
+        "onFocus": null,
+        "onBlur": null
+      },
+      "popoverContent:PopoverContent": {
+        "onClick": "MouseEventHandler<HTMLDivElement>",
+        "onKeyDown": null,
+        "onFocus": null,
+        "onBlur": null
+      },
+      "popoverClose:PopoverClose": {
+        "onClick": "MouseEventHandler<HTMLButtonElement>",
+        "onKeyDown": null,
+        "onFocus": null,
+        "onBlur": null
+      }
+    },
+    "visible": {
+      "Popover": [],
+      "popoverTrigger": ["onClick | MouseEventHandler<HTMLButtonElement>"],
+      "popoverContent": ["onClick | MouseEventHandler<HTMLDivElement>"],
+      "popoverClose": ["onClick | MouseEventHandler<HTMLButtonElement>"]
+    },
+    "tabs": null,
+    "tabButtons": ["Popover", "popoverTrigger", "popoverContent", "popoverClose"]
+  }
+]

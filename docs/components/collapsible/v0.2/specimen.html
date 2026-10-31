@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Collapsible v0.2 — static design proposal</title>
+  <link rel="stylesheet" href="/tokens.css">
+  <style>
+    /* Local design specimen only. Not a runtime component stylesheet or behavior demo.
+       Parent supplies compiled canonical /tokens.css; no copied token definitions.
+       Caret geometry is verbatim iconPaths['chevron-down'], Foundation/Lucide provenance. */
+    * { box-sizing: border-box; }
+    body {
+      margin: var(--space-0);
+      padding: var(--gutter);
+      background: var(--color-bg-canvas);
+      color: var(--color-fg-default);
+      font-family: var(--font-sans);
+      font-size: var(--text-body-default);
+      font-weight: var(--text-body-default--font-weight);
+      line-height: var(--text-body-default--line-height);
+      letter-spacing: var(--text-body-default--letter-spacing);
+    }
+    .board { max-width: var(--content-max); margin-inline: auto; display: grid; gap: var(--space-8); }
+    .intro, .scenario, .stack { display: grid; gap: var(--space-4); }
+    .title {
+      margin: var(--space-0);
+      font-size: var(--text-heading-small);
+      line-height: var(--text-heading-small--line-height);
+      font-weight: var(--text-heading-small--font-weight);
+      letter-spacing: var(--text-heading-small--letter-spacing);
+    }
+    .note { margin: var(--space-0); color: var(--color-fg-muted); }
+    .caption {
+      margin: var(--space-0);
+      color: var(--color-fg-secondary);
+      font-size: var(--text-label-default);
+      line-height: var(--text-label-default--line-height);
+      font-weight: var(--text-label-default--font-weight);
+      letter-spacing: var(--text-label-default--letter-spacing);
+    }
+    .frame {
+      background-color: var(--color-surface-1);
+      background-image: var(--gradient-sheen);
+      border: var(--border-width) solid var(--color-border-hairline);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-edge);
+      overflow: visible;
+    }
+    .trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      min-height: var(--space-12);
+      margin: var(--space-0);
+      /* Compensate for the Button recipe's transparent hairline in this static reset. */
+      padding-block: calc(var(--space-3) + var(--border-width));
+      padding-inline: calc(var(--space-1) * 5.5 + var(--border-width));
+      gap: calc(var(--space-1) * 2.5);
+      border: none;
+      border-radius: var(--radius-md);
+      background: none;
+      box-shadow: none;
+      color: var(--color-fg-secondary);
+      text-align: start;
+      font-family: var(--font-sans);
+      font-size: var(--text-cta-label);
+      font-weight: var(--text-cta-label--font-weight);
+      line-height: var(--text-cta-label--line-height);
+      letter-spacing: var(--text-cta-label--letter-spacing);
+      white-space: normal;
+    }
+    .label { min-width: var(--space-0); overflow-wrap: anywhere; }
+    .caret {
+      display: block;
+      flex-shrink: 0;
+      width: var(--space-4);
+      height: var(--space-4);
+      fill: none;
+      stroke: currentColor;
+      stroke-width: var(--icon-stroke);
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform var(--duration-fast) var(--ease-out);
+    }
+    .caret[data-state="open"] { transform: rotate(180deg); }
+    .content {
+      padding: var(--space-4);
+      border-top: var(--border-width) solid var(--color-border-hairline);
+    }
+    .copy { margin: var(--space-0); }
+    .trigger[data-illustrated-focus="true"], .trigger:focus-visible {
+      outline: none;
+      box-shadow: var(--shadow-focus);
+    }
+    .trigger:disabled { opacity: .45; pointer-events: none; cursor: not-allowed; }
+    .field { display: grid; gap: var(--space-2); margin-top: var(--space-4); }
+    .input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      border: var(--border-width) solid var(--color-border-control);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-0);
+      box-shadow: var(--shadow-well);
+      color: var(--color-fg-default);
+      font: inherit;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .caret { transform: none; transition: none; animation: none; }
+      .caret[data-state="open"] { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <header class="intro">
+      <h1 class="title">Collapsible / v0.2 Draft</h1>
+      <p class="note">Static design illustrations only. All examples are inert: no toggling, keyboard engine, focus script or production React. Open, closed, disabled and focus-ring states are authored, not observed runtime behavior.</p>
+      <p class="note">Proposed Surface frame, ghost/md trigger recipe and token content separator. Parent must supply canonical compiled /tokens.css and record actual fonts and browser conditions. No visual adoption or accessibility validation is claimed.</p>
+    </header>
+
+    <section class="scenario" id="independent" aria-labelledby="independent-title">
+      <h2 class="title" id="independent-title">VIS-01 · Independent disclosures</h2>
+      <p class="caption">Closed then open. History has its own body; opening it does not require consumption to close.</p>
+      <div class="stack" inert>
+        <div class="frame eg-collapsible" data-state="closed">
+          <button class="trigger eg-collapsible__trigger" type="button" aria-expanded="false" aria-controls="illustration-consumption-closed" data-state="closed">
+            <span class="label">Consumption rhythm</span>
+            <svg class="caret" data-state="closed" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg>
+          </button>
+          <div id="illustration-consumption-closed" hidden></div>
+        </div>
+        <div class="frame eg-collapsible" data-state="open">
+          <button class="trigger eg-collapsible__trigger" type="button" aria-expanded="true" aria-controls="illustration-history-open" data-state="open">
+            <span class="label">History</span>
+            <svg class="caret" data-state="open" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg>
+          </button>
+          <div class="content eg-collapsible__content" id="illustration-history-open" data-state="open">
+            <p class="copy">Review earlier measurements without leaving this section.</p>
+          </div>
+        </div>
+      </div>
+      <p class="caption">Both open · independent state, not an exclusive accordion.</p>
+      <div class="stack" inert>
+        <div class="frame eg-collapsible" data-state="open">
+          <button class="trigger eg-collapsible__trigger" type="button" aria-expanded="true" aria-controls="illustration-consumption-open" data-state="open">
+            <span class="label">Consumption rhythm</span>
+            <svg class="caret" data-state="open" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg>
+          </button>
+          <div class="content eg-collapsible__content" id="illustration-consumption-open" data-state="open"><p class="copy">Compare the current measurement with the previous interval.</p></div>
+        </div>
+        <div class="frame eg-collapsible" data-state="open">
+          <button class="trigger eg-collapsible__trigger" type="button" aria-expanded="true" aria-controls="illustration-history-both" data-state="open">
+            <span class="label">History</span>
+            <svg class="caret" data-state="open" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg>
+          </button>
+          <div class="content eg-collapsible__content" id="illustration-history-both" data-state="open"><p class="copy">Previous measurements remain available alongside the current view.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scenario" id="states" aria-labelledby="states-title">
+      <h2 class="title" id="states-title">VIS-02 · Focus and disabled illustrations</h2>
+      <p class="caption">Authored focus ring, not actual browser focus. Disabled affects only the trigger; the open body stays readable.</p>
+      <div class="stack" inert>
+        <div class="frame eg-collapsible" data-state="closed">
+          <button class="trigger eg-collapsible__trigger" data-illustrated-focus="true" type="button" aria-expanded="false" aria-controls="illustration-focus" data-state="closed">
+            <span class="label">Measurement details</span>
+            <svg class="caret" data-state="closed" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg>
+          </button>
+          <div id="illustration-focus" hidden></div>
+        </div>
+        <div class="frame eg-collapsible" data-state="closed" data-disabled>
+          <button class="trigger eg-collapsible__trigger" type="button" disabled aria-expanded="false" aria-controls="illustration-disabled-closed" data-state="closed" data-disabled>
+            <span class="label">Unavailable section</span>
+            <svg class="caret" data-state="closed" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg>
+          </button>
+          <div id="illustration-disabled-closed" hidden></div>
+        </div>
+        <div class="frame eg-collapsible" data-state="open" data-disabled>
+          <button class="trigger eg-collapsible__trigger" type="button" disabled aria-expanded="true" aria-controls="illustration-disabled-open" data-state="open" data-disabled>
+            <span class="label">Pinned open for review</span>
+            <svg class="caret" data-state="open" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg>
+          </button>
+          <div class="content eg-collapsible__content" id="illustration-disabled-open" data-state="open">
+            <p class="copy">Root disabled does not disable body controls. This entire static preview is inert solely to prevent it being mistaken for a behavior demo.</p>
+            <label class="field"><span class="caption">Review note</span><input class="input" value="Body content remains readable" readonly></label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="scenario" id="long-label" aria-labelledby="long-label-title">
+      <h2 class="title" id="long-label-title">VIS-03 · Narrow-layout label</h2>
+      <p class="caption">Capture at the proposed narrow viewport and browser zoom. The label wraps; the decorative caret keeps its size.</p>
+      <div class="frame eg-collapsible" data-state="open" inert>
+        <button class="trigger eg-collapsible__trigger" type="button" aria-expanded="true" aria-controls="illustration-long" data-state="open">
+          <span class="label">Consumption rhythm and measurement history for the current reporting interval</span>
+          <svg class="caret" data-state="open" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"></path></svg>
+        </button>
+        <div class="content eg-collapsible__content" id="illustration-long" data-state="open"><p class="copy">The separator and body padding remain token-backed when the label wraps.</p></div>
+      </div>
+    </section>
+
+    <footer class="intro">
+      <p class="caption">VIS-04 · Reduced motion request</p>
+      <p class="note">Capture the independent examples again with prefers-reduced-motion: reduce. All carets remain unrotated and transitions are removed. These static examples cannot verify runtime state, IDs, focus, presence, callback counts, disabled activation or assistive-technology output.</p>
+    </footer>
+  </main>
+</body>
+</html>

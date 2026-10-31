@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GaugeGroup v0.1 — supplemental static preparation specimen</title>
+  <link rel="stylesheet" href="/tokens.css">
+  <style>
+    /* Static endpoint silhouettes only, NOT the production conic/mask engine.
+       Token-backed borders illustrate 0/100 and the approved slot dimensions.
+       They cannot establish partial-arc fidelity or +0.5px mask smoothing.
+       No Gauge exception or new runtime recipe is granted by this specimen. */
+    * { box-sizing: border-box; }
+    body {
+      margin: var(--space-0); padding: var(--gutter);
+      background: var(--color-bg-canvas); color: var(--color-fg-default);
+      font-family: var(--font-sans); font-size: var(--text-body-default);
+      line-height: var(--text-body-default--line-height);
+      font-weight: var(--text-body-default--font-weight);
+      letter-spacing: var(--text-body-default--letter-spacing);
+    }
+    .board { display: grid; gap: var(--space-8); max-width: var(--content-max); margin-inline: auto; }
+    .scenario, .intro { display: grid; gap: var(--space-3); }
+    .title {
+      margin: var(--space-0); font-size: var(--text-heading-small);
+      line-height: var(--text-heading-small--line-height);
+      font-weight: var(--text-heading-small--font-weight);
+      letter-spacing: var(--text-heading-small--letter-spacing);
+    }
+    .note { margin: var(--space-0); color: var(--color-fg-muted); }
+    .caption {
+      margin: var(--space-0); color: var(--color-fg-secondary);
+      font-size: var(--text-label-default); line-height: var(--text-label-default--line-height);
+      font-weight: var(--text-label-default--font-weight);
+      letter-spacing: var(--text-label-default--letter-spacing);
+    }
+    .group { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--space-3); max-width: 100%; }
+    .diagram { position: relative; flex-shrink: 0; padding: var(--space-0); border: none; border-radius: var(--radius-full); background: none; box-shadow: none; }
+    .sm { width: var(--space-14); height: var(--space-14); }
+    .md { width: var(--space-20); height: var(--space-20); }
+    .lg { width: var(--space-24); height: var(--space-24); }
+    .ring { position: absolute; border: var(--space-1) solid var(--color-fg-brand-default); border-radius: var(--radius-full); }
+    .slot-0 { inset: var(--space-0); }
+    .slot-1 { inset: calc(var(--space-1) + var(--space-1)); }
+    .slot-2 { inset: calc((var(--space-1) + var(--space-1)) * 2); }
+    .ring[data-state="warning"] { border-color: var(--color-status-warning); }
+    .ring[data-state="critical"] { border-color: var(--color-status-danger); }
+    .ring[data-state="muted"] { border-color: var(--color-fg-muted); }
+    .ring[data-endpoint="0"] { border-color: var(--color-fg-default); opacity: .1; }
+    .center { position: absolute; display: grid; place-items: center; font-size: var(--text-label-default); line-height: var(--text-label-default--line-height); }
+    .count-2 .center { inset: var(--space-3); }
+    .count-3 .center { inset: var(--space-5); }
+    .readings { display: grid; gap: var(--space-2); margin: var(--space-0); padding-inline-start: var(--space-6); min-width: var(--space-0); max-width: 100%; overflow-wrap: anywhere; }
+    .reading { font-size: var(--text-label-default); line-height: var(--text-body-default--line-height); }
+    .value { font-weight: var(--text-label-default--font-weight); }
+    .cue { display: inline-flex; align-items: center; gap: var(--space-2); }
+    .cue-icon { width: var(--space-4); height: var(--space-4); flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 2; }
+    .unavailable { color: var(--color-fg-muted); }
+    .hosts { display: flex; flex-wrap: wrap; gap: var(--space-4); }
+    .host { padding: var(--space-4); background: var(--color-bg-canvas); }
+    .host-raised { background: var(--color-surface-2); }
+    /* No transitions/animations/transforms: reduced motion is inherently static. */
+  </style>
+</head>
+<body>
+  <main class="board">
+    <header class="intro">
+      <h1 class="title">GaugeGroup · approved v0.1 intent</h1>
+      <p class="note">Supplemental static preparation specimen, not a new full-contract draft. Existing approved VIS-01/02 retain their scopes. These authored examples are not React, a production ring engine, browser evidence or owner adoption of a new image.</p>
+      <p class="note">Border silhouettes illustrate empty/full endpoints only; no fractional-value geometry or mask smoothing is demonstrated. Every magnitude has its own visible reading. No total, aggregate state, action or fixed logo.</p>
+    </header>
+
+    <section class="scenario" id="two-rings" aria-labelledby="two-title">
+      <h2 class="title" id="two-title">PREP-01 · Two independent readings</h2>
+      <p class="caption">md · 80px diagram · shared token stroke/gap · empty outer and full inner, both normal</p>
+      <div class="group eg-gauge-group" role="group" aria-label="Provider A usage limits">
+        <div class="diagram md count-2" aria-hidden="true">
+          <span class="ring slot-0" data-state="normal" data-endpoint="0"></span>
+          <span class="ring slot-1" data-state="normal" data-endpoint="100"></span>
+        </div>
+        <ol class="readings">
+          <li class="reading" data-state="normal"><span>Outer · Provider A session quota</span><div class="value" role="meter" aria-label="Provider A session quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 / 100"><span aria-hidden="true">0 / 100</span></div></li>
+          <li class="reading" data-state="normal"><span>Inner · Provider A weekly quota</span><div class="value" role="meter" aria-label="Provider A weekly quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-valuetext="100 / 100"><span aria-hidden="true">100 / 100</span></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="scenario" id="three-rings" aria-labelledby="three-title">
+      <h2 class="title" id="three-title">PREP-02 · Three stable slots</h2>
+      <p class="caption">sm · 56px diagram · diameters 56/40/24px · 16px innermost hole; essential copy stays outside</p>
+      <div class="group eg-gauge-group" role="group" aria-label="Provider B usage limits">
+        <div class="diagram sm count-3" aria-hidden="true">
+          <span class="ring slot-0" data-state="normal" data-endpoint="0"></span>
+          <span class="ring slot-1" data-state="normal" data-endpoint="100"></span>
+          <span class="ring slot-2" data-state="normal" data-endpoint="0"></span>
+        </div>
+        <ol class="readings">
+          <li class="reading" data-state="normal"><span>Outer · Provider B session quota</span><div class="value" role="meter" aria-label="Provider B session quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 / 100"><span aria-hidden="true">0 / 100</span></div></li>
+          <li class="reading" data-state="normal"><span>Middle · Provider B weekly quota</span><div class="value" role="meter" aria-label="Provider B weekly quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-valuetext="100 / 100"><span aria-hidden="true">100 / 100</span></div></li>
+          <li class="reading" data-state="normal"><span>Inner · Provider B model quota</span><div class="value" role="meter" aria-label="Provider B model quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 / 100"><span aria-hidden="true">0 / 100</span></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="scenario" id="mixed-unavailable" aria-labelledby="mixed-title">
+      <h2 class="title" id="mixed-title">PREP-03 · Missing middle reading</h2>
+      <p class="caption">lg · 96px diagram · no middle track or arc; inner slot stays inset · decorative C repeats the group identity</p>
+      <div class="group eg-gauge-group" role="group" aria-label="Provider C usage limits">
+        <div class="diagram lg count-3" aria-hidden="true">
+          <span class="ring slot-0" data-state="critical" data-endpoint="100"></span>
+          <span class="ring slot-2" data-state="muted" data-endpoint="0"></span>
+          <span class="center">C</span>
+        </div>
+        <ol class="readings">
+          <li class="reading" data-state="critical"><span>Outer · Provider C session quota</span><div class="value" role="meter" aria-label="Provider C session quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-valuetext="100 / 100" aria-describedby="prep-critical"><span aria-hidden="true">100 / 100</span></div><span class="cue"><svg class="cue-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 5v7m0 3v1"></path></svg><span id="prep-critical">Access restricted by administrator</span></span></li>
+          <li class="reading"><span>Middle · Provider C weekly quota</span><div class="unavailable">Data unavailable</div></li>
+          <li class="reading" data-state="muted"><span>Inner · Provider C model quota</span><div class="value" role="meter" aria-label="Provider C model quota" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 / 100" aria-describedby="prep-muted"><span aria-hidden="true">0 / 100</span></div><span class="cue"><svg class="cue-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20ZM7 12h10"></path></svg><span id="prep-muted">Reference reading; not the active plan</span></span></li>
+        </ol>
+      </div>
+      <p class="note">Non-finite input is described as unavailable, not drawn as zero. These authored conditions are not inferred from endpoint values.</p>
+    </section>
+
+    <section class="scenario" id="all-unavailable" aria-labelledby="all-title">
+      <h2 class="title" id="all-title">PREP-04 · All unavailable</h2>
+      <p class="caption">Retained md diagram footprint; no meters, tracks, arcs or center. The blank diagram area is intentional.</p>
+      <div class="group eg-gauge-group" role="group" aria-label="Provider D usage limits">
+        <div class="diagram md count-2" aria-hidden="true"></div>
+        <ol class="readings">
+          <li class="reading"><span>Outer · Provider D session quota</span><div class="unavailable">Data unavailable</div></li>
+          <li class="reading"><span>Inner · Provider D weekly quota</span><div class="unavailable">Sensor offline</div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="scenario" id="transparent-hosts" aria-labelledby="hosts-title">
+      <h2 class="title" id="hosts-title">PREP-05 · Diagnostic host patches</h2>
+      <p class="caption">Identical endpoint silhouettes on canvas and surface-2. These solid color patches are diagnostic hosts, not new Group Material cards.</p>
+      <div class="hosts">
+        <div class="host"><div class="diagram md count-2" aria-hidden="true"><span class="ring slot-0" data-state="normal" data-endpoint="0"></span><span class="ring slot-1" data-state="normal" data-endpoint="100"></span></div><p class="caption">Canvas · same two readings as PREP-01</p></div>
+        <div class="host host-raised"><div class="diagram md count-2" aria-hidden="true"><span class="ring slot-0" data-state="normal" data-endpoint="0"></span><span class="ring slot-1" data-state="normal" data-endpoint="100"></span></div><p class="caption">Surface-2 · same two readings as PREP-01</p></div>
+      </div>
+    </section>
+
+    <section class="scenario" id="long-labels" aria-labelledby="long-title">
+      <h2 class="title" id="long-title">PREP-06 · Long visible readings</h2>
+      <p class="caption">Parent captures at a narrow viewport and inspects 200% text/zoom. No essential content is placed in the diagram.</p>
+      <div class="group eg-gauge-group" role="group" aria-label="Extended provider reporting limits">
+        <div class="diagram md count-2" aria-hidden="true"><span class="ring slot-0" data-state="warning" data-endpoint="0"></span><span class="ring slot-1" data-state="normal" data-endpoint="100"></span></div>
+        <ol class="readings">
+          <li class="reading" data-state="warning"><span>Outer · Provider reporting capacity for the current extended session interval</span><div class="value" role="meter" aria-label="Provider reporting capacity for the current extended session interval" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0 of 100 capacity units" aria-describedby="prep-warning"><span aria-hidden="true">0 of 100 capacity units</span></div><span class="cue"><svg class="cue-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3L2 21h20L12 3Zm0 5v6m0 3v1"></path></svg><span id="prep-warning">Review the provider policy before selecting a new reporting interval</span></span></li>
+          <li class="reading" data-state="normal"><span>Inner · Provider reporting capacity for the weekly reference interval</span><div class="value" role="meter" aria-label="Provider reporting capacity for the weekly reference interval" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-valuetext="100 / 100"><span aria-hidden="true">100 / 100</span></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <footer class="intro"><p class="note">Parent supplies canonical compiled /tokens.css and owns actual browser captures. No scripts, canvas, polling, interactive controls, new assets or runtime components are included. Static IDs and authored semantics do not verify runtime IDs, validation, state updates, CSS masks, fractional arcs, React compatibility or assistive technology.</p></footer>
+  </main>
+</body>
+</html>

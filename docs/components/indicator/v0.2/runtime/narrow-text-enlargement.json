@@ -1,0 +1,308 @@
+[
+  {
+    "story": "corners",
+    "rootFont": "16px",
+    "mode": "normal",
+    "viewport": 390,
+    "overflow": false,
+    "markers": [
+      {
+        "text": "",
+        "rect": {
+          "x": 44,
+          "y": 44,
+          "width": 8,
+          "height": 8,
+          "top": 44,
+          "right": 52,
+          "bottom": 52,
+          "left": 44
+        },
+        "font": "16px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 184.4375,
+          "y": 124,
+          "width": 8,
+          "height": 8,
+          "top": 124,
+          "right": 192.4375,
+          "bottom": 132,
+          "left": 184.4375
+        },
+        "font": "16px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 44,
+          "y": 252,
+          "width": 8,
+          "height": 8,
+          "top": 252,
+          "right": 52,
+          "bottom": 260,
+          "left": 44
+        },
+        "font": "16px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 212.4875030517578,
+          "y": 332,
+          "width": 8,
+          "height": 8,
+          "top": 332,
+          "right": 220.4875030517578,
+          "bottom": 340,
+          "left": 212.4875030517578
+        },
+        "font": "16px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 207.0749969482422,
+          "y": 364,
+          "width": 8,
+          "height": 8,
+          "top": 364,
+          "right": 215.0749969482422,
+          "bottom": 372,
+          "left": 207.0749969482422
+        },
+        "font": "16px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 338.3999938964844,
+          "y": 444,
+          "width": 8,
+          "height": 8,
+          "top": 444,
+          "right": 346.3999938964844,
+          "bottom": 452,
+          "left": 338.3999938964844
+        },
+        "font": "16px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 179.02500915527344,
+          "y": 572,
+          "width": 8,
+          "height": 8,
+          "top": 572,
+          "right": 187.02500915527344,
+          "bottom": 580,
+          "left": 179.02500915527344
+        },
+        "font": "16px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 338.3999938964844,
+          "y": 652,
+          "width": 8,
+          "height": 8,
+          "top": 652,
+          "right": 346.3999938964844,
+          "bottom": 660,
+          "left": 338.3999938964844
+        },
+        "font": "16px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      }
+    ]
+  },
+  {
+    "story": "corners",
+    "rootFont": "32px",
+    "mode": "200% root-font enlargement, NOT browser zoom",
+    "viewport": 390,
+    "overflow": false,
+    "markers": [
+      {
+        "text": "",
+        "rect": {
+          "x": 60,
+          "y": 60,
+          "width": 8,
+          "height": 8,
+          "top": 60,
+          "right": 68,
+          "bottom": 68,
+          "left": 60
+        },
+        "font": "32px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 200.4375,
+          "y": 140,
+          "width": 8,
+          "height": 8,
+          "top": 140,
+          "right": 208.4375,
+          "bottom": 148,
+          "left": 200.4375
+        },
+        "font": "32px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 60,
+          "y": 268,
+          "width": 8,
+          "height": 8,
+          "top": 268,
+          "right": 68,
+          "bottom": 276,
+          "left": 60
+        },
+        "font": "32px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 228.4875030517578,
+          "y": 348,
+          "width": 8,
+          "height": 8,
+          "top": 348,
+          "right": 236.4875030517578,
+          "bottom": 356,
+          "left": 228.4875030517578
+        },
+        "font": "32px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 191.0749969482422,
+          "y": 380,
+          "width": 8,
+          "height": 8,
+          "top": 380,
+          "right": 199.0749969482422,
+          "bottom": 388,
+          "left": 191.0749969482422
+        },
+        "font": "32px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 322.3999938964844,
+          "y": 460,
+          "width": 8,
+          "height": 8,
+          "top": 460,
+          "right": 330.3999938964844,
+          "bottom": 468,
+          "left": 322.3999938964844
+        },
+        "font": "32px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 163.02500915527344,
+          "y": 588,
+          "width": 8,
+          "height": 8,
+          "top": 588,
+          "right": 171.02500915527344,
+          "bottom": 596,
+          "left": 163.02500915527344
+        },
+        "font": "32px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      },
+      {
+        "text": "",
+        "rect": {
+          "x": 322.3999938964844,
+          "y": 668,
+          "width": 8,
+          "height": 8,
+          "top": 668,
+          "right": 330.3999938964844,
+          "bottom": 676,
+          "left": 322.3999938964844
+        },
+        "font": "32px Barlow, system-ui, sans-serif",
+        "lineHeight": "normal"
+      }
+    ]
+  },
+  {
+    "story": "long-count",
+    "rootFont": "16px",
+    "mode": "normal",
+    "viewport": 390,
+    "overflow": false,
+    "markers": [
+      {
+        "text": "9007199254740991",
+        "rect": {
+          "x": 119.1875,
+          "y": 44,
+          "width": 130.1125030517578,
+          "height": 18.399999618530273,
+          "top": 44,
+          "right": 249.3000030517578,
+          "bottom": 62.39999961853027,
+          "left": 119.1875
+        },
+        "font": "",
+        "lineHeight": "16.8px"
+      }
+    ]
+  },
+  {
+    "story": "long-count",
+    "rootFont": "32px",
+    "mode": "200% root-font enlargement, NOT browser zoom",
+    "viewport": 390,
+    "overflow": false,
+    "markers": [
+      {
+        "text": "9007199254740991",
+        "rect": {
+          "x": 119.1875,
+          "y": 60,
+          "width": 130.1125030517578,
+          "height": 18.399999618530273,
+          "top": 60,
+          "right": 249.3000030517578,
+          "bottom": 78.39999961853027,
+          "left": 119.1875
+        },
+        "font": "",
+        "lineHeight": "16.8px"
+      }
+    ]
+  }
+]

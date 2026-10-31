@@ -1,0 +1,7 @@
+{
+  "result": "FAILED",
+  "operation": "getByRole(switch,{name:disabled,exact:true}).check()",
+  "timeoutMs": 30000,
+  "observed": "input#control-disabled resolved, visible/enabled/stable, but td and occasionally save-from-controls footer intercepted pointer events. No forced click or automatic retry; subsequent Docs collection was not executed.",
+  "scope": "Browser verification locator failure, not yet classified as component or Storybook defect."
+}

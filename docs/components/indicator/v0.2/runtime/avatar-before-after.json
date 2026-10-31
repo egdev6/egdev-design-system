@@ -1,0 +1,1576 @@
+{
+  "baseline": "Panel Avatar source git diff f88b36e44b3d5ec6d7725350959f9cdfdfeb5b23 -- packages/ui/src/atoms/avatar exit0, empty status; canonical token stylesheet appended capture-only in both ports",
+  "data": [
+    {
+      "port": 6029,
+      "size": "sm",
+      "paused": false,
+      "observed": [
+        {
+          "state": "active",
+          "label": "Example channel on LinkedIn",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 24,
+              "height": 24,
+              "top": 16,
+              "right": 40,
+              "bottom": 40,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 26,
+              "y": 26,
+              "width": 18,
+              "height": 18,
+              "top": 26,
+              "right": 44,
+              "bottom": 44,
+              "left": 26
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 29.5,
+              "y": 29.5,
+              "width": 11,
+              "height": 11,
+              "top": 29.5,
+              "right": 40.5,
+              "bottom": 40.5,
+              "left": 29.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6029,
+      "size": "sm",
+      "paused": true,
+      "observed": [
+        {
+          "state": "paused",
+          "label": "Example channel on LinkedIn, paused",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 24,
+              "height": 24,
+              "top": 16,
+              "right": 40,
+              "bottom": 40,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "0.6",
+            "filter": "grayscale(1)",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 26,
+              "y": 26,
+              "width": 18,
+              "height": 18,
+              "top": 26,
+              "right": 44,
+              "bottom": 44,
+              "left": 26
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 29.5,
+              "y": 29.5,
+              "width": 11,
+              "height": 11,
+              "top": 29.5,
+              "right": 40.5,
+              "bottom": 40.5,
+              "left": 29.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6029,
+      "size": "md",
+      "paused": false,
+      "observed": [
+        {
+          "state": "active",
+          "label": "Example channel on LinkedIn",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 30,
+              "height": 30,
+              "top": 16,
+              "right": 46,
+              "bottom": 46,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 32,
+              "y": 32,
+              "width": 18,
+              "height": 18,
+              "top": 32,
+              "right": 50,
+              "bottom": 50,
+              "left": 32
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 35.5,
+              "y": 35.5,
+              "width": 11,
+              "height": 11,
+              "top": 35.5,
+              "right": 46.5,
+              "bottom": 46.5,
+              "left": 35.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6029,
+      "size": "md",
+      "paused": true,
+      "observed": [
+        {
+          "state": "paused",
+          "label": "Example channel on LinkedIn, paused",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 30,
+              "height": 30,
+              "top": 16,
+              "right": 46,
+              "bottom": 46,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "0.6",
+            "filter": "grayscale(1)",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 32,
+              "y": 32,
+              "width": 18,
+              "height": 18,
+              "top": 32,
+              "right": 50,
+              "bottom": 50,
+              "left": 32
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 35.5,
+              "y": 35.5,
+              "width": 11,
+              "height": 11,
+              "top": 35.5,
+              "right": 46.5,
+              "bottom": 46.5,
+              "left": 35.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6029,
+      "size": "lg",
+      "paused": false,
+      "observed": [
+        {
+          "state": "active",
+          "label": "Example channel on LinkedIn",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 40,
+              "height": 40,
+              "top": 16,
+              "right": 56,
+              "bottom": 56,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 42,
+              "y": 42,
+              "width": 18,
+              "height": 18,
+              "top": 42,
+              "right": 60,
+              "bottom": 60,
+              "left": 42
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 45.5,
+              "y": 45.5,
+              "width": 11,
+              "height": 11,
+              "top": 45.5,
+              "right": 56.5,
+              "bottom": 56.5,
+              "left": 45.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6029,
+      "size": "lg",
+      "paused": true,
+      "observed": [
+        {
+          "state": "paused",
+          "label": "Example channel on LinkedIn, paused",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 40,
+              "height": 40,
+              "top": 16,
+              "right": 56,
+              "bottom": 56,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "0.6",
+            "filter": "grayscale(1)",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 42,
+              "y": 42,
+              "width": 18,
+              "height": 18,
+              "top": 42,
+              "right": 60,
+              "bottom": 60,
+              "left": 42
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 45.5,
+              "y": 45.5,
+              "width": 11,
+              "height": 11,
+              "top": 45.5,
+              "right": 56.5,
+              "bottom": 56.5,
+              "left": 45.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6029,
+      "size": "xl",
+      "paused": false,
+      "observed": [
+        {
+          "state": "active",
+          "label": "Example channel on LinkedIn",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 48,
+              "height": 48,
+              "top": 16,
+              "right": 64,
+              "bottom": 64,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 46,
+              "y": 46,
+              "width": 22,
+              "height": 22,
+              "top": 46,
+              "right": 68,
+              "bottom": 68,
+              "left": 46
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 50.5,
+              "y": 50.5,
+              "width": 13,
+              "height": 13,
+              "top": 50.5,
+              "right": 63.5,
+              "bottom": 63.5,
+              "left": 50.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6029,
+      "size": "xl",
+      "paused": true,
+      "observed": [
+        {
+          "state": "paused",
+          "label": "Example channel on LinkedIn, paused",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 48,
+              "height": 48,
+              "top": 16,
+              "right": 64,
+              "bottom": 64,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "0.6",
+            "filter": "grayscale(1)",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 46,
+              "y": 46,
+              "width": 22,
+              "height": 22,
+              "top": 46,
+              "right": 68,
+              "bottom": 68,
+              "left": 46
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 50.5,
+              "y": 50.5,
+              "width": 13,
+              "height": 13,
+              "top": 50.5,
+              "right": 63.5,
+              "bottom": 63.5,
+              "left": 50.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6029,
+      "story": "network-badge",
+      "observed": [
+        {
+          "state": "active",
+          "label": "Example channel on LinkedIn",
+          "hidden": null,
+          "role": "img",
+          "ring": "#141518",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 20,
+              "width": 40,
+              "height": 40,
+              "top": 20,
+              "right": 56,
+              "bottom": 60,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 42,
+              "y": 46,
+              "width": 18,
+              "height": 18,
+              "top": 46,
+              "right": 60,
+              "bottom": 64,
+              "left": 42
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(20, 21, 24) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 45.5,
+              "y": 49.5,
+              "width": 11,
+              "height": 11,
+              "top": 49.5,
+              "right": 56.5,
+              "bottom": 60.5,
+              "left": 45.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        },
+        {
+          "state": "active",
+          "label": "Example channel on YouTube",
+          "hidden": null,
+          "role": "img",
+          "ring": "#141518",
+          "root": {
+            "rect": {
+              "x": 80,
+              "y": 16,
+              "width": 48,
+              "height": 48,
+              "top": 16,
+              "right": 128,
+              "bottom": 64,
+              "left": 80
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 110,
+              "y": 46,
+              "width": 22,
+              "height": 22,
+              "top": 46,
+              "right": 132,
+              "bottom": 68,
+              "left": 110
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(20, 21, 24) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 114.5,
+              "y": 50.5,
+              "width": 13,
+              "height": 13,
+              "top": 50.5,
+              "right": 127.5,
+              "bottom": 63.5,
+              "left": 114.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6028,
+      "size": "sm",
+      "paused": false,
+      "observed": [
+        {
+          "state": "active",
+          "label": "Example channel on LinkedIn",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 24,
+              "height": 24,
+              "top": 16,
+              "right": 40,
+              "bottom": 40,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 26,
+              "y": 26,
+              "width": 18,
+              "height": 18,
+              "top": 26,
+              "right": 44,
+              "bottom": 44,
+              "left": 26
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 29.5,
+              "y": 29.5,
+              "width": 11,
+              "height": 11,
+              "top": 29.5,
+              "right": 40.5,
+              "bottom": 40.5,
+              "left": 29.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6028,
+      "size": "sm",
+      "paused": true,
+      "observed": [
+        {
+          "state": "paused",
+          "label": "Example channel on LinkedIn, paused",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 24,
+              "height": 24,
+              "top": 16,
+              "right": 40,
+              "bottom": 40,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "0.6",
+            "filter": "grayscale(1)",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 26,
+              "y": 26,
+              "width": 18,
+              "height": 18,
+              "top": 26,
+              "right": 44,
+              "bottom": 44,
+              "left": 26
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 29.5,
+              "y": 29.5,
+              "width": 11,
+              "height": 11,
+              "top": 29.5,
+              "right": 40.5,
+              "bottom": 40.5,
+              "left": 29.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6028,
+      "size": "md",
+      "paused": false,
+      "observed": [
+        {
+          "state": "active",
+          "label": "Example channel on LinkedIn",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 30,
+              "height": 30,
+              "top": 16,
+              "right": 46,
+              "bottom": 46,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 32,
+              "y": 32,
+              "width": 18,
+              "height": 18,
+              "top": 32,
+              "right": 50,
+              "bottom": 50,
+              "left": 32
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 35.5,
+              "y": 35.5,
+              "width": 11,
+              "height": 11,
+              "top": 35.5,
+              "right": 46.5,
+              "bottom": 46.5,
+              "left": 35.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6028,
+      "size": "md",
+      "paused": true,
+      "observed": [
+        {
+          "state": "paused",
+          "label": "Example channel on LinkedIn, paused",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 30,
+              "height": 30,
+              "top": 16,
+              "right": 46,
+              "bottom": 46,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "0.6",
+            "filter": "grayscale(1)",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 32,
+              "y": 32,
+              "width": 18,
+              "height": 18,
+              "top": 32,
+              "right": 50,
+              "bottom": 50,
+              "left": 32
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 35.5,
+              "y": 35.5,
+              "width": 11,
+              "height": 11,
+              "top": 35.5,
+              "right": 46.5,
+              "bottom": 46.5,
+              "left": 35.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6028,
+      "size": "lg",
+      "paused": false,
+      "observed": [
+        {
+          "state": "active",
+          "label": "Example channel on LinkedIn",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 40,
+              "height": 40,
+              "top": 16,
+              "right": 56,
+              "bottom": 56,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 42,
+              "y": 42,
+              "width": 18,
+              "height": 18,
+              "top": 42,
+              "right": 60,
+              "bottom": 60,
+              "left": 42
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 45.5,
+              "y": 45.5,
+              "width": 11,
+              "height": 11,
+              "top": 45.5,
+              "right": 56.5,
+              "bottom": 56.5,
+              "left": 45.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6028,
+      "size": "lg",
+      "paused": true,
+      "observed": [
+        {
+          "state": "paused",
+          "label": "Example channel on LinkedIn, paused",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 40,
+              "height": 40,
+              "top": 16,
+              "right": 56,
+              "bottom": 56,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "0.6",
+            "filter": "grayscale(1)",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 42,
+              "y": 42,
+              "width": 18,
+              "height": 18,
+              "top": 42,
+              "right": 60,
+              "bottom": 60,
+              "left": 42
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 45.5,
+              "y": 45.5,
+              "width": 11,
+              "height": 11,
+              "top": 45.5,
+              "right": 56.5,
+              "bottom": 56.5,
+              "left": 45.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6028,
+      "size": "xl",
+      "paused": false,
+      "observed": [
+        {
+          "state": "active",
+          "label": "Example channel on LinkedIn",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 48,
+              "height": 48,
+              "top": 16,
+              "right": 64,
+              "bottom": 64,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 46,
+              "y": 46,
+              "width": 22,
+              "height": 22,
+              "top": 46,
+              "right": 68,
+              "bottom": 68,
+              "left": 46
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 50.5,
+              "y": 50.5,
+              "width": 13,
+              "height": 13,
+              "top": 50.5,
+              "right": 63.5,
+              "bottom": 63.5,
+              "left": 50.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6028,
+      "size": "xl",
+      "paused": true,
+      "observed": [
+        {
+          "state": "paused",
+          "label": "Example channel on LinkedIn, paused",
+          "hidden": null,
+          "role": "img",
+          "ring": "",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 16,
+              "width": 48,
+              "height": 48,
+              "top": 16,
+              "right": 64,
+              "bottom": 64,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "0.6",
+            "filter": "grayscale(1)",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 46,
+              "y": 46,
+              "width": 22,
+              "height": 22,
+              "top": 46,
+              "right": 68,
+              "bottom": 68,
+              "left": 46
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(27, 28, 32) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 50.5,
+              "y": 50.5,
+              "width": 13,
+              "height": 13,
+              "top": 50.5,
+              "right": 63.5,
+              "bottom": 63.5,
+              "left": 50.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    },
+    {
+      "port": 6028,
+      "story": "network-badge",
+      "observed": [
+        {
+          "state": "active",
+          "label": "Example channel on LinkedIn",
+          "hidden": null,
+          "role": "img",
+          "ring": "#141518",
+          "root": {
+            "rect": {
+              "x": 16,
+              "y": 20,
+              "width": 40,
+              "height": 40,
+              "top": 20,
+              "right": 56,
+              "bottom": 60,
+              "left": 16
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 42,
+              "y": 46,
+              "width": 18,
+              "height": 18,
+              "top": 46,
+              "right": 60,
+              "bottom": 64,
+              "left": 42
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(20, 21, 24) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 45.5,
+              "y": 49.5,
+              "width": 11,
+              "height": 11,
+              "top": 49.5,
+              "right": 56.5,
+              "bottom": 60.5,
+              "left": 45.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        },
+        {
+          "state": "active",
+          "label": "Example channel on YouTube",
+          "hidden": null,
+          "role": "img",
+          "ring": "#141518",
+          "root": {
+            "rect": {
+              "x": 80,
+              "y": 16,
+              "width": 48,
+              "height": 48,
+              "top": 16,
+              "right": 128,
+              "bottom": 64,
+              "left": 80
+            },
+            "background": "linear-gradient(135deg in oklab, rgb(128, 12, 29) 0%, rgb(255, 0, 54) 100%)",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "badge": {
+            "rect": {
+              "x": 110,
+              "y": 46,
+              "width": 22,
+              "height": 22,
+              "top": 46,
+              "right": 132,
+              "bottom": 68,
+              "left": 110
+            },
+            "background": "none",
+            "backgroundColor": "rgb(20, 21, 24)",
+            "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(20, 21, 24) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          },
+          "glyph": {
+            "rect": {
+              "x": 114.5,
+              "y": 50.5,
+              "width": 13,
+              "height": 13,
+              "top": 50.5,
+              "right": 127.5,
+              "bottom": 63.5,
+              "left": 114.5
+            },
+            "background": "none",
+            "backgroundColor": "rgba(0, 0, 0, 0)",
+            "shadow": "none",
+            "border": "0px none rgb(255, 255, 255)",
+            "outline": "rgb(255, 255, 255) none 2.4px",
+            "color": "rgb(255, 255, 255)",
+            "opacity": "1",
+            "filter": "none",
+            "pointer": "auto"
+          }
+        }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "size": "sm",
+      "paused": false,
+      "exactComputedGeometryPaintSemantics": true
+    },
+    {
+      "size": "sm",
+      "paused": true,
+      "exactComputedGeometryPaintSemantics": true
+    },
+    {
+      "size": "md",
+      "paused": false,
+      "exactComputedGeometryPaintSemantics": true
+    },
+    {
+      "size": "md",
+      "paused": true,
+      "exactComputedGeometryPaintSemantics": true
+    },
+    {
+      "size": "lg",
+      "paused": false,
+      "exactComputedGeometryPaintSemantics": true
+    },
+    {
+      "size": "lg",
+      "paused": true,
+      "exactComputedGeometryPaintSemantics": true
+    },
+    {
+      "size": "xl",
+      "paused": false,
+      "exactComputedGeometryPaintSemantics": true
+    },
+    {
+      "size": "xl",
+      "paused": true,
+      "exactComputedGeometryPaintSemantics": true
+    },
+    {
+      "size": "network-badge",
+      "exactComputedGeometryPaintSemantics": true
+    }
+  ],
+  "networkBadgePngBytesEqual": true
+}

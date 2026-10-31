@@ -1,0 +1,175 @@
+{
+  "kind": "diagnostic-static-specimen-capture-request",
+  "component": "PhotoFrame",
+  "preparationVersion": "0.3",
+  "status": "Proposed; not a capture, fixture adoption or implementation receipt",
+  "baselineCommit": "f88b36e44b3d5ec6d7725350959f9cdfdfeb5b23",
+  "approvedContract": {
+    "version": "0.2",
+    "classification": "atom",
+    "canonicalSHA256": "sha256:13d66d39b036de68276c332bab3b97c3e8de6f42f4ebc2024c96be4a94142774",
+    "approvalReference": "https://github.com/egdev6/egdev-design-system/issues/95#issuecomment-6251537589",
+    "classificationSnapshot": "https://github.com/egdev6/egdev-design-system/issues/95#issuecomment-6244025883",
+    "recoverySource": "/tmp/egdev-remaining-odd/95.json",
+    "recoverySourceWholeFileSHA256": "sha256:8ba14027af601759a68d66d7ad6eddd880cfc75571c7cc6b9c4b85298b8db3d6",
+    "fullReconstruction": "Verified frozen body/amendment hashes, all three ordered replacement counts, seven blocks and full canonical v0.2 digest. Historical Draft and molecule wording does not override final approval/classification.",
+    "reapprovalRequested": false,
+    "separateImplementationPlanApproval": null
+  },
+  "sources": {
+    "recovery": {
+      "path": "docs/components/photo-frame/v0.3/contract-recovery.md",
+      "payloadSHA256": "sha256:bc430e450cb91d1081cc3b889a20b2cb67d81dd208f4c498c227a5b05b88ad67",
+      "hashRule": "UTF-8 LF bytes from the actual ## 1. Purpose and scope heading line through EOF including final LF; metadata excluded"
+    },
+    "plan": {
+      "path": "docs/components/photo-frame/v0.3/implementation-plan.md",
+      "payloadSHA256": "sha256:3a8f4a2db10cc1f5f93498443bb002b50bdec5abc25119302b9a5a7fe118f13f",
+      "hashRule": "UTF-8 LF bytes from the actual ## 1. Remaining gates heading line through EOF including final LF; metadata excluded"
+    },
+    "specimen": {
+      "path": "docs/components/photo-frame/v0.3/specimen.html",
+      "wholeFileSHA256": "sha256:361b9a0b19c1907e73e4d6818d089260b19dad19c6bf24170a22f0543cd2b377",
+      "provenance": "Authored native HTML/CSS design illustration with native local SVG img resources. Not React PhotoFrame output or a new approved reference."
+    },
+    "fixture": {
+      "path": "docs/components/photo-frame/v0.3/fixtures/diagnostic.svg",
+      "sha256": "sha256:1027f0f62e322fa73f9c7e6ce6960f1f00207c0c37ec592409fe073af1e00b59",
+      "provenancePath": "docs/components/photo-frame/v0.3/fixtures/provenance.json",
+      "provenanceWholeFileSHA256": "sha256:06b0decd39297c957262753efb3826f32a8f1fbb4f635c65bc69a048323167ee",
+      "permission": "Local diagnostic authoring authorized separately by owner via parent",
+      "ownerAdoption": null,
+      "imageKind": "Square labelled diagnostic SVG; not photography, generated editorial imagery or runtime fallback",
+      "browserDecodeResult": null
+    },
+    "runtimeSourceSHA256": null
+  },
+  "retainedApprovedVisuals": [
+    {
+      "id": "VIS-01",
+      "url": "https://raw.githubusercontent.com/egdev6/egdev-design-system/97677b286e39a2a7e4a9ce545e45613ac20b5bfc/docs/design/foundation-boards/v2026-10-18/PhotoFrame.png",
+      "sha256": "sha256:da886df91ee0b7f113b07ff8715ce747bcb93126f0f77c50d75e7561e6d1f0c7",
+      "scope": "Original neutral placeholder board; source layout context with explicit approved target differences, not source photography/crop/filter expectations",
+      "verification": "Parent already verified immutable PNG bytes against this exact expected hash; writer did not repeat network access",
+      "sourceCaptureVersion": "0.1",
+      "approvalContractVersion": "0.2"
+    },
+    {
+      "id": "VIS-02",
+      "url": "https://raw.githubusercontent.com/egdev6/egdev-design-system/97677b286e39a2a7e4a9ce545e45613ac20b5bfc/docs/design/foundation-boards/v2026-10-18/specimens/photo-frame--specimen.png",
+      "sha256": "sha256:1095e82de8abc25c92a1cc6ffb14c1ee247f97d196dcb4c74c665bc65f204950",
+      "scope": "Static neutral ratio/frame/caption target differences and authored unrotated reduced-motion illustration; not runtime/media-query/photo evidence",
+      "verification": "Parent already verified immutable PNG bytes against this exact expected hash; no missing-SHA blocker remains",
+      "sourceCaptureVersion": "0.1",
+      "approvalContractVersion": "0.2"
+    }
+  ],
+  "hosting": {
+    "owner": "Parent",
+    "writerServerLaunch": false,
+    "url": null,
+    "tokenStylesheetHref": "/tokens.css",
+    "tokenSource": "packages/tokens/src/theme.css",
+    "tokenSourceSHA256": "sha256:62d10992ae654e34e83d9d11bcf35da29e56c905648015f2415ebdca59bf6ab8",
+    "compiledCanonicalTokensSHA256": null,
+    "requirements": [
+      "Serve exact HTML/SVG bytes and compiled canonical tokens, not raw @theme CSS.",
+      "Serve diagnostic.svg as image/svg+xml and record actual response status/hash.",
+      "Scroll each lazy img study into view and wait for successful native decode/naturalWidth plus document.fonts.ready before capture; do not call an offscreen unloaded image a passing crop.",
+      "Record actual Barlow/Barlow Condensed loading or token fallback, plus browser/system font environment for diagnostic SVG monospace labels. No font assets are supplied."
+    ]
+  },
+  "proposedConditions": {
+    "browser": "Real parent-owned Playwright Chromium; record actual version/OS",
+    "viewports": [
+      { "name": "desktop", "width": 1280, "height": 960 },
+      { "name": "narrow", "width": 390, "height": 844 }
+    ],
+    "deviceScaleFactor": 1,
+    "theme": "Canonical dark; flood/raised are explicit host examples only",
+    "motion": ["no-preference for normal tilt", "actual reduced-motion emulation for frame reset"],
+    "transparency": "Record actual condition; solid frames use no backdrop filter",
+    "direction": "ltr baseline; separately recorded rtl reflow inspection",
+    "zoom": "100% baseline; separately recorded 200% and 400% caption/reflow inspection",
+    "crop": "Scenario comparison plus individual figure/component-zone crops; measure untransformed viewport separately from transformed frame/caption",
+    "captureToolDate": null,
+    "actualBrowserVersion": null,
+    "actualLoadedFonts": null
+  },
+  "scenarios": [
+    {
+      "id": "P-VIS-03",
+      "selector": "[data-capture=\"ratios-and-crops\"]",
+      "alt": "Static diagnostic image studies at square, portrait and landscape ratios, with left/right and top/bottom cover alignment comparisons.",
+      "acceptance": ["AC-02", "AC-03", "AC-09", "AC-16"],
+      "requestedConditions": ["desktop", "narrow", "successful SVG decode"],
+      "checks": [
+        "Full grid in square",
+        "Different horizontal landmarks for portrait left/center/right",
+        "Different vertical landmarks for landscape top/center/bottom",
+        "Native width/height metadata remain square, not viewport ratio",
+        "Caption is outside image viewport"
+      ],
+      "proposedOutput": "diagnostic-crops--static--desktop--dark.png",
+      "imageSHA256": null,
+      "ownerAdoption": null
+    },
+    {
+      "id": "P-VIS-04",
+      "selector": "[data-capture=\"frame-and-motion\"]",
+      "alt": "Static framed diagnostic image with media-only tilt and upright caption on a token-backed flood, alongside an explicitly authored unrotated illustration.",
+      "acceptance": ["AC-06", "AC-07", "AC-08", "AC-10"],
+      "requestedConditions": [
+        "desktop",
+        "narrow",
+        "no-preference",
+        "actual reduced-motion emulation",
+        "real hover inspection"
+      ],
+      "checks": [
+        "Raised surface-0 sheen/edge/elevation-2 shadow and token inset",
+        "Only media frame tilts normally; no hover change",
+        "Actual reduced-motion condition removes tilt in the normal candidate too",
+        "Caption inherits host foreground, remains upright and selectable",
+        "Authored unrotated sample is not falsely labelled an emulation result"
+      ],
+      "proposedOutput": "diagnostic-frame--normal--desktop--dark.png",
+      "reducedMotionProposedOutput": "diagnostic-frame--reduced-motion--desktop--dark.png",
+      "imageSHA256": null,
+      "ownerAdoption": null
+    },
+    {
+      "id": "P-VIS-05",
+      "selector": "[data-capture=\"caption-and-decorative\"]",
+      "alt": "Static diagnostic image studies with a wrapping below-image caption, no caption and deliberately empty decorative alt.",
+      "acceptance": ["AC-01", "AC-05", "AC-06", "AC-07", "AC-12"],
+      "requestedConditions": ["desktop", "narrow", "rtl inspection", "200% and 400% zoom inspection"],
+      "checks": [
+        "Caption is not clipped/rotated/painted over media",
+        "Omitted caption has no reserved gap",
+        "Native figure/img/figcaption semantics and explicit decorative alt are inspected separately",
+        "No keyboard/focus/activation engine is added"
+      ],
+      "proposedOutput": "diagnostic-caption--static--desktop--dark.png",
+      "imageSHA256": null,
+      "ownerAdoption": null
+    }
+  ],
+  "laterRuntimeNativeImageChecks": {
+    "status": "Planned only; requires approved fixture/plan/runtime and parent-owned browser routing",
+    "success": "Serve exact SVG bytes, assert decode/naturalWidth=1000/naturalHeight=1000 and native image onLoad destination.",
+    "delay": "Hold same-origin SVG response, measure reserved viewport before releasing exact bytes; no custom loading placeholder/state.",
+    "failure": "Return explicit 404 to resource request, assert native img alt/caption and reserved viewport persist, onError belongs to img; no fallback asset/live message.",
+    "sourceChange": "Cache-distinct query URLs with identical approved SVG bytes; inspect currentSrc/events without inferring a custom state machine.",
+    "noOverflowNegatives": "Square: all five focal choices coincide. Portrait top/bottom and landscape left/right coincide when that axis has no overflow.",
+    "results": null
+  },
+  "limits": [
+    "All new capture paths are requests, not files created by the writer; parent owns additional asset edit authorization and capture metadata.",
+    "New diagnostic specimens do not replace or widen original approved VIS-01/VIS-02 scope.",
+    "No current PhotoFrame behavior, native decoding, browser layout, reduced-motion result, AT review, photo rights or photo quality is established by source authoring/hash checks.",
+    "Native broken-image rendering and SVG text rasterization vary by browser/system font; record conditions instead of inventing pixel tolerances.",
+    "No image loading/failure UI or keyboard/focus script is implemented in the specimen.",
+    "No server, browser, dependency installation, Git/GitHub mutation or asset publication was performed by the writer."
+  ]
+}

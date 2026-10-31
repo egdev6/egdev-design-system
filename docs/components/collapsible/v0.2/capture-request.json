@@ -1,0 +1,104 @@
+{
+  "component": "Collapsible",
+  "issue": "https://github.com/egdev6/egdev-design-system/issues/181",
+  "specVersion": "0.2",
+  "status": "Proposed capture request — not capture evidence or owner adoption",
+  "sourceBaseline": "f88b36e44b3d5ec6d7725350959f9cdfdfeb5b23",
+  "source": {
+    "path": "docs/components/collapsible/v0.2/specimen.html",
+    "wholeFileSHA256": "65b93e46c4bfc94a11121f78ab6d30946f479075321a0f424a9192f62fdceb68",
+    "specCanonicalSHA256": "b3d9f158d45661b151dbff249b645ab6f97b036e872d187eb6f4be39d35b2017",
+    "planCanonicalSHA256": "136dc06ca4e2bdc55cdd31ab07a023aaa13443642bde467541eefcbf271df42f",
+    "kind": "Locally authored inert static HTML; not runtime React or an observed reference screenshot",
+    "previewURL": null,
+    "tokenStylesheet": "/tokens.css",
+    "tokenSource": "packages/tokens/src/theme.css",
+    "tokenSourceSHA256": "62d10992ae654e34e83d9d11bcf35da29e56c905648015f2415ebdca59bf6ab8",
+    "compiledTokenSHA256": null,
+    "caretSource": "packages/ui/src/atoms/icon/icon-paths.ts — iconPaths['chevron-down']; path m6 9 6 6 6-6; 24x24 viewBox",
+    "caretSourceSHA256": "c590c71332c08921102517bada473f7d032ffb792dd95e3c38b8f07b3edc6f94"
+  },
+  "ownership": {
+    "hostingAndCanonicalTokens": "Parent only; no server launched by writer",
+    "realBrowserCapture": "Parent only, using authorized real-browser tooling",
+    "visualAdoption": "Owner approval identifying exact spec digest and actual PNG hashes remains required",
+    "assetPublication": "Separate authorization; no GitHub-visible image URL exists yet"
+  },
+  "proposedConditions": {
+    "theme": "Existing canonical dark theme only; no invented theme selector",
+    "browser": "Chromium via parent-authorized Playwright MCP; record actual version, OS and tool",
+    "deviceScaleFactor": 1,
+    "defaultViewport": { "width": 1280, "height": 1200 },
+    "narrowViewport": { "width": 390, "height": 844 },
+    "locale": "en-US",
+    "direction": "ltr baseline; additional rtl inspection without editing source",
+    "zoom": "100% baseline; additional 200% real browser zoom for long-label inspection, not CSS transform",
+    "fonts": "Use canonical Barlow when authorized font assets are available; wait for document.fonts.ready and record actual loaded face/fallback. No network font import in the specimen. If unavailable, mark fallback and do not claim matched typography.",
+    "motion": "no-preference except VIS-04 reduce",
+    "transparency": "no-preference baseline; additionally inspect reduce, expecting the same solid frame",
+    "crop": "Component-zone element crops listed below; board overview may supplement but not replace them",
+    "stability": "Verify /tokens.css loaded, tokens resolve, fonts settled and content stable. Record failures rather than capturing an unstyled page as expected design."
+  },
+  "scenarios": [
+    {
+      "visualId": "VIS-01",
+      "selector": "#independent",
+      "viewport": "defaultViewport",
+      "motion": "no-preference",
+      "states": ["authored closed/open pair", "authored both-open pair"],
+      "alt": "Independent consumption and history disclosure frames, with a separate both-open example and token-backed body separators.",
+      "acceptanceIds": ["AC-01", "AC-05", "AC-06", "AC-08"]
+    },
+    {
+      "visualId": "VIS-02",
+      "selector": "#states",
+      "viewport": "defaultViewport",
+      "motion": "no-preference",
+      "states": ["authored focus-ring illustration", "disabled closed", "disabled open with undimmed body"],
+      "alt": "A simulated focus ring and disabled disclosure triggers, with readable body content beneath the disabled open trigger.",
+      "acceptanceIds": ["AC-03", "AC-07", "AC-08"]
+    },
+    {
+      "visualId": "VIS-03",
+      "selector": "#long-label",
+      "viewport": "narrowViewport",
+      "motion": "no-preference",
+      "states": ["open long wrapping label", "additional 200% zoom and rtl inspections"],
+      "alt": "A long disclosure label wrapping next to a nonshrinking caret above its separated body at a narrow viewport.",
+      "acceptanceIds": ["AC-08"]
+    },
+    {
+      "visualId": "VIS-04",
+      "selector": "#independent",
+      "viewport": "defaultViewport",
+      "motion": "reduce",
+      "states": ["open and closed authored carets without rotation or transition"],
+      "alt": "Independent disclosure frames under reduced motion, with unrotated carets regardless of their authored expanded state.",
+      "acceptanceIds": ["AC-08"]
+    }
+  ],
+  "parentResultFieldsRequired": [
+    "actual source URL and source HTML SHA-256",
+    "actual canonical token CSS SHA-256 and source revision",
+    "VIS ID, exact output path, descriptive alt, PNG SHA-256",
+    "capture timestamp, tool, browser/version and OS",
+    "viewport, device scale, zoom, direction, locale and component crop bounds",
+    "loaded fonts or named fallback, motion/transparency preferences and theme",
+    "observed token loading, visual differences and unresolved limits",
+    "owner adoption reference and exact spec/visual digest scope, or Pending"
+  ],
+  "knownLimits": [
+    "No browser launched, PNG generated, visual comparison, AT result or screenshot hash exists in this preparation.",
+    "HTML state and focus-ring attributes are authored design illustrations, not Radix-generated state or actual focus.",
+    "Every example is inert; body control appearance does not demonstrate disabled-open operability.",
+    "Static specimen approximates resting ghost/md layout; transparent border is compensated with token padding. Hover/press recipe parity requires later runtime computed-CSS and browser review.",
+    "Fixed illustration IDs serve static ARIA examples only. They are not runtime ID-generation logic or a promise to override Radix Content IDs.",
+    "Static HTML cannot verify keyboard, state requests, refs, IDs/hydration, presence/remount, disabled activation or focus restoration responsibilities.",
+    "Canonical compiled tokens and exact fonts are supplied by parent, not generated/copied here. A fallback font capture is not typography-conformity evidence.",
+    "No recovered owner-reference image is available; consumption/history labels are an authored interpretation, not a copied screenshot.",
+    "No visual is owner-adopted, and no remote asset/publication is authorized by this request."
+  ],
+  "observedResults": [],
+  "visualHashes": null,
+  "ownerAdoptionReference": null
+}

@@ -1,0 +1,166 @@
+{
+  "component": "AmbientBackground",
+  "effectiveContractVersion": "0.4",
+  "taxonomyAmendment": "0.5 classification only: atom (effect)",
+  "status": "preparation-request-not-a-runtime-capture-record",
+  "implementationReady": false,
+  "canonicalIssue": "https://github.com/egdev6/egdev-design-system/issues/45",
+  "contractApprovalReference": "https://github.com/egdev6/egdev-design-system/issues/45#issuecomment-6241414979",
+  "sourceVisualAndNamingApprovalReference": "https://github.com/egdev6/egdev-design-system/issues/45#issuecomment-6241536173",
+  "preparationAssignment": "https://github.com/egdev6/egdev-design-system/issues/45#issuecomment-6522800380",
+  "sourceBaseline": "f88b36e44b3d5ec6d7725350959f9cdfdfeb5b23",
+  "ownerDirectionRecord": {
+    "path": "docs/components/remaining-components/v0.1/effects-owner-decisions.md",
+    "canonicalHeading": "## Decisions",
+    "contentSHA256": "sha256:636e5a37c41e3896920f9a728349978a09cb1e5e11d5a03498f88b540602cb61",
+    "selectedUtility": "A",
+    "selectedDependencies": { "class-variance-authority": "0.7.1", "@egdev/ui": "workspace:*" },
+    "utilityWiring": "Public @egdev/ui root cn only; no UI CSS or effects-local cn helper/test; UI/Radix/ReactDOM/build-order coupling accepted without assuming tree-shaking benefits",
+    "publicationDirection": "dist-only; retain reference scripts in repository; conditional on consumer/migration review and exact final-plan approval",
+    "compatibilityDisposition": "Pending; local inventory is W3 work, published/external consumer coverage is not assumed",
+    "scope": "Scoped direction choices only; not compatibility certification, exact final-plan approval, manifest/lock/install/runtime or Git authority"
+  },
+  "implementationPlanBinding": {
+    "path": "docs/components/ambient-background/v0.4/implementation-plan.md",
+    "canonicalHeading": "## 1. Authority and owner decisions",
+    "contentSHA256": "sha256:c25bdfe955fec20e1ff6b62827d852e973288fbe9c330246192c74cbdb77e3ed",
+    "hashDefinition": "UTF-8 LF bytes from the unique actual whole-line canonicalHeading through EOF, including final LF; tracking metadata excluded",
+    "approvalStatus": "Pending exact final-plan approval; owner direction record does not approve this payload"
+  },
+  "localDocuments": [
+    "docs/components/ambient-background/v0.4/contract-recovery.md",
+    "docs/components/ambient-background/v0.4/implementation-plan.md",
+    "docs/components/ambient-background/v0.4/engine-port-map.md"
+  ],
+  "source": {
+    "referenceEnginePath": "packages/effects/reference/particle-streaks.js",
+    "referenceEngineSHA256": "acabbacd1bdb1b94bb1745cbcb7e3e4bf804a77c3fef3e375d63692bd9ad9086",
+    "tokenSourcePath": "packages/tokens/src/theme.css",
+    "tokenSourceSHA256": "62d10992ae654e34e83d9d11bcf35da29e56c905648015f2415ebdca59bf6ab8",
+    "canonicalCompiledTokenCSSPath": null,
+    "canonicalCompiledTokenCSSSHA256": null,
+    "runtimeURL": null,
+    "runtimeSourceRevision": null,
+    "runtimeEnginePathProposed": "packages/effects/src/ambient-background/particleStreaks.ts",
+    "hostingAndBrowserOwner": "parent; no server or browser action performed by writer",
+    "scope": "Original reference or later separately approved Ambient runtime only; no pulso-director/HomeTemplate choreography or Isotipo layer"
+  },
+  "retainedApprovedReference": {
+    "specVersion": "0.4",
+    "sourceCaptureVersion": "0.3",
+    "repositoryCommit": "0c477f97ce9ddff82f0c41f5c04143498d1ea990",
+    "metadataPath": "docs/components/ambient-background/v0.3/capture.json",
+    "metadataSHA256": "180936afbd2c81bf0a47dc4b576b12a6126e72bd66f02fd6cad8c36e2c3659d3",
+    "conditions": {
+      "browser": "Chromium 148.0.0.0, Linux x86_64",
+      "viewport": { "width": 1280, "height": 720 },
+      "deviceScaleFactor": 1,
+      "theme": "dark; engine ambient background",
+      "motion": "running; capture 3 seconds after start",
+      "transparency": "default; opacity 1",
+      "fonts": "not applicable; canvas has no text",
+      "crop": "full viewport equals component zone",
+      "capturedAt": "2026-10-17"
+    },
+    "visuals": [
+      {
+        "id": "VIS-01",
+        "path": "docs/components/ambient-background/v0.3/base--running--1280--dark.png",
+        "sha256": "d52cdd0877d242f8e9b72dc3d2cd065c274a75f8f1b8eee628b766aee97b5711",
+        "profile": "base",
+        "parameters": { "lineCount": 70, "squareCount": 90, "speedMultiplier": 1, "backgroundGlowOpacity": 0.1 },
+        "altText": "Dark red-black canvas with diagonal glowing red streaks, scattered diamonds and a soft central glow."
+      },
+      {
+        "id": "VIS-02",
+        "path": "docs/components/ambient-background/v0.3/read--running--1280--dark.png",
+        "sha256": "bba1da4dfbd898164dc88c5f8c7c5dbe03f0e3bbb57c2d6421c9a31cfe4c43f4",
+        "profile": "read",
+        "parameters": { "lineCount": 20, "squareCount": 25, "speedMultiplier": 0.6, "backgroundGlowOpacity": 0.1 },
+        "altText": "Sparse diagonal red streaks and diamonds over a mostly empty dark red-black canvas."
+      },
+      {
+        "id": "VIS-03",
+        "path": "docs/components/ambient-background/v0.3/live--running--1280--dark.png",
+        "sha256": "4c0feaa1722243122d27ea9581abaedd7d8ea0feeb2573383a56acb012b08c84",
+        "profile": "live",
+        "parameters": { "lineCount": 110, "squareCount": 120, "speedMultiplier": 1.4, "backgroundGlowOpacity": 0.18 },
+        "altText": "Dense glowing diagonal red streaks and numerous diamonds with a brighter central glow."
+      }
+    ],
+    "approvalScope": "Already adopted density, palette, glow and streak angle per profile; random positions are not normative",
+    "writerVerification": "Local metadata/PNG byte hashes checked against adopted record; no new screenshot, visual inspection or remote access",
+    "reapprovalRequested": false
+  },
+  "proposedRuntimeChecks": [
+    {
+      "id": "OBS-01",
+      "compareWith": ["VIS-01", "VIS-02", "VIS-03"],
+      "scenario": "Real runtime base/read/live, separate component zones after 3 seconds of running at opacity 1, 1280x720 CSS px, DPR 1",
+      "method": "Parent real browser capture and inspection under comparable conditions; retain exact actual browser/version and differences from Chromium 148",
+      "acceptanceIDs": ["AC-01", "AC-02"],
+      "compare": ["density", "palette", "glow", "streak angle", "size distribution"],
+      "notCompared": ["exact random particle positions", "pixel identity", "unmeasured performance"],
+      "actualPNGPaths": [],
+      "actualSHA256": []
+    },
+    {
+      "id": "OBS-02",
+      "scenario": "Constant-size base to read to live without reset, then genuine resize and DPR change",
+      "method": "Real-browser observation plus approved bounded instrumentation if separately authorized; a still PNG alone cannot prove survivor identity or lifecycle",
+      "widthsCSSPixels": [699, 700, 701],
+      "deviceScaleFactors": [1, 2, 3],
+      "expectedNarrowCounts": { "base": [42, 54], "read": [12, 15], "live": [66, 72] },
+      "expectedBackingDPRCap": 2,
+      "acceptanceIDs": ["AC-03", "AC-07"],
+      "actualEvidence": null
+    },
+    {
+      "id": "OBS-03",
+      "scenario": "Opacity 1, 0.5 and 0; reduced motion initially and live changes; hidden then visible; nonpositive then positive container size",
+      "method": "Real media/visibility/resize observation where tooling supports it; record any unsupported visibility transition rather than substituting a mocked event as browser proof",
+      "acceptanceIDs": ["AC-04", "AC-05", "AC-06", "AC-11"],
+      "expected": "No active loop at zero opacity, hidden or zero size; one frame with no loop under reduced motion when drawable; fresh-clock resume",
+      "additionalCondition": "Stopped/static precedence is a pending plan recommendation, not an extra approved contract claim",
+      "actualEvidence": null
+    },
+    {
+      "id": "OBS-04",
+      "scenario": "Forced colors; unavailable main or offscreen 2D context; two instances and one unmounted instance",
+      "method": "Real forced-colors capture plus separately authorized fallback/resource diagnostics. Browser capability failure fixtures and resource instrumentation must retain their provenance",
+      "acceptanceIDs": ["AC-08", "AC-09", "AC-10"],
+      "expected": "Canvas hidden in forced colors; token-backed root fallback when no context; no other instance cancellation or post-unmount work",
+      "actualEvidence": null
+    },
+    {
+      "id": "OBS-05",
+      "scenario": "Actual Storybook Controls profile/opacity and packed native CSS consumer on both supported React majors",
+      "method": "Parent verifies real widgets and computed root opacity/fill/canvas geometry; AST/docgen/recorded canvas calls are complementary evidence, not browser output",
+      "actualEvidence": null
+    }
+  ],
+  "knownLimits": [
+    "Preparation writes documents only. Utility A and conditional dist-only direction are selected; runtime source/build artifacts, compatibility disposition, exact final-plan approval and execution authority remain absent.",
+    "Source captures and naming were already adopted in v0.4 and are not pending new approval. Historical snapshots are not runtime parity results.",
+    "Math.random positions are non-normative. Tests may seed randomness/clock without adding a public seed prop or claiming historical captures were seeded.",
+    "Source captures cover desktop, opacity 1 and running animation only. Narrow/DPR/reduced-motion/visibility/opacity/forced-colors/context/cleanup behavior needs separate runtime verification.",
+    "The writer launched no server/browser, created no screenshot or test harness and performed no build, packed install, AT or Controls-widget verification.",
+    "No exact frame-rate target, screenshot tolerance, resource budget or perceptual threshold has been invented. Density/glow/color/angle comparison must state observed conditions and limits.",
+    "No fonts are drawn in the effect. Exclude unrelated host typography/surfaces from the component-zone crop.",
+    "G1 selected A fixes CVA0.7.1 plus public @egdev/ui workspace:* cn for reconciliation, no UI CSS/helper/test. B is historical, not selected. Compatibility/migration and exact final-plan/execution gates remain Pending; separate exact Isotipo three/@types pins, lazy initialization and engine/lifecycle exceptions are unchanged.",
+    "The decision index is not edited by this task; its AB-P/AB-R/FX-P bindings are temporarily stale pending parent refresh after all reconciliation returns."
+  ],
+  "parentRecordRequired": [
+    "Exact final-plan approval after compatibility/migration review, selected-A direction record, source/artifact revisions and runtime URL",
+    "Actual token CSS artifact byte hash and computed six color inputs",
+    "Browser/tool/version/time, CSS viewport and canvas bounds, backing dimensions, DPR, media preferences/support, visibility, opacity, profile and crop",
+    "Actual component-zone PNG paths and byte hashes; comparison findings keyed to retained VIS IDs",
+    "Mocked/instrumented versus real browser behavior provenance and any unsupported checks",
+    "Separate owner approval for any changed expected design; existing v0.4 adoption remains in force",
+    "Separate asset/publication authority before GitHub-visible new images; no remote publication inferred"
+  ],
+  "runtimeVisualConformity": "not-evaluated",
+  "implementationPlanApprovalReference": null,
+  "utilityDependencyApprovalReference": "docs/components/remaining-components/v0.1/effects-owner-decisions.md",
+  "utilityDependencyApprovalScope": "Route A/exact edges selected for plan reconciliation only; no manifest/lock/install/runtime grant"
+}
