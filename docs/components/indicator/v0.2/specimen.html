@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Indicator v0.2 — static design proposal</title>
+  <link rel="stylesheet" href="/tokens.css">
+  <style>
+    /* Authored static proposal only. Not production CSS, React or browser evidence. */
+    * { box-sizing: border-box; }
+    body { margin: var(--space-0); padding: var(--gutter); color: var(--color-fg-default); background: var(--color-bg-canvas); font-family: var(--font-sans); font-size: var(--text-body-default); line-height: var(--text-body-default--line-height); font-weight: var(--text-body-default--font-weight); letter-spacing: var(--text-body-default--letter-spacing); }
+    main { max-width: var(--content-max); margin-inline: auto; display: grid; gap: var(--space-8); }
+    h1, h2, p, figure { margin: var(--space-0); }
+    h1, h2 { font-size: var(--text-heading-small); line-height: var(--text-heading-small--line-height); font-weight: var(--text-heading-small--font-weight); letter-spacing: var(--text-heading-small--letter-spacing); }
+    header, section { display: grid; gap: var(--space-4); }
+    .note, figcaption { color: var(--color-fg-muted); }
+    .tiles { display: flex; flex-wrap: wrap; align-items: start; gap: var(--space-8); padding: var(--space-6); background: var(--color-surface-1); border: var(--border-width) solid var(--color-border-hairline); border-radius: var(--radius-lg); background-image: var(--gradient-sheen); box-shadow: var(--shadow-edge), var(--shadow-elev-1); }
+    figure { display: grid; gap: var(--space-4); justify-items: start; }
+    figcaption { font-size: var(--text-label-default); line-height: var(--text-label-default--line-height); font-weight: var(--text-label-default--font-weight); letter-spacing: var(--text-label-default--letter-spacing); }
+    .eg-indicator { position: relative; display: inline-flex; vertical-align: middle; overflow: visible; }
+    .host { display: inline-grid; place-items: center; min-height: var(--space-12); padding: var(--space-3) var(--space-4); border: var(--border-width) solid var(--color-border-hairline); border-radius: var(--radius-md); background: var(--color-surface-2); background-image: var(--gradient-sheen); box-shadow: var(--shadow-edge), var(--shadow-elev-1); }
+    .marker { position: absolute; display: grid; place-items: center; pointer-events: none; user-select: none; border-radius: var(--radius-full); border: var(--border-width) solid var(--color-border-hairline); outline: var(--focus-width) solid var(--color-bg-surface); outline-offset: var(--space-0); background-color: var(--color-status-danger); color: var(--color-fg-on-status); background-image: var(--gradient-sheen); box-shadow: var(--shadow-edge), var(--shadow-elev-1); }
+    .marker[data-position="top-right"] { top: calc(-1 * var(--space-1)); right: calc(-1 * var(--space-1)); }
+    .marker[data-position="top-left"] { top: calc(-1 * var(--space-1)); left: calc(-1 * var(--space-1)); }
+    .marker[data-position="bottom-right"] { bottom: calc(-1 * var(--space-1)); right: calc(-1 * var(--space-1)); }
+    .marker[data-position="bottom-left"] { bottom: calc(-1 * var(--space-1)); left: calc(-1 * var(--space-1)); }
+    .marker[data-variant="dot"] { width: var(--space-2); height: var(--space-2); box-shadow: var(--shadow-edge); }
+    .marker[data-variant="dot"][data-size="md"] { width: calc(2.5 * var(--space-1)); height: calc(2.5 * var(--space-1)); }
+    .marker[data-variant="count"] { min-height: calc(4.5 * var(--space-1)); min-width: calc(4.5 * var(--space-1)); padding-inline: var(--space-1); white-space: nowrap; font-family: var(--font-sans); font-size: var(--text-label-default); line-height: var(--text-label-default--line-height); font-weight: var(--text-label-default--font-weight); letter-spacing: var(--text-label-default--letter-spacing); font-variant-numeric: tabular-nums; }
+    .marker[data-variant="count"][data-size="md"] { min-height: calc(5.5 * var(--space-1)); min-width: calc(5.5 * var(--space-1)); }
+    .marker[data-variant="icon"] { width: calc(4.5 * var(--space-1)); height: calc(4.5 * var(--space-1)); }
+    .marker[data-variant="icon"][data-size="md"] { width: calc(5.5 * var(--space-1)); height: calc(5.5 * var(--space-1)); }
+    .marker[data-tone="neutral"] { background-color: var(--color-bg-canvas); color: var(--color-fg-default); }
+    .marker[data-tone="info"] { background-color: var(--color-status-info); }
+    .marker[data-tone="success"] { background-color: var(--color-status-success); }
+    .marker[data-tone="warning"] { background-color: var(--color-status-warning); }
+    .marker[data-tone="brand"] { background-color: var(--color-action-primary-solid-bg); color: var(--color-action-primary-solid-fg); }
+    .glyph { width: calc(2.75 * var(--space-1)); height: calc(2.75 * var(--space-1)); fill: none; stroke: currentColor; stroke-width: var(--icon-stroke); stroke-linecap: round; stroke-linejoin: round; }
+    .marker[data-size="md"] .glyph { width: calc(3.25 * var(--space-1)); height: calc(3.25 * var(--space-1)); }
+    /* Reconstruct existing Avatar utilities; no loading behavior is simulated. */
+    .pair { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-8); padding: var(--space-2); }
+    .avatar { position: relative; display: inline-grid; flex-shrink: 0; place-items: center; width: calc(7.5 * var(--space-1)); height: calc(7.5 * var(--space-1)); border-radius: var(--radius-full); color: var(--color-fg-default); background-image: linear-gradient(135deg, var(--color-bg-deep), var(--color-primitive-red-neon)); }
+    .avatar > .glyph { width: var(--space-4); height: var(--space-4); }
+    .avatar[data-avatar-size="sm"] { width: var(--space-6); height: var(--space-6); }
+    .avatar[data-avatar-size="sm"] > .glyph { width: calc(3.25 * var(--space-1)); height: calc(3.25 * var(--space-1)); }
+    .avatar[data-avatar-size="lg"] { width: var(--space-10); height: var(--space-10); }
+    .avatar[data-avatar-size="lg"] > .glyph { width: var(--icon-size); height: var(--icon-size); }
+    .avatar[data-avatar-size="xl"] { width: var(--space-12); height: var(--space-12); }
+    .avatar[data-avatar-size="xl"] > .glyph { width: var(--space-6); height: var(--space-6); }
+    .avatar-badge { position: absolute; right: calc(-1 * var(--space-1)); bottom: calc(-1 * var(--space-1)); display: grid; place-items: center; width: calc(4.5 * var(--space-1)); height: calc(4.5 * var(--space-1)); border-radius: var(--radius-full); background: var(--color-bg-canvas); color: var(--color-fg-default); outline: var(--focus-width) solid var(--eg-avatar-ring, var(--color-bg-surface)); outline-offset: var(--space-0); }
+    .avatar[data-avatar-size="xl"] .avatar-badge { width: calc(5.5 * var(--space-1)); height: calc(5.5 * var(--space-1)); }
+    .avatar[data-avatar-size="xl"] .avatar-badge .glyph { width: calc(3.25 * var(--space-1)); height: calc(3.25 * var(--space-1)); }
+    .avatar[data-state="paused"] { filter: grayscale(1); opacity: .6; }
+    .canvas-host { background: var(--color-bg-canvas); --eg-avatar-ring: var(--color-bg-canvas); }
+    .authored-focus { box-shadow: var(--shadow-focus); }
+    .disabled-illustration { opacity: .45; }
+    .caption { display: grid; gap: var(--space-2); }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Indicator · v0.2 Draft</h1>
+    <p>Static design illustrations, not implemented components or approved visuals.</p>
+    <p class="note">Canonical compiled tokens must be hosted at /tokens.css. No scripts, external fonts, images, keyboard handlers or focus simulation. Labels describe the intended meaning; authored states do not demonstrate runtime behavior.</p>
+  </header>
+
+  <section id="branches" aria-label="Marker branches and sizes">
+    <h2>VIS-01 · Branches and sizes</h2>
+    <div class="tiles">
+      <figure><div class="eg-indicator"><span class="host">Updates available</span><span class="marker" data-variant="dot" data-position="top-right" aria-hidden="true"></span></div><figcaption>Default: danger · sm · top-right</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">Updates available</span><span class="marker" data-variant="dot" data-size="md" data-position="top-right" aria-hidden="true"></span></div><figcaption>Dot · md</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">Inbox</span><span class="marker" data-variant="count" data-position="top-right" aria-hidden="true">1</span></div><figcaption>1 unread · sm</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">Inbox</span><span class="marker" data-variant="count" data-position="top-right" aria-hidden="true">99</span></div><figcaption>99 unread · sm</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">Inbox</span><span class="marker" data-variant="count" data-position="top-right" aria-hidden="true">99+</span></div><figcaption>120 unread · max 99 · sm</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">Inbox</span><span class="marker" data-variant="count" data-size="md" data-position="top-right" aria-hidden="true">99+</span></div><figcaption>120 unread · max 99 · md</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">Inbox</span></div><figcaption>Zero or invalid count: no marker</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">Channel on LinkedIn</span><span class="marker" data-variant="icon" data-tone="neutral" data-position="top-right" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg></span></div><figcaption>Origin icon · neutral explicit · sm</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">Channel on LinkedIn</span><span class="marker" data-variant="icon" data-size="md" data-position="top-right" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg></span></div><figcaption>Origin icon · default danger · md</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="corners" aria-label="Physical corners in both directions">
+    <h2>VIS-02 · Physical corners</h2>
+    <p class="note">The marker edge is one spacing token outside the anchor. Left/right do not flip in RTL.</p>
+    <div class="tiles" dir="ltr">
+      <figure><div class="eg-indicator"><span class="host">New items</span><span class="marker" data-variant="dot" data-position="top-left" aria-hidden="true"></span></div><figcaption>LTR · top-left</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">New items</span><span class="marker" data-variant="dot" data-position="top-right" aria-hidden="true"></span></div><figcaption>LTR · top-right</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">New items</span><span class="marker" data-variant="dot" data-position="bottom-left" aria-hidden="true"></span></div><figcaption>LTR · bottom-left</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">New items</span><span class="marker" data-variant="dot" data-position="bottom-right" aria-hidden="true"></span></div><figcaption>LTR · bottom-right</figcaption></figure>
+    </div>
+    <div class="tiles" dir="rtl">
+      <figure><div class="eg-indicator"><span class="host">New items</span><span class="marker" data-variant="dot" data-position="top-left" aria-hidden="true"></span></div><figcaption>RTL · top-left</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">New items</span><span class="marker" data-variant="dot" data-position="top-right" aria-hidden="true"></span></div><figcaption>RTL · top-right</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">New items</span><span class="marker" data-variant="dot" data-position="bottom-left" aria-hidden="true"></span></div><figcaption>RTL · bottom-left</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">New items</span><span class="marker" data-variant="dot" data-position="bottom-right" aria-hidden="true"></span></div><figcaption>RTL · bottom-right</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="tones" aria-label="Six marker tone families">
+    <h2>VIS-02 · Tone families</h2>
+    <p class="note">Tone is supplementary. A notification count is not an error/status announcement.</p>
+    <div class="tiles">
+      <figure><div class="eg-indicator"><span class="host">Inbox</span><span class="marker" data-variant="count" data-tone="neutral" data-position="top-right" aria-hidden="true">8</span></div><figcaption>Neutral · 8 unread</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">Inbox</span><span class="marker" data-variant="count" data-tone="info" data-position="top-right" aria-hidden="true">8</span></div><figcaption>Info · 8 unread</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">Inbox</span><span class="marker" data-variant="count" data-tone="success" data-position="top-right" aria-hidden="true">8</span></div><figcaption>Success · 8 unread</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">Inbox</span><span class="marker" data-variant="count" data-tone="warning" data-position="top-right" aria-hidden="true">8</span></div><figcaption>Warning · 8 unread</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">Inbox</span><span class="marker" data-variant="count" data-tone="danger" data-position="top-right" aria-hidden="true">8</span></div><figcaption>Danger · 8 unread</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">Inbox</span><span class="marker" data-variant="count" data-tone="brand" data-position="top-right" aria-hidden="true">8</span></div><figcaption>Brand · 8 unread</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="avatar-comparison" aria-label="Avatar before and proposed after comparison">
+    <h2>VIS-03 · Avatar compatibility, not a redesign</h2>
+    <p>Each pair: Before / After (proposed). No intended appearance difference. Geometry-only sharing retains the identity badge, no Indicator sheen, hairline or elevation.</p>
+    <p class="note">Both sides are authored source reconstructions, not a migrated React component. Token outline approximates the current Tailwind ring-2 without inventing a shadow; real computed ring parity remains pending.</p>
+    <div class="tiles">
+      <figure><div class="pair">
+        <span class="avatar" data-avatar-size="sm" role="img" aria-label="Before: channel on LinkedIn, small"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="avatar-badge eg-avatar__badge" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg></span></span>
+        <span class="avatar" data-avatar-size="sm" role="img" aria-label="After proposed: channel on LinkedIn, small"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="avatar-badge eg-avatar__badge" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg></span></span>
+      </div><figcaption>sm · disc 24 · marker 18 · glyph 11</figcaption></figure>
+      <figure><div class="pair">
+        <span class="avatar" role="img" aria-label="Before: channel on LinkedIn, medium"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="avatar-badge eg-avatar__badge" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg></span></span>
+        <span class="avatar" role="img" aria-label="After proposed: channel on LinkedIn, medium"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="avatar-badge eg-avatar__badge" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg></span></span>
+      </div><figcaption>md · disc 30 · marker 18 · glyph 11</figcaption></figure>
+      <figure><div class="pair">
+        <span class="avatar" data-avatar-size="lg" role="img" aria-label="Before: channel on LinkedIn, large"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="avatar-badge eg-avatar__badge" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg></span></span>
+        <span class="avatar" data-avatar-size="lg" role="img" aria-label="After proposed: channel on LinkedIn, large"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="avatar-badge eg-avatar__badge" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg></span></span>
+      </div><figcaption>lg · disc 40 · marker 18 · glyph 11</figcaption></figure>
+      <figure><div class="pair">
+        <span class="avatar" data-avatar-size="xl" role="img" aria-label="Before: channel on LinkedIn, extra large"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="avatar-badge eg-avatar__badge" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg></span></span>
+        <span class="avatar" data-avatar-size="xl" role="img" aria-label="After proposed: channel on LinkedIn, extra large"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="avatar-badge eg-avatar__badge" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg></span></span>
+      </div><figcaption>xl · disc 48 · marker 22 · glyph 13</figcaption></figure>
+      <figure><div class="pair">
+        <span class="avatar" data-state="paused" role="img" aria-label="Before: channel on LinkedIn, paused"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="avatar-badge eg-avatar__badge" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg></span></span>
+        <span class="avatar" data-state="paused" role="img" aria-label="After proposed: channel on LinkedIn, paused"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="avatar-badge eg-avatar__badge" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg></span></span>
+      </div><figcaption>Paused md · whole subtree at 60%</figcaption></figure>
+    </div>
+    <div class="tiles canvas-host">
+      <figure><div class="pair">
+        <span class="avatar" role="img" aria-label="Before: channel on LinkedIn, canvas ring"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="avatar-badge eg-avatar__badge" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg></span></span>
+        <span class="avatar" role="img" aria-label="After proposed: channel on LinkedIn, canvas ring"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="avatar-badge eg-avatar__badge" aria-hidden="true"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg></span></span>
+      </div><figcaption>Token-valued --eg-avatar-ring override: canvas, both sides</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="contexts" aria-label="Authored context illustrations">
+    <h2>VIS-04 · Context and overflow</h2>
+    <p class="note">Inert spans illustrate child focus/disabled paint only. No controls or interaction implementation. The marker stays visible independently of child disabled state.</p>
+    <div class="tiles">
+      <figure><div class="eg-indicator"><span class="host authored-focus">Inbox</span><span class="marker" data-variant="count" data-position="top-right" aria-hidden="true">99+</span></div><figcaption>Authored child focus · 120 unread</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host disabled-illustration">Inbox</span><span class="marker" data-variant="count" data-position="top-right" aria-hidden="true">99+</span></div><figcaption>Authored disabled child · marker unchanged</figcaption></figure>
+      <figure><div class="eg-indicator"><span class="host">Inbox</span><span class="marker" data-variant="count" data-size="md" data-position="top-right" aria-hidden="true">9999+</span></div><figcaption>12000 unread · max 9999 · grows horizontally</figcaption></figure>
+    </div>
+  </section>
+  <p class="note">Source: f88b36e Avatar/Icon/token APIs. Glyph geometry: existing user/linkedin descriptors from packages/ui/src/atoms/icon/icon-paths.ts. No new runtime icons. Photo decoding, event propagation, focus, AT, CSS production output and true before/after parity remain unevaluated.</p>
+</main>
+</body>
+</html>

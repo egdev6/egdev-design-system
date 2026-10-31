@@ -1,0 +1,96 @@
+{
+  "widgets": [
+    {
+      "name": "title",
+      "selects": [],
+      "buttons": ["Set string"]
+    },
+    {
+      "name": "className",
+      "selects": [],
+      "buttons": ["Set string"]
+    },
+    {
+      "name": "dir",
+      "selects": [],
+      "buttons": ["Set string"]
+    },
+    {
+      "name": "id",
+      "selects": [],
+      "buttons": ["Set string"]
+    },
+    {
+      "name": "aria-describedby",
+      "selects": [],
+      "buttons": ["Set string"]
+    },
+    {
+      "name": "children*",
+      "selects": [],
+      "buttons": []
+    },
+    {
+      "name": "variant",
+      "selects": [
+        {
+          "name": null,
+          "options": ["Choose option...", "default", "banded"]
+        }
+      ],
+      "buttons": []
+    },
+    {
+      "name": "tone",
+      "selects": [
+        {
+          "name": null,
+          "options": ["Choose option...", "inherit", "surface-1", "overlay"]
+        }
+      ],
+      "buttons": []
+    }
+  ],
+  "result": {
+    "variant": "banded",
+    "tone": "surface-1",
+    "sameRoot": true,
+    "headerBackground": "rgb(35, 36, 40)"
+  },
+  "tables": [
+    {
+      "headers": ["Name", "Description", "Default", "Control"],
+      "rows": [
+        ["title", "string", "-", "Set string"],
+        ["className", "string", "-", "Set string"],
+        ["dir", "string", "-", "Set string"],
+        ["id", "string", "-", "Set string"],
+        [
+          "aria-describedby",
+          "Identifies the element (or elements) that describes the object.string",
+          "-",
+          "Set string"
+        ],
+        [
+          "children*",
+          "Optional Header, exactly one Body and optional Footer, in direct DOM sibling order.\nFragments without wrappers are supported; Panel never parses or repairs the child tree.ReactNode",
+          "-",
+          "Setup controls-"
+        ],
+        [
+          "variant",
+          "Shared presentation of the supplied zones, without changing their behavior.\"default\"\"banded\"",
+          "\"default\"",
+          "variantChoose option...defaultbanded"
+        ],
+        [
+          "tone",
+          "Explicit Material ownership. Inherit exposes an existing raised host, never infers one.\"inherit\"\"surface-1\"\"overlay\"",
+          "\"surface-1\"",
+          "toneChoose option...inheritsurface-1overlay"
+        ]
+      ]
+    }
+  ],
+  "tabs": ["Panel", "panelHeader", "panelBody", "panelFooter"]
+}

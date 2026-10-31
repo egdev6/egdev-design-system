@@ -261,7 +261,7 @@
     "radix": "—",
     "compone": "Icon",
     "accion": "extraer",
-    "notas": "Draft v0.1 only: anchored dot/count/network-icon marker and positioning wrapper. Avatar #51 migration is a separate amendment; Badge #52 stays unchanged. Contract: [#178](https://github.com/egdev6/egdev-design-system/issues/178), [local draft](components/indicator/v0.1/spec.md). No implementation approval."
+    "notas": "Implemented public working-tree React atom under the [approved v0.2 contract](components/indicator/v0.2/spec.md): passive dot/count/icon marker on a direct-children anchor, physical corners, safe-integer counts and overflow text. Marker semantics stay decorative and consumer content owns meaning. Compact token Material; no stylesheet, ref or asChild. Parent unit, metadata, build and packed React 18.3.1/19.3.0 checks passed; runtime browser/AT conformity remains pending. Badge is unchanged."
   },
   {
     "actual": "—",
@@ -314,9 +314,9 @@
     "nivel": "atom",
     "destino": "ui",
     "radix": "Avatar",
-    "compone": "Icon; proposed Indicator migration (#178)",
+    "compone": "Icon; source-private Indicator geometry",
     "accion": "mantener",
-    "notas": "Implemented in @egdev/ui under the approved v0.1 contract: passive identity disc with Radix-managed photo loading and immediate user-icon fallback, sm/md/lg/xl sizes, an optional decorative network badge and paused presentation. Root label owns the accessible name; decorative without it. No initials, interaction, ref, asChild or stylesheet. Contract: [#51](https://github.com/egdev6/egdev-design-system/issues/51). Proposed Indicator extraction preserves badgeIcon, geometry and legacy marker; amendment and plan approval remain separate, with no migration performed."
+    "notas": "Implemented in @egdev/ui under the approved v0.1 contract: passive identity disc with Radix-managed photo loading and immediate user-icon fallback, sm/md/lg/xl sizes, an optional decorative network badge and paused presentation. Root label owns the accessible name; decorative without it. No initials, interaction, ref, asChild or stylesheet. Contract: [#51](https://github.com/egdev6/egdev-design-system/issues/51). The separately approved Indicator amendment now shares source-private geometry/glyph/position recipes only, not the public wrapper or standalone paint. Public types, markup, ring and paused policy remain unchanged; browser-measured migration parity is still pending."
   },
   {
     "actual": "Logo",
@@ -613,7 +613,7 @@
     "radix": "—",
     "compone": "Surface recipes, Badge, Icon; consumer Button/Link/IconButton",
     "accion": "mantener",
-    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/91): passive article named by its generated h1–h6, readable status Badge, free body and independent actions/footer. Solid/overlay Material and tonal bands compose Surface recipes; error retains Material with a danger border, stopped is an unpainted dashed frame. Wide is parent grid placement. No Panel composition (#180 remains unapproved), stylesheet, ref, asChild, process state or whole-card activation. Legacy styles unchanged; visual conformity not evaluated."
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/91): passive article named by its generated h1–h6, readable status Badge, free body and independent actions/footer. Solid/overlay Material and tonal bands compose Surface recipes; error retains Material with a danger border, stopped is an unpainted dashed frame. Wide is parent grid placement. No Panel composition or migration, stylesheet, ref, asChild, process state or whole-card activation. Legacy styles unchanged; visual conformity not evaluated."
   },
   {
     "actual": "SectionHeader",
@@ -646,7 +646,7 @@
     "radix": "—",
     "compone": "Surface",
     "accion": "extraer",
-    "notas": "Draft v0.1 only: static host-agnostic Header/Body/Footer composition, default/banded variants and explicit frame ownership. Popover #96, Dialog #119 or a page own opening/semantics. Contract: [#180](https://github.com/egdev6/egdev-design-system/issues/180), [local draft](components/panel/v0.1/spec.md)."
+    "notas": "Implemented public working-tree compound React molecule under the [approved v0.2 contract](components/panel/v0.2/spec.md): Panel/Header/Body/Footer, default/banded treatment and explicit surface-1/overlay/inherit ownership. Real Surface supplies framed paint; inherit requires an already painted host. No stylesheet, ref, asChild or interaction engine; ModuleCard is not migrated. Parent unit, metadata, build and packed React 18.3.1/19.3.0 checks passed; runtime browser/AT conformity remains pending."
   },
   {
     "actual": "—",
@@ -657,7 +657,7 @@
     "radix": "Collapsible",
     "compone": "Surface, Button recipe, Icon",
     "accion": "nuevo",
-    "notas": "Draft v0.1 only: independent disclosure over @radix-ui/react-collapsible, pending owner confirmation before dependency addition. Accordion is not justified or requested; NavList #92 unchanged. Contract: [#181](https://github.com/egdev6/egdev-design-system/issues/181), [local draft](components/collapsible/v0.1/spec.md)."
+    "notas": "Implemented public working-tree React disclosure over the already-declared Radix Collapsible 1.2.1 under the [v0.2 base](components/collapsible/v0.2/spec.md) and [approved v0.3 relationship amendment](components/collapsible/v0.3/radix-relationship-amendment.md). Fixed Surface frame, ghost/md button recipe, native state/presence and Trigger-only button ref. Closed Trigger omits aria-controls; the hidden Content shell/id remains while children unmount. No stylesheet, custom key/focus engine or dependency change; NavList is unchanged. Parent unit, metadata, build and packed React 18.3.1/19.3.0 checks passed; runtime browser/AT conformity remains pending."
   },
   {
     "actual": "SearchTrigger",

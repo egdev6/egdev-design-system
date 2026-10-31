@@ -9,6 +9,14 @@ export * from './atoms/dropzone';
 export * from './atoms/gauge';
 export * from './atoms/icon';
 export * from './atoms/icon-button';
+export type {
+  IndicatorPosition,
+  IndicatorProps,
+  IndicatorSize,
+  IndicatorTone,
+  IndicatorVariant
+} from './atoms/indicator';
+export { Indicator } from './atoms/indicator';
 export * from './atoms/input';
 export * from './atoms/kbd';
 export * from './atoms/link';
@@ -33,6 +41,8 @@ export * from './molecules/button-group';
 export * from './molecules/carousel';
 export type { ChipGroupOption, ChipGroupProps, ChipGroupType } from './molecules/chip-group';
 export { ChipGroup } from './molecules/chip-group';
+export type { CollapsibleContentProps, CollapsibleProps, CollapsibleTriggerProps } from './molecules/collapsible';
+export { Collapsible, CollapsibleContent, CollapsibleTrigger } from './molecules/collapsible';
 export * from './molecules/field';
 export * from './molecules/gauge-dock';
 export type { HoverCardContentProps, HoverCardProps, HoverCardTriggerProps } from './molecules/hover-card';
@@ -44,6 +54,15 @@ export * from './molecules/module-card';
 export * from './molecules/nav-list';
 export * from './molecules/notice';
 export * from './molecules/page-header';
+export type {
+  PanelBodyProps,
+  PanelFooterProps,
+  PanelHeaderProps,
+  PanelProps,
+  PanelTone,
+  PanelVariant
+} from './molecules/panel';
+export { Panel, PanelBody, PanelFooter, PanelHeader } from './molecules/panel';
 export * from './molecules/popover';
 export type {
   SectionHeaderLevel,

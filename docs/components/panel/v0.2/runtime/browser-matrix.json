@@ -1,0 +1,1966 @@
+[
+  {
+    "story": "default",
+    "width": 1280,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "default",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 332.625,
+          "top": 16,
+          "right": 1264,
+          "bottom": 348.625,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__header"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 16.80000114440918,
+              "width": 1246.4000244140625,
+              "height": 110.2249984741211,
+              "top": 16.80000114440918,
+              "right": 1263.2000255584717,
+              "bottom": 127.02499961853027,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 127.0250015258789,
+              "width": 1246.4000244140625,
+              "height": 163.1999969482422,
+              "top": 127.0250015258789,
+              "right": 1263.2000255584717,
+              "bottom": 290.2249984741211,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__footer"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 290.2250061035156,
+              "width": 1246.4000244140625,
+              "height": 57.60000228881836,
+              "top": 290.2250061035156,
+              "right": 1263.2000255584717,
+              "bottom": 347.825008392334,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "banded",
+    "width": 1280,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 334.2250061035156,
+          "top": 16,
+          "right": 1264,
+          "bottom": 350.2250061035156,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__header"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 16.80000114440918,
+              "width": 1246.4000244140625,
+              "height": 111.0250015258789,
+              "top": 16.80000114440918,
+              "right": 1263.2000255584717,
+              "bottom": 127.82500267028809,
+              "left": 16.80000114440918
+            },
+            "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 127.82500457763672,
+              "width": 1246.4000244140625,
+              "height": 163.1999969482422,
+              "top": 127.82500457763672,
+              "right": 1263.2000255584717,
+              "bottom": 291.0250015258789,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__footer"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 291.0249938964844,
+              "width": 1246.4000244140625,
+              "height": 58.400001525878906,
+              "top": 291.0249938964844,
+              "right": 1263.2000255584717,
+              "bottom": 349.4249954223633,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "inherited-host",
+    "width": 1280,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "default",
+        "tone": "inherit",
+        "rect": {
+          "x": 40.79999923706055,
+          "y": 40.79999923706055,
+          "width": 1198.4000244140625,
+          "height": 331.0249938964844,
+          "top": 40.79999923706055,
+          "right": 1239.200023651123,
+          "bottom": 371.8249931335449,
+          "left": 40.79999923706055
+        },
+        "ownsSurface": false,
+        "distinctSurfaceHost": true,
+        "background": "none",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "border": "0px solid rgb(255, 255, 255)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__header"],
+            "rect": {
+              "x": 40.79999923706055,
+              "y": 40.79999923706055,
+              "width": 1198.4000244140625,
+              "height": 110.2249984741211,
+              "top": 40.79999923706055,
+              "right": 1239.200023651123,
+              "bottom": 151.02499771118164,
+              "left": 40.79999923706055
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 40.79999923706055,
+              "y": 151.02500915527344,
+              "width": 1198.4000244140625,
+              "height": 163.1999969482422,
+              "top": 151.02500915527344,
+              "right": 1239.200023651123,
+              "bottom": 314.2250061035156,
+              "left": 40.79999923706055
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__footer"],
+            "rect": {
+              "x": 40.79999923706055,
+              "y": 314.2250061035156,
+              "width": 1198.4000244140625,
+              "height": 57.60000228881836,
+              "top": 314.2250061035156,
+              "right": 1239.200023651123,
+              "bottom": 371.825008392334,
+              "left": 40.79999923706055
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      },
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "inherit",
+        "rect": {
+          "x": 40.79999923706055,
+          "y": 445.4250183105469,
+          "width": 1198.4000244140625,
+          "height": 332.625,
+          "top": 445.4250183105469,
+          "right": 1239.200023651123,
+          "bottom": 778.0500183105469,
+          "left": 40.79999923706055
+        },
+        "ownsSurface": false,
+        "distinctSurfaceHost": true,
+        "background": "none",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "border": "0px solid rgb(255, 255, 255)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__header"],
+            "rect": {
+              "x": 40.79999923706055,
+              "y": 445.4250183105469,
+              "width": 1198.4000244140625,
+              "height": 111.0250015258789,
+              "top": 445.4250183105469,
+              "right": 1239.200023651123,
+              "bottom": 556.4500198364258,
+              "left": 40.79999923706055
+            },
+            "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 40.79999923706055,
+              "y": 556.4500122070312,
+              "width": 1198.4000244140625,
+              "height": 163.1999969482422,
+              "top": 556.4500122070312,
+              "right": 1239.200023651123,
+              "bottom": 719.6500091552734,
+              "left": 40.79999923706055
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__footer"],
+            "rect": {
+              "x": 40.79999923706055,
+              "y": 719.6500244140625,
+              "width": 1198.4000244140625,
+              "height": 58.400001525878906,
+              "top": 719.6500244140625,
+              "right": 1239.200023651123,
+              "bottom": 778.0500259399414,
+              "left": 40.79999923706055
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "overlay",
+    "width": 1280,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "overlay",
+        "rect": {
+          "x": 872,
+          "y": 24,
+          "width": 384,
+          "height": 385.4250183105469,
+          "top": 24,
+          "right": 1256,
+          "bottom": 409.4250183105469,
+          "left": 872
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "none",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.13) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 4px 10px 0px, rgba(0, 0, 0, 0.9) 0px 28px 70px -10px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.14)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__header"],
+            "rect": {
+              "x": 872.7999877929688,
+              "y": 24.80000114440918,
+              "width": 382.3999938964844,
+              "height": 111.0250015258789,
+              "top": 24.80000114440918,
+              "right": 1255.1999816894531,
+              "bottom": 135.8250026702881,
+              "left": 872.7999877929688
+            },
+            "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 872.7999877929688,
+              "y": 135.8249969482422,
+              "width": 382.3999938964844,
+              "height": 214.40000915527344,
+              "top": 135.8249969482422,
+              "right": 1255.1999816894531,
+              "bottom": 350.2250061035156,
+              "left": 872.7999877929688
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__footer"],
+            "rect": {
+              "x": 872.7999877929688,
+              "y": 350.2250061035156,
+              "width": 382.3999938964844,
+              "height": 58.400001525878906,
+              "top": 350.2250061035156,
+              "right": 1255.1999816894531,
+              "bottom": 408.62500762939453,
+              "left": 872.7999877929688
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "optional-parts",
+    "width": 1280,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 59.20000076293945,
+          "top": 16,
+          "right": 1264,
+          "bottom": 75.20000076293945,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 16.80000114440918,
+              "width": 1246.4000244140625,
+              "height": 57.60000228881836,
+              "top": 16.80000114440918,
+              "right": 1263.2000255584717,
+              "bottom": 74.40000343322754,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      },
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 99.20000457763672,
+          "width": 1248,
+          "height": 117.5999984741211,
+          "top": 99.20000457763672,
+          "right": 1264,
+          "bottom": 216.8000030517578,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 100,
+              "width": 1246.4000244140625,
+              "height": 57.60000228881836,
+              "top": 100,
+              "right": 1263.2000255584717,
+              "bottom": 157.60000228881836,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__footer"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 157.60000610351562,
+              "width": 1246.4000244140625,
+              "height": 58.400001525878906,
+              "top": 157.60000610351562,
+              "right": 1263.2000255584717,
+              "bottom": 216.00000762939453,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      },
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 240.8000030517578,
+          "width": 1248,
+          "height": 170.22500610351562,
+          "top": 240.8000030517578,
+          "right": 1264,
+          "bottom": 411.02500915527344,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__header"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 241.60000610351562,
+              "width": 1246.4000244140625,
+              "height": 111.0250015258789,
+              "top": 241.60000610351562,
+              "right": 1263.2000255584717,
+              "bottom": 352.62500762939453,
+              "left": 16.80000114440918
+            },
+            "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 352.625,
+              "width": 1246.4000244140625,
+              "height": 57.60000228881836,
+              "top": 352.625,
+              "right": 1263.2000255584717,
+              "bottom": 410.22500228881836,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "nested-panels",
+    "width": 1280,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 482.3999938964844,
+          "top": 16,
+          "right": 1264,
+          "bottom": 498.3999938964844,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__header"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 16.80000114440918,
+              "width": 1246.4000244140625,
+              "height": 111.0250015258789,
+              "top": 16.80000114440918,
+              "right": 1263.2000255584717,
+              "bottom": 127.82500267028809,
+              "left": 16.80000114440918
+            },
+            "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 127.82500457763672,
+              "width": 1246.4000244140625,
+              "height": 369.7749938964844,
+              "top": 127.82500457763672,
+              "right": 1263.2000255584717,
+              "bottom": 497.5999984741211,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      },
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "default",
+        "tone": "inherit",
+        "rect": {
+          "x": 57.60000228881836,
+          "y": 242.22500610351562,
+          "width": 1164.800048828125,
+          "height": 214.5749969482422,
+          "top": 242.22500610351562,
+          "right": 1222.4000511169434,
+          "bottom": 456.8000030517578,
+          "left": 57.60000228881836
+        },
+        "ownsSurface": false,
+        "distinctSurfaceHost": true,
+        "background": "none",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "border": "0px solid rgb(255, 255, 255)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__header"],
+            "rect": {
+              "x": 57.60000228881836,
+              "y": 242.22500610351562,
+              "width": 1164.800048828125,
+              "height": 99.375,
+              "top": 242.22500610351562,
+              "right": 1222.4000511169434,
+              "bottom": 341.6000061035156,
+              "left": 57.60000228881836
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 57.60000228881836,
+              "y": 341.6000061035156,
+              "width": 1164.800048828125,
+              "height": 57.60000228881836,
+              "top": 341.6000061035156,
+              "right": 1222.4000511169434,
+              "bottom": 399.200008392334,
+              "left": 57.60000228881836
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__footer"],
+            "rect": {
+              "x": 57.60000228881836,
+              "y": 399.20001220703125,
+              "width": 1164.800048828125,
+              "height": 57.60000228881836,
+              "top": 399.20001220703125,
+              "right": 1222.4000511169434,
+              "bottom": 456.8000144958496,
+              "left": 57.60000228881836
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "child-controls",
+    "width": 1280,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "default",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 409.4250183105469,
+          "top": 16,
+          "right": 1264,
+          "bottom": 425.4250183105469,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__header"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 16.80000114440918,
+              "width": 1246.4000244140625,
+              "height": 110.2249984741211,
+              "top": 16.80000114440918,
+              "right": 1263.2000255584717,
+              "bottom": 127.02499961853027,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 127.0250015258789,
+              "width": 1246.4000244140625,
+              "height": 217.60000610351562,
+              "top": 127.0250015258789,
+              "right": 1263.2000255584717,
+              "bottom": 344.62500762939453,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__footer"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 344.625,
+              "width": 1246.4000244140625,
+              "height": 80,
+              "top": 344.625,
+              "right": 1263.2000255584717,
+              "bottom": 424.625,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "layout-composition",
+    "width": 1280,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 576,
+          "height": 260.625,
+          "top": 16,
+          "right": 592,
+          "bottom": 276.625,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__header"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 16.80000114440918,
+              "width": 574.4000244140625,
+              "height": 111.0250015258789,
+              "top": 16.80000114440918,
+              "right": 591.2000255584717,
+              "bottom": 127.82500267028809,
+              "left": 16.80000114440918
+            },
+            "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 127.82500457763672,
+              "width": 574.4000244140625,
+              "height": 89.5999984741211,
+              "top": 127.82500457763672,
+              "right": 591.2000255584717,
+              "bottom": 217.4250030517578,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__footer"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 217.4250030517578,
+              "width": 574.4000244140625,
+              "height": 58.400001525878906,
+              "top": 217.4250030517578,
+              "right": 591.2000255584717,
+              "bottom": 275.8250045776367,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "page-region",
+    "width": 1280,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "default",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 1248,
+          "height": 169.4250030517578,
+          "top": 16,
+          "right": 1264,
+          "bottom": 185.4250030517578,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__header"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 16.80000114440918,
+              "width": 1246.4000244140625,
+              "height": 110.2249984741211,
+              "top": 16.80000114440918,
+              "right": 1263.2000255584717,
+              "bottom": 127.02499961853027,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 127.0250015258789,
+              "width": 1246.4000244140625,
+              "height": 57.60000228881836,
+              "top": 127.0250015258789,
+              "right": 1263.2000255584717,
+              "bottom": 184.62500381469727,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "in-popover",
+    "width": 1280,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "inherit",
+        "rect": {
+          "x": 40.79999923706055,
+          "y": 93.80000305175781,
+          "width": 334.3999938964844,
+          "height": 363.0249938964844,
+          "top": 93.80000305175781,
+          "right": 375.1999931335449,
+          "bottom": 456.8249969482422,
+          "left": 40.79999923706055
+        },
+        "ownsSurface": false,
+        "distinctSurfaceHost": true,
+        "background": "none",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "border": "0px solid rgb(255, 255, 255)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__header"],
+            "rect": {
+              "x": 40.79999923706055,
+              "y": 93.80000305175781,
+              "width": 334.3999938964844,
+              "height": 111.0250015258789,
+              "top": 93.80000305175781,
+              "right": 375.1999931335449,
+              "bottom": 204.82500457763672,
+              "left": 40.79999923706055
+            },
+            "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 40.79999923706055,
+              "y": 204.8249969482422,
+              "width": 334.3999938964844,
+              "height": 179.1999969482422,
+              "top": 204.8249969482422,
+              "right": 375.1999931335449,
+              "bottom": 384.0249938964844,
+              "left": 40.79999923706055
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__footer"],
+            "rect": {
+              "x": 40.79999923706055,
+              "y": 384.0249938964844,
+              "width": 334.3999938964844,
+              "height": 72.80000305175781,
+              "top": 384.0249938964844,
+              "right": 375.1999931335449,
+              "bottom": 456.8249969482422,
+              "left": 40.79999923706055
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "default",
+    "width": 390,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "default",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 383.82501220703125,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 399.82501220703125,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__header"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 16.80000114440918,
+              "width": 356.8000183105469,
+              "height": 110.2249984741211,
+              "top": 16.80000114440918,
+              "right": 373.60001945495605,
+              "bottom": 127.02499961853027,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 127.0250015258789,
+              "width": 356.8000183105469,
+              "height": 214.40000915527344,
+              "top": 127.0250015258789,
+              "right": 373.60001945495605,
+              "bottom": 341.42501068115234,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__footer"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 341.4250183105469,
+              "width": 356.8000183105469,
+              "height": 57.60000228881836,
+              "top": 341.4250183105469,
+              "right": 373.60001945495605,
+              "bottom": 399.02502059936523,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "banded",
+    "width": 390,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 385.4250183105469,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 401.4250183105469,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__header"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 16.80000114440918,
+              "width": 356.8000183105469,
+              "height": 111.0250015258789,
+              "top": 16.80000114440918,
+              "right": 373.60001945495605,
+              "bottom": 127.82500267028809,
+              "left": 16.80000114440918
+            },
+            "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 127.82500457763672,
+              "width": 356.8000183105469,
+              "height": 214.40000915527344,
+              "top": 127.82500457763672,
+              "right": 373.60001945495605,
+              "bottom": 342.22501373291016,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__footer"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 342.2250061035156,
+              "width": 356.8000183105469,
+              "height": 58.400001525878906,
+              "top": 342.2250061035156,
+              "right": 373.60001945495605,
+              "bottom": 400.62500762939453,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "inherited-host",
+    "width": 390,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "default",
+        "tone": "inherit",
+        "rect": {
+          "x": 40.79999923706055,
+          "y": 40.79999923706055,
+          "width": 293.6000061035156,
+          "height": 382.2250061035156,
+          "top": 40.79999923706055,
+          "right": 334.4000053405762,
+          "bottom": 423.0250053405762,
+          "left": 40.79999923706055
+        },
+        "ownsSurface": false,
+        "distinctSurfaceHost": true,
+        "background": "none",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "border": "0px solid rgb(255, 255, 255)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__header"],
+            "rect": {
+              "x": 40.79999923706055,
+              "y": 40.79999923706055,
+              "width": 293.6000061035156,
+              "height": 110.2249984741211,
+              "top": 40.79999923706055,
+              "right": 334.4000053405762,
+              "bottom": 151.02499771118164,
+              "left": 40.79999923706055
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 40.79999923706055,
+              "y": 151.02500915527344,
+              "width": 293.6000061035156,
+              "height": 214.40000915527344,
+              "top": 151.02500915527344,
+              "right": 334.4000053405762,
+              "bottom": 365.4250183105469,
+              "left": 40.79999923706055
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__footer"],
+            "rect": {
+              "x": 40.79999923706055,
+              "y": 365.4250183105469,
+              "width": 293.6000061035156,
+              "height": 57.60000228881836,
+              "top": 365.4250183105469,
+              "right": 334.4000053405762,
+              "bottom": 423.02502059936523,
+              "left": 40.79999923706055
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      },
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "inherit",
+        "rect": {
+          "x": 40.79999923706055,
+          "y": 496.625,
+          "width": 293.6000061035156,
+          "height": 383.82501220703125,
+          "top": 496.625,
+          "right": 334.4000053405762,
+          "bottom": 880.4500122070312,
+          "left": 40.79999923706055
+        },
+        "ownsSurface": false,
+        "distinctSurfaceHost": true,
+        "background": "none",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "border": "0px solid rgb(255, 255, 255)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__header"],
+            "rect": {
+              "x": 40.79999923706055,
+              "y": 496.625,
+              "width": 293.6000061035156,
+              "height": 111.0250015258789,
+              "top": 496.625,
+              "right": 334.4000053405762,
+              "bottom": 607.6500015258789,
+              "left": 40.79999923706055
+            },
+            "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 40.79999923706055,
+              "y": 607.6500244140625,
+              "width": 293.6000061035156,
+              "height": 214.40000915527344,
+              "top": 607.6500244140625,
+              "right": 334.4000053405762,
+              "bottom": 822.0500335693359,
+              "left": 40.79999923706055
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__footer"],
+            "rect": {
+              "x": 40.79999923706055,
+              "y": 822.0499877929688,
+              "width": 293.6000061035156,
+              "height": 58.400001525878906,
+              "top": 822.0499877929688,
+              "right": 334.4000053405762,
+              "bottom": 880.4499893188477,
+              "left": 40.79999923706055
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "overlay",
+    "width": 390,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "overlay",
+        "rect": {
+          "x": 24,
+          "y": 24,
+          "width": 342.3999938964844,
+          "height": 385.4250183105469,
+          "top": 24,
+          "right": 366.3999938964844,
+          "bottom": 409.4250183105469,
+          "left": 24
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "none",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.13) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 4px 10px 0px, rgba(0, 0, 0, 0.9) 0px 28px 70px -10px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.14)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__header"],
+            "rect": {
+              "x": 24.80000114440918,
+              "y": 24.80000114440918,
+              "width": 340.8000183105469,
+              "height": 111.0250015258789,
+              "top": 24.80000114440918,
+              "right": 365.60001945495605,
+              "bottom": 135.8250026702881,
+              "left": 24.80000114440918
+            },
+            "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 24.80000114440918,
+              "y": 135.8249969482422,
+              "width": 340.8000183105469,
+              "height": 214.40000915527344,
+              "top": 135.8249969482422,
+              "right": 365.60001945495605,
+              "bottom": 350.2250061035156,
+              "left": 24.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__footer"],
+            "rect": {
+              "x": 24.80000114440918,
+              "y": 350.2250061035156,
+              "width": 340.8000183105469,
+              "height": 58.400001525878906,
+              "top": 350.2250061035156,
+              "right": 365.60001945495605,
+              "bottom": 408.62500762939453,
+              "left": 24.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "optional-parts",
+    "width": 390,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 84.80000305175781,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 100.80000305175781,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 16.80000114440918,
+              "width": 356.8000183105469,
+              "height": 83.20000457763672,
+              "top": 16.80000114440918,
+              "right": 373.60001945495605,
+              "bottom": 100.0000057220459,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      },
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 124.80000305175781,
+          "width": 358.3999938964844,
+          "height": 117.5999984741211,
+          "top": 124.80000305175781,
+          "right": 374.3999938964844,
+          "bottom": 242.4000015258789,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 125.5999984741211,
+              "width": 356.8000183105469,
+              "height": 57.60000228881836,
+              "top": 125.5999984741211,
+              "right": 373.60001945495605,
+              "bottom": 183.20000076293945,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__footer"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 183.1999969482422,
+              "width": 356.8000183105469,
+              "height": 58.400001525878906,
+              "top": 183.1999969482422,
+              "right": 373.60001945495605,
+              "bottom": 241.5999984741211,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      },
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 266.3999938964844,
+          "width": 358.3999938964844,
+          "height": 195.8249969482422,
+          "top": 266.3999938964844,
+          "right": 374.3999938964844,
+          "bottom": 462.22499084472656,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__header"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 267.20001220703125,
+              "width": 356.8000183105469,
+              "height": 111.0250015258789,
+              "top": 267.20001220703125,
+              "right": 373.60001945495605,
+              "bottom": 378.22501373291016,
+              "left": 16.80000114440918
+            },
+            "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 378.2250061035156,
+              "width": 356.8000183105469,
+              "height": 83.20000457763672,
+              "top": 378.2250061035156,
+              "right": 373.60001945495605,
+              "bottom": 461.42501068115234,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "nested-panels",
+    "width": 390,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 533.6000366210938,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 549.6000366210938,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__header"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 16.80000114440918,
+              "width": 356.8000183105469,
+              "height": 111.0250015258789,
+              "top": 16.80000114440918,
+              "right": 373.60001945495605,
+              "bottom": 127.82500267028809,
+              "left": 16.80000114440918
+            },
+            "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 127.82500457763672,
+              "width": 356.8000183105469,
+              "height": 420.9750061035156,
+              "top": 127.82500457763672,
+              "right": 373.60001945495605,
+              "bottom": 548.8000106811523,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      },
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "default",
+        "tone": "inherit",
+        "rect": {
+          "x": 57.60000228881836,
+          "y": 267.82501220703125,
+          "width": 275.20001220703125,
+          "height": 240.1750030517578,
+          "top": 267.82501220703125,
+          "right": 332.8000144958496,
+          "bottom": 508.00001525878906,
+          "left": 57.60000228881836
+        },
+        "ownsSurface": false,
+        "distinctSurfaceHost": true,
+        "background": "none",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "border": "0px solid rgb(255, 255, 255)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__header"],
+            "rect": {
+              "x": 57.60000228881836,
+              "y": 267.82501220703125,
+              "width": 275.20001220703125,
+              "height": 99.375,
+              "top": 267.82501220703125,
+              "right": 332.8000144958496,
+              "bottom": 367.20001220703125,
+              "left": 57.60000228881836
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 57.60000228881836,
+              "y": 367.20001220703125,
+              "width": 275.20001220703125,
+              "height": 83.20000457763672,
+              "top": 367.20001220703125,
+              "right": 332.8000144958496,
+              "bottom": 450.40001678466797,
+              "left": 57.60000228881836
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__footer"],
+            "rect": {
+              "x": 57.60000228881836,
+              "y": 450.3999938964844,
+              "width": 275.20001220703125,
+              "height": 57.60000228881836,
+              "top": 450.3999938964844,
+              "right": 332.8000144958496,
+              "bottom": 507.99999618530273,
+              "left": 57.60000228881836
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "child-controls",
+    "width": 390,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "default",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 435.0249938964844,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 451.0249938964844,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__header"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 16.80000114440918,
+              "width": 356.8000183105469,
+              "height": 110.2249984741211,
+              "top": 16.80000114440918,
+              "right": 373.60001945495605,
+              "bottom": 127.02499961853027,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 127.0250015258789,
+              "width": 356.8000183105469,
+              "height": 243.1999969482422,
+              "top": 127.0250015258789,
+              "right": 373.60001945495605,
+              "bottom": 370.2249984741211,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__footer"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 370.2250061035156,
+              "width": 356.8000183105469,
+              "height": 80,
+              "top": 370.2250061035156,
+              "right": 373.60001945495605,
+              "bottom": 450.2250061035156,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "layout-composition",
+    "width": 390,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 355.82501220703125,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 371.82501220703125,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__header"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 16.80000114440918,
+              "width": 356.8000183105469,
+              "height": 180.625,
+              "top": 16.80000114440918,
+              "right": 373.60001945495605,
+              "bottom": 197.42500114440918,
+              "left": 16.80000114440918
+            },
+            "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 197.4250030517578,
+              "width": 356.8000183105469,
+              "height": 115.20000457763672,
+              "top": 197.4250030517578,
+              "right": 373.60001945495605,
+              "bottom": 312.62500762939453,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__footer"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 312.625,
+              "width": 356.8000183105469,
+              "height": 58.400001525878906,
+              "top": 312.625,
+              "right": 373.60001945495605,
+              "bottom": 371.0250015258789,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "page-region",
+    "width": 390,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "default",
+        "tone": "surface-1",
+        "rect": {
+          "x": 16,
+          "y": 16,
+          "width": 358.3999938964844,
+          "height": 195.02500915527344,
+          "top": 16,
+          "right": 374.3999938964844,
+          "bottom": 211.02500915527344,
+          "left": 16
+        },
+        "ownsSurface": true,
+        "distinctSurfaceHost": false,
+        "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+        "border": "0.8px solid rgba(255, 255, 255, 0.08)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__header"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 16.80000114440918,
+              "width": 356.8000183105469,
+              "height": 110.2249984741211,
+              "top": 16.80000114440918,
+              "right": 373.60001945495605,
+              "bottom": 127.02499961853027,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 16.80000114440918,
+              "y": 127.0250015258789,
+              "width": 356.8000183105469,
+              "height": 83.20000457763672,
+              "top": 127.0250015258789,
+              "right": 373.60001945495605,
+              "bottom": 210.22500610351562,
+              "left": 16.80000114440918
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "story": "in-popover",
+    "width": 390,
+    "horizontalOverflow": false,
+    "roots": [
+      {
+        "tag": "DIV",
+        "role": null,
+        "tabindex": null,
+        "variant": "banded",
+        "tone": "inherit",
+        "rect": {
+          "x": 32.79999923706055,
+          "y": 93.80000305175781,
+          "width": 324.8000183105469,
+          "height": 363.0249938964844,
+          "top": 93.80000305175781,
+          "right": 357.6000175476074,
+          "bottom": 456.8249969482422,
+          "left": 32.79999923706055
+        },
+        "ownsSurface": false,
+        "distinctSurfaceHost": true,
+        "background": "none",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+        "border": "0px solid rgb(255, 255, 255)",
+        "parts": [
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__header"],
+            "rect": {
+              "x": 32.79999923706055,
+              "y": 93.80000305175781,
+              "width": 324.8000183105469,
+              "height": 111.0250015258789,
+              "top": 93.80000305175781,
+              "right": 357.6000175476074,
+              "bottom": 204.82500457763672,
+              "left": 32.79999923706055
+            },
+            "background": "linear-gradient(rgba(255, 255, 255, 0.043) 0%, rgba(255, 255, 255, 0) 42%)",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-panel__body"],
+            "rect": {
+              "x": 32.79999923706055,
+              "y": 204.8249969482422,
+              "width": 324.8000183105469,
+              "height": 179.1999969482422,
+              "top": 204.8249969482422,
+              "right": 357.6000175476074,
+              "bottom": 384.0249938964844,
+              "left": 32.79999923706055
+            },
+            "background": "none",
+            "padding": "16px"
+          },
+          {
+            "tag": "DIV",
+            "classes": ["eg-surface", "eg-panel__footer"],
+            "rect": {
+              "x": 32.79999923706055,
+              "y": 384.0249938964844,
+              "width": 324.8000183105469,
+              "height": 72.80000305175781,
+              "top": 384.0249938964844,
+              "right": 357.6000175476074,
+              "bottom": 456.8249969482422,
+              "left": 32.79999923706055
+            },
+            "background": "none",
+            "padding": "16px"
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,62 @@
+{
+  "headers": ["Name", "Description", "Default", "Control"],
+  "rows": [
+    ["title", "string", "-", "Set string"],
+    ["className", "string", "-", "Set string"],
+    ["dir", "string", "-", "Set string"],
+    ["id", "string", "-", "Set string"],
+    ["aria-describedby", "Identifies the element (or elements) that describes the object.string", "-", "Set string"],
+    ["onFocus", "FocusEventHandler<HTMLDivElement>", "-", "Set object"],
+    ["onBlur", "FocusEventHandler<HTMLDivElement>", "-", "Set object"],
+    ["onKeyDown", "KeyboardEventHandler<HTMLDivElement>", "-", "Set object"],
+    ["onClick", "MouseEventHandler<HTMLDivElement>", "-", "Set object"],
+    [
+      "children*",
+      "Meaningful anchor content rendered directly, without cloning. Null/empty content is valid.ReactNode",
+      "-",
+      "Setup controls-"
+    ],
+    [
+      "tone",
+      "Supplementary signal color family; meaning must also exist in readable consumer content.\"neutral\"\"info\"\"success\"\"warning\"\"danger\"\"brand\"",
+      "\"danger\"",
+      "toneChoose option...neutralinfosuccesswarningdangerbrand"
+    ],
+    [
+      "size",
+      "Marker geometry preset, independent of child dimensions. Counts may grow with text zoom.\"sm\"\"md\"",
+      "\"sm\"",
+      "sizeChoose option...smmd"
+    ],
+    [
+      "position",
+      "Physical corner of the shared anchor footprint; does not flip in RTL or avoid collisions.\"top-left\"\"top-right\"\"bottom-left\"\"bottom-right\"",
+      "\"top-right\"",
+      "positionChoose option...top-lefttop-rightbottom-leftbottom-right"
+    ],
+    [
+      "variant",
+      "Empty decorative marker. Count and icon branches require their explicit variant.\nDecimal supplementary count, not a primary measurement.\nExisting decorative origin/network glyph, not an action.\"dot\"\"count\"\"icon\"",
+      "\"dot\"",
+      "variantChoose option...dotcounticon"
+    ],
+    [
+      "count",
+      "Supplementary total; available only in the count branch.\nPositive safe-integer total. Zero, invalid and unsafe inputs suppress only the marker.\nNo coercion, rounding, automatic announcement or data clamping.number",
+      "-",
+      "Set number"
+    ],
+    [
+      "max",
+      "Display overflow threshold; available only in the count branch.\nPositive safe-integer display threshold. Larger totals show threshold-plus-sign text;\ninvalid thresholds fall back to 99, without invalidating the underlying count.number",
+      "99",
+      "Set number"
+    ],
+    [
+      "badgeIcon",
+      "Decorative origin glyph; available only in the icon branch.\nClosed system glyph for origin/network decoration. Meaning belongs in child text/name.\"menu\"\"search\"\"github\"\"youtube\"\"twitch\"\"x\"\"linkedin\"\"instagram\"\"arrow-right\"\"arrow-up-right\"\"arrow-down\"\"play\"\"users\"\"radio\"\"terminal\"\"hammer\"\"compass\"\"alert\"\"close\"\"user\"\"bookmark\"\"bell\"\"settings\"\"log-out\"\"chevron-down\"\"calendar\"\"inbox\"\"lightbulb\"\"shuffle\"\"pause\"\"pencil\"\"send\"\"grip\"\"upload\"\"flask\"\"plug\"\"bot\"\"trash\"\"copy\"\"check\"\"minus\"\"plus\"Show 34 more...",
+      "-",
+      "badgeIconChoose option...menusearchgithubyoutubetwitchxlinkedininstagramarrow-rightarrow-up-rightarrow-downplayusersradioterminalhammercompassalertcloseuserbookmarkbellsettingslog-outchevron-downcalendarinboxlightbulbshufflepausepencilsendgripuploadflaskplugbottrashcopycheckminusplus"
+    ]
+  ]
+}

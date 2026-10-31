@@ -15,6 +15,7 @@
 @source "../packages/ui/src/atoms/gauge/Gauge.stories.tsx";
 @source "../packages/ui/src/atoms/icon/Icon.stories.tsx";
 @source "../packages/ui/src/atoms/icon-button/IconButton.stories.tsx";
+@source "../packages/ui/src/atoms/indicator/Indicator.stories.tsx";
 @source "../packages/ui/src/atoms/input/Input.stories.tsx";
 @source "../packages/ui/src/atoms/kbd/Kbd.stories.tsx";
 @source "../packages/ui/src/atoms/link/Link.stories.tsx";

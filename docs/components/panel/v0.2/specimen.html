@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Panel v0.2 — static design proposal</title>
+  <link rel="stylesheet" href="/tokens.css">
+  <style>
+    /* Preview-only token-backed illustration, not a production Panel engine.
+       Material/Surface source baseline: f88b36e44b3d5ec6d7725350959f9cdfdfeb5b23.
+       Parent supplies the real compiled canonical tokens and records font loading.
+       No remote assets, React, scripts, state engine or invented component APIs. */
+    * { box-sizing: border-box; }
+    body {
+      margin: var(--space-0);
+      background: var(--color-bg-canvas);
+      color: var(--color-fg-default);
+      font-family: var(--font-sans);
+      font-size: var(--text-body-default);
+      line-height: var(--text-body-default--line-height);
+      font-weight: var(--text-body-default--font-weight);
+      letter-spacing: var(--text-body-default--letter-spacing);
+    }
+    main { max-width: var(--content-max); margin-inline: auto; padding: var(--gutter); }
+    h1, h2, h3, p, figure { margin: var(--space-0); }
+    h1, h2, h3 {
+      font-family: var(--font-sans);
+      font-size: var(--text-heading-small);
+      line-height: var(--text-heading-small--line-height);
+      font-weight: var(--text-heading-small--font-weight);
+      letter-spacing: var(--text-heading-small--letter-spacing);
+    }
+    .page-head { display: grid; gap: var(--space-3); margin-block-end: var(--space-8); }
+    .scenario { display: grid; gap: var(--space-4); margin-block-end: var(--space-10); }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--space-24) * 4)), 1fr));
+      gap: var(--space-6);
+      align-items: start;
+    }
+    .sample { display: grid; min-width: var(--space-0); gap: var(--space-3); }
+    .caption, .note { color: var(--color-fg-muted); }
+    .caption {
+      font-size: var(--text-label-default);
+      line-height: var(--text-label-default--line-height);
+      font-weight: var(--text-label-default--font-weight);
+      letter-spacing: var(--text-label-default--letter-spacing);
+    }
+    /* Exact static counterpart of the existing Surface frame recipe; runtime
+       must compose Surface instead of copying these declarations. */
+    .surface-one {
+      background-color: var(--color-surface-1);
+      background-image: var(--gradient-sheen);
+      border: var(--border-width) solid var(--color-border-hairline);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-edge), var(--shadow-elev-1);
+    }
+    .surface-two {
+      background-color: var(--color-surface-2);
+      background-image: var(--gradient-sheen);
+      border: var(--border-width) solid var(--color-border-hairline);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-edge), var(--shadow-elev-1);
+    }
+    .surface-overlay {
+      background-color: var(--color-surface-overlay);
+      background-image: none;
+      border: var(--border-width) solid var(--color-border-hairline-strong);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-edge-strong), var(--shadow-elev-3);
+      backdrop-filter: blur(var(--blur-overlay)) saturate(150%);
+    }
+    @media (prefers-reduced-transparency: reduce) {
+      .surface-overlay { background-color: var(--color-surface-2); backdrop-filter: none; }
+    }
+    @supports not (backdrop-filter: blur(var(--blur-overlay))) {
+      .surface-overlay { background-color: var(--color-surface-2); backdrop-filter: none; }
+    }
+    .panel {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-0);
+      min-width: var(--space-0);
+      padding: var(--space-0);
+      overflow: visible;
+    }
+    .panel-inherit {
+      border: var(--space-0) solid;
+      background: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+    .zone {
+      min-width: var(--space-0);
+      padding: var(--space-4);
+      overflow-wrap: anywhere;
+    }
+    .zone-head, .zone-foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+    .zone-body { display: flex; flex-direction: column; gap: var(--space-4); }
+    .zone:first-child {
+      border-start-start-radius: calc(var(--radius-xl) - var(--border-width));
+      border-start-end-radius: calc(var(--radius-xl) - var(--border-width));
+    }
+    .zone:last-child {
+      border-end-start-radius: calc(var(--radius-xl) - var(--border-width));
+      border-end-end-radius: calc(var(--radius-xl) - var(--border-width));
+    }
+    .panel-inherit > .zone:first-child { border-start-start-radius: var(--radius-xl); border-start-end-radius: var(--radius-xl); }
+    .panel-inherit > .zone:last-child { border-end-start-radius: var(--radius-xl); border-end-end-radius: var(--radius-xl); }
+    .band-head {
+      background-color: var(--color-surface-2);
+      background-image: var(--gradient-sheen);
+      border-block-end: var(--border-width) solid var(--color-border-hairline);
+      box-shadow: var(--shadow-edge);
+    }
+    .band-foot {
+      background-color: var(--color-surface-0);
+      background-image: none;
+      border-block-start: var(--border-width) solid var(--color-border-hairline);
+      box-shadow: none;
+    }
+    .raised-head { background-color: var(--color-surface-3); }
+    .raised-foot { background-color: var(--color-surface-1); }
+    .host { display: grid; gap: var(--space-4); padding: var(--space-6); min-width: var(--space-0); }
+    .label {
+      font-size: var(--text-label-default);
+      line-height: var(--text-label-default--line-height);
+      font-weight: var(--text-label-default--font-weight);
+      letter-spacing: var(--text-label-default--letter-spacing);
+    }
+  </style>
+</head>
+<body>
+<main>
+  <div class="page-head">
+    <p class="caption">Issue #180 · v0.2 Draft · preparation only</p>
+    <h1>Panel: content hierarchy, explicit paint ownership</h1>
+    <p>Authored static design illustrations, not React output, runtime behavior, screenshots or owner-adopted visuals. The only external resource is parent-hosted canonical /tokens.css.</p>
+    <p class="note">No focus, keyboard, open, disabled or loading behavior is demonstrated. Text stands for consumer content; no runtime icon or new component API is proposed.</p>
+  </div>
+
+  <section class="scenario" data-capture="default">
+    <h2>VIS-01 · Framed default</h2>
+    <p class="note">Surface owns one outer frame. All three zones expose that material; no internal cards or automatic landmarks.</p>
+    <div class="panel surface-one" data-tone="surface-1" data-variant="default">
+      <div class="zone zone-head"><h3>Workspace summary</h3><span class="label">Personal workspace</span></div>
+      <div class="zone zone-body"><p>Review the details supplied by your application.</p><p class="note">Primary actions and content controls belong here, supplied and labelled by the consumer.</p></div>
+      <div class="zone zone-foot"><time datetime="2026-10-30T10:00:00Z">Updated 30 October 2026, 10:00 UTC</time></div>
+    </div>
+  </section>
+
+  <section class="scenario" data-capture="banded">
+    <h2>VIS-02 · Banded surface-1</h2>
+    <p class="note">Header surface-2 with sheen and light edge; transparent body; footer surface-0 with a top separator only. No child elevations.</p>
+    <div class="panel surface-one" data-tone="surface-1" data-variant="banded">
+      <div class="zone zone-head band-head"><h3>Workspace summary</h3><span class="label">Personal workspace</span></div>
+      <div class="zone zone-body"><p>Review the details supplied by your application.</p><p class="note">Long supplied text wraps naturally. The body remains transparent so the single frame's material is visible between content zones.</p></div>
+      <div class="zone zone-foot band-foot"><time datetime="2026-10-30T10:00:00Z">Updated 30 October 2026, 10:00 UTC</time></div>
+    </div>
+  </section>
+
+  <section class="scenario" data-capture="hosts">
+    <h2>VIS-03 · Floating frame versus inherited host</h2>
+    <p class="note">Static floating-placement studies only: no portal, dialog, focus trap or dismissal. Overlay is for a genuinely floating host in runtime, never inferred from placement.</p>
+    <div class="board">
+      <figure class="sample">
+        <figcaption class="caption">Overlay · default · Panel owns the frame</figcaption>
+        <div class="panel surface-overlay" data-tone="overlay" data-variant="default">
+          <div class="zone zone-head"><h3>Quick summary</h3></div>
+          <div class="zone zone-body"><p>The overlay frame belongs to this standalone content unit.</p></div>
+          <div class="zone zone-foot"><span class="label">Supplied supplementary context</span></div>
+        </div>
+      </figure>
+      <figure class="sample">
+        <figcaption class="caption">Overlay · banded · raised band palette</figcaption>
+        <div class="panel surface-overlay" data-tone="overlay" data-variant="banded">
+          <div class="zone zone-head band-head raised-head"><h3>Quick summary</h3></div>
+          <div class="zone zone-body"><p>Header surface-3; body exposes the overlay; footer surface-1.</p></div>
+          <div class="zone zone-foot band-foot raised-foot"><span class="label">Supplied supplementary context</span></div>
+        </div>
+      </figure>
+      <figure class="sample">
+        <figcaption class="caption">Inherit · default · painted overlay host</figcaption>
+        <div class="host surface-overlay">
+          <p class="label">Host-owned title, frame and padding</p>
+          <div class="panel panel-inherit" data-tone="inherit" data-variant="default">
+            <div class="zone zone-head"><h3>Embedded summary</h3></div>
+            <div class="zone zone-body"><p>No second frame, sheen, shadow or blur. Host padding is deliberately preserved.</p></div>
+            <div class="zone zone-foot"><span class="label">Supplied supplementary context</span></div>
+          </div>
+        </div>
+      </figure>
+      <figure class="sample">
+        <figcaption class="caption">Inherit · banded · raised surface-2 host</figcaption>
+        <div class="host surface-two">
+          <p class="label">Host-owned title, frame and padding</p>
+          <div class="panel panel-inherit" data-tone="inherit" data-variant="banded">
+            <div class="zone zone-head band-head raised-head"><h3>Embedded summary</h3></div>
+            <div class="zone zone-body"><p>Only local bands paint. Local rounded band ends do not replace the host's outer corners.</p></div>
+            <div class="zone zone-foot band-foot raised-foot"><span class="label">Supplied supplementary context</span></div>
+          </div>
+        </div>
+      </figure>
+    </div>
+    <p class="note">Permitted inherited hosts are surface-2 or overlay, including solid overlay fallback. Canvas and surface-1 are not inferred. Actual Popover Content retains its own padding and accessible name; a future Dialog keeps its own contract.</p>
+  </section>
+
+  <section class="scenario" data-capture="optional">
+    <h2>VIS-04 · Optional zones and exposed corners</h2>
+    <p class="note">No empty region or orphan separator is reserved for an omitted part. Only present end zones round; root overflow remains visible.</p>
+    <div class="board">
+      <figure class="sample">
+        <figcaption class="caption">Body only · no phantom bands</figcaption>
+        <div class="panel surface-one" data-tone="surface-1" data-variant="banded">
+          <div class="zone zone-body"><p>Only the required Body is present. It remains transparent and padded once.</p></div>
+        </div>
+      </figure>
+      <figure class="sample">
+        <figcaption class="caption">Without Header · Body begins the flow</figcaption>
+        <div class="panel surface-one" data-tone="surface-1" data-variant="banded">
+          <div class="zone zone-body"><p>No top separator. This longer text also demonstrates wrapping in the first remaining zone.</p></div>
+          <div class="zone zone-foot band-foot"><span class="label">Footer retains only its top separator</span></div>
+        </div>
+      </figure>
+      <figure class="sample">
+        <figcaption class="caption">Without Footer · no reserved lower band</figcaption>
+        <div class="panel surface-one" data-tone="surface-1" data-variant="banded">
+          <div class="zone zone-head band-head"><h3>Summary without metadata</h3></div>
+          <div class="zone zone-body"><p>Body is the last zone. A later runtime browser check must verify supplied focus rings remain unclipped.</p></div>
+        </div>
+      </figure>
+    </div>
+  </section>
+  <p class="note">Review hierarchy and corner/paint ownership, not domain behavior. ModuleCard, Surface and host APIs remain unchanged. Real browser captures, font provenance, token output identity and exact visual adoption are pending parent review.</p>
+</main>
+</body>
+</html>

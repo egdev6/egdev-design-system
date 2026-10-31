@@ -48,6 +48,152 @@ function cssBlock(css, opening) {
 const unapprovedTransitionUtility =
   /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\])(?=\s*\{))[\w\\]/;
 
+test('Collapsible ships native group-state caret motion and reduced-motion resets', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    '.whitespace-normal',
+    '.text-start',
+    '.transition-transform',
+    String.raw`.group-data-\[state\=open\]\/collapsible\:rotate-180`,
+    String.raw`.motion-reduce\:group-data-\[state\=open\]\/collapsible\:rotate-0`,
+    String.raw`.motion-reduce\:transform-none`
+  ]) {
+    assert.ok(utilities.includes(selector), 'Missing Collapsible utility ' + selector);
+  }
+  assert.match(utilities, /prefers-reduced-motion:\s*reduce/);
+  assert.doesNotMatch(utilities, /\.eg-collapsible[^{}]*\{/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/collapsible/collapsible.css')), false);
+});
+test('Collapsible package preserves amended native closed/open relationships and private helpers in SSR', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.Collapsible, 'function');
+  assert.equal(typeof exported.CollapsibleContent, 'function');
+  assert.equal(exported.CollapsibleTrigger.$$typeof, Symbol.for('react.forward_ref'));
+  for (const name of [
+    'useCollapsible',
+    'useCollapsibleTrigger',
+    'useCollapsibleContent',
+    'collapsibleVariants',
+    'collapsibleTriggerVariants',
+    'collapsibleContentVariants',
+    'collapsibleCaretVariants'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, name + ' is private');
+  }
+  for (const open of [false, true]) {
+    const dom = new JSDOM(
+      renderToString(
+        createElement(exported.Collapsible, {
+          defaultOpen: open,
+          children: [
+            createElement(exported.CollapsibleTrigger, { key: 'trigger', children: 'Details' }),
+            createElement(exported.CollapsibleContent, {
+              key: 'content',
+              children: createElement('input', { 'aria-label': 'Body field' })
+            })
+          ]
+        })
+      )
+    );
+    try {
+      const doc = dom.window.document;
+      const trigger = doc.querySelector('button');
+      const content = doc.querySelector('.eg-collapsible__content');
+      assert.ok(trigger && content?.id);
+      assert.equal(trigger.getAttribute('type'), 'button');
+      assert.equal(trigger.getAttribute('aria-expanded'), String(open));
+      assert.equal(trigger.getAttribute('aria-controls'), open ? content.id : null);
+      assert.equal(content.hasAttribute('hidden'), !open);
+      assert.equal(Boolean(content.querySelector('input')), open);
+      assert.equal(doc.querySelectorAll('.eg-surface').length, 1);
+    } finally {
+      dom.window.close();
+    }
+  }
+});
+
+test('Panel ships band resets and direct-zone corner utilities without a new marker engine', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    '.gap-0',
+    '.overflow-visible',
+    '.bg-none',
+    '.shadow-none',
+    '.backdrop-filter-none',
+    String.raw`.first\:rounded-t-\[calc\(var\(--radius-xl\)-var\(--border-width\)\)\]`,
+    String.raw`.last\:rounded-b-\[calc\(var\(--radius-xl\)-var\(--border-width\)\)\]`,
+    String.raw`.first\:rounded-t-xl`,
+    String.raw`.last\:rounded-b-xl`
+  ]) {
+    assert.ok(utilities.includes(selector), 'Missing Panel utility ' + selector);
+  }
+  assert.doesNotMatch(utilities, /\.eg-panel[^{}]*\{/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/panel/panel.css')), false);
+});
+test('Panel package preserves compound zones, explicit frame ownership and closed public exports in SSR', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  for (const name of ['Panel', 'PanelHeader', 'PanelBody', 'PanelFooter']) {
+    assert.equal(typeof exported[name], 'function');
+  }
+  for (const name of [
+    'usePanel',
+    'usePanelHeader',
+    'usePanelBody',
+    'usePanelFooter',
+    'PanelContext',
+    'panelVariants',
+    'panelHeaderVariants',
+    'panelBodyVariants',
+    'panelFooterVariants'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, name + ' is private');
+  }
+  for (const tone of ['surface-1', 'overlay', 'inherit']) {
+    for (const variant of ['default', 'banded']) {
+      const dom = new JSDOM(
+        renderToString(
+          createElement(exported.Panel, {
+            tone,
+            variant,
+            children: [
+              createElement(exported.PanelHeader, { key: 'header', children: 'Heading' }),
+              createElement(exported.PanelBody, {
+                key: 'body',
+                children: createElement('button', { type: 'button', children: 'Child action' })
+              }),
+              createElement(exported.PanelFooter, { key: 'footer', children: 'Metadata' })
+            ]
+          })
+        )
+      );
+      try {
+        const wrapper = dom.window.document.querySelector('.eg-panel');
+        assert.ok(wrapper);
+        assert.deepEqual(
+          [...wrapper.children].map((node) => node.className.match(/eg-panel__(header|body|footer)/)?.[1]),
+          ['header', 'body', 'footer']
+        );
+        assert.equal(wrapper.classList.contains('eg-surface'), tone !== 'inherit');
+        assert.equal(wrapper.getAttribute('data-tone'), tone);
+        assert.equal(wrapper.getAttribute('data-variant'), variant);
+        assert.equal(wrapper.hasAttribute('role'), false);
+        assert.equal(wrapper.querySelectorAll('button').length, 1);
+      } finally {
+        dom.window.close();
+      }
+    }
+  }
+  assert.throws(() => renderToString(createElement(exported.PanelBody, { children: 'Orphan' })), /Panel/);
+});
+
 test('Toast ships floating elevation, viewport, swipe, fade and reduced-motion utilities', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -2521,6 +2667,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Chip',
       'ChipGroup',
       'Cluster',
+      'Collapsible',
+      'CollapsibleContent',
+      'CollapsibleTrigger',
       'Countdown',
       'Divider',
       'Dropzone',
@@ -2535,6 +2684,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'HoverCardTrigger',
       'Icon',
       'IconButton',
+      'Indicator',
       'Input',
       'Kbd',
       'Label',
@@ -2553,6 +2703,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'NavList',
       'Notice',
       'PageHeader',
+      'Panel',
+      'PanelBody',
+      'PanelFooter',
+      'PanelHeader',
       'Popover',
       'PopoverClose',
       'PopoverContent',
@@ -2730,6 +2884,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ChipProps',
     'Cluster',
     'ClusterProps',
+    'Collapsible',
+    'CollapsibleContent',
+    'CollapsibleContentProps',
+    'CollapsibleProps',
+    'CollapsibleTrigger',
+    'CollapsibleTriggerProps',
     'Countdown',
     'CountdownProps',
     'CountdownSize',
@@ -2771,6 +2931,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'IconName',
     'IconProps',
     'IconSize',
+    'Indicator',
+    'IndicatorPosition',
+    'IndicatorProps',
+    'IndicatorSize',
+    'IndicatorTone',
+    'IndicatorVariant',
     'Input',
     'InputProps',
     'InputSize',
@@ -2838,6 +3004,16 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'PageHeader',
     'PageHeaderLevel',
     'PageHeaderProps',
+    'Panel',
+    'PanelBody',
+    'PanelBodyProps',
+    'PanelFooter',
+    'PanelFooterProps',
+    'PanelHeader',
+    'PanelHeaderProps',
+    'PanelProps',
+    'PanelTone',
+    'PanelVariant',
     'Popover',
     'PopoverClose',
     'PopoverCloseProps',
@@ -4193,5 +4369,90 @@ test('Carousel public exports preserve deterministic named groups and composed a
   assert.equal((html.match(/tabindex="0"/g) ?? []).length, 1);
   for (const name of ['useCarousel', 'carouselVariants', 'defaultCarouselMessages']) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} remains internal`);
+  }
+});
+
+test('Indicator ships physical corners, compact Material and no utility-layer marker engine', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    '.-top-1',
+    '.-right-1',
+    '.-bottom-1',
+    '.-left-1',
+    '.size-2',
+    String.raw`.size-2\.5`,
+    String.raw`.min-w-4\.5`,
+    String.raw`.min-h-5\.5`,
+    '.pointer-events-none',
+    '.select-none',
+    '.outline-bg-surface',
+    String.raw`.outline-\[length\:var\(--focus-width\)\]`,
+    String.raw`.shadow-\[var\(--shadow-edge\)\,var\(--shadow-elev-1\)\]`
+  ]) {
+    assert.ok(utilities.includes(selector), 'Missing Indicator utility ' + selector);
+  }
+  for (const token of [
+    '--color-status-info',
+    '--color-status-success',
+    '--color-status-warning',
+    '--color-status-danger',
+    '--gradient-sheen',
+    '--focus-width'
+  ]) {
+    assert.ok(utilities.includes('var(' + token), 'Missing Indicator token reference ' + token);
+  }
+  assert.doesNotMatch(utilities, /\.eg-indicator[^{}]*\{/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/atoms/indicator/indicator.css')), false);
+});
+test('Indicator package preserves a passive wrapper and suppresses only invalid-count markers in SSR', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.Indicator, 'function');
+  for (const name of [
+    'useIndicator',
+    'indicatorRootVariants',
+    'indicatorPositionVariants',
+    'indicatorMarkerGeometryVariants',
+    'indicatorGlyphVariants',
+    'indicatorMarkerPaintVariants'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, name + ' is private');
+  }
+  for (const [count, expected] of [
+    [100, '99+'],
+    [0, null],
+    [NaN, null]
+  ]) {
+    const dom = new JSDOM(
+      renderToString(
+        createElement(exported.Indicator, {
+          variant: 'count',
+          count,
+          position: 'bottom-left',
+          children: createElement('button', { type: 'button', children: 'Inbox, actual total supplied by consumer' })
+        })
+      )
+    );
+    try {
+      const wrapper = dom.window.document.querySelector('.eg-indicator');
+      assert.ok(wrapper);
+      assert.equal(wrapper.firstElementChild.tagName, 'BUTTON');
+      for (const attr of ['role', 'tabindex', 'aria-label', 'aria-live']) {
+        assert.equal(wrapper.hasAttribute(attr), false);
+      }
+      const marker = wrapper.querySelector(':scope > span');
+      if (expected === null) {
+        assert.equal(marker, null);
+      } else {
+        assert.equal(marker.textContent, expected);
+        assert.equal(marker.getAttribute('aria-hidden'), 'true');
+        assert.ok(marker.classList.contains('-bottom-1') && marker.classList.contains('-left-1'));
+      }
+    } finally {
+      dom.window.close();
+    }
   }
 });

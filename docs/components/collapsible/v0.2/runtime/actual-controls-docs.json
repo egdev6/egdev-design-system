@@ -1,0 +1,135 @@
+{
+  "first": {
+    "rows": [
+      {
+        "name": "title",
+        "buttons": ["Set string"],
+        "inputs": []
+      },
+      {
+        "name": "className",
+        "buttons": ["Set string"],
+        "inputs": []
+      },
+      {
+        "name": "dir",
+        "buttons": ["Set string"],
+        "inputs": []
+      },
+      {
+        "name": "id",
+        "buttons": ["Set string"],
+        "inputs": []
+      },
+      {
+        "name": "aria-describedby",
+        "buttons": ["Set string"],
+        "inputs": []
+      },
+      {
+        "name": "open",
+        "buttons": ["Set boolean"],
+        "inputs": []
+      },
+      {
+        "name": "defaultOpen",
+        "buttons": ["Set boolean"],
+        "inputs": []
+      },
+      {
+        "name": "onOpenChange",
+        "buttons": [],
+        "inputs": []
+      },
+      {
+        "name": "children*",
+        "buttons": [],
+        "inputs": []
+      },
+      {
+        "name": "disabled",
+        "buttons": ["Set boolean"],
+        "inputs": []
+      }
+    ],
+    "disabledRow": "<tr class=\"css-eaulyu\"><td class=\"css-4lbn0a\"><span class=\"css-in3yi3\">disabled</span></td><td><label aria-disabled=\"false\" for=\"control-disabled\" aria-label=\"disabled\" class=\"css-3n4n59\"><input id=\"control-disabled\" type=\"checkbox\" role=\"switch\" name=\"disabled\"><span aria-hidden=\"true\">False</span><span aria-hidden=\"true\">True</span></label></td></tr>"
+  },
+  "resolution": "Actual switch input is deliberately1×1/clippedrect0; clicked real visible associated label after inspecting hit targets, no force/dispatch/code change. Prior30sinputcheck RED preserved separately.",
+  "disabled": {
+    "switchChecked": true,
+    "nativeDisabled": true
+  },
+  "tabs": ["Collapsible", "trigger", "content"],
+  "tables": [
+    {
+      "name": "Collapsible",
+      "rows": [
+        ["title", "string", "-", "Set string"],
+        ["className", "string", "-", "Set string"],
+        ["dir", "string", "-", "Set string"],
+        ["id", "string", "-", "Set string"],
+        [
+          "aria-describedby",
+          "Identifies the element (or elements) that describes the object.string",
+          "-",
+          "Set string"
+        ],
+        [
+          "open",
+          "Owner-supplied visibility; do not switch control mode while mounted.\nOwner-supplied visibility; omit in uncontrolled mode and do not switch mode while mounted.boolean",
+          "-",
+          "Set boolean"
+        ],
+        [
+          "defaultOpen",
+          "Initial visibility only; unavailable in controlled mode, where open is authoritative.\nInitial visibility only; later changes do not reset the native state.boolean",
+          "false",
+          "Set boolean"
+        ],
+        [
+          "onOpenChange",
+          "Requests the next visibility without echoing mount or incoming prop updates.((open: boolean) => void) | ((open: boolean) => void)",
+          "-",
+          "-"
+        ],
+        ["children*", "One named Trigger/Content pair; nested Roots are independent.ReactNode", "-", "Setup controls-"],
+        [
+          "disabled",
+          "Disable only Trigger activation, retaining visibility and enabled body controls.boolean",
+          "false",
+          "Set boolean"
+        ]
+      ]
+    },
+    {
+      "name": "trigger",
+      "rows": [
+        ["title", "string", "-"],
+        ["className", "string", "-"],
+        ["dir", "string", "-"],
+        ["id", "string", "-"],
+        ["aria-describedby", "Identifies the element (or elements) that describes the object.string", "-"],
+        ["aria-label", "Defines a string value that labels the current element.string", "-"],
+        ["aria-labelledby", "Identifies the element (or elements) that labels the current element.string", "-"],
+        ["onFocus", "FocusEventHandler<HTMLDivElement>", "-"],
+        ["onBlur", "FocusEventHandler<HTMLDivElement>", "-"],
+        ["onKeyDown", "KeyboardEventHandler<HTMLDivElement>", "-"],
+        ["onClick", "MouseEventHandler<HTMLDivElement>", "-"],
+        ["children*", "Required non-empty visible inline label; no focusable descendants.ReactNode", "-"]
+      ]
+    },
+    {
+      "name": "content",
+      "rows": [
+        ["title", "string", "-"],
+        ["className", "string", "-"],
+        ["dir", "string", "-"],
+        ["role", "AriaRole", "-"],
+        ["aria-describedby", "Identifies the element (or elements) that describes the object.string", "-"],
+        ["aria-label", "Defines a string value that labels the current element.string", "-"],
+        ["aria-labelledby", "Identifies the element (or elements) that labels the current element.string", "-"],
+        ["children*", "Meaningful flow content; children remount on reopening and local state may reset.ReactNode", "-"]
+      ]
+    }
+  ]
+}

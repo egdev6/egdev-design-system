@@ -4,6 +4,26 @@ import tailwindcss from '@tailwindcss/vite';
 import { mergeConfig } from 'vite';
 
 const documentedNativeProps: Record<string, readonly string[]> = {
+  indicator: ['id', 'title', 'dir', 'aria-describedby', 'className', 'onClick', 'onKeyDown', 'onFocus', 'onBlur'],
+  panel: ['id', 'title', 'dir', 'aria-describedby', 'className'],
+  panelHeader: ['id', 'title', 'dir', 'aria-describedby', 'className'],
+  panelBody: ['id', 'title', 'dir', 'aria-describedby', 'className'],
+  panelFooter: ['id', 'title', 'dir', 'aria-describedby', 'className'],
+  collapsible: ['id', 'title', 'dir', 'aria-describedby', 'className'],
+  collapsibleTrigger: [
+    'id',
+    'title',
+    'dir',
+    'aria-describedby',
+    'className',
+    'onClick',
+    'onKeyDown',
+    'onFocus',
+    'onBlur',
+    'aria-label',
+    'aria-labelledby'
+  ],
+  collapsibleContent: ['title', 'dir', 'aria-describedby', 'className', 'role', 'aria-label', 'aria-labelledby'],
   moduleCard: ['id', 'dir', 'aria-describedby', 'aria-busy', 'onClick', 'className', 'style'],
   timeline: ['id', 'title', 'aria-describedby', 'aria-busy', 'className', 'style', 'onClick'],
   avatar: ['id', 'title', 'aria-describedby', 'className', 'style'],

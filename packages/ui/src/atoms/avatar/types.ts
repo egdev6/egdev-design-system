@@ -1,6 +1,7 @@
 import { cva } from 'class-variance-authority';
 import type { ComponentPropsWithoutRef } from 'react';
 import type { IconName } from '../icon';
+import { indicatorGlyphVariants, indicatorMarkerGeometryVariants, indicatorPositionVariants } from '../indicator/types';
 
 export type AvatarSize = 'sm' | 'md' | 'lg' | 'xl';
 
@@ -56,13 +57,33 @@ export const avatarFallbackIconVariants = cva('', {
   defaultVariants: { size: 'md' }
 });
 export const avatarBadgeVariants = cva(
-  'eg-avatar__badge absolute -right-1 -bottom-1 grid place-items-center rounded-full bg-bg-canvas text-fg-default ring-2 ring-[var(--eg-avatar-ring,var(--color-bg-surface))]',
+  [
+    'eg-avatar__badge',
+    // Preserve base geometry even for the existing source recipe's explicit null size input.
+    indicatorMarkerGeometryVariants({ variant: 'icon', size: null }),
+    indicatorPositionVariants({ position: 'bottom-right' }),
+    'bg-bg-canvas text-fg-default ring-2 ring-[var(--eg-avatar-ring,var(--color-bg-surface))]'
+  ],
   {
-    variants: { size: { sm: 'size-4.5', md: 'size-4.5', lg: 'size-4.5', xl: 'size-5.5' } },
+    variants: {
+      size: {
+        sm: indicatorMarkerGeometryVariants({ variant: 'icon', size: 'sm' }),
+        md: indicatorMarkerGeometryVariants({ variant: 'icon', size: 'sm' }),
+        lg: indicatorMarkerGeometryVariants({ variant: 'icon', size: 'sm' }),
+        xl: indicatorMarkerGeometryVariants({ variant: 'icon', size: 'md' })
+      }
+    },
     defaultVariants: { size: 'md' }
   }
 );
 export const avatarBadgeIconVariants = cva('', {
-  variants: { size: { sm: 'size-2.75', md: 'size-2.75', lg: 'size-2.75', xl: 'size-3.25' } },
+  variants: {
+    size: {
+      sm: indicatorGlyphVariants({ size: 'sm' }),
+      md: indicatorGlyphVariants({ size: 'sm' }),
+      lg: indicatorGlyphVariants({ size: 'sm' }),
+      xl: indicatorGlyphVariants({ size: 'md' })
+    }
+  },
   defaultVariants: { size: 'md' }
 });

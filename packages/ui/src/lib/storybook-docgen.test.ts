@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { withCustomConfig } from 'react-docgen-typescript';
 import ts from 'typescript';
@@ -623,6 +623,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/gauge',
       './atoms/icon',
       './atoms/icon-button',
+      './atoms/indicator',
       './atoms/input',
       './atoms/kbd',
       './atoms/link',
@@ -644,6 +645,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/button-group',
       './molecules/carousel',
       './molecules/chip-group',
+      './molecules/collapsible',
       './molecules/field',
       './molecules/gauge-dock',
       './molecules/hover-card',
@@ -654,6 +656,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/nav-list',
       './molecules/notice',
       './molecules/page-header',
+      './molecules/panel',
       './molecules/popover',
       './molecules/section-header',
       './molecules/select-tile',
@@ -683,6 +686,9 @@ describe('Storybook TypeScript docgen contract', () => {
       'Chip',
       'ChipGroup',
       'Cluster',
+      'Collapsible',
+      'CollapsibleContent',
+      'CollapsibleTrigger',
       'Countdown',
       'Divider',
       'Dropzone',
@@ -697,6 +703,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'HoverCardTrigger',
       'Icon',
       'IconButton',
+      'Indicator',
       'Input',
       'Kbd',
       'Label',
@@ -715,6 +722,10 @@ describe('Storybook TypeScript docgen contract', () => {
       'NavList',
       'Notice',
       'PageHeader',
+      'Panel',
+      'PanelBody',
+      'PanelFooter',
+      'PanelHeader',
       'Popover',
       'PopoverClose',
       'PopoverContent',
@@ -3451,6 +3462,286 @@ describe('Slider interactive metadata contract', () => {
   }, 20_000);
 });
 
+describe('Indicator first-wave metadata contract', () => {
+  const controls: Record<string, string> = {
+    children: 'false',
+    tone: 'select',
+    size: 'select',
+    position: 'select',
+    variant: 'select',
+    count: 'number',
+    max: 'number',
+    badgeIcon: 'select'
+  };
+  const constants: Record<string, string> = {
+    variant: 'dot',
+    tone: 'danger',
+    size: 'sm',
+    position: 'top-right',
+    max: '99'
+  };
+  const parts: { name: string; native: string[]; own: string[] }[] = [
+    {
+      name: 'Indicator',
+      native: ['id', 'title', 'dir', 'aria-describedby', 'className', 'onClick', 'onKeyDown', 'onFocus', 'onBlur'],
+      own: ['children', 'tone', 'size', 'position', 'variant', 'count', 'max', 'badgeIcon']
+    }
+  ];
+
+  it('annotates every own union declaration and binds false-control reasons to real stories', () => {
+    const file = ast(source('atoms/indicator/types.ts'));
+    const properties = ownProps(file, ['IndicatorBranch', 'IndicatorProps']);
+    expect(properties).toHaveLength(16);
+    expect([...new Set(properties.map((property) => property.name.getText(file)))].sort()).toEqual(
+      Object.keys(controls).sort()
+    );
+    const stories = ast(source('atoms/indicator/Indicator.stories.tsx'));
+    const names = exportedStoryNames(stories);
+    const observedDefaults: Record<string, string> = {};
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const values = (tag: string) =>
+        tags.filter((item) => item.tagName.text === tag).map((item) => ts.getTextOfJSDocComment(item.comment));
+      expect(values('control'), name).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        const reason = values('controlReason')[0] ?? '';
+        expect(reason, name).not.toBe('');
+        expect(
+          names.some((story) => reason.includes(story)),
+          name
+        ).toBe(true);
+      }
+      for (const value of values('default')) {
+        expect(value, name).toBe(constants[name]);
+        if (value !== undefined) {
+          observedDefaults[name] = value;
+        }
+      }
+    }
+    expect(observedDefaults).toEqual(constants);
+    expect(stories.getText()).not.toMatch(/\bargTypes\s*:|\bplay\s*:/);
+  });
+
+  it('extracts exact public and approved native rows without leaking internal or forbidden props', () => {
+    const extracted = parser.parse(source('atoms/indicator/Indicator.tsx'));
+    for (const { name, native, own } of parts) {
+      const doc = extracted.find((item) => item.displayName === name);
+      if (!doc) {
+        throw new Error('Missing real docgen for ' + name);
+      }
+      expect(Object.keys(doc.props).sort(), name).toEqual([...own, ...native].sort());
+      expect(doc.props.children, name).toMatchObject({ required: true });
+      for (const prop of own) {
+        const tags: Record<string, unknown> = doc.props[prop]?.tags ?? {};
+        const directives = String(tags.control ?? '')
+          .split(/\r?\n/)
+          .map((value) => value.trim())
+          .filter(Boolean);
+        expect([...new Set(directives)], name + '.' + prop).toEqual([controls[prop]]);
+        if (controls[prop] === 'false') {
+          expect(typeof tags.controlReason).toBe('string');
+          expect(tags.controlReason).toBeTruthy();
+        }
+      }
+      if (name === 'Indicator') {
+        for (const prop of own) {
+          expect(normalize(doc.props[prop]?.defaultValue?.value ?? ''), name + '.' + prop).toBe(constants[prop] ?? '');
+        }
+      }
+    }
+  }, 20_000);
+});
+
+describe('Panel first-wave metadata contract', () => {
+  const controls: Record<string, string> = { children: 'false', variant: 'select', tone: 'select' };
+  const constants: Record<string, string> = { variant: 'default', tone: 'surface-1' };
+  const parts: { name: string; native: string[]; own: string[] }[] = [
+    {
+      name: 'Panel',
+      native: ['id', 'title', 'dir', 'aria-describedby', 'className'],
+      own: ['children', 'variant', 'tone']
+    },
+    { name: 'PanelHeader', native: ['id', 'title', 'dir', 'aria-describedby', 'className'], own: ['children'] },
+    { name: 'PanelBody', native: ['id', 'title', 'dir', 'aria-describedby', 'className'], own: ['children'] },
+    { name: 'PanelFooter', native: ['id', 'title', 'dir', 'aria-describedby', 'className'], own: ['children'] }
+  ];
+
+  it('annotates every own union declaration and binds false-control reasons to real stories', () => {
+    const file = ast(source('molecules/panel/types.ts'));
+    const properties = ownProps(file, ['PanelProps', 'PanelHeaderProps', 'PanelBodyProps', 'PanelFooterProps']);
+    expect(properties).toHaveLength(6);
+    expect([...new Set(properties.map((property) => property.name.getText(file)))].sort()).toEqual(
+      Object.keys(controls).sort()
+    );
+    const stories = ast(source('molecules/panel/Panel.stories.tsx'));
+    const names = exportedStoryNames(stories);
+    const observedDefaults: Record<string, string> = {};
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const values = (tag: string) =>
+        tags.filter((item) => item.tagName.text === tag).map((item) => ts.getTextOfJSDocComment(item.comment));
+      expect(values('control'), name).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        const reason = values('controlReason')[0] ?? '';
+        expect(reason, name).not.toBe('');
+        expect(
+          names.some((story) => reason.includes(story)),
+          name
+        ).toBe(true);
+      }
+      for (const value of values('default')) {
+        expect(value, name).toBe(constants[name]);
+        if (value !== undefined) {
+          observedDefaults[name] = value;
+        }
+      }
+    }
+    expect(observedDefaults).toEqual(constants);
+    expect(stories.getText()).not.toMatch(/\bargTypes\s*:|\bplay\s*:/);
+  });
+
+  it('extracts exact public and approved native rows without leaking internal or forbidden props', () => {
+    const extracted = parser.parse(source('molecules/panel/Panel.tsx'));
+    for (const { name, native, own } of parts) {
+      const doc = extracted.find((item) => item.displayName === name);
+      if (!doc) {
+        throw new Error('Missing real docgen for ' + name);
+      }
+      expect(Object.keys(doc.props).sort(), name).toEqual([...own, ...native].sort());
+      expect(doc.props.children, name).toMatchObject({ required: true });
+      for (const prop of own) {
+        const tags: Record<string, unknown> = doc.props[prop]?.tags ?? {};
+        const directives = String(tags.control ?? '')
+          .split(/\r?\n/)
+          .map((value) => value.trim())
+          .filter(Boolean);
+        expect([...new Set(directives)], name + '.' + prop).toEqual([controls[prop]]);
+        if (controls[prop] === 'false') {
+          expect(typeof tags.controlReason).toBe('string');
+          expect(tags.controlReason).toBeTruthy();
+        }
+      }
+      if (name === 'Panel') {
+        for (const prop of own) {
+          expect(normalize(doc.props[prop]?.defaultValue?.value ?? ''), name + '.' + prop).toBe(constants[prop] ?? '');
+        }
+      }
+    }
+  }, 20_000);
+});
+
+describe('Collapsible first-wave metadata contract', () => {
+  const controls: Record<string, string> = {
+    open: 'boolean',
+    defaultOpen: 'boolean',
+    onOpenChange: 'false',
+    children: 'false',
+    disabled: 'boolean'
+  };
+  const constants: Record<string, string> = { defaultOpen: 'false', disabled: 'false' };
+  const parts: { name: string; native: string[]; own: string[] }[] = [
+    {
+      name: 'Collapsible',
+      native: ['id', 'title', 'dir', 'aria-describedby', 'className'],
+      own: ['open', 'defaultOpen', 'onOpenChange', 'children', 'disabled']
+    },
+    {
+      name: 'CollapsibleTrigger',
+      native: [
+        'id',
+        'title',
+        'dir',
+        'aria-describedby',
+        'className',
+        'onClick',
+        'onKeyDown',
+        'onFocus',
+        'onBlur',
+        'aria-label',
+        'aria-labelledby'
+      ],
+      own: ['children']
+    },
+    {
+      name: 'CollapsibleContent',
+      native: ['title', 'dir', 'aria-describedby', 'className', 'role', 'aria-label', 'aria-labelledby'],
+      own: ['children']
+    }
+  ];
+
+  it('annotates every own union declaration and binds false-control reasons to real stories', () => {
+    const file = ast(source('molecules/collapsible/types.ts'));
+    const properties = ownProps(file, [
+      'ControlledDisclosure',
+      'UncontrolledDisclosure',
+      'CollapsibleProps',
+      'CollapsibleTriggerProps',
+      'CollapsibleContentProps'
+    ]);
+    expect(properties).toHaveLength(10);
+    expect([...new Set(properties.map((property) => property.name.getText(file)))].sort()).toEqual(
+      Object.keys(controls).sort()
+    );
+    const stories = ast(source('molecules/collapsible/Collapsible.stories.tsx'));
+    const names = exportedStoryNames(stories);
+    const observedDefaults: Record<string, string> = {};
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const values = (tag: string) =>
+        tags.filter((item) => item.tagName.text === tag).map((item) => ts.getTextOfJSDocComment(item.comment));
+      expect(values('control'), name).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        const reason = values('controlReason')[0] ?? '';
+        expect(reason, name).not.toBe('');
+        expect(
+          names.some((story) => reason.includes(story)),
+          name
+        ).toBe(true);
+      }
+      for (const value of values('default')) {
+        expect(value, name).toBe(constants[name]);
+        if (value !== undefined) {
+          observedDefaults[name] = value;
+        }
+      }
+    }
+    expect(observedDefaults).toEqual(constants);
+    expect(stories.getText()).not.toMatch(/\bargTypes\s*:|\bplay\s*:/);
+  });
+
+  it('extracts exact public and approved native rows without leaking internal or forbidden props', () => {
+    const extracted = parser.parse(source('molecules/collapsible/Collapsible.tsx'));
+    for (const { name, native, own } of parts) {
+      const doc = extracted.find((item) => item.displayName === name);
+      if (!doc) {
+        throw new Error('Missing real docgen for ' + name);
+      }
+      expect(Object.keys(doc.props).sort(), name).toEqual([...own, ...native].sort());
+      expect(doc.props.children, name).toMatchObject({ required: true });
+      for (const prop of own) {
+        const tags: Record<string, unknown> = doc.props[prop]?.tags ?? {};
+        const directives = String(tags.control ?? '')
+          .split(/\r?\n/)
+          .map((value) => value.trim())
+          .filter(Boolean);
+        expect([...new Set(directives)], name + '.' + prop).toEqual([controls[prop]]);
+        if (controls[prop] === 'false') {
+          expect(typeof tags.controlReason).toBe('string');
+          expect(tags.controlReason).toBeTruthy();
+        }
+      }
+      if (name === 'Collapsible') {
+        for (const prop of own) {
+          expect(normalize(doc.props[prop]?.defaultValue?.value ?? ''), name + '.' + prop).toBe(constants[prop] ?? '');
+        }
+      }
+    }
+  }, 20_000);
+});
+
 describe('Chip metadata contract', () => {
   const chipControls: Record<string, string> = {
     children: 'false',
@@ -3514,4 +3805,45 @@ describe('Chip metadata contract', () => {
       'Disabled'
     ]);
   });
+});
+
+describe('Inherited native prop context regression', () => {
+  it.each(['raw', 'configured'] as const)(
+    '%s parsing preserves instantiated DOM handler targets in normal export order',
+    (mode) => {
+      const options = mode === 'configured' ? { ...config.typescript?.reactDocgenTypescriptOptions } : {};
+      const scoped = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), options);
+      const cases: { path: string; parts: [string, string][] }[] = [
+        {
+          path: 'molecules/popover/Popover.tsx',
+          parts: [
+            ['PopoverTrigger', 'HTMLButtonElement'],
+            ['PopoverContent', 'HTMLDivElement']
+          ]
+        },
+        ...(existsSync(source('molecules/collapsible/Collapsible.tsx'))
+          ? [
+              {
+                path: 'molecules/collapsible/Collapsible.tsx',
+                parts: [['CollapsibleTrigger', 'HTMLButtonElement'] satisfies [string, string]]
+              }
+            ]
+          : [])
+      ];
+      for (const sample of cases) {
+        const extracted = scoped.parse(source(sample.path));
+        for (const [name, target] of sample.parts) {
+          const doc = extracted.find((item) => item.displayName === name);
+          expect(doc, name).toBeDefined();
+          for (const handler of ['onClick', 'onKeyDown', 'onFocus', 'onBlur']) {
+            if (mode === 'configured' && name.startsWith('Popover') && handler !== 'onClick') {
+              continue;
+            }
+            expect.soft(doc?.props[handler]?.type.name, name + '.' + handler).toContain(target);
+          }
+        }
+      }
+    },
+    20_000
+  );
 });
