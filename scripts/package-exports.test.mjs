@@ -1211,6 +1211,30 @@ test('UI ships SearchTrigger token geometry, coarse targets and attribute-driven
   assert.ok(css.indexOf('.eg-search{') < css.indexOf('@layer utilities'));
 });
 
+test('UI ships PhotoFrame declarations and native utility resets', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  assert.equal(typeof exported.PhotoFrame, 'function');
+  assert.equal(exported.usePhotoFrame, undefined);
+  assert.equal(exported.photoFrameRootVariants, undefined);
+  const declarations = readFileSync(artifact('ui', './dist/atoms/photo-frame/types.d.ts'), 'utf8');
+  for (const name of ['PhotoFrameProps', 'PhotoFrameRatio', 'PhotoFrameVariant', 'PhotoFrameFocalPoint']) {
+    assert.match(declarations, new RegExp(`export (?:declare )?type ${name}\\b`));
+  }
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    '.object-cover',
+    '.object-center',
+    '.filter-none',
+    '.inset-auto',
+    '.overflow-visible',
+    String.raw`.motion-reduce\:rotate-none`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing PhotoFrame utility ${selector}`);
+  }
+  assert.ok(css.indexOf('.eg-photo{') < css.indexOf('@layer utilities'));
+});
+
 test('UI ships PullQuote quote recipes, logical filet and measure without preflight', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -2708,6 +2732,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'PanelBody',
       'PanelFooter',
       'PanelHeader',
+      'PhotoFrame',
       'Popover',
       'PopoverClose',
       'PopoverContent',
@@ -3018,6 +3043,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'PanelProps',
     'PanelTone',
     'PanelVariant',
+    'PhotoFrame',
+    'PhotoFrameFocalPoint',
+    'PhotoFrameProps',
+    'PhotoFrameRatio',
+    'PhotoFrameVariant',
     'Popover',
     'PopoverClose',
     'PopoverCloseProps',
@@ -3282,6 +3312,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ProgressBarSize',
     'ProgressBarVariant',
     'progressBarVariants',
+    'PhotoFrame',
+    'PhotoFrameFocalPoint',
+    'PhotoFrameProps',
+    'PhotoFrameRatio',
+    'PhotoFrameVariant',
     'PullQuote',
     'PullQuoteProps',
     'PullQuoteTone',

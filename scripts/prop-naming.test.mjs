@@ -57,6 +57,10 @@ function indicatorProposalHash(entry) {
 }
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...['aspect-ratio', 'visual-treatment', 'image-focal-point', 'image-caption'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/photo-frame/types.ts#PhotoFrameProps'
+  })),
   ...['surface-material-tone', 'leading-icon'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/atoms/field-message/types.ts#FieldMessageProps'

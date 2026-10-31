@@ -22,6 +22,7 @@ export * from './atoms/input';
 export * from './atoms/kbd';
 export * from './atoms/link';
 export * from './atoms/logo';
+export * from './atoms/photo-frame';
 export * from './atoms/progress-bar';
 export * from './atoms/pull-quote';
 export * from './atoms/radio-group';
