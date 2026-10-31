@@ -1166,6 +1166,17 @@
     "notas": "El carrusel genérico sube a ui."
   },
   {
+    "actual": "Isotipo3D",
+    "nivelActual": "átomo (efecto)",
+    "nombre": "Isotipo3D",
+    "nivel": "atom",
+    "destino": "effects",
+    "radix": "—",
+    "compone": "—",
+    "accion": "mover",
+    "notas": "Decorative 3D isotype with scene, progress, opacity and pointer tilt controls, lazy three loading and an SVG fallback. Browser visual conformity and packed-consumer validation remain pending. Contract: [#47](https://github.com/egdev6/egdev-design-system/issues/47)."
+  },
+  {
     "actual": "AmbientBackground",
     "nivelActual": "organismo (efecto)",
     "nombre": "AmbientBackground",

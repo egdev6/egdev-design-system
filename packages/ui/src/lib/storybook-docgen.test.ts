@@ -118,6 +118,29 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts Isotipo3D effects metadata and bounded native rows', () => {
+    const isotipoRoot = new URL('../../../effects/', import.meta.url);
+    const isotipoParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', isotipoRoot)), {
+      ...config.typescript?.reactDocgenTypescriptOptions
+    });
+    const isotipoDoc = isotipoParser
+      .parse(fileURLToPath(new URL('src/atoms/isotipo3d/Isotipo3D.tsx', isotipoRoot)))
+      .find((item) => item.displayName === 'Isotipo3D');
+    for (const [name, control, value] of [
+      ['scene', 'select', 'hero'],
+      ['progress', 'number', '0'],
+      ['opacity', 'number', '1'],
+      ['pointerTilt', 'boolean', 'true']
+    ] as const) {
+      expect(isotipoDoc?.props[name]).toMatchObject({ required: false, tags: { control }, defaultValue: { value } });
+    }
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className']) {
+      expect(isotipoDoc?.props[name], name).toBeDefined();
+    }
+    for (const name of ['children', 'style', 'role', 'tabIndex', 'aria-hidden']) {
+      expect(isotipoDoc?.props[name], name).toBeUndefined();
+    }
+  });
   it('extracts AmbientBackground own metadata and supported native rows from the effects project', () => {
     const effectsRoot = new URL('../../../effects/', import.meta.url);
     const effectsParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', effectsRoot)), {

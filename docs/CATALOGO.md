@@ -9,7 +9,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 
 | Acción | Componentes |
 |---|---|
-| mover | 35 |
+| mover | 36 |
 | mantener | 30 |
 | nuevo | 23 |
 | extraer | 12 |
@@ -22,7 +22,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 | Destino | Componentes |
 |---|---|
 | @egdev/ui | 74 |
-| @egdev/effects | 2 |
+| @egdev/effects | 3 |
 | Mando | 6 |
 | Cadencia | 1 |
 | Web (egdev.es) | 27 |
@@ -142,6 +142,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
+| **Isotipo3D** | Isotipo3D (átomo (efecto)) | — | — | mover | Decorative 3D isotype with scene, progress, opacity and pointer tilt controls, lazy three loading and an SVG fallback. Browser visual conformity and packed-consumer validation remain pending. Contract: [#47](https://github.com/egdev6/egdev-design-system/issues/47). |
 | **AmbientBackground** | AmbientBackground (organismo (efecto)) | — | — | mover | Working-tree React effect under the approved v0.4 contract and implementation plan: decorative canvas particles with profile and opacity, reduced-motion fallback and a forwarded root ref. No component stylesheet or director choreography. Browser visual conformity and packed-consumer validation remain pending. Contract: [#45](https://github.com/egdev6/egdev-design-system/issues/45). |
 | **Isotipo3D** | Isotipo3D (organismo (efecto)) | — | — | mover | One rendered brand-mark effect using three.js with an SVG fallback; rendering complexity does not make it a structural region or coordinate independent UI concepts. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation or dependency approval. |
 

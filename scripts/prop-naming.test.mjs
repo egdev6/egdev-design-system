@@ -57,6 +57,10 @@ function indicatorProposalHash(entry) {
 }
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...['effect-scene', 'effect-progress', 'layer-opacity', 'pointer-tilt'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/effects/src/atoms/isotipo3d/types.ts#Isotipo3DProps'
+  })),
   ...['effect-profile', 'layer-opacity'].map((conventionId) => ({
     conventionId,
     source: 'packages/effects/src/ambient-background/types.ts#AmbientBackgroundProps'
@@ -1587,14 +1591,16 @@ test('Isotipo3D naming receipt preserves 125 entries and binds three scoped appr
     assert.equal(entry.name, name);
     assert.equal(entry.status, 'approved');
     assert.deepEqual(record.convention, convention);
-    assert.deepEqual(record.proposedConvention, { ...entry, status: 'proposed', approval: null });
+    assert.deepEqual(record.proposedConvention, { ...entry, status: 'proposed', approval: null, usages: [] });
     assert.equal(record.proposedContentHash, `sha256:${proposedHash}`);
     assert.equal(record.proposedContentHash, props.conventionHash(record.proposedConvention));
     assert.equal(record.contentHash, `sha256:${approvedHash}`);
     assert.equal(record.contentHash, props.conventionHash(entry));
     assert.equal(record.scope, `convention:${id}`);
     assert.deepEqual(approval, { reference: isotipoReference, scope: record.scope, contentHash: record.contentHash });
-    assert.deepEqual(usages, []);
+    assert.equal(usages.length, 1);
+    assert.equal(usages[0].component, 'Isotipo3D');
+    assert.equal(usages[0].source.path, 'packages/effects/src/atoms/isotipo3d/types.ts');
     assert.deepEqual(entry.aliases, []);
     assert.deepEqual(entry.exceptions, []);
   }

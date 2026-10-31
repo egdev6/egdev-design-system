@@ -42,6 +42,36 @@ test('ambient package exposes the decorative component and its stylesheet withou
   assert.match(html, /<canvas/);
 });
 
+test('Isotipo3D exports its component and CSS without eager three or private helpers', async () => {
+  const isotipoEntry = artifact('effects', effects.exports['.'].import);
+  const isotipoSource = readFileSync(isotipoEntry, 'utf8');
+  const isotipoParsed = ts.createSourceFile('index.js', isotipoSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.JS);
+  for (const isotipoStatement of isotipoParsed.statements) {
+    if (
+      (ts.isImportDeclaration(isotipoStatement) || ts.isExportDeclaration(isotipoStatement)) &&
+      isotipoStatement.moduleSpecifier &&
+      ts.isStringLiteral(isotipoStatement.moduleSpecifier)
+    ) {
+      assert.doesNotMatch(isotipoStatement.moduleSpecifier.text, /^three(?:\/|$)/);
+    }
+  }
+  const isotipoExports = await import(isotipoEntry);
+  assert.ok(isotipoExports.Isotipo3D);
+  for (const isotipoName of ['useIsotipo3D', 'isotipoCreateScene', 'isotipoPose', 'isotipoRootVariants']) {
+    assert.equal(Object.hasOwn(isotipoExports, isotipoName), false, isotipoName);
+  }
+  const isotipoCss = readFileSync(artifact('effects', effects.exports['./styles.css']), 'utf8');
+  for (const isotipoValue of [
+    '--eg-iso3d-opacity',
+    '--logo-red',
+    '--logo-red-shade',
+    '.pointer-events-none',
+    '.overflow-hidden'
+  ]) {
+    assert.ok(isotipoCss.includes(isotipoValue), `Missing Isotipo3D CSS ${isotipoValue}`);
+  }
+});
+
 // Read a complete emitted block, including nested supports/media rules and quoted values.
 function cssBlock(css, opening) {
   const match = opening.exec(css);

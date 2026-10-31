@@ -5,6 +5,7 @@ import { mergeConfig } from 'vite';
 
 const documentedNativeProps: Record<string, readonly string[]> = {
   ambientBackground: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style'],
+  isotipo3D: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],
   indicator: ['id', 'title', 'dir', 'aria-describedby', 'className', 'onClick', 'onKeyDown', 'onFocus', 'onBlur'],
   panel: ['id', 'title', 'dir', 'aria-describedby', 'className'],
   panelHeader: ['id', 'title', 'dir', 'aria-describedby', 'className'],
