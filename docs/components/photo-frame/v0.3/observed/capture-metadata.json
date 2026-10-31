@@ -1,0 +1,418 @@
+{
+  "recordedAt": "2026-10-30T13:36:41.490735+00:00",
+  "kind": "Observed authored HTML diagnostic studies; not PhotoFrame React implementation",
+  "adoption": "Pending owner fixture/visual/plan decisions",
+  "source": {
+    "specimenSha256": "361b9a0b19c1907e73e4d6818d089260b19dad19c6bf24170a22f0543cd2b377",
+    "fixtureSha256": "1027f0f62e322fa73f9c7e6ce6960f1f00207c0c37ec592409fe073af1e00b59",
+    "provenanceSha256": "06b0decd39297c957262753efb3826f32a8f1fbb4f635c65bc69a048323167ee",
+    "tokensSha256": "1fc1edda6b1a7cdc475add0f4c971d7297687b123b1db43a58ddf442562adf22"
+  },
+  "candidateCaptures": [
+    {
+      "path": "diagnostic-frame--normal--desktop--dark.png",
+      "sha256": "f4ed66568df83d0419f79af1555ebb6a6ac65c5e2180dee8a09a8af2707de579",
+      "selector": "[data-capture=\"frame-and-motion\"]",
+      "pngDimensions": {
+        "width": 1185,
+        "height": 753
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/photo-frame/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 1280,
+          "height": 960
+        },
+        "dpr": 1,
+        "scrollY": 1874,
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": false,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 40,
+          "y": 83.015625,
+          "width": 1185,
+          "height": 752.640625,
+          "top": 83.015625,
+          "right": 1225,
+          "bottom": 835.65625,
+          "left": 40
+        },
+        "images": [
+          {
+            "src": "http://127.0.0.1:4321/photo-frame/fixtures/diagnostic.svg",
+            "naturalWidth": 1000,
+            "naturalHeight": 1000,
+            "complete": true,
+            "alt": "Square diagnostic grid used to inspect a tilted frame without photographic content.",
+            "viewport": {
+              "width": 515,
+              "height": 386,
+              "aspectRatio": "4 / 3"
+            },
+            "objectPosition": "50% 50%",
+            "frameTransform": "matrix(0.999391, 0.0348995, -0.0348995, 0.999391, 0, 0)",
+            "captionTransform": "none"
+          },
+          {
+            "src": "http://127.0.0.1:4321/photo-frame/fixtures/diagnostic.svg",
+            "naturalWidth": 1000,
+            "naturalHeight": 1000,
+            "complete": true,
+            "alt": "Diagnostic grid inside an authored unrotated frame illustration.",
+            "viewport": {
+              "width": 515,
+              "height": 386,
+              "aspectRatio": "4 / 3"
+            },
+            "objectPosition": "50% 50%",
+            "frameTransform": "none",
+            "captionTransform": "none"
+          }
+        ],
+        "resourceResponse": {
+          "status": 200,
+          "contentType": "image/svg+xml"
+        }
+      },
+      "hover": {
+        "before": "matrix(0.999391, 0.0348995, -0.0348995, 0.999391, 0, 0)",
+        "after": "matrix(0.999391, 0.0348995, -0.0348995, 0.999391, 0, 0)"
+      },
+      "parentImageInspection": "completed",
+      "adoption": "Pending"
+    },
+    {
+      "path": "diagnostic-frame--reduced-motion--desktop--dark.png",
+      "sha256": "8ddccf35ad253e02797c6a49de7b5054f3b5c38745b4a36f0b60ce16067a6943",
+      "selector": "[data-capture=\"frame-and-motion\"]",
+      "pngDimensions": {
+        "width": 1185,
+        "height": 753
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/photo-frame/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 1280,
+          "height": 960
+        },
+        "dpr": 1,
+        "scrollY": 1874,
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": true,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 40,
+          "y": 83.015625,
+          "width": 1185,
+          "height": 752.640625,
+          "top": 83.015625,
+          "right": 1225,
+          "bottom": 835.65625,
+          "left": 40
+        },
+        "images": [
+          {
+            "src": "http://127.0.0.1:4321/photo-frame/fixtures/diagnostic.svg",
+            "naturalWidth": 1000,
+            "naturalHeight": 1000,
+            "complete": true,
+            "alt": "Square diagnostic grid used to inspect a tilted frame without photographic content.",
+            "viewport": {
+              "width": 515,
+              "height": 386,
+              "aspectRatio": "4 / 3"
+            },
+            "objectPosition": "50% 50%",
+            "frameTransform": "none",
+            "captionTransform": "none"
+          },
+          {
+            "src": "http://127.0.0.1:4321/photo-frame/fixtures/diagnostic.svg",
+            "naturalWidth": 1000,
+            "naturalHeight": 1000,
+            "complete": true,
+            "alt": "Diagnostic grid inside an authored unrotated frame illustration.",
+            "viewport": {
+              "width": 515,
+              "height": 386,
+              "aspectRatio": "4 / 3"
+            },
+            "objectPosition": "50% 50%",
+            "frameTransform": "none",
+            "captionTransform": "none"
+          }
+        ],
+        "resourceResponse": {
+          "status": 200,
+          "contentType": "image/svg+xml"
+        }
+      },
+      "hover": {
+        "before": "none",
+        "after": "none"
+      },
+      "parentImageInspection": "completed",
+      "adoption": "Pending"
+    },
+    {
+      "path": "diagnostic-crops--static--desktop--dark--stable-gutter.png",
+      "sha256": "6c1b2be2074f829049726e1150cd4dbaa4edb70b2530146da3e10ecb0041514d",
+      "selector": "[data-capture=\"ratios-and-crops\"]",
+      "pngDimensions": {
+        "width": 1185,
+        "height": 1661
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/photo-frame/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 1280,
+          "height": 960
+        },
+        "clientWidth": 1280,
+        "dpr": 1.0000000149011612,
+        "scrollY": 880.7999877929688,
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": false,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 40,
+          "y": -624.7999877929688,
+          "width": 1184.800048828125,
+          "height": 1661,
+          "top": -624.7999877929688,
+          "right": 1224.800048828125,
+          "bottom": 1036.2000122070312,
+          "left": 40
+        },
+        "captureOnlyOverride": "html { scrollbar-gutter: stable; }",
+        "images": [
+          {
+            "naturalWidth": 1000,
+            "naturalHeight": 1000,
+            "complete": true,
+            "alt": "Diagnostic grid with north, south, west and east edge labels, numbered quadrants and a central crosshair.",
+            "viewport": {
+              "width": 372,
+              "height": 372,
+              "aspectRatio": "1 / 1"
+            },
+            "objectPosition": "50% 50%",
+            "frameTransform": "none",
+            "captionTransform": "none"
+          },
+          {
+            "naturalWidth": 1000,
+            "naturalHeight": 1000,
+            "complete": true,
+            "alt": "Square diagnostic crop grid with four labelled edges and a centered crosshair.",
+            "viewport": {
+              "width": 372,
+              "height": 465,
+              "aspectRatio": "4 / 5"
+            },
+            "objectPosition": "50% 50%",
+            "frameTransform": "none",
+            "captionTransform": "none"
+          },
+          {
+            "naturalWidth": 1000,
+            "naturalHeight": 1000,
+            "complete": true,
+            "alt": "Square diagnostic crop grid with four labelled edges and a centered crosshair.",
+            "viewport": {
+              "width": 372,
+              "height": 279,
+              "aspectRatio": "4 / 3"
+            },
+            "objectPosition": "50% 50%",
+            "frameTransform": "none",
+            "captionTransform": "none"
+          },
+          {
+            "naturalWidth": 1000,
+            "naturalHeight": 1000,
+            "complete": true,
+            "alt": "Diagnostic grid with west and east side landmarks for horizontal crop comparison.",
+            "viewport": {
+              "width": 372,
+              "height": 465,
+              "aspectRatio": "4 / 5"
+            },
+            "objectPosition": "0% 50%",
+            "frameTransform": "none",
+            "captionTransform": null
+          },
+          {
+            "naturalWidth": 1000,
+            "naturalHeight": 1000,
+            "complete": true,
+            "alt": "Diagnostic grid with west and east side landmarks for horizontal crop comparison.",
+            "viewport": {
+              "width": 372,
+              "height": 465,
+              "aspectRatio": "4 / 5"
+            },
+            "objectPosition": "100% 50%",
+            "frameTransform": "none",
+            "captionTransform": null
+          },
+          {
+            "naturalWidth": 1000,
+            "naturalHeight": 1000,
+            "complete": true,
+            "alt": "Diagnostic grid with north and south edge bands for vertical crop comparison.",
+            "viewport": {
+              "width": 372,
+              "height": 279,
+              "aspectRatio": "4 / 3"
+            },
+            "objectPosition": "50% 0%",
+            "frameTransform": "none",
+            "captionTransform": null
+          },
+          {
+            "naturalWidth": 1000,
+            "naturalHeight": 1000,
+            "complete": true,
+            "alt": "Diagnostic grid with north and south edge bands for vertical crop comparison.",
+            "viewport": {
+              "width": 372,
+              "height": 279,
+              "aspectRatio": "4 / 3"
+            },
+            "objectPosition": "50% 100%",
+            "frameTransform": "none",
+            "captionTransform": null
+          }
+        ]
+      },
+      "hover": null,
+      "parentImageInspection": "completed",
+      "adoption": "Pending"
+    },
+    {
+      "path": "diagnostic-caption--static--narrow--dark--stable-gutter.png",
+      "sha256": "ced696295c6426304abca8b056789a56d66873d8961eeda680419fe41b6423b9",
+      "selector": "[data-capture=\"caption-and-decorative\"]",
+      "pngDimensions": {
+        "width": 344,
+        "height": 1333
+      },
+      "observed": {
+        "url": "http://127.0.0.1:4321/photo-frame/specimen.html",
+        "browser": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36",
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "clientWidth": 390,
+        "dpr": 1.0000000149011612,
+        "scrollY": 5712,
+        "theme": "rgb(20, 21, 24)",
+        "fontFamily": "Barlow, system-ui, sans-serif",
+        "fontFaces": [],
+        "reducedMotion": true,
+        "reducedTransparency": false,
+        "direction": "ltr",
+        "documentOverflow": false,
+        "bounds": {
+          "x": 16,
+          "y": -487.20001220703125,
+          "width": 343.20001220703125,
+          "height": 1331.4000244140625,
+          "top": -487.20001220703125,
+          "right": 359.20001220703125,
+          "bottom": 844.2000122070312,
+          "left": 16
+        },
+        "captureOnlyOverride": "html { scrollbar-gutter: stable; }",
+        "images": [
+          {
+            "naturalWidth": 1000,
+            "naturalHeight": 1000,
+            "complete": true,
+            "alt": "Square diagnostic crop grid with edge labels and numbered interior regions.",
+            "viewport": {
+              "width": 292,
+              "height": 219,
+              "aspectRatio": "4 / 3"
+            },
+            "objectPosition": "50% 50%",
+            "frameTransform": "none",
+            "captionTransform": "none"
+          },
+          {
+            "naturalWidth": 1000,
+            "naturalHeight": 1000,
+            "complete": true,
+            "alt": "Diagnostic crop grid with north, south, west and east labels.",
+            "viewport": {
+              "width": 292,
+              "height": 219,
+              "aspectRatio": "4 / 3"
+            },
+            "objectPosition": "50% 50%",
+            "frameTransform": "none",
+            "captionTransform": null
+          },
+          {
+            "naturalWidth": 1000,
+            "naturalHeight": 1000,
+            "complete": true,
+            "alt": "",
+            "viewport": {
+              "width": 292,
+              "height": 219,
+              "aspectRatio": "4 / 3"
+            },
+            "objectPosition": "50% 50%",
+            "frameTransform": "none",
+            "captionTransform": null
+          }
+        ]
+      },
+      "hover": null,
+      "parentImageInspection": "completed",
+      "adoption": "Pending"
+    }
+  ],
+  "supersededAttempts": [
+    {
+      "path": "diagnostic-crops--static--desktop--dark.png",
+      "sha256": "523099374528e48d79b189ba646a8e0c33cfda821c69636ca36673dc0a560abe",
+      "status": "Not an adoption candidate: scrollbar-induced reflow and misaligned crop; retained as failed capture attempt"
+    },
+    {
+      "path": "diagnostic-caption--static--narrow--dark.png",
+      "sha256": "3351ddab4ae69047367511a07d4b4ae8d2b76e979da5487d8301a2d83d4ed15a",
+      "status": "Not an adoption candidate: scrollbar-induced reflow and misaligned crop; retained as failed capture attempt"
+    }
+  ],
+  "captureGeometryCheck": {
+    "initialCheck": "A <=1 CSS-pixel PNG/DOM dimension check failed on the corrected narrow capture (344x1333 versus 343.2x1331.4).",
+    "currentCheck": "Stable before/after DOM sizes; raster dimensions within floor(size) through ceil(size)+1 to allow outward rounding at both crop edges. All four candidate PNGs visually inspected; corrected crops start/end at their requested sections. This is not a component visual-parity tolerance."
+  },
+  "limitations": [
+    "HTML/CSS/native SVG resource evidence only: not React, Radix, callbacks, delayed/error routing, Controls, AT or approved runtime outcomes.",
+    "Installed Barlow/Barlow Condensed and SVG generic-monospace identities are unverified; document.fonts listed no web faces.",
+    "Corrected crop/narrow captures inject only html { scrollbar-gutter: stable; }; source specimen is unchanged. Other candidate captures have no such override.",
+    "No 200%/400% browser zoom, RTL, forced reduced-transparency or cross-browser verification is claimed.",
+    "Four candidate captures are proposed supplemental visuals only; historical approved VIS-01/02 remain unchanged."
+  ]
+}
