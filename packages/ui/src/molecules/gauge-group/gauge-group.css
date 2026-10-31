@@ -1,0 +1,13 @@
+@layer components {
+  .eg-gauge-group-slot {
+    position: absolute;
+    inset: var(--eg-gauge-group-slot-inset);
+  }
+
+  .eg-gauge-group-center {
+    position: absolute;
+    inset: var(--eg-gauge-group-center-inset);
+    display: grid;
+    place-items: center;
+  }
+}

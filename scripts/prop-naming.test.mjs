@@ -57,6 +57,21 @@ function indicatorProposalHash(entry) {
 }
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...['accessible-name', 'collection-items', 'preset-dimensions', 'decorative-center-content'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/gauge-group/types.ts#GaugeGroupProps'
+  })),
+  ...[
+    'accessible-name',
+    'primary-value',
+    'measurement-text-equivalent',
+    'consumer-selected-condition',
+    'condition-description',
+    'unavailable-measurement-message'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/gauge-group/types.ts#GaugeGroupRing'
+  })),
   ...['surface-material-tone', 'leading-icon'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/atoms/field-message/types.ts#FieldMessageProps'

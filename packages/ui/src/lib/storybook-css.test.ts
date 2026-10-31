@@ -358,6 +358,20 @@ describe('Storybook preview CSS', () => {
     expect(gaugeCircleVariants().split(/\s+/)).toContain(utility);
   });
 
+  it('compiles GaugeGroup slot and shared-center geometry alongside the Gauge engine', () => {
+    expect(rule('.eg-gauge-group-slot')).toMatch(/position:\s*absolute\s*;/);
+    expect(rule('.eg-gauge-group-slot')).toMatch(/inset:\s*var\(--eg-gauge-group-slot-inset\)/);
+    expect(rule('.eg-gauge-group-center')).toMatch(/inset:\s*var\(--eg-gauge-group-center-inset\)/);
+    expect(rule('.eg-gauge-group-center')).toMatch(/display:\s*grid\s*;/);
+    expect(rule('.eg-gauge-arc')).toMatch(/conic-gradient/);
+    expect(css).toMatch(/--eg-gauge-group-slot-inset:\s*var\(--space-0\)/);
+    expect(css).toMatch(/--eg-gauge-group-slot-inset:\s*calc\(var\(--space-1\)\s*\+\s*var\(--space-1\)\)/);
+    expect(css).toMatch(/--eg-gauge-group-slot-inset:\s*calc\(\(var\(--space-1\)\s*\+\s*var\(--space-1\)\)\s*\*\s*2\)/);
+    for (const inset of [3, 5]) {
+      expect(css).toContain(`--eg-gauge-group-center-inset: var(--space-${inset})`);
+    }
+  });
+
   it('compiles GaugeDock axis, overflow and perpendicular separator utilities without a custom stylesheet', () => {
     expect(rule('.max-w-full')).toMatch(/max-width:\s*100%/);
     expect(rule('.max-h-full')).toMatch(/max-height:\s*100%/);

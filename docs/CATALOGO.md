@@ -11,7 +11,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 |---|---|
 | mover | 35 |
 | mantener | 30 |
-| nuevo | 22 |
+| nuevo | 23 |
 | extraer | 12 |
 | fusionar | 3 |
 | separar | 3 |
@@ -21,7 +21,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 
 | Destino | Componentes |
 |---|---|
-| @egdev/ui | 73 |
+| @egdev/ui | 74 |
 | @egdev/effects | 2 |
 | Mando | 6 |
 | Cadencia | 1 |
@@ -107,6 +107,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Collapsible** | — | Collapsible | Surface, Button recipe, Icon | nuevo | Implemented public working-tree React disclosure over the already-declared Radix Collapsible 1.2.1 under the [v0.2 base](components/collapsible/v0.2/spec.md) and [approved v0.3 relationship amendment](components/collapsible/v0.3/radix-relationship-amendment.md). Fixed Surface frame, ghost/md button recipe, native state/presence and Trigger-only button ref. Closed Trigger omits aria-controls; the hidden Content shell/id remains while children unmount. No stylesheet, custom key/focus engine or dependency change; NavList is unchanged. Parent unit, metadata, build and packed React 18.3.1/19.3.0 checks passed; runtime browser/AT conformity remains pending. |
 | **SocialLinks** | SocialLinks (molécula) | — (native anchors; atom-owned Slot + AccessibleIcon) | IconButton, Icon, Stack, Cluster | mantener | Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/104): named native list of validated HTTPS profile links, optional independent caption, stacked or wrapping inline layout, outline/ghost atom treatments and md/lg presets (lg touch-sized default). Per-item opt-in new context merges secure rel tokens and a localized hidden notice once. Empty/all-invalid data renders nothing; no truncation, selection, ref or asChild. Six meaningful files, no stylesheet; legacy markers/styles preserved. Visual conformity: Not evaluated. |
 | **Carousel** | — | — (native scroll and bounded roving focus) | IconButton, Icon, ProgressBar, VisuallyHidden | extraer | Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/80): manually navigated read-only slides with stable string identities, bounded direction-aware keyboard navigation, native scrolling and background/media mouse dragging. Controlled requests wait for acceptance; settled user changes coordinate focus and polite status. Structural layout only; consumer Surface content owns Material. No autoplay, stylesheet, new dependencies or legacy TipsSlider migration. |
+| **GaugeGroup** | — | — (native group and meters) | Shared private Gauge geometry | nuevo | Implemented in @egdev/ui under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/31): two or three independent passive readings with a decorative transparent concentric diagram and ordered visible list. No aggregate or GaugeDock extension. |
 | **Dialog** | Dialog (organismo) | Dialog | Surface, ButtonGroup, Portal | mantener | Coordinates dialog content and actions as one reusable overlay interaction, not a structural page region. Retains the `sheet` variant for side panels (MobileMenu). See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval. |
 | **AlertDialog** | — | AlertDialog | Dialog | nuevo | Coordinates a confirmation prompt and decision actions as one reusable interaction, not a structural page region. Retains destructive confirmations (delete, disconnect). See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval. |
 | **CommandPalette** | CommandPalette (organismo) | Dialog (+ cmdk, a confirmar) | Input, ListItem, Kbd | mantener | Coordinates search input, results and command activation as one reusable interaction, not application-level structure. Radix has no combobox; cmdk over Radix Dialog remains a candidate requiring confirmation. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation or dependency approval. |

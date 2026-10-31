@@ -118,6 +118,16 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts GaugeGroup required inputs and bounded controls', () => {
+    const doc = parser
+      .parse(source('molecules/gauge-group/GaugeGroup.tsx'))
+      .find((item) => item.displayName === 'GaugeGroup');
+    expect(doc?.props.label).toMatchObject({ required: true, tags: { control: 'text' } });
+    expect(doc?.props.items).toMatchObject({ required: true, tags: { control: 'false' } });
+    expect(doc?.props.center).toMatchObject({ tags: { control: 'false' } });
+    expect(doc?.props.size).toMatchObject({ tags: { control: 'select' }, defaultValue: { value: 'md' } });
+    expect(publicAPI.GaugeGroup).toBeDefined();
+  });
   it('extracts PageHeader own controls, semantic rank, native rows and bounded exports', () => {
     const file = ast(source('molecules/page-header/types.ts'));
     const properties = ownProps(file, ['PageHeaderProps']);
@@ -699,6 +709,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/collapsible',
       './molecules/field',
       './molecules/gauge-dock',
+      './molecules/gauge-group',
       './molecules/hover-card',
       './molecules/list-item',
       './molecules/menu',
@@ -749,6 +760,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'GaugeDock',
       'GaugeDockItem',
       'GaugeDockSeparator',
+      'GaugeGroup',
       'Heading',
       'HoverCard',
       'HoverCardContent',

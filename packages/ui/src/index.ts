@@ -46,6 +46,8 @@ export type { CollapsibleContentProps, CollapsibleProps, CollapsibleTriggerProps
 export { Collapsible, CollapsibleContent, CollapsibleTrigger } from './molecules/collapsible';
 export * from './molecules/field';
 export * from './molecules/gauge-dock';
+export type { GaugeGroupItems, GaugeGroupProps, GaugeGroupRing, GaugeGroupSize } from './molecules/gauge-group';
+export { GaugeGroup } from './molecules/gauge-group';
 export type { HoverCardContentProps, HoverCardProps, HoverCardTriggerProps } from './molecules/hover-card';
 export { HoverCard, HoverCardContent, HoverCardTrigger } from './molecules/hover-card';
 export * from './molecules/list-item';
