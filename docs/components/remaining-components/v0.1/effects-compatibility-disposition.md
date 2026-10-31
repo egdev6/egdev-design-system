@@ -13,7 +13,7 @@
 | Input | Canonical boundary → EOF, UTF-8 LF/final LF included; SHA-256 |
 | --- | --- |
 | [FX-O — scoped owner choices](effects-owner-decisions.md) | Actual whole-line `## Decisions`; `636e5a37c41e3896920f9a728349978a09cb1e5e11d5a03498f88b540602cb61` |
-| [FX-I — W3 compatibility inventory](../../../../../collapsible/docs/components/remaining-components/v0.1/effects-compatibility-inventory.md) | Actual whole-line `## 1. Authority and inventory boundary`; `1f952925e4e46e83e714805a77d305ca6720c3a9d85cb6131603fdb1f3cbe3b5` |
+| [FX-I — W3 compatibility inventory](effects-compatibility-inventory.md) | Actual whole-line `## 1. Authority and inventory boundary`; `1f952925e4e46e83e714805a77d305ca6720c3a9d85cb6131603fdb1f3cbe3b5` |
 | [FX-P — reconciled common proposal](effects-integration-plan.md) | Actual whole-line `## 1. Decisions and authority`; `bae5b2351b711927b89f8dd5b60de637fa52e1a7b9a981ef0607c3fc522aa3ad` |
 
 FX-I binds six tracked package files/archive closure at baseline f88b36e and the parent-supplied external record `/tmp/egdev-remaining-odd/effects-external-inventory.json`, whole-file SHA-256 `f26bdb49c01805195bab9c694bed9537289653af914d5f20c28edc4bc211dfc0`. Parent reports reading the inventory and checking those bindings. This writer performs no fresh network query, consumer search, tarball inspection or independent-verifier review.
