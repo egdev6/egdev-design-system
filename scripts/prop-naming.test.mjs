@@ -61,6 +61,10 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/atoms/indicator/types.ts#IndicatorProps'
   })),
+  ...['visual-treatment', 'surface-material-tone'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/panel/types.ts#PanelProps'
+  })),
   ...[
     'surface-material-tone',
     'leading-icon',

@@ -1,0 +1,153 @@
+{
+  "kind": "static-specimen-capture-request",
+  "component": "Panel",
+  "issue": "https://github.com/egdev6/egdev-design-system/issues/180",
+  "specVersion": "0.2",
+  "status": "Proposed — not a capture receipt or visual approval",
+  "baselineCommit": "f88b36e44b3d5ec6d7725350959f9cdfdfeb5b23",
+  "authority": {
+    "proposalApproval": "https://github.com/egdev6/egdev-design-system/issues/180#issuecomment-6516515172",
+    "scope": "Prepare detailed Panel contract and plan over Surface; no ModuleCard migration",
+    "suppliedHistorySnapshot": "/tmp/egdev-remaining-odd/180.json",
+    "suppliedHistorySHA256": "sha256:da1152e9bee9cfc37ef9782705cb34d09551ecb033d5e403a86037590a69190e",
+    "historicalCommentCountInspected": 1,
+    "exactContractApproval": null,
+    "visualAdoption": null,
+    "separatePlanApproval": null
+  },
+  "source": {
+    "path": "docs/components/panel/v0.2/specimen.html",
+    "wholeFileSHA256": "sha256:fe3a436d3cf6128b0dc2b6df1f9f57dea18cbd1aa9972bfdb09d53d4f68fb8fc",
+    "provenance": "Locally authored static design proposal based on inspected Surface recipes and Panel v0.2. Not React output or an owner-provided screenshot.",
+    "specPath": "docs/components/panel/v0.2/spec.md",
+    "specPayloadSHA256": "sha256:98d1cc3aa4fa81040f001476a334e1436e2d78f86f1a93cf7a23220b02917e06",
+    "specHashRule": "UTF-8 LF bytes from the actual line beginning ## 1. Purpose and scope through EOF, final newline included; metadata excluded",
+    "planPath": "docs/components/panel/v0.2/implementation-plan.md",
+    "planPayloadSHA256": "sha256:0d4e70b14ddd26ddd80df4225b5e105451acee9e15623600446ef70c10370b79",
+    "planHashRule": "UTF-8 LF bytes from the actual line beginning ## 1. Gates and boundaries through EOF, final newline included; metadata excluded",
+    "historicalSpecWholeFileSHA256": "sha256:ad29de6a9035caea7271e1916a47ee0ad6b968e3a67e7aa10a0110a60aac322f",
+    "runtimeSourceSHA256": null
+  },
+  "hosting": {
+    "owner": "Parent",
+    "serverLaunchedByWriter": false,
+    "url": null,
+    "tokenStylesheetHref": "/tokens.css",
+    "tokenSource": "packages/tokens/src/theme.css",
+    "tokenSourceSHA256": "sha256:62d10992ae654e34e83d9d11bcf35da29e56c905648015f2415ebdca59bf6ab8",
+    "compiledCanonicalTokenStylesheetSHA256": null,
+    "requirements": [
+      "Serve the exact specimen bytes with the actual compiled canonical token output at /tokens.css; do not serve uncompiled @theme source as CSS evidence.",
+      "Record resolved URL, token output hash, source hash and actual browser conditions before capture.",
+      "Wait for stylesheet resolution and document.fonts.ready; verify and record actual loaded fonts. No font files or external font requests are supplied by this specimen."
+    ]
+  },
+  "proposedConditions": {
+    "theme": "Canonical dark only",
+    "browser": "Chromium via parent-owned real Playwright browser; exact version to record",
+    "deviceScaleFactor": 1,
+    "viewports": [
+      { "name": "desktop", "width": 1280, "height": 960 },
+      { "name": "narrow", "width": 390, "height": 844 }
+    ],
+    "fonts": ["Barlow from --font-sans; actual loaded face or token fallback must be recorded"],
+    "colorScheme": "dark",
+    "reducedMotion": "reduce; specimen has no animations",
+    "transparency": "Default no-preference, plus reduced-transparency host comparison when supported",
+    "direction": "ltr initially; parent may add an explicitly recorded rtl comparison",
+    "zoom": "100% baseline; separately recorded 200% reflow inspection",
+    "crop": "Element screenshot of each data-capture scenario, including ownership labels; individual panel/host crops supplement the comparison board",
+    "captureDate": null,
+    "actualBrowserVersion": null,
+    "actualLoadedFonts": null
+  },
+  "scenarios": [
+    {
+      "visualId": "VIS-01",
+      "selector": "[data-capture=\"default\"]",
+      "name": "Framed default",
+      "alt": "Static surface-1 Panel proposal with transparent Header, Body and Footer over one Material frame.",
+      "conditions": ["desktop", "narrow"],
+      "acceptance": ["AC-01", "AC-02", "AC-03"],
+      "checks": [
+        "Single outer hairline/light edge/two-layer shadow",
+        "No internal paint or automatic landmarks",
+        "Supplied text wraps"
+      ],
+      "proposedOutput": "default--static--desktop--dark.png",
+      "imageSHA256": null,
+      "approvalReference": null
+    },
+    {
+      "visualId": "VIS-02",
+      "selector": "[data-capture=\"banded\"]",
+      "name": "Banded solid frame",
+      "alt": "Static banded Panel proposal with surface-2 header, transparent body and surface-0 footer inside a surface-1 frame.",
+      "conditions": ["desktop", "narrow"],
+      "acceptance": ["AC-01", "AC-02", "AC-03"],
+      "checks": [
+        "Header sheen/light edge and bottom hairline only",
+        "Footer top hairline without sheen or shadow",
+        "Inset corners without clipping"
+      ],
+      "proposedOutput": "banded--static--desktop--dark.png",
+      "imageSHA256": null,
+      "approvalReference": null
+    },
+    {
+      "visualId": "VIS-03",
+      "selector": "[data-capture=\"hosts\"]",
+      "name": "Explicit floating and inherited paint ownership",
+      "alt": "Static comparison of default and banded standalone overlay frames against inherited content inside already painted overlay and surface-2 hosts.",
+      "conditions": [
+        "desktop",
+        "narrow",
+        "reduced-transparency when available",
+        "unsupported backdrop-filter condition only if genuinely available and recorded"
+      ],
+      "acceptance": ["AC-02", "AC-03", "AC-05"],
+      "checks": [
+        "All six tone-by-variant combinations are represented across VIS-01 through VIS-03",
+        "Inherit adds no frame, shadow or blur",
+        "Host padding and outer corners stay host-owned",
+        "Raised bands use surface-3 and surface-1",
+        "Overlay fallback is solid surface-2"
+      ],
+      "proposedOutput": "hosts--static--desktop--dark.png",
+      "imageSHA256": null,
+      "approvalReference": null
+    },
+    {
+      "visualId": "VIS-04",
+      "selector": "[data-capture=\"optional\"]",
+      "name": "Missing optional parts",
+      "alt": "Three static banded Panels showing Body only, omitted Header and omitted Footer with no empty optional band.",
+      "conditions": ["desktop", "narrow", "200% zoom inspection"],
+      "acceptance": ["AC-01", "AC-03"],
+      "checks": [
+        "No phantom separator or padding for omitted parts",
+        "Only exposed first and last zone corners round",
+        "No root overflow clipping"
+      ],
+      "proposedOutput": "optional--static--desktop--dark.png",
+      "imageSHA256": null,
+      "approvalReference": null
+    }
+  ],
+  "parentCaptureHandoff": {
+    "outputDirectory": "docs/components/panel/v0.2/",
+    "outputsCreatedByWriter": [],
+    "metadata": "Parent records actual conditions, tool/date, source and PNG hashes, component-zone crop and approval scope in a separate real capture record; additional assets require parent-owned edit authorization.",
+    "narrowNaming": "Use --narrow-- in additional filenames; do not overwrite desktop captures or historical v0.1.",
+    "publication": "No asset publication, GitHub image URL, upload, Git operation or owner adoption is authorized by this request."
+  },
+  "knownLimits": [
+    "No browser, screenshot, computed-style, Controls, AT or runtime results were obtained by the writer.",
+    "No script, React component, runtime icon, keyboard/focus engine or interactive control state exists in the specimen.",
+    "Comparison host markup illustrates Material ownership only, not a real Popover/Dialog portal, naming, focus or dismissal integration.",
+    "An overlay recipe is shown statically; the application must actually provide floating placement for runtime overlay use.",
+    "Historical v0.1 screenshot descriptions do not provide recoverable PNG bytes or browser conditions.",
+    "Static design adoption cannot prove native passthrough, child events, context isolation, package compatibility or absence of runtime regressions.",
+    "Visual conformity remains Not evaluated until recoverable expected-design adoption and comparable runtime evidence exist."
+  ]
+}

@@ -48,6 +48,84 @@ function cssBlock(css, opening) {
 const unapprovedTransitionUtility =
   /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\])(?=\s*\{))[\w\\]/;
 
+test('Panel ships band resets and direct-zone corner utilities without a new marker engine', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    '.gap-0',
+    '.overflow-visible',
+    '.bg-none',
+    '.shadow-none',
+    '.backdrop-filter-none',
+    String.raw`.first\:rounded-t-\[calc\(var\(--radius-xl\)-var\(--border-width\)\)\]`,
+    String.raw`.last\:rounded-b-\[calc\(var\(--radius-xl\)-var\(--border-width\)\)\]`,
+    String.raw`.first\:rounded-t-xl`,
+    String.raw`.last\:rounded-b-xl`
+  ]) {
+    assert.ok(utilities.includes(selector), 'Missing Panel utility ' + selector);
+  }
+  assert.doesNotMatch(utilities, /\.eg-panel[^{}]*\{/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/panel/panel.css')), false);
+});
+test('Panel package preserves compound zones, explicit frame ownership and closed public exports in SSR', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  for (const name of ['Panel', 'PanelHeader', 'PanelBody', 'PanelFooter']) {
+    assert.equal(typeof exported[name], 'function');
+  }
+  for (const name of [
+    'usePanel',
+    'usePanelHeader',
+    'usePanelBody',
+    'usePanelFooter',
+    'PanelContext',
+    'panelVariants',
+    'panelHeaderVariants',
+    'panelBodyVariants',
+    'panelFooterVariants'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, name + ' is private');
+  }
+  for (const tone of ['surface-1', 'overlay', 'inherit']) {
+    for (const variant of ['default', 'banded']) {
+      const dom = new JSDOM(
+        renderToString(
+          createElement(exported.Panel, {
+            tone,
+            variant,
+            children: [
+              createElement(exported.PanelHeader, { key: 'header', children: 'Heading' }),
+              createElement(exported.PanelBody, {
+                key: 'body',
+                children: createElement('button', { type: 'button', children: 'Child action' })
+              }),
+              createElement(exported.PanelFooter, { key: 'footer', children: 'Metadata' })
+            ]
+          })
+        )
+      );
+      try {
+        const wrapper = dom.window.document.querySelector('.eg-panel');
+        assert.ok(wrapper);
+        assert.deepEqual(
+          [...wrapper.children].map((node) => node.className.match(/eg-panel__(header|body|footer)/)?.[1]),
+          ['header', 'body', 'footer']
+        );
+        assert.equal(wrapper.classList.contains('eg-surface'), tone !== 'inherit');
+        assert.equal(wrapper.getAttribute('data-tone'), tone);
+        assert.equal(wrapper.getAttribute('data-variant'), variant);
+        assert.equal(wrapper.hasAttribute('role'), false);
+        assert.equal(wrapper.querySelectorAll('button').length, 1);
+      } finally {
+        dom.window.close();
+      }
+    }
+  }
+  assert.throws(() => renderToString(createElement(exported.PanelBody, { children: 'Orphan' })), /Panel/);
+});
+
 test('Toast ships floating elevation, viewport, swipe, fade and reduced-motion utilities', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -2554,6 +2632,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'NavList',
       'Notice',
       'PageHeader',
+      'Panel',
+      'PanelBody',
+      'PanelFooter',
+      'PanelHeader',
       'Popover',
       'PopoverClose',
       'PopoverContent',
@@ -2845,6 +2927,16 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'PageHeader',
     'PageHeaderLevel',
     'PageHeaderProps',
+    'Panel',
+    'PanelBody',
+    'PanelBodyProps',
+    'PanelFooter',
+    'PanelFooterProps',
+    'PanelHeader',
+    'PanelHeaderProps',
+    'PanelProps',
+    'PanelTone',
+    'PanelVariant',
     'Popover',
     'PopoverClose',
     'PopoverCloseProps',

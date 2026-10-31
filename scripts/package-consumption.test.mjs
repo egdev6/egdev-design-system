@@ -1766,6 +1766,38 @@ const waveRef: ComponentProps<typeof Indicator> = { children: 'Anchor', ref: cre
 // @ts-expect-error No cloning/composition API.
 const waveSlot: IndicatorProps = { children: 'Anchor', asChild: true };
 
+import { Panel, PanelHeader, PanelBody, PanelFooter } from '@egdev/ui';
+import type { PanelProps, PanelVariant, PanelTone, PanelHeaderProps, PanelBodyProps, PanelFooterProps } from '@egdev/ui';
+// @ts-expect-error Presentation context is private.
+import type { PanelContext } from '@egdev/ui';
+export const panelConsumerChanges: string[] = [];
+const panelWaveVariant: PanelVariant = 'banded';
+const panelWaveTone: PanelTone = 'surface-1';
+const panelWaveHeader: PanelHeaderProps = { children: createElement('h2', null, 'Packed panel') };
+const panelWaveBody: PanelBodyProps = { children: createElement('button', { type: 'button', id: 'packed-panel-wave-action', onClick: () => panelConsumerChanges.push('activate') }, 'Child action') };
+const panelWaveFooter: PanelFooterProps = { children: 'Metadata' };
+const panelWaveProps: PanelProps = { children: 'Composition supplied below' };
+export function PanelConsumerSamples({ tone = panelWaveTone, variant = panelWaveVariant }: { tone?: PanelTone; variant?: PanelVariant } = {}) {
+  return createElement(Surface, { tone: 'surface-2', radius: 'xl', padding: 'md', children:
+    createElement(Panel, { ...panelWaveProps, id: 'packed-panel-wave', tone, variant, children: [
+      createElement(PanelHeader, { ...panelWaveHeader, key: 'header' }),
+      createElement(PanelBody, { ...panelWaveBody, key: 'body' }),
+      createElement(PanelFooter, { ...panelWaveFooter, key: 'footer' })
+    ] }) });
+}
+// @ts-expect-error Root owns passive semantics.
+const panelWaveRole: PanelProps = { children: 'Body', role: 'region' };
+// @ts-expect-error Root has no HTML injection API.
+const panelWaveHTML: PanelProps = { children: 'Body', dangerouslySetInnerHTML: { __html: 'Body' } };
+// @ts-expect-error No public ref.
+const panelWaveRef: ComponentProps<typeof Panel> = { children: 'Body', ref: createRef<HTMLDivElement>() };
+// @ts-expect-error No asChild composition.
+const panelWaveSlot: PanelProps = { children: 'Body', asChild: true };
+// @ts-expect-error Part paint is recipe-owned.
+const panelWavePartStyle: PanelBodyProps = { children: 'Body', style: { color: 'red' } };
+// @ts-expect-error Tone is a closed frame-ownership union.
+const panelWaveToneError: PanelProps = { children: 'Body', tone: 'brand' };
+
 export function App({ gaugeValue, wideRatio, stackGap, surfaceElevation, dividerSemantic, headingLevel, iconName, spinnerLoading, linkExternal, statusDotPulse, inputValue, progressValue }: { gaugeValue?: number; wideRatio?: number; stackGap?: LayoutGap; surfaceElevation?: SurfaceElevation; dividerSemantic?: boolean; headingLevel?: HeadingLevel; iconName?: IconName; spinnerLoading?: boolean; linkExternal?: boolean; statusDotPulse?: boolean; inputValue?: string; progressValue?: number } = {}) {
   // Intrinsic controls are consumer harness elements, not additional SDK components.
   return createElement('main', null,
@@ -3445,6 +3477,18 @@ function assertIndicatorConsumerCSS(css) {
   }
 }
 
+function assertPanelConsumerCSS(css) {
+  for (const selector of [
+    '.bg-none',
+    '.shadow-none',
+    '.backdrop-filter-none',
+    '.first\\:rounded-t-\\[calc\\(var\\(--radius-xl\\)-var\\(--border-width\\)\\)\\]',
+    '.last\\:rounded-b-xl'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing panel packed CSS utility ' + selector);
+  }
+}
+
 const entries = `
 import assert from 'node:assert/strict';
 import { readFileSync, realpathSync } from 'node:fs';
@@ -3486,6 +3530,8 @@ ${assertNavListCSS.toString()}
 assertNavListCSS(shippedStyles);
 ${assertIndicatorConsumerCSS.toString()}
 assertIndicatorConsumerCSS(shippedStyles);
+${assertPanelConsumerCSS.toString()}
+assertPanelConsumerCSS(shippedStyles);
 ${assertHoverCardCSS.toString()}
 assertHoverCardCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
@@ -3532,6 +3578,10 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'NavList',
   'Notice',
   'PageHeader',
+  'Panel',
+  'PanelBody',
+  'PanelFooter',
+  'PanelHeader',
   'Popover',
   'PopoverClose',
   'PopoverContent',
@@ -3822,6 +3872,21 @@ try {
   assert.equal(wave.hasAttribute('aria-live'), false);
 
 } finally { waveDOM.window.close(); }
+
+import { PanelConsumerSamples } from './consumer.ts';
+const panelWaveHTML = renderToString(createElement(PanelConsumerSamples));
+writeFileSync(new URL('./panel-wave-hydration.html', import.meta.url), panelWaveHTML);
+const panelWaveDOM = new JSDOM(panelWaveHTML);
+try {
+  const doc = panelWaveDOM.window.document;
+  const panelWave = doc.getElementById('packed-panel-wave');
+  assert.ok(panelWave.classList.contains('eg-surface'));
+  assert.equal(panelWave.getAttribute('data-tone'), 'surface-1');
+  assert.equal(panelWave.getAttribute('data-variant'), 'banded');
+  assert.deepEqual([...panelWave.children].map(node => node.className.match(/eg-panel__(header|body|footer)/)?.[1]), ['header', 'body', 'footer']);
+  assert.equal(panelWave.querySelectorAll('button').length, 1);
+  assert.equal(panelWave.hasAttribute('role'), false);
+} finally { panelWaveDOM.window.close(); }
 
 import { PageHeaderSamples } from './consumer.ts';
 const pageDocument = new JSDOM(renderToString(createElement(PageHeaderSamples)));
@@ -5138,6 +5203,41 @@ try {
 
   await act(async () => root.render(null));
   stage('first-wave:indicator:complete');
+  const { PanelConsumerSamples, panelConsumerChanges } = await import('./consumer.ts');
+  const panelWaveHost = document.createElement('section');
+  panelWaveHost.innerHTML = readWaveFile(new URL('./panel-wave-hydration.html', import.meta.url), 'utf8');
+  document.body.append(panelWaveHost);
+  const panelWaveServerNode = panelWaveHost.querySelector('#packed-panel-wave');
+  const panelWaveRecoveries = [];
+  let panelWaveHydrated;
+  await act(async () => {
+    panelWaveHydrated = hydrateRoot(panelWaveHost, createElement(PanelConsumerSamples), { onRecoverableError: error => panelWaveRecoveries.push(error) });
+  });
+  assert.deepEqual(panelWaveRecoveries, [], 'First-wave SSR hydrates without recovery');
+  assert.equal(panelWaveHost.querySelector('#packed-panel-wave'), panelWaveServerNode, 'Hydration retains the server root');
+  await act(async () => panelWaveHydrated.unmount());
+  panelWaveHost.remove();
+  await act(async () => root.render(createElement(PanelConsumerSamples)));
+
+  const panelWave = document.getElementById('packed-panel-wave');
+  const panelWaveAction = document.getElementById('packed-panel-wave-action');
+  panelWaveAction.focus();
+  await act(async () => panelWaveAction.click());
+  assert.deepEqual(panelConsumerChanges, ['activate']);
+  await act(async () => root.render(createElement(PanelConsumerSamples, { tone: 'overlay', variant: 'default' })));
+  assert.equal(document.getElementById('packed-panel-wave'), panelWave);
+  assert.equal(document.getElementById('packed-panel-wave-action'), panelWaveAction);
+  assert.equal(document.activeElement, panelWaveAction);
+  assert.equal(panelWave.getAttribute('data-tone'), 'overlay');
+  await act(async () => root.render(createElement(PanelConsumerSamples, { tone: 'inherit' })));
+  const inherited = document.getElementById('packed-panel-wave');
+  assert.equal(inherited.classList.contains('eg-surface'), false);
+  const inheritedHost = inherited.closest('.eg-surface');
+  assert.ok(inheritedHost && inheritedHost !== inherited);
+  assert.ok(inheritedHost.classList.contains('bg-surface-2'), 'Inherit is explicitly hosted on the existing raised recipe');
+
+  await act(async () => root.render(null));
+  stage('first-wave:panel:complete');
   await act(async () => root.render(createElement(FieldSamples)));
   const fieldInput = document.getElementById('post-control');
   assert.equal(fieldControlRef.current, fieldInput);
@@ -6665,6 +6765,8 @@ ${assertLinkCSS.toString()}
 assertLinkCSS(emitted);
 ${assertNavListCSS.toString()}
 assertNavListCSS(emitted);
+${assertPanelConsumerCSS.toString()}
+assertPanelConsumerCSS(emitted);
 ${assertIndicatorConsumerCSS.toString()}
 assertIndicatorConsumerCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
@@ -6752,6 +6854,7 @@ assertSurfaceCSS(twCss);
 assertPopoverCSS(twCss);
 assertLinkCSS(twCss);
 assertNavListCSS(twCss);
+assertPanelConsumerCSS(twCss);
 assertIndicatorConsumerCSS(twCss);
 assertLabelCSS(twCss);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) {

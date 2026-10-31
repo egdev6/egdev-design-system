@@ -613,7 +613,7 @@
     "radix": "—",
     "compone": "Surface recipes, Badge, Icon; consumer Button/Link/IconButton",
     "accion": "mantener",
-    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/91): passive article named by its generated h1–h6, readable status Badge, free body and independent actions/footer. Solid/overlay Material and tonal bands compose Surface recipes; error retains Material with a danger border, stopped is an unpainted dashed frame. Wide is parent grid placement. No Panel composition (#180 remains unapproved), stylesheet, ref, asChild, process state or whole-card activation. Legacy styles unchanged; visual conformity not evaluated."
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/91): passive article named by its generated h1–h6, readable status Badge, free body and independent actions/footer. Solid/overlay Material and tonal bands compose Surface recipes; error retains Material with a danger border, stopped is an unpainted dashed frame. Wide is parent grid placement. No Panel composition or migration, stylesheet, ref, asChild, process state or whole-card activation. Legacy styles unchanged; visual conformity not evaluated."
   },
   {
     "actual": "SectionHeader",
@@ -646,7 +646,7 @@
     "radix": "—",
     "compone": "Surface",
     "accion": "extraer",
-    "notas": "Draft v0.1 only: static host-agnostic Header/Body/Footer composition, default/banded variants and explicit frame ownership. Popover #96, Dialog #119 or a page own opening/semantics. Contract: [#180](https://github.com/egdev6/egdev-design-system/issues/180), [local draft](components/panel/v0.1/spec.md)."
+    "notas": "Implemented public working-tree compound React molecule under the [approved v0.2 contract](components/panel/v0.2/spec.md): Panel/Header/Body/Footer, default/banded treatment and explicit surface-1/overlay/inherit ownership. Real Surface supplies framed paint; inherit requires an already painted host. No stylesheet, ref, asChild or interaction engine; ModuleCard is not migrated. Parent unit, metadata, build and packed React 18.3.1/19.3.0 checks passed; runtime browser/AT conformity remains pending."
   },
   {
     "actual": "—",

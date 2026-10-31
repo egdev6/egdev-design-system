@@ -771,6 +771,16 @@
           "symbol": "IndicatorProps",
           "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
         }
+      },
+      {
+        "component": "Panel",
+        "type": "PanelVariant ('default' | 'banded')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/panel/types.ts",
+          "symbol": "PanelProps",
+          "revision": "sha256:5aa2753d3af82b96e29f8df01eda0af56e750d5f4b7d321664a74bc4c4432cd8"
+        }
       }
     ]
   },
@@ -937,6 +947,16 @@
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
           "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+        }
+      },
+      {
+        "component": "Panel",
+        "type": "PanelTone ('surface-1' | 'overlay' | 'inherit')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/panel/types.ts",
+          "symbol": "PanelProps",
+          "revision": "sha256:5aa2753d3af82b96e29f8df01eda0af56e750d5f4b7d321664a74bc4c4432cd8"
         }
       }
     ]

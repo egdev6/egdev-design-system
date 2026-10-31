@@ -52,6 +52,15 @@ export * from './molecules/module-card';
 export * from './molecules/nav-list';
 export * from './molecules/notice';
 export * from './molecules/page-header';
+export type {
+  PanelBodyProps,
+  PanelFooterProps,
+  PanelHeaderProps,
+  PanelProps,
+  PanelTone,
+  PanelVariant
+} from './molecules/panel';
+export { Panel, PanelBody, PanelFooter, PanelHeader } from './molecules/panel';
 export * from './molecules/popover';
 export type {
   SectionHeaderLevel,

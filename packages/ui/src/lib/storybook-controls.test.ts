@@ -65,7 +65,11 @@ const components = [
   ['Menu', 'molecules/menu'],
   ['Tabs', 'molecules/tabs'],
   // Preserve the existing query prefix: TypeScript enum ordering depends on literal interning.
-  ['Indicator', 'atoms/indicator']
+  ['Indicator', 'atoms/indicator'],
+  ['Panel', 'molecules/panel'],
+  ['PanelHeader', 'molecules/panel'],
+  ['PanelBody', 'molecules/panel'],
+  ['PanelFooter', 'molecules/panel']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -125,6 +129,10 @@ const expected: Record<string, Record<string, string | false>> = {
     max: 'number',
     badgeIcon: 'select'
   },
+  panel: { children: false, variant: 'select', tone: 'select' },
+  panelheader: { children: false },
+  panelbody: { children: false },
+  panelfooter: { children: false },
   modulecard: {
     title: 'text',
     level: 'select',
@@ -424,6 +432,10 @@ const expected: Record<string, Record<string, string | false>> = {
 };
 const ownPropCounts: Record<string, number> = {
   indicator: 8,
+  panel: 3,
+  panelheader: 1,
+  panelbody: 1,
+  panelfooter: 1,
   modulecard: 10,
   timeline: 7,
   selecttile: 11,
@@ -701,6 +713,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
 
   it.each([
     ['Indicator', { variant: '"dot"', tone: '"danger"', size: '"sm"', position: '"top-right"', max: '99' }],
+    ['Panel', { variant: '"default"', tone: '"surface-1"' }],
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
     ['Checkbox', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }],
     ['Menu', { side: '"bottom"', align: '"start"', defaultOpen: 'false' }],

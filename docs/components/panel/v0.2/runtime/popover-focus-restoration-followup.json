@@ -1,0 +1,7 @@
+{
+  "note": "Earlier immediate post-detach BODY read and unscoped document.querySelector(button) result preserved in keyboard-popover.json; hidden Storybook template button was not trigger. Followup scopes actual accessible trigger and waits native asynchronous focus restoration.",
+  "expandedWhileOpen": "true",
+  "expandedAfterClose": "false",
+  "focusRestored": true,
+  "focusTag": "BUTTON"
+}
