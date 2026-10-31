@@ -529,7 +529,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   assert.ok(heading);
   assert.equal(
     digest(Buffer.from(text.slice(heading.index))),
-    'sha256:bbc9ec9834515877bd416af040179b0e5916d75ca0d699fbad35a292b73eceb7'
+    // Corrected canonical after the 2026-10-31 link-only fix; see link-correction-record.md.
+    'sha256:0634a27670d7fc00c1d66257c64c5dbe3fc5c892f04ad453dfe597403837070c'
   );
   assert.ok(text.includes('218403be9baee574e213cf1b06db1f7bd4d3951b20c7e24e593e90ef011fb062'));
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
