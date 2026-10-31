@@ -10,16 +10,16 @@ The owner selected every listed option in four separate questionnaire sections: 
 | Binding | Frozen approval target | SHA-256 |
 | --- | --- | --- |
 | I-C | [spec.md](../../indicator/v0.2/spec.md) | `5a7f18f79329d4cc3fc37ca4ad4ce823cc11e321cdc11936b1f032d7947c4eb6` |
-| P-C | [spec.md](../../../../../panel/docs/components/panel/v0.2/spec.md) | `98d1cc3aa4fa81040f001476a334e1436e2d78f86f1a93cf7a23220b02917e06` |
-| C-C | [spec.md](../../../../../collapsible/docs/components/collapsible/v0.2/spec.md) | `b3d9f158d45661b151dbff249b645ab6f97b036e872d187eb6f4be39d35b2017` |
+| P-C | [spec.md](../../panel/v0.2/spec.md) | `98d1cc3aa4fa81040f001476a334e1436e2d78f86f1a93cf7a23220b02917e06` |
+| C-C | [spec.md](../../collapsible/v0.2/spec.md) | `b3d9f158d45661b151dbff249b645ab6f97b036e872d187eb6f4be39d35b2017` |
 | I-V | [capture-metadata.json](../../indicator/v0.2/observed/capture-metadata.json) | `84b4657450e3dff258af66e50e4d16b79fb6749166988eeed55e2868f5427bf3` |
-| P-V | [capture-metadata.json](../../../../../panel/docs/components/panel/v0.2/observed/capture-metadata.json) | `ba97d0956d084cd503091e22c10e851dd7cdd97517f54880a2db840afa4d2a56` |
-| C-V | [capture-metadata.json](../../../../../collapsible/docs/components/collapsible/v0.2/observed/capture-metadata.json) | `3bfe14c4f31834b58a7789388c08ad02ecbe075cb0376a0ad3b3ad8f7ab99e49` |
+| P-V | [capture-metadata.json](../../panel/v0.2/observed/capture-metadata.json) | `ba97d0956d084cd503091e22c10e851dd7cdd97517f54880a2db840afa4d2a56` |
+| C-V | [capture-metadata.json](../../collapsible/v0.2/observed/capture-metadata.json) | `3bfe14c4f31834b58a7789388c08ad02ecbe075cb0376a0ad3b3ad8f7ab99e49` |
 | I-P | [implementation-plan.md](../../indicator/v0.2/implementation-plan.md) | `0e2a477066f7ce162fcbcdff3713822e1a5eae6f3e12ebe44471476d97f3793e` |
-| P-P | [implementation-plan.md](../../../../../panel/docs/components/panel/v0.2/implementation-plan.md) | `0d4e70b14ddd26ddd80df4225b5e105451acee9e15623600446ef70c10370b79` |
-| C-P | [implementation-plan.md](../../../../../collapsible/docs/components/collapsible/v0.2/implementation-plan.md) | `136dc06ca4e2bdc55cdd31ab07a023aaa13443642bde467541eefcbf271df42f` |
+| P-P | [implementation-plan.md](../../panel/v0.2/implementation-plan.md) | `0d4e70b14ddd26ddd80df4225b5e105451acee9e15623600446ef70c10370b79` |
+| C-P | [implementation-plan.md](../../collapsible/v0.2/implementation-plan.md) | `136dc06ca4e2bdc55cdd31ab07a023aaa13443642bde467541eefcbf271df42f` |
 | I-A | [indicator-amendment.md](../../avatar/v0.2/indicator-amendment.md) | `c46c02566fb2dec680f69231e5ee96236a1cfaf28011086923985bfa03c6b1da` |
-| I-N | [indicator-naming-proposals.md](../../../../../collapsible/docs/components/remaining-components/v0.1/indicator-naming-proposals.md) | `218403be9baee574e213cf1b06db1f7bd4d3951b20c7e24e593e90ef011fb062` |
+| I-N | [indicator-naming-proposals.md](indicator-naming-proposals.md) | `218403be9baee574e213cf1b06db1f7bd4d3951b20c7e24e593e90ef011fb062` |
 
 ## Visual adoption limits
 
