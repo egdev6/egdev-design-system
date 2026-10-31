@@ -573,6 +573,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "PhotoFrame",
+        "type": "PhotoFrameVariant ('default' | 'framed')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/photo-frame/types.ts",
+          "symbol": "PhotoFrameProps",
+          "revision": "sha256:d88523162dc25f36bd591bbabdf2169775ab9b209ae3547a0fd36b5901f130f4"
+        }
+      },
+      {
         "component": "ModuleCard",
         "type": "ModuleCardVariant (default|banded; stopped accepts default only)",
         "status": "existing",
@@ -2859,6 +2869,16 @@
     },
     "usages": [
       {
+        "component": "PhotoFrame",
+        "type": "PhotoFrameRatio ('square' | 'portrait' | 'landscape')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/photo-frame/types.ts",
+          "symbol": "PhotoFrameProps",
+          "revision": "sha256:d88523162dc25f36bd591bbabdf2169775ab9b209ae3547a0fd36b5901f130f4"
+        }
+      },
+      {
         "component": "SelectTile",
         "type": "SelectTileRatio = 'landscape' | 'portrait' | 'story' | 'square' | 'wide' | 'banner'",
         "status": "existing",
@@ -4141,7 +4161,18 @@
       "scope": "convention:image-caption",
       "contentHash": "sha256:55020a5c48746ed3b84b1a7b1e95a5694e8a9b4b26698034978d49d4c5be64ca"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "PhotoFrame",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/photo-frame/types.ts",
+          "symbol": "PhotoFrameProps",
+          "revision": "sha256:d88523162dc25f36bd591bbabdf2169775ab9b209ae3547a0fd36b5901f130f4"
+        }
+      }
+    ]
   },
   {
     "id": "image-focal-point",
@@ -4157,7 +4188,18 @@
       "scope": "convention:image-focal-point",
       "contentHash": "sha256:5d450bbb1de545ef284c1d7a77165e41fd99d28c22625be19d61626004ae2a03"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "PhotoFrame",
+        "type": "PhotoFrameFocalPoint ('center' | 'top' | 'bottom' | 'left' | 'right')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/photo-frame/types.ts",
+          "symbol": "PhotoFrameProps",
+          "revision": "sha256:d88523162dc25f36bd591bbabdf2169775ab9b209ae3547a0fd36b5901f130f4"
+        }
+      }
+    ]
   },
   {
     "id": "interaction-modality",
