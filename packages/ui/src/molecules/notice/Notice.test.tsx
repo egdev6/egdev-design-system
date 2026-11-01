@@ -155,7 +155,7 @@ describe('Notice public contract', () => {
   it('retains the same single status owner and focus across genuine content updates', async () => {
     const user = userEvent.setup();
     const actions = (
-      <Button size='sm' variant='ghost'>
+      <Button size='sm' variant='neutral'>
         Inspect queue
       </Button>
     );

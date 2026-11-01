@@ -33,7 +33,7 @@ type Story = StoryObj<typeof ButtonGroup>;
 export const Spaced: Story = {
   args: {
     children: [
-      <Button key='cancel' variant='ghost' onClick={action('cancel')}>
+      <Button key='cancel' variant='neutral' onClick={action('cancel')}>
         Cancel
       </Button>,
       <Button key='save' onClick={action('save')}>

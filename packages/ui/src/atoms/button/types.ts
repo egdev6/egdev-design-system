@@ -1,7 +1,7 @@
 import { cva } from 'class-variance-authority';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'dark';
+export type ButtonVariant = 'primary' | 'secondary' | 'neutral' | 'dark';
 export type ButtonSize = 'md' | 'sm';
 
 /**
@@ -17,7 +17,8 @@ export type ButtonProps = Omit<ComponentPropsWithoutRef<'button'>, 'children'> &
    */
   children: ReactNode;
   /**
-   * Material treatment. Use dark only on flood backgrounds.
+   * Material treatment. neutral is the visible grey quiet action; use dark only on flood
+   * backgrounds.
    * @control select
    * @default primary
    */
@@ -75,8 +76,8 @@ export const buttonVariants = cva(
           '[background-image:var(--gradient-btn-primary)] border-border-brand-strong text-action-primary-solid-fg [box-shadow:var(--shadow-btn-primary)] [&:not([aria-disabled=true]):not(:active):hover]:[background-image:var(--gradient-btn-primary-hover)] [&:not([aria-disabled=true]):not(:active):not(:focus-visible):hover]:[box-shadow:var(--shadow-btn-primary-hover)] [&:not([aria-disabled=true]):not(:active):hover]:-translate-y-px [&:not([aria-disabled=true]):active]:bg-action-primary-solid-bg [&:not([aria-disabled=true]):active]:bg-none [&:not([aria-disabled=true]):not(:focus-visible):active]:[box-shadow:var(--shadow-btn-pressed)]',
         secondary:
           'bg-surface-1 [background-image:var(--gradient-btn-secondary)] border-border-brand text-action-primary-fg [box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1)] [&:not([aria-disabled=true]):not(:active):hover]:[background-image:var(--gradient-btn-secondary-hover)] [&:not([aria-disabled=true]):not(:active):hover]:border-primitive-red-neon [&:not([aria-disabled=true]):not(:active):not(:focus-visible):hover]:[box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1),var(--shadow-glow-base)] [&:not([aria-disabled=true]):not(:active):hover]:-translate-y-px [&:not([aria-disabled=true]):active]:bg-alpha-red-15 [&:not([aria-disabled=true]):active]:bg-none [&:not([aria-disabled=true]):not(:focus-visible):active]:[box-shadow:var(--shadow-btn-pressed)]',
-        ghost:
-          'bg-none shadow-none text-fg-secondary [&:not([aria-disabled=true]):hover]:bg-surface-2 [&:not([aria-disabled=true]):hover]:[background-image:var(--gradient-sheen)] [&:not([aria-disabled=true]):not(:focus-visible):hover]:shadow-(--shadow-edge) [&:not([aria-disabled=true]):not(:focus-visible):hover]:ring [&:not([aria-disabled=true]):not(:focus-visible):hover]:ring-border-hairline [&:not([aria-disabled=true]):hover]:text-fg-default',
+        neutral:
+          'bg-surface-2 bg-[image:var(--gradient-sheen)] border-border-hairline shadow-(--shadow-edge) text-fg-default [transition-property:background,color,box-shadow,border-color,translate,scale,opacity] [transition-duration:var(--duration-fast),var(--duration-fast),var(--duration-base),var(--duration-base),var(--duration-fast),var(--duration-fast),var(--duration-fast)] [transition-timing-function:var(--ease-out),var(--ease-out),var(--ease-out),var(--ease-out),var(--ease-spring),var(--ease-spring),var(--ease-out)] [&:not([aria-disabled=true]):hover]:opacity-80 [&:not([aria-disabled=true]):active]:opacity-70',
         dark: 'bg-none shadow-none bg-primitive-black text-primitive-white [&:not([aria-disabled=true]):hover]:bg-primitive-neutral-900 [&:not([aria-disabled=true]):not(:active):hover]:-translate-y-0.5'
       },
       size: {

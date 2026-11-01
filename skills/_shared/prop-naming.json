@@ -392,7 +392,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:8654edfadc6fef69828f5a1781b1a12c8c0f80d932835007607d28b7b7064f72"
+          "revision": "sha256:700fb977229da90178cc8679025a787fbfcf44c6cd28b63dc6f6c1cd5ce9debb"
         }
       },
       {
@@ -412,7 +412,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       },
       {
@@ -644,12 +644,12 @@
       },
       {
         "component": "Button",
-        "type": "ButtonVariant ('primary' | 'secondary' | 'ghost' | 'dark')",
+        "type": "ButtonVariant ('primary' | 'secondary' | 'neutral' | 'dark')",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       },
       {
@@ -896,7 +896,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:8654edfadc6fef69828f5a1781b1a12c8c0f80d932835007607d28b7b7064f72"
+          "revision": "sha256:700fb977229da90178cc8679025a787fbfcf44c6cd28b63dc6f6c1cd5ce9debb"
         }
       },
       {
@@ -1830,7 +1830,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:8654edfadc6fef69828f5a1781b1a12c8c0f80d932835007607d28b7b7064f72"
+          "revision": "sha256:700fb977229da90178cc8679025a787fbfcf44c6cd28b63dc6f6c1cd5ce9debb"
         }
       },
       {
@@ -1840,7 +1840,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       },
       {
@@ -1927,7 +1927,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       }
     ]
@@ -1954,7 +1954,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       },
       {
@@ -2001,7 +2001,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       },
       {
@@ -3983,7 +3983,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:8654edfadc6fef69828f5a1781b1a12c8c0f80d932835007607d28b7b7064f72"
+          "revision": "sha256:700fb977229da90178cc8679025a787fbfcf44c6cd28b63dc6f6c1cd5ce9debb"
         }
       }
     ]
@@ -4047,7 +4047,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:8654edfadc6fef69828f5a1781b1a12c8c0f80d932835007607d28b7b7064f72"
+          "revision": "sha256:700fb977229da90178cc8679025a787fbfcf44c6cd28b63dc6f6c1cd5ce9debb"
         }
       }
     ]

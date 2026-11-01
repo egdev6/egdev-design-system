@@ -71,13 +71,13 @@ export function useCollapsible(props: CollapsibleProps): RootResult {
   };
 }
 
-/** Reuse the ghost/md recipe only; Button/useButton would overwrite native open/closed data-state. */
+/** Reuse the neutral/md recipe only; Button/useButton would overwrite native open/closed data-state. */
 export function useCollapsibleTrigger(props: CollapsibleTriggerProps): TriggerResult {
   const { children, className, ...rest } = props;
   return {
     triggerProps: {
       ...nativeProps(rest, TRIGGER_OWNED),
-      className: cn(buttonVariants({ variant: 'ghost', size: 'md' }), collapsibleTriggerVariants(), className)
+      className: cn(buttonVariants({ variant: 'neutral', size: 'md' }), collapsibleTriggerVariants(), className)
     },
     labelProps: { className: cn(collapsibleLabelVariants()) },
     caretProps: { className: cn(collapsibleCaretVariants()), 'aria-hidden': true },

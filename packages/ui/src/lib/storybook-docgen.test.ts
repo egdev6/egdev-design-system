@@ -1071,7 +1071,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(props.variant?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
       'primary',
       'secondary',
-      'ghost',
+      'neutral',
       'dark'
     ]);
     expect(props.size?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual(['md', 'sm']);
