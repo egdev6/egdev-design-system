@@ -392,7 +392,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:700fb977229da90178cc8679025a787fbfcf44c6cd28b63dc6f6c1cd5ce9debb"
+          "revision": "sha256:928a78703455cdeebcc1de4331fee16b041b50bfc34f7a14ad59de8b7df858aa"
         }
       },
       {
@@ -896,7 +896,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:700fb977229da90178cc8679025a787fbfcf44c6cd28b63dc6f6c1cd5ce9debb"
+          "revision": "sha256:928a78703455cdeebcc1de4331fee16b041b50bfc34f7a14ad59de8b7df858aa"
         }
       },
       {
@@ -1850,7 +1850,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:700fb977229da90178cc8679025a787fbfcf44c6cd28b63dc6f6c1cd5ce9debb"
+          "revision": "sha256:928a78703455cdeebcc1de4331fee16b041b50bfc34f7a14ad59de8b7df858aa"
         }
       },
       {
@@ -3973,7 +3973,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:700fb977229da90178cc8679025a787fbfcf44c6cd28b63dc6f6c1cd5ce9debb"
+          "revision": "sha256:928a78703455cdeebcc1de4331fee16b041b50bfc34f7a14ad59de8b7df858aa"
         }
       }
     ]
@@ -4037,7 +4037,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:700fb977229da90178cc8679025a787fbfcf44c6cd28b63dc6f6c1cd5ce9debb"
+          "revision": "sha256:928a78703455cdeebcc1de4331fee16b041b50bfc34f7a14ad59de8b7df858aa"
         }
       }
     ]
