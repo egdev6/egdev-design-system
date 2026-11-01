@@ -206,13 +206,44 @@ describe('Input', () => {
     expect(control).toHaveClass('read-only:hover:border-border-control');
   });
 
-  it('passes aria-invalid through and carries the danger border variants (AC-05)', () => {
+  it('passes aria-invalid through and carries the danger treatment variants (AC-05)', () => {
     render(<Input aria-label='Post text' aria-invalid='true' />);
     const control = screen.getByRole('textbox', { name: 'Post text' });
     expect(control).toHaveAttribute('aria-invalid', 'true');
     expect(control).toBeInvalid();
-    expect(control).toHaveClass('aria-invalid:border-status-danger', 'aria-invalid:focus-visible:border-status-danger');
+    expect(control).toHaveClass(
+      'aria-invalid:border-status-danger',
+      'aria-invalid:border-(length:--border-width-invalid)',
+      'aria-invalid:bg-status-danger-bg',
+      'aria-invalid:hover:border-status-danger',
+      'aria-invalid:focus-visible:border-status-danger'
+    );
     expect(control).not.toHaveAttribute('data-state');
+  });
+
+  it('shows the unified outer focus ring instead of the field halo, invalid or not (#219 option A)', () => {
+    const { rerender } = render(<Input aria-label='Post text' />);
+    const control = screen.getByRole('textbox', { name: 'Post text' });
+    expect(control).toHaveClass('focus-visible:shadow-[var(--shadow-well),var(--shadow-focus)]');
+    expect(control).not.toHaveClass('focus-visible:border-border-brand-strong');
+    expect(control).not.toHaveClass('focus-visible:shadow-[var(--shadow-well),var(--shadow-ring-brand)]');
+    rerender(<Input aria-label='Post text' aria-invalid='true' />);
+    expect(control).toHaveClass('focus-visible:shadow-[var(--shadow-well),var(--shadow-focus)]');
+  });
+
+  it('renders the in-control danger glyph only while invalid, taking the spinner slot (#219 option A)', () => {
+    const { container, rerender } = render(<Input aria-label='Post text' aria-invalid='true' loading={true} />);
+    const glyph = container.querySelector('span.text-status-danger');
+    expect(glyph).not.toBeNull();
+    expect(glyph).toHaveAttribute('aria-hidden', 'true');
+    expect(glyph?.querySelector('svg')).not.toBeNull();
+    expect(container.querySelectorAll('span.pointer-events-none.absolute.right-3')).toHaveLength(1);
+    rerender(<Input aria-label='Post text' loading={true} />);
+    expect(container.querySelector('span.text-status-danger')).toBeNull();
+    expect(container.querySelectorAll('span.pointer-events-none.absolute.right-3')).toHaveLength(1);
+    rerender(<Input aria-label='Post text' />);
+    expect(container.querySelector('span.text-status-danger')).toBeNull();
+    expect(container.querySelectorAll('span.pointer-events-none.absolute.right-3')).toHaveLength(0);
   });
 
   it('applies the md/default well recipe by default and the sm and code treatments (AC-06)', () => {
@@ -334,8 +365,10 @@ describe('Input', () => {
     for (const utility of [
       'hover:border-fg-muted',
       'focus-visible:outline-none',
-      'focus-visible:border-border-brand-strong',
-      'focus-visible:shadow-[var(--shadow-well),var(--shadow-ring-brand)]',
+      'focus-visible:shadow-[var(--shadow-well),var(--shadow-focus)]',
+      'aria-invalid:border-status-danger',
+      'aria-invalid:border-(length:--border-width-invalid)',
+      'aria-invalid:bg-status-danger-bg',
       'transition-[border-color,box-shadow]',
       'ease-out',
       'duration-[var(--duration-fast)]',
@@ -343,6 +376,8 @@ describe('Input', () => {
     ]) {
       expect(control.split(' ')).toContain(utility);
     }
+    expect(control).not.toContain('focus-visible:border-border-brand-strong');
+    expect(control).not.toContain('shadow-ring-brand');
     for (const classes of [control, inputVariants(), inputIconVariants()]) {
       expect(classes).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|\d+px|gradient|!important/i);
     }

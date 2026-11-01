@@ -1,7 +1,13 @@
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/cn';
 import type { InputNativeProps, InputProps, InputSize, InputType, InputVariant } from './types';
-import { inputControlVariants, inputIconVariants, inputSpinnerVariants, inputVariants } from './types';
+import {
+  inputControlVariants,
+  inputErrorIconVariants,
+  inputIconVariants,
+  inputSpinnerVariants,
+  inputVariants
+} from './types';
 
 export type UseInputResult = {
   rootProps: { className: string };
@@ -9,8 +15,10 @@ export type UseInputResult = {
   icon: ReactNode;
   iconClassName: string;
   spinnerClassName: string;
+  errorIconClassName: string;
   loading: boolean;
   hasIcon: boolean;
+  invalid: boolean;
   size: InputSize;
   variant: InputVariant;
 };
@@ -26,6 +34,8 @@ export function useInput({
   ...rest
 }: InputProps): UseInputResult {
   const hasIcon = icon !== undefined && icon !== null && typeof icon !== 'boolean' && icon !== '';
+  // Error appearance follows the native attribute; no mirrored own state (#219 option A).
+  const invalid = rest['aria-invalid'] === true || rest['aria-invalid'] === 'true';
   return {
     rootProps: { className: cn(inputVariants(), className) },
     controlProps: {
@@ -37,8 +47,10 @@ export function useInput({
     icon,
     iconClassName: cn(inputIconVariants()),
     spinnerClassName: cn(inputSpinnerVariants()),
+    errorIconClassName: cn(inputErrorIconVariants()),
     loading,
     hasIcon,
+    invalid,
     size,
     variant
   };

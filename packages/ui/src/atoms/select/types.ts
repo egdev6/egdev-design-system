@@ -71,7 +71,7 @@ export type SelectProps = SelectTriggerNativeProps & {
 };
 
 export const selectTriggerVariants = cva(
-  'eg-select relative inline-flex items-center w-full box-border m-0 border-solid border-(length:--border-width) bg-surface-0 bg-none shadow-[var(--shadow-well)] border-border-control rounded-md font-sans text-fg-default text-left data-placeholder:text-fg-muted hover:border-fg-muted focus-visible:outline-none focus-visible:border-border-brand-strong focus-visible:shadow-[var(--shadow-well),var(--shadow-ring-brand)] data-[state=open]:outline-none data-[state=open]:border-border-brand-strong data-[state=open]:shadow-[var(--shadow-well),var(--shadow-ring-brand)] aria-invalid:border-status-danger disabled:opacity-45 disabled:pointer-events-none disabled:cursor-not-allowed transition-colors ease-out duration-[var(--duration-fast)] motion-reduce:transition-none',
+  'eg-select relative inline-flex items-center w-full box-border m-0 border-solid border-(length:--border-width) bg-surface-0 bg-none shadow-[var(--shadow-well)] border-border-control rounded-md font-sans text-fg-default text-left data-placeholder:text-fg-muted hover:border-fg-muted focus-visible:outline-none focus-visible:shadow-[var(--shadow-well),var(--shadow-focus)] data-[state=open]:outline-none data-[state=open]:shadow-[var(--shadow-well),var(--shadow-focus)] aria-invalid:border-status-danger aria-invalid:border-(length:--border-width-invalid) aria-invalid:bg-status-danger-bg aria-invalid:hover:border-status-danger aria-invalid:focus-visible:border-status-danger aria-invalid:data-[state=open]:border-status-danger disabled:opacity-45 disabled:pointer-events-none disabled:cursor-not-allowed transition-colors ease-out duration-[var(--duration-fast)] motion-reduce:transition-none',
   {
     variants: {
       size: {
@@ -93,6 +93,11 @@ export const selectItemVariants = cva(
 
 export const selectChevronVariants = cva(
   'absolute right-3 inline-flex items-center justify-center size-4 text-fg-muted [&>svg]:block [&>svg]:size-full'
+);
+
+/** In-control error glyph slot (#219 option A); rendered left of the chevron while invalid. */
+export const selectErrorIconVariants = cva(
+  'pointer-events-none absolute right-8 inline-flex items-center justify-center size-4 text-status-danger'
 );
 export const selectIndicatorVariants = cva('absolute right-3 size-4 text-fg-brand-default');
 export const selectViewportVariants = cva('max-h-[var(--radix-select-content-available-height)]');

@@ -41,6 +41,11 @@ export const Default: Story = {
   args: { label: 'Volume' }
 };
 
+/** The invalid thumb doubles its border and tints its fill; the error text stays with Field. */
+export const Invalid: Story = {
+  args: { label: 'Volume', defaultValue: 80, 'aria-invalid': true }
+};
+
 /** Consumer state drives the value; the readout stands in for the Field molecule's output. */
 export const Controlled: Story = {
   args: { label: 'Ring size' },

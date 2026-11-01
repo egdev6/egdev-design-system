@@ -286,6 +286,11 @@ describe('Slider', () => {
     const { slider, thumb } = parts(container);
     expect(thumb).toHaveAttribute('aria-invalid', 'true');
     expect(thumb).toHaveAttribute('aria-describedby', 'volume-error');
+    expect(thumb).toHaveClass(
+      'aria-invalid:border-status-danger',
+      'aria-invalid:border-(length:--border-width-invalid)',
+      'aria-invalid:bg-status-danger-bg'
+    );
     expect(slider).not.toHaveAttribute('aria-invalid');
     expect(slider).toHaveAttribute('id', 'volume');
   });

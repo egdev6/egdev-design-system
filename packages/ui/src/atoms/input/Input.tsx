@@ -1,4 +1,5 @@
 import { forwardRef } from 'react';
+import { Icon } from '../icon';
 import { Spinner } from '../spinner';
 import type { InputProps } from './types';
 import { useInput } from './useInput';
@@ -14,7 +15,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(pro
         </span>
       ) : null}
       <input {...input.controlProps} ref={ref} />
-      {input.loading ? (
+      {/* The in-control error glyph takes the trailing slot while invalid (#219 option A). */}
+      {input.invalid ? (
+        <span aria-hidden='true' className={input.errorIconClassName}>
+          <Icon name='circle-alert' size='sm' />
+        </span>
+      ) : input.loading ? (
         <span aria-hidden='true' className={input.spinnerClassName}>
           <Spinner size='sm' />
         </span>
