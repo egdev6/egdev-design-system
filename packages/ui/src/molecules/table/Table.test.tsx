@@ -53,6 +53,26 @@ function typeRejectionFixtures() {
 void typeRejectionFixtures;
 
 describe('Table', () => {
+  it('keeps header and body in one full-width native table with aligned numeric and compact selection columns', () => {
+    const formattedColumns: typeof columns = columns.map((column) =>
+      column.id === 'amount' ? { ...column, format: 'number' } : column
+    );
+    render(<Table label='Items' columns={formattedColumns} rows={rows} selectable={true} />);
+    const table = screen.getByRole('table', { name: 'Items' });
+    expect(table).toHaveClass('w-full');
+    expect(table.querySelectorAll('table')).toHaveLength(0);
+    const head = table.querySelector('thead');
+    const body = table.querySelector('tbody');
+    expect(head?.parentElement).toBe(table);
+    expect(body?.parentElement).toBe(table);
+    const all = screen.getByRole('checkbox', { name: 'Select all rows' }).closest('th');
+    const selection = screen.getByRole('checkbox', { name: 'Select Item 10' }).closest('td');
+    expect(all).toHaveClass('w-[1%]');
+    expect(selection).toHaveClass('w-[1%]');
+    expect(screen.getByRole('columnheader', { name: 'Amount' })).toHaveClass('text-end');
+    expect(within(table).getByRole('cell', { name: '10' })).toHaveClass('text-end');
+    expect(screen.getByRole('columnheader', { name: 'Name' })).toHaveClass('text-start');
+  });
   it('renders native semantics and a named keyboard viewport', () => {
     render(<Table label='Items' columns={columns} rows={rows} hideLabel={true} maxHeight='sm' />);
     expect(screen.getByRole('table', { name: 'Items' })).toHaveClass('eg-table');

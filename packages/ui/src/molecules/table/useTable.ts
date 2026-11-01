@@ -128,7 +128,10 @@ export function useTable<TRow extends TableRow>(props: TableProps<TRow>) {
       viewport: cn(tableViewportVariants({ maxHeight })),
       table: cn(tableVariants()),
       caption: cn(captionVariants()),
-      header: (sticky: boolean) => cn(headerVariants({ size, sticky })),
+      header: (sticky: boolean, format?: TableColumn<TRow>['format']) =>
+        cn(headerVariants({ size, sticky }), (format === 'number' || format === 'actions') && 'text-end'),
+      selectionHeader: (sticky: boolean) => cn(headerVariants({ size, sticky }), 'w-[1%] whitespace-nowrap'),
+      selectionCell: cn(cellVariants({ size, format: 'text' }), 'w-[1%] whitespace-nowrap'),
       cell: (format: TableColumn<TRow>['format'], rowHeader = false) =>
         cn(cellVariants({ size, format: format ?? 'text', rowHeader, details: rowHeader && variant === 'details' })),
       row: cn(rowVariants()),

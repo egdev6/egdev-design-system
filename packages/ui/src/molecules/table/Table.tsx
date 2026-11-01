@@ -30,7 +30,7 @@ export function Table<TRow extends TableRow>(props: TableProps<TRow>) {
             <thead>
               <tr>
                 {t.selectable && (
-                  <th scope='col' className={t.classes.header(Boolean(t.maxHeight))}>
+                  <th scope='col' className={t.classes.selectionHeader(Boolean(t.maxHeight))}>
                     <Checkbox
                       aria-label={t.messages.selectAll}
                       checked={t.allChecked ? true : t.selectedCount > 0 ? 'indeterminate' : false}
@@ -43,7 +43,7 @@ export function Table<TRow extends TableRow>(props: TableProps<TRow>) {
                   <th
                     key={column.id}
                     scope='col'
-                    className={t.classes.header(Boolean(t.maxHeight))}
+                    className={t.classes.header(Boolean(t.maxHeight), column.format)}
                     aria-sort={t.currentSort?.columnId === column.id ? t.currentSort.direction : undefined}
                     data-format={column.format ?? 'text'}
                   >
@@ -83,7 +83,7 @@ export function Table<TRow extends TableRow>(props: TableProps<TRow>) {
                   aria-current={t.activeRowId === row.id ? 'true' : undefined}
                 >
                   {t.selectable && (
-                    <td className={t.classes.cell('text')}>
+                    <td className={t.classes.selectionCell}>
                       <label className={t.classes.selectLabel} htmlFor={`${t.baseId}-check-${index}`}>
                         <VisuallyHidden id={`${t.baseId}-select-${index}`}>{t.messages.selectRow}</VisuallyHidden>
                         <Checkbox
