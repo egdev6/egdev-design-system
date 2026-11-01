@@ -121,11 +121,43 @@ test('compiled dist/tokens.css exposes the 283 manual variables and preserves th
   assert.deepEqual(parity.missing, [], 'compiled artifact dropped tokens');
   assert.deepEqual(parity.extra, [], 'compiled artifact invented tokens');
   assert.deepEqual(parity.changed, [], 'compiled artifact changed token values');
-  // The immutable fixture proves the pre-#10 tokens keep their exact values and units.
+  // The immutable fixture proves the pre-#10 tokens keep their exact values and units,
+  // except the 24 tokens the owner re-valued with the #218 global scale ×0.8 (spec S13,
+  // L8 OQ1 exact sub-pixel values); those are compared against their new scale.
+  const rescaledBy218 = new Map([
+    ['--space-1', '3.2px'],
+    ['--space-2', '6.4px'],
+    ['--space-3', '9.6px'],
+    ['--space-4', '12.8px'],
+    ['--space-5', '16px'],
+    ['--space-6', '19.2px'],
+    ['--space-7', '22.4px'],
+    ['--space-8', '25.6px'],
+    ['--space-10', '32px'],
+    ['--space-12', '38.4px'],
+    ['--space-14', '44.8px'],
+    ['--space-16', '51.2px'],
+    ['--space-20', '64px'],
+    ['--space-24', '76.8px'],
+    ['--radius-sm', '3.2px'],
+    ['--radius-md', '9.6px'],
+    ['--radius-lg', '12.8px'],
+    ['--radius-xl', '17.6px'],
+    ['--radius-2xl', '19.2px'],
+    ['--icon-size', '16px'],
+    ['--effect-grid-size', '32px'],
+    ['--content-max', '1024px'],
+    ['--gutter', 'clamp(12.8px, 3.2vw, 32px)'],
+    ['--nav-height', '54.4px']
+  ]);
   const original = toDeclarationMap(baseline);
   assert.equal(original.size, 168, 'baseline fixture must keep its 168 original tokens');
   for (const [name, value] of original) {
-    assert.equal(compiled.get(name), value, `compiled artifact must preserve the original value of ${name}`);
+    assert.equal(
+      compiled.get(name),
+      rescaledBy218.get(name) ?? value,
+      `compiled artifact must preserve the original value of ${name}`
+    );
   }
 });
 

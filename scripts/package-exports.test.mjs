@@ -1213,10 +1213,10 @@ test('ButtonGroup ships static spacing, wrapping, logical child corners and focu
   assert.match(rule(String.raw`.gap-0\.5`), /gap:\s*calc\(var\(--space-1\)\s*\*\s*0\.5\)/);
   const start = rule(String.raw`.\*\:not-first\:rounded-s-sm`);
   const end = rule(String.raw`.\*\:not-last\:rounded-e-sm`);
-  assert.match(start, /border-start-start-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
-  assert.match(start, /border-end-start-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
-  assert.match(end, /border-start-end-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
-  assert.match(end, /border-end-end-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.match(start, /border-start-start-radius:\s*var\(--radius-sm(?:,\s*3\.2px)?\)/);
+  assert.match(start, /border-end-start-radius:\s*var\(--radius-sm(?:,\s*3\.2px)?\)/);
+  assert.match(end, /border-start-end-radius:\s*var\(--radius-sm(?:,\s*3\.2px)?\)/);
+  assert.match(end, /border-end-end-radius:\s*var\(--radius-sm(?:,\s*3\.2px)?\)/);
   assert.match(start, /:not\(:first-child\)/);
   assert.match(end, /:not\(:last-child\)/);
   assert.match(rule(String.raw`.\*\:focus-visible\:relative`), /position:\s*relative/);
@@ -1457,7 +1457,7 @@ test('UI ships functional static Gauge utilities without an application Tailwind
     ['.gap-2', /gap:\s*var\(--space-2\)\s*;/],
     ['.font-sans', /font-family:\s*var\(--font-sans(?:,\s*"Barlow",\s*system-ui,\s*sans-serif)?\)\s*;/],
     ['.text-fg-default', /color:\s*var\(--color-fg-default(?:,\s*var\(--color-primitive-white\))?\)\s*;/],
-    ['.text-label-default', /font-size:\s*var\(--text-label-default(?:,\s*14px)?\)\s*;/],
+    ['.text-label-default', /font-size:\s*var\(--text-label-default(?:,\s*11\.2px)?\)\s*;/],
     ['.transition-none', /transition-property:\s*none\s*;/],
     [String.raw`.hover\:shadow-none:hover`, /box-shadow:\s*[^;]+;/]
   ]) {
@@ -1523,8 +1523,8 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
     }
   }
   for (const [selector, token, fallback] of [
-    ['.rounded-sm', 'radius-sm', '4px'],
-    ['.rounded-md', 'radius-md', '12px'],
+    ['.rounded-sm', 'radius-sm', '3.2px'],
+    ['.rounded-md', 'radius-md', '9.6px'],
     ['.rounded-full', 'radius-full', '9999px']
   ]) {
     assert.match(rule(selector), new RegExp(`border-radius:\\s*var\\(--${token},\\s*${fallback}\\)\\s*;`));
@@ -1606,7 +1606,7 @@ test('UI ships the Logo heights, token inks and link focus ring over the legacy 
     const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
   };
-  // Heights are --spacing multiples: 28/32px bound steps and the 9 × 4px calculated step.
+  // Heights are --spacing multiples: 22.4/25.6px bound steps and the 9 × 3.2px calculated step.
   assert.match(rule('.h-7'), /height:\s*var\(--space-7\)\s*;/);
   assert.match(rule('.h-8'), /height:\s*var\(--space-8\)\s*;/);
   assert.match(rule('.h-9'), /height:\s*calc\(var\(--space-1\) \* 9\)\s*;/);
@@ -1637,7 +1637,7 @@ test('UI ships the StatusDot ring, glow and fill utilities with its motion-safe 
     const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
   };
-  // D4: 8px status dots and 10px signal dots on the spacing scale.
+  // D4: 6.4px status dots and 8px signal dots on the spacing scale.
   assert.match(rule('.size-2'), /width:\s*var\(--space-2\)\s*;/);
   assert.match(rule(String.raw`.size-2\.5`), /width:\s*calc\(var\(--space-1\) \* 2\.5\)\s*;/);
   assert.match(rule('.inline-block'), /display:\s*inline-block\s*;/);
@@ -1704,8 +1704,8 @@ test('UI ships the Countdown digit, spacing and label token utilities without a 
   };
   // #82 owner-approved recipes resolve through tokens, with the exact source values as fallbacks.
   for (const [size, clamp] of [
-    ['md', String.raw`clamp\(52px, 6vw, 96px\)`],
-    ['sm', String.raw`clamp\(36px, 4vw, 56px\)`]
+    ['md', String.raw`clamp\(41.6px, 4.8vw, 76.8px\)`],
+    ['sm', String.raw`clamp\(28.8px, 3.2vw, 44.8px\)`]
   ]) {
     const body = rule(`.text-countdown-${size}`);
     assert.match(body, new RegExp(`font-size:\\s*var\\(--text-countdown-${size},\\s*${clamp}\\)\\s*;`));
@@ -1714,7 +1714,7 @@ test('UI ships the Countdown digit, spacing and label token utilities without a 
   }
   assert.match(
     rule('.gap-x-countdown-column'),
-    /column-gap:\s*var\(--spacing-countdown-column,\s*clamp\(14px, 2\.2vw, 32px\)\)\s*;/
+    /column-gap:\s*var\(--spacing-countdown-column,\s*clamp\(11.2px, 1\.76vw, 25.6px\)\)\s*;/
   );
   assert.match(rule('.min-w-countdown-unit'), /min-width:\s*var\(--spacing-countdown-unit,\s*1\.9ch\)\s*;/);
   assert.match(rule('.gap-y-2'), /row-gap:\s*var\(--space-2\)\s*;/);
@@ -1725,7 +1725,7 @@ test('UI ships the Countdown digit, spacing and label token utilities without a 
   assert.match(rule('.tabular-nums'), /font-variant-numeric:[^;]*--tw-numeric-spacing/);
   assert.match(rule('.not-italic'), /font-style:\s*normal\s*;/);
   assert.match(rule('.text-inherit'), /color:\s*inherit\s*;/);
-  assert.match(rule('.text-label-eyebrow'), /font-size:\s*var\(--text-label-eyebrow,\s*14px\)/);
+  assert.match(rule('.text-label-eyebrow'), /font-size:\s*var\(--text-label-eyebrow,\s*11.2px\)/);
   assert.match(rule('.text-fg-secondary'), /color:\s*var\(--color-fg-secondary[,)]/);
   // D11 no stylesheet: the only .eg-countdown rules are the retained legacy ones (components layer).
   const legacy = readFileSync(resolve(root, 'packages/ui/src/styles/legacy/bundle.css'), 'utf8');
@@ -1818,7 +1818,7 @@ test('UI ships the RadioGroup row, radio and indicator utilities without a Radio
     const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
   };
-  // Layout by orientation and the 40px option row on the --spacing scale (D5, D7).
+  // Layout by orientation and the 32px option row on the --spacing scale (D5, D7).
   assert.match(rule('.gap-1'), /gap:\s*var\(--space-1\)\s*;/);
   assert.match(rule('.gap-x-6'), /column-gap:\s*var\(--space-6\)\s*;/);
   assert.match(rule('.gap-y-1'), /row-gap:\s*var\(--space-1\)\s*;/);
@@ -1831,7 +1831,7 @@ test('UI ships the RadioGroup row, radio and indicator utilities without a Radio
     rule(String.raw`.has-\[\[data-disabled\]\]\:opacity-45:has(:is([data-disabled]))`),
     /opacity:\s*45%\s*;/
   );
-  // Radio circle: 20px border-box well, raised primary recipe when checked (D6).
+  // Radio circle: 16px border-box well, raised primary recipe when checked (D6).
   assert.match(rule('.size-5'), /width:\s*var\(--space-5\)\s*;\s*height:\s*var\(--space-5\)\s*;/);
   assert.match(rule('.place-items-center'), /place-items:\s*center\s*;/);
   assert.match(rule('.box-border'), /box-sizing:\s*border-box\s*;/);
@@ -1867,7 +1867,7 @@ test('UI ships the RadioGroup row, radio and indicator utilities without a Radio
     /transition-property:\s*border-color,\s*box-shadow\s*;/
   );
   assert.match(rule(String.raw`.disabled\:pointer-events-none:disabled`), /pointer-events:\s*none\s*;/);
-  // Indicator: 8px black dot.
+  // Indicator: 6.4px black dot.
   assert.match(rule('.size-2'), /width:\s*var\(--space-2\)\s*;/);
   assert.match(rule('.bg-action-primary-solid-fg'), /background-color:\s*var\(--color-action-primary-solid-fg[,)]/);
   // D9 no stylesheet: the marker carries no rule.
@@ -1937,7 +1937,7 @@ test('UI ships the Switch track, thumb and state utilities without a Switch styl
   assert.match(rule('.border-border-control'), /border-color:\s*var\(--color-border-control[,)]/);
   assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
   assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)\s*;/);
-  // Checked: primary gradient, bevel/halo token and the black thumb moved 16px (D4).
+  // Checked: primary gradient, bevel/halo token and the black thumb moved 12.8px (D4).
   assert.match(
     rule(String.raw`.data-\[state\=checked\]\:bg-\[image\:var\(--gradient-btn-primary\)\][data-state="checked"]`),
     /background-image:\s*var\(--gradient-btn-primary\)\s*;/
@@ -2141,7 +2141,7 @@ test('UI ships the approved Label typography recipe without an application Tailw
   };
   // Base recipe: token typography, foreground color and sans family.
   const base = rule('.text-label-default');
-  assert.match(base, /font-size:\s*var\(--text-label-default(?:,\s*14px)?\)\s*;/);
+  assert.match(base, /font-size:\s*var\(--text-label-default(?:,\s*11\.2px)?\)\s*;/);
   assert.match(
     base,
     /font-weight:\s*var\(--tw-font-weight,\s*var\(--text-label-default--font-weight(?:,\s*600)?\)\)\s*;/
@@ -2188,10 +2188,10 @@ test('UI ships the static Icon preset, fill and stroke utilities without an appl
   }
   const theme = readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8');
   for (const [token, value] of [
-    ['--icon-size', '20px'],
+    ['--icon-size', '16px'],
     ['--icon-stroke', '1.75'],
-    ['--space-4', '16px'],
-    ['--space-7', '28px']
+    ['--space-4', '12.8px'],
+    ['--space-7', '22.4px']
   ]) {
     assert.match(theme, new RegExp(`${token}:\\s*${value.replace('.', '\\.')};`), `${token} must stay ${value}`);
     assert.doesNotMatch(css, new RegExp(`${token}\\s*:`), `UI must not redefine ${token}`);
@@ -2728,7 +2728,7 @@ test('SectionHeader emits every local CVA utility and its exact static breakpoin
   assert.match(wide, /grid-template-columns:\s*minmax\(0,\s*1fr\)\s+minmax\(0,\s*0\.8fr\)/);
   assert.match(wide, /justify-self:\s*(?:flex-)?end/);
   const lede = cssBlock(css, /\.text-body-muted\s*\{/);
-  assert.match(lede, /font-size:\s*var\(--text-body-muted,\s*20px\)/);
+  assert.match(lede, /font-size:\s*var\(--text-body-muted,\s*16px\)/);
   assert.match(lede, /line-height:\s*var\(--tw-leading,\s*var\(--text-body-muted--line-height,\s*1\.6\)\)/);
   assert.match(lede, /font-weight:\s*var\(--tw-font-weight,\s*var\(--text-body-muted--font-weight,\s*400\)\)/);
   assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/section-header/section-header.css')));
@@ -4198,7 +4198,7 @@ test('UI ships the Slider well, range and raised thumb utilities without a Slide
   assert.match(rule(String.raw`.ease-\[var\(--ease-out\)\]`), /transition-timing-function:\s*var\(--ease-out\)\s*;/);
   assert.match(rule('.cursor-grab'), /cursor:\s*grab\s*;/);
   assert.match(rule(String.raw`.active\:cursor-grabbing`), /cursor:\s*grabbing\s*;/);
-  // The 44px touch target applies only on coarse pointers (D9); reduced motion drops the transition.
+  // The 35.2px touch target applies only on coarse pointers (D9); reduced motion drops the transition.
   assert.match(
     utilities,
     /@media \(pointer: coarse\)\s*\{\s*\.pointer-coarse\\:h-11\s*\{\s*height:\s*calc\(var\(--space-1\)\s*\*\s*11\)\s*;/

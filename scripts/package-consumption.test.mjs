@@ -566,7 +566,7 @@ export function CheckboxSamples() {
 const slottedCheckbox: CheckboxProps = { asChild: true };
 // @ts-expect-error Checkbox owns its internal indicator; children are not public.
 const checkboxChildren: CheckboxProps = { children: 'Option' };
-// @ts-expect-error Checkbox is a fixed 18px control, with no size axis.
+// @ts-expect-error Checkbox is a fixed 14.4px control (18px ×0.8, #218), with no size axis.
 const checkboxSize: CheckboxProps = { size: 'sm' };
 // @ts-expect-error Mixed state is indeterminate, never the ARIA string mixed.
 const invalidCheckboxState: CheckboxProps = { checked: 'mixed' };
@@ -3135,8 +3135,8 @@ function assertButtonGroupCSS(css) {
   ]) {
     assert.ok(css.includes(selector), 'Missing ButtonGroup utility ' + selector);
   }
-  assert.match(css, /border-start-start-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
-  assert.match(css, /border-end-end-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.match(css, /border-start-start-radius:\s*var\(--radius-sm(?:,\s*3\.2px)?\)/);
+  assert.match(css, /border-end-end-radius:\s*var\(--radius-sm(?:,\s*3\.2px)?\)/);
   assert.doesNotMatch(css, /\.eg-button-group\s*[,{]/);
 }
 
@@ -3471,8 +3471,8 @@ function assertRadioGroupCSS(css) {
   ]) {
     assert.ok(css.includes(utility), 'Missing RadioGroup utility ' + utility);
   }
-  assert.match(css, /\.min-h-10\s*\{[^}]*min-height:\s*var\(--space-10\)/, 'RadioGroup 40px row');
-  assert.match(css, /\.size-5\s*\{[^}]*width:\s*var\(--space-5\)/, 'RadioGroup 20px radio');
+  assert.match(css, /\.min-h-10\s*\{[^}]*min-height:\s*var\(--space-10\)/, 'RadioGroup 32px row');
+  assert.match(css, /\.size-5\s*\{[^}]*width:\s*var\(--space-5\)/, 'RadioGroup 16px radio');
   assert.match(css, /transition-property:\s*border-color,\s*box-shadow/, 'The radio animates border and shadow only');
   assert.doesNotMatch(css, /\.eg-radio-group[^{]*\{/, 'RadioGroup has no stylesheet: its marker carries no rule');
 }
@@ -6960,7 +6960,7 @@ for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) ass
 for (const name of typography) {
   for (const field of ['--line-height', '--font-weight', '--letter-spacing']) assert.ok(emitted.includes('--text-' + name + field + ':'), 'Native artifact must expose --text-' + name + field);
 }
-assert.ok(emitted.includes('--effect-grid-size: 40px'), 'Native artifact must emit unused effect spacing');
+assert.ok(emitted.includes('--effect-grid-size: 32px'), 'Native artifact must emit unused effect spacing');
 assert.ok(emitted.includes('--spacing-16: var(--space-16)'), 'Native artifact must emit unused spacing aliases');
 for (const [name, paths] of Object.entries(instances)) assert.equal(paths.size, 1, 'Consumer bundle must contain one physical ' + name);
 const tailwind = await build({ configFile: false, logLevel: 'error', plugins: [tailwindcss({ optimize: false })], build: { cssMinify: false, emptyOutDir: true, outDir: 'dist-tw', rolldownOptions: { input: 'tailwind.css', output: { assetFileNames: 'tailwind.css' } } } });

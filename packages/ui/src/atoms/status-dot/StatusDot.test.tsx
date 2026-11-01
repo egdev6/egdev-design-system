@@ -45,7 +45,7 @@ describe('StatusDot', () => {
     expect(dot).toHaveClass('inline-block', 'shrink-0', 'rounded-full', 'bg-primitive-neutral-600');
   });
 
-  it.each(statusStates)('resolves %s to an 8px ringed %s dot without glow (AC-02)', (state, fill) => {
+  it.each(statusStates)('resolves %s to a 6.4px ringed %s dot without glow (AC-02)', (state, fill) => {
     const resolved = classes(state);
     expect(resolved).toEqual(expect.arrayContaining(['size-2', 'ring-2', 'ring-bg-surface', fill]));
     expect(resolved).not.toContain('size-2.5');
@@ -55,7 +55,7 @@ describe('StatusDot', () => {
     }
   });
 
-  it.each(signalStates)('resolves %s to a 10px glowing %s dot without ring (AC-02)', (state, fill) => {
+  it.each(signalStates)('resolves %s to an 8px glowing %s dot without ring (AC-02)', (state, fill) => {
     const resolved = classes(state);
     expect(resolved).toEqual(expect.arrayContaining(['size-2.5', 'shadow-glow-hot', fill]));
     expect(resolved).not.toContain('size-2');

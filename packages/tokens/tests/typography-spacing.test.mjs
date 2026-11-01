@@ -17,61 +17,102 @@ const blockOf = (source, header) => {
 const staticBlock = blockOf(themeSource, '@theme static');
 
 // Approved typography recipes from docs/tokens-reference.md. Family and casing are
-// documented next to the CSS, never published as new tokens.
+// documented next to the CSS, never published as new tokens. Sizes are the #218
+// global scale ×0.8 of the originally approved px values (exact sub-pixel, L8 OQ1).
 const TYPOGRAPHY = [
-  { name: 'display-hero', size: '56px', lineHeight: '1.1', fontWeight: '800', letterSpacing: '0' },
-  { name: 'display-show', size: '96px', lineHeight: '0.9', fontWeight: '800', letterSpacing: '0' },
-  { name: 'display-pro', size: '64px', lineHeight: '0.95', fontWeight: '800', letterSpacing: '0' },
-  { name: 'heading-section', size: '40px', lineHeight: '1.2', fontWeight: '800', letterSpacing: '0' },
-  { name: 'heading-small', size: '24px', lineHeight: '1.2', fontWeight: '700', letterSpacing: '0' },
-  { name: 'body-large', size: '20px', lineHeight: '1.6', fontWeight: '500', letterSpacing: '0' },
-  { name: 'body-default', size: '16px', lineHeight: '1.6', fontWeight: '500', letterSpacing: '0' },
-  { name: 'body-muted', size: '20px', lineHeight: '1.6', fontWeight: '400', letterSpacing: '0' },
-  { name: 'label-default', size: '14px', lineHeight: '1.2', fontWeight: '600', letterSpacing: '0' },
-  { name: 'label-eyebrow', size: '14px', lineHeight: '1.2', fontWeight: '700', letterSpacing: '0.12em' },
-  { name: 'meta', size: '14px', lineHeight: '1.3', fontWeight: '600', letterSpacing: '0.08em' },
-  { name: 'cta-label', size: '16px', lineHeight: '1.2', fontWeight: '700', letterSpacing: '0' },
-  { name: 'code', size: '14px', lineHeight: '1.6', fontWeight: '400', letterSpacing: '0' }
+  { name: 'display-hero', size: '44.8px', lineHeight: '1.1', fontWeight: '800', letterSpacing: '0' },
+  { name: 'display-show', size: '76.8px', lineHeight: '0.9', fontWeight: '800', letterSpacing: '0' },
+  { name: 'display-pro', size: '51.2px', lineHeight: '0.95', fontWeight: '800', letterSpacing: '0' },
+  { name: 'heading-section', size: '32px', lineHeight: '1.2', fontWeight: '800', letterSpacing: '0' },
+  { name: 'heading-small', size: '19.2px', lineHeight: '1.2', fontWeight: '700', letterSpacing: '0' },
+  { name: 'body-large', size: '16px', lineHeight: '1.6', fontWeight: '500', letterSpacing: '0' },
+  { name: 'body-default', size: '12.8px', lineHeight: '1.6', fontWeight: '500', letterSpacing: '0' },
+  { name: 'body-muted', size: '16px', lineHeight: '1.6', fontWeight: '400', letterSpacing: '0' },
+  { name: 'label-default', size: '11.2px', lineHeight: '1.2', fontWeight: '600', letterSpacing: '0' },
+  { name: 'label-eyebrow', size: '11.2px', lineHeight: '1.2', fontWeight: '700', letterSpacing: '0.12em' },
+  { name: 'meta', size: '11.2px', lineHeight: '1.3', fontWeight: '600', letterSpacing: '0.08em' },
+  { name: 'cta-label', size: '12.8px', lineHeight: '1.2', fontWeight: '700', letterSpacing: '0' },
+  { name: 'code', size: '11.2px', lineHeight: '1.6', fontWeight: '400', letterSpacing: '0' }
 ];
 
-// Fluid Title recipes approved for Text/Heading (#108 D8): exact legacy .eg-title clamps.
+// Fluid Title recipes approved for Text/Heading (#108 D8): exact legacy .eg-title clamps
+// scaled ×0.8 end to end, midpoint included (#218).
 const TITLE_TYPOGRAPHY = [
-  { name: 'title-section', size: 'clamp(40px, 5.6vw, 64px)', lineHeight: '0.9', fontWeight: '800', letterSpacing: '0' },
-  { name: 'title-hero', size: 'clamp(60px, 9vw, 140px)', lineHeight: '0.86', fontWeight: '800', letterSpacing: '0' },
-  { name: 'title-show', size: 'clamp(56px, 8.2vw, 132px)', lineHeight: '0.86', fontWeight: '800', letterSpacing: '0' },
+  {
+    name: 'title-section',
+    size: 'clamp(32px, 4.48vw, 51.2px)',
+    lineHeight: '0.9',
+    fontWeight: '800',
+    letterSpacing: '0'
+  },
+  {
+    name: 'title-hero',
+    size: 'clamp(48px, 7.2vw, 112px)',
+    lineHeight: '0.86',
+    fontWeight: '800',
+    letterSpacing: '0'
+  },
+  {
+    name: 'title-show',
+    size: 'clamp(44.8px, 6.56vw, 105.6px)',
+    lineHeight: '0.86',
+    fontWeight: '800',
+    letterSpacing: '0'
+  },
   {
     name: 'title-display',
-    size: 'clamp(64px, 9.6vw, 164px)',
+    size: 'clamp(51.2px, 7.68vw, 131.2px)',
     lineHeight: '0.82',
     fontWeight: '800',
     letterSpacing: '0'
   }
 ];
 
-// Fixed Stat figure recipes approved for Stat (#70 D6): legacy .eg-stat__value 36px and --sm 28px.
+// Fixed Stat figure recipes approved for Stat (#70 D6): legacy .eg-stat__value 36px and --sm 28px,
+// scaled ×0.8 by #218.
 const STAT_TYPOGRAPHY = [
-  { name: 'display-stat', size: '36px', lineHeight: '1', fontWeight: '800', letterSpacing: '0' },
-  { name: 'display-stat-sm', size: '28px', lineHeight: '1', fontWeight: '800', letterSpacing: '0' }
+  { name: 'display-stat', size: '28.8px', lineHeight: '1', fontWeight: '800', letterSpacing: '0' },
+  { name: 'display-stat-sm', size: '22.4px', lineHeight: '1', fontWeight: '800', letterSpacing: '0' }
 ];
 
-// Countdown digit recipes approved by the owner for #82 (2026-10-26): exact source clamps.
+// Countdown digit recipes approved by the owner for #82 (2026-10-26): exact source clamps,
+// scaled ×0.8 by #218.
 const COUNTDOWN_TYPOGRAPHY = [
-  { name: 'countdown-md', size: 'clamp(52px, 6vw, 96px)', lineHeight: '0.85', fontWeight: '800', letterSpacing: '0' },
-  { name: 'countdown-sm', size: 'clamp(36px, 4vw, 56px)', lineHeight: '0.85', fontWeight: '800', letterSpacing: '0' }
+  {
+    name: 'countdown-md',
+    size: 'clamp(41.6px, 4.8vw, 76.8px)',
+    lineHeight: '0.85',
+    fontWeight: '800',
+    letterSpacing: '0'
+  },
+  {
+    name: 'countdown-sm',
+    size: 'clamp(28.8px, 3.2vw, 44.8px)',
+    lineHeight: '0.85',
+    fontWeight: '800',
+    letterSpacing: '0'
+  }
 ];
 
 // Countdown spacing approved with the recipes above: responsive column gap and minimum digit measure.
 const COUNTDOWN_SPACING = [
-  ['--spacing-countdown-column', 'clamp(14px, 2.2vw, 32px)'],
+  ['--spacing-countdown-column', 'clamp(11.2px, 1.76vw, 25.6px)'],
   ['--spacing-countdown-unit', '1.9ch']
 ];
 
-// Fluid quotation recipes approved for PullQuote (#98 D7): exact legacy .eg-quote__text clamps.
+// Fluid quotation recipes approved for PullQuote (#98 D7): exact legacy .eg-quote__text clamps,
+// scaled ×0.8 by #218.
 const QUOTE_TYPOGRAPHY = [
-  { name: 'quote-pull', size: 'clamp(19px, 1.7vw, 23px)', lineHeight: '1.4', fontWeight: '500', letterSpacing: '0' },
+  {
+    name: 'quote-pull',
+    size: 'clamp(15.2px, 1.36vw, 18.4px)',
+    lineHeight: '1.4',
+    fontWeight: '500',
+    letterSpacing: '0'
+  },
   {
     name: 'quote-display',
-    size: 'clamp(48px, 6.2vw, 100px)',
+    size: 'clamp(38.4px, 4.96vw, 80px)',
     lineHeight: '0.86',
     fontWeight: '800',
     letterSpacing: '0'

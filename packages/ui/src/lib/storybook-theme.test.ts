@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { createBrandTheme } from '../../../../.storybook/theme';
 
 const readToken = (name: string): string =>
-  name === '--radius-md' ? '12px' : name === '--radius-sm' ? '4px' : `resolved:${name}`;
+  name === '--radius-md' ? '9.6px' : name === '--radius-sm' ? '3.2px' : `resolved:${name}`;
 
 describe('Storybook brand theme', () => {
   it('publishes tokens and branding at the URLs used by the manager', () => {
@@ -30,8 +30,8 @@ describe('Storybook brand theme', () => {
     expect(theme.colorSecondary).toBe('resolved:--color-fg-brand-raised');
     expect(theme.fontBase).toBe('resolved:--font-sans');
     expect(theme.fontCode).toBe('resolved:--font-mono');
-    expect(theme.appBorderRadius).toBe(12);
-    expect(theme.inputBorderRadius).toBe(4);
+    expect(theme.appBorderRadius).toBe(9.6);
+    expect(theme.inputBorderRadius).toBe(3.2);
   });
 
   it('rejects missing tokens rather than silently using unrelated colors', () => {
