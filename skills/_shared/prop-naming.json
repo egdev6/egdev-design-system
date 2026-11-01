@@ -412,7 +412,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
+          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
         }
       },
       {
@@ -649,7 +649,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
+          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
         }
       },
       {
@@ -1860,7 +1860,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
+          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
         }
       },
       {
@@ -1947,7 +1947,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
+          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
         }
       }
     ]
@@ -1974,7 +1974,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
+          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
         }
       },
       {
@@ -2021,7 +2021,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
+          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
         }
       },
       {

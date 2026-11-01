@@ -342,3 +342,22 @@ describe('Button contract', () => {
     expect(button).toHaveAttribute('data-disabled');
   });
 });
+
+describe('Button hover motion (#224 owner review)', () => {
+  const hoverMotion = /hover\]?(?:\/button)?:-?(?:translate|scale)|hover\]:-?translate/;
+
+  it.each(['primary', 'secondary', 'neutral', 'dark'] as const)('keeps the %s root still on hover', (variant) => {
+    render(<Button variant={variant}>Save</Button>);
+    const classes = screen.getByRole('button', { name: 'Save' }).className.split(/\s+/);
+    expect(classes.filter((value) => hoverMotion.test(value))).toEqual([]);
+  });
+
+  it('keeps the icon still on hover while preserving the press feedback', () => {
+    render(<Button icon={<Icon name='arrow-right' />}>Next</Button>);
+    const button = screen.getByRole('button', { name: 'Next' });
+    const icon = button.querySelector('.eg-btn__icon');
+    expect(icon).not.toBeNull();
+    expect(icon?.className.split(/\s+/).filter((value) => /hover.*translate/.test(value))).toEqual([]);
+    expect(button.className).toContain('[&:not([aria-disabled=true]):active]:translate-y-px');
+  });
+});
