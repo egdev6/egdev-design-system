@@ -3,7 +3,7 @@
   "compilerOptions": {
     "noEmit": true,
     "types": ["node", "vitest/globals", "@testing-library/jest-dom"],
-    "paths": { "@/*": ["./packages/ui/src/*"] }
+    "paths": { "@/*": ["./packages/ui/src/*"], "@egdev/ui": ["./packages/ui/src/index.ts"] }
   },
   "include": ["packages/*/src", ".storybook", "vitest.config.ts", "vitest.setup.ts"]
 }
