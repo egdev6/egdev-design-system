@@ -1,0 +1,115 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "sourceRegistry": "skills/_shared/prop-naming.json",
+  "sourceRegistrySHA256": "sha256:bacfa66ecc19cab2b40b614d191cc0f973dd1b7cdbc79dae1e77482cfb367a66",
+  "sourceRegistryEntryCount": 137,
+  "evidence": "Owner questionnaire decision dated 2026-11-01 and subsequent clarification, forwarded by the parent task. The exact serialized payloads were assembled by the assistant, not separately signed by the owner.",
+  "ownerAnswers": ["Aprobar las 4 + nueva para paused", "Convención animationPaused + excepción"],
+  "decision": "Approve the four existing interaction proposals without changing their semantics. Introduce animation-paused under canonical name animationPaused and approve the Isotipo3D-only paused exception. Move the existing usage from entity status to animation pause without changing the API.",
+  "limits": "This record does not approve any component API change, other naming exception, dependency, or implementation. Hashes bind content and do not prove consent independently of the forwarded owner decisions. Earlier receipts remain immutable.",
+  "priorReceipts": [
+    {
+      "path": "docs/decisions/prop-naming-isotipo3d-approval.json",
+      "wholeFileSHA256": "sha256:7b2518dfd984374f3eb2b632040ff4faab8015c42be4617c26ed03803e338b60"
+    }
+  ],
+  "exception": {
+    "scope": "Isotipo3D",
+    "propName": "paused",
+    "reason": "The existing Isotipo3D API uses paused for its idle animation loop; no API rename is implied.",
+    "approval": {
+      "reference": "docs/decisions/prop-naming-isotipo3d-interaction-approval.json",
+      "scope": "exception:animation-paused:Isotipo3D:paused",
+      "contentHash": "sha256:bc736e2542015b57abe527cab4d991a6a9052970eca8f523790d84aee3d1dce7"
+    }
+  },
+  "entries": [
+    {
+      "scope": "convention:interaction-drag-rotate",
+      "proposedContentHash": "sha256:67f60e8aa128255b5be71a664e9758f3c6f0827a934c37cddeb9bd789e15bcb2",
+      "contentHash": "sha256:270ead1bac9c0fda9dd3aec967587ca03286e28b6a1405a669c88705e36623a7",
+      "convention": {
+        "id": "interaction-drag-rotate",
+        "name": "dragRotate",
+        "meaning": "Whether the user may drag a decorative effect to rotate it away from its scene pose before it springs back.",
+        "whenToUse": "A decorative effect exposes opt-in direct-manipulation rotation; clamping, capture and release behavior are component-specific.",
+        "avoid": "Ambient pointer tilt (use pointer-tilt), selection or camera-control APIs, or gestures that trap touch scroll outside an explicitly interactive posture.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:interaction-flip-gesture",
+      "proposedContentHash": "sha256:73d91876acff8eb97b4ed4091981c6bed4f1dc40bb84d58c9337d11fbdd5148f",
+      "contentHash": "sha256:84f8c34c5f85034d9cefbcd496fcc2602862f4374c7c37ba4c07a10962824d81",
+      "convention": {
+        "id": "interaction-flip-gesture",
+        "name": "flip",
+        "meaning": "Whether the user may toggle a decorative effect’s 180° presentation through a flip gesture.",
+        "whenToUse": "A decorative effect offers an opt-in front/back flip triggered by component-specific gestures or keys.",
+        "avoid": "Drag rotation offsets (use interaction-drag-rotate), controlled or persistent presentation state, or visual variant selection (use visual-treatment).",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:interaction-interactive-mode",
+      "proposedContentHash": "sha256:58b075f13db65f467c7a46b9fa39c758fd53374e6f81520226992edad73a3ec3",
+      "contentHash": "sha256:7f2d63e75ecccd4daf8aad047c97ac865a0b73eff4c0fcf7cde8e6e6375a402c",
+      "convention": {
+        "id": "interaction-interactive-mode",
+        "name": "interactive",
+        "meaning": "Whether a decorative component switches from its decorative posture to a focusable, announced interactive posture.",
+        "whenToUse": "A decorative layer opts into keyboard operability and an accessible role; component-specific requirements (such as a required label) apply.",
+        "avoid": "Dialog focus modality (use interaction-modality), hover-only emphasis, loading state or generic disabled switches.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:interaction-pose-change",
+      "proposedContentHash": "sha256:a227936497e9e10cf73c54d7c9220b2db8ae98249427624cbed902b41ab4afd1",
+      "contentHash": "sha256:662ddf686effd82b1e1234992c9ef9f6e07793a032befb10487b6540c2550432",
+      "convention": {
+        "id": "interaction-pose-change",
+        "name": "onPoseChange",
+        "meaning": "Notification of a user-driven decorative-effect pose change, reported in component-specific units.",
+        "whenToUse": "The component emits gesture- or keyboard-driven pose updates; scene- or prop-driven pose changes are excluded.",
+        "avoid": "Selection or editing value changes (use interactive-value-change), controlled pose state or internal animation telemetry.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:animation-paused",
+      "contentHash": "sha256:6bf0ae4999e08d0225a5bcc6dbbae0fa63de2b6b9ab8451af97ccc0f14c6ee9f",
+      "convention": {
+        "id": "animation-paused",
+        "name": "animationPaused",
+        "meaning": "Whether a decorative effect pauses its idle animation at the current pose.",
+        "whenToUse": "A consumer can freeze and resume an idle animation loop; gesture repaint behavior is component-specific.",
+        "avoid": "Entity status or visual de-emphasis (use paused-presentation), disabled controls or a general interaction toggle.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": [
+          {
+            "scope": "Isotipo3D",
+            "propName": "paused",
+            "reason": "The existing Isotipo3D API uses paused for its idle animation loop; no API rename is implied.",
+            "approval": {
+              "reference": "docs/decisions/prop-naming-isotipo3d-interaction-approval.json",
+              "scope": "exception:animation-paused:Isotipo3D:paused",
+              "contentHash": "sha256:bc736e2542015b57abe527cab4d991a6a9052970eca8f523790d84aee3d1dce7"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
