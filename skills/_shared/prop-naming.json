@@ -512,7 +512,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
-          "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
+          "revision": "sha256:721e9ef2357a52b4a75ce9202736901a82a80ab7d5da7ba94b575f582d351489"
         }
       },
       {
@@ -749,7 +749,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
-          "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
+          "revision": "sha256:721e9ef2357a52b4a75ce9202736901a82a80ab7d5da7ba94b575f582d351489"
         }
       },
       {
@@ -1270,7 +1270,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
-          "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
+          "revision": "sha256:721e9ef2357a52b4a75ce9202736901a82a80ab7d5da7ba94b575f582d351489"
         }
       },
       {
@@ -1890,7 +1890,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
-          "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
+          "revision": "sha256:721e9ef2357a52b4a75ce9202736901a82a80ab7d5da7ba94b575f582d351489"
         }
       },
       {
@@ -2091,7 +2091,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
-          "revision": "sha256:edb71e533dc0c7b01187181aec1dcdb243355c8d49431778d2b5fc32000824e0"
+          "revision": "sha256:721e9ef2357a52b4a75ce9202736901a82a80ab7d5da7ba94b575f582d351489"
         }
       },
       {
