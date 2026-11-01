@@ -28,6 +28,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   collapsibleContent: ['title', 'dir', 'aria-describedby', 'className', 'role', 'aria-label', 'aria-labelledby'],
   moduleCard: ['id', 'dir', 'aria-describedby', 'aria-busy', 'onClick', 'className', 'style'],
   timeline: ['id', 'title', 'aria-describedby', 'aria-busy', 'className', 'style', 'onClick'],
+  table: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick'],
   avatar: ['id', 'title', 'aria-describedby', 'className', 'style'],
   navList: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   carousel: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onKeyDown', 'onFocus', 'onBlur'],
