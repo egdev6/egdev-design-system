@@ -45,7 +45,7 @@ import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorI
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
 import { ToastProvider, useToast } from '@egdev/ui';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -124,6 +124,8 @@ import type {
   PopoverTriggerProps,
   PopoverContentProps,
   PopoverCloseProps,
+  PreviewFrameProps,
+  PreviewFrameZone,
   MeterRowMessages,
   MeterRowProps,
   MeterRowVariant,
@@ -1809,6 +1811,25 @@ const sidebarRole: SidebarProps = { children: 'Body', role: 'navigation' };
 const sidebarHTML: SidebarProps = { children: 'Body', dangerouslySetInnerHTML: { __html: 'Body' } };
 // @ts-expect-error Sidebar does not manage collapse.
 const sidebarCollapsed: SidebarProps = { children: 'Body', collapsed: true };
+const previewZone: PreviewFrameZone = { id: 'title', label: 'Title area', x: 10, y: 10, width: 80, height: 20 };
+const previewFrameProps: PreviewFrameProps = {
+  figureCaption: 'Packed preview',
+  zones: [previewZone],
+  children: createElement('span', null, 'Artwork')
+};
+export function previewFrameConsumerSample() {
+  return createElement(PreviewFrame, previewFrameProps);
+}
+// @ts-expect-error The ratio is width divided by height, never a CSS string.
+const previewFrameStringRatio: PreviewFrameProps = { ...previewFrameProps, ratio: '16/9' };
+// @ts-expect-error Zone tones are limited to info and warning.
+const previewFrameZoneTone: PreviewFrameZone = { ...previewZone, tone: 'danger' };
+// @ts-expect-error The validation hook stays internal.
+type PreviewFrameHookNotExported = (typeof import('@egdev/ui'))['usePreviewFrame'];
+// @ts-expect-error Zone recipes stay internal.
+type PreviewFrameZoneVariantsNotExported = (typeof import('@egdev/ui'))['zoneVariants'];
+void previewFrameStringRatio;
+void previewFrameZoneTone;
 // @ts-expect-error Product name is required.
 const sidebarMissingName: ProductIdentity = { node: 'W' };
 
@@ -3743,6 +3764,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'PopoverContent',
   'PopoverTrigger',
   'Portal',
+  'PreviewFrame',
   'ProgressBar',
   'PullQuote',
   'RadioGroup',

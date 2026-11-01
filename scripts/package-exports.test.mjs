@@ -210,6 +210,27 @@ test('sidebar exports its component and static CSS without private helpers', asy
   }
 });
 
+test('preview-frame exports its passive figure and keeps recipes internal', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(typeof exported.PreviewFrame, 'function');
+  for (const name of ['usePreviewFrame', 'rootVariants', 'zoneVariants', 'canvasVariants', 'safeAreaVariants']) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} is internal`);
+  }
+  const html = renderToString(
+    createElement(exported.PreviewFrame, {
+      figureCaption: 'Packed preview',
+      zones: [{ id: 'title', label: 'Title area', x: 10, y: 10, width: 80, height: 20 }],
+      children: createElement('span', null, 'Artwork')
+    })
+  );
+  assert.match(html, /<figure[^>]*eg-stage/);
+  assert.match(html, /aria-labelledby="[^"]+"/);
+  assert.match(html, /--eg-zone-x:10%/);
+  assert.match(html, /aria-hidden="true"/);
+});
+
 test('Panel ships band resets and direct-zone corner utilities without a new marker engine', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -2905,6 +2926,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'PopoverContent',
       'PopoverTrigger',
       'Portal',
+      'PreviewFrame',
       'ProgressBar',
       'PullQuote',
       'RadioGroup',
@@ -3231,6 +3253,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'PopoverTriggerProps',
     'Portal',
     'PortalProps',
+    'PreviewFrame',
+    'PreviewFrameProps',
+    'PreviewFrameZone',
     'ProductIdentity',
     'ProgressBar',
     'ProgressBarProps',

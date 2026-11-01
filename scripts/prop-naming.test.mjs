@@ -61,6 +61,19 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/organisms/sidebar/types.ts#SidebarProps'
   })),
+  ...[
+    'aspect-ratio',
+    'visual-treatment',
+    'surface-material-tone',
+    'trailing-actions',
+    'panel-footer',
+    'safe-area-guide',
+    'guide-zones',
+    'figure-caption'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/organisms/preview-frame/types.ts#PreviewFrameProps'
+  })),
   ...['open-state', 'initial-uncontrolled-open', 'open-change'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/dialog/types.ts#DialogProps'
