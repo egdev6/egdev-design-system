@@ -216,11 +216,14 @@ export const selectTileVariants = {
   image: cva('w-full h-full object-cover block'),
   fallback: cva('w-full h-full grid place-items-center text-cta-label text-fg-default font-sans'),
   badge: cva('absolute top-1.5 start-1.5 pointer-events-none'),
-  label: cva([
-    'text-cta-label text-fg-default px-1 wrap-anywhere',
-    'group-has-[[data-state=checked]]/tile:underline group-has-[[data-state=on]]/tile:underline',
-    'decoration-(length:--border-width) underline-offset-(--space-1)'
+  check: cva([
+    'absolute top-1.5 end-1.5 pointer-events-none inline-flex h-3.5 w-3.5 items-center justify-center overflow-hidden',
+    'opacity-0 scale-50 transition-[opacity,transform] duration-(--duration-fast) ease-(--ease-out)',
+    'group-has-[[data-state=checked]]/tile:opacity-100 group-has-[[data-state=on]]/tile:opacity-100',
+    'group-has-[[data-state=checked]]/tile:scale-100 group-has-[[data-state=on]]/tile:scale-100',
+    'motion-reduce:transition-none [&>svg]:size-full'
   ]),
+  label: cva('text-cta-label text-fg-default px-1 wrap-anywhere'),
   meta: cva('text-label-default font-[var(--text-body-default--font-weight)] text-fg-muted px-1 pb-1 wrap-anywhere'),
   control: cva([
     'absolute inset-0 w-full h-full rounded-lg border-0 border-solid bg-transparent bg-none p-0 cursor-pointer appearance-none',

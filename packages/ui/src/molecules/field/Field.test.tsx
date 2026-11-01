@@ -310,6 +310,69 @@ describe('Field public contract', () => {
   });
 });
 
+describe('Field bottom row', () => {
+  it('shares one horizontal bottom row between the message and the counter, mirroring the label/readout row', () => {
+    render(
+      <Field label='Post' hint='Keep it brief.' counter={{ value: 12, max: 280 }}>
+        <Textarea />
+      </Field>
+    );
+    const input = screen.getByRole('textbox', { name: 'Post' });
+    const message = screen.getByText('Keep it brief.').closest('.eg-field-message');
+    const counter = screen.getByText('12 / 280');
+    const row = counter.parentElement;
+    expect(row).toHaveClass('flex', 'justify-between', 'gap-2');
+    expect(row?.firstElementChild).toBe(message?.parentElement);
+    expect(row?.lastElementChild).toBe(counter);
+    expect(message?.parentElement).toHaveClass('min-w-0');
+    expect(counter).toHaveClass('shrink-0');
+    expect(input).toHaveAccessibleDescription('Keep it brief. 12 / 280');
+  });
+
+  it('lets the counter occupy the row alone, still aligned to the end', () => {
+    render(
+      <Field label='Comment' counter={{ value: 36, max: 1250 }}>
+        <Textarea />
+      </Field>
+    );
+    const counter = screen.getByText('36 / 1250');
+    const row = counter.parentElement;
+    expect(row).toHaveClass('flex', 'justify-between', 'gap-2');
+    expect(row?.children).toHaveLength(1);
+    expect(counter).toHaveClass('ml-auto', 'shrink-0');
+  });
+
+  it('lets the message occupy the row alone', () => {
+    render(
+      <Field label='Title' hint='Short title'>
+        <Input />
+      </Field>
+    );
+    const wrapper = screen.getByText('Short title').closest('.eg-field-message')?.parentElement;
+    const row = wrapper?.parentElement;
+    expect(row).toHaveClass('flex', 'justify-between', 'gap-2');
+    expect(row?.children).toHaveLength(1);
+    expect(wrapper).toHaveClass('min-w-0');
+  });
+
+  it('keeps the choice message as a direct grid child without a bottom row', () => {
+    render(
+      <Field
+        label='Remember this device'
+        layout='choice'
+        hint='Only on a private device.'
+        counter={{ value: 1, max: 2 }}
+      >
+        <Checkbox />
+      </Field>
+    );
+    const wrapper = screen.getByText('Only on a private device.').closest('.eg-field-message')?.parentElement;
+    expect(wrapper).toHaveClass('col-start-2');
+    expect(wrapper?.parentElement).toHaveClass('grid');
+    expect(screen.queryByText('1 / 2')).not.toBeInTheDocument();
+  });
+});
+
 describe('FieldMessage composition', () => {
   it.each([
     ['description', 'text-fg-muted'],

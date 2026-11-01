@@ -514,7 +514,7 @@
     "radix": "HoverCard",
     "compone": "Surface overlay; internal Radix Portal",
     "accion": "nuevo",
-    "notas": "Implemented in @egdev/ui under [approved v0.1 + A1](https://github.com/egdev6/egdev-design-system/issues/86): supplementary read-only rich link preview with controlled/uncontrolled Radix state, native hover/focus timers and collision bounds. Surface owns overlay Material; Gauge remains passive inside a separate named anchor. A1 retains Radix touch cancellation: usage requires a separate persistent details link outside the trigger for touch users. No stylesheet, public content ref, presence or delay API."
+    "notas": "Retired from @egdev/ui by owner decision ([#220](https://github.com/egdev6/egdev-design-system/issues/220), 2026-11-01): exports, stories, tests and implementation removed; see the [retirement record](components/hover-card/RETIRED.md) and use Popover for interactive rich previews. Historical v0.1 + A1 record: supplementary read-only rich link preview with controlled/uncontrolled Radix state, native hover/focus timers and collision bounds; Surface owned overlay Material; A1 retained Radix touch cancellation requiring a separate persistent details link for touch users. No stylesheet, public content ref, presence or delay API."
   },
   {
     "actual": "—",
@@ -987,7 +987,7 @@
     "radix": "Toolbar",
     "compone": "Surface overlay, Gauge, Button/IconButton",
     "accion": "extraer",
-    "notas": "Implemented in @egdev/ui under #85 v0.1: independent passive measurements beside separate native actions; Radix owns bounded roving focus. No aggregation, selection, stylesheet or legacy GaugeStrip migration."
+    "notas": "Retired from @egdev/ui by owner decision ([#220](https://github.com/egdev6/egdev-design-system/issues/220), 2026-11-01): exports, stories, tests and implementation removed; see the [retirement record](components/gauge-dock/RETIRED.md) and compose GaugeGroup/MeterRow readings with separate Button/IconButton actions. Historical #85 v0.1 record: independent passive measurements beside separate native actions with Radix-owned bounded roving focus; no aggregation, selection, stylesheet or legacy GaugeStrip migration."
   },
   {
     "actual": "AgentPanel",

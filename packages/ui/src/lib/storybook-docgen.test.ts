@@ -436,50 +436,6 @@ describe('Storybook TypeScript docgen contract', () => {
       expect(ts.getJSDocTags(declaration).find(({ tagName }) => tagName.text === 'control')?.comment).toBe('number');
     }
   });
-  it('extracts GaugeDock composition, protected native semantics and own Controls metadata', () => {
-    const entries = parser.parse(source('molecules/gauge-dock/GaugeDock.tsx'));
-    const root = entries.find(({ displayName }) => displayName === 'GaugeDock');
-    const item = entries.find(({ displayName }) => displayName === 'GaugeDockItem');
-    const separator = entries.find(({ displayName }) => displayName === 'GaugeDockSeparator');
-    expect(root?.props.label).toMatchObject({ required: true, tags: { control: 'text' } });
-    expect(root?.props.orientation).toMatchObject({
-      defaultValue: { value: 'horizontal' },
-      tags: { control: 'select' }
-    });
-    expect(root?.props.orientation?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
-      'horizontal',
-      'vertical'
-    ]);
-    for (const doc of [root, item]) {
-      expect(doc?.props.children).toMatchObject({
-        required: true,
-        tags: { control: 'false', controlReason: expect.stringMatching(/serializable/) }
-      });
-    }
-    expect(item?.props.children?.type.name).toMatch(/ReactElement/);
-    expect(root?.props.dir?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual(['ltr', 'rtl']);
-    for (const doc of [root, item, separator]) {
-      expect(doc).toBeDefined();
-      for (const prop of ['id', 'title', 'className', 'style']) {
-        expect(doc?.props[prop], prop).toBeDefined();
-      }
-      for (const prop of ['role', 'tabIndex', 'asChild', 'ref', 'dangerouslySetInnerHTML']) {
-        expect(doc?.props[prop], prop).toBeUndefined();
-      }
-    }
-    expect(separator?.props.children).toBeUndefined();
-    expect(separator?.props.orientation).toBeUndefined();
-    expect(separator?.props['aria-hidden']).toBeUndefined();
-    const properties = ownProps(ast(source('molecules/gauge-dock/types.ts')), ['GaugeDockProps', 'GaugeDockItemProps']);
-    expect(properties).toHaveLength(4);
-    for (const property of properties) {
-      const tags = ts.getJSDocTags(property);
-      expect(tags.filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
-      if (!property.questionToken) {
-        expect(tags.some(({ tagName }) => tagName.text === 'default')).toBe(false);
-      }
-    }
-  });
   it('extracts SelectTile mode-dependent metadata under A1 and annotates every own branch', () => {
     const doc = parser
       .parse(source('molecules/select-tile/SelectTile.tsx'))
@@ -756,9 +712,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/chip-group',
       './molecules/collapsible',
       './molecules/field',
-      './molecules/gauge-dock',
       './molecules/gauge-group',
-      './molecules/hover-card',
       './molecules/list-item',
       './molecules/menu',
       './molecules/meter-row',
@@ -805,14 +759,8 @@ describe('Storybook TypeScript docgen contract', () => {
       'Field',
       'FieldMessage',
       'Gauge',
-      'GaugeDock',
-      'GaugeDockItem',
-      'GaugeDockSeparator',
       'GaugeGroup',
       'Heading',
-      'HoverCard',
-      'HoverCardContent',
-      'HoverCardTrigger',
       'Icon',
       'IconButton',
       'Indicator',

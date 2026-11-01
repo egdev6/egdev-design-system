@@ -149,10 +149,6 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/molecules/field/types.ts#FieldProps'
   })),
-  ...['accessible-name', 'layout-orientation'].map((conventionId) => ({
-    conventionId,
-    source: 'packages/ui/src/molecules/gauge-dock/types.ts#GaugeDockProps'
-  })),
   ...['accessible-name', 'collection-items', 'navigation-intent'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/nav-list/types.ts#NavListProps'
@@ -193,15 +189,6 @@ const postReceiptUsages = [
   ].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/select-tile/types.ts#SelectTileOption'
-  })),
-  ...['open-state', 'initial-uncontrolled-open', 'open-change'].map((conventionId) => ({
-    conventionId,
-    source: 'packages/ui/src/molecules/hover-card/types.ts#HoverCardProps'
-  })),
-  { conventionId: 'slot-composition', source: 'packages/ui/src/molecules/hover-card/types.ts#HoverCardTriggerProps' },
-  ...['floating-side', 'floating-align'].map((conventionId) => ({
-    conventionId,
-    source: 'packages/ui/src/molecules/hover-card/types.ts#HoverCardContentProps'
   })),
   ...['open-state', 'initial-uncontrolled-open', 'open-change', 'interaction-modality'].map((conventionId) => ({
     conventionId,
