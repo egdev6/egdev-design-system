@@ -1462,6 +1462,16 @@
           "symbol": "TableProps",
           "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
         }
+      },
+      {
+        "component": "ModuleRail",
+        "type": "string (required landmark name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailProps",
+          "revision": "sha256:1072cc225995343eaba696aaf7ea75942b21d1174ccf6b1ac39bf714ad1e0a1a"
+        }
       }
     ]
   },
@@ -1991,6 +2001,16 @@
           "path": "packages/ui/src/atoms/field-message/types.ts",
           "symbol": "FieldMessageProps",
           "revision": "sha256:e5c3ba8c39dbd45a5aa7e4701ddf65b82e9c85284b15bd0a8d09a211da6f93fe"
+        }
+      },
+      {
+        "component": "ModuleRail",
+        "type": "ModuleRailLink.icon (required decorative IconName)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailLink",
+          "revision": "sha256:1072cc225995343eaba696aaf7ea75942b21d1174ccf6b1ac39bf714ad1e0a1a"
         }
       }
     ]
@@ -3086,6 +3106,16 @@
           "symbol": "TabsProps",
           "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
+      },
+      {
+        "component": "ModuleRail",
+        "type": "ModuleRailEntry[] (links and separators)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailProps",
+          "revision": "sha256:1072cc225995343eaba696aaf7ea75942b21d1174ccf6b1ac39bf714ad1e0a1a"
+        }
       }
     ]
   },
@@ -3152,6 +3182,16 @@
           "path": "packages/ui/src/molecules/table/types.ts",
           "symbol": "TableProps",
           "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
+        }
+      },
+      {
+        "component": "ModuleRail",
+        "type": "ModuleRailMessages (add and state words)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailProps",
+          "revision": "sha256:1072cc225995343eaba696aaf7ea75942b21d1174ccf6b1ac39bf714ad1e0a1a"
         }
       }
     ]
@@ -3863,6 +3903,16 @@
           "symbol": "MenuEntry",
           "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
+      },
+      {
+        "component": "ModuleRail",
+        "type": "ModuleRailEntry ('link' optional; 'separator')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailEntry",
+          "revision": "sha256:1072cc225995343eaba696aaf7ea75942b21d1174ccf6b1ac39bf714ad1e0a1a"
+        }
       }
     ]
   },
@@ -3926,6 +3976,16 @@
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuProps",
           "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
+        }
+      },
+      {
+        "component": "ModuleRail",
+        "type": "(item: ModuleRailLink, event: MouseEvent<HTMLAnchorElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailProps",
+          "revision": "sha256:1072cc225995343eaba696aaf7ea75942b21d1174ccf6b1ac39bf714ad1e0a1a"
         }
       }
     ]
@@ -5430,6 +5490,16 @@
           "symbol": "SidebarProps",
           "revision": "sha256:489fe1683e9a448ec5111da30b92c468298799392fb7441a5493cf32a7e50e18"
         }
+      },
+      {
+        "component": "ModuleRail",
+        "type": "ProductIdentity (consumer node, name, optional href)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailProps",
+          "revision": "sha256:1072cc225995343eaba696aaf7ea75942b21d1174ccf6b1ac39bf714ad1e0a1a"
+        }
       }
     ]
   },
@@ -5447,7 +5517,18 @@
       "scope": "convention:end-items",
       "contentHash": "sha256:9a95c86f3155874b006075dfa97f7e397b6b78bb2d93506cff5dc37c29fe4b74"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "ModuleRail",
+        "type": "ModuleRailLink[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailProps",
+          "revision": "sha256:1072cc225995343eaba696aaf7ea75942b21d1174ccf6b1ac39bf714ad1e0a1a"
+        }
+      }
+    ]
   },
   {
     "id": "add-request",
@@ -5463,7 +5544,18 @@
       "scope": "convention:add-request",
       "contentHash": "sha256:989d86b930117a5c51757561bdf0f93ae836f71e1b83d75f4e9611291f467796"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "ModuleRail",
+        "type": "(event: MouseEvent<HTMLButtonElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailProps",
+          "revision": "sha256:1072cc225995343eaba696aaf7ea75942b21d1174ccf6b1ac39bf714ad1e0a1a"
+        }
+      }
+    ]
   },
   {
     "id": "move-intent",

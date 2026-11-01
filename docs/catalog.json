@@ -929,10 +929,10 @@
     "nombre": "ModuleRail",
     "nivel": "organism",
     "destino": "ui",
-    "radix": "Tooltip + NavigationMenu o ToggleGroup",
-    "compone": "Logo, IconButton, StatusDot",
+    "radix": "Tooltip + VisuallyHidden",
+    "compone": "Icon, IconButton, StatusDot, Surface recipe; consumer identity",
     "accion": "mantener",
-    "notas": "Raíl compacto de Mando; genérico."
+    "notas": "Working-tree compact navigation under the approved #124 plan: native links, consumer-selected current page, grouped items and optional pinned identity, add action and end links. Consumer owns routing and responsive switching. Browser visual and accessibility verification pending."
   },
   {
     "actual": "TabBar",

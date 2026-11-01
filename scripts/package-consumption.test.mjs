@@ -1798,6 +1798,30 @@ const waveRef: ComponentProps<typeof Indicator> = { children: 'Anchor', ref: cre
 // @ts-expect-error No cloning/composition API.
 const waveSlot: IndicatorProps = { children: 'Anchor', asChild: true };
 
+import { ModuleRail, moduleRailVariants } from '@egdev/ui';
+import type { ModuleRailEntry, ModuleRailLink, ModuleRailMessages, ModuleRailProps, ModuleRailState } from '@egdev/ui';
+const moduleRailState: ModuleRailState = 'running';
+const moduleRailLink: ModuleRailLink = { id: 'home', label: 'Home', href: '#home', icon: 'plus', state: moduleRailState };
+const moduleRailEntries: ModuleRailEntry[] = [moduleRailLink];
+const moduleRailMessages: ModuleRailMessages = { add: 'Create' };
+export const moduleRailProps: ModuleRailProps = { label: 'Modules', items: moduleRailEntries, messages: moduleRailMessages };
+export function moduleRailConsumerSample() { return createElement(ModuleRail, moduleRailProps); }
+export const moduleRailRecipe = moduleRailVariants();
+// @ts-expect-error Internal helper is not exported.
+type ModuleRailHelperNotExported = (typeof import('@egdev/ui'))['useModuleRail'];
+// @ts-expect-error Navigation label is required.
+const moduleRailMissingLabel: ModuleRailProps = { items: [] };
+// @ts-expect-error Separators cannot be pinned end links.
+const moduleRailSeparatorEnd: ModuleRailProps = { label: 'Modules', items: [], endItems: [{ kind: 'separator', id: 's' }] };
+// @ts-expect-error Landmark role is fixed.
+const moduleRailRole: ModuleRailProps = { label: 'Modules', items: [], role: 'menu' };
+// @ts-expect-error There is no children renderer; content comes from items.
+const moduleRailChildren: ModuleRailProps = { label: 'Modules', items: [], children: 'Extra' };
+// @ts-expect-error No root ref or Slot API.
+const moduleRailRef: ModuleRailProps = { label: 'Modules', items: [], ref: createRef<HTMLElement>() };
+// @ts-expect-error No slotted composition API.
+const moduleRailAsChild: ModuleRailProps = { label: 'Modules', items: [], asChild: true };
+
 import { Sidebar } from '@egdev/ui';
 import type { SidebarProps, ProductIdentity } from '@egdev/ui';
 const sidebarIdentity: ProductIdentity = { name: 'Workspace', node: createElement('span', null, 'W'), href: '/home' };
@@ -3730,6 +3754,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Menu',
   'MeterRow',
   'ModuleCard',
+  'ModuleRail',
   'NavList',
   'Notice',
   'PageHeader',
@@ -3777,6 +3802,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'dropzoneVariants',
   'labelVariants',
   'menuVariants',
+  'moduleRailVariants',
   'navListVariants',
   'noticeVariants',
   'progressBarVariants',

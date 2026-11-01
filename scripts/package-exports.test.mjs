@@ -187,6 +187,21 @@ test('Collapsible package preserves amended native closed/open relationships and
   }
 });
 
+test('module-rail exports native navigation without private helpers', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(
+    createElement(exported.ModuleRail, {
+      label: 'Modules',
+      items: [{ id: 'home', label: 'Home', href: '#home', icon: 'plus', 'aria-current': 'page' }]
+    })
+  );
+  assert.match(html, /<nav[^>]*aria-label="Modules"/);
+  assert.match(html, /aria-current="page"/);
+  assert.equal(Object.hasOwn(exported, 'useModuleRail'), false);
+});
+
 test('sidebar exports its component and static CSS without private helpers', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -2892,6 +2907,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Menu',
       'MeterRow',
       'ModuleCard',
+      'ModuleRail',
       'NavList',
       'Notice',
       'PageHeader',
@@ -2939,6 +2955,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'dropzoneVariants',
       'labelVariants',
       'menuVariants',
+      'moduleRailVariants',
       'navListVariants',
       'noticeVariants',
       'progressBarVariants',
@@ -3191,6 +3208,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ModuleCardStatus',
     'ModuleCardTone',
     'ModuleCardVariant',
+    'ModuleRail',
+    'ModuleRailEntry',
+    'ModuleRailLink',
+    'ModuleRailMessages',
+    'ModuleRailProps',
+    'ModuleRailState',
     'NavList',
     'NavListCollapsibleGroup',
     'NavListEntry',
@@ -3351,6 +3374,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'dropzoneVariants',
     'labelVariants',
     'menuVariants',
+    'moduleRailVariants',
     'navListVariants',
     'noticeVariants',
     'progressBarVariants',

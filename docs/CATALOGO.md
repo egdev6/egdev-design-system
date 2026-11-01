@@ -119,7 +119,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
 | **Sidebar** | — | ScrollArea | Surface recipe; consumer identity, NavList and footer | nuevo | Working-tree Sidebar under the approved #123 plan and consumer identity amendment: host-sized passive panel with a scrollable body and optional pinned identity and footer. Navigation, routing and responsive visibility belong to consumers. Browser visual and accessibility verification pending. |
-| **ModuleRail** | ModuleRail (organismo (agente)) | Tooltip + NavigationMenu o ToggleGroup | Logo, IconButton, StatusDot | mantener | Raíl compacto de Mando; genérico. |
+| **ModuleRail** | ModuleRail (organismo (agente)) | Tooltip + VisuallyHidden | Icon, IconButton, StatusDot, Surface recipe; consumer identity | mantener | Working-tree compact navigation under the approved #124 plan: native links, consumer-selected current page, grouped items and optional pinned identity, add action and end links. Consumer owns routing and responsive switching. Browser visual and accessibility verification pending. |
 | **TabBar** | TabBar (organismo (agente)) | — | Icon, Badge | mantener | Navegación inferior móvil. |
 | **CalendarGrid** | CalendarGrid (organismo) | — (arrastre: dnd-kit, a confirmar) | ListItem, Text | mantener | `.eg-day` y `.eg-post-row` pasan a partes internas. Falta vista Mes. |
 | **PreviewFrame** | StageFrame (organismo) | AspectRatio + Toolbar | IconButton, Chip | renombrar | Vista previa a tamaño fijo con zonas seguras. |
