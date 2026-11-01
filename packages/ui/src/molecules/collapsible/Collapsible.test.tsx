@@ -265,6 +265,21 @@ describe('Collapsible native relationship ownership', () => {
     expect(onOpenChange).not.toHaveBeenCalled();
   });
 
+  it('keeps the closed ghost radius and flattens only the open Trigger bottom radius', async () => {
+    const user = userEvent.setup();
+    render(
+      <Collapsible>
+        <Parts />
+      </Collapsible>
+    );
+    const trigger = screen.getByRole('button', { name: 'History' });
+    expect(trigger).toHaveAttribute('data-state', 'closed');
+    expect(trigger).toHaveClass('rounded-md', 'data-[state=open]:rounded-b-none');
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute('data-state', 'open');
+    expect(trigger).toHaveClass('rounded-md', 'data-[state=open]:rounded-b-none');
+  });
+
   it('retains uncontrolled visibility and body state when disabled changes after opening', async () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();
