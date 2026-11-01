@@ -271,17 +271,14 @@ test('Toast ships floating elevation, viewport, swipe, fade and reduced-motion u
 });
 
 test('Toast provider preserves application SSR without rendering portal content on the server', async () => {
-  const { Toast, ToastProvider } = await import(artifact('ui', ui.exports['.'].import));
+  const { ToastProvider, useToast } = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
   const { renderToString } = await import('react-dom/server');
-  assert.equal(typeof Toast, 'function');
   assert.equal(typeof ToastProvider, 'function');
+  assert.equal(typeof useToast, 'function');
   const html = renderToString(
     createElement(ToastProvider, {
-      children: [
-        createElement('main', { key: 'app' }, 'Application'),
-        createElement(Toast, { key: 'toast', summary: 'Link copied' })
-      ]
+      children: [createElement('main', { key: 'app' }, 'Application')]
     })
   );
   assert.equal(html, '<main>Application</main>');
@@ -2832,7 +2829,6 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Text',
       'Textarea',
       'Timeline',
-      'Toast',
       'ToastProvider',
       'Toggle',
       'Tooltip',
@@ -2852,7 +2848,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'statusDotVariants',
       'surfaceVariants',
       'tabsVariants',
-      'tooltipVariants'
+      'tooltipVariants',
+      'useToast'
     ],
     'Only approved components and cn are public runtime exports'
   );
@@ -3207,10 +3204,15 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'TimelineTime',
     'TimelineVariant',
     'TitleVariant',
-    'Toast',
+    'ToastApi',
+    'ToastCallOptions',
+    'ToastPlacement',
+    'ToastPromiseMessages',
     'ToastProps',
     'ToastProvider',
     'ToastProviderProps',
+    'ToastTone',
+    'ToastUpdateOptions',
     'Toggle',
     'ToggleProps',
     'ToggleSize',
@@ -3246,7 +3248,6 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
-    'useToast',
     'useToastProvider',
     'toastVariants',
     'toastViewportVariants',
@@ -3342,10 +3343,15 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'NoticeProps',
     'NoticeTone',
     'noticeVariants',
-    'Toast',
+    'ToastApi',
+    'ToastCallOptions',
+    'ToastPlacement',
+    'ToastPromiseMessages',
     'ToastProps',
     'ToastProvider',
     'ToastProviderProps',
+    'ToastTone',
+    'ToastUpdateOptions',
     'SearchTrigger',
     'SearchTriggerProps',
     'SectionHeader',

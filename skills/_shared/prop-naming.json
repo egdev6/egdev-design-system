@@ -831,12 +831,12 @@
     "usages": [
       {
         "component": "Toast",
-        "type": "NoticeTone ('neutral' | 'info' | 'success' | 'warning' | 'danger')",
+        "type": "ToastTone ('neutral' | 'info' | 'success' | 'warning' | 'danger' | 'loading')",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/molecules/toast/types.ts",
           "symbol": "ToastProps",
-          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+          "revision": "sha256:d40fb5fe1fe6202a780cc8b420b3b19b1d8761939e111487cb70b7bffce828f6"
         }
       },
       {
@@ -1065,12 +1065,12 @@
       },
       {
         "component": "ToastProvider",
-        "type": "string",
+        "type": "string (viewport region name; {hotkey} becomes F8)",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/molecules/toast/types.ts",
           "symbol": "ToastProviderProps",
-          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+          "revision": "sha256:d40fb5fe1fe6202a780cc8b420b3b19b1d8761939e111487cb70b7bffce828f6"
         }
       },
       {
@@ -1770,7 +1770,7 @@
         "source": {
           "path": "packages/ui/src/molecules/toast/types.ts",
           "symbol": "ToastProps",
-          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+          "revision": "sha256:d40fb5fe1fe6202a780cc8b420b3b19b1d8761939e111487cb70b7bffce828f6"
         }
       },
       {
@@ -3487,16 +3487,6 @@
     },
     "usages": [
       {
-        "component": "Toast",
-        "type": "boolean",
-        "status": "existing",
-        "source": {
-          "path": "packages/ui/src/molecules/toast/types.ts",
-          "symbol": "ToastProps",
-          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
-        }
-      },
-      {
         "component": "NavList",
         "type": "NavListCollapsibleGroup.open (optional controlled boolean)",
         "status": "existing",
@@ -3554,16 +3544,6 @@
     },
     "usages": [
       {
-        "component": "Toast",
-        "type": "boolean",
-        "status": "existing",
-        "source": {
-          "path": "packages/ui/src/molecules/toast/types.ts",
-          "symbol": "ToastProps",
-          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
-        }
-      },
-      {
         "component": "NavList",
         "type": "NavListCollapsibleGroup.defaultOpen (boolean, default false)",
         "status": "existing",
@@ -3620,16 +3600,6 @@
       "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
     },
     "usages": [
-      {
-        "component": "Toast",
-        "type": "(open: boolean) => void",
-        "status": "existing",
-        "source": {
-          "path": "packages/ui/src/molecules/toast/types.ts",
-          "symbol": "ToastProps",
-          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
-        }
-      },
       {
         "component": "NavList",
         "type": "NavListCollapsibleGroup.onOpenChange ((open: boolean) => void)",
@@ -3963,7 +3933,7 @@
         "source": {
           "path": "packages/ui/src/molecules/toast/types.ts",
           "symbol": "ToastProps",
-          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+          "revision": "sha256:d40fb5fe1fe6202a780cc8b420b3b19b1d8761939e111487cb70b7bffce828f6"
         }
       },
       {
@@ -4042,12 +4012,12 @@
     "usages": [
       {
         "component": "Toast",
-        "type": "string",
+        "type": "string (required short lead sentence, emphasized in the Radix Title)",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/molecules/toast/types.ts",
           "symbol": "ToastProps",
-          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+          "revision": "sha256:d40fb5fe1fe6202a780cc8b420b3b19b1d8761939e111487cb70b7bffce828f6"
         }
       },
       {
@@ -4837,12 +4807,12 @@
     "usages": [
       {
         "component": "Toast",
-        "type": "number (Infinity disables auto-dismissal)",
+        "type": "number (Infinity disables auto-dismissal; 0 falls back through Radix)",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/molecules/toast/types.ts",
           "symbol": "ToastProps",
-          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+          "revision": "sha256:d40fb5fe1fe6202a780cc8b420b3b19b1d8761939e111487cb70b7bffce828f6"
         }
       }
     ]
@@ -4869,7 +4839,7 @@
         "source": {
           "path": "packages/ui/src/molecules/toast/types.ts",
           "symbol": "ToastProps",
-          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+          "revision": "sha256:d40fb5fe1fe6202a780cc8b420b3b19b1d8761939e111487cb70b7bffce828f6"
         }
       }
     ]
@@ -4896,7 +4866,7 @@
         "source": {
           "path": "packages/ui/src/molecules/toast/types.ts",
           "symbol": "ToastProps",
-          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+          "revision": "sha256:d40fb5fe1fe6202a780cc8b420b3b19b1d8761939e111487cb70b7bffce828f6"
         }
       }
     ]
@@ -4923,7 +4893,7 @@
         "source": {
           "path": "packages/ui/src/molecules/toast/types.ts",
           "symbol": "ToastProviderProps",
-          "revision": "sha256:cd5f8f12014b2e94510e45f3d78452491ffb10f60283ffa5731863765f315e30"
+          "revision": "sha256:d40fb5fe1fe6202a780cc8b420b3b19b1d8761939e111487cb70b7bffce828f6"
         }
       }
     ]

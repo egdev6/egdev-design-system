@@ -1,75 +1,55 @@
-import type * as ToastPrimitive from '@radix-ui/react-toast';
-import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import type { IconName } from '../../atoms/icon';
-import { cn } from '../../lib/cn';
-import { noticeActionsVariants, noticeIconVariants, noticeTextVariants } from '../notice/types';
-import { type ToastProps, type ToastProviderProps, toastVariants, toastViewportVariants } from './types';
+import { toastStore } from './toastStore';
+import type { ToastApi, ToastCallOptions, ToastPromiseMessages, ToastProps, ToastTone } from './types';
 
-type UseToastResult = {
-  rootProps: ComponentPropsWithoutRef<typeof ToastPrimitive.Root> & { 'data-tone': ToastProps['tone'] };
-  summary: string;
-  children: ReactNode;
-  icon: ReactNode;
-  iconName: IconName;
-  actions: ToastProps['actions'];
-  actionAltText: ToastProps['actionAltText'];
-  dismissLabel: string;
-  iconClassName: string;
-  textClassName: string;
-  actionsClassName: string;
-};
-
-/** Derive urgency and glyph, while Radix owns all state, timers, announcements and focus. */
-export function useToast({
-  summary,
-  children,
-  tone = 'neutral',
-  icon,
-  actions,
-  actionAltText,
-  duration = 5000,
-  defaultOpen = true,
-  dismissLabel = 'Dismiss',
-  className,
-  ...rest
-}: ToastProps): UseToastResult {
-  return {
-    rootProps: {
-      ...rest,
-      duration,
-      defaultOpen,
-      type: tone === 'danger' ? 'foreground' : 'background',
-      'data-tone': tone,
-      className: cn(toastVariants(tone), className)
-    },
-    summary,
-    children,
-    icon,
-    iconName: tone === 'success' ? 'check' : tone === 'warning' || tone === 'danger' ? 'alert' : 'bell',
-    actions,
-    actionAltText,
-    dismissLabel,
-    iconClassName: cn(noticeIconVariants({ tone, size: 'md' })),
-    textClassName: cn(noticeTextVariants()),
-    actionsClassName: cn(noticeActionsVariants())
-  };
+function showTone(tone: ToastTone, title: string, options?: ToastCallOptions): string {
+  return toastStore.show({ tone, title, ...options } as ToastProps);
 }
 
-type UseToastProviderResult = {
-  children: ReactNode;
-  providerProps: ComponentPropsWithoutRef<typeof ToastPrimitive.Provider>;
-  viewportProps: ComponentPropsWithoutRef<typeof ToastPrimitive.Viewport>;
+function resolveMessage<T>(message: string | ((value: T) => string), value: T): string {
+  return typeof message === 'function' ? message(value) : message;
+}
+
+/** Stable imperative object; safe outside React effects once the provider has mounted. */
+const toastApi: ToastApi = {
+  show: (options) => toastStore.show(options),
+  update: (id, options) => toastStore.update(id, options),
+  close: (id) => toastStore.close(id),
+  clear: () => toastStore.clear(),
+  info: (title, options) => showTone('info', title, options),
+  success: (title, options) => showTone('success', title, options),
+  warning: (title, options) => showTone('warning', title, options),
+  error: (title, options) => showTone('danger', title, options),
+  loading: (title, options) => showTone('loading', title, options),
+  promise: <T>(promise: Promise<T>, messages: ToastPromiseMessages<T>): Promise<T> => {
+    const id = toastStore.show({ tone: 'loading', title: messages.loading });
+    return promise.then(
+      (value) => {
+        if (messages.success !== undefined) {
+          toastStore.update(id, { tone: 'success', title: resolveMessage(messages.success, value) });
+        } else {
+          toastStore.close(id);
+        }
+        return value;
+      },
+      (reason: unknown) => {
+        if (messages.error !== undefined) {
+          toastStore.update(id, { tone: 'danger', title: resolveMessage(messages.error, reason) });
+        } else {
+          toastStore.close(id);
+        }
+        throw reason;
+      }
+    );
+  }
 };
 
-/** Localize both independent Radix labels without exposing provider-level timing or placement. */
-export function useToastProvider({
-  children,
-  label = 'Notifications ({hotkey})',
-  announcementLabel = 'Notification'
-}: ToastProviderProps): UseToastProviderResult {
-  return {
-    children,
-    providerProps: { label: announcementLabel, swipeDirection: 'right' },
-    viewportProps: { label, className: cn(toastViewportVariants()) }
-  };
+/** Returns the stable imperative surface; calls before provider mount warn and no-op. */
+export function useToast(): ToastApi {
+  return toastApi;
+}
+
+/** Decorative glyph per tone; loading renders a Spinner instead of a system Icon. */
+export function toastIconName(tone: ToastTone): IconName {
+  return tone === 'success' ? 'check' : tone === 'warning' || tone === 'danger' ? 'alert' : 'bell';
 }
