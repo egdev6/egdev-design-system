@@ -154,6 +154,9 @@ const documentedNativeProps: Record<string, readonly string[]> = {
     'value',
     'tabIndex'
   ],
+  dialogTrigger: ['disabled', 'id', 'title', 'onClick', 'aria-label', 'aria-describedby', 'className'],
+  dialogClose: ['disabled', 'id', 'title', 'onClick', 'aria-label', 'aria-describedby', 'className'],
+  dialogContent: ['id', 'dir', 'lang', 'className', 'onClick'],
   popoverTrigger: ['disabled', 'id', 'title', 'onClick', 'aria-label', 'aria-describedby', 'className'],
   popoverClose: ['disabled', 'id', 'title', 'onClick', 'aria-label', 'aria-describedby', 'className'],
   popoverContent: ['title', 'aria-describedby', 'className', 'onClick'],
