@@ -392,7 +392,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+          "revision": "sha256:ee494185d4bb872871a586300454f2bba4f2e6db445bcd70fb66ece88ccd2193"
         }
       },
       {
@@ -412,7 +412,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       },
       {
@@ -644,12 +644,12 @@
       },
       {
         "component": "Button",
-        "type": "ButtonVariant ('primary' | 'secondary' | 'ghost' | 'dark')",
+        "type": "ButtonVariant ('primary' | 'secondary' | 'neutral' | 'dark')",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       },
       {
@@ -896,7 +896,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+          "revision": "sha256:ee494185d4bb872871a586300454f2bba4f2e6db445bcd70fb66ece88ccd2193"
         }
       },
       {
@@ -1850,7 +1850,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+          "revision": "sha256:ee494185d4bb872871a586300454f2bba4f2e6db445bcd70fb66ece88ccd2193"
         }
       },
       {
@@ -1860,7 +1860,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       },
       {
@@ -1947,7 +1947,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       }
     ]
@@ -1974,7 +1974,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       },
       {
@@ -2021,7 +2021,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       },
       {
@@ -4073,7 +4073,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+          "revision": "sha256:ee494185d4bb872871a586300454f2bba4f2e6db445bcd70fb66ece88ccd2193"
         }
       }
     ]
@@ -4137,7 +4137,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+          "revision": "sha256:ee494185d4bb872871a586300454f2bba4f2e6db445bcd70fb66ece88ccd2193"
         }
       }
     ]

@@ -35,7 +35,7 @@ export const Variants: Story = {
     <div className='flex flex-wrap items-center gap-4'>
       <Button>Primary action</Button>
       <Button variant='secondary'>Secondary action</Button>
-      <Button variant='ghost'>Quiet action</Button>
+      <Button variant='neutral'>Neutral action</Button>
       <div className='bg-bg-flood p-3'>
         <Button variant='dark'>Flood action</Button>
       </div>
