@@ -88,7 +88,7 @@ describe('Icon glyph set', () => {
 });
 
 describe('Icon appearance', () => {
-  it('defaults to a 20px stroke-only glyph with round geometry inheriting currentColor', () => {
+  it('defaults to a 16px stroke-only glyph with round geometry inheriting currentColor', () => {
     const { container } = render(<Icon name='radio' />);
     const svg = svgOf(container);
     expect(svg).toHaveClass(

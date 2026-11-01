@@ -109,7 +109,7 @@ export const InvalidValue: Story = {
   )
 };
 
-/** Presets measure 40/56/80px; custom 64.5px stays fractional, while invalid size 0 falls back to 56px. */
+/** Presets resolve to --space-10/14/20 (32/44.8/64px after the #218 ×0.8 scale); custom 64.5px stays fractional, while invalid size 0 falls back to 44.8px. */
 export const Sizes: Story = {
   args: { label: 'Capacity', value: 42 },
   render: (args) => (
