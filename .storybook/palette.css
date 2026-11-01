@@ -1,6 +1,6 @@
-/* Storybook-only substitution, shared by chrome, Docs and story canvases.
- * Load before createBrandTheme reads resolved tokens; keep published tokens intact.
+/* Shared Storybook stylesheet, imported by manager.css and preview.css before the brand
+ * theme reads resolved tokens. It intentionally declares no rules: Storybook must paint
+ * the published tokens unchanged (issue #219 — the former red-300 → red-neon alias was
+ * removed so red-300 shows its token value #FF6680). Keep the file: both entry styles
+ * import it and the branding tests guard its load order and emptiness.
  */
-:root {
-  --color-primitive-red-300: var(--color-primitive-red-neon);
-}
