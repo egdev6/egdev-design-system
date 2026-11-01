@@ -35,6 +35,8 @@ import { Isotipo3D } from '@egdev/effects';
 import type { Isotipo3DProps } from '@egdev/effects';
 import { AmbientBackground } from '@egdev/effects';
 import type { AmbientBackgroundProfile, AmbientBackgroundProps } from '@egdev/effects';
+import { Table } from '@egdev/ui';
+import type { TableColumn, TableProps, TableRow, TableSort, TableSortDirection, TableColumnFormat, TableVariant, TableSize, TableMaxHeight, TableMessages } from '@egdev/ui';
 import { GaugeGroup } from '@egdev/ui';
 import type { GaugeGroupItems, GaugeGroupProps, GaugeGroupRing, GaugeGroupSize } from '@egdev/ui';
 import { PhotoFrame } from '@egdev/ui';
@@ -44,7 +46,7 @@ import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorI
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
 import { ToastProvider, useToast } from '@egdev/ui';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -123,6 +125,8 @@ import type {
   PopoverTriggerProps,
   PopoverContentProps,
   PopoverCloseProps,
+  PreviewFrameProps,
+  PreviewFrameZone,
   MeterRowMessages,
   MeterRowProps,
   MeterRowVariant,
@@ -279,6 +283,23 @@ const pageSlot: PageHeaderProps = { title: 'Projects', asChild: true };
 const pageRegister: PageHeaderProps = { title: 'Projects', register: 'show' };
 // @ts-expect-error Generated heading content cannot be replaced with HTML.
 const pageHtml: PageHeaderProps = { title: 'Projects', dangerouslySetInnerHTML: { __html: 'Other' } };
+type tableRow = TableRow & { name: string; score: number };
+const tableRows: tableRow[] = [{ id: 'a', name: 'First', score: 2 }];
+const tableColumns: TableColumn<tableRow>[] = [{ id: 'name', header: 'Name', cell: (row) => row.name, sortValue: (row) => row.name }];
+const tableSort: TableSort = { columnId: 'name', direction: 'ascending' };
+const tableDirection: TableSortDirection = tableSort.direction;
+const tableFormat: TableColumnFormat = 'text';
+const tableVariant: TableVariant = 'data';
+const tableSize: TableSize = 'sm';
+const tableMaxHeight: TableMaxHeight = 'md';
+const tableMessages: Partial<TableMessages> = { empty: 'Nothing' };
+export const tableProps: TableProps<tableRow> = { label: 'Items', columns: tableColumns, rows: tableRows, variant: tableVariant, size: tableSize, maxHeight: tableMaxHeight, messages: tableMessages, sort: tableSort };
+export function tableSample() { return createElement(Table<tableRow>, tableProps); }
+// @ts-expect-error Details cannot enable selection.
+const tableInvalidDetails: TableProps<tableRow> = { label: 'Items', columns: tableColumns, rows: tableRows, variant: 'details', selectable: true };
+// @ts-expect-error Row accessors are typed against the consumer's row.
+const tableInvalidColumn: TableColumn<tableRow> = { id: 'x', header: 'X', cell: (row) => row.missing };
+void [tableDirection, tableFormat, tableInvalidDetails, tableInvalidColumn];
 const timelineVariant: TimelineVariant = 'chat';
 const timelineSize: TimelineSize = 'sm';
 const timelineTime: TimelineTime = { text: '12:30', dateTime: '2026-10-29T12:30:00Z' };
@@ -1792,6 +1813,39 @@ const waveStyle: IndicatorProps = { children: 'Anchor', style: { color: 'red' } 
 const waveRef: ComponentProps<typeof Indicator> = { children: 'Anchor', ref: createRef<HTMLDivElement>() };
 // @ts-expect-error No cloning/composition API.
 const waveSlot: IndicatorProps = { children: 'Anchor', asChild: true };
+
+import { Sidebar } from '@egdev/ui';
+import type { SidebarProps, ProductIdentity } from '@egdev/ui';
+const sidebarIdentity: ProductIdentity = { name: 'Workspace', node: createElement('span', null, 'W'), href: '/home' };
+const sidebarProps: SidebarProps = { product: sidebarIdentity, children: 'Navigation', footer: 'Account', className: 'w-80' };
+export function sidebarConsumerSample() { return createElement(Sidebar, sidebarProps); }
+// @ts-expect-error Sidebar does not own navigation semantics.
+const sidebarRole: SidebarProps = { children: 'Body', role: 'navigation' };
+// @ts-expect-error Sidebar does not accept raw HTML.
+const sidebarHTML: SidebarProps = { children: 'Body', dangerouslySetInnerHTML: { __html: 'Body' } };
+// @ts-expect-error Sidebar does not manage collapse.
+const sidebarCollapsed: SidebarProps = { children: 'Body', collapsed: true };
+const previewZone: PreviewFrameZone = { id: 'title', label: 'Title area', x: 10, y: 10, width: 80, height: 20 };
+const previewFrameProps: PreviewFrameProps = {
+  figureCaption: 'Packed preview',
+  zones: [previewZone],
+  children: createElement('span', null, 'Artwork')
+};
+export function previewFrameConsumerSample() {
+  return createElement(PreviewFrame, previewFrameProps);
+}
+// @ts-expect-error The ratio is width divided by height, never a CSS string.
+const previewFrameStringRatio: PreviewFrameProps = { ...previewFrameProps, ratio: '16/9' };
+// @ts-expect-error Zone tones are limited to info and warning.
+const previewFrameZoneTone: PreviewFrameZone = { ...previewZone, tone: 'danger' };
+// @ts-expect-error The validation hook stays internal.
+type PreviewFrameHookNotExported = (typeof import('@egdev/ui'))['usePreviewFrame'];
+// @ts-expect-error Zone recipes stay internal.
+type PreviewFrameZoneVariantsNotExported = (typeof import('@egdev/ui'))['zoneVariants'];
+void previewFrameStringRatio;
+void previewFrameZoneTone;
+// @ts-expect-error Product name is required.
+const sidebarMissingName: ProductIdentity = { node: 'W' };
 
 import { Panel, PanelHeader, PanelBody, PanelFooter } from '@egdev/ui';
 import type { PanelProps, PanelVariant, PanelTone, PanelHeaderProps, PanelBodyProps, PanelFooterProps } from '@egdev/ui';
@@ -3725,6 +3779,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'PopoverContent',
   'PopoverTrigger',
   'Portal',
+  'PreviewFrame',
   'ProgressBar',
   'PullQuote',
   'RadioGroup',
@@ -3732,6 +3787,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'SectionHeader',
   'Select',
   'SelectTile',
+  'Sidebar',
   'Skeleton',
   'Slider',
   'Slot',
@@ -3743,6 +3799,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'StatusDot',
   'Surface',
   'Switch',
+  'Table',
   'Tabs',
   'Text',
   'Textarea',
@@ -3761,6 +3818,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'noticeVariants',
   'progressBarVariants',
   'radioGroupVariants',
+  'sidebarVariants',
   'sliderVariants',
   'statVariants',
   'statusDotVariants',
