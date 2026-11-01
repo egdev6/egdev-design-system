@@ -37,3 +37,11 @@ body {
   outline: var(--focus-width) solid var(--color-focus-ring);
   outline-offset: var(--focus-offset);
 }
+
+/* Owner visual review: the neon brand red predominates in the Storybook chrome too.
+   Component icons already follow colorSecondary; recolor Storybook's own amber document
+   and teal story icons, except on the selected row whose neon background keeps its ink. */
+#storybook-explorer-tree [data-selected="false"] svg[type="document"],
+#storybook-explorer-tree [data-selected="false"] svg[type="story"] {
+  color: var(--color-fg-brand-raised);
+}
