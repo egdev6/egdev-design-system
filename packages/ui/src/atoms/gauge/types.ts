@@ -85,8 +85,8 @@ export type GaugeProps = GaugeNativeProps &
      */
     center?: ReactNode;
     /**
-     * sm/md/lg resolve to --space-10/14/20 (32/44.8/64px after the #218 ×0.8 scale); any finite positive CSS-pixel diameter, including fractions, has no cap.
-     * Invalid numeric sizes fall back to md (44.8px), independently of measurement clamping.
+     * sm/md/lg use 40/56/80px; any finite positive CSS-pixel diameter, including fractions, has no cap.
+     * Invalid numeric sizes fall back to md (56px), independently of measurement clamping.
      * @control false
      * @controlReason Mixed preset and numeric diameter union; no single control represents both. Use the Sizes story.
      * @default md

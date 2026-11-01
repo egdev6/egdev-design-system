@@ -71,7 +71,7 @@
         "source": {
           "path": "packages/ui/src/atoms/gauge/types.ts",
           "symbol": "GaugeProps",
-          "revision": "sha256:918d73921222d77dce71db233784ce144d861e957a53bd4f98520e368bdee6a3"
+          "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
         }
       },
       {
@@ -422,7 +422,7 @@
         "source": {
           "path": "packages/ui/src/atoms/gauge/types.ts",
           "symbol": "GaugeProps",
-          "revision": "sha256:918d73921222d77dce71db233784ce144d861e957a53bd4f98520e368bdee6a3"
+          "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
         }
       },
       {
@@ -1180,7 +1180,7 @@
         "source": {
           "path": "packages/ui/src/atoms/gauge/types.ts",
           "symbol": "GaugeProps",
-          "revision": "sha256:918d73921222d77dce71db233784ce144d861e957a53bd4f98520e368bdee6a3"
+          "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
         }
       },
       {
@@ -1407,7 +1407,7 @@
         "source": {
           "path": "packages/ui/src/atoms/gauge/types.ts",
           "symbol": "GaugeProps",
-          "revision": "sha256:918d73921222d77dce71db233784ce144d861e957a53bd4f98520e368bdee6a3"
+          "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
         }
       },
       {
@@ -1454,7 +1454,7 @@
         "source": {
           "path": "packages/ui/src/atoms/gauge/types.ts",
           "symbol": "GaugeProps",
-          "revision": "sha256:918d73921222d77dce71db233784ce144d861e957a53bd4f98520e368bdee6a3"
+          "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
         }
       }
     ]
@@ -1491,7 +1491,7 @@
         "source": {
           "path": "packages/ui/src/atoms/gauge/types.ts",
           "symbol": "GaugeProps",
-          "revision": "sha256:918d73921222d77dce71db233784ce144d861e957a53bd4f98520e368bdee6a3"
+          "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
         }
       },
       {
@@ -1558,7 +1558,7 @@
         "source": {
           "path": "packages/ui/src/atoms/gauge/types.ts",
           "symbol": "GaugeProps",
-          "revision": "sha256:918d73921222d77dce71db233784ce144d861e957a53bd4f98520e368bdee6a3"
+          "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
         }
       }
     ]
@@ -1595,7 +1595,7 @@
         "source": {
           "path": "packages/ui/src/atoms/gauge/types.ts",
           "symbol": "GaugeProps",
-          "revision": "sha256:918d73921222d77dce71db233784ce144d861e957a53bd4f98520e368bdee6a3"
+          "revision": "sha256:36bf194b6bdc9da09139704ee50d244cc1b13717150dee60d5473d5e0bb5c05a"
         }
       },
       {
