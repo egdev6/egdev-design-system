@@ -1064,6 +1064,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "TabBar",
+        "type": "string (required navigation landmark name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/tab-bar/types.ts",
+          "symbol": "TabBarProps",
+          "revision": "sha256:0ea79ce6d91c30838af890c520786a1d1cd866b1d310b3579eff3d09e23ad672"
+        }
+      },
+      {
         "component": "GaugeGroup",
         "type": "string (required collection name)",
         "status": "existing",
@@ -1783,6 +1793,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "TabBarItem",
+        "type": "IconName (required decorative glyph)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/tab-bar/types.ts",
+          "symbol": "TabBarItem",
+          "revision": "sha256:0ea79ce6d91c30838af890c520786a1d1cd866b1d310b3579eff3d09e23ad672"
+        }
+      },
       {
         "component": "Toast",
         "type": "ReactNode",
@@ -2948,6 +2968,16 @@
     },
     "usages": [
       {
+        "component": "TabBar",
+        "type": "TabBarItem[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/tab-bar/types.ts",
+          "symbol": "TabBarProps",
+          "revision": "sha256:0ea79ce6d91c30838af890c520786a1d1cd866b1d310b3579eff3d09e23ad672"
+        }
+      },
+      {
         "component": "GaugeGroup",
         "type": "GaugeGroupItems (readonly tuple of two or three readings)",
         "status": "existing",
@@ -3044,6 +3074,16 @@
       "contentHash": "sha256:555c4e48e004651531f1588e18a8f71781afd8054c2ae113959b2831d86736cd"
     },
     "usages": [
+      {
+        "component": "TabBar",
+        "type": "TabBarMessages (optional pendingCount formatter)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/tab-bar/types.ts",
+          "symbol": "TabBarProps",
+          "revision": "sha256:0ea79ce6d91c30838af890c520786a1d1cd866b1d310b3579eff3d09e23ad672"
+        }
+      },
       {
         "component": "ModuleCard",
         "type": "Partial<ModuleCardMessages> (defaultStatus, errorStatus, stoppedStatus)",
@@ -3828,6 +3868,16 @@
       "contentHash": "sha256:7fb068ceea0357c786c87878c1080e7737b18da24f7feb48010b643ba4d1e197"
     },
     "usages": [
+      {
+        "component": "TabBar",
+        "type": "(item: TabBarItem, event: MouseEvent<HTMLAnchorElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/tab-bar/types.ts",
+          "symbol": "TabBarProps",
+          "revision": "sha256:0ea79ce6d91c30838af890c520786a1d1cd866b1d310b3579eff3d09e23ad672"
+        }
+      },
       {
         "component": "NavList",
         "type": "(item: NavListLink, event: MouseEvent<HTMLAnchorElement>) => void",

@@ -20,6 +20,24 @@ function artifact(name, target) {
   return path;
 }
 
+test('tab-bar exports native navigation and its public recipe', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(
+    createElement(exported.TabBar, {
+      label: 'Main',
+      items: [{ id: 'inbox', label: 'Inbox', href: '#inbox', icon: 'compass', count: 250, 'aria-current': 'page' }]
+    })
+  );
+  assert.match(html, /<nav[^>]*aria-label="Main"/);
+  assert.match(html, /aria-current="page"/);
+  assert.match(html, /99\+/);
+  assert.match(html, /250 pending/);
+  assert.match(exported.tabBarVariants(), /eg-tabbar/);
+  assert.equal(exported.useTabBar, undefined);
+});
+
 test('dialog exports its public compound API and keeps shared recipes internal', async () => {
   const dialogExports = await import(artifact('ui', ui.exports['.'].import));
   for (const dialogName of ['Dialog', 'DialogTrigger', 'DialogContent', 'DialogClose']) {
@@ -2874,6 +2892,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'StatusDot',
       'Surface',
       'Switch',
+      'TabBar',
       'Tabs',
       'Text',
       'Textarea',
@@ -2896,6 +2915,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'statVariants',
       'statusDotVariants',
       'surfaceVariants',
+      'tabBarVariants',
       'tabsVariants',
       'tooltipVariants',
       'useToast'
@@ -3241,6 +3261,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SurfaceTone',
     'Switch',
     'SwitchProps',
+    'TabBar',
+    'TabBarItem',
+    'TabBarMessages',
+    'TabBarProps',
     'Tabs',
     'TabsItem',
     'TabsProps',
@@ -3293,6 +3317,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'statVariants',
     'statusDotVariants',
     'surfaceVariants',
+    'tabBarVariants',
     'tabsVariants',
     'tooltipVariants',
     'useToast'

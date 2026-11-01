@@ -729,6 +729,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/tabs',
       './molecules/timeline',
       './molecules/toast',
+      './organisms/tab-bar',
       './primitives/aspect-ratio',
       './primitives/divider',
       './primitives/label',
@@ -815,6 +816,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'StatusDot',
       'Surface',
       'Switch',
+      'TabBar',
       'Tabs',
       'Text',
       'Textarea',
@@ -837,6 +839,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'statVariants',
       'statusDotVariants',
       'surfaceVariants',
+      'tabBarVariants',
       'tabsVariants',
       'tooltipVariants',
       'useToast'

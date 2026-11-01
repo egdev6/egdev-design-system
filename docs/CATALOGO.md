@@ -120,7 +120,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 |---|---|---|---|---|---|
 | **Sidebar** | — | ScrollArea | Logo, NavList, Text | nuevo | La barra lateral de todas las apps. |
 | **ModuleRail** | ModuleRail (organismo (agente)) | Tooltip + NavigationMenu o ToggleGroup | Logo, IconButton, StatusDot | mantener | Raíl compacto de Mando; genérico. |
-| **TabBar** | TabBar (organismo (agente)) | — | Icon, Badge | mantener | Navegación inferior móvil. |
+| **TabBar** | TabBar (organismo (agente)) | — (native navigation) | Icon, Badge, VisuallyHidden, Surface recipe | mantener | Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/125): named native navigation links with consumer-owned current page, localized count badges and intrinsic safe-area padding. Host owns placement and responsive visibility. No stylesheet or new dependency; visual and packed-consumer verification remain pending. |
 | **CalendarGrid** | CalendarGrid (organismo) | — (arrastre: dnd-kit, a confirmar) | ListItem, Text | mantener | `.eg-day` y `.eg-post-row` pasan a partes internas. Falta vista Mes. |
 | **PreviewFrame** | StageFrame (organismo) | AspectRatio + Toolbar | IconButton, Chip | renombrar | Vista previa a tamaño fijo con zonas seguras. |
 
