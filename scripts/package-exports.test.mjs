@@ -99,7 +99,7 @@ function cssBlock(css, opening) {
 
 // Match escaped emitted selectors, not unescaped CVA class names; allow only complete approved utilities.
 const unapprovedTransitionUtility =
-  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\])(?=\s*\{))[\w\\]/;
+  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\]|\\\[opacity\\,transform\\\]|\\\[width\\,margin\\,opacity\\,transform\\\])(?=\s*\{))[\w\\]/;
 
 test('Collapsible ships native group-state caret motion and reduced-motion resets', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
@@ -767,15 +767,15 @@ test('SocialLinks ships static collection utilities and native SSR composition w
   assert.match(ghost, /size-10/);
 });
 
-test('ChipGroup ships wrapping layout, token underline and disabled/motion guards from its CVA source', () => {
+test('ChipGroup ships wrapping layout, the selected check cue and disabled/motion guards from its CVA source', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
   assert.match(cssBlock(utilities, /\.flex-wrap\s*\{/), /flex-wrap:\s*wrap/);
   assert.match(cssBlock(utilities, /\.gap-2\s*\{/), /gap:\s*var\(--space-2\)/);
   for (const selector of [
-    String.raw`.data-\[state\=on\]\:underline`,
-    String.raw`.decoration-\[length\:var\(--border-width\)\]`,
-    String.raw`.underline-offset-\[var\(--space-1\)\]`,
+    String.raw`.group-data-\[state\=on\]\/item\:w-3\.5`,
+    String.raw`.group-data-\[state\=on\]\/item\:opacity-100`,
+    String.raw`.transition-\[width\,margin\,opacity\,transform\]`,
     String.raw`.disabled\:cursor-not-allowed`,
     String.raw`.disabled\:active\:translate-none`,
     String.raw`.disabled\:active\:scale-none`,
@@ -783,8 +783,8 @@ test('ChipGroup ships wrapping layout, token underline and disabled/motion guard
   ]) {
     assert.ok(utilities.includes(selector), `Missing ChipGroup utility ${selector}`);
   }
-  assert.match(utilities, /text-decoration-thickness:\s*var\(--border-width\)/);
-  assert.match(utilities, /text-underline-offset:\s*var\(--space-1\)/);
+  // #221: the selected underline was replaced by a decorative check.
+  assert.ok(!utilities.includes(String.raw`.data-\[state\=on\]\:underline`), 'Selected underline must not ship');
   assert.doesNotMatch(css, /\.eg-chip-group[^{]*\{/, 'Root marker adds no painted panel');
   const source = readFileSync(resolve(root, 'packages/ui/src/styles/compiled.css'), 'utf8');
   assert.ok(source.includes('@source "../molecules/chip-group/types.ts";'));
@@ -1555,6 +1555,7 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   // Stat #70 reuses the approved [border-color,box-shadow] selector; no Skeleton transition.
   // SearchTrigger #99 reuses the approved transition-[border-color,color] selector only.
   // PullQuote #98 adds no transition or animation utility.
+  // #221 selected check cues: SelectTile [opacity,transform] and ChipGroup [width,margin,opacity,transform].
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
