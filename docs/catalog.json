@@ -886,9 +886,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "Dialog",
-    "compone": "Surface, ButtonGroup, Portal",
+    "compone": "Surface, IconButton, Icon; consumer actions",
     "accion": "mantener",
-    "notas": "Coordinates dialog content and actions as one reusable overlay interaction, not a structural page region. Retains the `sheet` variant for side panels (MobileMenu). See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval."
+    "notas": "Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/119): modal Root, Trigger, Content and Close; centered sizes and sheet. Radix owns portal, dismissal and focus; Surface owns panel paint. Browser, visual and packed-consumer verification remain pending."
   },
   {
     "actual": "—",

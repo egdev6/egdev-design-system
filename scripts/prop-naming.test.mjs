@@ -61,6 +61,26 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/organisms/sidebar/types.ts#SidebarProps'
   })),
+  ...['open-state', 'initial-uncontrolled-open', 'open-change'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/dialog/types.ts#DialogProps'
+  })),
+  ...[
+    'heading-title',
+    'dialog-description',
+    'header-status-text',
+    'trailing-actions',
+    'dismiss-label',
+    'visual-treatment',
+    'preset-dimensions'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/dialog/types.ts#DialogContentProps'
+  })),
+  ...['DialogTriggerProps', 'DialogCloseProps'].map((symbol) => ({
+    conventionId: 'slot-composition',
+    source: `packages/ui/src/molecules/dialog/types.ts#${symbol}`
+  })),
   ...['effect-scene', 'effect-progress', 'layer-opacity', 'pointer-tilt'].map((conventionId) => ({
     conventionId,
     source: 'packages/effects/src/atoms/isotipo3d/types.ts#Isotipo3DProps'

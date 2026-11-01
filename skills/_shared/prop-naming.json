@@ -356,6 +356,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "DialogContent",
+        "type": "DialogSize (sm | md | lg | full; centered only)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogContentProps",
+          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+        }
+      },
+      {
         "component": "GaugeGroup",
         "type": "GaugeGroupSize ('sm' | 'md' | 'lg')",
         "status": "existing",
@@ -572,6 +582,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "DialogContent",
+        "type": "DialogVariant (centered | sheet)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogContentProps",
+          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+        }
+      },
       {
         "component": "PhotoFrame",
         "type": "PhotoFrameVariant ('default' | 'framed')",
@@ -1994,6 +2014,26 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "DialogTrigger",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogTriggerProps",
+          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+        }
+      },
+      {
+        "component": "DialogClose",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogCloseProps",
+          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+        }
+      },
       {
         "component": "ListItem",
         "type": "boolean; required true for empty presentation",
@@ -3487,6 +3527,16 @@
     },
     "usages": [
       {
+        "component": "Dialog",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogProps",
+          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+        }
+      },
+      {
         "component": "NavList",
         "type": "NavListCollapsibleGroup.open (optional controlled boolean)",
         "status": "existing",
@@ -3544,6 +3594,16 @@
     },
     "usages": [
       {
+        "component": "Dialog",
+        "type": "boolean (default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogProps",
+          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+        }
+      },
+      {
         "component": "NavList",
         "type": "NavListCollapsibleGroup.defaultOpen (boolean, default false)",
         "status": "existing",
@@ -3600,6 +3660,16 @@
       "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
     },
     "usages": [
+      {
+        "component": "Dialog",
+        "type": "(open: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogProps",
+          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+        }
+      },
       {
         "component": "NavList",
         "type": "NavListCollapsibleGroup.onOpenChange ((open: boolean) => void)",
@@ -3823,6 +3893,16 @@
     },
     "usages": [
       {
+        "component": "DialogContent",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogContentProps",
+          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+        }
+      },
+      {
         "component": "PageHeader",
         "type": "string",
         "status": "existing",
@@ -3926,6 +4006,16 @@
       "contentHash": "sha256:b00c5b3d1006ee97caa5d258e4ce04a046acb3d8d752d734e37bf96c92356550"
     },
     "usages": [
+      {
+        "component": "DialogContent",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogContentProps",
+          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+        }
+      },
       {
         "component": "Toast",
         "type": "ReactElement (requires actionAltText)",
@@ -4843,6 +4933,16 @@
     },
     "usages": [
       {
+        "component": "DialogContent",
+        "type": "string (default Close)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogContentProps",
+          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+        }
+      },
+      {
         "component": "Toast",
         "type": "string",
         "status": "existing",
@@ -4922,7 +5022,18 @@
       "scope": "convention:dialog-description",
       "contentHash": "sha256:c4841a60fb7576538ec4dcbb12143a6ce9f4eae14b87aaa475824da19a2c334f"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "DialogContent",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogContentProps",
+          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+        }
+      }
+    ]
   },
   {
     "id": "header-status-text",
@@ -4938,7 +5049,18 @@
       "scope": "convention:header-status-text",
       "contentHash": "sha256:89a19b570093b7240d0229c06ba729678faa08a7f6154c5b45d6d3bb17b83711"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "DialogContent",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogContentProps",
+          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+        }
+      }
+    ]
   },
   {
     "id": "search-query-change",
