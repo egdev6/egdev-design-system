@@ -219,6 +219,51 @@ describe('SelectTile public contract', () => {
     expect(change).not.toHaveBeenCalled();
   });
 
+  it('keeps the selected title free of underline utilities in both modes', () => {
+    render(
+      <>
+        <SelectTile {...base} defaultValue='camera' />
+        <SelectTile type='multiple' label='More scenes' options={options} defaultValue={['slides']} />
+      </>
+    );
+    for (const [role, name, attr] of [
+      ['radio', 'Camera', 'aria-checked'],
+      ['button', 'Slides', 'aria-pressed']
+    ] as const) {
+      const control = screen.getByRole(role, { name });
+      expect(control).toHaveAttribute(attr, 'true');
+      const label = document.getElementById(control.getAttribute('aria-labelledby') ?? '');
+      expect(label).not.toBeNull();
+      expect(label?.className).not.toMatch(/underline|decoration/);
+    }
+  });
+
+  it('reveals a decorative check on selected cards in both modes', () => {
+    render(
+      <>
+        <SelectTile {...base} defaultValue='camera' />
+        <SelectTile type='multiple' label='More scenes' options={options} defaultValue={['slides']} />
+      </>
+    );
+    for (const [role, name] of [
+      ['radio', 'Camera'],
+      ['button', 'Slides']
+    ] as const) {
+      const check = card(screen.getByRole(role, { name })).querySelector('svg');
+      expect(check).toHaveAttribute('aria-hidden', 'true');
+      const wrapper = check?.closest('span');
+      expect(wrapper).not.toBeNull();
+      expect(wrapper).toHaveClass(
+        'group-has-[[data-state=checked]]/tile:opacity-100',
+        'group-has-[[data-state=on]]/tile:opacity-100'
+      );
+    }
+    const hidden = card(screen.getByRole('radio', { name: 'Credits' }))
+      .querySelector('svg')
+      ?.closest('span');
+    expect(hidden).toHaveClass('opacity-0', 'motion-reduce:transition-none');
+  });
+
   it('keeps missing/failed media decorative, retries a new source and ignores stale failures', () => {
     const { container, rerender } = render(<SelectTile {...base} />);
     const oldImage = container.querySelector('img');

@@ -7,6 +7,7 @@
 - [Owner-approved amendment A1](https://github.com/egdev6/egdev-design-system/issues/101#issuecomment-6505015286): `value` and `defaultValue` use `@control false` in both branches. Each reason explains the mode-dependent `string` / `string[]` type and points to Single, Multiple and Controlled. Runtime API is unchanged.
 - Implementation authorization: delegated molecules-build T14, S1–S4 and the explicit continuation after A1. Dependencies were installed by the parent; this implementation changes no dependencies or tokens.
 - Six meaningful files in `packages/ui/src/molecules/select-tile/`. **No stylesheet.** No additional internal modules.
+- Amendment A2 ([v0.2 underline amendment](../v0.2/underline-amendment.md), issue #221): the owner removed the selected underline ("No poner título en underline cuando está seleccionado"), so the D8–D12 title underline and its decoration/offset utilities are no longer part of the label recipe. The rows above record v0.1 history and are not rewritten.
 
 ## Decisions implemented
 
