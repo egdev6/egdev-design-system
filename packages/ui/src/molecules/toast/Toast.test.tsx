@@ -122,6 +122,35 @@ describe('Toast public contract', () => {
     }
   );
 
+  it('paints danger inside an opaque surface while keeping the outer focus treatment', () => {
+    mount();
+    act(() => api?.error('Could not publish'));
+    const root = toast();
+    expect(root).toHaveClass(
+      'border-status-danger',
+      'border-(length:--border-width-invalid)',
+      'bg-surface-1',
+      'bg-none',
+      'before:absolute',
+      'before:inset-0',
+      'before:rounded-[inherit]',
+      'before:pointer-events-none',
+      'before:bg-status-danger-bg',
+      '[&>*]:relative',
+      'shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)]'
+    );
+    expect(root).not.toHaveClass('border-status-danger/30', 'bg-linear-to-b');
+    expect(viewport()).toHaveClass('focus-visible:shadow-[var(--shadow-focus)]');
+    expect(screen.getByRole('status')).toHaveAttribute('aria-live', 'assertive');
+  });
+
+  it('preserves the neutral Notice-derived floating recipe', () => {
+    mount();
+    act(() => api?.show({ title: 'Current state' }));
+    expect(toast()).toHaveClass('border-fg-secondary/30', 'bg-linear-to-b');
+    expect(toast()).not.toHaveClass('before:bg-status-danger-bg', 'border-(length:--border-width-invalid)');
+  });
+
   it('keeps the same glyph derivation used by the mounted records', () => {
     expect(toastIconName('neutral')).toBe('bell');
     expect(toastIconName('info')).toBe('bell');

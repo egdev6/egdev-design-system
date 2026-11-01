@@ -185,12 +185,22 @@ export type ToastApi = {
 };
 
 const toastRootVariants = cva(
-  'eg-toast pe-2 shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)] transition-opacity duration-[var(--duration-fast)] ease-[var(--ease-out)] starting:opacity-0 data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:translate-y-[var(--radix-toast-swipe-move-y)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:translate-y-0 data-[swipe=cancel]:transition-transform motion-reduce:transition-none motion-reduce:data-[swipe=cancel]:transition-none'
+  'eg-toast pe-2 shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)] transition-opacity duration-[var(--duration-fast)] ease-[var(--ease-out)] starting:opacity-0 data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:translate-y-[var(--radix-toast-swipe-move-y)] data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:translate-y-0 data-[swipe=cancel]:transition-transform motion-reduce:transition-none motion-reduce:data-[swipe=cancel]:transition-none',
+  {
+    variants: {
+      danger: {
+        true: 'border-status-danger border-(length:--border-width-invalid) bg-none before:pointer-events-none before:absolute before:inset-0 before:rounded-[inherit] before:bg-status-danger-bg [&>*]:relative'
+      }
+    }
+  }
 );
 
 /** Reuse Notice without its marker or semantics; replace only the floating recipe deltas. */
 export function toastVariants(tone: ToastTone = 'neutral'): string {
-  return cn(noticeVariants({ tone: tone === 'loading' ? 'neutral' : tone, size: 'md' }), toastRootVariants());
+  return cn(
+    noticeVariants({ tone: tone === 'loading' ? 'neutral' : tone, size: 'md' }),
+    toastRootVariants({ danger: tone === 'danger' })
+  );
 }
 
 export const toastViewportVariants = cva(

@@ -4,7 +4,7 @@ Issue #226 (T6, S8). Implements the owner-approved
 [API and visual proposal](./api-visual-proposal.md) (OQ1–OQ9 approved: imperative `useToast()`,
 single Material recipe per tone, no progress bar, four placements, `toast.promise()` + `loading`,
 `pauseOnWindowBlur` default false, `title`/`description` renames, placement-derived swipe, danger
-inner treatment deferred to T9). All work stays on the approved Radix engine; the new store owns
+inner treatment using the T9 tokens). All work stays on the approved Radix engine; the new store owns
 identity and ordering only.
 
 ## Public surface (breaking)
@@ -61,9 +61,10 @@ identity and ordering only.
   `bottom-end` keeps `right` for v0.1 compatibility. The recipe adds
   `translate-y-[var(--radix-toast-swipe-move-y)]` movement/cancel utilities so vertical swipes
   actually translate.
-- **Danger treatment (OQ9 fallback, §3.2)**: the two T9 tokens (`--color-status-danger-bg`, 2px
-  invalid border) are not in `packages/tokens/src/theme.css` yet, so danger keeps the v0.1 Notice
-  recipe treatment (tinted status border/glyph, assertive announcement). Revisit when T9 lands.
+- **Danger treatment (OQ9, §3.2)**: Toast replaces the inherited Notice danger edge with the
+  `--border-width-invalid` danger border and layers `--color-status-danger-bg` over the opaque
+  surface inside it. The glyph and assertive announcement remain unchanged. Focus remains outside
+  on the viewport and controls; Notice retains its own danger recipe.
 - **`onAction`**: runs after the action element's own `onClick` (which may still `preventDefault`
   to cancel dismissal, preserved) and before Radix closes.
 - **Storybook**: stories are store-driven (`Default`, `Tones`, `WithAction`, `Persistent`,
