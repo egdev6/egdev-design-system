@@ -198,7 +198,6 @@ describe('IconButton public contract', () => {
     render(<IconButton {...base} variant='outline' />);
     const button = screen.getByRole('button');
     expect(button).toHaveClass('motion-safe:[&:not([data-disabled]):active]:scale-94');
-    expect(button).toHaveClass('motion-safe:[&:not([data-disabled]):hover:not(:active)]:-translate-y-0.5');
     expect(button).toHaveClass(
       '[&:not([data-disabled]):hover:not(:focus-visible)]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1),var(--shadow-glow-base)]'
     );
@@ -221,5 +220,14 @@ describe('IconButton public contract', () => {
     expect(svg).not.toHaveClass('size-7');
     expect(svg).toHaveAttribute('aria-hidden', 'true');
     expect(svg).toHaveAttribute('focusable', 'false');
+  });
+});
+
+describe('IconButton hover motion (owner visual review)', () => {
+  it.each(['ghost', 'outline', 'primary', 'secondary'] as const)('keeps the %s root still on hover', (variant) => {
+    render(<IconButton {...base} variant={variant} />);
+    const classes = screen.getByRole('button').className.split(/\s+/);
+    expect(classes.filter((value) => /hover[^:]*:(?:-?translate|scale)/.test(value))).toEqual([]);
+    expect(screen.getByRole('button')).toHaveClass('motion-safe:[&:not([data-disabled]):active]:scale-94');
   });
 });
