@@ -40,7 +40,7 @@ import { Menu, menuVariants, cn } from '@egdev/ui';
 import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorItem, MenuLabelItem, MenuSubmenuItem, MenuTone, MenuAlign, MenuSide } from '@egdev/ui';
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
-import { Toast, ToastProvider } from '@egdev/ui';
+import { ToastProvider, useToast } from '@egdev/ui';
 import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
@@ -141,6 +141,7 @@ import type {
   SectionHeaderTone,
   NoticeProps,
   NoticeTone,
+  ToastApi,
   ToastProps,
   ToastProviderProps,
   SelectProps,
@@ -733,41 +734,54 @@ const largeCountdown: CountdownProps = { ...countdownProps, size: 'lg' };
 const darkCountdown: CountdownProps = { ...countdownProps, tone: 'onDark' };
 // @ts-expect-error There is no tick callback.
 const tickingCountdown: CountdownProps = { ...countdownProps, onTick: () => undefined };
-// Toast stays isolated from the generic focus/count harness; use the real union branches.
-export const toastChanges: boolean[] = [];
+// Toast stays isolated from the generic focus/count harness; the store owns identity and ordering.
 export const toastActions: string[] = [];
-export function ToastSamples({ open = true, withAction = false }: { open?: boolean; withAction?: boolean }) {
-  const message: Extract<ToastProps, { actions?: never }> = {
-    summary: 'Post published', tone: 'success', duration: Infinity, open,
-    id: 'packed-toast', dismissLabel: 'Close packed notification',
-    onOpenChange: (nextOpen) => toastChanges.push(nextOpen), children: 'Ready to share.'
-  };
-  const actionable: Extract<ToastProps, { actions: ReactElement }> = {
-    ...message, actions: createElement(Button, {
-      size: 'md', onClick: () => toastActions.push('undo'), children: 'Undo packed publication'
-    }), actionAltText: 'Undo publication from post history'
-  };
+// Mutable holder: bundled consumer chunks must not reassign an imported binding.
+export const packedToast: { api: ToastApi | null } = { api: null };
+export function ToastSamples() {
+  function Probe() {
+    packedToast.api = useToast();
+    return null;
+  }
   const provider: ToastProviderProps = {
     label: 'Packed notifications ({hotkey})', announcementLabel: 'Packed notification',
-    children: [createElement('main', { key: 'host' }, 'Toast host'),
-      withAction ? createElement(Toast, { ...actionable, key: 'toast' }) : createElement(Toast, { ...message, key: 'toast' })]
+    children: [createElement('main', { key: 'host' }, 'Toast host'), createElement(Probe, { key: 'probe' })]
   };
   return createElement(ToastProvider, provider);
 }
-// @ts-expect-error A summary is required.
+export function packedToastOptions(withAction = true): ToastProps {
+  const base = {
+    title: 'Post published', tone: 'success', duration: Infinity,
+    id: 'packed-toast', dismissLabel: 'Close packed notification',
+    description: 'Ready to share.'
+  } as const;
+  if (withAction) {
+    return {
+      ...base,
+      actions: createElement(Button, {
+        size: 'md', onClick: () => toastActions.push('undo'), children: 'Undo packed publication'
+      }),
+      actionAltText: 'Undo publication from post history'
+    };
+  }
+  return { ...base };
+}
+// @ts-expect-error A title is required.
 const missingToastSummary: ToastProps = {};
 // @ts-expect-error An action requires a persistent alternative route.
-const missingToastAlternative: ToastProps = { summary: 'Published', actions: createElement(Button, null, 'Undo') };
+const missingToastAlternative: ToastProps = { title: 'Published', actions: createElement(Button, null, 'Undo') };
 // @ts-expect-error Action children must be elements, not text.
-const textToastAction: ToastProps = { summary: 'Published', actions: 'Undo', actionAltText: 'History' };
+const textToastAction: ToastProps = { title: 'Published', actions: 'Undo', actionAltText: 'History' };
 // @ts-expect-error Toast derives urgency; type is not public.
-const explicitToastType: ToastProps = { summary: 'Published', type: 'foreground' };
+const explicitToastType: ToastProps = { title: 'Published', type: 'foreground' };
 // @ts-expect-error Toast has no ref API.
-const toastRef: ToastProps = { summary: 'Published', ref: createRef<HTMLLIElement>() };
+const toastRef: ToastProps = { title: 'Published', ref: createRef<HTMLLIElement>() };
 // @ts-expect-error Toast owns its li root.
-const slottedToast: ToastProps = { summary: 'Published', asChild: true };
-// @ts-expect-error Provider duration remains at the Radix default.
-const timedToastProvider: ToastProviderProps = { children: null, duration: 1000 };
+const slottedToast: ToastProps = { title: 'Published', asChild: true };
+// @ts-expect-error Only top/bottom × start/end placements exist.
+const centeredToastProvider: ToastProviderProps = { children: null, placement: 'center' };
+void missingToastSummary; void missingToastAlternative; void textToastAction;
+void explicitToastType; void toastRef; void slottedToast; void centeredToastProvider;
 
 // Carousel stays outside App to preserve the existing intrinsic focus harness.
 export const carouselChanges: string[] = [];
@@ -3699,7 +3713,6 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Text',
   'Textarea',
   'Timeline',
-  'Toast',
   'ToastProvider',
   'Toggle',
   'Tooltip',
@@ -3719,7 +3732,8 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'statusDotVariants',
   'surfaceVariants',
   'tabsVariants',
-  'tooltipVariants'
+  'tooltipVariants',
+  'useToast'
 ]);
 ${assertCheckboxCSS.toString()}
 assertCheckboxCSS(shippedStyles);
@@ -3912,7 +3926,7 @@ import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
 const { ToastSamples } = await import('./consumer.ts');
-assert.equal(renderToString(createElement(ToastSamples)), '<main>Toast host</main>', 'Toast content mounts client-side through Portal');
+assert.equal(renderToString(createElement(ToastSamples)), '<main>Toast host</main>', 'Toast records stay client-side through Portal');
 import { IndicatorConsumerSamples } from './consumer.ts';
 import { writeFileSync } from 'node:fs';
 import { AmbientSamples, IsotipoSamples } from './consumer.ts';
@@ -5291,7 +5305,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { ToastSamples, toastChanges, toastActions } = await import('./consumer.ts');
+const { ToastSamples, packedToast, packedToastOptions, toastActions } = await import('./consumer.ts');
 const { PageHeaderSamples } = await import('./consumer.ts');
 const { photoFrameSamples } = await import('./consumer.ts');
 const { ModuleCardSamples, moduleCardClicks } = await import('./consumer.ts');
@@ -6517,14 +6531,16 @@ try {
   await act(async () => root.render(null));
   stage('notice:complete');
   stage('toast:start');
-  await act(async () => root.render(createElement(ToastSamples, { withAction: true })));
-  const toast = document.getElementById('packed-toast');
+  await act(async () => root.render(createElement(ToastSamples)));
   const toastViewport = document.querySelector('.eg-toast-viewport');
+  assert.ok(toastViewport, 'The provider hosts the store viewport');
+  await act(async () => packedToast.api.show(packedToastOptions(true)));
+  const toast = document.getElementById('packed-toast');
   assert.ok(toast.classList.contains('eg-toast') && toast.classList.contains('eg-surface'));
   assert.equal(toast.classList.contains('eg-notice'), false);
   assert.equal(toast.parentElement, toastViewport);
   assert.equal(toast.querySelector('strong').textContent, 'Post published');
-  assert.deepEqual(toastChanges, [], 'Mounting emits no visibility echo');
+  assert.equal(toast.getAttribute('data-tone'), 'success');
   await act(async () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'F8', code: 'F8', bubbles: true })));
   assert.equal(document.activeElement, toastViewport);
   const undoPublication = [...toast.querySelectorAll('button')].find((button) => button.textContent.includes('Undo packed publication'));
@@ -6532,20 +6548,27 @@ try {
   await act(async () => undoPublication.focus());
   await act(async () => undoPublication.click());
   assert.deepEqual(toastActions, ['undo']);
-  assert.deepEqual(toastChanges, [false]);
   assert.equal(document.activeElement, toastViewport, 'A1 retains native viewport focus');
-  assert.equal(toast.getAttribute('data-state'), 'open', 'Controlled requests await acknowledgement');
-  await act(async () => root.render(createElement(ToastSamples, { open: false, withAction: true })));
+  assert.equal(document.getElementById('packed-toast'), null, 'Action activation dismisses the record');
+  await act(async () => packedToast.api.show(packedToastOptions(false)));
+  await act(async () => packedToast.api.update('packed-toast', { title: 'Renamed in place' }));
+  assert.equal(
+    document.getElementById('packed-toast').querySelector('strong').textContent,
+    'Renamed in place',
+    'update keeps the stable id'
+  );
+  await act(async () => packedToast.api.close('packed-toast'));
   assert.equal(document.getElementById('packed-toast'), null);
-  assert.deepEqual(toastChanges, [false], 'Acknowledgement emits no echo');
-  await act(async () => root.render(createElement(ToastSamples)));
+  const closeViewport = document.querySelector('.eg-toast-viewport');
+  await act(async () => packedToast.api.show(packedToastOptions(false)));
   const closeToast = document.querySelector('#packed-toast .eg-icon-btn');
   assert.equal(closeToast.textContent, 'Close packed notification', 'AccessibleIcon supplies hidden name');
   assert.ok(closeToast.classList.contains('size-12'));
   await act(async () => closeToast.focus());
   await act(async () => closeToast.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
-  assert.deepEqual(toastChanges, [false, false]);
-  assert.equal(document.activeElement, toastViewport);
+  assert.equal(document.getElementById('packed-toast'), null);
+  assert.equal(document.activeElement, closeViewport);
+  await act(async () => packedToast.api.clear());
   await act(async () => root.render(null));
   assert.equal(document.querySelector('.eg-toast-viewport'), null);
   stage('toast:complete');

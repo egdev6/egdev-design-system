@@ -814,7 +814,6 @@ describe('Storybook TypeScript docgen contract', () => {
       'Text',
       'Textarea',
       'Timeline',
-      'Toast',
       'ToastProvider',
       'Toggle',
       'Tooltip',
@@ -834,57 +833,35 @@ describe('Storybook TypeScript docgen contract', () => {
       'statusDotVariants',
       'surfaceVariants',
       'tabsVariants',
-      'tooltipVariants'
+      'tooltipVariants',
+      'useToast'
     ]);
   });
 
-  it('extracts Toast and Provider metadata, action branches and the bounded public API', () => {
+  it('extracts Toast Provider metadata, imperative API branches and the bounded public API', () => {
     const extracted = parser.parse(source('molecules/toast/Toast.tsx'));
-    const toast = extracted.find(({ displayName }) => displayName === 'Toast');
     const provider = extracted.find(({ displayName }) => displayName === 'ToastProvider');
-    expect(toast).toBeDefined();
     expect(provider).toBeDefined();
-    expect(toast?.props.summary).toMatchObject({ required: true, defaultValue: null, type: { name: 'string' } });
-    for (const [name, value] of Object.entries({
-      tone: 'neutral',
-      duration: '5000',
-      defaultOpen: 'true',
-      dismissLabel: 'Dismiss'
-    })) {
-      expect(toast?.props[name]?.defaultValue?.value, name).toBe(value);
-    }
-    expect(toast?.props.tone?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
-      'neutral',
-      'info',
-      'success',
-      'warning',
-      'danger'
-    ]);
     expect(provider?.props.children?.required).toBe(true);
-    expect(provider?.props.label?.defaultValue?.value).toBe('Notifications ({hotkey})');
-    expect(provider?.props.announcementLabel?.defaultValue?.value).toBe('Notification');
-    for (const name of ['ref', 'asChild', 'type', 'toastVariants']) {
-      expect(toast?.props[name], name).toBeUndefined();
+    for (const [name, value] of Object.entries({
+      label: 'Notifications ({hotkey})',
+      announcementLabel: 'Notification',
+      placement: 'bottom-end',
+      defaultDuration: '5000',
+      maxVisible: '3',
+      pauseOnWindowBlur: 'false'
+    })) {
+      expect(provider?.props[name]?.defaultValue?.value, name).toBe(value);
     }
-    for (const name of [
-      'id',
-      'title',
-      'aria-describedby',
-      'className',
-      'forceMount',
-      'onEscapeKeyDown',
-      'onPause',
-      'onResume',
-      'onSwipeStart',
-      'onSwipeMove',
-      'onSwipeCancel',
-      'onSwipeEnd'
-    ]) {
-      expect(toast?.props[name], name).toBeDefined();
-    }
+    expect(provider?.props.placement?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      'top-start',
+      'top-end',
+      'bottom-start',
+      'bottom-end'
+    ]);
     const file = ast(source('molecules/toast/types.ts'));
     const properties = ownProps(file, ['ToastProps', 'ToastActionProps', 'ToastProviderProps']);
-    expect(properties).toHaveLength(16);
+    expect(properties).toHaveLength(19);
     for (const property of properties) {
       const tags = ts.getJSDocTags(property);
       const controls = tags.filter(({ tagName }) => tagName.text === 'control');
@@ -901,9 +878,10 @@ describe('Storybook TypeScript docgen contract', () => {
       'Tones',
       'WithAction',
       'Persistent',
+      'Loading',
+      'PromiseLifecycle',
+      'Placement',
       'Stack',
-      'DismissTargets',
-      'Controlled',
       'CustomIcon'
     ]);
     expect(readFileSync(source('molecules/toast/Toast.stories.tsx'), 'utf8')).not.toMatch(/argTypes:|\bplay:/);

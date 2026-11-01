@@ -109,9 +109,6 @@ const postReceiptUsages = [
     'leading-icon',
     'message-summary',
     'trailing-actions',
-    'open-state',
-    'initial-uncontrolled-open',
-    'open-change',
     'auto-dismiss-duration',
     'dismiss-label',
     'action-alternative-text'
