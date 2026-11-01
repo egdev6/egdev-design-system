@@ -2200,20 +2200,18 @@ function assertToggleCSS(css) {
 
 // Chip ships its sheen/edge pill, red-tinted on state, focus and reduced-motion press resets.
 function assertChipCSS(css) {
-  // ChipGroup shares this recipe and adds only wrapping layout and a token underline.
+  // ChipGroup shares this recipe and adds wrapping layout and a decorative selected check (#221).
   for (const selector of [
     '.flex-wrap',
     '.gap-2',
-    String.raw`.data-\[state\=on\]\:underline`,
-    String.raw`.decoration-\[length\:var\(--border-width\)\]`,
-    String.raw`.underline-offset-\[var\(--space-1\)\]`,
+    String.raw`.group-data-\[state\=on\]\/item\:w-3\.5`,
+    String.raw`.group-data-\[state\=on\]\/item\:opacity-100`,
     String.raw`.disabled\:cursor-not-allowed`,
     String.raw`.motion-reduce\:transition-none`
   ]) {
     assert.ok(css.includes(selector), 'Missing ChipGroup selector ' + selector);
   }
-  assert.match(css, /text-decoration-thickness:\s*var\(--border-width\)/);
-  assert.match(css, /text-underline-offset:\s*var\(--space-1\)/);
+  assert.ok(!css.includes(String.raw`.data-\[state\=on\]\:underline`), 'Selected underline must not ship');
   assert.doesNotMatch(css, /\.eg-chip-group[^{]*\{/);
   for (const selector of [
     String.raw`.\[background\:var\(--gradient-sheen\)\,var\(--color-surface-1\)\]`,
