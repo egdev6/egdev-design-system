@@ -47,7 +47,7 @@ export type NoticeProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'ro
    */
   icon?: ReactNode;
   /**
-   * Optional trailing one or two system Button (sm, secondary/ghost) or Link elements.
+   * Optional trailing one or two system Button (sm, secondary/neutral) or Link elements.
    * Their handlers, routing and keyboard behavior stay consumer-owned. No dismissal API.
    * @control false
    * @controlReason ReactNode action elements are not serializable; see WithActions.
