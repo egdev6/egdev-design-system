@@ -67,18 +67,18 @@ export const buttonVariants = cva(
     'data-disabled:opacity-45 data-disabled:pointer-events-none data-disabled:cursor-not-allowed data-disabled:shadow-none data-disabled:translate-none data-disabled:scale-100',
     'data-[state=loading]:pointer-events-auto data-[state=loading]:opacity-100 data-[state=loading]:cursor-progress data-[state=loading]:translate-none data-[state=loading]:scale-100',
     'data-disabled:data-[state=loading]:pointer-events-none data-disabled:data-[state=loading]:opacity-45 data-disabled:data-[state=loading]:cursor-not-allowed',
-    'motion-reduce:transition-none motion-reduce:transform-none motion-reduce:translate-none motion-reduce:scale-100 motion-reduce:[&:not([aria-disabled=true]):not(:active):hover]:translate-none motion-reduce:[&:not([aria-disabled=true]):active]:translate-none motion-reduce:[&:not([aria-disabled=true]):active]:scale-100'
+    'motion-reduce:transition-none motion-reduce:transform-none motion-reduce:translate-none motion-reduce:scale-100 motion-reduce:[&:not([aria-disabled=true]):active]:translate-none motion-reduce:[&:not([aria-disabled=true]):active]:scale-100'
   ],
   {
     variants: {
       variant: {
         primary:
-          '[background-image:var(--gradient-btn-primary)] border-border-brand-strong text-action-primary-solid-fg [box-shadow:var(--shadow-btn-primary)] [&:not([aria-disabled=true]):not(:active):hover]:[background-image:var(--gradient-btn-primary-hover)] [&:not([aria-disabled=true]):not(:active):not(:focus-visible):hover]:[box-shadow:var(--shadow-btn-primary-hover)] [&:not([aria-disabled=true]):not(:active):hover]:-translate-y-px [&:not([aria-disabled=true]):active]:bg-action-primary-solid-bg [&:not([aria-disabled=true]):active]:bg-none [&:not([aria-disabled=true]):not(:focus-visible):active]:[box-shadow:var(--shadow-btn-pressed)]',
+          '[background-image:var(--gradient-btn-primary)] border-border-brand-strong text-action-primary-solid-fg [box-shadow:var(--shadow-btn-primary)] [&:not([aria-disabled=true]):not(:active):hover]:[background-image:var(--gradient-btn-primary-hover)] [&:not([aria-disabled=true]):not(:active):not(:focus-visible):hover]:[box-shadow:var(--shadow-btn-primary-hover)] [&:not([aria-disabled=true]):active]:bg-action-primary-solid-bg [&:not([aria-disabled=true]):active]:bg-none [&:not([aria-disabled=true]):not(:focus-visible):active]:[box-shadow:var(--shadow-btn-pressed)]',
         secondary:
-          'bg-surface-1 [background-image:var(--gradient-btn-secondary)] border-border-brand text-action-primary-fg [box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1)] [&:not([aria-disabled=true]):not(:active):hover]:[background-image:var(--gradient-btn-secondary-hover)] [&:not([aria-disabled=true]):not(:active):hover]:border-primitive-red-neon [&:not([aria-disabled=true]):not(:active):not(:focus-visible):hover]:[box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1),var(--shadow-glow-base)] [&:not([aria-disabled=true]):not(:active):hover]:-translate-y-px [&:not([aria-disabled=true]):active]:bg-alpha-red-15 [&:not([aria-disabled=true]):active]:bg-none [&:not([aria-disabled=true]):not(:focus-visible):active]:[box-shadow:var(--shadow-btn-pressed)]',
+          'bg-surface-1 [background-image:var(--gradient-btn-secondary)] border-border-brand text-action-primary-fg [box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1)] [&:not([aria-disabled=true]):not(:active):hover]:[background-image:var(--gradient-btn-secondary-hover)] [&:not([aria-disabled=true]):not(:active):hover]:border-primitive-red-neon [&:not([aria-disabled=true]):not(:active):not(:focus-visible):hover]:[box-shadow:var(--shadow-edge-strong),var(--shadow-elev-1),var(--shadow-glow-base)] [&:not([aria-disabled=true]):active]:bg-alpha-red-15 [&:not([aria-disabled=true]):active]:bg-none [&:not([aria-disabled=true]):not(:focus-visible):active]:[box-shadow:var(--shadow-btn-pressed)]',
         neutral:
           'bg-surface-2 bg-[image:var(--gradient-sheen)] border-border-hairline shadow-(--shadow-edge) text-fg-default [transition-property:background,color,box-shadow,border-color,translate,scale,opacity] [transition-duration:var(--duration-fast),var(--duration-fast),var(--duration-base),var(--duration-base),var(--duration-fast),var(--duration-fast),var(--duration-fast)] [transition-timing-function:var(--ease-out),var(--ease-out),var(--ease-out),var(--ease-out),var(--ease-spring),var(--ease-spring),var(--ease-out)] [&:not([aria-disabled=true]):hover]:opacity-80 [&:not([aria-disabled=true]):active]:opacity-70',
-        dark: 'bg-none shadow-none bg-primitive-black text-primitive-white [&:not([aria-disabled=true]):hover]:bg-primitive-neutral-900 [&:not([aria-disabled=true]):not(:active):hover]:-translate-y-0.5'
+        dark: 'bg-none shadow-none bg-primitive-black text-primitive-white [&:not([aria-disabled=true]):hover]:bg-primitive-neutral-900'
       },
       size: {
         md: 'min-h-12 py-3 px-5.5 gap-2.5 text-cta-label',
@@ -90,6 +90,6 @@ export const buttonVariants = cva(
 );
 
 export const buttonIconVariants = cva(
-  'eg-btn__icon inline-flex flex-none items-center justify-center fill-none stroke-current stroke-(length:--icon-stroke) [stroke-linecap:round] [stroke-linejoin:round] transform-none translate-none transition-[translate] duration-(--duration-base) ease-(--ease-out) group-[:not([aria-disabled=true]):hover]/button:translate-x-0.5 motion-reduce:transition-none motion-reduce:transform-none motion-reduce:translate-none motion-reduce:group-[:not([aria-disabled=true]):hover]/button:translate-none [&>svg]:block [&>svg]:size-full',
+  'eg-btn__icon inline-flex flex-none items-center justify-center fill-none stroke-current stroke-(length:--icon-stroke) [stroke-linecap:round] [stroke-linejoin:round] transform-none translate-none motion-reduce:transition-none motion-reduce:transform-none motion-reduce:translate-none [&>svg]:block [&>svg]:size-full',
   { variants: { size: { md: 'size-(--icon-size)', sm: 'size-4' } }, defaultVariants: { size: 'md' } }
 );
