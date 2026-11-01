@@ -3747,6 +3747,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'StatusDot',
   'Surface',
   'Switch',
+  'Table',
   'Tabs',
   'Text',
   'Textarea',
