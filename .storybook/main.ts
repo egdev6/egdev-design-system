@@ -158,6 +158,10 @@ const documentedNativeProps: Record<string, readonly string[]> = {
     'value',
     'tabIndex'
   ],
+  alertDialogTrigger: ['disabled', 'id', 'title', 'onClick', 'aria-label', 'aria-describedby', 'className'],
+  alertDialogCancel: ['disabled', 'id', 'title', 'onClick', 'aria-label', 'aria-describedby', 'className'],
+  alertDialogAction: ['disabled', 'id', 'title', 'onClick', 'aria-label', 'aria-describedby', 'className'],
+  alertDialogContent: ['id', 'dir', 'lang', 'className', 'onClick'],
   dialogTrigger: ['disabled', 'id', 'title', 'onClick', 'aria-label', 'aria-describedby', 'className'],
   dialogClose: ['disabled', 'id', 'title', 'onClick', 'aria-label', 'aria-describedby', 'className'],
   dialogContent: ['id', 'dir', 'lang', 'className', 'onClick'],

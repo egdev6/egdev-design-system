@@ -910,6 +910,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "AlertDialogContent",
+        "type": "AlertDialogTone (neutral | danger; default neutral)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogContentProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
+      {
         "component": "Toast",
         "type": "ToastTone ('neutral' | 'info' | 'success' | 'warning' | 'danger' | 'loading')",
         "status": "existing",
@@ -2144,6 +2154,36 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "AlertDialogTrigger",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogTriggerProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
+      {
+        "component": "AlertDialogCancel",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogCancelProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
+      {
+        "component": "AlertDialogAction",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogActionProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
       {
         "component": "DialogTrigger",
         "type": "boolean",
@@ -3727,6 +3767,16 @@
     },
     "usages": [
       {
+        "component": "AlertDialog",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
+      {
         "component": "CommandPalette",
         "type": "boolean",
         "status": "existing",
@@ -3804,6 +3854,16 @@
     },
     "usages": [
       {
+        "component": "AlertDialog",
+        "type": "boolean (default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
+      {
         "component": "CommandPalette",
         "type": "boolean (default false)",
         "status": "existing",
@@ -3880,6 +3940,16 @@
       "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
     },
     "usages": [
+      {
+        "component": "AlertDialog",
+        "type": "(open: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
       {
         "component": "CommandPalette",
         "type": "(open: boolean) => void",
@@ -4133,6 +4203,16 @@
     },
     "usages": [
       {
+        "component": "AlertDialogContent",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogContentProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
+      {
         "component": "DialogContent",
         "type": "string (required)",
         "status": "existing",
@@ -4246,6 +4326,16 @@
       "contentHash": "sha256:b00c5b3d1006ee97caa5d258e4ce04a046acb3d8d752d734e37bf96c92356550"
     },
     "usages": [
+      {
+        "component": "AlertDialogContent",
+        "type": "ReactNode (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogContentProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
       {
         "component": "DialogContent",
         "type": "ReactNode",
@@ -5303,6 +5393,16 @@
       "contentHash": "sha256:c4841a60fb7576538ec4dcbb12143a6ce9f4eae14b87aaa475824da19a2c334f"
     },
     "usages": [
+      {
+        "component": "AlertDialogContent",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogContentProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
       {
         "component": "DialogContent",
         "type": "string",
