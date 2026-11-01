@@ -107,8 +107,8 @@
   --color-action-primary-solid-bg: var(--color-primitive-red-neon);
   /* --color-action-primary-solid-fg — Texto negro sobre el CTA neón (5.31:1) y sobre su hover red-light (5.89:1). Sustituye a la propuesta anterior de blanco sobre red-dark, que cumplía pero apagaba la marca. */
   --color-action-primary-solid-fg: var(--color-primitive-black);
-  /* --color-fg-brand-raised — Texto de marca sobre superficies elevadas (surface-1…3): #FF6680, ≥4.82:1. El neón como texto solo sobre surface-0. */
-  --color-fg-brand-raised: var(--color-primitive-red-300);
+  /* --color-fg-brand-raised — Brand text on raised surfaces: neon by owner decision (visual review 2026-11-01, "Todo neón"). Small text does not meet WCAG AA except on the canvas (surface-1 4.30, -2 3.92, -3 3.42); large text, icons and borders meet 3:1. Errors keep red-300 via color-status-danger. */
+  --color-fg-brand-raised: var(--color-primitive-red-neon);
   /* --color-focus-ring-inverse — Foco sobre rellenos rojos sólidos: blanco = 3.96:1 contra neón y 5.83:1 contra red-dark. */
   --color-focus-ring-inverse: var(--color-primitive-white);
   /* --color-status-success — Éxito (aguamarina, fuera del eje rojo-verde). 12.8:1 canvas. Siempre con icono + texto. */
@@ -161,7 +161,7 @@
   --color-primitive-graphite-500: #7A7B81;
   /* --color-primitive-graphite-400 — Primitivo Grafito. Base de color-fg-muted (≥5.32:1 sobre surface-0…3). */
   --color-primitive-graphite-400: #A1A2A8;
-  /* --color-primitive-red-300 — Primitivo de marca. Base de color-fg-brand-raised y color-status-danger: rojo legible como texto sobre cualquier superficie (≥4.82:1 en surface-3). */
+  /* --color-primitive-red-300 — Primitivo de marca. Base de color-status-danger (color-fg-brand-raised moved to neon): rojo legible como texto sobre cualquier superficie (≥4.82:1 en surface-3). */
   --color-primitive-red-300: #FF6680;
   /* --color-surface-0 — Nivel 0 (Grafito): canvas y pozos (inputs, pistas de progreso, Tabs --segmented). Lo más hundido. */
   --color-surface-0: var(--color-primitive-graphite-950);
