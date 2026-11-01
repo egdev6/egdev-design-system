@@ -212,7 +212,7 @@ const dialogInvalidSize: DialogContentProps = { title: 'Settings', children: 'Pr
 // @ts-expect-error Content requires a title.
 const dialogMissingTitle: DialogContentProps = { children: 'Preferences' };
 // @ts-expect-error The modal implementation does not expose its internal scrim recipe.
-import { dialogScrimVariants } from '@egdev/ui';
+type DialogScrimNotExported = (typeof import('@egdev/ui'))['dialogScrimVariants'];
 export const isotipoRef = createRef<HTMLDivElement>();
 export const isotipoProps: Isotipo3DProps = { id: 'isotipo-packed', scene: 'lab', progress: 0.5, opacity: 0.5, pointerTilt: false };
 export function IsotipoSamples() { return createElement(Isotipo3D, { ...isotipoProps, ref: isotipoRef }); }
@@ -3668,6 +3668,10 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'CollapsibleContent',
   'CollapsibleTrigger',
   'Countdown',
+  'Dialog',
+  'DialogClose',
+  'DialogContent',
+  'DialogTrigger',
   'Divider',
   'Dropzone',
   'Field',

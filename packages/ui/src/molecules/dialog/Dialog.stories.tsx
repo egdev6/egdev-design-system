@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { Button } from '../../atoms/button';
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from './Dialog';
 
 /** Modal dialog. Content className merges last; overriding reserved panel geometry, paint, focus or positioning is unsupported. */
@@ -11,7 +12,9 @@ const meta = {
   args: {
     children: (
       <>
-        <DialogTrigger>Open settings</DialogTrigger>
+        <DialogTrigger asChild={true}>
+          <Button variant='secondary'>Open settings</Button>
+        </DialogTrigger>
         <DialogContent title='Settings' description='Adjust preferences.'>
           Settings content
         </DialogContent>
@@ -26,13 +29,19 @@ export const WithSplitAction: Story = {
   args: {
     children: (
       <>
-        <DialogTrigger>Open settings</DialogTrigger>
+        <DialogTrigger asChild={true}>
+          <Button variant='secondary'>Open settings</Button>
+        </DialogTrigger>
         <DialogContent
           title='Settings'
           actions={
             <>
-              <button type='button'>Apply</button>
-              <DialogClose>Cancel</DialogClose>
+              <Button size='sm'>Apply</Button>
+              <DialogClose asChild={true}>
+                <Button variant='neutral' size='sm'>
+                  Cancel
+                </Button>
+              </DialogClose>
             </>
           }
         >
@@ -47,7 +56,9 @@ export const Sizes: Story = {
     <>
       {(['sm', 'md', 'lg'] as const).map((size) => (
         <Dialog key={size}>
-          <DialogTrigger>{size}</DialogTrigger>
+          <DialogTrigger asChild={true}>
+            <Button variant='secondary'>{size}</Button>
+          </DialogTrigger>
           <DialogContent title={`${size} dialog`} size={size}>
             Content
           </DialogContent>
@@ -60,7 +71,9 @@ export const Full: Story = {
   args: {
     children: (
       <>
-        <DialogTrigger>Open full dialog</DialogTrigger>
+        <DialogTrigger asChild={true}>
+          <Button variant='secondary'>Open full dialog</Button>
+        </DialogTrigger>
         <DialogContent title='Full dialog' size='full'>
           Content
         </DialogContent>
@@ -72,7 +85,9 @@ export const Sheet: Story = {
   args: {
     children: (
       <>
-        <DialogTrigger>Open sheet</DialogTrigger>
+        <DialogTrigger asChild={true}>
+          <Button variant='secondary'>Open sheet</Button>
+        </DialogTrigger>
         <DialogContent title='Sheet' variant='sheet'>
           Content
         </DialogContent>
@@ -84,7 +99,9 @@ export const LongContent: Story = {
   args: {
     children: (
       <>
-        <DialogTrigger>Open long dialog</DialogTrigger>
+        <DialogTrigger asChild={true}>
+          <Button variant='secondary'>Open long dialog</Button>
+        </DialogTrigger>
         <DialogContent title='Long content'>
           {Array.from({ length: 30 }, (_, i) => (
             <p key={i}>Paragraph {i + 1}</p>
@@ -99,7 +116,9 @@ export const Controlled: Story = {
     const [open, setOpen] = useState(false);
     return (
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger>Open controlled dialog</DialogTrigger>
+        <DialogTrigger asChild={true}>
+          <Button variant='secondary'>Open controlled dialog</Button>
+        </DialogTrigger>
         <DialogContent title='Controlled'>Content</DialogContent>
       </Dialog>
     );
@@ -110,9 +129,9 @@ export const WithoutTrigger: Story = {
     const [open, setOpen] = useState(false);
     return (
       <>
-        <button type='button' onClick={() => setOpen(true)}>
+        <Button variant='secondary' onClick={() => setOpen(true)}>
           Open externally
-        </button>
+        </Button>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent title='External trigger'>The consumer owns focus restoration.</DialogContent>
         </Dialog>
