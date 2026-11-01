@@ -61,7 +61,7 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/effects/src/atoms/isotipo3d/types.ts#Isotipo3DProps'
   })),
-  ...['accessible-name', 'paused-presentation'].map((conventionId) => ({
+  ...['accessible-name', 'animation-paused'].map((conventionId) => ({
     conventionId,
     source: 'packages/effects/src/atoms/isotipo3d/types.ts#Isotipo3DProps'
   })),
@@ -486,7 +486,8 @@ const postReceiptProposals = [
   'interaction-drag-rotate',
   'interaction-flip-gesture',
   'interaction-interactive-mode',
-  'interaction-pose-change'
+  'interaction-pose-change',
+  'animation-paused'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -515,6 +516,10 @@ test('post-receipt usages exist with valid source evidence', () => {
     assert.equal(matching.length, 1, reviewed.source);
     assert.ok(fs.statSync(resolve(root, matching[0].source.path)).isFile());
     assert.equal(matching[0].source.revision, digest(fs.readFileSync(resolve(root, matching[0].source.path))));
+    if (postReceiptProposals.includes(current.id)) {
+      assert.deepEqual(historicalRegistry([current], [reviewed]), []);
+      continue;
+    }
     const filtered = historicalRegistry([current], [reviewed])[0].usages;
     assert.ok(
       filtered.every((usage) => `${usage.source.path}#${usage.source.symbol}` !== reviewed.source),
@@ -556,8 +561,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   assert.ok(text.includes('218403be9baee574e213cf1b06db1f7bd4d3951b20c7e24e593e90ef011fb062'));
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   validate(actual);
-  assert.equal(actual.length, 137);
-  assert.equal(beforeIndicatorConventions(actual).length, 134);
+  assert.equal(actual.length, 138);
+  assert.equal(beforeIndicatorConventions(actual).length, 135);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -2107,6 +2112,62 @@ test('invalid registry, unknown flags and escaping output never write', () => {
   const result = spawnSync(process.execPath, ['scripts/prop-naming.mjs', '--unknown'], { cwd: root, encoding: 'utf8' });
   assert.equal(result.status, 1);
   assert.match(result.stderr, /unknown/i);
+});
+
+test('Isotipo3D interaction and animation pause decisions bind exact scoped approvals', () => {
+  const reference = 'docs/decisions/prop-naming-isotipo3d-interaction-approval.json';
+  const bytes = fs.readFileSync(resolve(root, reference));
+  assert.equal(digest(bytes), 'sha256:190011d7d6dde2795459bf4113f9ac1b576ac339aab0aded2d9167b474ef8812');
+  const receipt = JSON.parse(bytes);
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(digest(fs.readFileSync(resolve(root, prior.path))), prior.wholeFileSHA256);
+  }
+  assert.deepEqual(receipt.ownerAnswers, [
+    'Aprobar las 4 + nueva para paused',
+    'Convención animationPaused + excepción'
+  ]);
+  const ids = [
+    'interaction-drag-rotate',
+    'interaction-flip-gesture',
+    'interaction-interactive-mode',
+    'interaction-pose-change',
+    'animation-paused'
+  ];
+  assert.deepEqual(
+    receipt.entries.map(({ convention }) => convention.id),
+    ids
+  );
+  for (const record of receipt.entries) {
+    const entry = actual.find(({ id }) => id === record.convention.id);
+    const { approval, usages, ...convention } = entry;
+    assert.deepEqual(convention, record.convention);
+    assert.equal(record.contentHash, props.conventionHash(entry));
+    assert.equal(record.scope, `convention:${entry.id}`);
+    if (record.proposedContentHash) {
+      assert.equal(record.proposedContentHash, props.conventionHash({ ...entry, status: 'proposed' }));
+    }
+    assert.deepEqual(approval, { reference, scope: `convention:${entry.id}`, contentHash: record.contentHash });
+    assert.equal(usages.length, 1);
+    assert.equal(usages[0].component, 'Isotipo3D');
+    assert.equal(usages[0].source.revision, digest(fs.readFileSync(resolve(root, usages[0].source.path))));
+  }
+  const paused = actual.find(({ id }) => id === 'animation-paused');
+  assert.equal(paused.name, 'animationPaused');
+  assert.equal(paused.exceptions.length, 1);
+  const exception = paused.exceptions[0];
+  assert.equal(exception.scope, 'Isotipo3D');
+  assert.equal(exception.propName, 'paused');
+  assert.deepEqual(exception.approval, {
+    reference,
+    scope: 'exception:animation-paused:Isotipo3D:paused',
+    contentHash: props.exceptionHash(exception)
+  });
+  assert.deepEqual(receipt.exception, exception);
+  assert.ok(
+    !actual.find(({ id }) => id === 'paused-presentation').usages.some(({ component }) => component === 'Isotipo3D')
+  );
 });
 
 test('FieldMessage registers reviewed usage without promoting proposed content/guidance conventions', () => {
