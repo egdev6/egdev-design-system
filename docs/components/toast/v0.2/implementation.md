@@ -36,6 +36,9 @@ identity and ordering only.
 - The internal `Toast` root is controlled (`open={true}`); every Radix close path (timer, swipe,
   Escape, action, close button) flows through `onOpenChange(false)` → `store.close(id)` → unmount,
   exactly like the v0.1 consumer contract, so A1 and Radix validation are preserved unchanged.
+- SSR: `useSyncExternalStore` receives a stable server snapshot (empty records, no active
+  provider), so `renderToString(<ToastProvider>…app…</ToastProvider>)` renders only the app
+  subtree; toasts are client-side content through the portal.
 - `loading` and the promise phases are sugar over `show`/`update`. A loading toast omits
   `duration`, which the internal root resolves to `Infinity` (persistent until settled); the
   promise's settle update replaces tone/title so the resolved toast uses `defaultDuration`.

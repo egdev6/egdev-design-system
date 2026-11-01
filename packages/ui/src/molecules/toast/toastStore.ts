@@ -24,6 +24,13 @@ function warnBeforeMount(id: string): void {
   }
 }
 
+/** Stable server snapshot: SSR never renders records; the viewport is client-only content. */
+const serverState: ToastState = { records: [], activeProviderId: null };
+
+export function getServerState(): ToastState {
+  return serverState;
+}
+
 /**
  * Module singleton between the imperative hook and the single mounted provider. Records keep
  * raw call options; defaults resolve at render time so updates replace, never bake, values.

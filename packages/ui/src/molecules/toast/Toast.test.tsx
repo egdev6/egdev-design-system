@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { renderToString } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Button, Icon, type ToastApi, ToastProvider, type ToastProviderProps, useToast } from '../../index';
 import { toastStore } from './toastStore';
@@ -57,6 +58,16 @@ function titles() {
 }
 
 describe('Toast public contract', () => {
+  it('renders no portal or toast content through renderToString on the server', () => {
+    const html = renderToString(
+      <ToastProvider>
+        <main>Application</main>
+      </ToastProvider>
+    );
+    expect(html).toBe('<main>Application</main>');
+    expect(html).not.toContain('eg-toast');
+  });
+
   it('renders a store-driven toast with bold title and description in the portalled list', () => {
     const { container } = mount(undefined, <main>Application</main>);
     act(() => api?.show({ title: 'Post published', description: 'Ready to share.' }));

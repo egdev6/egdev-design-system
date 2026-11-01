@@ -3236,7 +3236,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'statusDotVariants',
     'surfaceVariants',
     'tabsVariants',
-    'tooltipVariants'
+    'tooltipVariants',
+    'useToast'
   ]);
   for (const name of [
     'useCountdown',

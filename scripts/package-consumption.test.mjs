@@ -736,10 +736,11 @@ const darkCountdown: CountdownProps = { ...countdownProps, tone: 'onDark' };
 const tickingCountdown: CountdownProps = { ...countdownProps, onTick: () => undefined };
 // Toast stays isolated from the generic focus/count harness; the store owns identity and ordering.
 export const toastActions: string[] = [];
-export let packedToastApi: ToastApi | null = null;
+// Mutable holder: bundled consumer chunks must not reassign an imported binding.
+export const packedToast: { api: ToastApi | null } = { api: null };
 export function ToastSamples() {
   function Probe() {
-    packedToastApi = useToast();
+    packedToast.api = useToast();
     return null;
   }
   const provider: ToastProviderProps = {
@@ -749,18 +750,21 @@ export function ToastSamples() {
   return createElement(ToastProvider, provider);
 }
 export function packedToastOptions(withAction = true): ToastProps {
-  const options: ToastProps = {
+  const base = {
     title: 'Post published', tone: 'success', duration: Infinity,
     id: 'packed-toast', dismissLabel: 'Close packed notification',
     description: 'Ready to share.'
-  };
+  } as const;
   if (withAction) {
-    options.actions = createElement(Button, {
-      size: 'md', onClick: () => toastActions.push('undo'), children: 'Undo packed publication'
-    });
-    options.actionAltText = 'Undo publication from post history';
+    return {
+      ...base,
+      actions: createElement(Button, {
+        size: 'md', onClick: () => toastActions.push('undo'), children: 'Undo packed publication'
+      }),
+      actionAltText: 'Undo publication from post history'
+    };
   }
-  return options;
+  return { ...base };
 }
 // @ts-expect-error A title is required.
 const missingToastSummary: ToastProps = {};
@@ -3679,7 +3683,6 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Text',
   'Textarea',
   'Timeline',
-  'Toast',
   'ToastProvider',
   'Toggle',
   'Tooltip',
@@ -3699,7 +3702,8 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'statusDotVariants',
   'surfaceVariants',
   'tabsVariants',
-  'tooltipVariants'
+  'tooltipVariants',
+  'useToast'
 ]);
 ${assertCheckboxCSS.toString()}
 assertCheckboxCSS(shippedStyles);
@@ -5271,7 +5275,7 @@ stage('setup:complete');
 const { act, createElement, createRef } = await import('react');
 const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable } = await import('@egdev/ui');
 const { createRoot } = await import('react-dom/client');
-const { ToastSamples, packedToastApi, packedToastOptions, toastActions } = await import('./consumer.ts');
+const { ToastSamples, packedToast, packedToastOptions, toastActions } = await import('./consumer.ts');
 const { PageHeaderSamples } = await import('./consumer.ts');
 const { photoFrameSamples } = await import('./consumer.ts');
 const { ModuleCardSamples, moduleCardClicks } = await import('./consumer.ts');
@@ -6500,7 +6504,7 @@ try {
   await act(async () => root.render(createElement(ToastSamples)));
   const toastViewport = document.querySelector('.eg-toast-viewport');
   assert.ok(toastViewport, 'The provider hosts the store viewport');
-  await act(async () => packedToastApi.show(packedToastOptions(true)));
+  await act(async () => packedToast.api.show(packedToastOptions(true)));
   const toast = document.getElementById('packed-toast');
   assert.ok(toast.classList.contains('eg-toast') && toast.classList.contains('eg-surface'));
   assert.equal(toast.classList.contains('eg-notice'), false);
@@ -6515,15 +6519,18 @@ try {
   await act(async () => undoPublication.click());
   assert.deepEqual(toastActions, ['undo']);
   assert.equal(document.activeElement, toastViewport, 'A1 retains native viewport focus');
-  assert.equal(toast.getAttribute('data-state'), 'open', 'Infinity keeps the record mounted');
-  await act(async () => packedToastApi.update('packed-toast', { title: 'Renamed in place' }));
-  assert.equal(toast.querySelector('strong').textContent, 'Renamed in place', 'update keeps the stable id');
-  await act(async () => packedToastApi.show(packedToastOptions(false)));
-  assert.equal(document.getElementById('packed-toast'), toast, 'A repeated caller id updates in place');
-  await act(async () => packedToastApi.close('packed-toast'));
+  assert.equal(document.getElementById('packed-toast'), null, 'Action activation dismisses the record');
+  await act(async () => packedToast.api.show(packedToastOptions(false)));
+  await act(async () => packedToast.api.update('packed-toast', { title: 'Renamed in place' }));
+  assert.equal(
+    document.getElementById('packed-toast').querySelector('strong').textContent,
+    'Renamed in place',
+    'update keeps the stable id'
+  );
+  await act(async () => packedToast.api.close('packed-toast'));
   assert.equal(document.getElementById('packed-toast'), null);
   const closeViewport = document.querySelector('.eg-toast-viewport');
-  await act(async () => packedToastApi.show(packedToastOptions(false)));
+  await act(async () => packedToast.api.show(packedToastOptions(false)));
   const closeToast = document.querySelector('#packed-toast .eg-icon-btn');
   assert.equal(closeToast.textContent, 'Close packed notification', 'AccessibleIcon supplies hidden name');
   assert.ok(closeToast.classList.contains('size-12'));
@@ -6531,7 +6538,7 @@ try {
   await act(async () => closeToast.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
   assert.equal(document.getElementById('packed-toast'), null);
   assert.equal(document.activeElement, closeViewport);
-  await act(async () => packedToastApi.clear());
+  await act(async () => packedToast.api.clear());
   await act(async () => root.render(null));
   assert.equal(document.querySelector('.eg-toast-viewport'), null);
   stage('toast:complete');

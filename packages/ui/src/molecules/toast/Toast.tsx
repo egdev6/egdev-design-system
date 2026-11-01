@@ -16,7 +16,7 @@ import { Spinner } from '../../atoms/spinner';
 import { cn } from '../../lib/cn';
 import { Portal } from '../../primitives/portal';
 import { type NoticeTone, noticeActionsVariants, noticeIconVariants, noticeTextVariants } from '../notice/types';
-import { type ToastRecord, toastStore } from './toastStore';
+import { getServerState, type ToastRecord, toastStore } from './toastStore';
 import { type ToastProviderProps, type ToastTone, toastVariants, toastViewportVariants } from './types';
 import { toastIconName } from './useToast';
 
@@ -102,7 +102,7 @@ export const ToastProvider: FC<ToastProviderProps> = (props) => {
     maxVisible = 3,
     pauseOnWindowBlur = false
   } = props;
-  const { records, activeProviderId } = useSyncExternalStore(toastStore.subscribe, toastStore.getState);
+  const { records, activeProviderId } = useSyncExternalStore(toastStore.subscribe, toastStore.getState, getServerState);
   const providerId = useId();
   const viewportRef = useRef<HTMLOListElement>(null);
 
