@@ -6987,20 +6987,26 @@ ${assertIndicatorConsumerCSS.toString()}
 assertIndicatorConsumerCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);
 const shipped = readFileSync(new URL('./node_modules/@egdev/tokens/dist/tokens.css', import.meta.url), 'utf8');
-const names = shipped
-  .split(String.fromCharCode(10))
-  .flatMap((line) => {
-    const at = line.indexOf('--');
-    if (at === -1) return [];
-    const name = line.slice(at).split(':')[0].trim();
-    return name.startsWith('--') ? [name] : [];
-  });
+const names = [
+  ...new Set(
+    shipped
+      .split(String.fromCharCode(10))
+      .flatMap((line) => {
+        const at = line.indexOf('--');
+        if (at === -1) return [];
+        const name = line.slice(at).split(':')[0].trim();
+        return name.startsWith('--') ? [name] : [];
+      })
+  )
+];
 const typography = ${JSON.stringify(typographyNames)};
 // #70 Stat adds --text-display-stat and --text-display-stat-sm with three companions each: 255 + 8 = 263.
 // #82 Countdown adds 10 tokens: 263 + 10 = 273.
 // #98 PullQuote adds 9 tokens: 273 + 9 = 282.
 // #100 D7 adds 1 static breakpoint: 282 + 1 = 283.
-assert.equal(names.length, 283, 'Packed native artifact must expose 283 variables');
+// #219 B adds the owner-approved error-vs-focus tokens: 283 + 2 = 285. Unique names: Tailwind
+// emits a color-mix() token on two lines (resolved fallback + @supports var-form override).
+assert.equal(names.length, 285, 'Packed native artifact must expose 285 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {

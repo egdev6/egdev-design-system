@@ -3848,7 +3848,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.match(radioGroup, /^<div role="radiogroup" aria-required="false" aria-orientation="vertical"[^>]*>/);
   assert.match(radioGroup, /id="visibility"/);
   assert.match(radioGroup, /aria-label="Visibility"/);
-  assert.match(radioGroup, /class="eg-radio-group flex flex-col gap-1"/);
+  assert.match(radioGroup, /class="eg-radio-group group flex flex-col gap-1"/);
   assert.equal(radioGroup.match(/<button type="button" role="radio"/g)?.length, 2, 'One radio per option');
   assert.equal(radioGroup.match(/<input type="radio" aria-hidden="true"[^>]*name="visibility"/g)?.length, 2);
   assert.match(
@@ -3869,7 +3869,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     })
   );
   assert.match(horizontalGroup, /aria-required="true" aria-orientation="horizontal" data-disabled=""/);
-  assert.match(horizontalGroup, /class="eg-radio-group flex flex-wrap gap-x-6 gap-y-1"/);
+  assert.match(horizontalGroup, /class="eg-radio-group group flex flex-wrap gap-x-6 gap-y-1"/);
   // Switch: one Radix switch button with its thumb (AC-01). Without a DOM, Radix cannot detect a form
   // ancestor during SSR, so it always emits its hidden bubble input after the button (AC-08).
   const offSwitch = renderToString(createElement(exported.Switch, { 'aria-label': 'Stream alerts', id: 'alerts' }));
