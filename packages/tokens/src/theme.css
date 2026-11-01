@@ -364,7 +364,7 @@
   --shadow-elev-3: 0 4px 10px rgba(0, 0, 0, 0.7), 0 28px 70px -10px rgba(0, 0, 0, 0.9);
   /* --shadow-well — Pozo: lo que se rellena se hunde (inputs, buscador, casillas, pista de progreso, segmentado). Grafito: más suave, porque sobre gris el negro al 80 % se ve como un agujero. */
   --shadow-well: inset 0 1px 2px rgba(0, 0, 0, 0.55), inset 0 0 0 1px rgba(0, 0, 0, 0.28);
-  /* --shadow-ring-brand — Anillo suave de foco en campos (junto a border-brand-strong). No sustituye a shadow-focus en controles. */
+  /* --shadow-ring-brand — Legacy only: kept for legacy/bundle.css field focus (eg-composer__field, eg-field__control) until its migration is approved. Not used by any @egdev/ui component since #238 (focus ring outside, error inside); do not use in new components. */
   --shadow-ring-brand: 0 0 0 3px rgba(255, 0, 54, 0.22);
   /* --shadow-btn-primary — Bisel y halo del botón primario. */
   --shadow-btn-primary: inset 0 1px 0 rgba(255, 255, 255, 0.38), inset 0 -1px 0 rgba(0, 0, 0, 0.28), 0 1px 2px rgba(0, 0, 0, 0.6), 0 8px 22px -8px rgba(255, 0, 54, 0.7);
