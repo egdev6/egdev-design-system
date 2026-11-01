@@ -170,7 +170,7 @@ describe('Storybook manager sidebar icons', () => {
   it('paints document and story icons with the neon brand token outside the selected row', () => {
     const css = read('.storybook/manager.css');
     expect(css).toMatch(
-      /#storybook-explorer-tree \[data-selected='false'\] svg\[type='document'\],\s*#storybook-explorer-tree \[data-selected='false'\] svg\[type='story'\]\s*\{\s*color: var\(--color-fg-brand-raised\);\s*\}/
+      /#storybook-explorer-tree \[data-selected=["']false["']\] svg\[type=["']document["']\],\s*#storybook-explorer-tree \[data-selected=["']false["']\] svg\[type=["']story["']\]\s*\{\s*color: var\(--color-fg-brand-raised\);\s*\}/
     );
   });
 });
