@@ -34,6 +34,8 @@ import { Isotipo3D } from '@egdev/effects';
 import type { Isotipo3DProps } from '@egdev/effects';
 import { AmbientBackground } from '@egdev/effects';
 import type { AmbientBackgroundProfile, AmbientBackgroundProps } from '@egdev/effects';
+import { Table } from '@egdev/ui';
+import type { TableColumn, TableProps, TableRow, TableSort, TableSortDirection, TableColumnFormat, TableVariant, TableSize, TableMaxHeight, TableMessages } from '@egdev/ui';
 import { GaugeGroup } from '@egdev/ui';
 import type { GaugeGroupItems, GaugeGroupProps, GaugeGroupRing, GaugeGroupSize } from '@egdev/ui';
 import { PhotoFrame } from '@egdev/ui';
@@ -265,6 +267,23 @@ const pageSlot: PageHeaderProps = { title: 'Projects', asChild: true };
 const pageRegister: PageHeaderProps = { title: 'Projects', register: 'show' };
 // @ts-expect-error Generated heading content cannot be replaced with HTML.
 const pageHtml: PageHeaderProps = { title: 'Projects', dangerouslySetInnerHTML: { __html: 'Other' } };
+type tableRow = TableRow & { name: string; score: number };
+const tableRows: tableRow[] = [{ id: 'a', name: 'First', score: 2 }];
+const tableColumns: TableColumn<tableRow>[] = [{ id: 'name', header: 'Name', cell: (row) => row.name, sortValue: (row) => row.name }];
+const tableSort: TableSort = { columnId: 'name', direction: 'ascending' };
+const tableDirection: TableSortDirection = tableSort.direction;
+const tableFormat: TableColumnFormat = 'text';
+const tableVariant: TableVariant = 'data';
+const tableSize: TableSize = 'sm';
+const tableMaxHeight: TableMaxHeight = 'md';
+const tableMessages: Partial<TableMessages> = { empty: 'Nothing' };
+export const tableProps: TableProps<tableRow> = { label: 'Items', columns: tableColumns, rows: tableRows, variant: tableVariant, size: tableSize, maxHeight: tableMaxHeight, messages: tableMessages, sort: tableSort };
+export function tableSample() { return createElement(Table<tableRow>, tableProps); }
+// @ts-expect-error Details cannot enable selection.
+const tableInvalidDetails: TableProps<tableRow> = { label: 'Items', columns: tableColumns, rows: tableRows, variant: 'details', selectable: true };
+// @ts-expect-error Row accessors are typed against the consumer's row.
+const tableInvalidColumn: TableColumn<tableRow> = { id: 'x', header: 'X', cell: (row) => row.missing };
+void [tableDirection, tableFormat, tableInvalidDetails, tableInvalidColumn];
 const timelineVariant: TimelineVariant = 'chat';
 const timelineSize: TimelineSize = 'sm';
 const timelineTime: TimelineTime = { text: '12:30', dateTime: '2026-10-29T12:30:00Z' };
@@ -3743,6 +3762,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'StatusDot',
   'Surface',
   'Switch',
+  'Table',
   'Tabs',
   'Text',
   'Textarea',

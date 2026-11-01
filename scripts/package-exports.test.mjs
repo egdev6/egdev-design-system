@@ -496,6 +496,32 @@ test('SelectTile ships shared Material, state priority, stretched geometry and n
   }
 });
 
+test('table exports native semantics and keeps internal recipes private', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  for (const multiplier of [3, 4, 6]) {
+    assert.match(css, new RegExp(String.raw`max-height:\s*calc\(var\(--space-24\)\s*\*\s*${multiplier}\)`));
+  }
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(
+    createElement(exported.Table, {
+      label: 'Items',
+      rows: [{ id: 'a', name: 'First' }],
+      columns: [{ id: 'name', header: 'Name', cell: (row) => row.name }],
+      selectable: true
+    })
+  );
+  assert.match(html, /<table[^>]*eg-table/);
+  assert.match(html, /<caption[^>]*>Items<\/caption>/);
+  assert.match(html, /scope="col"/);
+  assert.match(html, /scope="row"/);
+  assert.match(html, /Select all rows/);
+  for (const name of ['useTable', 'tableVariants', 'tableFrameVariants']) {
+    assert.equal(Object.hasOwn(exported, name), false);
+  }
+});
+
 test('Timeline ships bounded geometry, attribute states, legacy resets and passive SSR semantics', async () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   for (const multiplier of [2, 3, 4]) {
@@ -2898,6 +2924,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'StatusDot',
       'Surface',
       'Switch',
+      'Table',
       'Tabs',
       'Text',
       'Textarea',
@@ -3269,6 +3296,17 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SurfaceTone',
     'Switch',
     'SwitchProps',
+    'Table',
+    'TableColumn',
+    'TableColumnFormat',
+    'TableMaxHeight',
+    'TableMessages',
+    'TableProps',
+    'TableRow',
+    'TableSize',
+    'TableSort',
+    'TableSortDirection',
+    'TableVariant',
     'Tabs',
     'TabsItem',
     'TabsProps',
