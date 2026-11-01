@@ -36,7 +36,6 @@
 @source "../atoms/toggle/types.ts";
 @source "../atoms/tooltip/types.ts";
 @source "../molecules/field/types.ts";
-@source "../molecules/gauge-dock/types.ts";
 @source "../molecules/nav-list/types.ts";
 @source "../molecules/timeline/types.ts";
 @source "../molecules/social-links/types.ts";
