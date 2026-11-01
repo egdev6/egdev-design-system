@@ -28,6 +28,8 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogCancel, AlertDialogAction } from '@egdev/ui';
+import type { AlertDialogProps, AlertDialogContentProps } from '@egdev/ui';
 import { Dialog, DialogTrigger, DialogContent, DialogClose } from '@egdev/ui';
 import type { DialogProps, DialogTriggerProps, DialogContentProps, DialogCloseProps } from '@egdev/ui';
 import { Isotipo3D } from '@egdev/effects';
@@ -200,6 +202,13 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+// @ts-expect-error AlertDialog recipes remain internal.
+type AlertDialogRecipeNotExported = (typeof import('@egdev/ui'))['alertDialogHeadVariants'];
+const alertDialogContentProps: AlertDialogContentProps = { title: 'Delete?', description: 'Cannot undo.', actions: [createElement(AlertDialogCancel, { key: 'cancel', children: 'Cancel' }), createElement(AlertDialogAction, { key: 'action', children: 'Delete' })] };
+export const alertDialogProps: AlertDialogProps = { children: [createElement(AlertDialogTrigger, { key: 'trigger', children: 'Open' }), createElement(AlertDialogContent, { ...alertDialogContentProps, key: 'content' })] };
+export function alertDialogSample() { return createElement(AlertDialog, alertDialogProps); }
+// @ts-expect-error A consequence description is required.
+const alertDialogMissingDescription: AlertDialogContentProps = { title: 'Delete?', actions: null };
 export const dialogTriggerRef = createRef<HTMLButtonElement>();
 export const dialogCloseRef = createRef<HTMLButtonElement>();
 const dialogTriggerProps: DialogTriggerProps = { children: 'Open settings' };
@@ -3654,6 +3663,11 @@ assertPanelConsumerCSS(shippedStyles);
 ${assertCollapsibleConsumerCSS.toString()}
 assertCollapsibleConsumerCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
+  'AlertDialog',
+  'AlertDialogAction',
+  'AlertDialogCancel',
+  'AlertDialogContent',
+  'AlertDialogTrigger',
   'AspectRatio',
   'Avatar',
   'Badge',

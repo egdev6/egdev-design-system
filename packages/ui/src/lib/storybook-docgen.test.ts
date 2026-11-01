@@ -707,6 +707,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/toggle',
       './atoms/tooltip',
       './lib/cn',
+      './molecules/alert-dialog',
       './molecules/button-group',
       './molecules/carousel',
       './molecules/chip-group',
@@ -741,6 +742,11 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/visually-hidden'
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
+      'AlertDialog',
+      'AlertDialogAction',
+      'AlertDialogCancel',
+      'AlertDialogContent',
+      'AlertDialogTrigger',
       'AspectRatio',
       'Avatar',
       'Badge',

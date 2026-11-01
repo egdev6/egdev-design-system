@@ -2800,6 +2800,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.deepEqual(
     Object.keys(exported).sort(),
     [
+      'AlertDialog',
+      'AlertDialogAction',
+      'AlertDialogCancel',
+      'AlertDialogContent',
+      'AlertDialogTrigger',
       'AspectRatio',
       'Avatar',
       'Badge',
@@ -2997,6 +3002,17 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   const symbol = checker.getSymbolAtLocation(program.getSourceFile(declaration));
   const names = new Set(checker.getExportsOfModule(symbol).map((item) => item.name));
   assert.deepEqual([...names].sort(), [
+    'AlertDialog',
+    'AlertDialogAction',
+    'AlertDialogActionProps',
+    'AlertDialogCancel',
+    'AlertDialogCancelProps',
+    'AlertDialogContent',
+    'AlertDialogContentProps',
+    'AlertDialogProps',
+    'AlertDialogTone',
+    'AlertDialogTrigger',
+    'AlertDialogTriggerProps',
     'AspectRatio',
     'AspectRatioProps',
     'Avatar',

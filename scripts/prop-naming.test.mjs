@@ -59,6 +59,18 @@ function indicatorProposalHash(entry) {
 const postReceiptUsages = [
   ...['open-state', 'initial-uncontrolled-open', 'open-change'].map((conventionId) => ({
     conventionId,
+    source: 'packages/ui/src/molecules/alert-dialog/types.ts#AlertDialogProps'
+  })),
+  ...['heading-title', 'dialog-description', 'trailing-actions', 'surface-material-tone'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/alert-dialog/types.ts#AlertDialogContentProps'
+  })),
+  ...['AlertDialogTriggerProps', 'AlertDialogCancelProps', 'AlertDialogActionProps'].map((symbol) => ({
+    conventionId: 'slot-composition',
+    source: `packages/ui/src/molecules/alert-dialog/types.ts#${symbol}`
+  })),
+  ...['open-state', 'initial-uncontrolled-open', 'open-change'].map((conventionId) => ({
+    conventionId,
     source: 'packages/ui/src/molecules/dialog/types.ts#DialogProps'
   })),
   ...[

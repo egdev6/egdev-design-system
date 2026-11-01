@@ -1,0 +1,47 @@
+# Organisms wave — specification issues #119–#127 to main
+
+Implement the nine owner-approved contracts of the organism wave (four molecules reclassified in #116 and five @egdev/ui organisms) through PRs into main, with up to three rolling writers. Implementation plans and any new dependency need owner approval before code (repo gate).
+
+## Specs
+
+- S1 — Start: owner "dale. si puedes paralelizar abre hasta tres subsgentes que vayan cogiendo issues" (after #113, #115 and #117 were confirmed delivered by #114, #116 and #118 and closed).
+- S2 — Scope: #119 Dialog, #120 AlertDialog, #121 CommandPalette, #122 Table (molecules); #123 Sidebar, #124 ModuleRail, #125 TabBar, #126 CalendarGrid, #127 PreviewFrame (organisms). Each issue body is the approved v0.1 contract (owner comment "autorizo").
+- S3 — Gates: per component, an implementation plan (docs) → owner approval of plan and of any new dependency (e.g. @radix-ui/react-dialog, @radix-ui/react-alert-dialog, not installed today) → test-first implementation → full local Verify set + package consumption (CI disabled by owner decision) → RDD assess → PR → merge with --admin. AppShell #130 stays parked until Sidebar/ModuleRail/TabBar exist.
+- S4 — Delivery rules from previous waves: one worktree per component from origin/main; writers never commit/install/build; parent integrates sequentially (fetch, merge main, ancestor check, regenerated docs, prop-naming revisions), keeps receipt-pinned files (e.g. gauge/types.ts) untouched; writer verify lists always include props:check and test:props.
+
+## Tasks
+
+Plans (O#) are done and owner-approved (L11–L14). Implementation tasks (T#) cover S2–S4; one PR each.
+
+| ID | Issue | Component | Phase | Status |
+|---|---|---|---|---|
+| O1–O9 | #119–#127 | all nine | plan | done (L2–L10, approved L11) |
+| T1 | #119 | Dialog | implement | integrating |
+| T2 | #122 | Table | implement | in progress |
+| T3 | #123 | Sidebar | implement | ready to integrate (after T1) |
+| T4 | #120 | AlertDialog | implement (after T1 on main) | pending |
+| T5 | #121 | CommandPalette | implement (after T1 on main) | pending |
+| T6 | #124 | ModuleRail | implement (after T3 on main) | pending |
+| T7 | #125 | TabBar | implement | pending |
+| T8 | #126 | CalendarGrid | implement | pending |
+| T9 | #127 | PreviewFrame | implement | in progress |
+
+## Log
+
+- L1 — #113, #115, #117 verified delivered (#114, #116, #118; catalog rows, evidence, spec issues, amendment comments) and closed 2026-11-01. All nine spec issues carry an owner full-contract approval comment; none has an implementation plan; @radix-ui/react-dialog and @radix-ui/react-alert-dialog are not installed.
+- L2 — O3 Sidebar plan done (mvy0kzto-1y-b395): docs/components/sidebar/v0.1/implementation-plan.md. Conflict: approved contract composes ProductMark, which was removed in #183 → owner decision (replacement, e.g. Logo). ScrollArea is already a direct @egdev/ui dependency (no new dep). ProductIdentity shared with ModuleRail. O6 ModuleRail plan launched (worktree module-rail).
+- L3 — O1 Dialog plan done (mvy0kwqx-1w-nbw1): NEW dependency @radix-ui/react-dialog@1.1.15 (owner confirmation); AlertDialog reuses marker-free recipes + veil (not wrapper/dismiss X); CommandPalette reuses the veil. O4 AlertDialog plan launched (worktree alert-dialog).
+- L4 — O2 Table plan done (mvy0ky48-1x-fln6): ScrollArea already a direct dependency; 8 naming candidates recorded by the issue as approved under a delegated receipt (verify registry); owner question on native style. O5 CommandPalette plan launched (worktree command-palette).
+- L5 — O4 AlertDialog plan done (mvy0p516-20-haqb): NEW dependency @radix-ui/react-alert-dialog@1.1.15; Dialog-first sequencing (reuses Dialog's marker-free recipes + veil once implemented); keeps the contract's Escape-to-close. O7 TabBar plan launched (worktree tab-bar).
+- L6 — O6 ModuleRail plan done (mvy0p3f9-1z-gfhl): no new dependency; shared ProductIdentity type in packages/ui/src/types with Sidebar; ProductMark replacement needed (Logo is fixed corporate artwork, not product monograms); Icon 'plus' glyph (#58 v0.2 amendment) status to verify. O8 CalendarGrid plan launched.
+- L7 — Icon 'plus' glyph already on main (icon-paths.ts:240). O5 CommandPalette plan done (mvy0p6qw-21-zfzc): recommends cmdk@1.1.1 inside Radix Dialog (NEW deps cmdk@1.1.1 + shared @radix-ui/react-dialog@1.1.15) or the contract's D4 native-combobox fallback. O7 TabBar, O8 CalendarGrid, O9 PreviewFrame plans launching.
+- L8 — O7 TabBar plan done (mvy0ta69-22-8sd4): native anchors (aria-current), no new dependency, no new conventions; responsive hand-off ownership to confirm (AppShell #130 parked).
+- L9 — O9 PreviewFrame plan done (mvy0tdjy-24-cxju): no new dependency (AspectRatio direct); StageFrame.png matches VIS-01; naming concepts already approved; owner decisions: --pattern-grid token vs plain fallback, scoped zone-geometry exception, extreme finite ratios, contract example 'Button ghost sm' now invalid (ghost→neutral #235).
+- L10 — O8 CalendarGrid plan done (mvy0tbrt-23-w9se): native list + keyboard-accessible Move menu (no ARIA grid, no drag dependency); add-request/move-intent already approved in registry. All nine plans drafted; owner decision round next.
+- L11 — Owner decisions: "Aprobar los 9 (Recomendado)" (all nine plans with their recommendations), "Las tres (Recomendado)" (@radix-ui/react-dialog@1.1.15, @radix-ui/react-alert-dialog@1.1.15, cmdk@1.1.1), ProductMark replaced by "Slot libre del consumidor" (ProductIdentity accepts a consumer node + name; no new component), PreviewFrame "Fondo liso por ahora" (no --pattern-grid token). Implementation phase starts.
+- L12 — Version alignment: plans proposed react-dialog/alert-dialog 1.1.15 (older generation than installed popover/toast 1.3.1); owner chose "Alineadas": @radix-ui/react-dialog@1.3.1, @radix-ui/react-alert-dialog@1.2.1, cmdk@1.1.1 (accepts react-dialog ^1.1.6). Installed react-dialog@1.3.1 in the dialog worktree; approval record docs/components/organisms-wave/v0.1/owner-approvals.md ships with the Dialog PR. Wave 1 implementation: Dialog, Table, Sidebar.
+- L13 — Owner: Dialog className "Documentar restricción (Recomendado)" (merge last; reserved-property overrides unsupported, not prevented; documented and tested). Table style "Mantener style, no soportado (Recomendado)" (native typing kept; appearance via style unsupported, documented). Sidebar blocked: product-identity registry entry requires ProductMark and excludes Logo/Avatar — convention amendment question asked.
+- L14 — Owner: "Aprobar la enmienda (Recomendado)" — explicit convention approval amending product-identity to {consumer-supplied node (Logo, Avatar or other), name, optional home destination}; recorded as a separate amendment, used by Sidebar and ModuleRail.
+- L15 — Owner (PreviewFrame): zones "Aprobar excepción acotada (Recomendado)" — only four static left/top/w/h-[var(--eg-zone-*)] utilities reading validated, clamped percentage custom properties; recorded in AGENTS.md and the shared contract next to Gauge's. Extreme ratios "Caer a 16:9 (Recomendado)" — ratios AspectRatio cannot represent are treated as invalid and fall back to 16:9 with a development warning; contract amendment. Dialog gates (job-65): unit 1986/1986, build, typecheck PASS; package-exports and package-consumption FAIL.
+- L16 — Dialog integration: commit 59602fe merged with origin/main f5ecd12; gates lint/props/test:props(91)/typecheck/build/tokens/unit(95 files, 1986 tests) PASS. Package tests failed on exact export lists (Dialog names missing) and a runtime import of the internal scrim used as a negative; fixed lists and turned the negative into a type-level check → package-consumption 12/12 PASS. Storybook :6107 check: centered/sheet/full geometry and initial focus OK; stories used unstyled native buttons → switched to Button via asChild. Writer launch for T9 rejected by runtime guard (feature doc only in main checkout); context backstop reached → delegate further multi-step units.
+- L17 — T1 Dialog delivered: PR #249 merged c5884fa (verifier gates PASS in scratch incl. consumption 12/12 with sibling TMPDIR; pre-push unit 1987). Browser RTL/motion/pixel comparison not evaluated (owner Storybook review). T2 Table integration started.

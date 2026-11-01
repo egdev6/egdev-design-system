@@ -39,6 +39,7 @@ export * from './atoms/tooltip';
 // Utilities
 export { cn } from './lib/cn';
 // Molecules
+export * from './molecules/alert-dialog';
 export * from './molecules/button-group';
 export * from './molecules/carousel';
 export type { ChipGroupOption, ChipGroupProps, ChipGroupType } from './molecules/chip-group';

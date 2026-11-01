@@ -897,9 +897,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "AlertDialog",
-    "compone": "Dialog",
+    "compone": "Surface, Icon, Button; internal Dialog recipes",
     "accion": "nuevo",
-    "notas": "Coordinates a confirmation prompt and decision actions as one reusable interaction, not a structural page region. Retains destructive confirmations (delete, disconnect). See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval."
+    "notas": "Working-tree implementation under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/120): decision-required modal with Cancel and Action, least-destructive initial focus and Escape dismissal. Radix owns interaction; Surface owns panel Material. Browser, visual and packed-consumer verification remain pending."
   },
   {
     "actual": "CommandPalette",
