@@ -116,23 +116,24 @@ describe('Notice public contract', () => {
     expect(root.querySelector('svg')).toHaveClass('size-4');
   });
 
-  it('aligns the leading icon with the first text line instead of the block center', () => {
-    render(<Notice summary='Queue ready.'>Detail wraps onto several lines, so block centering would drift.</Notice>);
-    const root = screen.getByRole('status');
-    expect(root).toHaveClass('items-start');
-    expect(root).not.toHaveClass('items-center');
-    const icon = root.querySelector('svg')?.parentElement;
-    expect(icon).toHaveClass(
-      'mt-[calc((var(--text-body-default--line-height)*var(--text-body-default)-var(--icon-size))/2)]'
+  it('centers icon, text and actions on one row so a button never drifts below the text', () => {
+    render(
+      <Notice summary='Simulation mode.' actions={<button type='button'>Leave simulation</button>}>
+        Changes will not be published.
+      </Notice>
     );
+    const root = screen.getByRole('status');
+    expect(root).toHaveClass('items-center');
+    expect(root).not.toHaveClass('items-start');
+    const icon = root.querySelector('svg')?.parentElement;
+    expect(icon?.className).not.toMatch(/\bmt-/);
   });
 
-  it('keeps first-line icon alignment in the compact preset', () => {
+  it('keeps the compact preset centered without a first-line offset', () => {
     render(<Notice summary='Queue paused.' size='sm' />);
-    const icon = screen.getByRole('status').querySelector('svg')?.parentElement;
-    expect(icon).toHaveClass(
-      'mt-[calc((var(--text-label-default--line-height)*var(--text-label-default)-var(--space-4))/2)]'
-    );
+    const root = screen.getByRole('status');
+    expect(root).toHaveClass('items-center');
+    expect(root.querySelector('svg')?.parentElement?.className).not.toMatch(/\bmt-/);
   });
 
   it.each(['', '   '])('warns for a blank summary without rendering a bold part (%j)', (summary) => {
