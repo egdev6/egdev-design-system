@@ -163,6 +163,16 @@
           "symbol": "TabsProps",
           "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
+      },
+      {
+        "component": "Table",
+        "type": "string[] (selected row ids)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
+        }
       }
     ]
   },
@@ -250,6 +260,16 @@
           "symbol": "TabsProps",
           "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
+      },
+      {
+        "component": "Table",
+        "type": "string[] (initial selected row ids)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
+        }
       }
     ]
   },
@@ -336,6 +356,16 @@
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
           "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+        }
+      },
+      {
+        "component": "Table",
+        "type": "(value: string[]) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
         }
       }
     ]
@@ -563,6 +593,16 @@
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
           "revision": "sha256:118721454e5b6f37753f295171b4d74c3a6774e280fca8c75278cf99e219fb69"
+        }
+      },
+      {
+        "component": "Table",
+        "type": "TableSize ('sm' | 'md'; density)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
         }
       }
     ]
@@ -830,6 +870,16 @@
           "path": "packages/ui/src/molecules/panel/types.ts",
           "symbol": "PanelProps",
           "revision": "sha256:5aa2753d3af82b96e29f8df01eda0af56e750d5f4b7d321664a74bc4c4432cd8"
+        }
+      },
+      {
+        "component": "Table",
+        "type": "TableVariant ('data' | 'details')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
         }
       }
     ]
@@ -1411,6 +1461,16 @@
           "path": "packages/effects/src/atoms/isotipo3d/types.ts",
           "symbol": "Isotipo3DProps",
           "revision": "sha256:0099ebba8fc63ca6fd3a3817b74ec2f311bd387f9ce521efa1391f5791144164"
+        }
+      },
+      {
+        "component": "Table",
+        "type": "string (required caption)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
         }
       }
     ]
@@ -3123,6 +3183,16 @@
           "symbol": "MeterRowProps",
           "revision": "sha256:1cd5df635731e9d05de3a79a2fea4f64392fe783c190f1b888c210535c17f6ab"
         }
+      },
+      {
+        "component": "Table",
+        "type": "Partial<TableMessages>",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
+        }
       }
     ]
   },
@@ -3483,6 +3553,16 @@
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
           "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
+        }
+      },
+      {
+        "component": "Table",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
         }
       }
     ]
@@ -4171,6 +4251,16 @@
           "path": "packages/ui/src/molecules/module-card/types.ts",
           "symbol": "ModuleCardProps",
           "revision": "sha256:ed7adc13e5eb72795fbfdd83ee8108b291cefd94708e6b4f3642293357139c53"
+        }
+      },
+      {
+        "component": "Sidebar",
+        "type": "ReactNode (supplementary metadata and utility controls)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/sidebar/types.ts",
+          "symbol": "SidebarProps",
+          "revision": "sha256:489fe1683e9a448ec5111da30b92c468298799392fb7441a5493cf32a7e50e18"
         }
       }
     ]
@@ -5214,7 +5304,18 @@
       "scope": "convention:table-columns",
       "contentHash": "sha256:2c5cc5cd16b267460705029d7c0c53610db39075b606a381449ccc7155a2b876"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Table",
+        "type": "TableColumn<TRow>[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
+        }
+      }
+    ]
   },
   {
     "id": "table-rows",
@@ -5230,7 +5331,18 @@
       "scope": "convention:table-rows",
       "contentHash": "sha256:c215a40f322d238a061190d6a374dd25eb991786840caee7cef9541e55aa269c"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Table",
+        "type": "TRow[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
+        }
+      }
+    ]
   },
   {
     "id": "table-sort",
@@ -5246,7 +5358,18 @@
       "scope": "convention:table-sort",
       "contentHash": "sha256:29270905c11a7d8c9af56e25aaaa1a7b734101895befdb955b391c8453b4bdb2"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Table",
+        "type": "TableSort | null",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
+        }
+      }
+    ]
   },
   {
     "id": "initial-uncontrolled-sort",
@@ -5262,7 +5385,18 @@
       "scope": "convention:initial-uncontrolled-sort",
       "contentHash": "sha256:ee1dbedbb39e03154a26958aea32ff09828424d4b6f6e50bf0c5f5c4d84f517a"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Table",
+        "type": "TableSort | null",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
+        }
+      }
+    ]
   },
   {
     "id": "sort-change",
@@ -5278,7 +5412,18 @@
       "scope": "convention:sort-change",
       "contentHash": "sha256:f97407f82b31802b78908e3553f1e8d1a4db9a637b847ad9adc4e8354f4883ff"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Table",
+        "type": "(sort: TableSort) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
+        }
+      }
+    ]
   },
   {
     "id": "row-selection",
@@ -5294,7 +5439,18 @@
       "scope": "convention:row-selection",
       "contentHash": "sha256:82e080b6e1118518c052b766680772d537fc85b54a34fdc1e63ba6b390f1560e"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Table",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
+        }
+      }
+    ]
   },
   {
     "id": "active-row",
@@ -5310,7 +5466,18 @@
       "scope": "convention:active-row",
       "contentHash": "sha256:899cd1694bbcbb9348c40a78eff3161a1523c1880b469c5d1655f3a4addfa632"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Table",
+        "type": "string (current row id)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
+        }
+      }
+    ]
   },
   {
     "id": "viewport-max-height",
@@ -5326,23 +5493,45 @@
       "scope": "convention:viewport-max-height",
       "contentHash": "sha256:a1fcb884a5350534b9664e23e1fba4e9c5af579d5da08c9e6da2b2ae72cd02f5"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Table",
+        "type": "TableMaxHeight ('sm' | 'md' | 'lg')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/table/types.ts",
+          "symbol": "TableProps",
+          "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
+        }
+      }
+    ]
   },
   {
     "id": "product-identity",
     "name": "product",
-    "meaning": "Identity of the EGDEV product or application that a structural region presents: its compact brand monogram, its visible and accessible name, and an optional home destination.",
-    "whenToUse": "An application region such as a sidebar shows which product the user is in by rendering ProductMark with the product's name, optionally linking to the product's home.",
-    "avoid": "The egdev corporate logo (use Logo), people or channel identities (use Avatar), page or section headings (use title), or accessible names of controls (use label).",
+    "meaning": "Identity of a product or application presented by a structural region: a consumer-supplied node, its visible and accessible name, and an optional home destination.",
+    "whenToUse": "An application region such as a sidebar presents a product using consumer-supplied artwork such as Logo, Avatar or another node, its name and optionally its home destination.",
+    "avoid": "Page or section headings (use title), accessible names of controls (use label), or assuming a specific artwork component.",
     "status": "approved",
     "aliases": [],
     "exceptions": [],
     "approval": {
-      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "reference": "docs/components/sidebar/v0.1/product-identity-approval.json",
       "scope": "convention:product-identity",
-      "contentHash": "sha256:85e4aaafbe7146d2d854747fb43d16523860811dd3f0afd287ef2342784e0452"
+      "contentHash": "sha256:8f5fdb1212b182c2e469051481597a21a26b913e021257ad4d760f169f6f4f1b"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Sidebar",
+        "type": "ProductIdentity (consumer node, name, optional href)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/sidebar/types.ts",
+          "symbol": "SidebarProps",
+          "revision": "sha256:489fe1683e9a448ec5111da30b92c468298799392fb7441a5493cf32a7e50e18"
+        }
+      }
+    ]
   },
   {
     "id": "end-items",

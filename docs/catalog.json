@@ -919,9 +919,9 @@
     "nivel": "organism",
     "destino": "ui",
     "radix": "ScrollArea",
-    "compone": "Logo, NavList, Text",
+    "compone": "Surface recipe; consumer identity, NavList and footer",
     "accion": "nuevo",
-    "notas": "La barra lateral de todas las apps."
+    "notas": "Working-tree Sidebar under the approved #123 plan and consumer identity amendment: host-sized passive panel with a scrollable body and optional pinned identity and footer. Navigation, routing and responsive visibility belong to consumers. Browser visual and accessibility verification pending."
   },
   {
     "actual": "ModuleRail",
@@ -954,7 +954,7 @@
     "radix": "ScrollArea",
     "compone": "Checkbox, Switch, Badge, ButtonGroup",
     "accion": "mantener",
-    "notas": "Coordinates tabular data and local sorting and selection as one reusable unit, not a structural page region. Retains the native table with sorting and selection in the hook. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval."
+    "notas": "Working-tree React implementation of a native generic table with local sorting, optional multiple selection and a Radix scroll viewport. Composes Checkbox and Surface; consumers compose Switch, Badge and ButtonGroup. Browser, accessibility and package-consumer verification remain pending. Contract: [#122](https://github.com/egdev6/egdev-design-system/issues/122)."
   },
   {
     "actual": "CalendarGrid",

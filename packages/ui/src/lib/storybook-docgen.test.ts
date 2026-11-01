@@ -727,9 +727,11 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/section-header',
       './molecules/select-tile',
       './molecules/social-links',
+      './molecules/table',
       './molecules/tabs',
       './molecules/timeline',
       './molecules/toast',
+      './organisms/sidebar',
       './primitives/aspect-ratio',
       './primitives/divider',
       './primitives/label',
@@ -739,7 +741,8 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/stack',
       './primitives/surface',
       './primitives/text',
-      './primitives/visually-hidden'
+      './primitives/visually-hidden',
+      './types/product-identity'
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
       'AlertDialog',
@@ -810,6 +813,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'SectionHeader',
       'Select',
       'SelectTile',
+      'Sidebar',
       'Skeleton',
       'Slider',
       'Slot',
@@ -821,6 +825,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'StatusDot',
       'Surface',
       'Switch',
+      'Table',
       'Tabs',
       'Text',
       'Textarea',
@@ -839,6 +844,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'noticeVariants',
       'progressBarVariants',
       'radioGroupVariants',
+      'sidebarVariants',
       'sliderVariants',
       'statVariants',
       'statusDotVariants',
