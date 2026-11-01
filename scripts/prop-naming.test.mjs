@@ -57,6 +57,25 @@ function indicatorProposalHash(entry) {
 }
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...[
+    'collection-items',
+    'accessible-name',
+    'dismiss-label',
+    'localized-messages',
+    'collection-filtering',
+    'results-busy',
+    'search-query-change',
+    'open-state',
+    'initial-uncontrolled-open',
+    'open-change'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/command-palette/types.ts#CommandPaletteProps'
+  })),
+  ...['accessible-name', 'leading-icon', 'keyboard-shortcut-hint'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/command-palette/types.ts#CommandPaletteItem'
+  })),
   ...['product-identity', 'panel-footer'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/organisms/sidebar/types.ts#SidebarProps'

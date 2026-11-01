@@ -28,7 +28,8 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
-import { Dialog, DialogTrigger, DialogContent, DialogClose } from '@egdev/ui';
+import { CommandPalette, Dialog, DialogTrigger, DialogContent, DialogClose } from '@egdev/ui';
+import type { CommandPaletteProps, CommandPaletteItem, CommandPaletteMessages, CommandPaletteFiltering } from '@egdev/ui';
 import type { DialogProps, DialogTriggerProps, DialogContentProps, DialogCloseProps } from '@egdev/ui';
 import { Isotipo3D } from '@egdev/effects';
 import type { Isotipo3DProps } from '@egdev/effects';
@@ -204,6 +205,19 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+const commandPaletteItem: CommandPaletteItem = { id: 'search', label: 'Search', onSelect: () => {} };
+const commandPaletteFiltering: CommandPaletteFiltering = 'builtin';
+const commandPaletteMessages: Partial<CommandPaletteMessages> = { empty: 'Nothing found.' };
+export const commandPaletteProps: CommandPaletteProps = { items: [commandPaletteItem], filtering: commandPaletteFiltering, messages: commandPaletteMessages };
+export const commandPaletteSample = createElement(CommandPalette, commandPaletteProps);
+// @ts-expect-error The palette does not export internal recipes.
+type CommandPaletteRecipeNotExported = (typeof import('@egdev/ui'))['paletteRow'];
+// @ts-expect-error Items are required.
+const commandPaletteInvalid: CommandPaletteProps = {};
+// @ts-expect-error The palette owns query state and does not expose a hotkey prop.
+const commandPaletteHotkey: CommandPaletteProps = { items: [], hotkey: 'mod+k' };
+// @ts-expect-error A command action requires an onSelect callback.
+const commandPaletteNoSelect: CommandPaletteItem = { id: 'missing', label: 'Missing' };
 export const dialogTriggerRef = createRef<HTMLButtonElement>();
 export const dialogCloseRef = createRef<HTMLButtonElement>();
 const dialogTriggerProps: DialogTriggerProps = { children: 'Open settings' };
@@ -3721,6 +3735,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Collapsible',
   'CollapsibleContent',
   'CollapsibleTrigger',
+  'CommandPalette',
   'Countdown',
   'Dialog',
   'DialogClose',
@@ -7278,6 +7293,9 @@ for (const [react, [types, domTypes]] of Object.entries(versions)) {
         install.push('--offline');
       }
       run(fixture, 'pnpm', install, 120_000);
+      await context.test('command-palette typed consumer and type-level negatives', () => {
+        run(fixture, 'pnpm', ['exec', 'tsc', '-p', 'tsconfig.json'], 30_000);
+      });
       const timeouts = { entries: 20_000, types: 30_000, ssr: 20_000, csr: 60_000, css: 60_000 };
       for (const [name, timeout] of Object.entries(timeouts)) {
         await context.test(name, () => {
