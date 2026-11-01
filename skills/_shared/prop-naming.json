@@ -1372,6 +1372,16 @@
           "symbol": "TabsProps",
           "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
+      },
+      {
+        "component": "Isotipo3D",
+        "type": "string (required non-empty accessible name in interactive mode)",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/atoms/isotipo3d/types.ts",
+          "symbol": "Isotipo3DProps",
+          "revision": "sha256:0099ebba8fc63ca6fd3a3817b74ec2f311bd387f9ce521efa1391f5791144164"
+        }
       }
     ]
   },
@@ -1679,7 +1689,7 @@
         "source": {
           "path": "packages/effects/src/atoms/isotipo3d/types.ts",
           "symbol": "Isotipo3DProps",
-          "revision": "sha256:b4b93ae799297801ed9d148f88ee50b56a1d786cab173e0a38eecb403e592b66"
+          "revision": "sha256:0099ebba8fc63ca6fd3a3817b74ec2f311bd387f9ce521efa1391f5791144164"
         }
       }
     ]
@@ -1744,6 +1754,16 @@
           "path": "packages/ui/src/atoms/avatar/types.ts",
           "symbol": "AvatarProps",
           "revision": "sha256:8ffd965e1e0baf15dbc4495f1780b62a9f5a654738ff78ad88f0775e16d0212b"
+        }
+      },
+      {
+        "component": "Isotipo3D",
+        "type": "boolean (freezes the idle animation loop while true; gestures still repaint)",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/atoms/isotipo3d/types.ts",
+          "symbol": "Isotipo3DProps",
+          "revision": "sha256:0099ebba8fc63ca6fd3a3817b74ec2f311bd387f9ce521efa1391f5791144164"
         }
       }
     ]
@@ -5302,7 +5322,7 @@
         "source": {
           "path": "packages/effects/src/atoms/isotipo3d/types.ts",
           "symbol": "Isotipo3DProps",
-          "revision": "sha256:b4b93ae799297801ed9d148f88ee50b56a1d786cab173e0a38eecb403e592b66"
+          "revision": "sha256:0099ebba8fc63ca6fd3a3817b74ec2f311bd387f9ce521efa1391f5791144164"
         }
       }
     ]
@@ -5329,7 +5349,7 @@
         "source": {
           "path": "packages/effects/src/atoms/isotipo3d/types.ts",
           "symbol": "Isotipo3DProps",
-          "revision": "sha256:b4b93ae799297801ed9d148f88ee50b56a1d786cab173e0a38eecb403e592b66"
+          "revision": "sha256:0099ebba8fc63ca6fd3a3817b74ec2f311bd387f9ce521efa1391f5791144164"
         }
       }
     ]
@@ -5356,7 +5376,7 @@
         "source": {
           "path": "packages/effects/src/atoms/isotipo3d/types.ts",
           "symbol": "Isotipo3DProps",
-          "revision": "sha256:b4b93ae799297801ed9d148f88ee50b56a1d786cab173e0a38eecb403e592b66"
+          "revision": "sha256:0099ebba8fc63ca6fd3a3817b74ec2f311bd387f9ce521efa1391f5791144164"
         }
       }
     ]
@@ -5484,6 +5504,98 @@
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
           "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+        }
+      }
+    ]
+  },
+  {
+    "id": "interaction-drag-rotate",
+    "name": "dragRotate",
+    "meaning": "Whether the user may drag a decorative effect to rotate it away from its scene pose before it springs back.",
+    "whenToUse": "A decorative effect exposes opt-in direct-manipulation rotation; clamping, capture and release behavior are component-specific.",
+    "avoid": "Ambient pointer tilt (use pointer-tilt), selection or camera-control APIs, or gestures that trap touch scroll outside an explicitly interactive posture.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Isotipo3D",
+        "type": "boolean (drag-to-rotate offsets, default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/atoms/isotipo3d/types.ts",
+          "symbol": "Isotipo3DProps",
+          "revision": "sha256:0099ebba8fc63ca6fd3a3817b74ec2f311bd387f9ce521efa1391f5791144164"
+        }
+      }
+    ]
+  },
+  {
+    "id": "interaction-flip-gesture",
+    "name": "flip",
+    "meaning": "Whether the user may toggle a decorative effect’s 180° presentation through a flip gesture.",
+    "whenToUse": "A decorative effect offers an opt-in front/back flip triggered by component-specific gestures or keys.",
+    "avoid": "Drag rotation offsets (use interaction-drag-rotate), controlled or persistent presentation state, or visual variant selection (use visual-treatment).",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Isotipo3D",
+        "type": "boolean (drag released past the threshold or double-click toggles the flip, default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/atoms/isotipo3d/types.ts",
+          "symbol": "Isotipo3DProps",
+          "revision": "sha256:0099ebba8fc63ca6fd3a3817b74ec2f311bd387f9ce521efa1391f5791144164"
+        }
+      }
+    ]
+  },
+  {
+    "id": "interaction-interactive-mode",
+    "name": "interactive",
+    "meaning": "Whether a decorative component switches from its decorative posture to a focusable, announced interactive posture.",
+    "whenToUse": "A decorative layer opts into keyboard operability and an accessible role; component-specific requirements (such as a required label) apply.",
+    "avoid": "Dialog focus modality (use interaction-modality), hover-only emphasis, loading state or generic disabled switches.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Isotipo3D",
+        "type": "boolean (focusable image role with Arrow-key rotate and Enter/Space flip; requires label, default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/atoms/isotipo3d/types.ts",
+          "symbol": "Isotipo3DProps",
+          "revision": "sha256:0099ebba8fc63ca6fd3a3817b74ec2f311bd387f9ce521efa1391f5791144164"
+        }
+      }
+    ]
+  },
+  {
+    "id": "interaction-pose-change",
+    "name": "onPoseChange",
+    "meaning": "Notification of a user-driven decorative-effect pose change, reported in component-specific units.",
+    "whenToUse": "The component emits gesture- or keyboard-driven pose updates; scene- or prop-driven pose changes are excluded.",
+    "avoid": "Selection or editing value changes (use interactive-value-change), controlled pose state or internal animation telemetry.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Isotipo3D",
+        "type": "((pose: { yaw: number; pitch: number; flipped: boolean }) => void) (user-driven degrees)",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/atoms/isotipo3d/types.ts",
+          "symbol": "Isotipo3DProps",
+          "revision": "sha256:0099ebba8fc63ca6fd3a3817b74ec2f311bd387f9ce521efa1391f5791144164"
         }
       }
     ]

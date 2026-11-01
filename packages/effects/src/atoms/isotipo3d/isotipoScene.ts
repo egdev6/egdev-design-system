@@ -301,16 +301,32 @@ export async function isotipoCreateScene(
         name: IsotipoScene,
         progress: number,
         reducedMotion: boolean,
-        animation: { time: number; intro: number; tiltX?: number; tiltY?: number; pose?: IsotipoPose } = {
-          time: 0,
-          intro: 1
-        }
+        animation: {
+          time: number;
+          intro: number;
+          tiltX?: number;
+          tiltY?: number;
+          yawOffset?: number;
+          pitchOffset?: number;
+          flipped?: boolean;
+          pose?: IsotipoPose;
+        } = { time: 0, intro: 1 }
       ) {
         const pose = reducedMotion
           ? isotipoPose(name, isotipoNormalizeProgress(progress), true)
           : (animation.pose ?? isotipoPose(name, isotipoNormalizeProgress(progress), false));
         const time = reducedMotion || !Number.isFinite(animation.time) ? 0 : Math.max(0, animation.time);
         const intro = reducedMotion ? 1 : isotipoNormalizeProgress(animation.intro);
+        const tiltX = reducedMotion ? 0 : Math.max(-1, Math.min(1, animation.tiltX ?? 0));
+        const tiltY = reducedMotion ? 0 : Math.max(-1, Math.min(1, animation.tiltY ?? 0));
+        // Gesture offsets stay available under reduced motion so a user-driven drag still repaints.
+        const yawOffset = animation.yawOffset ?? 0;
+        const pitchOffset = animation.pitchOffset ?? 0;
+        const flipped = animation.flipped === true;
+        const angles = isotipoGestureAngles(pose, tiltX, tiltY, yawOffset, pitchOffset, flipped);
+        const az = (angles.az * Math.PI) / 180;
+        const el = (angles.el * Math.PI) / 180;
+        camera.fov = pose.fov;
         const explosion = pose.ex * pose.ex * (3 - 2 * pose.ex);
         const introEase = 1 - (1 - intro) ** 3;
         const rotation = reducedMotion ? 0 : Math.sin(time * 0.3) * 0.02 * (1 - explosion);
@@ -318,11 +334,6 @@ export async function isotipoCreateScene(
         group.rotation.y = rotation;
         group.scale.setScalar(groupScale);
         group.updateMatrixWorld(true);
-        const tiltX = reducedMotion ? 0 : Math.max(-1, Math.min(1, animation.tiltX ?? 0));
-        const tiltY = reducedMotion ? 0 : Math.max(-1, Math.min(1, animation.tiltY ?? 0));
-        const az = ((pose.az + tiltX * 3) * Math.PI) / 180;
-        const el = ((pose.el - tiltY * 2) * Math.PI) / 180;
-        camera.fov = pose.fov;
         const projectedExtent = (distance: number) => {
           camera.position.set(
             distance * Math.cos(el) * Math.sin(az),
@@ -347,7 +358,9 @@ export async function isotipoCreateScene(
           }
           return Math.max(maxX - minX, maxY - minY);
         };
-        const nextFitKey = `${az}:${el}:${pose.fov}:${camera.aspect}:${rotation}:${groupScale}`;
+        const nextFitKey = `${
+          pose.az + tiltX * 3 + isotipoGestureBand(yawOffset) + (flipped ? 180 : 0)
+        }: ${pose.el - tiltY * 2 + isotipoGestureBand(pitchOffset)}:${pose.fov}:${camera.aspect}:${rotation}:${groupScale}`;
         if (fitKey !== nextFitKey) {
           let lower = Math.max(...corners.map((corner) => corner.length())) + 1;
           let upper = lower * 2;
@@ -428,6 +441,26 @@ const smooth = (a: number, b: number, value: number) => {
   const t = Math.max(0, Math.min(1, (value - a) / (b - a)));
   return t * t * (3 - 2 * t);
 };
+
+/** Camera view angles in degrees: approved pose plus ambient tilt, user gesture offsets and flip. */
+export function isotipoGestureAngles(
+  pose: Pick<IsotipoPose, 'az' | 'el'>,
+  tiltX = 0,
+  tiltY = 0,
+  yawOffset = 0,
+  pitchOffset = 0,
+  flipped = false
+): { az: number; el: number } {
+  return {
+    az: pose.az + Math.max(-1, Math.min(1, tiltX)) * 3 + Math.max(-90, Math.min(90, yawOffset)) + (flipped ? 180 : 0),
+    el: pose.el - Math.max(-1, Math.min(1, tiltY)) * 2 + Math.max(-30, Math.min(30, pitchOffset))
+  };
+}
+
+/** Five-degree hysteresis band so gesture drags do not recompute the assembled fit every frame. */
+export function isotipoGestureBand(value: number): number {
+  return Math.round(value / 5) * 5;
+}
 
 /** Target pose; progress is normalized by the component before entering the engine. */
 export function isotipoPose(scene: IsotipoScene, progress: number, reducedMotion: boolean): IsotipoPose {

@@ -1,6 +1,6 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import * as effects from '../../index';
 import * as isotipoScene from './isotipoScene';
 import { isotipoPose } from './isotipoScene';
@@ -207,5 +207,82 @@ describe('Isotipo3D scene pose port', () => {
         expect(pose[key as keyof typeof pose], key).toBeCloseTo(value, 6);
       }
     }
+  });
+});
+
+describe('Isotipo3D interaction amendment (v0.5)', () => {
+  const render = (props: Record<string, unknown>) => {
+    const component = Reflect.get(effects, 'Isotipo3D');
+    return renderToStaticMarkup(createElement(component, props));
+  };
+  const rootClass = (html: string) => html.match(/class="([^"]+)"/)?.[1]?.split(' ') ?? [];
+
+  it('keeps the decorative posture by default and under gesture-less props', () => {
+    for (const props of [{}, { paused: true }, { dragRotate: false }]) {
+      const html = render(props);
+      expect(html).toContain('aria-hidden="true"');
+      expect(html).not.toContain('role="img"');
+      expect(html).not.toContain('tabindex=');
+      expect(rootClass(html)).toContain('pointer-events-none');
+      expect(rootClass(html)).not.toContain('pointer-events-auto');
+      expect(rootClass(html)).not.toContain('touch-none');
+    }
+  });
+
+  it('relaxes pointer events only when a gesture is enabled, without touch-action in decorative mode', () => {
+    for (const props of [{ dragRotate: true }, { flip: true }]) {
+      const html = render(props);
+      expect(html).toContain('aria-hidden="true"');
+      expect(rootClass(html)).toContain('pointer-events-auto');
+      expect(rootClass(html)).not.toContain('pointer-events-none');
+      expect(rootClass(html)).not.toContain('touch-none');
+    }
+  });
+
+  it('exposes the image role, focus and touch-action in interactive mode', () => {
+    const html = render({ interactive: true, label: 'EGDEV isotype' });
+    expect(html).toContain('role="img"');
+    expect(html).toContain('tabindex="0"');
+    expect(html).toContain('aria-label="EGDEV isotype"');
+    expect(html).not.toMatch(/<div[^>]*aria-hidden="true"/);
+    expect(rootClass(html)).toContain('pointer-events-auto');
+    expect(rootClass(html)).toContain('touch-none');
+  });
+
+  it('warns and keeps the decorative fallback posture when interactive lacks a label', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {
+      /* silenced for the assertion */
+    });
+    const html = render({ interactive: true });
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('label'));
+    expect(html).toContain('aria-hidden="true"');
+    expect(html).not.toContain('role="img"');
+    expect(rootClass(html)).toContain('pointer-events-none');
+    warn.mockRestore();
+  });
+
+  it('adds drag offsets, flip and tilt into the approved view angles', () => {
+    const angles = Reflect.get(isotipoScene, 'isotipoGestureAngles') as (
+      pose: { az: number; el: number },
+      tiltX?: number,
+      tiltY?: number,
+      yawOffset?: number,
+      pitchOffset?: number,
+      flipped?: boolean
+    ) => { az: number; el: number };
+    expect(angles({ az: 45, el: 35.264 })).toEqual({ az: 45, el: 35.264 });
+    expect(angles({ az: 45, el: 35.264 }, 0.5, 0.5)).toEqual({ az: 46.5, el: 34.264 });
+    const tilted = angles({ az: 45, el: 35.264 }, 0.5, 0.5, -90, 30, true);
+    expect(tilted.az).toBeCloseTo(45 + 1.5 - 90 + 180);
+    expect(tilted.el).toBeCloseTo(35.264 - 1 + 30);
+  });
+
+  it('quantizes gesture offsets into five-degree fit bands', () => {
+    const band = Reflect.get(isotipoScene, 'isotipoGestureBand') as (value: number) => number;
+    expect(band(0)).toBe(0);
+    expect(band(2.4)).toBe(0);
+    expect(band(2.6)).toBe(5);
+    expect(band(-2.6)).toBe(-5);
+    expect(band(90)).toBe(90);
   });
 });

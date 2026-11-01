@@ -1174,7 +1174,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "mover",
-    "notas": "Decorative 3D isotype with scene, progress, opacity and pointer tilt controls, lazy three loading and an SVG fallback. Browser visual conformity and packed-consumer validation remain pending. Contract: [#47](https://github.com/egdev6/egdev-design-system/issues/47)."
+    "notas": "Decorative 3D isotype with scene, progress, opacity and pointer tilt controls, opt-in paused/dragRotate/flip/interactive gestures with onPoseChange, lazy three loading and an SVG fallback. Interaction amendment: [#227](https://github.com/egdev6/egdev-design-system/issues/227). Contract: [#47](https://github.com/egdev6/egdev-design-system/issues/47)."
   },
   {
     "actual": "AmbientBackground",
