@@ -2278,14 +2278,16 @@ test('UI ships exactly the approved Avatar utility recipe without new marker rul
     ['.bg-linear-135', /--tw-gradient-position:\s*135deg/],
     ['.from-bg-deep', /--tw-gradient-from:\s*var\(--color-bg-deep[,)]/],
     ['.to-primitive-red-neon', /--tw-gradient-to:\s*var\(--color-primitive-red-neon[,)]/],
-    ['.object-cover', /object-fit:\s*cover\s*;/],
-    [
-      String.raw`.ring-\[var\(--eg-avatar-ring\,var\(--color-bg-surface\)\)\]`,
-      /--tw-ring-color:\s*var\(--eg-avatar-ring,\s*var\(--color-bg-surface\)\)/
-    ]
+    ['.object-cover', /object-fit:\s*cover\s*;/]
   ]) {
     assert.match(rule(selector), declaration, selector);
   }
+  // The removed badge was the only consumer of this ring utility; it must leave the shipped CSS.
+  assert.doesNotMatch(
+    utilities,
+    /--tw-ring-color:\s*var\(--eg-avatar-ring/,
+    'Removed Avatar badge ring utility must not ship'
+  );
   for (const size of ['2.75', '3.25', '4.5', '5.5', '7.5']) {
     const body = rule('.size-' + size.replace('.', '\\.'));
     for (const property of ['width', 'height']) {
