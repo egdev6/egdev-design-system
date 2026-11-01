@@ -84,7 +84,8 @@ export const sliderTrackVariants = cva(
 /** Range: brand fill up to the value; Radix positions it with inline percentages. */
 export const sliderRangeVariants = cva('absolute h-full bg-fg-brand-default');
 
-/** Thumb: raised 16px handle ("what is pressed stands out"); the focus ring replaces the elevation. */
+/** Thumb: raised 16px handle ("what is pressed stands out"); the focus ring replaces the elevation.
+ * An invalid value doubles the border and tints the fill (#219 option A). */
 export const sliderThumbVariants = cva(
-  'block size-4 rounded-full bg-fg-default shadow-[var(--shadow-elev-1)] cursor-grab active:cursor-grabbing focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)] transition-shadow duration-[var(--duration-fast)] ease-[var(--ease-out)] motion-reduce:transition-none'
+  'block box-border size-4 rounded-full bg-fg-default shadow-[var(--shadow-elev-1)] cursor-grab active:cursor-grabbing focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)] aria-invalid:border-status-danger aria-invalid:border-(length:--border-width-invalid) aria-invalid:bg-status-danger-bg transition-shadow duration-[var(--duration-fast)] ease-[var(--ease-out)] motion-reduce:transition-none'
 );

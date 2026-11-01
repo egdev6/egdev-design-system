@@ -215,21 +215,24 @@ describe('Textarea contract', () => {
         'border-border-control',
         'hover:border-fg-muted',
         'read-only:hover:border-border-control',
-        'focus-visible:border-border-brand-strong',
-        'focus-visible:shadow-[var(--shadow-well),var(--shadow-ring-brand)]'
+        'focus-visible:shadow-[var(--shadow-well),var(--shadow-focus)]'
       ]) {
         expect(list, `${variant} ${utility}`).toContain(utility);
       }
+      expect(list).not.toContain('focus-visible:border-border-brand-strong');
+      expect(list).not.toContain('focus-visible:shadow-[var(--shadow-well),var(--shadow-ring-brand)]');
     }
-    expect(classes('prose')).toContain('focus-visible:border-border-brand-strong');
+    expect(classes('prose')).not.toContain('focus-visible:border-border-brand-strong');
     expect(classes('prose')).toContain(
-      'focus-visible:shadow-[var(--shadow-edge),var(--shadow-elev-1),var(--shadow-glow-base)]'
+      'focus-visible:shadow-[var(--shadow-edge),var(--shadow-elev-1),var(--shadow-glow-base),var(--shadow-focus)]'
     );
     for (const variant of ['default', 'code', 'prose'] as const) {
       const list = classes(variant);
       for (const utility of [
         'focus-visible:outline-none',
         'aria-invalid:border-status-danger',
+        'aria-invalid:border-(length:--border-width-invalid)',
+        'aria-invalid:bg-status-danger-bg',
         'aria-invalid:hover:border-status-danger',
         'aria-invalid:focus-visible:border-status-danger',
         'disabled:opacity-45',

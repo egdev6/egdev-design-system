@@ -113,7 +113,7 @@ export const ReadOnly: Story = {
   args: { 'aria-label': 'API token', variant: 'code', defaultValue: 'egd_4f1763a5e997fc', readOnly: true }
 };
 
-/** Native aria-invalid applies the danger border, kept while focused; the error text names the problem. */
+/** Native aria-invalid applies the in-control danger treatment: 2px border, tinted well and glyph. */
 export const Invalid: Story = {
   render: () => {
     const id = useId();

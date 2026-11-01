@@ -2878,7 +2878,7 @@ describe('RadioGroup metadata contract', () => {
       }
     }
     const stories = exportedStoryNames(ast(source('atoms/radio-group/RadioGroup.stories.tsx')));
-    expect(stories).toEqual(['Default', 'Controlled', 'Horizontal', 'DisabledOption', 'DisabledGroup']);
+    expect(stories).toEqual(['Default', 'Invalid', 'Controlled', 'Horizontal', 'DisabledOption', 'DisabledGroup']);
   });
 
   it('binds the documented defaults to the hook destructuring and the root CVA', () => {

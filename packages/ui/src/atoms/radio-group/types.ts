@@ -76,8 +76,8 @@ export type RadioGroupProps = Omit<
   name?: string;
 };
 
-/** Group root: a column or a wrapping row of options. */
-const radioGroupRootVariants = cva('eg-radio-group flex', {
+/** Group root: a column or a wrapping row of options. The group carries the invalid state that its radios reflect. */
+const radioGroupRootVariants = cva('eg-radio-group group flex', {
   variants: {
     orientation: {
       vertical: 'flex-col gap-1',
@@ -93,9 +93,17 @@ const radioGroupRowVariants = cva(
 );
 
 /** Radio circle: Material well when unchecked, primary bevel and halo when checked, focus ring winning in both. */
-const radioGroupItemVariants = cva(
-  'grid place-items-center box-border p-0 size-5 shrink-0 rounded-full border border-solid border-border-control bg-surface-0 shadow-[var(--shadow-well)] cursor-pointer transition-[border-color,box-shadow] ease-out duration-[var(--duration-fast)] motion-reduce:transition-none hover:border-fg-muted data-[state=checked]:border-action-primary-solid-bg data-[state=checked]:bg-[image:var(--gradient-btn-primary)] data-[state=checked]:shadow-[var(--shadow-btn-primary)] focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)] data-[state=checked]:focus-visible:shadow-[var(--shadow-focus)] disabled:pointer-events-none'
-);
+const radioGroupItemVariants = cva([
+  'grid place-items-center box-border p-0 size-5 shrink-0 rounded-full border border-solid border-border-control bg-surface-0 shadow-[var(--shadow-well)] cursor-pointer',
+  'transition-[border-color,box-shadow] ease-out duration-[var(--duration-fast)] motion-reduce:transition-none hover:border-fg-muted',
+  'data-[state=checked]:border-action-primary-solid-bg data-[state=checked]:bg-[image:var(--gradient-btn-primary)] data-[state=checked]:shadow-[var(--shadow-btn-primary)]',
+  'focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)] data-[state=checked]:focus-visible:shadow-[var(--shadow-focus)]',
+  // #219 option A: an invalid group tints each unchecked radio well and doubles the border;
+  // checked radios keep their opaque primary fill, so only the danger border applies there.
+  'group-aria-invalid:border-status-danger group-aria-invalid:border-(length:--border-width-invalid) group-aria-invalid:bg-status-danger-bg',
+  'group-aria-invalid:hover:border-status-danger group-aria-invalid:data-[state=checked]:border-status-danger',
+  'disabled:pointer-events-none'
+]);
 
 /** Checked dot: 8px black circle centred in the raised control. */
 const radioGroupIndicatorVariants = cva('size-2 rounded-full bg-action-primary-solid-fg');

@@ -48,6 +48,11 @@ export const Default: Story = {
   args: { label: 'Visibility', options: visibility, onValueChange: action('onValueChange') }
 };
 
+/** Native aria-invalid on the group doubles each radio border and tints the unchecked wells. */
+export const Invalid: Story = {
+  args: { label: 'Visibility', options: visibility, defaultValue: 'public', 'aria-invalid': true }
+};
+
 /** Consumer-owned selection: the value is stored by the consumer from onValueChange. */
 export const Controlled: Story = {
   render: () => {

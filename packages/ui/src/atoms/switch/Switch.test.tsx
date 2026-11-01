@@ -259,6 +259,20 @@ describe('Switch', () => {
     );
   });
 
+  it('applies the danger border and tinted well while invalid, checked and unchecked (#219 option A)', () => {
+    const { rerender } = render(<Switch aria-label='Stream alerts' aria-invalid='true' />);
+    const control = screen.getByRole('switch', { name: 'Stream alerts' });
+    expect(control).toHaveClass(
+      'aria-invalid:border-status-danger',
+      'aria-invalid:border-(length:--border-width-invalid)',
+      'aria-invalid:bg-status-danger-bg'
+    );
+    rerender(<Switch aria-label='Stream alerts' aria-invalid='true' defaultChecked={true} />);
+    expect(control).toHaveClass('aria-invalid:data-[state=checked]:border-status-danger');
+    // The checked error keeps its opaque primary fill; the tint would be invisible beneath it.
+    expect(control).not.toHaveClass('aria-invalid:data-[state=checked]:bg-status-danger-bg');
+  });
+
   it('never mirrors Radix state into classes', async () => {
     const user = userEvent.setup();
     render(<Switch aria-label='Stream alerts' />);

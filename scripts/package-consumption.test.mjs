@@ -2254,6 +2254,9 @@ function assertCheckboxCSS(css) {
     '.place-items-center',
     String.raw`.disabled\:opacity-45`,
     String.raw`.aria-invalid\:data-\[state\=unchecked\]\:border-status-danger`,
+    // #219 option A closed additions: invalid border width and tinted well (unchecked only).
+    String.raw`.aria-invalid\:data-\[state\=unchecked\]\:border-\(length\:--border-width-invalid\)`,
+    String.raw`.aria-invalid\:data-\[state\=unchecked\]\:bg-status-danger-bg`,
     String.raw`.data-\[state\=checked\]\:\[\&\>svg\:last-child\]\:hidden`,
     String.raw`.data-\[state\=indeterminate\]\:\[\&\>svg\:first-child\]\:hidden`
   ]) {
@@ -2316,20 +2319,23 @@ function assertSelectCSS(css) {
     String.raw`.border-\(length\:--border-width\)`,
     String.raw`.min-w-\[var\(--radix-select-trigger-width\)\]`,
     String.raw`.max-h-\[var\(--radix-select-content-available-height\)\]`,
-    String.raw`.data-\[state\=open\]\:shadow-\[var\(--shadow-well\)\,var\(--shadow-ring-brand\)\]`,
+    String.raw`.data-\[state\=open\]\:shadow-\[var\(--shadow-well\)\,var\(--shadow-focus\)\]`,
     String.raw`.data-highlighted\:bg-fg-default\/6`,
     String.raw`.data-disabled\:opacity-45`,
     String.raw`.data-placeholder\:text-fg-muted`,
     String.raw`.focus-visible\:ring-\[length\:var\(--focus-width\)\]`,
     String.raw`.focus-visible\:ring-focus-ring-inverse`,
     String.raw`.aria-invalid\:border-status-danger`,
+    // #219 option A closed additions: invalid border width and tinted well.
+    String.raw`.aria-invalid\:border-\(length\:--border-width-invalid\)`,
+    String.raw`.aria-invalid\:bg-status-danger-bg`,
     String.raw`.transition-colors`
   ]) {
     assert.ok(css.includes(utility), 'Missing Select utility ' + utility);
   }
   for (const token of [
     '--shadow-well',
-    '--shadow-ring-brand',
+    '--shadow-focus',
     '--shadow-edge-strong',
     '--shadow-elev-3',
     '--blur-overlay',
@@ -2669,6 +2675,10 @@ function assertSliderCSS(css) {
     String.raw`.pointer-coarse\:h-11`,
     String.raw`.data-\[disabled\]\:opacity-45`,
     String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`,
+    // #219 option A closed additions: invalid border width and tinted thumb fill.
+    String.raw`.aria-invalid\:border-status-danger`,
+    String.raw`.aria-invalid\:border-\(length\:--border-width-invalid\)`,
+    String.raw`.aria-invalid\:bg-status-danger-bg`,
     String.raw`.shadow-\[var\(--shadow-well\)\]`,
     String.raw`.shadow-\[var\(--shadow-elev-1\)\]`,
     String.raw`.motion-reduce\:transition-none`
@@ -2757,6 +2767,9 @@ function assertSwitchCSS(css) {
     '.data-\\[state\\=checked\\]\\:shadow-\\[var\\(--shadow-btn-primary\\)\\]',
     '.data-\\[state\\=checked\\]\\:bg-action-primary-solid-fg',
     '.data-\\[state\\=checked\\]\\:focus-visible\\:shadow-\\[var\\(--shadow-focus\\)\\]',
+    // #219 option A closed additions: invalid border width and tinted well (unchecked only).
+    '.aria-invalid\\:data-\\[state\\=unchecked\\]\\:border-\\(length\\:--border-width-invalid\\)',
+    '.aria-invalid\\:data-\\[state\\=unchecked\\]\\:bg-status-danger-bg',
     '.disabled\\:opacity-45',
     '.motion-reduce\\:transition-none'
   ]) {
@@ -2902,6 +2915,17 @@ function assertTextareaCSS(css) {
     /\.aria-invalid\\:border-status-danger\[aria-invalid="true"\]\s*\{[^}]*border-color:\s*var\(--color-status-danger/,
     'Invalid border'
   );
+  // #219 option A closed additions: invalid border width and tinted well.
+  assert.match(
+    css,
+    /\.aria-invalid\\:border-\\\(length\\:--border-width-invalid\\\)\[aria-invalid="true"\]\s*\{[^}]*border-width:\s*var\(--border-width-invalid\)/,
+    'Invalid border width'
+  );
+  assert.match(
+    css,
+    /\.aria-invalid\\:bg-status-danger-bg\[aria-invalid="true"\]\s*\{[^}]*background-color:\s*var\(--color-status-danger-bg/,
+    'Invalid tinted well'
+  );
   assert.match(css, /\.disabled\\:opacity-45:disabled\s*\{[^}]*opacity:\s*45%/, 'Disabled opacity');
   assert.ok(css.includes('.motion-reduce\\:transition-none'), 'Reduced motion removes the transition');
   assert.doesNotMatch(css, /\.eg-textarea[^{]*\{/, 'Textarea marker must not become a shipped CSS rule');
@@ -2917,15 +2941,17 @@ function assertInputCSS(css) {
     '.text-body-default',
     '.placeholder\\:text-fg-muted',
     '.hover\\:border-fg-muted',
-    '.focus-visible\\:border-border-brand-strong',
     '.aria-invalid\\:border-status-danger',
+    // #219 option A closed additions: invalid border width and tinted well.
+    '.aria-invalid\\:border-\\(length\\:--border-width-invalid\\)',
+    '.aria-invalid\\:bg-status-danger-bg',
     '.read-only\\:hover\\:border-border-control',
     '.disabled\\:cursor-not-allowed',
     '.motion-reduce\\:transition-none'
   ]) {
     assert.ok(css.includes(utility), 'Missing Input utility ' + utility);
   }
-  assert.match(css, /--tw-shadow:\s*var\(--shadow-well\),\s*var\(--shadow-ring-brand\)/, 'Input focus ring must ship');
+  assert.match(css, /--tw-shadow:\s*var\(--shadow-well\),\s*var\(--shadow-focus\)/, 'Input focus ring must ship');
   assert.match(
     css,
     /\.min-h-11\s*\{[^}]*min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*11\)/,
@@ -3466,6 +3492,10 @@ function assertRadioGroupCSS(css) {
     '.data-\\[state\\=checked\\]\\:bg-\\[image\\:var\\(--gradient-btn-primary\\)\\]',
     '.data-\\[state\\=checked\\]\\:shadow-\\[var\\(--shadow-btn-primary\\)\\]',
     '.data-\\[state\\=checked\\]\\:focus-visible\\:shadow-\\[var\\(--shadow-focus\\)\\]',
+    // #219 option A closed additions: the invalid group treatment on every radio.
+    '.group-aria-invalid\\:border-status-danger',
+    '.group-aria-invalid\\:border-\\(length\\:--border-width-invalid\\)',
+    '.group-aria-invalid\\:bg-status-danger-bg',
     '.disabled\\:pointer-events-none',
     '.cursor-pointer'
   ]) {

@@ -119,6 +119,10 @@
   --color-status-info: #8AB4FF;
   /* --color-status-danger — Error = red-300 + icono circle-alert + texto, para no confundirse con la marca. 6.49:1 canvas · 4.82:1 surface-3. */
   --color-status-danger: var(--color-primitive-red-300);
+  /* --color-status-danger-bg — Tinted danger well inside an invalid control (issue #219, option A).
+     Owner-approved derivation (2026-11): color-mix from the existing --color-status-danger primitive
+     at 12%, mirroring the alpha-red-12 brand-tint precedent; no new color literal is introduced. */
+  --color-status-danger-bg: color-mix(in srgb, var(--color-status-danger) 12%, transparent);
   /* --color-fg-on-status — Texto sobre rellenos de estado sólidos (≥10:1 en los tres). */
   --color-fg-on-status: var(--color-primitive-black);
   /* --color-alpha-red-22 — Ya se usa en egdev.es y Agent Teams como borde de card de marca; formalizarlo. Decorativo (≈ #38000C, 1.17:1). */
@@ -441,6 +445,9 @@
   --effect-grid-size: 32px;
   /* --border-width — Grosor de borde de superficies y controles. */
   --border-width: 1px;
+  /* --border-width-invalid — Invalid control border width (issue #219, option A): doubles the
+     resting 1px to the 2px focus geometry so width itself is a non-color error cue. */
+  --border-width-invalid: 2px;
   /* --focus-width — Grosor del anillo de foco. */
   --focus-width: 2px;
   /* --focus-offset — Separación del anillo de foco. */
