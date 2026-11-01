@@ -28,8 +28,19 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
-import { CommandPalette, Dialog, DialogTrigger, DialogContent, DialogClose } from '@egdev/ui';
+import { CommandPalette, Dialog, DialogTrigger, DialogContent, DialogClose, TabBar, tabBarVariants } from '@egdev/ui';
 import type { CommandPaletteProps, CommandPaletteItem, CommandPaletteMessages, CommandPaletteFiltering } from '@egdev/ui';
+import type { TabBarItem, TabBarMessages, TabBarProps } from '@egdev/ui';
+// @ts-expect-error Internal hook is not public.
+type TabBarPrivateHook = (typeof import('@egdev/ui'))['useTabBar'];
+// @ts-expect-error Internal part recipe is not public.
+type TabBarPrivateRecipe = (typeof import('@egdev/ui'))['tabBarLinkVariants'];
+export type TabBarPrivateNegatives = [TabBarPrivateHook, TabBarPrivateRecipe];
+export const tabBarItems: TabBarItem[] = [{ id: 'inbox', label: 'Inbox', href: '#inbox', icon: 'compass', count: 250, 'aria-current': 'page' }];
+export const tabBarMessages: TabBarMessages = { pendingCount: (count) => count + ' pending' };
+export const tabBarProps: TabBarProps = { label: 'Main', items: tabBarItems, messages: tabBarMessages };
+export const tabBarSample = createElement(TabBar, tabBarProps);
+export const tabBarRecipe = tabBarVariants();
 import type { DialogProps, DialogTriggerProps, DialogContentProps, DialogCloseProps } from '@egdev/ui';
 import { Isotipo3D } from '@egdev/effects';
 import type { Isotipo3DProps } from '@egdev/effects';
@@ -3799,6 +3810,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'StatusDot',
   'Surface',
   'Switch',
+  'TabBar',
   'Table',
   'Tabs',
   'Text',
@@ -3823,6 +3835,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'statVariants',
   'statusDotVariants',
   'surfaceVariants',
+  'tabBarVariants',
   'tabsVariants',
   'tooltipVariants',
   'useToast'

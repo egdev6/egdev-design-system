@@ -84,6 +84,7 @@ export * from './molecules/toast';
 // Organisms
 export * from './organisms/preview-frame';
 export * from './organisms/sidebar';
+export * from './organisms/tab-bar';
 // Primitives
 export type { AspectRatioProps } from './primitives/aspect-ratio';
 export { AspectRatio } from './primitives/aspect-ratio';

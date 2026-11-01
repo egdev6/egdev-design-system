@@ -20,6 +20,24 @@ function artifact(name, target) {
   return path;
 }
 
+test('tab-bar exports native navigation and its public recipe', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(
+    createElement(exported.TabBar, {
+      label: 'Main',
+      items: [{ id: 'inbox', label: 'Inbox', href: '#inbox', icon: 'compass', count: 250, 'aria-current': 'page' }]
+    })
+  );
+  assert.match(html, /<nav[^>]*aria-label="Main"/);
+  assert.match(html, /aria-current="page"/);
+  assert.match(html, /99\+/);
+  assert.match(html, /250 pending/);
+  assert.match(exported.tabBarVariants(), /eg-tabbar/);
+  assert.equal(exported.useTabBar, undefined);
+});
+
 test('command-palette closed SSR renders only its optional launcher', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -138,7 +156,7 @@ function cssBlock(css, opening) {
 
 // Match escaped emitted selectors, not unescaped CVA class names; allow only complete approved utilities.
 const unapprovedTransitionUtility =
-  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\]|\\\[opacity\\,transform\\\]|\\\[width\\,margin\\,opacity\\,transform\\\])(?=\s*\{))[\w\\]/;
+  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\]|\\\[opacity\\,transform\\\]|\\\[width\\,margin\\,opacity\\,transform\\\]|\\\[color\\,transform\\\])(?=\s*\{))[\w\\]/;
 
 test('Collapsible ships native group-state caret motion and reduced-motion resets', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
@@ -1662,6 +1680,7 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   // SearchTrigger #99 reuses the approved transition-[border-color,color] selector only.
   // PullQuote #98 adds no transition or animation utility.
   // #221 selected check cues: SelectTile [opacity,transform] and ChipGroup [width,margin,opacity,transform].
+  // TabBar #125 adds only its contracted [color,transform] link color and press feedback.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
@@ -2968,6 +2987,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'StatusDot',
       'Surface',
       'Switch',
+      'TabBar',
       'Table',
       'Tabs',
       'Text',
@@ -2992,6 +3012,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'statVariants',
       'statusDotVariants',
       'surfaceVariants',
+      'tabBarVariants',
       'tabsVariants',
       'tooltipVariants',
       'useToast'
@@ -3348,6 +3369,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SurfaceTone',
     'Switch',
     'SwitchProps',
+    'TabBar',
+    'TabBarItem',
+    'TabBarMessages',
+    'TabBarProps',
     'Table',
     'TableColumn',
     'TableColumnFormat',
@@ -3412,6 +3437,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'statVariants',
     'statusDotVariants',
     'surfaceVariants',
+    'tabBarVariants',
     'tabsVariants',
     'tooltipVariants',
     'useToast'
