@@ -1324,16 +1324,6 @@
         }
       },
       {
-        "component": "GaugeDock",
-        "type": "string (required non-empty toolbar name)",
-        "status": "existing",
-        "source": {
-          "path": "packages/ui/src/molecules/gauge-dock/types.ts",
-          "symbol": "GaugeDockProps",
-          "revision": "sha256:892044d2ba68a86b7ebcd73a966662f0b611eac20e8388b6ae90056b267c2a35"
-        }
-      },
-      {
         "component": "PopoverContent",
         "type": "string (required non-empty dialog name)",
         "status": "existing",
@@ -2095,16 +2085,6 @@
         }
       },
       {
-        "component": "HoverCardTrigger",
-        "type": "boolean (discriminates native required href from child-owned href)",
-        "status": "existing",
-        "source": {
-          "path": "packages/ui/src/molecules/hover-card/types.ts",
-          "symbol": "HoverCardTriggerProps",
-          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
-        }
-      },
-      {
         "component": "PopoverTrigger",
         "type": "boolean (button composition union)",
         "status": "existing",
@@ -2633,16 +2613,6 @@
           "symbol": "RadioGroupProps",
           "revision": "sha256:4ca31d93de621ebd92fb4d19375b50baffcf633301bde23f3b4cc91b5fef88bf"
         }
-      },
-      {
-        "component": "GaugeDock",
-        "type": "'horizontal' | 'vertical'",
-        "status": "existing",
-        "source": {
-          "path": "packages/ui/src/molecules/gauge-dock/types.ts",
-          "symbol": "GaugeDockProps",
-          "revision": "sha256:892044d2ba68a86b7ebcd73a966662f0b611eac20e8388b6ae90056b267c2a35"
-        }
       }
     ]
   },
@@ -2843,16 +2813,6 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
-      {
-        "component": "HoverCardContent",
-        "type": "'top' | 'right' | 'bottom' | 'left'",
-        "status": "existing",
-        "source": {
-          "path": "packages/ui/src/molecules/hover-card/types.ts",
-          "symbol": "HoverCardContentProps",
-          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
-        }
-      },
       {
         "component": "Menu",
         "type": "MenuSide ('top' | 'right' | 'bottom' | 'left')",
@@ -3490,16 +3450,6 @@
     },
     "usages": [
       {
-        "component": "HoverCardContent",
-        "type": "'start' | 'center' | 'end'",
-        "status": "existing",
-        "source": {
-          "path": "packages/ui/src/molecules/hover-card/types.ts",
-          "symbol": "HoverCardContentProps",
-          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
-        }
-      },
-      {
         "component": "PopoverContent",
         "type": "'start' | 'center' | 'end'",
         "status": "existing",
@@ -3554,16 +3504,6 @@
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListCollapsibleGroup",
           "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
-        }
-      },
-      {
-        "component": "HoverCard",
-        "type": "boolean",
-        "status": "existing",
-        "source": {
-          "path": "packages/ui/src/molecules/hover-card/types.ts",
-          "symbol": "HoverCardProps",
-          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
         }
       },
       {
@@ -3634,16 +3574,6 @@
         }
       },
       {
-        "component": "HoverCard",
-        "type": "boolean (default false)",
-        "status": "existing",
-        "source": {
-          "path": "packages/ui/src/molecules/hover-card/types.ts",
-          "symbol": "HoverCardProps",
-          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
-        }
-      },
-      {
         "component": "Popover",
         "type": "boolean",
         "status": "existing",
@@ -3708,16 +3638,6 @@
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListCollapsibleGroup",
           "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
-        }
-      },
-      {
-        "component": "HoverCard",
-        "type": "(open: boolean) => void",
-        "status": "existing",
-        "source": {
-          "path": "packages/ui/src/molecules/hover-card/types.ts",
-          "symbol": "HoverCardProps",
-          "revision": "sha256:e7d36beedcc1196db25751455b6c910b4848b9286b1b7d463642ad91c1b146a6"
         }
       },
       {
