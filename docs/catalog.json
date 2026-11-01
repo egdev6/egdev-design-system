@@ -314,9 +314,9 @@
     "nivel": "atom",
     "destino": "ui",
     "radix": "Avatar",
-    "compone": "Icon; source-private Indicator geometry",
+    "compone": "Icon; Indicator (consumer composition)",
     "accion": "mantener",
-    "notas": "Implemented in @egdev/ui under the approved v0.1 contract: passive identity disc with Radix-managed photo loading and immediate user-icon fallback, sm/md/lg/xl sizes, an optional decorative network badge and paused presentation. Root label owns the accessible name; decorative without it. No initials, interaction, ref, asChild or stylesheet. Contract: [#51](https://github.com/egdev6/egdev-design-system/issues/51). The separately approved Indicator amendment now shares source-private geometry/glyph/position recipes only, not the public wrapper or standalone paint. Public types, markup, ring and paused policy remain unchanged; browser-measured migration parity is still pending."
+    "notas": "Implemented in @egdev/ui under the approved v0.1 contract: passive identity disc with Radix-managed photo loading and immediate user-icon fallback, sm/md/lg/xl sizes and paused presentation. The v0.3 amendment removes the optional decorative network badge (owner: “Quitar badgeIcon (ya tenemos el indicator)”); origin/network glyphs now compose the public Indicator wrapper around the Avatar. Root label owns the accessible name; decorative without it. No initials, interaction, ref, asChild or stylesheet. Contract: [#51](https://github.com/egdev6/egdev-design-system/issues/51). Public types, markup, ring and paused policy otherwise remain unchanged."
   },
   {
     "actual": "Logo",

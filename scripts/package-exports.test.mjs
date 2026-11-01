@@ -2299,13 +2299,11 @@ test('UI ships exactly the approved Avatar utility recipe without new marker rul
   const { Avatar } = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
   const { renderToString } = await import('react-dom/server');
-  const html = renderToString(
-    createElement(Avatar, { label: 'Channel on LinkedIn, paused', badgeIcon: 'linkedin', paused: true })
-  );
+  const html = renderToString(createElement(Avatar, { label: 'Channel on LinkedIn, paused', paused: true }));
   assert.match(html, /role="img"/);
   assert.match(html, /aria-label="Channel on LinkedIn, paused"/);
   assert.match(html, /data-state="paused"/);
-  assert.match(html, /eg-avatar__badge/);
+  assert.doesNotMatch(html, /eg-avatar__badge/, 'badgeIcon removal leaves no badge marker');
   assert.equal((html.match(/aria-label=/g) ?? []).length, 1);
   assert.doesNotMatch(html, /<img|tabindex=|style=|is-paused/);
 });

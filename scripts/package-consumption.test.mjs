@@ -1570,7 +1570,10 @@ export function AvatarSamples() {
     sizes.map((size) => createElement(Avatar, { ...avatarDefaults, key: size, size, id: 'avatar-' + size })),
     createElement(Avatar, { id: 'avatar-decorative' }),
     createElement(Avatar, { label: 'Channel on LinkedIn, paused', id: 'avatar-paused', size: 'xl',
-      paused: true, badgeIcon: 'linkedin', className: 'ms-1 ms-2 [--eg-avatar-ring:var(--color-bg-canvas)]' }));
+      paused: true, className: 'ms-1 ms-2 [--eg-avatar-ring:var(--color-bg-canvas)]' }),
+    // badgeIcon was removed (S10): origin glyphs wrap the Avatar with the public Indicator.
+    createElement(Indicator, { variant: 'icon', badgeIcon: 'linkedin', tone: 'neutral', position: 'bottom-right',
+      children: createElement(Avatar, { label: 'Channel on LinkedIn', size: 'lg', id: 'avatar-indicator' }) }));
 }
 // @ts-expect-error Avatar owns its internal content.
 const avatarChildren: AvatarProps = { children: 'AB' };
@@ -1586,7 +1589,7 @@ const avatarLabel: AvatarProps = { 'aria-label': 'Wrong' };
 const avatarAlt: AvatarProps = { alt: 'Wrong' };
 // @ts-expect-error No arbitrary dimensions.
 const avatarSize: AvatarProps = { size: 30 };
-// @ts-expect-error Badges use the closed IconName set.
+// @ts-expect-error badgeIcon was removed; wrap Avatar with Indicator for origin glyphs.
 const avatarBadge: AvatarProps = { badgeIcon: 'unknown' };
 export const iconDefaults: IconProps = { name: 'plus' };
 const iconPreset: IconSize = 'lg';

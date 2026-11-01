@@ -402,7 +402,7 @@
         "source": {
           "path": "packages/ui/src/atoms/avatar/types.ts",
           "symbol": "AvatarProps",
-          "revision": "sha256:8ffd965e1e0baf15dbc4495f1780b62a9f5a654738ff78ad88f0775e16d0212b"
+          "revision": "sha256:257f17ea206a79e5a560cc7593f2f5c456bdca5dda51bc9c11fdb5ce418f1817"
         }
       },
       {
@@ -552,7 +552,7 @@
         "source": {
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
-          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+          "revision": "sha256:118721454e5b6f37753f295171b4d74c3a6774e280fca8c75278cf99e219fb69"
         }
       }
     ]
@@ -799,7 +799,7 @@
         "source": {
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
-          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+          "revision": "sha256:118721454e5b6f37753f295171b4d74c3a6774e280fca8c75278cf99e219fb69"
         }
       },
       {
@@ -986,7 +986,7 @@
         "source": {
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
-          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+          "revision": "sha256:118721454e5b6f37753f295171b4d74c3a6774e280fca8c75278cf99e219fb69"
         }
       },
       {
@@ -1170,7 +1170,7 @@
         "source": {
           "path": "packages/ui/src/atoms/avatar/types.ts",
           "symbol": "AvatarProps",
-          "revision": "sha256:8ffd965e1e0baf15dbc4495f1780b62a9f5a654738ff78ad88f0775e16d0212b"
+          "revision": "sha256:257f17ea206a79e5a560cc7593f2f5c456bdca5dda51bc9c11fdb5ce418f1817"
         }
       },
       {
@@ -1710,23 +1710,13 @@
     "exceptions": [],
     "usages": [
       {
-        "component": "Avatar",
-        "type": "IconName",
-        "status": "existing",
-        "source": {
-          "path": "packages/ui/src/atoms/avatar/types.ts",
-          "symbol": "AvatarProps",
-          "revision": "sha256:8ffd965e1e0baf15dbc4495f1780b62a9f5a654738ff78ad88f0775e16d0212b"
-        }
-      },
-      {
         "component": "Indicator",
         "type": "IconName (icon branch only)",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
-          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+          "revision": "sha256:118721454e5b6f37753f295171b4d74c3a6774e280fca8c75278cf99e219fb69"
         }
       }
     ]
@@ -1753,7 +1743,7 @@
         "source": {
           "path": "packages/ui/src/atoms/avatar/types.ts",
           "symbol": "AvatarProps",
-          "revision": "sha256:8ffd965e1e0baf15dbc4495f1780b62a9f5a654738ff78ad88f0775e16d0212b"
+          "revision": "sha256:257f17ea206a79e5a560cc7593f2f5c456bdca5dda51bc9c11fdb5ce418f1817"
         }
       }
     ]
@@ -5486,7 +5476,7 @@
         "source": {
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
-          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+          "revision": "sha256:118721454e5b6f37753f295171b4d74c3a6774e280fca8c75278cf99e219fb69"
         }
       }
     ]
@@ -5536,7 +5526,7 @@
         "source": {
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
-          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+          "revision": "sha256:118721454e5b6f37753f295171b4d74c3a6774e280fca8c75278cf99e219fb69"
         }
       }
     ]
@@ -5563,7 +5553,7 @@
         "source": {
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
-          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+          "revision": "sha256:118721454e5b6f37753f295171b4d74c3a6774e280fca8c75278cf99e219fb69"
         }
       }
     ]
