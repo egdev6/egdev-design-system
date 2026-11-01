@@ -73,13 +73,11 @@ describe('Storybook brand theme', () => {
 describe('Storybook-only palette', () => {
   const read = (path: string) => readFileSync(resolve(import.meta.dirname, '../../../../', path), 'utf8');
 
-  it('remaps only red-300 to the existing neon primitive at the root', () => {
+  it('shows the published tokens without any Storybook substitution', () => {
     const sheet = new CSSStyleSheet();
-    sheet.insertRule(read('.storybook/palette.css'));
-    const rule = sheet.cssRules[0] as CSSStyleRule;
-    expect(rule.selectorText).toBe(':root');
-    expect(rule.style.length).toBe(1);
-    expect(rule.style.getPropertyValue('--color-primitive-red-300')).toBe('var(--color-primitive-red-neon)');
+    sheet.replaceSync(read('.storybook/palette.css')); // Comment-only sheet: no rules, no alias.
+    expect(sheet.cssRules).toHaveLength(0);
+    expect(read('.storybook/palette.css')).not.toContain('--color-primitive-red-300');
   });
 
   it.each(['manager', 'preview'])('loads the shared palette before %s reads the theme', (entry) => {

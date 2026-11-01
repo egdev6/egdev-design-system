@@ -56,6 +56,42 @@ describe('ChipGroup v0.1 + A1', () => {
     expect(onValueChange.mock.calls).toEqual([['react'], ['css'], ['']]);
   });
 
+  it('keeps the on-state chip free of underline utilities in both modes', () => {
+    render(
+      <>
+        <ChipGroup type='single' label='Topics' options={options} defaultValue='react' />
+        <ChipGroup type='multiple' label='Filters' options={options} defaultValue={['css']} />
+      </>
+    );
+    for (const chip of [named('React', true), named('CSS')]) {
+      expect(chip).toHaveAttribute('data-state', 'on');
+      expect(chip.className).not.toMatch(/underline/);
+    }
+  });
+
+  it('reveals a decorative check on selected items in both modes', async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <ChipGroup type='single' label='Topics' options={options} defaultValue='react' />
+        <ChipGroup type='multiple' label='Filters' options={options} />
+      </>
+    );
+    const reactCheck = named('React', true).querySelector('svg');
+    expect(reactCheck).toHaveAttribute('aria-hidden', 'true');
+    const wrapper = reactCheck?.closest('span');
+    expect(wrapper).not.toBeNull();
+    expect(wrapper).toHaveClass('group-data-[state=on]/item:w-3.5', 'group-data-[state=on]/item:opacity-100');
+    const css = named('CSS');
+    expect(css.querySelector('svg')).not.toBeNull();
+    const cssWrapper = css.querySelector('svg')?.closest('span');
+    expect(cssWrapper).toHaveClass('w-0', 'opacity-0');
+    expect(cssWrapper).toHaveClass('motion-reduce:transition-none');
+    await user.click(css);
+    expect(css).toHaveAttribute('data-state', 'on');
+    expect(cssWrapper).toHaveClass('group-data-[state=on]/item:w-3.5', 'group-data-[state=on]/item:opacity-100');
+  });
+
   it('adds and removes multiple choices in activation order, including the final empty array', async () => {
     const user = userEvent.setup();
     const onValueChange = vi.fn();
@@ -407,15 +443,13 @@ describe('useChipGroup composition', () => {
         'min-h-8',
         'pointer-coarse:min-h-11',
         'text-label-default',
-        'data-[state=on]:underline',
-        'decoration-[length:var(--border-width)]',
-        'underline-offset-[var(--space-1)]',
         'focus-visible:shadow-focus',
         'data-[state=on]:focus-visible:shadow-focus',
         'motion-reduce:transition-none',
         'disabled:cursor-not-allowed'
       ])
     );
+    expect(result.current.itemClassName).not.toMatch(/underline/);
     expect(result.current.itemClassName).not.toMatch(/w-full|mt-2|is-active/);
     expect(result.current.iconProps).toMatchObject({ 'aria-hidden': true });
   });

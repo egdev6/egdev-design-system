@@ -99,7 +99,7 @@ function cssBlock(css, opening) {
 
 // Match escaped emitted selectors, not unescaped CVA class names; allow only complete approved utilities.
 const unapprovedTransitionUtility =
-  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\])(?=\s*\{))[\w\\]/;
+  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\]|\\\[opacity\\,transform\\\]|\\\[width\\,margin\\,opacity\\,transform\\\])(?=\s*\{))[\w\\]/;
 
 test('Collapsible ships native group-state caret motion and reduced-motion resets', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
@@ -767,15 +767,15 @@ test('SocialLinks ships static collection utilities and native SSR composition w
   assert.match(ghost, /size-10/);
 });
 
-test('ChipGroup ships wrapping layout, token underline and disabled/motion guards from its CVA source', () => {
+test('ChipGroup ships wrapping layout, the selected check cue and disabled/motion guards from its CVA source', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
   assert.match(cssBlock(utilities, /\.flex-wrap\s*\{/), /flex-wrap:\s*wrap/);
   assert.match(cssBlock(utilities, /\.gap-2\s*\{/), /gap:\s*var\(--space-2\)/);
   for (const selector of [
-    String.raw`.data-\[state\=on\]\:underline`,
-    String.raw`.decoration-\[length\:var\(--border-width\)\]`,
-    String.raw`.underline-offset-\[var\(--space-1\)\]`,
+    String.raw`.group-data-\[state\=on\]\/item\:w-3\.5`,
+    String.raw`.group-data-\[state\=on\]\/item\:opacity-100`,
+    String.raw`.transition-\[width\,margin\,opacity\,transform\]`,
     String.raw`.disabled\:cursor-not-allowed`,
     String.raw`.disabled\:active\:translate-none`,
     String.raw`.disabled\:active\:scale-none`,
@@ -783,8 +783,8 @@ test('ChipGroup ships wrapping layout, token underline and disabled/motion guard
   ]) {
     assert.ok(utilities.includes(selector), `Missing ChipGroup utility ${selector}`);
   }
-  assert.match(utilities, /text-decoration-thickness:\s*var\(--border-width\)/);
-  assert.match(utilities, /text-underline-offset:\s*var\(--space-1\)/);
+  // #221: the selected underline was replaced by a decorative check.
+  assert.ok(!utilities.includes(String.raw`.data-\[state\=on\]\:underline`), 'Selected underline must not ship');
   assert.doesNotMatch(css, /\.eg-chip-group[^{]*\{/, 'Root marker adds no painted panel');
   const source = readFileSync(resolve(root, 'packages/ui/src/styles/compiled.css'), 'utf8');
   assert.ok(source.includes('@source "../molecules/chip-group/types.ts";'));
@@ -1555,6 +1555,7 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   // Stat #70 reuses the approved [border-color,box-shadow] selector; no Skeleton transition.
   // SearchTrigger #99 reuses the approved transition-[border-color,color] selector only.
   // PullQuote #98 adds no transition or animation utility.
+  // #221 selected check cues: SelectTile [opacity,transform] and ChipGroup [width,margin,opacity,transform].
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
@@ -2777,14 +2778,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Field',
       'FieldMessage',
       'Gauge',
-      'GaugeDock',
-      'GaugeDockItem',
-      'GaugeDockSeparator',
       'GaugeGroup',
       'Heading',
-      'HoverCard',
-      'HoverCardContent',
-      'HoverCardTrigger',
       'Icon',
       'IconButton',
       'Indicator',
@@ -3012,12 +3007,6 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'FieldMessageTone',
     'FieldProps',
     'Gauge',
-    'GaugeDock',
-    'GaugeDockItem',
-    'GaugeDockItemProps',
-    'GaugeDockProps',
-    'GaugeDockSeparator',
-    'GaugeDockSeparatorProps',
     'GaugeGroup',
     'GaugeGroupItems',
     'GaugeGroupProps',
@@ -3029,12 +3018,6 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Heading',
     'HeadingLevel',
     'HeadingProps',
-    'HoverCard',
-    'HoverCardContent',
-    'HoverCardContentProps',
-    'HoverCardProps',
-    'HoverCardTrigger',
-    'HoverCardTriggerProps',
     'Icon',
     'IconButton',
     'IconButtonProps',
@@ -4157,143 +4140,6 @@ test('UI Checkbox SSR retains binary/mixed semantics, private recipes and form i
   }
   for (const name of ['checkboxVariants', 'checkboxIndicatorVariants', 'checkboxIconVariants', 'useCheckbox']) {
     assert.equal(exported[name], undefined, `${name} stays private`);
-  }
-});
-
-test('GaugeDock ships scanned layout utilities and independent passive SSR semantics', async () => {
-  const exported = await import(artifact('ui', ui.exports['.'].import));
-  const { createElement: h } = await import('react');
-  const { renderToStaticMarkup } = await import('react-dom/server');
-  const html = renderToStaticMarkup(
-    h(exported.GaugeDock, {
-      label: 'Usage detail actions',
-      children: [
-        h(exported.GaugeDockItem, {
-          key: 'pair',
-          children: [
-            h(exported.Gauge, { key: 'meter', label: 'Provider A session', value: 0 }),
-            h(exported.Button, { key: 'action', children: 'Open Provider A details' })
-          ]
-        }),
-        h(exported.GaugeDockSeparator, { key: 'separator' })
-      ]
-    })
-  );
-  assert.match(html, /role="toolbar"/);
-  assert.match(html, /aria-label="Usage detail actions"/);
-  assert.match(html, /role="meter"[^>]*aria-label="Provider A session"[^>]*aria-valuenow="0"/);
-  assert.match(html, /<\/div><button[^>]*type="button"/);
-  assert.match(html, /data-orientation="vertical"[^>]*aria-hidden="true"/);
-  assert.doesNotMatch(html, /eg-gauge-strip/);
-  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
-  const utilities = cssBlock(css, /@layer utilities\s*\{/);
-  const source = ts.createSourceFile(
-    'types.ts',
-    readFileSync(resolve(root, 'packages/ui/src/molecules/gauge-dock/types.ts'), 'utf8'),
-    ts.ScriptTarget.Latest,
-    true
-  );
-  let parts = 0;
-  function visit(node) {
-    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
-      const base = node.arguments[0];
-      assert.ok(base && ts.isStringLiteral(base));
-      parts++;
-      for (const name of base.text.split(/\s+/).filter((name) => !name.startsWith('eg-') && name !== 'group')) {
-        const selector = `.${name.replace(/([^a-zA-Z0-9_-])/g, '\\$1')}`;
-        assert.ok(utilities.includes(selector), `Missing GaugeDock utility ${name}`);
-      }
-    }
-    ts.forEachChild(node, visit);
-  }
-  visit(source);
-  assert.equal(parts, 3);
-  assert.match(css, /background-color:\s*var\(--color-border-hairline[,)]/);
-  assert.doesNotMatch(css, /\.eg-gauge-dock(?:-item|-separator)?\s*\{/);
-  for (const name of ['useGaugeDock', 'gaugeDockVariants', 'gaugeDockItemVariants', 'gaugeDockSeparatorVariants']) {
-    assert.equal(exported[name], undefined, `${name} stays internal`);
-  }
-});
-
-test('HoverCard ships every static CVA utility, Radix bounds and opacity-only entry', () => {
-  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
-  const source = ts.createSourceFile(
-    'types.ts',
-    readFileSync(resolve(root, 'packages/ui/src/molecules/hover-card/types.ts'), 'utf8'),
-    ts.ScriptTarget.Latest,
-    true
-  );
-  let parts = 0;
-  const visit = (node) => {
-    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
-      parts++;
-      const collect = (value) => {
-        if (ts.isStringLiteral(value)) {
-          for (const name of value.text.split(/\s+/).filter(Boolean)) {
-            if (name === 'eg-hover-card') {
-              continue;
-            }
-            const selector = `.${name.replace(/([^a-zA-Z0-9_-])/g, '\\$1')}`;
-            assert.ok(css.includes(selector), `Missing HoverCard utility ${name}`);
-          }
-        } else {
-          ts.forEachChild(value, collect);
-        }
-      };
-      collect(node.arguments[0]);
-    }
-    ts.forEachChild(node, visit);
-  };
-  visit(source);
-  assert.equal(parts, 2, 'Trigger and Content recipes must both ship');
-  assert.match(css, /width:\s*calc\([^;]*var\(--space-24\)[^;]*\)/);
-  assert.match(css, /max-width:\s*var\(--radix-hover-card-content-available-width\)/);
-  assert.match(css, /max-height:\s*var\(--radix-hover-card-content-available-height\)/);
-  assert.match(css, /overflow-y:\s*auto/);
-  assert.match(css, /overflow-wrap:\s*break-word/);
-  assert.match(css, /@starting-style/);
-  assert.match(css, /transition-duration:\s*var\(--duration-fast\)/);
-  assert.match(css, /prefers-reduced-motion:\s*reduce/);
-  assert.doesNotMatch(css, /\.eg-hover-card\s*[,{]/, 'No HoverCard stylesheet or local Material recipe');
-});
-
-test('HoverCard exports its bounded composition with native link SSR and private helpers', async () => {
-  const exported = await import(artifact('ui', ui.exports['.'].import));
-  const { createElement } = await import('react');
-  const { renderToString } = await import('react-dom/server');
-  assert.equal(typeof exported.HoverCard, 'function');
-  assert.equal(typeof exported.HoverCardContent, 'function');
-  assert.equal(exported.HoverCardTrigger.$$typeof, Symbol.for('react.forward_ref'));
-  const html = renderToString(
-    createElement(
-      exported.HoverCard,
-      { defaultOpen: true },
-      createElement(exported.HoverCardTrigger, { href: '#details', id: 'preview' }, 'Usage preview'),
-      createElement(exported.HoverCardContent, null, 'Read-only usage')
-    )
-  );
-  assert.match(html, /^<a /, 'Root adds no DOM');
-  assert.match(html, /href="#details"/);
-  assert.match(html, /data-state="open"/);
-  assert.match(html, />Usage preview<\/a>$/);
-  assert.doesNotMatch(html, /Read-only usage|aria-expanded|aria-controls|aria-describedby|role="(?:dialog|tooltip)"/);
-  const slotted = renderToString(
-    createElement(
-      exported.HoverCard,
-      null,
-      createElement(exported.HoverCardTrigger, { asChild: true }, createElement('a', { href: '#details' }, 'Details'))
-    )
-  );
-  assert.equal((slotted.match(/<a /g) ?? []).length, 1);
-  assert.match(slotted, /href="#details"/);
-  for (const name of [
-    'useHoverCard',
-    'useHoverCardContent',
-    'useHoverCardTrigger',
-    'hoverCardContentVariants',
-    'hoverCardTriggerVariants'
-  ]) {
-    assert.equal(exported[name], undefined, `${name} stays internal`);
   }
 });
 

@@ -9,6 +9,16 @@ import { useField } from './useField';
 /** Label and descriptions for one consumer-owned control, independent of any form library. */
 export const Field: FC<FieldProps> = (props) => {
   const field = useField(props);
+  const messageNode = field.message ? (
+    <div {...field.messageWrapperProps}>
+      <FieldMessage {...field.messageProps}>{field.message}</FieldMessage>
+    </div>
+  ) : null;
+  const counterNode = field.counter ? (
+    <span {...field.counterProps}>
+      {field.counter.value} / {field.counter.max}
+    </span>
+  ) : null;
   return (
     <div {...field.rootProps}>
       {field.choice ? <SlotPrimitive.Root {...field.controlProps}>{field.children}</SlotPrimitive.Root> : null}
@@ -23,15 +33,13 @@ export const Field: FC<FieldProps> = (props) => {
         {field.readout !== undefined ? <output {...field.readoutProps}>{field.readout}</output> : null}
       </div>
       {field.choice ? null : <SlotPrimitive.Root {...field.controlProps}>{field.children}</SlotPrimitive.Root>}
-      {field.message ? (
-        <div {...field.messageWrapperProps}>
-          <FieldMessage {...field.messageProps}>{field.message}</FieldMessage>
+      {field.choice ? (
+        messageNode
+      ) : messageNode || counterNode ? (
+        <div {...field.footerRowProps}>
+          {messageNode}
+          {counterNode}
         </div>
-      ) : null}
-      {field.counter ? (
-        <span {...field.counterProps}>
-          {field.counter.value} / {field.counter.max}
-        </span>
       ) : null}
     </div>
   );
