@@ -46,6 +46,7 @@ export type { ChipGroupOption, ChipGroupProps, ChipGroupType } from './molecules
 export { ChipGroup } from './molecules/chip-group';
 export type { CollapsibleContentProps, CollapsibleProps, CollapsibleTriggerProps } from './molecules/collapsible';
 export { Collapsible, CollapsibleContent, CollapsibleTrigger } from './molecules/collapsible';
+export * from './molecules/command-palette';
 export * from './molecules/dialog';
 export * from './molecules/field';
 export type { GaugeGroupItems, GaugeGroupProps, GaugeGroupRing, GaugeGroupSize } from './molecules/gauge-group';
@@ -82,6 +83,7 @@ export { Tabs, tabsVariants } from './molecules/tabs';
 export * from './molecules/timeline';
 export * from './molecules/toast';
 // Organisms
+export * from './organisms/preview-frame';
 export * from './organisms/sidebar';
 // Primitives
 export type { AspectRatioProps } from './primitives/aspect-ratio';

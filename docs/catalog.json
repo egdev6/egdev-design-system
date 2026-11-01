@@ -907,10 +907,10 @@
     "nombre": "CommandPalette",
     "nivel": "molecule",
     "destino": "ui",
-    "radix": "Dialog (+ cmdk, a confirmar)",
-    "compone": "Input, ListItem, Kbd",
+    "radix": "Dialog (native D4 combobox)",
+    "compone": "Surface, IconButton, Icon, Kbd",
     "accion": "mantener",
-    "notas": "Coordinates search input, results and command activation as one reusable interaction, not application-level structure. Radix has no combobox; cmdk over Radix Dialog remains a candidate requiring confirmation. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation or dependency approval."
+    "notas": "Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/121): native combobox and listbox inside Radix Dialog; consumer owns global shortcuts and commands. Browser, visual and packed-consumer verification remain pending."
   },
   {
     "actual": "—",
@@ -922,6 +922,17 @@
     "compone": "Surface recipe; consumer identity, NavList and footer",
     "accion": "nuevo",
     "notas": "Working-tree Sidebar under the approved #123 plan and consumer identity amendment: host-sized passive panel with a scrollable body and optional pinned identity and footer. Navigation, routing and responsive visibility belong to consumers. Browser visual and accessibility verification pending."
+  },
+  {
+    "actual": "StageFrame",
+    "nivelActual": "organismo",
+    "nombre": "PreviewFrame",
+    "nivel": "organism",
+    "destino": "ui",
+    "radix": "AspectRatio",
+    "compone": "IconButton, Chip",
+    "accion": "renombrar",
+    "notas": "Working-tree implementation under the approved #127 plan and owner decisions L11/L15: passive native preview figure with a decorative safe-area guide, clamped percentage zones and consumer-owned slots. Grid renders like plain until a grid token is approved; zone geometry uses only the four approved percentage custom properties. No stylesheet; browser visual and accessibility verification pending. Contract: [#127](https://github.com/egdev6/egdev-design-system/issues/127)."
   },
   {
     "actual": "ModuleRail",

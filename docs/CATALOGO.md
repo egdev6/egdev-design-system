@@ -15,13 +15,13 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 | extraer | 12 |
 | fusionar | 3 |
 | separar | 3 |
+| renombrar | 3 |
 | componer | 2 |
-| renombrar | 2 |
 | absorber | 1 |
 
 | Destino | Componentes |
 |---|---|
-| @egdev/ui | 74 |
+| @egdev/ui | 75 |
 | @egdev/effects | 3 |
 | Mando | 6 |
 | Cadencia | 1 |
@@ -110,7 +110,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **GaugeGroup** | — | — (native group and meters) | Shared private Gauge geometry | nuevo | Implemented in @egdev/ui under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/31): two or three independent passive readings with a decorative transparent concentric diagram and ordered visible list. No aggregate or GaugeDock extension. |
 | **Dialog** | Dialog (organismo) | Dialog | Surface, IconButton, Icon; consumer actions | mantener | Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/119): modal Root, Trigger, Content and Close; centered sizes and sheet. Radix owns portal, dismissal and focus; Surface owns panel paint. Browser, visual and packed-consumer verification remain pending. |
 | **AlertDialog** | — | AlertDialog | Surface, Icon, Button; internal Dialog recipes | nuevo | Working-tree implementation under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/120): decision-required modal with Cancel and Action, least-destructive initial focus and Escape dismissal. Radix owns interaction; Surface owns panel Material. Browser, visual and packed-consumer verification remain pending. |
-| **CommandPalette** | CommandPalette (organismo) | Dialog (+ cmdk, a confirmar) | Input, ListItem, Kbd | mantener | Coordinates search input, results and command activation as one reusable interaction, not application-level structure. Radix has no combobox; cmdk over Radix Dialog remains a candidate requiring confirmation. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation or dependency approval. |
+| **CommandPalette** | CommandPalette (organismo) | Dialog (native D4 combobox) | Surface, IconButton, Icon, Kbd | mantener | Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/121): native combobox and listbox inside Radix Dialog; consumer owns global shortcuts and commands. Browser, visual and packed-consumer verification remain pending. |
 | **Table** | Table (organismo) | ScrollArea | Checkbox, Switch, Badge, ButtonGroup | mantener | Working-tree React implementation of a native generic table with local sorting, optional multiple selection and a Radix scroll viewport. Composes Checkbox and Surface; consumers compose Switch, Badge and ButtonGroup. Browser, accessibility and package-consumer verification remain pending. Contract: [#122](https://github.com/egdev6/egdev-design-system/issues/122). |
 | **GaugeDock** | GaugeStrip (parte de Gauge) | Toolbar | Surface overlay, Gauge, Button/IconButton | extraer | Retired from @egdev/ui by owner decision ([#220](https://github.com/egdev6/egdev-design-system/issues/220), 2026-11-01): exports, stories, tests and implementation removed; see the [retirement record](components/gauge-dock/RETIRED.md) and compose GaugeGroup/MeterRow readings with separate Button/IconButton actions. Historical #85 v0.1 record: independent passive measurements beside separate native actions with Radix-owned bounded roving focus; no aggregation, selection, stylesheet or legacy GaugeStrip migration. |
 
@@ -119,6 +119,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
 | **Sidebar** | — | ScrollArea | Surface recipe; consumer identity, NavList and footer | nuevo | Working-tree Sidebar under the approved #123 plan and consumer identity amendment: host-sized passive panel with a scrollable body and optional pinned identity and footer. Navigation, routing and responsive visibility belong to consumers. Browser visual and accessibility verification pending. |
+| **PreviewFrame** | StageFrame (organismo) | AspectRatio | IconButton, Chip | renombrar | Working-tree implementation under the approved #127 plan and owner decisions L11/L15: passive native preview figure with a decorative safe-area guide, clamped percentage zones and consumer-owned slots. Grid renders like plain until a grid token is approved; zone geometry uses only the four approved percentage custom properties. No stylesheet; browser visual and accessibility verification pending. Contract: [#127](https://github.com/egdev6/egdev-design-system/issues/127). |
 | **ModuleRail** | ModuleRail (organismo (agente)) | Tooltip + NavigationMenu o ToggleGroup | Logo, IconButton, StatusDot | mantener | Raíl compacto de Mando; genérico. |
 | **TabBar** | TabBar (organismo (agente)) | — | Icon, Badge | mantener | Navegación inferior móvil. |
 | **CalendarGrid** | CalendarGrid (organismo) | — (arrastre: dnd-kit, a confirmar) | ListItem, Text | mantener | `.eg-day` y `.eg-post-row` pasan a partes internas. Falta vista Mes. |

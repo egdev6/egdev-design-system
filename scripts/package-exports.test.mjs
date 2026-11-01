@@ -20,6 +20,27 @@ function artifact(name, target) {
   return path;
 }
 
+test('command-palette closed SSR renders only its optional launcher', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(typeof exported.CommandPalette, 'function');
+  const items = [{ id: 'find', label: 'Find', onSelect: () => undefined }];
+  assert.equal(renderToString(createElement(exported.CommandPalette, { items })), '');
+  const html = renderToString(
+    createElement(exported.CommandPalette, {
+      items,
+      children: createElement('button', { type: 'button' }, 'Open commands')
+    })
+  );
+  assert.match(html, /<button[^>]*>Open commands<\/button>/);
+  assert.match(html, /aria-expanded="false"/);
+  assert.doesNotMatch(html, /role="(?:dialog|combobox|listbox|option)"|Find|eg-palette/);
+  for (const name of ['useCommandPalette', 'paletteOverlay', 'paletteRow']) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} is private`);
+  }
+});
+
 test('dialog exports its public compound API and keeps shared recipes internal', async () => {
   const dialogExports = await import(artifact('ui', ui.exports['.'].import));
   for (const dialogName of ['Dialog', 'DialogTrigger', 'DialogContent', 'DialogClose']) {
@@ -208,6 +229,27 @@ test('sidebar exports its component and static CSS without private helpers', asy
   for (const selector of ['.w-64', '.min-h-0', '.overflow-hidden']) {
     assert.ok(css.includes(selector), selector);
   }
+});
+
+test('preview-frame exports its passive figure and keeps recipes internal', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(typeof exported.PreviewFrame, 'function');
+  for (const name of ['usePreviewFrame', 'rootVariants', 'zoneVariants', 'canvasVariants', 'safeAreaVariants']) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} is internal`);
+  }
+  const html = renderToString(
+    createElement(exported.PreviewFrame, {
+      figureCaption: 'Packed preview',
+      zones: [{ id: 'title', label: 'Title area', x: 10, y: 10, width: 80, height: 20 }],
+      children: createElement('span', null, 'Artwork')
+    })
+  );
+  assert.match(html, /<figure[^>]*eg-stage/);
+  assert.match(html, /aria-labelledby="[^"]+"/);
+  assert.match(html, /--eg-zone-x:10%/);
+  assert.match(html, /aria-hidden="true"/);
 });
 
 test('Panel ships band resets and direct-zone corner utilities without a new marker engine', () => {
@@ -2867,6 +2909,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Collapsible',
       'CollapsibleContent',
       'CollapsibleTrigger',
+      'CommandPalette',
       'Countdown',
       'Dialog',
       'DialogClose',
@@ -2910,6 +2953,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'PopoverContent',
       'PopoverTrigger',
       'Portal',
+      'PreviewFrame',
       'ProgressBar',
       'PullQuote',
       'RadioGroup',
@@ -3102,6 +3146,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'CollapsibleProps',
     'CollapsibleTrigger',
     'CollapsibleTriggerProps',
+    'CommandPalette',
+    'CommandPaletteFiltering',
+    'CommandPaletteItem',
+    'CommandPaletteMessages',
+    'CommandPaletteProps',
     'Countdown',
     'CountdownProps',
     'CountdownSize',
@@ -3247,6 +3296,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'PopoverTriggerProps',
     'Portal',
     'PortalProps',
+    'PreviewFrame',
+    'PreviewFrameProps',
+    'PreviewFrameZone',
     'ProductIdentity',
     'ProgressBar',
     'ProgressBarProps',
