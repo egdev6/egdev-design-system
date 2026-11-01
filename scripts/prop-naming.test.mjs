@@ -57,6 +57,11 @@ function indicatorProposalHash(entry) {
 }
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...['accessible-name', 'collection-items', 'navigation-intent', 'localized-messages'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/organisms/tab-bar/types.ts#TabBarProps'
+  })),
+  { conventionId: 'leading-icon', source: 'packages/ui/src/organisms/tab-bar/types.ts#TabBarItem' },
   ...[
     'collection-items',
     'accessible-name',
