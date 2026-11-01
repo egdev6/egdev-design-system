@@ -1481,7 +1481,10 @@ export function AvatarSamples() {
     sizes.map((size) => createElement(Avatar, { ...avatarDefaults, key: size, size, id: 'avatar-' + size })),
     createElement(Avatar, { id: 'avatar-decorative' }),
     createElement(Avatar, { label: 'Channel on LinkedIn, paused', id: 'avatar-paused', size: 'xl',
-      paused: true, badgeIcon: 'linkedin', className: 'ms-1 ms-2 [--eg-avatar-ring:var(--color-bg-canvas)]' }));
+      paused: true, className: 'ms-1 ms-2 [--eg-avatar-ring:var(--color-bg-canvas)]' }),
+    // badgeIcon was removed (S10): origin glyphs wrap the Avatar with the public Indicator.
+    createElement(Indicator, { variant: 'icon', badgeIcon: 'linkedin', tone: 'neutral', position: 'bottom-right',
+      children: createElement(Avatar, { label: 'Channel on LinkedIn', size: 'lg', id: 'avatar-indicator' }) }));
 }
 // @ts-expect-error Avatar owns its internal content.
 const avatarChildren: AvatarProps = { children: 'AB' };
@@ -1497,7 +1500,7 @@ const avatarLabel: AvatarProps = { 'aria-label': 'Wrong' };
 const avatarAlt: AvatarProps = { alt: 'Wrong' };
 // @ts-expect-error No arbitrary dimensions.
 const avatarSize: AvatarProps = { size: 30 };
-// @ts-expect-error Badges use the closed IconName set.
+// @ts-expect-error badgeIcon was removed; wrap Avatar with Indicator for origin glyphs.
 const avatarBadge: AvatarProps = { badgeIcon: 'unknown' };
 export const iconDefaults: IconProps = { name: 'plus' };
 const iconPreset: IconSize = 'lg';
@@ -2565,7 +2568,8 @@ function assertAvatarCSS(css) {
   assert.match(css, /--tw-gradient-position:\s*135deg/);
   assert.match(css, /--tw-gradient-from:\s*var\(--color-bg-deep[,)]/);
   assert.match(css, /--tw-gradient-to:\s*var\(--color-primitive-red-neon[,)]/);
-  assert.match(css, /--tw-ring-color:\s*var\(--eg-avatar-ring,\s*var\(--color-bg-surface\)\)/);
+  // The removed badge was the only consumer of this ring utility; it must leave every shipped CSS.
+  assert.doesNotMatch(css, /--tw-ring-color:\s*var\(--eg-avatar-ring/);
   assert.match(css, /opacity-60\[data-state="paused"\]\s*\{\s*opacity:\s*60%/);
   assert.match(css, /grayscale\[data-state="paused"\]\s*\{\s*--tw-grayscale:\s*grayscale\(100%\)/);
   assert.match(css, /object-fit:\s*cover/);
@@ -5196,9 +5200,17 @@ for (const frame of [square, wide]) {
   const pausedAvatar = document.getElementById('avatar-paused');
   assert.equal(pausedAvatar.getAttribute('data-state'), 'paused');
   assert.equal(pausedAvatar.getAttribute('aria-label'), 'Channel on LinkedIn, paused');
-  assert.equal(pausedAvatar.querySelector('.eg-avatar__badge').getAttribute('aria-hidden'), 'true');
-  assert.equal(pausedAvatar.querySelector('.eg-avatar__badge svg').getAttribute('aria-hidden'), 'true');
+  assert.equal(pausedAvatar.querySelector('.eg-avatar__badge'), null, 'SSR must not render the removed badge');
   assert.equal(pausedAvatar.hasAttribute('tabindex'), false);
+  // The Indicator-wrapped sample documents the badgeIcon migration at the package boundary.
+  const indicatorAvatar = document.getElementById('avatar-indicator');
+  assert.ok(indicatorAvatar, 'SSR must render the Indicator-wrapped Avatar');
+  assert.ok(indicatorAvatar.classList.contains('eg-avatar'));
+  assert.ok(indicatorAvatar.parentElement.classList.contains('eg-indicator'));
+  const indicatorMarker = indicatorAvatar.parentElement.querySelector(':scope > span[aria-hidden="true"]');
+  assert.ok(indicatorMarker, 'SSR must render the Indicator icon marker');
+  assert.ok(indicatorMarker.querySelector('.eg-icon'), 'SSR marker must contain the system glyph');
+  assert.equal(indicatorMarker.getAttribute('aria-hidden'), 'true');
   const decorativeIcon = document.getElementById('icon-decorative');
   assert.ok(decorativeIcon, 'SSR must render the decorative Icon');
   assert.equal(decorativeIcon.tagName.toLowerCase(), 'svg');
@@ -5943,7 +5955,11 @@ try {
   stage('link:refs:complete');
   const avatar = document.getElementById('avatar-paused');
   assert.equal(avatar.getAttribute('data-state'), 'paused');
-  assert.equal(avatar.querySelector('.eg-avatar__badge').getAttribute('aria-hidden'), 'true');
+  assert.equal(avatar.querySelector('.eg-avatar__badge'), null, 'CSR must not render the removed badge');
+  const csrIndicator = document.getElementById('avatar-indicator');
+  assert.ok(csrIndicator, 'CSR must render the Indicator-wrapped Avatar');
+  assert.ok(csrIndicator.parentElement.classList.contains('eg-indicator'));
+  assert.ok(csrIndicator.parentElement.querySelector(':scope > span[aria-hidden="true"] .eg-icon'));
   assert.ok(avatar.classList.contains('ms-2') && !avatar.classList.contains('ms-1'));
   const preloads = [];
   const BrowserImage = window.Image;

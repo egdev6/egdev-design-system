@@ -8,9 +8,25 @@ import { useIsotipo3D } from './useIsotipo3D';
  * `className` supports outer layout and positioning; recognized size, clipping,
  * pointer, opacity and paint conflicts yield to the component invariants.
  * Arbitrary CSS and unrecognized utilities are not guaranteed overrides.
+ * Opt-in interaction: `dragRotate`/`flip` add pointer gestures to the decorative
+ * layer; `interactive` requires `label` and switches to a focusable image role
+ * with Arrow-key rotate and Enter/Space flip.
  */
 export const Isotipo3D = forwardRef<HTMLDivElement, Isotipo3DProps>(function Isotipo3D(
-  { scene = 'hero', progress = 0, opacity = 1, pointerTilt = true, className, ...native },
+  {
+    scene = 'hero',
+    progress = 0,
+    opacity = 1,
+    pointerTilt = true,
+    paused = false,
+    dragRotate = false,
+    flip = false,
+    interactive = false,
+    label,
+    onPoseChange,
+    className,
+    ...native
+  },
   ref
 ) {
   const normalizedScene = scene === 'chapter' || scene === 'lab' || scene === 'outro' ? scene : 'hero';
@@ -21,7 +37,15 @@ export const Isotipo3D = forwardRef<HTMLDivElement, Isotipo3DProps>(function Iso
     normalizedOpacity,
     native.hidden === true,
     pointerTilt === true,
-    className
+    className,
+    {
+      paused: paused === true,
+      dragRotate: dragRotate === true,
+      flip: flip === true,
+      interactive: interactive === true,
+      label,
+      onPoseChange
+    }
   );
   useImperativeHandle(ref, () => hook.rootRef.current as HTMLDivElement, [hook.rootRef]);
   const safeNative = Object.fromEntries(
@@ -46,7 +70,9 @@ export const Isotipo3D = forwardRef<HTMLDivElement, Isotipo3DProps>(function Iso
       ref={hook.rootRef}
       className={hook.rootClassName}
       style={{ '--eg-iso3d-opacity': normalizedOpacity } as CSSProperties}
-      aria-hidden='true'
+      {...(interactive === true && typeof label === 'string' && label.trim().length > 0
+        ? { role: 'img', tabIndex: 0, 'aria-label': label }
+        : { 'aria-hidden': true as const })}
       data-state={hook.state}
     >
       <canvas ref={hook.canvasRef} className={hook.canvasClassName} hidden={!hook.showCanvas} aria-hidden='true' />

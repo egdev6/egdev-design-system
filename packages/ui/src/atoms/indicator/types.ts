@@ -130,7 +130,7 @@ export type IndicatorProps = IndicatorNativeProps & {
 
 export const indicatorRootVariants = cva('eg-indicator relative inline-flex align-middle overflow-visible');
 
-/** Source-private position recipe shared with Avatar; never a package-barrel export. */
+/** Source-private position recipe; never a package-barrel export. */
 export const indicatorPositionVariants = cva('', {
   variants: {
     position: {
@@ -160,7 +160,7 @@ export const indicatorMarkerGeometryVariants = cva('absolute grid place-items-ce
   defaultVariants: { variant: 'dot', size: 'sm' }
 });
 
-/** Source-private glyph geometry shared with Avatar, without Icon naming or paint. */
+/** Source-private glyph geometry, without Icon naming or paint. */
 export const indicatorGlyphVariants = cva('', {
   variants: { size: { sm: 'size-2.75', md: 'size-3.25' } },
   defaultVariants: { size: 'sm' }
