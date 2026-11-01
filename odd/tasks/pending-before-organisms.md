@@ -21,7 +21,7 @@ RDD is re-enabled for this clone from 2026-10-31 for future candidates only; mer
 | T4 | S4,S5 | Implement approved components, PRs, merge | 3 background writers | done | #213 PhotoFrame 4d4e692, #214 GaugeGroup f64a0f6, #215 AmbientBackground 8aba48f, #216 Isotipo3D 26261c4 |
 | T5 | S4 | Owner visual review in Storybook on main | owner | in progress | |
 | T6 | S1,S4 | Plan corrections before organisms | parent + owner | pending | |
-| T7 | S4 | Remove merged worktrees | parent | pending | |
+| T7 | S4 | Remove merged worktrees | parent | done | 61 removed; backup /home/egdev/egdev-worktrees-backup-2026-10-31 |
 
 ## Log
 
@@ -67,3 +67,7 @@ RDD is re-enabled for this clone from 2026-10-31 for future candidates only; mer
 - L40 — Isotipo3D className: recognized layout/position composed before root invariants via public cn (RED→GREEN), documented limit: variant-prefixed/important/arbitrary utilities not stripped (consistent with AGENTS 'document and test supported merge precedence'); effects 155. Integrations delegated to a fresh broad-surface writer using AmbientBackground's main entries as template.
 - L41 — Isotipo3D integrations (fresh writer mvwsnwey-14-34dl): Storybook/metadata (RED: missing native id → GREEN), catalog 112 rows, prop-naming, package-exports/consumption cases; 596 focused tests, props 90. Parent commit + merge main + full gates + dist lazy-three inspection running.
 - L42 — Isotipo3D: parent commit 01c304a, merged main 8aba48f; gates lint, props 90, typecheck, build, tokens, package-exports 87, package-consumption 12/12, unit 97 files/1968; emitted effects entry has no static three import and one literal dynamic import('three'). No manifest/lock/build-config change in this PR, so item 5 did not apply (correcting my earlier statement); RDD assess medium, not due. #216 squash-merged 26261c4 (Refs #47). T4 complete; T5 owner visual review next.
+- L43 — Final independent verifier (mvwt7wv7-15-ia3h) on a parent-prepared detached worktree did not run: its protocol requires creating its own isolated scratch, which the task forbade. Static diff evidence consistent with approved scope; gates/resolution/dist/secrets unverified independently. Helper worktree verify-main removed. Owner decision needed.
+- L44 — Owner: "acepto riesgo" for the unverified #215/#216 final verification. Owner: "Todos los worktrees con cambios en main o desactualizados eliminalos" → T7 authorized (inventory first; preserve anything not in main).
+- L45 — T7: inventoried 61 worktrees (58 with merged PRs; indicator/panel/collapsible integrated via #207/#208). Uncommitted content was only odd/tasks copies (some with older/divergent lines), .atl skill-registry caches and the pre-integration first-wave trees. Backed up all 276 uncommitted files to /home/egdev/egdev-worktrees-backup-2026-10-31/uncommitted.tar.gz (manifest vs archive verified, 0 differences), then `git worktree remove --force` 61/61 and prune. Local branches kept.
+- L46 — Owner: "limpia ramas tb". 98 local branches (90 merged PRs, 7 PR-less ancestors of main, fix/storybook-css-preamble PR-less but all 140 files present in main: 101 identical, 39 newer on main) bundled to /home/egdev/egdev-worktrees-backup-2026-10-31/local-branches.bundle (verified, 98 heads) and deleted with git branch -D. Only main remains locally. Remote branches untouched.
