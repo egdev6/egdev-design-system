@@ -10,7 +10,7 @@ import { ColorInventory } from '../../.storybook/color-inventory';
     <h2><span className="eg-docs-section-title">Read the complete palette</span></h2>
     <p>The inventory below includes every existing color declaration and both logo colors, directly from the token source. Primitives are ingredients; choose semantic roles for UI. Neutral legacy values remain available; the current surface ladder uses Graphite.</p>
     <p>Each card pairs <strong>Original token</strong> (the canonical source value, resolving original aliases) with <strong>Storybook preview</strong> (the actual CSS variable and its browser-computed value). Opaque preview values are shown as hex; transparent values retain alpha. A difference label identifies local substitutions, not a token change.</p>
-    <p className="eg-docs-note">Storybook locally maps <code>--color-primitive-red-300</code> to <code>--color-primitive-red-neon</code> across the manager, Docs and story canvases, including raised-brand and danger aliases. Published tokens are unchanged. Neon meets normal-text contrast on the canvas, but not WCAG AA's 4.5:1 minimum on raised surfaces; this local preview is not an accessible-text recommendation there.</p>
+    <p className="eg-docs-note">Storybook shows the published tokens without local substitutions. Brand text on raised surfaces is neon by owner decision: neon meets normal-text contrast only on the canvas (4.61:1), not WCAG AA's 4.5:1 on surface-1 (4.30), surface-2 (3.92) or surface-3 (3.42); it meets 3:1 for large text, icons and borders everywhere. Errors keep <code>--color-primitive-red-300</code> (#FF6680) so they never read as the neon focus ring.</p>
     <p className="eg-docs-note">Alpha colors depend on what is underneath; specimens are shown over the same Material card. Shadow-only alpha tokens are documentary samples, not standalone UI fills. The logo has its own source colors; do not recolor the supplied artwork with UI neon.</p>
   </section>
   <section className="eg-docs-panel">
@@ -21,8 +21,8 @@ import { ColorInventory } from '../../.storybook/color-inventory';
         <tbody>
           <tr><td>Canvas / raised</td><td><code>--color-bg-canvas</code> / <code>--color-surface-1</code></td><td>Base plane / panels; add the full Material recipe.</td></tr>
           <tr><td>Primary / supporting text</td><td><code>--color-fg-default</code> / <code>--color-fg-muted</code></td><td>Readable content, not a disabled state.</td></tr>
-          <tr><td>Brand text on canvas</td><td><code>--color-fg-brand-default</code></td><td>Neon text is for surface-0 only.</td></tr>
-          <tr><td>Brand text on raised panels</td><td><code>--color-fg-brand-raised</code></td><td>Published role for surface-1 through surface-3; Storybook's local substitution does not meet text contrast here.</td></tr>
+          <tr><td>Brand text on canvas</td><td><code>--color-fg-brand-default</code></td><td>Neon; meets AA for small text on the canvas only.</td></tr>
+          <tr><td>Brand text on raised panels</td><td><code>--color-fg-brand-raised</code></td><td>Neon by owner decision so the brand red predominates; prefer it for large text, icons and accents — small text does not meet AA on raised surfaces.</td></tr>
           <tr><td>Solid primary action</td><td><code>--color-action-primary-solid-bg</code> / <code>--color-action-primary-solid-fg</code></td><td>Neon with black text, never white text.</td></tr>
           <tr><td>Control boundary / focus</td><td><code>--color-border-control</code> / <code>--color-focus-ring</code></td><td>A decorative hairline alone cannot define a control.</td></tr>
         </tbody>

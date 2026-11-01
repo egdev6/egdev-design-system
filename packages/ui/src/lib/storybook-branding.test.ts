@@ -9,7 +9,7 @@ import { createBrandTheme } from '../../../../.storybook/theme';
 // Representative resolved values injected to test mapping independently of browser CSS.
 const tokens: Record<string, string> = {
   '--color-fg-brand-default': '#FF0036',
-  '--color-fg-brand-raised': '#FF6680',
+  '--color-fg-brand-raised': '#FF0036',
   '--color-bg-canvas': '#141518',
   '--color-surface-0': '#141518',
   '--color-surface-1': '#1B1C20',
@@ -42,7 +42,7 @@ describe('Storybook brand theme', () => {
     const reader = vi.fn((name: string) => `  ${readToken(name)}  `);
     expect(createBrandTheme(reader)).toMatchObject({
       colorPrimary: '#FF0036',
-      colorSecondary: '#FF6680',
+      colorSecondary: '#FF0036',
       appBg: '#141518',
       appContentBg: '#1B1C20',
       appPreviewBg: '#141518',
@@ -92,13 +92,12 @@ describe('Storybook-only palette', () => {
     expect(styleImport).toBeLessThan(bootstrap.indexOf('createBrandTheme()'));
   });
 
-  it('keeps the published pink primitive and its semantic aliases unchanged', () => {
+  it('publishes neon brand text and keeps the pink primitive for errors only', () => {
     for (const path of ['packages/tokens/src/theme.css', 'packages/tokens/dist/tokens.css']) {
       const css = read(path);
-      expect(css).toContain(`--color-primitive-red-300: ${tokens['--color-fg-brand-raised']};`);
-      for (const alias of ['--color-fg-brand-raised', '--color-status-danger']) {
-        expect(css).toContain(`${alias}: var(--color-primitive-red-300);`);
-      }
+      expect(css).toContain('--color-primitive-red-300: #FF6680;');
+      expect(css).toContain('--color-status-danger: var(--color-primitive-red-300);');
+      expect(css).toContain('--color-fg-brand-raised: var(--color-primitive-red-neon);');
     }
   });
 });
@@ -163,5 +162,15 @@ describe('Storybook preview configuration', () => {
       vi.unstubAllGlobals();
       vi.resetModules();
     }
+  });
+});
+
+describe('Storybook manager sidebar icons', () => {
+  const read = (path: string) => readFileSync(resolve(import.meta.dirname, '../../../../', path), 'utf8');
+  it('paints document and story icons with the neon brand token outside the selected row', () => {
+    const css = read('.storybook/manager.css');
+    expect(css).toMatch(
+      /#storybook-explorer-tree \[data-selected=["']false["']\] svg\[type=["']document["']\],\s*#storybook-explorer-tree \[data-selected=["']false["']\] svg\[type=["']story["']\]\s*\{\s*color: var\(--color-fg-brand-raised\);\s*\}/
+    );
   });
 });

@@ -95,9 +95,14 @@ it('shows six distinct original reds and all seven navigable inventory groups', 
 it('reads effective preview paint, shows no substituted aliases, and never overrides token variables', () => {
   // JSDOM is not the browser acceptance gate: simulate computed CSS, not an override in the renderer.
   const tokens = parseColorTokens(source);
-  // Issue #219: the Storybook red-300 → red-neon alias is gone, so the brand reds preview
-  // with their published #FF6680 value and no card may disclose a substitution.
-  const formerAliases = ['--color-primitive-red-300', '--color-fg-brand-raised', '--color-status-danger'];
+  // Issue #219: the Storybook red-300 → red-neon alias is gone, so every red previews with its
+  // published value and no card may disclose a substitution. Owner decision (visual review):
+  // brand text on raised surfaces is neon; errors keep red-300.
+  const formerAliases: [string, string][] = [
+    ['--color-primitive-red-300', '#FF6680'],
+    ['--color-status-danger', '#FF6680'],
+    ['--color-fg-brand-raised', '#FF0036']
+  ];
   const nativeComputedStyle = window.getComputedStyle.bind(window);
   vi.spyOn(window, 'getComputedStyle').mockImplementation((element) => {
     const name = element.closest('[data-token]')?.getAttribute('data-token');
@@ -118,17 +123,17 @@ it('reads effective preview paint, shows no substituted aliases, and never overr
   expect(document.documentElement.getAttribute('style')).toBe(rootStyle);
   expect(container.querySelectorAll('[data-different="true"]')).toHaveLength(0);
   expect(container.querySelectorAll('[data-different="false"]')).toHaveLength(82);
-  for (const name of formerAliases) {
+  for (const [name, value] of formerAliases) {
     const card = container.querySelector(`[data-token="${name}"]`) as HTMLElement;
     const figures = within(card).getAllByRole('figure');
-    expect(figures[0]).toHaveTextContent('Original token#FF6680');
-    expect(figures[1]).toHaveTextContent('Storybook preview#FF6680');
+    expect(figures[0]).toHaveTextContent(`Original token${value}`);
+    expect(figures[1]).toHaveTextContent(`Storybook preview${value}`);
     expect(within(card).queryByText('Differs from original')).not.toBeInTheDocument();
     expect(card.querySelector<HTMLElement>('[data-view="preview"]')?.style.backgroundColor).toBe(`var(${name})`);
   }
   expect(container.querySelector('[data-token="--color-bg-deep"]')).toHaveTextContent('#800C1D');
   expect(container.querySelector('[data-token="--color-fg-brand-raised"]')).toHaveTextContent(
-    'var(--color-primitive-red-300)'
+    'var(--color-primitive-red-neon)'
   );
   const alpha = container.querySelector('[data-token="--color-alpha-red-12"]') as HTMLElement;
   expect(within(alpha).getAllByRole('figure')[1]).toHaveTextContent('rgba(255, 0, 54, 0.12)');

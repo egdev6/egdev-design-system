@@ -131,7 +131,7 @@ test('compiled dist/tokens.css exposes the 285 manual variables and preserves th
   assert.deepEqual(parity.extra, [], 'compiled artifact invented tokens');
   assert.deepEqual(parity.changed, [], 'compiled artifact changed token values');
   // The immutable fixture proves the pre-#10 tokens keep their exact values and units,
-  // except the 24 tokens the owner re-valued with the #218 global scale ×0.8 (spec S13,
+  // except the 24 tokens the owner re-valued with the #218 global scale and the brand-text token re-pointed to neon ×0.8 (spec S13,
   // L8 OQ1 exact sub-pixel values); those are compared against their new scale.
   const rescaledBy218 = new Map([
     ['--space-1', '3.2px'],
@@ -157,7 +157,9 @@ test('compiled dist/tokens.css exposes the 285 manual variables and preserves th
     ['--effect-grid-size', '32px'],
     ['--content-max', '1024px'],
     ['--gutter', 'clamp(12.8px, 3.2vw, 32px)'],
-    ['--nav-height', '54.4px']
+    ['--nav-height', '54.4px'],
+    // Owner visual review 2026-11-01 ("Todo neón"): brand text on raised surfaces uses neon.
+    ['--color-fg-brand-raised', 'var(--color-primitive-red-neon)']
   ]);
   const original = toDeclarationMap(baseline);
   assert.equal(original.size, 168, 'baseline fixture must keep its 168 original tokens');
