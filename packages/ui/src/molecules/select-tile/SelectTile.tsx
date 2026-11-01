@@ -2,6 +2,7 @@ import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import * as ToggleGroupPrimitive from '@radix-ui/react-toggle-group';
 import type { FC } from 'react';
 import { Badge } from '@/atoms/badge';
+import { Icon } from '@/atoms/icon';
 import { AspectRatio } from '@/primitives/aspect-ratio';
 import type { SelectTileProps } from './types';
 import { useSelectTile } from './useSelectTile';
@@ -33,6 +34,9 @@ export const SelectTile: FC<SelectTileProps> = (props) => {
           </div>
           <span {...item.labelProps}>{item.label}</span>
           {item.meta && <span {...item.metaProps}>{item.meta}</span>}
+          <span {...item.checkProps}>
+            <Icon name='check' size='sm' />
+          </span>
           {root.type === 'single' ? (
             <RadioGroupPrimitive.Item {...item.controlProps} />
           ) : (

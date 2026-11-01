@@ -6,6 +6,7 @@
 - [Owner-approved amendment A1](https://github.com/egdev6/egdev-design-system/issues/81#issuecomment-6503699329): Storybook metadata only. Both `value` and `defaultValue` declarations in both branches use `@control false`, with the mode-dependent `string` / `string[]` reason pointing to Single and Multiple. Runtime API, selection and other directives are unchanged. No metadata adapter or manual argTypes.
 - Implementation authorization: the parent explicitly delegated complete implementation under `odd/tasks/molecules-build.md`, T6, S1–S4, then authorized resuming with A1. This records the scoped parent instruction, not an independent approval receipt. Base `origin/main` at `d428967`; parent-installed `@radix-ui/react-toggle-group` 1.2.1 committed at `47251ca`. No other dependency or token change.
 - Worktree: `chip-group`, branch `feat/81-chip-group`. The untracked coordination document is read-only and unchanged. No Git commit, merge, staging or remote mutation is part of this implementation.
+- Amendment A2 ([v0.2 underline amendment](../v0.2/underline-amendment.md), issue #221): the owner removed the on-state underline ("Sin underline al estar seleccionado"), so the D12 underline and its decoration/offset utilities are no longer part of `chipGroupItemVariants`. The rows and composition notes below record v0.1 history and are not rewritten.
 
 ## Decisions implemented
 

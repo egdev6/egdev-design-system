@@ -42,11 +42,6 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   gauge: ['id', 'title', 'aria-describedby', 'className', 'style'],
   field: ['id', 'title', 'aria-describedby', 'className', 'style'],
   fieldMessage: ['id', 'title', 'role', 'aria-live', 'aria-describedby', 'className', 'style'],
-  gaugeDock: ['id', 'title', 'dir', 'aria-describedby', 'className', 'style'],
-  gaugeDockItem: ['id', 'title', 'aria-describedby', 'className', 'style'],
-  gaugeDockSeparator: ['id', 'title', 'className', 'style'],
-  hoverCardTrigger: ['href', 'id', 'title', 'target', 'rel', 'onClick', 'aria-label', 'className', 'style'],
-  hoverCardContent: ['id', 'title', 'aria-label', 'aria-describedby', 'className', 'style'],
   notice: ['id', 'title', 'role', 'aria-describedby', 'className', 'style'],
   toast: [
     'id',
