@@ -133,10 +133,19 @@ export type ChipGroupProps = ChipGroupCommonProps &
 /** Internal unpainted wrapping layout, not a Material panel. */
 export const chipGroupVariants = cva('eg-chip-group flex flex-wrap items-center gap-2');
 
-/** Internal bounded additions to the shared Chip recipe: non-color cue and motion/disabled guards. */
+/** Internal bounded additions to the shared Chip recipe: named item group, motion/disabled guards. */
 export const chipGroupItemVariants = cva(
-  'data-[state=on]:underline decoration-[length:var(--border-width)] underline-offset-[var(--space-1)] motion-reduce:transition-none disabled:cursor-not-allowed disabled:active:transform-none disabled:active:translate-none disabled:active:scale-none'
+  'group/item motion-reduce:transition-none disabled:cursor-not-allowed disabled:active:transform-none disabled:active:translate-none disabled:active:scale-none'
 );
+
+/** Internal decorative on-state check: zero-width when off, animated width when on, no reservation. */
+export const chipGroupCheckVariants = cva([
+  'inline-flex h-3.5 w-0 -ms-1.5 shrink-0 items-center justify-center overflow-hidden opacity-0 scale-50',
+  'transition-[width,margin,opacity,transform] duration-(--duration-fast) ease-(--ease-out)',
+  'group-data-[state=on]/item:w-3.5 group-data-[state=on]/item:ms-0',
+  'group-data-[state=on]/item:opacity-100 group-data-[state=on]/item:scale-100',
+  'motion-reduce:transition-none [&>svg]:size-full'
+]);
 
 /** Decorative 14px wrapper; no public per-option class override. */
 export const chipGroupIconVariants = cva(

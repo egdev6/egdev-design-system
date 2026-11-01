@@ -1071,7 +1071,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(props.variant?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
       'primary',
       'secondary',
-      'ghost',
+      'neutral',
       'dark'
     ]);
     expect(props.size?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual(['md', 'sm']);
@@ -2289,14 +2289,13 @@ describe('Stat passive figure metadata contract', () => {
 });
 
 describe('Avatar identity metadata contract', () => {
-  it('annotates all five optional own props with constant-only defaults', () => {
+  it('annotates all four optional own props with constant-only defaults', () => {
     const file = ast(source('atoms/avatar/types.ts'));
     const properties = ownProps(file, ['AvatarProps']);
     const controls: Record<string, string> = {
       src: 'text',
       label: 'text',
       size: 'select',
-      badgeIcon: 'select',
       paused: 'boolean'
     };
     expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(controls));
@@ -2327,10 +2326,7 @@ describe('Avatar identity metadata contract', () => {
       (props[prop]?.type.value ?? []).map((item: { value: string }) => normalize(item.value));
     expect(values('size').sort()).toEqual(['lg', 'md', 'sm', 'xl']);
     expect(normalize(props.size?.defaultValue?.value)).toBe('md');
-    expect(values('badgeIcon')).toHaveLength(45);
-    expect(values('badgeIcon')).toContain('user');
-    expect(values('badgeIcon')).toContain('linkedin');
-    expect(props.badgeIcon?.defaultValue).toBeNull();
+    expect(props.badgeIcon, 'badgeIcon must leave autodocs with the badge').toBeUndefined();
     expect(props.paused).toMatchObject({ required: false, type: { name: 'boolean' }, tags: { control: 'boolean' } });
     expect(normalize(props.paused?.defaultValue?.value)).toBe('false');
     for (const prop of ['id', 'title', 'aria-describedby', 'className', 'style']) {

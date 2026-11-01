@@ -57,7 +57,7 @@ export const Tones: Story = {
         summary='Queue paused.'
         icon={<Icon name='pause' />}
         actions={
-          <Button size='sm' variant='ghost' onClick={action('resume-queue')}>
+          <Button size='sm' variant='neutral' onClick={action('resume-queue')}>
             Resume
           </Button>
         }

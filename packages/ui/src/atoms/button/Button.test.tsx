@@ -7,7 +7,7 @@ import { Button } from './Button';
 import { useButton } from './useButton';
 
 describe('Button contract', () => {
-  it.each(['primary', 'secondary', 'ghost', 'dark'] as const)(
+  it.each(['primary', 'secondary', 'neutral', 'dark'] as const)(
     'supports the %s treatment in both sizes without legacy modifiers',
     (variant) => {
       const { rerender } = render(
@@ -56,11 +56,27 @@ describe('Button contract', () => {
     }
   );
 
-  it.each(['ghost', 'dark'] as const)('keeps explicit no-image and no-shadow resets for %s at rest', (variant) => {
-    render(<Button variant={variant}>Save</Button>);
+  it('keeps explicit no-image and no-shadow resets for dark at rest', () => {
+    render(<Button variant='dark'>Save</Button>);
     const button = screen.getByRole('button', { name: 'Save' });
     expect(button).toHaveClass('bg-none', 'shadow-none');
-    expect(button).toHaveClass(variant === 'ghost' ? 'bg-transparent' : 'bg-primitive-black');
+    expect(button).toHaveClass('bg-primitive-black');
+  });
+
+  it('styles the neutral treatment as a visible grey surface with opacity-only hover feedback', () => {
+    render(<Button variant='neutral'>Save</Button>);
+    const button = screen.getByRole('button', { name: 'Save' });
+    expect(button).toHaveClass(
+      'bg-surface-2',
+      'bg-[image:var(--gradient-sheen)]',
+      'border-border-hairline',
+      'shadow-(--shadow-edge)',
+      'text-fg-default'
+    );
+    expect(button).not.toHaveClass('bg-transparent');
+    expect(button).toHaveClass('[&:not([aria-disabled=true]):hover]:opacity-80');
+    expect(button).toHaveClass('[&:not([aria-disabled=true]):active]:opacity-70');
+    expect(button).toHaveClass('focus-visible:[box-shadow:var(--shadow-focus)]');
   });
 
   it.each(['start', 'end'] as const)('centers the %s icon without an inline SVG line box', (iconPosition) => {

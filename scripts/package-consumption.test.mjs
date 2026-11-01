@@ -566,7 +566,7 @@ export function CheckboxSamples() {
 const slottedCheckbox: CheckboxProps = { asChild: true };
 // @ts-expect-error Checkbox owns its internal indicator; children are not public.
 const checkboxChildren: CheckboxProps = { children: 'Option' };
-// @ts-expect-error Checkbox is a fixed 18px control, with no size axis.
+// @ts-expect-error Checkbox is a fixed 14.4px control (18px ×0.8, #218), with no size axis.
 const checkboxSize: CheckboxProps = { size: 'sm' };
 // @ts-expect-error Mixed state is indeterminate, never the ARIA string mixed.
 const invalidCheckboxState: CheckboxProps = { checked: 'mixed' };
@@ -1481,7 +1481,10 @@ export function AvatarSamples() {
     sizes.map((size) => createElement(Avatar, { ...avatarDefaults, key: size, size, id: 'avatar-' + size })),
     createElement(Avatar, { id: 'avatar-decorative' }),
     createElement(Avatar, { label: 'Channel on LinkedIn, paused', id: 'avatar-paused', size: 'xl',
-      paused: true, badgeIcon: 'linkedin', className: 'ms-1 ms-2 [--eg-avatar-ring:var(--color-bg-canvas)]' }));
+      paused: true, className: 'ms-1 ms-2 [--eg-avatar-ring:var(--color-bg-canvas)]' }),
+    // badgeIcon was removed (S10): origin glyphs wrap the Avatar with the public Indicator.
+    createElement(Indicator, { variant: 'icon', badgeIcon: 'linkedin', tone: 'neutral', position: 'bottom-right',
+      children: createElement(Avatar, { label: 'Channel on LinkedIn', size: 'lg', id: 'avatar-indicator' }) }));
 }
 // @ts-expect-error Avatar owns its internal content.
 const avatarChildren: AvatarProps = { children: 'AB' };
@@ -1497,7 +1500,7 @@ const avatarLabel: AvatarProps = { 'aria-label': 'Wrong' };
 const avatarAlt: AvatarProps = { alt: 'Wrong' };
 // @ts-expect-error No arbitrary dimensions.
 const avatarSize: AvatarProps = { size: 30 };
-// @ts-expect-error Badges use the closed IconName set.
+// @ts-expect-error badgeIcon was removed; wrap Avatar with Indicator for origin glyphs.
 const avatarBadge: AvatarProps = { badgeIcon: 'unknown' };
 export const iconDefaults: IconProps = { name: 'plus' };
 const iconPreset: IconSize = 'lg';
@@ -2200,20 +2203,18 @@ function assertToggleCSS(css) {
 
 // Chip ships its sheen/edge pill, red-tinted on state, focus and reduced-motion press resets.
 function assertChipCSS(css) {
-  // ChipGroup shares this recipe and adds only wrapping layout and a token underline.
+  // ChipGroup shares this recipe and adds wrapping layout and a decorative selected check (#221).
   for (const selector of [
     '.flex-wrap',
     '.gap-2',
-    String.raw`.data-\[state\=on\]\:underline`,
-    String.raw`.decoration-\[length\:var\(--border-width\)\]`,
-    String.raw`.underline-offset-\[var\(--space-1\)\]`,
+    String.raw`.group-data-\[state\=on\]\/item\:w-3\.5`,
+    String.raw`.group-data-\[state\=on\]\/item\:opacity-100`,
     String.raw`.disabled\:cursor-not-allowed`,
     String.raw`.motion-reduce\:transition-none`
   ]) {
     assert.ok(css.includes(selector), 'Missing ChipGroup selector ' + selector);
   }
-  assert.match(css, /text-decoration-thickness:\s*var\(--border-width\)/);
-  assert.match(css, /text-underline-offset:\s*var\(--space-1\)/);
+  assert.ok(!css.includes(String.raw`.data-\[state\=on\]\:underline`), 'Selected underline must not ship');
   assert.doesNotMatch(css, /\.eg-chip-group[^{]*\{/);
   for (const selector of [
     String.raw`.\[background\:var\(--gradient-sheen\)\,var\(--color-surface-1\)\]`,
@@ -2561,7 +2562,8 @@ function assertAvatarCSS(css) {
   assert.match(css, /--tw-gradient-position:\s*135deg/);
   assert.match(css, /--tw-gradient-from:\s*var\(--color-bg-deep[,)]/);
   assert.match(css, /--tw-gradient-to:\s*var\(--color-primitive-red-neon[,)]/);
-  assert.match(css, /--tw-ring-color:\s*var\(--eg-avatar-ring,\s*var\(--color-bg-surface\)\)/);
+  // The removed badge was the only consumer of this ring utility; it must leave every shipped CSS.
+  assert.doesNotMatch(css, /--tw-ring-color:\s*var\(--eg-avatar-ring/);
   assert.match(css, /opacity-60\[data-state="paused"\]\s*\{\s*opacity:\s*60%/);
   assert.match(css, /grayscale\[data-state="paused"\]\s*\{\s*--tw-grayscale:\s*grayscale\(100%\)/);
   assert.match(css, /object-fit:\s*cover/);
@@ -3137,8 +3139,8 @@ function assertButtonGroupCSS(css) {
   ]) {
     assert.ok(css.includes(selector), 'Missing ButtonGroup utility ' + selector);
   }
-  assert.match(css, /border-start-start-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
-  assert.match(css, /border-end-end-radius:\s*var\(--radius-sm(?:,\s*4px)?\)/);
+  assert.match(css, /border-start-start-radius:\s*var\(--radius-sm(?:,\s*3\.2px)?\)/);
+  assert.match(css, /border-end-end-radius:\s*var\(--radius-sm(?:,\s*3\.2px)?\)/);
   assert.doesNotMatch(css, /\.eg-button-group\s*[,{]/);
 }
 
@@ -3473,8 +3475,8 @@ function assertRadioGroupCSS(css) {
   ]) {
     assert.ok(css.includes(utility), 'Missing RadioGroup utility ' + utility);
   }
-  assert.match(css, /\.min-h-10\s*\{[^}]*min-height:\s*var\(--space-10\)/, 'RadioGroup 40px row');
-  assert.match(css, /\.size-5\s*\{[^}]*width:\s*var\(--space-5\)/, 'RadioGroup 20px radio');
+  assert.match(css, /\.min-h-10\s*\{[^}]*min-height:\s*var\(--space-10\)/, 'RadioGroup 32px row');
+  assert.match(css, /\.size-5\s*\{[^}]*width:\s*var\(--space-5\)/, 'RadioGroup 16px radio');
   assert.match(css, /transition-property:\s*border-color,\s*box-shadow/, 'The radio animates border and shadow only');
   assert.doesNotMatch(css, /\.eg-radio-group[^{]*\{/, 'RadioGroup has no stylesheet: its marker carries no rule');
 }
@@ -5168,9 +5170,17 @@ for (const frame of [square, wide]) {
   const pausedAvatar = document.getElementById('avatar-paused');
   assert.equal(pausedAvatar.getAttribute('data-state'), 'paused');
   assert.equal(pausedAvatar.getAttribute('aria-label'), 'Channel on LinkedIn, paused');
-  assert.equal(pausedAvatar.querySelector('.eg-avatar__badge').getAttribute('aria-hidden'), 'true');
-  assert.equal(pausedAvatar.querySelector('.eg-avatar__badge svg').getAttribute('aria-hidden'), 'true');
+  assert.equal(pausedAvatar.querySelector('.eg-avatar__badge'), null, 'SSR must not render the removed badge');
   assert.equal(pausedAvatar.hasAttribute('tabindex'), false);
+  // The Indicator-wrapped sample documents the badgeIcon migration at the package boundary.
+  const indicatorAvatar = document.getElementById('avatar-indicator');
+  assert.ok(indicatorAvatar, 'SSR must render the Indicator-wrapped Avatar');
+  assert.ok(indicatorAvatar.classList.contains('eg-avatar'));
+  assert.ok(indicatorAvatar.parentElement.classList.contains('eg-indicator'));
+  const indicatorMarker = indicatorAvatar.parentElement.querySelector(':scope > span[aria-hidden="true"]');
+  assert.ok(indicatorMarker, 'SSR must render the Indicator icon marker');
+  assert.ok(indicatorMarker.querySelector('.eg-icon'), 'SSR marker must contain the system glyph');
+  assert.equal(indicatorMarker.getAttribute('aria-hidden'), 'true');
   const decorativeIcon = document.getElementById('icon-decorative');
   assert.ok(decorativeIcon, 'SSR must render the decorative Icon');
   assert.equal(decorativeIcon.tagName.toLowerCase(), 'svg');
@@ -5915,7 +5925,11 @@ try {
   stage('link:refs:complete');
   const avatar = document.getElementById('avatar-paused');
   assert.equal(avatar.getAttribute('data-state'), 'paused');
-  assert.equal(avatar.querySelector('.eg-avatar__badge').getAttribute('aria-hidden'), 'true');
+  assert.equal(avatar.querySelector('.eg-avatar__badge'), null, 'CSR must not render the removed badge');
+  const csrIndicator = document.getElementById('avatar-indicator');
+  assert.ok(csrIndicator, 'CSR must render the Indicator-wrapped Avatar');
+  assert.ok(csrIndicator.parentElement.classList.contains('eg-indicator'));
+  assert.ok(csrIndicator.parentElement.querySelector(':scope > span[aria-hidden="true"] .eg-icon'));
   assert.ok(avatar.classList.contains('ms-2') && !avatar.classList.contains('ms-1'));
   const preloads = [];
   const BrowserImage = window.Image;
@@ -6962,7 +6976,7 @@ for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) ass
 for (const name of typography) {
   for (const field of ['--line-height', '--font-weight', '--letter-spacing']) assert.ok(emitted.includes('--text-' + name + field + ':'), 'Native artifact must expose --text-' + name + field);
 }
-assert.ok(emitted.includes('--effect-grid-size: 40px'), 'Native artifact must emit unused effect spacing');
+assert.ok(emitted.includes('--effect-grid-size: 32px'), 'Native artifact must emit unused effect spacing');
 assert.ok(emitted.includes('--spacing-16: var(--space-16)'), 'Native artifact must emit unused spacing aliases');
 for (const [name, paths] of Object.entries(instances)) assert.equal(paths.size, 1, 'Consumer bundle must contain one physical ' + name);
 const tailwind = await build({ configFile: false, logLevel: 'error', plugins: [tailwindcss({ optimize: false })], build: { cssMinify: false, emptyOutDir: true, outDir: 'dist-tw', rolldownOptions: { input: 'tailwind.css', output: { assetFileNames: 'tailwind.css' } } } });

@@ -47,7 +47,7 @@ export type NoticeProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'ro
    */
   icon?: ReactNode;
   /**
-   * Optional trailing one or two system Button (sm, secondary/ghost) or Link elements.
+   * Optional trailing one or two system Button (sm, secondary/neutral) or Link elements.
    * Their handlers, routing and keyboard behavior stay consumer-owned. No dismissal API.
    * @control false
    * @controlReason ReactNode action elements are not serializable; see WithActions.
@@ -62,7 +62,7 @@ export type NoticeProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'ro
 };
 
 const noticeAppearanceVariants = cva(
-  'relative flex flex-wrap items-center gap-3 px-4 py-3 font-sans text-fg-default bg-linear-to-b',
+  'relative flex flex-wrap items-start gap-3 px-4 py-3 font-sans text-fg-default bg-linear-to-b',
   {
     variants: {
       tone: {
@@ -92,6 +92,11 @@ export function noticeVariants(options: VariantProps<typeof noticeAppearanceVari
   );
 }
 
+/**
+ * First-line optical alignment: items-start on the root plus a top offset that centers the icon
+ * square on the first text line box (line-height × font-size minus icon square, halved), resolved
+ * from @egdev/tokens for both presets. No hardcoded pixel offsets.
+ */
 export const noticeIconVariants = cva('shrink-0', {
   variants: {
     tone: {
@@ -101,7 +106,10 @@ export const noticeIconVariants = cva('shrink-0', {
       warning: 'text-status-warning',
       danger: 'text-status-danger'
     },
-    size: { md: 'size-(--icon-size)', sm: 'size-4' }
+    size: {
+      md: 'mt-[calc((var(--text-body-default--line-height)*var(--text-body-default)-var(--icon-size))/2)] size-(--icon-size)',
+      sm: 'mt-[calc((var(--text-label-default--line-height)*var(--text-label-default)-var(--space-4))/2)] size-4'
+    }
   },
   defaultVariants: { tone: 'neutral', size: 'md' }
 });

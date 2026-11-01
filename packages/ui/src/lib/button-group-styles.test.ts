@@ -37,7 +37,7 @@ describe('ButtonGroup static utility emission', () => {
     expect(css).toMatch(/:not\(:first-child\)/);
     expect(css).toMatch(/:not\(:last-child\)/);
     for (const corner of ['start-start', 'start-end', 'end-start', 'end-end']) {
-      expect(css).toContain(`border-${corner}-radius: var(--radius-sm, 4px)`);
+      expect(css).toContain(`border-${corner}-radius: var(--radius-sm, 3.2px)`);
     }
     expect(css).toMatch(/position:\s*relative/);
     expect(css).toMatch(/z-index:\s*10/);

@@ -31,7 +31,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
         }
       },
       {
@@ -41,7 +41,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
         }
       },
       {
@@ -51,7 +51,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupProps",
-          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
         }
       },
       {
@@ -61,7 +61,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupOption",
-          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
         }
       },
       {
@@ -188,7 +188,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
         }
       },
       {
@@ -198,7 +198,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupProps",
-          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
         }
       },
       {
@@ -275,7 +275,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
         }
       },
       {
@@ -285,7 +285,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupProps",
-          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
         }
       },
       {
@@ -392,7 +392,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+          "revision": "sha256:700fb977229da90178cc8679025a787fbfcf44c6cd28b63dc6f6c1cd5ce9debb"
         }
       },
       {
@@ -402,7 +402,7 @@
         "source": {
           "path": "packages/ui/src/atoms/avatar/types.ts",
           "symbol": "AvatarProps",
-          "revision": "sha256:8ffd965e1e0baf15dbc4495f1780b62a9f5a654738ff78ad88f0775e16d0212b"
+          "revision": "sha256:257f17ea206a79e5a560cc7593f2f5c456bdca5dda51bc9c11fdb5ce418f1817"
         }
       },
       {
@@ -412,7 +412,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       },
       {
@@ -552,7 +552,7 @@
         "source": {
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
-          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+          "revision": "sha256:118721454e5b6f37753f295171b4d74c3a6774e280fca8c75278cf99e219fb69"
         }
       }
     ]
@@ -644,12 +644,12 @@
       },
       {
         "component": "Button",
-        "type": "ButtonVariant ('primary' | 'secondary' | 'ghost' | 'dark')",
+        "type": "ButtonVariant ('primary' | 'secondary' | 'neutral' | 'dark')",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       },
       {
@@ -799,7 +799,7 @@
         "source": {
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
-          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+          "revision": "sha256:118721454e5b6f37753f295171b4d74c3a6774e280fca8c75278cf99e219fb69"
         }
       },
       {
@@ -896,7 +896,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+          "revision": "sha256:700fb977229da90178cc8679025a787fbfcf44c6cd28b63dc6f6c1cd5ce9debb"
         }
       },
       {
@@ -986,7 +986,7 @@
         "source": {
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
-          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+          "revision": "sha256:118721454e5b6f37753f295171b4d74c3a6774e280fca8c75278cf99e219fb69"
         }
       },
       {
@@ -1100,7 +1100,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
         }
       },
       {
@@ -1110,7 +1110,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
         }
       },
       {
@@ -1140,7 +1140,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupProps",
-          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
         }
       },
       {
@@ -1150,7 +1150,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupOption",
-          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
         }
       },
       {
@@ -1170,7 +1170,7 @@
         "source": {
           "path": "packages/ui/src/atoms/avatar/types.ts",
           "symbol": "AvatarProps",
-          "revision": "sha256:8ffd965e1e0baf15dbc4495f1780b62a9f5a654738ff78ad88f0775e16d0212b"
+          "revision": "sha256:257f17ea206a79e5a560cc7593f2f5c456bdca5dda51bc9c11fdb5ce418f1817"
         }
       },
       {
@@ -1320,7 +1320,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
+          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
         }
       },
       {
@@ -1710,23 +1710,13 @@
     "exceptions": [],
     "usages": [
       {
-        "component": "Avatar",
-        "type": "IconName",
-        "status": "existing",
-        "source": {
-          "path": "packages/ui/src/atoms/avatar/types.ts",
-          "symbol": "AvatarProps",
-          "revision": "sha256:8ffd965e1e0baf15dbc4495f1780b62a9f5a654738ff78ad88f0775e16d0212b"
-        }
-      },
-      {
         "component": "Indicator",
         "type": "IconName (icon branch only)",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
-          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+          "revision": "sha256:118721454e5b6f37753f295171b4d74c3a6774e280fca8c75278cf99e219fb69"
         }
       }
     ]
@@ -1753,7 +1743,7 @@
         "source": {
           "path": "packages/ui/src/atoms/avatar/types.ts",
           "symbol": "AvatarProps",
-          "revision": "sha256:8ffd965e1e0baf15dbc4495f1780b62a9f5a654738ff78ad88f0775e16d0212b"
+          "revision": "sha256:257f17ea206a79e5a560cc7593f2f5c456bdca5dda51bc9c11fdb5ce418f1817"
         }
       },
       {
@@ -1850,7 +1840,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupOption",
-          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
         }
       },
       {
@@ -1860,7 +1850,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+          "revision": "sha256:700fb977229da90178cc8679025a787fbfcf44c6cd28b63dc6f6c1cd5ce9debb"
         }
       },
       {
@@ -1870,7 +1860,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       },
       {
@@ -1957,7 +1947,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       }
     ]
@@ -1984,7 +1974,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       },
       {
@@ -2031,7 +2021,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:1cf6a0e59cd1636bc05d59bb5d91bdb49e3da9cc0fbc27ecf69fb224e79b888f"
+          "revision": "sha256:c76cfcc621a680ab114ddc49b81da36cb683eea2a2f63eaed5030f68329348d3"
         }
       },
       {
@@ -2564,7 +2554,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
         }
       },
       {
@@ -2574,7 +2564,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupProps",
-          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
         }
       },
       {
@@ -2897,7 +2887,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
         }
       },
       {
@@ -3088,7 +3078,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
         }
       },
       {
@@ -3098,7 +3088,7 @@
         "source": {
           "path": "packages/ui/src/molecules/chip-group/types.ts",
           "symbol": "ChipGroupProps",
-          "revision": "sha256:91398445d28ea34d62c8a9c078990ca57e67784af09b0709e0f470a641174252"
+          "revision": "sha256:f371c4ad3f2f6796d1f74724a5c26ab45597cbb49e670fff85ad330ef093e91f"
         }
       }
     ]
@@ -3314,7 +3304,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
+          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
         }
       }
     ]
@@ -3341,7 +3331,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
+          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
         }
       }
     ]
@@ -3368,7 +3358,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
+          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
         }
       }
     ]
@@ -3395,7 +3385,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
+          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
         }
       }
     ]
@@ -3422,7 +3412,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
+          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
         }
       }
     ]
@@ -3449,7 +3439,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
+          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
         }
       }
     ]
@@ -3553,7 +3543,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleProps",
-          "revision": "sha256:10240b3b86416357ccf485e8a095e34c20e3fd411a82b4c7e2dc7d2bad1f0438"
+          "revision": "sha256:4ccff811ba38c7c700cd1b36fe333c07a6d2189d033d1af163e9cb8db5ed1bba"
         }
       }
     ]
@@ -3620,7 +3610,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleProps",
-          "revision": "sha256:10240b3b86416357ccf485e8a095e34c20e3fd411a82b4c7e2dc7d2bad1f0438"
+          "revision": "sha256:4ccff811ba38c7c700cd1b36fe333c07a6d2189d033d1af163e9cb8db5ed1bba"
         }
       }
     ]
@@ -3687,7 +3677,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleProps",
-          "revision": "sha256:10240b3b86416357ccf485e8a095e34c20e3fd411a82b4c7e2dc7d2bad1f0438"
+          "revision": "sha256:4ccff811ba38c7c700cd1b36fe333c07a6d2189d033d1af163e9cb8db5ed1bba"
         }
       }
     ]
@@ -4013,7 +4003,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+          "revision": "sha256:700fb977229da90178cc8679025a787fbfcf44c6cd28b63dc6f6c1cd5ce9debb"
         }
       }
     ]
@@ -4077,7 +4067,7 @@
         "source": {
           "path": "packages/ui/src/molecules/notice/types.ts",
           "symbol": "NoticeProps",
-          "revision": "sha256:ac7eafd209afa4d4540bc4a598e0aee447bca676257ce18b98e8b2569fce9eb3"
+          "revision": "sha256:700fb977229da90178cc8679025a787fbfcf44c6cd28b63dc6f6c1cd5ce9debb"
         }
       }
     ]
@@ -4525,7 +4515,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
         }
       }
     ]
@@ -4552,7 +4542,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
         }
       }
     ]
@@ -4579,7 +4569,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
         }
       }
     ]
@@ -4606,7 +4596,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:211e99db0425c209a04027efabb575be4218bf621dc10ad9b3ac39c1183c2c92"
+          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
         }
       }
     ]
@@ -5426,7 +5416,7 @@
         "source": {
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
-          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+          "revision": "sha256:118721454e5b6f37753f295171b4d74c3a6774e280fca8c75278cf99e219fb69"
         }
       }
     ]
@@ -5449,7 +5439,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:4f9353b58beeb2c439d052e1dbd4936ed78305b2056967e2bf636d8e444f80e8"
+          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
         }
       }
     ]
@@ -5476,7 +5466,7 @@
         "source": {
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
-          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+          "revision": "sha256:118721454e5b6f37753f295171b4d74c3a6774e280fca8c75278cf99e219fb69"
         }
       }
     ]
@@ -5503,7 +5493,7 @@
         "source": {
           "path": "packages/ui/src/atoms/indicator/types.ts",
           "symbol": "IndicatorProps",
-          "revision": "sha256:729dadf1edc984ba639e3d99f6747b678525ccf33131292e96e9b13fe2250c65"
+          "revision": "sha256:118721454e5b6f37753f295171b4d74c3a6774e280fca8c75278cf99e219fb69"
         }
       }
     ]

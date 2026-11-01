@@ -27,6 +27,7 @@ type Item = {
   labelProps: { id: string; className: string };
   metaProps: { id: string; className: string };
   badgeProps: { id: string; className: string };
+  checkProps: { className: string; 'aria-hidden': true };
   controlProps: {
     value: string;
     disabled: boolean;
@@ -102,6 +103,7 @@ export function useSelectTile({
         labelProps: { id: labelId, className: cn(selectTileVariants.label()) },
         metaProps: { id: metaId, className: cn(selectTileVariants.meta()) },
         badgeProps: { id: badgeId, className: cn(selectTileVariants.badge()) },
+        checkProps: { className: cn(selectTileVariants.check()), 'aria-hidden': true },
         controlProps: {
           value: option.value,
           disabled: itemDisabled,
