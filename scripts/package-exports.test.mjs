@@ -2278,14 +2278,16 @@ test('UI ships exactly the approved Avatar utility recipe without new marker rul
     ['.bg-linear-135', /--tw-gradient-position:\s*135deg/],
     ['.from-bg-deep', /--tw-gradient-from:\s*var\(--color-bg-deep[,)]/],
     ['.to-primitive-red-neon', /--tw-gradient-to:\s*var\(--color-primitive-red-neon[,)]/],
-    ['.object-cover', /object-fit:\s*cover\s*;/],
-    [
-      String.raw`.ring-\[var\(--eg-avatar-ring\,var\(--color-bg-surface\)\)\]`,
-      /--tw-ring-color:\s*var\(--eg-avatar-ring,\s*var\(--color-bg-surface\)\)/
-    ]
+    ['.object-cover', /object-fit:\s*cover\s*;/]
   ]) {
     assert.match(rule(selector), declaration, selector);
   }
+  // The removed badge was the only consumer of this ring utility; it must leave the shipped CSS.
+  assert.doesNotMatch(
+    utilities,
+    /--tw-ring-color:\s*var\(--eg-avatar-ring/,
+    'Removed Avatar badge ring utility must not ship'
+  );
   for (const size of ['2.75', '3.25', '4.5', '5.5', '7.5']) {
     const body = rule('.size-' + size.replace('.', '\\.'));
     for (const property of ['width', 'height']) {
@@ -2300,13 +2302,11 @@ test('UI ships exactly the approved Avatar utility recipe without new marker rul
   const { Avatar } = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
   const { renderToString } = await import('react-dom/server');
-  const html = renderToString(
-    createElement(Avatar, { label: 'Channel on LinkedIn, paused', badgeIcon: 'linkedin', paused: true })
-  );
+  const html = renderToString(createElement(Avatar, { label: 'Channel on LinkedIn, paused', paused: true }));
   assert.match(html, /role="img"/);
   assert.match(html, /aria-label="Channel on LinkedIn, paused"/);
   assert.match(html, /data-state="paused"/);
-  assert.match(html, /eg-avatar__badge/);
+  assert.doesNotMatch(html, /eg-avatar__badge/, 'badgeIcon removal leaves no badge marker');
   assert.equal((html.match(/aria-label=/g) ?? []).length, 1);
   assert.doesNotMatch(html, /<img|tabindex=|style=|is-paused/);
 });

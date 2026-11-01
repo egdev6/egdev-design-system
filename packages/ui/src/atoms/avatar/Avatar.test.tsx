@@ -1,8 +1,8 @@
 import { act, render, renderHook, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Indicator } from '../indicator/Indicator.js';
 import { Avatar } from './Avatar.js';
-import { avatarBadgeIconVariants, avatarBadgeVariants } from './types.js';
 import { useAvatar } from './useAvatar.js';
 
 // Only the browser image transport is replaced; real Radix owns loading and fallback.
@@ -35,7 +35,13 @@ describe('Avatar contract', () => {
     expect(result.current.rootProps).toMatchObject({ 'aria-hidden': true, 'data-state': 'active' });
     expect(result.current.rootProps.className).toContain('size-7.5');
     expect(result.current.fallbackIconClassName).toContain('size-4');
-    expect(result.current.badgeClassName).toContain('size-4.5');
+    expect(Object.keys(result.current).sort()).toEqual([
+      'fallbackClassName',
+      'fallbackIconClassName',
+      'imageClassName',
+      'rootProps',
+      'src'
+    ]);
   });
 
   it.each([
@@ -84,18 +90,6 @@ describe('Avatar contract', () => {
     rerender(<Avatar />);
     expect(screen.queryByRole('img')).toBeNull();
     expect(container.firstElementChild).toHaveAttribute('aria-hidden', 'true');
-  });
-
-  it.each(['md', 'xl'] as const)('renders the %s decorative network badge without clipping', (size) => {
-    render(<Avatar label='Channel on LinkedIn' badgeIcon='linkedin' size={size} />);
-    const root = screen.getByRole('img');
-    const badge = root.querySelector('.eg-avatar__badge');
-    expect(badge).toHaveAttribute('aria-hidden', 'true');
-    expect(badge).toHaveClass('ring-2', 'ring-[var(--eg-avatar-ring,var(--color-bg-surface))]');
-    expect(badge).toHaveClass(size === 'xl' ? 'size-5.5' : 'size-4.5');
-    expect(badge?.querySelector('svg')).toHaveClass(size === 'xl' ? 'size-3.25' : 'size-2.75');
-    expect(root).not.toHaveClass('overflow-hidden');
-    expect(screen.getAllByRole('img')).toHaveLength(1);
   });
 
   it('toggles paused data state without state classes or DOM-only props', () => {
@@ -156,89 +150,33 @@ describe('Avatar contract', () => {
   });
 });
 
-// Bounds are asserted as token utility intent; real before/after browser parity is parent-owned.
-describe('Avatar geometry-sharing compatibility', () => {
-  it.each([
-    ['sm', 'size-4.5', 'size-2.75'],
-    ['md', 'size-4.5', 'size-2.75'],
-    ['lg', 'size-4.5', 'size-2.75'],
-    ['xl', 'size-5.5', 'size-3.25']
-  ] as const)(
-    'retains %s badge bounds classes, paint, pointer behavior and paused ancestry',
-    (size, diameter, glyph) => {
-      const { container, rerender } = render(<Avatar label='Channel on LinkedIn' size={size} badgeIcon='linkedin' />);
-      const root = screen.getByRole('img', { name: 'Channel on LinkedIn' });
-      const badge = root.querySelector('.eg-avatar__badge');
-      const svg = badge?.querySelector('svg');
-      expect(container.firstElementChild).toBe(root);
-      expect(root.tagName).toBe('SPAN');
-      expect(badge?.parentElement).toBe(root);
-      expect(badge).toHaveClass(
-        'absolute',
-        'grid',
-        'place-items-center',
-        'rounded-full',
-        '-right-1',
-        '-bottom-1',
-        diameter
-      );
-      expect(svg).toHaveClass(glyph);
-      expect(badge).toHaveClass(
-        'bg-bg-canvas',
-        'text-fg-default',
-        'ring-2',
-        'ring-[var(--eg-avatar-ring,var(--color-bg-surface))]'
-      );
-      expect(badge?.className).not.toMatch(
-        /pointer-events|select-none|border-|outline-|shadow-|bg-\[image|eg-indicator/
-      );
-      expect(root).not.toHaveClass('overflow-hidden');
-      expect(root.querySelector('.eg-indicator')).toBeNull();
-      expect(root.querySelectorAll('.eg-avatar__badge')).toHaveLength(1);
-      rerender(<Avatar label='Channel on LinkedIn, paused' size={size} badgeIcon='linkedin' paused={true} />);
-      expect(screen.getByRole('img')).toBe(root);
-      expect(root.querySelector('.eg-avatar__badge')).toBe(badge);
-      expect(badge?.querySelector('svg')).toBe(svg);
-      expect(root).toHaveAttribute('data-state', 'paused');
-      expect(root).toHaveClass(
-        'bg-linear-135',
-        'from-bg-deep',
-        'to-primitive-red-neon',
-        'data-[state=paused]:grayscale',
-        'data-[state=paused]:opacity-60'
-      );
-      expect(badge?.className).not.toMatch(/opacity|grayscale/);
-    }
-  );
+// The badge is retired; the wrapped-Indicator migration keeps Anchor geometry and hidden semantics.
+describe('Removed badgeIcon (owner S10) and Indicator migration', () => {
+  // Legacy consumers may still spread the removed prop; it must never render a badge again.
+  const legacyBadgeIcon = { badgeIcon: 'linkedin' };
 
-  it('preserves source-exported size signatures, md defaults and class composition', () => {
-    expect(avatarBadgeVariants()).toBe(avatarBadgeVariants({ size: 'md' }));
-    expect(avatarBadgeIconVariants()).toBe(avatarBadgeIconVariants({ size: 'md' }));
-    expect(avatarBadgeVariants({ size: 'sm', className: 'source-consumer' })).toContain('source-consumer');
-    expect(avatarBadgeIconVariants({ size: 'lg', className: 'source-glyph' })).toContain('source-glyph');
-    expect(avatarBadgeVariants({ size: null }).split(' ')).toEqual(
-      expect.arrayContaining(['absolute', 'grid', 'place-items-center', 'rounded-full', '-right-1', '-bottom-1'])
-    );
-    expect(avatarBadgeVariants({ size: null })).not.toMatch(/size-4\.5|size-5\.5/);
-    expect(avatarBadgeIconVariants({ size: null })).toBe('');
+  it('ignores the removed badgeIcon prop and renders no corner badge', () => {
+    const { rerender } = render(<Avatar label='Channel on LinkedIn' size='lg' {...legacyBadgeIcon} />);
+    const root = screen.getByRole('img', { name: 'Channel on LinkedIn' });
+    expect(root.querySelector('.eg-avatar__badge')).toBeNull();
+    expect(screen.getAllByRole('img')).toHaveLength(1);
+    rerender(<Avatar label='Channel on LinkedIn' />);
+    expect(root.querySelector('.eg-avatar__badge')).toBeNull();
   });
 
-  it('retains one badge across live size changes, and removes it without replacing the root', () => {
-    const { rerender } = render(
-      <Avatar label='Channel' badgeIcon='linkedin' className='ms-2 [--eg-avatar-ring:var(--color-bg-canvas)]' />
+  it('moves origin glyphs to a wrapped Indicator without losing naming or geometry', () => {
+    render(
+      <Indicator variant='icon' badgeIcon='linkedin' tone='neutral' position='bottom-right'>
+        <Avatar label='Channel on LinkedIn' size='lg' />
+      </Indicator>
     );
-    const root = screen.getByRole('img');
-    const badge = root.querySelector('.eg-avatar__badge');
-    rerender(<Avatar size='xl' badgeIcon='github' className='ms-2 [--eg-avatar-ring:var(--color-bg-canvas)]' />);
-    expect(root.querySelector('.eg-avatar__badge')).toBe(badge);
-    expect(badge).toHaveClass('size-5.5');
-    expect(badge?.querySelector('svg')).toHaveClass('size-3.25');
-    expect(root).toHaveAttribute('aria-hidden', 'true');
-    expect(root).not.toHaveAttribute('role');
-    expect(root).not.toHaveAttribute('aria-label');
-    expect(root).toHaveClass('[--eg-avatar-ring:var(--color-bg-canvas)]');
-    rerender(<Avatar label='Channel' />);
-    expect(screen.getByRole('img')).toBe(root);
-    expect(root.querySelector('.eg-avatar__badge')).toBeNull();
+    const avatar = screen.getByRole('img', { name: 'Channel on LinkedIn' });
+    const anchor = avatar.parentElement;
+    expect(anchor).toHaveClass('eg-indicator');
+    const marker = anchor?.querySelector(':scope > span[aria-hidden="true"]');
+    expect(marker).toHaveClass('absolute', '-bottom-1', '-right-1', 'size-4.5');
+    expect(marker?.querySelector('svg')).toHaveClass('eg-icon', 'size-2.75');
+    expect(marker?.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+    expect(avatar.querySelector('.eg-avatar__badge')).toBeNull();
   });
 });

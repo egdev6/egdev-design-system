@@ -325,7 +325,6 @@ const postReceiptUsages = [
   { conventionId: 'checked-change', source: 'packages/ui/src/atoms/checkbox/types.ts#CheckboxProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/avatar/types.ts#AvatarProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/avatar/types.ts#AvatarProps' },
-  { conventionId: 'corner-badge-icon', source: 'packages/ui/src/atoms/avatar/types.ts#AvatarProps' },
   { conventionId: 'paused-presentation', source: 'packages/ui/src/atoms/avatar/types.ts#AvatarProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/button/types.ts#ButtonProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/button/types.ts#ButtonProps' },
@@ -597,7 +596,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   const avatar = actual.flatMap((entry) =>
     entry.usages.filter((usage) => usage.source.path === 'packages/ui/src/atoms/avatar/types.ts')
   );
-  assert.equal(avatar.length, 4);
+  // corner-badge-icon lost its Avatar usage when the badgeIcon prop was removed (S10).
+  assert.equal(avatar.length, 3);
   for (const usage of avatar) {
     assert.equal(usage.source.symbol, 'AvatarProps');
     assert.equal(usage.source.revision, digest(fs.readFileSync(resolve(root, usage.source.path))));
