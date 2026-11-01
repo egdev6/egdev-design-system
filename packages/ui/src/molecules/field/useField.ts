@@ -5,6 +5,7 @@ import type { LabelProps } from '../../primitives/label';
 import {
   type FieldProps,
   fieldCounterVariants,
+  fieldFooterRowVariants,
   fieldLabelRowVariants,
   fieldMessageVariants,
   fieldReadoutVariants,
@@ -25,6 +26,7 @@ export type UseFieldResult = {
   message: string | undefined;
   messageProps: { id: string; tone: FieldMessageTone };
   messageWrapperProps: { className: string };
+  footerRowProps: { className: string };
   counter: FieldProps['counter'];
   counterProps: { id: string; className: string; 'data-state': 'over' | undefined };
   readout: string | undefined;
@@ -74,6 +76,7 @@ export function useField({
     message,
     messageProps: { id: messageId, tone: invalid ? 'error' : hintTone },
     messageWrapperProps: { className: cn(fieldMessageVariants({ layout })) },
+    footerRowProps: { className: cn(fieldFooterRowVariants()) },
     counter: visibleCounter,
     counterProps: {
       id: counterId,
