@@ -72,7 +72,8 @@ const components = [
   ['CollapsibleTrigger', 'molecules/collapsible'],
   ['CollapsibleContent', 'molecules/collapsible'],
   ['GaugeGroup', 'molecules/gauge-group'],
-  ['PhotoFrame', 'atoms/photo-frame']
+  ['PhotoFrame', 'atoms/photo-frame'],
+  ['Table', 'molecules/table']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -421,6 +422,24 @@ const expected: Record<string, Record<string, string | false>> = {
     label: 'text',
     size: 'select'
   },
+  table: {
+    label: 'text',
+    hideLabel: 'boolean',
+    columns: false,
+    rows: false,
+    size: 'select',
+    maxHeight: 'select',
+    activeRowId: 'text',
+    messages: false,
+    variant: 'select',
+    sort: false,
+    defaultSort: false,
+    onSortChange: false,
+    selectable: 'boolean',
+    value: false,
+    defaultValue: false,
+    onValueChange: false
+  },
   gauge: {
     label: 'text',
     value: 'number',
@@ -433,6 +452,7 @@ const expected: Record<string, Record<string, string | false>> = {
   }
 };
 const ownPropCounts: Record<string, number> = {
+  table: 16,
   gaugegroup: 4,
   photoframe: 6,
   indicator: 8,
@@ -682,6 +702,19 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
     const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
     expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+  });
+  it('extracts Table required data and maps its controls without diagnostics', () => {
+    const metadata = component('Table');
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    const rows: StrictArgTypes = extract(metadata);
+    expect(rows.label?.type?.required).toBe(true);
+    expect(rows.columns?.type?.required).toBe(true);
+    expect(rows.rows?.type?.required).toBe(true);
+    expect(mapJSDocControls(rows, metadata).diagnostics).toEqual([]);
+    const composed = story('Table');
+    expect(composed.argTypes.label?.control).toEqual({ type: 'text' });
+    expect(composed.argTypes.columns?.control).toBe(false);
+    expect(composed.argTypes.hideLabel?.control).toEqual({ type: 'boolean' });
   });
   it('retains Field required content, stacked defaults, choices and supported native rows', () => {
     const { argTypes, args } = story('Field');

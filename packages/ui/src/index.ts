@@ -45,6 +45,7 @@ export type { ChipGroupOption, ChipGroupProps, ChipGroupType } from './molecules
 export { ChipGroup } from './molecules/chip-group';
 export type { CollapsibleContentProps, CollapsibleProps, CollapsibleTriggerProps } from './molecules/collapsible';
 export { Collapsible, CollapsibleContent, CollapsibleTrigger } from './molecules/collapsible';
+export * from './molecules/command-palette';
 export * from './molecules/dialog';
 export * from './molecules/field';
 export type { GaugeGroupItems, GaugeGroupProps, GaugeGroupRing, GaugeGroupSize } from './molecules/gauge-group';
@@ -75,11 +76,14 @@ export type {
 export { SectionHeader } from './molecules/section-header';
 export * from './molecules/select-tile';
 export * from './molecules/social-links';
+export * from './molecules/table';
 export type { TabsItem, TabsProps, TabsSize, TabsTone, TabsVariant } from './molecules/tabs';
 export { Tabs, tabsVariants } from './molecules/tabs';
 export * from './molecules/timeline';
 export * from './molecules/toast';
 // Organisms
+export * from './organisms/preview-frame';
+export * from './organisms/sidebar';
 export * from './organisms/tab-bar';
 // Primitives
 export type { AspectRatioProps } from './primitives/aspect-ratio';
@@ -119,3 +123,4 @@ export type {
 } from './primitives/text';
 export { Heading, Text } from './primitives/text';
 export * from './primitives/visually-hidden';
+export type { ProductIdentity } from './types/product-identity';

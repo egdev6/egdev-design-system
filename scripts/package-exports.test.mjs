@@ -38,6 +38,27 @@ test('tab-bar exports native navigation and its public recipe', async () => {
   assert.equal(exported.useTabBar, undefined);
 });
 
+test('command-palette closed SSR renders only its optional launcher', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(typeof exported.CommandPalette, 'function');
+  const items = [{ id: 'find', label: 'Find', onSelect: () => undefined }];
+  assert.equal(renderToString(createElement(exported.CommandPalette, { items })), '');
+  const html = renderToString(
+    createElement(exported.CommandPalette, {
+      items,
+      children: createElement('button', { type: 'button' }, 'Open commands')
+    })
+  );
+  assert.match(html, /<button[^>]*>Open commands<\/button>/);
+  assert.match(html, /aria-expanded="false"/);
+  assert.doesNotMatch(html, /role="(?:dialog|combobox|listbox|option)"|Find|eg-palette/);
+  for (const name of ['useCommandPalette', 'paletteOverlay', 'paletteRow']) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} is private`);
+  }
+});
+
 test('dialog exports its public compound API and keeps shared recipes internal', async () => {
   const dialogExports = await import(artifact('ui', ui.exports['.'].import));
   for (const dialogName of ['Dialog', 'DialogTrigger', 'DialogContent', 'DialogClose']) {
@@ -203,6 +224,50 @@ test('Collapsible package preserves amended native closed/open relationships and
       dom.window.close();
     }
   }
+});
+
+test('sidebar exports its component and static CSS without private helpers', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(typeof exported.Sidebar, 'function');
+  assert.equal(Object.hasOwn(exported, 'useSidebar'), false);
+  const html = renderToString(
+    createElement(exported.Sidebar, {
+      product: { name: 'Workspace', href: '/home', node: createElement('span', null, 'W') },
+      footer: 'Account',
+      children: 'Body'
+    })
+  );
+  assert.match(html, /eg-sidebar/);
+  assert.match(html, /href="\/home"/);
+  assert.match(html, /Body/);
+  assert.match(html, /Account/);
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  for (const selector of ['.w-64', '.min-h-0', '.overflow-hidden']) {
+    assert.ok(css.includes(selector), selector);
+  }
+});
+
+test('preview-frame exports its passive figure and keeps recipes internal', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(typeof exported.PreviewFrame, 'function');
+  for (const name of ['usePreviewFrame', 'rootVariants', 'zoneVariants', 'canvasVariants', 'safeAreaVariants']) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} is internal`);
+  }
+  const html = renderToString(
+    createElement(exported.PreviewFrame, {
+      figureCaption: 'Packed preview',
+      zones: [{ id: 'title', label: 'Title area', x: 10, y: 10, width: 80, height: 20 }],
+      children: createElement('span', null, 'Artwork')
+    })
+  );
+  assert.match(html, /<figure[^>]*eg-stage/);
+  assert.match(html, /aria-labelledby="[^"]+"/);
+  assert.match(html, /--eg-zone-x:10%/);
+  assert.match(html, /aria-hidden="true"/);
 });
 
 test('Panel ships band resets and direct-zone corner utilities without a new marker engine', () => {
@@ -488,6 +553,32 @@ test('SelectTile ships shared Material, state priority, stretched geometry and n
     } finally {
       document.window.close();
     }
+  }
+});
+
+test('table exports native semantics and keeps internal recipes private', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  for (const multiplier of [3, 4, 6]) {
+    assert.match(css, new RegExp(String.raw`max-height:\s*calc\(var\(--space-24\)\s*\*\s*${multiplier}\)`));
+  }
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(
+    createElement(exported.Table, {
+      label: 'Items',
+      rows: [{ id: 'a', name: 'First' }],
+      columns: [{ id: 'name', header: 'Name', cell: (row) => row.name }],
+      selectable: true
+    })
+  );
+  assert.match(html, /<table[^>]*eg-table/);
+  assert.match(html, /<caption[^>]*>Items<\/caption>/);
+  assert.match(html, /scope="col"/);
+  assert.match(html, /scope="row"/);
+  assert.match(html, /Select all rows/);
+  for (const name of ['useTable', 'tableVariants', 'tableFrameVariants']) {
+    assert.equal(Object.hasOwn(exported, name), false);
   }
 });
 
@@ -2831,6 +2922,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Collapsible',
       'CollapsibleContent',
       'CollapsibleTrigger',
+      'CommandPalette',
       'Countdown',
       'Dialog',
       'DialogClose',
@@ -2874,6 +2966,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'PopoverContent',
       'PopoverTrigger',
       'Portal',
+      'PreviewFrame',
       'ProgressBar',
       'PullQuote',
       'RadioGroup',
@@ -2881,6 +2974,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'SectionHeader',
       'Select',
       'SelectTile',
+      'Sidebar',
       'Skeleton',
       'Slider',
       'Slot',
@@ -2893,6 +2987,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Surface',
       'Switch',
       'TabBar',
+      'Table',
       'Tabs',
       'Text',
       'Textarea',
@@ -2911,6 +3006,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'noticeVariants',
       'progressBarVariants',
       'radioGroupVariants',
+      'sidebarVariants',
       'sliderVariants',
       'statVariants',
       'statusDotVariants',
@@ -3054,6 +3150,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'CollapsibleProps',
     'CollapsibleTrigger',
     'CollapsibleTriggerProps',
+    'CommandPalette',
+    'CommandPaletteFiltering',
+    'CommandPaletteItem',
+    'CommandPaletteMessages',
+    'CommandPaletteProps',
     'Countdown',
     'CountdownProps',
     'CountdownSize',
@@ -3199,6 +3300,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'PopoverTriggerProps',
     'Portal',
     'PortalProps',
+    'PreviewFrame',
+    'PreviewFrameProps',
+    'PreviewFrameZone',
+    'ProductIdentity',
     'ProgressBar',
     'ProgressBarProps',
     'ProgressBarSize',
@@ -3228,6 +3333,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SelectTileRatio',
     'SelectTileThumbnail',
     'SelectTileType',
+    'Sidebar',
+    'SidebarProps',
     'Skeleton',
     'SkeletonProps',
     'SkeletonSize',
@@ -3265,6 +3372,17 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'TabBarItem',
     'TabBarMessages',
     'TabBarProps',
+    'Table',
+    'TableColumn',
+    'TableColumnFormat',
+    'TableMaxHeight',
+    'TableMessages',
+    'TableProps',
+    'TableRow',
+    'TableSize',
+    'TableSort',
+    'TableSortDirection',
+    'TableVariant',
     'Tabs',
     'TabsItem',
     'TabsProps',
@@ -3313,6 +3431,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'noticeVariants',
     'progressBarVariants',
     'radioGroupVariants',
+    'sidebarVariants',
     'sliderVariants',
     'statVariants',
     'statusDotVariants',

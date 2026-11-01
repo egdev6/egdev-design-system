@@ -711,6 +711,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/carousel',
       './molecules/chip-group',
       './molecules/collapsible',
+      './molecules/command-palette',
       './molecules/dialog',
       './molecules/field',
       './molecules/gauge-group',
@@ -726,9 +727,12 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/section-header',
       './molecules/select-tile',
       './molecules/social-links',
+      './molecules/table',
       './molecules/tabs',
       './molecules/timeline',
       './molecules/toast',
+      './organisms/preview-frame',
+      './organisms/sidebar',
       './organisms/tab-bar',
       './primitives/aspect-ratio',
       './primitives/divider',
@@ -739,7 +743,8 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/stack',
       './primitives/surface',
       './primitives/text',
-      './primitives/visually-hidden'
+      './primitives/visually-hidden',
+      './types/product-identity'
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
       'AspectRatio',
@@ -755,6 +760,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Collapsible',
       'CollapsibleContent',
       'CollapsibleTrigger',
+      'CommandPalette',
       'Countdown',
       'Dialog',
       'DialogClose',
@@ -798,6 +804,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'PopoverContent',
       'PopoverTrigger',
       'Portal',
+      'PreviewFrame',
       'ProgressBar',
       'PullQuote',
       'RadioGroup',
@@ -805,6 +812,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'SectionHeader',
       'Select',
       'SelectTile',
+      'Sidebar',
       'Skeleton',
       'Slider',
       'Slot',
@@ -817,6 +825,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Surface',
       'Switch',
       'TabBar',
+      'Table',
       'Tabs',
       'Text',
       'Textarea',
@@ -835,6 +844,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'noticeVariants',
       'progressBarVariants',
       'radioGroupVariants',
+      'sidebarVariants',
       'sliderVariants',
       'statVariants',
       'statusDotVariants',
@@ -3889,4 +3899,67 @@ describe('Inherited native prop context regression', () => {
     },
     20_000
   );
+});
+
+describe('PreviewFrame metadata contract', () => {
+  it('annotates own props with supported controls, false-control reasons and actual defaults', () => {
+    const file = ast(source('organisms/preview-frame/types.ts'));
+    const properties = ownProps(file, ['PreviewFrameProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual([
+      'children',
+      'ratio',
+      'variant',
+      'safeArea',
+      'zones',
+      'figureCaption',
+      'actions',
+      'footer'
+    ]);
+    const controls = Object.fromEntries(
+      properties.map((property) => {
+        const tags = ts.getJSDocTags(property);
+        const control = tags.find((tag) => tag.tagName.text === 'control');
+        const reason = tags.find((tag) => tag.tagName.text === 'controlReason');
+        return [property.name.getText(file), [ts.getTextOfJSDocComment(control?.comment), !!reason] as const];
+      })
+    );
+    expect(controls).toEqual({
+      children: ['false', true],
+      ratio: ['number', false],
+      variant: ['select', false],
+      safeArea: ['boolean', false],
+      zones: ['false', true],
+      figureCaption: ['text', false],
+      actions: ['false', true],
+      footer: ['false', true]
+    });
+  });
+
+  it('extracts own rows, the closed variant enum and only documented native rows', () => {
+    const doc = parser
+      .parse(source('organisms/preview-frame/PreviewFrame.tsx'))
+      .find((item) => item.displayName === 'PreviewFrame');
+    if (!doc) {
+      throw new Error('Missing docgen for PreviewFrame');
+    }
+    const { props } = doc;
+    expect(props.ratio?.type.name).toBe('number');
+    expect(props.variant?.type.name).toBe('enum');
+    expect(props.safeArea?.defaultValue?.value).toBe('true');
+    for (const prop of [
+      'id',
+      'title',
+      'dir',
+      'lang',
+      'aria-label',
+      'aria-labelledby',
+      'aria-describedby',
+      'className'
+    ]) {
+      expect(props[prop], `PreviewFrame native ${prop} must remain documented`).toBeDefined();
+    }
+    for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick']) {
+      expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
 });
