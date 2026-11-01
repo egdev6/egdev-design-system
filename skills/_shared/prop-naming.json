@@ -881,6 +881,16 @@
           "symbol": "TableProps",
           "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
         }
+      },
+      {
+        "component": "PreviewFrame",
+        "type": "'grid' | 'plain'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+        }
       }
     ]
   },
@@ -1067,6 +1077,16 @@
           "path": "packages/ui/src/molecules/panel/types.ts",
           "symbol": "PanelProps",
           "revision": "sha256:5aa2753d3af82b96e29f8df01eda0af56e750d5f4b7d321664a74bc4c4432cd8"
+        }
+      },
+      {
+        "component": "PreviewFrame",
+        "type": "'info' | 'warning' (default info)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
         }
       }
     ]
@@ -2989,6 +3009,16 @@
           "symbol": "AspectRatioProps",
           "revision": "sha256:771b93daa9a3c3548cba5ea6172b0182b32705e6ab7caeaf1b207641669ff1ed"
         }
+      },
+      {
+        "component": "PreviewFrame",
+        "type": "number (width divided by height; invalid values fall back to 16:9)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+        }
       }
     ]
   },
@@ -4135,6 +4165,16 @@
           "symbol": "NoticeProps",
           "revision": "sha256:928a78703455cdeebcc1de4331fee16b041b50bfc34f7a14ad59de8b7df858aa"
         }
+      },
+      {
+        "component": "PreviewFrame",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+        }
       }
     ]
   },
@@ -4171,6 +4211,16 @@
           "path": "packages/ui/src/organisms/sidebar/types.ts",
           "symbol": "SidebarProps",
           "revision": "sha256:489fe1683e9a448ec5111da30b92c468298799392fb7441a5493cf32a7e50e18"
+        }
+      },
+      {
+        "component": "PreviewFrame",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
         }
       }
     ]
@@ -5495,7 +5545,18 @@
       "scope": "convention:safe-area-guide",
       "contentHash": "sha256:6907abfdc393028cba8972e992275e8428c7837715d2e7deb190b3e35dcb5ccf"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "PreviewFrame",
+        "type": "boolean (default true)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+        }
+      }
+    ]
   },
   {
     "id": "guide-zones",
@@ -5511,7 +5572,18 @@
       "scope": "convention:guide-zones",
       "contentHash": "sha256:9f087b7f24dd88644da462717d27231bbb4a26c2d7fd90165831b80a8c4d9bfa"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "PreviewFrame",
+        "type": "PreviewFrameZone[] (default empty)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+        }
+      }
+    ]
   },
   {
     "id": "figure-caption",
@@ -5527,7 +5599,18 @@
       "scope": "convention:figure-caption",
       "contentHash": "sha256:170ba06cd9fd19980688f56c43b5582d6e85227354b98ced6939e96e3d5e5b83"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "PreviewFrame",
+        "type": "string (optional visible figcaption)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+        }
+      }
+    ]
   },
   {
     "id": "side-navigation",

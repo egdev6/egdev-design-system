@@ -15,13 +15,13 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 | extraer | 12 |
 | fusionar | 3 |
 | separar | 3 |
+| renombrar | 3 |
 | componer | 2 |
-| renombrar | 2 |
 | absorber | 1 |
 
 | Destino | Componentes |
 |---|---|
-| @egdev/ui | 74 |
+| @egdev/ui | 75 |
 | @egdev/effects | 3 |
 | Mando | 6 |
 | Cadencia | 1 |
@@ -119,6 +119,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
 | **Sidebar** | — | ScrollArea | Surface recipe; consumer identity, NavList and footer | nuevo | Working-tree Sidebar under the approved #123 plan and consumer identity amendment: host-sized passive panel with a scrollable body and optional pinned identity and footer. Navigation, routing and responsive visibility belong to consumers. Browser visual and accessibility verification pending. |
+| **PreviewFrame** | StageFrame (organismo) | AspectRatio | IconButton, Chip | renombrar | Working-tree implementation under the approved #127 plan and owner decisions L11/L15: passive native preview figure with a decorative safe-area guide, clamped percentage zones and consumer-owned slots. Grid renders like plain until a grid token is approved; zone geometry uses only the four approved percentage custom properties. No stylesheet; browser visual and accessibility verification pending. Contract: [#127](https://github.com/egdev6/egdev-design-system/issues/127). |
 | **ModuleRail** | ModuleRail (organismo (agente)) | Tooltip + NavigationMenu o ToggleGroup | Logo, IconButton, StatusDot | mantener | Raíl compacto de Mando; genérico. |
 | **TabBar** | TabBar (organismo (agente)) | — | Icon, Badge | mantener | Navegación inferior móvil. |
 | **CalendarGrid** | CalendarGrid (organismo) | — (arrastre: dnd-kit, a confirmar) | ListItem, Text | mantener | `.eg-day` y `.eg-post-row` pasan a partes internas. Falta vista Mes. |
