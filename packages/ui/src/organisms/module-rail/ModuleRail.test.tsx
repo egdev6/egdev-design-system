@@ -149,6 +149,21 @@ describe('ModuleRail', () => {
     expect(screen.getByRole('link', { name: 'Other' })).not.toHaveAttribute('aria-current');
   });
 
+  it('sizes current and inactive links with the same border-box so the current state does not shift layout', () => {
+    render(
+      <ModuleRail
+        label='Modules'
+        items={[
+          { id: 'current', label: 'Current', href: '#current', icon: 'plus', 'aria-current': 'page' },
+          { id: 'other', label: 'Other', href: '#other', icon: 'plus' }
+        ]}
+      />
+    );
+    for (const name of ['Current', 'Other']) {
+      expect(screen.getByRole('link', { name })).toHaveClass('size-12', 'box-border');
+    }
+  });
+
   it('tabs through identity, main, add and end controls with native focus', async () => {
     const user = userEvent.setup();
     const add = vi.fn();

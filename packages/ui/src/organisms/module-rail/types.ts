@@ -64,7 +64,7 @@ export const railBodyVariants = cva(
 );
 export const railListVariants = cva('m-0 flex list-none flex-col items-center gap-2 p-0');
 export const railLinkVariants = cva(
-  'relative grid size-12 place-items-center rounded-md border border-transparent text-fg-secondary no-underline hover:bg-surface-2 hover:text-fg-default focus-visible:outline-none focus-visible:shadow-focus motion-reduce:transition-none'
+  'relative grid box-border size-12 place-items-center rounded-md border border-transparent text-fg-secondary no-underline hover:bg-surface-2 hover:text-fg-default focus-visible:outline-none focus-visible:shadow-focus motion-reduce:transition-none'
 );
 export const railSeparatorVariants = cva('my-1.5 h-px w-8 shrink-0 bg-border-hairline');
 export const railDotVariants = cva('absolute end-2 bottom-2');
