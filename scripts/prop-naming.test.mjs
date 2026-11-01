@@ -61,6 +61,10 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/effects/src/atoms/isotipo3d/types.ts#Isotipo3DProps'
   })),
+  ...['accessible-name', 'paused-presentation'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/effects/src/atoms/isotipo3d/types.ts#Isotipo3DProps'
+  })),
   ...['effect-profile', 'layer-opacity'].map((conventionId) => ({
     conventionId,
     source: 'packages/effects/src/ambient-background/types.ts#AmbientBackgroundProps'
@@ -479,7 +483,14 @@ const postReceiptUsages = [
   }))
 ];
 // These newly proposed conventions are not part of any immutable approval receipt.
-const postReceiptProposals = ['field-message-content', 'field-guidance-tone'];
+const postReceiptProposals = [
+  'field-message-content',
+  'field-guidance-tone',
+  'interaction-drag-rotate',
+  'interaction-flip-gesture',
+  'interaction-interactive-mode',
+  'interaction-pose-change'
+];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
     .filter(({ id }) => !postReceiptProposals.includes(id))
@@ -548,8 +559,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   assert.ok(text.includes('218403be9baee574e213cf1b06db1f7bd4d3951b20c7e24e593e90ef011fb062'));
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   validate(actual);
-  assert.equal(actual.length, 133);
-  assert.equal(beforeIndicatorConventions(actual).length, 130);
+  assert.equal(actual.length, 137);
+  assert.equal(beforeIndicatorConventions(actual).length, 134);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
