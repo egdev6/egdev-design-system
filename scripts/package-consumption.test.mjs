@@ -41,7 +41,7 @@ import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorI
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
 import { Toast, ToastProvider } from '@egdev/ui';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, GaugeDock, GaugeDockItem, GaugeDockSeparator, Heading, HoverCard, HoverCardContent, HoverCardTrigger, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -76,9 +76,6 @@ import type {
   FieldLayout,
   FieldCounter,
   GaugeProps,
-  GaugeDockProps,
-  GaugeDockItemProps,
-  GaugeDockSeparatorProps,
   GaugeState,
   GaugeSize,
   IconButtonProps,
@@ -168,9 +165,6 @@ import type {
   StackProps,
   HeadingLevel,
   HeadingProps,
-  HoverCardProps,
-  HoverCardTriggerProps,
-  HoverCardContentProps,
   TextProps,
   TextTone,
   TextVariant,
@@ -334,51 +328,6 @@ const tileRef: SelectTileProps = { ...singleTile, ref: createRef<HTMLDivElement>
 const tileChildren: SelectTileProps = { ...singleTile, children: 'Custom tile' };
 // @ts-expect-error There is no asChild composition API.
 const tileAsChild: SelectTileProps = { ...singleTile, asChild: true };
-export const hoverCardRef = createRef<HTMLAnchorElement>();
-export const hoverCardSlotRef = createRef<HTMLAnchorElement>();
-export const hoverCardChanges: boolean[] = [];
-const previewContent: HoverCardContentProps = { children: 'Usage: 42%. Reset: tomorrow.', id: 'hover-preview' };
-const previewTrigger: HoverCardTriggerProps = { children: 'Usage preview', href: '#hover-details', id: 'hover-trigger' };
-export function HoverCardSamples({ open, defaultOpen = false, slotted = false }: { open?: boolean; defaultOpen?: boolean; slotted?: boolean }) {
-  const trigger = slotted
-    ? createElement(HoverCardTrigger, { key: 'trigger', asChild: true, ref: hoverCardSlotRef, children: createElement('a', { href: '#hover-details', id: 'hover-trigger' }, 'Usage preview') })
-    : createElement(HoverCardTrigger, { ...previewTrigger, key: 'trigger', ref: hoverCardRef });
-  const props: HoverCardProps = { open, defaultOpen, onOpenChange: (next) => hoverCardChanges.push(next),
-    children: [trigger, createElement(HoverCardContent, { ...previewContent, key: 'content' })] };
-  return createElement('section', null, createElement(HoverCard, props),
-    createElement('a', { href: '#hover-details', id: 'hover-persistent' }, 'Read all usage details'),
-    createElement('p', { id: 'hover-details' }, 'Usage: 42%. Reset: tomorrow.'));
-}
-// @ts-expect-error Default native anchor requires href.
-const missingHoverDestination: HoverCardTriggerProps = { children: 'Usage' };
-// @ts-expect-error A slotted trigger takes one element, never text.
-const hoverTextChild: HoverCardTriggerProps = { asChild: true, children: 'Usage' };
-// @ts-expect-error The child owns the destination when asChild is true.
-const hoverWrapperHref: HoverCardTriggerProps = { asChild: true, href: '#details', children: createElement('a', { href: '#details' }, 'Details') };
-// @ts-expect-error Root requires composition children.
-const missingHoverPair: HoverCardProps = { open: true };
-// @ts-expect-error Radix default delays are not public configuration.
-const hoverDelay: HoverCardProps = { children: null, openDelay: 0 };
-// @ts-expect-error Content cannot acquire dialog semantics.
-const hoverRole: HoverCardContentProps = { children: 'Usage', role: 'dialog' };
-// @ts-expect-error Content is not focusable.
-const hoverTabStop: HoverCardContentProps = { children: 'Usage', tabIndex: 0 };
-// @ts-expect-error No live preview announcements.
-const hoverLive: HoverCardContentProps = { children: 'Usage', 'aria-live': 'polite' };
-// @ts-expect-error Content must remain read-only.
-const hoverEditable: HoverCardContentProps = { children: 'Usage', contentEditable: true };
-// @ts-expect-error No raw HTML bypass for content.
-const hoverHtml: HoverCardContentProps = { children: 'Usage', dangerouslySetInnerHTML: { __html: 'Usage' } };
-// @ts-expect-error Content is internally portalled, not slotted by consumers.
-const hoverContentSlot: HoverCardContentProps = { children: 'Usage', asChild: true };
-// @ts-expect-error Presence is Radix-owned, without public forceMount.
-const hoverPresence: HoverCardContentProps = { children: 'Usage', forceMount: true };
-// @ts-expect-error Content has no public ref API.
-const hoverContentRef: HoverCardContentProps = { children: 'Usage', ref: createRef<HTMLDivElement>() };
-// @ts-expect-error Positioning numbers are fixed internally.
-const hoverOffset: HoverCardContentProps = { children: 'Usage', sideOffset: 0 };
-// @ts-expect-error Placement accepts only four sides.
-const hoverBadSide: HoverCardContentProps = { children: 'Usage', side: 'up' };
 export const popoverTriggerRef = createRef<HTMLButtonElement>();
 export const popoverCloseRef = createRef<HTMLButtonElement>();
 const popoverTriggerProps: PopoverTriggerProps = {
@@ -625,44 +574,6 @@ const invalidCheckboxState: CheckboxProps = { checked: 'mixed' };
 const checkboxChange: CheckboxProps = { onChange: () => undefined };
 // @ts-expect-error Button type is owned by Radix Checkbox.
 const checkboxType: CheckboxProps = { type: 'submit' };
-export const gaugeDockActionRef = createRef<HTMLButtonElement>();
-export const gaugeDockCalls: string[] = [];
-export function GaugeDockSamples({ value = 0, orientation = 'horizontal', dir = 'ltr' }: { value?: number; orientation?: GaugeDockProps['orientation']; dir?: GaugeDockProps['dir'] } = {}) {
-  const first: GaugeDockItemProps = { children: [
-    createElement(Gauge, { key: 'meter', label: 'Packed session usage', value, size: 'sm' }),
-    createElement(Button, { key: 'action', ref: gaugeDockActionRef, onClick: () => gaugeDockCalls.push('session'), children: 'Open packed session details' })
-  ] };
-  const disabled: GaugeDockItemProps = { children: [
-    createElement(Gauge, { key: 'meter', label: 'Packed daily usage', value: 75 }),
-    createElement(Button, { key: 'action', disabled: true, children: 'Open packed daily details' })
-  ] };
-  const unavailable: GaugeDockItemProps = { children: [
-    createElement(Gauge, { key: 'meter', label: 'Packed unavailable usage', value: NaN, unavailableText: 'Packed reading offline' }),
-    createElement(IconButton, { key: 'action', label: 'Open packed offline details', size: 'lg', icon: createElement(Icon, { name: 'arrow-right' }) })
-  ] };
-  const separator: GaugeDockSeparatorProps = { id: 'packed-dock-separator' };
-  const props: GaugeDockProps = { label: 'Packed usage detail actions', id: 'packed-gauge-dock', orientation, dir, children: [
-    createElement(GaugeDockItem, { ...first, key: 'first' }),
-    createElement(GaugeDockSeparator, { ...separator, key: 'separator' }),
-    createElement(GaugeDockItem, { ...disabled, key: 'disabled' }),
-    createElement(GaugeDockItem, { ...unavailable, key: 'offline' })
-  ] };
-  return createElement(GaugeDock, props);
-}
-// @ts-expect-error GaugeDock requires an explicit accessible toolbar name.
-const unnamedDock: GaugeDockProps = { children: null };
-// @ts-expect-error Native automatic direction is not supported by Radix Toolbar.
-const autoDock: GaugeDockProps = { label: 'Usage', children: null, dir: 'auto' };
-// @ts-expect-error Dock has no aggregate value or selection API.
-const valuedDock: GaugeDockProps = { label: 'Usage', children: null, value: 42 };
-// @ts-expect-error Root semantics belong to Radix Toolbar.
-const roleDock: GaugeDockProps = { label: 'Usage', children: null, role: 'group' };
-// @ts-expect-error No public ref is exposed by GaugeDock.
-const refDock: GaugeDockProps = { label: 'Usage', children: null, ref: createRef<HTMLDivElement>() };
-// @ts-expect-error Exactly two elements are required, not a single Gauge.
-const incompleteDockItem: GaugeDockItemProps = { children: [createElement(Gauge, { label: 'Usage', value: 0 })] };
-// @ts-expect-error Decorative separator cannot be given an independent orientation.
-const orientedDockSeparator: GaugeDockSeparatorProps = { orientation: 'vertical' };
 const gaugeGroupRing: GaugeGroupRing = { label: 'Session quota', value: 42.5, state: 'warning', stateText: 'Review session' };
 const gaugeGroupItems: GaugeGroupItems = [gaugeGroupRing, { label: 'Weekly quota', value: NaN }];
 const gaugeGroupSize: GaugeGroupSize = 'sm';
@@ -3681,8 +3592,6 @@ ${assertPanelConsumerCSS.toString()}
 assertPanelConsumerCSS(shippedStyles);
 ${assertCollapsibleConsumerCSS.toString()}
 assertCollapsibleConsumerCSS(shippedStyles);
-${assertHoverCardCSS.toString()}
-assertHoverCardCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AspectRatio',
   'Avatar',
@@ -3703,14 +3612,8 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Field',
   'FieldMessage',
   'Gauge',
-  'GaugeDock',
-  'GaugeDockItem',
-  'GaugeDockSeparator',
   'GaugeGroup',
   'Heading',
-  'HoverCard',
-  'HoverCardContent',
-  'HoverCardTrigger',
   'Icon',
   'IconButton',
   'Indicator',
@@ -3908,24 +3811,6 @@ function assertNavListCSS(css) {
   assert.doesNotMatch(css, /\.eg-nav-list\s*\{/);
 }
 
-function assertHoverCardCSS(css) {
-  for (const selector of [
-    String.raw`.w-\[calc\(var\(--space-24\)\*4\)\]`,
-    String.raw`.max-w-\[var\(--radix-hover-card-content-available-width\)\]`,
-    String.raw`.max-h-\[var\(--radix-hover-card-content-available-height\)\]`,
-    String.raw`.pointer-coarse\:min-h-\[var\(--space-12\)\]`,
-    String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`,
-    String.raw`.data-\[state\=open\]\:starting\:opacity-0`,
-    String.raw`.motion-reduce\:transition-none`
-  ]) {
-    assert.ok(css.includes(selector), 'Missing HoverCard utility ' + selector);
-  }
-  assert.match(css, /max-width:\s*var\(--radix-hover-card-content-available-width\)/);
-  assert.match(css, /max-height:\s*var\(--radix-hover-card-content-available-height\)/);
-  assert.match(css, /@starting-style/);
-  assert.doesNotMatch(css, /\.eg-hover-card\s*[,{]/);
-}
-
 function assertCarouselCSS(css) {
   for (const selector of [
     '.basis-full',
@@ -3970,22 +3855,6 @@ function assertLinkCSS(css) {
   assert.match(css, /transition-duration:\s*var\(--duration-fast\)/);
   assert.match(css, /@media \(prefers-reduced-motion:\s*no-preference\)/);
   assert.match(css, /@media \(prefers-reduced-motion:\s*reduce\)/);
-}
-
-function assertGaugeDockCSS(css) {
-  for (const selector of [
-    '.max-w-full',
-    '.max-h-full',
-    '.flex-nowrap',
-    '.overflow-auto',
-    String.raw`.data-\[orientation\=vertical\]\:flex-col`,
-    String.raw`.data-\[orientation\=vertical\]\:h-6`,
-    String.raw`.data-\[orientation\=horizontal\]\:w-6`
-  ]) {
-    assert.ok(css.includes(selector), `GaugeDock layout must ship ${selector}`);
-  }
-  assert.match(css, /background-color:\s*var\(--color-border-hairline[,)]/);
-  assert.doesNotMatch(css, /\.eg-gauge-dock(?:-item|-separator)?\s*\{/);
 }
 
 function assertListItemCSS(css) {
@@ -4151,21 +4020,7 @@ try {
 } finally {
   moduleDocument.window.close();
 }
-const { GaugeDockSamples } = await import('./consumer.ts');
-const dockDOM = new JSDOM(renderToString(createElement(GaugeDockSamples)));
-try {
-  const root = dockDOM.window.document.getElementById('packed-gauge-dock');
-  assert.equal(root.getAttribute('role'), 'toolbar');
-  assert.equal(root.getAttribute('aria-label'), 'Packed usage detail actions');
-  assert.equal(root.querySelectorAll('[role="meter"]').length, 2);
-  assert.equal(root.querySelectorAll('button').length, 3);
-  assert.equal(root.querySelector('button [role="meter"]'), null);
-  assert.equal(root.querySelector('[role="meter"]').getAttribute('aria-valuenow'), '0');
-  assert.equal(root.querySelector('#packed-dock-separator').getAttribute('data-orientation'), 'vertical');
-  assert.equal(root.querySelector('#packed-dock-separator').getAttribute('aria-hidden'), 'true');
-  assert.ok(root.textContent.includes('Packed reading offline'));
-} finally { dockDOM.window.close(); }
-import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, HoverCardSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
+import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
 import { photoFrameSamples } from './consumer.ts';
 const photoFrameDocument = new JSDOM(renderToString(createElement(photoFrameSamples)));
 try {
@@ -4209,16 +4064,6 @@ for (const multiple of [false, true]) {
     tiles.window.close();
   }
 }
-const hoverDocument = new JSDOM(renderToString(createElement(HoverCardSamples, { defaultOpen: true })));
-try {
-  const doc = hoverDocument.window.document;
-  assert.equal(doc.querySelectorAll('a').length, 2);
-  assert.equal(doc.getElementById('hover-trigger').getAttribute('data-state'), 'open');
-  assert.equal(doc.getElementById('hover-trigger').getAttribute('href'), '#hover-details');
-  assert.equal(doc.getElementById('hover-persistent').getAttribute('href'), '#hover-details');
-  assert.ok(!doc.querySelector('.eg-hover-card'), 'Portal content is client-only even with defaultOpen');
-  assert.ok(!doc.querySelector('[aria-controls], [aria-expanded], [role="tooltip"], [role="dialog"]'));
-} finally { hoverDocument.window.close(); }
 // Popover SSR renders only the named button: the dialog is an internal client portal.
 const popoverDocument = new JSDOM(renderToString(createElement(PopoverSamples)));
 try {
@@ -5410,7 +5255,7 @@ const { ToastSamples, toastChanges, toastActions } = await import('./consumer.ts
 const { PageHeaderSamples } = await import('./consumer.ts');
 const { photoFrameSamples } = await import('./consumer.ts');
 const { ModuleCardSamples, moduleCardClicks } = await import('./consumer.ts');
-const { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, FieldSamples, fieldControlRef, HoverCardSamples, hoverCardRef, hoverCardSlotRef, hoverCardChanges, ListItemSamples, MeterRowSamples, NavListSamples, navRequests, navNavigations, NoticeSamples, PopoverSamples, popoverTriggerRef, popoverCloseRef, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, carouselChanges, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
+const { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, FieldSamples, fieldControlRef, ListItemSamples, MeterRowSamples, NavListSamples, navRequests, navNavigations, NoticeSamples, PopoverSamples, popoverTriggerRef, popoverCloseRef, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, carouselChanges, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
 const root = createRoot(document.getElementById('app'));
 try {
@@ -6150,56 +5995,6 @@ try {
   assert.deepEqual(linkEvents, ['native', 'child', 'parent']);
   await act(async () => root.render(null));
   assert.ok(nativeLinkRef.current === null && slottedLinkRef.current === null, 'Native and slotted Link refs clean up');
-  stage('hover-card:focus:start');
-  hoverCardChanges.length = 0;
-  await act(async () => root.render(createElement(HoverCardSamples)));
-  const hoverTrigger = document.getElementById('hover-trigger');
-  assert.ok(hoverCardRef.current === hoverTrigger, 'Native trigger forwards its anchor ref');
-  assert.equal(hoverTrigger.getAttribute('href'), '#hover-details');
-  assert.equal(hoverCardChanges.length, 0, 'Mount emits no notification');
-  await act(async () => hoverTrigger.focus());
-  assert.ok(document.querySelector('.eg-hover-card') === null, 'Focus follows the open delay');
-  await act(async () => new Promise((resolve) => setTimeout(resolve, 750)));
-  const hoverPanel = document.querySelector('.eg-hover-card');
-  assert.ok(hoverPanel && hoverPanel.classList.contains('eg-surface'));
-  assert.equal(hoverPanel.textContent, 'Usage: 42%. Reset: tomorrow.');
-  assert.equal(hoverPanel.id, 'hover-preview', 'Content id remains a compatible native prop');
-  assert.ok(!document.getElementById('app').contains(hoverPanel), 'Content is internally portalled');
-  assert.ok(hoverPanel.closest('[data-radix-popper-content-wrapper]').parentElement === document.body);
-  assert.ok(document.activeElement === hoverTrigger, 'Preview does not move focus');
-  for (const attr of ['aria-describedby', 'aria-controls', 'aria-expanded']) {
-    assert.equal(hoverTrigger.hasAttribute(attr), false);
-  }
-  assert.ok(!hoverPanel.querySelector('a, button, input, [tabindex], [aria-live]'));
-  await act(async () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
-  assert.ok(document.querySelector('.eg-hover-card') === null);
-  assert.ok(document.activeElement === hoverTrigger);
-  const touch = new Event('touchstart', { bubbles: true, cancelable: true });
-  let cancelRequests = 0;
-  touch.preventDefault = () => { cancelRequests += 1; };
-  await act(async () => hoverTrigger.dispatchEvent(touch));
-  assert.equal(cancelRequests, 1, 'A1 retains Radix touch cancellation, not a HoverCard-owned handler');
-  assert.equal(document.getElementById('hover-persistent').getAttribute('href'), '#hover-details');
-  await act(async () => root.render(null));
-  assert.ok(hoverCardRef.current === null);
-  hoverCardChanges.length = 0;
-  await act(async () => root.render(createElement(HoverCardSamples, { open: false })));
-  await act(async () => document.getElementById('hover-trigger').focus());
-  await act(async () => new Promise((resolve) => setTimeout(resolve, 750)));
-  assert.ok(hoverCardChanges.includes(true), 'Controlled owner receives the open request');
-  assert.ok(document.querySelector('.eg-hover-card') === null, 'Owner acknowledgement is required');
-  const requestCount = hoverCardChanges.length;
-  await act(async () => root.render(createElement(HoverCardSamples, { open: true })));
-  assert.ok(document.querySelector('.eg-hover-card'));
-  assert.equal(hoverCardChanges.length, requestCount, 'Acknowledgement does not echo a request');
-  await act(async () => root.render(null));
-  await act(async () => root.render(createElement(HoverCardSamples, { defaultOpen: true, slotted: true })));
-  assert.ok(hoverCardSlotRef.current === document.getElementById('hover-trigger'));
-  assert.equal(document.querySelectorAll('#hover-trigger').length, 1, 'Slotted link has no duplicate anchor');
-  await act(async () => root.render(null));
-  assert.ok(hoverCardSlotRef.current === null);
-  assert.ok(document.querySelector('.eg-hover-card') === null);
-  stage('hover-card:focus:complete');
   stage('tooltip:focus:start');
   await act(async () => root.render(createElement(TooltipSamples)));
   const tooltipTrigger = document.getElementById('tooltip-search');
@@ -6933,38 +6728,6 @@ try {
   await act(async () => root.render(null));
   assert.ok(switchRef.current === null, 'Switch ref must be cleaned up on unmount');
   stage('switch:complete');
-  const { GaugeDockSamples, gaugeDockActionRef, gaugeDockCalls } = await import('./consumer.ts');
-  await act(async () => root.render(createElement(GaugeDockSamples)));
-  const dock = document.getElementById('packed-gauge-dock');
-  const dockButtons = [...dock.querySelectorAll('button')];
-  assert.equal(gaugeDockActionRef.current, dockButtons[0]);
-  assert.equal(dockButtons[1].disabled, true);
-  assert.ok(dockButtons[2].textContent.includes('Open packed offline details'), 'AccessibleIcon hidden text names the action');
-  await act(async () => dock.focus());
-  assert.equal(document.activeElement, dockButtons[0]);
-  const dockKey = async (key) => {
-    await act(async () => {
-      document.activeElement.dispatchEvent(new window.KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    });
-  };
-  await dockKey('ArrowRight');
-  assert.equal(document.activeElement, dockButtons[2], 'Disabled action is skipped');
-  await dockKey('ArrowRight');
-  assert.equal(document.activeElement, dockButtons[2], 'Dock never loops');
-  await dockKey('Home');
-  assert.equal(document.activeElement, dockButtons[0]);
-  await act(async () => dockButtons[0].click());
-  assert.deepEqual(gaugeDockCalls, ['session']);
-  await act(async () => root.render(createElement(GaugeDockSamples, { value: 42.5, orientation: 'vertical' })));
-  assert.equal(document.activeElement, dockButtons[0], 'Measurement updates retain action focus');
-  assert.equal(dock.querySelector('[role="meter"]').getAttribute('aria-valuenow'), '42.5');
-  assert.equal(dock.getAttribute('data-orientation'), 'vertical');
-  await dockKey('ArrowDown');
-  assert.equal(document.activeElement, dockButtons[2]);
-  await act(async () => root.render(null));
-  assert.equal(gaugeDockActionRef.current, null);
-  stage('gauge-dock:complete');
   await act(async () => root.render(createElement(ChipGroupSamples)));
   const singleGroup = document.getElementById('chip-group-single');
   const multipleGroup = document.getElementById('chip-group-multiple');
@@ -7073,8 +6836,6 @@ assert.ok(!emitted.includes('@theme'), 'Native consumption must not need Tailwin
 for (const ambientValue of ['--eg-ambient-opacity', '--color-ambient-bg', 'forced-colors']) {
   assert.ok(emitted.includes(ambientValue), 'Native consumer is missing ambient CSS: ' + ambientValue);
 }
-${assertGaugeDockCSS.toString()}
-assertGaugeDockCSS(emitted);
 ${assertButtonCSS.toString()}
 ${assertBadgeCSS.toString()}
 assertBadgeCSS(emitted);
@@ -7208,7 +6969,6 @@ const tailwind = await build({ configFile: false, logLevel: 'error', plugins: [t
 const twAssets = [tailwind].flat().flatMap((bundle) => bundle.output).filter((asset) => asset.type === 'asset' && asset.fileName.endsWith('.css'));
 const twCss = twAssets.map((asset) => String(asset.source)).join(' ');
 assert.ok(twAssets.length > 0, 'Tailwind build must emit CSS');
-assertGaugeDockCSS(twCss);
 assertCheckboxCSS(twCss);
 assertButtonCSS(twCss);
 assertBadgeCSS(twCss);

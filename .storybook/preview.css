@@ -39,7 +39,6 @@
 @source "../packages/ui/src/atoms/tooltip/Tooltip.stories.tsx";
 @source "../packages/ui/src/molecules/page-header/PageHeader.stories.tsx";
 @source "../packages/ui/src/molecules/field/Field.stories.tsx";
-@source "../packages/ui/src/molecules/gauge-dock/GaugeDock.stories.tsx";
 @source "../packages/ui/src/molecules/nav-list/NavList.stories.tsx";
 @source "../packages/ui/src/molecules/timeline/Timeline.stories.tsx";
 @source "../packages/ui/src/molecules/carousel/Carousel.stories.tsx";
