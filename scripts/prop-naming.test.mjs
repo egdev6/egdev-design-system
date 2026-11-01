@@ -77,9 +77,58 @@ const postReceiptUsages = [
     conventionId: 'menu-entry-kind',
     source: 'packages/ui/src/organisms/module-rail/types.ts#ModuleRailEntry'
   },
+  ...['accessible-name', 'collection-items', 'navigation-intent', 'localized-messages'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/organisms/tab-bar/types.ts#TabBarProps'
+  })),
+  { conventionId: 'leading-icon', source: 'packages/ui/src/organisms/tab-bar/types.ts#TabBarItem' },
+  ...[
+    'collection-items',
+    'accessible-name',
+    'dismiss-label',
+    'localized-messages',
+    'collection-filtering',
+    'results-busy',
+    'search-query-change',
+    'open-state',
+    'initial-uncontrolled-open',
+    'open-change'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/command-palette/types.ts#CommandPaletteProps'
+  })),
+  ...['accessible-name', 'leading-icon', 'keyboard-shortcut-hint'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/command-palette/types.ts#CommandPaletteItem'
+  })),
   ...['product-identity', 'panel-footer'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/organisms/sidebar/types.ts#SidebarProps'
+  })),
+  ...[
+    'aspect-ratio',
+    'visual-treatment',
+    'surface-material-tone',
+    'trailing-actions',
+    'panel-footer',
+    'safe-area-guide',
+    'guide-zones',
+    'figure-caption'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/organisms/preview-frame/types.ts#PreviewFrameProps'
+  })),
+  ...['open-state', 'initial-uncontrolled-open', 'open-change'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/alert-dialog/types.ts#AlertDialogProps'
+  })),
+  ...['heading-title', 'dialog-description', 'trailing-actions', 'surface-material-tone'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/alert-dialog/types.ts#AlertDialogContentProps'
+  })),
+  ...['AlertDialogTriggerProps', 'AlertDialogCancelProps', 'AlertDialogActionProps'].map((symbol) => ({
+    conventionId: 'slot-composition',
+    source: `packages/ui/src/molecules/alert-dialog/types.ts#${symbol}`
   })),
   ...['open-state', 'initial-uncontrolled-open', 'open-change'].map((conventionId) => ({
     conventionId,

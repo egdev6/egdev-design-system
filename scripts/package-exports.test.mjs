@@ -20,6 +20,45 @@ function artifact(name, target) {
   return path;
 }
 
+test('tab-bar exports native navigation and its public recipe', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(
+    createElement(exported.TabBar, {
+      label: 'Main',
+      items: [{ id: 'inbox', label: 'Inbox', href: '#inbox', icon: 'compass', count: 250, 'aria-current': 'page' }]
+    })
+  );
+  assert.match(html, /<nav[^>]*aria-label="Main"/);
+  assert.match(html, /aria-current="page"/);
+  assert.match(html, /99\+/);
+  assert.match(html, /250 pending/);
+  assert.match(exported.tabBarVariants(), /eg-tabbar/);
+  assert.equal(exported.useTabBar, undefined);
+});
+
+test('command-palette closed SSR renders only its optional launcher', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(typeof exported.CommandPalette, 'function');
+  const items = [{ id: 'find', label: 'Find', onSelect: () => undefined }];
+  assert.equal(renderToString(createElement(exported.CommandPalette, { items })), '');
+  const html = renderToString(
+    createElement(exported.CommandPalette, {
+      items,
+      children: createElement('button', { type: 'button' }, 'Open commands')
+    })
+  );
+  assert.match(html, /<button[^>]*>Open commands<\/button>/);
+  assert.match(html, /aria-expanded="false"/);
+  assert.doesNotMatch(html, /role="(?:dialog|combobox|listbox|option)"|Find|eg-palette/);
+  for (const name of ['useCommandPalette', 'paletteOverlay', 'paletteRow']) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} is private`);
+  }
+});
+
 test('dialog exports its public compound API and keeps shared recipes internal', async () => {
   const dialogExports = await import(artifact('ui', ui.exports['.'].import));
   for (const dialogName of ['Dialog', 'DialogTrigger', 'DialogContent', 'DialogClose']) {
@@ -117,7 +156,7 @@ function cssBlock(css, opening) {
 
 // Match escaped emitted selectors, not unescaped CVA class names; allow only complete approved utilities.
 const unapprovedTransitionUtility =
-  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\]|\\\[opacity\\,transform\\\]|\\\[width\\,margin\\,opacity\\,transform\\\])(?=\s*\{))[\w\\]/;
+  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\]|\\\[opacity\\,transform\\\]|\\\[width\\,margin\\,opacity\\,transform\\\]|\\\[color\\,transform\\\])(?=\s*\{))[\w\\]/;
 
 test('Collapsible ships native group-state caret motion and reduced-motion resets', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
@@ -223,6 +262,27 @@ test('sidebar exports its component and static CSS without private helpers', asy
   for (const selector of ['.w-64', '.min-h-0', '.overflow-hidden']) {
     assert.ok(css.includes(selector), selector);
   }
+});
+
+test('preview-frame exports its passive figure and keeps recipes internal', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(typeof exported.PreviewFrame, 'function');
+  for (const name of ['usePreviewFrame', 'rootVariants', 'zoneVariants', 'canvasVariants', 'safeAreaVariants']) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} is internal`);
+  }
+  const html = renderToString(
+    createElement(exported.PreviewFrame, {
+      figureCaption: 'Packed preview',
+      zones: [{ id: 'title', label: 'Title area', x: 10, y: 10, width: 80, height: 20 }],
+      children: createElement('span', null, 'Artwork')
+    })
+  );
+  assert.match(html, /<figure[^>]*eg-stage/);
+  assert.match(html, /aria-labelledby="[^"]+"/);
+  assert.match(html, /--eg-zone-x:10%/);
+  assert.match(html, /aria-hidden="true"/);
 });
 
 test('Panel ships band resets and direct-zone corner utilities without a new marker engine', () => {
@@ -1635,6 +1695,7 @@ test('UI ships the approved Skeleton silhouette utilities with the canonical v0.
   // SearchTrigger #99 reuses the approved transition-[border-color,color] selector only.
   // PullQuote #98 adds no transition or animation utility.
   // #221 selected check cues: SelectTile [opacity,transform] and ChipGroup [width,margin,opacity,transform].
+  // TabBar #125 adds only its contracted [color,transform] link color and press feedback.
   assert.doesNotMatch(
     utilityLayer,
     /\.animate-(?!pulse\b|spin\b|none\b)\w/,
@@ -2864,6 +2925,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.deepEqual(
     Object.keys(exported).sort(),
     [
+      'AlertDialog',
+      'AlertDialogAction',
+      'AlertDialogCancel',
+      'AlertDialogContent',
+      'AlertDialogTrigger',
       'AspectRatio',
       'Avatar',
       'Badge',
@@ -2877,6 +2943,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Collapsible',
       'CollapsibleContent',
       'CollapsibleTrigger',
+      'CommandPalette',
       'Countdown',
       'Dialog',
       'DialogClose',
@@ -2921,6 +2988,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'PopoverContent',
       'PopoverTrigger',
       'Portal',
+      'PreviewFrame',
       'ProgressBar',
       'PullQuote',
       'RadioGroup',
@@ -2940,6 +3008,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'StatusDot',
       'Surface',
       'Switch',
+      'TabBar',
       'Table',
       'Tabs',
       'Text',
@@ -2965,6 +3034,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'statVariants',
       'statusDotVariants',
       'surfaceVariants',
+      'tabBarVariants',
       'tabsVariants',
       'tooltipVariants',
       'useToast'
@@ -3066,6 +3136,17 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   const symbol = checker.getSymbolAtLocation(program.getSourceFile(declaration));
   const names = new Set(checker.getExportsOfModule(symbol).map((item) => item.name));
   assert.deepEqual([...names].sort(), [
+    'AlertDialog',
+    'AlertDialogAction',
+    'AlertDialogActionProps',
+    'AlertDialogCancel',
+    'AlertDialogCancelProps',
+    'AlertDialogContent',
+    'AlertDialogContentProps',
+    'AlertDialogProps',
+    'AlertDialogTone',
+    'AlertDialogTrigger',
+    'AlertDialogTriggerProps',
     'AspectRatio',
     'AspectRatioProps',
     'Avatar',
@@ -3103,6 +3184,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'CollapsibleProps',
     'CollapsibleTrigger',
     'CollapsibleTriggerProps',
+    'CommandPalette',
+    'CommandPaletteFiltering',
+    'CommandPaletteItem',
+    'CommandPaletteMessages',
+    'CommandPaletteProps',
     'Countdown',
     'CountdownProps',
     'CountdownSize',
@@ -3254,6 +3340,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'PopoverTriggerProps',
     'Portal',
     'PortalProps',
+    'PreviewFrame',
+    'PreviewFrameProps',
+    'PreviewFrameZone',
     'ProductIdentity',
     'ProgressBar',
     'ProgressBarProps',
@@ -3319,6 +3408,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SurfaceTone',
     'Switch',
     'SwitchProps',
+    'TabBar',
+    'TabBarItem',
+    'TabBarMessages',
+    'TabBarProps',
     'Table',
     'TableColumn',
     'TableColumnFormat',
@@ -3384,6 +3477,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'statVariants',
     'statusDotVariants',
     'surfaceVariants',
+    'tabBarVariants',
     'tabsVariants',
     'tooltipVariants',
     'useToast'

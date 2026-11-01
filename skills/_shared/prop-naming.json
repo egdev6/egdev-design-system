@@ -881,6 +881,16 @@
           "symbol": "TableProps",
           "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
         }
+      },
+      {
+        "component": "PreviewFrame",
+        "type": "'grid' | 'plain'",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+        }
       }
     ]
   },
@@ -899,6 +909,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "AlertDialogContent",
+        "type": "AlertDialogTone (neutral | danger; default neutral)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogContentProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
       {
         "component": "Toast",
         "type": "ToastTone ('neutral' | 'info' | 'success' | 'warning' | 'danger' | 'loading')",
@@ -1068,6 +1088,16 @@
           "symbol": "PanelProps",
           "revision": "sha256:5aa2753d3af82b96e29f8df01eda0af56e750d5f4b7d321664a74bc4c4432cd8"
         }
+      },
+      {
+        "component": "PreviewFrame",
+        "type": "'info' | 'warning' (default info)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+        }
       }
     ]
   },
@@ -1113,6 +1143,36 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "TabBar",
+        "type": "string (required navigation landmark name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/tab-bar/types.ts",
+          "symbol": "TabBarProps",
+          "revision": "sha256:0ea79ce6d91c30838af890c520786a1d1cd866b1d310b3579eff3d09e23ad672"
+        }
+      },
+      {
+        "component": "CommandPalette",
+        "type": "string (default Search)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
+      {
+        "component": "CommandPaletteItem",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteItem",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
       {
         "component": "GaugeGroup",
         "type": "string (required collection name)",
@@ -1854,6 +1914,26 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "TabBarItem",
+        "type": "IconName (required decorative glyph)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/tab-bar/types.ts",
+          "symbol": "TabBarItem",
+          "revision": "sha256:0ea79ce6d91c30838af890c520786a1d1cd866b1d310b3579eff3d09e23ad672"
+        }
+      },
+      {
+        "component": "CommandPaletteItem",
+        "type": "IconName",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteItem",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
+      {
         "component": "Toast",
         "type": "ReactNode",
         "status": "existing",
@@ -2094,6 +2174,36 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "AlertDialogTrigger",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogTriggerProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
+      {
+        "component": "AlertDialogCancel",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogCancelProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
+      {
+        "component": "AlertDialogAction",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogActionProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
       {
         "component": "DialogTrigger",
         "type": "boolean",
@@ -3009,6 +3119,16 @@
           "symbol": "AspectRatioProps",
           "revision": "sha256:771b93daa9a3c3548cba5ea6172b0182b32705e6ab7caeaf1b207641669ff1ed"
         }
+      },
+      {
+        "component": "PreviewFrame",
+        "type": "number (width divided by height; invalid values fall back to 16:9)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+        }
       }
     ]
   },
@@ -3027,6 +3147,26 @@
       "contentHash": "sha256:304ac895a943454d04d057e18518794a315958b70252df2e696e00dc65b36f40"
     },
     "usages": [
+      {
+        "component": "TabBar",
+        "type": "TabBarItem[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/tab-bar/types.ts",
+          "symbol": "TabBarProps",
+          "revision": "sha256:0ea79ce6d91c30838af890c520786a1d1cd866b1d310b3579eff3d09e23ad672"
+        }
+      },
+      {
+        "component": "CommandPalette",
+        "type": "CommandPaletteItem[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
       {
         "component": "GaugeGroup",
         "type": "GaugeGroupItems (readonly tuple of two or three readings)",
@@ -3134,6 +3274,26 @@
       "contentHash": "sha256:555c4e48e004651531f1588e18a8f71781afd8054c2ae113959b2831d86736cd"
     },
     "usages": [
+      {
+        "component": "TabBar",
+        "type": "TabBarMessages (optional pendingCount formatter)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/tab-bar/types.ts",
+          "symbol": "TabBarProps",
+          "revision": "sha256:0ea79ce6d91c30838af890c520786a1d1cd866b1d310b3579eff3d09e23ad672"
+        }
+      },
+      {
+        "component": "CommandPalette",
+        "type": "Partial<CommandPaletteMessages>",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
       {
         "component": "ModuleCard",
         "type": "Partial<ModuleCardMessages> (defaultStatus, errorStatus, stoppedStatus)",
@@ -3647,6 +3807,26 @@
     },
     "usages": [
       {
+        "component": "AlertDialog",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
+      {
+        "component": "CommandPalette",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
+      {
         "component": "Dialog",
         "type": "boolean",
         "status": "existing",
@@ -3714,6 +3894,26 @@
     },
     "usages": [
       {
+        "component": "AlertDialog",
+        "type": "boolean (default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
+      {
+        "component": "CommandPalette",
+        "type": "boolean (default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
+      {
         "component": "Dialog",
         "type": "boolean (default false)",
         "status": "existing",
@@ -3780,6 +3980,26 @@
       "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
     },
     "usages": [
+      {
+        "component": "AlertDialog",
+        "type": "(open: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
+      {
+        "component": "CommandPalette",
+        "type": "(open: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
       {
         "component": "Dialog",
         "type": "(open: boolean) => void",
@@ -3959,6 +4179,16 @@
     },
     "usages": [
       {
+        "component": "TabBar",
+        "type": "(item: TabBarItem, event: MouseEvent<HTMLAnchorElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/tab-bar/types.ts",
+          "symbol": "TabBarProps",
+          "revision": "sha256:0ea79ce6d91c30838af890c520786a1d1cd866b1d310b3579eff3d09e23ad672"
+        }
+      },
+      {
         "component": "NavList",
         "type": "(item: NavListLink, event: MouseEvent<HTMLAnchorElement>) => void",
         "status": "existing",
@@ -4032,6 +4262,16 @@
       "contentHash": "sha256:3b7c8409a2f43bbc296608d65ee61e78aebbe31118f1f65e955ff65078e8c2d3"
     },
     "usages": [
+      {
+        "component": "AlertDialogContent",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogContentProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
       {
         "component": "DialogContent",
         "type": "string (required)",
@@ -4147,6 +4387,16 @@
     },
     "usages": [
       {
+        "component": "AlertDialogContent",
+        "type": "ReactNode (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogContentProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
+      {
         "component": "DialogContent",
         "type": "ReactNode",
         "status": "existing",
@@ -4195,6 +4445,16 @@
           "symbol": "NoticeProps",
           "revision": "sha256:928a78703455cdeebcc1de4331fee16b041b50bfc34f7a14ad59de8b7df858aa"
         }
+      },
+      {
+        "component": "PreviewFrame",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+        }
       }
     ]
   },
@@ -4231,6 +4491,16 @@
           "path": "packages/ui/src/organisms/sidebar/types.ts",
           "symbol": "SidebarProps",
           "revision": "sha256:489fe1683e9a448ec5111da30b92c468298799392fb7441a5493cf32a7e50e18"
+        }
+      },
+      {
+        "component": "PreviewFrame",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
         }
       }
     ]
@@ -4543,6 +4813,16 @@
       "contentHash": "sha256:4f922985284399a34fe26994e80533c2a8db49066e01a3e9d00544c2fbbc1339"
     },
     "usages": [
+      {
+        "component": "CommandPaletteItem",
+        "type": "string (display only)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteItem",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
       {
         "component": "MenuEntry",
         "type": "string (action branch only; display-only)",
@@ -5073,6 +5353,16 @@
     },
     "usages": [
       {
+        "component": "CommandPalette",
+        "type": "string (default Close)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
+      {
         "component": "DialogContent",
         "type": "string (default Close)",
         "status": "existing",
@@ -5164,6 +5454,16 @@
     },
     "usages": [
       {
+        "component": "AlertDialogContent",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/alert-dialog/types.ts",
+          "symbol": "AlertDialogContentProps",
+          "revision": "sha256:f54fef973e78951d687f5ef3fef9e8103aed517359c47878cd28b962e51bfd3c"
+        }
+      },
+      {
         "component": "DialogContent",
         "type": "string",
         "status": "existing",
@@ -5216,7 +5516,18 @@
       "scope": "convention:search-query-change",
       "contentHash": "sha256:d3e3572c7a32fb22dbb27c9876b67fbe5aa156d7be2193c5be8ebb4affc1377a"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "CommandPalette",
+        "type": "(query: string) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      }
+    ]
   },
   {
     "id": "collection-filtering",
@@ -5232,7 +5543,18 @@
       "scope": "convention:collection-filtering",
       "contentHash": "sha256:f86b73a3d5bc39e134d521e99c345b47e5e4eda40afab45b99e95cde2c72908d"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "CommandPalette",
+        "type": "CommandPaletteFiltering (default builtin)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      }
+    ]
   },
   {
     "id": "results-busy",
@@ -5248,7 +5570,18 @@
       "scope": "convention:results-busy",
       "contentHash": "sha256:42000bfec7d3e02b6cb997983b5de14b320b5bd391a496f77b92926fffb3d3c9"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "CommandPalette",
+        "type": "boolean (default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      }
+    ]
   },
   {
     "id": "table-columns",
@@ -5587,7 +5920,18 @@
       "scope": "convention:safe-area-guide",
       "contentHash": "sha256:6907abfdc393028cba8972e992275e8428c7837715d2e7deb190b3e35dcb5ccf"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "PreviewFrame",
+        "type": "boolean (default true)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+        }
+      }
+    ]
   },
   {
     "id": "guide-zones",
@@ -5603,7 +5947,18 @@
       "scope": "convention:guide-zones",
       "contentHash": "sha256:9f087b7f24dd88644da462717d27231bbb4a26c2d7fd90165831b80a8c4d9bfa"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "PreviewFrame",
+        "type": "PreviewFrameZone[] (default empty)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+        }
+      }
+    ]
   },
   {
     "id": "figure-caption",
@@ -5619,7 +5974,18 @@
       "scope": "convention:figure-caption",
       "contentHash": "sha256:170ba06cd9fd19980688f56c43b5582d6e85227354b98ced6939e96e3d5e5b83"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "PreviewFrame",
+        "type": "string (optional visible figcaption)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/preview-frame/types.ts",
+          "symbol": "PreviewFrameProps",
+          "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+        }
+      }
+    ]
   },
   {
     "id": "side-navigation",

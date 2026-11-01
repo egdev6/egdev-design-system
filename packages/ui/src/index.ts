@@ -39,12 +39,14 @@ export * from './atoms/tooltip';
 // Utilities
 export { cn } from './lib/cn';
 // Molecules
+export * from './molecules/alert-dialog';
 export * from './molecules/button-group';
 export * from './molecules/carousel';
 export type { ChipGroupOption, ChipGroupProps, ChipGroupType } from './molecules/chip-group';
 export { ChipGroup } from './molecules/chip-group';
 export type { CollapsibleContentProps, CollapsibleProps, CollapsibleTriggerProps } from './molecules/collapsible';
 export { Collapsible, CollapsibleContent, CollapsibleTrigger } from './molecules/collapsible';
+export * from './molecules/command-palette';
 export * from './molecules/dialog';
 export * from './molecules/field';
 export type { GaugeGroupItems, GaugeGroupProps, GaugeGroupRing, GaugeGroupSize } from './molecules/gauge-group';
@@ -82,7 +84,9 @@ export * from './molecules/timeline';
 export * from './molecules/toast';
 // Organisms
 export * from './organisms/module-rail';
+export * from './organisms/preview-frame';
 export * from './organisms/sidebar';
+export * from './organisms/tab-bar';
 // Primitives
 export type { AspectRatioProps } from './primitives/aspect-ratio';
 export { AspectRatio } from './primitives/aspect-ratio';

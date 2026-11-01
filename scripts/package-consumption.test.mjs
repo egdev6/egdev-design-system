@@ -28,7 +28,21 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
-import { Dialog, DialogTrigger, DialogContent, DialogClose } from '@egdev/ui';
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogCancel, AlertDialogAction } from '@egdev/ui';
+import type { AlertDialogProps, AlertDialogContentProps } from '@egdev/ui';
+import { CommandPalette, Dialog, DialogTrigger, DialogContent, DialogClose, TabBar, tabBarVariants } from '@egdev/ui';
+import type { CommandPaletteProps, CommandPaletteItem, CommandPaletteMessages, CommandPaletteFiltering } from '@egdev/ui';
+import type { TabBarItem, TabBarMessages, TabBarProps } from '@egdev/ui';
+// @ts-expect-error Internal hook is not public.
+type TabBarPrivateHook = (typeof import('@egdev/ui'))['useTabBar'];
+// @ts-expect-error Internal part recipe is not public.
+type TabBarPrivateRecipe = (typeof import('@egdev/ui'))['tabBarLinkVariants'];
+export type TabBarPrivateNegatives = [TabBarPrivateHook, TabBarPrivateRecipe];
+export const tabBarItems: TabBarItem[] = [{ id: 'inbox', label: 'Inbox', href: '#inbox', icon: 'compass', count: 250, 'aria-current': 'page' }];
+export const tabBarMessages: TabBarMessages = { pendingCount: (count) => count + ' pending' };
+export const tabBarProps: TabBarProps = { label: 'Main', items: tabBarItems, messages: tabBarMessages };
+export const tabBarSample = createElement(TabBar, tabBarProps);
+export const tabBarRecipe = tabBarVariants();
 import type { DialogProps, DialogTriggerProps, DialogContentProps, DialogCloseProps } from '@egdev/ui';
 import { Isotipo3D } from '@egdev/effects';
 import type { Isotipo3DProps } from '@egdev/effects';
@@ -45,7 +59,7 @@ import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorI
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
 import { ToastProvider, useToast } from '@egdev/ui';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -124,6 +138,8 @@ import type {
   PopoverTriggerProps,
   PopoverContentProps,
   PopoverCloseProps,
+  PreviewFrameProps,
+  PreviewFrameZone,
   MeterRowMessages,
   MeterRowProps,
   MeterRowVariant,
@@ -202,6 +218,26 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+// @ts-expect-error AlertDialog recipes remain internal.
+type AlertDialogRecipeNotExported = (typeof import('@egdev/ui'))['alertDialogHeadVariants'];
+const alertDialogContentProps: AlertDialogContentProps = { title: 'Delete?', description: 'Cannot undo.', actions: [createElement(AlertDialogCancel, { key: 'cancel', children: 'Cancel' }), createElement(AlertDialogAction, { key: 'action', children: 'Delete' })] };
+export const alertDialogProps: AlertDialogProps = { children: [createElement(AlertDialogTrigger, { key: 'trigger', children: 'Open' }), createElement(AlertDialogContent, { ...alertDialogContentProps, key: 'content' })] };
+export function alertDialogSample() { return createElement(AlertDialog, alertDialogProps); }
+// @ts-expect-error A consequence description is required.
+const alertDialogMissingDescription: AlertDialogContentProps = { title: 'Delete?', actions: null };
+const commandPaletteItem: CommandPaletteItem = { id: 'search', label: 'Search', onSelect: () => {} };
+const commandPaletteFiltering: CommandPaletteFiltering = 'builtin';
+const commandPaletteMessages: Partial<CommandPaletteMessages> = { empty: 'Nothing found.' };
+export const commandPaletteProps: CommandPaletteProps = { items: [commandPaletteItem], filtering: commandPaletteFiltering, messages: commandPaletteMessages };
+export const commandPaletteSample = createElement(CommandPalette, commandPaletteProps);
+// @ts-expect-error The palette does not export internal recipes.
+type CommandPaletteRecipeNotExported = (typeof import('@egdev/ui'))['paletteRow'];
+// @ts-expect-error Items are required.
+const commandPaletteInvalid: CommandPaletteProps = {};
+// @ts-expect-error The palette owns query state and does not expose a hotkey prop.
+const commandPaletteHotkey: CommandPaletteProps = { items: [], hotkey: 'mod+k' };
+// @ts-expect-error A command action requires an onSelect callback.
+const commandPaletteNoSelect: CommandPaletteItem = { id: 'missing', label: 'Missing' };
 export const dialogTriggerRef = createRef<HTMLButtonElement>();
 export const dialogCloseRef = createRef<HTMLButtonElement>();
 const dialogTriggerProps: DialogTriggerProps = { children: 'Open settings' };
@@ -1833,6 +1869,25 @@ const sidebarRole: SidebarProps = { children: 'Body', role: 'navigation' };
 const sidebarHTML: SidebarProps = { children: 'Body', dangerouslySetInnerHTML: { __html: 'Body' } };
 // @ts-expect-error Sidebar does not manage collapse.
 const sidebarCollapsed: SidebarProps = { children: 'Body', collapsed: true };
+const previewZone: PreviewFrameZone = { id: 'title', label: 'Title area', x: 10, y: 10, width: 80, height: 20 };
+const previewFrameProps: PreviewFrameProps = {
+  figureCaption: 'Packed preview',
+  zones: [previewZone],
+  children: createElement('span', null, 'Artwork')
+};
+export function previewFrameConsumerSample() {
+  return createElement(PreviewFrame, previewFrameProps);
+}
+// @ts-expect-error The ratio is width divided by height, never a CSS string.
+const previewFrameStringRatio: PreviewFrameProps = { ...previewFrameProps, ratio: '16/9' };
+// @ts-expect-error Zone tones are limited to info and warning.
+const previewFrameZoneTone: PreviewFrameZone = { ...previewZone, tone: 'danger' };
+// @ts-expect-error The validation hook stays internal.
+type PreviewFrameHookNotExported = (typeof import('@egdev/ui'))['usePreviewFrame'];
+// @ts-expect-error Zone recipes stay internal.
+type PreviewFrameZoneVariantsNotExported = (typeof import('@egdev/ui'))['zoneVariants'];
+void previewFrameStringRatio;
+void previewFrameZoneTone;
 // @ts-expect-error Product name is required.
 const sidebarMissingName: ProductIdentity = { node: 'W' };
 
@@ -3711,6 +3766,11 @@ assertPanelConsumerCSS(shippedStyles);
 ${assertCollapsibleConsumerCSS.toString()}
 assertCollapsibleConsumerCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
+  'AlertDialog',
+  'AlertDialogAction',
+  'AlertDialogCancel',
+  'AlertDialogContent',
+  'AlertDialogTrigger',
   'AspectRatio',
   'Avatar',
   'Badge',
@@ -3724,6 +3784,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Collapsible',
   'CollapsibleContent',
   'CollapsibleTrigger',
+  'CommandPalette',
   'Countdown',
   'Dialog',
   'DialogClose',
@@ -3768,6 +3829,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'PopoverContent',
   'PopoverTrigger',
   'Portal',
+  'PreviewFrame',
   'ProgressBar',
   'PullQuote',
   'RadioGroup',
@@ -3787,6 +3849,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'StatusDot',
   'Surface',
   'Switch',
+  'TabBar',
   'Table',
   'Tabs',
   'Text',
@@ -3812,6 +3875,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'statVariants',
   'statusDotVariants',
   'surfaceVariants',
+  'tabBarVariants',
   'tabsVariants',
   'tooltipVariants',
   'useToast'
@@ -7282,6 +7346,9 @@ for (const [react, [types, domTypes]] of Object.entries(versions)) {
         install.push('--offline');
       }
       run(fixture, 'pnpm', install, 120_000);
+      await context.test('command-palette typed consumer and type-level negatives', () => {
+        run(fixture, 'pnpm', ['exec', 'tsc', '-p', 'tsconfig.json'], 30_000);
+      });
       const timeouts = { entries: 20_000, types: 30_000, ssr: 20_000, csr: 60_000, css: 60_000 };
       for (const [name, timeout] of Object.entries(timeouts)) {
         await context.test(name, () => {

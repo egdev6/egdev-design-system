@@ -897,9 +897,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "AlertDialog",
-    "compone": "Dialog",
+    "compone": "Surface, Icon, Button; internal Dialog recipes",
     "accion": "nuevo",
-    "notas": "Coordinates a confirmation prompt and decision actions as one reusable interaction, not a structural page region. Retains destructive confirmations (delete, disconnect). See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation approval."
+    "notas": "Working-tree implementation under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/120): decision-required modal with Cancel and Action, least-destructive initial focus and Escape dismissal. Radix owns interaction; Surface owns panel Material. Browser, visual and packed-consumer verification remain pending."
   },
   {
     "actual": "CommandPalette",
@@ -907,10 +907,10 @@
     "nombre": "CommandPalette",
     "nivel": "molecule",
     "destino": "ui",
-    "radix": "Dialog (+ cmdk, a confirmar)",
-    "compone": "Input, ListItem, Kbd",
+    "radix": "Dialog (native D4 combobox)",
+    "compone": "Surface, IconButton, Icon, Kbd",
     "accion": "mantener",
-    "notas": "Coordinates search input, results and command activation as one reusable interaction, not application-level structure. Radix has no combobox; cmdk over Radix Dialog remains a candidate requiring confirmation. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation or dependency approval."
+    "notas": "Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/121): native combobox and listbox inside Radix Dialog; consumer owns global shortcuts and commands. Browser, visual and packed-consumer verification remain pending."
   },
   {
     "actual": "—",
@@ -935,15 +935,26 @@
     "notas": "Working-tree compact navigation under the approved #124 plan: native links, consumer-selected current page, grouped items and optional pinned identity, add action and end links. Consumer owns routing and responsive switching. Browser visual and accessibility verification pending."
   },
   {
+    "actual": "StageFrame",
+    "nivelActual": "organismo",
+    "nombre": "PreviewFrame",
+    "nivel": "organism",
+    "destino": "ui",
+    "radix": "AspectRatio",
+    "compone": "IconButton, Chip",
+    "accion": "renombrar",
+    "notas": "Working-tree implementation under the approved #127 plan and owner decisions L11/L15: passive native preview figure with a decorative safe-area guide, clamped percentage zones and consumer-owned slots. Grid renders like plain until a grid token is approved; zone geometry uses only the four approved percentage custom properties. No stylesheet; browser visual and accessibility verification pending. Contract: [#127](https://github.com/egdev6/egdev-design-system/issues/127)."
+  },
+  {
     "actual": "TabBar",
     "nivelActual": "organismo (agente)",
     "nombre": "TabBar",
     "nivel": "organism",
     "destino": "ui",
-    "radix": "—",
-    "compone": "Icon, Badge",
+    "radix": "— (native navigation)",
+    "compone": "Icon, Badge, VisuallyHidden, Surface recipe",
     "accion": "mantener",
-    "notas": "Navegación inferior móvil."
+    "notas": "Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/125): named native navigation links with consumer-owned current page, localized count badges and intrinsic safe-area padding. Host owns placement and responsive visibility. No stylesheet or new dependency; visual and packed-consumer verification remain pending."
   },
   {
     "actual": "Table",
