@@ -27,7 +27,6 @@ const components = [
   ['Gauge', 'atoms/gauge'],
   ['Field', 'molecules/field'],
   ['FieldMessage', 'atoms/field-message'],
-  ['GaugeDock', 'molecules/gauge-dock'],
   ['Dropzone', 'atoms/dropzone'],
   ['Heading', 'primitives/text'],
   ['Icon', 'atoms/icon'],
@@ -438,7 +437,6 @@ const expected: Record<string, Record<string, string | false>> = {
     label: 'text',
     size: 'select'
   },
-  gaugedock: { label: 'text', orientation: 'select', children: false },
   gauge: {
     label: 'text',
     value: 'number',
@@ -479,7 +477,6 @@ const ownPropCounts: Record<string, number> = {
   gauge: 8,
   field: 9,
   fieldmessage: 3,
-  gaugedock: 3,
   icon: 4,
   iconbutton: 6,
   skeleton: 3,
@@ -752,17 +749,6 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     for (const name of ['style', 'role', 'children', 'onClick', 'ref']) {
       expect(argTypes[name], name).toBeUndefined();
     }
-  });
-
-  it('retains GaugeDockItem tuple documentation with no serializable content controller', () => {
-    const composed = story('GaugeDockItem');
-    expect(composed.argTypes.children?.control).toBe(false);
-    expect(composed.argTypes.children?.type?.required).toBe(true);
-    expect(composed.argTypes.children?.table?.disable).toBeUndefined();
-    expect(composed.argTypes.orientation).toBeUndefined();
-    expect(story('GaugeDock').argTypes.orientation?.table?.defaultValue?.summary).toBe('"horizontal"');
-    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
-    expect(mapJSDocControls(extract(component('GaugeDockItem')), component('GaugeDockItem')).diagnostics).toEqual([]);
   });
 
   it.each(components)('%s maps every annotated own prop after real extraction and inference', (name) => {

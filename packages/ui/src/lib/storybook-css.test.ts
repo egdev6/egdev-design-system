@@ -224,16 +224,8 @@ describe('Storybook preview CSS', () => {
     );
   });
 
-  it('compiles the first molecule source with Radix available-space bounds and opacity entry', () => {
-    expect(rule(String.raw`.max-w-\[var\(--radix-hover-card-content-available-width\)\]`)).toMatch(
-      /max-width:\s*var\(--radix-hover-card-content-available-width\)/
-    );
-    expect(rule(String.raw`.max-h-\[var\(--radix-hover-card-content-available-height\)\]`)).toMatch(
-      /max-height:\s*var\(--radix-hover-card-content-available-height\)/
-    );
-    expect(rule(String.raw`.w-\[calc\(var\(--space-24\)\*4\)\]`)).toMatch(/width:\s*calc\(/);
-    expect(css).toContain(String.raw`.data-\[state\=open\]\:starting\:opacity-0`);
-    expect(css).toMatch(/@starting-style/);
+  it('no longer compiles retired HoverCard bounds or root utilities (#220)', () => {
+    expect(css).not.toMatch(/--radix-hover-card-content-available-(?:width|height)/);
     expect(css).not.toMatch(/\.eg-hover-card\s*[,{]/);
   });
 
@@ -372,21 +364,10 @@ describe('Storybook preview CSS', () => {
     }
   });
 
-  it('compiles GaugeDock axis, overflow and perpendicular separator utilities without a custom stylesheet', () => {
-    expect(rule('.max-w-full')).toMatch(/max-width:\s*100%/);
-    expect(rule('.max-h-full')).toMatch(/max-height:\s*100%/);
-    expect(rule('.overflow-auto')).toMatch(/overflow:\s*auto/);
-    expect(rule(String.raw`.data-\[orientation\=vertical\]\:flex-col[data-orientation="vertical"]`)).toMatch(
-      /flex-direction:\s*column/
-    );
-    expect(rule(String.raw`.data-\[orientation\=vertical\]\:h-6[data-orientation="vertical"]`)).toMatch(
-      /height:\s*var\(--space-6\)/
-    );
-    expect(rule(String.raw`.data-\[orientation\=horizontal\]\:w-6[data-orientation="horizontal"]`)).toMatch(
-      /width:\s*var\(--space-6\)/
-    );
-    expect(css).not.toMatch(/\.eg-gauge-dock(?:-item|-separator)?\s*\{/);
-    expect(rule('.max-w-80')).toMatch(/max-width:/);
+  it('no longer compiles retired GaugeDock axis or separator utilities (#220)', () => {
+    expect(css).not.toMatch(/eg-gauge-dock/);
+    expect(css).not.toContain(String.raw`.data-\[orientation\=vertical\]\:h-6`);
+    expect(css).not.toContain(String.raw`.data-\[orientation\=horizontal\]\:w-6`);
   });
 
   it('keeps Gauge independent of Surface imports and class identities', () => {

@@ -106,8 +106,10 @@ export type CollapsibleContentProps = Omit<
 
 // Internal recipes: native state attributes select appearance, never mirrored state classes.
 export const collapsibleVariants = cva('eg-collapsible overflow-visible');
+// Open Trigger keeps the ghost hover paint but drops its bottom rounding so it stays visually
+// attached to the content below; closed keeps the full Button radius.
 export const collapsibleTriggerVariants = cva(
-  'eg-collapsible__trigger group/collapsible w-full justify-between text-start whitespace-normal'
+  'eg-collapsible__trigger group/collapsible w-full justify-between text-start whitespace-normal data-[state=open]:rounded-b-none'
 );
 export const collapsibleContentVariants = cva(
   'eg-collapsible__content border-t-(length:--border-width) border-solid border-border-hairline p-4 font-sans text-body-default text-fg-default'

@@ -51,7 +51,7 @@ export type FieldProps = Omit<ComponentPropsWithoutRef<'div'>, 'children'> & {
    * @control text
    */
   error?: string;
-  /** Consumer-derived length and limit, shown only in stacked layout; never invents an error.
+  /** Consumer-derived length and limit, shown alone on the stacked bottom row; never invents an error.
    * @control false
    * @controlReason Structured FieldCounter is not a scalar control; see Counter and Invalid.
    */
@@ -93,14 +93,17 @@ export const fieldLabelRowVariants = cva(['flex justify-between gap-2', disabled
 });
 
 /** Field owns layout and disabled dimming; FieldMessage owns paragraph appearance. */
-export const fieldMessageVariants = cva(disabledPart, {
+export const fieldMessageVariants = cva(['min-w-0', disabledPart], {
   variants: { layout: { stacked: '', choice: 'col-start-2' } },
   defaultVariants: { layout: 'stacked' }
 });
 
+/** Stacked bottom row: the message takes the start and the counter the end, like the label/readout row. */
+export const fieldFooterRowVariants = cva('flex justify-between gap-2');
+
 /** Over-limit tone does not create error semantics. */
 export const fieldCounterVariants = cva([
-  'self-end text-label-default tabular-nums text-fg-muted data-[state=over]:text-status-danger',
+  'ml-auto shrink-0 text-label-default tabular-nums text-fg-muted data-[state=over]:text-status-danger',
   disabledPart
 ]);
 

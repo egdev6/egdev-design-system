@@ -116,6 +116,25 @@ describe('Notice public contract', () => {
     expect(root.querySelector('svg')).toHaveClass('size-4');
   });
 
+  it('aligns the leading icon with the first text line instead of the block center', () => {
+    render(<Notice summary='Queue ready.'>Detail wraps onto several lines, so block centering would drift.</Notice>);
+    const root = screen.getByRole('status');
+    expect(root).toHaveClass('items-start');
+    expect(root).not.toHaveClass('items-center');
+    const icon = root.querySelector('svg')?.parentElement;
+    expect(icon).toHaveClass(
+      'mt-[calc((var(--text-body-default--line-height)*var(--text-body-default)-var(--icon-size))/2)]'
+    );
+  });
+
+  it('keeps first-line icon alignment in the compact preset', () => {
+    render(<Notice summary='Queue paused.' size='sm' />);
+    const icon = screen.getByRole('status').querySelector('svg')?.parentElement;
+    expect(icon).toHaveClass(
+      'mt-[calc((var(--text-label-default--line-height)*var(--text-label-default)-var(--space-4))/2)]'
+    );
+  });
+
   it.each(['', '   '])('warns for a blank summary without rendering a bold part (%j)', (summary) => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     render(<Notice summary={summary}>Explanation remains readable.</Notice>);

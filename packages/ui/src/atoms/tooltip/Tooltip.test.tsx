@@ -200,7 +200,7 @@ describe('Tooltip', () => {
     expect(trigger.parentElement).toBe(document.body.firstElementChild);
   }, 10_000);
 
-  it('places the content on the top side by default, 8px away (AC-05)', async () => {
+  it('places the content on the top side by default, 6.4px away (AC-05)', async () => {
     const user = userEvent.setup();
     render(
       <Tooltip content='Search'>
