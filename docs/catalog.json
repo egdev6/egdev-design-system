@@ -919,9 +919,9 @@
     "nivel": "organism",
     "destino": "ui",
     "radix": "ScrollArea",
-    "compone": "Logo, NavList, Text",
+    "compone": "Surface recipe; consumer identity, NavList and footer",
     "accion": "nuevo",
-    "notas": "La barra lateral de todas las apps."
+    "notas": "Working-tree Sidebar under the approved #123 plan and consumer identity amendment: host-sized passive panel with a scrollable body and optional pinned identity and footer. Navigation, routing and responsive visibility belong to consumers. Browser visual and accessibility verification pending."
   },
   {
     "actual": "ModuleRail",

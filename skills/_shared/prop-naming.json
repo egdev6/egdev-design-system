@@ -4162,6 +4162,16 @@
           "symbol": "ModuleCardProps",
           "revision": "sha256:ed7adc13e5eb72795fbfdd83ee8108b291cefd94708e6b4f3642293357139c53"
         }
+      },
+      {
+        "component": "Sidebar",
+        "type": "ReactNode (supplementary metadata and utility controls)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/sidebar/types.ts",
+          "symbol": "SidebarProps",
+          "revision": "sha256:489fe1683e9a448ec5111da30b92c468298799392fb7441a5493cf32a7e50e18"
+        }
       }
     ]
   },
@@ -5399,18 +5409,29 @@
   {
     "id": "product-identity",
     "name": "product",
-    "meaning": "Identity of the EGDEV product or application that a structural region presents: its compact brand monogram, its visible and accessible name, and an optional home destination.",
-    "whenToUse": "An application region such as a sidebar shows which product the user is in by rendering ProductMark with the product's name, optionally linking to the product's home.",
-    "avoid": "The egdev corporate logo (use Logo), people or channel identities (use Avatar), page or section headings (use title), or accessible names of controls (use label).",
+    "meaning": "Identity of a product or application presented by a structural region: a consumer-supplied node, its visible and accessible name, and an optional home destination.",
+    "whenToUse": "An application region such as a sidebar presents a product using consumer-supplied artwork such as Logo, Avatar or another node, its name and optionally its home destination.",
+    "avoid": "Page or section headings (use title), accessible names of controls (use label), or assuming a specific artwork component.",
     "status": "approved",
     "aliases": [],
     "exceptions": [],
     "approval": {
-      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "reference": "docs/components/sidebar/v0.1/product-identity-approval.json",
       "scope": "convention:product-identity",
-      "contentHash": "sha256:85e4aaafbe7146d2d854747fb43d16523860811dd3f0afd287ef2342784e0452"
+      "contentHash": "sha256:8f5fdb1212b182c2e469051481597a21a26b913e021257ad4d760f169f6f4f1b"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "Sidebar",
+        "type": "ProductIdentity (consumer node, name, optional href)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/sidebar/types.ts",
+          "symbol": "SidebarProps",
+          "revision": "sha256:489fe1683e9a448ec5111da30b92c468298799392fb7441a5493cf32a7e50e18"
+        }
+      }
+    ]
   },
   {
     "id": "end-items",

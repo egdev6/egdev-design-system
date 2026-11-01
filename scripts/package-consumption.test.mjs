@@ -1798,6 +1798,20 @@ const waveRef: ComponentProps<typeof Indicator> = { children: 'Anchor', ref: cre
 // @ts-expect-error No cloning/composition API.
 const waveSlot: IndicatorProps = { children: 'Anchor', asChild: true };
 
+import { Sidebar } from '@egdev/ui';
+import type { SidebarProps, ProductIdentity } from '@egdev/ui';
+const sidebarIdentity: ProductIdentity = { name: 'Workspace', node: createElement('span', null, 'W'), href: '/home' };
+const sidebarProps: SidebarProps = { product: sidebarIdentity, children: 'Navigation', footer: 'Account', className: 'w-80' };
+export function sidebarConsumerSample() { return createElement(Sidebar, sidebarProps); }
+// @ts-expect-error Sidebar does not own navigation semantics.
+const sidebarRole: SidebarProps = { children: 'Body', role: 'navigation' };
+// @ts-expect-error Sidebar does not accept raw HTML.
+const sidebarHTML: SidebarProps = { children: 'Body', dangerouslySetInnerHTML: { __html: 'Body' } };
+// @ts-expect-error Sidebar does not manage collapse.
+const sidebarCollapsed: SidebarProps = { children: 'Body', collapsed: true };
+// @ts-expect-error Product name is required.
+const sidebarMissingName: ProductIdentity = { node: 'W' };
+
 import { Panel, PanelHeader, PanelBody, PanelFooter } from '@egdev/ui';
 import type { PanelProps, PanelVariant, PanelTone, PanelHeaderProps, PanelBodyProps, PanelFooterProps } from '@egdev/ui';
 // @ts-expect-error Presentation context is private.
@@ -3736,6 +3750,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'SectionHeader',
   'Select',
   'SelectTile',
+  'Sidebar',
   'Skeleton',
   'Slider',
   'Slot',
@@ -3766,6 +3781,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'noticeVariants',
   'progressBarVariants',
   'radioGroupVariants',
+  'sidebarVariants',
   'sliderVariants',
   'statVariants',
   'statusDotVariants',

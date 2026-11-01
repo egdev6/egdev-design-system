@@ -187,6 +187,29 @@ test('Collapsible package preserves amended native closed/open relationships and
   }
 });
 
+test('sidebar exports its component and static CSS without private helpers', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(typeof exported.Sidebar, 'function');
+  assert.equal(Object.hasOwn(exported, 'useSidebar'), false);
+  const html = renderToString(
+    createElement(exported.Sidebar, {
+      product: { name: 'Workspace', href: '/home', node: createElement('span', null, 'W') },
+      footer: 'Account',
+      children: 'Body'
+    })
+  );
+  assert.match(html, /eg-sidebar/);
+  assert.match(html, /href="\/home"/);
+  assert.match(html, /Body/);
+  assert.match(html, /Account/);
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  for (const selector of ['.w-64', '.min-h-0', '.overflow-hidden']) {
+    assert.ok(css.includes(selector), selector);
+  }
+});
+
 test('Panel ships band resets and direct-zone corner utilities without a new marker engine', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -2889,6 +2912,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'SectionHeader',
       'Select',
       'SelectTile',
+      'Sidebar',
       'Skeleton',
       'Slider',
       'Slot',
@@ -2919,6 +2943,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'noticeVariants',
       'progressBarVariants',
       'radioGroupVariants',
+      'sidebarVariants',
       'sliderVariants',
       'statVariants',
       'statusDotVariants',
@@ -3206,6 +3231,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'PopoverTriggerProps',
     'Portal',
     'PortalProps',
+    'ProductIdentity',
     'ProgressBar',
     'ProgressBarProps',
     'ProgressBarSize',
@@ -3235,6 +3261,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SelectTileRatio',
     'SelectTileThumbnail',
     'SelectTileType',
+    'Sidebar',
+    'SidebarProps',
     'Skeleton',
     'SkeletonProps',
     'SkeletonSize',
@@ -3327,6 +3355,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'noticeVariants',
     'progressBarVariants',
     'radioGroupVariants',
+    'sidebarVariants',
     'sliderVariants',
     'statVariants',
     'statusDotVariants',
