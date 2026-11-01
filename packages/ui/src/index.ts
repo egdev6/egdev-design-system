@@ -78,6 +78,8 @@ export type { TabsItem, TabsProps, TabsSize, TabsTone, TabsVariant } from './mol
 export { Tabs, tabsVariants } from './molecules/tabs';
 export * from './molecules/timeline';
 export * from './molecules/toast';
+// Organisms
+export * from './organisms/sidebar';
 // Primitives
 export type { AspectRatioProps } from './primitives/aspect-ratio';
 export { AspectRatio } from './primitives/aspect-ratio';
@@ -116,3 +118,4 @@ export type {
 } from './primitives/text';
 export { Heading, Text } from './primitives/text';
 export * from './primitives/visually-hidden';
+export type { ProductIdentity } from './types/product-identity';

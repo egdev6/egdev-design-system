@@ -57,6 +57,10 @@ function indicatorProposalHash(entry) {
 }
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...['product-identity', 'panel-footer'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/organisms/sidebar/types.ts#SidebarProps'
+  })),
   ...['effect-scene', 'effect-progress', 'layer-opacity', 'pointer-tilt'].map((conventionId) => ({
     conventionId,
     source: 'packages/effects/src/atoms/isotipo3d/types.ts#Isotipo3DProps'
@@ -671,7 +675,8 @@ const receiptChain = [
   'docs/decisions/prop-naming-skeleton-v0.2-approval.json',
   'docs/components/button/v0.1/prop-naming-approval.json',
   'docs/components/toggle/v0.1/prop-naming-approval-leading-icon-combined.json',
-  'docs/components/icon-button/v0.1/prop-naming-approval-leading-icon-combined.json'
+  'docs/components/icon-button/v0.1/prop-naming-approval-leading-icon-combined.json',
+  'docs/components/sidebar/v0.1/product-identity-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -1344,7 +1349,7 @@ test('organism naming receipt binds delegated decisions and the menu-entry-kind 
   const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   validate(registry);
-  const actual = historicalRegistry(registry);
+  const actual = registryBeforeSemanticAmendments(historicalRegistry(registry), reference);
   assert.equal(receipt.kind, 'human-approval-record');
   assert.equal(receipt.nativeReviewApproval, false);
   assert.equal(receipt.authority, 'assistant-observed-human-delegation');
@@ -1425,6 +1430,34 @@ test('organism naming receipt binds delegated decisions and the menu-entry-kind 
     entries.filter(({ convention }) => !knownIds.has(convention.id))
   );
   assert.equal(historicalRegistry(actual).length, 123 + laterAdded.length);
+});
+
+test('Sidebar product identity amendment binds the owner decision and the prior convention', () => {
+  const reference = 'docs/components/sidebar/v0.1/product-identity-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(registry);
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar la enmienda (Recomendado)');
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(digest(fs.readFileSync(resolve(root, prior.path))), prior.wholeFileSHA256);
+  }
+  const amendment = receipt.semanticAmendments[0];
+  const previous = JSON.parse(fs.readFileSync(resolve(root, amendment.previousReference), 'utf8')).entries.find(
+    ({ convention }) => convention.id === amendment.id
+  );
+  const current = registry.find(({ id }) => id === amendment.id);
+  assert.equal(previous.contentHash, amendment.previousContentHash);
+  for (const field of amendment.changedFields) {
+    assert.equal(amendment.before[field], previous.convention[field]);
+    assert.equal(amendment.after[field], current[field]);
+  }
+  assert.deepEqual(current.approval, {
+    reference,
+    scope: receipt.entries[0].scope,
+    contentHash: props.conventionHash(current)
+  });
+  const { approval: _approval, usages: _usages, ...convention } = current;
+  assert.deepEqual(receipt.entries[0].convention, convention);
 });
 
 test('template naming receipt pins the organism receipt and binds two new layout slots', () => {
