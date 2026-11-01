@@ -9,7 +9,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './Collapsib
  *
  * ## Dependencies
  * Radix Collapsible owns state, activation, relationships and presence. Surface supplies the fixed
- * Material frame, the internal ghost/md Button recipe styles the native Trigger, and Icon supplies
+ * Material frame, the internal neutral/md Button recipe styles the native Trigger, and Icon supplies
  * the decorative caret. The Button component/state hook is not used.
  *
  * ## Usage guidelines

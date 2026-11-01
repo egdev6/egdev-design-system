@@ -33,7 +33,7 @@ export const WithInput: Story = {};
 /** Persistent guidance becomes the control's accessible description. */
 export const WithHint: Story = { args: { hint: 'Use a short, descriptive title.' } };
 
-/** Error replaces the hint and accompanies, rather than follows from, an over-limit counter. */
+/** Error replaces the hint and accompanies, rather than follows from, an over-limit counter; both share the bottom row. */
 export const Invalid: Story = {
   args: {
     label: 'Post',
@@ -44,7 +44,7 @@ export const Invalid: Story = {
   }
 };
 
-/** The consumer derives length; an over-limit counter alone never marks the control invalid. */
+/** The consumer derives length; with no message, the counter occupies the bottom row alone at the end. */
 export const Counter: Story = {
   args: {
     label: 'Comment',
@@ -95,7 +95,7 @@ export const ChoiceSwitch: Story = {
   args: { label: 'Notifications', layout: 'choice', hint: 'Receive release updates.', children: <Switch /> }
 };
 
-/** Field dims its own parts once; the disabled control owns its separate opacity. */
+/** Field dims its own parts once; the disabled control owns its separate opacity. The hint and counter share the bottom row. */
 export const Disabled: Story = {
   args: {
     hint: 'Editing is unavailable.',

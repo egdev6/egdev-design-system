@@ -16,8 +16,8 @@ const tokens: Record<string, string> = {
   '--color-surface-2': '#232428',
   '--color-border-hairline': 'rgba(255, 255, 255, 0.08)',
   '--color-border-control': '#7A7B81',
-  '--radius-md': '12px',
-  '--radius-sm': '4px',
+  '--radius-md': '9.6px',
+  '--radius-sm': '3.2px',
   '--font-sans': '"Barlow", system-ui, sans-serif',
   '--font-mono': '"JetBrains Mono", ui-monospace, monospace',
   '--color-fg-default': '#FFFFFF',
@@ -47,10 +47,10 @@ describe('Storybook brand theme', () => {
       appContentBg: '#1B1C20',
       appPreviewBg: '#141518',
       appBorderColor: 'rgba(255, 255, 255, 0.08)',
-      appBorderRadius: 12,
+      appBorderRadius: 9.6,
       fontBase: tokens['--font-sans'],
       fontCode: tokens['--font-mono'],
-      inputBorderRadius: 4
+      inputBorderRadius: 3.2
     });
     expect(reader).toHaveBeenCalledWith('--color-bg-canvas');
     expect(reader).toHaveBeenCalledWith('--color-fg-brand-raised');

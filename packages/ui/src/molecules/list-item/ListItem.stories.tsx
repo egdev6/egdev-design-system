@@ -51,7 +51,7 @@ function Example({
   );
   const actions = (
     <ListItemActions>
-      <Button variant='ghost' onClick={edit}>
+      <Button variant='neutral' onClick={edit}>
         {status === 'off' ? 'Show' : 'Edit'}
       </Button>
     </ListItemActions>
@@ -95,7 +95,7 @@ function ReorderExample() {
           <ListItemActions>
             <IconButton label={`Drag ${item}`} icon={<Icon name='grip' />} disabled={true} />
             <Button
-              variant='ghost'
+              variant='neutral'
               disabled={index === 0}
               onClick={() => {
                 setFirst(!first);
@@ -105,7 +105,7 @@ function ReorderExample() {
               Move up
             </Button>
             <Button
-              variant='ghost'
+              variant='neutral'
               disabled={index === items.length - 1}
               onClick={() => {
                 setFirst(!first);

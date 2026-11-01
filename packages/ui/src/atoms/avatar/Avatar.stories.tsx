@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Indicator } from '../indicator/Indicator';
 import { Avatar } from './Avatar';
 
 /**
@@ -10,8 +11,10 @@ import { Avatar } from './Avatar';
  *
  * ## Usage guidelines
  * Omit label beside an equivalent visible name. Include network and paused meaning in label or
- * adjacent text. Root className supports outer margin/alignment and a token-valued --eg-avatar-ring,
- * not appearance overrides. Avatar has no ref or asChild: wrap it inside the consumer's trigger.
+ * adjacent text. Origin or network glyphs compose the public Indicator wrapper around the Avatar,
+ * not a badge prop. Root className supports outer margin/alignment and a token-valued
+ * --eg-avatar-ring, not appearance overrides. Avatar has no ref or asChild: wrap it inside the
+ * consumer's trigger.
  */
 const meta: Meta<typeof Avatar> = {
   title: 'Atoms/Avatar',
@@ -46,36 +49,28 @@ export const WithImage: Story = {
 /** Invalid image bytes keep Radix's immediate user fallback visible. */
 export const BrokenImage: Story = { args: { label: 'Unavailable channel image', src: 'data:image/png,invalid' } };
 
-/** Both badge geometries; the canvas host supplies the ring through the public token property. */
-export const NetworkBadge: Story = {
+/** Replaces the removed badgeIcon prop: the public Indicator wrapper supplies the corner glyph. */
+export const WithIndicator: Story = {
   render: () => (
-    <div className='flex items-center gap-6'>
-      <Avatar
-        size='lg'
-        badgeIcon='linkedin'
-        label='Example channel on LinkedIn'
-        className='[--eg-avatar-ring:var(--color-bg-canvas)]'
-      />
-      <Avatar
-        size='xl'
-        badgeIcon='youtube'
-        label='Example channel on YouTube'
-        className='[--eg-avatar-ring:var(--color-bg-canvas)]'
-      />
+    <div className='flex items-center gap-6 p-4'>
+      <Indicator variant='icon' badgeIcon='linkedin' tone='neutral' position='bottom-right'>
+        <Avatar size='lg' label='Example channel on LinkedIn' className='[--eg-avatar-ring:var(--color-bg-canvas)]' />
+      </Indicator>
+      <Indicator variant='icon' badgeIcon='youtube' tone='neutral' position='bottom-right'>
+        <Avatar size='xl' label='Example channel on YouTube' className='[--eg-avatar-ring:var(--color-bg-canvas)]' />
+      </Indicator>
     </div>
   )
 };
 
 /** The accessible label includes paused meaning rather than relying only on de-emphasis. */
-export const Paused: Story = {
-  args: { label: 'Example channel on LinkedIn, paused', badgeIcon: 'linkedin', paused: true }
-};
+export const Paused: Story = { args: { label: 'Example channel on LinkedIn, paused', paused: true } };
 
-/** Adjacent text supplies the name; the whole avatar, including its badge, stays decorative. */
+/** Adjacent text supplies the name; the whole avatar stays decorative. */
 export const Decorative: Story = {
   render: () => (
     <div className='flex items-center gap-2'>
-      <Avatar badgeIcon='youtube' className='[--eg-avatar-ring:var(--color-bg-canvas)]' />
+      <Avatar />
       <span>Example channel on YouTube</span>
     </div>
   )

@@ -281,7 +281,7 @@ describe('NavList public contract v0.2', () => {
     expect(screen.queryByText('Injected')).not.toBeInTheDocument();
   });
 
-  it('keeps 44px targets, label-only truncation, focus tokens and reduced-motion recipes', () => {
+  it('keeps 35.2px targets, label-only truncation, focus tokens and reduced-motion recipes', () => {
     render(<NavList label='Workspace' items={[home, group()]} />);
     const link = screen.getByRole('link');
     expect(link).toHaveClass(

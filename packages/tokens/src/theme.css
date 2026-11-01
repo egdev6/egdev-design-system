@@ -4,7 +4,8 @@
  * @theme static conserva las variables que generan utilidades de Tailwind;
  * :root las que no las generan. `tokens.css` es el artefacto nativo compilado
  * con `pnpm tokens` (Vite + @tailwindcss/vite) y no se edita a mano.
- * La escala de espaciado de Tailwind (4 px) coincide con --space-*.
+ * La escala de espaciado de Tailwind (3,2 px) coincide con --space-*.
+ * Escala global ×0.8 (#218, S13): valores exactos con decimales (sub-píxel).
  */
 
 @theme static {
@@ -183,78 +184,78 @@
    * --text-* set feeds a Tailwind text-* utility; font family and casing stay in the
    * existing --font-* tokens and the separate uppercase utility classes.
    */
-  /* --text-display-hero — Display hero: Barlow Condensed (display), uppercase; 56px/1.1. */
-  --text-display-hero: 56px;
+  /* --text-display-hero — Display hero: Barlow Condensed (display), uppercase; 44.8px/1.1 (56px ×0.8, #218). */
+  --text-display-hero: 44.8px;
   --text-display-hero--line-height: 1.1;
   --text-display-hero--font-weight: 800;
   --text-display-hero--letter-spacing: 0;
-  /* --text-display-show — Show register hero: display family, uppercase; 96px/0.9. */
-  --text-display-show: 96px;
+  /* --text-display-show — Show register hero: display family, uppercase; 76.8px/0.9 (96px ×0.8, #218). */
+  --text-display-show: 76.8px;
   --text-display-show--line-height: 0.9;
   --text-display-show--font-weight: 800;
   --text-display-show--letter-spacing: 0;
-  /* --text-display-pro — Pro register hero: display family, uppercase; 64px/0.95. */
-  --text-display-pro: 64px;
+  /* --text-display-pro — Pro register hero: display family, uppercase; 51.2px/0.95 (64px ×0.8, #218). */
+  --text-display-pro: 51.2px;
   --text-display-pro--line-height: 0.95;
   --text-display-pro--font-weight: 800;
   --text-display-pro--letter-spacing: 0;
-  /* --text-display-stat — Stat figure (#70 D6): display family, tabular numerals; 36px/1. */
-  --text-display-stat: 36px;
+  /* --text-display-stat — Stat figure (#70 D6): display family, tabular numerals; 28.8px/1 (36px ×0.8, #218). */
+  --text-display-stat: 28.8px;
   --text-display-stat--line-height: 1;
   --text-display-stat--font-weight: 800;
   --text-display-stat--letter-spacing: 0;
-  /* --text-display-stat-sm — Compact Stat figure (#70 D6): display family, tabular numerals; 28px/1. */
-  --text-display-stat-sm: 28px;
+  /* --text-display-stat-sm — Compact Stat figure (#70 D6): display family, tabular numerals; 22.4px/1 (28px ×0.8, #218). */
+  --text-display-stat-sm: 22.4px;
   --text-display-stat-sm--line-height: 1;
   --text-display-stat-sm--font-weight: 800;
   --text-display-stat-sm--letter-spacing: 0;
-  /* --text-heading-section — Section headings: display family, uppercase; 40px/1.2. */
-  --text-heading-section: 40px;
+  /* --text-heading-section — Section headings: display family, uppercase; 32px/1.2 (40px ×0.8, #218). */
+  --text-heading-section: 32px;
   --text-heading-section--line-height: 1.2;
   --text-heading-section--font-weight: 800;
   --text-heading-section--letter-spacing: 0;
-  /* --text-heading-small — Card and block titles: sans family, normal case; 24px/1.2. */
-  --text-heading-small: 24px;
+  /* --text-heading-small — Card and block titles: sans family, normal case; 19.2px/1.2 (24px ×0.8, #218). */
+  --text-heading-small: 19.2px;
   --text-heading-small--line-height: 1.2;
   --text-heading-small--font-weight: 700;
   --text-heading-small--letter-spacing: 0;
-  /* --text-body-large — Large body copy: sans family; 20px/1.6. */
-  --text-body-large: 20px;
+  /* --text-body-large — Large body copy: sans family; 16px/1.6 (20px ×0.8, #218). */
+  --text-body-large: 16px;
   --text-body-large--line-height: 1.6;
   --text-body-large--font-weight: 500;
   --text-body-large--letter-spacing: 0;
-  /* --text-body-default — Default body copy: sans family; 16px/1.6. */
-  --text-body-default: 16px;
+  /* --text-body-default — Default body copy: sans family; 12.8px/1.6 (16px ×0.8, #218). */
+  --text-body-default: 12.8px;
   --text-body-default--line-height: 1.6;
   --text-body-default--font-weight: 500;
   --text-body-default--letter-spacing: 0;
-  /* --text-body-muted — Muted body copy: sans family (the name does not imply color); 20px/1.6. */
-  --text-body-muted: 20px;
+  /* --text-body-muted — Muted body copy: sans family (the name does not imply color); 16px/1.6 (20px ×0.8, #218). */
+  --text-body-muted: 16px;
   --text-body-muted--line-height: 1.6;
   --text-body-muted--font-weight: 400;
   --text-body-muted--letter-spacing: 0;
-  /* --text-label-default — Default labels: sans family; 14px/1.2. */
-  --text-label-default: 14px;
+  /* --text-label-default — Default labels: sans family; 11.2px/1.2 (14px ×0.8, #218). */
+  --text-label-default: 11.2px;
   --text-label-default--line-height: 1.2;
   --text-label-default--font-weight: 600;
   --text-label-default--letter-spacing: 0;
-  /* --text-label-eyebrow — Eyebrow labels: display family, uppercase, tracking 0.12em; 14px/1.2. */
-  --text-label-eyebrow: 14px;
+  /* --text-label-eyebrow — Eyebrow labels: display family, uppercase, tracking 0.12em; 11.2px/1.2 (14px ×0.8, #218). */
+  --text-label-eyebrow: 11.2px;
   --text-label-eyebrow--line-height: 1.2;
   --text-label-eyebrow--font-weight: 700;
   --text-label-eyebrow--letter-spacing: 0.12em;
-  /* --text-meta — Metadata, versions and tags: display family, uppercase, tracking 0.08em; 14px/1.3. */
-  --text-meta: 14px;
+  /* --text-meta — Metadata, versions and tags: display family, uppercase, tracking 0.08em; 11.2px/1.3 (14px ×0.8, #218). */
+  --text-meta: 11.2px;
   --text-meta--line-height: 1.3;
   --text-meta--font-weight: 600;
   --text-meta--letter-spacing: 0.08em;
-  /* --text-cta-label — Call-to-action labels: sans family; 16px/1.2. */
-  --text-cta-label: 16px;
+  /* --text-cta-label — Call-to-action labels: sans family; 12.8px/1.2 (16px ×0.8, #218). */
+  --text-cta-label: 12.8px;
   --text-cta-label--line-height: 1.2;
   --text-cta-label--font-weight: 700;
   --text-cta-label--letter-spacing: 0;
-  /* --text-code — Code blocks and snippets only: mono family; 14px/1.6. */
-  --text-code: 14px;
+  /* --text-code — Code blocks and snippets only: mono family; 11.2px/1.6 (14px ×0.8, #218). */
+  --text-code: 11.2px;
   --text-code--line-height: 1.6;
   --text-code--font-weight: 400;
   --text-code--letter-spacing: 0;
@@ -263,23 +264,23 @@
    * and tight leading, display family, uppercase. Not interchangeable with the fixed
    * --text-display-* / --text-heading-section recipes above.
    */
-  /* --text-title-section — Section title: clamp(40px, 5.6vw, 64px)/0.9. */
-  --text-title-section: clamp(40px, 5.6vw, 64px);
+  /* --text-title-section — Section title: clamp(32px, 4.48vw, 51.2px)/0.9 (×0.8, #218). */
+  --text-title-section: clamp(32px, 4.48vw, 51.2px);
   --text-title-section--line-height: 0.9;
   --text-title-section--font-weight: 800;
   --text-title-section--letter-spacing: 0;
-  /* --text-title-hero — Hero title: clamp(60px, 9vw, 140px)/0.86. */
-  --text-title-hero: clamp(60px, 9vw, 140px);
+  /* --text-title-hero — Hero title: clamp(48px, 7.2vw, 112px)/0.86 (×0.8, #218). */
+  --text-title-hero: clamp(48px, 7.2vw, 112px);
   --text-title-hero--line-height: 0.86;
   --text-title-hero--font-weight: 800;
   --text-title-hero--letter-spacing: 0;
-  /* --text-title-show — Show register title: clamp(56px, 8.2vw, 132px)/0.86. */
-  --text-title-show: clamp(56px, 8.2vw, 132px);
+  /* --text-title-show — Show register title: clamp(44.8px, 6.56vw, 105.6px)/0.86 (×0.8, #218). */
+  --text-title-show: clamp(44.8px, 6.56vw, 105.6px);
   --text-title-show--line-height: 0.86;
   --text-title-show--font-weight: 800;
   --text-title-show--letter-spacing: 0;
-  /* --text-title-display — Display and inverse title: clamp(64px, 9.6vw, 164px)/0.82. */
-  --text-title-display: clamp(64px, 9.6vw, 164px);
+  /* --text-title-display — Display and inverse title: clamp(51.2px, 7.68vw, 131.2px)/0.82 (×0.8, #218). */
+  --text-title-display: clamp(51.2px, 7.68vw, 131.2px);
   --text-title-display--line-height: 0.82;
   --text-title-display--font-weight: 800;
   --text-title-display--letter-spacing: 0;
@@ -289,31 +290,31 @@
    * Countdown digit recipes and spacing (#82, owner-approved 2026-10-26): the exact legacy
    * .eg-countdown__value clamps, column gap and minimum digit measure, display family.
    */
-  /* --text-countdown-md — Default countdown digits: clamp(52px, 6vw, 96px)/0.85. */
-  --text-countdown-md: clamp(52px, 6vw, 96px);
+  /* --text-countdown-md — Default countdown digits: clamp(41.6px, 4.8vw, 76.8px)/0.85 (×0.8, #218). */
+  --text-countdown-md: clamp(41.6px, 4.8vw, 76.8px);
   --text-countdown-md--line-height: 0.85;
   --text-countdown-md--font-weight: 800;
   --text-countdown-md--letter-spacing: 0;
-  /* --text-countdown-sm — Small countdown digits: clamp(36px, 4vw, 56px)/0.85. */
-  --text-countdown-sm: clamp(36px, 4vw, 56px);
+  /* --text-countdown-sm — Small countdown digits: clamp(28.8px, 3.2vw, 44.8px)/0.85 (×0.8, #218). */
+  --text-countdown-sm: clamp(28.8px, 3.2vw, 44.8px);
   --text-countdown-sm--line-height: 0.85;
   --text-countdown-sm--font-weight: 800;
   --text-countdown-sm--letter-spacing: 0;
   /* --spacing-countdown-column — Responsive horizontal gap between countdown unit columns. */
-  --spacing-countdown-column: clamp(14px, 2.2vw, 32px);
+  --spacing-countdown-column: clamp(11.2px, 1.76vw, 25.6px);
   /* --spacing-countdown-unit — Minimum digit measure, relative to the value element's font. */
   --spacing-countdown-unit: 1.9ch;
   /*
    * Fluid quotation recipes for PullQuote (#98 D7): the exact legacy .eg-quote__text
    * clamps. Pull uses the sans family; display uses the display family, uppercase.
    */
-  /* --text-quote-pull — Pull quotation: clamp(19px, 1.7vw, 23px)/1.4. */
-  --text-quote-pull: clamp(19px, 1.7vw, 23px);
+  /* --text-quote-pull — Pull quotation: clamp(15.2px, 1.36vw, 18.4px)/1.4 (×0.8, #218). */
+  --text-quote-pull: clamp(15.2px, 1.36vw, 18.4px);
   --text-quote-pull--line-height: 1.4;
   --text-quote-pull--font-weight: 500;
   --text-quote-pull--letter-spacing: 0;
-  /* --text-quote-display — Display quotation: clamp(48px, 6.2vw, 100px)/0.86. */
-  --text-quote-display: clamp(48px, 6.2vw, 100px);
+  /* --text-quote-display — Display quotation: clamp(38.4px, 4.96vw, 80px)/0.86 (×0.8, #218). */
+  --text-quote-display: clamp(38.4px, 4.96vw, 80px);
   --text-quote-display--line-height: 0.86;
   --text-quote-display--font-weight: 800;
   --text-quote-display--letter-spacing: 0;
@@ -321,16 +322,16 @@
   --container-quote-pull: 40ch;
   /* --radius-none — Sin redondeo. */
   --radius-none: 0px;
-  /* --radius-sm — Asignación a componentes sin definir. */
-  --radius-sm: 4px;
-  /* --radius-md — Asignación a componentes sin definir. */
-  --radius-md: 12px;
-  /* --radius-lg — Asignación a componentes sin definir. */
-  --radius-lg: 16px;
-  /* --radius-xl — Asignación a componentes sin definir. */
-  --radius-xl: 22px;
-  /* --radius-2xl — Asignación a componentes sin definir. */
-  --radius-2xl: 24px;
+  /* --radius-sm — Asignación a componentes sin definir (4px ×0.8, #218). */
+  --radius-sm: 3.2px;
+  /* --radius-md — Asignación a componentes sin definir (12px ×0.8, #218). */
+  --radius-md: 9.6px;
+  /* --radius-lg — Asignación a componentes sin definir (16px ×0.8, #218). */
+  --radius-lg: 12.8px;
+  /* --radius-xl — Asignación a componentes sin definir (22px ×0.8, #218). */
+  --radius-xl: 17.6px;
+  /* --radius-2xl — Asignación a componentes sin definir (24px ×0.8, #218). */
+  --radius-2xl: 19.2px;
   /* --radius-full — Píldoras y círculos. */
   --radius-full: 9999px;
   /* --shadow-glow-base — Glow en reposo de elementos de marca. */
@@ -406,46 +407,46 @@
   --logo-red-shade: #800C1D;
   /* --space-0 — Sin espacio. */
   --space-0: 0px;
-  /* --space-1 — Separación icono-texto mínima. */
-  --space-1: 4px;
-  /* --space-2 — Gaps compactos. */
-  --space-2: 8px;
-  /* --space-3 — Padding vertical de controles. */
-  --space-3: 12px;
-  /* --space-4 — Padding base. */
-  --space-4: 16px;
-  /* --space-5 — Escala. */
-  --space-5: 20px;
-  /* --space-6 — Padding de card. */
-  --space-6: 24px;
-  /* --space-7 — Escala. */
-  --space-7: 28px;
-  /* --space-8 — Separación entre bloques. */
-  --space-8: 32px;
-  /* --space-10 — Escala. Coincide con effect.grid.size. */
-  --space-10: 40px;
-  /* --space-12 — Escala. */
-  --space-12: 48px;
-  /* --space-14 — Escala. */
-  --space-14: 56px;
-  /* --space-16 — Separación entre secciones. */
-  --space-16: 64px;
-  /* --space-20 — Escala. */
-  --space-20: 80px;
-  /* --space-24 — Márgenes de sección amplios. */
-  --space-24: 96px;
+  /* --space-1 — Separación icono-texto mínima (4px ×0.8, #218). Base de la escala Tailwind. */
+  --space-1: 3.2px;
+  /* --space-2 — Gaps compactos (8px ×0.8, #218). */
+  --space-2: 6.4px;
+  /* --space-3 — Padding vertical de controles (12px ×0.8, #218). */
+  --space-3: 9.6px;
+  /* --space-4 — Padding base (16px ×0.8, #218). */
+  --space-4: 12.8px;
+  /* --space-5 — Escala (20px ×0.8, #218). */
+  --space-5: 16px;
+  /* --space-6 — Padding de card (24px ×0.8, #218). */
+  --space-6: 19.2px;
+  /* --space-7 — Escala (28px ×0.8, #218). */
+  --space-7: 22.4px;
+  /* --space-8 — Separación entre bloques (32px ×0.8, #218). */
+  --space-8: 25.6px;
+  /* --space-10 — Escala. Coincide con effect.grid.size (40px ×0.8, #218). */
+  --space-10: 32px;
+  /* --space-12 — Escala (48px ×0.8, #218). */
+  --space-12: 38.4px;
+  /* --space-14 — Escala (56px ×0.8, #218). */
+  --space-14: 44.8px;
+  /* --space-16 — Separación entre secciones (64px ×0.8, #218). */
+  --space-16: 51.2px;
+  /* --space-20 — Escala (80px ×0.8, #218). */
+  --space-20: 64px;
+  /* --space-24 — Márgenes de sección amplios (96px ×0.8, #218). */
+  --space-24: 76.8px;
   /* --effect-grid-opacity — Opacidad de la retícula de fondo. Color, grosor y construcción sin definir. */
   --effect-grid-opacity: 0.025;
-  /* --effect-grid-size — Paso de la retícula de fondo. */
-  --effect-grid-size: 40px;
+  /* --effect-grid-size — Paso de la retícula de fondo (40px ×0.8, #218). Coincide con --space-10. */
+  --effect-grid-size: 32px;
   /* --border-width — Grosor de borde de superficies y controles. */
   --border-width: 1px;
   /* --focus-width — Grosor del anillo de foco. */
   --focus-width: 2px;
   /* --focus-offset — Separación del anillo de foco. */
   --focus-offset: 2px;
-  /* --icon-size — Tamaño base Lucide: 20px (16 en labels y menús, 24 en headings). */
-  --icon-size: 20px;
+  /* --icon-size — Tamaño base Lucide: 16px (12.8 en labels y menús, 19.2 en headings; 20px ×0.8, #218). */
+  --icon-size: 16px;
   /* --icon-stroke — stroke-width Lucide, a juego con el peso medio de Space Grotesk. */
   --icon-stroke: 1.75;
   /* --duration-fast — Color, fondo, hover de enlaces y botones. */
@@ -460,12 +461,12 @@
   --delay-popover: 2s;
   /* --duration-press — Pulsación de botones (translateY 1px + scale .97). */
   --duration-press: 90ms;
-  /* --content-max — Ancho máximo del contenido (wrap). */
-  --content-max: 1280px;
-  /* --gutter — Margen lateral de la página. */
-  --gutter: clamp(16px, 4vw, 40px);
-  /* --nav-height — Alto de la barra superior; las secciones lo compensan arriba. */
-  --nav-height: 68px;
+  /* --content-max — Ancho máximo del contenido (wrap; 1280px ×0.8, #218). */
+  --content-max: 1024px;
+  /* --gutter — Margen lateral de la página (clamp 16/40px ×0.8, #218). */
+  --gutter: clamp(12.8px, 3.2vw, 32px);
+  /* --nav-height — Alto de la barra superior; las secciones lo compensan arriba (68px ×0.8, #218). */
+  --nav-height: 54.4px;
   /* --section-min-height — Toda sección ocupa al menos una pantalla y centra su contenido en vertical. */
   --section-min-height: 100dvh;
   /* --bp-sm — Breakpoint móvil estrecho. */
@@ -517,36 +518,36 @@
  * var() reference in generated utilities, so a local --space-* override still wins.
  */
 @theme inline static {
-  /* --spacing — Base Tailwind step for fractional utilities (p-0.5); maps to --space-1 (4px). */
+  /* --spacing — Base Tailwind step for fractional utilities (p-0.5); maps to --space-1 (3.2px, #218). */
   --spacing: var(--space-1);
   /* --spacing-0 — Tailwind step bound to --space-0 (0px). */
   --spacing-0: var(--space-0);
-  /* --spacing-1 — Tailwind step bound to --space-1 (4px). */
+  /* --spacing-1 — Tailwind step bound to --space-1 (3.2px, #218). */
   --spacing-1: var(--space-1);
-  /* --spacing-2 — Tailwind step bound to --space-2 (8px). */
+  /* --spacing-2 — Tailwind step bound to --space-2 (6.4px, #218). */
   --spacing-2: var(--space-2);
-  /* --spacing-3 — Tailwind step bound to --space-3 (12px). */
+  /* --spacing-3 — Tailwind step bound to --space-3 (9.6px, #218). */
   --spacing-3: var(--space-3);
-  /* --spacing-4 — Tailwind step bound to --space-4 (16px). */
+  /* --spacing-4 — Tailwind step bound to --space-4 (12.8px, #218). */
   --spacing-4: var(--space-4);
-  /* --spacing-5 — Tailwind step bound to --space-5 (20px). */
+  /* --spacing-5 — Tailwind step bound to --space-5 (16px, #218). */
   --spacing-5: var(--space-5);
-  /* --spacing-6 — Tailwind step bound to --space-6 (24px). */
+  /* --spacing-6 — Tailwind step bound to --space-6 (19.2px, #218). */
   --spacing-6: var(--space-6);
-  /* --spacing-7 — Tailwind step bound to --space-7 (28px). */
+  /* --spacing-7 — Tailwind step bound to --space-7 (22.4px, #218). */
   --spacing-7: var(--space-7);
-  /* --spacing-8 — Tailwind step bound to --space-8 (32px). */
+  /* --spacing-8 — Tailwind step bound to --space-8 (25.6px, #218). */
   --spacing-8: var(--space-8);
-  /* --spacing-10 — Tailwind step bound to --space-10 (40px). */
+  /* --spacing-10 — Tailwind step bound to --space-10 (32px, #218). */
   --spacing-10: var(--space-10);
-  /* --spacing-12 — Tailwind step bound to --space-12 (48px). */
+  /* --spacing-12 — Tailwind step bound to --space-12 (38.4px, #218). */
   --spacing-12: var(--space-12);
-  /* --spacing-14 — Tailwind step bound to --space-14 (56px). */
+  /* --spacing-14 — Tailwind step bound to --space-14 (44.8px, #218). */
   --spacing-14: var(--space-14);
-  /* --spacing-16 — Tailwind step bound to --space-16 (64px). */
+  /* --spacing-16 — Tailwind step bound to --space-16 (51.2px, #218). */
   --spacing-16: var(--space-16);
-  /* --spacing-20 — Tailwind step bound to --space-20 (80px). */
+  /* --spacing-20 — Tailwind step bound to --space-20 (64px, #218). */
   --spacing-20: var(--space-20);
-  /* --spacing-24 — Tailwind step bound to --space-24 (96px). */
+  /* --spacing-24 — Tailwind step bound to --space-24 (76.8px, #218). */
   --spacing-24: var(--space-24);
 }

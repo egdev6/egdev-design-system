@@ -5,6 +5,7 @@ import { cn } from '@/lib/cn';
 import {
   type ChipGroupOption,
   type ChipGroupProps,
+  chipGroupCheckVariants,
   chipGroupIconVariants,
   chipGroupItemVariants,
   chipGroupVariants
@@ -32,6 +33,7 @@ type ChipGroupResult = {
   options: (ChipGroupOption & { showIcon: boolean })[];
   itemClassName: string;
   iconProps: { className: string; 'aria-hidden': true };
+  checkProps: { className: string; 'aria-hidden': true };
 };
 
 /** Splits the discriminated API without parallel selection state; Radix owns all interaction. */
@@ -85,6 +87,7 @@ export function useChipGroup(props: ChipGroupProps): ChipGroupResult {
       showIcon: option.icon !== undefined && option.icon !== null && typeof option.icon !== 'boolean'
     })),
     itemClassName: cn(chipVariants(), chipGroupItemVariants()),
-    iconProps: { className: cn(chipGroupIconVariants()), 'aria-hidden': true }
+    iconProps: { className: cn(chipGroupIconVariants()), 'aria-hidden': true },
+    checkProps: { className: cn(chipGroupCheckVariants()), 'aria-hidden': true }
   };
 }

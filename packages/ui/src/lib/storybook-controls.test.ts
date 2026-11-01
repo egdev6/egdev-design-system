@@ -206,7 +206,7 @@ const expected: Record<string, Record<string, string | false>> = {
     titleId: 'text',
     tone: 'select'
   },
-  avatar: { src: 'text', label: 'text', size: 'select', badgeIcon: 'select', paused: 'boolean' },
+  avatar: { src: 'text', label: 'text', size: 'select', paused: 'boolean' },
   navlist: { label: 'text', items: false, onNavigate: false },
   button: {
     children: false,
@@ -447,7 +447,7 @@ const ownPropCounts: Record<string, number> = {
   timeline: 7,
   selecttile: 11,
   carousel: 6,
-  avatar: 5,
+  avatar: 4,
   button: 7,
   checkbox: 7,
   chip: 6,
