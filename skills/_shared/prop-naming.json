@@ -1064,6 +1064,26 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "CommandPalette",
+        "type": "string (default Search)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
+      {
+        "component": "CommandPaletteItem",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteItem",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
+      {
         "component": "GaugeGroup",
         "type": "string (required collection name)",
         "status": "existing",
@@ -1783,6 +1803,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "CommandPaletteItem",
+        "type": "IconName",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteItem",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
       {
         "component": "Toast",
         "type": "ReactNode",
@@ -2948,6 +2978,16 @@
     },
     "usages": [
       {
+        "component": "CommandPalette",
+        "type": "CommandPaletteItem[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
+      {
         "component": "GaugeGroup",
         "type": "GaugeGroupItems (readonly tuple of two or three readings)",
         "status": "existing",
@@ -3044,6 +3084,16 @@
       "contentHash": "sha256:555c4e48e004651531f1588e18a8f71781afd8054c2ae113959b2831d86736cd"
     },
     "usages": [
+      {
+        "component": "CommandPalette",
+        "type": "Partial<CommandPaletteMessages>",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
       {
         "component": "ModuleCard",
         "type": "Partial<ModuleCardMessages> (defaultStatus, errorStatus, stoppedStatus)",
@@ -3527,6 +3577,16 @@
     },
     "usages": [
       {
+        "component": "CommandPalette",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
+      {
         "component": "Dialog",
         "type": "boolean",
         "status": "existing",
@@ -3594,6 +3654,16 @@
     },
     "usages": [
       {
+        "component": "CommandPalette",
+        "type": "boolean (default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
+      {
         "component": "Dialog",
         "type": "boolean (default false)",
         "status": "existing",
@@ -3660,6 +3730,16 @@
       "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
     },
     "usages": [
+      {
+        "component": "CommandPalette",
+        "type": "(open: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
       {
         "component": "Dialog",
         "type": "(open: boolean) => void",
@@ -4394,6 +4474,16 @@
     },
     "usages": [
       {
+        "component": "CommandPaletteItem",
+        "type": "string (display only)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteItem",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
+      {
         "component": "MenuEntry",
         "type": "string (action branch only; display-only)",
         "status": "existing",
@@ -4923,6 +5013,16 @@
     },
     "usages": [
       {
+        "component": "CommandPalette",
+        "type": "string (default Close)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      },
+      {
         "component": "DialogContent",
         "type": "string (default Close)",
         "status": "existing",
@@ -5066,7 +5166,18 @@
       "scope": "convention:search-query-change",
       "contentHash": "sha256:d3e3572c7a32fb22dbb27c9876b67fbe5aa156d7be2193c5be8ebb4affc1377a"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "CommandPalette",
+        "type": "(query: string) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      }
+    ]
   },
   {
     "id": "collection-filtering",
@@ -5082,7 +5193,18 @@
       "scope": "convention:collection-filtering",
       "contentHash": "sha256:f86b73a3d5bc39e134d521e99c345b47e5e4eda40afab45b99e95cde2c72908d"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "CommandPalette",
+        "type": "CommandPaletteFiltering (default builtin)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      }
+    ]
   },
   {
     "id": "results-busy",
@@ -5098,7 +5220,18 @@
       "scope": "convention:results-busy",
       "contentHash": "sha256:42000bfec7d3e02b6cb997983b5de14b320b5bd391a496f77b92926fffb3d3c9"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "CommandPalette",
+        "type": "boolean (default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/command-palette/types.ts",
+          "symbol": "CommandPaletteProps",
+          "revision": "sha256:01d9bbb3bb12e6e0f70550dd66d9fd11bf57597fa194203249c62ecb97788cf7"
+        }
+      }
+    ]
   },
   {
     "id": "table-columns",

@@ -20,6 +20,27 @@ function artifact(name, target) {
   return path;
 }
 
+test('command-palette closed SSR renders only its optional launcher', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  assert.equal(typeof exported.CommandPalette, 'function');
+  const items = [{ id: 'find', label: 'Find', onSelect: () => undefined }];
+  assert.equal(renderToString(createElement(exported.CommandPalette, { items })), '');
+  const html = renderToString(
+    createElement(exported.CommandPalette, {
+      items,
+      children: createElement('button', { type: 'button' }, 'Open commands')
+    })
+  );
+  assert.match(html, /<button[^>]*>Open commands<\/button>/);
+  assert.match(html, /aria-expanded="false"/);
+  assert.doesNotMatch(html, /role="(?:dialog|combobox|listbox|option)"|Find|eg-palette/);
+  for (const name of ['useCommandPalette', 'paletteOverlay', 'paletteRow']) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} is private`);
+  }
+});
+
 test('dialog exports its public compound API and keeps shared recipes internal', async () => {
   const dialogExports = await import(artifact('ui', ui.exports['.'].import));
   for (const dialogName of ['Dialog', 'DialogTrigger', 'DialogContent', 'DialogClose']) {
@@ -2813,6 +2834,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Collapsible',
       'CollapsibleContent',
       'CollapsibleTrigger',
+      'CommandPalette',
       'Countdown',
       'Dialog',
       'DialogClose',
@@ -3034,6 +3056,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'CollapsibleProps',
     'CollapsibleTrigger',
     'CollapsibleTriggerProps',
+    'CommandPalette',
+    'CommandPaletteFiltering',
+    'CommandPaletteItem',
+    'CommandPaletteMessages',
+    'CommandPaletteProps',
     'Countdown',
     'CountdownProps',
     'CountdownSize',
