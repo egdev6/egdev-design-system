@@ -20,6 +20,24 @@ function artifact(name, target) {
   return path;
 }
 
+test('dialog exports its public compound API and keeps shared recipes internal', async () => {
+  const dialogExports = await import(artifact('ui', ui.exports['.'].import));
+  for (const dialogName of ['Dialog', 'DialogTrigger', 'DialogContent', 'DialogClose']) {
+    assert.ok(dialogExports[dialogName], `Missing ${dialogName}`);
+  }
+  for (const dialogName of ['dialogScrimVariants', 'dialogPanelVariants', 'useDialogContent']) {
+    assert.equal(Object.hasOwn(dialogExports, dialogName), false, `${dialogName} is internal`);
+  }
+  const dialogCss = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  for (const dialogSelector of [
+    String.raw`.bg-bg-scrim\/72`,
+    String.raw`.backdrop-blur-none`,
+    String.raw`.border-b-0`
+  ]) {
+    assert.ok(dialogCss.includes(dialogSelector), `Missing Dialog utility ${dialogSelector}`);
+  }
+});
+
 test('ambient package exposes the decorative component and its stylesheet without private engines', async () => {
   assert.equal(effects.exports['.'].import, './dist/index.js');
   assert.equal(effects.exports['.'].types, './dist/index.d.ts');

@@ -28,6 +28,8 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
+import { Dialog, DialogTrigger, DialogContent, DialogClose } from '@egdev/ui';
+import type { DialogProps, DialogTriggerProps, DialogContentProps, DialogCloseProps } from '@egdev/ui';
 import { Isotipo3D } from '@egdev/effects';
 import type { Isotipo3DProps } from '@egdev/effects';
 import { AmbientBackground } from '@egdev/effects';
@@ -198,6 +200,19 @@ import type {
   PullQuoteVariant,
   VisuallyHiddenProps
 } from '@egdev/ui';
+export const dialogTriggerRef = createRef<HTMLButtonElement>();
+export const dialogCloseRef = createRef<HTMLButtonElement>();
+const dialogTriggerProps: DialogTriggerProps = { children: 'Open settings' };
+const dialogCloseProps: DialogCloseProps = { children: 'Done' };
+const dialogContentProps: DialogContentProps = { title: 'Settings', children: 'Preferences' };
+export const dialogProps: DialogProps = { children: [createElement(DialogTrigger, { ...dialogTriggerProps, key: 'trigger', ref: dialogTriggerRef }), createElement(DialogContent, { ...dialogContentProps, key: 'content', actions: createElement(DialogClose, { ...dialogCloseProps, ref: dialogCloseRef }) })] };
+export function dialogSample() { return createElement(Dialog, dialogProps); }
+// @ts-expect-error Sheet dimensions cannot be changed using size.
+const dialogInvalidSize: DialogContentProps = { title: 'Settings', children: 'Preferences', variant: 'sheet', size: 'sm' };
+// @ts-expect-error Content requires a title.
+const dialogMissingTitle: DialogContentProps = { children: 'Preferences' };
+// @ts-expect-error The modal implementation does not expose its internal scrim recipe.
+import { dialogScrimVariants } from '@egdev/ui';
 export const isotipoRef = createRef<HTMLDivElement>();
 export const isotipoProps: Isotipo3DProps = { id: 'isotipo-packed', scene: 'lab', progress: 0.5, opacity: 0.5, pointerTilt: false };
 export function IsotipoSamples() { return createElement(Isotipo3D, { ...isotipoProps, ref: isotipoRef }); }
