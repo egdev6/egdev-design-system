@@ -391,6 +391,25 @@ describe('RadioGroup', () => {
     expect(row(control).querySelector('label')).toHaveClass('cursor-pointer');
   });
 
+  it('applies the danger border and tinted well to every radio while the group is invalid (#219 option A)', () => {
+    const { rerender } = render(
+      <RadioGroup label='Visibility' options={visibility} defaultValue='public' aria-invalid='true' />
+    );
+    for (const name of ['Public', 'Unlisted', 'Private']) {
+      expect(radio(name)).toHaveClass(
+        'group-aria-invalid:border-status-danger',
+        'group-aria-invalid:border-(length:--border-width-invalid)',
+        'group-aria-invalid:bg-status-danger-bg',
+        'group-aria-invalid:hover:border-status-danger'
+      );
+    }
+    // A checked error keeps its primary fill; the danger border still overrides it.
+    expect(radio('Public')).toHaveClass('group-aria-invalid:data-[state=checked]:border-status-danger');
+    // The invalid classes are static; activation is attribute-driven, never a mirrored class.
+    rerender(<RadioGroup label='Visibility' options={visibility} />);
+    expect(screen.getByRole('radiogroup', { name: 'Visibility' })).not.toHaveAttribute('aria-invalid');
+  });
+
   it('never mirrors Radix state into classes', async () => {
     const user = userEvent.setup();
     render(<RadioGroup label='Visibility' options={visibility} />);

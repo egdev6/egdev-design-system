@@ -42,15 +42,24 @@ test('theme.css keeps the Tailwind color reset instead of a global reset', () =>
   assert.doesNotMatch(themeSource, globalReset, 'only the color namespace may be reset');
 });
 
-// #70 Stat adds two typography recipes of four declarations each: 184 + 8 = 192 utility, 255 + 8 = 263 total.
-// #82 Countdown adds 10 static declarations: 2 recipes x 4 fields + 2 spacing tokens (192 + 10 = 202; 263 + 10 = 273).
-// #98 PullQuote adds 9 static declarations: 2 recipes x 4 fields + 1 container token (202 + 9 = 211; 273 + 9 = 282).
-// #100 D7 adds 1 static breakpoint: 211 + 1 = 212 utility; 282 + 1 = 283 total.
-test('theme.css declares exactly 212 utility variables, 16 inline aliases, and 55 root variables', () => {
-  assert.equal(extractDeclarations(themeBlock).length, 212, 'utility namespace declaration count');
+// #219 B adds 1 semantic color token (danger tinted well): 212 + 1 = 213 utility, 283 + 2 = 285 total.
+// #219 B adds 1 root geometry token (invalid border width): 55 + 1 = 56 root variables.
+test('theme.css declares exactly 213 utility variables, 16 inline aliases, and 56 root variables', () => {
+  assert.equal(extractDeclarations(themeBlock).length, 213, 'utility namespace declaration count');
   assert.equal(extractDeclarations(inlineBlock).length, 16, 'inline spacing alias count');
-  assert.equal(extractDeclarations(rootBlock).length, 55, 'root declaration count');
-  assert.equal(extractDeclarations(themeSource).length, 283, 'total declaration count');
+  assert.equal(extractDeclarations(rootBlock).length, 56, 'root declaration count');
+  assert.equal(extractDeclarations(themeSource).length, 285, 'total declaration count');
+});
+
+test('theme.css declares the owner-approved error-vs-focus tokens (#219 option A)', () => {
+  const dangerBg = extractDeclarations(themeBlock).find(({ name }) => name === '--color-status-danger-bg');
+  assert.equal(
+    dangerBg?.value,
+    'color-mix(in srgb, var(--color-status-danger) 12%, transparent)',
+    'danger well tint derives from the existing status-danger primitive (owner option 1)'
+  );
+  const invalidWidth = extractDeclarations(rootBlock).find(({ name }) => name === '--border-width-invalid');
+  assert.equal(invalidWidth?.value, '2px', 'invalid border doubles the resting width to the focus geometry');
 });
 
 test('theme.css declares the approved SectionHeader split breakpoint in the static namespace', () => {
@@ -74,9 +83,9 @@ test('theme.css declares the indeterminate spin animation token with its keyfram
   );
 });
 
-test('theme.css preserves all 52 aliases and has no duplicates, missing targets, or cycles', () => {
+test('theme.css preserves all 53 aliases and has no duplicates, missing targets, or cycles', () => {
   const declarations = extractDeclarations(themeSource);
-  assert.equal(declarations.filter(({ value }) => value.includes('var(')).length, 52, 'alias count');
+  assert.equal(declarations.filter(({ value }) => value.includes('var(')).length, 53, 'alias count');
   assert.deepEqual(findDuplicates(declarations), [], 'duplicate declarations');
   assert.deepEqual(findUnresolvedAliases(declarations), [], 'unresolved aliases');
   assert.deepEqual(findAliasCycles(declarations), [], 'alias cycles');
@@ -108,13 +117,13 @@ test('package publishes compiled tokens and keeps backward CSS exports', () => {
   assert.ok(manifest.files.includes('dist'), 'compiled artifact must ship');
 });
 
-test('compiled dist/tokens.css exposes the 283 manual variables and preserves the original 168 values', () => {
+test('compiled dist/tokens.css exposes the 285 manual variables and preserves the original 168 values', () => {
   const artifactPath = at('../dist/tokens.css');
   assert.ok(existsSync(artifactPath), 'dist/tokens.css missing — run pnpm tokens before this test');
   const artifact = readFileSync(artifactPath, 'utf8');
   assert.doesNotMatch(artifact, /@theme/, 'compiled artifact must not keep the @theme at-rule');
   const compiled = toDeclarationMap(artifact);
-  assert.equal(compiled.size, 283, 'compiled artifact must expose 283 variables');
+  assert.equal(compiled.size, 285, 'compiled artifact must expose 285 variables');
   assert.match(artifact, /@keyframes\s+pulse\s*\{/, 'compiled artifact must ship the pulse keyframes');
   assert.match(artifact, /@keyframes\s+spin\s*\{/, 'compiled artifact must ship the spin keyframes');
   const parity = compareParity(artifact, themeSource);

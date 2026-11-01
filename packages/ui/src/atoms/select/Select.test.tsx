@@ -86,11 +86,29 @@ describe('Select public contract', () => {
     expect(result.current.indicatorClassName).toContain('text-fg-brand-default');
   });
 
+  it('renders the in-control danger glyph while invalid and none otherwise (#219 option A)', () => {
+    const { container, rerender } = render(<Select options={options} aria-label='Visibility' aria-invalid='true' />);
+    const glyph = container.querySelector('span.text-status-danger');
+    expect(glyph).not.toBeNull();
+    expect(glyph).toHaveAttribute('aria-hidden', 'true');
+    expect(glyph?.querySelector('svg')).not.toBeNull();
+    rerender(<Select options={options} aria-label='Visibility' />);
+    expect(container.querySelector('span.text-status-danger')).toBeNull();
+  });
+
   it('uses md by default, sm on request and retains the well, invalid and focus recipes', () => {
     const { rerender } = render(<Select options={options} aria-label='Visibility' aria-invalid='true' />);
     expect(trigger()).toHaveClass('min-h-11', 'text-body-default', 'bg-surface-0', 'bg-none', 'border-solid');
     expect(trigger()).toHaveAttribute('aria-invalid', 'true');
-    expect(trigger()).toHaveClass('aria-invalid:border-status-danger', 'data-[state=open]:border-border-brand-strong');
+    expect(trigger()).toHaveClass(
+      'aria-invalid:border-status-danger',
+      'aria-invalid:border-(length:--border-width-invalid)',
+      'aria-invalid:bg-status-danger-bg',
+      'aria-invalid:hover:border-status-danger',
+      'data-[state=open]:shadow-[var(--shadow-well),var(--shadow-focus)]'
+    );
+    expect(trigger()).not.toHaveClass('data-[state=open]:border-border-brand-strong');
+    expect(trigger()).not.toHaveClass('focus-visible:border-border-brand-strong');
     rerender(<Select options={options} aria-label='Visibility' size='sm' className='w-auto mt-2' />);
     expect(trigger()).toHaveClass('min-h-9', 'text-label-default', 'w-auto', 'mt-2');
     expect(trigger()).not.toHaveClass('min-h-11', 'w-full');

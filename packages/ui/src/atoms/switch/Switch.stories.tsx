@@ -74,6 +74,16 @@ export const States: Story = {
   )
 };
 
+/** Invalid in both states: the danger border doubles in width; the unchecked well is tinted. */
+export const Invalid: Story = {
+  render: () => (
+    <div className='flex items-center gap-4'>
+      <Switch aria-label='Invalid off' aria-invalid='true' />
+      <Switch aria-label='Invalid on' aria-invalid='true' defaultChecked={true} />
+    </div>
+  )
+};
+
 /** A native label names the switch and toggles it when clicked, as Field's choice layout composes it. */
 export const WithLabel: Story = {
   render: () => {

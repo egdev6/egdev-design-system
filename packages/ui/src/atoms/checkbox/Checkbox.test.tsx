@@ -159,6 +159,8 @@ describe('Checkbox public contract', () => {
     const checkbox = screen.getByRole('checkbox');
     expect(checkbox).toHaveAttribute('aria-invalid', 'true');
     expect(checkbox).toHaveClass('aria-invalid:data-[state=unchecked]:border-status-danger');
+    expect(checkbox).toHaveClass('aria-invalid:data-[state=unchecked]:border-(length:--border-width-invalid)');
+    expect(checkbox).toHaveClass('aria-invalid:data-[state=unchecked]:bg-status-danger-bg');
     expect(checkbox).toHaveClass('focus-visible:shadow-[var(--shadow-focus)]');
     for (const state of ['checked', 'indeterminate']) {
       expect(checkbox).toHaveClass(`data-[state=${state}]:focus-visible:shadow-[var(--shadow-focus)]`);

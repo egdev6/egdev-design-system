@@ -14,6 +14,8 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>((props, ref) =>
     contentClassName,
     itemClassName,
     chevronClassName,
+    errorIconClassName,
+    invalid,
     indicatorClassName,
     viewportClassName
   } = useSelect(props);
@@ -22,6 +24,12 @@ export const Select = forwardRef<HTMLButtonElement, SelectProps>((props, ref) =>
     <SelectPrimitive.Root {...rootProps}>
       <SelectPrimitive.Trigger {...triggerProps} ref={ref}>
         <SelectPrimitive.Value placeholder={placeholder} />
+        {/* In-control error glyph, left of the chevron while invalid (#219 option A). */}
+        {invalid ? (
+          <span aria-hidden='true' className={errorIconClassName}>
+            <Icon name='circle-alert' size='sm' />
+          </span>
+        ) : null}
         <SelectPrimitive.Icon className={chevronClassName} aria-hidden='true'>
           <Icon name='chevron-down' size='sm' />
         </SelectPrimitive.Icon>

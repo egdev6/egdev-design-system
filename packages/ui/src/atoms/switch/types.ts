@@ -55,9 +55,17 @@ export type SwitchProps = SwitchNativeProps & {
 };
 
 /** Track: Material well when off, primary bevel and halo when on, with the focus ring winning in both states. */
-export const switchVariants = cva(
-  'eg-switch relative inline-block shrink-0 box-border p-0 w-9 h-5 rounded-full border border-solid border-border-control bg-surface-0 shadow-[var(--shadow-well)] cursor-pointer transition-[background-color,border-color] ease-out duration-[var(--duration-fast)] motion-reduce:transition-none data-[state=checked]:bg-[image:var(--gradient-btn-primary)] data-[state=checked]:border-action-primary-solid-bg data-[state=checked]:shadow-[var(--shadow-btn-primary)] focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)] data-[state=checked]:focus-visible:shadow-[var(--shadow-focus)] disabled:opacity-45 disabled:pointer-events-none disabled:cursor-not-allowed'
-);
+export const switchVariants = cva([
+  'eg-switch relative inline-block shrink-0 box-border p-0 w-9 h-5 rounded-full border border-solid border-border-control bg-surface-0 shadow-[var(--shadow-well)] cursor-pointer',
+  'transition-[background-color,border-color] ease-out duration-[var(--duration-fast)] motion-reduce:transition-none',
+  'data-[state=checked]:bg-[image:var(--gradient-btn-primary)] data-[state=checked]:border-action-primary-solid-bg data-[state=checked]:shadow-[var(--shadow-btn-primary)]',
+  'focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)] data-[state=checked]:focus-visible:shadow-[var(--shadow-focus)]',
+  // #219 option A: error lives inside the control. Unchecked errors tint the well; checked errors
+  // keep their opaque primary fill, so only the danger border width and color apply there.
+  'aria-invalid:border-status-danger aria-invalid:border-(length:--border-width-invalid) aria-invalid:bg-status-danger-bg',
+  'aria-invalid:data-[state=checked]:border-status-danger aria-invalid:data-[state=checked]:border-(length:--border-width-invalid)',
+  'disabled:opacity-45 disabled:pointer-events-none disabled:cursor-not-allowed'
+]);
 
 /** Thumb: 14px knob inset 2px that travels 16px and turns black when on. */
 export const switchThumbVariants = cva(

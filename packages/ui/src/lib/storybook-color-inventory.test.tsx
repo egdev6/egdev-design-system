@@ -24,7 +24,8 @@ it('integrates every source color once, rather than a curated MDX subset', () =>
   expect(mdx).not.toContain('data-color=');
   const { container } = render(<ColorInventory source={source} />);
   const names = [...container.querySelectorAll('[data-token]')].map((card) => card.getAttribute('data-token'));
-  expect(names).toHaveLength(81);
+  // #219 option A adds --color-status-danger-bg, derived from the existing status-danger primitive.
+  expect(names).toHaveLength(82);
   expect(new Set(names).size).toBe(names.length);
   expect(names.sort()).toEqual(declarations.map(([name]) => name).sort());
   expect(container.querySelectorAll('[data-token] .eg-docs-swatch')).toHaveLength(names.length * 2);
@@ -100,9 +101,14 @@ it('reads effective preview paint, shows no substituted aliases, and never overr
   const nativeComputedStyle = window.getComputedStyle.bind(window);
   vi.spyOn(window, 'getComputedStyle').mockImplementation((element) => {
     const name = element.closest('[data-token]')?.getAttribute('data-token');
-    if (name && element.getAttribute('data-view') === 'preview') {
+    // JSDOM's cssstyle cannot resolve color-mix() painted swatches, so the derived
+    // --color-status-danger-bg figures are compared from their canonical declaration;
+    // substitution stays guarded by the literal tokens and the published var() preview.
+    const canonical = tokens.find((token) => token.name === name)?.canonical ?? '';
+    const derivedMix = element.getAttribute('data-view') === 'original' && canonical.includes('color-mix');
+    if (name && (element.getAttribute('data-view') === 'preview' || derivedMix)) {
       const style = document.createElement('span').style;
-      style.backgroundColor = tokens.find((token) => token.name === name)?.canonical ?? '';
+      style.backgroundColor = canonical;
       return style;
     }
     return nativeComputedStyle(element);
@@ -111,7 +117,7 @@ it('reads effective preview paint, shows no substituted aliases, and never overr
   const { container } = render(<ColorInventory source={source} />);
   expect(document.documentElement.getAttribute('style')).toBe(rootStyle);
   expect(container.querySelectorAll('[data-different="true"]')).toHaveLength(0);
-  expect(container.querySelectorAll('[data-different="false"]')).toHaveLength(81);
+  expect(container.querySelectorAll('[data-different="false"]')).toHaveLength(82);
   for (const name of formerAliases) {
     const card = container.querySelector(`[data-token="${name}"]`) as HTMLElement;
     const figures = within(card).getAllByRole('figure');

@@ -72,7 +72,11 @@ export const checkboxVariants = cva([
   'focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)]',
   'data-[state=checked]:focus-visible:shadow-[var(--shadow-focus)]',
   'data-[state=indeterminate]:focus-visible:shadow-[var(--shadow-focus)]',
+  // #219 option A: error lives inside the control. Unchecked errors tint the well; checked errors
+  // keep their opaque primary fill, so only the danger border width and color apply there.
   'aria-invalid:data-[state=unchecked]:border-status-danger',
+  'aria-invalid:data-[state=unchecked]:border-(length:--border-width-invalid)',
+  'aria-invalid:data-[state=unchecked]:bg-status-danger-bg',
   'disabled:opacity-45 disabled:pointer-events-none disabled:cursor-not-allowed'
 ]);
 

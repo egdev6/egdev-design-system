@@ -60,7 +60,7 @@ export const inputVariants = cva(
 
 /** Material well recipe with native hover, focus, read-only, invalid and disabled states. */
 export const inputControlVariants = cva(
-  'box-border w-full min-w-0 rounded-md border border-border-control bg-surface-0 shadow-[var(--shadow-well)] font-sans text-fg-default placeholder:text-fg-muted transition-[border-color,box-shadow] ease-out duration-[var(--duration-fast)] motion-reduce:transition-none hover:border-fg-muted read-only:hover:border-border-control focus-visible:outline-none focus-visible:border-border-brand-strong focus-visible:shadow-[var(--shadow-well),var(--shadow-ring-brand)] aria-invalid:border-status-danger aria-invalid:focus-visible:border-status-danger disabled:cursor-not-allowed',
+  'box-border w-full min-w-0 rounded-md border border-border-control bg-surface-0 shadow-[var(--shadow-well)] font-sans text-fg-default placeholder:text-fg-muted transition-[border-color,box-shadow] ease-out duration-[var(--duration-fast)] motion-reduce:transition-none hover:border-fg-muted read-only:hover:border-border-control focus-visible:outline-none focus-visible:shadow-[var(--shadow-well),var(--shadow-focus)] aria-invalid:border-status-danger aria-invalid:border-(length:--border-width-invalid) aria-invalid:bg-status-danger-bg aria-invalid:hover:border-status-danger aria-invalid:focus-visible:border-status-danger disabled:cursor-not-allowed',
   {
     variants: {
       size: {
@@ -96,4 +96,9 @@ export const inputIconVariants = cva(
 /** Decorative trailing Spinner slot, vertically centered without intercepting input events. */
 export const inputSpinnerVariants = cva(
   'pointer-events-none absolute right-3 flex size-4 items-center justify-center text-fg-muted'
+);
+
+/** In-control error glyph slot (#219 option A); rendered only while the input is invalid. */
+export const inputErrorIconVariants = cva(
+  'pointer-events-none absolute right-3 flex size-4 items-center justify-center text-status-danger'
 );

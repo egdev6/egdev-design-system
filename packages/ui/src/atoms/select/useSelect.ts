@@ -6,6 +6,7 @@ import {
   type SelectProps,
   selectChevronVariants,
   selectContentVariants,
+  selectErrorIconVariants,
   selectIndicatorVariants,
   selectItemVariants,
   selectTriggerVariants,
@@ -20,6 +21,8 @@ type UseSelectReturn = {
   contentClassName: string;
   itemClassName: string;
   chevronClassName: string;
+  errorIconClassName: string;
+  invalid: boolean;
   indicatorClassName: string;
   viewportClassName: string;
 };
@@ -38,6 +41,8 @@ export function useSelect({
   className,
   ...triggerProps
 }: SelectProps): UseSelectReturn {
+  // Error appearance follows the native attribute; no mirrored own state (#219 option A).
+  const invalid = triggerProps['aria-invalid'] === true || triggerProps['aria-invalid'] === 'true';
   return {
     rootProps: { value, defaultValue, onValueChange, name, required, disabled },
     triggerProps: { ...triggerProps, disabled, className: cn(selectTriggerVariants({ size }), className) },
@@ -46,6 +51,8 @@ export function useSelect({
     contentClassName: cn(selectContentVariants()),
     itemClassName: cn(selectItemVariants()),
     chevronClassName: cn(selectChevronVariants()),
+    errorIconClassName: cn(selectErrorIconVariants()),
+    invalid,
     indicatorClassName: cn(selectIndicatorVariants()),
     viewportClassName: cn(selectViewportVariants())
   };

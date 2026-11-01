@@ -896,7 +896,7 @@ test('UI ships Select token recipes, Radix geometry and precise state utilities'
   }
   for (const text of [
     'var(--shadow-well)',
-    'var(--shadow-ring-brand)',
+    'var(--shadow-focus)',
     'var(--shadow-edge-strong)',
     'var(--shadow-elev-3)',
     'var(--blur-overlay)',
@@ -2038,6 +2038,25 @@ test('UI ships the Textarea well, sheet and state utilities without a Textarea-s
     /background-image:\s*var\(--gradient-sheen\)\s*;/
   );
   assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)\s*;/);
+  // #219 option A closed additions: invalid border width, tinted well and the unified focus rings.
+  assert.match(
+    rule(String.raw`.aria-invalid\:border-\(length\:--border-width-invalid\)[aria-invalid="true"]`),
+    /border-width:\s*var\(--border-width-invalid\)/
+  );
+  assert.match(
+    rule(String.raw`.aria-invalid\:bg-status-danger-bg[aria-invalid="true"]`),
+    /background-color:\s*var\(--color-status-danger-bg/
+  );
+  assert.match(
+    rule(String.raw`.focus-visible\:shadow-\[var\(--shadow-well\)\,var\(--shadow-focus\)\]:focus-visible`),
+    /--tw-shadow:\s*var\(--shadow-well\),\s*var\(--shadow-focus\)/
+  );
+  assert.match(
+    rule(
+      String.raw`.focus-visible\:shadow-\[var\(--shadow-edge\)\,var\(--shadow-elev-1\)\,var\(--shadow-glow-base\)\,var\(--shadow-focus\)\]:focus-visible`
+    ),
+    /--tw-shadow:\s*var\(--shadow-edge\),\s*var\(--shadow-elev-1\),\s*var\(--shadow-glow-base\),\s*var\(--shadow-focus\)/
+  );
   assert.match(rule('.text-code'), /font-size:\s*var\(--text-code[,)]/);
   assert.match(rule('.ease-out'), /transition-timing-function:\s*var\(--ease-out[,)]/);
   assert.match(
@@ -2063,7 +2082,7 @@ test('UI ships the Textarea well, sheet and state utilities without a Textarea-s
   const readOnlyHover = at(String.raw`.read-only\:hover\:border-border-control:read-only:hover`);
   for (const earlier of [
     at(String.raw`.hover\:border-fg-muted:hover`),
-    at(String.raw`.focus-visible\:border-border-brand-strong:focus-visible`)
+    at(String.raw`.focus-visible\:shadow-\[var\(--shadow-well\)\,var\(--shadow-focus\)\]:focus-visible`)
   ]) {
     assert.ok(earlier < invalid, 'Invalid border must follow hover and focus borders');
   }
@@ -2090,13 +2109,19 @@ test('UI ships the Input well, state and preset utilities without an Input-speci
   assert.match(rule('.text-code'), /font-size:\s*var\(--text-code[,)]/);
   assert.match(rule('.font-mono'), /font-family:\s*var\(--font-mono[,)]/);
   assert.match(rule(String.raw`.hover\:border-fg-muted:hover`), /border-color:\s*var\(--color-fg-muted[,)]/);
+  // #219 option A: the unified outer focus ring replaces the adjacent field halo.
   assert.match(
-    rule(String.raw`.focus-visible\:border-border-brand-strong:focus-visible`),
-    /border-color:\s*var\(--color-border-brand-strong[,)]/
+    rule(String.raw`.focus-visible\:shadow-\[var\(--shadow-well\)\,var\(--shadow-focus\)\]:focus-visible`),
+    /--tw-shadow:\s*var\(--shadow-well\),\s*var\(--shadow-focus\)/
+  );
+  // #219 option A closed additions: the invalid border width and tinted well utilities.
+  assert.match(
+    rule(String.raw`.aria-invalid\:border-\(length\:--border-width-invalid\)[aria-invalid="true"]`),
+    /border-width:\s*var\(--border-width-invalid\)/
   );
   assert.match(
-    rule(String.raw`.focus-visible\:shadow-\[var\(--shadow-well\)\,var\(--shadow-ring-brand\)\]:focus-visible`),
-    /--tw-shadow:\s*var\(--shadow-well\),\s*var\(--shadow-ring-brand\)/
+    rule(String.raw`.aria-invalid\:bg-status-danger-bg[aria-invalid="true"]`),
+    /background-color:\s*var\(--color-status-danger-bg/
   );
   assert.match(
     rule(String.raw`.aria-invalid\:border-status-danger[aria-invalid="true"]`),
@@ -2109,7 +2134,8 @@ test('UI ships the Input well, state and preset utilities without an Input-speci
   const at = (selector) => utilities.indexOf(selector);
   assert.ok(at(String.raw`.aria-invalid\:border-status-danger`) > at(String.raw`.hover\:border-fg-muted`));
   assert.ok(
-    at(String.raw`.aria-invalid\:border-status-danger`) > at(String.raw`.focus-visible\:border-border-brand-strong`)
+    at(String.raw`.aria-invalid\:border-status-danger`) >
+      at(String.raw`.focus-visible\:shadow-\[var\(--shadow-well\)\,var\(--shadow-focus\)\]`)
   );
   // The icon offset must follow the symmetric padding so padding-left survives the cascade.
   assert.ok(at('.pl-9 {') > at('.px-3 {'));
@@ -3822,7 +3848,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.match(radioGroup, /^<div role="radiogroup" aria-required="false" aria-orientation="vertical"[^>]*>/);
   assert.match(radioGroup, /id="visibility"/);
   assert.match(radioGroup, /aria-label="Visibility"/);
-  assert.match(radioGroup, /class="eg-radio-group flex flex-col gap-1"/);
+  assert.match(radioGroup, /class="eg-radio-group group flex flex-col gap-1"/);
   assert.equal(radioGroup.match(/<button type="button" role="radio"/g)?.length, 2, 'One radio per option');
   assert.equal(radioGroup.match(/<input type="radio" aria-hidden="true"[^>]*name="visibility"/g)?.length, 2);
   assert.match(
@@ -3843,7 +3869,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     })
   );
   assert.match(horizontalGroup, /aria-required="true" aria-orientation="horizontal" data-disabled=""/);
-  assert.match(horizontalGroup, /class="eg-radio-group flex flex-wrap gap-x-6 gap-y-1"/);
+  assert.match(horizontalGroup, /class="eg-radio-group group flex flex-wrap gap-x-6 gap-y-1"/);
   // Switch: one Radix switch button with its thumb (AC-01). Without a DOM, Radix cannot detect a form
   // ancestor during SSR, so it always emits its hidden bubble input after the button (AC-08).
   const offSwitch = renderToString(createElement(exported.Switch, { 'aria-label': 'Stream alerts', id: 'alerts' }));
