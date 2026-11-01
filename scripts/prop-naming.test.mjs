@@ -69,6 +69,27 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/effects/src/ambient-background/types.ts#AmbientBackgroundProps'
   })),
+  ...[
+    'accessible-name',
+    'visually-hidden-label',
+    'visual-treatment',
+    'preset-dimensions',
+    'primary-value',
+    'initial-uncontrolled-value',
+    'interactive-value-change',
+    'localized-messages',
+    'table-columns',
+    'table-rows',
+    'table-sort',
+    'initial-uncontrolled-sort',
+    'sort-change',
+    'row-selection',
+    'active-row',
+    'viewport-max-height'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/table/types.ts#TableProps'
+  })),
   ...['accessible-name', 'collection-items', 'preset-dimensions', 'decorative-center-content'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/gauge-group/types.ts#GaugeGroupProps'
@@ -2168,6 +2189,20 @@ test('Isotipo3D interaction and animation pause decisions bind exact scoped appr
   assert.ok(
     !actual.find(({ id }) => id === 'paused-presentation').usages.some(({ component }) => component === 'Isotipo3D')
   );
+});
+
+test('Table registers reviewed usage without changing delegated convention approvals', () => {
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  const table = postReceiptUsages.filter(
+    ({ source }) => source === 'packages/ui/src/molecules/table/types.ts#TableProps'
+  );
+  assert.equal(table.length, 16);
+  for (const { conventionId } of table) {
+    const entry = actual.find(({ id }) => id === conventionId);
+    assert.equal(entry.status, 'approved', conventionId);
+    assert.equal(entry.usages.filter(({ component }) => component === 'Table').length, 1, conventionId);
+  }
 });
 
 test('FieldMessage registers reviewed usage without promoting proposed content/guidance conventions', () => {
