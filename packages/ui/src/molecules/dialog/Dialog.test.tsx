@@ -231,4 +231,25 @@ describe('Dialog public behavior', () => {
       children: string;
     }>().not.toMatchTypeOf<DialogContentProps>();
   });
+  it('requests controlled Escape while retaining the modal and updates description on rerender', async () => {
+    const onOpenChange = vi.fn();
+    const { rerender } = render(
+      <Dialog open={true} onOpenChange={onOpenChange}>
+        <DialogContent title='Account' description='First'>
+          Body
+        </DialogContent>
+      </Dialog>
+    );
+    const modal = screen.getByRole('dialog', { name: 'Account', description: 'First' });
+    await userEvent.setup().keyboard('{Escape}');
+    expect(onOpenChange).toHaveBeenCalledOnce();
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(modal).toBeInTheDocument();
+    rerender(
+      <Dialog open={true} onOpenChange={onOpenChange}>
+        <DialogContent title='Account'>Body</DialogContent>
+      </Dialog>
+    );
+    expect(screen.getByRole('dialog', { name: 'Account' })).not.toHaveAttribute('aria-describedby');
+  });
 });
