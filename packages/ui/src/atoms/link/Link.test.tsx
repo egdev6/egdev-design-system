@@ -5,6 +5,7 @@ import { createRef, forwardRef } from 'react';
 import { renderToString } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { Link } from './Link';
+import { type LinkVariant, linkVariants } from './types';
 import { useLink } from './useLink';
 
 const RouterLink = forwardRef<HTMLAnchorElement, ComponentPropsWithoutRef<'a'>>((props, ref) => (
@@ -224,5 +225,113 @@ describe('Link navigation contract', () => {
     expect(slotted).toContain('eg-link');
     expect(slotted).toContain('href="#router"');
     expect(slotted).not.toContain('asChild');
+  });
+});
+
+const tokens = (value: string) => value.split(/\s+/).filter(Boolean).sort();
+
+describe('Link underlined variant', () => {
+  it('keeps the plain recipe as the default, including its legacy border and padding reset', () => {
+    const plain = linkVariants({ variant: 'plain' });
+    expect(tokens(plain)).toEqual(tokens(linkVariants()));
+    expect(tokens(linkVariants())).toContain('border-0');
+    expect(tokens(linkVariants())).toContain('pb-0');
+    for (const utility of ['border-b', 'border-border-brand', 'pb-0.5', 'hover:border-fg-brand-default']) {
+      expect(tokens(plain)).not.toContain(utility);
+    }
+  });
+
+  it('resolves the underline utilities for the underlined variant and drops the reset', () => {
+    const base = tokens(linkVariants());
+    const underlined = tokens(linkVariants({ variant: 'underlined' }));
+    for (const utility of ['border-b', 'border-border-brand', 'pb-0.5', 'hover:border-fg-brand-default']) {
+      expect(underlined).toContain(utility);
+    }
+    expect(underlined).not.toContain('border-0');
+    expect(underlined).not.toContain('pb-0');
+    const reset = new Set(['border-0', 'pb-0']);
+    for (const utility of base.filter((token) => !reset.has(token))) {
+      expect(underlined).toContain(utility);
+    }
+  });
+
+  it('paints the underline on the root while keeping ink, marker and the decorative arrow', () => {
+    render(
+      <Link href='#docs' variant='underlined'>
+        Docs
+      </Link>
+    );
+    const link = screen.getByRole('link', { name: 'Docs' });
+    expect(screen.getAllByRole('link')).toHaveLength(1);
+    expect(link).toHaveClass(
+      'eg-link',
+      'text-fg-brand-raised',
+      'no-underline',
+      'border-b',
+      'border-border-brand',
+      'pb-0.5',
+      'hover:border-fg-brand-default'
+    );
+    expect(link).not.toHaveClass('border-0', 'pb-0');
+    expect(link).not.toHaveAttribute('variant');
+    expect(link.style.textDecoration).toBe('');
+    const arrow = link.querySelector('svg');
+    expect(arrow).toHaveAttribute('aria-hidden', 'true');
+    expect(arrow).toHaveAttribute('focusable', 'false');
+    expect(arrow).toHaveClass('size-4');
+    expect(arrow?.innerHTML).toContain('M5 12h14');
+    expect(link.querySelector('span')).toBeNull();
+  });
+
+  it('falls back to the plain recipe for a runtime variant outside the union', () => {
+    const { result } = renderHook(() =>
+      useLink({ href: '#docs', children: 'Docs', variant: 'primary' as unknown as LinkVariant })
+    );
+    expect(tokens(result.current.rootProps.className as string)).toContain('border-0');
+    expect(tokens(result.current.rootProps.className as string)).toContain('pb-0');
+    expect(tokens(result.current.rootProps.className as string)).not.toContain('border-b');
+  });
+
+  it('keeps new-tab safety, the hidden notice and arrow visibility for the underlined variant', () => {
+    const { rerender } = render(
+      <Link href='https://example.com' external={true} variant='underlined'>
+        Repository
+      </Link>
+    );
+    const link = screen.getByRole('link', { name: 'Repository (opens in a new tab)' });
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(new Set(link.getAttribute('rel')?.split(' '))).toEqual(new Set(['noopener', 'noreferrer']));
+    expect(link.querySelector('svg')?.innerHTML).toContain('M5 12h14');
+    expect(screen.getByText('(opens in a new tab)').style.position).toBe('absolute');
+    rerender(
+      <Link href='https://example.com' external={true} variant='underlined' arrow={false}>
+        Repository
+      </Link>
+    );
+    const withoutArrow = screen.getByRole('link', { name: 'Repository (opens in a new tab)' });
+    expect(withoutArrow.querySelector('svg')).toBeNull();
+    expect(withoutArrow).toHaveClass('border-b');
+  });
+
+  it('merges consumer layout last, keeps the marker and never leaks own props for either mode', () => {
+    const { rerender } = render(
+      <Link href='#docs' variant='underlined' className='mt-2 mt-4 self-start'>
+        Docs
+      </Link>
+    );
+    const link = screen.getByRole('link', { name: 'Docs' });
+    expect(link).toHaveClass('eg-link', 'mt-4', 'self-start', 'border-b');
+    expect(link).not.toHaveClass('mt-2');
+    for (const prop of ['variant', 'external', 'newTabText', 'asChild', 'arrow']) {
+      expect(link).not.toHaveAttribute(prop);
+    }
+    rerender(
+      <Link asChild={true} variant='underlined' className='self-start'>
+        <RouterLink href='#router'>Router docs</RouterLink>
+      </Link>
+    );
+    const slotted = screen.getByRole('link', { name: 'Router docs' });
+    expect(slotted).toHaveClass('eg-link', 'self-start', 'border-b', 'border-border-brand');
+    expect(slotted).not.toHaveAttribute('variant');
   });
 });

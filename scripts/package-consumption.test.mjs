@@ -88,7 +88,7 @@ import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorI
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
 import { ToastProvider, useToast } from '@egdev/ui';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -140,9 +140,12 @@ import type {
   LabelProps,
   LabelVariant,
   LinkProps,
+  LinkVariant,
   ListItemProps,
   ListItemPartProps,
+  ListItemSize,
   ListItemStatus,
+  ListItemTitleProps,
   ListItemVariant,
   SliderProps,
   LogoProps,
@@ -557,6 +560,45 @@ const itemDisabled: ListItemProps = { children: 'Item', 'aria-disabled': true };
 const itemCreate: ListItemProps = { children: 'Item', onCreate: () => undefined };
 // @ts-expect-error The presentation status set is closed.
 const unknownItemStatus: ListItemProps = { children: 'Item', status: 'published' };
+export const editorialSizes: ListItemSize[] = ['md', 'sm'];
+export function EditorialRowSamples({ size = editorialSizes[0] }: { size?: ListItemSize }) {
+  // The row element itself must be the anchor: parts live inside it, never inside an inner anchor.
+  return createElement('ul', null, createElement('li', null, createElement(ListItem, {
+    asChild: true, variant: 'editorial', size,
+    children: createElement('a', { href: '#note' },
+      createElement(ListItemLeading, null,
+        createElement('time', { dateTime: '2026-09-12' }, '12', createElement('small', null, 'SEP'))),
+      createElement(ListItemBody, null,
+        createElement(ListItemTitle, { level: 3, children: 'Reading the release train' }),
+        createElement(ListItemMeta, null, 'Notes · 4 min read')),
+      createElement(ListItemTrailing, null, '18:04'))
+  })));
+}
+export function DividedRowSamples() {
+  return createElement(ListItem, {
+    variant: 'editorial-divided',
+    children: [
+      createElement(ListItemBody, { key: 'body' },
+        createElement(ListItemTitle, { level: 4, children: 'Previous stream' }),
+        createElement(ListItemMeta, null, '2026-08-30')),
+      createElement(ListItemTrailing, { key: 'trailing' }, '42:11')
+    ]
+  });
+}
+// @ts-expect-error Editorial rows do not widen the empty presentation.
+const editorialEmpty: ListItemProps = { status: 'empty', variant: 'editorial', asChild: true, children: createElement('button') };
+// @ts-expect-error Sizes are a closed preset set.
+const largeItem: ListItemProps = { children: 'Item', size: 'lg' };
+// @ts-expect-error Heading ranks are h2-h6 only.
+const rankOneTitle: ListItemTitleProps = { level: 1, children: 'Title' };
+// @ts-expect-error The root owns the size preset, not a heading rank.
+const rootLevel: ListItemProps = { children: 'Item', level: 3 };
+// @ts-expect-error Editorial parts expose no ref.
+const leadingRef: ComponentPropsWithoutRef<typeof ListItemLeading> = { ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Editorial parts expose no role.
+const trailingRole: ComponentPropsWithoutRef<typeof ListItemTrailing> = { role: 'button' };
+// @ts-expect-error Editorial parts expose no tab stop.
+const leadingTab: ComponentPropsWithoutRef<typeof ListItemLeading> = { tabIndex: 0 };
 // Keep grouped samples outside App so the existing button-count/focus harness stays unchanged.
 const groupVariant: ButtonGroupVariant = 'attached';
 export const groupProps: ButtonGroupProps = {
@@ -1300,15 +1342,21 @@ const glassStat: StatProps = { ...statProps, glass: true };
 const objectStat: StatProps = { ...statProps, value: { amount: 4 } };
 // @ts-expect-error highlighted is a boolean, not a timer duration.
 const timedStat: StatProps = { ...statProps, highlighted: 3000 };
-const photoFrameRatio: PhotoFrameRatio = 'portrait';
+const photoFrameRatio: PhotoFrameRatio = 'auto';
 const photoFrameVariant: PhotoFrameVariant = 'framed';
-const photoFrameFocalPoint: PhotoFrameFocalPoint = 'left';
+const photoFrameFocalPoint: PhotoFrameFocalPoint = 'left-top';
 export const photoFrameProps: PhotoFrameProps = { src: '/grid.svg', alt: 'Grid', ratio: photoFrameRatio, variant: photoFrameVariant, focalPoint: photoFrameFocalPoint, imageCaption: 'Grid caption', id: 'consumer-photo-frame' };
+export const photoFrameNumericProps: PhotoFrameProps = { src: '/grid.svg', alt: 'Grid', ratio: 716 / 890, focalPoint: photoFrameFocalPoint, id: 'consumer-photo-frame-numeric' };
 export function photoFrameSamples({ src = photoFrameProps.src }: { src?: string }) {
   return createElement(PhotoFrame, { ...photoFrameProps, src });
 }
+export function photoFrameNumericSamples() {
+  return createElement(PhotoFrame, photoFrameNumericProps);
+}
 // @ts-expect-error PhotoFrame requires image inputs.
 const photoFrameMissing: PhotoFrameProps = {};
+// @ts-expect-error The ratio union is exhaustive: only presets, auto or a number.
+const photoFrameUnknownRatio: PhotoFrameProps = { ...photoFrameProps, ratio: 'wide' };
 // @ts-expect-error PhotoFrame is passive and has no children API.
 const photoFrameChildren: PhotoFrameProps = { ...photoFrameProps, children: 'child' };
 // @ts-expect-error PhotoFrame has no ref API.
@@ -1349,9 +1397,11 @@ const RouterLink = forwardRef<HTMLAnchorElement, ComponentPropsWithoutRef<'a'>>(
   createElement('a', { ...props, ref })
 );
 export const linkDefaults: LinkProps = { href: '#docs', children: 'Documentation' };
+const linkUnderlinedVariant: LinkVariant = 'underlined';
 export function LinkSamples({ external = true }: { external?: boolean }) {
   return createElement('section', { 'aria-label': 'Text navigation' },
     createElement(Link, { ...linkDefaults, id: 'link-native', ref: linkNativeRef, className: 'mt-2 mt-4 self-start' }),
+    createElement(Link, { ...linkDefaults, variant: linkUnderlinedVariant, id: 'link-underlined', children: 'Read the guide' }),
     createElement(Link, { href: '#external', external, rel: 'author noopener', id: 'link-external', children: 'Repository' }),
     createElement(Link, { href: '#legal', arrow: false, id: 'link-plain', children: 'Legal information' }),
     createElement(Link, { asChild: true, external, rel: 'author', ref: linkSlotRef, newTabText: '(new window)',
@@ -1365,7 +1415,7 @@ const slottedLinkDestination: LinkProps = { asChild: true, href: '#docs', childr
 const missingLinkContent: LinkProps = { href: '#docs' };
 // @ts-expect-error Disabled links are not supported; use plain text without a destination.
 const disabledLink: LinkProps = { href: '#docs', children: 'Docs', disabled: true };
-// @ts-expect-error Link v0.1 has no visual variants.
+// @ts-expect-error Link only accepts the opt-in plain|underlined appearance axis.
 const variantLink: LinkProps = { href: '#docs', children: 'Docs', variant: 'primary' };
 // @ts-expect-error The public ref is an anchor ref, never a button ref.
 const wrongLinkRef: ComponentProps<typeof Link> = { href: '#docs', children: 'Docs', ref: createRef<HTMLButtonElement>() };
@@ -3870,8 +3920,11 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ListItemBody',
   'ListItemContent',
   'ListItemFooter',
+  'ListItemLeading',
   'ListItemMedia',
   'ListItemMeta',
+  'ListItemTitle',
+  'ListItemTrailing',
   'Logo',
   'Menu',
   'MeterRow',
@@ -4120,7 +4173,20 @@ function assertListItemCSS(css) {
     String.raw`.data-\[state\=empty\]\:focus-visible\:shadow-focus`,
     String.raw`.data-\[state\=empty\]\:disabled\:opacity-45`,
     String.raw`.group-data-\[state\=dragging\]\/list-item\:opacity-50`,
-    String.raw`.data-\[variant\=row\]\:flex-wrap`
+    String.raw`.data-\[variant\=row\]\:flex-wrap`,
+    String.raw`.data-\[variant\=editorial\]\:flex-row`,
+    String.raw`.data-\[variant\=editorial-divided\]\:data-\[state\=default\]\:bg-none`,
+    String.raw`.data-\[variant\=editorial-divided\]\:data-\[state\=default\]\:shadow-none`,
+    String.raw`.data-\[variant\=editorial-divided\]\:data-\[state\=default\]\:border-b`,
+    String.raw`.data-\[state\=default\]\:data-\[variant\=editorial\]\:\[\&\:is\(a\)\]\:hover\:border-border-brand`,
+    String.raw`.data-\[state\=default\]\:data-\[variant\=editorial-divided\]\:\[\&\:is\(a\)\]\:hover\:bg-surface-2`,
+    String.raw`.data-\[variant\=editorial\]\:\[\&\:is\(a\)\]\:focus-visible\:shadow-focus`,
+    String.raw`.data-\[variant\=editorial\]\:duration-\(--duration-fast\)`,
+    String.raw`.data-\[variant\=editorial\]\:ease-\(--ease-out\)`,
+    String.raw`.data-\[variant\=editorial\]\:motion-reduce\:transition-none`,
+    String.raw`.data-\[variant\=editorial\]\:\[\&\:is\(a\)\]\:no-underline`,
+    String.raw`.data-\[variant\=editorial-divided\]\:\[\&\:is\(a\)\]\:no-underline`,
+    String.raw`.group-data-\[size\=sm\]\/list-item\:w-\[var\(--space-16\)\]`
   ]) {
     assert.ok(css.includes(selector), 'Missing packed ListItem utility ' + selector);
   }
@@ -4275,16 +4341,28 @@ try {
   moduleDocument.window.close();
 }
 import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
-import { photoFrameSamples } from './consumer.ts';
+import { photoFrameNumericSamples, photoFrameSamples } from './consumer.ts';
 const photoFrameDocument = new JSDOM(renderToString(createElement(photoFrameSamples)));
 try {
   const photoFrameFigure = photoFrameDocument.window.document.querySelector('figure');
   assert.equal(photoFrameFigure.id, 'consumer-photo-frame');
+  assert.equal(photoFrameFigure.getAttribute('data-ratio'), 'auto');
+  assert.equal(photoFrameFigure.querySelector('[data-radix-aspect-ratio-wrapper]'), null);
   assert.equal(photoFrameFigure.querySelector('img').getAttribute('alt'), 'Grid');
   assert.equal(photoFrameFigure.querySelector('img').getAttribute('loading'), 'lazy');
+  assert.ok(photoFrameFigure.querySelector('img').classList.contains('object-left-top'));
   assert.equal(photoFrameFigure.querySelector('figcaption').textContent, 'Grid caption');
   assert.equal(photoFrameFigure.hasAttribute('role'), false);
 } finally { photoFrameDocument.window.close(); }
+// A numeric proportion keeps the AspectRatio reservation without any inline image appearance.
+const photoFrameNumericDocument = new JSDOM(renderToString(createElement(photoFrameNumericSamples)));
+try {
+  const numericFigure = photoFrameNumericDocument.window.document.querySelector('figure');
+  const numericWrapper = numericFigure.querySelector('[data-radix-aspect-ratio-wrapper]');
+  assert.equal(numericFigure.getAttribute('data-ratio'), String(716 / 890));
+  assert.ok(Math.abs(Number.parseFloat(numericWrapper.style.paddingBottom) - 100 / (716 / 890)) < 0.001);
+  assert.equal(numericFigure.querySelector('img').hasAttribute('style'), false);
+} finally { photoFrameNumericDocument.window.close(); }
 // Navigation SSR covers native semantics and a fully controlled open group on both React majors.
 const navDocument = new JSDOM(renderToString(createElement(NavListSamples, { open: true })));
 try {
@@ -5515,7 +5593,7 @@ const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable
 const { createRoot } = await import('react-dom/client');
 const { ToastSamples, packedToast, packedToastOptions, toastActions } = await import('./consumer.ts');
 const { PageHeaderSamples } = await import('./consumer.ts');
-const { photoFrameSamples } = await import('./consumer.ts');
+const { photoFrameNumericSamples, photoFrameSamples } = await import('./consumer.ts');
 const { ModuleCardSamples, moduleCardClicks } = await import('./consumer.ts');
 const { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, FieldSamples, fieldControlRef, ListItemSamples, MeterRowSamples, NavListSamples, navRequests, navNavigations, NoticeSamples, PopoverSamples, popoverTriggerRef, popoverCloseRef, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, carouselChanges, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
@@ -6851,9 +6929,16 @@ try {
   await act(async () => root.render(createElement(photoFrameSamples)));
   const photoFrameFigure = document.getElementById('consumer-photo-frame');
   assert.equal(photoFrameFigure.querySelector('img').getAttribute('src'), '/grid.svg');
+  assert.equal(photoFrameFigure.querySelector('img').getAttribute('class').includes('object-left-top'), true);
+  assert.equal(photoFrameFigure.getAttribute('data-ratio'), 'auto');
+  assert.equal(photoFrameFigure.querySelector('[data-radix-aspect-ratio-wrapper]'), null);
   assert.equal(photoFrameFigure.querySelector('figcaption').textContent, 'Grid caption');
   await act(async () => root.render(createElement(photoFrameSamples, { src: '/grid.svg?next' })));
   assert.equal(photoFrameFigure.querySelector('img').getAttribute('src'), '/grid.svg?next');
+  await act(async () => root.render(createElement(photoFrameNumericSamples)));
+  const numericFigure = document.getElementById('consumer-photo-frame-numeric');
+  assert.equal(numericFigure.getAttribute('data-ratio'), String(716 / 890));
+  assert.ok(numericFigure.querySelector('[data-radix-aspect-ratio-wrapper]'));
   await act(async () => root.render(null));
   stage('photo-frame:complete');
   stage('pull-quote:start');

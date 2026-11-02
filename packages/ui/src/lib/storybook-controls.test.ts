@@ -48,6 +48,7 @@ const components = [
   ['Kbd', 'atoms/kbd'],
   ['Link', 'atoms/link'],
   ['ListItem', 'molecules/list-item'],
+  ['ListItemTitle', 'molecules/list-item'],
   ['Badge', 'atoms/badge'],
   ['Logo', 'atoms/logo'],
   ['MeterRow', 'molecules/meter-row'],
@@ -127,7 +128,7 @@ const expected: Record<string, Record<string, string | false>> = {
   photoframe: {
     src: 'text',
     alt: 'text',
-    ratio: 'select',
+    ratio: false,
     variant: 'select',
     focalPoint: 'select',
     imageCaption: 'text'
@@ -394,7 +395,8 @@ const expected: Record<string, Record<string, string | false>> = {
     gap: 'select',
     newTabText: 'text'
   },
-  listitem: { status: 'select', variant: 'select', asChild: 'boolean', children: false },
+  listitem: { status: 'select', variant: 'select', size: 'select', asChild: 'boolean', children: false },
+  listitemtitle: { level: 'select', children: false },
   notice: {
     summary: 'text',
     children: false,
@@ -495,7 +497,8 @@ const ownPropCounts: Record<string, number> = {
   statusdot: 2,
   kbd: 2,
   link: 6,
-  listitem: 4,
+  listitem: 5,
+  listitemtitle: 2,
   slider: 11,
   radiogroup: 9,
   searchtrigger: 3,
@@ -867,7 +870,10 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Stat', { highlighted: 'false', size: '"md"', unavailableText: '"No data"' }],
     ['Select', { size: '"md"', required: 'false', disabled: 'false' }],
     ['Avatar', { size: '"md"', paused: 'false' }],
-    ['Link', { asChild: 'false', external: 'false', arrow: 'true', newTabText: '"(opens in a new tab)"' }],
+    [
+      'Link',
+      { asChild: 'false', external: 'false', arrow: 'true', newTabText: '"(opens in a new tab)"', variant: '"plain"' }
+    ],
     ['Logo', { variant: '"wordmark"', size: '"md"', label: '"egdev"' }],
     ['StatusDot', { state: '"stopped"', pulse: 'true' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
@@ -1102,6 +1108,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     for (const prop of ['asChild', 'external', 'arrow']) {
       expect(argTypes[prop]?.control, prop).toEqual({ type: 'boolean' });
     }
+    expect(argTypes.variant?.control).toEqual({ type: 'select' });
+    expect(argTypes.variant?.options).toEqual(['plain', 'underlined']);
     for (const prop of ['id', 'title', 'target', 'rel', 'onClick', 'aria-describedby', 'className', 'style']) {
       expect(argTypes[prop], prop).toBeDefined();
       expect(argTypes[prop], prop).toEqual(story('Link', false).argTypes[prop]);

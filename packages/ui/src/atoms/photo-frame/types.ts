@@ -1,12 +1,21 @@
 import { cva } from 'class-variance-authority';
 import type { ComponentPropsWithoutRef } from 'react';
 
-/** Reserved image proportions. */
-export type PhotoFrameRatio = 'square' | 'portrait' | 'landscape';
+/** Reserved image proportions, or `auto` to reserve nothing and fill the host height. */
+export type PhotoFrameRatio = 'square' | 'portrait' | 'landscape' | 'auto';
 /** Material framing treatment. */
 export type PhotoFrameVariant = 'default' | 'framed';
-/** Cover alignment within the image viewport. */
-export type PhotoFrameFocalPoint = 'center' | 'top' | 'bottom' | 'left' | 'right';
+/** Cover alignment within the image viewport, including the four physical corners. */
+export type PhotoFrameFocalPoint =
+  | 'center'
+  | 'top'
+  | 'bottom'
+  | 'left'
+  | 'right'
+  | 'left-top'
+  | 'right-top'
+  | 'left-bottom'
+  | 'right-bottom';
 
 type PhotoFrameImageProps = Pick<
   ComponentPropsWithoutRef<'img'>,
@@ -50,17 +59,25 @@ type PhotoFrameNativeProps = Omit<
 /** Passive editorial image with optional plain caption. Layout className applies to the figure only. */
 export type PhotoFrameProps = PhotoFrameNativeProps &
   PhotoFrameImageProps & {
-    /** Reserved viewport proportions.
+    /** Reserved viewport proportion. `square` is 1, `portrait` is 4/5 and `landscape` is 4/3;
+     * `auto` reserves nothing, so the media fills the height the host layout gives the figure and
+     * the host owns that definite height. `auto` also stretches the figure itself (`h-full min-h-0`)
+     * so a grid, flex or block host can size it instead of the image's natural height. A number is
+     * the width divided by the height and is
+     * normalised by AspectRatio; unrepresentable numbers (zero, negative, NaN, infinite) fall back
+     * to a square. Unrecognised strings fall back to landscape.
      * @default landscape
-     * @control select
+     * @control false
+     * @controlReason The preset/numeric union is not a finite extracted enum, so no select control can render it; see the Ratios and AutoHeight stories.
      */
-    ratio?: PhotoFrameRatio;
+    ratio?: PhotoFrameRatio | number;
     /** Material framing treatment.
      * @default default
      * @control select
      */
     variant?: PhotoFrameVariant;
-    /** Cover alignment inside the viewport.
+    /** Static cover alignment inside the viewport. Corners combine a horizontal and a vertical
+     * physical keyword, so the crop never mirrors. Unrecognised values fall back to center.
      * @default center
      * @control select
      */
@@ -74,8 +91,11 @@ export type PhotoFrameProps = PhotoFrameNativeProps &
 export const photoFrameRootVariants = cva(
   'eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none',
   {
-    variants: { caption: { none: 'gap-0', default: 'gap-3', framed: 'gap-10' } },
-    defaultVariants: { caption: 'none' }
+    variants: {
+      caption: { none: 'gap-0', default: 'gap-3', framed: 'gap-10' },
+      ratio: { preset: '', auto: 'h-full min-h-0' }
+    },
+    defaultVariants: { caption: 'none', ratio: 'preset' }
   }
 );
 export const photoFrameMediaVariants = cva('transition-none', {
@@ -84,9 +104,10 @@ export const photoFrameMediaVariants = cva('transition-none', {
       default: 'transform-none rotate-none',
       framed:
         'p-1.5 rotate-[calc(var(--tilt-max)/3)] motion-reduce:rotate-none motion-reduce:transform-none motion-reduce:transition-none'
-    }
+    },
+    ratio: { preset: '', auto: 'h-full' }
   },
-  defaultVariants: { variant: 'default' }
+  defaultVariants: { variant: 'default', ratio: 'preset' }
 });
 export const photoFrameViewportVariants = cva('size-full overflow-hidden', {
   variants: { variant: { default: 'rounded-xl', framed: 'rounded-lg' } },
@@ -101,7 +122,11 @@ export const photoFrameImageVariants = cva(
         top: 'object-top',
         bottom: 'object-bottom',
         left: 'object-left',
-        right: 'object-right'
+        right: 'object-right',
+        'left-top': 'object-left-top',
+        'right-top': 'object-right-top',
+        'left-bottom': 'object-left-bottom',
+        'right-bottom': 'object-right-bottom'
       }
     },
     defaultVariants: { focalPoint: 'center' }

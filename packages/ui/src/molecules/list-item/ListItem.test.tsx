@@ -2,17 +2,27 @@ import { render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createRef, type ReactElement } from 'react';
 import { describe, expect, expectTypeOf, it, vi } from 'vitest';
-import type { ListItemPartProps, ListItemProps, ListItemStatus, ListItemVariant } from '../../index';
+import type {
+  ListItemPartProps,
+  ListItemProps,
+  ListItemSize,
+  ListItemStatus,
+  ListItemTitleProps,
+  ListItemVariant
+} from '../../index';
 import {
   ListItem,
   ListItemActions,
   ListItemBody,
   ListItemContent,
   ListItemFooter,
+  ListItemLeading,
   ListItemMedia,
-  ListItemMeta
+  ListItemMeta,
+  ListItemTitle,
+  ListItemTrailing
 } from '../../index';
-import { useListItem } from '../../molecules/list-item/useListItem';
+import { useListItem, type useListItemTitle } from '../../molecules/list-item/useListItem';
 
 describe('ListItem public contract', () => {
   it('keeps required content, empty action composition and protected props in the public types', () => {
@@ -317,5 +327,358 @@ describe('ListItem public contract', () => {
     expect(screen.getByText('Footer')).toHaveClass('w-full');
     expect(screen.getByText('Actions')).toHaveClass('ms-0');
     expect(screen.getByText('Actions')).not.toHaveClass('ms-auto');
+  });
+});
+
+describe('ListItem editorial rows', () => {
+  it('orders leading, title/meta and trailing and keeps the raised row surface', () => {
+    const { container } = render(
+      <ListItem variant='editorial'>
+        <ListItemLeading>
+          <time dateTime='2026-09-12'>
+            12<small>SEP</small>
+          </time>
+        </ListItemLeading>
+        <ListItemBody>
+          <ListItemTitle>Reading the release train</ListItemTitle>
+          <ListItemMeta>Notes · 4 min read</ListItemMeta>
+        </ListItemBody>
+        <ListItemTrailing>18:04</ListItemTrailing>
+      </ListItem>
+    );
+    const root = container.querySelector('.eg-list-item');
+    expect(root).toHaveAttribute('data-variant', 'editorial');
+    expect(root).toHaveClass(
+      'eg-surface',
+      'data-[variant=editorial]:flex-row',
+      'data-[variant=editorial]:items-start',
+      'data-[variant=editorial]:min-h-11'
+    );
+    const nodes = [
+      '.eg-list-item__leading',
+      '.eg-list-item__title',
+      '.eg-list-item__meta',
+      '.eg-list-item__trailing'
+    ].map((selector) => container.querySelector(selector));
+    expect(nodes.every(Boolean)).toBe(true);
+    for (let index = 1; index < nodes.length; index += 1) {
+      expect(
+        (nodes[index - 1] as Node).compareDocumentPosition(nodes[index] as Node) & Node.DOCUMENT_POSITION_FOLLOWING
+      ).toBeTruthy();
+    }
+  });
+
+  it('normalizes empty back to card and keeps every other status snapshot on editorial rows', () => {
+    const { result } = renderHook(() =>
+      useListItem({ status: 'empty', variant: 'editorial', asChild: true, children: null } as unknown as ListItemProps)
+    );
+    expect(result.current.rootProps).toMatchObject({ 'data-state': 'empty', 'data-variant': 'card' });
+    for (const status of ['default', 'new', 'failed', 'done', 'off', 'dragging'] as const) {
+      const { container, rerender } = render(
+        <ListItem status={status} variant='editorial-divided'>
+          <ListItemBody>
+            <ListItemTitle>{status} row</ListItemTitle>
+          </ListItemBody>
+        </ListItem>
+      );
+      const root = container.querySelector('.eg-list-item');
+      expect(root).toHaveAttribute('data-state', status);
+      expect(root).toHaveAttribute('data-variant', 'editorial-divided');
+      rerender(
+        <ListItem status='default' variant='editorial-divided'>
+          Restored
+        </ListItem>
+      );
+      expect(container.querySelector('.eg-list-item')).toHaveAttribute('data-state', 'default');
+    }
+  });
+
+  it('narrows the leading column and the day/title steps for size sm only', () => {
+    const { container, rerender } = render(
+      <ListItem variant='editorial' size='sm'>
+        <ListItemLeading>
+          <time dateTime='2026-09-12'>
+            12<small>SEP</small>
+          </time>
+        </ListItemLeading>
+        <ListItemBody>
+          <ListItemTitle>Compact note</ListItemTitle>
+        </ListItemBody>
+      </ListItem>
+    );
+    const root = container.querySelector('.eg-list-item');
+    expect(root).toHaveAttribute('data-size', 'sm');
+    const leading = container.querySelector('.eg-list-item__leading');
+    expect(leading).toHaveClass('group-data-[size=sm]/list-item:w-[var(--space-16)]');
+    expect(leading).toHaveClass('[&_time]:text-display-stat');
+    expect(leading).toHaveClass('group-data-[size=sm]/list-item:[&_time]:text-display-stat-sm');
+    expect(leading).toHaveClass('[&_time>small]:text-label-eyebrow');
+    const title = container.querySelector('.eg-list-item__title');
+    expect(title).toHaveClass('text-body-large', 'group-data-[size=sm]/list-item:text-body-default');
+    rerender(
+      <ListItem variant='card' size='sm'>
+        Card row
+      </ListItem>
+    );
+    const card = container.querySelector('.eg-list-item');
+    expect(card).toHaveAttribute('data-size', 'sm');
+    expect(card?.className).not.toMatch(/size=sm/);
+    const { result } = renderHook(() =>
+      useListItem({ variant: 'editorial', size: 'lg' as ListItemSize, children: 'Row' })
+    );
+    expect(result.current.rootProps['data-size']).toBe('md');
+  });
+
+  it('keeps a machine-readable time and renders the chosen heading rank', () => {
+    const { container } = render(
+      <ListItem variant='editorial'>
+        <ListItemLeading>
+          <time dateTime='2026-09-12'>12</time>
+        </ListItemLeading>
+        <ListItemBody>
+          <ListItemTitle id='row-title' aria-describedby='row-meta'>
+            Dated row
+          </ListItemTitle>
+          <ListItemMeta id='row-meta'>September</ListItemMeta>
+        </ListItemBody>
+      </ListItem>
+    );
+    const time = container.querySelector('time');
+    expect(time).toHaveAttribute('datetime', '2026-09-12');
+    const title = screen.getByRole('heading', { name: 'Dated row' });
+    expect(title.tagName).toBe('H3');
+    expect(title).toHaveAttribute('id', 'row-title');
+    expect(title).toHaveAttribute('aria-describedby', 'row-meta');
+    const levels = [2, 4, 5, 6] as const;
+    for (const level of levels) {
+      const { container: ranked } = render(
+        <ListItem variant='editorial'>
+          <ListItemTitle level={level}>Rank {level}</ListItemTitle>
+        </ListItem>
+      );
+      expect(ranked.querySelector('.eg-list-item__title')?.tagName).toBe(`H${level}`);
+    }
+  });
+
+  it('slots one anchor for the whole editorial row and forwards its native API', async () => {
+    const user = userEvent.setup();
+    const ref = createRef<HTMLAnchorElement>();
+    const click = vi.fn((event) => event.preventDefault());
+    render(
+      <ListItem asChild={true} variant='editorial'>
+        <a ref={ref} href='#notes' onClick={click}>
+          <ListItemBody>
+            <ListItemTitle>Linked row</ListItemTitle>
+          </ListItemBody>
+        </a>
+      </ListItem>
+    );
+    const link = screen.getByRole('link', { name: 'Linked row' });
+    expect(ref.current).toBe(link);
+    expect(link).toHaveAttribute('href', '#notes');
+    expect(link).toHaveClass('eg-list-item');
+    expect(link).toHaveAttribute('data-variant', 'editorial');
+    expect(link.parentElement?.tagName).toBe('DIV');
+    await user.click(link);
+    expect(click).toHaveBeenCalledTimes(1);
+  });
+
+  it('exposes one tab stop and one accessible name per linked row', async () => {
+    const user = userEvent.setup();
+    const first = vi.fn();
+    const second = vi.fn();
+    render(
+      <>
+        <ListItem asChild={true} variant='editorial'>
+          <a href='#first' onClick={first}>
+            <ListItemLeading>
+              <time dateTime='2026-09-12'>12</time>
+            </ListItemLeading>
+            <ListItemBody>
+              <ListItemTitle>First stream</ListItemTitle>
+            </ListItemBody>
+            <ListItemTrailing>18:04</ListItemTrailing>
+          </a>
+        </ListItem>
+        <ListItem asChild={true} variant='editorial-divided'>
+          <a href='#second' onClick={second}>
+            <ListItemBody>
+              <ListItemTitle>Second stream</ListItemTitle>
+            </ListItemBody>
+          </a>
+        </ListItem>
+        <ListItem variant='editorial'>
+          <ListItemBody>
+            <ListItemTitle>Static stream</ListItemTitle>
+          </ListItemBody>
+        </ListItem>
+      </>
+    );
+    const link = screen.getByRole('link', { name: '12 First stream 18:04' });
+    await user.tab();
+    expect(link).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('link', { name: 'Second stream' })).toHaveFocus();
+    expect(screen.getAllByRole('link')).toHaveLength(2);
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+    expect(document.querySelector('[data-variant=editorial]:not(a)')).not.toHaveAttribute('tabindex');
+    link.focus();
+    await user.keyboard('{Enter}');
+    expect(first).toHaveBeenCalledTimes(1);
+    expect(second).not.toHaveBeenCalled();
+  });
+
+  it('adds no link affordance to static rows and paints only a bottom hairline when divided', () => {
+    const { container } = render(
+      <ListItem variant='editorial-divided'>
+        <ListItemBody>
+          <ListItemTitle>Static stream</ListItemTitle>
+          <ListItemMeta>2026-08-30</ListItemMeta>
+        </ListItemBody>
+        <ListItemTrailing>42:11</ListItemTrailing>
+      </ListItem>
+    );
+    const root = container.querySelector('.eg-list-item');
+    expect(root?.tagName).toBe('DIV');
+    expect(root).not.toHaveAttribute('tabindex');
+    expect(root).not.toHaveAttribute('role');
+    expect(root).toHaveClass(
+      'data-[variant=editorial-divided]:data-[state=default]:bg-transparent',
+      'data-[variant=editorial-divided]:data-[state=default]:bg-none',
+      'data-[variant=editorial-divided]:data-[state=default]:shadow-none',
+      'data-[variant=editorial-divided]:data-[state=default]:rounded-none',
+      'data-[variant=editorial-divided]:data-[state=default]:border-x-0',
+      'data-[variant=editorial-divided]:data-[state=default]:border-t-0',
+      'data-[variant=editorial-divided]:data-[state=default]:border-b',
+      'data-[variant=editorial-divided]:data-[state=default]:border-border-hairline'
+    );
+    const classes = (root?.className ?? '').split(/\s+/).filter(Boolean);
+    const hoverRules = classes.filter(
+      (name) =>
+        /:(hover|focus-visible):/.test(name) && name.includes('data-[variant=editorial') && !name.includes('not-data-')
+    );
+    expect(hoverRules.length).toBeGreaterThan(0);
+    for (const rule of hoverRules) {
+      expect(rule, rule).toContain('[&:is(a)]');
+    }
+    expect(classes).toContain(
+      'data-[state=default]:not-data-[variant=editorial]:not-data-[variant=editorial-divided]:hover:border-border-hairline-strong'
+    );
+    expect(classes).not.toContain('data-[state=default]:hover:border-border-hairline-strong');
+  });
+
+  it('keys linked hover, focus and motion to existing tokens and reduced motion', () => {
+    const { container } = render(
+      <ListItem asChild={true} variant='editorial'>
+        <a href='#row'>Row</a>
+      </ListItem>
+    );
+    const root = container.querySelector('.eg-list-item');
+    for (const token of [
+      'data-[variant=editorial]:duration-(--duration-fast)',
+      'data-[variant=editorial]:ease-(--ease-out)',
+      'data-[variant=editorial]:motion-reduce:transition-none',
+      'data-[state=default]:data-[variant=editorial]:[&:is(a)]:hover:border-border-brand',
+      'data-[state=default]:data-[variant=editorial]:[&:is(a)]:hover:[background:var(--gradient-sheen),var(--color-surface-2)]',
+      'data-[variant=editorial]:[&:is(a)]:focus-visible:outline-none',
+      'data-[variant=editorial]:[&:is(a)]:focus-visible:shadow-focus',
+      'data-[variant=editorial]:[&:is(a)]:hover:[&>.eg-list-item__trailing]:text-fg-brand-raised'
+    ]) {
+      expect(root, token).toHaveClass(token);
+    }
+    const classes = (root?.className ?? '').split(/\s+/).filter(Boolean);
+    expect(classes.some((name) => /#[0-9a-f]{3,8}/i.test(name) || /rgba?\(/.test(name))).toBe(false);
+  });
+
+  it('keeps the row element itself as the anchor inside a linked list', () => {
+    const { container } = render(
+      <ul>
+        {['2026-09-12', '2026-08-30'].map((dateTime, index) => (
+          <li key={dateTime}>
+            <ListItem asChild={true} variant={index === 0 ? 'editorial' : 'editorial-divided'}>
+              <a href={`#${dateTime}`}>
+                <ListItemLeading>
+                  <time dateTime={dateTime}>{index + 12}</time>
+                </ListItemLeading>
+                <ListItemBody>
+                  <ListItemTitle>Stream {index + 1}</ListItemTitle>
+                  <ListItemMeta>{dateTime}</ListItemMeta>
+                </ListItemBody>
+                <ListItemTrailing>18:04</ListItemTrailing>
+              </a>
+            </ListItem>
+          </li>
+        ))}
+      </ul>
+    );
+    const links = [...container.querySelectorAll('a')];
+    expect(links).toHaveLength(2);
+    for (const link of links) {
+      expect(link).toHaveClass('eg-list-item');
+      expect(link).toHaveAttribute('data-variant', expect.stringMatching(/^editorial(-divided)?$/));
+      expect(link.parentElement?.tagName).toBe('LI');
+      expect(link.parentElement).not.toHaveAttribute('data-variant');
+      expect(link.parentElement?.className ?? '').not.toContain('eg-list-item');
+      const parts = [
+        '.eg-list-item__leading',
+        '.eg-list-item__body',
+        '.eg-list-item__title',
+        '.eg-list-item__trailing'
+      ];
+      for (const selector of parts) {
+        expect(link.querySelector(selector), selector).not.toBeNull();
+      }
+      expect(link.querySelector('.eg-list-item__leading')?.parentElement).toBe(link);
+      expect(link.querySelector('.eg-list-item__trailing')?.parentElement).toBe(link);
+    }
+  });
+
+  it('documents that an ancestor list item cannot carry the editorial row recipe', () => {
+    const { container } = render(
+      <ListItem asChild={true} variant='editorial'>
+        <li>
+          <a href='#nested'>
+            <ListItemBody>
+              <ListItemTitle>Nested anchor</ListItemTitle>
+            </ListItemBody>
+          </a>
+        </li>
+      </ListItem>
+    );
+    const row = container.querySelector('.eg-list-item');
+    expect(row?.tagName).toBe('LI');
+    expect(row).toHaveAttribute('data-variant', 'editorial');
+    expect(container.querySelector('a')).not.toHaveAttribute('data-variant');
+    expect(container.querySelector('a')?.className ?? '').not.toContain('eg-list-item');
+  });
+
+  it('merges each editorial part className independently', () => {
+    const { container } = render(
+      <ListItem variant='editorial' className='mt-2'>
+        <ListItemLeading className='w-full'>Leading</ListItemLeading>
+        <ListItemBody>
+          <ListItemTitle className='text-label-default'>Title</ListItemTitle>
+        </ListItemBody>
+        <ListItemTrailing className='gap-1'>Trailing</ListItemTrailing>
+      </ListItem>
+    );
+    expect(container.querySelector('.eg-list-item')).toHaveClass('mt-2');
+    expect(container.querySelector('.eg-list-item__leading')).toHaveClass('w-full');
+    const title = container.querySelector('.eg-list-item__title');
+    expect(title).toHaveClass('text-label-default');
+    expect(title).not.toHaveClass('text-body-large');
+    const trailing = container.querySelector('.eg-list-item__trailing');
+    expect(trailing).toHaveClass('gap-1');
+    expect(trailing).not.toHaveClass('gap-2');
+  });
+
+  it('keeps the editorial API closed at the type level', () => {
+    expectTypeOf<{ size: 'lg'; children: ReactElement }>().not.toExtend<ListItemProps>();
+    expectTypeOf<{ variant: 'editorial'; size: 'md'; children: ReactElement }>().toExtend<ListItemProps>();
+    expectTypeOf<Extract<'level', keyof ListItemProps>>().toBeNever();
+    expectTypeOf<Extract<1 | 7, ListItemTitleProps['level']>>().toBeNever();
+    expectTypeOf<Extract<'ref' | 'role' | 'tabIndex', keyof ListItemTitleProps>>().toBeNever();
+    expectTypeOf<ListItemTitleProps['level']>().toEqualTypeOf<2 | 3 | 4 | 5 | 6 | undefined>();
+    expectTypeOf<ReturnType<typeof useListItemTitle>['component']>().toEqualTypeOf<'h2' | 'h3' | 'h4' | 'h5' | 'h6'>();
   });
 });

@@ -1426,8 +1426,11 @@ test('ListItem ships compound layout, state Material and native empty focus util
     'ListItemBody',
     'ListItemContent',
     'ListItemFooter',
+    'ListItemLeading',
     'ListItemMedia',
-    'ListItemMeta'
+    'ListItemMeta',
+    'ListItemTitle',
+    'ListItemTrailing'
   ]) {
     assert.equal(typeof exported[name], 'function', `${name} is a plain component without a ref API`);
   }
@@ -1443,7 +1446,21 @@ test('ListItem ships compound layout, state Material and native empty focus util
     String.raw`.data-\[state\=empty\]\:focus-visible\:shadow-focus`,
     String.raw`.data-\[state\=empty\]\:disabled\:opacity-45`,
     String.raw`.data-\[variant\=row\]\:flex-wrap`,
-    String.raw`.group-data-\[variant\=compact\]\/list-item\:text-label-default`
+    String.raw`.group-data-\[variant\=compact\]\/list-item\:text-label-default`,
+    String.raw`.data-\[variant\=editorial\]\:flex-row`,
+    String.raw`.data-\[variant\=editorial-divided\]\:min-h-11`,
+    String.raw`.data-\[variant\=editorial-divided\]\:data-\[state\=default\]\:bg-none`,
+    String.raw`.data-\[variant\=editorial-divided\]\:data-\[state\=default\]\:shadow-none`,
+    String.raw`.data-\[variant\=editorial-divided\]\:data-\[state\=default\]\:border-b`,
+    String.raw`.data-\[state\=default\]\:data-\[variant\=editorial\]\:\[\&\:is\(a\)\]\:hover\:border-border-brand`,
+    String.raw`.data-\[state\=default\]\:data-\[variant\=editorial-divided\]\:\[\&\:is\(a\)\]\:hover\:bg-surface-2`,
+    String.raw`.data-\[variant\=editorial\]\:\[\&\:is\(a\)\]\:focus-visible\:shadow-focus`,
+    String.raw`.data-\[variant\=editorial\]\:duration-\(--duration-fast\)`,
+    String.raw`.data-\[variant\=editorial\]\:ease-\(--ease-out\)`,
+    String.raw`.data-\[variant\=editorial\]\:motion-reduce\:transition-none`,
+    String.raw`.data-\[variant\=editorial\]\:\[\&\:is\(a\)\]\:no-underline`,
+    String.raw`.data-\[variant\=editorial-divided\]\:\[\&\:is\(a\)\]\:no-underline`,
+    String.raw`.group-data-\[size\=sm\]\/list-item\:w-\[var\(--space-16\)\]`
   ];
   for (const state of ['done', 'off', 'empty']) {
     for (const reset of ['bg-transparent', 'bg-none', 'shadow-none']) {
@@ -1547,6 +1564,12 @@ test('UI ships PhotoFrame declarations and native utility resets', async () => {
   for (const selector of [
     '.object-cover',
     '.object-center',
+    '.object-left-top',
+    '.object-right-top',
+    '.object-left-bottom',
+    '.object-right-bottom',
+    '.h-full',
+    '.min-h-0',
     '.filter-none',
     '.inset-auto',
     '.overflow-visible',
@@ -2503,6 +2526,7 @@ test('UI ships Link token recipes, scoped motion and legacy resets without a new
   };
   for (const [selector, declaration] of [
     ['.border-0', /border-width:\s*0(?:px)?\s*;/],
+    ['.border-border-brand', /border-color:\s*var\(--color-border-brand[,)]/],
     ['.text-fg-brand-raised', /color:\s*var\(--color-fg-brand-raised[,)]/],
     ['.pb-0', /padding-bottom:\s*var\(--space-0\)/],
     ['.no-underline', /text-decoration-line:\s*none/],
@@ -2516,7 +2540,10 @@ test('UI ships Link token recipes, scoped motion and legacy resets without a new
     assert.match(rule(selector), declaration, selector);
   }
   for (const selector of [
+    '.border-b',
+    '.pb-0\\.5',
     String.raw`.hover\:text-primitive-red-200`,
+    String.raw`.hover\:border-fg-brand-default`,
     String.raw`.motion-safe\:group-hover\/link\:translate-x-1`,
     String.raw`.motion-reduce\:translate-none`,
     String.raw`.motion-reduce\:transition-none`,
@@ -2526,6 +2553,11 @@ test('UI ships Link token recipes, scoped motion and legacy resets without a new
   ]) {
     assert.ok(utilities.includes(selector), `Missing Link utility ${selector}`);
   }
+  assert.match(
+    rule(String.raw`.hover\:border-fg-brand-default:hover`),
+    /border-color:\s*var\(--color-fg-brand-default[,)]/
+  );
+  assert.match(css, /@property --tw-border-style\s*\{[^}]*initial-value:\s*solid/);
   assert.match(utilities, /@media \(prefers-reduced-motion:\s*no-preference\)/);
   assert.match(rule(String.raw`.motion-reduce\:translate-none`), /translate:\s*none/);
   assert.match(rule(String.raw`.motion-reduce\:transition-none`), /transition-property:\s*none/);
@@ -3100,8 +3132,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'ListItemBody',
       'ListItemContent',
       'ListItemFooter',
+      'ListItemLeading',
       'ListItemMedia',
       'ListItemMeta',
+      'ListItemTitle',
+      'ListItemTrailing',
       'Logo',
       'Menu',
       'MeterRow',
@@ -3401,16 +3436,22 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LayoutJustifyContent',
     'Link',
     'LinkProps',
+    'LinkVariant',
     'ListItem',
     'ListItemActions',
     'ListItemBody',
     'ListItemContent',
     'ListItemFooter',
+    'ListItemLeading',
     'ListItemMedia',
     'ListItemMeta',
     'ListItemPartProps',
     'ListItemProps',
+    'ListItemSize',
     'ListItemStatus',
+    'ListItemTitle',
+    'ListItemTitleProps',
+    'ListItemTrailing',
     'ListItemVariant',
     'Logo',
     'LogoProps',
