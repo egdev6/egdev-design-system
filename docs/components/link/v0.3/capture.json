@@ -1,0 +1,319 @@
+{
+  "kind": "Component-zone captures for the Link v0.3 amendment (web external arrow and underline treatment)",
+  "specVersion": "0.3",
+  "specLocation": "docs/components/link/v0.3/spec.md",
+  "capturedAt": "2026-11-02",
+  "task": "odd/tasks/web-catalog.md, B5 (web catalog layer b, S3)",
+  "captureVersion": "v0.3-capture-1",
+  "purpose": "Observed evidence of the underline treatment and arrow direction the Foundation components and the real Pulso web use, plus one non-anchor link-look usage. These are source captures of the current web appearance, not approved expected design and not verification of the design-system recipe.",
+  "source": {
+    "webSourceRoot": "/home/egdev/proyectos/egdev-website/egdev-foundation (read-only, owner-granted)",
+    "files": [
+      {
+        "path": "design-system/components/Link/preview.html",
+        "sha256": "f38aa5b6a84c8a0fb3a6f1b75fa770ec4aeb8d195673185d5fb708540bf010a5",
+        "role": "Source fragment for VIS-01 to VIS-04, mounted unmodified in a temporary harness"
+      },
+      {
+        "path": "design-system/components/Link/README.md",
+        "sha256": "8fe31a8c586d40632efdd11fc89c3121898b52c019e4455572590874d628805a",
+        "role": "Documented icon/underline promise; read, not captured"
+      },
+      {
+        "path": "reference-web/pulso-source.html",
+        "sha256": "778e5412b64d1b79195c51c0e47c78f654b46da445be8354a97e572774348f13",
+        "role": "Primary source for VIS-05 to VIS-08"
+      },
+      {
+        "path": "design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+        "role": "Linked read-only into the VIS-01..VIS-04 harness; not edited"
+      },
+      {
+        "path": "design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe",
+        "role": "Linked read-only into the VIS-01..VIS-04 harness; not edited"
+      }
+    ],
+    "note": "Nothing was written inside egdev-website. The harness and the capture script live in /tmp/egdev-sbcheck/link-b5/ and only read the sources."
+  },
+  "conditions": {
+    "tool": "playwright-core 1.x (npx cache /home/egdev/.npm/_npx/e41f203b7505f1fb/node_modules/playwright-core), programmatic Chromium, not Playwright MCP",
+    "browser": "Chromium 153.0.8010.12 (chrome-headless-shell-linux64), Linux x86_64",
+    "executablePath": "~/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+    "pageLoading": "file:// URL; preview.html mounted in /tmp/egdev-sbcheck/link-b5/link-preview-harness.html with tokens.css and components/bundle.css linked, pulso-source.html loaded directly",
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "deviceScaleFactor": 1,
+    "forceColorProfile": "srgb",
+    "waitAfterLoad": "document.fonts.ready + 1.5 s; on pulso-source.html all [data-reveal] nodes forced to their revealed state plus 900 ms",
+    "fontsLoadedPreviewHarness": {
+      "Barlow 600": true,
+      "Barlow 700": false,
+      "Barlow Condensed 700": false,
+      "note": "Only the weights the preview rows actually use were fetched; the label weight 600 is loaded and the heavier families remain unfetched, so the capture does not show those weights."
+    },
+    "fontsLoadedPulso": {
+      "Barlow 600": true,
+      "Barlow Condensed 800": true,
+      "JetBrains Mono": true
+    },
+    "crop": "Component zone per image: the element that contains the link, captured with element.screenshot() at device scale 1",
+    "hoverState": "VIS-02 uses the preview's own .is-hover class; VIS-06 uses a real mouse hover held over the anchor while the crop is taken",
+    "domCountsPulso": {
+      "linkAnchors": 9,
+      "linkSpans": 1,
+      "upRightGlyphLinks": 7,
+      "rightGlyphLinks": 2,
+      "spanLinkGlyph": 1,
+      "ariaHiddenArrows": 0,
+      "externalAnchors": 1,
+      "noRelnoreferrer": 1
+    }
+  },
+  "images": [
+    {
+      "visualId": "VIS-01",
+      "file": "underlined--external--720x480--dark.png",
+      "sha256": "0199d9eaaf14aef9657c640eb0699cf0672569f64b62f77bed2a2f5dc7448b31",
+      "pngPixels": "115x47",
+      "viewport": "720x480",
+      "sourcePath": "design-system/components/Link/preview.html",
+      "sourceSelector": ".pv-row:nth-of-type(1) .pv-cell:nth-of-type(1)",
+      "sourceOuterHTML": "<div class=\"pv-cell\"><a class=\"eg-link\" href=\"#\">Ver en GitHub <svg class=\"eg-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M7 7h10v10\"></path><path d=\"M7 17 17 7\"></path></svg></a><span class=\"meta\">default</span></div>",
+      "altText": "An underlined Foundation link on a dark panel: 'Ver en GitHub' in white bold text followed by an up-right arrow, with a thin red hairline under the whole label.",
+      "status": "Proposed",
+      "scopeNote": "Underlined variant, external state. Supports the `variant=\"underlined\"` proposal and the web/Foundation external arrow direction.",
+      "observedComputedStyle": {
+        "font-family": "Barlow, system-ui, sans-serif",
+        "font-weight": "600",
+        "font-size": "15px",
+        "line-height": "19.5px",
+        "color": "rgb(255, 255, 255)",
+        "gap": "8px",
+        "padding-bottom": "2px",
+        "border-bottom-width": "1px",
+        "border-bottom-style": "solid",
+        "border-bottom-color": "rgba(255, 0, 54, 0.45)",
+        "text-decoration-line": "none",
+        "transition-property": "border-color, color",
+        "transition-duration": "0.2s, 0.2s"
+      },
+      "observedComputedStyleIcon": {
+        "width": "18px",
+        "height": "18px",
+        "transform": "none",
+        "transition-property": "transform",
+        "transition-duration": "0.3s"
+      }
+    },
+    {
+      "visualId": "VIS-02",
+      "file": "underlined--external-hover--720x480--dark.png",
+      "sha256": "360717a9da672d3d39006f4afdc369d76c41e00e4bc062652f6514aa84e92419",
+      "pngPixels": "115x47",
+      "viewport": "720x480",
+      "sourcePath": "design-system/components/Link/preview.html",
+      "sourceSelector": ".pv-row:nth-of-type(1) .pv-cell:nth-of-type(2)",
+      "sourceOuterHTML": "<div class=\"pv-cell\"><a class=\"eg-link is-hover\" href=\"#\">Ver en GitHub <svg class=\"eg-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M7 7h10v10\"></path><path d=\"M7 17 17 7\"></path></svg></a><span class=\"meta\">hover</span></div>",
+      "altText": "The same external Foundation link in its hover state: the label turns light pink, the underline turns solid neon red, and the arrow moves up and to the right.",
+      "status": "Proposed",
+      "scopeNote": "Underlined variant, hover. Supports the hover paint change (label, underline) and the diagonal arrow nudge recorded as a superseded web/legacy detail (spec Q4).",
+      "observedComputedStyle": {
+        "font-family": "Barlow, system-ui, sans-serif",
+        "font-weight": "600",
+        "font-size": "15px",
+        "line-height": "19.5px",
+        "color": "rgb(255, 143, 166)",
+        "gap": "8px",
+        "padding-bottom": "2px",
+        "border-bottom-width": "1px",
+        "border-bottom-style": "solid",
+        "border-bottom-color": "rgb(255, 0, 54)",
+        "text-decoration-line": "none",
+        "transition-property": "border-color, color",
+        "transition-duration": "0.2s, 0.2s"
+      },
+      "observedComputedStyleIcon": {
+        "width": "18px",
+        "height": "18px",
+        "transform": "matrix(1, 0, 0, 1, 2, -2)",
+        "transition-property": "transform",
+        "transition-duration": "0.3s"
+      }
+    },
+    {
+      "visualId": "VIS-03",
+      "file": "underlined--internal--720x480--dark.png",
+      "sha256": "8ec8bbb769d31bef57757a6b0f74325b9e8fd72297c0ceb8808ddb7644e88d88",
+      "pngPixels": "111x47",
+      "viewport": "720x480",
+      "sourcePath": "design-system/components/Link/preview.html",
+      "sourceSelector": ".pv-row:nth-of-type(2) .pv-cell:nth-of-type(1)",
+      "sourceOuterHTML": "<div class=\"pv-cell\"><a class=\"eg-link\" href=\"#\">Leer artículo <svg class=\"eg-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 12h14\"></path><path d=\"m12 5 7 7-7 7\"></path></svg></a><span class=\"meta\">default</span></div>",
+      "altText": "An internal Foundation link: 'Leer artículo' in white bold text with a right-pointing arrow, over a thin red hairline underline.",
+      "status": "Proposed",
+      "scopeNote": "Underlined variant, internal state. Supports the arrow-right default direction.",
+      "observedComputedStyle": {
+        "font-family": "Barlow, system-ui, sans-serif",
+        "font-weight": "600",
+        "font-size": "15px",
+        "line-height": "19.5px",
+        "color": "rgb(255, 255, 255)",
+        "gap": "8px",
+        "padding-bottom": "2px",
+        "border-bottom-width": "1px",
+        "border-bottom-style": "solid",
+        "border-bottom-color": "rgba(255, 0, 54, 0.45)",
+        "text-decoration-line": "none",
+        "transition-property": "border-color, color",
+        "transition-duration": "0.2s, 0.2s"
+      },
+      "observedComputedStyleIcon": {
+        "width": "18px",
+        "height": "18px",
+        "transform": "none",
+        "transition-property": "transform",
+        "transition-duration": "0.3s"
+      }
+    },
+    {
+      "visualId": "VIS-04",
+      "file": "underlined--no-arrow--720x480--dark.png",
+      "sha256": "45e31aa57f24199142b4fdbed96fd6c3a1b8c6e5ef16fd8671c0d27e7a84491e",
+      "pngPixels": "142x47",
+      "viewport": "720x480",
+      "sourcePath": "design-system/components/Link/preview.html",
+      "sourceSelector": ".pv-row:nth-of-type(3) .pv-cell:nth-of-type(1)",
+      "sourceOuterHTML": "<div class=\"pv-cell\"><a class=\"eg-link\" href=\"#\">Política de privacidad</a><span class=\"meta\">default</span></div>",
+      "altText": "An underlined Foundation link without an arrow: 'Política de privacidad' in white bold text over the red hairline underline.",
+      "status": "Proposed",
+      "scopeNote": "Underlined variant without an arrow. Supports `arrow={false}` independent of `variant`.",
+      "observedComputedStyle": {
+        "font-family": "Barlow, system-ui, sans-serif",
+        "font-weight": "600",
+        "font-size": "15px",
+        "line-height": "19.5px",
+        "color": "rgb(255, 255, 255)",
+        "gap": "8px",
+        "padding-bottom": "2px",
+        "border-bottom-width": "1px",
+        "border-bottom-style": "solid",
+        "border-bottom-color": "rgba(255, 0, 54, 0.45)",
+        "text-decoration-line": "none",
+        "transition-property": "border-color, color",
+        "transition-duration": "0.2s, 0.2s"
+      }
+    },
+    {
+      "visualId": "VIS-05",
+      "file": "underlined--external--1280x900--dark.png",
+      "sha256": "50a983ebc37fba523dc37c8d666f7aa644cedafb5da6dfaca0f2d7a9ee810b9a",
+      "pngPixels": "349x38",
+      "viewport": "1280x900",
+      "sourcePath": "reference-web/pulso-source.html",
+      "sourceSelector": ".now-strip .now-card:nth-of-type(1) .foot",
+      "sourceOuterHTML": "<div class=\"foot\">\n              <a class=\"link\" href=\"https://github.com/egdev6\">Ver en GitHub <svg class=\"i\"><use href=\"#i-arrow-ur\"></use></svg></a>\n              <span class=\"meter\" role=\"img\" aria-label=\"Progreso alto\"><i class=\"f\"></i><i class=\"f\"></i><i class=\"f\"></i><i></i></span>\n            </div>",
+      "altText": "A real Pulso card footer: 'Ver en GitHub' in white bold text with an up-right arrow above a red hairline underline, next to a four-step meter.",
+      "status": "Proposed",
+      "scopeNote": "Real web external link. Same underline and up-right cue as the Foundation preview, captured in its host card footer.",
+      "observedComputedStyle": {
+        "font-family": "Barlow, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "font-weight": "600",
+        "font-size": "15px",
+        "line-height": "23.25px",
+        "color": "rgb(255, 255, 255)",
+        "gap": "8px",
+        "padding-bottom": "2px",
+        "border-bottom-width": "1px",
+        "border-bottom-style": "solid",
+        "border-bottom-color": "rgba(255, 0, 54, 0.45)",
+        "text-decoration-line": "none"
+      },
+      "observedComputedStyleIcon": {
+        "width": "18px",
+        "height": "18px",
+        "transform": "none",
+        "transition-property": "transform",
+        "transition-duration": "0.3s"
+      }
+    },
+    {
+      "visualId": "VIS-06",
+      "file": "underlined--external-hover--1280x900--dark.png",
+      "sha256": "e1d5de52b3fac8f4dc42f4a73d3a355453ac2c9b1157e88ae8fcf894a298639d",
+      "pngPixels": "349x38",
+      "viewport": "1280x900",
+      "sourcePath": "reference-web/pulso-source.html",
+      "sourceSelector": ".now-strip .now-card:nth-of-type(1) .foot",
+      "sourceOuterHTML": "<div class=\"foot\">\n              <a class=\"link\" href=\"https://github.com/egdev6\">Ver en GitHub <svg class=\"i\"><use href=\"#i-arrow-ur\"></use></svg></a>\n              <span class=\"meter\" role=\"img\" aria-label=\"Progreso alto\"><i class=\"f\"></i><i class=\"f\"></i><i class=\"f\"></i><i></i></span>\n            </div>",
+      "altText": "The same real Pulso card footer in its hover state: light pink label, solid neon red underline and the arrow nudged up-right.",
+      "status": "Proposed",
+      "scopeNote": "Real web hover. Confirms the web paint change matches the Foundation preview.",
+      "observedComputedStyle": {
+        "color": "rgb(255, 143, 166)",
+        "border-bottom-color": "rgb(255, 0, 54)"
+      },
+      "observedComputedStyleIcon": {
+        "transform": "matrix(1, 0, 0, 1, 2, -2)"
+      }
+    },
+    {
+      "visualId": "VIS-07",
+      "file": "underlined--internal--1280x900--dark.png",
+      "sha256": "02582c8cece4fd3000f47105c463afb8bb31ff31489248f3c87252c5590f4b4d",
+      "pngPixels": "350x38",
+      "viewport": "1280x900",
+      "sourcePath": "reference-web/pulso-source.html",
+      "sourceSelector": ".now-strip .now-card:nth-of-type(2) .foot",
+      "sourceOuterHTML": "<div class=\"foot\">\n              <a class=\"link\" href=\"#lab\">Ver en el Lab <svg class=\"i\"><use href=\"#i-arrow-r\"></use></svg></a>\n              <span class=\"meter\" role=\"img\" aria-label=\"Progreso inicial\"><i class=\"f\"></i><i></i><i></i><i></i></span>\n            </div>",
+      "altText": "A real Pulso card footer for an internal destination: 'Ver en el Lab' with a right-pointing arrow above the red hairline underline, next to a meter.",
+      "status": "Proposed",
+      "scopeNote": "Real web internal link. Confirms the web also uses arrow-right for same-page destinations."
+    },
+    {
+      "visualId": "VIS-08",
+      "file": "underlined--nested-text--1280x900--dark.png",
+      "sha256": "aa1f200ab97c05ec70c50cebfefaab3f3a852854856b07bdbbe1a72e6f65a4af",
+      "pngPixels": "687x207",
+      "viewport": "1280x900",
+      "sourcePath": "reference-web/pulso-source.html",
+      "sourceSelector": ".blog-grid .feature .body",
+      "sourceOuterHTML": "<div class=\"body\">\n            <p class=\"meta\"><b>Arquitectura</b> · 12 min · 18 SEP 2026</p>\n            <h3>Arquitectura frontend: el problema no es dónde pones las carpetas.</h3>\n            <span class=\"link\">Leer artículo <svg class=\"i\"><use href=\"#i-arrow-r\"></use></svg></span>\n          </div>",
+      "altText": "A real Pulso article-feature body: meta line, a two-line card title and the non-anchor text 'Leer artículo' with a right arrow, styled exactly like a link with the red hairline underline.",
+      "status": "Proposed",
+      "scopeNote": "Real web non-anchor link-look inside a whole-card anchor. Recorded as a card/list concern, not a Link delta (spec Q3).",
+      "observedComputedStyle": {
+        "font-size": "15px",
+        "color": "rgb(255, 255, 255)",
+        "border-bottom-width": "1px",
+        "border-bottom-color": "rgba(255, 0, 54, 0.45)",
+        "padding-bottom": "2px",
+        "display": "flex"
+      }
+    }
+  ],
+  "notCaptured": [
+    {
+      "visualId": "underlined variant rendered by @egdev/ui",
+      "reason": "No design-system implementation of the proposed variant exists yet; rendering one now would be implementation before approval. The captures show the Foundation and web sources only."
+    },
+    {
+      "visualId": "plain variant",
+      "reason": "The approved v0.2 appearance is unchanged by this amendment and already covered by the v0.1 expected-design reference VIS-01 (docs/design/foundation-boards/v2026-10-17/Link.png, sha256 31eb1841a9bc072f49c5aaf2e7fa3fa4d2dbd3077eb5bccb146c827f93e7b03f); it was not re-captured."
+    }
+  ],
+  "limits": [
+    "The captures show the Foundation and web .eg-link/.link appearance: 15px/600 labels, 18px arrows, 1px brand underline and a 2px bottom inset. They are evidence for the web treatment and its roles, not approved expected design for the design-system recipe (which uses text-label-default and 16px icons).",
+    "The preview harness loaded only the font weights the rows use; heavier Barlow and Barlow Condensed weights are unfetched, so the captures cannot validate those weights.",
+    "pulso-source.html is a template with Jinja image placeholders and an external Google Fonts request; the link crops do not depend on either, and the loaded families are recorded above.",
+    "The web arrows carry no aria-hidden in the source (a real web accessibility defect); the captures therefore document the web defect as evidence, not as expected behavior for the design-system component.",
+    "Only one web external anchor sets target/rel in the capture set, and it ships rel=\"noopener\" without noreferrer; the design-system component keeps its stricter merged rel.",
+    "Browser images do not verify behavior, accessibility, keyboard, focus or contrast.",
+    "A localized difference in PNG bytes can appear between runs of the same script (scroll-dependent compositing); the hashes above are of the files stored in this folder and must be re-verified with sha256sum before linking them in any published comment."
+  ],
+  "approval": {
+    "status": "Proposed",
+    "reference": "Pending: the owner approves or declines these captures as supporting evidence for Link v0.3 in issue #61. The captures are source evidence and grant no expected-design approval."
+  }
+}

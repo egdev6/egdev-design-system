@@ -19,13 +19,13 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 | W4 | S1–S4 | Owner review of the draft | parent | done (L5) |
 | W5 | S1–S3 | Layer (a): amend CATALOGACION/ARQUITECTURA, append effects contract notes, update catalog rows and regenerate | worker | done — PR #263 (8a0b7b9) |
 | W6 | S3 | Layers (b)–(f): specs, plans and implementation per component, in the approved order | per component | in progress (layer b) |
-| B1 | S3 | Spec: Chip static and href modes (#55) | worker | drafted — docs/components/chip/v0.2 |
-| B2 | S3 | Spec: ListItem editorial row variant absorbing ArticleItem/NoteItem/StreamItem (#88) | worker | drafted — docs/components/list-item/v0.2 |
-| B3 | S3 | Spec: PhotoFrame auto ratio and image position (#95) | worker | drafted — docs/components/photo-frame/v0.4 |
-| B4 | S3 | Spec: IconButton round outline treatment (#57) | worker | pending |
-| B5 | S3 | Spec: Link external arrow affordance (#61/#175) | worker | pending |
-| B6 | S3 | Spec: Isotipo3D named zone poses as inputs (#47/#227) | worker | pending |
-| B7 | S3 | Spec check: Countdown (#82) and ProgressBar (#65) API deltas (may conclude reuse, no change) | worker | pending |
+| B1 | S3 | Spec: Chip static and href modes (#55) | worker | approved — docs/components/chip/v0.2; #55 snapshot 6573737002, approval 6576758274 |
+| B2 | S3 | Spec: ListItem editorial row variant absorbing ArticleItem/NoteItem/StreamItem (#88) | worker | approved — docs/components/list-item/v0.2; #88 snapshot 6573738637, approval 6576758816 |
+| B3 | S3 | Spec: PhotoFrame auto ratio and image position (#95) | worker | approved — docs/components/photo-frame/v0.4; #95 snapshot 6573745782, approval 6576759318 |
+| B4 | S3 | Spec: IconButton round outline treatment (#57) | worker | drafted — docs/components/icon-button/v0.3 (documentation only) |
+| B5 | S3 | Spec: Link external arrow affordance (#61/#175) | worker | drafted — docs/components/link/v0.3 |
+| B6 | S3 | Spec: Isotipo3D named zone poses as inputs (#47/#227) | worker | drafted — docs/components/isotipo3d/v0.6 (documentation only) |
+| B7 | S3 | Spec check: Countdown (#82) and ProgressBar (#65) API deltas (may conclude reuse, no change) | worker | in progress |
 
 ## Log
 
@@ -36,3 +36,4 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 - L5 — Owner approved the draft (verbatim): policy amendment "Aprobar la enmienda (Recomendado)"; scenes "Sí, como escenas con slots (Recomendado)"; reveal/wipe "Utilidad en @egdev/effects (Recomendado)"; order "Por capas (Recomendado)". Recorded in docs/components/web-catalog/v0.1/owner-approvals.md. Layer (a) starts.
 - L6 — Layer (a) merged in PR #263 (8a0b7b9). Owner, for layer (b) specs: storage "Issue por componente en GitHub (Recomendado)" (each spec is a versioned comment on the existing component issue; parent authorized to create/comment those issues) and captures "Sí, capturar los previews (Recomendado)" (render egdev-foundation preview.html read-only in Chromium; PNG + conditions + SHA-256 under docs/components/<name>/<version>/). Every component already has an issue (all closed): Chip #55, ListItem #88, PhotoFrame #95, IconButton #57, Link #61/#175, Isotipo3D #47/#227, Countdown #82, ProgressBar #65. Workers draft specs and exact issue-comment snapshots; the parent posts them.
 - L7 — Batch 1 drafted (all Draft, not approved): Chip v0.2 (`mode` toggle|static|link; reverses v0.1 D1, needs explicit adoption; no link-mode capture exists because the web renders no anchor chips), ListItem v0.2 (`variant` editorial + editorial-divided, `size` md|sm, new parts ListItemLeading/ListItemTitle/ListItemTrailing; one family covers ArticleItem/NoteItem/StreamItem), PhotoFrame v0.4 (`ratio="auto"`, nine-value `focalPoint`; framed hover, overlay caption and filter left as owner questions). Publication route: merge specs + captures as drafts, then link images by immutable commit URL after verifying each downloaded PNG hash, then comment on #55/#88/#95.
+- L8 — Batch 1 published (PR #264, 406869b): 11 captures downloaded from immutable commit URLs and SHA-256 matched before posting; snapshot comments #55 6573737002, #88 6573738637, #95 6573745782 (read back byte-identical; #95 first attempt failed with a GitHub GraphQL error, verified not posted, single retry). Owner approved all three (verbatim): Chip "Aprobar con static y link (Recomendado)", ListItem "Aprobar con sus recomendaciones (Recomendado)", PhotoFrame "Aprobar con sus recomendaciones (Recomendado)"; approval comments #55 6576758274, #88 6576758816, #95 6576759318. Batch 2 drafted: IconButton v0.3 and Isotipo3D v0.6 conclude no API change (outline is already round per v0.1 D4 and the web social row is SocialLinks; the web `pose` is the approved `scene`), Link v0.3 proposes opt-in external up-right arrow and brand underline (both rejected as defaults in #175).
