@@ -2080,7 +2080,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:ba72c0a83957b4990e1d69a971c8214cd5ba1debe375d1c14f987290650ad765"
+          "revision": "sha256:81a2e34fb331d02cba19601f1bacb9b75a9ee8d1bdc3439dab7b2e9faa40cbb1"
         }
       },
       {
@@ -2415,7 +2415,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:ba72c0a83957b4990e1d69a971c8214cd5ba1debe375d1c14f987290650ad765"
+          "revision": "sha256:81a2e34fb331d02cba19601f1bacb9b75a9ee8d1bdc3439dab7b2e9faa40cbb1"
         }
       }
     ]
@@ -2452,7 +2452,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:ba72c0a83957b4990e1d69a971c8214cd5ba1debe375d1c14f987290650ad765"
+          "revision": "sha256:81a2e34fb331d02cba19601f1bacb9b75a9ee8d1bdc3439dab7b2e9faa40cbb1"
         }
       }
     ]
@@ -2489,7 +2489,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:ba72c0a83957b4990e1d69a971c8214cd5ba1debe375d1c14f987290650ad765"
+          "revision": "sha256:81a2e34fb331d02cba19601f1bacb9b75a9ee8d1bdc3439dab7b2e9faa40cbb1"
         }
       }
     ]
@@ -2636,6 +2636,16 @@
           "symbol": "LinkProps",
           "revision": "sha256:ba59cc4ae5c38984541b2c5a84e2aefe74b7b7f99295cc94fd3682107122936d"
         }
+      },
+      {
+        "component": "Chip",
+        "type": "boolean (link mode only, safe new context)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/chip/types.ts",
+          "symbol": "ChipProps",
+          "revision": "sha256:81a2e34fb331d02cba19601f1bacb9b75a9ee8d1bdc3439dab7b2e9faa40cbb1"
+        }
       }
     ]
   },
@@ -2672,6 +2682,16 @@
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
           "revision": "sha256:ba59cc4ae5c38984541b2c5a84e2aefe74b7b7f99295cc94fd3682107122936d"
+        }
+      },
+      {
+        "component": "Chip",
+        "type": "string (link mode only, localized notice)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/chip/types.ts",
+          "symbol": "ChipProps",
+          "revision": "sha256:81a2e34fb331d02cba19601f1bacb9b75a9ee8d1bdc3439dab7b2e9faa40cbb1"
         }
       }
     ]
@@ -6482,6 +6502,33 @@
           "path": "packages/effects/src/atoms/isotipo3d/types.ts",
           "symbol": "Isotipo3DProps",
           "revision": "sha256:0099ebba8fc63ca6fd3a3817b74ec2f311bd387f9ce521efa1391f5791144164"
+        }
+      }
+    ]
+  },
+  {
+    "id": "render-mode",
+    "name": "mode",
+    "meaning": "The semantic role and rendered element of a component whose behavior differs per role, when the role is not a visual treatment.",
+    "whenToUse": "A component keeps one appearance and content contract but must render as a non-interactive element, a pressable control or a link.",
+    "avoid": "Visual presentation (use variant), data-entry kind (use kind), selection cardinality (use type) or a boolean flag per role.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/chip/v0.2/render-mode-approval.json",
+      "scope": "convention:render-mode",
+      "contentHash": "sha256:01fec4e337b01e9826f39dfed96be50d2e3922a149b0a450d98786270700fead"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Chip",
+        "type": "'toggle' | 'static' | 'link' (default toggle)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/chip/types.ts",
+          "symbol": "ChipProps",
+          "revision": "sha256:81a2e34fb331d02cba19601f1bacb9b75a9ee8d1bdc3439dab7b2e9faa40cbb1"
         }
       }
     ]

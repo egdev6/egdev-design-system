@@ -106,6 +106,7 @@ import type {
   CarouselProps,
   CheckboxCheckedState,
   CheckboxProps,
+  ChipMode,
   ChipProps,
   ChipGroupOption,
   ChipGroupProps,
@@ -1789,12 +1790,27 @@ import type { chipGroupVariants } from '@egdev/ui';
 export const chipChanges: boolean[] = [];
 export const chipDefaults: ChipProps = { children: 'Design' };
 export const chipRecipe: string = chipVariants();
+const chipMode: ChipMode = 'static';
+export const chipModeName: ChipMode = chipMode;
+const chipStatic: Extract<ChipProps, { mode: 'static' }> = { mode: 'static', children: 'Open Source' };
+const chipLink: Extract<ChipProps, { mode: 'link' }> = { mode: 'link', href: '#topics', children: 'Topics' };
+const chipExternalLink: Extract<ChipProps, { mode: 'link' }> = {
+  mode: 'link',
+  href: 'https://example.com',
+  external: true,
+  newTabText: '(new window)',
+  children: 'Documentation'
+};
 export function ChipSamples() {
   return createElement('section', { 'aria-label': 'Chip samples' },
     createElement(Chip, { ...chipDefaults, id: 'chip-default', onPressedChange: (next) => chipChanges.push(next) }),
     createElement(Chip, { id: 'chip-controlled', pressed: true, children: 'Saved',
       icon: createElement(Icon, { name: 'bookmark', className: 'size-3.5' }) }),
-    createElement(Chip, { id: 'chip-disabled', defaultPressed: true, disabled: true, children: 'Archived' }));
+    createElement(Chip, { id: 'chip-disabled', defaultPressed: true, disabled: true, children: 'Archived' }),
+    createElement('ul', { 'aria-label': 'Topics' },
+      createElement('li', null, createElement(Chip, { ...chipStatic, id: 'chip-static' })),
+      createElement('li', null, createElement(Chip, { ...chipLink, id: 'chip-link' })),
+      createElement('li', null, createElement(Chip, { ...chipExternalLink, id: 'chip-external' }))));
 }
 // @ts-expect-error Chip always requires its visible label.
 const unlabelledChip: ChipProps = {};
@@ -1814,6 +1830,20 @@ const referencedChip: ChipProps = { children: 'Design', ref: createRef<HTMLButto
 const stringPressedChip: ChipProps = { children: 'Design', pressed: 'on' };
 // @ts-expect-error Chip does not expose its private icon recipe.
 import type { chipIconVariants } from '@egdev/ui';
+// @ts-expect-error Static mode rejects pressed state.
+const pressedStaticChip: ChipProps = { mode: 'static', children: 'Design', pressed: true };
+// @ts-expect-error Static mode rejects a disabled flag.
+const disabledStaticChip: ChipProps = { mode: 'static', children: 'Design', disabled: true };
+// @ts-expect-error Static mode rejects a destination.
+const linkedStaticChip: ChipProps = { mode: 'static', children: 'Design', href: '#topics' };
+// @ts-expect-error Link mode requires its destination.
+const hrefLessLinkChip: ChipProps = { mode: 'link', children: 'Design' };
+// @ts-expect-error Link mode rejects pressed state.
+const pressedLinkChip: ChipProps = { mode: 'link', href: '#topics', children: 'Design', pressed: true };
+// @ts-expect-error Toggle mode rejects a destination.
+const hrefToggleChip: ChipProps = { children: 'Design', href: '#topics' };
+// @ts-expect-error mode is a closed union of the three roles.
+const unknownModeChip: ChipProps = { mode: 'button', children: 'Design' };
 export const dividerDefaults: DividerProps = {};
 export const dividerSemanticVertical: DividerProps = {
   orientation: 'vertical', decorative: false, className: 'consumer-rule'

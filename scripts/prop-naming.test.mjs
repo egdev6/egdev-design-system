@@ -487,6 +487,10 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/atoms/chip/types.ts#ChipProps'
   })),
+  ...['new-tab-navigation', 'new-tab-notice', 'render-mode'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/chip/types.ts#ChipProps'
+  })),
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
   { conventionId: 'files-received', source: 'packages/ui/src/atoms/dropzone/types.ts#DropzoneProps' },
@@ -696,8 +700,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   assert.ok(text.includes('218403be9baee574e213cf1b06db1f7bd4d3951b20c7e24e593e90ef011fb062'));
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   validate(actual);
-  assert.equal(actual.length, 138);
-  assert.equal(beforeIndicatorConventions(actual).length, 135);
+  assert.equal(actual.length, 139);
+  assert.equal(beforeIndicatorConventions(actual).length, 136);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -808,7 +812,8 @@ const receiptChain = [
   'docs/components/toggle/v0.1/prop-naming-approval-leading-icon-combined.json',
   'docs/components/icon-button/v0.1/prop-naming-approval-leading-icon-combined.json',
   'docs/components/sidebar/v0.1/product-identity-approval.json',
-  'docs/components/calendar-grid/v0.1/collection-items-organism-approval.json'
+  'docs/components/calendar-grid/v0.1/collection-items-organism-approval.json',
+  'docs/components/chip/v0.2/render-mode-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -1643,6 +1648,46 @@ test('Sidebar product identity amendment binds the owner decision and the prior 
   assert.deepEqual(receipt.entries[0].convention, convention);
 });
 
+test('Chip render-mode receipt binds the owner decision without rewriting historical approvals', () => {
+  const reference = 'docs/components/chip/v0.2/render-mode-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(registry);
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar render-mode (Recomendado)');
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(digest(fs.readFileSync(resolve(root, prior.path))), prior.wholeFileSHA256, prior.path);
+  }
+  const [record] = receipt.entries;
+  const entry = registry.find(({ id }) => id === 'render-mode');
+  assert.ok(entry);
+  const { approval, usages, ...convention } = entry;
+  assert.deepEqual(record.convention, convention);
+  assert.equal(record.scope, 'convention:render-mode');
+  assert.equal(record.contentHash, props.conventionHash(entry));
+  assert.equal(record.contentHash, approval.contentHash);
+  assert.deepEqual(approval, { reference, scope: record.scope, contentHash: record.contentHash });
+  assert.equal(entry.status, 'approved');
+  assert.equal(entry.name, 'mode');
+  assert.deepEqual(entry.aliases, []);
+  assert.deepEqual(entry.exceptions, []);
+  assert.deepEqual(
+    entry.usages.map(({ component }) => component),
+    ['Chip']
+  );
+  assert.equal(entry.usages[0].source.path, 'packages/ui/src/atoms/chip/types.ts');
+  assert.equal(entry.usages[0].source.symbol, 'ChipProps');
+  assert.equal(entry.usages[0].source.revision, digest(fs.readFileSync(resolve(root, entry.usages[0].source.path))));
+  assert.deepEqual(historicalRegistry([entry])[0].usages, []);
+  const changed = structuredClone(registry);
+  changed.find(({ id }) => id === 'render-mode').meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+});
+
 test('template naming receipt pins the organism receipt and binds two new layout slots', () => {
   const reference = 'docs/decisions/prop-naming-template-specs-approval.json';
   const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
@@ -1744,7 +1789,20 @@ test('Isotipo3D naming receipt preserves 125 entries and binds three scoped appr
   const receipt = JSON.parse(fs.readFileSync(resolve(root, isotipoReference), 'utf8'));
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   validate(actual);
-  assert.equal(historicalRegistry(actual).length, 128);
+  // Later receipts may only add conventions; this frozen snapshot keeps its own 128 entries.
+  const knownAtSkeleton = new Set(
+    [
+      ...receipt.priorReceipts.flatMap(({ path }) => JSON.parse(fs.readFileSync(resolve(root, path), 'utf8')).entries),
+      ...receipt.entries
+    ].map(({ convention }) => convention.id)
+  );
+  const laterAdded = new Set(
+    [...laterReceipts(skeletonReference).values()]
+      .flatMap(({ entries }) => entries)
+      .map(({ convention }) => convention.id)
+      .filter((id) => !knownAtSkeleton.has(id))
+  );
+  assert.equal(historicalRegistry(actual).length, 128 + laterAdded.size);
   assert.equal(receipt.kind, 'human-approval-record');
   assert.equal(receipt.nativeReviewApproval, false);
   assert.equal(receipt.authority, 'assistant-observed-human-delegation');
@@ -1873,7 +1931,20 @@ test('Skeleton v0.2 naming receipt records the owner published-spec approval and
   const receipt = JSON.parse(fs.readFileSync(resolve(root, skeletonReference), 'utf8'));
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   validate(actual);
-  assert.equal(historicalRegistry(actual).length, 128);
+  // Later receipts may only add conventions; this frozen snapshot keeps its own 128 entries.
+  const knownAtSkeleton = new Set(
+    [
+      ...receipt.priorReceipts.flatMap(({ path }) => JSON.parse(fs.readFileSync(resolve(root, path), 'utf8')).entries),
+      ...receipt.entries
+    ].map(({ convention }) => convention.id)
+  );
+  const laterAdded = new Set(
+    [...laterReceipts(skeletonReference).values()]
+      .flatMap(({ entries }) => entries)
+      .map(({ convention }) => convention.id)
+      .filter((id) => !knownAtSkeleton.has(id))
+  );
+  assert.equal(historicalRegistry(actual).length, 128 + laterAdded.size);
   assert.equal(receipt.kind, 'human-approval-record');
   assert.equal(receipt.nativeReviewApproval, false);
   assert.equal(receipt.authority, 'assistant-observed-human-delegation');
