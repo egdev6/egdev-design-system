@@ -1426,8 +1426,11 @@ test('ListItem ships compound layout, state Material and native empty focus util
     'ListItemBody',
     'ListItemContent',
     'ListItemFooter',
+    'ListItemLeading',
     'ListItemMedia',
-    'ListItemMeta'
+    'ListItemMeta',
+    'ListItemTitle',
+    'ListItemTrailing'
   ]) {
     assert.equal(typeof exported[name], 'function', `${name} is a plain component without a ref API`);
   }
@@ -1443,7 +1446,19 @@ test('ListItem ships compound layout, state Material and native empty focus util
     String.raw`.data-\[state\=empty\]\:focus-visible\:shadow-focus`,
     String.raw`.data-\[state\=empty\]\:disabled\:opacity-45`,
     String.raw`.data-\[variant\=row\]\:flex-wrap`,
-    String.raw`.group-data-\[variant\=compact\]\/list-item\:text-label-default`
+    String.raw`.group-data-\[variant\=compact\]\/list-item\:text-label-default`,
+    String.raw`.data-\[variant\=editorial\]\:flex-row`,
+    String.raw`.data-\[variant\=editorial-divided\]\:min-h-11`,
+    String.raw`.data-\[variant\=editorial-divided\]\:data-\[state\=default\]\:bg-none`,
+    String.raw`.data-\[variant\=editorial-divided\]\:data-\[state\=default\]\:shadow-none`,
+    String.raw`.data-\[variant\=editorial-divided\]\:data-\[state\=default\]\:border-b`,
+    String.raw`.data-\[state\=default\]\:data-\[variant\=editorial\]\:\[\&\:is\(a\)\]\:hover\:border-border-brand`,
+    String.raw`.data-\[state\=default\]\:data-\[variant\=editorial-divided\]\:\[\&\:is\(a\)\]\:hover\:bg-surface-2`,
+    String.raw`.data-\[variant\=editorial\]\:\[\&\:is\(a\)\]\:focus-visible\:shadow-focus`,
+    String.raw`.data-\[variant\=editorial\]\:duration-\(--duration-fast\)`,
+    String.raw`.data-\[variant\=editorial\]\:ease-\(--ease-out\)`,
+    String.raw`.data-\[variant\=editorial\]\:motion-reduce\:transition-none`,
+    String.raw`.group-data-\[size\=sm\]\/list-item\:w-\[var\(--space-16\)\]`
   ];
   for (const state of ['done', 'off', 'empty']) {
     for (const reset of ['bg-transparent', 'bg-none', 'shadow-none']) {
@@ -3100,8 +3115,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'ListItemBody',
       'ListItemContent',
       'ListItemFooter',
+      'ListItemLeading',
       'ListItemMedia',
       'ListItemMeta',
+      'ListItemTitle',
+      'ListItemTrailing',
       'Logo',
       'Menu',
       'MeterRow',
@@ -3409,7 +3427,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ListItemMeta',
     'ListItemPartProps',
     'ListItemProps',
+    'ListItemSize',
     'ListItemStatus',
+    'ListItemTitleProps',
     'ListItemVariant',
     'Logo',
     'LogoProps',
