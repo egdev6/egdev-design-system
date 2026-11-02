@@ -4001,10 +4001,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     createElement(exported.Chip, { mode: 'link', href: '#topics', external: true, children: 'Topics' })
   );
   assert.match(linkChipHtml, /<a href="#topics" target="_blank" rel="noopener noreferrer" class="eg-chip /);
-  assert.match(
-    linkChipHtml,
-    /Topics <span style="[^"]*" >\(opens in a new tab\)<\/span><\/a>$|Topics <span[^>]*>\(opens in a new tab\)<\/span><\/a>$/
-  );
+  assert.match(linkChipHtml, /Topics(?:<!-- -->)? <span[^>]*>\(opens in a new tab\)<\/span><\/a>$/);
   assert.doesNotMatch(linkChipHtml, /aria-pressed|data-state/);
   const sameTabLinkChipHtml = renderToString(
     createElement(exported.Chip, { mode: 'link', href: '#topics', children: 'Topics' })
