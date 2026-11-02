@@ -2763,7 +2763,7 @@ function assertIconButtonCSS(css) {
     '--gradient-btn-primary-hover',
     '--gradient-btn-secondary-hover',
     '--gradient-sheen',
-    '--color-alpha-red-65',
+    '--color-border-brand',
     '--duration-press',
     '--ease-spring'
   ]) {
