@@ -1,0 +1,738 @@
+{
+  "kind": "read-only-web-preview-component-zone-captures",
+  "component": "PhotoFrame",
+  "componentIssue": "https://github.com/egdev6/egdev-design-system/issues/95",
+  "specVersion": "0.4",
+  "captureVersion": "0.4",
+  "status": "Proposed visual reference for the v0.4 amendment draft; no adoption and no design system appearance approval",
+  "recordedAt": "2026-11-02T09:20:58Z",
+  "recordedBy": "writer (docs-only specification task)",
+  "purpose": "Record the web PhotoFrame ratio, free-form image position and framed treatment so the v0.4 amendment can separate what the design system is missing from behaviour that is deliberately excluded.",
+  "source": {
+    "access": "Owner-granted read-only access to /home/egdev/proyectos/egdev-website on 2026-11-02 (odd/tasks/web-catalog.md S4, L6). No file inside egdev-website was created or modified.",
+    "foundation": "/home/egdev/proyectos/egdev-website/egdev-foundation",
+    "componentReadme": {
+      "path": "design-system/components/PhotoFrame/README.md",
+      "sha256": "dbcf2dd82828d477f07ee21e7fc206da948e21db8a813463f3529e474063cab0"
+    },
+    "renderedPreview": {
+      "path": "design-system/components/PhotoFrame/preview.html",
+      "sha256": "658a9edd975cfb8fe45ceddca014f5804bef555ca647aae9aa99c9d21799ab10",
+      "note": "Rendered as authored; the harness only adds the two file:// stylesheets and resolves runtime media URLs (see harness.transformations)."
+    },
+    "propTypes": {
+      "path": "design-system/components/index.d.ts",
+      "symbol": "PhotoFrameProps",
+      "sha256": "b136dca56066fad8dbde0d425e256e2be3d82a408b9c79b59ae7a935f4ed2501"
+    },
+    "stylesheets": [
+      {
+        "path": "design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e"
+      },
+      {
+        "path": "design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      }
+    ],
+    "pageEvidence": {
+      "path": "reference-web/pulso-source.html",
+      "sha256": "778e5412b64d1b79195c51c0e47c78f654b46da445be8354a97e572774348f13",
+      "note": "Source-only evidence for the usages that preview.html cannot show: about portrait container height (line 168), live band framed hover (line 363), community bespoke proportion (line 392) and the sub-760px overrides (lines 509-510, 522-523)."
+    },
+    "media": [
+      {
+        "runtimeBlobUrl": "/_blob/8d3842fe311d5a18843796f2f9d4836b",
+        "resolvedAsset": "reference-web/assets/photo-canyon.webp",
+        "sha256": "e4a5d7a1f6f5e0618a3b44a72c6c6229d1fac68ff43bf2f9962be29333d98206",
+        "naturalSize": {
+          "width": 900,
+          "height": 900
+        },
+        "matchingEvidence": "preview.html alt text names the canyon photograph; pulso-source.html line 854-855 uses the same alt text with width 900 height 900 for {{PHOTO_CANYON}}."
+      },
+      {
+        "runtimeBlobUrl": "/_blob/929b1c529651733be4d4b1265eec701d",
+        "resolvedAsset": "reference-web/assets/photo-hazlo.webp",
+        "sha256": "27822375cc6d30a9696ac689817575d122409186aae8fb5401dca91066c732d8",
+        "naturalSize": {
+          "width": 716,
+          "height": 890
+        },
+        "matchingEvidence": "preview.html alt text names the neon \"Hazlo con miedo\" photograph; pulso-source.html line 1138-1139 uses the same alt text and subject for {{PHOTO_HAZLO}}."
+      },
+      {
+        "runtimeBlobUrl": "/_blob/ce2d47159017f6b32cabffad74654133",
+        "resolvedAsset": "reference-web/assets/photo-setup.webp",
+        "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f",
+        "naturalSize": {
+          "width": 1280,
+          "height": 960
+        },
+        "matchingEvidence": "preview.html alt text names the setup selfie; pulso-source.html line 1103-1104 uses the same alt text and subject for {{PHOTO_SETUP}}."
+      }
+    ]
+  },
+  "harness": {
+    "path": "/tmp/egdev-sbcheck/photo-frame-preview.html",
+    "sha256": "d33c966e068d65a6855134a949b1fb9afac3061bf1b8c6b9b5229aae21c7eeb9",
+    "generator": {
+      "path": "/tmp/egdev-sbcheck/build-harness.mjs",
+      "sha256": "1aeba6d94a9fc05710f3531986f9fb7a7d0a17e758d608b4225d52166c74463d"
+    },
+    "captureScript": {
+      "path": "/tmp/egdev-sbcheck/capture.mjs",
+      "sha256": "34b8291b3a494efff7bbde516b5192a3164a9b9171a697e5f2a203f4c71c1eca"
+    },
+    "scratchLocation": "/tmp/egdev-sbcheck (outside the worktree; nothing was written inside egdev-website)",
+    "transformations": [
+      "Wrapped the preview fragment in a full HTML document because preview.html has no <head> or <html> element; markup, inline <style> and @dsCard comment are otherwise byte-identical text from the source.",
+      "Added the two authored Foundation stylesheets as file:// links: design-system/tokens.css and design-system/components/bundle.css.",
+      "Resolved the three runtime /_blob/<id> image URLs to the matching reference-web/assets photographs listed under source.media; no other markup or CSS was changed.",
+      "No component CSS, token or preview rule was added, removed or overridden."
+    ],
+    "reproducibility": "Two consecutive runs produced byte-identical PNGs (same SHA-256 per file)."
+  },
+  "conditions": {
+    "browser": "Chromium headless shell 153.0.8010.12 via playwright-core from /home/egdev/.npm/_npx/e41f203b7505f1fb/node_modules/playwright-core, executable /home/egdev/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+    "os": "Linux",
+    "viewport": {
+      "width": 1280,
+      "height": 960
+    },
+    "deviceScaleFactor": 1,
+    "colorScheme": "dark (as authored by the preview color-scheme meta and the Foundation dark tokens)",
+    "reducedMotion": "no-preference for every capture; no reduced-motion capture was taken because the ratio/position delta has no motion promise",
+    "reducedTransparency": false,
+    "direction": "ltr (preview html lang=\"es\", no dir attribute)",
+    "fonts": {
+      "network": "Google Fonts CSS and woff2 responses returned 200 during capture",
+      "loadedFacesObserved": ["Barlow normal 400", "Barlow Condensed normal 600", "Barlow Condensed normal 700"],
+      "notLoadedObserved": "JetBrains Mono faces stayed unloaded because no captured element uses the mono stack",
+      "resolvedBodyFamily": "Barlow, system-ui, sans-serif"
+    },
+    "waitPolicy": "waitUntil load, then every img complete with naturalWidth > 0, then document.fonts.ready, then a 150 ms settle; hover captures add a 600 ms transition settle"
+  },
+  "captures": [
+    {
+      "visualId": "VIS-03",
+      "path": "ratios--static--desktop--dark.png",
+      "alt": "Three real Pulso photographs rendered by the Foundation PhotoFrame preview: the canyon portrait at square 1:1 cropped at --pos 42% 50%, the neon portrait at 4:5 cropped at 50% 40%, and the setup selfie at 4:3 cropped at 32% 50%, each with an overlaid uppercase caption and a neon diamond.",
+      "scenario": "Ratio presets and free-form image position: --square with --pos 42% 50%, --portrait with --pos 50% 40%, --landscape without caption with --pos 32% 50%.",
+      "crop": "Component zone: the first preview row (.pv > .pv-row:nth-of-type(1)), 1232x524 CSS px.",
+      "selector": ".pv > .pv-row:nth-of-type(1)",
+      "png": {
+        "width": 1232,
+        "height": 524,
+        "bytes": 736811,
+        "sha256": "a1d1a240f6aa47e52d73293bba5fd58e667c96fbbd9a15be633bf46d0eb7d62f"
+      },
+      "expectedDesignVsObserved": "Observed web behavior supplied as the comparison baseline and as Proposed visual reference. This is the current web implementation, not an approved design system appearance.",
+      "approval": "Proposed; no adoption recorded",
+      "deltaEvidence": "The three figures show three free-form percentage object-position values. None of them is reproducible with the design system five keyword presets (center/top/bottom/left/right), and each figure keeps a preset aspect ratio.",
+      "observed": {
+        "figures": [
+          {
+            "className": "eg-photo eg-photo--square",
+            "posVariable": "42% 50%",
+            "computedAspectRatio": "1 / 1",
+            "computedSize": {
+              "width": 394.66,
+              "height": 394.66
+            },
+            "computedRatio": 1,
+            "border": "0px none rgb(255, 255, 255)",
+            "borderRadius": "22px",
+            "transform": "none",
+            "image": {
+              "currentSrc": "photo-canyon.webp",
+              "alt": "Quique de espaldas mirando un gran cañón con un río al fondo",
+              "naturalSize": {
+                "width": 900,
+                "height": 900
+              },
+              "objectFit": "cover",
+              "objectPosition": "42% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--portrait",
+            "posVariable": "50% 40%",
+            "computedAspectRatio": "4 / 5",
+            "computedSize": {
+              "width": 394.67,
+              "height": 493.33
+            },
+            "computedRatio": 0.8,
+            "border": "0px none rgb(255, 255, 255)",
+            "borderRadius": "22px",
+            "transform": "none",
+            "image": {
+              "currentSrc": "photo-hazlo.webp",
+              "alt": "Quique junto a un neón que dice: Hazlo, y si tienes miedo, hazlo con miedo",
+              "naturalSize": {
+                "width": 716,
+                "height": 890
+              },
+              "objectFit": "cover",
+              "objectPosition": "50% 40%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--landscape",
+            "posVariable": "32% 50%",
+            "computedAspectRatio": "4 / 3",
+            "computedSize": {
+              "width": 394.66,
+              "height": 295.98
+            },
+            "computedRatio": 1.3334,
+            "border": "0px none rgb(255, 255, 255)",
+            "borderRadius": "22px",
+            "transform": "none",
+            "image": {
+              "currentSrc": "photo-setup.webp",
+              "alt": "Selfie de Quique delante de su setup",
+              "naturalSize": {
+                "width": 1280,
+                "height": 960
+              },
+              "objectFit": "cover",
+              "objectPosition": "32% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--landscape eg-photo--framed",
+            "posVariable": "32% 50%",
+            "computedAspectRatio": "4 / 3",
+            "computedSize": {
+              "width": 537.5,
+              "height": 414.05
+            },
+            "computedRatio": 1.2982,
+            "border": "6px solid rgb(0, 0, 0)",
+            "borderRadius": "18px",
+            "transform": "matrix(0.999391, 0.0348995, -0.0348995, 0.999391, 0, 0)",
+            "image": {
+              "currentSrc": "photo-setup.webp",
+              "alt": "Selfie de Quique con el pulgar arriba delante de su setup",
+              "naturalSize": {
+                "width": 1280,
+                "height": 960
+              },
+              "objectFit": "cover",
+              "objectPosition": "32% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--landscape eg-photo--framed is-hover",
+            "posVariable": "32% 50%",
+            "computedAspectRatio": "4 / 3",
+            "computedSize": {
+              "width": 529.24,
+              "height": 399.96
+            },
+            "computedRatio": 1.3232,
+            "border": "6px solid rgb(0, 0, 0)",
+            "borderRadius": "18px",
+            "transform": "matrix(1.01, 0, 0, 1.01, 0, 0)",
+            "image": {
+              "currentSrc": "photo-setup.webp",
+              "alt": "Selfie de Quique con el pulgar arriba delante de su setup",
+              "naturalSize": {
+                "width": 1280,
+                "height": 960
+              },
+              "objectFit": "cover",
+              "objectPosition": "32% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          }
+        ],
+        "hover": null,
+        "consoleErrors": [],
+        "documentCanvasBackground": "rgb(0, 0, 0)",
+        "bodyFontFamily": "Barlow, system-ui, sans-serif"
+      }
+    },
+    {
+      "visualId": "VIS-04",
+      "path": "framed--static--desktop--dark.png",
+      "alt": "Two framed copies of the setup selfie on a red flood field: the left frame rests rotated two degrees with a six pixel black border and rounded corners, and the right frame is authored in its hover state, straightened and scaled to 1.01.",
+      "scenario": "--landscape --framed on the flood field, resting state and the authored .is-hover state, both with --pos 32% 50%.",
+      "crop": "Component zone: the second preview row (.pv > .pv-row:nth-of-type(2)), 1232x507 CSS px.",
+      "selector": ".pv > .pv-row:nth-of-type(2)",
+      "png": {
+        "width": 1232,
+        "height": 507,
+        "bytes": 537786,
+        "sha256": "86cf61757dc9b1a405e6b3d067ddc8624aab19aad3ea3e1a83f16d926dd36364"
+      },
+      "expectedDesignVsObserved": "Observed web behavior supplied as the comparison baseline and as Proposed visual reference. This is the current web implementation, not an approved design system appearance.",
+      "approval": "Proposed; no adoption recorded",
+      "deltaEvidence": "Records the web framed treatment (6px black border, 18px radius, rotate(2deg), hover straightens to rotate(0) scale(1.01)) so the owner can compare it with the approved design system framed recipe, which uses a Surface inset and no hover motion.",
+      "observed": {
+        "figures": [
+          {
+            "className": "eg-photo eg-photo--square",
+            "posVariable": "42% 50%",
+            "computedAspectRatio": "1 / 1",
+            "computedSize": {
+              "width": 394.66,
+              "height": 394.66
+            },
+            "computedRatio": 1,
+            "border": "0px none rgb(255, 255, 255)",
+            "borderRadius": "22px",
+            "transform": "none",
+            "image": {
+              "currentSrc": "photo-canyon.webp",
+              "alt": "Quique de espaldas mirando un gran cañón con un río al fondo",
+              "naturalSize": {
+                "width": 900,
+                "height": 900
+              },
+              "objectFit": "cover",
+              "objectPosition": "42% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--portrait",
+            "posVariable": "50% 40%",
+            "computedAspectRatio": "4 / 5",
+            "computedSize": {
+              "width": 394.67,
+              "height": 493.33
+            },
+            "computedRatio": 0.8,
+            "border": "0px none rgb(255, 255, 255)",
+            "borderRadius": "22px",
+            "transform": "none",
+            "image": {
+              "currentSrc": "photo-hazlo.webp",
+              "alt": "Quique junto a un neón que dice: Hazlo, y si tienes miedo, hazlo con miedo",
+              "naturalSize": {
+                "width": 716,
+                "height": 890
+              },
+              "objectFit": "cover",
+              "objectPosition": "50% 40%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--landscape",
+            "posVariable": "32% 50%",
+            "computedAspectRatio": "4 / 3",
+            "computedSize": {
+              "width": 394.66,
+              "height": 295.98
+            },
+            "computedRatio": 1.3334,
+            "border": "0px none rgb(255, 255, 255)",
+            "borderRadius": "22px",
+            "transform": "none",
+            "image": {
+              "currentSrc": "photo-setup.webp",
+              "alt": "Selfie de Quique delante de su setup",
+              "naturalSize": {
+                "width": 1280,
+                "height": 960
+              },
+              "objectFit": "cover",
+              "objectPosition": "32% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--landscape eg-photo--framed",
+            "posVariable": "32% 50%",
+            "computedAspectRatio": "4 / 3",
+            "computedSize": {
+              "width": 537.5,
+              "height": 414.05
+            },
+            "computedRatio": 1.2982,
+            "border": "6px solid rgb(0, 0, 0)",
+            "borderRadius": "18px",
+            "transform": "matrix(0.999391, 0.0348995, -0.0348995, 0.999391, 0, 0)",
+            "image": {
+              "currentSrc": "photo-setup.webp",
+              "alt": "Selfie de Quique con el pulgar arriba delante de su setup",
+              "naturalSize": {
+                "width": 1280,
+                "height": 960
+              },
+              "objectFit": "cover",
+              "objectPosition": "32% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--landscape eg-photo--framed is-hover",
+            "posVariable": "32% 50%",
+            "computedAspectRatio": "4 / 3",
+            "computedSize": {
+              "width": 529.24,
+              "height": 399.96
+            },
+            "computedRatio": 1.3232,
+            "border": "6px solid rgb(0, 0, 0)",
+            "borderRadius": "18px",
+            "transform": "matrix(1.01, 0, 0, 1.01, 0, 0)",
+            "image": {
+              "currentSrc": "photo-setup.webp",
+              "alt": "Selfie de Quique con el pulgar arriba delante de su setup",
+              "naturalSize": {
+                "width": 1280,
+                "height": 960
+              },
+              "objectFit": "cover",
+              "objectPosition": "32% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          }
+        ],
+        "hover": null,
+        "consoleErrors": [],
+        "documentCanvasBackground": "rgb(0, 0, 0)",
+        "bodyFontFamily": "Barlow, system-ui, sans-serif"
+      }
+    },
+    {
+      "visualId": "VIS-05",
+      "path": "framed--pointer-hover--desktop--dark.png",
+      "alt": "The same framed row after a real pointer hover on the left figure: both frames are straightened and scaled, with no visible rotation left on the left figure.",
+      "scenario": "Same row as VIS-04 with an actual Playwright pointer hover on the left framed figure; the right figure keeps its authored .is-hover class.",
+      "crop": "Component zone: the second preview row (.pv > .pv-row:nth-of-type(2)), 1232x507 CSS px.",
+      "selector": ".pv > .pv-row:nth-of-type(2)",
+      "png": {
+        "width": 1232,
+        "height": 507,
+        "bytes": 283603,
+        "sha256": "b8f75b16af9d9dc1b6feada58a8decea4f901bb7466f60e8fa07e1b0107f301c"
+      },
+      "expectedDesignVsObserved": "Observed web behavior supplied as the comparison baseline and as Proposed visual reference. This is the current web implementation, not an approved design system appearance.",
+      "approval": "Proposed; no adoption recorded",
+      "deltaEvidence": "Observed computed transform changes from matrix(0.999391, 0.0348995, -0.0348995, 0.999391, 0, 0) to matrix(1.01, 0, 0, 1.01, 0, 0), proving the hover straighten is real browser behavior, not only an authored class.",
+      "observed": {
+        "figures": [
+          {
+            "className": "eg-photo eg-photo--square",
+            "posVariable": "42% 50%",
+            "computedAspectRatio": "1 / 1",
+            "computedSize": {
+              "width": 394.66,
+              "height": 394.66
+            },
+            "computedRatio": 1,
+            "border": "0px none rgb(255, 255, 255)",
+            "borderRadius": "22px",
+            "transform": "none",
+            "image": {
+              "currentSrc": "photo-canyon.webp",
+              "alt": "Quique de espaldas mirando un gran cañón con un río al fondo",
+              "naturalSize": {
+                "width": 900,
+                "height": 900
+              },
+              "objectFit": "cover",
+              "objectPosition": "42% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--portrait",
+            "posVariable": "50% 40%",
+            "computedAspectRatio": "4 / 5",
+            "computedSize": {
+              "width": 394.67,
+              "height": 493.33
+            },
+            "computedRatio": 0.8,
+            "border": "0px none rgb(255, 255, 255)",
+            "borderRadius": "22px",
+            "transform": "none",
+            "image": {
+              "currentSrc": "photo-hazlo.webp",
+              "alt": "Quique junto a un neón que dice: Hazlo, y si tienes miedo, hazlo con miedo",
+              "naturalSize": {
+                "width": 716,
+                "height": 890
+              },
+              "objectFit": "cover",
+              "objectPosition": "50% 40%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--landscape",
+            "posVariable": "32% 50%",
+            "computedAspectRatio": "4 / 3",
+            "computedSize": {
+              "width": 394.66,
+              "height": 295.98
+            },
+            "computedRatio": 1.3334,
+            "border": "0px none rgb(255, 255, 255)",
+            "borderRadius": "22px",
+            "transform": "none",
+            "image": {
+              "currentSrc": "photo-setup.webp",
+              "alt": "Selfie de Quique delante de su setup",
+              "naturalSize": {
+                "width": 1280,
+                "height": 960
+              },
+              "objectFit": "cover",
+              "objectPosition": "32% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--landscape eg-photo--framed",
+            "posVariable": "32% 50%",
+            "computedAspectRatio": "4 / 3",
+            "computedSize": {
+              "width": 529.24,
+              "height": 399.96
+            },
+            "computedRatio": 1.3232,
+            "border": "6px solid rgb(0, 0, 0)",
+            "borderRadius": "18px",
+            "transform": "matrix(1.01, 0, 0, 1.01, 0, 0)",
+            "image": {
+              "currentSrc": "photo-setup.webp",
+              "alt": "Selfie de Quique con el pulgar arriba delante de su setup",
+              "naturalSize": {
+                "width": 1280,
+                "height": 960
+              },
+              "objectFit": "cover",
+              "objectPosition": "32% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--landscape eg-photo--framed is-hover",
+            "posVariable": "32% 50%",
+            "computedAspectRatio": "4 / 3",
+            "computedSize": {
+              "width": 529.24,
+              "height": 399.96
+            },
+            "computedRatio": 1.3232,
+            "border": "6px solid rgb(0, 0, 0)",
+            "borderRadius": "18px",
+            "transform": "matrix(1.01, 0, 0, 1.01, 0, 0)",
+            "image": {
+              "currentSrc": "photo-setup.webp",
+              "alt": "Selfie de Quique con el pulgar arriba delante de su setup",
+              "naturalSize": {
+                "width": 1280,
+                "height": 960
+              },
+              "objectFit": "cover",
+              "objectPosition": "32% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          }
+        ],
+        "hover": {
+          "target": "first .eg-photo--framed in framed row",
+          "before": "matrix(0.999391, 0.0348995, -0.0348995, 0.999391, 0, 0)",
+          "after": "matrix(1.01, 0, 0, 1.01, 0, 0)"
+        },
+        "consoleErrors": [],
+        "documentCanvasBackground": "rgb(0, 0, 0)",
+        "bodyFontFamily": "Barlow, system-ui, sans-serif"
+      }
+    },
+    {
+      "visualId": "VIS-06",
+      "path": "board--static--desktop--dark.png",
+      "alt": "Supplementary board of the whole PhotoFrame preview: the ratio and crop row above the framed row, on the black canvas.",
+      "scenario": "Whole preview board (.pv) at rest, supplementary to VIS-03 and VIS-04.",
+      "crop": "Whole component board, 1280x1110 CSS px, supplementary only; it does not replace the row captures.",
+      "selector": ".pv",
+      "png": {
+        "width": 1280,
+        "height": 1110,
+        "bytes": 1281491,
+        "sha256": "9101df380045ee554a16a832e723af0519fbc8205fe855f32d59cc09ae17359a"
+      },
+      "expectedDesignVsObserved": "Observed web behavior supplied as the comparison baseline and as Proposed visual reference. This is the current web implementation, not an approved design system appearance.",
+      "approval": "Proposed; no adoption recorded",
+      "deltaEvidence": "Board-level context only; no promise depends on it alone.",
+      "observed": {
+        "figures": [
+          {
+            "className": "eg-photo eg-photo--square",
+            "posVariable": "42% 50%",
+            "computedAspectRatio": "1 / 1",
+            "computedSize": {
+              "width": 394.66,
+              "height": 394.66
+            },
+            "computedRatio": 1,
+            "border": "0px none rgb(255, 255, 255)",
+            "borderRadius": "22px",
+            "transform": "none",
+            "image": {
+              "currentSrc": "photo-canyon.webp",
+              "alt": "Quique de espaldas mirando un gran cañón con un río al fondo",
+              "naturalSize": {
+                "width": 900,
+                "height": 900
+              },
+              "objectFit": "cover",
+              "objectPosition": "42% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--portrait",
+            "posVariable": "50% 40%",
+            "computedAspectRatio": "4 / 5",
+            "computedSize": {
+              "width": 394.67,
+              "height": 493.33
+            },
+            "computedRatio": 0.8,
+            "border": "0px none rgb(255, 255, 255)",
+            "borderRadius": "22px",
+            "transform": "none",
+            "image": {
+              "currentSrc": "photo-hazlo.webp",
+              "alt": "Quique junto a un neón que dice: Hazlo, y si tienes miedo, hazlo con miedo",
+              "naturalSize": {
+                "width": 716,
+                "height": 890
+              },
+              "objectFit": "cover",
+              "objectPosition": "50% 40%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--landscape",
+            "posVariable": "32% 50%",
+            "computedAspectRatio": "4 / 3",
+            "computedSize": {
+              "width": 394.66,
+              "height": 295.98
+            },
+            "computedRatio": 1.3334,
+            "border": "0px none rgb(255, 255, 255)",
+            "borderRadius": "22px",
+            "transform": "none",
+            "image": {
+              "currentSrc": "photo-setup.webp",
+              "alt": "Selfie de Quique delante de su setup",
+              "naturalSize": {
+                "width": 1280,
+                "height": 960
+              },
+              "objectFit": "cover",
+              "objectPosition": "32% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--landscape eg-photo--framed",
+            "posVariable": "32% 50%",
+            "computedAspectRatio": "4 / 3",
+            "computedSize": {
+              "width": 537.5,
+              "height": 414.05
+            },
+            "computedRatio": 1.2982,
+            "border": "6px solid rgb(0, 0, 0)",
+            "borderRadius": "18px",
+            "transform": "matrix(0.999391, 0.0348995, -0.0348995, 0.999391, 0, 0)",
+            "image": {
+              "currentSrc": "photo-setup.webp",
+              "alt": "Selfie de Quique con el pulgar arriba delante de su setup",
+              "naturalSize": {
+                "width": 1280,
+                "height": 960
+              },
+              "objectFit": "cover",
+              "objectPosition": "32% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          },
+          {
+            "className": "eg-photo eg-photo--landscape eg-photo--framed is-hover",
+            "posVariable": "32% 50%",
+            "computedAspectRatio": "4 / 3",
+            "computedSize": {
+              "width": 529.24,
+              "height": 399.96
+            },
+            "computedRatio": 1.3232,
+            "border": "6px solid rgb(0, 0, 0)",
+            "borderRadius": "18px",
+            "transform": "matrix(1.01, 0, 0, 1.01, 0, 0)",
+            "image": {
+              "currentSrc": "photo-setup.webp",
+              "alt": "Selfie de Quique con el pulgar arriba delante de su setup",
+              "naturalSize": {
+                "width": 1280,
+                "height": 960
+              },
+              "objectFit": "cover",
+              "objectPosition": "32% 50%",
+              "filter": "saturate(0.92) contrast(1.06)",
+              "complete": true
+            }
+          }
+        ],
+        "hover": null,
+        "consoleErrors": [],
+        "documentCanvasBackground": "rgb(0, 0, 0)",
+        "bodyFontFamily": "Barlow, system-ui, sans-serif"
+      }
+    }
+  ],
+  "componentCssFactsObserved": {
+    "rootBackground": "computed body background rgb(0, 0, 0) from --color-bg-canvas",
+    "imageCss": "object-fit: cover; object-position from --pos; filter: saturate(.92) contrast(1.06)",
+    "captionCss": "absolutely positioned inside the frame at the bottom with a neon diamond pseudo-element",
+    "overlayCss": "radial vignette plus bottom gradient pseudo-element above the image",
+    "framedCss": "border: 6px solid #000; border-radius: 18px; transform: rotate(2deg); transition on transform; :hover and .is-hover produce rotate(0) scale(1.01)",
+    "ratioCss": "aspect-ratio 1/1, 4/5, 4/3 from the --square, --portrait and --landscape modifiers",
+    "note": "These are observed web values, not design system tokens or approved design system appearance."
+  },
+  "limits": [
+    "preview.html cannot show ratio=\"auto\": the preview has no auto example, and the page-level container-height and sub-760px overrides exist only in pulso-source.html CSS. Those behaviours are quoted from source, not captured.",
+    "The captures are the current web implementation, not an approved expected design for the design system; adoption needs a separate owner decision bound to these hashes.",
+    "No reduced-motion, narrow-viewport, RTL, zoom or reduced-transparency capture was taken; none of them carries this delta.",
+    "Runtime media ids were resolved to the reference-web asset files by figure alt text; a different photograph behind a runtime id would be a source mismatch, not a capture defect.",
+    "Pixels do not establish tokens, contrast, accessibility or behaviour; no design system component was rendered, built or tested here."
+  ]
+}

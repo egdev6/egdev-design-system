@@ -1,0 +1,184 @@
+{
+  "kind": "Component-zone captures for the Chip v0.2 amendment (static and link modes)",
+  "specVersion": "0.2",
+  "specLocation": "docs/components/chip/v0.2/spec.md",
+  "capturedAt": "2026-11-02",
+  "task": "odd/tasks/web-catalog.md, B1 (web catalog layer b, S3)",
+  "captureVersion": "v0.2-capture-1",
+  "purpose": "Observed evidence of the real static chip roles in the Pulso reference page, plus one supporting reference from the Foundation Chip preview. These are source captures of the current web appearance, not approved expected design and not verification of the design-system recipe.",
+  "source": {
+    "webSourceRoot": "/home/egdev/proyectos/egdev-website/egdev-foundation (read-only, owner-granted)",
+    "files": [
+      {
+        "path": "reference-web/pulso-source.html",
+        "sha256": "778e5412b64d1b79195c51c0e47c78f654b46da445be8354a97e572774348f13",
+        "role": "Primary source for VIS-02 to VIS-04"
+      },
+      {
+        "path": "design-system/components/Chip/preview.html",
+        "sha256": "b165fe3c03bcc18f9a51b14cf985ff2ced89361fc0087fbb384192baa2e6dfe3",
+        "role": "Source fragment for VIS-05, mounted unmodified in a temporary harness"
+      },
+      {
+        "path": "design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+        "role": "Inlined into the VIS-05 harness (read-only); not edited"
+      },
+      {
+        "path": "design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe",
+        "role": "Inlined into the VIS-05 harness (read-only); not edited"
+      },
+      {
+        "path": "design-system/components/Chip/README.md",
+        "sha256": "b7ee7561555d4836cf015562e3cbe904dadf74db7ced9a585d3c4d9e0a48482e",
+        "role": "Documented static/`href` promise; read, not captured"
+      }
+    ],
+    "note": "Nothing was written inside egdev-website. The VIS-05 harness and the capture script live in /tmp/egdev-sbcheck/ and only read the sources."
+  },
+  "conditions": {
+    "tool": "playwright-core (npx cache: /home/egdev/.npm/_npx/e41f203b7505f1fb/node_modules/playwright-core), programmatic Chromium, not Playwright MCP",
+    "browser": "Chromium 153.0.8010.12 (chrome-headless-shell-linux64), Linux x86_64",
+    "executablePath": "~/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+    "pageLoading": "file:// URL; pulso-source.html loaded directly, preview.html mounted in a /tmp harness page with tokens.css and bundle.css inlined as <style> blocks",
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "deviceScaleFactor": 1,
+    "forceColorProfile": "srgb",
+    "waitAfterLoad": "document.fonts.ready + 1.5 s, then all [data-reveal] nodes forced to their revealed state (class 'in') + 900 ms",
+    "fontsLoadedPulso": [
+      "Barlow 400",
+      "Barlow 500",
+      "Barlow 600",
+      "Barlow 700",
+      "Barlow Condensed 700",
+      "Barlow Condensed 800",
+      "JetBrains Mono 400",
+      "JetBrains Mono 500"
+    ],
+    "fontsLoadedPreviewHarness": ["Barlow 600", "Barlow Condensed 600"],
+    "crop": "Component zone per image: the element that contains the chips, captured with element.screenshot() at device scale 1"
+  },
+  "images": [
+    {
+      "visualId": "VIS-02",
+      "file": "static--topic-chips--1280x900--dark.png",
+      "sha256": "2a7903a8d97519013730c39427865b0a5c01c92eb4d820bdc3704a948b4a97ec",
+      "pngPixels": "340x28",
+      "viewport": "1280x900",
+      "sourcePath": "reference-web/pulso-source.html",
+      "sourceSelector": ".build-grid .proj.feat .chips",
+      "sourceOuterHTML": "<div class=\"chips\"><span class=\"chip\">Open Source</span><span class=\"chip\">TypeScript</span></div>",
+      "altText": "Two static topic pills on a dark card: 'Open Source' and 'TypeScript', hairline-bordered rounded pills with secondary text.",
+      "observedComputedStyle": {
+        "fontFamily": "Barlow",
+        "fontWeight": "600",
+        "fontSize": "13px",
+        "lineHeight": "13px",
+        "padding": "6px 10px",
+        "borderRadius": "9999px",
+        "border": "1px solid rgba(255,255,255,0.07)",
+        "background": "rgba(255,255,255,0.04)",
+        "color": "rgb(204,204,204)"
+      },
+      "status": "Proposed"
+    },
+    {
+      "visualId": "VIS-03",
+      "file": "static--topic-list--1280x900--dark.png",
+      "sha256": "f735de41bad0c77b774f943885ef32cf74f072c67260e8eb8f2af7d04d061ca8",
+      "pngPixels": "422x70",
+      "viewport": "1280x900",
+      "sourcePath": "reference-web/pulso-source.html",
+      "sourceSelector": ".think-side .topics",
+      "sourceOuterHTML": "<ul class=\"topics\" aria-label=\"Temas\"><li>Arquitectura frontend</li><li>Accesibilidad</li><li>Agentes IA</li><li>CSS moderno</li><li>Design systems</li><li>Testing</li><li>React</li></ul>",
+      "altText": "Named topics list of seven static pills in two wrapped rows: 'Arquitectura frontend', 'Accesibilidad', 'Agentes IA', 'CSS moderno', 'Design systems', 'Testing', 'React'.",
+      "observedComputedStyle": {
+        "fontFamily": "Barlow",
+        "fontWeight": "600",
+        "fontSize": "13px",
+        "lineHeight": "20.15px (inherited from body 1.55; the rule sets none)",
+        "padding": "4px 10px",
+        "borderRadius": "9999px",
+        "border": "1px solid rgba(255,255,255,0.07)",
+        "background": "rgba(255,255,255,0.03)",
+        "color": "rgb(204,204,204)",
+        "display": "list-item"
+      },
+      "status": "Proposed"
+    },
+    {
+      "visualId": "VIS-04",
+      "file": "static--icon-warning--1280x900--dark.png",
+      "sha256": "6b71fdae5191843726c2652575c144f76dba35be0c5ffd00d3ed2332c917c70c",
+      "pngPixels": "82x29",
+      "viewport": "1280x900",
+      "sourcePath": "reference-web/pulso-source.html",
+      "sourceSelector": ".lab .exp .chip.warn",
+      "sourceOuterHTML": "<span class=\"chip warn\"><svg class=\"i\"><use href=\"#i-alert\"></use></svg>testing</span>",
+      "altText": "One static pill with a leading warning-triangle icon and the label 'testing', in the warning tone (amber border, amber text).",
+      "observedComputedStyle": {
+        "fontFamily": "Barlow",
+        "fontWeight": "600",
+        "fontSize": "13px",
+        "lineHeight": "13px",
+        "padding": "6px 10px",
+        "borderRadius": "9999px",
+        "border": "1px solid rgba(255,178,36,0.3)",
+        "background": "rgba(255,178,36,0.08)",
+        "color": "rgb(255,178,36)",
+        "gap": "6px"
+      },
+      "status": "Proposed",
+      "scopeNote": "Recorded as evidence that the web uses a leading icon and a warning tone on a static chip. The tone is outside the approved B1 gap and is not part of the v0.2 delta (see spec owner question Q1)."
+    },
+    {
+      "visualId": "VIS-05",
+      "file": "static--foundation-preview-row--720x480--dark.png",
+      "sha256": "5677e54fac872067b744a379ebd6f60757244d9c96bb0dd7500451d1af0ce50e",
+      "pngPixels": "506x27",
+      "viewport": "720x480",
+      "sourcePath": "design-system/components/Chip/preview.html",
+      "sourceSelector": ".pv-row:nth-of-type(1) .pv-items",
+      "sourceOuterHTML": "<div class=\"pv-items\"><span class=\"eg-chip\">Open Source</span><span class=\"eg-chip\">TypeScript</span><span class=\"eg-chip\">React</span><span class=\"eg-chip\">CLI</span></div>",
+      "altText": "Four static Foundation .eg-chip pills in one row: 'Open Source', 'TypeScript', 'React', 'CLI'.",
+      "observedComputedStyle": {
+        "fontFamily": "Barlow",
+        "fontWeight": "600",
+        "fontSize": "13px",
+        "lineHeight": "13px",
+        "padding": "6px 10px",
+        "borderRadius": "9999px",
+        "border": "1px solid rgba(255,255,255,0.07)",
+        "background": "color(srgb 1 1 1 / 0.04)",
+        "color": "rgb(204,204,204)"
+      },
+      "status": "Proposed",
+      "scopeNote": "Supporting reference only: the same preview family as the approved VIS-01 board, but captured now instead of reusing the 2026-10-17 board. It does not renew or widen VIS-01 approval."
+    }
+  ],
+  "notCaptured": [
+    {
+      "visualId": "link mode",
+      "reason": "No anchor chip exists in the reference page: a DOM query for 'a.chip, a.eg-chip, a[class*=\"chip\"]' returned 0 matches, and the only link-mode traces are the Chip README 'href' prop and the 'a.eg-chip:hover' rule in bundle.css line 119. No real rendered link chip exists to capture, and no synthetic markup was rendered to fabricate one."
+    },
+    {
+      "visualId": "pressable on/off/hover",
+      "reason": "Covered by the approved v0.1 reference VIS-01 (docs/design/foundation-boards/v2026-10-17/Chip.png, sha256 a45c6772f1ab77e6d14cc45a05c518a17f3ae581e601b4e04884655c548c72ae); not re-captured because the v0.2 amendment does not change pressable appearance."
+    }
+  ],
+  "limits": [
+    "The captures show the web's current local .chip/.topics styles, which are flatter than the design-system recipe (no sheen gradient, no edge shadow, 13/14px label). They are evidence for the role and content, not approved expected design for the Chip recipe.",
+    "pulso-source.html is a template with Jinja image placeholders and an external Google Fonts request; the chips do not depend on either, and the loaded font families are recorded above.",
+    "The reveal system starts every [data-reveal] node at opacity 0; the script forces the revealed state so the crop is not a pre-reveal capture. No source file is modified.",
+    "Static and interactive chips look identical except for pointer/keyboard affordances, so the captures cannot show mode by appearance; mode is a DOM and behavior property verified by tests.",
+    "The preview harness loaded Barlow 600 and Barlow Condensed 600 only, which covers the chip label weight (600); heavier weights used by other preview rows were not loaded.",
+    "Browser images do not verify behavior, accessibility, keyboard or focus behavior.",
+    "A localized difference in PNG bytes can appear between runs of the same script (scroll-dependent compositing); the hashes above are of the files stored in this folder and must be re-verified with sha256sum before linking them in any published comment."
+  ],
+  "approval": {
+    "status": "Proposed",
+    "reference": "Pending: the owner approves or declines these captures as supporting evidence for Chip v0.2 in issue #55. The captures are source evidence and grant no expected-design approval."
+  }
+}

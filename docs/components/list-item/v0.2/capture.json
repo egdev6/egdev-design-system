@@ -1,0 +1,104 @@
+{
+  "component": "list-item",
+  "specVersion": "0.2",
+  "spec": "docs/components/list-item/v0.2/spec.md",
+  "specContentSHA256": "94a7d5c5e3be5094d34d1b54b09e2268c0a44bf4361bbd01d03fb31f81461eae",
+  "status": "Proposed — expected-design evidence for owner review; adoption and GitHub-visible publication pending. Visual conformity: Not evaluated.",
+  "capturedFrom": {
+    "authority": "odd/tasks/web-catalog.md L6 owner answer \"Sí, capturar los previews\" (render egdev-foundation preview.html read-only in Chromium; PNG + conditions + SHA-256 under docs/components/<name>/<version>/)",
+    "sourceRoot": "egdev-website/ (owner-granted read-only workspace root)",
+    "readOnly": true,
+    "notes": "No file inside egdev-website was edited. A throwaway harness under /tmp/egdev-sbcheck/ linked the Foundation stylesheets by file:// URL and embedded the original preview fragment unchanged."
+  },
+  "harness": {
+    "directory": "/tmp/egdev-sbcheck (scratch, outside the worktree; safe to delete)",
+    "script": "/tmp/egdev-sbcheck/capture.mjs",
+    "stylesheetLinks": [
+      "file://egdev-website/egdev-foundation/design-system/tokens.css",
+      "file://egdev-website/egdev-foundation/design-system/components/bundle.css"
+    ],
+    "stylesheets": [
+      {
+        "path": "egdev-website/egdev-foundation/design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e"
+      },
+      {
+        "path": "egdev-website/egdev-foundation/design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      }
+    ]
+  },
+  "conditions": {
+    "browser": "chrome-headless-shell (Playwright 1.60.0, chromium_headless_shell-1243 build)",
+    "tool": "playwright-core 1.60.0, launched with --allow-file-access-from-files --force-color-profile=srgb --hide-scrollbars",
+    "viewport": { "width": 1024, "height": 768 },
+    "deviceScaleFactor": 2,
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "locale": "en-US",
+    "crop": "component zone: element screenshot of the preview board (.pv), the labelled grid containing every previewed state",
+    "animations": "disabled during the screenshot",
+    "fonts": {
+      "status": "loaded (document.fonts.ready awaited before the screenshot)",
+      "loadedFaces": ["Barlow 600", "Barlow Condensed 600", "Barlow Condensed 700", "Barlow Condensed 800"],
+      "unusedFaces": "requested by the preview link but never used by the rendered markup, so reported as unloaded (expected)",
+      "source": "Google Fonts, requested by the original preview.html"
+    },
+    "resolvedTokens": {
+      "--color-bg-canvas": "#000000",
+      "--font-display": "\"Barlow Condensed\", \"Arial Narrow\", sans-serif"
+    },
+    "date": "2026-11-02T09:20Z",
+    "verificationLimits": "Static resting and is-hover states only. No pointer-driven hover, focus-visible, reduced-motion, light-theme or below-560px capture was produced; captures are browser evidence of the current web design, not of the DS implementation."
+  },
+  "visuals": [
+    {
+      "id": "VIS-03",
+      "file": "article-row--rest-and-hover--1024x768--dark.png",
+      "pngSha256": "27898d4620a0a939eb694f4c288a2c73c121c683e9d361aa4b2ee60486222758",
+      "pngBytes": 64883,
+      "pixelSize": { "width": 2048, "height": 846 },
+      "alt": "Two-column board: the left column stacks three blog rows, the middle one hovered, each with an uppercase meta line above a two-line sans title; the right column shows one loose row of the same shape.",
+      "webComponent": "ArticleItem",
+      "source": {
+        "readme": "egdev-website/egdev-foundation/design-system/components/ArticleItem/README.md",
+        "preview": "egdev-website/egdev-foundation/design-system/components/ArticleItem/preview.html",
+        "previewSha256": "a447aa80e45f1982690fb4bc0e3176b19ec1b074b8f1b1e613963166990b1a70",
+        "realUsage": "egdev-website/egdev-foundation/reference-web/pulso-source.html lines 1032-1034 (.post rows inside the blog section)"
+      },
+      "mapsTo": "proposed ListItem variant=\"editorial\" size=\"md\", linked row, inline meta above the title, no leading and no trailing zone"
+    },
+    {
+      "id": "VIS-04",
+      "file": "note-row--rest-hover-compact--1024x768--dark.png",
+      "pngSha256": "e035c06884de24484b005ae0bf7720f27d000f7eb054c47f3464f3fbc120ae09",
+      "pngBytes": 91244,
+      "pixelSize": { "width": 2048, "height": 754 },
+      "alt": "Left column of three note rows with a large day and month stamp, a title and a diagonal arrow, the middle row hovered; the right column repeats the same rows at compact density.",
+      "webComponent": "NoteItem",
+      "source": {
+        "readme": "egdev-website/egdev-foundation/design-system/components/NoteItem/README.md",
+        "preview": "egdev-website/egdev-foundation/design-system/components/NoteItem/preview.html",
+        "previewSha256": "54425e527028f6437118aaebfbff225dd3824828366448b55b8952e94893b5ec",
+        "realUsage": "egdev-website/egdev-foundation/reference-web/pulso-source.html lines 977-981 (<ol class=\"log\"> rows with <time datetime> day + month)"
+      },
+      "mapsTo": "proposed ListItem variant=\"editorial\" size=\"md\" (left) and size=\"sm\" (right), leading <time datetime> stamp, title, trailing decorative arrow"
+    },
+    {
+      "id": "VIS-05",
+      "file": "stream-row--rest-and-hover--1024x768--dark.png",
+      "pngSha256": "e179eac79b6e782370446b6338b0336d1cb77beeab489048721c4e98b62c02ed",
+      "pngBytes": 56085,
+      "pixelSize": { "width": 2048, "height": 698 },
+      "alt": "Hairline-separated list of past streams: a title with a small date line under it and a large tabular duration at the trailing edge; the middle row is hovered with a wash and a start indent, and the right column shows a long-title case.",
+      "webComponent": "StreamItem",
+      "source": {
+        "readme": "egdev-website/egdev-foundation/design-system/components/StreamItem/README.md",
+        "preview": "egdev-website/egdev-foundation/design-system/components/StreamItem/preview.html",
+        "previewSha256": "f13a9dbd6a363697bb4ee226c846868622c80b2f72470e0012985ed76de7fa63",
+        "realUsage": "egdev-website/egdev-foundation/reference-web/pulso-source.html lines 1125-1129 (<ul class=\"slist\"> rows with date and duration)"
+      },
+      "mapsTo": "proposed ListItem variant=\"editorial-divided\" size=\"md\", title over meta date, trailing readable duration, no surface and a bottom hairline"
+    }
+  ]
+}

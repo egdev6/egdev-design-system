@@ -1,0 +1,171 @@
+# ListItem — v0.2 snapshot comment for issue #88 (prepared, not posted)
+
+**Readiness: Draft — not ready for implementation.** OQ-1 to OQ-5 are open blocking choices, and this version explicitly refines two approved v0.1 promises (interactive-only hover affordances; `asChild` anchor child allowed on editorial rows), so it needs its own explicit owner adoption. Posting this comment authorizes no code, plan, token, dependency or catalog change.
+
+## Snapshot identity
+
+- `version: 0.2`
+- `contentSHA256: 94a7d5c5e3be5094d34d1b54b09e2268c0a44bf4361bbd01d03fb31f81461eae` (SHA-256 of the canonical payload from `## 1. Purpose and scope` through EOF, LF line endings, final newline; reproduced verbatim below, tracking metadata excluded)
+- `visualHashes: VIS-03 27898d4620a0a939eb694f4c288a2c73c121c683e9d361aa4b2ee60486222758; VIS-04 e035c06884de24484b005ae0bf7720f27d000f7eb054c47f3464f3fbc120ae09; VIS-05 e179eac79b6e782370446b6338b0336d1cb77beeab489048721c4e98b62c02ed`
+- `approvalReference: Pending (Draft v0.2; captures and the issue-comment route were authorized by odd/tasks/web-catalog.md L6, the catalog decision by docs/components/web-catalog/v0.1/owner-approvals.md)`
+- `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/88`
+- `latestPublishedComment: Pending (this snapshot is prepared, not posted)`
+- Previous snapshot: the issue body (v0.1 contract) plus its approval comment https://github.com/egdev6/egdev-design-system/issues/88#issuecomment-6251516412, and the v0.1 implementation evidence `docs/components/list-item/v0.1/implementation.md`. This comment is the next version of the same issue: it does not edit the body and does not open a new issue.
+
+## Reason and compatibility impact
+
+- **Reason:** the approved web catalog review ([cataloging-draft.md §3](https://github.com/egdev6/egdev-design-system/blob/main/docs/components/web-catalog/v0.1/cataloging-draft.md), owner approvals 2026-11-02) records that the web's ArticleItem, NoteItem and StreamItem are absorbed into a ListItem editorial row variant, and `docs/CATALOGO.md` already carries those three rows as “ListItem row variant”, action “absorber”. The shipped ListItem v0.1 has no leading date block, no trailing duration/arrow zone and no row-level title part.
+- **Compatibility:** additive. `variant` gains `editorial` and `editorial-divided`; `size` is new and only affects the editorial values; `ListItemTitle` (`level`), `ListItemLeading` and `ListItemTrailing` are new public parts. `ListItem`, the six v0.1 parts, `ListItemProps`, `ListItemPartProps`, `ListItemStatus`, the `eg-list-item` root and all existing part markers keep their contracts, and `CalendarGrid` (the only in-repo consumer, `variant="compact"`) is unaffected. Two v0.1 promises are refined and need adoption: a whole-row anchor is now allowed for editorial rows (v0.1 restricted populated children to non-focusable containers) with `ListItemActions` forbidden inside it, and the link hover affordance is scoped to interactive rows only (v0.1 hovered every `default` row). No ref, no stylesheet, no new dependency, no token change and no catalog-row change is proposed here.
+
+## Visual references and asset status
+
+Local captures for this version live in `docs/components/list-item/v0.2/`; `capture.json` holds the harness, source paths, conditions and per-file SHA-256.
+
+- VIS-03 — `docs/components/list-item/v0.2/article-row--rest-and-hover--1024x768--dark.png`, from `ArticleItem/preview.html` (source SHA-256 `a447aa80e45f1982690fb4bc0e3176b19ec1b074b8f1b1e613963166990b1a70`).
+- VIS-04 — `docs/components/list-item/v0.2/note-row--rest-hover-compact--1024x768--dark.png`, from `NoteItem/preview.html` (source SHA-256 `54425e527028f6437118aaebfbff225dd3824828366448b55b8952e94893b5ec`).
+- VIS-05 — `docs/components/list-item/v0.2/stream-row--rest-and-hover--1024x768--dark.png`, from `StreamItem/preview.html` (source SHA-256 `f13a9dbd6a363697bb4ee226c846868622c80b2f72470e0012985ed76de7fa63`).
+- Conditions for all three: 1024×768 viewport, device scale factor 2, `chrome-headless-shell` (Playwright 1.60.0), dark colour scheme, `prefers-reduced-motion: no-preference`, animations disabled, Google Fonts loaded before capture, element screenshot of the preview board. Resting and `is-hover` states only.
+
+**Image handoff: Pending and blocked.** Local PNGs are not GitHub-visible. The owner must choose either human attachment (upload the exact PNGs and return their URLs) or a bounded, separately authorized asset-publication branch; the published bytes must be compared against the hashes above before any image is linked here. No URL is invented and no commit, push or upload is implied.
+
+## What approval of this comment would mean
+
+Adopting v0.2 as the ListItem contract (the editorial row family with `editorial`/`editorial-divided`, `size`, the three new parts and the two stated promise refinements) and adopting or declining VIS-03 to VIS-05 as supporting expected-design evidence. It would not approve the implementation plan, tokens, dependencies, conventions globally or any catalog-row change. Answers needed: OQ-1 (naming of the editorial family), OQ-2 (`ListItemTitle` part versus consumer heading), OQ-3 (NoteItem compact density in this contract), OQ-4 (DS raised row instead of the web's alpha-glass card), OQ-5 (whole-row anchor refinement) — each with a recommendation at the end of the snapshot.
+
+---
+
+## Full snapshot (canonical payload, SHA-256 `94a7d5c5e3be5094d34d1b54b09e2268c0a44bf4361bbd01d03fb31f81461eae`)
+
+## 1. Purpose and scope
+
+- **Need:** one editorial list row in `@egdev/ui` so a new web view can build dated and linked editorial lists without three per-page molecules. The catalog rows for ArticleItem, NoteItem and StreamItem already read “ListItem row variant”, destination `@egdev/ui`, action “absorber”, with the reason recorded in [cataloging-draft.md §3](../web-catalog/v0.1/cataloging-draft.md) and approved in [owner-approvals.md](../web-catalog/v0.1/owner-approvals.md). `scripts/catalog_data.py` and `docs/CATALOGO.md` carry that decision.
+- **Non-goals:** not three new molecules; not a grid, board or slider (`BlogGrid`, `NotesBoard`, `LiveBand` are layer (c) organisms); not ArticleFeature, which keeps a cover, a decorative mark and its own contract; not date parsing, locale formatting, reading-time computation, duration formatting or any Pulso copy — day, month, category, reading time and duration arrive as consumer content; no routing, no analytics, no pagination.
+- **Cataloging decision / alternatives:** **variant** on the existing ListItem. Rejected: *reuse as is* (no v0.1 value has a leading date block or a trailing duration/arrow zone); *compose* (three compositions would each re-implement the same row zones, link semantics, `<time>` handling and focus treatment); *extract* to three molecules (they differ only in slot content and one surface identity, and the approved catalog decision already assigns them to ListItem); *new component* (would duplicate ListItem's root Surface, status and `asChild` contracts).
+- **Evidence / level and package:** molecule in `@egdev/ui`, next to the existing `packages/ui/src/molecules/list-item/`. Verified current public React API: `ListItem`, `ListItemBody`, `ListItemContent`, `ListItemMedia`, `ListItemMeta`, `ListItemFooter`, `ListItemActions` plus `ListItemProps`, `ListItemPartProps`, `ListItemStatus`, `ListItemVariant` from `packages/ui/src/molecules/list-item/index.ts`; root always composes `surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'lg' })` and `variant` accepts `card`, `compact`, `row`. Web evidence (read-only, owner-granted): `egdev-foundation/design-system/components/{ArticleItem,NoteItem,StreamItem}/README.md` + `preview.html`; real usage in `egdev-foundation/reference-web/pulso-source.html` — blog rows `.post` (meta above title), notes `<ol class="log">` with `<time datetime>` day + month, previous-streams `<ul class="slist">` with date and tabular duration; compiled recipes in `design-system/components/bundle.css`.
+- **Does one variant cover all three?** **Yes for anatomy, accessibility and link semantics; no for surface identity.** All three are one whole-row anchor with a 19–20 px sans title, a display-family uppercase meta line, and the same focus treatment. They diverge in exactly two ways: (a) ArticleItem and NoteItem are raised rows (radius, subtle border, brand hover border) while StreamItem is a flush row that paints no surface and separates rows with a hairline (`.slist{border-top}` + `.eg-stream{border-bottom}`); (b) the NoteItem `--compact` density (64 px leading column, 22 px day, 17 px title). Because of (a) the amendment adds one second row presentation of the same anatomy — `variant="editorial-divided"` — not a second component; because of (b) it adds `size`. Slot content differs (leading date, inline meta, trailing arrow vs trailing duration) and is consumer-owned. Details of each difference and the per-row matrix are in §6.
+
+## 2. Anatomy and composition
+
+| Part | Responsibility | Native element / Radix primitive | Allowed content |
+| --- | --- | --- | --- |
+| `ListItem` root | Row frame, surface, status snapshot and `asChild` composition | `div`, or the single slotted child through `@radix-ui/react-slot` | Editorial parts in reading order; no `Media` with an editorial value |
+| `ListItemLeading` (new) | Optional leading zone: dated stamp, index or short label | `div` | A single `<time datetime>` for dated rows, or short static text; no controls |
+| `ListItemBody` (existing, editorial recipe) | Growing column that stacks title and meta | `div` | `ListItemTitle` then `ListItemMeta`, in that order |
+| `ListItemTitle` (new) | The row's readable title and heading rank | `h2`–`h6` chosen by `level` | One heading text node |
+| `ListItemMeta` (existing, editorial recipe) | Inline meta line: category, reading time, date, or stream date | `div` | Phrasing content and the existing `Text`/`Badge` atoms; no controls |
+| `ListItemTrailing` (new) | Optional trailing zone: decorative direction arrow or readable duration | `div` | A decorative `Icon`, or short readable text such as a duration; no controls |
+| `ListItemContent`, `ListItemMedia`, `ListItemFooter`, `ListItemActions` | Unchanged v0.1 parts for `card`, `compact`, `row` and `empty` | `div` | Unchanged for their own variants. Editorial rows do not compose `Content`, `Media` or `Footer`; `Actions` is allowed only in a non-linked editorial row and forbidden inside a linked one |
+
+- **Radix / composition:** the installed `@radix-ui/react-slot` (1.5.0), imported as `import * as SlotPrimitive from '@radix-ui/react-slot'`, keeps owning single-child composition for `asChild`. No new Radix package, no new dependency, no handwritten polymorphism.
+- **Public markers:** `eg-list-item` stays the stable public root. The v0.1 part markers (`eg-list-item__body`, `__content`, `__media`, `__foot`, `__meta`, `__acts`) are unchanged; the new parts introduce `eg-list-item__leading`, `eg-list-item__title` and `eg-list-item__trailing` in the same naming scheme. No existing marker, class-driven consumer style or `index.ts` export is removed.
+- **Reading order:** DOM order equals visual order in every editorial row. The leading zone precedes the body; the trailing zone follows it. A row never reorders visually against the DOM.
+
+## 3. Public API
+
+New and changed own props only; every other v0.1 prop keeps its contract.
+
+| Prop / event | Type | Required | Default or rule | Description |
+| --- | --- | --- | --- | --- |
+| `variant` | `ListItemVariant = 'card' \| 'compact' \| 'row' \| 'editorial' \| 'editorial-divided'` | no | `card`; `status="empty"` still normalizes to `card` | Editorial values select the three-zone dated row. `editorial` keeps the raised row surface; `editorial-divided` paints no surface and separates rows with a bottom hairline. |
+| `size` | `'md' \| 'sm'` | no | `md` | Editorial row density only: `sm` narrows the leading column and reduces the day and title steps. No effect on `card`, `compact`, `row` or `empty`. |
+| `status` | unchanged `Exclude<ListItemStatus, 'empty'>` | no | `default` | Unchanged snapshots. On editorial values a non-default status repaints the row and supersedes the variant paint; visible explanatory content stays mandatory. |
+| `asChild` | unchanged union (`false` \| `true`, `true` required for `empty`) | no | `false` | Editorial values additionally accept one `<a>`/router-link child, so the whole row is a single link. `card`, `compact`, `row` and `empty` keep their v0.1 child sets. |
+| `ListItemTitle.level` | `2 \| 3 \| 4 \| 5 \| 6` | no | `3` | Heading rank of the rendered title element, independent of its visual size. |
+| part `className` | unchanged `ListItemPartProps` | no | — | Local alignment, placement and width per part; still no appearance overrides, hidden content or reordering. |
+
+- **Prop conventions:** [canonical registry](../../../../skills/_shared/prop-naming.json) and [generated view](../../../prop-naming.md), looked up by meaning and alias before drafting. Applied entries — `variant` → `visual-treatment` (approved; the editorial family stays inside its “visual treatment within a component's responsibility” meaning, following the `banded` precedent of Panel and ModuleCard), `size` → `preset-dimensions` (approved; same density meaning as Notice `md | sm`), `status` → `item-presentation-status` (approved, unchanged), `asChild` → `slot-composition` (approved, unchanged semantics with a wider allowed child set for editorial rows), `ListItemTitle.level` → `heading-level` (approved; same meaning as Heading and SectionHeader). No new semantic ID, no exception and no convention status change is requested; the ListItem usages are appended as evidence with `source: {path: packages/ui/src/molecules/list-item/types.ts, symbol: ListItemProps}` and the whole-file revision reviewed for this draft (`sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2`). Convention approval remains separate from spec, capture and issue approval.
+- **Native props / refs:** unchanged for the root. It still forwards compatible native attributes (`data-*`, `aria-*`) to the `div` or slotted child, protects `role`, `tabIndex`, `selection`/`pressed`/`disabled` ARIA and owns no ref; a slotted anchor keeps its own ref through Slot. `ListItemLeading` and `ListItemTrailing` forward native `div` attributes; `ListItemTitle` forwards native heading attributes for the element its `level` selects. No part exposes a ref, an own role or a tab stop.
+- **Controlled / uncontrolled:** Not applicable. The amendment adds no state, no controlled value and no callback.
+- **Compatibility:** additive union members and one new optional prop. `CalendarGrid`, the only in-repo ListItem consumer, uses `variant="compact"` and is unaffected. Two explicit refinements replace narrower v0.1 wording: (1) v0.1 forbade any focusable populated child, so a whole-row link is now allowed **for editorial values only**, and `ListItemActions` must not be composed inside it; (2) v0.1 applied a subtle border hover to every `default` row, so editorial rows now restrict interactive hover affordances to rows whose root element is an anchor. React 18/19 consumption stays a plan gate, not a claim of this draft.
+
+## 4. Behavior
+
+| Initial state / action | Expected result | Emitted event |
+| --- | --- | --- |
+| Editorial row with `asChild` anchor at rest | One link, one tab stop, whole row is the click target; no nested controls | Native navigation only |
+| Pointer hover over a linked editorial row | `editorial`: brand border and raised-surface hover wash. `editorial-divided`: surface wash and a start-edge indent. No layout shift outside the row | none |
+| Pointer hover over a static editorial row | No link affordance: no brand border, wash or indent | none |
+| Keyboard focus on a linked editorial row | `--shadow-focus` on the row; visible at the normal 2 px offset; no outline duplication | none |
+| Static editorial row | Non-interactive container: no tab stop, no hover affordance, no synthesized role | none |
+| `size="md"` / `size="sm"` | `md` is the default 92 px-scaled leading column with the larger day and title steps; `sm` narrows the column and lowers both steps | none |
+| `status` non-default on an editorial row | Existing state recipe repaints the row and its visible status text stays mandatory | none |
+| `status="empty"` with an editorial value | Normalizes to `card` and keeps the v0.1 empty contract | none |
+| Narrow host or long title | Leading, body and trailing zones wrap without clipping or reordering; the title wraps at word boundaries and is never clamped, truncated or replaced by a tooltip | none |
+| Leading zone with `time` and `small` | Day and month lines render with the editorial stamp recipe; no JS reads or formats the date | none |
+
+- **States / representation:** unchanged v0.1 model — the root keeps `data-state` for the consumer-selected status and `data-variant` for the arrangement; parts read both through the existing `group/list-item` scope. The amendment adds no state attribute, timer, listener or transition of its own.
+- **Limits / consumer responsibilities:** the consumer formats day, month, category, reading time and duration; marks streams with rendered duration text; owns `<ul>`/`<ol>`/`<li>` semantics through `asChild`; keeps a linked row free of interactive parts; and supplies a heading rank that fits the surrounding outline. A static row is not a substitute for a control: rows that navigate must be anchors.
+
+## 5. Accessibility
+
+- **Accessible name / roles / relationships:** a linked editorial row is a single anchor whose accessible name is its visible text in DOM order — leading stamp, meta and title — so the consumer keeps that text short and front-loads a meaningful title. The row title is a real heading (`ListItemTitle` renders `h2`–`h6` by `level`), giving link lists a heading structure. Static rows are plain containers without a synthesized role. `ListItemActions` is invalid inside a linked row; there is no overlapping activation.
+- **Dated rows:** a leading date must be `<time datetime="YYYY-MM-DD">` with the visible day and month inside it, exactly as the web markup does. No bare `div`/`span` carrying a date, no scripted date parsing, and no `aria-label` replacing the machine-readable `datetime`.
+- **Decorative vs readable trailing content:** an arrow is decorative — the system `Icon` renders `aria-hidden` and unfocusable by contract, so it adds no name and no tab stop. A duration is readable text: when it matters for the row's purpose the consumer keeps it in the visible name rather than in a decorative glyph, and no `title` attribute substitutes for it.
+- **Keyboard / focus:** native Tab moves between linked rows and native Enter activates. No key handler, roving tabindex or focus trap is added. Focus lands on the row itself; `--shadow-focus` comes from the existing focus token and never from a decorative glow. Static rows never enter the tab order.
+- **Touch targets:** the whole row is the target, never the trailing arrow or duration alone. At both `size` values the row keeps two text lines plus row padding, above the 44 px minimum; nothing inside an editorial row is a smaller separate target.
+- **Announcements / other conditions:** no live region, no status announcement and no synthesized label; status text and failure detail stay consumer-supplied as in v0.1. The leading stamp and meta are non-color cues, so the row does not depend on the brand tint of the category segment. Contrast of the meta line stays a plan/verification gate (see §6 and AC).
+
+## 6. Appearance
+
+| Variant axis | Allowed values | Default or rule | Combinations / restrictions |
+| --- | --- | --- | --- |
+| `variant` | `card`, `compact`, `row`, `editorial`, `editorial-divided` | `card`; `empty` forces `card` | `editorial*` never compose `ListItemContent`, `ListItemMedia` or `ListItemFooter`, and a linked editorial row never composes `ListItemActions`; `row` keeps its v0.1 wrapping-row recipe unchanged |
+| `size` | `md`, `sm` | `md` | Editorial values only; ignored by `card`, `compact`, `row`, `empty` |
+| `status` | unchanged seven snapshots | `default` | Status paint wins over editorial variant paint; `new` on a divided row repaints it and is documented, not silently suppressed |
+
+- **Material (existing recipes only):** the root keeps composing the exported `surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'lg' })`; `editorial` keeps that raised row with token radius and hairline edge; `editorial-divided` reuses the established flush idiom of `Panel`/`ModuleCard` `variant="banded"` — no background image, no shadow, no radius and only a bottom hairline border — instead of inventing a translucent glass recipe. The web's `color-mix(surface 60%) + blur-glass` card is therefore an **allowed difference**, not a new Material recipe: the DS raised row is the token-backed equivalent and no token or recipe is added. Leading stamp, meta line and title reuse existing typography recipes (`font-display`, `tabular-nums`, an existing display figure step for the day and duration, an existing label/meta step for month and meta), and existing foreground tokens: `text-fg-default` for the title, `text-fg-secondary` for meta and duration, and the contrast-checked brand text token — not the brighter legacy ink — for the highlighted category segment. Existing fills and hairlines cover washes, hover borders and dividers; a missing utility is proposed to the owner instead of being hand-written.
+- **Dynamic geometry:** Not applicable. No custom property, no interpolated class string and no inline geometry is introduced; the leading column width comes from existing spacing tokens through a static `calc()` utility, as `ListItemMedia` already does with `calc(var(--space-20) + var(--space-2))`.
+- **Motion:** hover affordances (border, wash, indent, muted-to-brand arrow color) use existing duration/easing tokens and are suppressed under `prefers-reduced-motion`, matching the web's own reduced-motion rule for this row. No new animation, no transition on the row height.
+- **Class composition / consumer layout:** the root still merges `className` last through `cn()` for outer margin, width and parent placement; parts merge their own `className` last for local placement and width. `twMerge` resolves recognised utility conflicts only; there is no universal last-class-wins promise, no appearance-override permission and no per-instance recipe. Interactive hover styling is keyed from the row element itself (`:is(a)` utility variants), never from a consumer class or a mirrored state class.
+- **Files / pending proposals:** the six mandatory files remain — `types.ts` (extended `ListItemVariant`, new `size` and `ListItemTitleProps` with English JSDoc and `@control` on every own declaration, editorial CVA recipes), `useListItem.ts` (variant/size normalization, protected props, per-part `cn()`), `ListItem.tsx` (new `ListItemLeading`, `ListItemTitle`, `ListItemTrailing` JSX only), `ListItem.test.tsx`, `ListItem.stories.tsx` (`Molecules/ListItem`, English), `index.ts` (named exports for the three new parts). **No stylesheet**, no extra internal module, no dependency and no token change; the existing production CSS scan entry for this folder already covers the new CVA source.
+
+### Expected-design visual reference
+
+Captured for this draft on 2026-11-02 from the read-only Foundation previews through a `/tmp` harness that links `tokens.css` and `components/bundle.css` as `file://` URLs; no file inside `egdev-website` was modified.
+
+| Visual ID | Real image / descriptive English alt text | Variant / state / props | Source and version | Status / recoverable approval |
+| --- | --- | --- | --- | --- |
+| VIS-03 | `article-row--rest-and-hover--1024x768--dark.png` — a two-column board: left column stacks three blog rows, the middle one hovered, each with an uppercase meta line above a two-line sans title; right column shows one loose row | Article source → proposed `variant="editorial"`, `size="md"`, static/linked row with inline meta above the title, no leading and no trailing zone | `egdev-foundation/design-system/components/ArticleItem/README.md` + `preview.html` (SHA-256 `a447aa80e45f1982690fb4bc0e3176b19ec1b074b8f1b1e613963166990b1a70`), previews built against `tokens.css` `1c92acb8…` and `bundle.css` `04797068…`; observed web design, not the DS implementation | Proposed |
+| VIS-04 | `note-row--rest-hover-compact--1024x768--dark.png` — left column of three note rows with a large day plus month stamp, a title and a diagonal arrow, the middle hovered; right column repeats the same rows at compact density | Note source → proposed `variant="editorial"` at `size="md"` (left) and `size="sm"` (right): leading `<time>` stamp, title, trailing decorative arrow | `egdev-foundation/design-system/components/NoteItem/README.md` + `preview.html` (SHA-256 `54425e527028f6437118aaebfbff225dd3824828366448b55b8952e94893b5ec`), same stylesheet revisions | Proposed |
+| VIS-05 | `stream-row--rest-and-hover--1024x768--dark.png` — a hairline-separated list of past streams: title with a small date line under it, and a large tabular duration at the trailing edge; the middle row is hovered with a wash and a start indent; right column shows a long title case | Stream source → proposed `variant="editorial-divided"`, `size="md"`: title over meta date, trailing readable duration, no surface, bottom hairline | `egdev-foundation/design-system/components/StreamItem/README.md` + `preview.html` (SHA-256 `f13a9dbd6a363697bb4ee226c846868622c80b2f72470e0012985ed76de7fa63`), same stylesheet revisions | Proposed |
+
+- **Conditions / provenance per VIS ID:** component-zone element screenshots of the preview board (`.pv`, labelled grid containing every previewed state), viewport 1024×768, device scale factor 2, `chrome-headless-shell` from Playwright 1.60.0 (`playwright-core`, Chromium 1243 build), colour scheme `dark`, locale `en-US`, `prefers-reduced-motion: no-preference`, animations disabled during the screenshot, Google Fonts loaded before capture (`document.fonts.ready` → `loaded`; the loaded faces are Barlow 600 and Barlow Condensed 600/700/800, unused faces stay unloaded as expected). Board heights observed: 422 px, 376 px and 349 px. Date, tool and per-file SHA-256 are recorded in `capture.json`.
+- **Intent / acceptance / pending evidence:** anatomy, zone order, leading stamp, trailing arrow/duration and hover identity must survive the port. Allowed differences: the DS raised row instead of the web's alpha-glass card; DS type steps derived from the token scale (`×0.8`, #218) instead of raw px; brand-token ink for the category segment instead of the legacy bright red; the web's `<560px` rule that hides the note arrow is not adopted as a new breakpoint. Related criteria: LR-01 to LR-08 and LR-12. Pending: owner adoption of VIS-03–VIS-05, a GitHub-visible image handoff (local PNGs are not visible in an issue) and any comparison against the implemented component. Until then visual conformity is **Not evaluated**; captures never replace behavior or accessibility tests.
+
+## 7. Acceptance criteria
+
+| ID | Observable promise | Planned test / method | Planned story / visual check | Observed evidence |
+| --- | --- | --- | --- | --- |
+| LR-01 | `variant="editorial"` renders leading → title/meta → trailing in DOM order and keeps the raised row surface | `ListItem.test.tsx` render assertions on order, markers and emitted classes | `EditorialRow`, `EditorialVariants` with VIS-03/VIS-04 | Pending |
+| LR-02 | `status="empty"` with `editorial`/`editorial-divided` normalizes to `card`; other statuses keep their v0.1 snapshots and repaint the row | Unit normalization and state-recipe cases | `Statuses`, `EditorialStatuses` | Pending |
+| LR-03 | `size="sm"` narrows the leading zone and the day/title steps; other variants ignore `size` | Unit assertions on per-variant classes | `EditorialSizes` with VIS-04 | Pending |
+| LR-04 | A dated row keeps a real `<time datetime>`; the title keeps its chosen heading rank `h2`–`h6` | Render assertions on `time[datetime]`, heading element and default rank 3 | `EditorialDatedList`, `EditorialHeadingRanks` | Pending |
+| LR-05 | `asChild` editorial rows accept one anchor child, forwarding `href`/events/ref through Slot; other variants still reject a focusable populated child | Slot composition and negative type cases | `EditorialLinkRow`, `AsList` | Pending |
+| LR-06 | A linked row has exactly one tab stop and one accessible name built from its visible text; `ListItemActions` inside it is unsupported and documented | Role/name assertions with `userEvent` tabbing | `EditorialLinkRow`, `EditorialFocus` | Pending |
+| LR-07 | Static editorial rows expose no link affordance and no tab stop; `editorial-divided` paints no surface and draws only a bottom hairline | Class assertions plus static CSS emission check; browser cascade still pending | `EditorialStaticRow`, `EditorialDivided` with VIS-05 | Pending |
+| LR-08 | Hover/focus treatments use existing tokens and are suppressed under reduced motion | CVA assertions and updated package CSS checks | `EditorialHover`, `ReducedMotion` | Pending |
+| LR-09 | Parts keep independent `className` merges; the root keeps outer-layout-only merges | Existing per-part merge tests extended to the new parts | `ClassComposition` | Pending |
+| LR-10 | No new export is missing: `ListItemLeading`, `ListItemTitle`, `ListItemTrailing` and the extended types are public, and `CalendarGrid` still compiles | `index.ts`/export inventory tests, `pnpm typecheck` under the plan | Docs autodocs page for `Molecules/ListItem` | Pending |
+| LR-11 | Own-prop metadata stays accurate: `variant`/`size` are selects, `level` is a select, complex children stay `false` with reasons and the registered Controls enhancer reports no diagnostics | `storybook-docgen` / `storybook-controls` suites | Docs table review | Pending |
+| LR-12 | Typography and contrast of the meta line, day/month stamp and duration meet the token recipes in §6 with no hand-written values | Actual CSS build/static scan plus browser contrast check under the plan | VIS-03–VIS-05 comparison | Pending (visual: not evaluated) |
+
+### Spec closure
+
+- [ ] All seven blocks are complete or justified as Not applicable; no blocking promise decisions remain — **not closed**: OQ-1 to OQ-5 below.
+- [x] New/changed own props have registry lookup evidence, exact applied IDs and no invented exceptions; convention approval stays separate and is not claimed here.
+- [x] Proposals, verified v0.1 implementation, planned checks and observed results are distinct; every promise has an acceptance ID and a method.
+- [x] Visual IDs identify real images, their provenance, conditions and related criteria; Pending captures are not verification, and status stays Proposed.
+- [ ] Snapshot identity is recoverable and owner approval identifies this exact version, digest and visual hashes — **pending owner approval**; status remains Draft.
+- [x] One canonical component issue (#88) is retained; the next authorized change is a comment with this snapshot, never a body edit or a new issue per version.
+
+**Next step:** the owner resolves OQ-1 to OQ-5, approves or rejects v0.2 with its digest and VIS hashes, and only then does a separately approved implementation plan authorize code. This draft authorizes no code, token or dependency change, capture re-run, remote publication or terminal Git action.
+
+## Blocking decisions for the owner
+
+| ID | Question | Recommendation |
+| --- | --- | --- |
+| OQ-1 | How should the editorial family be named in the public `variant` union: `editorial` + `editorial-divided`, a single `editorial` with a separate chrome prop, or redefining the existing `row`? | `editorial` + `editorial-divided`, additive. It keeps the published `row` recipe untouched, follows the `Panel`/`ModuleCard` `banded` precedent for a flush presentation, and avoids encoding a new boolean convention. |
+| OQ-2 | Should `ListItemTitle` be a new public part with `level`, or should the consumer supply its own `<h3>` inside `ListItemContent`? | New part with `level`. It reuses the approved `heading-level` convention, keeps title typography in the DS and guarantees a real heading instead of relying on consumer markup. |
+| OQ-3 | Is the NoteItem `--compact` density part of this contract (`size="sm"`), or deferred? | Include it now via `size` (`preset-dimensions`), because the Think list uses it on the web and NotesBoard will need it; deferring would leave one documented web variant unabsorbed. |
+| OQ-4 | Does the owner accept the DS raised row instead of the web's alpha-glass card as the `editorial` surface, and the token-scale typography instead of raw web px? | Yes. Handwritten glass recipes are outside Material; the raised row plus `×0.8` token steps is the compliant equivalent, and the difference is recorded as allowed in §6. |
+| OQ-5 | Does allowing a whole-row anchor on editorial rows (and hovering only when the row is a link) count as the intended v0.1 refinement? | Yes. It is required for parity with all three web molecules, it is scoped to editorial values, it forbids `ListItemActions` inside the link and it is recorded as an explicit compatibility change. |
