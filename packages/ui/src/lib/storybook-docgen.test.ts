@@ -747,6 +747,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/surface',
       './primitives/text',
       './primitives/visually-hidden',
+      './templates/app-shell',
       './types/product-identity'
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
@@ -755,6 +756,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'AlertDialogCancel',
       'AlertDialogContent',
       'AlertDialogTrigger',
+      'AppShell',
       'AspectRatio',
       'Avatar',
       'Badge',
@@ -844,6 +846,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Toggle',
       'Tooltip',
       'VisuallyHidden',
+      'appShellVariants',
       'badgeVariants',
       'calendarGridVariants',
       'chipVariants',

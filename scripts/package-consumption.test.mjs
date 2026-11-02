@@ -30,9 +30,9 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogCancel, AlertDialogAction } from '@egdev/ui';
 import type { AlertDialogProps, AlertDialogContentProps } from '@egdev/ui';
-import { CalendarGrid, calendarGridVariants, CommandPalette, Dialog, DialogTrigger, DialogContent, DialogClose, TabBar, tabBarVariants } from '@egdev/ui';
+import { AppShell, appShellVariants, CalendarGrid, calendarGridVariants, CommandPalette, Dialog, DialogTrigger, DialogContent, DialogClose, TabBar, tabBarVariants } from '@egdev/ui';
 import type { CommandPaletteProps, CommandPaletteItem, CommandPaletteMessages, CommandPaletteFiltering } from '@egdev/ui';
-import type { TabBarItem, TabBarMessages, TabBarProps } from '@egdev/ui';
+import type { AppShellMessages, AppShellProps, TabBarItem, TabBarMessages, TabBarProps } from '@egdev/ui';
 import type { CalendarGridDay, CalendarGridEntry, CalendarGridMessages, CalendarGridProps } from '@egdev/ui';
 // @ts-expect-error Internal hook is not public.
 type TabBarPrivateHook = (typeof import('@egdev/ui'))['useTabBar'];
@@ -44,6 +44,25 @@ export const tabBarMessages: TabBarMessages = { pendingCount: (count) => count +
 export const tabBarProps: TabBarProps = { label: 'Main', items: tabBarItems, messages: tabBarMessages };
 export const tabBarSample = createElement(TabBar, tabBarProps);
 export const tabBarRecipe = tabBarVariants();
+// @ts-expect-error Internal hook is not public.
+type AppShellPrivateHook = (typeof import('@egdev/ui'))['useAppShell'];
+// @ts-expect-error Internal part recipe is not public.
+type AppShellPrivateRecipe = (typeof import('@egdev/ui'))['appShellSkipRowVariants'];
+export type AppShellPrivateNegatives = [AppShellPrivateHook, AppShellPrivateRecipe];
+export const appShellMessages: AppShellMessages = { skipToContent: 'Skip to content' };
+export const appShellProps: AppShellProps = { children: 'Content', messages: appShellMessages, className: 'min-h-full' };
+export const appShellSample = createElement(AppShell, appShellProps);
+export const appShellSlots = Object.keys(appShellVariants).sort();
+export const appShellSwitchingSide = appShellVariants.side({ arrangement: 'switching' });
+// @ts-expect-error children is required.
+const appShellMissingChildren: AppShellProps = { sideNavigation: null };
+// @ts-expect-error role is owned by the shell.
+const appShellRole: AppShellProps = { children: 'Body', role: 'main' };
+// @ts-expect-error AppShell v0.1 exposes no layout prop.
+const appShellLayout: AppShellProps = { children: 'Body', layout: 'switching' };
+// @ts-expect-error AppShell v0.1 exposes no asChild.
+const appShellAsChild: AppShellProps = { children: 'Body', asChild: true };
+export type AppShellNegatives = [typeof appShellMissingChildren, typeof appShellRole, typeof appShellLayout, typeof appShellAsChild];
 // @ts-expect-error Internal move model is not public.
 type CalendarGridPrivateHook = (typeof import('@egdev/ui'))['useCalendarGrid'];
 export type CalendarGridPrivateNegatives = CalendarGridPrivateHook;
@@ -3781,6 +3800,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AlertDialogCancel',
   'AlertDialogContent',
   'AlertDialogTrigger',
+  'AppShell',
   'AspectRatio',
   'Avatar',
   'Badge',
@@ -3870,6 +3890,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Toggle',
   'Tooltip',
   'VisuallyHidden',
+  'appShellVariants',
   'badgeVariants',
   'calendarGridVariants',
   'chipVariants',

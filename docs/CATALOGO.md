@@ -128,7 +128,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
-| **AppShell** | — | — | Sidebar, ModuleRail, TabBar | nuevo | Barra lateral + contenido; móvil con TabBar. Hoy se repite en las seis apps. |
+| **AppShell** | — | — | Sidebar, ModuleRail, TabBar | nuevo | Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/130) and its [implementation plan](components/app-shell/v0.1/implementation-plan.md): slot-based application region layout that docks a consumer-supplied Sidebar or ModuleRail beside the single main landmark and a TabBar at the bottom below the 56rem viewport threshold, with a built-in localized skip link. Owns placement, sticky in-flow docking, document scroll and responsive visibility only; navigation data, routing, current page and region Material stay with the organisms and consumer. No stylesheet, no new token and no new dependency; browser visual and accessibility verification pending. |
 
 ### Composition recipes
 

@@ -126,4 +126,6 @@ export type {
 } from './primitives/text';
 export { Heading, Text } from './primitives/text';
 export * from './primitives/visually-hidden';
+// Templates
+export * from './templates/app-shell';
 export type { ProductIdentity } from './types/product-identity';

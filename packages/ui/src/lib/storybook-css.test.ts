@@ -400,6 +400,22 @@ describe('Storybook preview CSS', () => {
     }
     const preview = readFileSync(new URL('../../../../.storybook/preview.css', import.meta.url), 'utf8');
     expect(preview).toContain('@source "../packages/ui/src/molecules/**/*.stories.tsx";');
+    expect(preview).toContain('@source "../packages/ui/src/templates/app-shell/AppShell.stories.tsx";');
+  });
+
+  it('emits the AppShell literal viewport threshold and docking utilities from the template scan', () => {
+    // #130 D3–D5: the approved threshold is a literal arbitrary media variant, so a missing
+    // at-rule must fail loudly instead of silently producing no CSS.
+    for (const selector of [String.raw`.min-\[56rem\]\:block`, String.raw`.min-\[56rem\]\:hidden`]) {
+      expect(css, selector).toContain(selector);
+    }
+    expect(css).toContain(String.raw`.max-\[56rem\]\:hidden`);
+    const threshold = css.indexOf(String.raw`.min-\[56rem\]\:block`);
+    const prelude = css.slice(Math.max(0, threshold - 200), threshold).replace(/\s+/g, ' ');
+    expect(prelude, prelude).toMatch(/\(width\s*>=\s*56rem\)|\(min-width:\s*56rem\)/);
+    expect(rule('.sticky')).toMatch(/position:\s*sticky/);
+    expect(rule('.h-dvh')).toMatch(/height:\s*100dvh/);
+    expect(rule('.min-w-0')).toMatch(/min-width:\s*var\(--space-0[,)]/);
   });
 
   it('compiles the Gauge story example layouts without requiring production story scanning', () => {

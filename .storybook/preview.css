@@ -7,6 +7,7 @@
 /* Example layout utilities belong to Storybook, not the production UI stylesheet. */
 @source "../packages/ui/src/organisms/calendar-grid/CalendarGrid.stories.tsx";
 @source "../packages/ui/src/organisms/preview-frame/PreviewFrame.stories.tsx";
+@source "../packages/ui/src/templates/app-shell/AppShell.stories.tsx";
 @source "../packages/effects/src/ambient-background/AmbientBackground.stories.tsx";
 @source "../packages/effects/src/atoms/isotipo3d/Isotipo3D.stories.tsx";
 @source "../packages/ui/src/molecules/**/*.stories.tsx";
