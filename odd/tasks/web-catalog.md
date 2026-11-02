@@ -44,10 +44,10 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 
 | T7 | S3 | Propose implementation plans for six approved layer (c) molecules | worker | approved — docs/components/web-catalog/v0.1/layer-c-plan-approvals.md |
 
-| T8 | S3 | Implement ProjectCard under approved v0.1 plan | worker + parent integration | in progress |
+| T8 | S3 | Implement ProjectCard under approved v0.1 plan | worker + parent integration | done — PR #283 (001335c) |
 | T9 | S3 | Implement NowCard under approved v0.1 plan | worker + parent integration | in progress |
 | T10 | S3 | Implement TerminalCard under approved v0.1 plan | worker + parent integration | in progress |
-| T11 | S3 | Implement TipCard under approved v0.1 plan | worker + parent integration | pending |
+| T11 | S3 | Implement TipCard under approved v0.1 plan | worker + parent integration | in progress |
 | T12 | S3 | Implement ArticleFeature under approved v0.1 plan | worker + parent integration | pending |
 | T13 | S3 | Implement CommunityCard under approved v0.1 plan | worker + parent integration | pending |
 
@@ -77,3 +77,5 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 - L19 — Plans and approval record merged in PR #282 (54e13cc). Implementation begins with T8–T10 in isolated component worktrees; shared exports, registry, catalog and package fixtures remain parent-owned.
 
 - L20 — NowCard conflict resolved by owner (verbatim): "Badge → título → texto (como en la web)". Follow-up decision: "Aprobar enmienda, plan y convención". Approved statusBadge/leading-status-badge, wrapper px-6 pt-6 pb-3, sm body text-body-default and type-test correction; exact amendment hashes pinned in docs/components/now-card/v0.1/badge-order-approval.md. Original approved files remain unchanged.
+
+- L21 — ProjectCard T8 merged PR #283 (001335c): lint, naming96, typecheck, build, tokens33, exports95, consumption14 and Vitest2188 PASS; Chromium hover/layout/focus checks PASS. TipCard T11 starts from this main while NowCard/TerminalCard package integrations continue in separate worktrees.

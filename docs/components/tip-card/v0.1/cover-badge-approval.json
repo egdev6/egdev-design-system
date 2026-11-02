@@ -1,0 +1,74 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve cover-badge canonical coverBadge and badge exceptions limited to TipCard and ArticleFeatureCover, preserving their approved APIs.",
+  "evidence": {
+    "channel": "docs/components/web-catalog/v0.1/cover-badge-naming-amendment.md; owner naming collision decision",
+    "ownerChoice": "Conservar badge con excepciones acotadas",
+    "interpretation": "Scoped convention and two alternative-name approvals; no global alias or thumbnail-badge widening."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/terminal-card/v0.1/terminal-naming-approval.json",
+      "wholeFileSHA256": "sha256:3331c5ce71fe4de1dc0d602547ad6e9e3d854482badf5987d03d6f4f57a5744a"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:cover-badge",
+      "contentHash": "sha256:90c0ae1dd8a4f8823ea8f91788939339e8372165fa0f387fba76f6616755b26e",
+      "convention": {
+        "id": "cover-badge",
+        "name": "coverBadge",
+        "meaning": "Short non-interactive category or flag annotation rendered as a Badge over or beside a media cover or poster, outside selectable-option semantics.",
+        "whenToUse": "A passive poster or article cover needs a consumer-supplied category annotation beside or over its media.",
+        "avoid": "Selectable-option metadata, counters, interactive actions or replacing the content heading.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": [
+          {
+            "scope": "TipCard",
+            "propName": "badge",
+            "reason": "Preserve the explicitly approved component badge API without colliding with the unrelated thumbnail-badge canonical name.",
+            "approval": {
+              "reference": "docs/components/tip-card/v0.1/cover-badge-approval.json",
+              "scope": "exception:cover-badge:TipCard:badge",
+              "contentHash": "sha256:49fea174b98b3bacac305b3a9568ca4a156e1e77f87a2bbeaed8eaf0e8c6784c"
+            }
+          },
+          {
+            "scope": "ArticleFeatureCover",
+            "propName": "badge",
+            "reason": "Preserve the explicitly approved component badge API without colliding with the unrelated thumbnail-badge canonical name.",
+            "approval": {
+              "reference": "docs/components/tip-card/v0.1/cover-badge-approval.json",
+              "scope": "exception:cover-badge:ArticleFeatureCover:badge",
+              "contentHash": "sha256:510eda9bae9423f8ace38e74210eedf0b4480e227a5ed93e4593751989a359e4"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "scope": "exception:cover-badge:TipCard:badge",
+      "contentHash": "sha256:49fea174b98b3bacac305b3a9568ca4a156e1e77f87a2bbeaed8eaf0e8c6784c",
+      "exception": {
+        "scope": "TipCard",
+        "propName": "badge",
+        "reason": "Preserve the explicitly approved component badge API without colliding with the unrelated thumbnail-badge canonical name."
+      }
+    },
+    {
+      "scope": "exception:cover-badge:ArticleFeatureCover:badge",
+      "contentHash": "sha256:510eda9bae9423f8ace38e74210eedf0b4480e227a5ed93e4593751989a359e4",
+      "exception": {
+        "scope": "ArticleFeatureCover",
+        "propName": "badge",
+        "reason": "Preserve the explicitly approved component badge API without colliding with the unrelated thumbnail-badge canonical name."
+      }
+    }
+  ]
+}

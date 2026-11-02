@@ -31,6 +31,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   // intersection only re-admits these remaining documented native div rows.
   terminalCard: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'onClick'],
   projectCard: ['id', 'dir', 'lang', 'aria-describedby', 'style', 'onClick'],
+  tipCard: ['id', 'dir', 'lang', 'aria-describedby', 'style', 'onClick'],
   timeline: ['id', 'title', 'aria-describedby', 'aria-busy', 'className', 'style', 'onClick'],
   table: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick'],
   appShell: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],

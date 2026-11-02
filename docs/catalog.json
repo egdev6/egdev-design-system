@@ -809,9 +809,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "—",
-    "compone": "AspectRatio, Text",
+    "compone": "PhotoFrame, Badge; Surface recipe",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): tip card with an optional media frame; no domain data."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): implemented v0.1 passive 2:3 poster with a wrapping caption below its cover and an optional scoped badge. See [approved plan](components/tip-card/v0.1/implementation-plan.md)."
   },
   {
     "actual": "ArticleFeature",

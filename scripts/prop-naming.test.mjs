@@ -670,7 +670,12 @@ const postReceiptUsages = [
   {
     conventionId: 'terminal-caret',
     source: 'packages/ui/src/molecules/terminal-card/types.ts#TerminalCardRow'
-  }
+  },
+  // TipCard T11 records its reviewed usages at implementation; the receipt binds convention content only.
+  ...['heading-title', 'heading-level', 'image-focal-point', 'cover-badge'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/tip-card/types.ts#TipCardProps'
+  }))
 ];
 // These newly proposed conventions are not part of any immutable approval receipt.
 const postReceiptProposals = [
@@ -754,9 +759,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   assert.ok(text.includes('218403be9baee574e213cf1b06db1f7bd4d3951b20c7e24e593e90ef011fb062'));
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   validate(actual);
-  // Union of both branch additions: three new approved conventions over the shared base.
-  assert.equal(actual.length, 143);
-  assert.equal(beforeIndicatorConventions(actual).length, 140);
+  // Union of both branch additions: two new approved conventions over the shared base.
+  assert.equal(actual.length, 144);
+  assert.equal(beforeIndicatorConventions(actual).length, 141);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -870,7 +875,8 @@ const receiptChain = [
   'docs/components/calendar-grid/v0.1/collection-items-organism-approval.json',
   'docs/components/chip/v0.2/render-mode-approval.json',
   'docs/components/project-card/v0.1/decorative-index-approval.json',
-  'docs/components/terminal-card/v0.1/terminal-naming-approval.json'
+  'docs/components/terminal-card/v0.1/terminal-naming-approval.json',
+  'docs/components/tip-card/v0.1/cover-badge-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -885,6 +891,13 @@ function laterReceipts(reference) {
     later.set(receiptChain[index], current);
   }
   return later;
+}
+
+// Receipt entries carry either a convention record or a scoped exception record. Historical
+// projections count conventions only, so exception records project out without editing receipt
+// bytes; the cover-badge receipt is the first to record exceptions alongside its convention.
+function receiptConventions(receipt) {
+  return receipt.entries.filter((record) => record.convention !== undefined);
 }
 
 // The NowCard receipt pins the same ProjectCard decorative-index predecessor as the TerminalCard
@@ -1518,7 +1531,9 @@ test('molecule naming receipt binds delegated decisions without speculative impl
     assert.ok(currentReceipt, `Unreviewed receipt: ${approval.reference}`);
     assert.equal(currentReceipt.kind, 'human-approval-record');
     assert.equal(currentReceipt.nativeReviewApproval, false);
-    const record = currentReceipt.entries.find((record) => record.convention.id === entry.id);
+    const record = currentReceipt.entries.find(
+      (record) => record.convention !== undefined && record.convention.id === entry.id
+    );
     assert.ok(record, entry.id);
     assert.deepEqual(record.convention, convention, entry.id);
     assert.equal(record.scope, `convention:${entry.id}`);
@@ -1683,8 +1698,8 @@ test('organism naming receipt binds delegated decisions and the menu-entry-kind 
   // 123 entries at this receipt; later receipts that pin it may only add new IDs.
   const later = laterReceipts(reference);
   const knownIds = new Set([...historicalIds, ...receipt.entries.map(({ convention }) => convention.id)]);
-  const laterAdded = [...later.values()].flatMap(({ entries }) =>
-    entries.filter(({ convention }) => !knownIds.has(convention.id))
+  const laterAdded = [...later.values()].flatMap((laterReceipt) =>
+    receiptConventions(laterReceipt).filter(({ convention }) => !knownIds.has(convention.id))
   );
   assert.equal(historicalRegistry(actual).length, 123 + laterAdded.length + parallelNowCardReceipt.entries.length);
 });
@@ -1943,6 +1958,100 @@ test('TerminalCard naming receipt binds the owner decision without rewriting his
   }
 });
 
+test('cover-badge naming receipt binds the scoped owner decision without rewriting historical approvals', () => {
+  const reference = 'docs/components/tip-card/v0.1/cover-badge-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(receipt.evidence.ownerChoice, 'Conservar badge con excepciones acotadas');
+  assert.match(receipt.evidence.channel, /cover-badge-naming-amendment\.md/);
+  assert.match(receipt.evidence.interpretation, /no global alias or thumbnail-badge widening/);
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  // The receipt pins the exact TerminalCard predecessor bytes; nothing historical is rewritten.
+  assert.deepEqual(
+    receipt.priorReceipts.map(({ path, wholeFileSHA256 }) => [path, wholeFileSHA256]),
+    [
+      [
+        'docs/components/terminal-card/v0.1/terminal-naming-approval.json',
+        'sha256:3331c5ce71fe4de1dc0d602547ad6e9e3d854482badf5987d03d6f4f57a5744a'
+      ]
+    ]
+  );
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(digest(fs.readFileSync(resolve(root, prior.path))), prior.wholeFileSHA256, prior.path);
+  }
+  assert.ok(laterReceipts('docs/components/terminal-card/v0.1/terminal-naming-approval.json').has(reference));
+  const entry = actual.find(({ id }) => id === 'cover-badge');
+  assert.ok(entry, 'cover-badge');
+  assert.equal(entry.status, 'approved');
+  assert.equal(entry.name, 'coverBadge');
+  assert.deepEqual(entry.aliases, [], 'badge stays a scoped exception, never a global alias');
+  const { approval, usages, ...convention } = entry;
+  const [conventionRecord, tipRecord, coverRecord] = receipt.entries;
+  assert.deepEqual(conventionRecord.convention, convention);
+  assert.equal(conventionRecord.scope, 'convention:cover-badge');
+  assert.equal(conventionRecord.contentHash, props.conventionHash(entry));
+  assert.deepEqual(approval, {
+    reference,
+    scope: 'convention:cover-badge',
+    contentHash: conventionRecord.contentHash
+  });
+  // Both alternative-name exceptions bind their own exact scope and payload hash.
+  assert.deepEqual(
+    receipt.entries.map(({ scope }) => scope),
+    ['convention:cover-badge', 'exception:cover-badge:TipCard:badge', 'exception:cover-badge:ArticleFeatureCover:badge']
+  );
+  assert.equal(entry.exceptions.length, 2);
+  for (const [record, scope] of [
+    [tipRecord, 'TipCard'],
+    [coverRecord, 'ArticleFeatureCover']
+  ]) {
+    const exception = entry.exceptions.find((candidate) => candidate.scope === scope);
+    assert.ok(exception, scope);
+    assert.equal(record.scope, `exception:cover-badge:${scope}:${exception.propName}`);
+    assert.equal(record.contentHash, props.exceptionHash(exception), scope);
+    assert.deepEqual(exception.approval, {
+      reference,
+      scope: record.scope,
+      contentHash: record.contentHash
+    });
+  }
+  // The reviewed TipCard usage carries the actual working-tree source revision.
+  const revision = digest(fs.readFileSync(resolve(root, 'packages/ui/src/molecules/tip-card/types.ts')));
+  assert.equal(usages.length, 1);
+  assert.equal(usages[0].component, 'TipCard');
+  assert.deepEqual(usages[0].source, {
+    path: 'packages/ui/src/molecules/tip-card/types.ts',
+    symbol: 'TipCardProps',
+    revision
+  });
+  assert.deepEqual(historicalRegistry([entry])[0].usages, []);
+  // Changed semantics cannot pass validation, and the pinned receipt hash cannot cover a widened
+  // exception scope: widening changes conventionHash, so it would need a fresh scoped receipt.
+  const changed = structuredClone(actual);
+  changed.find(({ id }) => id === 'cover-badge').meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+  const widened = structuredClone(actual);
+  const widenedEntry = widened.find(({ id }) => id === 'cover-badge');
+  widenedEntry.exceptions.push({ scope: 'SelectTileOption', propName: 'badge', reason: 'Widened.', approval: null });
+  assert.throws(() => validate(widened), /approval/i, 'A widened exception scope invalidates the pinned approval hash');
+  assert.notEqual(
+    props.conventionHash(widenedEntry),
+    approval.contentHash,
+    'The recorded receipt contentHash cannot authorize a wider exception scope'
+  );
+  // thumbnail-badge keeps its canonical badge name and gains no exception from this decision.
+  const thumbnail = actual.find(({ id }) => id === 'thumbnail-badge');
+  assert.ok(thumbnail, 'thumbnail-badge');
+  assert.equal(thumbnail.name, 'badge');
+  assert.deepEqual(thumbnail.aliases, []);
+  assert.deepEqual(thumbnail.exceptions, []);
+});
+
 test('template naming receipt pins the organism receipt and binds two new layout slots', () => {
   const reference = 'docs/decisions/prop-naming-template-specs-approval.json';
   const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
@@ -2011,8 +2120,8 @@ test('template naming receipt pins the organism receipt and binds two new layout
   assert.equal(actual.find(({ id }) => id === 'side-navigation').name, 'sideNavigation');
   assert.equal(actual.find(({ id }) => id === 'bottom-navigation').name, 'bottomNavigation');
   const later = laterReceipts(reference);
-  const laterAdded = [...later.values()].flatMap(({ entries }) =>
-    entries.filter(
+  const laterAdded = [...later.values()].flatMap((laterReceipt) =>
+    receiptConventions(laterReceipt).filter(
       ({ convention }) =>
         !historicalIds.has(convention.id) && !receipt.entries.some((r) => r.convention.id === convention.id)
     )
@@ -2053,7 +2162,7 @@ test('Isotipo3D naming receipt preserves 125 entries and binds three scoped appr
   );
   const laterAdded = new Set(
     [...laterReceipts(skeletonReference).values()]
-      .flatMap(({ entries }) => entries)
+      .flatMap((laterReceipt) => receiptConventions(laterReceipt))
       .map(({ convention }) => convention.id)
       .filter((id) => !knownAtSkeleton.has(id))
   );
@@ -2195,7 +2304,7 @@ test('Skeleton v0.2 naming receipt records the owner published-spec approval and
   );
   const laterAdded = new Set(
     [...laterReceipts(skeletonReference).values()]
-      .flatMap(({ entries }) => entries)
+      .flatMap((laterReceipt) => receiptConventions(laterReceipt))
       .map(({ convention }) => convention.id)
       .filter((id) => !knownAtSkeleton.has(id))
   );
