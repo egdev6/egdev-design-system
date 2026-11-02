@@ -37,6 +37,8 @@ export type TerminalCardRow = {
 
 type TerminalCardNativeProps = Omit<
   ComponentPropsWithoutRef<'div'>,
+  | 'children'
+  | 'className'
   | 'role'
   | 'tabIndex'
   | 'aria-label'

@@ -73,6 +73,9 @@ const components = [
   ['CollapsibleTrigger', 'molecules/collapsible'],
   ['CollapsibleContent', 'molecules/collapsible'],
   ['GaugeGroup', 'molecules/gauge-group'],
+  ['TerminalCard', 'molecules/terminal-card'],
+  ['TerminalCardBar', 'molecules/terminal-card'],
+  ['TerminalCardList', 'molecules/terminal-card'],
   ['PhotoFrame', 'atoms/photo-frame'],
   ['Table', 'molecules/table']
 ] as const;
@@ -455,11 +458,17 @@ const expected: Record<string, Record<string, string | false>> = {
     unavailableText: 'text',
     center: false,
     size: false
-  }
+  },
+  terminalcard: { label: 'text', children: false, className: 'text' },
+  terminalcardbar: { children: false, shell: 'text', className: 'text' },
+  terminalcardlist: { items: false, className: 'text' }
 };
 const ownPropCounts: Record<string, number> = {
   table: 16,
   gaugegroup: 4,
+  terminalcard: 3,
+  terminalcardbar: 3,
+  terminalcardlist: 2,
   photoframe: 6,
   indicator: 8,
   panel: 3,
@@ -770,6 +779,39 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
     for (const name of ['style', 'role', 'children', 'onClick', 'ref']) {
       expect(argTypes[name], name).toBeUndefined();
+    }
+  });
+
+  it('retains TerminalCard required group naming, collection items and decorative row presentation', () => {
+    const { argTypes } = story('TerminalCard');
+    expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.label?.control).toEqual({ type: 'text' });
+    expect(argTypes.children?.type?.required).toBe(true);
+    expect(argTypes.children?.control).toBe(false);
+    expect(argTypes.className?.control).toEqual({ type: 'text' });
+    expect(argTypes.items).toBeUndefined();
+    expect(argTypes.shell).toBeUndefined();
+    // The row's caret/tone are nested data fields; they must never be promoted to root Controls.
+    for (const name of ['caret', 'tone', 'term', 'value']) {
+      expect(argTypes[name], name).toBeUndefined();
+    }
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'onClick']) {
+      expect(argTypes[name], name).toBeDefined();
+    }
+    for (const name of ['style', 'role', 'aria-label', 'aria-labelledby', 'ref', 'asChild']) {
+      expect(argTypes[name], name).toBeUndefined();
+    }
+    const bar = story('TerminalCardBar');
+    expect(bar.argTypes.shell?.control).toEqual({ type: 'text' });
+    expect(bar.argTypes.children?.type?.required).toBe(true);
+    expect(bar.argTypes.children?.control).toBe(false);
+    expect(bar.argTypes.items).toBeUndefined();
+    const list = story('TerminalCardList');
+    expect(list.argTypes.items?.type?.required).toBe(true);
+    expect(list.argTypes.items?.control).toBe(false);
+    expect(list.argTypes.className?.control).toEqual({ type: 'text' });
+    for (const composed of [story('TerminalCard'), bar, list]) {
+      expect(composed.args).toEqual({});
     }
   });
 
