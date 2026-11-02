@@ -3122,6 +3122,113 @@ test('TerminalCard ships scanned band, wrap, tone and caret pulse utilities with
   assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/terminal-card/terminal-card.css')));
 });
 
+test('ProjectCard ships named passive article SSR and keeps its composition recipes private', async () => {
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const html = renderToStaticMarkup(
+    createElement(exported.ProjectCard, {
+      title: 'Pulso',
+      index: '01',
+      eyebrow: 'Open source',
+      id: 'packed-project',
+      className: 'col-span-full',
+      children: [
+        createElement('p', null, 'Watches repositories and reports what changed.'),
+        createElement(exported.ProjectCardTags, { items: ['React', 'Vitest'] }),
+        createElement(exported.ProjectCardCode, {
+          label: 'Install commands',
+          items: [{ text: 'pnpm install' }, { text: '# requires Node 20', kind: 'comment' }]
+        }),
+        createElement(exported.ProjectCardFooter, {
+          children: createElement(exported.Link, { href: '#pulso', variant: 'underlined', children: 'View project' })
+        })
+      ]
+    })
+  );
+  const heading = /<h3[^>]*id="([^"]+)"/.exec(html);
+  assert.ok(heading, 'The card generates one native h3 heading');
+  assert.ok(html.includes(`aria-labelledby="${heading[1]}"`));
+  assert.match(html, /^<article\b/);
+  assert.match(html, /data-variant="default"/);
+  assert.match(html, /data-size="md"/);
+  assert.match(html, /aria-hidden="true"[^>]*>01</);
+  for (const marker of [
+    'eg-project-card',
+    'eg-project-card__tags',
+    'eg-project-card__code',
+    'eg-project-card__foot',
+    'eg-chip',
+    'col-span-full',
+    '# requires Node 20',
+    'View project'
+  ]) {
+    assert.ok(html.includes(marker), marker);
+  }
+  assert.doesNotMatch(html, /tabindex=|role="(?:button|region)"|aria-live=/);
+  // Featured sm keeps positive padding and still renders every supplied part, including the well.
+  const compact = renderToStaticMarkup(
+    createElement(exported.ProjectCard, {
+      title: 'Compact project',
+      size: 'sm',
+      variant: 'featured',
+      children: createElement(exported.ProjectCardCode, {
+        label: 'Install commands',
+        items: [{ text: 'pnpm install' }]
+      })
+    })
+  );
+  assert.match(compact, /data-variant="featured"/);
+  assert.match(compact, /data-size="sm"/);
+  assert.ok(compact.includes('eg-project-card__code'), 'sm density never hides the code well');
+  assert.match(compact, /class="[^\"]*\bp-3\b/);
+  assert.doesNotMatch(compact, /\bp-0\b/);
+  for (const name of [
+    'useProjectCard',
+    'useProjectCardTags',
+    'useProjectCardCode',
+    'useProjectCardFooter',
+    'projectCardVariants',
+    'projectCardIndexVariants',
+    'ProjectCardNativeProps'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, name);
+  }
+});
+
+test('ProjectCard ships scanned stroke, signature and density utilities without a new stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    String.raw`.\[-webkit-text-stroke\:var\(--border-width\)_var\(--color-border-brand\)\]`,
+    String.raw`.\[-webkit-text-stroke\:var\(--border-width\)_var\(--color-fg-brand-default\)\]`,
+    '.border-border-brand',
+    String.raw`.shadow-\[var\(--shadow-hot\)\]`,
+    '.text-title-display',
+    '.text-title-section',
+    '.text-heading-small',
+    '.text-body-large',
+    '.text-label-eyebrow',
+    '.text-code',
+    '.text-fg-muted',
+    '.text-fg-brand-raised',
+    '.p-3',
+    '.p-6'
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing ProjectCard utility ${selector}`);
+  }
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}[^{]*\\{`));
+  };
+  assert.match(rule('.p-3'), /padding:[^;]*var\(--space/);
+  assert.match(rule('.p-6'), /padding:[^;]*var\(--space/);
+  assert.match(rule('.text-code'), /font-size:\s*var\(--text-code[,)]/);
+  assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)\s*;/);
+  assert.doesNotMatch(utilities, /\.eg-project-card[^{}]*\{/);
+  assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/project-card/project-card.css')));
+});
+
 test('SectionHeader emits every local CVA utility and its exact static breakpoint without a stylesheet', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const source = ts.createSourceFile(
@@ -3265,6 +3372,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Portal',
       'PreviewFrame',
       'ProgressBar',
+      'ProjectCard',
+      'ProjectCardCode',
+      'ProjectCardFooter',
+      'ProjectCardTags',
       'PullQuote',
       'RadioGroup',
       'SearchTrigger',
@@ -3641,6 +3752,18 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ProgressBarProps',
     'ProgressBarSize',
     'ProgressBarVariant',
+    'ProjectCard',
+    'ProjectCardCode',
+    'ProjectCardCodeLine',
+    'ProjectCardCodeProps',
+    'ProjectCardFooter',
+    'ProjectCardFooterProps',
+    'ProjectCardLevel',
+    'ProjectCardProps',
+    'ProjectCardSize',
+    'ProjectCardTags',
+    'ProjectCardTagsProps',
+    'ProjectCardVariant',
     'PullQuote',
     'PullQuoteProps',
     'PullQuoteTone',
@@ -3783,6 +3906,26 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'countdownValueVariants',
     'countdownLabelVariants',
     'CountdownState'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
+  for (const name of [
+    'useProjectCard',
+    'useProjectCardTags',
+    'useProjectCardCode',
+    'useProjectCardFooter',
+    'projectCardVariants',
+    'projectCardIndexVariants',
+    'projectCardEyebrowVariants',
+    'projectCardHeadingVariants',
+    'projectCardBodyVariants',
+    'projectCardTagsVariants',
+    'projectCardCodeVariants',
+    'projectCardCodeLineVariants',
+    'projectCardCodeGlyphVariants',
+    'projectCardFootVariants',
+    'ProjectCardNativeProps'
   ]) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
