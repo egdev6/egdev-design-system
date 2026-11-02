@@ -1,0 +1,109 @@
+{
+  "component": "article-feature",
+  "specVersion": "0.1",
+  "spec": "docs/components/article-feature/v0.1/spec.md",
+  "specContentSHA256": "9b099d34e4fd042f93d16f704fdb2741ac222220d96c3fb335a2340f29a994b6",
+  "status": "Proposed — expected-design evidence for owner review; adoption and GitHub-visible publication pending. Visual conformity: Not evaluated.",
+  "capturedFrom": {
+    "authority": "odd/tasks/web-catalog.md L6 owner answer (render egdev-foundation preview.html read-only in Chromium; PNG + conditions + SHA-256 under docs/components/<name>/<version>/) and L15/L16 batch-2 cadence",
+    "sourceRoot": "egdev-website/ (owner-granted read-only workspace root)",
+    "readOnly": true,
+    "notes": "No file inside egdev-website was edited. A throwaway harness under /tmp/egdev-sbcheck/ linked the Foundation stylesheets by file:// URL, embedded the original preview fragment unchanged and resolved its runtime image URL to the authored reference asset."
+  },
+  "harness": {
+    "directory": "/tmp/egdev-sbcheck (scratch, outside the worktree; safe to delete)",
+    "script": "/tmp/egdev-sbcheck/capture-cards-b2.mjs (derived from /tmp/egdev-sbcheck/capture-cards.mjs, the layer-(c) batch-1 harness)",
+    "generatedPage": "/tmp/egdev-sbcheck/harness-cards-b2-article-feature.html",
+    "stylesheetLinks": [
+      "file://egdev-website/egdev-foundation/design-system/tokens.css",
+      "file://egdev-website/egdev-foundation/design-system/components/bundle.css"
+    ],
+    "stylesheets": [
+      {
+        "path": "egdev-website/egdev-foundation/design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e"
+      },
+      {
+        "path": "egdev-website/egdev-foundation/design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      }
+    ],
+    "transformations": [
+      "Wrapped the preview fragment in a full HTML document because preview.html has no <head> or <html> element; markup, inline <style> and the @dsCard comment are otherwise byte-identical.",
+      "Added the two authored Foundation stylesheets as file:// links.",
+      "Resolved the single runtime /_blob/<id> cover URL to reference-web/assets/photo-setup.webp (matched by the declared 1280x960 size, by the same asset already identified for PhotoFrame v0.4, and by the same setup selfie in reference-web/pulso-source.html line 1104); no other markup or CSS was changed."
+    ]
+  },
+  "conditions": {
+    "browser": "chrome-headless-shell (Playwright 1.60.0, chromium_headless_shell-1243 build)",
+    "tool": "playwright-core 1.60.0, launched with --allow-file-access-from-files --force-color-profile=srgb --hide-scrollbars",
+    "executable": "/home/egdev/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+    "viewport": {
+      "width": 1280,
+      "height": 1400
+    },
+    "deviceScaleFactor": 2,
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "locale": "en-US",
+    "crop": "component zone: element screenshot of the preview board (.pv), the labelled grid containing every previewed state",
+    "animations": "disabled during the screenshot",
+    "fonts": {
+      "status": "loaded (document.fonts.ready awaited before the screenshot)",
+      "loadedFaces": [
+        "Barlow 600 normal",
+        "Barlow 700 normal",
+        "Barlow Condensed 600 normal",
+        "Barlow Condensed 700 normal",
+        "Barlow Condensed 800 normal"
+      ],
+      "unloadedFaces": "faces requested by the preview link but never used by the rendered markup, reported as unloaded (expected)",
+      "source": "Google Fonts, requested by the original preview.html"
+    },
+    "images": [
+      {
+        "natural": "1280x960",
+        "source": "reference-web/assets/photo-setup.webp"
+      }
+    ],
+    "resolvedTokens": {
+      "--color-bg-canvas": "#000000",
+      "--color-bg-glass": "rgba(255, 255, 255, 0.08)",
+      "--font-display": "\"Barlow Condensed\", \"Arial Narrow\", sans-serif",
+      "--font-mono": "\"JetBrains Mono\", ui-monospace, monospace"
+    },
+    "observedBoardHeight": "585.40625 CSS px",
+    "date": "2026-11-02T16:08Z",
+    "verificationLimits": "Static resting generative cover and one static `.is-hover` media cover only. No pointer-driven hover, focus-visible, reduced-motion, light-theme or below-560px capture was produced; the capture is browser evidence of the current web design, not of a DS implementation."
+  },
+  "visuals": [
+    {
+      "id": "VIS-01",
+      "file": "article-feature--variants--1280x1400--dark.png",
+      "pngSha256": "b9d8db80b1deea14ddc0871d7f4d922e013d0cff4818a01512f5c5254b1d1880",
+      "pngBytes": 984361,
+      "pixelSize": {
+        "width": 2560,
+        "height": 1172
+      },
+      "alt": "Two featured article cards side by side: the left card has a generative 16:8 cover (dark brand-tinted plate with the huge ghost word /SRC bottom-left and the seven-polygon egdev isotype right of centre) plus a DESTACADO outline tag in the top-left corner, then the uppercase context row ARQUITECTURA · 12 MIN · 18 SEP 2026, a two-line title and the underlined Leer artículo → label; the right card shows the photographic cover variant with the same solid neon tag, the hovered frame (brand hairline plus neon glow), the context row DIRECTOS · 8 MIN · 20 SEP 2026, a two-line title and the same action label.",
+      "webComponent": "ArticleFeature",
+      "source": {
+        "readme": "egdev-website/egdev-foundation/design-system/components/ArticleFeature/README.md",
+        "readmeSha256": "9ee095052a989a966bcc570f491c93e0cfa239aed1d05d77e81a724be0858c4b",
+        "preview": "egdev-website/egdev-foundation/design-system/components/ArticleFeature/preview.html",
+        "previewSha256": "2aeab75559cc3660b9b3e37dff6a187b7bffbff4aaddff0777d96a3bc9e7ccad",
+        "consumer": "egdev-website/egdev-foundation/design-system/components/BlogGrid/README.md (sha256 8362eae6346a5738af7a071887489831340a8408098f20b0064ea40e85f159f7)",
+        "realUsage": "egdev-website/egdev-foundation/reference-web/pulso-source.html lines 1021-1035 (a.feature.glass.card with .cover, .body and a span.link inside the blog-grid of the Blog zone)"
+      },
+      "media": [
+        {
+          "runtimeBlobUrl": "/_blob/ce2d47159017f6b32cabffad74654133",
+          "resolvedAsset": "egdev-website/egdev-foundation/reference-web/assets/photo-setup.webp",
+          "sha256": "ae7946a4d3cc943af852e0a51363b04a9a7040e48bfde9d118eab0a58b87dfa1"
+        }
+      ],
+      "mapsTo": "proposed single presentation with two cover branches: generative (coverWord) on the left and media (PhotoFrame child) on the right; the neon halo, the isotype mark and the hover glow document treatments the DS proposal does not keep (OQ-1, OQ-4)"
+    }
+  ]
+}

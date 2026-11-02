@@ -1,0 +1,110 @@
+{
+  "component": "community-card",
+  "specVersion": "0.1",
+  "spec": "docs/components/community-card/v0.1/spec.md",
+  "specContentSHA256": "e61852ce0683616aa070f14bd9fa65457286ed8b474d7bb2630bfe8004b75662",
+  "status": "Proposed — expected-design evidence for owner review; adoption and GitHub-visible publication pending. Visual conformity: Not evaluated.",
+  "capturedFrom": {
+    "authority": "odd/tasks/web-catalog.md L6 owner answer (render egdev-foundation preview.html read-only in Chromium; PNG + conditions + SHA-256 under docs/components/<name>/<version>/) and L15/L16 batch-2 cadence",
+    "sourceRoot": "egdev-website/ (owner-granted read-only workspace root)",
+    "readOnly": true,
+    "notes": "No file inside egdev-website was edited. A throwaway harness under /tmp/egdev-sbcheck/ linked the Foundation stylesheets by file:// URL, embedded the original preview fragment unchanged and resolved its runtime image URL to the authored reference asset."
+  },
+  "harness": {
+    "directory": "/tmp/egdev-sbcheck (scratch, outside the worktree; safe to delete)",
+    "script": "/tmp/egdev-sbcheck/capture-cards-b2.mjs (derived from /tmp/egdev-sbcheck/capture-cards.mjs, the layer-(c) batch-1 harness)",
+    "generatedPage": "/tmp/egdev-sbcheck/harness-cards-b2-community-card.html",
+    "stylesheetLinks": [
+      "file://egdev-website/egdev-foundation/design-system/tokens.css",
+      "file://egdev-website/egdev-foundation/design-system/components/bundle.css"
+    ],
+    "stylesheets": [
+      {
+        "path": "egdev-website/egdev-foundation/design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e"
+      },
+      {
+        "path": "egdev-website/egdev-foundation/design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      }
+    ],
+    "transformations": [
+      "Wrapped the preview fragment in a full HTML document because preview.html has no <head> or <html> element; markup, inline <style> and the @dsCard comment are otherwise byte-identical.",
+      "Added the two authored Foundation stylesheets as file:// links.",
+      "Resolved the single runtime /_blob/<id> logo URL to reference-web/assets/gentle.svg: that file is byte-identical to the inline data:image/svg+xml;base64 artwork that reference-web/pulso-source.html line 1165 uses for the same alt text (Gentleman Programming) with the same declared 2538x1631 size; the harness inlined the same bytes as a data URI so the file:// page needed no extra request. No other markup or CSS was changed."
+    ]
+  },
+  "conditions": {
+    "browser": "chrome-headless-shell (Playwright 1.60.0, chromium_headless_shell-1243 build)",
+    "tool": "playwright-core 1.60.0, launched with --allow-file-access-from-files --force-color-profile=srgb --hide-scrollbars",
+    "executable": "/home/egdev/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+    "viewport": {
+      "width": 1280,
+      "height": 1400
+    },
+    "deviceScaleFactor": 2,
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "locale": "en-US",
+    "crop": "component zone: element screenshot of the preview board (.pv), the labelled grid containing every previewed state",
+    "animations": "disabled during the screenshot",
+    "fonts": {
+      "status": "loaded (document.fonts.ready awaited before the screenshot)",
+      "loadedFaces": [
+        "Barlow 400 normal",
+        "Barlow 700 normal",
+        "Barlow Condensed 600 normal",
+        "Barlow Condensed 700 normal",
+        "Barlow Condensed 800 normal"
+      ],
+      "unloadedFaces": "faces requested by the preview link but never used by the rendered markup, reported as unloaded (expected)",
+      "source": "Google Fonts, requested by the original preview.html"
+    },
+    "images": [
+      {
+        "natural": "2538x1631",
+        "source": "reference-web/assets/gentle.svg"
+      }
+    ],
+    "resolvedTokens": {
+      "--color-bg-canvas": "#000000",
+      "--color-bg-glass": "rgba(255, 255, 255, 0.08)",
+      "--font-display": "\"Barlow Condensed\", \"Arial Narrow\", sans-serif",
+      "--font-mono": "\"JetBrains Mono\", ui-monospace, monospace"
+    },
+    "observedBoardHeight": "456.046875 CSS px",
+    "date": "2026-11-02T16:08Z",
+    "verificationLimits": "Static resting cards only (the web card has no own hover state). No pointer-driven hover, focus-visible, reduced-motion, light-theme or below-760px capture was produced; the capture is browser evidence of the current web design, not of a DS implementation."
+  },
+  "visuals": [
+    {
+      "id": "VIS-01",
+      "file": "community-card--variants--1280x1400--dark.png",
+      "pngSha256": "786a935a0215ee77dad3957917b767b14d4aff9fb26b02da6dda20205f7a2db0",
+      "pngBytes": 102644,
+      "pixelSize": {
+        "width": 2560,
+        "height": 914
+      },
+      "alt": "Two glass community cards side by side: the left one shows the diamond role line MI COMUNIDAD with a role=img boxed STACK & FLOW wordmark on the trailing edge, the display name STACK & FLOW, a three-line description and a solid neon primary button Entrar al Discord ↗; the right one shows SOY MAINTAINER with the pink Gentleman Programming moustache-and-eyes logo, the display name GENTLEMAN PROGRAMMING, a two-line description and an outlined secondary button with the same label.",
+      "webComponent": "CommunityCard",
+      "source": {
+        "readme": "egdev-website/egdev-foundation/design-system/components/CommunityCard/README.md",
+        "readmeSha256": "02fca672078569941b50f54bae70a28ca965e18927b6554957bde5629f9b31cf",
+        "preview": "egdev-website/egdev-foundation/design-system/components/CommunityCard/preview.html",
+        "previewSha256": "9ec5270443717f47651a5a12b483a2a89bc9181f5fc301ea799b0b5a9e6b28fe",
+        "consumer": "egdev-website/egdev-foundation/design-system/components/CommunityGrid/README.md (sha256 f928b6b6da59020b2d592b588a0978dc0a480411f50f48d89ff39377040e75f4) and CommunityGrid/preview.html (sha256 0768deacbceb7e370a74e28deba19d0c22a9dd6182ced245fa2471184df5401c)",
+        "realUsage": "egdev-website/egdev-foundation/reference-web/pulso-source.html lines 1154-1173 (two article.dc-card.glass.card units in the Discord zone, each with .dc-top, h3.dc-name, a paragraph and a btn link)"
+      },
+      "media": [
+        {
+          "runtimeBlobUrl": "/_blob/b23c225b815c078d33d997f87f8b0fd3",
+          "resolvedAsset": "egdev-website/egdev-foundation/reference-web/assets/gentle.svg",
+          "sha256": "21c97577af16d46705bf2feef04106c5e6888531c5d5f931b3a83c3acca6d192",
+          "matchingEvidence": "Byte-identical to the decoded inline data:image/svg+xml;base64 artwork in reference-web/pulso-source.html line 1165, same alt text and same declared 2538x1631 size as the preview image."
+        }
+      ],
+      "mapsTo": "proposed single presentation: eyebrow + CommunityCardMark + title + body copy + CommunityCardAction with a consumer Button; the boxed wordmark documents the mark treatment the DS proposal does not keep (OQ-1)"
+    }
+  ]
+}
