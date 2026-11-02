@@ -68,6 +68,7 @@ export type {
 } from './molecules/panel';
 export { Panel, PanelBody, PanelFooter, PanelHeader } from './molecules/panel';
 export * from './molecules/popover';
+export * from './molecules/project-card';
 export type {
   SectionHeaderLevel,
   SectionHeaderProps,

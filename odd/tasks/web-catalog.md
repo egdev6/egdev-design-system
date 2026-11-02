@@ -44,6 +44,13 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 
 | T7 | S3 | Propose implementation plans for six approved layer (c) molecules | worker | approved — docs/components/web-catalog/v0.1/layer-c-plan-approvals.md |
 
+| T8 | S3 | Implement ProjectCard under approved v0.1 plan | worker + parent integration | in progress |
+| T9 | S3 | Implement NowCard under approved v0.1 plan | worker + parent integration | in progress |
+| T10 | S3 | Implement TerminalCard under approved v0.1 plan | worker + parent integration | in progress |
+| T11 | S3 | Implement TipCard under approved v0.1 plan | worker + parent integration | pending |
+| T12 | S3 | Implement ArticleFeature under approved v0.1 plan | worker + parent integration | pending |
+| T13 | S3 | Implement CommunityCard under approved v0.1 plan | worker + parent integration | pending |
+
 ## Log
 
 - L1 — Owner, verbatim: "creo que aquí faltaría un nuevo template. El de la vista web de pulso"; then chose "Llevar HomeTemplate al sistema"; answers: source "\home\egdev\proyectos\egdev-website", scope "habría que analizar la web entera en busca de los componentes que falten añadir al catálogo. La idea del design system es también poder crear nuevas vistas de la web", package "@egdev/effects (Recomendado)".
@@ -66,3 +73,5 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 - L17 — Batch 2 specs and captures published in PR #278 (b9ce7c9), issues TipCard #279, ArticleFeature #280, CommunityCard #281; issue bodies and immutable PNG hashes verified. Owner answered all three (verbatim): "Aprobar las recomendaciones". All recommended OQs approved, including cover-badge, card-link-action-label, content-detail and decorative-cover-word conventions, and planned catalog composition corrections. Approval references: https://github.com/egdev6/egdev-design-system/issues/279#issuecomment-6581571495, https://github.com/egdev6/egdev-design-system/issues/280#issuecomment-6581572442, https://github.com/egdev6/egdev-design-system/issues/281#issuecomment-6581573407. Implementation remains subject to separate plan approval.
 
 - L18 — Owner approved the six implementation plans (verbatim): "Aprobar los seis planes"; naming: "Aprobar decorative-index"; captures: "Adoptarlas con las diferencias aprobadas". Exact whole-file plan hashes pinned in docs/components/web-catalog/v0.1/layer-c-plan-approvals.md. Parent corrected stale plan payload hashes before approval; approved contracts unchanged. Implementation authorized under these plans.
+
+- L19 — Plans and approval record merged in PR #282 (54e13cc). Implementation begins with T8–T10 in isolated component worktrees; shared exports, registry, catalog and package fixtures remain parent-owned.

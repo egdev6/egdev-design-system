@@ -41,7 +41,12 @@
     "animations": "disabled during the screenshot",
     "fonts": {
       "status": "loaded (document.fonts.ready awaited before the screenshot)",
-      "loadedFaces": ["Barlow 600 normal", "Barlow Condensed 600 normal", "JetBrains Mono 400 normal", "JetBrains Mono 500 normal"],
+      "loadedFaces": [
+        "Barlow 600 normal",
+        "Barlow Condensed 600 normal",
+        "JetBrains Mono 400 normal",
+        "JetBrains Mono 500 normal"
+      ],
       "unloadedFaces": "requested by the preview link but never used by the rendered markup, so reported as unloaded (expected)",
       "source": "Google Fonts, requested by the original preview.html"
     },

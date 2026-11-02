@@ -614,6 +614,16 @@
           "symbol": "ListItemProps",
           "revision": "sha256:df2e05c470c79ad94bef1b06c87d118216ea601ebebe1d8aea6cff8c366cbe76"
         }
+      },
+      {
+        "component": "ProjectCard",
+        "type": "ProjectCardSize",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/project-card/types.ts",
+          "symbol": "ProjectCardProps",
+          "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
+        }
       }
     ]
   },
@@ -910,6 +920,16 @@
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
           "revision": "sha256:b5e5ba0b47c7e53c9a3759888c1d746a82596537fd3834d1ca3dd2a4b05503f3"
+        }
+      },
+      {
+        "component": "ProjectCard",
+        "type": "ProjectCardVariant",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/project-card/types.ts",
+          "symbol": "ProjectCardProps",
+          "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
         }
       }
     ]
@@ -1561,6 +1581,16 @@
           "path": "packages/ui/src/organisms/module-rail/types.ts",
           "symbol": "ModuleRailProps",
           "revision": "sha256:a21f7c5ee39eb148b115ea95a82bd820c692ba3a4f855af380ffc20f3b4f95bd"
+        }
+      },
+      {
+        "component": "ProjectCardCode",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/project-card/types.ts",
+          "symbol": "ProjectCardCodeProps",
+          "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
         }
       }
     ]
@@ -3316,6 +3346,26 @@
           "symbol": "ModuleRailProps",
           "revision": "sha256:a21f7c5ee39eb148b115ea95a82bd820c692ba3a4f855af380ffc20f3b4f95bd"
         }
+      },
+      {
+        "component": "ProjectCardTags",
+        "type": "string[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/project-card/types.ts",
+          "symbol": "ProjectCardTagsProps",
+          "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
+        }
+      },
+      {
+        "component": "ProjectCardCode",
+        "type": "ProjectCardCodeLine[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/project-card/types.ts",
+          "symbol": "ProjectCardCodeProps",
+          "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
+        }
       }
     ]
   },
@@ -4411,6 +4461,16 @@
           "symbol": "SectionHeaderProps",
           "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
         }
+      },
+      {
+        "component": "ProjectCard",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/project-card/types.ts",
+          "symbol": "ProjectCardProps",
+          "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
+        }
       }
     ]
   },
@@ -4487,6 +4547,16 @@
           "path": "packages/ui/src/molecules/list-item/types.ts",
           "symbol": "ListItemTitleProps",
           "revision": "sha256:df2e05c470c79ad94bef1b06c87d118216ea601ebebe1d8aea6cff8c366cbe76"
+        }
+      },
+      {
+        "component": "ProjectCard",
+        "type": "ProjectCardLevel",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/project-card/types.ts",
+          "symbol": "ProjectCardProps",
+          "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
         }
       }
     ]
@@ -4695,6 +4765,16 @@
           "path": "packages/ui/src/molecules/section-header/types.ts",
           "symbol": "SectionHeaderProps",
           "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      },
+      {
+        "component": "ProjectCard",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/project-card/types.ts",
+          "symbol": "ProjectCardProps",
+          "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
         }
       }
     ]
@@ -6559,6 +6639,33 @@
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
           "revision": "sha256:aac605536ebb3fce3185c76418509c18641a008a1f65d4488e39e648bd992b7a"
+        }
+      }
+    ]
+  },
+  {
+    "id": "decorative-index",
+    "name": "index",
+    "meaning": "Decorative editorial identifier for a content card, not a collection position or selection state.",
+    "whenToUse": "A content card renders a supplied editorial identifier as decoration outside its accessible name.",
+    "avoid": "Collection offsets, selected indexes, ordering controls, or meaningful identifiers that assistive technology must announce.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/components/project-card/v0.1/decorative-index-approval.json",
+      "scope": "convention:decorative-index",
+      "contentHash": "sha256:f6785858de73667d450eb9dc610a0e1aeebbeb8137e661ccfb6f475e8b7d41c6"
+    },
+    "usages": [
+      {
+        "component": "ProjectCard",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/project-card/types.ts",
+          "symbol": "ProjectCardProps",
+          "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
         }
       }
     ]
