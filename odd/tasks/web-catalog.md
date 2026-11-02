@@ -18,16 +18,16 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 | W3 | S2, S3 | Cataloging draft + required policy amendments (CATALOGACION/ARQUITECTURA web rule, effects exclusions) | parent | done — docs/components/web-catalog/v0.1/cataloging-draft.md |
 | W4 | S1–S4 | Owner review of the draft | parent | done (L5) |
 | W5 | S1–S3 | Layer (a): amend CATALOGACION/ARQUITECTURA, append effects contract notes, update catalog rows and regenerate | worker | done — PR #263 (8a0b7b9) |
-| W6 | S3 | Layers (b)–(f): specs, plans and implementation per component, in the approved order | per component | in progress (layer b: specs done, plans next) |
+| W6 | S3 | Layers (b)–(f): specs, plans and implementation per component, in the approved order | per component | in progress (layer b done; layer c next) |
 | P1 | S3 | Plan: Chip v0.2 static/link modes | worker | approved |
 | P2 | S3 | Plan: ListItem v0.2 editorial rows | worker | approved |
 | P3 | S3 | Plan: PhotoFrame v0.4 auto/numeric ratio + nine focal points | worker | approved |
 | P4 | S3 | Plan: Link v0.3 underlined variant only + IconButton v0.3 outline hover token | worker | approved |
-| I1 | S3 | Implement IconButton v0.3 outline hover token | worker | pending |
-| I2 | S3 | Implement Link v0.3 underlined | worker | pending |
-| I3 | S3 | Implement PhotoFrame v0.4 | worker | pending |
-| I4 | S3 | Implement ListItem v0.2 | worker | pending |
-| I5 | S3 | Implement Chip v0.2 + render-mode convention receipt | worker | pending |
+| I1 | S3 | Implement IconButton v0.3 outline hover token | worker | done — PR #268 (7fdb364) |
+| I2 | S3 | Implement Link v0.3 underlined | worker | done — PR #269 (abf848d) |
+| I3 | S3 | Implement PhotoFrame v0.4 | worker | done — PR #270 (a4f6b60), auto-height amendment |
+| I4 | S3 | Implement ListItem v0.2 | worker | done — PR #271 (09780ea), list anchor-composition fix |
+| I5 | S3 | Implement Chip v0.2 + render-mode convention receipt | worker | done — PR #272 (4ad56f8), union `never` slots + box-border fix |
 | B1 | S3 | Spec: Chip static and href modes (#55) | worker | approved — docs/components/chip/v0.2; #55 snapshot 6573737002, approval 6576758274 |
 | B2 | S3 | Spec: ListItem editorial row variant absorbing ArticleItem/NoteItem/StreamItem (#88) | worker | approved — docs/components/list-item/v0.2; #88 snapshot 6573738637, approval 6576758816 |
 | B3 | S3 | Spec: PhotoFrame auto ratio and image position (#95) | worker | approved — docs/components/photo-frame/v0.4; #95 snapshot 6573745782, approval 6576759318 |
@@ -51,3 +51,4 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 - L11 — B7 published (PR #266, b4839bc; 8 captures verified); snapshot comments #82 6577133907, #65 6577134986. Owner "Aprobar las dos (Recomendado)"; approvals #82 6577176014, #65 6577176648. All eight layer-(b) specs are approved. Implementation plans start (P1–P4); each plan needs its own owner approval before code.
 - L12 — Snapshot hash audit (parent): ListItem v0.2, Isotipo3D v0.6, Countdown v0.3 and ProgressBar v0.2 reproduce their declared contentSHA256 from the line whose full text is `## 1. Purpose and scope` to EOF. Chip v0.2, PhotoFrame v0.4, IconButton v0.3 and Link v0.3 declared their contentSHA256 over a different but deterministic cut: from the first occurrence of the substring `## 1. Purpose and scope`, which sits inside the hash-definition sentence on line 7 of each spec.md, through EOF (python: `t=open(p).read(); h=sha256(t[t.find("## 1. Purpose and scope"):].encode())`). Verified exact for all four. Their spec.md files are unchanged since they were merged (PRs #264/#265), before the approvals, so the approved contracts are intact; only the stated hash definition is imprecise. The spec.md files are not edited (that would change the approved hashes). Plans and implementations must cite the spec.md at those merge commits and reproduce the hash with this method.
 - L13 — Owner approved the layer-(b) plans (verbatim): "Aprobar los cinco (Recomendado)"; captures "Adoptarlas (Recomendado)"; convention "Aprobar render-mode (Recomendado)". Recorded in docs/components/web-catalog/v0.1/layer-b-plan-approvals.md with each plan's whole-file SHA-256. Implementation I1–I5 follows, one worktree and PR per component, integrated sequentially.
+- L14 — Layer (b) implemented and merged: IconButton #268, Link #269, PhotoFrame #270, ListItem #271, Chip #272 (main 4ad56f8). Parent browser checks against the adopted captures found three defects the unit gates missed, each fixed RED first with evidence under each component's observed/ folder: PhotoFrame auto ratio collapsed in grid/flex hosts (owner-approved auto-height amendment); ListItem list stories nested the anchor inside a row on the li (rows stacked, default underline); Chip span/anchor modes were content-box (37px vs 26px). The packed-consumer typecheck also caught a Chip union excess-property leak (aria-pressed, type), closed with `never` slots on the toggle branch. Next: layer (c) molecules.
