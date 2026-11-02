@@ -607,6 +607,11 @@ const postReceiptUsages = [
   ].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/atoms/countdown/types.ts#CountdownProps'
+  })),
+  // AppShell #130 records its two template layout slots and its skip-label messages at implementation.
+  ...['side-navigation', 'bottom-navigation', 'localized-messages'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/templates/app-shell/types.ts#AppShellProps'
   }))
 ];
 // These newly proposed conventions are not part of any immutable approval receipt.
@@ -1688,7 +1693,15 @@ test('template naming receipt pins the organism receipt and binds two new layout
     assert.equal(record.scope, `convention:${entry.id}`);
     assert.equal(record.contentHash, props.conventionHash(entry), entry.id);
     assert.deepEqual(approval, { reference, scope: record.scope, contentHash: record.contentHash });
-    assert.deepEqual(usages, [], entry.id);
+    // The receipt pins convention content, not later reviewed usage evidence.
+    assert.deepEqual(
+      historicalRegistry(
+        [entry],
+        postReceiptUsages.filter(({ conventionId }) => conventionId === entry.id)
+      )[0].usages,
+      [],
+      entry.id
+    );
     assert.deepEqual(convention.aliases, [], entry.id);
     assert.deepEqual(convention.exceptions, [], entry.id);
     const changed = structuredClone(actual);

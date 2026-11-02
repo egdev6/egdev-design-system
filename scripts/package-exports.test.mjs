@@ -276,6 +276,101 @@ test('module-rail exports native navigation without private helpers', async () =
   assert.equal(Object.hasOwn(exported, 'useModuleRail'), false);
 });
 
+test('app-shell exports its slots recipe and ships the literal 56rem viewport utilities', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const render = (props) => renderToString(createElement(exported.AppShell, { children: 'Content', ...props }));
+  const switching = render({
+    sideNavigation: createElement('div', { 'data-witness': 'side' }, 'Side'),
+    bottomNavigation: createElement('nav', { 'aria-label': 'Primary', 'data-witness': 'bottom' }, 'Bottom'),
+    messages: { skipToContent: 'Skip to content' }
+  });
+  assert.match(switching, /^<div/);
+  assert.match(switching, /eg-app-shell/);
+  assert.match(switching, /<main[^>]*tabindex="-1"/);
+  assert.match(switching, /Skip to content/);
+  assert.equal(switching.match(/<main/g)?.length, 1);
+  assert.doesNotMatch(switching, /role="main"/);
+  assert.doesNotMatch(
+    render({ bottomNavigation: createElement('nav', { 'aria-label': 'Primary' }, 'Bottom') }),
+    /Skip to content/
+  );
+  assert.deepEqual(Object.keys(exported.appShellVariants).sort(), [
+    'body',
+    'bottom',
+    'main',
+    'root',
+    'side',
+    'skip',
+    'skipLink'
+  ]);
+  assert.match(exported.appShellVariants.root(), /eg-app-shell/);
+  assert.match(exported.appShellVariants.side({ arrangement: 'switching' }), /max-\[56rem\]:hidden/);
+  assert.match(exported.appShellVariants.bottom({ arrangement: 'switching' }), /min-\[56rem\]:hidden/);
+  assert.match(exported.appShellVariants.skip({ arrangement: 'switching' }), /min-\[56rem\]:block/);
+  assert.equal(Object.hasOwn(exported, 'useAppShell'), false);
+  assert.equal(Object.hasOwn(exported, 'appShellSkipRowVariants'), false);
+
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/templates/app-shell/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      return;
+    }
+    if (ts.isStringLiteral(node)) {
+      for (const name of node.text.split(/\s+/).filter(Boolean)) {
+        classes.add(name);
+      }
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      for (const argument of node.arguments) {
+        collect(argument);
+      }
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.ok(classes.size > 8, 'Scan every local part recipe');
+  for (const name of classes) {
+    if (name.startsWith('eg-')) {
+      continue;
+    }
+    assert.ok(css.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing AppShell utility ${name}`);
+  }
+  // #130 D3–D5: the approved literal threshold must emit real CSS, never only a source string.
+  for (const selector of ['.min-\\[56rem\\]\\:block', '.min-\\[56rem\\]\\:hidden']) {
+    const index = css.indexOf(selector);
+    assert.ok(index > 0, `Missing ${selector}`);
+    const prelude = css.slice(css.lastIndexOf('@media', index), index);
+    // Accept the range or the min-width spelling; both mean the same at-or-above-56rem boundary.
+    assert.match(
+      prelude,
+      /\(\s*width\s*>=\s*56rem\s*\)|\(\s*min-width:\s*56rem\s*\)/,
+      `Expected an at-or-above-56rem at-rule for ${selector}, observed: ${prelude.replace(/\s+/g, ' ').slice(-80)}`
+    );
+  }
+  const below = css.indexOf('.max-\\[56rem\\]\\:hidden');
+  assert.ok(below > 0, 'Missing the below-56rem side utility');
+  const belowPrelude = css.slice(css.lastIndexOf('@media', below), below);
+  assert.ok(
+    /\(\s*width\s*<\s*56rem\s*\)/.test(belowPrelude) || /not all and/.test(belowPrelude),
+    `Expected a below-56rem at-rule, observed: ${belowPrelude.replace(/\s+/g, ' ').slice(-80)}`
+  );
+  assert.ok(!existsSync(resolve(root, 'packages/ui/src/templates/app-shell/app-shell.css')));
+});
+
 test('sidebar exports its component and static CSS without private helpers', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -2965,6 +3060,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'AlertDialogCancel',
       'AlertDialogContent',
       'AlertDialogTrigger',
+      'AppShell',
       'AspectRatio',
       'Avatar',
       'Badge',
@@ -3054,6 +3150,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Toggle',
       'Tooltip',
       'VisuallyHidden',
+      'appShellVariants',
       'badgeVariants',
       'calendarGridVariants',
       'chipVariants',
@@ -3184,6 +3281,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'AlertDialogTone',
     'AlertDialogTrigger',
     'AlertDialogTriggerProps',
+    'AppShell',
+    'AppShellMessages',
+    'AppShellProps',
     'AspectRatio',
     'AspectRatioProps',
     'Avatar',
@@ -3504,6 +3604,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'TooltipProps',
     'VisuallyHidden',
     'VisuallyHiddenProps',
+    'appShellVariants',
     'badgeVariants',
     'calendarGridVariants',
     'chipVariants',

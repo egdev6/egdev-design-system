@@ -3383,6 +3383,16 @@
           "symbol": "ModuleRailProps",
           "revision": "sha256:a21f7c5ee39eb148b115ea95a82bd820c692ba3a4f855af380ffc20f3b4f95bd"
         }
+      },
+      {
+        "component": "AppShell",
+        "type": "AppShellMessages (skipToContent)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/templates/app-shell/types.ts",
+          "symbol": "AppShellProps",
+          "revision": "sha256:a38077de08175a76725986fd36f873de673304cb800d1134b90b18d80251aed4"
+        }
       }
     ]
   },
@@ -6082,7 +6092,18 @@
       "scope": "convention:side-navigation",
       "contentHash": "sha256:5192bcdd094a11de6d3350e049019291a9ddf3a00741f3c461d1ff2f8067966f"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "AppShell",
+        "type": "ReactNode (docked Sidebar or ModuleRail)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/templates/app-shell/types.ts",
+          "symbol": "AppShellProps",
+          "revision": "sha256:a38077de08175a76725986fd36f873de673304cb800d1134b90b18d80251aed4"
+        }
+      }
+    ]
   },
   {
     "id": "bottom-navigation",
@@ -6098,7 +6119,18 @@
       "scope": "convention:bottom-navigation",
       "contentHash": "sha256:59c322d5ee26a6f383c7b70d45014a784501acf1918a77865dcd2da1394dc971"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "AppShell",
+        "type": "ReactNode (docked TabBar)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/templates/app-shell/types.ts",
+          "symbol": "AppShellProps",
+          "revision": "sha256:a38077de08175a76725986fd36f873de673304cb800d1134b90b18d80251aed4"
+        }
+      }
+    ]
   },
   {
     "id": "effect-scene",
