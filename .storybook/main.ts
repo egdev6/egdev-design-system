@@ -42,7 +42,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   buttonGroup: ['id', 'title', 'dir', 'aria-labelledby', 'aria-describedby', 'className'],
   pageHeader: ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick'],
   checkbox: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'aria-invalid', 'className', 'form'],
-  chip: ['id', 'title', 'name', 'onClick', 'aria-describedby', 'className'],
+  chip: ['id', 'title', 'name', 'onClick', 'aria-describedby', 'className', 'href', 'target', 'rel'],
   chipGroup: ['id', 'title', 'onClick', 'aria-describedby', 'className', 'style'],
   countdown: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],
   dropzone: ['id', 'title', 'disabled', 'className', 'aria-describedby', 'onClick'],
@@ -176,6 +176,12 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   popoverContent: ['title', 'aria-describedby', 'className', 'onClick'],
   surface: ['id', 'title', 'role', 'aria-label', 'aria-labelledby', 'className', 'style']
 };
+// Own props that exist only as type-level rejections (`?: never` slots). They must never reach
+// autodocs or Controls: Chip's union declares them to close excess-property leaks, not as API.
+const hiddenOwnProps: Record<string, readonly string[]> = {
+  chip: ['type', 'aria-pressed']
+};
+
 const camelCase = (name: string) => name.charAt(0).toLowerCase() + name.slice(1);
 
 const config: StorybookConfig = {
@@ -205,9 +211,16 @@ const config: StorybookConfig = {
       savePropValueAsString: true,
       shouldExtractLiteralValuesFromEnum: true,
       shouldRemoveUndefinedFromOptional: true,
-      propFilter: (prop, component) =>
-        documentedNativeProps[camelCase(component.name)]?.includes(prop.name) ||
-        (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true)
+      propFilter: (prop, component) => {
+        const name = camelCase(component.name);
+        if (hiddenOwnProps[name]?.includes(prop.name)) {
+          return false;
+        }
+        return (
+          documentedNativeProps[name]?.includes(prop.name) ||
+          (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true)
+        );
+      }
     }
   },
   viteFinal: async (cfg) =>

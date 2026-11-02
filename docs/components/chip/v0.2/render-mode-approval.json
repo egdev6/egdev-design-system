@@ -1,0 +1,35 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the render-mode convention proposed by Chip v0.2 for the mode prop: one pill that renders as a pressable toggle, a static label or a native link, selected by an explicit role prop rather than a boolean flag or implicit href inference.",
+  "evidence": {
+    "channel": "Owner decision forwarded in odd/tasks/web-catalog.md L13, 2026-11-02 (recorded in docs/components/web-catalog/v0.1/layer-b-plan-approvals.md)",
+    "ownerChoice": "Aprobar render-mode (Recomendado)",
+    "interpretation": "Explicit convention approval reported by the parent; this is not a signed or independent receipt, and it does not rewrite the earlier convention approvals."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/calendar-grid/v0.1/collection-items-organism-approval.json",
+      "wholeFileSHA256": "sha256:d8e7a12a4902f6c433689cbfd4a3750654b196b951c0ef62eb34b3fb20db07b9"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:render-mode",
+      "contentHash": "sha256:01fec4e337b01e9826f39dfed96be50d2e3922a149b0a450d98786270700fead",
+      "convention": {
+        "id": "render-mode",
+        "name": "mode",
+        "meaning": "The semantic role and rendered element of a component whose behavior differs per role, when the role is not a visual treatment.",
+        "whenToUse": "A component keeps one appearance and content contract but must render as a non-interactive element, a pressable control or a link.",
+        "avoid": "Visual presentation (use variant), data-entry kind (use kind), selection cardinality (use type) or a boolean flag per role.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

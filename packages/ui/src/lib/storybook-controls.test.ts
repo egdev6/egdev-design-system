@@ -242,11 +242,15 @@ const expected: Record<string, Record<string, string | false>> = {
   },
   chip: {
     children: false,
+    icon: false,
     pressed: 'boolean',
     defaultPressed: 'boolean',
     onPressedChange: false,
-    icon: false,
-    disabled: 'boolean'
+    mode: 'select',
+    disabled: 'boolean',
+    href: 'text',
+    external: 'boolean',
+    newTabText: 'text'
   },
   aspectratio: {
     ratio: 'number'
@@ -472,7 +476,7 @@ const ownPropCounts: Record<string, number> = {
   avatar: 4,
   button: 7,
   checkbox: 7,
-  chip: 6,
+  chip: 10,
   chipgroup: 8,
   countdown: 10,
   aspectratio: 1,
@@ -812,7 +816,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
     ['Checkbox', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }],
     ['Menu', { side: '"bottom"', align: '"start"', defaultOpen: 'false' }],
-    ['Chip', { defaultPressed: 'false', disabled: 'false' }],
+    ['Chip', { mode: '"toggle"', defaultPressed: 'false', disabled: 'false', external: 'false' }],
     ['AspectRatio', { ratio: '1' }],
     ['Stack', { gap: '4', alignItems: '"stretch"', justifyContent: '"start"', asChild: 'false' }],
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],

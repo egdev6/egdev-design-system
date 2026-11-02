@@ -3353,6 +3353,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ChipGroupOption',
     'ChipGroupProps',
     'ChipGroupType',
+    'ChipMode',
     'ChipProps',
     'Cluster',
     'ClusterProps',
@@ -3989,6 +3990,23 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.match(html, type === 'single' ? /role="radio" aria-checked="true"/ : /aria-pressed="true"/);
     assert.doesNotMatch(html, /<input|is-active|eg-surface/);
   }
+  const toggleChipHtml = renderToString(createElement(exported.Chip, { children: 'Design' }));
+  assert.match(toggleChipHtml, /^<button type="button" aria-pressed="false" data-state="off" class="eg-chip /);
+  assert.match(toggleChipHtml, />Design<\/button>$/);
+  const staticChipHtml = renderToString(createElement(exported.Chip, { mode: 'static', children: 'Open Source' }));
+  assert.match(staticChipHtml, /^<span class="eg-chip /);
+  assert.doesNotMatch(staticChipHtml, /role=|tabindex|aria-pressed|data-state|<button/);
+  assert.match(staticChipHtml, />Open Source<\/span>$/);
+  const linkChipHtml = renderToString(
+    createElement(exported.Chip, { mode: 'link', href: '#topics', external: true, children: 'Topics' })
+  );
+  assert.match(linkChipHtml, /<a href="#topics" target="_blank" rel="noopener noreferrer" class="eg-chip /);
+  assert.match(linkChipHtml, /Topics(?:<!-- -->)? <span[^>]*>\(opens in a new tab\)<\/span><\/a>$/);
+  assert.doesNotMatch(linkChipHtml, /aria-pressed|data-state/);
+  const sameTabLinkChipHtml = renderToString(
+    createElement(exported.Chip, { mode: 'link', href: '#topics', children: 'Topics' })
+  );
+  assert.doesNotMatch(sameTabLinkChipHtml, /target=|rel=|\(opens in a new tab\)/);
   assert.equal(typeof exported.Notice, 'function', 'Notice has no public ref API');
   const sharedNotice = exported.noticeVariants({ tone: 'danger', size: 'sm' });
   assert.ok(sharedNotice.split(' ').includes('eg-surface'), 'A1 permits inherited Surface identity');

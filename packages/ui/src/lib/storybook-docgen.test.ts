@@ -3820,37 +3820,69 @@ describe('Collapsible first-wave metadata contract', () => {
 describe('Chip metadata contract', () => {
   const chipControls: Record<string, string> = {
     children: 'false',
+    icon: 'false',
     pressed: 'boolean',
     defaultPressed: 'boolean',
     onPressedChange: 'false',
-    icon: 'false',
-    disabled: 'boolean'
+    mode: 'select',
+    disabled: 'boolean',
+    href: 'text',
+    external: 'boolean',
+    newTabText: 'text'
   };
-  const chipDefaults: Record<string, string> = { defaultPressed: 'false', disabled: 'false' };
+  const chipDefaults: Record<string, string> = {
+    mode: 'toggle',
+    defaultPressed: 'false',
+    disabled: 'false',
+    external: 'false',
+    newTabText: '(opens in a new tab)'
+  };
 
-  it('annotates every own prop with one control, concrete reasons and only actual constant defaults', () => {
+  it('annotates every non-never own prop with one control and only actual constant defaults', () => {
     const file = ast(source('atoms/chip/types.ts'));
-    const properties = ownProps(file, ['ChipProps']);
-    expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(chipControls));
-    for (const property of properties) {
+    const declarations = new Map<string, ts.PropertySignature[]>();
+    for (const property of ownProps(file, [
+      'ChipCommonProps',
+      'ChipPressedProps',
+      'ChipToggleProps',
+      'ChipStaticProps',
+      'ChipLinkProps'
+    ])) {
+      if (property.type?.getText(file) === 'never') {
+        continue;
+      }
       const name = property.name.getText(file);
-      expect(Boolean(property.questionToken), `Chip.${name} optionality`).toBe(name !== 'children');
-      const tags = ts.getJSDocTags(property);
+      declarations.set(name, [...(declarations.get(name) ?? []), property]);
+    }
+    expect([...declarations.keys()].sort()).toEqual(Object.keys(chipControls).sort());
+    for (const [name, properties] of declarations) {
       const values = (tagName: string) =>
-        tags.filter((tag) => tag.tagName.text === tagName).map((tag) => ts.getTextOfJSDocComment(tag.comment));
-      expect(values('control'), `Chip.${name} control`).toEqual([chipControls[name]]);
-      expect(values('default'), `Chip.${name} default`).toEqual(chipDefaults[name] ? [chipDefaults[name]] : []);
+        properties.flatMap((property) =>
+          ts
+            .getJSDocTags(property)
+            .filter((tag) => tag.tagName.text === tagName)
+            .map((tag) => ts.getTextOfJSDocComment(tag.comment)?.trim())
+        );
+      expect([...new Set(values('control'))], `Chip.${name} control`).toEqual([chipControls[name]]);
+      expect([...new Set(values('default'))], `Chip.${name} default`).toEqual(
+        chipDefaults[name] ? [chipDefaults[name]] : []
+      );
       if (chipControls[name] === 'false') {
         expect(values('controlReason')[0], `Chip.${name} reason`).toMatch(/Non-serializable.*stor(?:y|ies)\.$/);
       }
     }
   });
 
-  it('binds the documented defaults to the hook and Radix', () => {
-    expect(defaults(source('atoms/chip/useChip.ts'), false)).toEqual({ defaultPressed: 'false' });
+  it('binds the documented defaults to CVA, the hook and Radix', () => {
+    expect(defaults(source('atoms/chip/types.ts'), true)).toEqual({ mode: 'toggle' });
+    expect(defaults(source('atoms/chip/useChip.ts'), false)).toEqual({
+      defaultPressed: 'false',
+      external: 'false',
+      newTabText: '(opens in a new tab)'
+    });
   });
 
-  it('extracts own rows, real defaults and only the documented native rows', () => {
+  it('extracts the union rows, real defaults and only the documented native rows', () => {
     const doc = parser.parse(source('atoms/chip/Chip.tsx')).find((item) => item.displayName === 'Chip');
     if (!doc) {
       throw new Error('Missing docgen for Chip');
@@ -3860,13 +3892,29 @@ describe('Chip metadata contract', () => {
       expect(props[prop], `Chip.${prop}`).toMatchObject({ required: prop === 'children', tags: { control } });
       expect(normalize(props[prop]?.defaultValue?.value ?? ''), `Chip.${prop} default`).toBe(chipDefaults[prop] ?? '');
     }
-    for (const prop of ['pressed', 'defaultPressed', 'disabled']) {
+    expect(props.mode?.type.raw, 'mode enum').toBe('"link" | "toggle" | "static"');
+    expect(
+      new Set((props.mode?.type.value as { value: string }[] | undefined)?.map((row) => row.value)),
+      'mode values'
+    ).toEqual(new Set(['"toggle"', '"static"', '"link"']));
+    expect(props.href?.type.name, 'href type').toBe('string');
+    for (const prop of ['pressed', 'defaultPressed', 'disabled', 'external']) {
       expect(props[prop]?.type.name, prop).toBe('boolean');
     }
     expect(Object.keys(props).sort()).toEqual(
-      [...Object.keys(chipControls), 'id', 'title', 'name', 'onClick', 'aria-describedby', 'className'].sort()
+      [
+        ...Object.keys(chipControls),
+        'id',
+        'title',
+        'name',
+        'onClick',
+        'aria-describedby',
+        'className',
+        'target',
+        'rel'
+      ].sort()
     );
-    for (const prop of ['type', 'value', 'asChild', 'aria-pressed', 'chipVariants', 'chipIconVariants']) {
+    for (const prop of ['type', 'value', 'asChild', 'aria-pressed', 'data-state', 'chipVariants', 'chipIconVariants']) {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);
@@ -3877,7 +3925,11 @@ describe('Chip metadata contract', () => {
       'WithIcon',
       'Pressed',
       'Controlled',
-      'Disabled'
+      'Disabled',
+      'Static',
+      'Link',
+      'ExternalLink',
+      'StaticInList'
     ]);
   });
 });
