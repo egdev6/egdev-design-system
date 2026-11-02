@@ -28,12 +28,12 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 | I3 | S3 | Implement PhotoFrame v0.4 | worker | done — PR #270 (a4f6b60), auto-height amendment |
 | I4 | S3 | Implement ListItem v0.2 | worker | done — PR #271 (09780ea), list anchor-composition fix |
 | I5 | S3 | Implement Chip v0.2 + render-mode convention receipt | worker | done — PR #272 (4ad56f8), union `never` slots + box-border fix |
-| T1 | S3 | Spec: ProjectCard v0.1 (new molecule, batch 1) | worker | in progress |
-| T2 | S3 | Spec: NowCard v0.1 (new molecule, batch 1) | worker | in progress |
-| T3 | S3 | Spec: TerminalCard v0.1 (new molecule, batch 1) | worker | in progress |
-| T4 | S3 | Spec: TipCard v0.1 (new molecule, batch 2) | worker | pending |
-| T5 | S3 | Spec: ArticleFeature v0.1 (new molecule, batch 2) | worker | pending |
-| T6 | S3 | Spec: CommunityCard v0.1 (new molecule, batch 2) | worker | pending |
+| T1 | S3 | Spec: ProjectCard v0.1 (new molecule, batch 1) | worker | approved — docs/components/project-card/v0.1; issue #275, approval 6580403446 |
+| T2 | S3 | Spec: NowCard v0.1 (new molecule, batch 1) | worker | approved — docs/components/now-card/v0.1; issue #276, approval 6580404063 |
+| T3 | S3 | Spec: TerminalCard v0.1 (new molecule, batch 1) | worker | approved — docs/components/terminal-card/v0.1; issue #277, approval 6580404628 |
+| T4 | S3 | Spec: TipCard v0.1 (new molecule, batch 2) | worker | in progress |
+| T5 | S3 | Spec: ArticleFeature v0.1 (new molecule, batch 2) | worker | in progress |
+| T6 | S3 | Spec: CommunityCard v0.1 (new molecule, batch 2) | worker | in progress |
 | B1 | S3 | Spec: Chip static and href modes (#55) | worker | approved — docs/components/chip/v0.2; #55 snapshot 6573737002, approval 6576758274 |
 | B2 | S3 | Spec: ListItem editorial row variant absorbing ArticleItem/NoteItem/StreamItem (#88) | worker | approved — docs/components/list-item/v0.2; #88 snapshot 6573738637, approval 6576758816 |
 | B3 | S3 | Spec: PhotoFrame auto ratio and image position (#95) | worker | approved — docs/components/photo-frame/v0.4; #95 snapshot 6573745782, approval 6576759318 |
@@ -59,3 +59,4 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 - L13 — Owner approved the layer-(b) plans (verbatim): "Aprobar los cinco (Recomendado)"; captures "Adoptarlas (Recomendado)"; convention "Aprobar render-mode (Recomendado)". Recorded in docs/components/web-catalog/v0.1/layer-b-plan-approvals.md with each plan's whole-file SHA-256. Implementation I1–I5 follows, one worktree and PR per component, integrated sequentially.
 - L14 — Layer (b) implemented and merged: IconButton #268, Link #269, PhotoFrame #270, ListItem #271, Chip #272 (main 4ad56f8). Parent browser checks against the adopted captures found three defects the unit gates missed, each fixed RED first with evidence under each component's observed/ folder: PhotoFrame auto ratio collapsed in grid/flex hosts (owner-approved auto-height amendment); ListItem list stories nested the anchor inside a row on the li (rows stacked, default underline); Chip span/anchor modes were content-box (37px vs 26px). The packed-consumer typecheck also caught a Chip union excess-property leak (aria-pressed, type), closed with `never` slots on the toggle branch. Next: layer (c) molecules.
 - L15 — Layer (c) starts. Owner chose the spec cadence (verbatim): "Dos tandas de tres (Recomendado)" — batch 1 (T1–T3) ProjectCard, NowCard, TerminalCard; batch 2 (T4–T6) TipCard, ArticleFeature, CommunityCard. Same storage and capture authority as L6 (one GitHub issue per component, spec as a versioned comment; Foundation previews captured read-only).
+- L16 — Batch 1 published: specs, captures and issue bodies merged in PR #274 (a00a6e2); new issues ProjectCard #275, NowCard #276, TerminalCard #277 (bodies read back identical apart from the trailing newline; image bytes verified at the merge commit). Owner answered each (verbatim): "Aprobar con las recomendaciones (Recomendado)" — every OQ resolved as recommended, including the prop-naming conventions `shell-label` and `terminal-caret` for TerminalCard (registry receipts belong to the plan). Approval comments 6580403446, 6580404063, 6580404628. Batch 2 (T4–T6) starts.

@@ -1,0 +1,130 @@
+{
+  "component": "tip-card",
+  "specVersion": "0.1",
+  "spec": "docs/components/tip-card/v0.1/spec.md",
+  "specContentSHA256": "7b0e82b7e2b7424efa0188b44b440afe5cd1bfdff16ba58365166d810739ac6e",
+  "status": "Proposed — expected-design evidence for owner review; adoption and GitHub-visible publication pending. Visual conformity: Not evaluated.",
+  "capturedFrom": {
+    "authority": "odd/tasks/web-catalog.md L6 owner answer (render egdev-foundation preview.html read-only in Chromium; PNG + conditions + SHA-256 under docs/components/<name>/<version>/) and L15/L16 batch-2 cadence",
+    "sourceRoot": "egdev-website/ (owner-granted read-only workspace root)",
+    "readOnly": true,
+    "notes": "No file inside egdev-website was edited. A throwaway harness under /tmp/egdev-sbcheck/ linked the Foundation stylesheets by file:// URL, embedded the original preview fragment unchanged and resolved its runtime image URLs to the authored reference assets."
+  },
+  "harness": {
+    "directory": "/tmp/egdev-sbcheck (scratch, outside the worktree; safe to delete)",
+    "script": "/tmp/egdev-sbcheck/capture-cards-b2.mjs (derived from /tmp/egdev-sbcheck/capture-cards.mjs, the layer-(c) batch-1 harness)",
+    "generatedPage": "/tmp/egdev-sbcheck/harness-cards-b2-tip-card.html",
+    "stylesheetLinks": [
+      "file://egdev-website/egdev-foundation/design-system/tokens.css",
+      "file://egdev-website/egdev-foundation/design-system/components/bundle.css"
+    ],
+    "stylesheets": [
+      {
+        "path": "egdev-website/egdev-foundation/design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e"
+      },
+      {
+        "path": "egdev-website/egdev-foundation/design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      }
+    ],
+    "transformations": [
+      "Wrapped the preview fragment in a full HTML document because preview.html has no <head> or <html> element; markup, inline <style> and the @dsCard comment are otherwise byte-identical.",
+      "Added the two authored Foundation stylesheets as file:// links.",
+      "Resolved the four runtime /_blob/<id> cover URLs to the matching reference-web/assets/tips/*.webp files (matched by the preview alt text, the declared 480x720 size and the same alt texts in reference-web/pulso-source.html lines 996-1004); no other markup or CSS was changed."
+    ]
+  },
+  "conditions": {
+    "browser": "chrome-headless-shell (Playwright 1.60.0, chromium_headless_shell-1243 build)",
+    "tool": "playwright-core 1.60.0, launched with --allow-file-access-from-files --force-color-profile=srgb --hide-scrollbars",
+    "executable": "/home/egdev/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+    "viewport": {
+      "width": 1280,
+      "height": 1400
+    },
+    "deviceScaleFactor": 2,
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "locale": "en-US",
+    "crop": "component zone: element screenshot of the preview board (.pv), the labelled grid containing every previewed state",
+    "animations": "disabled during the screenshot",
+    "fonts": {
+      "status": "loaded (document.fonts.ready awaited before the screenshot)",
+      "loadedFaces": ["Barlow Condensed 600 normal", "Barlow Condensed 700 normal", "JetBrains Mono 400 normal"],
+      "unloadedFaces": "faces requested by the preview link but never used by the rendered markup, reported as unloaded (expected)",
+      "source": "Google Fonts, requested by the original preview.html"
+    },
+    "images": [
+      {
+        "natural": "480x720",
+        "source": "reference-web/assets/tips/isolation.webp"
+      },
+      {
+        "natural": "480x720",
+        "source": "reference-web/assets/tips/touch-action.webp"
+      },
+      {
+        "natural": "480x720",
+        "source": "reference-web/assets/tips/aria-current.webp"
+      },
+      {
+        "natural": "480x721",
+        "source": "reference-web/assets/tips/abortController.webp"
+      }
+    ],
+    "resolvedTokens": {
+      "--color-bg-canvas": "#000000",
+      "--color-bg-glass": "rgba(255, 255, 255, 0.08)",
+      "--font-display": "\"Barlow Condensed\", \"Arial Narrow\", sans-serif",
+      "--font-mono": "\"JetBrains Mono\", ui-monospace, monospace"
+    },
+    "observedBoardHeight": "347.1875 CSS px",
+    "date": "2026-11-02T16:08Z",
+    "verificationLimits": "Static resting, .is-active, .is-active.is-hover and lateral (--ad:.6) states only. No pointer-driven hover, focus-visible, reduced-motion, light-theme or below-560px capture was produced; the capture is browser evidence of the current web design, not of a DS implementation."
+  },
+  "visuals": [
+    {
+      "id": "VIS-01",
+      "file": "tip-card--variants--1280x1400--dark.png",
+      "pngSha256": "569106fc473a863fff84169116b3113fcec68c6e3ee8117e3382e6430d6e485e",
+      "pngBytes": 643819,
+      "pixelSize": {
+        "width": 2560,
+        "height": 696
+      },
+      "alt": "Four 2:3 tip posters under the board labels Default, .is-active, .is-active · hover and Lateral (--ad:.6) · nombre largo: the default poster (CSS / isolation), the centered active poster with a neon border and halo (CSS / touch-acti…, label truncated), the hovered poster (A11Y / aria-curre…, label truncated) and a side poster greyed by the coverflow offsets (JS / AbortContro…, label truncated); each poster has a solid red category pill and a mono technical name in a bottom caption over a dark gradient scrim.",
+      "webComponent": "TipCard",
+      "source": {
+        "readme": "egdev-website/egdev-foundation/design-system/components/TipCard/README.md",
+        "readmeSha256": "fbd834eaf4f547e80a206049cd4d3625a8ba87a932dda2904e856c580923db9c",
+        "preview": "egdev-website/egdev-foundation/design-system/components/TipCard/preview.html",
+        "previewSha256": "2c358e09a6815fcfd313a3807b9acdbf0dce934560584bcb8dd8f43d33c94dcb",
+        "consumer": "egdev-website/egdev-foundation/design-system/components/TipsSlider/README.md (sha256 eb09ef4261e4743ada5219c56863ee848c925c66323076ccc309a4835bfc8a4f)",
+        "realUsage": "egdev-website/egdev-foundation/reference-web/pulso-source.html lines 984-1007 (.tips header plus a ul.tips-rail of ten li.tip posters in the Think zone)"
+      },
+      "media": [
+        {
+          "runtimeBlobUrl": "/_blob/efaae4fc3d7d3e1b8233d0b8672c54bb",
+          "resolvedAsset": "egdev-website/egdev-foundation/reference-web/assets/tips/isolation.webp",
+          "sha256": "6b0e580a3f0420228e748b56938a166d78af2a71e45c9ad2e5bee44299cf7839"
+        },
+        {
+          "runtimeBlobUrl": "/_blob/a40738b1aec9e53b854d76aeb65dc0db",
+          "resolvedAsset": "egdev-website/egdev-foundation/reference-web/assets/tips/touch-action.webp",
+          "sha256": "f5664c904b6bc261b51dad1519fbe45643a330caf4016c3280f9e227bc4dc6cc"
+        },
+        {
+          "runtimeBlobUrl": "/_blob/5ad8df20f43513a036a18f73fd336c58",
+          "resolvedAsset": "egdev-website/egdev-foundation/reference-web/assets/tips/aria-current.webp",
+          "sha256": "50bfeb3cdabce88189d2153384f446fa574fbc97c42c1fb5f148331b95a79bb1"
+        },
+        {
+          "runtimeBlobUrl": "/_blob/7cac0a4982aa3939c416d4f28f841880",
+          "resolvedAsset": "egdev-website/egdev-foundation/reference-web/assets/tips/abortController.webp",
+          "sha256": "0cd5c388e84f238320e4c3a8b0322fa62bac2576132933616d64d60fcdd66063"
+        }
+      ],
+      "mapsTo": "proposed single presentation: badge + title + src/alt + focalPoint; the .is-active glow, the hover state and the --ad side offsets document states the DS proposal does not keep (OQ-3)"
+    }
+  ]
+}
