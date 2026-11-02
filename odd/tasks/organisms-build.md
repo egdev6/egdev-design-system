@@ -16,15 +16,15 @@ Plans (O#) are done and owner-approved (L11–L14). Implementation tasks (T#) co
 | ID | Issue | Component | Phase | Status |
 |---|---|---|---|---|
 | O1–O9 | #119–#127 | all nine | plan | done (L2–L10, approved L11) |
-| T1 | #119 | Dialog | implement | integrating |
-| T2 | #122 | Table | implement | in progress |
-| T3 | #123 | Sidebar | implement | ready to integrate (after T1) |
-| T4 | #120 | AlertDialog | implement (after T1 on main) | pending |
-| T5 | #121 | CommandPalette | implement (after T1 on main) | pending |
-| T6 | #124 | ModuleRail | implement (after T3 on main) | pending |
-| T7 | #125 | TabBar | implement | pending |
-| T8 | #126 | CalendarGrid | implement | pending |
-| T9 | #127 | PreviewFrame | implement | in progress |
+| T1 | #119 | Dialog | implement | done — PR #249 (c5884fa) |
+| T2 | #122 | Table | implement | done — PR #250 (a206d65) |
+| T3 | #123 | Sidebar | implement | done — PR #251 (ecc885a) |
+| T4 | #120 | AlertDialog | implement | done — PR #255 (ab9a793); verifier incomplete, accepted by owner (L27) |
+| T5 | #121 | CommandPalette | implement | done — PR #253 (5bcd422); native combobox D4 (L19) |
+| T6 | #124 | ModuleRail | implement | done — PR #256 (fcf67bb) |
+| T7 | #125 | TabBar | implement | done — PR #254 (3fab7f1) |
+| T8 | #126 | CalendarGrid | implement | done — PR #258 (437da64); stacking token (L29) |
+| T9 | #127 | PreviewFrame | implement | done — PR #252 (146c0f3); catalog fix PR #257 (d664c0a) |
 
 ## Log
 
@@ -57,3 +57,4 @@ Plans (O#) are done and owner-approved (L11–L14). Implementation tasks (T#) co
 - L27 — Owner: "aceptamos alertDialog" — AlertDialog #120 delivered despite the independent verifier's final FAIL/incomplete verdict (green gates; missing full browser/visual comparison and historical behavior-level RED). Visual and screen-reader review stays with the owner in Storybook.
 - L28 — Owner decisions for CalendarGrid #126 (T8, 2026-11-02), recorded verbatim in docs/components/calendar-grid/v0.1/implementation-plan.md: pending-move focus “Encabezado del día destino (Recomendado)” (destination day heading as internal fallback, `tabIndex=-1`, no public API change, announcement unchanged; behavior-level RED recorded), move trigger size “Mantener la excepción (Recomendado)” (32px `sm` stands, no change), and `collection-items` “Aprobar para organismos (Recomendado)” (explicit convention amendment with appended receipt docs/components/calendar-grid/v0.1/collection-items-organism-approval.json, superseded wording and registry content hash; historical records untouched). CalendarGrid worktree: fallback-focus test 18/18, props:check valid, test:props 94/94.
 - L29 — CalendarGrid browser check found two defects. (1) Stacking never happened: `@max-4xl:` emitted no CSS because `theme.css` defines no `--container-4xl`. Owner: “Agregar --container-calendar-grid-stack: 960px (Recomendado)” — one component container token next to `--container-quote-pull`, every `@max-4xl:` replaced by `@max-calendar-grid-stack:`, RED-first class-contract and tokens assertions, pinned token counts 213→214 / 285→286; `packages/tokens/dist/tokens.css` untouched (stale-artifact parity test fails until the parent rebuilds). (2) The MoveMenu story only logged `move-intent`; it is now stateful (keeps `items` in React state, applies the move) so the destination update, `entryMoved` announcement and focus hand-off are observable, with system components only. Registry CalendarGrid usage revisions refreshed (types.ts sha256:a2b239f6…), props:check valid after props:docs. CalendarGrid tests 19/19; the only failing check in this worktree is the dist-parity assertion that requires a rebuilt tokens artifact.
+- L30 — Wave closed (2026-11-02): all nine components merged to main and issues #119–#127 closed. Every delivery ran local gates (lint, props:check, test:props, typecheck, build, tokens, package exports, React 18/19 packed consumption, full Vitest) because CI stays disabled by owner decision; final main 437da64 has 110 test files / 2096 tests. Not evaluated anywhere: screen-reader sessions and pixel comparison against the wave-3 boards (owner Storybook review). Open owner follow-ups: visible focus cue on CalendarGrid's fallback day heading; AppShell #130 is now unblocked (Sidebar, ModuleRail and TabBar are on main).
