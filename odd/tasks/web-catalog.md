@@ -76,4 +76,6 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 
 - L19 — Plans and approval record merged in PR #282 (54e13cc). Implementation begins with T8–T10 in isolated component worktrees; shared exports, registry, catalog and package fixtures remain parent-owned.
 
+- L20 — NowCard conflict resolved by owner (verbatim): "Badge → título → texto (como en la web)". Follow-up decision: "Aprobar enmienda, plan y convención". Approved statusBadge/leading-status-badge, wrapper px-6 pt-6 pb-3, sm body text-body-default and type-test correction; exact amendment hashes pinned in docs/components/now-card/v0.1/badge-order-approval.md. Original approved files remain unchanged.
+
 - L21 — ProjectCard T8 merged PR #283 (001335c): lint, naming96, typecheck, build, tokens33, exports95, consumption14 and Vitest2188 PASS; Chromium hover/layout/focus checks PASS. TipCard T11 starts from this main while NowCard/TerminalCard package integrations continue in separate worktrees.
