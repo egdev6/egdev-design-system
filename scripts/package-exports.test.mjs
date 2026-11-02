@@ -2803,7 +2803,7 @@ test('UI ships every static IconButton CVA utility, native resets and scoped sta
   for (const token of [
     '--gradient-btn-primary-hover',
     '--gradient-btn-secondary-hover',
-    '--color-alpha-red-65',
+    '--color-border-brand',
     '--duration-press',
     '--ease-spring'
   ]) {

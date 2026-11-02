@@ -194,6 +194,14 @@ describe('IconButton public contract', () => {
     }
   );
 
+  it('moves the outline hover border to the brand token and keeps the rest hairline', () => {
+    render(<IconButton {...base} variant='outline' />);
+    const classes = screen.getByRole('button').className.split(/\s+/);
+    expect(classes).toContain('[&:not([data-disabled]):hover]:border-border-brand');
+    expect(classes).toContain('border-border-hairline-strong');
+    expect(classes.filter((value) => value.includes('alpha-red-65'))).toEqual([]);
+  });
+
   it('limits interactive geometry to motion-safe states and keeps focus out of state-shadow competition', () => {
     render(<IconButton {...base} variant='outline' />);
     const button = screen.getByRole('button');
