@@ -3536,501 +3536,166 @@ test('ArticleFeature ships scanned token utilities without a new stylesheet', ()
   assert.match(ring, /--tw-shadow/);
   assert.doesNotMatch(utilities, /\.eg-article-feature[^{}]*\{/);
   assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/article-feature/article-feature.css')));
+});
 
-  test('TipCard emits its raised frame, in-flow caption and legacy resets without a stylesheet', () => {
-    const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
-    const utilities = cssBlock(css, /@layer utilities\s*\{/);
-    for (const selector of [
-      '.bg-surface-1',
-      '.rounded-xl',
-      '.p-3',
-      '.p-0',
-      '.gap-3',
-      String.raw`.gap-1\.5`,
-      '.flex-col',
-      '.min-w-0',
-      String.raw`.shadow-\[var\(--shadow-edge\)\,var\(--shadow-elev-1\)\]`,
-      '.transform-none',
-      '.transition-none',
-      '.opacity-100',
-      '.transform-flat',
-      '.relative',
-      '.inset-auto',
-      '.bg-none',
-      '.items-start',
-      '.font-mono',
-      '.text-label-default',
-      '.text-fg-default',
-      '.wrap-anywhere'
-    ]) {
-      assert.ok(utilities.includes(selector), `Missing TipCard utility ${selector}`);
-    }
-    const rule = (selector) => {
-      const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      return cssBlock(utilities, new RegExp(`${escaped}[^{]*\\{`));
-    };
-    assert.match(rule('.p-3'), /padding:[^;]*var\(--space/);
-    assert.match(rule('.bg-surface-1'), /background-color:\s*var\(--color-surface-1[,)]/);
-    assert.match(rule('.wrap-anywhere'), /overflow-wrap:\s*anywhere/);
-    assert.match(rule('.transform-flat'), /transform-style:\s*flat/);
-    assert.match(rule('.opacity-100'), /opacity:\s*1/);
-    assert.match(rule('.bg-none'), /background-image:\s*none/);
-    assert.doesNotMatch(utilities, /\.eg-tip-card[^{}]*\{/);
-    assert.ok(css.includes('.eg-tip-card'), 'Legacy coverflow rules remain untouched in the components layer');
-    assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/tip-card/tip-card.css')));
-  });
+test('TipCard emits its raised frame, in-flow caption and legacy resets without a stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    '.bg-surface-1',
+    '.rounded-xl',
+    '.p-3',
+    '.p-0',
+    '.gap-3',
+    String.raw`.gap-1\.5`,
+    '.flex-col',
+    '.min-w-0',
+    String.raw`.shadow-\[var\(--shadow-edge\)\,var\(--shadow-elev-1\)\]`,
+    '.transform-none',
+    '.transition-none',
+    '.opacity-100',
+    '.transform-flat',
+    '.relative',
+    '.inset-auto',
+    '.bg-none',
+    '.items-start',
+    '.font-mono',
+    '.text-label-default',
+    '.text-fg-default',
+    '.wrap-anywhere'
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing TipCard utility ${selector}`);
+  }
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}[^{]*\\{`));
+  };
+  assert.match(rule('.p-3'), /padding:[^;]*var\(--space/);
+  assert.match(rule('.bg-surface-1'), /background-color:\s*var\(--color-surface-1[,)]/);
+  assert.match(rule('.wrap-anywhere'), /overflow-wrap:\s*anywhere/);
+  assert.match(rule('.transform-flat'), /transform-style:\s*flat/);
+  assert.match(rule('.opacity-100'), /opacity:\s*1/);
+  assert.match(rule('.bg-none'), /background-image:\s*none/);
+  assert.doesNotMatch(utilities, /\.eg-tip-card[^{}]*\{/);
+  assert.ok(css.includes('.eg-tip-card'), 'Legacy coverflow rules remain untouched in the components layer');
+  assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/tip-card/tip-card.css')));
+});
 
-  test('SectionHeader emits every local CVA utility and its exact static breakpoint without a stylesheet', () => {
-    const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
-    const source = ts.createSourceFile(
-      'types.ts',
-      readFileSync(resolve(root, 'packages/ui/src/molecules/section-header/types.ts'), 'utf8'),
-      ts.ScriptTarget.Latest,
-      true
-    );
-    const classes = new Set();
-    function collect(node) {
-      if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
-        return;
-      }
-      if (ts.isStringLiteral(node)) {
-        for (const name of node.text.split(/\s+/).filter(Boolean)) {
-          classes.add(name);
-        }
-      } else {
-        ts.forEachChild(node, collect);
-      }
+test('SectionHeader emits every local CVA utility and its exact static breakpoint without a stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/section-header/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      return;
     }
-    function visit(node) {
-      if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
-        for (const argument of node.arguments) {
-          collect(argument);
-        }
-      } else {
-        ts.forEachChild(node, visit);
+    if (ts.isStringLiteral(node)) {
+      for (const name of node.text.split(/\s+/).filter(Boolean)) {
+        classes.add(name);
       }
+    } else {
+      ts.forEachChild(node, collect);
     }
-    visit(source);
-    assert.ok(classes.size > 20, 'Scan every local root and part recipe');
-    for (const name of classes) {
-      if (name.startsWith('eg-')) {
-        continue;
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      for (const argument of node.arguments) {
+        collect(argument);
       }
-      assert.ok(css.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing SectionHeader utility ${name}`);
+    } else {
+      ts.forEachChild(node, visit);
     }
-    const wide = cssBlock(css, /@media \(width >= 860px\)\s*\{(?=\s*\.section-header-split\\:)/);
-    assert.match(wide, /grid-template-columns:\s*minmax\(0,\s*1fr\)\s+minmax\(0,\s*0\.8fr\)/);
-    assert.match(wide, /justify-self:\s*(?:flex-)?end/);
-    const lede = cssBlock(css, /\.text-body-muted\s*\{/);
-    assert.match(lede, /font-size:\s*var\(--text-body-muted,\s*16px\)/);
-    assert.match(lede, /line-height:\s*var\(--tw-leading,\s*var\(--text-body-muted--line-height,\s*1\.6\)\)/);
-    assert.match(lede, /font-weight:\s*var\(--tw-font-weight,\s*var\(--text-body-muted--font-weight,\s*400\)\)/);
-    assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/section-header/section-header.css')));
-  });
+  }
+  visit(source);
+  assert.ok(classes.size > 20, 'Scan every local root and part recipe');
+  for (const name of classes) {
+    if (name.startsWith('eg-')) {
+      continue;
+    }
+    assert.ok(css.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing SectionHeader utility ${name}`);
+  }
+  const wide = cssBlock(css, /@media \(width >= 860px\)\s*\{(?=\s*\.section-header-split\\:)/);
+  assert.match(wide, /grid-template-columns:\s*minmax\(0,\s*1fr\)\s+minmax\(0,\s*0\.8fr\)/);
+  assert.match(wide, /justify-self:\s*(?:flex-)?end/);
+  const lede = cssBlock(css, /\.text-body-muted\s*\{/);
+  assert.match(lede, /font-size:\s*var\(--text-body-muted,\s*16px\)/);
+  assert.match(lede, /line-height:\s*var\(--tw-leading,\s*var\(--text-body-muted--line-height,\s*1\.6\)\)/);
+  assert.match(lede, /font-weight:\s*var\(--tw-font-weight,\s*var\(--text-body-muted--font-weight,\s*400\)\)/);
+  assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/section-header/section-header.css')));
+});
 
-  test('SectionHeader ships native passive SSR composition with decorative rule and fallbacks', async () => {
-    const { SectionHeader } = await import(artifact('ui', ui.exports['.'].import));
-    const { createElement } = await import('react');
-    const { renderToString } = await import('react-dom/server');
-    const render = (props) =>
-      renderToString(createElement(SectionHeader, { title: 'Build ', accent: 'together.', ...props }));
-    const html = render({ variant: 'inline', eyebrow: 'Our work', titleId: 'section-title', id: 'root' });
-    assert.match(html, /^<header/);
-    assert.match(html, /id="root"/);
-    assert.match(html, /<h2[^>]*id="section-title"/);
-    assert.match(html, /role="none"/);
-    assert.doesNotMatch(html, /role="separator"|aria-live|tabindex|eg-section-head--inline/);
-    assert.equal(html, render({ variant: 'inline', eyebrow: 'Our work', titleId: 'section-title', id: 'root' }));
-    for (const variant of ['split', 'inline']) {
-      const fallback = render({ variant });
-      assert.match(fallback, /flex flex-col items-start gap-5/);
-      assert.doesNotMatch(fallback, /eg-divider|eg-section-head__lede/);
-    }
-  });
+test('SectionHeader ships native passive SSR composition with decorative rule and fallbacks', async () => {
+  const { SectionHeader } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const render = (props) =>
+    renderToString(createElement(SectionHeader, { title: 'Build ', accent: 'together.', ...props }));
+  const html = render({ variant: 'inline', eyebrow: 'Our work', titleId: 'section-title', id: 'root' });
+  assert.match(html, /^<header/);
+  assert.match(html, /id="root"/);
+  assert.match(html, /<h2[^>]*id="section-title"/);
+  assert.match(html, /role="none"/);
+  assert.doesNotMatch(html, /role="separator"|aria-live|tabindex|eg-section-head--inline/);
+  assert.equal(html, render({ variant: 'inline', eyebrow: 'Our work', titleId: 'section-title', id: 'root' }));
+  for (const variant of ['split', 'inline']) {
+    const fallback = render({ variant });
+    assert.match(fallback, /flex flex-col items-start gap-5/);
+    assert.doesNotMatch(fallback, /eg-divider|eg-section-head__lede/);
+  }
+});
 
-  test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal and Slot with passive SSR semantics', async () => {
-    const exported = await import(artifact('ui', ui.exports['.'].import));
-    assert.deepEqual(
-      Object.keys(exported).sort(),
-      [
-        'AlertDialog',
-        'AlertDialogAction',
-        'AlertDialogCancel',
-        'AlertDialogContent',
-        'AlertDialogTrigger',
-        'AppShell',
-        'ArticleFeature',
-        'ArticleFeatureCover',
-        'AspectRatio',
-        'Avatar',
-        'Badge',
-        'Button',
-        'ButtonGroup',
-        'CalendarGrid',
-        'Carousel',
-        'Checkbox',
-        'Chip',
-        'ChipGroup',
-        'Cluster',
-        'Collapsible',
-        'CollapsibleContent',
-        'CollapsibleTrigger',
-        'CommandPalette',
-        'Countdown',
-        'Dialog',
-        'DialogClose',
-        'DialogContent',
-        'DialogTrigger',
-        'Divider',
-        'Dropzone',
-        'Field',
-        'FieldMessage',
-        'Gauge',
-        'GaugeGroup',
-        'Heading',
-        'Icon',
-        'IconButton',
-        'Indicator',
-        'Input',
-        'Kbd',
-        'Label',
-        'Link',
-        'ListItem',
-        'ListItemActions',
-        'ListItemBody',
-        'ListItemContent',
-        'ListItemFooter',
-        'ListItemLeading',
-        'ListItemMedia',
-        'ListItemMeta',
-        'ListItemTitle',
-        'ListItemTrailing',
-        'Logo',
-        'Menu',
-        'MeterRow',
-        'ModuleCard',
-        'ModuleRail',
-        'NavList',
-        'Notice',
-        'NowCard',
-        'NowCardBody',
-        'NowCardDetail',
-        'NowCardFooter',
-        'PageHeader',
-        'Panel',
-        'PanelBody',
-        'PanelFooter',
-        'PanelHeader',
-        'PhotoFrame',
-        'Popover',
-        'PopoverClose',
-        'PopoverContent',
-        'PopoverTrigger',
-        'Portal',
-        'PreviewFrame',
-        'ProgressBar',
-        'ProjectCard',
-        'ProjectCardCode',
-        'ProjectCardFooter',
-        'ProjectCardTags',
-        'PullQuote',
-        'RadioGroup',
-        'SearchTrigger',
-        'SectionHeader',
-        'Select',
-        'SelectTile',
-        'Sidebar',
-        'Skeleton',
-        'Slider',
-        'Slot',
-        'Slottable',
-        'SocialLinks',
-        'Spinner',
-        'Stack',
-        'Stat',
-        'StatusDot',
-        'Surface',
-        'Switch',
-        'TabBar',
-        'Table',
-        'Tabs',
-        'TerminalCard',
-        'TerminalCardBar',
-        'TerminalCardList',
-        'Text',
-        'Textarea',
-        'Timeline',
-        'TipCard',
-        'ToastProvider',
-        'Toggle',
-        'Tooltip',
-        'VisuallyHidden',
-        'appShellVariants',
-        'badgeVariants',
-        'calendarGridVariants',
-        'chipVariants',
-        'cn',
-        'dropzoneVariants',
-        'labelVariants',
-        'menuVariants',
-        'moduleRailVariants',
-        'navListVariants',
-        'noticeVariants',
-        'progressBarVariants',
-        'radioGroupVariants',
-        'sidebarVariants',
-        'sliderVariants',
-        'statVariants',
-        'statusDotVariants',
-        'surfaceVariants',
-        'tabBarVariants',
-        'tabsVariants',
-        'tooltipVariants',
-        'useToast'
-      ],
-      'Only approved components and cn are public runtime exports'
-    );
-    assert.equal(
-      typeof exported.Countdown,
-      'function',
-      'Countdown must be a plain function with no public ref API (D12)'
-    );
-    assert.equal(exported.Select?.$$typeof, Symbol.for('react.forward_ref'), 'Select forwards the native button ref');
-    assert.equal(exported.Checkbox?.$$typeof, Symbol.for('react.forward_ref'), 'Checkbox must forward its button ref');
-    assert.equal(typeof exported.ButtonGroup, 'function', 'ButtonGroup has no public root ref API');
-    assert.equal(typeof exported.Dropzone, 'function', 'Dropzone must be a plain function with no public ref API');
-    assert.equal(typeof exported.Field, 'function', 'Field has no public ref API');
-    for (const name of ['NowCard', 'NowCardBody', 'NowCardFooter', 'NowCardDetail']) {
-      assert.equal(typeof exported[name], 'function', `${name} must be a plain function component without a ref API`);
-    }
-    assert.equal(typeof exported.Stat, 'function', 'Stat must be a plain function with no public ref API');
-    assert.equal(typeof exported.statVariants, 'function', 'Stat card recipe must be public');
-    assert.equal(typeof exported.dropzoneVariants, 'function', 'Dropzone recipe must be public');
-    assert.equal(
-      exported.SearchTrigger?.$$typeof,
-      Symbol.for('react.forward_ref'),
-      'SearchTrigger forwards the native button ref'
-    );
-    assert.equal(typeof exported.Chip, 'function', 'Chip must be a plain function component with no public ref API');
-    assert.equal(typeof exported.chipVariants, 'function', 'Chip recipe must stay public for ChipGroup');
-    assert.equal(typeof exported.ChipGroup, 'function', 'ChipGroup has no public ref API');
-    assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
-    // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
-    assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
-    assert.equal(typeof exported.Skeleton, 'function', 'Skeleton must be a named root export');
-    assert.equal(typeof exported.Spinner, 'function', 'Spinner must be a plain function component without a ref API');
-    assert.equal(typeof exported.Logo, 'function', 'Logo must be a plain function component without a ref API (D8)');
-    assert.equal(
-      typeof exported.StatusDot,
-      'function',
-      'StatusDot must be a plain function component without a ref API'
-    );
-    assert.equal(typeof exported.statusDotVariants, 'function', 'StatusDot composition recipe must be a public export');
-    assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
-    assert.equal(typeof exported.sliderVariants, 'function', 'Slider root recipe must stay a public export');
-    assert.equal(typeof exported.Tooltip, 'function', 'Tooltip must be a plain function component without a ref API');
-    assert.equal(typeof exported.tooltipVariants, 'function', 'Tooltip overlay recipe must stay a public export');
-    assert.equal(
-      typeof exported.ProgressBar,
-      'function',
-      'ProgressBar must be a plain function component without a ref API'
-    );
-    assert.equal(typeof exported.progressBarVariants, 'function', 'ProgressBar track recipe must stay a public export');
-    assert.equal(
-      exported.Textarea?.$$typeof,
-      Symbol.for('react.forward_ref'),
-      'Textarea must be a forwardRef component whose ref targets the native textarea (D9)'
-    );
-    assert.equal(
-      exported.Input?.$$typeof,
-      Symbol.for('react.forward_ref'),
-      'Input must be a React 18-compatible forwardRef component targeting the native input (D12)'
-    );
-    assert.equal(
-      exported.Switch?.$$typeof,
-      Symbol.for('react.forward_ref'),
-      'Switch must be a forwardRef component whose ref targets the root button (D9)'
-    );
-    assert.equal(
-      typeof exported.RadioGroup,
-      'function',
-      'RadioGroup must be a plain function component without a ref API'
-    );
-    assert.deepEqual(
-      Object.keys(exported.radioGroupVariants).sort(),
-      ['indicator', 'item', 'label', 'root', 'row'],
-      'RadioGroup per-part recipes stay public for SelectTile parity'
-    );
-    assert.equal(
-      exported.VisuallyHidden?.$$typeof,
-      Symbol.for('react.forward_ref'),
-      'VisuallyHidden must be a forwardRef component with a public ref'
-    );
-    assert.equal(typeof exported.VisuallyHidden.render, 'function', 'VisuallyHidden must expose its render function');
-    assert.equal(typeof exported.Stack, 'function', 'Stack must be a plain function component without a ref API');
-    assert.equal(typeof exported.Cluster, 'function', 'Cluster must be a plain function component without a ref API');
-    assert.equal(
-      exported.Stack.prototype?.render,
-      undefined,
-      'Stack must not be a forwardRef component (D10: no public ref)'
-    );
-    assert.equal(typeof exported.Icon, 'function', 'Icon must be a plain function component without a ref API');
-    assert.equal(exported.Icon.prototype?.render, undefined, 'Icon must not be a forwardRef component (D6: no ref)');
-    assert.equal(
-      exported.Surface?.$$typeof,
-      Symbol.for('react.forward_ref'),
-      'Surface must be a React 18-compatible forwardRef bridge with a public ref'
-    );
-    assert.equal(typeof exported.surfaceVariants, 'function', 'Surface composition recipe must stay a public export');
-    for (const name of ['Text', 'Heading']) {
-      assert.equal(typeof exported[name], 'function', `${name} must be a plain function component without a ref API`);
-    }
-    assert.equal(exported.default, undefined, 'UI must not introduce a default export');
-    const declaration = artifact('ui', ui.exports['.'].types);
-    const program = ts.createProgram([declaration], { moduleResolution: ts.ModuleResolutionKind.Bundler });
-    const checker = program.getTypeChecker();
-    const symbol = checker.getSymbolAtLocation(program.getSourceFile(declaration));
-    const names = new Set(checker.getExportsOfModule(symbol).map((item) => item.name));
-    assert.deepEqual([...names].sort(), [
+test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal and Slot with passive SSR semantics', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  assert.deepEqual(
+    Object.keys(exported).sort(),
+    [
       'AlertDialog',
       'AlertDialogAction',
-      'AlertDialogActionProps',
       'AlertDialogCancel',
-      'AlertDialogCancelProps',
       'AlertDialogContent',
-      'AlertDialogContentProps',
-      'AlertDialogProps',
-      'AlertDialogTone',
       'AlertDialogTrigger',
-      'AlertDialogTriggerProps',
       'AppShell',
-      'AppShellMessages',
-      'AppShellProps',
       'ArticleFeature',
       'ArticleFeatureCover',
-      'ArticleFeatureCoverProps',
-      'ArticleFeatureLevel',
-      'ArticleFeatureLinkProps',
-      'ArticleFeatureProps',
-      'ArticleFeatureSlottedProps',
       'AspectRatio',
-      'AspectRatioProps',
       'Avatar',
-      'AvatarProps',
-      'AvatarSize',
       'Badge',
-      'BadgeProps',
-      'BadgeTone',
-      'BadgeVariant',
       'Button',
       'ButtonGroup',
-      'ButtonGroupProps',
-      'ButtonGroupVariant',
-      'ButtonProps',
-      'ButtonSize',
-      'ButtonVariant',
       'CalendarGrid',
-      'CalendarGridDay',
-      'CalendarGridEntry',
-      'CalendarGridEntryStatus',
-      'CalendarGridMessages',
-      'CalendarGridProps',
       'Carousel',
-      'CarouselItem',
-      'CarouselMessages',
-      'CarouselProps',
       'Checkbox',
-      'CheckboxCheckedState',
-      'CheckboxProps',
       'Chip',
       'ChipGroup',
-      'ChipGroupOption',
-      'ChipGroupProps',
-      'ChipGroupType',
-      'ChipMode',
-      'ChipProps',
       'Cluster',
-      'ClusterProps',
       'Collapsible',
       'CollapsibleContent',
-      'CollapsibleContentProps',
-      'CollapsibleProps',
       'CollapsibleTrigger',
-      'CollapsibleTriggerProps',
       'CommandPalette',
-      'CommandPaletteFiltering',
-      'CommandPaletteItem',
-      'CommandPaletteMessages',
-      'CommandPaletteProps',
       'Countdown',
-      'CountdownProps',
-      'CountdownSize',
-      'CountdownTone',
-      'CountdownUnits',
       'Dialog',
       'DialogClose',
-      'DialogCloseProps',
       'DialogContent',
-      'DialogContentProps',
-      'DialogProps',
-      'DialogSize',
       'DialogTrigger',
-      'DialogTriggerProps',
-      'DialogVariant',
       'Divider',
-      'DividerOrientation',
-      'DividerProps',
       'Dropzone',
-      'DropzoneProps',
       'Field',
-      'FieldCounter',
-      'FieldLayout',
       'FieldMessage',
-      'FieldMessageProps',
-      'FieldMessageTone',
-      'FieldProps',
       'Gauge',
       'GaugeGroup',
-      'GaugeGroupItems',
-      'GaugeGroupProps',
-      'GaugeGroupRing',
-      'GaugeGroupSize',
-      'GaugeProps',
-      'GaugeSize',
-      'GaugeState',
       'Heading',
-      'HeadingLevel',
-      'HeadingProps',
       'Icon',
       'IconButton',
-      'IconButtonProps',
-      'IconButtonSize',
-      'IconButtonVariant',
-      'IconName',
-      'IconProps',
-      'IconSize',
       'Indicator',
-      'IndicatorPosition',
-      'IndicatorProps',
-      'IndicatorSize',
-      'IndicatorTone',
-      'IndicatorVariant',
       'Input',
-      'InputProps',
-      'InputSize',
-      'InputType',
-      'InputVariant',
       'Kbd',
-      'KbdProps',
       'Label',
-      'LabelProps',
-      'LabelVariant',
-      'LayoutAlignItems',
-      'LayoutGap',
-      'LayoutJustifyContent',
       'Link',
-      'LinkProps',
-      'LinkVariant',
       'ListItem',
       'ListItemActions',
       'ListItemBody',
@@ -4039,240 +3704,68 @@ test('ArticleFeature ships scanned token utilities without a new stylesheet', ()
       'ListItemLeading',
       'ListItemMedia',
       'ListItemMeta',
-      'ListItemPartProps',
-      'ListItemProps',
-      'ListItemSize',
-      'ListItemStatus',
       'ListItemTitle',
-      'ListItemTitleProps',
       'ListItemTrailing',
-      'ListItemVariant',
       'Logo',
-      'LogoProps',
-      'LogoSize',
-      'LogoVariant',
       'Menu',
-      'MenuActionItem',
-      'MenuAlign',
-      'MenuEntry',
-      'MenuLabelItem',
-      'MenuLinkItem',
-      'MenuProps',
-      'MenuSeparatorItem',
-      'MenuSide',
-      'MenuSubmenuItem',
-      'MenuTone',
       'MeterRow',
-      'MeterRowMessages',
-      'MeterRowProps',
-      'MeterRowVariant',
       'ModuleCard',
-      'ModuleCardLevel',
-      'ModuleCardMessages',
-      'ModuleCardProps',
-      'ModuleCardStatus',
-      'ModuleCardTone',
-      'ModuleCardVariant',
       'ModuleRail',
-      'ModuleRailEntry',
-      'ModuleRailLink',
-      'ModuleRailMessages',
-      'ModuleRailProps',
-      'ModuleRailState',
       'NavList',
-      'NavListCollapsibleGroup',
-      'NavListEntry',
-      'NavListGroupBase',
-      'NavListLink',
-      'NavListProps',
-      'NavListSignal',
-      'NavListStaticGroup',
-      'NavListTag',
       'Notice',
-      'NoticeProps',
-      'NoticeTone',
       'NowCard',
       'NowCardBody',
-      'NowCardBodyProps',
       'NowCardDetail',
-      'NowCardDetailProps',
       'NowCardFooter',
-      'NowCardFooterProps',
-      'NowCardLevel',
-      'NowCardProps',
-      'NowCardSize',
       'PageHeader',
-      'PageHeaderLevel',
-      'PageHeaderProps',
       'Panel',
       'PanelBody',
-      'PanelBodyProps',
       'PanelFooter',
-      'PanelFooterProps',
       'PanelHeader',
-      'PanelHeaderProps',
-      'PanelProps',
-      'PanelTone',
-      'PanelVariant',
       'PhotoFrame',
-      'PhotoFrameFocalPoint',
-      'PhotoFrameProps',
-      'PhotoFrameRatio',
-      'PhotoFrameVariant',
       'Popover',
       'PopoverClose',
-      'PopoverCloseProps',
       'PopoverContent',
-      'PopoverContentProps',
-      'PopoverProps',
       'PopoverTrigger',
-      'PopoverTriggerProps',
       'Portal',
-      'PortalProps',
       'PreviewFrame',
-      'PreviewFrameProps',
-      'PreviewFrameZone',
-      'ProductIdentity',
       'ProgressBar',
-      'ProgressBarProps',
-      'ProgressBarSize',
-      'ProgressBarVariant',
       'ProjectCard',
       'ProjectCardCode',
-      'ProjectCardCodeLine',
-      'ProjectCardCodeProps',
       'ProjectCardFooter',
-      'ProjectCardFooterProps',
-      'ProjectCardLevel',
-      'ProjectCardProps',
-      'ProjectCardSize',
       'ProjectCardTags',
-      'ProjectCardTagsProps',
-      'ProjectCardVariant',
       'PullQuote',
-      'PullQuoteProps',
-      'PullQuoteTone',
-      'PullQuoteVariant',
       'RadioGroup',
-      'RadioGroupOption',
-      'RadioGroupOrientation',
-      'RadioGroupProps',
       'SearchTrigger',
-      'SearchTriggerProps',
       'SectionHeader',
-      'SectionHeaderLevel',
-      'SectionHeaderProps',
-      'SectionHeaderTone',
-      'SectionHeaderVariant',
       'Select',
-      'SelectOption',
-      'SelectProps',
-      'SelectSize',
       'SelectTile',
-      'SelectTileOption',
-      'SelectTileProps',
-      'SelectTileRatio',
-      'SelectTileThumbnail',
-      'SelectTileType',
       'Sidebar',
-      'SidebarProps',
       'Skeleton',
-      'SkeletonProps',
-      'SkeletonSize',
-      'SkeletonVariant',
       'Slider',
-      'SliderProps',
       'Slot',
-      'SlotProps',
       'Slottable',
-      'SocialLinkItem',
       'SocialLinks',
-      'SocialLinksGap',
-      'SocialLinksProps',
-      'SocialLinksSize',
-      'SocialLinksVariant',
       'Spinner',
-      'SpinnerProps',
-      'SpinnerSize',
       'Stack',
-      'StackProps',
       'Stat',
-      'StatProps',
       'StatusDot',
-      'StatusDotProps',
-      'StatusDotState',
       'Surface',
-      'SurfaceElevation',
-      'SurfacePadding',
-      'SurfaceProps',
-      'SurfaceRadius',
-      'SurfaceTone',
       'Switch',
-      'SwitchProps',
       'TabBar',
-      'TabBarItem',
-      'TabBarMessages',
-      'TabBarProps',
       'Table',
-      'TableColumn',
-      'TableColumnFormat',
-      'TableMaxHeight',
-      'TableMessages',
-      'TableProps',
-      'TableRow',
-      'TableSize',
-      'TableSort',
-      'TableSortDirection',
-      'TableVariant',
       'Tabs',
-      'TabsItem',
-      'TabsProps',
-      'TabsSize',
-      'TabsTone',
-      'TabsVariant',
       'TerminalCard',
       'TerminalCardBar',
-      'TerminalCardBarProps',
       'TerminalCardList',
-      'TerminalCardListProps',
-      'TerminalCardProps',
-      'TerminalCardRow',
-      'TerminalCardTone',
       'Text',
-      'TextProps',
-      'TextTone',
-      'TextVariant',
       'Textarea',
-      'TextareaProps',
-      'TextareaVariant',
       'Timeline',
-      'TimelineChatItem',
-      'TimelineEvent',
-      'TimelineMessages',
-      'TimelineProps',
-      'TimelineSize',
-      'TimelineTime',
-      'TimelineVariant',
       'TipCard',
-      'TipCardLevel',
-      'TipCardProps',
-      'TitleVariant',
-      'ToastApi',
-      'ToastCallOptions',
-      'ToastPlacement',
-      'ToastPromiseMessages',
-      'ToastProps',
       'ToastProvider',
-      'ToastProviderProps',
-      'ToastTone',
-      'ToastUpdateOptions',
       'Toggle',
-      'ToggleProps',
-      'ToggleSize',
       'Tooltip',
-      'TooltipProps',
       'VisuallyHidden',
-      'VisuallyHiddenProps',
       'appShellVariants',
       'badgeVariants',
       'calendarGridVariants',
@@ -4295,1320 +3788,1801 @@ test('ArticleFeature ships scanned token utilities without a new stylesheet', ()
       'tabsVariants',
       'tooltipVariants',
       'useToast'
-    ]);
-    for (const name of [
-      'useCountdown',
-      'countdownRootVariants',
-      'countdownValueVariants',
-      'countdownLabelVariants',
-      'CountdownState'
-    ]) {
-      assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
-      assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
-    }
-    for (const name of [
-      'useProjectCard',
-      'useProjectCardTags',
-      'useProjectCardCode',
-      'useProjectCardFooter',
-      'projectCardVariants',
-      'projectCardIndexVariants',
-      'projectCardEyebrowVariants',
-      'projectCardHeadingVariants',
-      'projectCardBodyVariants',
-      'projectCardTagsVariants',
-      'projectCardCodeVariants',
-      'projectCardCodeLineVariants',
-      'projectCardCodeGlyphVariants',
-      'projectCardFootVariants',
-      'ProjectCardNativeProps'
-    ]) {
-      assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
-      assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
-    }
-    for (const name of [
-      'useToastProvider',
-      'toastVariants',
-      'toastViewportVariants',
-      'ToastActionProps',
-      'usePageHeader',
-      'PageHeaderActions',
-      'PageHeaderNativeProps',
-      'pageHeaderVariants',
-      'pageHeaderTextVariants',
-      'pageHeaderHeadingVariants',
-      'pageHeaderEyebrowVariants',
-      'pageHeaderActionsVariants',
-      'useField',
-      'fieldVariants',
-      'fieldLabelRowVariants',
-      'fieldMessageVariants',
-      'fieldCounterVariants',
-      'fieldReadoutVariants',
-      'useNotice',
-      'noticeAppearanceVariants',
-      'noticeIconVariants',
-      'noticeTextVariants',
-      'noticeActionsVariants',
-      'useButtonGroup',
-      'buttonGroupVariants',
-      'useSlider',
-      'sliderTrackVariants',
-      'sliderRangeVariants',
-      'sliderThumbVariants',
-      'usePullQuote',
-      'pullQuoteVariants',
-      'pullQuoteQuotationVariants',
-      'pullQuotePassageVariants',
-      'pullQuoteAccentVariants',
-      'pullQuoteSourceVariants',
-      'useStat',
-      'StatSize',
-      'statLabelVariants',
-      'statUnavailableTextVariants',
-      'statValueVariants',
-      'statDeltaVariants',
-      'useChip',
-      'useChipGroup',
-      'chipGroupVariants',
-      'chipGroupItemVariants',
-      'chipGroupIconVariants',
-      'chipIconVariants'
-    ]) {
-      assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
-      assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
-    }
-    for (const name of [
-      'useSocialLinks',
-      'socialLinksVariants',
-      'socialLinksCaptionVariants',
-      'socialLinksListVariants',
-      'socialLinksItemVariants',
-      'SocialLinksNativeProps',
-      'useSectionHeader',
-      'sectionHeaderVariants',
-      'sectionHeaderEyebrowVariants',
-      'sectionHeaderHeadingVariants',
-      'sectionHeaderLedeVariants',
-      'sectionHeaderRuleVariants',
-      'SectionHeaderNativeProps',
-      'useMeterRow',
-      'meterRowVariants',
-      'MeterRowNativeProps',
-      'useSearchTrigger',
-      'searchTriggerVariants',
-      'searchTriggerLabelVariants',
-      'searchTriggerHintVariants'
-    ]) {
-      assert.equal(Object.hasOwn(exported, name), false, `${name} must stay internal to SearchTrigger`);
-      assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
-    }
-    for (const name of [
-      'ButtonGroup',
-      'ButtonGroupProps',
-      'ButtonGroupVariant',
-      'Chip',
-      'ChipProps',
-      'chipVariants',
-      'Countdown',
-      'CountdownProps',
-      'CountdownSize',
-      'CountdownTone',
-      'CountdownUnits',
-      'Dropzone',
-      'DropzoneProps',
-      'dropzoneVariants',
-      'Notice',
-      'NoticeProps',
-      'NoticeTone',
-      'noticeVariants',
-      'ToastApi',
-      'ToastCallOptions',
-      'ToastPlacement',
-      'ToastPromiseMessages',
-      'ToastProps',
-      'ToastProvider',
-      'ToastProviderProps',
-      'ToastTone',
-      'ToastUpdateOptions',
-      'SearchTrigger',
-      'SearchTriggerProps',
-      'SectionHeader',
-      'SectionHeaderLevel',
-      'SectionHeaderProps',
-      'SectionHeaderTone',
-      'SectionHeaderVariant',
-      'Divider',
-      'DividerOrientation',
-      'DividerProps',
-      'Gauge',
-      'GaugeProps',
-      'GaugeState',
-      'GaugeSize',
-      'Icon',
-      'IconButton',
-      'IconButtonProps',
-      'IconButtonSize',
-      'IconButtonVariant',
-      'IconName',
-      'IconProps',
-      'IconSize',
-      'Kbd',
-      'KbdProps',
-      'Link',
-      'LinkProps',
-      'ProgressBar',
-      'ProgressBarProps',
-      'ProgressBarSize',
-      'ProgressBarVariant',
-      'progressBarVariants',
-      'PhotoFrame',
-      'PhotoFrameFocalPoint',
-      'PhotoFrameProps',
-      'PhotoFrameRatio',
-      'PhotoFrameVariant',
-      'TerminalCard',
-      'TerminalCardBar',
-      'TerminalCardBarProps',
-      'TerminalCardList',
-      'TerminalCardListProps',
-      'TerminalCardProps',
-      'TerminalCardRow',
-      'TerminalCardTone',
-      'PullQuote',
-      'PullQuoteProps',
-      'PullQuoteTone',
-      'PullQuoteVariant',
-      'Textarea',
-      'TextareaProps',
-      'TextareaVariant',
-      'Input',
-      'InputProps',
-      'InputSize',
-      'InputType',
-      'InputVariant',
-      'AspectRatio',
-      'AspectRatioProps',
-
-      'Label',
-      'LabelProps',
-      'LabelVariant',
-      'Logo',
-      'LogoProps',
-      'LogoSize',
-      'LogoVariant',
-      'MeterRow',
-      'MeterRowMessages',
-      'MeterRowProps',
-      'MeterRowVariant',
-      'Portal',
-      'PortalProps',
-      'RadioGroup',
-      'RadioGroupOption',
-      'RadioGroupOrientation',
-      'RadioGroupProps',
-      'radioGroupVariants',
-      'Skeleton',
-      'SkeletonProps',
-      'SkeletonSize',
-      'SkeletonVariant',
-      'Slot',
-      'SlotProps',
-      'Slottable',
-      'Spinner',
-      'SpinnerProps',
-      'SpinnerSize',
-      'Stack',
-      'StackProps',
-      'StatusDot',
-      'StatusDotProps',
-      'StatusDotState',
-      'statusDotVariants',
-      'Stat',
-      'StatProps',
-      'statVariants',
-      'Cluster',
-      'ClusterProps',
-      'LayoutAlignItems',
-      'LayoutGap',
-      'LayoutJustifyContent',
-      'Surface',
-      'SurfaceElevation',
-      'SurfacePadding',
-      'SurfaceProps',
-      'SurfaceRadius',
-      'SurfaceTone',
-      'surfaceVariants',
-      'Switch',
-      'SwitchProps',
-      'Tooltip',
-      'TooltipProps',
-      'tooltipVariants',
-      'VisuallyHidden',
-      'VisuallyHiddenProps',
-      'labelVariants'
-    ]) {
-      assert.ok(names.has(name), `Missing public declaration export ${name}`);
-    }
-    const { createElement } = await import('react');
-    const { renderToString } = await import('react-dom/server');
-    const buttonGroupHtml = renderToString(
-      createElement(exported.ButtonGroup, {
-        variant: 'attached',
-        label: 'Save options',
-        className: 'ms-auto',
-        children: [
-          createElement(exported.Button, { key: 'save' }, 'Save'),
-          createElement(exported.IconButton, {
-            key: 'options',
-            label: 'More save options',
-            size: 'lg',
-            icon: createElement(exported.Icon, { name: 'chevron-down' })
-          })
-        ]
-      })
-    );
-    assert.match(buttonGroupHtml, /^<div role="group" aria-label="Save options" class="eg-button-group /);
-    assert.match(buttonGroupHtml, /\*:not-first:rounded-s-sm/);
-    assert.match(buttonGroupHtml, /ms-auto/);
-    assert.match(buttonGroupHtml, /More save options/);
-    assert.equal((buttonGroupHtml.match(/<button /g) ?? []).length, 2);
-    assert.doesNotMatch(buttonGroupHtml, /aria-haspopup|aria-expanded|eg-btn--join|eg-btn-split/);
-    const dropzoneHtml = renderToString(
-      createElement(exported.Dropzone, { onFiles: () => undefined, accept: 'image/*', multiple: true })
-    );
-    assert.match(dropzoneHtml, /^<button[^>]*type="button"[^>]*data-state="idle"/);
-    assert.match(
-      dropzoneHtml,
-      /Drag, paste or upload<\/span><\/button><input type="file" hidden="" tabindex="-1" accept="image\/\*" multiple=""\/>$/
-    );
-    assert.match(dropzoneHtml, /aria-hidden="true"/);
-    assert.doesNotMatch(dropzoneHtml, /name=|required=|onFiles=|aria-live=|is-over/);
-    // Countdown SSR is the deterministic initializing placeholder: no digits, clock or live region (D3/D8).
-    const countdownHtml = renderToString(
-      createElement(exported.Countdown, {
-        deadline: Date.UTC(2030, 0, 2, 1, 1, 1),
-        deadlineText: 'Jan 2, 2030, 01:01:01 UTC',
-        id: 'launch',
-        tone: 'canvas'
-      })
-    );
-    assert.match(countdownHtml, /^<div id="launch" role="timer" aria-labelledby="[^"]+" aria-live="off"/);
-    assert.match(countdownHtml, /data-state="initializing"/);
-    assert.match(countdownHtml, /class="eg-countdown min-w-0 text-fg-default"/);
-    assert.match(countdownHtml, /<time id="[^"]+" dateTime="2030-01-02T01:01:01.000Z"/i);
-    assert.match(countdownHtml, />Calculating time remaining<\/p><\/div>$/);
-    assert.doesNotMatch(countdownHtml, /eg-countdown__row|eg-countdown--|aria-hidden|role="status"/);
-    const invalidCountdownHtml = renderToString(
-      createElement(exported.Countdown, { deadline: Number.NaN, deadlineText: 'Unknown' })
-    );
-    assert.match(invalidCountdownHtml, /data-state="unavailable"/);
-    assert.match(invalidCountdownHtml, />Time unavailable<\/p><\/div>$/);
-    assert.doesNotMatch(invalidCountdownHtml, /<time/);
-    const statHtml = renderToString(
-      createElement(exported.Stat, { label: 'Subs', value: 4, delta: '+1 10 s ago', highlighted: true, id: 'subs' })
-    );
-    const statLabelId = statHtml.match(/<span id="([^"]+)" class="eg-stat-label /)?.[1];
-    assert.ok(statLabelId, 'Stat label carries a generated id');
-    assert.match(
-      statHtml,
-      new RegExp(
-        `^<div id="subs" role="group" aria-labelledby="${statLabelId.replace(/[^\w]/g, '\\$&')}" data-state="highlighted" class="eg-stat `
-      )
-    );
-    assert.match(
-      statHtml,
-      />Subs<\/span><span class="eg-stat-value [^"]*text-display-stat[^"]*">4<\/span><span class="eg-stat-delta [^"]*">\+1 10 s ago<\/span><\/div>$/
-    );
-    const noDataHtml = renderToString(createElement(exported.Stat, { label: 'Superchats', value: null, size: 'sm' }));
-    assert.match(
-      noDataHtml,
-      /<span data-state="unavailable" class="eg-stat-value [^"]*text-display-stat-sm[^"]*"><span aria-hidden="true">—<\/span><span class="sr-only">No data<\/span><\/span><\/div>$/
-    );
-    assert.doesNotMatch(noDataHtml, /data-state="highlighted"|eg-stat-delta|aria-live|>0</);
-    const chipGroupOptions = [
-      { value: 'react', label: 'React' },
-      { value: 'css', label: 'CSS' }
-    ];
-    for (const type of ['single', 'multiple']) {
-      const html = renderToString(
-        createElement(exported.ChipGroup, {
-          type,
-          label: 'Topics',
-          options: chipGroupOptions,
-          defaultValue: type === 'single' ? 'react' : ['react']
-        })
-      );
-      assert.match(html, /role="group"/);
-      assert.match(html, /aria-label="Topics"/);
-      assert.match(html, /class="eg-chip-group flex flex-wrap items-center gap-2"/);
-      assert.match(html, type === 'single' ? /role="radio" aria-checked="true"/ : /aria-pressed="true"/);
-      assert.doesNotMatch(html, /<input|is-active|eg-surface/);
-    }
-    const toggleChipHtml = renderToString(createElement(exported.Chip, { children: 'Design' }));
-    assert.match(toggleChipHtml, /^<button type="button" aria-pressed="false" data-state="off" class="eg-chip /);
-    assert.match(toggleChipHtml, />Design<\/button>$/);
-    const staticChipHtml = renderToString(createElement(exported.Chip, { mode: 'static', children: 'Open Source' }));
-    assert.match(staticChipHtml, /^<span class="eg-chip /);
-    assert.doesNotMatch(staticChipHtml, /role=|tabindex|aria-pressed|data-state|<button/);
-    assert.match(staticChipHtml, />Open Source<\/span>$/);
-    const linkChipHtml = renderToString(
-      createElement(exported.Chip, { mode: 'link', href: '#topics', external: true, children: 'Topics' })
-    );
-    assert.match(linkChipHtml, /<a href="#topics" target="_blank" rel="noopener noreferrer" class="eg-chip /);
-    assert.match(linkChipHtml, /Topics(?:<!-- -->)? <span[^>]*>\(opens in a new tab\)<\/span><\/a>$/);
-    assert.doesNotMatch(linkChipHtml, /aria-pressed|data-state/);
-    const sameTabLinkChipHtml = renderToString(
-      createElement(exported.Chip, { mode: 'link', href: '#topics', children: 'Topics' })
-    );
-    assert.doesNotMatch(sameTabLinkChipHtml, /target=|rel=|\(opens in a new tab\)/);
-    assert.equal(typeof exported.Notice, 'function', 'Notice has no public ref API');
-    const sharedNotice = exported.noticeVariants({ tone: 'danger', size: 'sm' });
-    assert.ok(sharedNotice.split(' ').includes('eg-surface'), 'A1 permits inherited Surface identity');
-    assert.doesNotMatch(sharedNotice, /eg-notice|eg-toast|aria-|role=/);
-    const noticeHtml = renderToString(
-      createElement(exported.Notice, {
-        summary: 'Sign in required.',
-        tone: 'danger',
-        id: 'connection',
-        children: 'Reconnect to continue.'
-      })
-    );
-    assert.match(noticeHtml, /role="alert"/);
-    assert.match(noticeHtml, /data-tone="danger"/);
-    assert.match(noticeHtml, /class="eg-notice eg-surface /);
-    assert.match(noticeHtml, /<strong>Sign in required\.<\/strong> (?:<!-- -->)?Reconnect to continue\./);
-    assert.match(noticeHtml, /aria-hidden="true"><svg/);
-    assert.doesNotMatch(noticeHtml, /aria-live=|tabindex=|eg-notice__actions/);
-    const searchHtml = renderToString(createElement(exported.SearchTrigger, { shortcut: 'Ctrl K' }));
-    assert.match(searchHtml, /^<button[^>]*type="button"[^>]*aria-label="Search…"[^>]*class="eg-surface[^"]*eg-search/);
-    assert.match(searchHtml, /<svg class="eg-icon[^"]*size-4[^"]*"[^>]*aria-hidden="true"/);
-    assert.match(
-      searchHtml,
-      /<span class="whitespace-nowrap">Search…<\/span><span class="ms-auto" aria-hidden="true"><kbd class="eg-kbd[^"]*">Ctrl K<\/kbd><\/span><\/button>$/
-    );
-    assert.doesNotMatch(
-      searchHtml,
-      /aria-haspopup|aria-expanded|aria-controls|aria-keyshortcuts|data-state|eg-search--|eg-search__/
-    );
-    const compactHtml = renderToString(createElement(exported.SearchTrigger, { compact: true, shortcut: 'Ctrl K' }));
-    assert.match(compactHtml, /aria-label="Search…"/);
-    assert.doesNotMatch(compactHtml, /<span|<kbd|min-w-48/);
-    assert.equal(typeof exported.PullQuote, 'function', 'PullQuote must be a plain function with no public ref API');
-    const pullQuoteHtml = renderToString(
-      createElement(exported.PullQuote, {
-        text: 'Build ',
-        accent: 'carefully.',
-        source: 'Field notes',
-        cite: 'https://example.com/notes',
-        id: 'quote'
-      })
-    );
-    assert.match(
-      pullQuoteHtml,
-      /^<figure id="quote" class="eg-quote [^"]*max-w-quote-pull[^"]*"><blockquote cite="https:\/\/example\.com\/notes" class="eg-quote__text [^"]*text-quote-pull[^"]*"><p class="[^"]*">Build <span class="eg-quote__accent [^"]*inline[^"]*">carefully\.<\/span><\/p><\/blockquote><figcaption class="eg-quote__source [^"]*">Field notes<\/figcaption><\/figure>$/
-    );
-    assert.doesNotMatch(pullQuoteHtml, /role=|<h[1-6]|<cite|<a |aria-live=|eg-quote--display/);
-    assert.equal(renderToString(createElement(exported.PullQuote, { text: '  ', source: 'Orphan' })), '');
-    assert.equal(renderToString(createElement(exported.Portal, { children: 'Server layer' })), '');
-    assert.equal(typeof exported.labelVariants, 'function', 'Label composition recipe must stay a public export');
-    const labelHtml = renderToString(
-      createElement(exported.Label, { children: 'Email address', htmlFor: 'email', id: 'email-label' })
-    );
-    for (const text of [
-      '<label',
-      'for="email"',
-      'id="email-label"',
-      'eg-label',
-      'text-label-default',
-      'Email address'
-    ]) {
-      assert.ok(labelHtml.includes(text), `Label SSR must render ${text}`);
-    }
-    const choiceHtml = renderToString(
-      createElement(exported.Label, { children: 'Choose plan', htmlFor: 'plan', variant: 'choice' })
-    );
-    for (const text of ['text-fg-secondary', 'font-[var(--text-body-default--font-weight)]']) {
-      assert.ok(choiceHtml.includes(text), `Label choice SSR must render ${text}`);
-    }
-    assert.doesNotMatch(labelHtml + choiceHtml, /asChild|aria-live=|<button|<input|tabindex=/);
-    const html = renderToString(createElement(exported.Gauge, { label: 'Capacity', value: 42.5 }));
-    for (const text of [
-      'eg-gauge',
-      'role="meter"',
-      'aria-label="Capacity"',
-      'aria-valuenow="42.5"',
-      'aria-valuetext="42.5 / 100"'
-    ]) {
-      assert.ok(html.includes(text), `Gauge SSR must render ${text}`);
-    }
-    const invalid = renderToString(createElement(exported.Gauge, { label: 'Capacity', value: NaN }));
-    assert.match(invalid, /Data unavailable/);
-    assert.doesNotMatch(invalid, /role="meter"|aria-value(?:now|min|max|text)=|eg-gauge-arc/);
-    assert.doesNotMatch(html + invalid, /aria-live=|<button|<input|tabindex=/);
-    // AspectRatio reserves geometry with the Radix padding-bottom trick and no extra semantics.
-    const wide = renderToString(createElement(exported.AspectRatio, { 'aria-label': 'Media', ratio: 16 / 9 }, 'Media'));
-    assert.ok(
-      wide.includes('eg-aspect-ratio') && wide.includes('min-w-0'),
-      'AspectRatio must carry its marker and CVA base'
-    );
-    assert.ok(wide.includes('padding-bottom:56.25%'), 'AspectRatio 16/9 must derive its padding-bottom geometry');
-    // Stack and Cluster resolve token gaps as static CVA utilities without inline appearance.
-    const stacked = renderToString(createElement(exported.Stack, { 'aria-label': 'Sections', gap: 6 }, 'Sections'));
-    assert.ok(
-      stacked.includes('eg-stack') && stacked.includes('flex-col') && stacked.includes('gap-6'),
-      'Stack must carry its marker and default column classes'
-    );
-    const clustered = renderToString(createElement(exported.Cluster, { 'aria-label': 'Actions', gap: 0 }, 'Actions'));
-    assert.ok(
-      clustered.includes('eg-cluster') && clustered.includes('flex-wrap') && clustered.includes('gap-0'),
-      'Cluster must carry its marker and wrapping row classes'
-    );
-    assert.doesNotMatch(stacked + clustered, /aria-live=|tabindex=|role=/);
-    // Text defaults to a paragraph eyebrow; Heading to a native h2 section title with its level independent of size.
-    const eyebrow = renderToString(createElement(exported.Text, null, 'Weekly stream'));
-    assert.match(eyebrow, /^<p class="[^"]*eg-text[^"]*text-label-eyebrow[^"]*">Weekly stream<\/p>$/);
-    const heading = renderToString(createElement(exported.Heading, { accent: 'ideas' }, 'Big '));
-    assert.match(
-      heading,
-      /^<h2 class="[^"]*eg-heading[^"]*text-title-section[^"]*">Big <span class="[^"]*eg-heading__accent[^"]*">ideas<\/span><\/h2>$/
-    );
-    const hero = renderToString(
-      createElement(exported.Heading, { level: 4, variant: 'hero', accent: '.', accentBreak: false }, 'Talk')
-    );
-    assert.ok(
-      hero.startsWith('<h4') && hero.includes('text-title-hero') && hero.includes('Talk<span'),
-      'Level must not resize; no space is injected'
-    );
-    assert.ok(
-      hero.includes('[text-shadow:var(--text-shadow-title-hero)]') && hero.includes('inline'),
-      'Canvas hero accent glows inline'
-    );
-    assert.doesNotMatch(eyebrow + heading + hero, /aria-live=|tabindex=|role=|aria-level=/);
-    // Surface resolves its Material recipe as static CVA utilities on a passive div or slotted child.
-    const surface = renderToString(createElement(exported.Surface, null, 'Card'));
-    for (const text of [
-      '<div class="eg-surface',
-      'bg-surface-1',
-      'bg-[image:var(--gradient-sheen)]',
-      'p-6',
-      'rounded-xl'
-    ]) {
-      assert.ok(surface.includes(text), `Surface SSR must render ${text}`);
-    }
-    const overlay = renderToString(createElement(exported.Surface, { tone: 'overlay' }, 'Glass'));
-    assert.ok(
-      overlay.includes('bg-surface-overlay') && overlay.includes('not-supports-[backdrop-filter]:bg-surface-2')
-    );
-    const slotted = renderToString(
-      createElement(
-        exported.Surface,
-        { asChild: true, tone: 'well' },
-        createElement('section', { 'aria-label': 'Well' })
-      )
-    );
-    assert.match(slotted, /^<section aria-label="Well" class="eg-surface [^"]*shadow-\[var\(--shadow-well\)\]/);
-    assert.doesNotMatch(surface + overlay + slotted, /aria-live=|tabindex=|role=|style=/);
-    assert.ok(
-      wide.includes('data-radix-aspect-ratio-wrapper'),
-      'AspectRatio must render the inner generic div inside the Radix frame'
-    );
-    assert.ok(wide.includes('Media'), 'AspectRatio must render its children');
-    assert.doesNotMatch(wide, /aria-live=|<button|<input|tabindex=|role=/);
-    for (const ratio of [0, -1, Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
-      const fallback = renderToString(createElement(exported.AspectRatio, { ratio }, 'Fallback'));
-      assert.ok(fallback.includes('padding-bottom:100%'), `Invalid ratio ${ratio} must fall back to a square`);
-    }
-    // Spinner: labelled status region or decorative hidden arc, Icon-scale presets, no ref or state.
-    const status = renderToString(createElement(exported.Spinner, { label: 'Loading results', id: 'loading' }));
-    assert.match(
-      status,
-      /^<span id="loading" role="status" class="eg-spinner inline-flex shrink-0 size-\(--icon-size\)">/
-    );
-    assert.match(
-      status,
-      /<svg class="[^"]*animate-spin motion-reduce:animate-none" aria-hidden="true" focusable="false"/
-    );
-    assert.match(status, /<span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Loading results<\/span><\/span>$/);
-    assert.doesNotMatch(status, /aria-hidden="true" class="eg-spinner|aria-live=|tabindex=|data-state/);
-    for (const label of [undefined, '', '  ']) {
-      const decorative = renderToString(createElement(exported.Spinner, { label }));
-      assert.match(decorative, /^<span aria-hidden="true" class="eg-spinner /, 'Unlabelled spinners are decorative');
-      assert.doesNotMatch(decorative, /role=|clip:rect/, 'Decorative spinners have no status or hidden text');
-    }
-    for (const [size, utility] of [
-      ['sm', 'size-4'],
-      ['md', 'size-(--icon-size)'],
-      ['lg', 'size-7']
-    ]) {
-      const sized = renderToString(createElement(exported.Spinner, { size }));
-      assert.ok(sized.includes(`class="eg-spinner inline-flex shrink-0 ${utility}"`), `Spinner ${size} preset`);
-    }
-    // Logo: named span image or named native link around hidden inline V4 artwork (#62).
-    const logo = renderToString(createElement(exported.Logo, { id: 'brand' }));
-    assert.match(
-      logo,
-      /^<span id="brand" role="img" aria-label="egdev" class="eg-logo inline-block shrink-0 leading-none rounded-sm h-8">/
-    );
-    assert.match(logo, /<svg class="block h-full w-auto" aria-hidden="true" focusable="false" viewBox="0 0 653 258">/);
-    assert.equal((logo.match(/<path /g) ?? []).length, 8, 'The wordmark ships its eight V4 paths');
-    assert.equal((logo.match(/class="fill-primitive-white"/g) ?? []).length, 1, 'One white name path');
-    assert.doesNotMatch(logo, /href=|tabindex=|<title|fill="|style=/);
-    const mark = renderToString(createElement(exported.Logo, { variant: 'mark' }));
-    assert.match(mark, /viewBox="0 0 638\.45 612\.37"/);
-    assert.equal((mark.match(/<polygon /g) ?? []).length, 7, 'The isotype ships its seven V4 polygons');
-    assert.equal((mark.match(/class="fill-\(--logo-red\)"/g) ?? []).length, 5);
-    assert.equal((mark.match(/class="fill-\(--logo-red-shade\)"/g) ?? []).length, 2);
-    const home = renderToString(createElement(exported.Logo, { href: '/', label: 'egdev, home', rel: 'home' }));
-    assert.match(
-      home,
-      /^<a rel="home" href="\/" aria-label="egdev, home" class="eg-logo [^"]*focus-visible:outline-none focus-visible:shadow-focus">/
-    );
-    assert.doesNotMatch(home, /role=/, 'The link keeps its native role');
-    for (const [size, utility] of [
-      ['sm', 'h-7'],
-      ['md', 'h-8'],
-      ['lg', 'h-9']
-    ]) {
-      const sized = renderToString(createElement(exported.Logo, { size }));
-      assert.ok(sized.includes(`rounded-sm ${utility}"`), `Logo ${size} preset`);
-    }
-    // StatusDot: always decorative, empty, data-state per state; ring vs glow geometry and the live pulse.
-    const pulse = 'motion-safe:animate-[eg-status-dot-pulse_2.4s_var(--ease-out)_infinite]';
-    assert.equal(
-      renderToString(createElement(exported.StatusDot)),
-      '<span aria-hidden="true" data-state="stopped" class="eg-status-dot inline-block shrink-0 rounded-full size-2 ring-2 ring-bg-surface bg-primitive-neutral-600"></span>'
-    );
-    for (const [state, fill] of [
-      ['running', 'bg-status-success'],
-      ['idle', 'bg-status-info'],
-      ['warning', 'bg-status-warning'],
-      ['error', 'bg-status-danger'],
-      ['stopped', 'bg-primitive-neutral-600']
-    ]) {
-      const dot = renderToString(createElement(exported.StatusDot, { state, pulse: true }));
-      assert.ok(dot.includes(`data-state="${state}"`), `StatusDot ${state} state`);
-      assert.ok(dot.includes(`size-2 ring-2 ring-bg-surface ${fill}`), `StatusDot ${state} ringed fill`);
-      assert.doesNotMatch(dot, /shadow-glow-hot|animate/, `StatusDot ${state} never glows or pulses`);
-    }
-    for (const [state, fill] of [
-      ['live', 'bg-fg-brand-default'],
-      ['standby', 'bg-primitive-white']
-    ]) {
-      const dot = renderToString(createElement(exported.StatusDot, { state }));
-      assert.ok(dot.includes(`size-2.5 shadow-glow-hot ${fill} ${pulse}`), `StatusDot ${state} glows and pulses`);
-      assert.doesNotMatch(dot, /ring-/, `StatusDot ${state} has no ring`);
-      const still = renderToString(createElement(exported.StatusDot, { state, pulse: false }));
-      assert.ok(still.includes(`shadow-glow-hot ${fill}"`), `StatusDot ${state} pulse:false keeps the glow`);
-      assert.doesNotMatch(still, /animate/, `StatusDot ${state} pulse:false is static`);
-    }
-    const placed = renderToString(
-      createElement(exported.StatusDot, { state: 'error', id: 'rail-dot', title: 'Error', className: 'absolute top-1' })
-    );
-    assert.match(
-      placed,
-      /^<span id="rail-dot" title="Error" aria-hidden="true" data-state="error" class="eg-status-dot /
-    );
-    assert.ok(placed.endsWith('bg-status-danger absolute top-1"></span>'), 'Consumer layout classes merge last');
-    assert.doesNotMatch(placed, /role=|aria-label|tabindex|\spulse=|\sstate=/);
-    // Kbd: one native kbd per key; a label hides the glyph and adds hidden spoken text (D2).
-    const plainKey = renderToString(createElement(exported.Kbd, { children: 'Esc', id: 'escape-key' }));
-    assert.equal(
-      plainKey,
-      '<kbd id="escape-key" class="eg-kbd inline-block whitespace-nowrap rounded-sm border border-border-subtle px-1.5 py-0.5 font-sans text-label-default text-fg-secondary">Esc</kbd>'
-    );
-    assert.equal(
-      renderToString(createElement(exported.Kbd, { children: 'Ctrl', label: '' })).includes('aria-hidden'),
-      false
-    );
-    const symbolKey = renderToString(createElement(exported.Kbd, { children: '⌘K', label: 'Command K' }));
-    assert.match(
-      symbolKey,
-      /^<kbd class="eg-kbd [^"]*"><span aria-hidden="true">⌘K<\/span><span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Command K<\/span><\/kbd>$/
-    );
-    assert.doesNotMatch(symbolKey, /role=|aria-label=|tabindex=|data-state/);
-    // RadioGroup: a named Radix radiogroup with one row per option (AC-01). Without a DOM, Radix cannot
-    // detect a form ancestor during SSR, so each radio is followed by its hidden radio input (AC-07).
-    const radioGroup = renderToString(
-      createElement(exported.RadioGroup, {
-        label: 'Visibility',
-        id: 'visibility',
-        name: 'visibility',
-        defaultValue: 'public',
-        options: [
-          { value: 'public', label: 'Public' },
-          { value: 'private', label: 'Private', disabled: true }
-        ]
-      })
-    );
-    assert.match(radioGroup, /^<div role="radiogroup" aria-required="false" aria-orientation="vertical"[^>]*>/);
-    assert.match(radioGroup, /id="visibility"/);
-    assert.match(radioGroup, /aria-label="Visibility"/);
-    assert.match(radioGroup, /class="eg-radio-group group flex flex-col gap-1"/);
-    assert.equal(radioGroup.match(/<button type="button" role="radio"/g)?.length, 2, 'One radio per option');
-    assert.equal(radioGroup.match(/<input type="radio" aria-hidden="true"[^>]*name="visibility"/g)?.length, 2);
-    assert.match(
-      radioGroup,
-      /aria-checked="true" data-state="checked" value="public" id="([^"]+)"[^>]*><span data-state="checked" class="size-2 rounded-full bg-action-primary-solid-fg"><\/span><\/button><input [^>]*checked="" value="public"\/><label for="\1" class="cursor-pointer">Public<\/label>/
-    );
-    assert.match(
-      radioGroup,
-      /aria-checked="false" data-state="unchecked" data-disabled="" disabled="" value="private" id="([^"]+)"[^>]*><\/button><input [^>]*disabled=""[^>]*value="private"\/><label for="\1" class="cursor-pointer">Private<\/label>/
-    );
-    const horizontalGroup = renderToString(
-      createElement(exported.RadioGroup, {
-        label: 'Format',
-        orientation: 'horizontal',
-        required: true,
-        disabled: true,
-        options: [{ value: 'video', label: 'Video' }]
-      })
-    );
-    assert.match(horizontalGroup, /aria-required="true" aria-orientation="horizontal" data-disabled=""/);
-    assert.match(horizontalGroup, /class="eg-radio-group group flex flex-wrap gap-x-6 gap-y-1"/);
-    // Switch: one Radix switch button with its thumb (AC-01). Without a DOM, Radix cannot detect a form
-    // ancestor during SSR, so it always emits its hidden bubble input after the button (AC-08).
-    const offSwitch = renderToString(createElement(exported.Switch, { 'aria-label': 'Stream alerts', id: 'alerts' }));
-    assert.match(offSwitch, /^<button type="button" role="switch" aria-checked="false"[^>]*>/);
-    assert.match(offSwitch, /data-state="unchecked"/);
-    assert.match(offSwitch, /value="on"/);
-    assert.match(offSwitch, /id="alerts"/);
-    assert.match(offSwitch, /aria-label="Stream alerts"/);
-    assert.match(offSwitch, /class="eg-switch /);
-    assert.match(
-      offSwitch,
-      /<span data-state="unchecked" class="absolute top-0\.5 left-0\.5 size-3\.5 [^"]*"><\/span><\/button><input type="checkbox" aria-hidden="true" tabindex="-1" [^>]*value="on"\/>$/
-    );
-    assert.doesNotMatch(offSwitch, /disabled=""|data-disabled|checked=""/);
-    const onSwitch = renderToString(
-      createElement(exported.Switch, { 'aria-label': 'Overlay', defaultChecked: true, disabled: true })
-    );
-    assert.match(onSwitch, /aria-checked="true"/);
-    assert.match(onSwitch, /disabled=""/);
-    assert.match(onSwitch, /data-disabled=""/);
-    assert.equal(onSwitch.match(/data-state="checked"/g)?.length, 2, 'Root and thumb expose the checked state');
-    const formSwitch = renderToString(
-      createElement('form', null, createElement(exported.Switch, { 'aria-label': 'Alerts', name: 'alerts' }))
-    );
-    assert.match(
-      formSwitch,
-      /<input type="checkbox" aria-hidden="true"[^>]*name="alerts"/,
-      'Form switches add Radix bubble input'
-    );
-    // Tooltip: closed on the server; only the consumer trigger renders, with Radix's closed state (D2, D7).
-    const tooltipHtml = renderToString(
-      createElement(exported.Tooltip, {
-        content: 'Search the catalogue',
-        children: createElement('button', { type: 'button', 'aria-label': 'Search' }, '⌕')
-      })
-    );
-    assert.equal(tooltipHtml, '<button type="button" aria-label="Search" data-state="closed">⌕</button>');
-    assert.doesNotMatch(tooltipHtml, /role="tooltip"|eg-tooltip|aria-describedby|Search the catalogue/);
-    // ProgressBar: Radix progressbar in percent, decorative without a label (D4), fill driven by one custom property (D8).
-    const announced = renderToString(
-      createElement(exported.ProgressBar, { label: 'Upload progress', value: 45, id: 'upload-progress' })
-    );
-    for (const text of [
-      'role="progressbar"',
-      'aria-valuemin="0"',
-      'aria-valuemax="100"',
-      'aria-valuenow="45"',
-      'aria-valuetext="45%"',
-      'aria-label="Upload progress"',
-      'data-state="loading"',
-      'id="upload-progress"',
-      'style="--eg-progress-value:0.45"'
-    ]) {
-      assert.ok(announced.includes(text), `ProgressBar SSR must render ${text}`);
-    }
-    assert.match(
-      announced,
-      /^<div [^>]*class="eg-progress [^"]*"[^>]*><div [^>]*class="eg-progress-fill [^"]*"[^>]*><\/div><\/div>$/
-    );
-    assert.doesNotMatch(announced, /aria-hidden|tabindex=/);
-    const decorative = renderToString(createElement(exported.ProgressBar, { value: 140 }));
-    assert.ok(decorative.includes('aria-hidden="true"') && decorative.includes('data-state="complete"'));
-    assert.ok(decorative.includes('aria-valuenow="100"') && decorative.includes('style="--eg-progress-value:1"'));
-    const unknown = renderToString(createElement(exported.ProgressBar, { label: 'Sync', value: Number.NaN }));
-    assert.ok(unknown.includes('data-state="indeterminate"') && unknown.includes('style="--eg-progress-value:0"'));
-    assert.doesNotMatch(unknown, /aria-valuenow|aria-valuetext/);
-    assert.match(
-      renderToString(createElement(exported.ProgressBar, { label: 'Goal', value: 74, valueText: '37 of 50' })),
-      /aria-valuetext="37 of 50"/
-    );
-    assert.equal(
-      exported.progressBarVariants({ size: 'sm', edge: true }),
-      'eg-progress block overflow-hidden h-0.5 absolute inset-x-0 bottom-0 w-auto rounded-none bg-bg-glass pointer-events-none'
-    );
-    // Textarea: one native textarea root with the public marker first and layout classes last (D9).
-    const textareaHtml = renderToString(
-      createElement(exported.Textarea, {
-        'aria-label': 'Notes',
-        'aria-invalid': true,
-        rows: 3,
-        maxLength: 1250,
-        defaultValue: 'Draft',
-        className: 'mt-2 mt-4'
-      })
-    );
-    assert.match(textareaHtml, /^<textarea [^>]*class="eg-textarea [^"]* mt-4"[^>]*>Draft<\/textarea>$/);
-    for (const text of ['aria-label="Notes"', 'aria-invalid="true"', 'rows="3"', 'maxLength="1250"']) {
-      assert.ok(textareaHtml.includes(text), `Textarea SSR must forward ${text}`);
-    }
-    assert.doesNotMatch(textareaHtml, / mt-2 |variant=|data-state|role=|tabindex=/);
-    for (const [variant, utility] of [
-      ['default', 'bg-surface-0'],
-      ['code', 'bg-primitive-neutral-950'],
-      ['prose', 'bg-surface-1']
-    ]) {
-      const variantHtml = renderToString(createElement(exported.Textarea, { 'aria-label': variant, variant }));
-      assert.ok(variantHtml.includes(utility), `Textarea ${variant} must render ${utility}`);
-    }
-    // Input: span.eg-input root, native input with forwarded attributes, className on the root only (D3).
-    const field = renderToString(
-      createElement(exported.Input, {
-        'aria-label': 'Title',
-        name: 'title',
-        placeholder: 'Untitled',
-        className: 'w-64'
-      })
-    );
-    assert.match(
-      field,
-      /^<span class="eg-input relative flex items-center [^"]*w-64"><input [^>]*class="box-border w-full [^"]*"[^>]*\/><\/span>$/
-    );
-    for (const attribute of ['aria-label="Title"', 'name="title"', 'placeholder="Untitled"', 'type="text"']) {
-      assert.ok(field.split('<input')[1].includes(attribute), `Input must forward ${attribute} to the native input`);
-    }
-    assert.ok(!field.split('<input')[0].includes('w-full'), 'Consumer width replaces the root full width');
-    for (const utility of [
-      'min-h-11',
-      'px-3',
-      'py-2',
-      'text-body-default',
-      'bg-surface-0',
-      'shadow-[var(--shadow-well)]'
-    ]) {
-      assert.ok(field.includes(utility), `Input md/default must render ${utility}`);
-    }
-    assert.doesNotMatch(field, /aria-hidden|data-state|role=|\ssize=/);
-    const search = renderToString(
-      createElement(exported.Input, {
-        'aria-label': 'Search',
-        type: 'search',
-        size: 'sm',
-        variant: 'code',
-        icon: createElement('svg', { viewBox: '0 0 16 16' })
-      })
-    );
-    assert.match(
-      search,
-      /^<span class="eg-input [^"]*"><span aria-hidden="true" class="[^"]*absolute left-3[^"]*"><svg/
-    );
-    assert.match(search, /type="search"/);
-    for (const utility of ['min-h-9', 'pl-9', 'font-mono', 'text-code', 'bg-primitive-neutral-950']) {
-      assert.ok(search.includes(utility), `Input sm/code/icon must render ${utility}`);
-    }
-    for (const utility of ['font-sans', 'bg-surface-0', 'text-label-default', 'font-[var(']) {
-      assert.ok(!search.includes(` ${utility}`), `Input code must replace ${utility}`);
-    }
-    const geometry = [
-      ['line', 'sm', 'h-3', 'rounded-sm'],
-      ['line', 'md', 'h-4', 'rounded-sm'],
-      ['line', 'lg', 'h-5', 'rounded-sm'],
-      ['block', 'sm', 'h-12', 'rounded-md'],
-      ['block', 'md', 'h-20', 'rounded-md'],
-      ['block', 'lg', 'h-24', 'rounded-md'],
-      ['circle', 'sm', 'size-8', 'rounded-full'],
-      ['circle', 'md', 'size-12', 'rounded-full'],
-      ['circle', 'lg', 'size-16', 'rounded-full']
-    ];
-    for (const [variant, size, dimension, radius] of geometry) {
-      const shape = renderToString(createElement(exported.Skeleton, { variant, size }));
-      assert.match(
-        shape,
-        /^<span aria-hidden="true" class="eg-skeleton /,
-        `Skeleton ${variant}/${size} must keep the stable root class`
-      );
-      assert.ok(shape.includes(dimension), `Skeleton ${variant}/${size} must render ${dimension}`);
-      assert.ok(shape.includes(radius), `Skeleton ${variant}/${size} must render ${radius}`);
-      assert.equal(shape.includes('w-full'), variant !== 'circle', `Skeleton ${variant}/${size} width ownership`);
-      assert.ok(shape.endsWith('></span>'), `Skeleton ${variant}/${size} must stay an empty span`);
-      assert.match(shape, /aria-hidden="true"/);
-      assert.match(
-        shape,
-        /animate-pulse motion-reduce:animate-none/,
-        `Skeleton ${variant}/${size} must pulse by default with the reduced-motion opt-out`
-      );
-      assert.doesNotMatch(shape, /aria-live|aria-busy|role=|tabindex|data-state|transition/);
-      assert.doesNotMatch(shape, /\spulse=/, 'The pulse switch must never reach the DOM');
-    }
-    const skeletonStatic = renderToString(
-      createElement(exported.Skeleton, { variant: 'line', size: 'md', pulse: false })
-    );
-    assert.ok(skeletonStatic.includes('eg-skeleton'), 'pulse:false must keep the stable root class');
-    assert.doesNotMatch(skeletonStatic, /animate-/, 'pulse:false must render fully static');
-    const skeletonNative = renderToString(
-      createElement(exported.Skeleton, {
-        id: 'consumer-skeleton',
-        title: 'Decorative placeholder',
-        className: 'w-3/4 mt-2'
-      })
-    );
-    assert.ok(skeletonNative.includes('id="consumer-skeleton"'), 'Native span id must survive');
-    assert.ok(skeletonNative.includes('title="Decorative placeholder"'), 'Native span title must survive');
-    assert.ok(
-      skeletonNative.includes('w-3/4') && skeletonNative.includes('mt-2'),
-      'Supported width override must survive'
-    );
-    assert.ok(!skeletonNative.includes('w-full'), 'Consumer width must replace the preset full width');
-    assert.ok(skeletonNative.endsWith('></span>'), 'Native props must not add content');
-  });
-
-  test('UI VisuallyHidden renders non-visual content without shipped CSS or Tailwind', async () => {
-    const exported = await import(artifact('ui', ui.exports['.'].import));
-    const { createElement } = await import('react');
-    const { renderToString } = await import('react-dom/server');
-    const { VisuallyHidden } = exported;
-    const note = renderToString(
-      createElement(VisuallyHidden, { id: 'hint', className: 'extra' }, 'Screen reader note')
-    );
-    // Radix applies the hiding geometry inline; the class is the stable public marker only.
-    assert.match(note, /<span id="hint" class="eg-visually-hidden extra" style="[^"]*position:absolute/);
-    assert.match(note, /clip:rect\(0, 0, 0, 0\)/);
-    assert.match(note, />Screen reader note<\/span>/);
-    const slotted = renderToString(
-      createElement(VisuallyHidden, { asChild: true }, createElement('h2', { id: 'slotted' }, 'Hidden heading'))
-    );
-    assert.match(slotted, /^<h2 id="slotted" class="eg-visually-hidden" style="[^"]*position:absolute/);
-    assert.match(slotted, /clip:rect\(0, 0, 0, 0\)[^"]*">Hidden heading<\/h2>$/);
-    assert.doesNotMatch(slotted, /<span/, 'asChild must not keep a wrapping span');
-    const styles = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
-    assert.ok(
-      !styles.includes('.eg-visually-hidden'),
-      'Hiding geometry is inline Radix behavior; shipped CSS must stay untouched'
-    );
-  });
-
-  test('UI ships Checkbox static state, focus, geometry and decorative glyph utilities', () => {
-    const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
-    const rule = (selector) => cssBlock(css, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^{}]*\\{`));
-    assert.match(rule(String.raw`.size-4\.5`), /width:\s*calc\(var\(--space-1\)\s*\*\s*4\.5\)/);
-    assert.match(rule('.size-3'), /width:\s*var\(--space-3\)/);
-    assert.match(rule('.inline-grid'), /display:\s*inline-grid/);
-    assert.match(rule('.box-border'), /box-sizing:\s*border-box/);
-    assert.match(rule('.border-solid'), /border-style:\s*solid/);
-    assert.match(rule('.p-0'), /padding:\s*(?:0|0px|var\(--space-0\))/);
-    for (const state of ['checked', 'indeterminate']) {
-      const prefix = `.data-\\[state\\=${state}\\]\\:`;
-      const fill = rule(`${prefix}bg-\\[image\\:var\\(--gradient-btn-primary\\)\\]`);
-      assert.ok(fill.includes(`data-state=\"${state}\"`) || fill.includes(`data-state=${state}`));
-      assert.match(fill, /background-image:\s*var\(--gradient-btn-primary\)/);
-      assert.match(
-        rule(`${prefix}shadow-\\[var\\(--shadow-btn-primary\\)\\]`),
-        /--tw-shadow:\s*var\(--shadow-btn-primary\)/
-      );
-      const focus = rule(`${prefix}focus-visible\\:shadow-\\[var\\(--shadow-focus\\)\\]`);
-      assert.match(focus, /:focus-visible/);
-      assert.match(focus, /--tw-shadow:\s*var\(--shadow-focus\)/);
-    }
-    assert.match(rule(String.raw`.disabled\:opacity-45`), /:disabled[\s\S]*opacity:\s*(?:45%|0?\.45)/);
-    assert.match(
-      rule(String.raw`.aria-invalid\:data-\[state\=unchecked\]\:border-status-danger`),
-      /border-color:\s*var\(--color-status-danger/
-    );
-    for (const [state, child] of [
-      ['checked', 'last'],
-      ['indeterminate', 'first']
-    ]) {
-      const glyph = rule(`.data-\\[state\\=${state}\\]\\:\\[\\&\\>svg\\:${child}-child\\]\\:hidden`);
-      assert.match(glyph, new RegExp(`svg:${child}-child`));
-      assert.match(glyph, /display:\s*none/);
-    }
-    assert.doesNotMatch(css, /\.eg-checkbox\s*[,{]/, 'Checkbox has no stylesheet or public part selectors');
-  });
-
-  test('UI Checkbox SSR retains binary/mixed semantics, private recipes and form integration', async () => {
-    const exported = await import(artifact('ui', ui.exports['.'].import));
-    const { createElement } = await import('react');
-    const { renderToString } = await import('react-dom/server');
-    for (const [checked, aria, state] of [
-      [false, 'false', 'unchecked'],
-      [true, 'true', 'checked'],
-      ['indeterminate', 'mixed', 'indeterminate']
-    ]) {
-      const html = renderToString(
-        createElement(
-          'form',
-          null,
-          createElement(exported.Checkbox, {
-            'aria-label': 'Select rows',
-            checked,
-            name: 'rows',
-            value: 'selected',
-            required: true
-          })
-        )
-      );
-      for (const text of [
-        '<button',
-        'eg-checkbox',
-        'role="checkbox"',
-        `aria-checked="${aria}"`,
-        `data-state="${state}"`,
-        'type="checkbox"',
-        'name="rows"',
-        'value="selected"',
-        'required=""'
-      ]) {
-        assert.ok(html.includes(text), `Checkbox SSR ${state} must render ${text}`);
-      }
-      if (checked) {
-        assert.match(html, /aria-hidden="true"/);
-        assert.equal(
-          (html.match(/<svg /g) ?? []).length,
-          2,
-          'Radix state utilities select the visible decorative glyph'
-        );
-      } else {
-        assert.doesNotMatch(html, /<svg /);
-      }
-    }
-    for (const name of ['checkboxVariants', 'checkboxIndicatorVariants', 'checkboxIconVariants', 'useCheckbox']) {
-      assert.equal(exported[name], undefined, `${name} stays private`);
-    }
-  });
-
-  for (const subpath of ['./tokens.css', './theme.css', './native.css']) {
-    test(`Tokens ${subpath} export resolves to a nonempty file`, () => {
-      artifact('tokens', tokens.exports[subpath]);
-    });
+    ],
+    'Only approved components and cn are public runtime exports'
+  );
+  assert.equal(
+    typeof exported.Countdown,
+    'function',
+    'Countdown must be a plain function with no public ref API (D12)'
+  );
+  assert.equal(exported.Select?.$$typeof, Symbol.for('react.forward_ref'), 'Select forwards the native button ref');
+  assert.equal(exported.Checkbox?.$$typeof, Symbol.for('react.forward_ref'), 'Checkbox must forward its button ref');
+  assert.equal(typeof exported.ButtonGroup, 'function', 'ButtonGroup has no public root ref API');
+  assert.equal(typeof exported.Dropzone, 'function', 'Dropzone must be a plain function with no public ref API');
+  assert.equal(typeof exported.Field, 'function', 'Field has no public ref API');
+  for (const name of ['NowCard', 'NowCardBody', 'NowCardFooter', 'NowCardDetail']) {
+    assert.equal(typeof exported[name], 'function', `${name} must be a plain function component without a ref API`);
   }
+  assert.equal(typeof exported.Stat, 'function', 'Stat must be a plain function with no public ref API');
+  assert.equal(typeof exported.statVariants, 'function', 'Stat card recipe must be public');
+  assert.equal(typeof exported.dropzoneVariants, 'function', 'Dropzone recipe must be public');
+  assert.equal(
+    exported.SearchTrigger?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'SearchTrigger forwards the native button ref'
+  );
+  assert.equal(typeof exported.Chip, 'function', 'Chip must be a plain function component with no public ref API');
+  assert.equal(typeof exported.chipVariants, 'function', 'Chip recipe must stay public for ChipGroup');
+  assert.equal(typeof exported.ChipGroup, 'function', 'ChipGroup has no public ref API');
+  assert.equal(typeof exported.Gauge, 'function', 'Gauge must be a named root export');
+  // Radix forwardRef wraps AspectRatio in a React ref object; its callable contract is proven by SSR below.
+  assert.equal(typeof exported.AspectRatio, 'object', 'AspectRatio must be a named forwardRef root export');
+  assert.equal(typeof exported.Skeleton, 'function', 'Skeleton must be a named root export');
+  assert.equal(typeof exported.Spinner, 'function', 'Spinner must be a plain function component without a ref API');
+  assert.equal(typeof exported.Logo, 'function', 'Logo must be a plain function component without a ref API (D8)');
+  assert.equal(typeof exported.StatusDot, 'function', 'StatusDot must be a plain function component without a ref API');
+  assert.equal(typeof exported.statusDotVariants, 'function', 'StatusDot composition recipe must be a public export');
+  assert.equal(typeof exported.Kbd, 'function', 'Kbd must be a plain function component without a ref API (D5)');
+  assert.equal(typeof exported.sliderVariants, 'function', 'Slider root recipe must stay a public export');
+  assert.equal(typeof exported.Tooltip, 'function', 'Tooltip must be a plain function component without a ref API');
+  assert.equal(typeof exported.tooltipVariants, 'function', 'Tooltip overlay recipe must stay a public export');
+  assert.equal(
+    typeof exported.ProgressBar,
+    'function',
+    'ProgressBar must be a plain function component without a ref API'
+  );
+  assert.equal(typeof exported.progressBarVariants, 'function', 'ProgressBar track recipe must stay a public export');
+  assert.equal(
+    exported.Textarea?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'Textarea must be a forwardRef component whose ref targets the native textarea (D9)'
+  );
+  assert.equal(
+    exported.Input?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'Input must be a React 18-compatible forwardRef component targeting the native input (D12)'
+  );
+  assert.equal(
+    exported.Switch?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'Switch must be a forwardRef component whose ref targets the root button (D9)'
+  );
+  assert.equal(
+    typeof exported.RadioGroup,
+    'function',
+    'RadioGroup must be a plain function component without a ref API'
+  );
+  assert.deepEqual(
+    Object.keys(exported.radioGroupVariants).sort(),
+    ['indicator', 'item', 'label', 'root', 'row'],
+    'RadioGroup per-part recipes stay public for SelectTile parity'
+  );
+  assert.equal(
+    exported.VisuallyHidden?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'VisuallyHidden must be a forwardRef component with a public ref'
+  );
+  assert.equal(typeof exported.VisuallyHidden.render, 'function', 'VisuallyHidden must expose its render function');
+  assert.equal(typeof exported.Stack, 'function', 'Stack must be a plain function component without a ref API');
+  assert.equal(typeof exported.Cluster, 'function', 'Cluster must be a plain function component without a ref API');
+  assert.equal(
+    exported.Stack.prototype?.render,
+    undefined,
+    'Stack must not be a forwardRef component (D10: no public ref)'
+  );
+  assert.equal(typeof exported.Icon, 'function', 'Icon must be a plain function component without a ref API');
+  assert.equal(exported.Icon.prototype?.render, undefined, 'Icon must not be a forwardRef component (D6: no ref)');
+  assert.equal(
+    exported.Surface?.$$typeof,
+    Symbol.for('react.forward_ref'),
+    'Surface must be a React 18-compatible forwardRef bridge with a public ref'
+  );
+  assert.equal(typeof exported.surfaceVariants, 'function', 'Surface composition recipe must stay a public export');
+  for (const name of ['Text', 'Heading']) {
+    assert.equal(typeof exported[name], 'function', `${name} must be a plain function component without a ref API`);
+  }
+  assert.equal(exported.default, undefined, 'UI must not introduce a default export');
+  const declaration = artifact('ui', ui.exports['.'].types);
+  const program = ts.createProgram([declaration], { moduleResolution: ts.ModuleResolutionKind.Bundler });
+  const checker = program.getTypeChecker();
+  const symbol = checker.getSymbolAtLocation(program.getSourceFile(declaration));
+  const names = new Set(checker.getExportsOfModule(symbol).map((item) => item.name));
+  assert.deepEqual([...names].sort(), [
+    'AlertDialog',
+    'AlertDialogAction',
+    'AlertDialogActionProps',
+    'AlertDialogCancel',
+    'AlertDialogCancelProps',
+    'AlertDialogContent',
+    'AlertDialogContentProps',
+    'AlertDialogProps',
+    'AlertDialogTone',
+    'AlertDialogTrigger',
+    'AlertDialogTriggerProps',
+    'AppShell',
+    'AppShellMessages',
+    'AppShellProps',
+    'ArticleFeature',
+    'ArticleFeatureCover',
+    'ArticleFeatureCoverProps',
+    'ArticleFeatureLevel',
+    'ArticleFeatureLinkProps',
+    'ArticleFeatureProps',
+    'ArticleFeatureSlottedProps',
+    'AspectRatio',
+    'AspectRatioProps',
+    'Avatar',
+    'AvatarProps',
+    'AvatarSize',
+    'Badge',
+    'BadgeProps',
+    'BadgeTone',
+    'BadgeVariant',
+    'Button',
+    'ButtonGroup',
+    'ButtonGroupProps',
+    'ButtonGroupVariant',
+    'ButtonProps',
+    'ButtonSize',
+    'ButtonVariant',
+    'CalendarGrid',
+    'CalendarGridDay',
+    'CalendarGridEntry',
+    'CalendarGridEntryStatus',
+    'CalendarGridMessages',
+    'CalendarGridProps',
+    'Carousel',
+    'CarouselItem',
+    'CarouselMessages',
+    'CarouselProps',
+    'Checkbox',
+    'CheckboxCheckedState',
+    'CheckboxProps',
+    'Chip',
+    'ChipGroup',
+    'ChipGroupOption',
+    'ChipGroupProps',
+    'ChipGroupType',
+    'ChipMode',
+    'ChipProps',
+    'Cluster',
+    'ClusterProps',
+    'Collapsible',
+    'CollapsibleContent',
+    'CollapsibleContentProps',
+    'CollapsibleProps',
+    'CollapsibleTrigger',
+    'CollapsibleTriggerProps',
+    'CommandPalette',
+    'CommandPaletteFiltering',
+    'CommandPaletteItem',
+    'CommandPaletteMessages',
+    'CommandPaletteProps',
+    'Countdown',
+    'CountdownProps',
+    'CountdownSize',
+    'CountdownTone',
+    'CountdownUnits',
+    'Dialog',
+    'DialogClose',
+    'DialogCloseProps',
+    'DialogContent',
+    'DialogContentProps',
+    'DialogProps',
+    'DialogSize',
+    'DialogTrigger',
+    'DialogTriggerProps',
+    'DialogVariant',
+    'Divider',
+    'DividerOrientation',
+    'DividerProps',
+    'Dropzone',
+    'DropzoneProps',
+    'Field',
+    'FieldCounter',
+    'FieldLayout',
+    'FieldMessage',
+    'FieldMessageProps',
+    'FieldMessageTone',
+    'FieldProps',
+    'Gauge',
+    'GaugeGroup',
+    'GaugeGroupItems',
+    'GaugeGroupProps',
+    'GaugeGroupRing',
+    'GaugeGroupSize',
+    'GaugeProps',
+    'GaugeSize',
+    'GaugeState',
+    'Heading',
+    'HeadingLevel',
+    'HeadingProps',
+    'Icon',
+    'IconButton',
+    'IconButtonProps',
+    'IconButtonSize',
+    'IconButtonVariant',
+    'IconName',
+    'IconProps',
+    'IconSize',
+    'Indicator',
+    'IndicatorPosition',
+    'IndicatorProps',
+    'IndicatorSize',
+    'IndicatorTone',
+    'IndicatorVariant',
+    'Input',
+    'InputProps',
+    'InputSize',
+    'InputType',
+    'InputVariant',
+    'Kbd',
+    'KbdProps',
+    'Label',
+    'LabelProps',
+    'LabelVariant',
+    'LayoutAlignItems',
+    'LayoutGap',
+    'LayoutJustifyContent',
+    'Link',
+    'LinkProps',
+    'LinkVariant',
+    'ListItem',
+    'ListItemActions',
+    'ListItemBody',
+    'ListItemContent',
+    'ListItemFooter',
+    'ListItemLeading',
+    'ListItemMedia',
+    'ListItemMeta',
+    'ListItemPartProps',
+    'ListItemProps',
+    'ListItemSize',
+    'ListItemStatus',
+    'ListItemTitle',
+    'ListItemTitleProps',
+    'ListItemTrailing',
+    'ListItemVariant',
+    'Logo',
+    'LogoProps',
+    'LogoSize',
+    'LogoVariant',
+    'Menu',
+    'MenuActionItem',
+    'MenuAlign',
+    'MenuEntry',
+    'MenuLabelItem',
+    'MenuLinkItem',
+    'MenuProps',
+    'MenuSeparatorItem',
+    'MenuSide',
+    'MenuSubmenuItem',
+    'MenuTone',
+    'MeterRow',
+    'MeterRowMessages',
+    'MeterRowProps',
+    'MeterRowVariant',
+    'ModuleCard',
+    'ModuleCardLevel',
+    'ModuleCardMessages',
+    'ModuleCardProps',
+    'ModuleCardStatus',
+    'ModuleCardTone',
+    'ModuleCardVariant',
+    'ModuleRail',
+    'ModuleRailEntry',
+    'ModuleRailLink',
+    'ModuleRailMessages',
+    'ModuleRailProps',
+    'ModuleRailState',
+    'NavList',
+    'NavListCollapsibleGroup',
+    'NavListEntry',
+    'NavListGroupBase',
+    'NavListLink',
+    'NavListProps',
+    'NavListSignal',
+    'NavListStaticGroup',
+    'NavListTag',
+    'Notice',
+    'NoticeProps',
+    'NoticeTone',
+    'NowCard',
+    'NowCardBody',
+    'NowCardBodyProps',
+    'NowCardDetail',
+    'NowCardDetailProps',
+    'NowCardFooter',
+    'NowCardFooterProps',
+    'NowCardLevel',
+    'NowCardProps',
+    'NowCardSize',
+    'PageHeader',
+    'PageHeaderLevel',
+    'PageHeaderProps',
+    'Panel',
+    'PanelBody',
+    'PanelBodyProps',
+    'PanelFooter',
+    'PanelFooterProps',
+    'PanelHeader',
+    'PanelHeaderProps',
+    'PanelProps',
+    'PanelTone',
+    'PanelVariant',
+    'PhotoFrame',
+    'PhotoFrameFocalPoint',
+    'PhotoFrameProps',
+    'PhotoFrameRatio',
+    'PhotoFrameVariant',
+    'Popover',
+    'PopoverClose',
+    'PopoverCloseProps',
+    'PopoverContent',
+    'PopoverContentProps',
+    'PopoverProps',
+    'PopoverTrigger',
+    'PopoverTriggerProps',
+    'Portal',
+    'PortalProps',
+    'PreviewFrame',
+    'PreviewFrameProps',
+    'PreviewFrameZone',
+    'ProductIdentity',
+    'ProgressBar',
+    'ProgressBarProps',
+    'ProgressBarSize',
+    'ProgressBarVariant',
+    'ProjectCard',
+    'ProjectCardCode',
+    'ProjectCardCodeLine',
+    'ProjectCardCodeProps',
+    'ProjectCardFooter',
+    'ProjectCardFooterProps',
+    'ProjectCardLevel',
+    'ProjectCardProps',
+    'ProjectCardSize',
+    'ProjectCardTags',
+    'ProjectCardTagsProps',
+    'ProjectCardVariant',
+    'PullQuote',
+    'PullQuoteProps',
+    'PullQuoteTone',
+    'PullQuoteVariant',
+    'RadioGroup',
+    'RadioGroupOption',
+    'RadioGroupOrientation',
+    'RadioGroupProps',
+    'SearchTrigger',
+    'SearchTriggerProps',
+    'SectionHeader',
+    'SectionHeaderLevel',
+    'SectionHeaderProps',
+    'SectionHeaderTone',
+    'SectionHeaderVariant',
+    'Select',
+    'SelectOption',
+    'SelectProps',
+    'SelectSize',
+    'SelectTile',
+    'SelectTileOption',
+    'SelectTileProps',
+    'SelectTileRatio',
+    'SelectTileThumbnail',
+    'SelectTileType',
+    'Sidebar',
+    'SidebarProps',
+    'Skeleton',
+    'SkeletonProps',
+    'SkeletonSize',
+    'SkeletonVariant',
+    'Slider',
+    'SliderProps',
+    'Slot',
+    'SlotProps',
+    'Slottable',
+    'SocialLinkItem',
+    'SocialLinks',
+    'SocialLinksGap',
+    'SocialLinksProps',
+    'SocialLinksSize',
+    'SocialLinksVariant',
+    'Spinner',
+    'SpinnerProps',
+    'SpinnerSize',
+    'Stack',
+    'StackProps',
+    'Stat',
+    'StatProps',
+    'StatusDot',
+    'StatusDotProps',
+    'StatusDotState',
+    'Surface',
+    'SurfaceElevation',
+    'SurfacePadding',
+    'SurfaceProps',
+    'SurfaceRadius',
+    'SurfaceTone',
+    'Switch',
+    'SwitchProps',
+    'TabBar',
+    'TabBarItem',
+    'TabBarMessages',
+    'TabBarProps',
+    'Table',
+    'TableColumn',
+    'TableColumnFormat',
+    'TableMaxHeight',
+    'TableMessages',
+    'TableProps',
+    'TableRow',
+    'TableSize',
+    'TableSort',
+    'TableSortDirection',
+    'TableVariant',
+    'Tabs',
+    'TabsItem',
+    'TabsProps',
+    'TabsSize',
+    'TabsTone',
+    'TabsVariant',
+    'TerminalCard',
+    'TerminalCardBar',
+    'TerminalCardBarProps',
+    'TerminalCardList',
+    'TerminalCardListProps',
+    'TerminalCardProps',
+    'TerminalCardRow',
+    'TerminalCardTone',
+    'Text',
+    'TextProps',
+    'TextTone',
+    'TextVariant',
+    'Textarea',
+    'TextareaProps',
+    'TextareaVariant',
+    'Timeline',
+    'TimelineChatItem',
+    'TimelineEvent',
+    'TimelineMessages',
+    'TimelineProps',
+    'TimelineSize',
+    'TimelineTime',
+    'TimelineVariant',
+    'TipCard',
+    'TipCardLevel',
+    'TipCardProps',
+    'TitleVariant',
+    'ToastApi',
+    'ToastCallOptions',
+    'ToastPlacement',
+    'ToastPromiseMessages',
+    'ToastProps',
+    'ToastProvider',
+    'ToastProviderProps',
+    'ToastTone',
+    'ToastUpdateOptions',
+    'Toggle',
+    'ToggleProps',
+    'ToggleSize',
+    'Tooltip',
+    'TooltipProps',
+    'VisuallyHidden',
+    'VisuallyHiddenProps',
+    'appShellVariants',
+    'badgeVariants',
+    'calendarGridVariants',
+    'chipVariants',
+    'cn',
+    'dropzoneVariants',
+    'labelVariants',
+    'menuVariants',
+    'moduleRailVariants',
+    'navListVariants',
+    'noticeVariants',
+    'progressBarVariants',
+    'radioGroupVariants',
+    'sidebarVariants',
+    'sliderVariants',
+    'statVariants',
+    'statusDotVariants',
+    'surfaceVariants',
+    'tabBarVariants',
+    'tabsVariants',
+    'tooltipVariants',
+    'useToast'
+  ]);
+  for (const name of [
+    'useCountdown',
+    'countdownRootVariants',
+    'countdownValueVariants',
+    'countdownLabelVariants',
+    'CountdownState'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
+  for (const name of [
+    'useProjectCard',
+    'useProjectCardTags',
+    'useProjectCardCode',
+    'useProjectCardFooter',
+    'projectCardVariants',
+    'projectCardIndexVariants',
+    'projectCardEyebrowVariants',
+    'projectCardHeadingVariants',
+    'projectCardBodyVariants',
+    'projectCardTagsVariants',
+    'projectCardCodeVariants',
+    'projectCardCodeLineVariants',
+    'projectCardCodeGlyphVariants',
+    'projectCardFootVariants',
+    'ProjectCardNativeProps'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
+  for (const name of [
+    'useToastProvider',
+    'toastVariants',
+    'toastViewportVariants',
+    'ToastActionProps',
+    'usePageHeader',
+    'PageHeaderActions',
+    'PageHeaderNativeProps',
+    'pageHeaderVariants',
+    'pageHeaderTextVariants',
+    'pageHeaderHeadingVariants',
+    'pageHeaderEyebrowVariants',
+    'pageHeaderActionsVariants',
+    'useField',
+    'fieldVariants',
+    'fieldLabelRowVariants',
+    'fieldMessageVariants',
+    'fieldCounterVariants',
+    'fieldReadoutVariants',
+    'useNotice',
+    'noticeAppearanceVariants',
+    'noticeIconVariants',
+    'noticeTextVariants',
+    'noticeActionsVariants',
+    'useButtonGroup',
+    'buttonGroupVariants',
+    'useSlider',
+    'sliderTrackVariants',
+    'sliderRangeVariants',
+    'sliderThumbVariants',
+    'usePullQuote',
+    'pullQuoteVariants',
+    'pullQuoteQuotationVariants',
+    'pullQuotePassageVariants',
+    'pullQuoteAccentVariants',
+    'pullQuoteSourceVariants',
+    'useStat',
+    'StatSize',
+    'statLabelVariants',
+    'statUnavailableTextVariants',
+    'statValueVariants',
+    'statDeltaVariants',
+    'useChip',
+    'useChipGroup',
+    'chipGroupVariants',
+    'chipGroupItemVariants',
+    'chipGroupIconVariants',
+    'chipIconVariants'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
+  for (const name of [
+    'useSocialLinks',
+    'socialLinksVariants',
+    'socialLinksCaptionVariants',
+    'socialLinksListVariants',
+    'socialLinksItemVariants',
+    'SocialLinksNativeProps',
+    'useSectionHeader',
+    'sectionHeaderVariants',
+    'sectionHeaderEyebrowVariants',
+    'sectionHeaderHeadingVariants',
+    'sectionHeaderLedeVariants',
+    'sectionHeaderRuleVariants',
+    'SectionHeaderNativeProps',
+    'useMeterRow',
+    'meterRowVariants',
+    'MeterRowNativeProps',
+    'useSearchTrigger',
+    'searchTriggerVariants',
+    'searchTriggerLabelVariants',
+    'searchTriggerHintVariants'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must stay internal to SearchTrigger`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
+  for (const name of [
+    'ButtonGroup',
+    'ButtonGroupProps',
+    'ButtonGroupVariant',
+    'Chip',
+    'ChipProps',
+    'chipVariants',
+    'Countdown',
+    'CountdownProps',
+    'CountdownSize',
+    'CountdownTone',
+    'CountdownUnits',
+    'Dropzone',
+    'DropzoneProps',
+    'dropzoneVariants',
+    'Notice',
+    'NoticeProps',
+    'NoticeTone',
+    'noticeVariants',
+    'ToastApi',
+    'ToastCallOptions',
+    'ToastPlacement',
+    'ToastPromiseMessages',
+    'ToastProps',
+    'ToastProvider',
+    'ToastProviderProps',
+    'ToastTone',
+    'ToastUpdateOptions',
+    'SearchTrigger',
+    'SearchTriggerProps',
+    'SectionHeader',
+    'SectionHeaderLevel',
+    'SectionHeaderProps',
+    'SectionHeaderTone',
+    'SectionHeaderVariant',
+    'Divider',
+    'DividerOrientation',
+    'DividerProps',
+    'Gauge',
+    'GaugeProps',
+    'GaugeState',
+    'GaugeSize',
+    'Icon',
+    'IconButton',
+    'IconButtonProps',
+    'IconButtonSize',
+    'IconButtonVariant',
+    'IconName',
+    'IconProps',
+    'IconSize',
+    'Kbd',
+    'KbdProps',
+    'Link',
+    'LinkProps',
+    'ProgressBar',
+    'ProgressBarProps',
+    'ProgressBarSize',
+    'ProgressBarVariant',
+    'progressBarVariants',
+    'PhotoFrame',
+    'PhotoFrameFocalPoint',
+    'PhotoFrameProps',
+    'PhotoFrameRatio',
+    'PhotoFrameVariant',
+    'TerminalCard',
+    'TerminalCardBar',
+    'TerminalCardBarProps',
+    'TerminalCardList',
+    'TerminalCardListProps',
+    'TerminalCardProps',
+    'TerminalCardRow',
+    'TerminalCardTone',
+    'PullQuote',
+    'PullQuoteProps',
+    'PullQuoteTone',
+    'PullQuoteVariant',
+    'Textarea',
+    'TextareaProps',
+    'TextareaVariant',
+    'Input',
+    'InputProps',
+    'InputSize',
+    'InputType',
+    'InputVariant',
+    'AspectRatio',
+    'AspectRatioProps',
 
-  test('Tokens ships a compiled native artifact under dist without @theme', () => {
-    assert.equal(tokens.exports['./tokens.css'], './dist/tokens.css', 'native import must be the compiled artifact');
-    const entry = artifact('tokens', tokens.exports['./tokens.css']);
-    assert.doesNotMatch(readFileSync(entry, 'utf8'), /@theme/, 'compiled artifact must not keep the @theme at-rule');
-  });
-
-  test('Tokens retires the JSON export and its source file', () => {
-    assert.equal(tokens.exports['./tokens.json'], undefined, 'tokens.json export must be retired');
-    assert.equal(
-      existsSync(resolve(root, 'packages/tokens/src/tokens.json')),
-      false,
-      'tokens.json source must be removed, not just unexported'
+    'Label',
+    'LabelProps',
+    'LabelVariant',
+    'Logo',
+    'LogoProps',
+    'LogoSize',
+    'LogoVariant',
+    'MeterRow',
+    'MeterRowMessages',
+    'MeterRowProps',
+    'MeterRowVariant',
+    'Portal',
+    'PortalProps',
+    'RadioGroup',
+    'RadioGroupOption',
+    'RadioGroupOrientation',
+    'RadioGroupProps',
+    'radioGroupVariants',
+    'Skeleton',
+    'SkeletonProps',
+    'SkeletonSize',
+    'SkeletonVariant',
+    'Slot',
+    'SlotProps',
+    'Slottable',
+    'Spinner',
+    'SpinnerProps',
+    'SpinnerSize',
+    'Stack',
+    'StackProps',
+    'StatusDot',
+    'StatusDotProps',
+    'StatusDotState',
+    'statusDotVariants',
+    'Stat',
+    'StatProps',
+    'statVariants',
+    'Cluster',
+    'ClusterProps',
+    'LayoutAlignItems',
+    'LayoutGap',
+    'LayoutJustifyContent',
+    'Surface',
+    'SurfaceElevation',
+    'SurfacePadding',
+    'SurfaceProps',
+    'SurfaceRadius',
+    'SurfaceTone',
+    'surfaceVariants',
+    'Switch',
+    'SwitchProps',
+    'Tooltip',
+    'TooltipProps',
+    'tooltipVariants',
+    'VisuallyHidden',
+    'VisuallyHiddenProps',
+    'labelVariants'
+  ]) {
+    assert.ok(names.has(name), `Missing public declaration export ${name}`);
+  }
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const buttonGroupHtml = renderToString(
+    createElement(exported.ButtonGroup, {
+      variant: 'attached',
+      label: 'Save options',
+      className: 'ms-auto',
+      children: [
+        createElement(exported.Button, { key: 'save' }, 'Save'),
+        createElement(exported.IconButton, {
+          key: 'options',
+          label: 'More save options',
+          size: 'lg',
+          icon: createElement(exported.Icon, { name: 'chevron-down' })
+        })
+      ]
+    })
+  );
+  assert.match(buttonGroupHtml, /^<div role="group" aria-label="Save options" class="eg-button-group /);
+  assert.match(buttonGroupHtml, /\*:not-first:rounded-s-sm/);
+  assert.match(buttonGroupHtml, /ms-auto/);
+  assert.match(buttonGroupHtml, /More save options/);
+  assert.equal((buttonGroupHtml.match(/<button /g) ?? []).length, 2);
+  assert.doesNotMatch(buttonGroupHtml, /aria-haspopup|aria-expanded|eg-btn--join|eg-btn-split/);
+  const dropzoneHtml = renderToString(
+    createElement(exported.Dropzone, { onFiles: () => undefined, accept: 'image/*', multiple: true })
+  );
+  assert.match(dropzoneHtml, /^<button[^>]*type="button"[^>]*data-state="idle"/);
+  assert.match(
+    dropzoneHtml,
+    /Drag, paste or upload<\/span><\/button><input type="file" hidden="" tabindex="-1" accept="image\/\*" multiple=""\/>$/
+  );
+  assert.match(dropzoneHtml, /aria-hidden="true"/);
+  assert.doesNotMatch(dropzoneHtml, /name=|required=|onFiles=|aria-live=|is-over/);
+  // Countdown SSR is the deterministic initializing placeholder: no digits, clock or live region (D3/D8).
+  const countdownHtml = renderToString(
+    createElement(exported.Countdown, {
+      deadline: Date.UTC(2030, 0, 2, 1, 1, 1),
+      deadlineText: 'Jan 2, 2030, 01:01:01 UTC',
+      id: 'launch',
+      tone: 'canvas'
+    })
+  );
+  assert.match(countdownHtml, /^<div id="launch" role="timer" aria-labelledby="[^"]+" aria-live="off"/);
+  assert.match(countdownHtml, /data-state="initializing"/);
+  assert.match(countdownHtml, /class="eg-countdown min-w-0 text-fg-default"/);
+  assert.match(countdownHtml, /<time id="[^"]+" dateTime="2030-01-02T01:01:01.000Z"/i);
+  assert.match(countdownHtml, />Calculating time remaining<\/p><\/div>$/);
+  assert.doesNotMatch(countdownHtml, /eg-countdown__row|eg-countdown--|aria-hidden|role="status"/);
+  const invalidCountdownHtml = renderToString(
+    createElement(exported.Countdown, { deadline: Number.NaN, deadlineText: 'Unknown' })
+  );
+  assert.match(invalidCountdownHtml, /data-state="unavailable"/);
+  assert.match(invalidCountdownHtml, />Time unavailable<\/p><\/div>$/);
+  assert.doesNotMatch(invalidCountdownHtml, /<time/);
+  const statHtml = renderToString(
+    createElement(exported.Stat, { label: 'Subs', value: 4, delta: '+1 10 s ago', highlighted: true, id: 'subs' })
+  );
+  const statLabelId = statHtml.match(/<span id="([^"]+)" class="eg-stat-label /)?.[1];
+  assert.ok(statLabelId, 'Stat label carries a generated id');
+  assert.match(
+    statHtml,
+    new RegExp(
+      `^<div id="subs" role="group" aria-labelledby="${statLabelId.replace(/[^\w]/g, '\\$&')}" data-state="highlighted" class="eg-stat `
+    )
+  );
+  assert.match(
+    statHtml,
+    />Subs<\/span><span class="eg-stat-value [^"]*text-display-stat[^"]*">4<\/span><span class="eg-stat-delta [^"]*">\+1 10 s ago<\/span><\/div>$/
+  );
+  const noDataHtml = renderToString(createElement(exported.Stat, { label: 'Superchats', value: null, size: 'sm' }));
+  assert.match(
+    noDataHtml,
+    /<span data-state="unavailable" class="eg-stat-value [^"]*text-display-stat-sm[^"]*"><span aria-hidden="true">—<\/span><span class="sr-only">No data<\/span><\/span><\/div>$/
+  );
+  assert.doesNotMatch(noDataHtml, /data-state="highlighted"|eg-stat-delta|aria-live|>0</);
+  const chipGroupOptions = [
+    { value: 'react', label: 'React' },
+    { value: 'css', label: 'CSS' }
+  ];
+  for (const type of ['single', 'multiple']) {
+    const html = renderToString(
+      createElement(exported.ChipGroup, {
+        type,
+        label: 'Topics',
+        options: chipGroupOptions,
+        defaultValue: type === 'single' ? 'react' : ['react']
+      })
     );
-  });
+    assert.match(html, /role="group"/);
+    assert.match(html, /aria-label="Topics"/);
+    assert.match(html, /class="eg-chip-group flex flex-wrap items-center gap-2"/);
+    assert.match(html, type === 'single' ? /role="radio" aria-checked="true"/ : /aria-pressed="true"/);
+    assert.doesNotMatch(html, /<input|is-active|eg-surface/);
+  }
+  const toggleChipHtml = renderToString(createElement(exported.Chip, { children: 'Design' }));
+  assert.match(toggleChipHtml, /^<button type="button" aria-pressed="false" data-state="off" class="eg-chip /);
+  assert.match(toggleChipHtml, />Design<\/button>$/);
+  const staticChipHtml = renderToString(createElement(exported.Chip, { mode: 'static', children: 'Open Source' }));
+  assert.match(staticChipHtml, /^<span class="eg-chip /);
+  assert.doesNotMatch(staticChipHtml, /role=|tabindex|aria-pressed|data-state|<button/);
+  assert.match(staticChipHtml, />Open Source<\/span>$/);
+  const linkChipHtml = renderToString(
+    createElement(exported.Chip, { mode: 'link', href: '#topics', external: true, children: 'Topics' })
+  );
+  assert.match(linkChipHtml, /<a href="#topics" target="_blank" rel="noopener noreferrer" class="eg-chip /);
+  assert.match(linkChipHtml, /Topics(?:<!-- -->)? <span[^>]*>\(opens in a new tab\)<\/span><\/a>$/);
+  assert.doesNotMatch(linkChipHtml, /aria-pressed|data-state/);
+  const sameTabLinkChipHtml = renderToString(
+    createElement(exported.Chip, { mode: 'link', href: '#topics', children: 'Topics' })
+  );
+  assert.doesNotMatch(sameTabLinkChipHtml, /target=|rel=|\(opens in a new tab\)/);
+  assert.equal(typeof exported.Notice, 'function', 'Notice has no public ref API');
+  const sharedNotice = exported.noticeVariants({ tone: 'danger', size: 'sm' });
+  assert.ok(sharedNotice.split(' ').includes('eg-surface'), 'A1 permits inherited Surface identity');
+  assert.doesNotMatch(sharedNotice, /eg-notice|eg-toast|aria-|role=/);
+  const noticeHtml = renderToString(
+    createElement(exported.Notice, {
+      summary: 'Sign in required.',
+      tone: 'danger',
+      id: 'connection',
+      children: 'Reconnect to continue.'
+    })
+  );
+  assert.match(noticeHtml, /role="alert"/);
+  assert.match(noticeHtml, /data-tone="danger"/);
+  assert.match(noticeHtml, /class="eg-notice eg-surface /);
+  assert.match(noticeHtml, /<strong>Sign in required\.<\/strong> (?:<!-- -->)?Reconnect to continue\./);
+  assert.match(noticeHtml, /aria-hidden="true"><svg/);
+  assert.doesNotMatch(noticeHtml, /aria-live=|tabindex=|eg-notice__actions/);
+  const searchHtml = renderToString(createElement(exported.SearchTrigger, { shortcut: 'Ctrl K' }));
+  assert.match(searchHtml, /^<button[^>]*type="button"[^>]*aria-label="Search…"[^>]*class="eg-surface[^"]*eg-search/);
+  assert.match(searchHtml, /<svg class="eg-icon[^"]*size-4[^"]*"[^>]*aria-hidden="true"/);
+  assert.match(
+    searchHtml,
+    /<span class="whitespace-nowrap">Search…<\/span><span class="ms-auto" aria-hidden="true"><kbd class="eg-kbd[^"]*">Ctrl K<\/kbd><\/span><\/button>$/
+  );
+  assert.doesNotMatch(
+    searchHtml,
+    /aria-haspopup|aria-expanded|aria-controls|aria-keyshortcuts|data-state|eg-search--|eg-search__/
+  );
+  const compactHtml = renderToString(createElement(exported.SearchTrigger, { compact: true, shortcut: 'Ctrl K' }));
+  assert.match(compactHtml, /aria-label="Search…"/);
+  assert.doesNotMatch(compactHtml, /<span|<kbd|min-w-48/);
+  assert.equal(typeof exported.PullQuote, 'function', 'PullQuote must be a plain function with no public ref API');
+  const pullQuoteHtml = renderToString(
+    createElement(exported.PullQuote, {
+      text: 'Build ',
+      accent: 'carefully.',
+      source: 'Field notes',
+      cite: 'https://example.com/notes',
+      id: 'quote'
+    })
+  );
+  assert.match(
+    pullQuoteHtml,
+    /^<figure id="quote" class="eg-quote [^"]*max-w-quote-pull[^"]*"><blockquote cite="https:\/\/example\.com\/notes" class="eg-quote__text [^"]*text-quote-pull[^"]*"><p class="[^"]*">Build <span class="eg-quote__accent [^"]*inline[^"]*">carefully\.<\/span><\/p><\/blockquote><figcaption class="eg-quote__source [^"]*">Field notes<\/figcaption><\/figure>$/
+  );
+  assert.doesNotMatch(pullQuoteHtml, /role=|<h[1-6]|<cite|<a |aria-live=|eg-quote--display/);
+  assert.equal(renderToString(createElement(exported.PullQuote, { text: '  ', source: 'Orphan' })), '');
+  assert.equal(renderToString(createElement(exported.Portal, { children: 'Server layer' })), '');
+  assert.equal(typeof exported.labelVariants, 'function', 'Label composition recipe must stay a public export');
+  const labelHtml = renderToString(
+    createElement(exported.Label, { children: 'Email address', htmlFor: 'email', id: 'email-label' })
+  );
+  for (const text of ['<label', 'for="email"', 'id="email-label"', 'eg-label', 'text-label-default', 'Email address']) {
+    assert.ok(labelHtml.includes(text), `Label SSR must render ${text}`);
+  }
+  const choiceHtml = renderToString(
+    createElement(exported.Label, { children: 'Choose plan', htmlFor: 'plan', variant: 'choice' })
+  );
+  for (const text of ['text-fg-secondary', 'font-[var(--text-body-default--font-weight)]']) {
+    assert.ok(choiceHtml.includes(text), `Label choice SSR must render ${text}`);
+  }
+  assert.doesNotMatch(labelHtml + choiceHtml, /asChild|aria-live=|<button|<input|tabindex=/);
+  const html = renderToString(createElement(exported.Gauge, { label: 'Capacity', value: 42.5 }));
+  for (const text of [
+    'eg-gauge',
+    'role="meter"',
+    'aria-label="Capacity"',
+    'aria-valuenow="42.5"',
+    'aria-valuetext="42.5 / 100"'
+  ]) {
+    assert.ok(html.includes(text), `Gauge SSR must render ${text}`);
+  }
+  const invalid = renderToString(createElement(exported.Gauge, { label: 'Capacity', value: NaN }));
+  assert.match(invalid, /Data unavailable/);
+  assert.doesNotMatch(invalid, /role="meter"|aria-value(?:now|min|max|text)=|eg-gauge-arc/);
+  assert.doesNotMatch(html + invalid, /aria-live=|<button|<input|tabindex=/);
+  // AspectRatio reserves geometry with the Radix padding-bottom trick and no extra semantics.
+  const wide = renderToString(createElement(exported.AspectRatio, { 'aria-label': 'Media', ratio: 16 / 9 }, 'Media'));
+  assert.ok(
+    wide.includes('eg-aspect-ratio') && wide.includes('min-w-0'),
+    'AspectRatio must carry its marker and CVA base'
+  );
+  assert.ok(wide.includes('padding-bottom:56.25%'), 'AspectRatio 16/9 must derive its padding-bottom geometry');
+  // Stack and Cluster resolve token gaps as static CVA utilities without inline appearance.
+  const stacked = renderToString(createElement(exported.Stack, { 'aria-label': 'Sections', gap: 6 }, 'Sections'));
+  assert.ok(
+    stacked.includes('eg-stack') && stacked.includes('flex-col') && stacked.includes('gap-6'),
+    'Stack must carry its marker and default column classes'
+  );
+  const clustered = renderToString(createElement(exported.Cluster, { 'aria-label': 'Actions', gap: 0 }, 'Actions'));
+  assert.ok(
+    clustered.includes('eg-cluster') && clustered.includes('flex-wrap') && clustered.includes('gap-0'),
+    'Cluster must carry its marker and wrapping row classes'
+  );
+  assert.doesNotMatch(stacked + clustered, /aria-live=|tabindex=|role=/);
+  // Text defaults to a paragraph eyebrow; Heading to a native h2 section title with its level independent of size.
+  const eyebrow = renderToString(createElement(exported.Text, null, 'Weekly stream'));
+  assert.match(eyebrow, /^<p class="[^"]*eg-text[^"]*text-label-eyebrow[^"]*">Weekly stream<\/p>$/);
+  const heading = renderToString(createElement(exported.Heading, { accent: 'ideas' }, 'Big '));
+  assert.match(
+    heading,
+    /^<h2 class="[^"]*eg-heading[^"]*text-title-section[^"]*">Big <span class="[^"]*eg-heading__accent[^"]*">ideas<\/span><\/h2>$/
+  );
+  const hero = renderToString(
+    createElement(exported.Heading, { level: 4, variant: 'hero', accent: '.', accentBreak: false }, 'Talk')
+  );
+  assert.ok(
+    hero.startsWith('<h4') && hero.includes('text-title-hero') && hero.includes('Talk<span'),
+    'Level must not resize; no space is injected'
+  );
+  assert.ok(
+    hero.includes('[text-shadow:var(--text-shadow-title-hero)]') && hero.includes('inline'),
+    'Canvas hero accent glows inline'
+  );
+  assert.doesNotMatch(eyebrow + heading + hero, /aria-live=|tabindex=|role=|aria-level=/);
+  // Surface resolves its Material recipe as static CVA utilities on a passive div or slotted child.
+  const surface = renderToString(createElement(exported.Surface, null, 'Card'));
+  for (const text of [
+    '<div class="eg-surface',
+    'bg-surface-1',
+    'bg-[image:var(--gradient-sheen)]',
+    'p-6',
+    'rounded-xl'
+  ]) {
+    assert.ok(surface.includes(text), `Surface SSR must render ${text}`);
+  }
+  const overlay = renderToString(createElement(exported.Surface, { tone: 'overlay' }, 'Glass'));
+  assert.ok(overlay.includes('bg-surface-overlay') && overlay.includes('not-supports-[backdrop-filter]:bg-surface-2'));
+  const slotted = renderToString(
+    createElement(exported.Surface, { asChild: true, tone: 'well' }, createElement('section', { 'aria-label': 'Well' }))
+  );
+  assert.match(slotted, /^<section aria-label="Well" class="eg-surface [^"]*shadow-\[var\(--shadow-well\)\]/);
+  assert.doesNotMatch(surface + overlay + slotted, /aria-live=|tabindex=|role=|style=/);
+  assert.ok(
+    wide.includes('data-radix-aspect-ratio-wrapper'),
+    'AspectRatio must render the inner generic div inside the Radix frame'
+  );
+  assert.ok(wide.includes('Media'), 'AspectRatio must render its children');
+  assert.doesNotMatch(wide, /aria-live=|<button|<input|tabindex=|role=/);
+  for (const ratio of [0, -1, Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
+    const fallback = renderToString(createElement(exported.AspectRatio, { ratio }, 'Fallback'));
+    assert.ok(fallback.includes('padding-bottom:100%'), `Invalid ratio ${ratio} must fall back to a square`);
+  }
+  // Spinner: labelled status region or decorative hidden arc, Icon-scale presets, no ref or state.
+  const status = renderToString(createElement(exported.Spinner, { label: 'Loading results', id: 'loading' }));
+  assert.match(
+    status,
+    /^<span id="loading" role="status" class="eg-spinner inline-flex shrink-0 size-\(--icon-size\)">/
+  );
+  assert.match(
+    status,
+    /<svg class="[^"]*animate-spin motion-reduce:animate-none" aria-hidden="true" focusable="false"/
+  );
+  assert.match(status, /<span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Loading results<\/span><\/span>$/);
+  assert.doesNotMatch(status, /aria-hidden="true" class="eg-spinner|aria-live=|tabindex=|data-state/);
+  for (const label of [undefined, '', '  ']) {
+    const decorative = renderToString(createElement(exported.Spinner, { label }));
+    assert.match(decorative, /^<span aria-hidden="true" class="eg-spinner /, 'Unlabelled spinners are decorative');
+    assert.doesNotMatch(decorative, /role=|clip:rect/, 'Decorative spinners have no status or hidden text');
+  }
+  for (const [size, utility] of [
+    ['sm', 'size-4'],
+    ['md', 'size-(--icon-size)'],
+    ['lg', 'size-7']
+  ]) {
+    const sized = renderToString(createElement(exported.Spinner, { size }));
+    assert.ok(sized.includes(`class="eg-spinner inline-flex shrink-0 ${utility}"`), `Spinner ${size} preset`);
+  }
+  // Logo: named span image or named native link around hidden inline V4 artwork (#62).
+  const logo = renderToString(createElement(exported.Logo, { id: 'brand' }));
+  assert.match(
+    logo,
+    /^<span id="brand" role="img" aria-label="egdev" class="eg-logo inline-block shrink-0 leading-none rounded-sm h-8">/
+  );
+  assert.match(logo, /<svg class="block h-full w-auto" aria-hidden="true" focusable="false" viewBox="0 0 653 258">/);
+  assert.equal((logo.match(/<path /g) ?? []).length, 8, 'The wordmark ships its eight V4 paths');
+  assert.equal((logo.match(/class="fill-primitive-white"/g) ?? []).length, 1, 'One white name path');
+  assert.doesNotMatch(logo, /href=|tabindex=|<title|fill="|style=/);
+  const mark = renderToString(createElement(exported.Logo, { variant: 'mark' }));
+  assert.match(mark, /viewBox="0 0 638\.45 612\.37"/);
+  assert.equal((mark.match(/<polygon /g) ?? []).length, 7, 'The isotype ships its seven V4 polygons');
+  assert.equal((mark.match(/class="fill-\(--logo-red\)"/g) ?? []).length, 5);
+  assert.equal((mark.match(/class="fill-\(--logo-red-shade\)"/g) ?? []).length, 2);
+  const home = renderToString(createElement(exported.Logo, { href: '/', label: 'egdev, home', rel: 'home' }));
+  assert.match(
+    home,
+    /^<a rel="home" href="\/" aria-label="egdev, home" class="eg-logo [^"]*focus-visible:outline-none focus-visible:shadow-focus">/
+  );
+  assert.doesNotMatch(home, /role=/, 'The link keeps its native role');
+  for (const [size, utility] of [
+    ['sm', 'h-7'],
+    ['md', 'h-8'],
+    ['lg', 'h-9']
+  ]) {
+    const sized = renderToString(createElement(exported.Logo, { size }));
+    assert.ok(sized.includes(`rounded-sm ${utility}"`), `Logo ${size} preset`);
+  }
+  // StatusDot: always decorative, empty, data-state per state; ring vs glow geometry and the live pulse.
+  const pulse = 'motion-safe:animate-[eg-status-dot-pulse_2.4s_var(--ease-out)_infinite]';
+  assert.equal(
+    renderToString(createElement(exported.StatusDot)),
+    '<span aria-hidden="true" data-state="stopped" class="eg-status-dot inline-block shrink-0 rounded-full size-2 ring-2 ring-bg-surface bg-primitive-neutral-600"></span>'
+  );
+  for (const [state, fill] of [
+    ['running', 'bg-status-success'],
+    ['idle', 'bg-status-info'],
+    ['warning', 'bg-status-warning'],
+    ['error', 'bg-status-danger'],
+    ['stopped', 'bg-primitive-neutral-600']
+  ]) {
+    const dot = renderToString(createElement(exported.StatusDot, { state, pulse: true }));
+    assert.ok(dot.includes(`data-state="${state}"`), `StatusDot ${state} state`);
+    assert.ok(dot.includes(`size-2 ring-2 ring-bg-surface ${fill}`), `StatusDot ${state} ringed fill`);
+    assert.doesNotMatch(dot, /shadow-glow-hot|animate/, `StatusDot ${state} never glows or pulses`);
+  }
+  for (const [state, fill] of [
+    ['live', 'bg-fg-brand-default'],
+    ['standby', 'bg-primitive-white']
+  ]) {
+    const dot = renderToString(createElement(exported.StatusDot, { state }));
+    assert.ok(dot.includes(`size-2.5 shadow-glow-hot ${fill} ${pulse}`), `StatusDot ${state} glows and pulses`);
+    assert.doesNotMatch(dot, /ring-/, `StatusDot ${state} has no ring`);
+    const still = renderToString(createElement(exported.StatusDot, { state, pulse: false }));
+    assert.ok(still.includes(`shadow-glow-hot ${fill}"`), `StatusDot ${state} pulse:false keeps the glow`);
+    assert.doesNotMatch(still, /animate/, `StatusDot ${state} pulse:false is static`);
+  }
+  const placed = renderToString(
+    createElement(exported.StatusDot, { state: 'error', id: 'rail-dot', title: 'Error', className: 'absolute top-1' })
+  );
+  assert.match(
+    placed,
+    /^<span id="rail-dot" title="Error" aria-hidden="true" data-state="error" class="eg-status-dot /
+  );
+  assert.ok(placed.endsWith('bg-status-danger absolute top-1"></span>'), 'Consumer layout classes merge last');
+  assert.doesNotMatch(placed, /role=|aria-label|tabindex|\spulse=|\sstate=/);
+  // Kbd: one native kbd per key; a label hides the glyph and adds hidden spoken text (D2).
+  const plainKey = renderToString(createElement(exported.Kbd, { children: 'Esc', id: 'escape-key' }));
+  assert.equal(
+    plainKey,
+    '<kbd id="escape-key" class="eg-kbd inline-block whitespace-nowrap rounded-sm border border-border-subtle px-1.5 py-0.5 font-sans text-label-default text-fg-secondary">Esc</kbd>'
+  );
+  assert.equal(
+    renderToString(createElement(exported.Kbd, { children: 'Ctrl', label: '' })).includes('aria-hidden'),
+    false
+  );
+  const symbolKey = renderToString(createElement(exported.Kbd, { children: '⌘K', label: 'Command K' }));
+  assert.match(
+    symbolKey,
+    /^<kbd class="eg-kbd [^"]*"><span aria-hidden="true">⌘K<\/span><span style="[^"]*clip:rect\(0, 0, 0, 0\)[^"]*">Command K<\/span><\/kbd>$/
+  );
+  assert.doesNotMatch(symbolKey, /role=|aria-label=|tabindex=|data-state/);
+  // RadioGroup: a named Radix radiogroup with one row per option (AC-01). Without a DOM, Radix cannot
+  // detect a form ancestor during SSR, so each radio is followed by its hidden radio input (AC-07).
+  const radioGroup = renderToString(
+    createElement(exported.RadioGroup, {
+      label: 'Visibility',
+      id: 'visibility',
+      name: 'visibility',
+      defaultValue: 'public',
+      options: [
+        { value: 'public', label: 'Public' },
+        { value: 'private', label: 'Private', disabled: true }
+      ]
+    })
+  );
+  assert.match(radioGroup, /^<div role="radiogroup" aria-required="false" aria-orientation="vertical"[^>]*>/);
+  assert.match(radioGroup, /id="visibility"/);
+  assert.match(radioGroup, /aria-label="Visibility"/);
+  assert.match(radioGroup, /class="eg-radio-group group flex flex-col gap-1"/);
+  assert.equal(radioGroup.match(/<button type="button" role="radio"/g)?.length, 2, 'One radio per option');
+  assert.equal(radioGroup.match(/<input type="radio" aria-hidden="true"[^>]*name="visibility"/g)?.length, 2);
+  assert.match(
+    radioGroup,
+    /aria-checked="true" data-state="checked" value="public" id="([^"]+)"[^>]*><span data-state="checked" class="size-2 rounded-full bg-action-primary-solid-fg"><\/span><\/button><input [^>]*checked="" value="public"\/><label for="\1" class="cursor-pointer">Public<\/label>/
+  );
+  assert.match(
+    radioGroup,
+    /aria-checked="false" data-state="unchecked" data-disabled="" disabled="" value="private" id="([^"]+)"[^>]*><\/button><input [^>]*disabled=""[^>]*value="private"\/><label for="\1" class="cursor-pointer">Private<\/label>/
+  );
+  const horizontalGroup = renderToString(
+    createElement(exported.RadioGroup, {
+      label: 'Format',
+      orientation: 'horizontal',
+      required: true,
+      disabled: true,
+      options: [{ value: 'video', label: 'Video' }]
+    })
+  );
+  assert.match(horizontalGroup, /aria-required="true" aria-orientation="horizontal" data-disabled=""/);
+  assert.match(horizontalGroup, /class="eg-radio-group group flex flex-wrap gap-x-6 gap-y-1"/);
+  // Switch: one Radix switch button with its thumb (AC-01). Without a DOM, Radix cannot detect a form
+  // ancestor during SSR, so it always emits its hidden bubble input after the button (AC-08).
+  const offSwitch = renderToString(createElement(exported.Switch, { 'aria-label': 'Stream alerts', id: 'alerts' }));
+  assert.match(offSwitch, /^<button type="button" role="switch" aria-checked="false"[^>]*>/);
+  assert.match(offSwitch, /data-state="unchecked"/);
+  assert.match(offSwitch, /value="on"/);
+  assert.match(offSwitch, /id="alerts"/);
+  assert.match(offSwitch, /aria-label="Stream alerts"/);
+  assert.match(offSwitch, /class="eg-switch /);
+  assert.match(
+    offSwitch,
+    /<span data-state="unchecked" class="absolute top-0\.5 left-0\.5 size-3\.5 [^"]*"><\/span><\/button><input type="checkbox" aria-hidden="true" tabindex="-1" [^>]*value="on"\/>$/
+  );
+  assert.doesNotMatch(offSwitch, /disabled=""|data-disabled|checked=""/);
+  const onSwitch = renderToString(
+    createElement(exported.Switch, { 'aria-label': 'Overlay', defaultChecked: true, disabled: true })
+  );
+  assert.match(onSwitch, /aria-checked="true"/);
+  assert.match(onSwitch, /disabled=""/);
+  assert.match(onSwitch, /data-disabled=""/);
+  assert.equal(onSwitch.match(/data-state="checked"/g)?.length, 2, 'Root and thumb expose the checked state');
+  const formSwitch = renderToString(
+    createElement('form', null, createElement(exported.Switch, { 'aria-label': 'Alerts', name: 'alerts' }))
+  );
+  assert.match(
+    formSwitch,
+    /<input type="checkbox" aria-hidden="true"[^>]*name="alerts"/,
+    'Form switches add Radix bubble input'
+  );
+  // Tooltip: closed on the server; only the consumer trigger renders, with Radix's closed state (D2, D7).
+  const tooltipHtml = renderToString(
+    createElement(exported.Tooltip, {
+      content: 'Search the catalogue',
+      children: createElement('button', { type: 'button', 'aria-label': 'Search' }, '⌕')
+    })
+  );
+  assert.equal(tooltipHtml, '<button type="button" aria-label="Search" data-state="closed">⌕</button>');
+  assert.doesNotMatch(tooltipHtml, /role="tooltip"|eg-tooltip|aria-describedby|Search the catalogue/);
+  // ProgressBar: Radix progressbar in percent, decorative without a label (D4), fill driven by one custom property (D8).
+  const announced = renderToString(
+    createElement(exported.ProgressBar, { label: 'Upload progress', value: 45, id: 'upload-progress' })
+  );
+  for (const text of [
+    'role="progressbar"',
+    'aria-valuemin="0"',
+    'aria-valuemax="100"',
+    'aria-valuenow="45"',
+    'aria-valuetext="45%"',
+    'aria-label="Upload progress"',
+    'data-state="loading"',
+    'id="upload-progress"',
+    'style="--eg-progress-value:0.45"'
+  ]) {
+    assert.ok(announced.includes(text), `ProgressBar SSR must render ${text}`);
+  }
+  assert.match(
+    announced,
+    /^<div [^>]*class="eg-progress [^"]*"[^>]*><div [^>]*class="eg-progress-fill [^"]*"[^>]*><\/div><\/div>$/
+  );
+  assert.doesNotMatch(announced, /aria-hidden|tabindex=/);
+  const decorative = renderToString(createElement(exported.ProgressBar, { value: 140 }));
+  assert.ok(decorative.includes('aria-hidden="true"') && decorative.includes('data-state="complete"'));
+  assert.ok(decorative.includes('aria-valuenow="100"') && decorative.includes('style="--eg-progress-value:1"'));
+  const unknown = renderToString(createElement(exported.ProgressBar, { label: 'Sync', value: Number.NaN }));
+  assert.ok(unknown.includes('data-state="indeterminate"') && unknown.includes('style="--eg-progress-value:0"'));
+  assert.doesNotMatch(unknown, /aria-valuenow|aria-valuetext/);
+  assert.match(
+    renderToString(createElement(exported.ProgressBar, { label: 'Goal', value: 74, valueText: '37 of 50' })),
+    /aria-valuetext="37 of 50"/
+  );
+  assert.equal(
+    exported.progressBarVariants({ size: 'sm', edge: true }),
+    'eg-progress block overflow-hidden h-0.5 absolute inset-x-0 bottom-0 w-auto rounded-none bg-bg-glass pointer-events-none'
+  );
+  // Textarea: one native textarea root with the public marker first and layout classes last (D9).
+  const textareaHtml = renderToString(
+    createElement(exported.Textarea, {
+      'aria-label': 'Notes',
+      'aria-invalid': true,
+      rows: 3,
+      maxLength: 1250,
+      defaultValue: 'Draft',
+      className: 'mt-2 mt-4'
+    })
+  );
+  assert.match(textareaHtml, /^<textarea [^>]*class="eg-textarea [^"]* mt-4"[^>]*>Draft<\/textarea>$/);
+  for (const text of ['aria-label="Notes"', 'aria-invalid="true"', 'rows="3"', 'maxLength="1250"']) {
+    assert.ok(textareaHtml.includes(text), `Textarea SSR must forward ${text}`);
+  }
+  assert.doesNotMatch(textareaHtml, / mt-2 |variant=|data-state|role=|tabindex=/);
+  for (const [variant, utility] of [
+    ['default', 'bg-surface-0'],
+    ['code', 'bg-primitive-neutral-950'],
+    ['prose', 'bg-surface-1']
+  ]) {
+    const variantHtml = renderToString(createElement(exported.Textarea, { 'aria-label': variant, variant }));
+    assert.ok(variantHtml.includes(utility), `Textarea ${variant} must render ${utility}`);
+  }
+  // Input: span.eg-input root, native input with forwarded attributes, className on the root only (D3).
+  const field = renderToString(
+    createElement(exported.Input, {
+      'aria-label': 'Title',
+      name: 'title',
+      placeholder: 'Untitled',
+      className: 'w-64'
+    })
+  );
+  assert.match(
+    field,
+    /^<span class="eg-input relative flex items-center [^"]*w-64"><input [^>]*class="box-border w-full [^"]*"[^>]*\/><\/span>$/
+  );
+  for (const attribute of ['aria-label="Title"', 'name="title"', 'placeholder="Untitled"', 'type="text"']) {
+    assert.ok(field.split('<input')[1].includes(attribute), `Input must forward ${attribute} to the native input`);
+  }
+  assert.ok(!field.split('<input')[0].includes('w-full'), 'Consumer width replaces the root full width');
+  for (const utility of [
+    'min-h-11',
+    'px-3',
+    'py-2',
+    'text-body-default',
+    'bg-surface-0',
+    'shadow-[var(--shadow-well)]'
+  ]) {
+    assert.ok(field.includes(utility), `Input md/default must render ${utility}`);
+  }
+  assert.doesNotMatch(field, /aria-hidden|data-state|role=|\ssize=/);
+  const search = renderToString(
+    createElement(exported.Input, {
+      'aria-label': 'Search',
+      type: 'search',
+      size: 'sm',
+      variant: 'code',
+      icon: createElement('svg', { viewBox: '0 0 16 16' })
+    })
+  );
+  assert.match(search, /^<span class="eg-input [^"]*"><span aria-hidden="true" class="[^"]*absolute left-3[^"]*"><svg/);
+  assert.match(search, /type="search"/);
+  for (const utility of ['min-h-9', 'pl-9', 'font-mono', 'text-code', 'bg-primitive-neutral-950']) {
+    assert.ok(search.includes(utility), `Input sm/code/icon must render ${utility}`);
+  }
+  for (const utility of ['font-sans', 'bg-surface-0', 'text-label-default', 'font-[var(']) {
+    assert.ok(!search.includes(` ${utility}`), `Input code must replace ${utility}`);
+  }
+  const geometry = [
+    ['line', 'sm', 'h-3', 'rounded-sm'],
+    ['line', 'md', 'h-4', 'rounded-sm'],
+    ['line', 'lg', 'h-5', 'rounded-sm'],
+    ['block', 'sm', 'h-12', 'rounded-md'],
+    ['block', 'md', 'h-20', 'rounded-md'],
+    ['block', 'lg', 'h-24', 'rounded-md'],
+    ['circle', 'sm', 'size-8', 'rounded-full'],
+    ['circle', 'md', 'size-12', 'rounded-full'],
+    ['circle', 'lg', 'size-16', 'rounded-full']
+  ];
+  for (const [variant, size, dimension, radius] of geometry) {
+    const shape = renderToString(createElement(exported.Skeleton, { variant, size }));
+    assert.match(
+      shape,
+      /^<span aria-hidden="true" class="eg-skeleton /,
+      `Skeleton ${variant}/${size} must keep the stable root class`
+    );
+    assert.ok(shape.includes(dimension), `Skeleton ${variant}/${size} must render ${dimension}`);
+    assert.ok(shape.includes(radius), `Skeleton ${variant}/${size} must render ${radius}`);
+    assert.equal(shape.includes('w-full'), variant !== 'circle', `Skeleton ${variant}/${size} width ownership`);
+    assert.ok(shape.endsWith('></span>'), `Skeleton ${variant}/${size} must stay an empty span`);
+    assert.match(shape, /aria-hidden="true"/);
+    assert.match(
+      shape,
+      /animate-pulse motion-reduce:animate-none/,
+      `Skeleton ${variant}/${size} must pulse by default with the reduced-motion opt-out`
+    );
+    assert.doesNotMatch(shape, /aria-live|aria-busy|role=|tabindex|data-state|transition/);
+    assert.doesNotMatch(shape, /\spulse=/, 'The pulse switch must never reach the DOM');
+  }
+  const skeletonStatic = renderToString(
+    createElement(exported.Skeleton, { variant: 'line', size: 'md', pulse: false })
+  );
+  assert.ok(skeletonStatic.includes('eg-skeleton'), 'pulse:false must keep the stable root class');
+  assert.doesNotMatch(skeletonStatic, /animate-/, 'pulse:false must render fully static');
+  const skeletonNative = renderToString(
+    createElement(exported.Skeleton, {
+      id: 'consumer-skeleton',
+      title: 'Decorative placeholder',
+      className: 'w-3/4 mt-2'
+    })
+  );
+  assert.ok(skeletonNative.includes('id="consumer-skeleton"'), 'Native span id must survive');
+  assert.ok(skeletonNative.includes('title="Decorative placeholder"'), 'Native span title must survive');
+  assert.ok(
+    skeletonNative.includes('w-3/4') && skeletonNative.includes('mt-2'),
+    'Supported width override must survive'
+  );
+  assert.ok(!skeletonNative.includes('w-full'), 'Consumer width must replace the preset full width');
+  assert.ok(skeletonNative.endsWith('></span>'), 'Native props must not add content');
+});
 
-  test('UI ships the Slider well, range and raised thumb utilities without a Slider-specific stylesheet rule', () => {
-    const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
-    const utilities = cssBlock(css, /@layer utilities\s*\{/);
-    const rule = (selector) => {
-      const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      return cssBlock(utilities, new RegExp(`${escaped}(?::[a-z-]+|\\[data-disabled\\])?\\s*\\{`));
-    };
-    assert.match(rule('.touch-none'), /touch-action:\s*none\s*;/);
-    assert.match(rule('.select-none'), /user-select:\s*none\s*;/);
-    assert.match(rule('.h-6'), /height:\s*var\(--space-6\)\s*;/);
-    assert.match(rule('.h-1'), /height:\s*var\(--space-1\)\s*;/);
-    assert.match(rule('.size-4'), /width:\s*var\(--space-4\)\s*;\s*height:\s*var\(--space-4\)\s*;/);
-    assert.match(rule('.grow'), /flex-grow:\s*1\s*;/);
-    assert.match(rule(String.raw`.data-\[disabled\]\:opacity-45`), /opacity:\s*45%\s*;/);
-    assert.match(rule(String.raw`.data-\[disabled\]\:pointer-events-none`), /pointer-events:\s*none\s*;/);
-    assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
-    assert.match(rule('.bg-fg-brand-default'), /background-color:\s*var\(--color-fg-brand-default[,)]/);
-    assert.match(rule('.bg-fg-default'), /background-color:\s*var\(--color-fg-default[,)]/);
-    // Material shadows stay token references instead of copied literal values.
-    for (const token of ['shadow-well', 'shadow-elev-1']) {
-      assert.match(rule(`.shadow-\\[var\\(--${token}\\)\\]`), new RegExp(`--tw-shadow:\\s*var\\(--${token}\\)\\s*;`));
+test('UI VisuallyHidden renders non-visual content without shipped CSS or Tailwind', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { VisuallyHidden } = exported;
+  const note = renderToString(createElement(VisuallyHidden, { id: 'hint', className: 'extra' }, 'Screen reader note'));
+  // Radix applies the hiding geometry inline; the class is the stable public marker only.
+  assert.match(note, /<span id="hint" class="eg-visually-hidden extra" style="[^"]*position:absolute/);
+  assert.match(note, /clip:rect\(0, 0, 0, 0\)/);
+  assert.match(note, />Screen reader note<\/span>/);
+  const slotted = renderToString(
+    createElement(VisuallyHidden, { asChild: true }, createElement('h2', { id: 'slotted' }, 'Hidden heading'))
+  );
+  assert.match(slotted, /^<h2 id="slotted" class="eg-visually-hidden" style="[^"]*position:absolute/);
+  assert.match(slotted, /clip:rect\(0, 0, 0, 0\)[^"]*">Hidden heading<\/h2>$/);
+  assert.doesNotMatch(slotted, /<span/, 'asChild must not keep a wrapping span');
+  const styles = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  assert.ok(
+    !styles.includes('.eg-visually-hidden'),
+    'Hiding geometry is inline Radix behavior; shipped CSS must stay untouched'
+  );
+});
+
+test('UI ships Checkbox static state, focus, geometry and decorative glyph utilities', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const rule = (selector) => cssBlock(css, new RegExp(`${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[^{}]*\\{`));
+  assert.match(rule(String.raw`.size-4\.5`), /width:\s*calc\(var\(--space-1\)\s*\*\s*4\.5\)/);
+  assert.match(rule('.size-3'), /width:\s*var\(--space-3\)/);
+  assert.match(rule('.inline-grid'), /display:\s*inline-grid/);
+  assert.match(rule('.box-border'), /box-sizing:\s*border-box/);
+  assert.match(rule('.border-solid'), /border-style:\s*solid/);
+  assert.match(rule('.p-0'), /padding:\s*(?:0|0px|var\(--space-0\))/);
+  for (const state of ['checked', 'indeterminate']) {
+    const prefix = `.data-\\[state\\=${state}\\]\\:`;
+    const fill = rule(`${prefix}bg-\\[image\\:var\\(--gradient-btn-primary\\)\\]`);
+    assert.ok(fill.includes(`data-state=\"${state}\"`) || fill.includes(`data-state=${state}`));
+    assert.match(fill, /background-image:\s*var\(--gradient-btn-primary\)/);
+    assert.match(
+      rule(`${prefix}shadow-\\[var\\(--shadow-btn-primary\\)\\]`),
+      /--tw-shadow:\s*var\(--shadow-btn-primary\)/
+    );
+    const focus = rule(`${prefix}focus-visible\\:shadow-\\[var\\(--shadow-focus\\)\\]`);
+    assert.match(focus, /:focus-visible/);
+    assert.match(focus, /--tw-shadow:\s*var\(--shadow-focus\)/);
+  }
+  assert.match(rule(String.raw`.disabled\:opacity-45`), /:disabled[\s\S]*opacity:\s*(?:45%|0?\.45)/);
+  assert.match(
+    rule(String.raw`.aria-invalid\:data-\[state\=unchecked\]\:border-status-danger`),
+    /border-color:\s*var\(--color-status-danger/
+  );
+  for (const [state, child] of [
+    ['checked', 'last'],
+    ['indeterminate', 'first']
+  ]) {
+    const glyph = rule(`.data-\\[state\\=${state}\\]\\:\\[\\&\\>svg\\:${child}-child\\]\\:hidden`);
+    assert.match(glyph, new RegExp(`svg:${child}-child`));
+    assert.match(glyph, /display:\s*none/);
+  }
+  assert.doesNotMatch(css, /\.eg-checkbox\s*[,{]/, 'Checkbox has no stylesheet or public part selectors');
+});
+
+test('UI Checkbox SSR retains binary/mixed semantics, private recipes and form integration', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  for (const [checked, aria, state] of [
+    [false, 'false', 'unchecked'],
+    [true, 'true', 'checked'],
+    ['indeterminate', 'mixed', 'indeterminate']
+  ]) {
+    const html = renderToString(
+      createElement(
+        'form',
+        null,
+        createElement(exported.Checkbox, {
+          'aria-label': 'Select rows',
+          checked,
+          name: 'rows',
+          value: 'selected',
+          required: true
+        })
+      )
+    );
+    for (const text of [
+      '<button',
+      'eg-checkbox',
+      'role="checkbox"',
+      `aria-checked="${aria}"`,
+      `data-state="${state}"`,
+      'type="checkbox"',
+      'name="rows"',
+      'value="selected"',
+      'required=""'
+    ]) {
+      assert.ok(html.includes(text), `Checkbox SSR ${state} must render ${text}`);
     }
-    assert.match(
-      rule(String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`),
-      /--tw-shadow:\s*var\(--shadow-focus\)\s*;/
-    );
-    assert.match(rule('.transition-shadow'), /transition-property:\s*box-shadow\s*;/);
-    assert.match(
-      rule(String.raw`.duration-\[var\(--duration-fast\)\]`),
-      /transition-duration:\s*var\(--duration-fast\)\s*;/
-    );
-    assert.match(rule(String.raw`.ease-\[var\(--ease-out\)\]`), /transition-timing-function:\s*var\(--ease-out\)\s*;/);
-    assert.match(rule('.cursor-grab'), /cursor:\s*grab\s*;/);
-    assert.match(rule(String.raw`.active\:cursor-grabbing`), /cursor:\s*grabbing\s*;/);
-    // The 35.2px touch target applies only on coarse pointers (D9); reduced motion drops the transition.
-    assert.match(
-      utilities,
-      /@media \(pointer: coarse\)\s*\{\s*\.pointer-coarse\\:h-11\s*\{\s*height:\s*calc\(var\(--space-1\)\s*\*\s*11\)\s*;/
-    );
-    assert.match(
-      utilities,
-      /@media \(prefers-reduced-motion: reduce\)\s*\{[^@]*\.motion-reduce\\:transition-none\s*\{\s*transition-property:\s*none\s*;/
-    );
-    assert.match(css, /@property --tw-shadow\s*\{[^}]*initial-value:\s*0 0 #0000/);
-    // Scan the real static CVA calls as well: every production part class must ship, not just a sample.
-    const source = ts.createSourceFile(
-      'types.ts',
-      readFileSync(resolve(root, 'packages/ui/src/atoms/slider/types.ts'), 'utf8'),
-      ts.ScriptTarget.Latest,
-      true
-    );
-    let parts = 0;
-    const visit = (node) => {
-      if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
-        const base = node.arguments[0];
-        assert.ok(base && ts.isStringLiteral(base), 'Slider CVA bases must be static strings');
-        parts++;
-        for (const name of base.text.split(/\s+/).filter((name) => name !== 'eg-slider')) {
+    if (checked) {
+      assert.match(html, /aria-hidden="true"/);
+      assert.equal((html.match(/<svg /g) ?? []).length, 2, 'Radix state utilities select the visible decorative glyph');
+    } else {
+      assert.doesNotMatch(html, /<svg /);
+    }
+  }
+  for (const name of ['checkboxVariants', 'checkboxIndicatorVariants', 'checkboxIconVariants', 'useCheckbox']) {
+    assert.equal(exported[name], undefined, `${name} stays private`);
+  }
+});
+
+for (const subpath of ['./tokens.css', './theme.css', './native.css']) {
+  test(`Tokens ${subpath} export resolves to a nonempty file`, () => {
+    artifact('tokens', tokens.exports[subpath]);
+  });
+}
+
+test('Tokens ships a compiled native artifact under dist without @theme', () => {
+  assert.equal(tokens.exports['./tokens.css'], './dist/tokens.css', 'native import must be the compiled artifact');
+  const entry = artifact('tokens', tokens.exports['./tokens.css']);
+  assert.doesNotMatch(readFileSync(entry, 'utf8'), /@theme/, 'compiled artifact must not keep the @theme at-rule');
+});
+
+test('Tokens retires the JSON export and its source file', () => {
+  assert.equal(tokens.exports['./tokens.json'], undefined, 'tokens.json export must be retired');
+  assert.equal(
+    existsSync(resolve(root, 'packages/tokens/src/tokens.json')),
+    false,
+    'tokens.json source must be removed, not just unexported'
+  );
+});
+
+test('UI ships the Slider well, range and raised thumb utilities without a Slider-specific stylesheet rule', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}(?::[a-z-]+|\\[data-disabled\\])?\\s*\\{`));
+  };
+  assert.match(rule('.touch-none'), /touch-action:\s*none\s*;/);
+  assert.match(rule('.select-none'), /user-select:\s*none\s*;/);
+  assert.match(rule('.h-6'), /height:\s*var\(--space-6\)\s*;/);
+  assert.match(rule('.h-1'), /height:\s*var\(--space-1\)\s*;/);
+  assert.match(rule('.size-4'), /width:\s*var\(--space-4\)\s*;\s*height:\s*var\(--space-4\)\s*;/);
+  assert.match(rule('.grow'), /flex-grow:\s*1\s*;/);
+  assert.match(rule(String.raw`.data-\[disabled\]\:opacity-45`), /opacity:\s*45%\s*;/);
+  assert.match(rule(String.raw`.data-\[disabled\]\:pointer-events-none`), /pointer-events:\s*none\s*;/);
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule('.bg-fg-brand-default'), /background-color:\s*var\(--color-fg-brand-default[,)]/);
+  assert.match(rule('.bg-fg-default'), /background-color:\s*var\(--color-fg-default[,)]/);
+  // Material shadows stay token references instead of copied literal values.
+  for (const token of ['shadow-well', 'shadow-elev-1']) {
+    assert.match(rule(`.shadow-\\[var\\(--${token}\\)\\]`), new RegExp(`--tw-shadow:\\s*var\\(--${token}\\)\\s*;`));
+  }
+  assert.match(
+    rule(String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`),
+    /--tw-shadow:\s*var\(--shadow-focus\)\s*;/
+  );
+  assert.match(rule('.transition-shadow'), /transition-property:\s*box-shadow\s*;/);
+  assert.match(
+    rule(String.raw`.duration-\[var\(--duration-fast\)\]`),
+    /transition-duration:\s*var\(--duration-fast\)\s*;/
+  );
+  assert.match(rule(String.raw`.ease-\[var\(--ease-out\)\]`), /transition-timing-function:\s*var\(--ease-out\)\s*;/);
+  assert.match(rule('.cursor-grab'), /cursor:\s*grab\s*;/);
+  assert.match(rule(String.raw`.active\:cursor-grabbing`), /cursor:\s*grabbing\s*;/);
+  // The 35.2px touch target applies only on coarse pointers (D9); reduced motion drops the transition.
+  assert.match(
+    utilities,
+    /@media \(pointer: coarse\)\s*\{\s*\.pointer-coarse\\:h-11\s*\{\s*height:\s*calc\(var\(--space-1\)\s*\*\s*11\)\s*;/
+  );
+  assert.match(
+    utilities,
+    /@media \(prefers-reduced-motion: reduce\)\s*\{[^@]*\.motion-reduce\\:transition-none\s*\{\s*transition-property:\s*none\s*;/
+  );
+  assert.match(css, /@property --tw-shadow\s*\{[^}]*initial-value:\s*0 0 #0000/);
+  // Scan the real static CVA calls as well: every production part class must ship, not just a sample.
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/atoms/slider/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  let parts = 0;
+  const visit = (node) => {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      const base = node.arguments[0];
+      assert.ok(base && ts.isStringLiteral(base), 'Slider CVA bases must be static strings');
+      parts++;
+      for (const name of base.text.split(/\s+/).filter((name) => name !== 'eg-slider')) {
+        const selector = `.${name.replace(/([^a-zA-Z0-9_-])/g, '\\$1')}`;
+        assert.ok(utilities.includes(selector), `Missing Slider CVA utility ${name}`);
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  assert.equal(parts, 4, 'Root, track, range and thumb must all be scanned');
+  // D11 no stylesheet: the marker carries no rule of its own.
+  assert.doesNotMatch(css, /\.eg-slider[^{]*\{/, 'Slider has no stylesheet: its marker carries no rule');
+});
+
+test('Popover ships every static CVA utility, Radix bounds and Surface composition without a stylesheet', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/popover/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  let parts = 0;
+  const visit = (node) => {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      const base = node.arguments[0];
+      assert.ok(ts.isArrayLiteralExpression(base), 'Popover CVA bases are static string arrays');
+      parts++;
+      for (const item of base.elements) {
+        assert.ok(ts.isStringLiteral(item));
+        for (const name of item.text.split(/\s+/).filter((name) => name !== 'eg-popover')) {
           const selector = `.${name.replace(/([^a-zA-Z0-9_-])/g, '\\$1')}`;
-          assert.ok(utilities.includes(selector), `Missing Slider CVA utility ${name}`);
+          assert.ok(utilities.includes(selector), `Missing Popover CVA utility ${name}`);
         }
       }
-      ts.forEachChild(node, visit);
-    };
-    visit(source);
-    assert.equal(parts, 4, 'Root, track, range and thumb must all be scanned');
-    // D11 no stylesheet: the marker carries no rule of its own.
-    assert.doesNotMatch(css, /\.eg-slider[^{]*\{/, 'Slider has no stylesheet: its marker carries no rule');
-  });
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  assert.equal(parts, 2);
+  assert.match(utilities, /width:\s*calc\(var\(--space-24\)\s*\*\s*4\)/);
+  assert.match(utilities, /max-width:\s*var\(--radix-popover-content-available-width\)/);
+  assert.match(utilities, /max-height:\s*var\(--radix-popover-content-available-height\)/);
+  assert.match(utilities, /outline-color:\s*var\(--color-focus-ring[,)]/);
+  assert.doesNotMatch(css, /\.eg-popover\s*[,{]/);
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  for (const name of [
+    'usePopover',
+    'usePopoverContent',
+    'PopoverModalityContext',
+    'popoverButtonVariants',
+    'popoverContentVariants',
+    'UserMenu'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} is not public`);
+  }
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(
+    createElement(exported.Popover, {
+      children: [
+        createElement(exported.PopoverTrigger, { key: 'trigger', children: 'Display settings' }),
+        createElement(exported.PopoverContent, { key: 'content', label: 'Display settings', children: 'Details' })
+      ]
+    })
+  );
+  assert.match(html, /<button[^>]*type="button"/);
+  assert.match(html, /aria-haspopup="dialog"/);
+  assert.match(html, /aria-expanded="false"/);
+  assert.match(html, />Display settings<\/button>/);
+  assert.doesNotMatch(html, /role="dialog"|Details|eg-popover/);
+});
 
-  test('Popover ships every static CVA utility, Radix bounds and Surface composition without a stylesheet', async () => {
-    const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
-    const utilities = cssBlock(css, /@layer utilities\s*\{/);
-    const source = ts.createSourceFile(
-      'types.ts',
-      readFileSync(resolve(root, 'packages/ui/src/molecules/popover/types.ts'), 'utf8'),
-      ts.ScriptTarget.Latest,
-      true
+test('Carousel ships static layout, snap, drag, focus and token geometry without a stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  for (const selector of [
+    '.basis-full',
+    '.snap-x',
+    '.snap-mandatory',
+    '.snap-center',
+    '.scroll-auto',
+    String.raw`.group-data-\[state\=dragging\]\:snap-none`,
+    String.raw`.group-data-\[state\=dragging\]\:cursor-grabbing`,
+    String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`,
+    String.raw`.max-w-\[calc\(var\(--space-20\)\*4\)\]`
+  ]) {
+    assert.ok(css.includes(selector), `Missing Carousel utility ${selector}`);
+  }
+  assert.match(cssBlock(css, /\.gap-7\s*\{/), /gap:\s*var\(--space-7[,)]/);
+  assert.doesNotMatch(css, /\.eg-carousel[^{]*\{/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/carousel/carousel.css')), false);
+});
+
+test('Carousel public exports preserve deterministic named groups and composed atoms in SSR', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(
+    createElement(exported.Carousel, {
+      label: 'Highlights',
+      items: [
+        { value: 'alpha', label: 'Alpha', children: 'First information' },
+        { value: 'beta', label: 'Beta', children: 'Second information' }
+      ]
+    })
+  );
+  assert.match(html, /eg-carousel/);
+  assert.match(html, /aria-roledescription="carousel"/);
+  assert.match(html, /aria-label="1 of 2: Alpha"/);
+  assert.match(html, /aria-label="2 of 2: Beta"/);
+  assert.match(html, /eg-icon-btn/);
+  assert.match(html, /eg-progress/);
+  assert.match(html.replace(/<!-- -->/g, '').replace(/<[^>]*>/g, ''), /01 \/ 02/);
+  assert.equal((html.match(/tabindex="0"/g) ?? []).length, 1);
+  for (const name of ['useCarousel', 'carouselVariants', 'defaultCarouselMessages']) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} remains internal`);
+  }
+});
+
+test('FieldMessage public build preserves independent tone, glyph and announcement semantics', async () => {
+  const { FieldMessage, Field, Input } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(renderToString(createElement(FieldMessage, { children: '', tone: 'error', role: 'alert' })), '');
+  for (const [tone, color, hasIcon] of [
+    ['description', 'text-fg-muted', false],
+    ['info', 'text-status-info', true],
+    ['warning', 'text-status-warning', true],
+    ['success', 'text-status-success', true],
+    ['error', 'text-status-danger', true]
+  ]) {
+    const dom = new JSDOM(
+      renderToString(createElement(FieldMessage, { children: 'Readable guidance', tone, id: 'guidance' }))
     );
-    let parts = 0;
-    const visit = (node) => {
-      if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
-        const base = node.arguments[0];
-        assert.ok(ts.isArrayLiteralExpression(base), 'Popover CVA bases are static string arrays');
-        parts++;
-        for (const item of base.elements) {
-          assert.ok(ts.isStringLiteral(item));
-          for (const name of item.text.split(/\s+/).filter((name) => name !== 'eg-popover')) {
-            const selector = `.${name.replace(/([^a-zA-Z0-9_-])/g, '\\$1')}`;
-            assert.ok(utilities.includes(selector), `Missing Popover CVA utility ${name}`);
-          }
-        }
+    try {
+      const root = dom.window.document.getElementById('guidance');
+      assert.equal(root.tagName, 'P');
+      assert.ok(root.classList.contains('eg-field-message') && root.classList.contains(color));
+      assert.equal(root.textContent, 'Readable guidance');
+      assert.equal(root.querySelector('svg') !== null, hasIcon);
+      if (hasIcon) {
+        assert.equal(root.querySelector('svg').getAttribute('aria-hidden'), 'true');
       }
-      ts.forEachChild(node, visit);
-    };
-    visit(source);
-    assert.equal(parts, 2);
-    assert.match(utilities, /width:\s*calc\(var\(--space-24\)\s*\*\s*4\)/);
-    assert.match(utilities, /max-width:\s*var\(--radix-popover-content-available-width\)/);
-    assert.match(utilities, /max-height:\s*var\(--radix-popover-content-available-height\)/);
-    assert.match(utilities, /outline-color:\s*var\(--color-focus-ring[,)]/);
-    assert.doesNotMatch(css, /\.eg-popover\s*[,{]/);
-    const exported = await import(artifact('ui', ui.exports['.'].import));
-    for (const name of [
-      'usePopover',
-      'usePopoverContent',
-      'PopoverModalityContext',
-      'popoverButtonVariants',
-      'popoverContentVariants',
-      'UserMenu'
-    ]) {
-      assert.equal(Object.hasOwn(exported, name), false, `${name} is not public`);
+      assert.equal(root.getAttribute('role'), null);
+      assert.equal(root.getAttribute('aria-live'), null);
+    } finally {
+      dom.window.close();
     }
-    const { createElement } = await import('react');
-    const { renderToString } = await import('react-dom/server');
-    const html = renderToString(
-      createElement(exported.Popover, {
-        children: [
-          createElement(exported.PopoverTrigger, { key: 'trigger', children: 'Display settings' }),
-          createElement(exported.PopoverContent, { key: 'content', label: 'Display settings', children: 'Details' })
-        ]
-      })
+  }
+  for (const hintTone of ['description', 'info', 'warning', 'success']) {
+    const dom = new JSDOM(
+      renderToString(
+        createElement(Field, { label: 'Name', hint: 'Helpful guidance', hintTone, children: createElement(Input) })
+      )
     );
-    assert.match(html, /<button[^>]*type="button"/);
-    assert.match(html, /aria-haspopup="dialog"/);
-    assert.match(html, /aria-expanded="false"/);
-    assert.match(html, />Display settings<\/button>/);
-    assert.doesNotMatch(html, /role="dialog"|Details|eg-popover/);
-  });
-
-  test('Carousel ships static layout, snap, drag, focus and token geometry without a stylesheet', () => {
-    const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
-    for (const selector of [
-      '.basis-full',
-      '.snap-x',
-      '.snap-mandatory',
-      '.snap-center',
-      '.scroll-auto',
-      String.raw`.group-data-\[state\=dragging\]\:snap-none`,
-      String.raw`.group-data-\[state\=dragging\]\:cursor-grabbing`,
-      String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`,
-      String.raw`.max-w-\[calc\(var\(--space-20\)\*4\)\]`
-    ]) {
-      assert.ok(css.includes(selector), `Missing Carousel utility ${selector}`);
+    try {
+      const control = dom.window.document.querySelector('input');
+      const message = dom.window.document.getElementById(control.getAttribute('aria-describedby'));
+      assert.equal(message.textContent, 'Helpful guidance');
+      assert.equal(control.getAttribute('aria-invalid'), null);
+      assert.equal(dom.window.document.querySelector('.eg-field').getAttribute('data-state'), null);
+    } finally {
+      dom.window.close();
     }
-    assert.match(cssBlock(css, /\.gap-7\s*\{/), /gap:\s*var\(--space-7[,)]/);
-    assert.doesNotMatch(css, /\.eg-carousel[^{]*\{/);
-    assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/carousel/carousel.css')), false);
-  });
+  }
+});
 
-  test('Carousel public exports preserve deterministic named groups and composed atoms in SSR', async () => {
-    const exported = await import(artifact('ui', ui.exports['.'].import));
-    const { createElement } = await import('react');
-    const { renderToString } = await import('react-dom/server');
-    const html = renderToString(
-      createElement(exported.Carousel, {
-        label: 'Highlights',
-        items: [
-          { value: 'alpha', label: 'Alpha', children: 'First information' },
-          { value: 'beta', label: 'Beta', children: 'Second information' }
-        ]
-      })
+test('Indicator ships physical corners, compact Material and no utility-layer marker engine', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    '.-top-1',
+    '.-right-1',
+    '.-bottom-1',
+    '.-left-1',
+    '.size-2',
+    String.raw`.size-2\.5`,
+    String.raw`.min-w-4\.5`,
+    String.raw`.min-h-5\.5`,
+    '.pointer-events-none',
+    '.select-none',
+    '.outline-bg-surface',
+    String.raw`.outline-\[length\:var\(--focus-width\)\]`,
+    String.raw`.shadow-\[var\(--shadow-edge\)\,var\(--shadow-elev-1\)\]`
+  ]) {
+    assert.ok(utilities.includes(selector), 'Missing Indicator utility ' + selector);
+  }
+  for (const token of [
+    '--color-status-info',
+    '--color-status-success',
+    '--color-status-warning',
+    '--color-status-danger',
+    '--gradient-sheen',
+    '--focus-width'
+  ]) {
+    assert.ok(utilities.includes('var(' + token), 'Missing Indicator token reference ' + token);
+  }
+  assert.doesNotMatch(utilities, /\.eg-indicator[^{}]*\{/);
+  assert.equal(existsSync(resolve(root, 'packages/ui/src/atoms/indicator/indicator.css')), false);
+});
+test('Indicator package preserves a passive wrapper and suppresses only invalid-count markers in SSR', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.Indicator, 'function');
+  for (const name of [
+    'useIndicator',
+    'indicatorRootVariants',
+    'indicatorPositionVariants',
+    'indicatorMarkerGeometryVariants',
+    'indicatorGlyphVariants',
+    'indicatorMarkerPaintVariants'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, name + ' is private');
+  }
+  for (const [count, expected] of [
+    [100, '99+'],
+    [0, null],
+    [NaN, null]
+  ]) {
+    const dom = new JSDOM(
+      renderToString(
+        createElement(exported.Indicator, {
+          variant: 'count',
+          count,
+          position: 'bottom-left',
+          children: createElement('button', { type: 'button', children: 'Inbox, actual total supplied by consumer' })
+        })
+      )
     );
-    assert.match(html, /eg-carousel/);
-    assert.match(html, /aria-roledescription="carousel"/);
-    assert.match(html, /aria-label="1 of 2: Alpha"/);
-    assert.match(html, /aria-label="2 of 2: Beta"/);
-    assert.match(html, /eg-icon-btn/);
-    assert.match(html, /eg-progress/);
-    assert.match(html.replace(/<!-- -->/g, '').replace(/<[^>]*>/g, ''), /01 \/ 02/);
-    assert.equal((html.match(/tabindex="0"/g) ?? []).length, 1);
-    for (const name of ['useCarousel', 'carouselVariants', 'defaultCarouselMessages']) {
-      assert.equal(Object.hasOwn(exported, name), false, `${name} remains internal`);
-    }
-  });
-
-  test('FieldMessage public build preserves independent tone, glyph and announcement semantics', async () => {
-    const { FieldMessage, Field, Input } = await import(artifact('ui', ui.exports['.'].import));
-    const { createElement } = await import('react');
-    const { renderToString } = await import('react-dom/server');
-    const { JSDOM } = await import('jsdom');
-    assert.equal(renderToString(createElement(FieldMessage, { children: '', tone: 'error', role: 'alert' })), '');
-    for (const [tone, color, hasIcon] of [
-      ['description', 'text-fg-muted', false],
-      ['info', 'text-status-info', true],
-      ['warning', 'text-status-warning', true],
-      ['success', 'text-status-success', true],
-      ['error', 'text-status-danger', true]
-    ]) {
-      const dom = new JSDOM(
-        renderToString(createElement(FieldMessage, { children: 'Readable guidance', tone, id: 'guidance' }))
-      );
-      try {
-        const root = dom.window.document.getElementById('guidance');
-        assert.equal(root.tagName, 'P');
-        assert.ok(root.classList.contains('eg-field-message') && root.classList.contains(color));
-        assert.equal(root.textContent, 'Readable guidance');
-        assert.equal(root.querySelector('svg') !== null, hasIcon);
-        if (hasIcon) {
-          assert.equal(root.querySelector('svg').getAttribute('aria-hidden'), 'true');
-        }
-        assert.equal(root.getAttribute('role'), null);
-        assert.equal(root.getAttribute('aria-live'), null);
-      } finally {
-        dom.window.close();
+    try {
+      const wrapper = dom.window.document.querySelector('.eg-indicator');
+      assert.ok(wrapper);
+      assert.equal(wrapper.firstElementChild.tagName, 'BUTTON');
+      for (const attr of ['role', 'tabindex', 'aria-label', 'aria-live']) {
+        assert.equal(wrapper.hasAttribute(attr), false);
       }
-    }
-    for (const hintTone of ['description', 'info', 'warning', 'success']) {
-      const dom = new JSDOM(
-        renderToString(
-          createElement(Field, { label: 'Name', hint: 'Helpful guidance', hintTone, children: createElement(Input) })
-        )
-      );
-      try {
-        const control = dom.window.document.querySelector('input');
-        const message = dom.window.document.getElementById(control.getAttribute('aria-describedby'));
-        assert.equal(message.textContent, 'Helpful guidance');
-        assert.equal(control.getAttribute('aria-invalid'), null);
-        assert.equal(dom.window.document.querySelector('.eg-field').getAttribute('data-state'), null);
-      } finally {
-        dom.window.close();
+      const marker = wrapper.querySelector(':scope > span');
+      if (expected === null) {
+        assert.equal(marker, null);
+      } else {
+        assert.equal(marker.textContent, expected);
+        assert.equal(marker.getAttribute('aria-hidden'), 'true');
+        assert.ok(marker.classList.contains('-bottom-1') && marker.classList.contains('-left-1'));
       }
+    } finally {
+      dom.window.close();
     }
-  });
-
-  test('Indicator ships physical corners, compact Material and no utility-layer marker engine', () => {
-    const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
-    const utilities = cssBlock(css, /@layer utilities\s*\{/);
-    for (const selector of [
-      '.-top-1',
-      '.-right-1',
-      '.-bottom-1',
-      '.-left-1',
-      '.size-2',
-      String.raw`.size-2\.5`,
-      String.raw`.min-w-4\.5`,
-      String.raw`.min-h-5\.5`,
-      '.pointer-events-none',
-      '.select-none',
-      '.outline-bg-surface',
-      String.raw`.outline-\[length\:var\(--focus-width\)\]`,
-      String.raw`.shadow-\[var\(--shadow-edge\)\,var\(--shadow-elev-1\)\]`
-    ]) {
-      assert.ok(utilities.includes(selector), 'Missing Indicator utility ' + selector);
-    }
-    for (const token of [
-      '--color-status-info',
-      '--color-status-success',
-      '--color-status-warning',
-      '--color-status-danger',
-      '--gradient-sheen',
-      '--focus-width'
-    ]) {
-      assert.ok(utilities.includes('var(' + token), 'Missing Indicator token reference ' + token);
-    }
-    assert.doesNotMatch(utilities, /\.eg-indicator[^{}]*\{/);
-    assert.equal(existsSync(resolve(root, 'packages/ui/src/atoms/indicator/indicator.css')), false);
-  });
-  test('Indicator package preserves a passive wrapper and suppresses only invalid-count markers in SSR', async () => {
-    const exported = await import(artifact('ui', ui.exports['.'].import));
-    const { createElement } = await import('react');
-    const { renderToString } = await import('react-dom/server');
-    const { JSDOM } = await import('jsdom');
-    assert.equal(typeof exported.Indicator, 'function');
-    for (const name of [
-      'useIndicator',
-      'indicatorRootVariants',
-      'indicatorPositionVariants',
-      'indicatorMarkerGeometryVariants',
-      'indicatorGlyphVariants',
-      'indicatorMarkerPaintVariants'
-    ]) {
-      assert.equal(Object.hasOwn(exported, name), false, name + ' is private');
-    }
-    for (const [count, expected] of [
-      [100, '99+'],
-      [0, null],
-      [NaN, null]
-    ]) {
-      const dom = new JSDOM(
-        renderToString(
-          createElement(exported.Indicator, {
-            variant: 'count',
-            count,
-            position: 'bottom-left',
-            children: createElement('button', { type: 'button', children: 'Inbox, actual total supplied by consumer' })
-          })
-        )
-      );
-      try {
-        const wrapper = dom.window.document.querySelector('.eg-indicator');
-        assert.ok(wrapper);
-        assert.equal(wrapper.firstElementChild.tagName, 'BUTTON');
-        for (const attr of ['role', 'tabindex', 'aria-label', 'aria-live']) {
-          assert.equal(wrapper.hasAttribute(attr), false);
-        }
-        const marker = wrapper.querySelector(':scope > span');
-        if (expected === null) {
-          assert.equal(marker, null);
-        } else {
-          assert.equal(marker.textContent, expected);
-          assert.equal(marker.getAttribute('aria-hidden'), 'true');
-          assert.ok(marker.classList.contains('-bottom-1') && marker.classList.contains('-left-1'));
-        }
-      } finally {
-        dom.window.close();
-      }
-    }
-  });
+  }
 });
 
 for (const subpath of ['./tokens.css', './theme.css', './native.css']) {
