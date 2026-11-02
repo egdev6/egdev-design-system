@@ -1,0 +1,79 @@
+{
+  "results": [
+    {
+      "story": "default",
+      "data": [
+        {
+          "width": 356,
+          "scroll": 356,
+          "ratio": 0.6666666666666666,
+          "captionBelow": true,
+          "captionPosition": "relative",
+          "opacity": "1",
+          "transform": "none",
+          "imageLoaded": true
+        }
+      ]
+    },
+    {
+      "story": "without-badge",
+      "data": [
+        {
+          "width": 356,
+          "scroll": 356,
+          "ratio": 0.6666666666666666,
+          "captionBelow": true,
+          "captionPosition": "relative",
+          "opacity": "1",
+          "transform": "none",
+          "imageLoaded": true
+        }
+      ]
+    },
+    {
+      "story": "long-label",
+      "data": [
+        {
+          "width": 152,
+          "scroll": 152,
+          "ratio": 0.6666666666666666,
+          "captionBelow": true,
+          "captionPosition": "relative",
+          "opacity": "1",
+          "transform": "none",
+          "imageLoaded": true
+        }
+      ]
+    },
+    {
+      "story": "widths",
+      "data": [
+        {
+          "width": 152,
+          "scroll": 152,
+          "ratio": 0.6666666666666666,
+          "captionBelow": true,
+          "captionPosition": "relative",
+          "opacity": "1",
+          "transform": "none",
+          "imageLoaded": true
+        },
+        {
+          "width": 254,
+          "scroll": 254,
+          "ratio": 0.6666666666666666,
+          "captionBelow": true,
+          "captionPosition": "relative",
+          "opacity": "1",
+          "transform": "none",
+          "imageLoaded": true
+        }
+      ]
+    }
+  ],
+  "hostVariableProof": {
+    "opacity": "1",
+    "transform": "none",
+    "transformStyle": "flat"
+  }
+}
