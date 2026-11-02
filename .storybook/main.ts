@@ -30,6 +30,20 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   // TerminalCard redeclares children/className with own annotations; the Omit'd native
   // intersection only re-admits these remaining documented native div rows.
   terminalCard: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'onClick'],
+  // ArticleFeature redeclares children/className on both union branches; the Omit'd native
+  // anchor intersection only re-admits these documented rows. aria-label/aria-labelledby stay
+  // documented because the whole-card anchor name is deliberately consumer-overridable.
+  articleFeature: [
+    'id',
+    'dir',
+    'lang',
+    'target',
+    'rel',
+    'aria-describedby',
+    'aria-label',
+    'aria-labelledby',
+    'onClick'
+  ],
   projectCard: ['id', 'dir', 'lang', 'aria-describedby', 'style', 'onClick'],
   timeline: ['id', 'title', 'aria-describedby', 'aria-busy', 'className', 'style', 'onClick'],
   table: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick'],

@@ -11,7 +11,7 @@ export type ArticleFeatureLevel = 2 | 3 | 4 | 5 | 6;
  */
 export type ArticleFeatureLinkProps = Omit<
   ComponentPropsWithoutRef<'a'>,
-  'title' | 'children' | 'role' | 'tabIndex' | 'style'
+  'title' | 'children' | 'className' | 'role' | 'tabIndex' | 'style'
 > & {
   /**
    * Destination of the card's single whole-card link.
@@ -74,7 +74,7 @@ export type ArticleFeatureLinkProps = Omit<
  */
 export type ArticleFeatureSlottedProps = Omit<
   HTMLAttributes<HTMLAnchorElement>,
-  'children' | 'title' | 'role' | 'tabIndex' | 'style'
+  'children' | 'title' | 'className' | 'role' | 'tabIndex' | 'style'
 > & {
   /**
    * Merge the card onto one consumer anchor through Radix Slot; the child keeps anchor semantics.
@@ -131,7 +131,9 @@ export type ArticleFeatureSlottedProps = Omit<
  * a reserved 16:8 cover, an optional context row, a generated heading and a paint-only action
  * label. No ref API; the card is the single tab stop.
  */
-export type ArticleFeatureProps = ArticleFeatureLinkProps | ArticleFeatureSlottedProps;
+// Slotted branch first keeps docgen's union merge on the required-href native branch, mirroring
+// the Chip union arrangement; branch order does not change assignability.
+export type ArticleFeatureProps = ArticleFeatureSlottedProps | ArticleFeatureLinkProps;
 
 /** Cover region props: one generative plate or exactly one `PhotoFrame ratio="auto"`. */
 export type ArticleFeatureCoverProps = {
