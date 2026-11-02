@@ -167,7 +167,7 @@ export type ArticleFeatureCoverProps = {
 
 /** Root anchor: Surface raised frame plus the approved ListItem whole-card anchor hover recipe. */
 export const articleFeatureVariants = cva([
-  'eg-article-feature flex flex-col gap-4 min-w-0 no-underline text-fg-default',
+  'eg-article-feature flex flex-col gap-4 min-w-0 overflow-visible backdrop-filter-none no-underline text-fg-default',
   'cursor-pointer hover:border-border-brand hover:[background:var(--gradient-sheen),var(--color-surface-2)]',
   'focus-visible:outline-none focus-visible:shadow-focus',
   'transition-[color,background-color,border-color] duration-(--duration-fast) ease-(--ease-out)',
@@ -175,10 +175,12 @@ export const articleFeatureVariants = cva([
 ]);
 
 /** Cover region: relative positioning for the overlay badge around the reserved proportion. */
-export const articleFeatureCoverVariants = cva('eg-article-feature__cover relative min-w-0');
+export const articleFeatureCoverVariants = cva(
+  'eg-article-feature__cover relative min-w-0 aspect-auto overflow-visible border-b-0 bg-none'
+);
 
 /** Generative plate layout inside the reserved region; the well recipe supplies the recessed paint. */
-export const articleFeaturePlateVariants = cva('flex items-end min-w-0');
+export const articleFeaturePlateVariants = cva('flex h-full items-end min-w-0 overflow-hidden');
 
 /** Oversized decorative word; token display step at the ghost alpha instead of the web's clamp literal. */
 export const articleFeatureWordVariants = cva(
@@ -190,7 +192,7 @@ export const articleFeatureBadgeVariants = cva('absolute top-4 left-4');
 
 /** Internal context row: uppercase display metadata in one line that wraps, never truncates. */
 export const articleFeatureMetaVariants = cva(
-  'eg-article-feature__meta m-0 flex items-center gap-2 min-w-0 font-display text-meta uppercase text-fg-secondary'
+  'eg-article-feature__meta m-0 flex items-center gap-2 min-w-0 font-display text-meta normal-nums uppercase text-fg-secondary'
 );
 
 /** Category ink of the context row. */

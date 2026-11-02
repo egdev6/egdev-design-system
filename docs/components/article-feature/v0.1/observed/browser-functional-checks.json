@@ -1,0 +1,261 @@
+{
+  "checks": [
+    {
+      "check": "default narrow semantics/overflow",
+      "result": "PASS"
+    },
+    {
+      "check": "generative-cover narrow semantics/overflow",
+      "result": "PASS"
+    },
+    {
+      "check": "media-cover narrow semantics/overflow",
+      "result": "PASS"
+    },
+    {
+      "check": "long-content narrow semantics/overflow",
+      "result": "PASS"
+    },
+    {
+      "check": "context-row narrow semantics/overflow",
+      "result": "PASS"
+    },
+    {
+      "check": "detail-only narrow semantics/overflow",
+      "result": "PASS"
+    },
+    {
+      "check": "with-action-label narrow semantics/overflow",
+      "result": "PASS"
+    },
+    {
+      "check": "as-child-link narrow semantics/overflow",
+      "result": "PASS"
+    },
+    {
+      "check": "cover halo/well geometry 390",
+      "result": "PASS",
+      "cover": {
+        "coverBg": "none",
+        "coverBorderBottom": "0px",
+        "reserved": {
+          "w": 317.625,
+          "h": 158.8125
+        },
+        "plate": {
+          "h": 158.8125
+        },
+        "wordBottomGap": 1,
+        "rootBackdrop": "none"
+      }
+    },
+    {
+      "check": "cover halo/well geometry 1280",
+      "result": "PASS",
+      "cover": {
+        "coverBg": "none",
+        "coverBorderBottom": "0px",
+        "reserved": {
+          "w": 1207.625,
+          "h": 603.8125
+        },
+        "plate": {
+          "h": 603.8125
+        },
+        "wordBottomGap": 1,
+        "rootBackdrop": "none"
+      }
+    },
+    {
+      "check": "Owner-approved badge-inclusive name; ghost word absent",
+      "result": "PASS"
+    },
+    {
+      "check": "Hover no lift; brand hairline",
+      "result": "PASS",
+      "hoverBorder": "rgba(255, 0, 54, 0.45)"
+    },
+    {
+      "check": "Single tab stop, token ring",
+      "result": "PASS"
+    },
+    {
+      "check": "Native Enter navigates",
+      "result": "PASS"
+    },
+    {
+      "check": "Reduced motion (corrected predicate)",
+      "result": "PASS",
+      "motion": {
+        "property": "none",
+        "duration": "0.2s"
+      }
+    },
+    {
+      "check": "media frame first attempt",
+      "result": "FAIL (assertion error, not component)",
+      "note": "Predicate compared <img> to reservation; img sits inside the approved PhotoFrame 1px Material border. See media-geometry-diagnostics.json"
+    },
+    {
+      "check": "media flex 160px (corrected predicate)",
+      "result": "PASS",
+      "g": {
+        "cover": {
+          "width": 119.625,
+          "height": 59.8125
+        },
+        "figure": {
+          "width": 119.625,
+          "height": 59.8125
+        },
+        "frame": {
+          "width": 119.625,
+          "height": 59.8125
+        },
+        "frameBorder": 1,
+        "img": {
+          "width": 117.625,
+          "height": 57.8125
+        },
+        "alt": "",
+        "overflow": false
+      }
+    },
+    {
+      "check": "media flex 280px (corrected predicate)",
+      "result": "PASS",
+      "g": {
+        "cover": {
+          "width": 239.625,
+          "height": 119.8125
+        },
+        "figure": {
+          "width": 239.625,
+          "height": 119.8125
+        },
+        "frame": {
+          "width": 239.625,
+          "height": 119.8125
+        },
+        "frameBorder": 1,
+        "img": {
+          "width": 237.625,
+          "height": 117.8125
+        },
+        "alt": "",
+        "overflow": false
+      }
+    },
+    {
+      "check": "media grid 160px (corrected predicate)",
+      "result": "PASS",
+      "g": {
+        "cover": {
+          "width": 119.625,
+          "height": 59.8125
+        },
+        "figure": {
+          "width": 119.625,
+          "height": 59.8125
+        },
+        "frame": {
+          "width": 119.625,
+          "height": 59.8125
+        },
+        "frameBorder": 1,
+        "img": {
+          "width": 117.625,
+          "height": 57.8125
+        },
+        "alt": "",
+        "overflow": false
+      }
+    },
+    {
+      "check": "media grid 280px (corrected predicate)",
+      "result": "PASS",
+      "g": {
+        "cover": {
+          "width": 239.625,
+          "height": 119.8125
+        },
+        "figure": {
+          "width": 239.625,
+          "height": 119.8125
+        },
+        "frame": {
+          "width": 239.625,
+          "height": 119.8125
+        },
+        "frameBorder": 1,
+        "img": {
+          "width": 237.625,
+          "height": 117.8125
+        },
+        "alt": "",
+        "overflow": false
+      }
+    },
+    {
+      "check": "No reservation jump on image load",
+      "result": "PASS",
+      "early": {
+        "w": 1207.625,
+        "h": 603.8125
+      },
+      "late": {
+        "w": 1207.625,
+        "h": 603.8125
+      }
+    },
+    {
+      "check": "aria-label override",
+      "result": "PASS"
+    },
+    {
+      "check": "Widths story renders both cards",
+      "result": "PASS",
+      "actions": [null, null]
+    },
+    {
+      "check": "Widths visual inspection (first)",
+      "result": "FAIL (component)",
+      "note": "Narrow card ghost word overflowed well and card edge after legacy cover clipping reset; screenshot widths-fixed-1280-dark.png"
+    },
+    {
+      "check": "Widths: ghost word clipped inside well, well fills reservation",
+      "result": "PASS",
+      "cards": [
+        {
+          "plateOverflow": "hidden",
+          "plateRight": 226.203125,
+          "cardRight": 246.390625,
+          "wordRight": 287.78125,
+          "plateH": 95,
+          "reservedH": 95
+        },
+        {
+          "plateOverflow": "hidden",
+          "plateRight": 751,
+          "cardRight": 771.1875,
+          "wordRight": 530.96875,
+          "plateH": 235.8125,
+          "reservedH": 235.8125
+        }
+      ]
+    },
+    {
+      "check": "Default final 390: no halo",
+      "result": "PASS"
+    },
+    {
+      "check": "Default final 1280: no halo",
+      "result": "PASS"
+    }
+  ],
+  "limitations": [
+    "Not an actual screen-reader run",
+    "Native browser zoom not evaluated",
+    "Storybook Controls widgets not exercised"
+  ]
+}

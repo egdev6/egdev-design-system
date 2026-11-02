@@ -2431,7 +2431,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
+          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
         }
       }
     ]
@@ -4549,7 +4549,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
+          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
         }
       }
     ]
@@ -4666,7 +4666,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
+          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
         }
       }
     ]
@@ -4894,7 +4894,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
+          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
         }
       }
     ]
@@ -6934,7 +6934,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureCoverProps",
-          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
+          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
         }
       }
     ]
@@ -6961,7 +6961,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
+          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
         }
       }
     ]
@@ -6988,7 +6988,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
+          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
         }
       }
     ]
@@ -7015,7 +7015,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureCoverProps",
-          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
+          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
         }
       }
     ]

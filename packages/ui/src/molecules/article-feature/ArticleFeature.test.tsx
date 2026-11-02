@@ -94,6 +94,40 @@ describe('ArticleFeature public contract', () => {
     expect(warnSpy).toHaveBeenCalled();
   });
 
+  it('neutralizes legacy cover paint and fills the reserved well (AF-05)', () => {
+    const { container } = render(
+      <ArticleFeature title='Covered' href='#covered'>
+        <ArticleFeatureCover coverWord='/src' />
+      </ArticleFeature>
+    );
+    const cover = container.querySelector('.eg-article-feature__cover');
+    expect(cover).toHaveClass('bg-none', 'border-b-0', 'aspect-auto', 'overflow-visible');
+  });
+
+  it('fills the reserved well so its decorative word aligns to the bottom (AF-05)', () => {
+    render(
+      <ArticleFeature title='Covered' href='#covered'>
+        <ArticleFeatureCover coverWord='/src' />
+      </ArticleFeature>
+    );
+    expect(screen.getByText('/src').parentElement).toHaveClass('h-full', 'flex', 'items-end');
+  });
+
+  it('clips the oversized decorative word inside the well on narrow cards (AF-05, AF-09)', () => {
+    render(
+      <ArticleFeature title='Narrow' href='#narrow' className='w-72'>
+        <ArticleFeatureCover coverWord='/design-system' />
+      </ArticleFeature>
+    );
+    expect(screen.getByText('/design-system').parentElement).toHaveClass('overflow-hidden');
+  });
+
+  it('neutralizes legacy root and metadata effects while retaining approved styling (AF-03, AF-08)', () => {
+    const { container } = render(<ArticleFeature title='T' href='#t' eyebrow='Architecture' />);
+    expect(screen.getByRole('link')).toHaveClass('backdrop-filter-none', 'overflow-visible');
+    expect(container.querySelector('.eg-article-feature__meta')).toHaveClass('normal-nums', 'text-meta');
+  });
+
   it('reserves 16:8 for a generative well with an aria-hidden cover word (AF-05)', () => {
     const { container } = render(
       <ArticleFeature title='Covered' href='#covered'>
@@ -120,6 +154,7 @@ describe('ArticleFeature public contract', () => {
     );
     const cover = container.querySelector('.eg-article-feature__cover');
     expect(cover).toHaveAttribute('data-cover', 'media');
+    expect(cover).toHaveClass('bg-none', 'border-b-0', 'aspect-auto', 'overflow-visible');
     expect(cover?.querySelector('[data-radix-aspect-ratio-wrapper]')).toHaveStyle({ paddingBottom: '50%' });
     const figure = container.querySelector('figure');
     expect(figure).toHaveAttribute('data-ratio', 'auto');

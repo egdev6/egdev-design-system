@@ -1,0 +1,230 @@
+[
+  {
+    "display": "natural",
+    "width": 0,
+    "tree": [
+      {
+        "tag": "DIV",
+        "cls": "eg-aspect-ratio min-w-0",
+        "w": 1207.625,
+        "h": 603.8125,
+        "y": 36.1875,
+        "boxSizing": "content-box",
+        "padding": "0px",
+        "border": "0px",
+        "height": "603.812px",
+        "aspect": "auto",
+        "objectFit": "fill",
+        "position": "absolute"
+      },
+      {
+        "tag": "FIGURE",
+        "cls": "eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0 h-fu",
+        "w": 1207.625,
+        "h": 603.8125,
+        "y": 36.1875,
+        "boxSizing": "content-box",
+        "padding": "0px",
+        "border": "0px",
+        "height": "603.812px",
+        "aspect": "auto",
+        "objectFit": "fill",
+        "position": "relative"
+      },
+      {
+        "tag": "DIV",
+        "cls": "eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shad",
+        "w": 1207.625,
+        "h": 603.8125,
+        "y": 36.1875,
+        "boxSizing": "border-box",
+        "padding": "0px",
+        "border": "1px",
+        "height": "603.812px",
+        "aspect": "auto",
+        "objectFit": "fill",
+        "position": "static"
+      },
+      {
+        "tag": "DIV",
+        "cls": "size-full overflow-hidden rounded-xl",
+        "w": 1205.625,
+        "h": 601.8125,
+        "y": 37.1875,
+        "boxSizing": "content-box",
+        "padding": "0px",
+        "border": "0px",
+        "height": "601.812px",
+        "aspect": "auto",
+        "objectFit": "fill",
+        "position": "static"
+      },
+      {
+        "tag": "IMG",
+        "cls": "eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-center",
+        "w": 1205.625,
+        "h": 601.8125,
+        "y": 37.1875,
+        "boxSizing": "content-box",
+        "padding": "0px",
+        "border": "0px",
+        "height": "601.812px",
+        "aspect": "auto",
+        "objectFit": "cover",
+        "position": "static"
+      }
+    ]
+  },
+  {
+    "display": "flex",
+    "width": 160,
+    "tree": [
+      {
+        "tag": "DIV",
+        "cls": "eg-aspect-ratio min-w-0",
+        "w": 119.625,
+        "h": 59.8125,
+        "y": 36.1875,
+        "boxSizing": "content-box",
+        "padding": "0px",
+        "border": "0px",
+        "height": "59.8125px",
+        "aspect": "auto",
+        "objectFit": "fill",
+        "position": "absolute"
+      },
+      {
+        "tag": "FIGURE",
+        "cls": "eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0 h-fu",
+        "w": 119.625,
+        "h": 59.8125,
+        "y": 36.1875,
+        "boxSizing": "content-box",
+        "padding": "0px",
+        "border": "0px",
+        "height": "59.8125px",
+        "aspect": "auto",
+        "objectFit": "fill",
+        "position": "relative"
+      },
+      {
+        "tag": "DIV",
+        "cls": "eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shad",
+        "w": 119.625,
+        "h": 59.8125,
+        "y": 36.1875,
+        "boxSizing": "border-box",
+        "padding": "0px",
+        "border": "1px",
+        "height": "59.8125px",
+        "aspect": "auto",
+        "objectFit": "fill",
+        "position": "static"
+      },
+      {
+        "tag": "DIV",
+        "cls": "size-full overflow-hidden rounded-xl",
+        "w": 117.625,
+        "h": 57.8125,
+        "y": 37.1875,
+        "boxSizing": "content-box",
+        "padding": "0px",
+        "border": "0px",
+        "height": "57.8125px",
+        "aspect": "auto",
+        "objectFit": "fill",
+        "position": "static"
+      },
+      {
+        "tag": "IMG",
+        "cls": "eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-center",
+        "w": 117.625,
+        "h": 57.8125,
+        "y": 37.1875,
+        "boxSizing": "content-box",
+        "padding": "0px",
+        "border": "0px",
+        "height": "57.8125px",
+        "aspect": "auto",
+        "objectFit": "cover",
+        "position": "static"
+      }
+    ]
+  },
+  {
+    "display": "grid",
+    "width": 280,
+    "tree": [
+      {
+        "tag": "DIV",
+        "cls": "eg-aspect-ratio min-w-0",
+        "w": 239.625,
+        "h": 119.8125,
+        "y": 36.1875,
+        "boxSizing": "content-box",
+        "padding": "0px",
+        "border": "0px",
+        "height": "119.812px",
+        "aspect": "auto",
+        "objectFit": "fill",
+        "position": "absolute"
+      },
+      {
+        "tag": "FIGURE",
+        "cls": "eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none gap-0 h-fu",
+        "w": 239.625,
+        "h": 119.8125,
+        "y": 36.1875,
+        "boxSizing": "content-box",
+        "padding": "0px",
+        "border": "0px",
+        "height": "119.812px",
+        "aspect": "auto",
+        "objectFit": "fill",
+        "position": "relative"
+      },
+      {
+        "tag": "DIV",
+        "cls": "eg-surface box-border border border-solid text-fg-default bg-surface-1 bg-[image:var(--gradient-sheen)] p-0 rounded-xl border-border-hairline shadow-[var(--shad",
+        "w": 239.625,
+        "h": 119.8125,
+        "y": 36.1875,
+        "boxSizing": "border-box",
+        "padding": "0px",
+        "border": "1px",
+        "height": "119.812px",
+        "aspect": "auto",
+        "objectFit": "fill",
+        "position": "static"
+      },
+      {
+        "tag": "DIV",
+        "cls": "size-full overflow-hidden rounded-xl",
+        "w": 237.625,
+        "h": 117.8125,
+        "y": 37.1875,
+        "boxSizing": "content-box",
+        "padding": "0px",
+        "border": "0px",
+        "height": "117.812px",
+        "aspect": "auto",
+        "objectFit": "fill",
+        "position": "static"
+      },
+      {
+        "tag": "IMG",
+        "cls": "eg-photo__img static inset-auto block size-full max-w-none object-cover filter-none object-center",
+        "w": 237.625,
+        "h": 117.8125,
+        "y": 37.1875,
+        "boxSizing": "content-box",
+        "padding": "0px",
+        "border": "0px",
+        "height": "117.812px",
+        "aspect": "auto",
+        "objectFit": "cover",
+        "position": "static"
+      }
+    ]
+  }
+]
