@@ -4,7 +4,17 @@ export {
   ListItemBody,
   ListItemContent,
   ListItemFooter,
+  ListItemLeading,
   ListItemMedia,
-  ListItemMeta
+  ListItemMeta,
+  ListItemTitle,
+  ListItemTrailing
 } from './ListItem';
-export type { ListItemPartProps, ListItemProps, ListItemStatus, ListItemVariant } from './types';
+export type {
+  ListItemPartProps,
+  ListItemProps,
+  ListItemSize,
+  ListItemStatus,
+  ListItemTitleProps,
+  ListItemVariant
+} from './types';

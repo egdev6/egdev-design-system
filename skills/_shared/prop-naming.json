@@ -604,6 +604,16 @@
           "symbol": "TableProps",
           "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
         }
+      },
+      {
+        "component": "ListItem",
+        "type": "ListItemSize ('md' | 'sm'); editorial values only",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/list-item/types.ts",
+          "symbol": "ListItemProps",
+          "revision": "sha256:df2e05c470c79ad94bef1b06c87d118216ea601ebebe1d8aea6cff8c366cbe76"
+        }
       }
     ]
   },
@@ -689,7 +699,7 @@
         "source": {
           "path": "packages/ui/src/molecules/list-item/types.ts",
           "symbol": "ListItemProps",
-          "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
+          "revision": "sha256:df2e05c470c79ad94bef1b06c87d118216ea601ebebe1d8aea6cff8c366cbe76"
         }
       },
       {
@@ -2251,7 +2261,7 @@
         "source": {
           "path": "packages/ui/src/molecules/list-item/types.ts",
           "symbol": "ListItemProps",
-          "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
+          "revision": "sha256:df2e05c470c79ad94bef1b06c87d118216ea601ebebe1d8aea6cff8c366cbe76"
         }
       },
       {
@@ -4134,7 +4144,7 @@
         "source": {
           "path": "packages/ui/src/molecules/list-item/types.ts",
           "symbol": "ListItemProps",
-          "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
+          "revision": "sha256:df2e05c470c79ad94bef1b06c87d118216ea601ebebe1d8aea6cff8c366cbe76"
         }
       },
       {
@@ -4447,6 +4457,16 @@
           "path": "packages/ui/src/organisms/calendar-grid/types.ts",
           "symbol": "CalendarGridProps",
           "revision": "sha256:a2b239f6d4a1d4985c726cc28ddc04c588f79e99891dda60e59749bd033b5d8d"
+        }
+      },
+      {
+        "component": "ListItemTitle",
+        "type": "2 | 3 | 4 | 5 | 6 (default 3)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/list-item/types.ts",
+          "symbol": "ListItemTitleProps",
+          "revision": "sha256:df2e05c470c79ad94bef1b06c87d118216ea601ebebe1d8aea6cff8c366cbe76"
         }
       }
     ]

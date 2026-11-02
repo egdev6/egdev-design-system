@@ -88,7 +88,7 @@ import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorI
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
 import { ToastProvider, useToast } from '@egdev/ui';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemMedia, ListItemMeta, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -142,7 +142,9 @@ import type {
   LinkVariant,
   ListItemProps,
   ListItemPartProps,
+  ListItemSize,
   ListItemStatus,
+  ListItemTitleProps,
   ListItemVariant,
   SliderProps,
   LogoProps,
@@ -557,6 +559,45 @@ const itemDisabled: ListItemProps = { children: 'Item', 'aria-disabled': true };
 const itemCreate: ListItemProps = { children: 'Item', onCreate: () => undefined };
 // @ts-expect-error The presentation status set is closed.
 const unknownItemStatus: ListItemProps = { children: 'Item', status: 'published' };
+export const editorialSizes: ListItemSize[] = ['md', 'sm'];
+export function EditorialRowSamples({ size = editorialSizes[0] }: { size?: ListItemSize }) {
+  // The row element itself must be the anchor: parts live inside it, never inside an inner anchor.
+  return createElement('ul', null, createElement('li', null, createElement(ListItem, {
+    asChild: true, variant: 'editorial', size,
+    children: createElement('a', { href: '#note' },
+      createElement(ListItemLeading, null,
+        createElement('time', { dateTime: '2026-09-12' }, '12', createElement('small', null, 'SEP'))),
+      createElement(ListItemBody, null,
+        createElement(ListItemTitle, { level: 3, children: 'Reading the release train' }),
+        createElement(ListItemMeta, null, 'Notes · 4 min read')),
+      createElement(ListItemTrailing, null, '18:04'))
+  })));
+}
+export function DividedRowSamples() {
+  return createElement(ListItem, {
+    variant: 'editorial-divided',
+    children: [
+      createElement(ListItemBody, { key: 'body' },
+        createElement(ListItemTitle, { level: 4, children: 'Previous stream' }),
+        createElement(ListItemMeta, null, '2026-08-30')),
+      createElement(ListItemTrailing, { key: 'trailing' }, '42:11')
+    ]
+  });
+}
+// @ts-expect-error Editorial rows do not widen the empty presentation.
+const editorialEmpty: ListItemProps = { status: 'empty', variant: 'editorial', asChild: true, children: createElement('button') };
+// @ts-expect-error Sizes are a closed preset set.
+const largeItem: ListItemProps = { children: 'Item', size: 'lg' };
+// @ts-expect-error Heading ranks are h2-h6 only.
+const rankOneTitle: ListItemTitleProps = { level: 1, children: 'Title' };
+// @ts-expect-error The root owns the size preset, not a heading rank.
+const rootLevel: ListItemProps = { children: 'Item', level: 3 };
+// @ts-expect-error Editorial parts expose no ref.
+const leadingRef: ComponentPropsWithoutRef<typeof ListItemLeading> = { ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Editorial parts expose no role.
+const trailingRole: ComponentPropsWithoutRef<typeof ListItemTrailing> = { role: 'button' };
+// @ts-expect-error Editorial parts expose no tab stop.
+const leadingTab: ComponentPropsWithoutRef<typeof ListItemLeading> = { tabIndex: 0 };
 // Keep grouped samples outside App so the existing button-count/focus harness stays unchanged.
 const groupVariant: ButtonGroupVariant = 'attached';
 export const groupProps: ButtonGroupProps = {
@@ -3849,8 +3890,11 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ListItemBody',
   'ListItemContent',
   'ListItemFooter',
+  'ListItemLeading',
   'ListItemMedia',
   'ListItemMeta',
+  'ListItemTitle',
+  'ListItemTrailing',
   'Logo',
   'Menu',
   'MeterRow',
@@ -4099,7 +4143,20 @@ function assertListItemCSS(css) {
     String.raw`.data-\[state\=empty\]\:focus-visible\:shadow-focus`,
     String.raw`.data-\[state\=empty\]\:disabled\:opacity-45`,
     String.raw`.group-data-\[state\=dragging\]\/list-item\:opacity-50`,
-    String.raw`.data-\[variant\=row\]\:flex-wrap`
+    String.raw`.data-\[variant\=row\]\:flex-wrap`,
+    String.raw`.data-\[variant\=editorial\]\:flex-row`,
+    String.raw`.data-\[variant\=editorial-divided\]\:data-\[state\=default\]\:bg-none`,
+    String.raw`.data-\[variant\=editorial-divided\]\:data-\[state\=default\]\:shadow-none`,
+    String.raw`.data-\[variant\=editorial-divided\]\:data-\[state\=default\]\:border-b`,
+    String.raw`.data-\[state\=default\]\:data-\[variant\=editorial\]\:\[\&\:is\(a\)\]\:hover\:border-border-brand`,
+    String.raw`.data-\[state\=default\]\:data-\[variant\=editorial-divided\]\:\[\&\:is\(a\)\]\:hover\:bg-surface-2`,
+    String.raw`.data-\[variant\=editorial\]\:\[\&\:is\(a\)\]\:focus-visible\:shadow-focus`,
+    String.raw`.data-\[variant\=editorial\]\:duration-\(--duration-fast\)`,
+    String.raw`.data-\[variant\=editorial\]\:ease-\(--ease-out\)`,
+    String.raw`.data-\[variant\=editorial\]\:motion-reduce\:transition-none`,
+    String.raw`.data-\[variant\=editorial\]\:\[\&\:is\(a\)\]\:no-underline`,
+    String.raw`.data-\[variant\=editorial-divided\]\:\[\&\:is\(a\)\]\:no-underline`,
+    String.raw`.group-data-\[size\=sm\]\/list-item\:w-\[var\(--space-16\)\]`
   ]) {
     assert.ok(css.includes(selector), 'Missing packed ListItem utility ' + selector);
   }

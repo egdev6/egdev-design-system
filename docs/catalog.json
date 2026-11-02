@@ -558,7 +558,7 @@
     "radix": "Slot",
     "compone": "Surface recipe; consumer Badge, Button, IconButton, Icon, Link",
     "accion": "renombrar",
-    "notas": "Implemented compound React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/88): generic card/compact/row with Body, Content, Media, Footer, Meta and Actions. Host-selected status snapshots include new, failed, done, empty, dragging and off; visible status words and domain transitions belong to the consumer. Surface recipes supply the elevated frame and passive thumbnail well. Empty is one slotted native action; no drag engine, ref API or stylesheet. Legacy PostCard CSS remains unchanged."
+    "notas": "Implemented compound React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/88): generic card/compact/row with Body, Content, Media, Footer, Meta and Actions. Host-selected status snapshots include new, failed, done, empty, dragging and off; visible status words and domain transitions belong to the consumer. Surface recipes supply the elevated frame and passive thumbnail well. Empty is one slotted native action; no drag engine, ref API or stylesheet. Legacy PostCard CSS remains unchanged. v0.2 ([#88](https://github.com/egdev6/egdev-design-system/issues/88)): `editorial` and `editorial-divided` variants with `size` md/sm and the ListItemLeading, ListItemTitle and ListItemTrailing parts; it replaces the web's ArticleItem, NoteItem and StreamItem."
   },
   {
     "actual": "PostCard (Cadencia)",

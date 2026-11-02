@@ -13,10 +13,13 @@ import {
   ListItemBody,
   ListItemContent,
   ListItemFooter,
+  ListItemLeading,
   ListItemMedia,
-  ListItemMeta
+  ListItemMeta,
+  ListItemTitle,
+  ListItemTrailing
 } from './ListItem';
-import type { ListItemStatus, ListItemVariant } from './types';
+import type { ListItemSize, ListItemStatus, ListItemTitleProps, ListItemVariant } from './types';
 import { listItemExampleVariants } from './types';
 
 const edit = action('Edit item');
@@ -136,6 +139,19 @@ function ReorderExample() {
  * Populated items are non-focusable containers, never whole-card buttons or links around actions.
  * Dragging is presentation only: collection owners supply accessible reorder actions and announcements.
  * Root className supports outer layout only; part classes support local placement/width, not appearance.
+ *
+ * Editorial rows compose Leading, Body (title then optional meta) and Trailing in DOM order; the
+ * consumer may put the meta line before the title in one family (Article) and after it in another
+ * (Note/Stream), because the parts are consumer-composed and DOM order equals visual order.
+ * ListItemTitle owns the heading rank: pass the level that fits the surrounding outline.
+ * Editorial values never compose Content, Media or Footer, and a linked row never composes Actions.
+ * A linked row is `<ul><li><ListItem asChild variant="editorial|editorial-divided"><a href>…parts…</a>
+ * </ListItem></li></ul>`: the row element itself is the anchor, so the anchor owns the three-zone layout,
+ * the hover affordances and the reset decoration. Never put the parts inside an inner anchor whose
+ * ListItem sits on the <li>; the recipe and the marker would land on the list item instead.
+ * Only a row whose root element is an anchor gets hover affordances; static rows stay inert.
+ * editorial-divided paints no surface and separates rows with a single bottom hairline.
+ * The consumer formats and owns the day, month, category, reading time and duration text.
  */
 const meta: Meta<typeof ListItem> = {
   title: 'Molecules/ListItem',
@@ -325,3 +341,240 @@ export const ClassComposition: Story = {
 };
 /** ListItem adds no motion; inspect with the OS reduced-motion preference enabled. */
 export const ReducedMotion: Story = { render: () => <Example status='new' /> };
+
+type EditorialNote = {
+  day: string;
+  month: string;
+  dateTime: string;
+  title: string;
+  meta: string;
+  duration: string;
+};
+
+const firstNote: EditorialNote = {
+  day: '12',
+  month: 'SEP',
+  dateTime: '2026-09-12',
+  title: 'Reading the release train',
+  meta: 'Notes · 4 min read',
+  duration: '18:04'
+};
+
+const secondNote: EditorialNote = {
+  day: '30',
+  month: 'AUG',
+  dateTime: '2026-08-30',
+  title: 'Shipping a calmer catalog',
+  meta: 'Notes · 6 min read',
+  duration: '22:41'
+};
+
+const thirdNote: EditorialNote = {
+  day: '04',
+  month: 'AUG',
+  dateTime: '2026-08-04',
+  title: 'One row for three editorial lists',
+  meta: 'Notes · 3 min read',
+  duration: '11:20'
+};
+
+const editorialNotes = [firstNote, secondNote, thirdNote];
+
+function EditorialParts({
+  note = firstNote,
+  level,
+  metaFirst = false
+}: {
+  note?: EditorialNote;
+  level?: ListItemTitleProps['level'];
+  metaFirst?: boolean;
+}) {
+  const title = (
+    <ListItemTitle key='title' level={level}>
+      {note.title}
+    </ListItemTitle>
+  );
+  const meta = (
+    <ListItemMeta key='meta'>
+      <b>{note.meta.split(' · ')[0]}</b> · {note.meta.split(' · ')[1]}
+    </ListItemMeta>
+  );
+  return (
+    <>
+      <ListItemLeading>
+        <time dateTime={note.dateTime}>
+          {note.day}
+          <small>{note.month}</small>
+        </time>
+      </ListItemLeading>
+      <ListItemBody>{metaFirst ? [meta, title] : [title, meta]}</ListItemBody>
+      <ListItemTrailing>{note.duration}</ListItemTrailing>
+    </>
+  );
+}
+
+/** Editorial rows stack leading, title/meta and trailing inside the raised row. */
+export const EditorialRow: Story = {
+  render: () => (
+    <ListItem variant='editorial'>
+      <EditorialParts />
+    </ListItem>
+  )
+};
+
+/** Article rows put an uppercase meta line above the title; Note and Stream rows put it below. */
+export const EditorialVariants: Story = {
+  render: () => (
+    <Stack>
+      <ListItem variant='editorial'>
+        <ListItemBody>
+          <ListItemMeta>
+            <b>Article</b> · 5 min read
+          </ListItemMeta>
+          <ListItemTitle>Editorial meta line above a two-line title</ListItemTitle>
+        </ListItemBody>
+      </ListItem>
+      <ListItem variant='editorial'>
+        <EditorialParts />
+      </ListItem>
+      <ListItem variant='editorial-divided'>
+        <EditorialParts note={secondNote} />
+      </ListItem>
+    </Stack>
+  )
+};
+
+/** A non-default status repaints the row and keeps its visible status words mandatory. */
+export const EditorialStatuses: Story = {
+  render: () => (
+    <Stack>
+      {(['default', 'new', 'failed', 'done', 'off', 'dragging'] as const).map((status) => (
+        <ListItem key={status} status={status} variant='editorial'>
+          <EditorialParts />
+          <ListItemMeta>{labels[status]}</ListItemMeta>
+        </ListItem>
+      ))}
+      <ListItem status='empty' asChild={true}>
+        <button type='button' onClick={create}>
+          Create item
+        </button>
+      </ListItem>
+    </Stack>
+  )
+};
+
+/** sm narrows the leading column and lowers the day and title steps; md is the default. */
+export const EditorialSizes: Story = {
+  render: () => (
+    <Stack>
+      {(['md', 'sm'] as ListItemSize[]).map((size) => (
+        <ListItem key={size} variant='editorial' size={size}>
+          <EditorialParts />
+        </ListItem>
+      ))}
+    </Stack>
+  )
+};
+
+/** A dated list keeps a real time[datetime] and one anchor per row. */
+export const EditorialDatedList: Story = {
+  render: () => (
+    <ul className='flex list-none flex-col gap-3 p-0'>
+      {editorialNotes.map((note) => (
+        <li key={note.dateTime}>
+          <ListItem asChild={true} variant='editorial'>
+            <a href={`#${note.dateTime}`}>
+              <EditorialParts note={note} />
+            </a>
+          </ListItem>
+        </li>
+      ))}
+    </ul>
+  )
+};
+
+/** ListItemTitle picks the native heading rank while typography stays a part recipe. */
+export const EditorialHeadingRanks: Story = {
+  render: () => (
+    <Stack>
+      {([2, 3, 4, 5, 6] as const).map((level) => (
+        <ListItem key={level} variant='editorial'>
+          <EditorialParts level={level} />
+        </ListItem>
+      ))}
+    </Stack>
+  )
+};
+
+/** One anchor owns the whole editorial row, its name and its single tab stop. */
+export const EditorialLinkRow: Story = {
+  render: () => (
+    <ListItem asChild={true} variant='editorial'>
+      <a href='#notes'>
+        <EditorialParts />
+      </a>
+    </ListItem>
+  )
+};
+
+/** Tab to a linked row to inspect the row focus ring; static rows never receive focus. */
+export const EditorialFocus: Story = {
+  render: () => (
+    <Stack>
+      <ListItem asChild={true} variant='editorial'>
+        <a href='#first'>
+          <EditorialParts />
+        </a>
+      </ListItem>
+      <ListItem asChild={true} variant='editorial-divided'>
+        <a href='#second'>
+          <EditorialParts note={thirdNote} />
+        </a>
+      </ListItem>
+    </Stack>
+  )
+};
+
+/** A static editorial row is a plain container: no tab stop, role or hover affordance. */
+export const EditorialStaticRow: Story = {
+  render: () => (
+    <ListItem variant='editorial'>
+      <EditorialParts />
+    </ListItem>
+  )
+};
+
+/** Divided rows paint no surface and separate rows with a single bottom hairline. */
+export const EditorialDivided: Story = {
+  render: () => (
+    <ul className='flex list-none flex-col p-0'>
+      {editorialNotes.map((note) => (
+        <li key={note.dateTime}>
+          <ListItem asChild={true} variant='editorial-divided'>
+            <a href={`#${note.dateTime}`}>
+              <EditorialParts note={note} />
+            </a>
+          </ListItem>
+        </li>
+      ))}
+    </ul>
+  )
+};
+
+/** Hover affordances exist only on linked rows: brand border and wash on editorial, wash and indent when divided. */
+export const EditorialHover: Story = {
+  render: () => (
+    <Stack>
+      <ListItem asChild={true} variant='editorial'>
+        <a href='#raised'>
+          <EditorialParts />
+        </a>
+      </ListItem>
+      <ListItem asChild={true} variant='editorial-divided'>
+        <a href='#divided'>
+          <EditorialParts note={secondNote} />
+        </a>
+      </ListItem>
+    </Stack>
+  )
+};

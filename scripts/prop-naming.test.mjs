@@ -424,10 +424,14 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/molecules/chip-group/types.ts#ChipGroupOption'
   })),
-  ...['visual-treatment', 'slot-composition', 'item-presentation-status'].map((conventionId) => ({
+  ...['visual-treatment', 'slot-composition', 'item-presentation-status', 'preset-dimensions'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/list-item/types.ts#ListItemProps'
   })),
+  {
+    conventionId: 'heading-level',
+    source: 'packages/ui/src/molecules/list-item/types.ts#ListItemTitleProps'
+  },
   ...[
     'accessible-name',
     'collection-items',
