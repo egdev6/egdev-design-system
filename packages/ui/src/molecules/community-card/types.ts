@@ -113,13 +113,16 @@ export const communityCardMarkVariants = cva(
   'eg-community-card__mark ms-auto flex max-h-16 max-w-full shrink-0 items-center justify-center [&>img]:max-h-16 [&>img]:object-contain'
 );
 
-/** Display name typography, independent of the heading rank. */
-export const communityCardTitleVariants = cva('m-0 min-w-0 wrap-anywhere text-title-section text-fg-default');
+/** Display name typography, independent of the heading rank: display family in uppercase (spec §4);
+ * the section token supplies only size, line height and weight. */
+export const communityCardTitleVariants = cva(
+  'm-0 min-w-0 wrap-anywhere font-display uppercase text-title-section text-fg-default'
+);
 
 /** Body zone: the frame's large padding step and inherited copy typography. The 48rem breakpoint
  * is the owner-authorized local variant (responsive amendment): no default md token breakpoint. */
 export const communityCardBodyVariants = cva(
-  'flex min-w-0 flex-col gap-4 p-6 text-body-default text-fg-secondary min-[48rem]:p-8'
+  'flex min-w-0 flex-1 flex-col gap-4 p-6 text-body-default text-fg-secondary min-[48rem]:p-8'
 );
 
 /** Bottom-edge zone for the card's single supplied action; engages when the host stretches the card. */

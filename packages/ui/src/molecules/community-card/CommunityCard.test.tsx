@@ -34,6 +34,8 @@ describe('CommunityCard public contract', () => {
     expect(article.tagName).toBe('ARTICLE');
     const heading = within(article).getByRole('heading', { name: 'Pulso', level: 3 });
     expect(heading).toHaveClass('text-title-section');
+    // Spec §4: the name uses the display family in uppercase; the token sets only size and weight.
+    expect(heading).toHaveClass('font-display', 'uppercase');
     expect(article).toHaveAttribute('aria-labelledby', heading.id);
   });
 
@@ -259,6 +261,8 @@ describe('CommunityCard public contract', () => {
     const article = screen.getByRole('article', { name: 'Pulso' });
     const action = article.querySelector('.eg-community-card__action');
     expect(action).toHaveClass('mt-auto');
+    // mt-auto only pins when the body zone grows to fill a stretched card (browser finding).
+    expect(action?.parentElement).toHaveClass('flex-1');
     expect(action).toContainElement(screen.getByRole('link', { name: 'Join the Discord' }));
     await user.tab();
     expect(document.activeElement).toBe(screen.getByRole('link', { name: 'Join the Discord' }));

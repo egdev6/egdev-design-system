@@ -675,6 +675,11 @@ const postReceiptUsages = [
   ...['heading-title', 'heading-level', 'image-focal-point', 'cover-badge'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/tip-card/types.ts#TipCardProps'
+  })),
+  // CommunityCard T13 adds usages only; existing receipts bind convention content, not usages.
+  ...['heading-title', 'heading-level', 'heading-eyebrow'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/community-card/types.ts#CommunityCardProps'
   }))
 ];
 // These newly proposed conventions are not part of any immutable approval receipt.
@@ -728,6 +733,36 @@ test('post-receipt usages exist with valid source evidence', () => {
       current.usages.filter((usage) => usage !== matching[0])
     );
   }
+});
+test('CommunityCard records only its three approved heading usages', () => {
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const path = 'packages/ui/src/molecules/community-card/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const expected = [
+    ['heading-title', 'string (required)'],
+    ['heading-level', 'CommunityCardLevel'],
+    ['heading-eyebrow', 'string']
+  ];
+  assert.deepEqual(
+    actual
+      .flatMap((entry) =>
+        entry.usages
+          .filter((usage) => usage.component.startsWith('CommunityCard') || usage.source.path === path)
+          .map((usage) => [entry.id, usage])
+      )
+      .sort(([a], [b]) => a.localeCompare(b)),
+    expected
+      .map(([id, type]) => [
+        id,
+        {
+          component: 'CommunityCard',
+          type,
+          status: 'existing',
+          source: { path, symbol: 'CommunityCardProps', revision }
+        }
+      ])
+      .sort(([a], [b]) => a.localeCompare(b))
+  );
 });
 test('historical registry removes only exact reviewed convention and source pairs', () => {
   const reviewed = [{ conventionId: 'example', source: 'example.ts#ExampleProps' }];

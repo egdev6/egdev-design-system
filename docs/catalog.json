@@ -853,9 +853,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "—",
-    "compone": "Surface, Avatar, Button",
+    "compone": "Surface, Button; consumer-supplied mark slot",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): community card on the Surface recipe with an avatar heading; no domain data."
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/281): community article with a `surface-2` header band (public `Text` eyebrow role line + consumer named-or-decorative mark slot), generated display heading, free copy and one supplied `Button`/`Link` pinned with `mt-auto`. No avatar, wordmark artwork, stylesheet, ref or card-level interaction."
   },
   {
     "actual": "—",
