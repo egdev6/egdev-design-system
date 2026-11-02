@@ -1,0 +1,274 @@
+{
+  "kind": "Component-zone captures for the ProgressBar v0.2 web-mapping amendment",
+  "specVersion": "0.2",
+  "specLocation": "docs/components/progress-bar/v0.2/spec.md",
+  "capturedAt": "2026-11-02",
+  "task": "odd/tasks/web-catalog.md, B7 (web catalog layer b, S3)",
+  "captureVersion": "v0.2-capture-1",
+  "purpose": "Observed evidence of the rendered web progress cases: the fraction-driven decorative strip in the tips carousel, its text counter, the edge strip pinned to the floating section dock, and the Foundation preview board that already announces percent ARIA values next to the 0-1 custom property. These are source captures of the current web appearance, not approved expected design for the design-system atom and not verification of it.",
+  "source": {
+    "webSourceRoot": "/home/egdev/proyectos/egdev-website/egdev-foundation (read-only, owner-granted)",
+    "files": [
+      {
+        "path": "reference-web/pulso-source.html",
+        "sha256": "778e5412b64d1b79195c51c0e47c78f654b46da445be8354a97e572774348f13",
+        "role": "Primary source for VIS-03, VIS-04 and VIS-05"
+      },
+      {
+        "path": "design-system/components/ProgressBar/preview.html",
+        "sha256": "9182f8a4f000662138f53407c4345340b2f7d0cbfb8221c0fb7566defbd7e04e",
+        "role": "Source fragment for VIS-06, mounted unmodified with its range-input script in a temporary harness"
+      },
+      {
+        "path": "design-system/components/ProgressBar/README.md",
+        "sha256": "f9bc9007c54c82cf1e04888522669ec7bd05211ef472f0ec1330b0aa57295934",
+        "role": "Documents value 0-1 written into --p, the edge modifier and the optional label; read, not captured"
+      },
+      {
+        "path": "design-system/components/SectionNav/README.md",
+        "sha256": "7f0332f489afcda0e69556d18124582a77bfb40ad028058e3e07e04ffc9ca6e5",
+        "role": "Documents the host organism whose scroll progress (0-1) feeds the edge bar; read, not captured"
+      },
+      {
+        "path": "design-system/components/TipsSlider/README.md",
+        "sha256": "eb09ef4261e4743ada5219c56863ee848c925c66323076ccc309a4835bfc8a4f",
+        "role": "Documents the same bar as --p = (activa + 1) / total, which disagrees with the rendered page; read, not captured"
+      },
+      {
+        "path": "design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+        "role": "Linked by file:// into the VIS-06 harness (read-only); not edited"
+      },
+      {
+        "path": "design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe",
+        "role": "Linked by file:// into the VIS-06 harness (read-only); not edited"
+      }
+    ],
+    "note": "Nothing was written inside egdev-website. The harness page and the capture script live in /tmp/egdev-sbcheck/b7/ and only read the sources."
+  },
+  "conditions": {
+    "tool": "playwright-core 1.60.0 (npx cache: /home/egdev/.npm/_npx/e41f203b7505f1fb/node_modules/playwright-core), programmatic Chromium, not Playwright MCP",
+    "browser": "Chromium 153.0.8010.12 (chrome-headless-shell-linux64), Linux x86_64",
+    "executablePath": "~/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+    "launchArgs": ["--force-color-profile=srgb", "--hide-scrollbars"],
+    "pageLoading": "file:// URL; pulso-source.html loaded directly, ProgressBar preview.html mounted in /tmp/egdev-sbcheck/b7/progress-bar-preview.html with tokens.css and bundle.css linked by file://",
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "deviceScaleFactor": 1,
+    "waitAfterLoad": "document.fonts.ready + 1.5 s (Pulso) / 1.2 s (harness), then all [data-reveal] nodes forced to their revealed state (class 'in') + 900 ms on the Pulso page",
+    "fontsConfirmedLoadedPulso": {
+      "Barlow 600": true,
+      "Barlow 700": true,
+      "Barlow Condensed 800": true,
+      "JetBrains Mono 500": true
+    },
+    "fontsCheckedHarness": {
+      "Barlow Condensed 600": true,
+      "Barlow 600": false
+    },
+    "crop": "VIS-03 is a 368x48 padded clip around a 320x2 strip (a bare element crop would be two pixels tall); VIS-04, VIS-05 and VIS-06 are element crops at device scale 1",
+    "scrollPosition": "VIS-05 was taken after scrolling to about 50% of the document scroll range, where the dock strip resolves to scaleX(0.5)"
+  },
+  "images": [
+    {
+      "visualId": "VIS-01",
+      "file": "docs/design/foundation-boards/v2026-10-17/ProgressBar.png",
+      "sha256": "6c5e7d0eed830604b22b731e21383ee91778dbcde7745982ab478771dab633e9",
+      "role": "Approved v0.1 expected design for the hairline track values and the edge strip; reused historical capture, not re-captured for v0.2.",
+      "sourcePath": "docs/design/foundation-boards/v2026-10-17/ (captured 2026-10-17 from design-system/components/ProgressBar/preview.html)",
+      "status": "Approved as expected design in issue #65"
+    },
+    {
+      "visualId": "VIS-02",
+      "file": "docs/design/foundation-boards/v2026-10-17/specimens/progress-bar--specimen.png",
+      "sha256": "6e6d838662bb4c7c63735d0738c8e843533dbc2325ecf881acf9796420c28025",
+      "role": "Approved v0.1 expected design for the sizes and edge placement; reused historical capture.",
+      "sourcePath": "docs/design/foundation-boards/v2026-10-17/specimens/ (captured 2026-10-17)",
+      "status": "Approved as expected design in issue #65"
+    },
+    {
+      "visualId": "VIS-03",
+      "file": "public--tips-slider-progress--1280x900--dark.png",
+      "sha256": "20909ef83f1dfaa6e52cd561a5b1539449b85619aa9a5bf12601756b1145235f",
+      "pngPixels": "368x48",
+      "viewport": "1280x900",
+      "sourceSelector": ".tslider > .wrap > .tips-prog",
+      "sourceOuterHTML": "<div class=\"wrap\"><div class=\"tips-prog\" aria-hidden=\"true\"><i id=\"tipsBar\" style=\"transform: translateX(200%);\"></i></div></div>",
+      "altText": "A 368 by 48 pixel crop centred on the tips carousel progress strip: a 320px two-pixel track with a short neon-red fill a fifth of the way in, matching the third of ten tips being active.",
+      "observedComputedStyle": {
+        "track": {
+          "box": "320x2px",
+          "background": "rgba(255, 255, 255, 0.07)",
+          "borderRadius": "2px",
+          "overflow": "hidden",
+          "attributes": { "aria-hidden": "true" }
+        },
+        "fill": {
+          "box": "32x2px",
+          "background": "rgb(255, 0, 54)",
+          "transform": "matrix(1, 0, 0, 1, 64, 0)",
+          "transformOrigin": "0px 1px",
+          "transitionProperty": "transform",
+          "transitionDuration": "0.3s",
+          "inlineStyle": "transform: translateX(200%);"
+        },
+        "counter": { "text": "03", "fontSize": "15px", "fontWeight": "800", "fontVariantNumeric": "tabular-nums" },
+        "rail": {
+          "box": "1280x388px",
+          "overflow": "auto hidden",
+          "attributes": { "aria-label": "Tips rápidos: usa las flechas para moverte" }
+        }
+      },
+      "role": "The rendered fraction-driven decorative strip: no label, no ARIA value, fill width 10% translated by the active index.",
+      "decisionImpact": "Measured progress is activeIndex / count (2 / 10 = 20%, translateX(200%) on a 32px fill inside a 320px track), not (activeIndex + 1) / count as the Foundation TipsSlider README documents. The design system takes the value from the host and expresses it as value={20}; the README/page disagreement is reported as owner question Q3."
+    },
+    {
+      "visualId": "VIS-04",
+      "file": "public--tips-slider-controls--1280x900--dark.png",
+      "sha256": "1b7e56629ec7a9862a2f092e3dfb4f7629cf6c1bec33658aa7ac41b9b6968d65",
+      "pngPixels": "309x40",
+      "viewport": "1280x900",
+      "sourceSelector": ".tips-ctrl",
+      "sourceOuterHTML": "<div class=\"tips-ctrl\"> <span class=\"tips-count tab\" aria-live=\"polite\"><b id=\"tipsCur\">03</b> / 10</span> <button class=\"icon-btn tips-btn\" type=\"button\" id=\"tipsPrev\" aria-label=\"Tip anterior\">…</button> <button class=\"icon-btn tips-btn\" type=\"button\" id=\"tipsNext\" aria-label=\"Tip siguiente\">…</button> <a class=\"link\" href=\"https://www.linkedin.com/in/egdev\" target=\"_blank\" rel=\"noopener\">Más en LinkedIn …</a> </div>",
+      "altText": "The tips carousel controls: a live counter reading 03 / 10, previous and next rounded-square icon buttons and the \"Más en LinkedIn\" text link.",
+      "observedComputedStyle": {
+        "controls": { "box": "309x40px", "display": "flex", "gap": "10px" },
+        "counter": {
+          "text": "03 / 10",
+          "box": "53x23px",
+          "fontSize": "15px",
+          "fontWeight": "700",
+          "color": "rgb(204, 204, 204)",
+          "fontVariantNumeric": "tabular-nums",
+          "attributes": { "aria-live": "polite" }
+        },
+        "prev": { "box": "40x40px", "borderRadius": "12px", "attributes": { "aria-label": "Tip anterior" } },
+        "next": { "box": "40x40px", "borderRadius": "12px", "attributes": { "aria-label": "Tip siguiente" } },
+        "link": { "text": "Más en LinkedIn", "box": "130x26px", "fontSize": "15px", "fontWeight": "600" }
+      },
+      "role": "The text alternative that lets the progress strip stay decorative.",
+      "decisionImpact": "Matches the design-system rule: omitting label makes the bar aria-hidden and the consumer exposes the position as text. The same zone was captured byte-identically for IconButton v0.3 (its VIS-06); this is a separate fresh capture of a deterministic region, not a copy.",
+      "crossComponentNote": "docs/components/icon-button/v0.3/ghost--slider-controls--1280x900--dark.png has the same SHA-256 because the region and conditions are identical; that capture documents the ghost icon treatment, this one documents the counter-as-text-alternative."
+    },
+    {
+      "visualId": "VIS-05",
+      "file": "public--dock-edge-progress--1280x900--dark.png",
+      "sha256": "2be08aa6a411934b6880bce14f267f4dbec2bea5ee9e0d7c5de23787df8bc1c5",
+      "pngPixels": "155x52",
+      "viewport": "1280x900",
+      "sourceSelector": ".fab-btn",
+      "sourceOuterHTML": "<div class=\"fab-btn\"> <button class=\"fab-cur\" type=\"button\" id=\"dkCur\" aria-expanded=\"false\" aria-controls=\"dkList\" aria-label=\"Mostrar secciones\"><span class=\"fab-num tab\" id=\"dkNum\">06</span><span class=\"fab-sep\" aria-hidden=\"true\"></span><span class=\"fab-mask\"><span class=\"fab-name\" id=\"dkName\">Lab</span></span></button> <button class=\"fab-next\" type=\"button\" id=\"dkNext\" aria-label=\"Ir a la siguiente sección\">…</button> <span class=\"fab-prog\" aria-hidden=\"true\"><i id=\"dkProg\" style=\"transform: scaleX(0.5);\"></i></span> </div>",
+      "altText": "The floating section dock at mid-page scroll: a rounded pill with the section number 06 and the name Lab, a next-section arrow, and a two-pixel neon strip pinned flush to its bottom edge, filled about halfway.",
+      "observedComputedStyle": {
+        "button": {
+          "box": "155x52px",
+          "display": "flex",
+          "background": "rgba(10, 10, 10, 0.86)",
+          "borderRadius": "9999px",
+          "border": "1px solid rgba(255, 0, 54, 0.22)",
+          "overflow": "hidden"
+        },
+        "strip": {
+          "box": "153x2px",
+          "background": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "0px",
+          "attributes": { "aria-hidden": "true" }
+        },
+        "fill": {
+          "box": "76x2px",
+          "background": "rgb(255, 0, 54)",
+          "transform": "matrix(0.5, 0, 0, 1, 0, 0)",
+          "transformOrigin": "0px 1px",
+          "inlineStyle": "transform: scaleX(0.5);"
+        },
+        "current": {
+          "text": "06",
+          "fontSize": "18px",
+          "fontWeight": "800",
+          "color": "rgb(255, 0, 54)",
+          "fontVariantNumeric": "tabular-nums"
+        },
+        "name": { "text": "Lab", "fontSize": "19px", "fontWeight": "800" }
+      },
+      "role": "The rendered edge placement: absolute strip at the container bottom, no radius, translucent track, neon fill scaled by scrollY / maxScroll.",
+      "decisionImpact": "Expressed in the design system as size=\"sm\" edge value={50} inside a positioned, overflow-clipping container; the 0-1 scroll fraction becomes 50 percent at the boundary."
+    },
+    {
+      "visualId": "VIS-06",
+      "file": "foundation-preview--variants--720x480--dark.png",
+      "sha256": "4bedcde3e0d8f0b7c6613fa929f4119a829589c1dae4247dcdeb25dbb954d79a",
+      "pngPixels": "720x279",
+      "viewport": "720x480",
+      "sourceSelector": ".pv",
+      "sourceOuterHTML": "<div class=\"pv\"><div class=\"pv-row\"><p class=\"pv-label meta\">valores</p><div class=\"pv-items\"><div class=\"pv-cell\"><span class=\"eg-progress\" style=\"--p:0.1;width:240px\" role=\"progressbar\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"10\" aria-label=\"Progreso\"><span class=\"eg-progress__bar\"></span></span><span class=\"meta\">--p: 0.1</span></div>…",
+      "altText": "The Foundation ProgressBar preview board: three 240px tracks filled at 0.1, 0.45 and 1 with the value written under each, an edge strip inside a rounded container filled at 0.62, and an interactive track at 0.3 driven by a range input.",
+      "observedComputedStyle": {
+        "board": { "box": "720x279px", "display": "grid", "gap": "20px" },
+        "bars": {
+          "box": "240x2px",
+          "background": "rgba(255, 255, 255, 0.07)",
+          "borderRadius": "2px",
+          "inlineStyle": "--p:0.1;width:240px",
+          "attributes": {
+            "role": "progressbar",
+            "aria-valuemin": "0",
+            "aria-valuemax": "100",
+            "aria-valuenow": "10",
+            "aria-label": "Progreso"
+          }
+        },
+        "bar": {
+          "box": "24x2px",
+          "background": "rgb(255, 0, 54)",
+          "transform": "matrix(0.1, 0, 0, 1, 0, 0)",
+          "transformOrigin": "0px 1px",
+          "transitionDuration": "0.3s"
+        },
+        "edge": {
+          "box": "258x2px",
+          "background": "rgba(255, 255, 255, 0.08)",
+          "borderRadius": "0px",
+          "inlineStyle": "--p:.62",
+          "attributes": { "aria-hidden": "true" }
+        },
+        "interactive": {
+          "box": "320x2px",
+          "inlineStyle": "--p:.3;width:320px",
+          "attributes": { "aria-hidden": "true" }
+        },
+        "range": { "box": "320x16px", "attributes": { "aria-label": "Valor de --p" } }
+      },
+      "measuredFills": "24/240 = 0.1, 108/240 = 0.45, 240/240 = 1, 160/258 = 0.62, 96/320 = 0.3",
+      "role": "Documented web cases: the 0-1 custom property with percent ARIA values, the edge placement and an interactive value input.",
+      "decisionImpact": "The preview itself announces percent (aria-valuenow 10/45/100 for --p 0.1/0.45/1), which is the evidence behind the approved 0-100 public scale; the fraction survives in the design system only as the private --eg-progress-value."
+    }
+  ],
+  "notCaptured": [
+    {
+      "visualId": "web lg goal bar and muted comparison series",
+      "reason": "Neither exists in the Pulso page: the 10px goal bar came from egdev-live and the muted series from Criterio. Foundation has no preview row for either, so nothing was fabricated; the design-system sizes are covered by its own approved board (VIS-01/VIS-02)."
+    },
+    {
+      "visualId": "labelled web progressbar from the live page",
+      "reason": "Every bar in the live page is decorative (aria-hidden). The labelled case exists only in the Foundation preview values row, captured in VIS-06."
+    },
+    {
+      "visualId": "design-system implementation",
+      "reason": "This version is documentation only; the current implementation is not approved expected design and captured implementation would add no evidence for the mapping decision."
+    }
+  ],
+  "limits": [
+    "The captures show the web's local .tips-prog/.fab-prog markup, which writes the fraction differently from the Foundation .eg-progress component (in-place width/translate versus scaleX). They are evidence for the rendered values, not approved expected design for the ProgressBar recipe.",
+    "VIS-03 is a padded clip rather than an element crop because the strip is two pixels tall; the 10% fill width and the translateX offset are recorded in the observed styles so the arithmetic can be re-checked without pixels.",
+    "The tips rail images are Jinja placeholders in the source and fail to load; the VIS-03 crop excludes the cards and VIS-04 captures the controls row, so no broken image is shown.",
+    "In the /tmp harness document.fonts.check('600 13px Barlow') returned false while the condensed 600 check returned true; only the small .meta captions use the sans family and the bars themselves are CSS.",
+    "VIS-06 records live JavaScript state from the preview's range input script (30 of 100), not a static design value.",
+    "Browser images do not verify behaviour, accessibility, keyboard or focus behaviour.",
+    "PNG bytes can differ between runs of the same script (scroll-dependent compositing); the hashes above are of the files stored in this folder and must be re-verified with sha256sum before linking them in any published comment."
+  ],
+  "approval": {
+    "status": "Proposed",
+    "reference": "Pending: the owner approves or declines these captures as supporting evidence for ProgressBar v0.2 in issue #65. The captures are source evidence and grant no expected-design approval."
+  }
+}
