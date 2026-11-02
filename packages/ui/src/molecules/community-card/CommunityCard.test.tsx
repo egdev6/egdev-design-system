@@ -301,6 +301,21 @@ describe('CommunityCard public contract', () => {
     expect(article).toHaveClass('overflow-hidden');
   });
 
+  it('applies the authorized static 48rem responsive padding variants (responsive amendment)', () => {
+    render(
+      <CommunityCard title='Pulso' eyebrow='Open community'>
+        {body}
+      </CommunityCard>
+    );
+    const article = screen.getByRole('article', { name: 'Pulso' });
+    const topRow = article.querySelector('.eg-community-card__band')?.children[0] as HTMLElement;
+    expect(topRow).toHaveClass('px-6', 'py-4', 'min-[48rem]:px-8', 'min-[48rem]:py-5');
+    expect(topRow.className).not.toContain('md:');
+    const bodyZone = article.children[1] as HTMLElement;
+    expect(bodyZone).toHaveClass('p-6', 'min-[48rem]:p-8');
+    expect(bodyZone.className).not.toContain('md:');
+  });
+
   it('partitions children once: the first hoisted marks are the mark parts, the rest stay in order (CC-05)', () => {
     render(
       <CommunityCard title='Pulso' eyebrow='Open community'>

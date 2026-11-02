@@ -30,6 +30,9 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   // TerminalCard redeclares children/className with own annotations; the Omit'd native
   // intersection only re-admits these remaining documented native div rows.
   terminalCard: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'onClick'],
+  // CommunityCard redeclares children/className with own annotations; style is protected
+  // (spec §3), so the Omit'd native intersection only re-admits these documented article rows.
+  communityCard: ['id', 'dir', 'lang', 'aria-describedby', 'onClick'],
   projectCard: ['id', 'dir', 'lang', 'aria-describedby', 'style', 'onClick'],
   timeline: ['id', 'title', 'aria-describedby', 'aria-busy', 'className', 'style', 'onClick'],
   table: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick'],

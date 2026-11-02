@@ -45,7 +45,7 @@ const wordmark = (
     <span
       role='img'
       aria-label='Stack and Flow'
-      className='flex size-16 shrink-0 items-center justify-center rounded-lg border border-border-hairline bg-surface-0 text-center font-display text-xs leading-tight font-extrabold'
+      className='flex size-16 shrink-0 items-center justify-center rounded-lg border border-border-hairline bg-surface-0 text-center font-display text-xs leading-tight [font-weight:var(--text-heading-section--font-weight)]'
     >
       STACK &amp; FLOW
     </span>

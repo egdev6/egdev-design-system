@@ -6,6 +6,8 @@ export type CommunityCardLevel = 2 | 3 | 4 | 5 | 6;
 
 type CommunityCardNativeProps = Omit<
   ComponentPropsWithoutRef<'article'>,
+  | 'children'
+  | 'className'
   | 'title'
   | 'role'
   | 'tabIndex'
@@ -100,9 +102,10 @@ export const communityCardVariants = cva(
 /** Tonal header band: top radius and bottom hairline, kept inside the rounded frame by the root. */
 export const communityCardBandVariants = cva('eg-community-card__band border-b border-border-hairline rounded-t-xl');
 
-/** Top row inside the band; collapses to its single supplied child. */
+/** Top row inside the band; collapses to its single supplied child. The 48rem breakpoint is the
+ * owner-authorized local variant (responsive amendment): the token theme defines no default md. */
 export const communityCardTopRowVariants = cva(
-  'flex min-w-0 items-center justify-between gap-3 px-6 py-4 md:px-8 md:py-5'
+  'flex min-w-0 items-center justify-between gap-3 px-6 py-4 min-[48rem]:px-8 min-[48rem]:py-5'
 );
 
 /** Consumer mark slot on the trailing edge; a consumer image keeps its aspect inside the cap. */
@@ -113,9 +116,10 @@ export const communityCardMarkVariants = cva(
 /** Display name typography, independent of the heading rank. */
 export const communityCardTitleVariants = cva('m-0 min-w-0 wrap-anywhere text-title-section text-fg-default');
 
-/** Body zone: the frame's large padding step and inherited copy typography. */
+/** Body zone: the frame's large padding step and inherited copy typography. The 48rem breakpoint
+ * is the owner-authorized local variant (responsive amendment): no default md token breakpoint. */
 export const communityCardBodyVariants = cva(
-  'flex min-w-0 flex-col gap-4 p-6 text-body-default text-fg-secondary md:p-8'
+  'flex min-w-0 flex-col gap-4 p-6 text-body-default text-fg-secondary min-[48rem]:p-8'
 );
 
 /** Bottom-edge zone for the card's single supplied action; engages when the host stretches the card. */

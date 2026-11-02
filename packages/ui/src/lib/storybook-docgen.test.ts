@@ -825,6 +825,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/chip-group',
       './molecules/collapsible',
       './molecules/command-palette',
+      './molecules/community-card',
       './molecules/dialog',
       './molecules/field',
       './molecules/gauge-group',
@@ -886,6 +887,9 @@ describe('Storybook TypeScript docgen contract', () => {
       'CollapsibleContent',
       'CollapsibleTrigger',
       'CommandPalette',
+      'CommunityCard',
+      'CommunityCardAction',
+      'CommunityCardMark',
       'Countdown',
       'Dialog',
       'DialogClose',
@@ -4306,6 +4310,131 @@ describe('PreviewFrame metadata contract', () => {
     }
     for (const prop of ['ref', 'asChild', 'dangerouslySetInnerHTML', 'style', 'onClick']) {
       expect(props[prop], prop).toBeUndefined();
+    }
+  }, 20_000);
+});
+
+describe('CommunityCard metadata contract', () => {
+  // All three public types share the same control map; every own declaration is annotated once.
+  const controls: Record<string, string> = {
+    title: 'text',
+    level: 'select',
+    eyebrow: 'text',
+    children: 'false',
+    className: 'text'
+  };
+  const parts: { name: string; native: string[]; own: string[] }[] = [
+    {
+      name: 'CommunityCard',
+      // TerminalCard pattern: the protected Omit strips style; only documented native article rows remain.
+      native: ['id', 'dir', 'lang', 'aria-describedby', 'onClick'],
+      own: ['title', 'level', 'eyebrow', 'children', 'className']
+    },
+    { name: 'CommunityCardMark', native: [], own: ['children', 'className'] },
+    { name: 'CommunityCardAction', native: [], own: ['children', 'className'] }
+  ];
+
+  it('annotates every own declaration and binds false-control reasons to real stories', () => {
+    const file = ast(source('molecules/community-card/types.ts'));
+    const properties = ownProps(file, ['CommunityCardProps', 'CommunityCardMarkProps', 'CommunityCardActionProps']);
+    expect(properties).toHaveLength(9);
+    expect([...new Set(properties.map((property) => property.name.getText(file)))].sort()).toEqual(
+      Object.keys(controls).sort()
+    );
+    const stories = ast(source('molecules/community-card/CommunityCard.stories.tsx'));
+    const names = exportedStoryNames(stories);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      const values = (tag: string) =>
+        tags.filter((item) => item.tagName.text === tag).map((item) => ts.getTextOfJSDocComment(item.comment));
+      expect(values('control'), name).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        const reason = values('controlReason')[0] ?? '';
+        expect(reason, name).not.toBe('');
+        expect(
+          names.some((story) => reason.includes(story)),
+          name
+        ).toBe(true);
+      }
+      if (!property.questionToken) {
+        expect(
+          tags.some((item) => item.tagName.text === 'default'),
+          `${name} required default`
+        ).toBe(false);
+      }
+    }
+    expect(names).toEqual([
+      'Default',
+      'WithImageMark',
+      'WithWordmarkMark',
+      'DecorativeMark',
+      'WithoutEyebrow',
+      'WithButton',
+      'WithLink',
+      'HeadingRanks',
+      'LongContent',
+      'Widths'
+    ]);
+    expect(stories.getText()).toMatch(/title: 'Molecules\/CommunityCard'/);
+    expect(stories.getText()).not.toMatch(/\bargTypes\s*:|\bplay\s*:/);
+  });
+
+  it('extracts required parts, the finite level enum and only documented native article rows', () => {
+    const extracted = parser.parse(source('molecules/community-card/CommunityCard.tsx'));
+    for (const { name, native, own } of parts) {
+      const doc = extracted.find((item) => item.displayName === name);
+      if (!doc) {
+        throw new Error('Missing real docgen for ' + name);
+      }
+      expect(Object.keys(doc.props).sort(), name).toEqual([...own, ...native].sort());
+    }
+    const doc = extracted.find((item) => item.displayName === 'CommunityCard');
+    expect(doc).toBeDefined();
+    expect(doc?.props.title).toMatchObject({ required: true, type: { name: 'string' }, defaultValue: null });
+    expect(doc?.props.eyebrow).toMatchObject({ required: false, type: { name: 'string' }, defaultValue: null });
+    expect(doc?.props.level).toMatchObject({
+      required: false,
+      defaultValue: { value: '3' },
+      tags: { control: 'select' }
+    });
+    expect(doc?.props.level?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      '2',
+      '3',
+      '4',
+      '5',
+      '6'
+    ]);
+    expect(doc?.props.children).toMatchObject({ required: false, tags: { control: 'false' } });
+    expect(doc?.props.className).toMatchObject({
+      required: false,
+      type: { name: 'string' },
+      defaultValue: null,
+      tags: { control: 'text' }
+    });
+    for (const part of ['CommunityCardMark', 'CommunityCardAction']) {
+      const partDoc = extracted.find((item) => item.displayName === part);
+      expect(partDoc?.props.children, part).toMatchObject({ required: true, tags: { control: 'false' } });
+      expect(partDoc?.props.className, part).toMatchObject({ required: false, tags: { control: 'text' } });
+    }
+    expect(defaults(source('molecules/community-card/useCommunityCard.ts'), false)).toEqual({ level: '3' });
+    expect(publicAPI.CommunityCard).toBeDefined();
+    expect(publicAPI.CommunityCardMark).toBeDefined();
+    expect(publicAPI.CommunityCardAction).toBeDefined();
+    for (const name of [
+      'useCommunityCard',
+      'useCommunityCardMark',
+      'useCommunityCardAction',
+      'communityCardVariants',
+      'communityCardBandVariants',
+      'communityCardTopRowVariants',
+      'communityCardMarkVariants',
+      'communityCardTitleVariants',
+      'communityCardBodyVariants',
+      'communityCardActionVariants',
+      'CommunityCardNativeProps'
+    ]) {
+      expect(name in publicAPI, name).toBe(false);
     }
   }, 20_000);
 });
