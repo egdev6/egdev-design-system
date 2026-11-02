@@ -1,0 +1,175 @@
+# ProjectCard — v0.1 proposal (new issue body, prepared, not posted)
+
+**Readiness: Draft — not ready for implementation.** OQ-1 to OQ-5 are open blocking choices, and the proposal depends on registry conventions that are still pending. Posting this body authorizes no code, plan, token, dependency or catalog change, and creates no publication permission.
+
+## Snapshot identity
+
+- `version: 0.1`
+- `contentSHA256: 9ffcf761634d14c0fc5d556584c0083fec601acde2c20aaf13b169e46aa6adf2` (SHA-256 over the canonical payload below, from the level-2 `1. Purpose and scope` heading line through EOF, LF line endings, final newline; tracking metadata above that heading is excluded)
+- `visualHashes: VIS-01 76b898745365c333865b8e206f4f14d99c5d54919b4b0115dcdf3b9489a1a781`
+- `approvalReference: Pending (Draft v0.1)`
+- `canonicalIssue: this new issue is the canonical issue for ProjectCard; later versions must be authorized comments, never body edits or one issue per version`
+- `latestPublishedComment: Pending (nothing published)`
+
+## Catalog authority and reason
+
+- Catalog decision (already approved, not re-opened here): `docs/components/web-catalog/v0.1/cataloging-draft.md` §4 lists **ProjectCard** as a new molecule in `@egdev/ui` with no domain defaults; `docs/components/web-catalog/v0.1/owner-approvals.md` records the owner's 2026-11-02 approval of that draft; `docs/CATALOGO.md` carries the row with action `mover` and composes `Surface, Badge, Link`.
+- Cadence and evidence authority: `odd/tasks/web-catalog.md` L6 (one versioned issue per component, Foundation previews captured read-only) and L15 (batch 1 = ProjectCard, NowCard, TerminalCard).
+- Reason: the web renders `.eg-project-card`/`.proj` only as page markup; `@egdev/ui` exports no project card. `ModuleCard`, `ListItem card` and `Stat` were reviewed and do not cover an editorial index, an eyebrow/kicker, a static technology chip list, a code sample and a signature variant without changing their published contracts.
+
+## Proposed API summary (details in the snapshot)
+
+- Root `ProjectCard` (`article`): `title` (required), `level` (2–6, default 3), `eyebrow?`, `index?` (decorative, `aria-hidden`), `variant` (`default` | `featured`), `size` (`md` | `sm`), plus free body `children`.
+- Parts: `ProjectCardTags` (`items: string[]` → static `Chip` list), `ProjectCardCode` (`label` + `items` of `{ text, kind }`), `ProjectCardFooter` (exactly one consumer action).
+- Reuses `surfaceVariants` (raised `surface-1`, elevation 1, radius `xl`), `Chip mode="static"`, `Link variant="underlined"`, `Badge`, `Icon`, and the token type recipes; no new dependency, no Radix primitive, no stylesheet.
+- Registry: approved entries `heading-title`, `heading-level`, `heading-eyebrow`, `visual-treatment`, `preset-dimensions`, `collection-items`, `accessible-name`. One **proposed** convention, pending owner approval and not registered yet: `decorative-index` / `index`.
+- `No stylesheet`: every role is expressible with token-backed utilities over the public Surface recipe.
+
+## Visual references and asset status
+
+`docs/components/project-card/v0.1/capture.json` holds the harness, source paths, conditions and SHA-256.
+
+- VIS-01 — `docs/components/project-card/v0.1/project-card--variants--1280x1400--dark.png`, from `ProjectCard/preview.html` (source SHA-256 `bdffc1b7720d489b0f9caa290061da2749a5d670db17f49432239749cd59f9f6`).
+- Conditions: 1280×1400 viewport, device scale factor 2, `chrome-headless-shell` (Playwright 1.60.0), dark colour scheme, `prefers-reduced-motion: no-preference`, animations disabled, Google Fonts loaded before capture, element screenshot of the preview board. Resting and `is-hover` states only.
+
+**Image handoff: Pending and blocked.** Local PNGs are not GitHub-visible. The owner must choose either human attachment (upload the exact PNG and return its URL) or a bounded, separately authorized asset-publication branch; the published bytes must be compared against the hash above before any image is linked here. No URL is invented and no commit, push or upload is implied.
+
+## What approval of this proposal would mean
+
+Adopting v0.1 as the ProjectCard contract (anatomy, API, behavior, accessibility, appearance and acceptance criteria) and adopting or declining VIS-01 as supporting expected-design evidence. It would not approve an implementation plan, tokens, dependencies, the pending `decorative-index` convention globally, or any catalog-row change. Answers needed: OQ-1 (featured background), OQ-2 (outlined decorative index), OQ-3 (`size="sm"` must not hide content), OQ-4 (no hover lift on a passive card), OQ-5 (isotype pixel artwork deferred) — each with a recommendation at the end of the snapshot.
+
+---
+
+## Full snapshot (canonical payload, SHA-256 `9ffcf761634d14c0fc5d556584c0083fec601acde2c20aaf13b169e46aa6adf2`)
+
+## 1. Purpose and scope
+
+- **Need:** one reusable project card in `@egdev/ui` so a new web view can present open-source projects, tools and experiments without copying the page-only markup. The card carries an optional decorative index, an optional eyebrow, a heading, free body copy, an optional technology chip list, an optional code sample and one footer action. No copy, link, project name, technology name or code line is built in: everything arrives through props or slots.
+- **Non-goals:** not a grid (`ProjectsGrid` is an approved **composition recipe**, not an export); not an article card (`ArticleFeature`/`ArticleItem` are separate, later catalog rows); not the current-status card (`NowCard` is its own molecule); not a whole-card link (the web card is passive and its footer holds the only action); no isotype artwork animation, no statistics, no images, no tags with icons, no routing, no analytics, no data fetching and no project model.
+- **Cataloging decision / alternatives:** **new** molecule, per [cataloging-draft.md §4](../web-catalog/v0.1/cataloging-draft.md) and the `ProjectCard` row in `docs/CATALOGO.md` (action `mover`, source `ProjectCard (molécula)`, composes `Surface, Badge, Link`). Rejected alternatives: *reuse* (`ModuleCard` is a passive named module summary with a status Badge and a utility footer, but it has no decorative index, no eyebrow/kicker, no chip list, no code sample and no signature variant; `ListItem card` is a list/snapshot card with media, meta and status snapshots; `Stat` is one figure); *variant* (adding an index, a chip list and a code sample to `ModuleCard` or `ListItem` would change their responsibility and their published `variant` unions); *compose* (a page-level composition would re-implement the same frame, index, chip list, code well and footer on every new web view, which is exactly what the approved web-consumer amendment removes); *extract* (nothing inside an existing component hides a project card).
+- **Evidence / level and package:** molecule in `@egdev/ui`, proposed `packages/ui/src/molecules/project-card/`. The level follows the responsibility: two or more coordinated concepts (decorative index + heading + body + chip list + code + one action) that only work as a unit, with no page-section or high-level navigation responsibility. Verified public React API inspected in this working tree: `packages/ui/src/index.ts` (whole file, `sha256:f85891be7d1d2ffc6d6788c9a06d87c70466213a227dec2abbd2235d2be6bd24`), `packages/ui/src/primitives/surface/types.ts` (`Surface`, `surfaceVariants`, `sha256:26d0726b5034dceb74e0067c1c0df5108d351e948205bbf22b5e187b92d9c0b6`), `packages/ui/src/molecules/module-card/types.ts` and `useModuleCard.ts` (banded card precedent, `sha256:ed7adc13e5eb72795fbfdd83ee8108b291cefd94708e6b4f3642293357139c53` / `sha256:4e279badd7163d0c1603ececa5eebffdb4a7645af43654c70196f797993aa8ce`), `packages/ui/src/primitives/text/types.ts` (`Text`, `Heading`, `sha256:badce40976a01fb4c0079a1481c5ba2fcdf88c10dd2bee6556244991fdfd21c9`), `packages/ui/src/atoms/chip/types.ts` (`mode: 'static'`, `sha256:aac605536ebb3fce3185c76418509c18641a008a1f65d4488e39e648bd992b7a`), `packages/ui/src/atoms/link/types.ts` (`variant: 'underlined'`, `sha256:b5e5ba0b47c7e53c9a3759888c1d746a82596537fd3834d1ca3dd2a4b05503f3`), `packages/ui/src/atoms/badge/types.ts`, `packages/ui/src/atoms/icon/types.ts` (`terminal`, `hammer`, `compass`, `radio`, `arrow-up-right` exist in the closed glyph set), `packages/ui/src/molecules/list-item/types.ts` (`ListItemTitle` precedent for a heading part) and `packages/ui/src/molecules/panel/usePanel.ts` (band precedent, `sha256:941368560688af0b54cd7559004209d42757ab6a0357180ccb7f5024ab876ffb`).
+- **Web evidence (read-only, owner-granted root):** `egdev-foundation/design-system/components/ProjectCard/README.md` (`sha256:fbe82f234a19aa98121d81c5c84379e8150603f209fac86a7924352ffa0d46da`) and `preview.html` (`sha256:bdffc1b7720d489b0f9caa290061da2749a5d670db17f49432239749cd59f9f6`); `ProjectsGrid/README.md` (`sha256:0ac351241afd391311604c696706ae49d97d7f632e9163f48387c1f9468bf1e1`); real usage in `egdev-foundation/reference-web/pulso-source.html` lines 918–945 (`.proj.feat` + two `.proj` in `.build-grid`) and its own CSS at lines 198–204 of `ProjectCard`-related rules; compiled recipes in `design-system/components/bundle.css` (`.eg-project-card` at line 283, `--feat` at 297–301, `--compact` at 303–308, mobile at 310–313). The web card is **glass** (`--color-bg-glass` + `--blur-glass` + `--shadow-card`) on the black canvas; Material v2 prescribes solid tonal cards in the grey register, so the DS frame is the raised `surface-1` recipe (see §6).
+
+## 2. Anatomy and composition
+
+| Part | Responsibility | Native element / Radix primitive | Allowed content |
+| --- | --- | --- | --- |
+| `ProjectCard` root | Article frame, Material surface, generated heading and the decorative index/eyebrow | `article` | Required `title`, optional `index`/`eyebrow`, then the free body flow (body copy, `ProjectCardTags`, `ProjectCardCode`, `ProjectCardFooter`) |
+| Index (root prop `index`) | Decorative outline number that gives the card its editorial rank | Internal `span`, `aria-hidden="true"` | Short string such as `01`; rendered only when supplied |
+| Eyebrow (root prop `eyebrow`) | Uppercase context line above the heading | Internal `span` | Short string such as a category line; rendered only when supplied |
+| Heading (root prop `title` + `level`) | Readable card title and the article's accessible name | `h2`–`h6` selected by `level` | One plain text run; blank titles warn in development and render nothing (ModuleCard precedent) |
+| `ProjectCardTags` | Ordered technology labels | `ul` > `li` > `Chip mode="static"` | `items` of short labels; no icons, no links, no controls |
+| `ProjectCardCode` | Optional sample command block in a mono well | `pre` | `items` of code lines with an optional `kind`; a required accessible `label`; never executable, never focusable |
+| `ProjectCardFooter` | Footer zone for the card's single action | `div` | Exactly one `Link` (or one `Button`) supplied by the consumer; never two competing actions |
+
+- **Radix / composition:** no Radix primitive is needed. The card is passive: it owns no keyboard model, no focus trap and no selection, so there is no primitive to delegate to and none is invented. The footer action keeps native/Router anchor semantics through the existing `Link` atom (which already composes `@radix-ui/react-slot`). No new dependency, no `asChild` on the card and no nested interactive controls.
+- **Public markers:** `eg-project-card` is the stable public root. Parts use `eg-project-card__tags`, `eg-project-card__code`, `eg-project-card__foot`. The decorative index and eyebrow are internal spans whose classes are not a public override surface. No existing ClassBEM/legacy consumer is migrated: the web keeps `.eg-project-card`/`.proj` until an explicitly approved parity migration.
+- **Reading order:** DOM order equals visual order — index, eyebrow, heading, body copy, tags, code, footer. The decorative index and eyebrow never reorder against the heading.
+
+## 3. Public API
+
+| Prop / event | Type | Required | Default or rule | Description |
+| --- | --- | --- | --- | --- |
+| `title` | `string` | yes | — | Visible heading text and the article's accessible name. Blank/whitespace warns in development and renders nothing. |
+| `level` | `2 \| 3 \| 4 \| 5 \| 6` | no | `3` | Native heading rank only; the visual step follows the variant and size, never the rank. |
+| `eyebrow` | `string` | no | none (omitted) | Optional uppercase context line above the heading. Whitespace-only renders nothing. |
+| `index` | `string` | no | none (omitted) | Optional decorative outline number (`01`). Never announced, never part of the card's name. |
+| `variant` | `'default' \| 'featured'` | no | `default` | `featured` is Material's signature card: brand edge, signature halo and brand index ink. At most one per view is a consumer rule, not enforced. |
+| `size` | `'md' \| 'sm'` | no | `md` | Density preset: `sm` is the ProjectsGrid desktop density (smaller padding, index and heading steps). It never hides supplied content. |
+| `children` | `ReactNode` | no | none | Free body flow in reading order: paragraphs, then `ProjectCardTags`/`ProjectCardCode`/`ProjectCardFooter`. |
+| `ProjectCardTags.items` | `string[]` | yes (on the part) | — | Ordered technology labels; each renders as one static `Chip` inside a list item. Empty array renders an empty list and should be omitted instead. |
+| `ProjectCardCode.label` | `string` | yes (on the part) | — | Accessible name of the code block; also the only description screen readers get, since the block is passive text. |
+| `ProjectCardCode.items` | `ProjectCardCodeLine[]` (`{ text: string; kind?: 'command' \| 'comment' }`) | yes (on the part) | `kind` defaults to `command` | Ordered code lines. `command` lines show a decorative brand prompt glyph; `comment` lines render muted. |
+| part `className` | `string` | no | — | Local layout only (grid placement, margin, width) per part; no appearance overrides, no hidden content, no reordering. |
+
+- **Prop conventions:** [canonical registry](../../../../skills/_shared/prop-naming.json) and [generated view](../../../prop-naming.md), looked up by meaning and alias before drafting. Applied approved entries: `title` → `heading-title`; `level` → `heading-level`; `eyebrow` → `heading-eyebrow` (same meaning as `SectionHeader.eyebrow`; the Foundation name “kicker” is not reused); `variant` → `visual-treatment` (the `default`/`featured` family stays inside “visual treatment within a component's responsibility”, following the `banded` precedent); `size` → `preset-dimensions` (same density meaning as `Notice` `md | sm`); `items` → `collection-items` (ordered entries a composite renders, as in `Menu`/`ChipGroup`); `ProjectCardCode.label` → `accessible-name`; `ProjectCardCodeLine.kind` reuses the field name of `menu-entry-kind` with a component-specific meaning (a nested data field, not a control convention).
+- **Proposed new convention (pending owner approval, not registered):** semantic ID `decorative-index`, name `index`, meaning “a short decorative ordinal rendered before a content unit's heading and hidden from assistive technology”, component-specific type `string`. The registry is not edited by this task: `skills/_shared/prop-naming.json` and `docs/prop-naming.md` are outside this task's edit surface, and a usage needs a `source` revision for a `types.ts` that does not exist yet. No exception is requested and no convention status changes.
+- **Native props / refs:** the root forwards native `article` attributes (`data-*`, `aria-*` outside the protected set) and is merged last through `cn()` for outer layout only. `role`, `tabIndex`, `aria-label`/`aria-labelledby` (the heading names the article), `aria-pressed`/`aria-selected` and `style` are protected, following the `ModuleCard` policy. No ref, no `asChild`: the card is passive and its children are not cloned.
+- **Controlled / uncontrolled:** Not applicable. The card holds no state, no timers and no controls of its own.
+- **Compatibility:** new export surface (`ProjectCard`, `ProjectCardTags`, `ProjectCardCode`, `ProjectCardFooter` and their types) added to `packages/ui/src/index.ts` under Molecules. Nothing existing changes; no token, dependency or legacy-class migration is proposed. React 18/19 consumption is a plan gate, not a claim of this draft.
+
+## 4. Behavior
+
+| Initial state / action | Expected result | Emitted event |
+| --- | --- | --- |
+| Card rendered with `title` only | Frame, heading and nothing else; no empty zones or placeholder boxes | none |
+| `index` supplied | Decorative outline number above the eyebrow, `aria-hidden`, absent from the accessible name | none |
+| `eyebrow` supplied | Uppercase context line between index and heading | none |
+| `title` blank or whitespace-only | Development warning; the card renders nothing at all (no unnamed article) | none |
+| `variant="featured"` | Signature finish: brand edge, signature halo, brand index ink; no layout change versus `default` | none |
+| `size="sm"` | Smaller padding and smaller index/heading steps; every supplied part still renders, including the code block | none |
+| Long title, long body copy or many tags | Text wraps at word boundaries; tags wrap to the next line; nothing is truncated, clamped or replaced by a tooltip | none |
+| `ProjectCardCode` with `kind: 'comment'` / `'command'` | Comment lines render muted without a prompt glyph; command lines render with the decorative brand prompt glyph | none |
+| Consumer activates the footer `Link` | Native/Slot anchor navigation; the card itself stays non-interactive | Router/native event from the consumer's own element |
+| Pointer over the card body | No movement, no glow change and no pointer cursor: a passive card must not look clickable | none |
+
+- **States / representation:** no own `data-state`. The variant and size are reflected as `data-variant`/`data-size` on the root so parts can read them; there is no state machine, no hover state in JS and no mirrored state class.
+- **Limits / consumer responsibilities:** the consumer supplies every string and the footer action, decides `<ul>`/grid placement around cards, keeps at most one `featured` card per view (Material rule 7) and formats its own index values. The card never fetches, sorts, links or animates the isotype artwork.
+
+## 5. Accessibility
+
+- **Accessible name / roles / relationships:** the root is a native `article` named by its generated heading through `aria-labelledby` with a `useId()` id; the heading element is chosen by `level` so a card grid keeps a valid outline. The decorative index, the eyebrow and the prompt glyph are inside `aria-hidden` spans and never join the name. `ProjectCardTags` is a real `ul` of `li` items.
+- **Keyboard / focus:** the card adds no tab stop and no key handler. The only focusable element is the consumer's footer `Link`/`Button`, which owns its native focus ring (`--shadow-focus`) and its own hover/focus affordances. No nested interactive controls exist, so there is never overlapping activation.
+- **Announcements / other conditions:** no live region and no synthesized announcement. `ProjectCardCode` is passive text carrying a required `label`, so assistive technology identifies the sample; its lines are not a `code`/`kbd` command API. The status of a project is never colour-only: any such state must be supplied as text (for example a `Badge`) inside the body, because the card has no status semantics of its own.
+- **Touch targets:** the footer action owns its own target; the card does not enlarge or shrink it. Tags are static labels, not targets.
+
+## 6. Appearance
+
+| Variant axis | Allowed values | Default or rule | Combinations / restrictions |
+| --- | --- | --- | --- |
+| `variant` | `default`, `featured` | `default` | `featured` changes ink, edge and halo only; it never changes anatomy or content. One per view is the consumer's rule |
+| `size` | `md`, `sm` | `md` | Both sizes render every supplied part; no content is hidden or clamped by density |
+| `level` | `2`–`6` | `3` | Rank never changes the visual step |
+
+- **Tokens / Material:** the root composes the public `surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'md', radius: 'xl' })` recipe — the same raised Grafito frame as `ModuleCard`/`ListItem` — and own layout classes (`flex flex-col gap-4`). `featured` adds only `border-border-brand` plus `shadow-[var(--shadow-hot)]` (Material's signature card token) and brand ink for the index; the signature background `--gradient-hot` is **not** applied in v0.1 (OQ-1). Typography comes from existing recipes only: `text-label-eyebrow` for the eyebrow, `text-title-display` with tabular numerals for the decorative index, `text-heading-small` for the heading, `text-body-large text-fg-secondary` for body copy, `font-mono text-code` on the `well` recipe for the code block, and the `Chip` static recipe for tags. The web's glass paint (`--color-bg-glass` + `--blur-glass` + `--shadow-card` over the black canvas) is replaced by the solid tonal frame that Material v2 prescribes for the grey register; that substitution is an allowed difference, not a new recipe.
+- **Dynamic geometry:** Not applicable. No custom property, no interpolated class string and no inline geometry is introduced. The decorative outline index needs one non-utility property — `-webkit-text-stroke` with `var(--border-width)` and a brand colour token — recorded as OQ-2; it carries no hardcoded colour, spacing or font, and it is not a stylesheet.
+- **Motion:** the card itself has no transition, no transform and no animation (see OQ-4); the only motion belongs to the supplied `Link`. Anything added later must be suppressed under `prefers-reduced-motion` and must not animate layout.
+- **Class composition / consumer layout:** the root merges `className` last through `cn()` for outer grid placement, margin and width; parts merge their own `className` last for local layout. `twMerge` resolves recognised utility conflicts only: there is no universal last-class-wins promise, no appearance-override permission and no per-instance recipe. `surfaceVariants` remains the appearance API.
+- **Files / pending proposals:** the six mandatory files are planned at `packages/ui/src/molecules/project-card/` — `types.ts` (CVA recipes, `ProjectCardProps`, `ProjectCardTagsProps`, `ProjectCardCodeProps`, `ProjectCardFooterProps`, English JSDoc with `@control` on every own declaration), `useProjectCard.ts` (normalization, protected props, derived heading id, per-part `cn()`), `ProjectCard.tsx` (JSX only), `ProjectCard.test.tsx`, `ProjectCard.stories.tsx` (`Molecules/ProjectCard`, English) and `index.ts`. **No stylesheet** and no extra internal module: every role is expressible with token-backed utilities over `surfaceVariants`. No token or dependency change is proposed.
+
+### Expected-design visual reference
+
+Captured for this draft on 2026-11-02 from the read-only Foundation preview through a `/tmp` harness that links `tokens.css` and `components/bundle.css` as `file://` URLs; no file inside `egdev-website` was modified.
+
+| Visual ID | Real image / descriptive English alt text | Variant / state / props | Source and version | Status / recoverable approval |
+| --- | --- | --- | --- | --- |
+| VIS-01 | `project-card--variants--1280x1400--dark.png` — two stacked boards: the top row pairs the large featured card (outlined `01`, isotype pixels top-right, uppercase kicker, large title, three-line body, two chips, a dark code well and an underlined footer link) with the smaller default card (outlined `02`, title, one-line body, two chips, footer link); the bottom row shows three compact cards, one hovered with brand glow | Project source → proposed `variant="featured"` + `variant="default"` at `size="md"`, and `size="sm"` for the ProjectsGrid density (hover state static) | `egdev-foundation/design-system/components/ProjectCard/README.md` + `preview.html` (SHA-256 `bdffc1b7720d489b0f9caa290061da2749a5d670db17f49432239749cd59f9f6`), previews built against `tokens.css` `1c92acb8…` and `bundle.css` `04797068…`; observed web design, not the DS implementation | Proposed |
+
+- **Conditions / provenance for VIS-01:** component-zone element screenshot of the preview board (`.pv`, the labelled grid containing every previewed state), viewport 1280×1400, device scale factor 2, `chrome-headless-shell` from Playwright 1.60.0 (`playwright-core`, Chromium 1243 build), colour scheme `dark`, locale `en-US`, `prefers-reduced-motion: no-preference`, animations disabled during the screenshot, Google Fonts loaded before capture (`document.fonts.ready`; loaded faces Barlow 400/600/700 and Barlow Condensed 600/700/800, JetBrains Mono 400). Board height observed 1046 px. Date, tool, source and per-file SHA-256 are recorded in `capture.json`.
+- **Intent / acceptance / pending evidence:** the editorial order (index → eyebrow → heading → copy → chips → code → link), the two densities and the signature identity must survive the port. Allowed differences: solid `surface-1` frame instead of the web's alpha-glass card; token type steps (`text-title-display`, `text-heading-small`) instead of raw 112–220 px / 24–32 px; `Badge`/`Chip` recipes instead of `.eg-chip`; `Link variant="underlined"` for the footer action; no isotype pixel artwork and no card-level hover lift in v0.1 (OQ-4/OQ-5); no `sm` content hiding (OQ-3). Related criteria: PC-01 to PC-10. Pending: owner adoption of VIS-01, a GitHub-visible image handoff and any comparison against an implementation. Until then visual conformity is **Not evaluated**; captures never replace behavior or accessibility tests.
+
+## 7. Acceptance criteria
+
+| ID | Observable promise | Planned test / method | Planned story / visual check | Observed evidence |
+| --- | --- | --- | --- | --- |
+| PC-01 | The card renders `article` > heading with `level` rank, named by that heading through `useId()` | Render assertions on role, heading element and `aria-labelledby` | `Default`, `HeadingRanks` | Pending |
+| PC-02 | Blank or whitespace-only `title` warns in development and renders nothing | Unit case on normalization; no unnamed article in the DOM | `InvalidTitle` (documented, not a story) | Pending |
+| PC-03 | `index` and `eyebrow` render only when supplied and stay out of the accessible name; the index is `aria-hidden` | Render plus `toHaveAccessibleName` assertions | `Variants` with VIS-01 | Pending |
+| PC-04 | `variant="featured"` adds the brand edge, `--shadow-hot` and brand index ink without changing anatomy; `default` keeps the raised frame | CVA/class assertions per variant | `Variants` with VIS-01 | Pending |
+| PC-05 | `size="sm"` reduces padding and index/heading steps and still renders `ProjectCardCode` | Class assertions plus a render case with code in both sizes | `Sizes` | Pending |
+| PC-06 | `ProjectCardTags` renders a `ul`/`li` list of static `Chip` labels and no interactive control | Render assertions on list semantics, chip mode and tab stops | `Tags` | Pending |
+| PC-07 | `ProjectCardCode` renders a `pre` named by `label`, command lines with the decorative prompt glyph (`aria-hidden`) and muted comment lines | Render assertions on `pre`, name, glyph visibility and per-line kind | `Code` | Pending |
+| PC-08 | The footer hosts exactly one supplied action and the card exposes no other tab stop | `userEvent` tabbing across a rendered card | `WithLink` | Pending |
+| PC-09 | Long copy, many tags and narrow hosts wrap without truncation, clamping or reordering | Render case with a long title/many tags at a narrow container | `LongContent` | Pending |
+| PC-10 | Every own prop carries English JSDoc with a supported `@control`/`@controlReason`, and the registered Controls enhancer reports no diagnostics | `storybook-docgen` / `storybook-controls` suites | Docs table review for `Molecules/ProjectCard` | Pending |
+
+### Spec closure
+
+- [ ] All seven blocks are complete or justified as Not applicable; no blocking promise decisions remain — **not closed**: OQ-1 to OQ-5 below.
+- [x] New/changed own props have registry lookup evidence and exact applied entry IDs; the single new proposal is marked pending and no exception or approval is invented.
+- [x] Proposals, verified implementation, planned checks and observed results are distinct; every promise has an acceptance ID and a method.
+- [x] VIS-01 identifies a real image with provenance, conditions and related criteria; it stays Proposed and visual conformity is Not evaluated.
+- [ ] Snapshot identity is recoverable and owner approval identifies this version, digest and visual hash — **pending owner approval**; status remains Draft.
+- [ ] A canonical component issue exists — **Pending**: this proposal is the body of a new issue (one issue per component), and later versions must be authorized comments, never body edits.
+
+**Next step:** the owner resolves OQ-1 to OQ-5 and approves or rejects v0.1 with its digest and VIS-01; only then does a separately approved implementation plan authorize code. This draft authorizes no code, no token or dependency change, no capture re-run, no remote publication and no terminal Git action.
+
+## Blocking decisions for the owner
+
+| ID | Question | Recommendation |
+| --- | --- | --- |
+| OQ-1 | Should `variant="featured"` also paint Material's signature background `--gradient-hot`, or only the brand edge, `--shadow-hot` and brand ink in v0.1? A `[background:var(--gradient-hot)]` utility cannot be layered over `surfaceVariants`' `bg-surface-1` without relying on emitted CSS order, and cloning the Surface recipe inside the card is forbidden. | Ship the edge/halo/ink version now and open a `hot` Surface tone (or another approved layering rule) as a separate primitive proposal; do not clone the frame or depend on cascade order. |
+| OQ-2 | Is the outlined decorative index acceptable as the single bounded non-utility property (`-webkit-text-stroke` with `var(--border-width)` and a brand token), or should the index render as plain brand-coloured text? | Keep the outline: it is the card's editorial identity, it uses only token values, and it is bounded to one property in one part. If rejected, the index becomes plain brand text with no card-level exception. |
+| OQ-3 | Must `size="sm"` hide the code block as the web's `--compact` does (`display:none`)? | No. Density must never hide supplied content; the consumer that wants the compact web look simply omits `ProjectCardCode`. |
+| OQ-4 | Should passive cards lift 4 px and glow on pointer hover as the web does, even though nothing activates on click? | No card-level hover movement on a passive card; only the supplied footnote action is interactive and it keeps its own hover/focus treatment. The featured halo is static. |
+| OQ-5 | Is the isotype “pixel” artwork (three brand polygons that separate on featured hover) part of this contract? | Defer it. It is Logo-family brand geometry that needs its own approved source and hover rule; v0.1 keeps the featured identity through edge, halo and index ink, and the decoration can arrive as a later amendment. |

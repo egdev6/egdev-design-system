@@ -1,0 +1,84 @@
+{
+  "component": "now-card",
+  "specVersion": "0.1",
+  "spec": "docs/components/now-card/v0.1/spec.md",
+  "specContentSHA256": "7bd00ad82db7e42f639972fc96dd7f86b0c1fdbf3b8bddeae655fdc5646f5e57",
+  "status": "Proposed — expected-design evidence for owner review; adoption and GitHub-visible publication pending. Visual conformity: Not evaluated.",
+  "capturedFrom": {
+    "authority": "odd/tasks/web-catalog.md L6 owner answer (render egdev-foundation preview.html read-only in Chromium; PNG + conditions + SHA-256 under docs/components/<name>/<version>/) and L15 batch-1 cadence",
+    "sourceRoot": "egdev-website/ (owner-granted read-only workspace root)",
+    "readOnly": true,
+    "notes": "No file inside egdev-website was edited. A throwaway harness under /tmp/egdev-sbcheck/ linked the Foundation stylesheets by file:// URL and embedded the original preview fragment unchanged."
+  },
+  "harness": {
+    "directory": "/tmp/egdev-sbcheck (scratch, outside the worktree; safe to delete)",
+    "script": "/tmp/egdev-sbcheck/capture-cards.mjs (derived from the layer-(b) /tmp/egdev-sbcheck/capture.mjs harness)",
+    "generatedPage": "/tmp/egdev-sbcheck/harness-cards-now-card.html",
+    "stylesheetLinks": [
+      "file://egdev-website/egdev-foundation/design-system/tokens.css",
+      "file://egdev-website/egdev-foundation/design-system/components/bundle.css"
+    ],
+    "stylesheets": [
+      {
+        "path": "egdev-website/egdev-foundation/design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e"
+      },
+      {
+        "path": "egdev-website/egdev-foundation/design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      }
+    ]
+  },
+  "conditions": {
+    "browser": "chrome-headless-shell (Playwright 1.60.0, chromium_headless_shell-1243 build)",
+    "tool": "playwright-core 1.60.0, launched with --allow-file-access-from-files --force-color-profile=srgb --hide-scrollbars",
+    "viewport": { "width": 1280, "height": 1400 },
+    "deviceScaleFactor": 2,
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "locale": "en-US",
+    "crop": "component zone: element screenshot of the preview board (.pv), the labelled grid containing every previewed state",
+    "animations": "disabled during the screenshot",
+    "fonts": {
+      "status": "loaded (document.fonts.ready awaited before the screenshot)",
+      "loadedFaces": [
+        "Barlow 400 normal",
+        "Barlow 600 normal",
+        "Barlow 700 normal",
+        "Barlow Condensed 600 normal",
+        "Barlow Condensed 700 normal",
+        "Barlow Condensed 800 normal"
+      ],
+      "unloadedFaces": "requested by the preview link but never used by the rendered markup, so reported as unloaded (expected)",
+      "source": "Google Fonts, requested by the original preview.html"
+    },
+    "resolvedTokens": {
+      "--color-bg-canvas": "#000000",
+      "--color-bg-glass": "rgba(255, 255, 255, 0.08)",
+      "--font-display": "\"Barlow Condensed\", \"Arial Narrow\", sans-serif",
+      "--font-mono": "\"JetBrains Mono\", ui-monospace, monospace"
+    },
+    "observedBoardHeight": "623.125 CSS px",
+    "date": "2026-11-02T14:47Z",
+    "verificationLimits": "Static resting and is-hover states only. No pointer-driven hover, focus-visible, reduced-motion, light-theme or below-860px capture was produced; the four-pixel meter visible in the capture is web-only and is not part of the v0.1 proposal. The capture is browser evidence of the current web design, not of a DS implementation."
+  },
+  "visuals": [
+    {
+      "id": "VIS-02",
+      "file": "now-card--variants--1280x1400--dark.png",
+      "pngSha256": "9fff262c4e7d6782e4cac2876388f59a71db3ebe99a5b1ae5f6a1b1efef91c23",
+      "pngBytes": 162552,
+      "pixelSize": { "width": 2560, "height": 1246 },
+      "alt": "Two rows of three status cards: the top row shows full density with a tinted status pill (Building, Exploring, Streaming), a large sans title, one or two lines of copy and a hairline-separated footer holding either a link plus a four-pixel meter or a bold next-date line plus a round icon action; the bottom row repeats the three-up compact density with one hovered card.",
+      "webComponent": "NowCard",
+      "source": {
+        "readme": "egdev-website/egdev-foundation/design-system/components/NowCard/README.md",
+        "readmeSha256": "3a8b8a674d6158d48a70182f5107befe8a1cf7011b06b954a26a29b3b9253abc",
+        "preview": "egdev-website/egdev-foundation/design-system/components/NowCard/preview.html",
+        "previewSha256": "4f8bb0701bea82891f95a5773b721f639447abe38834d8a3b048a40826351853",
+        "realUsage": "egdev-website/egdev-foundation/reference-web/pulso-source.html lines 888-911 (three .now-card.glass.card inside .now-strip)"
+      },
+      "mapsTo": "proposed NowCard size=\"md\" (top row) and size=\"sm\" (bottom row, the NowStrip density); badge composed from Badge, footer action from Link/IconButton, footer detail from NowCardDetail; the four-pixel meter is intentionally absent from v0.1 (OQ-1)"
+    }
+  ]
+}

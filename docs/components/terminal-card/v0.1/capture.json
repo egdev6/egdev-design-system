@@ -1,0 +1,77 @@
+{
+  "component": "terminal-card",
+  "specVersion": "0.1",
+  "spec": "docs/components/terminal-card/v0.1/spec.md",
+  "specContentSHA256": "f3272e420250e646e20dbe58d52dbd61799d944042069ea91db5b7e439135f8c",
+  "status": "Proposed — expected-design evidence for owner review; adoption and GitHub-visible publication pending. Visual conformity: Not evaluated.",
+  "capturedFrom": {
+    "authority": "odd/tasks/web-catalog.md L6 owner answer (render egdev-foundation preview.html read-only in Chromium; PNG + conditions + SHA-256 under docs/components/<name>/<version>/) and L15 batch-1 cadence",
+    "sourceRoot": "egdev-website/ (owner-granted read-only workspace root)",
+    "readOnly": true,
+    "notes": "No file inside egdev-website was edited. A throwaway harness under /tmp/egdev-sbcheck/ linked the Foundation stylesheets by file:// URL and embedded the original preview fragment unchanged."
+  },
+  "harness": {
+    "directory": "/tmp/egdev-sbcheck (scratch, outside the worktree; safe to delete)",
+    "script": "/tmp/egdev-sbcheck/capture-cards.mjs (derived from the layer-(b) /tmp/egdev-sbcheck/capture.mjs harness)",
+    "generatedPage": "/tmp/egdev-sbcheck/harness-cards-terminal-card.html",
+    "stylesheetLinks": [
+      "file://egdev-website/egdev-foundation/design-system/tokens.css",
+      "file://egdev-website/egdev-foundation/design-system/components/bundle.css"
+    ],
+    "stylesheets": [
+      {
+        "path": "egdev-website/egdev-foundation/design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e"
+      },
+      {
+        "path": "egdev-website/egdev-foundation/design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      }
+    ]
+  },
+  "conditions": {
+    "browser": "chrome-headless-shell (Playwright 1.60.0, chromium_headless_shell-1243 build)",
+    "tool": "playwright-core 1.60.0, launched with --allow-file-access-from-files --force-color-profile=srgb --hide-scrollbars",
+    "viewport": { "width": 1280, "height": 1400 },
+    "deviceScaleFactor": 2,
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "locale": "en-US",
+    "crop": "component zone: element screenshot of the preview board (.pv), the labelled grid containing every previewed state",
+    "animations": "disabled during the screenshot",
+    "fonts": {
+      "status": "loaded (document.fonts.ready awaited before the screenshot)",
+      "loadedFaces": ["Barlow 600 normal", "Barlow Condensed 600 normal", "JetBrains Mono 400 normal", "JetBrains Mono 500 normal"],
+      "unloadedFaces": "requested by the preview link but never used by the rendered markup, so reported as unloaded (expected)",
+      "source": "Google Fonts, requested by the original preview.html"
+    },
+    "resolvedTokens": {
+      "--color-bg-canvas": "#000000",
+      "--color-bg-glass": "rgba(255, 255, 255, 0.08)",
+      "--font-display": "\"Barlow Condensed\", \"Arial Narrow\", sans-serif",
+      "--font-mono": "\"JetBrains Mono\", ui-monospace, monospace"
+    },
+    "observedBoardHeight": "279.39 CSS px",
+    "date": "2026-11-02T14:47Z",
+    "verificationLimits": "Static resting state only (these previews contain no is-hover cell). No pointer-driven hover, focus-visible, reduced-motion, light-theme or narrow-viewport capture was produced; the capture is browser evidence of the current web design, not of a DS implementation."
+  },
+  "visuals": [
+    {
+      "id": "VIS-03",
+      "file": "terminal-card--variants--1280x1400--dark.png",
+      "pngSha256": "b6f8a75d3c34d2ee2b0df7206598e23835a079223ed172f202281b686200379e",
+      "pngBytes": 67441,
+      "pixelSize": { "width": 2560, "height": 558 },
+      "alt": "Two terminal cards side by side: the left profile sheet has a title bar with a red prompt glyph, the path ~/egdev and the shell zsh, then five definition pairs in a two-column mono grid, with a neon block cursor after building and a green '● online' status; the right project sheet shows ~/egdev/agent-teams with bash, four pairs and a green '● passing' row.",
+      "webComponent": "TerminalCard",
+      "source": {
+        "readme": "egdev-website/egdev-foundation/design-system/components/TerminalCard/README.md",
+        "readmeSha256": "427cfea515c71b764eee76b85212e318d86ac4d6e6d1b9beb38621b26fb9e30e",
+        "preview": "egdev-website/egdev-foundation/design-system/components/TerminalCard/preview.html",
+        "previewSha256": "5bf606a78ae683d3f58a243a3f72bbe00a59a5307c54fcd43e8b8367b0953ba5",
+        "realUsage": "egdev-website/egdev-foundation/reference-web/pulso-source.html lines 863-872 (.term.glass with .term-bar and a five-pair definition list)"
+      },
+      "mapsTo": "proposed single TerminalCard presentation: bar (children path + shell) and list (items with tone/caret); the left card exercises caret: true plus tone: 'success', the right one tone: 'success' only"
+    }
+  ]
+}
