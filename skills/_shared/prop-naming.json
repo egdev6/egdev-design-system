@@ -632,7 +632,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:a0659fdb28b17a50caea2b6473c1a7b6eb1a7009a4fcfa4f33d5ebeb74e72329"
+          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
         }
       }
     ]
@@ -4519,7 +4519,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:a0659fdb28b17a50caea2b6473c1a7b6eb1a7009a4fcfa4f33d5ebeb74e72329"
+          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
         }
       }
     ]
@@ -4616,7 +4616,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:a0659fdb28b17a50caea2b6473c1a7b6eb1a7009a4fcfa4f33d5ebeb74e72329"
+          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
         }
       }
     ]
@@ -6752,7 +6752,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:a0659fdb28b17a50caea2b6473c1a7b6eb1a7009a4fcfa4f33d5ebeb74e72329"
+          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
         }
       }
     ]

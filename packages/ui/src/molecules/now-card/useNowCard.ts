@@ -41,7 +41,7 @@ export type UseNowCardResult = {
 
 export type UseNowCardPartResult = { className: string };
 
-const headingBase = 'm-0 min-w-0 text-heading-small text-fg-default';
+const headingBase = 'm-0 min-w-0 px-6 text-heading-small text-fg-default wrap-anywhere';
 
 const present = (slot: ReactNode) => slot !== undefined && slot !== null && typeof slot !== 'boolean';
 
@@ -93,7 +93,7 @@ export function useNowCard({
       )
     },
     headingElement: `h${rank}`,
-    headingProps: { id: headingId, className: cn(headingBase, size === 'sm' && 'text-body-large') },
+    headingProps: { id: headingId, className: cn(headingBase, size === 'sm' && 'px-4 text-body-large') },
     title,
     children
   };

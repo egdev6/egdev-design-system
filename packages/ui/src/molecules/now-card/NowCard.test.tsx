@@ -295,7 +295,9 @@ describe('NowCard public contract', () => {
       for (const selector of ['.eg-now-card', '.eg-now-card__body', '.eg-now-card__foot', '.eg-now-card__detail']) {
         const element = container.querySelector(selector);
         expect(element).not.toBeNull();
-        expect(element?.className).not.toMatch(/(^|\s)(transition|animate-|motion-safe|hover:|cursor-pointer)/);
+        expect(element?.className).not.toMatch(
+          /(^|\s)(transition-(?!none)|animate-|motion-safe|hover:|cursor-pointer)/
+        );
       }
       expect(matchMedia.mock.calls.every(([query]) => typeof query === 'string')).toBe(true);
       expect(screen.getByRole('article', { name: 'Currently building' })).toBeInTheDocument();
@@ -306,7 +308,16 @@ describe('NowCard public contract', () => {
 
   it('keeps every surface-composed element border-box so consumer widths contain the frame (G7a)', () => {
     const { container } = render(fullCard);
-    expect(container.querySelector('.eg-now-card')).toHaveClass('box-border');
+    expect(container.querySelector('.eg-now-card')).toHaveClass(
+      'box-border',
+      'items-stretch',
+      'gap-0',
+      'min-h-0',
+      'transform-none',
+      'transition-none'
+    );
+    expect(container.querySelector('h3')).toHaveClass('px-6');
+    expect(container.querySelector('.eg-now-card__foot')).toHaveClass('m-0');
     expect(container.querySelector('.eg-now-card__foot')).toHaveClass('box-border');
     expect(container.querySelector('.eg-now-card__foot')).toHaveClass('border-x-0', 'border-b-0', 'shadow-none');
   });

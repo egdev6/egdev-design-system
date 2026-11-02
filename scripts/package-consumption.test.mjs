@@ -4176,6 +4176,10 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ModuleRail',
   'NavList',
   'Notice',
+  'NowCard',
+  'NowCardBody',
+  'NowCardDetail',
+  'NowCardFooter',
   'PageHeader',
   'Panel',
   'PanelBody',
@@ -4590,6 +4594,8 @@ try {
   assert.ok(card.querySelector('.eg-module-card__head').classList.contains('bg-surface-3'));
   assert.notEqual(heading.id, document.getElementById('second-module').getAttribute('aria-labelledby'));
   assert.equal(card.hasAttribute('aria-live'), false);
+} finally {
+  moduleDocument.window.close();
 }
 import { NowCardSamples } from './consumer.ts';
 const nowDocument = new JSDOM(renderToString(createElement(NowCardSamples)));

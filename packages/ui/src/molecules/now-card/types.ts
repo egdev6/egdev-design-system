@@ -115,12 +115,15 @@ export type NowCardDetailProps = {
 };
 
 /** Material frame: solid surface-1 tonal card, light edge, one-step elevation, no inner padding. */
-export const nowCardVariants = cva('eg-now-card flex flex-col min-w-0 overflow-hidden', {
-  variants: {
-    size: { md: '', sm: '' }
-  },
-  defaultVariants: { size: 'md' }
-});
+export const nowCardVariants = cva(
+  'eg-now-card flex flex-col items-stretch gap-0 min-w-0 min-h-0 overflow-hidden transform-none transition-none backdrop-filter-none',
+  {
+    variants: {
+      size: { md: '', sm: '' }
+    },
+    defaultVariants: { size: 'md' }
+  }
+);
 
 /** Inner padded body; the density step shrinks the padding and the body copy, never the content. */
 export const nowCardBodyVariants = cva('eg-now-card__body flex flex-col gap-2 p-6 text-body-large text-fg-secondary', {
@@ -141,7 +144,7 @@ export const nowCardBadgeVariants = cva('eg-now-card__badge flex px-6 pt-6 pb-3'
  * kept, sheen and shadow are dropped, and the bottom radius tracks the frame.
  */
 export const nowCardFootVariants = cva(
-  'eg-now-card__foot flex flex-wrap items-center justify-between gap-2 min-w-0 border-x-0 border-b-0 border-t bg-none shadow-none rounded-b-xl px-6 py-3',
+  'eg-now-card__foot m-0 flex flex-wrap items-center justify-between gap-2 min-w-0 border-x-0 border-b-0 border-t bg-none shadow-none rounded-b-xl px-6 py-3',
   {
     variants: {
       size: { md: '', sm: 'px-5 py-2' }

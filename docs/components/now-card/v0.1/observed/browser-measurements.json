@@ -1,0 +1,99 @@
+[
+  {
+    "story": "default",
+    "rows": [
+      {
+        "size": "md",
+        "width": 990,
+        "scroll": 1009,
+        "headingLeft": 1,
+        "bodyLeft": 1,
+        "bodyPadding": "19.2px",
+        "headingSize": "19.2px",
+        "bodySize": "16px",
+        "badgeFirst": true,
+        "boldWeight": "800"
+      }
+    ]
+  },
+  {
+    "story": "sizes",
+    "rows": [
+      {
+        "size": "md",
+        "width": 990,
+        "scroll": 1009,
+        "headingLeft": 1,
+        "bodyLeft": 1,
+        "bodyPadding": "19.2px",
+        "headingSize": "19.2px",
+        "bodySize": "16px",
+        "badgeFirst": true,
+        "boldWeight": "800"
+      },
+      {
+        "size": "sm",
+        "width": 990,
+        "scroll": 1009,
+        "headingLeft": 1,
+        "bodyLeft": 1,
+        "bodyPadding": "12.8px",
+        "headingSize": "16px",
+        "bodySize": "12.8px",
+        "badgeFirst": true,
+        "boldWeight": "800"
+      }
+    ]
+  },
+  {
+    "story": "with-next-date",
+    "rows": [
+      {
+        "size": "md",
+        "width": 990,
+        "scroll": 1009,
+        "headingLeft": 1,
+        "bodyLeft": 1,
+        "bodyPadding": "19.2px",
+        "headingSize": "19.2px",
+        "bodySize": "16px",
+        "badgeFirst": true,
+        "boldWeight": "800"
+      }
+    ]
+  },
+  {
+    "story": "long-content",
+    "rows": [
+      {
+        "size": "md",
+        "width": 238,
+        "scroll": 257,
+        "headingLeft": 1,
+        "bodyLeft": 1,
+        "bodyPadding": "19.2px",
+        "headingSize": "19.2px",
+        "bodySize": "16px",
+        "badgeFirst": null,
+        "boldWeight": "800"
+      }
+    ]
+  },
+  {
+    "story": "with-single-child",
+    "rows": [
+      {
+        "size": "md",
+        "width": 990,
+        "scroll": 1009,
+        "headingLeft": 1,
+        "bodyLeft": null,
+        "bodyPadding": null,
+        "headingSize": "19.2px",
+        "bodySize": null,
+        "badgeFirst": null,
+        "boldWeight": "800"
+      }
+    ]
+  }
+]
