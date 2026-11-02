@@ -639,7 +639,7 @@
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:10cf462321eea6ec0c46e8f0dac6f0a9733404b0c9e3f117073d0c57272b6efe"
+          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
         }
       },
       {
@@ -3117,7 +3117,7 @@
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:10cf462321eea6ec0c46e8f0dac6f0a9733404b0c9e3f117073d0c57272b6efe"
+          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
         }
       },
       {
@@ -4681,7 +4681,7 @@
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:10cf462321eea6ec0c46e8f0dac6f0a9733404b0c9e3f117073d0c57272b6efe"
+          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
         }
       }
     ]
@@ -4708,7 +4708,7 @@
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:10cf462321eea6ec0c46e8f0dac6f0a9733404b0c9e3f117073d0c57272b6efe"
+          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
         }
       }
     ]

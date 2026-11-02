@@ -68,8 +68,9 @@ export const FocalPoints: Story = {
     </div>
   )
 };
-/** `auto` reserves nothing, so the host owns a definite height, shown here as a stretched grid cell.
- * A host without one collapses the media: the component adds no fallback.
+/** `auto` stretches the figure to the definite height its host supplies, shown here as a stretched grid cell;
+ * the component adds `h-full min-h-0` to the root, so no consumer utility is needed. A host without a
+ * definite height collapses the media: the component adds no other fallback.
  */
 export const AutoHeight: Story = {
   args,

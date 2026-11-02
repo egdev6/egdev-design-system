@@ -61,7 +61,9 @@ export type PhotoFrameProps = PhotoFrameNativeProps &
   PhotoFrameImageProps & {
     /** Reserved viewport proportion. `square` is 1, `portrait` is 4/5 and `landscape` is 4/3;
      * `auto` reserves nothing, so the media fills the height the host layout gives the figure and
-     * the host owns that definite height. A number is the width divided by the height and is
+     * the host owns that definite height. `auto` also stretches the figure itself (`h-full min-h-0`)
+     * so a grid, flex or block host can size it instead of the image's natural height. A number is
+     * the width divided by the height and is
      * normalised by AspectRatio; unrepresentable numbers (zero, negative, NaN, infinite) fall back
      * to a square. Unrecognised strings fall back to landscape.
      * @default landscape
@@ -89,8 +91,11 @@ export type PhotoFrameProps = PhotoFrameNativeProps &
 export const photoFrameRootVariants = cva(
   'eg-photo m-0 min-w-0 flex flex-col overflow-visible rounded-none bg-transparent bg-none shadow-none transform-none transition-none after:content-none',
   {
-    variants: { caption: { none: 'gap-0', default: 'gap-3', framed: 'gap-10' } },
-    defaultVariants: { caption: 'none' }
+    variants: {
+      caption: { none: 'gap-0', default: 'gap-3', framed: 'gap-10' },
+      ratio: { preset: '', auto: 'h-full min-h-0' }
+    },
+    defaultVariants: { caption: 'none', ratio: 'preset' }
   }
 );
 export const photoFrameMediaVariants = cva('transition-none', {

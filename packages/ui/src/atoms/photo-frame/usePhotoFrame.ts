@@ -89,7 +89,10 @@ export function usePhotoFrame({
       'data-ratio': marker,
       'data-variant': variant,
       'data-focal-point': focalPoint,
-      className: cn(photoFrameRootVariants({ caption: caption ? variant : 'none' }), className)
+      className: cn(
+        photoFrameRootVariants({ caption: caption ? variant : 'none', ratio: auto ? 'auto' : 'preset' }),
+        className
+      )
     },
     mediaClassName: cn(
       surfaceVariants({

@@ -101,6 +101,17 @@ describe('PhotoFrame', () => {
     expect(screen.getByRole('img')).toHaveClass('object-cover', 'object-center');
   });
 
+  it('stretches the root only for auto so a grid, flex or block host can size it', () => {
+    const auto = render(<PhotoFrame {...base} ratio='auto' className='mt-8' />);
+    expect(screen.getByRole('figure')).toHaveClass('h-full', 'min-h-0', 'mt-8');
+    auto.unmount();
+    for (const ratio of [undefined, 'square', 'portrait', 'landscape', 716 / 890] as const) {
+      const { unmount } = render(<PhotoFrame {...base} ratio={ratio} />);
+      expect(screen.getByRole('figure')).not.toHaveClass('h-full', 'min-h-0');
+      unmount();
+    }
+  });
+
   it('invents no fallback geometry for auto', () => {
     const { container } = render(<PhotoFrame {...base} ratio='auto' />);
     const figure = screen.getByRole('figure');
