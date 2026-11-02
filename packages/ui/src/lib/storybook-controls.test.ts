@@ -863,7 +863,10 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Stat', { highlighted: 'false', size: '"md"', unavailableText: '"No data"' }],
     ['Select', { size: '"md"', required: 'false', disabled: 'false' }],
     ['Avatar', { size: '"md"', paused: 'false' }],
-    ['Link', { asChild: 'false', external: 'false', arrow: 'true', newTabText: '"(opens in a new tab)"' }],
+    [
+      'Link',
+      { asChild: 'false', external: 'false', arrow: 'true', newTabText: '"(opens in a new tab)"', variant: '"plain"' }
+    ],
     ['Logo', { variant: '"wordmark"', size: '"md"', label: '"egdev"' }],
     ['StatusDot', { state: '"stopped"', pulse: 'true' }]
   ] as const)('%s presents actual constant defaults without extra quote characters', (name, defaults) => {
@@ -1098,6 +1101,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     for (const prop of ['asChild', 'external', 'arrow']) {
       expect(argTypes[prop]?.control, prop).toEqual({ type: 'boolean' });
     }
+    expect(argTypes.variant?.control).toEqual({ type: 'select' });
+    expect(argTypes.variant?.options).toEqual(['plain', 'underlined']);
     for (const prop of ['id', 'title', 'target', 'rel', 'onClick', 'aria-describedby', 'className', 'style']) {
       expect(argTypes[prop], prop).toBeDefined();
       expect(argTypes[prop], prop).toEqual(story('Link', false).argTypes[prop]);

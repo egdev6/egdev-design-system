@@ -139,6 +139,7 @@ import type {
   LabelProps,
   LabelVariant,
   LinkProps,
+  LinkVariant,
   ListItemProps,
   ListItemPartProps,
   ListItemStatus,
@@ -1354,9 +1355,11 @@ const RouterLink = forwardRef<HTMLAnchorElement, ComponentPropsWithoutRef<'a'>>(
   createElement('a', { ...props, ref })
 );
 export const linkDefaults: LinkProps = { href: '#docs', children: 'Documentation' };
+const linkUnderlinedVariant: LinkVariant = 'underlined';
 export function LinkSamples({ external = true }: { external?: boolean }) {
   return createElement('section', { 'aria-label': 'Text navigation' },
     createElement(Link, { ...linkDefaults, id: 'link-native', ref: linkNativeRef, className: 'mt-2 mt-4 self-start' }),
+    createElement(Link, { ...linkDefaults, variant: linkUnderlinedVariant, id: 'link-underlined', children: 'Read the guide' }),
     createElement(Link, { href: '#external', external, rel: 'author noopener', id: 'link-external', children: 'Repository' }),
     createElement(Link, { href: '#legal', arrow: false, id: 'link-plain', children: 'Legal information' }),
     createElement(Link, { asChild: true, external, rel: 'author', ref: linkSlotRef, newTabText: '(new window)',
@@ -1370,7 +1373,7 @@ const slottedLinkDestination: LinkProps = { asChild: true, href: '#docs', childr
 const missingLinkContent: LinkProps = { href: '#docs' };
 // @ts-expect-error Disabled links are not supported; use plain text without a destination.
 const disabledLink: LinkProps = { href: '#docs', children: 'Docs', disabled: true };
-// @ts-expect-error Link v0.1 has no visual variants.
+// @ts-expect-error Link only accepts the opt-in plain|underlined appearance axis.
 const variantLink: LinkProps = { href: '#docs', children: 'Docs', variant: 'primary' };
 // @ts-expect-error The public ref is an anchor ref, never a button ref.
 const wrongLinkRef: ComponentProps<typeof Link> = { href: '#docs', children: 'Docs', ref: createRef<HTMLButtonElement>() };
@@ -2769,7 +2772,7 @@ function assertIconButtonCSS(css) {
     '--gradient-btn-primary-hover',
     '--gradient-btn-secondary-hover',
     '--gradient-sheen',
-    '--color-alpha-red-65',
+    '--color-border-brand',
     '--duration-press',
     '--ease-spring'
   ]) {

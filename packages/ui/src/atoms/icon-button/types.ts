@@ -18,7 +18,8 @@ export type IconButtonProps = Omit<ComponentPropsWithoutRef<'button'>, 'children
    */
   icon: ReactElement;
   /**
-   * Visual treatment. Outline is round; every other treatment uses radius-md.
+   * Visual treatment. Outline is the round treatment; it is the web social-row treatment used at lg.
+   * Every other treatment uses radius-md.
    * @control select
    * @default ghost
    */
@@ -54,7 +55,7 @@ export const iconButtonVariants = cva(
         ghost:
           'border-0 rounded-md bg-transparent bg-none shadow-none text-fg-secondary [&:not([data-disabled]):hover]:text-fg-default [&:not([data-disabled]):hover]:bg-action-primary-bg-default',
         outline:
-          'border rounded-full border-border-hairline-strong bg-surface-1 bg-[image:var(--gradient-sheen)] shadow-[var(--shadow-edge),var(--shadow-elev-1)] text-fg-secondary [&:not([data-disabled]):hover]:border-alpha-red-65 [&:not([data-disabled]):hover]:bg-surface-2 [&:not([data-disabled]):hover:not(:focus-visible)]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1),var(--shadow-glow-base)] [&:not([data-disabled]):hover]:text-fg-default',
+          'border rounded-full border-border-hairline-strong bg-surface-1 bg-[image:var(--gradient-sheen)] shadow-[var(--shadow-edge),var(--shadow-elev-1)] text-fg-secondary [&:not([data-disabled]):hover]:border-border-brand [&:not([data-disabled]):hover]:bg-surface-2 [&:not([data-disabled]):hover:not(:focus-visible)]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1),var(--shadow-glow-base)] [&:not([data-disabled]):hover]:text-fg-default',
         primary:
           'border rounded-md border-border-brand-strong bg-transparent bg-(image:--gradient-btn-primary) shadow-btn-primary text-action-primary-solid-fg [&:not([data-disabled]):hover:not(:active)]:bg-(image:--gradient-btn-primary-hover) [&:not([data-disabled]):hover:not(:focus-visible):not(:active)]:shadow-btn-primary-hover [&:not([data-disabled]):active]:bg-none [&:not([data-disabled]):active]:bg-action-primary-solid-bg [&:not([data-disabled]):active:not(:focus-visible)]:shadow-btn-pressed',
         secondary:
