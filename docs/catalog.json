@@ -690,7 +690,7 @@
     "radix": "AspectRatio",
     "compone": "Surface",
     "accion": "mantener",
-    "notas": "Implemented passive framed image with native figure and caption; approved v0.2 contract and v0.3 plan. Visual review pending."
+    "notas": "Implemented passive framed image with native figure and caption; approved v0.2 contract and v0.3 plan. Visual review pending. v0.4 ([#95](https://github.com/egdev6/egdev-design-system/issues/95)): `ratio='auto'` fills the host height, numeric ratios delegate to AspectRatio, and `focalPoint` has nine static positions; exact-percentage crops stay deferred."
   },
   {
     "actual": "PullQuote",

@@ -47,13 +47,15 @@ export const Ratios: Story = {
     </div>
   )
 };
-/** The diagnostic grid exposes horizontal and vertical cover choices. */
+/** The diagnostic grid exposes horizontal and vertical cover choices, including the four corners. */
 export const FocalPoints: Story = {
   args,
   render: () => (
     <div className='grid grid-cols-3 gap-6'>
       {(['portrait', 'landscape', 'square'] as const).flatMap((ratio) =>
-        (['left', 'center', 'right', 'top', 'bottom'] as const).map((focalPoint) => (
+        (
+          ['left', 'center', 'right', 'top', 'bottom', 'left-top', 'right-top', 'left-bottom', 'right-bottom'] as const
+        ).map((focalPoint) => (
           <PhotoFrame
             key={`${ratio}-${focalPoint}`}
             {...args}
@@ -63,6 +65,17 @@ export const FocalPoints: Story = {
           />
         ))
       )}
+    </div>
+  )
+};
+/** `auto` reserves nothing, so the host owns a definite height, shown here as a stretched grid cell.
+ * A host without one collapses the media: the component adds no fallback.
+ */
+export const AutoHeight: Story = {
+  args,
+  render: () => (
+    <div className='grid h-96 place-items-stretch'>
+      <PhotoFrame {...args} ratio='auto' />
     </div>
   )
 };

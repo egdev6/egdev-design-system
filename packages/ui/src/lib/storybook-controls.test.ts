@@ -127,7 +127,7 @@ const expected: Record<string, Record<string, string | false>> = {
   photoframe: {
     src: 'text',
     alt: 'text',
-    ratio: 'select',
+    ratio: false,
     variant: 'select',
     focalPoint: 'select',
     imageCaption: 'text'
