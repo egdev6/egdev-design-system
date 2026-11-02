@@ -1,0 +1,279 @@
+{
+  "kind": "Component-zone captures for the Countdown v0.3 web-mapping amendment",
+  "specVersion": "0.3",
+  "specLocation": "docs/components/countdown/v0.3/spec.md",
+  "capturedAt": "2026-11-02",
+  "task": "odd/tasks/web-catalog.md, B7 (web catalog layer b, S3)",
+  "captureVersion": "v0.3-capture-1",
+  "purpose": "Observed evidence of how the Pulso reference page feeds its Countdown (readable next date, Spanish copy, live/elapsed branch) and of the Foundation preview modifiers that map to the design-system size and tone axes. These are source captures of the current web appearance, not approved expected design for the design-system atom and not verification of it.",
+  "source": {
+    "webSourceRoot": "/home/egdev/proyectos/egdev-website/egdev-foundation (read-only, owner-granted)",
+    "files": [
+      {
+        "path": "reference-web/pulso-source.html",
+        "sha256": "778e5412b64d1b79195c51c0e47c78f654b46da445be8354a97e572774348f13",
+        "role": "Primary source for VIS-03, VIS-04 and VIS-05"
+      },
+      {
+        "path": "design-system/components/Countdown/preview.html",
+        "sha256": "7b9a43acf659ecdafcddf116ebde3a9e7a447db177116e5108a7657686860466",
+        "role": "Source fragment for VIS-06, mounted unmodified with its demonstration script in a temporary harness"
+      },
+      {
+        "path": "design-system/components/Countdown/README.md",
+        "sha256": "3ee46986b6ea651ce8dd9c96283b4ee50cbb718d0b9aef2d921ace98662aa9da",
+        "role": "Documented props (target ISO, label, units, small, onDark) and the nearby-readable-date advice; read, not captured"
+      },
+      {
+        "path": "design-system/components/LiveBand/README.md",
+        "sha256": "5350c5771a5009412204fad1563fe1dec15f6a11650233a1a915c8a5eb3b92fd",
+        "role": "Documents the host organism that renders the countdown on the flood field with its fixed next-slot caption; read, not captured"
+      },
+      {
+        "path": "design-system/components/NowCard/README.md",
+        "sha256": "3a8b8a674d6158d48a70182f5107befe8a1cf7011b06b954a26a29b3b9253abc",
+        "role": "Documents the `when: {label, value}` footer that renders the next-date string; read, not captured"
+      },
+      {
+        "path": "design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+        "role": "Linked by file:// into the VIS-06 harness (read-only); not edited"
+      },
+      {
+        "path": "design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe",
+        "role": "Linked by file:// into the VIS-06 harness (read-only); not edited"
+      },
+      {
+        "path": "design-system/components/index.d.ts",
+        "sha256": "b136dca56066fad8dbde0d425e256e2be3d82a408b9c79b59ae7a935f4ed2501",
+        "role": "Declares CountdownProps (target, label, units, small, onDark); read, not captured"
+      }
+    ],
+    "note": "Nothing was written inside egdev-website. The harness page and the capture script live in /tmp/egdev-sbcheck/b7/ and only read the sources."
+  },
+  "conditions": {
+    "tool": "playwright-core 1.60.0 (npx cache: /home/egdev/.npm/_npx/e41f203b7505f1fb/node_modules/playwright-core), programmatic Chromium, not Playwright MCP",
+    "browser": "Chromium 153.0.8010.12 (chrome-headless-shell-linux64), Linux x86_64",
+    "executablePath": "~/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+    "launchArgs": ["--force-color-profile=srgb", "--hide-scrollbars"],
+    "pageLoading": "file:// URL; pulso-source.html loaded directly, Countdown preview.html mounted in /tmp/egdev-sbcheck/b7/countdown-preview.html with tokens.css and bundle.css linked by file://",
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "deviceScaleFactor": 1,
+    "waitAfterLoad": "document.fonts.ready + 1.5 s (Pulso) / 1.2 s (harness), then all [data-reveal] nodes forced to their revealed state (class 'in') + 900 ms on the Pulso page",
+    "fontsConfirmedLoadedPulso": {
+      "Barlow 600": true,
+      "Barlow 700": true,
+      "Barlow Condensed 800": true,
+      "JetBrains Mono 500": true
+    },
+    "fontsCheckedHarness": {
+      "Barlow Condensed 600": true,
+      "Barlow 600": false
+    },
+    "crop": "VIS-03/VIS-05 are a padded clip (634x153) around the .cd element because the element box cuts the unit-name row; VIS-04 and VIS-06 are element crops at device scale 1",
+    "frozenClock": "VIS-05 installs page.clock at 2026-11-04T17:30:00Z (Wednesday 18:30 Europe/Madrid, CET) before navigation and advances it 1.2 s, so the page's own live branch renders; no source file is modified and no real stream window is claimed",
+    "clockAtCapture": "VIS-03/VIS-04 ran with the real clock at 2026-11-02T12:16:53Z, so the page computed the next Wednesday as 04 NOV · 18:00"
+  },
+  "images": [
+    {
+      "visualId": "VIS-01",
+      "file": "docs/design/foundation-boards/v2026-10-18/Countdown.png",
+      "sha256": "f1c1c2fa94bf7a256e3523b12800af5b58486b4a415311b1a8402ce350dd7f76",
+      "role": "Approved v0.1/v0.2 expected design for the default, on-dark and small readouts; reused historical capture, not re-captured for v0.3.",
+      "sourcePath": "docs/design/foundation-boards/v2026-10-18/ (captured 2026-10-18 from design-system/components/Countdown/preview.html)",
+      "status": "Approved as expected design in issue #82"
+    },
+    {
+      "visualId": "VIS-02",
+      "file": "docs/design/foundation-boards/v2026-10-18/specimens/countdown--specimen.png",
+      "sha256": "c4253fad0ba30fe6d48375854aa35bb7472f0e1bc947e888e8d74d90f5d34ea4",
+      "role": "Approved v0.1/v0.2 expected design for the size and tone variants; reused historical capture.",
+      "sourcePath": "docs/design/foundation-boards/v2026-10-18/specimens/ (captured 2026-10-18)",
+      "status": "Approved as expected design in issue #82"
+    },
+    {
+      "visualId": "VIS-03",
+      "file": "public--live-band-countdown--1280x900--dark.png",
+      "sha256": "9828d649237a45060f93e325cb2956405007eda402cb879b6668afcd121f77af",
+      "pngPixels": "634x153",
+      "viewport": "1280x900",
+      "sourceSelector": ".cd",
+      "sourceOuterHTML": "<div class=\"cd\" role=\"timer\" aria-label=\"Cuenta atrás al próximo directo\"> <p class=\"cd-label\" id=\"cdLabel\">Próximo directo en</p> <div class=\"cd-row\" aria-hidden=\"true\"> <span><b id=\"cdD\">2</b><i>días</i></span> <span><b id=\"cdH\">04</b><i>horas</i></span> <span><b id=\"cdM\">43</b><i>min</i></span> <span><b id=\"cdS\">06</b><i>seg</i></span> </div> </div>",
+      "altText": "The live band countdown in the Pulso page: the label \"Próximo directo en\" above four tabular columns reading 2 days, 04 hours, 43 minutes and 06 seconds over the Spanish unit names días, horas, min and seg, all black on the red flood field.",
+      "observedComputedStyle": {
+        "root": {
+          "box": "602x127px",
+          "color": "rgb(0, 0, 0)",
+          "background": "rgba(0, 0, 0, 0)",
+          "border": "0px none rgb(0, 0, 0)",
+          "attributes": { "role": "timer", "aria-label": "Cuenta atrás al próximo directo" }
+        },
+        "label": {
+          "text": "Próximo directo en",
+          "box": "602x23px",
+          "fontFamily": "\"Barlow Condensed\", \"Arial Narrow\", \"DejaVu Sans Condensed\", sans-serif",
+          "fontSize": "15px",
+          "fontWeight": "800",
+          "letterSpacing": "1.8px",
+          "lineHeight": "23.25px",
+          "textTransform": "uppercase"
+        },
+        "row": {
+          "box": "602x93px",
+          "display": "flex",
+          "gap": "8px 28.16px",
+          "attributes": { "aria-hidden": "true" }
+        },
+        "value": {
+          "text": "2",
+          "box": "67x65px",
+          "fontSize": "76.8px",
+          "fontWeight": "800",
+          "lineHeight": "65.28px",
+          "fontVariantNumeric": "tabular-nums",
+          "minWidth": "66.5px"
+        },
+        "name": {
+          "text": "días",
+          "fontSize": "13px",
+          "fontWeight": "700",
+          "letterSpacing": "1.56px",
+          "textTransform": "uppercase"
+        },
+        "bandNext": {
+          "text": "Miércoles · 18:00",
+          "box": "149x28px",
+          "fontSize": "18px",
+          "fontWeight": "800",
+          "fontVariantNumeric": "tabular-nums"
+        },
+        "nextDate": { "text": "04 NOV · 18:00", "fontSize": "15px", "fontWeight": "800", "color": "rgb(255, 255, 255)" }
+      },
+      "role": "Rendered countdown: label plus four unit columns on the host flood field, with the readable date placed outside the component.",
+      "decisionImpact": "Role, anatomy, fluid digit scale, column gap and 1.9ch minimum measure already match the design system; the readable date is an outside element (deadlineText), and the digit row is aria-hidden (a divergence the DS does not adopt)."
+    },
+    {
+      "visualId": "VIS-04",
+      "file": "public--now-card-next-date--1280x900--dark.png",
+      "sha256": "4ec944512f2f714051027ea05d9777705f34b1b5772d7692dab6623e272829ba",
+      "pngPixels": "349x51",
+      "viewport": "1280x900",
+      "sourceSelector": ".now-grid .now-card:nth-of-type(3) .foot",
+      "sourceOuterHTML": "<div class=\"foot\"> <span class=\"when\">Siguiente: <b id=\"nextDate\">04 NOV · 18:00</b></span> <a class=\"icon-btn\" href=\"https://twitch.tv/egdev6\" aria-label=\"Abrir Twitch\"><svg class=\"i\"><use href=\"#i-twitch\"/></svg></a> </div>",
+      "altText": "The footer of the Streaming NowCard: \"Siguiente: 04 NOV · 18:00\" beside a rounded-square Twitch icon button; the readable next date is written by the same tick that drives the countdown.",
+      "observedComputedStyle": {
+        "foot": { "box": "349x51px", "display": "flex", "gap": "12px" },
+        "when": {
+          "text": "Siguiente: 04 NOV · 18:00",
+          "fontSize": "15px",
+          "fontWeight": "700",
+          "color": "rgb(204, 204, 204)",
+          "textTransform": "uppercase",
+          "fontVariantNumeric": "tabular-nums"
+        },
+        "nextDate": {
+          "text": "04 NOV · 18:00",
+          "fontSize": "15px",
+          "fontWeight": "800",
+          "color": "rgb(255, 255, 255)",
+          "fontVariantNumeric": "tabular-nums"
+        },
+        "iconBtn": {
+          "box": "40x40px",
+          "borderRadius": "12px",
+          "background": "rgba(0, 0, 0, 0)",
+          "attributes": { "aria-label": "Abrir Twitch" }
+        }
+      },
+      "role": "The readable next-date string, produced by the domain weekly-schedule tick and written into a separate element.",
+      "decisionImpact": "This string is exactly the Countdown deadlineText input; the component requires it and renders it in a time element, while the page keeps its own visible copy."
+    },
+    {
+      "visualId": "VIS-05",
+      "file": "public--live-band-countdown-live--1280x900--dark.png",
+      "sha256": "e43e39f3d13480eed045fb70fb26952ff1e6d82c9c86c5dd04d66b5a63e05688",
+      "pngPixels": "634x153",
+      "viewport": "1280x900",
+      "sourceSelector": ".cd",
+      "sourceOuterHTML": "<div class=\"cd\" role=\"timer\" aria-label=\"Cuenta atrás al próximo directo\"> <p class=\"cd-label\" id=\"cdLabel\">En directo desde hace</p> <div class=\"cd-row\" aria-hidden=\"true\"> <span><b id=\"cdD\">0</b><i>días</i></span> <span><b id=\"cdH\">00</b><i>horas</i></span> <span><b id=\"cdM\">30</b><i>min</i></span> <span><b id=\"cdS\">02</b><i>seg</i></span> </div> </div>",
+      "altText": "The same live band countdown with the page clock frozen at Wednesday 18:30 Europe/Madrid: the label now reads \"En directo desde hace\" and the columns show 0 days, 00 hours, 30 minutes and 02 seconds of elapsed time.",
+      "observedComputedStyle": {
+        "root": {
+          "box": "602x127px",
+          "color": "rgb(0, 0, 0)",
+          "attributes": { "role": "timer", "aria-label": "Cuenta atrás al próximo directo" }
+        },
+        "label": {
+          "text": "En directo desde hace",
+          "fontSize": "15px",
+          "fontWeight": "800",
+          "letterSpacing": "1.8px",
+          "textTransform": "uppercase"
+        },
+        "row": { "box": "602x93px", "gap": "8px 28.16px", "attributes": { "aria-hidden": "true" } },
+        "value": { "text": "0", "fontSize": "76.8px", "fontVariantNumeric": "tabular-nums" },
+        "nextDate": { "text": "04 NOV · 18:00", "fontSize": "15px", "fontWeight": "800" }
+      },
+      "role": "The live branch of the same widget: elapsed count-up plus a rewritten label.",
+      "decisionImpact": "This is the behaviour the design-system atom does not own: v0.2 lists stopwatch/past-duration display, timezone selection and business scheduling as non-goals. Owner question Q2 records the recommendation to keep it in the LiveBand organism and its host."
+    },
+    {
+      "visualId": "VIS-06",
+      "file": "foundation-preview--variants--720x480--dark.png",
+      "sha256": "b400585d5516124900a18f5ddef260ba13325a45deaadc4c501589f025944a00",
+      "pngPixels": "720x414",
+      "viewport": "720x480",
+      "sourceSelector": ".pv",
+      "sourceOuterHTML": "<div class=\"pv\"><div class=\"pv-row\" style=\"--cols:2;\"><div class=\"pv-cell pv-stretch\"><span class=\"meta pv-label\">Sobre campo rojo (default)</span><div class=\"pv-flood\" style=\"width:100%;box-sizing:border-box\"><div class=\"eg-countdown \" role=\"timer\" aria-label=\"Cuenta atrás al próximo directo\" data-cd=\"a\">…</div></div></div><div class=\"pv-cell \"><span class=\"meta pv-label\">--on-dark</span>…",
+      "altText": "The Foundation Countdown preview board with four cells: default on the red flood field, on-dark, small on-dark, and small on the flood field, each reading 2 days, 04 hours, 37 minutes and 10 seconds.",
+      "observedComputedStyle": {
+        "board": { "box": "720x414px", "display": "grid", "gap": "32px" },
+        "first": {
+          "box": "276x96px",
+          "color": "rgb(0, 0, 0)",
+          "attributes": { "role": "timer", "aria-label": "Cuenta atrás al próximo directo" }
+        },
+        "firstValue": {
+          "text": "2",
+          "fontSize": "52px",
+          "fontWeight": "800",
+          "lineHeight": "44.2px",
+          "minWidth": "45.6px"
+        },
+        "onDark": { "color": "rgb(255, 255, 255)" },
+        "small": { "box": "192x82px" }
+      },
+      "role": "Documented modifiers (default, --on-dark, --sm) as shipped in the component preview.",
+      "decisionImpact": "The two boolean modifiers map one-to-one to the design-system size and tone axes; the Spanish copy is source demo data, not a design-system default."
+    }
+  ],
+  "notCaptured": [
+    {
+      "visualId": "web expired / unavailable state",
+      "reason": "The web page has no placeholder, expired or unavailable state: its tick clamps at zero and rewrites the label. There is nothing to capture for that branch, and the design-system states come from its own approved contract, not from the source."
+    },
+    {
+      "visualId": "a real live stream window",
+      "reason": "The live branch renders only on a Wednesday between 18:00 and 20:00 Europe/Madrid. VIS-05 reaches it with a frozen browser clock instead of waiting for that window; the alternative (editing the schedule) would have modified the source."
+    },
+    {
+      "visualId": "design-system implementation",
+      "reason": "This version is documentation only; the current implementation is not approved expected design and captured implementation would add no evidence for the mapping decision."
+    }
+  ],
+  "limits": [
+    "The captures show the web's local .cd styles and Spanish copy. They are evidence for the role and the mapping, not approved expected design for the Countdown recipe.",
+    "pulso-source.html is a template with Jinja image placeholders; no placeholder image is inside these crops.",
+    "The reveal system starts every [data-reveal] node at opacity 0; the script forces the revealed state so the crops are not pre-reveal captures. No source file is modified.",
+    "In the /tmp harness document.fonts.check('600 13px Barlow') returned false while the condensed 600 check returned true; only the small .meta captions on the VIS-06 board use the sans family, and the countdown text itself is condensed and unaffected.",
+    "VIS-03/VIS-05 record live JavaScript state (a real remaining time and a frozen elapsed time), so the digits are a moment of a ticking readout, not a fixed design value.",
+    "Browser images do not verify behaviour, accessibility, keyboard or focus behaviour.",
+    "PNG bytes can differ between runs of the same script (scroll-dependent compositing); the hashes above are of the files stored in this folder and must be re-verified with sha256sum before linking them in any published comment."
+  ],
+  "approval": {
+    "status": "Proposed",
+    "reference": "Pending: the owner approves or declines these captures as supporting evidence for Countdown v0.3 in issue #82. The captures are source evidence and grant no expected-design approval."
+  }
+}
