@@ -567,17 +567,21 @@ export function EditorialRowSamples({ size = editorialSizes[0] }: { size?: ListI
       createElement(ListItemLeading, null,
         createElement('time', { dateTime: '2026-09-12' }, '12', createElement('small', null, 'SEP'))),
       createElement(ListItemBody, null,
-        createElement(ListItemTitle, { level: 3 }, 'Reading the release train'),
+        createElement(ListItemTitle, { level: 3, children: 'Reading the release train' }),
         createElement(ListItemMeta, null, 'Notes · 4 min read')),
       createElement(ListItemTrailing, null, '18:04')))
   }));
 }
 export function DividedRowSamples() {
-  return createElement(ListItem, { variant: 'editorial-divided' },
-    createElement(ListItemBody, null,
-      createElement(ListItemTitle, { level: 4 }, 'Previous stream'),
-      createElement(ListItemMeta, null, '2026-08-30')),
-    createElement(ListItemTrailing, null, '42:11'));
+  return createElement(ListItem, {
+    variant: 'editorial-divided',
+    children: [
+      createElement(ListItemBody, { key: 'body' },
+        createElement(ListItemTitle, { level: 4, children: 'Previous stream' }),
+        createElement(ListItemMeta, null, '2026-08-30')),
+      createElement(ListItemTrailing, { key: 'trailing' }, '42:11')
+    ]
+  });
 }
 // @ts-expect-error Editorial rows do not widen the empty presentation.
 const editorialEmpty: ListItemProps = { status: 'empty', variant: 'editorial', asChild: true, children: createElement('button') };
@@ -3885,8 +3889,11 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ListItemBody',
   'ListItemContent',
   'ListItemFooter',
+  'ListItemLeading',
   'ListItemMedia',
   'ListItemMeta',
+  'ListItemTitle',
+  'ListItemTrailing',
   'Logo',
   'Menu',
   'MeterRow',
