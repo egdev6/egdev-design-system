@@ -324,6 +324,8 @@
   --text-quote-display--letter-spacing: 0;
   /* --container-quote-pull — Pull quotation measure (#98 D8), relative to the quote's own font metrics. */
   --container-quote-pull: 40ch;
+  /* --container-calendar-grid-stack — CalendarGrid lane stacking threshold (#126 D17): 960px, unscaled like other breakpoints. */
+  --container-calendar-grid-stack: 960px;
   /* --radius-none — Sin redondeo. */
   --radius-none: 0px;
   /* --radius-sm — Asignación a componentes sin definir (4px ×0.8, #218). */

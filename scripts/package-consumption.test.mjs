@@ -30,9 +30,10 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogCancel, AlertDialogAction } from '@egdev/ui';
 import type { AlertDialogProps, AlertDialogContentProps } from '@egdev/ui';
-import { CommandPalette, Dialog, DialogTrigger, DialogContent, DialogClose, TabBar, tabBarVariants } from '@egdev/ui';
+import { CalendarGrid, calendarGridVariants, CommandPalette, Dialog, DialogTrigger, DialogContent, DialogClose, TabBar, tabBarVariants } from '@egdev/ui';
 import type { CommandPaletteProps, CommandPaletteItem, CommandPaletteMessages, CommandPaletteFiltering } from '@egdev/ui';
 import type { TabBarItem, TabBarMessages, TabBarProps } from '@egdev/ui';
+import type { CalendarGridDay, CalendarGridEntry, CalendarGridMessages, CalendarGridProps } from '@egdev/ui';
 // @ts-expect-error Internal hook is not public.
 type TabBarPrivateHook = (typeof import('@egdev/ui'))['useTabBar'];
 // @ts-expect-error Internal part recipe is not public.
@@ -43,6 +44,15 @@ export const tabBarMessages: TabBarMessages = { pendingCount: (count) => count +
 export const tabBarProps: TabBarProps = { label: 'Main', items: tabBarItems, messages: tabBarMessages };
 export const tabBarSample = createElement(TabBar, tabBarProps);
 export const tabBarRecipe = tabBarVariants();
+// @ts-expect-error Internal move model is not public.
+type CalendarGridPrivateHook = (typeof import('@egdev/ui'))['useCalendarGrid'];
+export type CalendarGridPrivateNegatives = CalendarGridPrivateHook;
+export const calendarGridEntries: CalendarGridEntry[] = [{ id: 'clips', label: 'Clips', meta: '10:00 · Done', href: '#clips', status: 'done', movable: true }];
+export const calendarGridDays: CalendarGridDay[] = [{ date: '2026-10-05', label: 'Monday, October 5', weekday: 'Mon', dayNumber: '5', entries: calendarGridEntries, 'aria-current': 'date', past: false, acceptsEntries: true }];
+export const calendarGridMessages: CalendarGridMessages = { today: 'Today', noEntries: 'No entries', addEntry: (day) => 'Add entry on ' + day, moveEntry: (entry) => 'Move ' + entry, moveTo: 'Move to', entryMoved: (entry, day) => entry + ' moved to ' + day };
+export const calendarGridProps: CalendarGridProps = { label: 'Week of October 5', items: calendarGridDays, messages: calendarGridMessages, level: 3 };
+export const calendarGridSample = createElement(CalendarGrid, calendarGridProps);
+export const calendarGridRecipe = calendarGridVariants();
 import type { DialogProps, DialogTriggerProps, DialogContentProps, DialogCloseProps } from '@egdev/ui';
 import { Isotipo3D } from '@egdev/effects';
 import type { Isotipo3DProps } from '@egdev/effects';
@@ -3776,6 +3786,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Badge',
   'Button',
   'ButtonGroup',
+  'CalendarGrid',
   'Carousel',
   'Checkbox',
   'Chip',
@@ -3860,6 +3871,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Tooltip',
   'VisuallyHidden',
   'badgeVariants',
+  'calendarGridVariants',
   'chipVariants',
   'cn',
   'dropzoneVariants',
@@ -7174,7 +7186,8 @@ const typography = ${JSON.stringify(typographyNames)};
 // #100 D7 adds 1 static breakpoint: 282 + 1 = 283.
 // #219 B adds the owner-approved error-vs-focus tokens: 283 + 2 = 285. Unique names: Tailwind
 // emits a color-mix() token on two lines (resolved fallback + @supports var-form override).
-assert.equal(names.length, 285, 'Packed native artifact must expose 285 variables');
+// #126 D17 adds the owner-approved --container-calendar-grid-stack: 285 + 1 = 286.
+assert.equal(names.length, 286, 'Packed native artifact must expose 286 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {

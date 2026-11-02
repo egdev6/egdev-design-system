@@ -1,0 +1,53 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Extend the collection-items convention to organisms, approving its use for organism collections such as CalendarGridProps.items; the convention meaning, avoid list, aliases and exceptions are unchanged.",
+  "evidence": {
+    "channel": "Owner decision forwarded in odd/tasks/organisms-build.md L28, 2026-11-02",
+    "ownerChoice": "Aprobar para organismos (Recomendado)",
+    "interpretation": "Explicit convention approval reported by the parent; this is not a signed or independent receipt."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "wholeFileSHA256": "sha256:2ef1fd8192f5004da741b83570a08b4a2e517cee6e714cd6154e37d67b53e838"
+    },
+    {
+      "path": "docs/components/sidebar/v0.1/product-identity-approval.json",
+      "wholeFileSHA256": "sha256:5b5429275883346c0061e91e3d9f9aacfa1534d5f9913758ef3c53a908e4d6a4"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [
+    {
+      "id": "collection-items",
+      "previousReference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "previousContentHash": "sha256:304ac895a943454d04d057e18518794a315958b70252df2e696e00dc65b36f40",
+      "changedFields": ["whenToUse"],
+      "before": {
+        "whenToUse": "A molecule renders its own standard entry, with its sub-parts, for each element of a consumer-supplied list."
+      },
+      "after": {
+        "whenToUse": "An organism or molecule renders its own standard entry, with its sub-parts, for each element of a consumer-supplied list."
+      },
+      "boundary": "Convention applicability only; no new convention, name, exception, component, token, dependency or automatic API migration."
+    }
+  ],
+  "entries": [
+    {
+      "scope": "convention:collection-items",
+      "contentHash": "sha256:613dc7288683dadf5feb9da38b53f78e9c0ff204e4e2edd946a810ac5cd43b4d",
+      "convention": {
+        "id": "collection-items",
+        "name": "items",
+        "meaning": "Ordered data describing the entries a composite component renders, such as tabs, menu entries or navigation links; the entry shape is component-specific.",
+        "whenToUse": "An organism or molecule renders its own standard entry, with its sub-parts, for each element of a consumer-supplied list.",
+        "avoid": "Selectable form options (use choice-options/options), free composition through children, or ReactNode lists without a defined entry shape.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

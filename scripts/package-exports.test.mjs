@@ -38,6 +38,41 @@ test('tab-bar exports native navigation and its public recipe', async () => {
   assert.equal(exported.useTabBar, undefined);
 });
 
+test('calendar-grid SSR renders named day lanes, add controls and move triggers', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const days = [
+    {
+      date: '2026-10-05',
+      label: 'Monday, October 5',
+      weekday: 'Mon',
+      dayNumber: '5',
+      entries: [{ id: 'clips', label: 'Clips', meta: '10:00 · Done', href: '#clips', status: 'done' }]
+    },
+    { date: '2026-10-06', label: 'Tuesday, October 6', weekday: 'Tue', dayNumber: '6', entries: [] }
+  ];
+  const html = renderToString(
+    createElement(exported.CalendarGrid, {
+      label: 'Week of October 5',
+      items: days,
+      onAdd: () => undefined,
+      onMove: () => undefined
+    })
+  );
+  assert.match(html, /<section[^>]*aria-label="Week of October 5"/);
+  assert.match(html, /<ol[^>]*>/);
+  assert.match(html, /<h3[^>]*>/);
+  assert.match(html, /Monday, October 5/);
+  assert.match(html, /No entries/);
+  assert.match(html, /Add entry on Tuesday, October 6/);
+  assert.match(html, /Move Clips/);
+  assert.match(html, /role="status"/);
+  assert.doesNotMatch(html, /role="grid"|role="gridcell"/);
+  assert.equal(exported.useCalendarGrid, undefined);
+  assert.match(exported.calendarGridVariants(), /eg-calendar-grid/);
+});
+
 test('command-palette closed SSR renders only its optional launcher', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -2935,6 +2970,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Badge',
       'Button',
       'ButtonGroup',
+      'CalendarGrid',
       'Carousel',
       'Checkbox',
       'Chip',
@@ -3019,6 +3055,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Tooltip',
       'VisuallyHidden',
       'badgeVariants',
+      'calendarGridVariants',
       'chipVariants',
       'cn',
       'dropzoneVariants',
@@ -3163,6 +3200,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ButtonProps',
     'ButtonSize',
     'ButtonVariant',
+    'CalendarGrid',
+    'CalendarGridDay',
+    'CalendarGridEntry',
+    'CalendarGridEntryStatus',
+    'CalendarGridMessages',
+    'CalendarGridProps',
     'Carousel',
     'CarouselItem',
     'CarouselMessages',
@@ -3462,6 +3505,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'badgeVariants',
+    'calendarGridVariants',
     'chipVariants',
     'cn',
     'dropzoneVariants',
