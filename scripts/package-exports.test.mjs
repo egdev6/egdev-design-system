@@ -1458,6 +1458,8 @@ test('ListItem ships compound layout, state Material and native empty focus util
     String.raw`.data-\[variant\=editorial\]\:duration-\(--duration-fast\)`,
     String.raw`.data-\[variant\=editorial\]\:ease-\(--ease-out\)`,
     String.raw`.data-\[variant\=editorial\]\:motion-reduce\:transition-none`,
+    String.raw`.data-\[variant\=editorial\]\:\[\&\:is\(a\)\]\:no-underline`,
+    String.raw`.data-\[variant\=editorial-divided\]\:\[\&\:is\(a\)\]\:no-underline`,
     String.raw`.group-data-\[size\=sm\]\/list-item\:w-\[var\(--space-16\)\]`
   ];
   for (const state of ['done', 'off', 'empty']) {

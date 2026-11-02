@@ -145,6 +145,10 @@ function ReorderExample() {
  * (Note/Stream), because the parts are consumer-composed and DOM order equals visual order.
  * ListItemTitle owns the heading rank: pass the level that fits the surrounding outline.
  * Editorial values never compose Content, Media or Footer, and a linked row never composes Actions.
+ * A linked row is `<ul><li><ListItem asChild variant="editorial|editorial-divided"><a href>…parts…</a>
+ * </ListItem></li></ul>`: the row element itself is the anchor, so the anchor owns the three-zone layout,
+ * the hover affordances and the reset decoration. Never put the parts inside an inner anchor whose
+ * ListItem sits on the <li>; the recipe and the marker would land on the list item instead.
  * Only a row whose root element is an anchor gets hover affordances; static rows stay inert.
  * editorial-divided paints no surface and separates rows with a single bottom hairline.
  * The consumer formats and owns the day, month, category, reading time and duration text.
@@ -477,13 +481,13 @@ export const EditorialDatedList: Story = {
   render: () => (
     <ul className='flex list-none flex-col gap-3 p-0'>
       {editorialNotes.map((note) => (
-        <ListItem key={note.dateTime} asChild={true} variant='editorial'>
-          <li>
+        <li key={note.dateTime}>
+          <ListItem asChild={true} variant='editorial'>
             <a href={`#${note.dateTime}`}>
               <EditorialParts note={note} />
             </a>
-          </li>
-        </ListItem>
+          </ListItem>
+        </li>
       ))}
     </ul>
   )
@@ -545,13 +549,13 @@ export const EditorialDivided: Story = {
   render: () => (
     <ul className='flex list-none flex-col p-0'>
       {editorialNotes.map((note) => (
-        <ListItem key={note.dateTime} asChild={true} variant='editorial-divided'>
-          <li>
+        <li key={note.dateTime}>
+          <ListItem asChild={true} variant='editorial-divided'>
             <a href={`#${note.dateTime}`}>
               <EditorialParts note={note} />
             </a>
-          </li>
-        </ListItem>
+          </ListItem>
+        </li>
       ))}
     </ul>
   )

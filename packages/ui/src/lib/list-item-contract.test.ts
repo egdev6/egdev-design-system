@@ -238,6 +238,36 @@ describe('ListItem delivery contract', () => {
     }
   });
 
+  it('composes every linked list example with the anchor as the row element', () => {
+    const stories = readFileSync(path('../molecules/list-item/ListItem.stories.tsx'), 'utf8');
+    const file = ts.createSourceFile('ListItem.stories.tsx', stories, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+    const offenders: string[] = [];
+    function visit(node: ts.Node) {
+      if (ts.isJsxElement(node)) {
+        const tag = node.openingElement.tagName.getText(file);
+        const attributes = node.openingElement.attributes.properties.filter(ts.isJsxAttribute);
+        const asChild = attributes.some((attribute) => attribute.name.getText(file) === 'asChild');
+        if (tag === 'ListItem' && asChild) {
+          const children = node.children
+            .filter(ts.isJsxElement)
+            .map((child) => child.openingElement.tagName.getText(file));
+          if (children.some((child) => child !== 'a' && child !== 'button' && child !== 'article')) {
+            offenders.push(`${tag} asChild receives ${children.join(', ')}`);
+          }
+        }
+      }
+      ts.forEachChild(node, visit);
+    }
+    visit(file);
+    expect(offenders).toEqual([]);
+    const consumption = readFileSync(path('../../../../scripts/package-consumption.test.mjs'), 'utf8');
+    const start = consumption.indexOf('export function EditorialRowSamples');
+    const sample = consumption.slice(start, consumption.indexOf('export function DividedRowSamples'));
+    expect(start).toBeGreaterThan(-1);
+    expect(sample).toContain("children: createElement('a'");
+    expect(sample).not.toContain("createElement('li', null, createElement('a'");
+  });
+
   it('keeps every editorial recipe on existing tokens with no hand-written paint', () => {
     const types = readFileSync(path('../molecules/list-item/types.ts'), 'utf8');
     expect(types).not.toMatch(/#[0-9a-f]{3,8}\b/i);
@@ -255,6 +285,8 @@ describe('ListItem delivery contract', () => {
       'data-[state=default]:data-[variant=editorial]:[&:is(a)]:hover:border-border-brand',
       'data-[state=default]:data-[variant=editorial-divided]:[&:is(a)]:hover:bg-surface-2',
       'data-[variant=editorial]:[&:is(a)]:focus-visible:shadow-focus',
+      'data-[variant=editorial]:[&:is(a)]:no-underline',
+      'data-[variant=editorial-divided]:[&:is(a)]:no-underline',
       'data-[variant=editorial]:duration-(--duration-fast)',
       'data-[variant=editorial]:ease-(--ease-out)',
       'data-[variant=editorial]:motion-reduce:transition-none'

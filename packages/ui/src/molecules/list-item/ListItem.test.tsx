@@ -590,6 +590,68 @@ describe('ListItem editorial rows', () => {
     expect(classes.some((name) => /#[0-9a-f]{3,8}/i.test(name) || /rgba?\(/.test(name))).toBe(false);
   });
 
+  it('keeps the row element itself as the anchor inside a linked list', () => {
+    const { container } = render(
+      <ul>
+        {['2026-09-12', '2026-08-30'].map((dateTime, index) => (
+          <li key={dateTime}>
+            <ListItem asChild={true} variant={index === 0 ? 'editorial' : 'editorial-divided'}>
+              <a href={`#${dateTime}`}>
+                <ListItemLeading>
+                  <time dateTime={dateTime}>{index + 12}</time>
+                </ListItemLeading>
+                <ListItemBody>
+                  <ListItemTitle>Stream {index + 1}</ListItemTitle>
+                  <ListItemMeta>{dateTime}</ListItemMeta>
+                </ListItemBody>
+                <ListItemTrailing>18:04</ListItemTrailing>
+              </a>
+            </ListItem>
+          </li>
+        ))}
+      </ul>
+    );
+    const links = [...container.querySelectorAll('a')];
+    expect(links).toHaveLength(2);
+    for (const link of links) {
+      expect(link).toHaveClass('eg-list-item');
+      expect(link).toHaveAttribute('data-variant', expect.stringMatching(/^editorial(-divided)?$/));
+      expect(link.parentElement?.tagName).toBe('LI');
+      expect(link.parentElement).not.toHaveAttribute('data-variant');
+      expect(link.parentElement?.className ?? '').not.toContain('eg-list-item');
+      const parts = [
+        '.eg-list-item__leading',
+        '.eg-list-item__body',
+        '.eg-list-item__title',
+        '.eg-list-item__trailing'
+      ];
+      for (const selector of parts) {
+        expect(link.querySelector(selector), selector).not.toBeNull();
+      }
+      expect(link.querySelector('.eg-list-item__leading')?.parentElement).toBe(link);
+      expect(link.querySelector('.eg-list-item__trailing')?.parentElement).toBe(link);
+    }
+  });
+
+  it('documents that an ancestor list item cannot carry the editorial row recipe', () => {
+    const { container } = render(
+      <ListItem asChild={true} variant='editorial'>
+        <li>
+          <a href='#nested'>
+            <ListItemBody>
+              <ListItemTitle>Nested anchor</ListItemTitle>
+            </ListItemBody>
+          </a>
+        </li>
+      </ListItem>
+    );
+    const row = container.querySelector('.eg-list-item');
+    expect(row?.tagName).toBe('LI');
+    expect(row).toHaveAttribute('data-variant', 'editorial');
+    expect(container.querySelector('a')).not.toHaveAttribute('data-variant');
+    expect(container.querySelector('a')?.className ?? '').not.toContain('eg-list-item');
+  });
+
   it('merges each editorial part className independently', () => {
     const { container } = render(
       <ListItem variant='editorial' className='mt-2'>

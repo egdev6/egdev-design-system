@@ -561,16 +561,17 @@ const itemCreate: ListItemProps = { children: 'Item', onCreate: () => undefined 
 const unknownItemStatus: ListItemProps = { children: 'Item', status: 'published' };
 export const editorialSizes: ListItemSize[] = ['md', 'sm'];
 export function EditorialRowSamples({ size = editorialSizes[0] }: { size?: ListItemSize }) {
-  return createElement('ul', null, createElement(ListItem, {
+  // The row element itself must be the anchor: parts live inside it, never inside an inner anchor.
+  return createElement('ul', null, createElement('li', null, createElement(ListItem, {
     asChild: true, variant: 'editorial', size,
-    children: createElement('li', null, createElement('a', { href: '#note' },
+    children: createElement('a', { href: '#note' },
       createElement(ListItemLeading, null,
         createElement('time', { dateTime: '2026-09-12' }, '12', createElement('small', null, 'SEP'))),
       createElement(ListItemBody, null,
         createElement(ListItemTitle, { level: 3, children: 'Reading the release train' }),
         createElement(ListItemMeta, null, 'Notes · 4 min read')),
-      createElement(ListItemTrailing, null, '18:04')))
-  }));
+      createElement(ListItemTrailing, null, '18:04'))
+  })));
 }
 export function DividedRowSamples() {
   return createElement(ListItem, {
@@ -4153,6 +4154,8 @@ function assertListItemCSS(css) {
     String.raw`.data-\[variant\=editorial\]\:duration-\(--duration-fast\)`,
     String.raw`.data-\[variant\=editorial\]\:ease-\(--ease-out\)`,
     String.raw`.data-\[variant\=editorial\]\:motion-reduce\:transition-none`,
+    String.raw`.data-\[variant\=editorial\]\:\[\&\:is\(a\)\]\:no-underline`,
+    String.raw`.data-\[variant\=editorial-divided\]\:\[\&\:is\(a\)\]\:no-underline`,
     String.raw`.group-data-\[size\=sm\]\/list-item\:w-\[var\(--space-16\)\]`
   ]) {
     assert.ok(css.includes(selector), 'Missing packed ListItem utility ' + selector);
