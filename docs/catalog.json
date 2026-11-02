@@ -979,17 +979,6 @@
     "notas": "`.eg-day` y `.eg-post-row` pasan a partes internas. Falta vista Mes."
   },
   {
-    "actual": "StageFrame",
-    "nivelActual": "organismo",
-    "nombre": "PreviewFrame",
-    "nivel": "organism",
-    "destino": "ui",
-    "radix": "AspectRatio + Toolbar",
-    "compone": "IconButton, Chip",
-    "accion": "renombrar",
-    "notas": "Vista previa a tamaño fijo con zonas seguras."
-  },
-  {
     "actual": "GaugeStrip",
     "nivelActual": "parte de Gauge",
     "nombre": "GaugeDock",
