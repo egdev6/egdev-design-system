@@ -139,6 +139,7 @@ import type {
   LabelProps,
   LabelVariant,
   LinkProps,
+  LinkVariant,
   ListItemProps,
   ListItemPartProps,
   ListItemSize,
@@ -1335,15 +1336,21 @@ const glassStat: StatProps = { ...statProps, glass: true };
 const objectStat: StatProps = { ...statProps, value: { amount: 4 } };
 // @ts-expect-error highlighted is a boolean, not a timer duration.
 const timedStat: StatProps = { ...statProps, highlighted: 3000 };
-const photoFrameRatio: PhotoFrameRatio = 'portrait';
+const photoFrameRatio: PhotoFrameRatio = 'auto';
 const photoFrameVariant: PhotoFrameVariant = 'framed';
-const photoFrameFocalPoint: PhotoFrameFocalPoint = 'left';
+const photoFrameFocalPoint: PhotoFrameFocalPoint = 'left-top';
 export const photoFrameProps: PhotoFrameProps = { src: '/grid.svg', alt: 'Grid', ratio: photoFrameRatio, variant: photoFrameVariant, focalPoint: photoFrameFocalPoint, imageCaption: 'Grid caption', id: 'consumer-photo-frame' };
+export const photoFrameNumericProps: PhotoFrameProps = { src: '/grid.svg', alt: 'Grid', ratio: 716 / 890, focalPoint: photoFrameFocalPoint, id: 'consumer-photo-frame-numeric' };
 export function photoFrameSamples({ src = photoFrameProps.src }: { src?: string }) {
   return createElement(PhotoFrame, { ...photoFrameProps, src });
 }
+export function photoFrameNumericSamples() {
+  return createElement(PhotoFrame, photoFrameNumericProps);
+}
 // @ts-expect-error PhotoFrame requires image inputs.
 const photoFrameMissing: PhotoFrameProps = {};
+// @ts-expect-error The ratio union is exhaustive: only presets, auto or a number.
+const photoFrameUnknownRatio: PhotoFrameProps = { ...photoFrameProps, ratio: 'wide' };
 // @ts-expect-error PhotoFrame is passive and has no children API.
 const photoFrameChildren: PhotoFrameProps = { ...photoFrameProps, children: 'child' };
 // @ts-expect-error PhotoFrame has no ref API.
@@ -1384,9 +1391,11 @@ const RouterLink = forwardRef<HTMLAnchorElement, ComponentPropsWithoutRef<'a'>>(
   createElement('a', { ...props, ref })
 );
 export const linkDefaults: LinkProps = { href: '#docs', children: 'Documentation' };
+const linkUnderlinedVariant: LinkVariant = 'underlined';
 export function LinkSamples({ external = true }: { external?: boolean }) {
   return createElement('section', { 'aria-label': 'Text navigation' },
     createElement(Link, { ...linkDefaults, id: 'link-native', ref: linkNativeRef, className: 'mt-2 mt-4 self-start' }),
+    createElement(Link, { ...linkDefaults, variant: linkUnderlinedVariant, id: 'link-underlined', children: 'Read the guide' }),
     createElement(Link, { href: '#external', external, rel: 'author noopener', id: 'link-external', children: 'Repository' }),
     createElement(Link, { href: '#legal', arrow: false, id: 'link-plain', children: 'Legal information' }),
     createElement(Link, { asChild: true, external, rel: 'author', ref: linkSlotRef, newTabText: '(new window)',
@@ -1400,7 +1409,7 @@ const slottedLinkDestination: LinkProps = { asChild: true, href: '#docs', childr
 const missingLinkContent: LinkProps = { href: '#docs' };
 // @ts-expect-error Disabled links are not supported; use plain text without a destination.
 const disabledLink: LinkProps = { href: '#docs', children: 'Docs', disabled: true };
-// @ts-expect-error Link v0.1 has no visual variants.
+// @ts-expect-error Link only accepts the opt-in plain|underlined appearance axis.
 const variantLink: LinkProps = { href: '#docs', children: 'Docs', variant: 'primary' };
 // @ts-expect-error The public ref is an anchor ref, never a button ref.
 const wrongLinkRef: ComponentProps<typeof Link> = { href: '#docs', children: 'Docs', ref: createRef<HTMLButtonElement>() };
@@ -2799,7 +2808,7 @@ function assertIconButtonCSS(css) {
     '--gradient-btn-primary-hover',
     '--gradient-btn-secondary-hover',
     '--gradient-sheen',
-    '--color-alpha-red-65',
+    '--color-border-brand',
     '--duration-press',
     '--ease-spring'
   ]) {
@@ -4292,16 +4301,28 @@ try {
   moduleDocument.window.close();
 }
 import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
-import { photoFrameSamples } from './consumer.ts';
+import { photoFrameNumericSamples, photoFrameSamples } from './consumer.ts';
 const photoFrameDocument = new JSDOM(renderToString(createElement(photoFrameSamples)));
 try {
   const photoFrameFigure = photoFrameDocument.window.document.querySelector('figure');
   assert.equal(photoFrameFigure.id, 'consumer-photo-frame');
+  assert.equal(photoFrameFigure.getAttribute('data-ratio'), 'auto');
+  assert.equal(photoFrameFigure.querySelector('[data-radix-aspect-ratio-wrapper]'), null);
   assert.equal(photoFrameFigure.querySelector('img').getAttribute('alt'), 'Grid');
   assert.equal(photoFrameFigure.querySelector('img').getAttribute('loading'), 'lazy');
+  assert.ok(photoFrameFigure.querySelector('img').classList.contains('object-left-top'));
   assert.equal(photoFrameFigure.querySelector('figcaption').textContent, 'Grid caption');
   assert.equal(photoFrameFigure.hasAttribute('role'), false);
 } finally { photoFrameDocument.window.close(); }
+// A numeric proportion keeps the AspectRatio reservation without any inline image appearance.
+const photoFrameNumericDocument = new JSDOM(renderToString(createElement(photoFrameNumericSamples)));
+try {
+  const numericFigure = photoFrameNumericDocument.window.document.querySelector('figure');
+  const numericWrapper = numericFigure.querySelector('[data-radix-aspect-ratio-wrapper]');
+  assert.equal(numericFigure.getAttribute('data-ratio'), String(716 / 890));
+  assert.ok(Math.abs(Number.parseFloat(numericWrapper.style.paddingBottom) - 100 / (716 / 890)) < 0.001);
+  assert.equal(numericFigure.querySelector('img').hasAttribute('style'), false);
+} finally { photoFrameNumericDocument.window.close(); }
 // Navigation SSR covers native semantics and a fully controlled open group on both React majors.
 const navDocument = new JSDOM(renderToString(createElement(NavListSamples, { open: true })));
 try {
@@ -5532,7 +5553,7 @@ const { Avatar, Badge, Button, Icon, Label, Link, SearchTrigger, Slot, Slottable
 const { createRoot } = await import('react-dom/client');
 const { ToastSamples, packedToast, packedToastOptions, toastActions } = await import('./consumer.ts');
 const { PageHeaderSamples } = await import('./consumer.ts');
-const { photoFrameSamples } = await import('./consumer.ts');
+const { photoFrameNumericSamples, photoFrameSamples } = await import('./consumer.ts');
 const { ModuleCardSamples, moduleCardClicks } = await import('./consumer.ts');
 const { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DropzoneSamples, FieldSamples, fieldControlRef, ListItemSamples, MeterRowSamples, NavListSamples, navRequests, navNavigations, NoticeSamples, PopoverSamples, popoverTriggerRef, popoverCloseRef, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TooltipSamples, aspectWideRef, buttonLinkRef, buttonRef, carouselChanges, checkboxRef, chipChanges, chipGroupMultipleChanges, chipGroupSingleChanges, chipRecipe, countdownExpirations, hiddenNoteRef, iconButtonCalls, iconButtonLinkRef, iconButtonRef, inputChanges, inputRef, itemActivations, itemChildRef, linkChildRef, linkNativeRef, linkSlotRef, noticeActivations, receivedFiles, searchActivations, searchTriggerProps, searchTriggerRef, selectRef, sliderCommits, sliderEvents, slottedHeadingRef, surfaceArticleChildRef, surfaceArticleRef, surfaceDivRef, surfaceSectionRef, switchRef, tabsChanges, textareaChanges, textareaRef, toggleRef, tooltipRecipe } = await import('./consumer.ts');
 stage('imports:complete');
@@ -6868,9 +6889,16 @@ try {
   await act(async () => root.render(createElement(photoFrameSamples)));
   const photoFrameFigure = document.getElementById('consumer-photo-frame');
   assert.equal(photoFrameFigure.querySelector('img').getAttribute('src'), '/grid.svg');
+  assert.equal(photoFrameFigure.querySelector('img').getAttribute('class').includes('object-left-top'), true);
+  assert.equal(photoFrameFigure.getAttribute('data-ratio'), 'auto');
+  assert.equal(photoFrameFigure.querySelector('[data-radix-aspect-ratio-wrapper]'), null);
   assert.equal(photoFrameFigure.querySelector('figcaption').textContent, 'Grid caption');
   await act(async () => root.render(createElement(photoFrameSamples, { src: '/grid.svg?next' })));
   assert.equal(photoFrameFigure.querySelector('img').getAttribute('src'), '/grid.svg?next');
+  await act(async () => root.render(createElement(photoFrameNumericSamples)));
+  const numericFigure = document.getElementById('consumer-photo-frame-numeric');
+  assert.equal(numericFigure.getAttribute('data-ratio'), String(716 / 890));
+  assert.ok(numericFigure.querySelector('[data-radix-aspect-ratio-wrapper]'));
   await act(async () => root.render(null));
   stage('photo-frame:complete');
   stage('pull-quote:start');

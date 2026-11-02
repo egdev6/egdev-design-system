@@ -6,7 +6,8 @@ import { IconButton } from './IconButton';
 /**
  * ## Description
  * One icon-only action with a required accessible name. Use Button for ambiguous glyphs or pending actions,
- * and Toggle for persistent pressed state. Ghost is the default toolbar treatment; outline is round.
+ * and Toggle for persistent pressed state. Ghost is the default toolbar treatment; outline is the round
+ * treatment the web's social rows use at lg, and the row itself is the SocialLinks molecule.
  *
  * ## Dependencies
  * Radix Slot/Slottable compose an empty anchor or router-link host. Radix AccessibleIcon hides the glyph
@@ -41,13 +42,17 @@ export const Variants: Story = {
   )
 };
 
-/** Fixed 32/40/48px controls; glyphs use 16px at sm and the 20px icon token otherwise. */
+/**
+ * Fixed 32/40/48px controls; glyphs use 16px at sm and the 20px icon token otherwise. The outline cell is
+ * the round treatment the web social rows use at lg.
+ */
 export const Sizes: Story = {
   render: (args) => (
     <div className='flex items-center gap-4'>
       {(['sm', 'md', 'lg'] as const).map((size) => (
         <IconButton {...args} key={size} size={size} />
       ))}
+      <IconButton {...args} key='outline-lg' size='lg' variant='outline' label='outline social action' />
     </div>
   )
 };

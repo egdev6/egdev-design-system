@@ -552,7 +552,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
-          "revision": "sha256:721e9ef2357a52b4a75ce9202736901a82a80ab7d5da7ba94b575f582d351489"
+          "revision": "sha256:5934ce381aedde034bd7c1d87c89a2a1f5d2d045a7ff2d2b5e5a18465c36b50a"
         }
       },
       {
@@ -649,7 +649,7 @@
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:d88523162dc25f36bd591bbabdf2169775ab9b209ae3547a0fd36b5901f130f4"
+          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
         }
       },
       {
@@ -819,7 +819,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
-          "revision": "sha256:721e9ef2357a52b4a75ce9202736901a82a80ab7d5da7ba94b575f582d351489"
+          "revision": "sha256:5934ce381aedde034bd7c1d87c89a2a1f5d2d045a7ff2d2b5e5a18465c36b50a"
         }
       },
       {
@@ -900,6 +900,16 @@
           "path": "packages/ui/src/organisms/preview-frame/types.ts",
           "symbol": "PreviewFrameProps",
           "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
+        }
+      },
+      {
+        "component": "Link",
+        "type": "LinkVariant ('plain' | 'underlined')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/link/types.ts",
+          "symbol": "LinkProps",
+          "revision": "sha256:b5e5ba0b47c7e53c9a3759888c1d746a82596537fd3834d1ca3dd2a4b05503f3"
         }
       }
     ]
@@ -1410,7 +1420,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
-          "revision": "sha256:721e9ef2357a52b4a75ce9202736901a82a80ab7d5da7ba94b575f582d351489"
+          "revision": "sha256:5934ce381aedde034bd7c1d87c89a2a1f5d2d045a7ff2d2b5e5a18465c36b50a"
         }
       },
       {
@@ -2070,7 +2080,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
-          "revision": "sha256:721e9ef2357a52b4a75ce9202736901a82a80ab7d5da7ba94b575f582d351489"
+          "revision": "sha256:5934ce381aedde034bd7c1d87c89a2a1f5d2d045a7ff2d2b5e5a18465c36b50a"
         }
       },
       {
@@ -2321,7 +2331,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:ba59cc4ae5c38984541b2c5a84e2aefe74b7b7f99295cc94fd3682107122936d"
+          "revision": "sha256:b5e5ba0b47c7e53c9a3759888c1d746a82596537fd3834d1ca3dd2a4b05503f3"
         }
       },
       {
@@ -2331,7 +2341,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
-          "revision": "sha256:721e9ef2357a52b4a75ce9202736901a82a80ab7d5da7ba94b575f582d351489"
+          "revision": "sha256:5934ce381aedde034bd7c1d87c89a2a1f5d2d045a7ff2d2b5e5a18465c36b50a"
         }
       },
       {
@@ -2644,7 +2654,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:ba59cc4ae5c38984541b2c5a84e2aefe74b7b7f99295cc94fd3682107122936d"
+          "revision": "sha256:b5e5ba0b47c7e53c9a3759888c1d746a82596537fd3834d1ca3dd2a4b05503f3"
         }
       }
     ]
@@ -2681,7 +2691,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:ba59cc4ae5c38984541b2c5a84e2aefe74b7b7f99295cc94fd3682107122936d"
+          "revision": "sha256:b5e5ba0b47c7e53c9a3759888c1d746a82596537fd3834d1ca3dd2a4b05503f3"
         }
       }
     ]
@@ -2708,7 +2718,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:ba59cc4ae5c38984541b2c5a84e2aefe74b7b7f99295cc94fd3682107122936d"
+          "revision": "sha256:b5e5ba0b47c7e53c9a3759888c1d746a82596537fd3834d1ca3dd2a4b05503f3"
         }
       }
     ]
@@ -3112,12 +3122,12 @@
     "usages": [
       {
         "component": "PhotoFrame",
-        "type": "PhotoFrameRatio ('square' | 'portrait' | 'landscape')",
+        "type": "PhotoFrameRatio ('square' | 'portrait' | 'landscape' | 'auto') | number (numeric width divided by height; unrepresentable numbers fall back to a square)",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:d88523162dc25f36bd591bbabdf2169775ab9b209ae3547a0fd36b5901f130f4"
+          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
         }
       },
       {
@@ -4691,7 +4701,7 @@
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:d88523162dc25f36bd591bbabdf2169775ab9b209ae3547a0fd36b5901f130f4"
+          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
         }
       }
     ]
@@ -4713,12 +4723,12 @@
     "usages": [
       {
         "component": "PhotoFrame",
-        "type": "PhotoFrameFocalPoint ('center' | 'top' | 'bottom' | 'left' | 'right')",
+        "type": "PhotoFrameFocalPoint ('center' | 'top' | 'bottom' | 'left' | 'right' | 'left-top' | 'right-top' | 'left-bottom' | 'right-bottom')",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:d88523162dc25f36bd591bbabdf2169775ab9b209ae3547a0fd36b5901f130f4"
+          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
         }
       }
     ]

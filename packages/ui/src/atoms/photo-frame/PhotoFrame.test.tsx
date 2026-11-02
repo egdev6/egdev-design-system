@@ -1,10 +1,24 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { PhotoFrame } from './PhotoFrame';
 import * as stories from './PhotoFrame.stories';
 import type { PhotoFrameProps } from './types';
 
 const base = { src: '/diagnostic.svg', alt: 'Diagnostic grid' } satisfies PhotoFrameProps;
+const focalPointClasses = {
+  center: 'object-center',
+  top: 'object-top',
+  bottom: 'object-bottom',
+  left: 'object-left',
+  right: 'object-right',
+  'left-top': 'object-left-top',
+  'right-top': 'object-right-top',
+  'left-bottom': 'object-left-bottom',
+  'right-bottom': 'object-right-bottom'
+} as const;
+const focalPoints = Object.keys(focalPointClasses) as (keyof typeof focalPointClasses)[];
+const storyRender = (story: { render?: unknown }) => render((story.render as () => ReactElement)());
 
 describe('PhotoFrame', () => {
   it('provides the planned diagnostic story matrix with the adopted fixture', () => {
@@ -19,6 +33,7 @@ describe('PhotoFrame', () => {
         'WithoutCaption',
         'LongCaption',
         'HostContexts',
+        'AutoHeight',
         'FocalPoints',
         'Framed',
         'ReducedMotion',
@@ -56,9 +71,118 @@ describe('PhotoFrame', () => {
     expect(screen.getByRole('img')).toHaveAttribute('width', '99');
   });
 
-  it.each(['center', 'top', 'bottom', 'left', 'right'] as const)('uses static %s cover alignment', (focalPoint) => {
+  it.each(focalPoints)('maps %s to exactly its own static object position', (focalPoint) => {
     render(<PhotoFrame {...base} focalPoint={focalPoint} />);
-    expect(screen.getByRole('img')).toHaveClass(`object-${focalPoint}`);
+    const image = screen.getByRole('img');
+    expect(image).toHaveClass(focalPointClasses[focalPoint]);
+    expect(image.className.match(/\bobject-(?:center|top|bottom|left|right)(?:-(?:top|bottom))?\b/g)).toEqual([
+      focalPointClasses[focalPoint]
+    ]);
+  });
+
+  it('keeps the five v0.2 focal points at their previous utilities', () => {
+    for (const focalPoint of ['center', 'top', 'bottom', 'left', 'right'] as const) {
+      const { unmount } = render(<PhotoFrame {...base} focalPoint={focalPoint} />);
+      expect(screen.getByRole('img')).toHaveClass(`object-${focalPoint}`);
+      unmount();
+    }
+  });
+
+  it('reserves nothing for auto and fills the host-provided height', () => {
+    const { container } = render(<PhotoFrame {...base} ratio='auto' />);
+    const figure = screen.getByRole('figure');
+    const frame = figure.firstElementChild as HTMLElement;
+    const viewport = frame.firstElementChild as HTMLElement;
+    expect(container.querySelector('[data-radix-aspect-ratio-wrapper]')).toBeNull();
+    expect(figure).toHaveAttribute('data-ratio', 'auto');
+    expect(frame).toHaveClass('eg-surface', 'h-full');
+    expect(viewport).toHaveClass('size-full', 'rounded-xl');
+    expect(viewport.firstElementChild).toBe(screen.getByRole('img'));
+    expect(screen.getByRole('img')).toHaveClass('object-cover', 'object-center');
+  });
+
+  it('stretches the root only for auto so a grid, flex or block host can size it', () => {
+    const auto = render(<PhotoFrame {...base} ratio='auto' className='mt-8' />);
+    expect(screen.getByRole('figure')).toHaveClass('h-full', 'min-h-0', 'mt-8');
+    auto.unmount();
+    for (const ratio of [undefined, 'square', 'portrait', 'landscape', 716 / 890] as const) {
+      const { unmount } = render(<PhotoFrame {...base} ratio={ratio} />);
+      expect(screen.getByRole('figure')).not.toHaveClass('h-full', 'min-h-0');
+      unmount();
+    }
+  });
+
+  it('invents no fallback geometry for auto', () => {
+    const { container } = render(<PhotoFrame {...base} ratio='auto' />);
+    const figure = screen.getByRole('figure');
+    const frame = figure.firstElementChild as HTMLElement;
+    const viewport = frame.firstElementChild as HTMLElement;
+    for (const element of [frame, viewport, screen.getByRole('img')]) {
+      expect(element).not.toHaveAttribute('style');
+      expect(element.className).not.toMatch(/\bmin-(?:h|w)-/);
+    }
+    expect(figure.childElementCount).toBe(1);
+    expect(frame.childElementCount).toBe(1);
+    expect(container.querySelector('[data-ratio="auto"] [aria-hidden]')).toBeNull();
+  });
+
+  it('reserves a numeric proportion through AspectRatio without inline image appearance', () => {
+    const { container } = render(<PhotoFrame {...base} ratio={716 / 890} />);
+    const wrapper = container.querySelector('[data-radix-aspect-ratio-wrapper]') as HTMLElement;
+    expect(Number.parseFloat(wrapper.style.paddingBottom)).toBeCloseTo(124.3, 1);
+    expect(screen.getByRole('figure')).toHaveAttribute('data-ratio', String(716 / 890));
+    expect(screen.getByRole('img')).not.toHaveAttribute('style');
+  });
+
+  it.each([0, -1, Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY])(
+    'falls back to a square for the unrepresentable numeric ratio %s',
+    (ratio) => {
+      const { container } = render(<PhotoFrame {...base} ratio={ratio} />);
+      expect(container.querySelector('[data-radix-aspect-ratio-wrapper]')).toHaveStyle({ paddingBottom: '100%' });
+      expect(screen.getByRole('figure')).toHaveAttribute('data-ratio', 'square');
+    }
+  );
+
+  it('keeps every ratio and focal point free of inline appearance', () => {
+    for (const ratio of ['square', 'portrait', 'landscape', 'auto', 716 / 890] as const) {
+      for (const focalPoint of focalPoints) {
+        const { unmount } = render(<PhotoFrame {...base} ratio={ratio} focalPoint={focalPoint} />);
+        expect(screen.getByRole('img')).not.toHaveAttribute('style');
+        unmount();
+      }
+    }
+  });
+
+  it.each(focalPoints)('composes auto with the framed recipe for %s without extra classes', (focalPoint) => {
+    const preset = render(<PhotoFrame {...base} variant='framed' focalPoint={focalPoint} />);
+    const expected = preset.container.querySelector('figure') as HTMLElement;
+    const expectedFrame = expected.firstElementChild as HTMLElement;
+    const expectedImage = preset.container.querySelector('img') as HTMLElement;
+    const expectedViewport = expectedImage.parentElement as HTMLElement;
+    const expectedImageClassName = expectedImage.className;
+    preset.unmount();
+    const { container } = render(<PhotoFrame {...base} ratio='auto' variant='framed' focalPoint={focalPoint} />);
+    const figure = screen.getByRole('figure');
+    const frame = figure.firstElementChild as HTMLElement;
+    const viewport = frame.firstElementChild as HTMLElement;
+    expect(container.querySelector('[data-radix-aspect-ratio-wrapper]')).toBeNull();
+    expect(new Set(frame.className.split(' '))).toEqual(new Set([...expectedFrame.className.split(' '), 'h-full']));
+    expect(viewport.className).toBe(expectedViewport.className);
+    expect(frame).toHaveClass('p-1.5', 'motion-reduce:rotate-none');
+    expect(screen.getByRole('img').className).toBe(expectedImageClassName);
+  });
+
+  it('demonstrates the supported definite-height host for auto', () => {
+    const { container } = storyRender(stories.AutoHeight);
+    expect(container.firstElementChild).toHaveClass('h-96');
+    expect(container.querySelector('[data-ratio="auto"]')).not.toBeNull();
+    expect(container.querySelector('[data-radix-aspect-ratio-wrapper]')).toBeNull();
+  });
+
+  it('renders the extended focal-point matrix story', () => {
+    const { container } = storyRender(stories.FocalPoints);
+    const rendered = [...container.querySelectorAll('figure')].map((figure) => figure.getAttribute('data-focal-point'));
+    expect(new Set(rendered)).toEqual(new Set(focalPoints));
   });
 
   it('routes image attributes and native events only to the image and root attributes only to figure', () => {
@@ -142,11 +266,14 @@ describe('PhotoFrame', () => {
   });
 
   it('falls back for unknown enums without leaking them to the DOM', () => {
-    const invalid = { ratio: 'bad', variant: 'bad', focalPoint: 'bad' } as unknown as PhotoFrameProps;
+    const invalid = { ratio: 'wide', variant: 'bad', focalPoint: 'middle' } as unknown as PhotoFrameProps;
     const { container } = render(<PhotoFrame {...base} {...invalid} />);
     expect(container.querySelector('[data-radix-aspect-ratio-wrapper]')).toHaveStyle({ paddingBottom: '75%' });
     expect(screen.getByRole('img')).toHaveClass('object-center');
     expect(screen.getByRole('figure')).toHaveAttribute('data-variant', 'default');
+    expect(screen.getByRole('figure')).toHaveAttribute('data-ratio', 'landscape');
+    expect(screen.getByRole('figure')).toHaveAttribute('data-focal-point', 'center');
+    expect(container.innerHTML).not.toMatch(/wide|middle/);
   });
 
   it('rejects unsupported APIs at the type boundary', () => {
