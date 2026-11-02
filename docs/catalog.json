@@ -140,7 +140,7 @@
     "radix": "Slot + VisuallyHidden",
     "compone": "Icon",
     "accion": "mantener",
-    "notas": "Implemented in @egdev/ui: standalone borderless brand-colored native anchor with a centered 16px right arrow and reduced-motion-safe rightward hover movement, safe external new-tab semantics and a localizable hidden notice. Slot/Slottable support router anchors and forwarded refs. No stylesheet; legacy `.eg-link` remains unchanged. Contract: [#61](https://github.com/egdev6/egdev-design-system/issues/61)."
+    "notas": "Implemented in @egdev/ui: standalone borderless brand-colored native anchor with a centered 16px right arrow and reduced-motion-safe rightward hover movement, safe external new-tab semantics and a localizable hidden notice. Slot/Slottable support router anchors and forwarded refs. No stylesheet; legacy `.eg-link` remains unchanged. Contract: [#61](https://github.com/egdev6/egdev-design-system/issues/61). v0.3 ([#61](https://github.com/egdev6/egdev-design-system/issues/61)): opt-in `variant='underlined'` (1px `--color-border-brand` underline that turns neon on hover); the default stays borderless colored text and the arrow keeps pointing right (the external up-right arrow was rejected)."
   },
   {
     "actual": "Icon",

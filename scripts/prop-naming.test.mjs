@@ -333,6 +333,10 @@ const postReceiptUsages = [
     conventionId: 'slot-composition',
     source: `packages/ui/src/molecules/popover/types.ts#${symbol}`
   })),
+  {
+    conventionId: 'visual-treatment',
+    source: 'packages/ui/src/atoms/link/types.ts#LinkProps'
+  },
   ...[
     'collection-items',
     'accessible-name',
