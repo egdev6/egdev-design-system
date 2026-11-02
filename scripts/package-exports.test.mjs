@@ -1547,6 +1547,12 @@ test('UI ships PhotoFrame declarations and native utility resets', async () => {
   for (const selector of [
     '.object-cover',
     '.object-center',
+    '.object-left-top',
+    '.object-right-top',
+    '.object-left-bottom',
+    '.object-right-bottom',
+    '.h-full',
+    '.min-h-0',
     '.filter-none',
     '.inset-auto',
     '.overflow-visible',

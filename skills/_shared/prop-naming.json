@@ -639,7 +639,7 @@
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:d88523162dc25f36bd591bbabdf2169775ab9b209ae3547a0fd36b5901f130f4"
+          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
         }
       },
       {
@@ -3112,12 +3112,12 @@
     "usages": [
       {
         "component": "PhotoFrame",
-        "type": "PhotoFrameRatio ('square' | 'portrait' | 'landscape')",
+        "type": "PhotoFrameRatio ('square' | 'portrait' | 'landscape' | 'auto') | number (numeric width divided by height; unrepresentable numbers fall back to a square)",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:d88523162dc25f36bd591bbabdf2169775ab9b209ae3547a0fd36b5901f130f4"
+          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
         }
       },
       {
@@ -4681,7 +4681,7 @@
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:d88523162dc25f36bd591bbabdf2169775ab9b209ae3547a0fd36b5901f130f4"
+          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
         }
       }
     ]
@@ -4703,12 +4703,12 @@
     "usages": [
       {
         "component": "PhotoFrame",
-        "type": "PhotoFrameFocalPoint ('center' | 'top' | 'bottom' | 'left' | 'right')",
+        "type": "PhotoFrameFocalPoint ('center' | 'top' | 'bottom' | 'left' | 'right' | 'left-top' | 'right-top' | 'left-bottom' | 'right-bottom')",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
-          "revision": "sha256:d88523162dc25f36bd591bbabdf2169775ab9b209ae3547a0fd36b5901f130f4"
+          "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
         }
       }
     ]
