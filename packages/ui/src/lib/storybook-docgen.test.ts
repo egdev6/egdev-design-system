@@ -1010,6 +1010,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/tooltip',
       './lib/cn',
       './molecules/alert-dialog',
+      './molecules/article-feature',
       './molecules/button-group',
       './molecules/carousel',
       './molecules/chip-group',
@@ -1063,6 +1064,8 @@ describe('Storybook TypeScript docgen contract', () => {
       'AlertDialogContent',
       'AlertDialogTrigger',
       'AppShell',
+      'ArticleFeature',
+      'ArticleFeatureCover',
       'AspectRatio',
       'Avatar',
       'Badge',
@@ -4505,4 +4508,157 @@ describe('PreviewFrame metadata contract', () => {
       expect(props[prop], prop).toBeUndefined();
     }
   }, 20_000);
+});
+
+describe('ArticleFeature metadata contract', () => {
+  const afControls: Record<string, string> = {
+    title: 'text',
+    href: 'text',
+    asChild: 'boolean',
+    level: 'select',
+    eyebrow: 'text',
+    detail: 'text',
+    actionLabel: 'text',
+    children: 'false',
+    className: 'text',
+    coverWord: 'text',
+    badge: 'text'
+  };
+  const afDefaults: Record<string, string> = { asChild: 'false', level: '3' };
+
+  it('annotates every own prop on both union branches and the cover with one control and only constant defaults', () => {
+    const file = ast(source('molecules/article-feature/types.ts'));
+    const declarations = new Map<string, ts.PropertySignature[]>();
+    for (const property of ownProps(file, [
+      'ArticleFeatureLinkProps',
+      'ArticleFeatureSlottedProps',
+      'ArticleFeatureCoverProps'
+    ])) {
+      if (property.type?.getText(file) === 'never') {
+        continue;
+      }
+      const name = property.name.getText(file);
+      declarations.set(name, [...(declarations.get(name) ?? []), property]);
+    }
+    expect([...declarations.keys()].sort()).toEqual(Object.keys(afControls).sort());
+    for (const [name, properties] of declarations) {
+      const values = (tagName: string) =>
+        properties.flatMap((property) =>
+          ts
+            .getJSDocTags(property)
+            .filter((tag) => tag.tagName.text === tagName)
+            .map((tag) => ts.getTextOfJSDocComment(tag.comment)?.trim())
+        );
+      expect([...new Set(values('control'))], `ArticleFeature.${name} control`).toEqual([afControls[name]]);
+      expect([...new Set(values('default'))], `ArticleFeature.${name} default`).toEqual(
+        afDefaults[name] ? [afDefaults[name]] : []
+      );
+      if (afControls[name] === 'false') {
+        expect(values('controlReason')[0], `ArticleFeature.${name} reason`).toMatch(/Non-serializable/);
+      }
+    }
+  });
+
+  it('binds the branch defaults to the hook and keeps the recipes free of defaultVariants', () => {
+    expect(defaults(source('molecules/article-feature/types.ts'), true)).toEqual({});
+    expect(defaults(source('molecules/article-feature/useArticleFeature.ts'), false)).toEqual({
+      asChild: 'false',
+      level: '3'
+    });
+  });
+
+  it('extracts the two-branch union, required href versus asChild, and only documented native anchor rows', () => {
+    const extracted = parser.parse(source('molecules/article-feature/ArticleFeature.tsx'));
+    const card = extracted.find(({ displayName }) => displayName === 'ArticleFeature');
+    if (!card) {
+      throw new Error('Missing docgen for ArticleFeature');
+    }
+    const { props } = card;
+    expect(props.title, 'ArticleFeature.title').toMatchObject({ required: true });
+    expect(props.href?.type.name, 'ArticleFeature.href type').toBe('string');
+    expect(props.asChild?.type.name, 'ArticleFeature.asChild merged branch type').toBe('boolean');
+    expect(normalize(props.asChild?.defaultValue?.value), 'ArticleFeature.asChild default').toBe('false');
+    expect(
+      [...new Set((props.level?.type.value as { value: string }[] | undefined)?.map((row) => normalize(row.value)))],
+      'ArticleFeature.level values'
+    ).toEqual(['2', '3', '4', '5', '6']);
+    expect(normalize(props.level?.defaultValue?.value), 'ArticleFeature.level default').toBe('3');
+    for (const [name, control] of Object.entries(afControls)) {
+      if (name === 'coverWord' || name === 'badge') {
+        // Cover-only fields stay on the cover part; the root row must not exist.
+        expect(props[name], name).toBeUndefined();
+        continue;
+      }
+      const extractedControl = (props[name]?.tags as Record<string, string> | undefined)?.control;
+      expect(
+        extractedControl?.split('\n').every((value) => value === control),
+        `ArticleFeature.${name} control tags`
+      ).toBe(true);
+    }
+    expect((props.children?.tags as Record<string, string> | undefined)?.controlReason).toMatch(/Non-serializable/);
+    // The whole-card anchor keeps native naming, placement and navigation rows documented.
+    for (const name of [
+      'id',
+      'dir',
+      'lang',
+      'target',
+      'rel',
+      'aria-describedby',
+      'aria-label',
+      'aria-labelledby',
+      'onClick'
+    ]) {
+      expect(props[name], `ArticleFeature native ${name} must remain documented`).toBeDefined();
+    }
+    for (const name of ['role', 'tabIndex', 'style', 'ref', 'useArticleFeature', 'articleFeatureVariants']) {
+      expect(props[name], name).toBeUndefined();
+    }
+    expect(Object.keys(props).sort()).toEqual(
+      [
+        ...Object.keys(afControls).filter((name) => name !== 'coverWord' && name !== 'badge'),
+        'id',
+        'dir',
+        'lang',
+        'target',
+        'rel',
+        'aria-describedby',
+        'aria-label',
+        'aria-labelledby',
+        'onClick'
+      ].sort()
+    );
+  }, 20_000);
+
+  it('extracts the cover part rows without promoting native or private rows', () => {
+    const extracted = parser.parse(source('molecules/article-feature/ArticleFeature.tsx'));
+    const cover = extracted.find(({ displayName }) => displayName === 'ArticleFeatureCover');
+    if (!cover) {
+      throw new Error('Missing docgen for ArticleFeatureCover');
+    }
+    const { props } = cover;
+    expect(Object.keys(props).sort()).toEqual(['badge', 'children', 'className', 'coverWord']);
+    expect((props.coverWord?.tags as Record<string, string> | undefined)?.control).toBe('text');
+    expect((props.badge?.tags as Record<string, string> | undefined)?.control).toBe('text');
+    expect((props.children?.tags as Record<string, string> | undefined)?.control).toBe('false');
+    expect((props.children?.tags as Record<string, string> | undefined)?.controlReason).toMatch(/Non-serializable/);
+    expect((props.className?.tags as Record<string, string> | undefined)?.control).toBe('text');
+    for (const name of ['href', 'asChild', 'title', 'level', 'articleFeatureCoverVariants']) {
+      expect(props[name], name).toBeUndefined();
+    }
+  }, 20_000);
+
+  it('exports exactly the contract stories', () => {
+    expect(exportedStoryNames(ast(source('molecules/article-feature/ArticleFeature.stories.tsx')))).toEqual([
+      'Default',
+      'AsChildLink',
+      'GenerativeCover',
+      'MediaCover',
+      'ContextRow',
+      'DetailOnly',
+      'WithActionLabel',
+      'LongContent',
+      'Widths',
+      'ReducedMotion'
+    ]);
+  });
 });

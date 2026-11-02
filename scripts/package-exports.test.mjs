@@ -191,7 +191,7 @@ function cssBlock(css, opening) {
 
 // Match escaped emitted selectors, not unescaped CVA class names; allow only complete approved utilities.
 const unapprovedTransitionUtility =
-  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\]|\\\[opacity\\,transform\\\]|\\\[width\\,margin\\,opacity\\,transform\\\]|\\\[color\\,transform\\\])(?=\s*\{))[\w\\]/;
+  /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[color\\,background-color\\,border-color\\\]|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\]|\\\[opacity\\,transform\\\]|\\\[width\\,margin\\,opacity\\,transform\\\]|\\\[color\\,transform\\\])(?=\s*\{))[\w\\]/;
 
 test('Collapsible ships native group-state caret motion and reduced-motion resets', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
@@ -867,6 +867,7 @@ test('transition utility guard accepts only the exact approved emitted selectors
     '.transition-shadow',
     String.raw`.transition-\[background-color\,border-color\]`,
     String.raw`.transition-\[border-color\,box-shadow\]`,
+    String.raw`.transition-\[color\,background-color\,border-color\]`,
     String.raw`.transition-\[translate\,background-color\]`,
     String.raw`.transition-\[border-color\,color\]`,
     String.raw`.transition-\[translate\]`,
@@ -3372,6 +3373,79 @@ test('ProjectCard ships scanned stroke, signature and density utilities without 
   assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/project-card/project-card.css')));
 });
 
+test('ArticleFeature ships one whole-card anchor SSR with reserved cover and paint-only action', async () => {
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const html = renderToStaticMarkup(
+    createElement(exported.ArticleFeature, {
+      title: 'Packed featured article',
+      href: '#packed-article',
+      eyebrow: 'Architecture',
+      detail: '12 min \u00b7 18 Sep 2026',
+      actionLabel: 'Read article',
+      className: 'col-span-full',
+      children: createElement(exported.ArticleFeatureCover, { coverWord: '/src', badge: 'Featured' })
+    })
+  );
+  assert.match(html, /^<a\b/);
+  assert.match(html, /href="#packed-article"/);
+  assert.match(html, /data-level="3"/);
+  assert.match(html, /class="[^"]*eg-article-feature/);
+  assert.match(html, /data-cover="generative"/);
+  // The reserved 16:8 proportion ships through the public AspectRatio composition.
+  assert.match(html, /padding-bottom:\s*50%/);
+  assert.ok(html.includes('Featured'), 'The cover badge renders as plain text');
+  assert.match(html, /aria-hidden="true"[^>]*>\u00b7</);
+  assert.ok(html.includes('Read article'), 'The paint-only action label renders');
+  assert.equal((html.match(/<a\b/g) ?? []).length, 1, 'The whole card is a single anchor');
+  assert.doesNotMatch(html, /<button\b|tabindex=/);
+  // Media branch: the supplied auto PhotoFrame fills the same reserved region.
+  const media = renderToStaticMarkup(
+    createElement(exported.ArticleFeature, {
+      title: 'Packed media cover',
+      href: '#packed-media',
+      children: createElement(exported.ArticleFeatureCover, {
+        children: createElement(exported.PhotoFrame, { ratio: 'auto', src: '/grid.svg', alt: '' })
+      })
+    })
+  );
+  assert.match(media, /data-cover="media"/);
+  assert.match(media, /data-ratio="auto"/);
+  assert.match(media, /padding-bottom:\s*50%/);
+  // Slotted branch: one consumer anchor receives the whole card; no nested anchor exists.
+  const slotted = renderToStaticMarkup(
+    createElement(exported.ArticleFeature, {
+      title: 'Packed slotted article',
+      asChild: true,
+      children: createElement('a', { href: '/packed-router' })
+    })
+  );
+  assert.match(slotted, /^<a\b/);
+  assert.match(slotted, /href="\/packed-router"/);
+  assert.match(slotted, /class="[^"]*eg-article-feature/);
+  assert.equal((slotted.match(/<a\b/g) ?? []).length, 1);
+  // A blank title warns and renders nothing, never an unnamed link.
+  const blank = renderToStaticMarkup(createElement(exported.ArticleFeature, { title: '   ', href: '#blank' }));
+  assert.equal(blank, '');
+  for (const name of [
+    'useArticleFeature',
+    'useArticleFeatureCover',
+    'articleFeatureVariants',
+    'articleFeatureCoverVariants',
+    'articleFeaturePlateVariants',
+    'articleFeatureWordVariants',
+    'articleFeatureBadgeVariants',
+    'articleFeatureMetaVariants',
+    'articleFeatureEyebrowVariants',
+    'articleFeatureDetailVariants',
+    'articleFeatureTitleVariants',
+    'articleFeatureActionVariants'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, name);
+  }
+});
+
 test('TipCard ships passive 2:3 poster SSR and keeps its composition recipes private', async () => {
   const { createElement } = await import('react');
   const { renderToStaticMarkup } = await import('react-dom/server');
@@ -3419,6 +3493,49 @@ test('TipCard ships passive 2:3 poster SSR and keeps its composition recipes pri
   ]) {
     assert.equal(Object.hasOwn(exported, name), false, name);
   }
+});
+
+test('ArticleFeature ships scanned token utilities without a new stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    '.text-heading-small',
+    '.text-title-display',
+    '.text-alpha-white-07',
+    '.text-meta',
+    '.text-label-default',
+    '.text-fg-brand-raised',
+    '.text-fg-secondary',
+    '.text-fg-default',
+    '.text-fg-on-status',
+    '.border-border-brand',
+    '.font-display',
+    '.no-underline',
+    '.cursor-pointer',
+    String.raw`.hover\:border-border-brand`,
+    String.raw`.focus-visible\:shadow-focus`,
+    String.raw`.motion-reduce\:transition-none`,
+    '.wrap-anywhere',
+    '.leading-none',
+    '.top-4',
+    '.left-4',
+    '.px-4',
+    '.mt-auto',
+    '.gap-4'
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing ArticleFeature utility ${selector}`);
+  }
+  // Token rules keep their var() arguments; fallbacks may accompany the token reference.
+  const heading = cssBlock(utilities, /\.text-heading-small[^{]*\{/);
+  assert.match(heading, /font-size:\s*var\(--text-heading-small/);
+  const ghost = cssBlock(utilities, /\.text-alpha-white-07[^{]*\{/);
+  assert.match(ghost, /color:\s*var\(--color-alpha-white-07/);
+  const hover = cssBlock(utilities, /\.hover\\:border-border-brand[^{]*\{/);
+  assert.match(hover, /border-color:\s*var\(--color-border-brand/);
+  const ring = cssBlock(utilities, /\.focus-visible\\:shadow-focus[^{]*\{/);
+  assert.match(ring, /--tw-shadow/);
+  assert.doesNotMatch(utilities, /\.eg-article-feature[^{}]*\{/);
+  assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/article-feature/article-feature.css')));
 });
 
 test('TipCard emits its raised frame, in-flow caption and legacy resets without a stylesheet', () => {
@@ -3543,6 +3660,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'AlertDialogContent',
       'AlertDialogTrigger',
       'AppShell',
+      'ArticleFeature',
+      'ArticleFeatureCover',
       'AspectRatio',
       'Avatar',
       'Badge',
@@ -3784,6 +3903,13 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'AppShell',
     'AppShellMessages',
     'AppShellProps',
+    'ArticleFeature',
+    'ArticleFeatureCover',
+    'ArticleFeatureCoverProps',
+    'ArticleFeatureLevel',
+    'ArticleFeatureLinkProps',
+    'ArticleFeatureProps',
+    'ArticleFeatureSlottedProps',
     'AspectRatio',
     'AspectRatioProps',
     'Avatar',
@@ -4924,7 +5050,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   }
   // Input: span.eg-input root, native input with forwarded attributes, className on the root only (D3).
   const field = renderToString(
-    createElement(exported.Input, { 'aria-label': 'Title', name: 'title', placeholder: 'Untitled', className: 'w-64' })
+    createElement(exported.Input, {
+      'aria-label': 'Title',
+      name: 'title',
+      placeholder: 'Untitled',
+      className: 'w-64'
+    })
   );
   assert.match(
     field,
@@ -5453,3 +5584,9 @@ test('Indicator package preserves a passive wrapper and suppresses only invalid-
     }
   }
 });
+
+for (const subpath of ['./tokens.css', './theme.css', './native.css']) {
+  test(`Tokens ${subpath} export resolves to a nonempty file`, () => {
+    artifact('tokens', tokens.exports[subpath]);
+  });
+}

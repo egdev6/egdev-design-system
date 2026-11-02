@@ -26,6 +26,8 @@ const components = [
   ['ProjectCardTags', 'molecules/project-card'],
   ['ProjectCardCode', 'molecules/project-card'],
   ['ProjectCardFooter', 'molecules/project-card'],
+  ['ArticleFeature', 'molecules/article-feature'],
+  ['ArticleFeatureCover', 'molecules/article-feature'],
   ['Checkbox', 'atoms/checkbox'],
   ['Chip', 'atoms/chip'],
   ['ChipGroup', 'molecules/chip-group'],
@@ -139,6 +141,18 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 
 const expected: Record<string, Record<string, string | false>> = {
   gaugegroup: { label: 'text', items: false, size: 'select', center: false },
+  articlefeature: {
+    title: 'text',
+    href: 'text',
+    asChild: 'boolean',
+    level: 'select',
+    eyebrow: 'text',
+    detail: 'text',
+    actionLabel: 'text',
+    children: false,
+    className: 'text'
+  },
+  articlefeaturecover: { coverWord: 'text', badge: 'text', children: false, className: 'text' },
   photoframe: {
     src: 'text',
     alt: 'text',
@@ -503,6 +517,8 @@ const expected: Record<string, Record<string, string | false>> = {
 const ownPropCounts: Record<string, number> = {
   table: 16,
   gaugegroup: 4,
+  articlefeature: 9,
+  articlefeaturecover: 4,
   terminalcard: 3,
   terminalcardbar: 3,
   terminalcardlist: 2,
@@ -828,6 +844,47 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
   });
 
+  it('retains ArticleFeature whole-card anchor rows, the href/asChild branches and paint-only parts', () => {
+    const { argTypes } = story('ArticleFeature');
+    expect(argTypes.title?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.href?.type?.name).toBe('string');
+    expect(argTypes.href?.control).toEqual({ type: 'text' });
+    expect(argTypes.asChild?.control).toEqual({ type: 'boolean' });
+    expect(argTypes.level?.options).toEqual([2, 3, 4, 5, 6]);
+    expect(argTypes.children?.control).toBe(false);
+    expect(argTypes.children?.table?.disable).toBeUndefined();
+    expect(argTypes.actionLabel?.control).toEqual({ type: 'text' });
+    // Cover-only fields never leak into the root Controls; the anchor keeps its native rows.
+    expect(argTypes.coverWord).toBeUndefined();
+    expect(argTypes.badge).toBeUndefined();
+    for (const name of [
+      'id',
+      'dir',
+      'lang',
+      'target',
+      'rel',
+      'aria-describedby',
+      'aria-label',
+      'aria-labelledby',
+      'onClick'
+    ]) {
+      expect(argTypes[name], name).toBeDefined();
+    }
+    for (const name of ['role', 'tabIndex', 'style', 'ref']) {
+      expect(argTypes[name], name).toBeUndefined();
+    }
+    const cover = story('ArticleFeatureCover');
+    expect(cover.argTypes.coverWord?.control).toEqual({ type: 'text' });
+    expect(cover.argTypes.badge?.control).toEqual({ type: 'text' });
+    expect(cover.argTypes.children?.control).toBe(false);
+    expect(cover.argTypes.className?.control).toEqual({ type: 'text' });
+    expect(cover.argTypes.href).toBeUndefined();
+    expect(cover.argTypes.asChild).toBeUndefined();
+    for (const composed of [story('ArticleFeature'), cover]) {
+      expect(composed.args).toEqual({});
+    }
+  });
+
   it('retains TerminalCard required group naming, collection items and decorative row presentation', () => {
     const { argTypes } = story('TerminalCard');
     expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });
@@ -873,9 +930,18 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       }
     }
     if (
-      !['Button', 'VisuallyHidden', 'Stack', 'Cluster', 'Text', 'Surface', 'Link', 'IconButton', 'ListItem'].includes(
-        name
-      )
+      ![
+        'Button',
+        'VisuallyHidden',
+        'Stack',
+        'Cluster',
+        'Text',
+        'Surface',
+        'Link',
+        'IconButton',
+        'ListItem',
+        'ArticleFeature'
+      ].includes(name)
     ) {
       expect(composed.argTypes.asChild, `${name} must not expose asChild`).toBeUndefined();
     }

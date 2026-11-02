@@ -675,6 +675,24 @@ const postReceiptUsages = [
   ...['heading-title', 'heading-level', 'image-focal-point', 'cover-badge'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/tip-card/types.ts#TipCardProps'
+  })),
+  // ArticleFeature T12 records its reviewed usages at implementation; the receipt binds convention
+  // content only. The cover usage carries the alternative badge name authorized by the approved
+  // ArticleFeatureCover exception and is registered under the canonical coverBadge convention.
+  ...[
+    'heading-title',
+    'heading-level',
+    'heading-eyebrow',
+    'slot-composition',
+    'card-link-action-label',
+    'content-detail'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/article-feature/types.ts#ArticleFeatureProps'
+  })),
+  ...['cover-badge', 'decorative-cover-word'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/article-feature/types.ts#ArticleFeatureCoverProps'
   }))
 ];
 // These newly proposed conventions are not part of any immutable approval receipt.
@@ -759,9 +777,10 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   assert.ok(text.includes('218403be9baee574e213cf1b06db1f7bd4d3951b20c7e24e593e90ef011fb062'));
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   validate(actual);
-  // Union of both branch additions: two new approved conventions over the shared base.
-  assert.equal(actual.length, 144);
-  assert.equal(beforeIndicatorConventions(actual).length, 141);
+  // Union of both branch additions: two new approved conventions over the shared base; the
+  // ArticleFeature naming additions add three more later in the chain.
+  assert.equal(actual.length, 147);
+  assert.equal(beforeIndicatorConventions(actual).length, 144);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -876,7 +895,8 @@ const receiptChain = [
   'docs/components/chip/v0.2/render-mode-approval.json',
   'docs/components/project-card/v0.1/decorative-index-approval.json',
   'docs/components/terminal-card/v0.1/terminal-naming-approval.json',
-  'docs/components/tip-card/v0.1/cover-badge-approval.json'
+  'docs/components/tip-card/v0.1/cover-badge-approval.json',
+  'docs/components/article-feature/v0.1/prop-naming-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -2020,14 +2040,27 @@ test('cover-badge naming receipt binds the scoped owner decision without rewriti
       contentHash: record.contentHash
     });
   }
-  // The reviewed TipCard usage carries the actual working-tree source revision.
-  const revision = digest(fs.readFileSync(resolve(root, 'packages/ui/src/molecules/tip-card/types.ts')));
-  assert.equal(usages.length, 1);
-  assert.equal(usages[0].component, 'TipCard');
-  assert.deepEqual(usages[0].source, {
-    path: 'packages/ui/src/molecules/tip-card/types.ts',
-    symbol: 'TipCardProps',
-    revision
+  // The reviewed usages carry actual working-tree source revisions. ArticleFeatureCover uses the
+  // alternative badge name under the canonical coverBadge convention; its alternative-name
+  // authority is the approved scoped exception above, never a global alias.
+  const tipRevision = digest(fs.readFileSync(resolve(root, 'packages/ui/src/molecules/tip-card/types.ts')));
+  const coverRevision = digest(fs.readFileSync(resolve(root, 'packages/ui/src/molecules/article-feature/types.ts')));
+  assert.equal(usages.length, 2);
+  assert.deepEqual(usages[0], {
+    component: 'TipCard',
+    type: 'string',
+    status: 'existing',
+    source: { path: 'packages/ui/src/molecules/tip-card/types.ts', symbol: 'TipCardProps', revision: tipRevision }
+  });
+  assert.deepEqual(usages[1], {
+    component: 'ArticleFeatureCover',
+    type: 'string',
+    status: 'existing',
+    source: {
+      path: 'packages/ui/src/molecules/article-feature/types.ts',
+      symbol: 'ArticleFeatureCoverProps',
+      revision: coverRevision
+    }
   });
   assert.deepEqual(historicalRegistry([entry])[0].usages, []);
   // Changed semantics cannot pass validation, and the pinned receipt hash cannot cover a widened
@@ -2050,6 +2083,114 @@ test('cover-badge naming receipt binds the scoped owner decision without rewriti
   assert.equal(thumbnail.name, 'badge');
   assert.deepEqual(thumbnail.aliases, []);
   assert.deepEqual(thumbnail.exceptions, []);
+});
+
+const articleFeatureReference = 'docs/components/article-feature/v0.1/prop-naming-approval.json';
+test('ArticleFeature naming receipt binds the approved #280 conventions without rewriting historical approvals', () => {
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, articleFeatureReference), 'utf8'));
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(registry);
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(
+    receipt.evidence.channel,
+    'https://github.com/egdev6/egdev-design-system/issues/280#issuecomment-6581572442; odd/tasks/web-catalog.md L17'
+  );
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar las recomendaciones (Recomendado)');
+  assert.match(receipt.evidence.interpretation, /cover-badge-naming-amendment/);
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  // The receipt pins the exact prior TipCard cover-badge predecessor bytes; nothing historical is rewritten.
+  assert.deepEqual(
+    receipt.priorReceipts.map(({ path, wholeFileSHA256 }) => [path, wholeFileSHA256]),
+    [
+      [
+        'docs/components/tip-card/v0.1/cover-badge-approval.json',
+        'sha256:d4a7040af6eb27ee28d895478d3934092fa2d3665fb1b0c7f51d8124a6248aa4'
+      ]
+    ]
+  );
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(digest(fs.readFileSync(resolve(root, prior.path))), prior.wholeFileSHA256, prior.path);
+  }
+  assert.ok(laterReceipts('docs/components/tip-card/v0.1/cover-badge-approval.json').has(articleFeatureReference));
+  assert.deepEqual(
+    receipt.entries.map(({ convention }) => convention.id),
+    ['card-link-action-label', 'content-detail', 'decorative-cover-word']
+  );
+  // The usage revision is read from the reviewed working-tree file, never pinned to an older receipt byte.
+  const revision = digest(fs.readFileSync(resolve(root, 'packages/ui/src/molecules/article-feature/types.ts')));
+  const expected = [
+    ['card-link-action-label', 'actionLabel', 'ArticleFeature', 'ArticleFeatureProps', 'string'],
+    ['content-detail', 'detail', 'ArticleFeature', 'ArticleFeatureProps', 'string'],
+    ['decorative-cover-word', 'coverWord', 'ArticleFeatureCover', 'ArticleFeatureCoverProps', 'string']
+  ];
+  for (const [id, name, component, symbol, type] of expected) {
+    const record = receipt.entries.find(({ convention }) => convention.id === id);
+    const entry = registry.find(({ id: entryId }) => entryId === id);
+    assert.ok(entry, id);
+    const { approval, usages, ...convention } = entry;
+    assert.deepEqual(record.convention, convention, id);
+    assert.equal(record.scope, `convention:${id}`, id);
+    assert.equal(record.contentHash, props.conventionHash(entry), id);
+    assert.equal(record.contentHash, approval.contentHash, id);
+    assert.deepEqual(approval, {
+      reference: articleFeatureReference,
+      scope: record.scope,
+      contentHash: record.contentHash
+    });
+    assert.equal(entry.status, 'approved', id);
+    assert.equal(entry.name, name, id);
+    assert.deepEqual(entry.aliases, [], id);
+    assert.deepEqual(entry.exceptions, [], id);
+    assert.equal(usages.length, 1, id);
+    assert.equal(usages[0].component, component, id);
+    assert.equal(usages[0].type, type, id);
+    assert.equal(usages[0].status, 'existing', id);
+    assert.deepEqual(
+      usages[0].source,
+      { path: 'packages/ui/src/molecules/article-feature/types.ts', symbol, revision },
+      id
+    );
+    assert.deepEqual(historicalRegistry([entry])[0].usages, [], id);
+    const changed = structuredClone(registry);
+    changed.find(({ id: entryId }) => entryId === id).meaning += ' Changed.';
+    assert.throws(() => validate(changed), /approval/i, id);
+  }
+  // Reviewed ArticleFeature usages land exactly on the applied approved entries; nothing else gains one.
+  assert.deepEqual(
+    registry
+      .filter((entry) => entry.usages.some(({ component }) => component === 'ArticleFeature'))
+      .map(({ id }) => id)
+      .sort(),
+    [
+      'card-link-action-label',
+      'content-detail',
+      'heading-eyebrow',
+      'heading-level',
+      'heading-title',
+      'slot-composition'
+    ]
+  );
+  assert.deepEqual(
+    registry
+      .filter((entry) => entry.usages.some(({ component }) => component === 'ArticleFeatureCover'))
+      .map(({ id }) => id)
+      .sort(),
+    ['cover-badge', 'decorative-cover-word']
+  );
+  // The retracted thumbnail-badge reuse stays retracted and option-metadata stays unwidened.
+  const thumbnail = registry.find(({ id }) => id === 'thumbnail-badge');
+  assert.deepEqual(
+    thumbnail.usages.map(({ component }) => component),
+    ['SelectTileOption']
+  );
+  const meta = registry.find(({ id }) => id === 'option-metadata');
+  assert.deepEqual(
+    meta.usages.map(({ component }) => component),
+    ['SelectTileOption']
+  );
 });
 
 test('template naming receipt pins the organism receipt and binds two new layout slots', () => {

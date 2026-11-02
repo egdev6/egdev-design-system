@@ -88,8 +88,13 @@ import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorI
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
 import { ToastProvider, useToast } from '@egdev/ui';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, NowCard, NowCardBody, NowCardDetail, NowCardFooter, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, TerminalCard, TerminalCardBar, TerminalCardList, Text, Textarea, Timeline, TipCard, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { ArticleFeature, ArticleFeatureCover, AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, NowCard, NowCardBody, NowCardDetail, NowCardFooter, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, TerminalCard, TerminalCardBar, TerminalCardList, Text, Textarea, Timeline, TipCard, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
+  ArticleFeatureCoverProps,
+  ArticleFeatureLevel,
+  ArticleFeatureLinkProps,
+  ArticleFeatureProps,
+  ArticleFeatureSlottedProps,
   AspectRatioProps,
   AvatarProps,
   AvatarSize,
@@ -1179,6 +1184,71 @@ type ProjectCardPrivateHook = (typeof import('@egdev/ui'))['useProjectCard'];
 // @ts-expect-error Internal root recipe is not public.
 type ProjectCardPrivateRecipe = (typeof import('@egdev/ui'))['projectCardVariants'];
 export type ProjectCardPrivateNegatives = [ProjectCardPrivateHook, ProjectCardPrivateRecipe];
+
+// ArticleFeature samples stay outside App so the existing aggregate harnesses remain unchanged.
+const articleFeatureCover: ArticleFeatureCoverProps = { coverWord: '/src', badge: 'Featured' };
+const articleFeatureLevel: ArticleFeatureLevel = 3;
+const articleFeatureNative: ArticleFeatureLinkProps = {
+  title: 'Packed featured article',
+  href: '#packed-article',
+  level: articleFeatureLevel,
+  eyebrow: 'Architecture',
+  detail: '12 min · 18 Sep 2026',
+  actionLabel: 'Read article',
+  className: 'col-span-full',
+  children: createElement(ArticleFeatureCover, articleFeatureCover)
+};
+const articleFeatureBase: ArticleFeatureProps = articleFeatureNative;
+export function ArticleFeatureSamples() {
+  return createElement(ArticleFeature, articleFeatureBase);
+}
+const articleFeatureSlotted: ArticleFeatureSlottedProps = {
+  title: 'Packed slotted article',
+  asChild: true,
+  children: createElement('a', { href: '/packed-router' }, 'Router anchor')
+};
+// Both union branches stay visible to packed consumers.
+export const articleFeatureBranchSamples: [ArticleFeatureLinkProps, ArticleFeatureSlottedProps] = [
+  articleFeatureNative,
+  articleFeatureSlotted
+];
+export function ArticleFeatureSlottedSamples() {
+  return createElement(ArticleFeature, articleFeatureSlotted);
+}
+const articleFeatureMediaCover: ArticleFeatureCoverProps = {
+  children: createElement(PhotoFrame, { ratio: 'auto', src: '/grid.svg', alt: '' })
+};
+const articleFeatureMedia: ArticleFeatureLinkProps = {
+  ...articleFeatureNative,
+  href: '#packed-media',
+  children: createElement(ArticleFeatureCover, articleFeatureMediaCover)
+};
+export function ArticleFeatureMediaSample() {
+  return createElement(ArticleFeature, articleFeatureMedia);
+}
+// @ts-expect-error The native branch requires href.
+const articleFeatureMissingHref: ArticleFeatureProps = { title: 'Missing href' };
+// @ts-expect-error The slotted branch accepts no href of its own.
+const articleFeatureSlottedHref: ArticleFeatureProps = {
+  title: 'Slotted href',
+  asChild: true,
+  href: '/packed-router',
+  children: createElement('a', { href: '/packed-router' })
+};
+// @ts-expect-error Heading ranks are h2-h6 only.
+const articleFeatureRank: ArticleFeatureProps = { ...articleFeatureBase, level: 1 };
+// @ts-expect-error The whole-card anchor owns the role.
+const articleFeatureRole: ArticleFeatureProps = { ...articleFeatureBase, role: 'article' };
+// @ts-expect-error The whole-card anchor owns the single tab stop.
+const articleFeatureTab: ArticleFeatureProps = { ...articleFeatureBase, tabIndex: 0 };
+// @ts-expect-error The Material frame owns inline appearance.
+const articleFeatureStyle: ArticleFeatureProps = { ...articleFeatureBase, style: { width: '20rem' } };
+// @ts-expect-error Internal hooks are not public.
+type ArticleFeaturePrivateHook = (typeof import('@egdev/ui'))['useArticleFeature'];
+// @ts-expect-error Internal root recipe is not public.
+type ArticleFeaturePrivateRecipe = (typeof import('@egdev/ui'))['articleFeatureVariants'];
+export type ArticleFeaturePrivateNegatives = [ArticleFeaturePrivateHook, ArticleFeaturePrivateRecipe];
+
 // TipCard samples stay outside App so the existing aggregate control-count/focus harness is unchanged.
 const tipCardBase: TipCardProps = {
   title: 'Packed tip',
@@ -4036,6 +4106,58 @@ function assertCollapsibleConsumerCSS(css) {
   }
 }
 
+function assertArticleFeatureConsumerCSS(css) {
+  // Frame, well plate, ghost word, hover recipe and action label ship as scanned token
+  // utilities; the eg-article-feature marker never becomes a component CSS rule.
+  for (const selector of [
+    '.text-heading-small',
+    '.text-title-display',
+    '.text-alpha-white-07',
+    '.text-meta',
+    '.text-label-default',
+    '.text-fg-brand-raised',
+    '.text-fg-secondary',
+    '.text-fg-default',
+    '.text-fg-on-status',
+    '.border-border-brand',
+    '.font-display',
+    '.no-underline',
+    '.cursor-pointer',
+    '.hover\\:border-border-brand',
+    '.focus-visible\\:shadow-focus',
+    '.motion-reduce\\:transition-none',
+    '.wrap-anywhere',
+    '.leading-none',
+    '.top-4',
+    '.left-4',
+    '.px-4',
+    '.mt-auto',
+    '.gap-4'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing ArticleFeature packed CSS utility ' + selector);
+  }
+  // Token rules keep their var() arguments; fallbacks may accompany the token reference.
+  const heading = css.match(/\.text-heading-small\s*\{([^}]*)\}/);
+  assert.ok(
+    heading && /font-size:\s*var\(--text-heading-small/.test(heading[1]),
+    'The title step resolves from the token'
+  );
+  const ghost = css.match(/\.text-alpha-white-07\s*\{([^}]*)\}/);
+  assert.ok(ghost && /color:\s*var\(--color-alpha-white-07/.test(ghost[1]), 'The ghost word uses the alpha token');
+  const hover = css.match(/\.hover\\:border-border-brand[^{]*\{([^}]*)\}/);
+  assert.ok(
+    hover && /border-color:\s*var\(--color-border-brand/.test(hover[1]),
+    'The hover hairline uses the brand border token'
+  );
+  // Legacy component-layer rules are preserved; the new recipe adds only utilities.
+  const utilityLayer = /@layer utilities\s*\{/.exec(css);
+  assert.ok(utilityLayer, 'Packed CSS must contain its utilities layer');
+  assert.doesNotMatch(
+    css.slice(utilityLayer.index),
+    /\.eg-article-feature[^{},]*\s*[{,]/,
+    'ArticleFeature marker must not become a new utilities-layer CSS rule'
+  );
+}
 function assertTerminalCardConsumerCSS(css) {
   // Frame, bar band, wrap, tone ink and caret pulse ship as scanned token utilities; the
   // eg-terminal-card marker never becomes a component CSS rule.
@@ -4139,6 +4261,8 @@ assert.ok(readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8').
 assert.doesNotMatch(shippedStyles, /\\.eg-terminal-card__?[a-z]*\\s*[{,]/, 'TerminalCard marker must not become a shipped CSS rule');
 ${assertTerminalCardConsumerCSS.toString()}
 assertTerminalCardConsumerCSS(shippedStyles);
+${assertArticleFeatureConsumerCSS.toString()}
+assertArticleFeatureConsumerCSS(shippedStyles);
 assert.doesNotMatch(shippedStyles, /\.eg-divider\s*[,{]/, 'Divider marker must not become a shipped CSS rule');
 assert.ok(!shippedStyles.includes('.eg-visually-hidden'), 'VisuallyHidden must not add shipped CSS; Radix hides inline');
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.items-stretch', '.items-start', '.justify-between']) {
@@ -4169,6 +4293,8 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AlertDialogContent',
   'AlertDialogTrigger',
   'AppShell',
+  'ArticleFeature',
+  'ArticleFeatureCover',
   'AspectRatio',
   'Avatar',
   'Badge',
@@ -6008,7 +6134,53 @@ for (const value of [NaN, Infinity, -Infinity]) {
   assert.ok(rendered.includes('Disconnected capacity') && rendered.includes('Data unavailable'));
   assert.doesNotMatch(rendered, /role="meter"|aria-value(?:now|min|max|text)=|eg-gauge-arc|--eg-gauge-value|Hidden condition|Hidden center|aria-live=|<button|tabindex=/);
 }
-console.log(JSON.stringify({ ssr: ['Gauge finite, bounded and unavailable', 'decorative centers', 'visible conditions', 'Checkbox binary/mixed ARIA, Icon indicator and form input', 'Badge defaults and twelve passive tone/treatment combinations with decorative icons', 'Slider bounds, formatted name and Radix server-hidden thumb', 'Countdown deterministic initializing and unavailable placeholders'], bytes: html.length }));
+const { ArticleFeatureSamples, ArticleFeatureSlottedSamples, ArticleFeatureMediaSample } = await import('./consumer.ts');
+const articleFeatureHTML = renderToString(createElement(ArticleFeatureSamples));
+writeFileSync(new URL('./article-feature-hydration.html', import.meta.url), articleFeatureHTML);
+const articleFeatureDOM = new JSDOM(articleFeatureHTML);
+try {
+  const doc = articleFeatureDOM.window.document;
+  const card = doc.querySelector('a.eg-article-feature');
+  assert.ok(card, 'The whole card is one anchor');
+  // Parse the tree instead of banning aria-hidden wholesale: the decorative arrow is aria-hidden
+  // inside the single anchor, while the card root itself never hides from assistive technology.
+  assert.equal(card.getAttribute('aria-hidden'), null);
+  assert.equal(doc.querySelectorAll('a').length, 1, 'No nested action anchor exists');
+  assert.equal(card.getAttribute('href'), '#packed-article');
+  assert.equal(card.getAttribute('data-level'), '3');
+  const cover = card.querySelector('[data-cover="generative"]');
+  assert.ok(cover, 'The generative cover renders');
+  assert.equal(cover.querySelector('[data-radix-aspect-ratio-wrapper]').style.paddingBottom, '50%', 'The cover reserves 16:8');
+  assert.ok(cover.querySelector('[aria-hidden="true"]').textContent.includes('/src'));
+  assert.ok(card.querySelector('.eg-article-feature__meta'), 'The context row renders');
+  const action = card.querySelector('.eg-article-feature__action');
+  assert.ok(action, 'The paint-only action label renders');
+  assert.equal(action.querySelector('a, button'), null);
+} finally {
+  articleFeatureDOM.window.close();
+}
+const slottedFeatureHTML = renderToString(createElement(ArticleFeatureSlottedSamples));
+const slottedFeatureDOM = new JSDOM(slottedFeatureHTML);
+try {
+  const doc = slottedFeatureDOM.window.document;
+  assert.equal(doc.querySelectorAll('a').length, 1, 'The consumer anchor receives the whole card');
+  const card = doc.querySelector('a.eg-article-feature');
+  assert.equal(card.getAttribute('href'), '/packed-router');
+  assert.ok(card.querySelector('h3'), 'The generated heading lands inside the consumer anchor');
+} finally {
+  slottedFeatureDOM.window.close();
+}
+const mediaFeatureHTML = renderToString(createElement(ArticleFeatureMediaSample));
+const mediaFeatureDOM = new JSDOM(mediaFeatureHTML);
+try {
+  const cover = mediaFeatureDOM.window.document.querySelector('[data-cover="media"]');
+  assert.ok(cover, 'The media cover renders');
+  assert.equal(cover.querySelector('[data-radix-aspect-ratio-wrapper]').style.paddingBottom, '50%', 'The media branch keeps the 16:8 reservation');
+  assert.ok(cover.querySelector('figure[data-ratio="auto"]'), 'The auto PhotoFrame fills the reservation');
+} finally {
+  mediaFeatureDOM.window.close();
+}
+console.log(JSON.stringify({ ssr: ['Gauge finite, bounded and unavailable', 'decorative centers', 'visible conditions', 'Checkbox binary/mixed ARIA, Icon indicator and form input', 'Badge defaults and twelve passive tone/treatment combinations with decorative icons', 'Slider bounds, formatted name and Radix server-hidden thumb', 'Countdown deterministic initializing and unavailable placeholders', 'ArticleFeature whole-card anchor, reserved covers and paint-only action'], bytes: html.length }));
 `;
 
 const csr = `
