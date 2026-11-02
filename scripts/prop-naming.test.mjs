@@ -645,6 +645,11 @@ const postReceiptUsages = [
     conventionId: 'collection-items',
     source: 'packages/ui/src/molecules/project-card/types.ts#ProjectCardTagsProps'
   },
+  // NowCard T9 records its reviewed usages at implementation; the receipt binds convention content only.
+  ...['heading-title', 'heading-level', 'preset-dimensions', 'leading-status-badge'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/now-card/types.ts#NowCardProps'
+  })),
   // TerminalCard T10 records its reviewed usages at implementation; the receipt binds convention content only.
   {
     conventionId: 'accessible-name',
@@ -749,8 +754,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   assert.ok(text.includes('218403be9baee574e213cf1b06db1f7bd4d3951b20c7e24e593e90ef011fb062'));
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   validate(actual);
-  assert.equal(actual.length, 142);
-  assert.equal(beforeIndicatorConventions(actual).length, 139);
+  // Union of both branch additions: three new approved conventions over the shared base.
+  assert.equal(actual.length, 143);
+  assert.equal(beforeIndicatorConventions(actual).length, 140);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -880,6 +886,13 @@ function laterReceipts(reference) {
   }
   return later;
 }
+
+// The NowCard receipt pins the same ProjectCard decorative-index predecessor as the TerminalCard
+// receipt, so receiptChain continues through the TerminalCard side and this parallel branch is
+// projected explicitly wherever a historical snapshot must account for the full current registry.
+const parallelNowCardReceiptReference = 'docs/components/now-card/v0.1/leading-status-badge-approval.json';
+const parallelNowCardReceipt = JSON.parse(fs.readFileSync(resolve(root, parallelNowCardReceiptReference), 'utf8'));
+
 // Semantic amendments from receipts later than `afterReference` are projected back onto the
 // current registry so a historical whole-registry snapshot stays reconstructable, the same way
 // laterReceipts/superseded projections resolve amended entries for earlier receipt tests. The
@@ -1492,7 +1505,12 @@ test('molecule naming receipt binds delegated decisions without speculative impl
         .map((amendment) => [amendment.id, { ...amendment, laterReference }])
     )
   );
-  const receipts = new Map([...history, [reference, receipt], ...later]);
+  const receipts = new Map([
+    ...history,
+    [reference, receipt],
+    ...later,
+    [parallelNowCardReceiptReference, parallelNowCardReceipt]
+  ]);
   for (const entry of historicalRegistry(actual)) {
     assert.equal(entry.status, 'approved', entry.id);
     const { approval, usages: _usages, ...convention } = entry;
@@ -1668,7 +1686,7 @@ test('organism naming receipt binds delegated decisions and the menu-entry-kind 
   const laterAdded = [...later.values()].flatMap(({ entries }) =>
     entries.filter(({ convention }) => !knownIds.has(convention.id))
   );
-  assert.equal(historicalRegistry(actual).length, 123 + laterAdded.length);
+  assert.equal(historicalRegistry(actual).length, 123 + laterAdded.length + parallelNowCardReceipt.entries.length);
 });
 
 test('Sidebar product identity amendment binds the owner decision and the prior convention', () => {
@@ -1789,6 +1807,61 @@ test('ProjectCard decorative-index receipt binds the owner decision without rewr
   assert.deepEqual(historicalRegistry([entry])[0].usages, []);
   const changed = structuredClone(registry);
   changed.find(({ id }) => id === 'decorative-index').meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+});
+
+test('NowCard leading-status-badge receipt binds the owner decision without rewriting historical approvals', () => {
+  const reference = 'docs/components/now-card/v0.1/leading-status-badge-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(registry);
+  // Both branch receipts pin only the ProjectCard decorative-index predecessor: the TerminalCard
+  // receipt continues the chain, while this parallel receipt stays out of it, like Toggle's.
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar enmienda, plan y convención');
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  // The receipt pins the exact prior ProjectCard decorative-index receipt bytes; nothing historical is rewritten.
+  assert.deepEqual(
+    receipt.priorReceipts.map(({ path, wholeFileSHA256 }) => [path, wholeFileSHA256]),
+    [
+      [
+        'docs/components/project-card/v0.1/decorative-index-approval.json',
+        'sha256:53757ca6f89eb69d99c8cff7d23497a51fd90c26cc927fdbb5e53a8e079128dd'
+      ]
+    ]
+  );
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(digest(fs.readFileSync(resolve(root, prior.path))), prior.wholeFileSHA256, prior.path);
+  }
+  assert.equal(receipt.entries.length, 1);
+  const [record] = receipt.entries;
+  const entry = registry.find(({ id }) => id === 'leading-status-badge');
+  assert.ok(entry);
+  const { approval, usages, ...convention } = entry;
+  assert.deepEqual(record.convention, convention);
+  assert.equal(record.scope, 'convention:leading-status-badge');
+  assert.equal(record.contentHash, 'sha256:221da6cbb0929f0346735d2436b0be6f0d869ccd5c2a9c3ec02ee7e482b6b900');
+  assert.equal(record.contentHash, props.conventionHash(entry));
+  assert.equal(record.contentHash, approval.contentHash);
+  assert.deepEqual(approval, { reference, scope: record.scope, contentHash: record.contentHash });
+  assert.equal(entry.status, 'approved');
+  assert.equal(entry.name, 'statusBadge');
+  assert.deepEqual(entry.aliases, []);
+  assert.deepEqual(entry.exceptions, []);
+  assert.deepEqual(
+    entry.usages.map(({ component }) => component),
+    ['NowCard']
+  );
+  // The usage revision is read from the reviewed working-tree file, never pinned to an older receipt byte.
+  assert.equal(entry.usages[0].source.path, 'packages/ui/src/molecules/now-card/types.ts');
+  assert.equal(entry.usages[0].source.symbol, 'NowCardProps');
+  assert.equal(entry.usages[0].source.revision, digest(fs.readFileSync(resolve(root, entry.usages[0].source.path))));
+  assert.deepEqual(historicalRegistry([entry])[0].usages, []);
+  const changed = structuredClone(registry);
+  changed.find(({ id }) => id === 'leading-status-badge').meaning += ' Changed.';
   assert.throws(() => validate(changed), /approval/i);
 });
 
@@ -1944,7 +2017,7 @@ test('template naming receipt pins the organism receipt and binds two new layout
         !historicalIds.has(convention.id) && !receipt.entries.some((r) => r.convention.id === convention.id)
     )
   );
-  assert.equal(historicalRegistry(actual).length, 125 + laterAdded.length);
+  assert.equal(historicalRegistry(actual).length, 125 + laterAdded.length + parallelNowCardReceipt.entries.length);
 });
 
 const isotipoReference = 'docs/decisions/prop-naming-isotipo3d-approval.json';
@@ -1984,7 +2057,7 @@ test('Isotipo3D naming receipt preserves 125 entries and binds three scoped appr
       .map(({ convention }) => convention.id)
       .filter((id) => !knownAtSkeleton.has(id))
   );
-  assert.equal(historicalRegistry(actual).length, 128 + laterAdded.size);
+  assert.equal(historicalRegistry(actual).length, 128 + laterAdded.size + parallelNowCardReceipt.entries.length);
   assert.equal(receipt.kind, 'human-approval-record');
   assert.equal(receipt.nativeReviewApproval, false);
   assert.equal(receipt.authority, 'assistant-observed-human-delegation');
@@ -2126,7 +2199,7 @@ test('Skeleton v0.2 naming receipt records the owner published-spec approval and
       .map(({ convention }) => convention.id)
       .filter((id) => !knownAtSkeleton.has(id))
   );
-  assert.equal(historicalRegistry(actual).length, 128 + laterAdded.size);
+  assert.equal(historicalRegistry(actual).length, 128 + laterAdded.size + parallelNowCardReceipt.entries.length);
   assert.equal(receipt.kind, 'human-approval-record');
   assert.equal(receipt.nativeReviewApproval, false);
   assert.equal(receipt.authority, 'assistant-observed-human-delegation');

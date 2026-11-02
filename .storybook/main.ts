@@ -79,6 +79,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   badge: ['id', 'title', 'aria-describedby', 'className'],
   radioGroup: ['id', 'aria-labelledby', 'aria-describedby', 'className'],
   selectTile: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  nowCard: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style'],
 
   switch: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className'],
   progressBar: ['id', 'title', 'aria-describedby', 'className', 'style'],

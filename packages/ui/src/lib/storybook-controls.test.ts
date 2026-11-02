@@ -11,6 +11,10 @@ import preview from '../../../../.storybook/preview';
 
 const components = [
   ['ModuleCard', 'molecules/module-card'],
+  ['NowCard', 'molecules/now-card'],
+  ['NowCardBody', 'molecules/now-card'],
+  ['NowCardFooter', 'molecules/now-card'],
+  ['NowCardDetail', 'molecules/now-card'],
   ['Timeline', 'molecules/timeline'],
   ['Avatar', 'atoms/avatar'],
   ['NavList', 'molecules/nav-list'],
@@ -169,6 +173,10 @@ const expected: Record<string, Record<string, string | false>> = {
     tone: 'select',
     actions: false
   },
+  nowcard: { statusBadge: false, title: 'text', level: 'select', size: 'select', children: false },
+  nowcardbody: { children: false, className: 'text' },
+  nowcardfooter: { children: false, className: 'text' },
+  nowcarddetail: { children: false, className: 'text' },
   projectcard: {
     title: 'text',
     level: 'select',
@@ -496,6 +504,10 @@ const ownPropCounts: Record<string, number> = {
   collapsibletrigger: 1,
   collapsiblecontent: 1,
   modulecard: 10,
+  nowcard: 5,
+  nowcardbody: 2,
+  nowcardfooter: 2,
+  nowcarddetail: 2,
   projectcard: 8,
   projectcardtags: 2,
   projectcardcode: 3,
@@ -878,6 +890,10 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['ProjectCard', { level: '3', variant: '"default"', size: '"md"' }],
     ['Collapsible', { defaultOpen: 'false', disabled: 'false' }],
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
+    ['NowCard', { level: '3', size: '"md"' }],
+    ['NowCardBody', {}],
+    ['NowCardFooter', {}],
+    ['NowCardDetail', {}],
     ['Checkbox', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }],
     ['Menu', { side: '"bottom"', align: '"start"', defaultOpen: 'false' }],
     ['Chip', { mode: '"toggle"', defaultPressed: 'false', disabled: 'false', external: 'false' }],

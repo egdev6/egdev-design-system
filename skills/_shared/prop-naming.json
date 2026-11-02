@@ -624,6 +624,16 @@
           "symbol": "ProjectCardProps",
           "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
         }
+      },
+      {
+        "component": "NowCard",
+        "type": "NowCardSize",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/now-card/types.ts",
+          "symbol": "NowCardProps",
+          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
+        }
       }
     ]
   },
@@ -4501,6 +4511,16 @@
           "symbol": "ProjectCardProps",
           "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
         }
+      },
+      {
+        "component": "NowCard",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/now-card/types.ts",
+          "symbol": "NowCardProps",
+          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
+        }
       }
     ]
   },
@@ -4587,6 +4607,16 @@
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
           "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
+        }
+      },
+      {
+        "component": "NowCard",
+        "type": "NowCardLevel",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/now-card/types.ts",
+          "symbol": "NowCardProps",
+          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
         }
       }
     ]
@@ -6696,6 +6726,33 @@
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
           "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
+        }
+      }
+    ]
+  },
+  {
+    "id": "leading-status-badge",
+    "name": "statusBadge",
+    "meaning": "Optional consumer-supplied non-interactive status node rendered before a component primary heading.",
+    "whenToUse": "A heading-owning content card renders a meaningful status Badge composition before its heading without inspecting child content.",
+    "avoid": "Interactive controls, decorative icons, plain-text eyebrows, trailing content or built-in status words.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/components/now-card/v0.1/leading-status-badge-approval.json",
+      "scope": "convention:leading-status-badge",
+      "contentHash": "sha256:221da6cbb0929f0346735d2436b0be6f0d869ccd5c2a9c3ec02ee7e482b6b900"
+    },
+    "usages": [
+      {
+        "component": "NowCard",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/now-card/types.ts",
+          "symbol": "NowCardProps",
+          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
         }
       }
     ]

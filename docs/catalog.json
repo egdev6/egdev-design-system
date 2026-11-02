@@ -778,7 +778,7 @@
     "radix": "—",
     "compone": "Surface, Text",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): current-status card on the Surface recipe; copy and figures arrive as props."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): implemented v0.1 current-status card with approved badge-first slot, smaller sm copy and a surface-0 footer band. See [approved amendment](components/now-card/v0.1/badge-order-amendment.md)."
   },
   {
     "actual": "ProjectCard",
