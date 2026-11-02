@@ -82,6 +82,7 @@ export * from './molecules/social-links';
 export * from './molecules/table';
 export type { TabsItem, TabsProps, TabsSize, TabsTone, TabsVariant } from './molecules/tabs';
 export { Tabs, tabsVariants } from './molecules/tabs';
+export * from './molecules/terminal-card';
 export * from './molecules/timeline';
 export * from './molecules/toast';
 // Organisms

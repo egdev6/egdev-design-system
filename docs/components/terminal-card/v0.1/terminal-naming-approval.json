@@ -1,0 +1,49 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve shell-label and terminal-caret conventions scoped to the passive TerminalCard header and row responsibilities.",
+  "evidence": {
+    "channel": "https://github.com/egdev6/egdev-design-system/issues/277#issuecomment-6580404628; odd/tasks/web-catalog.md L16",
+    "ownerChoice": "Aprobar con las recomendaciones (Recomendado)",
+    "interpretation": "Explicit approval of both named conventions offered in the owner questionnaire; not native review authority."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/project-card/v0.1/decorative-index-approval.json",
+      "wholeFileSHA256": "sha256:53757ca6f89eb69d99c8cff7d23497a51fd90c26cc927fdbb5e53a8e079128dd"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:shell-label",
+      "contentHash": "sha256:54ddb4e4e2dc864f2280797b53621ffd7fac1afc2bb61320e1795415218848c4",
+      "convention": {
+        "id": "shell-label",
+        "name": "shell",
+        "meaning": "Optional supplied shell-name label in terminal-card header chrome.",
+        "whenToUse": "A terminal-card header aligns a consumer-supplied shell name separately from its path content.",
+        "avoid": "Executing shells, interpreting commands, process state or built-in domain defaults.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:terminal-caret",
+      "contentHash": "sha256:6ae6ba74cfb583998e848f274d17eddc030f3a061ee147afe363dea9ca420eb0",
+      "convention": {
+        "id": "terminal-caret",
+        "name": "caret",
+        "meaning": "Whether a terminal display row renders a decorative cursor after its value.",
+        "whenToUse": "A passive terminal row needs a decorative cursor that is hidden from assistive technology and stops animating under reduced motion.",
+        "avoid": "Editable text selection, keyboard focus, input caret positioning or meaningful status communicated only through animation.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

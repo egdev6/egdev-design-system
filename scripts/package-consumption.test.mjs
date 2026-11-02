@@ -88,7 +88,7 @@ import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorI
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
 import { ToastProvider, useToast } from '@egdev/ui';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, NowCard, NowCardBody, NowCardDetail, NowCardFooter, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, NowCard, NowCardBody, NowCardDetail, NowCardFooter, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, TerminalCard, TerminalCardBar, TerminalCardList, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -250,6 +250,11 @@ import type {
   TabsTone,
   TabsVariant,
   TabsSize,
+  TerminalCardProps,
+  TerminalCardBarProps,
+  TerminalCardListProps,
+  TerminalCardRow,
+  TerminalCardTone,
   TextareaProps,
   TextareaVariant,
   TimelineProps,
@@ -1349,6 +1354,42 @@ const seventhSection: SectionHeaderProps = { title: 'Build', level: 7 };
 const floodSection: SectionHeaderProps = { title: 'Build', tone: 'flood' };
 // @ts-expect-error titleId is plain text.
 const numericSectionId: SectionHeaderProps = { title: 'Build', titleId: 1 };
+// TerminalCard samples stay outside App: the passive group adds no harness elements.
+// @ts-expect-error Internal hook is not public.
+type TerminalCardPrivateHook = (typeof import('@egdev/ui'))['useTerminalCard'];
+// @ts-expect-error Internal root recipe is not public.
+type TerminalCardPrivateRecipe = (typeof import('@egdev/ui'))['terminalCardVariants'];
+export type TerminalCardPrivateNegatives = [TerminalCardPrivateHook, TerminalCardPrivateRecipe];
+const terminalRows: TerminalCardRow[] = [
+  { term: 'user', value: 'egdev' },
+  { term: 'status', value: 'online', tone: 'success' },
+  { term: 'build', value: 'agent-teams', caret: true }
+];
+export const terminalCardProps: TerminalCardProps = { label: 'Consumer profile', id: 'consumer-terminal-card', children: null };
+export function TerminalCardSamples() {
+  return createElement(
+    TerminalCard,
+    { ...terminalCardProps },
+    createElement(TerminalCardBar, { key: 'bar', shell: 'zsh', children: '~/egdev' }),
+    createElement(TerminalCardList, { key: 'list', items: terminalRows })
+  );
+}
+// @ts-expect-error A group label is required; blank names render nothing.
+const missingTerminalLabel: TerminalCardProps = { children: null };
+// @ts-expect-error The root role is owned: the card is always a named group.
+const terminalRole: TerminalCardProps = { label: 'Profile', children: null, role: 'table' };
+// @ts-expect-error The accessible name is owned by the required label prop.
+const terminalAriaLabel: TerminalCardProps = { label: 'Profile', children: null, 'aria-label': 'Injected' };
+// @ts-expect-error Protected semantics: the passive card exposes no inline style API.
+const terminalStyle: TerminalCardProps = { label: 'Profile', children: null, style: { width: 1 } };
+// @ts-expect-error No public ref API.
+const terminalRef: TerminalCardProps = { label: 'Profile', children: null, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error No asChild composition API.
+const terminalAsChild: TerminalCardProps = { label: 'Profile', children: null, asChild: true };
+// @ts-expect-error Only default and success are supported row tones.
+const terminalTone: TerminalCardRow = { term: 'region', value: 'eu-west-1', tone: 'neon' };
+// @ts-expect-error The caret is a boolean flag, not content.
+const terminalCaret: TerminalCardRow = { term: 'region', value: 'eu-west-1', caret: 'true' };
 // Task-progress samples stay outside App to preserve the existing focus harness.
 const meterRowVariant: MeterRowVariant = 'muted';
 const meterRowMessages: MeterRowMessages = { indeterminate: 'Preparing import' };
@@ -3951,6 +3992,68 @@ function assertCollapsibleConsumerCSS(css) {
   }
 }
 
+function assertTerminalCardConsumerCSS(css) {
+  // Frame, bar band, wrap, tone ink and caret pulse ship as scanned token utilities; the
+  // eg-terminal-card marker never becomes a component CSS rule.
+  for (const selector of [
+    '.bg-surface-1',
+    '.bg-surface-2',
+    '.rounded-xl',
+    '.rounded-t-xl',
+    '.border-b',
+    '.overflow-hidden',
+    '.min-w-0',
+    '.grid-cols-\\[auto_1fr\\]',
+    '.gap-x-4',
+    '.gap-y-1\\.5',
+    '.\\[overflow-wrap\\:anywhere\\]',
+    '.tabular-nums',
+    '.font-mono',
+    '.animate-pulse',
+    '.motion-reduce\\:animate-none',
+    '.w-2',
+    '.h-4',
+    '.bg-fg-brand-default',
+    '.align-text-bottom',
+    '.ms-auto',
+    '.text-fg-brand-raised',
+    '.text-fg-default',
+    '.text-fg-secondary',
+    '.text-status-success',
+    '.data-\\[tone\\=success\\]\\:text-status-success',
+    '.text-body-default',
+    '.text-label-default'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing TerminalCard packed CSS utility ' + selector);
+  }
+  const gridRule = css.match(/\.grid-cols-\\\[auto_1fr\\\]\s*\{([^}]*)\}/);
+  assert.ok(
+    gridRule && /grid-template-columns:\s*auto\s+1fr/.test(gridRule[1]),
+    'The definition grid keeps its two-column wrap layout'
+  );
+  const wrapRule = css.match(/\.\\\[overflow-wrap\\\:anywhere\\\]\s*\{([^}]*)\}/);
+  assert.ok(
+    wrapRule && /overflow-wrap:\s*anywhere/.test(wrapRule[1]),
+    'Long terms and values wrap instead of truncating'
+  );
+  const toneRule = css.match(/\.data-\\\[tone\\\=success\\\]\\\:text-status-success[^{]*\{([^}]*)\}/);
+  assert.ok(
+    toneRule && /color:\s*var\(--color-status-success(?:,[^)]*)?\)/.test(toneRule[1]),
+    'Success tone repaints the value through the status token'
+  );
+  const pulseRule = css.match(/\.animate-pulse\s*\{([^}]*)\}/);
+  assert.ok(
+    pulseRule && /var\(--animate-pulse[,)]/.test(pulseRule[1]),
+    'The caret pulses through the existing token animation'
+  );
+  const reduceAt = css.indexOf('prefers-reduced-motion: reduce');
+  assert.ok(reduceAt !== -1, 'Reduced-motion support must ship');
+  assert.ok(
+    /animation:\s*none/.test(css.slice(reduceAt, reduceAt + 1500)),
+    'The caret pulse must stop under reduced motion'
+  );
+}
+
 const entries = `
 import assert from 'node:assert/strict';
 import { readFileSync, realpathSync } from 'node:fs';
@@ -3988,6 +4091,10 @@ assert.doesNotMatch(shippedStyles, /@(import|reference|source|tailwind|theme|cus
 assert.ok(shippedStyles.includes('.eg-gauge-arc'), 'Packed styles must retain Gauge geometry');
 assert.ok(shippedStyles.includes('.min-w-0'), 'Packed styles must retain the AspectRatio min-width guard');
 assert.ok(readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8').includes('eg-divider'), 'Packed JS must retain the Divider marker');
+assert.ok(readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8').includes('eg-terminal-card'), 'Packed JS must retain the TerminalCard marker');
+assert.doesNotMatch(shippedStyles, /\\.eg-terminal-card__?[a-z]*\\s*[{,]/, 'TerminalCard marker must not become a shipped CSS rule');
+${assertTerminalCardConsumerCSS.toString()}
+assertTerminalCardConsumerCSS(shippedStyles);
 assert.doesNotMatch(shippedStyles, /\.eg-divider\s*[,{]/, 'Divider marker must not become a shipped CSS rule');
 assert.ok(!shippedStyles.includes('.eg-visually-hidden'), 'VisuallyHidden must not add shipped CSS; Radix hides inline');
 for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '.gap-0', '.gap-4', '.gap-6', '.items-stretch', '.items-start', '.justify-between']) {
@@ -4107,6 +4214,9 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'TabBar',
   'Table',
   'Tabs',
+  'TerminalCard',
+  'TerminalCardBar',
+  'TerminalCardList',
   'Text',
   'Textarea',
   'Timeline',
@@ -4524,6 +4634,37 @@ try {
 } finally {
   nowDocument.window.close();
 }
+import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TerminalCardSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
+// TerminalCard SSR: named group, definition pairs, success tone and decorative caret.
+{
+  const terminalMarkup = renderToString(createElement(TerminalCardSamples));
+  assert.equal(terminalMarkup, renderToString(createElement(TerminalCardSamples)));
+  const terminalDocument = new JSDOM(terminalMarkup);
+  try {
+    const terminalRoot = terminalDocument.window.document.querySelector('.eg-terminal-card');
+    assert.equal(terminalRoot.getAttribute('role'), 'group');
+    assert.equal(terminalRoot.getAttribute('aria-label'), 'Consumer profile');
+    assert.equal(terminalRoot.id, 'consumer-terminal-card');
+    assert.ok(terminalRoot.classList.contains('eg-surface') && terminalRoot.classList.contains('box-border'));
+    const terminalBar = terminalRoot.querySelector('.eg-terminal-card__bar');
+    assert.ok(terminalBar.querySelector('svg').getAttribute('aria-hidden') === 'true');
+    assert.equal(terminalBar.querySelector('.eg-terminal-card__shell').textContent, 'zsh');
+    const terminalCells = terminalRoot.querySelectorAll('dl > dt, dl > dd');
+    assert.equal(terminalCells.length, 6);
+    assert.equal(terminalCells[2].tagName, 'DT');
+    assert.equal(terminalCells[3].getAttribute('data-tone'), 'success');
+    assert.equal(terminalCells[3].textContent, 'online');
+    const terminalCaret = terminalRoot.querySelector('.eg-terminal-card__caret');
+    assert.ok(terminalCaret, 'The caret row renders exactly one decorative cursor');
+    assert.equal(terminalCaret.getAttribute('aria-hidden'), 'true');
+    assert.equal(terminalCaret.parentElement.tagName, 'DD');
+    assert.ok(terminalCaret.classList.contains('animate-pulse'));
+    assert.ok(terminalCaret.classList.contains('motion-reduce:animate-none'));
+    assert.equal(terminalRoot.querySelector('[tabindex], [aria-live]'), null);
+  } finally {
+    terminalDocument.window.close();
+  }
+}
 import { ProjectCardSamples } from './consumer.ts';
 for (const [projectVariant, projectSize] of [
   ['default', 'md'],
@@ -4555,7 +4696,6 @@ for (const [projectVariant, projectSize] of [
     projectDocument.window.close();
   }
 }
-import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
 import { photoFrameNumericSamples, photoFrameSamples } from './consumer.ts';
 const photoFrameDocument = new JSDOM(renderToString(createElement(photoFrameSamples)));
 try {
@@ -7514,6 +7654,8 @@ ${assertNavListCSS.toString()}
 assertNavListCSS(emitted);
 ${assertPanelConsumerCSS.toString()}
 assertPanelConsumerCSS(emitted);
+${assertTerminalCardConsumerCSS.toString()}
+assertTerminalCardConsumerCSS(emitted);
 ${assertCollapsibleConsumerCSS.toString()}
 assertCollapsibleConsumerCSS(emitted);
 ${assertIndicatorConsumerCSS.toString()}
@@ -7610,6 +7752,7 @@ assertPopoverCSS(twCss);
 assertLinkCSS(twCss);
 assertNavListCSS(twCss);
 assertPanelConsumerCSS(twCss);
+assertTerminalCardConsumerCSS(twCss);
 assertCollapsibleConsumerCSS(twCss);
 assertIndicatorConsumerCSS(twCss);
 assertLabelCSS(twCss);
