@@ -79,6 +79,8 @@ const meta: Meta<typeof AppShell> = {
   title: 'Templates/AppShell',
   component: AppShell,
   tags: ['autodocs'],
+  // A full-viewport template: the global padded layout would offset the docked regions.
+  parameters: { layout: 'fullscreen' },
   args: { children: pageContent, sideNavigation: sidebar, bottomNavigation: tabBar }
 };
 export default meta;
