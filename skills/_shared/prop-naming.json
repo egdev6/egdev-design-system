@@ -1138,6 +1138,16 @@
           "symbol": "PreviewFrameProps",
           "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
         }
+      },
+      {
+        "component": "TerminalCardRow",
+        "type": "TerminalCardTone",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/terminal-card/types.ts",
+          "symbol": "TerminalCardRow",
+          "revision": "sha256:c88f7bd2515c52ad6181967587bf4127381620c26edf8d37e521f3137c481be0"
+        }
       }
     ]
   },
@@ -1591,6 +1601,16 @@
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardCodeProps",
           "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
+        }
+      },
+      {
+        "component": "TerminalCard",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/terminal-card/types.ts",
+          "symbol": "TerminalCardProps",
+          "revision": "sha256:c88f7bd2515c52ad6181967587bf4127381620c26edf8d37e521f3137c481be0"
         }
       }
     ]
@@ -3365,6 +3385,16 @@
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardCodeProps",
           "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
+        }
+      },
+      {
+        "component": "TerminalCardList",
+        "type": "TerminalCardRow[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/terminal-card/types.ts",
+          "symbol": "TerminalCardListProps",
+          "revision": "sha256:c88f7bd2515c52ad6181967587bf4127381620c26edf8d37e521f3137c481be0"
         }
       }
     ]
@@ -6666,6 +6696,60 @@
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
           "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
+        }
+      }
+    ]
+  },
+  {
+    "id": "shell-label",
+    "name": "shell",
+    "meaning": "Optional supplied shell-name label in terminal-card header chrome.",
+    "whenToUse": "A terminal-card header aligns a consumer-supplied shell name separately from its path content.",
+    "avoid": "Executing shells, interpreting commands, process state or built-in domain defaults.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/components/terminal-card/v0.1/terminal-naming-approval.json",
+      "scope": "convention:shell-label",
+      "contentHash": "sha256:54ddb4e4e2dc864f2280797b53621ffd7fac1afc2bb61320e1795415218848c4"
+    },
+    "usages": [
+      {
+        "component": "TerminalCardBar",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/terminal-card/types.ts",
+          "symbol": "TerminalCardBarProps",
+          "revision": "sha256:c88f7bd2515c52ad6181967587bf4127381620c26edf8d37e521f3137c481be0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "terminal-caret",
+    "name": "caret",
+    "meaning": "Whether a terminal display row renders a decorative cursor after its value.",
+    "whenToUse": "A passive terminal row needs a decorative cursor that is hidden from assistive technology and stops animating under reduced motion.",
+    "avoid": "Editable text selection, keyboard focus, input caret positioning or meaningful status communicated only through animation.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/components/terminal-card/v0.1/terminal-naming-approval.json",
+      "scope": "convention:terminal-caret",
+      "contentHash": "sha256:6ae6ba74cfb583998e848f274d17eddc030f3a061ee147afe363dea9ca420eb0"
+    },
+    "usages": [
+      {
+        "component": "TerminalCardRow",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/terminal-card/types.ts",
+          "symbol": "TerminalCardRow",
+          "revision": "sha256:c88f7bd2515c52ad6181967587bf4127381620c26edf8d37e521f3137c481be0"
         }
       }
     ]

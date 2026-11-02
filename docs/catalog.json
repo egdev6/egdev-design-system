@@ -723,7 +723,7 @@
     "radix": "—",
     "compone": "Surface",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): key/value terminal card with its title bar on the Surface recipe; no domain data."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): implemented v0.1 passive named terminal group with Surface header band, supplied shell label and non-truncating key/value rows; optional reduced-motion-safe decorative caret. See [approved plan](components/terminal-card/v0.1/implementation-plan.md)."
   },
   {
     "actual": "ToolCallChip",
