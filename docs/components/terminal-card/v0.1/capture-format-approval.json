@@ -1,0 +1,11 @@
+{
+  "ownerChoice": "Autorizar formato y registrar evidencia",
+  "scope": "docs/components/terminal-card/v0.1/capture.json",
+  "beforeSHA256": "712698eca6e78d4add0e3b40daa23f267a86836cc19d866d9a12b7f8145c6a72",
+  "semanticSHA256": "9d076e6d8f80a05da6aef266ab1cdd60fea577ce6915c35462d678eefaa5324c",
+  "imagesSHA256": {
+    "docs/components/terminal-card/v0.1/terminal-card--variants--1280x1400--dark.png": "b6f8a75d3c34d2ee2b0df7206598e23835a079223ed172f202281b686200379e"
+  },
+  "afterSHA256": "9aaad84dfc8c598fa1986ac4f6fdcc879e011f5a4fae707e3c10095ebabebc85",
+  "verification": "Parsed JSON content and all captured PNG bytes unchanged; formatting only."
+}

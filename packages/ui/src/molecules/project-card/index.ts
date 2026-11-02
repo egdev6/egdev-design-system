@@ -1,14 +1,11 @@
 export { ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags } from './ProjectCard';
-export type * from './types';
-export {
-  projectCardBodyVariants,
-  projectCardCodeGlyphVariants,
-  projectCardCodeLineVariants,
-  projectCardCodeVariants,
-  projectCardEyebrowVariants,
-  projectCardFootVariants,
-  projectCardHeadingVariants,
-  projectCardIndexVariants,
-  projectCardTagsVariants,
-  projectCardVariants
+export type {
+  ProjectCardCodeLine,
+  ProjectCardCodeProps,
+  ProjectCardFooterProps,
+  ProjectCardLevel,
+  ProjectCardProps,
+  ProjectCardSize,
+  ProjectCardTagsProps,
+  ProjectCardVariant
 } from './types';

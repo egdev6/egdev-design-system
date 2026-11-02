@@ -215,10 +215,12 @@ describe('ProjectCard public contract', () => {
   it('keeps the root border-box and passive on hover (G7a, OQ-4)', () => {
     render(<ProjectCard title='Pulso'>{body}</ProjectCard>);
     const article = screen.getByRole('article', { name: 'Pulso' });
-    expect(article).toHaveClass('box-border');
+    expect(article).toHaveClass('box-border', 'transform-none', 'transition-none');
     for (const cls of article.classList) {
       expect(cls.startsWith('hover:')).toBe(false);
-      expect(cls.startsWith('transition')).toBe(false);
+      if (cls.startsWith('transition')) {
+        expect(cls).toBe('transition-none');
+      }
       expect(cls).not.toBe('cursor-pointer');
     }
   });

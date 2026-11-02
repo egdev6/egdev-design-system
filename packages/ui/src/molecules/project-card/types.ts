@@ -25,6 +25,8 @@ export type ProjectCardCodeLine = {
 
 type ProjectCardNativeProps = Omit<
   ComponentPropsWithoutRef<'article'>,
+  | 'children'
+  | 'className'
   | 'title'
   | 'role'
   | 'tabIndex'
@@ -141,7 +143,7 @@ export type ProjectCardFooterProps = {
 };
 
 /** Public raised frame: Surface material plus the card's layout and signature variant. */
-export const projectCardVariants = cva('eg-project-card flex flex-col gap-4 min-w-0', {
+export const projectCardVariants = cva('eg-project-card flex flex-col gap-4 min-w-0 transform-none transition-none', {
   variants: {
     variant: {
       default: '',

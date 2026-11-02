@@ -1,0 +1,160 @@
+{
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "theme": "dark",
+  "results": [
+    {
+      "story": "default",
+      "rows": [
+        {
+          "variant": "default",
+          "size": "md",
+          "width": 1248,
+          "padding": "19.2px",
+          "boxSizing": "border-box",
+          "border": "rgba(255, 255, 255, 0.08)",
+          "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+          "heading": "H3",
+          "headingSize": "19.2px",
+          "indexStroke": "0px rgb(255, 0, 54)",
+          "scrollWidth": 1246,
+          "clientWidth": 1246,
+          "links": 1
+        }
+      ]
+    },
+    {
+      "story": "variants",
+      "rows": [
+        {
+          "variant": "featured",
+          "size": "md",
+          "width": 614.40625,
+          "padding": "19.2px",
+          "boxSizing": "border-box",
+          "border": "rgba(255, 0, 54, 0.45)",
+          "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 180, 195, 0.35) 0px 1px 0px 0px inset, rgba(255, 0, 54, 0.18) 0px 0px 0px 1px inset, rgb(122, 10, 28) 0px 2px 0px 0px, rgb(61, 5, 14) 0px 5px 0px 0px, rgba(0, 0, 0, 0.85) 0px 18px 40px -10px, rgba(255, 0, 54, 0.45) 0px 0px 50px -6px",
+          "heading": "H3",
+          "headingSize": "19.2px",
+          "indexStroke": "1px rgb(255, 0, 54)",
+          "scrollWidth": 612,
+          "clientWidth": 612,
+          "links": 1
+        },
+        {
+          "variant": "default",
+          "size": "md",
+          "width": 614.40625,
+          "padding": "19.2px",
+          "boxSizing": "border-box",
+          "border": "rgba(255, 255, 255, 0.08)",
+          "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+          "heading": "H3",
+          "headingSize": "19.2px",
+          "indexStroke": "1px rgba(255, 0, 54, 0.45)",
+          "scrollWidth": 612,
+          "clientWidth": 612,
+          "links": 1
+        }
+      ]
+    },
+    {
+      "story": "sizes",
+      "rows": [
+        {
+          "variant": "default",
+          "size": "md",
+          "width": 614.40625,
+          "padding": "19.2px",
+          "boxSizing": "border-box",
+          "border": "rgba(255, 255, 255, 0.08)",
+          "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+          "heading": "H3",
+          "headingSize": "19.2px",
+          "indexStroke": "0px rgb(255, 0, 54)",
+          "scrollWidth": 612,
+          "clientWidth": 612,
+          "links": 0
+        },
+        {
+          "variant": "default",
+          "size": "sm",
+          "width": 614.40625,
+          "padding": "9.6px",
+          "boxSizing": "border-box",
+          "border": "rgba(255, 255, 255, 0.08)",
+          "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+          "heading": "H3",
+          "headingSize": "16px",
+          "indexStroke": "0px rgb(255, 0, 54)",
+          "scrollWidth": 612,
+          "clientWidth": 612,
+          "links": 0
+        }
+      ]
+    },
+    {
+      "story": "long-content",
+      "rows": [
+        {
+          "variant": "default",
+          "size": "md",
+          "width": 230.390625,
+          "padding": "19.2px",
+          "boxSizing": "border-box",
+          "border": "rgba(255, 255, 255, 0.08)",
+          "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+          "heading": "H3",
+          "headingSize": "19.2px",
+          "indexStroke": "1px rgba(255, 0, 54, 0.45)",
+          "scrollWidth": 228,
+          "clientWidth": 228,
+          "links": 1
+        }
+      ]
+    },
+    {
+      "story": "with-link",
+      "rows": [
+        {
+          "variant": "default",
+          "size": "md",
+          "width": 1248,
+          "padding": "19.2px",
+          "boxSizing": "border-box",
+          "border": "rgba(255, 255, 255, 0.08)",
+          "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+          "heading": "H3",
+          "headingSize": "19.2px",
+          "indexStroke": "0px rgb(255, 0, 54)",
+          "scrollWidth": 1246,
+          "clientWidth": 1246,
+          "links": 1
+        }
+      ]
+    },
+    {
+      "story": "code",
+      "rows": [
+        {
+          "variant": "default",
+          "size": "md",
+          "width": 1248,
+          "padding": "19.2px",
+          "boxSizing": "border-box",
+          "border": "rgba(255, 255, 255, 0.08)",
+          "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px",
+          "heading": "H3",
+          "headingSize": "19.2px",
+          "indexStroke": "0px rgb(255, 0, 54)",
+          "scrollWidth": 1246,
+          "clientWidth": 1246,
+          "links": 0
+        }
+      ]
+    }
+  ],
+  "pageErrors": []
+}
