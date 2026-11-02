@@ -1530,7 +1530,7 @@
         "source": {
           "path": "packages/ui/src/organisms/calendar-grid/types.ts",
           "symbol": "CalendarGridProps",
-          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+          "revision": "sha256:a2b239f6d4a1d4985c726cc28ddc04c588f79e99891dda60e59749bd033b5d8d"
         }
       },
       {
@@ -3264,7 +3264,7 @@
         "source": {
           "path": "packages/ui/src/organisms/calendar-grid/types.ts",
           "symbol": "CalendarGridProps",
-          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+          "revision": "sha256:a2b239f6d4a1d4985c726cc28ddc04c588f79e99891dda60e59749bd033b5d8d"
         }
       },
       {
@@ -3371,7 +3371,7 @@
         "source": {
           "path": "packages/ui/src/organisms/calendar-grid/types.ts",
           "symbol": "CalendarGridProps",
-          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+          "revision": "sha256:a2b239f6d4a1d4985c726cc28ddc04c588f79e99891dda60e59749bd033b5d8d"
         }
       },
       {
@@ -4124,7 +4124,7 @@
         "source": {
           "path": "packages/ui/src/organisms/calendar-grid/types.ts",
           "symbol": "CalendarGridEntry",
-          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+          "revision": "sha256:a2b239f6d4a1d4985c726cc28ddc04c588f79e99891dda60e59749bd033b5d8d"
         }
       }
     ]
@@ -4255,7 +4255,7 @@
         "source": {
           "path": "packages/ui/src/organisms/calendar-grid/types.ts",
           "symbol": "CalendarGridProps",
-          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+          "revision": "sha256:a2b239f6d4a1d4985c726cc28ddc04c588f79e99891dda60e59749bd033b5d8d"
         }
       },
       {
@@ -4426,7 +4426,7 @@
         "source": {
           "path": "packages/ui/src/organisms/calendar-grid/types.ts",
           "symbol": "CalendarGridProps",
-          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+          "revision": "sha256:a2b239f6d4a1d4985c726cc28ddc04c588f79e99891dda60e59749bd033b5d8d"
         }
       }
     ]
@@ -5945,7 +5945,7 @@
         "source": {
           "path": "packages/ui/src/organisms/calendar-grid/types.ts",
           "symbol": "CalendarGridProps",
-          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+          "revision": "sha256:a2b239f6d4a1d4985c726cc28ddc04c588f79e99891dda60e59749bd033b5d8d"
         }
       },
       {
@@ -5982,7 +5982,7 @@
         "source": {
           "path": "packages/ui/src/organisms/calendar-grid/types.ts",
           "symbol": "CalendarGridProps",
-          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+          "revision": "sha256:a2b239f6d4a1d4985c726cc28ddc04c588f79e99891dda60e59749bd033b5d8d"
         }
       }
     ]

@@ -327,6 +327,17 @@ describe('CalendarGrid', () => {
     expect(region.className).toContain('@container');
   });
 
+  it('stacks the lanes from the component container token instead of an undefined breakpoint', () => {
+    render(<CalendarGrid label='Week of October 5' items={week} />);
+    const region = screen.getByRole('region', { name: 'Week of October 5' });
+    const list = region.querySelector('ol') as HTMLElement;
+    expect(list).toHaveClass('@max-calendar-grid-stack:grid-flow-row', '@max-calendar-grid-stack:grid-cols-1');
+    expect(list.className).not.toContain('@max-4xl:');
+    const lane = dayItems(region)[0] as HTMLElement;
+    expect(lane).toHaveClass('@max-calendar-grid-stack:min-h-0');
+    expect(lane.className).not.toContain('@max-4xl:');
+  });
+
   it('keeps the named empty region when there are no days', () => {
     render(<CalendarGrid label='Week of October 5' items={[]} />);
     const region = screen.getByRole('region', { name: 'Week of October 5' });

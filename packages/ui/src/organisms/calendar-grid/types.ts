@@ -108,11 +108,11 @@ export type CalendarGridHeadingTag = 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 export const calendarGridVariants = cva('eg-calendar-grid @container block min-w-0 font-sans text-fg-default');
 
 export const calendarGridListVariants = cva(
-  'm-0 p-0 list-none grid grid-flow-col auto-cols-fr gap-2 @max-4xl:grid-flow-row @max-4xl:grid-cols-1'
+  'm-0 p-0 list-none grid grid-flow-col auto-cols-fr gap-2 @max-calendar-grid-stack:grid-flow-row @max-calendar-grid-stack:grid-cols-1'
 );
 
 export const calendarGridDayVariants = cva(
-  'flex flex-col gap-2 min-w-0 min-h-80 p-2 rounded-lg border border-solid border-transparent bg-fg-default/2 aria-[current=date]:border-border-brand aria-[current=date]:bg-alpha-red-07 @max-4xl:min-h-0'
+  'flex flex-col gap-2 min-w-0 min-h-80 p-2 rounded-lg border border-solid border-transparent bg-fg-default/2 aria-[current=date]:border-border-brand aria-[current=date]:bg-alpha-red-07 @max-calendar-grid-stack:min-h-0'
 );
 
 export const calendarGridHeaderVariants = cva('flex items-baseline gap-2 pt-1 px-0.5 pb-2 m-0');

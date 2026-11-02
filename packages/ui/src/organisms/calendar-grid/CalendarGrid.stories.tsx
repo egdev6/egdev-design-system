@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { useState } from 'react';
 import { action } from 'storybook/actions';
 import { CalendarGrid } from './CalendarGrid';
-import type { CalendarGridDay } from './types';
+import type { CalendarGridDay, CalendarGridProps } from './types';
 
 const published: CalendarGridDay[] = [
   {
@@ -109,9 +110,33 @@ export const AddIntent: Story = {
   args: { onMove: undefined }
 };
 
-/** Only the move intent is supplied, so no day offers an add control. */
+/** Applies the requested move locally so the announcement and focus hand-off are observable. */
+const MoveMenuHost = (args: CalendarGridProps) => {
+  const [items, setItems] = useState<CalendarGridDay[]>(args.items);
+  return (
+    <CalendarGrid
+      {...args}
+      items={items}
+      onMove={(entry, date) => {
+        args.onMove?.(entry, date);
+        setItems((current) =>
+          current.map((day) => ({
+            ...day,
+            entries:
+              day.date === date
+                ? [...day.entries, { ...entry }]
+                : day.entries.filter((candidate) => candidate.id !== entry.id)
+          }))
+        );
+      }}
+    />
+  );
+};
+
+/** Only the move intent is supplied, and this story applies it, so focus and the status announcement follow. */
 export const MoveMenu: Story = {
-  args: { onAdd: undefined }
+  args: { onAdd: undefined },
+  render: (args) => <MoveMenuHost {...args} />
 };
 
 /** Non-accepting days expose neither an add control nor a move target. */
