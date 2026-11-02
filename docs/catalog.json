@@ -334,11 +334,11 @@
     "nivelActual": "átomo",
     "nombre": "Pixel",
     "nivel": "atom",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "—",
     "accion": "mover",
-    "notas": "Recurso gráfico de la web; revisar si alguna app lo usa."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): isometric 8×12 marker used in meters and indexes; its `clip-path` geometry still needs a geometry or token decision before any spec."
   },
   {
     "actual": "ProgressBar",
@@ -719,11 +719,11 @@
     "nivelActual": "molécula",
     "nombre": "TerminalCard",
     "nivel": "molecule",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "Surface",
     "accion": "mover",
-    "notas": "Ficha de perfil de la web. Barra en banda `surface-2` (Grafito)."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): key/value terminal card with its title bar on the Surface recipe; no domain data."
   },
   {
     "actual": "ToolCallChip",
@@ -774,88 +774,88 @@
     "nivelActual": "molécula",
     "nombre": "NowCard",
     "nivel": "molecule",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "Surface, Text",
     "accion": "mover",
-    "notas": "Pie en banda `surface-0` (Grafito)."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): current-status card on the Surface recipe; copy and figures arrive as props."
   },
   {
     "actual": "ProjectCard",
     "nivelActual": "molécula",
     "nombre": "ProjectCard",
     "nivel": "molecule",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "Surface, Badge, Link",
     "accion": "mover",
-    "notas": ""
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): project card on the Surface recipe; links and tags arrive as props."
   },
   {
     "actual": "NoteItem",
     "nivelActual": "molécula",
-    "nombre": "NoteItem",
+    "nombre": "ListItem row variant",
     "nivel": "molecule",
-    "destino": "web",
-    "radix": "—",
+    "destino": "ui",
+    "radix": "Slot",
     "compone": "ListItem",
-    "accion": "mover",
-    "notas": "Valorar construirlo sobre ListItem."
+    "accion": "absorber",
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): absorbed into a ListItem editorial row variant with a leading date or meta; no separate export."
   },
   {
     "actual": "TipCard",
     "nivelActual": "molécula",
     "nombre": "TipCard",
     "nivel": "molecule",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "AspectRatio, Text",
     "accion": "mover",
-    "notas": ""
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): tip card with an optional media frame; no domain data."
   },
   {
     "actual": "ArticleFeature",
     "nivelActual": "molécula",
     "nombre": "ArticleFeature",
     "nivel": "molecule",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "PhotoFrame, Text",
     "accion": "mover",
-    "notas": ""
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): feature article card composing a photo frame and text; no domain data."
   },
   {
     "actual": "ArticleItem",
     "nivelActual": "molécula",
-    "nombre": "ArticleItem",
+    "nombre": "ListItem row variant",
     "nivel": "molecule",
-    "destino": "web",
-    "radix": "—",
+    "destino": "ui",
+    "radix": "Slot",
     "compone": "ListItem",
-    "accion": "mover",
-    "notas": ""
+    "accion": "absorber",
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): absorbed into a ListItem editorial row variant with a leading date or meta; no separate export."
   },
   {
     "actual": "StreamItem",
     "nivelActual": "molécula",
-    "nombre": "StreamItem",
+    "nombre": "ListItem row variant",
     "nivel": "molecule",
-    "destino": "web",
-    "radix": "—",
+    "destino": "ui",
+    "radix": "Slot",
     "compone": "ListItem",
-    "accion": "mover",
-    "notas": ""
+    "accion": "absorber",
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): absorbed into a ListItem editorial row variant with a leading date or meta; no separate export."
   },
   {
     "actual": "CommunityCard",
     "nivelActual": "molécula",
     "nombre": "CommunityCard",
     "nivel": "molecule",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "Surface, Avatar, Button",
     "accion": "mover",
-    "notas": "Cabecera en banda `surface-2` (Grafito)."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): community card on the Surface recipe with an avatar heading; no domain data."
   },
   {
     "actual": "—",
@@ -1005,165 +1005,165 @@
     "nivelActual": "organismo",
     "nombre": "TopBar",
     "nivel": "organism",
-    "destino": "web",
+    "destino": "ui",
     "radix": "NavigationMenu",
     "compone": "Logo, SearchTrigger, UserMenu",
     "accion": "mover",
-    "notas": ""
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): site navigation chrome; scroll state (glass, active section, progress) stays with the host."
   },
   {
     "actual": "MobileMenu",
     "nivelActual": "organismo",
     "nombre": "MobileMenu",
-    "nivel": "organism",
-    "destino": "web",
+    "nivel": "recipe",
+    "destino": "ui",
     "radix": "Dialog (sheet)",
     "compone": "NavList, SocialLinks",
-    "accion": "mover",
-    "notas": ""
+    "accion": "componer",
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented Dialog sheet composition with NavList and SocialLinks; not a standalone export."
   },
   {
     "actual": "SectionNav",
     "nivelActual": "organismo",
     "nombre": "SectionNav",
     "nivel": "organism",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "Link",
     "accion": "mover",
-    "notas": ""
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): section navigation organism; the section list and current section arrive as props."
   },
   {
     "actual": "Footer",
     "nivelActual": "organismo",
     "nombre": "Footer",
     "nivel": "organism",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "Logo, SocialLinks, Link",
     "accion": "mover",
-    "notas": ""
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): site footer organism; links and social profiles arrive as props."
   },
   {
     "actual": "Hero",
     "nivelActual": "organismo",
     "nombre": "Hero",
     "nivel": "organism",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "Text, Button",
     "accion": "mover",
-    "notas": ""
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): slot-based scene organism; copy, CTAs and the media slot are inputs and it runs no choreography."
   },
   {
     "actual": "ChapterBreak",
     "nivelActual": "organismo",
     "nombre": "ChapterBreak",
     "nivel": "organism",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "Text",
     "accion": "mover",
-    "notas": ""
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): slot-based scene organism; the chapter label and copy are inputs and it runs no choreography."
   },
   {
     "actual": "LabStage",
     "nivelActual": "organismo",
     "nombre": "LabStage",
     "nivel": "organism",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "Surface",
     "accion": "mover",
-    "notas": ""
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): slot-based scene organism with a consumer media/3D slot; it runs no choreography."
   },
   {
     "actual": "Closing",
     "nivelActual": "organismo",
     "nombre": "Closing",
     "nivel": "organism",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "Text, Button",
     "accion": "mover",
-    "notas": ""
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): slot-based scene organism; copy and CTAs are inputs and it runs no choreography."
   },
   {
     "actual": "NotesBoard",
     "nivelActual": "organismo",
     "nombre": "NotesBoard",
     "nivel": "organism",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
-    "compone": "SectionHeader, ChipGroup, NoteItem",
+    "compone": "SectionHeader, ChipGroup, ListItem row variant",
     "accion": "mover",
-    "notas": ""
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): section body composed from SectionHeader, ChipGroup and the ListItem editorial row variant."
   },
   {
     "actual": "NowStrip",
     "nivelActual": "organismo",
     "nombre": "NowStrip",
     "nivel": "organism",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "NowCard",
     "accion": "mover",
-    "notas": ""
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): section body composed from NowCard instances."
   },
   {
     "actual": "ProjectsGrid",
     "nivelActual": "organismo",
     "nombre": "ProjectsGrid",
     "nivel": "recipe",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "ProjectCard",
     "accion": "componer",
-    "notas": "Web composition recipe arranging ProjectCard instances; no independently specified component API or behavior beyond that composition. Not a standalone component or export. See [classification rules](CATALOGACION.md). Catalogue classification only, no implementation approval."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented composition recipe arranging ProjectCard instances; no independently specified component API or behavior beyond that composition. Not a standalone component or export. See [classification rules](CATALOGACION.md). Catalogue classification only, no implementation approval."
   },
   {
     "actual": "BlogGrid",
     "nivelActual": "organismo",
     "nombre": "BlogGrid",
     "nivel": "organism",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
-    "compone": "ArticleFeature, ArticleItem",
+    "compone": "ArticleFeature, ListItem row variant",
     "accion": "mover",
-    "notas": ""
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): section body composed from ArticleFeature and the ListItem editorial row variant."
   },
   {
     "actual": "LiveBand",
     "nivelActual": "organismo",
     "nombre": "LiveBand",
     "nivel": "organism",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
-    "compone": "Countdown, PhotoFrame, StreamItem",
+    "compone": "Countdown, PhotoFrame, ListItem row variant",
     "accion": "mover",
-    "notas": ""
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): live section body composed from Countdown, PhotoFrame and the ListItem editorial row variant."
   },
   {
     "actual": "CommunityGrid",
     "nivelActual": "organismo",
     "nombre": "CommunityGrid",
-    "nivel": "organism",
-    "destino": "web",
+    "nivel": "recipe",
+    "destino": "ui",
     "radix": "—",
     "compone": "CommunityCard",
-    "accion": "mover",
-    "notas": ""
+    "accion": "componer",
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented composition recipe arranging CommunityCard instances; not a standalone export."
   },
   {
     "actual": "TipsSlider",
     "nivelActual": "organismo",
     "nombre": "TipsSlider",
-    "nivel": "organism",
-    "destino": "web",
+    "nivel": "recipe",
+    "destino": "ui",
     "radix": "—",
     "compone": "Carousel, TipCard",
-    "accion": "mover",
-    "notas": "El carrusel genérico sube a ui."
+    "accion": "componer",
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented Carousel plus TipCard composition; not a standalone export. It becomes an organism only if coverflow offsets are required."
   },
   {
     "actual": "Isotipo3D",
@@ -1201,6 +1201,17 @@
   {
     "actual": "—",
     "nivelActual": "—",
+    "nombre": "ScrollReveal",
+    "nivel": "atom",
+    "destino": "effects",
+    "radix": "—",
+    "compone": "—",
+    "accion": "nuevo",
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): owner-approved scroll reveal/wipe utility in @egdev/effects with a reduced-motion mode, independent of HomeTemplate. Name is a proposal; level, API and tokens are not approved yet."
+  },
+  {
+    "actual": "—",
+    "nivelActual": "—",
     "nombre": "AppShell",
     "nivel": "template",
     "destino": "ui",
@@ -1214,21 +1225,21 @@
     "nivelActual": "plantilla",
     "nombre": "SectionShell",
     "nivel": "template",
-    "destino": "web",
+    "destino": "ui",
     "radix": "—",
     "compone": "—",
     "accion": "mover",
-    "notas": "`--pro`, `--show`, `--flood`, `--deep`; `--grafito` (+ `--fade-top`, `--fade-bottom`) para lectura sobre gris."
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): section frame with the pro/show/flood/deep/grafito registers and their top and bottom fades; the register arrives as a prop."
   },
   {
     "actual": "HomeTemplate",
     "nivelActual": "plantilla",
     "nombre": "HomeTemplate",
     "nivel": "template",
-    "destino": "web",
+    "destino": "effects",
     "radix": "—",
-    "compone": "Secciones web, effects",
+    "compone": "Isotipo3D, AmbientBackground, ScrollReveal",
     "accion": "mover",
-    "notas": ""
+    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): effect layers plus zone choreography in @egdev/effects; the zone table becomes an input, not hardcoded Pulso values."
   }
 ]

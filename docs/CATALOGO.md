@@ -9,23 +9,23 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 
 | Acción | Componentes |
 |---|---|
-| mover | 36 |
 | mantener | 30 |
-| nuevo | 23 |
+| mover | 30 |
+| nuevo | 24 |
 | extraer | 12 |
+| componer | 5 |
+| absorber | 4 |
 | fusionar | 3 |
 | separar | 3 |
-| componer | 2 |
 | renombrar | 2 |
-| absorber | 1 |
 
 | Destino | Componentes |
 |---|---|
-| @egdev/ui | 74 |
-| @egdev/effects | 3 |
+| @egdev/ui | 100 |
+| @egdev/effects | 5 |
 | Mando | 6 |
 | Cadencia | 1 |
-| Web (egdev.es) | 27 |
+| Web (egdev.es) | 0 |
 | Criterio | 1 |
 
 Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un componente se parte en varios), **extraer** (sale una pieza nueva de otro), **fusionar** (dos o más pasan a uno), **absorber** (pasa a ser variante o preset de otro), **mover** (cambia de paquete), **nuevo** (falta y hace falta), **componer** (documented composition recipe, not a standalone component).
@@ -71,6 +71,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Kbd** | Kbd (átomo) | — | — | mantener | Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/60): one key or shortcut glyph as native inline kbd text with a flat hairline treatment (label-default recipe, secondary text). Optional label gives symbol keys a spoken name through Radix VisuallyHidden and hides the glyph. Combos are consumer composition. No stylesheet. |
 | **Avatar** | Avatar (átomo) | Avatar | Icon; Indicator (consumer composition) | mantener | Implemented in @egdev/ui under the approved v0.1 contract: passive identity disc with Radix-managed photo loading and immediate user-icon fallback, sm/md/lg/xl sizes and paused presentation. The v0.3 amendment removes the optional decorative network badge (owner: “Quitar badgeIcon (ya tenemos el indicator)”); origin/network glyphs now compose the public Indicator wrapper around the Avatar. Root label owns the accessible name; decorative without it. No initials, interaction, ref, asChild or stylesheet. Contract: [#51](https://github.com/egdev6/egdev-design-system/issues/51). Public types, markup, ring and paused policy otherwise remain unchanged. |
 | **Logo** | Logo (átomo) | — | — | mantener | Implemented React atom under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/62): V4 isotype (mark) or isotype with white name (wordmark) as inline SVG data with the --logo-red/--logo-red-shade token inks, 28/32/36px heights, named span image or native link with the focus ring. No asChild, ref or stylesheet; legacy eg-logo CSS untouched. |
+| **Pixel** | Pixel (átomo) | — | — | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): isometric 8×12 marker used in meters and indexes; its `clip-path` geometry still needs a geometry or token decision before any spec. |
 | **ProgressBar** | ProgressBar (átomo) | Progress | — | mantener | Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/65): passive Radix Progress bar in percent (clamped 0–100; non-finite values are indeterminate with an empty fill). `label` announces the progressbar, otherwise it is decorative. `size` sm hairline or lg goal well with gradient fill and token bevel, `variant` muted for comparison series and sm-only `edge` strip. Fill scaled through `--eg-progress-value`. No stylesheet. |
 | **Gauge** | Gauge (átomo) | — (native role=meter) | Native transparent geometry frame | mantener | Currently implemented React component: one passive circular 0–100 measurement with optional decorative center and consumer-selected normal, warning, critical or muted state. Own transparent native frame uses existing tokens, not Surface. Effective contract: [v0.10 amendment](components/gauge/v0.10/transparent-interior-amendment.md), [v0.9 amendment](components/gauge/v0.9/composition-amendment.md) and [base](specs/gauge.md). Not task progress, multiple rings or a dock API; no Radix dependency. |
 | **Stat** | Stat (átomo) | — | — | mantener | Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/70): one live figure in a native div role=group named by its visible label (label → value → optional delta). Numbers and strings render unformatted; value={null} shows a hidden em dash with readable unavailableText. Consumer-timed highlighted emphasis (brand border and glow, light edge kept), md/sm figures on the --text-display-stat(-sm) tokens. Own Material elevated-card recipe with token utilities; Text is not composed (no matching recipe). Drops legacy --glass (D2). No Radix base, ref, asChild or stylesheet. |
@@ -106,6 +107,15 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Panel** | ModuleCard frame (design anatomy) | — | Surface | extraer | Implemented public working-tree compound React molecule under the [approved v0.2 contract](components/panel/v0.2/spec.md): Panel/Header/Body/Footer, default/banded treatment and explicit surface-1/overlay/inherit ownership. Real Surface supplies framed paint; inherit requires an already painted host. No stylesheet, ref, asChild or interaction engine; ModuleCard is not migrated. Parent unit, metadata, build and packed React 18.3.1/19.3.0 checks passed; runtime browser/AT conformity remains pending. |
 | **Collapsible** | — | Collapsible | Surface, Button recipe, Icon | nuevo | Implemented public working-tree React disclosure over the already-declared Radix Collapsible 1.2.1 under the [v0.2 base](components/collapsible/v0.2/spec.md) and [approved v0.3 relationship amendment](components/collapsible/v0.3/radix-relationship-amendment.md). Fixed Surface frame, ghost/md button recipe, native state/presence and Trigger-only button ref. Closed Trigger omits aria-controls; the hidden Content shell/id remains while children unmount. No stylesheet, custom key/focus engine or dependency change; NavList is unchanged. Parent unit, metadata, build and packed React 18.3.1/19.3.0 checks passed; runtime browser/AT conformity remains pending. |
 | **SocialLinks** | SocialLinks (molécula) | — (native anchors; atom-owned Slot + AccessibleIcon) | IconButton, Icon, Stack, Cluster | mantener | Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/104): named native list of validated HTTPS profile links, optional independent caption, stacked or wrapping inline layout, outline/ghost atom treatments and md/lg presets (lg touch-sized default). Per-item opt-in new context merges secure rel tokens and a localized hidden notice once. Empty/all-invalid data renders nothing; no truncation, selection, ref or asChild. Six meaningful files, no stylesheet; legacy markers/styles preserved. Visual conformity: Not evaluated. |
+| **TerminalCard** | TerminalCard (molécula) | — | Surface | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): key/value terminal card with its title bar on the Surface recipe; no domain data. |
+| **NowCard** | NowCard (molécula) | — | Surface, Text | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): current-status card on the Surface recipe; copy and figures arrive as props. |
+| **ProjectCard** | ProjectCard (molécula) | — | Surface, Badge, Link | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): project card on the Surface recipe; links and tags arrive as props. |
+| **ListItem row variant** | NoteItem (molécula) | Slot | ListItem | absorber | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): absorbed into a ListItem editorial row variant with a leading date or meta; no separate export. |
+| **TipCard** | TipCard (molécula) | — | AspectRatio, Text | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): tip card with an optional media frame; no domain data. |
+| **ArticleFeature** | ArticleFeature (molécula) | — | PhotoFrame, Text | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): feature article card composing a photo frame and text; no domain data. |
+| **ListItem row variant** | ArticleItem (molécula) | Slot | ListItem | absorber | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): absorbed into a ListItem editorial row variant with a leading date or meta; no separate export. |
+| **ListItem row variant** | StreamItem (molécula) | Slot | ListItem | absorber | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): absorbed into a ListItem editorial row variant with a leading date or meta; no separate export. |
+| **CommunityCard** | CommunityCard (molécula) | — | Surface, Avatar, Button | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): community card on the Surface recipe with an avatar heading; no domain data. |
 | **Carousel** | — | — (native scroll and bounded roving focus) | IconButton, Icon, ProgressBar, VisuallyHidden | extraer | Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/80): manually navigated read-only slides with stable string identities, bounded direction-aware keyboard navigation, native scrolling and background/media mouse dragging. Controlled requests wait for acceptance; settled user changes coordinate focus and polite status. Structural layout only; consumer Surface content owns Material. No autoplay, stylesheet, new dependencies or legacy TipsSlider migration. |
 | **GaugeGroup** | — | — (native group and meters) | Shared private Gauge geometry | nuevo | Implemented in @egdev/ui under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/31): two or three independent passive readings with a decorative transparent concentric diagram and ordered visible list. No aggregate or GaugeDock extension. |
 | **Dialog** | Dialog (organismo) | Dialog | Surface, IconButton, Icon; consumer actions | mantener | Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/119): modal Root, Trigger, Content and Close; centered sizes and sheet. Radix owns portal, dismissal and focus; Surface owns panel paint. Browser, visual and packed-consumer verification remain pending. |
@@ -123,18 +133,34 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **PreviewFrame** | StageFrame (organismo) | AspectRatio | IconButton, Chip | renombrar | Working-tree implementation under the approved #127 plan and owner decisions L11/L15: passive native preview figure with a decorative safe-area guide, clamped percentage zones and consumer-owned slots. Grid renders like plain until a grid token is approved; zone geometry uses only the four approved percentage custom properties. No stylesheet; browser visual and accessibility verification pending. Contract: [#127](https://github.com/egdev6/egdev-design-system/issues/127). |
 | **TabBar** | TabBar (organismo (agente)) | — (native navigation) | Icon, Badge, VisuallyHidden, Surface recipe | mantener | Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/125): named native navigation links with consumer-owned current page, localized count badges and intrinsic safe-area padding. Host owns placement and responsive visibility. No stylesheet or new dependency; visual and packed-consumer verification remain pending. |
 | **CalendarGrid** | CalendarGrid (organismo) | — (Move menu, no drag dependency) | ListItem, Menu, IconButton, Icon, VisuallyHidden | mantener | Working-tree implementation under the approved #126 plan (owner decision L11): named region of ordered day lanes with a keyboard-accessible Move menu, quiet add controls and consumer-owned dates, locale, eligibility and move rejection. No ARIA grid, no drag dependency, no new token and no stylesheet. Month view stays out of v0.1; browser visual and accessibility verification pending. |
+| **TopBar** | TopBar (organismo) | NavigationMenu | Logo, SearchTrigger, UserMenu | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): site navigation chrome; scroll state (glass, active section, progress) stays with the host. |
+| **SectionNav** | SectionNav (organismo) | — | Link | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): section navigation organism; the section list and current section arrive as props. |
+| **Footer** | Footer (organismo) | — | Logo, SocialLinks, Link | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): site footer organism; links and social profiles arrive as props. |
+| **Hero** | Hero (organismo) | — | Text, Button | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): slot-based scene organism; copy, CTAs and the media slot are inputs and it runs no choreography. |
+| **ChapterBreak** | ChapterBreak (organismo) | — | Text | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): slot-based scene organism; the chapter label and copy are inputs and it runs no choreography. |
+| **LabStage** | LabStage (organismo) | — | Surface | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): slot-based scene organism with a consumer media/3D slot; it runs no choreography. |
+| **Closing** | Closing (organismo) | — | Text, Button | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): slot-based scene organism; copy and CTAs are inputs and it runs no choreography. |
+| **NotesBoard** | NotesBoard (organismo) | — | SectionHeader, ChipGroup, ListItem row variant | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): section body composed from SectionHeader, ChipGroup and the ListItem editorial row variant. |
+| **NowStrip** | NowStrip (organismo) | — | NowCard | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): section body composed from NowCard instances. |
+| **BlogGrid** | BlogGrid (organismo) | — | ArticleFeature, ListItem row variant | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): section body composed from ArticleFeature and the ListItem editorial row variant. |
+| **LiveBand** | LiveBand (organismo) | — | Countdown, PhotoFrame, ListItem row variant | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): live section body composed from Countdown, PhotoFrame and the ListItem editorial row variant. |
 
 ### Plantillas
 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
 | **AppShell** | — | — | Sidebar, ModuleRail, TabBar | nuevo | Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/130) and its [implementation plan](components/app-shell/v0.1/implementation-plan.md): slot-based application region layout that docks a consumer-supplied Sidebar or ModuleRail beside the single main landmark and a TabBar at the bottom below the 56rem viewport threshold, with a built-in localized skip link. Owns placement, sticky in-flow docking, document scroll and responsive visibility only; navigation data, routing, current page and region Material stay with the organisms and consumer. No stylesheet, no new token and no new dependency; browser visual and accessibility verification pending. |
+| **SectionShell** | SectionShell (plantilla) | — | — | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): section frame with the pro/show/flood/deep/grafito registers and their top and bottom fades; the register arrives as a prop. |
 
 ### Composition recipes
 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
 | **UserMenu** | UserMenu (molécula) | DropdownMenu | Avatar, Menu | componer | Approved six-row catalogue correction: Menu composition recipe with an Avatar trigger; no standalone UserMenu export. See [classification rules](CATALOGACION.md). Catalogue decision only; no implementation implied. |
+| **MobileMenu** | MobileMenu (organismo) | Dialog (sheet) | NavList, SocialLinks | componer | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented Dialog sheet composition with NavList and SocialLinks; not a standalone export. |
+| **ProjectsGrid** | ProjectsGrid (organismo) | — | ProjectCard | componer | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented composition recipe arranging ProjectCard instances; no independently specified component API or behavior beyond that composition. Not a standalone component or export. See [classification rules](CATALOGACION.md). Catalogue classification only, no implementation approval. |
+| **CommunityGrid** | CommunityGrid (organismo) | — | CommunityCard | componer | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented composition recipe arranging CommunityCard instances; not a standalone export. |
+| **TipsSlider** | TipsSlider (organismo) | — | Carousel, TipCard | componer | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): documented Carousel plus TipCard composition; not a standalone export. It becomes an organism only if coverflow offsets are required. |
 
 ## @egdev/effects
 
@@ -145,6 +171,13 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Isotipo3D** | Isotipo3D (átomo (efecto)) | — | — | mover | Decorative 3D isotype with scene, progress, opacity and pointer tilt controls, opt-in paused/dragRotate/flip/interactive gestures with onPoseChange, lazy three loading and an SVG fallback. Interaction amendment: [#227](https://github.com/egdev6/egdev-design-system/issues/227). Contract: [#47](https://github.com/egdev6/egdev-design-system/issues/47). |
 | **AmbientBackground** | AmbientBackground (organismo (efecto)) | — | — | mover | Working-tree React effect under the approved v0.4 contract and implementation plan: decorative canvas particles with profile and opacity, reduced-motion fallback and a forwarded root ref. No component stylesheet or director choreography. Browser visual conformity and packed-consumer validation remain pending. Contract: [#45](https://github.com/egdev6/egdev-design-system/issues/45). |
 | **Isotipo3D** | Isotipo3D (organismo (efecto)) | — | — | mover | One rendered brand-mark effect using three.js with an SVG fallback; rendering complexity does not make it a structural region or coordinate independent UI concepts. See [classification rules](CATALOGACION.md). API unchanged; catalogue classification only, no implementation or dependency approval. |
+| **ScrollReveal** | — | — | — | nuevo | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): owner-approved scroll reveal/wipe utility in @egdev/effects with a reduced-motion mode, independent of HomeTemplate. Name is a proposal; level, API and tokens are not approved yet. |
+
+### Plantillas
+
+| Componente | Antes | Radix | Compone | Acción | Notas |
+|---|---|---|---|---|---|
+| **HomeTemplate** | HomeTemplate (plantilla) | — | Isotipo3D, AmbientBackground, ScrollReveal | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): effect layers plus zone choreography in @egdev/effects; the zone table becomes an input, not hardcoded Pulso values. |
 
 ## Mando
 
@@ -176,60 +209,6 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
 | **PostCard** | PostCard (Cadencia) (molécula) | — | ListItem, Avatar, Chip | mover | Composición de dominio en Cadencia sobre ListItem. |
-
-## Web (egdev.es)
-
-### Átomos
-
-| Componente | Antes | Radix | Compone | Acción | Notas |
-|---|---|---|---|---|---|
-| **Pixel** | Pixel (átomo) | — | — | mover | Recurso gráfico de la web; revisar si alguna app lo usa. |
-
-### Moléculas
-
-| Componente | Antes | Radix | Compone | Acción | Notas |
-|---|---|---|---|---|---|
-| **TerminalCard** | TerminalCard (molécula) | — | Surface | mover | Ficha de perfil de la web. Barra en banda `surface-2` (Grafito). |
-| **NowCard** | NowCard (molécula) | — | Surface, Text | mover | Pie en banda `surface-0` (Grafito). |
-| **ProjectCard** | ProjectCard (molécula) | — | Surface, Badge, Link | mover |  |
-| **NoteItem** | NoteItem (molécula) | — | ListItem | mover | Valorar construirlo sobre ListItem. |
-| **TipCard** | TipCard (molécula) | — | AspectRatio, Text | mover |  |
-| **ArticleFeature** | ArticleFeature (molécula) | — | PhotoFrame, Text | mover |  |
-| **ArticleItem** | ArticleItem (molécula) | — | ListItem | mover |  |
-| **StreamItem** | StreamItem (molécula) | — | ListItem | mover |  |
-| **CommunityCard** | CommunityCard (molécula) | — | Surface, Avatar, Button | mover | Cabecera en banda `surface-2` (Grafito). |
-
-### Organismos
-
-| Componente | Antes | Radix | Compone | Acción | Notas |
-|---|---|---|---|---|---|
-| **TopBar** | TopBar (organismo) | NavigationMenu | Logo, SearchTrigger, UserMenu | mover |  |
-| **MobileMenu** | MobileMenu (organismo) | Dialog (sheet) | NavList, SocialLinks | mover |  |
-| **SectionNav** | SectionNav (organismo) | — | Link | mover |  |
-| **Footer** | Footer (organismo) | — | Logo, SocialLinks, Link | mover |  |
-| **Hero** | Hero (organismo) | — | Text, Button | mover |  |
-| **ChapterBreak** | ChapterBreak (organismo) | — | Text | mover |  |
-| **LabStage** | LabStage (organismo) | — | Surface | mover |  |
-| **Closing** | Closing (organismo) | — | Text, Button | mover |  |
-| **NotesBoard** | NotesBoard (organismo) | — | SectionHeader, ChipGroup, NoteItem | mover |  |
-| **NowStrip** | NowStrip (organismo) | — | NowCard | mover |  |
-| **BlogGrid** | BlogGrid (organismo) | — | ArticleFeature, ArticleItem | mover |  |
-| **LiveBand** | LiveBand (organismo) | — | Countdown, PhotoFrame, StreamItem | mover |  |
-| **CommunityGrid** | CommunityGrid (organismo) | — | CommunityCard | mover |  |
-| **TipsSlider** | TipsSlider (organismo) | — | Carousel, TipCard | mover | El carrusel genérico sube a ui. |
-
-### Plantillas
-
-| Componente | Antes | Radix | Compone | Acción | Notas |
-|---|---|---|---|---|---|
-| **SectionShell** | SectionShell (plantilla) | — | — | mover | `--pro`, `--show`, `--flood`, `--deep`; `--grafito` (+ `--fade-top`, `--fade-bottom`) para lectura sobre gris. |
-| **HomeTemplate** | HomeTemplate (plantilla) | — | Secciones web, effects | mover |  |
-
-### Composition recipes
-
-| Componente | Antes | Radix | Compone | Acción | Notas |
-|---|---|---|---|---|---|
-| **ProjectsGrid** | ProjectsGrid (organismo) | — | ProjectCard | componer | Web composition recipe arranging ProjectCard instances; no independently specified component API or behavior beyond that composition. Not a standalone component or export. See [classification rules](CATALOGACION.md). Catalogue classification only, no implementation approval. |
 
 ## Criterio
 
