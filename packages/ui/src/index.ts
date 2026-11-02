@@ -83,6 +83,7 @@ export { Tabs, tabsVariants } from './molecules/tabs';
 export * from './molecules/timeline';
 export * from './molecules/toast';
 // Organisms
+export * from './organisms/module-rail';
 export * from './organisms/preview-frame';
 export * from './organisms/sidebar';
 export * from './organisms/tab-bar';
