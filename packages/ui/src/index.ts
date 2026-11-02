@@ -84,6 +84,7 @@ export * from './molecules/timeline';
 export * from './molecules/toast';
 // Organisms
 export * from './organisms/calendar-grid';
+export * from './organisms/module-rail';
 export * from './organisms/preview-frame';
 export * from './organisms/sidebar';
 export * from './organisms/tab-bar';

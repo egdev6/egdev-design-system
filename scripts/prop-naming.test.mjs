@@ -57,6 +57,26 @@ function indicatorProposalHash(entry) {
 }
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  ...[
+    'accessible-name',
+    'collection-items',
+    'localized-messages',
+    'navigation-intent',
+    'product-identity',
+    'end-items',
+    'add-request'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/organisms/module-rail/types.ts#ModuleRailProps'
+  })),
+  {
+    conventionId: 'leading-icon',
+    source: 'packages/ui/src/organisms/module-rail/types.ts#ModuleRailLink'
+  },
+  {
+    conventionId: 'menu-entry-kind',
+    source: 'packages/ui/src/organisms/module-rail/types.ts#ModuleRailEntry'
+  },
   ...['accessible-name', 'collection-items', 'navigation-intent', 'localized-messages'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/organisms/tab-bar/types.ts#TabBarProps'

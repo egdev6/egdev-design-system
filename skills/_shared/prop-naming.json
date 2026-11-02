@@ -1532,6 +1532,16 @@
           "symbol": "CalendarGridProps",
           "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
         }
+      },
+      {
+        "component": "ModuleRail",
+        "type": "string (required landmark name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailProps",
+          "revision": "sha256:a21f7c5ee39eb148b115ea95a82bd820c692ba3a4f855af380ffc20f3b4f95bd"
+        }
       }
     ]
   },
@@ -2081,6 +2091,16 @@
           "path": "packages/ui/src/atoms/field-message/types.ts",
           "symbol": "FieldMessageProps",
           "revision": "sha256:e5c3ba8c39dbd45a5aa7e4701ddf65b82e9c85284b15bd0a8d09a211da6f93fe"
+        }
+      },
+      {
+        "component": "ModuleRail",
+        "type": "ModuleRailLink.icon (required decorative IconName)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailLink",
+          "revision": "sha256:a21f7c5ee39eb148b115ea95a82bd820c692ba3a4f855af380ffc20f3b4f95bd"
         }
       }
     ]
@@ -3246,6 +3266,16 @@
           "symbol": "CalendarGridProps",
           "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
         }
+      },
+      {
+        "component": "ModuleRail",
+        "type": "ModuleRailEntry[] (links and separators)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailProps",
+          "revision": "sha256:a21f7c5ee39eb148b115ea95a82bd820c692ba3a4f855af380ffc20f3b4f95bd"
+        }
       }
     ]
   },
@@ -3342,6 +3372,16 @@
           "path": "packages/ui/src/organisms/calendar-grid/types.ts",
           "symbol": "CalendarGridProps",
           "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+        }
+      },
+      {
+        "component": "ModuleRail",
+        "type": "ModuleRailMessages (add and state words)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailProps",
+          "revision": "sha256:a21f7c5ee39eb148b115ea95a82bd820c692ba3a4f855af380ffc20f3b4f95bd"
         }
       }
     ]
@@ -4123,6 +4163,16 @@
           "symbol": "MenuEntry",
           "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
         }
+      },
+      {
+        "component": "ModuleRail",
+        "type": "ModuleRailEntry ('link' optional; 'separator')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailEntry",
+          "revision": "sha256:a21f7c5ee39eb148b115ea95a82bd820c692ba3a4f855af380ffc20f3b4f95bd"
+        }
       }
     ]
   },
@@ -4206,6 +4256,16 @@
           "path": "packages/ui/src/organisms/calendar-grid/types.ts",
           "symbol": "CalendarGridProps",
           "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+        }
+      },
+      {
+        "component": "ModuleRail",
+        "type": "(item: ModuleRailLink, event: MouseEvent<HTMLAnchorElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailProps",
+          "revision": "sha256:a21f7c5ee39eb148b115ea95a82bd820c692ba3a4f855af380ffc20f3b4f95bd"
         }
       }
     ]
@@ -5823,6 +5883,16 @@
           "symbol": "SidebarProps",
           "revision": "sha256:489fe1683e9a448ec5111da30b92c468298799392fb7441a5493cf32a7e50e18"
         }
+      },
+      {
+        "component": "ModuleRail",
+        "type": "ProductIdentity (consumer node, name, optional href)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailProps",
+          "revision": "sha256:a21f7c5ee39eb148b115ea95a82bd820c692ba3a4f855af380ffc20f3b4f95bd"
+        }
       }
     ]
   },
@@ -5840,7 +5910,18 @@
       "scope": "convention:end-items",
       "contentHash": "sha256:9a95c86f3155874b006075dfa97f7e397b6b78bb2d93506cff5dc37c29fe4b74"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "ModuleRail",
+        "type": "ModuleRailLink[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailProps",
+          "revision": "sha256:a21f7c5ee39eb148b115ea95a82bd820c692ba3a4f855af380ffc20f3b4f95bd"
+        }
+      }
+    ]
   },
   {
     "id": "add-request",
@@ -5865,6 +5946,16 @@
           "path": "packages/ui/src/organisms/calendar-grid/types.ts",
           "symbol": "CalendarGridProps",
           "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+        }
+      },
+      {
+        "component": "ModuleRail",
+        "type": "(event: MouseEvent<HTMLButtonElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/module-rail/types.ts",
+          "symbol": "ModuleRailProps",
+          "revision": "sha256:a21f7c5ee39eb148b115ea95a82bd820c692ba3a4f855af380ffc20f3b4f95bd"
         }
       }
     ]

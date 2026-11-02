@@ -924,6 +924,17 @@
     "notas": "Working-tree Sidebar under the approved #123 plan and consumer identity amendment: host-sized passive panel with a scrollable body and optional pinned identity and footer. Navigation, routing and responsive visibility belong to consumers. Browser visual and accessibility verification pending."
   },
   {
+    "actual": "ModuleRail",
+    "nivelActual": "organismo (agente)",
+    "nombre": "ModuleRail",
+    "nivel": "organism",
+    "destino": "ui",
+    "radix": "Tooltip + VisuallyHidden",
+    "compone": "Icon, IconButton, StatusDot, Surface recipe; consumer identity",
+    "accion": "mantener",
+    "notas": "Working-tree compact navigation under the approved #124 plan: native links, consumer-selected current page, grouped items and optional pinned identity, add action and end links. Consumer owns routing and responsive switching. Browser visual and accessibility verification pending."
+  },
+  {
     "actual": "StageFrame",
     "nivelActual": "organismo",
     "nombre": "PreviewFrame",
@@ -933,17 +944,6 @@
     "compone": "IconButton, Chip",
     "accion": "renombrar",
     "notas": "Working-tree implementation under the approved #127 plan and owner decisions L11/L15: passive native preview figure with a decorative safe-area guide, clamped percentage zones and consumer-owned slots. Grid renders like plain until a grid token is approved; zone geometry uses only the four approved percentage custom properties. No stylesheet; browser visual and accessibility verification pending. Contract: [#127](https://github.com/egdev6/egdev-design-system/issues/127)."
-  },
-  {
-    "actual": "ModuleRail",
-    "nivelActual": "organismo (agente)",
-    "nombre": "ModuleRail",
-    "nivel": "organism",
-    "destino": "ui",
-    "radix": "Tooltip + NavigationMenu o ToggleGroup",
-    "compone": "Logo, IconButton, StatusDot",
-    "accion": "mantener",
-    "notas": "Raíl compacto de Mando; genérico."
   },
   {
     "actual": "TabBar",
@@ -977,17 +977,6 @@
     "compone": "ListItem, Menu, IconButton, Icon, VisuallyHidden",
     "accion": "mantener",
     "notas": "Working-tree implementation under the approved #126 plan (owner decision L11): named region of ordered day lanes with a keyboard-accessible Move menu, quiet add controls and consumer-owned dates, locale, eligibility and move rejection. No ARIA grid, no drag dependency, no new token and no stylesheet. Month view stays out of v0.1; browser visual and accessibility verification pending."
-  },
-  {
-    "actual": "StageFrame",
-    "nivelActual": "organismo",
-    "nombre": "PreviewFrame",
-    "nivel": "organism",
-    "destino": "ui",
-    "radix": "AspectRatio + Toolbar",
-    "compone": "IconButton, Chip",
-    "accion": "renombrar",
-    "notas": "Vista previa a tamaño fijo con zonas seguras."
   },
   {
     "actual": "GaugeStrip",

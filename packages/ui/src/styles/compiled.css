@@ -48,6 +48,7 @@
 @source "../molecules/tabs/types.ts";
 @source "../molecules/**/types.ts";
 @source "../organisms/calendar-grid/types.ts";
+@source "../organisms/module-rail/types.ts";
 @source "../organisms/preview-frame/types.ts";
 @source "../organisms/sidebar/types.ts";
 @source "../organisms/tab-bar/types.ts";
