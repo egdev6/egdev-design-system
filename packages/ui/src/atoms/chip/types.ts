@@ -114,7 +114,7 @@ export type ChipProps = ChipToggleProps | ChipStaticProps | ChipLinkProps;
  * className supports outer layout only.
  */
 export const chipVariants = cva(
-  'eg-chip inline-flex items-center gap-1.5 min-h-8 px-2.5 py-1.5 rounded-full border border-border-hairline [background:var(--gradient-sheen),var(--color-surface-1)] shadow-edge font-sans text-label-default text-fg-secondary whitespace-nowrap',
+  'eg-chip box-border inline-flex items-center gap-1.5 min-h-8 px-2.5 py-1.5 rounded-full border border-border-hairline [background:var(--gradient-sheen),var(--color-surface-1)] shadow-edge font-sans text-label-default text-fg-secondary whitespace-nowrap',
   {
     variants: {
       mode: {

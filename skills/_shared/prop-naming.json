@@ -2100,7 +2100,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:6a785d2b0b83089bc41b568b0b4b2aa5fa097894a27e535d9b564de632c5c46b"
+          "revision": "sha256:aac605536ebb3fce3185c76418509c18641a008a1f65d4488e39e648bd992b7a"
         }
       },
       {
@@ -2435,7 +2435,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:6a785d2b0b83089bc41b568b0b4b2aa5fa097894a27e535d9b564de632c5c46b"
+          "revision": "sha256:aac605536ebb3fce3185c76418509c18641a008a1f65d4488e39e648bd992b7a"
         }
       }
     ]
@@ -2472,7 +2472,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:6a785d2b0b83089bc41b568b0b4b2aa5fa097894a27e535d9b564de632c5c46b"
+          "revision": "sha256:aac605536ebb3fce3185c76418509c18641a008a1f65d4488e39e648bd992b7a"
         }
       }
     ]
@@ -2509,7 +2509,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:6a785d2b0b83089bc41b568b0b4b2aa5fa097894a27e535d9b564de632c5c46b"
+          "revision": "sha256:aac605536ebb3fce3185c76418509c18641a008a1f65d4488e39e648bd992b7a"
         }
       }
     ]
@@ -2664,7 +2664,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:6a785d2b0b83089bc41b568b0b4b2aa5fa097894a27e535d9b564de632c5c46b"
+          "revision": "sha256:aac605536ebb3fce3185c76418509c18641a008a1f65d4488e39e648bd992b7a"
         }
       }
     ]
@@ -2711,7 +2711,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:6a785d2b0b83089bc41b568b0b4b2aa5fa097894a27e535d9b564de632c5c46b"
+          "revision": "sha256:aac605536ebb3fce3185c76418509c18641a008a1f65d4488e39e648bd992b7a"
         }
       }
     ]
@@ -6558,7 +6558,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:6a785d2b0b83089bc41b568b0b4b2aa5fa097894a27e535d9b564de632c5c46b"
+          "revision": "sha256:aac605536ebb3fce3185c76418509c18641a008a1f65d4488e39e648bd992b7a"
         }
       }
     ]

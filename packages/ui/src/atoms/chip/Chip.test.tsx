@@ -476,6 +476,22 @@ describe('Chip mode contract', () => {
     expect(chipVariants({ mode: 'toggle' }).split(' ')).toEqual(chipVariants().split(' '));
   });
 
+  it('sizes every rendered element border-box so span and anchor chips match the button height', () => {
+    for (const mode of ['toggle', 'static', 'link'] as const) {
+      expect(chipVariants({ mode }).split(' ')).toContain('box-border');
+    }
+    render(
+      <>
+        <Chip mode='static'>Static</Chip>
+        <Chip mode='link' href='#topics'>
+          Topics
+        </Chip>
+      </>
+    );
+    expect(screen.getByText('Static').closest('.eg-chip')).toHaveClass('box-border');
+    expect(screen.getByRole('link', { name: 'Topics' })).toHaveClass('box-border');
+  });
+
   it('adds no list semantics around static chips (AC-13)', () => {
     render(
       <ul aria-label='Topics'>
