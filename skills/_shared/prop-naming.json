@@ -891,6 +891,16 @@
           "symbol": "PreviewFrameProps",
           "revision": "sha256:ff4bfd0716594de6f8fc6a5adba4c6e5145bc2fd18eb6d6cbbf3a4d7708e7490"
         }
+      },
+      {
+        "component": "Link",
+        "type": "LinkVariant ('plain' | 'underlined')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/link/types.ts",
+          "symbol": "LinkProps",
+          "revision": "sha256:b5e5ba0b47c7e53c9a3759888c1d746a82596537fd3834d1ca3dd2a4b05503f3"
+        }
       }
     ]
   },
@@ -2311,7 +2321,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:ba59cc4ae5c38984541b2c5a84e2aefe74b7b7f99295cc94fd3682107122936d"
+          "revision": "sha256:b5e5ba0b47c7e53c9a3759888c1d746a82596537fd3834d1ca3dd2a4b05503f3"
         }
       },
       {
@@ -2634,7 +2644,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:ba59cc4ae5c38984541b2c5a84e2aefe74b7b7f99295cc94fd3682107122936d"
+          "revision": "sha256:b5e5ba0b47c7e53c9a3759888c1d746a82596537fd3834d1ca3dd2a4b05503f3"
         }
       }
     ]
@@ -2671,7 +2681,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:ba59cc4ae5c38984541b2c5a84e2aefe74b7b7f99295cc94fd3682107122936d"
+          "revision": "sha256:b5e5ba0b47c7e53c9a3759888c1d746a82596537fd3834d1ca3dd2a4b05503f3"
         }
       }
     ]
@@ -2698,7 +2708,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:ba59cc4ae5c38984541b2c5a84e2aefe74b7b7f99295cc94fd3682107122936d"
+          "revision": "sha256:b5e5ba0b47c7e53c9a3759888c1d746a82596537fd3834d1ca3dd2a4b05503f3"
         }
       }
     ]

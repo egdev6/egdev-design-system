@@ -2503,6 +2503,7 @@ test('UI ships Link token recipes, scoped motion and legacy resets without a new
   };
   for (const [selector, declaration] of [
     ['.border-0', /border-width:\s*0(?:px)?\s*;/],
+    ['.border-border-brand', /border-color:\s*var\(--color-border-brand[,)]/],
     ['.text-fg-brand-raised', /color:\s*var\(--color-fg-brand-raised[,)]/],
     ['.pb-0', /padding-bottom:\s*var\(--space-0\)/],
     ['.no-underline', /text-decoration-line:\s*none/],
@@ -2516,7 +2517,10 @@ test('UI ships Link token recipes, scoped motion and legacy resets without a new
     assert.match(rule(selector), declaration, selector);
   }
   for (const selector of [
+    '.border-b',
+    '.pb-0\\.5',
     String.raw`.hover\:text-primitive-red-200`,
+    String.raw`.hover\:border-fg-brand-default`,
     String.raw`.motion-safe\:group-hover\/link\:translate-x-1`,
     String.raw`.motion-reduce\:translate-none`,
     String.raw`.motion-reduce\:transition-none`,
@@ -2526,6 +2530,11 @@ test('UI ships Link token recipes, scoped motion and legacy resets without a new
   ]) {
     assert.ok(utilities.includes(selector), `Missing Link utility ${selector}`);
   }
+  assert.match(
+    rule(String.raw`.hover\:border-fg-brand-default:hover`),
+    /border-color:\s*var\(--color-fg-brand-default[,)]/
+  );
+  assert.match(css, /@property --tw-border-style\s*\{[^}]*initial-value:\s*solid/);
   assert.match(utilities, /@media \(prefers-reduced-motion:\s*no-preference\)/);
   assert.match(rule(String.raw`.motion-reduce\:translate-none`), /translate:\s*none/);
   assert.match(rule(String.raw`.motion-reduce\:transition-none`), /transition-property:\s*none/);
@@ -3400,6 +3409,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'LayoutJustifyContent',
     'Link',
     'LinkProps',
+    'LinkVariant',
     'ListItem',
     'ListItemActions',
     'ListItemBody',

@@ -2368,7 +2368,8 @@ describe('Link navigation metadata contract', () => {
       children: 'false',
       external: 'boolean',
       newTabText: 'text',
-      arrow: 'boolean'
+      arrow: 'boolean',
+      variant: 'select'
     };
     expect(properties.map((property) => property.name.getText(file))).toEqual([
       'asChild',
@@ -2378,7 +2379,8 @@ describe('Link navigation metadata contract', () => {
       'children',
       'external',
       'newTabText',
-      'arrow'
+      'arrow',
+      'variant'
     ]);
     for (const property of properties) {
       const name = property.name.getText(file);
@@ -2412,7 +2414,8 @@ describe('Link navigation metadata contract', () => {
       ['asChild', 'false'],
       ['external', 'false'],
       ['arrow', 'true'],
-      ['newTabText', '(opens in a new tab)']
+      ['newTabText', '(opens in a new tab)'],
+      ['variant', 'plain']
     ] as const) {
       expect(bindings[prop], prop).toBe(value);
       expect(normalize(props[prop]?.defaultValue?.value), prop).toBe(value);
@@ -2423,7 +2426,8 @@ describe('Link navigation metadata contract', () => {
     expect(props.newTabText?.tags).toMatchObject({ control: 'text' });
     expect(props.external?.tags).toMatchObject({ control: 'boolean' });
     expect(props.arrow?.tags).toMatchObject({ control: 'boolean' });
-    for (const prop of ['disabled', 'size', 'variant']) {
+    expect(props.variant?.tags).toMatchObject({ control: 'select', default: 'plain' });
+    for (const prop of ['disabled', 'size']) {
       expect(props[prop]).toBeUndefined();
     }
   }, 20_000);
