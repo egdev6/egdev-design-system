@@ -1838,7 +1838,8 @@ const verticalChipGroup: ChipGroupProps = { ...chipGroupSingle, orientation: 've
 // @ts-expect-error Group recipes stay internal.
 import type { chipGroupVariants } from '@egdev/ui';
 export const chipChanges: boolean[] = [];
-export const chipDefaults: ChipProps = { children: 'Design' };
+// Toggle branch on purpose: a union-typed object cannot be spread into the mode-discriminated Chip.
+export const chipDefaults: Extract<ChipProps, { mode?: 'toggle' }> = { children: 'Design' };
 export const chipRecipe: string = chipVariants();
 const chipMode: ChipMode = 'static';
 export const chipModeName: ChipMode = chipMode;

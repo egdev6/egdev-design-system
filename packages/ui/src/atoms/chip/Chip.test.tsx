@@ -1,9 +1,61 @@
 import { render, renderHook, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { createRef } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { Icon } from '../icon';
 import { Chip, type ChipProps, chipVariants } from './index';
 import { useChip } from './useChip';
+
+// Compile-time contract fixtures: every line below must stay rejected.
+export const chipRejectedInputs = () => {
+  // @ts-expect-error Chip always requires its visible label.
+  const unlabelled: ChipProps = {};
+  // @ts-expect-error asChild is not public in any mode.
+  const slotted: ChipProps = { children: 'Design', asChild: true };
+  // @ts-expect-error aria-pressed is owned by Radix, not an incoming override.
+  const overridden: ChipProps = { children: 'Design', 'aria-pressed': true };
+  // @ts-expect-error The toggle button type is always button.
+  const submit: ChipProps = { children: 'Design', type: 'submit' };
+  // @ts-expect-error Pressed state is boolean, not value selection.
+  const valued: ChipProps = { children: 'Design', value: 'design' };
+  // @ts-expect-error Chip has no size axis.
+  const sized: ChipProps = { children: 'Design', size: 'sm' };
+  // @ts-expect-error No mode offers a public ref API.
+  const referenced: ChipProps = { children: 'Design', ref: createRef<HTMLButtonElement>() };
+  // @ts-expect-error pressed is a boolean, not a string state.
+  const stringPressed: ChipProps = { children: 'Design', pressed: 'on' };
+  // @ts-expect-error Static mode rejects pressed state.
+  const pressedStatic: ChipProps = { mode: 'static', children: 'Design', pressed: true };
+  // @ts-expect-error Static mode rejects a disabled flag.
+  const disabledStatic: ChipProps = { mode: 'static', children: 'Design', disabled: true };
+  // @ts-expect-error Static mode rejects a destination.
+  const linkedStatic: ChipProps = { mode: 'static', children: 'Design', href: '#topics' };
+  // @ts-expect-error Link mode requires its destination.
+  const hrefLessLink: ChipProps = { mode: 'link', children: 'Design' };
+  // @ts-expect-error Link mode rejects pressed state.
+  const pressedLink: ChipProps = { mode: 'link', href: '#topics', children: 'Design', pressed: true };
+  // @ts-expect-error Toggle mode rejects a destination.
+  const hrefToggle: ChipProps = { children: 'Design', href: '#topics' };
+  // @ts-expect-error mode is a closed union of the three roles.
+  const unknownMode: ChipProps = { mode: 'button', children: 'Design' };
+  return [
+    unlabelled,
+    slotted,
+    overridden,
+    submit,
+    valued,
+    sized,
+    referenced,
+    stringPressed,
+    pressedStatic,
+    disabledStatic,
+    linkedStatic,
+    hrefLessLink,
+    pressedLink,
+    hrefToggle,
+    unknownMode
+  ];
+};
 
 describe('Chip public contract', () => {
   it('derives the uncontrolled default and per-part classes in the hook', () => {

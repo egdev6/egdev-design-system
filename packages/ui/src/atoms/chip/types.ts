@@ -60,6 +60,8 @@ export type ChipToggleProps = Omit<
      */
     disabled?: boolean;
     href?: never;
+    type?: never;
+    'aria-pressed'?: never;
   };
 
 export type ChipStaticProps = Omit<ComponentPropsWithoutRef<'span'>, 'children' | 'role'> &
