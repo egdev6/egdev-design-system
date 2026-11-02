@@ -1,0 +1,35 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve leading-status-badge for optional NowCard statusBadge rendered before the generated heading.",
+  "evidence": {
+    "channel": "Owner approval recorded in docs/components/now-card/v0.1/badge-order-approval.md and odd/tasks/web-catalog.md L20",
+    "ownerChoice": "Aprobar enmienda, plan y convención",
+    "interpretation": "Scoped naming approval only, not native review authority."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/project-card/v0.1/decorative-index-approval.json",
+      "wholeFileSHA256": "sha256:53757ca6f89eb69d99c8cff7d23497a51fd90c26cc927fdbb5e53a8e079128dd"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:leading-status-badge",
+      "contentHash": "sha256:221da6cbb0929f0346735d2436b0be6f0d869ccd5c2a9c3ec02ee7e482b6b900",
+      "convention": {
+        "id": "leading-status-badge",
+        "name": "statusBadge",
+        "meaning": "Optional consumer-supplied non-interactive status node rendered before a component primary heading.",
+        "whenToUse": "A heading-owning content card renders a meaningful status Badge composition before its heading without inspecting child content.",
+        "avoid": "Interactive controls, decorative icons, plain-text eyebrows, trailing content or built-in status words.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

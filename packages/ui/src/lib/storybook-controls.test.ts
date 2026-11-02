@@ -11,6 +11,10 @@ import preview from '../../../../.storybook/preview';
 
 const components = [
   ['ModuleCard', 'molecules/module-card'],
+  ['NowCard', 'molecules/now-card'],
+  ['NowCardBody', 'molecules/now-card'],
+  ['NowCardFooter', 'molecules/now-card'],
+  ['NowCardDetail', 'molecules/now-card'],
   ['Timeline', 'molecules/timeline'],
   ['Avatar', 'atoms/avatar'],
   ['NavList', 'molecules/nav-list'],
@@ -67,6 +71,9 @@ const components = [
   ['Textarea', 'atoms/textarea'],
   ['Toggle', 'atoms/toggle'],
   ['Tooltip', 'atoms/tooltip'],
+  // After Tooltip: TipCard re-exports PhotoFrameFocalPoint, whose shared top/right/bottom/left
+  // literals must not re-intern before Tooltip's side enum (literal interning sets option order).
+  ['TipCard', 'molecules/tip-card'],
   ['Menu', 'molecules/menu'],
   ['Tabs', 'molecules/tabs'],
   // Preserve the existing query prefix: TypeScript enum ordering depends on literal interning.
@@ -183,6 +190,10 @@ const expected: Record<string, Record<string, string | false>> = {
     tone: 'select',
     actions: false
   },
+  nowcard: { statusBadge: false, title: 'text', level: 'select', size: 'select', children: false },
+  nowcardbody: { children: false, className: 'text' },
+  nowcardfooter: { children: false, className: 'text' },
+  nowcarddetail: { children: false, className: 'text' },
   projectcard: {
     title: 'text',
     level: 'select',
@@ -196,6 +207,15 @@ const expected: Record<string, Record<string, string | false>> = {
   projectcardtags: { items: false, className: 'text' },
   projectcardcode: { label: 'text', items: false, className: 'text' },
   projectcardfooter: { children: false, className: 'text' },
+  tipcard: {
+    title: 'text',
+    level: 'select',
+    badge: 'text',
+    src: 'text',
+    alt: 'text',
+    focalPoint: 'select',
+    className: 'text'
+  },
   field: {
     label: 'text',
     children: false,
@@ -512,10 +532,15 @@ const ownPropCounts: Record<string, number> = {
   collapsibletrigger: 1,
   collapsiblecontent: 1,
   modulecard: 10,
+  nowcard: 5,
+  nowcardbody: 2,
+  nowcardfooter: 2,
+  nowcarddetail: 2,
   projectcard: 8,
   projectcardtags: 2,
   projectcardcode: 3,
   projectcardfooter: 2,
+  tipcard: 7,
   timeline: 7,
   selecttile: 11,
   carousel: 6,
@@ -942,8 +967,13 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Indicator', { variant: '"dot"', tone: '"danger"', size: '"sm"', position: '"top-right"', max: '99' }],
     ['Panel', { variant: '"default"', tone: '"surface-1"' }],
     ['ProjectCard', { level: '3', variant: '"default"', size: '"md"' }],
+    ['TipCard', { level: '3', focalPoint: '"center"' }],
     ['Collapsible', { defaultOpen: 'false', disabled: 'false' }],
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
+    ['NowCard', { level: '3', size: '"md"' }],
+    ['NowCardBody', {}],
+    ['NowCardFooter', {}],
+    ['NowCardDetail', {}],
     ['Checkbox', { defaultChecked: 'false', disabled: 'false', required: 'false', value: '"on"' }],
     ['Menu', { side: '"bottom"', align: '"start"', defaultOpen: 'false' }],
     ['Chip', { mode: '"toggle"', defaultPressed: 'false', disabled: 'false', external: 'false' }],

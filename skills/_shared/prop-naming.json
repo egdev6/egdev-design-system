@@ -624,6 +624,16 @@
           "symbol": "ProjectCardProps",
           "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
         }
+      },
+      {
+        "component": "NowCard",
+        "type": "NowCardSize",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/now-card/types.ts",
+          "symbol": "NowCardProps",
+          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
+        }
       }
     ]
   },
@@ -4501,6 +4511,26 @@
           "symbol": "ProjectCardProps",
           "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
         }
+      },
+      {
+        "component": "TipCard",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tip-card/types.ts",
+          "symbol": "TipCardProps",
+          "revision": "sha256:5a94b02317de7bf9440fe92f2c994ef521421e1359c017600cad768af334b512"
+        }
+      },
+      {
+        "component": "NowCard",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/now-card/types.ts",
+          "symbol": "NowCardProps",
+          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
+        }
       }
     ]
   },
@@ -4587,6 +4617,26 @@
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
           "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
+        }
+      },
+      {
+        "component": "TipCard",
+        "type": "TipCardLevel",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tip-card/types.ts",
+          "symbol": "TipCardProps",
+          "revision": "sha256:5a94b02317de7bf9440fe92f2c994ef521421e1359c017600cad768af334b512"
+        }
+      },
+      {
+        "component": "NowCard",
+        "type": "NowCardLevel",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/now-card/types.ts",
+          "symbol": "NowCardProps",
+          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
         }
       }
     ]
@@ -4859,6 +4909,16 @@
           "path": "packages/ui/src/atoms/photo-frame/types.ts",
           "symbol": "PhotoFrameProps",
           "revision": "sha256:aca1d91add7e92b3629233d6bc521b2d07d1e7bf14d86795c3ba23fe6213092e"
+        }
+      },
+      {
+        "component": "TipCard",
+        "type": "PhotoFrameFocalPoint",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tip-card/types.ts",
+          "symbol": "TipCardProps",
+          "revision": "sha256:5a94b02317de7bf9440fe92f2c994ef521421e1359c017600cad768af334b512"
         }
       }
     ]
@@ -6701,6 +6761,33 @@
     ]
   },
   {
+    "id": "leading-status-badge",
+    "name": "statusBadge",
+    "meaning": "Optional consumer-supplied non-interactive status node rendered before a component primary heading.",
+    "whenToUse": "A heading-owning content card renders a meaningful status Badge composition before its heading without inspecting child content.",
+    "avoid": "Interactive controls, decorative icons, plain-text eyebrows, trailing content or built-in status words.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/components/now-card/v0.1/leading-status-badge-approval.json",
+      "scope": "convention:leading-status-badge",
+      "contentHash": "sha256:221da6cbb0929f0346735d2436b0be6f0d869ccd5c2a9c3ec02ee7e482b6b900"
+    },
+    "usages": [
+      {
+        "component": "NowCard",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/now-card/types.ts",
+          "symbol": "NowCardProps",
+          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
+        }
+      }
+    ]
+  },
+  {
     "id": "shell-label",
     "name": "shell",
     "meaning": "Optional supplied shell-name label in terminal-card header chrome.",
@@ -6750,6 +6837,54 @@
           "path": "packages/ui/src/molecules/terminal-card/types.ts",
           "symbol": "TerminalCardRow",
           "revision": "sha256:c88f7bd2515c52ad6181967587bf4127381620c26edf8d37e521f3137c481be0"
+        }
+      }
+    ]
+  },
+  {
+    "id": "cover-badge",
+    "name": "coverBadge",
+    "meaning": "Short non-interactive category or flag annotation rendered as a Badge over or beside a media cover or poster, outside selectable-option semantics.",
+    "whenToUse": "A passive poster or article cover needs a consumer-supplied category annotation beside or over its media.",
+    "avoid": "Selectable-option metadata, counters, interactive actions or replacing the content heading.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [
+      {
+        "scope": "TipCard",
+        "propName": "badge",
+        "reason": "Preserve the explicitly approved component badge API without colliding with the unrelated thumbnail-badge canonical name.",
+        "approval": {
+          "reference": "docs/components/tip-card/v0.1/cover-badge-approval.json",
+          "scope": "exception:cover-badge:TipCard:badge",
+          "contentHash": "sha256:49fea174b98b3bacac305b3a9568ca4a156e1e77f87a2bbeaed8eaf0e8c6784c"
+        }
+      },
+      {
+        "scope": "ArticleFeatureCover",
+        "propName": "badge",
+        "reason": "Preserve the explicitly approved component badge API without colliding with the unrelated thumbnail-badge canonical name.",
+        "approval": {
+          "reference": "docs/components/tip-card/v0.1/cover-badge-approval.json",
+          "scope": "exception:cover-badge:ArticleFeatureCover:badge",
+          "contentHash": "sha256:510eda9bae9423f8ace38e74210eedf0b4480e227a5ed93e4593751989a359e4"
+        }
+      }
+    ],
+    "approval": {
+      "reference": "docs/components/tip-card/v0.1/cover-badge-approval.json",
+      "scope": "convention:cover-badge",
+      "contentHash": "sha256:90c0ae1dd8a4f8823ea8f91788939339e8372165fa0f387fba76f6616755b26e"
+    },
+    "usages": [
+      {
+        "component": "TipCard",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tip-card/types.ts",
+          "symbol": "TipCardProps",
+          "revision": "sha256:5a94b02317de7bf9440fe92f2c994ef521421e1359c017600cad768af334b512"
         }
       }
     ]
