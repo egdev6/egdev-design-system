@@ -1,0 +1,29 @@
+# Web catalog review — EGDEV Pulso into the design system
+
+Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the components missing from the catalog, so the design system can build new web views. Read-only source: `/home/egdev/proyectos/egdev-website` (owner-granted). Output is a cataloging draft for owner approval; no specs, plans or code until approved.
+
+## Specs
+
+- S1 — "en appShell... creo que aquí faltaría un nuevo template. El de la vista web de pulso" → HomeTemplate must be cataloged into the system.
+- S2 — "Llevar HomeTemplate al sistema" and package "@egdev/effects (Recomendado)" → HomeTemplate (frame + scroll choreography coordinating Isotipo3D and AmbientBackground) is cataloged into `@egdev/effects`.
+- S3 — "habría que analizar la web entera en busca de los componentes que falten añadir al catálogo. La idea del design system es también poder crear nuevas vistas de la web" → inventory every component of the Pulso web, compare with the catalog and the implemented packages, and propose the missing ones with level, package and decision (reuse → variant → compose → extract → new).
+- S4 — Source of truth for anatomy: `/home/egdev/proyectos/egdev-website/egdev-foundation` (`reference-web/pulso*.html`, `design-system/components/*/README.md` + `preview.html`, `CONTRACT.md`, `DECISIONES.md`), read-only.
+
+## Tasks
+
+| ID | Specs | Task | Route | Status |
+|---|---|---|---|---|
+| W1 | S1, S3, S4 | Page anatomy: Pulso sections, order, composition and choreography | explore (read-only) | done (L3) |
+| W2 | S3, S4 | Gap table: 54 Foundation web components vs catalog rows and implemented DS components | explore (read-only) | done (L4) |
+| W3 | S2, S3 | Cataloging draft + required policy amendments (CATALOGACION/ARQUITECTURA web rule, effects exclusions) | parent | done — docs/components/web-catalog/v0.1/cataloging-draft.md |
+| W4 | S1–S4 | Owner review of the draft | parent | done (L5) |
+| W5 | S1–S3 | Layer (a): amend CATALOGACION/ARQUITECTURA, append effects contract notes, update catalog rows and regenerate | worker | in progress |
+| W6 | S3 | Layers (b)–(f): specs, plans and implementation per component, in the approved order | per component | pending |
+
+## Log
+
+- L1 — Owner, verbatim: "creo que aquí faltaría un nuevo template. El de la vista web de pulso"; then chose "Llevar HomeTemplate al sistema"; answers: source "\home\egdev\proyectos\egdev-website", scope "habría que analizar la web entera en busca de los componentes que falten añadir al catálogo. La idea del design system es también poder crear nuevas vistas de la web", package "@egdev/effects (Recomendado)".
+- L2 — Evidence before this feature: catalog classifies HomeTemplate, SectionShell and 24 web pieces as destino `web` / accion `mover` (CATALOGACION rule: page-only or single-app pieces stay in the app); approved effects contracts (Isotipo3D v0.4, AmbientBackground v0.4) exclude the director choreography because it "belongs to HomeTemplate (web)". Bringing them in requires amending that rule.
+- L3 — W1 anatomy (explorer mvz058fi): HomeTemplate renders the effect layers (ambient, vignette, gl, grain), icon sprite, dock nav and page wrapper, and receives TopBar/MobileMenu/SectionNav/CommandPalette/Footer plus 12 ordered zones (hero, about, build, chapter, think, blog, lab, live, community, discord, outro, footer) registered by `data-zone`; choreography = director constants (bands 35%/15%, read point 50vh, 760/700px mobile rules, reduced motion), outputs `window.PULSO` and layer opacities. Reusable patterns: section frame, SectionHeader split/inline/stacked, card grids, feature + list split, editorial dated list (notes/streams), coverflow slider, photo + quote split, key-value terminal card, status-card strip, navigation trio, scroll-reveal/wipe. Pulso-specific storytelling: Hero, ChapterBreak, LabStage, Closing, zone model. Not covered by any folder: about and community scenes (inline), reveal/wipe system, shared glass card surface; dead hooks (`[data-nav]`, live signal pill, count-up). Source evidence: egdev-website/egdev-foundation/reference-web/pulso-source.html, HomeTemplate/SectionShell READMEs, pulso-director.js.
+- L4 — W2 gap table (explorer mvz05a5a): 54 Foundation folders; 25 already satisfied in the DS (20 exact exports + 5 fused/renamed/split: Eyebrow/Title→Text/Heading, LiveDot→StatusDot, StatusBadge/Tag→Badge, MenuList→Menu+NavList), 28 not implemented, 1 not a component (Cover, a docs cover graphic with no README or catalog row). Catalog has 27 web rows (correcting L2: not 24), all with a Foundation folder. Not implemented: atom Pixel; molecules ProjectCard, NowCard, TerminalCard, TipCard, ArticleFeature, CommunityCard, ArticleItem, NoteItem, StreamItem (the last three fit a ListItem row variant); organisms TopBar, MobileMenu, SectionNav, Footer, Hero, ChapterBreak, LabStage, Closing, NotesBoard, NowStrip, BlogGrid, LiveBand, CommunityGrid, TipsSlider; templates SectionShell, HomeTemplate; recipes ProjectsGrid, UserMenu. Variant gaps on existing components: Chip static/href, PhotoFrame auto ratio + position, IconButton round outline, Link external arrow, Isotipo3D zone pose, Countdown and ProgressBar API deltas.
+- L5 — Owner approved the draft (verbatim): policy amendment "Aprobar la enmienda (Recomendado)"; scenes "Sí, como escenas con slots (Recomendado)"; reveal/wipe "Utilidad en @egdev/effects (Recomendado)"; order "Por capas (Recomendado)". Recorded in docs/components/web-catalog/v0.1/owner-approvals.md. Layer (a) starts.

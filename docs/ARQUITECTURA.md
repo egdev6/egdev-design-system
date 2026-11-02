@@ -23,11 +23,13 @@ Gauge is the only implemented public React component in `@egdev/ui`; `cn` is a u
 
 Lo que solo tiene sentido en un producto **no entra en el sistema**: se queda en el repo de esa app, en `src/patterns/`, y se construye con `@egdev/ui`:
 
-- **Web (egdev.es):** secciones de la home (Hero, LiveBand, NotesBoard…), tarjetas de contenido (NowCard, TipCard, ArticleItem…), TopBar, Footer, SectionShell y HomeTemplate.
+- **Web (egdev.es):** ~~secciones de la home (Hero, LiveBand, NotesBoard…), tarjetas de contenido (NowCard, TipCard, ArticleItem…), TopBar, Footer, SectionShell y HomeTemplate.~~ *(superseded 2026-11-02 for the web consumer: those pieces now enter `@egdev/ui` without domain data, and choreography enters `@egdev/effects`)*
 - **Mando:** el panel del agente (AgentPanel, ChatMessage, Composer, ToolCallChip, ConfirmCard) y el preset PermissionLevel. Mando será la capa de módulos de **Gentle Dots** (Gentleman Programming), que lleva la orquestación y su propio panel de agente; está por ver qué patrones se usan allí y cuáles quedan para las interfaces de los módulos (ModuleCard, ToolCallChip, ConfirmCard).
 - **Cadencia:** PostCard, montado sobre ListItem.
 
-**Regla de subida:** un patrón de producto pasa a `@egdev/ui` cuando lo necesita una segunda app. Se generaliza al subir: nombre neutro, sin datos ni textos del dominio.
+**Regla de subida:** ~~un patrón de producto pasa a `@egdev/ui` cuando lo necesita una segunda app.~~ Se generaliza al subir: nombre neutro, sin datos ni textos del dominio.
+
+> **Web consumer amendment (approved 2026-11-02).** The second-app requirement no longer gates the web: a web building block that a new web view could reuse enters `@egdev/ui` even when only the web uses it, provided no domain data is built in, and choreography belongs to `@egdev/effects`. Both struck-through passages above keep their original wording as superseded history. See [CATALOGACION.md — web consumer amendment](CATALOGACION.md#web-consumer-amendment-approved-2026-11-02); Mando, Cadencia and every other product keep the original rule.
 
 ## Niveles
 

@@ -30,6 +30,16 @@ Registra qué se inspeccionó y por qué cada opción anterior no basta; no salt
 
 EGDEV admite primitivas en `packages/ui/src/primitives/`; no se las convierte en átomos por reglas de otro repo. Clasifica por **responsabilidad, coordinación y composición**, no por tamaño visual, cantidad de nodos o imports Radix, presencia de CSS ni número de stories.
 
+## Web consumer amendment (approved 2026-11-02)
+
+Owner-approved on 2026-11-02 from [web catalog v0.1](components/web-catalog/v0.1/cataloging-draft.md); the decision record is [owner-approvals.md](components/web-catalog/v0.1/owner-approvals.md). It governs the web consumer (`egdev.es`) only: every other product keeps the rules above, and nothing here authorizes component code, a spec, an implementation plan or a token change.
+
+1. **Web building blocks enter the system.** A web piece enters `@egdev/ui` when a new web view could reuse it. This applies even when only the web uses it, as long as it carries no domain data: content arrives through props or slots and never as built-in Pulso copy.
+2. **Storytelling scenes enter as slot-based organisms.** Hero, ChapterBreak, LabStage and Closing are reusable scene shapes: copy, CTAs and the 3D/media slot are inputs. They do not run choreography; they only expose the anchors a template drives.
+3. **Choreography lives in `@egdev/effects`.** Anything that drives Isotipo3D, AmbientBackground or the 3D/particle exclusion rule belongs to effects. `@egdev/ui` still never imports effects.
+4. **Effects contracts are reinterpreted, not rewritten.** The Isotipo3D and AmbientBackground v0.4 contracts exclude the director "because it belongs to HomeTemplate (web)". That exclusion stays valid: the components themselves still do not choreograph. The HomeTemplate contract owns it instead, and each component gets an appended note instead of an edit to its approved text.
+5. **Domain data never enters.** Pulso copy, links, social networks, the zone table values and the experiment/stream data stay in the web app.
+
 ## Señales para decidir
 
 | Señal | Decisión |
@@ -42,8 +52,10 @@ EGDEV admite primitivas en `packages/ui/src/primitives/`; no se las convierte en
 | Props que activan comportamientos que se excluyen entre sí | Componentes distintos |
 | Storybook necesita muchas stories para usos que no tienen que ver | Probablemente hay que separar |
 | Los tests cubren flujos independientes dentro del mismo componente | Probablemente hay que separar |
-| Solo existe para el layout de una página | Fuera del sistema (patrón de la app) |
-| Solo lo usa una app y lleva datos de su dominio | Patrón de esa app hasta que lo necesite otra |
+| ~~Solo existe para el layout de una página~~ (superseded 2026-11-02) | ~~Fuera del sistema (patrón de la app)~~ → For the web consumer, see the [web consumer amendment](#web-consumer-amendment-approved-2026-11-02) |
+| ~~Solo lo usa una app y lleva datos de su dominio~~ (superseded 2026-11-02) | ~~Patrón de esa app hasta que lo necesite otra~~ → For the web consumer, see the [web consumer amendment](#web-consumer-amendment-approved-2026-11-02) |
+
+Both struck-through rows keep their original Spanish wording as superseded history. They still apply to Mando, Cadencia and any other product; only the web consumer is amended above.
 
 ## Qué impide que algo sea un átomo
 
