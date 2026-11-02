@@ -1,0 +1,207 @@
+{
+  "kind": "Component-zone captures for the Isotipo3D v0.6 amendment (named zone poses as inputs, no API change)",
+  "specVersion": "0.6",
+  "specLocation": "docs/components/isotipo3d/v0.6/spec.md",
+  "capturedAt": "2026-11-02",
+  "task": "odd/tasks/web-catalog.md, B6 (web catalog layer b, S3)",
+  "captureVersion": "v0.6-capture-1",
+  "purpose": "Observed evidence that the Pulso web drives its isotype with exactly two inputs — a named zone pose and a local progress number — which the approved Isotipo3D contract already exposes as `scene` and `progress`. These are read-only captures of the web preview, not approved expected design and not verification of the design-system recipe.",
+  "source": {
+    "webSourceRoot": "/home/egdev/proyectos/egdev-website/egdev-foundation (read-only, owner-granted)",
+    "files": [
+      {
+        "path": "design-system/components/Isotipo3D/preview.html",
+        "sha256": "8984aeb1926622a23faf40a11250e0d10b6b4b979d6515e73cd3cbd791c6fa5c",
+        "role": "Captured preview; fragment mounted unmodified in a temporary harness"
+      },
+      {
+        "path": "design-system/components/Isotipo3D/README.md",
+        "sha256": "c70792e3cc84cd6e3cf7810450622cc437c4fdcdfa30892e744bac4c8998bc8f",
+        "role": "Documented `pose`/`progress`/`size`/`fill`/`fallback` props and pose table; read, not captured"
+      },
+      {
+        "path": "design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+        "role": "Inlined into the harness as a <style> block (read-only); not edited"
+      },
+      {
+        "path": "design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe",
+        "role": "Inlined into the harness as a <style> block (read-only); not edited. Source of the `.eg-iso3d` box sizes and the <=860 px / <=760 px rules cited by the spec"
+      },
+      {
+        "path": "design-system/components/src/effects/pulso-iso3d.mjs",
+        "sha256": "394bbf719bc3e1b5855e63a37ceee55ee5069065c659c953528ed3c13a7e34c8",
+        "role": "Web pose formulas (`poseOf`), pose blending (`mix`) and anchor-slot travel; read, never executed or imported by the design system"
+      },
+      {
+        "path": "design-system/components/src/effects/pulso-director.js",
+        "sha256": "eb4bb9acdfd1872b8c78c9e4d8f48c5b80f7621da08113b2232144a16bee8495",
+        "role": "Zone table, per-zone progress formulas, band mixing, mobile and reduced-motion rules; read, never executed"
+      },
+      {
+        "path": "reference-web/pulso-source.html",
+        "sha256": "778e5412b64d1b79195c51c0e47c78f654b46da445be8354a97e572774348f13",
+        "role": "Twelve `data-zone` regions and the four anchor slots; line references only, not captured in this version"
+      }
+    ],
+    "note": "Nothing was written inside egdev-website. The harness and capture scripts live in /tmp/egdev-sbcheck/ and only read the sources."
+  },
+  "harness": {
+    "location": "/tmp/egdev-sbcheck/ (outside the worktree)",
+    "files": [
+      {
+        "path": "/tmp/egdev-sbcheck/iso3d-harness-build.mjs",
+        "sha256": "2851a0974c8516ccb1610fbc22972f6d27ffd338948b58a823a6a5adf5521abc",
+        "role": "Wraps the preview fragment in a document, keeps its original Google Fonts links and inlines the two authored stylesheets"
+      },
+      {
+        "path": "/tmp/egdev-sbcheck/iso3d-preview-harness.html",
+        "sha256": "7f0f4669e3d7abba18e3ce1c14b0c0a8aa5d642c1f9dab924817ae5022f280d9",
+        "role": "Generated harness page actually loaded by the browser"
+      },
+      {
+        "path": "/tmp/egdev-sbcheck/iso3d-capture.mjs",
+        "sha256": "fe4a64632603906aef0b96f081939721b7adbf111b90fd1532ae5c1d15802131",
+        "role": "Capture script (selection of pose and progress, element crops, observed state collection)"
+      }
+    ],
+    "sourceAlterations": "None. The fragment markup, its inline <style> and its module script were copied verbatim; the only wrapper change is the added document boilerplate around it."
+  },
+  "conditions": {
+    "tool": "playwright-core 1.60.0 (npx cache: /home/egdev/.npm/_npx/e41f203b7505f1fb/node_modules/playwright-core), programmatic API, not Playwright MCP",
+    "browser": "Chromium 153.0.8010.12 chrome-headless-shell (navigator.userAgent HeadlessChrome/153.0.8010.12), Linux x86_64",
+    "executablePath": "~/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+    "launchArgs": ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"],
+    "webgl": "Available (context created, `three.js r160 · WebGL activo` status observed); software rasterisation through SwiftShader, so shading is not a GPU-vendor reference",
+    "pageLoading": "file:// URL of the generated harness; the preview module imported three@0.160.0 from cdn.jsdelivr.net at capture time (HTTP 200) and no request failed",
+    "viewport": "1280x900 CSS px",
+    "deviceScaleFactor": 1,
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "forcedColors": "none",
+    "document": "lang=\"es\", data-theme=\"dark\"",
+    "fontsLoaded": ["Barlow 500", "Barlow 600", "Barlow Condensed 600", "JetBrains Mono 400"],
+    "waitAfterLoad": "waitForFunction(is-gl-on) then 2500 ms; 1400 ms after each pose/progress change",
+    "crop": "Element crops: `.pv-stage` for the pose images (620x560 CSS px), a computed box covering the pose group plus the progress row for VIS-04, and `.pv` for the board"
+  },
+  "images": [
+    {
+      "visualId": "VIS-04",
+      "file": "zone-poses--inputs-controls--1280x900--dark.png",
+      "sha256": "be95e6a50e135c64ff4dc3dd65ced5d25e2566c6fdbe4cdfaf5de851d1995dc5",
+      "pngPixels": "563x69",
+      "sourcePath": "design-system/components/Isotipo3D/preview.html",
+      "sourceSelector": "[role=\"group\"][aria-label=\"Pose\"] plus `.pv-range`",
+      "sourceOuterHTML": "<div class=\"pv-ctrl\" role=\"group\" aria-label=\"Pose\">…<button class=\"eg-chip\" type=\"button\" data-iso-pose=\"outro\" aria-pressed=\"false\">Cierre · ensamblado</button><button … data-iso-pose=\"lab\">Lab · explosión</button><button … data-iso-pose=\"hero\" aria-pressed=\"true\">Hero · giro</button><button … data-iso-pose=\"chapter\">Capítulo · 33°→57°</button>… and the `Progreso` range row",
+      "state": "Hero pose pressed, progress 0.50 (state left by the preceding scenario)",
+      "altText": "Four web pose chips — Cierre · ensamblado, Lab · explosión, Hero · giro (pressed) and Capítulo · 33°→57° — above a progress slider reading 0.50.",
+      "whyCaptured": "Shows that the web's only two isotype inputs are a named zone pose and a local progress value.",
+      "status": "Proposed"
+    },
+    {
+      "visualId": "VIS-05",
+      "file": "chapter--pose-progress-1--1280x900--dark.png",
+      "sha256": "f0bb3c83624ec0e96ef593a90943bfe1789606574c5a063915d24ab4c03b8c80",
+      "pngPixels": "621x561",
+      "sourcePath": "design-system/components/Isotipo3D/preview.html",
+      "sourceSelector": ".pv-stage",
+      "state": "pose=chapter, progress=1 (33°→57° end, isometric elevation)",
+      "altText": "The egdev isotype rendered isometrically at the end of the chapter turn, assembled from seven red extruded faces on a black stage.",
+      "whyCaptured": "Chapter is one of the four zone poses and is not covered by the approved v0.3 references.",
+      "status": "Proposed"
+    },
+    {
+      "visualId": "VIS-06",
+      "file": "outro--pose-progress-0--1280x900--dark.png",
+      "sha256": "cd2f4cc0306c47c35d9a495caaaefe51e4797d60d44785a3a46668c6fdc43cbf",
+      "pngPixels": "621x561",
+      "sourcePath": "design-system/components/Isotipo3D/preview.html",
+      "sourceSelector": ".pv-stage",
+      "state": "pose=outro, progress=0 (assembly curve start, explosion 0.9)",
+      "altText": "The same isotype with its pieces separated and mostly outside the stage framing at the start of the closing (outro) pose.",
+      "whyCaptured": "Outro is the second pose family missing from the approved v0.3 references, and its progress-0 state documents that the assembled-bounds fit clips separated pieces.",
+      "status": "Proposed"
+    },
+    {
+      "visualId": "VIS-07",
+      "file": "hero--pose-progress-0.5--1280x900--dark.png",
+      "sha256": "c7aaf797980bdb9ee73a0b609f6a629f3c97b029e27ef9002d5f510a9711fb21",
+      "pngPixels": "621x561",
+      "sourcePath": "design-system/components/Isotipo3D/preview.html",
+      "sourceSelector": ".pv-stage",
+      "state": "pose=hero, progress=0.5 (mid front-to-isometric turn)",
+      "altText": "The isotype half-way through the hero turn, assembled and tilted between frontal and isometric framing.",
+      "whyCaptured": "Supplementary: shows that a single named pose is a continuous curve driven by progress, not a fixed image (see also the approved VIS-01 at progress 1).",
+      "status": "Proposed"
+    },
+    {
+      "visualId": "VIS-08",
+      "file": "board--pose-controls-and-fallbacks--1280x900--dark.png",
+      "sha256": "14b937a95cedc2d839203fce8f855b58825576c157afcd0cbb4cb8f1ab492634",
+      "pngPixels": "1264x639",
+      "sourcePath": "design-system/components/Isotipo3D/preview.html",
+      "sourceSelector": ".pv",
+      "state": "pose=outro, progress=1, board at rest with both SVG fallbacks",
+      "altText": "The whole web preview board: the assembled isotype in the outro pose at progress 1 on the left, the pose chips and progress slider on the right, and below them the two fallbacks, mounted with glow and the exploded Lab variant.",
+      "whyCaptured": "Supplementary. Documents the web's `fallback: 'assembled' | 'exploded'` option, which the design-system contract deliberately does not expose.",
+      "status": "Proposed"
+    }
+  ],
+  "reusedReferences": [
+    {
+      "visualId": "VIS-01",
+      "file": "../v0.3/hero--progress-1--1280--dark.png",
+      "sha256": "48a0c0c425d6b7b33c0c53711c062767472ea090be3f1614e9445d11c9bb8ff1",
+      "scope": "Hero pose at progress 1; source glow/stage chrome excluded",
+      "sourceCaptureVersion": "0.3",
+      "status": "Approved as v0.3 source reference (geometry/palette/pose scope only); not recaptured and not widened by v0.6"
+    },
+    {
+      "visualId": "VIS-02",
+      "file": "../v0.3/lab--progress-0.50--1280--dark.png",
+      "sha256": "ce33c7d90e8fbe42a3cb3d207bee6715a443e7136bf3bfc4792b2772529642e4",
+      "scope": "Lab pose at progress 0.5, full-explosion plateau, visibly clipped",
+      "sourceCaptureVersion": "0.3",
+      "status": "Approved as v0.3 source reference; not recaptured and not widened by v0.6"
+    },
+    {
+      "visualId": "VIS-03",
+      "file": "../v0.3/assembled--source-fallback--1280--dark.png",
+      "sha256": "cb2412989d99da261e3a869061397bb283bbc31b1c5fce669743a809bcbd0aaf",
+      "scope": "Source SVG fallback geometry and palette only; source glow excluded",
+      "sourceCaptureVersion": "0.3",
+      "status": "Approved as v0.3 source reference (geometry/palette only); not recaptured and not widened by v0.6"
+    }
+  ],
+  "notCaptured": [
+    {
+      "visualId": "Pose travel between two zone poses",
+      "reason": "The web blends two pose families and moves the logo between anchor slots (`mix: { a, b, t }` in pulso-iso3d.mjs, band logic in pulso-director.js). Reproducing it needs the page director and the twelve zone regions, which are not part of this component's evidence; the amendment deliberately records it as HomeTemplate's responsibility and captures nothing."
+    },
+    {
+      "visualId": "Mobile chapter rule (no 3D at <=760 px)",
+      "reason": "The rule exists only in page and component CSS (`.gl-on.gl-mob #slot-cap .fb3d{opacity:1}`, bundle.css line 49) and in the director's `applyMobileZones()`. The preview has no mobile state; capturing it would require fabricating markup."
+    },
+    {
+      "visualId": "Design-system implementation",
+      "reason": "Capturing the shipped React component requires the Storybook dev server, which is not authorized for this docs-only task. The v0.6 amendment changes no appearance, so no new implementation capture is requested; runtime visual conformity of the design system stays Not evaluated."
+    },
+    {
+      "visualId": "Reduced motion",
+      "reason": "The web's reduced-motion poses are fixed values (`rm ? …`), already quoted in the approved v0.4 contract and covered by the existing reduced-motion tests; a static frame would add no information beyond VIS-05 and VIS-08."
+    }
+  ],
+  "limits": [
+    "These images show the web's own preview composition and stage chrome (rounded stage, radial red wash). They are evidence for the inputs and pose families, never design-system tokens or approved expected design.",
+    "GPU rendering used SwiftShader software rasterisation through headless Chromium; lighting and anti-aliasing will differ from a hardware browser.",
+    "three@0.160.0 and the Google Fonts stylesheet were fetched from their original CDNs at capture time (200, no failed requests). A later run without network access would fall back to the SVG and produce different bytes; the hashes above identify the stored files only.",
+    "The preview's idle motion continues while capturing (brand-pixel drift and a small yaw sway), so a re-run may differ by a few pixels in the same conditions.",
+    "VIS-06 shows separated pieces clipped by the stage crop: the web fits the camera to assembled bounds, so progress-0 outro pieces fall outside the framing. This is an expected source behaviour, not a capture defect.",
+    "Browser images do not verify behaviour, accessibility, keyboard, focus or any design-system guarantee."
+  ],
+  "approval": {
+    "status": "Proposed",
+    "reference": "Pending: the owner approves or declines these captures as supporting evidence for Isotipo3D v0.6 in issue #47. Owner authorization for read-only Chromium capture under odd/tasks/web-catalog.md L6 covers the act of capturing, not adoption of these images as expected design."
+  }
+}
