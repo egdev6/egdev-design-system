@@ -48,6 +48,7 @@ export { ChipGroup } from './molecules/chip-group';
 export type { CollapsibleContentProps, CollapsibleProps, CollapsibleTriggerProps } from './molecules/collapsible';
 export { Collapsible, CollapsibleContent, CollapsibleTrigger } from './molecules/collapsible';
 export * from './molecules/command-palette';
+export * from './molecules/community-card';
 export * from './molecules/dialog';
 export * from './molecules/field';
 export type { GaugeGroupItems, GaugeGroupProps, GaugeGroupRing, GaugeGroupSize } from './molecules/gauge-group';

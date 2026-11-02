@@ -48,8 +48,8 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 | T9 | S3 | Implement NowCard under approved v0.1 plan | worker + parent integration | in progress |
 | T10 | S3 | Implement TerminalCard under approved v0.1 plan | worker + parent integration | in progress |
 | T11 | S3 | Implement TipCard under approved v0.1 plan | worker + parent integration | done — PR #286 (squash 6335d15be9f6baebe33e958c964d741ff29d19fa); parent job229 full suite 2263 tests PASS; job239 merged |
-| T12 | S3 | Implement ArticleFeature under approved v0.1 plan | worker + parent integration | in progress — source Units A/B in tree; naming/catalog integration worker-bounded (G3 naming + receipt done; Unit C catalog row parent-owned) |
-| T13 | S3 | Implement CommunityCard under approved v0.1 plan | worker + parent integration | pending |
+| T12 | S3 | Implement ArticleFeature under approved v0.1 plan | worker + parent integration | done — PR #287 (squash 6a4624a) |
+| T13 | S3 | Implement CommunityCard under approved v0.1 plan | worker + parent integration | in progress — Unit A 4105da9, Unit B 9e82df3, merge d26f203; registry usages appended |
 
 ## Log
 

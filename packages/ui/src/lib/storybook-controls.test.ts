@@ -89,6 +89,9 @@ const components = [
   ['TerminalCard', 'molecules/terminal-card'],
   ['TerminalCardBar', 'molecules/terminal-card'],
   ['TerminalCardList', 'molecules/terminal-card'],
+  ['CommunityCard', 'molecules/community-card'],
+  ['CommunityCardMark', 'molecules/community-card'],
+  ['CommunityCardAction', 'molecules/community-card'],
   ['PhotoFrame', 'atoms/photo-frame'],
   ['Table', 'molecules/table']
 ] as const;
@@ -207,6 +210,15 @@ const expected: Record<string, Record<string, string | false>> = {
   projectcardtags: { items: false, className: 'text' },
   projectcardcode: { label: 'text', items: false, className: 'text' },
   projectcardfooter: { children: false, className: 'text' },
+  communitycard: {
+    title: 'text',
+    level: 'select',
+    eyebrow: 'text',
+    children: false,
+    className: 'text'
+  },
+  communitycardmark: { children: false, className: 'text' },
+  communitycardaction: { children: false, className: 'text' },
   tipcard: {
     title: 'text',
     level: 'select',
@@ -540,6 +552,9 @@ const ownPropCounts: Record<string, number> = {
   projectcardtags: 2,
   projectcardcode: 3,
   projectcardfooter: 2,
+  communitycard: 5,
+  communitycardmark: 2,
+  communitycardaction: 2,
   tipcard: 7,
   timeline: 7,
   selecttile: 11,
@@ -731,6 +746,45 @@ describe('pure JSDoc Controls metadata mapping', () => {
 });
 
 describe('registered JSDoc Controls through installed Storybook extraction and inference', () => {
+  it('retains CommunityCard band anatomy, required parts and documented native rows', () => {
+    const card = story('CommunityCard');
+    expect(card.argTypes.title?.type).toMatchObject({ name: 'string', required: true });
+    expect(card.argTypes.title?.control).toEqual({ type: 'text' });
+    expect(card.argTypes.level?.control).toEqual({ type: 'select' });
+    expect(card.argTypes.eyebrow?.control).toEqual({ type: 'text' });
+    expect(card.argTypes.children?.type?.required).toBe(false);
+    expect(card.argTypes.children?.control).toBe(false);
+    expect(card.argTypes.className?.control).toEqual({ type: 'text' });
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'onClick']) {
+      expect(card.argTypes[name], name).toBeDefined();
+    }
+    for (const name of [
+      'style',
+      'role',
+      'tabIndex',
+      'aria-label',
+      'aria-labelledby',
+      'aria-pressed',
+      'aria-selected',
+      'aria-live',
+      'ref',
+      'asChild'
+    ]) {
+      expect(card.argTypes[name], name).toBeUndefined();
+    }
+    const mark = story('CommunityCardMark');
+    expect(mark.argTypes.children?.type?.required).toBe(true);
+    expect(mark.argTypes.children?.control).toBe(false);
+    expect(mark.argTypes.className?.control).toEqual({ type: 'text' });
+    const action = story('CommunityCardAction');
+    expect(action.argTypes.children?.type?.required).toBe(true);
+    expect(action.argTypes.children?.control).toBe(false);
+    expect(action.argTypes.className?.control).toEqual({ type: 'text' });
+    for (const composed of [card, mark, action]) {
+      expect(composed.args).toEqual({});
+    }
+  });
+
   it('maps Isotipo3D effects metadata through the registered enhancer', () => {
     const isotipoRoot = new URL('../../../effects/', import.meta.url);
     const isotipoParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', isotipoRoot)), {
@@ -967,6 +1021,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Indicator', { variant: '"dot"', tone: '"danger"', size: '"sm"', position: '"top-right"', max: '99' }],
     ['Panel', { variant: '"default"', tone: '"surface-1"' }],
     ['ProjectCard', { level: '3', variant: '"default"', size: '"md"' }],
+    ['CommunityCard', { level: '3' }],
     ['TipCard', { level: '3', focalPoint: '"center"' }],
     ['Collapsible', { defaultOpen: 'false', disabled: 'false' }],
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],

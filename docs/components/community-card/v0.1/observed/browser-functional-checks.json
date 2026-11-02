@@ -1,0 +1,147 @@
+{
+  "checks": [
+    {
+      "check": "Initial Widths action alignment",
+      "result": "FAIL (component)",
+      "note": "Equal-height stretched cards, action bottoms 292.2 vs 266.6 at 1280: body did not grow, so mt-auto had no effect. See browser-initial-measurements.json"
+    },
+    {
+      "check": "Initial heading typography",
+      "result": "FAIL (component)",
+      "note": "text-transform none and body font; spec section 4 requires display family uppercase. Token defines size/weight only"
+    },
+    {
+      "check": "Widths 390: action pinned and aligned across stretched cards",
+      "result": "PASS",
+      "cards": [
+        {
+          "actionBottom": 416.9375,
+          "rootBottom": 437.125,
+          "rootH": 421.125,
+          "bodyPad": "19.2px"
+        },
+        {
+          "actionBottom": 416.9375,
+          "rootBottom": 437.125,
+          "rootH": 421.125,
+          "bodyPad": "19.2px"
+        }
+      ]
+    },
+    {
+      "check": "Widths 767: action pinned and aligned across stretched cards",
+      "result": "PASS",
+      "cards": [
+        {
+          "actionBottom": 259.125,
+          "rootBottom": 279.3125,
+          "rootH": 263.3125,
+          "bodyPad": "19.2px"
+        },
+        {
+          "actionBottom": 259.125,
+          "rootBottom": 279.3125,
+          "rootH": 263.3125,
+          "bodyPad": "19.2px"
+        }
+      ]
+    },
+    {
+      "check": "Widths 768: action pinned and aligned across stretched cards",
+      "result": "PASS",
+      "cards": [
+        {
+          "actionBottom": 323.390625,
+          "rootBottom": 349.984375,
+          "rootH": 333.984375,
+          "bodyPad": "25.6px"
+        },
+        {
+          "actionBottom": 323.390625,
+          "rootBottom": 349.984375,
+          "rootH": 333.984375,
+          "bodyPad": "25.6px"
+        }
+      ]
+    },
+    {
+      "check": "Widths 1280: action pinned and aligned across stretched cards",
+      "result": "PASS",
+      "cards": [
+        {
+          "actionBottom": 292.234375,
+          "rootBottom": 318.828125,
+          "rootH": 302.828125,
+          "bodyPad": "25.6px"
+        },
+        {
+          "actionBottom": 292.234375,
+          "rootBottom": 318.828125,
+          "rootH": 302.828125,
+          "bodyPad": "25.6px"
+        }
+      ]
+    },
+    {
+      "check": "Heading 390: display family uppercase",
+      "result": "PASS",
+      "h": {
+        "tt": "uppercase",
+        "font": "\"Barlow Condensed\", \"Arial Narrow\", sans-serif",
+        "size": "32px",
+        "weight": "800",
+        "lh": "28.8px"
+      }
+    },
+    {
+      "check": "Heading 1280: display family uppercase",
+      "result": "PASS",
+      "h": {
+        "tt": "uppercase",
+        "font": "\"Barlow Condensed\", \"Arial Narrow\", sans-serif",
+        "size": "51.2px",
+        "weight": "800",
+        "lh": "46.08px"
+      }
+    },
+    {
+      "check": "48rem boundary 767px",
+      "result": "PASS",
+      "m": {
+        "row": "12.8px 19.2px",
+        "body": "19.2px"
+      }
+    },
+    {
+      "check": "48rem boundary 768px",
+      "result": "PASS",
+      "m": {
+        "row": "16px 25.6px",
+        "body": "25.6px"
+      }
+    },
+    {
+      "check": "Named article landmark via generated heading",
+      "result": "PASS",
+      "tree": "- article \"Stack and Flow\":\n  - paragraph: My community\n  - img \"Stack and Flow\": STACK & FLOW\n  - heading \"Stack and Flow\" [level=3]\n  - paragraph: Where members of the studio share work in progress, review each other and ship together.\n  - button \"Join the Discord\""
+    },
+    {
+      "check": "Single tab stop is the supplied action",
+      "result": "PASS",
+      "focused": {
+        "tag": "BUTTON",
+        "text": "Join the Discord",
+        "inAction": true
+      }
+    },
+    {
+      "check": "No page overflow across 5 stories at 390/1280",
+      "result": "PASS"
+    }
+  ],
+  "limitations": [
+    "Not an actual screen-reader run",
+    "Native browser zoom not evaluated",
+    "Storybook Controls widgets not exercised"
+  ]
+}

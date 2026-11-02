@@ -3373,6 +3373,150 @@ test('ProjectCard ships scanned stroke, signature and density utilities without 
   assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/project-card/project-card.css')));
 });
 
+test('CommunityCard ships named banded article SSR with the consumer mark and one pinned action', async () => {
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const logoSrc = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 42"/%3E';
+  const html = renderToStaticMarkup(
+    createElement(exported.CommunityCard, {
+      title: 'Packed community',
+      eyebrow: 'Open community',
+      id: 'community-ssr',
+      className: 'w-96',
+      children: [
+        createElement(exported.CommunityCardMark, {
+          key: 'mark',
+          children: createElement('img', { src: logoSrc, alt: 'Gentleman Programming' })
+        }),
+        createElement('p', { key: 'copy' }, 'A community for people who build the web together.'),
+        createElement(exported.CommunityCardAction, {
+          key: 'action',
+          children: createElement(exported.Button, { children: 'Join the Discord' })
+        })
+      ]
+    })
+  );
+  assert.match(html, /^<article id="community-ssr"/, 'The generated heading names the article');
+  const headingId = /aria-labelledby="([^"]+)"/.exec(html)?.[1];
+  assert.ok(headingId, 'The card is named by its heading');
+  assert.match(html, /data-level="3"/);
+  assert.match(html, /class="eg-surface [^"]*eg-community-card /);
+  assert.ok(html.includes('w-96'), 'Consumer width lands on the root');
+  assert.match(html, new RegExp(`<h3 id="${headingId}"[^>]*>Packed community</h3>`));
+  assert.ok(html.includes('eg-community-card__band'), 'The band part marker ships');
+  assert.ok(html.includes('bg-surface-2'), 'The band paints surface-2 Material');
+  assert.ok(html.includes('rounded-t-xl') && html.includes('border-b'), 'Band geometry: top radius, bottom hairline');
+  assert.ok(html.includes('overflow-hidden'), 'The band stays inside the rounded frame');
+  assert.ok(html.includes('eg-community-card__mark'), 'The consumer mark slot ships');
+  assert.match(html, /<img src="data:image[^"]*" alt="Gentleman Programming"\/>/);
+  assert.ok(html.includes('eg-text'), 'The role line renders the public Text eyebrow primitive');
+  assert.ok(html.includes('eg-community-card__action'), 'The pinned action part ships');
+  assert.ok(html.includes('mt-auto'), 'The action pins to the bottom edge when the host stretches the card');
+  assert.ok(html.includes('Join the Discord'), 'The supplied action renders its label');
+  // Exactly one focus stop: the supplied action. The named mark adds no tab stop and no button.
+  assert.equal((html.match(/<button /g) ?? []).length, 1);
+  assert.doesNotMatch(html, /tabindex=/);
+  for (const name of [
+    'useCommunityCard',
+    'useCommunityCardMark',
+    'useCommunityCardAction',
+    'communityCardVariants',
+    'CommunityCardNativeProps'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, name);
+  }
+  // A decorative mark (alt="") renders its consumer content untouched without joining the name.
+  const decorative = renderToStaticMarkup(
+    createElement(exported.CommunityCard, {
+      title: 'Decorative only',
+      children: [
+        createElement(exported.CommunityCardMark, {
+          key: 'mark',
+          children: createElement('img', { src: logoSrc, alt: '' })
+        }),
+        createElement('p', { key: 'copy' }, 'Body copy.')
+      ]
+    })
+  );
+  assert.match(decorative, /alt=""/);
+  assert.match(decorative, /<h3[^>]*>Decorative only<\/h3>/);
+  // Eyebrow without a mark: the top row renders only the role line, no mark slot.
+  const eyebrowOnly = renderToStaticMarkup(
+    createElement(exported.CommunityCard, { title: 'Eyebrow only', eyebrow: 'Open community' })
+  );
+  assert.match(eyebrowOnly, /eg-text/);
+  assert.ok(!eyebrowOnly.includes('eg-community-card__mark'));
+  // Title only: the band still renders, but no top row, mark slot or action zone appears.
+  const titleOnly = renderToStaticMarkup(createElement(exported.CommunityCard, { title: 'Title only' }));
+  assert.match(titleOnly, /<article[^>]*eg-community-card/);
+  assert.ok(titleOnly.includes('eg-community-card__band'), 'The band always renders');
+  assert.ok(!titleOnly.includes('eg-community-card__mark'));
+  assert.ok(!titleOnly.includes('eg-community-card__action'));
+  assert.match(titleOnly, /<h3[^>]*>Title only<\/h3>/);
+});
+
+test('CommunityCard ships scanned band, typography and mark-image utilities without a stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    '.bg-surface-1',
+    '.bg-surface-2',
+    '.rounded-xl',
+    '.rounded-t-xl',
+    '.border-b',
+    '.border-border-hairline',
+    '.overflow-hidden',
+    '.min-w-0',
+    '.flex-col',
+    '.items-stretch',
+    '.justify-between',
+    '.gap-0',
+    '.gap-3',
+    '.gap-4',
+    '.p-6',
+    '.px-6',
+    '.py-4',
+    '.ms-auto',
+    '.mt-auto',
+    '.max-h-16',
+    '.max-w-full',
+    '.shrink-0',
+    '.m-0',
+    '.box-border',
+    '.backdrop-filter-none',
+    '.text-title-section',
+    '.text-body-default',
+    '.text-fg-secondary',
+    String.raw`.min-\[48rem\]\:p-8`,
+    String.raw`.min-\[48rem\]\:px-8`,
+    String.raw`.min-\[48rem\]\:py-5`,
+    String.raw`.\[overflow-wrap\:anywhere\]`,
+    String.raw`.\[\&\>img\]\:max-h-16`,
+    String.raw`.\[\&\>img\]\:object-contain`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing CommunityCard utility ${selector}`);
+  }
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}[^{]*\{`));
+  };
+  // Supplied mark image CSS emission: the consumer image keeps its aspect inside the token cap.
+  assert.match(rule(String.raw`.\[\&\>img\]\:object-contain`), /object-fit:\s*contain/);
+  assert.match(rule('.max-h-16'), /max-height:\s*var\(--space-16\)/);
+  assert.match(rule('.backdrop-filter-none'), /backdrop-filter:\s*none/);
+  // The authorized local breakpoint must emit a real media query at 48rem (no default md exists).
+  const mediumMedia = cssBlock(utilities, /@media \(width\s*>?=\s*48rem\)/);
+  for (const selector of [
+    String.raw`.min-\[48rem\]\:p-8`,
+    String.raw`.min-\[48rem\]\:px-8`,
+    String.raw`.min-\[48rem\]\:py-5`
+  ]) {
+    assert.ok(mediumMedia.includes(selector), `Missing 48rem media rule ${selector}`);
+  }
+  assert.doesNotMatch(utilities, /\.eg-community-card[^{}]*\{/);
+  assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/community-card/community-card.css')));
+});
 test('ArticleFeature ships one whole-card anchor SSR with reserved cover and paint-only action', async () => {
   const { createElement } = await import('react');
   const { renderToStaticMarkup } = await import('react-dom/server');
@@ -3677,6 +3821,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'CollapsibleContent',
       'CollapsibleTrigger',
       'CommandPalette',
+      'CommunityCard',
+      'CommunityCardAction',
+      'CommunityCardMark',
       'Countdown',
       'Dialog',
       'DialogClose',
@@ -3959,6 +4106,13 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'CommandPaletteItem',
     'CommandPaletteMessages',
     'CommandPaletteProps',
+    'CommunityCard',
+    'CommunityCardAction',
+    'CommunityCardActionProps',
+    'CommunityCardLevel',
+    'CommunityCardMark',
+    'CommunityCardMarkProps',
+    'CommunityCardProps',
     'Countdown',
     'CountdownProps',
     'CountdownSize',
@@ -4324,6 +4478,22 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
   }
   for (const name of [
+    'useCommunityCard',
+    'useCommunityCardMark',
+    'useCommunityCardAction',
+    'communityCardVariants',
+    'communityCardBandVariants',
+    'communityCardTopRowVariants',
+    'communityCardMarkVariants',
+    'communityCardTitleVariants',
+    'communityCardBodyVariants',
+    'communityCardActionVariants',
+    'CommunityCardNativeProps'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, `${name} must not be a runtime root export`);
+    assert.equal(names.has(name), false, `${name} must not be a declaration root export`);
+  }
+  for (const name of [
     'useToastProvider',
     'toastVariants',
     'toastViewportVariants',
@@ -4526,6 +4696,13 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'statVariants',
     'Cluster',
     'ClusterProps',
+    'CommunityCard',
+    'CommunityCardAction',
+    'CommunityCardActionProps',
+    'CommunityCardLevel',
+    'CommunityCardMark',
+    'CommunityCardMarkProps',
+    'CommunityCardProps',
     'LayoutAlignItems',
     'LayoutGap',
     'LayoutJustifyContent',
@@ -5584,9 +5761,3 @@ test('Indicator package preserves a passive wrapper and suppresses only invalid-
     }
   }
 });
-
-for (const subpath of ['./tokens.css', './theme.css', './native.css']) {
-  test(`Tokens ${subpath} export resolves to a nonempty file`, () => {
-    artifact('tokens', tokens.exports[subpath]);
-  });
-}

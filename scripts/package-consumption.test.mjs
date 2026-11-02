@@ -88,7 +88,7 @@ import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorI
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
 import { ToastProvider, useToast } from '@egdev/ui';
-import { ArticleFeature, ArticleFeatureCover, AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, NowCard, NowCardBody, NowCardDetail, NowCardFooter, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, TerminalCard, TerminalCardBar, TerminalCardList, Text, Textarea, Timeline, TipCard, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { ArticleFeature, ArticleFeatureCover, AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, CommunityCard, CommunityCardAction, CommunityCardMark, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, NowCard, NowCardBody, NowCardDetail, NowCardFooter, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, TerminalCard, TerminalCardBar, TerminalCardList, Text, Textarea, Timeline, TipCard, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   ArticleFeatureCoverProps,
   ArticleFeatureLevel,
@@ -158,6 +158,10 @@ import type {
   LogoVariant,
   PageHeaderProps,
   PageHeaderLevel,
+  CommunityCardProps,
+  CommunityCardMarkProps,
+  CommunityCardActionProps,
+  CommunityCardLevel,
   ProjectCardProps,
   ProjectCardTagsProps,
   ProjectCardCodeProps,
@@ -1504,6 +1508,120 @@ const terminalAsChild: TerminalCardProps = { label: 'Profile', children: null, a
 const terminalTone: TerminalCardRow = { term: 'region', value: 'eu-west-1', tone: 'neon' };
 // @ts-expect-error The caret is a boolean flag, not content.
 const terminalCaret: TerminalCardRow = { term: 'region', value: 'eu-west-1', caret: 'true' };
+// CommunityCard samples stay outside App: the passive article adds no harness elements.
+// @ts-expect-error Internal hook is not public.
+type CommunityCardPrivateHook = (typeof import('@egdev/ui'))['useCommunityCard'];
+// @ts-expect-error Internal root recipe is not public.
+type CommunityCardPrivateRecipe = (typeof import('@egdev/ui'))['communityCardVariants'];
+export type CommunityCardPrivateNegatives = [CommunityCardPrivateHook, CommunityCardPrivateRecipe];
+const communityWordmark: ReactElement = createElement('span', {
+  role: 'img',
+  'aria-label': 'Stack and Flow',
+  children: 'STACK & FLOW'
+});
+const communityLogoSrc = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 42"/%3E';
+export const communityCardProps: CommunityCardProps = {
+  title: 'Packed community',
+  eyebrow: 'Open community',
+  id: 'consumer-community-card',
+  className: 'col-span-full',
+  'aria-describedby': 'community-copy',
+  children: [
+    createElement(CommunityCardMark, { key: 'mark', children: communityWordmark }),
+    createElement('p', { key: 'copy', id: 'community-copy' }, 'Where members share work in progress and ship together.'),
+    createElement(CommunityCardAction, {
+      key: 'action',
+      children: createElement(Button, { children: 'Join the Discord' })
+    })
+  ]
+};
+export function CommunityCardSamples() {
+  return createElement(Fragment, null,
+    createElement(CommunityCard, { key: 'named', ...communityCardProps }),
+    createElement(CommunityCard, {
+      key: 'decorative',
+      title: 'Decorative only',
+      eyebrow: 'Open community',
+      children: [
+        createElement(CommunityCardMark, {
+          key: 'mark',
+          children: createElement('img', { src: communityLogoSrc, alt: '' })
+        }),
+        createElement('p', { key: 'copy' }, 'Streams, builds and code reviews with a community of builders.')
+      ]
+    }),
+    createElement(CommunityCard, {
+      key: 'mark-only',
+      title: 'Mark without eyebrow',
+      children: [
+        createElement(CommunityCardMark, {
+          key: 'mark',
+          children: createElement('img', { src: communityLogoSrc, alt: 'Gentleman Programming' })
+        }),
+        createElement('p', { key: 'copy' }, 'The top row collapses to the single supplied child.')
+      ]
+    }),
+    createElement(CommunityCard, {
+      key: 'link-action',
+      title: 'Link action',
+      children: [
+        createElement('p', { key: 'copy' }, 'Exactly one supplied action owns the only tab stop.'),
+        createElement(CommunityCardAction, {
+          key: 'action',
+          children: createElement(Link, { href: '#community', variant: 'underlined', children: 'Join the Discord' })
+        })
+      ]
+    }),
+    createElement(CommunityCard, { key: 'title-only', title: 'Title only' })
+  );
+}
+// @ts-expect-error A visible heading is required.
+const missingCommunityTitle: CommunityCardProps = { children: 'Body' };
+// @ts-expect-error Only native heading ranks 2-6 are supported.
+const communityLevel1: CommunityCardProps = { ...communityCardProps, level: 1 };
+// @ts-expect-error The generated heading owns the article name.
+const communityAriaLabel: CommunityCardProps = { ...communityCardProps, 'aria-label': 'Injected' };
+// @ts-expect-error The generated heading owns the article name.
+const communityAriaLabelledBy: CommunityCardProps = { ...communityCardProps, 'aria-labelledby': 'other' };
+// @ts-expect-error The article role belongs to the card.
+const communityRole: CommunityCardProps = { ...communityCardProps, role: 'region' };
+// @ts-expect-error Passive articles have no root tab stop API.
+const communityTabIndex: CommunityCardProps = { ...communityCardProps, tabIndex: 0 };
+// @ts-expect-error Protected semantics: the passive card exposes no inline style API.
+const communityStyle: CommunityCardProps = { ...communityCardProps, style: { width: 1 } };
+// @ts-expect-error Protected semantics: content is not replaceable HTML.
+const communityInnerHtml: CommunityCardProps = { ...communityCardProps, dangerouslySetInnerHTML: { __html: '<p>x</p>' } };
+// @ts-expect-error Protected semantics: the card adds no editability.
+const communityEditable: CommunityCardProps = { ...communityCardProps, contentEditable: true };
+// @ts-expect-error Protected semantics: the card holds no pressed state.
+const communityPressed: CommunityCardProps = { ...communityCardProps, 'aria-pressed': true };
+// @ts-expect-error Protected semantics: the passive card never announces.
+const communityLive: CommunityCardProps = { ...communityCardProps, 'aria-live': 'polite' };
+// @ts-expect-error No public ref API on either supported React major.
+const communityRef: CommunityCardProps = { ...communityCardProps, ref: createRef<HTMLElement>() };
+// @ts-expect-error CommunityCard is not polymorphic.
+const communityAsChild: CommunityCardProps = { ...communityCardProps, asChild: true };
+// @ts-expect-error Exactly one mark element is required.
+const emptyCommunityMark: CommunityCardMarkProps = { children: null };
+// @ts-expect-error Exactly one action element is required.
+const emptyCommunityAction: CommunityCardActionProps = { children: null };
+export type CommunityCardNegatives = [
+  typeof missingCommunityTitle,
+  typeof communityLevel1,
+  typeof communityAriaLabel,
+  typeof communityAriaLabelledBy,
+  typeof communityRole,
+  typeof communityTabIndex,
+  typeof communityStyle,
+  typeof communityInnerHtml,
+  typeof communityEditable,
+  typeof communityPressed,
+  typeof communityLive,
+  typeof communityRef,
+  typeof communityAsChild,
+  typeof emptyCommunityMark,
+  typeof emptyCommunityAction
+];
 // Task-progress samples stay outside App to preserve the existing focus harness.
 const meterRowVariant: MeterRowVariant = 'muted';
 const meterRowMessages: MeterRowMessages = { indeterminate: 'Preparing import' };
@@ -4220,6 +4338,57 @@ function assertTerminalCardConsumerCSS(css) {
   );
 }
 
+function assertCommunityCardConsumerCSS(css) {
+  // Preserve legacy component-layer CSS; the new recipe must add only scanned utilities.
+  assert.ok(css.includes('@layer utilities {'), 'Packed CSS must contain its utilities layer');
+  const utilities = css.slice(css.indexOf('@layer utilities {'));
+  assert.doesNotMatch(
+    utilities,
+    /\.eg-community-card(?:__[a-z-]+)?\s*[{,]/,
+    'CommunityCard marker must not become a new utilities-layer CSS rule'
+  );
+  // Band Material styles and the supplied mark image cap ship as scanned token utilities (no stylesheet).
+  for (const selector of [
+    '.bg-surface-2',
+    '.rounded-t-xl',
+    '.border-b',
+    '.ms-auto',
+    '.max-h-16',
+    '.shrink-0',
+    '.backdrop-filter-none',
+    '.\\[\\&\\>img\\]\\:max-h-16',
+    '.\\[\\&\\>img\\]\\:object-contain',
+    '.text-title-section',
+    '.text-body-default',
+    '.mt-auto'
+  ]) {
+    assert.ok(css.includes(selector), 'Packed styles must retain CommunityCard utility ' + selector);
+  }
+  // The 48rem responsive padding ships as the owner-authorized local variants inside a real media query.
+  const medium = /@media \(width\s*>=\s*48rem\)/.exec(css);
+  assert.ok(medium, 'CommunityCard 48rem media query must be present');
+  let depth = 0;
+  let mediaEnd = medium.index;
+  for (; mediaEnd < css.length; mediaEnd++) {
+    if (css[mediaEnd] === '{') {
+      depth++;
+    } else if (css[mediaEnd] === '}' && --depth === 0) {
+      mediaEnd++;
+      break;
+    }
+  }
+  const mediaBlock = css.slice(medium.index, mediaEnd);
+  for (const selector of ['.min-\\[48rem\\]\\:p-8', '.min-\\[48rem\\]\\:px-8', '.min-\\[48rem\\]\\:py-5']) {
+    assert.ok(mediaBlock.includes(selector), 'CommunityCard 48rem media query must retain ' + selector);
+  }
+  // Supplied mark image CSS emission: the consumer image keeps its aspect inside the token cap.
+  assert.match(
+    css,
+    /\.\\\[\\\&\\\>img\\\]\\:object-contain[^{]*\{[^}]*object-fit:\s*contain/,
+    'Mark image object-contain must emit under the token theme'
+  );
+}
+
 const entries = `
 import assert from 'node:assert/strict';
 import { readFileSync, realpathSync } from 'node:fs';
@@ -4259,6 +4428,9 @@ assert.ok(shippedStyles.includes('.min-w-0'), 'Packed styles must retain the Asp
 assert.ok(readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8').includes('eg-divider'), 'Packed JS must retain the Divider marker');
 assert.ok(readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8').includes('eg-terminal-card'), 'Packed JS must retain the TerminalCard marker');
 assert.doesNotMatch(shippedStyles, /\\.eg-terminal-card__?[a-z]*\\s*[{,]/, 'TerminalCard marker must not become a shipped CSS rule');
+assert.ok(readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8').includes('eg-community-card'), 'Packed JS must retain the CommunityCard marker');
+${assertCommunityCardConsumerCSS.toString()}
+assertCommunityCardConsumerCSS(shippedStyles);
 ${assertTerminalCardConsumerCSS.toString()}
 assertTerminalCardConsumerCSS(shippedStyles);
 ${assertArticleFeatureConsumerCSS.toString()}
@@ -4310,6 +4482,9 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'CollapsibleContent',
   'CollapsibleTrigger',
   'CommandPalette',
+  'CommunityCard',
+  'CommunityCardAction',
+  'CommunityCardMark',
   'Countdown',
   'Dialog',
   'DialogClose',

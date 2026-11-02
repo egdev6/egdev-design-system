@@ -44,6 +44,9 @@ const documentedNativeProps: Record<string, readonly string[]> = {
     'aria-labelledby',
     'onClick'
   ],
+  // CommunityCard redeclares children/className with own annotations; style is protected
+  // (spec §3), so the Omit'd native intersection only re-admits these documented article rows.
+  communityCard: ['id', 'dir', 'lang', 'aria-describedby', 'onClick'],
   projectCard: ['id', 'dir', 'lang', 'aria-describedby', 'style', 'onClick'],
   tipCard: ['id', 'dir', 'lang', 'aria-describedby', 'style', 'onClick'],
   timeline: ['id', 'title', 'aria-describedby', 'aria-busy', 'className', 'style', 'onClick'],

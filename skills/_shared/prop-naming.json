@@ -4543,6 +4543,16 @@
         }
       },
       {
+        "component": "CommunityCard",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/community-card/types.ts",
+          "symbol": "CommunityCardProps",
+          "revision": "sha256:93b7c3fb23bc67dda990aaf8b1adaacefa0455b77529a0f2c25fc10051971ee9"
+        }
+      },
+      {
         "component": "ArticleFeature",
         "type": "string (required)",
         "status": "existing",
@@ -4657,6 +4667,16 @@
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
           "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
+        }
+      },
+      {
+        "component": "CommunityCard",
+        "type": "CommunityCardLevel",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/community-card/types.ts",
+          "symbol": "CommunityCardProps",
+          "revision": "sha256:93b7c3fb23bc67dda990aaf8b1adaacefa0455b77529a0f2c25fc10051971ee9"
         }
       },
       {
@@ -4885,6 +4905,16 @@
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
           "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
+        }
+      },
+      {
+        "component": "CommunityCard",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/community-card/types.ts",
+          "symbol": "CommunityCardProps",
+          "revision": "sha256:93b7c3fb23bc67dda990aaf8b1adaacefa0455b77529a0f2c25fc10051971ee9"
         }
       },
       {
