@@ -9,6 +9,7 @@ export type NowCardLevel = 2 | 3 | 4 | 5 | 6;
 
 type NowCardNativeProps = Omit<
   ComponentPropsWithoutRef<'article'>,
+  | 'children'
   | 'title'
   | 'role'
   | 'tabIndex'
