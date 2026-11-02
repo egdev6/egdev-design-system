@@ -15,13 +15,13 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 | extraer | 12 |
 | fusionar | 3 |
 | separar | 3 |
-| renombrar | 3 |
 | componer | 2 |
+| renombrar | 2 |
 | absorber | 1 |
 
 | Destino | Componentes |
 |---|---|
-| @egdev/ui | 75 |
+| @egdev/ui | 74 |
 | @egdev/effects | 3 |
 | Mando | 6 |
 | Cadencia | 1 |
@@ -123,7 +123,6 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **PreviewFrame** | StageFrame (organismo) | AspectRatio | IconButton, Chip | renombrar | Working-tree implementation under the approved #127 plan and owner decisions L11/L15: passive native preview figure with a decorative safe-area guide, clamped percentage zones and consumer-owned slots. Grid renders like plain until a grid token is approved; zone geometry uses only the four approved percentage custom properties. No stylesheet; browser visual and accessibility verification pending. Contract: [#127](https://github.com/egdev6/egdev-design-system/issues/127). |
 | **TabBar** | TabBar (organismo (agente)) | — (native navigation) | Icon, Badge, VisuallyHidden, Surface recipe | mantener | Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/125): named native navigation links with consumer-owned current page, localized count badges and intrinsic safe-area padding. Host owns placement and responsive visibility. No stylesheet or new dependency; visual and packed-consumer verification remain pending. |
 | **CalendarGrid** | CalendarGrid (organismo) | — (arrastre: dnd-kit, a confirmar) | ListItem, Text | mantener | `.eg-day` y `.eg-post-row` pasan a partes internas. Falta vista Mes. |
-| **PreviewFrame** | StageFrame (organismo) | AspectRatio + Toolbar | IconButton, Chip | renombrar | Vista previa a tamaño fijo con zonas seguras. |
 
 ### Plantillas
 
