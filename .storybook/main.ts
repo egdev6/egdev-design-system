@@ -33,6 +33,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   navList: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   tabBar: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   sidebar: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
+  calendarGrid: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   previewFrame: ['id', 'title', 'dir', 'lang', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className'],
   carousel: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onKeyDown', 'onFocus', 'onBlur'],
   button: ['type', 'disabled', 'onClick', 'id', 'title', 'aria-describedby', 'className', 'name', 'value', 'tabIndex'],

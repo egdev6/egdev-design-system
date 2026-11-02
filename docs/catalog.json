@@ -973,10 +973,10 @@
     "nombre": "CalendarGrid",
     "nivel": "organism",
     "destino": "ui",
-    "radix": "— (arrastre: dnd-kit, a confirmar)",
-    "compone": "ListItem, Text",
+    "radix": "— (Move menu, no drag dependency)",
+    "compone": "ListItem, Menu, IconButton, Icon, VisuallyHidden",
     "accion": "mantener",
-    "notas": "`.eg-day` y `.eg-post-row` pasan a partes internas. Falta vista Mes."
+    "notas": "Working-tree implementation under the approved #126 plan (owner decision L11): named region of ordered day lanes with a keyboard-accessible Move menu, quiet add controls and consumer-owned dates, locale, eligibility and move rejection. No ARIA grid, no drag dependency, no new token and no stylesheet. Month view stays out of v0.1; browser visual and accessibility verification pending."
   },
   {
     "actual": "StageFrame",

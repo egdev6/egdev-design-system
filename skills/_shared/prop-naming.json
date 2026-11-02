@@ -1522,6 +1522,16 @@
           "symbol": "TableProps",
           "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
         }
+      },
+      {
+        "component": "CalendarGrid",
+        "type": "string (required region name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/calendar-grid/types.ts",
+          "symbol": "CalendarGridProps",
+          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+        }
       }
     ]
   },
@@ -3116,15 +3126,15 @@
     "id": "collection-items",
     "name": "items",
     "meaning": "Ordered data describing the entries a composite component renders, such as tabs, menu entries or navigation links; the entry shape is component-specific.",
-    "whenToUse": "A molecule renders its own standard entry, with its sub-parts, for each element of a consumer-supplied list.",
+    "whenToUse": "An organism or molecule renders its own standard entry, with its sub-parts, for each element of a consumer-supplied list.",
     "avoid": "Selectable form options (use choice-options/options), free composition through children, or ReactNode lists without a defined entry shape.",
     "status": "approved",
     "aliases": [],
     "exceptions": [],
     "approval": {
-      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "reference": "docs/components/calendar-grid/v0.1/collection-items-organism-approval.json",
       "scope": "convention:collection-items",
-      "contentHash": "sha256:304ac895a943454d04d057e18518794a315958b70252df2e696e00dc65b36f40"
+      "contentHash": "sha256:613dc7288683dadf5feb9da38b53f78e9c0ff204e4e2edd946a810ac5cd43b4d"
     },
     "usages": [
       {
@@ -3226,6 +3236,16 @@
           "symbol": "TabsProps",
           "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
         }
+      },
+      {
+        "component": "CalendarGrid",
+        "type": "CalendarGridDay[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/calendar-grid/types.ts",
+          "symbol": "CalendarGridProps",
+          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+        }
       }
     ]
   },
@@ -3312,6 +3332,16 @@
           "path": "packages/ui/src/molecules/table/types.ts",
           "symbol": "TableProps",
           "revision": "sha256:f0fe6f3a76b989086e569315fb7da179181ce80d84e97fd35ce8404e10bf57b9"
+        }
+      },
+      {
+        "component": "CalendarGrid",
+        "type": "CalendarGridMessages (today, noEntries, addEntry, moveEntry, moveTo, entryMoved)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/calendar-grid/types.ts",
+          "symbol": "CalendarGridProps",
+          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
         }
       }
     ]
@@ -4046,6 +4076,16 @@
           "symbol": "ListItemProps",
           "revision": "sha256:32748d00736596f3fb04297aea7f903e74152f8f0e430974160a6cad8a1135f2"
         }
+      },
+      {
+        "component": "CalendarGridEntry",
+        "type": "CalendarGridEntryStatus ('default' | 'new' | 'failed' | 'done' | 'off')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/calendar-grid/types.ts",
+          "symbol": "CalendarGridEntry",
+          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+        }
       }
     ]
   },
@@ -4156,6 +4196,16 @@
           "path": "packages/ui/src/molecules/menu/types.ts",
           "symbol": "MenuProps",
           "revision": "sha256:cb8c2b9b492e09c5493e3c8354846284bdccc309b8d1afde2d8e9015b4e0f329"
+        }
+      },
+      {
+        "component": "CalendarGrid",
+        "type": "(entry: CalendarGridEntry, event: MouseEvent<HTMLAnchorElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/calendar-grid/types.ts",
+          "symbol": "CalendarGridProps",
+          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
         }
       }
     ]
@@ -4307,6 +4357,16 @@
           "path": "packages/ui/src/molecules/page-header/types.ts",
           "symbol": "PageHeaderProps",
           "revision": "sha256:65e419324a9415188c20755942f710f92fd24f062bb3b7fab886d51ec0c612a3"
+        }
+      },
+      {
+        "component": "CalendarGrid",
+        "type": "2 | 3 | 4 | 5 | 6 (default 3)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/calendar-grid/types.ts",
+          "symbol": "CalendarGridProps",
+          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
         }
       }
     ]
@@ -5796,7 +5856,18 @@
       "scope": "convention:add-request",
       "contentHash": "sha256:989d86b930117a5c51757561bdf0f93ae836f71e1b83d75f4e9611291f467796"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "CalendarGrid",
+        "type": "(date: string) => void (render add controls)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/calendar-grid/types.ts",
+          "symbol": "CalendarGridProps",
+          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+        }
+      }
+    ]
   },
   {
     "id": "move-intent",
@@ -5812,7 +5883,18 @@
       "scope": "convention:move-intent",
       "contentHash": "sha256:4012870d88118a3b8d9d5ce3916d9b393ed0fa61de7dafd5fadceade9d6133c3"
     },
-    "usages": []
+    "usages": [
+      {
+        "component": "CalendarGrid",
+        "type": "(entry: CalendarGridEntry, date: string) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/calendar-grid/types.ts",
+          "symbol": "CalendarGridProps",
+          "revision": "sha256:9ed79bb3ffd195d725df3db4c7ed119353f5997a157c3a43fbee5b069fe2f178"
+        }
+      }
+    ]
   },
   {
     "id": "safe-area-guide",

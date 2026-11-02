@@ -86,6 +86,22 @@ const postReceiptUsages = [
     source: 'packages/ui/src/organisms/sidebar/types.ts#SidebarProps'
   })),
   ...[
+    'accessible-name',
+    'collection-items',
+    'add-request',
+    'move-intent',
+    'navigation-intent',
+    'heading-level',
+    'localized-messages'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/organisms/calendar-grid/types.ts#CalendarGridProps'
+  })),
+  {
+    conventionId: 'item-presentation-status',
+    source: 'packages/ui/src/organisms/calendar-grid/types.ts#CalendarGridEntry'
+  },
+  ...[
     'aspect-ratio',
     'visual-treatment',
     'surface-material-tone',
@@ -766,7 +782,8 @@ const receiptChain = [
   'docs/components/button/v0.1/prop-naming-approval.json',
   'docs/components/toggle/v0.1/prop-naming-approval-leading-icon-combined.json',
   'docs/components/icon-button/v0.1/prop-naming-approval-leading-icon-combined.json',
-  'docs/components/sidebar/v0.1/product-identity-approval.json'
+  'docs/components/sidebar/v0.1/product-identity-approval.json',
+  'docs/components/calendar-grid/v0.1/collection-items-organism-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -918,6 +935,57 @@ test('IconButton alone permits required decorative icon-only content without rew
     'Rehashing cannot authorize other components'
   );
   assert.notDeepEqual(icon.avoid, convention.avoid);
+});
+
+const calendarGridReference = 'docs/components/calendar-grid/v0.1/collection-items-organism-approval.json';
+test('CalendarGrid extends collection-items to organisms without rewriting historical approvals', () => {
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, calendarGridReference), 'utf8'));
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar para organismos (Recomendado)');
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.equal(receipt.semanticAmendments.length, 1);
+  const [amendment] = receipt.semanticAmendments;
+  assert.equal(amendment.id, 'collection-items');
+  assert.deepEqual(amendment.changedFields, ['whenToUse']);
+  const previousReceipt = JSON.parse(fs.readFileSync(resolve(root, amendment.previousReference), 'utf8'));
+  const previous = previousReceipt.entries.find(({ convention }) => convention.id === amendment.id);
+  assert.equal(amendment.previousContentHash, previous.contentHash);
+  assert.equal(previous.contentHash, props.conventionHash(previous.convention));
+  const current = actual.find(({ id }) => id === amendment.id);
+  for (const field of amendment.changedFields) {
+    assert.equal(amendment.before[field], previous.convention[field]);
+    assert.equal(amendment.after[field], current[field]);
+  }
+  assert.equal(
+    actual.find(({ id }) => id === amendment.id).usages.filter(({ component }) => component === 'CalendarGrid').length,
+    1
+  );
+  const { approval, usages: _usages, ...convention } = current;
+  assert.deepEqual(receipt.entries, [
+    { scope: 'convention:collection-items', contentHash: props.conventionHash(current), convention }
+  ]);
+  assert.deepEqual(approval, {
+    reference: calendarGridReference,
+    scope: 'convention:collection-items',
+    contentHash: props.conventionHash(current)
+  });
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(digest(fs.readFileSync(resolve(root, prior.path))), prior.wholeFileSHA256, prior.path);
+  }
+  assert.deepEqual(
+    registryBeforeSemanticAmendments(
+      historicalRegistry(actual),
+      'docs/decisions/prop-naming-molecule-specs-approval.json'
+    ).find(({ id }) => id === amendment.id),
+    {
+      ...previous.convention,
+      approval: { reference: amendment.previousReference, scope: previous.scope, contentHash: previous.contentHash },
+      usages: []
+    }
+  );
 });
 
 const toggleReference = 'docs/components/toggle/v0.1/prop-naming-approval.json';
