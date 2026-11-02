@@ -3048,7 +3048,7 @@ test('NowCard ships badge-first named article SSR, full density copy and no priv
         ...props
       })
     );
-  const html = render({ id: 'now-md' });
+  const html = render({ id: 'now-md', className: 'col-span-full' });
   const heading = /<h3[^>]*id="([^"]+)"/.exec(html);
   assert.ok(heading, 'The card generates one native h3');
   assert.ok(html.includes(`aria-labelledby="${heading[1]}"`));
@@ -3060,7 +3060,12 @@ test('NowCard ships badge-first named article SSR, full density copy and no priv
   const headingIndex = html.indexOf('<h3');
   assert.ok(badgeIndex > articleStart && badgeIndex < headingIndex, 'Badge must precede the heading');
   assert.ok(html.includes('Building'));
-  assert.doesNotMatch(html, /aria-hidden/, 'The meaningful status badge stays readable');
+  const { JSDOM } = await import('jsdom');
+  const badgeDOM = new JSDOM(html);
+  const status = badgeDOM.window.document.querySelector('.eg-now-card__badge');
+  assert.equal(status?.closest('[aria-hidden="true"]'), null, 'The status wrapper stays readable');
+  assert.equal(status?.querySelector('.eg-badge')?.closest('[aria-hidden="true"]'), null);
+  badgeDOM.window.close();
   for (const marker of [
     'eg-now-card__body',
     'eg-now-card__foot',
@@ -3080,7 +3085,11 @@ test('NowCard ships badge-first named article SSR, full density copy and no priv
   assert.ok(sm.includes('<h3'), 'sm still renders the heading');
   assert.match(sm, /Shipping the web catalog layer for the design system\./, 'sm renders the full copy');
   assert.ok(sm.includes('eg-now-card__foot'), 'sm renders the full footer');
-  assert.doesNotMatch(sm, /truncate|line-clamp|whitespace-nowrap/);
+  const compactDOM = new JSDOM(sm);
+  const ownedCopy = compactDOM.window.document.querySelector('.eg-now-card__body');
+  assert.ok(ownedCopy);
+  assert.doesNotMatch(ownedCopy.outerHTML, /truncate|line-clamp|whitespace-nowrap/);
+  compactDOM.window.close();
   for (const name of [
     'useNowCard',
     'NowCardContext',
@@ -3104,7 +3113,7 @@ test('NowCard ships Surface frame, banded footer, wrapping and sm density utilit
   // Surface-composed frame and the surface-0 band keep their token paints.
   assert.match(rule('.bg-surface-1'), /background-color:\s*var\(--color-surface-1[,)]/);
   assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
-  assert.match(rule('.shadow-none'), /box-shadow:\s*none/);
+  assert.match(rule('.shadow-none'), /--tw-shadow:\s*0 0 #0000/);
   for (const selector of [
     '.overflow-hidden',
     '.min-w-0',
@@ -3124,10 +3133,15 @@ test('NowCard ships Surface frame, banded footer, wrapping and sm density utilit
     '.tabular-nums',
     '.justify-between',
     String.raw`.\[\&_b\]\:text-fg-default`,
-    String.raw`.\[\&_b\]\:font-extrabold`
+    String.raw`.\[\&_b\]\:font-\(weight\:--text-title-section--font-weight\)`
   ]) {
     assert.ok(utilities.includes(selector), `Missing NowCard utility ${selector}`);
   }
+  // The emphasized <b> value keeps the planned 800 emphasis through the existing weight token.
+  assert.match(
+    rule(String.raw`.\[\&_b\]\:font-\(weight\:--text-title-section--font-weight\)`),
+    /font-weight:[^;]*var\(--text-title-section--font-weight/
+  );
   // sm density: positive smaller padding and the smaller body copy step.
   assert.match(rule('.p-6'), /padding:\s*var\(--space-6[,)]/);
   assert.match(rule('.p-4'), /padding:\s*var\(--space-4[,)]/);
@@ -3739,8 +3753,11 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'NoticeProps',
     'NoticeTone',
     'NowCard',
+    'NowCardBody',
     'NowCardBodyProps',
+    'NowCardDetail',
     'NowCardDetailProps',
+    'NowCardFooter',
     'NowCardFooterProps',
     'NowCardLevel',
     'NowCardProps',

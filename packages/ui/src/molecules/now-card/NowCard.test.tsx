@@ -228,7 +228,7 @@ describe('NowCard public contract', () => {
     );
     const detail = document.querySelector('.eg-now-card__detail');
     expect(detail).toHaveClass('eg-now-card__detail', 'text-meta', 'uppercase', 'tabular-nums', 'text-fg-muted');
-    expect(detail).toHaveClass('[&_b]:text-fg-default', '[&_b]:font-extrabold');
+    expect(detail).toHaveClass('[&_b]:text-fg-default', '[&_b]:font-(weight:--text-title-section--font-weight)');
     expect(detail?.textContent).toContain('Next stream');
     const time = detail?.querySelector('time');
     expect(time).toHaveAttribute('dateTime', '2026-11-05T18:00:00Z');

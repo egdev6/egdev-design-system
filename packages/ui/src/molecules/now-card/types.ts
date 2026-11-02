@@ -156,7 +156,10 @@ export const nowCardDetailVariants = cva(
 );
 
 /**
- * Emphasized <b> value inside the supplied detail content; a static token-valued descendant
- * utility on the part, so no stylesheet and no per-instance recipe is needed.
+ * Emphasized <b> value inside the supplied detail content; static token-backed descendant
+ * utilities on the part, so no stylesheet and no per-instance recipe is needed. The planned
+ * 800 emphasis uses the existing --text-title-section weight token (800), not a bare default.
  */
-export const nowCardDetailValueVariants = cva('[&_b]:text-fg-default [&_b]:font-extrabold');
+export const nowCardDetailValueVariants = cva(
+  '[&_b]:text-fg-default [&_b]:font-(weight:--text-title-section--font-weight)'
+);
