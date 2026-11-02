@@ -3014,6 +3014,120 @@ test('ModuleCard ships scanned state, band, layout and legacy-reset utilities wi
   assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/module-card/module-card.css')));
 });
 
+test('TerminalCard ships named group SSR with decorative chrome and status/caret rows', async () => {
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const html = renderToStaticMarkup(
+    createElement(
+      exported.TerminalCard,
+      { label: 'Profile', id: 'terminal-ssr', className: 'w-96' },
+      createElement(exported.TerminalCardBar, { key: 'bar', shell: 'zsh' }, '~/egdev'),
+      createElement(exported.TerminalCardList, {
+        key: 'list',
+        items: [
+          { term: 'user', value: 'egdev' },
+          { term: 'status', value: 'online', tone: 'success' },
+          { term: 'build', value: 'agent-teams', caret: true }
+        ]
+      })
+    )
+  );
+  assert.match(
+    html,
+    /^<div id="terminal-ssr" role="group" aria-label="Profile" class="eg-surface [^"]*eg-terminal-card /
+  );
+  assert.ok(html.includes('w-96'), 'Consumer width lands on the root');
+  assert.ok(html.includes('eg-terminal-card__bar'));
+  assert.ok(html.includes('eg-terminal-card__shell'));
+  const { JSDOM } = await import('jsdom');
+  const dom = new JSDOM(html);
+  const cells = [...dom.window.document.querySelectorAll('dl > dt, dl > dd')].map((cell) => [
+    cell.tagName.toLowerCase(),
+    cell.textContent
+  ]);
+  dom.window.close();
+  assert.deepEqual(cells, [
+    ['dt', 'user'],
+    ['dd', 'egdev'],
+    ['dt', 'status'],
+    ['dd', 'online'],
+    ['dt', 'build'],
+    ['dd', 'agent-teams']
+  ]);
+  assert.match(html, /<dd[^>]*data-tone="success"[^>]*>/);
+  const caret = /<span aria-hidden="true" class="([^"]*eg-terminal-card__caret[^"]*)"/.exec(html);
+  assert.ok(caret, 'The caret row renders exactly one decorative cursor');
+  assert.ok(caret[1].includes('animate-pulse') && caret[1].includes('motion-reduce:animate-none'));
+  assert.doesNotMatch(html, /tabindex=|aria-live=|<button|<a /);
+  for (const name of ['useTerminalCard', 'terminalCardVariants', 'TerminalCardNativeProps']) {
+    assert.equal(Object.hasOwn(exported, name), false, name);
+  }
+  const blank = renderToStaticMarkup(createElement(exported.TerminalCard, { label: '   ' }, null));
+  assert.equal(blank, '', 'A blank label renders nothing, never an unnamed group');
+});
+
+test('TerminalCard ships scanned band, wrap, tone and caret pulse utilities without a stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}[^{]*\\{`));
+  };
+  for (const selector of [
+    '.bg-surface-1',
+    '.bg-surface-2',
+    '.rounded-xl',
+    '.rounded-t-xl',
+    '.border-b',
+    '.overflow-hidden',
+    '.min-w-0',
+    String.raw`.grid-cols-\[auto_1fr\]`,
+    '.gap-x-4',
+    '.gap-y-1\\.5',
+    String.raw`.\[overflow-wrap\:anywhere\]`,
+    '.tabular-nums',
+    '.font-mono',
+    '.animate-pulse',
+    String.raw`.motion-reduce\:animate-none`,
+    '.w-2',
+    '.h-4',
+    '.bg-fg-brand-default',
+    '.align-text-bottom',
+    '.ms-auto',
+    '.text-fg-brand-raised',
+    '.text-status-success',
+    String.raw`.data-\[tone\=success\]\:text-status-success`,
+    '.text-body-default',
+    '.text-label-default'
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing TerminalCard utility ${selector}`);
+  }
+  assert.match(rule('.grid-cols-\\[auto_1fr\\]'), /grid-template-columns:\s*auto\s+1fr/);
+  assert.match(rule('.\\[overflow-wrap\\:anywhere\\]'), /overflow-wrap:\s*anywhere/);
+  assert.match(
+    rule('.data-\\[tone\\=success\\]\\:text-status-success'),
+    /color:\s*var\(--color-status-success(?:,[^)]*)?\)/,
+    'Success tone repaints the value through the status token'
+  );
+  assert.match(
+    rule('.animate-pulse'),
+    /animation:[^;]*var\(--animate-pulse[,)]/,
+    'The caret pulses through the existing token'
+  );
+  assert.ok(css.includes('@media (prefers-reduced-motion: reduce)'));
+  assert.match(
+    css,
+    /\.motion-reduce\\:animate-none[^{]*\{[^}]*animation:\s*none/,
+    'The caret pulse stops under reduced motion'
+  );
+  assert.doesNotMatch(utilities, /\.eg-terminal-card[^{}]*\{/);
+  const source = readFileSync(resolve(root, 'packages/ui/src/molecules/terminal-card/useTerminalCard.ts'), 'utf8');
+  assert.match(source, /surfaceVariants\(/);
+  assert.doesNotMatch(source, /Panel|ModuleCard|background:|backdrop-filter:/);
+  assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/terminal-card/terminal-card.css')));
+});
+
 test('ProjectCard ships named passive article SSR and keeps its composition recipes private', async () => {
   const { createElement } = await import('react');
   const { renderToStaticMarkup } = await import('react-dom/server');
@@ -3381,6 +3495,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'TabBar',
       'Table',
       'Tabs',
+      'TerminalCard',
+      'TerminalCardBar',
+      'TerminalCardList',
       'Text',
       'Textarea',
       'Timeline',
@@ -3830,6 +3947,14 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'TabsSize',
     'TabsTone',
     'TabsVariant',
+    'TerminalCard',
+    'TerminalCardBar',
+    'TerminalCardBarProps',
+    'TerminalCardList',
+    'TerminalCardListProps',
+    'TerminalCardProps',
+    'TerminalCardRow',
+    'TerminalCardTone',
     'Text',
     'TextProps',
     'TextTone',
@@ -4059,6 +4184,14 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'PhotoFrameProps',
     'PhotoFrameRatio',
     'PhotoFrameVariant',
+    'TerminalCard',
+    'TerminalCardBar',
+    'TerminalCardBarProps',
+    'TerminalCardList',
+    'TerminalCardListProps',
+    'TerminalCardProps',
+    'TerminalCardRow',
+    'TerminalCardTone',
     'PullQuote',
     'PullQuoteProps',
     'PullQuoteTone',

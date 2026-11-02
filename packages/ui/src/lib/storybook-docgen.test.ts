@@ -918,6 +918,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/social-links',
       './molecules/table',
       './molecules/tabs',
+      './molecules/terminal-card',
       './molecules/timeline',
       './molecules/tip-card',
       './molecules/toast',
@@ -1035,6 +1036,9 @@ describe('Storybook TypeScript docgen contract', () => {
       'TabBar',
       'Table',
       'Tabs',
+      'TerminalCard',
+      'TerminalCardBar',
+      'TerminalCardList',
       'Text',
       'Textarea',
       'Timeline',
@@ -1066,6 +1070,157 @@ describe('Storybook TypeScript docgen contract', () => {
       'tooltipVariants',
       'useToast'
     ]);
+  });
+
+  it('extracts TerminalCard required group naming, part metadata and nested row directives', () => {
+    const extracted = parser.parse(source('molecules/terminal-card/TerminalCard.tsx'));
+    const card = extracted.find(({ displayName }) => displayName === 'TerminalCard');
+    const bar = extracted.find(({ displayName }) => displayName === 'TerminalCardBar');
+    const list = extracted.find(({ displayName }) => displayName === 'TerminalCardList');
+    expect(card).toBeDefined();
+    expect(bar).toBeDefined();
+    expect(list).toBeDefined();
+    const props = card?.props ?? {};
+    expect(props.label).toMatchObject({
+      required: true,
+      type: { name: 'string' },
+      defaultValue: null,
+      tags: { control: 'text' }
+    });
+    expect(props.children).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    const childrenTags = props.children?.tags as Record<string, string> | undefined;
+    expect(childrenTags?.controlReason).toMatch(/Non-serializable ReactNode.*Default.*WithShell/);
+    expect(props.className).toMatchObject({
+      required: false,
+      type: { name: 'string' },
+      defaultValue: null,
+      tags: { control: 'text' }
+    });
+    expect(bar?.props.shell).toMatchObject({
+      required: false,
+      type: { name: 'string' },
+      defaultValue: null,
+      tags: { control: 'text' }
+    });
+    expect(bar?.props.children).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    expect(bar?.props.className).toMatchObject({
+      required: false,
+      type: { name: 'string' },
+      tags: { control: 'text' }
+    });
+    expect(list?.props.items).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    const itemsTags = list?.props.items?.tags as Record<string, string> | undefined;
+    expect(itemsTags?.controlReason).toMatch(/[\s\S]*Structured row objects[\s\S]*Default[\s\S]*StatusPairs/);
+    expect(list?.props.className).toMatchObject({
+      required: false,
+      type: { name: 'string' },
+      tags: { control: 'text' }
+    });
+    // The named group owns its semantics: protected attributes never become documented rows.
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'onClick']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'role',
+      'tabIndex',
+      'aria-label',
+      'aria-labelledby',
+      'aria-pressed',
+      'aria-selected',
+      'style',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    // Every own declaration carries exactly one supported @control; required rows never invent @default.
+    const file = ast(source('molecules/terminal-card/types.ts'));
+    const properties = ownProps(file, [
+      'TerminalCardProps',
+      'TerminalCardBarProps',
+      'TerminalCardListProps',
+      'TerminalCardRow'
+    ]);
+    expect(properties).toHaveLength(12);
+    for (const property of properties) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      expect(
+        tags.filter((tag) => tag.tagName.text === 'control'),
+        name
+      ).toHaveLength(1);
+      if (!property.questionToken) {
+        expect(
+          tags.some((tag) => tag.tagName.text === 'default'),
+          `${name} required default`
+        ).toBe(false);
+      }
+      const control = ts.getTextOfJSDocComment(tags.find((tag) => tag.tagName.text === 'control')?.comment);
+      if (control === 'false') {
+        expect(
+          tags.some((tag) => tag.tagName.text === 'controlReason' && ts.getTextOfJSDocComment(tag.comment)),
+          name
+        ).toBe(true);
+      }
+    }
+    // The row is a data contract, not a component: its fields verify through the AST source,
+    // matching the FieldCounter and SocialLinkItem precedent for nested data fields.
+    const rowControls: Record<string, string> = { term: 'text', value: 'false', tone: 'select', caret: 'boolean' };
+    const rowProperties = ownProps(file, ['TerminalCardRow']);
+    expect(rowProperties.map((property) => property.name.getText(file))).toEqual(Object.keys(rowControls));
+    for (const property of rowProperties) {
+      const name = property.name.getText(file);
+      expect(
+        ts
+          .getJSDocTags(property)
+          .filter((tag) => tag.tagName.text === 'control')
+          .map((tag) => ts.getTextOfJSDocComment(tag.comment))
+      ).toEqual([rowControls[name]]);
+    }
+    const defaultValue = (name: string) => {
+      const property = rowProperties.find((row) => row.name.getText(file) === name);
+      if (!property) {
+        throw new Error(`Missing TerminalCardRow field ${name}`);
+      }
+      return ts.getTextOfJSDocComment(ts.getJSDocTags(property).find((tag) => tag.tagName.text === 'default')?.comment);
+    };
+    expect(defaultValue('tone')).toBe('default');
+    expect(defaultValue('caret')).toBe('false');
+    expect(defaults(source('molecules/terminal-card/types.ts'), true)).toEqual({ tone: 'default' });
+    // Bounded public API: the three components and no private helpers or recipes.
+    expect(publicAPI.TerminalCard).toBeDefined();
+    expect(publicAPI.TerminalCardBar).toBeDefined();
+    expect(publicAPI.TerminalCardList).toBeDefined();
+    for (const name of [
+      'useTerminalCard',
+      'useTerminalCardBar',
+      'useTerminalCardList',
+      'terminalCardVariants',
+      'terminalCardBarVariants',
+      'terminalCardShellVariants',
+      'terminalCardListVariants',
+      'terminalCardTermVariants',
+      'terminalCardValueVariants',
+      'terminalCardCaretVariants',
+      'TerminalCardNativeProps'
+    ]) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+    const stories = ast(source('molecules/terminal-card/TerminalCard.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'WithShell',
+      'WithoutShell',
+      'StatusPairs',
+      'WithStatusDot',
+      'WithCaret',
+      'LongValues',
+      'Widths',
+      'ReducedMotion'
+    ]);
+    expect(stories.getText()).toMatch(/title: 'Molecules\/TerminalCard'/);
+    expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
   });
 
   it('extracts Toast Provider metadata, imperative API branches and the bounded public API', () => {
