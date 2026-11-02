@@ -75,3 +75,5 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 - L18 — Owner approved the six implementation plans (verbatim): "Aprobar los seis planes"; naming: "Aprobar decorative-index"; captures: "Adoptarlas con las diferencias aprobadas". Exact whole-file plan hashes pinned in docs/components/web-catalog/v0.1/layer-c-plan-approvals.md. Parent corrected stale plan payload hashes before approval; approved contracts unchanged. Implementation authorized under these plans.
 
 - L19 — Plans and approval record merged in PR #282 (54e13cc). Implementation begins with T8–T10 in isolated component worktrees; shared exports, registry, catalog and package fixtures remain parent-owned.
+
+- L20 — NowCard conflict resolved by owner (verbatim): "Badge → título → texto (como en la web)". Follow-up decision: "Aprobar enmienda, plan y convención". Approved statusBadge/leading-status-badge, wrapper px-6 pt-6 pb-3, sm body text-body-default and type-test correction; exact amendment hashes pinned in docs/components/now-card/v0.1/badge-order-approval.md. Original approved files remain unchanged.
