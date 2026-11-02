@@ -11,6 +11,7 @@ type TipCardNativeProps = Omit<
   ComponentPropsWithoutRef<'article'>,
   | 'children'
   | 'title'
+  | 'className'
   | 'role'
   | 'tabIndex'
   | 'contentEditable'
@@ -72,8 +73,11 @@ export type TipCardProps = TipCardNativeProps & {
 };
 
 /** Raised Material poster frame over the surface-1 recipe; the layout and passivity neutralizers
- * (no transform, no transition) also override the legacy coverflow rules on the stable root. */
-export const tipCardVariants = cva('eg-tip-card flex min-w-0 flex-col gap-3 transform-none transition-none');
+ * (no transform, no transition, flat opaque geometry) also override the legacy coverflow rules on
+ * the stable root regardless of inherited --ad/--d host variables. */
+export const tipCardVariants = cva(
+  'eg-tip-card flex min-w-0 flex-col gap-3 transform-none transition-none opacity-100 transform-flat'
+);
 
 /** Caption row below the cover. `relative inset-auto p-0 bg-none` neutralizes the legacy overlay
  * rule (absolute position, gradient scrim and padding) so the caption stays in flow, unpainted. */

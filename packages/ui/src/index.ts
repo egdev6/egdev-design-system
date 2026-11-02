@@ -82,6 +82,8 @@ export * from './molecules/table';
 export type { TabsItem, TabsProps, TabsSize, TabsTone, TabsVariant } from './molecules/tabs';
 export { Tabs, tabsVariants } from './molecules/tabs';
 export * from './molecules/timeline';
+export type { TipCardLevel, TipCardProps } from './molecules/tip-card';
+export { TipCard } from './molecules/tip-card';
 export * from './molecules/toast';
 // Organisms
 export * from './organisms/calendar-grid';

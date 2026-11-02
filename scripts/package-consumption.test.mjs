@@ -88,7 +88,7 @@ import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorI
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
 import { ToastProvider, useToast } from '@egdev/ui';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, TipCard, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -161,6 +161,8 @@ import type {
   ProjectCardLevel,
   ProjectCardSize,
   ProjectCardVariant,
+  TipCardLevel,
+  TipCardProps,
   ModuleCardProps,
   ModuleCardStatus,
   ModuleCardVariant,
@@ -1166,6 +1168,48 @@ type ProjectCardPrivateHook = (typeof import('@egdev/ui'))['useProjectCard'];
 // @ts-expect-error Internal root recipe is not public.
 type ProjectCardPrivateRecipe = (typeof import('@egdev/ui'))['projectCardVariants'];
 export type ProjectCardPrivateNegatives = [ProjectCardPrivateHook, ProjectCardPrivateRecipe];
+// TipCard samples stay outside App so the existing aggregate control-count/focus harness is unchanged.
+const tipCardBase: TipCardProps = {
+  title: 'Packed tip',
+  badge: 'Tip',
+  src: 'tip-cover.webp',
+  alt: 'Cover of the packed tip',
+  focalPoint: 'left',
+  id: 'packed-tip',
+  className: 'col-span-full'
+};
+const tipCardRank: TipCardLevel = 6;
+export function TipCardSamples({ badge = 'Tip', level = 3 }: { badge?: string; level?: TipCardLevel }) {
+  return createElement(TipCard, {
+    ...tipCardBase,
+    badge,
+    level,
+    title: level === tipCardRank ? 'Packed tip six' : tipCardBase.title
+  });
+}
+// @ts-expect-error The generated heading owns the article name.
+const relabelledTipCard: TipCardProps = { ...tipCardBase, 'aria-label': 'Other' };
+// @ts-expect-error Passive articles have no root tab stop API.
+const focusableTipCard: TipCardProps = { ...tipCardBase, tabIndex: 0 };
+// @ts-expect-error The article role belongs to the card.
+const roleTipCard: TipCardProps = { ...tipCardBase, role: 'region' };
+// @ts-expect-error There is no public ref API on either supported React major.
+const referencedTipCard: TipCardProps = { ...tipCardBase, ref: createRef<HTMLElement>() };
+// @ts-expect-error TipCard is not polymorphic.
+const slottedTipCard: TipCardProps = { ...tipCardBase, asChild: true };
+// @ts-expect-error The poster carries no children; every content slot is prop-driven.
+const childTipCard: TipCardProps = { ...tipCardBase, children: 'Extra' };
+// @ts-expect-error A visible heading is required.
+const unnamedTipCard: TipCardProps = { src: 'tip-cover.webp', alt: 'Cover' };
+// @ts-expect-error A cover image is required.
+const unimagedTipCard: TipCardProps = { title: 'Packed tip', alt: 'Cover' };
+// @ts-expect-error Cover alternative text is required.
+const undescribedTipCard: TipCardProps = { title: 'Packed tip', src: 'tip-cover.webp' };
+// @ts-expect-error Internal hook is not public.
+type TipCardPrivateHook = (typeof import('@egdev/ui'))['useTipCard'];
+// @ts-expect-error Internal root recipe is not public.
+type TipCardPrivateRecipe = (typeof import('@egdev/ui'))['tipCardVariants'];
+export type TipCardPrivateNegatives = [TipCardPrivateHook, TipCardPrivateRecipe];
 // The standalone annotation and Field share public APIs, no workspace aliases.
 export const messageTones: FieldMessageTone[] = ['description', 'info', 'warning', 'success', 'error'];
 export const messageProps: FieldMessageProps = { children: 'Message text', tone: 'description' };
@@ -4054,6 +4098,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Text',
   'Textarea',
   'Timeline',
+  'TipCard',
   'ToastProvider',
   'Toggle',
   'Tooltip',
@@ -4456,6 +4501,42 @@ for (const [projectVariant, projectSize] of [
     assert.equal(document.querySelectorAll('a').length, 1, 'The footer link is the only tab stop');
   } finally {
     projectDocument.window.close();
+  }
+}
+import { TipCardSamples } from './consumer.ts';
+for (const [tipBadge, tipLevel, tipTitle] of [
+  ['Tip', 3, 'Packed tip'],
+  ['   ', 6, 'Packed tip six']
+]) {
+  const tipDocument = new JSDOM(renderToString(createElement(TipCardSamples, { badge: tipBadge, level: tipLevel })));
+  try {
+    const document = tipDocument.window.document;
+    const card = document.getElementById('packed-tip');
+    const heading = document.getElementById(card.getAttribute('aria-labelledby'));
+    assert.equal(card.tagName, 'ARTICLE');
+    assert.equal(heading.tagName, tipLevel === 6 ? 'H6' : 'H3', 'The supplied rank names the poster');
+    assert.equal(heading.textContent, tipTitle);
+    assert.equal(card.getAttribute('data-level'), String(tipLevel));
+    assert.ok(heading.classList.contains('wrap-anywhere'), 'The mono label wraps');
+    assert.equal(card.hasAttribute('role'), false);
+    assert.equal(card.hasAttribute('tabindex'), false);
+    assert.equal(card.hasAttribute('aria-live'), false);
+    const figure = card.querySelector('figure');
+    const wrapper = figure.querySelector('[data-radix-aspect-ratio-wrapper]');
+    assert.match(wrapper.getAttribute('style'), /padding-bottom:\s*150%/, 'The card fixes 2:3 internally');
+    assert.equal(figure.getAttribute('data-ratio'), String(2 / 3));
+    assert.equal(figure.querySelector('img').getAttribute('alt'), 'Cover of the packed tip');
+    assert.ok(figure.querySelector('img').className.includes('object-left'), 'The focal point reaches the crop');
+    assert.equal(card.querySelector('.eg-tip-card__cap').contains(figure), false, 'The caption row stays below the cover');
+    const badge = card.querySelector('.eg-badge');
+    if (tipBadge === 'Tip') {
+      assert.equal(badge.textContent, 'Tip');
+      assert.equal(badge.nextElementSibling, heading, 'The badge precedes the label in the caption row');
+    } else {
+      assert.equal(badge, null, 'Whitespace-only badge leaves no empty pill');
+    }
+  } finally {
+    tipDocument.window.close();
   }
 }
 import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';

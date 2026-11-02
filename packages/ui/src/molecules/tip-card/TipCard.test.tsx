@@ -1,5 +1,6 @@
 import { render, renderHook, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import type { CSSProperties } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { TipCard } from './TipCard';
 import type { TipCardProps } from './types';
@@ -228,6 +229,21 @@ describe('TipCard public contract', () => {
     // (utilities layer wins over the legacy components layer). The flex column layout overrides
     // the legacy display:block.
     expect(article).toHaveClass('transform-none', 'transition-none', 'flex', 'flex-col');
+  });
+
+  it('ignores inherited coverflow host variables in opacity and transform-style (legacy collision regression)', () => {
+    render(
+      // A TipsSlider host may set --ad (side offset) and --d (depth); the legacy root rule turns
+      // them into opacity:calc(1 - var(--ad, 0) * .45) and transform-style:preserve-3d. The new
+      // passive card must paint opaque flat geometry regardless of the host's coverflow variables.
+      <div style={{ '--ad': '0.5', '--d': '1' } as CSSProperties}>
+        <TipCard {...base} />
+      </div>
+    );
+    const article = screen.getByRole('article', { name: base.title });
+    // opacity-100 fixes opacity at 1 no matter the inherited --ad; transform-flat pins
+    // transform-style:flat against the legacy preserve-3d.
+    expect(article).toHaveClass('opacity-100', 'transform-flat');
   });
 
   it('keeps the caption row in flow below the cover without the legacy overlay scrim (legacy collision regression)', () => {
