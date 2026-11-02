@@ -7186,7 +7186,8 @@ const typography = ${JSON.stringify(typographyNames)};
 // #100 D7 adds 1 static breakpoint: 282 + 1 = 283.
 // #219 B adds the owner-approved error-vs-focus tokens: 283 + 2 = 285. Unique names: Tailwind
 // emits a color-mix() token on two lines (resolved fallback + @supports var-form override).
-assert.equal(names.length, 285, 'Packed native artifact must expose 285 variables');
+// #126 D17 adds the owner-approved --container-calendar-grid-stack: 285 + 1 = 286.
+assert.equal(names.length, 286, 'Packed native artifact must expose 286 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
