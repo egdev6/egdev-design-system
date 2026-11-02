@@ -2423,6 +2423,16 @@
           "symbol": "PopoverCloseProps",
           "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
         }
+      },
+      {
+        "component": "ArticleFeature",
+        "type": "boolean (discriminates native required href from child-owned href)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/article-feature/types.ts",
+          "symbol": "ArticleFeatureProps",
+          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
+        }
       }
     ]
   },
@@ -4531,6 +4541,16 @@
           "symbol": "NowCardProps",
           "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
         }
+      },
+      {
+        "component": "ArticleFeature",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/article-feature/types.ts",
+          "symbol": "ArticleFeatureProps",
+          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
+        }
       }
     ]
   },
@@ -4637,6 +4657,16 @@
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
           "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
+        }
+      },
+      {
+        "component": "ArticleFeature",
+        "type": "ArticleFeatureLevel",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/article-feature/types.ts",
+          "symbol": "ArticleFeatureProps",
+          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
         }
       }
     ]
@@ -4855,6 +4885,16 @@
           "path": "packages/ui/src/molecules/project-card/types.ts",
           "symbol": "ProjectCardProps",
           "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
+        }
+      },
+      {
+        "component": "ArticleFeature",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/article-feature/types.ts",
+          "symbol": "ArticleFeatureProps",
+          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
         }
       }
     ]
@@ -6885,6 +6925,97 @@
           "path": "packages/ui/src/molecules/tip-card/types.ts",
           "symbol": "TipCardProps",
           "revision": "sha256:5a94b02317de7bf9440fe92f2c994ef521421e1359c017600cad768af334b512"
+        }
+      },
+      {
+        "component": "ArticleFeatureCover",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/article-feature/types.ts",
+          "symbol": "ArticleFeatureCoverProps",
+          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
+        }
+      }
+    ]
+  },
+  {
+    "id": "card-link-action-label",
+    "name": "actionLabel",
+    "meaning": "Visible text of a whole-card link's action affordance, rendered as paint and text only because the card element is the single link.",
+    "whenToUse": "A whole-card link offers a visible action affordance that stays paint and text inside its single anchor.",
+    "avoid": "Nested links or buttons, a second interactive action, or any control semantics for the label.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/components/article-feature/v0.1/prop-naming-approval.json",
+      "scope": "convention:card-link-action-label",
+      "contentHash": "sha256:5359865ae20bb0f41752d0124c466e2e16e26a61efb421f1fd8d848e631f9082"
+    },
+    "usages": [
+      {
+        "component": "ArticleFeature",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/article-feature/types.ts",
+          "symbol": "ArticleFeatureProps",
+          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
+        }
+      }
+    ]
+  },
+  {
+    "id": "content-detail",
+    "name": "detail",
+    "meaning": "Short visible factual detail shown beside a content unit's context label, such as reading time or publication date; never an accessible description and never a control prop.",
+    "whenToUse": "A content unit's context row shows one short consumer-formatted fact beside its context label.",
+    "avoid": "Accessible descriptions, selectable-option metadata, controls, or component-computed reading times and dates.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/components/article-feature/v0.1/prop-naming-approval.json",
+      "scope": "convention:content-detail",
+      "contentHash": "sha256:776d267bd7a5e3630987ac0518b15ea3677394d0c6a1b15cf9e4664ea44a9ea7"
+    },
+    "usages": [
+      {
+        "component": "ArticleFeature",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/article-feature/types.ts",
+          "symbol": "ArticleFeatureProps",
+          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
+        }
+      }
+    ]
+  },
+  {
+    "id": "decorative-cover-word",
+    "name": "coverWord",
+    "meaning": "Oversized decorative word rendered as visual identity inside a media cover region and hidden from assistive technology.",
+    "whenToUse": "A generative or poster cover carries an oversized decorative word as the cover's visual identity.",
+    "avoid": "Meaningful text, accessible names, brand marks or interactive content.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/components/article-feature/v0.1/prop-naming-approval.json",
+      "scope": "convention:decorative-cover-word",
+      "contentHash": "sha256:73f0e7d3350cd9924dafd597055b1ecea80c6e9131f217bdb6a48f0446b9393f"
+    },
+    "usages": [
+      {
+        "component": "ArticleFeatureCover",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/article-feature/types.ts",
+          "symbol": "ArticleFeatureCoverProps",
+          "revision": "sha256:178615da34999a5dec78afe841b38038f78ffdf286617ad782de54272c8b4d52"
         }
       }
     ]

@@ -820,9 +820,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "—",
-    "compone": "PhotoFrame, Text",
+    "compone": "PhotoFrame, Badge, Icon; Surface recipe",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): feature article card composing a photo frame and text; no domain data."
+    "notas": "Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/280): whole-card anchor (native `a` or `asChild` Slot) with a reserved 16:8 cover (generative well + `aria-hidden` word, or `PhotoFrame ratio=\"auto\"`), optional brand badge, context row, generated heading and paint-only action label; `ListItem` anchor hover treatment. No halo, isotype mark, stylesheet, ref or nested action."
   },
   {
     "actual": "ArticleItem",
