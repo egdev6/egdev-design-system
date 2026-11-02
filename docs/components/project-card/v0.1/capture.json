@@ -1,0 +1,85 @@
+{
+  "component": "project-card",
+  "specVersion": "0.1",
+  "spec": "docs/components/project-card/v0.1/spec.md",
+  "specContentSHA256": "9ffcf761634d14c0fc5d556584c0083fec601acde2c20aaf13b169e46aa6adf2",
+  "status": "Proposed — expected-design evidence for owner review; adoption and GitHub-visible publication pending. Visual conformity: Not evaluated.",
+  "capturedFrom": {
+    "authority": "odd/tasks/web-catalog.md L6 owner answer (render egdev-foundation preview.html read-only in Chromium; PNG + conditions + SHA-256 under docs/components/<name>/<version>/) and L15 batch-1 cadence",
+    "sourceRoot": "egdev-website/ (owner-granted read-only workspace root)",
+    "readOnly": true,
+    "notes": "No file inside egdev-website was edited. A throwaway harness under /tmp/egdev-sbcheck/ linked the Foundation stylesheets by file:// URL and embedded the original preview fragment unchanged."
+  },
+  "harness": {
+    "directory": "/tmp/egdev-sbcheck (scratch, outside the worktree; safe to delete)",
+    "script": "/tmp/egdev-sbcheck/capture-cards.mjs (derived from the layer-(b) /tmp/egdev-sbcheck/capture.mjs harness)",
+    "generatedPage": "/tmp/egdev-sbcheck/harness-cards-project-card.html",
+    "stylesheetLinks": [
+      "file://egdev-website/egdev-foundation/design-system/tokens.css",
+      "file://egdev-website/egdev-foundation/design-system/components/bundle.css"
+    ],
+    "stylesheets": [
+      {
+        "path": "egdev-website/egdev-foundation/design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e"
+      },
+      {
+        "path": "egdev-website/egdev-foundation/design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      }
+    ]
+  },
+  "conditions": {
+    "browser": "chrome-headless-shell (Playwright 1.60.0, chromium_headless_shell-1243 build)",
+    "tool": "playwright-core 1.60.0, launched with --allow-file-access-from-files --force-color-profile=srgb --hide-scrollbars",
+    "viewport": { "width": 1280, "height": 1400 },
+    "deviceScaleFactor": 2,
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "locale": "en-US",
+    "crop": "component zone: element screenshot of the preview board (.pv), the labelled grid containing every previewed state",
+    "animations": "disabled during the screenshot",
+    "fonts": {
+      "status": "loaded (document.fonts.ready awaited before the screenshot)",
+      "loadedFaces": [
+        "Barlow 400 normal",
+        "Barlow 600 normal",
+        "Barlow 700 normal",
+        "Barlow Condensed 600 normal",
+        "Barlow Condensed 700 normal",
+        "Barlow Condensed 800 normal",
+        "JetBrains Mono 400 normal"
+      ],
+      "unloadedFaces": "requested by the preview link but never used by the rendered markup, so reported as unloaded (expected)",
+      "source": "Google Fonts, requested by the original preview.html"
+    },
+    "resolvedTokens": {
+      "--color-bg-canvas": "#000000",
+      "--color-bg-glass": "rgba(255, 255, 255, 0.08)",
+      "--font-display": "\"Barlow Condensed\", \"Arial Narrow\", sans-serif",
+      "--font-mono": "\"JetBrains Mono\", ui-monospace, monospace"
+    },
+    "observedBoardHeight": "1046.375 CSS px",
+    "date": "2026-11-02T14:47Z",
+    "verificationLimits": "Static resting and is-hover states only. No pointer-driven hover, focus-visible, reduced-motion, light-theme or below-560px capture was produced; the capture is browser evidence of the current web design, not of a DS implementation."
+  },
+  "visuals": [
+    {
+      "id": "VIS-01",
+      "file": "project-card--variants--1280x1400--dark.png",
+      "pngSha256": "76b898745365c333865b8e206f4f14d99c5d54919b4b0115dcdf3b9489a1a781",
+      "pngBytes": 271055,
+      "pixelSize": { "width": 2560, "height": 2092 },
+      "alt": "Two stacked boards: the top row pairs the large featured project card (outlined 01, isotype pixels top-right, uppercase kicker, large title, three-line body, two chips, a dark code well and an underlined footer link) with the smaller default card (outlined 02, title, one-line body, two chips, footer link); the bottom row shows three compact cards, one hovered with a brand glow.",
+      "webComponent": "ProjectCard",
+      "source": {
+        "readme": "egdev-website/egdev-foundation/design-system/components/ProjectCard/README.md",
+        "readmeSha256": "fbe82f234a19aa98121d81c5c84379e8150603f209fac86a7924352ffa0d46da",
+        "preview": "egdev-website/egdev-foundation/design-system/components/ProjectCard/preview.html",
+        "previewSha256": "bdffc1b7720d489b0f9caa290061da2749a5d670db17f49432239749cd59f9f6",
+        "realUsage": "egdev-website/egdev-foundation/reference-web/pulso-source.html lines 918-945 (.proj.feat and two .proj articles inside .build-grid)"
+      },
+      "mapsTo": "proposed ProjectCard variant=\"featured\" and variant=\"default\" at size=\"md\", plus size=\"sm\" for the ProjectsGrid desktop density; the hovered cell documents a state the DS proposal does not keep (OQ-4)"
+    }
+  ]
+}
