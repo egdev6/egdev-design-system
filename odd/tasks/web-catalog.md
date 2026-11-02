@@ -31,9 +31,9 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 | T1 | S3 | Spec: ProjectCard v0.1 (new molecule, batch 1) | worker | approved — docs/components/project-card/v0.1; issue #275, approval 6580403446 |
 | T2 | S3 | Spec: NowCard v0.1 (new molecule, batch 1) | worker | approved — docs/components/now-card/v0.1; issue #276, approval 6580404063 |
 | T3 | S3 | Spec: TerminalCard v0.1 (new molecule, batch 1) | worker | approved — docs/components/terminal-card/v0.1; issue #277, approval 6580404628 |
-| T4 | S3 | Spec: TipCard v0.1 (new molecule, batch 2) | worker | in progress |
-| T5 | S3 | Spec: ArticleFeature v0.1 (new molecule, batch 2) | worker | in progress |
-| T6 | S3 | Spec: CommunityCard v0.1 (new molecule, batch 2) | worker | in progress |
+| T4 | S3 | Spec: TipCard v0.1 (new molecule, batch 2) | worker | approved — issue #279; approval 6581571495 |
+| T5 | S3 | Spec: ArticleFeature v0.1 (new molecule, batch 2) | worker | approved — issue #280; approval 6581572442 |
+| T6 | S3 | Spec: CommunityCard v0.1 (new molecule, batch 2) | worker | approved — issue #281; approval 6581573407 |
 | B1 | S3 | Spec: Chip static and href modes (#55) | worker | approved — docs/components/chip/v0.2; #55 snapshot 6573737002, approval 6576758274 |
 | B2 | S3 | Spec: ListItem editorial row variant absorbing ArticleItem/NoteItem/StreamItem (#88) | worker | approved — docs/components/list-item/v0.2; #88 snapshot 6573738637, approval 6576758816 |
 | B3 | S3 | Spec: PhotoFrame auto ratio and image position (#95) | worker | approved — docs/components/photo-frame/v0.4; #95 snapshot 6573745782, approval 6576759318 |
@@ -41,6 +41,8 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 | B5 | S3 | Spec: Link external arrow affordance (#61/#175) | worker | approved in part — link/v0.3 (underlined variant only; up-right arrow rejected); #61 snapshot 6576837530, approval 6576886041 |
 | B6 | S3 | Spec: Isotipo3D named zone poses as inputs (#47/#227) | worker | approved — isotipo3d/v0.6 (documentation only); #47 snapshot 6576838628, approval 6576886514 |
 | B7 | S3 | Spec check: Countdown (#82) and ProgressBar (#65) API deltas (may conclude reuse, no change) | worker | approved — countdown/v0.3 + progress-bar/v0.2 (documentation only); #82 approval 6577176014, #65 approval 6577176648 |
+
+| T7 | S3 | Propose implementation plans for six approved layer (c) molecules | worker | approved — docs/components/web-catalog/v0.1/layer-c-plan-approvals.md |
 
 ## Log
 
@@ -60,3 +62,7 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 - L14 — Layer (b) implemented and merged: IconButton #268, Link #269, PhotoFrame #270, ListItem #271, Chip #272 (main 4ad56f8). Parent browser checks against the adopted captures found three defects the unit gates missed, each fixed RED first with evidence under each component's observed/ folder: PhotoFrame auto ratio collapsed in grid/flex hosts (owner-approved auto-height amendment); ListItem list stories nested the anchor inside a row on the li (rows stacked, default underline); Chip span/anchor modes were content-box (37px vs 26px). The packed-consumer typecheck also caught a Chip union excess-property leak (aria-pressed, type), closed with `never` slots on the toggle branch. Next: layer (c) molecules.
 - L15 — Layer (c) starts. Owner chose the spec cadence (verbatim): "Dos tandas de tres (Recomendado)" — batch 1 (T1–T3) ProjectCard, NowCard, TerminalCard; batch 2 (T4–T6) TipCard, ArticleFeature, CommunityCard. Same storage and capture authority as L6 (one GitHub issue per component, spec as a versioned comment; Foundation previews captured read-only).
 - L16 — Batch 1 published: specs, captures and issue bodies merged in PR #274 (a00a6e2); new issues ProjectCard #275, NowCard #276, TerminalCard #277 (bodies read back identical apart from the trailing newline; image bytes verified at the merge commit). Owner answered each (verbatim): "Aprobar con las recomendaciones (Recomendado)" — every OQ resolved as recommended, including the prop-naming conventions `shell-label` and `terminal-caret` for TerminalCard (registry receipts belong to the plan). Approval comments 6580403446, 6580404063, 6580404628. Batch 2 (T4–T6) starts.
+
+- L17 — Batch 2 specs and captures published in PR #278 (b9ce7c9), issues TipCard #279, ArticleFeature #280, CommunityCard #281; issue bodies and immutable PNG hashes verified. Owner answered all three (verbatim): "Aprobar las recomendaciones". All recommended OQs approved, including cover-badge, card-link-action-label, content-detail and decorative-cover-word conventions, and planned catalog composition corrections. Approval references: https://github.com/egdev6/egdev-design-system/issues/279#issuecomment-6581571495, https://github.com/egdev6/egdev-design-system/issues/280#issuecomment-6581572442, https://github.com/egdev6/egdev-design-system/issues/281#issuecomment-6581573407. Implementation remains subject to separate plan approval.
+
+- L18 — Owner approved the six implementation plans (verbatim): "Aprobar los seis planes"; naming: "Aprobar decorative-index"; captures: "Adoptarlas con las diferencias aprobadas". Exact whole-file plan hashes pinned in docs/components/web-catalog/v0.1/layer-c-plan-approvals.md. Parent corrected stale plan payload hashes before approval; approved contracts unchanged. Implementation authorized under these plans.
