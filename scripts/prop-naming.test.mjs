@@ -624,6 +624,31 @@ const postReceiptUsages = [
   ...['side-navigation', 'bottom-navigation', 'localized-messages'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/templates/app-shell/types.ts#AppShellProps'
+  })),
+  // ProjectCard T8 records its reviewed usages at implementation; the receipt binds convention content only.
+  ...[
+    'heading-title',
+    'heading-level',
+    'heading-eyebrow',
+    'visual-treatment',
+    'preset-dimensions',
+    'decorative-index'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/project-card/types.ts#ProjectCardProps'
+  })),
+  ...['collection-items', 'accessible-name'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/project-card/types.ts#ProjectCardCodeProps'
+  })),
+  {
+    conventionId: 'collection-items',
+    source: 'packages/ui/src/molecules/project-card/types.ts#ProjectCardTagsProps'
+  },
+  // NowCard T9 records its reviewed usages at implementation; the receipt binds convention content only.
+  ...['heading-title', 'heading-level', 'preset-dimensions', 'leading-status-badge'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/now-card/types.ts#NowCardProps'
   }))
 ];
 // These newly proposed conventions are not part of any immutable approval receipt.
@@ -708,8 +733,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   assert.ok(text.includes('218403be9baee574e213cf1b06db1f7bd4d3951b20c7e24e593e90ef011fb062'));
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   validate(actual);
-  assert.equal(actual.length, 139);
-  assert.equal(beforeIndicatorConventions(actual).length, 136);
+  assert.equal(actual.length, 141);
+  assert.equal(beforeIndicatorConventions(actual).length, 138);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -821,7 +846,9 @@ const receiptChain = [
   'docs/components/icon-button/v0.1/prop-naming-approval-leading-icon-combined.json',
   'docs/components/sidebar/v0.1/product-identity-approval.json',
   'docs/components/calendar-grid/v0.1/collection-items-organism-approval.json',
-  'docs/components/chip/v0.2/render-mode-approval.json'
+  'docs/components/chip/v0.2/render-mode-approval.json',
+  'docs/components/project-card/v0.1/decorative-index-approval.json',
+  'docs/components/now-card/v0.1/leading-status-badge-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -1693,6 +1720,112 @@ test('Chip render-mode receipt binds the owner decision without rewriting histor
   assert.deepEqual(historicalRegistry([entry])[0].usages, []);
   const changed = structuredClone(registry);
   changed.find(({ id }) => id === 'render-mode').meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+});
+
+test('ProjectCard decorative-index receipt binds the owner decision without rewriting historical approvals', () => {
+  const reference = 'docs/components/project-card/v0.1/decorative-index-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(registry);
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar decorative-index');
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  // The receipt pins the exact prior Chip render-mode receipt bytes; nothing historical is rewritten.
+  assert.deepEqual(
+    receipt.priorReceipts.map(({ path, wholeFileSHA256 }) => [path, wholeFileSHA256]),
+    [
+      [
+        'docs/components/chip/v0.2/render-mode-approval.json',
+        'sha256:5eb8181a9ff2344e18468c1db0a20d03c928b0bb623bc0ce084b69d099bb9d3b'
+      ]
+    ]
+  );
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(digest(fs.readFileSync(resolve(root, prior.path))), prior.wholeFileSHA256, prior.path);
+  }
+  assert.equal(receipt.entries.length, 1);
+  const [record] = receipt.entries;
+  const entry = registry.find(({ id }) => id === 'decorative-index');
+  assert.ok(entry);
+  const { approval, usages, ...convention } = entry;
+  assert.deepEqual(record.convention, convention);
+  assert.equal(record.scope, 'convention:decorative-index');
+  assert.equal(record.contentHash, 'sha256:f6785858de73667d450eb9dc610a0e1aeebbeb8137e661ccfb6f475e8b7d41c6');
+  assert.equal(record.contentHash, props.conventionHash(entry));
+  assert.equal(record.contentHash, approval.contentHash);
+  assert.deepEqual(approval, { reference, scope: record.scope, contentHash: record.contentHash });
+  assert.equal(entry.status, 'approved');
+  assert.equal(entry.name, 'index');
+  assert.deepEqual(entry.aliases, []);
+  assert.deepEqual(entry.exceptions, []);
+  assert.deepEqual(
+    entry.usages.map(({ component }) => component),
+    ['ProjectCard']
+  );
+  // The usage revision is read from the reviewed working-tree file, never pinned to an older receipt byte.
+  assert.equal(entry.usages[0].source.path, 'packages/ui/src/molecules/project-card/types.ts');
+  assert.equal(entry.usages[0].source.symbol, 'ProjectCardProps');
+  assert.equal(entry.usages[0].source.revision, digest(fs.readFileSync(resolve(root, entry.usages[0].source.path))));
+  assert.deepEqual(historicalRegistry([entry])[0].usages, []);
+  const changed = structuredClone(registry);
+  changed.find(({ id }) => id === 'decorative-index').meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+});
+
+test('NowCard leading-status-badge receipt binds the owner decision without rewriting historical approvals', () => {
+  const reference = 'docs/components/now-card/v0.1/leading-status-badge-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(registry);
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar enmienda, plan y convención');
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  // The receipt pins the exact prior ProjectCard decorative-index receipt bytes; nothing historical is rewritten.
+  assert.deepEqual(
+    receipt.priorReceipts.map(({ path, wholeFileSHA256 }) => [path, wholeFileSHA256]),
+    [
+      [
+        'docs/components/project-card/v0.1/decorative-index-approval.json',
+        'sha256:53757ca6f89eb69d99c8cff7d23497a51fd90c26cc927fdbb5e53a8e079128dd'
+      ]
+    ]
+  );
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(digest(fs.readFileSync(resolve(root, prior.path))), prior.wholeFileSHA256, prior.path);
+  }
+  assert.equal(receipt.entries.length, 1);
+  const [record] = receipt.entries;
+  const entry = registry.find(({ id }) => id === 'leading-status-badge');
+  assert.ok(entry);
+  const { approval, usages, ...convention } = entry;
+  assert.deepEqual(record.convention, convention);
+  assert.equal(record.scope, 'convention:leading-status-badge');
+  assert.equal(record.contentHash, 'sha256:221da6cbb0929f0346735d2436b0be6f0d869ccd5c2a9c3ec02ee7e482b6b900');
+  assert.equal(record.contentHash, props.conventionHash(entry));
+  assert.equal(record.contentHash, approval.contentHash);
+  assert.deepEqual(approval, { reference, scope: record.scope, contentHash: record.contentHash });
+  assert.equal(entry.status, 'approved');
+  assert.equal(entry.name, 'statusBadge');
+  assert.deepEqual(entry.aliases, []);
+  assert.deepEqual(entry.exceptions, []);
+  assert.deepEqual(
+    entry.usages.map(({ component }) => component),
+    ['NowCard']
+  );
+  // The usage revision is read from the reviewed working-tree file, never pinned to an older receipt byte.
+  assert.equal(entry.usages[0].source.path, 'packages/ui/src/molecules/now-card/types.ts');
+  assert.equal(entry.usages[0].source.symbol, 'NowCardProps');
+  assert.equal(entry.usages[0].source.revision, digest(fs.readFileSync(resolve(root, entry.usages[0].source.path))));
+  assert.deepEqual(historicalRegistry([entry])[0].usages, []);
+  const changed = structuredClone(registry);
+  changed.find(({ id }) => id === 'leading-status-badge').meaning += ' Changed.';
   assert.throws(() => validate(changed), /approval/i);
 });
 

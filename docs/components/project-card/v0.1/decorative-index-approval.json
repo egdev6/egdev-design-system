@@ -1,0 +1,35 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve decorative-index for ProjectCard index: a decorative editorial identifier, not collection position or selection state.",
+  "evidence": {
+    "channel": "Owner decision in odd/tasks/web-catalog.md L18 and docs/components/web-catalog/v0.1/layer-c-plan-approvals.md",
+    "ownerChoice": "Aprobar decorative-index",
+    "interpretation": "Scoped human naming approval recorded by the parent; not native review authority."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/chip/v0.2/render-mode-approval.json",
+      "wholeFileSHA256": "sha256:5eb8181a9ff2344e18468c1db0a20d03c928b0bb623bc0ce084b69d099bb9d3b"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:decorative-index",
+      "contentHash": "sha256:f6785858de73667d450eb9dc610a0e1aeebbeb8137e661ccfb6f475e8b7d41c6",
+      "convention": {
+        "id": "decorative-index",
+        "name": "index",
+        "meaning": "Decorative editorial identifier for a content card, not a collection position or selection state.",
+        "whenToUse": "A content card renders a supplied editorial identifier as decoration outside its accessible name.",
+        "avoid": "Collection offsets, selected indexes, ordering controls, or meaningful identifiers that assistive technology must announce.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

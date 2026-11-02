@@ -87,8 +87,7 @@ import { Menu, menuVariants, cn } from '@egdev/ui';
 import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorItem, MenuLabelItem, MenuSubmenuItem, MenuTone, MenuAlign, MenuSide } from '@egdev/ui';
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
-import { ToastProvider, useToast } from '@egdev/ui';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, NowCard, NowCardBody, NowCardDetail, NowCardFooter, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { ToastProvider, useToast } import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, NowCard, NowCardBody, NowCardDetail, NowCardFooter, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -153,6 +152,14 @@ import type {
   LogoVariant,
   PageHeaderProps,
   PageHeaderLevel,
+  ProjectCardProps,
+  ProjectCardTagsProps,
+  ProjectCardCodeProps,
+  ProjectCardFooterProps,
+  ProjectCardCodeLine,
+  ProjectCardLevel,
+  ProjectCardSize,
+  ProjectCardVariant,
   ModuleCardProps,
   ModuleCardStatus,
   ModuleCardVariant,
@@ -1112,6 +1119,58 @@ const slottedModule: ModuleCardProps = { ...moduleCardDefault, asChild: true };
 const wideModule: ModuleCardProps = { ...moduleCardDefault, wide: true };
 // @ts-expect-error Material uses tone, never a glass boolean.
 const glassModule: ModuleCardProps = { ...moduleCardDefault, glass: true };
+
+// ProjectCard samples stay outside App so the existing aggregate control-count/focus harness is unchanged.
+const projectCardLevel: ProjectCardLevel = 3;
+const projectCardLines: ProjectCardCodeLine[] = [
+  { text: 'pnpm install' },
+  { text: '# requires Node 20', kind: 'comment' }
+];
+const projectCardTagsProps: ProjectCardTagsProps = { items: ['React', 'Vitest'] };
+const projectCardCodeProps: ProjectCardCodeProps = { label: 'Install commands', items: projectCardLines };
+const projectCardBase: ProjectCardProps = {
+  title: 'Packed project',
+  level: projectCardLevel,
+  index: '01',
+  eyebrow: 'Open source',
+  id: 'packed-project',
+  className: 'col-span-full',
+  'aria-describedby': 'project-description',
+  children: [
+    createElement('p', null, 'Reusable project summary.'),
+    createElement(ProjectCardTags, projectCardTagsProps),
+    createElement(ProjectCardCode, projectCardCodeProps),
+    createElement(ProjectCardFooter, {
+      children: createElement(Link, { href: '#packed-project', variant: 'underlined', children: 'View project' })
+    })
+  ]
+};
+export function ProjectCardSamples({
+  variant = 'default',
+  size = 'md'
+}: {
+  variant?: ProjectCardVariant;
+  size?: ProjectCardSize;
+}) {
+  return createElement(ProjectCard, { ...projectCardBase, variant, size });
+}
+// @ts-expect-error The generated heading owns the article name.
+const relabelledProjectCard: ProjectCardProps = { ...projectCardBase, 'aria-label': 'Other' };
+// @ts-expect-error Passive articles have no root tab stop API.
+const focusableProjectCard: ProjectCardProps = { ...projectCardBase, tabIndex: 0 };
+// @ts-expect-error The article role belongs to the card.
+const roleProjectCard: ProjectCardProps = { ...projectCardBase, role: 'region' };
+// @ts-expect-error There is no public ref API on either supported React major.
+const referencedProjectCard: ProjectCardProps = { ...projectCardBase, ref: createRef<HTMLElement>() };
+// @ts-expect-error ProjectCard is not polymorphic.
+const slottedProjectCard: ProjectCardProps = { ...projectCardBase, asChild: true };
+// @ts-expect-error A visible heading is required.
+const unnamedProjectCard: ProjectCardProps = { children: 'Body' };
+// @ts-expect-error Internal hook is not public.
+type ProjectCardPrivateHook = (typeof import('@egdev/ui'))['useProjectCard'];
+// @ts-expect-error Internal root recipe is not public.
+type ProjectCardPrivateRecipe = (typeof import('@egdev/ui'))['projectCardVariants'];
+export type ProjectCardPrivateNegatives = [ProjectCardPrivateHook, ProjectCardPrivateRecipe];
 // The standalone annotation and Field share public APIs, no workspace aliases.
 // NowCard stays outside App so the existing aggregate control-count/focus harness is unchanged.
 const nowCardLevel: NowCardLevel = 4;
@@ -3579,6 +3638,26 @@ function assertModuleCardCSS(css) {
 }
 
 // The row ships its own reflow/help utilities; ProgressBar retains its separate CSS assertions.
+function assertProjectCardCSS(css) {
+  for (const selector of [
+    String.raw`.\[-webkit-text-stroke\:var\(--border-width\)_var\(--color-border-brand\)\]`,
+    String.raw`.\[-webkit-text-stroke\:var\(--border-width\)_var\(--color-fg-brand-default\)\]`,
+    '.border-border-brand',
+    String.raw`.shadow-\[var\(--shadow-hot\)\]`,
+    '.text-title-display',
+    '.text-title-section',
+    '.text-heading-small',
+    '.text-body-large',
+    '.text-label-eyebrow',
+    '.text-code',
+    '.p-3',
+    '.p-6'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing ProjectCard utility ' + selector);
+  }
+  assert.match(css, /background-color:\s*var\(--color-surface-0[,)]/);
+}
+
 function assertMeterRowCSS(css) {
   for (const selector of [
     '.gap-x-3',
@@ -4002,6 +4081,10 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Portal',
   'PreviewFrame',
   'ProgressBar',
+  'ProjectCard',
+  'ProjectCardCode',
+  'ProjectCardFooter',
+  'ProjectCardTags',
   'PullQuote',
   'RadioGroup',
   'SearchTrigger',
@@ -4098,6 +4181,8 @@ assertButtonGroupCSS(shippedStyles);
 ${assertCountdownCSS.toString()}
 ${assertModuleCardCSS.toString()}
 assertModuleCardCSS(shippedStyles);
+${assertProjectCardCSS.toString()}
+assertProjectCardCSS(shippedStyles);
 ${assertFieldCSS.toString()}
 assertFieldCSS(shippedStyles);
 ${assertMeterRowCSS.toString()}
@@ -4394,8 +4479,6 @@ try {
   assert.ok(card.querySelector('.eg-module-card__head').classList.contains('bg-surface-3'));
   assert.notEqual(heading.id, document.getElementById('second-module').getAttribute('aria-labelledby'));
   assert.equal(card.hasAttribute('aria-live'), false);
-} finally {
-  moduleDocument.window.close();
 }
 import { NowCardSamples } from './consumer.ts';
 const nowDocument = new JSDOM(renderToString(createElement(NowCardSamples)));
@@ -4439,6 +4522,37 @@ try {
   }
 } finally {
   nowDocument.window.close();
+}
+import { ProjectCardSamples } from './consumer.ts';
+for (const [projectVariant, projectSize] of [
+  ['default', 'md'],
+  ['featured', 'sm']
+]) {
+  const projectDocument = new JSDOM(renderToString(createElement(ProjectCardSamples, { variant: projectVariant, size: projectSize })));
+  try {
+    const document = projectDocument.window.document;
+    const card = document.getElementById('packed-project');
+    const heading = document.getElementById(card.getAttribute('aria-labelledby'));
+    assert.equal(card.tagName, 'ARTICLE');
+    assert.equal(heading.tagName, 'H3');
+    assert.equal(heading.textContent, 'Packed project');
+    assert.equal(card.getAttribute('data-variant'), projectVariant);
+    assert.equal(card.getAttribute('data-size'), projectSize);
+    assert.equal(card.hasAttribute('role'), false);
+    assert.equal(card.hasAttribute('tabindex'), false);
+    assert.equal(card.hasAttribute('aria-live'), false);
+    const index = card.querySelector('span[aria-hidden="true"]');
+    assert.ok(index, 'The decorative index renders aria-hidden');
+    assert.equal(index.textContent, '01');
+    assert.equal(card.querySelector('ul.eg-project-card__tags').children.length, 2);
+    const pre = card.querySelector('pre.eg-project-card__code');
+    assert.equal(pre.getAttribute('aria-label'), 'Install commands');
+    assert.equal(pre.querySelectorAll('span[aria-hidden="true"]').length, 1, 'One decorative prompt glyph');
+    assert.ok(card.querySelector('.eg-project-card__foot a[href="#packed-project"]'), 'One supplied footer action');
+    assert.equal(document.querySelectorAll('a').length, 1, 'The footer link is the only tab stop');
+  } finally {
+    projectDocument.window.close();
+  }
 }
 import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
 import { photoFrameNumericSamples, photoFrameSamples } from './consumer.ts';
@@ -7328,6 +7442,8 @@ ${assertTabsCSS.toString()}
 ${assertPullQuoteCSS.toString()}
 ${assertModuleCardCSS.toString()}
 assertModuleCardCSS(emitted);
+${assertProjectCardCSS.toString()}
+assertProjectCardCSS(emitted);
 assertIconButtonCSS(emitted);
 ${assertToggleCSS.toString()}
 ${assertChipCSS.toString()}

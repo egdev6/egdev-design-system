@@ -454,6 +454,118 @@ describe('Storybook TypeScript docgen contract', () => {
     );
   });
 
+  it('extracts every ProjectCard union declaration, parts and native article boundaries (PC-10)', () => {
+    const extracted = parser.parse(source('molecules/project-card/ProjectCard.tsx'));
+    const doc = extracted.find(({ displayName }) => displayName === 'ProjectCard');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    const controls: Record<string, string> = {
+      title: 'text',
+      level: 'select',
+      eyebrow: 'text',
+      index: 'text',
+      variant: 'select',
+      size: 'select',
+      children: 'false',
+      className: 'text'
+    };
+    const own = ownProps(ast(source('molecules/project-card/types.ts')), ['ProjectCardProps']);
+    expect(own).toHaveLength(8);
+    for (const declaration of own) {
+      const name = declaration.name.getText();
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment))
+      ).toEqual([controls[name]]);
+      if (controls[name] === 'false') {
+        expect(
+          tags.some(
+            ({ tagName, comment }) => tagName.text === 'controlReason' && Boolean(ts.getTextOfJSDocComment(comment))
+          )
+        ).toBe(true);
+      }
+      if (!declaration.questionToken) {
+        expect(tags.some(({ tagName }) => tagName.text === 'default')).toBe(false);
+      }
+      const extractedTags = props[name]?.tags as Record<string, string> | undefined;
+      expect(extractedTags?.control?.split('\n').every((value) => value === controls[name])).toBe(true);
+    }
+    expect(props.title?.required).toBe(true);
+    expect(props.children?.required).toBe(false);
+    for (const [name, value] of Object.entries({ level: '3', variant: 'default', size: 'md' })) {
+      expect(normalize(props[name]?.defaultValue?.value), name).toBe(value);
+    }
+    for (const [name, values] of Object.entries({
+      level: ['2', '3', '4', '5', '6'],
+      variant: ['default', 'featured'],
+      size: ['md', 'sm']
+    })) {
+      expect(
+        [...new Set(props[name]?.type.value.map(({ value }: { value: string }) => normalize(value)))],
+        name
+      ).toEqual(values);
+    }
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'ref',
+      'asChild',
+      'role',
+      'tabIndex',
+      'aria-label',
+      'aria-labelledby',
+      'aria-disabled',
+      'aria-selected',
+      'aria-pressed',
+      'aria-live'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    for (const [displayName, alias, partControls, requiredProp] of [
+      ['ProjectCardTags', 'ProjectCardTagsProps', { items: 'false', className: 'text' }, 'items'],
+      ['ProjectCardCode', 'ProjectCardCodeProps', { label: 'text', items: 'false', className: 'text' }, 'label'],
+      ['ProjectCardFooter', 'ProjectCardFooterProps', { children: 'false', className: 'text' }, 'children']
+    ] as [string, string, Record<string, string>, string][]) {
+      const part = extracted.find(({ displayName: name }) => name === displayName);
+      expect(part, displayName).toBeDefined();
+      const partOwn = ownProps(ast(source('molecules/project-card/types.ts')), [alias]);
+      expect(partOwn, displayName).toHaveLength(Object.keys(partControls).length);
+      for (const declaration of partOwn) {
+        const name = declaration.name.getText();
+        const tags = ts.getJSDocTags(declaration);
+        expect(
+          tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment)),
+          `${displayName}.${name}`
+        ).toEqual([partControls[name]]);
+        if (partControls[name] === 'false') {
+          expect(
+            tags.some(
+              ({ tagName, comment }) => tagName.text === 'controlReason' && Boolean(ts.getTextOfJSDocComment(comment))
+            ),
+            `${displayName}.${name} reason`
+          ).toBe(true);
+        }
+        const extractedTags = part?.props[name]?.tags as Record<string, string> | undefined;
+        expect(extractedTags?.control?.split('\n').every((value) => value === partControls[name])).toBe(true);
+      }
+      expect(part?.props[requiredProp]?.required, `${displayName}.${requiredProp}`).toBe(true);
+    }
+    expect(extracted.find(({ displayName }) => displayName === 'ProjectCardCode')?.props.items?.required).toBe(true);
+    const stories = ast(source('molecules/project-card/ProjectCard.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'Variants',
+      'Sizes',
+      'HeadingRanks',
+      'Tags',
+      'Code',
+      'WithLink',
+      'LongContent'
+    ]);
+    expect(stories.getText()).toMatch(/title: 'Molecules\/ProjectCard'/);
+    expect(stories.getText()).not.toMatch(/\b(?:argTypes|play)\s*:/);
+  });
   it('extracts FieldMessage plain content, five tones and native-only opt-in announcements', () => {
     const doc = parser
       .parse(source('atoms/field-message/FieldMessage.tsx'))
@@ -841,6 +953,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/page-header',
       './molecules/panel',
       './molecules/popover',
+      './molecules/project-card',
       './molecules/section-header',
       './molecules/select-tile',
       './molecules/social-links',
@@ -941,6 +1054,10 @@ describe('Storybook TypeScript docgen contract', () => {
       'Portal',
       'PreviewFrame',
       'ProgressBar',
+      'ProjectCard',
+      'ProjectCardCode',
+      'ProjectCardFooter',
+      'ProjectCardTags',
       'PullQuote',
       'RadioGroup',
       'SearchTrigger',
