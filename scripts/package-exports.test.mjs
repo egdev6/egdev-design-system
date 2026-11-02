@@ -3014,6 +3014,143 @@ test('ModuleCard ships scanned state, band, layout and legacy-reset utilities wi
   assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/module-card/module-card.css')));
 });
 
+test('NowCard ships badge-first named article SSR, full density copy and no private helpers', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const badge = createElement(exported.Badge, null, 'Building');
+  const render = (props) =>
+    renderToString(
+      createElement(exported.NowCard, {
+        title: 'Currently building',
+        statusBadge: badge,
+        children: [
+          createElement(exported.NowCardBody, {
+            key: 'body',
+            children: createElement('p', null, 'Shipping the web catalog layer for the design system.')
+          }),
+          createElement(exported.NowCardFooter, {
+            key: 'foot',
+            children: [
+              createElement(exported.NowCardDetail, {
+                key: 'detail',
+                children: ['Next stream ', createElement('b', null, 'Thursday')]
+              }),
+              createElement(exported.Link, {
+                key: 'live',
+                href: '#live',
+                variant: 'underlined',
+                children: 'Watch live'
+              })
+            ]
+          })
+        ],
+        ...props
+      })
+    );
+  const html = render({ id: 'now-md', className: 'col-span-full' });
+  const heading = /<h3[^>]*id="([^"]+)"/.exec(html);
+  assert.ok(heading, 'The card generates one native h3');
+  assert.ok(html.includes(`aria-labelledby="${heading[1]}"`));
+  assert.match(html, /^<article\b/);
+  assert.ok(html.includes('data-size="md"'));
+  // Badge-first DOM/reading order: the wrapper is the article's first content, before the heading.
+  const articleStart = html.indexOf('<article');
+  const badgeIndex = html.indexOf('eg-now-card__badge');
+  const headingIndex = html.indexOf('<h3');
+  assert.ok(badgeIndex > articleStart && badgeIndex < headingIndex, 'Badge must precede the heading');
+  assert.ok(html.includes('Building'));
+  const { JSDOM } = await import('jsdom');
+  const badgeDOM = new JSDOM(html);
+  const status = badgeDOM.window.document.querySelector('.eg-now-card__badge');
+  assert.equal(status?.closest('[aria-hidden="true"]'), null, 'The status wrapper stays readable');
+  assert.equal(status?.querySelector('.eg-badge')?.closest('[aria-hidden="true"]'), null);
+  badgeDOM.window.close();
+  for (const marker of [
+    'eg-now-card__body',
+    'eg-now-card__foot',
+    'eg-now-card__detail',
+    'Watch live',
+    'col-span-full'
+  ]) {
+    assert.ok(html.includes(marker), marker);
+  }
+  assert.equal(html.match(/<a\b/g)?.length, 1, 'exactly one footer tab stop');
+  // Omitted, null and boolean slots render no wrapper at all.
+  for (const slot of [undefined, null, false]) {
+    assert.ok(!render({ statusBadge: slot }).includes('eg-now-card__badge'), String(slot));
+  }
+  const sm = render({ size: 'sm' });
+  assert.ok(sm.includes('data-size="sm"'));
+  assert.ok(sm.includes('<h3'), 'sm still renders the heading');
+  assert.match(sm, /Shipping the web catalog layer for the design system\./, 'sm renders the full copy');
+  assert.ok(sm.includes('eg-now-card__foot'), 'sm renders the full footer');
+  const compactDOM = new JSDOM(sm);
+  const ownedCopy = compactDOM.window.document.querySelector('.eg-now-card__body');
+  assert.ok(ownedCopy);
+  assert.doesNotMatch(ownedCopy.outerHTML, /truncate|line-clamp|whitespace-nowrap/);
+  compactDOM.window.close();
+  for (const name of [
+    'useNowCard',
+    'NowCardContext',
+    'nowCardVariants',
+    'nowCardBodyVariants',
+    'nowCardFootVariants',
+    'nowCardDetailVariants',
+    'nowCardDetailValueVariants'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, name);
+  }
+});
+
+test('NowCard ships Surface frame, banded footer, wrapping and sm density utilities without a stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}[^{]*\\{`));
+  };
+  // Surface-composed frame and the surface-0 band keep their token paints.
+  assert.match(rule('.bg-surface-1'), /background-color:\s*var\(--color-surface-1[,)]/);
+  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule('.shadow-none'), /--tw-shadow:\s*0 0 #0000/);
+  for (const selector of [
+    '.overflow-hidden',
+    '.min-w-0',
+    '.flex-col',
+    '.flex-wrap',
+    '.border-x-0',
+    '.border-b-0',
+    '.border-t',
+    '.rounded-xl',
+    '.rounded-b-xl',
+    '.text-body-large',
+    '.text-fg-secondary',
+    '.text-fg-muted',
+    '.font-display',
+    '.text-meta',
+    '.uppercase',
+    '.tabular-nums',
+    '.justify-between',
+    String.raw`.\[\&_b\]\:text-fg-default`,
+    String.raw`.\[\&_b\]\:font-\(weight\:--text-title-section--font-weight\)`
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing NowCard utility ${selector}`);
+  }
+  // The emphasized <b> value keeps the planned 800 emphasis through the existing weight token.
+  assert.match(
+    rule(String.raw`.\[\&_b\]\:font-\(weight\:--text-title-section--font-weight\)`),
+    /font-weight:[^;]*var\(--text-title-section--font-weight/
+  );
+  // sm density: positive smaller padding and the smaller body copy step.
+  assert.match(rule('.p-6'), /padding:\s*var\(--space-6[,)]/);
+  assert.match(rule('.p-4'), /padding:\s*var\(--space-4[,)]/);
+  assert.match(rule('.text-body-default'), /font-size:\s*var\(--text-body-default[,)]/);
+  assert.match(rule('.text-body-large'), /font-size:\s*var\(--text-body-large[,)]/);
+  assert.doesNotMatch(utilities, /\.eg-now-card[^{}]*\{/);
+  assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/now-card/now-card.css')));
+});
+
 test('TerminalCard ships named group SSR with decorative chrome and status/caret rows', async () => {
   const { createElement } = await import('react');
   const { renderToStaticMarkup } = await import('react-dom/server');
@@ -3379,6 +3516,98 @@ test('CommunityCard ships scanned band, typography and mark-image utilities with
   assert.doesNotMatch(utilities, /\.eg-community-card[^{}]*\{/);
   assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/community-card/community-card.css')));
 });
+test('TipCard ships passive 2:3 poster SSR and keeps its composition recipes private', async () => {
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const html = renderToStaticMarkup(
+    createElement(exported.TipCard, {
+      title: 'Ship faster',
+      badge: 'Tip',
+      src: 'cover.webp',
+      alt: 'Cover of the ship-faster tip',
+      focalPoint: 'left',
+      id: 'packed-tip',
+      className: 'col-span-full'
+    })
+  );
+  const heading = /<h3[^>]*id="([^"]+)"[^>]*>/.exec(html);
+  assert.ok(heading, 'The poster generates one native h3 heading');
+  assert.ok(html.includes(`aria-labelledby="${heading[1]}"`));
+  assert.match(html, /^<article\b/);
+  assert.match(html, /data-level="3"/);
+  assert.match(html, /class="[^\"]*\beg-badge\b/, 'The optional badge renders as a solid brand pill');
+  assert.match(heading[0], /wrap-anywhere/, 'The mono label wraps instead of truncating');
+  assert.ok(html.includes('object-left'), 'The supplied focal point reaches the cover crop');
+  assert.match(html, /data-ratio="0\.6666666666666666"/, 'The card fixes the 2:3 ratio internally');
+  assert.match(html, /padding-bottom:\s*150%/, 'The Radix reservation box holds 2:3');
+  assert.ok(html.indexOf('</figure>') < html.indexOf('eg-tip-card__cap'), 'The caption row sits below the cover');
+  assert.ok(html.includes('col-span-full'));
+  assert.doesNotMatch(html, /tabindex=|role="(?:button|region)"|aria-live=/);
+  // Without a badge the caption row holds the label alone, with no empty pill.
+  const bare = renderToStaticMarkup(
+    createElement(exported.TipCard, {
+      title: 'Bare poster',
+      src: 'cover.webp',
+      alt: 'Cover of the bare poster'
+    })
+  );
+  assert.ok(bare.includes('eg-tip-card__cap'), 'The caption row keeps the label without a badge');
+  assert.ok(!bare.includes('eg-badge'), 'No badge, no empty pill');
+  for (const name of [
+    'useTipCard',
+    'tipCardVariants',
+    'tipCardCapVariants',
+    'tipCardTitleVariants',
+    'TipCardNativeProps'
+  ]) {
+    assert.equal(Object.hasOwn(exported, name), false, name);
+  }
+});
+
+test('TipCard emits its raised frame, in-flow caption and legacy resets without a stylesheet', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of [
+    '.bg-surface-1',
+    '.rounded-xl',
+    '.p-3',
+    '.p-0',
+    '.gap-3',
+    String.raw`.gap-1\.5`,
+    '.flex-col',
+    '.min-w-0',
+    String.raw`.shadow-\[var\(--shadow-edge\)\,var\(--shadow-elev-1\)\]`,
+    '.transform-none',
+    '.transition-none',
+    '.opacity-100',
+    '.transform-flat',
+    '.relative',
+    '.inset-auto',
+    '.bg-none',
+    '.items-start',
+    '.font-mono',
+    '.text-label-default',
+    '.text-fg-default',
+    '.wrap-anywhere'
+  ]) {
+    assert.ok(utilities.includes(selector), `Missing TipCard utility ${selector}`);
+  }
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}[^{]*\\{`));
+  };
+  assert.match(rule('.p-3'), /padding:[^;]*var\(--space/);
+  assert.match(rule('.bg-surface-1'), /background-color:\s*var\(--color-surface-1[,)]/);
+  assert.match(rule('.wrap-anywhere'), /overflow-wrap:\s*anywhere/);
+  assert.match(rule('.transform-flat'), /transform-style:\s*flat/);
+  assert.match(rule('.opacity-100'), /opacity:\s*1/);
+  assert.match(rule('.bg-none'), /background-image:\s*none/);
+  assert.doesNotMatch(utilities, /\.eg-tip-card[^{}]*\{/);
+  assert.ok(css.includes('.eg-tip-card'), 'Legacy coverflow rules remain untouched in the components layer');
+  assert.ok(!existsSync(resolve(root, 'packages/ui/src/molecules/tip-card/tip-card.css')));
+});
+
 test('SectionHeader emits every local CVA utility and its exact static breakpoint without a stylesheet', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const source = ts.createSourceFile(
@@ -3512,6 +3741,10 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'ModuleRail',
       'NavList',
       'Notice',
+      'NowCard',
+      'NowCardBody',
+      'NowCardDetail',
+      'NowCardFooter',
       'PageHeader',
       'Panel',
       'PanelBody',
@@ -3556,6 +3789,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Text',
       'Textarea',
       'Timeline',
+      'TipCard',
       'ToastProvider',
       'Toggle',
       'Tooltip',
@@ -3595,6 +3829,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(typeof exported.ButtonGroup, 'function', 'ButtonGroup has no public root ref API');
   assert.equal(typeof exported.Dropzone, 'function', 'Dropzone must be a plain function with no public ref API');
   assert.equal(typeof exported.Field, 'function', 'Field has no public ref API');
+  for (const name of ['NowCard', 'NowCardBody', 'NowCardFooter', 'NowCardDetail']) {
+    assert.equal(typeof exported[name], 'function', `${name} must be a plain function component without a ref API`);
+  }
   assert.equal(typeof exported.Stat, 'function', 'Stat must be a plain function with no public ref API');
   assert.equal(typeof exported.statVariants, 'function', 'Stat card recipe must be public');
   assert.equal(typeof exported.dropzoneVariants, 'function', 'Dropzone recipe must be public');
@@ -3879,6 +4116,16 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Notice',
     'NoticeProps',
     'NoticeTone',
+    'NowCard',
+    'NowCardBody',
+    'NowCardBodyProps',
+    'NowCardDetail',
+    'NowCardDetailProps',
+    'NowCardFooter',
+    'NowCardFooterProps',
+    'NowCardLevel',
+    'NowCardProps',
+    'NowCardSize',
     'PageHeader',
     'PageHeaderLevel',
     'PageHeaderProps',
@@ -4031,6 +4278,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'TimelineSize',
     'TimelineTime',
     'TimelineVariant',
+    'TipCard',
+    'TipCardLevel',
+    'TipCardProps',
     'TitleVariant',
     'ToastApi',
     'ToastCallOptions',

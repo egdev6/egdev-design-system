@@ -34,6 +34,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   // (spec §3), so the Omit'd native intersection only re-admits these documented article rows.
   communityCard: ['id', 'dir', 'lang', 'aria-describedby', 'onClick'],
   projectCard: ['id', 'dir', 'lang', 'aria-describedby', 'style', 'onClick'],
+  tipCard: ['id', 'dir', 'lang', 'aria-describedby', 'style', 'onClick'],
   timeline: ['id', 'title', 'aria-describedby', 'aria-busy', 'className', 'style', 'onClick'],
   table: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick'],
   appShell: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
@@ -82,6 +83,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   badge: ['id', 'title', 'aria-describedby', 'className'],
   radioGroup: ['id', 'aria-labelledby', 'aria-describedby', 'className'],
   selectTile: ['id', 'title', 'aria-describedby', 'className', 'style'],
+  nowCard: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style'],
 
   switch: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className'],
   progressBar: ['id', 'title', 'aria-describedby', 'className', 'style'],

@@ -339,6 +339,121 @@ describe('Storybook TypeScript docgen contract', () => {
       /\b(?:argTypes|play)\s*:/
     );
   });
+  it('extracts every NowCard own declaration, the badge slot, defaults and protected article boundaries', () => {
+    const doc = parser
+      .parse(source('molecules/now-card/NowCard.tsx'))
+      .find(({ displayName }) => displayName === 'NowCard');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    const controls: Record<string, string> = {
+      statusBadge: 'false',
+      title: 'text',
+      level: 'select',
+      size: 'select',
+      children: 'false'
+    };
+    const file = ast(source('molecules/now-card/types.ts'));
+    const own = ownProps(file, ['NowCardProps', 'NowCardBodyProps', 'NowCardFooterProps', 'NowCardDetailProps']);
+    expect(own).toHaveLength(11);
+    for (const declaration of own) {
+      const name = declaration.name.getText(file);
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment))
+      ).toEqual([controls[name] ?? (name === 'className' ? 'text' : 'false')]);
+      if ((tags.find(({ tagName }) => tagName.text === 'control')?.comment ?? '') === 'false') {
+        expect(
+          tags.some(
+            ({ tagName, comment }) => tagName.text === 'controlReason' && Boolean(ts.getTextOfJSDocComment(comment))
+          )
+        ).toBe(true);
+      }
+      if (!declaration.questionToken) {
+        expect(tags.some(({ tagName }) => tagName.text === 'default')).toBe(false);
+      }
+    }
+    expect(props.statusBadge).toMatchObject({ required: false, defaultValue: null, tags: { control: 'false' } });
+    expect(props.statusBadge?.tags).toMatchObject({
+      controlReason: expect.stringMatching(/ReactNode.*Default.*WithBadge/)
+    });
+    expect(props.title).toMatchObject({ required: true, type: { name: 'string' }, defaultValue: null });
+    for (const [name, value] of Object.entries({ level: '3', size: 'md' })) {
+      expect(normalize(props[name]?.defaultValue?.value), name).toBe(value);
+    }
+    expect(props.level?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      '2',
+      '3',
+      '4',
+      '5',
+      '6'
+    ]);
+    expect(props.size?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual(['md', 'sm']);
+    expect(props.children).toMatchObject({ required: false, tags: { control: 'false' } });
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'ref',
+      'asChild',
+      'role',
+      'tabIndex',
+      'contentEditable',
+      'dangerouslySetInnerHTML',
+      'aria-label',
+      'aria-labelledby',
+      'aria-disabled',
+      'aria-selected',
+      'aria-pressed',
+      'aria-live'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    for (const [part, required] of [
+      ['NowCardBody', true],
+      ['NowCardFooter', true],
+      ['NowCardDetail', true]
+    ] as const) {
+      const partDoc = parser
+        .parse(source('molecules/now-card/NowCard.tsx'))
+        .find(({ displayName }) => displayName === part);
+      expect(partDoc?.props.children).toMatchObject({ required, defaultValue: null, tags: { control: 'false' } });
+      expect(partDoc?.props.className).toMatchObject({ required: false, tags: { control: 'text' } });
+      for (const name of ['id', 'title', 'role', 'tabIndex', 'ref', 'asChild']) {
+        expect(partDoc?.props[name], `${part}.${name}`).toBeUndefined();
+      }
+    }
+    expect(publicAPI.NowCard).toBeDefined();
+    for (const name of [
+      'useNowCard',
+      'NowCardContext',
+      'nowCardVariants',
+      'nowCardBodyVariants',
+      'nowCardFootVariants',
+      'nowCardDetailVariants',
+      'nowCardDetailValueVariants',
+      'NowCardNativeProps'
+    ]) {
+      expect(name in publicAPI, name).toBe(false);
+    }
+    const barrel = readFileSync(source('molecules/now-card/index.ts'), 'utf8');
+    expect(barrel).not.toMatch(/nowCard\w*Variants|useNowCard|NowCardContext/);
+    const stories = ast(source('molecules/now-card/NowCard.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'WithBadge',
+      'WithLink',
+      'WithNextDate',
+      'WithSingleChild',
+      'Sizes',
+      'HeadingRanks',
+      'LongContent',
+      'ReducedMotion'
+    ]);
+    expect(readFileSync(source('molecules/now-card/NowCard.stories.tsx'), 'utf8')).not.toMatch(
+      /\b(?:argTypes|play)\s*:/
+    );
+  });
+
   it('extracts every ProjectCard union declaration, parts and native article boundaries (PC-10)', () => {
     const extracted = parser.parse(source('molecules/project-card/ProjectCard.tsx'));
     const doc = extracted.find(({ displayName }) => displayName === 'ProjectCard');
@@ -449,6 +564,81 @@ describe('Storybook TypeScript docgen contract', () => {
       'LongContent'
     ]);
     expect(stories.getText()).toMatch(/title: 'Molecules\/ProjectCard'/);
+    expect(stories.getText()).not.toMatch(/\b(?:argTypes|play)\s*:/);
+  });
+  it('extracts every TipCard union declaration and native article boundaries (TP-08)', () => {
+    const extracted = parser.parse(source('molecules/tip-card/TipCard.tsx'));
+    const doc = extracted.find(({ displayName }) => displayName === 'TipCard');
+    expect(doc).toBeDefined();
+    const props = doc?.props ?? {};
+    const controls: Record<string, string> = {
+      title: 'text',
+      level: 'select',
+      badge: 'text',
+      src: 'text',
+      alt: 'text',
+      focalPoint: 'select',
+      className: 'text'
+    };
+    const own = ownProps(ast(source('molecules/tip-card/types.ts')), ['TipCardProps']);
+    expect(own).toHaveLength(7);
+    for (const declaration of own) {
+      const name = declaration.name.getText();
+      const tags = ts.getJSDocTags(declaration);
+      expect(
+        tags.filter(({ tagName }) => tagName.text === 'control').map((tag) => ts.getTextOfJSDocComment(tag.comment))
+      ).toEqual([controls[name]]);
+      if (!declaration.questionToken) {
+        expect(tags.some(({ tagName }) => tagName.text === 'default')).toBe(false);
+      }
+      const extractedTags = props[name]?.tags as Record<string, string> | undefined;
+      expect(extractedTags?.control?.split('\n').every((value) => value === controls[name])).toBe(true);
+    }
+    expect(props.title?.required).toBe(true);
+    expect(props.src?.required).toBe(true);
+    expect(props.alt?.required).toBe(true);
+    expect(props.badge?.required).toBe(false);
+    for (const [name, value] of Object.entries({ level: '3', focalPoint: 'center' })) {
+      expect(normalize(props[name]?.defaultValue?.value), name).toBe(value);
+    }
+    for (const [name, values] of Object.entries({
+      level: ['2', '3', '4', '5', '6'],
+      focalPoint: ['center', 'top', 'bottom', 'left', 'right', 'left-top', 'right-top', 'left-bottom', 'right-bottom']
+    })) {
+      expect(
+        [...new Set(props[name]?.type.value.map(({ value }: { value: string }) => normalize(value)))],
+        name
+      ).toEqual(values);
+    }
+    for (const name of ['id', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'ref',
+      'asChild',
+      'role',
+      'tabIndex',
+      'aria-label',
+      'aria-labelledby',
+      'aria-disabled',
+      'aria-selected',
+      'aria-pressed',
+      'aria-live'
+    ]) {
+      expect(props[name], name).toBeUndefined();
+    }
+    const stories = ast(source('molecules/tip-card/TipCard.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'WithoutBadge',
+      'HeadingRanks',
+      'Ratios',
+      'FocalPoints',
+      'LongLabel',
+      'Widths'
+    ]);
+    expect(stories.getText()).toMatch(/title: 'Molecules\/TipCard'/);
     expect(stories.getText()).not.toMatch(/\b(?:argTypes|play)\s*:/);
   });
   it('extracts FieldMessage plain content, five tones and native-only opt-in announcements', () => {
@@ -835,6 +1025,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/module-card',
       './molecules/nav-list',
       './molecules/notice',
+      './molecules/now-card',
       './molecules/page-header',
       './molecules/panel',
       './molecules/popover',
@@ -846,6 +1037,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/tabs',
       './molecules/terminal-card',
       './molecules/timeline',
+      './molecules/tip-card',
       './molecules/toast',
       './organisms/calendar-grid',
       './organisms/module-rail',
@@ -926,6 +1118,10 @@ describe('Storybook TypeScript docgen contract', () => {
       'ModuleRail',
       'NavList',
       'Notice',
+      'NowCard',
+      'NowCardBody',
+      'NowCardDetail',
+      'NowCardFooter',
       'PageHeader',
       'Panel',
       'PanelBody',
@@ -970,6 +1166,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Text',
       'Textarea',
       'Timeline',
+      'TipCard',
       'ToastProvider',
       'Toggle',
       'Tooltip',

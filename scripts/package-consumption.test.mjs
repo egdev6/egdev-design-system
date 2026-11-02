@@ -88,7 +88,7 @@ import type { MenuProps, MenuEntry, MenuActionItem, MenuLinkItem, MenuSeparatorI
 import { createElement, createRef, forwardRef, Fragment } from 'react';
 import type { ChangeEvent, ComponentProps, ComponentPropsWithoutRef, ComponentRef, ReactElement } from 'react';
 import { ToastProvider, useToast } from '@egdev/ui';
-import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, CommunityCard, CommunityCardAction, CommunityCardMark, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, TerminalCard, TerminalCardBar, TerminalCardList, Text, Textarea, Timeline, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
+import { AspectRatio, Avatar, Badge, Button, ButtonGroup, Carousel, Checkbox, Chip, ChipGroup, Cluster, CommunityCard, CommunityCardAction, CommunityCardMark, Countdown, Divider, Dropzone, Field, FieldMessage, Gauge, Heading, Icon, IconButton, Input, Kbd, Label, Link, ListItem, ListItemActions, ListItemBody, ListItemContent, ListItemFooter, ListItemLeading, ListItemMedia, ListItemMeta, ListItemTitle, ListItemTrailing, Logo, MeterRow, ModuleCard, NavList, Notice, NowCard, NowCardBody, NowCardDetail, NowCardFooter, PageHeader, Popover, PopoverClose, PopoverContent, PopoverTrigger, PreviewFrame, ProgressBar, ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags, PullQuote, RadioGroup, SearchTrigger, SectionHeader, Select, SelectTile, Skeleton, Slider, Slot, Slottable, SocialLinks, Spinner, Stack, Stat, StatusDot, Surface, Switch, Tabs, TerminalCard, TerminalCardBar, TerminalCardList, Text, Textarea, Timeline, TipCard, Toggle, Tooltip, VisuallyHidden, badgeVariants, chipVariants, dropzoneVariants, navListVariants, noticeVariants, progressBarVariants, radioGroupVariants, sliderVariants, statVariants, surfaceVariants, tabsVariants, tooltipVariants } from '@egdev/ui';
 import type {
   AspectRatioProps,
   AvatarProps,
@@ -165,6 +165,8 @@ import type {
   ProjectCardLevel,
   ProjectCardSize,
   ProjectCardVariant,
+  TipCardLevel,
+  TipCardProps,
   ModuleCardProps,
   ModuleCardStatus,
   ModuleCardVariant,
@@ -206,6 +208,12 @@ import type {
   SectionHeaderTone,
   NoticeProps,
   NoticeTone,
+  NowCardBodyProps,
+  NowCardDetailProps,
+  NowCardFooterProps,
+  NowCardLevel,
+  NowCardProps,
+  NowCardSize,
   ToastApi,
   ToastProps,
   ToastProviderProps,
@@ -1175,7 +1183,99 @@ type ProjectCardPrivateHook = (typeof import('@egdev/ui'))['useProjectCard'];
 // @ts-expect-error Internal root recipe is not public.
 type ProjectCardPrivateRecipe = (typeof import('@egdev/ui'))['projectCardVariants'];
 export type ProjectCardPrivateNegatives = [ProjectCardPrivateHook, ProjectCardPrivateRecipe];
+// TipCard samples stay outside App so the existing aggregate control-count/focus harness is unchanged.
+const tipCardBase: TipCardProps = {
+  title: 'Packed tip',
+  badge: 'Tip',
+  src: 'tip-cover.webp',
+  alt: 'Cover of the packed tip',
+  focalPoint: 'left',
+  id: 'packed-tip',
+  className: 'col-span-full'
+};
+const tipCardRank: TipCardLevel = 6;
+export function TipCardSamples({ badge = 'Tip', level = 3 }: { badge?: string; level?: TipCardLevel }) {
+  return createElement(TipCard, {
+    ...tipCardBase,
+    badge,
+    level,
+    title: level === tipCardRank ? 'Packed tip six' : tipCardBase.title
+  });
+}
+// @ts-expect-error The generated heading owns the article name.
+const relabelledTipCard: TipCardProps = { ...tipCardBase, 'aria-label': 'Other' };
+// @ts-expect-error Passive articles have no root tab stop API.
+const focusableTipCard: TipCardProps = { ...tipCardBase, tabIndex: 0 };
+// @ts-expect-error The article role belongs to the card.
+const roleTipCard: TipCardProps = { ...tipCardBase, role: 'region' };
+// @ts-expect-error There is no public ref API on either supported React major.
+const referencedTipCard: TipCardProps = { ...tipCardBase, ref: createRef<HTMLElement>() };
+// @ts-expect-error TipCard is not polymorphic.
+const slottedTipCard: TipCardProps = { ...tipCardBase, asChild: true };
+// @ts-expect-error The poster carries no children; every content slot is prop-driven.
+const childTipCard: TipCardProps = { ...tipCardBase, children: 'Extra' };
+// @ts-expect-error A visible heading is required.
+const unnamedTipCard: TipCardProps = { src: 'tip-cover.webp', alt: 'Cover' };
+// @ts-expect-error A cover image is required.
+const unimagedTipCard: TipCardProps = { title: 'Packed tip', alt: 'Cover' };
+// @ts-expect-error Cover alternative text is required.
+const undescribedTipCard: TipCardProps = { title: 'Packed tip', src: 'tip-cover.webp' };
+// @ts-expect-error Internal hook is not public.
+type TipCardPrivateHook = (typeof import('@egdev/ui'))['useTipCard'];
+// @ts-expect-error Internal root recipe is not public.
+type TipCardPrivateRecipe = (typeof import('@egdev/ui'))['tipCardVariants'];
+export type TipCardPrivateNegatives = [TipCardPrivateHook, TipCardPrivateRecipe];
 // The standalone annotation and Field share public APIs, no workspace aliases.
+// NowCard stays outside App so the existing aggregate control-count/focus harness is unchanged.
+const nowCardLevel: NowCardLevel = 4;
+const nowCardBadge = createElement(Badge, { tone: 'brand', variant: 'soft', children: 'Building' });
+const nowCardSample: NowCardProps = {
+  title: 'Currently building',
+  level: nowCardLevel,
+  statusBadge: nowCardBadge,
+  'aria-describedby': 'now-description',
+  className: 'col-span-full',
+  children: [
+    createElement(NowCardBody, { key: 'body', children: createElement('p', null, 'Shipping the web catalog layer.') }),
+    createElement(NowCardFooter, {
+      key: 'foot',
+      children: [
+        createElement(NowCardDetail, { key: 'detail', children: ['Next stream ', createElement('b', null, 'Thursday')] }),
+        createElement(Link, { key: 'live', href: '#live', variant: 'underlined', children: 'Watch live' })
+      ]
+    })
+  ]
+};
+export function NowCardSamples({ size = 'md' }: { size?: NowCardSize }) {
+  return createElement('div', null,
+    createElement(NowCard, { ...nowCardSample, size, id: 'now-card' }),
+    createElement(NowCard, { ...nowCardSample, size: 'sm', id: 'now-card-sm' }),
+    // Omitted, null and boolean slots render no wrapper at all.
+    createElement(NowCard, { title: 'Currently exploring', id: 'now-omitted', children: createElement(NowCardBody, { children: 'Copy only.' }) }),
+    createElement(NowCard, { title: 'Currently exploring', statusBadge: null, id: 'now-null', children: createElement(NowCardBody, { children: 'Copy only.' }) }),
+    createElement(NowCard, { title: 'Currently exploring', statusBadge: false, id: 'now-boolean', children: createElement(NowCardBody, { children: 'Copy only.' }) }));
+}
+// @ts-expect-error A visible heading is required.
+const unnamedNow: NowCardProps = {};
+// @ts-expect-error Root naming belongs to the generated heading.
+const relabelledNow: NowCardProps = { ...nowCardSample, 'aria-label': 'Other' };
+// @ts-expect-error Root naming belongs to the generated heading.
+const reheadedNow: NowCardProps = { ...nowCardSample, 'aria-labelledby': 'other-heading' };
+// @ts-expect-error Passive articles have no root tab stop API.
+const focusableNow: NowCardProps = { ...nowCardSample, tabIndex: 0 };
+// @ts-expect-error There is no public ref API on either supported React major.
+const referencedNow: NowCardProps = { ...nowCardSample, ref: createRef<HTMLElement>() };
+// @ts-expect-error NowCard is not polymorphic.
+const slottedNow: NowCardProps = { ...nowCardSample, asChild: true };
+// @ts-expect-error Only md and sm densities are supported.
+const sizedNow: NowCardProps = { ...nowCardSample, size: 'xs' };
+// @ts-expect-error Heading rank is semantic 2-6, never a visual size.
+const rankedNow: NowCardProps = { ...nowCardSample, level: 1 };
+// @ts-expect-error Internal hook is not public.
+type NowCardPrivateHook = (typeof import('@egdev/ui'))['useNowCard'];
+// @ts-expect-error Internal part recipe is not public.
+type NowCardPrivateRecipe = (typeof import('@egdev/ui'))['nowCardVariants'];
+export type NowCardPrivateNegatives = [NowCardPrivateHook, NowCardPrivateRecipe];
 export const messageTones: FieldMessageTone[] = ['description', 'info', 'warning', 'success', 'error'];
 export const messageProps: FieldMessageProps = { children: 'Message text', tone: 'description' };
 export function FieldMessageSamples({ tone = 'description' }: { tone?: FieldMessageTone }) {
@@ -4295,6 +4395,10 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ModuleRail',
   'NavList',
   'Notice',
+  'NowCard',
+  'NowCardBody',
+  'NowCardDetail',
+  'NowCardFooter',
   'PageHeader',
   'Panel',
   'PanelBody',
@@ -4339,6 +4443,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Text',
   'Textarea',
   'Timeline',
+  'TipCard',
   'ToastProvider',
   'Toggle',
   'Tooltip',
@@ -4712,6 +4817,49 @@ try {
 } finally {
   moduleDocument.window.close();
 }
+import { NowCardSamples } from './consumer.ts';
+const nowDocument = new JSDOM(renderToString(createElement(NowCardSamples)));
+try {
+  const document = nowDocument.window.document;
+  const card = document.getElementById('now-card');
+  const heading = document.getElementById(card.getAttribute('aria-labelledby'));
+  assert.equal(card.tagName, 'ARTICLE');
+  assert.equal(heading.tagName, 'H4');
+  assert.equal(heading.textContent, 'Currently building');
+  // Badge-first DOM/reading order: the wrapper is the article's first content, before the heading.
+  const badgeWrapper = card.firstElementChild;
+  assert.ok(badgeWrapper.classList.contains('eg-now-card__badge'));
+  assert.equal(badgeWrapper.textContent, 'Building');
+  assert.equal(badgeWrapper.hasAttribute('aria-hidden'), false);
+  assert.ok(badgeWrapper.compareDocumentPosition(heading) & nowDocument.window.Node.DOCUMENT_POSITION_FOLLOWING);
+  assert.equal(card.getAttribute('data-size'), 'md');
+  const body = card.querySelector('.eg-now-card__body');
+  assert.ok(body.classList.contains('p-6'));
+  assert.ok(body.classList.contains('text-body-large'));
+  const foot = card.querySelector('.eg-now-card__foot');
+  assert.ok(foot.classList.contains('bg-surface-0'));
+  assert.ok(foot.classList.contains('border-t'));
+  assert.ok(foot.classList.contains('rounded-b-xl'));
+  assert.ok(foot.classList.contains('justify-between'));
+  assert.ok(card.querySelector('.eg-now-card__detail'));
+  assert.equal(card.querySelectorAll('a').length, 1, 'exactly one footer tab stop');
+  assert.equal(card.querySelector('a').getAttribute('href'), '#live');
+  assert.equal(card.hasAttribute('role'), false);
+  assert.equal(card.hasAttribute('tabindex'), false);
+  assert.equal(card.hasAttribute('aria-label'), false);
+  const sm = document.getElementById('now-card-sm');
+  assert.equal(sm.getAttribute('data-size'), 'sm');
+  const smBody = sm.querySelector('.eg-now-card__body');
+  assert.ok(smBody.classList.contains('p-4'));
+  assert.ok(smBody.classList.contains('text-body-default'));
+  assert.match(smBody.textContent, /Shipping the web catalog layer\./, 'sm renders the full copy');
+  assert.ok(sm.querySelector('.eg-now-card__foot'), 'sm renders the full footer');
+  for (const id of ['now-omitted', 'now-null', 'now-boolean']) {
+    assert.equal(document.getElementById(id).querySelector('.eg-now-card__badge'), null, id);
+  }
+} finally {
+  nowDocument.window.close();
+}
 import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TerminalCardSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
 // TerminalCard SSR: named group, definition pairs, success tone and decorative caret.
 {
@@ -4772,6 +4920,42 @@ for (const [projectVariant, projectSize] of [
     assert.equal(document.querySelectorAll('a').length, 1, 'The footer link is the only tab stop');
   } finally {
     projectDocument.window.close();
+  }
+}
+import { TipCardSamples } from './consumer.ts';
+for (const [tipBadge, tipLevel, tipTitle] of [
+  ['Tip', 3, 'Packed tip'],
+  ['   ', 6, 'Packed tip six']
+]) {
+  const tipDocument = new JSDOM(renderToString(createElement(TipCardSamples, { badge: tipBadge, level: tipLevel })));
+  try {
+    const document = tipDocument.window.document;
+    const card = document.getElementById('packed-tip');
+    const heading = document.getElementById(card.getAttribute('aria-labelledby'));
+    assert.equal(card.tagName, 'ARTICLE');
+    assert.equal(heading.tagName, tipLevel === 6 ? 'H6' : 'H3', 'The supplied rank names the poster');
+    assert.equal(heading.textContent, tipTitle);
+    assert.equal(card.getAttribute('data-level'), String(tipLevel));
+    assert.ok(heading.classList.contains('wrap-anywhere'), 'The mono label wraps');
+    assert.equal(card.hasAttribute('role'), false);
+    assert.equal(card.hasAttribute('tabindex'), false);
+    assert.equal(card.hasAttribute('aria-live'), false);
+    const figure = card.querySelector('figure');
+    const wrapper = figure.querySelector('[data-radix-aspect-ratio-wrapper]');
+    assert.match(wrapper.getAttribute('style'), /padding-bottom:\s*150%/, 'The card fixes 2:3 internally');
+    assert.equal(figure.getAttribute('data-ratio'), String(2 / 3));
+    assert.equal(figure.querySelector('img').getAttribute('alt'), 'Cover of the packed tip');
+    assert.ok(figure.querySelector('img').className.includes('object-left'), 'The focal point reaches the crop');
+    assert.equal(card.querySelector('.eg-tip-card__cap').contains(figure), false, 'The caption row stays below the cover');
+    const badge = card.querySelector('.eg-badge');
+    if (tipBadge === 'Tip') {
+      assert.equal(badge.textContent, 'Tip');
+      assert.equal(badge.nextElementSibling, heading, 'The badge precedes the label in the caption row');
+    } else {
+      assert.equal(badge, null, 'Whitespace-only badge leaves no empty pill');
+    }
+  } finally {
+    tipDocument.window.close();
   }
 }
 import { photoFrameNumericSamples, photoFrameSamples } from './consumer.ts';
