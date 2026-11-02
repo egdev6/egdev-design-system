@@ -139,12 +139,12 @@ export const terminalCardListVariants = cva(
 
 /** Definition term ink; the Material brand ink for text on raised surfaces. */
 export const terminalCardTermVariants = cva(
-  'eg-terminal-card__term min-w-0 [overflow-wrap:anywhere] text-fg-brand-raised'
+  'eg-terminal-card__term min-w-0 max-w-24 [overflow-wrap:anywhere] text-fg-brand-raised'
 );
 
 /** Definition value ink; a success tone repaints the value only, through `data-tone`. */
 export const terminalCardValueVariants = cva(
-  'eg-terminal-card__value min-w-0 tabular-nums text-fg-default [overflow-wrap:anywhere]',
+  'eg-terminal-card__value m-0 min-w-0 tabular-nums text-fg-default [overflow-wrap:anywhere]',
   {
     variants: {
       tone: {

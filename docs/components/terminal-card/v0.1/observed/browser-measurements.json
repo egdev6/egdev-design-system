@@ -1,0 +1,69 @@
+[
+  {
+    "story": "default",
+    "role": "group",
+    "label": "Profile",
+    "width": 356,
+    "scroll": 356,
+    "box": "border-box",
+    "bg": "rgb(27, 28, 32)",
+    "barBg": "rgb(35, 36, 40)",
+    "pairs": 5,
+    "caretHidden": "true",
+    "animation": "pulse",
+    "tabStops": 0
+  },
+  {
+    "story": "with-shell",
+    "role": "group",
+    "label": "Agent teams",
+    "width": 356,
+    "scroll": 356,
+    "box": "border-box",
+    "bg": "rgb(27, 28, 32)",
+    "barBg": "rgb(35, 36, 40)",
+    "pairs": 3,
+    "animation": null,
+    "tabStops": 0
+  },
+  {
+    "story": "without-shell",
+    "role": "group",
+    "label": "Session",
+    "width": 356,
+    "scroll": 356,
+    "box": "border-box",
+    "bg": "rgb(27, 28, 32)",
+    "barBg": "rgb(35, 36, 40)",
+    "pairs": 1,
+    "animation": null,
+    "tabStops": 0
+  },
+  {
+    "story": "long-values",
+    "role": "group",
+    "label": "Deployment",
+    "width": 228,
+    "scroll": 228,
+    "box": "border-box",
+    "bg": "rgb(27, 28, 32)",
+    "barBg": "rgb(35, 36, 40)",
+    "pairs": 1,
+    "animation": null,
+    "tabStops": 0
+  },
+  {
+    "story": "with-caret",
+    "role": "group",
+    "label": "Building",
+    "width": 356,
+    "scroll": 356,
+    "box": "border-box",
+    "bg": "rgb(27, 28, 32)",
+    "barBg": "rgb(35, 36, 40)",
+    "pairs": 1,
+    "caretHidden": "true",
+    "animation": "pulse",
+    "tabStops": 0
+  }
+]

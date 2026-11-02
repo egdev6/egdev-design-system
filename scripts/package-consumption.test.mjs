@@ -1314,7 +1314,7 @@ export function TerminalCardSamples() {
   return createElement(
     TerminalCard,
     { ...terminalCardProps },
-    createElement(TerminalCardBar, { key: 'bar', shell: 'zsh' }, '~/egdev'),
+    createElement(TerminalCardBar, { key: 'bar', shell: 'zsh', children: '~/egdev' }),
     createElement(TerminalCardList, { key: 'list', items: terminalRows })
   );
 }
@@ -3982,12 +3982,12 @@ function assertTerminalCardConsumerCSS(css) {
   );
   const toneRule = css.match(/\.data-\\\[tone\\\=success\\\]\\\:text-status-success[^{]*\{([^}]*)\}/);
   assert.ok(
-    toneRule && /color:\s*var\(--color-status-success\)/.test(toneRule[1]),
+    toneRule && /color:\s*var\(--color-status-success(?:,[^)]*)?\)/.test(toneRule[1]),
     'Success tone repaints the value through the status token'
   );
   const pulseRule = css.match(/\.animate-pulse\s*\{([^}]*)\}/);
   assert.ok(
-    pulseRule && /var\(--animate-pulse\)/.test(pulseRule[1]),
+    pulseRule && /var\(--animate-pulse[,)]/.test(pulseRule[1]),
     'The caret pulses through the existing token animation'
   );
   const reduceAt = css.indexOf('prefers-reduced-motion: reduce');

@@ -3040,7 +3040,13 @@ test('TerminalCard ships named group SSR with decorative chrome and status/caret
   assert.ok(html.includes('w-96'), 'Consumer width lands on the root');
   assert.ok(html.includes('eg-terminal-card__bar'));
   assert.ok(html.includes('eg-terminal-card__shell'));
-  const cells = [...html.matchAll(/<(dt|dd)[^>]*>([^<]*)<\/\1>/g)].map((cell) => [cell[1], cell[2]]);
+  const { JSDOM } = await import('jsdom');
+  const dom = new JSDOM(html);
+  const cells = [...dom.window.document.querySelectorAll('dl > dt, dl > dd')].map((cell) => [
+    cell.tagName.toLowerCase(),
+    cell.textContent
+  ]);
+  dom.window.close();
   assert.deepEqual(cells, [
     ['dt', 'user'],
     ['dd', 'egdev'],
@@ -3101,12 +3107,12 @@ test('TerminalCard ships scanned band, wrap, tone and caret pulse utilities with
   assert.match(rule('.\\[overflow-wrap\\:anywhere\\]'), /overflow-wrap:\s*anywhere/);
   assert.match(
     rule('.data-\\[tone\\=success\\]\\:text-status-success'),
-    /color:\s*var\(--color-status-success\)/,
+    /color:\s*var\(--color-status-success(?:,[^)]*)?\)/,
     'Success tone repaints the value through the status token'
   );
   assert.match(
     rule('.animate-pulse'),
-    /animation:[^;]*var\(--animate-pulse\)/,
+    /animation:[^;]*var\(--animate-pulse[,)]/,
     'The caret pulses through the existing token'
   );
   assert.ok(css.includes('@media (prefers-reduced-motion: reduce)'));
@@ -3397,6 +3403,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'TabBar',
       'Table',
       'Tabs',
+      'TerminalCard',
+      'TerminalCardBar',
+      'TerminalCardList',
       'Text',
       'Textarea',
       'Timeline',
@@ -3845,6 +3854,14 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'TabsSize',
     'TabsTone',
     'TabsVariant',
+    'TerminalCard',
+    'TerminalCardBar',
+    'TerminalCardBarProps',
+    'TerminalCardList',
+    'TerminalCardListProps',
+    'TerminalCardProps',
+    'TerminalCardRow',
+    'TerminalCardTone',
     'Text',
     'TextProps',
     'TextTone',

@@ -172,6 +172,8 @@ describe('TerminalCard public contract', () => {
     const path = screen.getByText('~/egdev/very-long-project-directory-name');
     expect(value.className).toContain('[overflow-wrap:anywhere]');
     expect(term.className).toContain('[overflow-wrap:anywhere]');
+    expect(term).toHaveClass('max-w-24');
+    expect(value).toHaveClass('m-0');
     expect(path.className).toContain('[overflow-wrap:anywhere]');
     expect(root).toHaveClass('min-w-0', 'overflow-hidden');
     expect(root).toHaveTextContent('eu-west-1-primary-with-secondary-failover-and-managed-replication');
