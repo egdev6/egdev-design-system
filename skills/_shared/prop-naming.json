@@ -1,5 +1,59 @@
 [
   {
+    "id": "scene-media",
+    "name": "media",
+    "meaning": "A passive, decorative media or 3D slot of a scene organism, supplied by the consumer.",
+    "whenToUse": "Supply optional decorative scene media such as an Isotipo3D or an image that carries no unique meaning.",
+    "avoid": "Do not use for thumbnails, interactive content, effect selectors or Radix asChild composition.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/hero/v0.1/prop-naming-approval-scene-media.json",
+      "scope": "convention:scene-media",
+      "contentHash": "sha256:811562fe3e2708a61ae3662e2fbb66f803fd6df641bf8cc60f635e857859f502"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Hero",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/hero/types.ts",
+          "symbol": "HeroProps",
+          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+        }
+      }
+    ]
+  },
+  {
+    "id": "scene-social",
+    "name": "social",
+    "meaning": "An optional consumer-supplied social-profile links group in a scene organism.",
+    "whenToUse": "Supply a named social-profile links group within a scene, such as SocialLinks.",
+    "avoid": "Do not use for CTA controls, a structured data array or a generic navigation landmark.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/hero/v0.1/prop-naming-approval-scene-social.json",
+      "scope": "convention:scene-social",
+      "contentHash": "sha256:e68de9fc4fe5b55e80fa6937b1f79fe2245942fe007308252072065394bd9bb1"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Hero",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/hero/types.ts",
+          "symbol": "HeroProps",
+          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+        }
+      }
+    ]
+  },
+  {
     "id": "active-section-id",
     "name": "activeId",
     "meaning": "The host-designated identity of the current section in an ordered section navigation.",
@@ -4688,6 +4742,16 @@
     },
     "usages": [
       {
+        "component": "Hero",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/hero/types.ts",
+          "symbol": "HeroProps",
+          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+        }
+      },
+      {
         "component": "AlertDialogContent",
         "type": "string (required)",
         "status": "existing",
@@ -4804,6 +4868,16 @@
       "contentHash": "sha256:3235f5126f7405ae3956b969186d33c48c302b42c2a40d169c9d2f11e1d12ead"
     },
     "usages": [
+      {
+        "component": "Hero",
+        "type": "1 | 2 | 3 | 4 | 5 | 6 (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/hero/types.ts",
+          "symbol": "HeroProps",
+          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+        }
+      },
       {
         "component": "ModuleCard",
         "type": "ModuleCardLevel (1|2|3|4|5|6)",
@@ -5113,6 +5187,16 @@
     },
     "usages": [
       {
+        "component": "Hero",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/hero/types.ts",
+          "symbol": "HeroProps",
+          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+        }
+      },
+      {
         "component": "PageHeader",
         "type": "string",
         "status": "existing",
@@ -5297,6 +5381,16 @@
       "contentHash": "sha256:6ad8880449dfe520919a4dcd2b6cfeb8f16c20a842553c86c89acb3180f40d6b"
     },
     "usages": [
+      {
+        "component": "Hero",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/hero/types.ts",
+          "symbol": "HeroProps",
+          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+        }
+      },
       {
         "component": "SectionHeader",
         "type": "string",
@@ -5529,6 +5623,16 @@
       "contentHash": "sha256:ef61567892d3f63443d04376c139f0c65a817818da8a3ef4b69f9aa80e1e9235"
     },
     "usages": [
+      {
+        "component": "Hero",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/hero/types.ts",
+          "symbol": "HeroProps",
+          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+        }
+      },
       {
         "component": "SectionHeader",
         "type": "string",

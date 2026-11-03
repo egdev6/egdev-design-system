@@ -122,6 +122,23 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts Hero inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
+    const doc = parser.parse(source('organisms/hero/Hero.tsx')).find(({ displayName }) => displayName === 'Hero');
+    for (const name of ['title', 'level']) {
+      expect(doc?.props[name], name).toMatchObject({ required: true });
+    }
+    for (const name of ['eyebrow', 'accent', 'lede', 'children', 'media', 'social', 'id']) {
+      expect(doc?.props[name], name).toMatchObject({ required: false, defaultValue: null });
+    }
+    for (const name of ['dir', 'lang', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className', 'onClick']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of ['role', 'style', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    expect(publicAPI.Hero).toBeDefined();
+    expect('heroVariants' in publicAPI).toBe(false);
+  });
   it('extracts SectionNav inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
     const doc = parser
       .parse(source('organisms/section-nav/SectionNav.tsx'))
@@ -1415,6 +1432,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './organisms/blog-grid',
       './organisms/calendar-grid',
       './organisms/footer',
+      './organisms/hero',
       './organisms/live-band',
       './organisms/module-rail',
       './organisms/notes-board',
@@ -1488,6 +1506,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Gauge',
       'GaugeGroup',
       'Heading',
+      'Hero',
       'Icon',
       'IconButton',
       'Indicator',
