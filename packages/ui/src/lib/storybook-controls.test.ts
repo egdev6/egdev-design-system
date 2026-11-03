@@ -124,7 +124,8 @@ const components = [
   ['TopBarUserMenu', 'organisms/top-bar'],
   ['Pixel', 'atoms/pixel'],
   ['SectionNav', 'organisms/section-nav'],
-  ['Closing', 'organisms/closing']
+  ['Closing', 'organisms/closing'],
+  ['Hero', 'organisms/hero']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -182,6 +183,17 @@ const expected: Record<string, Record<string, string | false>> = {
     lede: 'text',
     children: false,
     media: false
+  },
+  hero: {
+    title: 'text',
+    level: 'select',
+    eyebrow: 'text',
+    accent: 'text',
+    lede: 'text',
+    children: false,
+    media: false,
+    social: false,
+    id: 'text'
   },
   sectionnav: {
     label: 'text',
@@ -609,6 +621,7 @@ const expected: Record<string, Record<string, string | false>> = {
 };
 const ownPropCounts: Record<string, number> = {
   closing: 7,
+  hero: 9,
   sectionnav: 10,
   pixel: 1,
   notesboard: 2,
@@ -1283,6 +1296,12 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(jsdocControlsEnhancer.secondPass).toBeUndefined();
     expect(preview.parameters?.backgrounds).toEqual({ disable: true });
     expect(preview.parameters?.layout).toBe('padded');
+  });
+
+  it('exposes all Button size choices with md as the default', () => {
+    const { argTypes } = story('Button');
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['lg', 'md', 'sm']);
+    expect(argTypes.size?.table?.defaultValue?.summary).toBe('"md"');
   });
 
   it('retains IconButton required hidden naming, full choices and native button rows', () => {

@@ -623,6 +623,18 @@ const postReceiptUsages = [
   ...['heading-title', 'heading-level', 'heading-eyebrow', 'trailing-text-accent', 'section-lede'].map(
     (conventionId) => ({ conventionId, source: 'packages/ui/src/organisms/closing/types.ts#ClosingProps' })
   ),
+  ...[
+    'scene-media',
+    'scene-social',
+    'heading-title',
+    'heading-level',
+    'heading-eyebrow',
+    'trailing-text-accent',
+    'section-lede'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/organisms/hero/types.ts#HeroProps'
+  })),
   { conventionId: 'consumer-selected-condition', source: 'packages/ui/src/atoms/pixel/types.ts#PixelProps' },
   { conventionId: 'board-sticky-side', source: 'packages/ui/src/organisms/notes-board/types.ts#NotesBoardProps' },
   ...[
@@ -788,6 +800,59 @@ test('post-receipt usages exist with valid source evidence', () => {
     );
   }
 });
+test('Hero binds both approved scene conventions and its reviewed usages', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const plan = fs.readFileSync(resolve(root, 'docs/components/hero/v0.1/implementation-plan.md'), 'utf8');
+  assert.equal(digest(plan), 'sha256:11906914c6cc8b6f5eddade2a14a3f3415061727408e4e03c34e09901de8eb82');
+  const proposals = [...plan.split('## 5. Naming proposals')[1].matchAll(/```json\n([\s\S]*?)\n```/g)].map((m) =>
+    JSON.parse(m[1])
+  );
+  const path = 'packages/ui/src/organisms/hero/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  for (const proposal of proposals) {
+    const entry = registry.find(({ id }) => id === proposal.id);
+    assert.ok(entry, proposal.id);
+    const reference = `docs/components/hero/v0.1/prop-naming-approval-${proposal.id}.json`;
+    const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+    const { approval, usages, ...convention } = entry;
+    const { approval: _pending, usages: _empty, ...proposed } = proposal;
+    assert.deepEqual(convention, { ...proposed, status: 'approved' });
+    assert.equal(receipt.evidence.ownerChoice, 'Aprobar plan y gates (Recomendado)');
+    assert.deepEqual(receipt.entries, [
+      { scope: `convention:${entry.id}`, contentHash: props.conventionHash(entry), convention }
+    ]);
+    assert.deepEqual(approval, {
+      reference,
+      scope: receipt.entries[0].scope,
+      contentHash: receipt.entries[0].contentHash
+    });
+    assert.equal(usages.length, 1);
+    for (const prior of receipt.priorReceipts) {
+      assert.equal(prior.wholeFileSHA256, digest(fs.readFileSync(resolve(root, prior.path))));
+    }
+  }
+  for (const id of [
+    'scene-media',
+    'scene-social',
+    'heading-title',
+    'heading-level',
+    'heading-eyebrow',
+    'trailing-text-accent',
+    'section-lede'
+  ]) {
+    const usages = registry.find((entry) => entry.id === id).usages.filter((usage) => usage.component === 'Hero');
+    assert.equal(usages.length, 1, id);
+    assert.equal(usages[0].status, 'existing');
+    assert.deepEqual(usages[0].source, { path, symbol: 'HeroProps', revision });
+  }
+  validate(registry);
+  for (const id of ['scene-media', 'scene-social']) {
+    const changed = structuredClone(registry);
+    changed.find((entry) => entry.id === id).meaning += ' Changed.';
+    assert.throws(() => validate(changed), /approval/i);
+  }
+});
+
 test('Popover binds the approved close auto-focus convention and reviewed usage', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const reference = 'docs/components/popover/v0.1/prop-naming-approval.json';
@@ -1059,8 +1124,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   validate(actual);
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
-  assert.equal(actual.length, 152);
-  assert.equal(beforeIndicatorConventions(actual).length, 149);
+  assert.equal(actual.length, 154);
+  assert.equal(beforeIndicatorConventions(actual).length, 151);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -1182,7 +1247,9 @@ const receiptChain = [
   'docs/components/pixel/v0.1/prop-naming-approval.json',
   'docs/components/popover/v0.1/prop-naming-approval.json',
   'docs/components/section-nav/v0.1/prop-naming-approval.json',
-  'docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json'
+  'docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json',
+  'docs/components/hero/v0.1/prop-naming-approval-scene-media.json',
+  'docs/components/hero/v0.1/prop-naming-approval-scene-social.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -2784,7 +2851,7 @@ test('Isotipo3D naming receipt preserves 125 entries and binds three scoped appr
       `${JSON.stringify(
         registryBeforeSemanticAmendments(
           historicalRegistry(actual)
-            .filter(({ id }) => id !== 'close-auto-focus' && id !== 'active-section-id')
+            .filter(({ id }) => !['close-auto-focus', 'active-section-id', 'scene-media', 'scene-social'].includes(id))
             .slice(0, 125),
           isotipoReference
         ),

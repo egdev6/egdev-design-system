@@ -1051,9 +1051,9 @@
     "nivel": "organism",
     "destino": "ui",
     "radix": "—",
-    "compone": "Text, Button",
+    "compone": "Heading, Text, Button, SocialLinks; host SectionShell; consumer media",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): slot-based scene organism; copy, CTAs and the media slot are inputs and it runs no choreography."
+    "notas": "Implemented under approved v0.1 contract (#318): passive introductory scene with structured copy, consumer actions, social links and decorative media; host owns section semantics and choreography."
   },
   {
     "actual": "ChapterBreak",

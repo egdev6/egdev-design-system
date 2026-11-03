@@ -7,6 +7,41 @@ import { Button } from './Button';
 import { useButton } from './useButton';
 
 describe('Button contract', () => {
+  it('renders the large recipe and md-sized icon, including while loading', () => {
+    const { rerender } = render(
+      <Button size='lg' icon={<Icon name='check' />}>
+        Save
+      </Button>
+    );
+    const button = screen.getByRole('button', { name: 'Save' });
+    expect(button).toHaveClass('min-h-14', 'py-3', 'px-5.5', 'gap-2.5', 'text-cta-label');
+    expect(button.querySelector('.eg-btn__icon')).toHaveClass('size-(--icon-size)');
+    rerender(
+      <Button size='lg' loading={true}>
+        Save
+      </Button>
+    );
+    expect(button.querySelector('.eg-btn__icon')).toHaveClass('size-(--icon-size)');
+    expect(button.querySelector('.eg-spinner')).not.toBeNull();
+  });
+
+  it.each([
+    ['md', ['min-h-12', 'py-3', 'px-5.5', 'gap-2.5', 'text-cta-label'], 'size-(--icon-size)'],
+    [
+      'sm',
+      ['min-h-10', 'py-2', 'px-4', 'gap-2', 'text-label-default', '[font-weight:var(--text-cta-label--font-weight)]'],
+      'size-4'
+    ]
+  ] as const)('preserves the %s size recipe and icon', (size, classes, iconClass) => {
+    render(
+      <Button size={size} icon={<Icon name='check' />}>
+        Save
+      </Button>
+    );
+    const button = screen.getByRole('button', { name: 'Save' });
+    expect(button).toHaveClass(...classes);
+    expect(button.querySelector('.eg-btn__icon')).toHaveClass(iconClass);
+  });
   it.each(['primary', 'secondary', 'neutral', 'dark'] as const)(
     'supports the %s treatment in both sizes without legacy modifiers',
     (variant) => {

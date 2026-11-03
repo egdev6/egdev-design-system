@@ -148,6 +148,23 @@ describe('Storybook TypeScript docgen contract', () => {
     }
     expect(publicAPI.Closing).toBeDefined();
   });
+  it('extracts Hero inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
+    const doc = parser.parse(source('organisms/hero/Hero.tsx')).find(({ displayName }) => displayName === 'Hero');
+    for (const name of ['title', 'level']) {
+      expect(doc?.props[name], name).toMatchObject({ required: true });
+    }
+    for (const name of ['eyebrow', 'accent', 'lede', 'children', 'media', 'social', 'id']) {
+      expect(doc?.props[name], name).toMatchObject({ required: false, defaultValue: null });
+    }
+    for (const name of ['dir', 'lang', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className', 'onClick']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of ['role', 'style', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    expect(publicAPI.Hero).toBeDefined();
+    expect('heroVariants' in publicAPI).toBe(false);
+  });
   it('extracts SectionNav inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
     const doc = parser
       .parse(source('organisms/section-nav/SectionNav.tsx'))
@@ -1442,6 +1459,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './organisms/calendar-grid',
       './organisms/closing',
       './organisms/footer',
+      './organisms/hero',
       './organisms/live-band',
       './organisms/module-rail',
       './organisms/notes-board',
@@ -1516,6 +1534,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Gauge',
       'GaugeGroup',
       'Heading',
+      'Hero',
       'Icon',
       'IconButton',
       'Indicator',
@@ -2002,7 +2021,11 @@ describe('Storybook TypeScript docgen contract', () => {
       'neutral',
       'dark'
     ]);
-    expect(props.size?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual(['md', 'sm']);
+    expect(props.size?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()).toEqual([
+      'lg',
+      'md',
+      'sm'
+    ]);
     for (const name of ['type', 'disabled', 'onClick', 'className']) {
       expect(props[name]).toBeDefined();
     }

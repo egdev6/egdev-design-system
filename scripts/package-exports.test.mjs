@@ -765,6 +765,111 @@ test('Closing package SSR retains its own responsive classes, heading, media and
   }
 });
 
+test('Hero ships every recipe utility in its bounded responsive blocks', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/organisms/hero/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      for (const name of node.text.split(/\s+/).filter(Boolean)) {
+        classes.add(name);
+      }
+    }
+    ts.forEachChild(node, collect);
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      for (const argument of node.arguments) {
+        collect(argument);
+      }
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.ok(classes.size > 30);
+  const narrow = cssBlock(utilities, /@media\s*\(\s*width\s*<=\s*860px\s*\)\s*\{/);
+  const wide = cssBlock(utilities, /@media\s*\(\s*width\s*>=\s*961px\s*\)\s*\{/);
+  for (const name of classes) {
+    if (name.startsWith('eg-')) {
+      continue;
+    }
+    const selector = '.' + name.replace(/[^\w-]/g, '\\$&');
+    assert.ok(utilities.includes(selector), `Missing Hero utility ${name}`);
+    if (name.startsWith('[@media(width<=860px)]:')) {
+      assert.ok(narrow.includes(selector), `Missing bounded ${name}`);
+    }
+    if (name.startsWith('[@media(width>=961px)]:')) {
+      assert.ok(wide.includes(selector), `Missing bounded ${name}`);
+    }
+  }
+  assert.doesNotMatch(utilities, /\.eg-hero\s*\{/);
+  assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-hero/);
+});
+
+test('Hero package SSR keeps responsive classes on its own elements and omits empty slots', async () => {
+  const { Hero } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const dom = new JSDOM(
+    renderToString(
+      h(Hero, {
+        title: 'Build ',
+        accent: 'together',
+        level: 2,
+        id: 'intro',
+        eyebrow: 'Hello',
+        lede: 'Intro',
+        media: h('span', null, 'Artwork'),
+        social: h('span', null, 'Profiles'),
+        children: h('button', null, 'Go')
+      })
+    )
+  );
+  try {
+    const root = dom.window.document.querySelector('.eg-hero');
+    const copy = root.children[0];
+    const media = root.children[1];
+    const slot = media.firstElementChild;
+    assert.equal(root.querySelector('h2#intro')?.textContent, 'Build together');
+    assert.equal(slot.getAttribute('aria-hidden'), 'true');
+    for (const name of ['[@media(width<=860px)]:grid-cols-1', '[@media(width<=860px)]:gap-4']) {
+      assert.ok(root.classList.contains(name));
+    }
+    assert.ok(copy.children[0].classList.contains('[@media(width>=961px)]:mb-3'));
+    assert.ok(copy.children[1].classList.contains('[@media(width>=961px)]:mb-5'));
+    for (const name of ['[@media(width>=961px)]:mt-7', '[@media(width>=961px)]:mb-8']) {
+      assert.ok(copy.children[3].classList.contains(name));
+    }
+    assert.ok(media.classList.contains('[@media(width<=860px)]:order-first'));
+    for (const name of [
+      '[@media(width<=860px)]:max-w-[min(34svh,calc(var(--space-24)*4))]',
+      '[@media(width>=961px)]:max-w-[min(56svh,calc(var(--space-24)*7))]'
+    ]) {
+      assert.ok(slot.classList.contains(name));
+    }
+  } finally {
+    dom.window.close();
+  }
+  const empty = new JSDOM(renderToString(h(Hero, { title: 'Plain', level: 3 })));
+  try {
+    const root = empty.window.document.querySelector('.eg-hero');
+    assert.equal(root.children.length, 1);
+    assert.equal(root.firstElementChild.children.length, 1);
+    assert.equal(root.querySelector('h3')?.textContent, 'Plain');
+    assert.equal(root.querySelector('[aria-hidden]'), null);
+  } finally {
+    empty.window.close();
+  }
+});
+
 test('SectionNav ships every recipe utility in the bounded compact block', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -4740,6 +4845,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Gauge',
       'GaugeGroup',
       'Heading',
+      'Hero',
       'Icon',
       'IconButton',
       'Indicator',
@@ -5101,6 +5207,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Heading',
     'HeadingLevel',
     'HeadingProps',
+    'Hero',
+    'HeroProps',
     'Icon',
     'IconButton',
     'IconButtonProps',

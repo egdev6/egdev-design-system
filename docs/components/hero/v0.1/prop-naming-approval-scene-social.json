@@ -1,0 +1,35 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the scene-social convention for a scene's social-profile links group.",
+  "evidence": {
+    "channel": "docs/components/web-catalog/v0.1/layer-e-plan-approvals.md",
+    "ownerChoice": "Aprobar plan y gates (Recomendado)",
+    "interpretation": "The owner approved the naming convention in gate 3 of the Hero v0.1 plan. The whole-file plan SHA-256 is 11906914c6cc8b6f5eddade2a14a3f3415061727408e4e03c34e09901de8eb82; the exact entry text is in section 5. Not native review authority."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/hero/v0.1/prop-naming-approval-scene-media.json",
+      "wholeFileSHA256": "sha256:f7ea9d33f9beffc3d9c46ebd5bfb3cd86e57601791383f9ebb1bf79dc017b1b3"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:scene-social",
+      "contentHash": "sha256:e68de9fc4fe5b55e80fa6937b1f79fe2245942fe007308252072065394bd9bb1",
+      "convention": {
+        "id": "scene-social",
+        "name": "social",
+        "meaning": "An optional consumer-supplied social-profile links group in a scene organism.",
+        "whenToUse": "Supply a named social-profile links group within a scene, such as SocialLinks.",
+        "avoid": "Do not use for CTA controls, a structured data array or a generic navigation landmark.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

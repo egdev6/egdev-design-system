@@ -10,7 +10,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) =>
   const Root = button.asChild ? SlotPrimitive.Root : 'button';
   const icon = button.showIcon ? (
     <span className={button.iconClassName} aria-hidden='true'>
-      {button.loading ? <Spinner size={button.size} /> : button.icon}
+      {button.loading ? <Spinner size={button.size === 'lg' ? 'md' : button.size} /> : button.icon}
     </span>
   ) : null;
   return (

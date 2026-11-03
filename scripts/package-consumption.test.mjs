@@ -38,6 +38,8 @@ import { LiveBandField, LiveBandList, LiveBandRow, LiveBandRows, LiveBandStreams
 import type { LiveBandFieldProps, LiveBandListProps, LiveBandRowProps, LiveBandRowsProps, LiveBandStreamsProps, LiveBandVodProps } from '@egdev/ui';
 import { Closing } from '@egdev/ui';
 import type { ClosingProps } from '@egdev/ui';
+import { Hero } from '@egdev/ui';
+import type { HeroProps } from '@egdev/ui';
 import { SectionNav } from '@egdev/ui';
 import type { SectionNavItem, SectionNavProps } from '@egdev/ui';
 import { NowStrip } from '@egdev/ui';
@@ -455,6 +457,23 @@ type ClosingPrivate = (typeof import('@egdev/ui'))['closingVariants'];
 // @ts-expect-error Media recipe is private.
 type ClosingMediaPrivate = (typeof import('@egdev/ui'))['closingMediaVariants'];
 export type ClosingNegatives = [typeof closingMissingTitle, typeof closingMissingLevel, typeof closingMissingChildren, typeof closingLevel, typeof closingRole, typeof closingStyle, typeof closingHtml, typeof closingSlot, typeof closingRef, ClosingPrivate, ClosingMediaPrivate];
+export const heroProps: HeroProps = { title: 'Build ', accent: 'together', level: 2, id: 'intro', eyebrow: 'Hello', lede: 'Intro', media: createElement('span', null, 'Artwork'), social: createElement('span', null, 'Profiles'), children: createElement('button', null, 'Go') };
+export function HeroSamples({ empty = false }: { empty?: boolean }) { return createElement(Hero, empty ? { title: 'Plain', level: 3 } : heroProps); }
+// @ts-expect-error Role is protected.
+const heroRole: HeroProps = { ...heroProps, role: 'region' };
+// @ts-expect-error Inline style is protected.
+const heroStyle: HeroProps = { ...heroProps, style: {} };
+// @ts-expect-error Raw HTML is protected.
+const heroHtml: HeroProps = { ...heroProps, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error Refs are not supported.
+const heroRef: HeroProps = { ...heroProps, ref: null };
+// @ts-expect-error Root polymorphism is not supported.
+const heroAsChild: HeroProps = { ...heroProps, asChild: true };
+// @ts-expect-error Heading rank is required.
+const heroMissing: HeroProps = { title: 'Missing level' };
+// @ts-expect-error Recipe is private.
+type HeroPrivate = (typeof import('@egdev/ui'))['heroVariants'];
+export type HeroNegatives = [typeof heroRole, typeof heroStyle, typeof heroHtml, typeof heroRef, typeof heroAsChild, typeof heroMissing, HeroPrivate];
 const sectionNavItems: SectionNavItem[] = [{ id: 'one', label: 'One', href: '#one' }, { id: 'two', label: 'Two', href: '#two' }];
 export const sectionNavProps: SectionNavProps = { label: 'Sections', disclosureLabel: 'Open index', nextLabel: 'Next section', items: sectionNavItems, activeId: 'one', value: 50 };
 export function SectionNavSamples() { return createElement(SectionNav, sectionNavProps); }
@@ -893,7 +912,7 @@ const missingButtonLabel: ButtonProps = {};
 const buttonHref: ButtonProps = { children: 'Projects', href: '#projects' };
 // @ts-expect-error Icon-only size treatments belong to IconButton.
 const buttonIconVariant: ButtonProps = { children: 'Save', variant: 'icon' };
-// @ts-expect-error Button dimensions are only md and sm presets.
+// @ts-expect-error Button dimensions are only lg, md and sm presets.
 const buttonNumericSize: ButtonProps = { children: 'Save', size: 48 };
 const slotProps: SlotProps = { 'aria-label': 'Composed documentation' };
 export function SlotSample() {
@@ -4671,6 +4690,46 @@ function assertClosingConsumerCSS(css) {
   assert.match(block(css, /@layer components\s*\{/), /\.eg-closing/);
 }
 
+function assertHeroConsumerCSS(css) {
+  function block(text, pattern) {
+    const match = pattern.exec(text);
+    assert.ok(match, `Missing CSS block ${pattern}`);
+    let depth = 1;
+    for (let i = match.index + match[0].length; i < text.length; i++) {
+      if (text[i] === '\\') {
+        i++;
+      } else if (text[i] === '{') {
+        depth++;
+      } else if (text[i] === '}' && --depth === 0) {
+        return text.slice(match.index, i + 1);
+      }
+    }
+    assert.fail('Unclosed CSS block');
+  }
+  const utilities = block(css, /@layer utilities\s*\{/);
+  const narrow = block(utilities, /@media\s*\(\s*width\s*<=\s*860px\s*\)\s*\{/);
+  const wide = block(utilities, /@media\s*\(\s*width\s*>=\s*961px\s*\)\s*\{/);
+  for (const name of [
+    '[@media(width<=860px)]:grid-cols-1',
+    '[@media(width<=860px)]:gap-4',
+    '[@media(width<=860px)]:order-first',
+    '[@media(width<=860px)]:max-w-[min(34svh,calc(var(--space-24)*4))]'
+  ]) {
+    assert.ok(narrow.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing bounded ${name}`);
+  }
+  for (const name of [
+    '[@media(width>=961px)]:mb-3',
+    '[@media(width>=961px)]:mb-5',
+    '[@media(width>=961px)]:mt-7',
+    '[@media(width>=961px)]:mb-8',
+    '[@media(width>=961px)]:max-w-[min(56svh,calc(var(--space-24)*7))]'
+  ]) {
+    assert.ok(wide.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing bounded ${name}`);
+  }
+  assert.doesNotMatch(utilities, /\.eg-hero\s*\{/);
+  assert.match(block(css, /@layer components\s*\{/), /\.eg-hero/);
+}
+
 function assertSectionNavConsumerCSS(css) {
   function block(text, pattern) {
     const match = pattern.exec(text);
@@ -4920,6 +4979,8 @@ ${assertLiveBandConsumerCSS.toString()}
 assertLiveBandConsumerCSS(shippedStyles);
 ${assertClosingConsumerCSS.toString()}
 assertClosingConsumerCSS(shippedStyles);
+${assertHeroConsumerCSS.toString()}
+assertHeroConsumerCSS(shippedStyles);
 ${assertSectionNavConsumerCSS.toString()}
 assertSectionNavConsumerCSS(shippedStyles);
 ${assertNowStripConsumerCSS.toString()}
@@ -5004,6 +5065,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Gauge',
   'GaugeGroup',
   'Heading',
+  'Hero',
   'Icon',
   'IconButton',
   'Indicator',
@@ -5365,6 +5427,30 @@ const { ClosingSamples } = await import('./consumer.ts');
     for (const name of ['[@media(width<=860px)]:order-first', '[@media(width<=860px)]:w-[min(100%,34svh,calc(var(--space-24)*4))]']) assert.ok(media.classList.contains(name));
     assert.deepEqual([...root.querySelectorAll('a')].map((a) => a.getAttribute('href')), ['#one', '#two']);
     assert.ok(grid.firstElementChild.contains(root.querySelector('h2')));
+  } finally { dom.window.close(); }
+}
+const { HeroSamples } = await import('./consumer.ts');
+for (const empty of [false, true]) {
+  const dom = new JSDOM(renderToString(createElement(HeroSamples, { empty })));
+  try {
+    const root = dom.window.document.querySelector('.eg-hero');
+    assert.ok(root);
+    if (empty) {
+      assert.equal(root.children.length, 1);
+      assert.equal(root.firstElementChild.children.length, 1);
+      assert.equal(root.querySelector('h3')?.textContent, 'Plain');
+      assert.equal(root.querySelector('[aria-hidden]'), null);
+    } else {
+      const copy = root.children[0], media = root.children[1], slot = media.firstElementChild;
+      assert.equal(root.querySelector('h2#intro')?.textContent, 'Build together');
+      assert.equal(slot.getAttribute('aria-hidden'), 'true');
+      for (const name of ['[@media(width<=860px)]:grid-cols-1', '[@media(width<=860px)]:gap-4']) assert.ok(root.classList.contains(name));
+      assert.ok(copy.children[0].classList.contains('[@media(width>=961px)]:mb-3'));
+      assert.ok(copy.children[1].classList.contains('[@media(width>=961px)]:mb-5'));
+      for (const name of ['[@media(width>=961px)]:mt-7', '[@media(width>=961px)]:mb-8']) assert.ok(copy.children[3].classList.contains(name));
+      assert.ok(media.classList.contains('[@media(width<=860px)]:order-first'));
+      for (const name of ['[@media(width<=860px)]:max-w-[min(34svh,calc(var(--space-24)*4))]', '[@media(width>=961px)]:max-w-[min(56svh,calc(var(--space-24)*7))]']) assert.ok(slot.classList.contains(name));
+    }
   } finally { dom.window.close(); }
 }
 const { SectionNavSamples } = await import('./consumer.ts');

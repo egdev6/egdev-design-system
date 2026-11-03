@@ -1,5 +1,59 @@
 [
   {
+    "id": "scene-media",
+    "name": "media",
+    "meaning": "A passive, decorative media or 3D slot of a scene organism, supplied by the consumer.",
+    "whenToUse": "Supply optional decorative scene media such as an Isotipo3D or an image that carries no unique meaning.",
+    "avoid": "Do not use for thumbnails, interactive content, effect selectors or Radix asChild composition.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/hero/v0.1/prop-naming-approval-scene-media.json",
+      "scope": "convention:scene-media",
+      "contentHash": "sha256:811562fe3e2708a61ae3662e2fbb66f803fd6df641bf8cc60f635e857859f502"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Hero",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/hero/types.ts",
+          "symbol": "HeroProps",
+          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+        }
+      }
+    ]
+  },
+  {
+    "id": "scene-social",
+    "name": "social",
+    "meaning": "An optional consumer-supplied social-profile links group in a scene organism.",
+    "whenToUse": "Supply a named social-profile links group within a scene, such as SocialLinks.",
+    "avoid": "Do not use for CTA controls, a structured data array or a generic navigation landmark.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/hero/v0.1/prop-naming-approval-scene-social.json",
+      "scope": "convention:scene-social",
+      "contentHash": "sha256:e68de9fc4fe5b55e80fa6937b1f79fe2245942fe007308252072065394bd9bb1"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Hero",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/hero/types.ts",
+          "symbol": "HeroProps",
+          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
+        }
+      }
+    ]
+  },
+  {
     "id": "active-section-id",
     "name": "activeId",
     "meaning": "The host-designated identity of the current section in an ordered section navigation.",
@@ -511,12 +565,12 @@
       },
       {
         "component": "Button",
-        "type": "ButtonSize ('md' | 'sm')",
+        "type": "ButtonSize ('lg' | 'md' | 'sm')",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
+          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
         }
       },
       {
@@ -803,7 +857,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
+          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
         }
       },
       {
@@ -2255,7 +2309,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
+          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
         }
       },
       {
@@ -2352,7 +2406,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
+          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
         }
       }
     ]
@@ -2379,7 +2433,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
+          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
         }
       },
       {
@@ -2476,7 +2530,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
+          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
         }
       },
       {
@@ -4688,13 +4742,13 @@
     },
     "usages": [
       {
-        "component": "Closing",
+        "component": "Hero",
         "type": "string (required)",
         "status": "existing",
         "source": {
-          "path": "packages/ui/src/organisms/closing/types.ts",
-          "symbol": "ClosingProps",
-          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+          "path": "packages/ui/src/organisms/hero/types.ts",
+          "symbol": "HeroProps",
+          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
         }
       },
       {
@@ -4796,6 +4850,16 @@
           "symbol": "ArticleFeatureProps",
           "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
         }
+      },
+      {
+        "component": "Closing",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+        }
       }
     ]
   },
@@ -4815,13 +4879,13 @@
     },
     "usages": [
       {
-        "component": "Closing",
+        "component": "Hero",
         "type": "1 | 2 | 3 | 4 | 5 | 6 (required)",
         "status": "existing",
         "source": {
-          "path": "packages/ui/src/organisms/closing/types.ts",
-          "symbol": "ClosingProps",
-          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+          "path": "packages/ui/src/organisms/hero/types.ts",
+          "symbol": "HeroProps",
+          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
         }
       },
       {
@@ -4942,6 +5006,16 @@
           "path": "packages/ui/src/organisms/footer/types.ts",
           "symbol": "FooterNavigationProps",
           "revision": "sha256:929a83a45117bff7c7737855adc8c9cff128b2560b0fb859ac967169ce455118"
+        }
+      },
+      {
+        "component": "Closing",
+        "type": "1 | 2 | 3 | 4 | 5 | 6 (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
         }
       }
     ]
@@ -5133,13 +5207,13 @@
     },
     "usages": [
       {
-        "component": "Closing",
+        "component": "Hero",
         "type": "string",
         "status": "existing",
         "source": {
-          "path": "packages/ui/src/organisms/closing/types.ts",
-          "symbol": "ClosingProps",
-          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+          "path": "packages/ui/src/organisms/hero/types.ts",
+          "symbol": "HeroProps",
+          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
         }
       },
       {
@@ -5190,6 +5264,16 @@
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
           "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
+        }
+      },
+      {
+        "component": "Closing",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
         }
       }
     ]
@@ -5328,13 +5412,13 @@
     },
     "usages": [
       {
-        "component": "Closing",
+        "component": "Hero",
         "type": "string",
         "status": "existing",
         "source": {
-          "path": "packages/ui/src/organisms/closing/types.ts",
-          "symbol": "ClosingProps",
-          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+          "path": "packages/ui/src/organisms/hero/types.ts",
+          "symbol": "HeroProps",
+          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
         }
       },
       {
@@ -5375,6 +5459,16 @@
           "path": "packages/ui/src/atoms/pull-quote/types.ts",
           "symbol": "PullQuoteProps",
           "revision": "sha256:a80b89c12589a3afe7dfc16fa86797bd860f12f839946ec189da60277e8f05d4"
+        }
+      },
+      {
+        "component": "Closing",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
         }
       }
     ]
@@ -5570,13 +5664,13 @@
     },
     "usages": [
       {
-        "component": "Closing",
+        "component": "Hero",
         "type": "string",
         "status": "existing",
         "source": {
-          "path": "packages/ui/src/organisms/closing/types.ts",
-          "symbol": "ClosingProps",
-          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+          "path": "packages/ui/src/organisms/hero/types.ts",
+          "symbol": "HeroProps",
+          "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
         }
       },
       {
@@ -5587,6 +5681,16 @@
           "path": "packages/ui/src/molecules/section-header/types.ts",
           "symbol": "SectionHeaderProps",
           "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      },
+      {
+        "component": "Closing",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
         }
       }
     ]

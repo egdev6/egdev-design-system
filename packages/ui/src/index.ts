@@ -114,6 +114,8 @@ export type {
   FooterSocialProps
 } from './organisms/footer';
 export { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from './organisms/footer';
+export type { HeroProps } from './organisms/hero';
+export { Hero } from './organisms/hero';
 export type {
   LiveBandFieldProps,
   LiveBandListProps,
