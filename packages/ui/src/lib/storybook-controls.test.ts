@@ -94,6 +94,12 @@ const components = [
   ['CommunityCardAction', 'molecules/community-card'],
   ['PhotoFrame', 'atoms/photo-frame'],
   ['Table', 'molecules/table'],
+  ['Footer', 'organisms/footer'],
+  ['FooterMotto', 'organisms/footer'],
+  ['FooterBrand', 'organisms/footer'],
+  ['FooterNavigation', 'organisms/footer'],
+  ['FooterSocial', 'organisms/footer'],
+  ['FooterLegal', 'organisms/footer'],
   ['SectionShell', 'templates/section-shell'],
   ['TopBar', 'organisms/top-bar'],
   ['TopBarBrand', 'organisms/top-bar'],
@@ -150,6 +156,12 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  footer: { children: false },
+  footermotto: { children: false },
+  footerbrand: { children: false },
+  footernavigation: { label: 'text', level: 'select', items: false },
+  footersocial: { children: false },
+  footerlegal: { children: false },
   sectionshell: { register: 'select', wrap: 'boolean', children: false },
   topbar: { label: 'text', items: false, onNavigate: false, children: false },
   topbarbrand: { children: false },
@@ -541,6 +553,12 @@ const expected: Record<string, Record<string, string | false>> = {
   terminalcardlist: { items: false, className: 'text' }
 };
 const ownPropCounts: Record<string, number> = {
+  footer: 1,
+  footermotto: 1,
+  footerbrand: 1,
+  footernavigation: 3,
+  footersocial: 1,
+  footerlegal: 1,
   table: 16,
   sectionshell: 3,
   topbar: 4,
@@ -915,7 +933,11 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     // Parse only implemented components: pending files fail their own tests, never their siblings.
     docs = parser.parse(
       components
-        .map(([name, directory]) => fileURLToPath(new URL(`../${directory}/${name}.tsx`, import.meta.url)))
+        .map(([name, directory]) =>
+          fileURLToPath(
+            new URL(`../${directory}/${directory === 'organisms/footer' ? 'Footer' : name}.tsx`, import.meta.url)
+          )
+        )
         .filter((path) => existsSync(path))
     );
   }, 20_000);
@@ -1067,6 +1089,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Panel', { variant: '"default"', tone: '"surface-1"' }],
     ['ProjectCard', { level: '3', variant: '"default"', size: '"md"' }],
     ['CommunityCard', { level: '3' }],
+    ['FooterNavigation', { level: '2' }],
     ['SectionShell', { register: '"pro"', wrap: 'true' }],
     ['TipCard', { level: '3', focalPoint: '"center"' }],
     ['Collapsible', { defaultOpen: 'false', disabled: 'false' }],

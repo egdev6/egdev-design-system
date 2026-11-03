@@ -1039,10 +1039,10 @@
     "nombre": "Footer",
     "nivel": "organism",
     "destino": "ui",
-    "radix": "—",
-    "compone": "Logo, SocialLinks, Link",
+    "radix": "— (native footer and navigation)",
+    "compone": "Link; consumer Logo and SocialLinks",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): site footer organism; links and social profiles arrive as props."
+    "notas": "Implemented React organism under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/293): passive native footer with optional motto, brand, labelled navigation, social and legal parts. Navigation accepts ordered destinations; consumers supply brand, social profiles and legal content. The host owns background and placement; no choreography, stylesheet, ref or asChild."
   },
   {
     "actual": "Hero",
