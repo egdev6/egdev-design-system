@@ -1,0 +1,134 @@
+[
+  {
+    "variant": "live-band",
+    "file": "live-band--variants--1280--dark.png",
+    "pngSha256": "501ce4aa4d1602e180bccb33aa658f65540b42b5ee38f4dd2e96bd410327101e",
+    "pngBytes": 1264704,
+    "source": {
+      "path": "egdev-foundation/design-system/components/LiveBand/preview.html",
+      "sha256": "7f378402544976c380943b9b8f0de904886405438b4dbde18270f4f708a6a88a"
+    },
+    "harness": {
+      "script": "/tmp/egdev-sbcheck/capture-layer-d-b3.mjs",
+      "page": "/tmp/egdev-sbcheck/harness-layer-d-b3-live-band.html",
+      "links": ["egdev-foundation/design-system/tokens.css", "egdev-foundation/design-system/components/bundle.css"],
+      "tokensSha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+      "bundleSha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+    },
+    "media": [
+      {
+        "runtimeBlobUrl": "/_blob/5c01b9d348f8d19c8099b2804624765d",
+        "resolvedAsset": "egdev-foundation/reference-web/assets/logo-wordmark.svg",
+        "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
+      },
+      {
+        "runtimeBlobUrl": "/_blob/ce2d47159017f6b32cabffad74654133",
+        "resolvedAsset": "egdev-foundation/reference-web/assets/photo-setup.webp",
+        "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f"
+      }
+    ],
+    "capture": {
+      "element": ".pv",
+      "viewport": {
+        "width": 1280,
+        "height": 1400
+      },
+      "deviceScaleFactor": 2,
+      "colorScheme": "dark",
+      "reducedMotion": "no-preference",
+      "locale": "en-US",
+      "browser": "chrome-headless-shell 1243 (Playwright core)",
+      "animations": "disabled during screenshot",
+      "date": "2026-11-03T07:12:28.300Z"
+    },
+    "observed": {
+      "fontsStatus": "loaded",
+      "loadedFaces": ["Barlow 400", "Barlow 600", "Barlow 700", "Barlow Condensed 700", "Barlow Condensed 800"],
+      "images": [
+        {
+          "natural": "1280x960",
+          "complete": true
+        }
+      ],
+      "labels": [],
+      "boardRect": {
+        "x": 8,
+        "y": 8,
+        "width": 1264,
+        "height": 1281.90625,
+        "top": 8,
+        "right": 1272,
+        "bottom": 1289.90625,
+        "left": 8
+      },
+      "documentWidth": 1280,
+      "documentHeight": 1400
+    }
+  },
+  {
+    "variant": "live-band",
+    "file": "live-band--variants--390--dark.png",
+    "pngSha256": "3975eebab47e3be4156943b7382add59b36ad71eb83f01335bfadbe253b5bd14",
+    "pngBytes": 613014,
+    "source": {
+      "path": "egdev-foundation/design-system/components/LiveBand/preview.html",
+      "sha256": "7f378402544976c380943b9b8f0de904886405438b4dbde18270f4f708a6a88a"
+    },
+    "harness": {
+      "script": "/tmp/egdev-sbcheck/capture-layer-d-b3.mjs",
+      "page": "/tmp/egdev-sbcheck/harness-layer-d-b3-live-band.html",
+      "links": ["egdev-foundation/design-system/tokens.css", "egdev-foundation/design-system/components/bundle.css"],
+      "tokensSha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+      "bundleSha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+    },
+    "media": [
+      {
+        "runtimeBlobUrl": "/_blob/5c01b9d348f8d19c8099b2804624765d",
+        "resolvedAsset": "egdev-foundation/reference-web/assets/logo-wordmark.svg",
+        "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
+      },
+      {
+        "runtimeBlobUrl": "/_blob/ce2d47159017f6b32cabffad74654133",
+        "resolvedAsset": "egdev-foundation/reference-web/assets/photo-setup.webp",
+        "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f"
+      }
+    ],
+    "capture": {
+      "element": ".pv",
+      "viewport": {
+        "width": 390,
+        "height": 1400
+      },
+      "deviceScaleFactor": 2,
+      "colorScheme": "dark",
+      "reducedMotion": "no-preference",
+      "locale": "en-US",
+      "browser": "chrome-headless-shell 1243 (Playwright core)",
+      "animations": "disabled during screenshot",
+      "date": "2026-11-03T07:12:29.295Z"
+    },
+    "observed": {
+      "fontsStatus": "loaded",
+      "loadedFaces": ["Barlow 400", "Barlow 600", "Barlow 700", "Barlow Condensed 700", "Barlow Condensed 800"],
+      "images": [
+        {
+          "natural": "1280x960",
+          "complete": true
+        }
+      ],
+      "labels": [],
+      "boardRect": {
+        "x": 8,
+        "y": 8,
+        "width": 374,
+        "height": 1603.46875,
+        "top": 8,
+        "right": 382,
+        "bottom": 1611.46875,
+        "left": 8
+      },
+      "documentWidth": 390,
+      "documentHeight": 1619
+    }
+  }
+]

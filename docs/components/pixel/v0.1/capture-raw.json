@@ -1,0 +1,124 @@
+[
+  {
+    "variant": "pixel",
+    "file": "pixel--variants--1280--dark.png",
+    "pngSha256": "164187ecd80434b8e824153f62b3055b55255292d8c2a7bbeedb84dffd7957d4",
+    "pngBytes": 17908,
+    "source": {
+      "path": "egdev-foundation/design-system/components/Pixel/preview.html",
+      "sha256": "baef733abae3b8626ef596a6ebec991e8a5d79bb11167dc27e6787c9dddb3cba"
+    },
+    "harness": {
+      "script": "/tmp/egdev-sbcheck/capture-layer-d-b3.mjs",
+      "page": "/tmp/egdev-sbcheck/harness-layer-d-b3-pixel.html",
+      "links": ["egdev-foundation/design-system/tokens.css", "egdev-foundation/design-system/components/bundle.css"],
+      "tokensSha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+      "bundleSha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+    },
+    "media": [
+      {
+        "runtimeBlobUrl": "/_blob/5c01b9d348f8d19c8099b2804624765d",
+        "resolvedAsset": "egdev-foundation/reference-web/assets/logo-wordmark.svg",
+        "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
+      },
+      {
+        "runtimeBlobUrl": "/_blob/ce2d47159017f6b32cabffad74654133",
+        "resolvedAsset": "egdev-foundation/reference-web/assets/photo-setup.webp",
+        "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f"
+      }
+    ],
+    "capture": {
+      "element": ".pv",
+      "viewport": {
+        "width": 1280,
+        "height": 1400
+      },
+      "deviceScaleFactor": 2,
+      "colorScheme": "dark",
+      "reducedMotion": "no-preference",
+      "locale": "en-US",
+      "browser": "chrome-headless-shell 1243 (Playwright core)",
+      "animations": "disabled during screenshot",
+      "date": "2026-11-03T07:12:24.331Z"
+    },
+    "observed": {
+      "fontsStatus": "loaded",
+      "loadedFaces": ["Barlow Condensed 600"],
+      "images": [],
+      "labels": ["estados", "secuencia", "ampliado ×4"],
+      "boardRect": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 243.78125,
+        "top": 0,
+        "right": 1280,
+        "bottom": 243.78125,
+        "left": 0
+      },
+      "documentWidth": 1280,
+      "documentHeight": 1400
+    }
+  },
+  {
+    "variant": "pixel",
+    "file": "pixel--variants--390--dark.png",
+    "pngSha256": "2348a1ddb51ce598249e9088ac0a040343bf3b1c52724096937ba750a504c72c",
+    "pngBytes": 14824,
+    "source": {
+      "path": "egdev-foundation/design-system/components/Pixel/preview.html",
+      "sha256": "baef733abae3b8626ef596a6ebec991e8a5d79bb11167dc27e6787c9dddb3cba"
+    },
+    "harness": {
+      "script": "/tmp/egdev-sbcheck/capture-layer-d-b3.mjs",
+      "page": "/tmp/egdev-sbcheck/harness-layer-d-b3-pixel.html",
+      "links": ["egdev-foundation/design-system/tokens.css", "egdev-foundation/design-system/components/bundle.css"],
+      "tokensSha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+      "bundleSha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+    },
+    "media": [
+      {
+        "runtimeBlobUrl": "/_blob/5c01b9d348f8d19c8099b2804624765d",
+        "resolvedAsset": "egdev-foundation/reference-web/assets/logo-wordmark.svg",
+        "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
+      },
+      {
+        "runtimeBlobUrl": "/_blob/ce2d47159017f6b32cabffad74654133",
+        "resolvedAsset": "egdev-foundation/reference-web/assets/photo-setup.webp",
+        "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f"
+      }
+    ],
+    "capture": {
+      "element": ".pv",
+      "viewport": {
+        "width": 390,
+        "height": 1400
+      },
+      "deviceScaleFactor": 2,
+      "colorScheme": "dark",
+      "reducedMotion": "no-preference",
+      "locale": "en-US",
+      "browser": "chrome-headless-shell 1243 (Playwright core)",
+      "animations": "disabled during screenshot",
+      "date": "2026-11-03T07:12:25.138Z"
+    },
+    "observed": {
+      "fontsStatus": "loaded",
+      "loadedFaces": ["Barlow Condensed 600"],
+      "images": [],
+      "labels": ["estados", "secuencia", "ampliado ×4"],
+      "boardRect": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 243.78125,
+        "top": 0,
+        "right": 390,
+        "bottom": 243.78125,
+        "left": 0
+      },
+      "documentWidth": 390,
+      "documentHeight": 1400
+    }
+  }
+]
