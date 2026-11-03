@@ -73,6 +73,11 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 | DI7 | S3 | Implement Pixel under approved v0.1 plan | worker + parent integration | done — PR #312 (squash c0e3cbe); widened `consumer-selected-condition` receipt |
 | DI8 | S3 | Implement SectionNav under approved v0.1 plan (after Pixel) | worker + parent integration | done — PR #315 (squash 3b1ee00); Popover `onCloseAutoFocus`, single-landmark and compact-target amendments |
 | DI9 | S3 | Implement LiveBand under approved v0.1 plan | worker + parent integration | done — PR #313 (squash 2b2e23d); explicit rows part amendment |
+| E1 | S3, S4 | Spec: Hero v0.1 (scene organism, layer (e) batch 1) | worker | drafting |
+| E2 | S3, S4 | Spec: Closing v0.1 (scene organism, layer (e) batch 1) | worker | drafting |
+| E3 | S3, S4 | Spec: ChapterBreak v0.1 (scene organism, layer (e) batch 2) | worker | pending |
+| E4 | S3, S4 | Spec: LabStage v0.1 (scene organism, layer (e) batch 2) | worker | pending |
+| ER | S3 | Recipes: About and Community scenes (documented compositions, no export) | worker + parent | pending (layer (e) close) |
 
 ## Log
 
@@ -127,3 +132,6 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
   - "Excepciones de accessible-name con comprobante nuevo (Recomendado)": `disclosureLabel` and `nextLabel` are scoped exceptions bound by a new receipt. The registry allows one usage per component, so the receipt carries their source evidence.
 
   Chromium found user-agent button and link paint, because the package ships without preflight; it was fixed test-first with token resets (15.5:1). Navigation keeps focus on the destination, Escape returns it to the trigger, and every control measures 44.8px at 519/520/521. Next: the About/Community scene-recipe question before layer (e).
+- L41 — Before layer (e) the owner answered the cataloging-draft §4 item 4 question (verbatim): "Recetas documentadas, sin export (Recomendado)". The About (PhotoFrame + PullQuote + TerminalCard) and Community (CommunityCard grid) scenes become documented recipes, like MobileMenu and CommunityGrid; layer (e) exports only the approved slot scenes Hero, ChapterBreak, LabStage and Closing.
+- L42 — Layer (e) cadence (owner, verbatim): "Dos tandas de dos (Recomendado)" — batch 1 Hero and Closing (copy and calls to action), batch 2 ChapterBreak and LabStage (3D or media slot); each batch runs specs → plans → implementation, recipes close the layer. The parent captured the Foundation previews read-only (/tmp/egdev-sbcheck/capture-layer-e-b1.mjs; no blobs).
+- L43 — The batch 1 drafts proposed different APIs (Hero compound `HeroCopy`/`HeroMedia`, Closing structured props). Owner chose (verbatim): "Props estructuradas, como SectionHeader (Recomendado)". Both specs now share `title`, `level`, `eyebrow`, `accent`, `lede`, CTA-only `children`, optional `media` (one proposed `scene-media` convention for both) and the heading `id` contract; Hero adds an optional `social` slot (proposed `scene-social`). Housekeeping: the owner authorized "Limpiar los 17 worktrees y sus ramas locales (Recomendado)"; 17 finished layer (d) worktrees and branches were removed after clean and merged-PR checks.

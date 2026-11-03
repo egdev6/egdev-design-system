@@ -1,0 +1,198 @@
+{
+  "component": "hero",
+  "specVersion": "0.1",
+  "spec": "docs/components/hero/v0.1/spec.md",
+  "specContentSHA256": "6456ca97c64569b0e66df4fe1d5b6ceb4563b312dec42b580f48858f45a15116",
+  "status": "Proposed — expected-design evidence for owner review; adoption and publication pending. Visual conformity: Not evaluated.",
+  "capturedFrom": {
+    "authority": "odd/tasks/web-catalog.md L5, L41–L43; parent-provided capture",
+    "sourceRoot": "/home/egdev/proyectos/egdev-website/egdev-foundation",
+    "readOnly": true,
+    "notes": "Parent rendered the Foundation preview read-only; no blobs; the spec writer did not recapture or modify the images."
+  },
+  "harness": {
+    "script": "/tmp/egdev-sbcheck/capture-layer-e-b1.mjs",
+    "page": "/tmp/egdev-sbcheck/harness-layer-e-b1-hero.html",
+    "stylesheets": [
+      {
+        "path": "design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e"
+      },
+      {
+        "path": "design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      }
+    ],
+    "transformations": ["Preview rendered with Foundation stylesheets; no runtime media blobs."]
+  },
+  "conditions": {
+    "browser": "chrome-headless-shell 1243 (Playwright core)",
+    "deviceScaleFactor": 2,
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "locale": "en-US",
+    "crop": "component preview board .pv",
+    "animations": "disabled during screenshot",
+    "fonts": {
+      "status": "loaded",
+      "loadedFaces": ["Barlow 400", "Barlow 600", "Barlow 700", "Barlow Condensed 700", "Barlow Condensed 800"]
+    },
+    "image": {
+      "asset": "reference-web/assets/photo-setup.webp",
+      "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f",
+      "natural": "1280x960",
+      "complete": true
+    },
+    "verificationLimits": "Static Foundation preview only; no DS comparison, interaction, reduced-motion, contrast, screen reader or public asset validation."
+  },
+  "images": [
+    {
+      "id": "VIS-01",
+      "file": "hero--variants--1280x1400--dark.png",
+      "sha256": "f8b7958e926cb1d6cbacb880fd27dda11e2ab0c129bc038548fb10756043327b"
+    },
+    {
+      "id": "VIS-02",
+      "file": "hero--variants--390x1400--dark.png",
+      "sha256": "2230fbbb5dda1b87717b23ecae6b93ee25d06f5881d36cfb5438e6f7fcba5417"
+    }
+  ],
+  "rawCapture": [
+    {
+      "variant": "hero",
+      "file": "hero--variants--1280--dark.png",
+      "pngSha256": "f8b7958e926cb1d6cbacb880fd27dda11e2ab0c129bc038548fb10756043327b",
+      "pngBytes": 333846,
+      "source": {
+        "path": "egdev-foundation/design-system/components/Hero/preview.html",
+        "sha256": "53866f6df7e970abc943ea9b018fbccd8544d24f8f7ff042e028879027b35c88"
+      },
+      "harness": {
+        "script": "/tmp/egdev-sbcheck/capture-layer-d-b3.mjs",
+        "page": "/tmp/egdev-sbcheck/harness-layer-d-b3-hero.html",
+        "links": ["egdev-foundation/design-system/tokens.css", "egdev-foundation/design-system/components/bundle.css"],
+        "tokensSha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+        "bundleSha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      },
+      "media": [
+        {
+          "runtimeBlobUrl": "/_blob/5c01b9d348f8d19c8099b2804624765d",
+          "resolvedAsset": "egdev-foundation/reference-web/assets/logo-wordmark.svg",
+          "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
+        },
+        {
+          "runtimeBlobUrl": "/_blob/ce2d47159017f6b32cabffad74654133",
+          "resolvedAsset": "egdev-foundation/reference-web/assets/photo-setup.webp",
+          "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f"
+        }
+      ],
+      "capture": {
+        "element": ".pv",
+        "viewport": {
+          "width": 1280,
+          "height": 1400
+        },
+        "deviceScaleFactor": 2,
+        "colorScheme": "dark",
+        "reducedMotion": "no-preference",
+        "locale": "en-US",
+        "browser": "chrome-headless-shell 1243 (Playwright core)",
+        "animations": "disabled during screenshot",
+        "date": "2026-11-03T12:20:02.601Z"
+      },
+      "observed": {
+        "fontsStatus": "loaded",
+        "loadedFaces": [
+          "Barlow 400",
+          "Barlow 700",
+          "Barlow Condensed 600",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 500"
+        ],
+        "images": [],
+        "labels": ["Por defecto · slot 3D con isotipo SVG de fallback (píxeles flotando) · .eg-hero"],
+        "boardRect": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 865.546875,
+          "top": 0,
+          "right": 1280,
+          "bottom": 865.546875,
+          "left": 0
+        },
+        "documentWidth": 1280,
+        "documentHeight": 1400
+      }
+    },
+    {
+      "variant": "hero",
+      "file": "hero--variants--390--dark.png",
+      "pngSha256": "2230fbbb5dda1b87717b23ecae6b93ee25d06f5881d36cfb5438e6f7fcba5417",
+      "pngBytes": 185981,
+      "source": {
+        "path": "egdev-foundation/design-system/components/Hero/preview.html",
+        "sha256": "53866f6df7e970abc943ea9b018fbccd8544d24f8f7ff042e028879027b35c88"
+      },
+      "harness": {
+        "script": "/tmp/egdev-sbcheck/capture-layer-d-b3.mjs",
+        "page": "/tmp/egdev-sbcheck/harness-layer-d-b3-hero.html",
+        "links": ["egdev-foundation/design-system/tokens.css", "egdev-foundation/design-system/components/bundle.css"],
+        "tokensSha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+        "bundleSha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      },
+      "media": [
+        {
+          "runtimeBlobUrl": "/_blob/5c01b9d348f8d19c8099b2804624765d",
+          "resolvedAsset": "egdev-foundation/reference-web/assets/logo-wordmark.svg",
+          "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
+        },
+        {
+          "runtimeBlobUrl": "/_blob/ce2d47159017f6b32cabffad74654133",
+          "resolvedAsset": "egdev-foundation/reference-web/assets/photo-setup.webp",
+          "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f"
+        }
+      ],
+      "capture": {
+        "element": ".pv",
+        "viewport": {
+          "width": 390,
+          "height": 1400
+        },
+        "deviceScaleFactor": 2,
+        "colorScheme": "dark",
+        "reducedMotion": "no-preference",
+        "locale": "en-US",
+        "browser": "chrome-headless-shell 1243 (Playwright core)",
+        "animations": "disabled during screenshot",
+        "date": "2026-11-03T12:20:03.598Z"
+      },
+      "observed": {
+        "fontsStatus": "loaded",
+        "loadedFaces": [
+          "Barlow 400",
+          "Barlow 700",
+          "Barlow Condensed 600",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 500"
+        ],
+        "images": [],
+        "labels": ["Por defecto · slot 3D con isotipo SVG de fallback (píxeles flotando) · .eg-hero"],
+        "boardRect": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 1183.390625,
+          "top": 0,
+          "right": 390,
+          "bottom": 1183.390625,
+          "left": 0
+        },
+        "documentWidth": 390,
+        "documentHeight": 1400
+      }
+    }
+  ]
+}
