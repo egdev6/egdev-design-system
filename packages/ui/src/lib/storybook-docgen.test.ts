@@ -122,6 +122,41 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts LabStage inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
+    const doc = parser
+      .parse(source('organisms/lab-stage/LabStage.tsx'))
+      .find(({ displayName }) => displayName === 'LabStage');
+    for (const name of ['title', 'level']) {
+      expect(doc?.props[name], name).toMatchObject({ required: true });
+    }
+    for (const name of [
+      'eyebrow',
+      'accent',
+      'lede',
+      'children',
+      'media',
+      'id',
+      'dir',
+      'lang',
+      'aria-label',
+      'aria-labelledby',
+      'aria-describedby',
+      'className',
+      'onClick'
+    ]) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of ['children', 'media']) {
+      expect(doc?.props[name]?.tags).toMatchObject({
+        control: 'false',
+        controlReason: expect.stringMatching(/ReactNode.*story/)
+      });
+    }
+    for (const name of ['role', 'style', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    expect(publicAPI.LabStage).toBeDefined();
+  });
   it('extracts ChapterBreak inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
     const doc = parser
       .parse(source('organisms/chapter-break/ChapterBreak.tsx'))
@@ -1489,6 +1524,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './organisms/closing',
       './organisms/footer',
       './organisms/hero',
+      './organisms/lab-stage',
       './organisms/live-band',
       './organisms/module-rail',
       './organisms/notes-board',
@@ -1570,6 +1606,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Indicator',
       'Input',
       'Kbd',
+      'LabStage',
       'Label',
       'Link',
       'ListItem',

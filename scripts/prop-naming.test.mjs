@@ -624,6 +624,9 @@ const postReceiptUsages = [
     (conventionId) => ({ conventionId, source: 'packages/ui/src/organisms/chapter-break/types.ts#ChapterBreakProps' })
   ),
   ...['heading-title', 'heading-level', 'heading-eyebrow', 'trailing-text-accent', 'section-lede', 'scene-media'].map(
+    (conventionId) => ({ conventionId, source: 'packages/ui/src/organisms/lab-stage/types.ts#LabStageProps' })
+  ),
+  ...['heading-title', 'heading-level', 'heading-eyebrow', 'trailing-text-accent', 'section-lede', 'scene-media'].map(
     (conventionId) => ({ conventionId, source: 'packages/ui/src/organisms/closing/types.ts#ClosingProps' })
   ),
   ...[

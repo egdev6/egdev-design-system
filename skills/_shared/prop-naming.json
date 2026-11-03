@@ -43,6 +43,16 @@
           "symbol": "ChapterBreakProps",
           "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
         }
+      },
+      {
+        "component": "LabStage",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/lab-stage/types.ts",
+          "symbol": "LabStageProps",
+          "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
+        }
       }
     ]
   },
@@ -4890,6 +4900,16 @@
           "symbol": "ChapterBreakProps",
           "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
         }
+      },
+      {
+        "component": "LabStage",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/lab-stage/types.ts",
+          "symbol": "LabStageProps",
+          "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
+        }
       }
     ]
   },
@@ -5056,6 +5076,16 @@
           "path": "packages/ui/src/organisms/chapter-break/types.ts",
           "symbol": "ChapterBreakProps",
           "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
+        }
+      },
+      {
+        "component": "LabStage",
+        "type": "1 | 2 | 3 | 4 | 5 | 6 (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/lab-stage/types.ts",
+          "symbol": "LabStageProps",
+          "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
         }
       }
     ]
@@ -5325,6 +5355,16 @@
           "symbol": "ChapterBreakProps",
           "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
         }
+      },
+      {
+        "component": "LabStage",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/lab-stage/types.ts",
+          "symbol": "LabStageProps",
+          "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
+        }
       }
     ]
   },
@@ -5529,6 +5569,16 @@
           "path": "packages/ui/src/organisms/chapter-break/types.ts",
           "symbol": "ChapterBreakProps",
           "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
+        }
+      },
+      {
+        "component": "LabStage",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/lab-stage/types.ts",
+          "symbol": "LabStageProps",
+          "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
         }
       }
     ]
@@ -5761,6 +5811,16 @@
           "path": "packages/ui/src/organisms/chapter-break/types.ts",
           "symbol": "ChapterBreakProps",
           "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
+        }
+      },
+      {
+        "component": "LabStage",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/lab-stage/types.ts",
+          "symbol": "LabStageProps",
+          "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
         }
       }
     ]

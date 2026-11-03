@@ -38,6 +38,8 @@ import { LiveBandField, LiveBandList, LiveBandRow, LiveBandRows, LiveBandStreams
 import type { LiveBandFieldProps, LiveBandListProps, LiveBandRowProps, LiveBandRowsProps, LiveBandStreamsProps, LiveBandVodProps } from '@egdev/ui';
 import { ChapterBreak } from '@egdev/ui';
 import type { ChapterBreakProps } from '@egdev/ui';
+import { LabStage } from '@egdev/ui';
+import type { LabStageProps } from '@egdev/ui';
 import { Closing } from '@egdev/ui';
 import type { ClosingProps } from '@egdev/ui';
 import { Hero } from '@egdev/ui';
@@ -459,6 +461,29 @@ type ChapterPrivate = (typeof import('@egdev/ui'))['chapterBreakVariants'];
 // @ts-expect-error Media recipe is private.
 type ChapterMediaPrivate = (typeof import('@egdev/ui'))['chapterBreakMediaVariants'];
 export type ChapterNegatives = [typeof chapterMissingTitle, typeof chapterMissingLevel, typeof chapterChildren, typeof chapterLevel, typeof chapterRole, typeof chapterStyle, typeof chapterHtml, typeof chapterSlot, typeof chapterRef, ChapterPrivate, ChapterMediaPrivate];
+export const labStageProps: LabStageProps = { title: 'Build ', level: 2, id: 'lab-title', accent: 'together', media: createElement('span', null, 'Decorative'), lede: 'Try ideas.', children: createElement('article', null, createElement('a', { href: '#experiment' }, 'Experiment')) };
+export function LabStageSamples({ empty = false }: { empty?: boolean } = {}) { return createElement(LabStage, empty ? { title: 'Plain', level: 3 } : labStageProps); }
+// @ts-expect-error Title is required.
+const labMissingTitle: LabStageProps = { level: 2 };
+// @ts-expect-error Heading rank is required.
+const labMissingLevel: LabStageProps = { title: 'Title' };
+// @ts-expect-error Heading rank is limited to native levels.
+const labLevel: LabStageProps = { ...labStageProps, level: 7 };
+// @ts-expect-error Root role is protected.
+const labRole: LabStageProps = { ...labStageProps, role: 'region' };
+// @ts-expect-error Inline style is protected.
+const labStyle: LabStageProps = { ...labStageProps, style: {} };
+// @ts-expect-error Raw HTML is protected.
+const labHtml: LabStageProps = { ...labStageProps, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error No Slot API.
+const labSlot: LabStageProps = { ...labStageProps, asChild: true };
+// @ts-expect-error No ref API.
+const labRef: LabStageProps = { ...labStageProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Recipe is private.
+type LabPrivate = (typeof import('@egdev/ui'))['labStageVariants'];
+// @ts-expect-error Media recipe is private.
+type LabMediaPrivate = (typeof import('@egdev/ui'))['labStageMediaVariants'];
+export type LabStageNegatives = [typeof labMissingTitle, typeof labMissingLevel, typeof labLevel, typeof labRole, typeof labStyle, typeof labHtml, typeof labSlot, typeof labRef, LabPrivate, LabMediaPrivate];
 export const closingProps: ClosingProps = { title: 'Build ', level: 2, id: 'closing-title', accent: 'together', media: createElement('span', null, 'Decorative'), children: [createElement('a', { key: 'one', href: '#one' }, 'One'), createElement('a', { key: 'two', href: '#two' }, 'Two')] };
 export function ClosingSamples() { return createElement(Closing, closingProps); }
 // @ts-expect-error Title is required.
@@ -4716,6 +4741,35 @@ function assertChapterBreakConsumerCSS(css) {
   assert.doesNotMatch(utilities, /\.eg-chapter-break\s*\{/);
 }
 
+function assertLabStageConsumerCSS(css) {
+  function block(text, pattern) {
+    const match = pattern.exec(text);
+    assert.ok(match, `Missing CSS block ${pattern}`);
+    let depth = 1;
+    for (let i = match.index + match[0].length; i < text.length; i++) {
+      if (text[i] === '\\') {
+        i++;
+      } else if (text[i] === '{') {
+        depth++;
+      } else if (text[i] === '}' && --depth === 0) {
+        return text.slice(match.index, i + 1);
+      }
+    }
+    assert.fail('Unclosed CSS block');
+  }
+  const utilities = block(css, /@layer utilities\s*\{/);
+  const compact = block(utilities, /@media\s*\(\s*width\s*<=\s*860px\s*\)\s*\{/);
+  for (const suffix of ['grid-cols-1', 'gap-2', 'order-first', 'w-[min(100%,36svh,calc(var(--space-24)*4))]']) {
+    const name = `[@media(width<=860px)]:${suffix}`;
+    assert.ok(compact.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing bounded ${name}`);
+  }
+  assert.match(utilities, /grid-template-columns:\s*minmax\(0,\s*1\.1fr\)\s+minmax\(0,\s*1fr\)/);
+  assert.match(utilities, /width:\s*min\(100%,\s*72vh\)/);
+  assert.match(compact, /width:\s*min\(100%,\s*36svh,\s*(?:calc\()?var\(--space-24(?:,\s*[^)]*)?\)\s*\*\s*4\)?\)/);
+  assert.doesNotMatch(utilities, /\.eg-lab\s*\{/);
+  assert.ok(utilities.includes('.h-auto'), 'Missing legacy height reset');
+}
+
 function assertClosingConsumerCSS(css) {
   function block(text, pattern) {
     const match = pattern.exec(text);
@@ -5034,6 +5088,8 @@ ${assertLiveBandConsumerCSS.toString()}
 assertLiveBandConsumerCSS(shippedStyles);
 ${assertChapterBreakConsumerCSS.toString()}
 assertChapterBreakConsumerCSS(shippedStyles);
+${assertLabStageConsumerCSS.toString()}
+assertLabStageConsumerCSS(shippedStyles);
 ${assertClosingConsumerCSS.toString()}
 assertClosingConsumerCSS(shippedStyles);
 ${assertHeroConsumerCSS.toString()}
@@ -5129,6 +5185,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Indicator',
   'Input',
   'Kbd',
+  'LabStage',
   'Label',
   'Link',
   'ListItem',
@@ -5490,6 +5547,35 @@ for (const empty of [false, true]) {
       assert.ok(grid.firstElementChild.contains(root.querySelector('h2')));
       for (const name of ['grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]', '[@media(width<=860px)]:grid-cols-1', '[@media(width<=860px)]:gap-2']) assert.ok(grid.classList.contains(name));
       for (const name of ['w-[min(100%,58vh)]', '[@media(width<=860px)]:order-first', '[@media(width<=860px)]:w-[min(100%,34svh,calc(var(--space-24)*4))]']) assert.ok(media.classList.contains(name));
+    }
+  } finally { dom.window.close(); }
+}
+const { LabStageSamples } = await import('./consumer.ts');
+for (const empty of [false, true]) {
+  const dom = new JSDOM(renderToString(createElement(LabStageSamples, { empty })));
+  try {
+    const root = dom.window.document.querySelector('.eg-lab');
+    assert.ok(root);
+    assert.ok(root.classList.contains('h-auto'));
+    const grid = root.firstElementChild;
+    if (empty) {
+      assert.equal(root.querySelector('h3')?.textContent, 'Plain');
+      assert.equal(grid.children.length, 1);
+      assert.equal(root.querySelector('article'), null);
+      assert.ok(grid.classList.contains('grid-cols-1'));
+      assert.equal(grid.classList.contains('grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]'), false);
+    } else {
+      const media = grid.lastElementChild;
+      assert.equal(root.querySelector('h2')?.id, 'lab-title');
+      assert.equal(root.querySelector('h2')?.textContent, 'Build together');
+      assert.equal(media.getAttribute('aria-hidden'), 'true');
+      assert.equal(media.textContent, 'Decorative');
+      const article = root.querySelector('article');
+      assert.equal(article?.querySelector('a')?.getAttribute('href'), '#experiment');
+      assert.ok(root.querySelector('p').compareDocumentPosition(article) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING);
+      assert.ok(grid.firstElementChild.contains(root.querySelector('h2')));
+      for (const name of ['grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]', '[@media(width<=860px)]:grid-cols-1', '[@media(width<=860px)]:gap-2']) assert.ok(grid.classList.contains(name));
+      for (const name of ['w-[min(100%,72vh)]', '[@media(width<=860px)]:order-first', '[@media(width<=860px)]:w-[min(100%,36svh,calc(var(--space-24)*4))]']) assert.ok(media.classList.contains(name));
     }
   } finally { dom.window.close(); }
 }

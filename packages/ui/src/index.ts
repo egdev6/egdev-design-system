@@ -118,6 +118,8 @@ export type {
 export { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from './organisms/footer';
 export type { HeroProps } from './organisms/hero';
 export { Hero } from './organisms/hero';
+export type { LabStageProps } from './organisms/lab-stage';
+export { LabStage } from './organisms/lab-stage';
 export type {
   LiveBandFieldProps,
   LiveBandListProps,
