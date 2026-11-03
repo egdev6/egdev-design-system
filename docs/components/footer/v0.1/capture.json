@@ -2,7 +2,7 @@
   "component": "footer",
   "specVersion": "0.1",
   "spec": "docs/components/footer/v0.1/spec.md",
-  "specContentSHA256": "e52b0cfd12946e852eea24f68262bd7c7afebb5c85bcc59c7a91a7657c9364b0",
+  "specContentSHA256": "8b672a15b17d23d1162b896867c45112a74c1749c6e6e7770b21c93717e7efd0",
   "status": "Proposed — source design evidence for owner review; adoption and publication pending. Visual conformity: Not evaluated.",
   "capturedFrom": {
     "authority": "odd/tasks/web-catalog.md L6, L15 and L25",

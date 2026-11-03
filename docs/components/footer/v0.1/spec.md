@@ -2,7 +2,7 @@
 
 - **Version / status:** 0.1 — **Proposed**, draft for owner review; not implementation-ready.
 - **Authority:** the web catalog decision is approved in [owner-approvals.md](../../web-catalog/v0.1/owner-approvals.md); the component contract, its visual evidence, any naming conventions and the implementation plan require separate approval. Capture authority: `odd/tasks/web-catalog.md` L6, L15 and L25. No GitHub action is authorized here.
-- **Snapshot identity:** `version: 0.1`; `contentSHA256: e52b0cfd12946e852eea24f68262bd7c7afebb5c85bcc59c7a91a7657c9364b0`; `visualHashes: VIS-01 53d75dae7646a1f6aa770525bb335ccb68eb2966b8db54cb679b39045e03011b; VIS-02 23311a65bfc2bffd958a52d7c85f8c19274ae384dacfd03b3cb4d02df07665dd`; `approvalReference: Pending`; `canonicalIssue: Pending`; `latestPublishedComment: Pending`.
+- **Snapshot identity:** `version: 0.1`; `contentSHA256: 8b672a15b17d23d1162b896867c45112a74c1749c6e6e7770b21c93717e7efd0`; `visualHashes: VIS-01 53d75dae7646a1f6aa770525bb335ccb68eb2966b8db54cb679b39045e03011b; VIS-02 23311a65bfc2bffd958a52d7c85f8c19274ae384dacfd03b3cb4d02df07665dd`; `approvalReference: Pending`; `canonicalIssue: Pending`; `latestPublishedComment: Pending`.
 - **Hash definition:** SHA-256 of UTF-8 bytes from the exact full heading line `## 1. Purpose and scope` through EOF, including the final LF; tracking metadata above that line is excluded.
 
 ## 1. Purpose and scope

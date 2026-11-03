@@ -1,0 +1,128 @@
+[
+  {
+    "variant": "now-strip",
+    "file": "now-strip--variants--1280--dark.png",
+    "pngSha256": "97ee91df0f13be6b2954dd7ab587cf8f1a372509cc86c97833ce1e0ecf566fbf",
+    "pngBytes": 76150,
+    "source": {
+      "path": "egdev-foundation/design-system/components/NowStrip/preview.html",
+      "sha256": "e7b421d8722d877655125b648d90e8df0d3368590893f03b29ffc01afea2ddad"
+    },
+    "harness": {
+      "script": "/tmp/egdev-sbcheck/capture-layer-d-b2.mjs",
+      "page": "/tmp/egdev-sbcheck/harness-layer-d-b2-now-strip.html",
+      "links": ["egdev-foundation/design-system/tokens.css", "egdev-foundation/design-system/components/bundle.css"],
+      "tokensSha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+      "bundleSha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+    },
+    "media": [
+      {
+        "runtimeBlobUrl": "/_blob/5c01b9d348f8d19c8099b2804624765d",
+        "resolvedAsset": "egdev-foundation/reference-web/assets/logo-wordmark.svg",
+        "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
+      }
+    ],
+    "capture": {
+      "element": ".pv",
+      "viewport": {
+        "width": 1280,
+        "height": 1400
+      },
+      "deviceScaleFactor": 2,
+      "colorScheme": "dark",
+      "reducedMotion": "no-preference",
+      "locale": "en-US",
+      "browser": "chrome-headless-shell 1243 (Playwright core)",
+      "animations": "disabled during screenshot",
+      "date": "2026-11-03T06:52:37.437Z"
+    },
+    "observed": {
+      "fontsStatus": "loaded",
+      "loadedFaces": [
+        "Barlow 400",
+        "Barlow 600",
+        "Barlow 700",
+        "Barlow Condensed 600",
+        "Barlow Condensed 700",
+        "Barlow Condensed 800"
+      ],
+      "images": [],
+      "labels": [],
+      "boardRect": {
+        "x": 8,
+        "y": 8,
+        "width": 1264,
+        "height": 319.4375,
+        "top": 8,
+        "right": 1272,
+        "bottom": 327.4375,
+        "left": 8
+      },
+      "documentWidth": 1280,
+      "documentHeight": 1400
+    }
+  },
+  {
+    "variant": "now-strip",
+    "file": "now-strip--variants--390--dark.png",
+    "pngSha256": "944e986359850ec614d27ee83eb27dba16558f61c66306a7eadcac451a18c031",
+    "pngBytes": 101441,
+    "source": {
+      "path": "egdev-foundation/design-system/components/NowStrip/preview.html",
+      "sha256": "e7b421d8722d877655125b648d90e8df0d3368590893f03b29ffc01afea2ddad"
+    },
+    "harness": {
+      "script": "/tmp/egdev-sbcheck/capture-layer-d-b2.mjs",
+      "page": "/tmp/egdev-sbcheck/harness-layer-d-b2-now-strip.html",
+      "links": ["egdev-foundation/design-system/tokens.css", "egdev-foundation/design-system/components/bundle.css"],
+      "tokensSha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+      "bundleSha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+    },
+    "media": [
+      {
+        "runtimeBlobUrl": "/_blob/5c01b9d348f8d19c8099b2804624765d",
+        "resolvedAsset": "egdev-foundation/reference-web/assets/logo-wordmark.svg",
+        "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
+      }
+    ],
+    "capture": {
+      "element": ".pv",
+      "viewport": {
+        "width": 390,
+        "height": 1400
+      },
+      "deviceScaleFactor": 2,
+      "colorScheme": "dark",
+      "reducedMotion": "no-preference",
+      "locale": "en-US",
+      "browser": "chrome-headless-shell 1243 (Playwright core)",
+      "animations": "disabled during screenshot",
+      "date": "2026-11-03T06:52:38.393Z"
+    },
+    "observed": {
+      "fontsStatus": "loaded",
+      "loadedFaces": [
+        "Barlow 400",
+        "Barlow 600",
+        "Barlow 700",
+        "Barlow Condensed 600",
+        "Barlow Condensed 700",
+        "Barlow Condensed 800"
+      ],
+      "images": [],
+      "labels": [],
+      "boardRect": {
+        "x": 8,
+        "y": 8,
+        "width": 374,
+        "height": 696.9375,
+        "top": 8,
+        "right": 382,
+        "bottom": 704.9375,
+        "left": 8
+      },
+      "documentWidth": 390,
+      "documentHeight": 1400
+    }
+  }
+]

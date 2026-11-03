@@ -2,7 +2,7 @@
   "component": "section-shell",
   "specVersion": "0.1",
   "spec": "docs/components/section-shell/v0.1/spec.md",
-  "specContentSHA256": "8efab611751597184f80f03eb7b6ed405287078d26b971ccb2c746d15f195558",
+  "specContentSHA256": "edb73a8b606fb49b19516e3d25cf2fe8bb78ca742ce05bd800e2215af03957f9",
   "status": "Proposed; owner adoption pending; visual conformity Not evaluated",
   "capturedFrom": {
     "authority": "odd/tasks/web-catalog.md L6, L15, L25",
