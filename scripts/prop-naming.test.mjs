@@ -682,6 +682,8 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/molecules/tip-card/types.ts#TipCardProps'
   })),
+  // NowStrip DI6 adds a reviewed usage without changing the convention receipt.
+  { conventionId: 'accessible-name', source: 'packages/ui/src/organisms/now-strip/types.ts#NowStripProps' },
   // Footer DI3 adds usages only; existing receipts bind convention content, not usages.
   ...['collection-items', 'accessible-name', 'heading-level'].map((conventionId) => ({
     conventionId,
@@ -797,6 +799,29 @@ test('CommunityCard records only its three approved heading usages', () => {
         }
       ])
       .sort(([a], [b]) => a.localeCompare(b))
+  );
+});
+test('NowStrip records only its approved accessible-name usage', () => {
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const path = 'packages/ui/src/organisms/now-strip/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  assert.deepEqual(
+    actual.flatMap((entry) =>
+      entry.usages
+        .filter((usage) => usage.component.startsWith('NowStrip') || usage.source.path === path)
+        .map((usage) => [entry.id, usage])
+    ),
+    [
+      [
+        'accessible-name',
+        {
+          component: 'NowStrip',
+          type: 'string (required visible group name)',
+          status: 'existing',
+          source: { path, symbol: 'NowStripProps', revision }
+        }
+      ]
+    ]
   );
 });
 test('Footer records only its four approved navigation usages', () => {

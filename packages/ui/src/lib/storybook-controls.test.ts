@@ -94,6 +94,12 @@ const components = [
   ['CommunityCardAction', 'molecules/community-card'],
   ['PhotoFrame', 'atoms/photo-frame'],
   ['Table', 'molecules/table'],
+  ['BlogGrid', 'organisms/blog-grid'],
+  ['BlogGridFeature', 'organisms/blog-grid'],
+  ['BlogGridRows', 'organisms/blog-grid'],
+  ['BlogGridRow', 'organisms/blog-grid'],
+  ['BlogGridArchive', 'organisms/blog-grid'],
+  ['NowStrip', 'organisms/now-strip'],
   ['Footer', 'organisms/footer'],
   ['FooterMotto', 'organisms/footer'],
   ['FooterBrand', 'organisms/footer'],
@@ -162,6 +168,12 @@ const expected: Record<string, Record<string, string | false>> = {
   notesboard: { children: false, sticky: 'boolean' },
   notesboardlist: { children: false },
   notesboardside: { children: false },
+  bloggrid: { children: false },
+  bloggridfeature: { children: false },
+  bloggridrows: { children: false },
+  bloggridrow: { children: false },
+  bloggridarchive: { children: false },
+  nowstrip: { label: 'text', children: false },
   footer: { children: false },
   footermotto: { children: false },
   footerbrand: { children: false },
@@ -562,6 +574,12 @@ const ownPropCounts: Record<string, number> = {
   notesboard: 2,
   notesboardlist: 1,
   notesboardside: 1,
+  bloggrid: 1,
+  bloggridfeature: 1,
+  bloggridrows: 1,
+  bloggridrow: 1,
+  bloggridarchive: 1,
+  nowstrip: 2,
   footer: 1,
   footermotto: 1,
   footerbrand: 1,
@@ -945,7 +963,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         .map(([name, directory]) =>
           fileURLToPath(
             new URL(
-              `../${directory}/${directory === 'organisms/footer' ? 'Footer' : directory === 'organisms/notes-board' ? 'NotesBoard' : name}.tsx`,
+              `../${directory}/${directory === 'organisms/footer' ? 'Footer' : directory === 'organisms/notes-board' ? 'NotesBoard' : directory === 'organisms/blog-grid' ? 'BlogGrid' : name}.tsx`,
               import.meta.url
             )
           )

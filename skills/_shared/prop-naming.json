@@ -632,7 +632,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
+          "revision": "sha256:0456c698ab96fb7522dc8676a36fac8de860b87b71eb1389e0785f7e14ee4b1c"
         }
       }
     ]
@@ -1203,6 +1203,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "NowStrip",
+        "type": "string (required visible group name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/now-strip/types.ts",
+          "symbol": "NowStripProps",
+          "revision": "sha256:1713d7a33c2810d71a554b2d42b60e2c95298647883bbc81e58d1c500f835bcb"
+        }
+      },
       {
         "component": "TabBar",
         "type": "string (required navigation landmark name)",
@@ -4599,7 +4609,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
+          "revision": "sha256:0456c698ab96fb7522dc8676a36fac8de860b87b71eb1389e0785f7e14ee4b1c"
         }
       },
       {
@@ -4726,7 +4736,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
+          "revision": "sha256:0456c698ab96fb7522dc8676a36fac8de860b87b71eb1389e0785f7e14ee4b1c"
         }
       },
       {
@@ -6922,7 +6932,7 @@
         "source": {
           "path": "packages/ui/src/molecules/now-card/types.ts",
           "symbol": "NowCardProps",
-          "revision": "sha256:520bea0e406bea5b9a9846bf8ee9155c279bbd0d1691c495061d7e6b35a41640"
+          "revision": "sha256:0456c698ab96fb7522dc8676a36fac8de860b87b71eb1389e0785f7e14ee4b1c"
         }
       }
     ]
