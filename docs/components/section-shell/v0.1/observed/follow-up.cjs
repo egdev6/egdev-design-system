@@ -19,11 +19,13 @@ const base = 'http://127.0.0.1:6031/iframe.html?id=';
       page.evaluate(() =>
         [...document.querySelectorAll('#storybook-root section')]
           .map((s) => {
-            const host = s.parentElement,
-              u = host.querySelector(':scope > [aria-hidden="true"]');
-            if (!u) return null;
-            let c = getComputedStyle(u),
-              sc = getComputedStyle(s);
+            const host = s.parentElement;
+            const u = host.querySelector(':scope > [aria-hidden="true"]');
+            if (!u) {
+              return null;
+            }
+            const c = getComputedStyle(u);
+            const sc = getComputedStyle(s);
             return {
               label: s.getAttribute('aria-label'),
               mask: c.maskImage,
@@ -54,14 +56,14 @@ const base = 'http://127.0.0.1:6031/iframe.html?id=';
     result[`adjacent-normal-${width}`] = await inspect();
     // Add test-only host fixtures by cloning real story markup. Inline token selection provides the bottom edge, absent from the stories.
     await page.evaluate(() => {
-      const root = document.querySelector('#storybook-root'),
-        group = root.firstElementChild;
+      const root = document.querySelector('#storybook-root');
+      const group = root.firstElementChild;
       for (const [edge, short] of [
         ['bottom', false],
         ['both', true]
       ]) {
-        const g = group.cloneNode(true),
-          s = [...g.querySelectorAll('section')];
+        const g = group.cloneNode(true);
+        const s = [...g.querySelectorAll('section')];
         s.slice(1).forEach((x) => x.remove());
         s[0].setAttribute('aria-label', edge + (short ? ' short fixture' : ' fixture'));
         const u = g.querySelector(':scope > [aria-hidden=true]');
@@ -131,9 +133,9 @@ const base = 'http://127.0.0.1:6031/iframe.html?id=';
     const button = page.locator('#inside-card button');
     await button.focus();
     result[`focus-${width}`] = await button.evaluate((e) => {
-      const c = getComputedStyle(e),
-        p = getComputedStyle(e.parentElement),
-        r = e.getBoundingClientRect();
+      const c = getComputedStyle(e);
+      const p = getComputedStyle(e.parentElement);
+      const r = e.getBoundingClientRect();
       return {
         focused: document.activeElement === e,
         focusVisible: e.matches(':focus-visible'),

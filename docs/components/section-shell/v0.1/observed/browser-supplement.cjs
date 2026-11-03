@@ -19,7 +19,7 @@ const fs = require('fs');
         ])
       ),
       groups: roots.map((s) => {
-        let u = s.parentElement.querySelector('[aria-hidden=true]');
+        const u = s.parentElement.querySelector('[aria-hidden=true]');
         return {
           underlay: {
             mask: getComputedStyle(u).maskImage,

@@ -96,27 +96,23 @@ const out = 'docs/components/section-shell/v0.1/observed/';
         media: matchMedia('(prefers-reduced-transparency: reduce)').matches
       }));
     await go('without-wrap');
-    results[`unwrap-${width}`] = await page
-      .locator('.eg-section')
-      .evaluate((e) => ({
-        root: e.getBoundingClientRect().toJSON(),
-        children: [...e.children].map((c) => ({
-          class: c.className,
-          rect: c.getBoundingClientRect().toJSON(),
-          width: getComputedStyle(c).width,
-          maxWidth: getComputedStyle(c).maxWidth,
-          marginLeft: getComputedStyle(c).marginLeft,
-          marginRight: getComputedStyle(c).marginRight
-        }))
-      }));
+    results[`unwrap-${width}`] = await page.locator('.eg-section').evaluate((e) => ({
+      root: e.getBoundingClientRect().toJSON(),
+      children: [...e.children].map((c) => ({
+        class: c.className,
+        rect: c.getBoundingClientRect().toJSON(),
+        width: getComputedStyle(c).width,
+        maxWidth: getComputedStyle(c).maxWidth,
+        marginLeft: getComputedStyle(c).marginLeft,
+        marginRight: getComputedStyle(c).marginRight
+      }))
+    }));
     await go('long-content');
-    results[`long-${width}`] = await page
-      .locator('.eg-section')
-      .evaluate((e) => ({
-        height: e.getBoundingClientRect().height,
-        scrollHeight: e.scrollHeight,
-        viewport: innerHeight
-      }));
+    results[`long-${width}`] = await page.locator('.eg-section').evaluate((e) => ({
+      height: e.getBoundingClientRect().height,
+      scrollHeight: e.scrollHeight,
+      viewport: innerHeight
+    }));
     await go('single-and-both-fades');
     results[`fades-${width}`] = await page.evaluate(() =>
       [...document.querySelectorAll('[aria-hidden=true]')].map((e) => ({
@@ -148,10 +144,10 @@ const out = 'docs/components/section-shell/v0.1/observed/';
     await go('host-fixed-bar');
     await page.keyboard.press('Tab');
     results[`focus-${width}`] = await page.evaluate(() => {
-      const e = document.activeElement,
-        c = getComputedStyle(e),
-        r = e.getBoundingClientRect(),
-        bar = document.querySelector('.sticky').getBoundingClientRect();
+      const e = document.activeElement;
+      const c = getComputedStyle(e);
+      const r = e.getBoundingClientRect();
+      const bar = document.querySelector('.sticky').getBoundingClientRect();
       return {
         tag: e.tagName,
         outline: c.outline,
