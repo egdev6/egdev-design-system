@@ -18,7 +18,7 @@ const actions = (
     </Button>
   </>
 );
-const image = <img alt='' src='/egdev-logo.png' className='block h-full w-full object-contain' />;
+const image = <img alt='' src='/brand/egdev-logo.png' className='block h-full w-full object-contain' />;
 
 function SceneHost({ children }: { children: (id: string) => ReactNode }) {
   const headingId = useId();
