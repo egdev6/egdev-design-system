@@ -7173,5 +7173,32 @@
         }
       }
     ]
+  },
+  {
+    "id": "board-sticky-side",
+    "name": "sticky",
+    "meaning": "Whether an editorial board's side column uses sticky positioning when its layout permits.",
+    "whenToUse": "Request sticky positioning for the side column of a board, subject to its layout boundary.",
+    "avoid": "Do not use for scroll state, a generic fixed header, or an uncontrolled scroll listener.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/notes-board/v0.1/prop-naming-approval.json",
+      "scope": "convention:board-sticky-side",
+      "contentHash": "sha256:9e067d908442436f38b6a98aebe398330c2d273c375b3d93bc63601ce1444924"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "NotesBoard",
+        "type": "boolean (default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/notes-board/types.ts",
+          "symbol": "NotesBoardProps",
+          "revision": "sha256:4edafa0801d22a4ea6c51fee92e21034919a006ea539d1e9ed16366282bd1fa4"
+        }
+      }
+    ]
   }
 ]

@@ -1,0 +1,35 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the board-sticky-side convention for the optional sticky side column of an editorial board.",
+  "evidence": {
+    "channel": "docs/components/web-catalog/v0.1/layer-d-plan-approvals.md",
+    "ownerChoice": "Aprobar plan y gates (Recomendado)",
+    "interpretation": "The owner approved the naming convention in gate 3 of the NotesBoard v0.1 plan. The whole-file plan SHA-256 is f70605329effcc833da4fa9f5e274df43525651321bdd2af45af85d40b034569; the exact entry text is in section 5. Not native review authority."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/section-shell/v0.1/prop-naming-approval.json",
+      "wholeFileSHA256": "sha256:81a7c8c1dda734e085564e19674ee351ca5e3965c75682553212d3a67eba344b"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:board-sticky-side",
+      "contentHash": "sha256:9e067d908442436f38b6a98aebe398330c2d273c375b3d93bc63601ce1444924",
+      "convention": {
+        "id": "board-sticky-side",
+        "name": "sticky",
+        "meaning": "Whether an editorial board's side column uses sticky positioning when its layout permits.",
+        "whenToUse": "Request sticky positioning for the side column of a board, subject to its layout boundary.",
+        "avoid": "Do not use for scroll state, a generic fixed header, or an uncontrolled scroll listener.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

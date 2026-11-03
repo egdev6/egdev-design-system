@@ -100,6 +100,9 @@ const components = [
   ['FooterNavigation', 'organisms/footer'],
   ['FooterSocial', 'organisms/footer'],
   ['FooterLegal', 'organisms/footer'],
+  ['NotesBoard', 'organisms/notes-board'],
+  ['NotesBoardList', 'organisms/notes-board'],
+  ['NotesBoardSide', 'organisms/notes-board'],
   ['SectionShell', 'templates/section-shell'],
   ['TopBar', 'organisms/top-bar'],
   ['TopBarBrand', 'organisms/top-bar'],
@@ -156,6 +159,9 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  notesboard: { children: false, sticky: 'boolean' },
+  notesboardlist: { children: false },
+  notesboardside: { children: false },
   footer: { children: false },
   footermotto: { children: false },
   footerbrand: { children: false },
@@ -553,6 +559,9 @@ const expected: Record<string, Record<string, string | false>> = {
   terminalcardlist: { items: false, className: 'text' }
 };
 const ownPropCounts: Record<string, number> = {
+  notesboard: 2,
+  notesboardlist: 1,
+  notesboardside: 1,
   footer: 1,
   footermotto: 1,
   footerbrand: 1,
@@ -935,7 +944,10 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       components
         .map(([name, directory]) =>
           fileURLToPath(
-            new URL(`../${directory}/${directory === 'organisms/footer' ? 'Footer' : name}.tsx`, import.meta.url)
+            new URL(
+              `../${directory}/${directory === 'organisms/footer' ? 'Footer' : directory === 'organisms/notes-board' ? 'NotesBoard' : name}.tsx`,
+              import.meta.url
+            )
           )
         )
         .filter((path) => existsSync(path))
@@ -1090,6 +1102,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['ProjectCard', { level: '3', variant: '"default"', size: '"md"' }],
     ['CommunityCard', { level: '3' }],
     ['FooterNavigation', { level: '2' }],
+    ['NotesBoard', { sticky: 'false' }],
     ['SectionShell', { register: '"pro"', wrap: 'true' }],
     ['TipCard', { level: '3', focalPoint: '"center"' }],
     ['Collapsible', { defaultOpen: 'false', disabled: 'false' }],

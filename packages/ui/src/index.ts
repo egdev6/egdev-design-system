@@ -103,6 +103,8 @@ export type {
 } from './organisms/footer';
 export { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from './organisms/footer';
 export * from './organisms/module-rail';
+export type { NotesBoardListProps, NotesBoardProps, NotesBoardSideProps } from './organisms/notes-board';
+export { NotesBoard, NotesBoardList, NotesBoardSide } from './organisms/notes-board';
 export * from './organisms/preview-frame';
 export * from './organisms/sidebar';
 export * from './organisms/tab-bar';
