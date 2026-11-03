@@ -80,3 +80,5 @@ body {
   color: var(--color-fg-default);
   font-family: var(--font-sans);
 }
+
+@source "../packages/effects/src/scroll-reveal/ScrollReveal.stories.tsx";

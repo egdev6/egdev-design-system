@@ -5319,3 +5319,28 @@ describe('ArticleFeature metadata contract', () => {
     ]);
   });
 });
+
+it('extracts ScrollReveal effects controls and documented native composition rows', () => {
+  const effectsRoot = new URL('../../../effects/', import.meta.url);
+  const effectsParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', effectsRoot)), {
+    ...config.typescript?.reactDocgenTypescriptOptions
+  });
+  const doc = effectsParser
+    .parse(fileURLToPath(new URL('src/scroll-reveal/ScrollReveal.tsx', effectsRoot)))
+    .find((item) => item.displayName === 'ScrollReveal');
+  expect(doc).toBeDefined();
+  expect(doc?.props.variant).toMatchObject({
+    required: false,
+    tags: { control: 'select' },
+    defaultValue: { value: 'reveal' }
+  });
+  expect(doc?.props.asChild).toMatchObject({
+    required: false,
+    tags: { control: 'boolean' },
+    defaultValue: { value: 'false' }
+  });
+  expect(doc?.props.delay).toMatchObject({ required: false, tags: { control: 'number' } });
+  for (const name of ['children', 'id', 'title', 'dir', 'lang', 'className', 'style', 'onFocus']) {
+    expect(doc?.props[name], name).toBeDefined();
+  }
+});

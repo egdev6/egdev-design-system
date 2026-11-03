@@ -7079,3 +7079,55 @@ test('Indicator package preserves a passive wrapper and suppresses only invalid-
     }
   }
 });
+
+test('ScrollReveal ships public SSR composition, own recipe classes and private implementation boundaries', async () => {
+  const effectsModule = await import(artifact('effects', effects.exports['.'].import));
+  assert.ok(effectsModule.ScrollReveal, 'Missing public ScrollReveal');
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  for (const variant of ['reveal', 'wipe']) {
+    const html = renderToString(
+      createElement(effectsModule.ScrollReveal, {
+        variant,
+        delay: 150,
+        children: createElement('a', { href: '#content', children: 'Visible content' })
+      })
+    );
+    const document = new JSDOM(html).window.document;
+    const root = document.querySelector('.eg-scroll-reveal');
+    assert.ok(root);
+    assert.equal(root.getAttribute('data-state'), 'revealed');
+    assert.equal(root.style.getPropertyValue('--eg-scroll-reveal-delay'), '150ms');
+    assert.equal(root.querySelector('a')?.textContent, 'Visible content');
+    for (const recipe of ['motion-reduce:transition-none', 'focus-within:transition-none']) {
+      assert.ok(root.classList.contains(recipe), 'Missing own-element ' + recipe);
+    }
+    if (variant === 'wipe') {
+      assert.ok(root.hasAttribute('data-done'), 'No-JS wipe must be fully unclipped');
+      for (const recipe of [
+        'duration-[var(--duration-wipe)]',
+        '[&[data-done]]:[clip-path:none]',
+        'data-[state=hidden]:[clip-path:inset(-10%_100%_-10%_0)]'
+      ]) {
+        assert.ok(root.classList.contains(recipe), 'Missing own wipe class ' + recipe);
+      }
+    } else {
+      assert.ok(root.classList.contains('data-[state=hidden]:translate-y-7'));
+      assert.ok(root.classList.contains('data-[state=hidden]:opacity-0'));
+    }
+  }
+  for (const name of ['useScrollReveal', 'scrollRevealRootVariants', 'reservedStateMarkers']) {
+    assert.equal(Object.hasOwn(effectsModule, name), false, name + ' must stay private');
+  }
+  const css = readFileSync(artifact('effects', effects.exports['./styles.css']), 'utf8');
+  for (const declaration of [
+    '--duration-wipe',
+    'clip-path',
+    'transition-property',
+    ':focus-within',
+    'prefers-reduced-motion'
+  ]) {
+    assert.ok(css.includes(declaration), 'Missing shipped ScrollReveal CSS ' + declaration);
+  }
+});

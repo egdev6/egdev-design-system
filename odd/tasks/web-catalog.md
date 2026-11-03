@@ -89,7 +89,7 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 
 | FP1 | S2, S3 | Draft ScrollReveal implementation plan under approved v0.1 spec | worker + parent | approved — scroll-reveal/v0.1/plan-approval.md |
 
-| FI1 | S2, S3 | Implement ScrollReveal under approved v0.1 spec and plan | worker + parent integration | in progress |
+| FI1 | S2, S3 | Implement ScrollReveal under approved v0.1 spec and plan | worker + parent integration | verified — final2594 tests; core d92fd50 verified; integration/chain delivery pending (L57–L59) |
 
 ## Log
 
@@ -162,3 +162,13 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 - L53 — Owner final spec choice (verbatim): "Approve spec and recommendations", bound to ScrollReveal canonical payload 7048c85eb9c2997349ad100bdae32e0e301701a412cc447f021cd9f4d0df2101. Independent naming choice: "Approve both conventions" (entrance-variant/variant, entrance-delay/delay). Reference choice: "Adopt with documented differences" (source limitations, sampled-state/screenshot timing, accepted 24→22.4px rise). Approval recorded in scroll-reveal/v0.1/owner-approval.md. No implementation, token edits or publishing authorized by this approval; plan remains separate.
 
 - L54 — Owner plan choice (verbatim): "Approve plan and implementation", bound to whole-file plan hash50e66ac2ebe3d2e0d3b97feb65728688f9ac68236c7e280fe4601208746f420a. Scoped gates: "Approve both scoped gates" (--duration-wipe:800ms; finite nonnegative millisecond --eg-scroll-reveal-delay for ScrollReveal only). Parent proved all13 utility candidates emit with installed compiler; computed timing remains browser-checked. Implementation FI1 authorized; HomeTemplate excluded.
+
+- L55 — Naming integration caught a parent/spec lookup error: variant is already canonical under visual-treatment; duplicate entrance-variant was rejected. Owner chose (verbatim) "Reuse existing convention (recommended)": bind ScrollReveal variant to unchanged visual-treatment; retain new entrance-delay. Scoped correction recorded in scroll-reveal/v0.1/naming-correction.md; no API/behavior change, no validator weakening or historical rewriting. Packed consumers14 and package exports130 pass; tokens34 pass.
+
+- L56 — ScrollReveal FI1 implementation: UnitA public behavior and UnitB package/naming integration observed passing. Source readback corrections were reproduced RED before fixes, including focus immediacy, observer failure cleanup, SSR wipe clipping and ref reassignment. Eleven source mutations killed; two own-element utility removals killed rebuilt exports/consumers; exact bytes restored. Chromium16 actual-scroll/focus/reduced-motion and four shipped-CSS no-JS cases passed. Final corrected-candidate gates remain in progress; not delivery approval.
+
+- L57 — Final corrected ScrollReveal candidate observed passing full TypeScript/lint/build, naming112, tokens34, exports130, React18/19 packed consumers14 including hydration/ref reassignment, focused62 and Vitest2594 in132files. Native forwarded-ref reassignment was reproduced RED then fixed without API narrowing; React18 void/React19 callback cleanup typing was corrected and fully checked. Browser16/no-JS4 and source11/packed2 mutation evidence is in scroll-reveal/v0.1/observed. No source delivery is claimed; implementation commit/assessment and publication are the next steps.
+
+- L58 — Oversized delivery choice (owner, verbatim): "Feature/tracker branch chain". Verified GitHub default branch main. Best cohesive split: original reference124lines, approved contract372lines, core1517lines (1006tests kept with behavior), integration/evidence separate. Delivery tracker is draft/no-merge until child integration; child PRs target their immediate parent, never a mixed strategy. No source push/PR/merge claimed yet.
+
+- L59 — Core commit d92fd50 holds the six ScrollReveal files and public behavior tests (1517lines); branch feat/scroll-reveal-core. Native committed-range assessment against docs/scroll-reveal-contract reports medium, reviewDue:false. Initial assessment could not run with undeclared untracked docs; after staging only known task docs/evidence, the committed-range assessment succeeded and reports exactly six paths/1517lines. No native review receipt/consent/approval is claimed. Chain tracker seed7bf7567 and contract1555812 remain separate; package/evidence commits follow.

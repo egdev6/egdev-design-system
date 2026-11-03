@@ -46,11 +46,11 @@ test('theme.css keeps the Tailwind color reset instead of a global reset', () =>
 // #219 B adds 1 root geometry token (invalid border width): 55 + 1 = 56 root variables.
 // #126 D17 adds 1 component container size (CalendarGrid stacking): 213 + 1 = 214 utility, 285 + 1 = 286 total.
 // #291 adds 4 owner-approved SectionShell root tokens (show halo, three fade masks): 56 + 4 = 60 root, 286 + 4 = 290 total.
-test('theme.css declares exactly 214 utility variables, 16 inline aliases, and 60 root variables', () => {
+test('theme.css declares exactly 214 utility variables, 16 inline aliases, and 61 root variables', () => {
   assert.equal(extractDeclarations(themeBlock).length, 214, 'utility namespace declaration count');
   assert.equal(extractDeclarations(inlineBlock).length, 16, 'inline spacing alias count');
-  assert.equal(extractDeclarations(rootBlock).length, 60, 'root declaration count');
-  assert.equal(extractDeclarations(themeSource).length, 290, 'total declaration count');
+  assert.equal(extractDeclarations(rootBlock).length, 61, 'root declaration count');
+  assert.equal(extractDeclarations(themeSource).length, 291, 'total declaration count');
 });
 
 test('theme.css declares the CalendarGrid stacking container size (#126 D17)', () => {
@@ -131,13 +131,13 @@ test('package publishes compiled tokens and keeps backward CSS exports', () => {
   assert.ok(manifest.files.includes('dist'), 'compiled artifact must ship');
 });
 
-test('compiled dist/tokens.css exposes the 290 manual variables and preserves the original 168 values', () => {
+test('compiled dist/tokens.css exposes the 291 manual variables and preserves the original 168 values', () => {
   const artifactPath = at('../dist/tokens.css');
   assert.ok(existsSync(artifactPath), 'dist/tokens.css missing — run pnpm tokens before this test');
   const artifact = readFileSync(artifactPath, 'utf8');
   assert.doesNotMatch(artifact, /@theme/, 'compiled artifact must not keep the @theme at-rule');
   const compiled = toDeclarationMap(artifact);
-  assert.equal(compiled.size, 290, 'compiled artifact must expose 290 variables');
+  assert.equal(compiled.size, 291, 'compiled artifact must expose 291 variables');
   assert.match(artifact, /@keyframes\s+pulse\s*\{/, 'compiled artifact must ship the pulse keyframes');
   assert.match(artifact, /@keyframes\s+spin\s*\{/, 'compiled artifact must ship the spin keyframes');
   const parity = compareParity(artifact, themeSource);
@@ -211,4 +211,13 @@ test('validator rejects duplicates, missing targets, cycles, and drifted artifac
   const drifted = compareParity(':root {\n  --a: 2px;\n}', ':root {\n  --a: 1px;\n}');
   assert.equal(drifted.ok, false);
   assert.deepEqual(drifted.changed, ['--a: 1px -> 2px']);
+});
+
+test('ScrollReveal wipe timing is the owner-approved 800ms root token', () => {
+  const declarations = extractDeclarations(rootBlock);
+  const values = declarations.filter(({ name }) => name === '--duration-wipe');
+  assert.equal(values.length, 1);
+  assert.equal(values[0]?.value, '800ms');
+  // Existing reveal timing remains unchanged.
+  assert.equal(declarations.find(({ name }) => name === '--duration-reveal')?.value, '560ms');
 });

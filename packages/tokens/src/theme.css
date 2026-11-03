@@ -464,6 +464,8 @@
   --duration-base: 300ms;
   /* --duration-reveal — Entradas al hacer scroll. */
   --duration-reveal: 560ms;
+  /* --duration-wipe — Owner-approved ScrollReveal wipe entrance duration. */
+  --duration-wipe: 800ms;
   /* --ambient-cycle — Ciclo mínimo de pulsos ambientales. */
   --ambient-cycle: 10s;
   /* --delay-popover — Espera de hover antes de abrir el pop-up del botón de secciones. */
