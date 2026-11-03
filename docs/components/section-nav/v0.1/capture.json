@@ -1,0 +1,71 @@
+{
+  "component": "section-nav",
+  "specVersion": "0.1",
+  "spec": "docs/components/section-nav/v0.1/spec.md",
+  "specContentSHA256": "a5eae79bf4d1a5090f814bb9c8a407e5c2d91785a2c92e7058d80679cd20d8ca",
+  "status": "Proposed — expected-design evidence for owner review; adoption and publication pending. Visual conformity: Not evaluated.",
+  "capturedFrom": {
+    "authority": "odd/tasks/web-catalog.md L6, L25 and L29; parent-provided capture",
+    "sourceRoot": "/home/egdev/proyectos/egdev-website/egdev-foundation",
+    "readOnly": true,
+    "notes": "Parent captured the Foundation preview; this worker did not recapture or modify images or capture-raw.json."
+  },
+  "harness": {
+    "script": "/tmp/egdev-sbcheck/capture-layer-d-b3.mjs",
+    "page": "/tmp/egdev-sbcheck/harness-layer-d-b3-section-nav.html",
+    "stylesheets": [
+      {
+        "path": "design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e"
+      },
+      {
+        "path": "design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      }
+    ],
+    "transformations": [
+      "Preview rendered in parent harness with authored Foundation stylesheets; raw capture records shared blob mappings; no images were observed in this board."
+    ]
+  },
+  "conditions": {
+    "browser": "chrome-headless-shell 1243 (Playwright core)",
+    "deviceScaleFactor": 2,
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "locale": "en-US",
+    "crop": "component preview board .pv",
+    "animations": "disabled during screenshot",
+    "fonts": {
+      "status": "loaded",
+      "loadedFaces": ["Barlow 400", "Barlow 600", "Barlow Condensed 600", "Barlow Condensed 800", "JetBrains Mono 500"]
+    },
+    "verificationLimits": "Static preview examples only; no DS comparison, live scrolling, focus, reduced-transparency or assistive-technology validation."
+  },
+  "visuals": [
+    {
+      "id": "VIS-01",
+      "file": "section-nav--variants--1280--dark.png",
+      "pngSha256": "dd1f700ace732dba694fb645815b647bdada135b3a7902c64d2db86959492214",
+      "pngBytes": 132722,
+      "viewport": { "width": 1280, "height": 1400 },
+      "boardRectCssPx": { "width": 1280, "height": 947.1875 },
+      "date": "2026-11-03T07:12:26.130Z",
+      "alt": "Interactive section canvas, open section list, last section with up arrow, and hovered button."
+    },
+    {
+      "id": "VIS-02",
+      "file": "section-nav--variants--390--dark.png",
+      "pngSha256": "9155ebdfb04d3dbdda9e5ff80fca20dd21110f32d6b29018ff3ca2225624e12b",
+      "pngBytes": 116890,
+      "viewport": { "width": 390, "height": 1400 },
+      "boardRectCssPx": { "width": 390, "height": 1278.96875 },
+      "date": "2026-11-03T07:12:27.063Z",
+      "alt": "The same four section navigation preview examples on a narrow board."
+    }
+  ],
+  "source": {
+    "preview": "design-system/components/SectionNav/preview.html",
+    "previewSha256": "663fcd9e38503c4b00910bd1c63a1770ad536510199d840c8e8a3d805a645063",
+    "rawCapture": "docs/components/section-nav/v0.1/capture-raw.json"
+  }
+}

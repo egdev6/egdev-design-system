@@ -1,0 +1,134 @@
+[
+  {
+    "variant": "section-nav",
+    "file": "section-nav--variants--1280--dark.png",
+    "pngSha256": "dd1f700ace732dba694fb645815b647bdada135b3a7902c64d2db86959492214",
+    "pngBytes": 132722,
+    "source": {
+      "path": "egdev-foundation/design-system/components/SectionNav/preview.html",
+      "sha256": "663fcd9e38503c4b00910bd1c63a1770ad536510199d840c8e8a3d805a645063"
+    },
+    "harness": {
+      "script": "/tmp/egdev-sbcheck/capture-layer-d-b3.mjs",
+      "page": "/tmp/egdev-sbcheck/harness-layer-d-b3-section-nav.html",
+      "links": ["egdev-foundation/design-system/tokens.css", "egdev-foundation/design-system/components/bundle.css"],
+      "tokensSha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+      "bundleSha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+    },
+    "media": [
+      {
+        "runtimeBlobUrl": "/_blob/5c01b9d348f8d19c8099b2804624765d",
+        "resolvedAsset": "egdev-foundation/reference-web/assets/logo-wordmark.svg",
+        "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
+      },
+      {
+        "runtimeBlobUrl": "/_blob/ce2d47159017f6b32cabffad74654133",
+        "resolvedAsset": "egdev-foundation/reference-web/assets/photo-setup.webp",
+        "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f"
+      }
+    ],
+    "capture": {
+      "element": ".pv",
+      "viewport": {
+        "width": 1280,
+        "height": 1400
+      },
+      "deviceScaleFactor": 2,
+      "colorScheme": "dark",
+      "reducedMotion": "no-preference",
+      "locale": "en-US",
+      "browser": "chrome-headless-shell 1243 (Playwright core)",
+      "animations": "disabled during screenshot",
+      "date": "2026-11-03T07:12:26.130Z"
+    },
+    "observed": {
+      "fontsStatus": "loaded",
+      "loadedFaces": ["Barlow 400", "Barlow 600", "Barlow Condensed 600", "Barlow Condensed 800", "JetBrains Mono 500"],
+      "images": [],
+      "labels": [
+        "Interactivo · haz scroll dentro del lienzo · .eg-section-nav",
+        "Lista abierta (táctil / foco) · .is-open",
+        "Última sección: flecha a arriba · __next.is-up",
+        "Hover del botón (antes de abrir) · __btn.is-hover"
+      ],
+      "boardRect": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 947.1875,
+        "top": 0,
+        "right": 1280,
+        "bottom": 947.1875,
+        "left": 0
+      },
+      "documentWidth": 1280,
+      "documentHeight": 1400
+    }
+  },
+  {
+    "variant": "section-nav",
+    "file": "section-nav--variants--390--dark.png",
+    "pngSha256": "9155ebdfb04d3dbdda9e5ff80fca20dd21110f32d6b29018ff3ca2225624e12b",
+    "pngBytes": 116890,
+    "source": {
+      "path": "egdev-foundation/design-system/components/SectionNav/preview.html",
+      "sha256": "663fcd9e38503c4b00910bd1c63a1770ad536510199d840c8e8a3d805a645063"
+    },
+    "harness": {
+      "script": "/tmp/egdev-sbcheck/capture-layer-d-b3.mjs",
+      "page": "/tmp/egdev-sbcheck/harness-layer-d-b3-section-nav.html",
+      "links": ["egdev-foundation/design-system/tokens.css", "egdev-foundation/design-system/components/bundle.css"],
+      "tokensSha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+      "bundleSha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+    },
+    "media": [
+      {
+        "runtimeBlobUrl": "/_blob/5c01b9d348f8d19c8099b2804624765d",
+        "resolvedAsset": "egdev-foundation/reference-web/assets/logo-wordmark.svg",
+        "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
+      },
+      {
+        "runtimeBlobUrl": "/_blob/ce2d47159017f6b32cabffad74654133",
+        "resolvedAsset": "egdev-foundation/reference-web/assets/photo-setup.webp",
+        "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f"
+      }
+    ],
+    "capture": {
+      "element": ".pv",
+      "viewport": {
+        "width": 390,
+        "height": 1400
+      },
+      "deviceScaleFactor": 2,
+      "colorScheme": "dark",
+      "reducedMotion": "no-preference",
+      "locale": "en-US",
+      "browser": "chrome-headless-shell 1243 (Playwright core)",
+      "animations": "disabled during screenshot",
+      "date": "2026-11-03T07:12:27.063Z"
+    },
+    "observed": {
+      "fontsStatus": "loaded",
+      "loadedFaces": ["Barlow 400", "Barlow 600", "Barlow Condensed 600", "Barlow Condensed 800", "JetBrains Mono 500"],
+      "images": [],
+      "labels": [
+        "Interactivo · haz scroll dentro del lienzo · .eg-section-nav",
+        "Lista abierta (táctil / foco) · .is-open",
+        "Última sección: flecha a arriba · __next.is-up",
+        "Hover del botón (antes de abrir) · __btn.is-hover"
+      ],
+      "boardRect": {
+        "x": 0,
+        "y": 0,
+        "width": 390,
+        "height": 1278.96875,
+        "top": 0,
+        "right": 390,
+        "bottom": 1278.96875,
+        "left": 0
+      },
+      "documentWidth": 390,
+      "documentHeight": 1400
+    }
+  }
+]
