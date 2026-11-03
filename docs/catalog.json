@@ -1138,10 +1138,10 @@
     "nombre": "LiveBand",
     "nivel": "organism",
     "destino": "ui",
-    "radix": "—",
-    "compone": "Countdown, PhotoFrame, ListItem row variant",
+    "radix": "— (native links and list)",
+    "compone": "Consumer Countdown, PhotoFrame and editorial ListItem",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): live section body composed from Countdown, PhotoFrame and the ListItem editorial row variant."
+    "notas": "Implemented React organism under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/302) and [rows-part amendment](components/live-band/v0.1/rows-part-amendment.md): independent field and recordings grids, a single VOD link and semantic rows with a separate archive. The host owns content, destinations and sections; no stylesheet, ref or asChild. Browser visual and accessibility verification remain pending."
   },
   {
     "actual": "CommunityGrid",
