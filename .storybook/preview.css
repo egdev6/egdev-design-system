@@ -7,6 +7,7 @@
 /* Example layout utilities belong to Storybook, not the production UI stylesheet. */
 @source "../packages/ui/src/organisms/blog-grid/BlogGrid.stories.tsx";
 @source "../packages/ui/src/organisms/calendar-grid/CalendarGrid.stories.tsx";
+@source "../packages/ui/src/organisms/chapter-break/ChapterBreak.stories.tsx";
 @source "../packages/ui/src/organisms/closing/Closing.stories.tsx";
 @source "../packages/ui/src/organisms/live-band/LiveBand.stories.tsx";
 @source "../packages/ui/src/organisms/notes-board/NotesBoard.stories.tsx";

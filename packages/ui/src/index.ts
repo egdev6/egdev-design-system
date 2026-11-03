@@ -101,6 +101,8 @@ export type {
 } from './organisms/blog-grid';
 export { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from './organisms/blog-grid';
 export * from './organisms/calendar-grid';
+export type { ChapterBreakProps } from './organisms/chapter-break';
+export { ChapterBreak } from './organisms/chapter-break';
 export type { ClosingProps } from './organisms/closing';
 export { Closing } from './organisms/closing';
 export type {
