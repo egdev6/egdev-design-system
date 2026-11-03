@@ -21,7 +21,7 @@ const meta = {
 } satisfies Meta<typeof Hero>;
 export default meta;
 type Story = StoryObj<typeof meta>;
-const media = <img src='/egdev-logo.png' alt='' />;
+const media = <img src='/brand/egdev-logo.png' alt='' className='block h-full w-full object-contain' />;
 const social = (
   <SocialLinks
     size='lg'
@@ -45,8 +45,10 @@ export const FullScene: Story = {
     social,
     children: (
       <>
-        <Button>Explore</Button>
-        <Button variant='secondary'>Learn more</Button>
+        <Button size='lg'>Explore</Button>
+        <Button size='lg' variant='secondary'>
+          Learn more
+        </Button>
       </>
     )
   }
@@ -56,14 +58,16 @@ export const NoMedia: Story = { args: { lede: 'A scene without media.' } };
 /** Decorative consumer image and no actions. */
 export const MediaOnlyDecoration: Story = { args: { media } };
 /** One independent action. */
-export const OneAction: Story = { args: { children: <Button>Explore</Button> } };
+export const OneAction: Story = { args: { children: <Button size='lg'>Explore</Button> } };
 /** Two distinct independent actions. */
 export const TwoActions: Story = {
   args: {
     children: (
       <>
-        <Button>Explore</Button>
-        <Button variant='secondary'>Learn more</Button>
+        <Button size='lg'>Explore</Button>
+        <Button size='lg' variant='secondary'>
+          Learn more
+        </Button>
       </>
     )
   }
@@ -91,5 +95,5 @@ export const MultipleSections: Story = {
 };
 /** Resize the canvas to inspect the scene at both local boundaries. */
 export const Responsive: Story = {
-  args: { media, lede: 'Resize to inspect the layout.', children: <Button>Explore</Button> }
+  args: { media, lede: 'Resize to inspect the layout.', children: <Button size='lg'>Explore</Button> }
 };
