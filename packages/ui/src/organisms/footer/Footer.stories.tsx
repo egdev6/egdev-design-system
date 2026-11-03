@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Icon } from '../../atoms/icon';
+import { Link } from '../../atoms/link';
 import { Logo } from '../../atoms/logo';
 import { SocialLinks } from '../../molecules/social-links';
 import { Text } from '../../primitives/text';
@@ -45,7 +46,9 @@ const content = (
     </FooterSocial>
     <FooterLegal>
       <span>Community project</span>
-      <a href='#privacy'>Privacy</a>
+      <Link href='#privacy' arrow={false}>
+        Privacy
+      </Link>
     </FooterLegal>
   </>
 );
@@ -99,7 +102,9 @@ export const HostComposition: Story = {
   render: (args) => (
     <>
       <nav aria-label='Host navigation'>
-        <a href='#content'>Content</a>
+        <Link href='#content' arrow={false}>
+          Content
+        </Link>
       </nav>
       <main id='content'>Content</main>
       <Footer {...args} />

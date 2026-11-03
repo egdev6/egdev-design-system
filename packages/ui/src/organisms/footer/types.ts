@@ -47,7 +47,8 @@ export type FooterMottoProps = PartNative & {
 /** Brand identity and optional tagline. */
 export type FooterBrandProps = PartNative & {
   /**
-   * Named brand element and optional descriptive copy, without nested anchors.
+   * Named brand element and optional descriptive copy, without nested anchors. The consumer owns
+   * link contrast and target size (44px recommended); Footer sizes its own navigation links to 44px.
    * @control false
    * @controlReason ReactNode composition cannot be serialized; see Default.
    */
@@ -81,7 +82,8 @@ export type FooterNavigationProps = Omit<
 /** Consumer social heading and named SocialLinks list. */
 export type FooterSocialProps = PartNative & {
   /**
-   * Consumer heading and configured SocialLinks; use a list label and caption={null}.
+   * Consumer heading and configured SocialLinks; use a list label and caption={null}. The consumer
+   * owns link contrast and target size (44px recommended); Footer sizes its own navigation links to 44px.
    * @control false
    * @controlReason ReactNode composition cannot be serialized; see Social.
    */
@@ -91,7 +93,8 @@ export type FooterSocialProps = PartNative & {
 /** Consumer legal and credit content in reading order. */
 export type FooterLegalProps = PartNative & {
   /**
-   * Legal text and optional links supplied by the host.
+   * Legal text and optional links supplied by the host. The consumer owns link contrast and target
+   * size (44px recommended); Footer sizes its own navigation links to 44px.
    * @control false
    * @controlReason ReactNode composition cannot be serialized; see Default.
    */
@@ -112,6 +115,8 @@ export const footerGridVariants = cva(
 export const footerBrandVariants = cva('footer-brand min-w-0 wrap-anywhere [@media(width<=860px)]:col-span-2');
 /** Navigation layout and wrapping. */
 export const footerNavigationVariants = cva('min-w-0 wrap-anywhere');
+/** Footer-only navigation link target exception. */
+export const footerNavigationLinkVariants = cva('min-h-14 min-w-14 inline-flex items-center justify-start');
 /** Social content remains consumer-owned. */
 export const footerSocialVariants = cva('min-w-0 wrap-anywhere');
 /** Legal row explicitly matches retained legacy layout and uses token typography. */

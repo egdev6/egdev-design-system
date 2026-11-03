@@ -676,6 +676,12 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/molecules/tip-card/types.ts#TipCardProps'
   })),
+  // Footer DI3 adds usages only; existing receipts bind convention content, not usages.
+  ...['collection-items', 'accessible-name', 'heading-level'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/organisms/footer/types.ts#FooterNavigationProps'
+  })),
+  { conventionId: 'accessible-name', source: 'packages/ui/src/organisms/footer/types.ts#FooterNavigationItem' },
   // CommunityCard T13 adds usages only; existing receipts bind convention content, not usages.
   ...['heading-title', 'heading-level', 'heading-eyebrow'].map((conventionId) => ({
     conventionId,
@@ -780,6 +786,33 @@ test('CommunityCard records only its three approved heading usages', () => {
         }
       ])
       .sort(([a], [b]) => a.localeCompare(b))
+  );
+});
+test('Footer records only its four approved navigation usages', () => {
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const path = 'packages/ui/src/organisms/footer/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const expected = [
+    ['collection-items', 'FooterNavigation', 'FooterNavigationItem[] (required)', 'FooterNavigationProps'],
+    ['accessible-name', 'FooterNavigation', 'string (required landmark name)', 'FooterNavigationProps'],
+    ['accessible-name', 'FooterNavigationItem', 'string (required destination name)', 'FooterNavigationItem'],
+    ['heading-level', 'FooterNavigation', 'FooterNavigationLevel (default 2)', 'FooterNavigationProps']
+  ];
+  const sort = (a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b));
+  assert.deepEqual(
+    actual
+      .flatMap((entry) =>
+        entry.usages
+          .filter((usage) => usage.component.startsWith('Footer') || usage.source.path === path)
+          .map((usage) => [entry.id, usage])
+      )
+      .sort(sort),
+    expected
+      .map(([id, component, type, symbol]) => [
+        id,
+        { component, type, status: 'existing', source: { path, symbol, revision } }
+      ])
+      .sort(sort)
   );
 });
 test('historical registry removes only exact reviewed convention and source pairs', () => {

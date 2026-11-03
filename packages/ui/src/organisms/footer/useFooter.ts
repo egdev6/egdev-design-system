@@ -21,6 +21,7 @@ import {
   footerLegalVariants,
   footerListVariants,
   footerMottoVariants,
+  footerNavigationLinkVariants,
   footerNavigationVariants,
   footerSocialVariants,
   footerVariants
@@ -117,6 +118,7 @@ export function useFooterNavigation({ label, level = 2, items, className, ...res
     heading,
     headingProps: { id, className: cn(footerHeadingVariants()) },
     listClassName: cn(footerListVariants()),
+    linkClassName: cn(footerNavigationLinkVariants()),
     props: {
       ...native,
       'aria-labelledby': id,

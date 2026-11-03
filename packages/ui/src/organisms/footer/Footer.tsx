@@ -44,7 +44,7 @@ export const FooterBrand: FC<FooterBrandProps> = (props) => {
   const { children, props: native } = useFooterBrand(props);
   return <div {...native}>{children}</div>;
 };
-/** Named section navigation with unmodified system links. */
+/** Named section navigation with the Footer-local link target exception. */
 export const FooterNavigation: FC<FooterNavigationProps> = (props) => {
   const {
     valid,
@@ -53,6 +53,7 @@ export const FooterNavigation: FC<FooterNavigationProps> = (props) => {
     heading: Heading,
     headingProps,
     listClassName,
+    linkClassName,
     props: native
   } = useFooterNavigation(props);
   return valid ? (
@@ -61,7 +62,7 @@ export const FooterNavigation: FC<FooterNavigationProps> = (props) => {
       <ul className={listClassName}>
         {entries.map((item, index) => (
           <li key={`${index}-${item.href}`}>
-            <Link href={item.href} arrow={false}>
+            <Link href={item.href} arrow={false} className={linkClassName}>
               {item.label}
             </Link>
           </li>

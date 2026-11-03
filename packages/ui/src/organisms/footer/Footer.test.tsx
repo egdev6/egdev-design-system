@@ -99,6 +99,37 @@ describe('Footer contract', () => {
     expect(footer).not.toHaveAttribute('asChild');
     expect(footer.querySelector('.eg-footer__legal')).toHaveClass('mt-4');
   });
+  it('applies the local target recipe only to navigation links (FT-08 amendment)', () => {
+    render(
+      <Footer>
+        <FooterBrand>
+          <a href='/'>Home</a>
+        </FooterBrand>
+        <FooterNavigation
+          label='Sections'
+          items={[
+            { href: '#one', label: 'One' },
+            { href: '#two', label: 'Two' }
+          ]}
+        />
+        <FooterSocial>
+          <a href='#social'>Social</a>
+        </FooterSocial>
+        <FooterLegal>
+          <a href='#legal'>Legal</a>
+        </FooterLegal>
+      </Footer>
+    );
+    const links = within(screen.getByRole('navigation', { name: 'Sections' })).getAllByRole('link');
+    expect(links).toHaveLength(2);
+    for (const link of links) {
+      expect(link).toHaveClass('min-h-14', 'min-w-14', 'inline-flex', 'items-center', 'justify-start');
+    }
+    for (const name of ['Home', 'Social', 'Legal']) {
+      expect(screen.getByRole('link', { name })).not.toHaveClass('min-h-14');
+      expect(screen.getByRole('link', { name })).not.toHaveClass('min-w-14');
+    }
+  });
   it('keeps ordered destinations and native keyboard focus without a trailing arrow (FT-03, FT-08)', async () => {
     const user = userEvent.setup();
     render(
