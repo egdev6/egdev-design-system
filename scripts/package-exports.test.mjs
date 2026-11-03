@@ -678,6 +678,96 @@ test('BlogGrid ships every recipe utility with bounded responsive resets and leg
   assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-blog-grid/);
 });
 
+test('SectionNav ships every recipe utility in the bounded compact block', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/organisms/section-nav/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      for (const argument of node.arguments) {
+        if (ts.isStringLiteral(argument)) {
+          for (const name of argument.text.split(/\s+/).filter(Boolean)) {
+            classes.add(name);
+          }
+        }
+      }
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(source);
+  assert.ok(classes.size > 20);
+  const compact = cssBlock(utilities, /@media\s*\(\s*width\s*<=\s*520px\s*\)\s*\{/);
+  for (const name of classes) {
+    if (name.startsWith('eg-')) {
+      continue;
+    }
+    const selector = '.' + name.replace(/[^\w-]/g, '\\$&');
+    assert.ok(utilities.includes(selector), `Missing SectionNav utility ${name}`);
+    if (name.startsWith('[@media(width<=520px)]:')) {
+      assert.ok(compact.includes(selector), `Missing bounded ${name}`);
+    }
+  }
+  assert.match(utilities, /right:\s*calc\(var\(--space-6\)\s*\+\s*env\(safe-area-inset-right,\s*0px\)\)/);
+  assert.match(utilities, /bottom:\s*calc\(var\(--space-6\)\s*\+\s*env\(safe-area-inset-bottom,\s*0px\)\)/);
+  assert.doesNotMatch(utilities, /\.eg-section-nav\s*\{/);
+  assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-section-nav/);
+});
+
+test('SectionNav package SSR keeps one named landmark and compact classes on its own elements', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const dom = new JSDOM(
+    renderToString(
+      h(exported.SectionNav, {
+        label: 'Sections',
+        disclosureLabel: 'Open index',
+        nextLabel: 'Next section',
+        activeId: 'one',
+        value: 50,
+        items: [
+          { id: 'one', label: 'One', href: '#one' },
+          { id: 'two', label: 'Two', href: '#two' }
+        ]
+      })
+    )
+  );
+  try {
+    const doc = dom.window.document;
+    assert.equal(doc.querySelectorAll('nav,[role="navigation"]').length, 1);
+    const nav = doc.querySelector('nav[aria-label="Sections"]');
+    assert.ok(nav);
+    for (const name of [
+      'right-[calc(var(--space-6)+env(safe-area-inset-right,0px))]',
+      'bottom-[calc(var(--space-6)+env(safe-area-inset-bottom,0px))]'
+    ]) {
+      assert.ok(nav.classList.contains(name));
+    }
+    const trigger = nav.querySelector('button[aria-label="Open index"]');
+    const next = nav.querySelector('a[aria-label="Next section"]');
+    assert.equal(trigger?.getAttribute('aria-expanded'), 'false');
+    assert.equal(next?.getAttribute('href'), '#two');
+    for (const node of [trigger, next]) {
+      for (const name of ['[@media(width<=520px)]:min-w-14', '[@media(width<=520px)]:min-h-14']) {
+        assert.ok(node.classList.contains(name));
+      }
+    }
+    for (const name of ['[@media(width<=520px)]:h-14', '[@media(width<=520px)]:px-3']) {
+      assert.ok(trigger.parentElement.classList.contains(name));
+    }
+    assert.equal(doc.querySelector('[role="dialog"]'), null);
+  } finally {
+    dom.window.close();
+  }
+});
+
 test('LiveBand ships every recipe utility in its bounded responsive blocks', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -4622,6 +4712,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'RadioGroup',
       'SearchTrigger',
       'SectionHeader',
+      'SectionNav',
       'SectionShell',
       'Select',
       'SelectTile',
@@ -5106,6 +5197,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SectionHeaderProps',
     'SectionHeaderTone',
     'SectionHeaderVariant',
+    'SectionNav',
+    'SectionNavItem',
+    'SectionNavProps',
     'SectionShell',
     'SectionShellProps',
     'SectionShellRegister',

@@ -134,6 +134,8 @@ export { NotesBoard, NotesBoardList, NotesBoardSide } from './organisms/notes-bo
 export type { NowStripProps } from './organisms/now-strip';
 export { NowStrip } from './organisms/now-strip';
 export * from './organisms/preview-frame';
+export type { SectionNavItem, SectionNavProps } from './organisms/section-nav';
+export { SectionNav } from './organisms/section-nav';
 export * from './organisms/sidebar';
 export * from './organisms/tab-bar';
 export type { TopBarItem, TopBarPartProps, TopBarProps } from './organisms/top-bar';

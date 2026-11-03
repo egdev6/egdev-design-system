@@ -101,6 +101,12 @@ export type PopoverContentProps = Omit<
    */
   label: string;
   /**
+   * Called before focus returns on close. Prevent the default only after navigation moves focus to its destination.
+   * @control false
+   * @controlReason Functions are not serializable; see Controlled for callback composition.
+   */
+  onCloseAutoFocus?: (event: Event) => void;
+  /**
    * Preferred side before Radix collision handling.
    * @default bottom
    * @control select

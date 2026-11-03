@@ -1,0 +1,35 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the active-section-id convention for the host-designated current section.",
+  "evidence": {
+    "channel": "docs/components/web-catalog/v0.1/layer-d-plan-approvals.md",
+    "ownerChoice": "Aprobar plan y gates (Recomendado)",
+    "interpretation": "The owner approved the naming convention in gate 4 of the SectionNav v0.1 plan. The whole-file plan SHA-256 is 16c42595c77871d8aa04ade026588167604b31c555e38aa2fc3cbdab379aad3f; the exact entry text is in section 4. Not native review authority."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/popover/v0.1/prop-naming-approval.json",
+      "wholeFileSHA256": "sha256:33e49b751be3c87d5cfef76d2ecc3ff13ab0a2dcc0738b28b5363c7d51c60b05"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:active-section-id",
+      "contentHash": "sha256:0eebb99c8ef8445fd9e8faf19475fdf993612c1d35855f7f612e06ba85e9bb8f",
+      "convention": {
+        "id": "active-section-id",
+        "name": "activeId",
+        "meaning": "The host-designated identity of the current section in an ordered section navigation.",
+        "whenToUse": "Identify the current section by its consumer-supplied stable item id.",
+        "avoid": "Do not use for a data-table active row, progress value, inferred scroll position or generic selection.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}
