@@ -93,7 +93,8 @@ const components = [
   ['CommunityCardMark', 'molecules/community-card'],
   ['CommunityCardAction', 'molecules/community-card'],
   ['PhotoFrame', 'atoms/photo-frame'],
-  ['Table', 'molecules/table']
+  ['Table', 'molecules/table'],
+  ['SectionShell', 'templates/section-shell']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -143,6 +144,7 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  sectionshell: { register: 'select', wrap: 'boolean', children: false },
   gaugegroup: { label: 'text', items: false, size: 'select', center: false },
   articlefeature: {
     title: 'text',
@@ -528,6 +530,7 @@ const expected: Record<string, Record<string, string | false>> = {
 };
 const ownPropCounts: Record<string, number> = {
   table: 16,
+  sectionshell: 3,
   gaugegroup: 4,
   articlefeature: 9,
   articlefeaturecover: 4,
@@ -1022,6 +1025,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Panel', { variant: '"default"', tone: '"surface-1"' }],
     ['ProjectCard', { level: '3', variant: '"default"', size: '"md"' }],
     ['CommunityCard', { level: '3' }],
+    ['SectionShell', { register: '"pro"', wrap: 'true' }],
     ['TipCard', { level: '3', focalPoint: '"center"' }],
     ['Collapsible', { defaultOpen: 'false', disabled: 'false' }],
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],
