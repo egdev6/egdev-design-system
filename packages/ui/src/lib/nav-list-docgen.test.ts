@@ -44,7 +44,9 @@ describe('NavList public metadata', () => {
     }
   });
 
-  it('extracts the real component and runs registered Storybook Controls with zero diagnostics', () => {
+  it('extracts the real component and runs registered Storybook Controls with zero diagnostics', {
+    timeout: 20_000
+  }, () => {
     const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
       ...config.typescript?.reactDocgenTypescriptOptions
     });

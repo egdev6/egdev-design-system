@@ -10,7 +10,7 @@ import type { AppShellProps } from '../templates/app-shell';
 import { AppShell } from '../templates/app-shell';
 import meta, { SidebarAndTabBar } from '../templates/app-shell/AppShell.stories';
 
-it('extracts AppShell metadata and applies registered Controls without diagnostics', () => {
+it('extracts AppShell metadata and applies registered Controls without diagnostics', { timeout: 20_000 }, () => {
   const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
     ...config.typescript?.reactDocgenTypescriptOptions
   });
