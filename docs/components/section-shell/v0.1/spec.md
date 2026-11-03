@@ -2,7 +2,7 @@
 
 - **Version / status:** 0.1 — **Proposed**, not approved or implementation-ready.
 - **Approval / recovery:** Pending owner review of the questions below, exact payload and VIS-01. Cataloging was approved separately in [owner approvals](../../web-catalog/v0.1/owner-approvals.md); `odd/tasks/web-catalog.md` L6, L15 and L25 authorize read-only preview captures and a prepared issue snapshot, not implementation.
-- **Snapshot identity:** `version: 0.1`; `contentSHA256: 8efab611751597184f80f03eb7b6ed405287078d26b971ccb2c746d15f195558`; `visualHashes: VIS-01 → da7aa002707b0c66dec602c72c5ae3f376226d928de32968dee438a47b83b4c7`; `approvalReference: Pending`; `canonicalIssue: Pending`; `latestPublishedComment: Pending`.
+- **Snapshot identity:** `version: 0.1`; `contentSHA256: edb73a8b606fb49b19516e3d25cf2fe8bb78ca742ce05bd800e2215af03957f9`; `visualHashes: VIS-01 → da7aa002707b0c66dec602c72c5ae3f376226d928de32968dee438a47b83b4c7`; `approvalReference: Pending`; `canonicalIssue: Pending`; `latestPublishedComment: Pending`.
 - **Hash definition:** SHA-256 of UTF-8 bytes beginning with the complete line `## 1. Purpose and scope` through EOF, including the final LF; metadata above is excluded.
 
 ## 1. Purpose and scope

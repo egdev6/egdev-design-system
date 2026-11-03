@@ -4,7 +4,7 @@
 
 ## Snapshot identity and recovery
 
-- Version: `0.1`; canonical spec payload SHA-256: `e52b0cfd12946e852eea24f68262bd7c7afebb5c85bcc59c7a91a7657c9364b0` (exact full heading line `## 1. Purpose and scope` to EOF, UTF-8 and final LF).
+- Version: `0.1`; canonical spec payload SHA-256: `8b672a15b17d23d1162b896867c45112a74c1749c6e6e7770b21c93717e7efd0` (exact full heading line `## 1. Purpose and scope` to EOF, UTF-8 and final LF).
 - Full local snapshot: [spec.md](./spec.md). The complete seven-block snapshot and all blocking choices are in that file. This is a draft local recovery reference, **not yet a GitHub-accessible immutable reference**. Before publication, either include its full exact payload in the issue body/comment or replace this link with a separately authorized, accessible immutable snapshot and verify the bytes and payload hash.
 - VIS-01: `53d75dae7646a1f6aa770525bb335ccb68eb2966b8db54cb679b39045e03011b`; VIS-02: `23311a65bfc2bffd958a52d7c85f8c19274ae384dacfd03b3cb4d02df07665dd`.
 - Approval reference: Pending; canonical issue: Pending; latest published comment: Pending. Verify the canonical component issue before choosing an initial body versus a subsequent versioned comment; never create a duplicate or silently change an existing body.

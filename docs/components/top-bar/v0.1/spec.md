@@ -2,7 +2,7 @@
 
 - **Version / status:** 0.1 — **Proposed**, draft for owner review, not approved or implementation-ready.
 - **Approval / recovery:** Pending explicit owner decision on this exact payload and VIS-01/VIS-02. Catalog classification is approved, not this API or a plan: `docs/components/web-catalog/v0.1/owner-approvals.md`; capture authority: `odd/tasks/web-catalog.md` L6, L15, L25.
-- **Snapshot identity:** `version: 0.1`; `contentSHA256: 2593857a726c34d8af012ff9195fcbe4d9819a19b447103eceb707d017a46ac6`; `visualHashes: VIS-01 → 4472d21dd0d5f12375972ca309a75a0d067ce63278e6e36eb4b741e2a961f25b; VIS-02 → dbdd553b8f813cf5792d7932ac6fb07c37031c71eb73ca4b759b2c7ac7240a7a`; `approvalReference: Pending`; `canonicalIssue: Pending`; `latestPublishedComment: Pending`.
+- **Snapshot identity:** `version: 0.1`; `contentSHA256: 12dc99c75b4b5e07e3772fd55f0c0c413339f64c6fe9ab0cd58404640fa74e82`; `visualHashes: VIS-01 → 4472d21dd0d5f12375972ca309a75a0d067ce63278e6e36eb4b741e2a961f25b; VIS-02 → dbdd553b8f813cf5792d7932ac6fb07c37031c71eb73ca4b759b2c7ac7240a7a`; `approvalReference: Pending`; `canonicalIssue: Pending`; `latestPublishedComment: Pending`.
 - **Hash definition:** SHA-256 of UTF-8 bytes from the exact whole heading line `## 1. Purpose and scope` through EOF, LF and final newline included. Tracking metadata above is excluded.
 
 ## 1. Purpose and scope

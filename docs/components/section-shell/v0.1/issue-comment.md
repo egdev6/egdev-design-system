@@ -3,7 +3,7 @@
 **Proposed — not ready for implementation.** The seven owner questions in the [full local snapshot](spec.md) remain blocking. This is a prepared handoff, not a posted issue or comment.
 
 - Version: `0.1`
-- Canonical payload SHA-256: `8efab611751597184f80f03eb7b6ed405287078d26b971ccb2c746d15f195558` (full `## 1. Purpose and scope` line to EOF in `spec.md`, UTF-8, LF)
+- Canonical payload SHA-256: `edb73a8b606fb49b19516e3d25cf2fe8bb78ca742ce05bd800e2215af03957f9` (full `## 1. Purpose and scope` line to EOF in `spec.md`, UTF-8, LF)
 - VIS-01 SHA-256: `da7aa002707b0c66dec602c72c5ae3f376226d928de32968dee438a47b83b4c7`
 - Approval reference, canonical issue and latest published comment: Pending.
 - Catalog authority: `scripts/catalog_data.py:120` and `docs/components/web-catalog/v0.1/owner-approvals.md`; approved five-register template for `@egdev/ui`. Foundation source is read-only; `odd/tasks/web-catalog.md` L6, L15 and L25 authorize this capture and handoff.

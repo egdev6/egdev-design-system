@@ -2,7 +2,7 @@
   "component": "top-bar",
   "specVersion": "0.1",
   "spec": "docs/components/top-bar/v0.1/spec.md",
-  "specContentSHA256": "2593857a726c34d8af012ff9195fcbe4d9819a19b447103eceb707d017a46ac6",
+  "specContentSHA256": "12dc99c75b4b5e07e3772fd55f0c0c413339f64c6fe9ab0cd58404640fa74e82",
   "status": "Proposed — expected-design evidence for owner review; adoption and publication pending. Visual conformity: Not evaluated.",
   "capturedFrom": {
     "authority": "odd/tasks/web-catalog.md L6, L15 and L25; parent-provided capture",

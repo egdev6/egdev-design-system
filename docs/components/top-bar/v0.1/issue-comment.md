@@ -5,7 +5,7 @@
 ## Snapshot identity and recovery
 
 - Version: `0.1`; status: **Proposed**; approval reference: **Pending**.
-- Full, recoverable local snapshot: [`spec.md`](spec.md), all seven contract blocks and owner questions. Canonical payload SHA-256 `2593857a726c34d8af012ff9195fcbe4d9819a19b447103eceb707d017a46ac6` (exact `## 1. Purpose and scope` heading line through EOF, UTF-8 LF including final newline). Before remote handoff the parent must provide an accessible immutable snapshot and verify its bytes; this local link alone is not a GitHub-visible asset.
+- Full, recoverable local snapshot: [`spec.md`](spec.md), all seven contract blocks and owner questions. Canonical payload SHA-256 `12dc99c75b4b5e07e3772fd55f0c0c413339f64c6fe9ab0cd58404640fa74e82` (exact `## 1. Purpose and scope` heading line through EOF, UTF-8 LF including final newline). Before remote handoff the parent must provide an accessible immutable snapshot and verify its bytes; this local link alone is not a GitHub-visible asset.
 - VIS-01 SHA-256 `4472d21dd0d5f12375972ca309a75a0d067ce63278e6e36eb4b741e2a961f25b`; VIS-02 SHA-256 `dbdd553b8f813cf5792d7932ac6fb07c37031c71eb73ca4b759b2c7ac7240a7a`. Capture metadata and limits: [`capture.json`](capture.json), raw parent provenance in [`capture-raw.json`](capture-raw.json). Foundation board capture, not a DS implementation. Visual conformity: **Not evaluated**.
 - Asset handoff pending: publish or attach the two exact PNGs only under separate authorization; verify accessible downloaded bytes against these hashes before inserting real URLs. No URL or approval is invented.
 
