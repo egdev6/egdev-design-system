@@ -122,6 +122,79 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts Footer parts, navigation metadata and documented native rows', () => {
+    const extracted = parser.parse(source('organisms/footer/Footer.tsx'));
+    const root = extracted.find(({ displayName }) => displayName === 'Footer');
+    expect(root?.props.children).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    for (const name of [
+      'id',
+      'title',
+      'dir',
+      'lang',
+      'aria-label',
+      'aria-labelledby',
+      'aria-describedby',
+      'className'
+    ]) {
+      expect(root?.props[name], name).toBeDefined();
+    }
+    for (const name of ['style', 'role', 'tabIndex', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
+      expect(root?.props[name], name).toBeUndefined();
+    }
+    for (const name of ['FooterMotto', 'FooterBrand', 'FooterSocial', 'FooterLegal']) {
+      const part = extracted.find(({ displayName }) => displayName === name);
+      expect(part?.props.children, name).toMatchObject({ required: true, tags: { control: 'false' } });
+    }
+    const nav = extracted.find(({ displayName }) => displayName === 'FooterNavigation');
+    expect(nav?.props.label).toMatchObject({ required: true, tags: { control: 'text' } });
+    expect(nav?.props.items).toMatchObject({ required: true, tags: { control: 'false' } });
+    expect(nav?.props.level).toMatchObject({
+      required: false,
+      defaultValue: { value: '2' },
+      tags: { control: 'select' }
+    });
+    expect(nav?.props.level?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
+      '2',
+      '3',
+      '4',
+      '5',
+      '6'
+    ]);
+    const file = ast(source('organisms/footer/types.ts'));
+    const properties = ownProps(file, [
+      'FooterProps',
+      'FooterMottoProps',
+      'FooterBrandProps',
+      'FooterNavigationProps',
+      'FooterNavigationItem',
+      'FooterSocialProps',
+      'FooterLegalProps'
+    ]);
+    expect(properties.map((property) => property.name.getText(file))).toEqual([
+      'href',
+      'label',
+      'children',
+      'children',
+      'children',
+      'label',
+      'level',
+      'items',
+      'children',
+      'children'
+    ]);
+    for (const property of properties) {
+      const tags = ts.getJSDocTags(property);
+      const control = tags.filter(({ tagName }) => tagName.text === 'control');
+      expect(control, property.name.getText(file)).toHaveLength(1);
+      if (control[0]?.comment === 'false') {
+        expect(tags.some(({ tagName, comment }) => tagName.text === 'controlReason' && Boolean(comment))).toBe(true);
+      }
+      if (!property.questionToken) {
+        expect(tags.some(({ tagName }) => tagName.text === 'default')).toBe(false);
+      }
+    }
+    expect(publicAPI.Footer).toBeDefined();
+  });
   it('extracts TopBar inputs, parts and native header rows (TB-09)', { timeout: heavyDocgenTimeoutMs }, () => {
     const extracted = parser.parse(source('organisms/top-bar/TopBar.tsx'));
     const props = extracted.find(({ displayName }) => displayName === 'TopBar')?.props ?? {};
@@ -1106,6 +1179,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/tip-card',
       './molecules/toast',
       './organisms/calendar-grid',
+      './organisms/footer',
       './organisms/module-rail',
       './organisms/preview-frame',
       './organisms/sidebar',
@@ -1161,6 +1235,12 @@ describe('Storybook TypeScript docgen contract', () => {
       'Dropzone',
       'Field',
       'FieldMessage',
+      'Footer',
+      'FooterBrand',
+      'FooterLegal',
+      'FooterMotto',
+      'FooterNavigation',
+      'FooterSocial',
       'Gauge',
       'GaugeGroup',
       'Heading',
