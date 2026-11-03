@@ -126,12 +126,15 @@ export const nowCardVariants = cva(
 );
 
 /** Inner padded body; the density step shrinks the padding and the body copy, never the content. */
-export const nowCardBodyVariants = cva('eg-now-card__body flex flex-col gap-2 p-6 text-body-large text-fg-secondary', {
-  variants: {
-    size: { md: '', sm: 'p-4 text-body-default' }
-  },
-  defaultVariants: { size: 'md' }
-});
+export const nowCardBodyVariants = cva(
+  'eg-now-card__body flex flex-1 flex-col gap-2 p-6 text-body-large text-fg-secondary',
+  {
+    variants: {
+      size: { md: '', sm: 'p-4 text-body-default' }
+    },
+    defaultVariants: { size: 'md' }
+  }
+);
 
 /**
  * Leading status wrapper: the card renders the consumer's statusBadge node verbatim inside this
