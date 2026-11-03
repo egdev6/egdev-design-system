@@ -93,7 +93,13 @@ const components = [
   ['CommunityCardMark', 'molecules/community-card'],
   ['CommunityCardAction', 'molecules/community-card'],
   ['PhotoFrame', 'atoms/photo-frame'],
-  ['Table', 'molecules/table']
+  ['Table', 'molecules/table'],
+  ['Footer', 'organisms/footer'],
+  ['FooterMotto', 'organisms/footer'],
+  ['FooterBrand', 'organisms/footer'],
+  ['FooterNavigation', 'organisms/footer'],
+  ['FooterSocial', 'organisms/footer'],
+  ['FooterLegal', 'organisms/footer']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -143,6 +149,12 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  footer: { children: false },
+  footermotto: { children: false },
+  footerbrand: { children: false },
+  footernavigation: { label: 'text', level: 'select', items: false },
+  footersocial: { children: false },
+  footerlegal: { children: false },
   gaugegroup: { label: 'text', items: false, size: 'select', center: false },
   articlefeature: {
     title: 'text',
@@ -527,6 +539,12 @@ const expected: Record<string, Record<string, string | false>> = {
   terminalcardlist: { items: false, className: 'text' }
 };
 const ownPropCounts: Record<string, number> = {
+  footer: 1,
+  footermotto: 1,
+  footerbrand: 1,
+  footernavigation: 3,
+  footersocial: 1,
+  footerlegal: 1,
   table: 16,
   gaugegroup: 4,
   articlefeature: 9,
@@ -870,7 +888,11 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     // Parse only implemented components: pending files fail their own tests, never their siblings.
     docs = parser.parse(
       components
-        .map(([name, directory]) => fileURLToPath(new URL(`../${directory}/${name}.tsx`, import.meta.url)))
+        .map(([name, directory]) =>
+          fileURLToPath(
+            new URL(`../${directory}/${directory === 'organisms/footer' ? 'Footer' : name}.tsx`, import.meta.url)
+          )
+        )
         .filter((path) => existsSync(path))
     );
   }, 20_000);
@@ -1022,6 +1044,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Panel', { variant: '"default"', tone: '"surface-1"' }],
     ['ProjectCard', { level: '3', variant: '"default"', size: '"md"' }],
     ['CommunityCard', { level: '3' }],
+    ['FooterNavigation', { level: '2' }],
     ['TipCard', { level: '3', focalPoint: '"center"' }],
     ['Collapsible', { defaultOpen: 'false', disabled: 'false' }],
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],

@@ -28,6 +28,8 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
+import { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from '@egdev/ui';
+import type { FooterProps, FooterBrandProps, FooterLegalProps, FooterMottoProps, FooterNavigationProps, FooterNavigationItem, FooterNavigationLevel, FooterSocialProps } from '@egdev/ui';
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogCancel, AlertDialogAction } from '@egdev/ui';
 import type { AlertDialogProps, AlertDialogContentProps } from '@egdev/ui';
 import { AppShell, appShellVariants, CalendarGrid, calendarGridVariants, CommandPalette, Dialog, DialogTrigger, DialogContent, DialogClose, TabBar, tabBarVariants } from '@egdev/ui';
@@ -331,6 +333,29 @@ export function AmbientSamples() {
 const ambientChildren: AmbientBackgroundProps = { children: 'Unsupported' };
 // @ts-expect-error Only the approved profiles are supported.
 const ambientInvalidProfile: AmbientBackgroundProps = { profile: 'unknown' };
+
+const footerItem: FooterNavigationItem = { href: '#one', label: 'One' };
+const footerLevel: FooterNavigationLevel = 2;
+const footerMotto: FooterMottoProps = { children: createElement('p', null, 'Motto') };
+const footerBrand: FooterBrandProps = { children: createElement(Logo, { href: '/', label: 'Home' }) };
+const footerNav: FooterNavigationProps = { label: 'Explore', level: footerLevel, items: [footerItem] };
+const footerSocial: FooterSocialProps = { children: createElement(SocialLinks, { label: 'Profiles', caption: null, items: [{ id: 'github', href: 'https://github.com/example', label: 'GitHub', icon: createElement(Icon, { name: 'github' }) }] }) };
+const footerLegal: FooterLegalProps = { children: createElement('a', { href: '#legal' }, 'Legal') };
+export const footerProps: FooterProps = { children: [createElement(FooterMotto, { key: 'motto', ...footerMotto }), createElement(FooterBrand, { key: 'brand', ...footerBrand }), createElement(FooterNavigation, { key: 'nav', ...footerNav }), createElement(FooterSocial, { key: 'social', ...footerSocial }), createElement(FooterLegal, { key: 'legal', ...footerLegal })] };
+export function FooterSamples() { return createElement(Footer, footerProps); }
+// @ts-expect-error Children are required.
+const footerMissing: FooterProps = {};
+// @ts-expect-error Root role is protected.
+const footerRole: FooterProps = { children: null, role: 'main' };
+// @ts-expect-error Style is protected.
+const footerStyle: FooterProps = { children: null, style: {} };
+// @ts-expect-error Navigation requires an approved heading rank.
+const footerRank: FooterNavigationProps = { label: 'Explore', items: [], level: 1 };
+// @ts-expect-error Navigation items need destinations.
+const footerDestination: FooterNavigationItem = { label: 'Missing' };
+// @ts-expect-error Internal recipes are not exported.
+type FooterPrivate = (typeof import('@egdev/ui'))['footerVariants'];
+export type FooterNegatives = [typeof footerMissing, typeof footerRole, typeof footerStyle, typeof footerRank, typeof footerDestination, FooterPrivate];
 
 // Keep PageHeader samples outside App so the existing button-count/focus harness stays unchanged.
 const pageHeaderLevel: PageHeaderLevel = 2;
@@ -4338,6 +4363,27 @@ function assertTerminalCardConsumerCSS(css) {
   );
 }
 
+function assertFooterConsumerCSS(css) {
+  const start = css.indexOf('@layer utilities {');
+  assert.ok(start >= 0, 'Footer requires shipped utilities');
+  let depth = 0;
+  let end = css.indexOf('{', start);
+  for (; end < css.length; end++) {
+    if (css[end] === '{') {
+      depth++;
+    } else if (css[end] === '}' && --depth === 0) {
+      end++;
+      break;
+    }
+  }
+  const utilities = css.slice(start, end);
+  assert.doesNotMatch(utilities, /\.eg-footer(?:__[\w-]+)?\s*\{/);
+  assert.match(utilities, /@media\s*\(\s*width\s*<=\s*860px\s*\)/);
+  assert.match(utilities, /border-top-style:\s*solid/);
+  assert.match(utilities, /border-bottom-style:\s*solid/);
+  assert.match(utilities, /border-(?:top|bottom)-width:\s*var\(--border-width[,)]/);
+}
+
 function assertCommunityCardConsumerCSS(css) {
   // Preserve legacy component-layer CSS; the new recipe must add only scanned utilities.
   assert.ok(css.includes('@layer utilities {'), 'Packed CSS must contain its utilities layer');
@@ -4431,6 +4477,8 @@ assert.doesNotMatch(shippedStyles, /\\.eg-terminal-card__?[a-z]*\\s*[{,]/, 'Term
 assert.ok(readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8').includes('eg-community-card'), 'Packed JS must retain the CommunityCard marker');
 ${assertCommunityCardConsumerCSS.toString()}
 assertCommunityCardConsumerCSS(shippedStyles);
+${assertFooterConsumerCSS.toString()}
+assertFooterConsumerCSS(shippedStyles);
 ${assertTerminalCardConsumerCSS.toString()}
 assertTerminalCardConsumerCSS(shippedStyles);
 ${assertArticleFeatureConsumerCSS.toString()}
@@ -4494,6 +4542,12 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Dropzone',
   'Field',
   'FieldMessage',
+  'Footer',
+  'FooterBrand',
+  'FooterLegal',
+  'FooterMotto',
+  'FooterNavigation',
+  'FooterSocial',
   'Gauge',
   'GaugeGroup',
   'Heading',
@@ -4802,6 +4856,16 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
+const { FooterSamples } = await import('./consumer.ts');
+const footerDocument = new JSDOM(renderToString(createElement(FooterSamples)));
+const footer = footerDocument.window.document.querySelector('footer');
+const footerNav = footer.querySelector('nav');
+assert.equal(footerDocument.window.document.getElementById(footerNav.getAttribute('aria-labelledby')).textContent, 'Explore');
+assert.equal(footerNav.querySelector('a').getAttribute('href'), '#one');
+assert.equal(footer.querySelector('ul[aria-label="Profiles"] a')?.getAttribute('href'), 'https://github.com/example');
+assert.equal(footer.querySelectorAll('nav').length, 1);
+assert.equal(footer.querySelector('a a'), null);
+footerDocument.window.close();
 const { ToastSamples } = await import('./consumer.ts');
 assert.equal(renderToString(createElement(ToastSamples)), '<main>Toast host</main>', 'Toast records stay client-side through Portal');
 import { IndicatorConsumerSamples } from './consumer.ts';

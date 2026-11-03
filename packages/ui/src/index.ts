@@ -91,6 +91,17 @@ export { TipCard } from './molecules/tip-card';
 export * from './molecules/toast';
 // Organisms
 export * from './organisms/calendar-grid';
+export type {
+  FooterBrandProps,
+  FooterLegalProps,
+  FooterMottoProps,
+  FooterNavigationItem,
+  FooterNavigationLevel,
+  FooterNavigationProps,
+  FooterProps,
+  FooterSocialProps
+} from './organisms/footer';
+export { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from './organisms/footer';
 export * from './organisms/module-rail';
 export * from './organisms/preview-frame';
 export * from './organisms/sidebar';
