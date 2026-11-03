@@ -620,6 +620,7 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/atoms/countdown/types.ts#CountdownProps'
   })),
+  { conventionId: 'consumer-selected-condition', source: 'packages/ui/src/atoms/pixel/types.ts#PixelProps' },
   { conventionId: 'board-sticky-side', source: 'packages/ui/src/organisms/notes-board/types.ts#NotesBoardProps' },
   // SectionShell records reviewed own props after the convention receipt.
   ...['section-register', 'section-content-wrap'].map((conventionId) => ({
@@ -771,6 +772,59 @@ test('post-receipt usages exist with valid source evidence', () => {
     );
   }
 });
+test('Pixel widens the existing condition convention with recoverable approved history', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const entry = registry.find(({ id }) => id === 'consumer-selected-condition');
+  const reference = 'docs/components/pixel/v0.1/prop-naming-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar plan y gates (Recomendado)');
+  assert.equal(entry.approval.reference, reference);
+  assert.equal(entry.approval.contentHash, props.conventionHash(entry));
+  assert.equal(
+    entry.meaning,
+    'The consumer-selected interpretation of a measurement or position marker; values and domain are component-specific, independent of automatic thresholds.'
+  );
+  assert.equal(
+    entry.whenToUse,
+    "A component exposes a consumer-selected measurement condition or a position marker's condition, such as idle, past or active."
+  );
+  assert.equal(
+    entry.avoid,
+    "Visual variants, material tone, loading behavior, automatic threshold inference or deriving a collection's progress."
+  );
+  const { approval: _approval, usages, ...convention } = entry;
+  assert.deepEqual(receipt.entries, [
+    { scope: 'convention:consumer-selected-condition', contentHash: props.conventionHash(entry), convention }
+  ]);
+  const path = 'packages/ui/src/atoms/pixel/types.ts';
+  assert.deepEqual(
+    usages.find(({ component }) => component === 'Pixel'),
+    {
+      component: 'Pixel',
+      type: 'PixelState (default idle)',
+      status: 'existing',
+      source: { path, symbol: 'PixelProps', revision: digest(fs.readFileSync(resolve(root, path))) }
+    }
+  );
+  assert.deepEqual(
+    usages.filter(({ component }) => component !== 'Pixel').map(({ component }) => component),
+    ['GaugeGroupRing', 'Gauge', 'StatusDot']
+  );
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(prior.wholeFileSHA256, digest(fs.readFileSync(resolve(root, prior.path))));
+  }
+  const [amendment] = receipt.semanticAmendments;
+  const previous = JSON.parse(fs.readFileSync(resolve(root, amendment.previousReference), 'utf8')).entries.find(
+    ({ convention: item }) => item.id === entry.id
+  );
+  assert.equal(amendment.previousContentHash, previous.contentHash);
+  assert.equal(props.conventionHash(previous.convention), previous.contentHash);
+  validate(registry);
+  const changed = structuredClone(registry);
+  changed.find(({ id }) => id === entry.id).meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+});
+
 test('CommunityCard records only its three approved heading usages', () => {
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const path = 'packages/ui/src/molecules/community-card/types.ts';
@@ -1032,7 +1086,8 @@ const receiptChain = [
   'docs/components/tip-card/v0.1/cover-badge-approval.json',
   'docs/components/article-feature/v0.1/prop-naming-approval.json',
   'docs/components/section-shell/v0.1/prop-naming-approval.json',
-  'docs/components/notes-board/v0.1/prop-naming-approval.json'
+  'docs/components/notes-board/v0.1/prop-naming-approval.json',
+  'docs/components/pixel/v0.1/prop-naming-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
