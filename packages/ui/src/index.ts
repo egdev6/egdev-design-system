@@ -95,6 +95,15 @@ export * from './organisms/module-rail';
 export * from './organisms/preview-frame';
 export * from './organisms/sidebar';
 export * from './organisms/tab-bar';
+export type { TopBarItem, TopBarPartProps, TopBarProps } from './organisms/top-bar';
+export {
+  TopBar,
+  TopBarBrand,
+  TopBarMobileTrigger,
+  TopBarSearchCompact,
+  TopBarSearchFull,
+  TopBarUserMenu
+} from './organisms/top-bar';
 // Primitives
 export type { AspectRatioProps } from './primitives/aspect-ratio';
 export { AspectRatio } from './primitives/aspect-ratio';

@@ -28,6 +28,8 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
+import { TopBar, TopBarBrand, TopBarMobileTrigger, TopBarSearchCompact, TopBarSearchFull, TopBarUserMenu } from '@egdev/ui';
+import type { TopBarItem, TopBarPartProps, TopBarProps } from '@egdev/ui';
 import { SectionShell } from '@egdev/ui';
 import type { SectionShellProps, SectionShellRegister } from '@egdev/ui';
 const sectionRegisters: SectionShellRegister[] = ['pro', 'show', 'flood', 'deep', 'grafito'];
@@ -346,6 +348,26 @@ export function AmbientSamples() {
 const ambientChildren: AmbientBackgroundProps = { children: 'Unsupported' };
 // @ts-expect-error Only the approved profiles are supported.
 const ambientInvalidProfile: AmbientBackgroundProps = { profile: 'unknown' };
+
+const topBarItem: TopBarItem = { id: 'home', label: 'Home', href: '#home', 'aria-current': 'page' };
+const topBarPart: TopBarPartProps = { children: createElement('a', { href: '/' }, 'Brand') };
+export const topBarProps: TopBarProps = { label: 'Main', items: [topBarItem], 'data-state': 'glass', style: { zIndex: 10 }, children: [
+  createElement(TopBarUserMenu, { key: 'user', children: createElement('button', null, 'Account') }),
+  createElement(TopBarBrand, { key: 'brand', ...topBarPart }),
+  createElement(TopBarSearchFull, { key: 'full', children: createElement('button', null, 'Full') }),
+  createElement(TopBarSearchCompact, { key: 'compact', children: createElement('button', null, 'Compact') }),
+  createElement(TopBarMobileTrigger, { key: 'mobile', children: createElement('button', null, 'Menu') })
+] };
+export function TopBarSamples() { return createElement(TopBar, topBarProps); }
+// @ts-expect-error A navigation name is required.
+const topBarMissingLabel: TopBarProps = { items: [], children: null };
+// @ts-expect-error Items are required.
+const topBarMissingItems: TopBarProps = { label: 'Main', children: null };
+// @ts-expect-error Native state is a closed set.
+const topBarInvalidState: TopBarProps = { ...topBarProps, 'data-state': 'open' };
+// @ts-expect-error The header role cannot be overridden.
+const topBarRole: TopBarProps = { ...topBarProps, role: 'navigation' };
+export type TopBarNegatives = [typeof topBarMissingLabel, typeof topBarMissingItems, typeof topBarInvalidState, typeof topBarRole];
 
 // Keep PageHeader samples outside App so the existing button-count/focus harness stays unchanged.
 const pageHeaderLevel: PageHeaderLevel = 2;
@@ -4357,6 +4379,30 @@ function assertTerminalCardConsumerCSS(css) {
   );
 }
 
+function assertTopBarConsumerCSS(css) {
+  const start = css.indexOf('@layer utilities {');
+  assert.ok(start >= 0, 'Missing utilities layer');
+  const utilities = css.slice(start);
+  for (const selector of [
+    String.raw`.\@container`,
+    String.raw`.\@max-\[900px\]\:hidden`,
+    String.raw`.\@max-\[900px\]\:block`,
+    String.raw`.\[\@container_\(width\=900px\)\]\:hidden`,
+    String.raw`.\[\@container_\(width\=900px\)\]\:block`,
+    String.raw`.data-\[state\=glass\]\:bg-surface-overlay`,
+    String.raw`.data-\[state\=glass\]\:border-border-hairline-strong`
+  ]) {
+    assert.ok(utilities.includes(selector), 'Missing TopBar packed utility ' + selector);
+  }
+  assert.match(utilities, /@container\s*\(width\s*<\s*900px\)/);
+  assert.match(utilities, /@container\s*\(width\s*=\s*900px\)/);
+  assert.match(utilities, /prefers-reduced-transparency:\s*reduce/);
+  assert.match(utilities, /var\(--color-surface-overlay[,)]/);
+  assert.match(utilities, /var\(--color-surface-2[,)]/);
+  assert.doesNotMatch(utilities, /\.eg-topbar(?:__[\w-]+)?\s*[{,]/);
+  assert.match(css.slice(0, start), /\.eg-topbar/);
+}
+
 function assertSectionShellConsumerCSS(css) {
   for (const selector of [
     String.raw`.min-h-\[var\(--section-min-height\)\]`,
@@ -4462,6 +4508,8 @@ assert.ok(readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8').
 assert.ok(readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8').includes('eg-terminal-card'), 'Packed JS must retain the TerminalCard marker');
 assert.doesNotMatch(shippedStyles, /\\.eg-terminal-card__?[a-z]*\\s*[{,]/, 'TerminalCard marker must not become a shipped CSS rule');
 assert.ok(readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8').includes('eg-community-card'), 'Packed JS must retain the CommunityCard marker');
+${assertTopBarConsumerCSS.toString()}
+assertTopBarConsumerCSS(shippedStyles);
 ${assertCommunityCardConsumerCSS.toString()}
 assertCommunityCardConsumerCSS(shippedStyles);
 ${assertSectionShellConsumerCSS.toString()}
@@ -4609,6 +4657,12 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ToastProvider',
   'Toggle',
   'Tooltip',
+  'TopBar',
+  'TopBarBrand',
+  'TopBarMobileTrigger',
+  'TopBarSearchCompact',
+  'TopBarSearchFull',
+  'TopBarUserMenu',
   'VisuallyHidden',
   'appShellVariants',
   'badgeVariants',
@@ -4838,6 +4892,15 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
+const { TopBarSamples } = await import('./consumer.ts');
+const topBarDOM = new JSDOM(renderToString(createElement(TopBarSamples)));
+try {
+  const header = topBarDOM.window.document.querySelector('header.eg-topbar');
+  assert.ok(header);
+  const nav = header.querySelector('nav[aria-label="Main"]');
+  assert.equal(nav.querySelector('a[href="#home"]').getAttribute('aria-current'), 'page');
+  assert.deepEqual([...header.querySelectorAll('a,button')].map((node) => node.textContent), ['Brand', 'Home', 'Full', 'Compact', 'Account', 'Menu']);
+} finally { topBarDOM.window.close(); }
 const { SectionShellSamples } = await import('./consumer.ts');
 {
   const sectionDocument = new JSDOM(renderToString(createElement(SectionShellSamples)));

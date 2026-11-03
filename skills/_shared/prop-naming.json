@@ -1622,6 +1622,16 @@
           "symbol": "TerminalCardProps",
           "revision": "sha256:c88f7bd2515c52ad6181967587bf4127381620c26edf8d37e521f3137c481be0"
         }
+      },
+      {
+        "component": "TopBar",
+        "type": "string (required navigation landmark name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/top-bar/types.ts",
+          "symbol": "TopBarProps",
+          "revision": "sha256:91e9458fbbbec04c1525cd33d593b6e62b66ebd57f0524c91fee0be1a3594078"
+        }
       }
     ]
   },
@@ -3416,6 +3426,16 @@
           "symbol": "TerminalCardListProps",
           "revision": "sha256:c88f7bd2515c52ad6181967587bf4127381620c26edf8d37e521f3137c481be0"
         }
+      },
+      {
+        "component": "TopBar",
+        "type": "TopBarItem[] (required ordered destinations)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/top-bar/types.ts",
+          "symbol": "TopBarProps",
+          "revision": "sha256:91e9458fbbbec04c1525cd33d593b6e62b66ebd57f0524c91fee0be1a3594078"
+        }
       }
     ]
   },
@@ -4416,6 +4436,16 @@
           "path": "packages/ui/src/organisms/module-rail/types.ts",
           "symbol": "ModuleRailProps",
           "revision": "sha256:a21f7c5ee39eb148b115ea95a82bd820c692ba3a4f855af380ffc20f3b4f95bd"
+        }
+      },
+      {
+        "component": "TopBar",
+        "type": "(item: TopBarItem, event: MouseEvent<HTMLAnchorElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/top-bar/types.ts",
+          "symbol": "TopBarProps",
+          "revision": "sha256:91e9458fbbbec04c1525cd33d593b6e62b66ebd57f0524c91fee0be1a3594078"
         }
       }
     ]

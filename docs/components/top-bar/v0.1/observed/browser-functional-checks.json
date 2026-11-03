@@ -1,0 +1,1390 @@
+{
+  "browser": "153.0.8010.12",
+  "checks": {
+    "boundary-1280-899": {
+      "width": 899,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "none",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "controls": [
+        {
+          "text": "Search",
+          "display": "none",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Search",
+          "display": "block",
+          "rect": {
+            "x": 90.796875,
+            "y": 16.1875,
+            "width": 58.234375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 149.03125,
+            "bottom": 38.1875,
+            "left": 90.796875
+          }
+        },
+        {
+          "text": "Account",
+          "display": "block",
+          "rect": {
+            "x": 161.828125,
+            "y": 16.1875,
+            "width": 64.171875,
+            "height": 22,
+            "top": 16.1875,
+            "right": 226,
+            "bottom": 38.1875,
+            "left": 161.828125
+          }
+        },
+        {
+          "text": "Menu",
+          "display": "block",
+          "rect": {
+            "x": 238.796875,
+            "y": 16.1875,
+            "width": 49.34375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 288.140625,
+            "bottom": 38.1875,
+            "left": 238.796875
+          }
+        }
+      ],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null],
+      "axNames": ["Search", "Account", "Menu", "Search", "Account", "Menu", "Search", "Account", "Menu"]
+    },
+    "boundary-1280-899.5": {
+      "width": 899.5,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "none",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "controls": [
+        {
+          "text": "Search",
+          "display": "none",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Search",
+          "display": "block",
+          "rect": {
+            "x": 90.796875,
+            "y": 16.1875,
+            "width": 58.234375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 149.03125,
+            "bottom": 38.1875,
+            "left": 90.796875
+          }
+        },
+        {
+          "text": "Account",
+          "display": "block",
+          "rect": {
+            "x": 161.828125,
+            "y": 16.1875,
+            "width": 64.171875,
+            "height": 22,
+            "top": 16.1875,
+            "right": 226,
+            "bottom": 38.1875,
+            "left": 161.828125
+          }
+        },
+        {
+          "text": "Menu",
+          "display": "block",
+          "rect": {
+            "x": 238.796875,
+            "y": 16.1875,
+            "width": 49.34375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 288.140625,
+            "bottom": 38.1875,
+            "left": 238.796875
+          }
+        }
+      ],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null],
+      "axNames": ["Search", "Account", "Menu", "Search", "Account", "Menu", "Search", "Account", "Menu"]
+    },
+    "boundary-1280-900": {
+      "width": 900,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "none",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "controls": [
+        {
+          "text": "Search",
+          "display": "none",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Search",
+          "display": "block",
+          "rect": {
+            "x": 90.796875,
+            "y": 16.1875,
+            "width": 58.234375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 149.03125,
+            "bottom": 38.1875,
+            "left": 90.796875
+          }
+        },
+        {
+          "text": "Account",
+          "display": "block",
+          "rect": {
+            "x": 161.828125,
+            "y": 16.1875,
+            "width": 64.171875,
+            "height": 22,
+            "top": 16.1875,
+            "right": 226,
+            "bottom": 38.1875,
+            "left": 161.828125
+          }
+        },
+        {
+          "text": "Menu",
+          "display": "block",
+          "rect": {
+            "x": 238.796875,
+            "y": 16.1875,
+            "width": 49.34375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 288.140625,
+            "bottom": 38.1875,
+            "left": 238.796875
+          }
+        }
+      ],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null],
+      "axNames": ["Search", "Account", "Menu", "Search", "Account", "Menu", "Search", "Account", "Menu"]
+    },
+    "boundary-1280-900.5": {
+      "width": 900.5,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "block",
+        "rect": {
+          "x": 90.796875,
+          "y": 17.6875,
+          "width": 629.703125,
+          "height": 19,
+          "top": 17.6875,
+          "right": 720.5,
+          "bottom": 36.6875,
+          "left": 90.796875
+        }
+      },
+      "controls": [
+        {
+          "text": "Search",
+          "display": "block",
+          "rect": {
+            "x": 733.296875,
+            "y": 16.1875,
+            "width": 58.234375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 791.53125,
+            "bottom": 38.1875,
+            "left": 733.296875
+          }
+        },
+        {
+          "text": "Search",
+          "display": "none",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Account",
+          "display": "block",
+          "rect": {
+            "x": 804.328125,
+            "y": 16.1875,
+            "width": 64.171875,
+            "height": 22,
+            "top": 16.1875,
+            "right": 868.5,
+            "bottom": 38.1875,
+            "left": 804.328125
+          }
+        },
+        {
+          "text": "Menu",
+          "display": "none",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        }
+      ],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null],
+      "axNames": [
+        "Search",
+        "Account",
+        "Search",
+        "Account",
+        "Home",
+        "About",
+        "Search",
+        "Account",
+        "Home",
+        "About",
+        "Home",
+        "About"
+      ]
+    },
+    "boundary-1280-901": {
+      "width": 901,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "block",
+        "rect": {
+          "x": 90.796875,
+          "y": 17.6875,
+          "width": 630.203125,
+          "height": 19,
+          "top": 17.6875,
+          "right": 721,
+          "bottom": 36.6875,
+          "left": 90.796875
+        }
+      },
+      "controls": [
+        {
+          "text": "Search",
+          "display": "block",
+          "rect": {
+            "x": 733.796875,
+            "y": 16.1875,
+            "width": 58.234375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 792.03125,
+            "bottom": 38.1875,
+            "left": 733.796875
+          }
+        },
+        {
+          "text": "Search",
+          "display": "none",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Account",
+          "display": "block",
+          "rect": {
+            "x": 804.828125,
+            "y": 16.1875,
+            "width": 64.171875,
+            "height": 22,
+            "top": 16.1875,
+            "right": 869,
+            "bottom": 38.1875,
+            "left": 804.828125
+          }
+        },
+        {
+          "text": "Menu",
+          "display": "none",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        }
+      ],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null],
+      "axNames": [
+        "Search",
+        "Account",
+        "Search",
+        "Account",
+        "Home",
+        "About",
+        "Search",
+        "Account",
+        "Home",
+        "About",
+        "Home",
+        "About"
+      ]
+    },
+    "boundary-390-899": {
+      "width": 899,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "none",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "controls": [
+        {
+          "text": "Search",
+          "display": "none",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Search",
+          "display": "block",
+          "rect": {
+            "x": 71.59375,
+            "y": 16.1875,
+            "width": 58.234375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 129.828125,
+            "bottom": 38.1875,
+            "left": 71.59375
+          }
+        },
+        {
+          "text": "Account",
+          "display": "block",
+          "rect": {
+            "x": 142.625,
+            "y": 16.1875,
+            "width": 64.171875,
+            "height": 22,
+            "top": 16.1875,
+            "right": 206.796875,
+            "bottom": 38.1875,
+            "left": 142.625
+          }
+        },
+        {
+          "text": "Menu",
+          "display": "block",
+          "rect": {
+            "x": 219.59375,
+            "y": 16.1875,
+            "width": 49.34375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 268.9375,
+            "bottom": 38.1875,
+            "left": 219.59375
+          }
+        }
+      ],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null],
+      "axNames": ["Search", "Account", "Menu", "Search", "Account", "Menu", "Search", "Account", "Menu"]
+    },
+    "boundary-390-899.5": {
+      "width": 899.5,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "none",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "controls": [
+        {
+          "text": "Search",
+          "display": "none",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Search",
+          "display": "block",
+          "rect": {
+            "x": 71.59375,
+            "y": 16.1875,
+            "width": 58.234375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 129.828125,
+            "bottom": 38.1875,
+            "left": 71.59375
+          }
+        },
+        {
+          "text": "Account",
+          "display": "block",
+          "rect": {
+            "x": 142.625,
+            "y": 16.1875,
+            "width": 64.171875,
+            "height": 22,
+            "top": 16.1875,
+            "right": 206.796875,
+            "bottom": 38.1875,
+            "left": 142.625
+          }
+        },
+        {
+          "text": "Menu",
+          "display": "block",
+          "rect": {
+            "x": 219.59375,
+            "y": 16.1875,
+            "width": 49.34375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 268.9375,
+            "bottom": 38.1875,
+            "left": 219.59375
+          }
+        }
+      ],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null],
+      "axNames": ["Search", "Account", "Menu", "Search", "Account", "Menu", "Search", "Account", "Menu"]
+    },
+    "boundary-390-900": {
+      "width": 900,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "none",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "controls": [
+        {
+          "text": "Search",
+          "display": "none",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Search",
+          "display": "block",
+          "rect": {
+            "x": 71.59375,
+            "y": 16.1875,
+            "width": 58.234375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 129.828125,
+            "bottom": 38.1875,
+            "left": 71.59375
+          }
+        },
+        {
+          "text": "Account",
+          "display": "block",
+          "rect": {
+            "x": 142.625,
+            "y": 16.1875,
+            "width": 64.171875,
+            "height": 22,
+            "top": 16.1875,
+            "right": 206.796875,
+            "bottom": 38.1875,
+            "left": 142.625
+          }
+        },
+        {
+          "text": "Menu",
+          "display": "block",
+          "rect": {
+            "x": 219.59375,
+            "y": 16.1875,
+            "width": 49.34375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 268.9375,
+            "bottom": 38.1875,
+            "left": 219.59375
+          }
+        }
+      ],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null],
+      "axNames": ["Search", "Account", "Menu", "Search", "Account", "Menu", "Search", "Account", "Menu"]
+    },
+    "boundary-390-900.5": {
+      "width": 900.5,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "block",
+        "rect": {
+          "x": 71.59375,
+          "y": 17.6875,
+          "width": 668.109375,
+          "height": 19,
+          "top": 17.6875,
+          "right": 739.703125,
+          "bottom": 36.6875,
+          "left": 71.59375
+        }
+      },
+      "controls": [
+        {
+          "text": "Search",
+          "display": "block",
+          "rect": {
+            "x": 752.5,
+            "y": 16.1875,
+            "width": 58.234375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 810.734375,
+            "bottom": 38.1875,
+            "left": 752.5
+          }
+        },
+        {
+          "text": "Search",
+          "display": "none",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Account",
+          "display": "block",
+          "rect": {
+            "x": 823.53125,
+            "y": 16.1875,
+            "width": 64.171875,
+            "height": 22,
+            "top": 16.1875,
+            "right": 887.703125,
+            "bottom": 38.1875,
+            "left": 823.53125
+          }
+        },
+        {
+          "text": "Menu",
+          "display": "none",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        }
+      ],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null],
+      "axNames": [
+        "Search",
+        "Account",
+        "Search",
+        "Account",
+        "Home",
+        "About",
+        "Search",
+        "Account",
+        "Home",
+        "About",
+        "Home",
+        "About"
+      ]
+    },
+    "boundary-390-901": {
+      "width": 901,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "block",
+        "rect": {
+          "x": 71.59375,
+          "y": 17.6875,
+          "width": 668.609375,
+          "height": 19,
+          "top": 17.6875,
+          "right": 740.203125,
+          "bottom": 36.6875,
+          "left": 71.59375
+        }
+      },
+      "controls": [
+        {
+          "text": "Search",
+          "display": "block",
+          "rect": {
+            "x": 753,
+            "y": 16.1875,
+            "width": 58.234375,
+            "height": 22,
+            "top": 16.1875,
+            "right": 811.234375,
+            "bottom": 38.1875,
+            "left": 753
+          }
+        },
+        {
+          "text": "Search",
+          "display": "none",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        {
+          "text": "Account",
+          "display": "block",
+          "rect": {
+            "x": 824.03125,
+            "y": 16.1875,
+            "width": 64.171875,
+            "height": 22,
+            "top": 16.1875,
+            "right": 888.203125,
+            "bottom": 38.1875,
+            "left": 824.03125
+          }
+        },
+        {
+          "text": "Menu",
+          "display": "none",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        }
+      ],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null],
+      "axNames": [
+        "Search",
+        "Account",
+        "Search",
+        "Account",
+        "Home",
+        "About",
+        "Search",
+        "Account",
+        "Home",
+        "About",
+        "Home",
+        "About"
+      ]
+    },
+    "default": {
+      "width": 1280,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "block",
+        "rect": {
+          "x": 218.796875,
+          "y": 17.6875,
+          "width": 901.203125,
+          "height": 19,
+          "top": 17.6875,
+          "right": 1120,
+          "bottom": 36.6875,
+          "left": 218.796875
+        }
+      },
+      "controls": [],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null]
+    },
+    "glass": {
+      "width": 1280,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(35, 36, 40, 0.84)",
+      "backgroundImage": "none",
+      "backdrop": "blur(20px) saturate(1.5)",
+      "border": "1px solid rgba(255, 255, 255, 0.14)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.13) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 4px 10px 0px, rgba(0, 0, 0, 0.9) 0px 28px 70px -10px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "block",
+        "rect": {
+          "x": 218.796875,
+          "y": 17.6875,
+          "width": 901.203125,
+          "height": 19,
+          "top": 17.6875,
+          "right": 1120,
+          "bottom": 36.6875,
+          "left": 218.796875
+        }
+      },
+      "controls": [],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null]
+    },
+    "default-reduced": {
+      "width": 1280,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "block",
+        "rect": {
+          "x": 218.796875,
+          "y": 17.6875,
+          "width": 901.203125,
+          "height": 19,
+          "top": 17.6875,
+          "right": 1120,
+          "bottom": 36.6875,
+          "left": 218.796875
+        }
+      },
+      "controls": [],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null]
+    },
+    "glass-reduced": {
+      "width": 1280,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgb(35, 36, 40)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(255, 255, 255, 0.14)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.13) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 4px 10px 0px, rgba(0, 0, 0, 0.9) 0px 28px 70px -10px",
+      "transition": "0s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "block",
+        "rect": {
+          "x": 218.796875,
+          "y": 17.6875,
+          "width": 901.203125,
+          "height": 19,
+          "top": 17.6875,
+          "right": 1120,
+          "bottom": 36.6875,
+          "left": 218.796875
+        }
+      },
+      "controls": [],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null]
+    },
+    "keyboard": [
+      {
+        "text": "Studio",
+        "outline": "rgb(16, 16, 16) auto 1px",
+        "shadow": "none"
+      },
+      {
+        "text": "Home",
+        "outline": "rgb(255, 0, 54) solid 2px",
+        "shadow": "none"
+      },
+      {
+        "text": "About",
+        "outline": "rgb(255, 0, 54) solid 2px",
+        "shadow": "none"
+      },
+      {
+        "text": "Search",
+        "outline": "rgb(16, 16, 16) auto 1px",
+        "shadow": "none"
+      },
+      {
+        "text": "Account",
+        "outline": "rgb(16, 16, 16) auto 1px",
+        "shadow": "none"
+      },
+      {
+        "text": "Name\n        Description\n        Default\n        Control \n      \n    \n    \n      \n        propertyName*\n        \n          This is a short description\n          \n            summary\n          \n        \n        \n          defaultValue\n        \n        Set string\n      \n      \n        propertyName*\n        \n          This is a short description\n          \n            summary\n          \n        \n        \n          defaultValue\n        \n        Set string\n      \n      \n        propertyName*\n        \n          This is a short description\n          \n            summary\n          \n        \n        \n          defaultValue\n        \n        Set string\n      \n    \n  \n\n\n\n  \n    No Preview\n    Sorry, but you either have no stories or none are selected somehow.\n    \n      Please check the Storybook config.\n      Try reloading the page.\n    \n    \n      If the problem persists, check the browser console, or the terminal you've run Storybook from.\n    \n  \n\n\n\n  \n    \n    \n      The component failed to render properly, likely due to a configuration issue in Storybook.\n      Here are some common causes and how you can address them:\n    \n    \n      \n        Missing Context/Providers: You can use decorators to supply specific\n        contexts or providers, which are sometimes necessary for components to render correctly. For\n        detailed instructions on using decorators, please visit the\n        Decorators documentation.\n      \n      \n        Misconfigured Webpack or Vite: Verify that Storybook picks up all necessary\n        settings for loaders, plugins, and other relevant parameters. You can find step-by-step\n        guides for configuring\n        Webpack or\n        Vite\n        with Storybook.\n      \n      \n        Missing Environment Variables: Your Storybook may require specific\n        environment variables to function as intended. You can set up custom environment variables\n        as outlined in the\n        Environment Variables documentation.\n      \n    \n    \n  \n\n\n    StudioHomeAboutSearchSearchAccountMenu\n    \n    \n      function __onViteAppLoadingError(event) {\n        const hostname = globalThis.location.hostname;\n        if (hostname !== 'localhost' && globalThis.CONFIG_TYPE === 'DEVELOPMENT') {\n          const message = `Failed to load the Storybook preview file 'vite-app.js':\n\n      It looks like you're visiting the Storybook development server on another hostname than localhost: '${hostname}', but you haven't configured the necessary security features to support this.\n      Please re-run your Storybook development server with the '--host ${hostname}' flag, or manually configure your Vite allowedHosts configuration with viteFinal.\n\n      See:`;\n          const docs = [\n            'https://storybook.js.org/docs/api/cli-options#dev',\n            'https://storybook.js.org/docs/api/main-config/main-config-vite-final',\n            'https://vite.dev/config/server-options.html#server-allowedhosts',\n          ];\n          console.error(`${message}\\n${docs.map((doc) => `- ${doc}`).join('\\n')}`);\n\n          document.getElementById('storybook-root').innerHTML =\n            `<p style=\"color: red; max-width: 70ch\">${message.replaceAll(\n              '\\n',\n              '<br/>'\n            )}<ul>${docs.map((doc) => `<li><a href='${doc}' target='_blank'>${doc}</a></li>`).join('')}</ul></p>`;\n          return;\n        }\n      }\n    \n    \n  \n\n\n            #storybook-highlights-menu {\n              position: absolute;\n              z-index: 2147483647;\n              width: 300px;\n              padding: 0px;\n              margin: 15px 0 0 0;\n              transform: translateX(-50%);\n              font-family: \"Nunito Sans\", -apple-system, \".SFNSText-Regular\", \"San Francisco\", BlinkMacSystemFont, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n              font-size: 12px;\n              background: white;\n              border: none;\n              border-radius: 6px;\n              box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.05), 0 5px 15px 0 rgba(0, 0, 0, 0.1);\n              color: #2E3438;\n            }\n            #storybook-highlights-menu ul {\n              list-style: none;\n              margin: 0;\n              padding: 0;\n            }\n            #storybook-highlights-menu > ul {\n              max-height: 300px;\n              overflow-y: auto;\n              padding: 4px 0;\n            }\n            #storybook-highlights-menu li {\n              padding: 0 4px;\n              margin: 0;\n            }\n            #storybook-highlights-menu li > :not(ul) {\n              display: flex;\n              padding: 8px;\n              margin: 0;\n              align-items: center;\n              gap: 8px;\n              border-radius: 4px;\n            }\n            #storybook-highlights-menu button {\n              width: 100%;\n              border: 0;\n              background: transparent;\n              color: inherit;\n              text-align: left;\n              font-family: inherit;\n              font-size: inherit;\n            }\n            #storybook-highlights-menu button:focus-visible {\n              outline-color: #029CFD;\n            }\n            #storybook-highlights-menu button:hover {\n              background: rgba(2, 156, 253, 0.07);\n              color: #029CFD;\n              cursor: pointer;\n            }\n            #storybook-highlights-menu li code {\n              white-space: nowrap;\n              overflow: hidden;\n              text-overflow: ellipsis;\n              line-height: 16px;\n              font-size: 11px;\n            }\n            #storybook-highlights-menu li svg {\n              flex-shrink: 0;\n              margin: 1px;\n              color: #73828C;\n            }\n            #storybook-highlights-menu li > button:hover svg, #storybook-highlights-menu li > button:focus-visible svg {\n              color: #029CFD;\n            }\n            #storybook-highlights-menu .element-list li svg {\n              display: none;\n            }\n            #storybook-highlights-menu li.selectable svg, #storybook-highlights-menu li.selected svg {\n              display: block;\n            }\n            #storybook-highlights-menu .menu-list {\n              border-top: 1px solid rgba(38, 85, 115, 0.15);\n            }\n            #storybook-highlights-menu .menu-list > li:not(:last-child) {\n              padding-bottom: 4px;\n              margin-bottom: 4px;\n              border-bottom: 1px solid rgba(38, 85, 115, 0.15);\n            }\n            #storybook-highlights-menu .menu-items, #storybook-highlights-menu .menu-items li {\n              padding: 0;\n            }\n            #storybook-highlights-menu .menu-item {\n              display: flex;\n            }\n            #storybook-highlights-menu .menu-item-content {\n              display: flex;\n              flex-direction: column;\n              flex-grow: 1;\n            }",
+        "outline": "rgb(255, 255, 255) none 3px",
+        "shadow": "none"
+      }
+    ],
+    "current": {
+      "value": "page",
+      "decoration": "underline",
+      "after": "none"
+    },
+    "scrollBefore": {
+      "width": 1280,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "block",
+        "rect": {
+          "x": 218.796875,
+          "y": 17.6875,
+          "width": 901.203125,
+          "height": 19,
+          "top": 17.6875,
+          "right": 1120,
+          "bottom": 36.6875,
+          "left": 218.796875
+        }
+      },
+      "controls": [],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null]
+    },
+    "scrollAfter": {
+      "width": 1280,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "HomeAbout",
+        "display": "block",
+        "rect": {
+          "x": 218.796875,
+          "y": 17.6875,
+          "width": 901.203125,
+          "height": 19,
+          "top": 17.6875,
+          "right": 1120,
+          "bottom": 36.6875,
+          "left": 218.796875
+        }
+      },
+      "controls": [],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null]
+    },
+    "dialogOpen": {
+      "count": 1,
+      "active": "<button type=\"button\" class=\"eg-icon-btn group/icon-button box-border inline-grid place-items-center flex-none p-0 border-solid border-transparent no-underline cursor-pointer transform-none translate-none scale-100 [transition:color_var(--duration-fast)_var(--ease-out),background-color_var(--duration-fast)_var(--ease-out),border-color_var(--duration-base)_var(--ease-out),transform_var(--duration-fast)_var(--ease-spring),translate_var(--duration-fast)_var(--ease-spring),scale_var(--duration-fast)_var(--ease-spring),box-shadow_var(--duration-base)_var(--ease-out)] motion-safe:[&amp;:not([data-disabled]):active]:scale-94 [&amp;:not([data-disabled]):active]:duration-(--duration-press) focus-visible:outline-none focus-visible:shadow-focus data-disabled:opacity-45 data-disabled:pointer-events-none data-disabled:cursor-not-allowed motion-reduce:transition-none motion-reduce:transform-none motion-reduce:translate-none motion-reduce:scale-100 motion-reduce:active:scale-100 border-0 rounded-md bg-transparent bg-none shadow-none text-fg-secondary [&amp;:not([data-disabled]):hover]:text-fg-default [&amp;:not([data-disabled]):hover]:bg-action-primary-bg-default size-12 absolute top-[var(--space-4)] end-[var(--space-4)]\"><svg class=\"eg-icon inline-block align-middle stroke-current stroke-(length:--icon-stroke) fill-none shrink-0 transition-colors duration-(--duration-fast) ease-(--ease-out) motion-reduce:transition-none size-(--icon-size)\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" focusable=\"false\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg><span style=\"position: absolute; border: 0px; width: 1px; height: 1px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; overflow-wrap: normal;\">Close</span></button>",
+      "glass": {
+        "width": 390,
+        "top": 0,
+        "height": 55.390625,
+        "position": "fixed",
+        "zIndex": "10",
+        "containerType": "normal",
+        "containerName": "none",
+        "internalContainer": "inline-size",
+        "background": "rgba(35, 36, 40, 0.84)",
+        "backgroundImage": "none",
+        "backdrop": "blur(20px) saturate(1.5)",
+        "border": "1px solid rgba(255, 255, 255, 0.14)",
+        "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.13) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 4px 10px 0px, rgba(0, 0, 0, 0.9) 0px 28px 70px -10px",
+        "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+        "animation": "0s",
+        "before": "none",
+        "after": "none",
+        "nav": {
+          "text": "HomeAbout",
+          "display": "none",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "controls": [
+          {
+            "text": "Menu",
+            "display": "block",
+            "rect": {
+              "x": 71.59375,
+              "y": 16.1875,
+              "width": 49.34375,
+              "height": 22,
+              "top": 16.1875,
+              "right": 120.9375,
+              "bottom": 38.1875,
+              "left": 71.59375
+            }
+          }
+        ],
+        "overflow": 0,
+        "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null, null]
+      }
+    },
+    "dialogClosed": {
+      "count": 0,
+      "active": "Name\n        Description\n        Default\n        Control \n      \n    \n    \n      \n        propertyName*\n        \n          This is a short description\n          \n            summary\n          \n        \n        \n          defaultValue\n        \n        Set string\n      \n      \n        propertyName*\n        \n          This is a short description\n          \n            summary\n          \n        \n        \n          defaultValue\n        \n        Set string\n      \n      \n        propertyName*\n        \n          This is a short description\n          \n            summary\n          \n        \n        \n          defaultValue\n        \n        Set string\n      \n    \n  \n\n\n\n  \n    No Preview\n    Sorry, but you either have no stories or none are selected somehow.\n    \n      Please check the Storybook config.\n      Try reloading the page.\n    \n    \n      If the problem persists, check the browser console, or the terminal you've run Storybook from.\n    \n  \n\n\n\n  \n    \n    \n      The component failed to render properly, likely due to a configuration issue in Storybook.\n      Here are some common causes and how you can address them:\n    \n    \n      \n        Missing Context/Providers: You can use decorators to supply specific\n        contexts or providers, which are sometimes necessary for components to render correctly. For\n        detailed instructions on using decorators, please visit the\n        Decorators documentation.\n      \n      \n        Misconfigured Webpack or Vite: Verify that Storybook picks up all necessary\n        settings for loaders, plugins, and other relevant parameters. You can find step-by-step\n        guides for configuring\n        Webpack or\n        Vite\n        with Storybook.\n      \n      \n        Missing Environment Variables: Your Storybook may require specific\n        environment variables to function as intended. You can set up custom environment variables\n        as outlined in the\n        Environment Variables documentation.\n      \n    \n    \n  \n\n\n    StudioHomeAboutMenu\n    \n    \n      function __onViteAppLoadingError(event) {\n        const hostname = globalThis.location.hostname;\n        if (hostname !== 'localhost' && globalThis.CONFIG_TYPE === 'DEVELOPMENT') {\n          const message = `Failed to load the Storybook preview file 'vite-app.js':\n\n      It looks like you're visiting the Storybook development server on another hostname than localhost: '${hostname}', but you haven't configured the necessary security features to support this.\n      Please re-run your Storybook development server with the '--host ${hostname}' flag, or manually configure your Vite allowedHosts configuration with viteFinal.\n\n      See:`;\n          const docs = [\n            'https://storybook.js.org/docs/api/cli-options#dev',\n            'https://storybook.js.org/docs/api/main-config/main-config-vite-final',\n            'https://vite.dev/config/server-options.html#server-allowedhosts',\n          ];\n          console.error(`${message}\\n${docs.map((doc) => `- ${doc}`).join('\\n')}`);\n\n          document.getElementById('storybook-root').innerHTML =\n            `<p style=\"color: red; max-width: 70ch\">${message.replaceAll(\n              '\\n',\n              '<br/>'\n            )}<ul>${docs.map((doc) => `<li><a href='${doc}' target='_blank'>${doc}</a></li>`).join('')}</ul></p>`;\n          return;\n        }\n      }\n    \n    \n  \n\n\n            #storybook-highlights-menu {\n              position: absolute;\n              z-index: 2147483647;\n              width: 300px;\n              padding: 0px;\n              margin: 15px 0 0 0;\n              transform: translateX(-50%);\n              font-family: \"Nunito Sans\", -apple-system, \".SFNSText-Regular\", \"San Francisco\", BlinkMacSystemFont, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n              font-size: 12px;\n              background: white;\n              border: none;\n              border-radius: 6px;\n              box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.05), 0 5px 15px 0 rgba(0, 0, 0, 0.1);\n              color: #2E3438;\n            }\n            #storybook-highlights-menu ul {\n              list-style: none;\n              margin: 0;\n              padding: 0;\n            }\n            #storybook-highlights-menu > ul {\n              max-height: 300px;\n              overflow-y: auto;\n              padding: 4px 0;\n            }\n            #storybook-highlights-menu li {\n              padding: 0 4px;\n              margin: 0;\n            }\n            #storybook-highlights-menu li > :not(ul) {\n              display: flex;\n              padding: 8px;\n              margin: 0;\n              align-items: center;\n              gap: 8px;\n              border-radius: 4px;\n            }\n            #storybook-highlights-menu button {\n              width: 100%;\n              border: 0;\n              background: transparent;\n              color: inherit;\n              text-align: left;\n              font-family: inherit;\n              font-size: inherit;\n            }\n            #storybook-highlights-menu button:focus-visible {\n              outline-color: #029CFD;\n            }\n            #storybook-highlights-menu button:hover {\n              background: rgba(2, 156, 253, 0.07);\n              color: #029CFD;\n              cursor: pointer;\n            }\n            #storybook-highlights-menu li code {\n              white-space: nowrap;\n              overflow: hidden;\n              text-overflow: ellipsis;\n              line-height: 16px;\n              font-size: 11px;\n            }\n            #storybook-highlights-menu li svg {\n              flex-shrink: 0;\n              margin: 1px;\n              color: #73828C;\n            }\n            #storybook-highlights-menu li > button:hover svg, #storybook-highlights-menu li > button:focus-visible svg {\n              color: #029CFD;\n            }\n            #storybook-highlights-menu .element-list li svg {\n              display: none;\n            }\n            #storybook-highlights-menu li.selectable svg, #storybook-highlights-menu li.selected svg {\n              display: block;\n            }\n            #storybook-highlights-menu .menu-list {\n              border-top: 1px solid rgba(38, 85, 115, 0.15);\n            }\n            #storybook-highlights-menu .menu-list > li:not(:last-child) {\n              padding-bottom: 4px;\n              margin-bottom: 4px;\n              border-bottom: 1px solid rgba(38, 85, 115, 0.15);\n            }\n            #storybook-highlights-menu .menu-items, #storybook-highlights-menu .menu-items li {\n              padding: 0;\n            }\n            #storybook-highlights-menu .menu-item {\n              display: flex;\n            }\n            #storybook-highlights-menu .menu-item-content {\n              display: flex;\n              flex-direction: column;\n              flex-grow: 1;\n            }"
+    },
+    "menuOpen": {
+      "count": 1,
+      "active": "<div data-side=\"bottom\" data-align=\"start\" role=\"menu\" aria-orientation=\"vertical\" data-state=\"open\" data-radix-menu-content=\"\" dir=\"ltr\" id=\"radix-_r_1_\" aria-labelledby=\"radix-_r_0_\" class=\"eg-surface box-border border border-solid bg-surface-overlay backdrop-blur-overlay backdrop-saturate-150 border-border-hairline-strong shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)] [@media(prefers-reduced-transparency:reduce)]:bg-surface-2 [@media(prefers-reduced-transparency:reduce)]:backdrop-filter-none not-supports-[backdrop-filter]:bg-surface-2 rounded-xl eg-menu min-w-57.5 max-h-[var(--radix-dropdown-menu-content-available-height)] overflow-y-auto p-2 font-sans text-fg-secondary transition-[opacity,translate] duration-[var(--duration-fast)] ease-[var(--ease-out)] starting:opacity-0 motion-safe:starting:-translate-y-1.5 motion-reduce:transition-none\" tabindex=\"-1\" data-orientation=\"vertical\" style=\"outline: none; --radix-dropdown-menu-content-transform-origin: var(--radix-popper-transform-origin); --radix-dropdown-menu-content-available-width: var(--radix-popper-available-width); --radix-dropdown-menu-content-available-height: var(--radix-popper-available-height); --radix-dropdown-menu-trigger-width: var(--radix-popper-anchor-width); --radix-dropdown-menu-trigger-height: var(--radix-popper-anchor-height); pointer-events: auto;\"><a href=\"#profile\" role=\"menuitem\" class=\"group flex items-center gap-3 px-3 py-2.25 pointer-coarse:min-h-11 rounded-md text-label-default text-fg-secondary no-underline cursor-pointer select-none outline-none transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] data-highlighted:bg-fg-default/6 data-highlighted:text-fg-default focus-visible:inset-ring-2 focus-visible:inset-ring-focus-ring-inverse data-disabled:opacity-45 data-disabled:pointer-events-none motion-reduce:transition-none\" tabindex=\"-1\" data-orientation=\"vertical\" data-radix-collection-item=\"\"><span>Profile</span></a></div>"
+    },
+    "menuClosed": {
+      "count": 0,
+      "active": "Name\n        Description\n        Default\n        Control \n      \n    \n    \n      \n        propertyName*\n        \n          This is a short description\n          \n            summary\n          \n        \n        \n          defaultValue\n        \n        Set string\n      \n      \n        propertyName*\n        \n          This is a short description\n          \n            summary\n          \n        \n        \n          defaultValue\n        \n        Set string\n      \n      \n        propertyName*\n        \n          This is a short description\n          \n            summary\n          \n        \n        \n          defaultValue\n        \n        Set string\n      \n    \n  \n\n\n\n  \n    No Preview\n    Sorry, but you either have no stories or none are selected somehow.\n    \n      Please check the Storybook config.\n      Try reloading the page.\n    \n    \n      If the problem persists, check the browser console, or the terminal you've run Storybook from.\n    \n  \n\n\n\n  \n    \n    \n      The component failed to render properly, likely due to a configuration issue in Storybook.\n      Here are some common causes and how you can address them:\n    \n    \n      \n        Missing Context/Providers: You can use decorators to supply specific\n        contexts or providers, which are sometimes necessary for components to render correctly. For\n        detailed instructions on using decorators, please visit the\n        Decorators documentation.\n      \n      \n        Misconfigured Webpack or Vite: Verify that Storybook picks up all necessary\n        settings for loaders, plugins, and other relevant parameters. You can find step-by-step\n        guides for configuring\n        Webpack or\n        Vite\n        with Storybook.\n      \n      \n        Missing Environment Variables: Your Storybook may require specific\n        environment variables to function as intended. You can set up custom environment variables\n        as outlined in the\n        Environment Variables documentation.\n      \n    \n    \n  \n\n\n    StudioHomeAboutAccount\n    \n    \n      function __onViteAppLoadingError(event) {\n        const hostname = globalThis.location.hostname;\n        if (hostname !== 'localhost' && globalThis.CONFIG_TYPE === 'DEVELOPMENT') {\n          const message = `Failed to load the Storybook preview file 'vite-app.js':\n\n      It looks like you're visiting the Storybook development server on another hostname than localhost: '${hostname}', but you haven't configured the necessary security features to support this.\n      Please re-run your Storybook development server with the '--host ${hostname}' flag, or manually configure your Vite allowedHosts configuration with viteFinal.\n\n      See:`;\n          const docs = [\n            'https://storybook.js.org/docs/api/cli-options#dev',\n            'https://storybook.js.org/docs/api/main-config/main-config-vite-final',\n            'https://vite.dev/config/server-options.html#server-allowedhosts',\n          ];\n          console.error(`${message}\\n${docs.map((doc) => `- ${doc}`).join('\\n')}`);\n\n          document.getElementById('storybook-root').innerHTML =\n            `<p style=\"color: red; max-width: 70ch\">${message.replaceAll(\n              '\\n',\n              '<br/>'\n            )}<ul>${docs.map((doc) => `<li><a href='${doc}' target='_blank'>${doc}</a></li>`).join('')}</ul></p>`;\n          return;\n        }\n      }\n    \n    \n  \n\n\n            #storybook-highlights-menu {\n              position: absolute;\n              z-index: 2147483647;\n              width: 300px;\n              padding: 0px;\n              margin: 15px 0 0 0;\n              transform: translateX(-50%);\n              font-family: \"Nunito Sans\", -apple-system, \".SFNSText-Regular\", \"San Francisco\", BlinkMacSystemFont, \"Segoe UI\", \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n              font-size: 12px;\n              background: white;\n              border: none;\n              border-radius: 6px;\n              box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.05), 0 5px 15px 0 rgba(0, 0, 0, 0.1);\n              color: #2E3438;\n            }\n            #storybook-highlights-menu ul {\n              list-style: none;\n              margin: 0;\n              padding: 0;\n            }\n            #storybook-highlights-menu > ul {\n              max-height: 300px;\n              overflow-y: auto;\n              padding: 4px 0;\n            }\n            #storybook-highlights-menu li {\n              padding: 0 4px;\n              margin: 0;\n            }\n            #storybook-highlights-menu li > :not(ul) {\n              display: flex;\n              padding: 8px;\n              margin: 0;\n              align-items: center;\n              gap: 8px;\n              border-radius: 4px;\n            }\n            #storybook-highlights-menu button {\n              width: 100%;\n              border: 0;\n              background: transparent;\n              color: inherit;\n              text-align: left;\n              font-family: inherit;\n              font-size: inherit;\n            }\n            #storybook-highlights-menu button:focus-visible {\n              outline-color: #029CFD;\n            }\n            #storybook-highlights-menu button:hover {\n              background: rgba(2, 156, 253, 0.07);\n              color: #029CFD;\n              cursor: pointer;\n            }\n            #storybook-highlights-menu li code {\n              white-space: nowrap;\n              overflow: hidden;\n              text-overflow: ellipsis;\n              line-height: 16px;\n              font-size: 11px;\n            }\n            #storybook-highlights-menu li svg {\n              flex-shrink: 0;\n              margin: 1px;\n              color: #73828C;\n            }\n            #storybook-highlights-menu li > button:hover svg, #storybook-highlights-menu li > button:focus-visible svg {\n              color: #029CFD;\n            }\n            #storybook-highlights-menu .element-list li svg {\n              display: none;\n            }\n            #storybook-highlights-menu li.selectable svg, #storybook-highlights-menu li.selected svg {\n              display: block;\n            }\n            #storybook-highlights-menu .menu-list {\n              border-top: 1px solid rgba(38, 85, 115, 0.15);\n            }\n            #storybook-highlights-menu .menu-list > li:not(:last-child) {\n              padding-bottom: 4px;\n              margin-bottom: 4px;\n              border-bottom: 1px solid rgba(38, 85, 115, 0.15);\n            }\n            #storybook-highlights-menu .menu-items, #storybook-highlights-menu .menu-items li {\n              padding: 0;\n            }\n            #storybook-highlights-menu .menu-item {\n              display: flex;\n            }\n            #storybook-highlights-menu .menu-item-content {\n              display: flex;\n              flex-direction: column;\n              flex-grow: 1;\n            }"
+    },
+    "longWide": {
+      "width": 1280,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "A longer destination label for localization",
+        "display": "block",
+        "rect": {
+          "x": 218.796875,
+          "y": 17.6875,
+          "width": 901.203125,
+          "height": 19,
+          "top": 17.6875,
+          "right": 1120,
+          "bottom": 36.6875,
+          "left": 218.796875
+        }
+      },
+      "controls": [],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null]
+    },
+    "longNarrow": {
+      "width": 390,
+      "top": 0,
+      "height": 55.390625,
+      "position": "fixed",
+      "zIndex": "10",
+      "containerType": "normal",
+      "containerName": "none",
+      "internalContainer": "inline-size",
+      "background": "rgba(0, 0, 0, 0)",
+      "backgroundImage": "none",
+      "backdrop": "none",
+      "border": "1px solid rgba(0, 0, 0, 0)",
+      "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+      "transition": "0.3s, 0.3s, 0.3s, 0.3s",
+      "animation": "0s",
+      "before": "none",
+      "after": "none",
+      "nav": {
+        "text": "A longer destination label for localization",
+        "display": "none",
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      },
+      "controls": [],
+      "overflow": 0,
+      "stylesheets": [null, null, "http://127.0.0.1:6032/tokens/tokens.css", null, null, null]
+    }
+  },
+  "limitations": []
+}

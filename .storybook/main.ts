@@ -66,6 +66,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   avatar: ['id', 'title', 'aria-describedby', 'className', 'style'],
   navList: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   tabBar: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
+  topBar: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick'],
   sidebar: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   calendarGrid: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   moduleRail: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
