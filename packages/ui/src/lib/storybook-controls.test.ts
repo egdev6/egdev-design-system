@@ -106,6 +106,9 @@ const components = [
   ['FooterNavigation', 'organisms/footer'],
   ['FooterSocial', 'organisms/footer'],
   ['FooterLegal', 'organisms/footer'],
+  ['NotesBoard', 'organisms/notes-board'],
+  ['NotesBoardList', 'organisms/notes-board'],
+  ['NotesBoardSide', 'organisms/notes-board'],
   ['SectionShell', 'templates/section-shell'],
   ['TopBar', 'organisms/top-bar'],
   ['TopBarBrand', 'organisms/top-bar'],
@@ -162,6 +165,9 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  notesboard: { children: false, sticky: 'boolean' },
+  notesboardlist: { children: false },
+  notesboardside: { children: false },
   bloggrid: { children: false },
   bloggridfeature: { children: false },
   bloggridrows: { children: false },
@@ -565,6 +571,9 @@ const expected: Record<string, Record<string, string | false>> = {
   terminalcardlist: { items: false, className: 'text' }
 };
 const ownPropCounts: Record<string, number> = {
+  notesboard: 2,
+  notesboardlist: 1,
+  notesboardside: 1,
   bloggrid: 1,
   bloggridfeature: 1,
   bloggridrows: 1,
@@ -954,7 +963,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         .map(([name, directory]) =>
           fileURLToPath(
             new URL(
-              `../${directory}/${directory === 'organisms/footer' ? 'Footer' : directory === 'organisms/blog-grid' ? 'BlogGrid' : name}.tsx`,
+              `../${directory}/${directory === 'organisms/footer' ? 'Footer' : directory === 'organisms/notes-board' ? 'NotesBoard' : directory === 'organisms/blog-grid' ? 'BlogGrid' : name}.tsx`,
               import.meta.url
             )
           )
@@ -1111,6 +1120,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['ProjectCard', { level: '3', variant: '"default"', size: '"md"' }],
     ['CommunityCard', { level: '3' }],
     ['FooterNavigation', { level: '2' }],
+    ['NotesBoard', { sticky: 'false' }],
     ['SectionShell', { register: '"pro"', wrap: 'true' }],
     ['TipCard', { level: '3', focalPoint: '"center"' }],
     ['Collapsible', { defaultOpen: 'false', disabled: 'false' }],

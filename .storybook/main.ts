@@ -75,6 +75,19 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   footerNavigation: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],
   footerSocial: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],
   footerLegal: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],
+  notesBoard: [
+    'id',
+    'title',
+    'dir',
+    'lang',
+    'aria-label',
+    'aria-labelledby',
+    'aria-describedby',
+    'className',
+    'onClick'
+  ],
+  notesBoardSide: [],
+  notesBoardList: [],
   sectionShell: [
     'id',
     'title',

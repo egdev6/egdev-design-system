@@ -111,6 +111,8 @@ export type {
 } from './organisms/footer';
 export { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from './organisms/footer';
 export * from './organisms/module-rail';
+export type { NotesBoardListProps, NotesBoardProps, NotesBoardSideProps } from './organisms/notes-board';
+export { NotesBoard, NotesBoardList, NotesBoardSide } from './organisms/notes-board';
 export type { NowStripProps } from './organisms/now-strip';
 export { NowStrip } from './organisms/now-strip';
 export * from './organisms/preview-frame';

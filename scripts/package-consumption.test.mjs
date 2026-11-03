@@ -28,6 +28,8 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
+import { NotesBoard, NotesBoardSide, NotesBoardList } from '@egdev/ui';
+import type { NotesBoardProps, NotesBoardSideProps, NotesBoardListProps } from '@egdev/ui';
 import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from '@egdev/ui';
 import type { BlogGridProps, BlogGridArchiveProps, BlogGridFeatureProps, BlogGridRowProps, BlogGridRowsProps } from '@egdev/ui';
 import { NowStrip } from '@egdev/ui';
@@ -355,6 +357,23 @@ const ambientChildren: AmbientBackgroundProps = { children: 'Unsupported' };
 // @ts-expect-error Only the approved profiles are supported.
 const ambientInvalidProfile: AmbientBackgroundProps = { profile: 'unknown' };
 
+const notesSide: NotesBoardSideProps = { children: createElement('ul', { 'aria-label': 'Topics' }, createElement('li', null, createElement(Chip, { mode: 'static', children: 'Design' }))) };
+const notesList: NotesBoardListProps = { children: createElement('li', null, createElement(ListItem, { variant: 'editorial', size: 'sm', asChild: true, children: createElement('a', { href: '#note' }, createElement(ListItemLeading, null, createElement('time', { dateTime: '2026-09-12' }, '12 Sep')), createElement(ListItemBody, null, createElement(ListItemTitle, { children: 'Note' })), createElement(ListItemTrailing, null, createElement('span', { 'aria-hidden': true }, '→'))) })) };
+export const notesProps: NotesBoardProps = { sticky: true, children: [createElement(NotesBoardSide, { key: 'side', ...notesSide }), createElement(NotesBoardList, { key: 'list', ...notesList })] };
+export function NotesBoardSamples() { return createElement(NotesBoard, notesProps); }
+// @ts-expect-error Children are required.
+const notesMissing: NotesBoardProps = {};
+// @ts-expect-error Root role is protected.
+const notesRole: NotesBoardProps = { children: null, role: 'region' };
+// @ts-expect-error Inline style is protected.
+const notesStyle: NotesBoardProps = { children: null, style: {} };
+// @ts-expect-error Raw HTML is protected.
+const notesHtml: NotesBoardProps = { children: null, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error Parts do not accept className.
+const notesPartClass: NotesBoardSideProps = { children: null, className: 'extra' };
+// @ts-expect-error Internal recipes are not exported.
+type NotesBoardPrivate = (typeof import('@egdev/ui'))['notesBoardVariants'];
+export type NotesBoardNegatives = [typeof notesMissing, typeof notesRole, typeof notesStyle, typeof notesHtml, typeof notesPartClass, NotesBoardPrivate];
 const blogFeature: BlogGridFeatureProps = { children: createElement(ArticleFeature, { href: '#feature', title: 'Feature', actionLabel: 'Read' }) };
 const blogRow: BlogGridRowProps = { children: createElement(ListItem, { variant: 'editorial', asChild: true, children: createElement('a', { href: '#row' }, 'Row') }) };
 const blogRows: BlogGridRowsProps = { children: createElement(BlogGridRow, blogRow) };
@@ -4439,6 +4458,35 @@ function assertTerminalCardConsumerCSS(css) {
   );
 }
 
+function assertNotesBoardConsumerCSS(css) {
+  function block(text, opening) {
+    const match = opening.exec(text);
+    assert.ok(match, 'Missing NotesBoard CSS block');
+    let depth = 1;
+    for (let i = match.index + match[0].length; i < text.length; i++) {
+      if (text[i] === '{') {
+        depth++;
+      } else if (text[i] === '}' && --depth === 0) {
+        return text.slice(match.index, i + 1);
+      }
+    }
+    assert.fail('Unclosed NotesBoard CSS block');
+  }
+  const utilities = block(css, /@layer utilities\s*\{/);
+  const narrow = block(utilities, /@media\s*\(\s*width\s*<=\s*1080px\s*\)\s*\{/);
+  for (const name of [
+    '[@media(width<=1080px)]:grid-cols-1',
+    '[@media(width<=1080px)]:gap-8',
+    '[@media(width<=1080px)]:static',
+    '[@media(width<=1080px)]:self-auto'
+  ]) {
+    assert.ok(narrow.includes('.' + name.replace(/[^\w-]/g, '\\$&')), 'Missing NotesBoard bounded reset ' + name);
+  }
+  assert.match(utilities, /top:\s*calc\(var\(--nav-height\)\s*\+\s*var\(--space-10\)\)/);
+  assert.doesNotMatch(utilities, /\.eg-notes(?:__[\w-]+)?\s*\{/);
+  assert.match(block(css, /@layer components\s*\{/), /\.eg-notes/);
+}
+
 function assertBlogGridConsumerCSS(css) {
   function block(text, pattern) {
     const match = pattern.exec(text);
@@ -4648,6 +4696,8 @@ ${assertCommunityCardConsumerCSS.toString()}
 assertCommunityCardConsumerCSS(shippedStyles);
 ${assertFooterConsumerCSS.toString()}
 assertFooterConsumerCSS(shippedStyles);
+${assertNotesBoardConsumerCSS.toString()}
+assertNotesBoardConsumerCSS(shippedStyles);
 ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
 ${assertNowStripConsumerCSS.toString()}
@@ -4754,6 +4804,9 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ModuleCard',
   'ModuleRail',
   'NavList',
+  'NotesBoard',
+  'NotesBoardList',
+  'NotesBoardSide',
   'Notice',
   'NowCard',
   'NowCardBody',
@@ -5044,6 +5097,17 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
+const { NotesBoardSamples } = await import('./consumer.ts');
+const notesDocument = new JSDOM(renderToString(createElement(NotesBoardSamples)));
+const notesBoard = notesDocument.window.document.querySelector('.eg-notes');
+assert.deepEqual([...notesBoard.children].map((node) => node.tagName), ['DIV', 'OL']);
+assert.equal(notesBoard.querySelector('ul[aria-label="Topics"] li button, ul[aria-label="Topics"] li a, ul[aria-label="Topics"] [tabindex], ul[aria-label="Topics"] [aria-pressed]'), null);
+const notesLink = notesBoard.querySelector('ol > li > a[href="#note"]');
+assert.ok(notesLink);
+assert.equal(notesLink.querySelector('time').getAttribute('datetime'), '2026-09-12');
+assert.equal(notesLink.querySelector('[aria-hidden="true"]').textContent, '→');
+assert.equal(notesBoard.querySelector('a a'), null);
+notesDocument.window.close();
 const { BlogGridSamples } = await import('./consumer.ts');
 for (const empty of [false, true]) {
   const dom = new JSDOM(renderToString(createElement(BlogGridSamples, { empty })));

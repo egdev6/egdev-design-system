@@ -1094,10 +1094,10 @@
     "nombre": "NotesBoard",
     "nivel": "organism",
     "destino": "ui",
-    "radix": "—",
-    "compone": "SectionHeader, ChipGroup, ListItem row variant",
+    "radix": "— (native ordered list)",
+    "compone": "Consumer SectionHeader, named static Chip list and editorial ListItem rows",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): section body composed from SectionHeader, ChipGroup and the ListItem editorial row variant."
+    "notas": "Implemented React organism under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/295): passive editorial board with supplied side and ordered list, optional sticky side above the inclusive 1080px boundary. Consumers own topics, dates, ordering and links; no filtering, stylesheet, ref or asChild."
   },
   {
     "actual": "NowStrip",

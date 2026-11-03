@@ -122,6 +122,53 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts NotesBoard parts and sticky metadata', () => {
+    const extracted = parser.parse(source('organisms/notes-board/NotesBoard.tsx'));
+    const root = extracted.find(({ displayName }) => displayName === 'NotesBoard');
+    expect(root?.props.children).toMatchObject({ required: true, defaultValue: null, tags: { control: 'false' } });
+    expect(root?.props.sticky).toMatchObject({
+      required: false,
+      defaultValue: { value: 'false' },
+      tags: { control: 'boolean' }
+    });
+    for (const name of [
+      'id',
+      'title',
+      'dir',
+      'lang',
+      'aria-label',
+      'aria-labelledby',
+      'aria-describedby',
+      'className',
+      'onClick'
+    ]) {
+      expect(root?.props[name], name).toBeDefined();
+    }
+    for (const name of ['style', 'role', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
+      expect(root?.props[name], name).toBeUndefined();
+    }
+    for (const name of ['NotesBoardSide', 'NotesBoardList']) {
+      const part = extracted.find(({ displayName }) => displayName === name);
+      expect(part?.props.children, name).toMatchObject({ required: true, tags: { control: 'false' } });
+      expect(part?.props.className, name).toBeUndefined();
+    }
+    const file = ast(source('organisms/notes-board/types.ts'));
+    const properties = ownProps(file, ['NotesBoardProps', 'NotesBoardSideProps', 'NotesBoardListProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual([
+      'children',
+      'sticky',
+      'children',
+      'children'
+    ]);
+    for (const property of properties) {
+      const tags = ts.getJSDocTags(property);
+      expect(tags.filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
+      if (property.name.getText(file) === 'children') {
+        expect(tags.some(({ tagName, comment }) => tagName.text === 'controlReason' && Boolean(comment))).toBe(true);
+      }
+    }
+    expect(publicAPI.NotesBoard).toBeDefined();
+  });
   it('extracts BlogGrid composition and native root rows', { timeout: heavyDocgenTimeoutMs }, () => {
     const extracted = parser.parse(source('organisms/blog-grid/BlogGrid.tsx'));
     for (const name of ['BlogGrid', 'BlogGridFeature', 'BlogGridRows', 'BlogGridRow', 'BlogGridArchive']) {
@@ -1266,6 +1313,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './organisms/calendar-grid',
       './organisms/footer',
       './organisms/module-rail',
+      './organisms/notes-board',
       './organisms/now-strip',
       './organisms/preview-frame',
       './organisms/sidebar',
@@ -1358,6 +1406,9 @@ describe('Storybook TypeScript docgen contract', () => {
       'ModuleCard',
       'ModuleRail',
       'NavList',
+      'NotesBoard',
+      'NotesBoardList',
+      'NotesBoardSide',
       'Notice',
       'NowCard',
       'NowCardBody',

@@ -620,6 +620,7 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/atoms/countdown/types.ts#CountdownProps'
   })),
+  { conventionId: 'board-sticky-side', source: 'packages/ui/src/organisms/notes-board/types.ts#NotesBoardProps' },
   // SectionShell records reviewed own props after the convention receipt.
   ...['section-register', 'section-content-wrap'].map((conventionId) => ({
     conventionId,
@@ -912,8 +913,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   validate(actual);
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
-  assert.equal(actual.length, 149);
-  assert.equal(beforeIndicatorConventions(actual).length, 146);
+  assert.equal(actual.length, 150);
+  assert.equal(beforeIndicatorConventions(actual).length, 147);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -1030,7 +1031,8 @@ const receiptChain = [
   'docs/components/terminal-card/v0.1/terminal-naming-approval.json',
   'docs/components/tip-card/v0.1/cover-badge-approval.json',
   'docs/components/article-feature/v0.1/prop-naming-approval.json',
-  'docs/components/section-shell/v0.1/prop-naming-approval.json'
+  'docs/components/section-shell/v0.1/prop-naming-approval.json',
+  'docs/components/notes-board/v0.1/prop-naming-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -2325,6 +2327,68 @@ test('ArticleFeature naming receipt binds the approved #280 conventions without 
     meta.usages.map(({ component }) => component),
     ['SelectTileOption']
   );
+});
+
+test('NotesBoard binds the approved plan convention and reviewed sticky usage', () => {
+  const reference = 'docs/components/notes-board/v0.1/prop-naming-approval.json';
+  const plan = fs.readFileSync(resolve(root, 'docs/components/notes-board/v0.1/implementation-plan.md'), 'utf8');
+  assert.equal(digest(plan), 'sha256:f70605329effcc833da4fa9f5e274df43525651321bdd2af45af85d40b034569');
+  const approvalPath = 'docs/components/web-catalog/v0.1/layer-d-plan-approvals.md';
+  const approvalText = fs.readFileSync(resolve(root, approvalPath), 'utf8');
+  assert.match(approvalText, /NotesBoard plan: "Aprobar plan y gates \(Recomendado\)"/);
+  assert.ok(approvalText.includes('`board-sticky-side` / `sticky`'));
+  const proposal = JSON.parse(plan.split('## 5. Naming proposal')[1].split('```json\n')[1].split('\n```')[0]);
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(receipt.evidence.channel, approvalPath);
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar plan y gates (Recomendado)');
+  assert.ok(
+    receipt.evidence.interpretation.includes('f70605329effcc833da4fa9f5e274df43525651321bdd2af45af85d40b034569')
+  );
+  assert.deepEqual(receipt.priorReceipts, [
+    {
+      path: 'docs/components/section-shell/v0.1/prop-naming-approval.json',
+      wholeFileSHA256: digest(
+        fs.readFileSync(resolve(root, 'docs/components/section-shell/v0.1/prop-naming-approval.json'))
+      )
+    }
+  ]);
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  const entry = actual.find(({ id }) => id === 'board-sticky-side');
+  const { approval, usages, ...convention } = entry;
+  const { approval: _pending, usages: _none, ...proposedConvention } = proposal;
+  assert.deepEqual(convention, { ...proposedConvention, status: 'approved' });
+  assert.deepEqual(receipt.entries, [
+    { scope: 'convention:board-sticky-side', contentHash: props.conventionHash(entry), convention }
+  ]);
+  assert.deepEqual(approval, {
+    reference,
+    scope: 'convention:board-sticky-side',
+    contentHash: props.conventionHash(entry)
+  });
+  const path = 'packages/ui/src/organisms/notes-board/types.ts';
+  assert.deepEqual(usages, [
+    {
+      component: 'NotesBoard',
+      type: 'boolean (default false)',
+      status: 'existing',
+      source: { path, symbol: 'NotesBoardProps', revision: digest(fs.readFileSync(resolve(root, path))) }
+    }
+  ]);
+  assert.deepEqual(
+    actual.flatMap((item) =>
+      item.usages.filter((usage) => usage.component === 'NotesBoard' || usage.source.path === path).map(() => item.id)
+    ),
+    ['board-sticky-side']
+  );
+  const changed = structuredClone(actual);
+  changed.find(({ id }) => id === 'board-sticky-side').meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
 });
 
 test('SectionShell binds approved plan conventions and only its reviewed own-prop usages', () => {

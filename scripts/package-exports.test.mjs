@@ -460,6 +460,118 @@ test('Footer package SSR keeps navigation and social list separately named', asy
   }
 });
 
+test('NotesBoard ships every scanned utility and bounded responsive resets', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/organisms/notes-board/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      return;
+    }
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.ok(classes.size > 15);
+  for (const name of classes) {
+    if (!name.startsWith('eg-')) {
+      assert.ok(utilities.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing NotesBoard utility ${name}`);
+    }
+  }
+  const narrow = cssBlock(utilities, /@media\s*\(\s*width\s*<=\s*1080px\s*\)\s*\{/);
+  for (const name of [
+    '[@media(width<=1080px)]:grid-cols-1',
+    '[@media(width<=1080px)]:gap-8',
+    '[@media(width<=1080px)]:static',
+    '[@media(width<=1080px)]:self-auto'
+  ]) {
+    assert.ok(narrow.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing bounded reset ${name}`);
+  }
+  assert.match(utilities, /top:\s*calc\(var\(--nav-height\)\s*\+\s*var\(--space-10\)\)/);
+  assert.doesNotMatch(utilities, /\.eg-notes(?:__[\w-]+)?\s*\{/);
+  assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-notes/);
+});
+
+test('NotesBoard package SSR keeps static topics and ordered dated links', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const html = renderToString(
+    h(exported.NotesBoard, {
+      sticky: true,
+      children: [
+        h(exported.NotesBoardSide, {
+          key: 'side',
+          children: h(
+            'ul',
+            { 'aria-label': 'Topics' },
+            h('li', null, h(exported.Chip, { mode: 'static', children: 'Design' }))
+          )
+        }),
+        h(exported.NotesBoardList, {
+          key: 'list',
+          children: h(
+            'li',
+            null,
+            h(exported.ListItem, {
+              variant: 'editorial',
+              size: 'sm',
+              asChild: true,
+              children: h(
+                'a',
+                { href: '#note' },
+                h(exported.ListItemLeading, null, h('time', { dateTime: '2026-09-12' }, '12 Sep')),
+                h(exported.ListItemBody, null, h(exported.ListItemTitle, null, 'Note')),
+                h(exported.ListItemTrailing, null, h('span', { 'aria-hidden': true }, '→'))
+              )
+            })
+          )
+        })
+      ]
+    })
+  );
+  const dom = new JSDOM(html);
+  try {
+    const board = dom.window.document.querySelector('.eg-notes');
+    assert.deepEqual(
+      [...board.children].map((node) => node.tagName),
+      ['DIV', 'OL']
+    );
+    const topic = board.querySelector('ul[aria-label="Topics"] li');
+    assert.equal(topic.querySelector('button,a,[tabindex],[aria-pressed]'), null);
+    const link = board.querySelector('ol > li > a[href="#note"]');
+    assert.ok(link);
+    assert.equal(link.querySelector('time').getAttribute('datetime'), '2026-09-12');
+    assert.equal(link.querySelector('[aria-hidden="true"]').textContent, '→');
+    assert.equal(board.querySelector('a a'), null);
+    for (const name of ['useNotesBoard', 'notesBoardVariants', 'notesBoardSideVariants', 'notesBoardListVariants']) {
+      assert.equal(exported[name], undefined);
+    }
+  } finally {
+    dom.window.close();
+  }
+});
+
 test('BlogGrid ships every recipe utility with bounded responsive resets and legacy CSS', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -4296,6 +4408,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'ModuleCard',
       'ModuleRail',
       'NavList',
+      'NotesBoard',
+      'NotesBoardList',
+      'NotesBoardSide',
       'Notice',
       'NowCard',
       'NowCardBody',
@@ -4708,6 +4823,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'NavListSignal',
     'NavListStaticGroup',
     'NavListTag',
+    'NotesBoard',
+    'NotesBoardList',
+    'NotesBoardListProps',
+    'NotesBoardProps',
+    'NotesBoardSide',
+    'NotesBoardSideProps',
     'Notice',
     'NoticeProps',
     'NoticeTone',
