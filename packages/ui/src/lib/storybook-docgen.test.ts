@@ -265,6 +265,60 @@ describe('Storybook TypeScript docgen contract', () => {
     }
     expect(publicAPI.BlogGrid).toBeDefined();
   });
+  it('extracts LiveBand parts and protected native rows', { timeout: heavyDocgenTimeoutMs }, () => {
+    const extracted = parser.parse(source('organisms/live-band/LiveBand.tsx'));
+    for (const name of [
+      'LiveBandField',
+      'LiveBandStreams',
+      'LiveBandVod',
+      'LiveBandList',
+      'LiveBandRows',
+      'LiveBandRow'
+    ]) {
+      const part = extracted.find(({ displayName }) => displayName === name);
+      expect(part?.props.children, name).toMatchObject({
+        required: true,
+        defaultValue: null,
+        tags: { control: 'false' }
+      });
+      for (const prop of ['role', 'style', 'onClick', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
+        expect(part?.props[prop], `${name}.${prop}`).toBeUndefined();
+      }
+      expect(publicAPI[name as keyof typeof publicAPI], name).toBeDefined();
+    }
+    for (const name of ['LiveBandField', 'LiveBandStreams', 'LiveBandRows']) {
+      const part = extracted.find(({ displayName }) => displayName === name);
+      for (const prop of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className']) {
+        expect(part?.props[prop], `${name}.${prop}`).toBeDefined();
+      }
+    }
+    const vod = extracted.find(({ displayName }) => displayName === 'LiveBandVod');
+    expect(vod?.props.href).toMatchObject({ required: true, tags: { control: 'text' } });
+    for (const prop of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'target', 'rel']) {
+      expect(vod?.props[prop], prop).toBeDefined();
+    }
+    for (const name of ['LiveBandVod', 'LiveBandList', 'LiveBandRow']) {
+      expect(extracted.find(({ displayName }) => displayName === name)?.props.className, name).toBeUndefined();
+    }
+    const file = ast(source('organisms/live-band/types.ts'));
+    const properties = ownProps(file, [
+      'LiveBandFieldProps',
+      'LiveBandStreamsProps',
+      'LiveBandVodProps',
+      'LiveBandListProps',
+      'LiveBandRowsProps',
+      'LiveBandRowProps'
+    ]);
+    expect(properties).toHaveLength(7);
+    for (const property of properties) {
+      const tags = ts.getJSDocTags(property);
+      expect(tags.filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
+      if (property.name.getText(file) === 'children') {
+        expect(tags.some(({ tagName, comment }) => tagName.text === 'controlReason' && Boolean(comment))).toBe(true);
+      }
+      expect(tags.some(({ tagName }) => tagName.text === 'default')).toBe(false);
+    }
+  });
   it('extracts NowStrip controls and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
     const doc = parser
       .parse(source('organisms/now-strip/NowStrip.tsx'))
@@ -1361,6 +1415,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './organisms/blog-grid',
       './organisms/calendar-grid',
       './organisms/footer',
+      './organisms/live-band',
       './organisms/module-rail',
       './organisms/notes-board',
       './organisms/now-strip',
@@ -1450,6 +1505,12 @@ describe('Storybook TypeScript docgen contract', () => {
       'ListItemMeta',
       'ListItemTitle',
       'ListItemTrailing',
+      'LiveBandField',
+      'LiveBandList',
+      'LiveBandRow',
+      'LiveBandRows',
+      'LiveBandStreams',
+      'LiveBandVod',
       'Logo',
       'Menu',
       'MeterRow',

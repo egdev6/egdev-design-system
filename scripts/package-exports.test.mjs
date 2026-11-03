@@ -678,6 +678,119 @@ test('BlogGrid ships every recipe utility with bounded responsive resets and leg
   assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-blog-grid/);
 });
 
+test('LiveBand ships every recipe utility in its bounded responsive blocks', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/organisms/live-band/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      for (const argument of node.arguments) {
+        if (ts.isStringLiteral(argument)) {
+          for (const name of argument.text.split(/\s+/).filter(Boolean)) {
+            classes.add(name);
+          }
+        }
+      }
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(source);
+  assert.ok(classes.size > 10);
+  for (const name of classes) {
+    if (!name.startsWith('eg-')) {
+      assert.ok(utilities.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing LiveBand utility ${name}`);
+    }
+  }
+  for (const width of [860, 1080]) {
+    const media = cssBlock(utilities, new RegExp(`@media\\s*\\(\\s*width\\s*<=\\s*${width}px\\s*\\)\\s*\\{`));
+    const name = `[@media(width<=${width}px)]:grid-cols-1`;
+    assert.ok(media.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing bounded ${name}`);
+  }
+  for (const track of ['1.1', '1.15']) {
+    assert.match(
+      utilities,
+      new RegExp(`grid-template-columns:\\s*minmax\\(0,\\s*${track.replace('.', '\\.')}fr\\)\\s+minmax\\(0,\\s*1fr\\)`)
+    );
+  }
+  assert.doesNotMatch(utilities, /\.eg-live-band\s*\{/);
+  assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-live-band/);
+});
+
+test('LiveBand package SSR preserves field, recording and semantic archive order', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  for (const empty of [false, true]) {
+    const row = h(exported.LiveBandRow, {
+      children: h(exported.ListItem, {
+        variant: 'editorial-divided',
+        asChild: true,
+        children: h('a', { href: '#row' }, 'Row')
+      })
+    });
+    const list = h(exported.LiveBandList, {
+      key: 'list',
+      children: [
+        h('h2', { key: 'head' }, 'Past'),
+        h(exported.LiveBandRows, { key: 'rows', children: empty ? [] : row }),
+        h('a', { key: 'archive', href: '#archive' }, 'Archive')
+      ]
+    });
+    const html = renderToString(
+      h(
+        'main',
+        null,
+        h(exported.LiveBandField, { children: [h('p', { key: 'text' }, 'Text'), h('div', { key: 'photo' }, 'Photo')] }),
+        h(exported.LiveBandStreams, {
+          children: [
+            h(exported.LiveBandVod, {
+              key: 'vod',
+              href: '#vod',
+              children: [h('span', { key: 'play', 'aria-hidden': true }, '▶'), 'Recording']
+            }),
+            list
+          ]
+        })
+      )
+    );
+    const dom = new JSDOM(html);
+    try {
+      const doc = dom.window.document;
+      assert.deepEqual(
+        [...doc.querySelector('.eg-live-band').children].map((node) => node.textContent),
+        ['Text', 'Photo']
+      );
+      // Shared responsive utilities are emitted by other components too: prove LiveBand's own parts carry them.
+      assert.ok(doc.querySelector('.eg-live-band').classList.contains('[@media(width<=860px)]:grid-cols-1'));
+      const vod = doc.querySelector('a[href="#vod"]');
+      assert.ok(vod.parentElement.classList.contains('[@media(width<=1080px)]:grid-cols-1'));
+      assert.ok(vod.classList.contains('eg-surface'));
+      assert.ok(vod.querySelector('[aria-hidden="true"]'));
+      assert.equal(vod.querySelector('a'), null);
+      assert.deepEqual(
+        [...doc.querySelectorAll('a')].map((a) => a.getAttribute('href')),
+        empty ? ['#vod', '#archive'] : ['#vod', '#row', '#archive']
+      );
+      assert.equal(doc.querySelectorAll('ul').length, empty ? 0 : 1);
+      if (!empty) {
+        assert.equal(doc.querySelectorAll('ul > li').length, 1);
+        assert.equal(doc.querySelector('ul > li > a')?.getAttribute('href'), '#row');
+      }
+      assert.equal(doc.querySelector('ul a[href="#archive"]'), null);
+      assert.equal(doc.querySelector('a a'), null);
+    } finally {
+      dom.window.close();
+    }
+  }
+});
+
 test('NowStrip ships every scanned utility within its approved layers', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -4466,6 +4579,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'ListItemMeta',
       'ListItemTitle',
       'ListItemTrailing',
+      'LiveBandField',
+      'LiveBandList',
+      'LiveBandRow',
+      'LiveBandRows',
+      'LiveBandStreams',
+      'LiveBandVod',
       'Logo',
       'Menu',
       'MeterRow',
@@ -4847,6 +4966,18 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ListItemTitleProps',
     'ListItemTrailing',
     'ListItemVariant',
+    'LiveBandField',
+    'LiveBandFieldProps',
+    'LiveBandList',
+    'LiveBandListProps',
+    'LiveBandRow',
+    'LiveBandRowProps',
+    'LiveBandRows',
+    'LiveBandRowsProps',
+    'LiveBandStreams',
+    'LiveBandStreamsProps',
+    'LiveBandVod',
+    'LiveBandVodProps',
     'Logo',
     'LogoProps',
     'LogoSize',
