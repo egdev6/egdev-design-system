@@ -22,11 +22,13 @@ EGDEV Foundation en código: el sistema de diseño que comparten egdev.es y toda
 pnpm install
 pnpm tokens        # compila CSS nativo desde la fuente theme.css
 pnpm storybook     # http://localhost:6006
-pnpm test
+pnpm test          # full Vitest suite; at most two workers by default
 pnpm test:tokens   # compila y comprueba fuente, alias y paridad
 pnpm typecheck
 pnpm build
 ```
+
+`pnpm test` uses a two-worker default budget, including when the unchanged pre-push hook invokes it. Test selection, assertions and timeouts are unchanged; watch and coverage commands retain their existing behavior.
 
 ## Documentación
 
