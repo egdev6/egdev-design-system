@@ -1089,6 +1089,16 @@
           "symbol": "ProjectCardProps",
           "revision": "sha256:e288a0ee47230a650bd8e6a5c0b3d2329b9e9724ca093be8a2f4b6765c516ea3"
         }
+      },
+      {
+        "component": "ScrollReveal",
+        "type": "'reveal' | 'wipe'",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/scroll-reveal/types.ts",
+          "symbol": "ScrollRevealProps",
+          "revision": "sha256:84c3badd268fe8b78d6b53fc8ba9db3d43b6142904896394b472ace130346158"
+        }
       }
     ]
   },
@@ -2661,6 +2671,16 @@
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
           "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
+        }
+      },
+      {
+        "component": "ScrollReveal",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/scroll-reveal/types.ts",
+          "symbol": "ScrollRevealProps",
+          "revision": "sha256:84c3badd268fe8b78d6b53fc8ba9db3d43b6142904896394b472ace130346158"
         }
       }
     ]
@@ -7646,6 +7666,33 @@
           "path": "packages/ui/src/organisms/notes-board/types.ts",
           "symbol": "NotesBoardProps",
           "revision": "sha256:4edafa0801d22a4ea6c51fee92e21034919a006ea539d1e9ed16366282bd1fa4"
+        }
+      }
+    ]
+  },
+  {
+    "id": "entrance-delay",
+    "name": "delay",
+    "meaning": "A finite nonnegative entrance delay in milliseconds.",
+    "whenToUse": "Supply an explicit per-element stagger delay to ScrollReveal.",
+    "avoid": "Do not use for animation duration, replay timing or invalid numeric values.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/components/scroll-reveal/v0.1/prop-naming-approval.json",
+      "scope": "convention:entrance-delay",
+      "contentHash": "sha256:40ab22f86d333f0d52c7d219d6712952971f9ba23ccbcc9806b175cd7832ba86"
+    },
+    "usages": [
+      {
+        "component": "ScrollReveal",
+        "type": "number (finite, >= 0, milliseconds)",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/scroll-reveal/types.ts",
+          "symbol": "ScrollRevealProps",
+          "revision": "sha256:84c3badd268fe8b78d6b53fc8ba9db3d43b6142904896394b472ace130346158"
         }
       }
     ]

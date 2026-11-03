@@ -1,0 +1,35 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve entrance-delay; reuse visual-treatment for variant per the scoped owner correction.",
+  "evidence": {
+    "channel": "docs/components/scroll-reveal/v0.1/owner-approval.md",
+    "ownerChoice": "Approve both conventions",
+    "interpretation": "Independent entrance-delay approval bound to spec payload7048c85eb9c2997349ad100bdae32e0e301701a412cc447f021cd9f4d0df2101. Variant reuses visual-treatment per naming-correction.md. Not native review authority."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/hero/v0.1/prop-naming-approval-scene-social.json",
+      "wholeFileSHA256": "sha256:786a29136232615abe91bf89c70db50c5790977d06398f32a09e2efedbca6627"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:entrance-delay",
+      "contentHash": "sha256:40ab22f86d333f0d52c7d219d6712952971f9ba23ccbcc9806b175cd7832ba86",
+      "convention": {
+        "id": "entrance-delay",
+        "name": "delay",
+        "meaning": "A finite nonnegative entrance delay in milliseconds.",
+        "whenToUse": "Supply an explicit per-element stagger delay to ScrollReveal.",
+        "avoid": "Do not use for animation duration, replay timing or invalid numeric values.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

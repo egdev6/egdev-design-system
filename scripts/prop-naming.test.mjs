@@ -57,6 +57,9 @@ function indicatorProposalHash(entry) {
 }
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  { conventionId: 'entrance-delay', source: 'packages/effects/src/scroll-reveal/types.ts#ScrollRevealProps' },
+  { conventionId: 'visual-treatment', source: 'packages/effects/src/scroll-reveal/types.ts#ScrollRevealProps' },
+  { conventionId: 'slot-composition', source: 'packages/effects/src/scroll-reveal/types.ts#ScrollRevealProps' },
   ...[
     'accessible-name',
     'collection-items',
@@ -1131,8 +1134,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   validate(actual);
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
-  assert.equal(actual.length, 154);
-  assert.equal(beforeIndicatorConventions(actual).length, 151);
+  assert.equal(actual.length, 155);
+  assert.equal(beforeIndicatorConventions(actual).length, 152);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -1256,7 +1259,8 @@ const receiptChain = [
   'docs/components/section-nav/v0.1/prop-naming-approval.json',
   'docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json',
   'docs/components/hero/v0.1/prop-naming-approval-scene-media.json',
-  'docs/components/hero/v0.1/prop-naming-approval-scene-social.json'
+  'docs/components/hero/v0.1/prop-naming-approval-scene-social.json',
+  'docs/components/scroll-reveal/v0.1/prop-naming-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -3544,4 +3548,39 @@ test('FieldMessage registers reviewed usage without promoting proposed content/g
     const entry = actual.find((entry) => entry.id === id);
     assert.equal(entry.usages.filter((usage) => usage.component === 'FieldMessage').length, 1);
   }
+});
+
+test('ScrollReveal binds independently approved entrance conventions and actual reviewed source', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const path = 'packages/effects/src/scroll-reveal/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  for (const id of ['entrance-delay']) {
+    const entry = registry.find((candidate) => candidate.id === id);
+    assert.ok(entry, id);
+    const reference = 'docs/components/scroll-reveal/v0.1/prop-naming-approval.json';
+    const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+    assert.equal(receipt.evidence.ownerChoice, 'Approve both conventions');
+    const { approval, usages, ...convention } = entry;
+    assert.ok(
+      receipt.entries.some(
+        (record) => record.scope === 'convention:' + id && record.contentHash === props.conventionHash(entry)
+      )
+    );
+    assert.equal(approval.reference, reference);
+    assert.deepEqual(usages, [
+      {
+        component: 'ScrollReveal',
+        type: 'number (finite, >= 0, milliseconds)',
+        status: 'existing',
+        source: { path, symbol: 'ScrollRevealProps', revision }
+      }
+    ]);
+    assert.deepEqual(receipt.entries.find((record) => record.scope === 'convention:' + id).convention, convention);
+  }
+  const usage = registry
+    .find((entry) => entry.id === 'slot-composition')
+    .usages.filter((entry) => entry.component === 'ScrollReveal');
+  assert.equal(usage.length, 1);
+  assert.deepEqual(usage[0].source, { path, symbol: 'ScrollRevealProps', revision });
+  validate(registry);
 });
