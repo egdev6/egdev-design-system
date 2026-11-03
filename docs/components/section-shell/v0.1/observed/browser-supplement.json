@@ -1,0 +1,31 @@
+{
+  "tokens": {
+    "--mask-section-fade-top": "linear-gradient(180deg, transparent, #000 clamp(96px, 14vh, 180px))",
+    "--mask-section-fade-bottom": "linear-gradient(0deg, transparent, #000 clamp(96px, 14vh, 180px))",
+    "--mask-section-fade-both": "linear-gradient(180deg, transparent, #000 clamp(96px, 14vh, 180px), #000 calc(100% - clamp(96px, 14vh, 180px)), transparent)"
+  },
+  "groups": [
+    {
+      "underlay": {
+        "mask": "none",
+        "bg": "oklab(0.195947 0.000126831 -0.00620709 / 0.5)",
+        "classes": "pointer-events-none absolute inset-0 -z-10 bg-surface-0/50 [mask-image:var(--mask-section-fade-top)] [-webkit-mask-image:var(--mask-section-fade-top)] [@media(prefers-reduced-transparency:reduce)]:bg-surface-0"
+      },
+      "section": {
+        "bg": "oklab(0.195947 0.000126831 -0.00620709 / 0.5)",
+        "classes": "eg-section box-border relative isolate flex flex-col justify-center min-h-[var(--section-min-height)] pt-[calc(var(--nav-height)+var(--space-8))] pb-8 shadow-none bg-surface-0/50 bg-none text-fg-default [@media(prefers-reduced-transparency:reduce)]:bg-surface-0"
+      }
+    },
+    {
+      "underlay": {
+        "mask": "none",
+        "bg": "oklab(0.195947 0.000126831 -0.00620709 / 0.5)",
+        "classes": "pointer-events-none absolute inset-0 -z-10 bg-surface-0/50 [mask-image:var(--mask-section-fade-both)] [-webkit-mask-image:var(--mask-section-fade-both)] [@media(prefers-reduced-transparency:reduce)]:bg-surface-0"
+      },
+      "section": {
+        "bg": "oklab(0.195947 0.000126831 -0.00620709 / 0.5)",
+        "classes": "eg-section box-border relative isolate flex flex-col justify-center min-h-[var(--section-min-height)] pt-[calc(var(--nav-height)+var(--space-8))] pb-8 shadow-none bg-surface-0/50 bg-none text-fg-default [@media(prefers-reduced-transparency:reduce)]:bg-surface-0"
+      }
+    }
+  ]
+}

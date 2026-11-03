@@ -195,6 +195,40 @@ describe('Storybook TypeScript docgen contract', () => {
     }
     expect(publicAPI.Footer).toBeDefined();
   });
+  it('extracts TopBar inputs, parts and native header rows (TB-09)', { timeout: heavyDocgenTimeoutMs }, () => {
+    const extracted = parser.parse(source('organisms/top-bar/TopBar.tsx'));
+    const props = extracted.find(({ displayName }) => displayName === 'TopBar')?.props ?? {};
+    for (const [name, control, required] of [
+      ['label', 'text', true],
+      ['items', 'false', true],
+      ['onNavigate', 'false', false],
+      ['children', 'false', true]
+    ] as const) {
+      expect(props[name], name).toMatchObject({ required, defaultValue: null, tags: { control } });
+    }
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick']) {
+      expect(props[name], name).toBeDefined();
+    }
+    for (const name of ['role', 'ref', 'asChild', 'dangerouslySetInnerHTML']) {
+      expect(props[name], name).toBeUndefined();
+    }
+    for (const name of [
+      'TopBarBrand',
+      'TopBarMobileTrigger',
+      'TopBarSearchCompact',
+      'TopBarSearchFull',
+      'TopBarUserMenu'
+    ]) {
+      const part = extracted.find(({ displayName }) => displayName === name);
+      expect(part?.props.children, name).toMatchObject({
+        required: true,
+        defaultValue: null,
+        tags: { control: 'false' }
+      });
+      expect(part?.props.className, name).toBeUndefined();
+    }
+    expect(publicAPI.TopBar).toBeDefined();
+  });
   it('extracts Isotipo3D effects metadata and bounded native rows', () => {
     const isotipoRoot = new URL('../../../effects/', import.meta.url);
     const isotipoParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', isotipoRoot)), {
@@ -241,6 +275,31 @@ describe('Storybook TypeScript docgen contract', () => {
       expect(doc?.props[name], name).toBeDefined();
     }
     expect(doc?.props.children).toBeUndefined();
+  });
+  it('extracts SectionShell own metadata and native section rows (SS-07)', () => {
+    const doc = parser
+      .parse(source('templates/section-shell/SectionShell.tsx'))
+      .find((item) => item.displayName === 'SectionShell');
+    expect(doc?.props.register).toMatchObject({ tags: { control: 'select' }, defaultValue: { value: 'pro' } });
+    expect(doc?.props.wrap).toMatchObject({ tags: { control: 'boolean' }, defaultValue: { value: 'true' } });
+    expect(doc?.props.children).toMatchObject({ required: true, tags: { control: 'false' } });
+    for (const name of [
+      'id',
+      'title',
+      'dir',
+      'lang',
+      'aria-label',
+      'aria-labelledby',
+      'aria-describedby',
+      'className',
+      'onClick'
+    ]) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of ['role', 'style', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    expect(publicAPI.SectionShell).toBeDefined();
   });
   it('extracts GaugeGroup required inputs and bounded controls', () => {
     const doc = parser
@@ -1125,6 +1184,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './organisms/preview-frame',
       './organisms/sidebar',
       './organisms/tab-bar',
+      './organisms/top-bar',
       './primitives/aspect-ratio',
       './primitives/divider',
       './primitives/label',
@@ -1136,6 +1196,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/text',
       './primitives/visually-hidden',
       './templates/app-shell',
+      './templates/section-shell',
       './types/product-identity'
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
@@ -1232,6 +1293,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'RadioGroup',
       'SearchTrigger',
       'SectionHeader',
+      'SectionShell',
       'Select',
       'SelectTile',
       'Sidebar',
@@ -1259,6 +1321,12 @@ describe('Storybook TypeScript docgen contract', () => {
       'ToastProvider',
       'Toggle',
       'Tooltip',
+      'TopBar',
+      'TopBarBrand',
+      'TopBarMobileTrigger',
+      'TopBarSearchCompact',
+      'TopBarSearchFull',
+      'TopBarUserMenu',
       'VisuallyHidden',
       'appShellVariants',
       'badgeVariants',

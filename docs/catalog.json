@@ -1006,10 +1006,10 @@
     "nombre": "TopBar",
     "nivel": "organism",
     "destino": "ui",
-    "radix": "NavigationMenu",
-    "compone": "Logo, SearchTrigger, UserMenu",
+    "radix": "— (native navigation links)",
+    "compone": "Consumer-supplied brand, search, user and mobile controls",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): site navigation chrome; scroll state (glass, active section, progress) stays with the host."
+    "notas": "Implemented React organism under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/292): fixed site header with named flat native navigation links and consumer-supplied brand, search, user and mobile parts placed by part type; TopBar-local 900px container query, host-driven glass state with solid reduced-transparency fallback. No NavigationMenu dependency, scroll listener, MobileMenu or UserMenu export."
   },
   {
     "actual": "MobileMenu",
@@ -1227,9 +1227,9 @@
     "nivel": "template",
     "destino": "ui",
     "radix": "—",
-    "compone": "—",
+    "compone": "Host-supplied children; host-composed group fades",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): section frame with the pro/show/flood/deep/grafito registers and their top and bottom fades; the register arrives as a prop."
+    "notas": "Implemented v0.1 passive section frame with pro/show/flood/deep/grafito registers and an optional centered content wrapper. Group-edge fades are host-owned; the sticky Lab escape is excluded from v0.1. See [approved plan](components/section-shell/v0.1/implementation-plan.md). Browser and packed-consumer verification remain pending."
   },
   {
     "actual": "HomeTemplate",

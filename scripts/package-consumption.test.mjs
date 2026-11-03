@@ -30,6 +30,23 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from '@egdev/ui';
 import type { FooterProps, FooterBrandProps, FooterLegalProps, FooterMottoProps, FooterNavigationProps, FooterNavigationItem, FooterNavigationLevel, FooterSocialProps } from '@egdev/ui';
+import { TopBar, TopBarBrand, TopBarMobileTrigger, TopBarSearchCompact, TopBarSearchFull, TopBarUserMenu } from '@egdev/ui';
+import type { TopBarItem, TopBarPartProps, TopBarProps } from '@egdev/ui';
+import { SectionShell } from '@egdev/ui';
+import type { SectionShellProps, SectionShellRegister } from '@egdev/ui';
+const sectionRegisters: SectionShellRegister[] = ['pro', 'show', 'flood', 'deep', 'grafito'];
+export const sectionProps: SectionShellProps = { children: 'Content', 'aria-label': 'Packed section', id: 'packed-section' };
+export function SectionShellSamples() {
+  return createElement(Fragment, null, ...sectionRegisters.map((register) => createElement(SectionShell, { ...sectionProps, key: register, register, wrap: register !== 'deep' })));
+}
+// @ts-expect-error Protected role.
+const sectionRole: SectionShellProps = { ...sectionProps, role: 'region' };
+// @ts-expect-error Inline style is protected.
+const sectionStyle: SectionShellProps = { ...sectionProps, style: { color: 'red' } };
+// @ts-expect-error Raw HTML is protected.
+const sectionHtml: SectionShellProps = { ...sectionProps, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error Register is a closed set.
+const sectionInvalid: SectionShellProps = { ...sectionProps, register: 'unknown' };
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogCancel, AlertDialogAction } from '@egdev/ui';
 import type { AlertDialogProps, AlertDialogContentProps } from '@egdev/ui';
 import { AppShell, appShellVariants, CalendarGrid, calendarGridVariants, CommandPalette, Dialog, DialogTrigger, DialogContent, DialogClose, TabBar, tabBarVariants } from '@egdev/ui';
@@ -356,6 +373,25 @@ const footerDestination: FooterNavigationItem = { label: 'Missing' };
 // @ts-expect-error Internal recipes are not exported.
 type FooterPrivate = (typeof import('@egdev/ui'))['footerVariants'];
 export type FooterNegatives = [typeof footerMissing, typeof footerRole, typeof footerStyle, typeof footerRank, typeof footerDestination, FooterPrivate];
+const topBarItem: TopBarItem = { id: 'home', label: 'Home', href: '#home', 'aria-current': 'page' };
+const topBarPart: TopBarPartProps = { children: createElement('a', { href: '/' }, 'Brand') };
+export const topBarProps: TopBarProps = { label: 'Main', items: [topBarItem], 'data-state': 'glass', style: { zIndex: 10 }, children: [
+  createElement(TopBarUserMenu, { key: 'user', children: createElement('button', null, 'Account') }),
+  createElement(TopBarBrand, { key: 'brand', ...topBarPart }),
+  createElement(TopBarSearchFull, { key: 'full', children: createElement('button', null, 'Full') }),
+  createElement(TopBarSearchCompact, { key: 'compact', children: createElement('button', null, 'Compact') }),
+  createElement(TopBarMobileTrigger, { key: 'mobile', children: createElement('button', null, 'Menu') })
+] };
+export function TopBarSamples() { return createElement(TopBar, topBarProps); }
+// @ts-expect-error A navigation name is required.
+const topBarMissingLabel: TopBarProps = { items: [], children: null };
+// @ts-expect-error Items are required.
+const topBarMissingItems: TopBarProps = { label: 'Main', children: null };
+// @ts-expect-error Native state is a closed set.
+const topBarInvalidState: TopBarProps = { ...topBarProps, 'data-state': 'open' };
+// @ts-expect-error The header role cannot be overridden.
+const topBarRole: TopBarProps = { ...topBarProps, role: 'navigation' };
+export type TopBarNegatives = [typeof topBarMissingLabel, typeof topBarMissingItems, typeof topBarInvalidState, typeof topBarRole];
 
 // Keep PageHeader samples outside App so the existing button-count/focus harness stays unchanged.
 const pageHeaderLevel: PageHeaderLevel = 2;
@@ -3055,7 +3091,11 @@ function assertSurfaceCSS(css) {
   ]) {
     assert.ok(css.includes(value), 'Surface recipe must emit ' + value);
   }
-  assert.match(css, /prefers-reduced-transparency:\s*reduce\)\s*\{\s*\.\\\[\\@media[^{]*bg-surface-2\s*\{/);
+  // The reduced-transparency block may hold other components' rules before Surface's; match within the block only.
+  assert.match(
+    css,
+    /prefers-reduced-transparency:\s*reduce\)\s*\{(?:\s*[^{}]+\{[^{}]*\})*?\s*\.\\\[\\@media[^{]*bg-surface-2\s*\{/
+  );
   assert.match(
     css,
     /@supports not \(backdrop-filter:[^{]+\{\s*\.not-supports-\\\[backdrop-filter\\\]\\:bg-surface-2\s*\{/
@@ -4384,6 +4424,44 @@ function assertFooterConsumerCSS(css) {
   assert.match(utilities, /border-(?:top|bottom)-width:\s*var\(--border-width[,)]/);
 }
 
+function assertTopBarConsumerCSS(css) {
+  const start = css.indexOf('@layer utilities {');
+  assert.ok(start >= 0, 'Missing utilities layer');
+  const utilities = css.slice(start);
+  for (const selector of [
+    String.raw`.\@container`,
+    String.raw`.\@max-\[900px\]\:hidden`,
+    String.raw`.\@max-\[900px\]\:block`,
+    String.raw`.\[\@container_\(width\=900px\)\]\:hidden`,
+    String.raw`.\[\@container_\(width\=900px\)\]\:block`,
+    String.raw`.data-\[state\=glass\]\:bg-surface-overlay`,
+    String.raw`.data-\[state\=glass\]\:border-border-hairline-strong`
+  ]) {
+    assert.ok(utilities.includes(selector), 'Missing TopBar packed utility ' + selector);
+  }
+  assert.match(utilities, /@container\s*\(width\s*<\s*900px\)/);
+  assert.match(utilities, /@container\s*\(width\s*=\s*900px\)/);
+  assert.match(utilities, /prefers-reduced-transparency:\s*reduce/);
+  assert.match(utilities, /var\(--color-surface-overlay[,)]/);
+  assert.match(utilities, /var\(--color-surface-2[,)]/);
+  assert.doesNotMatch(utilities, /\.eg-topbar(?:__[\w-]+)?\s*[{,]/);
+  assert.match(css.slice(0, start), /\.eg-topbar/);
+}
+
+function assertSectionShellConsumerCSS(css) {
+  for (const selector of [
+    String.raw`.min-h-\[var\(--section-min-height\)\]`,
+    String.raw`.pt-\[calc\(var\(--nav-height\)\+var\(--space-8\)\)\]`,
+    String.raw`.max-w-\[var\(--content-max\)\]`,
+    String.raw`.px-\[var\(--gutter\)\]`,
+    String.raw`.bg-\[image\:var\(--gradient-section-show\)\]`,
+    String.raw`.\[\&\>\*\]\:w-auto`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing SectionShell utility ' + selector);
+  }
+  assert.match(css, /prefers-reduced-transparency:\s*reduce/);
+}
+
 function assertCommunityCardConsumerCSS(css) {
   // Preserve legacy component-layer CSS; the new recipe must add only scanned utilities.
   assert.ok(css.includes('@layer utilities {'), 'Packed CSS must contain its utilities layer');
@@ -4475,10 +4553,14 @@ assert.ok(readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8').
 assert.ok(readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8').includes('eg-terminal-card'), 'Packed JS must retain the TerminalCard marker');
 assert.doesNotMatch(shippedStyles, /\\.eg-terminal-card__?[a-z]*\\s*[{,]/, 'TerminalCard marker must not become a shipped CSS rule');
 assert.ok(readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8').includes('eg-community-card'), 'Packed JS must retain the CommunityCard marker');
+${assertTopBarConsumerCSS.toString()}
+assertTopBarConsumerCSS(shippedStyles);
 ${assertCommunityCardConsumerCSS.toString()}
 assertCommunityCardConsumerCSS(shippedStyles);
 ${assertFooterConsumerCSS.toString()}
 assertFooterConsumerCSS(shippedStyles);
+${assertSectionShellConsumerCSS.toString()}
+assertSectionShellConsumerCSS(shippedStyles);
 ${assertTerminalCardConsumerCSS.toString()}
 assertTerminalCardConsumerCSS(shippedStyles);
 ${assertArticleFeatureConsumerCSS.toString()}
@@ -4600,6 +4682,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'RadioGroup',
   'SearchTrigger',
   'SectionHeader',
+  'SectionShell',
   'Select',
   'SelectTile',
   'Sidebar',
@@ -4627,6 +4710,12 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ToastProvider',
   'Toggle',
   'Tooltip',
+  'TopBar',
+  'TopBarBrand',
+  'TopBarMobileTrigger',
+  'TopBarSearchCompact',
+  'TopBarSearchFull',
+  'TopBarUserMenu',
   'VisuallyHidden',
   'appShellVariants',
   'badgeVariants',
@@ -4866,6 +4955,30 @@ assert.equal(footer.querySelector('ul[aria-label="Profiles"] a')?.getAttribute('
 assert.equal(footer.querySelectorAll('nav').length, 1);
 assert.equal(footer.querySelector('a a'), null);
 footerDocument.window.close();
+const { TopBarSamples } = await import('./consumer.ts');
+const topBarDOM = new JSDOM(renderToString(createElement(TopBarSamples)));
+try {
+  const header = topBarDOM.window.document.querySelector('header.eg-topbar');
+  assert.ok(header);
+  const nav = header.querySelector('nav[aria-label="Main"]');
+  assert.equal(nav.querySelector('a[href="#home"]').getAttribute('aria-current'), 'page');
+  assert.deepEqual([...header.querySelectorAll('a,button')].map((node) => node.textContent), ['Brand', 'Home', 'Full', 'Compact', 'Account', 'Menu']);
+} finally { topBarDOM.window.close(); }
+const { SectionShellSamples } = await import('./consumer.ts');
+{
+  const sectionDocument = new JSDOM(renderToString(createElement(SectionShellSamples)));
+  try {
+    const sections = [...sectionDocument.window.document.querySelectorAll('section')];
+    assert.equal(sections.length, 5);
+    for (const section of sections) {
+      assert.equal(section.getAttribute('aria-label'), 'Packed section');
+      assert.ok(section.classList.contains('eg-section'));
+      assert.equal(section.textContent, 'Content');
+    }
+    assert.equal(sections[3].querySelector('.eg-section__wrap'), null);
+    assert.ok(sections[0].querySelector('.eg-section__wrap'));
+  } finally { sectionDocument.window.close(); }
+}
 const { ToastSamples } = await import('./consumer.ts');
 assert.equal(renderToString(createElement(ToastSamples)), '<main>Toast host</main>', 'Toast records stay client-side through Portal');
 import { IndicatorConsumerSamples } from './consumer.ts';
@@ -8180,7 +8293,8 @@ const typography = ${JSON.stringify(typographyNames)};
 // #219 B adds the owner-approved error-vs-focus tokens: 283 + 2 = 285. Unique names: Tailwind
 // emits a color-mix() token on two lines (resolved fallback + @supports var-form override).
 // #126 D17 adds the owner-approved --container-calendar-grid-stack: 285 + 1 = 286.
-assert.equal(names.length, 286, 'Packed native artifact must expose 286 variables');
+// #291 adds the owner-approved SectionShell show halo and three group-edge masks: 286 + 4 = 290.
+assert.equal(names.length, 290, 'Packed native artifact must expose 290 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {

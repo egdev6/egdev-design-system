@@ -500,6 +500,11 @@
   --ambient-square-size-min: 6px;
   /* --ambient-square-size-max — Tamaño máximo de rombo. */
   --ambient-square-size-max: 28px;
+  /* #291 — SectionShell show halo and host-composed group edge masks. */
+  --gradient-section-show: radial-gradient(45% 55% at 22% 50%, var(--color-alpha-red-12), transparent 70%);
+  --mask-section-fade-top: linear-gradient(180deg, transparent, #000 clamp(96px, 14vh, 180px));
+  --mask-section-fade-bottom: linear-gradient(0deg, transparent, #000 clamp(96px, 14vh, 180px));
+  --mask-section-fade-both: linear-gradient(180deg, transparent, #000 clamp(96px, 14vh, 180px), #000 calc(100% - clamp(96px, 14vh, 180px)), transparent);
   /* --gradient-sheen — Brillo cenital sobre las superficies (se apila encima del color de surface). */
   --gradient-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0) 42%);
   /* --gradient-glass-card — Brillo de las tarjetas glass de la web (NowCard, ProjectCard, ArticleFeature, CommunityCard, TerminalCard). */
