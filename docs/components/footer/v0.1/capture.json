@@ -1,0 +1,85 @@
+{
+  "component": "footer",
+  "specVersion": "0.1",
+  "spec": "docs/components/footer/v0.1/spec.md",
+  "specContentSHA256": "e52b0cfd12946e852eea24f68262bd7c7afebb5c85bcc59c7a91a7657c9364b0",
+  "status": "Proposed — source design evidence for owner review; adoption and publication pending. Visual conformity: Not evaluated.",
+  "capturedFrom": {
+    "authority": "odd/tasks/web-catalog.md L6, L15 and L25",
+    "sourceRoot": "egdev-website/egdev-foundation (owner-granted read-only source)",
+    "readOnly": true,
+    "notes": "Parent captured the Foundation preview read-only and supplied these PNGs and capture-raw.json. No source file was modified. The external harness wrapped the preview fragment, linked the Foundation stylesheets, and resolved the original runtime logo blob to the authored reference asset."
+  },
+  "harness": {
+    "script": "/tmp/egdev-sbcheck/capture-layer-d-b1.mjs",
+    "page": "/tmp/egdev-sbcheck/harness-layer-d-b1-footer.html",
+    "stylesheets": [
+      {
+        "path": "egdev-foundation/design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e"
+      },
+      {
+        "path": "egdev-foundation/design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      }
+    ],
+    "media": [
+      {
+        "runtimeBlobUrl": "/_blob/5c01b9d348f8d19c8099b2804624765d",
+        "resolvedAsset": "egdev-foundation/reference-web/assets/logo-wordmark.svg",
+        "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
+      }
+    ]
+  },
+  "conditions": {
+    "browser": "chrome-headless-shell 1243 (Playwright core)",
+    "deviceScaleFactor": 2,
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "locale": "en-US",
+    "crop": "Foundation preview board .pv, including the labelled surrounding frame",
+    "animations": "disabled during screenshot",
+    "fonts": {
+      "status": "loaded",
+      "loadedFaces": [
+        "Barlow 400",
+        "Barlow Condensed 600",
+        "Barlow Condensed 700",
+        "Barlow Condensed 800",
+        "JetBrains Mono 500"
+      ]
+    },
+    "image": "logo complete; observed natural size 653x258",
+    "rawProvenance": "docs/components/footer/v0.1/capture-raw.json",
+    "verificationLimits": "Static source previews only; no implementation comparison, boundary width, hover, focus, light theme, reduced-motion or screen-reader check."
+  },
+  "visuals": [
+    {
+      "id": "VIS-01",
+      "file": "footer--variants--1280--dark.png",
+      "pngSha256": "53d75dae7646a1f6aa770525bb335ccb68eb2966b8db54cb679b39045e03011b",
+      "pngBytes": 88730,
+      "viewport": { "width": 1280, "height": 1400 },
+      "pixelSize": { "width": 2560, "height": 1566 },
+      "date": "2026-11-03T06:35:59.992Z",
+      "alt": "A dark footer with a white display motto and red ending, brand and tagline, section links and social icons in three columns, and a divided legal row.",
+      "source": {
+        "path": "egdev-foundation/design-system/components/Footer/preview.html",
+        "sha256": "6c4279b26363b784af9a38d7f141783bb91fb70ad5f2b945dc8e07e8be0cd145"
+      }
+    },
+    {
+      "id": "VIS-02",
+      "file": "footer--variants--390--dark.png",
+      "pngSha256": "23311a65bfc2bffd958a52d7c85f8c19274ae384dacfd03b3cb4d02df07665dd",
+      "pngBytes": 65333,
+      "viewport": { "width": 390, "height": 1400 },
+      "date": "2026-11-03T06:36:00.889Z",
+      "alt": "The dark footer at narrow width: a white and red motto, brand above the section links and wrapping social icons, and a divided legal row.",
+      "source": {
+        "path": "egdev-foundation/design-system/components/Footer/preview.html",
+        "sha256": "6c4279b26363b784af9a38d7f141783bb91fb70ad5f2b945dc8e07e8be0cd145"
+      }
+    }
+  ]
+}
