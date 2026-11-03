@@ -68,24 +68,13 @@
         "sha256": "53866f6df7e970abc943ea9b018fbccd8544d24f8f7ff042e028879027b35c88"
       },
       "harness": {
-        "script": "/tmp/egdev-sbcheck/capture-layer-d-b3.mjs",
-        "page": "/tmp/egdev-sbcheck/harness-layer-d-b3-hero.html",
+        "script": "/tmp/egdev-sbcheck/capture-layer-e-b1.mjs",
+        "page": "/tmp/egdev-sbcheck/harness-layer-e-b1-hero.html",
         "links": ["egdev-foundation/design-system/tokens.css", "egdev-foundation/design-system/components/bundle.css"],
         "tokensSha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
         "bundleSha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
       },
-      "media": [
-        {
-          "runtimeBlobUrl": "/_blob/5c01b9d348f8d19c8099b2804624765d",
-          "resolvedAsset": "egdev-foundation/reference-web/assets/logo-wordmark.svg",
-          "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
-        },
-        {
-          "runtimeBlobUrl": "/_blob/ce2d47159017f6b32cabffad74654133",
-          "resolvedAsset": "egdev-foundation/reference-web/assets/photo-setup.webp",
-          "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f"
-        }
-      ],
+      "media": [],
       "capture": {
         "element": ".pv",
         "viewport": {
@@ -136,24 +125,13 @@
         "sha256": "53866f6df7e970abc943ea9b018fbccd8544d24f8f7ff042e028879027b35c88"
       },
       "harness": {
-        "script": "/tmp/egdev-sbcheck/capture-layer-d-b3.mjs",
-        "page": "/tmp/egdev-sbcheck/harness-layer-d-b3-hero.html",
+        "script": "/tmp/egdev-sbcheck/capture-layer-e-b1.mjs",
+        "page": "/tmp/egdev-sbcheck/harness-layer-e-b1-hero.html",
         "links": ["egdev-foundation/design-system/tokens.css", "egdev-foundation/design-system/components/bundle.css"],
         "tokensSha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
         "bundleSha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
       },
-      "media": [
-        {
-          "runtimeBlobUrl": "/_blob/5c01b9d348f8d19c8099b2804624765d",
-          "resolvedAsset": "egdev-foundation/reference-web/assets/logo-wordmark.svg",
-          "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
-        },
-        {
-          "runtimeBlobUrl": "/_blob/ce2d47159017f6b32cabffad74654133",
-          "resolvedAsset": "egdev-foundation/reference-web/assets/photo-setup.webp",
-          "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f"
-        }
-      ],
+      "media": [],
       "capture": {
         "element": ".pv",
         "viewport": {
@@ -194,5 +172,6 @@
         "documentHeight": 1400
       }
     }
-  ]
+  ],
+  "provenanceCorrection": "2026-11-03: rawCapture harness script and page previously named the copied layer (d) batch 3 harness and listed its unused wordmark blob mapping; the preview loaded no images (observed.images is empty). Corrected to the actual layer (e) harness; image bytes and hashes are unchanged."
 }
