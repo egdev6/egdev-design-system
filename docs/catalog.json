@@ -338,7 +338,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): isometric 8×12 marker used in meters and indexes; its `clip-path` geometry still needs a geometry or token decision before any spec."
+    "notas": "Implemented React atom under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/300): passive hidden position marker with idle, past and active states, token-scaled dimensions and approved static clip-path. The host owns meaning and composition; no glow, stylesheet, ref or asChild. Browser and packed-consumer verification remain pending."
   },
   {
     "actual": "ProgressBar",

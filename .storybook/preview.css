@@ -31,6 +31,7 @@
 @source "../packages/ui/src/atoms/link/Link.stories.tsx";
 @source "../packages/ui/src/atoms/logo/Logo.stories.tsx";
 @source "../packages/ui/src/atoms/photo-frame/PhotoFrame.stories.tsx";
+@source "../packages/ui/src/atoms/pixel/Pixel.stories.tsx";
 @source "../packages/ui/src/atoms/progress-bar/ProgressBar.stories.tsx";
 @source "../packages/ui/src/atoms/pull-quote/PullQuote.stories.tsx";
 @source "../packages/ui/src/atoms/radio-group/RadioGroup.stories.tsx";

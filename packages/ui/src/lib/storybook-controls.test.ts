@@ -121,7 +121,8 @@ const components = [
   ['TopBarMobileTrigger', 'organisms/top-bar'],
   ['TopBarSearchCompact', 'organisms/top-bar'],
   ['TopBarSearchFull', 'organisms/top-bar'],
-  ['TopBarUserMenu', 'organisms/top-bar']
+  ['TopBarUserMenu', 'organisms/top-bar'],
+  ['Pixel', 'atoms/pixel']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -171,6 +172,7 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  pixel: { state: 'select' },
   notesboard: { children: false, sticky: 'boolean' },
   notesboardlist: { children: false },
   notesboardside: { children: false },
@@ -583,6 +585,7 @@ const expected: Record<string, Record<string, string | false>> = {
   terminalcardlist: { items: false, className: 'text' }
 };
 const ownPropCounts: Record<string, number> = {
+  pixel: 1,
   notesboard: 2,
   notesboardlist: 1,
   notesboardside: 1,
@@ -1139,6 +1142,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['CommunityCard', { level: '3' }],
     ['FooterNavigation', { level: '2' }],
     ['NotesBoard', { sticky: 'false' }],
+    ['Pixel', { state: '"idle"' }],
     ['SectionShell', { register: '"pro"', wrap: 'true' }],
     ['TipCard', { level: '3', focalPoint: '"center"' }],
     ['Collapsible', { defaultOpen: 'false', disabled: 'false' }],

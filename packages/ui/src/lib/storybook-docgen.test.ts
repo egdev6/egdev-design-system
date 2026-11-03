@@ -122,6 +122,39 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts Pixel state and passive native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
+    const doc = parser.parse(source('atoms/pixel/Pixel.tsx')).find(({ displayName }) => displayName === 'Pixel');
+    expect(doc?.props.state).toMatchObject({
+      required: false,
+      defaultValue: { value: 'idle' },
+      tags: { control: 'select' }
+    });
+    expect(doc?.props.state?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()).toEqual([
+      'active',
+      'idle',
+      'past'
+    ]);
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'children',
+      'role',
+      'aria-hidden',
+      'aria-label',
+      'aria-labelledby',
+      'tabIndex',
+      'contentEditable',
+      'onClick',
+      'ref'
+    ]) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const file = ast(source('atoms/pixel/types.ts'));
+    expect(ownProps(file, ['PixelProps']).map((property) => property.name.getText(file))).toEqual(['state']);
+    expect(publicAPI.Pixel).toBeDefined();
+    expect('pixelVariants' in publicAPI).toBe(false);
+  });
   it('extracts NotesBoard parts and sticky metadata', () => {
     const extracted = parser.parse(source('organisms/notes-board/NotesBoard.tsx'));
     const root = extracted.find(({ displayName }) => displayName === 'NotesBoard');
@@ -1318,6 +1351,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './atoms/link',
       './atoms/logo',
       './atoms/photo-frame',
+      './atoms/pixel',
       './atoms/progress-bar',
       './atoms/pull-quote',
       './atoms/radio-group',
@@ -1482,6 +1516,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'PanelFooter',
       'PanelHeader',
       'PhotoFrame',
+      'Pixel',
       'Popover',
       'PopoverClose',
       'PopoverContent',

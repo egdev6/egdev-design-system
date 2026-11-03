@@ -44,3 +44,36 @@ Whole-file SHA-256 values at merge commit `3ecc13f8862358269712dfaee45468ef271e4
 | notes-board | `docs/components/notes-board/v0.1/implementation-plan.md` | `f70605329effcc833da4fa9f5e274df43525651321bdd2af45af85d40b034569` |
 | blog-grid | `docs/components/blog-grid/v0.1/implementation-plan.md` | `da456d1a9d9a3264c65405c4bc5dff48c180fb157dcdf69887e5dd3613edb2bf` |
 | now-strip | `docs/components/now-strip/v0.1/implementation-plan.md` | `9d2032d666912dcb35762f5f69aef66b16ce46d038fda0fbf67138411eb60117` |
+
+## Batch 3 — Pixel, SectionNav, LiveBand (2026-11-03)
+
+Owner decisions (verbatim):
+- **Pixel plan:** "Aprobar plan y gates (Recomendado)". This approves:
+  - the Pixel-only static `[clip-path:polygon(0_0,100%_33.8%,100%_100%,0_66.2%)]` with `w-2 h-3`;
+  - the Pixel-only idle `bg-fg-default/18`, with no glow in any state;
+  - the exact widening of the existing `consumer-selected-condition` entry (plan §4), keeping its ID and `state`;
+  - bounded local legacy neutralization;
+  - visual adoption of the surviving shape and state intent only.
+- **SectionNav plan:** "Aprobar plan y gates (Recomendado)". This approves:
+  - a Popover that stays conditional on the plan's focus and landmark proof, with no hover timer and no global shortcuts;
+  - the local inclusive 520px boundary;
+  - the overlay recipe;
+  - the `active-section-id` convention;
+  - the catalog composition correction.
+- **LiveBand plan:** "Aprobar plan y gates (Recomendado)". This approves:
+  - the LiveBand-only inclusive `[@media(width<=860px)]:` (Field) and `[@media(width<=1080px)]:` (Streams) boundaries;
+  - the existing-token VOD recipe;
+  - no new naming convention;
+  - bounded local legacy neutralization;
+  - host-composed flood through SectionShell, with pixels omitted.
+
+Parent evidence before approval: every arbitrary or variant utility the three plans list emits with the installed compiler ([ODD L34](../../../../odd/tasks/web-catalog.md)).
+
+
+Whole-file SHA-256 values at merge commit `126800b9657f24f2c03d012dad79ff087230753b` (PR #305):
+
+| Component | Plan | Whole-file SHA-256 |
+|---|---|---|
+| pixel | `docs/components/pixel/v0.1/implementation-plan.md` | `b16ee7519c291faf2bc3b0e2450bfaae39d09bb510d7de023920e28cc86c689b` |
+| section-nav | `docs/components/section-nav/v0.1/implementation-plan.md` | `16c42595c77871d8aa04ade026588167604b31c555e38aa2fc3cbdab379aad3f` |
+| live-band | `docs/components/live-band/v0.1/implementation-plan.md` | `02f9434e66c74e65c23a57e580a68c56af7d8d3dea9c7b095983d3109db3957b` |

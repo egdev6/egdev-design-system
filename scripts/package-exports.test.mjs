@@ -460,6 +460,70 @@ test('Footer package SSR keeps navigation and social list separately named', asy
   }
 });
 
+test('Pixel ships all scanned utilities and preserves legacy components CSS', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/atoms/pixel/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      return;
+    }
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.ok(classes.size >= 10);
+  for (const name of classes) {
+    if (!name.startsWith('eg-')) {
+      assert.ok(utilities.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing Pixel utility ${name}`);
+    }
+  }
+  assert.match(utilities, /clip-path:\s*polygon\(0\s+0,\s*100%\s+33\.8%,\s*100%\s+100%,\s*0\s+66\.2%\)/);
+  assert.match(utilities, /color-mix\(in\s+\w+,\s*var\(--color-fg-default\b[^%]*?\)\s+18%,\s*transparent\)/);
+  assert.doesNotMatch(utilities, /\.eg-pixel\s*\{/);
+  assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-pixel/);
+});
+
+test('Pixel package SSR renders empty hidden spans in each state', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(exported.pixelVariants, undefined);
+  for (const state of [undefined, 'idle', 'past', 'active']) {
+    const dom = new JSDOM(renderToString(createElement(exported.Pixel, { state })));
+    try {
+      const span = dom.window.document.querySelector('span.eg-pixel');
+      assert.ok(span);
+      assert.equal(span.getAttribute('aria-hidden'), 'true');
+      assert.equal(span.getAttribute('data-state'), state ?? 'idle');
+      assert.equal(span.childNodes.length, 0);
+      assert.equal(span.hasAttribute('role'), false);
+    } finally {
+      dom.window.close();
+    }
+  }
+});
+
 test('NotesBoard ships every scanned utility and bounded responsive resets', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -4542,6 +4606,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'PanelFooter',
       'PanelHeader',
       'PhotoFrame',
+      'Pixel',
       'Popover',
       'PopoverClose',
       'PopoverContent',
@@ -4993,6 +5058,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'PhotoFrameProps',
     'PhotoFrameRatio',
     'PhotoFrameVariant',
+    'Pixel',
+    'PixelProps',
+    'PixelState',
     'Popover',
     'PopoverClose',
     'PopoverCloseProps',

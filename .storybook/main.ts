@@ -156,6 +156,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   switch: ['id', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className'],
   progressBar: ['id', 'title', 'aria-describedby', 'className', 'style'],
   meterRow: ['id', 'title', 'dir', 'lang', 'className', 'style'],
+  pixel: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style'],
   photoFrame: [
     'srcSet',
     'sizes',

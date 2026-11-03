@@ -28,6 +28,8 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
+import { Pixel } from '@egdev/ui';
+import type { PixelProps, PixelState } from '@egdev/ui';
 import { NotesBoard, NotesBoardSide, NotesBoardList } from '@egdev/ui';
 import type { NotesBoardProps, NotesBoardSideProps, NotesBoardListProps } from '@egdev/ui';
 import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from '@egdev/ui';
@@ -358,6 +360,35 @@ export function AmbientSamples() {
 const ambientChildren: AmbientBackgroundProps = { children: 'Unsupported' };
 // @ts-expect-error Only the approved profiles are supported.
 const ambientInvalidProfile: AmbientBackgroundProps = { profile: 'unknown' };
+
+const pixelStates: PixelState[] = ['idle', 'past', 'active'];
+export const pixelProps: PixelProps = { id: 'packed-pixel' };
+export function PixelSamples() { return createElement(Fragment, null, ...pixelStates.map((state) => createElement(Pixel, { ...pixelProps, key: state, state }))); }
+// @ts-expect-error Decorative semantics are protected.
+const pixelRole: PixelProps = { role: 'img' };
+// @ts-expect-error Hidden semantics are protected.
+const pixelHidden: PixelProps = { 'aria-hidden': false };
+// @ts-expect-error The data state is derived.
+const pixelData: PixelProps = { 'data-state': 'active' };
+// @ts-expect-error Decorative markers have no children.
+const pixelChildren: PixelProps = { children: 'x' };
+// @ts-expect-error Raw HTML is protected.
+const pixelHtml: PixelProps = { dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error Accessible labels belong to the host.
+const pixelLabel: PixelProps = { 'aria-label': 'x' };
+// @ts-expect-error Accessible labels belong to the host.
+const pixelLabelledBy: PixelProps = { 'aria-labelledby': 'x' };
+// @ts-expect-error No tab stop.
+const pixelTab: PixelProps = { tabIndex: 0 };
+// @ts-expect-error No editable content.
+const pixelEditable: PixelProps = { contentEditable: true };
+// @ts-expect-error No interaction handlers.
+const pixelClick: PixelProps = { onClick: () => {} };
+// @ts-expect-error State is a closed set.
+const pixelInvalid: PixelProps = { state: 'unknown' };
+// @ts-expect-error Recipe is private.
+type PixelPrivate = (typeof import('@egdev/ui'))['pixelVariants'];
+export type PixelNegatives = [typeof pixelRole, typeof pixelHidden, typeof pixelData, typeof pixelChildren, typeof pixelHtml, typeof pixelLabel, typeof pixelLabelledBy, typeof pixelTab, typeof pixelEditable, typeof pixelClick, typeof pixelInvalid, PixelPrivate];
 
 const notesSide: NotesBoardSideProps = { children: createElement('ul', { 'aria-label': 'Topics' }, createElement('li', null, createElement(Chip, { mode: 'static', children: 'Design' }))) };
 const notesList: NotesBoardListProps = { children: createElement('li', null, createElement(ListItem, { variant: 'editorial', size: 'sm', asChild: true, children: createElement('a', { href: '#note' }, createElement(ListItemLeading, null, createElement('time', { dateTime: '2026-09-12' }, '12 Sep')), createElement(ListItemBody, null, createElement(ListItemTitle, { children: 'Note' })), createElement(ListItemTrailing, null, createElement('span', { 'aria-hidden': true }, '→'))) })) };
@@ -4484,6 +4515,29 @@ function assertTerminalCardConsumerCSS(css) {
   );
 }
 
+function assertPixelConsumerCSS(css) {
+  const utilitiesStart = css.search(/@layer utilities\s*\{/);
+  assert.ok(utilitiesStart >= 0);
+  const utilities = css.slice(utilitiesStart);
+  for (const name of [
+    'inline-block',
+    'flex-none',
+    'w-2',
+    'h-3',
+    '[clip-path:polygon(0_0,100%_33.8%,100%_100%,0_66.2%)]',
+    'filter-none',
+    'transition-none',
+    'bg-fg-default/18',
+    'bg-bg-deep',
+    'bg-fg-brand-default'
+  ]) {
+    assert.ok(utilities.includes('.' + name.replace(/[^\w-]/g, '\\$&')), 'Missing Pixel utility ' + name);
+  }
+  assert.match(utilities, /clip-path:\s*polygon\(0\s+0,\s*100%\s+33\.8%,\s*100%\s+100%,\s*0\s+66\.2%\)/);
+  assert.match(utilities, /color-mix\(in\s+\w+,\s*var\(--color-fg-default\b[^%]*?\)\s+18%,\s*transparent\)/);
+  assert.doesNotMatch(utilities, /\.eg-pixel\s*\{/);
+}
+
 function assertNotesBoardConsumerCSS(css) {
   function block(text, opening) {
     const match = opening.exec(text);
@@ -4756,6 +4810,8 @@ ${assertFooterConsumerCSS.toString()}
 assertFooterConsumerCSS(shippedStyles);
 ${assertNotesBoardConsumerCSS.toString()}
 assertNotesBoardConsumerCSS(shippedStyles);
+${assertPixelConsumerCSS.toString()}
+assertPixelConsumerCSS(shippedStyles);
 ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
 ${assertLiveBandConsumerCSS.toString()}
@@ -4885,6 +4941,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'PanelFooter',
   'PanelHeader',
   'PhotoFrame',
+  'Pixel',
   'Popover',
   'PopoverClose',
   'PopoverContent',
@@ -5163,6 +5220,16 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
+const { PixelSamples } = await import('./consumer.ts');
+const pixelDocument = new JSDOM(renderToString(createElement(PixelSamples)));
+const pixels = [...pixelDocument.window.document.querySelectorAll('span.eg-pixel')];
+assert.deepEqual(pixels.map((pixel) => pixel.getAttribute('data-state')), ['idle', 'past', 'active']);
+for (const pixel of pixels) {
+  assert.equal(pixel.getAttribute('aria-hidden'), 'true');
+  assert.equal(pixel.childNodes.length, 0);
+  assert.equal(pixel.hasAttribute('role'), false);
+}
+pixelDocument.window.close();
 const { NotesBoardSamples } = await import('./consumer.ts');
 const notesDocument = new JSDOM(renderToString(createElement(NotesBoardSamples)));
 const notesBoard = notesDocument.window.document.querySelector('.eg-notes');
