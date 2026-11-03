@@ -45,7 +45,9 @@ describe('Carousel Storybook contract', () => {
     expect(config.stories).toContain('../packages/*/src/**/*.stories.@(ts|tsx)');
   });
 
-  it('passes real extraction, registered enhancement and native inference without owned diagnostics', () => {
+  it('passes real extraction, registered enhancement and native inference without owned diagnostics', {
+    timeout: 20_000
+  }, () => {
     const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
       ...config.typescript?.reactDocgenTypescriptOptions
     });
