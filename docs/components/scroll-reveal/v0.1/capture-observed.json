@@ -1,0 +1,53 @@
+{
+  "source": "file:///home/egdev/proyectos/egdev-website/egdev-foundation/reference-web/pulso-source.html",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "browser": "153.0.8010.12",
+  "note": "Original source loaded read-only via file URL; actual scrollIntoView, no source/DOM mutations. File-URL resource restrictions may limit visual parity. These are observations, not adopted design.",
+  "results": [
+    {
+      "kind": "reveal",
+      "selector": {
+        "index": 1,
+        "total": 32
+      },
+      "before": {
+        "opacity": "0",
+        "transform": "matrix(1, 0, 0, 1, 0, 24)",
+        "clip": "none",
+        "classes": "lede"
+      },
+      "after": {
+        "opacity": "1",
+        "transform": "none",
+        "clip": "none",
+        "classes": "lede in"
+      },
+      "file": "reveal-revealed-1280-dark.png",
+      "sha256": "757dae11b2e15d60f39b6ee280fb7fe659521f46e78c438293b52bd1bd2d3b97"
+    },
+    {
+      "kind": "wipe",
+      "selector": {
+        "index": 1,
+        "total": 10
+      },
+      "before": {
+        "opacity": "1",
+        "transform": "none",
+        "clip": "inset(-10% 100% -10% 0px)",
+        "classes": "h2"
+      },
+      "after": {
+        "opacity": "1",
+        "transform": "none",
+        "clip": "none",
+        "classes": "h2 in done"
+      },
+      "file": "wipe-revealed-1280-dark.png",
+      "sha256": "d5356ad69c806790fd1a8e664c4c404d8b456c831c157b255441abbd1e6fb0a3"
+    }
+  ]
+}
