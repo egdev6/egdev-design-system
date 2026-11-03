@@ -1,23 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { type ReactNode, useId } from 'react';
-import { Badge } from '../../atoms/badge';
 import { Button } from '../../atoms/button';
-import { Surface } from '../../primitives/surface';
-import { Heading, Text } from '../../primitives/text';
+import { ProjectCard, ProjectCardFooter } from '../../molecules/project-card';
 import { SectionShell } from '../../templates/section-shell';
 import { LabStage } from './LabStage';
 
+/** Consumer experiment content composed from the delivered ProjectCard; LabStage paints no card. */
 const experiment = (
-  <Surface asChild={true}>
-    <article>
-      <Badge>In progress</Badge>
-      <Heading level={3}>An experiment</Heading>
-      <Text>Exploring a new idea.</Text>
+  <ProjectCard eyebrow='Experiment' index='014' title='OpenDesign × Gentle AI' level={3}>
+    <p>Designing interfaces directly from agents.</p>
+    <ProjectCardFooter>
       <Button asChild={true} size='lg' variant='secondary'>
         <a href='#experiment'>Explore the experiment</a>
       </Button>
-    </article>
-  </Surface>
+    </ProjectCardFooter>
+  </ProjectCard>
 );
 const image = <img src='/brand/egdev-logo.png' alt='' className='block h-full w-full object-contain' />;
 function SceneHost({ children }: { children: (id: string) => ReactNode }) {

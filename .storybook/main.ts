@@ -77,6 +77,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   liveBandRows: ['id', 'title', 'dir', 'lang', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className'],
   liveBandRow: [],
   hero: ['dir', 'lang', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className', 'onClick'],
+  labStage: ['dir', 'lang', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className', 'onClick'],
   nowStrip: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   footer: ['id', 'title', 'dir', 'lang', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className', 'onClick'],
   footerMotto: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],

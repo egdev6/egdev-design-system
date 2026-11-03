@@ -1073,9 +1073,9 @@
     "nivel": "organism",
     "destino": "ui",
     "radix": "—",
-    "compone": "Surface",
+    "compone": "Heading, Text; host SectionShell; consumer Surface, Badge, Link and media",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): slot-based scene organism with a consumer media/3D slot; it runs no choreography."
+    "notas": "Implemented React organism under the approved v0.1 contract (#325): passive static scene with consumer-supplied experiment content and decorative media. The host owns the section and effects; no glitch, effect import or choreography."
   },
   {
     "actual": "Closing",
