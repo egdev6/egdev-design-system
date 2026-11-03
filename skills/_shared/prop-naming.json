@@ -1624,6 +1624,26 @@
         }
       },
       {
+        "component": "FooterNavigation",
+        "type": "string (required landmark name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/footer/types.ts",
+          "symbol": "FooterNavigationProps",
+          "revision": "sha256:929a83a45117bff7c7737855adc8c9cff128b2560b0fb859ac967169ce455118"
+        }
+      },
+      {
+        "component": "FooterNavigationItem",
+        "type": "string (required destination name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/footer/types.ts",
+          "symbol": "FooterNavigationItem",
+          "revision": "sha256:929a83a45117bff7c7737855adc8c9cff128b2560b0fb859ac967169ce455118"
+        }
+      },
+      {
         "component": "TopBar",
         "type": "string (required navigation landmark name)",
         "status": "existing",
@@ -3428,6 +3448,16 @@
         }
       },
       {
+        "component": "FooterNavigation",
+        "type": "FooterNavigationItem[] (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/footer/types.ts",
+          "symbol": "FooterNavigationProps",
+          "revision": "sha256:929a83a45117bff7c7737855adc8c9cff128b2560b0fb859ac967169ce455118"
+        }
+      },
+      {
         "component": "TopBar",
         "type": "TopBarItem[] (required ordered destinations)",
         "status": "existing",
@@ -4717,6 +4747,16 @@
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
           "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
+        }
+      },
+      {
+        "component": "FooterNavigation",
+        "type": "FooterNavigationLevel (default 2)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/footer/types.ts",
+          "symbol": "FooterNavigationProps",
+          "revision": "sha256:929a83a45117bff7c7737855adc8c9cff128b2560b0fb859ac967169ce455118"
         }
       }
     ]
