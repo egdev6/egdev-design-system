@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { mergeConfig } from 'vite';
 
 const documentedNativeProps: Record<string, readonly string[]> = {
+  scrollReveal: ['children', 'id', 'title', 'dir', 'lang', 'className', 'style', 'onFocus'],
   ambientBackground: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style'],
   isotipo3D: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],
   indicator: ['id', 'title', 'dir', 'aria-describedby', 'className', 'onClick', 'onKeyDown', 'onFocus', 'onBlur'],

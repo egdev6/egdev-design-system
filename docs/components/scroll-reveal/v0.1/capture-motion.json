@@ -1,0 +1,71 @@
+{
+  "browser": "153.0.8010.12",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "source": "file:///home/egdev/proyectos/egdev-website/egdev-foundation/reference-web/pulso-source.html",
+  "note": "Real original source, no source/DOM edits; native scrolling. State sampled 140ms after scrolling; screenshot follows sampling, so timestamps differ. File URL may restrict assets. Observed evidence only, not adopted reference.",
+  "results": [
+    {
+      "motion": "no-preference",
+      "kind": "reveal",
+      "index": 1,
+      "observed": {
+        "opacity": "0",
+        "transform": "matrix(1, 0, 0, 1, 0, 24)",
+        "clip": "none",
+        "duration": "0.56s, 0.56s",
+        "delay": "0.09s, 0.09s",
+        "classes": "lede in"
+      },
+      "file": "reveal-no-preference-140ms-1280.png",
+      "sha256": "645d943117348c561ff2fde4ff50e3c200998e8ac742ca0bbf36663192c5ed66"
+    },
+    {
+      "motion": "no-preference",
+      "kind": "wipe",
+      "index": 0,
+      "observed": {
+        "opacity": "1",
+        "transform": "none",
+        "clip": "inset(-10% 38.2489% -10% 0px)",
+        "duration": "0.8s",
+        "delay": "0s",
+        "classes": "h2 in"
+      },
+      "file": "wipe-no-preference-140ms-1280.png",
+      "sha256": "388d19dadc2d43b439a627921cc66c86200b63d55bc934f92849ec1a217923b6"
+    },
+    {
+      "motion": "reduce",
+      "kind": "reveal",
+      "index": 1,
+      "observed": {
+        "opacity": "1",
+        "transform": "none",
+        "clip": "none",
+        "duration": "0s",
+        "delay": "0s",
+        "classes": "lede"
+      },
+      "file": "reveal-reduce-140ms-1280.png",
+      "sha256": "f67bc3949e7ca439b9b669a62a21ceaf95c0dbda80a426bca398184c01821303"
+    },
+    {
+      "motion": "reduce",
+      "kind": "wipe",
+      "index": 0,
+      "observed": {
+        "opacity": "1",
+        "transform": "none",
+        "clip": "none",
+        "duration": "0s",
+        "delay": "0s",
+        "classes": "h2"
+      },
+      "file": "wipe-reduce-140ms-1280.png",
+      "sha256": "5da9bb5049a400a750a04a3a21b508da6122fb8ce2dc060f1f6c0b45d594d031"
+    }
+  ]
+}

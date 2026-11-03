@@ -1,0 +1,69 @@
+{
+  "method": "Single-source mutation followed by focused public-interface tests; exact source restored byte-identical after each case. No history-based tests.",
+  "cases": [
+    {
+      "name": "hidden-opacity",
+      "exitCode": 1,
+      "killed": true
+    },
+    {
+      "name": "rise-distance",
+      "exitCode": 1,
+      "killed": true
+    },
+    {
+      "name": "wipe-hidden",
+      "exitCode": 1,
+      "killed": true
+    },
+    {
+      "name": "wipe-revealed",
+      "exitCode": 1,
+      "killed": true
+    },
+    {
+      "name": "wipe-done",
+      "exitCode": 1,
+      "killed": true
+    },
+    {
+      "name": "reduced-motion-css",
+      "exitCode": 1,
+      "killed": true
+    },
+    {
+      "name": "focus-css",
+      "exitCode": 1,
+      "killed": true
+    },
+    {
+      "name": "delay-validation",
+      "exitCode": 1,
+      "killed": true
+    },
+    {
+      "name": "focus-immediate",
+      "exitCode": 1,
+      "killed": true
+    },
+    {
+      "name": "fail-open-state",
+      "exitCode": 1,
+      "killed": true
+    },
+    {
+      "name": "unmount-cleanup",
+      "exitCode": 1,
+      "killed": true
+    }
+  ],
+  "restored": true,
+  "sourceSHA256": {
+    "packages/effects/src/scroll-reveal/ScrollReveal.tsx": "6e579cc2e7025905217e625db3d58bfb57ae0fdb23d5924ccc01d72957844e75",
+    "packages/effects/src/scroll-reveal/ScrollReveal.test.tsx": "6443489feefe528342ded845091ae391bc97491f274400bba169b3bc138e13d5",
+    "packages/effects/src/scroll-reveal/types.ts": "84c3badd268fe8b78d6b53fc8ba9db3d43b6142904896394b472ace130346158",
+    "packages/effects/src/scroll-reveal/useScrollReveal.ts": "a69ca6079acc583696f0af94c96b0898d28da6b4bafbda3e2485f120ea0ce8b4",
+    "packages/effects/src/scroll-reveal/index.ts": "96bc0f0ba5211df1e02d1b3d5f1267d12783b80e9b8ccd25c53c72a97b610272",
+    "packages/effects/src/scroll-reveal/ScrollReveal.stories.tsx": "80276ea5828a328d8bd7153f13b2497390190ae8b114826d0b143265ce0d11d2"
+  }
+}

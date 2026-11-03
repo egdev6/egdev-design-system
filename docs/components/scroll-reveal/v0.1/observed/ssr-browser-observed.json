@@ -1,0 +1,60 @@
+{
+  "browser": "153.0.8010.12",
+  "javaScriptEnabled": false,
+  "artifacts": [
+    {
+      "path": "packages/tokens/dist/tokens.css",
+      "sha256": "a445e8bd5d3b99121a3d3767cc49f9928f60e1f3268544e20b0356fdabfb0ccc"
+    },
+    {
+      "path": "packages/ui/dist/styles.css",
+      "sha256": "0dbb765c9240ae307153ed6952e646d59346896c7de1bd91b984d5b0978ce685"
+    },
+    {
+      "path": "packages/effects/dist/styles.css",
+      "sha256": "ce997a1759ff35e96e9da0221eb3564a899b9195a16fc522d5446897f652f61d"
+    }
+  ],
+  "rows": [
+    {
+      "width": 390,
+      "variant": "reveal",
+      "opacity": "1",
+      "translate": "none",
+      "clip": "none",
+      "state": "revealed",
+      "done": false,
+      "delay": "0s"
+    },
+    {
+      "width": 390,
+      "variant": "wipe",
+      "opacity": "1",
+      "translate": "none",
+      "clip": "none",
+      "state": "revealed",
+      "done": true,
+      "delay": "0s"
+    },
+    {
+      "width": 1280,
+      "variant": "reveal",
+      "opacity": "1",
+      "translate": "none",
+      "clip": "none",
+      "state": "revealed",
+      "done": false,
+      "delay": "0s"
+    },
+    {
+      "width": 1280,
+      "variant": "wipe",
+      "opacity": "1",
+      "translate": "none",
+      "clip": "none",
+      "state": "revealed",
+      "done": true,
+      "delay": "0s"
+    }
+  ]
+}

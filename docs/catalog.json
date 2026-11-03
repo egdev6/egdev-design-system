@@ -1207,7 +1207,7 @@
     "radix": "—",
     "compone": "—",
     "accion": "nuevo",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): owner-approved scroll reveal/wipe utility in @egdev/effects with a reduced-motion mode, independent of HomeTemplate. Name is a proposal; level, API and tokens are not approved yet."
+    "notas": "React ScrollReveal utility in @egdev/effects under the [approved v0.1 spec and plan](components/scroll-reveal/v0.1/owner-approval.md): once-only reveal/wipe, explicit delay, fail-open visibility, immediate focus reveal and reduced-motion support; default wrapper or restricted native asChild. Independent of HomeTemplate. The scoped duration-wipe token and delay exception are recorded in the [plan approval](components/scroll-reveal/v0.1/plan-approval.md); final browser verification remains separately recorded."
   },
   {
     "actual": "—",

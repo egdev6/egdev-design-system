@@ -112,6 +112,8 @@ export const calendarGridProps: CalendarGridProps = { label: 'Week of October 5'
 export const calendarGridSample = createElement(CalendarGrid, calendarGridProps);
 export const calendarGridRecipe = calendarGridVariants();
 import type { DialogProps, DialogTriggerProps, DialogContentProps, DialogCloseProps } from '@egdev/ui';
+import { ScrollReveal } from '@egdev/effects';
+import type { ScrollRevealProps } from '@egdev/effects';
 import { Isotipo3D } from '@egdev/effects';
 import type { Isotipo3DProps } from '@egdev/effects';
 import { AmbientBackground } from '@egdev/effects';
@@ -353,6 +355,19 @@ const dialogInvalidSize: DialogContentProps = { title: 'Settings', children: 'Pr
 const dialogMissingTitle: DialogContentProps = { children: 'Preferences' };
 // @ts-expect-error The modal implementation does not expose its internal scrim recipe.
 type DialogScrimNotExported = (typeof import('@egdev/ui'))['dialogScrimVariants'];
+export const scrollRevealRef = createRef<HTMLDivElement>();
+export const scrollRevealProps: ScrollRevealProps = { variant: 'wipe', delay: 150, id: 'packed-scroll-reveal' };
+export function ScrollRevealSamples() {
+  return createElement(ScrollReveal, { ...scrollRevealProps, ref: scrollRevealRef, children: createElement('a', { href: '#content', children: 'Visible packed content' }) });
+}
+// @ts-expect-error Entrance variant is closed.
+const revealInvalidVariant: ScrollRevealProps = { variant: 'unknown' };
+// @ts-expect-error Delay uses numeric milliseconds.
+const revealInvalidDelay: ScrollRevealProps = { delay: '150ms' };
+// @ts-expect-error Replay is not part of v0.1.
+const revealInvalidOnce: ScrollRevealProps = { once: false };
+// @ts-expect-error Implementation recipes stay private.
+type RevealPrivateRecipe = (typeof import('@egdev/effects'))['scrollRevealRootVariants'];
 export const isotipoRef = createRef<HTMLDivElement>();
 export const isotipoProps: Isotipo3DProps = { id: 'isotipo-packed', scene: 'lab', progress: 0.5, opacity: 0.5, pointerTilt: false };
 export function IsotipoSamples() { return createElement(Isotipo3D, { ...isotipoProps, ref: isotipoRef }); }
@@ -5050,6 +5065,8 @@ assert.equal(ambientManifest.exports['.'].types, './dist/index.d.ts');
 assert.ok(readFileSync(resolve(dirname(ambientEntry), 'index.d.ts'), 'utf8').trim());
 assert.ok((await import('@egdev/effects')).AmbientBackground);
 assert.ok((await import('@egdev/effects')).Isotipo3D);
+assert.ok((await import('@egdev/effects')).ScrollReveal);
+assert.throws(() => import.meta.resolve('@egdev/effects/scroll-reveal/useScrollReveal'));
 assert.throws(() => import.meta.resolve('@egdev/effects/atoms/isotipo3d/isotipoScene'));
 assert.throws(() => import.meta.resolve('@egdev/effects/ambient-background/particleStreaks'));
 const ambientStyles = readFileSync(fileURLToPath(import.meta.resolve('@egdev/effects/styles.css')), 'utf8');
@@ -5057,6 +5074,10 @@ for (const ambientValue of ['--eg-ambient-opacity', '--color-ambient-bg', 'force
   assert.ok(ambientStyles.includes(ambientValue), 'Missing ambient CSS: ' + ambientValue);
 }
 assert.doesNotMatch(ambientStyles, /@(import|reference|source|tailwind|theme|custom-variant|apply)\\b/);
+for (const value of ['--duration-wipe', ':focus-within', 'clip-path', 'prefers-reduced-motion']) {
+  assert.ok(ambientStyles.includes(value), 'Missing shipped entrance rule ' + value);
+}
+
 assert.equal(ui.exports['.'].import, './dist/index.js');
 assert.equal(ui.exports['.'].types, './dist/index.d.ts');
 assert.equal(ui.types, ui.exports['.'].types);
@@ -5717,6 +5738,22 @@ const { ToastSamples } = await import('./consumer.ts');
 assert.equal(renderToString(createElement(ToastSamples)), '<main>Toast host</main>', 'Toast records stay client-side through Portal');
 import { IndicatorConsumerSamples } from './consumer.ts';
 import { writeFileSync } from 'node:fs';
+import { ScrollRevealSamples } from './consumer.ts';
+const revealHTML = renderToString(createElement(ScrollRevealSamples));
+writeFileSync(new URL('./scroll-reveal-hydration.html', import.meta.url), revealHTML);
+const revealDOM = new JSDOM(revealHTML);
+try {
+  const root = revealDOM.window.document.getElementById('packed-scroll-reveal');
+  assert.ok(root.classList.contains('eg-scroll-reveal'));
+  assert.equal(root.getAttribute('data-state'), 'revealed');
+  assert.ok(root.hasAttribute('data-done'), 'SSR wipe is fully unclipped without JavaScript');
+  assert.equal(root.style.getPropertyValue('--eg-scroll-reveal-delay'), '150ms');
+  for (const recipe of ['focus-within:transition-none', 'motion-reduce:transition-none', 'duration-[var(--duration-wipe)]', '[&[data-done]]:[clip-path:none]', 'data-[state=hidden]:[clip-path:inset(-10%_100%_-10%_0)]']) {
+    assert.ok(root.classList.contains(recipe), 'Missing own-element entrance class ' + recipe);
+  }
+  assert.equal(root.querySelector('a').getAttribute('href'), '#content');
+  assert.equal(root.querySelector('a').textContent, 'Visible packed content');
+} finally { revealDOM.window.close(); }
 import { AmbientSamples, IsotipoSamples } from './consumer.ts';
 const isotipoHTML = renderToString(createElement(IsotipoSamples));
 writeFileSync(new URL('./isotipo-hydration.html', import.meta.url), isotipoHTML);
@@ -7302,6 +7339,39 @@ try {
   const { IndicatorConsumerSamples, indicatorConsumerChanges } = await import('./consumer.ts');
   const { readFileSync: readWaveFile } = await import('node:fs');
   const { hydrateRoot } = await import('react-dom/client');
+  const { ScrollRevealSamples, scrollRevealRef } = await import('./consumer.ts');
+  const revealHost = document.createElement('section');
+  revealHost.innerHTML = readWaveFile(new URL('./scroll-reveal-hydration.html', import.meta.url), 'utf8');
+  document.body.append(revealHost);
+  const revealServerNode = revealHost.querySelector('#packed-scroll-reveal');
+  const revealRecoveries = [];
+  let revealHydrated;
+  await act(async () => {
+    revealHydrated = hydrateRoot(revealHost, createElement(ScrollRevealSamples), { onRecoverableError: error => revealRecoveries.push(error) });
+  });
+  assert.deepEqual(revealRecoveries, []);
+  assert.equal(revealHost.querySelector('#packed-scroll-reveal'), revealServerNode);
+  assert.equal(scrollRevealRef.current, revealServerNode);
+  assert.equal(revealServerNode.getAttribute('data-state'), 'revealed');
+  assert.ok(revealServerNode.hasAttribute('data-done'));
+  await act(async () => revealHydrated.unmount());
+  assert.equal(scrollRevealRef.current, null);
+  revealHost.remove();
+  await act(async () => root.render(createElement(ScrollRevealSamples)));
+  assert.equal(scrollRevealRef.current, document.getElementById('packed-scroll-reveal'));
+  await act(async () => root.render(null));
+  assert.equal(scrollRevealRef.current, null);
+  const packedEntrance = (await import('@egdev/effects')).ScrollReveal;
+  const firstEntranceRef = { current: null };
+  const secondEntranceRef = { current: null };
+  await act(async () => root.render(createElement(packedEntrance, { ref: firstEntranceRef, children: 'Packed ref replacement' })));
+  const entranceNode = firstEntranceRef.current;
+  assert.ok(entranceNode);
+  await act(async () => root.render(createElement(packedEntrance, { ref: secondEntranceRef, children: 'Packed ref replacement' })));
+  assert.equal(firstEntranceRef.current, null);
+  assert.equal(secondEntranceRef.current, entranceNode);
+  await act(async () => root.render(null));
+  assert.equal(secondEntranceRef.current, null);
   const { IsotipoSamples, isotipoRef } = await import('./consumer.ts');
   const isotipoHost = document.createElement('section');
   isotipoHost.innerHTML = readWaveFile(new URL('./isotipo-hydration.html', import.meta.url), 'utf8');
@@ -9028,7 +9098,8 @@ const typography = ${JSON.stringify(typographyNames)};
 // emits a color-mix() token on two lines (resolved fallback + @supports var-form override).
 // #126 D17 adds the owner-approved --container-calendar-grid-stack: 285 + 1 = 286.
 // #291 adds the owner-approved SectionShell show halo and three group-edge masks: 286 + 4 = 290.
-assert.equal(names.length, 290, 'Packed native artifact must expose 290 variables');
+// Approved ScrollReveal wipe duration adds one root token: 290 + 1 = 291.
+assert.equal(names.length, 291, 'Packed native artifact must expose 291 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
