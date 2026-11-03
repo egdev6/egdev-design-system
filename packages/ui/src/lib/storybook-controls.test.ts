@@ -94,6 +94,7 @@ const components = [
   ['CommunityCardAction', 'molecules/community-card'],
   ['PhotoFrame', 'atoms/photo-frame'],
   ['Table', 'molecules/table'],
+  ['NowStrip', 'organisms/now-strip'],
   ['Footer', 'organisms/footer'],
   ['FooterMotto', 'organisms/footer'],
   ['FooterBrand', 'organisms/footer'],
@@ -156,6 +157,7 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  nowstrip: { label: 'text', children: false },
   footer: { children: false },
   footermotto: { children: false },
   footerbrand: { children: false },
@@ -553,6 +555,7 @@ const expected: Record<string, Record<string, string | false>> = {
   terminalcardlist: { items: false, className: 'text' }
 };
 const ownPropCounts: Record<string, number> = {
+  nowstrip: 2,
   footer: 1,
   footermotto: 1,
   footerbrand: 1,
