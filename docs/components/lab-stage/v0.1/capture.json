@@ -1,0 +1,206 @@
+{
+  "component": "lab-stage",
+  "specVersion": "0.1",
+  "spec": "docs/components/lab-stage/v0.1/spec.md",
+  "specContentSHA256": "7fdf88b6472e575a7104b0c24d84776defdc3e08c0dee0f30659a1e5f52f3f2f",
+  "status": "Proposed — expected-design evidence for owner review; adoption and publication pending. Visual conformity: Not evaluated.",
+  "capturedFrom": {
+    "authority": "odd/tasks/web-catalog.md L5, L41–L46; parent-provided capture",
+    "sourceRoot": "/home/egdev/proyectos/egdev-website/egdev-foundation",
+    "readOnly": true,
+    "notes": "Parent rendered the Foundation preview read-only; no blobs; the spec writer did not recapture or modify the images."
+  },
+  "harness": {
+    "script": "/tmp/egdev-sbcheck/capture-layer-e-b2.mjs",
+    "page": "/tmp/egdev-sbcheck/harness-layer-e-b2-lab-stage.html",
+    "stylesheets": [
+      {
+        "path": "design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e"
+      },
+      {
+        "path": "design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      }
+    ],
+    "transformations": ["Preview rendered with Foundation stylesheets; no runtime media blobs."]
+  },
+  "conditions": {
+    "browser": "chrome-headless-shell 1243 (Playwright core)",
+    "deviceScaleFactor": 2,
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "locale": "en-US",
+    "crop": "component preview board .pv",
+    "animations": "disabled during screenshot",
+    "fonts": {
+      "status": "loaded",
+      "loadedFaces": ["Barlow 400", "Barlow 600", "Barlow 700", "Barlow Condensed 700", "Barlow Condensed 800"]
+    },
+    "image": {
+      "asset": "reference-web/assets/photo-setup.webp",
+      "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f",
+      "natural": "1280x960",
+      "complete": true
+    },
+    "verificationLimits": "Static Foundation preview only; no DS comparison, interaction, reduced-motion, contrast, screen reader or public asset validation."
+  },
+  "images": [
+    {
+      "id": "VIS-01",
+      "file": "lab-stage--variants--1280x1400--dark.png",
+      "sha256": "8c09321746b64eb2b518df17ac15b337f8347a5f4b80969086f49c322d9ab1a1"
+    },
+    {
+      "id": "VIS-02",
+      "file": "lab-stage--variants--390x1400--dark.png",
+      "sha256": "255bf178437bfc891f104b7a189f74397dc5c8ce06c1993da37af637eb028233"
+    }
+  ],
+  "rawCapture": [
+    {
+      "variant": "lab-stage",
+      "file": "lab-stage--variants--1280--dark.png",
+      "pngSha256": "8c09321746b64eb2b518df17ac15b337f8347a5f4b80969086f49c322d9ab1a1",
+      "pngBytes": 887343,
+      "source": {
+        "path": "egdev-foundation/design-system/components/LabStage/preview.html",
+        "sha256": "4f07276302dc8074003dcaf19cbdbf36e3c6e16d26addb2cae408a02e4438fe5"
+      },
+      "harness": {
+        "script": "/tmp/egdev-sbcheck/capture-layer-d-b3.mjs",
+        "page": "/tmp/egdev-sbcheck/harness-layer-d-b3-lab-stage.html",
+        "links": ["egdev-foundation/design-system/tokens.css", "egdev-foundation/design-system/components/bundle.css"],
+        "tokensSha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+        "bundleSha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      },
+      "media": [
+        {
+          "runtimeBlobUrl": "/_blob/5c01b9d348f8d19c8099b2804624765d",
+          "resolvedAsset": "egdev-foundation/reference-web/assets/logo-wordmark.svg",
+          "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
+        },
+        {
+          "runtimeBlobUrl": "/_blob/ce2d47159017f6b32cabffad74654133",
+          "resolvedAsset": "egdev-foundation/reference-web/assets/photo-setup.webp",
+          "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f"
+        }
+      ],
+      "capture": {
+        "element": ".pv",
+        "viewport": {
+          "width": 1280,
+          "height": 1400
+        },
+        "deviceScaleFactor": 2,
+        "colorScheme": "dark",
+        "reducedMotion": "no-preference",
+        "locale": "en-US",
+        "browser": "chrome-headless-shell 1243 (Playwright core)",
+        "animations": "disabled during screenshot",
+        "date": "2026-11-03T14:09:36.065Z"
+      },
+      "observed": {
+        "fontsStatus": "loaded",
+        "loadedFaces": [
+          "Barlow 400",
+          "Barlow 600",
+          "Barlow 700",
+          "Barlow Condensed 600",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 500"
+        ],
+        "images": [],
+        "labels": [
+          "En flujo (sin scroll coreografiado) · .eg-lab.eg-lab--static",
+          "Titular glitch · bucle rápido (hover o forzado) · .eg-lab__title.is-active"
+        ],
+        "boardRect": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 1223.125,
+          "top": 0,
+          "right": 1280,
+          "bottom": 1223.125,
+          "left": 0
+        },
+        "documentWidth": 1280,
+        "documentHeight": 1400
+      }
+    },
+    {
+      "variant": "lab-stage",
+      "file": "lab-stage--variants--390--dark.png",
+      "pngSha256": "255bf178437bfc891f104b7a189f74397dc5c8ce06c1993da37af637eb028233",
+      "pngBytes": 443010,
+      "source": {
+        "path": "egdev-foundation/design-system/components/LabStage/preview.html",
+        "sha256": "4f07276302dc8074003dcaf19cbdbf36e3c6e16d26addb2cae408a02e4438fe5"
+      },
+      "harness": {
+        "script": "/tmp/egdev-sbcheck/capture-layer-d-b3.mjs",
+        "page": "/tmp/egdev-sbcheck/harness-layer-d-b3-lab-stage.html",
+        "links": ["egdev-foundation/design-system/tokens.css", "egdev-foundation/design-system/components/bundle.css"],
+        "tokensSha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e",
+        "bundleSha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      },
+      "media": [
+        {
+          "runtimeBlobUrl": "/_blob/5c01b9d348f8d19c8099b2804624765d",
+          "resolvedAsset": "egdev-foundation/reference-web/assets/logo-wordmark.svg",
+          "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
+        },
+        {
+          "runtimeBlobUrl": "/_blob/ce2d47159017f6b32cabffad74654133",
+          "resolvedAsset": "egdev-foundation/reference-web/assets/photo-setup.webp",
+          "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f"
+        }
+      ],
+      "capture": {
+        "element": ".pv",
+        "viewport": {
+          "width": 390,
+          "height": 1400
+        },
+        "deviceScaleFactor": 2,
+        "colorScheme": "dark",
+        "reducedMotion": "no-preference",
+        "locale": "en-US",
+        "browser": "chrome-headless-shell 1243 (Playwright core)",
+        "animations": "disabled during screenshot",
+        "date": "2026-11-03T14:09:37.082Z"
+      },
+      "observed": {
+        "fontsStatus": "loaded",
+        "loadedFaces": [
+          "Barlow 400",
+          "Barlow 600",
+          "Barlow 700",
+          "Barlow Condensed 600",
+          "Barlow Condensed 700",
+          "Barlow Condensed 800",
+          "JetBrains Mono 500"
+        ],
+        "images": [],
+        "labels": [
+          "En flujo (sin scroll coreografiado) · .eg-lab.eg-lab--static",
+          "Titular glitch · bucle rápido (hover o forzado) · .eg-lab__title.is-active"
+        ],
+        "boardRect": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 1423.265625,
+          "top": 0,
+          "right": 390,
+          "bottom": 1423.265625,
+          "left": 0
+        },
+        "documentWidth": 390,
+        "documentHeight": 1423
+      }
+    }
+  ]
+}
