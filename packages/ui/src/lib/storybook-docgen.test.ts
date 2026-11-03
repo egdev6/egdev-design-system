@@ -122,6 +122,21 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts SectionNav inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
+    const doc = parser
+      .parse(source('organisms/section-nav/SectionNav.tsx'))
+      .find(({ displayName }) => displayName === 'SectionNav');
+    for (const name of ['label', 'disclosureLabel', 'nextLabel', 'items', 'activeId', 'value']) {
+      expect(doc?.props[name], name).toMatchObject({ required: true });
+    }
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick', 'hidden']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of ['children', 'role', 'aria-label', 'aria-labelledby', 'style', 'dangerouslySetInnerHTML']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    expect(publicAPI.SectionNav).toBeDefined();
+  });
   it('extracts Pixel state and passive native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
     const doc = parser.parse(source('atoms/pixel/Pixel.tsx')).find(({ displayName }) => displayName === 'Pixel');
     expect(doc?.props.state).toMatchObject({
@@ -1350,6 +1365,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './organisms/notes-board',
       './organisms/now-strip',
       './organisms/preview-frame',
+      './organisms/section-nav',
       './organisms/sidebar',
       './organisms/tab-bar',
       './organisms/top-bar',
@@ -1471,6 +1487,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'RadioGroup',
       'SearchTrigger',
       'SectionHeader',
+      'SectionNav',
       'SectionShell',
       'Select',
       'SelectTile',

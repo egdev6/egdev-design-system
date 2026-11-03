@@ -55,6 +55,7 @@
 @source "../organisms/notes-board/types.ts";
 @source "../organisms/now-strip/types.ts";
 @source "../organisms/preview-frame/types.ts";
+@source "../organisms/section-nav/types.ts";
 @source "../organisms/sidebar/types.ts";
 @source "../organisms/tab-bar/types.ts";
 @source "../organisms/top-bar/types.ts";

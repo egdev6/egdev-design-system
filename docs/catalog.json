@@ -1028,10 +1028,10 @@
     "nombre": "SectionNav",
     "nivel": "organism",
     "destino": "ui",
-    "radix": "—",
-    "compone": "Link",
+    "radix": "Popover",
+    "compone": "Native section links, Pixel, ProgressBar, Icon; Surface overlay",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): section navigation organism; the section list and current section arrive as props."
+    "notas": "Implemented under approved v0.1 contract (#301): host-driven section navigation with explicit disclosure and separate next link, decorative progress edge and Pixel markers; Popover owns portal and focus. No scroll tracking or global shortcuts."
   },
   {
     "actual": "Footer",

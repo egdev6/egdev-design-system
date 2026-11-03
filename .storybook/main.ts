@@ -88,6 +88,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   ],
   notesBoardSide: [],
   notesBoardList: [],
+  sectionNav: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick', 'hidden'],
   sectionShell: [
     'id',
     'title',
