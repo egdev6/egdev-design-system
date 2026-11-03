@@ -23,6 +23,16 @@
           "symbol": "HeroProps",
           "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
         }
+      },
+      {
+        "component": "Closing",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
+        }
       }
     ]
   },
@@ -4850,6 +4860,16 @@
           "symbol": "ArticleFeatureProps",
           "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
         }
+      },
+      {
+        "component": "Closing",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
+        }
       }
     ]
   },
@@ -4996,6 +5016,16 @@
           "path": "packages/ui/src/organisms/footer/types.ts",
           "symbol": "FooterNavigationProps",
           "revision": "sha256:929a83a45117bff7c7737855adc8c9cff128b2560b0fb859ac967169ce455118"
+        }
+      },
+      {
+        "component": "Closing",
+        "type": "1 | 2 | 3 | 4 | 5 | 6 (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
         }
       }
     ]
@@ -5245,6 +5275,16 @@
           "symbol": "ArticleFeatureProps",
           "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
         }
+      },
+      {
+        "component": "Closing",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
+        }
       }
     ]
   },
@@ -5429,6 +5469,16 @@
           "path": "packages/ui/src/atoms/pull-quote/types.ts",
           "symbol": "PullQuoteProps",
           "revision": "sha256:a80b89c12589a3afe7dfc16fa86797bd860f12f839946ec189da60277e8f05d4"
+        }
+      },
+      {
+        "component": "Closing",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
         }
       }
     ]
@@ -5641,6 +5691,16 @@
           "path": "packages/ui/src/molecules/section-header/types.ts",
           "symbol": "SectionHeaderProps",
           "revision": "sha256:5726750a3c95049bf2262524f7d11d504774fd67f3b7d4409e49b9641b1d6f0c"
+        }
+      },
+      {
+        "component": "Closing",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
         }
       }
     ]

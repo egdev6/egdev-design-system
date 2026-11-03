@@ -122,6 +122,32 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts Closing inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
+    const doc = parser
+      .parse(source('organisms/closing/Closing.tsx'))
+      .find(({ displayName }) => displayName === 'Closing');
+    for (const name of ['title', 'level', 'children']) {
+      expect(doc?.props[name], name).toMatchObject({ required: true });
+    }
+    for (const name of [
+      'eyebrow',
+      'accent',
+      'lede',
+      'media',
+      'id',
+      'dir',
+      'lang',
+      'aria-describedby',
+      'className',
+      'onClick'
+    ]) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of ['role', 'style', 'dangerouslySetInnerHTML']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    expect(publicAPI.Closing).toBeDefined();
+  });
   it('extracts Hero inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
     const doc = parser.parse(source('organisms/hero/Hero.tsx')).find(({ displayName }) => displayName === 'Hero');
     for (const name of ['title', 'level']) {
@@ -1431,6 +1457,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/toast',
       './organisms/blog-grid',
       './organisms/calendar-grid',
+      './organisms/closing',
       './organisms/footer',
       './organisms/hero',
       './organisms/live-band',
@@ -1480,6 +1507,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Checkbox',
       'Chip',
       'ChipGroup',
+      'Closing',
       'Cluster',
       'Collapsible',
       'CollapsibleContent',

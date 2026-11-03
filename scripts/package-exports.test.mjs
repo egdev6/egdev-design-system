@@ -678,6 +678,93 @@ test('BlogGrid ships every recipe utility with bounded responsive resets and leg
   assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-blog-grid/);
 });
 
+test('Closing ships every recipe utility and bounded responsive declarations', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/organisms/closing/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      for (const argument of node.arguments) {
+        if (ts.isStringLiteral(argument)) {
+          for (const name of argument.text.split(/\s+/).filter(Boolean)) {
+            classes.add(name);
+          }
+        }
+      }
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(source);
+  assert.ok(classes.size > 20);
+  const compact = cssBlock(utilities, /@media\s*\(\s*width\s*<=\s*860px\s*\)\s*\{/);
+  for (const name of classes) {
+    if (name.startsWith('eg-')) {
+      continue;
+    }
+    const selector = '.' + name.replace(/[^\w-]/g, '\\$&');
+    assert.ok(utilities.includes(selector), `Missing Closing utility ${name}`);
+    if (name.startsWith('[@media(width<=860px)]:')) {
+      assert.ok(compact.includes(selector), `Missing bounded ${name}`);
+    }
+  }
+  assert.match(utilities, /grid-template-columns:\s*minmax\(0,\s*1\.25fr\)\s+minmax\(0,\s*1fr\)/);
+  assert.match(utilities, /width:\s*min\(100%,\s*62vh\)/);
+  assert.match(compact, /width:\s*min\(100%,\s*34svh,\s*(?:calc\()?var\(--space-24(?:,\s*[^)]*)?\)\s*\*\s*4\)?\)/);
+  assert.doesNotMatch(utilities, /\.eg-closing\s*\{/);
+  assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-closing/);
+});
+
+test('Closing package SSR retains its own responsive classes, heading, media and CTA order', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const dom = new JSDOM(
+    renderToString(
+      h(exported.Closing, {
+        title: 'Build ',
+        level: 2,
+        id: 'closing-title',
+        accent: 'together',
+        media: h('span', null, 'Decorative'),
+        children: [h('a', { key: 'a', href: '#one' }, 'One'), h('a', { key: 'b', href: '#two' }, 'Two')]
+      })
+    )
+  );
+  try {
+    const root = dom.window.document.querySelector('.eg-closing');
+    assert.ok(root);
+    const grid = root.firstElementChild;
+    const media = grid.lastElementChild;
+    assert.equal(root.querySelector('h2')?.id, 'closing-title');
+    assert.equal(root.querySelector('h2')?.textContent, 'Build together');
+    assert.equal(media.getAttribute('aria-hidden'), 'true');
+    assert.equal(media.textContent, 'Decorative');
+    for (const name of ['[@media(width<=860px)]:grid-cols-1', '[@media(width<=860px)]:gap-2']) {
+      assert.ok(grid.classList.contains(name));
+    }
+    for (const name of [
+      '[@media(width<=860px)]:order-first',
+      '[@media(width<=860px)]:w-[min(100%,34svh,calc(var(--space-24)*4))]'
+    ]) {
+      assert.ok(media.classList.contains(name));
+    }
+    assert.deepEqual(
+      [...root.querySelectorAll('a')].map((a) => a.getAttribute('href')),
+      ['#one', '#two']
+    );
+    assert.ok(grid.firstElementChild.contains(root.querySelector('h2')));
+  } finally {
+    dom.window.close();
+  }
+});
+
 test('Hero ships every recipe utility in its bounded responsive blocks', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -4731,6 +4818,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Checkbox',
       'Chip',
       'ChipGroup',
+      'Closing',
       'Cluster',
       'Collapsible',
       'CollapsibleContent',
@@ -5044,6 +5132,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ChipGroupType',
     'ChipMode',
     'ChipProps',
+    'Closing',
+    'ClosingProps',
     'Cluster',
     'ClusterProps',
     'Collapsible',
