@@ -90,6 +90,14 @@ export type { TipCardLevel, TipCardProps } from './molecules/tip-card';
 export { TipCard } from './molecules/tip-card';
 export * from './molecules/toast';
 // Organisms
+export type {
+  BlogGridArchiveProps,
+  BlogGridFeatureProps,
+  BlogGridProps,
+  BlogGridRowProps,
+  BlogGridRowsProps
+} from './organisms/blog-grid';
+export { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from './organisms/blog-grid';
 export * from './organisms/calendar-grid';
 export type {
   FooterBrandProps,

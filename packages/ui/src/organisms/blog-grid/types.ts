@@ -52,7 +52,7 @@ export type BlogGridArchiveProps = {
 };
 
 export const blogGridVariants = cva(
-  'eg-blog-grid grid grid-cols-[minmax(0,7fr)_minmax(0,5fr)] grid-rows-[minmax(0,1fr)_auto] gap-x-5 gap-y-0 items-stretch min-w-0 [@media(width<=1080px)]:grid-cols-1 [@media(width<=1080px)]:grid-rows-none'
+  'eg-blog-grid grid grid-cols-[minmax(0,7fr)_minmax(0,5fr)] grid-rows-[minmax(0,1fr)_auto] gap-x-5 gap-y-0 items-stretch min-w-0 [@media(width<=1080px)]:grid-cols-1 [@media(width<=1080px)]:grid-rows-none [@media(width<=1080px)]:gap-y-5'
 );
 export const blogGridFeatureVariants = cva(
   'min-w-0 col-start-1 row-start-1 row-span-2 [&>a]:h-full [@media(width<=1080px)]:col-auto [@media(width<=1080px)]:row-auto [@media(width<=1080px)]:[&>a]:h-auto'

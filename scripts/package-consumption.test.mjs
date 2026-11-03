@@ -28,6 +28,8 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
+import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from '@egdev/ui';
+import type { BlogGridProps, BlogGridArchiveProps, BlogGridFeatureProps, BlogGridRowProps, BlogGridRowsProps } from '@egdev/ui';
 import { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from '@egdev/ui';
 import type { FooterProps, FooterBrandProps, FooterLegalProps, FooterMottoProps, FooterNavigationProps, FooterNavigationItem, FooterNavigationLevel, FooterSocialProps } from '@egdev/ui';
 import { TopBar, TopBarBrand, TopBarMobileTrigger, TopBarSearchCompact, TopBarSearchFull, TopBarUserMenu } from '@egdev/ui';
@@ -351,6 +353,25 @@ const ambientChildren: AmbientBackgroundProps = { children: 'Unsupported' };
 // @ts-expect-error Only the approved profiles are supported.
 const ambientInvalidProfile: AmbientBackgroundProps = { profile: 'unknown' };
 
+const blogFeature: BlogGridFeatureProps = { children: createElement(ArticleFeature, { href: '#feature', title: 'Feature', actionLabel: 'Read' }) };
+const blogRow: BlogGridRowProps = { children: createElement(ListItem, { variant: 'editorial', asChild: true, children: createElement('a', { href: '#row' }, 'Row') }) };
+const blogRows: BlogGridRowsProps = { children: createElement(BlogGridRow, blogRow) };
+const blogArchive: BlogGridArchiveProps = { children: createElement(Link, { href: '#archive', children: 'Archive' }) };
+export const blogGridProps: BlogGridProps = { id: 'blog-grid', 'aria-label': 'Blog', children: [createElement(BlogGridFeature, { key: 'feature', ...blogFeature }), createElement(BlogGridRows, { key: 'rows', ...blogRows }), createElement(BlogGridArchive, { key: 'archive', ...blogArchive })] };
+export function BlogGridSamples({ empty = false }: { empty?: boolean } = {}) { return createElement(BlogGrid, { ...blogGridProps, children: [createElement(BlogGridFeature, { key: 'feature', ...blogFeature }), createElement(BlogGridRows, { key: 'rows', children: empty ? [] : blogRows.children }), createElement(BlogGridArchive, { key: 'archive', ...blogArchive })] }); }
+// @ts-expect-error Children are required.
+const blogMissing: BlogGridProps = {};
+// @ts-expect-error Raw HTML cannot replace children.
+const blogHtml: BlogGridProps = { children: null, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error No root Slot API.
+const blogSlot: BlogGridProps = { children: null, asChild: true };
+// @ts-expect-error No root ref API.
+const blogRef: BlogGridProps = { children: null, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Parts do not accept className.
+const blogPartClass: BlogGridFeatureProps = { ...blogFeature, className: 'extra' };
+// @ts-expect-error Recipes remain private.
+type BlogGridPrivate = (typeof import('@egdev/ui'))['blogGridVariants'];
+export type BlogGridNegatives = [typeof blogMissing, typeof blogHtml, typeof blogSlot, typeof blogRef, typeof blogPartClass, BlogGridPrivate];
 const footerItem: FooterNavigationItem = { href: '#one', label: 'One' };
 const footerLevel: FooterNavigationLevel = 2;
 const footerMotto: FooterMottoProps = { children: createElement('p', null, 'Motto') };
@@ -4403,6 +4424,36 @@ function assertTerminalCardConsumerCSS(css) {
   );
 }
 
+function assertBlogGridConsumerCSS(css) {
+  function block(text, pattern) {
+    const match = pattern.exec(text);
+    assert.ok(match, `Missing CSS block ${pattern}`);
+    let depth = 1;
+    for (let i = match.index + match[0].length; i < text.length; i++) {
+      if (text[i] === '\\') {
+        i++;
+      } else if (text[i] === '{') {
+        depth++;
+      } else if (text[i] === '}' && --depth === 0) {
+        return text.slice(match.index, i + 1);
+      }
+    }
+    assert.fail('Unclosed CSS block');
+  }
+  const utilities = block(css, /@layer utilities\s*\{/);
+  const responsive = block(utilities, /@media\s*\(\s*width\s*<=\s*1080px\s*\)\s*\{/);
+  for (const name of ['grid-cols-1', 'grid-rows-none', 'col-auto', 'row-auto', 'h-auto', 'flex-none', '[&>a]:h-auto']) {
+    const full = `[@media(width<=1080px)]:${name}`;
+    assert.ok(
+      responsive.includes('.' + full.replace(/[^\w-]/g, '\\$&')),
+      `Missing responsive BlogGrid utility ${full}`
+    );
+  }
+  assert.match(utilities, /grid-template-columns:\s*minmax\(0,\s*7fr\)\s+minmax\(0,\s*5fr\)/);
+  assert.doesNotMatch(utilities, /\.eg-blog-grid(?:__[\w-]+)?\s*\{/);
+  assert.match(block(css, /@layer components\s*\{/), /\.eg-blog-grid/);
+}
+
 function assertFooterConsumerCSS(css) {
   const start = css.indexOf('@layer utilities {');
   assert.ok(start >= 0, 'Footer requires shipped utilities');
@@ -4559,6 +4610,8 @@ ${assertCommunityCardConsumerCSS.toString()}
 assertCommunityCardConsumerCSS(shippedStyles);
 ${assertFooterConsumerCSS.toString()}
 assertFooterConsumerCSS(shippedStyles);
+${assertBlogGridConsumerCSS.toString()}
+assertBlogGridConsumerCSS(shippedStyles);
 ${assertSectionShellConsumerCSS.toString()}
 assertSectionShellConsumerCSS(shippedStyles);
 ${assertTerminalCardConsumerCSS.toString()}
@@ -4600,6 +4653,11 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AspectRatio',
   'Avatar',
   'Badge',
+  'BlogGrid',
+  'BlogGridArchive',
+  'BlogGridFeature',
+  'BlogGridRow',
+  'BlogGridRows',
   'Button',
   'ButtonGroup',
   'CalendarGrid',
@@ -4945,6 +5003,18 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
+const { BlogGridSamples } = await import('./consumer.ts');
+for (const empty of [false, true]) {
+  const dom = new JSDOM(renderToString(createElement(BlogGridSamples, { empty })));
+  try {
+    const root = dom.window.document.querySelector('.eg-blog-grid');
+    assert.deepEqual([...root.querySelectorAll('a')].map((a) => a.getAttribute('href')), empty ? ['#feature', '#archive'] : ['#feature', '#row', '#archive']);
+    assert.equal(root.querySelector('a a'), null);
+    assert.equal(root.querySelectorAll('ul').length, empty ? 0 : 1);
+    if (!empty) assert.equal(root.querySelector('ul > li > a')?.getAttribute('href'), '#row');
+    assert.equal(root.querySelector('ul a[href="#archive"]'), null);
+  } finally { dom.window.close(); }
+}
 const { FooterSamples } = await import('./consumer.ts');
 const footerDocument = new JSDOM(renderToString(createElement(FooterSamples)));
 const footer = footerDocument.window.document.querySelector('footer');

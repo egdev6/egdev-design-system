@@ -122,6 +122,54 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts BlogGrid composition and native root rows', { timeout: heavyDocgenTimeoutMs }, () => {
+    const extracted = parser.parse(source('organisms/blog-grid/BlogGrid.tsx'));
+    for (const name of ['BlogGrid', 'BlogGridFeature', 'BlogGridRows', 'BlogGridRow', 'BlogGridArchive']) {
+      const part = extracted.find(({ displayName }) => displayName === name);
+      expect(part?.props.children, name).toMatchObject({
+        required: true,
+        defaultValue: null,
+        tags: { control: 'false' }
+      });
+      if (name !== 'BlogGrid') {
+        expect(part?.props.className, name).toBeUndefined();
+      }
+    }
+    const root = extracted.find(({ displayName }) => displayName === 'BlogGrid');
+    for (const name of [
+      'id',
+      'title',
+      'dir',
+      'lang',
+      'aria-label',
+      'aria-labelledby',
+      'aria-describedby',
+      'className',
+      'style',
+      'onClick'
+    ]) {
+      expect(root?.props[name], name).toBeDefined();
+    }
+    for (const name of ['dangerouslySetInnerHTML', 'ref', 'asChild']) {
+      expect(root?.props[name], name).toBeUndefined();
+    }
+    const file = ast(source('organisms/blog-grid/types.ts'));
+    const properties = ownProps(file, [
+      'BlogGridProps',
+      'BlogGridFeatureProps',
+      'BlogGridRowsProps',
+      'BlogGridRowProps',
+      'BlogGridArchiveProps'
+    ]);
+    expect(properties).toHaveLength(5);
+    for (const property of properties) {
+      const tags = ts.getJSDocTags(property);
+      expect(tags.find(({ tagName }) => tagName.text === 'control')?.comment).toBe('false');
+      expect(tags.some(({ tagName, comment }) => tagName.text === 'controlReason' && Boolean(comment))).toBe(true);
+      expect(tags.some(({ tagName }) => tagName.text === 'default')).toBe(false);
+    }
+    expect(publicAPI.BlogGrid).toBeDefined();
+  });
   it('extracts Footer parts, navigation metadata and documented native rows', () => {
     const extracted = parser.parse(source('organisms/footer/Footer.tsx'));
     const root = extracted.find(({ displayName }) => displayName === 'Footer');
@@ -1178,6 +1226,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/timeline',
       './molecules/tip-card',
       './molecules/toast',
+      './organisms/blog-grid',
       './organisms/calendar-grid',
       './organisms/footer',
       './organisms/module-rail',
@@ -1211,6 +1260,11 @@ describe('Storybook TypeScript docgen contract', () => {
       'AspectRatio',
       'Avatar',
       'Badge',
+      'BlogGrid',
+      'BlogGridArchive',
+      'BlogGridFeature',
+      'BlogGridRow',
+      'BlogGridRows',
       'Button',
       'ButtonGroup',
       'CalendarGrid',

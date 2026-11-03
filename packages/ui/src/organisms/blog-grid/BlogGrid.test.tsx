@@ -108,7 +108,9 @@ describe('BlogGrid', () => {
       'items-stretch',
       'min-w-0',
       '[@media(width<=1080px)]:grid-cols-1',
-      '[@media(width<=1080px)]:grid-rows-none'
+      '[@media(width<=1080px)]:grid-rows-none',
+      // Stacked layout restores the legacy --space-5 gap between feature, rows and archive.
+      '[@media(width<=1080px)]:gap-y-5'
     );
     expect(featureWrapper).toHaveClass(
       'min-w-0',
