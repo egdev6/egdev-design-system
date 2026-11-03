@@ -124,6 +124,7 @@ const components = [
   ['TopBarUserMenu', 'organisms/top-bar'],
   ['Pixel', 'atoms/pixel'],
   ['SectionNav', 'organisms/section-nav'],
+  ['ChapterBreak', 'organisms/chapter-break'],
   ['Closing', 'organisms/closing'],
   ['Hero', 'organisms/hero']
 ] as const;
@@ -175,6 +176,15 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  chapterbreak: {
+    title: 'text',
+    level: 'select',
+    eyebrow: 'text',
+    accent: 'text',
+    lede: 'text',
+    media: false,
+    id: 'text'
+  },
   closing: {
     title: 'text',
     level: 'select',
@@ -620,6 +630,7 @@ const expected: Record<string, Record<string, string | false>> = {
   terminalcardlist: { items: false, className: 'text' }
 };
 const ownPropCounts: Record<string, number> = {
+  chapterbreak: 7,
   closing: 7,
   hero: 9,
   sectionnav: 10,

@@ -50,6 +50,7 @@
 @source "../molecules/**/types.ts";
 @source "../organisms/blog-grid/types.ts";
 @source "../organisms/calendar-grid/types.ts";
+@source "../organisms/chapter-break/types.ts";
 @source "../organisms/closing/types.ts";
 @source "../organisms/footer/types.ts";
 @source "../organisms/hero/types.ts";

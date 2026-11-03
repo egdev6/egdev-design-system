@@ -122,6 +122,34 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts ChapterBreak inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
+    const doc = parser
+      .parse(source('organisms/chapter-break/ChapterBreak.tsx'))
+      .find(({ displayName }) => displayName === 'ChapterBreak');
+    for (const name of ['title', 'level']) {
+      expect(doc?.props[name], name).toMatchObject({ required: true });
+    }
+    for (const name of [
+      'eyebrow',
+      'accent',
+      'lede',
+      'media',
+      'id',
+      'dir',
+      'lang',
+      'aria-label',
+      'aria-labelledby',
+      'aria-describedby',
+      'className',
+      'onClick'
+    ]) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of ['children', 'role', 'style', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    expect(publicAPI.ChapterBreak).toBeDefined();
+  });
   it('extracts Closing inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
     const doc = parser
       .parse(source('organisms/closing/Closing.tsx'))
@@ -1457,6 +1485,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './molecules/toast',
       './organisms/blog-grid',
       './organisms/calendar-grid',
+      './organisms/chapter-break',
       './organisms/closing',
       './organisms/footer',
       './organisms/hero',
@@ -1504,6 +1533,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'ButtonGroup',
       'CalendarGrid',
       'Carousel',
+      'ChapterBreak',
       'Checkbox',
       'Chip',
       'ChipGroup',

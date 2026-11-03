@@ -64,6 +64,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
     'style',
     'onClick'
   ],
+  chapterBreak: ['dir', 'lang', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className', 'onClick'],
   closing: ['dir', 'lang', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className', 'onClick'],
   blogGridFeature: [],
   blogGridRows: [],
