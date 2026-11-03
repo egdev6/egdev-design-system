@@ -69,7 +69,6 @@ Owner decisions (verbatim):
 
 Parent evidence before approval: every arbitrary or variant utility the three plans list emits with the installed compiler ([ODD L34](../../../../odd/tasks/web-catalog.md)).
 
-Later amendments are recorded beside each contract. The first is [LiveBand explicit rows part](../../live-band/v0.1/rows-part-amendment.md).
 
 Whole-file SHA-256 values at merge commit `126800b9657f24f2c03d012dad79ff087230753b` (PR #305):
 

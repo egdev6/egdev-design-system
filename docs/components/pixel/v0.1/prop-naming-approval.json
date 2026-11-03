@@ -1,0 +1,47 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the widened consumer-selected-condition convention for measurement conditions and position markers.",
+  "evidence": {
+    "channel": "docs/components/web-catalog/v0.1/layer-d-plan-approvals.md",
+    "ownerChoice": "Aprobar plan y gates (Recomendado)",
+    "interpretation": "The owner approved the exact naming widening in section 4 of the Pixel v0.1 plan. The whole-file plan SHA-256 is b16ee7519c291faf2bc3b0e2450bfaae39d09bb510d7de023920e28cc86c689b. Not native review authority."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/notes-board/v0.1/prop-naming-approval.json",
+      "wholeFileSHA256": "sha256:6baa7623e03194807148c46b41372e78e5b5c526ad907514bdb4825968765b04"
+    },
+    {
+      "path": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "wholeFileSHA256": "sha256:2ef1fd8192f5004da741b83570a08b4a2e517cee6e714cd6154e37d67b53e838"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [
+    {
+      "id": "consumer-selected-condition",
+      "previousReference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "previousContentHash": "sha256:d0c856444b73ed6637e49288dac923c66821c2de0c56cc0a8204ab065c6b1605",
+      "changedFields": ["meaning", "whenToUse", "avoid"],
+      "boundary": "Consumer-selected measurement conditions and position markers only; no automatic progress inference."
+    }
+  ],
+  "entries": [
+    {
+      "scope": "convention:consumer-selected-condition",
+      "contentHash": "sha256:7a258d5bcb92a1b5f313bf646bab6433db42e102b484b2f692014937fce96914",
+      "convention": {
+        "id": "consumer-selected-condition",
+        "name": "state",
+        "meaning": "The consumer-selected interpretation of a measurement or position marker; values and domain are component-specific, independent of automatic thresholds.",
+        "whenToUse": "A component exposes a consumer-selected measurement condition or a position marker's condition, such as idle, past or active.",
+        "avoid": "Visual variants, material tone, loading behavior, automatic threshold inference or deriving a collection's progress.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

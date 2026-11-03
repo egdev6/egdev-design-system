@@ -23,6 +23,8 @@ export * from './atoms/kbd';
 export * from './atoms/link';
 export * from './atoms/logo';
 export * from './atoms/photo-frame';
+export type { PixelProps, PixelState } from './atoms/pixel';
+export { Pixel } from './atoms/pixel';
 export * from './atoms/progress-bar';
 export * from './atoms/pull-quote';
 export * from './atoms/radio-group';

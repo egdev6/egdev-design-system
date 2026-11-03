@@ -1668,14 +1668,14 @@
   {
     "id": "consumer-selected-condition",
     "name": "state",
-    "meaning": "The consumer-selected interpretation of a Gauge magnitude or an independent GaugeGroup ring magnitude, independent of thresholds.",
-    "whenToUse": "A Gauge or GaugeGroup ring exposes consumer-selected normal, warning, critical or muted measurement conditions.",
-    "avoid": "Visual variants, material tone, loading behavior or automatic threshold inference.",
+    "meaning": "The consumer-selected interpretation of a measurement or position marker; values and domain are component-specific, independent of automatic thresholds.",
+    "whenToUse": "A component exposes a consumer-selected measurement condition or a position marker's condition, such as idle, past or active.",
+    "avoid": "Visual variants, material tone, loading behavior, automatic threshold inference or deriving a collection's progress.",
     "status": "approved",
     "approval": {
-      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "reference": "docs/components/pixel/v0.1/prop-naming-approval.json",
       "scope": "convention:consumer-selected-condition",
-      "contentHash": "sha256:d0c856444b73ed6637e49288dac923c66821c2de0c56cc0a8204ab065c6b1605"
+      "contentHash": "sha256:7a258d5bcb92a1b5f313bf646bab6433db42e102b484b2f692014937fce96914"
     },
     "aliases": [],
     "exceptions": [],
@@ -1708,6 +1708,16 @@
           "path": "packages/ui/src/atoms/status-dot/types.ts",
           "symbol": "StatusDotProps",
           "revision": "sha256:4d3db595cffe56d87931b3000d57fa0226a2c812d35950308f6d4309c89e4ecb"
+        }
+      },
+      {
+        "component": "Pixel",
+        "type": "PixelState (default idle)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/pixel/types.ts",
+          "symbol": "PixelProps",
+          "revision": "sha256:82826efba6d7792cc9509e30ad5f8988ecc7c249f965cf850edb3aa7ca72cb25"
         }
       }
     ]
