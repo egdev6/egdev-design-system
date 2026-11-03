@@ -10,7 +10,13 @@ import type { ModuleRailProps } from '../organisms/module-rail';
 import { ModuleRail } from '../organisms/module-rail';
 import meta, { Default } from '../organisms/module-rail/ModuleRail.stories';
 
-it('extracts ModuleRail metadata and applies registered Controls without diagnostics', () => {
+// Real react-docgen-typescript extraction parses the TypeScript program and can exceed Vitest's
+// default 5s under load, so only these heavy extraction tests get an explicit longer timeout.
+const heavyDocgenTimeoutMs = 20_000;
+
+it('extracts ModuleRail metadata and applies registered Controls without diagnostics', {
+  timeout: heavyDocgenTimeoutMs
+}, () => {
   const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
     ...config.typescript?.reactDocgenTypescriptOptions
   });

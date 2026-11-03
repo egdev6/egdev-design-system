@@ -7,6 +7,10 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import config from '../../../../.storybook/main';
 import * as publicAPI from '../index';
 
+// Real react-docgen-typescript extraction parses the TypeScript program and can exceed Vitest's
+// default 5s under load, so only these heavy extraction tests get an explicit longer timeout.
+const heavyDocgenTimeoutMs = 20_000;
+
 const source = (path: string) => fileURLToPath(new URL(`../${path}`, import.meta.url));
 const normalize = (value: unknown) => String(value).replace(/^['"]+|['"]+$/g, '');
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
@@ -339,7 +343,9 @@ describe('Storybook TypeScript docgen contract', () => {
       /\b(?:argTypes|play)\s*:/
     );
   });
-  it('extracts every NowCard own declaration, the badge slot, defaults and protected article boundaries', () => {
+  it('extracts every NowCard own declaration, the badge slot, defaults and protected article boundaries', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
     const doc = parser
       .parse(source('molecules/now-card/NowCard.tsx'))
       .find(({ displayName }) => displayName === 'NowCard');

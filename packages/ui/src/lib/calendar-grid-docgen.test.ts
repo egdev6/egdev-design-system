@@ -12,6 +12,10 @@ import type { CalendarGridProps } from '../organisms/calendar-grid';
 import { CalendarGrid } from '../organisms/calendar-grid';
 import meta, { Default } from '../organisms/calendar-grid/CalendarGrid.stories';
 
+// Real react-docgen-typescript extraction parses the TypeScript program and can exceed Vitest's
+// default 5s under load, so only these heavy extraction tests get an explicit longer timeout.
+const heavyDocgenTimeoutMs = 20_000;
+
 const source = (file: string) => fileURLToPath(new URL(`../organisms/calendar-grid/${file}`, import.meta.url));
 describe('CalendarGrid metadata', () => {
   it('documents every own field with a control directive', () => {
@@ -43,7 +47,7 @@ describe('CalendarGrid metadata', () => {
       }
     }
   });
-  it('extracts real docgen and registered Controls without diagnostics', () => {
+  it('extracts real docgen and registered Controls without diagnostics', { timeout: heavyDocgenTimeoutMs }, () => {
     const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
       ...config.typescript?.reactDocgenTypescriptOptions
     });
