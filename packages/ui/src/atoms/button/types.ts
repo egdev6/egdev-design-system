@@ -2,7 +2,7 @@ import { cva } from 'class-variance-authority';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'neutral' | 'dark';
-export type ButtonSize = 'md' | 'sm';
+export type ButtonSize = 'lg' | 'md' | 'sm';
 
 /**
  * One labelled action. className supports root layout only (margin, alignment, placement,
@@ -24,7 +24,8 @@ export type ButtonProps = Omit<ComponentPropsWithoutRef<'button'>, 'children'> &
    */
   variant?: ButtonVariant;
   /**
-   * Desktop minimum height: md 48px or sm 40px. Prefer md in touch layouts.
+   * Minimum height uses spacing tokens: lg 44.8px, md 38.4px and sm 32px.
+   * Use lg when the action must meet a 44px touch target.
    * @control select
    * @default md
    */
@@ -81,6 +82,7 @@ export const buttonVariants = cva(
         dark: 'bg-none shadow-none bg-primitive-black text-primitive-white [&:not([aria-disabled=true]):hover]:bg-primitive-neutral-900'
       },
       size: {
+        lg: 'min-h-14 py-3 px-5.5 gap-2.5 text-cta-label',
         md: 'min-h-12 py-3 px-5.5 gap-2.5 text-cta-label',
         sm: 'min-h-10 py-2 px-4 gap-2 text-label-default [font-weight:var(--text-cta-label--font-weight)]'
       }
@@ -91,5 +93,8 @@ export const buttonVariants = cva(
 
 export const buttonIconVariants = cva(
   'eg-btn__icon inline-flex flex-none items-center justify-center fill-none stroke-current stroke-(length:--icon-stroke) [stroke-linecap:round] [stroke-linejoin:round] transform-none translate-none motion-reduce:transition-none motion-reduce:transform-none motion-reduce:translate-none [&>svg]:block [&>svg]:size-full',
-  { variants: { size: { md: 'size-(--icon-size)', sm: 'size-4' } }, defaultVariants: { size: 'md' } }
+  {
+    variants: { size: { lg: 'size-(--icon-size)', md: 'size-(--icon-size)', sm: 'size-4' } },
+    defaultVariants: { size: 'md' }
+  }
 );

@@ -13,7 +13,7 @@ import { Button } from './Button';
  *
  * ## Usage guidelines
  * Loading retains focus but suppresses activation; consumers announce pending operations separately.
- * Disabled takes precedence. Use md for touch layouts (48px); sm is a 40px desktop control.
+ * Disabled takes precedence. Use lg when a 44px minimum touch target is required.
  * asChild requires one compatible prop-spreading, ref-forwarding link or button, without overriding
  * disabled/busy/tabIndex state. className supports outer layout only; appearance overrides and
  * interactive descendants are unsupported. Native type defaults to button and is omitted for asChild.
@@ -43,10 +43,13 @@ export const Variants: Story = {
   )
 };
 
-/** Both desktop control sizes, with matching icon scale rather than the legacy 18px glyph. */
+/** Three control sizes, with lg sharing the standard icon scale. */
 export const Sizes: Story = {
   render: () => (
     <div className='flex items-center gap-4'>
+      <Button size='lg' icon={<Icon name='arrow-right' />}>
+        Large action
+      </Button>
       <Button icon={<Icon name='arrow-right' />}>Standard action</Button>
       <Button size='sm' icon={<Icon name='arrow-right' size='sm' />}>
         Small action

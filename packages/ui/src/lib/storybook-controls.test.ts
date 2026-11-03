@@ -123,7 +123,8 @@ const components = [
   ['TopBarSearchFull', 'organisms/top-bar'],
   ['TopBarUserMenu', 'organisms/top-bar'],
   ['Pixel', 'atoms/pixel'],
-  ['SectionNav', 'organisms/section-nav']
+  ['SectionNav', 'organisms/section-nav'],
+  ['Hero', 'organisms/hero']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -173,6 +174,17 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  hero: {
+    title: 'text',
+    level: 'select',
+    eyebrow: 'text',
+    accent: 'text',
+    lede: 'text',
+    children: false,
+    media: false,
+    social: false,
+    id: 'text'
+  },
   sectionnav: {
     label: 'text',
     disclosureLabel: 'text',
@@ -598,6 +610,7 @@ const expected: Record<string, Record<string, string | false>> = {
   terminalcardlist: { items: false, className: 'text' }
 };
 const ownPropCounts: Record<string, number> = {
+  hero: 9,
   sectionnav: 10,
   pixel: 1,
   notesboard: 2,
@@ -1272,6 +1285,12 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(jsdocControlsEnhancer.secondPass).toBeUndefined();
     expect(preview.parameters?.backgrounds).toEqual({ disable: true });
     expect(preview.parameters?.layout).toBe('padded');
+  });
+
+  it('exposes all Button size choices with md as the default', () => {
+    const { argTypes } = story('Button');
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['lg', 'md', 'sm']);
+    expect(argTypes.size?.table?.defaultValue?.summary).toBe('"md"');
   });
 
   it('retains IconButton required hidden naming, full choices and native button rows', () => {

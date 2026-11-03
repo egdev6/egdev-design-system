@@ -1,0 +1,35 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the scene-media convention for decorative scene media.",
+  "evidence": {
+    "channel": "docs/components/web-catalog/v0.1/layer-e-plan-approvals.md",
+    "ownerChoice": "Aprobar plan y gates (Recomendado)",
+    "interpretation": "The owner approved the naming convention in gate 3 of the Hero v0.1 plan. The whole-file plan SHA-256 is 11906914c6cc8b6f5eddade2a14a3f3415061727408e4e03c34e09901de8eb82; the exact entry text is in section 5. Not native review authority."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json",
+      "wholeFileSHA256": "sha256:5034c36b063f4e3128a912e23f497ee9196e7e057e50fba94deb7a25eac2a717"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:scene-media",
+      "contentHash": "sha256:811562fe3e2708a61ae3662e2fbb66f803fd6df641bf8cc60f635e857859f502",
+      "convention": {
+        "id": "scene-media",
+        "name": "media",
+        "meaning": "A passive, decorative media or 3D slot of a scene organism, supplied by the consumer.",
+        "whenToUse": "Supply optional decorative scene media such as an Isotipo3D or an image that carries no unique meaning.",
+        "avoid": "Do not use for thumbnails, interactive content, effect selectors or Radix asChild composition.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}
