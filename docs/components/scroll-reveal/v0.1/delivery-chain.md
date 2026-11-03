@@ -46,3 +46,8 @@ The task-trace conflict preserved the complete incoming line multiset/order (exc
 The final tracker merge to `main` is authorized and remains subject to final head/base/tree guards. The tracker is kept draft until those guards pass. Its issue link is `Refs #330`, not an automatic closing directive: issue closure was not authorized. HomeTemplate remains a separate next specification, not part of this feature.
 
 This section is the pre-merge authorization/guard record; the durable [#332 merge state](https://github.com/egdev6/egdev-design-system/pull/332) is authoritative for final integration, rather than a prediction of the future merge commit.
+
+
+## Verification runner prerequisite
+
+The final trace push encountered a separate Timeline extraction timeout. The owner selected **"Limitar pnpm test a 2 workers (Recomendado)"** rather than widening another timeout. Independently verified [#336](https://github.com/egdev6/egdev-design-system/pull/336) merged at `bb2d201461f6c47b4a5037b8497d7bca1f27368b`: root `pnpm test` now defaults to `vitest run --maxWorkers=2`. All existing assertions/timeouts, the hook file, watch/coverage and dependencies are unchanged. Public baseline2534, build/lint/types, independent V1–V4 verification and a parent spot check passed. Normal merge into the tracker changed only the four approved maintenance files, not ScrollReveal source. This is not a retry-budget reset or permission to bypass the final gate.
