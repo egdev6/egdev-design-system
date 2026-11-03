@@ -27,3 +27,20 @@ The following exact whole-file SHA-256 values pin the approved plans at merge co
 | section-shell | `docs/components/section-shell/v0.1/implementation-plan.md` | `0b62bfd213b8cca5337a616457e904f1d1059bbd52891ef61489b72a3b66fc2e` |
 | top-bar | `docs/components/top-bar/v0.1/implementation-plan.md` | `cc6f23fae4b3f20336cc53e24e8b9860f81406d43eaee5df750678f4163283ab` |
 | footer | `docs/components/footer/v0.1/implementation-plan.md` | `1009fa7b5879b44e4b9fd7b70dd572923be90aeaa346d5a169fbb58d36ebd5ce` |
+
+## Batch 2 — NotesBoard, BlogGrid, NowStrip (2026-11-03)
+
+Owner decisions (verbatim):
+- NotesBoard plan: "Aprobar plan y gates (Recomendado)" — the inclusive `[@media(width<=1080px)]:` breakpoint, the token-based sticky offset `top-[calc(var(--nav-height)+var(--space-10))]`, the naming convention `board-sticky-side` / `sticky` and bounded local legacy neutralization. Topics stay a named list of static Chips (the approved contract), not ChipGroup.
+- BlogGrid plan: "Aprobar plan y gates (Recomendado)" — the inclusive 1080px breakpoint, the `minmax(0,7fr)` / `minmax(0,5fr)` grid with rows stretching to the feature, no new naming convention, and bounded local legacy neutralization; each conditional on the Chromium proof the plan requires.
+- NowStrip plan: "Aprobar plan y gates (Recomendado)" — its own inclusive `[@media(width<=860px)]:` breakpoint, the token-backed bottom hairline, the existing `accessible-name` entry, bounded local legacy neutralization, and the stop condition if NowCard footers cannot align without changing NowCard.
+
+Parent evidence before approval: all 18 arbitrary or variant utilities listed by the three plans emit with the installed Tailwind 4.3.3 compiler (probe mirroring `packages/ui/src/styles/compiled.css`).
+
+Whole-file SHA-256 values at merge commit `3ecc13f8862358269712dfaee45468ef271e4d22` (PR #304):
+
+| Component | Plan | Whole-file SHA-256 |
+|---|---|---|
+| notes-board | `docs/components/notes-board/v0.1/implementation-plan.md` | `f70605329effcc833da4fa9f5e274df43525651321bdd2af45af85d40b034569` |
+| blog-grid | `docs/components/blog-grid/v0.1/implementation-plan.md` | `da456d1a9d9a3264c65405c4bc5dff48c180fb157dcdf69887e5dd3613edb2bf` |
+| now-strip | `docs/components/now-strip/v0.1/implementation-plan.md` | `9d2032d666912dcb35762f5f69aef66b16ce46d038fda0fbf67138411eb60117` |
