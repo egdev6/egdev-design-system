@@ -18,6 +18,9 @@ export type TopBarProps = Omit<
   ComponentPropsWithoutRef<'header'>,
   'children' | 'role' | 'dangerouslySetInnerHTML' | 'label' | 'items' | 'onNavigate'
 > & {
+  /** Host-selected native presentation state; absence is transparent. */
+  'data-state'?: 'transparent' | 'glass';
+} & {
   /** Non-empty localized page navigation landmark name. @control text */
   label: string;
   /** Ordered destinations, including an empty list when appropriate. @control false

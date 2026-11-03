@@ -18,7 +18,10 @@ type InvalidPart = Assert<'className' extends keyof TopBarPartProps ? true : fal
 type InvalidRole = Assert<'role' extends keyof TopBarProps ? true : false>;
 // @ts-expect-error Current state is restricted to page.
 type InvalidCurrent = Assert<'step' extends TopBarItem['aria-current'] ? true : false>;
-export type TypeNegatives = [InvalidPart, InvalidRole, InvalidCurrent];
+type StateContract = Assert<TopBarProps extends { 'data-state'?: 'transparent' | 'glass' } ? true : false>;
+// @ts-expect-error Native state accepts only transparent or glass.
+type InvalidState = Assert<'open' extends TopBarProps['data-state'] ? true : false>;
+export type TypeNegatives = [InvalidPart, InvalidRole, InvalidCurrent, StateContract, InvalidState];
 
 const home: TopBarItem = { id: 'home', label: 'Home', href: '#home' };
 const about: TopBarItem = { id: 'about', label: 'About', href: '#about' };

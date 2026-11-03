@@ -93,7 +93,13 @@ const components = [
   ['CommunityCardMark', 'molecules/community-card'],
   ['CommunityCardAction', 'molecules/community-card'],
   ['PhotoFrame', 'atoms/photo-frame'],
-  ['Table', 'molecules/table']
+  ['Table', 'molecules/table'],
+  ['TopBar', 'organisms/top-bar'],
+  ['TopBarBrand', 'organisms/top-bar'],
+  ['TopBarMobileTrigger', 'organisms/top-bar'],
+  ['TopBarSearchCompact', 'organisms/top-bar'],
+  ['TopBarSearchFull', 'organisms/top-bar'],
+  ['TopBarUserMenu', 'organisms/top-bar']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -143,6 +149,12 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  topbar: { label: 'text', items: false, onNavigate: false, children: false },
+  topbarbrand: { children: false },
+  topbarmobiletrigger: { children: false },
+  topbarsearchcompact: { children: false },
+  topbarsearchfull: { children: false },
+  topbarusermenu: { children: false },
   gaugegroup: { label: 'text', items: false, size: 'select', center: false },
   articlefeature: {
     title: 'text',
@@ -528,6 +540,12 @@ const expected: Record<string, Record<string, string | false>> = {
 };
 const ownPropCounts: Record<string, number> = {
   table: 16,
+  topbar: 4,
+  topbarbrand: 1,
+  topbarmobiletrigger: 1,
+  topbarsearchcompact: 1,
+  topbarsearchfull: 1,
+  topbarusermenu: 1,
   gaugegroup: 4,
   articlefeature: 9,
   articlefeaturecover: 4,
@@ -746,6 +764,30 @@ describe('pure JSDoc Controls metadata mapping', () => {
 });
 
 describe('registered JSDoc Controls through installed Storybook extraction and inference', () => {
+  it('retains TopBar required inputs, native rows and parts without defaults', () => {
+    const card = story('TopBar');
+    for (const name of ['label', 'items', 'children']) {
+      expect(card.argTypes[name]?.type?.required, name).toBe(true);
+      expect(card.argTypes[name]?.table?.defaultValue, name).toBeUndefined();
+    }
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick']) {
+      expect(card.argTypes[name], name).toBeDefined();
+    }
+    for (const name of ['role', 'ref', 'asChild', 'dangerouslySetInnerHTML']) {
+      expect(card.argTypes[name], name).toBeUndefined();
+    }
+    for (const name of [
+      'TopBarBrand',
+      'TopBarMobileTrigger',
+      'TopBarSearchCompact',
+      'TopBarSearchFull',
+      'TopBarUserMenu'
+    ]) {
+      expect(story(name).argTypes.children?.type?.required, name).toBe(true);
+      expect(story(name).argTypes.children?.control, name).toBe(false);
+      expect(story(name).argTypes.className, name).toBeUndefined();
+    }
+  });
   it('retains CommunityCard band anatomy, required parts and documented native rows', () => {
     const card = story('CommunityCard');
     expect(card.argTypes.title?.type).toMatchObject({ name: 'string', required: true });

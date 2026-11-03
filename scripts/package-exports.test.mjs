@@ -20,6 +20,110 @@ function artifact(name, target) {
   return path;
 }
 
+test('TopBar ships ordered native navigation and every scanned utility', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const html = renderToString(
+    createElement(exported.TopBar, {
+      label: 'Main',
+      items: [{ id: 'home', label: 'Home', href: '#home', 'aria-current': 'page' }],
+      children: [
+        createElement(exported.TopBarUserMenu, { key: 'user', children: createElement('button', null, 'Account') }),
+        createElement(exported.TopBarBrand, { key: 'brand', children: createElement('a', { href: '/' }, 'Brand') }),
+        createElement(exported.TopBarSearchFull, { key: 'full', children: createElement('button', null, 'Full') }),
+        createElement(exported.TopBarSearchCompact, {
+          key: 'compact',
+          children: createElement('button', null, 'Compact')
+        }),
+        createElement(exported.TopBarMobileTrigger, { key: 'mobile', children: createElement('button', null, 'Menu') })
+      ]
+    })
+  );
+  const dom = new JSDOM(html);
+  try {
+    const header = dom.window.document.querySelector('header.eg-topbar');
+    assert.ok(header);
+    const nav = header.querySelector('nav[aria-label="Main"]');
+    assert.equal(nav.querySelector('a[href="#home"]').getAttribute('aria-current'), 'page');
+    assert.deepEqual(
+      [...header.querySelectorAll('a,button')].map((node) => node.textContent),
+      ['Brand', 'Home', 'Full', 'Compact', 'Account', 'Menu']
+    );
+  } finally {
+    dom.window.close();
+  }
+  for (const name of ['useTopBar', 'useTopBarPart', 'topBarVariants']) {
+    assert.equal(exported[name], undefined);
+  }
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/organisms/top-bar/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isStringLiteral(node)) {
+      for (const name of node.text.split(/\s+/).filter(Boolean)) {
+        classes.add(name);
+      }
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.ok(classes.size > 30);
+  for (const name of classes) {
+    if (name.startsWith('eg-')) {
+      continue;
+    }
+    assert.ok(utilities.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing TopBar utility ${name}`);
+  }
+  const rule = (name) => {
+    const selector = '.' + name.replace(/[^\w-]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[^{]*\\{'));
+  };
+  // Container queries wrap their rules, so look for each selector inside its emitted @container block.
+  for (const [name, condition, display] of [
+    ['@max-[900px]:hidden', /@container\s*\(width\s*<\s*900px\)\s*\{/, /display:\s*none/],
+    ['@max-[900px]:block', /@container\s*\(width\s*<\s*900px\)\s*\{/, /display:\s*block/],
+    ['[@container_(width=900px)]:hidden', /@container\s*\(width\s*=\s*900px\)\s*\{/, /display:\s*none/],
+    ['[@container_(width=900px)]:block', /@container\s*\(width\s*=\s*900px\)\s*\{/, /display:\s*block/]
+  ]) {
+    const selector = '.' + name.replace(/[^\w-]/g, '\\$&');
+    assert.ok(cssBlock(utilities, condition).includes(selector), `${name} must sit inside its @container condition`);
+    assert.match(rule(name), display);
+  }
+  // The reduced-transparency media query wraps the glass fallback rule, as the container queries do.
+  const reducedName = '[@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:bg-surface-2';
+  const reducedOpen = /@media\s*\(prefers-reduced-transparency:\s*reduce\)\s*\{/g;
+  const reducedBlocks = [...utilities.matchAll(reducedOpen)].map((match) =>
+    cssBlock(utilities.slice(match.index), /@media\s*\(prefers-reduced-transparency:\s*reduce\)\s*\{/)
+  );
+  assert.ok(
+    reducedBlocks.some((block) => block.includes('.' + reducedName.replace(/[^\w-]/g, '\\$&'))),
+    'Glass fallback must sit inside a prefers-reduced-transparency block'
+  );
+  const reduced = rule(reducedName);
+  assert.match(reduced, /\[data-state[=\s]+["']?glass/);
+  assert.match(reduced, /background-color:\s*var\(--color-surface-2[,)]/);
+  assert.match(utilities, /var\(--color-surface-overlay[,)]/);
+  assert.match(utilities, /var\(--color-surface-2[,)]/);
+  assert.doesNotMatch(utilities, /\.eg-topbar(?:__[\w-]+)?\s*[{,]/);
+  assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-topbar/);
+});
+
 test('tab-bar exports native navigation and its public recipe', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -3912,6 +4016,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'ToastProvider',
       'Toggle',
       'Tooltip',
+      'TopBar',
+      'TopBarBrand',
+      'TopBarMobileTrigger',
+      'TopBarSearchCompact',
+      'TopBarSearchFull',
+      'TopBarUserMenu',
       'VisuallyHidden',
       'appShellVariants',
       'badgeVariants',
@@ -4422,6 +4532,15 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ToggleSize',
     'Tooltip',
     'TooltipProps',
+    'TopBar',
+    'TopBarBrand',
+    'TopBarItem',
+    'TopBarMobileTrigger',
+    'TopBarPartProps',
+    'TopBarProps',
+    'TopBarSearchCompact',
+    'TopBarSearchFull',
+    'TopBarUserMenu',
     'VisuallyHidden',
     'VisuallyHiddenProps',
     'appShellVariants',
