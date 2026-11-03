@@ -373,6 +373,93 @@ function cssBlock(css, opening) {
 const unapprovedTransitionUtility =
   /\.transition-(?!(?:none|colors|opacity|transform|shadow|\\\[color\\,background-color\\,border-color\\\]|\\\[background-color\\,border-color\\\]|\\\[border-color\\,box-shadow\\\]|\\\[border-color\\,color\\\]|\\\[translate\\\]|\\\[translate\\,background-color\\\]|\\\[opacity\\,translate\\\]|\\\[color\\,background-color\\,border-color\\,box-shadow\\,scale\\\]|\\\[opacity\\,transform\\\]|\\\[width\\,margin\\,opacity\\,transform\\\]|\\\[color\\,transform\\\])(?=\s*\{))[\w\\]/;
 
+test('Footer ships every scanned recipe utility and retains legacy component CSS', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/organisms/footer/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      for (const argument of node.arguments) {
+        if (ts.isStringLiteral(argument)) {
+          for (const name of argument.text.split(/\s+/).filter(Boolean)) {
+            classes.add(name);
+          }
+        }
+      }
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(source);
+  assert.ok(classes.size > 30);
+  for (const name of classes) {
+    if (name.startsWith('eg-') || name === 'footer-brand') {
+      continue;
+    }
+    const selector = '.' + name.replace(/[^\w-]/g, '\\$&');
+    assert.ok(utilities.includes(selector), `Missing Footer utility ${name}`);
+  }
+  assert.match(utilities, /@media\s*\(\s*width\s*<=\s*860px\s*\)/);
+  assert.match(utilities, /border-top-style:\s*solid/);
+  assert.match(utilities, /border-bottom-style:\s*solid/);
+  assert.match(utilities, /border-(?:top|bottom)-width:\s*var\(--border-width[,)]/);
+  assert.doesNotMatch(utilities, /\.eg-footer(?:__[\w-]+)?\s*\{/);
+  assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-footer/);
+});
+
+test('Footer package SSR keeps navigation and social list separately named', async () => {
+  const uiExports = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const html = renderToString(
+    h(uiExports.Footer, {
+      children: [
+        h(uiExports.FooterMotto, { key: 'motto', children: h('p', null, 'Motto') }),
+        h(uiExports.FooterBrand, { key: 'brand', children: h(uiExports.Logo, { href: '/', label: 'Home' }) }),
+        h(uiExports.FooterNavigation, { key: 'nav', label: 'Explore', items: [{ href: '#one', label: 'One' }] }),
+        h(uiExports.FooterSocial, {
+          key: 'social',
+          children: h(uiExports.SocialLinks, {
+            label: 'Profiles',
+            caption: null,
+            items: [
+              {
+                id: 'github',
+                href: 'https://github.com/example',
+                label: 'GitHub',
+                icon: h(uiExports.Icon, { name: 'github' })
+              }
+            ]
+          })
+        }),
+        h(uiExports.FooterLegal, { key: 'legal', children: h('a', { href: '#legal' }, 'Legal') })
+      ]
+    })
+  );
+  const dom = new JSDOM(html);
+  try {
+    const doc = dom.window.document;
+    const footer = doc.querySelector('footer');
+    const nav = footer.querySelector('nav');
+    assert.equal(doc.getElementById(nav.getAttribute('aria-labelledby')).textContent, 'Explore');
+    assert.equal(nav.querySelector('a').getAttribute('href'), '#one');
+    assert.equal(
+      footer.querySelector('ul[aria-label="Profiles"] a')?.getAttribute('href'),
+      'https://github.com/example'
+    );
+    assert.equal(footer.querySelectorAll('nav').length, 1);
+    assert.equal(footer.querySelector('a a'), null);
+  } finally {
+    dom.window.close();
+  }
+});
+
 test('Collapsible ships native group-state caret motion and reduced-motion resets', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -4013,6 +4100,12 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Dropzone',
       'Field',
       'FieldMessage',
+      'Footer',
+      'FooterBrand',
+      'FooterLegal',
+      'FooterMotto',
+      'FooterNavigation',
+      'FooterSocial',
       'Gauge',
       'GaugeGroup',
       'Heading',
@@ -4327,6 +4420,20 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'FieldMessageProps',
     'FieldMessageTone',
     'FieldProps',
+    'Footer',
+    'FooterBrand',
+    'FooterBrandProps',
+    'FooterLegal',
+    'FooterLegalProps',
+    'FooterMotto',
+    'FooterMottoProps',
+    'FooterNavigation',
+    'FooterNavigationItem',
+    'FooterNavigationLevel',
+    'FooterNavigationProps',
+    'FooterProps',
+    'FooterSocial',
+    'FooterSocialProps',
     'Gauge',
     'GaugeGroup',
     'GaugeGroupItems',
