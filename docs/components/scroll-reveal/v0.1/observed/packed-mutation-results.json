@@ -1,0 +1,18 @@
+{
+  "method": "Each mutated source rebuilt before package tests; exact original bytes restored after every case; React18/19 packed hydration baseline ran first.",
+  "cases": [
+    {
+      "name": "focus-immediate-class",
+      "exportsExit": 1,
+      "consumersExit": 1,
+      "killed": true
+    },
+    {
+      "name": "wipe-final-unclipped-class",
+      "exportsExit": 1,
+      "consumersExit": 1,
+      "killed": true
+    }
+  ],
+  "restored": true
+}
