@@ -621,6 +621,9 @@ const postReceiptUsages = [
     source: 'packages/ui/src/atoms/countdown/types.ts#CountdownProps'
   })),
   ...['heading-title', 'heading-level', 'heading-eyebrow', 'trailing-text-accent', 'section-lede', 'scene-media'].map(
+    (conventionId) => ({ conventionId, source: 'packages/ui/src/organisms/chapter-break/types.ts#ChapterBreakProps' })
+  ),
+  ...['heading-title', 'heading-level', 'heading-eyebrow', 'trailing-text-accent', 'section-lede', 'scene-media'].map(
     (conventionId) => ({ conventionId, source: 'packages/ui/src/organisms/closing/types.ts#ClosingProps' })
   ),
   ...[

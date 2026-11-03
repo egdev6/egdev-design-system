@@ -1062,9 +1062,9 @@
     "nivel": "organism",
     "destino": "ui",
     "radix": "—",
-    "compone": "Text",
+    "compone": "Heading, Text; host SectionShell and consumer media",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): slot-based scene organism; the chapter label and copy are inputs and it runs no choreography."
+    "notas": "Implemented React organism under the approved v0.1 contract (#324): passive chapter interlude with consumer-supplied copy and decorative media. The host owns the section and effects; no children, effect import or choreography."
   },
   {
     "actual": "LabStage",

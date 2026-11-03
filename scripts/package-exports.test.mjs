@@ -678,6 +678,108 @@ test('BlogGrid ships every recipe utility with bounded responsive resets and leg
   assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-blog-grid/);
 });
 
+test('ChapterBreak ships recipe utilities and bounded responsive declarations', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/organisms/chapter-break/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      return;
+    }
+    if (ts.isStringLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.ok(classes.size > 20);
+  const compact = cssBlock(utilities, /@media\s*\(\s*width\s*<=\s*860px\s*\)\s*\{/);
+  for (const name of classes) {
+    if (name.startsWith('eg-')) {
+      continue;
+    }
+    const selector = '.' + name.replace(/[^\w-]/g, '\\$&');
+    assert.ok(utilities.includes(selector), `Missing ChapterBreak utility ${name}`);
+    if (name.startsWith('[@media(width<=860px)]:')) {
+      assert.ok(compact.includes(selector), `Missing bounded ${name}`);
+    }
+  }
+  assert.match(utilities, /grid-template-columns:\s*minmax\(0,\s*1\.25fr\)\s+minmax\(0,\s*1fr\)/);
+  assert.match(utilities, /width:\s*min\(100%,\s*58vh\)/);
+  assert.match(compact, /width:\s*min\(100%,\s*34svh,\s*(?:calc\()?var\(--space-24(?:,\s*[^)]*)?\)\s*\*\s*4\)?\)/);
+  assert.doesNotMatch(utilities, /\.eg-chapter-break\s*\{/);
+});
+
+test('ChapterBreak package SSR retains its own responsive classes and omits empty media', async () => {
+  const { ChapterBreak } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  for (const hasMedia of [true, false]) {
+    const dom = new JSDOM(
+      renderToString(
+        h(ChapterBreak, {
+          title: 'Build ',
+          accent: 'together',
+          level: 2,
+          id: 'chapter-title',
+          media: hasMedia ? h('span', null, 'Decorative') : null
+        })
+      )
+    );
+    try {
+      const root = dom.window.document.querySelector('.eg-chapter-break');
+      assert.ok(root);
+      const grid = root.firstElementChild;
+      assert.equal(root.querySelector('h2')?.id, 'chapter-title');
+      assert.equal(root.querySelector('h2')?.textContent, 'Build together');
+      assert.ok(grid.firstElementChild.contains(root.querySelector('h2')));
+      if (hasMedia) {
+        const media = grid.lastElementChild;
+        assert.equal(media.getAttribute('aria-hidden'), 'true');
+        assert.equal(media.textContent, 'Decorative');
+        for (const name of [
+          'grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]',
+          '[@media(width<=860px)]:grid-cols-1',
+          '[@media(width<=860px)]:gap-2'
+        ]) {
+          assert.ok(grid.classList.contains(name));
+        }
+        for (const name of [
+          'w-[min(100%,58vh)]',
+          '[@media(width<=860px)]:order-first',
+          '[@media(width<=860px)]:w-[min(100%,34svh,calc(var(--space-24)*4))]'
+        ]) {
+          assert.ok(media.classList.contains(name));
+        }
+      } else {
+        assert.equal(grid.children.length, 1);
+        assert.ok(grid.classList.contains('grid-cols-1'));
+        assert.equal(grid.classList.contains('grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]'), false);
+      }
+    } finally {
+      dom.window.close();
+    }
+  }
+});
+
 test('Closing ships every recipe utility and bounded responsive declarations', () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -4815,6 +4917,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'ButtonGroup',
       'CalendarGrid',
       'Carousel',
+      'ChapterBreak',
       'Checkbox',
       'Chip',
       'ChipGroup',
@@ -5122,6 +5225,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'CarouselItem',
     'CarouselMessages',
     'CarouselProps',
+    'ChapterBreak',
+    'ChapterBreakProps',
     'Checkbox',
     'CheckboxCheckedState',
     'CheckboxProps',

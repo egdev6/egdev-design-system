@@ -33,6 +33,16 @@
           "symbol": "ClosingProps",
           "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
         }
+      },
+      {
+        "component": "ChapterBreak",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/chapter-break/types.ts",
+          "symbol": "ChapterBreakProps",
+          "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
+        }
       }
     ]
   },
@@ -4870,6 +4880,16 @@
           "symbol": "ClosingProps",
           "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
         }
+      },
+      {
+        "component": "ChapterBreak",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/chapter-break/types.ts",
+          "symbol": "ChapterBreakProps",
+          "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
+        }
       }
     ]
   },
@@ -5026,6 +5046,16 @@
           "path": "packages/ui/src/organisms/closing/types.ts",
           "symbol": "ClosingProps",
           "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
+        }
+      },
+      {
+        "component": "ChapterBreak",
+        "type": "1 | 2 | 3 | 4 | 5 | 6 (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/chapter-break/types.ts",
+          "symbol": "ChapterBreakProps",
+          "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
         }
       }
     ]
@@ -5285,6 +5315,16 @@
           "symbol": "ClosingProps",
           "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
         }
+      },
+      {
+        "component": "ChapterBreak",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/chapter-break/types.ts",
+          "symbol": "ChapterBreakProps",
+          "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
+        }
       }
     ]
   },
@@ -5479,6 +5519,16 @@
           "path": "packages/ui/src/organisms/closing/types.ts",
           "symbol": "ClosingProps",
           "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
+        }
+      },
+      {
+        "component": "ChapterBreak",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/chapter-break/types.ts",
+          "symbol": "ChapterBreakProps",
+          "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
         }
       }
     ]
@@ -5701,6 +5751,16 @@
           "path": "packages/ui/src/organisms/closing/types.ts",
           "symbol": "ClosingProps",
           "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
+        }
+      },
+      {
+        "component": "ChapterBreak",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/chapter-break/types.ts",
+          "symbol": "ChapterBreakProps",
+          "revision": "sha256:ddcb7063a88e7495ec2234a6fa9817a8321fb5ef4a17127eadad0d11c030c16f"
         }
       }
     ]

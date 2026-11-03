@@ -36,6 +36,8 @@ import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows }
 import type { BlogGridProps, BlogGridArchiveProps, BlogGridFeatureProps, BlogGridRowProps, BlogGridRowsProps } from '@egdev/ui';
 import { LiveBandField, LiveBandList, LiveBandRow, LiveBandRows, LiveBandStreams, LiveBandVod } from '@egdev/ui';
 import type { LiveBandFieldProps, LiveBandListProps, LiveBandRowProps, LiveBandRowsProps, LiveBandStreamsProps, LiveBandVodProps } from '@egdev/ui';
+import { ChapterBreak } from '@egdev/ui';
+import type { ChapterBreakProps } from '@egdev/ui';
 import { Closing } from '@egdev/ui';
 import type { ClosingProps } from '@egdev/ui';
 import { Hero } from '@egdev/ui';
@@ -432,6 +434,31 @@ const blogPartClass: BlogGridFeatureProps = { ...blogFeature, className: 'extra'
 // @ts-expect-error Recipes remain private.
 type BlogGridPrivate = (typeof import('@egdev/ui'))['blogGridVariants'];
 export type BlogGridNegatives = [typeof blogMissing, typeof blogHtml, typeof blogSlot, typeof blogRef, typeof blogPartClass, BlogGridPrivate];
+export const chapterBreakProps: ChapterBreakProps = { title: 'Build ', level: 2, id: 'chapter-title', accent: 'together', media: createElement('span', null, 'Decorative') };
+export function ChapterBreakSamples({ empty = false }: { empty?: boolean } = {}) { return createElement(ChapterBreak, empty ? { title: 'Plain', level: 3 } : chapterBreakProps); }
+// @ts-expect-error Title is required.
+const chapterMissingTitle: ChapterBreakProps = { level: 2 };
+// @ts-expect-error Heading rank is required.
+const chapterMissingLevel: ChapterBreakProps = { title: 'Title' };
+// @ts-expect-error Children are not accepted.
+const chapterChildren: ChapterBreakProps = { ...chapterBreakProps, children: 'No' };
+// @ts-expect-error Heading rank is limited to native levels.
+const chapterLevel: ChapterBreakProps = { ...chapterBreakProps, level: 7 };
+// @ts-expect-error Root role is protected.
+const chapterRole: ChapterBreakProps = { ...chapterBreakProps, role: 'region' };
+// @ts-expect-error Inline style is protected.
+const chapterStyle: ChapterBreakProps = { ...chapterBreakProps, style: {} };
+// @ts-expect-error Raw HTML is protected.
+const chapterHtml: ChapterBreakProps = { ...chapterBreakProps, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error No Slot API.
+const chapterSlot: ChapterBreakProps = { ...chapterBreakProps, asChild: true };
+// @ts-expect-error No ref API.
+const chapterRef: ChapterBreakProps = { ...chapterBreakProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Recipe is private.
+type ChapterPrivate = (typeof import('@egdev/ui'))['chapterBreakVariants'];
+// @ts-expect-error Media recipe is private.
+type ChapterMediaPrivate = (typeof import('@egdev/ui'))['chapterBreakMediaVariants'];
+export type ChapterNegatives = [typeof chapterMissingTitle, typeof chapterMissingLevel, typeof chapterChildren, typeof chapterLevel, typeof chapterRole, typeof chapterStyle, typeof chapterHtml, typeof chapterSlot, typeof chapterRef, ChapterPrivate, ChapterMediaPrivate];
 export const closingProps: ClosingProps = { title: 'Build ', level: 2, id: 'closing-title', accent: 'together', media: createElement('span', null, 'Decorative'), children: [createElement('a', { key: 'one', href: '#one' }, 'One'), createElement('a', { key: 'two', href: '#two' }, 'Two')] };
 export function ClosingSamples() { return createElement(Closing, closingProps); }
 // @ts-expect-error Title is required.
@@ -4661,6 +4688,34 @@ function assertBlogGridConsumerCSS(css) {
   assert.match(block(css, /@layer components\s*\{/), /\.eg-blog-grid/);
 }
 
+function assertChapterBreakConsumerCSS(css) {
+  function block(text, pattern) {
+    const match = pattern.exec(text);
+    assert.ok(match, `Missing CSS block ${pattern}`);
+    let depth = 1;
+    for (let i = match.index + match[0].length; i < text.length; i++) {
+      if (text[i] === '\\') {
+        i++;
+      } else if (text[i] === '{') {
+        depth++;
+      } else if (text[i] === '}' && --depth === 0) {
+        return text.slice(match.index, i + 1);
+      }
+    }
+    assert.fail('Unclosed CSS block');
+  }
+  const utilities = block(css, /@layer utilities\s*\{/);
+  const compact = block(utilities, /@media\s*\(\s*width\s*<=\s*860px\s*\)\s*\{/);
+  for (const suffix of ['grid-cols-1', 'gap-2', 'order-first', 'w-[min(100%,34svh,calc(var(--space-24)*4))]']) {
+    const name = `[@media(width<=860px)]:${suffix}`;
+    assert.ok(compact.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing bounded ${name}`);
+  }
+  assert.match(utilities, /grid-template-columns:\s*minmax\(0,\s*1\.25fr\)\s+minmax\(0,\s*1fr\)/);
+  assert.match(utilities, /width:\s*min\(100%,\s*58vh\)/);
+  assert.match(compact, /width:\s*min\(100%,\s*34svh,\s*(?:calc\()?var\(--space-24(?:,\s*[^)]*)?\)\s*\*\s*4\)?\)/);
+  assert.doesNotMatch(utilities, /\.eg-chapter-break\s*\{/);
+}
+
 function assertClosingConsumerCSS(css) {
   function block(text, pattern) {
     const match = pattern.exec(text);
@@ -4977,6 +5032,8 @@ ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
 ${assertLiveBandConsumerCSS.toString()}
 assertLiveBandConsumerCSS(shippedStyles);
+${assertChapterBreakConsumerCSS.toString()}
+assertChapterBreakConsumerCSS(shippedStyles);
 ${assertClosingConsumerCSS.toString()}
 assertClosingConsumerCSS(shippedStyles);
 ${assertHeroConsumerCSS.toString()}
@@ -5035,6 +5092,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ButtonGroup',
   'CalendarGrid',
   'Carousel',
+  'ChapterBreak',
   'Checkbox',
   'Chip',
   'ChipGroup',
@@ -5411,6 +5469,30 @@ assert.equal(notesLink.querySelector('time').getAttribute('datetime'), '2026-09-
 assert.equal(notesLink.querySelector('[aria-hidden="true"]').textContent, '→');
 assert.equal(notesBoard.querySelector('a a'), null);
 notesDocument.window.close();
+const { ChapterBreakSamples } = await import('./consumer.ts');
+for (const empty of [false, true]) {
+  const dom = new JSDOM(renderToString(createElement(ChapterBreakSamples, { empty })));
+  try {
+    const root = dom.window.document.querySelector('.eg-chapter-break');
+    assert.ok(root);
+    const grid = root.firstElementChild;
+    if (empty) {
+      assert.equal(root.querySelector('h3')?.textContent, 'Plain');
+      assert.equal(grid.children.length, 1);
+      assert.ok(grid.classList.contains('grid-cols-1'));
+      assert.equal(grid.classList.contains('grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]'), false);
+    } else {
+      const media = grid.lastElementChild;
+      assert.equal(root.querySelector('h2')?.id, 'chapter-title');
+      assert.equal(root.querySelector('h2')?.textContent, 'Build together');
+      assert.equal(media.getAttribute('aria-hidden'), 'true');
+      assert.equal(media.textContent, 'Decorative');
+      assert.ok(grid.firstElementChild.contains(root.querySelector('h2')));
+      for (const name of ['grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]', '[@media(width<=860px)]:grid-cols-1', '[@media(width<=860px)]:gap-2']) assert.ok(grid.classList.contains(name));
+      for (const name of ['w-[min(100%,58vh)]', '[@media(width<=860px)]:order-first', '[@media(width<=860px)]:w-[min(100%,34svh,calc(var(--space-24)*4))]']) assert.ok(media.classList.contains(name));
+    }
+  } finally { dom.window.close(); }
+}
 const { ClosingSamples } = await import('./consumer.ts');
 {
   const dom = new JSDOM(renderToString(createElement(ClosingSamples)));
