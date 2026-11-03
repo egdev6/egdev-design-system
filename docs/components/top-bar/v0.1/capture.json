@@ -1,0 +1,85 @@
+{
+  "component": "top-bar",
+  "specVersion": "0.1",
+  "spec": "docs/components/top-bar/v0.1/spec.md",
+  "specContentSHA256": "2593857a726c34d8af012ff9195fcbe4d9819a19b447103eceb707d017a46ac6",
+  "status": "Proposed — expected-design evidence for owner review; adoption and publication pending. Visual conformity: Not evaluated.",
+  "capturedFrom": {
+    "authority": "odd/tasks/web-catalog.md L6, L15 and L25; parent-provided capture",
+    "sourceRoot": "/home/egdev/proyectos/egdev-website/egdev-foundation",
+    "readOnly": true,
+    "notes": "Parent rendered the Foundation preview read-only; this worker did not recapture or modify the supplied images or capture-raw.json."
+  },
+  "harness": {
+    "script": "/tmp/egdev-sbcheck/capture-layer-d-b1.mjs",
+    "page": "/tmp/egdev-sbcheck/harness-layer-d-b1-top-bar.html",
+    "stylesheets": [
+      {
+        "path": "design-system/tokens.css",
+        "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e"
+      },
+      {
+        "path": "design-system/components/bundle.css",
+        "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe"
+      }
+    ],
+    "transformations": [
+      "Preview rendered in a harness with authored Foundation stylesheets; runtime /_blob/5c01b9d348f8d19c8099b2804624765d resolved to reference-web/assets/logo-wordmark.svg."
+    ]
+  },
+  "conditions": {
+    "browser": "chrome-headless-shell 1243 (Playwright core)",
+    "deviceScaleFactor": 2,
+    "colorScheme": "dark",
+    "reducedMotion": "no-preference",
+    "locale": "en-US",
+    "crop": "component preview board .pv",
+    "animations": "disabled during screenshot",
+    "fonts": {
+      "status": "loaded",
+      "loadedFaces": [
+        "Barlow 400",
+        "Barlow 500",
+        "Barlow 600",
+        "Barlow 700",
+        "Barlow Condensed 600",
+        "Barlow Condensed 800",
+        "JetBrains Mono 500"
+      ]
+    },
+    "image": {
+      "asset": "reference-web/assets/logo-wordmark.svg",
+      "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2",
+      "natural": "653x258",
+      "complete": true
+    },
+    "verificationLimits": "Static preview examples only; desktop frames are scaled. No runtime DS comparison, live scrolling, focus, reduced-transparency or assistive-technology validation."
+  },
+  "visuals": [
+    {
+      "id": "VIS-01",
+      "file": "top-bar--variants--1280--dark.png",
+      "pngSha256": "4472d21dd0d5f12375972ca309a75a0d067ce63278e6e36eb4b741e2a961f25b",
+      "pngBytes": 299347,
+      "viewport": { "width": 1280, "height": 1400 },
+      "boardRectCssPx": { "width": 1280, "height": 1293.5625 },
+      "date": "2026-11-03T06:35:57.350Z",
+      "alt": "Four labelled examples: transparent desktop, glass desktop with user menu open, compact closed and compact with mobile menu open."
+    },
+    {
+      "id": "VIS-02",
+      "file": "top-bar--variants--390--dark.png",
+      "pngSha256": "dbdd553b8f813cf5792d7932ac6fb07c37031c71eb73ca4b759b2c7ac7240a7a",
+      "pngBytes": 164399,
+      "viewport": { "width": 390, "height": 1400 },
+      "boardRectCssPx": { "width": 390, "height": 1248.25 },
+      "date": "2026-11-03T06:35:59.094Z",
+      "alt": "The same four labelled Foundation preview examples on a narrow board."
+    }
+  ],
+  "source": {
+    "preview": "design-system/components/TopBar/preview.html",
+    "previewSha256": "b015059f41fb5c5b58cc06755e956e29a9e0c1bca31b6b4a75f8ee973afd25c0",
+    "rawCapture": "docs/components/top-bar/v0.1/capture-raw.json"
+  }
+}

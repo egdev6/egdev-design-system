@@ -1,0 +1,51 @@
+{
+  "component": "section-shell",
+  "specVersion": "0.1",
+  "spec": "docs/components/section-shell/v0.1/spec.md",
+  "specContentSHA256": "8efab611751597184f80f03eb7b6ed405287078d26b971ccb2c746d15f195558",
+  "status": "Proposed; owner adoption pending; visual conformity Not evaluated",
+  "capturedFrom": {
+    "authority": "odd/tasks/web-catalog.md L6, L15, L25",
+    "readOnly": true,
+    "sourceRoot": "egdev-website/egdev-foundation/design-system",
+    "notes": "No website files modified; original preview fragment wrapped in temporary HTML with authored tokens.css and components/bundle.css linked by file URL. HTTPS requests aborted."
+  },
+  "harness": {
+    "directory": "/tmp/egdev-sbcheck-d1",
+    "script": "/tmp/egdev-sbcheck-d1/capture.cjs",
+    "generatedPage": "/tmp/egdev-sbcheck-d1/preview.html"
+  },
+  "sources": [
+    {
+      "path": "components/SectionShell/README.md",
+      "sha256": "0d82a9938497094ec8279f33e741228b36a5d873abb6079ecb8454bd2fb0a5ba"
+    },
+    {
+      "path": "components/SectionShell/preview.html",
+      "sha256": "105329435ffb30b4f42cb0c022f6a1a9099bb9fe49fc9019fe8821966f3268c3"
+    },
+    { "path": "tokens.css", "sha256": "1c92acb850695d6093e7e3eb988d66152ffd7bb1592dba744f8433d9051da30e" },
+    { "path": "components/bundle.css", "sha256": "04797068bfc9de49a02b8fbdb54c12e336f19dae04a1616ce23fd8bf8c2d70fe" }
+  ],
+  "conditions": {
+    "browser": "HeadlessChrome/153.0.8010.12, chromium_headless_shell-1243 via playwright-core",
+    "viewport": { "width": 1280, "height": 1400 },
+    "deviceScaleFactor": 2,
+    "colorScheme": "dark",
+    "locale": "en-US",
+    "reducedMotion": "no-preference",
+    "animations": "disabled during screenshot",
+    "crop": "preview board .pv, four sections; 1264 x 687.328125 CSS pixels",
+    "fonts": "document.fonts.ready awaited; Barlow and Barlow Condensed reported loaded; source not verified; JetBrains Mono unloaded; HTTPS blocked",
+    "limits": "Preview sets section-min-height to 250px; does not cover Grafito, fades, mobile, reduced transparency or actual viewport height. Browser capture is not approval or implementation evidence."
+  },
+  "visuals": [
+    {
+      "id": "VIS-01",
+      "file": "section-shell--registers--1280x1400--dark.png",
+      "pngSha256": "da7aa002707b0c66dec602c72c5ae3f376226d928de32968dee438a47b83b4c7",
+      "pixelSize": { "width": 2528, "height": 1376 },
+      "alt": "Four sample sections in a two-column board: Pro without halo, Show with red halo, Flood with red background and black text, and Deep with dark red background and light text; dashed lines indicate the compensated navigation height."
+    }
+  ]
+}
