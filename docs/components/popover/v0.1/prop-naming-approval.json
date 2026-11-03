@@ -1,0 +1,35 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the close-auto-focus convention for the Popover close auto-focus event.",
+  "evidence": {
+    "channel": "docs/components/popover/v0.1/close-autofocus-amendment.md",
+    "ownerChoice": "Enmienda acotada de Popover: exponer onCloseAutoFocus (Recomendado)",
+    "interpretation": "The owner approved the bounded Popover amendment and its naming registration; this does not generalize to other Radix events. Not native review authority."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/pixel/v0.1/prop-naming-approval.json",
+      "wholeFileSHA256": "sha256:ac544212857673f1d6a3ae1ff6233280b986d895b0a27abd855661ca079ac12d"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:close-auto-focus",
+      "contentHash": "sha256:b9f602240d7a29f2c2425602a42b6969ad05a5069bd0f4dd2c2f912496272f60",
+      "convention": {
+        "id": "close-auto-focus",
+        "name": "onCloseAutoFocus",
+        "meaning": "Callback invoked before Popover returns focus on close.",
+        "whenToUse": "Allow a consumer to prevent focus return after real navigation moves focus to a destination.",
+        "avoid": "Do not suppress focus return after Escape or outside interaction, or generalize to other Radix events.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

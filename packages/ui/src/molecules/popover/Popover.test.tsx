@@ -26,6 +26,35 @@ function Example(props: Omit<PopoverProps, 'children'>) {
 }
 
 describe('Popover public contract', () => {
+  it('accepts the close auto-focus callback in its public type', () => {
+    expectTypeOf<PopoverContentProps>()
+      .toHaveProperty('onCloseAutoFocus')
+      .toEqualTypeOf<((event: Event) => void) | undefined>();
+  });
+
+  it('lets the consumer prevent close auto-focus without moving focus', async () => {
+    const onCloseAutoFocus = vi.fn((event: Event) => event.preventDefault());
+    const { rerender } = render(
+      <Popover open={true}>
+        <PopoverTrigger>Settings</PopoverTrigger>
+        <PopoverContent label='Settings' onCloseAutoFocus={onCloseAutoFocus}>
+          Details
+        </PopoverContent>
+      </Popover>
+    );
+    expect(screen.getByRole('dialog')).toHaveFocus();
+    rerender(
+      <Popover open={false}>
+        <PopoverTrigger>Settings</PopoverTrigger>
+        <PopoverContent label='Settings' onCloseAutoFocus={onCloseAutoFocus}>
+          Details
+        </PopoverContent>
+      </Popover>
+    );
+    await waitFor(() => expect(onCloseAutoFocus).toHaveBeenCalledOnce());
+    expect(screen.getByRole('button', { name: 'Settings' })).not.toHaveFocus();
+  });
+
   it('excludes consumer Content id under A1', () => {
     expectTypeOf<PopoverContentProps>().not.toHaveProperty('id');
   });

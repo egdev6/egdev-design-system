@@ -18,7 +18,7 @@ let docs: ReturnType<typeof parser.parse>;
 const expected = {
   popover: { children: false, open: 'boolean', defaultOpen: 'boolean', onOpenChange: false, modal: 'boolean' },
   popovertrigger: { children: false, asChild: 'boolean' },
-  popovercontent: { children: false, label: 'text', side: 'select', align: 'select' },
+  popovercontent: { children: false, label: 'text', onCloseAutoFocus: false, side: 'select', align: 'select' },
   popoverclose: { children: false, asChild: 'boolean' }
 } as const;
 
@@ -106,7 +106,7 @@ describe('Popover Storybook metadata', () => {
       ts.forEachChild(node, visit);
     };
     visit(file);
-    expect(count).toBe(13);
+    expect(count).toBe(14);
   });
 
   it('registers static molecule scanning and stories without a new stylesheet or manual argTypes', () => {

@@ -325,7 +325,7 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/molecules/popover/types.ts#PopoverProps'
   })),
-  ...['accessible-name', 'floating-side', 'floating-align'].map((conventionId) => ({
+  ...['accessible-name', 'floating-side', 'floating-align', 'close-auto-focus'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/popover/types.ts#PopoverContentProps'
   })),
@@ -772,6 +772,39 @@ test('post-receipt usages exist with valid source evidence', () => {
     );
   }
 });
+test('Popover binds the approved close auto-focus convention and reviewed usage', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/popover/v0.1/prop-naming-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const entry = registry.find(({ id }) => id === 'close-auto-focus');
+  const { approval, usages, ...convention } = entry;
+  assert.equal(receipt.evidence.ownerChoice, 'Enmienda acotada de Popover: exponer onCloseAutoFocus (Recomendado)');
+  assert.deepEqual(receipt.entries, [
+    { scope: 'convention:close-auto-focus', contentHash: props.conventionHash(entry), convention }
+  ]);
+  assert.deepEqual(approval, {
+    reference,
+    scope: receipt.entries[0].scope,
+    contentHash: receipt.entries[0].contentHash
+  });
+  const path = 'packages/ui/src/molecules/popover/types.ts';
+  assert.deepEqual(usages, [
+    {
+      component: 'PopoverContent',
+      type: '(event: Event) => void',
+      status: 'existing',
+      source: { path, symbol: 'PopoverContentProps', revision: digest(fs.readFileSync(resolve(root, path))) }
+    }
+  ]);
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(prior.wholeFileSHA256, digest(fs.readFileSync(resolve(root, prior.path))));
+  }
+  const changed = structuredClone(registry);
+  changed.find(({ id }) => id === entry.id).meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+  validate(registry);
+});
+
 test('Pixel widens the existing condition convention with recoverable approved history', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const entry = registry.find(({ id }) => id === 'consumer-selected-condition');
@@ -967,8 +1000,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   validate(actual);
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
-  assert.equal(actual.length, 150);
-  assert.equal(beforeIndicatorConventions(actual).length, 147);
+  assert.equal(actual.length, 151);
+  assert.equal(beforeIndicatorConventions(actual).length, 148);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -1087,7 +1120,8 @@ const receiptChain = [
   'docs/components/article-feature/v0.1/prop-naming-approval.json',
   'docs/components/section-shell/v0.1/prop-naming-approval.json',
   'docs/components/notes-board/v0.1/prop-naming-approval.json',
-  'docs/components/pixel/v0.1/prop-naming-approval.json'
+  'docs/components/pixel/v0.1/prop-naming-approval.json',
+  'docs/components/popover/v0.1/prop-naming-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -2641,7 +2675,12 @@ test('Isotipo3D naming receipt preserves 125 entries and binds three scoped appr
   assert.equal(
     digest(
       `${JSON.stringify(
-        registryBeforeSemanticAmendments(historicalRegistry(actual).slice(0, 125), isotipoReference),
+        registryBeforeSemanticAmendments(
+          historicalRegistry(actual)
+            .filter(({ id }) => id !== 'close-auto-focus')
+            .slice(0, 125),
+          isotipoReference
+        ),
         null,
         2
       )}\n`

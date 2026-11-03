@@ -1,5 +1,32 @@
 [
   {
+    "id": "close-auto-focus",
+    "name": "onCloseAutoFocus",
+    "meaning": "Callback invoked before Popover returns focus on close.",
+    "whenToUse": "Allow a consumer to prevent focus return after real navigation moves focus to a destination.",
+    "avoid": "Do not suppress focus return after Escape or outside interaction, or generalize to other Radix events.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/popover/v0.1/prop-naming-approval.json",
+      "scope": "convention:close-auto-focus",
+      "contentHash": "sha256:b9f602240d7a29f2c2425602a42b6969ad05a5069bd0f4dd2c2f912496272f60"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "PopoverContent",
+        "type": "(event: Event) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/popover/types.ts",
+          "symbol": "PopoverContentProps",
+          "revision": "sha256:b6397ad1b70dd859c32d4132f31bc302032ee7e2ace15338219817dca43d6bde"
+        }
+      }
+    ]
+  },
+  {
     "id": "primary-value",
     "name": "value",
     "meaning": "The selected value or displayed measurement; domain and type are component-specific.",
@@ -1530,7 +1557,7 @@
         "source": {
           "path": "packages/ui/src/molecules/popover/types.ts",
           "symbol": "PopoverContentProps",
-          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+          "revision": "sha256:b6397ad1b70dd859c32d4132f31bc302032ee7e2ace15338219817dca43d6bde"
         }
       },
       {
@@ -2461,7 +2488,7 @@
         "source": {
           "path": "packages/ui/src/molecules/popover/types.ts",
           "symbol": "PopoverTriggerProps",
-          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+          "revision": "sha256:b6397ad1b70dd859c32d4132f31bc302032ee7e2ace15338219817dca43d6bde"
         }
       },
       {
@@ -2471,7 +2498,7 @@
         "source": {
           "path": "packages/ui/src/molecules/popover/types.ts",
           "symbol": "PopoverCloseProps",
-          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+          "revision": "sha256:b6397ad1b70dd859c32d4132f31bc302032ee7e2ace15338219817dca43d6bde"
         }
       },
       {
@@ -3240,7 +3267,7 @@
         "source": {
           "path": "packages/ui/src/molecules/popover/types.ts",
           "symbol": "PopoverContentProps",
-          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+          "revision": "sha256:b6397ad1b70dd859c32d4132f31bc302032ee7e2ace15338219817dca43d6bde"
         }
       }
     ]
@@ -4026,7 +4053,7 @@
         "source": {
           "path": "packages/ui/src/molecules/popover/types.ts",
           "symbol": "PopoverContentProps",
-          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+          "revision": "sha256:b6397ad1b70dd859c32d4132f31bc302032ee7e2ace15338219817dca43d6bde"
         }
       },
       {
@@ -4103,7 +4130,7 @@
         "source": {
           "path": "packages/ui/src/molecules/popover/types.ts",
           "symbol": "PopoverProps",
-          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+          "revision": "sha256:b6397ad1b70dd859c32d4132f31bc302032ee7e2ace15338219817dca43d6bde"
         }
       },
       {
@@ -4190,7 +4217,7 @@
         "source": {
           "path": "packages/ui/src/molecules/popover/types.ts",
           "symbol": "PopoverProps",
-          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+          "revision": "sha256:b6397ad1b70dd859c32d4132f31bc302032ee7e2ace15338219817dca43d6bde"
         }
       },
       {
@@ -4277,7 +4304,7 @@
         "source": {
           "path": "packages/ui/src/molecules/popover/types.ts",
           "symbol": "PopoverProps",
-          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+          "revision": "sha256:b6397ad1b70dd859c32d4132f31bc302032ee7e2ace15338219817dca43d6bde"
         }
       },
       {
@@ -5105,7 +5132,7 @@
         "source": {
           "path": "packages/ui/src/molecules/popover/types.ts",
           "symbol": "PopoverProps",
-          "revision": "sha256:f5c4d5fd52630fba8d7bbebb433642b5fc5d7c33de8fe832257376829c4dfe96"
+          "revision": "sha256:b6397ad1b70dd859c32d4132f31bc302032ee7e2ace15338219817dca43d6bde"
         }
       }
     ]
