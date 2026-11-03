@@ -22,7 +22,7 @@ One honest slicing pass keeps these cohesive units. The core slice remains over 
 Every child PR targets its immediate parent, carries the repository PR template plus its own chain diagram/dependency/scope/verification section, and is checked against that base. The tracker remains draft/no-merge until the child chain has been reviewed and integrated. Publishing and native review consent retain their independent authority boundaries. HomeTemplate implementation is excluded.
 
 
-## Published chain — awaiting review/integration
+## Initial publication — historical state before integration
 
 - Canonical issue: [#330](https://github.com/egdev6/egdev-design-system/issues/330), owner-approved and assigned to `egdev6`.
 - Tracker: [#332](https://github.com/egdev6/egdev-design-system/pull/332), **draft/no-merge**, targeting `main`.
@@ -30,8 +30,19 @@ Every child PR targets its immediate parent, carries the repository PR template 
 - Core and tests: [#334](https://github.com/egdev6/egdev-design-system/pull/334), targeting the contract branch.
 - Integration/evidence: [#335](https://github.com/egdev6/egdev-design-system/pull/335), targeting the core branch.
 
-All initial remote HEADs, PR bodies/base branches, single type labels, draft status and `egdev6` assignments were read back and verified. The post-maintenance push passed the real 2594-test hook. No ScrollReveal PR has been merged and issue #330 stays open.
+All initial remote HEADs, PR bodies/base branches, single type labels, draft status and `egdev6` assignments were read back and verified. The post-maintenance push passed the real 2594-test hook. At that publication point no ScrollReveal PR had been merged; issue #330 stays open.
 
 Separate prerequisite maintenance [#331](https://github.com/egdev6/egdev-design-system/pull/331) is merged at `eb1bf539335f730a97a2d37f21c9ff1614b3b6e6`: only three extraction-test timeouts became 20 seconds. Assertions, the hook and global timeout remain unchanged. Normal merges propagated it through the chain; the verified feature source otherwise stayed byte-identical. Rebuild and 65 focused checks passed after propagation; fresh core and integration assessments report medium and reviewDue false.
 
-The next decision is review/merge authorization for the dependent chain, followed by final tracker integration. Publication is not approval to merge and does not mean the feature is on `main`.
+Publication alone was not approval to merge and did not put the feature on `main`; the later explicit decision is recorded below.
+
+
+## Child integration and final merge authorization
+
+Owner choice, verbatim: **"Integrar hijos y mergear #332 a main"**. PRs #333, #334 and #335 are now merged into the tracker (respectively `ca601c35`, `f29ce314`, `02cd372c`). Every squash used current head/base/main guards; the resulting target tree matched the reviewed child head. Successors were normally merged with the updated tracker and retargeted after their parent integrated, keeping each review diff scoped. No force/rebase or hook bypass occurred.
+
+The task-trace conflict preserved the complete incoming line multiset/order (except the explicitly superseded FI1 status) and all unique L1–L60 entries. The full resolved tree matched the verified published leaf `0497c0e` exactly. All feature source remains unchanged by this trace-only closure update.
+
+The final tracker merge to `main` is authorized and remains subject to final head/base/tree guards. The tracker is kept draft until those guards pass. Its issue link is `Refs #330`, not an automatic closing directive: issue closure was not authorized. HomeTemplate remains a separate next specification, not part of this feature.
+
+This section is the pre-merge authorization/guard record; the durable [#332 merge state](https://github.com/egdev6/egdev-design-system/pull/332) is authoritative for final integration, rather than a prediction of the future merge commit.
