@@ -35,7 +35,7 @@ const meta = {
   component: Closing,
   tags: ['autodocs'],
   args: { title: 'Keep building', level: 2, children: actions },
-  decorators: [(Story) => <SceneHost>{(id) => <Story args={{ id }} />}</SceneHost>]
+  decorators: [(Story, context) => <SceneHost>{(id) => <Story args={{ ...context.args, id }} />}</SceneHost>]
 } satisfies Meta<typeof Closing>;
 export default meta;
 type Story = StoryObj<typeof meta>;

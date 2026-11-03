@@ -1084,9 +1084,9 @@
     "nivel": "organism",
     "destino": "ui",
     "radix": "—",
-    "compone": "Text, Button",
+    "compone": "Heading, Text; consumer Button, Link and SectionShell",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): slot-based scene organism; copy and CTAs are inputs and it runs no choreography."
+    "notas": "Implemented React organism under the approved v0.1 contract (#319): passive concluding scene with consumer-supplied copy, CTAs and decorative media. The host owns the section and effects; no effect import or choreography."
   },
   {
     "actual": "NotesBoard",

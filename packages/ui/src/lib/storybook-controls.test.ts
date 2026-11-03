@@ -123,7 +123,8 @@ const components = [
   ['TopBarSearchFull', 'organisms/top-bar'],
   ['TopBarUserMenu', 'organisms/top-bar'],
   ['Pixel', 'atoms/pixel'],
-  ['SectionNav', 'organisms/section-nav']
+  ['SectionNav', 'organisms/section-nav'],
+  ['Closing', 'organisms/closing']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -173,6 +174,15 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  closing: {
+    title: 'text',
+    level: 'select',
+    eyebrow: 'text',
+    accent: 'text',
+    lede: 'text',
+    children: false,
+    media: false
+  },
   sectionnav: {
     label: 'text',
     disclosureLabel: 'text',
@@ -598,6 +608,7 @@ const expected: Record<string, Record<string, string | false>> = {
   terminalcardlist: { items: false, className: 'text' }
 };
 const ownPropCounts: Record<string, number> = {
+  closing: 7,
   sectionnav: 10,
   pixel: 1,
   notesboard: 2,

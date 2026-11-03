@@ -620,6 +620,9 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/atoms/countdown/types.ts#CountdownProps'
   })),
+  ...['heading-title', 'heading-level', 'heading-eyebrow', 'trailing-text-accent', 'section-lede'].map(
+    (conventionId) => ({ conventionId, source: 'packages/ui/src/organisms/closing/types.ts#ClosingProps' })
+  ),
   { conventionId: 'consumer-selected-condition', source: 'packages/ui/src/atoms/pixel/types.ts#PixelProps' },
   { conventionId: 'board-sticky-side', source: 'packages/ui/src/organisms/notes-board/types.ts#NotesBoardProps' },
   ...[

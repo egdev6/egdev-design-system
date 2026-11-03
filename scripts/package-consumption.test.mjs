@@ -36,6 +36,8 @@ import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows }
 import type { BlogGridProps, BlogGridArchiveProps, BlogGridFeatureProps, BlogGridRowProps, BlogGridRowsProps } from '@egdev/ui';
 import { LiveBandField, LiveBandList, LiveBandRow, LiveBandRows, LiveBandStreams, LiveBandVod } from '@egdev/ui';
 import type { LiveBandFieldProps, LiveBandListProps, LiveBandRowProps, LiveBandRowsProps, LiveBandStreamsProps, LiveBandVodProps } from '@egdev/ui';
+import { Closing } from '@egdev/ui';
+import type { ClosingProps } from '@egdev/ui';
 import { SectionNav } from '@egdev/ui';
 import type { SectionNavItem, SectionNavProps } from '@egdev/ui';
 import { NowStrip } from '@egdev/ui';
@@ -428,6 +430,31 @@ const blogPartClass: BlogGridFeatureProps = { ...blogFeature, className: 'extra'
 // @ts-expect-error Recipes remain private.
 type BlogGridPrivate = (typeof import('@egdev/ui'))['blogGridVariants'];
 export type BlogGridNegatives = [typeof blogMissing, typeof blogHtml, typeof blogSlot, typeof blogRef, typeof blogPartClass, BlogGridPrivate];
+export const closingProps: ClosingProps = { title: 'Build ', level: 2, id: 'closing-title', accent: 'together', media: createElement('span', null, 'Decorative'), children: [createElement('a', { key: 'one', href: '#one' }, 'One'), createElement('a', { key: 'two', href: '#two' }, 'Two')] };
+export function ClosingSamples() { return createElement(Closing, closingProps); }
+// @ts-expect-error Title is required.
+const closingMissingTitle: ClosingProps = { level: 2, children: null };
+// @ts-expect-error Heading rank is required.
+const closingMissingLevel: ClosingProps = { title: 'Title', children: null };
+// @ts-expect-error CTA children are required.
+const closingMissingChildren: ClosingProps = { title: 'Title', level: 2 };
+// @ts-expect-error Heading rank is limited to native levels.
+const closingLevel: ClosingProps = { ...closingProps, level: 7 };
+// @ts-expect-error Root role is protected.
+const closingRole: ClosingProps = { ...closingProps, role: 'region' };
+// @ts-expect-error Inline style is protected.
+const closingStyle: ClosingProps = { ...closingProps, style: {} };
+// @ts-expect-error Raw HTML is protected.
+const closingHtml: ClosingProps = { ...closingProps, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error No Slot API.
+const closingSlot: ClosingProps = { ...closingProps, asChild: true };
+// @ts-expect-error No ref API.
+const closingRef: ClosingProps = { ...closingProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Recipe is private.
+type ClosingPrivate = (typeof import('@egdev/ui'))['closingVariants'];
+// @ts-expect-error Media recipe is private.
+type ClosingMediaPrivate = (typeof import('@egdev/ui'))['closingMediaVariants'];
+export type ClosingNegatives = [typeof closingMissingTitle, typeof closingMissingLevel, typeof closingMissingChildren, typeof closingLevel, typeof closingRole, typeof closingStyle, typeof closingHtml, typeof closingSlot, typeof closingRef, ClosingPrivate, ClosingMediaPrivate];
 const sectionNavItems: SectionNavItem[] = [{ id: 'one', label: 'One', href: '#one' }, { id: 'two', label: 'Two', href: '#two' }];
 export const sectionNavProps: SectionNavProps = { label: 'Sections', disclosureLabel: 'Open index', nextLabel: 'Next section', items: sectionNavItems, activeId: 'one', value: 50 };
 export function SectionNavSamples() { return createElement(SectionNav, sectionNavProps); }
@@ -4615,6 +4642,35 @@ function assertBlogGridConsumerCSS(css) {
   assert.match(block(css, /@layer components\s*\{/), /\.eg-blog-grid/);
 }
 
+function assertClosingConsumerCSS(css) {
+  function block(text, pattern) {
+    const match = pattern.exec(text);
+    assert.ok(match, `Missing CSS block ${pattern}`);
+    let depth = 1;
+    for (let i = match.index + match[0].length; i < text.length; i++) {
+      if (text[i] === '\\') {
+        i++;
+      } else if (text[i] === '{') {
+        depth++;
+      } else if (text[i] === '}' && --depth === 0) {
+        return text.slice(match.index, i + 1);
+      }
+    }
+    assert.fail('Unclosed CSS block');
+  }
+  const utilities = block(css, /@layer utilities\s*\{/);
+  const compact = block(utilities, /@media\s*\(\s*width\s*<=\s*860px\s*\)\s*\{/);
+  for (const suffix of ['grid-cols-1', 'gap-2', 'order-first', 'w-[min(100%,34svh,calc(var(--space-24)*4))]']) {
+    const name = `[@media(width<=860px)]:${suffix}`;
+    assert.ok(compact.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing bounded ${name}`);
+  }
+  assert.match(utilities, /grid-template-columns:\s*minmax\(0,\s*1\.25fr\)\s+minmax\(0,\s*1fr\)/);
+  assert.match(utilities, /width:\s*min\(100%,\s*62vh\)/);
+  assert.match(compact, /width:\s*min\(100%,\s*34svh,\s*(?:calc\()?var\(--space-24(?:,\s*[^)]*)?\)\s*\*\s*4\)?\)/);
+  assert.doesNotMatch(utilities, /\.eg-closing\s*\{/);
+  assert.match(block(css, /@layer components\s*\{/), /\.eg-closing/);
+}
+
 function assertSectionNavConsumerCSS(css) {
   function block(text, pattern) {
     const match = pattern.exec(text);
@@ -4862,6 +4918,8 @@ ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
 ${assertLiveBandConsumerCSS.toString()}
 assertLiveBandConsumerCSS(shippedStyles);
+${assertClosingConsumerCSS.toString()}
+assertClosingConsumerCSS(shippedStyles);
 ${assertSectionNavConsumerCSS.toString()}
 assertSectionNavConsumerCSS(shippedStyles);
 ${assertNowStripConsumerCSS.toString()}
@@ -4919,6 +4977,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Checkbox',
   'Chip',
   'ChipGroup',
+  'Closing',
   'Cluster',
   'Collapsible',
   'CollapsibleContent',
@@ -5290,6 +5349,24 @@ assert.equal(notesLink.querySelector('time').getAttribute('datetime'), '2026-09-
 assert.equal(notesLink.querySelector('[aria-hidden="true"]').textContent, '→');
 assert.equal(notesBoard.querySelector('a a'), null);
 notesDocument.window.close();
+const { ClosingSamples } = await import('./consumer.ts');
+{
+  const dom = new JSDOM(renderToString(createElement(ClosingSamples)));
+  try {
+    const root = dom.window.document.querySelector('.eg-closing');
+    assert.ok(root);
+    const grid = root.firstElementChild;
+    const media = grid.lastElementChild;
+    assert.equal(root.querySelector('h2')?.id, 'closing-title');
+    assert.equal(root.querySelector('h2')?.textContent, 'Build together');
+    assert.equal(media.getAttribute('aria-hidden'), 'true');
+    assert.equal(media.textContent, 'Decorative');
+    for (const name of ['[@media(width<=860px)]:grid-cols-1', '[@media(width<=860px)]:gap-2']) assert.ok(grid.classList.contains(name));
+    for (const name of ['[@media(width<=860px)]:order-first', '[@media(width<=860px)]:w-[min(100%,34svh,calc(var(--space-24)*4))]']) assert.ok(media.classList.contains(name));
+    assert.deepEqual([...root.querySelectorAll('a')].map((a) => a.getAttribute('href')), ['#one', '#two']);
+    assert.ok(grid.firstElementChild.contains(root.querySelector('h2')));
+  } finally { dom.window.close(); }
+}
 const { SectionNavSamples } = await import('./consumer.ts');
 {
   const dom = new JSDOM(renderToString(createElement(SectionNavSamples)));

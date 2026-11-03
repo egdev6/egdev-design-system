@@ -4688,6 +4688,16 @@
     },
     "usages": [
       {
+        "component": "Closing",
+        "type": "string (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+        }
+      },
+      {
         "component": "AlertDialogContent",
         "type": "string (required)",
         "status": "existing",
@@ -4804,6 +4814,16 @@
       "contentHash": "sha256:3235f5126f7405ae3956b969186d33c48c302b42c2a40d169c9d2f11e1d12ead"
     },
     "usages": [
+      {
+        "component": "Closing",
+        "type": "1 | 2 | 3 | 4 | 5 | 6 (required)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+        }
+      },
       {
         "component": "ModuleCard",
         "type": "ModuleCardLevel (1|2|3|4|5|6)",
@@ -5113,6 +5133,16 @@
     },
     "usages": [
       {
+        "component": "Closing",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+        }
+      },
+      {
         "component": "PageHeader",
         "type": "string",
         "status": "existing",
@@ -5297,6 +5327,16 @@
       "contentHash": "sha256:6ad8880449dfe520919a4dcd2b6cfeb8f16c20a842553c86c89acb3180f40d6b"
     },
     "usages": [
+      {
+        "component": "Closing",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+        }
+      },
       {
         "component": "SectionHeader",
         "type": "string",
@@ -5529,6 +5569,16 @@
       "contentHash": "sha256:ef61567892d3f63443d04376c139f0c65a817818da8a3ef4b69f9aa80e1e9235"
     },
     "usages": [
+      {
+        "component": "Closing",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+        }
+      },
       {
         "component": "SectionHeader",
         "type": "string",
