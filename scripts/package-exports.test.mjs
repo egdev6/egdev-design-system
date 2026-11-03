@@ -20,6 +20,82 @@ function artifact(name, target) {
   return path;
 }
 
+test('SectionShell ships scanned utilities and named section SSR (SS-07)', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const recipes = {
+    pro: 'bg-transparent',
+    show: 'bg-[image:var(--gradient-section-show)]',
+    flood: 'bg-bg-flood',
+    deep: 'bg-bg-deep',
+    grafito: 'bg-surface-0/50'
+  };
+  for (const [register, recipe] of Object.entries(recipes)) {
+    for (const wrap of [true, false]) {
+      const html = renderToString(
+        createElement(exported.SectionShell, { 'aria-label': register, register, wrap, children: 'Content' })
+      );
+      assert.match(html, /<section[^>]*aria-label=/);
+      assert.match(html, /eg-section/);
+      assert.ok(html.includes(recipe), `Missing ${register} recipe`);
+      assert.equal(html.includes('eg-section__wrap'), wrap);
+      assert.match(html, /Content/);
+    }
+  }
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/templates/section-shell/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function visit(node) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      return;
+    }
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      function collect(child) {
+        if (ts.isPropertyAssignment(child) && child.name.getText(source) === 'defaultVariants') {
+          return;
+        }
+        if (ts.isStringLiteral(child)) {
+          for (const name of child.text.split(/\s+/).filter(Boolean)) {
+            classes.add(name);
+          }
+        } else {
+          ts.forEachChild(child, collect);
+        }
+      }
+      node.arguments.forEach(collect);
+    } else {
+      ts.forEachChild(node, visit);
+    }
+  }
+  visit(source);
+  assert.ok(classes.size > 20);
+  for (const name of classes) {
+    if (!name.startsWith('eg-')) {
+      assert.ok(utilities.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing SectionShell utility ${name}`);
+    }
+  }
+  for (const declaration of [
+    /min-height:\s*var\(--section-min-height[,)]/,
+    /--gradient-section-show/,
+    /prefers-reduced-transparency:\s*reduce/,
+    /--color-bg-flood/,
+    /--color-bg-deep/,
+    /--content-max/,
+    /--gutter/
+  ]) {
+    assert.match(utilities, declaration);
+  }
+  assert.doesNotMatch(utilities, /\.eg-section(?:__wrap)?\s*\{/);
+  assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-section/);
+});
+
 test('tab-bar exports native navigation and its public recipe', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -3885,6 +3961,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'RadioGroup',
       'SearchTrigger',
       'SectionHeader',
+      'SectionShell',
       'Select',
       'SelectTile',
       'Sidebar',
@@ -4315,6 +4392,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SectionHeaderProps',
     'SectionHeaderTone',
     'SectionHeaderVariant',
+    'SectionShell',
+    'SectionShellProps',
+    'SectionShellRegister',
     'Select',
     'SelectOption',
     'SelectProps',

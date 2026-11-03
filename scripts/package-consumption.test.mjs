@@ -28,6 +28,21 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
+import { SectionShell } from '@egdev/ui';
+import type { SectionShellProps, SectionShellRegister } from '@egdev/ui';
+const sectionRegisters: SectionShellRegister[] = ['pro', 'show', 'flood', 'deep', 'grafito'];
+export const sectionProps: SectionShellProps = { children: 'Content', 'aria-label': 'Packed section', id: 'packed-section' };
+export function SectionShellSamples() {
+  return createElement(Fragment, null, ...sectionRegisters.map((register) => createElement(SectionShell, { ...sectionProps, key: register, register, wrap: register !== 'deep' })));
+}
+// @ts-expect-error Protected role.
+const sectionRole: SectionShellProps = { ...sectionProps, role: 'region' };
+// @ts-expect-error Inline style is protected.
+const sectionStyle: SectionShellProps = { ...sectionProps, style: { color: 'red' } };
+// @ts-expect-error Raw HTML is protected.
+const sectionHtml: SectionShellProps = { ...sectionProps, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error Register is a closed set.
+const sectionInvalid: SectionShellProps = { ...sectionProps, register: 'unknown' };
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogCancel, AlertDialogAction } from '@egdev/ui';
 import type { AlertDialogProps, AlertDialogContentProps } from '@egdev/ui';
 import { AppShell, appShellVariants, CalendarGrid, calendarGridVariants, CommandPalette, Dialog, DialogTrigger, DialogContent, DialogClose, TabBar, tabBarVariants } from '@egdev/ui';
@@ -3030,7 +3045,11 @@ function assertSurfaceCSS(css) {
   ]) {
     assert.ok(css.includes(value), 'Surface recipe must emit ' + value);
   }
-  assert.match(css, /prefers-reduced-transparency:\s*reduce\)\s*\{\s*\.\\\[\\@media[^{]*bg-surface-2\s*\{/);
+  // The reduced-transparency block may hold other components' rules before Surface's; match within the block only.
+  assert.match(
+    css,
+    /prefers-reduced-transparency:\s*reduce\)\s*\{(?:\s*[^{}]+\{[^{}]*\})*?\s*\.\\\[\\@media[^{]*bg-surface-2\s*\{/
+  );
   assert.match(
     css,
     /@supports not \(backdrop-filter:[^{]+\{\s*\.not-supports-\\\[backdrop-filter\\\]\\:bg-surface-2\s*\{/
@@ -4338,6 +4357,20 @@ function assertTerminalCardConsumerCSS(css) {
   );
 }
 
+function assertSectionShellConsumerCSS(css) {
+  for (const selector of [
+    String.raw`.min-h-\[var\(--section-min-height\)\]`,
+    String.raw`.pt-\[calc\(var\(--nav-height\)\+var\(--space-8\)\)\]`,
+    String.raw`.max-w-\[var\(--content-max\)\]`,
+    String.raw`.px-\[var\(--gutter\)\]`,
+    String.raw`.bg-\[image\:var\(--gradient-section-show\)\]`,
+    String.raw`.\[\&\>\*\]\:w-auto`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing SectionShell utility ' + selector);
+  }
+  assert.match(css, /prefers-reduced-transparency:\s*reduce/);
+}
+
 function assertCommunityCardConsumerCSS(css) {
   // Preserve legacy component-layer CSS; the new recipe must add only scanned utilities.
   assert.ok(css.includes('@layer utilities {'), 'Packed CSS must contain its utilities layer');
@@ -4431,6 +4464,8 @@ assert.doesNotMatch(shippedStyles, /\\.eg-terminal-card__?[a-z]*\\s*[{,]/, 'Term
 assert.ok(readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8').includes('eg-community-card'), 'Packed JS must retain the CommunityCard marker');
 ${assertCommunityCardConsumerCSS.toString()}
 assertCommunityCardConsumerCSS(shippedStyles);
+${assertSectionShellConsumerCSS.toString()}
+assertSectionShellConsumerCSS(shippedStyles);
 ${assertTerminalCardConsumerCSS.toString()}
 assertTerminalCardConsumerCSS(shippedStyles);
 ${assertArticleFeatureConsumerCSS.toString()}
@@ -4546,6 +4581,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'RadioGroup',
   'SearchTrigger',
   'SectionHeader',
+  'SectionShell',
   'Select',
   'SelectTile',
   'Sidebar',
@@ -4802,6 +4838,21 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
+const { SectionShellSamples } = await import('./consumer.ts');
+{
+  const sectionDocument = new JSDOM(renderToString(createElement(SectionShellSamples)));
+  try {
+    const sections = [...sectionDocument.window.document.querySelectorAll('section')];
+    assert.equal(sections.length, 5);
+    for (const section of sections) {
+      assert.equal(section.getAttribute('aria-label'), 'Packed section');
+      assert.ok(section.classList.contains('eg-section'));
+      assert.equal(section.textContent, 'Content');
+    }
+    assert.equal(sections[3].querySelector('.eg-section__wrap'), null);
+    assert.ok(sections[0].querySelector('.eg-section__wrap'));
+  } finally { sectionDocument.window.close(); }
+}
 const { ToastSamples } = await import('./consumer.ts');
 assert.equal(renderToString(createElement(ToastSamples)), '<main>Toast host</main>', 'Toast records stay client-side through Portal');
 import { IndicatorConsumerSamples } from './consumer.ts';
@@ -8116,7 +8167,8 @@ const typography = ${JSON.stringify(typographyNames)};
 // #219 B adds the owner-approved error-vs-focus tokens: 283 + 2 = 285. Unique names: Tailwind
 // emits a color-mix() token on two lines (resolved fallback + @supports var-form override).
 // #126 D17 adds the owner-approved --container-calendar-grid-stack: 285 + 1 = 286.
-assert.equal(names.length, 286, 'Packed native artifact must expose 286 variables');
+// #291 adds the owner-approved SectionShell show halo and three group-edge masks: 286 + 4 = 290.
+assert.equal(names.length, 290, 'Packed native artifact must expose 290 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
