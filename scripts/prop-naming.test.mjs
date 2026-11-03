@@ -676,6 +676,11 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/molecules/tip-card/types.ts#TipCardProps'
   })),
+  // TopBar DI2 adds usages only; existing receipts bind convention content, not usages.
+  ...['accessible-name', 'collection-items', 'navigation-intent'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/organisms/top-bar/types.ts#TopBarProps'
+  })),
   // CommunityCard T13 adds usages only; existing receipts bind convention content, not usages.
   ...['heading-title', 'heading-level', 'heading-eyebrow'].map((conventionId) => ({
     conventionId,
@@ -777,6 +782,36 @@ test('CommunityCard records only its three approved heading usages', () => {
           type,
           status: 'existing',
           source: { path, symbol: 'CommunityCardProps', revision }
+        }
+      ])
+      .sort(([a], [b]) => a.localeCompare(b))
+  );
+});
+test('TopBar records only its three approved navigation usages', () => {
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const path = 'packages/ui/src/organisms/top-bar/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const expected = [
+    ['accessible-name', 'string (required navigation landmark name)'],
+    ['collection-items', 'TopBarItem[] (required ordered destinations)'],
+    ['navigation-intent', '(item: TopBarItem, event: MouseEvent<HTMLAnchorElement>) => void']
+  ];
+  assert.deepEqual(
+    actual
+      .flatMap((entry) =>
+        entry.usages
+          .filter((usage) => usage.component.startsWith('TopBar') || usage.source.path === path)
+          .map((usage) => [entry.id, usage])
+      )
+      .sort(([a], [b]) => a.localeCompare(b)),
+    expected
+      .map(([id, type]) => [
+        id,
+        {
+          component: 'TopBar',
+          type,
+          status: 'existing',
+          source: { path, symbol: 'TopBarProps', revision }
         }
       ])
       .sort(([a], [b]) => a.localeCompare(b))
