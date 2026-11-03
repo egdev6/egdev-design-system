@@ -72,6 +72,7 @@
 @source "../packages/ui/src/molecules/select-tile/SelectTile.stories.tsx";
 @source "../packages/ui/src/organisms/hero/Hero.stories.tsx";
 @source "../packages/ui/src/organisms/lab-stage/LabStage.stories.tsx";
+@source "../packages/ui/src/recipes/scene-recipes.stories.tsx";
 
 body {
   margin: 0;

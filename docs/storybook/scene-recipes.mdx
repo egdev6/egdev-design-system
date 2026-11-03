@@ -1,0 +1,41 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Foundations/Scene recipes" />
+
+<div className="eg-docs">
+  <header className="eg-docs-hero">
+    <div className="eg-docs-eyebrow">Web catalog · layer (e) close</div>
+    <h1><span className="eg-docs-title">Scene recipes: About and Community</span></h1>
+    <div className="eg-docs-lead">Two documented compositions for the Pulso web scenes that have no Foundation folder. They are recipes, not exports: copy the composition, keep the API as it is.</div>
+  </header>
+
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">What this is (and is not)</span></h2>
+    <p>The owner approved these two scenes as <strong>documented recipes without export</strong> (<a href="https://github.com/egdev6/egdev-design-system/blob/main/odd/tasks/web-catalog.md" target="_blank" rel="noopener noreferrer">tracking, L41</a>). About is composed from <code>PhotoFrame</code> + <code>PullQuote</code> + <code>TerminalCard</code>; Community is a grid of <code>CommunityCard</code>. There is no scene component, no new props, no tokens and no choreography — the recipes compose delivered public API inside a <code>SectionShell</code>, like the already cataloged <code>ProjectsGrid</code> and <code>MobileMenu</code> recipes.</p>
+  </section>
+
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Quick path</span></h2>
+    <div className="eg-docs-grid">
+      <article className="eg-docs-card"><h3><span className="eg-docs-card-title">1. See it live</span></h3><p>Open the two recipe stories with working compositions.</p><a href="/?path=/story/recipes-scene-recipes--about-scene" target="_top">About scene →</a></article>
+      <article className="eg-docs-card"><h3><span className="eg-docs-card-title">2. Read the contract</span></h3><p>Composition tables, host obligations and boundaries.</p><a href="https://github.com/egdev6/egdev-design-system/blob/main/docs/components/web-catalog/v0.1/scene-recipes.md" target="_blank" rel="noopener noreferrer">scene-recipes.md ↗</a></article>
+      <article className="eg-docs-card"><h3><span className="eg-docs-card-title">3. Compose your own</span></h3><p>Reuse the parts, supply your own copy, media and actions.</p><a href="/?path=/story/recipes-scene-recipes--community-scene" target="_top">Community scene →</a></article>
+    </div>
+  </section>
+
+  <section className="eg-docs-panel">
+    <h2><span className="eg-docs-section-title">Composition at a glance</span></h2>
+    <div className="eg-docs-table-wrap">
+      <table>
+        <thead><tr><th>Scene</th><th>Parts</th><th>Host obligations</th></tr></thead>
+        <tbody>
+          <tr><td>About</td><td><code>PhotoFrame</code> (framed media) · <code>PullQuote</code> · <code>TerminalCard</code>, inside a <code>SectionShell</code> two-column split</td><td>Section register and landmark name, image source and alt, quotation text and source, definition rows</td></tr>
+          <tr><td>Community</td><td>A grid of two <code>CommunityCard</code> with <code>CommunityCardMark</code> and one <code>CommunityCardAction</code> each</td><td>Section register and landmark name, community copy, marks, the single action per card</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p className="eg-docs-note">Every part stays within its own contract: outer layout only on <code>className</code>, one action per card, and no domain data baked into any component.</p>
+  </section>
+
+  <footer className="eg-docs-links"><a href="/?path=/story/recipes-scene-recipes--about-scene" target="_top">Open the About recipe →</a><a href="/?path=/story/recipes-scene-recipes--community-scene" target="_top">Open the Community recipe →</a><a href="/?path=/docs/foundations-material--docs" target="_top">Review Material rules →</a></footer>
+</div>
