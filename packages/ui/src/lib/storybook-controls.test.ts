@@ -94,6 +94,11 @@ const components = [
   ['CommunityCardAction', 'molecules/community-card'],
   ['PhotoFrame', 'atoms/photo-frame'],
   ['Table', 'molecules/table'],
+  ['BlogGrid', 'organisms/blog-grid'],
+  ['BlogGridFeature', 'organisms/blog-grid'],
+  ['BlogGridRows', 'organisms/blog-grid'],
+  ['BlogGridRow', 'organisms/blog-grid'],
+  ['BlogGridArchive', 'organisms/blog-grid'],
   ['NowStrip', 'organisms/now-strip'],
   ['Footer', 'organisms/footer'],
   ['FooterMotto', 'organisms/footer'],
@@ -157,6 +162,11 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  bloggrid: { children: false },
+  bloggridfeature: { children: false },
+  bloggridrows: { children: false },
+  bloggridrow: { children: false },
+  bloggridarchive: { children: false },
   nowstrip: { label: 'text', children: false },
   footer: { children: false },
   footermotto: { children: false },
@@ -555,6 +565,11 @@ const expected: Record<string, Record<string, string | false>> = {
   terminalcardlist: { items: false, className: 'text' }
 };
 const ownPropCounts: Record<string, number> = {
+  bloggrid: 1,
+  bloggridfeature: 1,
+  bloggridrows: 1,
+  bloggridrow: 1,
+  bloggridarchive: 1,
   nowstrip: 2,
   footer: 1,
   footermotto: 1,
@@ -938,7 +953,10 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       components
         .map(([name, directory]) =>
           fileURLToPath(
-            new URL(`../${directory}/${directory === 'organisms/footer' ? 'Footer' : name}.tsx`, import.meta.url)
+            new URL(
+              `../${directory}/${directory === 'organisms/footer' ? 'Footer' : directory === 'organisms/blog-grid' ? 'BlogGrid' : name}.tsx`,
+              import.meta.url
+            )
           )
         )
         .filter((path) => existsSync(path))
