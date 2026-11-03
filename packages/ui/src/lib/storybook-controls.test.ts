@@ -94,6 +94,7 @@ const components = [
   ['CommunityCardAction', 'molecules/community-card'],
   ['PhotoFrame', 'atoms/photo-frame'],
   ['Table', 'molecules/table'],
+  ['SectionShell', 'templates/section-shell'],
   ['TopBar', 'organisms/top-bar'],
   ['TopBarBrand', 'organisms/top-bar'],
   ['TopBarMobileTrigger', 'organisms/top-bar'],
@@ -149,6 +150,7 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 }
 
 const expected: Record<string, Record<string, string | false>> = {
+  sectionshell: { register: 'select', wrap: 'boolean', children: false },
   topbar: { label: 'text', items: false, onNavigate: false, children: false },
   topbarbrand: { children: false },
   topbarmobiletrigger: { children: false },
@@ -540,6 +542,7 @@ const expected: Record<string, Record<string, string | false>> = {
 };
 const ownPropCounts: Record<string, number> = {
   table: 16,
+  sectionshell: 3,
   topbar: 4,
   topbarbrand: 1,
   topbarmobiletrigger: 1,
@@ -1064,6 +1067,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Panel', { variant: '"default"', tone: '"surface-1"' }],
     ['ProjectCard', { level: '3', variant: '"default"', size: '"md"' }],
     ['CommunityCard', { level: '3' }],
+    ['SectionShell', { register: '"pro"', wrap: 'true' }],
     ['TipCard', { level: '3', focalPoint: '"center"' }],
     ['Collapsible', { defaultOpen: 'false', disabled: 'false' }],
     ['Gauge', { state: '"normal"', size: 'md', unavailableText: '"Data unavailable"' }],

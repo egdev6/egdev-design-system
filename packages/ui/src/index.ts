@@ -144,4 +144,6 @@ export { Heading, Text } from './primitives/text';
 export * from './primitives/visually-hidden';
 // Templates
 export * from './templates/app-shell';
+export type { SectionShellProps, SectionShellRegister } from './templates/section-shell';
+export { SectionShell } from './templates/section-shell';
 export type { ProductIdentity } from './types/product-identity';

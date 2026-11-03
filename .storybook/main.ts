@@ -52,6 +52,17 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   timeline: ['id', 'title', 'aria-describedby', 'aria-busy', 'className', 'style', 'onClick'],
   table: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick'],
   appShell: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
+  sectionShell: [
+    'id',
+    'title',
+    'dir',
+    'lang',
+    'aria-label',
+    'aria-labelledby',
+    'aria-describedby',
+    'className',
+    'onClick'
+  ],
   avatar: ['id', 'title', 'aria-describedby', 'className', 'style'],
   navList: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   tabBar: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],

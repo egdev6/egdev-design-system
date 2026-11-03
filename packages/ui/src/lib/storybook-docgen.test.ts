@@ -203,6 +203,31 @@ describe('Storybook TypeScript docgen contract', () => {
     }
     expect(doc?.props.children).toBeUndefined();
   });
+  it('extracts SectionShell own metadata and native section rows (SS-07)', () => {
+    const doc = parser
+      .parse(source('templates/section-shell/SectionShell.tsx'))
+      .find((item) => item.displayName === 'SectionShell');
+    expect(doc?.props.register).toMatchObject({ tags: { control: 'select' }, defaultValue: { value: 'pro' } });
+    expect(doc?.props.wrap).toMatchObject({ tags: { control: 'boolean' }, defaultValue: { value: 'true' } });
+    expect(doc?.props.children).toMatchObject({ required: true, tags: { control: 'false' } });
+    for (const name of [
+      'id',
+      'title',
+      'dir',
+      'lang',
+      'aria-label',
+      'aria-labelledby',
+      'aria-describedby',
+      'className',
+      'onClick'
+    ]) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of ['role', 'style', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    expect(publicAPI.SectionShell).toBeDefined();
+  });
   it('extracts GaugeGroup required inputs and bounded controls', () => {
     const doc = parser
       .parse(source('molecules/gauge-group/GaugeGroup.tsx'))
@@ -1097,6 +1122,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/text',
       './primitives/visually-hidden',
       './templates/app-shell',
+      './templates/section-shell',
       './types/product-identity'
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
@@ -1187,6 +1213,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'RadioGroup',
       'SearchTrigger',
       'SectionHeader',
+      'SectionShell',
       'Select',
       'SelectTile',
       'Sidebar',

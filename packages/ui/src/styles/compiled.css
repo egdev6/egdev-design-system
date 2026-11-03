@@ -62,6 +62,7 @@
 @source "../primitives/surface/types.ts";
 @source "../primitives/text/types.ts";
 @source "../templates/app-shell/types.ts";
+@source "../templates/section-shell/types.ts";
 @layer utilities {
   @tailwind utilities source(none);
 }

@@ -620,6 +620,11 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/atoms/countdown/types.ts#CountdownProps'
   })),
+  // SectionShell records reviewed own props after the convention receipt.
+  ...['section-register', 'section-content-wrap'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/templates/section-shell/types.ts#SectionShellProps'
+  })),
   // AppShell #130 records its two template layout slots and its skip-label messages at implementation.
   ...['side-navigation', 'bottom-navigation', 'localized-messages'].map((conventionId) => ({
     conventionId,
@@ -849,8 +854,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   validate(actual);
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
-  assert.equal(actual.length, 147);
-  assert.equal(beforeIndicatorConventions(actual).length, 144);
+  assert.equal(actual.length, 149);
+  assert.equal(beforeIndicatorConventions(actual).length, 146);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -966,7 +971,8 @@ const receiptChain = [
   'docs/components/project-card/v0.1/decorative-index-approval.json',
   'docs/components/terminal-card/v0.1/terminal-naming-approval.json',
   'docs/components/tip-card/v0.1/cover-badge-approval.json',
-  'docs/components/article-feature/v0.1/prop-naming-approval.json'
+  'docs/components/article-feature/v0.1/prop-naming-approval.json',
+  'docs/components/section-shell/v0.1/prop-naming-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -2260,6 +2266,79 @@ test('ArticleFeature naming receipt binds the approved #280 conventions without 
   assert.deepEqual(
     meta.usages.map(({ component }) => component),
     ['SelectTileOption']
+  );
+});
+
+test('SectionShell binds approved plan conventions and only its reviewed own-prop usages', () => {
+  const reference = 'docs/components/section-shell/v0.1/prop-naming-approval.json';
+  const planPath = 'docs/components/section-shell/v0.1/implementation-plan.md';
+  const approvalPath = 'docs/components/web-catalog/v0.1/layer-d-plan-approvals.md';
+  const plan = fs.readFileSync(resolve(root, planPath), 'utf8');
+  assert.equal(digest(plan), 'sha256:0b62bfd213b8cca5337a616457e904f1d1059bbd52891ef61489b72a3b66fc2e');
+  const approvalText = fs.readFileSync(resolve(root, approvalPath), 'utf8');
+  assert.match(approvalText, /SectionShell plan: "Aprobar plan y gates \(Recomendado\)"/);
+  assert.ok(approvalText.includes('`section-register` / `register` and `section-content-wrap` / `wrap`'));
+  assert.ok(approvalText.includes('0b62bfd213b8cca5337a616457e904f1d1059bbd52891ef61489b72a3b66fc2e'));
+  const proposals = JSON.parse(
+    plan.split('## 5. Naming gate and parent-owned registry')[1].split('```json\n')[1].split('\n```')[0]
+  );
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.authority, 'assistant-recorded-forwarded-owner-approval');
+  assert.equal(receipt.evidence.channel, approvalPath);
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar plan y gates (Recomendado)');
+  assert.ok(
+    receipt.evidence.interpretation.includes('0b62bfd213b8cca5337a616457e904f1d1059bbd52891ef61489b72a3b66fc2e')
+  );
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  assert.deepEqual(receipt.semanticAmendments, []);
+  assert.deepEqual(receipt.priorReceipts, [
+    {
+      path: 'docs/components/article-feature/v0.1/prop-naming-approval.json',
+      wholeFileSHA256: 'sha256:069c5eda7312e4af4b7e511d1b79113a85fc588aab14130787845f8e9423d653'
+    }
+  ]);
+  assert.ok(laterReceipts(articleFeatureReference).has(reference));
+  const path = 'packages/ui/src/templates/section-shell/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const expected = [
+    ['section-register', 'SectionShellRegister'],
+    ['section-content-wrap', 'boolean']
+  ];
+  assert.deepEqual(
+    receipt.entries.map(({ scope }) => scope),
+    expected.map(([id]) => `convention:${id}`)
+  );
+  for (const [id, type] of expected) {
+    const entry = actual.find((item) => item.id === id);
+    const record = receipt.entries.find(({ scope }) => scope === `convention:${id}`);
+    const proposal = proposals.find((item) => item.id === id);
+    const { approval, usages, ...convention } = entry;
+    const { approval: _pending, usages: _none, ...proposedConvention } = proposal;
+    assert.deepEqual(convention, { ...proposedConvention, status: 'approved' });
+    assert.deepEqual(record.convention, convention);
+    assert.equal(record.contentHash, props.conventionHash(entry));
+    assert.deepEqual(approval, { reference, scope: record.scope, contentHash: record.contentHash });
+    assert.deepEqual(usages, [
+      { component: 'SectionShell', type, status: 'existing', source: { path, symbol: 'SectionShellProps', revision } }
+    ]);
+    assert.deepEqual(historicalRegistry([entry])[0].usages, []);
+    const changed = structuredClone(actual);
+    changed.find((item) => item.id === id).meaning += ' Changed.';
+    assert.throws(() => validate(changed), /approval/i);
+  }
+  assert.deepEqual(
+    actual
+      .flatMap((entry) =>
+        entry.usages
+          .filter((usage) => usage.component === 'SectionShell' || usage.source.path === path)
+          .map(() => entry.id)
+      )
+      .sort(),
+    expected.map(([id]) => id).sort()
   );
 });
 
