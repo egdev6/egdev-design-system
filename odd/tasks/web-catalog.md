@@ -89,7 +89,7 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 
 | FP1 | S2, S3 | Draft ScrollReveal implementation plan under approved v0.1 spec | worker + parent | approved — scroll-reveal/v0.1/plan-approval.md |
 
-| FI1 | S2, S3 | Implement ScrollReveal under approved v0.1 spec and plan | worker + parent integration | verified — final2594 tests; core d92fd50 verified; integration/chain delivery pending (L57–L59) |
+| FI1 | S2, S3 | Implement ScrollReveal under approved v0.1 spec and plan | worker + parent integration | verified — final2594 tests; verified and published — issue #330; draft tracker #332, children #333/#334/#335; review/merge pending (L60) |
 
 ## Log
 
@@ -172,3 +172,5 @@ Owner request (2026-11-02): analyze the whole egdev.es web (Pulso) and find the 
 - L58 — Oversized delivery choice (owner, verbatim): "Feature/tracker branch chain". Verified GitHub default branch main. Best cohesive split: original reference124lines, approved contract372lines, core1517lines (1006tests kept with behavior), integration/evidence separate. Delivery tracker is draft/no-merge until child integration; child PRs target their immediate parent, never a mixed strategy. No source push/PR/merge claimed yet.
 
 - L59 — Core commit d92fd50 holds the six ScrollReveal files and public behavior tests (1517lines); branch feat/scroll-reveal-core. Native committed-range assessment against docs/scroll-reveal-contract reports medium, reviewDue:false. Initial assessment could not run with undeclared untracked docs; after staging only known task docs/evidence, the committed-range assessment succeeded and reports exactly six paths/1517lines. No native review receipt/consent/approval is claimed. Chain tracker seed7bf7567 and contract1555812 remain separate; package/evidence commits follow.
+
+- L60 — Owner authorized a separate scoped20s maintenance after the exhausted push retry; PR331 merged eb1bf53, preserving all assertions/hook/global timeout. Normal merges propagated only those three test options through the feature chain; build/focused65 passed and exact core/integration assessments remain medium/reviewDue:false. Issue330 created with explicit status:approved authorization and assigned/read back egdev6. Post-maintenance push passed2594 tests; all four remote HEADs verified. Published draft/no-merge tracker332 and immediate-parent children333(contract),334(core/tests),335(integration/evidence), with exact readback and labels/assignments checked. No feature PR merge or main integration claimed; review/merge authorization remains pending.
