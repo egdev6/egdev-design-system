@@ -885,7 +885,7 @@ const missingButtonLabel: ButtonProps = {};
 const buttonHref: ButtonProps = { children: 'Projects', href: '#projects' };
 // @ts-expect-error Icon-only size treatments belong to IconButton.
 const buttonIconVariant: ButtonProps = { children: 'Save', variant: 'icon' };
-// @ts-expect-error Button dimensions are only md and sm presets.
+// @ts-expect-error Button dimensions are only lg, md and sm presets.
 const buttonNumericSize: ButtonProps = { children: 'Save', size: 48 };
 const slotProps: SlotProps = { 'aria-label': 'Composed documentation' };
 export function SlotSample() {

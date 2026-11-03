@@ -1287,6 +1287,12 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(preview.parameters?.layout).toBe('padded');
   });
 
+  it('exposes all Button size choices with md as the default', () => {
+    const { argTypes } = story('Button');
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['lg', 'md', 'sm']);
+    expect(argTypes.size?.table?.defaultValue?.summary).toBe('"md"');
+  });
+
   it('retains IconButton required hidden naming, full choices and native button rows', () => {
     const { argTypes } = story('IconButton');
     expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });

@@ -565,12 +565,12 @@
       },
       {
         "component": "Button",
-        "type": "ButtonSize ('md' | 'sm')",
+        "type": "ButtonSize ('lg' | 'md' | 'sm')",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
+          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
         }
       },
       {
@@ -857,7 +857,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
+          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
         }
       },
       {
@@ -2309,7 +2309,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
+          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
         }
       },
       {
@@ -2406,7 +2406,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
+          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
         }
       }
     ]
@@ -2433,7 +2433,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
+          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
         }
       },
       {
@@ -2530,7 +2530,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:8c61498c24fe7f3da8f7393782910328e9f48cb5273b31dcd215f8bd9f58a0cb"
+          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
         }
       },
       {

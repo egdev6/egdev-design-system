@@ -1993,7 +1993,11 @@ describe('Storybook TypeScript docgen contract', () => {
       'neutral',
       'dark'
     ]);
-    expect(props.size?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual(['md', 'sm']);
+    expect(props.size?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()).toEqual([
+      'lg',
+      'md',
+      'sm'
+    ]);
     for (const name of ['type', 'disabled', 'onClick', 'className']) {
       expect(props[name]).toBeDefined();
     }
