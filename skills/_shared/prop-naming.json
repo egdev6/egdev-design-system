@@ -7049,5 +7049,59 @@
         }
       }
     ]
+  },
+  {
+    "id": "section-register",
+    "name": "register",
+    "meaning": "The combined visual register selected for a section frame; values and recipes are component-specific.",
+    "whenToUse": "Select a section's coordinated scene and material treatment.",
+    "avoid": "Do not use for a color tone alone, a generic visual variant or choreography.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/section-shell/v0.1/prop-naming-approval.json",
+      "scope": "convention:section-register",
+      "contentHash": "sha256:9adf9db4b8d9164ac14ad965756ffe0553d99f854a2e17d311b944b313fbbfe8"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "SectionShell",
+        "type": "SectionShellRegister",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/templates/section-shell/types.ts",
+          "symbol": "SectionShellProps",
+          "revision": "sha256:2ffb7ade60035149a30c05ad5f32666f4087e7d5ef0d522b8182876266585cd1"
+        }
+      }
+    ]
+  },
+  {
+    "id": "section-content-wrap",
+    "name": "wrap",
+    "meaning": "Whether a section frame supplies its own centered content wrapper.",
+    "whenToUse": "Choose whether section children receive the section content max-width and gutters.",
+    "avoid": "Do not use for flex wrapping, a gap, padding alone or a portal container.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/section-shell/v0.1/prop-naming-approval.json",
+      "scope": "convention:section-content-wrap",
+      "contentHash": "sha256:953bf9bc4877f9a843f3a2def75b7358a3152d0c127c6fd70b5c64f2ac0617e3"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "SectionShell",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/templates/section-shell/types.ts",
+          "symbol": "SectionShellProps",
+          "revision": "sha256:2ffb7ade60035149a30c05ad5f32666f4087e7d5ef0d522b8182876266585cd1"
+        }
+      }
+    ]
   }
 ]
