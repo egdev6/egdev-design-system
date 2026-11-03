@@ -18,7 +18,7 @@ export function Closing(props: ClosingProps) {
           {scene.lede != null && <p className={scene.ledeClass}>{scene.lede}</p>}
           <div className={scene.actions}>{scene.children}</div>
         </div>
-        {scene.media != null && (
+        {scene.hasMedia && (
           <div className={scene.mediaClass} aria-hidden='true'>
             {scene.media}
           </div>

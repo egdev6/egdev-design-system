@@ -50,9 +50,16 @@ export type ClosingProps = Omit<
 export const closingVariants = cva(
   'eg-closing box-border relative isolate w-full font-sans text-fg-default before:content-none'
 );
-export const closingGridVariants = cva(
-  'grid min-w-0 grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] items-center gap-10 [@media(width<=860px)]:grid-cols-1 [@media(width<=860px)]:gap-2'
-);
+export const closingGridVariants = cva('grid min-w-0 grid-cols-1 items-center gap-10', {
+  variants: {
+    // Two tracks only when media is supplied, so an absent slot leaves no empty column.
+    media: {
+      true: 'grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] [@media(width<=860px)]:grid-cols-1 [@media(width<=860px)]:gap-2',
+      false: ''
+    }
+  },
+  defaultVariants: { media: false }
+});
 export const closingCopyVariants = cva('min-w-0');
 export const closingHeadingVariants = cva('mt-5 mb-7');
 export const closingLedeVariants = cva('m-0 max-w-[40ch] font-sans text-body-large text-fg-default wrap-break-word');

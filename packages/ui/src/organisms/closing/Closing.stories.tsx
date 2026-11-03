@@ -7,13 +7,13 @@ import { Closing } from './Closing';
 
 const actions = (
   <>
-    <Button asChild={true} icon={<Icon name='arrow-right' />} iconPosition='start'>
+    <Button size='lg' asChild={true} icon={<Icon name='arrow-right' />} iconPosition='start'>
       <a href='#explore'>Explore</a>
     </Button>
-    <Button asChild={true} variant='secondary' icon={<Icon name='users' />} iconPosition='start'>
+    <Button size='lg' asChild={true} variant='secondary' icon={<Icon name='users' />} iconPosition='start'>
       <a href='#community'>Community</a>
     </Button>
-    <Button asChild={true} variant='neutral' icon={<Icon name='github' />} iconPosition='start'>
+    <Button size='lg' asChild={true} variant='neutral' icon={<Icon name='github' />} iconPosition='start'>
       <a href='#source'>Source</a>
     </Button>
   </>

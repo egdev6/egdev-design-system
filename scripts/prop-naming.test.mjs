@@ -620,7 +620,7 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/atoms/countdown/types.ts#CountdownProps'
   })),
-  ...['heading-title', 'heading-level', 'heading-eyebrow', 'trailing-text-accent', 'section-lede'].map(
+  ...['heading-title', 'heading-level', 'heading-eyebrow', 'trailing-text-accent', 'section-lede', 'scene-media'].map(
     (conventionId) => ({ conventionId, source: 'packages/ui/src/organisms/closing/types.ts#ClosingProps' })
   ),
   ...[
@@ -826,7 +826,8 @@ test('Hero binds both approved scene conventions and its reviewed usages', () =>
       scope: receipt.entries[0].scope,
       contentHash: receipt.entries[0].contentHash
     });
-    assert.equal(usages.length, 1);
+    // Closing is a later approved consumer of scene-media; Hero still records exactly one usage per convention.
+    assert.equal(usages.filter((usage) => usage.component === 'Hero').length, 1);
     for (const prior of receipt.priorReceipts) {
       assert.equal(prior.wholeFileSHA256, digest(fs.readFileSync(resolve(root, prior.path))));
     }

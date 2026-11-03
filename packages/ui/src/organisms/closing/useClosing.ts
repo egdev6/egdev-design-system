@@ -1,4 +1,5 @@
 import type { ComponentPropsWithoutRef } from 'react';
+import { Children } from 'react';
 import { cn } from '../../lib/cn';
 import {
   type ClosingProps,
@@ -28,6 +29,7 @@ export function useClosing(props: ClosingProps) {
     dangerouslySetInnerHTML: _html,
     ...native
   } = props as ClosingProps & Pick<ComponentPropsWithoutRef<'div'>, 'role' | 'style' | 'dangerouslySetInnerHTML'>;
+  const hasMedia = Children.toArray(media).length > 0;
   return {
     title,
     level,
@@ -38,7 +40,8 @@ export function useClosing(props: ClosingProps) {
     children,
     id,
     rootProps: { ...native, className: cn(closingVariants(), className) },
-    grid: cn(closingGridVariants()),
+    hasMedia,
+    grid: cn(closingGridVariants({ media: hasMedia })),
     copy: cn(closingCopyVariants()),
     heading: cn(closingHeadingVariants()),
     ledeClass: cn(closingLedeVariants()),

@@ -7,6 +7,34 @@ import { SectionShell } from '../../templates/section-shell';
 import { Closing, type ClosingProps } from './index';
 
 describe('Closing expanded contract', () => {
+  it('uses a single column without media so no empty media track remains (CL-03)', () => {
+    const { container, rerender } = render(
+      <Closing title='Keep building' level={2}>
+        <a href='#next'>Next</a>
+      </Closing>
+    );
+    const grid = container.querySelector('.eg-closing')?.firstElementChild;
+    expect(grid).toHaveClass('grid', 'grid-cols-1');
+    expect(grid).not.toHaveClass('grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]');
+    rerender(
+      <Closing title='Keep building' level={2} media={<span>Art</span>}>
+        <a href='#next'>Next</a>
+      </Closing>
+    );
+    expect(container.querySelector('.eg-closing')?.firstElementChild).toHaveClass(
+      'grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]',
+      '[@media(width<=860px)]:grid-cols-1'
+    );
+    rerender(
+      <Closing title='Keep building' level={2} media={false}>
+        <a href='#next'>Next</a>
+      </Closing>
+    );
+    expect(container.querySelector('[aria-hidden="true"]')).toBeNull();
+    expect(container.querySelector('.eg-closing')?.firstElementChild).not.toHaveClass(
+      'grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]'
+    );
+  });
   it.each([1, 2, 3, 4, 5, 6] as const)('CL-01 forwards heading ID at rank %i only', (level) => {
     const { container } = render(
       <SectionShell aria-labelledby={`rank-${level}`}>

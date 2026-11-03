@@ -23,6 +23,16 @@
           "symbol": "HeroProps",
           "revision": "sha256:09c805d2cd51cf46095f17945aabfe547ab59f464fccdbdba9fe30d66c1ed844"
         }
+      },
+      {
+        "component": "Closing",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/closing/types.ts",
+          "symbol": "ClosingProps",
+          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
+        }
       }
     ]
   },
@@ -4858,7 +4868,7 @@
         "source": {
           "path": "packages/ui/src/organisms/closing/types.ts",
           "symbol": "ClosingProps",
-          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
         }
       }
     ]
@@ -5015,7 +5025,7 @@
         "source": {
           "path": "packages/ui/src/organisms/closing/types.ts",
           "symbol": "ClosingProps",
-          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
         }
       }
     ]
@@ -5273,7 +5283,7 @@
         "source": {
           "path": "packages/ui/src/organisms/closing/types.ts",
           "symbol": "ClosingProps",
-          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
         }
       }
     ]
@@ -5468,7 +5478,7 @@
         "source": {
           "path": "packages/ui/src/organisms/closing/types.ts",
           "symbol": "ClosingProps",
-          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
         }
       }
     ]
@@ -5690,7 +5700,7 @@
         "source": {
           "path": "packages/ui/src/organisms/closing/types.ts",
           "symbol": "ClosingProps",
-          "revision": "sha256:7112ace50a307e410a4b5ecf1012cc99f8f07b9eeb934ac558337156522a6cca"
+          "revision": "sha256:b413fbef41e1ca87a2ebd9300287aad94f5c751f829f733b0463a614fc7e496e"
         }
       }
     ]
