@@ -54,12 +54,40 @@ export const LongContent: Story = {
     )
   }
 };
-/** Uneven content and a second row exercise stretching without promising footer alignment. */
+const footer = (id: string) => (
+  <NowCardFooter>
+    <NowCardDetail>
+      Next <b>update</b>
+    </NowCardDetail>
+    <Link href={`#${id}`}>Explore</Link>
+  </NowCardFooter>
+);
+
+/** Uneven bodies, an optional badge and a second row: cards stretch and their footer bands align at the bottom. */
 export const UnevenCards: Story = {
   args: {
     children: [
-      ...exampleCards,
-      <NowCard key='extra' title='Learning' size='sm'>
+      <NowCard key='building' title='Building' size='sm' statusBadge={<Badge>In progress</Badge>}>
+        <NowCardBody>
+          <p>Making space for new ideas.</p>
+        </NowCardBody>
+        {footer('building')}
+      </NowCard>,
+      <NowCard key='reading' title='Reading' size='sm'>
+        <NowCardBody>
+          <p>
+            Exploring a longer collection of notes and references that wraps across several lines in a narrow column.
+          </p>
+        </NowCardBody>
+        {footer('reading')}
+      </NowCard>,
+      <NowCard key='writing' title='Writing' size='sm'>
+        <NowCardBody>
+          <p>Preparing a new article.</p>
+        </NowCardBody>
+        {footer('writing')}
+      </NowCard>,
+      <NowCard key='learning' title='Learning' size='sm'>
         <NowCardBody>
           <p>Another activity.</p>
         </NowCardBody>

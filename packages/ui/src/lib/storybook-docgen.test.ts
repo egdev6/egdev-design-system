@@ -122,6 +122,42 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts NowStrip controls and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
+    const doc = parser
+      .parse(source('organisms/now-strip/NowStrip.tsx'))
+      .find(({ displayName }) => displayName === 'NowStrip');
+    expect(doc?.props.label).toMatchObject({ required: true, defaultValue: null, tags: { control: 'text' } });
+    expect(doc?.props.children).toMatchObject({
+      required: true,
+      defaultValue: null,
+      tags: { control: 'false', controlReason: expect.stringMatching(/ReactNode.*Default.*UnevenCards/) }
+    });
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick']) {
+      expect(doc?.props[name], name).toBeDefined();
+    }
+    for (const name of [
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'aria-live',
+      'tabIndex',
+      'style',
+      'dangerouslySetInnerHTML',
+      'ref',
+      'asChild'
+    ]) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    const file = ast(source('organisms/now-strip/types.ts'));
+    const properties = ownProps(file, ['NowStripProps']);
+    expect(properties.map((property) => property.name.getText(file))).toEqual(['label', 'children']);
+    for (const property of properties) {
+      const tags = ts.getJSDocTags(property);
+      expect(tags.filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
+      expect(tags.some(({ tagName }) => tagName.text === 'default')).toBe(false);
+    }
+    expect(publicAPI.NowStrip).toBeDefined();
+  });
   it('extracts Footer parts, navigation metadata and documented native rows', () => {
     const extracted = parser.parse(source('organisms/footer/Footer.tsx'));
     const root = extracted.find(({ displayName }) => displayName === 'Footer');
@@ -1181,6 +1217,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './organisms/calendar-grid',
       './organisms/footer',
       './organisms/module-rail',
+      './organisms/now-strip',
       './organisms/preview-frame',
       './organisms/sidebar',
       './organisms/tab-bar',
@@ -1272,6 +1309,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'NowCardBody',
       'NowCardDetail',
       'NowCardFooter',
+      'NowStrip',
       'PageHeader',
       'Panel',
       'PanelBody',
