@@ -124,7 +124,7 @@ describe('LiveBand', () => {
         </LiveBandField>
         <LiveBandStreams id='s'>
           <LiveBandVod href='#vod'>
-            <div className='relative aspect-video overflow-hidden rounded-lg bg-surface-0 shadow-well'>
+            <div className='relative aspect-16/9 overflow-hidden rounded-lg bg-surface-0 shadow-well'>
               <span>Featured</span>
               <span className='bg-surface-1 text-fg-default rounded-sm px-2 py-1 font-display text-meta'>
                 30 minutes
@@ -178,7 +178,7 @@ describe('LiveBand', () => {
     );
     expect(vod.firstElementChild).toHaveClass(
       'relative',
-      'aspect-video',
+      'aspect-16/9',
       'overflow-hidden',
       'rounded-lg',
       'bg-surface-0',

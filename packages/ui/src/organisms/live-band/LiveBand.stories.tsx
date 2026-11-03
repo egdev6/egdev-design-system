@@ -36,7 +36,7 @@ const field = (
 const streams = (
   <LiveBandStreams>
     <LiveBandVod href='#recording'>
-      <div className='relative aspect-video overflow-hidden rounded-lg bg-surface-0 shadow-well'>
+      <div className='relative aspect-16/9 overflow-hidden rounded-lg bg-surface-0 shadow-well'>
         <span className='absolute top-4 left-4'>Featured recording</span>
         <span className='absolute top-4 right-4 bg-surface-1 text-fg-default rounded-sm px-2 py-1 font-display text-meta'>
           30 minutes
@@ -49,9 +49,11 @@ const streams = (
             <path d='M26 19v26l20-13z' fill='currentColor' />
           </svg>
         </span>
-        <span className='absolute bottom-4 left-4'>Building together</span>
+        <span className='absolute bottom-4 left-4 right-24'>Building together</span>
       </div>
-      <span>Recorded January 1, 2026</span>
+      <span className='block px-4 py-3'>
+        Recorded <time dateTime='2026-01-01'>January 1, 2026</time>
+      </span>
     </LiveBandVod>
     <LiveBandList>
       <h2>Past streams</h2>
@@ -132,7 +134,7 @@ export const LongContent: Story = {
       <LiveBandField {...args} />
       <LiveBandStreams>
         <LiveBandVod href='#long-recording'>
-          <div className='relative aspect-video overflow-hidden rounded-lg bg-surface-0 shadow-well'>
+          <div className='relative aspect-16/9 overflow-hidden rounded-lg bg-surface-0 shadow-well'>
             <span className='absolute top-4 left-4'>Featured</span>
             <span className='absolute top-4 right-4 bg-surface-1 text-fg-default rounded-sm px-2 py-1 font-display text-meta'>
               2 hours 30 minutes
@@ -145,11 +147,13 @@ export const LongContent: Story = {
                 <path d='M26 19v26l20-13z' fill='currentColor' />
               </svg>
             </span>
-            <span className='absolute bottom-4 left-4'>
+            <span className='absolute bottom-4 left-4 right-24'>
               A deliberately long recording title that exercises overlap and clipping in a narrow localized host
             </span>
           </div>
-          <time dateTime='2026-01-01'>January 1, 2026</time>
+          <time className='block px-4 py-3' dateTime='2026-01-01'>
+            January 1, 2026
+          </time>
         </LiveBandVod>
         <LiveBandList>
           <h2>Past streams</h2>

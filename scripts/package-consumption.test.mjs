@@ -32,6 +32,8 @@ import { NotesBoard, NotesBoardSide, NotesBoardList } from '@egdev/ui';
 import type { NotesBoardProps, NotesBoardSideProps, NotesBoardListProps } from '@egdev/ui';
 import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from '@egdev/ui';
 import type { BlogGridProps, BlogGridArchiveProps, BlogGridFeatureProps, BlogGridRowProps, BlogGridRowsProps } from '@egdev/ui';
+import { LiveBandField, LiveBandList, LiveBandRow, LiveBandRows, LiveBandStreams, LiveBandVod } from '@egdev/ui';
+import type { LiveBandFieldProps, LiveBandListProps, LiveBandRowProps, LiveBandRowsProps, LiveBandStreamsProps, LiveBandVodProps } from '@egdev/ui';
 import { NowStrip } from '@egdev/ui';
 import type { NowStripProps } from '@egdev/ui';
 import { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from '@egdev/ui';
@@ -393,6 +395,30 @@ const blogPartClass: BlogGridFeatureProps = { ...blogFeature, className: 'extra'
 // @ts-expect-error Recipes remain private.
 type BlogGridPrivate = (typeof import('@egdev/ui'))['blogGridVariants'];
 export type BlogGridNegatives = [typeof blogMissing, typeof blogHtml, typeof blogSlot, typeof blogRef, typeof blogPartClass, BlogGridPrivate];
+const liveField: LiveBandFieldProps = { id: 'live-field', children: [createElement('p', { key: 'text' }, 'Text'), createElement('div', { key: 'photo' }, 'Photo')] };
+const liveVod: LiveBandVodProps = { href: '#vod', children: [createElement('span', { key: 'play', 'aria-hidden': true }, '▶'), 'Recording'] };
+const liveRow: LiveBandRowProps = { children: createElement(ListItem, { variant: 'editorial-divided', asChild: true, children: createElement('a', { href: '#row' }, 'Row') }) };
+const liveRows: LiveBandRowsProps = { children: createElement(LiveBandRow, liveRow) };
+const liveList: LiveBandListProps = { children: [createElement('h2', { key: 'heading' }, 'Past'), createElement(LiveBandRows, { key: 'rows', ...liveRows }), createElement('a', { key: 'archive', href: '#archive' }, 'Archive')] };
+const liveStreams: LiveBandStreamsProps = { children: [createElement(LiveBandVod, { key: 'vod', ...liveVod }), createElement(LiveBandList, { key: 'list', ...liveList })] };
+export function LiveBandSamples({ empty = false }: { empty?: boolean } = {}) { return createElement('main', null, createElement(LiveBandField, liveField), createElement(LiveBandStreams, { ...liveStreams, children: [createElement(LiveBandVod, { key: 'vod', ...liveVod }), createElement(LiveBandList, { key: 'list', children: [createElement('h2', { key: 'heading' }, 'Past'), createElement(LiveBandRows, { key: 'rows', children: empty ? [] : liveRows.children }), createElement('a', { key: 'archive', href: '#archive' }, 'Archive')] })] })); }
+// @ts-expect-error Field protects role.
+const liveFieldRole: LiveBandFieldProps = { ...liveField, role: 'region' };
+// @ts-expect-error Streams protects inline style.
+const liveStreamsStyle: LiveBandStreamsProps = { ...liveStreams, style: {} };
+// @ts-expect-error Vod owns its class.
+const liveVodClass: LiveBandVodProps = { ...liveVod, className: 'extra' };
+// @ts-expect-error Vod requires a destination.
+const liveVodMissing: LiveBandVodProps = { children: null };
+// @ts-expect-error List only accepts children.
+const liveListClass: LiveBandListProps = { ...liveList, className: 'extra' };
+// @ts-expect-error Rows protect raw HTML.
+const liveRowsHtml: LiveBandRowsProps = { ...liveRows, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error Row requires an element.
+const liveRowText: LiveBandRowProps = { children: 'text' };
+// @ts-expect-error Recipes are private.
+type LiveBandPrivate = (typeof import('@egdev/ui'))['liveBandFieldVariants'];
+export type LiveBandNegatives = [typeof liveFieldRole, typeof liveStreamsStyle, typeof liveVodClass, typeof liveVodMissing, typeof liveListClass, typeof liveRowsHtml, typeof liveRowText, LiveBandPrivate];
 export const nowStripProps: NowStripProps = { label: 'Current activity', children: ['One', 'Two', 'Three'].map((title, index) => createElement(NowCard, { key: title, title, size: 'sm', children: createElement(NowCardFooter, { children: createElement(Link, { href: '#' + index, children: title }) }) })) };
 export function NowStripSamples() { return createElement(NowStrip, nowStripProps); }
 // @ts-expect-error A visible label is required.
@@ -4517,6 +4543,38 @@ function assertBlogGridConsumerCSS(css) {
   assert.match(block(css, /@layer components\s*\{/), /\.eg-blog-grid/);
 }
 
+function assertLiveBandConsumerCSS(css) {
+  function block(text, pattern) {
+    const match = pattern.exec(text);
+    assert.ok(match, `Missing CSS block ${pattern}`);
+    let depth = 1;
+    for (let i = match.index + match[0].length; i < text.length; i++) {
+      if (text[i] === '\\') {
+        i++;
+      } else if (text[i] === '{') {
+        depth++;
+      } else if (text[i] === '}' && --depth === 0) {
+        return text.slice(match.index, i + 1);
+      }
+    }
+    assert.fail('Unclosed CSS block');
+  }
+  const utilities = block(css, /@layer utilities\s*\{/);
+  for (const width of [860, 1080]) {
+    const media = block(utilities, new RegExp(`@media\\s*\\(\\s*width\\s*<=\\s*${width}px\\s*\\)\\s*\\{`));
+    const name = `[@media(width<=${width}px)]:grid-cols-1`;
+    assert.ok(media.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing bounded ${name}`);
+  }
+  for (const track of ['1.1', '1.15']) {
+    assert.match(
+      utilities,
+      new RegExp(`grid-template-columns:\\s*minmax\\(0,\\s*${track.replace('.', '\\.')}fr\\)\\s+minmax\\(0,\\s*1fr\\)`)
+    );
+  }
+  assert.doesNotMatch(utilities, /\.eg-live-band\s*\{/);
+  assert.match(block(css, /@layer components\s*\{/), /\.eg-live-band/);
+}
+
 function assertNowStripConsumerCSS(css) {
   const start = css.indexOf('@layer utilities {');
   assert.ok(start >= 0);
@@ -4700,6 +4758,8 @@ ${assertNotesBoardConsumerCSS.toString()}
 assertNotesBoardConsumerCSS(shippedStyles);
 ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
+${assertLiveBandConsumerCSS.toString()}
+assertLiveBandConsumerCSS(shippedStyles);
 ${assertNowStripConsumerCSS.toString()}
 assertNowStripConsumerCSS(shippedStyles);
 ${assertSectionShellConsumerCSS.toString()}
@@ -4798,6 +4858,12 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'ListItemMeta',
   'ListItemTitle',
   'ListItemTrailing',
+  'LiveBandField',
+  'LiveBandList',
+  'LiveBandRow',
+  'LiveBandRows',
+  'LiveBandStreams',
+  'LiveBandVod',
   'Logo',
   'Menu',
   'MeterRow',
@@ -5108,6 +5174,24 @@ assert.equal(notesLink.querySelector('time').getAttribute('datetime'), '2026-09-
 assert.equal(notesLink.querySelector('[aria-hidden="true"]').textContent, '→');
 assert.equal(notesBoard.querySelector('a a'), null);
 notesDocument.window.close();
+const { LiveBandSamples } = await import('./consumer.ts');
+for (const empty of [false, true]) {
+  const dom = new JSDOM(renderToString(createElement(LiveBandSamples, { empty })));
+  try {
+    const doc = dom.window.document;
+    assert.deepEqual([...doc.querySelector('.eg-live-band').children].map((node) => node.textContent), ['Text', 'Photo']);
+    assert.ok(doc.querySelector('.eg-live-band').classList.contains('[@media(width<=860px)]:grid-cols-1'));
+    const vod = doc.querySelector('a[href="#vod"]');
+    assert.ok(vod.parentElement.classList.contains('[@media(width<=1080px)]:grid-cols-1'));
+    assert.ok(vod.classList.contains('eg-surface'));
+    assert.ok(vod.querySelector('[aria-hidden="true"]'));
+    assert.deepEqual([...doc.querySelectorAll('a')].map((a) => a.getAttribute('href')), empty ? ['#vod', '#archive'] : ['#vod', '#row', '#archive']);
+    assert.equal(doc.querySelectorAll('ul').length, empty ? 0 : 1);
+    if (!empty) { assert.equal(doc.querySelectorAll('ul > li').length, 1); assert.equal(doc.querySelector('ul > li > a')?.getAttribute('href'), '#row'); }
+    assert.equal(doc.querySelector('ul a[href="#archive"]'), null);
+    assert.equal(doc.querySelector('a a'), null);
+  } finally { dom.window.close(); }
+}
 const { BlogGridSamples } = await import('./consumer.ts');
 for (const empty of [false, true]) {
   const dom = new JSDOM(renderToString(createElement(BlogGridSamples, { empty })));

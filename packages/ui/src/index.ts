@@ -110,6 +110,22 @@ export type {
   FooterSocialProps
 } from './organisms/footer';
 export { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from './organisms/footer';
+export type {
+  LiveBandFieldProps,
+  LiveBandListProps,
+  LiveBandRowProps,
+  LiveBandRowsProps,
+  LiveBandStreamsProps,
+  LiveBandVodProps
+} from './organisms/live-band';
+export {
+  LiveBandField,
+  LiveBandList,
+  LiveBandRow,
+  LiveBandRows,
+  LiveBandStreams,
+  LiveBandVod
+} from './organisms/live-band';
 export * from './organisms/module-rail';
 export type { NotesBoardListProps, NotesBoardProps, NotesBoardSideProps } from './organisms/notes-board';
 export { NotesBoard, NotesBoardList, NotesBoardSide } from './organisms/notes-board';

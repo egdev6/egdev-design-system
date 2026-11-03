@@ -99,6 +99,12 @@ const components = [
   ['BlogGridRows', 'organisms/blog-grid'],
   ['BlogGridRow', 'organisms/blog-grid'],
   ['BlogGridArchive', 'organisms/blog-grid'],
+  ['LiveBandField', 'organisms/live-band'],
+  ['LiveBandList', 'organisms/live-band'],
+  ['LiveBandRow', 'organisms/live-band'],
+  ['LiveBandRows', 'organisms/live-band'],
+  ['LiveBandStreams', 'organisms/live-band'],
+  ['LiveBandVod', 'organisms/live-band'],
   ['NowStrip', 'organisms/now-strip'],
   ['Footer', 'organisms/footer'],
   ['FooterMotto', 'organisms/footer'],
@@ -173,6 +179,12 @@ const expected: Record<string, Record<string, string | false>> = {
   bloggridrows: { children: false },
   bloggridrow: { children: false },
   bloggridarchive: { children: false },
+  livebandfield: { children: false },
+  livebandlist: { children: false },
+  livebandrow: { children: false },
+  livebandrows: { children: false },
+  livebandstreams: { children: false },
+  livebandvod: { children: false, href: 'text' },
   nowstrip: { label: 'text', children: false },
   footer: { children: false },
   footermotto: { children: false },
@@ -579,6 +591,12 @@ const ownPropCounts: Record<string, number> = {
   bloggridrows: 1,
   bloggridrow: 1,
   bloggridarchive: 1,
+  livebandfield: 1,
+  livebandlist: 1,
+  livebandrow: 1,
+  livebandrows: 1,
+  livebandstreams: 1,
+  livebandvod: 2,
   nowstrip: 2,
   footer: 1,
   footermotto: 1,
@@ -963,7 +981,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         .map(([name, directory]) =>
           fileURLToPath(
             new URL(
-              `../${directory}/${directory === 'organisms/footer' ? 'Footer' : directory === 'organisms/notes-board' ? 'NotesBoard' : directory === 'organisms/blog-grid' ? 'BlogGrid' : name}.tsx`,
+              `../${directory}/${directory === 'organisms/footer' ? 'Footer' : directory === 'organisms/notes-board' ? 'NotesBoard' : directory === 'organisms/blog-grid' ? 'BlogGrid' : directory === 'organisms/live-band' ? 'LiveBand' : name}.tsx`,
               import.meta.url
             )
           )
