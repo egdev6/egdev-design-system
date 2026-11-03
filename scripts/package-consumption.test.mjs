@@ -36,6 +36,8 @@ import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows }
 import type { BlogGridProps, BlogGridArchiveProps, BlogGridFeatureProps, BlogGridRowProps, BlogGridRowsProps } from '@egdev/ui';
 import { LiveBandField, LiveBandList, LiveBandRow, LiveBandRows, LiveBandStreams, LiveBandVod } from '@egdev/ui';
 import type { LiveBandFieldProps, LiveBandListProps, LiveBandRowProps, LiveBandRowsProps, LiveBandStreamsProps, LiveBandVodProps } from '@egdev/ui';
+import { SectionNav } from '@egdev/ui';
+import type { SectionNavItem, SectionNavProps } from '@egdev/ui';
 import { NowStrip } from '@egdev/ui';
 import type { NowStripProps } from '@egdev/ui';
 import { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from '@egdev/ui';
@@ -426,6 +428,22 @@ const blogPartClass: BlogGridFeatureProps = { ...blogFeature, className: 'extra'
 // @ts-expect-error Recipes remain private.
 type BlogGridPrivate = (typeof import('@egdev/ui'))['blogGridVariants'];
 export type BlogGridNegatives = [typeof blogMissing, typeof blogHtml, typeof blogSlot, typeof blogRef, typeof blogPartClass, BlogGridPrivate];
+const sectionNavItems: SectionNavItem[] = [{ id: 'one', label: 'One', href: '#one' }, { id: 'two', label: 'Two', href: '#two' }];
+export const sectionNavProps: SectionNavProps = { label: 'Sections', disclosureLabel: 'Open index', nextLabel: 'Next section', items: sectionNavItems, activeId: 'one', value: 50 };
+export function SectionNavSamples() { return createElement(SectionNav, sectionNavProps); }
+// @ts-expect-error Root role is protected.
+const sectionNavRole: SectionNavProps = { ...sectionNavProps, role: 'region' };
+// @ts-expect-error Inline style is protected.
+const sectionNavStyle: SectionNavProps = { ...sectionNavProps, style: {} };
+// @ts-expect-error Children are not accepted.
+const sectionNavChildren: SectionNavProps = { ...sectionNavProps, children: 'Extra' };
+// @ts-expect-error The landmark name is owned by label.
+const sectionNavAria: SectionNavProps = { ...sectionNavProps, 'aria-label': 'Other' };
+// @ts-expect-error Raw HTML is protected.
+const sectionNavHtml: SectionNavProps = { ...sectionNavProps, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error Recipe is private.
+type SectionNavPrivate = (typeof import('@egdev/ui'))['sectionNavRootVariants'];
+export type SectionNavNegatives = [typeof sectionNavRole, typeof sectionNavStyle, typeof sectionNavChildren, typeof sectionNavAria, typeof sectionNavHtml, SectionNavPrivate];
 const liveField: LiveBandFieldProps = { id: 'live-field', children: [createElement('p', { key: 'text' }, 'Text'), createElement('div', { key: 'photo' }, 'Photo')] };
 const liveVod: LiveBandVodProps = { href: '#vod', children: [createElement('span', { key: 'play', 'aria-hidden': true }, '▶'), 'Recording'] };
 const liveRow: LiveBandRowProps = { children: createElement(ListItem, { variant: 'editorial-divided', asChild: true, children: createElement('a', { href: '#row' }, 'Row') }) };
@@ -4597,6 +4615,34 @@ function assertBlogGridConsumerCSS(css) {
   assert.match(block(css, /@layer components\s*\{/), /\.eg-blog-grid/);
 }
 
+function assertSectionNavConsumerCSS(css) {
+  function block(text, pattern) {
+    const match = pattern.exec(text);
+    assert.ok(match, `Missing CSS block ${pattern}`);
+    let depth = 1;
+    for (let i = match.index + match[0].length; i < text.length; i++) {
+      if (text[i] === '\\') {
+        i++;
+      } else if (text[i] === '{') {
+        depth++;
+      } else if (text[i] === '}' && --depth === 0) {
+        return text.slice(match.index, i + 1);
+      }
+    }
+    assert.fail('Unclosed CSS block');
+  }
+  const utilities = block(css, /@layer utilities\s*\{/);
+  const compact = block(utilities, /@media\s*\(\s*width\s*<=\s*520px\s*\)\s*\{/);
+  for (const suffix of ['h-14', 'px-3', 'min-w-14', 'min-h-14']) {
+    const name = `[@media(width<=520px)]:${suffix}`;
+    assert.ok(compact.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing bounded ${name}`);
+  }
+  assert.match(utilities, /safe-area-inset-right/);
+  assert.match(utilities, /safe-area-inset-bottom/);
+  assert.doesNotMatch(utilities, /\.eg-section-nav\s*\{/);
+  assert.match(block(css, /@layer components\s*\{/), /\.eg-section-nav/);
+}
+
 function assertLiveBandConsumerCSS(css) {
   function block(text, pattern) {
     const match = pattern.exec(text);
@@ -4816,6 +4862,8 @@ ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
 ${assertLiveBandConsumerCSS.toString()}
 assertLiveBandConsumerCSS(shippedStyles);
+${assertSectionNavConsumerCSS.toString()}
+assertSectionNavConsumerCSS(shippedStyles);
 ${assertNowStripConsumerCSS.toString()}
 assertNowStripConsumerCSS(shippedStyles);
 ${assertSectionShellConsumerCSS.toString()}
@@ -4957,6 +5005,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'RadioGroup',
   'SearchTrigger',
   'SectionHeader',
+  'SectionNav',
   'SectionShell',
   'Select',
   'SelectTile',
@@ -5241,6 +5290,26 @@ assert.equal(notesLink.querySelector('time').getAttribute('datetime'), '2026-09-
 assert.equal(notesLink.querySelector('[aria-hidden="true"]').textContent, '→');
 assert.equal(notesBoard.querySelector('a a'), null);
 notesDocument.window.close();
+const { SectionNavSamples } = await import('./consumer.ts');
+{
+  const dom = new JSDOM(renderToString(createElement(SectionNavSamples)));
+  try {
+    const doc = dom.window.document;
+    assert.equal(doc.querySelectorAll('nav,[role="navigation"]').length, 1);
+    const nav = doc.querySelector('nav[aria-label="Sections"]');
+    assert.ok(nav);
+    for (const name of ['right-[calc(var(--space-6)+env(safe-area-inset-right,0px))]', 'bottom-[calc(var(--space-6)+env(safe-area-inset-bottom,0px))]']) assert.ok(nav.classList.contains(name));
+    const trigger = nav.querySelector('button[aria-label="Open index"]');
+    const next = nav.querySelector('a[aria-label="Next section"]');
+    assert.equal(trigger?.getAttribute('aria-expanded'), 'false');
+    assert.equal(next?.getAttribute('href'), '#two');
+    for (const node of [trigger, next]) {
+      for (const name of ['[@media(width<=520px)]:min-w-14', '[@media(width<=520px)]:min-h-14']) assert.ok(node.classList.contains(name));
+    }
+    for (const name of ['[@media(width<=520px)]:h-14', '[@media(width<=520px)]:px-3']) assert.ok(trigger.parentElement.classList.contains(name));
+    assert.equal(doc.querySelector('[role="dialog"]'), null);
+  } finally { dom.window.close(); }
+}
 const { LiveBandSamples } = await import('./consumer.ts');
 for (const empty of [false, true]) {
   const dom = new JSDOM(renderToString(createElement(LiveBandSamples, { empty })));

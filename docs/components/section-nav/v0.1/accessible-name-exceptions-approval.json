@@ -1,0 +1,96 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve SectionNav disclosureLabel and nextLabel scoped accessible-name exceptions.",
+  "evidence": {
+    "channel": "Interactive owner decision forwarded by parent",
+    "ownerChoice": "Excepciones de accessible-name con comprobante nuevo (Recomendado)",
+    "interpretation": "Approves only the two SectionNav alternatives; no global aliases. Not native review authority."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/section-nav/v0.1/prop-naming-approval.json",
+      "wholeFileSHA256": "sha256:1f601c8bef3b4af6f1541a21798aa8bc47f424d8e5b9f805e51bc1fce41d6b64"
+    },
+    {
+      "path": "docs/decisions/prop-naming-gauge-approval.json",
+      "wholeFileSHA256": "sha256:97374db3519c5cd1b0c7c05e5c73974138c47ce38c4326e702f613f800b69911"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [
+    {
+      "id": "accessible-name",
+      "previousReference": "docs/decisions/prop-naming-gauge-approval.json",
+      "previousContentHash": "sha256:6d20aa57ba4692b62dc87e3d0a4ac2871e9113442fa738a61759e8c842a093f5",
+      "changedFields": ["exceptions"],
+      "boundary": "SectionNav disclosure and next controls only; the existing label convention and usages remain unchanged."
+    }
+  ],
+  "entries": [
+    {
+      "scope": "convention:accessible-name",
+      "contentHash": "sha256:36e573d8e9406d1cbedf973331aee3d0b46f628b0c5f21263f0432581fbd519b",
+      "convention": {
+        "id": "accessible-name",
+        "name": "label",
+        "meaning": "The accessible name of the control or displayed magnitude.",
+        "whenToUse": "The public API owns an explicit accessible-name input.",
+        "avoid": "Assuming Surface has this prop or using it as a generic visible caption.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": [
+          {
+            "scope": "SectionNav",
+            "propName": "disclosureLabel",
+            "reason": "Required localized accessible name of the index disclosure button, distinct from label naming the landmark and dialog.",
+            "approval": {
+              "reference": "docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json",
+              "scope": "exception:accessible-name:SectionNav:disclosureLabel",
+              "contentHash": "sha256:429b45c066db4125640c9348869425ad2099a82e69954b9509a43a92495edc35"
+            }
+          },
+          {
+            "scope": "SectionNav",
+            "propName": "nextLabel",
+            "reason": "Required localized accessible name of the next-section link, distinct from label naming the landmark and dialog.",
+            "approval": {
+              "reference": "docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json",
+              "scope": "exception:accessible-name:SectionNav:nextLabel",
+              "contentHash": "sha256:656cf60f41cfadef6cba70507a34c86137b0c0a5a6ad4c386913b80739bbddce"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "scope": "exception:accessible-name:SectionNav:disclosureLabel",
+      "contentHash": "sha256:429b45c066db4125640c9348869425ad2099a82e69954b9509a43a92495edc35",
+      "exception": {
+        "scope": "SectionNav",
+        "propName": "disclosureLabel",
+        "reason": "Required localized accessible name of the index disclosure button, distinct from label naming the landmark and dialog."
+      },
+      "source": {
+        "path": "packages/ui/src/organisms/section-nav/types.ts",
+        "symbol": "SectionNavProps",
+        "revision": "sha256:bc0f8e59bd0b872d303a0f78c35a5fea2cdbeae5bb2ce07f1e5b4b6801b9620a"
+      }
+    },
+    {
+      "scope": "exception:accessible-name:SectionNav:nextLabel",
+      "contentHash": "sha256:656cf60f41cfadef6cba70507a34c86137b0c0a5a6ad4c386913b80739bbddce",
+      "exception": {
+        "scope": "SectionNav",
+        "propName": "nextLabel",
+        "reason": "Required localized accessible name of the next-section link, distinct from label naming the landmark and dialog."
+      },
+      "source": {
+        "path": "packages/ui/src/organisms/section-nav/types.ts",
+        "symbol": "SectionNavProps",
+        "revision": "sha256:bc0f8e59bd0b872d303a0f78c35a5fea2cdbeae5bb2ce07f1e5b4b6801b9620a"
+      }
+    }
+  ]
+}

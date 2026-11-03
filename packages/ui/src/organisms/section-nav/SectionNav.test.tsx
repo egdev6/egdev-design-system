@@ -19,6 +19,25 @@ const props = {
 };
 
 describe('SectionNav', () => {
+  it('resets user-agent paint on its own controls and links with token ink (no preflight)', async () => {
+    render(<SectionNav {...props} />);
+    const trigger = screen.getByRole('button', { name: props.disclosureLabel });
+    expect(trigger).toHaveClass(
+      'border-0',
+      'bg-transparent',
+      'p-0',
+      'font-sans',
+      'text-body-default',
+      'text-fg-default',
+      'cursor-pointer'
+    );
+    expect(screen.getByRole('link', { name: props.nextLabel })).toHaveClass('text-fg-default');
+    await userEvent.click(trigger);
+    const links = within(await screen.findByRole('dialog')).getAllByRole('link');
+    for (const link of links) {
+      expect(link).toHaveClass('text-fg-default', 'no-underline', 'aria-[current=location]:underline');
+    }
+  });
   it('renders named navigation and the next native link', () => {
     render(<SectionNav {...props} />);
     expect(screen.getByRole('navigation', { name: 'Sections' })).toBeInTheDocument();

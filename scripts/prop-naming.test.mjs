@@ -622,6 +622,19 @@ const postReceiptUsages = [
   })),
   { conventionId: 'consumer-selected-condition', source: 'packages/ui/src/atoms/pixel/types.ts#PixelProps' },
   { conventionId: 'board-sticky-side', source: 'packages/ui/src/organisms/notes-board/types.ts#NotesBoardProps' },
+  ...[
+    'active-section-id',
+    'accessible-name',
+    'collection-items',
+    'primary-value',
+    'navigation-intent',
+    'open-state',
+    'initial-uncontrolled-open',
+    'open-change'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/organisms/section-nav/types.ts#SectionNavProps'
+  })),
   // SectionShell records reviewed own props after the convention receipt.
   ...['section-register', 'section-content-wrap'].map((conventionId) => ({
     conventionId,
@@ -803,6 +816,49 @@ test('Popover binds the approved close auto-focus convention and reviewed usage'
   changed.find(({ id }) => id === entry.id).meaning += ' Changed.';
   assert.throws(() => validate(changed), /approval/i);
   validate(registry);
+});
+
+test('SectionNav binds accessible-name exceptions and their source evidence', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const entry = registry.find(({ id }) => id === 'accessible-name');
+  assert.equal(receipt.evidence.ownerChoice, 'Excepciones de accessible-name con comprobante nuevo (Recomendado)');
+  assert.equal(entry.approval.reference, reference);
+  assert.equal(entry.approval.contentHash, props.conventionHash(entry));
+  const { approval: _approval, usages, ...convention } = entry;
+  assert.deepEqual(receipt.entries[0], {
+    scope: 'convention:accessible-name',
+    contentHash: props.conventionHash(entry),
+    convention
+  });
+  const path = 'packages/ui/src/organisms/section-nav/types.ts';
+  for (const propName of ['disclosureLabel', 'nextLabel']) {
+    const exception = entry.exceptions.find((item) => item.scope === 'SectionNav' && item.propName === propName);
+    assert.equal(exception.approval.contentHash, props.exceptionHash(exception));
+    const record = receipt.entries.find((item) => item.scope === `exception:accessible-name:SectionNav:${propName}`);
+    assert.equal(record.contentHash, props.exceptionHash(exception));
+    assert.deepEqual(record.source, {
+      path,
+      symbol: 'SectionNavProps',
+      revision: digest(fs.readFileSync(resolve(root, path)))
+    });
+    assert.deepEqual(record.exception, { scope: exception.scope, propName, reason: exception.reason });
+  }
+  assert.equal(usages.filter((usage) => usage.component === 'SectionNav').length, 1);
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(prior.wholeFileSHA256, digest(fs.readFileSync(resolve(root, prior.path))));
+  }
+  const [amendment] = receipt.semanticAmendments;
+  const previous = JSON.parse(fs.readFileSync(resolve(root, amendment.previousReference), 'utf8')).entries.find(
+    ({ convention: item }) => item.id === entry.id
+  );
+  assert.equal(amendment.previousContentHash, previous.contentHash);
+  assert.equal(props.conventionHash(previous.convention), previous.contentHash);
+  validate(registry);
+  const changed = structuredClone(registry);
+  changed.find(({ id }) => id === entry.id).exceptions[0].reason += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
 });
 
 test('Pixel widens the existing condition convention with recoverable approved history', () => {
@@ -1000,8 +1056,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   validate(actual);
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
-  assert.equal(actual.length, 151);
-  assert.equal(beforeIndicatorConventions(actual).length, 148);
+  assert.equal(actual.length, 152);
+  assert.equal(beforeIndicatorConventions(actual).length, 149);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -1121,7 +1177,9 @@ const receiptChain = [
   'docs/components/section-shell/v0.1/prop-naming-approval.json',
   'docs/components/notes-board/v0.1/prop-naming-approval.json',
   'docs/components/pixel/v0.1/prop-naming-approval.json',
-  'docs/components/popover/v0.1/prop-naming-approval.json'
+  'docs/components/popover/v0.1/prop-naming-approval.json',
+  'docs/components/section-nav/v0.1/prop-naming-approval.json',
+  'docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -2418,6 +2476,52 @@ test('ArticleFeature naming receipt binds the approved #280 conventions without 
   );
 });
 
+test('SectionNav binds its approved convention and reviewed existing usages', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/section-nav/v0.1/prop-naming-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const entry = registry.find(({ id }) => id === 'active-section-id');
+  const plan = fs.readFileSync(resolve(root, 'docs/components/section-nav/v0.1/implementation-plan.md'), 'utf8');
+  assert.equal(digest(plan), 'sha256:16c42595c77871d8aa04ade026588167604b31c555e38aa2fc3cbdab379aad3f');
+  const proposal = JSON.parse(plan.split('## 4. G4')[1].split('```json\n')[1].split('\n```')[0]);
+  const { approval, usages, ...convention } = entry;
+  const { approval: _pending, usages: _none, ...proposed } = proposal;
+  assert.deepEqual(convention, { ...proposed, status: 'approved' });
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar plan y gates (Recomendado)');
+  assert.deepEqual(receipt.entries, [
+    { scope: 'convention:active-section-id', contentHash: props.conventionHash(entry), convention }
+  ]);
+  assert.deepEqual(approval, {
+    reference,
+    scope: receipt.entries[0].scope,
+    contentHash: receipt.entries[0].contentHash
+  });
+  const path = 'packages/ui/src/organisms/section-nav/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  for (const id of [
+    'active-section-id',
+    'accessible-name',
+    'collection-items',
+    'primary-value',
+    'navigation-intent',
+    'open-state',
+    'initial-uncontrolled-open',
+    'open-change'
+  ]) {
+    const usage = registry.find((item) => item.id === id).usages.find((item) => item.component === 'SectionNav');
+    assert.deepEqual(usage.source, { path, symbol: 'SectionNavProps', revision });
+    assert.equal(usage.status, 'existing');
+  }
+  assert.equal(usages.length, 1);
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(prior.wholeFileSHA256, digest(fs.readFileSync(resolve(root, prior.path))));
+  }
+  validate(registry);
+  const changed = structuredClone(registry);
+  changed.find(({ id }) => id === entry.id).meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+});
+
 test('NotesBoard binds the approved plan convention and reviewed sticky usage', () => {
   const reference = 'docs/components/notes-board/v0.1/prop-naming-approval.json';
   const plan = fs.readFileSync(resolve(root, 'docs/components/notes-board/v0.1/implementation-plan.md'), 'utf8');
@@ -2677,7 +2781,7 @@ test('Isotipo3D naming receipt preserves 125 entries and binds three scoped appr
       `${JSON.stringify(
         registryBeforeSemanticAmendments(
           historicalRegistry(actual)
-            .filter(({ id }) => id !== 'close-auto-focus')
+            .filter(({ id }) => id !== 'close-auto-focus' && id !== 'active-section-id')
             .slice(0, 125),
           isotipoReference
         ),

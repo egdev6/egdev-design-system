@@ -1,5 +1,32 @@
 [
   {
+    "id": "active-section-id",
+    "name": "activeId",
+    "meaning": "The host-designated identity of the current section in an ordered section navigation.",
+    "whenToUse": "Identify the current section by its consumer-supplied stable item id.",
+    "avoid": "Do not use for a data-table active row, progress value, inferred scroll position or generic selection.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/section-nav/v0.1/prop-naming-approval.json",
+      "scope": "convention:active-section-id",
+      "contentHash": "sha256:0eebb99c8ef8445fd9e8faf19475fdf993612c1d35855f7f612e06ba85e9bb8f"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "SectionNav",
+        "type": "string (required current section id)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/section-nav/types.ts",
+          "symbol": "SectionNavProps",
+          "revision": "sha256:bc0f8e59bd0b872d303a0f78c35a5fea2cdbeae5bb2ce07f1e5b4b6801b9620a"
+        }
+      }
+    ]
+  },
+  {
     "id": "close-auto-focus",
     "name": "onCloseAutoFocus",
     "meaning": "Callback invoked before Popover returns focus on close.",
@@ -41,6 +68,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "SectionNav",
+        "type": "number (required progress percentage)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/section-nav/types.ts",
+          "symbol": "SectionNavProps",
+          "revision": "sha256:bc0f8e59bd0b872d303a0f78c35a5fea2cdbeae5bb2ce07f1e5b4b6801b9620a"
+        }
+      },
       {
         "component": "GaugeGroupRing",
         "type": "number",
@@ -1223,13 +1260,44 @@
     "avoid": "Assuming Surface has this prop or using it as a generic visible caption.",
     "status": "approved",
     "approval": {
-      "reference": "docs/decisions/prop-naming-gauge-approval.json",
+      "reference": "docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json",
       "scope": "convention:accessible-name",
-      "contentHash": "sha256:6d20aa57ba4692b62dc87e3d0a4ac2871e9113442fa738a61759e8c842a093f5"
+      "contentHash": "sha256:36e573d8e9406d1cbedf973331aee3d0b46f628b0c5f21263f0432581fbd519b"
     },
     "aliases": [],
-    "exceptions": [],
+    "exceptions": [
+      {
+        "scope": "SectionNav",
+        "propName": "disclosureLabel",
+        "reason": "Required localized accessible name of the index disclosure button, distinct from label naming the landmark and dialog.",
+        "approval": {
+          "reference": "docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json",
+          "scope": "exception:accessible-name:SectionNav:disclosureLabel",
+          "contentHash": "sha256:429b45c066db4125640c9348869425ad2099a82e69954b9509a43a92495edc35"
+        }
+      },
+      {
+        "scope": "SectionNav",
+        "propName": "nextLabel",
+        "reason": "Required localized accessible name of the next-section link, distinct from label naming the landmark and dialog.",
+        "approval": {
+          "reference": "docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json",
+          "scope": "exception:accessible-name:SectionNav:nextLabel",
+          "contentHash": "sha256:656cf60f41cfadef6cba70507a34c86137b0c0a5a6ad4c386913b80739bbddce"
+        }
+      }
+    ],
     "usages": [
+      {
+        "component": "SectionNav",
+        "type": "string (required navigation and dialog name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/section-nav/types.ts",
+          "symbol": "SectionNavProps",
+          "revision": "sha256:bc0f8e59bd0b872d303a0f78c35a5fea2cdbeae5bb2ce07f1e5b4b6801b9620a"
+        }
+      },
       {
         "component": "NowStrip",
         "type": "string (required visible group name)",
@@ -3345,6 +3413,16 @@
     },
     "usages": [
       {
+        "component": "SectionNav",
+        "type": "SectionNavItem[] (required ordered destinations)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/section-nav/types.ts",
+          "symbol": "SectionNavProps",
+          "revision": "sha256:bc0f8e59bd0b872d303a0f78c35a5fea2cdbeae5bb2ce07f1e5b4b6801b9620a"
+        }
+      },
+      {
         "component": "TabBar",
         "type": "TabBarItem[]",
         "status": "existing",
@@ -4084,6 +4162,16 @@
     },
     "usages": [
       {
+        "component": "SectionNav",
+        "type": "boolean",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/section-nav/types.ts",
+          "symbol": "SectionNavProps",
+          "revision": "sha256:bc0f8e59bd0b872d303a0f78c35a5fea2cdbeae5bb2ce07f1e5b4b6801b9620a"
+        }
+      },
+      {
         "component": "AlertDialog",
         "type": "boolean",
         "status": "existing",
@@ -4171,6 +4259,16 @@
     },
     "usages": [
       {
+        "component": "SectionNav",
+        "type": "boolean (default false)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/section-nav/types.ts",
+          "symbol": "SectionNavProps",
+          "revision": "sha256:bc0f8e59bd0b872d303a0f78c35a5fea2cdbeae5bb2ce07f1e5b4b6801b9620a"
+        }
+      },
+      {
         "component": "AlertDialog",
         "type": "boolean (default false)",
         "status": "existing",
@@ -4257,6 +4355,16 @@
       "contentHash": "sha256:9a372029db1931ce82238122f592178caedd6060b8cc440e5f0bead3ff93f25e"
     },
     "usages": [
+      {
+        "component": "SectionNav",
+        "type": "(open: boolean) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/section-nav/types.ts",
+          "symbol": "SectionNavProps",
+          "revision": "sha256:bc0f8e59bd0b872d303a0f78c35a5fea2cdbeae5bb2ce07f1e5b4b6801b9620a"
+        }
+      },
       {
         "component": "AlertDialog",
         "type": "(open: boolean) => void",
@@ -4465,6 +4573,16 @@
       "contentHash": "sha256:7fb068ceea0357c786c87878c1080e7737b18da24f7feb48010b643ba4d1e197"
     },
     "usages": [
+      {
+        "component": "SectionNav",
+        "type": "(item: SectionNavItem, event: MouseEvent<HTMLAnchorElement>) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/section-nav/types.ts",
+          "symbol": "SectionNavProps",
+          "revision": "sha256:bc0f8e59bd0b872d303a0f78c35a5fea2cdbeae5bb2ce07f1e5b4b6801b9620a"
+        }
+      },
       {
         "component": "TabBar",
         "type": "(item: TabBarItem, event: MouseEvent<HTMLAnchorElement>) => void",

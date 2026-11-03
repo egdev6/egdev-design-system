@@ -89,12 +89,12 @@ export const sectionNavPillVariants = cva(
   'relative flex items-center h-14 px-4 [@media(width<=520px)]:h-14 [@media(width<=520px)]:px-3 overflow-hidden'
 );
 export const sectionNavTriggerVariants = cva(
-  'flex items-center gap-3 min-w-14 min-h-14 [@media(width<=520px)]:min-w-14 [@media(width<=520px)]:min-h-14 motion-reduce:transition-none'
+  'flex items-center gap-3 border-0 bg-transparent p-0 font-sans text-body-default text-fg-default cursor-pointer min-w-14 min-h-14 [@media(width<=520px)]:min-w-14 [@media(width<=520px)]:min-h-14 motion-reduce:transition-none'
 );
 export const sectionNavNextVariants = cva(
-  'inline-flex items-center justify-center min-w-14 min-h-14 [@media(width<=520px)]:min-w-14 [@media(width<=520px)]:min-h-14 focus-visible:shadow-[var(--shadow-focus)] motion-reduce:transition-none'
+  'inline-flex items-center justify-center text-fg-default min-w-14 min-h-14 [@media(width<=520px)]:min-w-14 [@media(width<=520px)]:min-h-14 focus-visible:shadow-[var(--shadow-focus)] motion-reduce:transition-none'
 );
 export const sectionNavListVariants = cva('m-0 p-0 list-none');
 export const sectionNavLinkVariants = cva(
-  'flex items-center gap-3 min-h-14 focus-visible:shadow-[var(--shadow-focus)] aria-[current=location]:underline motion-reduce:transition-none'
+  'flex items-center gap-3 min-h-14 text-fg-default no-underline focus-visible:shadow-[var(--shadow-focus)] aria-[current=location]:underline motion-reduce:transition-none'
 );
