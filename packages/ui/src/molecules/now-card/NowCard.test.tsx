@@ -83,6 +83,8 @@ describe('NowCard public contract', () => {
     expect(body).not.toBeNull();
     expect(foot).not.toBeNull();
     expect(body).toHaveClass('p-6', 'text-body-large', 'text-fg-secondary');
+    // Body-grow amendment: the body absorbs stretched height so the footer band pins to the card bottom.
+    expect(body).toHaveClass('flex-1');
     expect(body?.nextElementSibling).toBe(foot);
     expect(foot).toHaveClass('eg-now-card__foot', 'bg-surface-0', 'border-t', 'rounded-b-xl');
     expect(foot).toHaveClass('flex-wrap', 'justify-between');

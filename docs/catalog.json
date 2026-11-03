@@ -1105,10 +1105,10 @@
     "nombre": "NowStrip",
     "nivel": "organism",
     "destino": "ui",
-    "radix": "—",
-    "compone": "NowCard",
+    "radix": "— (native named group)",
+    "compone": "StatusDot; consumer NowCard sm",
     "accion": "mover",
-    "notas": "web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): section body composed from NowCard instances."
+    "notas": "Implemented React organism under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/297): passive visible-labelled group with a decorative static StatusDot and responsive consumer-supplied NowCard sm children. The host owns content and background; no Pixel meter, stylesheet, ref or asChild."
   },
   {
     "actual": "ProjectsGrid",

@@ -68,6 +68,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   blogGridRows: [],
   blogGridRow: [],
   blogGridArchive: [],
+  nowStrip: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   footer: ['id', 'title', 'dir', 'lang', 'aria-label', 'aria-labelledby', 'aria-describedby', 'className', 'onClick'],
   footerMotto: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],
   footerBrand: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],

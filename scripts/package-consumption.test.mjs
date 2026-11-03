@@ -30,6 +30,8 @@ function run(cwd, command, args, timeout) {
 const consumer = `
 import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from '@egdev/ui';
 import type { BlogGridProps, BlogGridArchiveProps, BlogGridFeatureProps, BlogGridRowProps, BlogGridRowsProps } from '@egdev/ui';
+import { NowStrip } from '@egdev/ui';
+import type { NowStripProps } from '@egdev/ui';
 import { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from '@egdev/ui';
 import type { FooterProps, FooterBrandProps, FooterLegalProps, FooterMottoProps, FooterNavigationProps, FooterNavigationItem, FooterNavigationLevel, FooterSocialProps } from '@egdev/ui';
 import { TopBar, TopBarBrand, TopBarMobileTrigger, TopBarSearchCompact, TopBarSearchFull, TopBarUserMenu } from '@egdev/ui';
@@ -372,6 +374,19 @@ const blogPartClass: BlogGridFeatureProps = { ...blogFeature, className: 'extra'
 // @ts-expect-error Recipes remain private.
 type BlogGridPrivate = (typeof import('@egdev/ui'))['blogGridVariants'];
 export type BlogGridNegatives = [typeof blogMissing, typeof blogHtml, typeof blogSlot, typeof blogRef, typeof blogPartClass, BlogGridPrivate];
+export const nowStripProps: NowStripProps = { label: 'Current activity', children: ['One', 'Two', 'Three'].map((title, index) => createElement(NowCard, { key: title, title, size: 'sm', children: createElement(NowCardFooter, { children: createElement(Link, { href: '#' + index, children: title }) }) })) };
+export function NowStripSamples() { return createElement(NowStrip, nowStripProps); }
+// @ts-expect-error A visible label is required.
+const nowStripMissing: NowStripProps = { children: null };
+// @ts-expect-error Role is protected.
+const nowStripRole: NowStripProps = { ...nowStripProps, role: 'region' };
+// @ts-expect-error Inline style is protected.
+const nowStripStyle: NowStripProps = { ...nowStripProps, style: {} };
+// @ts-expect-error Accessible name is owned by the visible label.
+const nowStripAria: NowStripProps = { ...nowStripProps, 'aria-label': 'Other' };
+// @ts-expect-error The recipe is private.
+type NowStripPrivate = (typeof import('@egdev/ui'))['nowStripVariants'];
+export type NowStripNegatives = [typeof nowStripMissing, typeof nowStripRole, typeof nowStripStyle, typeof nowStripAria, NowStripPrivate];
 const footerItem: FooterNavigationItem = { href: '#one', label: 'One' };
 const footerLevel: FooterNavigationLevel = 2;
 const footerMotto: FooterMottoProps = { children: createElement('p', null, 'Motto') };
@@ -4454,6 +4469,29 @@ function assertBlogGridConsumerCSS(css) {
   assert.match(block(css, /@layer components\s*\{/), /\.eg-blog-grid/);
 }
 
+function assertNowStripConsumerCSS(css) {
+  const start = css.indexOf('@layer utilities {');
+  assert.ok(start >= 0);
+  const utilities = css.slice(start);
+  const match = /@media\s*\(\s*width\s*<=\s*860px\s*\)\s*\{/.exec(utilities);
+  assert.ok(match);
+  let depth = 1;
+  let end = match.index + match[0].length;
+  for (; end < utilities.length && depth > 0; end++) {
+    if (utilities[end] === '{') {
+      depth++;
+    } else if (utilities[end] === '}') {
+      depth--;
+    }
+  }
+  assert.equal(depth, 0);
+  assert.ok(utilities.slice(match.index, end).includes(String.raw`.\[\@media\(width\<\=860px\)\]\:grid-cols-1`));
+  assert.match(utilities, /border-bottom-width:\s*var\(--border-width[,)]/);
+  assert.match(utilities, /border-bottom-style:\s*solid/);
+  assert.doesNotMatch(utilities, /\.eg-now-strip\s*\{/);
+  assert.match(css.slice(0, start), /\.eg-now-strip/);
+}
+
 function assertFooterConsumerCSS(css) {
   const start = css.indexOf('@layer utilities {');
   assert.ok(start >= 0, 'Footer requires shipped utilities');
@@ -4612,6 +4650,8 @@ ${assertFooterConsumerCSS.toString()}
 assertFooterConsumerCSS(shippedStyles);
 ${assertBlogGridConsumerCSS.toString()}
 assertBlogGridConsumerCSS(shippedStyles);
+${assertNowStripConsumerCSS.toString()}
+assertNowStripConsumerCSS(shippedStyles);
 ${assertSectionShellConsumerCSS.toString()}
 assertSectionShellConsumerCSS(shippedStyles);
 ${assertTerminalCardConsumerCSS.toString()}
@@ -4719,6 +4759,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'NowCardBody',
   'NowCardDetail',
   'NowCardFooter',
+  'NowStrip',
   'PageHeader',
   'Panel',
   'PanelBody',
@@ -5025,6 +5066,14 @@ assert.equal(footer.querySelector('ul[aria-label="Profiles"] a')?.getAttribute('
 assert.equal(footer.querySelectorAll('nav').length, 1);
 assert.equal(footer.querySelector('a a'), null);
 footerDocument.window.close();
+const { NowStripSamples } = await import('./consumer.ts');
+const nowStripDocument = new JSDOM(renderToString(createElement(NowStripSamples)));
+const nowStripGroup = nowStripDocument.window.document.querySelector('[role="group"].eg-now-strip');
+assert.ok(nowStripGroup);
+assert.equal(nowStripDocument.window.document.getElementById(nowStripGroup.getAttribute('aria-labelledby')).textContent, 'Current activity');
+assert.equal(nowStripGroup.querySelectorAll('article').length, 3);
+assert.deepEqual([...nowStripGroup.querySelectorAll('a')].map((link) => link.getAttribute('href')), ['#0', '#1', '#2']);
+nowStripDocument.window.close();
 const { TopBarSamples } = await import('./consumer.ts');
 const topBarDOM = new JSDOM(renderToString(createElement(TopBarSamples)));
 try {

@@ -502,6 +502,43 @@ test('BlogGrid ships every recipe utility with bounded responsive resets and leg
   assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-blog-grid/);
 });
 
+test('NowStrip ships every scanned utility within its approved layers', () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/organisms/now-strip/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      for (const argument of node.arguments) {
+        if (ts.isStringLiteral(argument)) {
+          for (const name of argument.text.split(/\s+/).filter(Boolean)) {
+            classes.add(name);
+          }
+        }
+      }
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(source);
+  assert.ok(classes.size > 10);
+  for (const name of classes) {
+    if (!name.startsWith('eg-')) {
+      assert.ok(utilities.includes('.' + name.replace(/[^\w-]/g, '\\$&')), `Missing NowStrip utility ${name}`);
+    }
+  }
+  const media = cssBlock(utilities, /@media\s*\(\s*width\s*<=\s*860px\s*\)\s*\{/);
+  assert.ok(media.includes(String.raw`.\[\@media\(width\<\=860px\)\]\:grid-cols-1`));
+  assert.match(utilities, /border-bottom-width:\s*var\(--border-width[,)]/);
+  assert.match(utilities, /border-bottom-style:\s*solid/);
+  assert.doesNotMatch(utilities, /\.eg-now-strip\s*\{/);
+  assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-now-strip/);
+});
+
 test('BlogGrid package SSR composes independent article, editorial row and archive links', async () => {
   const uiExports = await import(artifact('ui', ui.exports['.'].import));
   const { createElement: h } = await import('react');
@@ -550,6 +587,35 @@ test('BlogGrid package SSR composes independent article, editorial row and archi
     } finally {
       dom.window.close();
     }
+  }
+});
+
+test('NowStrip package SSR names its group and retains child-owned links', async () => {
+  const uiExports = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const children = ['One', 'Two', 'Three'].map((title, index) =>
+    h(uiExports.NowCard, {
+      key: title,
+      title,
+      size: 'sm',
+      children: h(uiExports.NowCardFooter, { children: h(uiExports.Link, { href: `#${index}`, children: title }) })
+    })
+  );
+  const dom = new JSDOM(renderToString(h(uiExports.NowStrip, { label: 'Current activity', children })));
+  try {
+    const doc = dom.window.document;
+    const group = doc.querySelector('[role="group"].eg-now-strip');
+    assert.ok(group);
+    assert.equal(doc.getElementById(group.getAttribute('aria-labelledby')).textContent, 'Current activity');
+    assert.equal(group.querySelectorAll('article').length, 3);
+    assert.deepEqual(
+      [...group.querySelectorAll('a')].map((link) => link.getAttribute('href')),
+      ['#0', '#1', '#2']
+    );
+  } finally {
+    dom.window.close();
   }
 });
 
@@ -4235,6 +4301,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'NowCardBody',
       'NowCardDetail',
       'NowCardFooter',
+      'NowStrip',
       'PageHeader',
       'Panel',
       'PanelBody',
@@ -4654,6 +4721,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'NowCardLevel',
     'NowCardProps',
     'NowCardSize',
+    'NowStrip',
+    'NowStripProps',
     'PageHeader',
     'PageHeaderLevel',
     'PageHeaderProps',
