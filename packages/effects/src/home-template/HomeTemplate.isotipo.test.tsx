@@ -1,5 +1,6 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import { StrictMode } from 'react';
+import { renderToString } from 'react-dom/server';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { isotipoCreateScene, isotipoPose } from '../atoms/isotipo3d/isotipoScene';
 import { HomeTemplate } from './HomeTemplate';
@@ -338,6 +339,178 @@ it('stops when hidden and resumes with one animation loop', async () => {
   fixture.visibility(false);
   fixture.tick();
   expect(created.render).toHaveBeenCalledTimes(count + 1);
+});
+
+it('paints only rendered anchors, including reduced motion, and never in SSR', async () => {
+  expect(renderToString(travelPage())).not.toContain('data-state="painted"');
+  const fixture = travelFixture();
+  let resolve!: (value: Scene) => void;
+  vi.mocked(isotipoCreateScene).mockReturnValue(
+    new Promise((done) => {
+      resolve = done;
+    })
+  );
+  const view = render(travelPage());
+  expect(view.getByText('A fallback')).not.toHaveAttribute('data-state');
+  await act(async () => {
+    resolve(scene());
+  });
+  expect(view.getByText('A fallback')).not.toHaveAttribute('data-state');
+  fixture.tick();
+  expect(view.getByText('A fallback')).toHaveAttribute('data-state', 'painted');
+  expect(view.getByText('B fallback')).toHaveAttribute('data-state', 'painted');
+  view.unmount();
+  travelFixture(true);
+  vi.mocked(isotipoCreateScene).mockResolvedValue(scene());
+  const reducedView = render(travelPage());
+  await act(async () => {
+    /* Resolve static render. */
+  });
+  expect(reducedView.getByText('A fallback')).toHaveAttribute('data-state', 'painted');
+});
+
+it('clears paint on geometry invalidation and new measurement, then repaints only after a frame', async () => {
+  const fixture = travelFixture();
+  const view = render(travelPage());
+  await act(async () => {
+    /* Resolve the scene. */
+  });
+  fixture.tick();
+  const fallback = view.getByText('A fallback');
+  expect(fallback).toHaveAttribute('data-state', 'painted');
+  Object.defineProperty(document.documentElement, 'scrollHeight', { configurable: true, value: 900 });
+  fireEvent.load(window);
+  expect(fallback).not.toHaveAttribute('data-state');
+  Object.defineProperty(document.documentElement, 'scrollHeight', { configurable: true, value: 2700 });
+  fireEvent.load(window);
+  expect(fallback).not.toHaveAttribute('data-state');
+  fixture.tick();
+  expect(fallback).toHaveAttribute('data-state', 'painted');
+  fireEvent.load(window);
+  expect(fallback).not.toHaveAttribute('data-state');
+  fixture.tick();
+  expect(fallback).toHaveAttribute('data-state', 'painted');
+});
+
+it('clears painted anchors on missing travel, mobile suppression, zone change and context loss', async () => {
+  const fixture = travelFixture();
+  const view = render(travelPage());
+  await act(async () => {
+    /* Resolve the scene. */
+  });
+  fixture.tick();
+  const fallback = view.getByText('A fallback');
+  expect(fallback).toHaveAttribute('data-state', 'painted');
+  view.rerender(travelPage(travelTable, true));
+  expect(fallback).not.toHaveAttribute('data-state');
+  view.rerender(travelPage());
+  fixture.tick();
+  expect(fallback).toHaveAttribute('data-state', 'painted');
+  const mobile: HomeTemplateZone[] = [
+    { id: 'a', isotipo: true, scene: 'chapter', mobileIsotipo: false },
+    { id: 'b' },
+    { id: 'c' }
+  ];
+  vi.stubGlobal('innerWidth', 760);
+  view.rerender(travelPage(mobile));
+  await act(async () => {
+    /* Resolve regeneration. */
+  });
+  fixture.tick();
+  expect(fallback).not.toHaveAttribute('data-state');
+  vi.stubGlobal('innerWidth', 1000);
+  view.rerender(travelPage());
+  await act(async () => {
+    /* Resolve regeneration. */
+  });
+  fixture.tick();
+  expect(fallback).toHaveAttribute('data-state', 'painted');
+  fireEvent(
+    view.container.querySelectorAll('canvas')[1] as HTMLCanvasElement,
+    new Event('webglcontextlost', { cancelable: true })
+  );
+  expect(fallback).not.toHaveAttribute('data-state');
+});
+
+it('clears zero-sized anchor paint and requires a successful new frame after recovery', async () => {
+  const fixture = travelFixture();
+  const view = render(travelPage());
+  await act(async () => {
+    /* Resolve the scene. */
+  });
+  fixture.tick();
+  const fallback = view.getByText('A fallback');
+  expect(fallback).toHaveAttribute('data-state', 'painted');
+  const original = vi.mocked(Element.prototype.getBoundingClientRect).getMockImplementation();
+  vi.mocked(Element.prototype.getBoundingClientRect).mockImplementation(function (this: Element) {
+    const rect = original?.call(this) as DOMRect;
+    return this.classList.contains('eg-home-template-anchor') ? { ...rect, width: 0 } : rect;
+  });
+  fireEvent.load(window);
+  expect(fallback).not.toHaveAttribute('data-state');
+  fixture.tick();
+  expect(fallback).not.toHaveAttribute('data-state');
+  if (original) {
+    vi.mocked(Element.prototype.getBoundingClientRect).mockImplementation(original);
+  }
+  fireEvent.load(window);
+  expect(fallback).not.toHaveAttribute('data-state');
+  fixture.tick();
+  expect(fallback).toHaveAttribute('data-state', 'painted');
+});
+
+it('clears old paint on scene rejection and zone changes', async () => {
+  const fixture = travelFixture();
+  const view = render(travelPage());
+  await act(async () => {
+    /* Resolve the scene. */
+  });
+  fixture.tick();
+  const fallback = view.getByText('A fallback');
+  expect(fallback).toHaveAttribute('data-state', 'painted');
+  vi.mocked(isotipoCreateScene).mockRejectedValueOnce(new Error('import'));
+  view.rerender(travelPage([...travelTable]));
+  await act(async () => {
+    /* Reject the regenerated scene. */
+  });
+  expect(fallback).not.toHaveAttribute('data-state');
+  view.rerender(travelPage([...travelTable]));
+  await act(async () => {
+    /* Resolve the next scene. */
+  });
+  fixture.tick();
+  expect(fallback).toHaveAttribute('data-state', 'painted');
+  view.rerender(
+    <HomeTemplate zoneTable={travelTable}>
+      <section data-zone='a'>
+        <HomeTemplateAnchor zone='c'>A fallback</HomeTemplateAnchor>
+      </section>
+      <section data-zone='b'>
+        <HomeTemplateAnchor zone='b'>B fallback</HomeTemplateAnchor>
+      </section>
+      <section data-zone='c'>C</section>
+    </HomeTemplate>
+  );
+  expect(fallback).not.toHaveAttribute('data-state');
+});
+
+it('clears paint on render failure while ambient remains operational', async () => {
+  const fixture = travelFixture();
+  const created = scene();
+  vi.mocked(isotipoCreateScene).mockResolvedValue(created);
+  const view = render(travelPage());
+  await act(async () => {
+    /* Resolve the scene. */
+  });
+  fixture.tick();
+  expect(view.getByText('A fallback')).toHaveAttribute('data-state', 'painted');
+  vi.mocked(created.render).mockImplementation(() => {
+    throw new Error('render');
+  });
+  fixture.tick();
+  expect(view.getByText('A fallback')).not.toHaveAttribute('data-state');
+  expect(created.dispose).toHaveBeenCalledOnce();
+  expect(ambient.dispose).not.toHaveBeenCalled();
 });
 
 it('leaves exactly one live scene in StrictMode', async () => {

@@ -1,6 +1,6 @@
 import { cn } from '@egdev/ui';
 import type { CSSProperties } from 'react';
-import { createContext, useCallback, useContext, useEffect, useRef } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { ambientProfiles, createParticleStreaks, resolveAmbientColors } from '../ambient-background/particleStreaks';
 import { isotipoCreateScene } from '../atoms/isotipo3d/isotipoScene';
 import type { DirectorZone, ZoneGeometry } from './homeDirector';
@@ -16,8 +16,8 @@ import {
   vignetteVariants
 } from './types';
 
-type Entry = { zone: string; node: HTMLDivElement };
-type Register = (zone: string, node: HTMLDivElement) => () => void;
+type Entry = { zone: string; node: HTMLDivElement; painted: boolean; notify: (painted: boolean) => void };
+type Register = (zone: string, node: HTMLDivElement, notify: (painted: boolean) => void) => () => void;
 export const HomeTemplateContext = createContext<Register | null>(null);
 const warn = (message: string) => {
   if (typeof process === 'undefined' || process.env.NODE_ENV !== 'production') {
@@ -43,6 +43,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
         geometry: ZoneGeometry[];
         sections: Element[];
         reduced: boolean;
+        generation: number;
       }) => void)
     | null
   >(null);
@@ -51,6 +52,15 @@ export function useHomeTemplate(props: HomeTemplateProps) {
     delete native[key];
   }
   const entries = useRef<Entry[]>([]);
+  const paint = useCallback((nodes: readonly HTMLDivElement[], allowNew: boolean) => {
+    for (const entry of entries.current) {
+      const next = nodes.includes(entry.node) && (allowNew || entry.painted);
+      if (entry.painted !== next) {
+        entry.painted = next;
+        entry.notify(next);
+      }
+    }
+  }, []);
   const validRows = Array.isArray(zoneTable)
     ? zoneTable.filter((row): row is HomeTemplateZone => !!row && typeof row === 'object' && typeof row.id === 'string')
     : [];
@@ -106,15 +116,18 @@ export function useHomeTemplate(props: HomeTemplateProps) {
     refreshAnchors(true);
   });
   const register = useCallback<Register>(
-    (zone, node) => {
-      const entry = { zone, node };
+    (zone, node, notify) => {
+      const entry: Entry = { zone, node, notify, painted: false };
+      notify(false);
       entries.current.push(entry);
       refreshAnchors(false);
       return () => {
+        paint([], false);
         entries.current = entries.current.filter((item) => item !== entry);
+        remeasure.current?.();
       };
     },
-    [refreshAnchors]
+    [paint, refreshAnchors]
   );
   useEffect(() => {
     const root = rootRef.current;
@@ -129,6 +142,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
     let geometry: ZoneGeometry[] = [];
     let sections: Element[] = [];
     let valid = false;
+    let generation = 0;
     let frame: number | null = null;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let motion: MediaQueryList | undefined;
@@ -197,7 +211,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
             reduced
           )
         : null;
-      updateIsotipo.current?.({ targets, rows, geometry, sections, reduced });
+      updateIsotipo.current?.({ targets, rows, geometry, sections, reduced, generation });
       if (!targets) {
         canvas.style.setProperty('--eg-home-ambient-opacity', '0');
         root.removeAttribute('data-state');
@@ -258,6 +272,8 @@ export function useHomeTemplate(props: HomeTemplateProps) {
       if (!active) {
         return;
       }
+      generation++;
+      paint([], false);
       try {
         const elements = Array.from(content.querySelectorAll('[data-zone]'));
         const configured = new Set(zones.current.map((zone) => zone.id));
@@ -400,6 +416,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
       name: NonNullable<DirectorZone['scene']>;
       progress: number;
       travel: NonNullable<ReturnType<typeof computeTravel>>;
+      nodes: HTMLDivElement[];
     } | null = null;
     let coarse: MediaQueryList | undefined;
     const stop = () => {
@@ -422,6 +439,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
       active = false;
       controller.abort();
       stop();
+      paint([], false);
       dispose();
       canvas.style.setProperty('--eg-home-isotipo-opacity', '0');
     };
@@ -442,13 +460,22 @@ export function useHomeTemplate(props: HomeTemplateProps) {
           { time, intro, pose: drawState.travel.pose },
           drawState.travel.projection
         );
+        paint(drawState.nodes, true);
         frame = requestAnimationFrame(draw);
       } catch {
         fail();
       }
     };
-    const update: NonNullable<typeof updateIsotipo.current> = ({ targets, rows, geometry, sections, reduced }) => {
+    const update: NonNullable<typeof updateIsotipo.current> = ({
+      targets,
+      rows,
+      geometry,
+      sections,
+      reduced,
+      generation
+    }) => {
       if (!active || !scene || !targets || targets.isotipo <= 0 || document.hidden) {
+        paint([], false);
         stop();
         staticKey = '';
         canvas.style.setProperty('--eg-home-isotipo-opacity', '0');
@@ -482,6 +509,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
           }
           return {
             scene: zone.scene,
+            node,
             geometry: bounds,
             anchor: rect ? { left: rect.left, top: rect.top, width: rect.width, height: rect.height } : null,
             sticky
@@ -492,6 +520,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
         const a = first ?? second;
         const b = second ?? first;
         if (!a || !b) {
+          paint([], false);
           stop();
           staticKey = '';
           canvas.style.setProperty('--eg-home-isotipo-opacity', '0');
@@ -500,11 +529,14 @@ export function useHomeTemplate(props: HomeTemplateProps) {
         const viewport = { width: window.innerWidth, height: window.innerHeight };
         const travel = computeTravel(a, b, targets.mix.t, window.scrollY, viewport, reduced);
         if (!travel) {
+          paint([], false);
           stop();
           staticKey = '';
           canvas.style.setProperty('--eg-home-isotipo-opacity', '0');
           return;
         }
+        const nodes = [a.node, b.node].filter((node): node is HTMLDivElement => node !== null);
+        paint(nodes, false);
         const ratio = window.devicePixelRatio || 1;
         const nextSize = `${viewport.width}:${viewport.height}:${ratio}:${coarse?.matches === true}`;
         if (size !== nextSize) {
@@ -516,14 +548,15 @@ export function useHomeTemplate(props: HomeTemplateProps) {
         canvas.style.setProperty('--eg-home-isotipo-opacity', String(opacity(targets.isotipo)));
         if (reduced) {
           stop();
-          const key = JSON.stringify([chosen.scene, progress, travel.projection, nextSize]);
+          const key = JSON.stringify([chosen.scene, progress, travel.projection, nextSize, generation]);
           if (key !== staticKey) {
             scene.render(chosen.scene, progress, true, { time: 0, intro: 1 }, travel.projection);
+            paint(nodes, true);
             staticKey = key;
           }
         } else {
           staticKey = '';
-          drawState = { name: a.scene, progress, travel };
+          drawState = { name: a.scene, progress, travel, nodes };
           if (frame === null) {
             frame = requestAnimationFrame(draw);
           }
@@ -601,6 +634,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
       active = false;
       controller.abort();
       stop();
+      paint([], false);
       updateIsotipo.current = null;
       canvas.style.setProperty('--eg-home-isotipo-opacity', '0');
       try {
@@ -643,10 +677,18 @@ export function useHomeTemplateAnchor(props: HomeTemplateAnchorProps) {
   }
   const register = useContext(HomeTemplateContext);
   const ref = useRef<HTMLDivElement>(null);
+  const [painted, setPainted] = useState(false);
   useEffect(() => {
     if (register && ref.current) {
-      return register(zone, ref.current);
+      return register(zone, ref.current, setPainted);
     }
   }, [register, zone]);
-  return { children, native, ref, className: cn(className, anchorVariants()), fallbackClass: cn(fallbackVariants()) };
+  return {
+    children,
+    native,
+    ref,
+    painted,
+    className: cn(className, anchorVariants()),
+    fallbackClass: cn(fallbackVariants())
+  };
 }
