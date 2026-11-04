@@ -27,7 +27,7 @@ Exact owner requirements, quoted verbatim (Spanish is the owner's wording; the e
 
 | Task | Content | Specs | Route | Status | Commit | GitHub |
 | --- | --- | --- | --- | --- | --- | --- |
-| P0 | Per-component v0.2 spec snapshots: A1–A12 deltas, WebSection/WebTemplate API, slot/landmark/naming mappings, visual provenance, approval evidence (G2–G5) | S1–S12, S14, S15 | `docs/components/<name>/v0.2/` | pending — not started; produces the specs, does not assume them | not implemented | #339 |
+| P0 | Per-component v0.2 spec snapshots: A1–A12 deltas, WebSection/WebTemplate API, slot/landmark/naming mappings, visual provenance, approval evidence (G2–G5) | S1–S12, S14, S15 | `docs/components/<name>/v0.2/` | drafted — 13 specs (T1–T11) snapshotted to their issues; owner approval and captures pending | 73fe84b | #339 |
 | P1 | Materialise this ODD plan | S14, S15 | `odd/tasks/` | done — parent structural readback | planning artifact only | #339 |
 | P2 | Publish tracker, new component proposals and canonical amendment comments | S15 | parent GitHub operations | done — all exact remote readbacks confirmed | planning publication only | #339, #340, #341 |
 | P3 | Read back publication, link tasks and mirror complete ODD | S15 | inline parent | done — structural/link validation; full mirror saved in closing step | planning synchronization only | #339 |
@@ -113,5 +113,7 @@ Preserved: prior frozen specs/approvals stay byte-identical, `roadmap8` body is 
 - **L5 — Publication in progress:** job-435 performs one creation per new planning issue and one append per planned comment, verifies exact readback, records partial outcomes in `docs/components/web-catalog/v0.2/github-planning.json`, and stops on uncertainty without replay. No protected labels or assignment.
 
 - **L7 — P0 start (verbatim):** "empezamos la planificación. Levanta 3 subagentes que trabajen en paralelo haciendo issues y cuando terminen que cojan otras hasta que esté la planificación terminada" — authorizes drafting the P0 v0.2 specs with three parallel workers on branch `docs/web-catalog-v0.2-specs`. Spec approval (G1–G5) is still the owner's decision.
+
+- **L8 — P0 drafts done:** T1–T11 drafted by three pull-based workers; 13 specs committed in 73fe84b, exact snapshots appended to #276, #297, #281, #275, #280, #296, #292, #293, #301, #295, #340, #341, #45 (all readbacks OK) and the decision summary to #339 (https://github.com/egdev6/egdev-design-system/issues/339#issuecomment-6637858760). Nothing approved; no captures; branch not pushed.
 
 - **L6 — Publication confirmed:** tracker #339, WebSection #340, WebTemplate #341. Exact proposal and plan snapshots and dependency links are in #339 comments. Appended planning amendments to the twelve canonical existing component issues and backlinks on #340/#341; preserved prior issue bodies, labels, state and assignees. Three new issues carry only enhancement/odd labels and no assignees. Job-435 exit0, all20 remote bodies read back exactly. No implementation, Git commit, push or roadmap-index edit.
