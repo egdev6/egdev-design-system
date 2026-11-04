@@ -60,20 +60,96 @@ describe('CommunityCard public contract', () => {
     warn.mockRestore();
   });
 
-  it('renders the eyebrow as the public Text eyebrow output with its diamond, inside the band only (CC-03)', () => {
+  it('renders the local fixed-size eyebrow recipe and preserves its diamond (A4)', () => {
     render(
       <CommunityCard title='Pulso' eyebrow='Open community'>
         {body}
       </CommunityCard>
     );
     const article = screen.getByRole('article', { name: 'Pulso' });
-    const eyebrow = within(article).getByText('Open community');
-    expect(eyebrow.tagName).toBe('P');
-    expect(eyebrow).toHaveClass('eg-text', 'text-label-eyebrow');
-    expect(eyebrow.className).toContain('before:bg-fg-brand-default');
+    const eyebrow = within(article).getByText('Open community').parentElement;
+    expect(eyebrow).toHaveClass('text-body-default', 'inline-flex', 'items-center', 'gap-2.5');
+    expect(eyebrow).not.toHaveClass('eg-text', 'text-label-eyebrow');
+    expect(eyebrow).toHaveClass(
+      "before:content-['']",
+      'before:size-2',
+      'before:shrink-0',
+      'before:rotate-45',
+      'before:bg-fg-brand-default'
+    );
     const band = article.querySelector('.eg-community-card__band');
     expect(band).toContainElement(eyebrow);
     expect(within(band as HTMLElement).getByText('Open community')).toBeInTheDocument();
+  });
+
+  it('reserves the same band recipe with or without header content (A4)', () => {
+    render(
+      <>
+        <CommunityCard title='Empty' />
+        <CommunityCard title='Filled' eyebrow='Open community'>
+          <CommunityCardMark>
+            <img src='/mark.svg' alt='Mark' />
+          </CommunityCardMark>
+        </CommunityCard>
+      </>
+    );
+    for (const name of ['Empty', 'Filled']) {
+      const band = screen.getByRole('article', { name }).querySelector('.eg-community-card__band');
+      expect(band).toHaveClass('h-[var(--space-24)]', 'min-[48rem]:h-[calc(var(--space-16)+var(--space-10))]');
+    }
+    const image = screen.getByRole('img', { name: 'Mark' });
+    expect(image.parentElement).toHaveClass('max-h-16', 'max-w-[calc(var(--space-24)*2)]');
+    expect(image.parentElement).toHaveClass('[&>img]:object-contain');
+  });
+
+  it('retains the full long eyebrow in a shrinkable two-line region (A4)', () => {
+    const label = 'A very long relationship label with an exceptionallylongunbrokenword that remains accessible';
+    render(
+      <CommunityCard title='Pulso' eyebrow={label}>
+        <CommunityCardMark>
+          <img src='/mark.svg' alt='Mark' />
+        </CommunityCardMark>
+      </CommunityCard>
+    );
+    const text = screen.getByText(label);
+    expect(text).toHaveTextContent(label);
+    expect(text.parentElement).toHaveClass('min-w-0');
+    expect(text).toHaveClass('line-clamp-2', 'wrap-anywhere');
+  });
+
+  it('preserves body and action recipes and order with and without a mark (A4)', () => {
+    render(
+      <>
+        {[false, true].map((withMark) => (
+          <CommunityCard key={String(withMark)} title={withMark ? 'With mark' : 'Without mark'} eyebrow='Open'>
+            {withMark && (
+              <CommunityCardMark>
+                <span role='img' aria-label='Mark'>
+                  M
+                </span>
+              </CommunityCardMark>
+            )}
+            <p>Untruncated body copy</p>
+            <CommunityCardAction>
+              <Button>Join</Button>
+            </CommunityCardAction>
+          </CommunityCard>
+        ))}
+      </>
+    );
+    for (const name of ['With mark', 'Without mark']) {
+      const article = screen.getByRole('article', { name });
+      const heading = within(article).getByRole('heading', { name });
+      const content = within(article).getByText('Untruncated body copy');
+      const action = within(article).getByRole('button', { name: 'Join' }).parentElement;
+      expect(heading).toHaveClass('font-display', 'uppercase', 'text-title-section', 'wrap-anywhere');
+      expect(heading.parentElement).toHaveClass('p-6', 'min-[48rem]:p-8', 'flex-1');
+      expect(action).toHaveClass('mt-auto');
+      expect(content.previousElementSibling).toBe(heading);
+      expect(content.nextElementSibling).toBe(action);
+      expect(heading).not.toHaveClass('line-clamp-2', 'truncate');
+      expect(content).not.toHaveClass('line-clamp-2', 'truncate');
+    }
   });
 
   it('renders no top row without eyebrow or mark, while the band still exists (CC-03)', () => {
@@ -233,7 +309,9 @@ describe('CommunityCard public contract', () => {
     const action = article.querySelector('.eg-community-card__action') as HTMLElement;
     // Consumer-supplied action content keeps its own approved recipes (e.g. the Button atom's nowrap).
     const ownParts = [article, ...article.querySelectorAll('*')].filter(
-      (element) => !action.contains(element) || element === action
+      (element) =>
+        (!action.contains(element) || element === action) &&
+        !article.querySelector('.eg-community-card__band')?.contains(element)
     );
     for (const element of ownParts) {
       for (const cls of element.classList) {

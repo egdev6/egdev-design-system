@@ -6,12 +6,11 @@ import { CommunityCard, CommunityCardAction, CommunityCardMark } from './Communi
 /**
  * ## Description
  * A passive community card that invites readers into a community, server or collaboration as one
- * self-contained unit. It carries an optional role line (the public Text eyebrow with its diamond),
+ * self-contained unit. It carries an optional two-line role line with a decorative diamond,
  * an optional consumer-supplied mark, a generated display heading, free body copy and one supplied
  * action pinned to the bottom edge.
  *
  * ## Dependencies
- * - Text (eyebrow variant): renders the role line with its decorative diamond.
  * - Button / Link (consumer-supplied): the card's single interactive element lives in the action part.
  * - Surface recipes: the banded Material frame composes `surfaceVariants` internally.
  *
@@ -19,6 +18,7 @@ import { CommunityCard, CommunityCardAction, CommunityCardMark } from './Communi
  * The card is passive: it adds no tab stop and never reacts to pointer hover; only the supplied
  * action is interactive. The mark must be one non-interactive element: named (`role="img"` with
  * `aria-label`, or `img` with `alt`) or decorative (`img alt=""`) when it repeats the visible name.
+ * Non-image marks must fit within 153.6 × 51.2 CSS pixels without distortion; the card does not clip them.
  * Supply no mark artwork of your own invention on the card: the boxed wordmark in these stories is
  * consumer content, exactly as a real consumer would supply it. Card width and equal-height
  * stretching are consumer layout; the pinned action aligns across stretched cards with unequal copy.
@@ -208,6 +208,33 @@ export const LongContent: Story = {
       </CommunityCard>
     </div>
   )
+};
+
+/** Matched cards and a full label show the two-line visual limit without removing the source text. */
+export const LongEyebrow: Story = {
+  render: () => {
+    const label = 'A long community relationship line that continues beyond two lines at narrow card widths';
+    return (
+      <div className='flex flex-col gap-6'>
+        <p>{label}</p>
+        <div className='grid grid-cols-2 items-stretch gap-6'>
+          <CommunityCard title='With mark' eyebrow={label}>
+            {wordmark}
+            <p>Shared description.</p>
+            <CommunityCardAction>
+              <Button>Join</Button>
+            </CommunityCardAction>
+          </CommunityCard>
+          <CommunityCard title='Without mark' eyebrow={label}>
+            <p>Shared description.</p>
+            <CommunityCardAction>
+              <Button>Join</Button>
+            </CommunityCardAction>
+          </CommunityCard>
+        </div>
+      </div>
+    );
+  }
 };
 
 /** Card width is consumer layout; in a stretched grid the pinned actions align across unequal copy. */

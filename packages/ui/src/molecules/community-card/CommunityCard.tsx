@@ -1,5 +1,4 @@
 import { type FC, Fragment, isValidElement } from 'react';
-import { Text } from '../../primitives/text';
 import type { CommunityCardActionProps, CommunityCardMarkProps, CommunityCardProps } from './types';
 import { useCommunityCard, useCommunityCardAction, useCommunityCardMark } from './useCommunityCard';
 
@@ -13,6 +12,8 @@ export const CommunityCard: FC<CommunityCardProps> = (props) => {
     rootProps,
     bandProps,
     topRowProps,
+    eyebrowProps,
+    eyebrowTextProps,
     headingElement: Heading,
     headingProps,
     title,
@@ -30,7 +31,11 @@ export const CommunityCard: FC<CommunityCardProps> = (props) => {
       <div {...bandProps}>
         {hasTopRow && (
           <div {...topRowProps}>
-            {eyebrow !== null && <Text variant='eyebrow'>{eyebrow}</Text>}
+            {eyebrow !== null && (
+              <span {...eyebrowProps}>
+                <span {...eyebrowTextProps}>{eyebrow}</span>
+              </span>
+            )}
             {marks.map((mark, position) => (
               <Fragment key={mark.key ?? `community-card-mark-${position}`}>{mark}</Fragment>
             ))}

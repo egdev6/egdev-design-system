@@ -40,8 +40,8 @@ export type CommunityCardProps = CommunityCardNativeProps & {
    */
   level?: CommunityCardLevel;
   /**
-   * Optional relationship line above the name, rendered through the public Text eyebrow primitive.
-   * Whitespace-only renders nothing and the top row collapses to the mark when one is supplied.
+   * Optional relationship line above the name. Visually limited to two lines; the full text remains
+   * in the DOM. Whitespace-only renders nothing and the top row collapses to the mark when supplied.
    * @control text
    */
   eyebrow?: string;
@@ -66,7 +66,9 @@ export type CommunityCardMarkProps = {
    * Exactly one consumer-supplied, non-interactive mark element: no anchor, button or tab stop.
    * Either named — `role="img"` with `aria-label`, or `img` with `alt` — so it joins the card
    * content, or decorative — `img` with `alt=""` or `aria-hidden` — when the mark repeats the
-   * visible name, so the card is not announced twice. Not type-enforced; rendered untouched.
+   * visible name, so the card is not announced twice. Non-image marks must fit within 153.6 ×
+   * 51.2 CSS pixels without distortion; consumers own this constraint and the slot does not clip.
+   * Not type-enforced; rendered untouched.
    * @control false
    * @controlReason A consumer ReactElement is not serializable; see WithImageMark and WithWordmarkMark.
    */
@@ -100,7 +102,9 @@ export const communityCardVariants = cva(
 );
 
 /** Tonal header band: top radius and bottom hairline, kept inside the rounded frame by the root. */
-export const communityCardBandVariants = cva('eg-community-card__band border-b border-border-hairline rounded-t-xl');
+export const communityCardBandVariants = cva(
+  'eg-community-card__band h-[var(--space-24)] shrink-0 border-b border-border-hairline rounded-t-xl min-[48rem]:h-[calc(var(--space-16)+var(--space-10))]'
+);
 
 /** Top row inside the band; collapses to its single supplied child. The 48rem breakpoint is the
  * owner-authorized local variant (responsive amendment): the token theme defines no default md. */
@@ -108,9 +112,16 @@ export const communityCardTopRowVariants = cva(
   'flex min-w-0 items-center justify-between gap-3 px-6 py-4 min-[48rem]:px-8 min-[48rem]:py-5'
 );
 
+/** Local relationship line and its decorative diamond; text clamps independently of the marker. */
+export const communityCardEyebrowVariants = cva(
+  "inline-flex min-w-0 items-center gap-2.5 font-display uppercase text-body-default font-(weight:--text-label-eyebrow--font-weight) [letter-spacing:var(--text-label-eyebrow--letter-spacing)] text-fg-secondary before:content-[''] before:size-2 before:shrink-0 before:rotate-45 before:bg-fg-brand-default"
+);
+
+export const communityCardEyebrowTextVariants = cva('min-w-0 wrap-anywhere line-clamp-2');
+
 /** Consumer mark slot on the trailing edge; a consumer image keeps its aspect inside the cap. */
 export const communityCardMarkVariants = cva(
-  'eg-community-card__mark ms-auto flex max-h-16 max-w-full shrink-0 items-center justify-center [&>img]:max-h-16 [&>img]:object-contain'
+  'eg-community-card__mark ms-auto flex max-h-16 max-w-[calc(var(--space-24)*2)] shrink items-center justify-center [&>img]:max-h-16 [&>img]:max-w-full [&>img]:object-contain'
 );
 
 /** Display name typography, independent of the heading rank: display family in uppercase (spec §4);

@@ -10,6 +10,8 @@ import {
   communityCardActionVariants,
   communityCardBandVariants,
   communityCardBodyVariants,
+  communityCardEyebrowTextVariants,
+  communityCardEyebrowVariants,
   communityCardMarkVariants,
   communityCardTitleVariants,
   communityCardTopRowVariants,
@@ -24,6 +26,8 @@ export type UseCommunityCardResult = {
   };
   bandProps: ComponentPropsWithoutRef<'div'>;
   topRowProps: ComponentPropsWithoutRef<'div'>;
+  eyebrowProps: ComponentPropsWithoutRef<'span'>;
+  eyebrowTextProps: ComponentPropsWithoutRef<'span'>;
   headingElement: `h${CommunityCardLevel}`;
   headingProps: { id: string; className: string };
   title: string;
@@ -109,6 +113,8 @@ export function useCommunityCard(
       )
     },
     topRowProps: { className: cn(communityCardTopRowVariants()) },
+    eyebrowProps: { className: cn(communityCardEyebrowVariants()) },
+    eyebrowTextProps: { className: cn(communityCardEyebrowTextVariants()) },
     headingElement: `h${rank}`,
     headingProps: { id: headingId, className: cn(communityCardTitleVariants()) },
     title,
