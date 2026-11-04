@@ -55,7 +55,7 @@ Each item writes only `docs/components/<name>/v0.2/**` for its components, follo
 | T2 (P0.2) | community-card | A4 | S4 | #281 | drafted — awaits G1, G2, G4 | — |
 | T3 (P0.3) | project-card | A1 | S1 | #275 | drafted — awaits G1, G3, G4 | — |
 | T4 (P0.4) | article-feature, blog-grid | A3, A9 | S3, S9 | #280, #296 | drafted — awaits G1, G4, G5 (content-description) | — |
-| T5 (P0.5) | top-bar | A5 | S5 | #292 | drafted — 390px check and current-link cardinality need owner choice; awaits G1, G4 | — |
+| T5 (P0.5) | top-bar | A5 | S5 | #292 | G4 approved (L16) | — |
 | T6 (P0.6) | footer | A6 | S6 | #293 | G4 approved (L9) | — |
 | T7 (P0.7) | section-nav | A7 | S7 | #301 | G4 approved (L9) | — |
 | T8 (P0.8) | notes-board | A10 | S10 | #295 | G4 approved (L9) | — |
@@ -72,6 +72,7 @@ Each item writes only `docs/components/<name>/v0.2/**` for its components, follo
 | T14 | U8 NotesBoard rhythm | S10 | `docs/components/notes-board/v0.2/spec.md` (`06e1041f…`) | worker, `packages/ui/src/organisms/notes-board/**` | implemented — unit checks green; browser computed-style check passed (L11); owner visual review pending | 41c7445 |
 | T15 | U2 CommunityCard fixed header band | S4 | `docs/components/community-card/v0.2/spec.md` (`0ba56c29…`) | worker, `packages/ui/src/molecules/community-card/**` | implemented — full suite, props and package-exports green; browser computed-style check passed (L15); owner visual review pending | c4c415b |
 | T16 | U4 ArticleFeature description + BlogGrid composition | S3, S9 | `docs/components/article-feature/v0.2/spec.md` (`77c0f220…`), `docs/components/blog-grid/v0.2/spec.md` (`2b9f0bcf…`) | worker, article-feature/blog-grid + naming registry surfaces | implemented — full suite, props and package-exports green; browser computed-style check passed (L15); owner visual review pending | 2dfe896 |
+| T17 | U5 TopBar links painted like the underline tabs | S5 | `docs/components/top-bar/v0.2/spec.md` (`1dd4518c…`) | worker, `packages/ui/src/organisms/top-bar/**` + registry evidence/package-exports tests | in progress | — |
 
 Approved spec bytes are frozen: implementation never edits an approved `spec.md`.
 
@@ -141,5 +142,7 @@ Preserved: prior frozen specs/approvals stay byte-identical, `roadmap8` body is 
 - **L14 — Parent regression fixed:** U6 (29c69f8) and U8 (41c7445) changed Footer/NotesBoard `types.ts` without refreshing prop-naming registry evidence, so `pnpm props:check` and `pnpm test:props` failed on the branch; the parent had not run them. Refreshed in 2dfe896 after confirming each recorded prop and type; both checks now pass, full suite 2708/2708.
 
 - **L15 — U2/U4 browser check (Storybook + Playwright, computed geometry):** CommunityCard Default/WithImageMark/WithoutEyebrow/LongEyebrow at 390/767/768/1280: band 76.8px below 768 and 83.2px from 768 in every case; heading offset identical with and without mark or eyebrow (96.8px / 109.6px); eyebrow 12.8px, long eyebrow clamps at 2 lines; marks within 153.6×51.2; no horizontal overflow. ArticleFeature Default/LongContent at 390/1280: description after heading, 12.8px, unclipped, included in the link's accessible text. BlogGrid Default at 390/1280: feature description and 3/3 row descriptions render, no overflow. Geometry only; no comparison against owner images.
+
+- **L16 — TopBar G4, G1 (A5) and U5 plan approval (verbatim choices):** A5-AC3 "Medir solo cuando se ven (recomendado)"; A5-AC1 "Cero o uno (recomendado)"; approval "Sí, aprobar e implementar". Recorded in `docs/components/top-bar/v0.2/approval.md`.
 
 - **L6 — Publication confirmed:** tracker #339, WebSection #340, WebTemplate #341. Exact proposal and plan snapshots and dependency links are in #339 comments. Appended planning amendments to the twelve canonical existing component issues and backlinks on #340/#341; preserved prior issue bodies, labels, state and assignees. Three new issues carry only enhancement/odd labels and no assignees. Job-435 exit0, all20 remote bodies read back exactly. No implementation, Git commit, push or roadmap-index edit.
