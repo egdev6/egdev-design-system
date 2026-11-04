@@ -5,6 +5,7 @@ import { Logo } from '../../atoms/logo';
 import { SocialLinks } from '../../molecules/social-links';
 import { Text } from '../../primitives/text';
 import { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from './Footer';
+import { footerHeadingVariants } from './index';
 
 /** Passive site boundary with consumer-owned content and a host-owned background. */
 const meta: Meta<typeof Footer> = {
@@ -31,7 +32,7 @@ const content = (
     </FooterMotto>
     <FooterBrand>
       <Logo href='/' label='Home' />
-      <p>Independent ideas and projects.</p>
+      <p className='text-body-default text-fg-secondary'>Independent ideas and projects.</p>
     </FooterBrand>
     <FooterNavigation
       label='Explore'
@@ -41,7 +42,7 @@ const content = (
       ]}
     />
     <FooterSocial>
-      <h2>Elsewhere</h2>
+      <h2 className={footerHeadingVariants()}>Elsewhere</h2>
       {social}
     </FooterSocial>
     <FooterLegal>
@@ -90,7 +91,7 @@ export const Social: Story = {
   args: {
     children: (
       <FooterSocial>
-        <h2>Elsewhere</h2>
+        <h2 className={footerHeadingVariants()}>Elsewhere</h2>
         {social}
       </FooterSocial>
     )

@@ -106,10 +106,10 @@ export const footerVariants = cva(
   'eg-footer relative box-border p-0 pb-8 font-sans text-fg-default border-t-[length:var(--border-width)] [border-top-style:solid] border-t-border-hairline border-b-[length:var(--border-width)] [border-bottom-style:solid] border-b-border-hairline'
 );
 /** Motto stage resets the legacy spacing. */
-export const footerMottoVariants = cva('eg-footer__stage min-w-0 px-0 pt-12 pb-10');
+export const footerMottoVariants = cva('eg-footer__stage min-w-0 px-0 pt-10 pb-8');
 /** Three tracks and inclusive local two-track layout, with legacy first-child reset. */
 export const footerGridVariants = cva(
-  'eg-footer__grid grid min-w-0 grid-cols-[minmax(0,1.4fr)_repeat(2,minmax(0,1fr))] gap-10 pt-10 border-t-[length:var(--border-width)] [border-top-style:solid] border-t-border-hairline [@media(width<=860px)]:grid-cols-2 [@media(width<=860px)]:[&>:first-child]:col-auto [@media(width<=860px)]:[&>.footer-brand:first-child]:col-span-2'
+  'eg-footer__grid grid min-w-0 grid-cols-[minmax(0,1.4fr)_repeat(2,minmax(0,1fr))] gap-x-10 gap-y-8 pt-10 border-t-[length:var(--border-width)] [border-top-style:solid] border-t-border-hairline [@media(width<=860px)]:grid-cols-2 [@media(width<=860px)]:[&>:first-child]:col-auto [@media(width<=860px)]:[&>.footer-brand:first-child]:col-span-2'
 );
 /** Brand spans both tracks at the inclusive local breakpoint. */
 export const footerBrandVariants = cva('footer-brand min-w-0 wrap-anywhere [@media(width<=860px)]:col-span-2');
@@ -121,11 +121,11 @@ export const footerNavigationLinkVariants = cva('min-h-14 min-w-14 inline-flex i
 export const footerSocialVariants = cva('min-w-0 wrap-anywhere');
 /** Legal row explicitly matches retained legacy layout and uses token typography. */
 export const footerLegalVariants = cva(
-  'eg-footer__legal flex min-w-0 flex-wrap justify-between gap-4 mt-12 pt-5 border-t-[length:var(--border-width)] [border-top-style:solid] border-t-border-hairline text-body-default text-fg-muted wrap-anywhere'
+  'eg-footer__legal flex min-w-0 flex-wrap justify-between gap-4 mt-10 pt-4 border-t-[length:var(--border-width)] [border-top-style:solid] border-t-border-hairline text-body-default text-fg-muted wrap-anywhere'
 );
 /** Visible navigation heading. */
 export const footerHeadingVariants = cva(
-  'm-0 mb-4 font-display text-label-eyebrow text-fg-secondary uppercase wrap-anywhere'
+  'm-0 mb-3 font-display text-label-eyebrow text-fg-secondary uppercase wrap-anywhere'
 );
 /** Native list reset independent of preflight. */
 export const footerListVariants = cva('m-0 p-0 list-none');

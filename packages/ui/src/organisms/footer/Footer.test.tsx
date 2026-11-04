@@ -3,10 +3,44 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { Icon } from '../../atoms/icon';
 import { Logo } from '../../atoms/logo';
+import * as publicUi from '../../index';
 import { SocialLinks } from '../../molecules/social-links';
 import { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from './Footer';
+import { Default, Social } from './Footer.stories';
 
 describe('Footer contract', () => {
+  it('exports the heading recipe and applies it to the story group headings and tagline (A6-AC2)', () => {
+    expect(publicUi).toHaveProperty('footerHeadingVariants');
+    const { unmount } = render(<Footer>{Default.args?.children}</Footer>);
+    expect(screen.getByRole('heading', { name: 'Explore' })).toHaveClass('mb-3', 'text-label-eyebrow');
+    expect(screen.getByRole('heading', { name: 'Elsewhere' })).toHaveClass('mb-3', 'text-label-eyebrow');
+    expect(screen.getByText('Independent ideas and projects.')).toHaveClass('text-body-default', 'text-fg-secondary');
+    unmount();
+    render(<Footer>{Social.args?.children}</Footer>);
+    expect(screen.getByRole('heading', { name: 'Elsewhere' })).toHaveClass('mb-3', 'text-label-eyebrow');
+  });
+  it('preserves composed regions and navigation targets alongside the new rhythm', () => {
+    render(
+      <Footer>
+        <FooterBrand>
+          <a href='/'>Home</a>
+        </FooterBrand>
+        <FooterNavigation label='Sections' items={[{ href: '#one', label: 'One' }]} />
+        <FooterSocial>
+          <a href='#social'>Social</a>
+        </FooterSocial>
+        <FooterLegal>
+          <a href='#legal'>Legal</a>
+        </FooterLegal>
+      </Footer>
+    );
+    const footer = screen.getByRole('contentinfo');
+    expect(footer).toHaveTextContent('HomeSectionsOneSocialLegal');
+    expect(within(footer).getByRole('link', { name: 'One' })).toHaveClass('min-h-14', 'min-w-14');
+    expect(within(footer).getByRole('link', { name: 'One' })).toHaveAttribute('href', '#one');
+    expect(within(footer).getByRole('link', { name: 'Social' })).toHaveAttribute('href', '#social');
+    expect(within(footer).getByRole('link', { name: 'Legal' })).toHaveAttribute('href', '#legal');
+  });
   it('renders supplied parts in order without default content (FT-01)', () => {
     render(
       <Footer>
@@ -166,12 +200,12 @@ describe('Footer contract', () => {
     );
     const root = screen.getByRole('contentinfo');
     expect(root).toHaveClass('border-t-[length:var(--border-width)]', 'border-b-[length:var(--border-width)]');
-    expect(root.querySelector('.eg-footer__stage')).toHaveClass('px-0', 'pt-12', 'pb-10');
+    expect(root.querySelector('.eg-footer__stage')).toHaveClass('px-0', 'pt-10', 'pb-8');
     const grid = root.querySelector('.eg-footer__grid');
-    expect(grid).toHaveClass('gap-10', 'pt-10', '[@media(width<=860px)]:[&>:first-child]:col-auto');
+    expect(grid).toHaveClass('gap-x-10', 'gap-y-8', 'pt-10', '[@media(width<=860px)]:[&>:first-child]:col-auto');
     expect(grid).toHaveClass('[@media(width<=860px)]:[&>.footer-brand:first-child]:col-span-2');
     expect(screen.getByText('Brand')).toHaveClass('[@media(width<=860px)]:col-span-2');
-    expect(root.querySelector('.eg-footer__legal')).toHaveClass('gap-4', 'mt-12', 'pt-5');
+    expect(root.querySelector('.eg-footer__legal')).toHaveClass('gap-4', 'mt-10', 'pt-4');
   });
   it('does not assert a contentinfo landmark inside main (FT-02)', () => {
     render(

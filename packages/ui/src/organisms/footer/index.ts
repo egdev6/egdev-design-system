@@ -9,3 +9,4 @@ export type {
   FooterProps,
   FooterSocialProps
 } from './types';
+export { footerHeadingVariants } from './types';
