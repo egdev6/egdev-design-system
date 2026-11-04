@@ -1,7 +1,7 @@
 import { act, fireEvent, render } from '@testing-library/react';
 import { StrictMode } from 'react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import { isotipoCreateScene } from '../atoms/isotipo3d/isotipoScene';
+import { isotipoCreateScene, isotipoPose } from '../atoms/isotipo3d/isotipoScene';
 import { HomeTemplate } from './HomeTemplate';
 import { HomeTemplateAnchor } from './HomeTemplateAnchor';
 import type { HomeTemplateZone } from './types';
@@ -95,6 +95,7 @@ beforeEach(() => {
   vi.mocked(isotipoCreateScene).mockImplementation(async () => scene());
 });
 afterEach(() => {
+  vi.useRealTimers();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
 });
@@ -188,6 +189,155 @@ it('disposes a scene resolved after unmount', async () => {
     resolve(created);
   });
   expect(created.dispose).toHaveBeenCalledOnce();
+});
+
+const travelTable: HomeTemplateZone[] = [
+  { id: 'a', isotipo: true, scene: 'chapter' },
+  { id: 'b', isotipo: true, scene: 'outro' },
+  { id: 'c' }
+];
+const travelPage = (zones = travelTable, missing = false) => (
+  <HomeTemplate zoneTable={zones}>
+    <section data-zone='a'>
+      <HomeTemplateAnchor zone='a'>A fallback</HomeTemplateAnchor>
+    </section>
+    <section data-zone='b'>{!missing && <HomeTemplateAnchor zone='b'>B fallback</HomeTemplateAnchor>}</section>
+    <section data-zone='c'>C</section>
+  </HomeTemplate>
+);
+const travelFixture = (reduced = false) => {
+  vi.useFakeTimers();
+  let scroll = 0;
+  let hidden = false;
+  Object.defineProperty(window, 'scrollY', { configurable: true, get: () => scroll });
+  Object.defineProperty(document, 'hidden', { configurable: true, get: () => hidden });
+  vi.stubGlobal(
+    'matchMedia',
+    vi.fn(() => ({ matches: reduced, addEventListener: vi.fn(), removeEventListener: vi.fn() }))
+  );
+  vi.mocked(Element.prototype.getBoundingClientRect).mockImplementation(function (this: Element) {
+    const anchor = this.classList.contains('eg-home-template-anchor');
+    const id = anchor ? this.closest('[data-zone]')?.getAttribute('data-zone') : this.getAttribute('data-zone');
+    const top = anchor ? 100 : (id === 'a' ? 0 : id === 'b' ? 900 : 1800) - scroll;
+    const left = anchor && id === 'b' ? 500 : 100;
+    const width = anchor ? 200 : 1000;
+    const height = anchor ? 200 : 900;
+    return { top, left, width, height, right: left + width, bottom: top + height, x: left, y: top, toJSON: () => ({}) };
+  });
+  const tick = () =>
+    act(() => {
+      vi.advanceTimersByTime(20);
+    });
+  return {
+    tick,
+    scrollTo: (value: number) => {
+      scroll = value;
+      fireEvent.scroll(window);
+      tick();
+    },
+    visibility: (value: boolean) => {
+      hidden = value;
+      fireEvent(document, new Event('visibilitychange'));
+    }
+  };
+};
+
+it('travels between two 3D anchors with interpolated projection and pose', async () => {
+  const fixture = travelFixture();
+  const created = scene();
+  vi.mocked(isotipoCreateScene).mockResolvedValue(created);
+  render(travelPage());
+  await act(async () => {
+    /* Resolve the scene. */
+  });
+  for (const [scroll, t] of [
+    [0, 0],
+    [337.5, 0.5],
+    [675, 1]
+  ] as const) {
+    fixture.scrollTo(scroll);
+    fixture.tick();
+    const call = vi.mocked(created.render).mock.lastCall;
+    expect(call?.[0]).toBe('chapter');
+    expect(call?.[2]).toBe(false);
+    expect(call?.[4]?.anchor.left).toBeCloseTo(100 + 400 * t);
+    const a = isotipoPose('chapter', (scroll + 900) / 1800, false);
+    const b = isotipoPose('outro', scroll / 900, false);
+    expect(call?.[3]?.pose?.az).toBeCloseTo(a.az + (b.az - a.az) * t);
+  }
+});
+
+it('holds the 3D anchor across a one-sided band and suppresses missing travel', async () => {
+  const fixture = travelFixture();
+  const created = scene();
+  vi.mocked(isotipoCreateScene).mockResolvedValue(created);
+  const view = render(travelPage([{ id: 'a' }, travelTable[1] as HomeTemplateZone, { id: 'c' }]));
+  await act(async () => {
+    /* Resolve the scene. */
+  });
+  fixture.scrollTo(500);
+  fixture.tick();
+  expect(vi.mocked(created.render).mock.lastCall?.[4]?.anchor.left).toBe(500);
+  view.rerender(travelPage(travelTable, true));
+  fixture.scrollTo(337.5);
+  const count = vi.mocked(created.render).mock.calls.length;
+  fixture.tick();
+  expect(vi.mocked(created.render)).toHaveBeenCalledTimes(count);
+  expect(view.container.querySelectorAll('canvas')[1]?.style.getPropertyValue('--eg-home-isotipo-opacity')).toBe('0');
+});
+
+it('suppresses mobile-disabled zones', async () => {
+  const fixture = travelFixture();
+  vi.stubGlobal('innerWidth', 760);
+  const created = scene();
+  vi.mocked(isotipoCreateScene).mockResolvedValue(created);
+  const view = render(
+    travelPage([{ id: 'a', isotipo: true, scene: 'chapter', mobileIsotipo: false }, { id: 'b' }, { id: 'c' }])
+  );
+  await act(async () => {
+    /* Resolve the scene. */
+  });
+  fixture.tick();
+  expect(created.render).not.toHaveBeenCalled();
+  expect(view.container.querySelectorAll('canvas')[1]?.style.getPropertyValue('--eg-home-isotipo-opacity')).toBe('0');
+});
+
+it('renders reduced motion once per effective change without pose override', async () => {
+  const fixture = travelFixture(true);
+  const created = scene();
+  vi.mocked(isotipoCreateScene).mockResolvedValue(created);
+  render(travelPage());
+  await act(async () => {
+    /* Resolve the scene. */
+  });
+  fixture.scrollTo(500);
+  const call = vi.mocked(created.render).mock.lastCall;
+  expect(call?.[0]).toBe('outro');
+  expect(call?.[2]).toBe(true);
+  expect(call?.[3]).toEqual({ time: 0, intro: 1 });
+  const count = vi.mocked(created.render).mock.calls.length;
+  fixture.tick();
+  fixture.tick();
+  expect(created.render).toHaveBeenCalledTimes(count);
+});
+
+it('stops when hidden and resumes with one animation loop', async () => {
+  const fixture = travelFixture();
+  const created = scene();
+  vi.mocked(isotipoCreateScene).mockResolvedValue(created);
+  render(travelPage());
+  await act(async () => {
+    /* Resolve the scene. */
+  });
+  fixture.tick();
+  fixture.visibility(true);
+  const count = vi.mocked(created.render).mock.calls.length;
+  fixture.tick();
+  expect(created.render).toHaveBeenCalledTimes(count);
+  fixture.visibility(false);
+  fixture.visibility(false);
+  fixture.tick();
+  expect(created.render).toHaveBeenCalledTimes(count + 1);
 });
 
 it('leaves exactly one live scene in StrictMode', async () => {

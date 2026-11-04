@@ -5,6 +5,7 @@ import { ambientProfiles, createParticleStreaks, resolveAmbientColors } from '..
 import { isotipoCreateScene } from '../atoms/isotipo3d/isotipoScene';
 import type { DirectorZone, ZoneGeometry } from './homeDirector';
 import { computeTargets, deriveBands, resolveZones } from './homeDirector';
+import { computeTravel, sceneProgress } from './homeTravel';
 import type { HomeTemplateAnchorProps, HomeTemplateProps, HomeTemplateZone } from './types';
 import {
   anchorVariants,
@@ -35,6 +36,16 @@ export function useHomeTemplate(props: HomeTemplateProps) {
   callback.current = onZoneChange;
   const lastNotified = useRef<string | null>(null);
   const remeasure = useRef<(() => void) | null>(null);
+  const updateIsotipo = useRef<
+    | ((state: {
+        targets: ReturnType<typeof computeTargets>;
+        rows: DirectorZone[];
+        geometry: ZoneGeometry[];
+        sections: Element[];
+        reduced: boolean;
+      }) => void)
+    | null
+  >(null);
   const native = { ...rest } as typeof rest & Record<string, unknown>;
   for (const key of ['style', 'role', 'dangerouslySetInnerHTML', 'ref', 'asChild', 'data-state', 'data-motion']) {
     delete native[key];
@@ -116,6 +127,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
     let active = true;
     let rows: DirectorZone[] = [];
     let geometry: ZoneGeometry[] = [];
+    let sections: Element[] = [];
     let valid = false;
     let frame: number | null = null;
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -185,7 +197,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
             reduced
           )
         : null;
-      isotipo.style.setProperty('--eg-home-isotipo-opacity', '0');
+      updateIsotipo.current?.({ targets, rows, geometry, sections, reduced });
       if (!targets) {
         canvas.style.setProperty('--eg-home-ambient-opacity', '0');
         root.removeAttribute('data-state');
@@ -256,6 +268,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
           }
         }
         const selected: Element[] = [];
+        sections = selected;
         rows = [];
         geometry = [];
         for (const zone of zones.current) {
@@ -377,6 +390,25 @@ export function useHomeTemplate(props: HomeTemplateProps) {
     const controller = new AbortController();
     let active = true;
     let scene: Awaited<ReturnType<typeof isotipoCreateScene>> | null = null;
+    let frame: number | null = null;
+    let last: number | null = null;
+    let time = 0;
+    let intro = 0;
+    let size = '';
+    let staticKey = '';
+    let drawState: {
+      name: NonNullable<DirectorZone['scene']>;
+      progress: number;
+      travel: NonNullable<ReturnType<typeof computeTravel>>;
+    } | null = null;
+    let coarse: MediaQueryList | undefined;
+    const stop = () => {
+      if (frame !== null) {
+        cancelAnimationFrame(frame);
+      }
+      frame = null;
+      last = null;
+    };
     const dispose = () => {
       const previous = scene;
       scene = null;
@@ -389,8 +421,128 @@ export function useHomeTemplate(props: HomeTemplateProps) {
     const fail = () => {
       active = false;
       controller.abort();
+      stop();
       dispose();
       canvas.style.setProperty('--eg-home-isotipo-opacity', '0');
+    };
+    const draw = (now: number) => {
+      frame = null;
+      if (!active || !scene || !drawState) {
+        return;
+      }
+      try {
+        const dt = last === null ? 0 : Math.max(0, Math.min(0.05, (now - last) / 1000));
+        last = now;
+        time += dt;
+        intro = Math.min(1, intro + dt / 1.2);
+        scene.render(
+          drawState.name,
+          drawState.progress,
+          false,
+          { time, intro, pose: drawState.travel.pose },
+          drawState.travel.projection
+        );
+        frame = requestAnimationFrame(draw);
+      } catch {
+        fail();
+      }
+    };
+    const update: NonNullable<typeof updateIsotipo.current> = ({ targets, rows, geometry, sections, reduced }) => {
+      if (!active || !scene || !targets || targets.isotipo <= 0 || document.hidden) {
+        stop();
+        staticKey = '';
+        canvas.style.setProperty('--eg-home-isotipo-opacity', '0');
+        return;
+      }
+      try {
+        const endpoint = (id: string) => {
+          const index = rows.findIndex((zone) => zone.id === id);
+          const zone = rows[index];
+          const section = sections[index];
+          const bounds = geometry[index];
+          if (
+            !zone?.isotipo ||
+            !zone.scene ||
+            !section ||
+            !bounds ||
+            (window.innerWidth <= 760 && !zone.mobileIsotipo)
+          ) {
+            return null;
+          }
+          const node = resolveAnchor(id);
+          const rect = node?.getBoundingClientRect();
+          let sticky = false;
+          for (let parent = node?.parentElement; parent && section.contains(parent); parent = parent.parentElement) {
+            if (getComputedStyle(parent).position === 'sticky') {
+              sticky = true;
+            }
+            if (parent === section) {
+              break;
+            }
+          }
+          return {
+            scene: zone.scene,
+            geometry: bounds,
+            anchor: rect ? { left: rect.left, top: rect.top, width: rect.width, height: rect.height } : null,
+            sticky
+          };
+        };
+        const first = endpoint(targets.mix.a);
+        const second = endpoint(targets.mix.b);
+        const a = first ?? second;
+        const b = second ?? first;
+        if (!a || !b) {
+          stop();
+          staticKey = '';
+          canvas.style.setProperty('--eg-home-isotipo-opacity', '0');
+          return;
+        }
+        const viewport = { width: window.innerWidth, height: window.innerHeight };
+        const travel = computeTravel(a, b, targets.mix.t, window.scrollY, viewport, reduced);
+        if (!travel) {
+          stop();
+          staticKey = '';
+          canvas.style.setProperty('--eg-home-isotipo-opacity', '0');
+          return;
+        }
+        const ratio = window.devicePixelRatio || 1;
+        const nextSize = `${viewport.width}:${viewport.height}:${ratio}:${coarse?.matches === true}`;
+        if (size !== nextSize) {
+          scene.resize(viewport.width, viewport.height, ratio, coarse?.matches === true);
+          size = nextSize;
+        }
+        const chosen = reduced && targets.mix.t >= 0.5 ? b : a;
+        const progress = sceneProgress(chosen.scene, chosen.geometry, window.scrollY, viewport.height, chosen.sticky);
+        canvas.style.setProperty('--eg-home-isotipo-opacity', String(opacity(targets.isotipo)));
+        if (reduced) {
+          stop();
+          const key = JSON.stringify([chosen.scene, progress, travel.projection, nextSize]);
+          if (key !== staticKey) {
+            scene.render(chosen.scene, progress, true, { time: 0, intro: 1 }, travel.projection);
+            staticKey = key;
+          }
+        } else {
+          staticKey = '';
+          drawState = { name: a.scene, progress, travel };
+          if (frame === null) {
+            frame = requestAnimationFrame(draw);
+          }
+        }
+      } catch {
+        fail();
+      }
+    };
+    const onCoarse = () => remeasure.current?.();
+    let dprMedia: MediaQueryList | undefined;
+    const onDprChange = () => {
+      try {
+        dprMedia?.removeEventListener('change', onDprChange);
+        dprMedia = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
+        dprMedia.addEventListener('change', onDprChange);
+      } catch {
+        /* Optional service. */
+      }
+      remeasure.current?.();
     };
     const contextLost = (event: Event) => {
       event.preventDefault();
@@ -415,6 +567,14 @@ export function useHomeTemplate(props: HomeTemplateProps) {
       ) {
         return;
       }
+      updateIsotipo.current = update;
+      try {
+        coarse = window.matchMedia('(pointer: coarse)');
+        coarse.addEventListener('change', onCoarse);
+        onDprChange();
+      } catch {
+        /* Optional service. */
+      }
       canvas.addEventListener('webglcontextlost', contextLost);
       isotipoCreateScene(canvas, { light, shade, neon, redLight }, controller.signal)
         .then((created) => {
@@ -427,6 +587,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
             return;
           }
           scene = created;
+          remeasure.current?.();
         })
         .catch(() => {
           if (active) {
@@ -439,6 +600,15 @@ export function useHomeTemplate(props: HomeTemplateProps) {
     return () => {
       active = false;
       controller.abort();
+      stop();
+      updateIsotipo.current = null;
+      canvas.style.setProperty('--eg-home-isotipo-opacity', '0');
+      try {
+        coarse?.removeEventListener('change', onCoarse);
+        dprMedia?.removeEventListener('change', onDprChange);
+      } catch {
+        /* Optional service. */
+      }
       canvas.removeEventListener('webglcontextlost', contextLost);
       dispose();
     };
