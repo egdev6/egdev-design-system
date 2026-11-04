@@ -53,7 +53,7 @@ Each item writes only `docs/components/<name>/v0.2/**` for its components, follo
 | --- | --- | --- | --- | --- | --- | --- |
 | T1 (P0.1) | now-card, now-strip | A2, A8 | S2, S8 | #276, #297 | G4 approved (L18) | — |
 | T2 (P0.2) | community-card | A4 | S4 | #281 | drafted — awaits G1, G2, G4 | — |
-| T3 (P0.3) | project-card | A1 | S1 | #275 | drafted — awaits G1, G3, G4 | — |
+| T3 (P0.3) | project-card | A1 | S1 | #275 | G4 approved (L20) | — |
 | T4 (P0.4) | article-feature, blog-grid | A3, A9 | S3, S9 | #280, #296 | drafted — awaits G1, G4, G5 (content-description) | — |
 | T5 (P0.5) | top-bar | A5 | S5 | #292 | G4 approved (L16) | — |
 | T6 (P0.6) | footer | A6 | S6 | #293 | G4 approved (L9) | — |
@@ -74,6 +74,7 @@ Each item writes only `docs/components/<name>/v0.2/**` for its components, follo
 | T16 | U4 ArticleFeature description + BlogGrid composition | S3, S9 | `docs/components/article-feature/v0.2/spec.md` (`77c0f220…`), `docs/components/blog-grid/v0.2/spec.md` (`2b9f0bcf…`) | worker, article-feature/blog-grid + naming registry surfaces | implemented — full suite, props and package-exports green; browser computed-style check passed (L15); owner visual review pending | 2dfe896 |
 | T17 | U5 TopBar links painted like the underline tabs | S5 | `docs/components/top-bar/v0.2/spec.md` (`1dd4518c…`) | worker, `packages/ui/src/organisms/top-bar/**` + registry evidence/package-exports tests | implemented — full suite, props and package-exports green; browser computed-style check passed (L17); owner visual review pending | b8adc57 |
 | T18 | U1 NowCard no-badge top inset; NowStrip inherits it | S2, S8 | `docs/components/now-card/v0.2/spec.md` (`571c1eb7…`), `docs/components/now-strip/v0.2/spec.md` (`fd2ff711…`) | worker, now-card/now-strip + registry evidence/package-exports tests | implemented — full suite, props and package-exports green; browser computed-style check passed (L19); owner visual review pending | 8ee5bff |
+| T19 | U3 ProjectCard backdrop and trailing mark | S1 | `docs/components/project-card/v0.2/spec.md` (`f4b7c7bf…`) | worker, project-card + barrel/registry/package tests | in progress | — |
 | F1 | Follow-up: enforce NowCard's protected `style` promise (v0.1 says protected, source forwards it) | — | outside U1 | not scheduled | pending | — |
 
 Approved spec bytes are frozen: implementation never edits an approved `spec.md`.
@@ -152,5 +153,7 @@ Preserved: prior frozen specs/approvals stay byte-identical, `roadmap8` body is 
 - **L18 — NowCard/NowStrip G4, G1 (A2/A8) and U1 plan approval (verbatim choices):** mixed row "Alinear bordes y footers (recomendado)"; `style` "Mantener la promesa, arreglar aparte (recomendado)" (follow-up F1); approval "Sí, aprobar e implementar". Recorded in `docs/components/{now-card,now-strip}/v0.2/approval.md`.
 
 - **L19 — U1 browser check (Storybook + Playwright, computed geometry):** NowCard/NowStrip at 390/860/861/1280: no-badge heading `padding-top` 19.2px, so its text starts 20px below the card top, the same inset as the badge wrapper; badge headings keep `padding-top` 0 and their 54.2px offset (recipe base byte-identical to the previous `headingBase`, badge adds only `pt-0`). NowStrip UnevenCards mixed row (one badge, two without) at 861/1280: equal card heights and footers starting at the same y (198px / 192px), the approved A8 criterion (insets and footer bands, not heading tops). Geometry only; no comparison against owner images.
+
+- **L20 — ProjectCard G4, G1 (A1), G3 and U3 plan approval (verbatim choices):** G3 "Aprobar la receta (recomendado)"; parts "Hijos por tipo, como Footer (recomendado)"; eyebrow "Exponerlo (recomendado)"; approval "Sí, aprobar e implementar". Recorded in `docs/components/project-card/v0.2/approval.md`.
 
 - **L6 — Publication confirmed:** tracker #339, WebSection #340, WebTemplate #341. Exact proposal and plan snapshots and dependency links are in #339 comments. Appended planning amendments to the twelve canonical existing component issues and backlinks on #340/#341; preserved prior issue bodies, labels, state and assignees. Three new issues carry only enhancement/odd labels and no assignees. Job-435 exit0, all20 remote bodies read back exactly. No implementation, Git commit, push or roadmap-index edit.
