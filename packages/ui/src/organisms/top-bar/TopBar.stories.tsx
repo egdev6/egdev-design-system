@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { Button } from '../../atoms/button';
 import { Dialog, DialogContent, DialogTrigger } from '../../molecules/dialog';
 import { Menu } from '../../molecules/menu';
 import {
@@ -50,10 +51,14 @@ export const Compact: Story = {
       <>
         {brand}
         <TopBarSearchCompact>
-          <button type='button'>Search</button>
+          <Button variant='neutral' size='lg'>
+            Search
+          </Button>
         </TopBarSearchCompact>
         <TopBarMobileTrigger>
-          <button type='button'>Menu</button>
+          <Button variant='neutral' size='lg'>
+            Menu
+          </Button>
         </TopBarMobileTrigger>
       </>
     )
@@ -66,16 +71,24 @@ export const ComposedControls: Story = {
       <>
         {brand}
         <TopBarSearchFull>
-          <button type='button'>Search</button>
+          <Button variant='neutral' size='lg'>
+            Search
+          </Button>
         </TopBarSearchFull>
         <TopBarSearchCompact>
-          <button type='button'>Search</button>
+          <Button variant='neutral' size='lg'>
+            Search
+          </Button>
         </TopBarSearchCompact>
         <TopBarUserMenu>
-          <button type='button'>Account</button>
+          <Button variant='neutral' size='lg'>
+            Account
+          </Button>
         </TopBarUserMenu>
         <TopBarMobileTrigger>
-          <button type='button'>Menu</button>
+          <Button variant='neutral' size='lg'>
+            Menu
+          </Button>
         </TopBarMobileTrigger>
       </>
     )
@@ -91,7 +104,9 @@ export const MobileDialog: Story = {
           {brand}
           <TopBarMobileTrigger>
             <DialogTrigger asChild={true}>
-              <button type='button'>Menu</button>
+              <Button variant='neutral' size='lg'>
+                Menu
+              </Button>
             </DialogTrigger>
           </TopBarMobileTrigger>
         </TopBar>
@@ -111,7 +126,9 @@ export const UserMenu: Story = {
         {brand}
         <TopBarUserMenu>
           <Menu items={[{ id: 'profile', kind: 'link', label: 'Profile', href: '#profile' }]}>
-            <button type='button'>Account</button>
+            <Button variant='neutral' size='lg'>
+              Account
+            </Button>
           </Menu>
         </TopBarUserMenu>
       </>
@@ -130,10 +147,14 @@ export const Widths: Story = {
       <>
         {brand}
         <TopBarSearchFull>
-          <button type='button'>Full search</button>
+          <Button variant='neutral' size='lg'>
+            Full search
+          </Button>
         </TopBarSearchFull>
         <TopBarSearchCompact>
-          <button type='button'>Compact search</button>
+          <Button variant='neutral' size='lg'>
+            Compact search
+          </Button>
         </TopBarSearchCompact>
       </>
     )
