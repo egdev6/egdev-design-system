@@ -64,17 +64,17 @@ export const Default: Story = {};
 /** Scroll between the read and live profiles and the 3D ownership handoffs. */
 export const ProfilesAndHandoff: Story = {};
 
-/** Delivered scenes provide natural layout; their media slots host two measured boxes. */
+/** Delivered scenes host two adjacent measured boxes; the consumer owns the section heights that give the band room to travel. */
 export const TwoAnchorTravel: Story = {
   args: {
     zoneTable: [
       { id: 'introduction', isotipo: true, scene: 'hero' },
-      { id: 'reading', profile: 'read' },
-      { id: 'closing', isotipo: true, scene: 'outro' }
+      { id: 'closing', isotipo: true, scene: 'outro' },
+      { id: 'reading', profile: 'read' }
     ],
     children: (
       <main>
-        <section data-zone='introduction' aria-labelledby='travel-introduction' className='p-8'>
+        <section data-zone='introduction' aria-labelledby='travel-introduction' className='min-h-screen p-8'>
           <Hero
             id='travel-introduction'
             title='A new beginning'
@@ -87,15 +87,7 @@ export const TwoAnchorTravel: Story = {
             }
           />
         </section>
-        <section data-zone='reading' aria-labelledby='travel-reading' className='p-8'>
-          <ChapterBreak
-            id='travel-reading'
-            title='A moment to read'
-            level={2}
-            lede='An ambient interlude separates the two anchors.'
-          />
-        </section>
-        <section data-zone='closing' aria-labelledby='travel-closing' className='p-8'>
+        <section data-zone='closing' aria-labelledby='travel-closing' className='min-h-screen p-8'>
           <Closing
             id='travel-closing'
             title='Continue exploring'
@@ -111,6 +103,14 @@ export const TwoAnchorTravel: Story = {
               <a href='#travel-introduction'>Return to the beginning</a>
             </Button>
           </Closing>
+        </section>
+        <section data-zone='reading' aria-labelledby='travel-reading' className='min-h-screen p-8'>
+          <ChapterBreak
+            id='travel-reading'
+            title='A moment to read'
+            level={2}
+            lede='After the two anchors, the ambient layer takes over.'
+          />
         </section>
       </main>
     )
