@@ -1,0 +1,532 @@
+{
+ "capturedAt": "2026-11-03T22:46:56.107Z",
+ "harness": {
+  "sourceFile": "/home/egdev/proyectos/egdev-website/egdev-foundation/reference-web/pulso-source.html",
+  "sourceSha256": "778e5412b64d1b79195c51c0e47c78f654b46da445be8354a97e572774348f13",
+  "harnessFile": "/home/egdev/proyectos/egdev-design-system-worktrees/home-template-spec/docs/components/home-template/v0.1/capture/harness/pulso-capture.html",
+  "harnessSha256": "2037e975a40b11c6f8e2cb3dca105afc92270ffe2475bab68f7f145e2cd65ca0",
+  "markerMap": {
+   "{{WORDMARK}}": {
+    "asset": "reference-web/assets/logo-wordmark.svg",
+    "sha256": "1659dbffe78508d3fb98c9172ecbd6d99037345ae7e50579f8ad1dd7ba792ae2"
+   },
+   "{{PHOTO_CANYON}}": {
+    "asset": "reference-web/assets/photo-canyon.webp",
+    "sha256": "e4a5d7a1f6f5e0618a3b44a72c6c6229d1fac68ff43bf2f9962be29333d98206"
+   },
+   "{{PHOTO_HAZLO}}": {
+    "asset": "reference-web/assets/photo-hazlo.webp",
+    "sha256": "27822375cc6d30a9696ac689817575d122409186aae8fb5401dca91066c732d8"
+   },
+   "{{PHOTO_SETUP}}": {
+    "asset": "reference-web/assets/photo-setup.webp",
+    "sha256": "f743512e2ba0beb98e2e68400ab4723d592df2f1e5facbdae3118a30688fe47f"
+   },
+   "{{TIP_ABORTCONTROLLER}}": {
+    "asset": "reference-web/assets/tips/abortController.webp",
+    "sha256": "e37add0b69e6841ca8552a3e20a21ab9097daaaba28e8e44cc47bae53e70c3d4"
+   },
+   "{{TIP_ALLSETTLED}}": {
+    "asset": "reference-web/assets/tips/allsettled.webp",
+    "sha256": "28888f2718bf2aa9e340f1425a7a33c57433423b6ea3219a2d693dd70c3df56d"
+   },
+   "{{TIP_ARIA_CURRENT}}": {
+    "asset": "reference-web/assets/tips/aria-current.webp",
+    "sha256": "31278ba7d44227d22b3dcfecab49437088d75fd5718074197d2c40d16f920d6e"
+   },
+   "{{TIP_DETAILS}}": {
+    "asset": "reference-web/assets/tips/details.webp",
+    "sha256": "fa40938ffb28e11110eb56acfd303d269404e8e4772d1489ac6f5a952003598a"
+   },
+   "{{TIP_INPUTMODE}}": {
+    "asset": "reference-web/assets/tips/inputmode.webp",
+    "sha256": "de0c14fed74adfcfdb3f727106ab8dccdda4fecea3d90564b4b23e8079213032"
+   },
+   "{{TIP_ISOLATION}}": {
+    "asset": "reference-web/assets/tips/isolation.webp",
+    "sha256": "06c4397ed5dfd54873c86e357181600600920c323fcad23ddc8165285ea93383"
+   },
+   "{{TIP_NULLISH}}": {
+    "asset": "reference-web/assets/tips/nullish.webp",
+    "sha256": "a6122c183c38852a02ca6f4d9290e3f7cdcb35383eece29d5ae7b39f394c9272"
+   },
+   "{{TIP_STARTING_STYLE}}": {
+    "asset": "reference-web/assets/tips/starting-style.webp",
+    "sha256": "3caa1169226e59b5f3813081eadbb88d33fdbf1cb7fbbf420ad29c7c9d740ad3"
+   },
+   "{{TIP_STICKY}}": {
+    "asset": "reference-web/assets/tips/sticky.webp",
+    "sha256": "32236ee14ebb01e2e462d3ab48a97092026b3364f43f16c09b8ba1fe7628b475"
+   },
+   "{{TIP_TOUCH_ACTION}}": {
+    "asset": "reference-web/assets/tips/touch-action.webp",
+    "sha256": "2c0d7788f377c34bdb1323c8b5442e44227fca85deb18d9a5aa059531ce13ab3"
+   }
+  },
+  "note": "Filled copy exists only under the design-system capture directory; the original source file was not modified. Assets are referenced read-only by absolute file:// URLs."
+ },
+ "geometry": {
+  "vh": 900,
+  "maxS": 11478,
+  "zones": [
+   {
+    "name": "hero",
+    "top": 0,
+    "h": 900
+   },
+   {
+    "name": "about",
+    "top": 900,
+    "h": 900
+   },
+   {
+    "name": "build",
+    "top": 1800,
+    "h": 900
+   },
+   {
+    "name": "chapter",
+    "top": 2700,
+    "h": 900
+   },
+   {
+    "name": "think",
+    "top": 3600,
+    "h": 900
+   },
+   {
+    "name": "blog",
+    "top": 4500,
+    "h": 1016.5
+   },
+   {
+    "name": "lab",
+    "top": 5516.5,
+    "h": 2070
+   },
+   {
+    "name": "live",
+    "top": 7586.5,
+    "h": 1400.390625
+   },
+   {
+    "name": "community",
+    "top": 8986.890625,
+    "h": 900
+   },
+   {
+    "name": "discord",
+    "top": 9886.890625,
+    "h": 900
+   },
+   {
+    "name": "outro",
+    "top": 10786.890625,
+    "h": 900
+   },
+   {
+    "name": "footer",
+    "top": 11686.890625,
+    "h": 690.90625
+   }
+  ],
+  "bands": [
+   {
+    "a": "hero",
+    "b": "about",
+    "s": 450,
+    "e": 1125
+   },
+   {
+    "a": "about",
+    "b": "build",
+    "s": 1327.5,
+    "e": 2002.5
+   },
+   {
+    "a": "build",
+    "b": "chapter",
+    "s": 2227.5,
+    "e": 2902.5
+   },
+   {
+    "a": "chapter",
+    "b": "think",
+    "s": 3127.5,
+    "e": 3802.5
+   },
+   {
+    "a": "think",
+    "b": "blog",
+    "s": 4045.162842932777,
+    "e": 4720.1628429327775
+   },
+   {
+    "a": "blog",
+    "b": "lab",
+    "s": 5156.066057558815,
+    "e": 5831.066057558815
+   },
+   {
+    "a": "lab",
+    "b": "live",
+    "s": 6862,
+    "e": 7796.55859375
+   },
+   {
+    "a": "live",
+    "b": "community",
+    "s": 8457.658738225233,
+    "e": 9132.658738225233
+   },
+   {
+    "a": "community",
+    "b": "discord",
+    "s": 9414.390625,
+    "e": 10089.390625
+   },
+   {
+    "a": "discord",
+    "b": "outro",
+    "s": 10314.390625,
+    "e": 10989.390625
+   },
+   {
+    "a": "outro",
+    "b": "footer",
+    "s": 11178.99108519998,
+    "e": 11853.99108519998
+   }
+  ]
+ },
+ "shots": [
+  {
+   "id": "initial-3d-hero",
+   "file": "home-template--initial-3d--1280x900--dark.png",
+   "probe": {
+    "zone": "hero",
+    "mix": {
+     "a": "hero",
+     "b": "about",
+     "t": 0
+    },
+    "glA": 1,
+    "ambA": 0,
+    "u": 0.5,
+    "rm": false,
+    "progress": {
+     "hero": 0,
+     "chapter": 0,
+     "lab": 0,
+     "outro": 0
+    },
+    "glOn": true,
+    "glOff": false,
+    "dataFx": "hero",
+    "webgl": true,
+    "vw": 1280,
+    "vh": 900,
+    "scrollY": 0,
+    "fonts": "loaded",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+   }
+  },
+  {
+   "id": "layer-handoff-hero-about-t025",
+   "file": "home-template--layer-handoff--1280x900--dark.png",
+   "requestedScrollY": 169,
+   "observedScrollY": 169,
+   "probe": {
+    "zone": "hero",
+    "mix": {
+     "a": "hero",
+     "b": "about",
+     "t": 0.25037037037037035
+    },
+    "glA": 0.4992592592592593,
+    "ambA": 0,
+    "u": 0.6877777777777778,
+    "rm": false,
+    "progress": {
+     "hero": 0.18777777777777777,
+     "chapter": 0,
+     "lab": 0,
+     "outro": 0
+    },
+    "glOn": true,
+    "glOff": false,
+    "dataFx": "hero",
+    "webgl": true,
+    "vw": 1280,
+    "vh": 900,
+    "scrollY": 169,
+    "fonts": "loaded",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+   }
+  },
+  {
+   "id": "ambient-read-think",
+   "file": "home-template--ambient-read--1280x900--dark.png",
+   "requestedScrollY": 3600,
+   "observedScrollY": 3600,
+   "probe": {
+    "zone": "think",
+    "mix": {
+     "a": "think",
+     "b": "blog",
+     "t": 0.007166158618108085
+    },
+    "glA": 0,
+    "ambA": 1,
+    "u": 4.5,
+    "rm": false,
+    "progress": {
+     "hero": 1,
+     "chapter": 1,
+     "lab": 0,
+     "outro": 0
+    },
+    "glOn": true,
+    "glOff": false,
+    "dataFx": "think",
+    "webgl": true,
+    "vw": 1280,
+    "vh": 900,
+    "scrollY": 3600,
+    "fonts": "loaded",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+   }
+  },
+  {
+   "id": "ambient-live-live",
+   "file": "home-template--ambient-live--1280x900--dark.png",
+   "requestedScrollY": 7837,
+   "observedScrollY": 7837,
+   "probe": {
+    "zone": "live",
+    "mix": {
+     "a": "live",
+     "b": "live",
+     "t": 0
+    },
+    "glA": 0,
+    "ambA": 1,
+    "u": 7.500217573221757,
+    "rm": false,
+    "progress": {
+     "hero": 1,
+     "chapter": 1,
+     "lab": 1,
+     "outro": 0
+    },
+    "glOn": true,
+    "glOff": false,
+    "dataFx": "live",
+    "webgl": true,
+    "vw": 1280,
+    "vh": 900,
+    "scrollY": 7837,
+    "fonts": "loaded",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+   }
+  },
+  {
+   "id": "lab-3d-mid",
+   "file": "home-template--lab-3d--1280x900--dark.png",
+   "requestedScrollY": 6102,
+   "observedScrollY": 6102,
+   "probe": {
+    "zone": "lab",
+    "mix": {
+     "a": "lab",
+     "b": "lab",
+     "t": 0
+    },
+    "glA": 1,
+    "ambA": 0,
+    "u": 6.5002415458937195,
+    "rm": false,
+    "progress": {
+     "hero": 1,
+     "chapter": 1,
+     "lab": 0.5004273504273504,
+     "outro": 0
+    },
+    "glOn": true,
+    "glOff": false,
+    "dataFx": "lab",
+    "webgl": true,
+    "vw": 1280,
+    "vh": 900,
+    "scrollY": 6102,
+    "fonts": "loaded",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+   }
+  },
+  {
+   "id": "outro-3d-mid",
+   "file": "home-template--outro-3d--1280x900--dark.png",
+   "requestedScrollY": 10337,
+   "observedScrollY": 10337,
+   "probe": {
+    "zone": "outro",
+    "mix": {
+     "a": "discord",
+     "b": "outro",
+     "t": 0.700162037037037
+    },
+    "glA": 0.4003240740740741,
+    "ambA": 0,
+    "u": 10.000121527777777,
+    "rm": false,
+    "progress": {
+     "hero": 1,
+     "chapter": 1,
+     "lab": 1,
+     "outro": 0.5001215277777777
+    },
+    "glOn": true,
+    "glOff": false,
+    "dataFx": "outro",
+    "webgl": true,
+    "vw": 1280,
+    "vh": 900,
+    "scrollY": 10337,
+    "fonts": "loaded",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+   }
+  },
+  {
+   "id": "outro-3d-assembled-late",
+   "file": "home-template--outro-assembly--1280x900--dark.png",
+   "requestedScrollY": 10652,
+   "observedScrollY": 10652,
+   "probe": {
+    "zone": "outro",
+    "mix": {
+     "a": "outro",
+     "b": "outro",
+     "t": 0
+    },
+    "glA": 1,
+    "ambA": 0,
+    "u": 10.350121527777778,
+    "rm": false,
+    "progress": {
+     "hero": 1,
+     "chapter": 1,
+     "lab": 1,
+     "outro": 0.8501215277777778
+    },
+    "glOn": true,
+    "glOff": false,
+    "dataFx": "outro",
+    "webgl": true,
+    "vw": 1280,
+    "vh": 900,
+    "scrollY": 10652,
+    "fonts": "loaded",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+   }
+  },
+  {
+   "id": "footer-calma-bottom",
+   "file": "home-template--footer-calma--1280x900--dark.png",
+   "requestedScrollY": 11478,
+   "observedScrollY": 11478,
+   "probe": {
+    "zone": "footer",
+    "mix": {
+     "a": "footer",
+     "b": "footer",
+     "t": 0
+    },
+    "glA": 0,
+    "ambA": 0.25,
+    "u": 11.348975530327015,
+    "rm": false,
+    "progress": {
+     "hero": 1,
+     "chapter": 1,
+     "lab": 1,
+     "outro": 1
+    },
+    "glOn": true,
+    "glOff": false,
+    "dataFx": "footer",
+    "webgl": true,
+    "vw": 1280,
+    "vh": 900,
+    "scrollY": 11478,
+    "fonts": "loaded",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+   }
+  },
+  {
+   "id": "mobile-chapter-gate",
+   "file": "home-template--mobile-chapter-gate--390x844--dark.png",
+   "requestedScrollY": 4218,
+   "observedScrollY": 4218,
+   "viewport": "390x844@2x desktop-style layout viewport",
+   "probe": {
+    "zone": "chapter",
+    "mix": {
+     "a": "chapter",
+     "b": "chapter",
+     "t": 0
+    },
+    "glA": 0,
+    "ambA": 1,
+    "u": 3.5000185130331753,
+    "rm": false,
+    "progress": {
+     "hero": 1,
+     "chapter": 0.5000092565165877,
+     "lab": 0,
+     "outro": 0
+    },
+    "glOn": true,
+    "glOff": false,
+    "dataFx": "chapter",
+    "webgl": true,
+    "vw": 390,
+    "vh": 844,
+    "scrollY": 4218,
+    "fonts": "loaded",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+   }
+  },
+  {
+   "id": "reduced-motion-hero",
+   "file": "home-template--reduced-motion--1280x900--dark.png",
+   "emulatedMedia": "prefers-reduced-motion: reduce",
+   "probe": {
+    "zone": "hero",
+    "mix": {
+     "a": "hero",
+     "b": "about",
+     "t": 0
+    },
+    "glA": 1,
+    "ambA": 0,
+    "u": 0.5,
+    "rm": true,
+    "progress": {
+     "hero": 0,
+     "chapter": 0,
+     "lab": 0,
+     "outro": 0
+    },
+    "glOn": true,
+    "glOff": false,
+    "dataFx": "hero",
+    "webgl": true,
+    "vw": 1280,
+    "vh": 900,
+    "scrollY": 0,
+    "fonts": "loaded",
+    "ua": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/148.0.0.0 Safari/537.36"
+   }
+  }
+ ]
+}
