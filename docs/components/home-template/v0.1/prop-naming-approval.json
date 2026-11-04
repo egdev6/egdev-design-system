@@ -1,0 +1,63 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the three HomeTemplate naming conventions with their exact scoped meanings.",
+  "evidence": {
+    "channel": "docs/components/home-template/v0.1/owner-approval.md",
+    "ownerChoice": "Aprobar las tres convenciones propuestas",
+    "interpretation": "Separate naming approval bound to spec payload 622eacf3cccb774690b6c247dcaf6e31a8feb4aa858376b00fd274438dc8eb84. No unrelated migration or native review authority."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/scroll-reveal/v0.1/prop-naming-approval.json",
+      "wholeFileSHA256": "sha256:04227fe88c600990842bc68bb365a7df3de457f924acb6829bc691df0f9f890b"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:choreography-zone-table",
+      "contentHash": "sha256:a8235bcc2424785e7aae86eb1b1043c74c933410bc711afee6f5af2c5abba13d",
+      "convention": {
+        "id": "choreography-zone-table",
+        "name": "zoneTable",
+        "meaning": "Ordered scroll-choreography zone table.",
+        "whenToUse": "Supply the authoritative ordered zones for scroll choreography.",
+        "avoid": "Do not use for preview guide rectangles or a current-section identity.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:anchor-zone-binding",
+      "contentHash": "sha256:21513f4e23359b7bb7feabeab3eeb47eeaf1dfc653b0eb7ae0b553421c1af879",
+      "convention": {
+        "id": "anchor-zone-binding",
+        "name": "zone",
+        "meaning": "Bind a rendered HomeTemplateAnchor to its configured zone key.",
+        "whenToUse": "Associate an anchor box with its configured choreography zone.",
+        "avoid": "Do not use for the active zone identity or a table of zones.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:zone-change",
+      "contentHash": "sha256:253da9c6c026d28f87556688698755e49683c0bea8a874171e635083ec018370",
+      "convention": {
+        "id": "zone-change",
+        "name": "onZoneChange",
+        "meaning": "Notify initial/current active-zone identity changes, not per-frame progress.",
+        "whenToUse": "Notify consumers when the active choreography zone identity is first resolved or changes.",
+        "avoid": "Do not use for continuous per-frame progress or a consumer-selected current section.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

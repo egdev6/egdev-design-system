@@ -57,6 +57,15 @@ function indicatorProposalHash(entry) {
 }
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  {
+    conventionId: 'choreography-zone-table',
+    source: 'packages/effects/src/home-template/types.ts#HomeTemplateProps.zoneTable'
+  },
+  {
+    conventionId: 'anchor-zone-binding',
+    source: 'packages/effects/src/home-template/types.ts#HomeTemplateAnchorProps.zone'
+  },
+  { conventionId: 'zone-change', source: 'packages/effects/src/home-template/types.ts#HomeTemplateProps.onZoneChange' },
   { conventionId: 'entrance-delay', source: 'packages/effects/src/scroll-reveal/types.ts#ScrollRevealProps' },
   { conventionId: 'visual-treatment', source: 'packages/effects/src/scroll-reveal/types.ts#ScrollRevealProps' },
   { conventionId: 'slot-composition', source: 'packages/effects/src/scroll-reveal/types.ts#ScrollRevealProps' },
@@ -1134,8 +1143,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   validate(actual);
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
-  assert.equal(actual.length, 155);
-  assert.equal(beforeIndicatorConventions(actual).length, 152);
+  assert.equal(actual.length, 158);
+  assert.equal(beforeIndicatorConventions(actual).length, 155);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -1260,7 +1269,8 @@ const receiptChain = [
   'docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json',
   'docs/components/hero/v0.1/prop-naming-approval-scene-media.json',
   'docs/components/hero/v0.1/prop-naming-approval-scene-social.json',
-  'docs/components/scroll-reveal/v0.1/prop-naming-approval.json'
+  'docs/components/scroll-reveal/v0.1/prop-naming-approval.json',
+  'docs/components/home-template/v0.1/prop-naming-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -2862,7 +2872,18 @@ test('Isotipo3D naming receipt preserves 125 entries and binds three scoped appr
       `${JSON.stringify(
         registryBeforeSemanticAmendments(
           historicalRegistry(actual)
-            .filter(({ id }) => !['close-auto-focus', 'active-section-id', 'scene-media', 'scene-social'].includes(id))
+            .filter(
+              ({ id }) =>
+                ![
+                  'close-auto-focus',
+                  'active-section-id',
+                  'scene-media',
+                  'scene-social',
+                  'choreography-zone-table',
+                  'anchor-zone-binding',
+                  'zone-change'
+                ].includes(id)
+            )
             .slice(0, 125),
           isotipoReference
         ),
@@ -3548,6 +3569,67 @@ test('FieldMessage registers reviewed usage without promoting proposed content/g
     const entry = actual.find((entry) => entry.id === id);
     assert.equal(entry.usages.filter((usage) => usage.component === 'FieldMessage').length, 1);
   }
+});
+
+test('HomeTemplate binds the three owner-approved conventions and reviewed props', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/home-template/v0.1/prop-naming-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const path = 'packages/effects/src/home-template/types.ts';
+  const revision = 'sha256:eb46fb84a5d9072d11c62e233ca8399469bab2244a5b0ec140b789d9f857c338';
+  assert.equal(digest(fs.readFileSync(resolve(root, path))), revision);
+  assert.equal(receipt.evidence.ownerChoice, 'Aprobar las tres convenciones propuestas');
+  assert.ok(
+    receipt.evidence.interpretation.includes('622eacf3cccb774690b6c247dcaf6e31a8feb4aa858376b00fd274438dc8eb84')
+  );
+  const expected = [
+    [
+      'choreography-zone-table',
+      'zoneTable',
+      'Ordered scroll-choreography zone table.',
+      'HomeTemplate',
+      'readonly HomeTemplateZone[]',
+      'HomeTemplateProps.zoneTable'
+    ],
+    [
+      'anchor-zone-binding',
+      'zone',
+      'Bind a rendered HomeTemplateAnchor to its configured zone key.',
+      'HomeTemplateAnchor',
+      'string',
+      'HomeTemplateAnchorProps.zone'
+    ],
+    [
+      'zone-change',
+      'onZoneChange',
+      'Notify initial/current active-zone identity changes, not per-frame progress.',
+      'HomeTemplate',
+      '(change: { zone: string; previous: string | null }) => void',
+      'HomeTemplateProps.onZoneChange'
+    ]
+  ];
+  assert.equal(receipt.entries.length, expected.length);
+  for (const [id, name, meaning, component, type, symbol] of expected) {
+    const entry = registry.find((candidate) => candidate.id === id);
+    assert.ok(entry, id);
+    const { approval, usages, ...convention } = entry;
+    assert.equal(entry.name, name);
+    assert.equal(entry.meaning, meaning);
+    assert.deepEqual(
+      receipt.entries.find((record) => record.scope === `convention:${id}`),
+      {
+        scope: `convention:${id}`,
+        contentHash: props.conventionHash(entry),
+        convention
+      }
+    );
+    assert.deepEqual(approval, { reference, scope: `convention:${id}`, contentHash: props.conventionHash(entry) });
+    assert.deepEqual(usages, [{ component, type, status: 'existing', source: { path, symbol, revision } }]);
+  }
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(prior.wholeFileSHA256, digest(fs.readFileSync(resolve(root, prior.path))));
+  }
+  validate(registry);
 });
 
 test('ScrollReveal binds independently approved entrance conventions and actual reviewed source', () => {

@@ -1,5 +1,86 @@
 [
   {
+    "id": "choreography-zone-table",
+    "name": "zoneTable",
+    "meaning": "Ordered scroll-choreography zone table.",
+    "whenToUse": "Supply the authoritative ordered zones for scroll choreography.",
+    "avoid": "Do not use for preview guide rectangles or a current-section identity.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/home-template/v0.1/prop-naming-approval.json",
+      "scope": "convention:choreography-zone-table",
+      "contentHash": "sha256:a8235bcc2424785e7aae86eb1b1043c74c933410bc711afee6f5af2c5abba13d"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "HomeTemplate",
+        "type": "readonly HomeTemplateZone[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/home-template/types.ts",
+          "symbol": "HomeTemplateProps.zoneTable",
+          "revision": "sha256:eb46fb84a5d9072d11c62e233ca8399469bab2244a5b0ec140b789d9f857c338"
+        }
+      }
+    ]
+  },
+  {
+    "id": "anchor-zone-binding",
+    "name": "zone",
+    "meaning": "Bind a rendered HomeTemplateAnchor to its configured zone key.",
+    "whenToUse": "Associate an anchor box with its configured choreography zone.",
+    "avoid": "Do not use for the active zone identity or a table of zones.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/home-template/v0.1/prop-naming-approval.json",
+      "scope": "convention:anchor-zone-binding",
+      "contentHash": "sha256:21513f4e23359b7bb7feabeab3eeb47eeaf1dfc653b0eb7ae0b553421c1af879"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "HomeTemplateAnchor",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/home-template/types.ts",
+          "symbol": "HomeTemplateAnchorProps.zone",
+          "revision": "sha256:eb46fb84a5d9072d11c62e233ca8399469bab2244a5b0ec140b789d9f857c338"
+        }
+      }
+    ]
+  },
+  {
+    "id": "zone-change",
+    "name": "onZoneChange",
+    "meaning": "Notify initial/current active-zone identity changes, not per-frame progress.",
+    "whenToUse": "Notify consumers when the active choreography zone identity is first resolved or changes.",
+    "avoid": "Do not use for continuous per-frame progress or a consumer-selected current section.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/home-template/v0.1/prop-naming-approval.json",
+      "scope": "convention:zone-change",
+      "contentHash": "sha256:253da9c6c026d28f87556688698755e49683c0bea8a874171e635083ec018370"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "HomeTemplate",
+        "type": "(change: { zone: string; previous: string | null }) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/home-template/types.ts",
+          "symbol": "HomeTemplateProps.onZoneChange",
+          "revision": "sha256:eb46fb84a5d9072d11c62e233ca8399469bab2244a5b0ec140b789d9f857c338"
+        }
+      }
+    ]
+  },
+  {
     "id": "scene-media",
     "name": "media",
     "meaning": "A passive, decorative media or 3D slot of a scene organism, supplied by the consumer.",
