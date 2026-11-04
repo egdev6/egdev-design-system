@@ -45,6 +45,24 @@ Exact owner requirements, quoted verbatim (Spanish is the owner's wording; the e
 | U12 | Integration, cross-component stories, catalog and packed-output readiness | S1–S13 | stories, `packages/ui/src/index.ts`, `scripts/catalog_data.py` | blocked — exact approvals G1 + G4 + G5 | not implemented | #339 |
 | M1 | Website adoption, choreography relocation and breaking removal of `HomeTemplate`/scenes | S12 | website repository (not this repo) | blocked — separate website scope and breaking-removal authority | not implemented | #337 (prior HomeTemplate) |
 
+### P0 queue — per-component v0.2 spec drafts (3 parallel workers, pull-based)
+
+Each item writes only `docs/components/<name>/v0.2/**` for its components, follows `skills/component-spec-proposer/SKILL.md`, and produces a draft awaiting exact owner approval (G4). Workers do not commit or publish; the parent commits and appends GitHub snapshots.
+
+| Item | Components | Amendment | Specs | Issue | Status | Commit |
+| --- | --- | --- | --- | --- | --- | --- |
+| T1 (P0.1) | now-card, now-strip | A2, A8 | S2, S8 | #276, #297 | drafted (partial) — S8 mixed-row alignment vs A2 parity needs owner choice; awaits G1, G4 | — |
+| T2 (P0.2) | community-card | A4 | S4 | #281 | drafted — awaits G1, G2, G4 | — |
+| T3 (P0.3) | project-card | A1 | S1 | #275 | drafted — awaits G1, G3, G4 | — |
+| T4 (P0.4) | article-feature, blog-grid | A3, A9 | S3, S9 | #280, #296 | drafted — awaits G1, G4, G5 (content-description) | — |
+| T5 (P0.5) | top-bar | A5 | S5 | #292 | drafted — 390px check and current-link cardinality need owner choice; awaits G1, G4 | — |
+| T6 (P0.6) | footer | A6 | S6 | #293 | drafted — awaits G1, G4 | — |
+| T7 (P0.7) | section-nav | A7 | S7 | #301 | drafted — awaits G1, G4 | — |
+| T8 (P0.8) | notes-board | A10 | S10 | #295 | drafted — awaits G1, G4 | — |
+| T9 (P0.9) | web-section (new) | A11 | S11 | #340 | drafted — heading-ID forwarding and neutral layout need owner choice; awaits G1, G4, G5 | — |
+| T10 (P0.10) | web-template (new) | A12 | S12 | #341 | drafted — availability statement conflict, empty-slot rule and native-prop boundary need owner choice; awaits G1, G4, G5 | — |
+| T11 (P0.11) | ambient-background (U11, spec only) | A13 | S13 | #45 | drafted (partial) — version collision with #45 history, combination axes, preset precedence, motion and perf bounds need owner choice; awaits G4, G7 | — |
+
 Status notes are approval gates only: unit ordering in `implementation-plan.md` §2 is not treated as a blocking edge here. U11 stays pending on scheduling, not on its own spec.
 
 ### Planning status and sources
@@ -93,5 +111,7 @@ Preserved: prior frozen specs/approvals stay byte-identical, `roadmap8` body is 
 - **L4 — Planning authorization (verbatim):** "planifica en odd y github" — authorizes the local ODD and GitHub planning publication. Exact IDs and content readback are parent work; implementation, approvals, assignment, branch creation and edits to prior frozen docs remain unauthorized.
 
 - **L5 — Publication in progress:** job-435 performs one creation per new planning issue and one append per planned comment, verifies exact readback, records partial outcomes in `docs/components/web-catalog/v0.2/github-planning.json`, and stops on uncertainty without replay. No protected labels or assignment.
+
+- **L7 — P0 start (verbatim):** "empezamos la planificación. Levanta 3 subagentes que trabajen en paralelo haciendo issues y cuando terminen que cojan otras hasta que esté la planificación terminada" — authorizes drafting the P0 v0.2 specs with three parallel workers on branch `docs/web-catalog-v0.2-specs`. Spec approval (G1–G5) is still the owner's decision.
 
 - **L6 — Publication confirmed:** tracker #339, WebSection #340, WebTemplate #341. Exact proposal and plan snapshots and dependency links are in #339 comments. Appended planning amendments to the twelve canonical existing component issues and backlinks on #340/#341; preserved prior issue bodies, labels, state and assignees. Three new issues carry only enhancement/odd labels and no assignees. Job-435 exit0, all20 remote bodies read back exactly. No implementation, Git commit, push or roadmap-index edit.
