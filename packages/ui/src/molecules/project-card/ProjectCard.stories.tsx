@@ -67,14 +67,24 @@ export const BackdropAndMark: Story = {
   render: () => (
     <ProjectCard title='Pulso' index='01' eyebrow='Open source'>
       <ProjectCardBackdrop>
-        <img src='/project-backdrop.png' alt='' />
+        <img src='/brand/egdev-logo-with-name.png' alt='' />
       </ProjectCardBackdrop>
       <ProjectCardMark>
-        <span role='img' aria-label='Pulso mark'>
-          ◆
-        </span>
+        <img src='/brand/egdev-logo.png' alt='EGDEV' className='h-12 w-auto' />
       </ProjectCardMark>
       <p>A project with a decorative backdrop.</p>
+    </ProjectCard>
+  )
+};
+
+/** A backdrop image that fails to load keeps the well, the single scrim and legible text. */
+export const BrokenBackdrop: Story = {
+  render: () => (
+    <ProjectCard title='Pulso' index='01' eyebrow='Open source'>
+      <ProjectCardBackdrop>
+        <img src='/missing-backdrop.png' alt='' />
+      </ProjectCardBackdrop>
+      <p>The image is missing; the card stays readable.</p>
     </ProjectCard>
   )
 };

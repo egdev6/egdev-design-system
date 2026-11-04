@@ -1033,6 +1033,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(exportedStoryNames(stories)).toEqual([
       'Default',
       'BackdropAndMark',
+      'BrokenBackdrop',
       'Variants',
       'Sizes',
       'HeadingRanks',
