@@ -13,6 +13,14 @@ const meta = {
   title: 'Organisms/SectionNav',
   component: SectionNav,
   tags: ['autodocs'],
+  parameters: { layout: 'fullscreen' },
+  decorators: [
+    (Story) => (
+      <div className='min-h-[calc(var(--space-24)*6)] pb-24'>
+        <Story />
+      </div>
+    )
+  ],
   args: {
     label: 'Page sections',
     disclosureLabel: 'Open section index',
@@ -60,5 +68,13 @@ export const Progress: Story = {
     </>
   )
 };
-/** View the navigation at different viewport widths. */
-export const Responsive: Story = {};
+/** Open the index and hover or focus its controls to inspect their states. */
+export const Hover: Story = { args: { defaultOpen: true } };
+/** View the navigation in a narrow host and resize the viewport to inspect fixed positioning. */
+export const Responsive: Story = {
+  render: (args) => (
+    <div className='w-full max-w-[calc(var(--space-24)*5)]'>
+      <SectionNav {...args} />
+    </div>
+  )
+};

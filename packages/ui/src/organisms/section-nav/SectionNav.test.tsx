@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import userEvent from '@testing-library/user-event';
 import { describe, expect, expectTypeOf, it, vi } from 'vitest';
 import { SectionNav } from '.';
+import storyMeta from './SectionNav.stories';
 import type { SectionNavProps } from './types';
 
 const items = [
@@ -17,6 +18,19 @@ const props = {
   activeId: 'b',
   value: 50
 };
+
+describe('SectionNav story canvas', () => {
+  it('uses fullscreen layout and reserves the approved clearance around every story', () => {
+    expect(storyMeta.parameters.layout).toBe('fullscreen');
+    const decorator = storyMeta.decorators[0];
+    if (!decorator) {
+      throw new Error('Missing story canvas decorator');
+    }
+    const { container } = render(decorator(() => <span>Story content</span>));
+    expect(container.firstElementChild).toHaveClass('min-h-[calc(var(--space-24)*6)]', 'pb-24');
+    expect(screen.getByText('Story content')).toBeInTheDocument();
+  });
+});
 
 describe('SectionNav', () => {
   it('resets user-agent paint on its own controls and links with token ink (no preflight)', async () => {
