@@ -17,7 +17,7 @@
     }
   },
   "planPayloadSHA256": "1c2fc44d10a3a1501b978d63e0757dbb33f384a756dcd422ba44069308c71fcb",
-  "scriptSHA256": "aeb1de2922917a526002d882dc67bcfdf31ba195e1805ff3d3787cd6c845574c",
+  "scriptSHA256": "5215c2ce3eda2734e60a84fa1c634e71a7dea22df17ef974c99d5c6e7e36e542",
   "compiler": {
     "resolved": "/home/egdev/proyectos/egdev-design-system/node_modules/.pnpm/tailwindcss@4.3.3/node_modules/tailwindcss/dist/lib.js",
     "manifest": "/home/egdev/proyectos/egdev-design-system/node_modules/.pnpm/tailwindcss@4.3.3/node_modules/tailwindcss/package.json",

@@ -26,7 +26,7 @@
  */
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync, mkdtempSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -52,16 +52,32 @@ const MARKERS = {
   '{{TIP_NULLISH}}': join(SRC_ROOT, 'reference-web/assets/tips/nullish.webp'),
   '{{TIP_STARTING_STYLE}}': join(SRC_ROOT, 'reference-web/assets/tips/starting-style.webp'),
   '{{TIP_STICKY}}': join(SRC_ROOT, 'reference-web/assets/tips/sticky.webp'),
-  '{{TIP_TOUCH_ACTION}}': join(SRC_ROOT, 'reference-web/assets/tips/touch-action.webp'),
+  '{{TIP_TOUCH_ACTION}}': join(SRC_ROOT, 'reference-web/assets/tips/touch-action.webp')
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let chromeProc = null;
 let currentProfile = null;
 const cleanupRun = () => {
-  if (chromeProc) { try { chromeProc.kill('SIGKILL'); } catch {} }
-  if (currentProfile) { try { rmSync(currentProfile, { recursive: true, force: true }); } catch {} }
+  if (chromeProc) {
+    try {
+      chromeProc.kill('SIGKILL');
+    } catch {
+      // Best-effort cleanup: keep attempting the remaining owned resources.
+    }
+  }
+  if (currentProfile) {
+    try {
+      rmSync(currentProfile, { recursive: true, force: true });
+    } catch {
+      // Best-effort cleanup: keep attempting the remaining owned resources.
+    }
+  }
 };
-const globalTimer = setTimeout(() => { console.error('GLOBAL TIMEOUT: cleaning up this run, then exiting.'); cleanupRun(); process.exit(2); }, GLOBAL_TIMEOUT_MS);
+const globalTimer = setTimeout(() => {
+  console.error('GLOBAL TIMEOUT: cleaning up this run, then exiting.');
+  cleanupRun();
+  process.exit(2);
+}, GLOBAL_TIMEOUT_MS);
 
 const OUT_FILES = [
   'home-template--initial-3d--1280x900--dark.png',
@@ -76,15 +92,19 @@ const OUT_FILES = [
   'home-template--reduced-motion--1280x900--dark.png',
   'capture/capture-raw.json',
   'capture/harness/pulso-capture.html',
-  'capture/harness/harness-meta.json',
+  'capture/harness/harness-meta.json'
 ].map((f) => join(OUT_DIR, f));
 // Refuse to touch any existing evidence BEFORE writing files, spawning a browser or cleaning up.
 // Existing capture versions are retained evidence: record a NEW capture version (e.g.
 // v0.1-capture-2 with its own filenames/directory) instead of overwriting.
 const existing = OUT_FILES.filter((f) => existsSync(f));
 if (existing.length > 0) {
-  console.error(`REFUSING TO RUN: existing capture evidence would be overwritten (${existing.length} file(s), first: ${existing[0]}).`);
-  console.error('Record a new capture version in a new directory (e.g. capture-2/) with its own filenames; do not move or remove current evidence.');
+  console.error(
+    `REFUSING TO RUN: existing capture evidence would be overwritten (${existing.length} file(s), first: ${existing[0]}).`
+  );
+  console.error(
+    'Record a new capture version in a new directory (e.g. capture-2/) with its own filenames; do not move or remove current evidence.'
+  );
   process.exit(1);
 }
 
@@ -93,54 +113,98 @@ async function main() {
   let html = readFileSync(SOURCE_HTML, 'utf8');
   const markerMap = {};
   for (const [marker, asset] of Object.entries(MARKERS)) {
-    if (!html.includes(marker)) throw new Error(`marker not found in source: ${marker}`);
+    if (!html.includes(marker)) {
+      throw new Error(`marker not found in source: ${marker}`);
+    }
     markerMap[marker] = { asset: asset.replace(SRC_ROOT + '/', ''), sha256: sha256(asset) };
     html = html.split(marker).join('file://' + asset);
   }
-  if (/{{[A-Z_]+}}/.test(html)) throw new Error('unresolved markers remain in harness copy');
+  if (/{{[A-Z_]+}}/.test(html)) {
+    throw new Error('unresolved markers remain in harness copy');
+  }
   mkdirSync(HARNESS_DIR, { recursive: true });
   const harnessPath = join(HARNESS_DIR, 'pulso-capture.html');
   writeFileSync(harnessPath, html);
   const meta = {
-    sourceFile: SOURCE_HTML, sourceSha256: sourceSha,
-    harnessFile: harnessPath, harnessSha256: sha256(harnessPath),
+    sourceFile: SOURCE_HTML,
+    sourceSha256: sourceSha,
+    harnessFile: harnessPath,
+    harnessSha256: sha256(harnessPath),
     markerMap,
-    note: 'Filled copy exists only under the design-system capture directory; the original source file was not modified. Assets are referenced read-only by absolute file:// URLs.',
+    note: 'Filled copy exists only under the design-system capture directory; the original source file was not modified. Assets are referenced read-only by absolute file:// URLs.'
   };
   writeFileSync(join(HARNESS_DIR, 'harness-meta.json'), JSON.stringify(meta, null, 1));
 
   // Uniquely created, owned by THIS run only; cleaned up by exact path in finally/timeout.
   const profile = mkdtempSync(join(HARNESS_DIR, 'profile-'));
   currentProfile = profile;
-  const chrome = (chromeProc = spawn('/usr/bin/google-chrome', [
-    '--headless=new', '--remote-debugging-port=0', `--user-data-dir=${profile}`,
-    '--no-first-run', '--no-default-browser-check', '--disable-extensions',
-    '--enable-unsafe-swiftshader', '--hide-scrollbars', 'about:blank',
-  ], { stdio: ['ignore', 'pipe', 'pipe'] }));
+  chromeProc = spawn(
+    '/usr/bin/google-chrome',
+    [
+      '--headless=new',
+      '--remote-debugging-port=0',
+      `--user-data-dir=${profile}`,
+      '--no-first-run',
+      '--no-default-browser-check',
+      '--disable-extensions',
+      '--enable-unsafe-swiftshader',
+      '--hide-scrollbars',
+      'about:blank'
+    ],
+    { stdio: ['ignore', 'pipe', 'pipe'] }
+  );
+  const chrome = chromeProc;
   let wsUrl = null;
   chrome.stderr.on('data', (d) => {
     const m = String(d).match(/DevTools listening on (ws:\/\/\S+)/);
-    if (m && !wsUrl) wsUrl = m[1];
+    if (m && !wsUrl) {
+      wsUrl = m[1];
+    }
   });
-  for (let i = 0; i < 50 && !wsUrl; i++) await sleep(100);
-  if (!wsUrl) throw new Error('Chrome did not expose a DevTools endpoint');
+  for (let i = 0; i < 50 && !wsUrl; i++) {
+    await sleep(100);
+  }
+  if (!wsUrl) {
+    throw new Error('Chrome did not expose a DevTools endpoint');
+  }
 
   const ws = new WebSocket(wsUrl);
-  await new Promise((res, rej) => { ws.onopen = res; ws.onerror = rej; });
+  await new Promise((res, rej) => {
+    ws.onopen = res;
+    ws.onerror = rej;
+  });
   let msgId = 0;
   const pending = new Map();
   ws.onmessage = (ev) => {
     const m = JSON.parse(ev.data);
-    if (m.id && pending.has(m.id)) { pending.get(m.id)(m); pending.delete(m.id); }
+    if (m.id && pending.has(m.id)) {
+      pending.get(m.id)(m);
+      pending.delete(m.id);
+    }
   };
-  const send = (method, params = {}, sessionId) => new Promise((resolve, reject) => {
-    const id = ++msgId;
-    const payload = { id, method, params };
-    if (sessionId) payload.sessionId = sessionId;
-    const timer = setTimeout(() => { if (pending.has(id)) { pending.delete(id); reject(new Error(method + ' timed out')); } }, 20_000);
-    pending.set(id, (m) => { clearTimeout(timer); if (m.error) reject(new Error(method + ': ' + JSON.stringify(m.error))); else resolve(m.result); });
-    ws.send(JSON.stringify(payload));
-  });
+  const send = (method, params = {}, sessionId) =>
+    new Promise((resolve, reject) => {
+      const id = ++msgId;
+      const payload = { id, method, params };
+      if (sessionId) {
+        payload.sessionId = sessionId;
+      }
+      const timer = setTimeout(() => {
+        if (pending.has(id)) {
+          pending.delete(id);
+          reject(new Error(method + ' timed out'));
+        }
+      }, 20_000);
+      pending.set(id, (m) => {
+        clearTimeout(timer);
+        if (m.error) {
+          reject(new Error(method + ': ' + JSON.stringify(m.error)));
+        } else {
+          resolve(m.result);
+        }
+      });
+      ws.send(JSON.stringify(payload));
+    });
 
   const { targetId } = await send('Target.createTarget', { url: 'about:blank' });
   const { sessionId } = await send('Target.attachToTarget', { targetId, flatten: true });
@@ -150,7 +214,11 @@ async function main() {
 
   const evalJs = async (expr) => {
     const r = await S('Runtime.evaluate', { expression: expr, returnByValue: true, awaitPromise: true });
-    if (r.exceptionDetails) throw new Error('evaluate failed: ' + JSON.stringify(r.exceptionDetails.exception?.description || r.exceptionDetails));
+    if (r.exceptionDetails) {
+      throw new Error(
+        'evaluate failed: ' + JSON.stringify(r.exceptionDetails.exception?.description || r.exceptionDetails)
+      );
+    }
     return r.result.value;
   };
   const shot = async (name) => {
@@ -158,7 +226,8 @@ async function main() {
     writeFileSync(join(OUT_DIR, name), Buffer.from(r.data, 'base64'));
     console.log('captured', name);
   };
-  const probe = () => evalJs(`(() => { const P = window.PULSO; let webgl = false;
+  const probe = () =>
+    evalJs(`(() => { const P = window.PULSO; let webgl = false;
     try { const c = document.createElement('canvas'); webgl = !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch (e) {}
     return { zone: P && P.zone, mix: P && P.mix, glA: P && P.glA, ambA: P && P.ambA, u: P && P.u, rm: !!(P && P.rm),
       progress: P && P.p, glOn: document.documentElement.classList.contains('gl-on'),
@@ -170,7 +239,9 @@ async function main() {
 
   const goto = async () => {
     await S('Page.navigate', { url: 'file://' + harnessPath });
-    await evalJs(`new Promise(r => { if (document.readyState === 'complete') r(); else addEventListener('load', r, { once: true }); })`);
+    await evalJs(
+      `new Promise(r => { if (document.readyState === 'complete') r(); else addEventListener('load', r, { once: true }); })`
+    );
     await evalJs(`document.fonts && document.fonts.ready ? document.fonts.ready.then(() => 1) : 1`);
     await evalJs(`new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))`);
   };
@@ -216,24 +287,52 @@ async function main() {
       await evalJs(`scrollTo({ top: ${y}, left: 0, behavior: 'instant' }); 1`);
       await sleep(250);
       const at = await evalJs('Math.round(scrollY)');
-      if (Math.abs(at - y) <= 2) return at;
+      if (Math.abs(at - y) <= 2) {
+        return at;
+      }
     }
     throw new Error(`scroll did not settle at ${y}`);
   };
   const bandT = (a, b, t) => {
     const bd = geom.bands.find((x) => x.a === a && x.b === b);
-    if (!bd) throw new Error('band not found ' + a + '->' + b);
+    if (!bd) {
+      throw new Error('band not found ' + a + '->' + b);
+    }
     return scrollForR(bd.s + t * (bd.e - bd.s));
   };
 
   const states = [
-    { name: 'layer-handoff-hero-about-t025', file: 'home-template--layer-handoff--1280x900--dark.png', y: () => bandT('hero', 'about', 0.25) },
-    { name: 'ambient-read-think', file: 'home-template--ambient-read--1280x900--dark.png', y: () => scrollForR(zone('think').top + zone('think').h * 0.5) },
-    { name: 'ambient-live-live', file: 'home-template--ambient-live--1280x900--dark.png', y: () => scrollForR(zone('live').top + zone('live').h * 0.5) },
-    { name: 'lab-3d-mid', file: 'home-template--lab-3d--1280x900--dark.png', y: () => Math.round(zone('lab').top + 0.5 * (zone('lab').h - geom.vh)) },
-    { name: 'outro-3d-mid', file: 'home-template--outro-3d--1280x900--dark.png', y: () => Math.round(zone('outro').top + 0.5 * zone('outro').h - geom.vh) },
-    { name: 'outro-3d-assembled-late', file: 'home-template--outro-assembly--1280x900--dark.png', y: () => Math.round(zone('outro').top + 0.85 * zone('outro').h - geom.vh) },
-    { name: 'footer-calma-bottom', file: 'home-template--footer-calma--1280x900--dark.png', y: () => geom.maxS },
+    {
+      name: 'layer-handoff-hero-about-t025',
+      file: 'home-template--layer-handoff--1280x900--dark.png',
+      y: () => bandT('hero', 'about', 0.25)
+    },
+    {
+      name: 'ambient-read-think',
+      file: 'home-template--ambient-read--1280x900--dark.png',
+      y: () => scrollForR(zone('think').top + zone('think').h * 0.5)
+    },
+    {
+      name: 'ambient-live-live',
+      file: 'home-template--ambient-live--1280x900--dark.png',
+      y: () => scrollForR(zone('live').top + zone('live').h * 0.5)
+    },
+    {
+      name: 'lab-3d-mid',
+      file: 'home-template--lab-3d--1280x900--dark.png',
+      y: () => Math.round(zone('lab').top + 0.5 * (zone('lab').h - geom.vh))
+    },
+    {
+      name: 'outro-3d-mid',
+      file: 'home-template--outro-3d--1280x900--dark.png',
+      y: () => Math.round(zone('outro').top + 0.5 * zone('outro').h - geom.vh)
+    },
+    {
+      name: 'outro-3d-assembled-late',
+      file: 'home-template--outro-assembly--1280x900--dark.png',
+      y: () => Math.round(zone('outro').top + 0.85 * zone('outro').h - geom.vh)
+    },
+    { name: 'footer-calma-bottom', file: 'home-template--footer-calma--1280x900--dark.png', y: () => geom.maxS }
   ];
   for (const st of states) {
     geom = await measure();
@@ -255,7 +354,13 @@ async function main() {
   const mY = Math.max(0, Math.round(mGeom.top + mGeom.h * 0.5 - mGeom.vh * 0.5));
   const mObs = await instantScroll(mY);
   await sleep(500);
-  await runState({ id: 'mobile-chapter-gate', file: 'home-template--mobile-chapter-gate--390x844--dark.png', requestedScrollY: mY, observedScrollY: mObs, viewport: '390x844@2x desktop-style layout viewport' });
+  await runState({
+    id: 'mobile-chapter-gate',
+    file: 'home-template--mobile-chapter-gate--390x844--dark.png',
+    requestedScrollY: mY,
+    observedScrollY: mObs,
+    viewport: '390x844@2x desktop-style layout viewport'
+  });
   await shot('home-template--mobile-chapter-gate--390x844--dark.png');
 
   // Reduced motion: emulate media, reload, initial hero state (nearest-zone static frame).
@@ -263,15 +368,26 @@ async function main() {
   await S('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
   await goto();
   await sleep(1200);
-  await runState({ id: 'reduced-motion-hero', file: 'home-template--reduced-motion--1280x900--dark.png', emulatedMedia: 'prefers-reduced-motion: reduce' });
+  await runState({
+    id: 'reduced-motion-hero',
+    file: 'home-template--reduced-motion--1280x900--dark.png',
+    emulatedMedia: 'prefers-reduced-motion: reduce'
+  });
   await shot('home-template--reduced-motion--1280x900--dark.png');
 
-  writeFileSync(join(HERE, 'capture-raw.json'), JSON.stringify({
-    capturedAt: new Date().toISOString(),
-    harness: meta,
-    geometry: geom,
-    shots,
-  }, null, 1));
+  writeFileSync(
+    join(HERE, 'capture-raw.json'),
+    JSON.stringify(
+      {
+        capturedAt: new Date().toISOString(),
+        harness: meta,
+        geometry: geom,
+        shots
+      },
+      null,
+      1
+    )
+  );
   console.log('DONE shots=' + shots.length);
 }
 

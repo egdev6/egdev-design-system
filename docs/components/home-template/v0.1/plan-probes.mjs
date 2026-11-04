@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { createRequire } from 'node:module';
 import { readFileSync, realpathSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -23,7 +23,10 @@ const specPath = 'docs/components/home-template/v0.1/spec.md';
 const ownerPath = 'docs/components/home-template/v0.1/owner-approval.md';
 const indexPath = 'docs/components/home-template/v0.1/capture.json';
 const spec = bytes(specPath);
-assert.equal(hash(payload(spec, '## 1. Purpose and scope')), '622eacf3cccb774690b6c247dcaf6e31a8feb4aa858376b00fd274438dc8eb84');
+assert.equal(
+  hash(payload(spec, '## 1. Purpose and scope')),
+  '622eacf3cccb774690b6c247dcaf6e31a8feb4aa858376b00fd274438dc8eb84'
+);
 assert.equal(hash(spec), 'b1ac63cd87d0fe51e72b3ca64645d739136d3037b46c37322909874c4442272c');
 assert.equal(hash(bytes(ownerPath)), 'b1724643da6299f7c65431a27a8cb6f3497d28a66fc0e62e5cc7ab8736cb5b7b');
 assert.equal(hash(bytes(indexPath)), '5d092aa9d776c6e633fc96e62e3ae0d879a69bae43f98e35420864960437db24');
@@ -48,15 +51,31 @@ const draftBinding = (file, label, heading) => {
   for (const required of ['SHA-256', 'UTF-8', 'EOF', 'LF']) {
     assert.ok(hashMethodDeclaration.includes(required), `${label} method must declare ${required}`);
   }
-  for (const binding of immutable.slice(0, 3)) assert.ok(text.includes(binding.sha256), `${label} missing frozen ${binding.path} binding`);
+  for (const binding of immutable.slice(0, 3)) {
+    assert.ok(text.includes(binding.sha256), `${label} missing frozen ${binding.path} binding`);
+  }
   assert.ok(text.includes('622eacf3cccb774690b6c247dcaf6e31a8feb4aa858376b00fd274438dc8eb84'));
-  return { path, payloadSHA256, wholeFileSHA256: hash(buffer), hashMethodDeclaration, wholeFileHashMethod: 'SHA-256 of all saved bytes including final metadata and LF' };
+  return {
+    path,
+    payloadSHA256,
+    wholeFileSHA256: hash(buffer),
+    hashMethodDeclaration,
+    wholeFileHashMethod: 'SHA-256 of all saved bytes including final metadata and LF'
+  };
 };
 const amendment = draftBinding('bounded-amendment.md', 'Amendment', '## 1. Binding and limited authority');
 const planBinding = draftBinding('implementation-plan.md', 'Plan', '## 1. Decision and authorization boundary');
 const plan = readFileSync(resolve(here, 'implementation-plan.md'));
-assert.equal(plan.toString().match(/amendment payload SHA-256 `([a-f0-9]{64})`/)?.[1], amendment.payloadSHA256, 'Stale amendment payload binding');
-assert.equal(plan.toString().match(/amendment whole-file SHA-256 `([a-f0-9]{64})`/)?.[1], amendment.wholeFileSHA256, 'Stale amendment whole-file binding');
+assert.equal(
+  plan.toString().match(/amendment payload SHA-256 `([a-f0-9]{64})`/)?.[1],
+  amendment.payloadSHA256,
+  'Stale amendment payload binding'
+);
+assert.equal(
+  plan.toString().match(/amendment whole-file SHA-256 `([a-f0-9]{64})`/)?.[1],
+  amendment.wholeFileSHA256,
+  'Stale amendment whole-file binding'
+);
 const planHash = planBinding.payloadSHA256;
 
 const roots = [
@@ -70,7 +89,9 @@ for (const directory of roots) {
     resolved = realpathSync(require.resolve('tailwindcss'));
     break;
   } catch (error) {
-    if (error.code !== 'MODULE_NOT_FOUND' && error.code !== 'ENOENT') throw error;
+    if (error.code !== 'MODULE_NOT_FOUND' && error.code !== 'ENOENT') {
+      throw error;
+    }
   }
 }
 assert.ok(resolved, 'BLOCKED: installed tailwindcss unavailable in both authorized compiler roots');
@@ -82,8 +103,13 @@ const compilerManifestPath = resolve(dirname(resolved), '../package.json');
 const version = JSON.parse(readFileSync(compilerManifestPath)).version;
 assert.equal(version, '4.3.3');
 const themePath = 'packages/tokens/src/theme.css';
-const token = '--gradient-vignette: radial-gradient(ellipse 120% 90% at 50% 45%, transparent 35%, rgba(0, 0, 0, 0.55) 75%, rgba(0, 0, 0, 0.92) 100%);';
-assert.equal(hash(bytes(themePath)), '41698fd4adb1f02a2828c439e9d4f2437ff338bc759231158185b12337e40ad9', 'Token source changed');
+const token =
+  '--gradient-vignette: radial-gradient(ellipse 120% 90% at 50% 45%, transparent 35%, rgba(0, 0, 0, 0.55) 75%, rgba(0, 0, 0, 0.92) 100%);';
+assert.equal(
+  hash(bytes(themePath)),
+  '41698fd4adb1f02a2828c439e9d4f2437ff338bc759231158185b12337e40ad9',
+  'Token source changed'
+);
 const loadedTheme = `${bytes(themePath).toString()}\n:root { ${token} }\n`;
 const input = '@reference "egdev-plan-theme";\n@layer utilities { @tailwind utilities source(none); }\n';
 const classesByPart = {
@@ -130,7 +156,9 @@ for (const candidate of candidates) {
   const selector = '.' + candidate.replace(/[^\w-]/g, '\\$&');
   assert.ok(css.includes(selector), `Missing selector: ${candidate}`);
   assert.match(css, declarations[candidate], `Missing declaration: ${candidate}`);
-  if (candidate.startsWith('data-')) assert.match(css, /\[data-state="?painted"?\]/);
+  if (candidate.startsWith('data-')) {
+    assert.match(css, /\[data-state="?painted"?\]/);
+  }
   assertions.push({ candidate, selector, expectedDeclaration: declarations[candidate].source, css, passed: true });
 }
 const compiler = await compile(input, options);
@@ -161,9 +189,19 @@ const report = {
   documents: { amendment, plan: planBinding },
   planPayloadSHA256: planHash,
   scriptSHA256: hash(readFileSync(fileURLToPath(import.meta.url))),
-  compiler: { resolved, manifest: compilerManifestPath, version, api: '(module.compile ?? module.default.compile)(input, {loadStylesheet}).build(candidates)' },
+  compiler: {
+    resolved,
+    manifest: compilerManifestPath,
+    version,
+    api: '(module.compile ?? module.default.compile)(input, {loadStylesheet}).build(candidates)'
+  },
   input,
-  loadedTheme: { path: themePath, sourceSHA256: hash(bytes(themePath)), appendedEphemeralToken: token, combinedSHA256: hash(loadedTheme) },
+  loadedTheme: {
+    path: themePath,
+    sourceSHA256: hash(bytes(themePath)),
+    appendedEphemeralToken: token,
+    combinedSHA256: hash(loadedTheme)
+  },
   classesByPart,
   candidateCount: candidates.length,
   assertions,
@@ -179,4 +217,13 @@ if (process.argv[2] === '--check') {
   assert.equal(process.argv.length, 2, 'Only --check is supported');
   writeFileSync(resolve(here, 'plan-probes.json'), serialized);
 }
-console.log(JSON.stringify({ compiler: version, assertions: assertions.length, immutableFiles: immutable.length, documents: { amendment, plan: planBinding }, reportSHA256: hash(serialized), mode: process.argv[2] ?? 'write' }));
+console.log(
+  JSON.stringify({
+    compiler: version,
+    assertions: assertions.length,
+    immutableFiles: immutable.length,
+    documents: { amendment, plan: planBinding },
+    reportSHA256: hash(serialized),
+    mode: process.argv[2] ?? 'write'
+  })
+);

@@ -20,7 +20,10 @@
       "!packages/ui/src/styles/legacy",
       "!packages/tokens/src/theme.css",
       "!packages/tokens/src/native.css",
-      "!packages/tokens/tests/fixtures"
+      "!packages/tokens/tests/fixtures",
+      "!docs/components/home-template/v0.1/capture.json",
+      "!docs/components/home-template/v0.1/capture/harness/pulso-capture.html",
+      "!docs/components/home-template/v0.1/capture/harness/profile-*"
     ]
   },
   "formatter": {
