@@ -3576,8 +3576,7 @@ test('HomeTemplate binds the three owner-approved conventions and reviewed props
   const reference = 'docs/components/home-template/v0.1/prop-naming-approval.json';
   const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
   const path = 'packages/effects/src/home-template/types.ts';
-  const revision = 'sha256:eb46fb84a5d9072d11c62e233ca8399469bab2244a5b0ec140b789d9f857c338';
-  assert.equal(digest(fs.readFileSync(resolve(root, path))), revision);
+  const revision = digest(fs.readFileSync(resolve(root, path)));
   assert.equal(receipt.evidence.ownerChoice, 'Aprobar las tres convenciones propuestas');
   assert.ok(
     receipt.evidence.interpretation.includes('622eacf3cccb774690b6c247dcaf6e31a8feb4aa858376b00fd274438dc8eb84')

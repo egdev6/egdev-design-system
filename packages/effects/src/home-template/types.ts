@@ -25,17 +25,17 @@ export type HomeTemplateProps = Omit<
   ComponentPropsWithoutRef<'div'>,
   'children' | 'dangerouslySetInnerHTML' | 'role' | 'style'
 > & {
-  /** Ordered scroll-choreography zones.
+  /** Ordered scroll-choreography zones; see the Default story.
    * @control false
    * @controlReason Zone records require the dedicated story examples.
    */
   zoneTable: readonly HomeTemplateZone[];
-  /** Consumer page content.
+  /** Consumer page content; see the Default story.
    * @control false
    * @controlReason React content requires the dedicated story examples.
    */
   children: ReactNode;
-  /** Notify active zone identity changes.
+  /** Notify active zone identity changes; see the ActiveZoneCallback story.
    * @control false
    * @controlReason Callbacks require the dedicated story examples.
    */

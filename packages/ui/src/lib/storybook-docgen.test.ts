@@ -5320,6 +5320,31 @@ describe('ArticleFeature metadata contract', () => {
   });
 });
 
+it('extracts HomeTemplate own props and concrete story guidance', () => {
+  const root = new URL('../../../effects/', import.meta.url);
+  const effectsParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', root)), {
+    ...config.typescript?.reactDocgenTypescriptOptions
+  });
+  const doc = effectsParser
+    .parse(fileURLToPath(new URL('src/home-template/HomeTemplate.tsx', root)))
+    .find((item) => item.displayName === 'HomeTemplate');
+  expect(doc).toBeDefined();
+  for (const name of ['zoneTable', 'children', 'onZoneChange']) {
+    expect(doc?.props[name]?.tags, name).toMatchObject({
+      control: 'false',
+      controlReason: expect.stringMatching(/story/i)
+    });
+    expect(doc?.props[name]?.description, name).toMatch(/Default|ActiveZoneCallback/);
+    expect(doc?.props[name]?.defaultValue, name).toBeNull();
+  }
+  expect(doc?.props.zoneTable?.required).toBe(true);
+  expect(doc?.props.children?.required).toBe(true);
+  const anchor = effectsParser
+    .parse(fileURLToPath(new URL('src/home-template/HomeTemplateAnchor.tsx', root)))
+    .find((item) => item.displayName === 'HomeTemplateAnchor');
+  expect(anchor?.props.zone).toMatchObject({ required: true, tags: { control: 'text' } });
+});
+
 it('extracts ScrollReveal effects controls and documented native composition rows', () => {
   const effectsRoot = new URL('../../../effects/', import.meta.url);
   const effectsParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', effectsRoot)), {
