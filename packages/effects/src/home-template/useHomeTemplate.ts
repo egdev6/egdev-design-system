@@ -125,6 +125,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
     let profile = '';
     let staticKey = '';
     let size = '';
+    let invalidGeometry = '';
     const attempt = (fn: () => void) => {
       try {
         fn();
@@ -245,6 +246,13 @@ export function useHomeTemplate(props: HomeTemplateProps) {
       }
       try {
         const elements = Array.from(content.querySelectorAll('[data-zone]'));
+        const configured = new Set(zones.current.map((zone) => zone.id));
+        for (const element of elements) {
+          const id = element.getAttribute('data-zone');
+          if (id !== null && !configured.has(id)) {
+            warn(`HomeTemplate: foreign section: ${id}`);
+          }
+        }
         const selected: Element[] = [];
         rows = [];
         geometry = [];
@@ -277,7 +285,18 @@ export function useHomeTemplate(props: HomeTemplateProps) {
           bands.valid &&
           geometry.every((item) => Number.isFinite(item.top) && Number.isFinite(item.height) && item.height > 0);
         if (geometry.length && !valid) {
-          warn('HomeTemplate: invalid geometry or section order');
+          const signature = JSON.stringify({
+            geometry,
+            order,
+            viewport: window.innerHeight,
+            scrollHeight: document.documentElement.scrollHeight
+          });
+          if (signature !== invalidGeometry) {
+            warn('HomeTemplate: invalid geometry or section order');
+            invalidGeometry = signature;
+          }
+        } else {
+          invalidGeometry = '';
         }
       } catch {
         valid = false;

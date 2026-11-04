@@ -397,6 +397,67 @@ it('does not write window keys or html/body attributes and styles throughout its
   expect(snapshot()).toEqual(before);
 });
 
+it('warns for foreign sections inside the content without disturbing valid choreography', () => {
+  const change = vi.fn();
+  const view = render(
+    <HomeTemplate zoneTable={table} onZoneChange={change}>
+      <section data-zone='a'>A</section>
+      <section data-zone='unknown'>Foreign</section>
+      <section data-zone='b'>B</section>
+      <section data-zone='c'>C</section>
+    </HomeTemplate>
+  );
+  expect(view.container.firstElementChild).toHaveAttribute('data-state', 'a');
+  expect(view.getByText('Foreign')).toBeVisible();
+  expect(console.warn).toHaveBeenCalledWith('HomeTemplate: foreign section: unknown');
+  expect(change).toHaveBeenCalledWith({ zone: 'a', previous: null });
+});
+
+it('warns once per distinct invalid geometry and again after recovery', () => {
+  height = 100;
+  docHeight = 900;
+  const view = render(page());
+  const warning = 'HomeTemplate: invalid geometry or section order';
+  const count = () => vi.mocked(console.warn).mock.calls.filter(([message]) => message === warning).length;
+  expect(count()).toBe(1);
+  fireEvent.load(window);
+  fireEvent.load(window);
+  expect(count()).toBe(1);
+  height = 300;
+  fireEvent.load(window);
+  expect(count()).toBe(2);
+  height = 900;
+  docHeight = 2700;
+  fireEvent.load(window);
+  expect(view.container.firstElementChild).toHaveAttribute('data-state', 'a');
+  height = 100;
+  docHeight = 900;
+  fireEvent.load(window);
+  expect(count()).toBe(3);
+  expect(view.container.firstElementChild).not.toHaveAttribute('data-state');
+});
+
+it('keeps foreign and invalid-geometry warnings silent in production', () => {
+  vi.stubEnv('NODE_ENV', 'production');
+  try {
+    height = 100;
+    docHeight = 900;
+    const view = render(
+      <HomeTemplate zoneTable={table}>
+        <section data-zone='a'>A</section>
+        <section data-zone='b'>B</section>
+        <section data-zone='c'>C</section>
+        <section data-zone='foreign'>Foreign</section>
+      </HomeTemplate>
+    );
+    expect(view.getByText('Foreign')).toBeVisible();
+    expect(view.container.firstElementChild).not.toHaveAttribute('data-state');
+    expect(console.warn).not.toHaveBeenCalled();
+  } finally {
+    vi.unstubAllEnvs();
+  }
+});
+
 it('does not notify on callback replacement or patch an unchanged profile', () => {
   const first = vi.fn();
   const second = vi.fn();
