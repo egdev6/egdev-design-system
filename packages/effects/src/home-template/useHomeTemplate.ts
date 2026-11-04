@@ -2,6 +2,7 @@ import { cn } from '@egdev/ui';
 import type { CSSProperties } from 'react';
 import { createContext, useCallback, useContext, useEffect, useRef } from 'react';
 import { ambientProfiles, createParticleStreaks, resolveAmbientColors } from '../ambient-background/particleStreaks';
+import { isotipoCreateScene } from '../atoms/isotipo3d/isotipoScene';
 import type { DirectorZone, ZoneGeometry } from './homeDirector';
 import { computeTargets, deriveBands, resolveZones } from './homeDirector';
 import type { HomeTemplateAnchorProps, HomeTemplateProps, HomeTemplateZone } from './types';
@@ -367,6 +368,81 @@ export function useHomeTemplate(props: HomeTemplateProps) {
       attempt(() => engine?.dispose());
     };
   }, []);
+  useEffect(() => {
+    const root = rootRef.current;
+    const canvas = isotipoRef.current;
+    if (!root || !canvas || !zones.current.some((zone) => zone.isotipo)) {
+      return;
+    }
+    const controller = new AbortController();
+    let active = true;
+    let scene: Awaited<ReturnType<typeof isotipoCreateScene>> | null = null;
+    const dispose = () => {
+      const previous = scene;
+      scene = null;
+      try {
+        previous?.dispose();
+      } catch {
+        /* Fail open. */
+      }
+    };
+    const fail = () => {
+      active = false;
+      controller.abort();
+      dispose();
+      canvas.style.setProperty('--eg-home-isotipo-opacity', '0');
+    };
+    const contextLost = (event: Event) => {
+      event.preventDefault();
+      fail();
+    };
+    try {
+      const style = getComputedStyle(root);
+      const colors = [
+        '--logo-red',
+        '--logo-red-shade',
+        '--color-primitive-red-neon',
+        '--color-primitive-red-light'
+      ].map((name) => style.getPropertyValue(name).trim());
+      const [light, shade, neon, redLight] = colors;
+      if (
+        !light ||
+        !shade ||
+        !neon ||
+        !redLight ||
+        colors.some((color) => !/^#(?:[\da-f]{3}|[\da-f]{6})$/i.test(color)) ||
+        !(canvas.getContext('webgl2') || canvas.getContext('webgl'))
+      ) {
+        return;
+      }
+      canvas.addEventListener('webglcontextlost', contextLost);
+      isotipoCreateScene(canvas, { light, shade, neon, redLight }, controller.signal)
+        .then((created) => {
+          if (!active) {
+            try {
+              created.dispose();
+            } catch {
+              /* Fail open. */
+            }
+            return;
+          }
+          scene = created;
+        })
+        .catch(() => {
+          if (active) {
+            fail();
+          }
+        });
+    } catch {
+      fail();
+    }
+    return () => {
+      active = false;
+      controller.abort();
+      canvas.removeEventListener('webglcontextlost', contextLost);
+      dispose();
+    };
+  }, [zoneTable]);
   useEffect(() => {
     remeasure.current?.();
   }, [zoneTable, children]);
