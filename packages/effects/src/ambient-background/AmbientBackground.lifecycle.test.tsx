@@ -2,6 +2,7 @@ import { act, cleanup, fireEvent, render } from '@testing-library/react';
 import { StrictMode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AmbientBackground } from '../index';
+import * as particleStreaks from './particleStreaks';
 
 describe('AmbientBackground lifecycle', () => {
   let width: number;
@@ -101,6 +102,64 @@ describe('AmbientBackground lifecycle', () => {
     cleanup();
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
+  });
+
+  it.each([
+    ['base', 70, 90, 1, 0.1],
+    ['read', 20, 25, 0.6, 0.1],
+    ['live', 110, 120, 1.4, 0.18]
+  ] as const)('passes the %s profile and host colors at the 700px boundary', (profile, lines, squares, speed, glow) => {
+    const set = vi.fn();
+    const engine = {
+      ready: () => true,
+      set,
+      resize: vi.fn(),
+      start: vi.fn(),
+      stop: vi.fn(),
+      renderOnce: vi.fn(),
+      dispose: vi.fn()
+    };
+    const create = vi.spyOn(particleStreaks, 'createParticleStreaks').mockReturnValue(engine);
+    vi.mocked(window.getComputedStyle).mockImplementation(
+      (element) =>
+        ({
+          getPropertyValue: () => (element === document.documentElement ? '#abcdef' : '#123456')
+        }) as unknown as CSSStyleDeclaration
+    );
+    width = 699;
+    const { container } = render(<AmbientBackground profile={profile} opacity={0.4} />);
+    const root = container.firstElementChild;
+    expect(window.getComputedStyle).toHaveBeenCalledWith(root);
+    expect(create).toHaveBeenCalledWith(
+      expect.any(HTMLCanvasElement),
+      {
+        backgroundColor: '#123456',
+        backgroundGlowColor: '#123456',
+        lineColor: '#123456',
+        lineGlowColor: '#123456',
+        squareColor: '#123456',
+        squareGlowColor: '#123456'
+      },
+      { lineCount: lines, squareCount: squares, speedMultiplier: speed, backgroundGlowOpacity: glow },
+      expect.any(Function)
+    );
+    expect(root?.getAttribute('style')).toContain('--eg-ambient-opacity: 0.4');
+    expect(set).toHaveBeenLastCalledWith({
+      lineCount: Math.round(lines * 0.6),
+      squareCount: Math.round(squares * 0.6),
+      speedMultiplier: speed,
+      backgroundGlowOpacity: glow
+    });
+    act(() => {
+      width = 700;
+      resize();
+    });
+    expect(set).toHaveBeenLastCalledWith({
+      lineCount: lines,
+      squareCount: squares,
+      speedMultiplier: speed,
+      backgroundGlowOpacity: glow
+    });
   });
 
   it('forwards native event handlers to the root', () => {
