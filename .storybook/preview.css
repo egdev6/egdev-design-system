@@ -82,3 +82,4 @@ body {
 }
 
 @source "../packages/effects/src/scroll-reveal/ScrollReveal.stories.tsx";
+@source "../packages/effects/src/home-template/HomeTemplate.stories.tsx";

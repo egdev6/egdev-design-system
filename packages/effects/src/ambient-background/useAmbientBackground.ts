@@ -1,13 +1,7 @@
 import { cn } from '@egdev/ui';
 import { useEffect, useRef, useState } from 'react';
-import { createParticleStreaks } from './particleStreaks';
+import { ambientProfiles, createParticleStreaks, resolveAmbientColors } from './particleStreaks';
 import { type AmbientBackgroundProfile, ambientCanvasVariants, ambientRootVariants } from './types';
-
-const profiles = {
-  base: { lineCount: 70, squareCount: 90, speedMultiplier: 1, backgroundGlowOpacity: 0.1 },
-  read: { lineCount: 20, squareCount: 25, speedMultiplier: 0.6, backgroundGlowOpacity: 0.1 },
-  live: { lineCount: 110, squareCount: 120, speedMultiplier: 1.4, backgroundGlowOpacity: 0.18 }
-};
 
 type State = 'stopped' | 'static' | 'running';
 
@@ -26,33 +20,15 @@ export function useAmbientBackground(profile: AmbientBackgroundProfile, opacity:
     if (!root || !canvas) {
       return;
     }
-    const style = getComputedStyle(root);
-    const names = [
-      '--color-ambient-bg',
-      '--color-ambient-glow',
-      '--color-ambient-line',
-      '--color-ambient-line-glow',
-      '--color-ambient-square',
-      '--color-ambient-square-glow'
-    ];
-    const colors = names.map((name) => style.getPropertyValue(name).trim());
-    if (colors.length !== 6 || colors.some((color) => !/^#(?:[\da-f]{3}|[\da-f]{6})$/i.test(color))) {
-      return;
-    }
-    const [backgroundColor, backgroundGlowColor, lineColor, lineGlowColor, squareColor, squareGlowColor] = colors;
-    if (!backgroundColor || !backgroundGlowColor || !lineColor || !lineGlowColor || !squareColor || !squareGlowColor) {
+    const colors = resolveAmbientColors(getComputedStyle(root));
+    if (!colors) {
       return;
     }
     let failed = false;
-    const engine = createParticleStreaks(
-      canvas,
-      { backgroundColor, backgroundGlowColor, lineColor, lineGlowColor, squareColor, squareGlowColor },
-      profiles[values.current.profile],
-      () => {
-        failed = true;
-        setState('stopped');
-      }
-    );
+    const engine = createParticleStreaks(canvas, colors, ambientProfiles[values.current.profile], () => {
+      failed = true;
+      setState('stopped');
+    });
     if (!engine) {
       return;
     }
@@ -77,7 +53,7 @@ export function useAmbientBackground(profile: AmbientBackgroundProfile, opacity:
       dpr = ratio;
       const current = values.current;
       const currentOpacity = Number.isFinite(current.opacity) ? Math.max(0, Math.min(1, current.opacity)) : 0;
-      const preset = profiles[current.profile];
+      const preset = ambientProfiles[current.profile];
       const scale = width < 700 ? 0.6 : 1;
       engine.set({
         ...preset,

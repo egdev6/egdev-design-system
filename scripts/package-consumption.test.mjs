@@ -112,6 +112,8 @@ export const calendarGridProps: CalendarGridProps = { label: 'Week of October 5'
 export const calendarGridSample = createElement(CalendarGrid, calendarGridProps);
 export const calendarGridRecipe = calendarGridVariants();
 import type { DialogProps, DialogTriggerProps, DialogContentProps, DialogCloseProps } from '@egdev/ui';
+import { HomeTemplate, HomeTemplateAnchor } from '@egdev/effects';
+import type { HomeTemplateProps, HomeTemplateAnchorProps, HomeTemplateZone } from '@egdev/effects';
 import { ScrollReveal } from '@egdev/effects';
 import type { ScrollRevealProps } from '@egdev/effects';
 import { Isotipo3D } from '@egdev/effects';
@@ -355,6 +357,16 @@ const dialogInvalidSize: DialogContentProps = { title: 'Settings', children: 'Pr
 const dialogMissingTitle: DialogContentProps = { children: 'Preferences' };
 // @ts-expect-error The modal implementation does not expose its internal scrim recipe.
 type DialogScrimNotExported = (typeof import('@egdev/ui'))['dialogScrimVariants'];
+const homeZones: readonly HomeTemplateZone[] = [{ id: 'intro', isotipo: true, scene: 'hero' }];
+const homeAnchorProps: HomeTemplateAnchorProps = { zone: 'intro', children: 'Fallback' };
+export const homeProps: HomeTemplateProps = { zoneTable: homeZones, id: 'packed-home', children: createElement(HomeTemplateAnchor, homeAnchorProps) };
+export function HomeSamples() { return createElement(HomeTemplate, homeProps); }
+// @ts-expect-error Root refs are not supported in either React version.
+const homeRef: HomeTemplateProps = { ...homeProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Anchor refs are not supported in either React version.
+const homeAnchorRef: HomeTemplateAnchorProps = { ...homeAnchorProps, ref: createRef<HTMLDivElement>() };
+// @ts-expect-error Internal recipes remain private.
+type HomeRecipePrivate = (typeof import('@egdev/effects'))['canvasVariants'];
 export const scrollRevealRef = createRef<HTMLDivElement>();
 export const scrollRevealProps: ScrollRevealProps = { variant: 'wipe', delay: 150, id: 'packed-scroll-reveal' };
 export function ScrollRevealSamples() {
@@ -5066,6 +5078,9 @@ assert.ok(readFileSync(resolve(dirname(ambientEntry), 'index.d.ts'), 'utf8').tri
 assert.ok((await import('@egdev/effects')).AmbientBackground);
 assert.ok((await import('@egdev/effects')).Isotipo3D);
 assert.ok((await import('@egdev/effects')).ScrollReveal);
+assert.ok((await import('@egdev/effects')).HomeTemplate);
+assert.ok((await import('@egdev/effects')).HomeTemplateAnchor);
+assert.throws(() => import.meta.resolve('@egdev/effects/home-template/homeDirector'));
 assert.throws(() => import.meta.resolve('@egdev/effects/scroll-reveal/useScrollReveal'));
 assert.throws(() => import.meta.resolve('@egdev/effects/atoms/isotipo3d/isotipoScene'));
 assert.throws(() => import.meta.resolve('@egdev/effects/ambient-background/particleStreaks'));
@@ -5738,6 +5753,23 @@ const { ToastSamples } = await import('./consumer.ts');
 assert.equal(renderToString(createElement(ToastSamples)), '<main>Toast host</main>', 'Toast records stay client-side through Portal');
 import { IndicatorConsumerSamples } from './consumer.ts';
 import { writeFileSync } from 'node:fs';
+import { HomeSamples } from './consumer.ts';
+const homeDOM = new JSDOM(renderToString(createElement(HomeSamples)));
+try {
+  const home = homeDOM.window.document.getElementById('packed-home');
+  const [ambient, vignette, isotipo, content] = home.children;
+  const anchor = content.querySelector('.eg-home-template-anchor');
+  for (const [element, names] of [
+    [home, ['relative', 'isolate', 'w-full']],
+    [ambient, ['fixed', 'inset-0', 'w-full', 'h-full', 'pointer-events-none', 'z-0', 'opacity-[var(--eg-home-ambient-opacity)]']],
+    [vignette, ['fixed', 'inset-0', 'z-0', 'pointer-events-none', 'bg-[image:var(--gradient-vignette)]']],
+    [isotipo, ['fixed', 'inset-0', 'w-full', 'h-full', 'pointer-events-none', 'z-[1]', 'opacity-[var(--eg-home-isotipo-opacity)]']],
+    [content, ['relative', 'z-[2]', 'overflow-x-clip']],
+    [anchor, ['relative', 'block']],
+    [anchor.firstElementChild, ['data-[state=painted]:opacity-0']]
+  ]) for (const name of names) assert.ok(element.classList.contains(name), 'Missing own HomeTemplate class ' + name);
+  assert.equal(anchor.textContent, 'Fallback');
+} finally { homeDOM.window.close(); }
 import { ScrollRevealSamples } from './consumer.ts';
 const revealHTML = renderToString(createElement(ScrollRevealSamples));
 writeFileSync(new URL('./scroll-reveal-hydration.html', import.meta.url), revealHTML);
@@ -9099,7 +9131,7 @@ const typography = ${JSON.stringify(typographyNames)};
 // #126 D17 adds the owner-approved --container-calendar-grid-stack: 285 + 1 = 286.
 // #291 adds the owner-approved SectionShell show halo and three group-edge masks: 286 + 4 = 290.
 // Approved ScrollReveal wipe duration adds one root token: 290 + 1 = 291.
-assert.equal(names.length, 291, 'Packed native artifact must expose 291 variables');
+assert.equal(names.length, 292, 'Packed native artifact must expose 292 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {

@@ -986,6 +986,32 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     const isotipoExtract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
     expect(mapJSDocControls(isotipoExtract(isotipoMetadata), isotipoMetadata).diagnostics).toEqual([]);
   });
+  it('maps HomeTemplate and Anchor metadata through native extraction and the registered enhancer', () => {
+    const root = new URL('../../../effects/', import.meta.url);
+    const effectsParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', root)), {
+      ...config.typescript?.reactDocgenTypescriptOptions
+    });
+    for (const name of ['HomeTemplate', 'HomeTemplateAnchor']) {
+      const doc = effectsParser
+        .parse(fileURLToPath(new URL(`src/home-template/${name}.tsx`, root)))
+        .find((item) => item.displayName === name);
+      expect(doc).toBeDefined();
+      const metadata = Object.assign((_props: Record<string, unknown>) => null, { __docgenInfo: doc });
+      const composed = composeStory({}, { title: `Metadata/${name}`, component: metadata }, preview, 'Default');
+      const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+      expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+      expect(composed.args).toEqual({});
+      if (name === 'HomeTemplate') {
+        for (const prop of ['zoneTable', 'children', 'onZoneChange']) {
+          expect(composed.argTypes[prop]?.control, prop).toBe(false);
+          expect(composed.argTypes[prop]?.description, prop).toMatch(/Default|ActiveZoneCallback/);
+        }
+      } else {
+        expect(composed.argTypes.zone?.control).toEqual({ type: 'text' });
+        expect(composed.argTypes.zone?.type?.required).toBe(true);
+      }
+    }
+  });
   it('maps AmbientBackground effects metadata through the registered enhancer', () => {
     const root = new URL('../../../effects/', import.meta.url);
     const effectsParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', root)), {

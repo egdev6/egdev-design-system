@@ -8,6 +8,32 @@ type Colors = {
 };
 
 type Profile = { lineCount: number; squareCount: number; speedMultiplier: number; backgroundGlowOpacity: number };
+
+export const ambientProfiles = {
+  base: { lineCount: 70, squareCount: 90, speedMultiplier: 1, backgroundGlowOpacity: 0.1 },
+  read: { lineCount: 20, squareCount: 25, speedMultiplier: 0.6, backgroundGlowOpacity: 0.1 },
+  live: { lineCount: 110, squareCount: 120, speedMultiplier: 1.4, backgroundGlowOpacity: 0.18 }
+};
+
+export function resolveAmbientColors(style: CSSStyleDeclaration): Colors | undefined {
+  const names = [
+    '--color-ambient-bg',
+    '--color-ambient-glow',
+    '--color-ambient-line',
+    '--color-ambient-line-glow',
+    '--color-ambient-square',
+    '--color-ambient-square-glow'
+  ];
+  const colors = names.map((name) => style.getPropertyValue(name).trim());
+  if (colors.length !== 6 || colors.some((color) => !/^#(?:[\da-f]{3}|[\da-f]{6})$/i.test(color))) {
+    return;
+  }
+  const [backgroundColor, backgroundGlowColor, lineColor, lineGlowColor, squareColor, squareGlowColor] = colors;
+  if (!backgroundColor || !backgroundGlowColor || !lineColor || !lineGlowColor || !squareColor || !squareGlowColor) {
+    return;
+  }
+  return { backgroundColor, backgroundGlowColor, lineColor, lineGlowColor, squareColor, squareGlowColor };
+}
 type Particle = {
   laneId: number;
   laneOffset: number;

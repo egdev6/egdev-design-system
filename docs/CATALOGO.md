@@ -177,7 +177,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
-| **HomeTemplate** | HomeTemplate (plantilla) | — | Isotipo3D, AmbientBackground, ScrollReveal | mover | web catalog v0.1 ([approvals](components/web-catalog/v0.1/owner-approvals.md)): effect layers plus zone choreography in @egdev/effects; the zone table becomes an input, not hardcoded Pulso values. |
+| **HomeTemplate** | HomeTemplate (plantilla) | — | Private Isotipo3D and AmbientBackground engines; consumer content | mover | Implemented React template in @egdev/effects under the [approved v0.1 plan](components/home-template/v0.1/implementation-plan.md): consumer-defined zone choreography and measured decorative anchors with fail-open fallback. Browser and packed-consumer verification remain pending. |
 
 ## Mando
 

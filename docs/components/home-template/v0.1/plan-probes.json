@@ -1,0 +1,254 @@
+{
+  "purpose": "Static compiler feasibility, not implemented behavior or browser evidence",
+  "documents": {
+    "amendment": {
+      "path": "docs/components/home-template/v0.1/bounded-amendment.md",
+      "payloadSHA256": "3638297be7989989a9c5125229ebd32471dd35f33fb34a196b042024a4f26e38",
+      "wholeFileSHA256": "3d66425cff234cf4da99ccc3ba4ef5f6cb18259713bdf692f75ddffb8cd39cc6",
+      "hashMethodDeclaration": "- Amendment hash method: SHA-256 of saved UTF-8 bytes from the unique whole heading line `## 1. Binding and limited authority` through EOF, including final LF; metadata above is excluded. Locate `\\n<heading>\\n` and begin after the leading LF. Whole-file SHA-256 includes all saved metadata and is recorded independently in plan-probes.json; neither digest proves approval.",
+      "wholeFileHashMethod": "SHA-256 of all saved bytes including final metadata and LF"
+    },
+    "plan": {
+      "path": "docs/components/home-template/v0.1/implementation-plan.md",
+      "payloadSHA256": "1c2fc44d10a3a1501b978d63e0757dbb33f384a756dcd422ba44069308c71fcb",
+      "wholeFileSHA256": "472ef6dc930fda1784f8d3d48940f08c6fed95db30d39676edc0334a0890b8a0",
+      "hashMethodDeclaration": "- Plan hash method: SHA-256 over saved UTF-8 bytes beginning at the unique whole heading line `## 1. Decision and authorization boundary` through EOF, including final LF; exclude this metadata. Match `\\n<heading>\\n`, then begin one byte after that leading LF. Never search the first textual mention of the heading. Whole-file hashes, when needed for later approval, must be recorded separately by the parent after metadata settles.",
+      "wholeFileHashMethod": "SHA-256 of all saved bytes including final metadata and LF"
+    }
+  },
+  "planPayloadSHA256": "1c2fc44d10a3a1501b978d63e0757dbb33f384a756dcd422ba44069308c71fcb",
+  "scriptSHA256": "5215c2ce3eda2734e60a84fa1c634e71a7dea22df17ef974c99d5c6e7e36e542",
+  "compiler": {
+    "resolved": "/home/egdev/proyectos/egdev-design-system/node_modules/.pnpm/tailwindcss@4.3.3/node_modules/tailwindcss/dist/lib.js",
+    "manifest": "/home/egdev/proyectos/egdev-design-system/node_modules/.pnpm/tailwindcss@4.3.3/node_modules/tailwindcss/package.json",
+    "version": "4.3.3",
+    "api": "(module.compile ?? module.default.compile)(input, {loadStylesheet}).build(candidates)"
+  },
+  "input": "@reference \"egdev-plan-theme\";\n@layer utilities { @tailwind utilities source(none); }\n",
+  "loadedTheme": {
+    "path": "packages/tokens/src/theme.css",
+    "sourceSHA256": "41698fd4adb1f02a2828c439e9d4f2437ff338bc759231158185b12337e40ad9",
+    "appendedEphemeralToken": "--gradient-vignette: radial-gradient(ellipse 120% 90% at 50% 45%, transparent 35%, rgba(0, 0, 0, 0.55) 75%, rgba(0, 0, 0, 0.92) 100%);",
+    "combinedSHA256": "e8b4255ab5f158350abad205f3c019bbc647ddbbbaead70be737b5b2ca1992bf"
+  },
+  "classesByPart": {
+    "root": "relative isolate block w-full",
+    "canvasBase": "fixed inset-0 block w-full h-full pointer-events-none bg-transparent",
+    "ambient": "z-0 opacity-[var(--eg-home-ambient-opacity)]",
+    "isotipo": "z-[1] opacity-[var(--eg-home-isotipo-opacity)]",
+    "vignette": "fixed inset-0 z-0 pointer-events-none bg-[image:var(--gradient-vignette)]",
+    "content": "relative z-[2] block overflow-x-clip",
+    "anchor": "relative block",
+    "fallback": "block data-[state=painted]:opacity-0"
+  },
+  "candidateCount": 17,
+  "assertions": [
+    {
+      "candidate": "relative",
+      "selector": ".relative",
+      "expectedDeclaration": "position: relative;",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .relative {\n    position: relative;\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "isolate",
+      "selector": ".isolate",
+      "expectedDeclaration": "isolation: isolate;",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .isolate {\n    isolation: isolate;\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "block",
+      "selector": ".block",
+      "expectedDeclaration": "display: block;",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .block {\n    display: block;\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "w-full",
+      "selector": ".w-full",
+      "expectedDeclaration": "width: 100%;",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .w-full {\n    width: 100%;\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "fixed",
+      "selector": ".fixed",
+      "expectedDeclaration": "position: fixed;",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .fixed {\n    position: fixed;\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "inset-0",
+      "selector": ".inset-0",
+      "expectedDeclaration": "inset: (?:var\\(--space-0\\)|0(?:px)?);",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .inset-0 {\n    inset: var(--space-0);\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "h-full",
+      "selector": ".h-full",
+      "expectedDeclaration": "height: 100%;",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .h-full {\n    height: 100%;\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "pointer-events-none",
+      "selector": ".pointer-events-none",
+      "expectedDeclaration": "pointer-events: none;",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .pointer-events-none {\n    pointer-events: none;\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "bg-transparent",
+      "selector": ".bg-transparent",
+      "expectedDeclaration": "background-color: transparent;",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .bg-transparent {\n    background-color: transparent;\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "z-0",
+      "selector": ".z-0",
+      "expectedDeclaration": "z-index: 0;",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .z-0 {\n    z-index: 0;\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "opacity-[var(--eg-home-ambient-opacity)]",
+      "selector": ".opacity-\\[var\\(--eg-home-ambient-opacity\\)\\]",
+      "expectedDeclaration": "opacity: var\\(--eg-home-ambient-opacity\\);",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .opacity-\\[var\\(--eg-home-ambient-opacity\\)\\] {\n    opacity: var(--eg-home-ambient-opacity);\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "z-[1]",
+      "selector": ".z-\\[1\\]",
+      "expectedDeclaration": "z-index: 1;",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .z-\\[1\\] {\n    z-index: 1;\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "opacity-[var(--eg-home-isotipo-opacity)]",
+      "selector": ".opacity-\\[var\\(--eg-home-isotipo-opacity\\)\\]",
+      "expectedDeclaration": "opacity: var\\(--eg-home-isotipo-opacity\\);",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .opacity-\\[var\\(--eg-home-isotipo-opacity\\)\\] {\n    opacity: var(--eg-home-isotipo-opacity);\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "bg-[image:var(--gradient-vignette)]",
+      "selector": ".bg-\\[image\\:var\\(--gradient-vignette\\)\\]",
+      "expectedDeclaration": "background-image: var\\(--gradient-vignette\\);",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .bg-\\[image\\:var\\(--gradient-vignette\\)\\] {\n    background-image: var(--gradient-vignette);\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "z-[2]",
+      "selector": ".z-\\[2\\]",
+      "expectedDeclaration": "z-index: 2;",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .z-\\[2\\] {\n    z-index: 2;\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "overflow-x-clip",
+      "selector": ".overflow-x-clip",
+      "expectedDeclaration": "overflow-x: clip;",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .overflow-x-clip {\n    overflow-x: clip;\n  }\n}\n",
+      "passed": true
+    },
+    {
+      "candidate": "data-[state=painted]:opacity-0",
+      "selector": ".data-\\[state\\=painted\\]\\:opacity-0",
+      "expectedDeclaration": "opacity: 0%;",
+      "css": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .data-\\[state\\=painted\\]\\:opacity-0[data-state=\"painted\"] {\n    opacity: 0%;\n  }\n}\n",
+      "passed": true
+    }
+  ],
+  "output": "/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */\n@layer utilities {\n  .pointer-events-none {\n    pointer-events: none;\n  }\n  .fixed {\n    position: fixed;\n  }\n  .relative {\n    position: relative;\n  }\n  .inset-0 {\n    inset: var(--space-0);\n  }\n  .isolate {\n    isolation: isolate;\n  }\n  .z-0 {\n    z-index: 0;\n  }\n  .z-\\[1\\] {\n    z-index: 1;\n  }\n  .z-\\[2\\] {\n    z-index: 2;\n  }\n  .block {\n    display: block;\n  }\n  .h-full {\n    height: 100%;\n  }\n  .w-full {\n    width: 100%;\n  }\n  .overflow-x-clip {\n    overflow-x: clip;\n  }\n  .bg-transparent {\n    background-color: transparent;\n  }\n  .bg-\\[image\\:var\\(--gradient-vignette\\)\\] {\n    background-image: var(--gradient-vignette);\n  }\n  .opacity-\\[var\\(--eg-home-ambient-opacity\\)\\] {\n    opacity: var(--eg-home-ambient-opacity);\n  }\n  .opacity-\\[var\\(--eg-home-isotipo-opacity\\)\\] {\n    opacity: var(--eg-home-isotipo-opacity);\n  }\n  .data-\\[state\\=painted\\]\\:opacity-0[data-state=\"painted\"] {\n    opacity: 0%;\n  }\n}\n",
+  "outputSHA256": "0f4d0b88b9ec03175993d51fc812194a28773bc92167d681b2c9690b8711b4ad",
+  "immutable": [
+    {
+      "path": "docs/components/home-template/v0.1/spec.md",
+      "sha256": "b1ac63cd87d0fe51e72b3ca64645d739136d3037b46c37322909874c4442272c"
+    },
+    {
+      "path": "docs/components/home-template/v0.1/owner-approval.md",
+      "sha256": "b1724643da6299f7c65431a27a8cb6f3497d28a66fc0e62e5cc7ab8736cb5b7b"
+    },
+    {
+      "path": "docs/components/home-template/v0.1/capture.json",
+      "sha256": "5d092aa9d776c6e633fc96e62e3ae0d879a69bae43f98e35420864960437db24"
+    },
+    {
+      "path": "docs/components/home-template/v0.1/home-template--initial-3d--1280x900--dark.png",
+      "sha256": "703c270ff89c20ef83f3e8dff93d7928677b5b1d93892c7d19f488ad63b4bc73",
+      "visualId": "VIS-01"
+    },
+    {
+      "path": "docs/components/home-template/v0.1/home-template--layer-handoff--1280x900--dark.png",
+      "sha256": "df99e6efed2e620f8a36070c1749d3f70ee3515002fad09fa0557cb4d4d1a0ee",
+      "visualId": "VIS-02"
+    },
+    {
+      "path": "docs/components/home-template/v0.1/home-template--ambient-read--1280x900--dark.png",
+      "sha256": "bce13b60ba07ebfc793abc531fc654da748da040f8739ce09fea2e50da3f45bd",
+      "visualId": "VIS-03"
+    },
+    {
+      "path": "docs/components/home-template/v0.1/home-template--ambient-live--1280x900--dark.png",
+      "sha256": "db9360b444cffd070f35e6a130a90b321a2c07c8ceca2358fa42ca716b439f84",
+      "visualId": "VIS-04"
+    },
+    {
+      "path": "docs/components/home-template/v0.1/home-template--lab-3d--1280x900--dark.png",
+      "sha256": "57d68ba03eb8b88d900aaf92395a616700f74ec854336afa7ab84b5559276400",
+      "visualId": "VIS-05"
+    },
+    {
+      "path": "docs/components/home-template/v0.1/home-template--outro-3d--1280x900--dark.png",
+      "sha256": "20ace97937c27b64e53f2edd2d1a74ae6fdc9e037fbd20a107369eae729fa1b6",
+      "visualId": "VIS-06"
+    },
+    {
+      "path": "docs/components/home-template/v0.1/home-template--outro-assembly--1280x900--dark.png",
+      "sha256": "2626dfa91e7f5a804dbaaba1d3c21296393ff01669cc430f0b7045513330a85d",
+      "visualId": "VIS-07"
+    },
+    {
+      "path": "docs/components/home-template/v0.1/home-template--footer-calma--1280x900--dark.png",
+      "sha256": "af5eb547243c63df6c00c5b393bade688d4d8d6cfe942c51d6a52ba0d3de7e45",
+      "visualId": "VIS-08"
+    },
+    {
+      "path": "docs/components/home-template/v0.1/home-template--mobile-chapter-gate--390x844--dark.png",
+      "sha256": "5ed434101e40d6e3b38bd4bee4cd90a4ffc882dde571fd7563e0f419372e94d8",
+      "visualId": "VIS-09"
+    },
+    {
+      "path": "docs/components/home-template/v0.1/home-template--reduced-motion--1280x900--dark.png",
+      "sha256": "389b856bb6c5fce9edd72d93535ba2abcf36f8467b4df8e4481ad9acf2fa9541",
+      "visualId": "VIS-10"
+    }
+  ],
+  "reviewedSource": [
+    {
+      "path": "packages/effects/src/index.ts",
+      "sha256": "30b7b4d98bd56e93a3de0ba0379ed4a50f0316eb2581be037a491445127bfe7d"
+    },
+    {
+      "path": "packages/effects/src/ambient-background/particleStreaks.ts",
+      "sha256": "41dc7ab6bc3961a63d33294f67dd5092d7ae7b1040c16046c702c06075c0e71b"
+    },
+    {
+      "path": "packages/effects/src/ambient-background/useAmbientBackground.ts",
+      "sha256": "952dd07a716733985e95d7c5a5d9e045c3b7cb842bc99b43990658f445b7f286"
+    },
+    {
+      "path": "packages/effects/src/atoms/isotipo3d/isotipoScene.ts",
+      "sha256": "df69d8787133a2823fa8d4f3c149e64394434595e9ab319f8d663c213a2b1668"
+    },
+    {
+      "path": "packages/effects/src/atoms/isotipo3d/useIsotipo3D.ts",
+      "sha256": "2beaaf008246dbb78056db5dd9988bc13021339d3181786bc73bd7daaae51023"
+    }
+  ]
+}
