@@ -198,7 +198,10 @@ it('keeps registration stable under StrictMode and avoids global writes', () => 
   );
   fireEvent.scroll(window);
   view.unmount();
-  expect(warn).not.toHaveBeenCalled();
+  expect(warn.mock.calls.map(([message]) => message)).toEqual([
+    'HomeTemplate: missing section: hero',
+    'HomeTemplate: missing section: read'
+  ]);
   expect(Object.keys(window).sort()).toEqual(beforeKeys);
   expect(document.documentElement.outerHTML.split('<head')[0]).toBe(html);
   expect(Array.from(document.body.attributes, (a) => [a.name, a.value])).toEqual(body);

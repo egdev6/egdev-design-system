@@ -46,6 +46,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
   const zones = useRef(resolved.zones);
   zones.current = resolved.zones;
   const warned = useRef(new Set<string>());
+  const missingSections = useRef(new Set<string>());
   const resolveAnchor = useCallback((zone: string): HTMLDivElement | null => {
     const matches = entries.current.filter((entry) => entry.zone === zone);
     if (!matches.length) {
@@ -263,6 +264,10 @@ export function useHomeTemplate(props: HomeTemplateProps) {
           }
           const element = matches[0];
           if (!element) {
+            if (!missingSections.current.has(zone.id)) {
+              missingSections.current.add(zone.id);
+              warn(`HomeTemplate: missing section: ${zone.id}`);
+            }
             continue;
           }
           const rect = element.getBoundingClientRect();
