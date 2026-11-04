@@ -142,6 +142,21 @@ export type ProjectCardFooterProps = {
   className?: string;
 };
 
+/** Decorative backdrop: supply one non-interactive image with empty alt. Layout classes only. */
+export type ProjectCardBackdropProps = ComponentPropsWithoutRef<'div'>;
+
+/** Trailing non-interactive mark: supply a named image or a decorative repeated mark. Layout classes only. */
+export type ProjectCardMarkProps = ComponentPropsWithoutRef<'div'>;
+
+/** Upper zone exists only when either decorative part is supplied. */
+export const projectCardUpperVariants = cva('relative isolate overflow-hidden rounded-xl flex flex-col gap-4 min-w-0');
+export const projectCardBackdropVariants = cva(
+  'absolute inset-0 pointer-events-none [&>img]:w-full [&>img]:h-full [&>img]:object-cover'
+);
+export const projectCardScrimVariants = cva('absolute inset-0 pointer-events-none bg-[var(--color-alpha-black-42)]');
+export const projectCardUpperContentVariants = cva('relative flex min-w-0 flex-col gap-4');
+export const projectCardMarkVariants = cva('relative self-end max-w-[calc(var(--space-24)*2)]');
+
 /** Public raised frame: Surface material plus the card's layout and signature variant. */
 export const projectCardVariants = cva('eg-project-card flex flex-col gap-4 min-w-0 transform-none transition-none', {
   variants: {

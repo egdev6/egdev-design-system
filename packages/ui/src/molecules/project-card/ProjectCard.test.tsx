@@ -1,8 +1,16 @@
 import { render, renderHook, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { Link } from '../../atoms/link';
-import { ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags } from './ProjectCard';
+import {
+  ProjectCard,
+  ProjectCardBackdrop,
+  ProjectCardCode,
+  ProjectCardFooter,
+  ProjectCardMark,
+  ProjectCardTags
+} from './ProjectCard';
 import type { ProjectCardCodeLine } from './types';
 import { useProjectCard } from './useProjectCard';
 
@@ -60,6 +68,104 @@ describe('ProjectCard public contract', () => {
     const article = screen.getByRole('article', { name: 'Pulso' });
     expect(article.querySelector('span[aria-hidden="true"]')).toHaveTextContent('01');
     expect(within(article).getByText('Open source')).toBeInTheDocument();
+  });
+
+  it('preserves the exact no-part markup', () => {
+    const props = { title: 'Pulso', index: '01', eyebrow: 'Open source', children: body };
+    function PreviousCard() {
+      const {
+        rootProps,
+        headingElement: Heading,
+        headingProps,
+        title,
+        index,
+        indexProps,
+        eyebrow,
+        eyebrowProps,
+        children
+      } = useProjectCard(props);
+      return (
+        <article {...rootProps}>
+          {index !== null && <span {...indexProps}>{index}</span>}
+          {eyebrow !== null && <span {...eyebrowProps}>{eyebrow}</span>}
+          <Heading {...headingProps}>{title}</Heading>
+          {children}
+        </article>
+      );
+    }
+    expect(renderToStaticMarkup(<ProjectCard {...props} />)).toBe(renderToStaticMarkup(<PreviousCard />));
+  });
+
+  it('keeps the eyebrow exposed and index hidden', () => {
+    render(<ProjectCard title='Pulso' index='01' eyebrow='Open source' />);
+    expect(screen.getByText('Open source')).not.toHaveAttribute('aria-hidden');
+    expect(screen.getByText('01')).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('places decorative backdrop and trailing mark in the upper zone with one scrim', async () => {
+    const user = userEvent.setup();
+    render(
+      <ProjectCard title='Pulso' index='01' eyebrow='Open source'>
+        <p>
+          Body <a href='#body'>Body link</a>
+        </p>
+        <ProjectCardBackdrop data-example='background'>
+          <img src='/backdrop.png' alt='' />
+        </ProjectCardBackdrop>
+        <ProjectCardMark data-example='mark'>
+          <img src='/mark.png' alt='Mark' />
+        </ProjectCardMark>
+        <ProjectCardFooter>
+          <a href='#footer'>Footer link</a>
+        </ProjectCardFooter>
+      </ProjectCard>
+    );
+    const article = screen.getByRole('article', { name: 'Pulso' });
+    const backdrop = article.querySelector('[data-example="background"]') as HTMLElement;
+    const mark = article.querySelector('[data-example="mark"]') as HTMLElement;
+    const upper = backdrop.parentElement as HTMLElement;
+    expect(upper).toHaveClass('isolate', 'overflow-hidden');
+    expect(upper).toContainElement(screen.getByText('01'));
+    expect(upper).toContainElement(screen.getByRole('heading', { name: 'Pulso' }));
+    expect(upper).toContainElement(mark);
+    expect(backdrop).toHaveAttribute('aria-hidden', 'true');
+    expect(backdrop.querySelector('img')).toHaveAttribute('alt', '');
+    expect(backdrop).toHaveClass('pointer-events-none');
+    expect(backdrop).toHaveClass('[&>img]:object-cover');
+    expect(mark).toHaveClass('max-w-[calc(var(--space-24)*2)]');
+    expect(upper.querySelectorAll('.bg-\\[var\\(--color-alpha-black-42\\)\\]')).toHaveLength(1);
+    await user.tab();
+    expect(screen.getByRole('link', { name: 'Body link' })).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('link', { name: 'Footer link' })).toHaveFocus();
+    await user.tab();
+    expect(document.body).toHaveFocus();
+  });
+
+  it('keeps the first duplicate part and warns in development', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    render(
+      <ProjectCard title='Pulso'>
+        <ProjectCardBackdrop>
+          <img src='/first.png' alt='' />
+        </ProjectCardBackdrop>
+        <ProjectCardBackdrop>
+          <img src='/second.png' alt='' />
+        </ProjectCardBackdrop>
+        <ProjectCardMark>
+          <span>First mark</span>
+        </ProjectCardMark>
+        <ProjectCardMark>
+          <span>Second mark</span>
+        </ProjectCardMark>
+      </ProjectCard>
+    );
+    expect(document.querySelector('img[src="/first.png"]')).not.toBeNull();
+    expect(document.querySelector('img[src="/second.png"]')).toBeNull();
+    expect(screen.getByText('First mark')).toBeInTheDocument();
+    expect(screen.queryByText('Second mark')).toBeNull();
+    expect(warn).toHaveBeenCalledTimes(2);
+    warn.mockRestore();
   });
 
   it('omits index and eyebrow placeholder boxes when both are absent (PC-03)', () => {

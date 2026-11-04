@@ -1032,6 +1032,7 @@ describe('Storybook TypeScript docgen contract', () => {
     const stories = ast(source('molecules/project-card/ProjectCard.stories.tsx'));
     expect(exportedStoryNames(stories)).toEqual([
       'Default',
+      'BackdropAndMark',
       'Variants',
       'Sizes',
       'HeadingRanks',
@@ -1655,8 +1656,10 @@ describe('Storybook TypeScript docgen contract', () => {
       'PreviewFrame',
       'ProgressBar',
       'ProjectCard',
+      'ProjectCardBackdrop',
       'ProjectCardCode',
       'ProjectCardFooter',
+      'ProjectCardMark',
       'ProjectCardTags',
       'PullQuote',
       'RadioGroup',

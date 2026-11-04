@@ -1,7 +1,21 @@
 import type { FC } from 'react';
 import { Chip } from '../../atoms/chip';
-import type { ProjectCardCodeProps, ProjectCardFooterProps, ProjectCardProps, ProjectCardTagsProps } from './types';
-import { useProjectCard, useProjectCardCode, useProjectCardFooter, useProjectCardTags } from './useProjectCard';
+import type {
+  ProjectCardBackdropProps,
+  ProjectCardCodeProps,
+  ProjectCardFooterProps,
+  ProjectCardMarkProps,
+  ProjectCardProps,
+  ProjectCardTagsProps
+} from './types';
+import {
+  useProjectCard,
+  useProjectCardBackdrop,
+  useProjectCardCode,
+  useProjectCardFooter,
+  useProjectCardMark,
+  useProjectCardTags
+} from './useProjectCard';
 
 /** Passive named project card: decorative index, eyebrow, generated heading and free body flow. */
 export const ProjectCard: FC<ProjectCardProps> = (props) => {
@@ -15,16 +29,48 @@ export const ProjectCard: FC<ProjectCardProps> = (props) => {
     indexProps,
     eyebrow,
     eyebrowProps,
-    children
-  } = useProjectCard(props);
+    children,
+    backdrop,
+    mark,
+    upperClassName,
+    upperContentClassName,
+    scrimClassName
+  } = useProjectCard(props, { backdrop: ProjectCardBackdrop, mark: ProjectCardMark });
   return valid ? (
     <article {...rootProps}>
-      {index !== null && <span {...indexProps}>{index}</span>}
-      {eyebrow !== null && <span {...eyebrowProps}>{eyebrow}</span>}
-      <Heading {...headingProps}>{title}</Heading>
+      {backdrop || mark ? (
+        <div className={upperClassName}>
+          {backdrop}
+          {backdrop && <div aria-hidden='true' className={scrimClassName} />}
+          <div className={upperContentClassName}>
+            {mark}
+            {index !== null && <span {...indexProps}>{index}</span>}
+            {eyebrow !== null && <span {...eyebrowProps}>{eyebrow}</span>}
+            <Heading {...headingProps}>{title}</Heading>
+          </div>
+        </div>
+      ) : (
+        <>
+          {index !== null && <span {...indexProps}>{index}</span>}
+          {eyebrow !== null && <span {...eyebrowProps}>{eyebrow}</span>}
+          <Heading {...headingProps}>{title}</Heading>
+        </>
+      )}
       {children}
     </article>
   ) : null;
+};
+
+/** Decorative backdrop; supply a single image with empty alt. */
+export const ProjectCardBackdrop: FC<ProjectCardBackdropProps> = (props) => {
+  const { children, props: slotProps } = useProjectCardBackdrop(props);
+  return <div {...slotProps}>{children}</div>;
+};
+
+/** Trailing non-interactive mark. */
+export const ProjectCardMark: FC<ProjectCardMarkProps> = (props) => {
+  const { children, props: slotProps } = useProjectCardMark(props);
+  return <div {...slotProps}>{children}</div>;
 };
 
 /** Ordered technology labels rendered as one static Chip per list item. */

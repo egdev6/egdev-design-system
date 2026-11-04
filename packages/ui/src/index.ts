@@ -73,7 +73,26 @@ export type {
 } from './molecules/panel';
 export { Panel, PanelBody, PanelFooter, PanelHeader } from './molecules/panel';
 export * from './molecules/popover';
-export * from './molecules/project-card';
+export type {
+  ProjectCardBackdropProps,
+  ProjectCardCodeLine,
+  ProjectCardCodeProps,
+  ProjectCardFooterProps,
+  ProjectCardLevel,
+  ProjectCardMarkProps,
+  ProjectCardProps,
+  ProjectCardSize,
+  ProjectCardTagsProps,
+  ProjectCardVariant
+} from './molecules/project-card';
+export {
+  ProjectCard,
+  ProjectCardBackdrop,
+  ProjectCardCode,
+  ProjectCardFooter,
+  ProjectCardMark,
+  ProjectCardTags
+} from './molecules/project-card';
 export type {
   SectionHeaderLevel,
   SectionHeaderProps,

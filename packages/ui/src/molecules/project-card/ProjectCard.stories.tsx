@@ -1,6 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Link } from '../../atoms/link';
-import { ProjectCard, ProjectCardCode, ProjectCardFooter, ProjectCardTags } from './ProjectCard';
+import {
+  ProjectCard,
+  ProjectCardBackdrop,
+  ProjectCardCode,
+  ProjectCardFooter,
+  ProjectCardMark,
+  ProjectCardTags
+} from './ProjectCard';
 
 /**
  * ## Description
@@ -53,6 +60,23 @@ export const Default: Story = {
       </>
     )
   }
+};
+
+/** Decorative image and non-interactive mark: the consumer supplies accessible image content. */
+export const BackdropAndMark: Story = {
+  render: () => (
+    <ProjectCard title='Pulso' index='01' eyebrow='Open source'>
+      <ProjectCardBackdrop>
+        <img src='/project-backdrop.png' alt='' />
+      </ProjectCardBackdrop>
+      <ProjectCardMark>
+        <span role='img' aria-label='Pulso mark'>
+          ◆
+        </span>
+      </ProjectCardMark>
+      <p>A project with a decorative backdrop.</p>
+    </ProjectCard>
+  )
 };
 
 /** The featured signature (brand edge, halo, index ink) beside the raised default frame. */
