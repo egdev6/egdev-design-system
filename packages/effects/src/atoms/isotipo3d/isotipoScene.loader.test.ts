@@ -33,6 +33,8 @@ describe('Isotipo3D lazy three loading', () => {
     const setPixelRatio = vi.fn();
     const render = vi.fn();
     const cameraPositions: number[][] = [];
+    const cameraOptions: number[][] = [];
+    const rendererOptions: unknown[] = [];
     const meshes: unknown[] = [];
     const debris: InstancedMesh[] = [];
     const sprites: Sprite[] = [];
@@ -86,6 +88,9 @@ describe('Isotipo3D lazy three loading', () => {
       aspect = 1;
       fov = 0;
       distance = 0;
+      constructor(...args: number[]) {
+        cameraOptions.push(args);
+      }
       position = {
         set: (...args: number[]) => {
           cameraPositions.push(args);
@@ -129,6 +134,9 @@ describe('Isotipo3D lazy three loading', () => {
       }
     }
     class Renderer {
+      constructor(options: unknown) {
+        rendererOptions.push(options);
+      }
       setSize = setSize;
       setPixelRatio = setPixelRatio;
       render = render;
@@ -229,7 +237,11 @@ describe('Isotipo3D lazy three loading', () => {
     const scene = await import('./isotipoScene');
     const create = Reflect.get(scene, 'isotipoCreateScene');
     expect(create).toBeTypeOf('function');
-    const engine = await create(document.createElement('canvas'), colors);
+    const canvas = document.createElement('canvas');
+    const styleWrites = vi.spyOn(canvas.style, 'setProperty');
+    const engine = await create(canvas, colors);
+    expect(rendererOptions[0]).toEqual({ canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
+    expect(cameraOptions[0]).toEqual([24, 1, 0.1, 400]);
     expect(meshes.filter((item) => item instanceof Mesh)).toHaveLength(7);
     expect(lights.map(({ color, intensity }) => [color, intensity])).toEqual([
       [0xffffff, 0.6],
@@ -339,6 +351,8 @@ describe('Isotipo3D lazy three loading', () => {
     expect(pieces[4]?.position.set.mock.lastCall).not.toEqual(firstPixel);
     engine.render('lab', 0.5, false, { time: 2, intro: 1 });
     expect(debris[0]?.setMatrixAt.mock.calls.slice(-44)).not.toEqual(firstDebrisMatrices);
+    expect(canvas.getAttribute('style')).toBeNull();
+    expect(styleWrites).not.toHaveBeenCalled();
     engine.dispose();
     engine.dispose();
     expect(disposed.mock.calls.filter(([kind]) => kind === 'geometry')).toHaveLength(8);

@@ -1,6 +1,14 @@
 export type IsotipoScene = 'hero' | 'chapter' | 'lab' | 'outro';
 export type IsotipoPose = { az: number; el: number; fov: number; ex: number; halo: number };
 
+// Internal scene input: all geometry is in CSS pixels, including signed viewport coordinates.
+type SceneProjection = {
+  viewport: { width: number; height: number };
+  anchor: { left: number; top: number; width: number; height: number };
+  pad: number;
+  feather: number;
+};
+
 // Clipped extrusion faces, in source draw order; these are not the assembled SVG fallback polygons.
 export const isotipoPolygons = [
   {
@@ -283,6 +291,56 @@ export async function isotipoCreateScene(
     halo.position.set(0.2, 0.1, -2.2);
     scene.add(halo);
     let fitKey = '';
+    let legacyAspect = 1;
+    let composite:
+      | {
+          target: import('three').WebGLRenderTarget;
+          scene: import('three').Scene;
+          camera: import('three').OrthographicCamera;
+          material: import('three').ShaderMaterial;
+        }
+      | undefined;
+    const getComposite = () => {
+      if (composite) {
+        return composite;
+      }
+      const target = own(new three.WebGLRenderTarget(1, 1, { samples: 4 }));
+      const geometry = own(new three.PlaneGeometry(2, 2));
+      const material = own(
+        new three.ShaderMaterial({
+          uniforms: {
+            image: { value: target.texture },
+            maskRect: { value: new three.Vector4() },
+            viewportSize: { value: new three.Vector2() },
+            feather: { value: 0 }
+          },
+          vertexShader: 'varying vec2 uvScreen; void main() { uvScreen = uv; gl_Position = vec4(position, 1.0); }',
+          fragmentShader: `
+          uniform sampler2D image;
+          uniform vec4 maskRect;
+          uniform vec2 viewportSize;
+          uniform float feather;
+          varying vec2 uvScreen;
+          void main() {
+            vec2 p = vec2(uvScreen.x, 1.0 - uvScreen.y) * viewportSize;
+            vec2 edge = min(p - maskRect.xy, maskRect.zw - p);
+            float mask = clamp(edge.x / max(feather, 0.00001), 0.0, 1.0)
+              * clamp(edge.y / max(feather, 0.00001), 0.0, 1.0);
+            vec4 color = texture2D(image, uvScreen);
+            gl_FragColor = color * mask;
+            #include <colorspace_fragment>
+          }
+        `,
+          blending: three.NoBlending,
+          depthTest: false,
+          depthWrite: false
+        })
+      );
+      const finalScene = new three.Scene();
+      finalScene.add(new three.Mesh(geometry, material));
+      composite = { target, scene: finalScene, camera: new three.OrthographicCamera(-1, 1, 1, -1, 0, 1), material };
+      return composite;
+    };
     return {
       resize(width: number, height: number, dpr = 1, coarse = false) {
         if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
@@ -294,7 +352,8 @@ export async function isotipoCreateScene(
         debrisMesh.count = low ? 44 : 100;
         renderer.setPixelRatio(Math.min(ratio, low ? 1.25 : 1.75));
         renderer.setSize(width, height, false);
-        camera.aspect = width / height;
+        legacyAspect = width / height;
+        camera.aspect = legacyAspect;
         camera.updateProjectionMatrix();
       },
       render(
@@ -310,8 +369,32 @@ export async function isotipoCreateScene(
           pitchOffset?: number;
           flipped?: boolean;
           pose?: IsotipoPose;
-        } = { time: 0, intro: 1 }
+        } = { time: 0, intro: 1 },
+        projection?: SceneProjection
       ) {
+        const validProjection =
+          projection &&
+          [
+            projection.viewport.width,
+            projection.viewport.height,
+            projection.anchor.left,
+            projection.anchor.top,
+            projection.anchor.width,
+            projection.anchor.height,
+            projection.pad,
+            projection.feather
+          ].every(Number.isFinite) &&
+          projection.viewport.width > 0 &&
+          projection.viewport.height > 0 &&
+          projection.anchor.width > 0 &&
+          projection.anchor.height > 0 &&
+          projection.pad >= 0 &&
+          projection.feather >= 0
+            ? projection
+            : undefined;
+        camera.aspect = validProjection
+          ? validProjection.viewport.width / validProjection.viewport.height
+          : legacyAspect;
         const pose = reducedMotion
           ? isotipoPose(name, isotipoNormalizeProgress(progress), true)
           : (animation.pose ?? isotipoPose(name, isotipoNormalizeProgress(progress), false));
@@ -356,20 +439,32 @@ export async function isotipoCreateScene(
             minY = Math.min(minY, projected.y);
             maxY = Math.max(maxY, projected.y);
           }
-          return Math.max(maxX - minX, maxY - minY);
+          const width = maxX - minX;
+          const height = maxY - minY;
+          return validProjection
+            ? Math.max(
+                width / ((1.8 * validProjection.anchor.width) / validProjection.viewport.width),
+                height / ((1.8 * validProjection.anchor.height) / validProjection.viewport.height)
+              )
+            : Math.max(width, height);
         };
-        const nextFitKey = `${
-          pose.az + tiltX * 3 + isotipoGestureBand(yawOffset) + (flipped ? 180 : 0)
-        }: ${pose.el - tiltY * 2 + isotipoGestureBand(pitchOffset)}:${pose.fov}:${camera.aspect}:${rotation}:${groupScale}`;
+        const nextFitKey =
+          `${
+            pose.az + tiltX * 3 + isotipoGestureBand(yawOffset) + (flipped ? 180 : 0)
+          }: ${pose.el - tiltY * 2 + isotipoGestureBand(pitchOffset)}:${pose.fov}:${camera.aspect}:${rotation}:${groupScale}` +
+          (validProjection
+            ? `:${JSON.stringify(validProjection)}:${angles.az}:${angles.el}:${pose.ex}:${pose.halo}`
+            : ':legacy');
         if (fitKey !== nextFitKey) {
           let lower = Math.max(...corners.map((corner) => corner.length())) + 1;
           let upper = lower * 2;
-          while (projectedExtent(upper) > 1.8) {
+          const limit = validProjection ? 1 : 1.8;
+          while (projectedExtent(upper) > limit) {
             upper *= 2;
           }
           for (let index = 0; index < 32; index++) {
             const middle = (lower + upper) / 2;
-            if (projectedExtent(middle) > 1.8) {
+            if (projectedExtent(middle) > limit) {
               lower = middle;
             } else {
               upper = middle;
@@ -377,6 +472,12 @@ export async function isotipoCreateScene(
           }
           projectedExtent(upper);
           fitKey = nextFitKey;
+        }
+        if (validProjection) {
+          const { anchor, viewport } = validProjection;
+          camera.projectionMatrix.elements[8] = -(((anchor.left + anchor.width / 2) / viewport.width) * 2 - 1);
+          camera.projectionMatrix.elements[9] = -(1 - ((anchor.top + anchor.height / 2) / viewport.height) * 2);
+          camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
         }
         const pixelDirectionLength = Math.hypot(0.72, 0.5, 0.35);
         for (const [index, piece] of pieces.entries()) {
@@ -422,7 +523,49 @@ export async function isotipoCreateScene(
           }
           debrisMesh.instanceMatrix.needsUpdate = true;
         }
-        renderer.render(scene, camera);
+        if (!validProjection) {
+          renderer.render(scene, camera);
+          return;
+        }
+        const { anchor, viewport, pad, feather } = validProjection;
+        try {
+          const pass = getComposite();
+          const previousTarget = renderer.getRenderTarget();
+          const previousViewport = renderer.getViewport(new three.Vector4());
+          const previousScissor = renderer.getScissor(new three.Vector4());
+          const previousScissorTest = renderer.getScissorTest();
+          try {
+            const ratio = renderer.getPixelRatio();
+            pass.target.setSize(Math.round(viewport.width * ratio), Math.round(viewport.height * ratio));
+            const { maskRect, viewportSize, feather: featherUniform } = pass.material.uniforms;
+            if (!maskRect || !viewportSize || !featherUniform) {
+              throw new Error('Missing isotipo composite uniforms');
+            }
+            maskRect.value.set(
+              Math.round(anchor.left - pad),
+              Math.round(anchor.top - pad),
+              Math.round(anchor.left + anchor.width + pad),
+              Math.round(anchor.top + anchor.height + pad)
+            );
+            viewportSize.value.set(viewport.width, viewport.height);
+            featherUniform.value = feather;
+            renderer.setRenderTarget(pass.target);
+            renderer.setScissorTest(false);
+            renderer.render(scene, camera);
+            renderer.setRenderTarget(previousTarget);
+            renderer.setViewport(previousViewport);
+            renderer.setScissorTest(false);
+            renderer.render(pass.scene, pass.camera);
+          } finally {
+            renderer.setRenderTarget(previousTarget);
+            renderer.setViewport(previousViewport);
+            renderer.setScissor(previousScissor);
+            renderer.setScissorTest(previousScissorTest);
+          }
+        } catch (error) {
+          dispose();
+          throw error;
+        }
       },
       dispose
     };
