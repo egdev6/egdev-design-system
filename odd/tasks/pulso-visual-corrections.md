@@ -56,9 +56,9 @@ Each item writes only `docs/components/<name>/v0.2/**` for its components, follo
 | T3 (P0.3) | project-card | A1 | S1 | #275 | drafted — awaits G1, G3, G4 | — |
 | T4 (P0.4) | article-feature, blog-grid | A3, A9 | S3, S9 | #280, #296 | drafted — awaits G1, G4, G5 (content-description) | — |
 | T5 (P0.5) | top-bar | A5 | S5 | #292 | drafted — 390px check and current-link cardinality need owner choice; awaits G1, G4 | — |
-| T6 (P0.6) | footer | A6 | S6 | #293 | drafted — awaits G1, G4 | — |
-| T7 (P0.7) | section-nav | A7 | S7 | #301 | drafted — awaits G1, G4 | — |
-| T8 (P0.8) | notes-board | A10 | S10 | #295 | drafted — awaits G1, G4 | — |
+| T6 (P0.6) | footer | A6 | S6 | #293 | G4 approved (L9) | — |
+| T7 (P0.7) | section-nav | A7 | S7 | #301 | G4 approved (L9) | — |
+| T8 (P0.8) | notes-board | A10 | S10 | #295 | G4 approved (L9) | — |
 | T9 (P0.9) | web-section (new) | A11 | S11 | #340 | drafted — heading-ID forwarding and neutral layout need owner choice; awaits G1, G4, G5 | — |
 | T10 (P0.10) | web-template (new) | A12 | S12 | #341 | drafted — availability statement conflict, empty-slot rule and native-prop boundary need owner choice; awaits G1, G4, G5 | — |
 | T11 (P0.11) | ambient-background (U11, spec only) | A13 | S13 | #45 | drafted (partial) — version collision with #45 history, combination axes, preset precedence, motion and perf bounds need owner choice; awaits G4, G7 | — |
@@ -115,5 +115,7 @@ Preserved: prior frozen specs/approvals stay byte-identical, `roadmap8` body is 
 - **L7 — P0 start (verbatim):** "empezamos la planificación. Levanta 3 subagentes que trabajen en paralelo haciendo issues y cuando terminen que cojan otras hasta que esté la planificación terminada" — authorizes drafting the P0 v0.2 specs with three parallel workers on branch `docs/web-catalog-v0.2-specs`. Spec approval (G1–G5) is still the owner's decision.
 
 - **L8 — P0 drafts done:** T1–T11 drafted by three pull-based workers; 13 specs committed in 73fe84b, exact snapshots appended to #276, #297, #281, #275, #280, #296, #292, #293, #301, #295, #340, #341, #45 (all readbacks OK) and the decision summary to #339 (https://github.com/egdev6/egdev-design-system/issues/339#issuecomment-6637858760). Nothing approved; no captures; branch not pushed.
+
+- **L9 — G4 approval for T6, T7, T8 (verbatim):** "si" — reply to "¿Aprobás estas tres specs v0.2 tal como están?" for Footer (`cf050c8c…`), SectionNav (`c2e7cd67…`) and NotesBoard (`06e1041f…`). Recorded in each `docs/components/<name>/v0.2/approval.md` with the full SHA256. U6–U8 plan approval is still separate.
 
 - **L6 — Publication confirmed:** tracker #339, WebSection #340, WebTemplate #341. Exact proposal and plan snapshots and dependency links are in #339 comments. Appended planning amendments to the twelve canonical existing component issues and backlinks on #340/#341; preserved prior issue bodies, labels, state and assignees. Three new issues carry only enhancement/odd labels and no assignees. Job-435 exit0, all20 remote bodies read back exactly. No implementation, Git commit, push or roadmap-index edit.
