@@ -1,0 +1,110 @@
+{
+  "repository": "egdev6/egdev-design-system",
+  "status": "confirmed",
+  "issues": {
+    "tracker": {
+      "number": 339,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/339",
+      "confirmed": true
+    },
+    "web-section": {
+      "number": 340,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/340",
+      "confirmed": true
+    },
+    "web-template": {
+      "number": 341,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/341",
+      "confirmed": true
+    }
+  },
+  "comments": {
+    "amendments": {
+      "issue": 339,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/339#issuecomment-6636690304",
+      "confirmed": true
+    },
+    "plan": {
+      "issue": 339,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/339#issuecomment-6636691440",
+      "confirmed": true
+    },
+    "tracker-links": {
+      "issue": 339,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/339#issuecomment-6636692582",
+      "confirmed": true
+    },
+    "issue-275": {
+      "issue": 275,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/275#issuecomment-6636693711",
+      "confirmed": true
+    },
+    "issue-276": {
+      "issue": 276,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/276#issuecomment-6636694595",
+      "confirmed": true
+    },
+    "issue-297": {
+      "issue": 297,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/297#issuecomment-6636695447",
+      "confirmed": true
+    },
+    "issue-280": {
+      "issue": 280,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/280#issuecomment-6636696348",
+      "confirmed": true
+    },
+    "issue-296": {
+      "issue": 296,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/296#issuecomment-6636697317",
+      "confirmed": true
+    },
+    "issue-281": {
+      "issue": 281,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/281#issuecomment-6636698258",
+      "confirmed": true
+    },
+    "issue-292": {
+      "issue": 292,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/292#issuecomment-6636699298",
+      "confirmed": true
+    },
+    "issue-293": {
+      "issue": 293,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/293#issuecomment-6636700308",
+      "confirmed": true
+    },
+    "issue-301": {
+      "issue": 301,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/301#issuecomment-6636701315",
+      "confirmed": true
+    },
+    "issue-295": {
+      "issue": 295,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/295#issuecomment-6636702484",
+      "confirmed": true
+    },
+    "issue-45": {
+      "issue": 45,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/45#issuecomment-6636703462",
+      "confirmed": true
+    },
+    "issue-337": {
+      "issue": 337,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/337#issuecomment-6636704440",
+      "confirmed": true
+    },
+    "issue-340": {
+      "issue": 340,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/340#issuecomment-6636705345",
+      "confirmed": true
+    },
+    "issue-341": {
+      "issue": 341,
+      "url": "https://github.com/egdev6/egdev-design-system/issues/341#issuecomment-6636706314",
+      "confirmed": true
+    }
+  },
+  "approval": "not granted",
+  "implementation": "not started"
+}
