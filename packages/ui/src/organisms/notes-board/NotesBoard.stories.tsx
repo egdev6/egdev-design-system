@@ -22,7 +22,7 @@ const topics = (
 const notes = (
   <>
     <li>
-      <ListItem variant='editorial' size='sm' asChild={true}>
+      <ListItem variant='editorial-divided' size='sm' asChild={true}>
         <a href='#first-note'>
           <ListItemLeading>
             <time dateTime='2026-09-12'>
@@ -39,7 +39,7 @@ const notes = (
       </ListItem>
     </li>
     <li>
-      <ListItem variant='editorial' size='sm' asChild={true}>
+      <ListItem variant='editorial-divided' size='sm' asChild={true}>
         <a href='#second-note'>
           <ListItemLeading>
             <time dateTime='2026-08-30'>
@@ -84,7 +84,7 @@ export const Empty: Story = {
 };
 /** Informational topics are static Chips in a named list, not a selection control. */
 export const Topics: Story = { args: { children: content } };
-/** Each direct list item contains one editorial anchor and a machine-readable date. */
+/** Each direct list item contains one divided editorial anchor and a machine-readable date. */
 export const DatedNotes: Story = { args: { children: content } };
 /** The host must verify header clearance and scrolling constraints. */
 export const Sticky: Story = { args: { children: content, sticky: true } };
@@ -113,11 +113,11 @@ export const LongTitles: Story = {
     )
   }
 };
-/** Separate host sections name themselves through distinct supplied heading IDs. */
+/** Host-owned spacing separates sections, which use distinct supplied heading IDs. */
 export const MultipleBoards: Story = {
   args: { children: content },
   render: () => (
-    <>
+    <div className='flex flex-col gap-16'>
       <section aria-labelledby='notes-one'>
         <NotesBoard>
           <NotesBoardSide>
@@ -134,7 +134,7 @@ export const MultipleBoards: Story = {
           <NotesBoardList>{null}</NotesBoardList>
         </NotesBoard>
       </section>
-    </>
+    </div>
   )
 };
 /** The enclosing section, not the board, owns the landmark and heading association. */

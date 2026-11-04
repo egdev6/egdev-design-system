@@ -43,9 +43,9 @@ export type NotesBoardListProps = {
 };
 
 export const notesBoardVariants = cva(
-  'eg-notes grid grid-cols-[minmax(0,4fr)_minmax(0,7fr)] gap-10 items-center [@media(width<=1080px)]:grid-cols-1 [@media(width<=1080px)]:gap-8'
+  'eg-notes grid grid-cols-[minmax(0,4fr)_minmax(0,7fr)] gap-10 items-start [@media(width<=1080px)]:grid-cols-1 [@media(width<=1080px)]:gap-8'
 );
-export const notesBoardSideVariants = cva('flex flex-col items-start gap-2 min-w-0', {
+export const notesBoardSideVariants = cva('flex flex-col items-start gap-4 min-w-0', {
   variants: {
     sticky: {
       true: 'sticky self-start top-[calc(var(--nav-height)+var(--space-10))] [@media(width<=1080px)]:static [@media(width<=1080px)]:self-auto',

@@ -115,7 +115,15 @@ describe('NotesBoard public contract', () => {
     rerender(board(['Beta', 'Alpha']));
     expect(screen.getAllByRole('link').map((link) => link.getAttribute('href'))).toEqual(['#Beta', '#Alpha']);
   });
-  it('uses exact responsive and sticky classes, without legacy part markers (NB-06–09)', () => {
+  it('aligns the rendered board to the top (A10-AC1)', () => {
+    const { container } = render(board([]));
+    expect(container.querySelector('.eg-notes')).toHaveClass('items-start');
+  });
+  it('spaces the rendered side content with gap-4 (A10-AC1)', () => {
+    const { container } = render(board([]));
+    expect(container.querySelector('.eg-notes')?.children[0]).toHaveClass('gap-4');
+  });
+  it('preserves the 1080px collapse and sticky offset without legacy part markers (NB-06–09)', () => {
     const { container, rerender } = render(board([]));
     const root = container.querySelector('.eg-notes') as HTMLElement;
     const sideElement = root.children[0];
@@ -123,7 +131,6 @@ describe('NotesBoard public contract', () => {
       'grid',
       'grid-cols-[minmax(0,4fr)_minmax(0,7fr)]',
       'gap-10',
-      'items-center',
       '[@media(width<=1080px)]:grid-cols-1',
       '[@media(width<=1080px)]:gap-8'
     );
