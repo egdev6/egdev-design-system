@@ -63,6 +63,16 @@ Each item writes only `docs/components/<name>/v0.2/**` for its components, follo
 | T10 (P0.10) | web-template (new) | A12 | S12 | #341 | drafted — availability statement conflict, empty-slot rule and native-prop boundary need owner choice; awaits G1, G4, G5 | — |
 | T11 (P0.11) | ambient-background (U11, spec only) | A13 | S13 | #45 | drafted (partial) — version collision with #45 history, combination axes, preset precedence, motion and perf bounds need owner choice; awaits G4, G7 | — |
 
+### Implementation queue — approved units
+
+| Task | Unit | Specs | Approved spec | Route | Status | Commit |
+| --- | --- | --- | --- | --- | --- | --- |
+| T12 | U6 Footer rhythm + exported heading recipe | S6 | `docs/components/footer/v0.2/spec.md` (`cf050c8c…`) | worker, `packages/ui/src/organisms/footer/**`, `packages/ui/src/index.ts`, `scripts/package-exports.test.mjs` | implemented — unit checks green; browser visual check pending | 29c69f8 |
+| T13 | U7 SectionNav story clearance | S7 | `docs/components/section-nav/v0.2/spec.md` (`c2e7cd67…`) | worker, `SectionNav.stories.tsx`, `SectionNav.test.tsx` | implemented — unit checks green; browser visual check pending | 2be48c1 |
+| T14 | U8 NotesBoard rhythm | S10 | `docs/components/notes-board/v0.2/spec.md` (`06e1041f…`) | worker, `packages/ui/src/organisms/notes-board/**` | implemented — unit checks green; browser visual check pending | 41c7445 |
+
+Approved spec bytes are frozen: implementation never edits an approved `spec.md`.
+
 Status notes are approval gates only: unit ordering in `implementation-plan.md` §2 is not treated as a blocking edge here. U11 stays pending on scheduling, not on its own spec.
 
 ### Planning status and sources
@@ -117,5 +127,7 @@ Preserved: prior frozen specs/approvals stay byte-identical, `roadmap8` body is 
 - **L8 — P0 drafts done:** T1–T11 drafted by three pull-based workers; 13 specs committed in 73fe84b, exact snapshots appended to #276, #297, #281, #275, #280, #296, #292, #293, #301, #295, #340, #341, #45 (all readbacks OK) and the decision summary to #339 (https://github.com/egdev6/egdev-design-system/issues/339#issuecomment-6637858760). Nothing approved; no captures; branch not pushed.
 
 - **L9 — G4 approval for T6, T7, T8 (verbatim):** "si" — reply to "¿Aprobás estas tres specs v0.2 tal como están?" for Footer (`cf050c8c…`), SectionNav (`c2e7cd67…`) and NotesBoard (`06e1041f…`). Recorded in each `docs/components/<name>/v0.2/approval.md` with the full SHA256. U6–U8 plan approval is still separate.
+
+- **L10 — G1 (A6, A7, A10) and U6–U8 plan approval (verbatim):** "si" — reply to "¿Aprobás G1 (A6, A7, A10) y los planes U6–U8 para empezar a implementar?". Authorizes implementation of U6–U8 per `implementation-plan.md` with one commit per unit on `docs/web-catalog-v0.2-specs`.
 
 - **L6 — Publication confirmed:** tracker #339, WebSection #340, WebTemplate #341. Exact proposal and plan snapshots and dependency links are in #339 comments. Appended planning amendments to the twelve canonical existing component issues and backlinks on #340/#341; preserved prior issue bodies, labels, state and assignees. Three new issues carry only enhancement/odd labels and no assignees. Job-435 exit0, all20 remote bodies read back exactly. No implementation, Git commit, push or roadmap-index edit.
