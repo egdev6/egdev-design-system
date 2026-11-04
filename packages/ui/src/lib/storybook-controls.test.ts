@@ -265,6 +265,7 @@ const expected: Record<string, Record<string, string | false>> = {
     level: 'select',
     eyebrow: 'text',
     detail: 'text',
+    description: 'text',
     actionLabel: 'text',
     children: false,
     className: 'text'
@@ -677,7 +678,7 @@ const ownPropCounts: Record<string, number> = {
   topbarsearchfull: 1,
   topbarusermenu: 1,
   gaugegroup: 4,
-  articlefeature: 9,
+  articlefeature: 10,
   articlefeaturecover: 4,
   terminalcard: 3,
   terminalcardbar: 3,
@@ -1113,6 +1114,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(argTypes.children?.control).toBe(false);
     expect(argTypes.children?.table?.disable).toBeUndefined();
     expect(argTypes.actionLabel?.control).toEqual({ type: 'text' });
+    expect(argTypes.description?.type?.name).toBe('string');
+    expect(argTypes.description?.control).toEqual({ type: 'text' });
     // Cover-only fields never leak into the root Controls; the anchor keeps its native rows.
     expect(argTypes.coverWord).toBeUndefined();
     expect(argTypes.badge).toBeUndefined();

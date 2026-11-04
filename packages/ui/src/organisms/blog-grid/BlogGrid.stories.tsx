@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Link } from '../../atoms/link';
 import { ArticleFeature, ArticleFeatureCover } from '../../molecules/article-feature';
-import { ListItem, ListItemBody, ListItemTitle } from '../../molecules/list-item';
+import { ListItem, ListItemBody, ListItemContent, ListItemTitle } from '../../molecules/list-item';
 import { SectionHeader } from '../../molecules/section-header';
 import { SectionShell } from '../../templates/section-shell';
 import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from './BlogGrid';
@@ -13,7 +13,12 @@ type Story = StoryObj<typeof meta>;
 
 const feature = (
   <BlogGridFeature>
-    <ArticleFeature href='#feature' title='Building a design system' actionLabel='Read article'>
+    <ArticleFeature
+      href='#feature'
+      title='Building a design system'
+      description='A practical look at shared foundations and decisions.'
+      actionLabel='Read article'
+    >
       <ArticleFeatureCover badge='Featured' coverWord='/design' />
     </ArticleFeature>
   </BlogGridFeature>
@@ -26,6 +31,7 @@ const rows = (
           <a href={`#article-${index}`}>
             <ListItemBody>
               <ListItemTitle>{title}</ListItemTitle>
+              <ListItemContent>Explore the ideas and decisions behind this article.</ListItemContent>
             </ListItemBody>
           </a>
         </ListItem>

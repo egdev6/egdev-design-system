@@ -1704,6 +1704,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'chipVariants',
       'cn',
       'dropzoneVariants',
+      'footerHeadingVariants',
       'labelVariants',
       'menuVariants',
       'moduleRailVariants',
@@ -5102,6 +5103,7 @@ describe('CommunityCard metadata contract', () => {
       'WithLink',
       'HeadingRanks',
       'LongContent',
+      'LongEyebrow',
       'Widths'
     ]);
     expect(stories.getText()).toMatch(/title: 'Molecules\/CommunityCard'/);
@@ -5169,6 +5171,7 @@ describe('CommunityCard metadata contract', () => {
 
 describe('ArticleFeature metadata contract', () => {
   const afControls: Record<string, string> = {
+    description: 'text',
     title: 'text',
     href: 'text',
     asChild: 'boolean',

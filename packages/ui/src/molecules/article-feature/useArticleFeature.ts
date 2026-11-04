@@ -8,6 +8,7 @@ import {
   articleFeatureActionVariants,
   articleFeatureBadgeVariants,
   articleFeatureCoverVariants,
+  articleFeatureDescriptionVariants,
   articleFeatureDetailVariants,
   articleFeatureEyebrowVariants,
   articleFeatureMetaVariants,
@@ -38,6 +39,8 @@ export type UseArticleFeatureResult = {
   detail: string | null;
   detailProps: { className: string };
   metaProps: { className: string };
+  description: string | null;
+  descriptionProps: { className: string };
   separatorProps: { 'aria-hidden': true };
   action: string | null;
   actionProps: { className: string };
@@ -52,6 +55,7 @@ export function useArticleFeature(props: ArticleFeatureProps): UseArticleFeature
     asChild = false,
     eyebrow,
     detail,
+    description,
     actionLabel,
     children,
     className,
@@ -94,6 +98,8 @@ export function useArticleFeature(props: ArticleFeatureProps): UseArticleFeature
     detail: detailText,
     detailProps: { className: cn(articleFeatureDetailVariants()) },
     metaProps: { className: cn(articleFeatureMetaVariants()) },
+    description: typeof description === 'string' && description.trim().length > 0 ? description : null,
+    descriptionProps: { className: cn(articleFeatureDescriptionVariants()) },
     separatorProps: { 'aria-hidden': true },
     action: actionText,
     actionProps: { className: cn(articleFeatureActionVariants()) },

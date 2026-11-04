@@ -1,7 +1,8 @@
 import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { ArticleFeature, ArticleFeatureCover } from '../../molecules/article-feature';
-import { ListItem, ListItemBody, ListItemTitle } from '../../molecules/list-item';
+import { ListItem, ListItemBody, ListItemContent, ListItemTitle } from '../../molecules/list-item';
 import { BlogGrid, BlogGridArchive, BlogGridFeature, BlogGridRow, BlogGridRows } from './index';
 
 const feature = (
@@ -29,6 +30,40 @@ const archive = (
 );
 
 describe('BlogGrid', () => {
+  it('renders feature and row descriptions in link and keyboard order', async () => {
+    const user = userEvent.setup();
+    render(
+      <BlogGrid>
+        <BlogGridFeature>
+          <ArticleFeature href='#feature' title='Feature' description='Feature description' />
+        </BlogGridFeature>
+        <BlogGridRows>
+          <BlogGridRow>
+            <ListItem variant='editorial' asChild={true}>
+              <a href='#row'>
+                <ListItemBody>
+                  <ListItemTitle>Row</ListItemTitle>
+                  <ListItemContent>Row description</ListItemContent>
+                </ListItemBody>
+              </a>
+            </ListItem>
+          </BlogGridRow>
+        </BlogGridRows>
+        {archive}
+      </BlogGrid>
+    );
+    const links = screen.getAllByRole('link');
+    expect(links.map((link) => link.getAttribute('href'))).toEqual(['#feature', '#row', '#archive']);
+    expect(links[0]).toHaveAccessibleName('Feature Feature description');
+    expect(links[1]).toHaveAccessibleName('Row Row description');
+    expect(links[1]?.querySelector('a, button')).toBeNull();
+    for (const link of links) {
+      await user.tab();
+      expect(link).toHaveFocus();
+    }
+    await user.tab();
+    expect(document.body).toHaveFocus();
+  });
   it('BG-01/02/04/06 preserves independent links, semantic list, ordering and native attributes', () => {
     const { container } = render(
       <section aria-label='Articles'>

@@ -4624,7 +4624,11 @@ test('CommunityCard ships named banded article SSR with the consumer mark and on
   assert.ok(html.includes('overflow-hidden'), 'The band stays inside the rounded frame');
   assert.ok(html.includes('eg-community-card__mark'), 'The consumer mark slot ships');
   assert.match(html, /<img src="data:image[^"]*" alt="Gentleman Programming"\/>/);
-  assert.ok(html.includes('eg-text'), 'The role line renders the public Text eyebrow primitive');
+  assert.ok(
+    html.includes('text-body-default') && html.includes('line-clamp-2'),
+    'The role line renders the local 12.8px recipe clamped to two lines (v0.2 A4)'
+  );
+  assert.ok(html.includes('h-[var(--space-24)]'), 'The band reserves its fixed height (v0.2 A4)');
   assert.ok(html.includes('eg-community-card__action'), 'The pinned action part ships');
   assert.ok(html.includes('mt-auto'), 'The action pins to the bottom edge when the host stretches the card');
   assert.ok(html.includes('Join the Discord'), 'The supplied action renders its label');
@@ -4659,7 +4663,7 @@ test('CommunityCard ships named banded article SSR with the consumer mark and on
   const eyebrowOnly = renderToStaticMarkup(
     createElement(exported.CommunityCard, { title: 'Eyebrow only', eyebrow: 'Open community' })
   );
-  assert.match(eyebrowOnly, /eg-text/);
+  assert.match(eyebrowOnly, /<span class="min-w-0 wrap-anywhere line-clamp-2">Open community<\/span>/);
   assert.ok(!eyebrowOnly.includes('eg-community-card__mark'));
   // Title only: the band still renders, but no top row, mark slot or action zone appears.
   const titleOnly = renderToStaticMarkup(createElement(exported.CommunityCard, { title: 'Title only' }));

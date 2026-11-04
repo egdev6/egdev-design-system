@@ -25,6 +25,8 @@ export const ArticleFeature: FC<ArticleFeatureProps> = (props) => {
     detailProps,
     metaProps,
     separatorProps,
+    description,
+    descriptionProps,
     action,
     actionProps,
     arrowProps
@@ -43,6 +45,7 @@ export const ArticleFeature: FC<ArticleFeatureProps> = (props) => {
         </p>
       )}
       <Heading {...headingProps}>{title}</Heading>
+      {description !== null && <p {...descriptionProps}>{description}</p>}
       {action !== null && (
         <span {...actionProps}>
           {action}

@@ -1910,7 +1910,7 @@
         "source": {
           "path": "packages/ui/src/organisms/footer/types.ts",
           "symbol": "FooterNavigationProps",
-          "revision": "sha256:929a83a45117bff7c7737855adc8c9cff128b2560b0fb859ac967169ce455118"
+          "revision": "sha256:7a294339ead212d93e618a2345bad6c7c38ea9b90b176f031007772eff107aa1"
         }
       },
       {
@@ -1920,7 +1920,7 @@
         "source": {
           "path": "packages/ui/src/organisms/footer/types.ts",
           "symbol": "FooterNavigationItem",
-          "revision": "sha256:929a83a45117bff7c7737855adc8c9cff128b2560b0fb859ac967169ce455118"
+          "revision": "sha256:7a294339ead212d93e618a2345bad6c7c38ea9b90b176f031007772eff107aa1"
         }
       },
       {
@@ -2751,7 +2751,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
+          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
         }
       },
       {
@@ -3764,7 +3764,7 @@
         "source": {
           "path": "packages/ui/src/organisms/footer/types.ts",
           "symbol": "FooterNavigationProps",
-          "revision": "sha256:929a83a45117bff7c7737855adc8c9cff128b2560b0fb859ac967169ce455118"
+          "revision": "sha256:7a294339ead212d93e618a2345bad6c7c38ea9b90b176f031007772eff107aa1"
         }
       },
       {
@@ -4969,7 +4969,7 @@
         "source": {
           "path": "packages/ui/src/molecules/community-card/types.ts",
           "symbol": "CommunityCardProps",
-          "revision": "sha256:93b7c3fb23bc67dda990aaf8b1adaacefa0455b77529a0f2c25fc10051971ee9"
+          "revision": "sha256:c18425b2578ea41176a6b06376e4990bbb43d6af3fcf15e969fb3aab87917b21"
         }
       },
       {
@@ -4979,7 +4979,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
+          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
         }
       },
       {
@@ -5136,7 +5136,7 @@
         "source": {
           "path": "packages/ui/src/molecules/community-card/types.ts",
           "symbol": "CommunityCardProps",
-          "revision": "sha256:93b7c3fb23bc67dda990aaf8b1adaacefa0455b77529a0f2c25fc10051971ee9"
+          "revision": "sha256:c18425b2578ea41176a6b06376e4990bbb43d6af3fcf15e969fb3aab87917b21"
         }
       },
       {
@@ -5146,7 +5146,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
+          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
         }
       },
       {
@@ -5156,7 +5156,7 @@
         "source": {
           "path": "packages/ui/src/organisms/footer/types.ts",
           "symbol": "FooterNavigationProps",
-          "revision": "sha256:929a83a45117bff7c7737855adc8c9cff128b2560b0fb859ac967169ce455118"
+          "revision": "sha256:7a294339ead212d93e618a2345bad6c7c38ea9b90b176f031007772eff107aa1"
         }
       },
       {
@@ -5424,7 +5424,7 @@
         "source": {
           "path": "packages/ui/src/molecules/community-card/types.ts",
           "symbol": "CommunityCardProps",
-          "revision": "sha256:93b7c3fb23bc67dda990aaf8b1adaacefa0455b77529a0f2c25fc10051971ee9"
+          "revision": "sha256:c18425b2578ea41176a6b06376e4990bbb43d6af3fcf15e969fb3aab87917b21"
         }
       },
       {
@@ -5434,7 +5434,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
+          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
         }
       },
       {
@@ -6419,18 +6419,18 @@
     ]
   },
   {
-    "id": "dialog-description",
+    "id": "content-description",
     "name": "description",
-    "meaning": "Optional visible plain-text sentence that explains the purpose or consequence of a dialog, rendered with its title and linked to the dialog as its accessible description.",
-    "whenToUse": "A modal or alert dialog needs one short explanatory sentence next to its heading that assistive technology announces when the dialog opens.",
-    "avoid": "The dialog's accessible name or heading (use title), form-field help (use hint), editorial introductions (use lede), status notes (use statusText), rich interactive content or long body copy.",
+    "meaning": "Optional visible short plain text that explains the content or purpose of its element, rendered next to its title",
+    "whenToUse": "Provide a short explanatory text alongside the title of a content unit or dialog.",
+    "avoid": "Accessible name or heading (use title), form help (use hint), editorial section introductions (use lede), status notes (use statusText), rich or interactive content.",
     "status": "approved",
     "aliases": [],
     "exceptions": [],
     "approval": {
-      "reference": "docs/decisions/prop-naming-organism-specs-approval.json",
-      "scope": "convention:dialog-description",
-      "contentHash": "sha256:c4841a60fb7576538ec4dcbb12143a6ce9f4eae14b87aaa475824da19a2c334f"
+      "reference": "docs/decisions/prop-naming-content-description-approval.json",
+      "scope": "convention:content-description",
+      "contentHash": "sha256:92f47129d24cb259734c592d154382c9d9c836f0da8150ef784889b186b0bb4f"
     },
     "usages": [
       {
@@ -6451,6 +6451,16 @@
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
           "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+        }
+      },
+      {
+        "component": "ArticleFeature",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/article-feature/types.ts",
+          "symbol": "ArticleFeatureProps",
+          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
         }
       }
     ]
@@ -7584,7 +7594,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureCoverProps",
-          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
+          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
         }
       }
     ]
@@ -7611,7 +7621,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
+          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
         }
       }
     ]
@@ -7638,7 +7648,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureProps",
-          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
+          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
         }
       }
     ]
@@ -7665,7 +7675,7 @@
         "source": {
           "path": "packages/ui/src/molecules/article-feature/types.ts",
           "symbol": "ArticleFeatureCoverProps",
-          "revision": "sha256:dd19b9b2a315dd9b854fed3cb7b62973f30fc81a330d156b88ed78a697cb63d6"
+          "revision": "sha256:04606319f19b00ac40f72154c65709327b23218b13cdc4cafc2fbdf4a24f6d85"
         }
       }
     ]
@@ -7746,7 +7756,7 @@
         "source": {
           "path": "packages/ui/src/organisms/notes-board/types.ts",
           "symbol": "NotesBoardProps",
-          "revision": "sha256:4edafa0801d22a4ea6c51fee92e21034919a006ea539d1e9ed16366282bd1fa4"
+          "revision": "sha256:aa1cffd9c322ef3c4ea675c29da235c72b98e185d80dcc7854399105cbfde2e3"
         }
       }
     ]

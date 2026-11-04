@@ -1,0 +1,41 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "owner-choice",
+  "decision": "Generalize dialog-description as content-description without changing the canonical prop name or dialog APIs.",
+  "evidence": {
+    "taskReference": "odd/tasks/pulso-visual-corrections.md#log",
+    "userStatements": [
+      { "quote": "Aprobar `description` (recomendado)", "provenance": "L12 G5" },
+      { "quote": "Sí, aprobar e implementar", "provenance": "L12 G1, G4 and U4 plan" },
+      { "quote": "Unificar en un concepto general (recomendado)", "provenance": "L13" }
+    ]
+  },
+  "limits": [
+    "DialogContent and AlertDialogContent retain their component-specific accessible-description linkage; ArticleFeature includes its description in the link name.",
+    "The previous receipt is immutable history; this record binds only the amended convention."
+  ],
+  "semanticAmendments": [
+    {
+      "previousId": "dialog-description",
+      "previousReference": "docs/decisions/prop-naming-organism-specs-approval.json",
+      "previousContentHash": "sha256:c4841a60fb7576538ec4dcbb12143a6ce9f4eae14b87aaa475824da19a2c334f"
+    }
+  ],
+  "entries": [
+    {
+      "scope": "convention:content-description",
+      "contentHash": "sha256:92f47129d24cb259734c592d154382c9d9c836f0da8150ef784889b186b0bb4f",
+      "convention": {
+        "id": "content-description",
+        "name": "description",
+        "meaning": "Optional visible short plain text that explains the content or purpose of its element, rendered next to its title",
+        "whenToUse": "Provide a short explanatory text alongside the title of a content unit or dialog.",
+        "avoid": "Accessible name or heading (use title), form help (use hint), editorial section introductions (use lede), status notes (use statusText), rich or interactive content.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

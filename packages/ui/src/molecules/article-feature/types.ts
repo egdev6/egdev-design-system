@@ -24,6 +24,10 @@ export type ArticleFeatureLinkProps = Omit<
    * @control boolean
    */
   asChild?: false;
+  /** Optional descriptive paragraph; whitespace-only is omitted. Included in the link's name.
+   * @control text
+   */
+  description?: string;
   /**
    * Visible article title and the card link's name. Blank or whitespace-only warns in development
    * and renders nothing, because an unnamed link is never promised.
@@ -81,6 +85,10 @@ export type ArticleFeatureSlottedProps = Omit<
    * @control boolean
    */
   asChild: true;
+  /** Optional descriptive paragraph; whitespace-only is omitted. Included in the link's name.
+   * @control text
+   */
+  description?: string;
   /**
    * The consumer anchor owns the destination; the slotted branch accepts no href of its own.
    */
@@ -203,6 +211,9 @@ export const articleFeatureDetailVariants = cva('text-fg-secondary min-w-0');
 
 /** Generated heading: token title step, independent of the heading rank; wraps instead of truncating. */
 export const articleFeatureTitleVariants = cva('m-0 min-w-0 wrap-anywhere text-heading-small text-fg-default');
+
+/** Descriptive copy wraps without truncation. */
+export const articleFeatureDescriptionVariants = cva('m-0 min-w-0 wrap-anywhere text-body-default text-fg-secondary');
 
 /** Paint-only action affordance: underlined label pinned last so unequal cards keep it aligned. */
 export const articleFeatureActionVariants = cva(

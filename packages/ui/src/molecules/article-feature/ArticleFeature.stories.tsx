@@ -41,6 +41,7 @@ export const Default: Story = {
     children: <ArticleFeatureCover coverWord='/src' badge='Featured' />,
     eyebrow: 'Architecture',
     detail: '12 min · 18 Sep 2026',
+    description: 'How shared design decisions become practical foundations for products.',
     actionLabel: 'Read article'
   }
 };
@@ -49,6 +50,7 @@ export const Default: Story = {
 export const AsChildLink: Story = {
   args: {
     title: 'Router-driven featured article',
+    description: 'A consumer-owned anchor carries the same descriptive text.',
     asChild: true,
     children: <ArticleFeatureCover coverWord='/src' />,
     actionLabel: 'Read article'
@@ -130,6 +132,8 @@ export const LongContent: Story = {
     className: 'w-72',
     eyebrow: 'Architecture',
     detail: 'twelve minutes of reading time plus the nineteenth of September in the year twenty twenty-six',
+    description:
+      'A longer description explains the article in plain language and wraps naturally without truncation, even when the available card width is narrow.',
     actionLabel: 'Read article'
   }
 };

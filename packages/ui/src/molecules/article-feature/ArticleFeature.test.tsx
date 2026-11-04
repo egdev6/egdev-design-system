@@ -14,6 +14,45 @@ afterEach(() => {
 });
 
 describe('ArticleFeature public contract', () => {
+  it('renders a description between the heading and action on both anchor branches', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <ArticleFeature title='Title' href='#article' description='Description' actionLabel='Read' />
+    );
+    let link = screen.getByRole('link', { name: 'Title Description Read' });
+    const description = screen.getByText('Description');
+    expect(description.tagName).toBe('P');
+    expect(description).toHaveClass('text-body-default', 'text-fg-secondary');
+    expect(screen.getByRole('heading').nextElementSibling).toBe(description);
+    expect(description.nextElementSibling).toHaveTextContent('Read');
+    expect(description.nextElementSibling).toHaveClass('mt-auto');
+    await user.tab();
+    expect(link).toHaveFocus();
+    await user.tab();
+    expect(document.body).toHaveFocus();
+    rerender(
+      <ArticleFeature title='Title' asChild={true} description='Description' actionLabel='Read'>
+        <a href='#slot' />
+      </ArticleFeature>
+    );
+    link = screen.getByRole('link', { name: 'Title Description Read' });
+    expect(link).toHaveAttribute('href', '#slot');
+    expect(link.querySelector('a, button')).toBeNull();
+    rerender(<ArticleFeature title='Title' href='#article' description='Description' aria-label='Override' />);
+    expect(screen.getByRole('link', { name: 'Override' })).toHaveTextContent('Description');
+  });
+
+  it('omits absent, empty and whitespace-only descriptions without changing existing content', () => {
+    const { rerender } = render(<ArticleFeature title='Title' href='#article' actionLabel='Read' />);
+    const link = screen.getByRole('link', { name: 'Title Read' });
+    expect(link.querySelectorAll('p')).toHaveLength(0);
+    for (const description of ['', '  ']) {
+      rerender(<ArticleFeature title='Title' href='#article' description={description} actionLabel='Read' />);
+      expect(link.querySelectorAll('p')).toHaveLength(0);
+      expect(screen.getByRole('heading').nextElementSibling).toHaveTextContent('Read');
+      expect(link).not.toHaveAttribute('description');
+    }
+  });
   it('renders exactly one anchor around the whole composition with no wrapper (AF-01)', () => {
     const { container } = render(<ArticleFeature title='Design tokens' href='/blog/tokens' />);
     const link = screen.getByRole('link', { name: 'Design tokens' });

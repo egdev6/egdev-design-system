@@ -150,7 +150,7 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/molecules/alert-dialog/types.ts#AlertDialogProps'
   })),
-  ...['heading-title', 'dialog-description', 'trailing-actions', 'surface-material-tone'].map((conventionId) => ({
+  ...['heading-title', 'content-description', 'trailing-actions', 'surface-material-tone'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/alert-dialog/types.ts#AlertDialogContentProps'
   })),
@@ -164,7 +164,7 @@ const postReceiptUsages = [
   })),
   ...[
     'heading-title',
-    'dialog-description',
+    'content-description',
     'header-status-text',
     'trailing-actions',
     'dismiss-label',
@@ -756,7 +756,8 @@ const postReceiptUsages = [
     'heading-eyebrow',
     'slot-composition',
     'card-link-action-label',
-    'content-detail'
+    'content-detail',
+    'content-description'
   ].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/article-feature/types.ts#ArticleFeatureProps'
@@ -779,17 +780,54 @@ const postReceiptProposals = [
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
     .filter(({ id }) => !postReceiptProposals.includes(id))
-    .map((entry) => ({
-      ...entry,
-      usages: entry.usages.filter(
+    .map((entry) => {
+      const usages = entry.usages.filter(
         (usage) =>
           !reviewedUsages.some(
             (reviewed) =>
               reviewed.conventionId === entry.id && reviewed.source === `${usage.source.path}#${usage.source.symbol}`
           )
-      )
-    }));
+      );
+      if (entry.id !== 'content-description') {
+        return { ...entry, usages };
+      }
+      const reference = 'docs/decisions/prop-naming-organism-specs-approval.json';
+      const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+      const previous = receipt.entries.find(({ scope }) => scope === 'convention:dialog-description');
+      return {
+        ...previous.convention,
+        approval: { reference, scope: previous.scope, contentHash: previous.contentHash },
+        usages
+      };
+    });
 }
+
+test('content description binds the owner decision and preserves dialog usage history', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const entry = registry.find(({ id }) => id === 'content-description');
+  const reference = 'docs/decisions/prop-naming-content-description-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const previous = JSON.parse(fs.readFileSync(resolve(root, receipt.semanticAmendments[0].previousReference), 'utf8'));
+  const old = previous.entries.find(({ scope }) => scope === 'convention:dialog-description');
+  const { approval, usages, ...convention } = entry;
+  assert.equal(old.contentHash, receipt.semanticAmendments[0].previousContentHash);
+  assert.equal(props.conventionHash(old.convention), old.contentHash);
+  assert.deepEqual(receipt.entries, [
+    { scope: 'convention:content-description', contentHash: props.conventionHash(entry), convention }
+  ]);
+  assert.deepEqual(approval, {
+    reference,
+    scope: receipt.entries[0].scope,
+    contentHash: receipt.entries[0].contentHash
+  });
+  assert.ok(
+    receipt.evidence.userStatements.some(({ quote }) => quote === 'Unificar en un concepto general (recomendado)')
+  );
+  assert.deepEqual(
+    usages.map(({ component }) => component),
+    ['AlertDialogContent', 'DialogContent', 'ArticleFeature']
+  );
+});
 
 test('post-receipt usages exist with valid source evidence', () => {
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
@@ -2540,6 +2578,7 @@ test('ArticleFeature naming receipt binds the approved #280 conventions without 
       .sort(),
     [
       'card-link-action-label',
+      'content-description',
       'content-detail',
       'heading-eyebrow',
       'heading-level',
