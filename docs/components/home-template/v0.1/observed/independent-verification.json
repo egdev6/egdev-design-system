@@ -79,7 +79,7 @@
       "description": "Recorded travel follow-up lists identities, opacities and fallback states, not sampled isotipo pixel positions or colors; it cannot prove continuous travel or confinement. Two cold-load 404s remain unexplained in the record."
     }
   ],
-  "overall_verdict": "FAIL — a32415a fixes live tracking while the loop runs, but introduces a zero-area recovery gap; the historical base-runtime versus current-runtime trace differential remains unverified.",
+  "overall_verdict": "FAIL — d7fa149 restores recovery for observed layout-box size changes, but the previously reported transform-to-zero recovery case remains: ResizeObserver does not notify for CSS transforms. The detailed runtime trace differential also remains unverified.",
   "reverification": {
     "candidate": "a32415afccf6de14ff571e0501df12f3e6433581",
     "items": {
@@ -128,6 +128,53 @@
       "Base-versus-current runtime trace differential",
       "Real-GL alpha/color and pixel confinement",
       "Independent moving-anchor and zero-area recovery browser reproduction"
+    ]
+  },
+  "reverification2": {
+    "candidate": "d7fa149444e8b90b90d3eaf29e78bc520c95ad9c",
+    "items": {
+      "observer_and_recovery": {
+        "verdict": "FAIL",
+        "evidence": "useHomeTemplate.ts:124-135 guards observe/unobserve, :378-388 observes existing registrations and body, :414-415 disconnects, and :351-358 coalesces updates. Normal-motion and reduced-motion paint paths require successful render before marking fallback painted (:473-492, :579-584). Frame guards and cleanup prevent duplicate loops by inspection. Layout-size changes that generate ResizeObserver entries recover. However ResizeObserver observes layout box dimensions, not CSS transforms: transform scale(0) makes getBoundingClientRect zero and stops the 3D loop, while changing scale back without a layout resize produces no notification, so the previously reported transform-to-zero witness remains stuck. The observer is optional, so recovery also depends on another event when unavailable."
+      },
+      "test": {
+        "verdict": "PASS",
+        "evidence": "HomeTemplate.isotipo.test.tsx:301-361 asserts anchor observation, invokes the mocked observer after width recovery, checks fallback remains visible until render, then checks unobserve/disconnect. It would fail on a32415a because the anchor is not observed, so the callback is not invoked. It mocks a layout-size notification and does not cover transform-only changes."
+      },
+      "parent_differential": {
+        "verdict": "PARTIAL",
+        "evidence": "Parent reports base tests run on both base and HEAD with identical normalized verbose stdout/stderr, exit 0 and 172 tests; this closes the earlier missing dual-run test-result comparison if accepted as reported. It does not prove the plan's explicitly required serialized DOM, renderer/canvas style writes and render/disposal/loop trace comparisons, because verbose test output is not such a trace. This verifier did not observe the parent runs or commands."
+      },
+      "tests": { "verdict": "PASS", "evidence": "Both requested commands passed once." }
+    },
+    "commands": [
+      {
+        "command": "git show d7fa149 -- packages/effects/src/home-template/useHomeTemplate.ts packages/effects/src/home-template/HomeTemplate.isotipo.test.tsx",
+        "exit": 0,
+        "result": "reviewed fix and test"
+      },
+      {
+        "command": "NODE_OPTIONS=--max-old-space-size=1024 pnpm test packages/effects/src/home-template",
+        "exit": 0,
+        "result": "5 files, 76 tests passed"
+      },
+      {
+        "command": "NODE_OPTIONS=--max-old-space-size=1024 pnpm test packages/effects",
+        "exit": 0,
+        "result": "15 files, 333 tests passed"
+      }
+    ],
+    "findings": [
+      {
+        "severity": "blocker",
+        "location": "packages/effects/src/home-template/useHomeTemplate.ts:378-388,470-476",
+        "description": "An anchor or ancestor animated with CSS transform scale(0) yields a zero visual bounding box, stopping the loop. Returning to a nonzero scale does not resize the layout box and does not generate a ResizeObserver notification. With no other subscribed event the 3D remains suppressed. The prior transform-to-zero recovery finding is therefore not fully resolved."
+      }
+    ],
+    "unverified": [
+      "Actual transform recovery in a real browser",
+      "Serialized base/current render, disposal and style-write traces",
+      "Real-GL alpha/color and pixel confinement"
     ]
   },
   "unverified": [
