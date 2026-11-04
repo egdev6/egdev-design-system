@@ -1,7 +1,9 @@
 import { cn } from '@egdev/ui';
 import type { CSSProperties } from 'react';
 import { createContext, useCallback, useContext, useEffect, useRef } from 'react';
-import { resolveZones } from './homeDirector';
+import { ambientProfiles, createParticleStreaks, resolveAmbientColors } from '../ambient-background/particleStreaks';
+import type { DirectorZone, ZoneGeometry } from './homeDirector';
+import { computeTargets, deriveBands, resolveZones } from './homeDirector';
 import type { HomeTemplateAnchorProps, HomeTemplateProps, HomeTemplateZone } from './types';
 import {
   anchorVariants,
@@ -23,7 +25,15 @@ const warn = (message: string) => {
 const opacity = (value: number) => (Number.isFinite(value) ? Math.max(0, Math.min(1, value)) : 0);
 
 export function useHomeTemplate(props: HomeTemplateProps) {
-  const { zoneTable, children, onZoneChange: _change, className, ...rest } = props;
+  const { zoneTable, children, onZoneChange, className, ...rest } = props;
+  const rootRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const ambientRef = useRef<HTMLCanvasElement>(null);
+  const isotipoRef = useRef<HTMLCanvasElement>(null);
+  const callback = useRef(onZoneChange);
+  callback.current = onZoneChange;
+  const lastNotified = useRef<string | null>(null);
+  const remeasure = useRef<(() => void) | null>(null);
   const native = { ...rest } as typeof rest & Record<string, unknown>;
   for (const key of ['style', 'role', 'dangerouslySetInnerHTML', 'ref', 'asChild', 'data-state', 'data-motion']) {
     delete native[key];
@@ -93,9 +103,256 @@ export function useHomeTemplate(props: HomeTemplateProps) {
     },
     [refreshAnchors]
   );
+  useEffect(() => {
+    const root = rootRef.current;
+    const content = contentRef.current;
+    const canvas = ambientRef.current;
+    const isotipo = isotipoRef.current;
+    if (!root || !content || !canvas || !isotipo) {
+      return;
+    }
+    let active = true;
+    let rows: DirectorZone[] = [];
+    let geometry: ZoneGeometry[] = [];
+    let valid = false;
+    let frame: number | null = null;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let motion: MediaQueryList | undefined;
+    let observer: ResizeObserver | undefined;
+    let engine: ReturnType<typeof createParticleStreaks> = null;
+    let failed = false;
+    let running = false;
+    let profile = '';
+    let staticKey = '';
+    let size = '';
+    const attempt = (fn: () => void) => {
+      try {
+        fn();
+      } catch {
+        /* Fail open. */
+      }
+    };
+    const stop = () => {
+      if (engine) {
+        attempt(() => engine?.stop());
+      }
+      running = false;
+    };
+    const fail = () => {
+      failed = true;
+      stop();
+      attempt(() => engine?.dispose());
+      engine = null;
+    };
+    try {
+      const colors = resolveAmbientColors(getComputedStyle(root));
+      if (colors) {
+        engine = createParticleStreaks(canvas, colors, ambientProfiles.base, fail);
+      }
+    } catch {
+      failed = true;
+    }
+    try {
+      motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    } catch {
+      /* Optional service. */
+    }
+    const update = () => {
+      if (!active) {
+        return;
+      }
+      const reduced = motion?.matches === true;
+      if (reduced) {
+        root.setAttribute('data-motion', 'reduced');
+      } else {
+        root.removeAttribute('data-motion');
+      }
+      const targets = valid
+        ? computeTargets(
+            rows,
+            geometry,
+            deriveBands(
+              geometry,
+              window.innerHeight,
+              Math.max(0, document.documentElement.scrollHeight - window.innerHeight)
+            ),
+            window.scrollY,
+            window.innerHeight,
+            window.innerWidth,
+            reduced
+          )
+        : null;
+      isotipo.style.setProperty('--eg-home-isotipo-opacity', '0');
+      if (!targets) {
+        canvas.style.setProperty('--eg-home-ambient-opacity', '0');
+        root.removeAttribute('data-state');
+        stop();
+        staticKey = '';
+        return;
+      }
+      root.setAttribute('data-state', targets.active);
+      if (targets.active !== lastNotified.current) {
+        const previous = lastNotified.current;
+        lastNotified.current = targets.active;
+        callback.current?.({ zone: targets.active, previous });
+      }
+      canvas.style.setProperty('--eg-home-ambient-opacity', String(opacity(targets.ambient)));
+      if (!engine || failed) {
+        return;
+      }
+      try {
+        const nextProfile = JSON.stringify(targets.profile);
+        if (nextProfile !== profile) {
+          engine.set(targets.profile);
+          profile = nextProfile;
+        }
+        const ratio = Math.min(window.devicePixelRatio || 1, 2);
+        const nextSize = `${window.innerWidth}:${window.innerHeight}:${ratio}`;
+        if (nextSize !== size) {
+          engine.resize(window.innerWidth, window.innerHeight, ratio);
+          size = nextSize;
+        }
+        if (document.hidden || targets.ambient <= 0 || window.innerWidth <= 0 || window.innerHeight <= 0) {
+          stop();
+          staticKey = '';
+          return;
+        }
+        if (!engine.ready()) {
+          fail();
+          return;
+        }
+        if (reduced) {
+          stop();
+          const nextKey = `${nextSize}:${nextProfile}:${targets.ambient}`;
+          if (nextKey !== staticKey) {
+            engine.renderOnce();
+            staticKey = nextKey;
+          }
+        } else {
+          staticKey = '';
+          if (!running) {
+            engine.start();
+            running = true;
+          }
+        }
+      } catch {
+        fail();
+      }
+    };
+    const measure = () => {
+      if (!active) {
+        return;
+      }
+      try {
+        const elements = Array.from(content.querySelectorAll('[data-zone]'));
+        const selected: Element[] = [];
+        rows = [];
+        geometry = [];
+        for (const zone of zones.current) {
+          const matches = elements.filter((element) => element.getAttribute('data-zone') === zone.id);
+          if (matches.length > 1) {
+            warn(`HomeTemplate: duplicate section: ${zone.id}`);
+          }
+          const element = matches[0];
+          if (!element) {
+            continue;
+          }
+          const rect = element.getBoundingClientRect();
+          selected.push(element);
+          rows.push(zone);
+          geometry.push({ top: rect.top + window.scrollY, height: rect.height });
+        }
+        const order = selected.every(
+          (element, index) =>
+            index === 0 ||
+            !!((selected[index - 1]?.compareDocumentPosition(element) ?? 0) & Node.DOCUMENT_POSITION_FOLLOWING)
+        );
+        const bands = deriveBands(
+          geometry,
+          window.innerHeight,
+          Math.max(0, document.documentElement.scrollHeight - window.innerHeight)
+        );
+        valid =
+          order &&
+          bands.valid &&
+          geometry.every((item) => Number.isFinite(item.top) && Number.isFinite(item.height) && item.height > 0);
+        if (geometry.length && !valid) {
+          warn('HomeTemplate: invalid geometry or section order');
+        }
+      } catch {
+        valid = false;
+      }
+      update();
+    };
+    const onScroll = () => {
+      if (frame === null) {
+        frame = requestAnimationFrame(() => {
+          frame = null;
+          update();
+        });
+      }
+    };
+    const onResize = () => {
+      clearTimeout(timer);
+      timer = setTimeout(measure, 150);
+    };
+    const onVisibility = () => {
+      if (document.hidden) {
+        update();
+      } else {
+        measure();
+      }
+    };
+    const onMotion = () => update();
+    remeasure.current = measure;
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+    window.addEventListener('load', measure);
+    document.addEventListener('visibilitychange', onVisibility);
+    attempt(() => motion?.addEventListener('change', onMotion));
+    attempt(() => {
+      observer = new ResizeObserver(measure);
+      observer.observe(document.body);
+    });
+    attempt(() => {
+      document.fonts?.ready
+        .then(() => {
+          if (active) {
+            measure();
+          }
+        })
+        .catch(() => {
+          /* Fonts are optional. */
+        });
+    });
+    measure();
+    return () => {
+      active = false;
+      remeasure.current = null;
+      clearTimeout(timer);
+      if (frame !== null) {
+        cancelAnimationFrame(frame);
+      }
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('load', measure);
+      document.removeEventListener('visibilitychange', onVisibility);
+      attempt(() => motion?.removeEventListener('change', onMotion));
+      attempt(() => observer?.disconnect());
+      stop();
+      attempt(() => engine?.dispose());
+    };
+  }, []);
+  useEffect(() => {
+    remeasure.current?.();
+  }, [zoneTable, children]);
   return {
     children,
     native,
+    rootRef,
+    contentRef,
+    ambientRef,
+    isotipoRef,
     register,
     resolveAnchor,
     rootClass: cn(className, rootVariants()),
