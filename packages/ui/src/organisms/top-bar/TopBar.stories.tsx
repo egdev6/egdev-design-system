@@ -32,7 +32,7 @@ export default meta;
 type Story = StoryObj<typeof TopBar>;
 /** Required inputs with transparent host-owned state. */
 export const Default: Story = {};
-/** The host marks the current destination. */
+/** The host marks the current destination; its brand indicator resembles Tabs without changing native navigation. */
 export const CurrentPage: Story = {
   args: {
     items: [

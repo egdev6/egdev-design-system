@@ -112,6 +112,73 @@ describe('TopBar', () => {
     );
     expect(screen.getByRole('list')).toBeEmptyDOMElement();
   });
+  it('A5 renders the Tabs-like indicator and a 44.8px minimum target only for current styling', () => {
+    const { rerender } = render(
+      <TopBar label='Main' items={[{ ...home, 'aria-current': 'page' }, about]}>
+        {brand}
+      </TopBar>
+    );
+    const links = within(screen.getByRole('navigation')).getAllByRole('link');
+    expect(links.filter((link) => link.getAttribute('aria-current') === 'page')).toEqual([links[0]]);
+    for (const link of links) {
+      expect(link).toHaveClass(
+        'relative',
+        'inline-flex',
+        'items-center',
+        'min-h-14',
+        'after:absolute',
+        'after:-bottom-px',
+        'after:h-0.5',
+        'after:rounded-full',
+        'after:inset-x-3',
+        'after:bg-transparent',
+        'after:transition-colors',
+        'motion-reduce:after:transition-none',
+        'aria-[current=page]:after:bg-fg-brand-default',
+        'aria-[current=page]:after:shadow-glow-base',
+        'aria-[current=page]:text-fg-default',
+        'hover:text-fg-default',
+        'no-underline',
+        'focus-visible:outline-2',
+        'focus-visible:outline-focus-ring'
+      );
+      expect(link).not.toHaveClass('aria-[current=page]:underline');
+    }
+    rerender(
+      <TopBar label='Main' items={[home, about]}>
+        {brand}
+      </TopBar>
+    );
+    expect(within(screen.getByRole('navigation')).queryByRole('link', { current: 'page' })).toBeNull();
+  });
+  it('A5 preserves native navigation order, tab stops and arrow-key behavior', async () => {
+    const user = userEvent.setup();
+    render(
+      <TopBar label='Main' items={[home, about]}>
+        {brand}
+      </TopBar>
+    );
+    const nav = screen.getByRole('navigation', { name: 'Main' });
+    const links = within(nav).getAllByRole('link');
+    expect(links.map((link) => [link.textContent, link.getAttribute('href')])).toEqual([
+      ['Home', '#home'],
+      ['About', '#about']
+    ]);
+    expect(within(nav).queryByRole('tab')).toBeNull();
+    expect(within(nav).queryByRole('menu')).toBeNull();
+    for (const link of links) {
+      expect(link).not.toHaveAttribute('aria-selected');
+      expect(link).not.toHaveAttribute('tabindex');
+    }
+    await user.tab();
+    expect(screen.getByRole('link', { name: 'Brand' })).toHaveFocus();
+    await user.tab();
+    expect(links[0]).toHaveFocus();
+    await user.keyboard('{ArrowRight}');
+    expect(links[0]).toHaveFocus();
+    await user.tab();
+    expect(links[1]).toHaveFocus();
+  });
   it('TB-02 preserves native links and forwards click events without changing focus', async () => {
     const user = userEvent.setup();
     const onNavigate = vi.fn((_item, event: React.MouseEvent<HTMLAnchorElement>) => event.preventDefault());

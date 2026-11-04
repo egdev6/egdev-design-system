@@ -59,7 +59,7 @@ export const topBarRowVariants = cva(
 export const topBarNavVariants = cva('min-w-0 flex-1 @max-[900px]:hidden [@container_(width=900px)]:hidden');
 export const topBarListVariants = cva('m-0 flex list-none items-center gap-4 p-0');
 export const topBarLinkVariants = cva(
-  'text-label-default text-fg-secondary no-underline hover:text-fg-default aria-[current=page]:text-fg-default aria-[current=page]:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus-ring'
+  'relative inline-flex items-center min-h-14 text-label-default text-fg-secondary no-underline hover:text-fg-default aria-[current=page]:text-fg-default focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus-ring after:absolute after:-bottom-px after:h-0.5 after:rounded-full after:inset-x-3 after:bg-transparent after:transition-colors motion-reduce:after:transition-none aria-[current=page]:after:bg-fg-brand-default aria-[current=page]:after:shadow-glow-base'
 );
 export const topBarBrandVariants = cva('shrink-0');
 export const topBarFullVariants = cva('@max-[900px]:hidden [@container_(width=900px)]:hidden');

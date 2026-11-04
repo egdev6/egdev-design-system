@@ -1930,7 +1930,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:91e9458fbbbec04c1525cd33d593b6e62b66ebd57f0524c91fee0be1a3594078"
+          "revision": "sha256:f097a3b5f6d5bf8bf5e451a3a826e663116abc1549d7947c4ccfe5ba64042c1c"
         }
       }
     ]
@@ -3774,7 +3774,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:91e9458fbbbec04c1525cd33d593b6e62b66ebd57f0524c91fee0be1a3594078"
+          "revision": "sha256:f097a3b5f6d5bf8bf5e451a3a826e663116abc1549d7947c4ccfe5ba64042c1c"
         }
       }
     ]
@@ -4825,7 +4825,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:91e9458fbbbec04c1525cd33d593b6e62b66ebd57f0524c91fee0be1a3594078"
+          "revision": "sha256:f097a3b5f6d5bf8bf5e451a3a826e663116abc1549d7947c4ccfe5ba64042c1c"
         }
       }
     ]
