@@ -1,0 +1,87 @@
+{
+  "verifier": "Independent verifier with fresh context; did not implement the candidate. Read-only verification except this report.",
+  "candidate": "4ef56f3..b3c8796 (HEAD b3c87963af7c1c3c8be87241e52083bfa5910ebf)",
+  "verdicts": {
+    "V1": {
+      "verdict": "FAIL",
+      "evidence": [
+        "Six pre-existing test files identified at base. Four are byte-identical and pass 91 tests; AmbientBackground.lifecycle.test.tsx and isotipoScene.loader.test.ts gained assertions/instrumentation without removed assertions, so cannot be executed as byte-identical base copies under the no-scratch restriction.",
+        "useAmbientBackground.ts:23 calls resolveAmbientColors(getComputedStyle(root)); particleStreaks.ts:12-37 preserves profiles and hex validation. No-projection scene code preserves 1.8 fit, setSize(..., false), render, reduced motion and disposal by inspection (isotipoScene.ts:342-355, 400-475, 526-528); existing gestures are exercised by the identical tests.",
+        "The requested base-versus-current public fixture differential was not executed: no scratch/base copy authorized. Running unchanged old tests against current code is not a base-runtime differential."
+      ]
+    },
+    "V2": {
+      "verdict": "FAIL",
+      "evidence": [
+        "A1 full bands and retained callback identity implemented at homeDirector.ts:97-110 and useHomeTemplate.ts:203-227; A2 alpha:false remains particleStreaks.ts:64 and transparent hosts at home-template/types.ts:54; A3 first match and warning at useHomeTemplate.ts:286-303.",
+        "One canvas at HomeTemplate.tsx:12; exact new root exports at packages/effects/src/index.ts:5-6 and home-template/index.ts:1-3; no component stylesheet. theme.css diff is exactly the authorized vignette declaration at line 507. No window/html/body writes found in controller.",
+        "Callback is identity-deduplicated; draw paints only after successful render and zero target stops loop (useHomeTemplate.ts:220-227, 446-481). Async cleanup and listeners inspected, not exhaustively proven.",
+        "Blocker: active anchor rectangles are not remeasured in the visible 3D frame loop, contrary to implementation-plan.md:156; see findings."
+      ]
+    },
+    "V3": {
+      "verdict": "PASS",
+      "evidence": [
+        "capture.json SHA-256 is 5d092aa9d776c6e633fc96e62e3ae0d879a69bae43f98e35420864960437db24; all 10 listed PNG hashes match. spec.md canonical payload is 622eacf3cccb774690b6c247dcaf6e31a8feb4aa858376b00fd274438dc8eb84.",
+        "mutation-results.json:29-41 honestly records S2 surviving initially; :429-444 records a follow-up kill, consistent with the current cutoff test, but historical mutation executions were not independently reproduced. browser-observed.json:7711-7752 explicitly records the initial inert travel story, follow-up, intermittent cold-load 404 and important visual limits; its records do not establish pixel-level confinement or continuous tracking."
+      ]
+    },
+    "V4": {
+      "verdict": "PASS",
+      "evidence": [
+        "All three requested commands passed. Package exports emits React missing-key warnings and expected component validation warnings.",
+        "dist/index.js timestamp 11:14:57 precedes 7dbdb65 at 11:27:33, which changed HomeTemplate.stories.tsx, so dist is stale relative to HEAD as a whole. Latest inspected runtime source commit 40fb552 predates dist; timestamps do not prove byte-for-byte build provenance. No rebuild performed."
+      ]
+    }
+  },
+  "commands": [
+    {
+      "command": "git diff --quiet 4ef56f3 -- packages/effects/src/ambient-background/AmbientBackground.test.tsx packages/effects/src/atoms/isotipo3d/Isotipo3D.test.tsx packages/effects/src/atoms/isotipo3d/useIsotipo3D.integration.test.tsx packages/effects/src/atoms/isotipo3d/useIsotipo3D.test.tsx",
+      "exit": 0,
+      "result": "four files byte-identical"
+    },
+    {
+      "command": "NODE_OPTIONS=--max-old-space-size=1024 pnpm test packages/effects/src/ambient-background/AmbientBackground.test.tsx packages/effects/src/atoms/isotipo3d/Isotipo3D.test.tsx packages/effects/src/atoms/isotipo3d/useIsotipo3D.integration.test.tsx packages/effects/src/atoms/isotipo3d/useIsotipo3D.test.tsx",
+      "exit": 0,
+      "result": "4 files, 91 tests passed"
+    },
+    {
+      "command": "NODE_OPTIONS=--max-old-space-size=1024 pnpm test packages/effects/src/home-template packages/effects/src/ambient-background/AmbientBackground.lifecycle.test.tsx packages/effects/src/atoms/isotipo3d/isotipoScene.loader.test.ts packages/effects/src/atoms/isotipo3d/isotipoScene.projection.test.ts",
+      "exit": 0,
+      "result": "8 files, 167 tests passed"
+    },
+    {
+      "command": "NODE_OPTIONS=--max-old-space-size=1024 pnpm test packages/effects",
+      "exit": 0,
+      "result": "15 files, 331 tests passed"
+    },
+    { "command": "pnpm test:props", "exit": 0, "result": "113 tests passed" },
+    {
+      "command": "pnpm test:package-exports",
+      "exit": 0,
+      "result": "131 tests passed with warnings; existing dist only"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "blocker",
+      "location": "packages/effects/src/home-template/useHomeTemplate.ts:446-464,500,559",
+      "description": "The animation loop renders a cached drawState.travel and never rereads anchor geometry; getBoundingClientRect occurs only in update, invoked by scroll/measurement/media events. A consumer-owned animated or independently moving anchor can move without any of those events, leaving the isotipo and confinement behind and potentially overlapping text. The approved plan explicitly requires remeasurement while the visible engine runs (implementation-plan.md:156). Existing tests pass but do not establish this case."
+    },
+    {
+      "severity": "advisory",
+      "location": "packages/effects/src/atoms/isotipo3d/isotipoScene.ts:307-334",
+      "description": "Composite multiplies sampled RGBA by the feather mask before sRGB conversion. Semitransparent render-target pixels are susceptible to premultiplied-alpha/color-space mismatch; source tests inspect shader text rather than actual GPU pixels. Do not treat pixel correctness as verified without a controlled real-GL alpha/color comparison."
+    },
+    {
+      "severity": "advisory",
+      "location": "docs/components/home-template/v0.1/observed/browser-observed.json:7711-7752",
+      "description": "Recorded travel follow-up lists identities, opacities and fallback states, not sampled isotipo pixel positions or colors; it cannot prove continuous travel or confinement. Two cold-load 404s remain unexplained in the record."
+    }
+  ],
+  "unverified": [
+    "Base-runtime versus current-runtime differential and exact original versions of the two assertion-extended test files, prohibited by no scratch/file writes.",
+    "Live moving-anchor reproduction, actual shader alpha/color correctness, real GPU pixel confinement and visual parity; no browser or GPU run authorized.",
+    "Historical mutation/browser executions, screen-reader and zoom behavior, and exact dist provenance."
+  ]
+}

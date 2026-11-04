@@ -268,6 +268,36 @@ it('travels between two 3D anchors with interpolated projection and pose', async
   }
 });
 
+it('remeasures moving endpoints each frame and restores fallback for zero-area anchors', async () => {
+  const fixture = travelFixture();
+  const created = scene();
+  vi.mocked(isotipoCreateScene).mockResolvedValue(created);
+  const view = render(travelPage());
+  await act(async () => {
+    /* Resolve the scene. */
+  });
+  fixture.tick();
+  expect(vi.mocked(created.render).mock.lastCall?.[4]?.anchor.left).toBe(100);
+  const original = vi.mocked(Element.prototype.getBoundingClientRect).getMockImplementation();
+  let width = 200;
+  vi.mocked(Element.prototype.getBoundingClientRect).mockImplementation(function (this: Element) {
+    const rect = original?.call(this) as DOMRect;
+    return this.classList.contains('eg-home-template-anchor') &&
+      this.closest('[data-zone]')?.getAttribute('data-zone') === 'a'
+      ? { ...rect, left: 250, width }
+      : rect;
+  });
+  fixture.tick();
+  expect(vi.mocked(created.render).mock.lastCall?.[4]?.anchor.left).toBe(250);
+  expect(view.getByText('A fallback')).toHaveAttribute('data-state', 'painted');
+  width = 0;
+  const count = vi.mocked(created.render).mock.calls.length;
+  fixture.tick();
+  expect(created.render).toHaveBeenCalledTimes(count);
+  expect(view.getByText('A fallback')).not.toHaveAttribute('data-state');
+  expect(view.container.querySelectorAll('canvas')[1]?.style.getPropertyValue('--eg-home-isotipo-opacity')).toBe('0');
+});
+
 it('holds the 3D anchor across a one-sided band and suppresses missing travel', async () => {
   const fixture = travelFixture();
   const created = scene();

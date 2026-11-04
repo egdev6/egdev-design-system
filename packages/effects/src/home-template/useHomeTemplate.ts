@@ -417,6 +417,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
       progress: number;
       travel: NonNullable<ReturnType<typeof computeTravel>>;
       nodes: HTMLDivElement[];
+      refresh: () => ReturnType<typeof computeTravel>;
     } | null = null;
     let coarse: MediaQueryList | undefined;
     const stop = () => {
@@ -449,6 +450,14 @@ export function useHomeTemplate(props: HomeTemplateProps) {
         return;
       }
       try {
+        const travel = drawState.refresh();
+        if (!travel) {
+          paint([], false);
+          stop();
+          canvas.style.setProperty('--eg-home-isotipo-opacity', '0');
+          return;
+        }
+        drawState.travel = travel;
         const dt = last === null ? 0 : Math.max(0, Math.min(0.05, (now - last) / 1000));
         last = now;
         time += dt;
@@ -556,7 +565,21 @@ export function useHomeTemplate(props: HomeTemplateProps) {
           }
         } else {
           staticKey = '';
-          drawState = { name: a.scene, progress, travel, nodes };
+          drawState = {
+            name: a.scene,
+            progress,
+            travel,
+            nodes,
+            refresh: () => {
+              const currentFirst = endpoint(targets.mix.a);
+              const currentSecond = endpoint(targets.mix.b);
+              const currentA = currentFirst ?? currentSecond;
+              const currentB = currentSecond ?? currentFirst;
+              return currentA && currentB
+                ? computeTravel(currentA, currentB, targets.mix.t, window.scrollY, viewport, false)
+                : null;
+            }
+          };
           if (frame === null) {
             frame = requestAnimationFrame(draw);
           }
