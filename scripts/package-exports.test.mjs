@@ -7080,6 +7080,89 @@ test('Indicator package preserves a passive wrapper and suppresses only invalid-
   }
 });
 
+test('HomeTemplate ships its own layer classes and private boundaries', async () => {
+  const effectsModule = await import(artifact('effects', effects.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const dom = new JSDOM(
+    renderToString(
+      h(effectsModule.HomeTemplate, {
+        zoneTable: [],
+        children: h(effectsModule.HomeTemplateAnchor, { zone: 'intro', children: 'Fallback' })
+      })
+    )
+  );
+  try {
+    const root = dom.window.document.querySelector('.eg-home-template');
+    assert.ok(root);
+    const [ambient, vignette, isotipo, content] = root.children;
+    const anchor = content.querySelector('.eg-home-template-anchor');
+    for (const [element, names] of [
+      [root, ['relative', 'isolate', 'block', 'w-full']],
+      [
+        ambient,
+        [
+          'fixed',
+          'inset-0',
+          'w-full',
+          'h-full',
+          'pointer-events-none',
+          'bg-transparent',
+          'z-0',
+          'opacity-[var(--eg-home-ambient-opacity)]'
+        ]
+      ],
+      [vignette, ['fixed', 'inset-0', 'z-0', 'pointer-events-none', 'bg-[image:var(--gradient-vignette)]']],
+      [
+        isotipo,
+        [
+          'fixed',
+          'inset-0',
+          'w-full',
+          'h-full',
+          'pointer-events-none',
+          'bg-transparent',
+          'z-[1]',
+          'opacity-[var(--eg-home-isotipo-opacity)]'
+        ]
+      ],
+      [content, ['relative', 'z-[2]', 'block', 'overflow-x-clip']],
+      [anchor, ['relative', 'block']],
+      [anchor.firstElementChild, ['block', 'data-[state=painted]:opacity-0']]
+    ]) {
+      for (const name of names) {
+        assert.ok(element.classList.contains(name), 'Missing own-element class ' + name);
+      }
+    }
+    assert.equal(anchor.textContent, 'Fallback');
+    for (const layer of [ambient, vignette, isotipo]) {
+      assert.equal(layer.getAttribute('aria-hidden'), 'true');
+    }
+  } finally {
+    dom.window.close();
+  }
+  for (const name of [
+    'useHomeTemplate',
+    'useHomeTemplateAnchor',
+    'rootVariants',
+    'canvasVariants',
+    'homeDirector',
+    'homeTravel'
+  ]) {
+    assert.equal(Object.hasOwn(effectsModule, name), false, name);
+  }
+  const css = readFileSync(artifact('effects', effects.exports['./styles.css']), 'utf8');
+  for (const name of [
+    'bg-[image:var(--gradient-vignette)]',
+    'opacity-[var(--eg-home-ambient-opacity)]',
+    'opacity-[var(--eg-home-isotipo-opacity)]',
+    'data-[state=painted]:opacity-0'
+  ]) {
+    assert.ok(css.includes('.' + name.replace(/[^\w-]/g, '\\$&')), 'Missing emitted class ' + name);
+  }
+});
+
 test('ScrollReveal ships public SSR composition, own recipe classes and private implementation boundaries', async () => {
   const effectsModule = await import(artifact('effects', effects.exports['.'].import));
   assert.ok(effectsModule.ScrollReveal, 'Missing public ScrollReveal');

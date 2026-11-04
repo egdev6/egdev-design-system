@@ -16,6 +16,19 @@ describe('@egdev/effects package contract', () => {
     expect(manifest.sideEffects).toEqual(['**/*.css']);
   });
 
+  it('exports the HomeTemplate components and keeps implementation private', async () => {
+    const effects = await import('./index');
+    expect(Object.keys(effects).sort()).toEqual([
+      'AmbientBackground',
+      'HomeTemplate',
+      'HomeTemplateAnchor',
+      'Isotipo3D',
+      'ScrollReveal'
+    ]);
+    const source = readFileSync(resolve(process.cwd(), 'packages/effects/src/styles/compiled.css'), 'utf8');
+    expect(source).toContain('@source "../home-template/types.ts";');
+  });
+
   it('retains the approved dependency and required-peer boundaries', () => {
     expect(manifest.dependencies).toEqual({ '@egdev/ui': 'workspace:*', 'class-variance-authority': '0.7.1' });
     expect(manifest.peerDependencies).toEqual({

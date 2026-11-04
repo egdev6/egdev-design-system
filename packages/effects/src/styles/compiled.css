@@ -2,6 +2,7 @@
 @source "../ambient-background/types.ts";
 @source "../atoms/isotipo3d/types.ts";
 @source "../scroll-reveal/types.ts";
+@source "../home-template/types.ts";
 
 @layer utilities {
   @tailwind utilities source(none);
