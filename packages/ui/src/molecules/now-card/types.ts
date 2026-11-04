@@ -125,6 +125,15 @@ export const nowCardVariants = cva(
   }
 );
 
+/** Heading density and inset for the presence of the leading badge. */
+export const nowCardHeadingVariants = cva('m-0 min-w-0 px-6 text-heading-small text-fg-default wrap-anywhere', {
+  variants: {
+    size: { md: '', sm: 'px-4 text-body-large' },
+    badge: { true: 'pt-0', false: 'pt-6' }
+  },
+  defaultVariants: { size: 'md', badge: false }
+});
+
 /** Inner padded body; the density step shrinks the padding and the body copy, never the content. */
 export const nowCardBodyVariants = cva(
   'eg-now-card__body flex flex-1 flex-col gap-2 p-6 text-body-large text-fg-secondary',

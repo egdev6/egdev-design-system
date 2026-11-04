@@ -42,6 +42,27 @@ const fullCard = (
 );
 
 describe('NowCard public contract', () => {
+  it.each(['md', 'sm'] as const)('sets the heading inset and badge marker at %s density', (size) => {
+    const { rerender } = render(<NowCard title='Activity' size={size} />);
+    const article = screen.getByRole('article', { name: 'Activity' });
+    const heading = screen.getByRole('heading', { name: 'Activity' });
+    expect(article).toHaveAttribute('data-badge', 'false');
+    expect(heading).toHaveClass('pt-6');
+    for (const statusBadge of [null, false, true]) {
+      rerender(<NowCard title='Activity' size={size} statusBadge={statusBadge} />);
+      expect(article).toHaveAttribute('data-badge', 'false');
+      expect(heading).toHaveClass('pt-6');
+      expect(article.querySelector('.eg-now-card__badge')).toBeNull();
+    }
+    rerender(<NowCard title='Activity' size={size} statusBadge={<span>Active</span>} />);
+    expect(article).toHaveAttribute('data-badge', 'true');
+    expect(heading).toHaveClass('pt-0');
+    expect(heading).not.toHaveClass('pt-6');
+    expect(article.firstElementChild).toHaveClass('px-6', 'pt-6', 'pb-3');
+    expect(article.firstElementChild?.nextElementSibling).toBe(heading);
+    expect(heading).toHaveClass('m-0', 'min-w-0', 'text-fg-default', 'wrap-anywhere');
+    expect(heading).toHaveClass(...(size === 'md' ? ['px-6', 'text-heading-small'] : ['px-4', 'text-body-large']));
+  });
   it('derives passive defaults and names the article with the generated heading (NC-01)', () => {
     const { result } = renderHook(() => useNowCard({ title: 'Currently building' }));
     expect(result.current.valid).toBe(true);

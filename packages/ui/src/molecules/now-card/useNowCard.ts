@@ -16,6 +16,7 @@ import {
   nowCardDetailValueVariants,
   nowCardDetailVariants,
   nowCardFootVariants,
+  nowCardHeadingVariants,
   nowCardVariants
 } from './types';
 
@@ -31,6 +32,7 @@ export type UseNowCardResult = {
   badgeProps: { className: string };
   rootProps: ComponentPropsWithoutRef<'article'> & {
     'data-size': NowCardSize;
+    'data-badge': boolean;
     'aria-labelledby': string;
   };
   headingElement: `h${NowCardLevel}`;
@@ -40,8 +42,6 @@ export type UseNowCardResult = {
 };
 
 export type UseNowCardPartResult = { className: string };
-
-const headingBase = 'm-0 min-w-0 px-6 text-heading-small text-fg-default wrap-anywhere';
 
 const present = (slot: ReactNode) => slot !== undefined && slot !== null && typeof slot !== 'boolean';
 
@@ -61,6 +61,7 @@ export function useNowCard({
     console.warn('NowCard requires a non-empty title. Nothing was rendered.');
   }
   const rank: NowCardLevel = [2, 3, 4, 5, 6].includes(level) ? level : 3;
+  const showBadge = present(statusBadge);
   // Remove protected native semantics even at untyped/JavaScript boundaries: the heading owns the name.
   const {
     role: _role,
@@ -79,13 +80,14 @@ export function useNowCard({
   return {
     valid,
     size,
-    showBadge: present(statusBadge),
+    showBadge,
     badge: statusBadge,
     badgeProps: { className: cn(nowCardBadgeVariants()) },
     rootProps: {
       ...rest,
       'aria-labelledby': headingId,
       'data-size': size,
+      'data-badge': showBadge,
       className: cn(
         surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'xl' }),
         nowCardVariants({ size }),
@@ -93,7 +95,7 @@ export function useNowCard({
       )
     },
     headingElement: `h${rank}`,
-    headingProps: { id: headingId, className: cn(headingBase, size === 'sm' && 'px-4 text-body-large') },
+    headingProps: { id: headingId, className: cn(nowCardHeadingVariants({ size, badge: showBadge })) },
     title,
     children
   };
