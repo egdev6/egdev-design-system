@@ -36,6 +36,7 @@ export function useHomeTemplate(props: HomeTemplateProps) {
   callback.current = onZoneChange;
   const lastNotified = useRef<string | null>(null);
   const remeasure = useRef<(() => void) | null>(null);
+  const anchorObserver = useRef<ResizeObserver | null>(null);
   const updateIsotipo = useRef<
     | ((state: {
         targets: ReturnType<typeof computeTargets>;
@@ -120,10 +121,20 @@ export function useHomeTemplate(props: HomeTemplateProps) {
       const entry: Entry = { zone, node, notify, painted: false };
       notify(false);
       entries.current.push(entry);
+      try {
+        anchorObserver.current?.observe(node);
+      } catch {
+        /* Optional service. */
+      }
       refreshAnchors(false);
       return () => {
         paint([], false);
         entries.current = entries.current.filter((item) => item !== entry);
+        try {
+          anchorObserver.current?.unobserve(node);
+        } catch {
+          /* Optional service. */
+        }
         remeasure.current?.();
       };
     },
@@ -146,7 +157,6 @@ export function useHomeTemplate(props: HomeTemplateProps) {
     let frame: number | null = null;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let motion: MediaQueryList | undefined;
-    let observer: ResizeObserver | undefined;
     let engine: ReturnType<typeof createParticleStreaks> = null;
     let failed = false;
     let running = false;
@@ -365,8 +375,17 @@ export function useHomeTemplate(props: HomeTemplateProps) {
     document.addEventListener('visibilitychange', onVisibility);
     attempt(() => motion?.addEventListener('change', onMotion));
     attempt(() => {
-      observer = new ResizeObserver(measure);
-      observer.observe(document.body);
+      anchorObserver.current = new ResizeObserver((changes) => {
+        if (!changes.length || changes.some((change) => change.target === document.body)) {
+          measure();
+        } else {
+          onScroll();
+        }
+      });
+      attempt(() => anchorObserver.current?.observe(document.body));
+      for (const entry of entries.current) {
+        attempt(() => anchorObserver.current?.observe(entry.node));
+      }
     });
     attempt(() => {
       document.fonts?.ready
@@ -392,7 +411,8 @@ export function useHomeTemplate(props: HomeTemplateProps) {
       window.removeEventListener('load', measure);
       document.removeEventListener('visibilitychange', onVisibility);
       attempt(() => motion?.removeEventListener('change', onMotion));
-      attempt(() => observer?.disconnect());
+      attempt(() => anchorObserver.current?.disconnect());
+      anchorObserver.current = null;
       stop();
       attempt(() => engine?.dispose());
     };

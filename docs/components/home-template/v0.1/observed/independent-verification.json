@@ -79,6 +79,57 @@
       "description": "Recorded travel follow-up lists identities, opacities and fallback states, not sampled isotipo pixel positions or colors; it cannot prove continuous travel or confinement. Two cold-load 404s remain unexplained in the record."
     }
   ],
+  "overall_verdict": "FAIL — a32415a fixes live tracking while the loop runs, but introduces a zero-area recovery gap; the historical base-runtime versus current-runtime trace differential remains unverified.",
+  "reverification": {
+    "candidate": "a32415afccf6de14ff571e0501df12f3e6433581",
+    "items": {
+      "code": {
+        "verdict": "FAIL",
+        "evidence": "useHomeTemplate.ts:450-464 and :568-581 re-resolve both endpoints and recompute travel on each normal-motion frame. The frame guard at :583-585 keeps one loop, cleanup cancels it, and reduced motion stops rather than schedules at :558-565. Invalid travel restores fallbacks and opacity zero at :451-456. However, after a zero-area frame, the loop stops; anchor size recovery alone is not observed because the ResizeObserver watches document.body (:367-369), not anchors. If an anchor scales to zero and back without a scroll, resize, load, body resize or other update, the 3D and fallback remain stuck until an unrelated event. This is a regression introduced by the new frame-time invalidation."
+      },
+      "test": {
+        "verdict": "PASS",
+        "evidence": "HomeTemplate.isotipo.test.tsx:271-300 changes anchor left without a scroll and expects the subsequent frame projection to follow; the pre-fix cached travel would retain left 100 and fail the expected 250. It also asserts suppression and fallback restoration at width zero, but does not test recovery when width becomes positive again without an external update."
+      },
+      "parent_legacy_evidence": {
+        "verdict": "PARTIAL",
+        "evidence": "Parent reports all base test versions against HEAD, 8 files and 191/191 passing. Accepting that reported result closes the specific gap of not running the two original assertion-extended files, but does not establish a comparison of base-runtime versus current-runtime DOM, renderer, style, gesture and disposal traces as required by implementation-plan.md:212. This verifier did not independently observe the parent run or its exact command."
+      },
+      "suite": {
+        "verdict": "PASS",
+        "evidence": "Both requested test commands passed once."
+      }
+    },
+    "commands": [
+      {
+        "command": "git show a32415a -- packages/effects/src/home-template/useHomeTemplate.ts packages/effects/src/home-template/HomeTemplate.isotipo.test.tsx",
+        "exit": 0,
+        "result": "reviewed fix and regression test"
+      },
+      {
+        "command": "NODE_OPTIONS=--max-old-space-size=1024 pnpm test packages/effects/src/home-template",
+        "exit": 0,
+        "result": "5 files, 75 tests passed"
+      },
+      {
+        "command": "NODE_OPTIONS=--max-old-space-size=1024 pnpm test packages/effects",
+        "exit": 0,
+        "result": "15 files, 332 tests passed"
+      }
+    ],
+    "new_findings": [
+      {
+        "severity": "blocker",
+        "location": "packages/effects/src/home-template/useHomeTemplate.ts:450-456,367-369",
+        "description": "Zero-area anchor encountered during the animation stops the only tracking loop without observing the anchor. Restoring its geometry without a document-body resize or another subscribed event leaves the visible 3D suppressed indefinitely. The added test ends at invalidation and does not exercise recovery."
+      }
+    ],
+    "remaining_unverified": [
+      "Base-versus-current runtime trace differential",
+      "Real-GL alpha/color and pixel confinement",
+      "Independent moving-anchor and zero-area recovery browser reproduction"
+    ]
+  },
   "unverified": [
     "Base-runtime versus current-runtime differential and exact original versions of the two assertion-extended test files, prohibited by no scratch/file writes.",
     "Live moving-anchor reproduction, actual shader alpha/color correctness, real GPU pixel confinement and visual parity; no browser or GPU run authorized.",

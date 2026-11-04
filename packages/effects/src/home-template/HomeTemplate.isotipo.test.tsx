@@ -298,6 +298,68 @@ it('remeasures moving endpoints each frame and restores fallback for zero-area a
   expect(view.container.querySelectorAll('canvas')[1]?.style.getPropertyValue('--eg-home-isotipo-opacity')).toBe('0');
 });
 
+it('recovers a zero-area endpoint on its own resize notification', async () => {
+  const fixture = travelFixture();
+  const observed = new Set<Element>();
+  const unobserve = vi.fn((node: Element) => observed.delete(node));
+  const disconnect = vi.fn();
+  let notify!: ResizeObserverCallback;
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      constructor(callback: ResizeObserverCallback) {
+        notify = callback;
+      }
+      observe(node: Element) {
+        observed.add(node);
+      }
+      unobserve = unobserve;
+      disconnect = disconnect;
+    }
+  );
+  const created = scene();
+  vi.mocked(isotipoCreateScene).mockResolvedValue(created);
+  const view = render(travelPage());
+  await act(async () => {
+    /* Resolve the scene. */
+  });
+  fixture.tick();
+  const fallback = view.getByText('A fallback');
+  const anchor = fallback.parentElement as HTMLDivElement;
+  expect(fallback).toHaveAttribute('data-state', 'painted');
+  const original = vi.mocked(Element.prototype.getBoundingClientRect).getMockImplementation();
+  let width = 0;
+  vi.mocked(Element.prototype.getBoundingClientRect).mockImplementation(function (this: Element) {
+    const rect = original?.call(this) as DOMRect;
+    return this === anchor ? { ...rect, left: 250, width } : rect;
+  });
+  const count = vi.mocked(created.render).mock.calls.length;
+  fixture.tick();
+  expect(created.render).toHaveBeenCalledTimes(count);
+  expect(fallback).not.toHaveAttribute('data-state');
+  const canvas = view.container.querySelectorAll('canvas')[1];
+  expect(canvas?.style.getPropertyValue('--eg-home-isotipo-opacity')).toBe('0');
+  width = 200;
+  act(() => {
+    if (observed.has(anchor)) {
+      notify([{ target: anchor } as unknown as ResizeObserverEntry], {} as ResizeObserver);
+    }
+  });
+  expect(fallback).not.toHaveAttribute('data-state');
+  fixture.tick();
+  expect(fallback).not.toHaveAttribute('data-state');
+  fixture.tick();
+  expect(created.render).toHaveBeenCalledTimes(count + 2);
+  expect(vi.mocked(created.render).mock.lastCall?.[4]?.anchor.left).toBe(250);
+  expect(fallback).toHaveAttribute('data-state', 'painted');
+  expect(canvas?.style.getPropertyValue('--eg-home-isotipo-opacity')).not.toBe('0');
+  const otherAnchor = view.getByText('B fallback').parentElement;
+  view.rerender(travelPage(travelTable, true));
+  expect(unobserve).toHaveBeenCalledWith(otherAnchor);
+  view.unmount();
+  expect(disconnect).toHaveBeenCalled();
+});
+
 it('holds the 3D anchor across a one-sided band and suppresses missing travel', async () => {
   const fixture = travelFixture();
   const created = scene();
