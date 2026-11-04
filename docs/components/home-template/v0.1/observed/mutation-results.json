@@ -1,0 +1,446 @@
+{
+  "base": "40fb552",
+  "method": "single in-memory byte snapshot per file; one mutation at a time; exact bytes restored and sha256-verified; packed mutations rebuilt before checks",
+  "mutations": [
+    {
+      "id": "S1",
+      "file": "packages/effects/src/home-template/homeDirector.ts",
+      "description": "A1 minimum band width check removed",
+      "checks": [
+        {
+          "command": "pnpm test packages/effects/src/home-template",
+          "exit": 1,
+          "evidence": [
+            "× keeps all content visible for A1 'overlap with available scroll' and recovers with the valid fixture 7ms",
+            "× rejects later-band collisions and out-of-order sections without publishing a prefix 3ms",
+            "× derives and validates all A1 witness bands 8ms",
+            "× samples handoffs, edges, active identity and reduced motion 2ms",
+            "FAIL  packages/effects/src/home-template/HomeTemplate.lifecycle.test.tsx > keeps all content visible for A1 'overlap with available scroll' and recovers with the valid fixture",
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31melement\u001b[39m\u001b[2m).not.toHaveAttribute(\u001b[22m\u001b[32m\u001b[32m\"data-state\"\u001b[32m\u001b[39m\u001b[2m) // element.hasAttribute(\"data-state\")\u001b[22m"
+          ]
+        }
+      ],
+      "killed": true,
+      "originalSha256": "c27a2a88ec7e4ebe5393697af78149c0880cfcdf78a6e1692bebe7a274085d83",
+      "restoredSha256": "c27a2a88ec7e4ebe5393697af78149c0880cfcdf78a6e1692bebe7a274085d83",
+      "restored": true
+    },
+    {
+      "id": "S2",
+      "file": "packages/effects/src/home-template/homeDirector.ts",
+      "description": "isotipo cutoff .002 -> .02",
+      "checks": [
+        {
+          "command": "pnpm test packages/effects/src/home-template",
+          "exit": 0,
+          "evidence": []
+        }
+      ],
+      "killed": false,
+      "originalSha256": "c27a2a88ec7e4ebe5393697af78149c0880cfcdf78a6e1692bebe7a274085d83",
+      "restoredSha256": "c27a2a88ec7e4ebe5393697af78149c0880cfcdf78a6e1692bebe7a274085d83",
+      "restored": true
+    },
+    {
+      "id": "S3",
+      "file": "packages/effects/src/home-template/homeDirector.ts",
+      "description": "handoff halves swapped",
+      "checks": [
+        {
+          "command": "pnpm test packages/effects/src/home-template",
+          "exit": 1,
+          "evidence": [
+            "× creates one scene from root tokens and leaves opacity and fallback unchanged 100ms",
+            "× isolates scene rejection from ambient and visible content 6ms",
+            "× disposes on context loss without affecting ambient 9ms",
+            "× distinguishes both sides of each band edge 3ms",
+            "× preserves the cutoff at 0.001999 in both handoff directions 3ms",
+            "× preserves the cutoff at 0.002 in both handoff directions 1ms"
+          ]
+        }
+      ],
+      "killed": true,
+      "originalSha256": "c27a2a88ec7e4ebe5393697af78149c0880cfcdf78a6e1692bebe7a274085d83",
+      "restoredSha256": "c27a2a88ec7e4ebe5393697af78149c0880cfcdf78a6e1692bebe7a274085d83",
+      "restored": true
+    },
+    {
+      "id": "S4",
+      "file": "packages/effects/src/home-template/homeDirector.ts",
+      "description": "<700 ambient count scaling removed",
+      "checks": [
+        {
+          "command": "pnpm test packages/effects/src/home-template",
+          "exit": 1,
+          "evidence": [
+            "× interpolates same-layer profiles, mobile gates and counts 5ms",
+            "FAIL  packages/effects/src/home-template/homeDirector.test.ts > home director > interpolates same-layer profiles, mobile gates and counts",
+            "AssertionError: expected { Object (lineCount, squareCount, ...) } to match object { lineCount: 26, squareCount: 29 }"
+          ]
+        }
+      ],
+      "killed": true,
+      "originalSha256": "c27a2a88ec7e4ebe5393697af78149c0880cfcdf78a6e1692bebe7a274085d83",
+      "restoredSha256": "c27a2a88ec7e4ebe5393697af78149c0880cfcdf78a6e1692bebe7a274085d83",
+      "restored": true
+    },
+    {
+      "id": "S5",
+      "file": "packages/effects/src/home-template/homeTravel.ts",
+      "description": "signed anchor left clamped to 0",
+      "checks": [
+        {
+          "command": "pnpm test packages/effects/src/home-template",
+          "exit": 1,
+          "evidence": [
+            "× mixes all pose and signed rectangle fields with the director t in either direction 3ms",
+            "× uses reduced-motion poses and already snapped t 4ms",
+            "× adds hero parallax to anchor top only outside reduced motion 1ms",
+            "FAIL  packages/effects/src/home-template/homeTravel.test.ts > home travel > mixes all pose and signed rectangle fields with the director t in either direction",
+            "AssertionError: expected +0 to be close to -100, received difference is 100, but expected 0.005",
+            "FAIL  packages/effects/src/home-template/homeTravel.test.ts > home travel > uses reduced-motion poses and already snapped t"
+          ]
+        }
+      ],
+      "killed": true,
+      "originalSha256": "8e0b73956ebb0ab5fe729adc7b17dc03bfc03f110087d5945afa28f17855c097",
+      "restoredSha256": "8e0b73956ebb0ab5fe729adc7b17dc03bfc03f110087d5945afa28f17855c097",
+      "restored": true
+    },
+    {
+      "id": "S6",
+      "file": "packages/effects/src/home-template/homeTravel.ts",
+      "description": "hero parallax removed",
+      "checks": [
+        {
+          "command": "pnpm test packages/effects/src/home-template",
+          "exit": 1,
+          "evidence": [
+            "× adds hero parallax to anchor top only outside reduced motion 5ms",
+            "FAIL  packages/effects/src/home-template/homeTravel.test.ts > home travel > adds hero parallax to anchor top only outside reduced motion",
+            "AssertionError: expected { left: -100, top: 20, …(2) } to deeply equal { left: -100, top: 170, …(2) }"
+          ]
+        }
+      ],
+      "killed": true,
+      "originalSha256": "8e0b73956ebb0ab5fe729adc7b17dc03bfc03f110087d5945afa28f17855c097",
+      "restoredSha256": "8e0b73956ebb0ab5fe729adc7b17dc03bfc03f110087d5945afa28f17855c097",
+      "restored": true
+    },
+    {
+      "id": "S7",
+      "file": "packages/effects/src/home-template/homeTravel.ts",
+      "description": "pad .14 -> .2",
+      "checks": [
+        {
+          "command": "pnpm test packages/effects/src/home-template",
+          "exit": 1,
+          "evidence": [
+            "× mixes all pose and signed rectangle fields with the director t in either direction 7ms",
+            "FAIL  packages/effects/src/home-template/homeTravel.test.ts > home travel > mixes all pose and signed rectangle fields with the director t in either direction",
+            "AssertionError: expected { …(4) } to deeply equal { …(4) }"
+          ]
+        }
+      ],
+      "killed": true,
+      "originalSha256": "8e0b73956ebb0ab5fe729adc7b17dc03bfc03f110087d5945afa28f17855c097",
+      "restoredSha256": "8e0b73956ebb0ab5fe729adc7b17dc03bfc03f110087d5945afa28f17855c097",
+      "restored": true
+    },
+    {
+      "id": "S8",
+      "file": "packages/effects/src/home-template/useHomeTemplate.ts",
+      "description": "identity callback dedupe removed",
+      "checks": [
+        {
+          "command": "pnpm test packages/effects/src/home-template",
+          "exit": 1,
+          "evidence": [
+            "× invalidates all targets and recovers with retained callback identity 8ms",
+            "× remeasures on load, font readiness and body resize observation 3ms",
+            "× does not notify on callback replacement or patch an unchanged profile 4ms",
+            "FAIL  packages/effects/src/home-template/HomeTemplate.lifecycle.test.tsx > invalidates all targets and recovers with retained callback identity",
+            "AssertionError: expected \"vi.fn()\" to be called 1 times, but got 2 times",
+            "FAIL  packages/effects/src/home-template/HomeTemplate.lifecycle.test.tsx > remeasures on load, font readiness and body resize observation"
+          ]
+        }
+      ],
+      "killed": true,
+      "originalSha256": "66fcb3a54d5538134230cd08fe6aba2fcfb2b83d4f49aee0ddc9b26e3d961784",
+      "restoredSha256": "66fcb3a54d5538134230cd08fe6aba2fcfb2b83d4f49aee0ddc9b26e3d961784",
+      "restored": true
+    },
+    {
+      "id": "S9",
+      "file": "packages/effects/src/home-template/useHomeTemplate.ts",
+      "description": "data-state kept on invalid geometry",
+      "checks": [
+        {
+          "command": "pnpm test packages/effects/src/home-template",
+          "exit": 1,
+          "evidence": [
+            "× invalidates all targets and recovers with retained callback identity 8ms",
+            "× chooses the first duplicate and debounces resize for exactly 150ms 6ms",
+            "× remeasures on load, font readiness and body resize observation 3ms",
+            "× warns once per distinct invalid geometry and again after recovery 4ms",
+            "FAIL  packages/effects/src/home-template/HomeTemplate.lifecycle.test.tsx > invalidates all targets and recovers with retained callback identity",
+            "Error: \u001b[2mexpect(\u001b[22m\u001b[31melement\u001b[39m\u001b[2m).not.toHaveAttribute(\u001b[22m\u001b[32m\u001b[32m\"data-state\"\u001b[32m\u001b[39m\u001b[2m) // element.hasAttribute(\"data-state\")\u001b[22m"
+          ]
+        }
+      ],
+      "killed": true,
+      "originalSha256": "66fcb3a54d5538134230cd08fe6aba2fcfb2b83d4f49aee0ddc9b26e3d961784",
+      "restoredSha256": "66fcb3a54d5538134230cd08fe6aba2fcfb2b83d4f49aee0ddc9b26e3d961784",
+      "restored": true
+    },
+    {
+      "id": "S10",
+      "file": "packages/effects/src/home-template/useHomeTemplate.ts",
+      "description": "fallback painted regardless of render",
+      "checks": [
+        {
+          "command": "pnpm test packages/effects/src/home-template",
+          "exit": 1,
+          "evidence": [
+            "× paints only rendered anchors, including reduced motion, and never in SSR 14ms",
+            "× clears paint on geometry invalidation and new measurement, then repaints only after a frame 9ms",
+            "× clears painted anchors on missing travel, mobile suppression, zone change and context loss 12ms",
+            "× clears zero-sized anchor paint and requires a successful new frame after recovery 12ms",
+            "× clears old paint on scene rejection and zone changes 14ms",
+            "× clears paint on render failure while ambient remains operational 6ms"
+          ]
+        }
+      ],
+      "killed": true,
+      "originalSha256": "66fcb3a54d5538134230cd08fe6aba2fcfb2b83d4f49aee0ddc9b26e3d961784",
+      "restoredSha256": "66fcb3a54d5538134230cd08fe6aba2fcfb2b83d4f49aee0ddc9b26e3d961784",
+      "restored": true
+    },
+    {
+      "id": "S11",
+      "file": "packages/effects/src/home-template/useHomeTemplate.ts",
+      "description": "late scene not disposed",
+      "checks": [
+        {
+          "command": "pnpm test packages/effects/src/home-template",
+          "exit": 1,
+          "evidence": [
+            "× disposes a scene resolved after unmount 6ms",
+            "× leaves exactly one live scene in StrictMode 8ms",
+            "FAIL  packages/effects/src/home-template/HomeTemplate.isotipo.test.tsx > disposes a scene resolved after unmount",
+            "AssertionError: expected \"vi.fn()\" to be called once, but got 0 times",
+            "FAIL  packages/effects/src/home-template/HomeTemplate.isotipo.test.tsx > leaves exactly one live scene in StrictMode",
+            "AssertionError: expected 2 to be 1 // Object.is equality"
+          ]
+        }
+      ],
+      "killed": true,
+      "originalSha256": "66fcb3a54d5538134230cd08fe6aba2fcfb2b83d4f49aee0ddc9b26e3d961784",
+      "restoredSha256": "66fcb3a54d5538134230cd08fe6aba2fcfb2b83d4f49aee0ddc9b26e3d961784",
+      "restored": true
+    },
+    {
+      "id": "P1",
+      "file": "packages/effects/src/home-template/types.ts",
+      "description": "vignette image utility removed",
+      "checks": [
+        {
+          "command": "pnpm build",
+          "exit": 0,
+          "evidence": []
+        },
+        {
+          "command": "pnpm test:package-exports",
+          "exit": 1,
+          "evidence": ["AssertionError [ERR_ASSERTION]: Missing own-element class bg-[image:var(--gradient-vignette)]"]
+        },
+        {
+          "command": "pnpm test:package-consumption",
+          "exit": 1,
+          "evidence": [
+            "AssertionError [ERR_ASSERTION]: /home/egdev/.nvm/versions/node/v24.20.0/bin/node ssr.mjs failed (null):",
+            "AssertionError [ERR_ASSERTION]: Missing own HomeTemplate class bg-[image:var(--gradient-vignette)]",
+            "AssertionError [ERR_ASSERTION]: /home/egdev/.nvm/versions/node/v24.20.0/bin/node csr.mjs failed (null):",
+            "Error: ENOENT: no such file or directory, open '/tmp/gp70wspV/egdev-package-consumption-AtyY3M/consumer/scroll-reveal-hydration.html'",
+            "AssertionError [ERR_ASSERTION]: /home/egdev/.nvm/versions/node/v24.20.0/bin/node ssr.mjs failed (null):",
+            "AssertionError [ERR_ASSERTION]: Missing own HomeTemplate class bg-[image:var(--gradient-vignette)]"
+          ]
+        }
+      ],
+      "killed": true,
+      "originalSha256": "ebd47eb475b4866b2ec45519badd62df64a59c2a5b751f6beefde4efd2b94983",
+      "restoredSha256": "ebd47eb475b4866b2ec45519badd62df64a59c2a5b751f6beefde4efd2b94983",
+      "restored": true
+    },
+    {
+      "id": "P2",
+      "file": "packages/effects/src/home-template/types.ts",
+      "description": "isotipo opacity variable utility removed",
+      "checks": [
+        {
+          "command": "pnpm build",
+          "exit": 0,
+          "evidence": []
+        },
+        {
+          "command": "pnpm test:package-exports",
+          "exit": 1,
+          "evidence": [
+            "AssertionError [ERR_ASSERTION]: Missing own-element class opacity-[var(--eg-home-isotipo-opacity)]"
+          ]
+        },
+        {
+          "command": "pnpm test:package-consumption",
+          "exit": 1,
+          "evidence": [
+            "AssertionError [ERR_ASSERTION]: /home/egdev/.nvm/versions/node/v24.20.0/bin/node ssr.mjs failed (null):",
+            "AssertionError [ERR_ASSERTION]: Missing own HomeTemplate class opacity-[var(--eg-home-isotipo-opacity)]",
+            "AssertionError [ERR_ASSERTION]: /home/egdev/.nvm/versions/node/v24.20.0/bin/node csr.mjs failed (null):",
+            "Error: ENOENT: no such file or directory, open '/tmp/gp70wspV/egdev-package-consumption-mLtOGO/consumer/scroll-reveal-hydration.html'",
+            "AssertionError [ERR_ASSERTION]: /home/egdev/.nvm/versions/node/v24.20.0/bin/node ssr.mjs failed (null):",
+            "AssertionError [ERR_ASSERTION]: Missing own HomeTemplate class opacity-[var(--eg-home-isotipo-opacity)]"
+          ]
+        }
+      ],
+      "killed": true,
+      "originalSha256": "ebd47eb475b4866b2ec45519badd62df64a59c2a5b751f6beefde4efd2b94983",
+      "restoredSha256": "ebd47eb475b4866b2ec45519badd62df64a59c2a5b751f6beefde4efd2b94983",
+      "restored": true
+    },
+    {
+      "id": "P3",
+      "file": "packages/effects/src/home-template/types.ts",
+      "description": "canvas pointer-events guard removed",
+      "checks": [
+        {
+          "command": "pnpm build",
+          "exit": 0,
+          "evidence": []
+        },
+        {
+          "command": "pnpm test:package-exports",
+          "exit": 1,
+          "evidence": ["AssertionError [ERR_ASSERTION]: Missing own-element class pointer-events-none"]
+        },
+        {
+          "command": "pnpm test:package-consumption",
+          "exit": 1,
+          "evidence": [
+            "AssertionError [ERR_ASSERTION]: /home/egdev/.nvm/versions/node/v24.20.0/bin/node ssr.mjs failed (null):",
+            "AssertionError [ERR_ASSERTION]: Missing own HomeTemplate class pointer-events-none",
+            "AssertionError [ERR_ASSERTION]: /home/egdev/.nvm/versions/node/v24.20.0/bin/node csr.mjs failed (null):",
+            "Error: ENOENT: no such file or directory, open '/tmp/gp70wspV/egdev-package-consumption-mSCxKF/consumer/scroll-reveal-hydration.html'",
+            "AssertionError [ERR_ASSERTION]: /home/egdev/.nvm/versions/node/v24.20.0/bin/node ssr.mjs failed (null):",
+            "AssertionError [ERR_ASSERTION]: Missing own HomeTemplate class pointer-events-none"
+          ]
+        }
+      ],
+      "killed": true,
+      "originalSha256": "ebd47eb475b4866b2ec45519badd62df64a59c2a5b751f6beefde4efd2b94983",
+      "restoredSha256": "ebd47eb475b4866b2ec45519badd62df64a59c2a5b751f6beefde4efd2b94983",
+      "restored": true
+    },
+    {
+      "id": "P4",
+      "file": "packages/effects/src/styles/compiled.css",
+      "description": "effects @source registration removed",
+      "checks": [
+        {
+          "command": "pnpm build",
+          "exit": 0,
+          "evidence": []
+        },
+        {
+          "command": "pnpm test:package-exports",
+          "exit": 1,
+          "evidence": ["AssertionError [ERR_ASSERTION]: Missing emitted class bg-[image:var(--gradient-vignette)]"]
+        },
+        {
+          "command": "pnpm test:package-consumption",
+          "exit": 0,
+          "evidence": []
+        }
+      ],
+      "killed": true,
+      "originalSha256": "badfebe899e9ad8f48f57040499aa50babb6ee6ce7cbdec74278ffd11ff5ee7f",
+      "restoredSha256": "badfebe899e9ad8f48f57040499aa50babb6ee6ce7cbdec74278ffd11ff5ee7f",
+      "restored": true
+    },
+    {
+      "id": "P5",
+      "file": "packages/tokens/src/theme.css",
+      "description": "vignette token value changed",
+      "checks": [
+        {
+          "command": "pnpm build",
+          "exit": 0,
+          "evidence": []
+        },
+        {
+          "command": "pnpm test:package-exports",
+          "exit": 0,
+          "evidence": []
+        },
+        {
+          "command": "pnpm test:package-consumption",
+          "exit": 0,
+          "evidence": []
+        },
+        {
+          "command": "pnpm test:tokens",
+          "exit": 1,
+          "evidence": [
+            "✔ issue #218 scales one representative token per group to exact ×0.8 (0.828902ms)",
+            "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:",
+            "ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @egdev/tokens@0.3.0 test: `node --test 'tests/*.test.mjs'`"
+          ]
+        }
+      ],
+      "killed": true,
+      "originalSha256": "01d087f908775a4b08ebd726fa5d540cbc1adb97f9ab10fbd31c27bfcd6c8f97",
+      "restoredSha256": "01d087f908775a4b08ebd726fa5d540cbc1adb97f9ab10fbd31c27bfcd6c8f97",
+      "restored": true
+    }
+  ],
+  "finalGates": [
+    {
+      "command": "pnpm build",
+      "exit": 0
+    },
+    {
+      "command": "pnpm test packages/effects",
+      "exit": 0
+    },
+    {
+      "command": "pnpm test:tokens",
+      "exit": 0
+    },
+    {
+      "command": "pnpm test:package-exports",
+      "exit": 0
+    },
+    {
+      "command": "pnpm test:package-consumption",
+      "exit": 0
+    }
+  ],
+  "allRestored": true,
+  "followUp": [
+    {
+      "id": "S2",
+      "finding": "Original run: the isotipo cutoff mutation (.002 -> .02) survived because only the ambient cutoff was pinned.",
+      "fix": "Added homeDirector test 'applies the 0.002 cutoff to a fading isotipo layer' (0.0015 -> 0, 0.0025 kept).",
+      "rerun": {
+        "command": "pnpm test packages/effects/src/home-template/homeDirector.test.ts",
+        "exitWithMutation": 1,
+        "failingTest": "applies the 0.002 cutoff to a fading isotipo layer",
+        "restored": true
+      }
+    }
+  ],
+  "summary": {
+    "initiallyKilled": 15,
+    "total": 16,
+    "killedAfterFollowUp": 16
+  }
+}

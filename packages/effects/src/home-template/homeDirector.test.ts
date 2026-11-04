@@ -209,6 +209,15 @@ describe('home director', () => {
     expect(computeTargets([], [], deriveBands([], 900, 0), 0, 900, 1000, false)).toBeNull();
     expect(computeTargets(zones, g, deriveBands(geometry([300, 300, 300]), 900, 1800), 0, 900, 1000, false)).toBeNull();
   });
+  it('applies the 0.002 cutoff to a fading isotipo layer', () => {
+    const g = geometry([900, 900]);
+    const bands = deriveBands(g, 900, 1800);
+    const zones = resolveZones([{ id: 'logo', isotipo: true, scene: 'hero' }, { id: 'reading' }]).zones;
+    const at = (value: number) => computeTargets(zones, g, bands, ((1 - value) / 2) * 675, 900, 1000, false);
+    expect(at(0.0015)?.isotipo).toBe(0);
+    expect(at(0.0025)?.isotipo).toBeCloseTo(0.0025, 6);
+    expect(at(0.0025)?.ambient).toBe(0);
+  });
   it('gates the cutoff and reverses the layer handoff', () => {
     const g = geometry([900, 900]);
     const bands = deriveBands(g, 900, 1800);
