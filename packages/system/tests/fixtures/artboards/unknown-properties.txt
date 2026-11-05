@@ -1,0 +1,4 @@
+<!doctype html>
+<style>
+.a { future-property: #123456; display: block; color: var(--color-action-primary-fg); }
+</style>

@@ -1,0 +1,5 @@
+<!doctype html>
+<style>
+.a { c\6flor: #123456; \63 olor: var(--color-primitive-white); foo\;bar: red; }
+</style>
+<div style="\63 olor: #123456">Example</div>

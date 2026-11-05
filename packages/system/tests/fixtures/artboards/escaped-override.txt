@@ -1,0 +1,5 @@
+<!doctype html>
+<style>
+:root { --color-\70 rimitive-white: #123456; }
+.a { color: var(--color-primitive-white); }
+</style>

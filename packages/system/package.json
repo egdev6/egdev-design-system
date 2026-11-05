@@ -8,7 +8,8 @@
     "src"
   ],
   "bin": {
-    "egdev-system-md": "./src/cli.mjs"
+    "egdev-system-md": "./src/cli.mjs",
+    "egdev-artboard-check": "./src/check-artboard-cli.mjs"
   },
   "exports": {
     ".": "./src/render-system-md.mjs",
