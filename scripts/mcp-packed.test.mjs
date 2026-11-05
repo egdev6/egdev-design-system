@@ -78,6 +78,8 @@ test('offline packed install answers all tools with its installed artifact', { t
         total: artifact.tokens.length
       });
       assert.deepEqual(await call('get_material_recipe'), { designSystem, recipes: artifact.materialRecipes });
+      const systemMd = readFileSync(join(clean, 'node_modules/@egdev/system/system.md'), 'utf8');
+      assert.deepEqual(await call('get_design_system_md'), { designSystem, systemMd });
     } finally {
       await client.close();
     }
