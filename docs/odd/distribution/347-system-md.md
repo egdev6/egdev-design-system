@@ -7,7 +7,7 @@
 | Proposal | `egdev-ds-distribution-v1` (roadmap index [#349](https://github.com/egdev6/egdev-design-system/issues/349)) |
 | Task / specs | `odd/tasks/ds-distribution.md` T6 — S1 (milestone goal), S5 ("design/system.md generado desde el DS (Recomendado)") |
 | Dependencies | #345 (artifact; decisions O1–O9 approved 2026-11-05); #346 (decisions Q1–Q8 approved 2026-11-05) for the MCP delivery path; #342 for the packed tarball (decisions D1–D7 approved 2026-11-05) |
-| Status | **Approved — owner, 2026-11-05 (see Owner approval); WU1–WU5 implemented, packed-consumer verification and observed sync pending; WU6 deferred to MCP integration** |
+| Status | **Approved — owner, 2026-11-05 (see Owner approval); WU1–WU6 implemented; MCP packed verification and observed sync pending** |
 
 Planning only. This document makes no source, `package.json`, token, dependency, `design/` folder, Git or GitHub change. Its decisions are numbered `P1–P8` and are local to #347: they reference, and never answer, #342 `D1–D7`, #345 `O1–O9` and #346 `Q1–Q8`.
 

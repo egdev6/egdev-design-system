@@ -36,7 +36,11 @@ test('startup fails closed with exact diagnostics for missing, malformed and inc
     }
     writeFileSync(
       join(system, 'package.json'),
-      '{"name":"@egdev/system","type":"module","exports":{"./design-system.json":"./design-system.json"}}'
+      '{"name":"@egdev/system","type":"module","exports":{".":"./render-system-md.mjs","./design-system.json":"./design-system.json"}}'
+    );
+    cpSync(
+      fileURLToPath(new URL('../../system/src/render-system-md.mjs', import.meta.url)),
+      join(system, 'render-system-md.mjs')
     );
     const artifactPath = join(system, 'design-system.json');
     const run = () => spawnSync(process.execPath, [join(mcp, 'dist/index.js')], { encoding: 'utf8', timeout: 5000 });

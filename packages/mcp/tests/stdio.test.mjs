@@ -10,7 +10,7 @@ import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 const artifact = JSON.parse(readFileSync(new URL('../../system/design-system.json', import.meta.url), 'utf8'));
 const designSystem = { name: artifact.name, schemaVersion: artifact.schemaVersion, packages: artifact.packages };
 const executable = fileURLToPath(new URL('../dist/index.js', import.meta.url));
-const names = ['get_component', 'get_material_recipe', 'get_tokens', 'list_components'];
+const names = ['get_component', 'get_design_system_md', 'get_material_recipe', 'get_tokens', 'list_components'];
 
 test('stdio tools project the installed artifact, validate inputs, and survive errors', async () => {
   const client = new Client({ name: 'test', version: '1.0.0' });

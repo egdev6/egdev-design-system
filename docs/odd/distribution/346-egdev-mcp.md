@@ -7,9 +7,9 @@
 | Proposal | `egdev-ds-distribution-v1` (roadmap index [#349](https://github.com/egdev6/egdev-design-system/issues/349)) |
 | Task / specs | `odd/tasks/ds-distribution.md` T5 — S1 (milestone goal), S4 ("Paquete @egdev/mcp propio (Recomendado)") |
 | Dependencies | #345 (artifact, decisions O1–O9 approved 2026-11-05), #342 (packing, decisions D1–D7 approved 2026-11-05) |
-| Status | **Implementation in progress — four issue tools; packed verification pending** |
+| Status | **Five-tool integration implemented; packed verification pending** |
 
-Parent decision L10 scopes this implementation to the four issue tools. `get_design_system_md` is deferred to the integration after #347; it is not registered as a stub. The original owner approval and five-tool requirements below remain recorded as historical context.
+Parent decision L10 deferred `get_design_system_md` until the integration after #347; that integration now implements the approved fifth tool. The original owner approval and five-tool requirements below remain recorded as historical context.
 
 ## 1. Current state (observed)
 

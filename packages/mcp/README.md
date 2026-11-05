@@ -1,6 +1,6 @@
 # @egdev/mcp
 
-Offline, read-only MCP over the `@egdev/system` artifact. Install both tarballs from the same release into a consumer and use Node 24. The server exposes `list_components`, `get_component`, `get_tokens`, and `get_material_recipe`. Each result includes the artifact's version identity. `get_design_system_md` is deferred to the #347 integration.
+Offline, read-only MCP over the `@egdev/system` artifact. Install both tarballs from the same release into a consumer and use Node 24. The server exposes `list_components`, `get_component`, `get_tokens`, `get_material_recipe`, and `get_design_system_md`. Each result includes the artifact's version identity. `get_design_system_md` returns `systemMd` rendered by `@egdev/system` from the same artifact.
 
 Replace `/absolute/path/to/consumer` with the directory containing the installed tarballs. Pi (`.pi/mcp.json` in a trusted project):
 

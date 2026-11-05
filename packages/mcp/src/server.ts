@@ -1,6 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { type Artifact, versionBlock } from './artifact.js';
+import { getDesignSystemMd } from './tools/get-design-system-md.js';
 
 export function createServer(data: Artifact) {
   const server = new McpServer({ name: '@egdev/mcp', version: '0.1.0' });
@@ -47,5 +48,8 @@ export function createServer(data: Artifact) {
     }
     return result({ designSystem, recipes });
   });
+  server.registerTool('get_design_system_md', { inputSchema: {}, annotations }, () =>
+    result({ designSystem, systemMd: getDesignSystemMd(data) })
+  );
   return server;
 }
