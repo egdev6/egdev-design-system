@@ -1,0 +1,42 @@
+{
+  "v": 5,
+  "entries": {
+    "atoms-gauge--default": {
+      "id": "atoms-gauge--default",
+      "type": "story",
+      "title": "Atoms/Gauge",
+      "name": "Default"
+    },
+    "atoms-gauge--value-limits": {
+      "id": "atoms-gauge--value-limits",
+      "type": "story",
+      "title": "Atoms/Gauge",
+      "name": "Value Limits"
+    },
+    "atoms-gauge--docs": { "id": "atoms-gauge--docs", "type": "docs", "title": "Atoms/Gauge" },
+    "atoms-iconbutton--default": {
+      "id": "atoms-iconbutton--default",
+      "type": "story",
+      "title": "Atoms/IconButton",
+      "name": "Default"
+    },
+    "molecules-table--default": {
+      "id": "molecules-table--default",
+      "type": "story",
+      "title": "Molecules/Table",
+      "name": "Default"
+    },
+    "recipes-scene-recipes--about-scene": {
+      "id": "recipes-scene-recipes--about-scene",
+      "type": "story",
+      "title": "Recipes/Scene recipes",
+      "name": "About scene"
+    },
+    "welcome--docs": { "id": "welcome--docs", "type": "docs", "title": "Welcome" },
+    "foundations-scene-recipes--docs": {
+      "id": "foundations-scene-recipes--docs",
+      "type": "docs",
+      "title": "Foundations/Scene recipes"
+    }
+  }
+}

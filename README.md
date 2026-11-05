@@ -43,6 +43,8 @@ pnpm build
 
 [AGENTS.md](AGENTS.md) resume las reglas; los flujos detallados están en [`skills/`](skills).
 
+- [docs/MCP.md](docs/MCP.md) — Storybook MCP endpoint for agents: start the dev server, connect a client and query the documentation tools.
+
 ## Licencia
 
 MIT

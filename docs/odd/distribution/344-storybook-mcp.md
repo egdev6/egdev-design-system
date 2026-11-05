@@ -145,3 +145,44 @@ Approved by the owner on 2026-11-05. Every decision below takes its recommended 
 | D8 | (a) The existing root `typescript` devDependency | "Aceptar todas las recomendaciones (Recomendado)" |
 
 Amendments recorded in place: R11 and the §4 file layout now state the approved D3 (a) split and the fixed paths. #346 Q6 (a) keeps the package-specific MCP examples in `packages/mcp/README.md`, so `docs/MCP.md` links to them instead of repeating them.
+
+## Log
+
+- **L1 — Implementation and live proof (2026-11-05).** Implemented T3 on branch `test/344-storybook-mcp` (base `32fe9d7`) with the approved shape: `scripts/storybook-mcp-contract.mjs` (pure expectation + reconciliation), `scripts/storybook-mcp-contract.test.mjs` (deterministic fixtures, no server), `scripts/storybook-mcp-exceptions.json` (data-only registry), the live smoke rewritten over the derived contract, `docs/MCP.md` linked once from `README.md` and `CONTRIBUTING.md`, and the only `package.json` edit being the `test:storybook-mcp` value (R11).
+
+  **Observed live run (R10, AC2).** Storybook was started with `pnpm storybook` (`storybook dev -p 6006 --host 127.0.0.1`) and the `docs/MCP.md` command blocks were pasted verbatim in one shell (initialize → `notifications/initialized` → `tools/list` → one `tools/call` per tool). Observed output:
+
+  ```text
+  $ export STORYBOOK_MCP_URL=http://127.0.0.1:6006/mcp   # guide step 1
+  $ echo "$MCP_SESSION"
+  5dce6961-3b21-4be7-81da-8b770ce5bf7f
+  $ mcp_post '{"jsonrpc":"2.0","id":3,"method":"tools/list","params":{}}' | grep -o '"name":"docs-[a-z-]*"'
+  "name":"docs-list"
+  "name":"docs-show"
+  "name":"docs-show-story"
+  $ mcp_post '{..."name":"docs-list","arguments":{"withStoryIds":true}...}' | mcp_text | grep '^- ' | head -5
+  - AspectRatio (primitives-aspectratio): ## Description
+  - Divider (primitives-divider): ## Description
+  - Label (primitives-label): ## Description
+  - Portal (primitives-portal): ## Description
+  - Skeleton (primitives-skeleton): ## Description
+  $ ... | mcp_text | grep -c '^- '
+  107
+  $ mcp_post '{..."name":"docs-show","arguments":{"id":"atoms-gauge"}...}' | mcp_text | head -12
+  # Gauge
+
+  ID: atoms-gauge
+
+  ## Description
+  A passive circular meter for a magnitude normalized to 0–100, not task progress.
+  $ mcp_post '{..."name":"docs-show-story","arguments":{"storyId":"atoms-gauge--default"}...}' | mcp_text | head -12
+  # Gauge - Default
+
+  Uses only the required accessible name and measurement, preserving every component default.
+  ```
+
+  Recorded figures: three docs tools, 99 components, 8 standalone guides (107 `- ` headers on `docs-list`), 874 story ids, `docs-show` sample id `atoms-gauge`, `docs-show-story` sample id `atoms-gauge--default`. The server this run used was started and stopped by the implementation session; `port 6006` is left free.
+
+  **Checks observed.** `pnpm test:storybook-mcp` against that server: `tests 25 / pass 25 / fail 0` in 88 s, with the live diagnostic `docs-list: 99 components, 8 docs guides, 874 story ids`. `node --test scripts/storybook-mcp-contract.test.mjs` green offline (24/24). `pnpm typecheck` and `pnpm lint` green. `pnpm test`: 2492/2496 tests pass; the 4 failing tests (10 files, all under `packages/effects`) fail with `Failed to resolve import "@egdev/ui"` because `packages/ui/dist` is not built in this worktree — a build-order condition of the environment, not of this change (this diff touches only `scripts/`, `docs/`, `README.md`, `CONTRIBUTING.md` and one `package.json` script value).
+
+  **Deviations from the plan text, with evidence.** (1) Per-request timeout is 30 s instead of the historical 3 s: measured `docs-show` latency is 5.2 s per call on this machine, so the old 3 s budget made the previous smoke fail with a timeout before reaching any assertion. (2) The registry holds 60 undocumented exports and 98 documented ones rather than the plan's 61/97: the plan's baseline was measured without R3/R4 name normalisation, so `Table<Row>` (`molecules-table`) now matches the `Table` export; the reconciled totals stay 158 = 98 + 60, validated by the live run. (3) The deterministic half proves export coverage offline through the story metas plus the registry (`158 exports = 98 story-documented + 60 registered`) instead of committing a captured manifest snapshot; the manifest itself is reconciled in the live run, so no large fixture goes stale. (4) New fixtures live in `scripts/fixtures/storybook-mcp/` (`docs-list.md`, `index.json`), the path the parent authorised for WU1/WU2's synthetic manifests.
