@@ -144,6 +144,7 @@ test('release:pack includes the system artifact in its versioned tarball', () =>
   assert.ok(existsSync(entry.path), `Missing ${entry.file}`);
   const archive = gunzipSync(readFileSync(entry.path));
   let artifact;
+  const files = new Set();
   for (let offset = 0; offset + 512 <= archive.length; ) {
     const header = archive.subarray(offset, offset + 512);
     if (header.every((byte) => byte === 0)) {
@@ -152,12 +153,19 @@ test('release:pack includes the system artifact in its versioned tarball', () =>
     const name = header.subarray(0, 100).toString('utf8').split('\0')[0].replace(/^\.\//, '');
     const size = Number.parseInt(header.subarray(124, 136).toString('utf8').replace(/\0.*$/, '').trim() || '0', 8);
     const start = offset + 512;
+    files.add(name);
     if (name === 'package/design-system.json') {
       artifact = archive.subarray(start, start + size).toString('utf8');
     }
     offset = start + Math.ceil(size / 512) * 512;
   }
   assert.equal(artifact, readFileSync(resolve(root, 'packages/system/design-system.json'), 'utf8'));
+  for (const name of ['package/system.md', 'package/src/cli.mjs', 'package/src/render-system-md.mjs']) {
+    assert.ok(files.has(name), `Missing ${name} from ${entry.file}`);
+  }
+  const manifest = readPackedManifest(entry.path);
+  assert.equal(manifest.bin['egdev-system-md'], './src/cli.mjs');
+  assert.equal(manifest.exports['.'], './src/render-system-md.mjs');
 });
 
 test('release:pack includes MCP with the matching carrier dependency', () => {
