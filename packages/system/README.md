@@ -8,6 +8,8 @@ The additive `components[].parts` entries expose source-derived compound part na
 
 The reference starts with organisms-first composition and proposal guidance, then orders catalog components by level. Source-derived `composedOf` entries identify public JSX components used in an implementation; props, parts and catalog descriptions document available slots. Static extraction is not exhaustive.
 
+The `compositionRecipes` field carries reviewed card and Hero supplementary-content examples, checked against public UI exports. Recipes cite their evidence and do not add component slots or replace source contracts.
+
 See [the artifact reference](../../docs/distribution/design-system-artifact.md) and [renderer guide](../../docs/distribution/system-md.md) for generation and limitations.
 
 The additive `typographyRoles` lists representative Heading, eyebrow, lede and code recipes with their source-derived font and size tokens. Missing token mappings are unresolved; these examples are not a universal cascade. Card headings may use sans rather than display.

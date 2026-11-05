@@ -26500,6 +26500,44 @@
       "tracking": "--text-body-muted--letter-spacing"
     }
   ],
+  "compositionRecipes": [
+    {
+      "id": "Session preview",
+      "guidance": "When no existing organism or molecule fits, compose a Surface containing Badge, TerminalCard and Countdown; the walkthrough records this session preview. Surface supplies Material paint; respect each child's own treatment.",
+      "components": ["Surface", "Badge", "TerminalCard", "Countdown"],
+      "sources": [
+        "docs/odd/distribution/348-gentle-design-walkthrough.md",
+        "docs/MATERIAL.md",
+        "packages/ui/src/primitives/surface/types.ts"
+      ]
+    },
+    {
+      "id": "List row",
+      "guidance": "Reuse ListItem with its Body, Leading, Content and Meta parts for an agenda row; its own Surface recipe supplies the frame. Use a surrounding Surface only when a separate group frame is needed, not as a replacement for ListItem's treatment.",
+      "components": ["Surface", "ListItem", "ListItemBody", "ListItemLeading", "ListItemContent", "ListItemMeta"],
+      "sources": [
+        "docs/odd/distribution/348-gentle-design-walkthrough.md",
+        "packages/ui/src/molecules/list-item/types.ts",
+        "packages/ui/src/molecules/list-item/useListItem.ts"
+      ]
+    },
+    {
+      "id": "Media card",
+      "guidance": "For a featured article link, reuse ArticleFeature and ArticleFeatureCover with PhotoFrame ratio=auto; ArticleFeature already uses the Surface raised frame. For a different passive media grouping, compose PhotoFrame and suitable content inside Surface rather than inventing a general card API.",
+      "components": ["Surface", "ArticleFeature", "ArticleFeatureCover", "PhotoFrame"],
+      "sources": ["packages/ui/src/molecules/article-feature/types.ts", "docs/MATERIAL.md"]
+    },
+    {
+      "id": "Hero supplementary content",
+      "guidance": "Place a registration count as sibling content beside or after Hero in the host section, for example a labelled Stat; do not put it in Hero children, which accept zero to two independent named actions, or decorative media. Stat owns its own Material treatment and the consumer formats the value.",
+      "components": ["Hero", "Stat", "WebSection"],
+      "sources": [
+        "packages/ui/src/organisms/hero/types.ts",
+        "packages/ui/src/atoms/stat/types.ts",
+        "packages/ui/src/organisms/web-section/types.ts"
+      ]
+    }
+  ],
   "types": [
     {
       "name": "CalendarGridEntry",

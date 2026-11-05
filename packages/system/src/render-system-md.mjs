@@ -61,6 +61,13 @@ function assetLines(component, assets) {
   ]);
 }
 
+function compositionRecipeLines(recipes) {
+  return (recipes ?? []).map(
+    (recipe) =>
+      `- ${cell(recipe.id)}: ${cell(recipe.guidance)} (compositionRecipes[] · ${recipe.sources.map(cell).join(' · ')})`
+  );
+}
+
 /** Render the artifact without reading the environment or filesystem. */
 export function renderSystemMd(artifact) {
   const tokens = artifact.tokens ?? [];
@@ -74,7 +81,8 @@ export function renderSystemMd(artifact) {
     'Map each template, section, organism and molecule approximation in the artboard with `data-component="Name"` (for example `data-component="WebTemplate"` and `data-component="WebSection"`). These markers do not render React.',
     'Mark missing pieces with `data-proposal="organism:Name"` or `data-proposal="atom:Name"` and add an artboard note describing the need, reused pieces and cataloging rationale. Proposals are not approved components.',
     'Use the catalog descriptions, source-derived Composes lists, parts and documented props/children as slots. These are static source facts, not an exhaustive runtime composition or permission to invent slots.',
-    'See Typography roles for source-derived font families and sizes; display headings and body copy have different recipes, and component overrides may differ.'
+    'See Typography roles for source-derived font families and sizes; display headings and body copy have different recipes, and component overrides may differ.',
+    ...compositionRecipeLines(artifact.compositionRecipes)
   ]);
   section('Header', [
     `# ${cell(artifact.name)}`,

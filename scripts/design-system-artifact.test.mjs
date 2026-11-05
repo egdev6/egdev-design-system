@@ -45,6 +45,25 @@ test('--check detects Logo artwork drift without writing', () => {
   assert.equal(readFileSync('packages/system/design-system.json', 'utf8'), before);
 });
 
+test('composition recipes reference only exported components and reject drift', () => {
+  const artifact = read('packages/system/design-system.json');
+  const recipes = read('packages/system/src/composition-recipes.json');
+  assert.deepEqual(artifact.compositionRecipes, recipes);
+  const names = new Set(artifact.components.filter((item) => item.package === '@egdev/ui').map((item) => item.name));
+  for (const recipe of recipes) {
+    for (const name of recipe.components) {
+      assert.ok(names.has(name), name);
+    }
+  }
+  const result = spawnSync(
+    process.execPath,
+    ['--import', './scripts/fixtures/design-system-artifact/recipe-drift.mjs', 'scripts/build-artifact.mjs', '--check'],
+    { encoding: 'utf8', timeout: 120_000 }
+  );
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /Non-exported component: MissingRecipeComponent/);
+});
+
 test('artifact identifies the design system and its package version set', () => {
   const artifact = read('packages/system/design-system.json');
   assert.equal(artifact.name, 'egdev-design-system');
@@ -381,6 +400,7 @@ test('artifact schema and total ordering match the contract', () => {
     'components',
     'anatomyUtilities',
     'typographyRoles',
+    'compositionRecipes',
     'types',
     'tokens',
     'materialRecipes',
