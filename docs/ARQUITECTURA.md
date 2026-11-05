@@ -101,7 +101,7 @@ packages/ui/src/{primitives|atoms|molecules|organisms|templates}/{kebab-name}/
   index.ts                   exportaciones públicas
 ```
 
-Current implementation reference: `packages/ui/src/atoms/gauge/`, interpreted through its effective base-plus-v0.9-plus-v0.10 contract above. Surface, IconButton and Tabs are also exported React examples; exports do not establish catalog-wide M3 compliance or approve contract changes. See the [contract](../skills/_shared/component-contract.md#typescript) for native inheritance and refs when an API exposes them: the React `>=18.0.0` peer is not compatibility proof. Gauge exposes no ref or `asChild` API.
+Current implementation reference: `packages/ui/src/atoms/gauge/`, interpreted through its effective base-plus-v0.9-plus-v0.10 contract above. Surface, IconButton and Tabs are also exported React examples; exports do not establish catalog-wide M3 compliance or approve contract changes. See the [contract](../skills/_shared/component-contract.md#typescript) for native inheritance and refs when an API exposes them: the React `^18.3.1 || ^19.3.0` peer only mirrors the tested matrix (18.3.1 and 19.3.0) and is not compatibility proof. Gauge exposes no ref or `asChild` API.
 
 Storybook 10 documenta la API con autodocs y docgen TypeScript sobre componentes reales. No se sustituyen fallos de extracción por `argTypes` manuales; `@control select` no garantiza un select visible. Defaults, required, enums y composición se verifican contra hooks/CVA; las stories solo aportan args requeridos y ejemplos. La [guía de stories](../skills/component-contributor/references/stories.md) fija formato e imports; los tests de interacción van en `.test.tsx`, nunca en `play`.
 

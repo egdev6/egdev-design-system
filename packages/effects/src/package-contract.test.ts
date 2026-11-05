@@ -33,8 +33,8 @@ describe('@egdev/effects package contract', () => {
     expect(manifest.dependencies).toEqual({ '@egdev/ui': 'workspace:*', 'class-variance-authority': '0.7.1' });
     expect(manifest.peerDependencies).toEqual({
       '@egdev/tokens': 'workspace:*',
-      react: '>=18.0.0',
-      'react-dom': '>=18.0.0',
+      react: '^18.3.1 || ^19.3.0',
+      'react-dom': '^18.3.1 || ^19.3.0',
       three: '0.160.0'
     });
     expect(manifest.devDependencies).toEqual({

@@ -46,7 +46,7 @@ Keep **one issue per component**, not per version: the initial body holds the fi
 - `T[]`, no `Array<T>`. Sin `!`, `@ts-ignore` ni `@ts-expect-error` sin motivo escrito.
 - Hereda props nativas y resuelve conflictos con `Omit`; usa `ComponentPropsWithoutRef<'elemento'>` si la API no expone refs. Heredar `ComponentProps` no prueba que una ref llegue al DOM.
 - Declare explicit public props in the component generic (for example, `FC<GaugeProps>`). Do not promise universal refs or impose `forwardRef` without verifying each component's contract. Gauge exposes no ref or `asChild` API.
-- El peer declara React `>=18.0.0` y el desarrollo usa React 19: una API de refs exclusiva de React 19 no acredita consumo con React 18. La evidencia de compatibilidad vive en el [plan ODD](../../docs/odd/stack-alignment.md), no se deduce de los tipos.
+- El peer declara React `^18.3.1 || ^19.3.0`, la matriz probada (18.3.1 y 19.3.0), y el desarrollo usa React 19: una API de refs exclusiva de React 19 no acredita consumo con React 18. La evidencia de compatibilidad vive en el [plan ODD](../../docs/odd/stack-alignment.md), no se deduce de los tipos.
 - `cn()` desde `@/lib/cn`.
 - `...rest` al elemento nativo o raíz compatible para que pasen `data-*`, `aria-*` y atributos de formulario sin pisar la semántica. Documenta restricciones reales de composición, como `asChild`.
 
