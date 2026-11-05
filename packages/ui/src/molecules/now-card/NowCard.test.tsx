@@ -345,6 +345,24 @@ describe('NowCard public contract', () => {
     expect(container.querySelector('.eg-now-card__foot')).toHaveClass('border-x-0', 'border-b-0', 'shadow-none');
   });
 
+  it('rejects root style at the public type and untyped runtime boundaries while preserving native attributes', () => {
+    const styleIsProtected: 'style' extends keyof NowCardProps ? false : true = true;
+    expect(styleIsProtected).toBe(true);
+    const untyped: ComponentPropsWithoutRef<'article'> & { title: string; 'data-track': string } = {
+      title: 'Activity',
+      style: { color: 'red', display: 'none' },
+      role: 'region',
+      id: 'activity',
+      'data-track': 'kept'
+    };
+    render(<NowCard {...(untyped as NowCardProps)} />);
+    const article = screen.getByRole('article', { name: 'Activity' });
+    expect(article).not.toHaveAttribute('style');
+    expect(article).not.toHaveAttribute('role');
+    expect(article).toHaveAttribute('id', 'activity');
+    expect(article).toHaveAttribute('data-track', 'kept');
+  });
+
   it('strips protected article semantics and forwards the remaining native props', () => {
     // The real pre-narrowing native surface a JavaScript consumer can pass; `data-*` attributes are
     // valid on the element but absent from React's attribute type, so the fixture declares the one

@@ -65,6 +65,7 @@ export function useNowCard({
   // Remove protected native semantics even at untyped/JavaScript boundaries: the heading owns the name.
   const {
     role: _role,
+    style: _style,
     tabIndex: _tabIndex,
     contentEditable: _editable,
     dangerouslySetInnerHTML: _html,

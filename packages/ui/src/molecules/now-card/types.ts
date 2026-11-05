@@ -12,6 +12,7 @@ type NowCardNativeProps = Omit<
   | 'children'
   | 'title'
   | 'role'
+  | 'style'
   | 'tabIndex'
   | 'contentEditable'
   | 'dangerouslySetInnerHTML'

@@ -866,13 +866,14 @@ describe('Storybook TypeScript docgen contract', () => {
     ]);
     expect(props.size?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual(['md', 'sm']);
     expect(props.children).toMatchObject({ required: false, tags: { control: 'false' } });
-    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style']) {
+    for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className']) {
       expect(props[name], name).toBeDefined();
     }
     for (const name of [
       'ref',
       'asChild',
       'role',
+      'style',
       'tabIndex',
       'contentEditable',
       'dangerouslySetInnerHTML',
