@@ -2,7 +2,7 @@
 
 # Referencia: tests de componentes
 
-Vitest 4 + Testing Library React + user-event. Current component reference: `packages/ui/src/atoms/gauge/Gauge.test.tsx`, under the [effective v0.10 base-plus-amendments contract and separate plan approval](../../_shared/component-contract.md#current-gauge-contract). Gauge is the only public React component; `packages/ui/src/lib/cn.test.ts` tests a utility, not another component. Surface, IconButton and Tabs remain future/provisional Foundation concepts, not current fixtures or importable APIs.
+Vitest 4 + Testing Library React + user-event. Current component reference: `packages/ui/src/atoms/gauge/Gauge.test.tsx`, under the [effective v0.10 base-plus-amendments contract and separate plan approval](../../_shared/component-contract.md#current-gauge-contract). Public availability is authoritative in `packages/ui/src/index.ts` and `packages/effects/src/index.ts`; `docs/CATALOGO.md` lists components by level. Surface, IconButton and Tabs are exported; `packages/ui/src/lib/cn.test.ts` tests a utility, not a component. Exported status does not establish catalog-wide M3 compliance or approve contract changes.
 
 ## Organización y entorno
 
@@ -78,7 +78,7 @@ describe('Gauge public contract', () => {
 
 The internal well query checks a bounded composition invariant, not a new public part-selector API or full class snapshot. Its v0.10 transparent-frame finish belongs to static CVA utilities in `types.ts`: border-box, padding 0, solid **0px border** (not Surface's conceptual base 1px), full token radius and foreground, with transparent background, no image and explicit no-shadow reset. The unchanged 10% alpha track blends with the actual host. `gauge.css` remains geometry-only, including +0.5px smoothing. Require emitted CSS and separate browser evidence for this finish; DOM classes alone do not prove computed or pixel parity. No hidden React Surface helper or general flat-well/global recipe permission follows from these assertions.
 
-Complete applicable Gauge cases: clamped endpoints/decimals, consumer-selected states with visible non-color cues, merged unique descriptions, decorative centers, finite-positive fractional sizes/invalid fallback, native semantic protection and passive focus/pointer behavior. Gauge has no ref, `asChild`, disabled or action/event API; use `userEvent` where it tests passivity, not to invent interaction. Future button/tab contracts must test their actual native/Radix behavior only after approval and implementation; they are not live Gauge examples. Consumer type negatives may use `@ts-expect-error` with a concrete reason (for example, a missing required label), never indiscriminate casts or general suppressions.
+Complete applicable Gauge cases: clamped endpoints/decimals, consumer-selected states with visible non-color cues, merged unique descriptions, decorative centers, finite-positive fractional sizes/invalid fallback, native semantic protection and passive focus/pointer behavior. Gauge has no ref, `asChild`, disabled or action/event API; use `userEvent` where it tests passivity, not to invent interaction. Existing button and tab APIs are tested against their actual native/Radix contracts; changes or new contracts require approval and are not Gauge examples. Consumer type negatives may use `@ts-expect-error` with a concrete reason (for example, a missing required label), never indiscriminate casts or general suppressions.
 
 ## Comandos y límites de la evidencia
 

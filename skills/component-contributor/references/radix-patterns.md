@@ -1,7 +1,7 @@
 # Referencia: patrones de Radix UI
 
 > Adapted from Stack & Flow: individual-package namespaces and token-backed Tailwind/CVA under the [contract](../../_shared/component-contract.md#radix); no implied completed migration. Historical BEM Menu/Dialog snippets below illustrate Radix structure only, not target appearance permission. Use approved types.ts variants and hook-derived per-part cn() composition, attribute data/aria variants and minimal justified CSS; preserve legacy until parity and migration approval.
-> Current implementation reference: `packages/ui/src/atoms/gauge/` under the [effective v0.10 contract](../../_shared/component-contract.md#current-gauge-contract). Gauge is passive and uses no Radix primitive; it is the only public React component. Surface, IconButton and Tabs are future/provisional Foundation concepts, not current importable references.
+> Current implementation references: `packages/ui/src/atoms/gauge/`, `packages/ui/src/atoms/icon-button/`, `packages/ui/src/molecules/tabs/`, `packages/ui/src/molecules/menu/` and `packages/ui/src/molecules/dialog/`. Gauge is passive and uses no Radix primitive; its [effective v0.10 contract](../../_shared/component-contract.md#current-gauge-contract) remains specific to it. Public availability is authoritative in `packages/ui/src/index.ts` and `packages/effects/src/index.ts`; `docs/CATALOGO.md` lists components by level. Exported status does not establish catalog-wide M3 compliance or approve contract changes.
 
 ## Por qué Radix
 
@@ -9,13 +9,13 @@ Radix da primitivas sin estilo y accesibles: teclado, ARIA, foco y portales. Nos
 
 ## Importación
 
-De paquetes individuales, con namespace `*Primitive`. Hoy solo están declarados `@radix-ui/react-tabs`, `@radix-ui/react-slot` y `@radix-ui/react-accessible-icon` en `packages/ui/package.json`. Menú, diálogo y el resto son esquemas futuros, no componentes disponibles: añadir su paquete requiere confirmación.
+Use individual packages with a `*Primitive` namespace. `packages/ui/package.json` declares `@radix-ui/react-` packages: `accessible-icon`, `alert-dialog`, `aspect-ratio`, `avatar`, `checkbox`, `collapsible`, `dialog`, `dropdown-menu`, `label`, `popover`, `portal`, `progress`, `radio-group`, `scroll-area`, `select`, `separator`, `slider`, `slot`, `switch`, `tabs`, `toast`, `toggle`, `toggle-group`, `tooltip` and `visually-hidden`. Adding a missing package requires confirmation.
 
 ```tsx
 // Use individual-package namespaces.
 import * as TabsPrimitive from '@radix-ui/react-tabs';
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'; // schematic: package not yet approved
-import * as DialogPrimitive from '@radix-ui/react-dialog'; // schematic: package not yet approved
+import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 // Avoid ambiguous standalone primitive imports.
 import { Root, Trigger, Content } from '@radix-ui/react-dropdown-menu';
@@ -26,7 +26,7 @@ Las utilidades también usan namespace: `import * as Slot from '@radix-ui/react-
 ## Menú (Menu)
 
 ```tsx
-// Schematic: MenuProps/useMenu do not exist here; approve anatomy, package and plan first.
+// Schematic only; see packages/ui/src/molecules/menu/ for the current implementation.
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 
 export const Menu: FC<MenuProps> = (props) => {
@@ -70,7 +70,7 @@ Historical state-recipe illustration only: use token-backed `data-[highlighted]:
 
 - `data-highlighted` es el foco de teclado y el hover del item: no hace falta `:hover` aparte.
 - Items con `cursor: default`, como un menú nativo.
-- This conceptual future snippet illustrates states only. Its root still needs the overlay treatment from [Material](../../../docs/MATERIAL.md), an approved component recipe or Surface proposal, and the required contract/plan/package approvals. Surface is not currently importable; Gauge's transparent-frame exception does not authorize a generic wrapper or Surface-class cloning. Use token spacing and justify custom offsets; do not copy `collisionPadding={8}` as policy.
+- This schematic snippet illustrates states only; see `packages/ui/src/molecules/menu/` for the current implementation. Its root still needs the overlay treatment from [Material](../../../docs/MATERIAL.md), composed through the exported Surface primitive or an approved component recipe, and the required contract/plan approvals. Gauge's transparent-frame exception does not authorize a generic wrapper or Surface-class cloning. Use token spacing and justify custom offsets; do not copy `collisionPadding={8}` as policy.
 
 ## Navegación lateral (NavList)
 
@@ -78,10 +78,10 @@ Grupos plegables con `Accordion` (`type="multiple"`) o `Collapsible` si es un so
 
 ## Diálogo y sheet
 
-**Conceptual future example, not runnable current API:** Dialog requires an approved contract/plan and missing-package confirmation before implementation. IconButton is also unavailable; a native close button illustrates Radix composition without importing a retired component. Appearance and composition require their own approved recipes; this sketch grants no dynamic-class or handwritten-style exception and is not a current story/test/consumer fixture.
+**Schematic snippet, not a runnable API example:** see `packages/ui/src/molecules/dialog/` and `packages/ui/src/atoms/icon-button/` for the current implementations. Changes or new contracts require approval. Appearance and composition require their own approved recipes; this sketch grants no dynamic-class or handwritten-style exception and is not a current story/test/consumer fixture.
 
 ```tsx
-import * as DialogPrimitive from '@radix-ui/react-dialog'; // future: requires approval
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
   <DialogPrimitive.Trigger asChild={true}>{trigger}</DialogPrimitive.Trigger>
@@ -116,7 +116,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'; // future: requires a
 
 ## Flotantes de lectura
 
-- **Tooltip:** solo texto, nunca contenido interactivo. Un `TooltipPrimitive.Provider` en la raíz de la app cuando se apruebe ese paquete.
+- **Tooltip:** text only, never interactive content. The tooltip package is declared; verify provider requirements against the current implementation.
 - **HoverCard:** future detail panel on hover, with an equivalent keyboard path. It is not implemented here and adds no hover, focus or interaction API to the passive Gauge.
 - **Popover:** panel interactivo al hacer clic.
 

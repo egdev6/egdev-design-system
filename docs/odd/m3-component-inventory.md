@@ -1,5 +1,7 @@
 # Inventario provisional de componentes — M3
 
+> Historical baseline (commit 6ea2841485b079a1d4a8e7b87a015afe4b872771). Current availability: see `packages/ui/src/index.ts` and `docs/CATALOGO.md`.
+
 **Borrador para revisión, sin clasificación Atomic definitiva.** Recopila lo disponible y lo propuesto antes de decidir responsabilidades, divisiones, pertenencia al sistema y unidades desarrollables.
 
 - **Baseline inspeccionada:** `6ea2841485b079a1d4a8e7b87a015afe4b872771` (main tras PR #29).

@@ -1,5 +1,7 @@
 # Design-system delivery chain
 
+> Historical baseline (commit 6ea2841485b079a1d4a8e7b87a015afe4b872771). Current availability: see `packages/ui/src/index.ts` and `docs/CATALOGO.md`.
+
 ## Status and authority
 
 This is the current delivery plan, not evidence of completed implementation or approval.

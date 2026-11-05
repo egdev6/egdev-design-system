@@ -1,5 +1,7 @@
 # Responsabilidades y límites de componentes — M3
 
+> Historical baseline (commit 6ea2841485b079a1d4a8e7b87a015afe4b872771). Current availability: see `packages/ui/src/index.ts` and `docs/CATALOGO.md`.
+
 **Borrador de análisis con decisiones parciales de producto registradas.** La clasificación Atomic, las specs y los planes siguen sin aprobar. Complementa el [inventario provisional](m3-component-inventory.md) antes de clasificar en Atomic, definir specs o abrir issues. El alcance son ocho familias ambiguas priorizadas, no una auditoría completa de los 108 registros.
 
 - **Baseline React:** `6ea2841485b079a1d4a8e7b87a015afe4b872771`.

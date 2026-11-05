@@ -1,6 +1,6 @@
 # @egdev/ui
 
-EGDEV Foundation's React package currently provides **Gauge only**, plus the `cn` utility. Surface, IconButton and Tabs are provisional future concepts, not importable React APIs or private implementations.
+EGDEV Foundation's React package. Its public exports are authoritative: see `src/index.ts`, listed by level in [the catalog](../../docs/CATALOGO.md). They include primitives such as Surface, atoms such as IconButton, molecules such as Tabs, organisms and templates, plus the `cn` utility. Being exported does not establish catalog-wide M3 compliance for any component.
 
 ```tsx
 import { Gauge } from '@egdev/ui';

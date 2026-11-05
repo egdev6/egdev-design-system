@@ -41,24 +41,24 @@ Origen: la versión 37 del artefacto *EGDEV Foundation* (Claude Design). Materia
 
 ## Recipes — visual semantics, not a CSS mandate
 
-These historical CSS recipes define binding Material semantics, not permission to hand-author per-component appearance or copy literal values into utilities. Use token-backed Tailwind/CVA; wells, overlays, solid/reduced-transparency fallbacks, reduced motion and focus remain mandatory. Surface is a future Foundation composition concept, not an importable React box. Gauge is the only implemented public React component; its approved transparent-frame exception is specified below. Other components require an approved Material recipe or Surface proposal before implementation, not automatic reuse or cloning of retired Surface classes. Minimize justified global CSS; approve any recipe exception and any optional stylesheet role in spec/plan. No new hardcoded values, tokens or dependencies without explicit approval.
+These historical CSS recipes define binding Material semantics, not permission to hand-author per-component appearance or copy literal values into utilities. Use token-backed Tailwind/CVA; wells, overlays, solid/reduced-transparency fallbacks, reduced motion and focus remain mandatory. Compose Material paint through the exported Surface primitive (`surfaceVariants`) or a recipe approved in the component's spec. Gauge's approved transparent-frame exception is specified below; do not clone retired Surface classes. Public exports are listed in `packages/ui/src/index.ts` and `packages/effects/src/index.ts` and cataloged in [CATALOGO.md](CATALOGO.md); availability does not establish catalog-wide M3 compliance or approve contract changes. Minimize justified global CSS; approve any recipe exception and any optional stylesheet role in spec/plan. No new hardcoded values, tokens or dependencies without explicit approval.
 
-The Surface names in the following historical recipes describe conceptual/future treatments, not current React APIs. A future Surface's general base hairline border remains a separate design concern; Gauge's accepted 0px frame border does not change that concept or every well recipe.
+The following historical recipes illustrate Material semantics, not the Surface API contract. Surface is exported; Gauge's accepted 0px frame border does not change Surface's base hairline or every well recipe.
 
 ```css
-/* Elevated surface: conceptual future Surface, not a current React API. */
+/* Elevated surface: historical Material semantics. */
 background: var(--gradient-sheen), var(--color-surface-1);
 border: 1px solid var(--color-border-hairline);
 box-shadow: var(--shadow-edge), var(--shadow-elev-1);
 
-/* Overlay: conceptual future Surface glass treatment, not an importable API. */
+/* Overlay: historical Material semantics. */
 background: var(--color-surface-overlay);
 backdrop-filter: blur(var(--blur-overlay)) saturate(150%);
 border: 1px solid var(--color-border-hairline-strong);
 box-shadow: var(--shadow-edge-strong), var(--shadow-elev-3);
 @media (prefers-reduced-transparency: reduce) { background: var(--color-surface-2); backdrop-filter: none; }
 
-/* Well: existing Material semantics; future Surface composition is conceptual. */
+/* Well: existing Material semantics. */
 background: var(--color-surface-0);
 box-shadow: var(--shadow-well);
 
@@ -93,7 +93,7 @@ Approval and the accepted pilot are not evidence that all retirement/test/build/
 
 ## En el código
 
-- **Future composition concepts, not current APIs:** Surface treatments (`default`, `glass`, `brand`, `well`, `ghost`; conceptual elevations `flat`, `low`, `high`) and segmented Tabs remain provisional. They require their own approved contracts/plans before becoming usable React components; do not import them from `@egdev/ui` or retain a hidden Surface helper. Gauge's transparent frame is the bounded exception above, not a general substitute.
+- **Public composition:** Surface and Tabs are exported from `@egdev/ui`; inspect their current contracts for supported treatments and variants. Compose Material paint through Surface or a spec-approved recipe, not a hidden helper or cloned classes. Gauge's transparent frame is the bounded exception above, not a general substitute.
 - **Product branding:** use Logo for egdev artwork or a consumer-owned image for other product identities; no monogram-tile component is provided.
 - **Foco** sigue siendo `--shadow-focus` y gana siempre a las sombras de material.
 - **Deshabilitado** sigue siendo opacidad `.45`.

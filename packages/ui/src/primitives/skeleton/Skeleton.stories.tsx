@@ -66,8 +66,8 @@ export const ShortLines: Story = {
 };
 
 /**
- * Host-owned loading state. This inline host is a demo pending the future Surface primitive
- * (#106); it reproduces the approved specimen tokens and is not an extractable recipe.
+ * Host-owned loading state. This inline host is a demo that reproduces the approved specimen
+ * tokens and is not an extractable recipe; real cards compose the exported Surface primitive.
  */
 export const InLoadingCard: Story = {
   render: () => (

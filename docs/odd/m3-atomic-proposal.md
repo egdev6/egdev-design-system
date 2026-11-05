@@ -1,5 +1,7 @@
 # Clasificación completa de trabajo — M3
 
+> Historical baseline (commit 6ea2841485b079a1d4a8e7b87a015afe4b872771). Current availability: see `packages/ui/src/index.ts` and `docs/CATALOGO.md`.
+
 **Todos los registros tienen nivel de trabajo y responsabilidad objetivo.** Nivel Atomic, destino y evidencia se evalúan por separado. Esta matriz permite organizar el trabajo; no presenta hipótesis como anatomías verificadas ni aprueba specs, APIs o implementación.
 
 - **Cobertura:** los **108 registros** del [inventario](m3-component-inventory.md) se concretan en **113 unidades de responsabilidad**, con IDs derivados cuando una fila reúne varios contratos.

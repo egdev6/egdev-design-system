@@ -18,11 +18,13 @@ The user paused new component work while these pre-spec adjustments are resolved
 
 ## Authoritative baseline, not the secondary checkout
 
-Current source authority is the repository's `main` baseline, commit `8882aae3b00bfccbff18db0e70339f8576a83ce4`, tree `fe8bafb2d908200ffd56b3812f7e80d4f95cfcc2`:
+> Historical baseline (commit 8882aae3b00bfccbff18db0e70339f8576a83ce4). Current availability: see `packages/ui/src/index.ts` and `docs/CATALOGO.md`.
+
+The T3 source baseline was the repository's `main` baseline, commit `8882aae3b00bfccbff18db0e70339f8576a83ce4`, tree `fe8bafb2d908200ffd56b3812f7e80d4f95cfcc2`:
 
 - [Token source][theme] and [declaration/alias contract][counts]: 236 variables, 50 aliases; 165 utility-theme declarations, 16 inline declarations and 55 root declarations.
 - [Artifact preservation contract][preservation]: preserve the existing 236 values and the immutable original 168-value fixture. These are existing contract requirements, not tests executed for T3.
-- [Current component contract][contract] and [architecture][architecture]: Gauge is the only implemented public React component; `cn` is a utility. Surface, IconButton, Tabs and other families are future/historical concepts, not available adoption references.
+- [Component contract][contract] and [architecture][architecture] at that baseline describe Gauge as the only implemented public React component and `cn` as a utility; current exports include Surface, IconButton and Tabs.
 
 This secondary checkout is at `560dfd6c6a6fdf9715f4dc196ff554d5a1b45d7b`, 16 commits behind that primary baseline. Its relative component documents must not establish current availability. T2/PR #14, merge `bc91273221eda01b7d7640b2b22d3a6f1cf41dcb`, and the matching old `560dfd6` tree `9ccd98b87f648252c0a218800a257245871945ec` are historical context only. Historical dimensions such as field 36/44px, Tabs 34/36/44px or icon 28px do not establish current React APIs or authorize migration.
 
@@ -106,7 +108,7 @@ This example grants no appearance overrides through `className`, no new Surface 
 
 ## Adoption and authorization boundaries
 
-T3 does not adopt components, rename props or approve the five prop conventions `defaultValue`, `onValueChange`, `variant`, `tone` and `elevation`. Historical/future IconButton, Button, Field, Tabs and Icon families need separately approved contracts, mapping and adoption decisions; their old dimensions are not current implementation evidence. Surface is not an importable prerequisite. Gauge remains outside this control policy.
+T3 does not adopt components, rename props or approve the five prop conventions `defaultValue`, `onValueChange`, `variant`, `tone` and `elevation`. Exported IconButton, Button, Field, Tabs and Icon require separately approved mapping and adoption decisions for T3; their historical dimensions are not current implementation evidence. Surface is also exported. Gauge remains outside this control policy.
 
 | Next phase | Required gate |
 | --- | --- |
