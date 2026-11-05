@@ -6,5 +6,6 @@ Planned work follows ODD. The roadmap index is issue [#8](https://github.com/egd
 
 - Agents use the [odd-contribute skill](.agents/skills/odd-contribute/SKILL.md) and its [workflow](.agents/skills/odd-contribute/references/workflow.md).
 - Component rules stay in [AGENTS.md](AGENTS.md) and the [component contract](skills/_shared/component-contract.md).
+- The [Storybook MCP guide](docs/MCP.md) documents the local docs endpoint agents query instead of guessing props.
 - Start work only on an explicit request; assignment is added, read back and rechecked, and is not a lock.
 - Scope changes, commits, pushes, PRs, merges and releases need separate maintainer authorization.

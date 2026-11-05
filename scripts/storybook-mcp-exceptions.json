@@ -1,0 +1,251 @@
+{
+  "manifestOnly": [
+    {
+      "id": "recipes-scene-recipes",
+      "name": "Scenerecipes",
+      "reason": "Component-less story (packages/ui/src/recipes/scene-recipes.stories.tsx): docs-list lists it, docgen reports no component, and it is registered instead of adding a component meta (D4 (a), #344)."
+    }
+  ],
+  "undocumented": [
+    {
+      "name": "AlertDialogAction",
+      "reason": "Declared subcomponent of AlertDialog (docs-list id molecules-alertdialog); docs-list exposes only top-level component ids (D1 (a), #344)."
+    },
+    {
+      "name": "AlertDialogCancel",
+      "reason": "Declared subcomponent of AlertDialog (docs-list id molecules-alertdialog); docs-list exposes only top-level component ids (D1 (a), #344)."
+    },
+    {
+      "name": "AlertDialogContent",
+      "reason": "Declared subcomponent of AlertDialog (docs-list id molecules-alertdialog); docs-list exposes only top-level component ids (D1 (a), #344)."
+    },
+    {
+      "name": "AlertDialogTrigger",
+      "reason": "Declared subcomponent of AlertDialog (docs-list id molecules-alertdialog); docs-list exposes only top-level component ids (D1 (a), #344)."
+    },
+    {
+      "name": "ArticleFeatureCover",
+      "reason": "Composed part exported alongside ArticleFeature (docs-list id molecules-articlefeature); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "BlogGridArchive",
+      "reason": "Composed part exported alongside BlogGrid (docs-list id organisms-bloggrid); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "BlogGridFeature",
+      "reason": "Composed part exported alongside BlogGrid (docs-list id organisms-bloggrid); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "BlogGridRow",
+      "reason": "Composed part exported alongside BlogGrid (docs-list id organisms-bloggrid); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "BlogGridRows",
+      "reason": "Composed part exported alongside BlogGrid (docs-list id organisms-bloggrid); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "CollapsibleContent",
+      "reason": "Declared subcomponent of Collapsible (docs-list id molecules-collapsible); docs-list exposes only top-level component ids (D1 (a), #344)."
+    },
+    {
+      "name": "CollapsibleTrigger",
+      "reason": "Declared subcomponent of Collapsible (docs-list id molecules-collapsible); docs-list exposes only top-level component ids (D1 (a), #344)."
+    },
+    {
+      "name": "CommunityCardAction",
+      "reason": "Composed part exported alongside CommunityCard (docs-list id molecules-communitycard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "CommunityCardMark",
+      "reason": "Composed part exported alongside CommunityCard (docs-list id molecules-communitycard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "DialogClose",
+      "reason": "Declared subcomponent of Dialog (docs-list id molecules-dialog); docs-list exposes only top-level component ids (D1 (a), #344)."
+    },
+    {
+      "name": "DialogContent",
+      "reason": "Declared subcomponent of Dialog (docs-list id molecules-dialog); docs-list exposes only top-level component ids (D1 (a), #344)."
+    },
+    {
+      "name": "DialogTrigger",
+      "reason": "Declared subcomponent of Dialog (docs-list id molecules-dialog); docs-list exposes only top-level component ids (D1 (a), #344)."
+    },
+    {
+      "name": "FooterBrand",
+      "reason": "Composed part exported alongside Footer (docs-list id organisms-footer); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "FooterLegal",
+      "reason": "Composed part exported alongside Footer (docs-list id organisms-footer); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "FooterMotto",
+      "reason": "Composed part exported alongside Footer (docs-list id organisms-footer); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "FooterNavigation",
+      "reason": "Composed part exported alongside Footer (docs-list id organisms-footer); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "FooterSocial",
+      "reason": "Composed part exported alongside Footer (docs-list id organisms-footer); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "HomeTemplateAnchor",
+      "reason": "Composed part exported alongside HomeTemplate (docs-list id templates-hometemplate); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "ListItemActions",
+      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "ListItemBody",
+      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "ListItemContent",
+      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "ListItemFooter",
+      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "ListItemLeading",
+      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "ListItemMedia",
+      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "ListItemMeta",
+      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "ListItemTitle",
+      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "ListItemTrailing",
+      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "LiveBandList",
+      "reason": "Composed part exported alongside LiveBandField (docs-list id organisms-liveband); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "LiveBandRow",
+      "reason": "Composed part exported alongside LiveBandField (docs-list id organisms-liveband); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "LiveBandRows",
+      "reason": "Composed part exported alongside LiveBandField (docs-list id organisms-liveband); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "LiveBandStreams",
+      "reason": "Composed part exported alongside LiveBandField (docs-list id organisms-liveband); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "LiveBandVod",
+      "reason": "Composed part exported alongside LiveBandField (docs-list id organisms-liveband); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "NotesBoardList",
+      "reason": "Composed part exported alongside NotesBoard (docs-list id organisms-notesboard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "NotesBoardSide",
+      "reason": "Composed part exported alongside NotesBoard (docs-list id organisms-notesboard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "NowCardBody",
+      "reason": "Composed part exported alongside NowCard (docs-list id molecules-nowcard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "NowCardDetail",
+      "reason": "Composed part exported alongside NowCard (docs-list id molecules-nowcard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "NowCardFooter",
+      "reason": "Composed part exported alongside NowCard (docs-list id molecules-nowcard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "PanelBody",
+      "reason": "Declared subcomponent of Panel (docs-list id molecules-panel); docs-list exposes only top-level component ids (D1 (a), #344)."
+    },
+    {
+      "name": "PanelFooter",
+      "reason": "Declared subcomponent of Panel (docs-list id molecules-panel); docs-list exposes only top-level component ids (D1 (a), #344)."
+    },
+    {
+      "name": "PanelHeader",
+      "reason": "Declared subcomponent of Panel (docs-list id molecules-panel); docs-list exposes only top-level component ids (D1 (a), #344)."
+    },
+    {
+      "name": "PopoverClose",
+      "reason": "Declared subcomponent of Popover (docs-list id molecules-popover); docs-list exposes only top-level component ids (D1 (a), #344)."
+    },
+    {
+      "name": "PopoverContent",
+      "reason": "Declared subcomponent of Popover (docs-list id molecules-popover); docs-list exposes only top-level component ids (D1 (a), #344)."
+    },
+    {
+      "name": "PopoverTrigger",
+      "reason": "Declared subcomponent of Popover (docs-list id molecules-popover); docs-list exposes only top-level component ids (D1 (a), #344)."
+    },
+    {
+      "name": "ProjectCardBackdrop",
+      "reason": "Composed part exported alongside ProjectCard (docs-list id molecules-projectcard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "ProjectCardCode",
+      "reason": "Composed part exported alongside ProjectCard (docs-list id molecules-projectcard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "ProjectCardFooter",
+      "reason": "Composed part exported alongside ProjectCard (docs-list id molecules-projectcard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "ProjectCardMark",
+      "reason": "Composed part exported alongside ProjectCard (docs-list id molecules-projectcard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "ProjectCardTags",
+      "reason": "Composed part exported alongside ProjectCard (docs-list id molecules-projectcard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "Slottable",
+      "reason": "Composed part exported alongside Slot (docs-list id primitives-slot); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "TerminalCardBar",
+      "reason": "Composed part exported alongside TerminalCard (docs-list id molecules-terminalcard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "TerminalCardList",
+      "reason": "Composed part exported alongside TerminalCard (docs-list id molecules-terminalcard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "TopBarBrand",
+      "reason": "Composed part exported alongside TopBar (docs-list id organisms-topbar); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "TopBarMobileTrigger",
+      "reason": "Composed part exported alongside TopBar (docs-list id organisms-topbar); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "TopBarSearchCompact",
+      "reason": "Composed part exported alongside TopBar (docs-list id organisms-topbar); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "TopBarSearchFull",
+      "reason": "Composed part exported alongside TopBar (docs-list id organisms-topbar); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    },
+    {
+      "name": "TopBarUserMenu",
+      "reason": "Composed part exported alongside TopBar (docs-list id organisms-topbar); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
+    }
+  ]
+}
