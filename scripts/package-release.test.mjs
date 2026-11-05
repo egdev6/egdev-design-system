@@ -160,6 +160,28 @@ test('release:pack includes the system artifact in its versioned tarball', () =>
   assert.equal(artifact, readFileSync(resolve(root, 'packages/system/design-system.json'), 'utf8'));
 });
 
+test('release:pack includes MCP with the matching carrier dependency', () => {
+  packedRelease();
+  const entry = packedEntry('@egdev/mcp');
+  assert.ok(existsSync(entry.path), `Missing ${entry.file}`);
+  const manifest = readPackedManifest(entry.path);
+  assert.equal(manifest.dependencies['@egdev/system'], manifestVersion('system'));
+  assert.ok(!manifest.dependencies['@egdev/system'].includes('workspace:'));
+});
+
+test('release verification rejects an MCP tarball without its carrier dependency', () => {
+  const fixture = mkdtempSync(join(tmpdir(), 'egdev-mcp-release-'));
+  try {
+    writeFileSync(join(fixture, 'CHANGELOG.md'), '# Changelog\n\n## 0.1.0\n');
+    const path = join(fixture, 'mcp.tgz');
+    writeTarball(path, { name: '@egdev/mcp', version: '0.1.0' });
+    const entry = { name: '@egdev/mcp', version: '0.1.0', path, directory: fixture };
+    assert.match(verifyPackedManifests([entry]).join('\n'), /packed @egdev\/system dependency/);
+  } finally {
+    rmSync(fixture, { recursive: true, force: true });
+  }
+});
+
 function manifestVersion(directoryName) {
   return JSON.parse(readFileSync(resolve(root, `packages/${directoryName}/package.json`), 'utf8')).version;
 }

@@ -149,6 +149,12 @@ export function verifyPackedManifests(packed) {
     if (workspaceSpecifiers.length > 0) {
       errors.push(`${entry.name}: workspace specifier in ${workspaceSpecifiers.join(', ')}`);
     }
+    if (entry.name === '@egdev/mcp') {
+      const system = packed.find((item) => item.name === '@egdev/system');
+      if (!system || manifest.dependencies?.['@egdev/system'] !== system.version) {
+        errors.push('@egdev/mcp: packed @egdev/system dependency must match the system release version');
+      }
+    }
     const changelog = changelogError(entry);
     if (changelog) {
       errors.push(changelog);
