@@ -280,6 +280,13 @@ test('release:pack fails when the packed version has no matching changelog secti
     assert.match(changelogError(entry), /CHANGELOG\.md top section is 0\.0\.9, expected 0\.1\.0/);
     writeFileSync(join(fixture, 'CHANGELOG.md'), '# Changelog\n\n## 0.1.0\n\n- Current release.\n\n## 0.0.9\n');
     assert.equal(changelogError(entry), null, 'The top section must match the packed version');
+    writeFileSync(
+      join(fixture, 'CHANGELOG.md'),
+      '# Changelog\n\n## Unreleased\n\n- Pending change.\n\n## 0.1.0\n\n- Current release.\n'
+    );
+    assert.equal(changelogError(entry), null, 'An Unreleased section above the packed version is allowed');
+    writeFileSync(join(fixture, 'CHANGELOG.md'), '# Changelog\n\n## Unreleased\n\n- Pending change.\n\n## 0.0.9\n');
+    assert.match(changelogError(entry), /CHANGELOG\.md top section is 0\.0\.9, expected 0\.1\.0/);
   } finally {
     rmSync(fixture, { recursive: true, force: true });
   }

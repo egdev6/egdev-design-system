@@ -116,9 +116,10 @@ export function changelogError({ name, version, directory }) {
   if (!existsSync(path)) {
     return `${name}: missing CHANGELOG.md for version ${version}`;
   }
+  // An `## Unreleased` section may sit above the release; the first versioned section must match.
   const heading = readFileSync(path, 'utf8')
     .split('\n')
-    .find((line) => /^##\s+\S/.test(line));
+    .find((line) => /^##\s+\S/.test(line) && !/^##\s+unreleased\b/i.test(line));
   const claimed = heading?.match(/\d+\.\d+\.\d+/)?.[0];
   if (claimed !== version) {
     return `${name}: CHANGELOG.md top section is ${claimed ?? 'missing'}, expected ${version}`;
