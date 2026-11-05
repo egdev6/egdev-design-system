@@ -53,7 +53,8 @@ export function renderSystemMd(artifact) {
     'Propose a new atom for anything that could be an atom or repeats across pieces. Follow docs/CATALOGACION.md: reuse → variant → compose → extract → new; record what was inspected and why earlier choices do not suffice. The agent proposes; the owner decides.',
     'Map each template, section, organism and molecule approximation in the artboard with `data-component="Name"` (for example `data-component="WebTemplate"` and `data-component="WebSection"`). These markers do not render React.',
     'Mark missing pieces with `data-proposal="organism:Name"` or `data-proposal="atom:Name"` and add an artboard note describing the need, reused pieces and cataloging rationale. Proposals are not approved components.',
-    'Use the catalog descriptions, source-derived Composes lists, parts and documented props/children as slots. These are static source facts, not an exhaustive runtime composition or permission to invent slots.'
+    'Use the catalog descriptions, source-derived Composes lists, parts and documented props/children as slots. These are static source facts, not an exhaustive runtime composition or permission to invent slots.',
+    'See Typography roles for source-derived font families and sizes; display headings and body copy have different recipes, and component overrides may differ.'
   ]);
   section('Header', [
     `# ${cell(artifact.name)}`,
@@ -67,6 +68,21 @@ export function renderSystemMd(artifact) {
     ),
     'Re-run: `pnpm exec egdev-system-md --write`'
   ]);
+  const roles = sorted(artifact.typographyRoles, (item) => item.name);
+  section(
+    'Typography roles',
+    roles.length
+      ? [
+          'Representative source recipes, not a computed cascade; unresolved means no token was statically identified.',
+          '| Role | Font family | Size | Line height | Weight | Tracking | Source |',
+          '| --- | --- | --- | --- | --- | --- | --- |',
+          ...roles.map(
+            (role) =>
+              `| ${cell(role.name)} | ${cell(role.family ?? 'unresolved')} | ${cell(role.size ?? 'unresolved')} | ${cell(role.lineHeight ?? 'unresolved')} | ${cell(role.weight ?? 'unresolved')} | ${cell(role.tracking ?? 'unresolved')} | typographyRoles[] · ${cell(role.source)} · packages/tokens/src/theme.css |`
+          )
+        ]
+      : []
+  );
   const groups = [
     ['Colours', ['--color-']],
     ['Typography', ['--font-', '--text-', '--leading-', '--tracking-']],

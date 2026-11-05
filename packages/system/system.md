@@ -5,6 +5,7 @@ Propose a new atom for anything that could be an atom or repeats across pieces. 
 Map each template, section, organism and molecule approximation in the artboard with `data-component="Name"` (for example `data-component="WebTemplate"` and `data-component="WebSection"`). These markers do not render React.
 Mark missing pieces with `data-proposal="organism:Name"` or `data-proposal="atom:Name"` and add an artboard note describing the need, reused pieces and cataloging rationale. Proposals are not approved components.
 Use the catalog descriptions, source-derived Composes lists, parts and documented props/children as slots. These are static source facts, not an exhaustive runtime composition or permission to invent slots.
+See Typography roles for source-derived font families and sizes; display headings and body copy have different recipes, and component overrides may differ.
 
 ## Header
 
@@ -17,6 +18,20 @@ Schema: 1.0.0 (schemaVersion)
 | @egdev/tokens | 0.3.0 | packages[] · packages/tokens/package.json |
 | @egdev/ui | 0.1.0 | packages[] · packages/ui/package.json |
 Re-run: `pnpm exec egdev-system-md --write`
+
+## Typography roles
+
+Representative source recipes, not a computed cascade; unresolved means no token was statically identified.
+| Role | Font family | Size | Line height | Weight | Tracking | Source |
+| --- | --- | --- | --- | --- | --- | --- |
+| Eyebrow | --font-display | --text-label-eyebrow | --text-label-eyebrow--line-height | --text-label-eyebrow--font-weight | --text-label-eyebrow--letter-spacing | typographyRoles[] · packages/ui/src/primitives/text/types.ts · packages/tokens/src/theme.css |
+| Heading display | --font-display | --text-title-display | --text-title-display--line-height | --text-title-display--font-weight | --text-title-display--letter-spacing | typographyRoles[] · packages/ui/src/primitives/text/types.ts · packages/tokens/src/theme.css |
+| Heading hero | --font-display | --text-title-hero | --text-title-hero--line-height | --text-title-hero--font-weight | --text-title-hero--letter-spacing | typographyRoles[] · packages/ui/src/primitives/text/types.ts · packages/tokens/src/theme.css |
+| Heading section | --font-display | --text-title-section | --text-title-section--line-height | --text-title-section--font-weight | --text-title-section--letter-spacing | typographyRoles[] · packages/ui/src/primitives/text/types.ts · packages/tokens/src/theme.css |
+| Heading show | --font-display | --text-title-show | --text-title-show--line-height | --text-title-show--font-weight | --text-title-show--letter-spacing | typographyRoles[] · packages/ui/src/primitives/text/types.ts · packages/tokens/src/theme.css |
+| Hero lede | --font-sans | --text-body-large | --text-body-large--line-height | --text-body-large--font-weight | --text-body-large--letter-spacing | typographyRoles[] · packages/ui/src/organisms/hero/types.ts · packages/tokens/src/theme.css |
+| ProjectCard code | --font-mono | --text-code | --text-code--line-height | --text-code--font-weight | --text-code--letter-spacing | typographyRoles[] · packages/ui/src/molecules/project-card/types.ts · packages/tokens/src/theme.css |
+| SectionHeader lede | --font-sans | --text-body-muted | --text-body-muted--line-height | --text-body-muted--font-weight | --text-body-muted--letter-spacing | typographyRoles[] · packages/ui/src/molecules/section-header/types.ts · packages/tokens/src/theme.css |
 
 ## Colours
 

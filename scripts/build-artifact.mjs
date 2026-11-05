@@ -468,6 +468,67 @@ for (const entry of registry) {
     typeMap.set(usage.component, { name: usage.component, owner, source });
   }
 }
+// Representative roles are anchored to named source recipes, not inferred CSS inheritance.
+function typographyRoles() {
+  const text = 'packages/ui/src/primitives/text/types.ts';
+  const specs = [
+    ['Heading section', text, 'headingVariants', 'titleRootClasses', 'section'],
+    ['Heading hero', text, 'headingVariants', 'titleRootClasses', 'hero'],
+    ['Heading show', text, 'headingVariants', 'titleRootClasses', 'show'],
+    ['Heading display', text, 'headingVariants', 'titleRootClasses', 'display'],
+    ['Eyebrow', text, 'textVariants', 'textVariantClasses', 'eyebrow'],
+    ['SectionHeader lede', 'packages/ui/src/molecules/section-header/types.ts', 'sectionHeaderLedeVariants'],
+    ['Hero lede', 'packages/ui/src/organisms/hero/types.ts', 'heroLedeVariants'],
+    ['ProjectCard code', 'packages/ui/src/molecules/project-card/types.ts', 'projectCardCodeVariants']
+  ];
+  return specs
+    .map(([name, sourcePath, recipe, object, property]) => {
+      const source = program.getSourceFile(resolve(root, sourcePath));
+      const declarations = new Map();
+      function visit(node) {
+        if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name)) {
+          declarations.set(node.name.text, node.initializer);
+        }
+        ts.forEachChild(node, visit);
+      }
+      visit(source);
+      const call = declarations.get(recipe);
+      const base =
+        call && ts.isCallExpression(call) && ts.isStringLiteral(call.arguments[0]) ? call.arguments[0].text : '';
+      let extra = '';
+      let initializer = declarations.get(object);
+      while (initializer && (ts.isAsExpression(initializer) || ts.isSatisfiesExpression(initializer))) {
+        initializer = initializer.expression;
+      }
+      if (initializer && ts.isObjectLiteralExpression(initializer)) {
+        const field = initializer.properties.find(
+          (item) => ts.isPropertyAssignment(item) && item.name.getText(source) === property
+        );
+        if (field && ts.isStringLiteral(field.initializer)) {
+          extra = field.initializer.text;
+        }
+      }
+      const classes = `${base} ${extra}`.split(/\s+/);
+      const familyClass = classes.find((item) => /^font-(display|sans|mono)$/.test(item));
+      const family = familyClass ? `--${familyClass}` : null;
+      const sizeClass = classes.find(
+        (item) => item.startsWith('text-') && tokenNames.has(`--${item}`) && tokenNames.has(`--${item}--line-height`)
+      );
+      const size = sizeClass ? `--${sizeClass}` : null;
+      const token = (suffix) => (size && tokenNames.has(`${size}--${suffix}`) ? `${size}--${suffix}` : null);
+      return {
+        name,
+        source: sourcePath,
+        family: tokenNames.has(family) ? family : null,
+        size,
+        lineHeight: token('line-height'),
+        weight: token('font-weight'),
+        tracking: token('letter-spacing')
+      };
+    })
+    .sort((a, b) => compare(a.name, b.name));
+}
+
 const artifact = {
   name: 'egdev-design-system',
   schemaVersion: '1.0.0',
@@ -491,6 +552,7 @@ const artifact = {
     .sort((a, b) => compare(a.name, b.name)),
   components,
   anatomyUtilities,
+  typographyRoles: typographyRoles(),
   types: [...typeMap.values()].sort((a, b) => compare(a.name, b.name)),
   tokens: tokenDeclarations.sort((a, b) => compare(a.name, b.name)),
   materialRecipes: [
