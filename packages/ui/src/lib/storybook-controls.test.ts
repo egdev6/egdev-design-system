@@ -128,7 +128,8 @@ const components = [
   ['LabStage', 'organisms/lab-stage'],
   ['Closing', 'organisms/closing'],
   ['Hero', 'organisms/hero'],
-  ['WebSection', 'organisms/web-section']
+  ['WebSection', 'organisms/web-section'],
+  ['WebTemplate', 'templates/web-template']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -179,6 +180,7 @@ function fixture(type: FixtureType, directive: unknown, reason?: string) {
 
 const expected: Record<string, Record<string, string | false>> = {
   websection: { header: false, media: false, body: false, actions: false, social: false },
+  webtemplate: { topBar: false, content: false, footer: false, messages: false },
   labstage: {
     title: 'text',
     level: 'select',
@@ -645,6 +647,7 @@ const expected: Record<string, Record<string, string | false>> = {
 };
 const ownPropCounts: Record<string, number> = {
   websection: 5,
+  webtemplate: 4,
   labstage: 8,
   chapterbreak: 7,
   closing: 7,

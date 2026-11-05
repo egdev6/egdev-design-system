@@ -775,6 +775,15 @@ const postReceiptUsages = [
   ].map(([conventionId, prop]) => ({
     conventionId,
     source: `packages/ui/src/organisms/web-section/types.ts#WebSectionProps.${prop}`
+  })),
+  ...[
+    ['page-top-bar-slot', 'topBar'],
+    ['tooltip-content', 'content'],
+    ['panel-footer', 'footer'],
+    ['localized-messages', 'messages']
+  ].map(([conventionId, prop]) => ({
+    conventionId,
+    source: `packages/ui/src/templates/web-template/types.ts#WebTemplateProps.${prop}`
   }))
 ];
 // These newly proposed conventions are not part of any immutable approval receipt.
@@ -789,7 +798,8 @@ const postReceiptProposals = [
   // AmbientBackground v0.5 direction conventions (L23/L25/L26), approved after these receipts.
   'line-particle-direction',
   'square-particle-direction',
-  'web-section-body-slot'
+  'web-section-body-slot',
+  'page-top-bar-slot'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -806,12 +816,24 @@ function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
         'scene-media': 'docs/components/hero/v0.1/prop-naming-approval-scene-media.json',
         'scene-social': 'docs/components/hero/v0.1/prop-naming-approval-scene-social.json',
         'panel-header': 'docs/decisions/prop-naming-molecule-specs-approval.json',
-        'trailing-actions': 'docs/decisions/prop-naming-molecule-specs-approval.json'
+        'trailing-actions': 'docs/decisions/prop-naming-molecule-specs-approval.json',
+        'panel-footer': 'docs/decisions/prop-naming-molecule-specs-approval.json',
+        'tooltip-content': 'docs/decisions/prop-naming-atom-specs-approval.json'
       };
       if (Object.hasOwn(amendments, entry.id)) {
         const reference = amendments[entry.id];
         const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
         const previous = receipt.entries.find(({ scope }) => scope === `convention:${entry.id}`);
+        if (entry.id === 'tooltip-content') {
+          const { aliases, exceptions, ...convention } = previous.convention;
+          return {
+            ...convention,
+            approval: { reference, scope: previous.scope, contentHash: previous.contentHash },
+            aliases,
+            exceptions,
+            usages
+          };
+        }
         return {
           ...previous.convention,
           approval: { reference, scope: previous.scope, contentHash: previous.contentHash },
@@ -831,6 +853,25 @@ function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
       };
     });
 }
+
+test('WebTemplate conventions bind the delegated approval and reviewed usage', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/decisions/prop-naming-web-template-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  assert.ok(
+    receipt.evidence.userStatements.some(
+      ({ quote, provenance }) => quote.includes('aplica las propuestas por defecto') && provenance.includes('L23')
+    )
+  );
+  for (const name of ['topBar', 'content', 'footer']) {
+    const entry = registry.find((item) => item.name === name);
+    const usage = entry.usages.find((item) => item.component === 'WebTemplate');
+    assert.equal(usage.source.revision, digest(fs.readFileSync(resolve(root, usage.source.path))));
+    const approved = receipt.entries.find((item) => item.scope === `convention:${entry.id}`);
+    assert.equal(approved?.contentHash, props.conventionHash(entry));
+    assert.equal(entry.approval.reference, reference);
+  }
+});
 
 test('WebSection slot conventions bind the delegated approval and reviewed usage', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
@@ -1238,8 +1279,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
   // AmbientBackground direction conventions add two more after ArticleFeature.
-  assert.equal(actual.length, 161);
-  assert.equal(beforeIndicatorConventions(actual).length, 158);
+  assert.equal(actual.length, 162);
+  assert.equal(beforeIndicatorConventions(actual).length, 159);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {

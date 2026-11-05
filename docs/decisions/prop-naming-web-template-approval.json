@@ -1,0 +1,75 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "owner-choice",
+  "decision": "Generalize existing content and footer conventions and approve the page top bar slot without changing existing component contracts.",
+  "evidence": {
+    "taskReference": "odd/tasks/pulso-visual-corrections.md#log",
+    "userStatements": [
+      {
+        "quote": "no me preguntes termina todo y luego vemos (aplica las propuestas por defecto). Puedes abrir hasta 3 subagentes que parelilcen trabajo y permanezcan abiertos hasta terminar",
+        "provenance": "L23 G1, G4, G5 and U10 plan"
+      }
+    ]
+  },
+  "limits": [
+    "Existing tooltip and panel contracts retain their component-specific restrictions.",
+    "Previous receipts remain immutable history."
+  ],
+  "semanticAmendments": [
+    {
+      "id": "tooltip-content",
+      "previousReference": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "previousContentHash": "sha256:d1891eabfd57ab09c15a6c365250a02039e99ef195c7a6038becb4cbeacf850c"
+    },
+    {
+      "id": "panel-footer",
+      "previousReference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "previousContentHash": "sha256:2a42776342fb15a34c5ab7d86abd1cdd8683044d2e37f30504f2bfd59d2f6a71"
+    }
+  ],
+  "entries": [
+    {
+      "scope": "convention:tooltip-content",
+      "contentHash": "sha256:cf0bbcdd9c87bf0c4456b8d16ab625c6e9078418a6dd6ad38c9450350a70129b",
+      "convention": {
+        "id": "tooltip-content",
+        "name": "content",
+        "meaning": "Consumer-supplied content for a component's owned content region.",
+        "whenToUse": "Supply tooltip text or page main content under the component-specific contract.",
+        "avoid": "Do not infer structure or accessibility from arbitrary content; existing tooltip contracts retain their restrictions.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:panel-footer",
+      "contentHash": "sha256:e501b2d192f322c23fb3bbbff84f25475387bb84a5709a31be1a5122a30ba59d",
+      "convention": {
+        "id": "panel-footer",
+        "name": "footer",
+        "meaning": "Consumer-supplied content following a component's main content.",
+        "whenToUse": "Supply panel supplementary content or a page footer under the component-specific contract.",
+        "avoid": "Replacing the body; existing panel contracts retain their restrictions.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:page-top-bar-slot",
+      "contentHash": "sha256:17a4f05e3eeea0dea9ea25c9ba00ebe7f27f6814324796f8f94cde0220a7bd7a",
+      "convention": {
+        "id": "page-top-bar-slot",
+        "name": "topBar",
+        "meaning": "Consumer-supplied page header region.",
+        "whenToUse": "Supply a page header to a structural page frame.",
+        "avoid": "Main content or footer; the consumer owns header semantics.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

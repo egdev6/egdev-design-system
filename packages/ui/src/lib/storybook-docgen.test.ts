@@ -122,6 +122,21 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts WebTemplate slots and protected boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
+    const doc = parser
+      .parse(source('templates/web-template/WebTemplate.tsx'))
+      .find(({ displayName }) => displayName === 'WebTemplate');
+    for (const name of ['topBar', 'content', 'footer', 'messages']) {
+      expect(doc?.props[name], name).toMatchObject({
+        required: name === 'content',
+        tags: { control: 'false', controlReason: expect.any(String) }
+      });
+    }
+    for (const name of ['children', 'role', 'style', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    expect(publicAPI.WebTemplate).toBeDefined();
+  });
   it('extracts WebSection slots and protected boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
     const doc = parser
       .parse(source('organisms/web-section/WebSection.tsx'))
@@ -1565,6 +1580,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './primitives/visually-hidden',
       './templates/app-shell',
       './templates/section-shell',
+      './templates/web-template',
       './types/product-identity'
     ]);
     expect(Object.keys(publicAPI).sort()).toEqual([
@@ -1720,6 +1736,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'TopBarUserMenu',
       'VisuallyHidden',
       'WebSection',
+      'WebTemplate',
       'appShellVariants',
       'badgeVariants',
       'calendarGridVariants',

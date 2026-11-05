@@ -226,4 +226,6 @@ export * from './primitives/visually-hidden';
 export * from './templates/app-shell';
 export type { SectionShellProps, SectionShellRegister } from './templates/section-shell';
 export { SectionShell } from './templates/section-shell';
+export type { WebTemplateProps } from './templates/web-template';
+export { WebTemplate } from './templates/web-template';
 export type { ProductIdentity } from './types/product-identity';
