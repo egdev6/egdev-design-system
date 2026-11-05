@@ -17,6 +17,9 @@ Operational detail for this repository:
 
 What `/index.json` cannot tell you, `docs-list` can: it lists one entry per documented component
 (`- <Name> (<component-id>)`) with its story ids, plus the standalone guides under `# Docs`.
+Declared public `subcomponents` are documented through their parent rather than separate `docs-list`
+entries. Use the parent's `docs-show` to discover those parts; the contract checks their declarations
+and the live smoke checks each listed parent exposes its declared parts.
 
 ## Prerequisites
 

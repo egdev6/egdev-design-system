@@ -167,6 +167,41 @@ test('the fixture manifest reconciles with the fixture exports, stories and docs
   assert.doesNotThrow(() => assertContract(baseInput()));
 });
 
+test('declared public subcomponents are documented only through their listed parent', () => {
+  const stories = baseStories();
+  stories[0].subcomponents = ['GaugePart'];
+  const exports = ['Gauge', 'GaugePart', 'IconButton', 'Table', 'Ghost'];
+  assert.deepEqual(problemsOf({ stories, exports }), []);
+  const manifest = parseDocsList(fixture('docs-list.md'));
+  assert.deepEqual(problemsOf({ stories, exports, manifest }), []);
+  manifest.components = manifest.components.filter(({ id }) => id !== 'atoms-gauge');
+  assert.ok(problemsOf({ stories, exports, manifest }).some((problem) => /GaugePart/.test(problem)));
+  assert.ok(
+    problemsOf({ stories, exports: exports.filter((name) => name !== 'GaugePart') }).some((problem) =>
+      /GaugePart/.test(problem)
+    )
+  );
+  const exceptions = baseExceptions();
+  exceptions.undocumented.push({ name: 'GaugePart', reason: 'stale' });
+  assert.ok(
+    problemsOf({ stories, exports, exceptions }).some(
+      (problem) => /GaugePart/.test(problem) && /document/i.test(problem)
+    )
+  );
+});
+
+test('ListItem declares and describes every exported composition part on its parent page', () => {
+  const storyPath = 'packages/ui/src/molecules/list-item/ListItem.stories.tsx';
+  const source = readFileSync(join(root, storyPath), 'utf8');
+  const meta = readStoryMeta(storyPath, source);
+  const names = enumeratePublicComponents(root).filter((name) => name.startsWith('ListItem') && name !== 'ListItem');
+  assert.deepEqual([...meta.subcomponents].sort(), names);
+  for (const name of names) {
+    assert.ok(source.includes(`* - ${name}: `), `${name} needs a description`);
+  }
+  assert.match(source, /export const Anatomy: Story/);
+});
+
 test('a documented export removed from the barrels fails by component name', () => {
   const problems = problemsOf({ exports: ['IconButton', 'Table', 'Ghost'] });
   assert.ok(

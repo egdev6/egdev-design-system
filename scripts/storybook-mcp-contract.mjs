@@ -204,6 +204,12 @@ export function reconcile(input) {
     if (!exportNames.has(name)) {
       problems.push(`Story file ${story.file} declares component ${story.component}, which no barrel exports`);
     }
+    for (const part of story.subcomponents ?? []) {
+      documentedNames.add(part);
+      if (!exportNames.has(part)) {
+        problems.push(`Story file ${story.file} declares subcomponent ${part}, which no barrel exports`);
+      }
+    }
   }
 
   const docsById = new Map();
@@ -268,6 +274,13 @@ export function reconcile(input) {
       }
     }
     visibleNames = new Set([...listed.values()].map((component) => normalizeComponentName(component.name)));
+    for (const [id, story] of storiesById) {
+      if (story.component && listed.has(id)) {
+        for (const part of story.subcomponents ?? []) {
+          visibleNames.add(part);
+        }
+      }
+    }
 
     const statedDocs = new Map();
     for (const doc of manifest.docs) {
@@ -323,7 +336,7 @@ export function reconcile(input) {
       problems.push(`Exception ${name} is registered as undocumented but no barrel exports it; remove the entry`);
     } else if (visibleNames.has(name)) {
       problems.push(
-        `Exception ${name} is registered as undocumented but ${manifest ? 'docs-list now lists it' : 'a story now documents it'}; remove the entry`
+        `Exception ${name} is registered as undocumented but ${manifest ? 'a listed story now documents it' : 'a story now documents it'}; remove the entry`
       );
     }
   }
@@ -347,7 +360,7 @@ export function reconcile(input) {
     problems.push(
       `Public export ${name} is ${
         manifest ? 'missing from docs-list' : 'not documented by any story component'
-      }; document it with a story component or register it in ${EXCEPTIONS_FILE}`
+      }; document it with a story component or declared subcomponent, or register it in ${EXCEPTIONS_FILE}`
     );
   }
 

@@ -190,6 +190,14 @@ test('docs-only MCP manifest matches the public exports and serves documentation
       `${manifest.components.reduce((total, { stories: list }) => total + list.length, 0)} story ids`
   );
 
+  for (const story of stories.filter(({ component, subcomponents }) => component && subcomponents.length > 0)) {
+    const documentation = await call('docs-show', { id: story.id });
+    for (const part of story.subcomponents) {
+      assert.ok(documentation.includes(part), `${story.id} docs-show must list declared part ${part}`);
+    }
+    t.diagnostic(`${story.id} docs-show lists ${story.subcomponents.length} declared parts`);
+  }
+
   for (const id of sampleIds(manifest, exports)) {
     const documentation = await call('docs-show', { id });
     assert.match(documentation, /^# /m, `${id} docs-show must start with a heading`);
