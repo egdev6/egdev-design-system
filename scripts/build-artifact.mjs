@@ -811,6 +811,20 @@ async function logoAssets() {
   });
 }
 
+// Curated recommendations are checked against the same public export set as the artifact.
+function compositionRecipes() {
+  const recipes = read('packages/system/src/composition-recipes.json');
+  const names = new Set(components.filter((entry) => entry.package === '@egdev/ui').map((entry) => entry.name));
+  for (const recipe of recipes) {
+    for (const name of recipe.components) {
+      if (!names.has(name)) {
+        throw new Error(`Non-exported component: ${name}`);
+      }
+    }
+  }
+  return recipes;
+}
+
 const artifact = {
   name: 'egdev-design-system',
   assets: await logoAssets(),
@@ -836,6 +850,7 @@ const artifact = {
   components,
   anatomyUtilities,
   typographyRoles: typographyRoles(),
+  compositionRecipes: compositionRecipes(),
   types: [...typeMap.values()].sort((a, b) => compare(a.name, b.name)),
   tokens: tokenDeclarations.sort((a, b) => compare(a.name, b.name)),
   materialRecipes: [

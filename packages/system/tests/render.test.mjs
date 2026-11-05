@@ -41,6 +41,25 @@ test('renders copyable source-backed Logo assets under Logo and supports old art
   assert.doesNotMatch(renderSystemMd(artifact), /Copyable inline SVG/);
 });
 
+test('composition recipes and Hero placement render from the artifact', () => {
+  const copy = structuredClone(artifact);
+  copy.compositionRecipes = [
+    {
+      id: 'Session preview',
+      guidance: 'Surface contains TerminalCard.',
+      components: ['Surface', 'TerminalCard'],
+      sources: ['docs/MATERIAL.md']
+    }
+  ];
+  const text = renderSystemMd(copy);
+  assert.match(text, /Session preview.*Surface contains TerminalCard\..*docs\/MATERIAL\.md/);
+  const generated = readFileSync(new URL('../system.md', import.meta.url), 'utf8');
+  for (const name of ['Session preview', 'List row', 'Media card', 'Hero supplementary content']) {
+    assert.ok(generated.includes(name), name);
+  }
+  assert.match(generated, /Hero supplementary content[^\n]*registration[^\n]*sibling/i);
+});
+
 test('composition guide leads and prioritizes catalog levels with explicit proposals', () => {
   const copy = structuredClone(artifact);
   copy.catalog = [
