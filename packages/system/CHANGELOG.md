@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Compact the generated artifact without changing its JSON schema or consumers, and enforce a 768 KiB shipped JSON budget.
+
 - Include source-rendered Logo mark and wordmark SVG assets with token inks in the artifact and design reference.
 - Add reviewed card composition and Hero supplementary-content guidance with public-export drift validation.
 - Add a static artboard token self-check with auditable traces and explicit gaps.

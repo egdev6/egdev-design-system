@@ -1,0 +1,9 @@
+{
+  "extends": "//",
+  "overrides": [
+    {
+      "includes": ["design-system.json"],
+      "formatter": { "enabled": false }
+    }
+  ]
+}
