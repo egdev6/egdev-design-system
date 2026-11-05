@@ -15,7 +15,7 @@ import { tmpdir } from 'node:os';
 import { join, relative, resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { gzipSync } from 'node:zlib';
+import { gunzipSync, gzipSync } from 'node:zlib';
 import {
   changelogError,
   finishReleasePack,
@@ -136,6 +136,28 @@ test('pnpm release:pack writes the versioned release set', async (t) => {
       }
     }
   });
+});
+
+test('release:pack includes the system artifact in its versioned tarball', () => {
+  packedRelease();
+  const entry = packedEntry('@egdev/system');
+  assert.ok(existsSync(entry.path), `Missing ${entry.file}`);
+  const archive = gunzipSync(readFileSync(entry.path));
+  let artifact;
+  for (let offset = 0; offset + 512 <= archive.length; ) {
+    const header = archive.subarray(offset, offset + 512);
+    if (header.every((byte) => byte === 0)) {
+      break;
+    }
+    const name = header.subarray(0, 100).toString('utf8').split('\0')[0].replace(/^\.\//, '');
+    const size = Number.parseInt(header.subarray(124, 136).toString('utf8').replace(/\0.*$/, '').trim() || '0', 8);
+    const start = offset + 512;
+    if (name === 'package/design-system.json') {
+      artifact = archive.subarray(start, start + size).toString('utf8');
+    }
+    offset = start + Math.ceil(size / 512) * 512;
+  }
+  assert.equal(artifact, readFileSync(resolve(root, 'packages/system/design-system.json'), 'utf8'));
 });
 
 function manifestVersion(directoryName) {
