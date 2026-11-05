@@ -30,11 +30,12 @@ One committed-or-generated JSON artifact, produced only from the sources above, 
 
 **R1 — Artifact identity and location (AC1).** A single UTF-8 JSON file named `design-system.json`, LF endings, 2-space indent, trailing newline, no timestamps, absolute paths, hostnames or environment values. Its repository location is `packages/system/design-system.json`, carried by the data-only package `@egdev/system` (O1 (b), approved 2026-11-05); the schema below is independent of that choice. **(amended by owner approval 2026-11-05.)**
 
-**R2 — Schema (AC1).** Top-level object with exactly these keys: `name` (`"egdev-design-system"`), `schemaVersion` (semver string, decision O3), `packages` (array), `catalog` (array), `components` (array), `tokens` (array), `materialRecipes` (array), `propNaming` (array). Every entry carries only the documented fields; unknown fields are a drift-test failure.
+**R2 — Schema (AC1).** Top-level object with exactly these keys: `name` (`"egdev-design-system"`), `schemaVersion` (semver string, decision O3), `packages` (array), `catalog` (array), `components` (array), `types` (array; L9 amendment), `tokens` (array), `materialRecipes` (array), `propNaming` (array). Every entry carries only the documented fields; unknown fields are a drift-test failure.
 
 - `packages[]`: `{ "name": "@egdev/tokens"|"@egdev/ui"|"@egdev/effects", "version": "<semver from that package.json>" }`, sorted by name.
 - `catalog[]`: `{ name, level, package, radix, composes[], action, available }` for rows whose `destino` is `ui` or `effects`; `available` follows O4 (a). **(amended by owner approval 2026-11-05.)**
 - `components[]`: `{ name, package, source, props[], variants[] }` sorted by `name`; `props[]` = `{ name, type, required, default, description, deprecated }` (decision O8); `variants[]` = `{ name, classes[] }` for exported CVA recipes found in the component's `types.ts`.
+- `types[]`: `{ name, owner, source }` for naming usages not represented by a public value export, derived from the usage source (L9).
 - `tokens[]`: `{ name, value, group }` sorted by `name`; `group` ∈ `theme` | `root` | `inline`, taken from the CSS block the declaration appears in (decision O6).
 - `materialRecipes[]`: `{ id, semantics, tokens[] }` sorted by `id`.
 - `propNaming[]`: `{ id, name, status, components[] }` sorted by `id`, derived from `skills/_shared/prop-naming.json` usages.
@@ -62,7 +63,7 @@ Abbreviated shape (not the literal file):
 
 **R6 — Material recipes section (AC1).** A small curated table inside the generator (O5 (a), approved 2026-11-05) naming the Material recipes of `docs/MATERIAL.md` and the tokens each depends on. The drift test asserts every listed recipe id appears in `docs/MATERIAL.md` text and every referenced token exists in `tokens[]`.
 
-**R7 — Prop naming section (AC1).** Derived from `skills/_shared/prop-naming.json` only (not from the rendered `docs/prop-naming.md`). Each usage's component name must exist in `components[]`.
+**R7 — Prop naming section (AC1).** Derived from `skills/_shared/prop-naming.json` only (not from the rendered `docs/prop-naming.md`). Each usage resolves to a public value in `components[]` or a separate `types[]` entry `{ name, owner, source }` derived from that usage's recorded source. `owner` identifies the component declaring the type where available. Every `types[]` source path exists. `components[]` remains limited to public value exports. See `odd/tasks/ds-distribution.md` L9.
 
 **R8 — Version set (AC2).** `packages[]` is read from the three `packages/*/package.json` versions at generation time (`packages/tokens/package.json:3` 0.3.0, `packages/ui/package.json:3` 0.1.0, `packages/effects/package.json:3` 0.1.0 today). The artifact must never carry a version it does not describe.
 
@@ -136,6 +137,10 @@ Exit: build emits the artifact with the package versions it describes; documente
 ## 6. Out of scope
 
 `@egdev/mcp` (#346), `design/system.md` (#347), token value or name changes, new tokens, new dependencies (O9 (a) adds none), the MCP connection guide (#344), the tarball/versioning policy itself (#342), npm or GitHub Packages publication, enabling CI, catalog reclassification, component changes, Material prose edits and any Git or GitHub operation.
+
+## Log
+
+- **2026-11-05 — R7 amendment:** The owner chose "Sección `types[]` aparte (Recomendado)"; naming usages resolve to public components or separately recorded types, including Toast. See `odd/tasks/ds-distribution.md` L9.
 
 ## Owner approval
 
