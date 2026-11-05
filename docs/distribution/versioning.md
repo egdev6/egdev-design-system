@@ -34,7 +34,9 @@ Bump procedure for one package:
 1. Choose the next version with the rules below.
 2. Edit `version` in `packages/<name>/package.json`.
 3. Add a changelog section for that exact version at the **top** of
-   `packages/<name>/CHANGELOG.md`.
+   `packages/<name>/CHANGELOG.md`, moving the entries collected under `## Unreleased` into it.
+   Between releases, changes accumulate under an `## Unreleased` section above the last
+   version; `release:pack` ignores that section and checks the first versioned one.
 4. Run `pnpm release:pack`. The command fails until the two agree, then prints one line per
    tarball.
 5. Commit the manifest and the changelog together, so the packed version and its section land in
