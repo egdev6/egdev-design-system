@@ -25428,6 +25428,80 @@
       "unresolved": false
     }
   ],
+  "typographyRoles": [
+    {
+      "name": "Eyebrow",
+      "source": "packages/ui/src/primitives/text/types.ts",
+      "family": "--font-display",
+      "size": "--text-label-eyebrow",
+      "lineHeight": "--text-label-eyebrow--line-height",
+      "weight": "--text-label-eyebrow--font-weight",
+      "tracking": "--text-label-eyebrow--letter-spacing"
+    },
+    {
+      "name": "Heading display",
+      "source": "packages/ui/src/primitives/text/types.ts",
+      "family": "--font-display",
+      "size": "--text-title-display",
+      "lineHeight": "--text-title-display--line-height",
+      "weight": "--text-title-display--font-weight",
+      "tracking": "--text-title-display--letter-spacing"
+    },
+    {
+      "name": "Heading hero",
+      "source": "packages/ui/src/primitives/text/types.ts",
+      "family": "--font-display",
+      "size": "--text-title-hero",
+      "lineHeight": "--text-title-hero--line-height",
+      "weight": "--text-title-hero--font-weight",
+      "tracking": "--text-title-hero--letter-spacing"
+    },
+    {
+      "name": "Heading section",
+      "source": "packages/ui/src/primitives/text/types.ts",
+      "family": "--font-display",
+      "size": "--text-title-section",
+      "lineHeight": "--text-title-section--line-height",
+      "weight": "--text-title-section--font-weight",
+      "tracking": "--text-title-section--letter-spacing"
+    },
+    {
+      "name": "Heading show",
+      "source": "packages/ui/src/primitives/text/types.ts",
+      "family": "--font-display",
+      "size": "--text-title-show",
+      "lineHeight": "--text-title-show--line-height",
+      "weight": "--text-title-show--font-weight",
+      "tracking": "--text-title-show--letter-spacing"
+    },
+    {
+      "name": "Hero lede",
+      "source": "packages/ui/src/organisms/hero/types.ts",
+      "family": "--font-sans",
+      "size": "--text-body-large",
+      "lineHeight": "--text-body-large--line-height",
+      "weight": "--text-body-large--font-weight",
+      "tracking": "--text-body-large--letter-spacing"
+    },
+    {
+      "name": "ProjectCard code",
+      "source": "packages/ui/src/molecules/project-card/types.ts",
+      "family": "--font-mono",
+      "size": "--text-code",
+      "lineHeight": "--text-code--line-height",
+      "weight": "--text-code--font-weight",
+      "tracking": "--text-code--letter-spacing"
+    },
+    {
+      "name": "SectionHeader lede",
+      "source": "packages/ui/src/molecules/section-header/types.ts",
+      "family": "--font-sans",
+      "size": "--text-body-muted",
+      "lineHeight": "--text-body-muted--line-height",
+      "weight": "--text-body-muted--font-weight",
+      "tracking": "--text-body-muted--letter-spacing"
+    }
+  ],
   "types": [
     {
       "name": "CalendarGridEntry",

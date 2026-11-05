@@ -47,6 +47,35 @@ test('composition guide leads and prioritizes catalog levels with explicit propo
   assert.match(text, /Composes:.*Molecule.*source\.tsx/);
 });
 
+test('renders source-derived typography roles and supports older artifacts', () => {
+  const copy = structuredClone(artifact);
+  copy.typographyRoles = [
+    {
+      name: 'Heading section',
+      source: 'text.ts',
+      family: '--font-display',
+      size: '--text-title-section',
+      lineHeight: '--text-title-section--line-height',
+      weight: '--text-title-section--font-weight',
+      tracking: '--text-title-section--letter-spacing'
+    },
+    {
+      name: 'Body',
+      source: 'body.ts',
+      family: '--font-sans',
+      size: null,
+      lineHeight: null,
+      weight: null,
+      tracking: null
+    }
+  ];
+  const text = renderSystemMd(copy);
+  assert.match(text, /Composition guide[\s\S]*Typography roles/);
+  assert.match(text, /Heading section.*--font-display.*--text-title-section.*text\.ts/);
+  assert.match(text, /Body.*--font-sans.*unresolved.*body\.ts/);
+  assert.match(renderSystemMd(artifact), /## Typography roles\n\nEmpty\./);
+});
+
 test('renders sorted source-derived compound parts under their parent', () => {
   const copy = structuredClone(artifact);
   copy.components[0].parts = [
@@ -74,7 +103,7 @@ test('renders deterministic sections and artifact facts only', () => {
     'Usage rules',
     'Other tokens'
   ]) {
-    const next = text.indexOf(`## ${name}`);
+    const next = text.indexOf(`## ${name}\n`);
     assert.ok(next > position, name);
     position = next;
   }

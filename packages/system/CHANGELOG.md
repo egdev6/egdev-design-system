@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Expose source-derived typography roles and token references in the artifact and generated design reference.
+
 - Lead the design reference with organisms-first composition and proposal guidance; expose source-derived component composition and catalog slots.
 
 - Expose source-derived compound component parts and their documented children in the artifact and generated system reference.
