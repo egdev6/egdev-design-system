@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import manifest from '../package.json' with { type: 'json' };
+import { packReleaseSet } from './lib/pack-packages.mjs';
 
 // Build first. Network installs are isolated; allow up to six minutes per React version.
 // No workspace links, source aliases, skipped declaration checks, or permanent dependencies.
@@ -9234,14 +9235,13 @@ for (const [react, [types, domTypes]] of Object.entries(versions)) {
   test(`packed UI consumer with React ${react}`, { timeout: 360_000 }, async (context) => {
     const temporary = mkdtempSync(join(tmpdir(), 'egdev-package-consumption-'));
     try {
+      // One shared packing step, also used by `pnpm release:pack` (scripts/lib/pack-packages.mjs).
+      const packed = packReleaseSet({ root, destination: temporary });
       const tarballs = {};
       for (const name of ['tokens', 'ui', 'effects']) {
-        run(join(root, 'packages', name), 'pnpm', ['pack', '--pack-destination', temporary], 30_000);
-        const file = readdirSync(temporary).find(
-          (entry) => entry.startsWith(`egdev-${name}-`) && entry.endsWith('.tgz')
-        );
-        assert.ok(file, `pnpm pack must produce the ${name} tarball`);
-        tarballs[name] = `file:${join(temporary, file)}`;
+        const entry = packed.find((item) => item.name === `@egdev/${name}`);
+        assert.ok(entry, `pnpm pack must produce the ${name} tarball`);
+        tarballs[name] = `file:${entry.path}`;
       }
       const fixture = join(temporary, 'consumer');
       mkdirSync(fixture);
