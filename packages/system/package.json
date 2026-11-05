@@ -3,9 +3,15 @@
   "version": "0.1.0",
   "type": "module",
   "files": [
-    "design-system.json"
+    "design-system.json",
+    "system.md",
+    "src"
   ],
+  "bin": {
+    "egdev-system-md": "./src/cli.mjs"
+  },
   "exports": {
+    ".": "./src/render-system-md.mjs",
     "./design-system.json": "./design-system.json"
   },
   "scripts": {
