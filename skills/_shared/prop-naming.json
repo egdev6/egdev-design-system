@@ -1,5 +1,32 @@
 [
   {
+    "id": "web-section-body-slot",
+    "name": "body",
+    "meaning": "Consumer-supplied body content of a neutral section.",
+    "whenToUse": "Supply the main section content, including interactive nodes.",
+    "avoid": "The section landmark or a replacement for header, media, actions or social slots.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/decisions/prop-naming-web-section-approval.json",
+      "scope": "convention:web-section-body-slot",
+      "contentHash": "sha256:00414a3747dd987b0b3990b1b2d8e4f52e88887ab1bf3642568e6fe23b689907"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "WebSection",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/web-section/types.ts",
+          "symbol": "WebSectionProps.body",
+          "revision": "sha256:8cc65bc084f2cf8089da45e82d5fed61d21a988d90e79cfb0bfcea83f6cbe1d9"
+        }
+      }
+    ]
+  },
+  {
     "id": "choreography-zone-table",
     "name": "zoneTable",
     "meaning": "Ordered scroll-choreography zone table.",
@@ -83,18 +110,28 @@
   {
     "id": "scene-media",
     "name": "media",
-    "meaning": "A passive, decorative media or 3D slot of a scene organism, supplied by the consumer.",
-    "whenToUse": "Supply optional decorative scene media such as an Isotipo3D or an image that carries no unique meaning.",
-    "avoid": "Do not use for thumbnails, interactive content, effect selectors or Radix asChild composition.",
+    "meaning": "Consumer-supplied media content in a component, including scene media and neutral section media.",
+    "whenToUse": "Supply scene media or meaningful and interactive media in a neutral section, subject to each component contract.",
+    "avoid": "Effect selectors or Radix asChild composition; existing scene contracts remain decorative only.",
     "status": "approved",
     "approval": {
-      "reference": "docs/components/hero/v0.1/prop-naming-approval-scene-media.json",
+      "reference": "docs/decisions/prop-naming-web-section-approval.json",
       "scope": "convention:scene-media",
-      "contentHash": "sha256:811562fe3e2708a61ae3662e2fbb66f803fd6df641bf8cc60f635e857859f502"
+      "contentHash": "sha256:19f1960457fe5758416724170cc1388d14dbe9206af421144c5ef23b51f5255a"
     },
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "WebSection",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/web-section/types.ts",
+          "symbol": "WebSectionProps.media",
+          "revision": "sha256:8cc65bc084f2cf8089da45e82d5fed61d21a988d90e79cfb0bfcea83f6cbe1d9"
+        }
+      },
       {
         "component": "Hero",
         "type": "ReactNode",
@@ -140,18 +177,28 @@
   {
     "id": "scene-social",
     "name": "social",
-    "meaning": "An optional consumer-supplied social-profile links group in a scene organism.",
-    "whenToUse": "Supply a named social-profile links group within a scene, such as SocialLinks.",
-    "avoid": "Do not use for CTA controls, a structured data array or a generic navigation landmark.",
+    "meaning": "Consumer-supplied social content in a scene or neutral section.",
+    "whenToUse": "Supply social-profile links or other social content according to the component contract.",
+    "avoid": "Structured data arrays or unrelated content; existing scene contracts remain unchanged.",
     "status": "approved",
     "approval": {
-      "reference": "docs/components/hero/v0.1/prop-naming-approval-scene-social.json",
+      "reference": "docs/decisions/prop-naming-web-section-approval.json",
       "scope": "convention:scene-social",
-      "contentHash": "sha256:e68de9fc4fe5b55e80fa6937b1f79fe2245942fe007308252072065394bd9bb1"
+      "contentHash": "sha256:60285bf22102b5301508e4c353e0322944c0019c241b87d72626f1cb8af29f4d"
     },
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "WebSection",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/web-section/types.ts",
+          "symbol": "WebSectionProps.social",
+          "revision": "sha256:8cc65bc084f2cf8089da45e82d5fed61d21a988d90e79cfb0bfcea83f6cbe1d9"
+        }
+      },
       {
         "component": "Hero",
         "type": "ReactNode",
@@ -4773,18 +4820,28 @@
   {
     "id": "panel-header",
     "name": "header",
-    "meaning": "Non-interactive content shown at the top of a floating panel, above and separated from its entries.",
-    "whenToUse": "A menu or panel shows identity or context, such as the signed-in user, before its entries.",
-    "avoid": "Interactive controls, page or section headings, or text that is the panel's only accessible name.",
+    "meaning": "Consumer-supplied introductory content at the start of a panel or neutral section.",
+    "whenToUse": "Supply a panel introduction or a neutral section header, subject to the component contract.",
+    "avoid": "Text that is a panel's only accessible name; existing panel contracts retain their restrictions.",
     "status": "approved",
     "aliases": [],
     "exceptions": [],
     "approval": {
-      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "reference": "docs/decisions/prop-naming-web-section-approval.json",
       "scope": "convention:panel-header",
-      "contentHash": "sha256:d0e5fa1ca4fc22a01baadd487e235b17b52c43da13ffa3af81826f5085295714"
+      "contentHash": "sha256:517908aad054c9f69a2a447d9e2cc4a79b526ffa64fc95954b4077f528223b6b"
     },
     "usages": [
+      {
+        "component": "WebSection",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/web-section/types.ts",
+          "symbol": "WebSectionProps.header",
+          "revision": "sha256:8cc65bc084f2cf8089da45e82d5fed61d21a988d90e79cfb0bfcea83f6cbe1d9"
+        }
+      },
       {
         "component": "Menu",
         "type": "ReactNode",
@@ -5248,18 +5305,28 @@
   {
     "id": "trailing-actions",
     "name": "actions",
-    "meaning": "Consumer-supplied action elements (buttons or links) rendered in a component's trailing action area.",
-    "whenToUse": "A message, header or control bar offers one or two related actions that the consumer builds with system Button or Link components.",
-    "avoid": "Primary navigation, generating buttons from data inside the component, or arbitrary layout content unrelated to actions.",
+    "meaning": "Consumer-supplied action content in a component or neutral section.",
+    "whenToUse": "Supply action elements or neutral section action content subject to the component contract.",
+    "avoid": "Generating controls from data inside the component; existing component contracts retain their restrictions.",
     "status": "approved",
     "aliases": [],
     "exceptions": [],
     "approval": {
-      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "reference": "docs/decisions/prop-naming-web-section-approval.json",
       "scope": "convention:trailing-actions",
-      "contentHash": "sha256:b00c5b3d1006ee97caa5d258e4ce04a046acb3d8d752d734e37bf96c92356550"
+      "contentHash": "sha256:a43b2184cfcb7265c8ae19c21f7c60f6f5a411db03b96a00f880b21ac9206eb1"
     },
     "usages": [
+      {
+        "component": "WebSection",
+        "type": "ReactNode",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/web-section/types.ts",
+          "symbol": "WebSectionProps.actions",
+          "revision": "sha256:8cc65bc084f2cf8089da45e82d5fed61d21a988d90e79cfb0bfcea83f6cbe1d9"
+        }
+      },
       {
         "component": "AlertDialogContent",
         "type": "ReactNode (required)",

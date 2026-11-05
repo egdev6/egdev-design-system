@@ -1,0 +1,113 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "owner-choice",
+  "decision": "Generalize existing slot conventions and approve the neutral WebSection body slot without changing existing component contracts.",
+  "evidence": {
+    "taskReference": "odd/tasks/pulso-visual-corrections.md#log",
+    "userStatements": [
+      {
+        "quote": "no me preguntes termina todo y luego vemos (aplica las propuestas por defecto). Puedes abrir hasta 3 subagentes que parelilcen trabajo y permanezcan abiertos hasta terminar",
+        "provenance": "L23 G1, G4, G5 and U9 plan"
+      }
+    ]
+  },
+  "limits": [
+    "Existing scene, panel and action contracts retain their component-specific restrictions.",
+    "Previous receipts are immutable history."
+  ],
+  "semanticAmendments": [
+    {
+      "id": "scene-media",
+      "previousReference": "docs/components/hero/v0.1/prop-naming-approval-scene-media.json",
+      "previousContentHash": "sha256:811562fe3e2708a61ae3662e2fbb66f803fd6df641bf8cc60f635e857859f502"
+    },
+    {
+      "id": "scene-social",
+      "previousReference": "docs/components/hero/v0.1/prop-naming-approval-scene-social.json",
+      "previousContentHash": "sha256:e68de9fc4fe5b55e80fa6937b1f79fe2245942fe007308252072065394bd9bb1"
+    },
+    {
+      "id": "panel-header",
+      "previousReference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "previousContentHash": "sha256:d0e5fa1ca4fc22a01baadd487e235b17b52c43da13ffa3af81826f5085295714"
+    },
+    {
+      "id": "trailing-actions",
+      "previousReference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "previousContentHash": "sha256:b00c5b3d1006ee97caa5d258e4ce04a046acb3d8d752d734e37bf96c92356550"
+    }
+  ],
+  "entries": [
+    {
+      "scope": "convention:scene-media",
+      "contentHash": "sha256:19f1960457fe5758416724170cc1388d14dbe9206af421144c5ef23b51f5255a",
+      "convention": {
+        "id": "scene-media",
+        "name": "media",
+        "meaning": "Consumer-supplied media content in a component, including scene media and neutral section media.",
+        "whenToUse": "Supply scene media or meaningful and interactive media in a neutral section, subject to each component contract.",
+        "avoid": "Effect selectors or Radix asChild composition; existing scene contracts remain decorative only.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:scene-social",
+      "contentHash": "sha256:60285bf22102b5301508e4c353e0322944c0019c241b87d72626f1cb8af29f4d",
+      "convention": {
+        "id": "scene-social",
+        "name": "social",
+        "meaning": "Consumer-supplied social content in a scene or neutral section.",
+        "whenToUse": "Supply social-profile links or other social content according to the component contract.",
+        "avoid": "Structured data arrays or unrelated content; existing scene contracts remain unchanged.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:panel-header",
+      "contentHash": "sha256:517908aad054c9f69a2a447d9e2cc4a79b526ffa64fc95954b4077f528223b6b",
+      "convention": {
+        "id": "panel-header",
+        "name": "header",
+        "meaning": "Consumer-supplied introductory content at the start of a panel or neutral section.",
+        "whenToUse": "Supply a panel introduction or a neutral section header, subject to the component contract.",
+        "avoid": "Text that is a panel's only accessible name; existing panel contracts retain their restrictions.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:trailing-actions",
+      "contentHash": "sha256:a43b2184cfcb7265c8ae19c21f7c60f6f5a411db03b96a00f880b21ac9206eb1",
+      "convention": {
+        "id": "trailing-actions",
+        "name": "actions",
+        "meaning": "Consumer-supplied action content in a component or neutral section.",
+        "whenToUse": "Supply action elements or neutral section action content subject to the component contract.",
+        "avoid": "Generating controls from data inside the component; existing component contracts retain their restrictions.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:web-section-body-slot",
+      "contentHash": "sha256:00414a3747dd987b0b3990b1b2d8e4f52e88887ab1bf3642568e6fe23b689907",
+      "convention": {
+        "id": "web-section-body-slot",
+        "name": "body",
+        "meaning": "Consumer-supplied body content of a neutral section.",
+        "whenToUse": "Supply the main section content, including interactive nodes.",
+        "avoid": "The section landmark or a replacement for header, media, actions or social slots.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

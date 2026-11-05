@@ -765,6 +765,16 @@ const postReceiptUsages = [
   ...['cover-badge', 'decorative-cover-word'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/article-feature/types.ts#ArticleFeatureCoverProps'
+  })),
+  ...[
+    ['panel-header', 'header'],
+    ['scene-media', 'media'],
+    ['web-section-body-slot', 'body'],
+    ['trailing-actions', 'actions'],
+    ['scene-social', 'social']
+  ].map(([conventionId, prop]) => ({
+    conventionId,
+    source: `packages/ui/src/organisms/web-section/types.ts#WebSectionProps.${prop}`
   }))
 ];
 // These newly proposed conventions are not part of any immutable approval receipt.
@@ -778,7 +788,8 @@ const postReceiptProposals = [
   'animation-paused',
   // AmbientBackground v0.5 direction conventions (L23/L25/L26), approved after these receipts.
   'line-particle-direction',
-  'square-particle-direction'
+  'square-particle-direction',
+  'web-section-body-slot'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -791,6 +802,22 @@ function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
               reviewed.conventionId === entry.id && reviewed.source === `${usage.source.path}#${usage.source.symbol}`
           )
       );
+      const amendments = {
+        'scene-media': 'docs/components/hero/v0.1/prop-naming-approval-scene-media.json',
+        'scene-social': 'docs/components/hero/v0.1/prop-naming-approval-scene-social.json',
+        'panel-header': 'docs/decisions/prop-naming-molecule-specs-approval.json',
+        'trailing-actions': 'docs/decisions/prop-naming-molecule-specs-approval.json'
+      };
+      if (Object.hasOwn(amendments, entry.id)) {
+        const reference = amendments[entry.id];
+        const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+        const previous = receipt.entries.find(({ scope }) => scope === `convention:${entry.id}`);
+        return {
+          ...previous.convention,
+          approval: { reference, scope: previous.scope, contentHash: previous.contentHash },
+          usages
+        };
+      }
       if (entry.id !== 'content-description') {
         return { ...entry, usages };
       }
@@ -804,6 +831,28 @@ function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
       };
     });
 }
+
+test('WebSection slot conventions bind the delegated approval and reviewed usage', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/decisions/prop-naming-web-section-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  assert.ok(
+    receipt.evidence.userStatements.some(
+      ({ quote, provenance }) => quote.includes('aplica las propuestas por defecto') && provenance.includes('L23')
+    )
+  );
+  for (const name of ['header', 'media', 'body', 'actions', 'social']) {
+    const entry = registry.find((item) => item.name === name);
+    assert.ok(entry, name);
+    const usage = entry.usages.find((item) => item.component === 'WebSection');
+    assert.ok(usage, name);
+    assert.equal(usage.source.path, 'packages/ui/src/organisms/web-section/types.ts');
+    assert.equal(usage.source.revision, digest(fs.readFileSync(resolve(root, usage.source.path))));
+    const approved = receipt.entries.find((item) => item.scope === `convention:${entry.id}`);
+    assert.equal(approved?.contentHash, props.conventionHash(entry));
+    assert.equal(entry.approval.reference, reference);
+  }
+});
 
 test('content description binds the owner decision and preserves dialog usage history', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
@@ -869,7 +918,11 @@ test('Hero binds both approved scene conventions and its reviewed usages', () =>
   const path = 'packages/ui/src/organisms/hero/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, path)));
   for (const proposal of proposals) {
-    const entry = registry.find(({ id }) => id === proposal.id);
+    const current = registry.find(({ id }) => id === proposal.id);
+    const entry = historicalRegistry(
+      [current],
+      postReceiptUsages.filter(({ source }) => source.includes('web-section/types.ts'))
+    )[0];
     assert.ok(entry, proposal.id);
     const reference = `docs/components/hero/v0.1/prop-naming-approval-${proposal.id}.json`;
     const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
@@ -1185,8 +1238,8 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
   // AmbientBackground direction conventions add two more after ArticleFeature.
-  assert.equal(actual.length, 160);
-  assert.equal(beforeIndicatorConventions(actual).length, 157);
+  assert.equal(actual.length, 161);
+  assert.equal(beforeIndicatorConventions(actual).length, 158);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -1981,7 +2034,8 @@ test('molecule naming receipt binds delegated decisions without speculative impl
     );
   }
   for (const record of receipt.entries) {
-    const entry = actual.find((entry) => entry.id === record.convention.id);
+    const current = actual.find((entry) => entry.id === record.convention.id);
+    const entry = historicalRegistry([current], [])[0];
     assert.ok(entry, record.scope);
     const amendment = superseded.get(entry.id);
     if (amendment) {

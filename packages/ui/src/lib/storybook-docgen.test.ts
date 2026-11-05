@@ -122,6 +122,21 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('extracts WebSection slots and protected boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
+    const doc = parser
+      .parse(source('organisms/web-section/WebSection.tsx'))
+      .find(({ displayName }) => displayName === 'WebSection');
+    for (const name of ['header', 'media', 'body', 'actions', 'social']) {
+      expect(doc?.props[name], name).toMatchObject({
+        required: false,
+        tags: { control: 'false', controlReason: expect.stringMatching(/ReactNode.*Full story/) }
+      });
+    }
+    for (const name of ['children', 'id', 'role', 'style', 'dangerouslySetInnerHTML', 'ref', 'asChild']) {
+      expect(doc?.props[name], name).toBeUndefined();
+    }
+    expect(publicAPI.WebSection).toBeDefined();
+  });
   it('extracts LabStage inputs and protected native boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
     const doc = parser
       .parse(source('organisms/lab-stage/LabStage.tsx'))
@@ -1537,6 +1552,7 @@ describe('Storybook TypeScript docgen contract', () => {
       './organisms/sidebar',
       './organisms/tab-bar',
       './organisms/top-bar',
+      './organisms/web-section',
       './primitives/aspect-ratio',
       './primitives/divider',
       './primitives/label',
@@ -1703,6 +1719,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'TopBarSearchFull',
       'TopBarUserMenu',
       'VisuallyHidden',
+      'WebSection',
       'appShellVariants',
       'badgeVariants',
       'calendarGridVariants',

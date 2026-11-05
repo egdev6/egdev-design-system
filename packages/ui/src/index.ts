@@ -182,6 +182,8 @@ export {
   TopBarSearchFull,
   TopBarUserMenu
 } from './organisms/top-bar';
+export type { WebSectionProps } from './organisms/web-section';
+export { WebSection } from './organisms/web-section';
 // Primitives
 export type { AspectRatioProps } from './primitives/aspect-ratio';
 export { AspectRatio } from './primitives/aspect-ratio';
