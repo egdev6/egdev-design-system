@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gunzipSync } from 'node:zlib';
@@ -50,28 +50,39 @@ export function packReleaseSet({ root = defaultRoot, destination, members = rele
   if (!existsSync(destination)) {
     mkdirSync(destination, { recursive: true });
   }
-  return members.map((member) => {
-    const result = spawnSync('pnpm', ['pack', '--pack-destination', destination], {
-      cwd: member.directory,
-      encoding: 'utf8',
-      timeout: 120_000,
-      maxBuffer: 8 * 1024 * 1024
-    });
-    if (result.status !== 0) {
-      throw new Error(
-        `pnpm pack failed for ${member.name} (${result.error ?? result.signal}):\n${result.stdout}\n${result.stderr}`
-      );
-    }
-    if (result.stderr) {
-      process.stderr.write(result.stderr);
-    }
-    const file = tarballName(member.name, member.version);
-    const path = join(destination, file);
-    if (!existsSync(path)) {
-      throw new Error(`pnpm pack did not write ${file} for ${member.name}:\n${result.stdout}`);
-    }
-    return { name: member.name, version: member.version, file, path, directory: member.directory };
+  // Each tarball is written under a temporary folder and renamed into place, so a reader of the
+  // destination never sees a partially written tarball.
+  const staging = mkdtempSync(join(destination, '.staging-'));
+  try {
+    return members.map((member) => packMember(member, destination, staging));
+  } finally {
+    rmSync(staging, { recursive: true, force: true });
+  }
+}
+
+function packMember(member, destination, staging) {
+  const result = spawnSync('pnpm', ['pack', '--pack-destination', staging], {
+    cwd: member.directory,
+    encoding: 'utf8',
+    timeout: 120_000,
+    maxBuffer: 8 * 1024 * 1024
   });
+  if (result.status !== 0) {
+    throw new Error(
+      `pnpm pack failed for ${member.name} (${result.error ?? result.signal}):\n${result.stdout}\n${result.stderr}`
+    );
+  }
+  if (result.stderr) {
+    process.stderr.write(result.stderr);
+  }
+  const file = tarballName(member.name, member.version);
+  const staged = join(staging, file);
+  if (!existsSync(staged)) {
+    throw new Error(`pnpm pack did not write ${file} for ${member.name}:\n${result.stdout}`);
+  }
+  const path = join(destination, file);
+  renameSync(staged, path);
+  return { name: member.name, version: member.version, file, path, directory: member.directory };
 }
 
 function headerString(header, offset, length) {
@@ -121,6 +132,7 @@ export function verifyPackedManifests(packed) {
   const errors = [];
   for (const entry of packed) {
     const manifest = readPackedManifest(entry.path);
+    const workspaceSpecifiers = [];
     if (manifest.name !== entry.name) {
       errors.push(`${entry.name}: packed manifest names ${manifest.name}`);
     }
@@ -130,9 +142,12 @@ export function verifyPackedManifests(packed) {
     for (const field of DEPENDENCY_FIELDS) {
       for (const [dependency, range] of Object.entries(manifest[field] ?? {})) {
         if (typeof range === 'string' && range.includes('workspace:')) {
-          errors.push(`${entry.name}: ${field}.${dependency} still contains the workspace specifier ${range}`);
+          workspaceSpecifiers.push(`${field}.${dependency} (${range})`);
         }
       }
+    }
+    if (workspaceSpecifiers.length > 0) {
+      errors.push(`${entry.name}: workspace specifier in ${workspaceSpecifiers.join(', ')}`);
     }
     const changelog = changelogError(entry);
     if (changelog) {
