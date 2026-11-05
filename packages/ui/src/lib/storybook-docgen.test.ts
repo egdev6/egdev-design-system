@@ -625,13 +625,7 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(publicAPI.TopBar).toBeDefined();
   });
   it('extracts Isotipo3D effects metadata and bounded native rows', () => {
-    const isotipoRoot = new URL('../../../effects/', import.meta.url);
-    const isotipoParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', isotipoRoot)), {
-      ...config.typescript?.reactDocgenTypescriptOptions
-    });
-    const isotipoDoc = isotipoParser
-      .parse(fileURLToPath(new URL('src/atoms/isotipo3d/Isotipo3D.tsx', isotipoRoot)))
-      .find((item) => item.displayName === 'Isotipo3D');
+    const isotipoDoc = effectsDocs.find((item) => item.displayName === 'Isotipo3D');
     for (const [name, control, value] of [
       ['scene', 'select', 'hero'],
       ['progress', 'number', '0'],
@@ -648,13 +642,7 @@ describe('Storybook TypeScript docgen contract', () => {
     }
   });
   it('extracts AmbientBackground own metadata and supported native rows from the effects project', () => {
-    const effectsRoot = new URL('../../../effects/', import.meta.url);
-    const effectsParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', effectsRoot)), {
-      ...config.typescript?.reactDocgenTypescriptOptions
-    });
-    const doc = effectsParser
-      .parse(fileURLToPath(new URL('src/ambient-background/AmbientBackground.tsx', effectsRoot)))
-      .find((item) => item.displayName === 'AmbientBackground');
+    const doc = effectsDocs.find((item) => item.displayName === 'AmbientBackground');
     expect(doc).toBeDefined();
     expect(doc?.props.profile).toMatchObject({
       required: false,
@@ -5388,14 +5376,25 @@ describe('ArticleFeature metadata contract', () => {
   });
 });
 
-it('extracts HomeTemplate own props and concrete story guidance', () => {
+let effectsDocs: ReturnType<typeof parser.parse>;
+beforeAll(() => {
   const root = new URL('../../../effects/', import.meta.url);
   const effectsParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', root)), {
     ...config.typescript?.reactDocgenTypescriptOptions
   });
-  const doc = effectsParser
-    .parse(fileURLToPath(new URL('src/home-template/HomeTemplate.tsx', root)))
-    .find((item) => item.displayName === 'HomeTemplate');
+  effectsDocs = effectsParser.parse(
+    [
+      'src/atoms/isotipo3d/Isotipo3D.tsx',
+      'src/ambient-background/AmbientBackground.tsx',
+      'src/home-template/HomeTemplate.tsx',
+      'src/home-template/HomeTemplateAnchor.tsx',
+      'src/scroll-reveal/ScrollReveal.tsx'
+    ].map((path) => fileURLToPath(new URL(path, root)))
+  );
+}, 30_000);
+
+it('extracts HomeTemplate own props and concrete story guidance', { timeout: heavyDocgenTimeoutMs }, () => {
+  const doc = effectsDocs.find((item) => item.displayName === 'HomeTemplate');
   expect(doc).toBeDefined();
   for (const name of ['zoneTable', 'children', 'onZoneChange']) {
     expect(doc?.props[name]?.tags, name).toMatchObject({
@@ -5407,20 +5406,14 @@ it('extracts HomeTemplate own props and concrete story guidance', () => {
   }
   expect(doc?.props.zoneTable?.required).toBe(true);
   expect(doc?.props.children?.required).toBe(true);
-  const anchor = effectsParser
-    .parse(fileURLToPath(new URL('src/home-template/HomeTemplateAnchor.tsx', root)))
-    .find((item) => item.displayName === 'HomeTemplateAnchor');
+  const anchor = effectsDocs.find((item) => item.displayName === 'HomeTemplateAnchor');
   expect(anchor?.props.zone).toMatchObject({ required: true, tags: { control: 'text' } });
 });
 
-it('extracts ScrollReveal effects controls and documented native composition rows', () => {
-  const effectsRoot = new URL('../../../effects/', import.meta.url);
-  const effectsParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', effectsRoot)), {
-    ...config.typescript?.reactDocgenTypescriptOptions
-  });
-  const doc = effectsParser
-    .parse(fileURLToPath(new URL('src/scroll-reveal/ScrollReveal.tsx', effectsRoot)))
-    .find((item) => item.displayName === 'ScrollReveal');
+it('extracts ScrollReveal effects controls and documented native composition rows', {
+  timeout: heavyDocgenTimeoutMs
+}, () => {
+  const doc = effectsDocs.find((item) => item.displayName === 'ScrollReveal');
   expect(doc).toBeDefined();
   expect(doc?.props.variant).toMatchObject({
     required: false,

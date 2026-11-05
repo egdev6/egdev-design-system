@@ -135,6 +135,8 @@ const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', imp
   ...config.typescript?.reactDocgenTypescriptOptions
 });
 let docs: ReturnType<typeof parser.parse>;
+let effectsDocs: ReturnType<typeof parser.parse>;
+const heavyDocgenTimeoutMs = 20_000;
 
 function component(name: string) {
   const doc = docs.find((item) => item.displayName === name);
@@ -965,13 +967,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
   });
 
   it('maps Isotipo3D effects metadata through the registered enhancer', () => {
-    const isotipoRoot = new URL('../../../effects/', import.meta.url);
-    const isotipoParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', isotipoRoot)), {
-      ...config.typescript?.reactDocgenTypescriptOptions
-    });
-    const isotipoDoc = isotipoParser
-      .parse(fileURLToPath(new URL('src/atoms/isotipo3d/Isotipo3D.tsx', isotipoRoot)))
-      .find((item) => item.displayName === 'Isotipo3D');
+    const isotipoDoc = effectsDocs.find((item) => item.displayName === 'Isotipo3D');
     expect(isotipoDoc).toBeDefined();
     const isotipoMetadata = Object.assign((_props: Record<string, unknown>) => null, { __docgenInfo: isotipoDoc });
     const isotipoStory = composeStory(
@@ -993,15 +989,11 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     const isotipoExtract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
     expect(mapJSDocControls(isotipoExtract(isotipoMetadata), isotipoMetadata).diagnostics).toEqual([]);
   });
-  it('maps HomeTemplate and Anchor metadata through native extraction and the registered enhancer', () => {
-    const root = new URL('../../../effects/', import.meta.url);
-    const effectsParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', root)), {
-      ...config.typescript?.reactDocgenTypescriptOptions
-    });
+  it('maps HomeTemplate and Anchor metadata through native extraction and the registered enhancer', {
+    timeout: heavyDocgenTimeoutMs
+  }, () => {
     for (const name of ['HomeTemplate', 'HomeTemplateAnchor']) {
-      const doc = effectsParser
-        .parse(fileURLToPath(new URL(`src/home-template/${name}.tsx`, root)))
-        .find((item) => item.displayName === name);
+      const doc = effectsDocs.find((item) => item.displayName === name);
       expect(doc).toBeDefined();
       const metadata = Object.assign((_props: Record<string, unknown>) => null, { __docgenInfo: doc });
       const composed = composeStory({}, { title: `Metadata/${name}`, component: metadata }, preview, 'Default');
@@ -1020,13 +1012,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
   });
   it('maps AmbientBackground effects metadata through the registered enhancer', () => {
-    const root = new URL('../../../effects/', import.meta.url);
-    const effectsParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', root)), {
-      ...config.typescript?.reactDocgenTypescriptOptions
-    });
-    const doc = effectsParser
-      .parse(fileURLToPath(new URL('src/ambient-background/AmbientBackground.tsx', root)))
-      .find((item) => item.displayName === 'AmbientBackground');
+    const doc = effectsDocs.find((item) => item.displayName === 'AmbientBackground');
     expect(doc).toBeDefined();
     const metadata = Object.assign((_props: Record<string, unknown>) => null, { __docgenInfo: doc });
     const composed = composeStory({}, { title: 'Metadata/AmbientBackground', component: metadata }, preview, 'Default');
@@ -1072,6 +1058,18 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
   });
   beforeAll(() => {
+    const root = new URL('../../../effects/', import.meta.url);
+    const effectsParser = withCustomConfig(fileURLToPath(new URL('tsconfig.json', root)), {
+      ...config.typescript?.reactDocgenTypescriptOptions
+    });
+    effectsDocs = effectsParser.parse(
+      [
+        'src/atoms/isotipo3d/Isotipo3D.tsx',
+        'src/home-template/HomeTemplate.tsx',
+        'src/home-template/HomeTemplateAnchor.tsx',
+        'src/ambient-background/AmbientBackground.tsx'
+      ].map((path) => fileURLToPath(new URL(path, root)))
+    );
     // Parse only implemented components: pending files fail their own tests, never their siblings.
     docs = parser.parse(
       components
@@ -1085,7 +1083,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
         )
         .filter((path) => existsSync(path))
     );
-  }, 20_000);
+  }, 60_000);
 
   it('demonstrates the native pipeline ignores separate docgen control tags', () => {
     const argTypes = story('Gauge', false).argTypes;
