@@ -52,3 +52,22 @@ Static imports and JSX cannot prove runtime nesting or discover consumer-supplie
 | D2 | (a) | adopted under the owner's standing instruction 'no me preguntes tanto. tira millas' |
 | D3 | (a) | adopted under the owner's standing instruction 'no me preguntes tanto. tira millas' |
 | D4 | (a) | adopted under the owner's standing instruction 'no me preguntes tanto. tira millas' |
+
+## Walkthrough evidence (parent-run, 2026-11-05)
+
+Deviation from the planned environment: the run used this repository's workspace with `design/system.md` copied byte-for-byte from the generated golden `packages/system/system.md` (main `1121e0d`), instead of the pilot consumer, because gentle-design runs in the active Pi workspace. Tarball installation of the same bytes was already proven in #348; this run measures what `system.md` teaches.
+
+- `gentle_design list` (verbatim): `Design system: design/system.md is up to date.`
+- Agent: an independent subagent restricted to the gentle-design skill and `design/system.md` (no other repository reads), given the original brief verbatim: "design one direction (only one) of a page that uses WebTemplate with two WebSections, using only design/system.md. Don't run sync or implement."
+- Output: `design/web-template-two-sections/01-foundation-overview.html` (106 lines) and `design.json`; no owner comments.
+- Markers (from the HTML): `WebTemplate` ×1, `TopBar` ×1, `WebSection` ×2, `SectionHeader` ×2, `NowStrip` ×1, `NowCard` ×3, `Footer` ×1; `data-proposal`: none (the agent found existing catalogued pieces for every block).
+
+| Pass criterion (R5) | Result |
+| --- | --- |
+| Template and sections mapped without owner comments | Pass — `WebTemplate` and both `WebSection`s marked (in #348 neither was mapped) |
+| Organisms and molecules used from the top down without owner comments | Pass — `TopBar`, `SectionHeader`, `Footer` organisms and `NowStrip`/`NowCard` molecules chosen by the agent (in #348 the first pass was plain HTML and needed 10 owner comments) |
+| Missing pieces recorded as proposals, not silent local patterns | Pass (vacuous) — no missing piece identified |
+
+Remaining visual divergences, filed as follow-ups: the agent rendered text with `system-ui` although `system.md` lists `--font-display` / `--font-sans`, because the reference does not state typography roles → #370; `WebTemplate` / `WebSection` show "No statically extracted anatomy", so their layout is interpreted → #371. Colours were inlined as resolved values and radii as computed pixels; no non-system colour was introduced.
+
+The design folder and `design/system.md` were scratch for this run and are removed after recording (not committed).
