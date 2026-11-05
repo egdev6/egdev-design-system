@@ -1,5 +1,7 @@
 node_modules
 dist
+# Local tarballs written by `pnpm release:pack`; consumers install them by path, never from git.
+/release/
 storybook-static
 coverage
 *.log
