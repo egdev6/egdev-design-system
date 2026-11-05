@@ -48,6 +48,13 @@ export function renderSystemMd(artifact) {
   const sections = [];
   const section = (name, lines) => sections.push(`## ${name}\n\n${lines.length ? lines.join('\n') : 'Empty.'}`);
   const packages = sorted(artifact.packages, (item) => item.name);
+  section('Composition guide', [
+    'Start with an existing organism; otherwise use a molecule; otherwise compose molecules and atoms and propose a new organism.',
+    'Propose a new atom for anything that could be an atom or repeats across pieces. Follow docs/CATALOGACION.md: reuse → variant → compose → extract → new; record what was inspected and why earlier choices do not suffice. The agent proposes; the owner decides.',
+    'Map each template, section, organism and molecule approximation in the artboard with `data-component="Name"` (for example `data-component="WebTemplate"` and `data-component="WebSection"`). These markers do not render React.',
+    'Mark missing pieces with `data-proposal="organism:Name"` or `data-proposal="atom:Name"` and add an artboard note describing the need, reused pieces and cataloging rationale. Proposals are not approved components.',
+    'Use the catalog descriptions, source-derived Composes lists, parts and documented props/children as slots. These are static source facts, not an exhaustive runtime composition or permission to invent slots.'
+  ]);
   section('Header', [
     `# ${cell(artifact.name)}`,
     '<!-- Generated from design-system.json. Do not edit. -->',
@@ -109,7 +116,12 @@ export function renderSystemMd(artifact) {
       return `- ${r.id}: ${r.semantics} ${values} (${recipeSource}; ${tokenSource})`;
     })
   );
-  const catalog = sorted(artifact.catalog, (row) => `${row.name}\0${row.package ?? ''}`);
+  const rank = { template: 0, organism: 1, molecule: 2, atom: 3, primitive: 4, recipe: 5 };
+  const catalog = [...(artifact.catalog ?? [])].sort(
+    (a, b) =>
+      (rank[a.level] ?? 6) - (rank[b.level] ?? 6) ||
+      compare(`${a.name}\0${a.package ?? ''}`, `${b.name}\0${b.package ?? ''}`)
+  );
   const componentLines = [];
   for (const row of catalog.filter((item) => item.available)) {
     const matches = (artifact.components ?? []).filter(
@@ -121,6 +133,14 @@ export function renderSystemMd(artifact) {
     );
     for (const component of sorted(matches, (item) => item.name)) {
       componentLines.push(`- ${component.name} (components[] · ${component.source})`);
+      if (row.level === 'template' || row.level === 'organism') {
+        componentLines.push(
+          `  - Catalog composition / slots: ${(row.composes ?? []).map(cell).join(', ') || 'Not documented.'} (catalog[] · docs/catalog.json)`
+        );
+        componentLines.push(
+          `  - Composes: ${(component.composedOf ?? []).map((item) => `${cell(item.name)} (${cell(item.source)})`).join(', ') || 'No public JSX composition statically extracted.'}`
+        );
+      }
       for (const part of sorted(component.parts, (item) => item.name)) {
         componentLines.push(
           `  - ${cell(part.name)}: ${cell(part.description)}${part.children ? ` Children: ${cell(part.children)}` : ''} (components[].parts · ${cell(part.source)})`

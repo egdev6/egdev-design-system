@@ -1059,6 +1059,20 @@
           "children": ""
         }
       ],
+      "composedOf": [
+        {
+          "name": "Button",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx"
+        },
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx"
+        },
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "alertDialogHeadVariants",
@@ -1118,6 +1132,20 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Button",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx"
+        },
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx"
+        },
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "alertDialogHeadVariants",
@@ -1177,6 +1205,20 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Button",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx"
+        },
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx"
+        },
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "alertDialogHeadVariants",
@@ -1260,6 +1302,20 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Button",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx"
+        },
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx"
+        },
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "alertDialogHeadVariants",
@@ -1319,6 +1375,20 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Button",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx"
+        },
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx"
+        },
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "alertDialogHeadVariants",
@@ -1392,6 +1462,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "ambientCanvasVariants",
@@ -1448,6 +1519,12 @@
       ],
       "variants": [],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Button",
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "appShellBodyVariants",
@@ -1665,6 +1742,20 @@
           "children": "Cover region props: one generative plate or exactly one `PhotoFrame ratio=\"auto\"`. Exactly one PhotoFrame composed with ratio=\"auto\": the cover region reserves the 16:8\nproportion and the auto media fills the reserved height. A child with its own ratio breaks\nthe reservation; that composition error is documented and warned about in development, not\nrejected by the type."
         }
       ],
+      "composedOf": [
+        {
+          "name": "AspectRatio",
+          "source": "packages/ui/src/molecules/article-feature/ArticleFeature.tsx"
+        },
+        {
+          "name": "Badge",
+          "source": "packages/ui/src/molecules/article-feature/ArticleFeature.tsx"
+        },
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/article-feature/ArticleFeature.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "articleFeatureActionVariants",
@@ -1839,6 +1930,20 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "AspectRatio",
+          "source": "packages/ui/src/molecules/article-feature/ArticleFeature.tsx"
+        },
+        {
+          "name": "Badge",
+          "source": "packages/ui/src/molecules/article-feature/ArticleFeature.tsx"
+        },
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/article-feature/ArticleFeature.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "articleFeatureActionVariants",
@@ -1939,6 +2044,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "aspectRatioVariants",
@@ -2012,6 +2118,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/atoms/avatar/Avatar.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "avatarFallbackIconVariants",
@@ -2125,6 +2237,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "badgeIconVariants",
@@ -2311,6 +2424,7 @@
           "children": "List slot: supply zero or more keyed BlogGridRow parts. Editorial rows in reading order; an empty collection omits the list."
         }
       ],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "blogGridArchiveVariants",
@@ -2392,6 +2506,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "blogGridArchiveVariants",
@@ -2473,6 +2588,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "blogGridArchiveVariants",
@@ -2554,6 +2670,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "blogGridArchiveVariants",
@@ -2635,6 +2752,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "blogGridArchiveVariants",
@@ -2763,6 +2881,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Spinner",
+          "source": "packages/ui/src/atoms/button/Button.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "buttonIconVariants",
@@ -2838,6 +2962,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "buttonGroupVariants",
@@ -2974,6 +3099,48 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/organisms/calendar-grid/CalendarGrid.tsx"
+        },
+        {
+          "name": "IconButton",
+          "source": "packages/ui/src/organisms/calendar-grid/CalendarGrid.tsx"
+        },
+        {
+          "name": "ListItem",
+          "source": "packages/ui/src/organisms/calendar-grid/CalendarGrid.tsx"
+        },
+        {
+          "name": "ListItemActions",
+          "source": "packages/ui/src/organisms/calendar-grid/CalendarGrid.tsx"
+        },
+        {
+          "name": "ListItemBody",
+          "source": "packages/ui/src/organisms/calendar-grid/CalendarGrid.tsx"
+        },
+        {
+          "name": "ListItemContent",
+          "source": "packages/ui/src/organisms/calendar-grid/CalendarGrid.tsx"
+        },
+        {
+          "name": "ListItemFooter",
+          "source": "packages/ui/src/organisms/calendar-grid/CalendarGrid.tsx"
+        },
+        {
+          "name": "ListItemMeta",
+          "source": "packages/ui/src/organisms/calendar-grid/CalendarGrid.tsx"
+        },
+        {
+          "name": "Menu",
+          "source": "packages/ui/src/organisms/calendar-grid/CalendarGrid.tsx"
+        },
+        {
+          "name": "VisuallyHidden",
+          "source": "packages/ui/src/organisms/calendar-grid/CalendarGrid.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "calendarGridAddVariants",
@@ -3170,6 +3337,24 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/carousel/Carousel.tsx"
+        },
+        {
+          "name": "IconButton",
+          "source": "packages/ui/src/molecules/carousel/Carousel.tsx"
+        },
+        {
+          "name": "ProgressBar",
+          "source": "packages/ui/src/molecules/carousel/Carousel.tsx"
+        },
+        {
+          "name": "VisuallyHidden",
+          "source": "packages/ui/src/molecules/carousel/Carousel.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "carouselArrowVariants",
@@ -3334,6 +3519,16 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Heading",
+          "source": "packages/ui/src/organisms/chapter-break/ChapterBreak.tsx"
+        },
+        {
+          "name": "Text",
+          "source": "packages/ui/src/organisms/chapter-break/ChapterBreak.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "chapterBreakCopyVariants",
@@ -3475,6 +3670,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/atoms/checkbox/Checkbox.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "checkboxIconVariants",
@@ -3599,6 +3800,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "chipIconVariants",
@@ -3718,6 +3920,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/chip-group/ChipGroup.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "chipGroupCheckVariants",
@@ -3853,6 +4061,16 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Heading",
+          "source": "packages/ui/src/organisms/closing/Closing.tsx"
+        },
+        {
+          "name": "Text",
+          "source": "packages/ui/src/organisms/closing/Closing.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "closingActionsVariants",
@@ -3953,6 +4171,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Slot",
+          "source": "packages/ui/src/primitives/stack/Cluster.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "clusterVariants",
@@ -4057,6 +4281,16 @@
           "children": ""
         }
       ],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/collapsible/Collapsible.tsx"
+        },
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/collapsible/Collapsible.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "collapsibleCaretVariants",
@@ -4134,6 +4368,16 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/collapsible/Collapsible.tsx"
+        },
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/collapsible/Collapsible.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "collapsibleCaretVariants",
@@ -4211,6 +4455,16 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/collapsible/Collapsible.tsx"
+        },
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/collapsible/Collapsible.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "collapsibleCaretVariants",
@@ -4390,6 +4644,24 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/command-palette/CommandPalette.tsx"
+        },
+        {
+          "name": "IconButton",
+          "source": "packages/ui/src/molecules/command-palette/CommandPalette.tsx"
+        },
+        {
+          "name": "Kbd",
+          "source": "packages/ui/src/molecules/command-palette/CommandPalette.tsx"
+        },
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/command-palette/CommandPalette.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "paletteCategory",
@@ -4548,6 +4820,7 @@
           "children": "Decorative consumer mark slot on the trailing edge of the header band's top row. Exactly one consumer-supplied, non-interactive mark element: no anchor, button or tab stop.\nEither named — `role=\"img\"` with `aria-label`, or `img` with `alt` — so it joins the card\ncontent, or decorative — `img` with `alt=\"\"` or `aria-hidden` — when the mark repeats the\nvisible name, so the card is not announced twice. Non-image marks must fit within 153.6 ×\n51.2 CSS pixels without distortion; consumers own this constraint and the slot does not clip.\nNot type-enforced; rendered untouched."
         }
       ],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "communityCardActionVariants",
@@ -4684,6 +4957,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "communityCardActionVariants",
@@ -4820,6 +5094,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "communityCardActionVariants",
@@ -5014,6 +5289,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "countdownDateVariants",
@@ -5194,6 +5470,20 @@
           "children": ""
         }
       ],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/dialog/Dialog.tsx"
+        },
+        {
+          "name": "IconButton",
+          "source": "packages/ui/src/molecules/dialog/Dialog.tsx"
+        },
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/dialog/Dialog.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "dialogBodyVariants",
@@ -5358,6 +5648,20 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/dialog/Dialog.tsx"
+        },
+        {
+          "name": "IconButton",
+          "source": "packages/ui/src/molecules/dialog/Dialog.tsx"
+        },
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/dialog/Dialog.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "dialogBodyVariants",
@@ -5570,6 +5874,20 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/dialog/Dialog.tsx"
+        },
+        {
+          "name": "IconButton",
+          "source": "packages/ui/src/molecules/dialog/Dialog.tsx"
+        },
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/dialog/Dialog.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "dialogBodyVariants",
@@ -5734,6 +6052,20 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/dialog/Dialog.tsx"
+        },
+        {
+          "name": "IconButton",
+          "source": "packages/ui/src/molecules/dialog/Dialog.tsx"
+        },
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/dialog/Dialog.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "dialogBodyVariants",
@@ -5862,6 +6194,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "dividerVariants",
@@ -5937,6 +6270,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/atoms/dropzone/Dropzone.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "dropzoneVariants",
@@ -6063,6 +6402,20 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "FieldMessage",
+          "source": "packages/ui/src/molecules/field/Field.tsx"
+        },
+        {
+          "name": "Label",
+          "source": "packages/ui/src/molecules/field/Field.tsx"
+        },
+        {
+          "name": "VisuallyHidden",
+          "source": "packages/ui/src/molecules/field/Field.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "fieldCounterVariants",
@@ -6170,6 +6523,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/atoms/field-message/FieldMessage.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "fieldMessageIconVariants",
@@ -6292,6 +6651,12 @@
           "source": "packages/ui/src/organisms/footer/Footer.tsx",
           "description": "Social heading and separately named list supplied by the consumer.",
           "children": "Consumer social heading and named SocialLinks list. Consumer heading and configured SocialLinks; use a list label and caption={null}. The consumer\nowns link contrast and target size (44px recommended); Footer sizes its own navigation links to 44px."
+        }
+      ],
+      "composedOf": [
+        {
+          "name": "Link",
+          "source": "packages/ui/src/organisms/footer/Footer.tsx"
         }
       ],
       "anatomy": [
@@ -6421,6 +6786,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Link",
+          "source": "packages/ui/src/organisms/footer/Footer.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "footerBrandVariants",
@@ -6548,6 +6919,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Link",
+          "source": "packages/ui/src/organisms/footer/Footer.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "footerBrandVariants",
@@ -6675,6 +7052,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Link",
+          "source": "packages/ui/src/organisms/footer/Footer.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "footerBrandVariants",
@@ -6818,6 +7201,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Link",
+          "source": "packages/ui/src/organisms/footer/Footer.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "footerBrandVariants",
@@ -6945,6 +7334,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Link",
+          "source": "packages/ui/src/organisms/footer/Footer.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "footerBrandVariants",
@@ -7116,6 +7511,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "gaugeArcVariants",
@@ -7250,6 +7646,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "groupCenterVariants",
@@ -7399,6 +7796,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "accentVariants",
@@ -7557,6 +7955,16 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Heading",
+          "source": "packages/ui/src/organisms/hero/Hero.tsx"
+        },
+        {
+          "name": "Text",
+          "source": "packages/ui/src/organisms/hero/Hero.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "heroActionsVariants",
@@ -7681,6 +8089,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "anchorVariants",
@@ -7771,6 +8180,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "anchorVariants",
@@ -7868,6 +8278,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "iconVariants",
@@ -7971,6 +8382,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "iconButtonIconVariants",
@@ -8128,6 +8540,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/atoms/indicator/Indicator.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "indicatorGlyphVariants",
@@ -8323,6 +8741,16 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/atoms/input/Input.tsx"
+        },
+        {
+          "name": "Spinner",
+          "source": "packages/ui/src/atoms/input/Input.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "inputControlVariants",
@@ -8501,6 +8929,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "isotipoCanvasVariants",
@@ -8594,6 +9023,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "kbdVariants",
@@ -8711,6 +9141,16 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Heading",
+          "source": "packages/ui/src/organisms/lab-stage/LabStage.tsx"
+        },
+        {
+          "name": "Text",
+          "source": "packages/ui/src/organisms/lab-stage/LabStage.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "labStageCopyVariants",
@@ -8795,6 +9235,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "labelVariants",
@@ -8889,6 +9330,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/atoms/link/Link.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "linkArrowVariants",
@@ -9087,6 +9534,7 @@
           "children": "Compound div attributes. className supports local alignment, placement and width constraints,\nnot appearance, hidden content or reordering. No ref, own role or tab stop is exposed."
         }
       ],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "listItemExampleVariants",
@@ -9216,6 +9664,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "listItemExampleVariants",
@@ -9345,6 +9794,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "listItemExampleVariants",
@@ -9474,6 +9924,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "listItemExampleVariants",
@@ -9603,6 +10054,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "listItemExampleVariants",
@@ -9732,6 +10184,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "listItemExampleVariants",
@@ -9861,6 +10314,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "listItemExampleVariants",
@@ -9990,6 +10444,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "listItemExampleVariants",
@@ -10136,6 +10591,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "listItemExampleVariants",
@@ -10265,6 +10721,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "listItemExampleVariants",
@@ -10358,6 +10815,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "liveBandFieldVariants",
@@ -10448,6 +10906,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "liveBandFieldVariants",
@@ -10538,6 +10997,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "liveBandFieldVariants",
@@ -10628,6 +11088,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "liveBandFieldVariants",
@@ -10718,6 +11179,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "liveBandFieldVariants",
@@ -10816,6 +11278,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "liveBandFieldVariants",
@@ -10917,6 +11380,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "logoArtworkVariants",
@@ -11094,6 +11558,16 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/menu/Menu.tsx"
+        },
+        {
+          "name": "Kbd",
+          "source": "packages/ui/src/molecules/menu/Menu.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "accountMenuRecipeVariants",
@@ -11276,6 +11750,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "ProgressBar",
+          "source": "packages/ui/src/molecules/meter-row/MeterRow.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "meterRowHeaderVariants",
@@ -11477,6 +11957,16 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Badge",
+          "source": "packages/ui/src/molecules/module-card/ModuleCard.tsx"
+        },
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/module-card/ModuleCard.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "moduleCardActionsVariants",
@@ -11670,6 +12160,28 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/organisms/module-rail/ModuleRail.tsx"
+        },
+        {
+          "name": "IconButton",
+          "source": "packages/ui/src/organisms/module-rail/ModuleRail.tsx"
+        },
+        {
+          "name": "StatusDot",
+          "source": "packages/ui/src/organisms/module-rail/ModuleRail.tsx"
+        },
+        {
+          "name": "Tooltip",
+          "source": "packages/ui/src/organisms/module-rail/ModuleRail.tsx"
+        },
+        {
+          "name": "VisuallyHidden",
+          "source": "packages/ui/src/organisms/module-rail/ModuleRail.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "moduleRailVariants",
@@ -11829,6 +12341,24 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Badge",
+          "source": "packages/ui/src/molecules/nav-list/NavList.tsx"
+        },
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/nav-list/NavList.tsx"
+        },
+        {
+          "name": "StatusDot",
+          "source": "packages/ui/src/molecules/nav-list/NavList.tsx"
+        },
+        {
+          "name": "VisuallyHidden",
+          "source": "packages/ui/src/molecules/nav-list/NavList.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "navListCaptionVariants",
@@ -11960,6 +12490,7 @@
           "children": ""
         }
       ],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "notesBoardListVariants",
@@ -12022,6 +12553,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "notesBoardListVariants",
@@ -12084,6 +12616,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "notesBoardListVariants",
@@ -12197,6 +12730,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/notice/Notice.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "noticeActionsVariants",
@@ -12368,6 +12907,7 @@
           "children": "Lower band for one supporting detail and/or one action (a Link or a labelled IconButton);\nnever two competing actions. One NowCardDetail and/or one Link/IconButton. Omit the part entirely when the card has no footer."
         }
       ],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "nowCardBadgeVariants",
@@ -12518,6 +13058,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "nowCardBadgeVariants",
@@ -12668,6 +13209,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "nowCardBadgeVariants",
@@ -12818,6 +13360,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "nowCardBadgeVariants",
@@ -12936,6 +13479,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "StatusDot",
+          "source": "packages/ui/src/organisms/now-strip/NowStrip.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "nowStripGridVariants",
@@ -13019,6 +13568,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Stack",
+          "source": "packages/ui/src/molecules/page-header/PageHeader.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "pageHeaderActionsVariants",
@@ -13130,6 +13685,12 @@
           "children": "Supplied identity/context zone; no generated heading or landmark. Meaningful supplied header content. Omit the part itself when it is not needed."
         }
       ],
+      "composedOf": [
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/panel/Panel.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "panelBodyVariants",
@@ -13221,6 +13782,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/panel/Panel.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "panelBodyVariants",
@@ -13312,6 +13879,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/panel/Panel.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "panelBodyVariants",
@@ -13403,6 +13976,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/panel/Panel.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "panelBodyVariants",
@@ -13559,6 +14138,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "AspectRatio",
+          "source": "packages/ui/src/atoms/photo-frame/PhotoFrame.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "photoFrameCaptionVariants",
@@ -13666,6 +14251,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "pixelVariants",
@@ -13770,6 +14356,12 @@
           "children": ""
         }
       ],
+      "composedOf": [
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/popover/Popover.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "popoverButtonVariants",
@@ -13831,6 +14423,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/popover/Popover.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "popoverButtonVariants",
@@ -13916,6 +14514,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/popover/Popover.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "popoverButtonVariants",
@@ -13977,6 +14581,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/molecules/popover/Popover.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "popoverButtonVariants",
@@ -14017,6 +14627,7 @@
       ],
       "variants": [],
       "parts": [],
+      "composedOf": [],
       "anatomy": [],
       "surfaceUsage": []
     },
@@ -14135,6 +14746,16 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "AspectRatio",
+          "source": "packages/ui/src/organisms/preview-frame/PreviewFrame.tsx"
+        },
+        {
+          "name": "Text",
+          "source": "packages/ui/src/organisms/preview-frame/PreviewFrame.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "actionsVariants",
@@ -14283,6 +14904,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "progressBarFillVariants",
@@ -14516,6 +15138,12 @@
           "children": "Ordered technology labels rendered as one static Chip per list item."
         }
       ],
+      "composedOf": [
+        {
+          "name": "Chip",
+          "source": "packages/ui/src/molecules/project-card/ProjectCard.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "projectCardBackdropVariants",
@@ -14731,6 +15359,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Chip",
+          "source": "packages/ui/src/molecules/project-card/ProjectCard.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "projectCardBackdropVariants",
@@ -14971,6 +15605,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Chip",
+          "source": "packages/ui/src/molecules/project-card/ProjectCard.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "projectCardBackdropVariants",
@@ -15203,6 +15843,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Chip",
+          "source": "packages/ui/src/molecules/project-card/ProjectCard.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "projectCardBackdropVariants",
@@ -15418,6 +16064,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Chip",
+          "source": "packages/ui/src/molecules/project-card/ProjectCard.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "projectCardBackdropVariants",
@@ -15650,6 +16302,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Chip",
+          "source": "packages/ui/src/molecules/project-card/ProjectCard.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "projectCardBackdropVariants",
@@ -15862,6 +16520,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "pullQuoteAccentVariants",
@@ -15976,6 +16635,7 @@
       ],
       "variants": [],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "radioGroupIndicatorVariants",
@@ -16056,6 +16716,16 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Slot",
+          "source": "packages/effects/src/scroll-reveal/ScrollReveal.tsx"
+        },
+        {
+          "name": "Slottable",
+          "source": "packages/effects/src/scroll-reveal/ScrollReveal.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "scrollRevealRootVariants",
@@ -16123,6 +16793,16 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/atoms/search-trigger/SearchTrigger.tsx"
+        },
+        {
+          "name": "Kbd",
+          "source": "packages/ui/src/atoms/search-trigger/SearchTrigger.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "searchTriggerHintVariants",
@@ -16266,6 +16946,20 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Divider",
+          "source": "packages/ui/src/molecules/section-header/SectionHeader.tsx"
+        },
+        {
+          "name": "Heading",
+          "source": "packages/ui/src/molecules/section-header/SectionHeader.tsx"
+        },
+        {
+          "name": "Text",
+          "source": "packages/ui/src/molecules/section-header/SectionHeader.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "sectionHeaderEyebrowVariants",
@@ -16447,6 +17141,36 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx"
+        },
+        {
+          "name": "Pixel",
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx"
+        },
+        {
+          "name": "Popover",
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx"
+        },
+        {
+          "name": "PopoverContent",
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx"
+        },
+        {
+          "name": "PopoverTrigger",
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx"
+        },
+        {
+          "name": "ProgressBar",
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx"
+        },
+        {
+          "name": "Surface",
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "sectionNavLinkVariants",
@@ -16537,6 +17261,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "sectionShellVariants",
@@ -16686,6 +17411,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/atoms/select/Select.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "selectChevronVariants",
@@ -16833,6 +17564,20 @@
       ],
       "variants": [],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "AspectRatio",
+          "source": "packages/ui/src/molecules/select-tile/SelectTile.tsx"
+        },
+        {
+          "name": "Badge",
+          "source": "packages/ui/src/molecules/select-tile/SelectTile.tsx"
+        },
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/select-tile/SelectTile.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "badge",
@@ -16975,6 +17720,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "sidebarBodyVariants",
@@ -17103,6 +17849,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "skeletonVariants",
@@ -17309,6 +18056,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "sliderRangeVariants",
@@ -17344,6 +18092,7 @@
       "props": [],
       "variants": [],
       "parts": [],
+      "composedOf": [],
       "anatomy": [],
       "surfaceUsage": [
         {
@@ -17507,6 +18256,7 @@
       "props": [],
       "variants": [],
       "parts": [],
+      "composedOf": [],
       "anatomy": [],
       "surfaceUsage": [
         {
@@ -17752,6 +18502,16 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Cluster",
+          "source": "packages/ui/src/molecules/social-links/SocialLinks.tsx"
+        },
+        {
+          "name": "IconButton",
+          "source": "packages/ui/src/molecules/social-links/SocialLinks.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "socialLinksCaptionVariants",
@@ -17815,6 +18575,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "spinnerArcVariants",
@@ -17886,6 +18647,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Slot",
+          "source": "packages/ui/src/primitives/stack/Stack.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "clusterVariants",
@@ -17989,6 +18756,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "statDeltaVariants",
@@ -18074,6 +18842,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "statusDotVariants",
@@ -18185,6 +18954,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Slot",
+          "source": "packages/ui/src/primitives/surface/Surface.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "surfaceVariants",
@@ -18347,6 +19122,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "switchThumbVariants",
@@ -18439,6 +19215,20 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Badge",
+          "source": "packages/ui/src/organisms/tab-bar/TabBar.tsx"
+        },
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/organisms/tab-bar/TabBar.tsx"
+        },
+        {
+          "name": "VisuallyHidden",
+          "source": "packages/ui/src/organisms/tab-bar/TabBar.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "tabBarCountVariants",
@@ -18711,6 +19501,20 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Checkbox",
+          "source": "packages/ui/src/molecules/table/Table.tsx"
+        },
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/table/Table.tsx"
+        },
+        {
+          "name": "VisuallyHidden",
+          "source": "packages/ui/src/molecules/table/Table.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "captionVariants",
@@ -18940,6 +19744,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "tabsCountVariants",
@@ -19097,6 +19902,12 @@
           "children": "Ordered definition pairs rendered as `dl` > `dt`/`dd`. No controls, no links and no nested\nlists. No ref or asChild API; className supports local layout only."
         }
       ],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/terminal-card/TerminalCard.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "terminalCardBarVariants",
@@ -19228,6 +20039,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/terminal-card/TerminalCard.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "terminalCardBarVariants",
@@ -19351,6 +20168,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/terminal-card/TerminalCard.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "terminalCardBarVariants",
@@ -19491,6 +20314,16 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Slot",
+          "source": "packages/ui/src/primitives/text/Text.tsx"
+        },
+        {
+          "name": "Slottable",
+          "source": "packages/ui/src/primitives/text/Text.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "accentVariants",
@@ -19552,6 +20385,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "textareaVariants",
@@ -19714,6 +20548,24 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Avatar",
+          "source": "packages/ui/src/molecules/timeline/Timeline.tsx"
+        },
+        {
+          "name": "Badge",
+          "source": "packages/ui/src/molecules/timeline/Timeline.tsx"
+        },
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/timeline/Timeline.tsx"
+        },
+        {
+          "name": "VisuallyHidden",
+          "source": "packages/ui/src/molecules/timeline/Timeline.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "timelineAuthorVariants",
@@ -19919,6 +20771,16 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Badge",
+          "source": "packages/ui/src/molecules/tip-card/TipCard.tsx"
+        },
+        {
+          "name": "PhotoFrame",
+          "source": "packages/ui/src/molecules/tip-card/TipCard.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "tipCardCapVariants",
@@ -20021,6 +20883,24 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Icon",
+          "source": "packages/ui/src/molecules/toast/Toast.tsx"
+        },
+        {
+          "name": "IconButton",
+          "source": "packages/ui/src/molecules/toast/Toast.tsx"
+        },
+        {
+          "name": "Portal",
+          "source": "packages/ui/src/molecules/toast/Toast.tsx"
+        },
+        {
+          "name": "Spinner",
+          "source": "packages/ui/src/molecules/toast/Toast.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "toastRootVariants",
@@ -20136,6 +21016,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "toggleIconVariants",
@@ -20245,6 +21126,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "tooltipVariants",
@@ -20385,6 +21267,7 @@
           "children": "Each part accepts a single consumer-owned named link or control. Consumer-supplied content."
         }
       ],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "topBarBrandVariants",
@@ -20507,6 +21390,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "topBarBrandVariants",
@@ -20629,6 +21513,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "topBarBrandVariants",
@@ -20751,6 +21636,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "topBarBrandVariants",
@@ -20873,6 +21759,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "topBarBrandVariants",
@@ -20995,6 +21882,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "topBarBrandVariants",
@@ -21083,6 +21971,7 @@
       ],
       "variants": [],
       "parts": [],
+      "composedOf": [],
       "anatomy": [],
       "surfaceUsage": []
     },
@@ -21139,6 +22028,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "webSectionVariants",
@@ -21198,6 +22088,12 @@
         }
       ],
       "parts": [],
+      "composedOf": [
+        {
+          "name": "Button",
+          "source": "packages/ui/src/templates/web-template/WebTemplate.tsx"
+        }
+      ],
       "anatomy": [
         {
           "name": "webTemplateTopBarVariants",
@@ -21221,6 +22117,7 @@
       "props": [],
       "variants": [],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "appShellBodyVariants",
@@ -21326,6 +22223,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "badgeIconVariants",
@@ -21504,6 +22402,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "calendarGridAddVariants",
@@ -21620,6 +22519,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "chipIconVariants",
@@ -21649,6 +22549,7 @@
       "props": [],
       "variants": [],
       "parts": [],
+      "composedOf": [],
       "anatomy": [],
       "surfaceUsage": []
     },
@@ -21668,6 +22569,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "dropzoneVariants",
@@ -21737,6 +22639,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "footerBrandVariants",
@@ -21817,6 +22720,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "labelVariants",
@@ -21902,6 +22806,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "accountMenuRecipeVariants",
@@ -22041,6 +22946,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "moduleRailVariants",
@@ -22175,6 +23081,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "navListCaptionVariants",
@@ -22279,6 +23186,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "noticeActionsVariants",
@@ -22367,6 +23275,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "progressBarFillVariants",
@@ -22431,6 +23340,7 @@
       "props": [],
       "variants": [],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "radioGroupIndicatorVariants",
@@ -22514,6 +23424,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "sidebarBodyVariants",
@@ -22614,6 +23525,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "sliderRangeVariants",
@@ -22680,6 +23592,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "statDeltaVariants",
@@ -22748,6 +23661,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "statusDotVariants",
@@ -22818,6 +23732,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "surfaceVariants",
@@ -22940,6 +23855,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "tabBarCountVariants",
@@ -23041,6 +23957,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "tabsCountVariants",
@@ -23136,6 +24053,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "tooltipVariants",
@@ -23164,6 +24082,7 @@
         }
       ],
       "parts": [],
+      "composedOf": [],
       "anatomy": [
         {
           "name": "toastRootVariants",
