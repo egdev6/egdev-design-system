@@ -113,6 +113,7 @@ describe('AmbientBackground lifecycle', () => {
     const engine = {
       ready: () => true,
       set,
+      setDirections: vi.fn(),
       resize: vi.fn(),
       start: vi.fn(),
       stop: vi.fn(),
@@ -160,6 +161,139 @@ describe('AmbientBackground lifecycle', () => {
       speedMultiplier: speed,
       backgroundGlowOpacity: glow
     });
+  });
+
+  it.each(['base', 'read', 'live'] as const)(
+    'keeps %s draw counts while changing independent directions',
+    (profile) => {
+      reduced = true;
+      vi.spyOn(Math, 'random').mockReturnValue(0.5);
+      const { container, rerender } = render(<AmbientBackground profile={profile} />);
+      const baselineCount = draw.mock.calls.length;
+      const baselinePositions = translate.mock.calls.slice();
+      draw.mockClear();
+      translate.mockClear();
+      rerender(<AmbientBackground profile={profile} lineDirection='right' squareDirection='up' />);
+      expect(draw).toHaveBeenCalledTimes(baselineCount);
+      expect(translate.mock.calls).not.toEqual(baselinePositions);
+      expect(container.firstElementChild?.getAttribute('data-state')).toBe('static');
+      expect(container.querySelector('canvas')?.className).toContain('forced-colors:hidden');
+      expect(raf.size).toBe(0);
+    }
+  );
+
+  it.each([
+    ['up', 270],
+    ['up-right', 315],
+    ['right', 0],
+    ['down-right', 45],
+    ['down', 90],
+    ['down-left', 135],
+    ['left', 180],
+    ['up-left', 225]
+  ] as const)('renders the line direction %s at %i degrees', (direction, degrees) => {
+    reduced = true;
+    render(<AmbientBackground lineDirection={direction} />);
+    expect(context.rotate).toHaveBeenCalledWith(
+      expect.closeTo(Math.atan2(Math.sin((degrees * Math.PI) / 180), Math.cos((degrees * Math.PI) / 180)))
+    );
+  });
+
+  it.each([
+    ['up', 0, -1],
+    ['up-right', 1, -1],
+    ['right', 1, 0],
+    ['down-right', 1, 1],
+    ['down', 0, 1],
+    ['down-left', -1, 1],
+    ['left', -1, 0],
+    ['up-left', -1, -1]
+  ] as const)('moves both families visibly %s between frames', (direction, signX, signY) => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    vi.spyOn(performance, 'now').mockReturnValue(0);
+    render(<AmbientBackground lineDirection={direction} squareDirection={direction} />);
+    const frame = (time: number) => {
+      translate.mockClear();
+      act(() => {
+        const callback = [...raf.values()][0];
+        raf.clear();
+        callback?.(time);
+      });
+      return translate.mock.calls.slice(-160);
+    };
+    const first = frame(100);
+    const second = frame(200);
+    for (const index of [0, 70]) {
+      const before = first[index];
+      const after = second[index];
+      expect(before).toBeDefined();
+      expect(after).toBeDefined();
+      if (!before || !after) {
+        throw new Error('Expected a rendered particle in each frame');
+      }
+      const dx = after[0] - before[0];
+      const dy = after[1] - before[1];
+      expect(Math.abs(dx) < 1e-8 ? 0 : Math.sign(dx)).toBe(signX);
+      expect(Math.abs(dy) < 1e-8 ? 0 : Math.sign(dy)).toBe(signY);
+    }
+  });
+
+  it('keeps every direction pair static, bounded and hidden in forced colors', () => {
+    reduced = true;
+    const directions = ['up', 'up-right', 'right', 'down-right', 'down', 'down-left', 'left', 'up-left'] as const;
+    const { container, rerender } = render(<AmbientBackground />);
+    for (const lineDirection of directions) {
+      for (const squareDirection of directions) {
+        draw.mockClear();
+        rerender(<AmbientBackground lineDirection={lineDirection} squareDirection={squareDirection} />);
+        expect(draw.mock.calls.length).toBeLessThanOrEqual(230);
+        expect(container.firstElementChild?.getAttribute('data-state')).toBe('static');
+        expect(container.querySelector('canvas')?.className).toContain('forced-colors:hidden');
+        expect(raf.size).toBe(0);
+      }
+    }
+  });
+
+  it('changes each family without moving the other in a static frame', () => {
+    reduced = true;
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    const { rerender } = render(<AmbientBackground />);
+    const initial = translate.mock.calls.slice(-160);
+    translate.mockClear();
+    rerender(<AmbientBackground lineDirection='up' />);
+    const linesChanged = translate.mock.calls.slice(-160);
+    expect(linesChanged.slice(0, 70)).not.toEqual(initial.slice(0, 70));
+    expect(linesChanged.slice(70)).toEqual(initial.slice(70));
+    translate.mockClear();
+    rerender(<AmbientBackground lineDirection='up' squareDirection='right' />);
+    const squaresChanged = translate.mock.calls.slice(-160);
+    expect(squaresChanged.slice(0, 70)).toEqual(linesChanged.slice(0, 70));
+    expect(squaresChanged.slice(70)).not.toEqual(linesChanged.slice(70));
+  });
+
+  it('falls back from invalid directions and warns in development', () => {
+    reduced = true;
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const { unmount } = render(<AmbientBackground />);
+    const baseline = translate.mock.calls.slice(-160);
+    unmount();
+    translate.mockClear();
+    render(<AmbientBackground lineDirection={'invalid' as never} squareDirection={'invalid' as never} />);
+    expect(translate.mock.calls.slice(-160)).toEqual(baseline);
+    expect(warning).toHaveBeenCalledWith('AmbientBackground: invalid lineDirection; using up-left.');
+    expect(warning).toHaveBeenCalledWith('AmbientBackground: invalid squareDirection; using up-left.');
+  });
+
+  it.each(['base', 'read', 'live'] as const)('keeps %s default geometry equal to explicit up-left', (profile) => {
+    reduced = true;
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    const { unmount } = render(<AmbientBackground profile={profile} />);
+    const baseline = translate.mock.calls.slice(1);
+    unmount();
+    translate.mockClear();
+    render(<AmbientBackground profile={profile} lineDirection='up-left' squareDirection='up-left' />);
+    expect(translate.mock.calls.slice(1)).toEqual(baseline);
   });
 
   it('forwards native event handlers to the root', () => {

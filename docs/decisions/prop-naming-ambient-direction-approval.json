@@ -1,0 +1,57 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "owner-delegation-and-parent-decisions",
+  "decision": "Approve the AmbientBackground family direction names and their screen-space semantics under the owner's default delegation.",
+  "evidence": {
+    "taskReference": "odd/tasks/pulso-visual-corrections.md#log",
+    "userStatements": [
+      {
+        "quote": "no me preguntes termina todo y luego vemos (aplica las propuestas por defecto). Puedes abrir hasta 3 subagentes que parelilcen trabajo y permanezcan abiertos hasta terminar",
+        "provenance": "L23 owner delegation"
+      },
+      {
+        "quote": "the engine supports only one fixed 225° direction, so \"existing values only\" cannot meet S13. Each family gets an optional direction from a closed set of eight named directions (0°–315° in 45° steps); omitted props keep today's 225° for both, so presets are unchanged; invalid values fall back with a development warning; stories show a non-parallel combination.",
+        "provenance": "L25 parent decision under L23"
+      },
+      {
+        "quote": "AmbientBackground direction names follow visible screen motion (default `up-left` = today's 225° motion).",
+        "provenance": "L26 parent decision under L23"
+      }
+    ]
+  },
+  "limits": [
+    "These names apply to independent AmbientBackground particle families; they do not grant a generic layout or text direction convention.",
+    "No change to tokens, dependencies, historical presets or prior approval records is implied."
+  ],
+  "entries": [
+    {
+      "scope": "convention:line-particle-direction",
+      "contentHash": "sha256:71ae3769046ee1e38e1886d7768feacc4e1fc22e6b94ba0c778439aa54c297af",
+      "convention": {
+        "id": "line-particle-direction",
+        "name": "lineDirection",
+        "meaning": "Screen-space movement direction of the line particle family.",
+        "whenToUse": "Select the travel direction of the line particle family independently.",
+        "avoid": "Changing particle density, speed or the direction of other particle families.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:square-particle-direction",
+      "contentHash": "sha256:76c91a97a0799af94c6e360d2d00501784824ebb3851a54ed48e126322588f42",
+      "convention": {
+        "id": "square-particle-direction",
+        "name": "squareDirection",
+        "meaning": "Screen-space movement direction of the square particle family.",
+        "whenToUse": "Select the travel direction of the square particle family independently.",
+        "avoid": "Changing particle density, speed or the direction of other particle families.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

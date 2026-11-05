@@ -24,6 +24,8 @@ export const Default: Story = {};
 export const Read: Story = { args: { profile: 'read' } };
 /** A denser profile. */
 export const Live: Story = { args: { profile: 'live' } };
+/** Independent non-parallel family directions. */
+export const IndependentDirections: Story = { args: { lineDirection: 'up-left', squareDirection: 'up' } };
 /** Layer opacity can be controlled by the host. */
 export const Opacity: Story = { args: { opacity: 0.5 } };
 /** Density adapts to the actual container width. */

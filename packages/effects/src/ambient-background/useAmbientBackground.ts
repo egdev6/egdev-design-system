@@ -1,16 +1,53 @@
 import { cn } from '@egdev/ui';
 import { useEffect, useRef, useState } from 'react';
 import { ambientProfiles, createParticleStreaks, resolveAmbientColors } from './particleStreaks';
-import { type AmbientBackgroundProfile, ambientCanvasVariants, ambientRootVariants } from './types';
+import {
+  type AmbientBackgroundProfile,
+  type AmbientDirection,
+  ambientCanvasVariants,
+  ambientRootVariants
+} from './types';
+
+const directionAngles: Record<AmbientDirection, number> = {
+  up: 270,
+  'up-right': 315,
+  right: 0,
+  'down-right': 45,
+  down: 90,
+  'down-left': 135,
+  left: 180,
+  'up-left': 225
+};
+
+function resolveDirection(value: AmbientDirection | undefined, prop: string): number {
+  if (value === undefined) {
+    return 225;
+  }
+  if (Object.hasOwn(directionAngles, value)) {
+    return directionAngles[value];
+  }
+  if (typeof process === 'undefined' || process.env.NODE_ENV !== 'production') {
+    console.warn(`AmbientBackground: invalid ${prop}; using up-left.`);
+  }
+  return 225;
+}
 
 type State = 'stopped' | 'static' | 'running';
 
-export function useAmbientBackground(profile: AmbientBackgroundProfile, opacity: number, className?: string) {
+export function useAmbientBackground(
+  profile: AmbientBackgroundProfile,
+  opacity: number,
+  lineDirection?: AmbientDirection,
+  squareDirection?: AmbientDirection,
+  className?: string
+) {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [state, setState] = useState<State>('stopped');
-  const values = useRef({ profile, opacity });
-  values.current = { profile, opacity };
+  const lineAngle = resolveDirection(lineDirection, 'lineDirection');
+  const squareAngle = resolveDirection(squareDirection, 'squareDirection');
+  const values = useRef({ profile, opacity, lineAngle, squareAngle });
+  values.current = { profile, opacity, lineAngle, squareAngle };
   const updateRef = useRef<(() => void) | null>(null);
   const normalized = Number.isFinite(opacity) ? Math.max(0, Math.min(1, opacity)) : 0;
 
@@ -39,6 +76,8 @@ export function useAmbientBackground(profile: AmbientBackgroundProfile, opacity:
     let dpr = -1;
     let previousProfile: AmbientBackgroundProfile | undefined;
     let previousOpacity = -1;
+    let previousLineAngle = -1;
+    let previousSquareAngle = -1;
     let previousState: State = 'stopped';
     let detach: (() => void) | undefined;
     const update = () => {
@@ -54,6 +93,7 @@ export function useAmbientBackground(profile: AmbientBackgroundProfile, opacity:
       const current = values.current;
       const currentOpacity = Number.isFinite(current.opacity) ? Math.max(0, Math.min(1, current.opacity)) : 0;
       const preset = ambientProfiles[current.profile];
+      engine.setDirections(current.lineAngle, current.squareAngle);
       const scale = width < 700 ? 0.6 : 1;
       engine.set({
         ...preset,
@@ -86,7 +126,9 @@ export function useAmbientBackground(profile: AmbientBackgroundProfile, opacity:
           (previousState !== 'static' ||
             changedSize ||
             previousProfile !== current.profile ||
-            previousOpacity !== currentOpacity)
+            previousOpacity !== currentOpacity ||
+            previousLineAngle !== current.lineAngle ||
+            previousSquareAngle !== current.squareAngle)
         ) {
           engine.renderOnce();
         }
@@ -94,6 +136,8 @@ export function useAmbientBackground(profile: AmbientBackgroundProfile, opacity:
       previousState = next;
       previousProfile = current.profile;
       previousOpacity = currentOpacity;
+      previousLineAngle = current.lineAngle;
+      previousSquareAngle = current.squareAngle;
       setState(failed ? 'stopped' : next);
     };
     updateRef.current = update;
@@ -123,7 +167,7 @@ export function useAmbientBackground(profile: AmbientBackgroundProfile, opacity:
   }, []);
   useEffect(() => {
     updateRef.current?.();
-  }, [profile, opacity]);
+  }, [profile, opacity, lineAngle, squareAngle]);
   return {
     rootRef,
     canvasRef,

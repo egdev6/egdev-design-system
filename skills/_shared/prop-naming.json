@@ -2212,7 +2212,61 @@
         "source": {
           "path": "packages/effects/src/ambient-background/types.ts",
           "symbol": "AmbientBackgroundProps",
-          "revision": "sha256:029a277aec8c2814ce057223b47f7581dad7707725eb00547fb1b037ab420174"
+          "revision": "sha256:59eaea0ac13b3b8236ebdf90ae8a839b8c416326937a743272acc517d89bcba1"
+        }
+      }
+    ]
+  },
+  {
+    "id": "line-particle-direction",
+    "name": "lineDirection",
+    "meaning": "Screen-space movement direction of the line particle family.",
+    "whenToUse": "Select the travel direction of the line particle family independently.",
+    "avoid": "Changing particle density, speed or the direction of other particle families.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-ambient-direction-approval.json",
+      "scope": "convention:line-particle-direction",
+      "contentHash": "sha256:71ae3769046ee1e38e1886d7768feacc4e1fc22e6b94ba0c778439aa54c297af"
+    },
+    "usages": [
+      {
+        "component": "AmbientBackground",
+        "type": "AmbientDirection",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/ambient-background/types.ts",
+          "symbol": "AmbientBackgroundProps",
+          "revision": "sha256:59eaea0ac13b3b8236ebdf90ae8a839b8c416326937a743272acc517d89bcba1"
+        }
+      }
+    ]
+  },
+  {
+    "id": "square-particle-direction",
+    "name": "squareDirection",
+    "meaning": "Screen-space movement direction of the square particle family.",
+    "whenToUse": "Select the travel direction of the square particle family independently.",
+    "avoid": "Changing particle density, speed or the direction of other particle families.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-ambient-direction-approval.json",
+      "scope": "convention:square-particle-direction",
+      "contentHash": "sha256:76c91a97a0799af94c6e360d2d00501784824ebb3851a54ed48e126322588f42"
+    },
+    "usages": [
+      {
+        "component": "AmbientBackground",
+        "type": "AmbientDirection",
+        "status": "existing",
+        "source": {
+          "path": "packages/effects/src/ambient-background/types.ts",
+          "symbol": "AmbientBackgroundProps",
+          "revision": "sha256:59eaea0ac13b3b8236ebdf90ae8a839b8c416326937a743272acc517d89bcba1"
         }
       }
     ]
@@ -2239,7 +2293,7 @@
         "source": {
           "path": "packages/effects/src/ambient-background/types.ts",
           "symbol": "AmbientBackgroundProps",
-          "revision": "sha256:029a277aec8c2814ce057223b47f7581dad7707725eb00547fb1b037ab420174"
+          "revision": "sha256:59eaea0ac13b3b8236ebdf90ae8a839b8c416326937a743272acc517d89bcba1"
         }
       },
       {

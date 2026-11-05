@@ -79,6 +79,8 @@ export function createParticleStreaks(
     coreCtx: CanvasRenderingContext2D;
   } | null = null;
   let cfg = initial;
+  let lineAngle = 225;
+  let squareAngle = 225;
   let width = 0;
   let height = 0;
   let dpr = 0;
@@ -241,11 +243,12 @@ export function createParticleStreaks(
       return;
     }
     const { squareCanvas, lineCanvas, coreCanvas } = resources;
-    const r = ((315 - 90) * Math.PI) / 180;
-    const dx = Math.cos(r);
-    const dy = Math.sin(r);
-    const px = -dy;
-    const py = dx;
+    const lineRadians = (lineAngle * Math.PI) / 180;
+    const squareRadians = (squareAngle * Math.PI) / 180;
+    const lineDx = Math.cos(lineRadians);
+    const lineDy = Math.sin(lineRadians);
+    const squareDx = Math.cos(squareRadians);
+    const squareDy = Math.sin(squareRadians);
     const d = diag();
     const cx = width / 2;
     const cy = height / 2;
@@ -293,8 +296,8 @@ export function createParticleStreaks(
         lines[i] = makeLine(false, l.laneId, total);
         continue;
       }
-      l.x = cx - dx * d * 0.6 + px * l.laneOffset + dx * l.distance;
-      l.y = cy - dy * d * 0.6 + py * l.laneOffset + dy * l.distance;
+      l.x = cx - lineDx * d * 0.6 - lineDy * l.laneOffset + lineDx * l.distance;
+      l.y = cy - lineDy * d * 0.6 + lineDx * l.laneOffset + lineDy * l.distance;
       let op = l.maxOpacity;
       if (l.progress < 0.15) {
         op *= l.progress / 0.15;
@@ -306,8 +309,8 @@ export function createParticleStreaks(
       const gl = l.length + 18;
       const gh = l.width * 2 + 16;
       ctx.save();
-      ctx.translate(l.x - dx * half, l.y - dy * half);
-      ctx.rotate(Math.atan2(dy, dx));
+      ctx.translate(l.x - lineDx * half, l.y - lineDy * half);
+      ctx.rotate(Math.atan2(lineDy, lineDx));
       ctx.globalAlpha = l.opacity;
       ctx.drawImage(lineCanvas, -gl / 2, -gh / 2, gl, gh);
       ctx.globalAlpha = l.opacity;
@@ -325,8 +328,8 @@ export function createParticleStreaks(
         squares[i] = makeSquare(false, q.laneId, total);
         continue;
       }
-      q.x = cx - dx * d * 0.6 + px * q.laneOffset + dx * q.distance;
-      q.y = cy - dy * d * 0.6 + py * q.laneOffset + dy * q.distance;
+      q.x = cx - squareDx * d * 0.6 - squareDy * q.laneOffset + squareDx * q.distance;
+      q.y = cy - squareDy * d * 0.6 + squareDx * q.laneOffset + squareDy * q.distance;
       const osc = 0.5 * (1 + Math.sin(((now / 1000) * (Math.PI * 2)) / 10 + q.opacityPhase));
       let op = 0.1 + osc * 0.85;
       if (q.progress < 0.15) {
@@ -356,6 +359,10 @@ export function createParticleStreaks(
     ready,
     set(next: Profile) {
       cfg = next;
+    },
+    setDirections(line: number, square: number) {
+      lineAngle = line;
+      squareAngle = square;
     },
     resize(w: number, h: number, ratio: number) {
       const nextDpr = Math.min(ratio || 1, 2);

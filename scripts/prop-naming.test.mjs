@@ -775,7 +775,10 @@ const postReceiptProposals = [
   'interaction-flip-gesture',
   'interaction-interactive-mode',
   'interaction-pose-change',
-  'animation-paused'
+  'animation-paused',
+  // AmbientBackground v0.5 direction conventions (L23/L25/L26), approved after these receipts.
+  'line-particle-direction',
+  'square-particle-direction'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -1181,8 +1184,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   validate(actual);
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
-  assert.equal(actual.length, 158);
-  assert.equal(beforeIndicatorConventions(actual).length, 155);
+  // AmbientBackground direction conventions add two more after ArticleFeature.
+  assert.equal(actual.length, 160);
+  assert.equal(beforeIndicatorConventions(actual).length, 157);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -3703,4 +3707,24 @@ test('ScrollReveal binds independently approved entrance conventions and actual 
   assert.equal(usage.length, 1);
   assert.deepEqual(usage[0].source, { path, symbol: 'ScrollRevealProps', revision });
   validate(registry);
+});
+
+test('AmbientBackground direction conventions bind the delegated approval and reviewed usages', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/decisions/prop-naming-ambient-direction-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  for (const [id, name] of [
+    ['line-particle-direction', 'lineDirection'],
+    ['square-particle-direction', 'squareDirection']
+  ]) {
+    const entry = registry.find((item) => item.id === id);
+    assert.ok(entry, id);
+    assert.equal(entry.name, name);
+    assert.equal(entry.approval.reference, reference);
+    const approved = receipt.entries.find((item) => item.scope === `convention:${id}`);
+    assert.equal(approved?.contentHash, props.conventionHash(entry));
+    const usage = entry.usages.find((item) => item.component === 'AmbientBackground');
+    assert.ok(usage, id);
+    assert.equal(usage.source.revision, digest(fs.readFileSync(resolve(root, usage.source.path))));
+  }
 });

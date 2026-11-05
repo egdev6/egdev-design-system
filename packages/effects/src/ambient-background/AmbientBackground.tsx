@@ -5,12 +5,14 @@ import { useAmbientBackground } from './useAmbientBackground';
 
 /** Decorative, container-sized particle layer. */
 export const AmbientBackground = forwardRef<HTMLDivElement, AmbientBackgroundProps>(function AmbientBackground(
-  { profile = 'base', opacity = 1, className, style, ...native },
+  { profile = 'base', opacity = 1, lineDirection, squareDirection, className, style, ...native },
   ref
 ) {
   const { rootRef, canvasRef, state, normalized, rootClassName, canvasClassName } = useAmbientBackground(
     profile,
     opacity,
+    lineDirection,
+    squareDirection,
     className
   );
   useImperativeHandle(ref, () => rootRef.current as HTMLDivElement, [rootRef]);

@@ -1,4 +1,4 @@
-export type { AmbientBackgroundProfile, AmbientBackgroundProps } from './ambient-background';
+export type { AmbientBackgroundProfile, AmbientBackgroundProps, AmbientDirection } from './ambient-background';
 export { AmbientBackground } from './ambient-background';
 export type { Isotipo3DProps, IsotipoPoseChange } from './atoms/isotipo3d';
 export { Isotipo3D } from './atoms/isotipo3d';

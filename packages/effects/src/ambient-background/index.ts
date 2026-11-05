@@ -1,2 +1,2 @@
 export { AmbientBackground } from './AmbientBackground';
-export type { AmbientBackgroundProfile, AmbientBackgroundProps } from './types';
+export type { AmbientBackgroundProfile, AmbientBackgroundProps, AmbientDirection } from './types';
