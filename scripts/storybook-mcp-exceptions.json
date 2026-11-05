@@ -8,22 +8,6 @@
   ],
   "undocumented": [
     {
-      "name": "AlertDialogAction",
-      "reason": "Declared subcomponent of AlertDialog (docs-list id molecules-alertdialog); docs-list exposes only top-level component ids (D1 (a), #344)."
-    },
-    {
-      "name": "AlertDialogCancel",
-      "reason": "Declared subcomponent of AlertDialog (docs-list id molecules-alertdialog); docs-list exposes only top-level component ids (D1 (a), #344)."
-    },
-    {
-      "name": "AlertDialogContent",
-      "reason": "Declared subcomponent of AlertDialog (docs-list id molecules-alertdialog); docs-list exposes only top-level component ids (D1 (a), #344)."
-    },
-    {
-      "name": "AlertDialogTrigger",
-      "reason": "Declared subcomponent of AlertDialog (docs-list id molecules-alertdialog); docs-list exposes only top-level component ids (D1 (a), #344)."
-    },
-    {
       "name": "ArticleFeatureCover",
       "reason": "Composed part exported alongside ArticleFeature (docs-list id molecules-articlefeature); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
     },
@@ -44,32 +28,12 @@
       "reason": "Composed part exported alongside BlogGrid (docs-list id organisms-bloggrid); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
     },
     {
-      "name": "CollapsibleContent",
-      "reason": "Declared subcomponent of Collapsible (docs-list id molecules-collapsible); docs-list exposes only top-level component ids (D1 (a), #344)."
-    },
-    {
-      "name": "CollapsibleTrigger",
-      "reason": "Declared subcomponent of Collapsible (docs-list id molecules-collapsible); docs-list exposes only top-level component ids (D1 (a), #344)."
-    },
-    {
       "name": "CommunityCardAction",
       "reason": "Composed part exported alongside CommunityCard (docs-list id molecules-communitycard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
     },
     {
       "name": "CommunityCardMark",
       "reason": "Composed part exported alongside CommunityCard (docs-list id molecules-communitycard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
-    },
-    {
-      "name": "DialogClose",
-      "reason": "Declared subcomponent of Dialog (docs-list id molecules-dialog); docs-list exposes only top-level component ids (D1 (a), #344)."
-    },
-    {
-      "name": "DialogContent",
-      "reason": "Declared subcomponent of Dialog (docs-list id molecules-dialog); docs-list exposes only top-level component ids (D1 (a), #344)."
-    },
-    {
-      "name": "DialogTrigger",
-      "reason": "Declared subcomponent of Dialog (docs-list id molecules-dialog); docs-list exposes only top-level component ids (D1 (a), #344)."
     },
     {
       "name": "FooterBrand",
@@ -94,42 +58,6 @@
     {
       "name": "HomeTemplateAnchor",
       "reason": "Composed part exported alongside HomeTemplate (docs-list id templates-hometemplate); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
-    },
-    {
-      "name": "ListItemActions",
-      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
-    },
-    {
-      "name": "ListItemBody",
-      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
-    },
-    {
-      "name": "ListItemContent",
-      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
-    },
-    {
-      "name": "ListItemFooter",
-      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
-    },
-    {
-      "name": "ListItemLeading",
-      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
-    },
-    {
-      "name": "ListItemMedia",
-      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
-    },
-    {
-      "name": "ListItemMeta",
-      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
-    },
-    {
-      "name": "ListItemTitle",
-      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
-    },
-    {
-      "name": "ListItemTrailing",
-      "reason": "Composed part exported alongside ListItem (docs-list id molecules-listitem); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
     },
     {
       "name": "LiveBandList",
@@ -170,30 +98,6 @@
     {
       "name": "NowCardFooter",
       "reason": "Composed part exported alongside NowCard (docs-list id molecules-nowcard); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
-    },
-    {
-      "name": "PanelBody",
-      "reason": "Declared subcomponent of Panel (docs-list id molecules-panel); docs-list exposes only top-level component ids (D1 (a), #344)."
-    },
-    {
-      "name": "PanelFooter",
-      "reason": "Declared subcomponent of Panel (docs-list id molecules-panel); docs-list exposes only top-level component ids (D1 (a), #344)."
-    },
-    {
-      "name": "PanelHeader",
-      "reason": "Declared subcomponent of Panel (docs-list id molecules-panel); docs-list exposes only top-level component ids (D1 (a), #344)."
-    },
-    {
-      "name": "PopoverClose",
-      "reason": "Declared subcomponent of Popover (docs-list id molecules-popover); docs-list exposes only top-level component ids (D1 (a), #344)."
-    },
-    {
-      "name": "PopoverContent",
-      "reason": "Declared subcomponent of Popover (docs-list id molecules-popover); docs-list exposes only top-level component ids (D1 (a), #344)."
-    },
-    {
-      "name": "PopoverTrigger",
-      "reason": "Declared subcomponent of Popover (docs-list id molecules-popover); docs-list exposes only top-level component ids (D1 (a), #344)."
     },
     {
       "name": "ProjectCardBackdrop",

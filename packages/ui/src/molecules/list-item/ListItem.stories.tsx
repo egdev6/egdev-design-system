@@ -128,6 +128,17 @@ function ReorderExample() {
  * ## Description
  * A generic content row or card with readable content, optional passive media and independent actions.
  *
+ * ## Parts
+ * - ListItemLeading: optional editorial date, index or short label; no controls.
+ * - ListItemTitle: editorial heading with a consumer-selected rank.
+ * - ListItemBody: groups the main content and optional passive media.
+ * - ListItemContent: flexible readable content for card, compact and row variants.
+ * - ListItemMedia: passive square thumbnail; supply appropriate image alt text.
+ * - ListItemFooter: wrapping metadata and action band for card and compact variants.
+ * - ListItemMeta: non-interactive context or visible status text.
+ * - ListItemActions: independent controls, not a whole-item activation region.
+ * - ListItemTrailing: optional editorial text or decorative icon.
+ *
  * ## Dependencies
  * Radix Slot preserves native child composition; Surface recipes provide elevated and recessed Material.
  * Examples compose Badge, Button, Icon, IconButton and Link without copying their recipes.
@@ -156,6 +167,17 @@ function ReorderExample() {
 const meta: Meta<typeof ListItem> = {
   title: 'Molecules/ListItem',
   component: ListItem,
+  subcomponents: {
+    listItemLeading: ListItemLeading,
+    listItemTitle: ListItemTitle,
+    listItemBody: ListItemBody,
+    listItemContent: ListItemContent,
+    listItemMedia: ListItemMedia,
+    listItemFooter: ListItemFooter,
+    listItemMeta: ListItemMeta,
+    listItemActions: ListItemActions,
+    listItemTrailing: ListItemTrailing
+  },
   tags: ['autodocs']
 };
 export default meta;
@@ -170,6 +192,27 @@ export const Default: Story = {
       </ListItemBody>
     )
   }
+};
+
+/** Editorial and card anatomy use separate compositions; see Parts above for each role. */
+export const Anatomy: Story = {
+  render: () => (
+    <Stack>
+      <ListItem variant='editorial'>
+        <ListItemLeading>
+          <time dateTime='2026-09-12'>
+            12 <small>SEP</small>
+          </time>
+        </ListItemLeading>
+        <ListItemBody>
+          <ListItemTitle>Release notes</ListItemTitle>
+          <ListItemMeta>Notes · 4 min read</ListItemMeta>
+        </ListItemBody>
+        <ListItemTrailing>18:04</ListItemTrailing>
+      </ListItem>
+      <Example media={true} />
+    </Stack>
+  )
 };
 
 /** The entire composition becomes a single native list item without another root wrapper. */
