@@ -13,6 +13,8 @@ test('get_design_system_md returns the golden bytes and artifact version over st
   const executable = fileURLToPath(new URL('../dist/index.js', import.meta.url));
   await client.connect(new StdioClientTransport({ command: process.execPath, args: [executable] }));
   try {
+    const manifest = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+    assert.deepEqual(client.getServerVersion(), { name: '@egdev/mcp', version: manifest.version });
     const { tools } = await client.listTools();
     const tool = tools.find((entry) => entry.name === 'get_design_system_md');
     assert.ok(tool, 'get_design_system_md is listed');

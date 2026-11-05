@@ -1,10 +1,14 @@
+import { readFileSync } from 'node:fs';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { type Artifact, versionBlock } from './artifact.js';
 import { getDesignSystemMd } from './tools/get-design-system-md.js';
 
+// The server reports the version of the installed package (package.json always ships in the tarball).
+const manifest = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as { version: string };
+
 export function createServer(data: Artifact) {
-  const server = new McpServer({ name: '@egdev/mcp', version: '0.1.0' });
+  const server = new McpServer({ name: '@egdev/mcp', version: manifest.version });
   const designSystem = versionBlock(data);
   const result = (value: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(value) }] });
   const unknown = (message: string) => ({ isError: true, content: [{ type: 'text' as const, text: message }] });
