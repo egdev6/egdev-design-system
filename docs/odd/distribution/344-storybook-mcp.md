@@ -7,7 +7,7 @@
 | Proposal | `egdev-ds-distribution-v1` (roadmap index [#349](https://github.com/egdev6/egdev-design-system/issues/349)) |
 | Task / specs | `odd/tasks/ds-distribution.md` T3 — S1 (milestone goal) |
 | Dependencies | None; runs in parallel with #342. #344 owns the Storybook endpoint guide that #346 links to |
-| Status | **Draft — pending owner approval** |
+| Status | **Approved — owner, 2026-11-05 (see Owner approval)** |
 
 Planning only. No source, `package.json`, token, dependency, Git or GitHub change is made by this document.
 
@@ -47,7 +47,7 @@ Two deliverables: an export-driven smoke test for the Storybook MCP endpoint, an
 - **R8 — One entry point (AC1, AC2).** `pnpm test:storybook-mcp` runs the deterministic contract checks and the live smoke. The live part needs `pnpm storybook` on `127.0.0.1:6006` and fails with a message naming that command when the endpoint is unreachable.
 - **R9 — Connection guide (AC2).** A single English page documents: how to start the dev server, the endpoint URL, the three tools with one copy-paste request sequence per tool, an HTTP MCP client configuration example, the loopback/no-auth security boundary, and troubleshooting. No global client configuration and no hosting are proposed.
 - **R10 — The guide is proven once (AC2).** The documented sequence is executed against a running dev server; the observed tool names, component count and one `docs-show` id are recorded in this file's Log and quoted as PR evidence.
-- **R11 — Constraint (AC1, AC2).** No dependency, token, component, Storybook config or package manifest field changes. The only `package.json` edit is the `test:storybook-mcp` command value if D3 selects a split; no source file outside the test/registry/guide set is touched (`AGENTS.md:44`).
+- **R11 — Constraint (AC1, AC2).** No dependency, token, component, Storybook config or package manifest field changes. The only `package.json` edit is the `test:storybook-mcp` command value, since D3 (a) splits the deterministic contract checks from the live smoke. **(amended by owner approval 2026-11-05: D3 = (a).)** No source file outside the test/registry/guide set is touched (`AGENTS.md:44`).
 
 The contract is the markdown `docs-list` already produces, parsed without a second format: components are `- <Name> (<id>)` lines, their stories are indented `  - <Story> (<story-id>)` lines, and standalone guides are the `# Docs` section's `- <Title> (<docs-id>)` lines. The test parses those sections, never `components.json` directly, so it keeps proving the tool agents actually read.
 
@@ -77,7 +77,7 @@ The RED for AC1 is captured twice on purpose: offline, a synthetic manifest is m
 
 Work units are sequenced; each stays under ~400 changed lines. Validation commands are run in the foreground from the repo root.
 
-Proposed file layout (paths depend on D2/D3/D7):
+File layout as approved (D2 (a), D3 (a), D7 (a); amended by owner approval 2026-11-05):
 
 ```text
 scripts/storybook-mcp-contract.mjs        new   pure expectation + reconciliation functions
@@ -128,3 +128,20 @@ Exit condition: guide exists in English, every command in it was executed, and t
 - **Delivery/environment:** the live half cannot run offline, and there is no CI (out of scope), so GREEN evidence depends on the parent starting Storybook in the foreground. Docgen anomalies (`Table<Row>`, `No component found`) come from Storybook 10.6.1 behaviour, not from this repo's code, and can change with an addon upgrade.
 - **Untestable:** "the guide was followed once" is a recorded manual run, not an automated assertion; the Log entry is the evidence. The 61 undocumented exports remain a documentation gap by design (D1 option a) and are named, not fixed.
 - **Out of scope:** hosting Storybook or exposing the endpoint publicly; enabling the `dev`/`test` toolsets; the `@egdev/mcp` package (#346); the data artifact (#345); `design/system.md` (#347); tarball versioning and packing (#342); the pilot consumer (#343); npm/GitHub Packages publication; enabling CI; adding stories or `subcomponents` to fix the 61 undocumented exports; any token, component, Storybook config or dependency change.
+
+## Owner approval
+
+Approved by the owner on 2026-11-05. Every decision below takes its recommended option, per the owner's answer "Aceptar todas las recomendaciones (Recomendado)". No dependency is added by any of the eight answers.
+
+| Decision | Chosen option | Source |
+| --- | --- | --- |
+| D1 | (a) Reviewed registry of documented/undocumented exports, enforced in both directions | "Aceptar todas las recomendaciones (Recomendado)" |
+| D2 | (a) New `scripts/storybook-mcp-exceptions.json` validated by the test | "Aceptar todas las recomendaciones (Recomendado)" |
+| D3 | (a) `scripts/storybook-mcp-contract.mjs` (pure functions) + `scripts/storybook-mcp-contract.test.mjs` (fixtures) + the existing live test | "Aceptar todas las recomendaciones (Recomendado)" |
+| D4 | (a) Normalise generics and register the component-less recipe page as a manifest-only exception | "Aceptar todas las recomendaciones (Recomendado)" |
+| D5 | (a) All advertised ids checked against the index, plus `docs-show`/preview for a deterministic sample | "Aceptar todas las recomendaciones (Recomendado)" |
+| D6 | (a) The live test fails fast naming `pnpm storybook` | "Aceptar todas las recomendaciones (Recomendado)" |
+| D7 | (a) `docs/MCP.md`, linked from `README.md` and `CONTRIBUTING.md`; #346's package examples stay in `packages/mcp/README.md` (its Q6 (a)) | "Aceptar todas las recomendaciones (Recomendado)" |
+| D8 | (a) The existing root `typescript` devDependency | "Aceptar todas las recomendaciones (Recomendado)" |
+
+Amendments recorded in place: R11 and the §4 file layout now state the approved D3 (a) split and the fixed paths. #346 Q6 (a) keeps the package-specific MCP examples in `packages/mcp/README.md`, so `docs/MCP.md` links to them instead of repeating them.

@@ -6,9 +6,9 @@
 | Milestone | 9 — "Distribution for products and agents" |
 | Proposal | `egdev-ds-distribution-v1` (roadmap index [#349](https://github.com/egdev6/egdev-design-system/issues/349)) |
 | Task / specs | `odd/tasks/ds-distribution.md` T2 — S1 (milestone goal), S2 (local packaging first) |
-| Dependency | #342 (T1) — tarballs and install guide. Its decisions D1–D7 are open; this plan references them and assumes none of them |
+| Dependency | #342 (T1) — tarballs and install guide. Its decisions D1–D7 are approved (2026-11-05; see `docs/odd/distribution/342-local-tarballs.md` § Owner approval), including D5's React peer range, so this document inherits them instead of assuming them **(amended by owner approval 2026-11-05)** |
 | Consumers | #348 (T7 observed gentle-design walkthrough) reads this pilot's evidence |
-| Status | **Draft — pending owner approval** |
+| Status | **Approved — owner, 2026-11-05 (see Owner approval)** |
 
 Planning only. This document makes no source, manifest, token, dependency, Git or GitHub change.
 
@@ -40,13 +40,13 @@ The pilot is generated into a fresh system temp directory outside the worktree b
 
 **R5 — Tokens and Material paint (AC2).** For every mode and viewport the pilot asserts, from computed styles, that the canvas and surface backgrounds equal the resolved `--color-bg-canvas` / `--color-surface-1` values, that a Material surface carries a non-empty shadow and a 1px conceptual border, and that no element resolves a colour absent from the token set. The exact assertion set is fixed in WU2 and recorded with observed values.
 
-**R6 — Themes (AC2).** Dark is measured. The second theme is what D3 decides: a real light theme, an explicit "not applicable" record citing `packages/tokens/src/theme.css:16`, or another supported media mode clearly labelled as not a light theme. Passing AC2's "both themes" is only claimed when two real token themes exist.
+**R6 — Themes (AC2).** Dark is measured. The second theme is D3 (a): light is recorded as not applicable, citing `packages/tokens/src/theme.css:16` and the precedent at `docs/components/section-shell/v0.1/implementation-plan.md:124`; no light theme is invented. **(amended by owner approval 2026-11-05: D3 = (a), "sólo dark".)** Passing AC2's "both themes" is only claimed when two real token themes exist, so the pilot records the light theme as not applicable rather than claiming it.
 
 **R7 — Geometry at 390 and 1280 (AC2, Checks).** At 390×844 and 1280×900 the pilot asserts `document.documentElement.scrollWidth <= clientWidth` and that no element's `boundingClientRect` exceeds the viewport width, and fails on any console error. Each measurement records mode, viewport, theme, commit and tool.
 
 **R8 — Documentation reconciliation (AC3).** Every contradiction the pilot exposes is entered in one table with the file and line, what the pilot observed, and a disposition: fixed in that file here, or recorded as a new issue with its link. Candidate files to re-read: `docs/distribution/install.md` (#342), `docs/ARQUITECTURA.md:74-87`, `packages/tokens/README.md:21-42`, `docs/MATERIAL.md`. Already-flagged items stay owned elsewhere: the React peer range (#342 D5) and the missing light theme (D3).
 
-**R9 — No new repository dependency, no regression (Checks).** The generated app installs its own React, Vite and Tailwind from the pinned versions above, so the repository manifest stays unchanged unless D2 authorizes a browser dependency. `pnpm test:package-consumption` keeps its current fixtures and assertions.
+**R9 — No new repository dependency, no regression (Checks).** The generated app installs its own React, Vite and Tailwind from the pinned versions above, so the repository manifest stays unchanged: D2 (a) adds no browser dependency. **(amended by owner approval 2026-11-05: D2 = (a), no dependency.)** `pnpm test:package-consumption` keeps its current fixtures and assertions.
 
 ## 3. Decisions for the owner
 
@@ -72,9 +72,9 @@ Order: WU1 → WU2 → WU3 → WU4. Requires #342 approved and landed, because t
 | --- | --- |
 | `scripts/pilot-consumer.mjs` | Creates, installs and builds the pilot; also writes the page source |
 | `scripts/pilot-consumer.test.mjs` | Tarball-only, both-mode and page/paint assertions |
-| `package.json` | `pilot:build`, `test:package-pilot` (and `test:pilot-browser` only if D2(b)) |
+| `package.json` | `pilot:build`, `test:package-pilot` (no `test:pilot-browser`: D2 = (a); amended by owner approval 2026-11-05) |
 | `scripts/lib/pilot-page.mjs` | Page composition, extracted from the generator for review |
-| `playwright.config.ts`, `scripts/pilot-browser.test.mjs` | Only if D2(b), with `@playwright/test` |
+| `playwright.config.ts`, `scripts/pilot-browser.test.mjs` | Not created: D2 = (a) keeps browser evidence in Playwright MCP captures (amended by owner approval 2026-11-05) |
 | Generated app (temp `mkdtemp` outside the worktree) | `package.json`, `pnpm-workspace.yaml`, `vite.config.ts`, `index.html`, `src/main.tsx`, `src/pilot.css`, `tsconfig.json` |
 | Recorded evidence | PR body and this document; images only in ignored `.playwright-mcp/` |
 
@@ -96,7 +96,7 @@ Order: WU1 → WU2 → WU3 → WU4. Requires #342 approved and landed, because t
 
 ### WU3 — Browser geometry at 390 and 1280 (R7, D2)
 
-- Files: none if D2(a); otherwise `playwright.config.ts`, `scripts/pilot-browser.test.mjs`, `package.json` (`test:pilot-browser`) and `@playwright/test` as a **new dependency requiring owner confirmation**.
+- Files: none (D2 = (a); the other branches would add `playwright.config.ts`, `scripts/pilot-browser.test.mjs`, `package.json` (`test:pilot-browser`) and `@playwright/test` as a **new dependency requiring owner confirmation**). **(amended by owner approval 2026-11-05.)**
 - Size: ~120-180 lines depending on the D2 branch.
 - RED: the overflow and console-error assertions have no natural failing behaviour on a correct page; the honest RED is the absent harness, observed as a non-zero exit for the missing config/runner. Say so in the PR rather than fabricating a failure.
 - GREEN: `pnpm pilot:build` then the D2 runner, with one record per viewport: scroll width, widest element, console errors, mode and theme.
@@ -126,5 +126,21 @@ Order: WU1 → WU2 → WU3 → WU4. Requires #342 approved and landed, because t
 | AC1 — installs only from tarballs and builds in both CSS modes | R1, R2, R3 | WU1 negative realpath case, two green builds, installed versions |
 | AC2 — expected tokens and Material paint, no horizontal overflow, both themes | R4, R5, R6, R7 | WU2 computed-style records, WU3 viewport records, D3 disposition |
 | AC3 — every documentation contradiction fixed or recorded | R8 | WU4 table with per-item disposition and issue links |
-| Scope — no new dependency without confirmation | R9, D2 | manifest diff and the D2 answer |
+| Scope — no new dependency without confirmation | R9, D2 | manifest diff and the D2 answer (a: none added) |
 | Checks — Chromium 390/1280, `pnpm test:package-consumption` | R7, R9 | WU3 records, unchanged consumption test run |
+
+## Owner approval
+
+Approved by the owner on 2026-11-05. D3 uses the owner's earlier answer "sólo dark" (`odd/tasks/ds-distribution.md` L5), which is this document's recommended option; every other decision takes its recommended option, per the owner's answer "Aceptar todas las recomendaciones (Recomendado)".
+
+| Decision | Chosen option | Source |
+| --- | --- | --- |
+| D1 | (a) Root script plus test that generates the app in `mkdtemp` and never commits it | "Aceptar todas las recomendaciones (Recomendado)" |
+| D2 | (a) Playwright MCP captures recorded as text evidence with hash, viewport, theme and mode; images left in ignored `.playwright-mcp/` | "Aceptar todas las recomendaciones (Recomendado)" |
+| D3 | (a) Measure dark and record light as not applicable, citing `packages/tokens/src/theme.css:16` | "sólo dark" (Log L5) |
+| D4 | (a) `Tabs`, `ChipGroup`, `Field`, `Notice`, `ListItem` | "Aceptar todas las recomendaciones (Recomendado)" |
+| D5 | (a) The pilot script packs the three packages into its own temp folder through #342's shared pack helper | "Aceptar todas las recomendaciones (Recomendado)" |
+| D6 | (a) Fix in place when consumer-facing and small, otherwise record an issue | "Aceptar todas las recomendaciones (Recomendado)" |
+| D7 | (a) Short evidence table in the PR body and this ODD document; images only in ignored `.playwright-mcp/` | "Aceptar todas las recomendaciones (Recomendado)" |
+
+Amendments recorded in place: the dependency row now inherits #342's approved decisions, R6 is fixed to the dark-only branch, R9's dependency clause is fixed to "none added", and the planned-path table and WU3 no longer carry the D2(b) browser harness, which the approval excludes.

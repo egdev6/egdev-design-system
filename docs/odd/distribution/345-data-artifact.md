@@ -8,7 +8,7 @@
 | Task / specs | `odd/tasks/ds-distribution.md` T4 — S1 (milestone goal), S4 (`@egdev/mcp`), S5 (`design/system.md`) |
 | Dependency | #342 (T1) — the artifact must ship in, or alongside, the versioned tarballs |
 | Consumers | #346 (MCP server), #347 (`design/system.md` renderer) |
-| Status | **Draft — pending owner approval** |
+| Status | **Approved — owner, 2026-11-05 (see Owner approval)** |
 
 Planning only. No source, `package.json`, token, dependency, Git or GitHub change is made by this document.
 
@@ -28,12 +28,12 @@ Planning only. No source, `package.json`, token, dependency, Git or GitHub chang
 
 One committed-or-generated JSON artifact, produced only from the sources above, describing the design system of one exact version set. Requirements are numbered; `AC1..AC3` are the issue's acceptance criteria.
 
-**R1 — Artifact identity and location (AC1).** A single UTF-8 JSON file named `design-system.json`, LF endings, 2-space indent, trailing newline, no timestamps, absolute paths, hostnames or environment values. Its repository location and the package that carries it is decision O1; the schema below is independent of that choice.
+**R1 — Artifact identity and location (AC1).** A single UTF-8 JSON file named `design-system.json`, LF endings, 2-space indent, trailing newline, no timestamps, absolute paths, hostnames or environment values. Its repository location is `packages/system/design-system.json`, carried by the data-only package `@egdev/system` (O1 (b), approved 2026-11-05); the schema below is independent of that choice. **(amended by owner approval 2026-11-05.)**
 
 **R2 — Schema (AC1).** Top-level object with exactly these keys: `name` (`"egdev-design-system"`), `schemaVersion` (semver string, decision O3), `packages` (array), `catalog` (array), `components` (array), `tokens` (array), `materialRecipes` (array), `propNaming` (array). Every entry carries only the documented fields; unknown fields are a drift-test failure.
 
 - `packages[]`: `{ "name": "@egdev/tokens"|"@egdev/ui"|"@egdev/effects", "version": "<semver from that package.json>" }`, sorted by name.
-- `catalog[]`: `{ name, level, package, radix, composes[], action, available }` for rows whose `destino` is `ui` or `effects`; `available` is decision O4.
+- `catalog[]`: `{ name, level, package, radix, composes[], action, available }` for rows whose `destino` is `ui` or `effects`; `available` follows O4 (a). **(amended by owner approval 2026-11-05.)**
 - `components[]`: `{ name, package, source, props[], variants[] }` sorted by `name`; `props[]` = `{ name, type, required, default, description, deprecated }` (decision O8); `variants[]` = `{ name, classes[] }` for exported CVA recipes found in the component's `types.ts`.
 - `tokens[]`: `{ name, value, group }` sorted by `name`; `group` ∈ `theme` | `root` | `inline`, taken from the CSS block the declaration appears in (decision O6).
 - `materialRecipes[]`: `{ id, semantics, tokens[] }` sorted by `id`.
@@ -60,7 +60,7 @@ Abbreviated shape (not the literal file):
 
 **R5 — Tokens section (AC1, AC3).** Derived from `packages/tokens/src/theme.css` by reusing/extending `packages/tokens/scripts/token-css.mjs` so each declaration keeps its block group. Values are copied verbatim; the artifact never becomes a second source of token values and no token is added, renamed or changed.
 
-**R6 — Material recipes section (AC1).** A small curated table inside the generator (decision O5) naming the Material recipes of `docs/MATERIAL.md` and the tokens each depends on. The drift test asserts every listed recipe id appears in `docs/MATERIAL.md` text and every referenced token exists in `tokens[]`.
+**R6 — Material recipes section (AC1).** A small curated table inside the generator (O5 (a), approved 2026-11-05) naming the Material recipes of `docs/MATERIAL.md` and the tokens each depends on. The drift test asserts every listed recipe id appears in `docs/MATERIAL.md` text and every referenced token exists in `tokens[]`.
 
 **R7 — Prop naming section (AC1).** Derived from `skills/_shared/prop-naming.json` only (not from the rendered `docs/prop-naming.md`). Each usage's component name must exist in `components[]`.
 
@@ -92,7 +92,7 @@ No other new dependency is requested: `react-docgen-typescript` and `typescript`
 
 ## 4. Implementation plan
 
-Work units are ordered; each stays within ~400 changed lines. Paths for U1–U5 assume O1 option (b) and O2 option (a). Every RED run must fail for the stated reason before implementation.
+Work units are ordered; each stays within ~400 changed lines. Paths for U1–U5 implement O1 option (b) and O2 option (a) as approved on 2026-11-05. **(amended by owner approval 2026-11-05.)** Every RED run must fail for the stated reason before implementation.
 
 **U1 — Schema, catalog and version set.**
 Files: `packages/system/package.json`, `packages/system/design-system.json`, `scripts/build-artifact.mjs`, `scripts/design-system-artifact.test.mjs`, root `package.json` scripts (`artifact`, `test:artifact`).
@@ -135,4 +135,22 @@ Exit: build emits the artifact with the package versions it describes; documente
 
 ## 6. Out of scope
 
-`@egdev/mcp` (#346), `design/system.md` (#347), token value or name changes, new tokens, new dependencies (except an owner-approved O9 option b), the MCP connection guide (#344), the tarball/versioning policy itself (#342), npm or GitHub Packages publication, enabling CI, catalog reclassification, component changes, Material prose edits and any Git or GitHub operation.
+`@egdev/mcp` (#346), `design/system.md` (#347), token value or name changes, new tokens, new dependencies (O9 (a) adds none), the MCP connection guide (#344), the tarball/versioning policy itself (#342), npm or GitHub Packages publication, enabling CI, catalog reclassification, component changes, Material prose edits and any Git or GitHub operation.
+
+## Owner approval
+
+Approved by the owner on 2026-11-05. O1 takes the owner's separate answer for the artifact package; every other decision takes its recommended option, per the owner's answer "Aceptar todas las recomendaciones (Recomendado)".
+
+| Decision | Chosen option | Source |
+| --- | --- | --- |
+| O1 | (b) A new data-only package `@egdev/system` with `files: ["design-system.json"]` | "Paquete nuevo @egdev/system (Recomendado)" |
+| O2 | (a) Committed, with `--check` in tests | "Aceptar todas las recomendaciones (Recomendado)" |
+| O3 | (a) `schemaVersion` (shape) + the described package versions only | "Aceptar todas las recomendaciones (Recomendado)" |
+| O4 | (a) Join catalog rows with the public barrels; rows without a matching export are `available: false` | "Aceptar todas las recomendaciones (Recomendado)" |
+| O5 | (a) Curated table in the generator, validated against `docs/MATERIAL.md` and `tokens[]` | "Aceptar todas las recomendaciones (Recomendado)" |
+| O6 | (a) Extend `token-css.mjs` with a block-aware reader and record `group` | "Aceptar todas las recomendaciones (Recomendado)" |
+| O7 | (a) Leave both legacy Spanish sentences untouched and document the resolution in the new artifact docs | "Aceptar todas las recomendaciones (Recomendado)" |
+| O8 | (a) Own props only, plus CVA recipe classes | "Aceptar todas las recomendaciones (Recomendado)" |
+| O9 | (a) Hand-written validator assertions in the drift test; no `ajv` | "Aceptar todas las recomendaciones (Recomendado)" |
+
+Consequence of O1 (b), recorded here because the decision table must not be rewritten: O1's option text prices the choice as "T1 must add a fourth package to `release:pack`". The released set is five packages — `@egdev/tokens`, `@egdev/ui`, `@egdev/effects`, `@egdev/system`, `@egdev/mcp` — because #346 Q5 (a) also put `@egdev/mcp` in the same `release:pack` run, and #347 P1 (a) makes `@egdev/system` carry the `system.md` renderer and its golden as well as this artifact. `packages[]` inside the artifact keeps describing the three design-system packages whose versions it reports (R8).

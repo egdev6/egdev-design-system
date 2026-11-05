@@ -6,8 +6,8 @@
 | Milestone | 9 — "Distribution for products and agents" |
 | Proposal | `egdev-ds-distribution-v1` (roadmap index [#349](https://github.com/egdev6/egdev-design-system/issues/349)) |
 | Task / specs | `odd/tasks/ds-distribution.md` T7 — S1 (milestone goal), S5 ("design/system.md generado desde el DS (Recomendado)") |
-| Dependencies | #343 (pilot consumer; its D1 and D7 open, D3 answered dark-only in `odd/tasks/ds-distribution.md` L5) — #347 (`design/system.md`; P1, P2, P6, P8 open) |
-| Status | **Draft — pending owner approval** |
+| Dependencies | #343 (pilot consumer; D1, D7 and the rest approved 2026-11-05, D3 dark-only in `odd/tasks/ds-distribution.md` L5) — #347 (`design/system.md`; P1, P2, P6, P8 and the rest approved 2026-11-05) **(amended by owner approval 2026-11-05)** |
+| Status | **Approved — owner, 2026-11-05 (see Owner approval)** |
 
 Planning only. This document creates no `design/` folder, no artboard, no observation, no source, token or dependency change, and no Git or GitHub operation. Artboards, comments and the walkthrough itself happen only after this plan and its dependencies are approved. #343 `D1–D7` and #347 `P1–P8` are referenced, never answered.
 
@@ -21,7 +21,7 @@ Planning only. This document creates no `design/` folder, no artboard, no observ
 - **Comments come from the canvas, not from the agent.** The owner creates them by clicking on the artboard; they are stored in `design/<slug>/comments.json` with `id`, `file`, `selector`, `excerpt`, `comment`, `createdAt`, `status` (`open`/`resolved`), `sentAt`, `resolvedAt`, and an optional `.screenshots/<id>.<ext>` (`SKILL.md:88-102`, `lib/design-comments.ts:37-48`, `:349`, `:243`). The agent reads open ones, edits only the target artboard, and resolves them with ids (`SKILL.md:84-86`, `lib/gentle-design.ts:333`). Every comment therefore needs the owner present at the canvas.
 - **Handoff is a message, not a conversion.** `implement <slug>/<artboard>` builds text that says "map its parts to the project's existing components and styles, and do not copy the artboard HTML verbatim", and, when `system.md` exists, "Take colors, typography, spacing, radius and shadows from design/system.md, the project's token source" (`lib/gentle-design.ts:82-117`, `:96`); it also records `handoffs.json` (`lib/design-handoffs.ts:35`, `:58-62`). It "commits nothing" (`lib/gentle-design.ts:117`), but it is the transformation boundary this task excludes.
 - **No `design/` folder exists here**, and `.gitignore:1-11` has no entry for one; captures under `docs/design/` are "propuestas; estar versionada no equivale a estar aprobada" (`docs/design/README.md:11`).
-- **The walkthrough consumer is not settled here.** #343 `D1` (pilot shape: temp `mkdtemp` generator recommended) and `D7` (evidence retention) decide where the pilot lives; #347 `P6` reuses it for the observed `list`. This plan names no path for the consumer; it records whatever those decisions produce.
+- **The walkthrough consumer is settled upstream.** #343 `D1` (a) generates the pilot on demand in a temp `mkdtemp` directory and `D7` (a) keeps the evidence in the document; #347 `P6` (a) reuses that consumer for the observed `list`. This plan still names no path of its own: it records the path those approved decisions produce. **(amended by owner approval 2026-11-05.)**
 - **No repository test can drive the tool.** gentle-design ships in the external `gentle-pi` package (no `gentle*` entry in the root `devDependencies`, `package.json:29-59`), so the walkthrough is manual evidence, not a suite (`docs/odd/distribution/347-system-md.md:20`).
 
 ## 2. Specification
@@ -30,7 +30,7 @@ Planning only. This document creates no `design/` folder, no artboard, no observ
 
 ### Observation protocol
 
-The screen, its slug and its content follow **§3 D1**. The protocol is the same either way. Every step records: UTC time, the exact command or tool call, its verbatim output (truncated only where noted), the files touched with `path` and mtime, and what the owner did on the canvas.
+The screen, its slug and its content follow **§3 D1**, approved as option (b): the screen shaped like #343's pilot page, one direction only. **(amended by owner approval 2026-11-05.)** The protocol is the same either way. Every step records: UTC time, the exact command or tool call, its verbatim output (truncated only where noted), the files touched with `path` and mtime, and what the owner did on the canvas.
 
 | Step | What is executed | What is recorded |
 | --- | --- | --- |
@@ -125,3 +125,19 @@ Phases match the issue's ODD plan (Design, Iterate, Report), with setup separate
 | AC3 — follow-ups proposed, none created without approval | R6, D5 | Gap table with proposed titles and labels, status `proposed — not created` |
 | Scope and Guidance — record, do not fix; no automation promised | R7, R8 | Empty `git status` outside the report file; report statements and no new script or dependency |
 | Delivery rules and Checks — English, no dependencies, owner review | R9, R10 | `git status --short`, unchanged `package.json`, owner verdict verbatim and dated |
+
+## Owner approval
+
+Approved by the owner on 2026-11-05. Every decision below takes its recommended option, per the owner's answer "Aceptar todas las recomendaciones (Recomendado)". D1 is the one decision whose recommended option is (b).
+
+| Decision | Chosen option | Source |
+| --- | --- | --- |
+| D1 | (b) The same screen as #343's pilot page (WebTemplate plus two WebSections), one direction only | "Aceptar todas las recomendaciones (Recomendado)" |
+| D2 | (a) Run in the #343 pilot consumer, generated on demand the way #343 D1 (a) does | "Aceptar todas las recomendaciones (Recomendado)" |
+| D3 | (a) Not committed: artboards, `design.json`, `comments.json` and screenshots stay in the consumer and are removed after the observation | "Aceptar todas las recomendaciones (Recomendado)" |
+| D4 | (a) The report lives in this document, plus the owner verdict in the PR body | "Aceptar todas las recomendaciones (Recomendado)" |
+| D5 | (a) The gap table is approved with the report, then the issues are created in a separate batch, one per gap, labelled `odd`/`type:*` | "Aceptar todas las recomendaciones (Recomendado)" |
+| D6 | (a) No `implement` handoff: recorded as available-but-out-of-scope, nothing executed | "Aceptar todas las recomendaciones (Recomendado)" |
+| D7 | (a) An unapplicable comment stays `open`, becomes a gap, and the owner is asked to rephrase or accept the deviation | "Aceptar todas las recomendaciones (Recomendado)" |
+
+Amendments recorded in place: the dependency row and the §1 consumer bullet now name the approved #343 and #347 decisions, and the observation protocol states D1 (b) explicitly so the run cannot be read as three directions. Artboards are removed after the observation (D3 (a)), so every claim about them is quoted in this document.
