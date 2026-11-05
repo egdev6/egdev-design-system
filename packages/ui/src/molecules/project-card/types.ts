@@ -142,7 +142,11 @@ export type ProjectCardFooterProps = {
   className?: string;
 };
 
-/** Decorative backdrop: supply one non-interactive image with empty alt. Layout classes only. */
+/**
+ * Decorative backdrop: supply one non-interactive image with empty alt. Layout classes only.
+ * Consumers own legibility: the single 42% scrim guarantees contrast only for dark or
+ * low-contrast images, so choose a backdrop that keeps the heading and eyebrow readable.
+ */
 export type ProjectCardBackdropProps = ComponentPropsWithoutRef<'div'>;
 
 /** Trailing non-interactive mark: supply a named image or a decorative repeated mark. Layout classes only. */
