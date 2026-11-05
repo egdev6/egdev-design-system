@@ -181,7 +181,12 @@ test('release:pack rejects a packed workspace specifier and keeps the tarballs i
     writeFileSync(join(fixture, 'CHANGELOG.md'), '# Changelog\n\n## 0.0.1\n\n- Fixture release.\n');
     const file = tarballName('@egdev/tokens', '0.0.1');
     const path = join(destination, file);
-    writeTarball(path, { name: '@egdev/tokens', version: '0.0.1', peerDependencies: { react: 'workspace:*' } });
+    writeTarball(path, {
+      name: '@egdev/tokens',
+      version: '0.0.1',
+      dependencies: { '@egdev/ui': 'workspace:^' },
+      peerDependencies: { react: 'workspace:*' }
+    });
     const lines = [];
     const errors = [];
     const exitCode = finishReleasePack([{ name: '@egdev/tokens', version: '0.0.1', file, path, directory: fixture }], {
@@ -191,7 +196,10 @@ test('release:pack rejects a packed workspace specifier and keeps the tarballs i
     assert.equal(exitCode, 1, 'A packed workspace specifier must fail the run');
     assert.deepEqual(lines, [], 'A failed run must not print the success lines');
     assert.equal(errors.length, 1, 'One stderr line per offending package');
-    assert.match(errors[0], /@egdev\/tokens: peerDependencies\.react still contains the workspace specifier/);
+    assert.equal(
+      errors[0],
+      '@egdev/tokens: workspace specifier in dependencies.@egdev/ui (workspace:^), peerDependencies.react (workspace:*)'
+    );
     assert.deepEqual(
       readdirSync(destination),
       [file],
