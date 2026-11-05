@@ -1,7 +1,11 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { basename, dirname, relative, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { gzipSync } from 'node:zlib';
+import React from 'react';
 import docgen from 'react-docgen-typescript';
+import { renderToStaticMarkup } from 'react-dom/server';
 import ts from 'typescript';
 import { extractGroupedDeclarations } from '../packages/tokens/scripts/token-css.mjs';
 
@@ -729,8 +733,87 @@ function typographyRoles() {
     .sort((a, b) => compare(a.name, b.name));
 }
 
+// Compile the actual Logo source in memory so --check observes source changes, not a stale build.
+// Resolve the small, explicit source graph without writing build products into the worktree.
+async function logoAssets() {
+  const directory = 'packages/ui/src/atoms/logo/';
+  const require = createRequire(resolve(root, 'packages/ui/package.json'));
+  const moduleUrl = (code) => `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`;
+  const compile = (path, imports) => {
+    let code = ts.transpileModule(readFileSync(resolve(root, path), 'utf8'), {
+      compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX }
+    }).outputText;
+    for (const [specifier, url] of Object.entries(imports)) {
+      code = code.replaceAll(`from '${specifier}'`, `from '${url}'`).replaceAll(`from "${specifier}"`, `from "${url}"`);
+    }
+    return moduleUrl(code);
+  };
+  const external = (name) => {
+    const url = pathToFileURL(require.resolve(name)).href;
+    const names = { 'class-variance-authority': ['cva'], clsx: ['clsx'], 'tailwind-merge': ['extendTailwindMerge'] }[
+      name
+    ];
+    return names
+      ? moduleUrl(
+          `import value from '${url}'; ${names.map((item) => `export const ${item} = value.${item};`).join(' ')}`
+        )
+      : url;
+  };
+  const cn = compile('packages/ui/src/lib/cn.ts', {
+    clsx: external('clsx'),
+    'tailwind-merge': external('tailwind-merge')
+  });
+  const artwork = compile(`${directory}logo-artwork.ts`, {});
+  const types = compile(`${directory}types.ts`, { 'class-variance-authority': external('class-variance-authority') });
+  const hook = compile(`${directory}useLogo.ts`, { '@/lib/cn': cn, './logo-artwork': artwork, './types': types });
+  const component = compile(`${directory}Logo.tsx`, {
+    './useLogo': hook,
+    'react/jsx-runtime': external('react/jsx-runtime')
+  });
+  const { Logo } = await import(component);
+  const { logoInkClasses } = await import(types);
+  const inks = Object.fromEntries(
+    Object.values(logoInkClasses).map((className) => {
+      const direct = className.match(/^fill-\((--[\w-]+)\)$/);
+      const named = className.match(/^fill-([\w-]+)$/);
+      const token = direct?.[1] ?? (named ? `--color-${named[1]}` : null);
+      if (!token || !tokenNames.has(token)) {
+        throw new Error(`Unresolved Logo ink: ${className}`);
+      }
+      return [className, token];
+    })
+  );
+  const sources = ['Logo.tsx', 'useLogo.ts', 'logo-artwork.ts', 'types.ts'].map((name) => `${directory}${name}`);
+  return ['mark', 'wordmark'].map((variant) => {
+    const rendered = renderToStaticMarkup(React.createElement(Logo, { variant }));
+    let svg = rendered.slice(rendered.indexOf('<svg'), rendered.indexOf('</svg>') + 6);
+    const tokens = new Set();
+    svg = svg.replace(/<svg[^>]*>/, (tag) =>
+      tag
+        .replace(/ class="[^"]*"/, '')
+        .replace(' aria-hidden="true" focusable="false"', ' role="img" aria-label="egdev"')
+    );
+    svg = svg.replace(/ class="([^"]+)"/g, (_, className) => {
+      const token = inks[className];
+      if (!token) {
+        throw new Error(`Unresolved Logo shape class: ${className}`);
+      }
+      tokens.add(token);
+      return ` fill="var(${token})"`;
+    });
+    return {
+      component: 'Logo',
+      variant,
+      sources,
+      tokens: [...tokens].sort(compare),
+      svgGzipBase64: gzipSync(svg).toString('base64')
+    };
+  });
+}
+
 const artifact = {
   name: 'egdev-design-system',
+  assets: await logoAssets(),
   schemaVersion: '1.0.0',
   packages: ['effects', 'tokens', 'ui'].map((name) => {
     const manifest = read(`packages/${name}/package.json`);
