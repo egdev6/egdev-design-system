@@ -51,6 +51,29 @@ test('compound parts expose source descriptions and child constraints', () => {
   assert.match(part('TerminalCard', 'TerminalCardBar').children, /plain text/i);
 });
 
+test('WebTemplate composition is derived from used public source imports', () => {
+  const template = read('packages/system/design-system.json').components.find(({ name }) => name === 'WebTemplate');
+  assert.ok(template.composedOf.some(({ name, source }) => name === 'Button' && source.endsWith('/WebTemplate.tsx')));
+});
+
+test('--check detects a changed composition import without writing', () => {
+  const before = readFileSync('packages/system/design-system.json', 'utf8');
+  const result = spawnSync(
+    process.execPath,
+    [
+      '--import',
+      './scripts/fixtures/design-system-artifact/composition-drift.mjs',
+      'scripts/build-artifact.mjs',
+      '--check'
+    ],
+    { encoding: 'utf8', timeout: 120_000 }
+  );
+  assert.equal(result.status, 1, result.stderr);
+  assert.equal(result.stdout, '');
+  assert.equal(result.stderr, 'design-system.json is stale; run pnpm artifact --write\n');
+  assert.equal(readFileSync('packages/system/design-system.json', 'utf8'), before);
+});
+
 test('Storybook hidden own props do not appear in Chip', () => {
   const chip = read('packages/system/design-system.json').components.find(({ name }) => name === 'Chip');
   assert.ok(!chip.props.some(({ name }) => name === 'type'));
@@ -218,7 +241,11 @@ test('artifact schema and total ordering match the contract', () => {
   for (const [field, key, fields] of [
     ['packages', 'name', ['name', 'version']],
     ['catalog', 'name', ['name', 'level', 'package', 'radix', 'composes', 'action', 'available']],
-    ['components', 'name', ['name', 'package', 'source', 'props', 'variants', 'parts', 'anatomy', 'surfaceUsage']],
+    [
+      'components',
+      'name',
+      ['name', 'package', 'source', 'props', 'variants', 'parts', 'anatomy', 'surfaceUsage', 'composedOf']
+    ],
     ['types', 'name', ['name', 'owner', 'source']],
     ['tokens', 'name', ['name', 'value', 'group']],
     ['materialRecipes', 'id', ['id', 'semantics', 'tokens']],

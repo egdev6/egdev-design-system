@@ -20,6 +20,33 @@ const artifact = {
   thirdParty: 'NEVER_RENDER'
 };
 
+test('composition guide leads and prioritizes catalog levels with explicit proposals', () => {
+  const copy = structuredClone(artifact);
+  copy.catalog = [
+    { name: 'Atom', package: '@egdev/ui', level: 'atom', available: true },
+    { name: 'Molecule', package: '@egdev/ui', level: 'molecule', available: true },
+    { name: 'Organism', package: '@egdev/ui', level: 'organism', available: true },
+    { name: 'Template', package: '@egdev/ui', level: 'template', available: true }
+  ];
+  copy.components = copy.catalog.map(({ name, package: pkg }) => ({
+    name,
+    package: pkg,
+    source: 'source.tsx',
+    props: [],
+    composedOf: name === 'Organism' ? [{ name: 'Molecule', source: 'source.tsx' }] : []
+  }));
+  const text = renderSystemMd(copy);
+  assert.ok(text.startsWith('## Composition guide\n'));
+  assert.match(text, /organism[\s\S]*molecule[\s\S]*propose.*organism/i);
+  assert.match(text, /atom[\s\S]*repeat/i);
+  assert.match(text, /data-proposal/);
+  assert.match(text, /docs\/CATALOGACION\.md/);
+  assert.ok(text.indexOf('### Template') < text.indexOf('### Organism'));
+  assert.ok(text.indexOf('### Organism') < text.indexOf('### Molecule'));
+  assert.ok(text.indexOf('### Molecule') < text.indexOf('### Atom'));
+  assert.match(text, /Composes:.*Molecule.*source\.tsx/);
+});
+
 test('renders sorted source-derived compound parts under their parent', () => {
   const copy = structuredClone(artifact);
   copy.components[0].parts = [

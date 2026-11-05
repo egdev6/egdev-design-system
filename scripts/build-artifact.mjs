@@ -206,6 +206,31 @@ function compoundParts(parent) {
     .sort((a, b) => compare(a.name, b.name));
 }
 
+// Only public components actually used as JSX in the implementation are recorded.
+// Consumer-supplied slots and indirect runtime composition cannot be inferred here.
+function composedOf(entry) {
+  const source = program.getSourceFile(entry.file);
+  const found = new Map();
+  function visit(node) {
+    if (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) {
+      const tag = node.tagName;
+      if (ts.isIdentifier(tag)) {
+        const symbol = checker.getSymbolAtLocation(tag);
+        const target = symbol?.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(symbol) : symbol;
+        const match = publicValues.find((item) => item.symbol === target && item.name !== entry.name);
+        if (match) {
+          found.set(match.name, { name: match.name, source: pathOf(source.fileName) });
+        }
+      }
+    }
+    ts.forEachChild(node, visit);
+  }
+  if (source) {
+    visit(source);
+  }
+  return [...found.values()].sort((a, b) => compare(a.name, b.name));
+}
+
 // Visual anatomy is deliberately separate from the legacy flattened CVA contract.
 const tokenDeclarations = extractGroupedDeclarations(
   readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8')
@@ -419,6 +444,7 @@ const components = publicValues
       props,
       variants: variants(entry.types),
       parts: compoundParts(entry),
+      composedOf: composedOf(entry),
       anatomy: visualAnatomy(entry.types),
       surfaceUsage: surfaceUsage(entry)
     };

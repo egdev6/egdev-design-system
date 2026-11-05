@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Lead the design reference with organisms-first composition and proposal guidance; expose source-derived component composition and catalog slots.
+
 - Expose source-derived compound component parts and their documented children in the artifact and generated system reference.
 - Add source-derived per-component visual anatomy and Surface usage to the artifact and generated reference.
 
