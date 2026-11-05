@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Expose source-derived typography roles and token references in the artifact and generated design reference.
+- Include source-derived template and section layout, CSS and custom-property facts in the artifact and design reference; mark dynamic class expressions unresolved.
 
 - Lead the design reference with organisms-first composition and proposal guidance; expose source-derived component composition and catalog slots.
 

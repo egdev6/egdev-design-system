@@ -32,6 +32,10 @@ function anatomyLines(component, utilities) {
       emit(`${recipe.name} ${JSON.stringify(compound.conditions)}`, compound.classes);
     }
   }
+  for (const item of component.layout ?? []) {
+    lines.push(`    - Layout source: \`${cell(item.expression)}\` · ${cell(item.source)}`);
+    emit(`Layout ${item.source}`, item.classes);
+  }
   for (const use of component.surfaceUsage ?? []) {
     lines.push(`    - surfaceVariants(${cell(use.arguments)}) · ${cell(use.source)}; see Surface anatomy`);
   }

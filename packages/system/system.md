@@ -313,7 +313,57 @@ catalog[] · docs/catalog.json · @egdev/ui · template · —
   - Catalog composition / slots: Sidebar, ModuleRail, TabBar (catalog[] · docs/catalog.json)
   - Composes: Button (packages/ui/src/templates/app-shell/AppShell.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
+    - appShellBodyVariants base: flex → 
+    - appShellBodyVariants base: flex-1 → 
+    - appShellBottomVariants base: sticky → 
+    - appShellBottomVariants base: bottom-0 → 
+    - appShellMainVariants base: min-w-0 → 
+    - appShellMainVariants base: flex-1 → 
+    - appShellRootVariants base: flex → 
+    - appShellRootVariants base: min-h-dvh → 
+    - appShellRootVariants base: w-full → 
+    - appShellRootVariants base: flex-col → 
+    - appShellRootVariants base: bg-bg-canvas → --color-bg-canvas
     - appShellRootVariants base: font-sans → --font-sans
+    - appShellSideVariants base: sticky → 
+    - appShellSideVariants base: top-0 → 
+    - appShellSideVariants base: h-dvh → 
+    - appShellSkipLinkVariants base: m-2 → --spacing-2
+    - appShellSkipRowVariants arrangement=switching: hidden → 
+    - Layout source: `cn(appShellVariants.skipLink())` · packages/ui/src/templates/app-shell/useAppShell.ts
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: appShellVariants.skipLink() → unresolved
+    - Layout source: `cn(appShellVariants.root(), className)` · packages/ui/src/templates/app-shell/useAppShell.ts
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: appShellVariants.root() → unresolved
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: className → unresolved
+    - Layout source: `cn(appShellVariants.skip({ arrangement }))` · packages/ui/src/templates/app-shell/useAppShell.ts
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: appShellVariants.skip({ arrangement }) → unresolved
+    - Layout source: `cn(appShellVariants.body())` · packages/ui/src/templates/app-shell/useAppShell.ts
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: appShellVariants.body() → unresolved
+    - Layout source: `cn(appShellVariants.side({ arrangement }))` · packages/ui/src/templates/app-shell/useAppShell.ts
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: appShellVariants.side({ arrangement }) → unresolved
+    - Layout source: `cn(appShellVariants.main())` · packages/ui/src/templates/app-shell/useAppShell.ts
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: appShellVariants.main() → unresolved
+    - Layout source: `cn(appShellVariants.bottom({ arrangement }))` · packages/ui/src/templates/app-shell/useAppShell.ts
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: appShellVariants.bottom({ arrangement }) → unresolved
+    - Layout source: `{s.showSkipRow && ( <div className={s.skipRowClass}> <Button variant='secondary' asChild={true} className={s.skipLinkClass}> <a href={s.skipHref} onClick={s.onSkipClick}> {s.skipLabel} </a> </Button> </div> )}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout source: `className={s.skipRowClass}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout packages/ui/src/templates/app-shell/AppShell.tsx: s.skipRowClass → unresolved
+    - Layout source: `className={s.skipLinkClass}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout packages/ui/src/templates/app-shell/AppShell.tsx: s.skipLinkClass → unresolved
+    - Layout source: `{s.skipLabel}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout source: `className={s.bodyClass}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout packages/ui/src/templates/app-shell/AppShell.tsx: s.bodyClass → unresolved
+    - Layout source: `{s.sideNavigation != null && <div className={s.sideClass}>{s.sideNavigation}</div>}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout source: `className={s.sideClass}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout packages/ui/src/templates/app-shell/AppShell.tsx: s.sideClass → unresolved
+    - Layout source: `{s.sideNavigation}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout source: `className={s.mainClass}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout packages/ui/src/templates/app-shell/AppShell.tsx: s.mainClass → unresolved
+    - Layout source: `{s.children}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout source: `{s.bottomNavigation != null && <div className={s.bottomClass}>{s.bottomNavigation}</div>}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout source: `className={s.bottomClass}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout packages/ui/src/templates/app-shell/AppShell.tsx: s.bottomClass → unresolved
+    - Layout source: `{s.bottomNavigation}` · packages/ui/src/templates/app-shell/AppShell.tsx
   - bottomNavigation: ReactNode; Docked bottom navigation region, such as a TabBar. Shown below the 56rem viewport threshold when sideNavigation is also supplied, and at every width when it is the only navigation. (components[] · packages/ui/src/templates/app-shell/types.ts)
   - children: ReactNode; Content of the view's single main landmark, without page padding or max-width. It must not contain another main landmark. (components[] · packages/ui/src/templates/app-shell/types.ts)
   - messages: AppShellMessages; Localizable built-in text. Omitted entries fall back to the documented English default. (components[] · packages/ui/src/templates/app-shell/types.ts)
@@ -334,10 +384,42 @@ catalog[] · docs/catalog.json · @egdev/ui · template · —
   - Catalog composition / slots: Host-supplied children; host-composed group fades (catalog[] · docs/catalog.json)
   - Composes: No public JSX composition statically extracted.
   - Visual anatomy (source classes; unresolved is not a guessed value):
+    - sectionShellVariants base: box-border → 
+    - sectionShellVariants base: relative → 
+    - sectionShellVariants base: isolate → 
+    - sectionShellVariants base: flex → 
+    - sectionShellVariants base: flex-col → 
+    - sectionShellVariants base: justify-center → 
+    - sectionShellVariants base: min-h-[var(--section-min-height)] → --section-min-height
     - sectionShellVariants base: pt-[calc(var(--nav-height)+var(--space-8))] → --nav-height, --space-8
     - sectionShellVariants base: pb-8 → --spacing-8
     - sectionShellVariants base: shadow-none → unresolved
+    - sectionShellVariants register=pro: bg-transparent → 
+    - sectionShellVariants register=pro: bg-none → 
+    - sectionShellVariants register=show: bg-transparent → 
+    - sectionShellVariants register=show: bg-[image:var(--gradient-section-show)] → --gradient-section-show
+    - sectionShellVariants register=flood: bg-bg-flood → --color-bg-flood
+    - sectionShellVariants register=flood: bg-none → 
+    - sectionShellVariants register=deep: bg-bg-deep → --color-bg-deep
+    - sectionShellVariants register=deep: bg-none → 
+    - sectionShellVariants register=grafito: bg-surface-0/50 → --color-surface-0
+    - sectionShellVariants register=grafito: bg-none → 
+    - sectionShellVariants register=grafito: [@media(prefers-reduced-transparency:reduce)]:bg-surface-0 → --color-surface-0
+    - sectionShellVariants wrap=false: [&>*]:w-auto → 
+    - sectionShellWrapVariants base: box-border → 
+    - sectionShellWrapVariants base: w-full → 
+    - sectionShellWrapVariants base: max-w-[var(--content-max)] → --content-max
+    - sectionShellWrapVariants base: mx-auto → 
     - sectionShellWrapVariants base: px-[var(--gutter)] → --gutter
+    - Layout source: `cn(sectionShellVariants({ register, wrap }), className)` · packages/ui/src/templates/section-shell/useSectionShell.ts
+    - Layout packages/ui/src/templates/section-shell/useSectionShell.ts: sectionShellVariants({ register, wrap }) → unresolved
+    - Layout packages/ui/src/templates/section-shell/useSectionShell.ts: className → unresolved
+    - Layout source: `cn(sectionShellWrapVariants())` · packages/ui/src/templates/section-shell/useSectionShell.ts
+    - Layout packages/ui/src/templates/section-shell/useSectionShell.ts: sectionShellWrapVariants() → unresolved
+    - Layout source: `{s.wrap ? <div className={s.wrapClass}>{s.children}</div> : s.children}` · packages/ui/src/templates/section-shell/SectionShell.tsx
+    - Layout source: `className={s.wrapClass}` · packages/ui/src/templates/section-shell/SectionShell.tsx
+    - Layout packages/ui/src/templates/section-shell/SectionShell.tsx: s.wrapClass → unresolved
+    - Layout source: `{s.children}` · packages/ui/src/templates/section-shell/SectionShell.tsx
   - children: ReactNode; Host-supplied content in reading order. (components[] · packages/ui/src/templates/section-shell/types.ts)
   - register: enum; Coordinated visual register for this section. (components[] · packages/ui/src/templates/section-shell/types.ts)
   - wrap: boolean; Supply a centered content wrapper with page gutters; disable for self-wrapped content. (components[] · packages/ui/src/templates/section-shell/types.ts)
@@ -347,7 +429,27 @@ catalog[] · docs/catalog.json · @egdev/ui · template · —
   - Catalog composition / slots: Consumer-supplied TopBar, content and Footer (catalog[] · docs/catalog.json)
   - Composes: Button (packages/ui/src/templates/web-template/WebTemplate.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - No statically extracted anatomy.
+    - webTemplateTopBarVariants base: min-h-[var(--nav-height)] → --nav-height
+    - Layout source: `cn(webTemplateVariants(), className)` · packages/ui/src/templates/web-template/useWebTemplate.ts
+    - Layout packages/ui/src/templates/web-template/useWebTemplate.ts: webTemplateVariants() → unresolved
+    - Layout packages/ui/src/templates/web-template/useWebTemplate.ts: className → unresolved
+    - Layout source: `cn(appShellVariants.skip())` · packages/ui/src/templates/web-template/useWebTemplate.ts
+    - Layout packages/ui/src/templates/web-template/useWebTemplate.ts: appShellVariants.skip() → unresolved
+    - Layout source: `cn(appShellVariants.skipLink())` · packages/ui/src/templates/web-template/useWebTemplate.ts
+    - Layout packages/ui/src/templates/web-template/useWebTemplate.ts: appShellVariants.skipLink() → unresolved
+    - Layout source: `cn(webTemplateTopBarVariants())` · packages/ui/src/templates/web-template/useWebTemplate.ts
+    - Layout packages/ui/src/templates/web-template/useWebTemplate.ts: webTemplateTopBarVariants() → unresolved
+    - Layout source: `className={page.skipClass}` · packages/ui/src/templates/web-template/WebTemplate.tsx
+    - Layout packages/ui/src/templates/web-template/WebTemplate.tsx: page.skipClass → unresolved
+    - Layout source: `className={page.skipLinkClass}` · packages/ui/src/templates/web-template/WebTemplate.tsx
+    - Layout packages/ui/src/templates/web-template/WebTemplate.tsx: page.skipLinkClass → unresolved
+    - Layout source: `{page.skipLabel}` · packages/ui/src/templates/web-template/WebTemplate.tsx
+    - Layout source: `{page.topBar != null && <div className={page.topBarClass}>{page.topBar}</div>}` · packages/ui/src/templates/web-template/WebTemplate.tsx
+    - Layout source: `className={page.topBarClass}` · packages/ui/src/templates/web-template/WebTemplate.tsx
+    - Layout packages/ui/src/templates/web-template/WebTemplate.tsx: page.topBarClass → unresolved
+    - Layout source: `{page.topBar}` · packages/ui/src/templates/web-template/WebTemplate.tsx
+    - Layout source: `{page.content}` · packages/ui/src/templates/web-template/WebTemplate.tsx
+    - Layout source: `{page.footer}` · packages/ui/src/templates/web-template/WebTemplate.tsx
   - content: ReactNode; Content of the owned main landmark, without another main. (components[] · packages/ui/src/templates/web-template/types.ts)
   - footer: ReactNode; Consumer footer rendered without another wrapper. (components[] · packages/ui/src/templates/web-template/types.ts)
   - messages: AppShellMessages; Localized skip link text; omitted entries use Skip to content. (components[] · packages/ui/src/templates/web-template/types.ts)
@@ -590,17 +692,77 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · Popover
   - Catalog composition / slots: Native section links, Pixel, ProgressBar, Icon; Surface overlay (catalog[] · docs/catalog.json)
   - Composes: Icon (packages/ui/src/organisms/section-nav/SectionNav.tsx), Pixel (packages/ui/src/organisms/section-nav/SectionNav.tsx), Popover (packages/ui/src/organisms/section-nav/SectionNav.tsx), PopoverContent (packages/ui/src/organisms/section-nav/SectionNav.tsx), PopoverTrigger (packages/ui/src/organisms/section-nav/SectionNav.tsx), ProgressBar (packages/ui/src/organisms/section-nav/SectionNav.tsx), Surface (packages/ui/src/organisms/section-nav/SectionNav.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
+    - sectionNavLinkVariants base: flex → 
+    - sectionNavLinkVariants base: items-center → 
     - sectionNavLinkVariants base: gap-3 → --spacing-3
+    - sectionNavLinkVariants base: min-h-14 → 
     - sectionNavLinkVariants base: focus-visible:shadow-[var(--shadow-focus)] → --shadow-focus
+    - sectionNavListVariants base: m-0 → --spacing-0
     - sectionNavListVariants base: p-0 → --spacing-0
+    - sectionNavNextVariants base: items-center → 
+    - sectionNavNextVariants base: justify-center → 
+    - sectionNavNextVariants base: min-w-14 → 
+    - sectionNavNextVariants base: min-h-14 → 
+    - sectionNavNextVariants base: [@media(width<=520px)]:min-w-14 → 
+    - sectionNavNextVariants base: [@media(width<=520px)]:min-h-14 → 
     - sectionNavNextVariants base: focus-visible:shadow-[var(--shadow-focus)] → --shadow-focus
+    - sectionNavPillVariants base: relative → 
+    - sectionNavPillVariants base: flex → 
+    - sectionNavPillVariants base: items-center → 
+    - sectionNavPillVariants base: h-14 → 
     - sectionNavPillVariants base: px-4 → --spacing-4
+    - sectionNavPillVariants base: [@media(width<=520px)]:h-14 → 
     - sectionNavPillVariants base: [@media(width<=520px)]:px-3 → --spacing-3
+    - sectionNavPillVariants base: overflow-hidden → 
+    - sectionNavRootVariants base: right-[calc(var(--space-6)+env(safe-area-inset-right,0px))] → --space-6
+    - sectionNavRootVariants base: bottom-[calc(var(--space-6)+env(safe-area-inset-bottom,0px))] → --space-6
+    - sectionNavRootVariants base: flex → 
+    - sectionNavRootVariants base: flex-col → 
+    - sectionNavRootVariants base: items-end → 
     - sectionNavRootVariants base: gap-0 → --spacing-0
+    - sectionNavTriggerVariants base: flex → 
+    - sectionNavTriggerVariants base: items-center → 
     - sectionNavTriggerVariants base: gap-3 → --spacing-3
+    - sectionNavTriggerVariants base: bg-transparent → 
     - sectionNavTriggerVariants base: p-0 → --spacing-0
     - sectionNavTriggerVariants base: font-sans → --font-sans
     - sectionNavTriggerVariants base: text-body-default → --text-body-default
+    - sectionNavTriggerVariants base: min-w-14 → 
+    - sectionNavTriggerVariants base: min-h-14 → 
+    - sectionNavTriggerVariants base: [@media(width<=520px)]:min-w-14 → 
+    - sectionNavTriggerVariants base: [@media(width<=520px)]:min-h-14 → 
+    - Layout source: `cn(sectionNavRootVariants(), className, hidden && 'hidden')` · packages/ui/src/organisms/section-nav/useSectionNav.ts
+    - Layout packages/ui/src/organisms/section-nav/useSectionNav.ts: sectionNavRootVariants() → unresolved
+    - Layout packages/ui/src/organisms/section-nav/useSectionNav.ts: className → unresolved
+    - Layout packages/ui/src/organisms/section-nav/useSectionNav.ts: hidden && 'hidden' → unresolved
+    - Layout source: `cn(sectionNavPillVariants())` · packages/ui/src/organisms/section-nav/useSectionNav.ts
+    - Layout packages/ui/src/organisms/section-nav/useSectionNav.ts: sectionNavPillVariants() → unresolved
+    - Layout source: `cn(sectionNavTriggerVariants())` · packages/ui/src/organisms/section-nav/useSectionNav.ts
+    - Layout packages/ui/src/organisms/section-nav/useSectionNav.ts: sectionNavTriggerVariants() → unresolved
+    - Layout source: `cn(sectionNavNextVariants())` · packages/ui/src/organisms/section-nav/useSectionNav.ts
+    - Layout packages/ui/src/organisms/section-nav/useSectionNav.ts: sectionNavNextVariants() → unresolved
+    - Layout source: `cn(sectionNavListVariants())` · packages/ui/src/organisms/section-nav/useSectionNav.ts
+    - Layout packages/ui/src/organisms/section-nav/useSectionNav.ts: sectionNavListVariants() → unresolved
+    - Layout source: `cn(sectionNavLinkVariants())` · packages/ui/src/organisms/section-nav/useSectionNav.ts
+    - Layout packages/ui/src/organisms/section-nav/useSectionNav.ts: sectionNavLinkVariants() → unresolved
+    - Layout source: `{nav.items.length > 0 && ( <Popover open={nav.popoverOpen} onOpenChange={nav.requestOpen}> <Surface tone='overlay' padding='none' radius='full' className={nav.pillClass}> <PopoverTrigger aria-label={nav.disclosureLabel} className={nav.triggerClass}> {nav.current && ( <> <span>{nav.currentNumber}</span> <span>{nav.current.label}</span> </> )} <Icon name='chevron-down' /> </PopoverTrigger> {nav.next && ( <a href={nav.next.href} aria-label={nav.nextLabel} className={nav.nextClass} onClick={nav.onNextClick} onAuxClick={nav.onNextAuxClick} > <Icon name='arrow-down' /> </a> )} <ProgressBar value={nav.value} size='sm' edge={true} /> </Surface> <PopoverContent label={nav.label} side='top' align='end' onCloseAutoFocus={nav.onCloseAutoFocus}> <ol className={nav.listClass}> {nav.rows.map((row) => ( <li key={row.item.id}> <a href={row.item.href} className={nav.linkClass} aria-current={row.current} onClick={row.onClick} onAuxClick={row.onAuxClick} > <Pixel state={row.state} /> <span>{row.number}</span> <span>{row.item.label}</span> </a> </li> ))} </ol> </PopoverContent> </Popover> )}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout source: `className={nav.pillClass}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout packages/ui/src/organisms/section-nav/SectionNav.tsx: nav.pillClass → unresolved
+    - Layout source: `className={nav.triggerClass}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout packages/ui/src/organisms/section-nav/SectionNav.tsx: nav.triggerClass → unresolved
+    - Layout source: `{nav.current && ( <> <span>{nav.currentNumber}</span> <span>{nav.current.label}</span> </> )}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout source: `{nav.currentNumber}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout source: `{nav.current.label}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout source: `{nav.next && ( <a href={nav.next.href} aria-label={nav.nextLabel} className={nav.nextClass} onClick={nav.onNextClick} onAuxClick={nav.onNextAuxClick} > <Icon name='arrow-down' /> </a> )}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout source: `className={nav.nextClass}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout packages/ui/src/organisms/section-nav/SectionNav.tsx: nav.nextClass → unresolved
+    - Layout source: `className={nav.listClass}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout packages/ui/src/organisms/section-nav/SectionNav.tsx: nav.listClass → unresolved
+    - Layout source: `{nav.rows.map((row) => ( <li key={row.item.id}> <a href={row.item.href} className={nav.linkClass} aria-current={row.current} onClick={row.onClick} onAuxClick={row.onAuxClick} > <Pixel state={row.state} /> <span>{row.number}</span> <span>{row.item.label}</span> </a> </li> ))}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout source: `className={nav.linkClass}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout packages/ui/src/organisms/section-nav/SectionNav.tsx: nav.linkClass → unresolved
+    - Layout source: `{row.number}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
+    - Layout source: `{row.item.label}` · packages/ui/src/organisms/section-nav/SectionNav.tsx
   - activeId: string; Host-designated current section identity. (components[] · packages/ui/src/organisms/section-nav/types.ts)
   - defaultOpen: boolean; Initial uncontrolled visibility. (components[] · packages/ui/src/organisms/section-nav/types.ts)
   - disclosureLabel: string; Localized disclosure name. (components[] · packages/ui/src/organisms/section-nav/types.ts)
@@ -692,7 +854,12 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · —
   - Catalog composition / slots: Consumer-supplied header, media, body, actions and social slots (catalog[] · docs/catalog.json)
   - Composes: No public JSX composition statically extracted.
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - No statically extracted anatomy.
+    - Layout source: `slots: [header, media, body, actions, social]` · packages/ui/src/organisms/web-section/useWebSection.ts
+    - Layout source: `cn(webSectionVariants(), className)` · packages/ui/src/organisms/web-section/useWebSection.ts
+    - Layout packages/ui/src/organisms/web-section/useWebSection.ts: webSectionVariants() → unresolved
+    - Layout packages/ui/src/organisms/web-section/useWebSection.ts: className → unresolved
+    - Layout source: `{section.slots.map((slot, index) => (slot == null ? null : <div key={index}>{slot}</div>))}` · packages/ui/src/organisms/web-section/WebSection.tsx
+    - Layout source: `{slot}` · packages/ui/src/organisms/web-section/WebSection.tsx
   - actions: ReactNode; Consumer actions. (components[] · packages/ui/src/organisms/web-section/types.ts)
   - body: ReactNode; Consumer section content. (components[] · packages/ui/src/organisms/web-section/types.ts)
   - header: ReactNode; Consumer introduction and heading. (components[] · packages/ui/src/organisms/web-section/types.ts)
@@ -3585,7 +3752,57 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
 ### appShellVariants
 - appShellVariants (components[] · packages/ui/src/templates/app-shell/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
+    - appShellBodyVariants base: flex → 
+    - appShellBodyVariants base: flex-1 → 
+    - appShellBottomVariants base: sticky → 
+    - appShellBottomVariants base: bottom-0 → 
+    - appShellMainVariants base: min-w-0 → 
+    - appShellMainVariants base: flex-1 → 
+    - appShellRootVariants base: flex → 
+    - appShellRootVariants base: min-h-dvh → 
+    - appShellRootVariants base: w-full → 
+    - appShellRootVariants base: flex-col → 
+    - appShellRootVariants base: bg-bg-canvas → --color-bg-canvas
     - appShellRootVariants base: font-sans → --font-sans
+    - appShellSideVariants base: sticky → 
+    - appShellSideVariants base: top-0 → 
+    - appShellSideVariants base: h-dvh → 
+    - appShellSkipLinkVariants base: m-2 → --spacing-2
+    - appShellSkipRowVariants arrangement=switching: hidden → 
+    - Layout source: `cn(appShellVariants.skipLink())` · packages/ui/src/templates/app-shell/useAppShell.ts
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: appShellVariants.skipLink() → unresolved
+    - Layout source: `cn(appShellVariants.root(), className)` · packages/ui/src/templates/app-shell/useAppShell.ts
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: appShellVariants.root() → unresolved
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: className → unresolved
+    - Layout source: `cn(appShellVariants.skip({ arrangement }))` · packages/ui/src/templates/app-shell/useAppShell.ts
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: appShellVariants.skip({ arrangement }) → unresolved
+    - Layout source: `cn(appShellVariants.body())` · packages/ui/src/templates/app-shell/useAppShell.ts
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: appShellVariants.body() → unresolved
+    - Layout source: `cn(appShellVariants.side({ arrangement }))` · packages/ui/src/templates/app-shell/useAppShell.ts
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: appShellVariants.side({ arrangement }) → unresolved
+    - Layout source: `cn(appShellVariants.main())` · packages/ui/src/templates/app-shell/useAppShell.ts
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: appShellVariants.main() → unresolved
+    - Layout source: `cn(appShellVariants.bottom({ arrangement }))` · packages/ui/src/templates/app-shell/useAppShell.ts
+    - Layout packages/ui/src/templates/app-shell/useAppShell.ts: appShellVariants.bottom({ arrangement }) → unresolved
+    - Layout source: `{s.showSkipRow && ( <div className={s.skipRowClass}> <Button variant='secondary' asChild={true} className={s.skipLinkClass}> <a href={s.skipHref} onClick={s.onSkipClick}> {s.skipLabel} </a> </Button> </div> )}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout source: `className={s.skipRowClass}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout packages/ui/src/templates/app-shell/AppShell.tsx: s.skipRowClass → unresolved
+    - Layout source: `className={s.skipLinkClass}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout packages/ui/src/templates/app-shell/AppShell.tsx: s.skipLinkClass → unresolved
+    - Layout source: `{s.skipLabel}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout source: `className={s.bodyClass}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout packages/ui/src/templates/app-shell/AppShell.tsx: s.bodyClass → unresolved
+    - Layout source: `{s.sideNavigation != null && <div className={s.sideClass}>{s.sideNavigation}</div>}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout source: `className={s.sideClass}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout packages/ui/src/templates/app-shell/AppShell.tsx: s.sideClass → unresolved
+    - Layout source: `{s.sideNavigation}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout source: `className={s.mainClass}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout packages/ui/src/templates/app-shell/AppShell.tsx: s.mainClass → unresolved
+    - Layout source: `{s.children}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout source: `{s.bottomNavigation != null && <div className={s.bottomClass}>{s.bottomNavigation}</div>}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout source: `className={s.bottomClass}` · packages/ui/src/templates/app-shell/AppShell.tsx
+    - Layout packages/ui/src/templates/app-shell/AppShell.tsx: s.bottomClass → unresolved
+    - Layout source: `{s.bottomNavigation}` · packages/ui/src/templates/app-shell/AppShell.tsx
 ### badgeVariants
 - badgeVariants (components[] · packages/ui/src/atoms/badge/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):

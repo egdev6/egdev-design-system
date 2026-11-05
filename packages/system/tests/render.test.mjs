@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { renderSystemMd } from '../src/render-system-md.mjs';
 
@@ -121,6 +122,22 @@ test('renders deterministic sections and artifact facts only', () => {
   }
   assert.ok(!text.includes('NEVER_RENDER'));
   assert.match(renderSystemMd({}), /## Typography\n\nEmpty\./);
+});
+
+test('renders source-backed layout facts inside anatomy and preserves empty legacy artifacts', () => {
+  const copy = structuredClone(artifact);
+  copy.components[0].layout = [{ source: 'component.tsx', expression: 'slots: [header, body]' }];
+  assert.match(renderSystemMd(copy), /Visual anatomy[\s\S]*slots: \[header, body\][\s\S]*component\.tsx/);
+  assert.match(renderSystemMd(artifact), /No statically extracted anatomy/);
+});
+
+test('generated WebTemplate and WebSection show extracted anatomy', () => {
+  const text = readFileSync(new URL('../system.md', import.meta.url), 'utf8');
+  for (const name of ['WebTemplate', 'WebSection']) {
+    const section = text.split(`### ${name}\n`)[1].split('\n### ')[0];
+    assert.match(section, /Visual anatomy[\s\S]*Layout source/);
+    assert.doesNotMatch(section, /No statically extracted anatomy/);
+  }
 });
 
 test('renders anatomy branches, unresolved utilities and Surface use from artifact', () => {
