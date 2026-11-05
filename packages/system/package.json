@@ -1,0 +1,14 @@
+{
+  "name": "@egdev/system",
+  "version": "0.1.0",
+  "type": "module",
+  "files": [
+    "design-system.json"
+  ],
+  "exports": {
+    "./design-system.json": "./design-system.json"
+  },
+  "scripts": {
+    "build": "node ../../scripts/build-artifact.mjs --write"
+  }
+}

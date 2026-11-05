@@ -23,6 +23,8 @@
     "pilot:build": "node scripts/pilot-consumer.mjs",
     "test:package-pilot": "node --test scripts/pilot-consumer.test.mjs",
     "test:package-release": "node --test scripts/package-release.test.mjs",
+    "artifact": "node scripts/build-artifact.mjs",
+    "test:artifact": "node --test scripts/design-system-artifact.test.mjs",
     "test:tokens": "pnpm tokens && pnpm --filter @egdev/tokens run test",
     "props:check": "node scripts/prop-naming.mjs --check",
     "release:pack": "node scripts/release-pack.mjs",
