@@ -287,6 +287,10 @@ Re-run: `pnpm exec egdev-system-md --write`
 ### AlertDialog
 catalog[] · docs/catalog.json · @egdev/ui · molecule · AlertDialog
 - AlertDialog (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
+  - AlertDialogAction: Decision action. (components[].parts · packages/ui/src/molecules/alert-dialog/AlertDialog.tsx)
+  - AlertDialogCancel: Least-destructive decision; receives initial focus. (components[].parts · packages/ui/src/molecules/alert-dialog/AlertDialog.tsx)
+  - AlertDialogContent: Labelled modal with required consequence and actions. (components[].parts · packages/ui/src/molecules/alert-dialog/AlertDialog.tsx)
+  - AlertDialogTrigger: Optional disclosure control. (components[].parts · packages/ui/src/molecules/alert-dialog/AlertDialog.tsx)
   - children: ReactNode; Trigger and Content. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
   - defaultOpen: boolean; Initial uncontrolled visibility. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
   - onOpenChange: ((open: boolean) => void); Requested visibility changes. (components[] · packages/ui/src/molecules/alert-dialog/types.ts)
@@ -308,6 +312,7 @@ catalog[] · docs/catalog.json · @egdev/ui · template · —
 ### ArticleFeature
 catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 - ArticleFeature (components[] · packages/ui/src/molecules/article-feature/types.ts)
+  - ArticleFeatureCover: Reserved 16:8 cover region: the generative recessed plate with the aria-hidden word, or the supplied `PhotoFrame ratio="auto"` filling the reservation, plus the optional overlay badge. Children: Cover region props: one generative plate or exactly one `PhotoFrame ratio="auto"`. Exactly one PhotoFrame composed with ratio="auto": the cover region reserves the 16:8 proportion and the auto media fills the reserved height. A child with its own ratio breaks the reservation; that composition error is documented and warned about in development, not rejected by the type. (components[].parts · packages/ui/src/molecules/article-feature/ArticleFeature.tsx)
   - actionLabel: string; Visible text of the card's action affordance. Paint and text only: it never becomes a nested link. Whitespace-only renders nothing. (components[] · packages/ui/src/molecules/article-feature/types.ts)
   - asChild: boolean; Merge the card onto one consumer anchor through Radix Slot; the child keeps anchor semantics. Render the native anchor that wraps the whole card. (components[] · packages/ui/src/molecules/article-feature/types.ts)
   - children: ReactNode; At most one ArticleFeatureCover, rendered before the context row. (components[] · packages/ui/src/molecules/article-feature/types.ts)
@@ -339,6 +344,10 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · —
 ### BlogGrid
 catalog[] · docs/catalog.json · @egdev/ui · organism · — (native list)
 - BlogGrid (components[] · packages/ui/src/organisms/blog-grid/types.ts)
+  - BlogGridArchive: Wrap the independent archive link. Children: Archive slot: supply one independent named link. The standalone archive link. (components[].parts · packages/ui/src/organisms/blog-grid/BlogGrid.tsx)
+  - BlogGridFeature: Wrap one ArticleFeature whole-card link. Children: Feature slot: supply one whole-card ArticleFeature link. The consumer's featured article element. (components[].parts · packages/ui/src/organisms/blog-grid/BlogGrid.tsx)
+  - BlogGridRow: Wrap one editorial anchor in a native list item. Children: Row slot: supply one editorial ListItem slotted onto an anchor. One editorial ListItem rendered as an anchor. (components[].parts · packages/ui/src/organisms/blog-grid/BlogGrid.tsx)
+  - BlogGridRows: Render a semantic list only when rows are present. Children: List slot: supply zero or more keyed BlogGridRow parts. Editorial rows in reading order; an empty collection omits the list. (components[].parts · packages/ui/src/organisms/blog-grid/BlogGrid.tsx)
   - children: ReactNode; One feature and rows part, followed by an optional archive part. (components[] · packages/ui/src/organisms/blog-grid/types.ts)
 ### Button
 catalog[] · docs/catalog.json · @egdev/ui · atom · Slot
@@ -433,6 +442,8 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · —
 ### Collapsible
 catalog[] · docs/catalog.json · @egdev/ui · molecule · Collapsible
 - Collapsible (components[] · packages/ui/src/molecules/collapsible/types.ts)
+  - CollapsibleContent: Native hidden-shell/unmounted-children boundary; no forceMount or content animation. Children: In-flow body; the native hidden shell/id remains closed while children unmount. Lift persistent form state outside it. className supports outer margin/self-alignment only, merged last; no id, hidden, ref, forceMount or asChild API. Opt-in regions need a name. Meaningful flow content; children remount on reopening and local state may reset. (components[].parts · packages/ui/src/molecules/collapsible/Collapsible.tsx)
+  - CollapsibleTrigger: Native button; the React 18-compatible bridge connects only this public part's ref. (components[].parts · packages/ui/src/molecules/collapsible/Collapsible.tsx)
   - children: ReactNode; One named Trigger/Content pair; nested Roots are independent. (components[] · packages/ui/src/molecules/collapsible/types.ts)
   - defaultOpen: boolean; Initial visibility only; unavailable in controlled mode, where open is authoritative. Initial visibility only; later changes do not reset the native state. (components[] · packages/ui/src/molecules/collapsible/types.ts)
   - disabled: boolean; Disable only Trigger activation, retaining visibility and enabled body controls. (components[] · packages/ui/src/molecules/collapsible/types.ts)
@@ -456,6 +467,8 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Dialog (native D4 com
 ### CommunityCard
 catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 - CommunityCard (components[] · packages/ui/src/molecules/community-card/types.ts)
+  - CommunityCardAction: Bottom-edge zone for the card's single supplied action; the card itself stays passive. Children: Bottom-edge zone for the card's single supplied action; the card itself stays passive. Exactly one consumer `Button` (optionally `asChild` with an anchor) or `Link`. Two competing actions are outside the contract; the action keeps its own events, focus ring and target. (components[].parts · packages/ui/src/molecules/community-card/CommunityCard.tsx)
+  - CommunityCardMark: Decorative consumer mark slot on the trailing edge of the header band's top row. Children: Decorative consumer mark slot on the trailing edge of the header band's top row. Exactly one consumer-supplied, non-interactive mark element: no anchor, button or tab stop. Either named — `role="img"` with `aria-label`, or `img` with `alt` — so it joins the card content, or decorative — `img` with `alt=""` or `aria-hidden` — when the mark repeats the visible name, so the card is not announced twice. Non-image marks must fit within 153.6 × 51.2 CSS pixels without distortion; consumers own this constraint and the slot does not clip. Not type-enforced; rendered untouched. (components[].parts · packages/ui/src/molecules/community-card/CommunityCard.tsx)
   - children: ReactNode; Free descriptive copy in reading order: paragraphs and phrasing content, never headings or interactive content. Direct CommunityCardMark children are hoisted into the header band's top row; a CommunityCardAction child stays in the body flow where it is placed. (components[] · packages/ui/src/molecules/community-card/types.ts)
   - className: string; Outer layout only (grid placement, margin, width); appearance stays with the recipes. (components[] · packages/ui/src/molecules/community-card/types.ts)
   - eyebrow: string; Optional relationship line above the name. Visually limited to two lines; the full text remains in the DOM. Whitespace-only renders nothing and the top row collapses to the mark when supplied. (components[] · packages/ui/src/molecules/community-card/types.ts)
@@ -477,6 +490,9 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · —
 ### Dialog
 catalog[] · docs/catalog.json · @egdev/ui · molecule · Dialog
 - Dialog (components[] · packages/ui/src/molecules/dialog/types.ts)
+  - DialogClose: Explicit close action. (components[].parts · packages/ui/src/molecules/dialog/Dialog.tsx)
+  - DialogContent: Body-portalled modal panel with an owned accessible title and optional description. (components[].parts · packages/ui/src/molecules/dialog/Dialog.tsx)
+  - DialogTrigger: Optional native or slotted disclosure button. (components[].parts · packages/ui/src/molecules/dialog/Dialog.tsx)
   - children: ReactNode; Composed Trigger and Content. (components[] · packages/ui/src/molecules/dialog/types.ts)
   - defaultOpen: boolean; Initial uncontrolled visibility. (components[] · packages/ui/src/molecules/dialog/types.ts)
   - onOpenChange: ((open: boolean) => void); Requested visibility changes. (components[] · packages/ui/src/molecules/dialog/types.ts)
@@ -516,6 +532,11 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · —
 ### Footer
 catalog[] · docs/catalog.json · @egdev/ui · organism · — (native footer and navigation)
 - Footer (components[] · packages/ui/src/organisms/footer/types.ts)
+  - FooterBrand: Consumer-owned brand and optional tagline. Children: Brand identity and optional tagline. Named brand element and optional descriptive copy, without nested anchors. The consumer owns link contrast and target size (44px recommended); Footer sizes its own navigation links to 44px. (components[].parts · packages/ui/src/organisms/footer/Footer.tsx)
+  - FooterLegal: Consumer legal and credit row. Children: Consumer legal and credit content in reading order. Legal text and optional links supplied by the host. The consumer owns link contrast and target size (44px recommended); Footer sizes its own navigation links to 44px. (components[].parts · packages/ui/src/organisms/footer/Footer.tsx)
+  - FooterMotto: Non-interactive motto stage. Children: Motto stage containing one non-interactive consumer Text element. One non-interactive Text element, including any consumer-owned accent. (components[].parts · packages/ui/src/organisms/footer/Footer.tsx)
+  - FooterNavigation: Named section navigation with the Footer-local link target exception. Children: Section navigation with a visible heading and ordered destinations. (components[].parts · packages/ui/src/organisms/footer/Footer.tsx)
+  - FooterSocial: Social heading and separately named list supplied by the consumer. Children: Consumer social heading and named SocialLinks list. Consumer heading and configured SocialLinks; use a list label and caption={null}. The consumer owns link contrast and target size (44px recommended); Footer sizes its own navigation links to 44px. (components[].parts · packages/ui/src/organisms/footer/Footer.tsx)
   - children: ReactNode; Optional named parts, each at most once in the documented order. (components[] · packages/ui/src/organisms/footer/types.ts)
 ### Gauge
 catalog[] · docs/catalog.json · @egdev/ui · atom · — (native role=meter)
@@ -648,6 +669,15 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · Slot + VisuallyHidden
 ### ListItem
 catalog[] · docs/catalog.json · @egdev/ui · molecule · Slot
 - ListItem (components[] · packages/ui/src/molecules/list-item/types.ts)
+  - ListItemActions: Independent trailing controls; no item-wide activation or primary navigation region. Children: Compound div attributes. className supports local alignment, placement and width constraints, not appearance, hidden content or reordering. No ref, own role or tab stop is exposed. (components[].parts · packages/ui/src/molecules/list-item/ListItem.tsx)
+  - ListItemBody: Leading content, optional host handle and passive media grouping. Children: Compound div attributes. className supports local alignment, placement and width constraints, not appearance, hidden content or reordering. No ref, own role or tab stop is exposed. (components[].parts · packages/ui/src/molecules/list-item/ListItem.tsx)
+  - ListItemContent: Flexible readable content; never automatically clamped or hidden. Children: Compound div attributes. className supports local alignment, placement and width constraints, not appearance, hidden content or reordering. No ref, own role or tab stop is exposed. (components[].parts · packages/ui/src/molecules/list-item/ListItem.tsx)
+  - ListItemFooter: Wrapping metadata/action band for card and compact compositions. Children: Compound div attributes. className supports local alignment, placement and width constraints, not appearance, hidden content or reordering. No ref, own role or tab stop is exposed. (components[].parts · packages/ui/src/molecules/list-item/ListItem.tsx)
+  - ListItemLeading: Optional editorial leading zone: a dated time stamp, index or short label; no controls. Children: Compound div attributes. className supports local alignment, placement and width constraints, not appearance, hidden content or reordering. No ref, own role or tab stop is exposed. (components[].parts · packages/ui/src/molecules/list-item/ListItem.tsx)
+  - ListItemMedia: Passive square thumbnail well; consumers own image alt and poster content. Children: Compound div attributes. className supports local alignment, placement and width constraints, not appearance, hidden content or reordering. No ref, own role or tab stop is exposed. (components[].parts · packages/ui/src/molecules/list-item/ListItem.tsx)
+  - ListItemMeta: Non-interactive context and visible status text. Children: Compound div attributes. className supports local alignment, placement and width constraints, not appearance, hidden content or reordering. No ref, own role or tab stop is exposed. (components[].parts · packages/ui/src/molecules/list-item/ListItem.tsx)
+  - ListItemTitle: Editorial row title; level picks the native heading rank h2–h6 independently of typography. Children: Editorial title zone: renders a real h2–h6 chosen by level, forwards native heading attributes for that element and merges className last for local placement. No ref, own role or tab stop. One heading text node; the consumer supplies a rank that fits the surrounding outline. (components[].parts · packages/ui/src/molecules/list-item/ListItem.tsx)
+  - ListItemTrailing: Optional editorial trailing zone: a decorative icon or readable text such as a duration. Children: Compound div attributes. className supports local alignment, placement and width constraints, not appearance, hidden content or reordering. No ref, own role or tab stop is exposed. (components[].parts · packages/ui/src/molecules/list-item/ListItem.tsx)
   - asChild: boolean; Merge onto one child through Radix Slot. Populated children remain non-focusable containers; editorial values additionally accept one anchor child for a whole-row link. Merge onto one child through Radix Slot. Editorial values accept one anchor child so the whole row is a single link; keep ListItemActions out of that anchor. Merge onto one native button or anchor; its child owns type, disabled, href and activation. (components[] · packages/ui/src/molecules/list-item/types.ts)
   - children: ReactNode \| ReactElement<unknown, string \| JSXElementConstructor<any>>; Populated item composition; use compound parts for readable content and independent controls. One non-focusable li, article or div containing the entire populated composition. One native action with phrasing content only; no compound div parts or nested controls. (components[] · packages/ui/src/molecules/list-item/types.ts)
   - size: enum; Editorial row density only; card, compact, row and empty ignore it. Inert for the empty presentation, which normalizes to card. (components[] · packages/ui/src/molecules/list-item/types.ts)
@@ -714,6 +744,8 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Collapsible
 ### NotesBoard
 catalog[] · docs/catalog.json · @egdev/ui · organism · — (native ordered list)
 - NotesBoard (components[] · packages/ui/src/organisms/notes-board/types.ts)
+  - NotesBoardList: Consumer-ordered list of linked notes. (components[].parts · packages/ui/src/organisms/notes-board/NotesBoard.tsx)
+  - NotesBoardSide: Introduction and optional static topics. (components[].parts · packages/ui/src/organisms/notes-board/NotesBoard.tsx)
   - children: ReactNode; One NotesBoardSide followed by one NotesBoardList; the consumer owns their contents. (components[] · packages/ui/src/organisms/notes-board/types.ts)
   - sticky: boolean; Stick the side above 1080px, subject to the host scroll container and navigation clearance. (components[] · packages/ui/src/organisms/notes-board/types.ts)
 ### Notice
@@ -729,6 +761,9 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 ### NowCard
 catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 - NowCard (components[] · packages/ui/src/molecules/now-card/types.ts)
+  - NowCardBody: Padded growing zone for the consumer-supplied copy. Children: Padded growing zone for the consumer-supplied copy; no interactive content, no badge slot. One or two short paragraphs. No controls, no links, no status badge: the card renders the consumer's statusBadge slot itself, before the heading. (components[].parts · packages/ui/src/molecules/now-card/NowCard.tsx)
+  - NowCardDetail: Supporting date or context line with the consumer-marked emphasized value. Children: Supporting date or context line with an emphasized value; no controls. One short visible sentence; mark the value with <b> (for example a real <time dateTime> inside it). (components[].parts · packages/ui/src/molecules/now-card/NowCard.tsx)
+  - NowCardFooter: Lower band for one supporting detail and/or one action. Children: Lower band for one supporting detail and/or one action (a Link or a labelled IconButton); never two competing actions. One NowCardDetail and/or one Link/IconButton. Omit the part entirely when the card has no footer. (components[].parts · packages/ui/src/molecules/now-card/NowCard.tsx)
   - children: ReactNode; Body and footer parts in reading order (NowCardBody, then NowCardFooter). (components[] · packages/ui/src/molecules/now-card/types.ts)
   - level: enum; Native heading rank only; the visual step follows size. (components[] · packages/ui/src/molecules/now-card/types.ts)
   - size: enum; Density preset: md is the standard card, sm the three-up NowStrip density. Density never clamps, truncates or hides supplied content. (components[] · packages/ui/src/molecules/now-card/types.ts)
@@ -749,6 +784,9 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 ### Panel
 catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 - Panel (components[] · packages/ui/src/molecules/panel/types.ts)
+  - PanelBody: Transparent main-content zone; controls retain their native or Radix behavior. Children: Required transparent main-content zone; child controls own their behavior. Free flow content and independently labelled consumer controls. (components[].parts · packages/ui/src/molecules/panel/Panel.tsx)
+  - PanelFooter: Supplied supplementary metadata/utility zone, not a footer landmark. Children: Supplementary metadata/utility zone, not a page-footer landmark. Supplied metadata and related utility controls. Omit the part when absent. (components[].parts · packages/ui/src/molecules/panel/Panel.tsx)
+  - PanelHeader: Supplied identity/context, without generated heading semantics. Children: Supplied identity/context zone; no generated heading or landmark. Meaningful supplied header content. Omit the part itself when it is not needed. (components[].parts · packages/ui/src/molecules/panel/Panel.tsx)
   - children: ReactNode; Optional Header, exactly one Body and optional Footer, in direct DOM sibling order. Fragments without wrappers are supported; Panel never parses or repairs the child tree. (components[] · packages/ui/src/molecules/panel/types.ts)
   - tone: enum; Explicit Material ownership. Inherit exposes an existing raised host, never infers one. (components[] · packages/ui/src/molecules/panel/types.ts)
   - variant: enum; Shared presentation of the supplied zones, without changing their behavior. (components[] · packages/ui/src/molecules/panel/types.ts)
@@ -768,6 +806,9 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · —
 ### Popover
 catalog[] · docs/catalog.json · @egdev/ui · molecule · Popover
 - Popover (components[] · packages/ui/src/molecules/popover/types.ts)
+  - PopoverClose: Explicit named dismissal action; optionally compose a button-compatible child. (components[].parts · packages/ui/src/molecules/popover/Popover.tsx)
+  - PopoverContent: Internally portalled named dialog on the existing Surface overlay treatment. Children: Named dialog. className supports outer dimensions, margins and alignment only, not Material paint. Consumer-owned body, field labels and visible Close action; no generated heading or form. (components[].parts · packages/ui/src/molecules/popover/Popover.tsx)
+  - PopoverTrigger: Named button that toggles the associated dialog; optionally compose an existing Button. (components[].parts · packages/ui/src/molecules/popover/Popover.tsx)
   - children: ReactNode; One Trigger and one Content; use Close for explicit dismissal. (components[] · packages/ui/src/molecules/popover/types.ts)
   - defaultOpen: boolean; Initial uncontrolled visibility, read once. (components[] · packages/ui/src/molecules/popover/types.ts)
   - modal: boolean; Contain focus, pointer interaction and assistive-technology access while open. Do not change modality while open. Non-modal Tab still cycles within Content. (components[] · packages/ui/src/molecules/popover/types.ts)
@@ -801,6 +842,11 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · Progress
 ### ProjectCard
 catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 - ProjectCard (components[] · packages/ui/src/molecules/project-card/types.ts)
+  - ProjectCardBackdrop: Decorative backdrop; supply a single image with empty alt. Children: Decorative backdrop: supply one non-interactive image with empty alt. Layout classes only. Consumers own legibility: the single 42% scrim guarantees contrast only for dark or low-contrast images, so choose a backdrop that keeps the heading and eyebrow readable. (components[].parts · packages/ui/src/molecules/project-card/ProjectCard.tsx)
+  - ProjectCardCode: Sample command block in a labelled mono well; passive text, never executable or focusable. Children: Sample command block in a labelled mono well; passive text, never executable or focusable. (components[].parts · packages/ui/src/molecules/project-card/ProjectCard.tsx)
+  - ProjectCardFooter: Footer zone for the card's single supplied action; the card itself stays passive. Children: Footer zone for the card's single action; the consumer supplies exactly one Link or Button. One supplied action; the card itself stays passive and adds no tab stop of its own. (components[].parts · packages/ui/src/molecules/project-card/ProjectCard.tsx)
+  - ProjectCardMark: Trailing non-interactive mark. Children: Trailing non-interactive mark: supply a named image or a decorative repeated mark. Layout classes only. (components[].parts · packages/ui/src/molecules/project-card/ProjectCard.tsx)
+  - ProjectCardTags: Ordered technology labels rendered as one static Chip per list item. Children: Ordered technology labels rendered as one static Chip per list item. (components[].parts · packages/ui/src/molecules/project-card/ProjectCard.tsx)
   - children: ReactNode; Free body flow in reading order: paragraphs, then ProjectCardTags, ProjectCardCode and ProjectCardFooter. (components[] · packages/ui/src/molecules/project-card/types.ts)
   - className: string; Outer layout only (grid placement, margin, width); appearance stays with the recipes. (components[] · packages/ui/src/molecules/project-card/types.ts)
   - eyebrow: string; Optional uppercase context line above the heading; whitespace-only renders nothing. (components[] · packages/ui/src/molecules/project-card/types.ts)
@@ -1027,6 +1073,8 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Tabs
 ### TerminalCard
 catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 - TerminalCard (components[] · packages/ui/src/molecules/terminal-card/types.ts)
+  - TerminalCardBar: Title bar with the decorative terminal glyph, the supplied path and an optional shell. Children: Title bar showing the current path and, optionally, the shell name on the trailing edge. No ref or asChild API; className supports local layout only. The path text shown after the decorative glyph; plain text, `span` or `code`. Controls are not acceptable bar content. (components[].parts · packages/ui/src/molecules/terminal-card/TerminalCard.tsx)
+  - TerminalCardList: Ordered definition pairs as a two-column `dl`; carets stay decorative and unannounced. Children: Ordered definition pairs rendered as `dl` > `dt`/`dd`. No controls, no links and no nested lists. No ref or asChild API; className supports local layout only. (components[].parts · packages/ui/src/molecules/terminal-card/TerminalCard.tsx)
   - children: ReactNode; `TerminalCardBar` and `TerminalCardList` in that order, as direct children. (components[] · packages/ui/src/molecules/terminal-card/types.ts)
   - className: string; Outer layout only (width, margin, grid placement). The card has no built-in maximum width; the consumer decides it here. (components[] · packages/ui/src/molecules/terminal-card/types.ts)
   - label: string; Accessible name of the `role="group"` region. Required and non-empty; a blank or whitespace-only label renders nothing, because an unnamed group is never promised. (components[] · packages/ui/src/molecules/terminal-card/types.ts)
@@ -1090,6 +1138,11 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · Tooltip
 ### TopBar
 catalog[] · docs/catalog.json · @egdev/ui · organism · — (native navigation links)
 - TopBar (components[] · packages/ui/src/organisms/top-bar/types.ts)
+  - TopBarBrand: Consumer-supplied named home link. Children: Each part accepts a single consumer-owned named link or control. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarMobileTrigger: Consumer-supplied mobile dialog trigger. Children: Each part accepts a single consumer-owned named link or control. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarSearchCompact: Compact search launcher. Children: Each part accepts a single consumer-owned named link or control. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarSearchFull: Full-width search launcher. Children: Each part accepts a single consumer-owned named link or control. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarUserMenu: Consumer-supplied account control. Children: Each part accepts a single consumer-owned named link or control. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
   - children: ReactNode; Direct TopBar parts, optionally wrapped in fragments; one brand is required. (components[] · packages/ui/src/organisms/top-bar/types.ts)
   - data-state: enum; Host-selected native presentation state; absence is transparent. (components[] · packages/ui/src/organisms/top-bar/types.ts)
   - items: TopBarItem[]; Ordered destinations, including an empty list when appropriate. (components[] · packages/ui/src/organisms/top-bar/types.ts)

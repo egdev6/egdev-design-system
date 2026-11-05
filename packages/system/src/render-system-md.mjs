@@ -88,6 +88,11 @@ export function renderSystemMd(artifact) {
     );
     for (const component of sorted(matches, (item) => item.name)) {
       componentLines.push(`- ${component.name} (components[] · ${component.source})`);
+      for (const part of sorted(component.parts, (item) => item.name)) {
+        componentLines.push(
+          `  - ${cell(part.name)}: ${cell(part.description)}${part.children ? ` Children: ${cell(part.children)}` : ''} (components[].parts · ${cell(part.source)})`
+        );
+      }
       for (const prop of sorted(component.props, (item) => item.name)) {
         componentLines.push(
           `  - ${prop.name}: ${cell(prop.type)}; ${cell(prop.description)} (components[] · ${component.source})`

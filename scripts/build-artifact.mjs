@@ -34,7 +34,9 @@ for (const barrel of barrels) {
       name: item.name,
       package: barrel.includes('/ui/') ? '@egdev/ui' : '@egdev/effects',
       file: local,
-      types: existsSync(types) ? types : null
+      types: existsSync(types) ? types : null,
+      symbol: target,
+      declaration
     });
   }
 }
@@ -173,6 +175,36 @@ function variants(file) {
   }
   return result.sort((a, b) => compare(a.name, b.name));
 }
+// Associate only public values declared in the same source file and named for their parent.
+// Descriptions and child restrictions remain source facts, not inferred API promises.
+function compoundParts(parent) {
+  return publicValues
+    .filter(
+      (part) =>
+        part.package === parent.package &&
+        part.file === parent.file &&
+        part.name !== parent.name &&
+        part.name.startsWith(parent.name) &&
+        /^[A-Z]/.test(part.name.slice(parent.name.length))
+    )
+    .map((part) => {
+      const propsType = part.declaration?.type?.typeArguments?.[0];
+      const alias =
+        propsType && checker.getSymbolAtLocation(ts.isTypeReferenceNode(propsType) ? propsType.typeName : propsType);
+      const propsSymbol = alias?.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(alias) : alias;
+      const propsDescription = propsSymbol ? ts.displayPartsToString(propsSymbol.getDocumentationComment(checker)) : '';
+      const type = propsType && checker.getTypeAtLocation(propsType);
+      const child = type && checker.getPropertyOfType(type, 'children');
+      const childDescription = child ? ts.displayPartsToString(child.getDocumentationComment(checker)) : '';
+      return {
+        name: part.name,
+        source: pathOf(part.file),
+        description: ts.displayPartsToString(part.symbol.getDocumentationComment(checker)),
+        children: [propsDescription, childDescription].filter(Boolean).join(' ')
+      };
+    })
+    .sort((a, b) => compare(a.name, b.name));
+}
 const components = publicValues
   .map((entry, index) => {
     const hiddenNames = hidden.get(entry.name.charAt(0).toLowerCase() + entry.name.slice(1)) ?? [];
@@ -196,7 +228,8 @@ const components = publicValues
       package: entry.package,
       source: pathOf(entry.types ?? entry.file),
       props,
-      variants: variants(entry.types)
+      variants: variants(entry.types),
+      parts: compoundParts(entry)
     };
   })
   .sort((a, b) => compare(a.name, b.name) || compare(a.package, b.package));

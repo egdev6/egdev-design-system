@@ -1032,6 +1032,32 @@
           "name": "alertDialogTitleRowVariants",
           "classes": ["flex items-center gap-[var(--space-3)]"]
         }
+      ],
+      "parts": [
+        {
+          "name": "AlertDialogAction",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx",
+          "description": "Decision action.",
+          "children": ""
+        },
+        {
+          "name": "AlertDialogCancel",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx",
+          "description": "Least-destructive decision; receives initial focus.",
+          "children": ""
+        },
+        {
+          "name": "AlertDialogContent",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx",
+          "description": "Labelled modal with required consequence and actions.",
+          "children": ""
+        },
+        {
+          "name": "AlertDialogTrigger",
+          "source": "packages/ui/src/molecules/alert-dialog/AlertDialog.tsx",
+          "description": "Optional disclosure control.",
+          "children": ""
+        }
       ]
     },
     {
@@ -1069,7 +1095,8 @@
           "name": "alertDialogTitleRowVariants",
           "classes": ["flex items-center gap-[var(--space-3)]"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "AlertDialogCancel",
@@ -1106,7 +1133,8 @@
           "name": "alertDialogTitleRowVariants",
           "classes": ["flex items-center gap-[var(--space-3)]"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "AlertDialogContent",
@@ -1167,7 +1195,8 @@
           "name": "alertDialogTitleRowVariants",
           "classes": ["flex items-center gap-[var(--space-3)]"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "AlertDialogTrigger",
@@ -1204,7 +1233,8 @@
           "name": "alertDialogTitleRowVariants",
           "classes": ["flex items-center gap-[var(--space-3)]"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "AmbientBackground",
@@ -1255,7 +1285,8 @@
             "eg-ambient-background absolute inset-0 pointer-events-none bg-ambient-bg opacity-[var(--eg-ambient-opacity)]"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "AppShell",
@@ -1295,7 +1326,8 @@
           "deprecated": false
         }
       ],
-      "variants": []
+      "variants": [],
+      "parts": []
     },
     {
       "name": "ArticleFeature",
@@ -1438,6 +1470,14 @@
           "name": "articleFeatureWordVariants",
           "classes": ["block px-4 text-title-display uppercase text-alpha-white-07 leading-none"]
         }
+      ],
+      "parts": [
+        {
+          "name": "ArticleFeatureCover",
+          "source": "packages/ui/src/molecules/article-feature/ArticleFeature.tsx",
+          "description": "Reserved 16:8 cover region: the generative recessed plate with the aria-hidden word, or the\nsupplied `PhotoFrame ratio=\"auto\"` filling the reservation, plus the optional overlay badge.",
+          "children": "Cover region props: one generative plate or exactly one `PhotoFrame ratio=\"auto\"`. Exactly one PhotoFrame composed with ratio=\"auto\": the cover region reserves the 16:8\nproportion and the auto media fills the reserved height. A child with its own ratio breaks\nthe reservation; that composition error is documented and warned about in development, not\nrejected by the type."
+        }
       ]
     },
     {
@@ -1533,7 +1573,8 @@
           "name": "articleFeatureWordVariants",
           "classes": ["block px-4 text-title-display uppercase text-alpha-white-07 leading-none"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "AspectRatio",
@@ -1554,7 +1595,8 @@
           "name": "aspectRatioVariants",
           "classes": ["min-w-0"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Avatar",
@@ -1617,7 +1659,8 @@
             "size-12"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Badge",
@@ -1688,7 +1731,8 @@
             "bg-action-primary-solid-bg text-action-primary-solid-fg"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "BlogGrid",
@@ -1734,6 +1778,32 @@
           "classes": [
             "eg-blog-grid grid grid-cols-[minmax(0,7fr)_minmax(0,5fr)] grid-rows-[minmax(0,1fr)_auto] gap-x-5 gap-y-0 items-stretch min-w-0 [@media(width<=1080px)]:grid-cols-1 [@media(width<=1080px)]:grid-rows-none [@media(width<=1080px)]:gap-y-5"
           ]
+        }
+      ],
+      "parts": [
+        {
+          "name": "BlogGridArchive",
+          "source": "packages/ui/src/organisms/blog-grid/BlogGrid.tsx",
+          "description": "Wrap the independent archive link.",
+          "children": "Archive slot: supply one independent named link. The standalone archive link."
+        },
+        {
+          "name": "BlogGridFeature",
+          "source": "packages/ui/src/organisms/blog-grid/BlogGrid.tsx",
+          "description": "Wrap one ArticleFeature whole-card link.",
+          "children": "Feature slot: supply one whole-card ArticleFeature link. The consumer's featured article element."
+        },
+        {
+          "name": "BlogGridRow",
+          "source": "packages/ui/src/organisms/blog-grid/BlogGrid.tsx",
+          "description": "Wrap one editorial anchor in a native list item.",
+          "children": "Row slot: supply one editorial ListItem slotted onto an anchor. One editorial ListItem rendered as an anchor."
+        },
+        {
+          "name": "BlogGridRows",
+          "source": "packages/ui/src/organisms/blog-grid/BlogGrid.tsx",
+          "description": "Render a semantic list only when rows are present.",
+          "children": "List slot: supply zero or more keyed BlogGridRow parts. Editorial rows in reading order; an empty collection omits the list."
         }
       ]
     },
@@ -1782,7 +1852,8 @@
             "eg-blog-grid grid grid-cols-[minmax(0,7fr)_minmax(0,5fr)] grid-rows-[minmax(0,1fr)_auto] gap-x-5 gap-y-0 items-stretch min-w-0 [@media(width<=1080px)]:grid-cols-1 [@media(width<=1080px)]:grid-rows-none [@media(width<=1080px)]:gap-y-5"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "BlogGridFeature",
@@ -1829,7 +1900,8 @@
             "eg-blog-grid grid grid-cols-[minmax(0,7fr)_minmax(0,5fr)] grid-rows-[minmax(0,1fr)_auto] gap-x-5 gap-y-0 items-stretch min-w-0 [@media(width<=1080px)]:grid-cols-1 [@media(width<=1080px)]:grid-rows-none [@media(width<=1080px)]:gap-y-5"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "BlogGridRow",
@@ -1876,7 +1948,8 @@
             "eg-blog-grid grid grid-cols-[minmax(0,7fr)_minmax(0,5fr)] grid-rows-[minmax(0,1fr)_auto] gap-x-5 gap-y-0 items-stretch min-w-0 [@media(width<=1080px)]:grid-cols-1 [@media(width<=1080px)]:grid-rows-none [@media(width<=1080px)]:gap-y-5"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "BlogGridRows",
@@ -1923,7 +1996,8 @@
             "eg-blog-grid grid grid-cols-[minmax(0,7fr)_minmax(0,5fr)] grid-rows-[minmax(0,1fr)_auto] gap-x-5 gap-y-0 items-stretch min-w-0 [@media(width<=1080px)]:grid-cols-1 [@media(width<=1080px)]:grid-rows-none [@media(width<=1080px)]:gap-y-5"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Button",
@@ -2017,7 +2091,8 @@
             "min-h-10 py-2 px-4 gap-2 text-label-default [font-weight:var(--text-cta-label--font-weight)]"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ButtonGroup",
@@ -2058,7 +2133,8 @@
             "flex-nowrap items-stretch gap-0.5 *:not-first:rounded-s-sm *:not-last:rounded-e-sm *:focus-visible:relative *:focus-visible:z-10"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "CalendarGrid",
@@ -2179,7 +2255,8 @@
           "name": "calendarGridWeekdayVariants",
           "classes": ["font-display text-meta uppercase text-fg-muted", "text-fg-brand-raised", ""]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Carousel",
@@ -2280,7 +2357,8 @@
           "name": "carouselVariants",
           "classes": ["eg-carousel group min-w-0 flex flex-col gap-4 font-sans text-fg-default"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ChapterBreak",
@@ -2375,7 +2453,8 @@
           "name": "chapterBreakVariants",
           "classes": ["eg-chapter-break box-border w-full font-sans text-fg-default"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Checkbox",
@@ -2471,7 +2550,8 @@
             "disabled:opacity-45 disabled:pointer-events-none disabled:cursor-not-allowed"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Chip",
@@ -2573,7 +2653,8 @@
             "pointer-coarse:min-h-11 cursor-pointer no-underline transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:border-border-hairline-strong hover:[background:var(--gradient-sheen),var(--color-surface-2)] hover:text-fg-default focus-visible:outline-none focus-visible:shadow-focus"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ChipGroup",
@@ -2670,7 +2751,8 @@
           "name": "chipGroupVariants",
           "classes": ["eg-chip-group flex flex-wrap items-center gap-2"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Closing",
@@ -2777,7 +2859,8 @@
           "name": "closingVariants",
           "classes": ["eg-closing box-border relative isolate w-full font-sans text-fg-default before:content-none"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Cluster",
@@ -2826,7 +2909,8 @@
           "name": "stackVariants",
           "classes": ["eg-stack flex min-w-0 flex-col flex-nowrap"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Collapsible",
@@ -2901,6 +2985,20 @@
           "name": "collapsibleVariants",
           "classes": ["eg-collapsible overflow-visible"]
         }
+      ],
+      "parts": [
+        {
+          "name": "CollapsibleContent",
+          "source": "packages/ui/src/molecules/collapsible/Collapsible.tsx",
+          "description": "Native hidden-shell/unmounted-children boundary; no forceMount or content animation.",
+          "children": "In-flow body; the native hidden shell/id remains closed while children unmount.\nLift persistent form state outside it. className supports outer margin/self-alignment\nonly, merged last; no id, hidden, ref, forceMount or asChild API. Opt-in regions need a name. Meaningful flow content; children remount on reopening and local state may reset."
+        },
+        {
+          "name": "CollapsibleTrigger",
+          "source": "packages/ui/src/molecules/collapsible/Collapsible.tsx",
+          "description": "Native button; the React 18-compatible bridge connects only this public part's ref.",
+          "children": ""
+        }
       ]
     },
     {
@@ -2944,7 +3042,8 @@
           "name": "collapsibleVariants",
           "classes": ["eg-collapsible overflow-visible"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "CollapsibleTrigger",
@@ -2987,7 +3086,8 @@
           "name": "collapsibleVariants",
           "classes": ["eg-collapsible overflow-visible"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "CommandPalette",
@@ -3132,7 +3232,8 @@
             "flex items-center gap-3 p-3 rounded-md font-sans text-body-default data-[selected=true]:bg-action-primary-bg-default data-[selected=true]:outline-2 data-[selected=true]:-outline-offset-2 data-[selected=true]:outline-focus-inverse data-[disabled=true]:opacity-45"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "CommunityCard",
@@ -3225,6 +3326,20 @@
             "eg-community-card flex min-w-0 flex-col items-stretch gap-0 overflow-hidden backdrop-filter-none"
           ]
         }
+      ],
+      "parts": [
+        {
+          "name": "CommunityCardAction",
+          "source": "packages/ui/src/molecules/community-card/CommunityCard.tsx",
+          "description": "Bottom-edge zone for the card's single supplied action; the card itself stays passive.",
+          "children": "Bottom-edge zone for the card's single supplied action; the card itself stays passive. Exactly one consumer `Button` (optionally `asChild` with an anchor) or `Link`. Two competing\nactions are outside the contract; the action keeps its own events, focus ring and target."
+        },
+        {
+          "name": "CommunityCardMark",
+          "source": "packages/ui/src/molecules/community-card/CommunityCard.tsx",
+          "description": "Decorative consumer mark slot on the trailing edge of the header band's top row.",
+          "children": "Decorative consumer mark slot on the trailing edge of the header band's top row. Exactly one consumer-supplied, non-interactive mark element: no anchor, button or tab stop.\nEither named — `role=\"img\"` with `aria-label`, or `img` with `alt` — so it joins the card\ncontent, or decorative — `img` with `alt=\"\"` or `aria-hidden` — when the mark repeats the\nvisible name, so the card is not announced twice. Non-image marks must fit within 153.6 ×\n51.2 CSS pixels without distortion; consumers own this constraint and the slot does not clip.\nNot type-enforced; rendered untouched."
+        }
       ]
     },
     {
@@ -3294,7 +3409,8 @@
             "eg-community-card flex min-w-0 flex-col items-stretch gap-0 overflow-hidden backdrop-filter-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "CommunityCardMark",
@@ -3363,7 +3479,8 @@
             "eg-community-card flex min-w-0 flex-col items-stretch gap-0 overflow-hidden backdrop-filter-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Countdown",
@@ -3490,7 +3607,8 @@
             "text-fg-default"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Dialog",
@@ -3585,6 +3703,26 @@
           "name": "dialogTitleVariants",
           "classes": ["font-display uppercase text-heading-small text-fg-default"]
         }
+      ],
+      "parts": [
+        {
+          "name": "DialogClose",
+          "source": "packages/ui/src/molecules/dialog/Dialog.tsx",
+          "description": "Explicit close action.",
+          "children": ""
+        },
+        {
+          "name": "DialogContent",
+          "source": "packages/ui/src/molecules/dialog/Dialog.tsx",
+          "description": "Body-portalled modal panel with an owned accessible title and optional description.",
+          "children": ""
+        },
+        {
+          "name": "DialogTrigger",
+          "source": "packages/ui/src/molecules/dialog/Dialog.tsx",
+          "description": "Optional native or slotted disclosure button.",
+          "children": ""
+        }
       ]
     },
     {
@@ -3664,7 +3802,8 @@
           "name": "dialogTitleVariants",
           "classes": ["font-display uppercase text-heading-small text-fg-default"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "DialogContent",
@@ -3791,7 +3930,8 @@
           "name": "dialogTitleVariants",
           "classes": ["font-display uppercase text-heading-small text-fg-default"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "DialogTrigger",
@@ -3870,7 +4010,8 @@
           "name": "dialogTitleVariants",
           "classes": ["font-display uppercase text-heading-small text-fg-default"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Divider",
@@ -3913,7 +4054,8 @@
             "data-[orientation=vertical]:bg-border-brand"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Dropzone",
@@ -3978,7 +4120,8 @@
             "flex-row gap-2.5 min-h-14 w-full"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Field",
@@ -4089,7 +4232,8 @@
             "grid grid-cols-[auto_1fr] items-center gap-x-2 gap-y-1 min-h-9 pointer-coarse:min-h-11"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "FieldMessage",
@@ -4141,7 +4285,8 @@
             "text-status-danger"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Footer",
@@ -4203,6 +4348,38 @@
           "classes": [
             "eg-footer relative box-border p-0 pb-8 font-sans text-fg-default border-t-[length:var(--border-width)] [border-top-style:solid] border-t-border-hairline border-b-[length:var(--border-width)] [border-bottom-style:solid] border-b-border-hairline"
           ]
+        }
+      ],
+      "parts": [
+        {
+          "name": "FooterBrand",
+          "source": "packages/ui/src/organisms/footer/Footer.tsx",
+          "description": "Consumer-owned brand and optional tagline.",
+          "children": "Brand identity and optional tagline. Named brand element and optional descriptive copy, without nested anchors. The consumer owns\nlink contrast and target size (44px recommended); Footer sizes its own navigation links to 44px."
+        },
+        {
+          "name": "FooterLegal",
+          "source": "packages/ui/src/organisms/footer/Footer.tsx",
+          "description": "Consumer legal and credit row.",
+          "children": "Consumer legal and credit content in reading order. Legal text and optional links supplied by the host. The consumer owns link contrast and target\nsize (44px recommended); Footer sizes its own navigation links to 44px."
+        },
+        {
+          "name": "FooterMotto",
+          "source": "packages/ui/src/organisms/footer/Footer.tsx",
+          "description": "Non-interactive motto stage.",
+          "children": "Motto stage containing one non-interactive consumer Text element. One non-interactive Text element, including any consumer-owned accent."
+        },
+        {
+          "name": "FooterNavigation",
+          "source": "packages/ui/src/organisms/footer/Footer.tsx",
+          "description": "Named section navigation with the Footer-local link target exception.",
+          "children": "Section navigation with a visible heading and ordered destinations."
+        },
+        {
+          "name": "FooterSocial",
+          "source": "packages/ui/src/organisms/footer/Footer.tsx",
+          "description": "Social heading and separately named list supplied by the consumer.",
+          "children": "Consumer social heading and named SocialLinks list. Consumer heading and configured SocialLinks; use a list label and caption={null}. The consumer\nowns link contrast and target size (44px recommended); Footer sizes its own navigation links to 44px."
         }
       ]
     },
@@ -4267,7 +4444,8 @@
             "eg-footer relative box-border p-0 pb-8 font-sans text-fg-default border-t-[length:var(--border-width)] [border-top-style:solid] border-t-border-hairline border-b-[length:var(--border-width)] [border-bottom-style:solid] border-b-border-hairline"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "FooterLegal",
@@ -4330,7 +4508,8 @@
             "eg-footer relative box-border p-0 pb-8 font-sans text-fg-default border-t-[length:var(--border-width)] [border-top-style:solid] border-t-border-hairline border-b-[length:var(--border-width)] [border-bottom-style:solid] border-b-border-hairline"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "FooterMotto",
@@ -4393,7 +4572,8 @@
             "eg-footer relative box-border p-0 pb-8 font-sans text-fg-default border-t-[length:var(--border-width)] [border-top-style:solid] border-t-border-hairline border-b-[length:var(--border-width)] [border-bottom-style:solid] border-b-border-hairline"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "FooterNavigation",
@@ -4472,7 +4652,8 @@
             "eg-footer relative box-border p-0 pb-8 font-sans text-fg-default border-t-[length:var(--border-width)] [border-top-style:solid] border-t-border-hairline border-b-[length:var(--border-width)] [border-bottom-style:solid] border-b-border-hairline"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "FooterSocial",
@@ -4535,7 +4716,8 @@
             "eg-footer relative box-border p-0 pb-8 font-sans text-fg-default border-t-[length:var(--border-width)] [border-top-style:solid] border-t-border-hairline border-b-[length:var(--border-width)] [border-bottom-style:solid] border-b-border-hairline"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Gauge",
@@ -4642,7 +4824,8 @@
             "eg-gauge inline-flex h-auto w-auto flex-col items-center gap-2 rounded-none bg-transparent shadow-none hover:shadow-none transition-none cursor-default font-sans text-label-default text-fg-default"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "GaugeGroup",
@@ -4729,7 +4912,8 @@
           "name": "groupValueVariants",
           "classes": ["text-body-default"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Heading",
@@ -4809,7 +4993,8 @@
           "name": "textVariants",
           "classes": ["eg-text m-0 font-display uppercase wrap-break-word"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Hero",
@@ -4932,7 +5117,8 @@
             ""
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "HomeTemplate",
@@ -4993,7 +5179,8 @@
           "name": "vignetteVariants",
           "classes": ["fixed inset-0 z-0 pointer-events-none bg-[image:var(--gradient-vignette)]"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "HomeTemplateAnchor",
@@ -5038,7 +5225,8 @@
           "name": "vignetteVariants",
           "classes": ["fixed inset-0 z-0 pointer-events-none bg-[image:var(--gradient-vignette)]"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Icon",
@@ -5090,7 +5278,8 @@
             "fill-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "IconButton",
@@ -5173,7 +5362,8 @@
             "size-12"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Indicator",
@@ -5290,7 +5480,8 @@
           "name": "indicatorRootVariants",
           "classes": ["eg-indicator relative inline-flex align-middle overflow-visible"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Input",
@@ -5372,7 +5563,8 @@
             "eg-input relative flex w-full items-center has-[:disabled]:pointer-events-none has-[:disabled]:opacity-45"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Isotipo3D",
@@ -5491,7 +5683,8 @@
           "name": "isotipoSvgVariants",
           "classes": ["absolute inset-0 h-full w-full", "block", "hidden"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Kbd",
@@ -5522,7 +5715,8 @@
             "eg-kbd inline-block whitespace-nowrap rounded-sm border border-border-subtle px-1.5 py-0.5 font-sans text-label-default text-fg-secondary"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "LabStage",
@@ -5629,7 +5823,8 @@
           "name": "labStageVariants",
           "classes": ["eg-lab box-border relative h-auto w-full font-sans text-fg-default"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Label",
@@ -5662,7 +5857,8 @@
             "font-[var(--text-body-default--font-weight)]"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Link",
@@ -5741,7 +5937,8 @@
             "border-b border-border-brand pb-0.5 hover:border-fg-brand-default"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ListItem",
@@ -5863,6 +6060,62 @@
             "data-[state=empty]:disabled:opacity-45 data-[state=empty]:disabled:pointer-events-none data-[state=empty]:disabled:cursor-not-allowed"
           ]
         }
+      ],
+      "parts": [
+        {
+          "name": "ListItemActions",
+          "source": "packages/ui/src/molecules/list-item/ListItem.tsx",
+          "description": "Independent trailing controls; no item-wide activation or primary navigation region.",
+          "children": "Compound div attributes. className supports local alignment, placement and width constraints,\nnot appearance, hidden content or reordering. No ref, own role or tab stop is exposed."
+        },
+        {
+          "name": "ListItemBody",
+          "source": "packages/ui/src/molecules/list-item/ListItem.tsx",
+          "description": "Leading content, optional host handle and passive media grouping.",
+          "children": "Compound div attributes. className supports local alignment, placement and width constraints,\nnot appearance, hidden content or reordering. No ref, own role or tab stop is exposed."
+        },
+        {
+          "name": "ListItemContent",
+          "source": "packages/ui/src/molecules/list-item/ListItem.tsx",
+          "description": "Flexible readable content; never automatically clamped or hidden.",
+          "children": "Compound div attributes. className supports local alignment, placement and width constraints,\nnot appearance, hidden content or reordering. No ref, own role or tab stop is exposed."
+        },
+        {
+          "name": "ListItemFooter",
+          "source": "packages/ui/src/molecules/list-item/ListItem.tsx",
+          "description": "Wrapping metadata/action band for card and compact compositions.",
+          "children": "Compound div attributes. className supports local alignment, placement and width constraints,\nnot appearance, hidden content or reordering. No ref, own role or tab stop is exposed."
+        },
+        {
+          "name": "ListItemLeading",
+          "source": "packages/ui/src/molecules/list-item/ListItem.tsx",
+          "description": "Optional editorial leading zone: a dated time stamp, index or short label; no controls.",
+          "children": "Compound div attributes. className supports local alignment, placement and width constraints,\nnot appearance, hidden content or reordering. No ref, own role or tab stop is exposed."
+        },
+        {
+          "name": "ListItemMedia",
+          "source": "packages/ui/src/molecules/list-item/ListItem.tsx",
+          "description": "Passive square thumbnail well; consumers own image alt and poster content.",
+          "children": "Compound div attributes. className supports local alignment, placement and width constraints,\nnot appearance, hidden content or reordering. No ref, own role or tab stop is exposed."
+        },
+        {
+          "name": "ListItemMeta",
+          "source": "packages/ui/src/molecules/list-item/ListItem.tsx",
+          "description": "Non-interactive context and visible status text.",
+          "children": "Compound div attributes. className supports local alignment, placement and width constraints,\nnot appearance, hidden content or reordering. No ref, own role or tab stop is exposed."
+        },
+        {
+          "name": "ListItemTitle",
+          "source": "packages/ui/src/molecules/list-item/ListItem.tsx",
+          "description": "Editorial row title; level picks the native heading rank h2–h6 independently of typography.",
+          "children": "Editorial title zone: renders a real h2–h6 chosen by level, forwards native heading attributes\nfor that element and merges className last for local placement. No ref, own role or tab stop. One heading text node; the consumer supplies a rank that fits the surrounding outline."
+        },
+        {
+          "name": "ListItemTrailing",
+          "source": "packages/ui/src/molecules/list-item/ListItem.tsx",
+          "description": "Optional editorial trailing zone: a decorative icon or readable text such as a duration.",
+          "children": "Compound div attributes. className supports local alignment, placement and width constraints,\nnot appearance, hidden content or reordering. No ref, own role or tab stop is exposed."
+        }
       ]
     },
     {
@@ -5944,7 +6197,8 @@
             "data-[state=empty]:disabled:opacity-45 data-[state=empty]:disabled:pointer-events-none data-[state=empty]:disabled:cursor-not-allowed"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ListItemBody",
@@ -6025,7 +6279,8 @@
             "data-[state=empty]:disabled:opacity-45 data-[state=empty]:disabled:pointer-events-none data-[state=empty]:disabled:cursor-not-allowed"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ListItemContent",
@@ -6106,7 +6361,8 @@
             "data-[state=empty]:disabled:opacity-45 data-[state=empty]:disabled:pointer-events-none data-[state=empty]:disabled:cursor-not-allowed"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ListItemFooter",
@@ -6187,7 +6443,8 @@
             "data-[state=empty]:disabled:opacity-45 data-[state=empty]:disabled:pointer-events-none data-[state=empty]:disabled:cursor-not-allowed"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ListItemLeading",
@@ -6268,7 +6525,8 @@
             "data-[state=empty]:disabled:opacity-45 data-[state=empty]:disabled:pointer-events-none data-[state=empty]:disabled:cursor-not-allowed"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ListItemMedia",
@@ -6349,7 +6607,8 @@
             "data-[state=empty]:disabled:opacity-45 data-[state=empty]:disabled:pointer-events-none data-[state=empty]:disabled:cursor-not-allowed"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ListItemMeta",
@@ -6430,7 +6689,8 @@
             "data-[state=empty]:disabled:opacity-45 data-[state=empty]:disabled:pointer-events-none data-[state=empty]:disabled:cursor-not-allowed"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ListItemTitle",
@@ -6528,7 +6788,8 @@
             "data-[state=empty]:disabled:opacity-45 data-[state=empty]:disabled:pointer-events-none data-[state=empty]:disabled:cursor-not-allowed"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ListItemTrailing",
@@ -6609,7 +6870,8 @@
             "data-[state=empty]:disabled:opacity-45 data-[state=empty]:disabled:pointer-events-none data-[state=empty]:disabled:cursor-not-allowed"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "LiveBandField",
@@ -6654,7 +6916,8 @@
           "name": "liveBandVodVariants",
           "classes": ["block min-w-0 focus-visible:outline-none focus-visible:shadow-focus"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "LiveBandList",
@@ -6699,7 +6962,8 @@
           "name": "liveBandVodVariants",
           "classes": ["block min-w-0 focus-visible:outline-none focus-visible:shadow-focus"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "LiveBandRow",
@@ -6744,7 +7008,8 @@
           "name": "liveBandVodVariants",
           "classes": ["block min-w-0 focus-visible:outline-none focus-visible:shadow-focus"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "LiveBandRows",
@@ -6789,7 +7054,8 @@
           "name": "liveBandVodVariants",
           "classes": ["block min-w-0 focus-visible:outline-none focus-visible:shadow-focus"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "LiveBandStreams",
@@ -6834,7 +7100,8 @@
           "name": "liveBandVodVariants",
           "classes": ["block min-w-0 focus-visible:outline-none focus-visible:shadow-focus"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "LiveBandVod",
@@ -6887,7 +7154,8 @@
           "name": "liveBandVodVariants",
           "classes": ["block min-w-0 focus-visible:outline-none focus-visible:shadow-focus"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Logo",
@@ -6943,7 +7211,8 @@
             ""
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Menu",
@@ -7094,7 +7363,8 @@
             "eg-menu min-w-57.5 max-h-[var(--radix-dropdown-menu-content-available-height)] overflow-y-auto p-2 font-sans text-fg-secondary transition-[opacity,translate] duration-[var(--duration-fast)] ease-[var(--ease-out)] starting:opacity-0 motion-safe:starting:-translate-y-1.5 motion-reduce:transition-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "MeterRow",
@@ -7183,7 +7453,8 @@
           "name": "meterRowVariants",
           "classes": ["eg-meter-row flex flex-col min-w-0 gap-2 font-sans"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ModuleCard",
@@ -7333,7 +7604,8 @@
             "data-[state=stopped]:border-dashed data-[state=stopped]:border-border-control"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ModuleRail",
@@ -7436,7 +7708,8 @@
           "name": "railStoppedVariants",
           "classes": ["[&_.eg-icon]:opacity-45"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "NavList",
@@ -7534,7 +7807,8 @@
           "name": "navListWarningVariants",
           "classes": ["size-4 text-status-warning"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "NotesBoard",
@@ -7577,6 +7851,20 @@
             "eg-notes grid grid-cols-[minmax(0,4fr)_minmax(0,7fr)] gap-10 items-start [@media(width<=1080px)]:grid-cols-1 [@media(width<=1080px)]:gap-8"
           ]
         }
+      ],
+      "parts": [
+        {
+          "name": "NotesBoardList",
+          "source": "packages/ui/src/organisms/notes-board/NotesBoard.tsx",
+          "description": "Consumer-ordered list of linked notes.",
+          "children": ""
+        },
+        {
+          "name": "NotesBoardSide",
+          "source": "packages/ui/src/organisms/notes-board/NotesBoard.tsx",
+          "description": "Introduction and optional static topics.",
+          "children": ""
+        }
       ]
     },
     {
@@ -7612,7 +7900,8 @@
             "eg-notes grid grid-cols-[minmax(0,4fr)_minmax(0,7fr)] gap-10 items-start [@media(width<=1080px)]:grid-cols-1 [@media(width<=1080px)]:gap-8"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "NotesBoardSide",
@@ -7647,7 +7936,8 @@
             "eg-notes grid grid-cols-[minmax(0,4fr)_minmax(0,7fr)] gap-10 items-start [@media(width<=1080px)]:grid-cols-1 [@media(width<=1080px)]:gap-8"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Notice",
@@ -7733,7 +8023,8 @@
           "name": "noticeTextVariants",
           "classes": ["min-w-0 grow basis-[calc(var(--space-24)*2.5)]"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "NowCard",
@@ -7828,6 +8119,26 @@
             ""
           ]
         }
+      ],
+      "parts": [
+        {
+          "name": "NowCardBody",
+          "source": "packages/ui/src/molecules/now-card/NowCard.tsx",
+          "description": "Padded growing zone for the consumer-supplied copy.",
+          "children": "Padded growing zone for the consumer-supplied copy; no interactive content, no badge slot. One or two short paragraphs. No controls, no links, no status badge: the card renders the\nconsumer's statusBadge slot itself, before the heading."
+        },
+        {
+          "name": "NowCardDetail",
+          "source": "packages/ui/src/molecules/now-card/NowCard.tsx",
+          "description": "Supporting date or context line with the consumer-marked emphasized value.",
+          "children": "Supporting date or context line with an emphasized value; no controls. One short visible sentence; mark the value with <b> (for example a real <time dateTime> inside it)."
+        },
+        {
+          "name": "NowCardFooter",
+          "source": "packages/ui/src/molecules/now-card/NowCard.tsx",
+          "description": "Lower band for one supporting detail and/or one action.",
+          "children": "Lower band for one supporting detail and/or one action (a Link or a labelled IconButton);\nnever two competing actions. One NowCardDetail and/or one Link/IconButton. Omit the part entirely when the card has no footer."
+        }
       ]
     },
     {
@@ -7899,7 +8210,8 @@
             ""
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "NowCardDetail",
@@ -7970,7 +8282,8 @@
             ""
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "NowCardFooter",
@@ -8041,7 +8354,8 @@
             ""
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "NowStrip",
@@ -8080,7 +8394,8 @@
             "eg-now-strip m-0 pb-6 border-b-[length:var(--border-width)] [border-bottom-style:solid] border-b-border-hairline"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "PageHeader",
@@ -8141,7 +8456,8 @@
           "name": "pageHeaderVariants",
           "classes": ["eg-page-header flex min-w-0 flex-wrap items-center justify-between gap-x-6 gap-y-4"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Panel",
@@ -8199,6 +8515,26 @@
             "border-0 border-solid bg-transparent bg-none shadow-none backdrop-filter-none"
           ]
         }
+      ],
+      "parts": [
+        {
+          "name": "PanelBody",
+          "source": "packages/ui/src/molecules/panel/Panel.tsx",
+          "description": "Transparent main-content zone; controls retain their native or Radix behavior.",
+          "children": "Required transparent main-content zone; child controls own their behavior. Free flow content and independently labelled consumer controls."
+        },
+        {
+          "name": "PanelFooter",
+          "source": "packages/ui/src/molecules/panel/Panel.tsx",
+          "description": "Supplied supplementary metadata/utility zone, not a footer landmark.",
+          "children": "Supplementary metadata/utility zone, not a page-footer landmark. Supplied metadata and related utility controls. Omit the part when absent."
+        },
+        {
+          "name": "PanelHeader",
+          "source": "packages/ui/src/molecules/panel/Panel.tsx",
+          "description": "Supplied identity/context, without generated heading semantics.",
+          "children": "Supplied identity/context zone; no generated heading or landmark. Meaningful supplied header content. Omit the part itself when it is not needed."
+        }
       ]
     },
     {
@@ -8241,7 +8577,8 @@
             "border-0 border-solid bg-transparent bg-none shadow-none backdrop-filter-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "PanelFooter",
@@ -8283,7 +8620,8 @@
             "border-0 border-solid bg-transparent bg-none shadow-none backdrop-filter-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "PanelHeader",
@@ -8325,7 +8663,8 @@
             "border-0 border-solid bg-transparent bg-none shadow-none backdrop-filter-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "PhotoFrame",
@@ -8432,7 +8771,8 @@
           "name": "photoFrameViewportVariants",
           "classes": ["size-full overflow-hidden", "rounded-xl", "rounded-lg"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Pixel",
@@ -8458,7 +8798,8 @@
             "bg-fg-brand-default"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Popover",
@@ -8527,6 +8868,26 @@
             "focus-visible:outline-2 focus-visible:outline-focus-ring focus-visible:outline-offset-2"
           ]
         }
+      ],
+      "parts": [
+        {
+          "name": "PopoverClose",
+          "source": "packages/ui/src/molecules/popover/Popover.tsx",
+          "description": "Explicit named dismissal action; optionally compose a button-compatible child.",
+          "children": ""
+        },
+        {
+          "name": "PopoverContent",
+          "source": "packages/ui/src/molecules/popover/Popover.tsx",
+          "description": "Internally portalled named dialog on the existing Surface overlay treatment.",
+          "children": "Named dialog. className supports outer dimensions, margins and alignment only, not Material paint. Consumer-owned body, field labels and visible Close action; no generated heading or form."
+        },
+        {
+          "name": "PopoverTrigger",
+          "source": "packages/ui/src/molecules/popover/Popover.tsx",
+          "description": "Named button that toggles the associated dialog; optionally compose an existing Button.",
+          "children": ""
+        }
       ]
     },
     {
@@ -8572,7 +8933,8 @@
             "focus-visible:outline-2 focus-visible:outline-focus-ring focus-visible:outline-offset-2"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "PopoverContent",
@@ -8641,7 +9003,8 @@
             "focus-visible:outline-2 focus-visible:outline-focus-ring focus-visible:outline-offset-2"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "PopoverTrigger",
@@ -8686,7 +9049,8 @@
             "focus-visible:outline-2 focus-visible:outline-focus-ring focus-visible:outline-offset-2"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Portal",
@@ -8710,7 +9074,8 @@
           "deprecated": false
         }
       ],
-      "variants": []
+      "variants": [],
+      "parts": []
     },
     {
       "name": "PreviewFrame",
@@ -8825,7 +9190,8 @@
             "border-status-warning bg-status-warning/10"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ProgressBar",
@@ -8905,7 +9271,8 @@
             "rounded-[var(--radius-sm)] bg-border-subtle"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ProjectCard",
@@ -9050,6 +9417,38 @@
             "gap-3 p-3"
           ]
         }
+      ],
+      "parts": [
+        {
+          "name": "ProjectCardBackdrop",
+          "source": "packages/ui/src/molecules/project-card/ProjectCard.tsx",
+          "description": "Decorative backdrop; supply a single image with empty alt.",
+          "children": "Decorative backdrop: supply one non-interactive image with empty alt. Layout classes only.\nConsumers own legibility: the single 42% scrim guarantees contrast only for dark or\nlow-contrast images, so choose a backdrop that keeps the heading and eyebrow readable."
+        },
+        {
+          "name": "ProjectCardCode",
+          "source": "packages/ui/src/molecules/project-card/ProjectCard.tsx",
+          "description": "Sample command block in a labelled mono well; passive text, never executable or focusable.",
+          "children": "Sample command block in a labelled mono well; passive text, never executable or focusable."
+        },
+        {
+          "name": "ProjectCardFooter",
+          "source": "packages/ui/src/molecules/project-card/ProjectCard.tsx",
+          "description": "Footer zone for the card's single supplied action; the card itself stays passive.",
+          "children": "Footer zone for the card's single action; the consumer supplies exactly one Link or Button. One supplied action; the card itself stays passive and adds no tab stop of its own."
+        },
+        {
+          "name": "ProjectCardMark",
+          "source": "packages/ui/src/molecules/project-card/ProjectCard.tsx",
+          "description": "Trailing non-interactive mark.",
+          "children": "Trailing non-interactive mark: supply a named image or a decorative repeated mark. Layout classes only."
+        },
+        {
+          "name": "ProjectCardTags",
+          "source": "packages/ui/src/molecules/project-card/ProjectCard.tsx",
+          "description": "Ordered technology labels rendered as one static Chip per list item.",
+          "children": "Ordered technology labels rendered as one static Chip per list item."
+        }
       ]
     },
     {
@@ -9130,7 +9529,8 @@
             "gap-3 p-3"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ProjectCardCode",
@@ -9235,7 +9635,8 @@
             "gap-3 p-3"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ProjectCardFooter",
@@ -9332,7 +9733,8 @@
             "gap-3 p-3"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ProjectCardMark",
@@ -9412,7 +9814,8 @@
             "gap-3 p-3"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ProjectCardTags",
@@ -9509,7 +9912,8 @@
             "gap-3 p-3"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "PullQuote",
@@ -9586,7 +9990,8 @@
             "gap-5.5 max-w-none border-0 p-0"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "RadioGroup",
@@ -9666,7 +10071,8 @@
           "deprecated": false
         }
       ],
-      "variants": []
+      "variants": [],
+      "parts": []
     },
     {
       "name": "ScrollReveal",
@@ -9707,7 +10113,8 @@
             "box-border transition-[clip-path] duration-[var(--duration-wipe)] ease-[var(--ease-out)] delay-[var(--eg-scroll-reveal-delay)] motion-reduce:transition-none focus-within:transition-none data-[state=hidden]:[clip-path:inset(-10%_100%_-10%_0)] data-[state=revealed]:[clip-path:inset(-10%_-2%_-10%_0)] [&[data-done]]:[clip-path:none]"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "SearchTrigger",
@@ -9759,7 +10166,8 @@
             "min-w-0 w-10 pointer-coarse:w-11 p-0 justify-center"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "SectionHeader",
@@ -9870,7 +10278,8 @@
             "grid grid-cols-[minmax(0,auto)_minmax(0,1fr)] items-center gap-6"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "SectionNav",
@@ -9993,7 +10402,8 @@
             "flex items-center gap-3 border-0 bg-transparent p-0 font-sans text-body-default text-fg-default cursor-pointer min-w-14 min-h-14 [@media(width<=520px)]:min-w-14 [@media(width<=520px)]:min-h-14 motion-reduce:transition-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "SectionShell",
@@ -10043,7 +10453,8 @@
           "name": "sectionShellWrapVariants",
           "classes": ["eg-section__wrap box-border w-full max-w-[var(--content-max)] mx-auto px-[var(--gutter)]"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Select",
@@ -10164,7 +10575,8 @@
           "name": "selectViewportVariants",
           "classes": ["max-h-[var(--radix-select-content-available-height)]"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "SelectTile",
@@ -10260,7 +10672,8 @@
           "deprecated": false
         }
       ],
-      "variants": []
+      "variants": [],
+      "parts": []
     },
     {
       "name": "Sidebar",
@@ -10329,7 +10742,8 @@
           "name": "sidebarViewportVariants",
           "classes": ["size-full"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Skeleton",
@@ -10385,7 +10799,8 @@
             "size-16"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Slider",
@@ -10502,21 +10917,24 @@
             "eg-slider relative flex w-full items-center h-6 pointer-coarse:h-11 touch-none select-none data-[disabled]:opacity-45 data-[disabled]:pointer-events-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Slot",
       "package": "@egdev/ui",
       "source": "packages/ui/src/index.ts",
       "props": [],
-      "variants": []
+      "variants": [],
+      "parts": []
     },
     {
       "name": "Slottable",
       "package": "@egdev/ui",
       "source": "packages/ui/src/index.ts",
       "props": [],
-      "variants": []
+      "variants": [],
+      "parts": []
     },
     {
       "name": "SocialLinks",
@@ -10605,7 +11023,8 @@
           "name": "socialLinksVariants",
           "classes": ["eg-social min-w-0"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Spinner",
@@ -10640,7 +11059,8 @@
           "name": "spinnerVariants",
           "classes": ["eg-spinner inline-flex shrink-0", "size-4", "size-(--icon-size)", "size-7"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Stack",
@@ -10689,7 +11109,8 @@
           "name": "stackVariants",
           "classes": ["eg-stack flex min-w-0 flex-col flex-nowrap"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Stat",
@@ -10776,7 +11197,8 @@
             "gap-1 px-3 py-2.5"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "StatusDot",
@@ -10817,7 +11239,8 @@
             "motion-safe:animate-[eg-status-dot-pulse_2.4s_var(--ease-out)_infinite]"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Surface",
@@ -10896,7 +11319,8 @@
             "border-border-hairline-strong shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)]"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Switch",
@@ -10979,7 +11403,8 @@
             "disabled:opacity-45 disabled:pointer-events-none disabled:cursor-not-allowed"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "TabBar",
@@ -11055,7 +11480,8 @@
             "eg-tabbar box-border block w-full pt-1.5 px-2 pb-[max(var(--space-5),env(safe-area-inset-bottom))] font-sans"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Table",
@@ -11276,7 +11702,8 @@
           "name": "thumbVariants",
           "classes": ["relative flex-1 bg-border-control rounded-full"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Tabs",
@@ -11383,7 +11810,8 @@
           "name": "tabsVariants",
           "classes": ["eg-tabs flex flex-col gap-0 border-0 overflow-visible"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "TerminalCard",
@@ -11453,6 +11881,20 @@
         {
           "name": "terminalCardVariants",
           "classes": ["eg-terminal-card flex flex-col min-w-0 overflow-hidden"]
+        }
+      ],
+      "parts": [
+        {
+          "name": "TerminalCardBar",
+          "source": "packages/ui/src/molecules/terminal-card/TerminalCard.tsx",
+          "description": "Title bar with the decorative terminal glyph, the supplied path and an optional shell.",
+          "children": "Title bar showing the current path and, optionally, the shell name on the trailing edge.\nNo ref or asChild API; className supports local layout only. The path text shown after the decorative glyph; plain text, `span` or `code`. Controls\nare not acceptable bar content."
+        },
+        {
+          "name": "TerminalCardList",
+          "source": "packages/ui/src/molecules/terminal-card/TerminalCard.tsx",
+          "description": "Ordered definition pairs as a two-column `dl`; carets stay decorative and unannounced.",
+          "children": "Ordered definition pairs rendered as `dl` > `dt`/`dd`. No controls, no links and no nested\nlists. No ref or asChild API; className supports local layout only."
         }
       ]
     },
@@ -11525,7 +11967,8 @@
           "name": "terminalCardVariants",
           "classes": ["eg-terminal-card flex flex-col min-w-0 overflow-hidden"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "TerminalCardList",
@@ -11588,7 +12031,8 @@
           "name": "terminalCardVariants",
           "classes": ["eg-terminal-card flex flex-col min-w-0 overflow-hidden"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Text",
@@ -11668,7 +12112,8 @@
           "name": "textVariants",
           "classes": ["eg-text m-0 font-display uppercase wrap-break-word"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Textarea",
@@ -11694,7 +12139,8 @@
             "min-h-70 p-5 font-sans text-body-default border-border-hairline bg-surface-1 bg-[image:var(--gradient-sheen)] shadow-[var(--shadow-edge),var(--shadow-elev-1)] focus-visible:shadow-[var(--shadow-edge),var(--shadow-elev-1),var(--shadow-glow-base),var(--shadow-focus)]"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Timeline",
@@ -11840,7 +12286,8 @@
             "max-h-[calc(var(--space-24)*4)]"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "TipCard",
@@ -11919,7 +12366,8 @@
             "eg-tip-card flex min-w-0 flex-col gap-3 transform-none transition-none opacity-100 transform-flat"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "ToastProvider",
@@ -11994,7 +12442,8 @@
             "bottom-6 end-6"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Toggle",
@@ -12082,7 +12531,8 @@
             "size-12"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "Tooltip",
@@ -12137,7 +12587,8 @@
             "motion-reduce:transition-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "TopBar",
@@ -12236,6 +12687,38 @@
             "[@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:bg-surface-2 [@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:[backdrop-filter:none] [@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:[-webkit-backdrop-filter:none] motion-reduce:transition-none"
           ]
         }
+      ],
+      "parts": [
+        {
+          "name": "TopBarBrand",
+          "source": "packages/ui/src/organisms/top-bar/TopBar.tsx",
+          "description": "Consumer-supplied named home link.",
+          "children": "Each part accepts a single consumer-owned named link or control. Consumer-supplied content."
+        },
+        {
+          "name": "TopBarMobileTrigger",
+          "source": "packages/ui/src/organisms/top-bar/TopBar.tsx",
+          "description": "Consumer-supplied mobile dialog trigger.",
+          "children": "Each part accepts a single consumer-owned named link or control. Consumer-supplied content."
+        },
+        {
+          "name": "TopBarSearchCompact",
+          "source": "packages/ui/src/organisms/top-bar/TopBar.tsx",
+          "description": "Compact search launcher.",
+          "children": "Each part accepts a single consumer-owned named link or control. Consumer-supplied content."
+        },
+        {
+          "name": "TopBarSearchFull",
+          "source": "packages/ui/src/organisms/top-bar/TopBar.tsx",
+          "description": "Full-width search launcher.",
+          "children": "Each part accepts a single consumer-owned named link or control. Consumer-supplied content."
+        },
+        {
+          "name": "TopBarUserMenu",
+          "source": "packages/ui/src/organisms/top-bar/TopBar.tsx",
+          "description": "Consumer-supplied account control.",
+          "children": "Each part accepts a single consumer-owned named link or control. Consumer-supplied content."
+        }
       ]
     },
     {
@@ -12294,7 +12777,8 @@
             "[@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:bg-surface-2 [@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:[backdrop-filter:none] [@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:[-webkit-backdrop-filter:none] motion-reduce:transition-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "TopBarMobileTrigger",
@@ -12352,7 +12836,8 @@
             "[@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:bg-surface-2 [@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:[backdrop-filter:none] [@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:[-webkit-backdrop-filter:none] motion-reduce:transition-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "TopBarSearchCompact",
@@ -12410,7 +12895,8 @@
             "[@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:bg-surface-2 [@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:[backdrop-filter:none] [@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:[-webkit-backdrop-filter:none] motion-reduce:transition-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "TopBarSearchFull",
@@ -12468,7 +12954,8 @@
             "[@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:bg-surface-2 [@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:[backdrop-filter:none] [@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:[-webkit-backdrop-filter:none] motion-reduce:transition-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "TopBarUserMenu",
@@ -12526,7 +13013,8 @@
             "[@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:bg-surface-2 [@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:[backdrop-filter:none] [@media(prefers-reduced-transparency:reduce)]:data-[state=glass]:[-webkit-backdrop-filter:none] motion-reduce:transition-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "VisuallyHidden",
@@ -12550,7 +13038,8 @@
           "deprecated": false
         }
       ],
-      "variants": []
+      "variants": [],
+      "parts": []
     },
     {
       "name": "WebSection",
@@ -12603,7 +13092,8 @@
           "name": "webSectionVariants",
           "classes": ["eg-web-section"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "WebTemplate",
@@ -12652,14 +13142,16 @@
           "name": "webTemplateVariants",
           "classes": ["eg-web-template"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "appShellVariants",
       "package": "@egdev/ui",
       "source": "packages/ui/src/templates/app-shell/types.ts",
       "props": [],
-      "variants": []
+      "variants": [],
+      "parts": []
     },
     {
       "name": "badgeVariants",
@@ -12697,7 +13189,8 @@
             "bg-action-primary-solid-bg text-action-primary-solid-fg"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "calendarGridVariants",
@@ -12761,7 +13254,8 @@
           "name": "calendarGridWeekdayVariants",
           "classes": ["font-display text-meta uppercase text-fg-muted", "text-fg-brand-raised", ""]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "chipVariants",
@@ -12782,14 +13276,16 @@
             "pointer-coarse:min-h-11 cursor-pointer no-underline transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] hover:border-border-hairline-strong hover:[background:var(--gradient-sheen),var(--color-surface-2)] hover:text-fg-default focus-visible:outline-none focus-visible:shadow-focus"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "cn",
       "package": "@egdev/ui",
       "source": "packages/ui/src/lib/cn.ts",
       "props": [],
-      "variants": []
+      "variants": [],
+      "parts": []
     },
     {
       "name": "dropzoneVariants",
@@ -12805,7 +13301,8 @@
             "flex-row gap-2.5 min-h-14 w-full"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "footerHeadingVariants",
@@ -12859,7 +13356,8 @@
             "eg-footer relative box-border p-0 pb-8 font-sans text-fg-default border-t-[length:var(--border-width)] [border-top-style:solid] border-t-border-hairline border-b-[length:var(--border-width)] [border-bottom-style:solid] border-b-border-hairline"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "labelVariants",
@@ -12875,7 +13373,8 @@
             "font-[var(--text-body-default--font-weight)]"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "menuVariants",
@@ -12945,7 +13444,8 @@
             "eg-menu min-w-57.5 max-h-[var(--radix-dropdown-menu-content-available-height)] overflow-y-auto p-2 font-sans text-fg-secondary transition-[opacity,translate] duration-[var(--duration-fast)] ease-[var(--ease-out)] starting:opacity-0 motion-safe:starting:-translate-y-1.5 motion-reduce:transition-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "moduleRailVariants",
@@ -12991,7 +13491,8 @@
           "name": "railStoppedVariants",
           "classes": ["[&_.eg-icon]:opacity-45"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "navListVariants",
@@ -13064,7 +13565,8 @@
           "name": "navListWarningVariants",
           "classes": ["size-4 text-status-warning"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "noticeVariants",
@@ -13093,7 +13595,8 @@
           "name": "noticeTextVariants",
           "classes": ["min-w-0 grow basis-[calc(var(--space-24)*2.5)]"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "progressBarVariants",
@@ -13124,14 +13627,16 @@
             "rounded-[var(--radius-sm)] bg-border-subtle"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "radioGroupVariants",
       "package": "@egdev/ui",
       "source": "packages/ui/src/atoms/radio-group/types.ts",
       "props": [],
-      "variants": []
+      "variants": [],
+      "parts": []
     },
     {
       "name": "sidebarVariants",
@@ -13175,7 +13680,8 @@
           "name": "sidebarViewportVariants",
           "classes": ["size-full"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "sliderVariants",
@@ -13203,7 +13709,8 @@
             "eg-slider relative flex w-full items-center h-6 pointer-coarse:h-11 touch-none select-none data-[disabled]:opacity-45 data-[disabled]:pointer-events-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "statVariants",
@@ -13241,7 +13748,8 @@
             "gap-1 px-3 py-2.5"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "statusDotVariants",
@@ -13265,7 +13773,8 @@
             "motion-safe:animate-[eg-status-dot-pulse_2.4s_var(--ease-out)_infinite]"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "surfaceVariants",
@@ -13303,7 +13812,8 @@
             "border-border-hairline-strong shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)]"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "tabBarVariants",
@@ -13346,7 +13856,8 @@
             "eg-tabbar box-border block w-full pt-1.5 px-2 pb-[max(var(--space-5),env(safe-area-inset-bottom))] font-sans"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "tabsVariants",
@@ -13396,7 +13907,8 @@
           "name": "tabsVariants",
           "classes": ["eg-tabs flex flex-col gap-0 border-0 overflow-visible"]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "tooltipVariants",
@@ -13418,7 +13930,8 @@
             "motion-reduce:transition-none"
           ]
         }
-      ]
+      ],
+      "parts": []
     },
     {
       "name": "useToast",
@@ -13436,7 +13949,8 @@
             "bottom-6 end-6"
           ]
         }
-      ]
+      ],
+      "parts": []
     }
   ],
   "types": [
