@@ -195,6 +195,10 @@ The "transparent shadow" finding was a parent measurement defect: the first run 
 
 Revised disposition: **shadow** — passes (no Material discrepancy, no issue needed). **Border and fractional edges** — host zoom artefacts; the declared border is 1px and no scroll overflow exists. **Skip link** — intentional `sr-only` clip. **Token-derived alpha mixes** (Chip 60%, Notice 30%) — still fail the literal token-set rule; they are recorded openly as a limitation of that rule (it compares against resolved token values and does not model `color-mix` of a token with transparency), not as a design-system defect. Remaining limits: captures stay in the Windows Playwright host folder without SHA-256, and the measurement ran at ~125% browser zoom.
 
+### R5 colour rule amendment (owner decision, 2026-11-05)
+
+Owner answer (verbatim): "token mezclado con transparencia" (`odd/tasks/ds-distribution.md` L12). R5's colour rule now accepts a colour equal to `color-mix(in oklab, <token> N%, transparent)` for any `--color-*` token; literal non-token colours still fail. The measurement script below implements it (`isTokenColour`). Re-run with the amended script, both CSS modes, 390×844 and 1280×900: **0 non-token colour failures** in all four runs, canvas and surface equal their tokens. The only remaining raw failures are the host-zoom artefacts and the `sr-only` skip link described above (10 at 390, 2 at 1280). R5 is satisfied; R7 is satisfied on its intent (scroll width equals client width, 0 console errors) with the zoom limitation recorded.
+
 The four `pilot--{tailwind,native}--dark--{390,1280}.png` captures are reported in the Playwright MCP host's Windows output folder, not this worktree's `.playwright-mcp/`. No SHA-256 values or matching metadata files were supplied; D7 hash/location retention is incomplete. Physical devices, assistive technology, zoom behavior and a light theme remain untested.
 
 ### Parent-owned Chromium capture procedure
@@ -217,15 +221,31 @@ At each viewport and mode evaluate the following in the page. It returns the mea
     return probe.style.color ? getComputedStyle(probe).color : null;
   };
   const tokens = new Set();
+  const tokenValues = [];
   for (const name of rootStyle) {
     if (name.startsWith('--color-')) {
-      const color = resolve(rootStyle.getPropertyValue(name).trim());
-      if (color) tokens.add(color);
+      const value = rootStyle.getPropertyValue(name).trim();
+      const color = resolve(value);
+      if (color) {
+        tokens.add(color);
+        tokenValues.push(value);
+      }
     }
   }
+  // Owner decision L12: a token mixed with transparency counts as a token colour.
+  const alphaOf = (color) => {
+    const match = color.match(/\/\s*([\d.]+)\)$/) ?? color.match(/^rgba\([^,]+,[^,]+,[^,]+,\s*([\d.]+)\)$/);
+    return match ? Number(match[1]) : null;
+  };
+  const isTokenColour = (color) => {
+    if (tokens.has(color)) return true;
+    const alpha = alphaOf(color);
+    if (alpha === null) return false;
+    const percent = Math.round(alpha * 1000) / 10;
+    return tokenValues.some((value) => resolve(`color-mix(in oklab, ${value} ${percent}%, transparent)`) === color);
+  };
   const canvasToken = resolve(rootStyle.getPropertyValue('--color-bg-canvas').trim());
   const surfaceToken = resolve(rootStyle.getPropertyValue('--color-surface-1').trim());
-  probe.remove();
   const canvas = getComputedStyle(root).backgroundColor;
   const surface = getComputedStyle(document.querySelector('[data-pilot-surface]'));
   const failures = [];
@@ -247,9 +267,10 @@ At each viewport and mode evaluate the following in the page. It returns the mea
     const style = getComputedStyle(element);
     for (const property of ['color', 'backgroundColor', 'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor']) {
       const color = style[property];
-      if (color !== 'rgba(0, 0, 0, 0)' && !tokens.has(color)) failures.push(`non-token ${property}: ${color} on ${element.tagName} ${String(element.className)}`);
+      if (color !== 'rgba(0, 0, 0, 0)' && !isTokenColour(color)) failures.push(`non-token ${property}: ${color} on ${element.tagName} ${String(element.className)}`);
     }
   }
+  probe.remove();
   return { viewport: [innerWidth, innerHeight], scrollWidth: root.scrollWidth, clientWidth: root.clientWidth, widest, canvas, canvasToken, surface: surface.backgroundColor, surfaceToken, shadow: surface.boxShadow, border: surface.borderTopWidth, failures };
 }
 ```
