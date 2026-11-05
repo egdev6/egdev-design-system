@@ -5,6 +5,7 @@ import { resolve } from 'node:path';
 import test from 'node:test';
 import docgen from 'react-docgen-typescript';
 import ts from 'typescript';
+import { renderSystemMd } from '../packages/system/src/render-system-md.mjs';
 import { extractGroupedDeclarations } from '../packages/tokens/scripts/token-css.mjs';
 
 const read = (path) => JSON.parse(readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'));
@@ -118,6 +119,85 @@ test('CVA recipes include class values, not default variant names', () => {
   assert.ok(recipe.classes.some((value) => value.includes('eg-btn')));
   assert.ok(!recipe.classes.includes('primary'));
   assert.ok(!recipe.classes.includes('md'));
+});
+
+test('template and section layout includes source-backed slots and section recipes', () => {
+  const artifact = read('packages/system/design-system.json');
+  const component = (name) => artifact.components.find((item) => item.name === name);
+  const section = component('SectionShell');
+  const classes = (ids) => ids.map((id) => artifact.anatomyUtilities[id]);
+  const wrap = section.anatomy.find(({ name }) => name === 'sectionShellWrapVariants');
+  assert.ok(
+    classes(wrap.base).some(
+      ({ className, tokens }) => className === 'max-w-[var(--content-max)]' && tokens.includes('--content-max')
+    )
+  );
+  const root = section.anatomy.find(({ name }) => name === 'sectionShellVariants');
+  assert.ok(
+    classes(root.variants.register.show).some(({ className }) => className.includes('--gradient-section-show'))
+  );
+  assert.ok(
+    component('WebTemplate').layout.some(
+      ({ source, expression }) => source.endsWith('WebTemplate.tsx') && expression.includes('page.content')
+    )
+  );
+  assert.ok(
+    component('WebSection').layout.some(
+      ({ source, expression }) =>
+        source.endsWith('useWebSection.ts') && expression.includes('[header, media, body, actions, social]')
+    )
+  );
+});
+
+test('layout extracts CSS declarations, custom-property assignments and unresolved dynamic classes', () => {
+  const result = spawnSync(
+    process.execPath,
+    ['--import', './scripts/fixtures/design-system-artifact/layout-extra.mjs', 'scripts/build-artifact.mjs', '--write'],
+    { encoding: 'utf8', timeout: 120_000, maxBuffer: 4_000_000 }
+  );
+  assert.equal(result.status, 0, result.stderr);
+  const artifact = JSON.parse(result.stdout);
+  const layout = artifact.components.find(({ name }) => name === 'WebSection').layout;
+  const facts = layout.flatMap((item) =>
+    item.classes.map((id) => ({ ...artifact.anatomyUtilities[id], source: item.source }))
+  );
+  assert.ok(
+    facts.some(
+      ({ className, tokens, source }) =>
+        className.includes('max-width: var(--content-max)') &&
+        tokens.includes('--content-max') &&
+        source.endsWith('web-section.css')
+    )
+  );
+  assert.ok(layout.some(({ expression }) => expression.includes('@media (min-width: 42rem) > .eg-web-section')));
+  assert.ok(facts.some(({ className, unresolved }) => className.includes('--unknown-gap') && unresolved));
+  assert.ok(
+    facts.some(
+      ({ className, unresolved, source }) =>
+        className.includes('--eg-zone-x') &&
+        className.includes('props.offset') &&
+        unresolved &&
+        source.endsWith('useWebSection.ts')
+    )
+  );
+  assert.ok(facts.some(({ className, unresolved }) => className === 'props.dynamicLayout' && unresolved));
+  assert.ok(facts.some(({ className, unresolved }) => className === 'section.dynamicClass' && unresolved));
+  const text = renderSystemMd(artifact);
+  assert.match(text, /props\.dynamicLayout → unresolved/);
+  assert.match(text, /--eg-zone-x[^\n]*unresolved/);
+});
+
+test('--check detects section wrapper width drift without writing', () => {
+  const before = readFileSync('packages/system/design-system.json', 'utf8');
+  const result = spawnSync(
+    process.execPath,
+    ['--import', './scripts/fixtures/design-system-artifact/layout-drift.mjs', 'scripts/build-artifact.mjs', '--check'],
+    { encoding: 'utf8', timeout: 120_000 }
+  );
+  assert.equal(result.status, 1, result.stderr);
+  assert.equal(result.stdout, '');
+  assert.equal(result.stderr, 'design-system.json is stale; run pnpm artifact --write\n');
+  assert.equal(readFileSync('packages/system/design-system.json', 'utf8'), before);
 });
 
 test('Button anatomy identifies its shared rounded-md token and size-specific spacing', () => {
@@ -277,7 +357,7 @@ test('artifact schema and total ordering match the contract', () => {
     [
       'components',
       'name',
-      ['name', 'package', 'source', 'props', 'variants', 'parts', 'anatomy', 'surfaceUsage', 'composedOf']
+      ['name', 'package', 'source', 'props', 'variants', 'parts', 'anatomy', 'layout', 'surfaceUsage', 'composedOf']
     ],
     ['types', 'name', ['name', 'owner', 'source']],
     ['tokens', 'name', ['name', 'value', 'group']],

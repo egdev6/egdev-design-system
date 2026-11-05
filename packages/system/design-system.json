@@ -1076,23 +1076,24 @@
       "anatomy": [
         {
           "name": "alertDialogHeadVariants",
-          "base": [160, 161, 162, 163],
+          "base": [215, 216, 217, 218],
           "variants": {},
           "compounds": []
         },
         {
           "name": "alertDialogIconVariants",
-          "base": [165],
+          "base": [220],
           "variants": {},
           "compounds": []
         },
         {
           "name": "alertDialogTitleRowVariants",
-          "base": [164],
+          "base": [219],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -1149,23 +1150,24 @@
       "anatomy": [
         {
           "name": "alertDialogHeadVariants",
-          "base": [160, 161, 162, 163],
+          "base": [215, 216, 217, 218],
           "variants": {},
           "compounds": []
         },
         {
           "name": "alertDialogIconVariants",
-          "base": [165],
+          "base": [220],
           "variants": {},
           "compounds": []
         },
         {
           "name": "alertDialogTitleRowVariants",
-          "base": [164],
+          "base": [219],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -1222,23 +1224,24 @@
       "anatomy": [
         {
           "name": "alertDialogHeadVariants",
-          "base": [160, 161, 162, 163],
+          "base": [215, 216, 217, 218],
           "variants": {},
           "compounds": []
         },
         {
           "name": "alertDialogIconVariants",
-          "base": [165],
+          "base": [220],
           "variants": {},
           "compounds": []
         },
         {
           "name": "alertDialogTitleRowVariants",
-          "base": [164],
+          "base": [219],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -1319,23 +1322,24 @@
       "anatomy": [
         {
           "name": "alertDialogHeadVariants",
-          "base": [160, 161, 162, 163],
+          "base": [215, 216, 217, 218],
           "variants": {},
           "compounds": []
         },
         {
           "name": "alertDialogIconVariants",
-          "base": [165],
+          "base": [220],
           "variants": {},
           "compounds": []
         },
         {
           "name": "alertDialogTitleRowVariants",
-          "base": [164],
+          "base": [219],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -1392,23 +1396,24 @@
       "anatomy": [
         {
           "name": "alertDialogHeadVariants",
-          "base": [160, 161, 162, 163],
+          "base": [215, 216, 217, 218],
           "variants": {},
           "compounds": []
         },
         {
           "name": "alertDialogIconVariants",
-          "base": [165],
+          "base": [220],
           "variants": {},
           "compounds": []
         },
         {
           "name": "alertDialogTitleRowVariants",
-          "base": [164],
+          "base": [219],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -1477,6 +1482,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -1528,13 +1534,13 @@
       "anatomy": [
         {
           "name": "appShellBodyVariants",
-          "base": [],
+          "base": [70, 322],
           "variants": {},
           "compounds": []
         },
         {
           "name": "appShellBottomVariants",
-          "base": [],
+          "base": [323, 327],
           "variants": {
             "arrangement": {
               "switching": [],
@@ -1547,19 +1553,19 @@
         },
         {
           "name": "appShellMainVariants",
-          "base": [],
+          "base": [326, 322],
           "variants": {},
           "compounds": []
         },
         {
           "name": "appShellRootVariants",
-          "base": [4],
+          "base": [70, 318, 129, 71, 319, 4],
           "variants": {},
           "compounds": []
         },
         {
           "name": "appShellSideVariants",
-          "base": [],
+          "base": [323, 324, 325],
           "variants": {
             "arrangement": {
               "switching": [],
@@ -1572,7 +1578,7 @@
         },
         {
           "name": "appShellSkipLinkVariants",
-          "base": [],
+          "base": [321],
           "variants": {},
           "compounds": []
         },
@@ -1581,13 +1587,115 @@
           "base": [],
           "variants": {
             "arrangement": {
-              "switching": [],
+              "switching": [320],
               "side": [],
               "bottom": [],
               "content": []
             }
           },
           "compounds": []
+        }
+      ],
+      "layout": [
+        {
+          "source": "packages/ui/src/templates/app-shell/useAppShell.ts",
+          "expression": "cn(appShellVariants.skipLink())",
+          "classes": [138]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/useAppShell.ts",
+          "expression": "cn(appShellVariants.root(), className)",
+          "classes": [328, 89]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/useAppShell.ts",
+          "expression": "cn(appShellVariants.skip({ arrangement }))",
+          "classes": [329]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/useAppShell.ts",
+          "expression": "cn(appShellVariants.body())",
+          "classes": [330]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/useAppShell.ts",
+          "expression": "cn(appShellVariants.side({ arrangement }))",
+          "classes": [331]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/useAppShell.ts",
+          "expression": "cn(appShellVariants.main())",
+          "classes": [332]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/useAppShell.ts",
+          "expression": "cn(appShellVariants.bottom({ arrangement }))",
+          "classes": [333]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "{s.showSkipRow && ( <div className={s.skipRowClass}> <Button variant='secondary' asChild={true} className={s.skipLinkClass}> <a href={s.skipHref} onClick={s.onSkipClick}> {s.skipLabel} </a> </Button> </div> )}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "className={s.skipRowClass}",
+          "classes": [334]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "className={s.skipLinkClass}",
+          "classes": [335]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "{s.skipLabel}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "className={s.bodyClass}",
+          "classes": [336]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "{s.sideNavigation != null && <div className={s.sideClass}>{s.sideNavigation}</div>}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "className={s.sideClass}",
+          "classes": [337]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "{s.sideNavigation}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "className={s.mainClass}",
+          "classes": [338]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "{s.children}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "{s.bottomNavigation != null && <div className={s.bottomClass}>{s.bottomNavigation}</div>}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "className={s.bottomClass}",
+          "classes": [339]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "{s.bottomNavigation}",
+          "classes": []
         }
       ],
       "surfaceUsage": []
@@ -1819,11 +1927,12 @@
         },
         {
           "name": "articleFeatureWordVariants",
-          "base": [68, 24],
+          "base": [76, 24],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/article-feature/useArticleFeature.ts",
@@ -2007,11 +2116,12 @@
         },
         {
           "name": "articleFeatureWordVariants",
-          "base": [68, 24],
+          "base": [76, 24],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/article-feature/useArticleFeature.ts",
@@ -2053,6 +2163,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -2164,6 +2275,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -2247,7 +2359,7 @@
         },
         {
           "name": "badgeVariants",
-          "base": [29, 88, 89, 0, 4, 5],
+          "base": [29, 143, 144, 0, 4, 5],
           "variants": {
             "tone": {
               "neutral": [],
@@ -2350,6 +2462,7 @@
           ]
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -2457,6 +2570,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -2539,6 +2653,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -2621,6 +2736,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -2703,6 +2819,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -2785,6 +2902,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -2902,23 +3020,24 @@
         },
         {
           "name": "buttonVariants",
-          "base": [83, 4, 90, 91],
+          "base": [114, 4, 145, 146],
           "variants": {
             "variant": {
-              "primary": [92, 93, 94],
-              "secondary": [95, 96, 94],
-              "neutral": [97],
+              "primary": [147, 148, 149],
+              "secondary": [150, 151, 149],
+              "neutral": [152],
               "dark": [17]
             },
             "size": {
-              "lg": [98, 99, 100, 101],
-              "md": [98, 99, 100, 101],
-              "sm": [102, 68, 7, 5, 103]
+              "lg": [153, 154, 155, 156],
+              "md": [153, 154, 155, 156],
+              "sm": [157, 76, 7, 5, 158]
             }
           },
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -2970,12 +3089,13 @@
           "variants": {
             "variant": {
               "spaced": [12],
-              "attached": [38, 166, 167]
+              "attached": [38, 221, 222]
             }
           },
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -3144,7 +3264,7 @@
       "anatomy": [
         {
           "name": "calendarGridAddVariants",
-          "base": [83, 45],
+          "base": [114, 45],
           "variants": {},
           "compounds": []
         },
@@ -3165,7 +3285,7 @@
         },
         {
           "name": "calendarGridDayVariants",
-          "base": [7, 146, 84],
+          "base": [7, 201, 115],
           "variants": {},
           "compounds": []
         },
@@ -3183,13 +3303,13 @@
         },
         {
           "name": "calendarGridHeaderVariants",
-          "base": [7, 256, 257, 258],
+          "base": [7, 311, 312, 313],
           "variants": {},
           "compounds": []
         },
         {
           "name": "calendarGridLinkVariants",
-          "base": [104, 45],
+          "base": [159, 45],
           "variants": {},
           "compounds": []
         },
@@ -3234,6 +3354,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -3405,13 +3526,13 @@
         },
         {
           "name": "carouselSlideVariants",
-          "base": [84, 70],
+          "base": [115, 86],
           "variants": {},
           "compounds": []
         },
         {
           "name": "carouselTrackVariants",
-          "base": [64, 146],
+          "base": [64, 201],
           "variants": {},
           "compounds": []
         },
@@ -3422,6 +3543,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -3572,6 +3694,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -3691,11 +3814,12 @@
         },
         {
           "name": "checkboxVariants",
-          "base": [13, 104, 78, 105, 106, 70, 107, 108],
+          "base": [13, 159, 109, 160, 161, 86, 162, 163],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -3810,10 +3934,10 @@
         },
         {
           "name": "chipVariants",
-          "base": [29, 89, 88, 0, 49, 4, 5],
+          "base": [29, 144, 143, 0, 49, 4, 5],
           "variants": {
             "mode": {
-              "toggle": [109, 45, 110],
+              "toggle": [164, 45, 165],
               "static": [],
               "link": [45]
             }
@@ -3821,6 +3945,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -3952,6 +4077,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -4120,6 +4246,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -4191,6 +4318,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -4323,6 +4451,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -4410,6 +4539,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -4497,6 +4627,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -4671,7 +4802,7 @@
         },
         {
           "name": "paletteField",
-          "base": [100, 42, 88],
+          "base": [155, 42, 143],
           "variants": {},
           "compounds": []
         },
@@ -4683,7 +4814,7 @@
         },
         {
           "name": "paletteList",
-          "base": [88],
+          "base": [143],
           "variants": {},
           "compounds": []
         },
@@ -4695,23 +4826,24 @@
         },
         {
           "name": "paletteOverlay",
-          "base": [168, 169],
+          "base": [223, 224],
           "variants": {},
           "compounds": []
         },
         {
           "name": "palettePanel",
-          "base": [146],
+          "base": [201],
           "variants": {},
           "compounds": []
         },
         {
           "name": "paletteRow",
-          "base": [12, 22, 83, 4, 11],
+          "base": [12, 22, 114, 4, 11],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -4830,13 +4962,13 @@
         },
         {
           "name": "communityCardBandVariants",
-          "base": [170],
+          "base": [225],
           "variants": {},
           "compounds": []
         },
         {
           "name": "communityCardBodyVariants",
-          "base": [19, 80, 11, 176],
+          "base": [19, 111, 11, 231],
           "variants": {},
           "compounds": []
         },
@@ -4848,7 +4980,7 @@
         },
         {
           "name": "communityCardEyebrowVariants",
-          "base": [100, 61, 11, 175],
+          "base": [155, 61, 11, 230],
           "variants": {},
           "compounds": []
         },
@@ -4866,7 +4998,7 @@
         },
         {
           "name": "communityCardTopRowVariants",
-          "base": [12, 171, 172, 173, 174],
+          "base": [12, 226, 227, 228, 229],
           "variants": {},
           "compounds": []
         },
@@ -4877,6 +5009,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/community-card/useCommunityCard.ts",
@@ -4967,13 +5100,13 @@
         },
         {
           "name": "communityCardBandVariants",
-          "base": [170],
+          "base": [225],
           "variants": {},
           "compounds": []
         },
         {
           "name": "communityCardBodyVariants",
-          "base": [19, 80, 11, 176],
+          "base": [19, 111, 11, 231],
           "variants": {},
           "compounds": []
         },
@@ -4985,7 +5118,7 @@
         },
         {
           "name": "communityCardEyebrowVariants",
-          "base": [100, 61, 11, 175],
+          "base": [155, 61, 11, 230],
           "variants": {},
           "compounds": []
         },
@@ -5003,7 +5136,7 @@
         },
         {
           "name": "communityCardTopRowVariants",
-          "base": [12, 171, 172, 173, 174],
+          "base": [12, 226, 227, 228, 229],
           "variants": {},
           "compounds": []
         },
@@ -5014,6 +5147,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/community-card/useCommunityCard.ts",
@@ -5104,13 +5238,13 @@
         },
         {
           "name": "communityCardBandVariants",
-          "base": [170],
+          "base": [225],
           "variants": {},
           "compounds": []
         },
         {
           "name": "communityCardBodyVariants",
-          "base": [19, 80, 11, 176],
+          "base": [19, 111, 11, 231],
           "variants": {},
           "compounds": []
         },
@@ -5122,7 +5256,7 @@
         },
         {
           "name": "communityCardEyebrowVariants",
-          "base": [100, 61, 11, 175],
+          "base": [155, 61, 11, 230],
           "variants": {},
           "compounds": []
         },
@@ -5140,7 +5274,7 @@
         },
         {
           "name": "communityCardTopRowVariants",
-          "base": [12, 171, 172, 173, 174],
+          "base": [12, 226, 227, 228, 229],
           "variants": {},
           "compounds": []
         },
@@ -5151,6 +5285,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/community-card/useCommunityCard.ts",
@@ -5314,7 +5449,7 @@
           "base": [],
           "variants": {
             "tone": {
-              "inherit": [111],
+              "inherit": [166],
               "canvas": []
             }
           },
@@ -5322,7 +5457,7 @@
         },
         {
           "name": "countdownRowVariants",
-          "base": [112, 113],
+          "base": [167, 168],
           "variants": {},
           "compounds": []
         },
@@ -5343,17 +5478,18 @@
           "base": [61],
           "variants": {
             "size": {
-              "md": [114],
-              "sm": [115]
+              "md": [169],
+              "sm": [170]
             },
             "tone": {
-              "inherit": [111],
+              "inherit": [166],
               "canvas": []
             }
           },
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -5487,7 +5623,7 @@
       "anatomy": [
         {
           "name": "dialogBodyVariants",
-          "base": [177],
+          "base": [232],
           "variants": {},
           "compounds": []
         },
@@ -5505,7 +5641,7 @@
         },
         {
           "name": "dialogFootVariants",
-          "base": [161, 178, 164],
+          "base": [216, 233, 219],
           "variants": {
             "variant": {
               "centered": [],
@@ -5516,13 +5652,13 @@
         },
         {
           "name": "dialogHeadVariants",
-          "base": [178, 179, 180],
+          "base": [233, 234, 235],
           "variants": {},
           "compounds": []
         },
         {
           "name": "dialogOverlayVariants",
-          "base": [177],
+          "base": [232],
           "variants": {
             "flush": {
               "true": [13],
@@ -5567,6 +5703,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -5665,7 +5802,7 @@
       "anatomy": [
         {
           "name": "dialogBodyVariants",
-          "base": [177],
+          "base": [232],
           "variants": {},
           "compounds": []
         },
@@ -5683,7 +5820,7 @@
         },
         {
           "name": "dialogFootVariants",
-          "base": [161, 178, 164],
+          "base": [216, 233, 219],
           "variants": {
             "variant": {
               "centered": [],
@@ -5694,13 +5831,13 @@
         },
         {
           "name": "dialogHeadVariants",
-          "base": [178, 179, 180],
+          "base": [233, 234, 235],
           "variants": {},
           "compounds": []
         },
         {
           "name": "dialogOverlayVariants",
-          "base": [177],
+          "base": [232],
           "variants": {
             "flush": {
               "true": [13],
@@ -5745,6 +5882,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -5891,7 +6029,7 @@
       "anatomy": [
         {
           "name": "dialogBodyVariants",
-          "base": [177],
+          "base": [232],
           "variants": {},
           "compounds": []
         },
@@ -5909,7 +6047,7 @@
         },
         {
           "name": "dialogFootVariants",
-          "base": [161, 178, 164],
+          "base": [216, 233, 219],
           "variants": {
             "variant": {
               "centered": [],
@@ -5920,13 +6058,13 @@
         },
         {
           "name": "dialogHeadVariants",
-          "base": [178, 179, 180],
+          "base": [233, 234, 235],
           "variants": {},
           "compounds": []
         },
         {
           "name": "dialogOverlayVariants",
-          "base": [177],
+          "base": [232],
           "variants": {
             "flush": {
               "true": [13],
@@ -5971,6 +6109,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -6069,7 +6208,7 @@
       "anatomy": [
         {
           "name": "dialogBodyVariants",
-          "base": [177],
+          "base": [232],
           "variants": {},
           "compounds": []
         },
@@ -6087,7 +6226,7 @@
         },
         {
           "name": "dialogFootVariants",
-          "base": [161, 178, 164],
+          "base": [216, 233, 219],
           "variants": {
             "variant": {
               "centered": [],
@@ -6098,13 +6237,13 @@
         },
         {
           "name": "dialogHeadVariants",
-          "base": [178, 179, 180],
+          "base": [233, 234, 235],
           "variants": {},
           "compounds": []
         },
         {
           "name": "dialogOverlayVariants",
-          "base": [177],
+          "base": [232],
           "variants": {
             "flush": {
               "true": [13],
@@ -6149,6 +6288,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -6203,6 +6343,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -6279,16 +6420,17 @@
       "anatomy": [
         {
           "name": "dropzoneVariants",
-          "base": [22, 83, 15, 5, 4, 116, 45],
+          "base": [22, 114, 15, 5, 4, 171, 45],
           "variants": {
             "variant": {
               "default": [29],
-              "inline": [100]
+              "inline": [155]
             }
           },
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -6419,7 +6561,7 @@
       "anatomy": [
         {
           "name": "fieldCounterVariants",
-          "base": [5, 182],
+          "base": [5, 237],
           "variants": {},
           "compounds": []
         },
@@ -6431,7 +6573,7 @@
         },
         {
           "name": "fieldLabelRowVariants",
-          "base": [7, 182],
+          "base": [7, 237],
           "variants": {
             "layout": {
               "stacked": [],
@@ -6442,7 +6584,7 @@
         },
         {
           "name": "fieldMessageVariants",
-          "base": [182],
+          "base": [237],
           "variants": {
             "layout": {
               "stacked": [],
@@ -6463,12 +6605,13 @@
           "variants": {
             "layout": {
               "stacked": [29],
-              "choice": [181, 138]
+              "choice": [236, 193]
             }
           },
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -6544,7 +6687,7 @@
         },
         {
           "name": "fieldMessageVariants",
-          "base": [29, 4, 5, 117],
+          "base": [29, 4, 5, 172],
           "variants": {
             "tone": {
               "description": [],
@@ -6557,6 +6700,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -6721,6 +6865,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -6854,6 +6999,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -6987,6 +7133,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -7120,6 +7267,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -7269,6 +7417,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -7402,6 +7551,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -7552,11 +7702,12 @@
         },
         {
           "name": "gaugeRootVariants",
-          "base": [7, 82, 17, 118, 4, 5],
+          "base": [7, 113, 17, 173, 4, 5],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -7714,6 +7865,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -7830,6 +7982,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -8026,6 +8179,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -8133,6 +8287,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -8224,6 +8379,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -8297,6 +8453,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -8407,10 +8564,10 @@
           "base": [13, 45],
           "variants": {
             "variant": {
-              "ghost": [83, 17],
-              "outline": [0, 6, 119],
-              "primary": [83, 120, 121, 122],
-              "secondary": [83, 123, 124, 122]
+              "ghost": [114, 17],
+              "outline": [0, 6, 174],
+              "primary": [114, 175, 176, 177],
+              "secondary": [114, 178, 179, 177]
             },
             "size": {
               "sm": [],
@@ -8421,6 +8578,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -8657,6 +8815,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -8754,22 +8913,22 @@
       "anatomy": [
         {
           "name": "inputControlVariants",
-          "base": [83, 78, 4, 125],
+          "base": [114, 109, 4, 180],
           "variants": {
             "size": {
-              "md": [42, 102, 11],
-              "sm": [42, 88, 5]
+              "md": [42, 157, 11],
+              "sm": [42, 143, 5]
             },
             "variant": {
               "default": [],
               "code": [30, 31]
             },
             "icon": {
-              "true": [126],
+              "true": [181],
               "false": []
             },
             "loading": {
-              "true": [127],
+              "true": [182],
               "false": []
             }
           },
@@ -8779,7 +8938,7 @@
                 "size": "sm",
                 "variant": "default"
               },
-              "classes": [74]
+              "classes": [105]
             }
           ]
         },
@@ -8808,6 +8967,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -8990,6 +9150,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -9027,11 +9188,12 @@
       "anatomy": [
         {
           "name": "kbdVariants",
-          "base": [104, 48, 128, 4, 5],
+          "base": [159, 48, 183, 4, 5],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -9200,6 +9362,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -9243,12 +9406,13 @@
           "variants": {
             "variant": {
               "field": [],
-              "choice": [74]
+              "choice": [105]
             }
           },
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -9345,16 +9509,17 @@
         },
         {
           "name": "linkVariants",
-          "base": [7, 4, 5, 90, 129],
+          "base": [7, 4, 5, 145, 184],
           "variants": {
             "variant": {
-              "plain": [130],
-              "underlined": [131]
+              "plain": [185],
+              "underlined": [186]
             }
           },
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -9552,14 +9717,14 @@
           "base": [],
           "variants": {
             "part": {
-              "body": [12, 200, 201],
-              "leading": [202, 203, 204, 205, 206],
-              "title": [4, 28, 207],
-              "trailing": [7, 61, 152],
-              "content": [4, 11, 208],
+              "body": [12, 255, 256],
+              "leading": [257, 258, 259, 260, 261],
+              "title": [4, 28, 262],
+              "trailing": [7, 61, 207],
+              "content": [4, 11, 263],
               "media": [],
-              "footer": [209, 7],
-              "meta": [7, 4, 5, 210, 211, 212, 213],
+              "footer": [264, 7],
+              "meta": [7, 4, 5, 265, 266, 267, 268],
               "actions": [37]
             }
           },
@@ -9567,11 +9732,12 @@
         },
         {
           "name": "listItemVariants",
-          "base": [12, 10, 84, 4, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199],
+          "base": [12, 10, 115, 4, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/list-item/useListItem.ts",
@@ -9682,14 +9848,14 @@
           "base": [],
           "variants": {
             "part": {
-              "body": [12, 200, 201],
-              "leading": [202, 203, 204, 205, 206],
-              "title": [4, 28, 207],
-              "trailing": [7, 61, 152],
-              "content": [4, 11, 208],
+              "body": [12, 255, 256],
+              "leading": [257, 258, 259, 260, 261],
+              "title": [4, 28, 262],
+              "trailing": [7, 61, 207],
+              "content": [4, 11, 263],
               "media": [],
-              "footer": [209, 7],
-              "meta": [7, 4, 5, 210, 211, 212, 213],
+              "footer": [264, 7],
+              "meta": [7, 4, 5, 265, 266, 267, 268],
               "actions": [37]
             }
           },
@@ -9697,11 +9863,12 @@
         },
         {
           "name": "listItemVariants",
-          "base": [12, 10, 84, 4, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199],
+          "base": [12, 10, 115, 4, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/list-item/useListItem.ts",
@@ -9812,14 +9979,14 @@
           "base": [],
           "variants": {
             "part": {
-              "body": [12, 200, 201],
-              "leading": [202, 203, 204, 205, 206],
-              "title": [4, 28, 207],
-              "trailing": [7, 61, 152],
-              "content": [4, 11, 208],
+              "body": [12, 255, 256],
+              "leading": [257, 258, 259, 260, 261],
+              "title": [4, 28, 262],
+              "trailing": [7, 61, 207],
+              "content": [4, 11, 263],
               "media": [],
-              "footer": [209, 7],
-              "meta": [7, 4, 5, 210, 211, 212, 213],
+              "footer": [264, 7],
+              "meta": [7, 4, 5, 265, 266, 267, 268],
               "actions": [37]
             }
           },
@@ -9827,11 +9994,12 @@
         },
         {
           "name": "listItemVariants",
-          "base": [12, 10, 84, 4, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199],
+          "base": [12, 10, 115, 4, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/list-item/useListItem.ts",
@@ -9942,14 +10110,14 @@
           "base": [],
           "variants": {
             "part": {
-              "body": [12, 200, 201],
-              "leading": [202, 203, 204, 205, 206],
-              "title": [4, 28, 207],
-              "trailing": [7, 61, 152],
-              "content": [4, 11, 208],
+              "body": [12, 255, 256],
+              "leading": [257, 258, 259, 260, 261],
+              "title": [4, 28, 262],
+              "trailing": [7, 61, 207],
+              "content": [4, 11, 263],
               "media": [],
-              "footer": [209, 7],
-              "meta": [7, 4, 5, 210, 211, 212, 213],
+              "footer": [264, 7],
+              "meta": [7, 4, 5, 265, 266, 267, 268],
               "actions": [37]
             }
           },
@@ -9957,11 +10125,12 @@
         },
         {
           "name": "listItemVariants",
-          "base": [12, 10, 84, 4, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199],
+          "base": [12, 10, 115, 4, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/list-item/useListItem.ts",
@@ -10072,14 +10241,14 @@
           "base": [],
           "variants": {
             "part": {
-              "body": [12, 200, 201],
-              "leading": [202, 203, 204, 205, 206],
-              "title": [4, 28, 207],
-              "trailing": [7, 61, 152],
-              "content": [4, 11, 208],
+              "body": [12, 255, 256],
+              "leading": [257, 258, 259, 260, 261],
+              "title": [4, 28, 262],
+              "trailing": [7, 61, 207],
+              "content": [4, 11, 263],
               "media": [],
-              "footer": [209, 7],
-              "meta": [7, 4, 5, 210, 211, 212, 213],
+              "footer": [264, 7],
+              "meta": [7, 4, 5, 265, 266, 267, 268],
               "actions": [37]
             }
           },
@@ -10087,11 +10256,12 @@
         },
         {
           "name": "listItemVariants",
-          "base": [12, 10, 84, 4, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199],
+          "base": [12, 10, 115, 4, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/list-item/useListItem.ts",
@@ -10202,14 +10372,14 @@
           "base": [],
           "variants": {
             "part": {
-              "body": [12, 200, 201],
-              "leading": [202, 203, 204, 205, 206],
-              "title": [4, 28, 207],
-              "trailing": [7, 61, 152],
-              "content": [4, 11, 208],
+              "body": [12, 255, 256],
+              "leading": [257, 258, 259, 260, 261],
+              "title": [4, 28, 262],
+              "trailing": [7, 61, 207],
+              "content": [4, 11, 263],
               "media": [],
-              "footer": [209, 7],
-              "meta": [7, 4, 5, 210, 211, 212, 213],
+              "footer": [264, 7],
+              "meta": [7, 4, 5, 265, 266, 267, 268],
               "actions": [37]
             }
           },
@@ -10217,11 +10387,12 @@
         },
         {
           "name": "listItemVariants",
-          "base": [12, 10, 84, 4, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199],
+          "base": [12, 10, 115, 4, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/list-item/useListItem.ts",
@@ -10332,14 +10503,14 @@
           "base": [],
           "variants": {
             "part": {
-              "body": [12, 200, 201],
-              "leading": [202, 203, 204, 205, 206],
-              "title": [4, 28, 207],
-              "trailing": [7, 61, 152],
-              "content": [4, 11, 208],
+              "body": [12, 255, 256],
+              "leading": [257, 258, 259, 260, 261],
+              "title": [4, 28, 262],
+              "trailing": [7, 61, 207],
+              "content": [4, 11, 263],
               "media": [],
-              "footer": [209, 7],
-              "meta": [7, 4, 5, 210, 211, 212, 213],
+              "footer": [264, 7],
+              "meta": [7, 4, 5, 265, 266, 267, 268],
               "actions": [37]
             }
           },
@@ -10347,11 +10518,12 @@
         },
         {
           "name": "listItemVariants",
-          "base": [12, 10, 84, 4, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199],
+          "base": [12, 10, 115, 4, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/list-item/useListItem.ts",
@@ -10462,14 +10634,14 @@
           "base": [],
           "variants": {
             "part": {
-              "body": [12, 200, 201],
-              "leading": [202, 203, 204, 205, 206],
-              "title": [4, 28, 207],
-              "trailing": [7, 61, 152],
-              "content": [4, 11, 208],
+              "body": [12, 255, 256],
+              "leading": [257, 258, 259, 260, 261],
+              "title": [4, 28, 262],
+              "trailing": [7, 61, 207],
+              "content": [4, 11, 263],
               "media": [],
-              "footer": [209, 7],
-              "meta": [7, 4, 5, 210, 211, 212, 213],
+              "footer": [264, 7],
+              "meta": [7, 4, 5, 265, 266, 267, 268],
               "actions": [37]
             }
           },
@@ -10477,11 +10649,12 @@
         },
         {
           "name": "listItemVariants",
-          "base": [12, 10, 84, 4, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199],
+          "base": [12, 10, 115, 4, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/list-item/useListItem.ts",
@@ -10609,14 +10782,14 @@
           "base": [],
           "variants": {
             "part": {
-              "body": [12, 200, 201],
-              "leading": [202, 203, 204, 205, 206],
-              "title": [4, 28, 207],
-              "trailing": [7, 61, 152],
-              "content": [4, 11, 208],
+              "body": [12, 255, 256],
+              "leading": [257, 258, 259, 260, 261],
+              "title": [4, 28, 262],
+              "trailing": [7, 61, 207],
+              "content": [4, 11, 263],
               "media": [],
-              "footer": [209, 7],
-              "meta": [7, 4, 5, 210, 211, 212, 213],
+              "footer": [264, 7],
+              "meta": [7, 4, 5, 265, 266, 267, 268],
               "actions": [37]
             }
           },
@@ -10624,11 +10797,12 @@
         },
         {
           "name": "listItemVariants",
-          "base": [12, 10, 84, 4, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199],
+          "base": [12, 10, 115, 4, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/list-item/useListItem.ts",
@@ -10739,14 +10913,14 @@
           "base": [],
           "variants": {
             "part": {
-              "body": [12, 200, 201],
-              "leading": [202, 203, 204, 205, 206],
-              "title": [4, 28, 207],
-              "trailing": [7, 61, 152],
-              "content": [4, 11, 208],
+              "body": [12, 255, 256],
+              "leading": [257, 258, 259, 260, 261],
+              "title": [4, 28, 262],
+              "trailing": [7, 61, 207],
+              "content": [4, 11, 263],
               "media": [],
-              "footer": [209, 7],
-              "meta": [7, 4, 5, 210, 211, 212, 213],
+              "footer": [264, 7],
+              "meta": [7, 4, 5, 265, 266, 267, 268],
               "actions": [37]
             }
           },
@@ -10754,11 +10928,12 @@
         },
         {
           "name": "listItemVariants",
-          "base": [12, 10, 84, 4, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199],
+          "base": [12, 10, 115, 4, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/list-item/useListItem.ts",
@@ -10854,6 +11029,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/organisms/live-band/useLiveBand.ts",
@@ -10945,6 +11121,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/organisms/live-band/useLiveBand.ts",
@@ -11036,6 +11213,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/organisms/live-band/useLiveBand.ts",
@@ -11127,6 +11305,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/organisms/live-band/useLiveBand.ts",
@@ -11218,6 +11397,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/organisms/live-band/useLiveBand.ts",
@@ -11317,6 +11497,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/organisms/live-band/useLiveBand.ts",
@@ -11390,7 +11571,7 @@
         },
         {
           "name": "logoVariants",
-          "base": [104],
+          "base": [159],
           "variants": {
             "size": {
               "sm": [],
@@ -11405,6 +11586,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -11576,7 +11758,7 @@
             "part": {
               "wrapper": [],
               "panel": [],
-              "trigger": [219],
+              "trigger": [274],
               "caret": [],
               "identity": [],
               "name": [4, 5],
@@ -11593,7 +11775,7 @@
         },
         {
           "name": "menuHeaderVariants",
-          "base": [12, 217, 218],
+          "base": [12, 272, 273],
           "variants": {},
           "compounds": []
         },
@@ -11611,7 +11793,7 @@
         },
         {
           "name": "menuItemVariants",
-          "base": [12, 42, 214, 83, 5],
+          "base": [12, 42, 269, 114, 5],
           "variants": {
             "tone": {
               "default": [],
@@ -11627,7 +11809,7 @@
         },
         {
           "name": "menuLabelVariants",
-          "base": [42, 215, 216, 61, 67],
+          "base": [42, 270, 271, 61, 67],
           "variants": {},
           "compounds": []
         },
@@ -11639,17 +11821,18 @@
         },
         {
           "name": "menuShortcutVariants",
-          "base": [143],
+          "base": [198],
           "variants": {},
           "compounds": []
         },
         {
           "name": "menuVariants",
-          "base": [146, 4],
+          "base": [201, 4],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/menu/types.ts",
@@ -11759,13 +11942,13 @@
       "anatomy": [
         {
           "name": "meterRowHeaderVariants",
-          "base": [220, 138],
+          "base": [275, 193],
           "variants": {},
           "compounds": []
         },
         {
           "name": "meterRowHelpVariants",
-          "base": [5, 117],
+          "base": [5, 172],
           "variants": {},
           "compounds": []
         },
@@ -11805,6 +11988,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -11970,10 +12154,10 @@
       "anatomy": [
         {
           "name": "moduleCardActionsVariants",
-          "base": [7, 226],
+          "base": [7, 281],
           "variants": {
             "banded": {
-              "true": [171, 228, 225],
+              "true": [226, 283, 280],
               "false": []
             }
           },
@@ -11981,10 +12165,10 @@
         },
         {
           "name": "moduleCardBodyVariants",
-          "base": [12, 4, 11, 226],
+          "base": [12, 4, 11, 281],
           "variants": {
             "banded": {
-              "true": [19, 227, 171, 66, 225],
+              "true": [19, 282, 226, 66, 280],
               "false": []
             }
           },
@@ -11995,7 +12179,7 @@
           "base": [7, 4, 5],
           "variants": {
             "banded": {
-              "true": [17, 229, 150, 230, 231, 225],
+              "true": [17, 284, 205, 285, 286, 280],
               "false": []
             }
           },
@@ -12003,10 +12187,10 @@
         },
         {
           "name": "moduleCardHeadVariants",
-          "base": [100],
+          "base": [155],
           "variants": {
             "banded": {
-              "true": [170, 224, 171, 225],
+              "true": [225, 279, 226, 280],
               "false": []
             }
           },
@@ -12024,7 +12208,7 @@
           "variants": {
             "banded": {
               "true": [61, 27],
-              "false": [4, 101]
+              "false": [4, 156]
             }
           },
           "compounds": []
@@ -12037,11 +12221,12 @@
         },
         {
           "name": "moduleCardVariants",
-          "base": [19, 155, 4, 221, 222, 223],
+          "base": [19, 210, 4, 276, 277, 278],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/module-card/useModuleCard.ts",
@@ -12185,7 +12370,7 @@
       "anatomy": [
         {
           "name": "moduleRailVariants",
-          "base": [7, 172],
+          "base": [7, 227],
           "variants": {},
           "compounds": []
         },
@@ -12209,7 +12394,7 @@
         },
         {
           "name": "railLinkVariants",
-          "base": [83, 45],
+          "base": [114, 45],
           "variants": {},
           "compounds": []
         },
@@ -12232,6 +12417,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/organisms/module-rail/useModuleRail.ts",
@@ -12392,7 +12578,7 @@
         },
         {
           "name": "navListLinkVariants",
-          "base": [12, 42, 88, 83, 4, 5],
+          "base": [12, 42, 143, 114, 4, 5],
           "variants": {},
           "compounds": []
         },
@@ -12410,7 +12596,7 @@
         },
         {
           "name": "navListTriggerVariants",
-          "base": [7, 42, 83, 141, 61, 67, 45],
+          "base": [7, 42, 114, 196, 61, 67, 45],
           "variants": {},
           "compounds": []
         },
@@ -12427,6 +12613,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/nav-list/useNavList.ts",
@@ -12516,6 +12703,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -12579,6 +12767,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -12642,6 +12831,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -12745,7 +12935,7 @@
         },
         {
           "name": "noticeAppearanceVariants",
-          "base": [12, 68, 98, 4],
+          "base": [12, 76, 153, 4],
           "variants": {
             "tone": {
               "neutral": [],
@@ -12756,7 +12946,7 @@
             },
             "size": {
               "md": [11],
-              "sm": [7, 42, 102, 83, 5]
+              "sm": [7, 42, 157, 114, 5]
             }
           },
           "compounds": []
@@ -12786,6 +12976,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/notice/types.ts",
@@ -12911,13 +13102,13 @@
       "anatomy": [
         {
           "name": "nowCardBadgeVariants",
-          "base": [171, 233, 218],
+          "base": [226, 288, 273],
           "variants": {},
           "compounds": []
         },
         {
           "name": "nowCardBodyVariants",
-          "base": [7, 80, 28],
+          "base": [7, 111, 28],
           "variants": {
             "size": {
               "md": [],
@@ -12928,7 +13119,7 @@
         },
         {
           "name": "nowCardDetailValueVariants",
-          "base": [235],
+          "base": [290],
           "variants": {},
           "compounds": []
         },
@@ -12940,26 +13131,26 @@
         },
         {
           "name": "nowCardFootVariants",
-          "base": [7, 17, 229, 171, 98],
+          "base": [7, 17, 284, 226, 153],
           "variants": {
             "size": {
               "md": [],
-              "sm": [234, 102]
+              "sm": [289, 157]
             }
           },
           "compounds": []
         },
         {
           "name": "nowCardHeadingVariants",
-          "base": [171, 27],
+          "base": [226, 27],
           "variants": {
             "size": {
               "md": [],
-              "sm": [68, 28]
+              "sm": [76, 28]
             },
             "badge": {
-              "true": [232],
-              "false": [233]
+              "true": [287],
+              "false": [288]
             }
           },
           "compounds": []
@@ -12976,6 +13167,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/now-card/useNowCard.ts",
@@ -13062,13 +13254,13 @@
       "anatomy": [
         {
           "name": "nowCardBadgeVariants",
-          "base": [171, 233, 218],
+          "base": [226, 288, 273],
           "variants": {},
           "compounds": []
         },
         {
           "name": "nowCardBodyVariants",
-          "base": [7, 80, 28],
+          "base": [7, 111, 28],
           "variants": {
             "size": {
               "md": [],
@@ -13079,7 +13271,7 @@
         },
         {
           "name": "nowCardDetailValueVariants",
-          "base": [235],
+          "base": [290],
           "variants": {},
           "compounds": []
         },
@@ -13091,26 +13283,26 @@
         },
         {
           "name": "nowCardFootVariants",
-          "base": [7, 17, 229, 171, 98],
+          "base": [7, 17, 284, 226, 153],
           "variants": {
             "size": {
               "md": [],
-              "sm": [234, 102]
+              "sm": [289, 157]
             }
           },
           "compounds": []
         },
         {
           "name": "nowCardHeadingVariants",
-          "base": [171, 27],
+          "base": [226, 27],
           "variants": {
             "size": {
               "md": [],
-              "sm": [68, 28]
+              "sm": [76, 28]
             },
             "badge": {
-              "true": [232],
-              "false": [233]
+              "true": [287],
+              "false": [288]
             }
           },
           "compounds": []
@@ -13127,6 +13319,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/now-card/useNowCard.ts",
@@ -13213,13 +13406,13 @@
       "anatomy": [
         {
           "name": "nowCardBadgeVariants",
-          "base": [171, 233, 218],
+          "base": [226, 288, 273],
           "variants": {},
           "compounds": []
         },
         {
           "name": "nowCardBodyVariants",
-          "base": [7, 80, 28],
+          "base": [7, 111, 28],
           "variants": {
             "size": {
               "md": [],
@@ -13230,7 +13423,7 @@
         },
         {
           "name": "nowCardDetailValueVariants",
-          "base": [235],
+          "base": [290],
           "variants": {},
           "compounds": []
         },
@@ -13242,26 +13435,26 @@
         },
         {
           "name": "nowCardFootVariants",
-          "base": [7, 17, 229, 171, 98],
+          "base": [7, 17, 284, 226, 153],
           "variants": {
             "size": {
               "md": [],
-              "sm": [234, 102]
+              "sm": [289, 157]
             }
           },
           "compounds": []
         },
         {
           "name": "nowCardHeadingVariants",
-          "base": [171, 27],
+          "base": [226, 27],
           "variants": {
             "size": {
               "md": [],
-              "sm": [68, 28]
+              "sm": [76, 28]
             },
             "badge": {
-              "true": [232],
-              "false": [233]
+              "true": [287],
+              "false": [288]
             }
           },
           "compounds": []
@@ -13278,6 +13471,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/now-card/useNowCard.ts",
@@ -13364,13 +13558,13 @@
       "anatomy": [
         {
           "name": "nowCardBadgeVariants",
-          "base": [171, 233, 218],
+          "base": [226, 288, 273],
           "variants": {},
           "compounds": []
         },
         {
           "name": "nowCardBodyVariants",
-          "base": [7, 80, 28],
+          "base": [7, 111, 28],
           "variants": {
             "size": {
               "md": [],
@@ -13381,7 +13575,7 @@
         },
         {
           "name": "nowCardDetailValueVariants",
-          "base": [235],
+          "base": [290],
           "variants": {},
           "compounds": []
         },
@@ -13393,26 +13587,26 @@
         },
         {
           "name": "nowCardFootVariants",
-          "base": [7, 17, 229, 171, 98],
+          "base": [7, 17, 284, 226, 153],
           "variants": {
             "size": {
               "md": [],
-              "sm": [234, 102]
+              "sm": [289, 157]
             }
           },
           "compounds": []
         },
         {
           "name": "nowCardHeadingVariants",
-          "base": [171, 27],
+          "base": [226, 27],
           "variants": {
             "size": {
               "md": [],
-              "sm": [68, 28]
+              "sm": [76, 28]
             },
             "badge": {
-              "true": [232],
-              "false": [233]
+              "true": [287],
+              "false": [288]
             }
           },
           "compounds": []
@@ -13429,6 +13623,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/now-card/useNowCard.ts",
@@ -13505,6 +13700,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -13601,11 +13797,12 @@
         },
         {
           "name": "pageHeaderVariants",
-          "base": [137, 236],
+          "base": [192, 291],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -13733,6 +13930,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/panel/usePanel.ts",
@@ -13830,6 +14028,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/panel/usePanel.ts",
@@ -13927,6 +14126,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/panel/usePanel.ts",
@@ -14024,6 +14224,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/panel/usePanel.ts",
@@ -14171,7 +14372,7 @@
         },
         {
           "name": "photoFrameLabelVariants",
-          "base": [61, 26, 111],
+          "base": [61, 26, 166],
           "variants": {},
           "compounds": []
         },
@@ -14181,7 +14382,7 @@
           "variants": {
             "variant": {
               "default": [],
-              "framed": [132]
+              "framed": [187]
             },
             "ratio": {
               "preset": [],
@@ -14192,7 +14393,7 @@
         },
         {
           "name": "photoFrameRootVariants",
-          "base": [82, 17],
+          "base": [113, 17],
           "variants": {
             "caption": {
               "none": [16],
@@ -14212,12 +14413,13 @@
           "variants": {
             "variant": {
               "default": [20],
-              "framed": [84]
+              "framed": [115]
             }
           },
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/atoms/photo-frame/usePhotoFrame.ts",
@@ -14266,6 +14468,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -14365,7 +14568,7 @@
       "anatomy": [
         {
           "name": "popoverButtonVariants",
-          "base": [83, 70],
+          "base": [114, 86],
           "variants": {},
           "compounds": []
         },
@@ -14376,6 +14579,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -14432,7 +14636,7 @@
       "anatomy": [
         {
           "name": "popoverButtonVariants",
-          "base": [83, 70],
+          "base": [114, 86],
           "variants": {},
           "compounds": []
         },
@@ -14443,6 +14647,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -14523,7 +14728,7 @@
       "anatomy": [
         {
           "name": "popoverButtonVariants",
-          "base": [83, 70],
+          "base": [114, 86],
           "variants": {},
           "compounds": []
         },
@@ -14534,6 +14739,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -14590,7 +14796,7 @@
       "anatomy": [
         {
           "name": "popoverButtonVariants",
-          "base": [83, 70],
+          "base": [114, 86],
           "variants": {},
           "compounds": []
         },
@@ -14601,6 +14807,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -14629,6 +14836,7 @@
       "parts": [],
       "composedOf": [],
       "anatomy": [],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -14801,7 +15009,7 @@
         },
         {
           "name": "safeAreaVariants",
-          "base": [84],
+          "base": [115],
           "variants": {},
           "compounds": []
         },
@@ -14817,6 +15025,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/organisms/preview-frame/usePreviewFrame.ts",
@@ -14912,7 +15121,7 @@
           "variants": {
             "size": {
               "sm": [],
-              "lg": [135, 136]
+              "lg": [190, 191]
             },
             "variant": {
               "default": [],
@@ -14942,11 +15151,11 @@
           "variants": {
             "size": {
               "sm": [],
-              "lg": [0, 133]
+              "lg": [0, 188]
             },
             "edge": {
               "false": [],
-              "true": [82]
+              "true": [113]
             }
           },
           "compounds": [
@@ -14955,11 +15164,12 @@
                 "size": "sm",
                 "edge": "false"
               },
-              "classes": [134]
+              "classes": [189]
             }
           ]
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -15264,6 +15474,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/project-card/useProjectCard.ts",
@@ -15485,6 +15696,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/project-card/useProjectCard.ts",
@@ -15731,6 +15943,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/project-card/useProjectCard.ts",
@@ -15969,6 +16182,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/project-card/useProjectCard.ts",
@@ -16190,6 +16404,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/project-card/useProjectCard.ts",
@@ -16428,6 +16643,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/project-card/useProjectCard.ts",
@@ -16553,6 +16769,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -16645,7 +16862,7 @@
         },
         {
           "name": "radioGroupItemVariants",
-          "base": [13, 0, 78, 105, 70, 107],
+          "base": [13, 0, 109, 160, 86, 162],
           "variants": {},
           "compounds": []
         },
@@ -16661,7 +16878,7 @@
           "variants": {
             "orientation": {
               "vertical": [37],
-              "horizontal": [137, 138]
+              "horizontal": [192, 193]
             }
           },
           "compounds": []
@@ -16673,6 +16890,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -16739,6 +16957,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -16818,7 +17037,7 @@
         },
         {
           "name": "searchTriggerVariants",
-          "base": [12, 139, 140, 3, 4, 5, 74, 45],
+          "base": [12, 194, 195, 3, 4, 5, 105, 45],
           "variants": {
             "compact": {
               "false": [],
@@ -16828,6 +17047,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/atoms/search-trigger/useSearchTrigger.ts",
@@ -17016,6 +17236,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -17174,39 +17395,136 @@
       "anatomy": [
         {
           "name": "sectionNavLinkVariants",
-          "base": [12, 70],
+          "base": [70, 74, 12, 82, 86],
           "variants": {},
           "compounds": []
         },
         {
           "name": "sectionNavListVariants",
-          "base": [13],
+          "base": [87, 13],
           "variants": {},
           "compounds": []
         },
         {
           "name": "sectionNavNextVariants",
-          "base": [70],
+          "base": [74, 85, 81, 82, 83, 84, 86],
           "variants": {},
           "compounds": []
         },
         {
           "name": "sectionNavPillVariants",
-          "base": [68, 69],
+          "base": [73, 70, 74, 75, 76, 77, 78, 79],
           "variants": {},
           "compounds": []
         },
         {
           "name": "sectionNavRootVariants",
-          "base": [16],
+          "base": [68, 69, 70, 71, 72, 16],
           "variants": {},
           "compounds": []
         },
         {
           "name": "sectionNavTriggerVariants",
-          "base": [12, 13, 4, 11],
+          "base": [70, 74, 12, 80, 13, 4, 11, 81, 82, 83, 84],
           "variants": {},
           "compounds": []
+        }
+      ],
+      "layout": [
+        {
+          "source": "packages/ui/src/organisms/section-nav/useSectionNav.ts",
+          "expression": "cn(sectionNavRootVariants(), className, hidden && 'hidden')",
+          "classes": [88, 89, 90]
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/useSectionNav.ts",
+          "expression": "cn(sectionNavPillVariants())",
+          "classes": [91]
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/useSectionNav.ts",
+          "expression": "cn(sectionNavTriggerVariants())",
+          "classes": [92]
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/useSectionNav.ts",
+          "expression": "cn(sectionNavNextVariants())",
+          "classes": [93]
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/useSectionNav.ts",
+          "expression": "cn(sectionNavListVariants())",
+          "classes": [94]
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/useSectionNav.ts",
+          "expression": "cn(sectionNavLinkVariants())",
+          "classes": [95]
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx",
+          "expression": "{nav.items.length > 0 && ( <Popover open={nav.popoverOpen} onOpenChange={nav.requestOpen}> <Surface tone='overlay' padding='none' radius='full' className={nav.pillClass}> <PopoverTrigger aria-label={nav.disclosureLabel} className={nav.triggerClass}> {nav.current && ( <> <span>{nav.currentNumber}</span> <span>{nav.current.label}</span> </> )} <Icon name='chevron-down' /> </PopoverTrigger> {nav.next && ( <a href={nav.next.href} aria-label={nav.nextLabel} className={nav.nextClass} onClick={nav.onNextClick} onAuxClick={nav.onNextAuxClick} > <Icon name='arrow-down' /> </a> )} <ProgressBar value={nav.value} size='sm' edge={true} /> </Surface> <PopoverContent label={nav.label} side='top' align='end' onCloseAutoFocus={nav.onCloseAutoFocus}> <ol className={nav.listClass}> {nav.rows.map((row) => ( <li key={row.item.id}> <a href={row.item.href} className={nav.linkClass} aria-current={row.current} onClick={row.onClick} onAuxClick={row.onAuxClick} > <Pixel state={row.state} /> <span>{row.number}</span> <span>{row.item.label}</span> </a> </li> ))} </ol> </PopoverContent> </Popover> )}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx",
+          "expression": "className={nav.pillClass}",
+          "classes": [96]
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx",
+          "expression": "className={nav.triggerClass}",
+          "classes": [97]
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx",
+          "expression": "{nav.current && ( <> <span>{nav.currentNumber}</span> <span>{nav.current.label}</span> </> )}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx",
+          "expression": "{nav.currentNumber}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx",
+          "expression": "{nav.current.label}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx",
+          "expression": "{nav.next && ( <a href={nav.next.href} aria-label={nav.nextLabel} className={nav.nextClass} onClick={nav.onNextClick} onAuxClick={nav.onNextAuxClick} > <Icon name='arrow-down' /> </a> )}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx",
+          "expression": "className={nav.nextClass}",
+          "classes": [98]
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx",
+          "expression": "className={nav.listClass}",
+          "classes": [99]
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx",
+          "expression": "{nav.rows.map((row) => ( <li key={row.item.id}> <a href={row.item.href} className={nav.linkClass} aria-current={row.current} onClick={row.onClick} onAuxClick={row.onAuxClick} > <Pixel state={row.state} /> <span>{row.number}</span> <span>{row.item.label}</span> </a> </li> ))}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx",
+          "expression": "className={nav.linkClass}",
+          "classes": [100]
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx",
+          "expression": "{row.number}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/organisms/section-nav/SectionNav.tsx",
+          "expression": "{row.item.label}",
+          "classes": []
         }
       ],
       "surfaceUsage": []
@@ -17265,27 +17583,54 @@
       "anatomy": [
         {
           "name": "sectionShellVariants",
-          "base": [87, 56, 17],
+          "base": [118, 73, 119, 70, 71, 85, 120, 121, 56, 17],
           "variants": {
             "register": {
-              "pro": [],
-              "show": [],
-              "flood": [],
-              "deep": [],
-              "grafito": []
+              "pro": [80, 122],
+              "show": [80, 123],
+              "flood": [124, 122],
+              "deep": [125, 122],
+              "grafito": [126, 122, 127]
             },
             "wrap": {
               "true": [],
-              "false": []
+              "false": [128]
             }
           },
           "compounds": []
         },
         {
           "name": "sectionShellWrapVariants",
-          "base": [72],
+          "base": [118, 129, 130, 131, 102],
           "variants": {},
           "compounds": []
+        }
+      ],
+      "layout": [
+        {
+          "source": "packages/ui/src/templates/section-shell/useSectionShell.ts",
+          "expression": "cn(sectionShellVariants({ register, wrap }), className)",
+          "classes": [132, 89]
+        },
+        {
+          "source": "packages/ui/src/templates/section-shell/useSectionShell.ts",
+          "expression": "cn(sectionShellWrapVariants())",
+          "classes": [133]
+        },
+        {
+          "source": "packages/ui/src/templates/section-shell/SectionShell.tsx",
+          "expression": "{s.wrap ? <div className={s.wrapClass}>{s.children}</div> : s.children}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/section-shell/SectionShell.tsx",
+          "expression": "className={s.wrapClass}",
+          "classes": [134]
+        },
+        {
+          "source": "packages/ui/src/templates/section-shell/SectionShell.tsx",
+          "expression": "{s.children}",
+          "classes": []
         }
       ],
       "surfaceUsage": []
@@ -17426,7 +17771,7 @@
         },
         {
           "name": "selectContentVariants",
-          "base": [146, 84, 79],
+          "base": [201, 115, 110],
           "variants": {},
           "compounds": []
         },
@@ -17444,17 +17789,17 @@
         },
         {
           "name": "selectItemVariants",
-          "base": [12, 83, 42, 102, 147, 4, 11],
+          "base": [12, 114, 42, 157, 202, 4, 11],
           "variants": {},
           "compounds": []
         },
         {
           "name": "selectTriggerVariants",
-          "base": [78, 83, 4, 141, 125, 142],
+          "base": [109, 114, 4, 196, 180, 197],
           "variants": {
             "size": {
-              "md": [143, 144, 102, 11],
-              "sm": [143, 144, 88, 5, 145]
+              "md": [198, 199, 157, 11],
+              "sm": [198, 199, 143, 5, 200]
             }
           },
           "compounds": []
@@ -17466,6 +17811,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -17587,7 +17933,7 @@
         },
         {
           "name": "card",
-          "base": [7, 146, 8, 4, 237, 238, 239, 240, 241, 242],
+          "base": [7, 201, 8, 4, 292, 293, 294, 295, 296, 297],
           "variants": {},
           "compounds": []
         },
@@ -17599,13 +17945,13 @@
         },
         {
           "name": "control",
-          "base": [84, 13, 45],
+          "base": [115, 13, 45],
           "variants": {},
           "compounds": []
         },
         {
           "name": "fallback",
-          "base": [101, 4],
+          "base": [156, 4],
           "variants": {},
           "compounds": []
         },
@@ -17617,7 +17963,7 @@
         },
         {
           "name": "label",
-          "base": [101, 2],
+          "base": [156, 2],
           "variants": {},
           "compounds": []
         },
@@ -17629,7 +17975,7 @@
         },
         {
           "name": "meta",
-          "base": [5, 74, 2, 216],
+          "base": [5, 105, 2, 271],
           "variants": {},
           "compounds": []
         },
@@ -17640,6 +17986,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/select-tile/useSelectTile.ts",
@@ -17730,7 +18077,7 @@
         },
         {
           "name": "sidebarContentVariants",
-          "base": [42, 259],
+          "base": [42, 314],
           "variants": {
             "header": {
               "true": [],
@@ -17741,13 +18088,13 @@
         },
         {
           "name": "sidebarFooterVariants",
-          "base": [7, 68, 98, 4, 5],
+          "base": [7, 76, 153, 4, 5],
           "variants": {},
           "compounds": []
         },
         {
           "name": "sidebarHeaderVariants",
-          "base": [12, 68, 227, 259],
+          "base": [12, 76, 282, 314],
           "variants": {},
           "compounds": []
         },
@@ -17759,7 +18106,7 @@
         },
         {
           "name": "sidebarScrollbarVariants",
-          "base": [254],
+          "base": [309],
           "variants": {},
           "compounds": []
         },
@@ -17782,6 +18129,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/organisms/sidebar/useSidebar.ts",
@@ -17856,8 +18204,8 @@
           "base": [13],
           "variants": {
             "variant": {
-              "line": [104],
-              "block": [83],
+              "line": [159],
+              "block": [114],
               "circle": [0]
             },
             "size": {
@@ -17937,6 +18285,7 @@
           ]
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -18066,13 +18415,13 @@
         },
         {
           "name": "sliderThumbVariants",
-          "base": [0, 148, 70],
+          "base": [0, 203, 86],
           "variants": {},
           "compounds": []
         },
         {
           "name": "sliderTrackVariants",
-          "base": [0, 78],
+          "base": [0, 109],
           "variants": {},
           "compounds": []
         },
@@ -18083,6 +18432,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -18094,6 +18444,7 @@
       "parts": [],
       "composedOf": [],
       "anatomy": [],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/atoms/photo-frame/usePhotoFrame.ts",
@@ -18258,6 +18609,7 @@
       "parts": [],
       "composedOf": [],
       "anatomy": [],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/atoms/photo-frame/usePhotoFrame.ts",
@@ -18538,6 +18890,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -18596,6 +18949,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -18667,6 +19021,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -18781,24 +19136,25 @@
           "base": [61],
           "variants": {
             "size": {
-              "md": [151],
-              "sm": [152]
+              "md": [206],
+              "sm": [207]
             }
           },
           "compounds": []
         },
         {
           "name": "statVariants",
-          "base": [84, 6, 149],
+          "base": [115, 6, 204],
           "variants": {
             "size": {
-              "md": [29, 68, 98],
-              "sm": [37, 42, 150]
+              "md": [29, 76, 153],
+              "sm": [37, 42, 205]
             }
           },
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -18854,8 +19210,8 @@
               "warning": [],
               "error": [],
               "stopped": [],
-              "live": [153],
-              "standby": [153]
+              "live": [208],
+              "standby": [208]
             },
             "pulse": {
               "true": [],
@@ -18873,6 +19229,7 @@
           ]
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -18967,11 +19324,11 @@
           "variants": {
             "tone": {
               "surface-0": [],
-              "surface-1": [75],
-              "surface-2": [76],
-              "surface-3": [77],
-              "well": [78],
-              "overlay": [79]
+              "surface-1": [106],
+              "surface-2": [107],
+              "surface-3": [108],
+              "well": [109],
+              "overlay": [110]
             },
             "elevation": {
               "0": [],
@@ -18982,13 +19339,13 @@
             "padding": {
               "none": [13],
               "sm": [22],
-              "md": [80],
-              "lg": [81]
+              "md": [111],
+              "lg": [112]
             },
             "radius": {
-              "none": [82],
-              "md": [83],
-              "lg": [84],
+              "none": [113],
+              "md": [114],
+              "lg": [115],
               "xl": [20],
               "full": [0]
             }
@@ -19013,25 +19370,26 @@
                 "tone": "raisedTones",
                 "elevation": "2"
               },
-              "classes": [85]
+              "classes": [116]
             },
             {
               "conditions": {
                 "tone": "raisedTones",
                 "elevation": "3"
               },
-              "classes": [79]
+              "classes": [110]
             },
             {
               "conditions": {
                 "tone": "surface-0",
                 "elevation": "[1, 2, 3]"
               },
-              "classes": [86]
+              "classes": [117]
             }
           ]
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/primitives/surface/useSurface.ts",
@@ -19132,11 +19490,12 @@
         },
         {
           "name": "switchVariants",
-          "base": [13, 0, 78, 105, 70, 107],
+          "base": [13, 0, 109, 160, 86, 162],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -19256,7 +19615,7 @@
         },
         {
           "name": "tabBarLinkVariants",
-          "base": [37, 102, 2, 83, 5, 262, 45],
+          "base": [37, 157, 2, 114, 5, 317, 45],
           "variants": {},
           "compounds": []
         },
@@ -19268,11 +19627,12 @@
         },
         {
           "name": "tabBarVariants",
-          "base": [260, 47, 261, 4],
+          "base": [315, 47, 316, 4],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/organisms/tab-bar/useTabBar.ts",
@@ -19518,23 +19878,23 @@
       "anatomy": [
         {
           "name": "captionVariants",
-          "base": [5, 8, 68, 98],
+          "base": [5, 8, 76, 153],
           "variants": {},
           "compounds": []
         },
         {
           "name": "cellVariants",
-          "base": [5, 243],
+          "base": [5, 298],
           "variants": {
             "size": {
-              "md": [98, 68],
-              "sm": [102, 42]
+              "md": [153, 76],
+              "sm": [157, 42]
             },
             "format": {
               "text": [],
-              "number": [244],
+              "number": [299],
               "code": [],
-              "actions": [244]
+              "actions": [299]
             },
             "rowHeader": {
               "true": []
@@ -19553,7 +19913,7 @@
         },
         {
           "name": "emptyVariants",
-          "base": [246, 68, 116],
+          "base": [301, 76, 171],
           "variants": {},
           "compounds": []
         },
@@ -19562,8 +19922,8 @@
           "base": [61, 26, 8],
           "variants": {
             "size": {
-              "md": [150, 68],
-              "sm": [102, 42]
+              "md": [205, 76],
+              "sm": [157, 42]
             },
             "sticky": {
               "true": []
@@ -19591,7 +19951,7 @@
         },
         {
           "name": "sortVariants",
-          "base": [37, 13, 245, 111, 45],
+          "base": [37, 13, 300, 166, 45],
           "variants": {},
           "compounds": []
         },
@@ -19626,6 +19986,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/table/useTable.ts",
@@ -19811,6 +20172,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/tabs/useTabs.ts",
@@ -19911,7 +20273,7 @@
       "anatomy": [
         {
           "name": "terminalCardBarVariants",
-          "base": [170, 7, 68, 150],
+          "base": [225, 7, 76, 205],
           "variants": {},
           "compounds": []
         },
@@ -19923,7 +20285,7 @@
         },
         {
           "name": "terminalCardListVariants",
-          "base": [247, 248, 68, 98, 30, 11],
+          "base": [302, 303, 76, 153, 30, 11],
           "variants": {},
           "compounds": []
         },
@@ -19957,6 +20319,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/terminal-card/useTerminalCard.ts",
@@ -20048,7 +20411,7 @@
       "anatomy": [
         {
           "name": "terminalCardBarVariants",
-          "base": [170, 7, 68, 150],
+          "base": [225, 7, 76, 205],
           "variants": {},
           "compounds": []
         },
@@ -20060,7 +20423,7 @@
         },
         {
           "name": "terminalCardListVariants",
-          "base": [247, 248, 68, 98, 30, 11],
+          "base": [302, 303, 76, 153, 30, 11],
           "variants": {},
           "compounds": []
         },
@@ -20094,6 +20457,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/terminal-card/useTerminalCard.ts",
@@ -20177,7 +20541,7 @@
       "anatomy": [
         {
           "name": "terminalCardBarVariants",
-          "base": [170, 7, 68, 150],
+          "base": [225, 7, 76, 205],
           "variants": {},
           "compounds": []
         },
@@ -20189,7 +20553,7 @@
         },
         {
           "name": "terminalCardListVariants",
-          "base": [247, 248, 68, 98, 30, 11],
+          "base": [302, 303, 76, 153, 30, 11],
           "variants": {},
           "compounds": []
         },
@@ -20223,6 +20587,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/terminal-card/useTerminalCard.ts",
@@ -20357,6 +20722,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -20389,17 +20755,18 @@
       "anatomy": [
         {
           "name": "textareaVariants",
-          "base": [83],
+          "base": [114],
           "variants": {
             "variant": {
-              "default": [154, 4, 11],
-              "code": [154, 30, 31],
-              "prose": [155, 4, 11, 6, 156]
+              "default": [209, 4, 11],
+              "code": [209, 30, 31],
+              "prose": [210, 4, 11, 6, 211]
             }
           },
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -20569,25 +20936,25 @@
       "anatomy": [
         {
           "name": "timelineAuthorVariants",
-          "base": [253],
+          "base": [308],
           "variants": {},
           "compounds": []
         },
         {
           "name": "timelineBodyVariants",
-          "base": [251, 252],
+          "base": [306, 307],
           "variants": {},
           "compounds": []
         },
         {
           "name": "timelineCategoryVariants",
-          "base": [29, 61, 26, 250],
+          "base": [29, 61, 26, 305],
           "variants": {},
           "compounds": []
         },
         {
           "name": "timelineEmptyVariants",
-          "base": [146, 4, 11],
+          "base": [201, 4, 11],
           "variants": {},
           "compounds": []
         },
@@ -20619,8 +20986,8 @@
           "base": [12, 47, 4],
           "variants": {
             "variant": {
-              "events": [102, 11],
-              "chat": [88, 5, 249]
+              "events": [157, 11],
+              "chat": [143, 5, 304]
             }
           },
           "compounds": []
@@ -20644,13 +21011,13 @@
         },
         {
           "name": "timelinePlatformVariants",
-          "base": [104],
+          "base": [159],
           "variants": {},
           "compounds": []
         },
         {
           "name": "timelineScrollbarVariants",
-          "base": [254],
+          "base": [309],
           "variants": {},
           "compounds": []
         },
@@ -20685,6 +21052,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/timeline/useTimeline.ts",
@@ -20801,6 +21169,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/tip-card/useTipCard.ts",
@@ -20904,17 +21273,17 @@
       "anatomy": [
         {
           "name": "toastRootVariants",
-          "base": [140, 79],
+          "base": [195, 110],
           "variants": {
             "danger": {
-              "true": [255]
+              "true": [310]
             }
           },
           "compounds": []
         },
         {
           "name": "toastViewportVariants",
-          "base": [7, 13, 70, 84],
+          "base": [7, 13, 86, 115],
           "variants": {
             "placement": {
               "top-start": [],
@@ -20926,6 +21295,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -21032,7 +21402,7 @@
         },
         {
           "name": "toggleVariants",
-          "base": [3, 83, 15, 4, 5, 116, 7, 157, 90, 158],
+          "base": [3, 114, 15, 4, 5, 171, 7, 212, 145, 213],
           "variants": {
             "size": {
               "sm": [47],
@@ -21069,6 +21439,7 @@
           ]
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -21130,11 +21501,12 @@
       "anatomy": [
         {
           "name": "tooltipVariants",
-          "base": [47, 159, 104, 79, 5, 4],
+          "base": [47, 214, 159, 110, 5, 4],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -21295,7 +21667,7 @@
         },
         {
           "name": "topBarLinkVariants",
-          "base": [5, 40, 73],
+          "base": [5, 40, 103],
           "variants": {},
           "compounds": []
         },
@@ -21313,7 +21685,7 @@
         },
         {
           "name": "topBarRowVariants",
-          "base": [19, 72],
+          "base": [19, 102],
           "variants": {},
           "compounds": []
         },
@@ -21325,11 +21697,12 @@
         },
         {
           "name": "topBarVariants",
-          "base": [17, 71],
+          "base": [17, 101],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -21418,7 +21791,7 @@
         },
         {
           "name": "topBarLinkVariants",
-          "base": [5, 40, 73],
+          "base": [5, 40, 103],
           "variants": {},
           "compounds": []
         },
@@ -21436,7 +21809,7 @@
         },
         {
           "name": "topBarRowVariants",
-          "base": [19, 72],
+          "base": [19, 102],
           "variants": {},
           "compounds": []
         },
@@ -21448,11 +21821,12 @@
         },
         {
           "name": "topBarVariants",
-          "base": [17, 71],
+          "base": [17, 101],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -21541,7 +21915,7 @@
         },
         {
           "name": "topBarLinkVariants",
-          "base": [5, 40, 73],
+          "base": [5, 40, 103],
           "variants": {},
           "compounds": []
         },
@@ -21559,7 +21933,7 @@
         },
         {
           "name": "topBarRowVariants",
-          "base": [19, 72],
+          "base": [19, 102],
           "variants": {},
           "compounds": []
         },
@@ -21571,11 +21945,12 @@
         },
         {
           "name": "topBarVariants",
-          "base": [17, 71],
+          "base": [17, 101],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -21664,7 +22039,7 @@
         },
         {
           "name": "topBarLinkVariants",
-          "base": [5, 40, 73],
+          "base": [5, 40, 103],
           "variants": {},
           "compounds": []
         },
@@ -21682,7 +22057,7 @@
         },
         {
           "name": "topBarRowVariants",
-          "base": [19, 72],
+          "base": [19, 102],
           "variants": {},
           "compounds": []
         },
@@ -21694,11 +22069,12 @@
         },
         {
           "name": "topBarVariants",
-          "base": [17, 71],
+          "base": [17, 101],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -21787,7 +22163,7 @@
         },
         {
           "name": "topBarLinkVariants",
-          "base": [5, 40, 73],
+          "base": [5, 40, 103],
           "variants": {},
           "compounds": []
         },
@@ -21805,7 +22181,7 @@
         },
         {
           "name": "topBarRowVariants",
-          "base": [19, 72],
+          "base": [19, 102],
           "variants": {},
           "compounds": []
         },
@@ -21817,11 +22193,12 @@
         },
         {
           "name": "topBarVariants",
-          "base": [17, 71],
+          "base": [17, 101],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -21910,7 +22287,7 @@
         },
         {
           "name": "topBarLinkVariants",
-          "base": [5, 40, 73],
+          "base": [5, 40, 103],
           "variants": {},
           "compounds": []
         },
@@ -21928,7 +22305,7 @@
         },
         {
           "name": "topBarRowVariants",
-          "base": [19, 72],
+          "base": [19, 102],
           "variants": {},
           "compounds": []
         },
@@ -21940,11 +22317,12 @@
         },
         {
           "name": "topBarVariants",
-          "base": [17, 71],
+          "base": [17, 101],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -21973,6 +22351,7 @@
       "parts": [],
       "composedOf": [],
       "anatomy": [],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -22037,6 +22416,28 @@
           "compounds": []
         }
       ],
+      "layout": [
+        {
+          "source": "packages/ui/src/organisms/web-section/useWebSection.ts",
+          "expression": "slots: [header, media, body, actions, social]",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/organisms/web-section/useWebSection.ts",
+          "expression": "cn(webSectionVariants(), className)",
+          "classes": [104, 89]
+        },
+        {
+          "source": "packages/ui/src/organisms/web-section/WebSection.tsx",
+          "expression": "{section.slots.map((slot, index) => (slot == null ? null : <div key={index}>{slot}</div>))}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/organisms/web-section/WebSection.tsx",
+          "expression": "{slot}",
+          "classes": []
+        }
+      ],
       "surfaceUsage": []
     },
     {
@@ -22097,7 +22498,7 @@
       "anatomy": [
         {
           "name": "webTemplateTopBarVariants",
-          "base": [],
+          "base": [135],
           "variants": {},
           "compounds": []
         },
@@ -22106,6 +22507,68 @@
           "base": [],
           "variants": {},
           "compounds": []
+        }
+      ],
+      "layout": [
+        {
+          "source": "packages/ui/src/templates/web-template/useWebTemplate.ts",
+          "expression": "cn(webTemplateVariants(), className)",
+          "classes": [136, 89]
+        },
+        {
+          "source": "packages/ui/src/templates/web-template/useWebTemplate.ts",
+          "expression": "cn(appShellVariants.skip())",
+          "classes": [137]
+        },
+        {
+          "source": "packages/ui/src/templates/web-template/useWebTemplate.ts",
+          "expression": "cn(appShellVariants.skipLink())",
+          "classes": [138]
+        },
+        {
+          "source": "packages/ui/src/templates/web-template/useWebTemplate.ts",
+          "expression": "cn(webTemplateTopBarVariants())",
+          "classes": [139]
+        },
+        {
+          "source": "packages/ui/src/templates/web-template/WebTemplate.tsx",
+          "expression": "className={page.skipClass}",
+          "classes": [140]
+        },
+        {
+          "source": "packages/ui/src/templates/web-template/WebTemplate.tsx",
+          "expression": "className={page.skipLinkClass}",
+          "classes": [141]
+        },
+        {
+          "source": "packages/ui/src/templates/web-template/WebTemplate.tsx",
+          "expression": "{page.skipLabel}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/web-template/WebTemplate.tsx",
+          "expression": "{page.topBar != null && <div className={page.topBarClass}>{page.topBar}</div>}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/web-template/WebTemplate.tsx",
+          "expression": "className={page.topBarClass}",
+          "classes": [142]
+        },
+        {
+          "source": "packages/ui/src/templates/web-template/WebTemplate.tsx",
+          "expression": "{page.topBar}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/web-template/WebTemplate.tsx",
+          "expression": "{page.content}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/web-template/WebTemplate.tsx",
+          "expression": "{page.footer}",
+          "classes": []
         }
       ],
       "surfaceUsage": []
@@ -22121,13 +22584,13 @@
       "anatomy": [
         {
           "name": "appShellBodyVariants",
-          "base": [],
+          "base": [70, 322],
           "variants": {},
           "compounds": []
         },
         {
           "name": "appShellBottomVariants",
-          "base": [],
+          "base": [323, 327],
           "variants": {
             "arrangement": {
               "switching": [],
@@ -22140,19 +22603,19 @@
         },
         {
           "name": "appShellMainVariants",
-          "base": [],
+          "base": [326, 322],
           "variants": {},
           "compounds": []
         },
         {
           "name": "appShellRootVariants",
-          "base": [4],
+          "base": [70, 318, 129, 71, 319, 4],
           "variants": {},
           "compounds": []
         },
         {
           "name": "appShellSideVariants",
-          "base": [],
+          "base": [323, 324, 325],
           "variants": {
             "arrangement": {
               "switching": [],
@@ -22165,7 +22628,7 @@
         },
         {
           "name": "appShellSkipLinkVariants",
-          "base": [],
+          "base": [321],
           "variants": {},
           "compounds": []
         },
@@ -22174,13 +22637,115 @@
           "base": [],
           "variants": {
             "arrangement": {
-              "switching": [],
+              "switching": [320],
               "side": [],
               "bottom": [],
               "content": []
             }
           },
           "compounds": []
+        }
+      ],
+      "layout": [
+        {
+          "source": "packages/ui/src/templates/app-shell/useAppShell.ts",
+          "expression": "cn(appShellVariants.skipLink())",
+          "classes": [138]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/useAppShell.ts",
+          "expression": "cn(appShellVariants.root(), className)",
+          "classes": [328, 89]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/useAppShell.ts",
+          "expression": "cn(appShellVariants.skip({ arrangement }))",
+          "classes": [329]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/useAppShell.ts",
+          "expression": "cn(appShellVariants.body())",
+          "classes": [330]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/useAppShell.ts",
+          "expression": "cn(appShellVariants.side({ arrangement }))",
+          "classes": [331]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/useAppShell.ts",
+          "expression": "cn(appShellVariants.main())",
+          "classes": [332]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/useAppShell.ts",
+          "expression": "cn(appShellVariants.bottom({ arrangement }))",
+          "classes": [333]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "{s.showSkipRow && ( <div className={s.skipRowClass}> <Button variant='secondary' asChild={true} className={s.skipLinkClass}> <a href={s.skipHref} onClick={s.onSkipClick}> {s.skipLabel} </a> </Button> </div> )}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "className={s.skipRowClass}",
+          "classes": [334]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "className={s.skipLinkClass}",
+          "classes": [335]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "{s.skipLabel}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "className={s.bodyClass}",
+          "classes": [336]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "{s.sideNavigation != null && <div className={s.sideClass}>{s.sideNavigation}</div>}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "className={s.sideClass}",
+          "classes": [337]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "{s.sideNavigation}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "className={s.mainClass}",
+          "classes": [338]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "{s.children}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "{s.bottomNavigation != null && <div className={s.bottomClass}>{s.bottomNavigation}</div>}",
+          "classes": []
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "className={s.bottomClass}",
+          "classes": [339]
+        },
+        {
+          "source": "packages/ui/src/templates/app-shell/AppShell.tsx",
+          "expression": "{s.bottomNavigation}",
+          "classes": []
         }
       ],
       "surfaceUsage": []
@@ -22233,7 +22798,7 @@
         },
         {
           "name": "badgeVariants",
-          "base": [29, 88, 89, 0, 4, 5],
+          "base": [29, 143, 144, 0, 4, 5],
           "variants": {
             "tone": {
               "neutral": [],
@@ -22336,6 +22901,7 @@
           ]
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -22406,7 +22972,7 @@
       "anatomy": [
         {
           "name": "calendarGridAddVariants",
-          "base": [83, 45],
+          "base": [114, 45],
           "variants": {},
           "compounds": []
         },
@@ -22427,7 +22993,7 @@
         },
         {
           "name": "calendarGridDayVariants",
-          "base": [7, 146, 84],
+          "base": [7, 201, 115],
           "variants": {},
           "compounds": []
         },
@@ -22445,13 +23011,13 @@
         },
         {
           "name": "calendarGridHeaderVariants",
-          "base": [7, 256, 257, 258],
+          "base": [7, 311, 312, 313],
           "variants": {},
           "compounds": []
         },
         {
           "name": "calendarGridLinkVariants",
-          "base": [104, 45],
+          "base": [159, 45],
           "variants": {},
           "compounds": []
         },
@@ -22496,6 +23062,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -22529,10 +23096,10 @@
         },
         {
           "name": "chipVariants",
-          "base": [29, 89, 88, 0, 49, 4, 5],
+          "base": [29, 144, 143, 0, 49, 4, 5],
           "variants": {
             "mode": {
-              "toggle": [109, 45, 110],
+              "toggle": [164, 45, 165],
               "static": [],
               "link": [45]
             }
@@ -22540,6 +23107,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -22551,6 +23119,7 @@
       "parts": [],
       "composedOf": [],
       "anatomy": [],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -22573,16 +23142,17 @@
       "anatomy": [
         {
           "name": "dropzoneVariants",
-          "base": [22, 83, 15, 5, 4, 116, 45],
+          "base": [22, 114, 15, 5, 4, 171, 45],
           "variants": {
             "variant": {
               "default": [29],
-              "inline": [100]
+              "inline": [155]
             }
           },
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -22702,6 +23272,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -22728,12 +23299,13 @@
           "variants": {
             "variant": {
               "field": [],
-              "choice": [74]
+              "choice": [105]
             }
           },
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -22815,7 +23387,7 @@
             "part": {
               "wrapper": [],
               "panel": [],
-              "trigger": [219],
+              "trigger": [274],
               "caret": [],
               "identity": [],
               "name": [4, 5],
@@ -22832,7 +23404,7 @@
         },
         {
           "name": "menuHeaderVariants",
-          "base": [12, 217, 218],
+          "base": [12, 272, 273],
           "variants": {},
           "compounds": []
         },
@@ -22850,7 +23422,7 @@
         },
         {
           "name": "menuItemVariants",
-          "base": [12, 42, 214, 83, 5],
+          "base": [12, 42, 269, 114, 5],
           "variants": {
             "tone": {
               "default": [],
@@ -22866,7 +23438,7 @@
         },
         {
           "name": "menuLabelVariants",
-          "base": [42, 215, 216, 61, 67],
+          "base": [42, 270, 271, 61, 67],
           "variants": {},
           "compounds": []
         },
@@ -22878,17 +23450,18 @@
         },
         {
           "name": "menuShortcutVariants",
-          "base": [143],
+          "base": [198],
           "variants": {},
           "compounds": []
         },
         {
           "name": "menuVariants",
-          "base": [146, 4],
+          "base": [201, 4],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/menu/types.ts",
@@ -22950,7 +23523,7 @@
       "anatomy": [
         {
           "name": "moduleRailVariants",
-          "base": [7, 172],
+          "base": [7, 227],
           "variants": {},
           "compounds": []
         },
@@ -22974,7 +23547,7 @@
         },
         {
           "name": "railLinkVariants",
-          "base": [83, 45],
+          "base": [114, 45],
           "variants": {},
           "compounds": []
         },
@@ -22997,6 +23570,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/organisms/module-rail/useModuleRail.ts",
@@ -23115,7 +23689,7 @@
         },
         {
           "name": "navListLinkVariants",
-          "base": [12, 42, 88, 83, 4, 5],
+          "base": [12, 42, 143, 114, 4, 5],
           "variants": {},
           "compounds": []
         },
@@ -23133,7 +23707,7 @@
         },
         {
           "name": "navListTriggerVariants",
-          "base": [7, 42, 83, 141, 61, 67, 45],
+          "base": [7, 42, 114, 196, 61, 67, 45],
           "variants": {},
           "compounds": []
         },
@@ -23150,6 +23724,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/nav-list/useNavList.ts",
@@ -23196,7 +23771,7 @@
         },
         {
           "name": "noticeAppearanceVariants",
-          "base": [12, 68, 98, 4],
+          "base": [12, 76, 153, 4],
           "variants": {
             "tone": {
               "neutral": [],
@@ -23207,7 +23782,7 @@
             },
             "size": {
               "md": [11],
-              "sm": [7, 42, 102, 83, 5]
+              "sm": [7, 42, 157, 114, 5]
             }
           },
           "compounds": []
@@ -23237,6 +23812,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/notice/types.ts",
@@ -23283,7 +23859,7 @@
           "variants": {
             "size": {
               "sm": [],
-              "lg": [135, 136]
+              "lg": [190, 191]
             },
             "variant": {
               "default": [],
@@ -23313,11 +23889,11 @@
           "variants": {
             "size": {
               "sm": [],
-              "lg": [0, 133]
+              "lg": [0, 188]
             },
             "edge": {
               "false": [],
-              "true": [82]
+              "true": [113]
             }
           },
           "compounds": [
@@ -23326,11 +23902,12 @@
                 "size": "sm",
                 "edge": "false"
               },
-              "classes": [134]
+              "classes": [189]
             }
           ]
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -23350,7 +23927,7 @@
         },
         {
           "name": "radioGroupItemVariants",
-          "base": [13, 0, 78, 105, 70, 107],
+          "base": [13, 0, 109, 160, 86, 162],
           "variants": {},
           "compounds": []
         },
@@ -23366,7 +23943,7 @@
           "variants": {
             "orientation": {
               "vertical": [37],
-              "horizontal": [137, 138]
+              "horizontal": [192, 193]
             }
           },
           "compounds": []
@@ -23378,6 +23955,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -23434,7 +24012,7 @@
         },
         {
           "name": "sidebarContentVariants",
-          "base": [42, 259],
+          "base": [42, 314],
           "variants": {
             "header": {
               "true": [],
@@ -23445,13 +24023,13 @@
         },
         {
           "name": "sidebarFooterVariants",
-          "base": [7, 68, 98, 4, 5],
+          "base": [7, 76, 153, 4, 5],
           "variants": {},
           "compounds": []
         },
         {
           "name": "sidebarHeaderVariants",
-          "base": [12, 68, 227, 259],
+          "base": [12, 76, 282, 314],
           "variants": {},
           "compounds": []
         },
@@ -23463,7 +24041,7 @@
         },
         {
           "name": "sidebarScrollbarVariants",
-          "base": [254],
+          "base": [309],
           "variants": {},
           "compounds": []
         },
@@ -23486,6 +24064,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/organisms/sidebar/useSidebar.ts",
@@ -23535,13 +24114,13 @@
         },
         {
           "name": "sliderThumbVariants",
-          "base": [0, 148, 70],
+          "base": [0, 203, 86],
           "variants": {},
           "compounds": []
         },
         {
           "name": "sliderTrackVariants",
-          "base": [0, 78],
+          "base": [0, 109],
           "variants": {},
           "compounds": []
         },
@@ -23552,6 +24131,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -23617,24 +24197,25 @@
           "base": [61],
           "variants": {
             "size": {
-              "md": [151],
-              "sm": [152]
+              "md": [206],
+              "sm": [207]
             }
           },
           "compounds": []
         },
         {
           "name": "statVariants",
-          "base": [84, 6, 149],
+          "base": [115, 6, 204],
           "variants": {
             "size": {
-              "md": [29, 68, 98],
-              "sm": [37, 42, 150]
+              "md": [29, 76, 153],
+              "sm": [37, 42, 205]
             }
           },
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -23673,8 +24254,8 @@
               "warning": [],
               "error": [],
               "stopped": [],
-              "live": [153],
-              "standby": [153]
+              "live": [208],
+              "standby": [208]
             },
             "pulse": {
               "true": [],
@@ -23692,6 +24273,7 @@
           ]
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -23740,11 +24322,11 @@
           "variants": {
             "tone": {
               "surface-0": [],
-              "surface-1": [75],
-              "surface-2": [76],
-              "surface-3": [77],
-              "well": [78],
-              "overlay": [79]
+              "surface-1": [106],
+              "surface-2": [107],
+              "surface-3": [108],
+              "well": [109],
+              "overlay": [110]
             },
             "elevation": {
               "0": [],
@@ -23755,13 +24337,13 @@
             "padding": {
               "none": [13],
               "sm": [22],
-              "md": [80],
-              "lg": [81]
+              "md": [111],
+              "lg": [112]
             },
             "radius": {
-              "none": [82],
-              "md": [83],
-              "lg": [84],
+              "none": [113],
+              "md": [114],
+              "lg": [115],
               "xl": [20],
               "full": [0]
             }
@@ -23786,25 +24368,26 @@
                 "tone": "raisedTones",
                 "elevation": "2"
               },
-              "classes": [85]
+              "classes": [116]
             },
             {
               "conditions": {
                 "tone": "raisedTones",
                 "elevation": "3"
               },
-              "classes": [79]
+              "classes": [110]
             },
             {
               "conditions": {
                 "tone": "surface-0",
                 "elevation": "[1, 2, 3]"
               },
-              "classes": [86]
+              "classes": [117]
             }
           ]
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/primitives/surface/useSurface.ts",
@@ -23883,7 +24466,7 @@
         },
         {
           "name": "tabBarLinkVariants",
-          "base": [37, 102, 2, 83, 5, 262, 45],
+          "base": [37, 157, 2, 114, 5, 317, 45],
           "variants": {},
           "compounds": []
         },
@@ -23895,11 +24478,12 @@
         },
         {
           "name": "tabBarVariants",
-          "base": [260, 47, 261, 4],
+          "base": [315, 47, 316, 4],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/organisms/tab-bar/useTabBar.ts",
@@ -24024,6 +24608,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": [
         {
           "source": "packages/ui/src/molecules/tabs/useTabs.ts",
@@ -24057,11 +24642,12 @@
       "anatomy": [
         {
           "name": "tooltipVariants",
-          "base": [47, 159, 104, 79, 5, 4],
+          "base": [47, 214, 159, 110, 5, 4],
           "variants": {},
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     },
     {
@@ -24086,17 +24672,17 @@
       "anatomy": [
         {
           "name": "toastRootVariants",
-          "base": [140, 79],
+          "base": [195, 110],
           "variants": {
             "danger": {
-              "true": [255]
+              "true": [310]
             }
           },
           "compounds": []
         },
         {
           "name": "toastViewportVariants",
-          "base": [7, 13, 70, 84],
+          "base": [7, 13, 86, 115],
           "variants": {
             "placement": {
               "top-start": [],
@@ -24108,6 +24694,7 @@
           "compounds": []
         }
       ],
+      "layout": [],
       "surfaceUsage": []
     }
   ],
@@ -24453,8 +25040,53 @@
       "unresolved": false
     },
     {
+      "className": "right-[calc(var(--space-6)+env(safe-area-inset-right,0px))]",
+      "tokens": ["--space-6"],
+      "unresolved": false
+    },
+    {
+      "className": "bottom-[calc(var(--space-6)+env(safe-area-inset-bottom,0px))]",
+      "tokens": ["--space-6"],
+      "unresolved": false
+    },
+    {
+      "className": "flex",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "flex-col",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "items-end",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "relative",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "items-center",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "h-14",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
       "className": "px-4",
       "tokens": ["--spacing-4"],
+      "unresolved": false
+    },
+    {
+      "className": "[@media(width<=520px)]:h-14",
+      "tokens": [],
       "unresolved": false
     },
     {
@@ -24463,9 +25095,114 @@
       "unresolved": false
     },
     {
+      "className": "overflow-hidden",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "bg-transparent",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "min-w-14",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "min-h-14",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "[@media(width<=520px)]:min-w-14",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "[@media(width<=520px)]:min-h-14",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "justify-center",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
       "className": "focus-visible:shadow-[var(--shadow-focus)]",
       "tokens": ["--shadow-focus"],
       "unresolved": false
+    },
+    {
+      "className": "m-0",
+      "tokens": ["--spacing-0"],
+      "unresolved": false
+    },
+    {
+      "className": "sectionNavRootVariants()",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "className",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "hidden && 'hidden'",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "sectionNavPillVariants()",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "sectionNavTriggerVariants()",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "sectionNavNextVariants()",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "sectionNavListVariants()",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "sectionNavLinkVariants()",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "nav.pillClass",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "nav.triggerClass",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "nav.nextClass",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "nav.listClass",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "nav.linkClass",
+      "tokens": [],
+      "unresolved": true
     },
     {
       "className": "data-[state=glass]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)]",
@@ -24481,6 +25218,11 @@
       "className": "aria-[current=page]:after:shadow-glow-base",
       "tokens": ["--shadow-glow-base"],
       "unresolved": false
+    },
+    {
+      "className": "webSectionVariants()",
+      "tokens": [],
+      "unresolved": true
     },
     {
       "className": "font-[var(--text-body-default--font-weight)]",
@@ -24548,9 +25290,129 @@
       "unresolved": true
     },
     {
+      "className": "box-border",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "isolate",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "min-h-[var(--section-min-height)]",
+      "tokens": ["--section-min-height"],
+      "unresolved": false
+    },
+    {
       "className": "pt-[calc(var(--nav-height)+var(--space-8))]",
       "tokens": ["--nav-height", "--space-8"],
       "unresolved": false
+    },
+    {
+      "className": "bg-none",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "bg-[image:var(--gradient-section-show)]",
+      "tokens": ["--gradient-section-show"],
+      "unresolved": false
+    },
+    {
+      "className": "bg-bg-flood",
+      "tokens": ["--color-bg-flood"],
+      "unresolved": false
+    },
+    {
+      "className": "bg-bg-deep",
+      "tokens": ["--color-bg-deep"],
+      "unresolved": false
+    },
+    {
+      "className": "bg-surface-0/50",
+      "tokens": ["--color-surface-0"],
+      "unresolved": false
+    },
+    {
+      "className": "[@media(prefers-reduced-transparency:reduce)]:bg-surface-0",
+      "tokens": ["--color-surface-0"],
+      "unresolved": false
+    },
+    {
+      "className": "[&>*]:w-auto",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "w-full",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "max-w-[var(--content-max)]",
+      "tokens": ["--content-max"],
+      "unresolved": false
+    },
+    {
+      "className": "mx-auto",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "sectionShellVariants({ register, wrap })",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "sectionShellWrapVariants()",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "s.wrapClass",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "min-h-[var(--nav-height)]",
+      "tokens": ["--nav-height"],
+      "unresolved": false
+    },
+    {
+      "className": "webTemplateVariants()",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "appShellVariants.skip()",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "appShellVariants.skipLink()",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "webTemplateTopBarVariants()",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "page.skipClass",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "page.skipLinkClass",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "page.topBarClass",
+      "tokens": [],
+      "unresolved": true
     },
     {
       "className": "py-1.5",
@@ -25426,6 +26288,116 @@
       "className": "aria-[current=page]:before:rounded-full",
       "tokens": ["--radius-full"],
       "unresolved": false
+    },
+    {
+      "className": "min-h-dvh",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "bg-bg-canvas",
+      "tokens": ["--color-bg-canvas"],
+      "unresolved": false
+    },
+    {
+      "className": "hidden",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "m-2",
+      "tokens": ["--spacing-2"],
+      "unresolved": false
+    },
+    {
+      "className": "flex-1",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "sticky",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "top-0",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "h-dvh",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "min-w-0",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "bottom-0",
+      "tokens": [],
+      "unresolved": false
+    },
+    {
+      "className": "appShellVariants.root()",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "appShellVariants.skip({ arrangement })",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "appShellVariants.body()",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "appShellVariants.side({ arrangement })",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "appShellVariants.main()",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "appShellVariants.bottom({ arrangement })",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "s.skipRowClass",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "s.skipLinkClass",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "s.bodyClass",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "s.sideClass",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "s.mainClass",
+      "tokens": [],
+      "unresolved": true
+    },
+    {
+      "className": "s.bottomClass",
+      "tokens": [],
+      "unresolved": true
     }
   ],
   "typographyRoles": [

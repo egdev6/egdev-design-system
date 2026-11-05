@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, relative, resolve } from 'node:path';
+import { basename, dirname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import docgen from 'react-docgen-typescript';
 import ts from 'typescript';
@@ -298,12 +298,39 @@ function utilityAnatomy(className) {
   };
 }
 
-function anatomyClasses(node, source) {
+// Layout utilities are extracted separately from the general visual CVA vocabulary.
+function layoutUtility(className) {
+  const utility = className.replace(/^(?:[^:[\]]+|\[[^\]]+\]):/g, '');
+  if (
+    !/^(?:max-w-|min-w-|w-|h-|min-h-|max-h-|bg-|grid|col-|row-|flex|items-|justify-|place-|gap-|p[trblxyse]?-|m[trblxyse]?-|space-|block$|hidden$|sticky$|relative$|absolute$|inset-|top-|bottom-|left-|right-|overflow-|isolate$|box-border$)/.test(
+      utility
+    )
+  ) {
+    return null;
+  }
+  const explicit = [...utility.matchAll(/--[a-zA-Z][\w-]*/g)].map((item) => item[0]);
+  const spacing = utility.match(/^(?:p[trblxyse]?|m[trblxyse]?|gap(?:-[xy])?)-(\d+(?:\.\d+)?)$/);
+  const color = utility.match(/^bg-([\w-]+)(?:\/\d+)?$/);
+  const candidates = explicit.length
+    ? explicit
+    : spacing
+      ? [tokenNames.has(`--spacing-${spacing[1]}`) ? `--spacing-${spacing[1]}` : '--spacing']
+      : color && !['transparent', 'none'].includes(color[1])
+        ? [`--color-${color[1]}`]
+        : [];
+  return {
+    className,
+    tokens: [...new Set(candidates.filter((name) => tokenNames.has(name)))],
+    unresolved: candidates.some((name) => !tokenNames.has(name)) || (!candidates.length && /\[/.test(utility))
+  };
+}
+
+function anatomyClasses(node, source, layout = false) {
   const result = [];
   function visit(item) {
     if (ts.isStringLiteral(item) || ts.isNoSubstitutionTemplateLiteral(item)) {
       for (const word of item.text.split(/\s+/).filter(Boolean)) {
-        const fact = utilityAnatomy(word);
+        const fact = utilityAnatomy(word) ?? (layout ? layoutUtility(word) : null);
         if (fact) {
           result.push(internUtility(fact));
         }
@@ -320,7 +347,7 @@ function anatomyClasses(node, source) {
   return result;
 }
 
-function visualAnatomy(file) {
+function visualAnatomy(file, layout = false) {
   if (!file) {
     return [];
   }
@@ -336,7 +363,7 @@ function visualAnatomy(file) {
         ts.isVariableDeclaration(declaration) || ts.isPropertyAssignment(declaration)
           ? declaration.name.getText(source).replace(/^['"]|['"]$/g, '')
           : 'anonymous';
-      const recipe = { name, base: anatomyClasses(node.arguments[0], source), variants: {}, compounds: [] };
+      const recipe = { name, base: anatomyClasses(node.arguments[0], source, layout), variants: {}, compounds: [] };
       const options = node.arguments[1];
       if (options && ts.isObjectLiteralExpression(options)) {
         for (const property of options.properties) {
@@ -354,7 +381,8 @@ function visualAnatomy(file) {
                 if (ts.isPropertyAssignment(value)) {
                   values[value.name.getText(source).replace(/^['"]|['"]$/g, '')] = anatomyClasses(
                     value.initializer,
-                    source
+                    source,
+                    layout
                   );
                 }
               }
@@ -374,7 +402,7 @@ function visualAnatomy(file) {
                 }
                 const fieldName = field.name.getText(source).replace(/^['"]|['"]$/g, '');
                 if (fieldName === 'class' || fieldName === 'className') {
-                  classes = anatomyClasses(field.initializer, source);
+                  classes = anatomyClasses(field.initializer, source, layout);
                 } else {
                   conditions[fieldName] = ts.isStringLiteral(field.initializer)
                     ? field.initializer.text
@@ -392,6 +420,174 @@ function visualAnatomy(file) {
   }
   visit(source);
   return result.sort((a, b) => compare(a.name, b.name));
+}
+
+// CSS facts keep their surrounding selectors/at-rules; this is not a computed cascade.
+function layoutStylesheet(file) {
+  if (!existsSync(file)) {
+    return [];
+  }
+  const css = readFileSync(file, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const result = [];
+  const scopes = [];
+  let start = 0;
+  let quote = '';
+  let parens = 0;
+  for (let i = 0; i < css.length; i++) {
+    const char = css[i];
+    if (quote) {
+      if (char === quote && css[i - 1] !== '\\') {
+        quote = '';
+      }
+      continue;
+    }
+    if (char === '"' || char === "'") {
+      quote = char;
+      continue;
+    }
+    if (char === '(') {
+      parens++;
+    }
+    if (char === ')') {
+      parens--;
+    }
+    if (parens) {
+      continue;
+    }
+    if (char === '{') {
+      scopes.push(css.slice(start, i).trim());
+      start = i + 1;
+    } else if (char === ';' || char === '}') {
+      const declaration = css.slice(start, i).trim();
+      const match = declaration.match(
+        /^(width|height|min-width|max-width|min-height|max-height|padding(?:-[\w-]+)?|margin(?:-[\w-]+)?|gap|row-gap|column-gap|background(?:-[\w-]+)?|grid(?:-[\w-]+)?|display|flex(?:-[\w-]+)?|align-[\w-]+|justify-[\w-]+|place-[\w-]+|position|inset(?:-[\w-]+)?|top|left|right|bottom)\s*:\s*([\s\S]+)$/
+      );
+      if (match) {
+        const expression = `${scopes.join(' > ')} { ${declaration}; }`;
+        const refs = [...match[2].matchAll(/var\(\s*(--[\w-]+)/g)].map((item) => item[1]);
+        result.push({
+          source: pathOf(file),
+          expression,
+          classes: [
+            internUtility({
+              className: declaration,
+              tokens: [...new Set(refs.filter((name) => tokenNames.has(name)))],
+              unresolved: refs.some((name) => !tokenNames.has(name))
+            })
+          ]
+        });
+      }
+      if (char === '}') {
+        scopes.pop();
+      }
+      start = i + 1;
+    }
+  }
+  return result;
+}
+
+// Record literal JSX slot expressions and hook slot arrays as source, not runtime claims.
+// Non-CVA class expressions and custom properties are retained when they cannot be evaluated.
+function layoutAnatomy(entry) {
+  if (!/\/templates\//.test(entry.file) && !/\/organisms\/[^/]*section[^/]*\//.test(entry.file)) {
+    return [];
+  }
+  const directory = `${dirname(entry.file)}/`;
+  const result = layoutStylesheet(resolve(dirname(entry.file), `${basename(dirname(entry.file))}.css`));
+  const unresolved = (node, source) => internUtility({ className: node.getText(source), tokens: [], unresolved: true });
+  for (const source of program
+    .getSourceFiles()
+    .filter((item) => item.fileName.startsWith(directory) && !/\.(?:test|stories)\./.test(item.fileName))) {
+    function visit(node) {
+      if (
+        (ts.isJsxExpression(node) &&
+          node.expression &&
+          (ts.isJsxElement(node.parent) || ts.isJsxFragment(node.parent))) ||
+        (ts.isPropertyAssignment(node) &&
+          node.name.getText(source) === 'slots' &&
+          ts.isArrayLiteralExpression(node.initializer))
+      ) {
+        result.push({
+          source: pathOf(source.fileName),
+          expression: node.getText(source).replace(/\s+/g, ' '),
+          classes: []
+        });
+      } else if (
+        ts.isJsxAttribute(node) &&
+        node.name.getText(source) === 'className' &&
+        node.initializer &&
+        ts.isStringLiteral(node.initializer)
+      ) {
+        const classes = anatomyClasses(node.initializer, source, true);
+        if (classes.length) {
+          result.push({ source: pathOf(source.fileName), expression: node.getText(source), classes });
+        }
+      } else if (
+        ts.isJsxAttribute(node) &&
+        node.name.getText(source) === 'className' &&
+        node.initializer &&
+        ts.isJsxExpression(node.initializer) &&
+        node.initializer.expression
+      ) {
+        result.push({
+          source: pathOf(source.fileName),
+          expression: node.getText(source),
+          classes: [unresolved(node.initializer.expression, source)]
+        });
+      } else if (
+        ts.isPropertyAssignment(node) &&
+        node.name.getText(source) === 'className' &&
+        !(ts.isCallExpression(node.initializer) && node.initializer.expression.getText(source) === 'cn')
+      ) {
+        const value = node.initializer;
+        const classes =
+          ts.isStringLiteral(value) || ts.isNoSubstitutionTemplateLiteral(value)
+            ? anatomyClasses(value, source, true)
+            : [unresolved(value, source)];
+        if (classes.length) {
+          result.push({ source: pathOf(source.fileName), expression: node.getText(source), classes });
+        }
+      } else if (
+        ts.isPropertyAssignment(node) &&
+        /^--eg-/.test(node.name.getText(source).replace(/^[\['"]+|[\]'" ]+$/g, ''))
+      ) {
+        const expression = node.getText(source);
+        const refs = [...expression.matchAll(/--[\w-]+/g)].map((item) => item[0]);
+        result.push({
+          source: pathOf(source.fileName),
+          expression,
+          classes: [
+            internUtility({
+              className: expression,
+              tokens: [...new Set(refs.filter((name) => tokenNames.has(name)))],
+              unresolved:
+                !(
+                  ts.isStringLiteral(node.initializer) ||
+                  ts.isNoSubstitutionTemplateLiteral(node.initializer) ||
+                  ts.isNumericLiteral(node.initializer)
+                ) || refs.slice(1).some((name) => !tokenNames.has(name))
+            })
+          ]
+        });
+      } else if (ts.isCallExpression(node) && node.expression.getText(source) === 'cn') {
+        const classes = node.arguments.flatMap((arg) =>
+          ts.isStringLiteral(arg) || ts.isNoSubstitutionTemplateLiteral(arg)
+            ? anatomyClasses(arg, source, true)
+            : [unresolved(arg, source)]
+        );
+        if (classes.length) {
+          result.push({
+            source: pathOf(source.fileName),
+            expression: node.getText(source).replace(/\s+/g, ' '),
+            classes
+          });
+        }
+      }
+      ts.forEachChild(node, visit);
+    }
+    visit(source);
+  }
+  return result;
 }
 
 function surfaceUsage(entry) {
@@ -445,7 +641,11 @@ const components = publicValues
       variants: variants(entry.types),
       parts: compoundParts(entry),
       composedOf: composedOf(entry),
-      anatomy: visualAnatomy(entry.types),
+      anatomy: visualAnatomy(
+        entry.types,
+        /\/templates\//.test(entry.file) || /\/organisms\/[^/]*section[^/]*\//.test(entry.file)
+      ),
+      layout: layoutAnatomy(entry),
       surfaceUsage: surfaceUsage(entry)
     };
   })

@@ -11,3 +11,4 @@ See [the artifact reference](../../docs/distribution/design-system-artifact.md) 
 The additive `typographyRoles` lists representative Heading, eyebrow, lede and code recipes with their source-derived font and size tokens. Missing token mappings are unresolved; these examples are not a universal cascade. Card headings may use sans rather than display.
 
 The artifact includes source-derived CVA visual anatomy and Surface usage, with unresolved classes explicitly identified. The generated `system.md` renders those facts for gentle-design; they are not a computed cascade.
+The artifact includes template and section source layout facts and slots as well as source-derived CVA visual anatomy and Surface usage, with unresolved classes explicitly identified. The generated `system.md` renders those facts for gentle-design; they are not a computed cascade.
