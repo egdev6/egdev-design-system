@@ -1001,6 +1001,17 @@
     "notas": ""
   },
   {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "WebSection",
+    "nivel": "organism",
+    "destino": "ui",
+    "radix": "—",
+    "compone": "Consumer-supplied header, media, body, actions and social slots",
+    "accion": "nuevo",
+    "notas": "Implemented neutral passive section content under the [approved v0.2 contract](components/web-section/v0.2/spec.md); the host owns section semantics, heading association and effects. Browser visual conformity remains pending."
+  },
+  {
     "actual": "TopBar",
     "nivelActual": "organismo",
     "nombre": "TopBar",
@@ -1219,6 +1230,17 @@
     "compone": "Sidebar, ModuleRail, TabBar",
     "accion": "nuevo",
     "notas": "Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/130) and its [implementation plan](components/app-shell/v0.1/implementation-plan.md): slot-based application region layout that docks a consumer-supplied Sidebar or ModuleRail beside the single main landmark and a TabBar at the bottom below the 56rem viewport threshold, with a built-in localized skip link. Owns placement, sticky in-flow docking, document scroll and responsive visibility only; navigation data, routing, current page and region Material stay with the organisms and consumer. No stylesheet, no new token and no new dependency; browser visual and accessibility verification pending."
+  },
+  {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "WebTemplate",
+    "nivel": "template",
+    "destino": "ui",
+    "radix": "—",
+    "compone": "Consumer-supplied TopBar, content and Footer",
+    "accion": "nuevo",
+    "notas": "Implemented structural page template under the [approved v0.2 contract](components/web-template/v0.2/spec.md): one main landmark and skip link with optional header and footer slots. Effects and choreography stay host-owned; browser visual conformity remains pending."
   },
   {
     "actual": "SectionShell",

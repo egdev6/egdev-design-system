@@ -1,7 +1,9 @@
 // @vitest-environment node
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { createElement } from 'react';
 import { withCustomConfig } from 'react-docgen-typescript';
+import { renderToStaticMarkup } from 'react-dom/server';
 import ts from 'typescript';
 import { beforeAll, describe, expect, it } from 'vitest';
 import config from '../../../../.storybook/main';
@@ -122,6 +124,30 @@ function defaults(path: string, cva: boolean): Record<string, string> {
 }
 
 describe('Storybook TypeScript docgen contract', () => {
+  it('publishes a composed WebTemplate page while keeping the existing stories', async () => {
+    const stories = await import('../templates/web-template/WebTemplate.stories');
+    expect(Object.keys(stories)).toEqual(expect.arrayContaining(['Default', 'Full', 'Localized', 'CatalogPage']));
+    const composed = Reflect.get(stories, 'CatalogPage');
+    expect(composed?.args?.content).toBeDefined();
+    const html = renderToStaticMarkup(
+      createElement(publicAPI.WebTemplate, { ...composed?.args, content: composed?.args?.content })
+    );
+    expect(html).toContain('<main');
+    expect(html).toContain('eg-topbar');
+    expect(html).toContain('eg-web-section');
+    for (const marker of [
+      'eg-article-feature',
+      'eg-blog-grid',
+      'eg-project-card',
+      'eg-community-card',
+      'eg-now-strip',
+      'eg-notes',
+      'eg-footer'
+    ]) {
+      expect(html, marker).toContain(marker);
+    }
+    expect(html).not.toContain('eg-ambient-background');
+  });
   it('extracts WebTemplate slots and protected boundaries', { timeout: heavyDocgenTimeoutMs }, () => {
     const doc = parser
       .parse(source('templates/web-template/WebTemplate.tsx'))

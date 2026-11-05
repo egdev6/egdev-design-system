@@ -11,7 +11,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 |---|---|
 | mantener | 30 |
 | mover | 30 |
-| nuevo | 24 |
+| nuevo | 26 |
 | extraer | 12 |
 | componer | 5 |
 | absorber | 4 |
@@ -21,7 +21,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 
 | Destino | Componentes |
 |---|---|
-| @egdev/ui | 100 |
+| @egdev/ui | 102 |
 | @egdev/effects | 5 |
 | Mando | 6 |
 | Cadencia | 1 |
@@ -133,6 +133,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **PreviewFrame** | StageFrame (organismo) | AspectRatio | IconButton, Chip | renombrar | Working-tree implementation under the approved #127 plan and owner decisions L11/L15: passive native preview figure with a decorative safe-area guide, clamped percentage zones and consumer-owned slots. Grid renders like plain until a grid token is approved; zone geometry uses only the four approved percentage custom properties. No stylesheet; browser visual and accessibility verification pending. Contract: [#127](https://github.com/egdev6/egdev-design-system/issues/127). |
 | **TabBar** | TabBar (organismo (agente)) | — (native navigation) | Icon, Badge, VisuallyHidden, Surface recipe | mantener | Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/125): named native navigation links with consumer-owned current page, localized count badges and intrinsic safe-area padding. Host owns placement and responsive visibility. No stylesheet or new dependency; visual and packed-consumer verification remain pending. |
 | **CalendarGrid** | CalendarGrid (organismo) | — (Move menu, no drag dependency) | ListItem, Menu, IconButton, Icon, VisuallyHidden | mantener | Working-tree implementation under the approved #126 plan (owner decision L11): named region of ordered day lanes with a keyboard-accessible Move menu, quiet add controls and consumer-owned dates, locale, eligibility and move rejection. No ARIA grid, no drag dependency, no new token and no stylesheet. Month view stays out of v0.1; browser visual and accessibility verification pending. |
+| **WebSection** | — | — | Consumer-supplied header, media, body, actions and social slots | nuevo | Implemented neutral passive section content under the [approved v0.2 contract](components/web-section/v0.2/spec.md); the host owns section semantics, heading association and effects. Browser visual conformity remains pending. |
 | **TopBar** | TopBar (organismo) | — (native navigation links) | Consumer-supplied brand, search, user and mobile controls | mover | Implemented React organism under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/292): fixed site header with named flat native navigation links and consumer-supplied brand, search, user and mobile parts placed by part type; TopBar-local 900px container query, host-driven glass state with solid reduced-transparency fallback. No NavigationMenu dependency, scroll listener, MobileMenu or UserMenu export. |
 | **SectionNav** | SectionNav (organismo) | Popover | Native section links, Pixel, ProgressBar, Icon; Surface overlay | mover | Implemented under approved v0.1 contract (#301): host-driven section navigation with explicit disclosure and separate next link, decorative progress edge and Pixel markers; Popover owns portal and focus. No scroll tracking or global shortcuts. |
 | **Footer** | Footer (organismo) | — (native footer and navigation) | Link; consumer Logo and SocialLinks | mover | Implemented React organism under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/293): passive native footer with optional motto, brand, labelled navigation, social and legal parts. Navigation accepts ordered destinations; consumers supply brand, social profiles and legal content. The host owns background and placement; no choreography, stylesheet, ref or asChild. |
@@ -150,6 +151,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | Componente | Antes | Radix | Compone | Acción | Notas |
 |---|---|---|---|---|---|
 | **AppShell** | — | — | Sidebar, ModuleRail, TabBar | nuevo | Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/130) and its [implementation plan](components/app-shell/v0.1/implementation-plan.md): slot-based application region layout that docks a consumer-supplied Sidebar or ModuleRail beside the single main landmark and a TabBar at the bottom below the 56rem viewport threshold, with a built-in localized skip link. Owns placement, sticky in-flow docking, document scroll and responsive visibility only; navigation data, routing, current page and region Material stay with the organisms and consumer. No stylesheet, no new token and no new dependency; browser visual and accessibility verification pending. |
+| **WebTemplate** | — | — | Consumer-supplied TopBar, content and Footer | nuevo | Implemented structural page template under the [approved v0.2 contract](components/web-template/v0.2/spec.md): one main landmark and skip link with optional header and footer slots. Effects and choreography stay host-owned; browser visual conformity remains pending. |
 | **SectionShell** | SectionShell (plantilla) | — | Host-supplied children; host-composed group fades | mover | Implemented v0.1 passive section frame with pro/show/flood/deep/grafito registers and an optional centered content wrapper. Group-edge fades are host-owned; the sticky Lab escape is excluded from v0.1. See [approved plan](components/section-shell/v0.1/implementation-plan.md). Browser and packed-consumer verification remain pending. |
 
 ### Composition recipes

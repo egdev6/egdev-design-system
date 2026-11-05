@@ -197,3 +197,23 @@ Sequenced, and each step separately authorized:
 ## 7. Out of scope for this plan
 
 Token values, dependencies, Radix packages, unapproved registry entries, breakpoint grants,  commits/branches/push, Storybook server runs, website-repository writes, `HomeTemplate`/scene removal, and any `AmbientBackground` implementation.
+
+## Status log
+
+Implementation authorizations and subsequent scope decisions are recorded in the ODD task log. Commit identities below follow its implementation table; U12 remains in progress.
+
+| Unit | Commit |
+| --- | --- |
+| U1 | `8ee5bff` |
+| U2 | `c4c415b` |
+| U3 | `3e8ab1e`, `1bc7cf1` |
+| U4 | `2dfe896` |
+| U5 | `b8adc57` |
+| U6 | `29c69f8` |
+| U7 | `2be48c1` |
+| U8 | `41c7445` |
+| U9 | `7e8f75a` |
+| U10 | `10ed04c` |
+| U11 | `5310dfc` |
+| F1 | `78af7da` (parent handoff; task table not yet refreshed) |
+| U12 | Pending |
