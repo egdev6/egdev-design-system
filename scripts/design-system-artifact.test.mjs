@@ -65,6 +65,80 @@ test('CVA recipes include class values, not default variant names', () => {
   assert.ok(!recipe.classes.includes('md'));
 });
 
+test('Button anatomy identifies its shared rounded-md token and size-specific spacing', () => {
+  const artifact = read('packages/system/design-system.json');
+  const button = artifact.components.find(({ name }) => name === 'Button');
+  const recipe = button.anatomy.find(({ name }) => name === 'buttonVariants');
+  const facts = (ids) => ids.map((id) => artifact.anatomyUtilities[id]);
+  assert.ok(
+    facts(recipe.base).some(({ className, tokens }) => className === 'rounded-md' && tokens.includes('--radius-md'))
+  );
+  assert.ok(
+    facts(recipe.variants.size.md).some(
+      ({ className, tokens }) => className === 'py-3' && tokens.includes('--spacing-3')
+    )
+  );
+  assert.ok(
+    facts(recipe.variants.size.sm).some(
+      ({ className, tokens }) => className === 'px-4' && tokens.includes('--spacing-4')
+    )
+  );
+  assert.ok(
+    facts(recipe.variants.variant.dark).some(({ className, tokens }) => className === 'shadow-none' && !tokens.length)
+  );
+});
+
+test('Surface anatomy retains compound conditions and source-proven composition', () => {
+  const artifact = read('packages/system/design-system.json');
+  const { components } = artifact;
+  const surface = components.find(({ name }) => name === 'Surface');
+  const recipe = surface.anatomy.find(({ name }) => name === 'surfaceVariants');
+  assert.ok(
+    recipe.compounds.some(
+      ({ conditions, classes }) =>
+        conditions.elevation === '1' &&
+        classes.some((id) => artifact.anatomyUtilities[id].tokens.includes('--shadow-elev-1'))
+    )
+  );
+  const card = components.find(({ name }) => name === 'CommunityCard');
+  assert.ok(card.surfaceUsage.some(({ arguments: args }) => args.includes("tone: 'surface-1'")));
+});
+
+test('--check detects Button radius source drift without changing files', () => {
+  const result = spawnSync(
+    process.execPath,
+    ['--import', './scripts/fixtures/design-system-artifact/radius-drift.mjs', 'scripts/build-artifact.mjs', '--check'],
+    { encoding: 'utf8', timeout: 120_000 }
+  );
+  assert.equal(result.status, 1, result.stderr);
+  assert.equal(result.stdout, '');
+  assert.equal(result.stderr, 'design-system.json is stale; run pnpm artifact --write\n');
+});
+
+test('mixed known and unknown token references are explicitly unresolved', () => {
+  const result = spawnSync(
+    process.execPath,
+    ['--import', './scripts/fixtures/design-system-artifact/mixed.mjs', 'scripts/build-artifact.mjs', '--write'],
+    { encoding: 'utf8', timeout: 120_000, maxBuffer: 4_000_000 }
+  );
+  assert.equal(result.status, 0, result.stderr);
+  const artifact = JSON.parse(result.stdout);
+  const fact = artifact.anatomyUtilities.find(({ className }) => className.includes('--unknown-mixed'));
+  assert.deepEqual(fact.tokens, ['--shadow-edge']);
+  assert.equal(fact.unresolved, true);
+});
+
+test('anatomy utilities are shared and the artifact stays below one MiB', () => {
+  const bytes = readFileSync(new URL('../packages/system/design-system.json', import.meta.url));
+  const artifact = JSON.parse(bytes);
+  assert.ok(bytes.length < 1_048_576, `${bytes.length} bytes`);
+  assert.equal(
+    new Set(artifact.anatomyUtilities.map(({ className }) => className)).size,
+    artifact.anatomyUtilities.length
+  );
+  assert.ok(artifact.components.find(({ name }) => name === 'Button').anatomy[0].base.every(Number.isInteger));
+});
+
 test('all L9 naming types retain their source and owner', () => {
   const artifact = read('packages/system/design-system.json');
   const usages = read('skills/_shared/prop-naming.json').flatMap((entry) => entry.usages);
@@ -134,6 +208,7 @@ test('artifact schema and total ordering match the contract', () => {
     'packages',
     'catalog',
     'components',
+    'anatomyUtilities',
     'types',
     'tokens',
     'materialRecipes',
@@ -143,7 +218,7 @@ test('artifact schema and total ordering match the contract', () => {
   for (const [field, key, fields] of [
     ['packages', 'name', ['name', 'version']],
     ['catalog', 'name', ['name', 'level', 'package', 'radix', 'composes', 'action', 'available']],
-    ['components', 'name', ['name', 'package', 'source', 'props', 'variants', 'parts']],
+    ['components', 'name', ['name', 'package', 'source', 'props', 'variants', 'parts', 'anatomy', 'surfaceUsage']],
     ['types', 'name', ['name', 'owner', 'source']],
     ['tokens', 'name', ['name', 'value', 'group']],
     ['materialRecipes', 'id', ['id', 'semantics', 'tokens']],

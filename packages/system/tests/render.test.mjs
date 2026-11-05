@@ -67,6 +67,38 @@ test('renders deterministic sections and artifact facts only', () => {
   assert.match(renderSystemMd({}), /## Typography\n\nEmpty\./);
 });
 
+test('renders anatomy branches, unresolved utilities and Surface use from artifact', () => {
+  const copy = structuredClone(artifact);
+  copy.components[0].anatomy = [
+    {
+      name: 'buttonVariants',
+      base: [0, 2],
+      variants: { size: { sm: [1] } },
+      compounds: []
+    }
+  ];
+  copy.anatomyUtilities = [
+    { className: 'rounded-md', tokens: ['--radius-md'], unresolved: false },
+    { className: 'px-mystery', tokens: [], unresolved: true },
+    { className: 'shadow-mixed', tokens: ['--shadow-edge'], unresolved: true }
+  ];
+  copy.components[0].surfaceUsage = [{ source: 'button.ts', arguments: "{ tone: 'well' }" }];
+  copy.components.push({
+    name: 'Uncatalogued',
+    package: '@egdev/ui',
+    source: 'other.ts',
+    props: [],
+    anatomy: copy.components[0].anatomy
+  });
+  const text = renderSystemMd(copy);
+  assert.match(text, /Visual anatomy/);
+  assert.match(text, /rounded-md.*--radius-md/);
+  assert.match(text, /size=sm.*px-mystery.*unresolved/);
+  assert.match(text, /shadow-mixed.*--shadow-edge.*unresolved/);
+  assert.match(text, /### Uncatalogued[\s\S]*Visual anatomy[\s\S]*rounded-md/);
+  assert.match(text, /surfaceVariants.*tone: 'well'/);
+});
+
 test('each mapped token appears in the correct section and unknown recipe references are not invented', () => {
   const copy = structuredClone(artifact);
   copy.tokens.push(

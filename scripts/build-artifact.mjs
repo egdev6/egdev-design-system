@@ -205,6 +205,195 @@ function compoundParts(parent) {
     })
     .sort((a, b) => compare(a.name, b.name));
 }
+
+// Visual anatomy is deliberately separate from the legacy flattened CVA contract.
+const tokenDeclarations = extractGroupedDeclarations(
+  readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8')
+);
+const tokenNames = new Set(tokenDeclarations.map(({ name }) => name));
+const anatomyUtilities = [];
+const anatomyUtilityIds = new Map();
+
+function internUtility(fact) {
+  if (!anatomyUtilityIds.has(fact.className)) {
+    anatomyUtilityIds.set(fact.className, anatomyUtilities.length);
+    anatomyUtilities.push(fact);
+  }
+  return anatomyUtilityIds.get(fact.className);
+}
+
+function utilityAnatomy(className) {
+  // Colons inside arbitrary selectors and values are not variant separators.
+  let depth = 0;
+  let start = 0;
+  for (let i = 0; i < className.length; i++) {
+    if (className[i] === '[' || className[i] === '(') {
+      depth++;
+    }
+    if (className[i] === ']' || className[i] === ')') {
+      depth--;
+    }
+    if (className[i] === ':' && depth === 0) {
+      start = i + 1;
+    }
+  }
+  const utility = className.slice(start);
+  const match = utility.match(/^(rounded(?:-[a-z]+)?|p[trblxyse]?|gap(?:-[xy])?|shadow|text|font)-(.+)$/);
+  if (!match && !utility.startsWith('[box-shadow:') && !utility.startsWith('[font-')) {
+    return null;
+  }
+  const prefix = match?.[1];
+  const value = match?.[2];
+  let candidates = [];
+  if (prefix?.startsWith('rounded')) {
+    candidates = [`--radius-${value}`];
+  } else if (prefix === 'shadow') {
+    candidates = [`--shadow-${value}`];
+  } else if (prefix === 'font') {
+    candidates = [`--font-${value}`];
+  } else if (prefix === 'text') {
+    if (tokenNames.has(`--color-${value}`)) {
+      return null;
+    }
+    candidates = [`--text-${value}`];
+  } else if (prefix) {
+    candidates = [`--spacing-${value}`];
+    if (!tokenNames.has(candidates[0]) && /^\d+(?:\.\d+)?$/.test(value)) {
+      candidates = ['--spacing'];
+    }
+  }
+  const explicit = [...utility.matchAll(/--[a-zA-Z][\w-]*/g)].map((item) => item[0]);
+  if (explicit.length) {
+    candidates = explicit;
+  }
+  return {
+    className,
+    tokens: [...new Set(candidates.filter((name) => tokenNames.has(name)))],
+    unresolved: !candidates.length || candidates.some((name) => !tokenNames.has(name))
+  };
+}
+
+function anatomyClasses(node, source) {
+  const result = [];
+  function visit(item) {
+    if (ts.isStringLiteral(item) || ts.isNoSubstitutionTemplateLiteral(item)) {
+      for (const word of item.text.split(/\s+/).filter(Boolean)) {
+        const fact = utilityAnatomy(word);
+        if (fact) {
+          result.push(internUtility(fact));
+        }
+      }
+    } else if (ts.isArrayLiteralExpression(item)) {
+      item.elements.forEach(visit);
+    } else if (ts.isTemplateExpression(item) || ts.isIdentifier(item) || ts.isCallExpression(item)) {
+      result.push(internUtility({ className: item.getText(source), tokens: [], unresolved: true }));
+    }
+  }
+  if (node) {
+    visit(node);
+  }
+  return result;
+}
+
+function visualAnatomy(file) {
+  if (!file) {
+    return [];
+  }
+  const source = program.getSourceFile(file);
+  if (!source) {
+    return [];
+  }
+  const result = [];
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      const declaration = node.parent;
+      const name =
+        ts.isVariableDeclaration(declaration) || ts.isPropertyAssignment(declaration)
+          ? declaration.name.getText(source).replace(/^['"]|['"]$/g, '')
+          : 'anonymous';
+      const recipe = { name, base: anatomyClasses(node.arguments[0], source), variants: {}, compounds: [] };
+      const options = node.arguments[1];
+      if (options && ts.isObjectLiteralExpression(options)) {
+        for (const property of options.properties) {
+          if (!ts.isPropertyAssignment(property)) {
+            continue;
+          }
+          const key = property.name.getText(source).replace(/^['"]|['"]$/g, '');
+          if (key === 'variants' && ts.isObjectLiteralExpression(property.initializer)) {
+            for (const axis of property.initializer.properties) {
+              if (!ts.isPropertyAssignment(axis) || !ts.isObjectLiteralExpression(axis.initializer)) {
+                continue;
+              }
+              const values = {};
+              for (const value of axis.initializer.properties) {
+                if (ts.isPropertyAssignment(value)) {
+                  values[value.name.getText(source).replace(/^['"]|['"]$/g, '')] = anatomyClasses(
+                    value.initializer,
+                    source
+                  );
+                }
+              }
+              recipe.variants[axis.name.getText(source).replace(/^['"]|['"]$/g, '')] = values;
+            }
+          }
+          if (key === 'compoundVariants' && ts.isArrayLiteralExpression(property.initializer)) {
+            for (const compound of property.initializer.elements) {
+              if (!ts.isObjectLiteralExpression(compound)) {
+                continue;
+              }
+              const conditions = {};
+              let classes = [];
+              for (const field of compound.properties) {
+                if (!ts.isPropertyAssignment(field)) {
+                  continue;
+                }
+                const fieldName = field.name.getText(source).replace(/^['"]|['"]$/g, '');
+                if (fieldName === 'class' || fieldName === 'className') {
+                  classes = anatomyClasses(field.initializer, source);
+                } else {
+                  conditions[fieldName] = ts.isStringLiteral(field.initializer)
+                    ? field.initializer.text
+                    : field.initializer.getText(source);
+                }
+              }
+              recipe.compounds.push({ conditions, classes });
+            }
+          }
+        }
+      }
+      result.push(recipe);
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(source);
+  return result.sort((a, b) => compare(a.name, b.name));
+}
+
+function surfaceUsage(entry) {
+  const directory = `${dirname(entry.file).replaceAll('\\\\', '/')}/`;
+  return program
+    .getSourceFiles()
+    .filter(
+      (source) =>
+        source.fileName.replaceAll('\\\\', '/').startsWith(directory) && !/\.(?:test|stories)\./.test(source.fileName)
+    )
+    .flatMap((source) => {
+      const found = [];
+      function visit(node) {
+        if (ts.isCallExpression(node) && node.expression.getText(source) === 'surfaceVariants') {
+          found.push({
+            source: pathOf(source.fileName),
+            arguments: node.arguments.map((arg) => arg.getText(source)).join(', ')
+          });
+        }
+        ts.forEachChild(node, visit);
+      }
+      visit(source);
+      return found;
+    })
+    .sort((a, b) => compare(a.source, b.source) || compare(a.arguments, b.arguments));
+}
+
 const components = publicValues
   .map((entry, index) => {
     const hiddenNames = hidden.get(entry.name.charAt(0).toLowerCase() + entry.name.slice(1)) ?? [];
@@ -229,7 +418,9 @@ const components = publicValues
       source: pathOf(entry.types ?? entry.file),
       props,
       variants: variants(entry.types),
-      parts: compoundParts(entry)
+      parts: compoundParts(entry),
+      anatomy: visualAnatomy(entry.types),
+      surfaceUsage: surfaceUsage(entry)
     };
   })
   .sort((a, b) => compare(a.name, b.name) || compare(a.package, b.package));
@@ -273,10 +464,9 @@ const artifact = {
     }))
     .sort((a, b) => compare(a.name, b.name)),
   components,
+  anatomyUtilities,
   types: [...typeMap.values()].sort((a, b) => compare(a.name, b.name)),
-  tokens: extractGroupedDeclarations(readFileSync(resolve(root, 'packages/tokens/src/theme.css'), 'utf8')).sort(
-    (a, b) => compare(a.name, b.name)
-  ),
+  tokens: tokenDeclarations.sort((a, b) => compare(a.name, b.name)),
   materialRecipes: [
     {
       id: 'Elevated surface',
@@ -307,7 +497,7 @@ const artifact = {
     .sort((a, b) => compare(a.id, b.id))
 };
 const output = `${JSON.stringify(artifact, null, 2)}\n`.replace(
-  /^( *)("[^"]+": )\[\n((?:\s+"[^\n]*"[,]?\n)+)\1\]/gm,
+  /^( *)("[^"]+": )\[\n((?:\s+(?:"[^\n]*"|\d+)[,]?\n)+)\1\]/gm,
   (block, indent, key, contents) => {
     const line = `${key}[${contents
       .trim()

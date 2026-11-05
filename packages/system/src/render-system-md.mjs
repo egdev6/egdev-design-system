@@ -8,6 +8,39 @@ const tokenSource = 'tokens[] · packages/tokens/src/theme.css';
 const recipeSource = 'materialRecipes[] · docs/MATERIAL.md';
 const namingSource = 'propNaming[] · skills/_shared/prop-naming.json';
 
+// These are source facts, not a computed cascade: branches and state prefixes remain visible.
+function anatomyLines(component, utilities) {
+  const lines = ['  - Visual anatomy (source classes; unresolved is not a guessed value):'];
+  const emit = (label, facts) => {
+    for (const id of facts ?? []) {
+      const fact = utilities[id];
+      if (!fact) {
+        continue;
+      }
+      const details = [...fact.tokens.map(cell), ...(fact.unresolved ? ['unresolved'] : [])].join(', ');
+      lines.push(`    - ${cell(label)}: ${cell(fact.className)} → ${details}`);
+    }
+  };
+  for (const recipe of component.anatomy ?? []) {
+    emit(`${recipe.name} base`, recipe.base);
+    for (const [axis, values] of Object.entries(recipe.variants ?? {})) {
+      for (const [value, facts] of Object.entries(values)) {
+        emit(`${recipe.name} ${axis}=${value}`, facts);
+      }
+    }
+    for (const compound of recipe.compounds ?? []) {
+      emit(`${recipe.name} ${JSON.stringify(compound.conditions)}`, compound.classes);
+    }
+  }
+  for (const use of component.surfaceUsage ?? []) {
+    lines.push(`    - surfaceVariants(${cell(use.arguments)}) · ${cell(use.source)}; see Surface anatomy`);
+  }
+  if (lines.length === 1) {
+    lines.push('    - No statically extracted anatomy.');
+  }
+  return lines;
+}
+
 /** Render the artifact without reading the environment or filesystem. */
 export function renderSystemMd(artifact) {
   const tokens = artifact.tokens ?? [];
@@ -93,12 +126,28 @@ export function renderSystemMd(artifact) {
           `  - ${cell(part.name)}: ${cell(part.description)}${part.children ? ` Children: ${cell(part.children)}` : ''} (components[].parts · ${cell(part.source)})`
         );
       }
+      componentLines.push(...anatomyLines(component, artifact.anatomyUtilities ?? []));
       for (const prop of sorted(component.props, (item) => item.name)) {
         componentLines.push(
           `  - ${prop.name}: ${cell(prop.type)}; ${cell(prop.description)} (components[] · ${component.source})`
         );
       }
     }
+  }
+  const catalogued = new Set(
+    catalog
+      .filter((row) => row.available)
+      .flatMap((row) => row.name.split(/\s*\/\s*/).map((name) => `${row.package}\0${name}`))
+  );
+  for (const component of sorted(artifact.components, (item) => `${item.name}\0${item.package}`)) {
+    if (catalogued.has(`${component.package}\0${component.name}`)) {
+      continue;
+    }
+    componentLines.push(
+      `### ${cell(component.name)}`,
+      `- ${cell(component.name)} (components[] · ${cell(component.source)} · ${cell(component.package)})`
+    );
+    componentLines.push(...anatomyLines(component, artifact.anatomyUtilities ?? []));
   }
   const unavailable = catalog.filter((row) => !row.available);
   if (unavailable.length) {
