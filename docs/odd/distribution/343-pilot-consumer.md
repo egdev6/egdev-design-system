@@ -144,3 +144,114 @@ Approved by the owner on 2026-11-05. D3 uses the owner's earlier answer "sólo d
 | D7 | (a) Short evidence table in the PR body and this ODD document; images only in ignored `.playwright-mcp/` | "Aceptar todas las recomendaciones (Recomendado)" |
 
 Amendments recorded in place: the dependency row now inherits #342's approved decisions, R6 is fixed to the dark-only branch, R9's dependency clause is fixed to "none added", and the planned-path table and WU3 no longer carry the D2(b) browser harness, which the approval excludes.
+
+## Implementation evidence and browser handoff
+
+`pnpm pilot:build` packs the existing three release members into a fresh system temporary directory, installs them with strict peers and scripts disabled, resolves their public entry points outside this repository, renders the public page on the server, and builds both modes. The directory is removed on exit. `pnpm test:package-pilot` exercises that path and verifies that a repository realpath is rejected and the temporary directory removed.
+
+| Evidence | Observed |
+| --- | --- |
+| Local tarballs | tokens 0.3.0, ui 0.1.0, effects 0.1.0; each installed from a `file:` tarball |
+| Tailwind build | CSS 302017 bytes; JS 431152 bytes; no literal `@theme` |
+| Native build | CSS 297690 bytes; JS 431152 bytes; no literal `@theme` |
+| Server-rendered structure | One `main`, two WebSections and all five D4 molecule roots |
+| Dark | Measured in Windows Chrome via Playwright MCP in both CSS modes and both viewports; see results below |
+| Light | Not applicable: `packages/tokens/src/theme.css:16` declares only dark; precedent `docs/components/section-shell/v0.1/implementation-plan.md:124` |
+
+Sizes above are observations from one run, not fixed acceptance thresholds. The parent supplied the browser observations below; AC2 is not claimed as passing.
+
+### Documentation reconciliation
+
+| File and location | Observation | Disposition |
+| --- | --- | --- |
+| `docs/distribution/install.md`, upgrading step 3 | The `@egdev` packages use tarballs, but installation may fetch React, Vite and other third-party packages from a registry; the old sentence said nothing was fetched from a registry. | Corrected in place. |
+| `docs/ARQUITECTURA.md:77-86`; `packages/tokens/README.md:24-35` | Both document the imports used by the respective successful builds. | No contradiction observed. |
+| `docs/MATERIAL.md:11-12,29-30,48-52`; `packages/ui/src/primitives/surface/types.ts:50-55,68` | The elevated default Surface specifies a light edge and two-layer shadow, but its computed shadow in the pilot consisted only of transparent layers. | Unresolved consumer-facing discrepancy; package changes are outside this task and no issue has been created or linked. AC3 remains open. |
+| This plan, section 5 security | Strictly offline wording overlooks installation of pinned third-party packages. | Clarified here: only `@egdev` packages are required to come from local tarballs; other dependencies may come from the registry. |
+
+### Parent-reported browser evidence and classification
+
+The parent reports Playwright MCP against Windows Chrome. All four runs used dark, activated Details and Code, then reloaded for default-state capture. Details reported `aria-selected=true` / `data-state=active`; Code reported `aria-pressed=true` / `data-state=on`. No console errors were reported. The parent did not supply the browser version, capture commit, device-pixel ratio, page zoom, widest-element value or screenshot hashes; these are not inferred from the current checkout.
+
+| CSS mode | Viewport | Canvas / token | Surface / token | scrollWidth / clientWidth | Raw assertion failures |
+| --- | --- | --- | --- | --- | --- |
+| Tailwind | 390×844 | rgb(20, 21, 24) / same | rgb(27, 28, 32) / same | 390 / 390 | border, fractional right edges, hidden skip row, two mixed colours; transparent shadow masked by textual check |
+| Tailwind | 1280×900 | rgb(20, 21, 24) / same | rgb(27, 28, 32) / same | 1280 / 1280 | border, hidden skip row, two mixed colours; transparent shadow masked by textual check |
+| Native | 390×844 | rgb(20, 21, 24) / same | rgb(27, 28, 32) / same | 390 / 390 | border, fractional right edges, hidden skip row, two mixed colours; transparent shadow masked by textual check |
+| Native | 1280×900 | rgb(20, 21, 24) / same | rgb(27, 28, 32) / same | 1280 / 1280 | border, hidden skip row, two mixed colours; transparent shadow masked by textual check |
+
+| Finding | Source-based classification and remaining uncertainty |
+| --- | --- |
+| Border `0.8px` in all runs | The measured Surface uses `border` (`packages/ui/src/primitives/surface/types.ts:22`); the shipped utility declares `border-width: 1px` (`packages/ui/dist/styles.css:7256-7259`). The conceptual CSS declaration is 1px. Fractional pixel/zoom quantization is plausible, but the reported value alone does not establish device-pixel ratio or zoom. The literal `1px` computed-style assertion failed; it has not been rerun or waived. |
+| At 390, HTML/BODY/DIV/`eg-web-template`/HEADER/MAIN right edge `390.3999938964844`; hidden skip DIV `-1..0` | Equal integer scroll/client widths show no measured scroll overflow; the strict rectangle assertion nevertheless failed. The fractional right edge is consistent with rounding but its cause is unconfirmed without zoom/DPR data. The skip row is intentional visually-hidden accessibility content: `packages/ui/src/templates/app-shell/types.ts:51-52` selects `sr-only`, whose shipped rule uses absolute position, 1px dimensions, -1px margin and clipping (`packages/ui/dist/styles.css:6137-6146`). This does not establish that every visible element satisfies R7's literal assertion. |
+| Surface shadow is four transparent layers | `scripts/lib/pilot-page.mjs:13` selects the default Surface, not a well or shadowless variant. `packages/ui/src/primitives/surface/useSurface.ts:10-24` defaults raised elevation to 1, and `packages/ui/src/primitives/surface/types.ts:50-55,68` specifies edge plus elevation shadows. The source tokens are nontransparent (`packages/tokens/src/theme.css:357-362`), and the shipped utility references them (`packages/ui/dist/styles.css:8275-8277`). `docs/MATERIAL.md:11-12,29-30` expects the light edge and two layers. Therefore the element/variant is appropriate; this is not an intentional no-shadow recipe. The parent reports a computed value containing only transparent zero-size layers, so the nonempty-string check was a false positive. The cause is not established by source inspection; do not claim a package or pilot root cause without further evidence. No pilot or package workaround was made. |
+| Selected Chip and neutral Notice border colours absent from the literal token set | The selected Chip uses `border-primitive-red-neon/60` (`packages/ui/src/atoms/chip/types.ts:120-122`), compiled to `color-mix(in oklab, var(--color-primitive-red-neon) 60%, transparent)` (`packages/ui/dist/styles.css:9723-9727`). The Notice uses `border-fg-secondary/30` (`packages/ui/src/molecules/notice/types.ts:67-70`), compiled to the corresponding 30% mix (`packages/ui/dist/styles.css:7364-7368`); the token aliases are in `packages/tokens/src/theme.css:27,31,75`. The observed values were respectively `oklab(0.630989 0.234418 0.0996162 / 0.6)` and `oklab(0.845217 0.0000385046 0.0000169277 / 0.3)`. They are token-derived alpha mixes, not literal members of the test's token-value set. Material describes alpha hairlines (`docs/MATERIAL.md:27`); this does not silently amend R5's stricter rule, which failed. |
+
+**Verdicts:** R4 and R6 have supporting evidence, with light not applicable. R5 is **not satisfied**: the backgrounds match, but the literal border and colour assertions failed and the observed shadow is transparent. R7 is **not satisfied literally**: scroll widths and console checks passed, but the rectangle assertion failed; the suspected rounding cause is unconfirmed. AC2 therefore remains open. R8/AC3 remain open because the Material shadow discrepancy has neither been fixed nor linked to a new issue; creating one is parent-owned. AC1/R1–R3 and R9 retain the earlier build/test evidence and are not revalidated by these browser results.
+
+### Parent re-measurement (2026-11-05, same pilot, both modes, 1280×900)
+
+The "transparent shadow" finding was a parent measurement defect: the first run truncated `boxShadow` to 120 characters. The full computed value, identical in Tailwind and native mode, is `rgba(0, 0, 0, 0) 0px 0px 0px 0px` ×4 (Tailwind's empty ring/inset slots) followed by `rgba(255, 255, 255, 0.07) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.7) 0px 1px 2px 0px, rgba(0, 0, 0, 0.55) 0px 4px 14px -2px` — the light edge plus the two elevation layers that `docs/MATERIAL.md` requires. The same run reported `devicePixelRatio` 1 and a browser zoom of about 1.23 (`outerWidth / innerWidth`), which explains the `0.8px` border (1px quantised at 125% zoom) and the `390.4px` root edge; scroll width still equals client width.
+
+Revised disposition: **shadow** — passes (no Material discrepancy, no issue needed). **Border and fractional edges** — host zoom artefacts; the declared border is 1px and no scroll overflow exists. **Skip link** — intentional `sr-only` clip. **Token-derived alpha mixes** (Chip 60%, Notice 30%) — still fail the literal token-set rule; they are recorded openly as a limitation of that rule (it compares against resolved token values and does not model `color-mix` of a token with transparency), not as a design-system defect. Remaining limits: captures stay in the Windows Playwright host folder without SHA-256, and the measurement ran at ~125% browser zoom.
+
+The four `pilot--{tailwind,native}--dark--{390,1280}.png` captures are reported in the Playwright MCP host's Windows output folder, not this worktree's `.playwright-mcp/`. No SHA-256 values or matching metadata files were supplied; D7 hash/location retention is incomplete. Physical devices, assistive technology, zoom behavior and a light theme remain untested.
+
+### Parent-owned Chromium capture procedure
+
+From the repository root run `pnpm pilot:build -- --serve` in a foreground terminal and leave it running. Wait until both Vite preview servers report ready. Tailwind is `http://localhost:4173/`; native is `http://localhost:4174/`. Stop with Ctrl-C after capture to remove the temporary app. The server listens on `0.0.0.0` for an external browser host; use the worktree host's reachable address in place of `localhost` if necessary. No preview is intended to remain running after capture.
+
+For each mode capture dark/default at 390×844 and 1280×900: `.playwright-mcp/pilot--tailwind--dark--390.png`, `.playwright-mcp/pilot--tailwind--dark--1280.png`, `.playwright-mcp/pilot--native--dark--390.png`, and `.playwright-mcp/pilot--native--dark--1280.png`. Attach matching `.json` records with viewport, mode, theme, commit, browser/tool, screenshot SHA-256, computed measurements and console errors. Record errors from navigation onward; assert none. Also activate the Details tab and the Code chip, confirm their selected states, then restore defaults before the screenshots. Do not treat captures as approval.
+
+At each viewport and mode evaluate the following in the page. It returns the measurements and failures instead of hiding failures in a boolean. Token-derived alpha mixes may expose a real discrepancy and must not be silently exempted. Record the returned data with the console-error count and screenshot hash.
+
+```js
+() => {
+  const root = document.documentElement;
+  const rootStyle = getComputedStyle(root);
+  const probe = document.createElement('span');
+  document.body.append(probe);
+  const resolve = (value) => {
+    probe.style.color = '';
+    probe.style.color = value;
+    return probe.style.color ? getComputedStyle(probe).color : null;
+  };
+  const tokens = new Set();
+  for (const name of rootStyle) {
+    if (name.startsWith('--color-')) {
+      const color = resolve(rootStyle.getPropertyValue(name).trim());
+      if (color) tokens.add(color);
+    }
+  }
+  const canvasToken = resolve(rootStyle.getPropertyValue('--color-bg-canvas').trim());
+  const surfaceToken = resolve(rootStyle.getPropertyValue('--color-surface-1').trim());
+  probe.remove();
+  const canvas = getComputedStyle(root).backgroundColor;
+  const surface = getComputedStyle(document.querySelector('[data-pilot-surface]'));
+  const failures = [];
+  if (canvas !== canvasToken) failures.push(`canvas: ${canvas} != ${canvasToken}`);
+  if (surface.backgroundColor !== surfaceToken) failures.push(`surface: ${surface.backgroundColor} != ${surfaceToken}`);
+  if (surface.boxShadow === 'none' || !surface.boxShadow) failures.push('surface has no shadow');
+  if (surface.borderTopWidth !== '1px') failures.push(`surface border: ${surface.borderTopWidth}`);
+  const elements = [...document.querySelectorAll('*')];
+  const widest = elements.map((element) => {
+    const rect = element.getBoundingClientRect();
+    return { tag: element.tagName, className: String(element.className), width: rect.width, left: rect.left, right: rect.right };
+  }).sort((a, b) => b.width - a.width)[0];
+  if (root.scrollWidth > root.clientWidth) failures.push(`scroll width: ${root.scrollWidth} > ${root.clientWidth}`);
+  for (const element of elements) {
+    const rect = element.getBoundingClientRect();
+    if (rect.width > root.clientWidth || rect.right > root.clientWidth || rect.left < 0) {
+      failures.push(`overflow: ${element.tagName} ${String(element.className)} ${rect.left}..${rect.right}`);
+    }
+    const style = getComputedStyle(element);
+    for (const property of ['color', 'backgroundColor', 'borderTopColor', 'borderRightColor', 'borderBottomColor', 'borderLeftColor']) {
+      const color = style[property];
+      if (color !== 'rgba(0, 0, 0, 0)' && !tokens.has(color)) failures.push(`non-token ${property}: ${color} on ${element.tagName} ${String(element.className)}`);
+    }
+  }
+  return { viewport: [innerWidth, innerHeight], scrollWidth: root.scrollWidth, clientWidth: root.clientWidth, widest, canvas, canvasToken, surface: surface.backgroundColor, surfaceToken, shadow: surface.boxShadow, border: surface.borderTopWidth, failures };
+}
+```
+
+A screenshot or this measurement does not prove physical-device rendering, assistive-technology behavior, zoom, or a light theme.
