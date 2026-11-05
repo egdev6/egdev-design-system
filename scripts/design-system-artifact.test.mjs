@@ -3,12 +3,47 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import test from 'node:test';
+import { gunzipSync } from 'node:zlib';
 import docgen from 'react-docgen-typescript';
 import ts from 'typescript';
 import { renderSystemMd } from '../packages/system/src/render-system-md.mjs';
 import { extractGroupedDeclarations } from '../packages/tokens/scripts/token-css.mjs';
 
 const read = (path) => JSON.parse(readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'));
+
+test('Logo assets preserve both source variants and token-backed SVGs', () => {
+  const artifact = read('packages/system/design-system.json');
+  assert.deepEqual(
+    artifact.assets.map(({ variant }) => variant),
+    ['mark', 'wordmark']
+  );
+  for (const asset of artifact.assets) {
+    assert.equal(asset.component, 'Logo');
+    assert.ok(asset.sources.includes('packages/ui/src/atoms/logo/logo-artwork.ts'));
+    const svg = gunzipSync(Buffer.from(asset.svgGzipBase64, 'base64')).toString('utf8');
+    assert.match(svg, /^<svg\b/);
+    assert.match(svg, /role="img" aria-label="egdev"/);
+    assert.match(svg, /fill="var\(--logo-red\)"/);
+    assert.ok(asset.tokens.includes('--logo-red-shade'));
+    for (const token of asset.tokens) {
+      assert.ok(artifact.tokens.some(({ name }) => name === token));
+    }
+  }
+  assert.ok(artifact.assets.find(({ variant }) => variant === 'wordmark').tokens.includes('--color-primitive-white'));
+});
+
+test('--check detects Logo artwork drift without writing', () => {
+  const before = readFileSync('packages/system/design-system.json', 'utf8');
+  const result = spawnSync(
+    process.execPath,
+    ['--import', './scripts/fixtures/design-system-artifact/logo-drift.mjs', 'scripts/build-artifact.mjs', '--check'],
+    { encoding: 'utf8', timeout: 120_000 }
+  );
+  assert.equal(result.status, 1, result.stderr);
+  assert.equal(result.stdout, '');
+  assert.equal(result.stderr, 'design-system.json is stale; run pnpm artifact --write\n');
+  assert.equal(readFileSync('packages/system/design-system.json', 'utf8'), before);
+});
 
 test('artifact identifies the design system and its package version set', () => {
   const artifact = read('packages/system/design-system.json');
@@ -339,6 +374,7 @@ test('artifact schema and total ordering match the contract', () => {
     );
   keys(artifact, [
     'name',
+    'assets',
     'schemaVersion',
     'packages',
     'catalog',

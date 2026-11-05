@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
+import { gzipSync } from 'node:zlib';
 import { renderSystemMd } from '../src/render-system-md.mjs';
 
 const artifact = {
@@ -20,6 +21,25 @@ const artifact = {
   propNaming: [{ id: 'example', name: 'label', status: 'approved', components: ['Button'] }],
   thirdParty: 'NEVER_RENDER'
 };
+
+test('renders copyable source-backed Logo assets under Logo and supports old artifacts', () => {
+  const copy = structuredClone(artifact);
+  copy.catalog.push({ name: 'Logo', package: '@egdev/ui', level: 'atom', available: true });
+  copy.components.push({ name: 'Logo', package: '@egdev/ui', source: 'logo.tsx', props: [] });
+  copy.assets = [
+    {
+      component: 'Logo',
+      variant: 'mark',
+      sources: ['logo.tsx'],
+      tokens: ['--logo-red'],
+      svgGzipBase64: gzipSync('<svg><path fill="var(--logo-red)"/></svg>').toString('base64')
+    }
+  ];
+  const logo = renderSystemMd(copy).split('### Logo\n')[1].split('\n### ')[0];
+  assert.match(logo, /mark.*logo\.tsx.*--logo-red/);
+  assert.match(logo, /```html\n<svg><path fill="var\(--logo-red\)"\/><\/svg>\n```/);
+  assert.doesNotMatch(renderSystemMd(artifact), /Copyable inline SVG/);
+});
 
 test('composition guide leads and prioritizes catalog levels with explicit proposals', () => {
   const copy = structuredClone(artifact);

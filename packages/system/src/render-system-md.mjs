@@ -1,3 +1,5 @@
+import { gunzipSync } from 'node:zlib';
+
 const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
 const sorted = (items, key) => [...(items ?? [])].sort((a, b) => compare(key(a), key(b)));
 const cell = (value) =>
@@ -43,6 +45,20 @@ function anatomyLines(component, utilities) {
     lines.push('    - No statically extracted anatomy.');
   }
   return lines;
+}
+
+function assetLines(component, assets) {
+  return sorted(
+    assets.filter((asset) => asset.component === component.name),
+    (asset) => asset.variant
+  ).flatMap((asset) => [
+    `  - Copyable inline SVG (${cell(asset.variant)}) · assets[] · ${asset.sources.map(cell).join(', ')} · tokens: ${asset.tokens.map(cell).join(', ')}`,
+    '    Define these CSS custom properties from the token tables in the artboard. Wordmark is for canvas or surface backgrounds; use an appropriate accessible name or link.',
+    '',
+    '```html',
+    gunzipSync(Buffer.from(asset.svgGzipBase64, 'base64')).toString('utf8'),
+    '```'
+  ]);
 }
 
 /** Render the artifact without reading the environment or filesystem. */
@@ -166,6 +182,7 @@ export function renderSystemMd(artifact) {
           `  - ${cell(part.name)}: ${cell(part.description)}${part.children ? ` Children: ${cell(part.children)}` : ''} (components[].parts · ${cell(part.source)})`
         );
       }
+      componentLines.push(...assetLines(component, artifact.assets ?? []));
       componentLines.push(...anatomyLines(component, artifact.anatomyUtilities ?? []));
       for (const prop of sorted(component.props, (item) => item.name)) {
         componentLines.push(
