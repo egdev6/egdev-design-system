@@ -20,6 +20,8 @@
     "test:storybook-mcp": "node --test scripts/storybook-mcp-contract.test.mjs scripts/storybook-mcp.test.mjs",
     "test:package-exports": "node --test scripts/package-exports.test.mjs",
     "test:package-consumption": "node --test scripts/package-consumption.test.mjs",
+    "pilot:build": "node scripts/pilot-consumer.mjs",
+    "test:package-pilot": "node --test scripts/pilot-consumer.test.mjs",
     "test:package-release": "node --test scripts/package-release.test.mjs",
     "test:tokens": "pnpm tokens && pnpm --filter @egdev/tokens run test",
     "props:check": "node scripts/prop-naming.mjs --check",

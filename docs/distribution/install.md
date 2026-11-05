@@ -167,4 +167,5 @@ dist/native/styles.css       -> mode B output
 2. Replace **all** the tarballs in `vendor/`: the packages pin each other to the versions packed in
    the same run, so a partial replacement fails the strict peer check.
 3. Repeat steps 7 and 8 of the block (`pnpm install` then both builds). Commit the updated tarballs
-   or re-publish them with your product; nothing is fetched from a registry.
+   or re-publish them with your product. The `@egdev` packages come from those tarballs; other
+   dependencies may be fetched from a registry during installation.
