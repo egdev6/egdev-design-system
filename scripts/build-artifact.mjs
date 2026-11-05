@@ -882,17 +882,8 @@ const artifact = {
     }))
     .sort((a, b) => compare(a.id, b.id))
 };
-const output = `${JSON.stringify(artifact, null, 2)}\n`.replace(
-  /^( *)("[^"]+": )\[\n((?:\s+(?:"[^\n]*"|\d+)[,]?\n)+)\1\]/gm,
-  (block, indent, key, contents) => {
-    const line = `${key}[${contents
-      .trim()
-      .split('\n')
-      .map((item) => item.trim().replace(/,$/, ''))
-      .join(', ')}]`;
-    return indent.length + line.length <= 120 ? indent + line : block;
-  }
-);
+// Preserve the JSON schema and every value while leaving room below the shipped-file budget.
+const output = `${JSON.stringify(artifact)}\n`;
 const path = resolve(root, 'packages/system/design-system.json');
 if (process.argv[2] === '--write') {
   writeFileSync(path, output);

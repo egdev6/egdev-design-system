@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import test from 'node:test';
 import { gunzipSync } from 'node:zlib';
@@ -315,6 +315,27 @@ test('mixed known and unknown token references are explicitly unresolved', () =>
   const fact = artifact.anatomyUtilities.find(({ className }) => className.includes('--unknown-mixed'));
   assert.deepEqual(fact.tokens, ['--shadow-edge']);
   assert.equal(fact.unresolved, true);
+});
+
+test('every shipped system JSON stays within the 768 KiB budget', () => {
+  const root = new URL('../packages/system/', import.meta.url);
+  const manifest = JSON.parse(readFileSync(new URL('package.json', root), 'utf8'));
+  const shipped = ['package.json'];
+  for (const entry of manifest.files) {
+    if (entry.endsWith('.json')) {
+      shipped.push(entry);
+    } else if (statSync(new URL(entry, root)).isDirectory()) {
+      shipped.push(
+        ...readdirSync(new URL(`${entry}/`, root), { recursive: true })
+          .filter((path) => path.endsWith('.json'))
+          .map((path) => `${entry}/${path}`)
+      );
+    }
+  }
+  for (const path of shipped) {
+    const bytes = readFileSync(new URL(path, root));
+    assert.ok(bytes.length <= 768 * 1024, `${path}: ${bytes.length} bytes exceeds 768 KiB`);
+  }
 });
 
 test('anatomy utilities are shared and the artifact stays below one MiB', () => {
