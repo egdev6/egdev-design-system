@@ -14,6 +14,18 @@ export function extractDeclarations(css) {
   return [...clean.matchAll(DECLARATION)].map(([, name, value]) => ({ name, value: value.trim() }));
 }
 
+export function extractGroupedDeclarations(css) {
+  const clean = css.replace(COMMENT, '');
+  const blocks = [
+    ['theme', /@theme\s+static\s*\{([\s\S]*?)\n\}/g],
+    ['root', /:root\s*\{([\s\S]*?)\n\}/g],
+    ['inline', /@theme\s+inline\s+static\s*\{([\s\S]*?)\n\}/g]
+  ];
+  return blocks.flatMap(([group, pattern]) =>
+    [...clean.matchAll(pattern)].flatMap(([, body]) => extractDeclarations(body).map((entry) => ({ ...entry, group })))
+  );
+}
+
 export function toDeclarationMap(css) {
   return new Map(extractDeclarations(css).map(({ name, value }) => [name, value]));
 }
