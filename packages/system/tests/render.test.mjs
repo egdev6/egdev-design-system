@@ -20,6 +20,16 @@ const artifact = {
   thirdParty: 'NEVER_RENDER'
 };
 
+test('renders sorted source-derived compound parts under their parent', () => {
+  const copy = structuredClone(artifact);
+  copy.components[0].parts = [
+    { name: 'ButtonAction', description: 'An action', children: 'One control', source: 'action.tsx' }
+  ];
+  const text = renderSystemMd(copy);
+  assert.match(text, /ButtonAction.*An action.*One control.*action\.tsx/);
+  assert.doesNotMatch(renderSystemMd(artifact), /ButtonAction/);
+});
+
 test('renders deterministic sections and artifact facts only', () => {
   const text = renderSystemMd(artifact);
   assert.equal(text, renderSystemMd(artifact));

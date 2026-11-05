@@ -32,6 +32,25 @@ test('artifact includes public component exports and their own props', () => {
   );
 });
 
+test('compound parts expose source descriptions and child constraints', () => {
+  const components = read('packages/system/design-system.json').components;
+  const part = (parent, name) =>
+    components.find((item) => item.name === parent).parts.find((item) => item.name === name);
+  const topBar = components.find((item) => item.name === 'TopBar');
+  assert.deepEqual(
+    topBar.parts.map(({ name }) => name),
+    ['TopBarBrand', 'TopBarMobileTrigger', 'TopBarSearchCompact', 'TopBarSearchFull', 'TopBarUserMenu']
+  );
+  assert.match(
+    topBar.props.find(({ name }) => name === 'children').description,
+    /direct TopBar parts.*one brand is required/i
+  );
+  assert.match(part('TopBar', 'TopBarUserMenu').description, /account control/i);
+  assert.match(part('TopBar', 'TopBarUserMenu').children, /single consumer-owned named link or control/i);
+  assert.match(part('ListItem', 'ListItemActions').description, /independent trailing controls/i);
+  assert.match(part('TerminalCard', 'TerminalCardBar').children, /plain text/i);
+});
+
 test('Storybook hidden own props do not appear in Chip', () => {
   const chip = read('packages/system/design-system.json').components.find(({ name }) => name === 'Chip');
   assert.ok(!chip.props.some(({ name }) => name === 'type'));
@@ -88,6 +107,19 @@ test('--check rejects stale artifact bytes without modifying the worktree', () =
   assert.equal(result.stderr, 'design-system.json is stale; run pnpm artifact --write\n');
 });
 
+test('--check detects a part removed from source without writing the artifact', () => {
+  const before = readFileSync('packages/system/design-system.json', 'utf8');
+  const result = spawnSync(
+    process.execPath,
+    ['--import', './scripts/fixtures/design-system-artifact/removed-part.mjs', 'scripts/build-artifact.mjs', '--check'],
+    { encoding: 'utf8', timeout: 120_000 }
+  );
+  assert.equal(result.status, 1, result.stderr);
+  assert.equal(result.stdout, '');
+  assert.equal(result.stderr, 'design-system.json is stale; run pnpm artifact --write\n');
+  assert.equal(readFileSync('packages/system/design-system.json', 'utf8'), before);
+});
+
 test('artifact schema and total ordering match the contract', () => {
   const artifact = read('packages/system/design-system.json');
   const keys = (item, expected) => assert.deepEqual(Object.keys(item).sort(), expected.slice().sort());
@@ -111,7 +143,7 @@ test('artifact schema and total ordering match the contract', () => {
   for (const [field, key, fields] of [
     ['packages', 'name', ['name', 'version']],
     ['catalog', 'name', ['name', 'level', 'package', 'radix', 'composes', 'action', 'available']],
-    ['components', 'name', ['name', 'package', 'source', 'props', 'variants']],
+    ['components', 'name', ['name', 'package', 'source', 'props', 'variants', 'parts']],
     ['types', 'name', ['name', 'owner', 'source']],
     ['tokens', 'name', ['name', 'value', 'group']],
     ['materialRecipes', 'id', ['id', 'semantics', 'tokens']],
@@ -123,6 +155,10 @@ test('artifact schema and total ordering match the contract', () => {
     }
   }
   for (const item of artifact.components) {
+    sorted(item.parts, 'name');
+    for (const part of item.parts) {
+      keys(part, ['name', 'source', 'description', 'children']);
+    }
     sorted(item.props, 'name');
     sorted(item.variants, 'name');
     for (const prop of item.props) {
