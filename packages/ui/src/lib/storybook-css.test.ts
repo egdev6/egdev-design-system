@@ -190,14 +190,20 @@ describe('Storybook preview CSS', () => {
 
   it.each([
     ['.w-75', /width:\s*calc\(var\(--space-1\)\s*\*\s*75\)/],
-    [String.raw`.min-h-\[calc\(var\(--space-1\)\*13\.75\)\]`, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*13\.75\)/],
-    [String.raw`.min-w-\[calc\(var\(--space-1\)\*13\.75\)\]`, /min-width:\s*calc\(var\(--space-1\)\s*\*\s*13\.75\)/],
+    [String.raw`.min-w-\[calc\(var\(--space-1\)\*7\.5\)\]`, /min-width:\s*calc\(var\(--space-1\)\s*\*\s*7\.5\)/],
+    [String.raw`.py-\[calc\(var\(--space-1\)\*1\.5625\)\]`, /padding-block:\s*calc\(var\(--space-1\)\s*\*\s*1\.5625\)/],
+    [String.raw`.mt-\[calc\(var\(--space-1\)\*5\.625\)\]`, /margin-top:\s*calc\(var\(--space-1\)\s*\*\s*5\.625\)/],
+    [String.raw`.mb-\[calc\(var\(--space-1\)\*1\.875\)\]`, /margin-bottom:\s*calc\(var\(--space-1\)\s*\*\s*1\.875\)/],
+    ['.gap-0', /gap:\s*var\(--space-0[,)]/],
     [String.raw`.px-\[calc\(var\(--space-1\)\*2\.5\)\]`, /padding-inline:\s*calc\(var\(--space-1\)\s*\*\s*2\.5\)/],
     [String.raw`.py-\[calc\(var\(--space-1\)\*2\.1875\)\]`, /padding-block:\s*calc\(var\(--space-1\)\s*\*\s*2\.1875\)/],
     [String.raw`.gap-\[calc\(var\(--space-1\)\*3\.125\)\]`, /gap:\s*calc\(var\(--space-1\)\s*\*\s*3\.125\)/],
-    [String.raw`.w-\[calc\(var\(--space-1\)\*0\.625\)\]`, /width:\s*calc\(var\(--space-1\)\s*\*\s*0?\.625\)/],
-    ['.start-0', /inset-inline-start:\s*var\(--space-0[,)]/],
-    ['.bg-bg-flood', /background-color:\s*var\(--color-bg-flood[,)]/],
+    [
+      String.raw`.border-s-\[length\:calc\(var\(--space-1\)\*0\.625\)\]`,
+      /border-inline-start-width:\s*calc\(var\(--space-1\)\s*\*\s*0?\.625\)/
+    ],
+    ['.border-bg-flood', /border-color:\s*var\(--color-bg-flood[,)]/],
+    ['.border-transparent', /border-color:\s*(?:transparent|#0000(?:0000)?)/],
     [String.raw`.size-\(--icon-size\)`, /width:\s*var\(--icon-size\)/]
   ])('emits NavList/Sidebar token geometry for %s', (selector, declaration) => {
     expect(rule(selector)).toMatch(declaration);
@@ -211,6 +217,18 @@ describe('Storybook preview CSS', () => {
     expect(rowPaddingX).toBeGreaterThan(surfacePadding);
     expect(rowPaddingY).toBeGreaterThan(surfacePadding);
     expect(rule('.text-nav-row')).toMatch(/font-size:\s*var\(--text-nav-row[,)]/);
+    expect(rule('.text-nav-count')).toMatch(/font-size:\s*var\(--text-nav-count[,)]/);
+    expect(rule('.font-mono')).toMatch(/font-family:\s*var\(--font-mono[,)]/);
+    expect(rule(String.raw`.leading-\[var\(--text-nav-group--line-height\)\]`)).toContain(
+      'var(--text-nav-group--line-height)'
+    );
+    expect(rule(String.raw`.font-\[var\(--text-label-default--font-weight\)\]`)).toContain(
+      'var(--text-label-default--font-weight)'
+    );
+    const firstGroup = css.indexOf(String.raw`.group-\[\:nth-child\(1_of_\[data-nav-group\]\)\]\/nav-group\:mt-`);
+    expect(firstGroup).toBeGreaterThanOrEqual(0);
+    expect(css.slice(firstGroup, firstGroup + 500)).toMatch(/:nth-child\(1\s+of\s+\[data-nav-group\]\)/);
+    expect(css.slice(firstGroup, firstGroup + 500)).toMatch(/margin-top:\s*calc\(var\(--space-1\)\s*\*\s*1\.25\)/);
     const group = rule('.text-nav-group');
     expect(group).toMatch(/font-size:\s*var\(--text-nav-group[,)]/);
     expect(group).toContain('var(--text-nav-group--line-height');
@@ -230,12 +248,17 @@ describe('Storybook preview CSS', () => {
     expect(rule(String.raw`.size-\(--icon-size\)`)).toMatch(/height:\s*var\(--icon-size\)/);
     expect(rule('.bg-surface-2')).toMatch(/background-color:\s*var\(--color-surface-2[,)]/);
     expect(rule(String.raw`.bg-\[image\:var\(--gradient-sheen\)\]`)).toContain('var(--gradient-sheen)');
-    expect(rule(String.raw`.shadow-\[var\(--shadow-edge\)\,var\(--shadow-elev-1\)\]`)).toContain(
-      'var(--shadow-elev-1)'
+    const edge = rule('.shadow-edge');
+    expect(edge).toMatch(/--tw-shadow:\s*inset 0 1px 0/);
+    expect(edge).not.toContain('--shadow-elev-');
+    expect(rule('.border-0')).toMatch(/border-width:\s*0(?:px)?\s*;/);
+    expect(css.indexOf(String.raw`.border-s-\[length\:calc\(var\(--space-1\)\*0\.625\)\] {`)).toBeGreaterThan(
+      css.indexOf('.border-0 {')
     );
+    const hover = css.indexOf(String.raw`.hover\:bg-surface-2`);
+    expect(hover).toBeGreaterThanOrEqual(0);
+    expect(css.slice(hover, hover + 300)).toMatch(/background-color:\s*var\(--color-surface-2[,)]/);
     for (const selector of [
-      String.raw`.group-hover\/nav-link\:opacity-100`,
-      String.raw`.group-aria-\[current\=page\]\/nav-link\:hidden`,
       String.raw`.group-aria-\[current\=page\]\/nav-link\:block`,
       String.raw`.focus-visible\:outline-\[var\(--color-focus-ring-inverse\)\]`
     ]) {

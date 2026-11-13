@@ -14,7 +14,6 @@ type GroupModel = Exclude<UseNavListResult['entries'][number], LinkModel>;
 const LinkRow = ({ item, view }: { item: LinkModel; view: UseNavListResult }) => (
   <li>
     <a {...item.anchorProps}>
-      <span aria-hidden='true' className={view.hoverClassName} />
       <span aria-hidden='true' className={view.markerClassName} />
       {item.icon && <Icon name={item.icon} className={view.iconClassName} />}
       <span className={view.labelClassName}>{item.label}</span>
@@ -57,7 +56,7 @@ export const NavList: FC<NavListProps> = (props) => {
           item.kind === 'link' ? (
             <LinkRow key={item.id} item={item} view={view} />
           ) : item.kind === 'group' ? (
-            <li key={item.id}>
+            <li key={item.id} className='group/nav-group' data-nav-group=''>
               <div id={item.captionId} className={view.captionClassName}>
                 <GroupLabel item={item} view={view} />
               </div>
@@ -69,7 +68,7 @@ export const NavList: FC<NavListProps> = (props) => {
             </li>
           ) : (
             <CollapsiblePrimitive.Root key={item.id} {...item.disclosureProps} asChild={true}>
-              <li>
+              <li className='group/nav-group' data-nav-group=''>
                 <CollapsiblePrimitive.Trigger className={view.triggerClassName}>
                   <Icon name='chevron-down' className={view.chevronClassName} />
                   <GroupLabel item={item} view={view} />

@@ -7,7 +7,7 @@ import {
   navListCaptionVariants,
   navListChevronVariants,
   navListCountVariants,
-  navListHoverVariants,
+  navListCurrentVariants,
   navListIconVariants,
   navListLabelVariants,
   navListLinkVariants,
@@ -47,7 +47,6 @@ export type UseNavListResult = {
   listClassName: string;
   labelClassName: string;
   iconClassName: string;
-  hoverClassName: string;
   markerClassName: string;
   countClassName: string;
   metadataClassName: string;
@@ -95,8 +94,9 @@ export function useNavList(props: NavListProps): UseNavListResult {
       onClick: onNavigate ? (event) => onNavigate(item, event) : undefined,
       className: cn(
         item['aria-current'] === 'page' &&
-          surfaceVariants({ tone: 'surface-2', elevation: 1, padding: 'none', radius: 'md' }),
-        navListLinkVariants()
+          surfaceVariants({ tone: 'surface-2', elevation: 0, padding: 'none', radius: 'md' }),
+        navListLinkVariants(),
+        item['aria-current'] === 'page' && navListCurrentVariants()
       )
     }
   });
@@ -126,10 +126,6 @@ export function useNavList(props: NavListProps): UseNavListResult {
     listClassName: cn(navListListVariants()),
     labelClassName: cn(navListLabelVariants()),
     iconClassName: cn(navListIconVariants()),
-    hoverClassName: cn(
-      surfaceVariants({ tone: 'surface-2', elevation: 0, padding: 'none', radius: 'md' }),
-      navListHoverVariants()
-    ),
     markerClassName: cn(navListMarkerVariants()),
     countClassName: cn(navListCountVariants()),
     metadataClassName: cn(navListMetadataVariants()),

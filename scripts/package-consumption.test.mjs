@@ -5455,9 +5455,12 @@ function assertNavListCSS(css) {
     '.w-75',
     '.text-nav-row',
     '.text-nav-group',
+    '.text-nav-count',
     String.raw`.group-data-\[state\=closed\]\/nav-trigger\:-rotate-90`,
-    String.raw`.group-hover\/nav-link\:opacity-100`,
-    String.raw`.group-aria-\[current\=page\]\/nav-link\:hidden`,
+    String.raw`.hover\:bg-surface-2`,
+    '.border-transparent',
+    '.border-bg-flood',
+    '.shadow-edge',
     String.raw`.group-aria-\[current\=page\]\/nav-link\:block`,
     String.raw`.focus-visible\:outline-\[var\(--color-focus-ring-inverse\)\]`,
     String.raw`.motion-reduce\:transform-none`
@@ -5467,19 +5470,23 @@ function assertNavListCSS(css) {
   assert.match(css, /outline-color:\s*var\(--color-focus-ring-inverse[,)]/);
   assert.match(css, /outline-width:\s*var\(--focus-width[,)]/);
   for (const [property, multiplier] of [
-    ['min-height', '13.75'],
-    ['min-width', '13.75'],
+    ['min-width', '7.5'],
     ['padding-inline', '2.5'],
     ['padding-block', '2.1875'],
+    ['padding-block', '1.5625'],
+    ['margin-top', '5.625'],
+    ['margin-bottom', '1.875'],
     ['gap', '3.125'],
-    ['width', '0.625'],
+    ['border-inline-start-width', '0.625'],
     ['width', '75']
   ]) {
     const factor = multiplier === '0.625' ? '0?\\.625' : multiplier.replace('.', '\\.');
     assert.match(css, new RegExp(property + ':\\s*calc\\(var\\(--space-1\\)\\s*\\*\\s*' + factor + '\\)'));
   }
-  assert.match(css, /inset-inline-start:\s*var\(--space-0[,)]/);
-  assert.match(css, /background-color:\s*var\(--color-bg-flood[,)]/);
+  assert.match(css, /border-color:\s*var\(--color-bg-flood[,)]/);
+  assert.match(css, /background-color:\s*var\(--color-surface-2[,)]/);
+  assert.match(css, /:nth-child\(1\s+of\s+\[data-nav-group\]\)/);
+  assert.match(css, /margin-top:\s*calc\(var\(--space-1\)\s*\*\s*1\.25\)/);
   assert.doesNotMatch(css, /\.eg-nav-list\s*\{/);
 }
 
@@ -8969,7 +8976,8 @@ const typographyNames = [
 // The navigation recipes intentionally have only these fields, unlike typographyNames.
 const partialTypography = {
   'nav-row': { '': '13.5px' },
-  'nav-group': { '': '14px', '--line-height': '1', '--letter-spacing': '0.14em' }
+  'nav-group': { '': '14px', '--line-height': '1', '--letter-spacing': '0.14em' },
+  'nav-count': { '': '11.5px' }
 };
 const spacingClasses = [
   'p-0',
@@ -9162,7 +9170,8 @@ const partialTypography = ${JSON.stringify(partialTypography)};
 // #291 adds the owner-approved SectionShell show halo and three group-edge masks: 286 + 4 = 290.
 // Approved ScrollReveal wipe duration adds one root token: 290 + 1 = 291.
 // NavList v0.3 adds four static typography declarations: 292 + 4 = 296.
-assert.equal(names.length, 296, 'Packed native artifact must expose 296 variables');
+// S9 adds the navigation count size: 296 + 1 = 297.
+assert.equal(names.length, 297, 'Packed native artifact must expose 297 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {

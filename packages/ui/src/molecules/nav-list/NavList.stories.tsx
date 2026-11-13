@@ -37,7 +37,7 @@ function ControlledExample(props: NavListProps) {
  *
  * ## Dependencies
  * Radix Collapsible owns disclosure state and relationships. Icon, Badge, StatusDot and
- * VisuallyHidden provide decorative metadata; Surface's public recipe raises the current row.
+ * VisuallyHidden provide decorative metadata; Surface's public recipe gives the current row a sheen and light edge.
  *
  * ## Usage guidelines
  * The host owns the panel and routing. Mark at most one current page and omit unavailable links.
@@ -80,6 +80,24 @@ export const CollapsibleGroups: Story = {
         id: 'archive',
         label: 'Archive',
         items: [{ id: 'saved', label: 'Saved', href: '#saved', 'aria-current': 'page' }]
+      }
+    ]
+  }
+};
+
+/** Compact rows and two caption types show spacing, muted counts, and alignment after a standalone link. */
+export const CompactGroups: Story = {
+  args: {
+    items: [
+      { id: 'home', label: 'Home', href: '#home', icon: 'compass', count: 2, 'aria-current': 'page' },
+      { kind: 'group', id: 'tools', label: 'Tools', count: 0, items: destinations },
+      {
+        kind: 'collapsible-group',
+        id: 'archive',
+        label: 'Archive',
+        count: 12,
+        defaultOpen: true,
+        items: [{ id: 'saved', label: 'Saved', href: '#saved', icon: 'compass' }]
       }
     ]
   }

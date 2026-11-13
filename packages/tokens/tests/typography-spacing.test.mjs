@@ -188,6 +188,17 @@ test('static theme publishes the partial navigation group recipe and retains its
   assert.equal(declarations.get('--text-label-eyebrow--font-weight'), '700');
 });
 
+test('static theme publishes only the navigation count size and reuses mono, leading and weight', () => {
+  const declarations = toDeclarationMap(staticBlock);
+  assert.deepEqual(
+    [...declarations].filter(([name]) => name === '--text-nav-count' || name.startsWith('--text-nav-count--')),
+    [['--text-nav-count', '11.5px']]
+  );
+  assert.equal(declarations.get('--font-mono'), '"JetBrains Mono", ui-monospace, monospace');
+  assert.equal(declarations.get('--text-nav-group--line-height'), '1');
+  assert.equal(declarations.get('--text-label-default--font-weight'), '600');
+});
+
 test('static theme publishes the four fluid Title recipes and the hero glyph glow (#108 D8/D9)', () => {
   assert.deepEqual(findRecipeDrift(staticBlock, TITLE_TYPOGRAPHY), [], 'Title recipes must match the approved clamps');
   assert.equal(

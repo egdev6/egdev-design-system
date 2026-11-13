@@ -2032,17 +2032,24 @@ test('NavList ships every static CVA utility and native disclosure/current-page 
   assert.match(css, /outline-color:\s*var\(--color-focus-ring-inverse[,)]/);
   assert.match(css, /outline-width:\s*var\(--focus-width[,)]/);
   for (const [property, multiplier] of [
-    ['min-height', '13.75'],
-    ['min-width', '13.75'],
+    ['min-width', '7.5'],
     ['padding-inline', '2.5'],
     ['padding-block', '2.1875'],
+    ['padding-block', '1.5625'],
+    ['margin-top', '5.625'],
+    ['margin-bottom', '1.875'],
     ['gap', '3.125'],
-    ['width', '0.625']
+    ['border-inline-start-width', '0.625']
   ]) {
     const factor = multiplier === '0.625' ? '0?\\.625' : multiplier.replace('.', '\\.');
     assert.match(css, new RegExp(`${property}:\\s*calc\\(var\\(--space-1\\)\\s*\\*\\s*${factor}\\)`));
   }
-  assert.match(css, /inset-inline-start:\s*var\(--space-0[,)]/);
+  assert.match(css, /border-color:\s*var\(--color-bg-flood[,)]/);
+  assert.ok(css.includes(String.raw`.hover\:bg-surface-2`));
+  assert.ok(css.includes('.border-transparent'));
+  assert.ok(css.includes('.shadow-edge'));
+  assert.match(css, /:nth-child\(1\s+of\s+\[data-nav-group\]\)/);
+  assert.match(css, /margin-top:\s*calc\(var\(--space-1\)\s*\*\s*1\.25\)/);
   assert.doesNotMatch(css, /\.eg-nav-list\s*\{/);
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -2074,7 +2081,16 @@ test('NavList ships every static CVA utility and native disclosure/current-page 
   );
   assert.match(html, /^<nav aria-label="Workspace" class="eg-nav-list /);
   assert.match(html, /<a href="#home" aria-current="page" class="eg-surface [^"]*bg-surface-2/);
-  assert.match(html, /aria-hidden="true" class="[^"]*start-0[^"]*bg-bg-flood/);
+  assert.match(
+    html,
+    /aria-hidden="true" class="[^"]*inset-0[^"]*border-s-\[length:calc\(var\(--space-1\)\*0\.625\)\][^"]*border-bg-flood/
+  );
+  const currentClass = html.match(/<a href="#home"[^>]*class="([^"]+)"/)?.[1] ?? '';
+  assert.match(currentClass, /border-transparent/);
+  assert.match(currentClass, /shadow-edge/);
+  assert.match(currentClass, /bg-\[image:var\(--gradient-sheen\)\]/);
+  assert.doesNotMatch(currentClass, /border-border-hairline|shadow-\[var\(--shadow-edge\),var\(--shadow-elev-1\)\]/);
+  assert.doesNotMatch(html, /group-hover\/nav-link:opacity-100/);
   assert.match(html, /aria-labelledby="[^"]+-caption-1"/);
   assert.match(html, /aria-expanded="false"/);
   assert.match(html, /aria-controls="[^"]+" aria-expanded="true"/);
@@ -2082,6 +2098,9 @@ test('NavList ships every static CVA utility and native disclosure/current-page 
   assert.match(html, /Voting live/);
   assert.match(html, /eg-badge/);
   assert.match(html, /Needs attention/);
+  assert.match(html, /text-nav-count[^\"]*text-fg-muted/);
+  assert.match(html, /min-w-\[calc\(var\(--space-1\)\*7\.5\)\]/);
+  assert.doesNotMatch(html, /min-h-\[calc\(var\(--space-1\)\*13\.75\)\]/);
   assert.doesNotMatch(html, /Secret|role="(?:menu|tree|tab)|eg-menu|aria-selected/);
   for (const name of ['useNavList', 'navListLinkVariants', 'navListTriggerVariants']) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} stays internal`);
@@ -6794,13 +6813,14 @@ test('Tokens ships a compiled native artifact under dist without @theme', () => 
   const entry = artifact('tokens', tokens.exports['./tokens.css']);
   const css = readFileSync(entry, 'utf8');
   assert.doesNotMatch(css, /@theme/, 'compiled artifact must not keep the @theme at-rule');
-  const navigation = [...css.matchAll(/^\s*(--text-nav-(?:row|group)(?:--[a-z-]+)?)\s*:\s*([^;]+);/gm)];
-  assert.equal(navigation.length, 4, 'navigation typography has exactly four declarations');
+  const navigation = [...css.matchAll(/^\s*(--text-nav-(?:row|group|count)(?:--[a-z-]+)?)\s*:\s*([^;]+);/gm)];
+  assert.equal(navigation.length, 5, 'navigation typography has exactly five declarations');
   assert.deepEqual(Object.fromEntries(navigation.map(([, name, value]) => [name, value.trim()])), {
     '--text-nav-row': '13.5px',
     '--text-nav-group': '14px',
     '--text-nav-group--line-height': '1',
-    '--text-nav-group--letter-spacing': '0.14em'
+    '--text-nav-group--letter-spacing': '0.14em',
+    '--text-nav-count': '11.5px'
   });
 });
 
