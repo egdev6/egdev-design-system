@@ -47,11 +47,12 @@ test('theme.css keeps the Tailwind color reset instead of a global reset', () =>
 // #126 D17 adds 1 component container size (CalendarGrid stacking): 213 + 1 = 214 utility, 285 + 1 = 286 total.
 // #291 adds 4 owner-approved SectionShell root tokens (show halo, three fade masks): 56 + 4 = 60 root, 286 + 4 = 290 total.
 // NavList v0.3 adds four static typography declarations: 214 + 4 = 218 utility, 292 + 4 = 296 total.
-test('theme.css declares exactly 218 utility variables, 16 inline aliases, and 62 root variables', () => {
-  assert.equal(extractDeclarations(themeBlock).length, 218, 'utility namespace declaration count');
+// S9 adds the navigation count size: 218 + 1 = 219 utility, 296 + 1 = 297 total.
+test('theme.css declares exactly 219 utility variables, 16 inline aliases, and 62 root variables', () => {
+  assert.equal(extractDeclarations(themeBlock).length, 219, 'utility namespace declaration count');
   assert.equal(extractDeclarations(inlineBlock).length, 16, 'inline spacing alias count');
   assert.equal(extractDeclarations(rootBlock).length, 62, 'root declaration count');
-  assert.equal(extractDeclarations(themeSource).length, 296, 'total declaration count');
+  assert.equal(extractDeclarations(themeSource).length, 297, 'total declaration count');
 });
 
 test('theme.css declares the CalendarGrid stacking container size (#126 D17)', () => {
@@ -132,13 +133,13 @@ test('package publishes compiled tokens and keeps backward CSS exports', () => {
   assert.ok(manifest.files.includes('dist'), 'compiled artifact must ship');
 });
 
-test('compiled dist/tokens.css exposes the 296 manual variables and preserves the original 168 values', () => {
+test('compiled dist/tokens.css exposes the 297 manual variables and preserves the original 168 values', () => {
   const artifactPath = at('../dist/tokens.css');
   assert.ok(existsSync(artifactPath), 'dist/tokens.css missing — run pnpm tokens before this test');
   const artifact = readFileSync(artifactPath, 'utf8');
   assert.doesNotMatch(artifact, /@theme/, 'compiled artifact must not keep the @theme at-rule');
   const compiled = toDeclarationMap(artifact);
-  assert.equal(compiled.size, 296, 'compiled artifact must expose 296 variables');
+  assert.equal(compiled.size, 297, 'compiled artifact must expose 297 variables');
   assert.match(artifact, /@keyframes\s+pulse\s*\{/, 'compiled artifact must ship the pulse keyframes');
   assert.match(artifact, /@keyframes\s+spin\s*\{/, 'compiled artifact must ship the spin keyframes');
   const parity = compareParity(artifact, themeSource);

@@ -18,6 +18,7 @@ const tokenTypographySizes = [
   'label-eyebrow',
   'nav-row',
   'nav-group',
+  'nav-count',
   'meta',
   'cta-label',
   'code',

@@ -30,24 +30,32 @@ describe('NavList public contract v0.3', () => {
     expect(screen.queryByRole('img')).not.toBeInTheDocument();
   });
 
-  it('composes Surface only for the explicitly current anchor and clears it on update', () => {
+  it('composes a flat-edged Surface on the current anchor and clears it on update', async () => {
+    const user = userEvent.setup();
     const { rerender } = render(<NavList label='Workspace' items={[{ ...home, 'aria-current': 'page' }]} />);
     const link = screen.getByRole('link', { name: 'Home' });
     expect(link).toHaveAttribute('aria-current', 'page');
     expect(link).toHaveClass(
       'eg-surface',
       'bg-surface-2',
-      'border-border-hairline',
-      'shadow-[var(--shadow-edge),var(--shadow-elev-1)]',
+      'border',
+      'border-solid',
+      'border-transparent',
+      'shadow-edge',
       'bg-[image:var(--gradient-sheen)]',
+      'hover:bg-surface-2',
       'px-[calc(var(--space-1)*2.5)]',
       'py-[calc(var(--space-1)*2.1875)]'
     );
+    expect(link).not.toHaveClass('border-border-hairline', 'shadow-[var(--shadow-edge),var(--shadow-elev-1)]');
     expect(screen.getByRole('navigation')).not.toHaveClass('eg-surface');
     expect(link).not.toHaveAttribute('aria-selected');
+    await user.hover(link);
+    expect(link).toHaveClass('bg-surface-2', 'border-transparent', 'shadow-edge', 'bg-[image:var(--gradient-sheen)]');
+    expect(link.querySelector('span.eg-surface')).toBeNull();
     rerender(<NavList label='Workspace' items={[home]} />);
     expect(link).not.toHaveAttribute('aria-current');
-    expect(link).not.toHaveClass('eg-surface', 'bg-surface-2');
+    expect(link).not.toHaveClass('eg-surface', 'bg-surface-2', 'border-transparent', 'shadow-edge');
   });
 
   it('names static lists with unique generated caption ids, not data ids', () => {
@@ -203,7 +211,7 @@ describe('NavList public contract v0.3', () => {
     );
     expect(screen.getByRole('link', { name: /Home\s*0/ })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Content\s*1200/ })).toBeInTheDocument();
-    expect(screen.getByText('1200')).toHaveClass('tabular-nums', 'text-label-default');
+    expect(screen.getByText('1200')).toHaveClass('tabular-nums', 'text-nav-count');
   });
 
   it('composes unmodified Badge and StatusDot with readable warning/signal equivalents', () => {
@@ -330,57 +338,127 @@ describe('NavList public contract v0.3', () => {
     );
   });
 
-  it('uses an inert Surface hover layer without covering the link or changing its name', () => {
+  it('uses a plain hover fill and inherited icon color without a Surface hover layer', async () => {
+    const user = userEvent.setup();
     render(<NavList label='Workspace' items={[home]} />);
     const link = screen.getByRole('link', { name: 'Home' });
-    const layer = link.querySelector('span.eg-surface');
-    expect(link).toHaveClass('relative', 'isolate');
-    expect(layer).toHaveAttribute('aria-hidden', 'true');
-    expect(layer).toHaveClass(
-      'pointer-events-none',
-      'absolute',
-      '-z-10',
-      'inset-0',
-      'bg-surface-2',
-      'opacity-0',
-      'group-hover/nav-link:opacity-100',
-      'group-aria-[current=page]/nav-link:hidden'
-    );
+    const icon = link.querySelector('svg');
+    expect(link).toHaveClass('relative', 'hover:bg-surface-2', 'hover:text-fg-default');
+    expect(link).not.toHaveClass('eg-surface', 'border', 'shadow-edge', 'bg-[image:var(--gradient-sheen)]');
+    expect(link.querySelector('span.eg-surface')).toBeNull();
+    expect(icon).toHaveClass('stroke-current');
+    expect(icon?.getAttribute('class')).not.toMatch(/text-fg-|group-hover|group-aria/);
+    await user.hover(link);
+    expect(link).toHaveClass('hover:bg-surface-2', 'hover:text-fg-default');
+    expect(link.querySelector('span.eg-surface')).toBeNull();
     expect(link).toHaveAccessibleName('Home');
   });
 
   it.each(['ltr', 'rtl'] as const)('uses the same decorative logical-start current marker in %s', (dir) => {
     render(<NavList dir={dir} label='Workspace' items={[{ ...home, 'aria-current': 'page' }]} />);
     const link = screen.getByRole('link', { name: 'Home' });
-    const marker = link.querySelector('span.start-0');
+    const marker = link.querySelector('span[aria-hidden="true"]');
     expect(marker).toHaveAttribute('aria-hidden', 'true');
     expect(marker).toHaveClass(
       'pointer-events-none',
       'absolute',
-      'inset-y-0',
-      'start-0',
-      'w-[calc(var(--space-1)*0.625)]',
-      'bg-bg-flood',
+      'inset-0',
+      'rounded-md',
+      'border-0',
+      'border-solid',
+      'border-s-[length:calc(var(--space-1)*0.625)]',
+      'border-bg-flood',
+      'hidden',
       'group-aria-[current=page]/nav-link:block'
     );
+    expect(marker).not.toHaveClass('inset-y-0', 'start-0', 'w-[calc(var(--space-1)*0.625)]', 'bg-bg-flood');
     expect(link).toHaveAccessibleName('Home');
   });
 
-  it('keeps 44px minimum link and trigger targets, truncation, focus and reduced-motion recipes', () => {
+  it('uses compact content-height rows with 24px minimum width and preserves focus and motion behavior', () => {
     render(<NavList className='w-1' label='Workspace' items={[home, group()]} />);
     const link = screen.getByRole('link');
     const trigger = screen.getByRole('button');
     for (const target of [link, trigger]) {
-      expect(target).toHaveClass('min-h-[calc(var(--space-1)*13.75)]', 'min-w-[calc(var(--space-1)*13.75)]');
+      expect(target).toHaveClass('min-w-[calc(var(--space-1)*7.5)]');
+      expect(target.className).not.toMatch(/(?:^|\s)min-h-/);
     }
     expect(link).toHaveClass(
+      'py-[calc(var(--space-1)*2.1875)]',
       'motion-reduce:transition-none',
       'focus-visible:outline-[var(--color-focus-ring-inverse)]'
     );
     expect(screen.getByText('Home')).toHaveClass('truncate', 'min-w-0');
     expect(link).not.toHaveClass('truncate');
-    expect(trigger).toHaveClass('focus-visible:shadow-focus');
+    expect(trigger).toHaveClass('py-[calc(var(--space-1)*1.5625)]', 'focus-visible:shadow-focus');
     expect(trigger.querySelector('svg')).toHaveClass('motion-reduce:transform-none', 'motion-reduce:transition-none');
+  });
+
+  it('removes inter-row gaps from both the outer list and nested lists', () => {
+    render(
+      <NavList
+        label='Workspace'
+        items={[home, { kind: 'group', id: 'tools', label: 'Tools', items: [{ ...home, id: 'child' }] }]}
+      />
+    );
+    for (const list of screen.getAllByRole('list')) {
+      expect(list).toHaveClass('gap-0');
+      expect(list).not.toHaveClass('gap-0.5');
+    }
+  });
+
+  it.each(['static', 'disclosure'] as const)(
+    'aligns %s group captions and applies the first-group margin even after a standalone link',
+    (firstKind) => {
+      const staticGroup = { kind: 'group' as const, id: 'tools', label: 'Tools', items: [] };
+      const disclosure = group();
+      const groups = firstKind === 'static' ? [staticGroup, disclosure] : [disclosure, staticGroup];
+      render(<NavList label='Workspace' items={[home, ...groups]} />);
+      const caption = document.getElementById(
+        screen.getByRole('list', { name: 'Tools' }).getAttribute('aria-labelledby') ?? ''
+      );
+      const trigger = screen.getByRole('button', { name: 'Content' });
+      for (const element of [caption, trigger]) {
+        expect(element).toHaveClass(
+          'mx-0',
+          'px-[calc(var(--space-1)*2.5)]',
+          'mt-[calc(var(--space-1)*5.625)]',
+          'mb-[calc(var(--space-1)*1.875)]',
+          'group-[:nth-child(1_of_[data-nav-group])]/nav-group:mt-[calc(var(--space-1)*1.25)]'
+        );
+        expect(element?.parentElement).toHaveAttribute('data-nav-group');
+        expect(element?.parentElement).toHaveClass('group/nav-group');
+      }
+      expect(trigger.querySelector('svg')).toHaveClass('order-last');
+      expect(groups[0]?.kind === 'group' ? caption?.parentElement : trigger.parentElement).toBe(
+        screen.getByRole('link', { name: 'Home' }).parentElement?.nextElementSibling
+      );
+    }
+  );
+
+  it('uses the same muted monospace count recipe for static groups, triggers, and current links', () => {
+    render(
+      <NavList
+        label='Workspace'
+        items={[
+          { ...home, 'aria-current': 'page', count: 71 },
+          { kind: 'group', id: 'tools', label: 'Tools', items: [], count: 72 },
+          group({ count: 73 })
+        ]}
+      />
+    );
+    for (const count of ['71', '72', '73']) {
+      const element = screen.getByText(count);
+      expect(element).toHaveClass(
+        'font-mono',
+        'text-nav-count',
+        'font-[var(--text-label-default--font-weight)]',
+        'leading-[var(--text-nav-group--line-height)]',
+        'text-fg-muted',
+        'tabular-nums'
+      );
+      expect(element).not.toHaveClass('group-aria-[current=page]/nav-link:text-fg-default');
+    }
   });
 
   it('derives normalization, callbacks and per-part classes in the hook', () => {

@@ -181,7 +181,7 @@
   --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
   /* --font-sans — Familia sans del cuerpo de texto. */
   --font-sans: "Barlow", system-ui, sans-serif;
-  /* --font-mono — Familia mono solo para bloques de código. */
+  /* --font-mono — Monospace family for code and navigation counts. */
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   /*
    * Typography recipes restored from docs/tokens-reference.md (Foundation v2). Each
@@ -254,6 +254,8 @@
   --text-nav-group: 14px;
   --text-nav-group--line-height: 1;
   --text-nav-group--letter-spacing: 0.14em;
+  /* Navigation count size; reuse mono, group leading and default-label weight. */
+  --text-nav-count: 11.5px;
   /* --text-meta — Metadata, versions and tags: display family, uppercase, tracking 0.08em; 11.2px/1.3 (14px ×0.8, #218). */
   --text-meta: 11.2px;
   --text-meta--line-height: 1.3;

@@ -63,6 +63,15 @@ describe('cn token typography merging', () => {
     expect(cn(size, `md:${size}`, 'md:text-label-default')).toBe(`${size} md:text-label-default`);
   });
 
+  it('treats the navigation count as a size alongside muted color and the reused weight', () => {
+    const weight = 'font-[var(--text-label-default--font-weight)]';
+    expect(cn('eg-nav-list', 'text-nav-count', 'text-fg-muted', weight)).toBe(
+      `eg-nav-list text-nav-count text-fg-muted ${weight}`
+    );
+    expect(cn('text-nav-count', 'text-nav-row')).toBe('text-nav-row');
+    expect(cn('text-nav-row', 'text-nav-count')).toBe('text-nav-count');
+  });
+
   it('preserves existing size, color and weight conflicts with public markers', () => {
     expect(
       cn(

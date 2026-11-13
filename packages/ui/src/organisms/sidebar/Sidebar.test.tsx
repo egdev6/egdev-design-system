@@ -41,6 +41,28 @@ describe('Sidebar', () => {
     expect(within(root as HTMLElement).queryByRole('button', { name: /collapse/i })).toBeNull();
   });
 
+  it('keeps composed links and disclosure triggers compact inside the Sidebar', () => {
+    render(
+      <Sidebar>
+        <NavList
+          label='Primary'
+          items={[
+            { id: 'home', label: 'Home', href: '/home' },
+            { kind: 'collapsible-group', id: 'tools', label: 'Tools', items: [] }
+          ]}
+        />
+      </Sidebar>
+    );
+    const link = screen.getByRole('link', { name: 'Home' });
+    const trigger = screen.getByRole('button', { name: 'Tools' });
+    for (const target of [link, trigger]) {
+      expect(target).toHaveClass('min-w-[calc(var(--space-1)*7.5)]');
+      expect(target.className).not.toMatch(/(?:^|\s)min-h-/);
+    }
+    expect(link).toHaveClass('py-[calc(var(--space-1)*2.1875)]');
+    expect(trigger).toHaveClass('py-[calc(var(--space-1)*1.5625)]');
+  });
+
   it('omits absent and invalid identity and absent footer, while preserving supplied content', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {
       /* suppress expected warning */
