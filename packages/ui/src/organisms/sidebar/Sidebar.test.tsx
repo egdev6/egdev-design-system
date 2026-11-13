@@ -29,7 +29,8 @@ describe('Sidebar', () => {
     );
     const root = container.firstElementChild;
     expect(root?.tagName).toBe('DIV');
-    expect(root).toHaveClass('eg-sidebar', 'h-full', 'w-64');
+    expect(root).toHaveClass('eg-sidebar', 'eg-surface', 'h-full', 'w-75', 'bg-surface-1', 'shadow-edge');
+    expect(root?.lastElementChild).toHaveClass('eg-surface', 'bg-surface-0', 'border-border-hairline', 'shadow-edge');
     expect(screen.getAllByRole('navigation')).toHaveLength(2);
     expect(screen.getByRole('navigation', { name: 'Primary' })).toBeInTheDocument();
     expect(screen.getByRole('navigation', { name: 'Secondary' })).toBeInTheDocument();
@@ -84,6 +85,45 @@ describe('Sidebar', () => {
     expect(screen.getByText('W').closest('[aria-hidden=true]')).toBeInTheDocument();
   });
 
+  it('preserves explicit RTL through the scroll area for child navigation', () => {
+    const { container } = render(
+      <Sidebar dir='rtl' data-owner='app'>
+        <NavList label='Primary' items={[{ id: 'home', label: 'Home', href: '#home', 'aria-current': 'page' }]} />
+      </Sidebar>
+    );
+    const root = container.firstElementChild;
+    const nav = screen.getByRole('navigation', { name: 'Primary' });
+    const link = screen.getByRole('link', { name: 'Home' });
+    expect(root).toHaveAttribute('dir', 'rtl');
+    expect(root).toHaveAttribute('data-owner', 'app');
+    expect(nav.closest('[dir]')).toHaveAttribute('dir', 'rtl');
+    expect(link.closest('[dir]')).toHaveAttribute('dir', 'rtl');
+    expect(link).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('preserves native direction passthrough and Radix defaults for unspecified or auto direction', () => {
+    const navigation = <NavList label='Primary' items={[{ id: 'home', label: 'Home', href: '#home' }]} />;
+    const { container, rerender } = render(<Sidebar data-owner='app'>{navigation}</Sidebar>);
+    const root = container.firstElementChild;
+    expect(root).not.toHaveAttribute('dir');
+    expect(screen.getByRole('link', { name: 'Home' }).closest('[dir]')).toHaveAttribute('dir', 'ltr');
+    rerender(
+      <Sidebar dir='ltr' data-owner='app'>
+        {navigation}
+      </Sidebar>
+    );
+    expect(root).toHaveAttribute('dir', 'ltr');
+    expect(root).toHaveAttribute('data-owner', 'app');
+    expect(screen.getByRole('link', { name: 'Home' }).closest('[dir]')).toHaveAttribute('dir', 'ltr');
+    rerender(
+      <Sidebar dir='auto' data-owner='app'>
+        {navigation}
+      </Sidebar>
+    );
+    expect(root).toHaveAttribute('dir', 'auto');
+    expect(screen.getByRole('link', { name: 'Home' }).closest('[dir]')).toHaveAttribute('dir', 'ltr');
+  });
+
   it('uses a non-tabbable Radix viewport and supports layout classes and native attributes', () => {
     const { container } = render(
       <Sidebar className='w-80' dir='rtl' data-example='yes'>
@@ -92,7 +132,7 @@ describe('Sidebar', () => {
     );
     const root = container.firstElementChild;
     expect(root).toHaveClass('eg-sidebar', 'w-80');
-    expect(root).not.toHaveClass('w-64');
+    expect(root).not.toHaveClass('w-75');
     expect(root).toHaveAttribute('dir', 'rtl');
     expect(root).toHaveAttribute('data-example', 'yes');
     const viewport = container.querySelector('[data-radix-scroll-area-viewport]');

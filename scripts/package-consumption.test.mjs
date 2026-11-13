@@ -5452,17 +5452,34 @@ console.log(JSON.stringify({ ui: ui.version, react: (await import('react')).vers
 
 function assertNavListCSS(css) {
   for (const selector of [
-    '.min-h-11',
+    '.w-75',
+    '.text-nav-row',
+    '.text-nav-group',
     String.raw`.group-data-\[state\=closed\]\/nav-trigger\:-rotate-90`,
-    String.raw`.aria-\[current\=page\]\:hover\:bg-surface-3`,
+    String.raw`.group-hover\/nav-link\:opacity-100`,
+    String.raw`.group-aria-\[current\=page\]\/nav-link\:hidden`,
+    String.raw`.group-aria-\[current\=page\]\/nav-link\:block`,
     String.raw`.focus-visible\:outline-\[var\(--color-focus-ring-inverse\)\]`,
     String.raw`.motion-reduce\:transform-none`
   ]) {
-    assert.ok(css.includes(selector), 'Missing NavList utility ' + selector);
+    assert.ok(css.includes(selector), 'Missing NavList/Sidebar utility ' + selector);
   }
   assert.match(css, /outline-color:\s*var\(--color-focus-ring-inverse[,)]/);
   assert.match(css, /outline-width:\s*var\(--focus-width[,)]/);
-  assert.match(css, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*11\)/);
+  for (const [property, multiplier] of [
+    ['min-height', '13.75'],
+    ['min-width', '13.75'],
+    ['padding-inline', '2.5'],
+    ['padding-block', '2.1875'],
+    ['gap', '3.125'],
+    ['width', '0.625'],
+    ['width', '75']
+  ]) {
+    const factor = multiplier === '0.625' ? '0?\\.625' : multiplier.replace('.', '\\.');
+    assert.match(css, new RegExp(property + ':\\s*calc\\(var\\(--space-1\\)\\s*\\*\\s*' + factor + '\\)'));
+  }
+  assert.match(css, /inset-inline-start:\s*var\(--space-0[,)]/);
+  assert.match(css, /background-color:\s*var\(--color-bg-flood[,)]/);
   assert.doesNotMatch(css, /\.eg-nav-list\s*\{/);
 }
 

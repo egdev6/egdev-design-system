@@ -24,7 +24,7 @@ export type SidebarProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'r
   footer?: ReactNode;
 };
 
-export const sidebarVariants = cva('eg-sidebar box-border flex h-full w-64 min-h-0 flex-col');
+export const sidebarVariants = cva('eg-sidebar box-border flex h-full w-75 min-h-0 flex-col');
 export const sidebarHeaderVariants = cva('flex items-center gap-3 px-4 pt-5 pb-4');
 export const sidebarNameVariants = cva('min-w-0 truncate font-display text-heading-small text-fg-default');
 export const sidebarBodyVariants = cva('relative min-h-0 flex-1 overflow-hidden');

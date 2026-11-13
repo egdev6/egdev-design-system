@@ -180,30 +180,39 @@ export type NavListProps = Omit<
 export const navListVariants = cva('eg-nav-list min-w-0 font-sans');
 export const navListListVariants = cva('m-0 p-0 list-none flex flex-col gap-0.5');
 export const navListLinkVariants = cva([
-  'group/nav-link box-border flex items-center gap-3 min-h-11 px-3 py-1.5 rounded-md',
-  'font-sans text-label-default text-fg-secondary no-underline',
-  'hover:bg-fg-default/6 hover:text-fg-default aria-[current=page]:text-fg-default',
-  'aria-[current=page]:hover:bg-surface-3',
+  'group/nav-link relative isolate box-border flex items-center rounded-md',
+  'min-h-[calc(var(--space-1)*13.75)] min-w-[calc(var(--space-1)*13.75)]',
+  'gap-[calc(var(--space-1)*3.125)] px-[calc(var(--space-1)*2.5)] py-[calc(var(--space-1)*2.1875)]',
+  'font-sans text-nav-row leading-[var(--text-label-default--line-height)]',
+  'tracking-[var(--text-label-default--letter-spacing)] font-[var(--text-body-muted--font-weight)]',
+  'text-fg-secondary no-underline hover:text-fg-default aria-[current=page]:text-fg-default',
   'transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out)] motion-reduce:transition-none',
   'focus-visible:outline-solid focus-visible:outline-[length:var(--focus-width)]',
   'focus-visible:outline-[var(--color-focus-ring-inverse)] focus-visible:outline-offset-[calc(var(--focus-width)*-1)]'
 ]);
-export const navListIconVariants = cva([
-  'size-4.5 text-fg-muted group-hover/nav-link:text-fg-brand-default',
-  'group-aria-[current=page]/nav-link:text-fg-brand-raised',
-  'group-aria-[current=page]/nav-link:group-hover/nav-link:text-fg-brand-raised'
+export const navListHoverVariants = cva([
+  'pointer-events-none absolute -z-10 inset-0 opacity-0',
+  'group-hover/nav-link:opacity-100 group-aria-[current=page]/nav-link:hidden'
 ]);
+export const navListMarkerVariants = cva([
+  'pointer-events-none absolute inset-y-0 start-0 w-[calc(var(--space-1)*0.625)] rounded-s-md bg-bg-flood',
+  'hidden group-aria-[current=page]/nav-link:block'
+]);
+export const navListIconVariants = cva('size-(--icon-size)');
 export const navListLabelVariants = cva('flex-1 min-w-0 truncate');
 export const navListCountVariants = cva(
   'shrink-0 tabular-nums text-label-default text-fg-muted group-aria-[current=page]/nav-link:text-fg-default'
 );
 export const navListMetadataVariants = cva('ml-auto inline-flex shrink-0 items-center gap-2');
-export const navListCaptionVariants = cva(
-  'flex items-center gap-2 font-display text-meta uppercase text-fg-muted mx-3 mt-4 mb-1'
-);
+export const navListCaptionVariants = cva([
+  'flex items-center gap-2 mx-3 mt-4 mb-1 text-fg-muted',
+  'font-display text-nav-group font-[var(--text-label-eyebrow--font-weight)] uppercase'
+]);
 export const navListTriggerVariants = cva([
-  'group/nav-trigger flex w-full min-h-11 items-center gap-2 px-3 border-0 bg-transparent rounded-md',
-  'text-left font-display text-meta uppercase text-fg-muted focus-visible:shadow-focus'
+  'group/nav-trigger flex w-full items-center gap-2 px-3 border-0 bg-transparent rounded-md',
+  'min-h-[calc(var(--space-1)*13.75)] min-w-[calc(var(--space-1)*13.75)]',
+  'text-left font-display text-nav-group font-[var(--text-label-eyebrow--font-weight)] uppercase',
+  'text-fg-muted focus-visible:shadow-focus'
 ]);
 export const navListChevronVariants = cva([
   'size-3.5 group-data-[state=closed]/nav-trigger:-rotate-90',

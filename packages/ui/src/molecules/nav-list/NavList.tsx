@@ -14,6 +14,8 @@ type GroupModel = Exclude<UseNavListResult['entries'][number], LinkModel>;
 const LinkRow = ({ item, view }: { item: LinkModel; view: UseNavListResult }) => (
   <li>
     <a {...item.anchorProps}>
+      <span aria-hidden='true' className={view.hoverClassName} />
+      <span aria-hidden='true' className={view.markerClassName} />
       {item.icon && <Icon name={item.icon} className={view.iconClassName} />}
       <span className={view.labelClassName}>{item.label}</span>
       <span className={view.metadataClassName}>
