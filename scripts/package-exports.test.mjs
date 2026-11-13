@@ -6776,7 +6776,16 @@ for (const subpath of ['./tokens.css', './theme.css', './native.css']) {
 test('Tokens ships a compiled native artifact under dist without @theme', () => {
   assert.equal(tokens.exports['./tokens.css'], './dist/tokens.css', 'native import must be the compiled artifact');
   const entry = artifact('tokens', tokens.exports['./tokens.css']);
-  assert.doesNotMatch(readFileSync(entry, 'utf8'), /@theme/, 'compiled artifact must not keep the @theme at-rule');
+  const css = readFileSync(entry, 'utf8');
+  assert.doesNotMatch(css, /@theme/, 'compiled artifact must not keep the @theme at-rule');
+  const navigation = [...css.matchAll(/^\s*(--text-nav-(?:row|group)(?:--[a-z-]+)?)\s*:\s*([^;]+);/gm)];
+  assert.equal(navigation.length, 4, 'navigation typography has exactly four declarations');
+  assert.deepEqual(Object.fromEntries(navigation.map(([, name, value]) => [name, value.trim()])), {
+    '--text-nav-row': '13.5px',
+    '--text-nav-group': '14px',
+    '--text-nav-group--line-height': '1',
+    '--text-nav-group--letter-spacing': '0.14em'
+  });
 });
 
 test('Tokens retires the JSON export and its source file', () => {
