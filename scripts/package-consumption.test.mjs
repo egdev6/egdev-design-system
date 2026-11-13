@@ -8949,6 +8949,11 @@ const typographyNames = [
   'countdown-md',
   'countdown-sm'
 ];
+// The navigation recipes intentionally have only these fields, unlike typographyNames.
+const partialTypography = {
+  'nav-row': { '': '13.5px' },
+  'nav-group': { '': '14px', '--line-height': '1', '--letter-spacing': '0.14em' }
+};
 const spacingClasses = [
   'p-0',
   'p-1',
@@ -8978,6 +8983,7 @@ const tailwindClasses = [
   'size-4.5',
   'text-fg-brand-default',
   ...typographyNames.map((name) => `text-${name}`),
+  ...Object.keys(partialTypography).map((name) => `text-${name}`),
   ...spacingClasses
 ].join(' ');
 
@@ -9128,6 +9134,7 @@ const names = [
   )
 ];
 const typography = ${JSON.stringify(typographyNames)};
+const partialTypography = ${JSON.stringify(partialTypography)};
 // #70 Stat adds --text-display-stat and --text-display-stat-sm with three companions each: 255 + 8 = 263.
 // #82 Countdown adds 10 tokens: 263 + 10 = 273.
 // #98 PullQuote adds 9 tokens: 273 + 9 = 282.
@@ -9137,11 +9144,25 @@ const typography = ${JSON.stringify(typographyNames)};
 // #126 D17 adds the owner-approved --container-calendar-grid-stack: 285 + 1 = 286.
 // #291 adds the owner-approved SectionShell show halo and three group-edge masks: 286 + 4 = 290.
 // Approved ScrollReveal wipe duration adds one root token: 290 + 1 = 291.
-assert.equal(names.length, 292, 'Packed native artifact must expose 292 variables');
+// NavList v0.3 adds four static typography declarations: 292 + 4 = 296.
+assert.equal(names.length, 296, 'Packed native artifact must expose 296 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {
   for (const field of ['--line-height', '--font-weight', '--letter-spacing']) assert.ok(emitted.includes('--text-' + name + field + ':'), 'Native artifact must expose --text-' + name + field);
+}
+for (const [name, fields] of Object.entries(partialTypography)) {
+  const prefix = '--text-' + name;
+  const actual = Object.fromEntries(shipped.split(String.fromCharCode(10)).map((line) => line.trim())
+    .filter((line) => line.startsWith(prefix + ':') || line.startsWith(prefix + '--'))
+    .map((line) => {
+      const colon = line.indexOf(':');
+      return [line.slice(prefix.length, colon), line.slice(colon + 1).trim().replace(/;$/, '')];
+    }));
+  assert.deepEqual(actual, fields, 'Packed native artifact must keep exactly the approved ' + name + ' fields');
+  for (const [field, value] of Object.entries(fields)) {
+    assert.ok(emitted.includes(prefix + field + ': ' + value + ';'), 'Native consumer must retain ' + prefix + field);
+  }
 }
 assert.ok(emitted.includes('--effect-grid-size: 32px'), 'Native artifact must emit unused effect spacing');
 assert.ok(emitted.includes('--spacing-16: var(--space-16)'), 'Native artifact must emit unused spacing aliases');
@@ -9220,6 +9241,24 @@ for (const name of typography) {
   assert.ok(twCss.includes('--tw-leading, var(--text-' + name + '--line-height)'), 'text-' + name + ' must carry line-height');
   assert.ok(twCss.includes('--tw-font-weight, var(--text-' + name + '--font-weight)'), 'text-' + name + ' must carry font-weight');
   assert.ok(twCss.includes('--tw-tracking, var(--text-' + name + '--letter-spacing)'), 'text-' + name + ' must carry letter-spacing');
+}
+for (const [name, fields] of Object.entries(partialTypography)) {
+  const selector = '.text-' + name + ' {';
+  const start = twCss.indexOf(selector);
+  assert.ok(start >= 0, 'Tailwind must emit the ' + selector + ' utility');
+  const end = twCss.indexOf('}', start);
+  assert.ok(end > start, 'Tailwind must close the ' + selector + ' utility');
+  const rule = twCss.slice(start, end + 1);
+  assert.ok(rule.includes('font-size: var(--text-' + name + ')'), 'text-' + name + ' must carry its size');
+  for (const [field, property, twProperty] of [
+    ['--line-height', 'line-height', '--tw-leading'],
+    ['--font-weight', 'font-weight', '--tw-font-weight'],
+    ['--letter-spacing', 'letter-spacing', '--tw-tracking']
+  ]) {
+    const expected = Object.hasOwn(fields, field);
+    assert.equal(rule.includes(property + ':'), expected, 'text-' + name + ' must only emit approved ' + property);
+    assert.equal(rule.includes(twProperty + ', var(--text-' + name + field + ')'), expected, 'text-' + name + ' must bind approved ' + field);
+  }
 }
 assert.ok(twCss.includes('padding: var(--space-4)'), 'Tailwind must bind p-4 to --space-4');
 assert.ok(twCss.includes('padding: var(--space-16)'), 'Tailwind must bind p-16 to --space-16');

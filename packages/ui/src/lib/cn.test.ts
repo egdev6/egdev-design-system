@@ -47,6 +47,31 @@ describe('cn token typography merging', () => {
     }
   });
 
+  it.each(['nav-row', 'nav-group'])('treats text-%s as a size alongside color and weight', (name) => {
+    const size = `text-${name}`;
+    const other = name === 'nav-row' ? 'text-nav-group' : 'text-nav-row';
+    const weight = 'font-[var(--text-body-muted--font-weight)]';
+    expect(cn('eg-nav-list', 'font-sans', size, 'text-fg-muted', weight, 'text-fg-default')).toBe(
+      `eg-nav-list font-sans ${size} ${weight} text-fg-default`
+    );
+    expect(cn('text-fg-secondary', size)).toBe(`text-fg-secondary ${size}`);
+    expect(cn(size, 'text-label-default')).toBe('text-label-default');
+    expect(cn('text-label-default', size)).toBe(size);
+    expect(cn(size, 'text-sm')).toBe('text-sm');
+    expect(cn('text-sm', size)).toBe(size);
+    expect(cn(size, other)).toBe(other);
+    expect(cn(size, `md:${size}`, 'md:text-label-default')).toBe(`${size} md:text-label-default`);
+  });
+
+  it('preserves existing size, color and weight conflicts with public markers', () => {
+    expect(
+      cn(
+        'eg-label font-sans text-label-default text-fg-secondary font-[var(--text-body-default--font-weight)]',
+        'text-body-default text-fg-muted font-[var(--text-body-muted--font-weight)]'
+      )
+    ).toBe('eg-label font-sans text-body-default text-fg-muted font-[var(--text-body-muted--font-weight)]');
+  });
+
   it('still resolves typography, foreground-color and layout conflicts last', () => {
     for (const first of typographySizes) {
       for (const last of typographySizes) {

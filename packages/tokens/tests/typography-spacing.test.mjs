@@ -162,6 +162,32 @@ test('static theme publishes the 13 typography recipes with Tailwind companion f
   );
 });
 
+test('static theme publishes the partial navigation row size and retains its reused tokens', () => {
+  const declarations = toDeclarationMap(staticBlock);
+  assert.deepEqual(
+    [...declarations].filter(([name]) => name === '--text-nav-row' || name.startsWith('--text-nav-row--')),
+    [['--text-nav-row', '13.5px']]
+  );
+  assert.equal(declarations.get('--font-sans'), '"Barlow", system-ui, sans-serif');
+  assert.equal(declarations.get('--text-label-default--line-height'), '1.2');
+  assert.equal(declarations.get('--text-label-default--letter-spacing'), '0');
+  assert.equal(declarations.get('--text-body-muted--font-weight'), '400');
+});
+
+test('static theme publishes the partial navigation group recipe and retains its reused tokens', () => {
+  const declarations = toDeclarationMap(staticBlock);
+  assert.deepEqual(
+    [...declarations].filter(([name]) => name === '--text-nav-group' || name.startsWith('--text-nav-group--')),
+    [
+      ['--text-nav-group', '14px'],
+      ['--text-nav-group--line-height', '1'],
+      ['--text-nav-group--letter-spacing', '0.14em']
+    ]
+  );
+  assert.equal(declarations.get('--font-display'), '"Barlow Condensed", "Arial Narrow", sans-serif');
+  assert.equal(declarations.get('--text-label-eyebrow--font-weight'), '700');
+});
+
 test('static theme publishes the four fluid Title recipes and the hero glyph glow (#108 D8/D9)', () => {
   assert.deepEqual(findRecipeDrift(staticBlock, TITLE_TYPOGRAPHY), [], 'Title recipes must match the approved clamps');
   assert.equal(

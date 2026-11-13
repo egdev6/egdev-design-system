@@ -16,6 +16,8 @@ const tokenTypographySizes = [
   'body-muted',
   'label-default',
   'label-eyebrow',
+  'nav-row',
+  'nav-group',
   'meta',
   'cta-label',
   'code',
