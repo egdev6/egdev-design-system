@@ -1598,14 +1598,18 @@ test('sidebar exports its component and static CSS without private helpers', asy
       children: 'Body'
     })
   );
-  assert.match(html, /eg-sidebar/);
+  assert.match(html, /eg-sidebar[^\"]*\bw-75\b/);
   assert.match(html, /href="\/home"/);
   assert.match(html, /Body/);
   assert.match(html, /Account/);
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
-  for (const selector of ['.w-64', '.min-h-0', '.overflow-hidden']) {
+  for (const selector of ['.w-75', '.min-h-0', '.overflow-hidden']) {
     assert.ok(css.includes(selector), selector);
   }
+  assert.match(css, /\.w-75\s*\{[^}]*width:\s*calc\(var\(--space-1\)\s*\*\s*75\)/);
+  const overridden = renderToString(createElement(exported.Sidebar, { className: 'w-80', children: 'Body' }));
+  assert.match(overridden, /eg-sidebar[^\"]*\bw-80\b/);
+  assert.doesNotMatch(overridden, /\bw-75\b/);
 });
 
 test('preview-frame exports its passive figure and keeps recipes internal', async () => {
@@ -2027,7 +2031,18 @@ test('NavList ships every static CVA utility and native disclosure/current-page 
   }
   assert.match(css, /outline-color:\s*var\(--color-focus-ring-inverse[,)]/);
   assert.match(css, /outline-width:\s*var\(--focus-width[,)]/);
-  assert.match(css, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*11\)/);
+  for (const [property, multiplier] of [
+    ['min-height', '13.75'],
+    ['min-width', '13.75'],
+    ['padding-inline', '2.5'],
+    ['padding-block', '2.1875'],
+    ['gap', '3.125'],
+    ['width', '0.625']
+  ]) {
+    const factor = multiplier === '0.625' ? '0?\\.625' : multiplier.replace('.', '\\.');
+    assert.match(css, new RegExp(`${property}:\\s*calc\\(var\\(--space-1\\)\\s*\\*\\s*${factor}\\)`));
+  }
+  assert.match(css, /inset-inline-start:\s*var\(--space-0[,)]/);
   assert.doesNotMatch(css, /\.eg-nav-list\s*\{/);
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -2058,7 +2073,8 @@ test('NavList ships every static CVA utility and native disclosure/current-page 
     })
   );
   assert.match(html, /^<nav aria-label="Workspace" class="eg-nav-list /);
-  assert.match(html, /<a href="#home" aria-current="page" class="eg-surface [^"]*bg-surface-3/);
+  assert.match(html, /<a href="#home" aria-current="page" class="eg-surface [^"]*bg-surface-2/);
+  assert.match(html, /aria-hidden="true" class="[^"]*start-0[^"]*bg-bg-flood/);
   assert.match(html, /aria-labelledby="[^"]+-caption-1"/);
   assert.match(html, /aria-expanded="false"/);
   assert.match(html, /aria-controls="[^"]+" aria-expanded="true"/);

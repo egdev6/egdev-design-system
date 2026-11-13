@@ -130,5 +130,23 @@ export const LongLabels: Story = {
   }
 };
 
+/** RTL preserves the logical current marker and label-only truncation inside a narrow host. */
+export const RTL: Story = {
+  args: {
+    dir: 'rtl',
+    className: 'w-64',
+    items: [
+      {
+        id: 'current',
+        label: 'A very long current destination name for this workspace',
+        href: '#current',
+        icon: 'compass',
+        'aria-current': 'page'
+      },
+      { kind: 'collapsible-group', id: 'archive', label: 'Archive', defaultOpen: true, items: destinations }
+    ]
+  }
+};
+
 /** Empty data has no fabricated destination or empty-state copy. */
 export const Empty: Story = { args: { items: [] } };

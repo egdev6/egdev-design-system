@@ -27,8 +27,11 @@ export function useSidebar({ product, children, footer, className, ...native }: 
     role?: unknown;
     dangerouslySetInnerHTML?: unknown;
   };
+  const scrollDirection: 'ltr' | 'rtl' | undefined =
+    safeNative.dir === 'rtl' ? 'rtl' : safeNative.dir === 'ltr' ? 'ltr' : undefined;
   return {
     product: validProduct,
+    scrollDirection,
     children,
     footer,
     rootProps: {

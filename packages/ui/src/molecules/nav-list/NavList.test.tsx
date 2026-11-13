@@ -14,7 +14,7 @@ const group = (overrides: Partial<NavListCollapsibleGroup> = {}): NavListCollaps
   ...overrides
 });
 
-describe('NavList public contract v0.2', () => {
+describe('NavList public contract v0.3', () => {
   it('renders a named landmark, native lists and ordered anchors without menu semantics', () => {
     render(<NavList label='Workspace' items={[home, { id: 'settings', label: 'Settings', href: '#settings' }]} />);
     const nav = screen.getByRole('navigation', { name: 'Workspace' });
@@ -36,18 +36,18 @@ describe('NavList public contract v0.2', () => {
     expect(link).toHaveAttribute('aria-current', 'page');
     expect(link).toHaveClass(
       'eg-surface',
-      'bg-surface-3',
+      'bg-surface-2',
       'border-border-hairline',
       'shadow-[var(--shadow-edge),var(--shadow-elev-1)]',
       'bg-[image:var(--gradient-sheen)]',
-      'px-3',
-      'py-1.5'
+      'px-[calc(var(--space-1)*2.5)]',
+      'py-[calc(var(--space-1)*2.1875)]'
     );
     expect(screen.getByRole('navigation')).not.toHaveClass('eg-surface');
     expect(link).not.toHaveAttribute('aria-selected');
     rerender(<NavList label='Workspace' items={[home]} />);
     expect(link).not.toHaveAttribute('aria-current');
-    expect(link).not.toHaveClass('eg-surface', 'bg-surface-3');
+    expect(link).not.toHaveClass('eg-surface', 'bg-surface-2');
   });
 
   it('names static lists with unique generated caption ids, not data ids', () => {
@@ -281,18 +281,105 @@ describe('NavList public contract v0.2', () => {
     expect(screen.queryByText('Injected')).not.toBeInTheDocument();
   });
 
-  it('keeps 35.2px targets, label-only truncation, focus tokens and reduced-motion recipes', () => {
-    render(<NavList label='Workspace' items={[home, group()]} />);
+  it('uses the approved row typography and exact token-backed padding and gap', () => {
+    render(<NavList label='Workspace' items={[home]} />);
+    expect(screen.getByRole('link', { name: 'Home' })).toHaveClass(
+      'font-sans',
+      'text-nav-row',
+      'leading-[var(--text-label-default--line-height)]',
+      'tracking-[var(--text-label-default--letter-spacing)]',
+      'font-[var(--text-body-muted--font-weight)]',
+      'px-[calc(var(--space-1)*2.5)]',
+      'py-[calc(var(--space-1)*2.1875)]',
+      'gap-[calc(var(--space-1)*3.125)]'
+    );
+  });
+
+  it('uses the approved typography on static captions and disclosure triggers', () => {
+    render(<NavList label='Workspace' items={[{ kind: 'group', id: 'tools', label: 'Tools', items: [] }, group()]} />);
+    const caption = document.getElementById(
+      screen.getByRole('list', { name: 'Tools' }).getAttribute('aria-labelledby') ?? ''
+    );
+    for (const element of [caption, screen.getByRole('button', { name: 'Content' })]) {
+      expect(element).toHaveClass(
+        'font-display',
+        'text-nav-group',
+        'font-[var(--text-label-eyebrow--font-weight)]',
+        'uppercase'
+      );
+    }
+  });
+
+  it('keeps the 16px leading icon on inherited row color in rest, hover and current states', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(<NavList label='Workspace' items={[home]} />);
+    const link = screen.getByRole('link', { name: 'Home' });
+    const icon = link.querySelector('svg');
+    expect(icon).toHaveClass('size-(--icon-size)', 'stroke-current');
+    expect(icon?.getAttribute('class')).not.toMatch(/text-fg-|group-hover|group-aria/);
+    expect(link).toHaveClass('text-fg-secondary', 'hover:text-fg-default', 'aria-[current=page]:text-fg-default');
+    await user.hover(link);
+    expect(icon?.getAttribute('class')).not.toMatch(/text-fg-|group-hover|group-aria/);
+    rerender(<NavList label='Workspace' items={[{ ...home, 'aria-current': 'page' }]} />);
+    expect(screen.getByRole('link', { name: 'Home' }).querySelector('svg')).toHaveClass(
+      'size-(--icon-size)',
+      'stroke-current'
+    );
+    expect(screen.getByRole('link', { name: 'Home' }).querySelector('svg')?.getAttribute('class')).not.toMatch(
+      /text-fg-|group-hover|group-aria/
+    );
+  });
+
+  it('uses an inert Surface hover layer without covering the link or changing its name', () => {
+    render(<NavList label='Workspace' items={[home]} />);
+    const link = screen.getByRole('link', { name: 'Home' });
+    const layer = link.querySelector('span.eg-surface');
+    expect(link).toHaveClass('relative', 'isolate');
+    expect(layer).toHaveAttribute('aria-hidden', 'true');
+    expect(layer).toHaveClass(
+      'pointer-events-none',
+      'absolute',
+      '-z-10',
+      'inset-0',
+      'bg-surface-2',
+      'opacity-0',
+      'group-hover/nav-link:opacity-100',
+      'group-aria-[current=page]/nav-link:hidden'
+    );
+    expect(link).toHaveAccessibleName('Home');
+  });
+
+  it.each(['ltr', 'rtl'] as const)('uses the same decorative logical-start current marker in %s', (dir) => {
+    render(<NavList dir={dir} label='Workspace' items={[{ ...home, 'aria-current': 'page' }]} />);
+    const link = screen.getByRole('link', { name: 'Home' });
+    const marker = link.querySelector('span.start-0');
+    expect(marker).toHaveAttribute('aria-hidden', 'true');
+    expect(marker).toHaveClass(
+      'pointer-events-none',
+      'absolute',
+      'inset-y-0',
+      'start-0',
+      'w-[calc(var(--space-1)*0.625)]',
+      'bg-bg-flood',
+      'group-aria-[current=page]/nav-link:block'
+    );
+    expect(link).toHaveAccessibleName('Home');
+  });
+
+  it('keeps 44px minimum link and trigger targets, truncation, focus and reduced-motion recipes', () => {
+    render(<NavList className='w-1' label='Workspace' items={[home, group()]} />);
     const link = screen.getByRole('link');
+    const trigger = screen.getByRole('button');
+    for (const target of [link, trigger]) {
+      expect(target).toHaveClass('min-h-[calc(var(--space-1)*13.75)]', 'min-w-[calc(var(--space-1)*13.75)]');
+    }
     expect(link).toHaveClass(
-      'min-h-11',
       'motion-reduce:transition-none',
       'focus-visible:outline-[var(--color-focus-ring-inverse)]'
     );
     expect(screen.getByText('Home')).toHaveClass('truncate', 'min-w-0');
     expect(link).not.toHaveClass('truncate');
-    const trigger = screen.getByRole('button');
-    expect(trigger).toHaveClass('min-h-11', 'focus-visible:shadow-focus');
+    expect(trigger).toHaveClass('focus-visible:shadow-focus');
     expect(trigger.querySelector('svg')).toHaveClass('motion-reduce:transform-none', 'motion-reduce:transition-none');
   });
 

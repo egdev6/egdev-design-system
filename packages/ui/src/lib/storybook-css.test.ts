@@ -188,6 +188,61 @@ describe('Storybook preview CSS', () => {
     css = String(stylesheet.source).replace(/\/\*[\s\S]*?\*\//g, '');
   }, 30_000);
 
+  it.each([
+    ['.w-75', /width:\s*calc\(var\(--space-1\)\s*\*\s*75\)/],
+    [String.raw`.min-h-\[calc\(var\(--space-1\)\*13\.75\)\]`, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*13\.75\)/],
+    [String.raw`.min-w-\[calc\(var\(--space-1\)\*13\.75\)\]`, /min-width:\s*calc\(var\(--space-1\)\s*\*\s*13\.75\)/],
+    [String.raw`.px-\[calc\(var\(--space-1\)\*2\.5\)\]`, /padding-inline:\s*calc\(var\(--space-1\)\s*\*\s*2\.5\)/],
+    [String.raw`.py-\[calc\(var\(--space-1\)\*2\.1875\)\]`, /padding-block:\s*calc\(var\(--space-1\)\s*\*\s*2\.1875\)/],
+    [String.raw`.gap-\[calc\(var\(--space-1\)\*3\.125\)\]`, /gap:\s*calc\(var\(--space-1\)\s*\*\s*3\.125\)/],
+    [String.raw`.w-\[calc\(var\(--space-1\)\*0\.625\)\]`, /width:\s*calc\(var\(--space-1\)\s*\*\s*0?\.625\)/],
+    ['.start-0', /inset-inline-start:\s*var\(--space-0[,)]/],
+    ['.bg-bg-flood', /background-color:\s*var\(--color-bg-flood[,)]/],
+    [String.raw`.size-\(--icon-size\)`, /width:\s*var\(--icon-size\)/]
+  ])('emits NavList/Sidebar token geometry for %s', (selector, declaration) => {
+    expect(rule(selector)).toMatch(declaration);
+  });
+
+  it('emits the NavList typography, Surface and attribute-driven hover/current paint', () => {
+    const surfacePadding = css.indexOf('.p-0 {');
+    const rowPaddingX = css.indexOf(String.raw`.px-\[calc\(var\(--space-1\)\*2\.5\)\] {`);
+    const rowPaddingY = css.indexOf(String.raw`.py-\[calc\(var\(--space-1\)\*2\.1875\)\] {`);
+    expect(surfacePadding).toBeGreaterThanOrEqual(0);
+    expect(rowPaddingX).toBeGreaterThan(surfacePadding);
+    expect(rowPaddingY).toBeGreaterThan(surfacePadding);
+    expect(rule('.text-nav-row')).toMatch(/font-size:\s*var\(--text-nav-row[,)]/);
+    const group = rule('.text-nav-group');
+    expect(group).toMatch(/font-size:\s*var\(--text-nav-group[,)]/);
+    expect(group).toContain('var(--text-nav-group--line-height');
+    expect(group).toContain('var(--text-nav-group--letter-spacing');
+    expect(rule(String.raw`.leading-\[var\(--text-label-default--line-height\)\]`)).toContain(
+      'var(--text-label-default--line-height)'
+    );
+    expect(rule(String.raw`.tracking-\[var\(--text-label-default--letter-spacing\)\]`)).toContain(
+      'var(--text-label-default--letter-spacing)'
+    );
+    expect(rule(String.raw`.font-\[var\(--text-body-muted--font-weight\)\]`)).toContain(
+      'var(--text-body-muted--font-weight)'
+    );
+    expect(rule(String.raw`.font-\[var\(--text-label-eyebrow--font-weight\)\]`)).toContain(
+      'var(--text-label-eyebrow--font-weight)'
+    );
+    expect(rule(String.raw`.size-\(--icon-size\)`)).toMatch(/height:\s*var\(--icon-size\)/);
+    expect(rule('.bg-surface-2')).toMatch(/background-color:\s*var\(--color-surface-2[,)]/);
+    expect(rule(String.raw`.bg-\[image\:var\(--gradient-sheen\)\]`)).toContain('var(--gradient-sheen)');
+    expect(rule(String.raw`.shadow-\[var\(--shadow-edge\)\,var\(--shadow-elev-1\)\]`)).toContain(
+      'var(--shadow-elev-1)'
+    );
+    for (const selector of [
+      String.raw`.group-hover\/nav-link\:opacity-100`,
+      String.raw`.group-aria-\[current\=page\]\/nav-link\:hidden`,
+      String.raw`.group-aria-\[current\=page\]\/nav-link\:block`,
+      String.raw`.focus-visible\:outline-\[var\(--color-focus-ring-inverse\)\]`
+    ]) {
+      expect(css, selector).toContain(selector);
+    }
+  });
+
   it('compiles Toast floating elevation, viewport sizing, swipe and reduced-motion utilities', () => {
     expect(rule(String.raw`.shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-elev-3\)\]`)).toMatch(
       /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-elev-3\)/

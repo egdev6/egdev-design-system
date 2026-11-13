@@ -1309,7 +1309,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListTag",
-          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+          "revision": "sha256:aadd1bd8fcb47dba0bc1123249ed7fcdb8e5cf2f317f6f27d2c224b9744b26b7"
         }
       },
       {
@@ -1624,7 +1624,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListProps",
-          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+          "revision": "sha256:aadd1bd8fcb47dba0bc1123249ed7fcdb8e5cf2f317f6f27d2c224b9744b26b7"
         }
       },
       {
@@ -2498,7 +2498,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListLink",
-          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+          "revision": "sha256:aadd1bd8fcb47dba0bc1123249ed7fcdb8e5cf2f317f6f27d2c224b9744b26b7"
         }
       },
       {
@@ -3782,7 +3782,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListProps",
-          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+          "revision": "sha256:aadd1bd8fcb47dba0bc1123249ed7fcdb8e5cf2f317f6f27d2c224b9744b26b7"
         }
       },
       {
@@ -4541,7 +4541,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListCollapsibleGroup",
-          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+          "revision": "sha256:aadd1bd8fcb47dba0bc1123249ed7fcdb8e5cf2f317f6f27d2c224b9744b26b7"
         }
       },
       {
@@ -4638,7 +4638,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListCollapsibleGroup",
-          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+          "revision": "sha256:aadd1bd8fcb47dba0bc1123249ed7fcdb8e5cf2f317f6f27d2c224b9744b26b7"
         }
       },
       {
@@ -4735,7 +4735,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListCollapsibleGroup",
-          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+          "revision": "sha256:aadd1bd8fcb47dba0bc1123249ed7fcdb8e5cf2f317f6f27d2c224b9744b26b7"
         }
       },
       {
@@ -4839,7 +4839,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListEntry",
-          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+          "revision": "sha256:aadd1bd8fcb47dba0bc1123249ed7fcdb8e5cf2f317f6f27d2c224b9744b26b7"
         }
       },
       {
@@ -4943,7 +4943,7 @@
         "source": {
           "path": "packages/ui/src/molecules/nav-list/types.ts",
           "symbol": "NavListProps",
-          "revision": "sha256:189b8cdce8ba0900cc1f66d24e9101f06c1250ceb004fb3ade0e036a0271c5f6"
+          "revision": "sha256:aadd1bd8fcb47dba0bc1123249ed7fcdb8e5cf2f317f6f27d2c224b9744b26b7"
         }
       },
       {
@@ -5488,7 +5488,7 @@
         "source": {
           "path": "packages/ui/src/organisms/sidebar/types.ts",
           "symbol": "SidebarProps",
-          "revision": "sha256:489fe1683e9a448ec5111da30b92c468298799392fb7441a5493cf32a7e50e18"
+          "revision": "sha256:7f16ca178fc47c6e03d450757dc09d0b4b812ec0b2e7b68c37e62f7845d9186a"
         }
       },
       {
@@ -6989,7 +6989,7 @@
         "source": {
           "path": "packages/ui/src/organisms/sidebar/types.ts",
           "symbol": "SidebarProps",
-          "revision": "sha256:489fe1683e9a448ec5111da30b92c468298799392fb7441a5493cf32a7e50e18"
+          "revision": "sha256:7f16ca178fc47c6e03d450757dc09d0b4b812ec0b2e7b68c37e62f7845d9186a"
         }
       },
       {

@@ -22,7 +22,7 @@ export const Sidebar: FC<SidebarProps> = (props) => {
           </span>
         </div>
       )}
-      <ScrollArea.Root className={s.bodyClass} type='auto'>
+      <ScrollArea.Root className={s.bodyClass} type='auto' dir={s.scrollDirection}>
         <ScrollArea.Viewport className={s.viewportClass}>
           <div className={s.contentClass}>{s.children}</div>
         </ScrollArea.Viewport>
