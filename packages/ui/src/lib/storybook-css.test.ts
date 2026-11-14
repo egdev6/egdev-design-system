@@ -266,6 +266,37 @@ describe('Storybook preview CSS', () => {
     }
   });
 
+  it('emits TopBar v0.3 typography, bottom indicator, Surface backing and state overrides', () => {
+    const text = rule('.text-body-large');
+    expect(text).toContain('var(--text-body-large');
+    expect(text).toContain('var(--text-body-large--line-height');
+    expect(text).toContain('var(--text-body-large--font-weight');
+    expect(text).toContain('var(--text-body-large--letter-spacing');
+    expect(rule('.gap-8')).toMatch(/gap:\s*var\(--space-8[,)]/);
+    expect(rule('.bg-surface-1')).toContain('var(--color-surface-1');
+    expect(rule(String.raw`.bg-\[image\:var\(--gradient-sheen\)\]`)).toContain('var(--gradient-sheen)');
+    for (const selector of [
+      String.raw`.after\:-bottom-px`,
+      String.raw`.after\:h-\[calc\(var\(--space-1\)\*0\.625\)\]`,
+      String.raw`.after\:w-full`,
+      String.raw`.aria-\[current\=page\]\:after\:bg-bg-flood`,
+      String.raw`.aria-\[current\=page\]\:font-\[var\(--text-label-default--font-weight\)\]`,
+      String.raw`.data-\[state\=glass\]\:bg-none`,
+      String.raw`.data-\[state\=transparent\]\:bg-none`,
+      String.raw`.data-\[state\=transparent\]\:bg-transparent`
+    ]) {
+      expect(css, selector).toContain(selector);
+    }
+    const declarationAfter = (selector: string) => css.slice(css.indexOf(selector), css.indexOf(selector) + 700);
+    expect(declarationAfter(String.raw`.after\:h-\[calc\(var\(--space-1\)\*0\.625\)\]`)).toMatch(
+      /height:\s*calc\(var\(--space-1\)\s*\*\s*0?\.625\)/
+    );
+    expect(declarationAfter(String.raw`.aria-\[current\=page\]\:after\:bg-bg-flood`)).toContain('--color-bg-flood');
+    expect(
+      declarationAfter(String.raw`.aria-\[current\=page\]\:font-\[var\(--text-label-default--font-weight\)\]`)
+    ).toContain('--text-label-default--font-weight');
+  });
+
   it('compiles Toast floating elevation, viewport sizing, swipe and reduced-motion utilities', () => {
     expect(rule(String.raw`.shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-elev-3\)\]`)).toMatch(
       /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-elev-3\)/

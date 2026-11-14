@@ -177,6 +177,7 @@ export type { TopBarItem, TopBarPartProps, TopBarProps } from './organisms/top-b
 export {
   TopBar,
   TopBarBrand,
+  TopBarEnd,
   TopBarMobileTrigger,
   TopBarSearchCompact,
   TopBarSearchFull,

@@ -136,6 +136,10 @@
       "reason": "Composed part exported alongside TopBar (docs-list id organisms-topbar); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
     },
     {
+      "name": "TopBarEnd",
+      "reason": "Composed part exported alongside TopBar (docs-list id organisms-topbar); it has no story component of its own, so docs-list omits it (D1 (a), #344; added by TopBar v0.3)."
+    },
+    {
       "name": "TopBarMobileTrigger",
       "reason": "Composed part exported alongside TopBar (docs-list id organisms-topbar); it has no story component of its own, so docs-list omits it (D1 (a), #344)."
     },

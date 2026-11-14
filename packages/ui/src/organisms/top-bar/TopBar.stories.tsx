@@ -1,11 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { Button } from '../../atoms/button';
+import { Link } from '../../atoms/link';
+import { Logo } from '../../atoms/logo';
+import { StatusDot } from '../../atoms/status-dot';
 import { Dialog, DialogContent, DialogTrigger } from '../../molecules/dialog';
 import { Menu } from '../../molecules/menu';
 import {
   TopBar,
   TopBarBrand,
+  TopBarEnd,
   TopBarMobileTrigger,
   TopBarSearchCompact,
   TopBarSearchFull,
@@ -14,15 +18,44 @@ import {
 import type { TopBarItem } from './types';
 
 const items: TopBarItem[] = [
-  { id: 'home', label: 'Home', href: '#home' },
+  { id: 'home', label: 'Home', href: '#home', 'aria-current': 'page' },
   { id: 'about', label: 'About', href: '#about' }
 ];
 const brand = (
   <TopBarBrand>
-    <a href='/'>Studio</a>
+    <span className='inline-flex items-center'>
+      <Link href='#home' aria-label='Studio home' arrow={false}>
+        <Logo variant='mark' size='sm' />
+        <span className='flex flex-col'>
+          <span className='font-display text-heading-small uppercase text-fg-default'>Studio</span>
+          <span className='text-label-default font-[var(--text-body-muted--font-weight)] text-fg-secondary'>
+            Design system
+          </span>
+        </span>
+      </Link>
+      <span aria-hidden='true' className='w-10 shrink-0' />
+    </span>
   </TopBarBrand>
 );
-/** Fixed site navigation. Supply direct parts (fragments are allowed); missing brand, duplicate parts and non-part children are composition errors. The host reserves nav-height once, provides a legible backdrop and manages dialog focus on resize. */
+const status = (
+  <TopBarEnd>
+    <span className='inline-flex items-center gap-2 text-label-default font-[var(--text-body-muted--font-weight)] text-fg-secondary'>
+      <StatusDot state='running' /> Online
+    </span>
+  </TopBarEnd>
+);
+/**
+ * ## Description
+ * Fixed site navigation with consumer-owned brand, destinations and controls.
+ *
+ * ## Dependencies
+ * The examples compose Link, Logo, StatusDot, Button, Dialog and Menu.
+ *
+ * ## Usage guidelines
+ * Supply direct parts or fragments; one brand is required, but a home link is optional.
+ * Transparent and content are the runtime defaults. Scroll selects glass unless the host supplies
+ * data-state. Reserve nav-height once, ensure backdrop contrast and manage dialog focus on resize.
+ */
 const meta = {
   title: 'Organisms/TopBar',
   component: TopBar,
@@ -31,18 +64,58 @@ const meta = {
 } satisfies Meta<typeof TopBar>;
 export default meta;
 type Story = StoryObj<typeof TopBar>;
-/** Required inputs with transparent host-owned state. */
-export const Default: Story = {};
-/** The host marks the current destination; its brand indicator resembles Tabs without changing native navigation. */
-export const CurrentPage: Story = {
+
+/** A reference-style solid header with a current page and passive status in its end slot. */
+export const Default: Story = {
   args: {
-    items: [
-      { id: 'home', label: 'Home', href: '#home', 'aria-current': 'page' },
-      { id: 'about', label: 'About', href: '#about' }
-    ]
+    initialBackground: 'solid',
+    children: (
+      <>
+        {brand}
+        {status}
+      </>
+    )
   }
 };
-/** The host explicitly selects the overlay. */
+/** Scroll the page to see the transparent backing become glass, then return to the top. */
+export const ScrollGlass: Story = {
+  render: (args) => (
+    <>
+      <TopBar {...args} />
+      <div className='h-dvh' />
+      <div className='h-dvh' />
+    </>
+  )
+};
+/** Full width retains the same gutters while the background remains full-bleed. */
+export const FullWidth: Story = {
+  args: {
+    contentWidth: 'full',
+    children: (
+      <>
+        {brand}
+        {status}
+      </>
+    )
+  }
+};
+/** The free end slot can contain passive content without any other utility parts. */
+export const TrailingSlot: Story = {
+  args: {
+    items: [],
+    children: (
+      <>
+        {brand}
+        {status}
+      </>
+    )
+  }
+};
+/** The host marks the current destination while native navigation remains unchanged. */
+export const CurrentPage: Story = {
+  args: { items: [{ id: 'about', label: 'About', href: '#about', 'aria-current': 'page' }] }
+};
+/** The host may explicitly select the overlay regardless of scroll. */
 export const Glass: Story = { render: (args) => <TopBar {...args} data-state='glass' /> };
 /** Compact controls appear when the bar container is at most 900px wide. */
 export const Compact: Story = {
@@ -94,7 +167,7 @@ export const ComposedControls: Story = {
     )
   }
 };
-/** The host owns glass state and must handle resize while the dialog trigger is hidden. */
+/** The host owns the dialog and must handle resize while its trigger is hidden. */
 export const MobileDialog: Story = {
   render: function MobileDialogStory(args) {
     const [open, setOpen] = useState(false);
@@ -111,8 +184,12 @@ export const MobileDialog: Story = {
           </TopBarMobileTrigger>
         </TopBar>
         <DialogContent title='Mobile navigation'>
-          <a href='#home'>Home</a>
-          <a href='#about'>About</a>
+          <Link href='#home' arrow={false}>
+            Home
+          </Link>
+          <Link href='#about' arrow={false}>
+            About
+          </Link>
         </DialogContent>
       </Dialog>
     );

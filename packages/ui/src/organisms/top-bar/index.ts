@@ -1,6 +1,7 @@
 export {
   TopBar,
   TopBarBrand,
+  TopBarEnd,
   TopBarMobileTrigger,
   TopBarSearchCompact,
   TopBarSearchFull,

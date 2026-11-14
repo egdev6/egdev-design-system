@@ -4,6 +4,8 @@
 
 **Identity and gates:** finalize the amendment's canonical payload hash; record owner approval scoped to v0.3 and any adopted visual hashes. Separately record convention approval and SHA-256 of this entire final plan file with the owner's plan approval. A changed approved payload needs renewed approval. The Image#5 reference is not recoverable here; the amendment records its provenance and limitations. Visual conformity remains **Not evaluated** until comparable, approved evidence is available.
 
+**Approved plan identity metadata:** SHA-256 `198cec9d4676e07de534e5469b813f1b522323c918982899a518b2d950711a16` identifies the entire approved plan before this metadata paragraph was inserted. To verify, remove this paragraph and its following blank line, then hash the remaining UTF-8 bytes. Approval: `odd/tasks/topbar-app-header.md#l4--approved`.
+
 ## 1. Proposed future edit surfaces
 
 These are candidates for a later bounded implementation authorization, **not** permission to change them now. Reinspect the tree and restrict each work unit to the paths actually needed.

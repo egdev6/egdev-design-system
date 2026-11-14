@@ -51,7 +51,7 @@ import { NowStrip } from '@egdev/ui';
 import type { NowStripProps } from '@egdev/ui';
 import { Footer, FooterBrand, FooterLegal, FooterMotto, FooterNavigation, FooterSocial } from '@egdev/ui';
 import type { FooterProps, FooterBrandProps, FooterLegalProps, FooterMottoProps, FooterNavigationProps, FooterNavigationItem, FooterNavigationLevel, FooterSocialProps } from '@egdev/ui';
-import { TopBar, TopBarBrand, TopBarMobileTrigger, TopBarSearchCompact, TopBarSearchFull, TopBarUserMenu } from '@egdev/ui';
+import { TopBar, TopBarBrand, TopBarEnd, TopBarMobileTrigger, TopBarSearchCompact, TopBarSearchFull, TopBarUserMenu } from '@egdev/ui';
 import type { TopBarItem, TopBarPartProps, TopBarProps } from '@egdev/ui';
 import { SectionShell } from '@egdev/ui';
 import type { SectionShellProps, SectionShellRegister } from '@egdev/ui';
@@ -631,11 +631,12 @@ type FooterPrivate = (typeof import('@egdev/ui'))['footerVariants'];
 export type FooterNegatives = [typeof footerMissing, typeof footerRole, typeof footerStyle, typeof footerRank, typeof footerDestination, FooterPrivate];
 const topBarItem: TopBarItem = { id: 'home', label: 'Home', href: '#home', 'aria-current': 'page' };
 const topBarPart: TopBarPartProps = { children: createElement('a', { href: '/' }, 'Brand') };
-export const topBarProps: TopBarProps = { label: 'Main', items: [topBarItem], 'data-state': 'glass', style: { zIndex: 10 }, children: [
+export const topBarProps: TopBarProps = { label: 'Main', items: [topBarItem], initialBackground: 'solid', contentWidth: 'full', 'data-state': 'glass', style: { zIndex: 10 }, children: [
   createElement(TopBarUserMenu, { key: 'user', children: createElement('button', null, 'Account') }),
   createElement(TopBarBrand, { key: 'brand', ...topBarPart }),
   createElement(TopBarSearchFull, { key: 'full', children: createElement('button', null, 'Full') }),
   createElement(TopBarSearchCompact, { key: 'compact', children: createElement('button', null, 'Compact') }),
+  createElement(TopBarEnd, { key: 'end', children: createElement('span', null, 'Online') }),
   createElement(TopBarMobileTrigger, { key: 'mobile', children: createElement('button', null, 'Menu') })
 ] };
 export function TopBarSamples() { return createElement(TopBar, topBarProps); }
@@ -647,7 +648,11 @@ const topBarMissingItems: TopBarProps = { label: 'Main', children: null };
 const topBarInvalidState: TopBarProps = { ...topBarProps, 'data-state': 'open' };
 // @ts-expect-error The header role cannot be overridden.
 const topBarRole: TopBarProps = { ...topBarProps, role: 'navigation' };
-export type TopBarNegatives = [typeof topBarMissingLabel, typeof topBarMissingItems, typeof topBarInvalidState, typeof topBarRole];
+// @ts-expect-error Only approved backing values are supported.
+const topBarBackground: TopBarProps = { ...topBarProps, initialBackground: 'overlay' };
+// @ts-expect-error Only approved row widths are supported.
+const topBarWidth: TopBarProps = { ...topBarProps, contentWidth: 'narrow' };
+export type TopBarNegatives = [typeof topBarMissingLabel, typeof topBarMissingItems, typeof topBarInvalidState, typeof topBarRole, typeof topBarBackground, typeof topBarWidth];
 
 // Keep PageHeader samples outside App so the existing button-count/focus harness stays unchanged.
 const pageHeaderLevel: PageHeaderLevel = 2;
@@ -4982,7 +4987,15 @@ function assertTopBarConsumerCSS(css) {
     String.raw`.\[\@container_\(width\=900px\)\]\:hidden`,
     String.raw`.\[\@container_\(width\=900px\)\]\:block`,
     String.raw`.data-\[state\=glass\]\:bg-surface-overlay`,
-    String.raw`.data-\[state\=glass\]\:border-border-hairline-strong`
+    String.raw`.data-\[state\=glass\]\:border-border-hairline-strong`,
+    String.raw`.data-\[state\=glass\]\:bg-none`,
+    String.raw`.data-\[state\=transparent\]\:bg-transparent`,
+    String.raw`.data-\[state\=transparent\]\:bg-none`,
+    String.raw`.after\:h-\[calc\(var\(--space-1\)\*0\.625\)\]`,
+    String.raw`.aria-\[current\=page\]\:after\:bg-bg-flood`,
+    String.raw`.aria-\[current\=page\]\:font-\[var\(--text-label-default--font-weight\)\]`,
+    String.raw`.text-body-large`,
+    String.raw`.gap-8`
   ]) {
     assert.ok(utilities.includes(selector), 'Missing TopBar packed utility ' + selector);
   }
@@ -5311,6 +5324,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Tooltip',
   'TopBar',
   'TopBarBrand',
+  'TopBarEnd',
   'TopBarMobileTrigger',
   'TopBarSearchCompact',
   'TopBarSearchFull',
@@ -5762,7 +5776,9 @@ try {
   assert.ok(header);
   const nav = header.querySelector('nav[aria-label="Main"]');
   assert.equal(nav.querySelector('a[href="#home"]').getAttribute('aria-current'), 'page');
-  assert.deepEqual([...header.querySelectorAll('a,button')].map((node) => node.textContent), ['Brand', 'Home', 'Full', 'Compact', 'Account', 'Menu']);
+  assert.deepEqual([...header.querySelectorAll('a,button,span')].map((node) => node.textContent), ['Brand', 'Home', 'Full', 'Compact', 'Online', 'Account', 'Menu']);
+  assert.ok(header.classList.contains('bg-surface-1'));
+  assert.ok(!nav.parentElement.classList.contains('max-w-[var(--content-max)]'));
 } finally { topBarDOM.window.close(); }
 const { SectionShellSamples } = await import('./consumer.ts');
 {

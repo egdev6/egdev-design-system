@@ -118,6 +118,7 @@ const components = [
   ['SectionShell', 'templates/section-shell'],
   ['TopBar', 'organisms/top-bar'],
   ['TopBarBrand', 'organisms/top-bar'],
+  ['TopBarEnd', 'organisms/top-bar'],
   ['TopBarMobileTrigger', 'organisms/top-bar'],
   ['TopBarSearchCompact', 'organisms/top-bar'],
   ['TopBarSearchFull', 'organisms/top-bar'],
@@ -257,8 +258,16 @@ const expected: Record<string, Record<string, string | false>> = {
   footersocial: { children: false },
   footerlegal: { children: false },
   sectionshell: { register: 'select', wrap: 'boolean', children: false },
-  topbar: { label: 'text', items: false, onNavigate: false, children: false },
+  topbar: {
+    label: 'text',
+    items: false,
+    onNavigate: false,
+    children: false,
+    initialBackground: 'select',
+    contentWidth: 'select'
+  },
   topbarbrand: { children: false },
+  topbarend: { children: false },
   topbarmobiletrigger: { children: false },
   topbarsearchcompact: { children: false },
   topbarsearchfull: { children: false },
@@ -679,8 +688,9 @@ const ownPropCounts: Record<string, number> = {
   footerlegal: 1,
   table: 16,
   sectionshell: 3,
-  topbar: 4,
+  topbar: 6,
   topbarbrand: 1,
+  topbarend: 1,
   topbarmobiletrigger: 1,
   topbarsearchcompact: 1,
   topbarsearchfull: 1,
@@ -915,8 +925,17 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     for (const name of ['role', 'ref', 'asChild', 'dangerouslySetInnerHTML']) {
       expect(card.argTypes[name], name).toBeUndefined();
     }
+    for (const [name, options, value] of [
+      ['initialBackground', ['solid', 'transparent'], '"transparent"'],
+      ['contentWidth', ['content', 'full'], '"content"']
+    ] as const) {
+      expect(card.argTypes[name]?.control).toEqual({ type: 'select' });
+      expect([...(card.argTypes[name]?.options ?? [])].sort()).toEqual(options);
+      expect(card.argTypes[name]?.table?.defaultValue?.summary).toBe(value);
+    }
     for (const name of [
       'TopBarBrand',
+      'TopBarEnd',
       'TopBarMobileTrigger',
       'TopBarSearchCompact',
       'TopBarSearchFull',
