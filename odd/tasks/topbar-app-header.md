@@ -52,9 +52,7 @@ Full runs: job24 failed on the public export inventory (missing `TopBarEnd`, par
 
 ### L6 — Second pre-existing stale artifact
 
-Job27: everything up to `test:system` passed (artifact 30/30), then `scripts/system-md.test.mjs` failed 4 tests because the generated `packages/system/system.md` was stale (`Stale: packages/system/system.md; run --write.`). It was already stale on main since #402 (it lacked the five navigation tokens) and also needed TopBar v0.3. Regenerated with `pnpm system:docs` (+114/−60: the 5 tokens plus TopBar parts/anatomy); `system:check` PASS, `test:system` 36/36. Job28 reruns the whole extended set, now including `system:check`. Not run (pack/install-based): test:package-release, test:package-pilot, test:mcp:packed, test:system:consumer.
-
-### L7 — Storybook MCP manifest exception
+Job27: everything up to `test:system` passed (artifact 30/30), then `scripts/system-md.test.mjs` failed 4 tests because the generated `packages/system/system.md` was stale (`Stale: packages/system/system.md; run --write.`). It was already stale on main since #402 (it lacked the five navigation tokens) and also needed TopBar v0.3. Regenerated with `pnpm system:docs` (+114/-60: the 5 tokens plus TopBar parts/anatomy); `system:check` PASS, `test:system` 36/36. Job28 reruns the whole extended set, now including `system:check`. X# L7 - Storybook MCP manifest exception
 
 Job28: build, full Vitest, artifact check, system check, test:artifact, test:system, test:tokens and test:mcp passed; `test:storybook-mcp` failed because the new public export `TopBarEnd` was not documented in the docs-only MCP manifest. Following the existing convention for the other TopBar parts, parent added `TopBarEnd` to `scripts/storybook-mcp-exceptions.json` with the same reason (#344 D1 (a)). Job29 reruns storybook-mcp and the remaining checks (props, typecheck, lint, exports, packed consumption, artifact/system checks).
 
@@ -69,3 +67,7 @@ Job31: typecheck PASS, then `pnpm lint` failed with 30 diagnostics, all in the g
 ### L10 — All green; commit
 
 Job33 exit 0 (ALL-GREEN): tracked-file lint, packed React 18/19 consumption 14/14, artifact check, system check, test:artifact 30/30, test:system 36/36, typecheck, diff-check. Native assessment of the current diff: medium, no independent verifier, reviewDue false (`under_budget`). Risk: none. Committing T2 as one work unit (TopBar v0.3 plus the two artifact checks that were already broken on main since #402: `test:artifact` 292→297 and regenerated `system.md`). Not run (pack/install-based): test:package-release, test:package-pilot, test:mcp:packed, test:system:consumer.
+
+### L11 — Native review stop and delivery choice
+
+T2 committed as `638b52b` (25 files, +878/−139; hooks Biome, typecheck, commitlint PASS). The RDD reminder requested inspect; inspect offered review.start; START with lenses readability+reliability stopped at preflight with `lens_context_budget_exceeded` (candidate too large for the reviewer context; no authority created, nothing to abandon). Owner then selected “PR único sin revisión nativa (recomendado)” — “Publicar los 2 commits en un solo PR contra main, como el anterior. La revisión nativa no era obligatoria y todas las comprobaciones están en verde.” Pushing (pre-push runs the full Vitest suite) and opening one PR against main with label type:feature.
