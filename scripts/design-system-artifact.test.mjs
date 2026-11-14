@@ -94,14 +94,25 @@ test('compound parts expose source descriptions and child constraints', () => {
   const topBar = components.find((item) => item.name === 'TopBar');
   assert.deepEqual(
     topBar.parts.map(({ name }) => name),
-    ['TopBarBrand', 'TopBarMobileTrigger', 'TopBarSearchCompact', 'TopBarSearchFull', 'TopBarUserMenu']
+    ['TopBarBrand', 'TopBarEnd', 'TopBarMobileTrigger', 'TopBarSearchCompact', 'TopBarSearchFull', 'TopBarUserMenu']
   );
   assert.match(
     topBar.props.find(({ name }) => name === 'children').description,
     /direct TopBar parts.*one brand is required/i
   );
   assert.match(part('TopBar', 'TopBarUserMenu').description, /account control/i);
-  assert.match(part('TopBar', 'TopBarUserMenu').children, /single consumer-owned named link or control/i);
+  assert.match(part('TopBar', 'TopBarUserMenu').children, /controls retain their own semantics/i);
+  assert.match(part('TopBar', 'TopBarEnd').description, /trailing content.*both layouts/i);
+  assert.match(part('TopBar', 'TopBarEnd').children, /arbitrary nodes/i);
+  for (const [name, value] of [
+    ['initialBackground', 'transparent'],
+    ['contentWidth', 'content']
+  ]) {
+    const prop = topBar.props.find((item) => item.name === name);
+    assert.ok(prop, name);
+    assert.equal(prop.required, false);
+    assert.equal(prop.default, value);
+  }
   assert.match(part('ListItem', 'ListItemActions').description, /independent trailing controls/i);
   assert.match(part('TerminalCard', 'TerminalCardBar').children, /plain text/i);
 });
@@ -607,6 +618,7 @@ test('own props match docgen for every exported props alias and reject removal o
 
 test('artifact contains the complete token source', () => {
   const artifact = read('packages/system/design-system.json');
-  assert.equal(artifact.tokens.length, 292);
+  // #402 added the four navigation typography tokens and --text-nav-count: 292 + 5 = 297.
+  assert.equal(artifact.tokens.length, 297);
   assert.deepEqual(new Set(artifact.tokens.map(({ group }) => group)), new Set(['theme', 'root', 'inline']));
 });

@@ -2004,7 +2004,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:f097a3b5f6d5bf8bf5e451a3a826e663116abc1549d7947c4ccfe5ba64042c1c"
+          "revision": "sha256:c68e86adf39da3f418e3e9770cbb44fde11743919330a7c022c205fe6a753c80"
         }
       }
     ]
@@ -3912,7 +3912,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:f097a3b5f6d5bf8bf5e451a3a826e663116abc1549d7947c4ccfe5ba64042c1c"
+          "revision": "sha256:c68e86adf39da3f418e3e9770cbb44fde11743919330a7c022c205fe6a753c80"
         }
       }
     ]
@@ -4983,7 +4983,7 @@
         "source": {
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
-          "revision": "sha256:f097a3b5f6d5bf8bf5e451a3a826e663116abc1549d7947c4ccfe5ba64042c1c"
+          "revision": "sha256:c68e86adf39da3f418e3e9770cbb44fde11743919330a7c022c205fe6a753c80"
         }
       }
     ]
@@ -7962,6 +7962,60 @@
           "path": "packages/effects/src/scroll-reveal/types.ts",
           "symbol": "ScrollRevealProps",
           "revision": "sha256:84c3badd268fe8b78d6b53fc8ba9db3d43b6142904896394b472ace130346158"
+        }
+      }
+    ]
+  },
+  {
+    "id": "top-bar-initial-background",
+    "name": "initialBackground",
+    "meaning": "The initial transparent or solid backing before scrolling, overridden by scroll or explicit state.",
+    "whenToUse": "Select the top-of-page backing when scroll or an explicit data-state may override it.",
+    "avoid": "Do not use for a semantic tone, elevation or scroll state.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/top-bar/v0.3/spec-amendment.md#3-public-api-and-naming",
+      "scope": "convention:top-bar-initial-background",
+      "contentHash": "sha256:299207ba7589c2888feb91c3a0a4672f5aaa0103f632493743d1d7830cccb86b"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "TopBar",
+        "type": "'transparent' | 'solid' (default transparent)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/top-bar/types.ts",
+          "symbol": "TopBarProps",
+          "revision": "sha256:c68e86adf39da3f418e3e9770cbb44fde11743919330a7c022c205fe6a753c80"
+        }
+      }
+    ]
+  },
+  {
+    "id": "top-bar-content-width",
+    "name": "contentWidth",
+    "meaning": "A constrained or full-width inner row that retains gutters in both modes.",
+    "whenToUse": "Choose between a centered content-max row and a full-width row.",
+    "avoid": "Do not use for a background, arbitrary width or flex wrapping.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/top-bar/v0.3/spec-amendment.md#3-public-api-and-naming",
+      "scope": "convention:top-bar-content-width",
+      "contentHash": "sha256:34d75409b77437635a339ca5b4d970dc6dca3a11fb378cfbc26889755ce621da"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "TopBar",
+        "type": "'content' | 'full' (default content)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/organisms/top-bar/types.ts",
+          "symbol": "TopBarProps",
+          "revision": "sha256:c68e86adf39da3f418e3e9770cbb44fde11743919330a7c022c205fe6a753c80"
         }
       }
     ]

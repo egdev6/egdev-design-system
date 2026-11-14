@@ -799,7 +799,9 @@ const postReceiptProposals = [
   'line-particle-direction',
   'square-particle-direction',
   'web-section-body-slot',
-  'page-top-bar-slot'
+  'page-top-bar-slot',
+  'top-bar-initial-background',
+  'top-bar-content-width'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -1216,14 +1218,16 @@ test('Footer records only its four approved navigation usages', () => {
       .sort(sort)
   );
 });
-test('TopBar records only its three approved navigation usages', () => {
+test('TopBar records its three navigation usages and two approved v0.3 usages', () => {
   const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const path = 'packages/ui/src/organisms/top-bar/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, path)));
   const expected = [
     ['accessible-name', 'string (required navigation landmark name)'],
     ['collection-items', 'TopBarItem[] (required ordered destinations)'],
-    ['navigation-intent', '(item: TopBarItem, event: MouseEvent<HTMLAnchorElement>) => void']
+    ['navigation-intent', '(item: TopBarItem, event: MouseEvent<HTMLAnchorElement>) => void'],
+    ['top-bar-initial-background', "'transparent' | 'solid' (default transparent)"],
+    ['top-bar-content-width', "'content' | 'full' (default content)"]
   ];
   assert.deepEqual(
     actual
@@ -1278,9 +1282,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   validate(actual);
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
-  // AmbientBackground direction conventions add two more after ArticleFeature.
-  assert.equal(actual.length, 162);
-  assert.equal(beforeIndicatorConventions(actual).length, 159);
+  // AmbientBackground adds two directions; TopBar v0.3 adds two approved conventions.
+  assert.equal(actual.length, 164);
+  assert.equal(beforeIndicatorConventions(actual).length, 161);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {

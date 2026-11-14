@@ -1,12 +1,24 @@
-import { Children, type FC, Fragment, isValidElement, type ReactElement, type ReactNode } from 'react';
+import {
+  Children,
+  type FC,
+  Fragment,
+  isValidElement,
+  type ReactElement,
+  type ReactNode,
+  useEffect,
+  useState
+} from 'react';
 import { cn } from '../../lib/cn';
+import { surfaceVariants } from '../../primitives/surface';
 import {
   type TopBarPartProps,
   type TopBarProps,
   topBarBrandVariants,
   topBarCompactVariants,
   topBarContainerVariants,
+  topBarEndVariants,
   topBarFullVariants,
+  topBarItemVariants,
   topBarLinkVariants,
   topBarListVariants,
   topBarNavVariants,
@@ -19,13 +31,52 @@ type Parts = {
   brand: FC<TopBarPartProps>;
   full: FC<TopBarPartProps>;
   compact: FC<TopBarPartProps>;
+  end: FC<TopBarPartProps>;
   user: FC<TopBarPartProps>;
   mobile: FC<TopBarPartProps>;
 };
 type PartName = keyof Parts;
 
 /** Partition only known direct parts, traversing fragments without inspecting their contents. */
-export function useTopBar({ children, label, items, onNavigate, className, ...native }: TopBarProps, parts: Parts) {
+export function useTopBar(
+  {
+    children,
+    label,
+    items,
+    onNavigate,
+    className,
+    initialBackground = 'transparent',
+    contentWidth = 'content',
+    'data-state': hostState,
+    ...native
+  }: TopBarProps,
+  parts: Parts
+) {
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    if (hostState !== undefined) {
+      return;
+    }
+    let frame: number | undefined;
+    const sample = () => setScrolled(window.scrollY > 0);
+    const onScroll = () => {
+      if (frame === undefined) {
+        frame = window.requestAnimationFrame(() => {
+          frame = undefined;
+          sample();
+        });
+      }
+    };
+    sample();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (frame !== undefined) {
+        window.cancelAnimationFrame(frame);
+      }
+    };
+  }, [hostState]);
+
   const slots: Partial<Record<PartName, ReactElement>> = {};
   const dev = typeof process === 'undefined' || process.env.NODE_ENV !== 'production';
   const visit = (nodes: ReactNode): void => {
@@ -65,11 +116,21 @@ export function useTopBar({ children, label, items, onNavigate, className, ...na
     ...rest
   } = native as typeof native & { role?: unknown; dangerouslySetInnerHTML?: unknown };
   return {
-    rootProps: { ...rest, className: cn(topBarVariants(), className) },
+    rootProps: {
+      ...rest,
+      'data-state': hostState ?? (scrolled ? 'glass' : undefined),
+      className: cn(
+        initialBackground === 'solid' &&
+          surfaceVariants({ tone: 'surface-1', elevation: 0, padding: 'none', radius: 'none' }),
+        topBarVariants({ initialBackground }),
+        className
+      )
+    },
     containerClassName: cn(topBarContainerVariants()),
-    rowClassName: cn(topBarRowVariants()),
+    rowClassName: cn(topBarRowVariants({ contentWidth })),
     navProps: { 'aria-label': label, className: cn(topBarNavVariants()) },
     listClassName: cn(topBarListVariants()),
+    itemClassName: cn(topBarItemVariants()),
     slots,
     items: items.map((item) => ({
       item,
@@ -89,6 +150,7 @@ export function useTopBarPart(kind: PartName) {
     brand: topBarBrandVariants,
     full: topBarFullVariants,
     compact: topBarCompactVariants,
+    end: topBarEndVariants,
     user: topBarUserVariants,
     mobile: topBarCompactVariants
   };

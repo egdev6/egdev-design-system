@@ -197,6 +197,11 @@ Representative source recipes, not a computed cascade; unresolved means no token
 | --text-meta--font-weight | 600 | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --text-meta--letter-spacing | 0.08em | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --text-meta--line-height | 1.3 | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --text-nav-count | 11.5px | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --text-nav-group | 14px | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --text-nav-group--letter-spacing | 0.14em | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --text-nav-group--line-height | 1 | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --text-nav-row | 13.5px | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --text-quote-display | clamp(38.4px, 4.96vw, 80px) | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --text-quote-display--font-weight | 800 | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --text-quote-display--letter-spacing | 0 | theme |  | tokens[] · packages/tokens/src/theme.css |
@@ -830,25 +835,30 @@ catalog[] · docs/catalog.json · @egdev/ui · organism · — (native navigatio
 ### TopBar
 catalog[] · docs/catalog.json · @egdev/ui · organism · — (native navigation links)
 - TopBar (components[] · packages/ui/src/organisms/top-bar/types.ts)
-  - Catalog composition / slots: Consumer-supplied brand, search, user and mobile controls (catalog[] · docs/catalog.json)
+  - Catalog composition / slots: Consumer-supplied brand, search, end, user and mobile parts; Surface recipe (catalog[] · docs/catalog.json)
   - Composes: No public JSX composition statically extracted.
-  - TopBarBrand: Consumer-supplied named home link. Children: Each part accepts a single consumer-owned named link or control. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
-  - TopBarMobileTrigger: Consumer-supplied mobile dialog trigger. Children: Each part accepts a single consumer-owned named link or control. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
-  - TopBarSearchCompact: Compact search launcher. Children: Each part accepts a single consumer-owned named link or control. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
-  - TopBarSearchFull: Full-width search launcher. Children: Each part accepts a single consumer-owned named link or control. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
-  - TopBarUserMenu: Consumer-supplied account control. Children: Each part accepts a single consumer-owned named link or control. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarBrand: Consumer-supplied leading identity; a home link is customary but not required. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarEnd: Consumer-supplied trailing content, visible in both layouts. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarMobileTrigger: Consumer-supplied mobile dialog trigger. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarSearchCompact: Compact search launcher. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarSearchFull: Full-width search launcher. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
+  - TopBarUserMenu: Consumer-supplied account control. Children: Consumer-owned part content; the end accepts arbitrary nodes, while controls retain their own semantics. Consumer-supplied content. (components[].parts · packages/ui/src/organisms/top-bar/TopBar.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - topBarLinkVariants base: text-label-default → --text-label-default
-    - topBarLinkVariants base: after:rounded-full → --radius-full
-    - topBarLinkVariants base: aria-[current=page]:after:shadow-glow-base → --shadow-glow-base
-    - topBarListVariants base: gap-4 → --spacing-4
+    - topBarLinkVariants base: font-sans → --font-sans
+    - topBarLinkVariants base: text-body-large → --text-body-large
+    - topBarLinkVariants base: aria-[current=page]:font-[var(--text-label-default--font-weight)] → --text-label-default--font-weight
+    - topBarListVariants base: gap-8 → --spacing-8
     - topBarListVariants base: p-0 → --spacing-0
     - topBarRowVariants base: gap-4 → --spacing-4
     - topBarRowVariants base: px-[var(--gutter)] → --gutter
-    - topBarVariants base: shadow-none → unresolved
+    - topBarVariants base: data-[state=transparent]:shadow-none → unresolved
     - topBarVariants base: data-[state=glass]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)] → --shadow-edge-strong, --shadow-elev-3
+    - topBarVariants initialBackground=transparent: shadow-none → unresolved
+    - surfaceVariants({ tone: 'surface-1', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/top-bar/useTopBar.ts; see Surface anatomy
   - children: ReactNode; Direct TopBar parts, optionally wrapped in fragments; one brand is required. (components[] · packages/ui/src/organisms/top-bar/types.ts)
-  - data-state: enum; Host-selected native presentation state; absence is transparent. (components[] · packages/ui/src/organisms/top-bar/types.ts)
+  - contentWidth: enum; Width of the inner row; the background remains full width in both modes. (components[] · packages/ui/src/organisms/top-bar/types.ts)
+  - data-state: enum; Host-selected presentation; when absent, scroll selects glass over the initial background. (components[] · packages/ui/src/organisms/top-bar/types.ts)
+  - initialBackground: enum; Unscrolled backing; glass or an explicit data-state takes precedence. (components[] · packages/ui/src/organisms/top-bar/types.ts)
   - items: TopBarItem[]; Ordered destinations, including an empty list when appropriate. (components[] · packages/ui/src/organisms/top-bar/types.ts)
   - label: string; Non-empty localized page navigation landmark name. (components[] · packages/ui/src/organisms/top-bar/types.ts)
   - onNavigate: ((item: TopBarItem, event: MouseEvent<HTMLAnchorElement, MouseEvent>) => void); Notifies a native link click; the host may prevent default. (components[] · packages/ui/src/organisms/top-bar/types.ts)
@@ -1295,27 +1305,35 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Collapsible
 - NavList (components[] · packages/ui/src/molecules/nav-list/types.ts)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - navListCaptionVariants base: gap-2 → --spacing-2
+    - navListCaptionVariants base: px-[calc(var(--space-1)*2.5)] → --space-1
     - navListCaptionVariants base: font-display → --font-display
-    - navListCaptionVariants base: text-meta → --text-meta
-    - navListCountVariants base: text-label-default → --text-label-default
-    - navListLinkVariants base: gap-3 → --spacing-3
-    - navListLinkVariants base: px-3 → --spacing-3
-    - navListLinkVariants base: py-1.5 → --spacing
+    - navListCaptionVariants base: text-nav-group → --text-nav-group
+    - navListCaptionVariants base: font-[var(--text-label-eyebrow--font-weight)] → --text-label-eyebrow--font-weight
+    - navListCountVariants base: font-mono → --font-mono
+    - navListCountVariants base: text-nav-count → --text-nav-count
+    - navListCountVariants base: font-[var(--text-label-default--font-weight)] → --text-label-default--font-weight
     - navListLinkVariants base: rounded-md → --radius-md
+    - navListLinkVariants base: gap-[calc(var(--space-1)*3.125)] → --space-1
+    - navListLinkVariants base: px-[calc(var(--space-1)*2.5)] → --space-1
+    - navListLinkVariants base: py-[calc(var(--space-1)*2.1875)] → --space-1
     - navListLinkVariants base: font-sans → --font-sans
-    - navListLinkVariants base: text-label-default → --text-label-default
+    - navListLinkVariants base: text-nav-row → --text-nav-row
+    - navListLinkVariants base: font-[var(--text-body-muted--font-weight)] → --text-body-muted--font-weight
     - navListListVariants base: p-0 → --spacing-0
-    - navListListVariants base: gap-0.5 → --spacing
+    - navListListVariants base: gap-0 → --spacing-0
+    - navListMarkerVariants base: rounded-md → --radius-md
     - navListMetadataVariants base: gap-2 → --spacing-2
     - navListTriggerVariants base: gap-2 → --spacing-2
-    - navListTriggerVariants base: px-3 → --spacing-3
+    - navListTriggerVariants base: px-[calc(var(--space-1)*2.5)] → --space-1
+    - navListTriggerVariants base: py-[calc(var(--space-1)*1.5625)] → --space-1
     - navListTriggerVariants base: rounded-md → --radius-md
     - navListTriggerVariants base: text-left → unresolved
     - navListTriggerVariants base: font-display → --font-display
-    - navListTriggerVariants base: text-meta → --text-meta
+    - navListTriggerVariants base: text-nav-group → --text-nav-group
+    - navListTriggerVariants base: font-[var(--text-label-eyebrow--font-weight)] → --text-label-eyebrow--font-weight
     - navListTriggerVariants base: focus-visible:shadow-focus → --shadow-focus
     - navListVariants base: font-sans → --font-sans
-    - surfaceVariants({ tone: 'surface-3', elevation: 1, padding: 'none', radius: 'md' }) · packages/ui/src/molecules/nav-list/useNavList.ts; see Surface anatomy
+    - surfaceVariants({ tone: 'surface-2', elevation: 0, padding: 'none', radius: 'md' }) · packages/ui/src/molecules/nav-list/useNavList.ts; see Surface anatomy
   - items: NavListEntry[]; Ordered links and one-level groups. Empty data renders an empty list. (components[] · packages/ui/src/molecules/nav-list/types.ts)
   - label: string; Required non-empty accessible name of the navigation landmark. (components[] · packages/ui/src/molecules/nav-list/types.ts)
   - onNavigate: ((item: NavListLink, event: MouseEvent<HTMLAnchorElement, MouseEvent>) => void); Native click notification with the original entry and React event. For client routing, preventDefault only on unmodified primary activations; modifiers and auxclick remain native. (components[] · packages/ui/src/molecules/nav-list/types.ts)
@@ -2410,7 +2428,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · Slot
     - surfaceVariants({             tone: effectiveTone === 'overlay' ? 'surface-1' : 'surface-0',             elevation: 0,             padding: 'none',             radius: 'none'           }) · packages/ui/src/molecules/module-card/useModuleCard.ts; see Surface anatomy
     - surfaceVariants({             tone: effectiveTone === 'overlay' ? 'surface-3' : 'surface-2',             elevation: 0,             padding: 'none',             radius: 'none'           }) · packages/ui/src/molecules/module-card/useModuleCard.ts; see Surface anatomy
     - surfaceVariants({           tone: effectiveTone,           ...(effectiveTone === 'surface-1' ? { elevation: 1 } : {}),           padding: 'none',           radius: 'xl'         }) · packages/ui/src/molecules/module-card/useModuleCard.ts; see Surface anatomy
-    - surfaceVariants({ tone: 'surface-3', elevation: 1, padding: 'none', radius: 'md' }) · packages/ui/src/molecules/nav-list/useNavList.ts; see Surface anatomy
+    - surfaceVariants({ tone: 'surface-2', elevation: 0, padding: 'none', radius: 'md' }) · packages/ui/src/molecules/nav-list/useNavList.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'lg' }) · packages/ui/src/molecules/notice/types.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-0', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/molecules/now-card/useNowCard.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'xl' }) · packages/ui/src/molecules/now-card/useNowCard.ts; see Surface anatomy
@@ -2434,6 +2452,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · Slot
     - surfaceVariants({ tone: 'surface-0', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/sidebar/useSidebar.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/sidebar/useSidebar.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/tab-bar/useTabBar.ts; see Surface anatomy
+    - surfaceVariants({ tone: 'surface-1', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/top-bar/useTopBar.ts; see Surface anatomy
     - surfaceVariants({ tone, elevation: raised ? (elevation ?? 1) : null, padding, radius }) · packages/ui/src/primitives/surface/useSurface.ts; see Surface anatomy
 ### Stack / Cluster
 catalog[] · docs/catalog.json · @egdev/ui · primitive · Slot
@@ -3636,7 +3655,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - surfaceVariants({             tone: effectiveTone === 'overlay' ? 'surface-1' : 'surface-0',             elevation: 0,             padding: 'none',             radius: 'none'           }) · packages/ui/src/molecules/module-card/useModuleCard.ts; see Surface anatomy
     - surfaceVariants({             tone: effectiveTone === 'overlay' ? 'surface-3' : 'surface-2',             elevation: 0,             padding: 'none',             radius: 'none'           }) · packages/ui/src/molecules/module-card/useModuleCard.ts; see Surface anatomy
     - surfaceVariants({           tone: effectiveTone,           ...(effectiveTone === 'surface-1' ? { elevation: 1 } : {}),           padding: 'none',           radius: 'xl'         }) · packages/ui/src/molecules/module-card/useModuleCard.ts; see Surface anatomy
-    - surfaceVariants({ tone: 'surface-3', elevation: 1, padding: 'none', radius: 'md' }) · packages/ui/src/molecules/nav-list/useNavList.ts; see Surface anatomy
+    - surfaceVariants({ tone: 'surface-2', elevation: 0, padding: 'none', radius: 'md' }) · packages/ui/src/molecules/nav-list/useNavList.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'lg' }) · packages/ui/src/molecules/notice/types.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-0', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/molecules/now-card/useNowCard.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'xl' }) · packages/ui/src/molecules/now-card/useNowCard.ts; see Surface anatomy
@@ -3660,6 +3679,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - surfaceVariants({ tone: 'surface-0', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/sidebar/useSidebar.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/sidebar/useSidebar.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/tab-bar/useTabBar.ts; see Surface anatomy
+    - surfaceVariants({ tone: 'surface-1', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/top-bar/useTopBar.ts; see Surface anatomy
     - surfaceVariants({ tone, elevation: raised ? (elevation ?? 1) : null, padding, radius }) · packages/ui/src/primitives/surface/useSurface.ts; see Surface anatomy
 ### TerminalCardBar
 - TerminalCardBar (components[] · packages/ui/src/molecules/terminal-card/types.ts · @egdev/ui)
@@ -3708,63 +3728,87 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
 ### TopBarBrand
 - TopBarBrand (components[] · packages/ui/src/organisms/top-bar/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - topBarLinkVariants base: text-label-default → --text-label-default
-    - topBarLinkVariants base: after:rounded-full → --radius-full
-    - topBarLinkVariants base: aria-[current=page]:after:shadow-glow-base → --shadow-glow-base
-    - topBarListVariants base: gap-4 → --spacing-4
+    - topBarLinkVariants base: font-sans → --font-sans
+    - topBarLinkVariants base: text-body-large → --text-body-large
+    - topBarLinkVariants base: aria-[current=page]:font-[var(--text-label-default--font-weight)] → --text-label-default--font-weight
+    - topBarListVariants base: gap-8 → --spacing-8
     - topBarListVariants base: p-0 → --spacing-0
     - topBarRowVariants base: gap-4 → --spacing-4
     - topBarRowVariants base: px-[var(--gutter)] → --gutter
-    - topBarVariants base: shadow-none → unresolved
+    - topBarVariants base: data-[state=transparent]:shadow-none → unresolved
     - topBarVariants base: data-[state=glass]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)] → --shadow-edge-strong, --shadow-elev-3
+    - topBarVariants initialBackground=transparent: shadow-none → unresolved
+    - surfaceVariants({ tone: 'surface-1', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/top-bar/useTopBar.ts; see Surface anatomy
+### TopBarEnd
+- TopBarEnd (components[] · packages/ui/src/organisms/top-bar/types.ts · @egdev/ui)
+  - Visual anatomy (source classes; unresolved is not a guessed value):
+    - topBarLinkVariants base: font-sans → --font-sans
+    - topBarLinkVariants base: text-body-large → --text-body-large
+    - topBarLinkVariants base: aria-[current=page]:font-[var(--text-label-default--font-weight)] → --text-label-default--font-weight
+    - topBarListVariants base: gap-8 → --spacing-8
+    - topBarListVariants base: p-0 → --spacing-0
+    - topBarRowVariants base: gap-4 → --spacing-4
+    - topBarRowVariants base: px-[var(--gutter)] → --gutter
+    - topBarVariants base: data-[state=transparent]:shadow-none → unresolved
+    - topBarVariants base: data-[state=glass]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)] → --shadow-edge-strong, --shadow-elev-3
+    - topBarVariants initialBackground=transparent: shadow-none → unresolved
+    - surfaceVariants({ tone: 'surface-1', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/top-bar/useTopBar.ts; see Surface anatomy
 ### TopBarMobileTrigger
 - TopBarMobileTrigger (components[] · packages/ui/src/organisms/top-bar/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - topBarLinkVariants base: text-label-default → --text-label-default
-    - topBarLinkVariants base: after:rounded-full → --radius-full
-    - topBarLinkVariants base: aria-[current=page]:after:shadow-glow-base → --shadow-glow-base
-    - topBarListVariants base: gap-4 → --spacing-4
+    - topBarLinkVariants base: font-sans → --font-sans
+    - topBarLinkVariants base: text-body-large → --text-body-large
+    - topBarLinkVariants base: aria-[current=page]:font-[var(--text-label-default--font-weight)] → --text-label-default--font-weight
+    - topBarListVariants base: gap-8 → --spacing-8
     - topBarListVariants base: p-0 → --spacing-0
     - topBarRowVariants base: gap-4 → --spacing-4
     - topBarRowVariants base: px-[var(--gutter)] → --gutter
-    - topBarVariants base: shadow-none → unresolved
+    - topBarVariants base: data-[state=transparent]:shadow-none → unresolved
     - topBarVariants base: data-[state=glass]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)] → --shadow-edge-strong, --shadow-elev-3
+    - topBarVariants initialBackground=transparent: shadow-none → unresolved
+    - surfaceVariants({ tone: 'surface-1', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/top-bar/useTopBar.ts; see Surface anatomy
 ### TopBarSearchCompact
 - TopBarSearchCompact (components[] · packages/ui/src/organisms/top-bar/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - topBarLinkVariants base: text-label-default → --text-label-default
-    - topBarLinkVariants base: after:rounded-full → --radius-full
-    - topBarLinkVariants base: aria-[current=page]:after:shadow-glow-base → --shadow-glow-base
-    - topBarListVariants base: gap-4 → --spacing-4
+    - topBarLinkVariants base: font-sans → --font-sans
+    - topBarLinkVariants base: text-body-large → --text-body-large
+    - topBarLinkVariants base: aria-[current=page]:font-[var(--text-label-default--font-weight)] → --text-label-default--font-weight
+    - topBarListVariants base: gap-8 → --spacing-8
     - topBarListVariants base: p-0 → --spacing-0
     - topBarRowVariants base: gap-4 → --spacing-4
     - topBarRowVariants base: px-[var(--gutter)] → --gutter
-    - topBarVariants base: shadow-none → unresolved
+    - topBarVariants base: data-[state=transparent]:shadow-none → unresolved
     - topBarVariants base: data-[state=glass]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)] → --shadow-edge-strong, --shadow-elev-3
+    - topBarVariants initialBackground=transparent: shadow-none → unresolved
+    - surfaceVariants({ tone: 'surface-1', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/top-bar/useTopBar.ts; see Surface anatomy
 ### TopBarSearchFull
 - TopBarSearchFull (components[] · packages/ui/src/organisms/top-bar/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - topBarLinkVariants base: text-label-default → --text-label-default
-    - topBarLinkVariants base: after:rounded-full → --radius-full
-    - topBarLinkVariants base: aria-[current=page]:after:shadow-glow-base → --shadow-glow-base
-    - topBarListVariants base: gap-4 → --spacing-4
+    - topBarLinkVariants base: font-sans → --font-sans
+    - topBarLinkVariants base: text-body-large → --text-body-large
+    - topBarLinkVariants base: aria-[current=page]:font-[var(--text-label-default--font-weight)] → --text-label-default--font-weight
+    - topBarListVariants base: gap-8 → --spacing-8
     - topBarListVariants base: p-0 → --spacing-0
     - topBarRowVariants base: gap-4 → --spacing-4
     - topBarRowVariants base: px-[var(--gutter)] → --gutter
-    - topBarVariants base: shadow-none → unresolved
+    - topBarVariants base: data-[state=transparent]:shadow-none → unresolved
     - topBarVariants base: data-[state=glass]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)] → --shadow-edge-strong, --shadow-elev-3
+    - topBarVariants initialBackground=transparent: shadow-none → unresolved
+    - surfaceVariants({ tone: 'surface-1', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/top-bar/useTopBar.ts; see Surface anatomy
 ### TopBarUserMenu
 - TopBarUserMenu (components[] · packages/ui/src/organisms/top-bar/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - topBarLinkVariants base: text-label-default → --text-label-default
-    - topBarLinkVariants base: after:rounded-full → --radius-full
-    - topBarLinkVariants base: aria-[current=page]:after:shadow-glow-base → --shadow-glow-base
-    - topBarListVariants base: gap-4 → --spacing-4
+    - topBarLinkVariants base: font-sans → --font-sans
+    - topBarLinkVariants base: text-body-large → --text-body-large
+    - topBarLinkVariants base: aria-[current=page]:font-[var(--text-label-default--font-weight)] → --text-label-default--font-weight
+    - topBarListVariants base: gap-8 → --spacing-8
     - topBarListVariants base: p-0 → --spacing-0
     - topBarRowVariants base: gap-4 → --spacing-4
     - topBarRowVariants base: px-[var(--gutter)] → --gutter
-    - topBarVariants base: shadow-none → unresolved
+    - topBarVariants base: data-[state=transparent]:shadow-none → unresolved
     - topBarVariants base: data-[state=glass]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)] → --shadow-edge-strong, --shadow-elev-3
+    - topBarVariants initialBackground=transparent: shadow-none → unresolved
+    - surfaceVariants({ tone: 'surface-1', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/organisms/top-bar/useTopBar.ts; see Surface anatomy
 ### appShellVariants
 - appShellVariants (components[] · packages/ui/src/templates/app-shell/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
@@ -3952,27 +3996,35 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
 - navListVariants (components[] · packages/ui/src/molecules/nav-list/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - navListCaptionVariants base: gap-2 → --spacing-2
+    - navListCaptionVariants base: px-[calc(var(--space-1)*2.5)] → --space-1
     - navListCaptionVariants base: font-display → --font-display
-    - navListCaptionVariants base: text-meta → --text-meta
-    - navListCountVariants base: text-label-default → --text-label-default
-    - navListLinkVariants base: gap-3 → --spacing-3
-    - navListLinkVariants base: px-3 → --spacing-3
-    - navListLinkVariants base: py-1.5 → --spacing
+    - navListCaptionVariants base: text-nav-group → --text-nav-group
+    - navListCaptionVariants base: font-[var(--text-label-eyebrow--font-weight)] → --text-label-eyebrow--font-weight
+    - navListCountVariants base: font-mono → --font-mono
+    - navListCountVariants base: text-nav-count → --text-nav-count
+    - navListCountVariants base: font-[var(--text-label-default--font-weight)] → --text-label-default--font-weight
     - navListLinkVariants base: rounded-md → --radius-md
+    - navListLinkVariants base: gap-[calc(var(--space-1)*3.125)] → --space-1
+    - navListLinkVariants base: px-[calc(var(--space-1)*2.5)] → --space-1
+    - navListLinkVariants base: py-[calc(var(--space-1)*2.1875)] → --space-1
     - navListLinkVariants base: font-sans → --font-sans
-    - navListLinkVariants base: text-label-default → --text-label-default
+    - navListLinkVariants base: text-nav-row → --text-nav-row
+    - navListLinkVariants base: font-[var(--text-body-muted--font-weight)] → --text-body-muted--font-weight
     - navListListVariants base: p-0 → --spacing-0
-    - navListListVariants base: gap-0.5 → --spacing
+    - navListListVariants base: gap-0 → --spacing-0
+    - navListMarkerVariants base: rounded-md → --radius-md
     - navListMetadataVariants base: gap-2 → --spacing-2
     - navListTriggerVariants base: gap-2 → --spacing-2
-    - navListTriggerVariants base: px-3 → --spacing-3
+    - navListTriggerVariants base: px-[calc(var(--space-1)*2.5)] → --space-1
+    - navListTriggerVariants base: py-[calc(var(--space-1)*1.5625)] → --space-1
     - navListTriggerVariants base: rounded-md → --radius-md
     - navListTriggerVariants base: text-left → unresolved
     - navListTriggerVariants base: font-display → --font-display
-    - navListTriggerVariants base: text-meta → --text-meta
+    - navListTriggerVariants base: text-nav-group → --text-nav-group
+    - navListTriggerVariants base: font-[var(--text-label-eyebrow--font-weight)] → --text-label-eyebrow--font-weight
     - navListTriggerVariants base: focus-visible:shadow-focus → --shadow-focus
     - navListVariants base: font-sans → --font-sans
-    - surfaceVariants({ tone: 'surface-3', elevation: 1, padding: 'none', radius: 'md' }) · packages/ui/src/molecules/nav-list/useNavList.ts; see Surface anatomy
+    - surfaceVariants({ tone: 'surface-2', elevation: 0, padding: 'none', radius: 'md' }) · packages/ui/src/molecules/nav-list/useNavList.ts; see Surface anatomy
 ### noticeVariants
 - noticeVariants (components[] · packages/ui/src/molecules/notice/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
@@ -4316,6 +4368,8 @@ Not exported:
 - thumbnail-badge: badge; approved; SelectTileOption (propNaming[] · skills/_shared/prop-naming.json)
 - time-unit-labels: units; approved; Countdown (propNaming[] · skills/_shared/prop-naming.json)
 - tooltip-content: content; approved; Tooltip, WebTemplate (propNaming[] · skills/_shared/prop-naming.json)
+- top-bar-content-width: contentWidth; approved; TopBar (propNaming[] · skills/_shared/prop-naming.json)
+- top-bar-initial-background: initialBackground; approved; TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - trailing-actions: actions; approved; AlertDialogContent, DialogContent, ModuleCard, Notice, PageHeader, PreviewFrame, Toast, WebSection (propNaming[] · skills/_shared/prop-naming.json)
 - trailing-arrow: arrow; approved; Link (propNaming[] · skills/_shared/prop-naming.json)
 - trailing-text-accent: accent; approved; ChapterBreak, Closing, Heading, Hero, LabStage, PullQuote, SectionHeader, Text (propNaming[] · skills/_shared/prop-naming.json)

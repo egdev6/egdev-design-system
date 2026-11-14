@@ -113,6 +113,7 @@ test('TopBar ships ordered native navigation and every scanned utility', async (
           key: 'compact',
           children: createElement('button', null, 'Compact')
         }),
+        createElement(exported.TopBarEnd, { key: 'end', children: createElement('span', null, 'Online') }),
         createElement(exported.TopBarMobileTrigger, { key: 'mobile', children: createElement('button', null, 'Menu') })
       ]
     })
@@ -124,8 +125,8 @@ test('TopBar ships ordered native navigation and every scanned utility', async (
     const nav = header.querySelector('nav[aria-label="Main"]');
     assert.equal(nav.querySelector('a[href="#home"]').getAttribute('aria-current'), 'page');
     assert.deepEqual(
-      [...header.querySelectorAll('a,button')].map((node) => node.textContent),
-      ['Brand', 'Home', 'Full', 'Compact', 'Account', 'Menu']
+      [...header.querySelectorAll('a,button,span')].map((node) => node.textContent),
+      ['Brand', 'Home', 'Full', 'Compact', 'Online', 'Account', 'Menu']
     );
   } finally {
     dom.window.close();
@@ -143,6 +144,9 @@ test('TopBar ships ordered native navigation and every scanned utility', async (
   );
   const classes = new Set();
   function collect(node) {
+    if (ts.isPropertyAssignment(node) && node.name.getText(source) === 'defaultVariants') {
+      return;
+    }
     if (ts.isStringLiteral(node)) {
       for (const name of node.text.split(/\s+/).filter(Boolean)) {
         classes.add(name);
@@ -5197,6 +5201,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Tooltip',
       'TopBar',
       'TopBarBrand',
+      'TopBarEnd',
       'TopBarMobileTrigger',
       'TopBarSearchCompact',
       'TopBarSearchFull',
@@ -5781,6 +5786,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'TooltipProps',
     'TopBar',
     'TopBarBrand',
+    'TopBarEnd',
     'TopBarItem',
     'TopBarMobileTrigger',
     'TopBarPartProps',

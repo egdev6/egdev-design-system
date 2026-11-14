@@ -601,6 +601,19 @@ describe('Storybook TypeScript docgen contract', () => {
     ] as const) {
       expect(props[name], name).toMatchObject({ required, defaultValue: null, tags: { control } });
     }
+    for (const [name, value, options] of [
+      ['initialBackground', 'transparent', ['transparent', 'solid']],
+      ['contentWidth', 'content', ['content', 'full']]
+    ] as const) {
+      expect(props[name], name).toMatchObject({
+        required: false,
+        defaultValue: { value },
+        tags: { control: 'select' }
+      });
+      expect(props[name]?.type.value.map(({ value: option }: { value: string }) => normalize(option)).sort()).toEqual(
+        [...options].sort()
+      );
+    }
     for (const name of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'style', 'onClick']) {
       expect(props[name], name).toBeDefined();
     }
@@ -609,6 +622,7 @@ describe('Storybook TypeScript docgen contract', () => {
     }
     for (const name of [
       'TopBarBrand',
+      'TopBarEnd',
       'TopBarMobileTrigger',
       'TopBarSearchCompact',
       'TopBarSearchFull',
@@ -623,6 +637,15 @@ describe('Storybook TypeScript docgen contract', () => {
       expect(part?.props.className, name).toBeUndefined();
     }
     expect(publicAPI.TopBar).toBeDefined();
+    expect(typeof window).toBe('undefined');
+    const topBarProps = {
+      label: 'Main',
+      items: [],
+      children: createElement(publicAPI.TopBarBrand, null, 'Identity')
+    };
+    const html = renderToStaticMarkup(createElement(publicAPI.TopBar, topBarProps));
+    expect(html).toContain('eg-topbar');
+    expect(html).not.toContain('data-state="glass"');
   });
   it('extracts Isotipo3D effects metadata and bounded native rows', () => {
     const isotipoDoc = effectsDocs.find((item) => item.displayName === 'Isotipo3D');
@@ -1744,6 +1767,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Tooltip',
       'TopBar',
       'TopBarBrand',
+      'TopBarEnd',
       'TopBarMobileTrigger',
       'TopBarSearchCompact',
       'TopBarSearchFull',
