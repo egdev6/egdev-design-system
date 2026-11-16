@@ -1,9 +1,9 @@
 # Button v0.4 — opt-in label wrapping amendment
 
-- **Status:** Draft — not approved.
+- **Status:** Approved — 2026-11-16 (owner, in session; proposal egdev-ds-nexo-adoption-v1). Implementation plan requires separate approval.
 - **Amends:** [Button v0.1](../v0.1/implementation.md), the [v0.2 neutral treatment](../v0.2/neutral-variant-amendment.md), [v0.3 hover motion](../v0.3/hover-motion-amendment.md) and [v0.3 large size](../v0.3/large-size-amendment.md). Requested by [#422](https://github.com/egdev6/egdev-design-system/issues/422), split from [#421](https://github.com/egdev6/egdev-design-system/issues/421); the canonical Button issue remains [#53](https://github.com/egdev6/egdev-design-system/issues/53).
-- **Approval / recovery:** Pending owner approval of this exact version, digest and identified visuals; the implementation plan requires a separate approval.
-- **Snapshot identity:** `version: v0.4`; `contentSHA256: Pending before finalization`; `visualHashes: VIS-01 → Pending`; `approvalReference: Pending`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/53`; `latestPublishedComment: Pending recovery`.
+- **Approval / recovery:** Owner session 2026-11-16, proposal egdev-ds-nexo-adoption-v1. The spec is approved without captures; the implementation plan requires separate approval.
+- **Snapshot identity:** `version: v0.4`; `contentSHA256: Pending before finalization`; `visualHashes: VIS-01 → Pending`; `approvalReference: owner session 2026-11-16; proposal egdev-ds-nexo-adoption-v1`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/53`; `latestPublishedComment: Pending recovery`.
 - **Hash definition:** SHA-256 of the UTF-8 payload from `## 1. Purpose and scope` through EOF, with LF endings and the final newline. Tracking metadata above that heading is excluded. Finalize before any separately authorized publication.
 - **Current situation:** `buttonVariants` currently includes `whitespace-nowrap`; the option and checks below are proposals, not implemented results.
 
@@ -29,7 +29,7 @@ Keep Radix Slot's existing single-child composition, merged handlers and refs; n
 | --- | --- | --- | --- |
 | `labelWrap` | `boolean` | No; `false` | When true, allow the visible label to wrap and break long unbroken words within available space. False/omitted retains the existing nowrap recipe. |
 
-**Naming lookup:** [registry source](../../../../skills/_shared/prop-naming.json), [generated view](../../../prop-naming.md), meanings, names and aliases reviewed. Propose new semantic ID `button-label-wrapping`, name `labelWrap`, component type `Button: boolean`, status **proposed**, `approval: null`: an opt-in line-breaking policy for a control's visible label, not generic flex wrapping or truncation. Existing `section-content-wrap`/`wrap` means a section's centered content wrapper and explicitly is not this behavior; do not reuse or overwrite it. No registry file is changed here; convention approval is separate from spec and plan approval.
+**Naming lookup:** [registry source](../../../../skills/_shared/prop-naming.json), [generated view](../../../prop-naming.md), meanings, names and aliases reviewed. The owner approved the shared `labelWrap: boolean` convention for Button and Tabs (owner session 2026-11-16, proposal egdev-ds-nexo-adoption-v1): an opt-in line-breaking policy for a control's visible label, not generic flex wrapping or truncation. The drafts used different candidate IDs for the shared convention (`button-label-wrapping` and `tab-label-wrap`); its single registry ID remains to be resolved. Existing `section-content-wrap`/`wrap` means a section's centered content wrapper and explicitly is not this behavior; do not reuse or overwrite it. Registry entries and usages are added in each implementation PR, not here.
 
 Reviewed baseline: `source: { path: packages/ui/src/atoms/button/types.ts, symbol: ButtonProps, revision: sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866 }`. `labelWrap` is not present in those bytes; a future usage needs source review and a fresh whole-file hash after implementation.
 
@@ -44,7 +44,7 @@ Reviewed baseline: `source: { path: packages/ui/src/atoms/button/types.ts, symbo
 | Wrapped action or supported slotted link activated | The whole rendered control remains the hit target; native/Slot behavior and child handlers remain unchanged. | Existing child/native events only. |
 | Loading or disabled | Existing focus-retaining loading guard and disabled precedence/tab behavior remain, independent of wrapping. | Existing guarded behavior. |
 
-The proposed interpretation of #422's unchanged hit area is **no reduction or detached/non-clickable label**: retain the size's minimum height and padding, and allow the whole box to grow vertically for multiple lines. It does not promise a fixed-height box. This interpretation requires owner confirmation. Consumers must allocate enough inline space for existing padding, any non-shrinking icon and at least one glyph; clipping ancestors, narrower impossible widths and descendants with their own conflicting whitespace/overflow rules are outside this guarantee. Plain visible text and a compatible slotted anchor with plain text are the supported wrapping scenarios; existing richer children are not removed from the API.
+The approved interpretation of #422's unchanged hit area is **no reduction or detached/non-clickable label**: retain the size's minimum height and padding, and allow the whole clickable box to grow vertically for multiple lines. It does not promise a fixed-height box. Consumers must allocate enough inline space for existing padding, any non-shrinking icon and at least one glyph; clipping ancestors, narrower impossible widths and descendants with their own conflicting whitespace/overflow rules are outside this guarantee. Plain visible text and a compatible slotted anchor with plain text are the supported wrapping scenarios; existing richer children are not removed from the API.
 
 ## 5. Accessibility
 
@@ -66,7 +66,7 @@ Use a static CVA variant in `types.ts`, composed in the hook with `cn()`, using 
 | --- | --- | --- | --- |
 | VIS-01 | Pending: constrained long localized label, icon and keyboard focus, plus unchanged nowrap comparison | Expected source, viewport, scale, browser, theme, fonts, motion/transparency, crop and date all pending | No capture in this batch; approval and hash pending. Visual conformity **Not evaluated**. |
 
-Historical v0.1 Button references do not establish the expected multiline design. Agree source and conditions before separately authorized capture and owner adoption; captures do not replace behavior checks.
+The spec is approved without captures; each Button implementation PR must provide stories and a real capture before merge. Historical v0.1 Button references do not establish the expected multiline design. Agree source and conditions before separately authorized capture and owner adoption; captures do not replace behavior checks.
 
 ## 7. Acceptance criteria
 
@@ -80,12 +80,17 @@ All checks below are planned, not observed; stories do not replace tests.
 | AC-04 | Native button and `asChild` link keep role/name, refs, handlers, Enter/Space as applicable, focus, disabled/loading guards and recovery; no DOM `labelWrap` attribute. | `Button.test.tsx` public interactions and ref/attribute assertions; browser keyboard verification. | Wrapped native and slotted link examples. |
 | AC-05 | Existing Material, merge limits, reduced motion, exports, type metadata and React 18/19 consumer support remain. | Token/CVA built CSS, docgen/Controls, typecheck, lint and packed-consumer checks; inspect focus and reduced motion in browser. | Variants and Controls; visual parity pending. |
 
-### Open decisions for the owner
+### Resolved decisions
 
-1. Approve or reject the proposed `labelWrap` name and `button-label-wrapping` convention separately from the component spec.
-2. Confirm that preserving the hit area means retaining the full clickable box and minimum dimensions while allowing vertical growth, rather than a fixed-height multiline control.
-3. Confirm the supported plain-label/compatible Slot scope and select the expected-design source and capture conditions for VIS-01. Approve the finalized spec and identified visuals before reviewing a separate implementation plan.
+- “Aprobar las cuatro” — the shared Button/Tabs `labelWrap` convention is approved.
+- “Sí, la caja crece y es clicable entera” — retain the size's minimum height and the entire clickable area; wrapped text can only add height.
+- “Sí, validación visual en cada PR” — the spec is approved without captures; the Button implementation PR must provide stories and a real capture before merge.
+
+### Remaining open decisions
+
+- Resolve the shared `labelWrap` registry ID in the implementation PR.
+- Confirm the supported plain-label/compatible Slot scope and select the expected-design source and capture conditions for VIS-01; visual approval remains separate.
 
 ### Planned checks
 
-After separate plan approval: focused Button tests, `pnpm test`, `pnpm typecheck`, `pnpm lint`; docgen/Controls, static built CSS and packed React 18/19 consumer verification; browser reflow, focus, keyboard and hit-area checks; then a separately approved visual comparison. All remain pending; this draft authorizes no code, tokens, dependencies or GitHub writes.
+After separate plan approval: focused Button tests, `pnpm test`, `pnpm typecheck`, `pnpm lint`; docgen/Controls, static built CSS and packed React 18/19 consumer verification; browser reflow, focus, keyboard and hit-area checks; then a separately approved visual comparison. All remain pending; this spec authorizes no code, tokens, dependencies or GitHub writes.

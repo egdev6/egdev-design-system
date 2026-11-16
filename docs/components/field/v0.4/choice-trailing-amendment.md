@@ -1,9 +1,9 @@
 # Field v0.4 — trailing choice amendment
 
-- **Status: Draft — not approved**
+- **Status:** Approved — 2026-11-16 (owner, in session; proposal egdev-ds-nexo-adoption-v1). Implementation plan requires separate approval.
 - **Amends:** [Field v0.1](../v0.1/implementation.md), [v0.2](../v0.2/message-amendment.md) and [v0.3](../v0.3/counter-row-amendment.md); unmentioned promises remain unchanged. Request: [#411](https://github.com/egdev6/egdev-design-system/issues/411).
-- **Approval / recovery:** Pending; this local draft is not an implementation authorization. Separate plan approval is required.
-- **Snapshot identity:** `version: v0.4`; `contentSHA256: Pending`; `visualHashes: Pending`; `approvalReference: Pending`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/84`; `latestPublishedComment: Pending`. This amendment is unpublished. Before publication, hash the UTF-8 payload from `## 1. Purpose and scope` through EOF, with LF line endings and its final newline; approval must identify the digest and visuals.
+- **Approval / recovery:** Owner session 2026-11-16, proposal egdev-ds-nexo-adoption-v1; this spec is not an implementation authorization. Separate plan approval is required.
+- **Snapshot identity:** `version: v0.4`; `contentSHA256: Pending`; `visualHashes: Pending`; `approvalReference: owner session 2026-11-16; proposal egdev-ds-nexo-adoption-v1`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/84`; `latestPublishedComment: Pending`. This amendment is unpublished. Before publication, hash the UTF-8 payload from `## 1. Purpose and scope` through EOF, with LF line endings and its final newline. The spec is approved without captures; visual hashes remain pending.
 
 ## 1. Purpose and scope
 
@@ -28,7 +28,7 @@ In the proposed layout, DOM and logical visual order are label, message, control
 | `layout` | `FieldLayout = 'stacked' \| 'choice' \| 'choice-trailing'`; optional | Existing default `stacked`; add opt-in `choice-trailing` for Switch or Checkbox. `choice` remains control-first. |
 | `label`, `children`, `hint`, `hintTone`, `error`, `hideLabel`, `counter`, `readout` | Existing `FieldProps` types and requiredness | Unchanged; the new layout follows choice rules, including omission of counter and readout. |
 
-**Naming:** lookup by meaning, name and aliases in the [registry source](../../../../skills/_shared/prop-naming.json) and [generated view](../../../prop-naming.md): reuse approved `label-layout` / `layout`; no new prop, convention or exception. Proposed Field usage is `FieldLayout = 'stacked' | 'choice' | 'choice-trailing'`. Reviewed baseline source: `{ path: 'packages/ui/src/molecules/field/types.ts', symbol: 'FieldProps', revision: 'sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45' }`; this hash identifies the existing source, not a future implementation. Update the usage and reviewed source revision only in a separately authorized implementation; convention and spec approvals are distinct.
+**Naming:** lookup by meaning, name and aliases in the [registry source](../../../../skills/_shared/prop-naming.json) and [generated view](../../../prop-naming.md): reuse approved `label-layout` / `layout`; no new prop or exception. The owner approved the Field `choice-trailing` value (owner session 2026-11-16, proposal egdev-ds-nexo-adoption-v1). Field usage is `FieldLayout = 'stacked' | 'choice' | 'choice-trailing'`. Reviewed baseline source: `{ path: 'packages/ui/src/molecules/field/types.ts', symbol: 'FieldProps', revision: 'sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45' }`; this hash identifies the existing source, not a future implementation. Add the registry usage/value evidence and updated reviewed source revision in the implementation PR, not here.
 
 Native root div attributes and root `className` continue to reach Field's root. Field has no ref or `asChild`; the child keeps its own ref through Slot. Controlled/uncontrolled checked state and callbacks stay on the supplied control. No default, export, existing layout, marker or legacy CSS is changed.
 
@@ -67,7 +67,7 @@ For the new layout only, propose a bounded consumer typography surface: a consum
 | --- | --- | --- |
 | VIS-01 | Pending: text-first Switch with label and description; also review Checkbox, disabled and narrow/RTL cases | Expected-design source, version, viewport, scale, browser, theme, fonts, motion/transparency, crop, provenance, hash and owner approval all Pending. |
 
-No capture is produced in this batch. Historical Field references in v0.1/v0.2 are not evidence for this new layout. Visual conformity: **Not evaluated**; capture and approval must follow the [guide](../../../design/README.md).
+No capture is produced in this batch. The spec is approved without captures; each Field implementation PR must provide stories and a real capture before merge. Historical Field references in v0.1/v0.2 are not evidence for this new layout. Visual conformity: **Not evaluated**; capture and approval must follow the [guide](../../../design/README.md).
 
 ## 7. Acceptance criteria
 
@@ -83,9 +83,17 @@ All checks below are planned, not observed. Stories illustrate behavior and do n
 | AC-06 | Scoped token typography reaches only Field text, not control internals; Material, focus and disabled dimming survive | Built CSS consumer and browser cascade/computed-style checks; scoped-typography story | Pending |
 | AC-07 | Existing root attributes, supported class merging, choice-only omissions and stacked footer remain unchanged | Focused Field regressions, docgen/Controls and packed React 18/19 consumer checks | Pending |
 
-### Open decisions for the owner and planned checks
+### Resolved decisions
 
-- Approve or revise the `choice-trailing` value, logical ordering and the single-control scope; `choice` remains unchanged.
+- “Aprobar las cuatro” — the Field `choice-trailing` value is approved.
+- “Sí, validación visual en cada PR” — the spec is approved without captures; the Field implementation PR must provide stories and a real capture before merge.
+
+### Remaining open decisions
+
+- Confirm logical ordering and the single-control scope; `choice` remains unchanged.
 - Approve or narrow the token-only typography selector surface and coarse-pointer target proposal, including hidden-label responsibility.
 - Supply and approve recoverable expected-design sources and conditions for VIS-01 and the additional states. No visuals are approved yet.
-- After spec approval, review a separate implementation plan; then run the AC matrix, focused regressions, built-CSS/package-consumer and browser/accessibility checks. No code, tokens, dependencies or GitHub writes are authorized by this draft.
+
+### Planned checks
+
+Review a separate implementation plan; then run the AC matrix, focused regressions, built-CSS/package-consumer and browser/accessibility checks. No code, tokens, dependencies or GitHub writes are authorized by this spec.

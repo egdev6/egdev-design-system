@@ -1,14 +1,14 @@
 # Carousel — full-width track amendment
 
-- **Status:** Draft — not approved
+- **Status:** Approved — 2026-11-16 (owner, in session; proposal egdev-ds-nexo-adoption-v1). Implementation plan requires separate approval.
 - **Amends:** [Carousel v0.1 implementation evidence](../v0.1/implementation.md) and its [approved base contract](https://github.com/egdev6/egdev-design-system/issues/80#issuecomment-6251492326); requested by [#420](https://github.com/egdev6/egdev-design-system/issues/420). This amendment proposes an additive opt-in layout, not implementation authorization.
-- **Snapshot identity:** `version: v0.2`; `contentSHA256: Pending before finalization`; `visualHashes: VIS-01 Pending, VIS-02 Pending`; `approvalReference: Pending`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/80`; `latestPublishedComment: Pending`. #420 tracks the request rather than creating a second canonical component contract.
-- **Hash definition:** SHA-256 of the UTF-8 payload from `## 1. Purpose and scope` through EOF, LF line endings and the final newline; tracking metadata above it is excluded. Approval must bind this exact version, digest and visual hashes.
+- **Snapshot identity:** `version: v0.2`; `contentSHA256: Pending before finalization`; `visualHashes: VIS-01 Pending, VIS-02 Pending`; `approvalReference: owner session 2026-11-16; proposal egdev-ds-nexo-adoption-v1`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/80`; `latestPublishedComment: Pending`. #420 tracks the request rather than creating a second canonical component contract.
+- **Hash definition:** SHA-256 of the UTF-8 payload from `## 1. Purpose and scope` through EOF, LF line endings and the final newline; tracking metadata above it is excluded. Finalize the digest before publication. The spec is approved without captures; visual hashes remain pending.
 
 ## 1. Purpose and scope
 
 - **Need:** a full-visible-width single-slide track with a hidden native scrollbar and intact native and keyboard operation, without consumer access to internal selectors. No news data, autoplay, loop or product-specific cards.
-- **Cataloging proposal:** extend the existing `@egdev/ui` molecule's track layout. Reuse already provides full-basis slides but not the complete supported padding/gap/scrollbar treatment; consumer composition cannot configure its internal track. Extraction and a new carousel are unnecessary for the same navigation responsibility. Approval is pending.
+- **Cataloging proposal:** extend the existing `@egdev/ui` molecule's track layout. Reuse already provides full-basis slides but not the complete supported padding/gap/scrollbar treatment; consumer composition cannot configure its internal track. Extraction and a new carousel are unnecessary for the same navigation responsibility. Implementation plan approval is separate.
 - **Evidence:** `packages/ui/src/index.ts`, `molecules/carousel/{index.ts,types.ts,useCarousel.ts,Carousel.tsx,Carousel.test.tsx,Carousel.stories.tsx}` and v0.1 evidence were inspected. The current track has `gap-7`, `p-2`, horizontal overflow and mandatory center snap; slides use `basis-full`. The recent [PR #407](https://github.com/egdev6/egdev-design-system/pull/407) alignment protection is present in `useCarousel.ts`: absolute `scrollTo` only when center drift is at least 0.5 CSS px. Mouse dragging still uses relative `scrollBy`.
 
 ## 2. Anatomy and composition
@@ -28,7 +28,7 @@ No matching Radix carousel primitive is used; preserve the approved native-scrol
 | --- | --- | --- | --- | --- |
 | `trackLayout` | `'default' \| 'full-width'` | No | `'default'` | `default` retains v0.1 track; `full-width` selects the edge-to-edge, scrollbar-hidden contract below. |
 
-**Prop conventions:** inspected the [registry source](../../../../skills/_shared/prop-naming.json) and [generated view](../../../prop-naming.md) by meaning, name and aliases. Propose new semantic ID `carousel-track-layout` → `trackLayout: 'default' | 'full-width'`, status `proposed`, approval pending. `top-bar-content-width` describes a constrained/full content row with gutters, not this scroll viewport and scrollbar policy; `visual-treatment` / `variant` concerns visual treatment, not track geometry and scrolling. No matching convention or scoped exception is asserted and no registry file is changed here. Reviewed existing usage context: `source: { path: 'packages/ui/src/molecules/carousel/types.ts', symbol: 'CarouselProps', revision: 'sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320' }`; the new prop is not yet in that symbol. Naming approval is separate from spec approval.
+**Prop conventions:** inspected the [registry source](../../../../skills/_shared/prop-naming.json) and [generated view](../../../prop-naming.md) by meaning, name and aliases. The owner approved `carousel-track-layout` → `trackLayout: 'default' | 'full-width'` for Carousel (owner session 2026-11-16, proposal egdev-ds-nexo-adoption-v1). `top-bar-content-width` describes a constrained/full content row with gutters, not this scroll viewport and scrollbar policy; `visual-treatment` / `variant` concerns visual treatment, not track geometry and scrolling. The registry entry and usage are added in the implementation PR, not here. Reviewed existing usage context: `source: { path: 'packages/ui/src/molecules/carousel/types.ts', symbol: 'CarouselProps', revision: 'sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320' }`; the new prop is not yet in that symbol.
 
 Native div props retain v0.1 exclusions and forwarding; `className` supports root width, margins and placement only. No ref, children, `asChild` or imperative API. Controlled requests commit only on owner acceptance; uncontrolled initialization, identity fallback and `onValueChange` remain unchanged. Public exports and React peer claims remain unchanged; packed-consumer checks are planned rather than inferred.
 
@@ -65,7 +65,7 @@ The Carousel frame remains structural and unpainted; consumer slide content owns
 | VIS-01 | Pending: full-width settled slide and controls, scrollbar hidden | Source, viewport, scale, browser, theme, fonts, preferences, crop and provenance pending | Pending owner reference and approval |
 | VIS-02 | Pending: narrow/zoomed host with current slide focus and boundaries | Same conditions and provenance pending; include focus/overflow and responsive layout | Pending owner reference and approval |
 
-No new captures are authorized for this batch. The v0.1 evidence refers to earlier VIS-01/VIS-02 but does not establish an approved reference for this new geometry; do not treat current implementation as expected design. Visual conformity is **Not evaluated** until comparable captures and scoped owner approval exist. Intended review covers the one-slide viewport, focus, spacing and existing composed treatments; do not infer tokens from pixels.
+No new captures are authorized for this batch. The spec is approved without captures; each Carousel implementation PR must provide stories and a real capture before merge. The v0.1 evidence refers to earlier VIS-01/VIS-02 but does not establish an approved reference for this new geometry; do not treat current implementation as expected design. Visual conformity is **Not evaluated** until comparable captures and scoped owner approval exist. Intended review covers the one-slide viewport, focus, spacing and existing composed treatments; do not infer tokens from pixels.
 
 ## 7. Acceptance criteria
 
@@ -81,8 +81,16 @@ All checks are planned, not observed for v0.2; stories do not replace behavior t
 | AC-06 | Empty, invalid, single and dynamic items; pointer cancellation; reduced motion and no autoplay retain v0.1 behavior. | Targeted tests and browser scenarios with `trackLayout='full-width'`; empty/single stories. | Pending |
 | AC-07 | Prop types, default, JSDoc/Controls and emitted scrollbar utilities are usable without internal selectors or a consumer Tailwind compiler. | Docgen/Controls, production CSS and packed-consumer checks; opt-in story. | Pending |
 
-### Open decisions for the owner and planned checks
+### Resolved decisions
 
-- Approve or revise `trackLayout`, its proposed `carousel-track-layout` convention, and the single combined opt-in: zero padding, zero gap, viewport-wide slide, center snap and visually hidden scrollbar. Confirm supported browser coverage and inset-focus treatment.
-- Approve the two visual scenarios and provide an authorized expected-design source, capture conditions and separately scoped visual approval. New references and conformity remain pending.
-- After version/digest/visual approval, propose a separately approved implementation plan. Planned verification is AC-01–AC-07, especially real browsers/WebView2, accessible operation and packed consumers; no check in this draft has run for v0.2.
+- “Aprobar las cuatro” — the Carousel `trackLayout` convention is approved.
+- “Sí, validación visual en cada PR” — the spec is approved without captures; the Carousel implementation PR must provide stories and a real capture before merge.
+
+### Remaining open decisions
+
+- Confirm the single combined opt-in: zero padding, zero gap, viewport-wide slide, center snap and visually hidden scrollbar, including supported browser coverage and inset-focus treatment.
+- Provide an authorized expected-design source, capture conditions and separately scoped visual approval for the two scenarios. New references and conformity remain pending.
+
+### Planned checks
+
+Propose a separately approved implementation plan. Planned verification is AC-01–AC-07, especially real browsers/WebView2, accessible operation and packed consumers; no check for this amendment has run for v0.2.

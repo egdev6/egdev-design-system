@@ -1,9 +1,9 @@
 # SelectTile v0.3 — text-only amendment
 
-- **Status: Draft — not approved**
+- **Status:** Approved — 2026-11-16 (owner, in session; proposal egdev-ds-nexo-adoption-v1). Implementation plan requires separate approval.
 - **Amends:** [SelectTile v0.1](../v0.1/implementation.md) and [v0.2](../v0.2/underline-amendment.md); unmentioned promises remain unchanged. Request: [#413](https://github.com/egdev6/egdev-design-system/issues/413).
-- **Approval / recovery:** Pending; this local draft is not an implementation authorization. Separate plan approval is required.
-- **Snapshot identity:** `version: v0.3`; `contentSHA256: Pending`; `visualHashes: Pending`; `approvalReference: Pending`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/101`; `latestPublishedComment: Pending`. This amendment is unpublished. Before publication, hash the UTF-8 payload from `## 1. Purpose and scope` through EOF, with LF line endings and its final newline; approval must identify the digest and visuals.
+- **Approval / recovery:** Owner session 2026-11-16, proposal egdev-ds-nexo-adoption-v1; this spec is not an implementation authorization. Separate plan approval is required.
+- **Snapshot identity:** `version: v0.3`; `contentSHA256: Pending`; `visualHashes: Pending`; `approvalReference: owner session 2026-11-16; proposal egdev-ds-nexo-adoption-v1`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/101`; `latestPublishedComment: Pending`. This amendment is unpublished. Before publication, hash the UTF-8 payload from `## 1. Purpose and scope` through EOF, with LF line endings and its final newline. The spec is approved without captures; visual hashes remain pending.
 
 ## 1. Purpose and scope
 
@@ -27,7 +27,7 @@ The proposed text-only card renders no image, fallback, AspectRatio, media wrapp
 | --- | --- | --- |
 | `variant` | New, optional: single branch `'default' \| 'text-only'`; multiple branch `'default'` only | `default` preserves current media cards; `text-only` is explicitly opt-in and scoped to `type='single'`. Unsupported untyped multiple/text-only combinations have no promised behavior. |
 | `type`, `label`, `options` | Existing discriminated API; all required as today | Unchanged: single is a named radio group; each option has a unique non-empty value and label. |
-| `ratio`, option `thumb` | Existing optional types | Their media geometry and image are ignored in `text-only`; default media behavior, including fallback/error retry, is unchanged. |
+| `ratio`, option `thumb` | Existing optional types | Their media geometry and image are ignored in `text-only`; a supplied `thumb` emits a development-only console warning and never throws, while `ratio` alone does not warn. Default media behavior, including fallback/error retry, is unchanged. |
 | `value`, `defaultValue`, `onValueChange`, `name`, `required`, `disabled`, `dir` | Existing single-branch types/defaults | Selection, form participation, direction and state remain unchanged. `meta`, `badge`, `live` and per-option disabled remain supported. |
 
 **Naming:** lookup by meaning, name and aliases in the [registry source](../../../../skills/_shared/prop-naming.json) and [generated view](../../../prop-naming.md): reuse approved `visual-treatment` / `variant`; proposed SelectTile usage is `'default' | 'text-only'` for single and `'default'` for multiple. No new semantic ID or exception. Reviewed baseline source: `{ path: 'packages/ui/src/molecules/select-tile/types.ts', symbol: 'SelectTileProps', revision: 'sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be' }`. This hash identifies the existing symbol, which does not yet declare `variant`; add the reviewed usage and future revision only during separately authorized implementation. Convention approval is independent of approval of this amendment.
@@ -42,10 +42,10 @@ Root native div attributes and `className` retain their existing restrictions. N
 | Use horizontal arrows | Radix moves focus and selects the next enabled option, looping with the existing LTR/RTL direction; Home/End retain existing focus-only behavior. Enter does not activate or submit. |
 | Controlled value | User interaction requests `onValueChange`; the visual/ARIA selection remains the supplied value until the owner changes it. |
 | Disabled option or group | Selection is retained, disabled controls cannot be focused or activated, and each card dims once. |
-| Missing or supplied thumbnail; supplied ratio | Text-only renders no media, whether or not thumbnail data exists; ratio does not reserve space. Existing default behavior is unchanged. |
+| Missing or supplied thumbnail; supplied ratio | Text-only renders no media, whether or not thumbnail data exists; ratio does not reserve space. A supplied option `thumb` emits a development-only console warning, never throws and is not rendered; `ratio` alone does not warn. No warning for `thumb` is emitted in production. Existing default behavior is unchanged. |
 | Empty options / long text | Named empty group has no radio or focus stop; labels and metadata wrap. Consumers choose root columns through the existing layout-only `className`; no automatic breakpoint is introduced. |
 
-`live` remains independent of selection; at most one option may be live and it requires the existing non-empty badge. No validation, pruning, auto-selection or notification on prop updates is introduced.
+`live` remains independent of selection; at most one option may be live and it requires the existing non-empty badge. No validation, pruning, auto-selection or selection notification on prop updates is introduced.
 
 ## 5. Accessibility
 
@@ -68,7 +68,7 @@ Root `className` continues to support margins, width, column count and parent la
 | --- | --- | --- |
 | VIS-01 | Pending: text-only single group with selected, unselected and disabled tiles; also review focus and narrow/RTL | Expected-design source, version, viewport, scale, browser, theme, fonts, motion/transparency, crop, provenance, hash and owner approval all Pending. |
 
-No capture is produced in this batch. Historical media-card references are not approved expected design for text-only. Visual conformity: **Not evaluated**; capture and approval must follow the [guide](../../../design/README.md).
+No capture is produced in this batch. The spec is approved without captures; each SelectTile implementation PR must provide stories and a real capture before merge. Historical media-card references are not approved expected design for text-only. Visual conformity: **Not evaluated**; capture and approval must follow the [guide](../../../design/README.md).
 
 ## 7. Acceptance criteria
 
@@ -76,7 +76,7 @@ All checks below are planned, not observed. Stories illustrate behavior and do n
 
 | ID | Observable promise | Planned check / story | Evidence |
 | --- | --- | --- | --- |
-| AC-01 | Opt-in single text-only renders no media or fallback even with thumb/ratio; label, optional meta/badge and selected check remain | Public DOM/role tests and text-only story; VIS-01 | Pending |
+| AC-01 | Opt-in single text-only renders no media or fallback even with thumb/ratio; label, optional meta/badge and selected check remain. A supplied thumb warns only in development and never throws; ratio alone does not warn. | Public DOM/role tests, development and production warning/no-throw checks, ratio-only check and text-only story; VIS-01 | Pending |
 | AC-02 | Whole-tile click, Space, arrow looping/disabled skipping, Home/End, Enter and RTL retain Radix single behavior | Real Radix user-event tests; RTL and keyboard browser checks | Pending |
 | AC-03 | Controlled requests wait for owner; uncontrolled initialization and callbacks work; selected radio cannot be cleared by reactivation | Controlled/uncontrolled public tests and stories | Pending |
 | AC-04 | Group/option names, descriptions once each, unique IDs, disabled behavior, focus and native required/form values survive | Role/description, disabled, multi-instance and form tests; keyboard/AT browser follow-up | Pending |
@@ -84,9 +84,17 @@ All checks below are planned, not observed. Stories illustrate behavior and do n
 | AC-06 | Long text wraps, narrow host can use one column and whole-tile hit target is at least 44 × 44 CSS pixels | Narrow/RTL stories and browser geometry/hit tests at comparable conditions | Pending |
 | AC-07 | Omitted/default variant and multiple mode retain media, fallback/retry, ratios, state, markers, class merge and form restrictions | Existing SelectTile regressions, negative type coverage, docgen/Controls and packed React 18/19 consumer checks | Pending |
 
-### Open decisions for the owner and planned checks
+### Resolved decisions
 
-- Approve or revise `variant='text-only'` and the single-only scope; separately decide whether multiple text tiles should ever be proposed.
-- Approve or revise ignoring `ratio`/`thumb`, retaining textual badge/live semantics and using consumer-selected responsive columns rather than an automatic breakpoint.
+- “Solo single; media ignorada con warning en dev” — `variant='text-only'` is single-only; option `thumb` is ignored and emits a development-only console warning without throwing. `ratio` alone does not warn.
+- “Sí, validación visual en cada PR” — the spec is approved without captures; the SelectTile implementation PR must provide stories and a real capture before merge.
+
+### Remaining open decisions
+
+- Decide separately whether multiple text tiles should ever be proposed.
+- Confirm retaining textual badge/live semantics and using consumer-selected responsive columns rather than an automatic breakpoint.
 - Supply and approve recoverable expected-design sources and conditions for VIS-01 and its additional states. No visuals are approved yet.
-- After spec approval, review a separate implementation plan; then run the AC matrix, focused regressions, built-CSS/package-consumer and browser/accessibility checks. No code, tokens, dependencies or GitHub writes are authorized by this draft.
+
+### Planned checks
+
+Review a separate implementation plan; then run the AC matrix, focused regressions, built-CSS/package-consumer and browser/accessibility checks. No code, tokens, dependencies or GitHub writes are authorized by this spec.
