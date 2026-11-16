@@ -28,6 +28,8 @@ export function useTabs(props: TabsProps): UseTabsResult {
     onValueChange,
     variant = 'underline',
     size = 'md',
+    fullWidth = false,
+    labelWrap = false,
     className,
     ...rest
   } = props;
@@ -43,17 +45,28 @@ export function useTabs(props: TabsProps): UseTabsResult {
     },
     listProps: {
       'aria-label': label,
+      onFocus:
+        variant === 'segmented' && fullWidth
+          ? (event) => {
+              if (
+                event.target.getAttribute('role') === 'tab' &&
+                event.currentTarget.scrollWidth > event.currentTarget.clientWidth
+              ) {
+                event.target.scrollIntoView?.({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
+              }
+            }
+          : undefined,
       className: cn(
         variant === 'segmented' && surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }),
-        tabsListVariants({ variant })
+        tabsListVariants({ variant, fullWidth })
       )
     },
-    triggerClassName: cn(tabsTriggerVariants({ variant, size })),
+    triggerClassName: cn(tabsTriggerVariants({ variant, size, fullWidth, labelWrap })),
     panelClassName: cn(tabsPanelVariants()),
     items: items.map((item) => ({
       ...item,
       showCount: item.count !== undefined,
-      countClassName: cn(tabsCountVariants({ tone: item.tone }))
+      countClassName: cn(tabsCountVariants({ tone: item.tone, variant, labelWrap }))
     }))
   };
 }

@@ -1989,11 +1989,18 @@ export const tabsItems: TabsItem[] = [
   { value: 'blocked', label: 'Unavailable', disabled: true, content: 'Unavailable posts' }
 ];
 export const tabsProps: TabsProps = { items: tabsItems, label: 'Post views', id: 'consumer-tabs', className: 'mt-2 mt-4' };
+export const tabsWidthProps: TabsProps = { ...tabsProps, variant: 'segmented', fullWidth: true };
+export const tabsWrapProps: TabsProps = { ...tabsProps, variant: 'segmented', labelWrap: true };
+export const tabsCombinedProps: TabsProps = { ...tabsProps, variant: 'segmented', fullWidth: true, labelWrap: true };
 export const tabsChanges: string[] = [];
 export const tabsRecipe: string = tabsVariants();
-export function TabsSamples({ value, segmented = false }: { value?: string; segmented?: boolean }) {
-  return createElement(Tabs, { ...tabsProps, value, ...(segmented ? { variant: tabsVariant, size: tabsSize } : {}), onValueChange: (next) => tabsChanges.push(next) });
+export function TabsSamples({ value, segmented = false, fullWidth = false, labelWrap = false }: { value?: string; segmented?: boolean; fullWidth?: boolean; labelWrap?: boolean }) {
+  return createElement(Tabs, { ...tabsProps, value, fullWidth, labelWrap, ...(segmented ? { variant: tabsVariant, size: tabsSize } : {}), onValueChange: (next) => tabsChanges.push(next) });
 }
+// @ts-expect-error fullWidth accepts a boolean, not a string.
+const stringFullWidthTabs: TabsProps = { ...tabsProps, fullWidth: 'true' };
+// @ts-expect-error labelWrap accepts a boolean, not a number.
+const numericLabelWrapTabs: TabsProps = { ...tabsProps, labelWrap: 1 };
 // @ts-expect-error A named tablist is required.
 const unlabelledTabs: TabsProps = { items: tabsItems };
 // @ts-expect-error Views must be supplied through items.
@@ -4171,6 +4178,15 @@ function assertSearchTriggerCSS(css) {
 function assertTabsCSS(css) {
   for (const selector of [
     String.raw`.p-0\.75`,
+    '.grid-flow-col',
+    String.raw`.auto-cols-\[1fr\]`,
+    '.self-stretch',
+    '.wrap-anywhere',
+    '.whitespace-normal',
+    '.whitespace-nowrap',
+    '.text-start',
+    '.justify-start',
+    '.justify-center',
     String.raw`.min-h-8\.5`,
     String.raw`.rounded-\[calc\(var\(--radius-md\)---spacing\(0\.75\)\)\]`,
     String.raw`.\[scrollbar-width\:none\]`,
@@ -4182,10 +4198,14 @@ function assertTabsCSS(css) {
   ]) {
     assert.ok(css.includes(selector), 'Missing Tabs utility ' + selector);
   }
+  assert.match(css, /\.grid\s*\{[^}]*display:\s*grid/);
+  assert.match(css, /\.w-full\s*\{[^}]*width:\s*100%/);
+  assert.match(css, /\.py-1\s*\{[^}]*padding-block:/);
   assert.match(css, /padding:\s*calc\(var\(--space-1\)\s*\*\s*0\.75\)/);
   assert.match(css, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*8\.5\)/);
   assert.match(css, /border-radius:\s*calc\(var\(--radius-md\)\s*-\s*[^;]+\)/);
   assert.match(css, /scrollbar-width:\s*none/);
+  assert.match(css, /overflow-wrap:\s*anywhere/);
 }
 
 // PullQuote quote recipes, logical filet and measure ship without preflight or a stylesheet.
@@ -6322,6 +6342,22 @@ try {
   assert.ok(tabsRecipe.includes('eg-tabs'));
 } finally {
   tabsDocument.window.close();
+}
+const wrappedTabsDocument = new JSDOM(renderToString(createElement(TabsSamples, { segmented: true, fullWidth: true, labelWrap: true })));
+try {
+  const root = wrappedTabsDocument.window.document.getElementById('consumer-tabs');
+  const list = root.querySelector('[role="tablist"]');
+  assert.ok(['eg-surface', 'grid', 'grid-flow-col', 'auto-cols-[1fr]', 'w-full', 'self-stretch', 'overflow-x-auto'].every((name) => list.classList.contains(name)));
+  assert.ok(!list.classList.contains('inline-flex') && !list.classList.contains('[scrollbar-width:none]'));
+  const tab = list.querySelector('[role="tab"]');
+  assert.ok(['whitespace-normal', 'wrap-anywhere', 'text-start', 'justify-start', 'py-1'].every((name) => tab.classList.contains(name)));
+  assert.ok(!tab.classList.contains('whitespace-nowrap') && !tab.classList.contains('justify-center'));
+  assert.ok(tab.querySelector('span').classList.contains('whitespace-nowrap'));
+  assert.equal(tab.textContent, 'Queue 0');
+  assert.equal(root.hasAttribute('fullwidth'), false);
+  assert.equal(root.hasAttribute('labelwrap'), false);
+} finally {
+  wrappedTabsDocument.window.close();
 }
 const countdownDocument = new JSDOM(renderToString(createElement(CountdownSamples)));
 try {

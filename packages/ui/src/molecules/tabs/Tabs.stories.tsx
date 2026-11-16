@@ -22,6 +22,8 @@ const items: TabsItem[] = [
  * Supply unique, non-empty item values and at least one enabled item. Inactive panel contents unmount;
  * lift persistent state into the host. Counts are raw numbers and included in accessible tab names.
  * Use meaningful labels for danger counters. Dense small/segmented sizes target pointer devices.
+ * Segmented fullWidth distributes tabs equally when they fit; labelWrap permits long labels to wrap at logical start.
+ * The options are independent, do not affect underline and preserve the visible overflow scrollbar.
  * className supports root margin, width and grid placement only, not internal appearance overrides.
  */
 const meta: Meta<typeof Tabs> = {
@@ -96,4 +98,44 @@ export const Controlled: Story = {
 /** The initial disabled item is skipped both by the derived default and arrow navigation. */
 export const Disabled: Story = {
   args: { items: items.map((item) => ({ ...item, disabled: item.value === 'queue' })) }
+};
+
+/** The segmented well fills the host; short labels are equal when they fit and scroll when they do not. */
+export const FullWidth: Story = {
+  args: { variant: 'segmented', fullWidth: true }
+};
+
+/** Natural and unbroken long labels reflow independently of the full-width option in a narrow host. */
+export const LabelWrap: Story = {
+  args: {
+    variant: 'segmented',
+    labelWrap: true,
+    items: [
+      { value: 'reviews', label: 'Posts awaiting editorial review', content: 'Posts awaiting review' },
+      { value: 'archive', label: 'ExtraordinarilyLongUnbrokenArchiveLabel', content: 'Archived posts' }
+    ]
+  },
+  render: (args) => (
+    <div className='w-48'>
+      <Tabs {...args} />
+    </div>
+  )
+};
+
+/** Full-width segmented tabs combine start-aligned wrapping with visible counters in a narrow host. */
+export const FullWidthLabelWrap: Story = {
+  args: {
+    variant: 'segmented',
+    fullWidth: true,
+    labelWrap: true,
+    items: [
+      { value: 'reviews', label: 'Posts awaiting review', count: 12, content: 'Posts awaiting review' },
+      { value: 'archive', label: 'LongUnbrokenArchiveLabel', count: 312, content: 'Archived posts' }
+    ]
+  },
+  render: (args) => (
+    <div className='w-48'>
+      <Tabs {...args} />
+    </div>
+  )
 };

@@ -464,7 +464,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+          "revision": "sha256:a294d6211645a5d74e1a9ece9d012747576e6c4c6ef03e309dab34081d190f5b"
         }
       },
       {
@@ -561,7 +561,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+          "revision": "sha256:a294d6211645a5d74e1a9ece9d012747576e6c4c6ef03e309dab34081d190f5b"
         }
       },
       {
@@ -658,7 +658,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+          "revision": "sha256:a294d6211645a5d74e1a9ece9d012747576e6c4c6ef03e309dab34081d190f5b"
         }
       },
       {
@@ -885,7 +885,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+          "revision": "sha256:a294d6211645a5d74e1a9ece9d012747576e6c4c6ef03e309dab34081d190f5b"
         }
       },
       {
@@ -1182,7 +1182,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+          "revision": "sha256:a294d6211645a5d74e1a9ece9d012747576e6c4c6ef03e309dab34081d190f5b"
         }
       },
       {
@@ -1419,7 +1419,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsItem",
-          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+          "revision": "sha256:a294d6211645a5d74e1a9ece9d012747576e6c4c6ef03e309dab34081d190f5b"
         }
       },
       {
@@ -1914,7 +1914,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+          "revision": "sha256:a294d6211645a5d74e1a9ece9d012747576e6c4c6ef03e309dab34081d190f5b"
         }
       },
       {
@@ -3842,7 +3842,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615"
+          "revision": "sha256:a294d6211645a5d74e1a9ece9d012747576e6c4c6ef03e309dab34081d190f5b"
         }
       },
       {
@@ -8016,6 +8016,60 @@
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
           "revision": "sha256:c68e86adf39da3f418e3e9770cbb44fde11743919330a7c022c205fe6a753c80"
+        }
+      }
+    ]
+  },
+  {
+    "id": "tab-list-full-width",
+    "name": "fullWidth",
+    "meaning": "Whether a segmented tab list fills available width and distributes triggers equally.",
+    "whenToUse": "Distribute segmented tabs equally across the available list width.",
+    "avoid": "Do not use for arbitrary element width, constrained content rows, underline tabs or label wrapping.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/tabs/v0.2/prop-naming-approval.json",
+      "scope": "convention:tab-list-full-width",
+      "contentHash": "sha256:b8adeb7b74133a49b1f75b68b92d8b89c0408865ff677ad96b1f43534c2f5504"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Tabs",
+        "type": "boolean (default false; segmented only)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:a294d6211645a5d74e1a9ece9d012747576e6c4c6ef03e309dab34081d190f5b"
+        }
+      }
+    ]
+  },
+  {
+    "id": "control-label-wrap",
+    "name": "labelWrap",
+    "meaning": "Whether a control permits its visible label to wrap, including inside long unbroken words.",
+    "whenToUse": "Opt into line breaking for a control label; alignment and sizing remain component-specific.",
+    "avoid": "Do not use for arbitrary child content, a section wrapper, truncation or generic flex wrapping.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/tabs/v0.2/prop-naming-approval.json",
+      "scope": "convention:control-label-wrap",
+      "contentHash": "sha256:9c95cc3521530db1bb3d5238da6926ee8b7cbe6fee45b2457ef6ca73e3a3dd10"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Tabs",
+        "type": "boolean (default false; segmented only)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/tabs/types.ts",
+          "symbol": "TabsProps",
+          "revision": "sha256:a294d6211645a5d74e1a9ece9d012747576e6c4c6ef03e309dab34081d190f5b"
         }
       }
     ]

@@ -89,6 +89,19 @@ export type TabsProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'defa
    * @control select
    */
   size?: TabsSize;
+  /**
+   * Fill the available width with equal segmented tabs when they fit; overflowing tabs may be unequal.
+   * Has no effect on underline.
+   * @default false
+   * @control boolean
+   */
+  fullWidth?: boolean;
+  /**
+   * Wrap and start-align segmented labels, including long words; has no effect on underline.
+   * @default false
+   * @control boolean
+   */
+  labelWrap?: boolean;
 };
 
 /** Public root recipe resets the legacy tablist geometry without emitting legacy part markers. */
@@ -100,8 +113,25 @@ export const tabsListVariants = cva('', {
     variant: {
       underline: 'flex items-stretch gap-1 border-b border-border-default overflow-x-auto [scrollbar-width:none]',
       segmented: 'inline-flex self-start gap-0.5 p-0.75'
-    }
+    },
+    fullWidth: { true: '', false: '' }
   },
+  compoundVariants: [
+    {
+      variant: 'segmented',
+      fullWidth: true,
+      // Reserve room for the 4px focus ring even at the scrollport edges. The overflow scrollbar is
+      // thin and token-colored: Blink/WebKit pseudo-elements without arrow buttons, and the standard
+      // properties only where those pseudo-elements do not exist (Firefox), because Chromium 121+
+      // ignores the pseudo-elements once the standard properties are set.
+      class: [
+        'grid grid-flow-col auto-cols-[1fr] w-full self-stretch overflow-x-auto p-1.5 scroll-px-1.5',
+        '[&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-button]:hidden',
+        '[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border-control hover:[&::-webkit-scrollbar-thumb]:bg-fg-muted',
+        'supports-[not_selector(::-webkit-scrollbar)]:[scrollbar-width:thin] supports-[not_selector(::-webkit-scrollbar)]:[scrollbar-color:var(--color-border-control)_transparent]'
+      ]
+    }
+  ],
   defaultVariants: { variant: 'underline' }
 });
 
@@ -126,11 +156,17 @@ export const tabsTriggerVariants = cva(
           'focus-visible:outline-none focus-visible:shadow-focus data-[state=active]:focus-visible:shadow-focus'
         ]
       },
-      size: { md: '', sm: '' }
+      size: { md: '', sm: '' },
+      fullWidth: { true: '', false: '' },
+      labelWrap: { true: '', false: '' }
     },
     compoundVariants: [
       { variant: 'underline', size: 'md', class: 'min-h-11 px-3 after:inset-x-3' },
-      { variant: 'underline', size: 'sm', class: 'min-h-9 px-2 after:inset-x-2' }
+      { variant: 'underline', size: 'sm', class: 'min-h-9 px-2 after:inset-x-2' },
+      { variant: 'segmented', fullWidth: true, class: 'justify-center' },
+      { variant: 'segmented', labelWrap: true, class: 'whitespace-normal wrap-anywhere text-start justify-start py-1' },
+      // Full width scrolls, so keep words whole and let a long word widen its column instead.
+      { variant: 'segmented', fullWidth: true, labelWrap: true, class: 'wrap-break-word' }
     ],
     defaultVariants: { variant: 'underline', size: 'md' }
   }
@@ -144,9 +180,12 @@ export const tabsCountVariants = cva(
       tone: {
         neutral: 'bg-bg-glass text-fg-secondary',
         danger: 'bg-status-danger/14 text-status-danger'
-      }
+      },
+      variant: { underline: '', segmented: '' },
+      labelWrap: { true: '', false: '' }
     },
-    defaultVariants: { tone: 'neutral' }
+    compoundVariants: [{ variant: 'segmented', labelWrap: true, class: 'whitespace-nowrap' }],
+    defaultVariants: { tone: 'neutral', variant: 'underline' }
   }
 );
 

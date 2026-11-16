@@ -569,7 +569,9 @@ const expected: Record<string, Record<string, string | false>> = {
     defaultValue: 'text',
     onValueChange: false,
     variant: 'select',
-    size: 'select'
+    size: 'select',
+    fullWidth: 'boolean',
+    labelWrap: 'boolean'
   },
   progressbar: {
     value: 'number',
@@ -762,7 +764,7 @@ const ownPropCounts: Record<string, number> = {
   switch: 7,
   tooltip: 4,
   menu: 10,
-  tabs: 7,
+  tabs: 9,
   progressbar: 6,
   pullquote: 5,
   textarea: 1,
@@ -1044,6 +1046,19 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
     const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
     expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+  });
+  it('maps both Tabs layout flags as optional boolean controls with false defaults', () => {
+    const metadata = component('Tabs');
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    const rows: StrictArgTypes = extract(metadata);
+    expect(mapJSDocControls(rows, metadata).diagnostics).toEqual([]);
+    const composed = story('Tabs');
+    for (const name of ['fullWidth', 'labelWrap']) {
+      expect(composed.argTypes[name]?.control, name).toEqual({ type: 'boolean' });
+      expect(composed.argTypes[name]?.type?.required, name).not.toBe(true);
+      expect(composed.argTypes[name]?.table?.defaultValue?.summary, name).toBe('false');
+    }
+    expect(composed.args).toEqual({});
   });
   it('extracts Table required data and maps its controls without diagnostics', () => {
     const metadata = component('Table');
