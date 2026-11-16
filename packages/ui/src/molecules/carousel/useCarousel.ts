@@ -57,6 +57,8 @@ type CarouselResult = {
 };
 
 const useClientLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+/** Alignment drift below half a CSS pixel is rounding noise, not a misaligned slide. */
+const ALIGN_TOLERANCE = 0.5;
 
 function localize(messages: CarouselProps['messages']): CarouselMessages {
   const text = (key: Exclude<keyof CarouselMessages, 'position'>) => {
@@ -159,8 +161,10 @@ export function useCarousel({
     const a = node.getBoundingClientRect();
     const b = viewport.getBoundingClientRect();
     const distance = (a.left + a.right - b.left - b.right) / 2;
-    if (distance) {
-      scroll(distance);
+    // Absolute and tolerant: some hosts (WebView2) treat any relative scrollBy on a mandatory snap
+    // track as directional intent and snap to the next slide, even for sub-pixel rounding drift.
+    if (Math.abs(distance) >= ALIGN_TOLERANCE) {
+      viewport.scrollTo?.({ left: viewport.scrollLeft + distance, behavior: 'instant' });
     }
   };
   const request = (next: number, focus: boolean) => {

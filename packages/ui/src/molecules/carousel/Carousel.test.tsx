@@ -41,10 +41,16 @@ function geometry(rtl = false) {
   const scrollBy = vi.fn((options: ScrollToOptions) => {
     offset += options.left ?? 0;
   });
+  const scrollTo = vi.fn((options: ScrollToOptions) => {
+    offset = options.left ?? offset;
+  });
   Object.defineProperty(viewport, 'scrollBy', { configurable: true, value: scrollBy });
+  Object.defineProperty(viewport, 'scrollTo', { configurable: true, value: scrollTo });
+  Object.defineProperty(viewport, 'scrollLeft', { configurable: true, get: () => offset });
   return {
     viewport,
     scrollBy,
+    scrollTo,
     setOffset: (value: number) => {
       offset = value;
     }
@@ -315,7 +321,7 @@ describe('Carousel public contract v0.1', () => {
       </>
     );
     screen.getByRole('button', { name: 'Outside' }).focus();
-    const { scrollBy } = geometry();
+    const { scrollTo } = geometry();
     rerender(
       <>
         <button type='button'>Outside</button>
@@ -324,7 +330,7 @@ describe('Carousel public contract v0.1', () => {
     );
     expect(screen.getByRole('button', { name: 'Outside' })).toHaveFocus();
     expect(screen.getByRole('status')).toBeEmptyDOMElement();
-    expect(scrollBy).toHaveBeenCalledWith({ left: 200, behavior: 'instant' });
+    expect(scrollTo).toHaveBeenCalledWith({ left: 200, behavior: 'instant' });
     fireEvent(window, new Event('resize'));
     expect(onValueChange).not.toHaveBeenCalled();
   });
@@ -411,13 +417,13 @@ describe('Carousel public contract v0.1', () => {
     vi.useFakeTimers();
     const onValueChange = vi.fn();
     const { rerender } = render(<Carousel label='Highlights' items={items} value='a' onValueChange={onValueChange} />);
-    const { viewport, scrollBy, setOffset } = geometry();
+    const { viewport, scrollTo, setOffset } = geometry();
     (current() as HTMLElement).focus();
     setOffset(100);
     fireEvent.scroll(viewport);
     fireEvent(viewport, new Event('scrollend'));
     expect(onValueChange).toHaveBeenCalledExactlyOnceWith('b');
-    expect(scrollBy).toHaveBeenLastCalledWith({ left: -100, behavior: 'instant' });
+    expect(scrollTo).toHaveBeenLastCalledWith({ left: 0, behavior: 'instant' });
     expect(current()).toHaveAccessibleName('1 of 3: Alpha');
     rerender(<Carousel label='Highlights' items={items} value='b' onValueChange={onValueChange} />);
     expect(current()).toHaveFocus();
@@ -574,16 +580,16 @@ describe('Carousel public contract v0.1', () => {
       );
     }
     render(<Controlled />);
-    const { viewport, scrollBy } = geometry();
+    const { viewport, scrollBy, scrollTo } = geometry();
     act(() => {
       fireEvent(window, new Event('resize'));
     });
     // Emulate WebView2: the programmatic scroll dispatches scroll and scrollend synchronously,
     // before React re-runs the passive effect that registers the native listeners.
     let dispatching = false;
-    scrollBy.mockClear();
-    const move = scrollBy.getMockImplementation();
-    scrollBy.mockImplementation((options: ScrollToOptions) => {
+    scrollTo.mockClear();
+    const move = scrollTo.getMockImplementation();
+    scrollTo.mockImplementation((options: ScrollToOptions) => {
       move?.(options);
       if (dispatching) {
         return;
@@ -602,6 +608,26 @@ describe('Carousel public contract v0.1', () => {
     expect(onValueChange).not.toHaveBeenCalledWith('c');
     expect(current()).toHaveAccessibleName('2 of 3: Beta');
     // Only the centering toward Beta; a stale listener used to bounce the track back to Gamma.
-    expect(scrollBy.mock.calls).toEqual([[{ left: -100, behavior: 'instant' }]]);
+    expect(scrollTo.mock.calls).toEqual([[{ left: 100, behavior: 'instant' }]]);
+    expect(scrollBy).not.toHaveBeenCalled();
+  });
+
+  it('ignores sub-pixel alignment drift instead of nudging a mandatory snap track', () => {
+    const onValueChange = vi.fn();
+    render(<Carousel label='Highlights' items={items} value='a' onValueChange={onValueChange} />);
+    const { scrollBy, scrollTo, setOffset } = geometry();
+    // WebView2 measured a +0.0000057 px drift at 125 % scale; a relative scrollBy that small
+    // made the snap track jump to the next slide.
+    setOffset(-0.0000057);
+    scrollBy.mockImplementation((options: ScrollToOptions) => {
+      setOffset(Math.sign(options.left ?? 0) * 100);
+    });
+    act(() => {
+      fireEvent(window, new Event('resize'));
+    });
+    expect(scrollBy).not.toHaveBeenCalled();
+    expect(scrollTo).not.toHaveBeenCalled();
+    expect(current()).toHaveAccessibleName('1 of 3: Alpha');
+    expect(onValueChange).not.toHaveBeenCalled();
   });
 });
