@@ -1,7 +1,10 @@
+import { resolve } from 'node:path';
+import tailwindcss from '@tailwindcss/vite';
 import { render, renderHook, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useEffect } from 'react';
 import { renderToString } from 'react-dom/server';
+import { build } from 'vite';
 import { describe, expect, it, vi } from 'vitest';
 import { surfaceVariants } from '../../primitives/surface';
 import { Tabs } from './index';
@@ -266,5 +269,347 @@ describe('Tabs public contract', () => {
     expect(html).not.toContain('Queued posts');
     expect(html).toContain('role="tablist"');
     expect(html).toContain('role="tabpanel"');
+  });
+});
+
+describe('Tabs segmented layout opt-ins', () => {
+  it.each([
+    ['full-width segmented', 'segmented', true],
+    ['underline', 'underline', false]
+  ] as const)(
+    'uses Radix roving focus without preventScroll for %s keyboard navigation',
+    async (_name, variant, fullWidth) => {
+      const user = userEvent.setup();
+      render(<Tabs {...base} variant={variant} fullWidth={fullWidth} />);
+      const published = screen.getByRole('tab', { name: 'Published' });
+      const focus = vi.spyOn(published, 'focus');
+      await user.tab();
+      await user.keyboard('{End}');
+      expect(published).toHaveFocus();
+      expect(focus).toHaveBeenLastCalledWith({ preventScroll: false });
+      focus.mockRestore();
+    }
+  );
+
+  it.each([false, true])('reveals focused tabs on overflow with labelWrap=%s', async (labelWrap) => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    const onFocus = vi.fn();
+    render(
+      <Tabs
+        {...base}
+        variant='segmented'
+        fullWidth={true}
+        labelWrap={labelWrap}
+        onValueChange={onValueChange}
+        onFocus={onFocus}
+      />
+    );
+    const list = screen.getByRole('tablist');
+    Object.defineProperties(list, {
+      clientWidth: { configurable: true, value: 117 },
+      scrollWidth: { configurable: true, value: 176 }
+    });
+    const queue = screen.getByRole('tab', { name: 'Queue' });
+    const drafts = screen.getByRole('tab', { name: 'Drafts' });
+    const published = screen.getByRole('tab', { name: 'Published' });
+    const queueScroll = vi.fn();
+    const draftsScroll = vi.fn();
+    const publishedScroll = vi.fn();
+    Object.defineProperty(queue, 'scrollIntoView', { configurable: true, value: queueScroll });
+    Object.defineProperty(drafts, 'scrollIntoView', { configurable: true, value: draftsScroll });
+    Object.defineProperty(published, 'scrollIntoView', { configurable: true, value: publishedScroll });
+    const options = { block: 'nearest', inline: 'nearest', behavior: 'instant' };
+
+    await user.tab();
+    expect(queueScroll).toHaveBeenCalledExactlyOnceWith(options);
+    await user.keyboard('{End}');
+    expect(published).toHaveFocus();
+    expect(published).toHaveAttribute('aria-selected', 'true');
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith('published');
+    expect(onFocus).toHaveBeenCalled();
+    expect(publishedScroll).toHaveBeenCalledExactlyOnceWith(options);
+    await user.keyboard('{Home}{ArrowRight}');
+    expect(queueScroll).toHaveBeenCalledTimes(2);
+    expect(queueScroll).toHaveBeenLastCalledWith(options);
+    expect(drafts).toHaveFocus();
+    expect(drafts).toHaveAttribute('aria-selected', 'true');
+    expect(draftsScroll).toHaveBeenCalledExactlyOnceWith(options);
+    expect(onValueChange.mock.calls).toEqual([['published'], ['queue'], ['drafts']]);
+  });
+
+  it('reserves token-derived space for the segmented focus ring at the scrollport and its edges', () => {
+    render(<Tabs {...base} variant='segmented' fullWidth={true} />);
+    const list = screen.getByRole('tablist');
+    expect(list).toHaveClass('p-1.5', 'scroll-px-1.5');
+    expect(list).not.toHaveClass('p-0.75');
+  });
+
+  it('compiles the focus-ring padding and logical scroll padding into production CSS', async () => {
+    const entry = resolve('packages/ui/src/styles/compiled.css');
+    const result = await build({
+      configFile: false,
+      envDir: false,
+      plugins: [tailwindcss({ optimize: false })],
+      logLevel: 'warn',
+      build: { write: false, minify: false, cssMinify: false, rolldownOptions: { input: entry } }
+    });
+    const outputs = (Array.isArray(result) ? result : [result]).flatMap((output) =>
+      'output' in output ? output.output : []
+    );
+    const asset = outputs.find((output) => output.type === 'asset' && output.fileName.endsWith('.css'));
+    if (asset?.type !== 'asset') {
+      throw new Error('Missing production CSS output');
+    }
+    const css = String(asset.source);
+    const rule = (selector: string) => {
+      const start = css.indexOf(selector);
+      expect(start, selector).toBeGreaterThan(-1);
+      return css.slice(start, css.indexOf('}', start) + 1);
+    };
+    expect(rule(String.raw`.p-1\.5`)).toMatch(/padding:\s*calc\(var\(--space-1\)\s*\*\s*1\.5\)/);
+    expect(rule(String.raw`.scroll-px-1\.5`)).toMatch(/scroll-padding-inline:\s*calc\(var\(--space-1\)\s*\*\s*1\.5\)/);
+  }, 30_000);
+
+  it.each([
+    ['a fitted full-width segmented list', 'segmented', true, 117, 117],
+    ['an overflowing intrinsic segmented list', 'segmented', false, 117, 176],
+    ['an overflowing underline list', 'underline', false, 117, 176],
+    ['an overflowing underline list with fullWidth', 'underline', true, 117, 176]
+  ] as const)(
+    'preserves native focus scrolling for %s',
+    async (_name, variant, fullWidth, clientWidth, scrollWidth) => {
+      const user = userEvent.setup();
+      const onValueChange = vi.fn();
+      render(<Tabs {...base} variant={variant} fullWidth={fullWidth} onValueChange={onValueChange} />);
+      const list = screen.getByRole('tablist');
+      Object.defineProperties(list, {
+        clientWidth: { configurable: true, value: clientWidth },
+        scrollWidth: { configurable: true, value: scrollWidth }
+      });
+      const published = screen.getByRole('tab', { name: 'Published' });
+      const scrollIntoView = vi.fn();
+      Object.defineProperty(published, 'scrollIntoView', { configurable: true, value: scrollIntoView });
+      await user.tab();
+      await user.keyboard('{End}');
+      expect(published).toHaveFocus();
+      expect(published).toHaveAttribute('aria-selected', 'true');
+      expect(onValueChange).toHaveBeenCalledExactlyOnceWith('published');
+      expect(scrollIntoView).not.toHaveBeenCalled();
+    }
+  );
+
+  it('keeps Radix keyboard selection working when scrollIntoView is unavailable', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<Tabs {...base} variant='segmented' fullWidth={true} onValueChange={onValueChange} />);
+    const list = screen.getByRole('tablist');
+    Object.defineProperties(list, {
+      clientWidth: { configurable: true, value: 117 },
+      scrollWidth: { configurable: true, value: 176 }
+    });
+    const published = screen.getByRole('tab', { name: 'Published' });
+    Object.defineProperty(published, 'scrollIntoView', { configurable: true, value: undefined });
+    await user.tab();
+    await user.keyboard('{End}');
+    expect(published).toHaveFocus();
+    expect(published).toHaveAttribute('aria-selected', 'true');
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith('published');
+  });
+
+  const countedItems = [
+    { value: 'queue', label: 'Long queued posts', count: 0, content: 'Queued posts' },
+    { value: 'drafts', label: 'UnbrokenLongDraftsLabel', count: 312, content: 'Draft posts' },
+    { value: 'disabled', label: 'Unavailable', disabled: true, content: 'Unavailable posts' }
+  ];
+
+  it('consumes both props without forwarding attributes or emitting React warnings', () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    try {
+      const { container } = render(<Tabs {...base} variant='segmented' fullWidth={true} labelWrap={true} />);
+      expect(container.firstElementChild?.outerHTML).not.toMatch(/(?:fullwidth|labelwrap)=/i);
+      expect(consoleError).not.toHaveBeenCalled();
+    } finally {
+      consoleError.mockRestore();
+    }
+  });
+
+  it('fills the segmented list with equal centered columns, visible overflow and the existing Surface well', () => {
+    render(<Tabs {...base} variant='segmented' fullWidth={true} />);
+    const list = screen.getByRole('tablist', { name: 'Post views' });
+    const well = surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' })
+      .split(' ')
+      .filter((part) => part !== 'p-0');
+    expect(list).toHaveClass(
+      ...well,
+      'grid',
+      'grid-flow-col',
+      'auto-cols-[1fr]',
+      'w-full',
+      'self-stretch',
+      'overflow-x-auto'
+    );
+    expect(list).not.toHaveClass('inline-flex', 'self-start', '[scrollbar-width:none]');
+    // Thin, token-colored scrollbar: WebKit/Blink pseudo-elements without arrow buttons, and the
+    // standard properties only where those pseudo-elements do not exist (Firefox).
+    expect(list).toHaveClass(
+      '[&::-webkit-scrollbar]:h-1.5',
+      '[&::-webkit-scrollbar-track]:bg-transparent',
+      '[&::-webkit-scrollbar-thumb]:rounded-full',
+      '[&::-webkit-scrollbar-thumb]:bg-border-control',
+      'hover:[&::-webkit-scrollbar-thumb]:bg-fg-muted',
+      '[&::-webkit-scrollbar-button]:hidden',
+      'supports-[not_selector(::-webkit-scrollbar)]:[scrollbar-width:thin]',
+      'supports-[not_selector(::-webkit-scrollbar)]:[scrollbar-color:var(--color-border-control)_transparent]'
+    );
+    expect(list).not.toHaveClass('[scrollbar-width:thin]');
+    expect(screen.getByRole('tab', { name: 'Queue' })).toHaveClass('justify-center', 'whitespace-nowrap');
+  });
+
+  it('wraps segmented labels independently, keeping counters together and avoiding a minimum width', () => {
+    render(<Tabs {...base} items={countedItems} variant='segmented' labelWrap={true} />);
+    const list = screen.getByRole('tablist');
+    expect(list).toHaveClass('inline-flex', 'self-start');
+    expect(list).not.toHaveClass('grid', 'w-full', 'overflow-x-auto');
+    for (const name of ['Long queued posts 0', 'UnbrokenLongDraftsLabel 312']) {
+      const tab = screen.getByRole('tab', { name });
+      expect(tab).toHaveClass('whitespace-normal', 'wrap-anywhere', 'text-start', 'justify-start', 'py-1');
+      expect(tab).not.toHaveClass('whitespace-nowrap', 'justify-center', 'text-balance');
+      expect(tab.className).not.toMatch(/(?:^|\s)min-w-/);
+      expect(within(tab).getByText(name.endsWith(' 0') ? '0' : '312')).toHaveClass('whitespace-nowrap');
+    }
+  });
+
+  it('supports all combinations, preserves explicit false defaults and never emits selection on reflow', () => {
+    const onValueChange = vi.fn();
+    const { rerender } = render(
+      <Tabs {...base} items={countedItems} variant='segmented' onValueChange={onValueChange} />
+    );
+    const list = screen.getByRole('tablist');
+    const tab = screen.getByRole('tab', { name: 'Long queued posts 0' });
+    const count = within(tab).getByText('0');
+    const defaults = [list.className, tab.className, count.className];
+    for (const [fullWidth, labelWrap] of [
+      [false, false],
+      [true, false],
+      [false, true],
+      [true, true]
+    ]) {
+      rerender(
+        <Tabs
+          {...base}
+          items={countedItems}
+          variant='segmented'
+          fullWidth={fullWidth}
+          labelWrap={labelWrap}
+          onValueChange={onValueChange}
+        />
+      );
+      expect(list.classList.contains('grid')).toBe(fullWidth);
+      expect(tab.classList.contains('whitespace-normal')).toBe(labelWrap);
+      expect(tab.classList.contains('justify-center')).toBe(fullWidth && !labelWrap);
+      expect(tab.classList.contains('justify-start')).toBe(labelWrap);
+      // Full width owns a scroll container, so words stay whole there and long ones widen the column;
+      // without full width, breaking anywhere is what keeps a long word inside the host.
+      expect(tab.classList.contains('wrap-anywhere')).toBe(labelWrap && !fullWidth);
+      expect(tab.classList.contains('wrap-break-word')).toBe(labelWrap && fullWidth);
+      expect(count.classList.contains('whitespace-nowrap')).toBe(labelWrap);
+      expect(tab).toHaveAttribute('aria-selected', 'true');
+      if (!fullWidth && !labelWrap) {
+        expect([list.className, tab.className, count.className]).toEqual(defaults);
+      }
+    }
+    expect(onValueChange).not.toHaveBeenCalled();
+    expect(screen.getByRole('tabpanel', { name: 'Long queued posts 0' })).toHaveTextContent('Queued posts');
+  });
+
+  it('leaves all underline list, trigger and counter classes unchanged for both sizes and every combination', () => {
+    const { rerender } = render(<Tabs {...base} items={countedItems} />);
+    for (const size of ['md', 'sm'] as const) {
+      rerender(<Tabs {...base} items={countedItems} size={size} />);
+      const list = screen.getByRole('tablist');
+      const tab = screen.getByRole('tab', { name: 'Long queued posts 0' });
+      const count = within(tab).getByText('0');
+      const defaults = [list.className, tab.className, count.className];
+      for (const [fullWidth, labelWrap] of [
+        [false, false],
+        [true, false],
+        [false, true],
+        [true, true]
+      ]) {
+        rerender(<Tabs {...base} items={countedItems} size={size} fullWidth={fullWidth} labelWrap={labelWrap} />);
+        expect([list.className, tab.className, count.className]).toEqual(defaults);
+      }
+    }
+  });
+
+  it('preserves automatic keyboard activation, looping, disabled skipping, panel relations and Tab exit with both props', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(
+      <Tabs
+        {...base}
+        items={countedItems}
+        variant='segmented'
+        fullWidth={true}
+        labelWrap={true}
+        onValueChange={onValueChange}
+      />
+    );
+    await user.tab();
+    expect(screen.getByRole('tab', { name: 'Long queued posts 0' })).toHaveFocus();
+    for (const [key, name, value] of [
+      ['{ArrowRight}', 'UnbrokenLongDraftsLabel 312', 'drafts'],
+      ['{ArrowRight}', 'Long queued posts 0', 'queue'],
+      ['{ArrowLeft}', 'UnbrokenLongDraftsLabel 312', 'drafts'],
+      ['{Home}', 'Long queued posts 0', 'queue'],
+      ['{End}', 'UnbrokenLongDraftsLabel 312', 'drafts']
+    ]) {
+      await user.keyboard(key ?? '');
+      const tab = screen.getByRole('tab', { name });
+      expect(tab).toHaveFocus();
+      expect(tab).toHaveAttribute('aria-selected', 'true');
+      expect(onValueChange).toHaveBeenLastCalledWith(value);
+      expect(screen.getByRole('tabpanel', { name })).toHaveAttribute('aria-labelledby', tab.id);
+    }
+    expect(onValueChange).toHaveBeenCalledTimes(5);
+    await user.click(screen.getByRole('tab', { name: 'Unavailable' }));
+    expect(onValueChange).toHaveBeenCalledTimes(5);
+    await user.tab();
+    expect(screen.getByRole('tabpanel', { name: 'UnbrokenLongDraftsLabel 312' })).toHaveFocus();
+  });
+
+  it('retains controlled selection until acknowledged while both layout props are enabled', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    const { rerender } = render(
+      <Tabs
+        {...base}
+        items={countedItems}
+        variant='segmented'
+        fullWidth={true}
+        labelWrap={true}
+        value='queue'
+        onValueChange={onValueChange}
+      />
+    );
+    await user.click(screen.getByRole('tab', { name: 'UnbrokenLongDraftsLabel 312' }));
+    expect(onValueChange).toHaveBeenCalledWith('drafts');
+    expect(onValueChange.mock.calls.every(([value]) => value === 'drafts')).toBe(true);
+    const requests = onValueChange.mock.calls.length;
+    selected('Long queued posts 0');
+    rerender(
+      <Tabs
+        {...base}
+        items={countedItems}
+        variant='segmented'
+        fullWidth={true}
+        labelWrap={true}
+        value='drafts'
+        onValueChange={onValueChange}
+      />
+    );
+    selected('UnbrokenLongDraftsLabel 312');
+    expect(onValueChange).toHaveBeenCalledTimes(requests);
   });
 });

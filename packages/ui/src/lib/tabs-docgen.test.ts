@@ -16,7 +16,9 @@ const controls: Record<string, string> = {
   defaultValue: 'text',
   onValueChange: 'false',
   variant: 'select',
-  size: 'select'
+  size: 'select',
+  fullWidth: 'boolean',
+  labelWrap: 'boolean'
 };
 
 function storyNames() {
@@ -43,7 +45,7 @@ describe('Tabs Storybook metadata', () => {
         visit(node.type);
       }
     }
-    expect(properties).toHaveLength(13);
+    expect(properties).toHaveLength(15);
     for (const property of properties) {
       const tags = ts.getJSDocTags(property);
       const control = tags.filter((tag) => tag.tagName.text === 'control');
@@ -58,7 +60,17 @@ describe('Tabs Storybook metadata', () => {
         expect(tags.some((tag) => tag.tagName.text === 'default')).toBe(false);
       }
     }
-    expect(storyNames()).toEqual(['Default', 'WithCounts', 'Small', 'Segmented', 'Controlled', 'Disabled']);
+    expect(storyNames()).toEqual([
+      'Default',
+      'WithCounts',
+      'Small',
+      'Segmented',
+      'Controlled',
+      'Disabled',
+      'FullWidth',
+      'LabelWrap',
+      'FullWidthLabelWrap'
+    ]);
     expect(readFileSync(source('Tabs.stories.tsx'), 'utf8')).not.toMatch(/argTypes:|\bplay:/);
   });
 
@@ -84,6 +96,12 @@ describe('Tabs Storybook metadata', () => {
     expect(props.defaultValue?.description).toMatch(/first enabled item/);
     expect(props.variant?.defaultValue?.value).toBe('underline');
     expect(props.size?.defaultValue?.value).toBe('md');
+    expect(props.fullWidth?.defaultValue?.value).toBe('false');
+    expect(props.labelWrap?.defaultValue?.value).toBe('false');
+    for (const name of ['fullWidth', 'labelWrap']) {
+      expect(props[name]?.description, name).toMatch(/segmented/i);
+      expect(props[name]?.description, name).toMatch(/underline/i);
+    }
     const choices = (name: string) =>
       props[name]?.type.value.map(({ value }: { value: string }) => value.replaceAll('"', ''));
     expect(choices('variant')).toEqual(['underline', 'segmented']);

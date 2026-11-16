@@ -1,0 +1,56 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve fullWidth for the segmented Tabs list and the shared labelWrap control-label convention, with Tabs as the reviewed implementation usage.",
+  "evidence": {
+    "userStatements": [
+      {
+        "quote": "Aprobar las cuatro",
+        "provenance": "odd/tasks/nexo-adoption-m1-specs.md#log L5: owner approval of the four naming conventions, including fullWidth and shared labelWrap."
+      },
+      {
+        "quote": "control-label-wrap",
+        "provenance": "odd/tasks/tabs-full-width-wrap.md#log L1: owner selection of the shared convention ID."
+      },
+      {
+        "quote": "Aprobar e implementar",
+        "provenance": "odd/tasks/tabs-full-width-wrap.md#log L1: owner approval of the bounded Tabs implementation plan."
+      }
+    ],
+    "interpretation": "The first statement approves the shared labelWrap name for Tabs and Button and fullWidth for Tabs. The Tabs plan resolves the shared semantic ID. Button implementation and its usage registration remain separately scoped; this record is not native review authority."
+  },
+  "priorReceipts": [],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:tab-list-full-width",
+      "contentHash": "sha256:b8adeb7b74133a49b1f75b68b92d8b89c0408865ff677ad96b1f43534c2f5504",
+      "convention": {
+        "id": "tab-list-full-width",
+        "name": "fullWidth",
+        "meaning": "Whether a segmented tab list fills available width and distributes triggers equally.",
+        "whenToUse": "Distribute segmented tabs equally across the available list width.",
+        "avoid": "Do not use for arbitrary element width, constrained content rows, underline tabs or label wrapping.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:control-label-wrap",
+      "contentHash": "sha256:9c95cc3521530db1bb3d5238da6926ee8b7cbe6fee45b2457ef6ca73e3a3dd10",
+      "convention": {
+        "id": "control-label-wrap",
+        "name": "labelWrap",
+        "meaning": "Whether a control permits its visible label to wrap, including inside long unbroken words.",
+        "whenToUse": "Opt into line breaking for a control label; alignment and sizing remain component-specific.",
+        "avoid": "Do not use for arbitrary child content, a section wrapper, truncation or generic flex wrapping.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}
