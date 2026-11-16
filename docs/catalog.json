@@ -600,9 +600,9 @@
     "nivel": "molecule",
     "destino": "ui",
     "radix": "—",
-    "compone": "Stack, Button, ButtonGroup",
+    "compone": "Stack, IconButton, Button, ButtonGroup",
     "accion": "nuevo",
-    "notas": "Implemented compact product heading (#94 v0.1): native h1–h6, optional eyebrow and unchanged supplied actions; intrinsic wrapping, no paint or stylesheet. Separate from editorial SectionHeader."
+    "notas": "Implemented compact product heading (#94 v0.1; #412 v0.2): native h1–h6, optional eyebrow, plain lede and unchanged supplied leading IconButton and trailing actions; intrinsic wrapping, no paint or stylesheet. Separate from editorial SectionHeader."
   },
   {
     "actual": "ModuleCard",
