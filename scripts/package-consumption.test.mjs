@@ -6350,7 +6350,9 @@ try {
   assert.ok(['eg-surface', 'grid', 'grid-flow-col', 'auto-cols-[1fr]', 'w-full', 'self-stretch', 'overflow-x-auto'].every((name) => list.classList.contains(name)));
   assert.ok(!list.classList.contains('inline-flex') && !list.classList.contains('[scrollbar-width:none]'));
   const tab = list.querySelector('[role="tab"]');
-  assert.ok(['whitespace-normal', 'wrap-anywhere', 'text-start', 'justify-start', 'py-1'].every((name) => tab.classList.contains(name)));
+  // Full width + label wrap keeps words whole (wrap-break-word); wrap-anywhere is for label wrap alone.
+  assert.ok(['whitespace-normal', 'wrap-break-word', 'text-start', 'justify-start', 'py-1'].every((name) => tab.classList.contains(name)));
+  assert.ok(!tab.classList.contains('wrap-anywhere'), 'Full-width wrapped tabs do not break words anywhere');
   assert.ok(!tab.classList.contains('whitespace-nowrap') && !tab.classList.contains('justify-center'));
   assert.ok(tab.querySelector('span').classList.contains('whitespace-nowrap'));
   assert.equal(tab.textContent, 'Queue 0');
