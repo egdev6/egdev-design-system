@@ -111,6 +111,8 @@ export function useCarousel({
   const drag = useRef<Drag | null>(null);
   const scrolling = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  // Native listeners and timers call the latest render's handlers; see the layout effect.
+  const latest = useRef<{ settle: () => void; resize: () => void } | null>(null);
   const [internal, setInternal] = useState(defaultValue);
   const [dragging, setDragging] = useState(false);
   const [rtl, setRtl] = useState(native.dir === 'rtl');
@@ -206,7 +208,7 @@ export function useCarousel({
     clearSettlement();
     scrolling.current = true;
     if (!drag.current?.captured) {
-      timer.current = setTimeout(settle, 120);
+      timer.current = setTimeout(() => latest.current?.settle(), 120);
     }
   };
   const release = () => {
@@ -243,6 +245,16 @@ export function useCarousel({
   }, [valid]);
 
   useClientLayoutEffect(() => {
+    // Refresh before aligning: a host may dispatch scrollend or ResizeObserver callbacks for this
+    // commit's scroll before passive effects re-run, and stale closures would restore the old slide.
+    latest.current = {
+      settle,
+      resize: () => {
+        if (!drag.current?.captured) {
+          align();
+        }
+      }
+    };
     const direction = isRTL();
     if (direction !== rtl) {
       setRtl(direction);
@@ -294,15 +306,12 @@ export function useCarousel({
     }
   });
 
-  // Keep native listeners current without stale controlled values or collection geometry.
+  // Re-observe the current slides; listeners delegate to `latest`, never to this render's closures.
   useEffect(() => {
     const viewport = track.current;
-    const onResize = () => {
-      if (!drag.current?.captured) {
-        align();
-      }
-    };
-    viewport?.addEventListener('scrollend', settle);
+    const onScrollEnd = () => latest.current?.settle();
+    const onResize = () => latest.current?.resize();
+    viewport?.addEventListener('scrollend', onScrollEnd);
     window.addEventListener('resize', onResize);
     const observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(onResize);
     if (viewport) {
@@ -312,7 +321,7 @@ export function useCarousel({
       observer?.observe(node);
     }
     return () => {
-      viewport?.removeEventListener('scrollend', settle);
+      viewport?.removeEventListener('scrollend', onScrollEnd);
       window.removeEventListener('resize', onResize);
       observer?.disconnect();
       clearSettlement();

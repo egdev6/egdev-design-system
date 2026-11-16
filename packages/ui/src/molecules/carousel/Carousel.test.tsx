@@ -1,5 +1,6 @@
 import { act, fireEvent, render, renderHook, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Carousel, type CarouselItem } from './index';
 import { useCarousel } from './useCarousel.js';
@@ -553,5 +554,54 @@ describe('Carousel public contract v0.1', () => {
       vi.runAllTimers();
     });
     expect(onValueChange).not.toHaveBeenCalled();
+  });
+
+  it('keeps a controlled selection when native scroll events arrive before passive effects re-run', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const onValueChange = vi.fn();
+    function Controlled() {
+      const [value, setValue] = useState('c');
+      return (
+        <Carousel
+          label='Highlights'
+          items={items}
+          value={value}
+          onValueChange={(next) => {
+            onValueChange(next);
+            setValue(next);
+          }}
+        />
+      );
+    }
+    render(<Controlled />);
+    const { viewport, scrollBy } = geometry();
+    act(() => {
+      fireEvent(window, new Event('resize'));
+    });
+    // Emulate WebView2: the programmatic scroll dispatches scroll and scrollend synchronously,
+    // before React re-runs the passive effect that registers the native listeners.
+    let dispatching = false;
+    scrollBy.mockClear();
+    const move = scrollBy.getMockImplementation();
+    scrollBy.mockImplementation((options: ScrollToOptions) => {
+      move?.(options);
+      if (dispatching) {
+        return;
+      }
+      dispatching = true;
+      fireEvent.scroll(viewport);
+      fireEvent(viewport, new Event('scrollend'));
+      dispatching = false;
+    });
+    await userEvent
+      .setup({ advanceTimers: vi.advanceTimersByTime })
+      .click(screen.getByRole('button', { name: 'Previous slide' }));
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+    expect(onValueChange).not.toHaveBeenCalledWith('c');
+    expect(current()).toHaveAccessibleName('2 of 3: Beta');
+    // Only the centering toward Beta; a stale listener used to bounce the track back to Gamma.
+    expect(scrollBy.mock.calls).toEqual([[{ left: -100, behavior: 'instant' }]]);
   });
 });
