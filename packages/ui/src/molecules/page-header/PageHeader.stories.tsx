@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { action } from 'storybook/actions';
 import { Button } from '../../atoms/button';
+import { Icon } from '../../atoms/icon';
+import { IconButton } from '../../atoms/icon-button';
 import { Stack } from '../../primitives/stack';
 import { ButtonGroup } from '../button-group';
 import { PageHeader } from './PageHeader';
@@ -11,8 +13,9 @@ import { PageHeader } from './PageHeader';
  * Place it inside main or sectioning content, not as the site's banner.
  *
  * ## Dependencies
- * Stack owns the text flow. Actions are one direct Button (including asChild links),
- * or a consumer-supplied spaced ButtonGroup with at least two direct supported children.
+ * Stack owns the text flow. A leading action is one direct IconButton, including an asChild
+ * link. Trailing actions are one direct Button (including asChild links), or a consumer-supplied
+ * spaced ButtonGroup with at least two direct supported children.
  * No PageHeader-specific Radix behavior, paint or stylesheet.
  *
  * ## Usage guidelines
@@ -20,8 +23,10 @@ import { PageHeader } from './PageHeader';
  * Heading rank changes semantics only. Actions render unchanged: no arrays, fragments,
  * arbitrary wrappers, nested groups or automatic grouping. Child behavior stays child-owned;
  * loading Button remains focusable but suppresses activation. Intrinsic wrapping needs no
- * breakpoint. className supports outer margins, sizing and placement only, not internal
- * gaps, typography or paint. Long unbroken text wraps without truncation.
+ * breakpoint. The optional plain lede follows the heading without describing it automatically;
+ * its text-body-default recipe deliberately differs from SectionHeader's text-body-muted.
+ * className supports outer margins, sizing and placement only, not internal gaps, typography or
+ * paint. Long unbroken text wraps without truncation; each control must fit its available space.
  */
 const meta: Meta<typeof PageHeader> = {
   title: 'Molecules/PageHeader',
@@ -118,6 +123,80 @@ export const ChildStates: Story = {
           Import
         </Button>
         <Button loading={true}>Saving</Button>
+        <Button onClick={action('new-project')}>New project</Button>
+      </ButtonGroup>
+    )
+  }
+};
+
+/** A single consumer-owned IconButton precedes and aligns to the start of the text block. */
+export const LeadingAction: Story = {
+  args: {
+    title: 'Projects',
+    leadingAction: <IconButton label='Open navigation' icon={<Icon name='menu' />} onClick={action('navigation')} />
+  }
+};
+
+/** Plain purpose text follows the heading without becoming part of its accessible name. */
+export const WithLede: Story = {
+  args: { title: 'Projects', lede: 'Browse and manage your workspace projects.' }
+};
+
+/** Leading link, contextual text and independently operable trailing actions compose together. */
+export const Combined: Story = {
+  args: {
+    title: 'Projects',
+    eyebrow: 'Workspace',
+    lede: 'Browse and manage your workspace projects.',
+    leadingAction: (
+      <IconButton asChild={true} label='Open navigation' icon={<Icon name='menu' />}>
+        <a href='#navigation' />
+      </IconButton>
+    ),
+    actions: (
+      <ButtonGroup variant='spaced' label='Project actions'>
+        <Button variant='secondary' onClick={action('import')}>
+          Import
+        </Button>
+        <Button onClick={action('new-project')}>New project</Button>
+      </ButtonGroup>
+    )
+  }
+};
+
+/** A narrow host tests intrinsic reflow and unbroken lede text with both action areas. */
+export const ConstrainedCombined: Story = {
+  args: {
+    title: 'Projects for the next release',
+    eyebrow: 'Workspace',
+    lede: 'InternationalWorkspaceProjectOverviewWithoutWordBreaks'.repeat(3),
+    className: 'max-w-[calc(var(--space-24)*3)]',
+    leadingAction: <IconButton label='Open navigation' icon={<Icon name='menu' />} onClick={action('navigation')} />,
+    actions: (
+      <ButtonGroup variant='spaced' label='Project actions'>
+        <Button variant='secondary' onClick={action('import')}>
+          Import
+        </Button>
+        <Button onClick={action('new-project')}>New project</Button>
+      </ButtonGroup>
+    )
+  }
+};
+
+/** Logical start/end mirror in RTL while the DOM and keyboard order stay unchanged. */
+export const RTLCombined: Story = {
+  args: {
+    title: 'Projects for the next release',
+    eyebrow: 'Workspace',
+    lede: 'InternationalWorkspaceProjectOverviewWithoutWordBreaks'.repeat(3),
+    dir: 'rtl',
+    className: 'max-w-[calc(var(--space-24)*3)]',
+    leadingAction: <IconButton label='Open navigation' icon={<Icon name='menu' />} onClick={action('navigation')} />,
+    actions: (
+      <ButtonGroup variant='spaced' label='Project actions'>
+        <Button variant='secondary' onClick={action('import')}>
+          Import
+        </Button>
         <Button onClick={action('new-project')}>New project</Button>
       </ButtonGroup>
     )

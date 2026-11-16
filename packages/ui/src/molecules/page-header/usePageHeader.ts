@@ -6,6 +6,9 @@ import {
   pageHeaderActionsVariants,
   pageHeaderEyebrowVariants,
   pageHeaderHeadingVariants,
+  pageHeaderLeadingVariants,
+  pageHeaderLedeVariants,
+  pageHeaderStartVariants,
   pageHeaderTextVariants,
   pageHeaderVariants
 } from './types';
@@ -15,11 +18,16 @@ type UsePageHeaderResult = {
   element: `h${PageHeaderLevel}`;
   title: string;
   eyebrow: string | undefined;
+  lede: string | undefined;
   actions: Exclude<PageHeaderProps['actions'], boolean>;
+  leadingAction: Exclude<PageHeaderProps['leadingAction'], boolean>;
   rootProps: ComponentPropsWithoutRef<'header'>;
+  startClassName: string;
+  leadingClassName: string;
   textClassName: string;
   headingClassName: string;
   eyebrowClassName: string;
+  ledeClassName: string;
   actionsClassName: string;
 };
 
@@ -29,6 +37,8 @@ export function usePageHeader({
   eyebrow,
   level = 1,
   actions,
+  leadingAction,
+  lede,
   className,
   ...rest
 }: PageHeaderProps): UsePageHeaderResult {
@@ -41,11 +51,16 @@ export function usePageHeader({
     element: `h${level}`,
     title,
     eyebrow: eyebrow?.trim() ? eyebrow : undefined,
+    lede: lede?.trim() ? lede : undefined,
     actions: typeof actions === 'boolean' ? undefined : actions,
+    leadingAction: typeof leadingAction === 'boolean' ? undefined : leadingAction,
     rootProps: { ...rest, className: cn(pageHeaderVariants(), className) },
-    textClassName: cn(pageHeaderTextVariants()),
+    startClassName: cn(pageHeaderStartVariants()),
+    leadingClassName: cn(pageHeaderLeadingVariants()),
+    textClassName: cn(pageHeaderTextVariants({ nested: leadingAction != null && typeof leadingAction !== 'boolean' })),
     headingClassName: cn(pageHeaderHeadingVariants()),
     eyebrowClassName: cn(pageHeaderEyebrowVariants()),
+    ledeClassName: cn(pageHeaderLedeVariants()),
     actionsClassName: cn(pageHeaderActionsVariants())
   };
 }

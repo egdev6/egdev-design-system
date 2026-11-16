@@ -262,7 +262,7 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/molecules/toast/types.ts#ToastProviderProps'
   })),
-  ...['heading-title', 'heading-eyebrow', 'heading-level', 'trailing-actions'].map((conventionId) => ({
+  ...['heading-title', 'heading-eyebrow', 'heading-level', 'trailing-actions', 'section-lede'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/page-header/types.ts#PageHeaderProps'
   })),
@@ -951,6 +951,72 @@ test('Field trailing choice updates only the approved layout usage and all revie
   validate(registry);
 });
 
+test('PageHeader binds its scoped leading-action exception, lede usage and reviewed source', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/page-header/v0.2/prop-naming-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  for (const [quote, locator] of [
+    ['lede', 'nexo-adoption-m1-specs.md L5'],
+    ['Aprobar leadingAction', 'nexo-adoption-m1-specs.md L5'],
+    ['Aprobar e implementar', 'page-header-leading-action.md L1']
+  ]) {
+    assert.ok(
+      receipt.evidence.userStatements.some((item) => item.quote === quote && item.provenance.includes(locator))
+    );
+  }
+  const path = 'packages/ui/src/molecules/page-header/types.ts';
+  const source = { path, symbol: 'PageHeaderProps', revision: digest(fs.readFileSync(resolve(root, path))) };
+  const entry = registry.find(({ id }) => id === 'trailing-actions');
+  const exception = entry.exceptions.find((item) => item.scope === 'PageHeader' && item.propName === 'leadingAction');
+  assert.deepEqual(exception.approval, {
+    reference,
+    scope: 'exception:trailing-actions:PageHeader:leadingAction',
+    contentHash: props.exceptionHash(exception)
+  });
+  const { approval: _exceptionApproval, ...exceptionPayload } = exception;
+  assert.deepEqual(receipt.entries[1], {
+    scope: exception.approval.scope,
+    contentHash: props.exceptionHash(exception),
+    exception: exceptionPayload,
+    source
+  });
+  const { approval, usages, ...convention } = entry;
+  assert.deepEqual(approval, {
+    reference,
+    scope: 'convention:trailing-actions',
+    contentHash: props.conventionHash(entry)
+  });
+  assert.deepEqual(receipt.entries[0], { scope: approval.scope, contentHash: approval.contentHash, convention });
+  assert.equal(usages.filter((usage) => usage.component === 'PageHeader').length, 1);
+  const prior = receipt.priorReceipts[0];
+  assert.equal(prior.wholeFileSHA256, digest(fs.readFileSync(resolve(root, prior.path))));
+  const previous = JSON.parse(fs.readFileSync(resolve(root, prior.path), 'utf8')).entries.find(
+    (item) => item.scope === approval.scope
+  );
+  assert.equal(receipt.semanticAmendments[0].previousContentHash, previous.contentHash);
+  assert.equal(props.conventionHash(previous.convention), previous.contentHash);
+  assert.deepEqual({ ...convention, exceptions: [] }, previous.convention);
+  const expectedIds = ['heading-title', 'heading-eyebrow', 'heading-level', 'trailing-actions', 'section-lede'];
+  const own = registry.flatMap((item) =>
+    item.usages.filter((usage) => usage.source.path === path).map((usage) => ({ id: item.id, usage }))
+  );
+  assert.deepEqual(own.map(({ id }) => id).sort(), [...expectedIds].sort());
+  for (const { usage } of own) {
+    assert.deepEqual(usage.source, source);
+    assert.equal(usage.status, 'existing');
+  }
+  const lede = registry.find(({ id }) => id === 'section-lede');
+  assert.equal(lede.approval.reference, 'docs/decisions/prop-naming-molecule-specs-approval.json');
+  assert.equal(lede.approval.contentHash, props.conventionHash(lede));
+  assert.equal(lede.usages.find((usage) => usage.component === 'PageHeader').type, 'string');
+  validate(registry);
+  const changed = structuredClone(registry);
+  changed.find(({ id }) => id === entry.id).exceptions[0].reason += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+});
+
 test('WebTemplate conventions bind the delegated approval and reviewed usage', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const reference = 'docs/decisions/prop-naming-web-template-approval.json';
@@ -987,8 +1053,21 @@ test('WebSection slot conventions bind the delegated approval and reviewed usage
     assert.equal(usage.source.path, 'packages/ui/src/organisms/web-section/types.ts');
     assert.equal(usage.source.revision, digest(fs.readFileSync(resolve(root, usage.source.path))));
     const approved = receipt.entries.find((item) => item.scope === `convention:${entry.id}`);
-    assert.equal(approved?.contentHash, props.conventionHash(entry));
-    assert.equal(entry.approval.reference, reference);
+    if (name === 'actions') {
+      // PageHeader's later scoped exception changes only exceptions; retain the WebSection pre-image.
+      const laterReference = 'docs/components/page-header/v0.2/prop-naming-approval.json';
+      const later = JSON.parse(fs.readFileSync(resolve(root, laterReference), 'utf8'));
+      const amendment = later.semanticAmendments.find((item) => item.id === entry.id);
+      assert.equal(amendment.previousReference, reference);
+      assert.equal(amendment.previousContentHash, approved.contentHash);
+      assert.equal(props.conventionHash(approved.convention), approved.contentHash);
+      const { approval: _approval, usages: _usages, ...current } = entry;
+      assert.deepEqual({ ...current, exceptions: [] }, approved.convention);
+      assert.equal(entry.approval.reference, laterReference);
+    } else {
+      assert.equal(approved?.contentHash, props.conventionHash(entry));
+      assert.equal(entry.approval.reference, reference);
+    }
   }
 });
 

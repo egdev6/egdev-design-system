@@ -5067,7 +5067,7 @@
         "source": {
           "path": "packages/ui/src/molecules/page-header/types.ts",
           "symbol": "PageHeaderProps",
-          "revision": "sha256:65e419324a9415188c20755942f710f92fd24f062bb3b7fab886d51ec0c612a3"
+          "revision": "sha256:efd948e4151568a21c5487e72c4f79b3bb3d56bcd91a39d2948717da6dca9d24"
         }
       },
       {
@@ -5234,7 +5234,7 @@
         "source": {
           "path": "packages/ui/src/molecules/page-header/types.ts",
           "symbol": "PageHeaderProps",
-          "revision": "sha256:65e419324a9415188c20755942f710f92fd24f062bb3b7fab886d51ec0c612a3"
+          "revision": "sha256:efd948e4151568a21c5487e72c4f79b3bb3d56bcd91a39d2948717da6dca9d24"
         }
       },
       {
@@ -5357,11 +5357,22 @@
     "avoid": "Generating controls from data inside the component; existing component contracts retain their restrictions.",
     "status": "approved",
     "aliases": [],
-    "exceptions": [],
+    "exceptions": [
+      {
+        "scope": "PageHeader",
+        "propName": "leadingAction",
+        "reason": "A single separate logical-start control must coexist with the existing trailing actions slot.",
+        "approval": {
+          "reference": "docs/components/page-header/v0.2/prop-naming-approval.json",
+          "scope": "exception:trailing-actions:PageHeader:leadingAction",
+          "contentHash": "sha256:373ddd892ff1e315fcce4215557f3b489350105dacc6806e877e72f6367957ea"
+        }
+      }
+    ],
     "approval": {
-      "reference": "docs/decisions/prop-naming-web-section-approval.json",
+      "reference": "docs/components/page-header/v0.2/prop-naming-approval.json",
       "scope": "convention:trailing-actions",
-      "contentHash": "sha256:a43b2184cfcb7265c8ae19c21f7c60f6f5a411db03b96a00f880b21ac9206eb1"
+      "contentHash": "sha256:4318a40e4fe5464997605a1855c7d71388ed35c8258745780ef3fe5eef393845"
     },
     "usages": [
       {
@@ -5411,7 +5422,7 @@
         "source": {
           "path": "packages/ui/src/molecules/page-header/types.ts",
           "symbol": "PageHeaderProps",
-          "revision": "sha256:65e419324a9415188c20755942f710f92fd24f062bb3b7fab886d51ec0c612a3"
+          "revision": "sha256:efd948e4151568a21c5487e72c4f79b3bb3d56bcd91a39d2948717da6dca9d24"
         }
       },
       {
@@ -5572,7 +5583,7 @@
         "source": {
           "path": "packages/ui/src/molecules/page-header/types.ts",
           "symbol": "PageHeaderProps",
-          "revision": "sha256:65e419324a9415188c20755942f710f92fd24f062bb3b7fab886d51ec0c612a3"
+          "revision": "sha256:efd948e4151568a21c5487e72c4f79b3bb3d56bcd91a39d2948717da6dca9d24"
         }
       },
       {
@@ -6100,6 +6111,16 @@
           "path": "packages/ui/src/organisms/lab-stage/types.ts",
           "symbol": "LabStageProps",
           "revision": "sha256:371b71eeab1356933c2f608ebb72e7e0dba10365d6e97b90d0c627ebadcaa1a7"
+        }
+      },
+      {
+        "component": "PageHeader",
+        "type": "string",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/page-header/types.ts",
+          "symbol": "PageHeaderProps",
+          "revision": "sha256:efd948e4151568a21c5487e72c4f79b3bb3d56bcd91a39d2948717da6dca9d24"
         }
       }
     ]

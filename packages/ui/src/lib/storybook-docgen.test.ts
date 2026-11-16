@@ -720,7 +720,14 @@ describe('Storybook TypeScript docgen contract', () => {
   it('extracts PageHeader own controls, semantic rank, native rows and bounded exports', () => {
     const file = ast(source('molecules/page-header/types.ts'));
     const properties = ownProps(file, ['PageHeaderProps']);
-    const expected: Record<string, string> = { title: 'text', eyebrow: 'text', level: 'select', actions: 'false' };
+    const expected: Record<string, string> = {
+      title: 'text',
+      eyebrow: 'text',
+      level: 'select',
+      actions: 'false',
+      leadingAction: 'false',
+      lede: 'text'
+    };
     expect(properties.map((property) => property.name.getText(file))).toEqual(Object.keys(expected));
     const doc = parser
       .parse(source('molecules/page-header/PageHeader.tsx'))
@@ -741,6 +748,11 @@ describe('Storybook TypeScript docgen contract', () => {
     }
     expect(doc?.props.title).toMatchObject({ required: true, type: { name: 'string' } });
     expect(doc?.props.eyebrow).toMatchObject({ required: false, type: { name: 'string' } });
+    expect(doc?.props.lede).toMatchObject({ required: false, type: { name: 'string' }, tags: { control: 'text' } });
+    expect(doc?.props.leadingAction).toMatchObject({
+      required: false,
+      tags: { control: 'false', controlReason: expect.stringMatching(/ReactElement\/boolean.*LeadingAction/) }
+    });
     expect(doc?.props.level?.defaultValue).toEqual({ value: '1' });
     expect(doc?.props.level?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
       '1',
@@ -779,7 +791,12 @@ describe('Storybook TypeScript docgen contract', () => {
       'Constrained',
       'HeadingLevels',
       'RTL',
-      'ChildStates'
+      'ChildStates',
+      'LeadingAction',
+      'WithLede',
+      'Combined',
+      'ConstrainedCombined',
+      'RTLCombined'
     ]);
     expect(stories.getText()).toMatch(/title: 'Molecules\/PageHeader'/);
     expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);

@@ -659,12 +659,18 @@ const pageHeaderLevel: PageHeaderLevel = 2;
 export const pageHeaderProps: PageHeaderProps = { title: 'Projects', eyebrow: 'Workspace', level: pageHeaderLevel };
 // createElement erases the exotic Button target identity; restore only this known factory target.
 const pageLinkAction = createElement(Button, { asChild: true, children: createElement('a', { href: '#new' }, 'New project') }) as ReactElement<ButtonProps, typeof Button>;
+// Restore only the known IconButton factory target erased by createElement.
+const pageLeadingAction = createElement(IconButton, { label: 'Open navigation', icon: createElement('svg'), asChild: true, children: createElement('a', { href: '#navigation' }) }) as ReactElement<IconButtonProps, typeof IconButton>;
 export function PageHeaderSamples({ title = 'Projects' }: { title?: string }) {
   return createElement('main', null,
     createElement(PageHeader, { title: 'Minimal', id: 'page-minimal' }),
     createElement(PageHeader, { ...pageHeaderProps, title, id: 'page-single', dir: 'rtl', actions: pageLinkAction }),
     createElement(PageHeader, { title: 'Grouped', id: 'page-grouped', actions: createElement(ButtonGroup, { variant: 'spaced', label: 'Project actions', children: [
       createElement(Button, { key: 'import', variant: 'secondary', disabled: true, children: 'Import' }),
+      createElement(Button, { key: 'new', children: 'New project' })
+    ] }) }),
+    createElement(PageHeader, { title, id: 'page-leading', eyebrow: 'Workspace', lede: 'Browse projects', leadingAction: pageLeadingAction, actions: createElement(ButtonGroup, { variant: 'spaced', label: 'Project actions', children: [
+      createElement(Button, { key: 'import', children: 'Import' }),
       createElement(Button, { key: 'new', children: 'New project' })
     ] }) }));
 }
@@ -678,6 +684,12 @@ const richPageTitle: PageHeaderProps = { title: createElement('em', null, 'Proje
 const arrayPageActions: PageHeaderProps = { title: 'Projects', actions: [createElement(Button, { children: 'New' })] };
 // @ts-expect-error Text is not a supported action element.
 const textPageActions: PageHeaderProps = { title: 'Projects', actions: 'New' };
+// @ts-expect-error Leading action is one IconButton element, not text.
+const textPageLeading: PageHeaderProps = { title: 'Projects', leadingAction: 'Back' };
+// @ts-expect-error Leading action does not accept arrays.
+const arrayPageLeading: PageHeaderProps = { title: 'Projects', leadingAction: [pageLeadingAction] };
+// @ts-expect-error Lede is plain text, not a React element.
+const elementPageLede: PageHeaderProps = { title: 'Projects', lede: createElement('em', null, 'Overview') };
 // @ts-expect-error No arbitrary children slot.
 const pageChildren: PageHeaderProps = { title: 'Projects', children: 'Extra' };
 // @ts-expect-error No root ref API.
@@ -3993,6 +4005,12 @@ function assertPageHeaderCSS(css) {
     '.gap-y-4',
     '.text-heading-small',
     '.text-label-eyebrow',
+    '.text-body-default',
+    '.text-fg-secondary',
+    '.items-start',
+    '.gap-3',
+    '.flex-none',
+    '.flex-1',
     '.wrap-anywhere'
   ]) {
     assert.ok(css.includes(selector), 'Missing PageHeader utility ' + selector);
@@ -4000,6 +4018,9 @@ function assertPageHeaderCSS(css) {
   assert.match(css, /flex-basis:\s*calc\(var\(--space-24\)\s*\*\s*3\)/);
   assert.match(css, /font-size:\s*var\(--text-heading-small[,)]/);
   assert.match(css, /font-size:\s*var\(--text-label-eyebrow[,)]/);
+  assert.match(css, /font-size:\s*var\(--text-body-default[,)]/);
+  assert.match(css, /color:\s*var\(--color-fg-secondary[,)]/);
+  assert.match(css, /overflow-wrap:\s*anywhere/);
   assert.doesNotMatch(css, /\.eg-page-header\s*[,{]/);
 }
 
@@ -5961,6 +5982,23 @@ try {
   assert.equal(grouped.querySelectorAll('[role="group"]').length, 1);
   assert.equal(grouped.querySelectorAll('button').length, 2);
   assert.equal(grouped.querySelector('button').disabled, true);
+  const leading = doc.getElementById('page-leading');
+  const link = leading.querySelector('a');
+  const eyebrow = leading.querySelector('p');
+  const heading = leading.querySelector('h1');
+  const lede = heading.nextElementSibling;
+  const group = leading.querySelector('[role="group"]');
+  assert.equal(link.getAttribute('href'), '#navigation');
+  assert.equal(link.textContent, 'Open navigation');
+  assert.equal(eyebrow.textContent, 'Workspace');
+  assert.equal(lede.textContent, 'Browse projects');
+  assert.equal(heading.hasAttribute('aria-describedby'), false);
+  assert.ok(link.compareDocumentPosition(eyebrow) & pageDocument.window.Node.DOCUMENT_POSITION_FOLLOWING);
+  assert.ok(eyebrow.compareDocumentPosition(heading) & pageDocument.window.Node.DOCUMENT_POSITION_FOLLOWING);
+  assert.ok(lede.compareDocumentPosition(group) & pageDocument.window.Node.DOCUMENT_POSITION_FOLLOWING);
+  assert.equal(group.querySelectorAll('button').length, 2);
+  assert.equal(leading.hasAttribute('leadingaction'), false);
+  assert.equal(leading.hasAttribute('lede'), false);
   for (const root of doc.querySelectorAll('header')) {
     assert.equal(root.hasAttribute('role'), false);
     assert.equal(root.hasAttribute('tabindex'), false);
@@ -8531,6 +8569,14 @@ try {
   const pageGrouped = document.getElementById('page-grouped');
   assert.equal(pageGrouped.querySelectorAll('[role="group"]').length, 1);
   assert.equal(pageGrouped.querySelectorAll('button').length, 2);
+  const pageLeading = document.getElementById('page-leading');
+  const leadingLink = pageLeading.querySelector('a');
+  await act(async () => leadingLink.focus());
+  await act(async () => root.render(createElement(PageHeaderSamples, { title: 'Final projects' })));
+  assert.equal(pageLeading.querySelector('a'), leadingLink);
+  assert.equal(document.activeElement, leadingLink);
+  assert.equal(pageLeading.querySelector('h1').textContent, 'Final projects');
+  assert.equal(pageLeading.querySelector('h1').nextElementSibling.textContent, 'Browse projects');
   await act(async () => root.render(null));
   stage('page-header:complete');
   stage('timeline:start');

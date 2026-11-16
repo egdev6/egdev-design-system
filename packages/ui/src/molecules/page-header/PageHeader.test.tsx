@@ -2,7 +2,7 @@ import { render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createElement, createRef, type ReactElement } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Button, ButtonGroup, type ButtonGroupProps, type ButtonProps, PageHeader } from '../../index';
+import { Button, ButtonGroup, type ButtonGroupProps, type ButtonProps, IconButton, PageHeader } from '../../index';
 import { usePageHeader } from './usePageHeader';
 
 function header(container: HTMLElement) {
@@ -269,5 +269,196 @@ describe('PageHeader public contract', () => {
     expect(screen.getByRole('heading').textContent).toBe(title);
     expect(screen.getByRole('heading')).toHaveClass('wrap-anywhere');
     expect(container.innerHTML).not.toMatch(/truncate|overflow-hidden|line-clamp/);
+  });
+});
+
+describe('PageHeader v0.2 public contract', () => {
+  it.each([undefined, null, false, true])(
+    'preserves the v0.1 tree with omitted leading action %j and blank lede',
+    (leadingAction) => {
+      for (const lede of [undefined, '', ' \n\t ']) {
+        const { container, unmount } = render(
+          <PageHeader title='Projects' leadingAction={leadingAction} lede={lede} />
+        );
+        const root = header(container);
+        expect(root.children).toHaveLength(1);
+        expect(root.firstElementChild).toHaveClass(
+          'eg-stack',
+          'gap-2',
+          'min-w-0',
+          'grow',
+          'basis-[calc(var(--space-24)*3)]'
+        );
+        expect(root.firstElementChild?.children).toHaveLength(1);
+        expect(root.firstElementChild?.firstElementChild).toBe(screen.getByRole('heading', { name: 'Projects' }));
+        expect(container.querySelector('p')).toBeNull();
+        expect(root).not.toHaveAttribute('leadingAction');
+        expect(root).not.toHaveAttribute('lede');
+        unmount();
+      }
+    }
+  );
+
+  it('retains the direct leading IconButton, ref, activation, focus and identity across updates', async () => {
+    const user = userEvent.setup();
+    const click = vi.fn();
+    const ref = createRef<HTMLButtonElement>();
+    const leadingAction = (
+      <IconButton label='Back to projects' icon={<svg />} ref={ref} onClick={click} className='mt-4' />
+    );
+    const { container, rerender } = render(<PageHeader title='Projects' leadingAction={leadingAction} />);
+    const root = header(container);
+    const button = screen.getByRole('button', { name: 'Back to projects' });
+    const baseline = render(<IconButton label='Back to projects' icon={<svg />} onClick={click} className='mt-4' />);
+    expect(button.className).toBe(screen.getAllByRole('button', { name: 'Back to projects' })[1]?.className);
+    baseline.unmount();
+    const start = root.firstElementChild;
+    const leading = start?.firstElementChild;
+    const text = start?.lastElementChild;
+    expect(start).toHaveClass('flex', 'min-w-0', 'grow', 'basis-[calc(var(--space-24)*3)]', 'items-start', 'gap-3');
+    expect(start?.children).toHaveLength(2);
+    expect(leading).toHaveClass('flex-none');
+    expect(leading?.firstElementChild).toBe(button);
+    expect(leading?.children).toHaveLength(1);
+    expect(text).toHaveClass('eg-stack', 'min-w-0', 'flex-1');
+    expect(text).not.toHaveClass('grow', 'basis-[calc(var(--space-24)*3)]');
+    expect(ref.current).toBe(button);
+    await user.click(button);
+    expect(click).toHaveBeenCalledTimes(1);
+    await user.keyboard('{Enter}');
+    expect(click).toHaveBeenCalledTimes(2);
+    await user.keyboard(' ');
+    expect(click).toHaveBeenCalledTimes(3);
+    rerender(<PageHeader title='Updated projects' lede='Project overview' leadingAction={leadingAction} />);
+    expect(screen.getByRole('button', { name: 'Back to projects' })).toBe(button);
+    expect(ref.current).toBe(button);
+    expect(button).toHaveFocus();
+  });
+
+  it('leaves disabled leading controls disabled and skips their tab stop', async () => {
+    const user = userEvent.setup();
+    const click = vi.fn();
+    render(
+      <PageHeader
+        title='Projects'
+        leadingAction={<IconButton label='Back' icon={<svg />} disabled={true} onClick={click} />}
+        actions={<Button>New project</Button>}
+      />
+    );
+    const leading = screen.getByRole('button', { name: 'Back' });
+    expect(leading).toBeDisabled();
+    await user.click(leading);
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'New project' })).toHaveFocus();
+    expect(click).not.toHaveBeenCalled();
+  });
+
+  it('preserves leading IconButton asChild link semantics and activation', async () => {
+    const user = userEvent.setup();
+    const click = vi.fn((event: React.MouseEvent) => event.preventDefault());
+    render(
+      <PageHeader
+        title='Projects'
+        leadingAction={
+          <IconButton asChild={true} label='Back to projects' icon={<svg />}>
+            <a href='/projects' onClick={click} />
+          </IconButton>
+        }
+      />
+    );
+    const link = screen.getByRole('link', { name: 'Back to projects' });
+    expect(link).toHaveAttribute('href', '/projects');
+    expect(screen.queryByRole('button')).toBeNull();
+    await user.tab();
+    expect(link).toHaveFocus();
+    await user.keyboard('{Enter}');
+    expect(click).toHaveBeenCalledOnce();
+  });
+
+  it('preserves lede text, heading name and eyebrow order through text to blank to text', () => {
+    const { container, rerender } = render(
+      <PageHeader title='Projects' eyebrow='Workspace' lede={'  Browse\n projects  '} />
+    );
+    const heading = screen.getByRole('heading', { name: 'Projects', level: 1 });
+    const eyebrow = screen.getByText('Workspace');
+    const paragraph = heading.nextElementSibling;
+    expect(header(container).firstElementChild).toBe(heading.parentElement);
+    expect(eyebrow.nextElementSibling).toBe(heading);
+    expect(paragraph?.tagName).toBe('P');
+    expect(paragraph?.textContent).toBe('  Browse\n projects  ');
+    expect(paragraph).toHaveClass(
+      'm-0',
+      'min-w-0',
+      'font-sans',
+      'text-body-default',
+      'text-fg-secondary',
+      'wrap-anywhere'
+    );
+    expect(heading).not.toHaveAttribute('aria-describedby');
+    rerender(<PageHeader title='Projects' eyebrow='Workspace' lede={' \n\t'} />);
+    expect(screen.getByRole('heading', { name: 'Projects' }).nextElementSibling).toBeNull();
+    expect(container.querySelectorAll('p')).toHaveLength(1);
+    rerender(<PageHeader title='Projects' eyebrow='Workspace' lede='Updated overview' />);
+    expect(screen.getByRole('heading', { name: 'Projects' }).nextElementSibling?.textContent).toBe('Updated overview');
+  });
+
+  it.each(['ltr', 'rtl'] as const)('keeps logical DOM and tab order in %s with long unbroken lede', async (dir) => {
+    const user = userEvent.setup();
+    const lede = 'ProjectOverview'.repeat(100);
+    const { container } = render(
+      <PageHeader
+        title='Projects'
+        eyebrow='Workspace'
+        dir={dir}
+        lede={lede}
+        leadingAction={<IconButton label='Back' icon={<svg />} />}
+        actions={
+          <ButtonGroup variant='spaced' label='Project actions'>
+            <Button>Import</Button>
+            <Button>Create</Button>
+          </ButtonGroup>
+        }
+      />
+    );
+    const root = header(container);
+    const back = screen.getByRole('button', { name: 'Back' });
+    const eyebrow = screen.getByText('Workspace');
+    const heading = screen.getByRole('heading', { name: 'Projects' });
+    const paragraph = heading.nextElementSibling;
+    const group = screen.getByRole('group', { name: 'Project actions' });
+    expect(root).toHaveAttribute('dir', dir);
+    expect(root.firstElementChild?.firstElementChild?.firstElementChild).toBe(back);
+    expect(eyebrow.nextElementSibling).toBe(heading);
+    expect(paragraph?.textContent).toBe(lede);
+    expect(paragraph).toHaveClass('wrap-anywhere');
+    expect(root.lastElementChild?.firstElementChild).toBe(group);
+    expect(root.innerHTML).not.toMatch(/truncate|overflow-hidden|line-clamp/);
+    await user.tab();
+    expect(back).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'Import' })).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'Create' })).toHaveFocus();
+    await user.tab({ shift: true });
+    expect(screen.getByRole('button', { name: 'Import' })).toHaveFocus();
+  });
+
+  it('does not forward new props and retains supported root class merge and native attributes', () => {
+    const { container } = render(
+      <PageHeader
+        title='Projects'
+        leadingAction={<IconButton label='Back' icon={<svg />} />}
+        lede='Overview'
+        data-context='workspace'
+        className='min-w-full mt-2 mt-4'
+      />
+    );
+    const root = header(container);
+    expect(root).toHaveAttribute('data-context', 'workspace');
+    expect(root).not.toHaveAttribute('leadingAction');
+    expect(root).not.toHaveAttribute('lede');
+    expect(root).toHaveClass('eg-page-header', 'min-w-full', 'mt-4', 'gap-x-6');
+    expect(root).not.toHaveClass('min-w-0', 'mt-2');
+    expect(screen.getByRole('heading')).not.toHaveClass('mt-4', 'min-w-full');
   });
 });
