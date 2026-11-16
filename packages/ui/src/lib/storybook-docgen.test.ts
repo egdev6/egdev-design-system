@@ -1272,7 +1272,8 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(props.layout?.defaultValue?.value).toBe('stacked');
     expect(props.layout?.type.value.map(({ value }: { value: string }) => normalize(value))).toEqual([
       'stacked',
-      'choice'
+      'choice',
+      'choice-trailing'
     ]);
     for (const name of ['id', 'title', 'className', 'aria-describedby', 'style']) {
       expect(props[name], name).toBeDefined();
@@ -1284,6 +1285,51 @@ describe('Storybook TypeScript docgen contract', () => {
     for (const declaration of ownProps(file, ['FieldCounter'])) {
       expect(ts.getJSDocTags(declaration).find(({ tagName }) => tagName.text === 'control')?.comment).toBe('number');
     }
+    const stories = ast(source('molecules/field/Field.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual(
+      expect.arrayContaining([
+        'TrailingSwitch',
+        'TrailingCheckbox',
+        'TrailingDisabled',
+        'TrailingLongText',
+        'TrailingRtl',
+        'TrailingScopedTypography'
+      ])
+    );
+    expect(stories.getText()).not.toMatch(/\b(?:argTypes|play)\s*:/);
+  });
+  it('compiles Field trailing choice utilities from the production CSS entry in memory', {
+    timeout: 30_000
+  }, async () => {
+    const { default: tailwindcss } = await import('@tailwindcss/vite');
+    const { build } = await import('vite');
+    const entry = source('styles/compiled.css');
+    expect(readFileSync(entry, 'utf8')).toContain('@source "../molecules/field/types.ts"');
+    const result = await build({
+      configFile: false,
+      envDir: false,
+      plugins: [tailwindcss({ optimize: false })],
+      logLevel: 'warn',
+      build: { write: false, minify: false, cssMinify: false, rolldownOptions: { input: entry } }
+    });
+    const assets = (Array.isArray(result) ? result : [result]).flatMap((output) =>
+      'output' in output ? output.output : []
+    );
+    const asset = assets.find((output) => output.type === 'asset' && output.fileName.endsWith('.css'));
+    if (asset?.type !== 'asset') {
+      throw new Error('Missing production CSS output');
+    }
+    const css = String(asset.source);
+    expect(css).toMatch(/grid-template-columns:\s*minmax\(0,\s*1fr\)\s+auto/);
+    expect(css).toMatch(/\.wrap-anywhere\s*\{[^}]*overflow-wrap:\s*anywhere/);
+    expect(css).toMatch(/>\s*button\s*\{[^}]*grid-row-start:\s*1/);
+    expect(css).toMatch(/>\s*button\s*\{[^}]*grid-column-start:\s*2/);
+    const target = css.indexOf(String.raw`.pointer-coarse\:min-h-14`);
+    expect(target).toBeGreaterThan(-1);
+    expect(css.slice(css.lastIndexOf('@media', target), target)).toContain('pointer: coarse');
+    expect(css.slice(target, css.indexOf('}', target))).toMatch(
+      /min-height:\s*(?:var\(--space-14\)|calc\(var\(--space-1\)\s*\*\s*14\))/
+    );
   });
   it('extracts SelectTile mode-dependent metadata under A1 and annotates every own branch', () => {
     const doc = parser

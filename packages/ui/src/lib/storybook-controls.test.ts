@@ -1079,7 +1079,8 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(argTypes.children?.type?.required).toBe(true);
     expect(argTypes.children?.control).toBe(false);
     expect(argTypes.counter?.control).toBe(false);
-    expect(argTypes.layout?.options).toEqual(['stacked', 'choice']);
+    expect(argTypes.layout?.control).toEqual({ type: 'select' });
+    expect(argTypes.layout?.options).toEqual(['stacked', 'choice', 'choice-trailing']);
     expect(argTypes.layout?.table?.defaultValue?.summary).toBe('"stacked"');
     expect(argTypes.hideLabel?.table?.defaultValue?.summary).toBe('false');
     expect(args).toEqual({});

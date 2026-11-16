@@ -373,6 +373,248 @@ describe('Field bottom row', () => {
   });
 });
 
+describe('Field choice-trailing amendment', () => {
+  const choices = [
+    { name: 'Checkbox', role: 'checkbox', component: Checkbox, marker: 'eg-checkbox' },
+    { name: 'Switch', role: 'switch', component: Switch, marker: 'eg-switch' }
+  ] as const;
+
+  it.each(choices)(
+    'AC-01: $name keeps its placement inside a form, beside the hidden native input',
+    ({ component: Control, role }) => {
+      render(
+        <form>
+          <Field label='Updates' layout='choice-trailing' hint='Receive news'>
+            <Control />
+          </Field>
+        </form>
+      );
+      const control = screen.getByRole(role, { name: 'Updates' });
+      const root = rootFor(control);
+      // Radix adds a hidden native input after the control inside forms, so the control is not the
+      // last child; placement must target the control element, not the last child.
+      expect(root?.lastElementChild).not.toBe(control);
+      expect(root?.lastElementChild?.tagName).toBe('INPUT');
+      expect(control.tagName).toBe('BUTTON');
+      expect(root).toHaveClass('[&>button]:row-start-1', '[&>button]:col-start-2');
+      expect(root?.className).not.toContain('last-child');
+    }
+  );
+
+  it.each(choices)('AC-01: $name order and grid', ({ component: Control, role, marker }) => {
+    render(
+      <Field label='Updates' layout='choice-trailing' hint='Receive news'>
+        <Control />
+      </Field>
+    );
+    const control = screen.getByRole(role, { name: 'Updates', description: 'Receive news' });
+    const root = rootFor(control);
+    const label = screen.getByText('Updates');
+    const message = screen.getByText('Receive news').closest('.eg-field-message');
+    expect(root).toHaveClass(
+      'eg-field',
+      'grid',
+      'grid-cols-[minmax(0,1fr)_auto]',
+      'items-center',
+      'gap-x-4',
+      'gap-y-1',
+      'min-h-9',
+      // The root places the control (a Radix button) beside the label row; auto-placement would
+      // otherwise put it beside the message row.
+      '[&>button]:row-start-1',
+      '[&>button]:col-start-2'
+    );
+    expect(control).not.toHaveClass('row-start-1', 'col-start-2');
+    expect(label).toHaveClass('eg-label');
+    expect(message).toHaveClass('eg-field-message');
+    expect(control).toHaveClass(marker);
+    expect(Array.from(root?.children ?? [])).toEqual([label.parentElement, message?.parentElement, control]);
+    expect(label.parentElement).toHaveClass('col-start-1', 'row-start-1', 'cursor-pointer', 'min-w-0');
+    expect(message?.parentElement).toHaveClass('col-start-1');
+  });
+
+  it.each(choices)('AC-02: $name activation and controlled/disabled values', async ({ component: Control, role }) => {
+    const user = userEvent.setup();
+    const changed = vi.fn();
+    const view = (checked?: boolean, disabled = false) => (
+      <Field label='Updates' layout='choice-trailing'>
+        <Control {...(checked === undefined ? {} : { checked })} disabled={disabled} onCheckedChange={changed} />
+      </Field>
+    );
+    const { rerender } = render(view());
+    const control = screen.getByRole(role, { name: 'Updates' });
+    await user.click(screen.getByText('Updates'));
+    expect(control).toBeChecked();
+    expect(changed.mock.calls).toEqual([[true]]);
+    const root = rootFor(control);
+    if (!root) {
+      throw new Error('Field root is missing');
+    }
+    await user.click(root);
+    expect(changed).toHaveBeenCalledTimes(1);
+    rerender(view(false));
+    await user.click(screen.getByText('Updates'));
+    expect(control).not.toBeChecked();
+    expect(changed.mock.calls).toEqual([[true], [true]]);
+    rerender(view(true));
+    await user.click(screen.getByText('Updates'));
+    expect(control).toBeChecked();
+    expect(changed.mock.calls).toEqual([[true], [true], [false]]);
+    rerender(view(true, true));
+    await user.click(screen.getByText('Updates'));
+    expect(control).toBeChecked();
+    expect(changed).toHaveBeenCalledTimes(3);
+  });
+
+  it.each(choices)('AC-03: $name names, descriptions, error and refs', ({ component: Control, role }) => {
+    const ref = createRef<HTMLButtonElement>();
+    const view = (describedBy: string, error = '', hideLabel = false, disabled = false) => (
+      <>
+        <p id='external-trailing'>External guidance</p>
+        <Field label='Updates' layout='choice-trailing' hint='Receive news' error={error} hideLabel={hideLabel}>
+          <Control id='supplied-trailing' ref={ref} aria-describedby={describedBy} checked={true} disabled={disabled} />
+        </Field>
+      </>
+    );
+    const { rerender, unmount } = render(view('external-trailing external-trailing'));
+    const control = screen.getByRole(role, { name: 'Updates', description: 'External guidance Receive news' });
+    const message = screen.getByText('Receive news').closest('.eg-field-message');
+    expect(control).toHaveAttribute('id', 'supplied-trailing');
+    expect(screen.getByText('Updates')).toHaveAttribute('for', 'supplied-trailing');
+    expect(ref.current).toBe(control);
+    expect(control).toHaveAttribute('aria-describedby', `external-trailing ${message?.id}`);
+    rerender(view(`external-trailing ${message?.id} external-trailing`, 'Unavailable', true, true));
+    expect(screen.getByRole(role, { name: 'Updates', description: 'External guidance Unavailable' })).toBe(control);
+    expect(control).toHaveAttribute('aria-describedby', `external-trailing ${message?.id}`);
+    expect(control).toHaveAttribute('aria-invalid', 'true');
+    expect(control).toBeDisabled();
+    expect(control).toBeChecked();
+    expect(ref.current).toBe(control);
+    expect(screen.queryByText('Receive news')).not.toBeInTheDocument();
+    expect(screen.getByText('Updates').parentElement?.style.position).toBe('absolute');
+    rerender(view('external-trailing', '', false));
+    expect(control).not.toHaveAttribute('aria-invalid');
+    expect(control).toHaveAccessibleDescription('External guidance Receive news');
+    expect(ref.current).toBe(control);
+    unmount();
+    expect(ref.current).toBeNull();
+  });
+
+  it.each(choices)('AC-03: $name generated ids remain distinct and stable', ({ component: Control, role }) => {
+    const view = (hint: string) => (
+      <>
+        <Field label='First' layout='choice-trailing' hint={hint}>
+          <Control />
+        </Field>
+        <Field label='Second' layout='choice-trailing'>
+          <Control />
+        </Field>
+      </>
+    );
+    const { rerender } = render(view('Details'));
+    const control = screen.getByRole(role, { name: 'First', description: 'Details' });
+    const id = control.id;
+    expect(id).toBeTruthy();
+    expect(id).not.toBe(screen.getByRole(role, { name: 'Second' }).id);
+    rerender(view('Changed details'));
+    expect(control.id).toBe(id);
+    expect(control).toHaveAccessibleDescription('Changed details');
+  });
+
+  it.each(choices)('AC-04: $name tab stop and keyboard', async ({ component: Control, role }) => {
+    const user = userEvent.setup();
+    const changed = vi.fn();
+    render(
+      <>
+        <Field label='Updates' layout='choice-trailing' hint='Receive news'>
+          <Control onCheckedChange={changed} />
+        </Field>
+        <button type='button'>Next</button>
+      </>
+    );
+    const control = screen.getByRole(role, { name: 'Updates' });
+    await user.tab();
+    expect(control).toHaveFocus();
+    await user.keyboard('[Space]');
+    expect(control).toBeChecked();
+    await user.keyboard('[Enter]');
+    expect(control).toHaveAttribute('aria-checked', role === 'switch' ? 'false' : 'true');
+    expect(changed.mock.calls).toEqual(role === 'switch' ? [[true], [false]] : [[true]]);
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'Next' })).toHaveFocus();
+  });
+
+  it.each(choices)('AC-05: $name coarse target and logical wrapping', ({ component: Control, role }) => {
+    render(
+      <Field label='AnExtraordinarilyLongUnbrokenLabel' layout='choice-trailing' hint='A long message' dir='rtl'>
+        <Control />
+      </Field>
+    );
+    const control = screen.getByRole(role, { name: 'AnExtraordinarilyLongUnbrokenLabel' });
+    const root = rootFor(control);
+    const label = screen.getByText('AnExtraordinarilyLongUnbrokenLabel');
+    const message = screen.getByText('A long message').closest('.eg-field-message');
+    expect(root).toHaveAttribute('dir', 'rtl');
+    // The label text is an anonymous flex item: only wrap-anywhere lowers its min-content, so an
+    // unbroken word breaks inside the text column instead of running under the control.
+    expect(label).toHaveClass('grow', 'flex', 'items-center', 'pointer-coarse:min-h-14', 'wrap-anywhere', 'min-w-0');
+    expect(label).not.toHaveClass('wrap-break-word');
+    for (const part of [root, label.parentElement, label, message?.parentElement]) {
+      expect(part?.className).not.toMatch(/(?:^|\s)(?:left|right|ml|mr|pl|pr|text-left|text-right)-/);
+    }
+  });
+
+  it.each(choices)('AC-06: $name control classes and disabled dimming', ({ component: Control, role }) => {
+    const baseline = render(<Control disabled={true} className='consumer-control' />);
+    const originalClasses = screen.getByRole(role).className;
+    baseline.unmount();
+    render(
+      <Field label='Updates' layout='choice-trailing' hint='Unavailable'>
+        <Control disabled={true} className='consumer-control' />
+      </Field>
+    );
+    const control = screen.getByRole(role, { name: 'Updates' });
+    const label = screen.getByText('Updates');
+    const message = screen.getByText('Unavailable').closest('.eg-field-message');
+    expect(control.className).toBe(originalClasses);
+    for (const part of [label.parentElement, message?.parentElement]) {
+      expect(part).toHaveClass('group-has-[:disabled]:opacity-45', 'group-has-[[data-disabled]]:opacity-45');
+      expect(Array.from(part?.classList ?? []).filter((name) => name.includes('opacity-45'))).toHaveLength(2);
+    }
+    for (const part of [rootFor(control), label, message]) {
+      expect(part?.className).not.toContain('opacity-45');
+    }
+  });
+
+  it.each(choices)('AC-07: $name omissions and root attributes', ({ component: Control, role }) => {
+    render(
+      <Field
+        label='Updates'
+        layout='choice-trailing'
+        id='field-root-trailing'
+        title='Preferences'
+        data-owner='consumer'
+        className='w-full mt-2'
+        readout='Omitted readout'
+        counter={{ value: 1, max: 2 }}
+        hint='Receive news'
+      >
+        <Control />
+      </Field>
+    );
+    const control = screen.getByRole(role, { name: 'Updates', description: 'Receive news' });
+    const root = rootFor(control);
+    expect(root).toHaveAttribute('id', 'field-root-trailing');
+    expect(root).toHaveAttribute('title', 'Preferences');
+    expect(root).toHaveAttribute('data-owner', 'consumer');
+    expect(root).toHaveClass('w-full', 'mt-2');
+    expect(control).not.toHaveClass('w-full', 'mt-2');
+    expect(screen.queryByText('Omitted readout')).not.toBeInTheDocument();
+    expect(screen.queryByText('1 / 2')).not.toBeInTheDocument();
+    expect(control.getAttribute('aria-describedby')?.split(' ')).toHaveLength(1);
+  });
+});
+
 describe('FieldMessage composition', () => {
   it.each([
     ['description', 'text-fg-muted'],

@@ -3,7 +3,7 @@ import type { ComponentPropsWithoutRef, ReactElement } from 'react';
 import type { FieldMessageTone } from '../../atoms/field-message';
 
 /** Placement of one control relative to its label; not a keyboard orientation. */
-export type FieldLayout = 'stacked' | 'choice';
+export type FieldLayout = 'stacked' | 'choice' | 'choice-trailing';
 
 /** Consumer-derived text length and limit; Field never validates the control value. */
 export type FieldCounter = {
@@ -20,6 +20,9 @@ export type FieldCounter = {
 /**
  * Coordinates one compatible control with its name and descriptions, without owning its value.
  * Root className supports outer grid placement, margins and width only, merged last with cn.
+ * In choice-trailing only, a root-scoping class may target eg-label and eg-field-message
+ * for token-backed font family, size, weight and line-height; not colors, geometry or control parts.
+ * CSS layer and specificity determine precedence for scoped rules; cn only merges utilities.
  * No Field ref or asChild API; the child keeps its own ref through Radix Slot.
  */
 export type FieldProps = Omit<ComponentPropsWithoutRef<'div'>, 'children'> & {
@@ -56,7 +59,7 @@ export type FieldProps = Omit<ComponentPropsWithoutRef<'div'>, 'children'> & {
    * @controlReason Structured FieldCounter is not a scalar control; see Counter and Invalid.
    */
   counter?: FieldCounter;
-  /** Visible current value in a linked output; omitted in choice layout or when absent.
+  /** Visible current value in a linked output; omitted in either choice layout or when absent.
    * @control text
    */
   readout?: string;
@@ -66,6 +69,7 @@ export type FieldProps = Omit<ComponentPropsWithoutRef<'div'>, 'children'> & {
    */
   hideLabel?: boolean;
   /** Label above the control, or beside a Checkbox/Switch. Choice omits readout and counter.
+   * Choice-trailing places the label and message before the control.
    * @default stacked
    * @control select
    */
@@ -77,7 +81,11 @@ export const fieldVariants = cva('eg-field group min-w-0 font-sans', {
   variants: {
     layout: {
       stacked: 'flex flex-col gap-1.5',
-      choice: 'grid grid-cols-[auto_1fr] items-center gap-x-2 gap-y-1 min-h-9 pointer-coarse:min-h-11'
+      choice: 'grid grid-cols-[auto_1fr] items-center gap-x-2 gap-y-1 min-h-9 pointer-coarse:min-h-11',
+      // The root places the control (a Radix button) beside the label row without classing it; not
+      // :last-child, because Radix appends a hidden native input inside forms and during SSR.
+      'choice-trailing':
+        'grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 min-h-9 [&>button]:row-start-1 [&>button]:col-start-2'
     }
   },
   defaultVariants: { layout: 'stacked' }
@@ -88,13 +96,31 @@ const disabledPart = 'group-has-[:disabled]:opacity-45 group-has-[[data-disabled
 
 /** Label owns typography; this wrapper owns alignment, choice cursor and disabled opacity. */
 export const fieldLabelRowVariants = cva(['flex justify-between gap-2', disabledPart], {
-  variants: { layout: { stacked: '', choice: 'col-start-2 row-start-1 cursor-pointer' } },
+  variants: {
+    layout: {
+      stacked: '',
+      choice: 'col-start-2 row-start-1 cursor-pointer',
+      'choice-trailing': 'col-start-1 row-start-1 cursor-pointer min-w-0'
+    }
+  },
+  defaultVariants: { layout: 'stacked' }
+});
+
+/** The trailing choice label itself supplies the coarse-pointer activation target. */
+export const fieldLabelVariants = cva('', {
+  variants: {
+    layout: {
+      stacked: '',
+      choice: '',
+      'choice-trailing': 'grow flex items-center min-w-0 pointer-coarse:min-h-14 wrap-anywhere'
+    }
+  },
   defaultVariants: { layout: 'stacked' }
 });
 
 /** Field owns layout and disabled dimming; FieldMessage owns paragraph appearance. */
 export const fieldMessageVariants = cva(['min-w-0', disabledPart], {
-  variants: { layout: { stacked: '', choice: 'col-start-2' } },
+  variants: { layout: { stacked: '', choice: 'col-start-2', 'choice-trailing': 'col-start-1' } },
   defaultVariants: { layout: 'stacked' }
 });
 

@@ -7,6 +7,7 @@ import {
   fieldCounterVariants,
   fieldFooterRowVariants,
   fieldLabelRowVariants,
+  fieldLabelVariants,
   fieldMessageVariants,
   fieldReadoutVariants,
   fieldVariants
@@ -18,10 +19,11 @@ export type UseFieldResult = {
   rootProps: ComponentPropsWithoutRef<'div'> & { 'data-state': 'invalid' | undefined; className: string };
   controlProps: ControlAttributes;
   children: ReactElement;
-  labelProps: Pick<LabelProps, 'htmlFor' | 'variant'>;
+  labelProps: Pick<LabelProps, 'htmlFor' | 'variant' | 'className'>;
   label: string;
   hideLabel: boolean;
   choice: boolean;
+  trailing: boolean;
   labelRowProps: { className: string };
   message: string | undefined;
   messageProps: { id: string; tone: FieldMessageTone };
@@ -56,7 +58,8 @@ export function useField({
   const controlId = (children.props as ControlAttributes).id ?? generatedId;
   const invalid = Boolean(error);
   const message = error || hint || undefined;
-  const choice = layout === 'choice';
+  const trailing = layout === 'choice-trailing';
+  const choice = layout === 'choice' || trailing;
   const visibleCounter = choice ? undefined : counter;
   const description =
     [message ? messageId : undefined, visibleCounter ? counterId : undefined].filter(Boolean).join(' ') || undefined;
@@ -68,10 +71,15 @@ export function useField({
     },
     controlProps: { id: controlId, 'aria-describedby': description, 'aria-invalid': invalid ? true : undefined },
     children,
-    labelProps: { htmlFor: controlId, variant: choice ? 'choice' : 'field' },
+    labelProps: {
+      htmlFor: controlId,
+      variant: choice ? 'choice' : 'field',
+      className: cn(fieldLabelVariants({ layout }))
+    },
     label,
     hideLabel,
     choice,
+    trailing,
     labelRowProps: { className: cn(fieldLabelRowVariants({ layout })) },
     message,
     messageProps: { id: messageId, tone: invalid ? 'error' : hintTone },
