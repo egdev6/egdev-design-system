@@ -1,0 +1,81 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Reuse section-lede for PageHeader and approve the PageHeader leadingAction scoped exception to trailing-actions.",
+  "evidence": {
+    "channel": "Owner decisions recorded in the adoption batch and approved implementation task",
+    "userStatements": [
+      {
+        "quote": "lede",
+        "provenance": "odd/tasks/nexo-adoption-m1-specs.md L5, #412"
+      },
+      {
+        "quote": "Aprobar leadingAction",
+        "provenance": "odd/tasks/nexo-adoption-m1-specs.md L5, #412"
+      },
+      {
+        "quote": "Aprobar e implementar",
+        "provenance": "odd/tasks/page-header-leading-action.md L1"
+      }
+    ],
+    "interpretation": "The exception applies only to PageHeader.leadingAction, which coexists with trailing actions. The existing lede convention is reused, not globally amended. This record is not native review authority."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/decisions/prop-naming-web-section-approval.json",
+      "wholeFileSHA256": "sha256:6c146fe97ee025a15e29bf9c7ff9b3ca840d7e34a1b918177b8110e79c4b1eba"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [
+    {
+      "id": "trailing-actions",
+      "previousReference": "docs/decisions/prop-naming-web-section-approval.json",
+      "previousContentHash": "sha256:a43b2184cfcb7265c8ae19c21f7c60f6f5a411db03b96a00f880b21ac9206eb1",
+      "changedFields": ["exceptions"],
+      "boundary": "PageHeader leadingAction only; the existing convention meaning and usages remain unchanged."
+    }
+  ],
+  "entries": [
+    {
+      "scope": "convention:trailing-actions",
+      "contentHash": "sha256:4318a40e4fe5464997605a1855c7d71388ed35c8258745780ef3fe5eef393845",
+      "convention": {
+        "id": "trailing-actions",
+        "name": "actions",
+        "meaning": "Consumer-supplied action content in a component or neutral section.",
+        "whenToUse": "Supply action elements or neutral section action content subject to the component contract.",
+        "avoid": "Generating controls from data inside the component; existing component contracts retain their restrictions.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": [
+          {
+            "scope": "PageHeader",
+            "propName": "leadingAction",
+            "reason": "A single separate logical-start control must coexist with the existing trailing actions slot.",
+            "approval": {
+              "reference": "docs/components/page-header/v0.2/prop-naming-approval.json",
+              "scope": "exception:trailing-actions:PageHeader:leadingAction",
+              "contentHash": "sha256:373ddd892ff1e315fcce4215557f3b489350105dacc6806e877e72f6367957ea"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "scope": "exception:trailing-actions:PageHeader:leadingAction",
+      "contentHash": "sha256:373ddd892ff1e315fcce4215557f3b489350105dacc6806e877e72f6367957ea",
+      "exception": {
+        "scope": "PageHeader",
+        "propName": "leadingAction",
+        "reason": "A single separate logical-start control must coexist with the existing trailing actions slot."
+      },
+      "source": {
+        "path": "packages/ui/src/molecules/page-header/types.ts",
+        "symbol": "PageHeaderProps",
+        "revision": "sha256:efd948e4151568a21c5487e72c4f79b3bb3d56bcd91a39d2948717da6dca9d24"
+      }
+    }
+  ]
+}

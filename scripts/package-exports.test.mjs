@@ -2637,9 +2637,15 @@ test('PageHeader ships compact typography and intrinsic layout without marker pa
   );
   assert.match(rule('.gap-x-6'), /column-gap:\s*var\(--space-6[,)]/);
   assert.match(rule('.gap-y-4'), /row-gap:\s*var\(--space-4[,)]/);
+  assert.match(rule('.gap-3'), /gap:\s*var\(--space-3[,)]/);
+  assert.match(rule('.items-start'), /align-items:\s*flex-start/);
+  assert.match(rule('.flex-none'), /flex:\s*none/);
+  assert.match(rule('.flex-1'), /flex:\s*1/);
+  assert.match(rule('.text-body-default'), /font-size:\s*var\(--text-body-default[,)]/);
+  assert.match(rule('.text-fg-secondary'), /color:\s*var\(--color-fg-secondary[,)]/);
   assert.match(rule('.wrap-anywhere'), /overflow-wrap:\s*anywhere/);
   assert.doesNotMatch(utilities, /\.eg-page-header\s*[,{]/);
-  const { PageHeader, Button, ButtonGroup } = await import(artifact('ui', ui.exports['.'].import));
+  const { PageHeader, Button, ButtonGroup, IconButton } = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
   const { renderToString } = await import('react-dom/server');
   const minimal = renderToString(createElement(PageHeader, { title: 'Projects' }));
@@ -2670,6 +2676,33 @@ test('PageHeader ships compact typography and intrinsic layout without marker pa
   );
   assert.match(single, /<a[^>]*href="#new"/);
   assert.doesNotMatch(single, /role="group"/);
+  const combined = renderToString(
+    createElement(PageHeader, {
+      title: 'Projects',
+      eyebrow: 'Workspace',
+      lede: 'Browse projects',
+      leadingAction: createElement(IconButton, {
+        label: 'Open navigation',
+        icon: createElement('svg'),
+        asChild: true,
+        children: createElement('a', { href: '#navigation' })
+      }),
+      actions: createElement(ButtonGroup, {
+        variant: 'spaced',
+        label: 'Project actions',
+        children: [
+          createElement(Button, { key: 'import', children: 'Import' }),
+          createElement(Button, { key: 'new', children: 'New project' })
+        ]
+      })
+    })
+  );
+  assert.match(combined, /<a[^>]*href="#navigation"/);
+  assert.ok(combined.indexOf('Open navigation') < combined.indexOf('Workspace'));
+  assert.ok(combined.indexOf('Workspace') < combined.indexOf('>Projects</h1>'));
+  assert.ok(combined.indexOf('>Projects</h1>') < combined.indexOf('Browse projects'));
+  assert.ok(combined.indexOf('Browse projects') < combined.indexOf('role="group"'));
+  assert.doesNotMatch(combined, /leadingAction=|lede=|aria-describedby=/i);
 });
 
 test('ListItem ships compound layout, state Material and native empty focus utilities', async () => {
@@ -5877,11 +5910,15 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'ToastActionProps',
     'usePageHeader',
     'PageHeaderActions',
+    'PageHeaderLeadingAction',
     'PageHeaderNativeProps',
     'pageHeaderVariants',
+    'pageHeaderStartVariants',
+    'pageHeaderLeadingVariants',
     'pageHeaderTextVariants',
     'pageHeaderHeadingVariants',
     'pageHeaderEyebrowVariants',
+    'pageHeaderLedeVariants',
     'pageHeaderActionsVariants',
     'useField',
     'fieldVariants',

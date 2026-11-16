@@ -416,7 +416,7 @@ const expected: Record<string, Record<string, string | false>> = {
     asChild: 'boolean'
   },
   buttongroup: { label: 'text', variant: 'select', children: false },
-  pageheader: { title: 'text', eyebrow: 'text', level: 'select', actions: false },
+  pageheader: { title: 'text', eyebrow: 'text', level: 'select', actions: false, leadingAction: false, lede: 'text' },
   checkbox: {
     checked: false,
     defaultChecked: false,
@@ -737,7 +737,7 @@ const ownPropCounts: Record<string, number> = {
   aspectratio: 1,
   badge: 4,
   buttongroup: 3,
-  pageheader: 4,
+  pageheader: 6,
   dropzone: 6,
   gauge: 8,
   field: 9,
@@ -1072,6 +1072,21 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(composed.argTypes.label?.control).toEqual({ type: 'text' });
     expect(composed.argTypes.columns?.control).toBe(false);
     expect(composed.argTypes.hideLabel?.control).toEqual({ type: 'boolean' });
+  });
+  it('maps PageHeader lede and leading action without hiding rows or inventing defaults', () => {
+    const metadata = component('PageHeader');
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+    const { argTypes, args } = story('PageHeader');
+    expect(argTypes.lede?.type).toMatchObject({ name: 'string', required: false });
+    expect(argTypes.lede?.control).toEqual({ type: 'text' });
+    expect(argTypes.leadingAction?.control).toBe(false);
+    for (const name of ['lede', 'leadingAction']) {
+      expect(argTypes[name]?.table?.disable, name).toBeUndefined();
+      expect(argTypes[name]?.table?.defaultValue, name).toBeUndefined();
+    }
+    expect(argTypes.actions?.control).toBe(false);
+    expect(args).toEqual({});
   });
   it('retains Field required content, stacked defaults, choices and supported native rows', () => {
     const { argTypes, args } = story('Field');

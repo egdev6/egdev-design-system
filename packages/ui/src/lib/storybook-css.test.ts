@@ -160,6 +160,12 @@ describe('Storybook preview CSS', () => {
     expect(rule('.gap-y-4')).toMatch(/row-gap:\s*var\(--space-4[,)]/);
     expect(rule('.text-heading-small')).toMatch(/font-size:\s*var\(--text-heading-small[,)]/);
     expect(rule('.text-label-eyebrow')).toMatch(/font-size:\s*var\(--text-label-eyebrow[,)]/);
+    expect(rule('.text-body-default')).toMatch(/font-size:\s*var\(--text-body-default[,)]/);
+    expect(rule('.text-fg-secondary')).toMatch(/color:\s*var\(--color-fg-secondary[,)]/);
+    expect(rule('.gap-3')).toMatch(/gap:\s*var\(--space-3[,)]/);
+    expect(rule('.items-start')).toMatch(/align-items:\s*flex-start/);
+    expect(rule('.flex-none')).toMatch(/flex:\s*none/);
+    expect(rule('.flex-1')).toMatch(/flex:\s*1/);
     expect(rule('.wrap-anywhere')).toMatch(/overflow-wrap:\s*anywhere/);
     expect(css).not.toMatch(/\.eg-page-header\s*[,{]/);
   });
