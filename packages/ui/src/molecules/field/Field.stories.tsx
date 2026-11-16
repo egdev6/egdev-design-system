@@ -15,8 +15,12 @@ import { Field } from './Field';
  * hintTone changes only guidance presentation; semantic messages include decorative icons.
  * With an error, the child must omit aria-invalid entirely or supply true/'true'; explicit
  * undefined, null, false and other conflicts are unsupported and retain Slot child precedence.
- * Slider needs its own matching label. Choice omits readout/counter; groups need a fieldset.
- * className supports root width, margins and outer grid placement, not internal appearance.
+ * Slider needs its own matching label. Both choice layouts omit readout/counter; groups need a fieldset.
+ * Choice-trailing puts text first; its visible label is the coarse-pointer target. When hidden,
+ * the consumer must provide an equivalent usable target. Blank root space does not toggle.
+ * className supports root width, margins and outer grid placement. Only choice-trailing permits
+ * a root-scoped eg-label/eg-field-message typography rule using font tokens; CSS cascade determines
+ * its precedence, not cn. Control internals, geometry and colors are not override surfaces.
  */
 const meta: Meta<typeof Field> = {
   title: 'Molecules/Field',
@@ -93,6 +97,92 @@ export const ChoiceCheckbox: Story = {
 /** Switch uses the same choice layout without inventing a group or an additional focus stop. */
 export const ChoiceSwitch: Story = {
   args: { label: 'Notifications', layout: 'choice', hint: 'Receive release updates.', children: <Switch /> }
+};
+
+/** A text-first setting leaves the Switch's value and interaction with the consumer. */
+export const TrailingSwitch: Story = {
+  args: { label: 'Notifications', layout: 'choice-trailing', hint: 'Receive release updates.', children: <Switch /> }
+};
+
+/** A text-first Checkbox uses the same native label relationship. */
+export const TrailingCheckbox: Story = {
+  args: {
+    label: 'Remember this device',
+    layout: 'choice-trailing',
+    hint: 'Only on a private device.',
+    children: <Checkbox />
+  }
+};
+
+/** Field text and the disabled Switch each retain their own single dimming treatment. */
+export const TrailingDisabled: Story = {
+  args: {
+    label: 'Notifications',
+    layout: 'choice-trailing',
+    hint: 'Unavailable for this account.',
+    children: <Switch disabled={true} />
+  }
+};
+
+/** A narrow host exercises ordinary wrapping and a long unbroken label without resizing the control. */
+export const TrailingLongText: Story = {
+  args: {
+    label: 'Notifications with an ExtraordinarilyLongUnbrokenPreferenceIdentifier',
+    layout: 'choice-trailing',
+    hint: 'Receive updates when this preference changes.',
+    children: <Switch />
+  },
+  decorators: [
+    (Story) => (
+      <div className='w-48'>
+        <Story />
+      </div>
+    )
+  ]
+};
+
+/** The logical columns mirror in an RTL host; Switch thumb mirroring is tracked separately. */
+export const TrailingRtl: Story = {
+  args: { label: 'Updates', layout: 'choice-trailing', hint: 'Receive release updates.', children: <Switch /> },
+  decorators: [
+    (Story) => (
+      <div dir='rtl'>
+        <Story />
+      </div>
+    )
+  ]
+};
+
+/** A consumer-scoped token typography rule targets only the two documented Field text roots. */
+export const TrailingScopedTypography: Story = {
+  args: {
+    label: 'Notifications',
+    layout: 'choice-trailing',
+    hint: 'Receive release updates.',
+    className: 'settings-choice',
+    children: <Switch />
+  },
+  decorators: [
+    (Story) => (
+      <>
+        <style>{`
+        .settings-choice.eg-field .eg-label {
+          font-family: var(--font-sans);
+          font-size: var(--text-body-muted);
+          font-weight: var(--text-body-muted--font-weight);
+          line-height: var(--text-body-muted--line-height);
+        }
+        .settings-choice.eg-field .eg-field-message {
+          font-family: var(--font-sans);
+          font-size: var(--text-body-default);
+          font-weight: var(--text-body-default--font-weight);
+          line-height: var(--text-body-default--line-height);
+        }
+      `}</style>
+        <Story />
+      </>
+    )
+  ]
 };
 
 /** Field dims its own parts once; the disabled control owns its separate opacity. The hint and counter share the bottom row. */

@@ -21,7 +21,9 @@ export const Field: FC<FieldProps> = (props) => {
   ) : null;
   return (
     <div {...field.rootProps}>
-      {field.choice ? <SlotPrimitive.Root {...field.controlProps}>{field.children}</SlotPrimitive.Root> : null}
+      {field.choice && !field.trailing ? (
+        <SlotPrimitive.Root {...field.controlProps}>{field.children}</SlotPrimitive.Root>
+      ) : null}
       <div {...field.labelRowProps}>
         {field.hideLabel ? (
           <VisuallyHidden>
@@ -41,6 +43,7 @@ export const Field: FC<FieldProps> = (props) => {
           {counterNode}
         </div>
       ) : null}
+      {field.trailing ? <SlotPrimitive.Root {...field.controlProps}>{field.children}</SlotPrimitive.Root> : null}
     </div>
   );
 };

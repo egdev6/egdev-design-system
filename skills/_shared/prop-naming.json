@@ -1864,7 +1864,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
+          "revision": "sha256:f9c15d241fe2646aefb45cc1969d4d60c92afeb313ffcea11be816040b3d0a6f"
         }
       },
       {
@@ -4292,7 +4292,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
+          "revision": "sha256:f9c15d241fe2646aefb45cc1969d4d60c92afeb313ffcea11be816040b3d0a6f"
         }
       }
     ]
@@ -4319,7 +4319,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
+          "revision": "sha256:f9c15d241fe2646aefb45cc1969d4d60c92afeb313ffcea11be816040b3d0a6f"
         }
       }
     ]
@@ -4346,7 +4346,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
+          "revision": "sha256:f9c15d241fe2646aefb45cc1969d4d60c92afeb313ffcea11be816040b3d0a6f"
         }
       }
     ]
@@ -4373,7 +4373,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
+          "revision": "sha256:f9c15d241fe2646aefb45cc1969d4d60c92afeb313ffcea11be816040b3d0a6f"
         }
       }
     ]
@@ -4400,7 +4400,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
+          "revision": "sha256:f9c15d241fe2646aefb45cc1969d4d60c92afeb313ffcea11be816040b3d0a6f"
         }
       },
       {
@@ -4432,12 +4432,12 @@
     "usages": [
       {
         "component": "Field",
-        "type": "FieldLayout = 'stacked' | 'choice'",
+        "type": "FieldLayout = 'stacked' | 'choice' | 'choice-trailing'",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
+          "revision": "sha256:f9c15d241fe2646aefb45cc1969d4d60c92afeb313ffcea11be816040b3d0a6f"
         }
       }
     ]
@@ -7379,7 +7379,7 @@
         "source": {
           "path": "packages/ui/src/molecules/field/types.ts",
           "symbol": "FieldProps",
-          "revision": "sha256:319d68639ac0029bda15d741a09e399405be9a39eb9e60e7b346e78e7df48f45"
+          "revision": "sha256:f9c15d241fe2646aefb45cc1969d4d60c92afeb313ffcea11be816040b3d0a6f"
         }
       }
     ]

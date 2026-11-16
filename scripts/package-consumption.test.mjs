@@ -1685,6 +1685,7 @@ const messageRef: FieldMessageProps = { children: 'Text', ref: createRef<HTMLPar
 
 // Field samples stay outside App so existing control counts and focus harnesses remain unchanged.
 const fieldLayout: FieldLayout = 'stacked';
+const trailingFieldLayout: FieldLayout = 'choice-trailing';
 const fieldCounter: FieldCounter = { value: 294, max: 280 };
 export const fieldControlRef = createRef<HTMLInputElement>();
 export const fieldProps: FieldProps = {
@@ -1697,6 +1698,7 @@ export function FieldSamples({ invalid = true }: { invalid?: boolean }) {
     createElement('p', { id: 'post-external' }, 'External guidance'),
     createElement(Field, { ...fieldProps, error: invalid ? fieldProps.error : '' }),
     createElement(Field, { label: 'Notifications', layout: 'choice', hint: 'Receive updates', id: 'choice-field', children: createElement(Checkbox) }),
+    createElement(Field, { label: 'Release alerts', layout: trailingFieldLayout, hint: 'Receive release news', id: 'trailing-field', children: createElement(Switch) }),
     createElement(Field, { label: 'Ring size', readout: '56 px', error: 'Size is too large', id: 'slider-field', children: createElement(Slider, { label: 'Ring size', defaultValue: 56 }) }));
 }
 // @ts-expect-error Field requires its label even when hidden.
@@ -1709,7 +1711,7 @@ const textField: FieldProps = { label: 'Title', children: 'Input' };
 const referencedField: FieldProps = { ...fieldProps, ref: createRef<HTMLDivElement>() };
 // @ts-expect-error Field has no asChild API.
 const slottedField: FieldProps = { ...fieldProps, asChild: true };
-// @ts-expect-error Layout is a closed stacked/choice axis.
+// @ts-expect-error Layout is a closed stacked/choice/choice-trailing axis.
 const horizontalField: FieldProps = { ...fieldProps, layout: 'horizontal' };
 // @ts-expect-error Control size belongs to the atom, not Field.
 const smallField: FieldProps = { ...fieldProps, size: 'sm' };
@@ -6421,6 +6423,14 @@ try {
   assert.equal(field.querySelector('[aria-live], [role="alert"]'), null);
   const choice = document.getElementById('choice-field');
   assert.equal(choice.firstElementChild.getAttribute('role'), 'checkbox');
+  const trailing = document.getElementById('trailing-field');
+  // Radix may render a hidden native input after the switch (SSR/forms); the visible order stays label, message, control.
+  assert.ok([3, 4].includes(trailing.children.length));
+  if (trailing.children.length === 4) assert.equal(trailing.children[3].tagName, 'INPUT');
+  assert.equal(trailing.children[0].querySelector('label').textContent, 'Release alerts');
+  assert.equal(trailing.children[1].querySelector('.eg-field-message').textContent, 'Receive release news');
+  assert.equal(trailing.children[2].getAttribute('role'), 'switch');
+  assert.equal(trailing.children[0].querySelector('label').htmlFor, trailing.children[2].id);
   const slider = document.getElementById('slider-field').querySelector('[role="slider"]');
   assert.equal(slider.getAttribute('aria-invalid'), 'true');
   assert.equal(document.getElementById(slider.getAttribute('aria-describedby')).textContent, 'Size is too large');
@@ -7694,6 +7704,12 @@ try {
   const fieldChoice = document.querySelector('#choice-field [role="checkbox"]');
   await act(async () => document.querySelector('#choice-field label').click());
   assert.equal(fieldChoice.getAttribute('aria-checked'), 'true');
+  const fieldTrailing = document.querySelector('#trailing-field [role="switch"]');
+  assert.equal(fieldTrailing.getAttribute('aria-checked'), 'false');
+  await act(async () => document.querySelector('#trailing-field label').click());
+  assert.equal(fieldTrailing.getAttribute('aria-checked'), 'true');
+  await act(async () => document.querySelector('#trailing-field label').click());
+  assert.equal(fieldTrailing.getAttribute('aria-checked'), 'false');
   await act(async () => root.render(createElement(FieldSamples, { invalid: false })));
   assert.equal(fieldControlRef.current, fieldInput);
   assert.equal(fieldInput.hasAttribute('aria-invalid'), false);

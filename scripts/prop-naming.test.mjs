@@ -910,6 +910,47 @@ test('Tabs layout conventions bind the owner choices, scoped receipt and reviewe
   }
 });
 
+test('Field trailing choice updates only the approved layout usage and all reviewed Field revisions', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const sourcePath = 'packages/ui/src/molecules/field/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, sourcePath)));
+  const layout = registry.find(({ id }) => id === 'label-layout');
+  assert.equal(layout.name, 'layout');
+  assert.equal(layout.status, 'approved');
+  assert.equal(layout.approval.reference, 'docs/decisions/prop-naming-molecule-specs-approval.json');
+  assert.equal(layout.approval.contentHash, props.conventionHash(layout));
+  assert.deepEqual(
+    layout.usages.filter(({ component }) => component === 'Field'),
+    [
+      {
+        component: 'Field',
+        type: "FieldLayout = 'stacked' | 'choice' | 'choice-trailing'",
+        status: 'existing',
+        source: { path: sourcePath, symbol: 'FieldProps', revision }
+      }
+    ]
+  );
+  const usages = registry.flatMap((entry) =>
+    entry.usages.filter((usage) => usage.source.path === sourcePath).map((usage) => ({ id: entry.id, usage }))
+  );
+  assert.deepEqual(usages.map(({ id }) => id).sort(), [
+    'accessible-name',
+    'character-counter',
+    'field-error',
+    'field-guidance-tone',
+    'field-hint',
+    'label-layout',
+    'value-readout',
+    'visually-hidden-label'
+  ]);
+  for (const { usage } of usages) {
+    assert.deepEqual(usage.source, { path: sourcePath, symbol: 'FieldProps', revision });
+    assert.equal(usage.status, 'existing');
+  }
+  assert.equal(registry.find(({ id }) => id === 'field-guidance-tone').status, 'proposed');
+  validate(registry);
+});
+
 test('WebTemplate conventions bind the delegated approval and reviewed usage', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const reference = 'docs/decisions/prop-naming-web-template-approval.json';
