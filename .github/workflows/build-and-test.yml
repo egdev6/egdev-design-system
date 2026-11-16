@@ -56,3 +56,5 @@ jobs:
         run: pnpm --filter @egdev/tokens run test
       - name: Test package exports after build
         run: pnpm test:package-exports
+      - name: Test packed package consumption (React 18 and 19)
+        run: pnpm test:package-consumption
