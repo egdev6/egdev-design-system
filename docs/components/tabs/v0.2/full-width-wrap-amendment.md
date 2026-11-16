@@ -1,14 +1,14 @@
 # Tabs — full-width and label-wrap amendment
 
-- **Status:** Draft — not approved
+- **Status:** Approved — 2026-11-16 (owner, in session; proposal egdev-ds-nexo-adoption-v1). Implementation plan requires separate approval.
 - **Amends:** [Tabs v0.1 implementation evidence](../v0.1/implementation.md) and its [approved base contract](https://github.com/egdev6/egdev-design-system/issues/107#issuecomment-6251573119); requested by [#414](https://github.com/egdev6/egdev-design-system/issues/414). This amendment proposes only additive, opt-in layout; it is not implementation authorization.
-- **Snapshot identity:** `version: v0.2`; `contentSHA256: Pending before finalization`; `visualHashes: VIS-01 Pending, VIS-02 Pending`; `approvalReference: Pending`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/107`; `latestPublishedComment: Pending`. #414 tracks this request, not a new canonical component contract.
-- **Hash definition:** SHA-256 of the UTF-8 payload from `## 1. Purpose and scope` through EOF, LF line endings and the final newline; tracking metadata above it is excluded. Approval must identify this exact version, digest and visual hashes.
+- **Snapshot identity:** `version: v0.2`; `contentSHA256: Pending before finalization`; `visualHashes: VIS-01 Pending, VIS-02 Pending`; `approvalReference: owner session 2026-11-16; proposal egdev-ds-nexo-adoption-v1`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/107`; `latestPublishedComment: Pending`. #414 tracks this request, not a new canonical component contract.
+- **Hash definition:** SHA-256 of the UTF-8 payload from `## 1. Purpose and scope` through EOF, LF line endings and the final newline; tracking metadata above it is excluded. Finalize the digest before publication. The spec is approved without captures; visual hashes remain pending.
 
 ## 1. Purpose and scope
 
 - **Need:** independently stretch segmented tabs to available width and allow long labels to wrap and align to the start, without internal selectors. Selected-state contrast is separate ([#404](https://github.com/egdev6/egdev-design-system/issues/404)).
-- **Cataloging proposal:** extend the existing `@egdev/ui` molecule, not a new navigation widget. Reuse alone permits root placement but not internal list/trigger styling; consumer composition cannot access those parts through the public API. Extraction/new components are unnecessary for the same selection responsibility. This is a proposal, not approval.
+- **Cataloging proposal:** extend the existing `@egdev/ui` molecule, not a new navigation widget. Reuse alone permits root placement but not internal list/trigger styling; consumer composition cannot access those parts through the public API. Extraction/new components are unnecessary for the same selection responsibility. Spec approval does not authorize implementation.
 - **Evidence:** `packages/ui/src/index.ts`, `molecules/tabs/{index.ts,types.ts,useTabs.ts,Tabs.tsx,Tabs.test.tsx,Tabs.stories.tsx}` and the v0.1 evidence were inspected. Current segmented lists are intrinsic-width, start-aligned Surface wells; trigger labels use `whitespace-nowrap`. Underline uses horizontal scrolling. No new behavior is claimed delivered.
 
 ## 2. Anatomy and composition
@@ -31,7 +31,7 @@ Radix `@radix-ui/react-tabs` continues to own selection, focus and relationships
 
 The two options are independent and may be combined. Both are layout proposals, not state or selection inputs. Existing `variant: 'underline' | 'segmented'` defaults to `underline`; `size: 'md' | 'sm'` defaults to `md` and still has no effect on segmented geometry. Existing item, value, callback and native APIs remain unchanged.
 
-**Prop conventions:** inspected the [registry source](../../../../skills/_shared/prop-naming.json) and [generated view](../../../prop-naming.md) by meaning, name and aliases. No matching convention exists for these responsibilities. Propose `tab-list-full-width` → `fullWidth: boolean` and `tab-label-wrap` → `labelWrap: boolean`, both `proposed`, approval pending; the latter includes logical-start label alignment. `top-bar-content-width` concerns a constrained content row, not equal trigger distribution; `section-content-wrap` / `wrap` explicitly excludes flex wrapping. No exception or registry mutation is proposed here. Reviewed existing usage context for both proposals: `source: { path: 'packages/ui/src/molecules/tabs/types.ts', symbol: 'TabsProps', revision: 'sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615' }`; this symbol does **not** yet contain the new props. Registry convention approval is separate from spec approval.
+**Prop conventions:** inspected the [registry source](../../../../skills/_shared/prop-naming.json) and [generated view](../../../prop-naming.md) by meaning, name and aliases. The owner approved `tab-list-full-width` → `fullWidth: boolean` for Tabs and a shared `labelWrap: boolean` convention for Tabs and Button (owner session 2026-11-16, proposal egdev-ds-nexo-adoption-v1); Tabs also aligns wrapped labels to logical start. The drafts used different candidate IDs for the shared convention (`tab-label-wrap` and `button-label-wrapping`); its single registry ID remains to be resolved. `top-bar-content-width` concerns a constrained content row, not equal trigger distribution; `section-content-wrap` / `wrap` explicitly excludes flex wrapping. Registry entries and usages are added in each implementation PR, not here. Reviewed existing usage context: `source: { path: 'packages/ui/src/molecules/tabs/types.ts', symbol: 'TabsProps', revision: 'sha256:f495fce0b20fb63177cda01fa64b84bea5e6d65ec2976f3bf4801e7e9aa22615' }`; this symbol does **not** yet contain the new props.
 
 Native div props forward to Radix Root with v0.1 omissions; `className` is root outer margin, width and grid placement only. No ref, children or `asChild` API. `value`, `defaultValue` and `onValueChange` retain controlled/uncontrolled semantics, including the first-enabled fallback and Radix's existing request behavior. Public exports and supported React peer claims are unchanged; compatibility requires the planned consumer checks, not a type-only inference.
 
@@ -70,7 +70,7 @@ Reuse the existing `surfaceVariants({ tone: 'well', padding: 'none', radius: 'md
 | VIS-01 | Pending: full-width segmented list with centered short labels | Source, viewport, scale, browser, theme, fonts, preferences, crop and provenance pending | Pending owner reference and approval |
 | VIS-02 | Pending: narrow segmented list with wrapping long labels and visible focus | Same conditions and provenance pending; also verify overflow and logical direction | Pending owner reference and approval |
 
-No new captures are authorized in this batch. The historical v0.1 `docs/design/foundation-boards/v2026-10-18/Tabs.png` (SHA-256 `5c99ce8a8ba13d955327a9826f4765d824a65bca3262b3f0d450dcff73bb418a`, per v0.1 evidence) is not evidence for these new layouts. Intended review covers well/active/focus treatments, tokens, spacing, readable labels and overflow; visual conformity is **Not evaluated** until comparable captures and scoped owner approval exist. Do not infer token values from pixels.
+No new captures are authorized in this batch. The spec is approved without captures; each Tabs implementation PR must provide stories and a real capture before merge. The historical v0.1 `docs/design/foundation-boards/v2026-10-18/Tabs.png` (SHA-256 `5c99ce8a8ba13d955327a9826f4765d824a65bca3262b3f0d450dcff73bb418a`, per v0.1 evidence) is not evidence for these new layouts. Intended review covers well/active/focus treatments, tokens, spacing, readable labels and overflow; visual conformity is **Not evaluated** until comparable captures and scoped owner approval exist. Do not infer token values from pixels.
 
 ## 7. Acceptance criteria
 
@@ -86,8 +86,17 @@ All checks below are planned, not observed for v0.2; stories do not replace test
 | AC-06 | Underline ignores both additions; existing Surface well, active and focus recipes remain; no arbitrary part override is required. | `Tabs.test.tsx`, production CSS scan and browser computed-focus/reduced-motion check; existing/default and opt-in stories. | Pending |
 | AC-07 | Public API documents accurate prop names, defaults and controls without a new dependency. | Type/docgen/Storybook Controls and package-consumer checks; inspect CSS bundle without a consumer Tailwind compiler. | Pending |
 
-### Open decisions for the owner and planned checks
+### Resolved decisions
 
-- Approve or revise `fullWidth` and `labelWrap` names, their separate proposed registry conventions, segmented-only/no-op underline scope, logical-start alignment and the four combinations. Confirm the equal-width-plus-scroll overflow policy, including behavior at extremely narrow host widths.
-- Approve the two visual scenarios and provide an authorized expected-design source, capture conditions and separately scoped visual approval. New visuals and conformity remain pending; #404 contrast work is not included.
-- After a version/digest/visual approval, propose a separately approved implementation plan. Planned verification is AC-01–AC-07 above, including real browser layout/accessibility and packed consumers; no check in this draft has run for v0.2.
+- “Aprobar las cuatro” — `fullWidth` for Tabs and the shared Tabs/Button `labelWrap` convention are approved.
+- “Sí, validación visual en cada PR” — the spec is approved without captures; the Tabs implementation PR must provide stories and a real capture before merge.
+
+### Remaining open decisions
+
+- Confirm segmented-only/no-op underline scope, logical-start alignment, the four combinations and the equal-width-plus-scroll overflow policy, including extremely narrow hosts.
+- Resolve the shared `labelWrap` registry ID in the implementation PR.
+- Provide an authorized expected-design source, capture conditions and separately scoped visual approval for the two scenarios. Visual conformity remains pending; #404 contrast work is not included.
+
+### Planned checks
+
+Propose a separately approved implementation plan. Planned verification is AC-01–AC-07 above, including real browser layout/accessibility and packed consumers; no check for this amendment has run for v0.2.
