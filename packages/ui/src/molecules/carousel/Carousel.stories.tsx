@@ -50,6 +50,7 @@ const items: [CarouselItem, CarouselItem, CarouselItem] = [
  * Slides must not contain links, controls, tab stops or autoplay. Arrow keys work on the slide group itself;
  * Home/End reach the boundaries. Text selection is preserved; media/background supports mouse dragging.
  * Controlled requests commit only when accepted. Never drive periodic value changes to simulate autoplay.
+ * Full-width tracks hide the scrollbar visually while retaining native scrolling; fit content inside each slide.
  * Root className supports only width, margins and layout placement. No stylesheet or part override API.
  */
 const meta: Meta<typeof Carousel> = {
@@ -63,6 +64,19 @@ type Story = StoryObj<typeof Carousel>;
 
 /** Required inputs only: first item, one tab stop, all read-only content mounted. */
 export const Default: Story = {};
+
+/** Edge-to-edge slides retain native scrolling and a visible inset focus indicator. */
+export const FullWidth: Story = { args: { trackLayout: 'full-width' } };
+
+/** The full-width track remains navigable in a narrow, token-sized host. */
+export const FullWidthNarrow: Story = {
+  args: { trackLayout: 'full-width' },
+  render: (args) => (
+    <div className='w-full max-w-[calc(var(--space-24)*3)]'>
+      <Carousel {...args} />
+    </div>
+  )
+};
 
 /** A one-item collection retains its readable slide while both controls are disabled. */
 export const SingleItem: Story = { args: { items: items.slice(0, 1) } };

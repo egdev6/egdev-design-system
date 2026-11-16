@@ -7014,6 +7014,15 @@ test('Carousel ships static layout, snap, drag, focus and token geometry without
     '.snap-mandatory',
     '.snap-center',
     '.scroll-auto',
+    '.overflow-x-auto',
+    '.gap-0',
+    '.p-0',
+    String.raw`.\[scrollbar-width\:none\]`,
+    String.raw`.\[\&\:\:-webkit-scrollbar\]\:hidden`,
+    String.raw`.focus-visible\:outline-solid`,
+    String.raw`.focus-visible\:outline-\(length\:--focus-width\)`,
+    String.raw`.focus-visible\:outline-focus-ring`,
+    String.raw`.focus-visible\:-outline-offset-\(--focus-width\)`,
     String.raw`.group-data-\[state\=dragging\]\:snap-none`,
     String.raw`.group-data-\[state\=dragging\]\:cursor-grabbing`,
     String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`,
@@ -7022,6 +7031,12 @@ test('Carousel ships static layout, snap, drag, focus and token geometry without
     assert.ok(css.includes(selector), `Missing Carousel utility ${selector}`);
   }
   assert.match(cssBlock(css, /\.gap-7\s*\{/), /gap:\s*var\(--space-7[,)]/);
+  assert.match(cssBlock(css, /\.gap-0\s*\{/), /gap:\s*var\(--space-0[,)]/);
+  assert.match(cssBlock(css, /\.p-0\s*\{/), /padding:\s*var\(--space-0[,)]/);
+  assert.match(cssBlock(css, /\.overflow-x-auto\s*\{/), /overflow-x:\s*auto/);
+  assert.match(css, /scrollbar-width:\s*none/);
+  assert.match(css, /::-webkit-scrollbar[^{}]*\{[^{}]*display:\s*none/);
+  assert.match(css, /outline-offset:\s*calc\(var\(--focus-width\)\s*\*\s*-1\)/);
   assert.doesNotMatch(css, /\.eg-carousel[^{]*\{/);
   assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/carousel/carousel.css')), false);
 });
@@ -7047,6 +7062,17 @@ test('Carousel public exports preserve deterministic named groups and composed a
   assert.match(html, /eg-progress/);
   assert.match(html.replace(/<!-- -->/g, '').replace(/<[^>]*>/g, ''), /01 \/ 02/);
   assert.equal((html.match(/tabindex="0"/g) ?? []).length, 1);
+  const fullWidth = renderToString(
+    createElement(exported.Carousel, {
+      label: 'Highlights',
+      trackLayout: 'full-width',
+      items: [{ value: 'alpha', label: 'Alpha', children: 'First information' }]
+    })
+  );
+  assert.match(fullWidth, /gap-0 p-0/);
+  assert.match(fullWidth, /scrollbar-width:none/);
+  assert.match(fullWidth, /focus-visible:-outline-offset-\(--focus-width\)/);
+  assert.doesNotMatch(fullWidth, /tracklayout=/i);
   for (const name of ['useCarousel', 'carouselVariants', 'defaultCarouselMessages']) {
     assert.equal(Object.hasOwn(exported, name), false, `${name} remains internal`);
   }

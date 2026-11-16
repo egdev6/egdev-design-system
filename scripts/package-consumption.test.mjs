@@ -1298,10 +1298,14 @@ const carouselItems: CarouselItem[] = [
 ];
 const carouselMessages: Partial<CarouselMessages> = { nextSlide: 'Next card' };
 const carouselProps: CarouselProps = { label: 'Highlights', items: carouselItems, messages: carouselMessages };
-export function CarouselSamples({ value, empty = false }: { value?: string; empty?: boolean }) {
-  return createElement(Carousel, { ...carouselProps, value, items: empty ? [] : carouselItems,
+export const carouselDefaultLayout: CarouselProps = { ...carouselProps, trackLayout: 'default' };
+export const carouselFullWidthLayout: CarouselProps = { ...carouselProps, trackLayout: 'full-width' };
+export function CarouselSamples({ value, empty = false, trackLayout }: { value?: string; empty?: boolean; trackLayout?: CarouselProps['trackLayout'] }) {
+  return createElement(Carousel, { ...carouselProps, value, trackLayout, items: empty ? [] : carouselItems,
     onValueChange: (next: string) => carouselChanges.push(next) });
 }
+// @ts-expect-error Track layout is the approved two-value union.
+const invalidCarouselTrackLayout: CarouselProps = { ...carouselProps, trackLayout: 'edge' };
 // @ts-expect-error Carousel requires a visible collection label.
 const unlabelledCarousel: CarouselProps = { items: carouselItems };
 // @ts-expect-error Carousel accepts stable string identities, not indexes.
@@ -5554,6 +5558,15 @@ function assertCarouselCSS(css) {
     '.snap-mandatory',
     '.snap-center',
     '.scroll-auto',
+    '.overflow-x-auto',
+    '.gap-0',
+    '.p-0',
+    String.raw`.\[scrollbar-width\:none\]`,
+    String.raw`.\[\&\:\:-webkit-scrollbar\]\:hidden`,
+    String.raw`.focus-visible\:outline-solid`,
+    String.raw`.focus-visible\:outline-\(length\:--focus-width\)`,
+    String.raw`.focus-visible\:outline-focus-ring`,
+    String.raw`.focus-visible\:-outline-offset-\(--focus-width\)`,
     String.raw`.group-data-\[state\=dragging\]\:snap-none`,
     String.raw`.group-data-\[state\=dragging\]\:cursor-grabbing`,
     String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`
@@ -5561,6 +5574,9 @@ function assertCarouselCSS(css) {
     assert.ok(css.includes(selector), 'Missing Carousel utility ' + selector);
   }
   assert.match(css, /gap:\s*var\(--space-7[,)]/);
+  assert.match(css, /scrollbar-width:\s*none/);
+  assert.match(css, /::-webkit-scrollbar[^{}]*\{[^{}]*display:\s*none/);
+  assert.match(css, /outline-offset:\s*calc\(var\(--focus-width\)\s*\*\s*-1\)/);
 }
 
 function assertLinkCSS(css) {
@@ -6252,6 +6268,20 @@ try {
   assert.ok(root.textContent.includes('01 / 03'));
 } finally { carouselDocument.window.close(); }
 assert.ok(renderToString(createElement(CarouselSamples, { empty: true })).includes('No slides'));
+const fullWidthCarousel = new JSDOM(renderToString(createElement(CarouselSamples, { trackLayout: 'full-width' })));
+try {
+  const root = fullWidthCarousel.window.document.querySelector('.eg-carousel');
+  const track = root.querySelector('[aria-roledescription="slide"]').parentElement;
+  assert.equal(root.hasAttribute('tracklayout'), false);
+  for (const name of ['gap-0', 'p-0', 'overflow-x-auto', '[scrollbar-width:none]', '[&::-webkit-scrollbar]:hidden']) {
+    assert.ok(track.classList.contains(name), name);
+  }
+  const slide = root.querySelector('[aria-current="true"]');
+  for (const name of ['basis-full', 'snap-center', 'focus-visible:-outline-offset-(--focus-width)']) {
+    assert.ok(slide.classList.contains(name), name);
+  }
+  assert.equal(slide.classList.contains('focus-visible:shadow-[var(--shadow-focus)]'), false);
+} finally { fullWidthCarousel.window.close(); }
 // MeterRow SSR has one semantic owner, coherent text and generated description references.
 for (const value of [42.5, Number.NaN]) {
   const dom = new JSDOM(renderToString(createElement(MeterRowSamples, { value })));
