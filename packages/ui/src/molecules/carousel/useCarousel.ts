@@ -98,6 +98,7 @@ export function useCarousel({
   defaultValue,
   onValueChange,
   messages: overrides,
+  trackLayout = 'default',
   className,
   onKeyDown,
   onFocusCapture,
@@ -420,7 +421,7 @@ export function useCarousel({
     trackProps: {
       id: trackId,
       ref: track,
-      className: cn(carouselTrackVariants()),
+      className: cn(carouselTrackVariants({ trackLayout })),
       onScroll: scheduleSettlement,
       onPointerDown: (event) => {
         if (
@@ -527,7 +528,7 @@ export function useCarousel({
         'aria-describedby': instructionId,
         'aria-current': itemIndex === index ? 'true' : undefined,
         tabIndex: itemIndex === index ? 0 : -1,
-        className: cn(carouselSlideVariants())
+        className: cn(carouselSlideVariants({ trackLayout }))
       }
     }))
   };

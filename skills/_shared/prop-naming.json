@@ -434,7 +434,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
         }
       },
       {
@@ -444,7 +444,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselItem",
-          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
         }
       },
       {
@@ -551,7 +551,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
         }
       },
       {
@@ -648,7 +648,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
         }
       },
       {
@@ -1884,7 +1884,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
         }
       },
       {
@@ -1894,7 +1894,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselItem",
-          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
         }
       },
       {
@@ -3802,7 +3802,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
         }
       },
       {
@@ -3989,7 +3989,7 @@
         "source": {
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
-          "revision": "sha256:e7bec3354a8aceb305f30e48715014d72c31627d86e8fa7b031d9ae52bd53320"
+          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
         }
       },
       {
@@ -8091,6 +8091,33 @@
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
           "revision": "sha256:a294d6211645a5d74e1a9ece9d012747576e6c4c6ef03e309dab34081d190f5b"
+        }
+      }
+    ]
+  },
+  {
+    "id": "carousel-track-layout",
+    "name": "trackLayout",
+    "meaning": "Layout and scrollbar presentation of a carousel scrolling track.",
+    "whenToUse": "Choose the default padded track or a full-width track with a visually hidden scrollbar while retaining native scrolling.",
+    "avoid": "Do not use for arbitrary element width, visual treatment or a non-scrolling content row.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/carousel/v0.2/prop-naming-approval.json",
+      "scope": "convention:carousel-track-layout",
+      "contentHash": "sha256:928d0d597a14134b2a8e66f0dcec2296a45fd2c1768df948ae1ef4fa07c5504c"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Carousel",
+        "type": "'default' | 'full-width' (default 'default')",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/carousel/types.ts",
+          "symbol": "CarouselProps",
+          "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
         }
       }
     ]

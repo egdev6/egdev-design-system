@@ -1,0 +1,42 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve the Carousel trackLayout convention for the default and full-width scrolling track layouts.",
+  "evidence": {
+    "userStatements": [
+      {
+        "quote": "Aprobar las cuatro",
+        "provenance": "odd/tasks/nexo-adoption-m1-specs.md#log L5: owner approval of the four naming conventions, including trackLayout."
+      },
+      {
+        "quote": "No, union inline en la prop",
+        "provenance": "odd/tasks/carousel-full-width-track.md#log L1: owner selected the inline prop union."
+      },
+      {
+        "quote": "Aprobar e implementar",
+        "provenance": "odd/tasks/carousel-full-width-track.md#log L1: owner approval of the bounded Carousel implementation plan."
+      }
+    ],
+    "interpretation": "The approval covers the Carousel track layout and scrollbar policy, not arbitrary element widths or other component APIs. This record is not native review authority."
+  },
+  "priorReceipts": [],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:carousel-track-layout",
+      "contentHash": "sha256:928d0d597a14134b2a8e66f0dcec2296a45fd2c1768df948ae1ef4fa07c5504c",
+      "convention": {
+        "id": "carousel-track-layout",
+        "name": "trackLayout",
+        "meaning": "Layout and scrollbar presentation of a carousel scrolling track.",
+        "whenToUse": "Choose the default padded track or a full-width track with a visually hidden scrollbar while retaining native scrolling.",
+        "avoid": "Do not use for arbitrary element width, visual treatment or a non-scrolling content row.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

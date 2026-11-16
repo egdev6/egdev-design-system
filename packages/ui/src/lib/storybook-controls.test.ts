@@ -392,7 +392,15 @@ const expected: Record<string, Record<string, string | false>> = {
     name: 'text',
     required: 'boolean'
   },
-  carousel: { items: false, label: 'text', value: 'text', defaultValue: 'text', onValueChange: false, messages: false },
+  carousel: {
+    items: false,
+    label: 'text',
+    value: 'text',
+    defaultValue: 'text',
+    onValueChange: false,
+    messages: false,
+    trackLayout: 'select'
+  },
   sectionheader: {
     title: 'text',
     eyebrow: 'text',
@@ -727,7 +735,7 @@ const ownPropCounts: Record<string, number> = {
   tipcard: 7,
   timeline: 7,
   selecttile: 11,
-  carousel: 6,
+  carousel: 7,
   avatar: 4,
   button: 7,
   checkbox: 7,
@@ -1046,6 +1054,17 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
     const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
     expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+  });
+  it('maps Carousel track layout as an optional select without injecting an argument', () => {
+    const metadata = component('Carousel');
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+    const { argTypes, args } = story('Carousel');
+    expect(argTypes.trackLayout?.control).toEqual({ type: 'select' });
+    expect(argTypes.trackLayout?.options).toEqual(['default', 'full-width']);
+    expect(argTypes.trackLayout?.type?.required).not.toBe(true);
+    expect(argTypes.trackLayout?.table?.defaultValue?.summary).toBe('"default"');
+    expect(args).toEqual({});
   });
   it('maps both Tabs layout flags as optional boolean controls with false defaults', () => {
     const metadata = component('Tabs');

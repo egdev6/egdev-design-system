@@ -111,6 +111,12 @@ export type CarouselProps = Omit<
    * @controlReason The dictionary includes a formatter function; see Localized.
    */
   messages?: Partial<CarouselMessages>;
+  /**
+   * Track spacing and scrollbar presentation. Full-width keeps native scrolling and inset focus.
+   * @control select
+   * @default default
+   */
+  trackLayout?: 'default' | 'full-width';
 };
 
 export const defaultCarouselMessages: CarouselMessages = {
@@ -130,11 +136,27 @@ export const carouselControlsVariants = cva('flex items-center gap-2');
 export const carouselCounterVariants = cva('font-display text-meta tabular-nums text-fg-secondary');
 export const carouselCurrentVariants = cva('text-fg-default');
 export const carouselTrackVariants = cva(
-  'flex min-w-0 gap-7 overflow-x-auto snap-x snap-mandatory scroll-auto p-2 group-data-[state=dragging]:snap-none group-data-[state=dragging]:cursor-grabbing'
+  'flex min-w-0 overflow-x-auto snap-x snap-mandatory scroll-auto group-data-[state=dragging]:snap-none group-data-[state=dragging]:cursor-grabbing',
+  {
+    variants: {
+      trackLayout: {
+        default: 'gap-7 p-2',
+        'full-width': 'gap-0 p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
+      }
+    },
+    defaultVariants: { trackLayout: 'default' }
+  }
 );
-export const carouselSlideVariants = cva(
-  'box-border min-w-0 basis-full shrink-0 snap-center rounded-lg outline-none focus-visible:shadow-[var(--shadow-focus)]'
-);
+export const carouselSlideVariants = cva('box-border min-w-0 basis-full shrink-0 snap-center rounded-lg outline-none', {
+  variants: {
+    trackLayout: {
+      default: 'focus-visible:shadow-[var(--shadow-focus)]',
+      'full-width':
+        'focus-visible:outline-solid focus-visible:outline-(length:--focus-width) focus-visible:outline-focus-ring focus-visible:-outline-offset-(--focus-width)'
+    }
+  },
+  defaultVariants: { trackLayout: 'default' }
+});
 export const carouselProgressVariants = cva('self-center w-full max-w-[calc(var(--space-20)*4)]');
 export const carouselArrowVariants = cva('', {
   variants: { reversed: { true: 'rotate-180', false: 'rotate-0' } }

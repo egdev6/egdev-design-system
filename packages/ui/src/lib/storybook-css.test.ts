@@ -552,6 +552,26 @@ describe('Storybook preview CSS', () => {
     expect(css).not.toMatch(/\.eg-carousel[^{]*\{/);
   });
 
+  it('compiles Carousel full-width scrolling, scrollbar hiding and inset focus utilities', () => {
+    expect(rule('.gap-0')).toMatch(/gap:\s*var\(--space-0[,)]/);
+    expect(rule('.p-0')).toMatch(/padding:\s*var\(--space-0[,)]/);
+    expect(rule('.overflow-x-auto')).toMatch(/overflow-x:\s*auto/);
+    expect(rule(String.raw`.\[scrollbar-width\:none\]`)).toMatch(/scrollbar-width:\s*none/);
+    const webkit = css.indexOf(String.raw`.\[\&\:\:-webkit-scrollbar\]\:hidden`);
+    expect(webkit).toBeGreaterThanOrEqual(0);
+    expect(css.slice(webkit, webkit + 250)).toMatch(/::-webkit-scrollbar[\s\S]*display:\s*none/);
+    expect(rule('.focus-visible\\:-outline-offset-\\(--focus-width\\):focus-visible')).toMatch(
+      /outline-offset:\s*calc\(var\(--focus-width\)\s*\*\s*-1\)/
+    );
+    for (const selector of [
+      String.raw`.focus-visible\:outline-solid`,
+      String.raw`.focus-visible\:outline-\(length\:--focus-width\)`,
+      String.raw`.focus-visible\:outline-focus-ring`
+    ]) {
+      expect(css).toContain(selector);
+    }
+  });
+
   it('preserves the external font import in a valid position and the existing body token bindings', () => {
     const fonts = /@import\s+(?:url\()?['"]https:\/\/fonts\.googleapis\.com\/css2\?[^'"]+['"]\)?\s*;/.exec(css);
     expect(fonts, 'Google Fonts must remain imported, not silently dropped by compilation').not.toBeNull();

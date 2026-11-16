@@ -804,9 +804,10 @@ const postReceiptProposals = [
   'page-top-bar-slot',
   'top-bar-initial-background',
   'top-bar-content-width',
-  // Tabs v0.2 conventions were approved after the historical receipts.
+  // Tabs and Carousel v0.2 conventions were approved after the historical receipts.
   'tab-list-full-width',
-  'control-label-wrap'
+  'control-label-wrap',
+  'carousel-track-layout'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -908,6 +909,48 @@ test('Tabs layout conventions bind the owner choices, scoped receipt and reviewe
     ]);
     assert.deepEqual(historicalRegistry([entry]), []);
   }
+});
+
+test('Carousel track layout binds the owner choices, scoped receipt and every reviewed source', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/carousel/v0.2/prop-naming-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  for (const [quote, locator] of [
+    ['Aprobar las cuatro', 'nexo-adoption-m1-specs.md#log L5'],
+    ['No, union inline en la prop', 'carousel-full-width-track.md#log L1'],
+    ['Aprobar e implementar', 'carousel-full-width-track.md#log L1']
+  ]) {
+    assert.ok(
+      receipt.evidence.userStatements.some((item) => item.quote === quote && item.provenance.includes(locator))
+    );
+  }
+  const path = 'packages/ui/src/molecules/carousel/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const entry = registry.find(({ id }) => id === 'carousel-track-layout');
+  assert.equal(entry.name, 'trackLayout');
+  assert.equal(entry.status, 'approved');
+  const { approval, usages, ...convention } = entry;
+  const contentHash = props.conventionHash(entry);
+  assert.deepEqual(approval, { reference, scope: 'convention:carousel-track-layout', contentHash });
+  assert.deepEqual(receipt.entries, [{ scope: approval.scope, contentHash, convention }]);
+  assert.deepEqual(usages, [
+    {
+      component: 'Carousel',
+      type: "'default' | 'full-width' (default 'default')",
+      status: 'existing',
+      source: { path, symbol: 'CarouselProps', revision }
+    }
+  ]);
+  assert.deepEqual(historicalRegistry([entry]), []);
+  const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
+  assert.equal(own.length, 9);
+  for (const usage of own) {
+    assert.equal(usage.source.revision, revision);
+    assert.ok(['CarouselProps', 'CarouselItem'].includes(usage.source.symbol));
+  }
+  validate(registry);
 });
 
 test('Field trailing choice updates only the approved layout usage and all reviewed Field revisions', () => {
@@ -1456,9 +1499,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   validate(actual);
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
-  // AmbientBackground adds two directions; TopBar v0.3 and Tabs v0.2 each add two approved conventions.
-  assert.equal(actual.length, 166);
-  assert.equal(beforeIndicatorConventions(actual).length, 163);
+  // AmbientBackground adds two directions; TopBar and Tabs each add two; Carousel adds one.
+  assert.equal(actual.length, 167);
+  assert.equal(beforeIndicatorConventions(actual).length, 164);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {

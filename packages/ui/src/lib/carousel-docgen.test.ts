@@ -12,7 +12,7 @@ import preview from '../../../../.storybook/preview';
 const path = (name: string) => fileURLToPath(new URL(`../molecules/carousel/${name}`, import.meta.url));
 
 describe('Carousel Storybook contract', () => {
-  it('documents every own item, dictionary and root property with explicit controls and no fake defaults', () => {
+  it('documents every own item, dictionary and root property with explicit controls and only the track layout default', () => {
     const file = ts.createSourceFile('types.ts', readFileSync(path('types.ts'), 'utf8'), ts.ScriptTarget.Latest, true);
     const declarations: ts.PropertySignature[] = [];
     const visit = (node: ts.Node) => {
@@ -29,12 +29,15 @@ describe('Carousel Storybook contract', () => {
         visit(node);
       }
     });
-    expect(declarations).toHaveLength(16);
+    expect(declarations).toHaveLength(17);
     for (const property of declarations) {
       const tags = ts.getJSDocTags(property);
       const controls = tags.filter((tag) => tag.tagName.text === 'control');
       expect(controls, property.name.getText(file)).toHaveLength(1);
-      expect(tags.some((tag) => tag.tagName.text === 'default')).toBe(false);
+      const defaults = tags.filter((tag) => tag.tagName.text === 'default');
+      expect(defaults.map((tag) => ts.getTextOfJSDocComment(tag.comment))).toEqual(
+        property.name.getText(file) === 'trackLayout' ? ['default'] : []
+      );
       if (ts.getTextOfJSDocComment(controls[0]?.comment) === 'false') {
         expect(tags.some((tag) => tag.tagName.text === 'controlReason' && tag.comment)).toBe(true);
       }
@@ -42,6 +45,8 @@ describe('Carousel Storybook contract', () => {
     const stories = readFileSync(path('Carousel.stories.tsx'), 'utf8');
     expect(stories).toContain("title: 'Molecules/Carousel'");
     expect(stories).not.toMatch(/\bargTypes\s*:|\bplay\s*:/);
+    expect(stories).toMatch(/export const FullWidth: Story/);
+    expect(stories).toMatch(/export const FullWidthNarrow: Story/);
     expect(config.stories).toContain('../packages/*/src/**/*.stories.@(ts|tsx)');
   });
 
@@ -68,6 +73,14 @@ describe('Carousel Storybook contract', () => {
       const tags = doc?.props[name]?.tags as Record<string, string> | undefined;
       expect(tags?.controlReason).toBeTruthy();
     }
+    expect(doc?.props.trackLayout).toMatchObject({
+      required: false,
+      defaultValue: { value: 'default' },
+      tags: { control: 'select' }
+    });
+    expect(installed.argTypes.trackLayout?.control).toEqual({ type: 'select' });
+    expect(installed.argTypes.trackLayout?.options).toEqual(['default', 'full-width']);
+    expect(installed.argTypes.trackLayout?.table?.defaultValue?.summary).toBe('"default"');
     expect(doc?.props.items?.required).toBe(true);
     expect(doc?.props.label?.required).toBe(true);
     for (const name of ['id', 'dir', 'className', 'onKeyDown', 'aria-describedby']) {

@@ -631,3 +631,300 @@ describe('Carousel public contract v0.1', () => {
     expect(onValueChange).not.toHaveBeenCalled();
   });
 });
+
+describe('Carousel v0.2 track layout', () => {
+  it.each([undefined, 'default'] as const)('preserves the padded default track and outward focus with %s', (layout) => {
+    render(<Carousel label='Highlights' items={items} trackLayout={layout} />);
+    expect(track()).toHaveClass('gap-7', 'p-2', 'overflow-x-auto', 'snap-x', 'snap-mandatory');
+    expect(track()).not.toHaveClass('gap-0', 'p-0', '[scrollbar-width:none]', '[&::-webkit-scrollbar]:hidden');
+    for (const slide of slides()) {
+      expect(slide).toHaveClass('basis-full', 'snap-center', 'focus-visible:shadow-[var(--shadow-focus)]');
+      expect(slide).not.toHaveClass('focus-visible:-outline-offset-(--focus-width)');
+    }
+  });
+
+  it('uses a scrollable edge-to-edge viewport with hidden scrollbars and an inset slide focus indicator', () => {
+    const errors = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    render(<Carousel label='Highlights' items={items} trackLayout='full-width' data-example='retained' />);
+    const root = screen.getByRole('group', { name: 'Highlights' });
+    expect(root).not.toHaveAttribute('tracklayout');
+    expect(root).toHaveAttribute('data-example', 'retained');
+    expect(errors).not.toHaveBeenCalled();
+    expect(track()).toHaveClass(
+      'gap-0',
+      'p-0',
+      'overflow-x-auto',
+      'snap-x',
+      'snap-mandatory',
+      '[scrollbar-width:none]',
+      '[&::-webkit-scrollbar]:hidden'
+    );
+    expect(track()).not.toHaveClass('gap-7', 'p-2');
+    for (const slide of slides()) {
+      expect(slide).toHaveClass(
+        'basis-full',
+        'snap-center',
+        'focus-visible:outline-solid',
+        'focus-visible:outline-(length:--focus-width)',
+        'focus-visible:outline-focus-ring',
+        'focus-visible:-outline-offset-(--focus-width)'
+      );
+      expect(slide).not.toHaveClass('focus-visible:shadow-[var(--shadow-focus)]');
+    }
+  });
+
+  it('updates both parts when the layout changes without changing the accepted slide', () => {
+    const onValueChange = vi.fn();
+    const { rerender } = render(<Carousel label='Highlights' items={items} value='b' onValueChange={onValueChange} />);
+    rerender(
+      <Carousel label='Highlights' items={items} value='b' trackLayout='full-width' onValueChange={onValueChange} />
+    );
+    expect(track()).toHaveClass('gap-0', 'p-0');
+    expect(current()).toHaveAccessibleName('2 of 3: Beta');
+    expect(current()).toHaveClass('focus-visible:-outline-offset-(--focus-width)');
+    expect(onValueChange).not.toHaveBeenCalled();
+    rerender(
+      <Carousel label='Highlights' items={items} value='b' trackLayout='default' onValueChange={onValueChange} />
+    );
+    expect(track()).toHaveClass('gap-7', 'p-2');
+    expect(current()).toHaveClass('focus-visible:shadow-[var(--shadow-focus)]');
+    expect(onValueChange).not.toHaveBeenCalled();
+  });
+
+  describe.each(['default', 'full-width'] as const)('%s interaction preservation', (layout) => {
+    it.each(['ltr', 'rtl'] as const)('keeps bounded directional keys, focus and Tab order in %s', async (dir) => {
+      const user = userEvent.setup();
+      const onValueChange = vi.fn();
+      render(
+        <>
+          <Carousel label='Highlights' items={items} trackLayout={layout} dir={dir} onValueChange={onValueChange} />
+          <button type='button'>After</button>
+        </>
+      );
+      await user.tab();
+      expect(screen.getByRole('button', { name: 'Next slide' })).toHaveFocus();
+      await user.tab();
+      expect(current()).toHaveFocus();
+      await user.keyboard(dir === 'ltr' ? '{ArrowLeft}' : '{ArrowRight}');
+      expect(onValueChange).not.toHaveBeenCalled();
+      await user.keyboard(dir === 'ltr' ? '{ArrowRight}' : '{ArrowLeft}');
+      expect(current()).toHaveAccessibleName('2 of 3: Beta');
+      expect(current()).toHaveFocus();
+      await user.keyboard('{End}{End}{Home}{Home}');
+      expect(current()).toHaveAccessibleName('1 of 3: Alpha');
+      expect(onValueChange.mock.calls).toEqual([['b'], ['c'], ['a']]);
+      await user.tab();
+      expect(screen.getByRole('button', { name: 'After' })).toHaveFocus();
+    });
+
+    it.each([false, true])('settles physical scrolling once in RTL %s', (rtl) => {
+      vi.useFakeTimers();
+      const onValueChange = vi.fn();
+      render(
+        <Carousel
+          label='Highlights'
+          items={items}
+          trackLayout={layout}
+          dir={rtl ? 'rtl' : 'ltr'}
+          onValueChange={onValueChange}
+        />
+      );
+      const { viewport, setOffset } = geometry(rtl);
+      setOffset(rtl ? -100 : 100);
+      fireEvent.scroll(viewport);
+      act(() => vi.advanceTimersByTime(200));
+      fireEvent(viewport, new Event('scrollend'));
+      expect(current()).toHaveAccessibleName('2 of 3: Beta');
+      expect(onValueChange).toHaveBeenCalledExactlyOnceWith('b');
+    });
+
+    it('realigns a rejected controlled scroll without duplicate requests or focus changes', () => {
+      const onValueChange = vi.fn();
+      render(
+        <Carousel label='Highlights' items={items} trackLayout={layout} value='a' onValueChange={onValueChange} />
+      );
+      const { viewport, scrollTo, setOffset } = geometry();
+      (current() as HTMLElement).focus();
+      setOffset(100);
+      fireEvent.scroll(viewport);
+      fireEvent(viewport, new Event('scrollend'));
+      expect(onValueChange).toHaveBeenCalledExactlyOnceWith('b');
+      expect(scrollTo).toHaveBeenLastCalledWith({ left: 0, behavior: 'instant' });
+      expect(current()).toHaveAccessibleName('1 of 3: Alpha');
+      expect(current()).toHaveFocus();
+      expect(screen.getByRole('status')).toBeEmptyDOMElement();
+    });
+
+    it('cancels and commits mouse drags without extra requests', () => {
+      const onValueChange = vi.fn();
+      render(<Carousel label='Highlights' items={items} trackLayout={layout} onValueChange={onValueChange} />);
+      const { viewport, scrollBy, scrollTo } = geometry();
+      const release = vi.fn();
+      Object.assign(viewport, {
+        setPointerCapture: vi.fn(),
+        releasePointerCapture: release,
+        hasPointerCapture: () => true
+      });
+      fireEvent.pointerDown(viewport, mouseDown);
+      fireEvent.pointerMove(viewport, mouseMove);
+      fireEvent.pointerCancel(viewport, { pointerId: 1 });
+      expect(scrollBy).toHaveBeenCalledWith({ left: 100, behavior: 'instant' });
+      expect(scrollTo).toHaveBeenCalledWith({ left: 0, behavior: 'instant' });
+      expect(onValueChange).not.toHaveBeenCalled();
+      expect(current()).toHaveAccessibleName('1 of 3: Alpha');
+      fireEvent.pointerDown(viewport, mouseDown);
+      fireEvent.pointerMove(viewport, mouseMove);
+      fireEvent.pointerUp(viewport, { pointerId: 1 });
+      expect(onValueChange).toHaveBeenCalledExactlyOnceWith('b');
+      expect(current()).toHaveAccessibleName('2 of 3: Beta');
+      expect(release).toHaveBeenCalledTimes(2);
+    });
+
+    it('retains safe empty, invalid and single-item boundaries', () => {
+      const warning = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const onValueChange = vi.fn();
+      const { rerender } = render(
+        <Carousel label='Highlights' items={[]} trackLayout={layout} onValueChange={onValueChange} />
+      );
+      expect(counterWith('00 / 00')).toBeVisible();
+      expect(screen.getByText('No slides')).toBeVisible();
+      expect(screen.getAllByRole('button').every((button) => (button as HTMLButtonElement).disabled)).toBe(true);
+      rerender(
+        <Carousel label='Highlights' items={[items[0], items[0]]} trackLayout={layout} onValueChange={onValueChange} />
+      );
+      expect(screen.getByText('No slides')).toBeVisible();
+      expect(warning).toHaveBeenCalledOnce();
+      rerender(<Carousel label='Highlights' items={[items[0]]} trackLayout={layout} onValueChange={onValueChange} />);
+      expect(counterWith('01 / 01')).toBeVisible();
+      expect(current()).toHaveAttribute('tabindex', '0');
+      expect(screen.getAllByRole('button').every((button) => (button as HTMLButtonElement).disabled)).toBe(true);
+      expect(onValueChange).not.toHaveBeenCalled();
+    });
+
+    it('preserves identity on reorder and repairs focus when the selected item is removed', () => {
+      const onValueChange = vi.fn();
+      const { rerender } = render(
+        <Carousel
+          label='Highlights'
+          items={items}
+          defaultValue='b'
+          trackLayout={layout}
+          onValueChange={onValueChange}
+        />
+      );
+      (current() as HTMLElement).focus();
+      rerender(
+        <Carousel
+          label='Highlights'
+          items={[items[1], items[0], items[2]]}
+          trackLayout={layout}
+          onValueChange={onValueChange}
+        />
+      );
+      expect(current()).toHaveAccessibleName('1 of 3: Beta');
+      expect(current()).toHaveFocus();
+      rerender(<Carousel label='Highlights' items={[items[0]]} trackLayout={layout} onValueChange={onValueChange} />);
+      expect(current()).toHaveAccessibleName('1 of 1: Alpha');
+      expect(current()).toHaveFocus();
+      expect(onValueChange).not.toHaveBeenCalled();
+    });
+
+    it.each(['touch', 'pen'] as const)('leaves native %s input uncaptured', (pointerType) => {
+      render(<Carousel label='Highlights' items={items} trackLayout={layout} />);
+      const { viewport } = geometry();
+      const capture = vi.fn();
+      Object.assign(viewport, { setPointerCapture: capture });
+      fireEvent.pointerDown(viewport, { ...mouseDown, pointerType });
+      fireEvent.pointerMove(viewport, { ...mouseMove, pointerType });
+      expect(capture).not.toHaveBeenCalled();
+      expect(current()).toHaveAccessibleName('1 of 3: Alpha');
+    });
+
+    it('never advances on idle, hover, focus or visibility changes', () => {
+      vi.useFakeTimers();
+      const onValueChange = vi.fn();
+      render(<Carousel label='Highlights' items={items} trackLayout={layout} onValueChange={onValueChange} />);
+      fireEvent.mouseEnter(track());
+      (current() as HTMLElement).focus();
+      fireEvent(document, new Event('visibilitychange'));
+      act(() => vi.advanceTimersByTime(60_000));
+      expect(current()).toHaveAccessibleName('1 of 3: Alpha');
+      expect(onValueChange).not.toHaveBeenCalled();
+    });
+
+    it('silently realigns accepted geometry on resize', () => {
+      const onValueChange = vi.fn();
+      render(
+        <Carousel label='Highlights' items={items} trackLayout={layout} value='b' onValueChange={onValueChange} />
+      );
+      const { scrollTo } = geometry();
+      fireEvent(window, new Event('resize'));
+      expect(scrollTo).toHaveBeenCalledWith({ left: 100, behavior: 'instant' });
+      expect(current()).toHaveAccessibleName('2 of 3: Beta');
+      expect(onValueChange).not.toHaveBeenCalled();
+    });
+  });
+
+  it('keeps a full-width controlled selection with synchronous WebView2 scroll listeners', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const onValueChange = vi.fn();
+    function Controlled() {
+      const [value, setValue] = useState('c');
+      return (
+        <Carousel
+          label='Highlights'
+          items={items}
+          trackLayout='full-width'
+          value={value}
+          onValueChange={(next) => {
+            onValueChange(next);
+            setValue(next);
+          }}
+        />
+      );
+    }
+    render(<Controlled />);
+    const { viewport, scrollBy, scrollTo } = geometry();
+    act(() => {
+      fireEvent(window, new Event('resize'));
+    });
+    let dispatching = false;
+    scrollTo.mockClear();
+    const move = scrollTo.getMockImplementation();
+    scrollTo.mockImplementation((options: ScrollToOptions) => {
+      move?.(options);
+      if (dispatching) {
+        return;
+      }
+      dispatching = true;
+      fireEvent.scroll(viewport);
+      fireEvent(viewport, new Event('scrollend'));
+      dispatching = false;
+    });
+    await userEvent
+      .setup({ advanceTimers: vi.advanceTimersByTime })
+      .click(screen.getByRole('button', { name: 'Previous slide' }));
+    act(() => vi.advanceTimersByTime(500));
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith('b');
+    expect(current()).toHaveAccessibleName('2 of 3: Beta');
+    expect(scrollTo.mock.calls).toEqual([[{ left: 100, behavior: 'instant' }]]);
+    expect(scrollBy).not.toHaveBeenCalled();
+  });
+
+  it('ignores full-width sub-pixel WebView2 alignment drift', () => {
+    const onValueChange = vi.fn();
+    render(
+      <Carousel label='Highlights' items={items} trackLayout='full-width' value='a' onValueChange={onValueChange} />
+    );
+    const { scrollBy, scrollTo, setOffset } = geometry();
+    setOffset(-0.0000057);
+    scrollBy.mockImplementation((options: ScrollToOptions) => setOffset(Math.sign(options.left ?? 0) * 100));
+    act(() => {
+      fireEvent(window, new Event('resize'));
+    });
+    expect(scrollBy).not.toHaveBeenCalled();
+    expect(scrollTo).not.toHaveBeenCalled();
+    expect(current()).toHaveAccessibleName('1 of 3: Alpha');
+    expect(onValueChange).not.toHaveBeenCalled();
+  });
+});
