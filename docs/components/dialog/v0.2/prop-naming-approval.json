@@ -26,6 +26,10 @@
     {
       "path": "docs/components/home-template/v0.1/prop-naming-approval.json",
       "wholeFileSHA256": "sha256:0555ab82fdcbd1ce6082f8cdb0ade8fada55954c06a3f1dd9fe478aaef21c2cd"
+    },
+    {
+      "path": "docs/components/text/v0.2/foreground-exception-approval.json",
+      "wholeFileSHA256": "sha256:31b2821478c4f6cbf8aa5e4b9f4825e6786602bb7f8fd04ca86df373849f834a"
     }
   ],
   "previouslyProposedNowApproved": [],
