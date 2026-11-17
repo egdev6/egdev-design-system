@@ -67,7 +67,10 @@ export const switchVariants = cva([
   'disabled:opacity-45 disabled:pointer-events-none disabled:cursor-not-allowed'
 ]);
 
-/** Thumb: 14px knob inset 2px that travels 16px and turns black when on. */
+/**
+ * Thumb: knob inset at the inline start that travels toward the inline end and turns black when on.
+ * The inset is logical and the travel is reversed in right-to-left contexts, so it mirrors (#432).
+ */
 export const switchThumbVariants = cva(
-  'absolute top-0.5 left-0.5 size-3.5 rounded-full bg-fg-secondary transition-[translate,background-color] ease-out duration-[var(--duration-fast)] motion-reduce:transition-none data-[state=checked]:translate-x-4 data-[state=checked]:bg-action-primary-solid-fg'
+  'absolute top-0.5 start-0.5 size-3.5 rounded-full bg-fg-secondary transition-[translate,background-color] ease-out duration-[var(--duration-fast)] motion-reduce:transition-none data-[state=checked]:translate-x-4 rtl:data-[state=checked]:-translate-x-4 data-[state=checked]:bg-action-primary-solid-fg'
 );

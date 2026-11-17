@@ -2977,7 +2977,7 @@
         "source": {
           "path": "packages/ui/src/atoms/switch/types.ts",
           "symbol": "SwitchProps",
-          "revision": "sha256:64248934b711a8027b310c944dc4b43999b0ae7f8dc30e9221ee789181347a24"
+          "revision": "sha256:d1d158cdc3ce022b96da37456ddafbcae49d88eeb48140a4d3afd04822ef387d"
         }
       }
     ]
