@@ -35,7 +35,7 @@ Representative source recipes, not a computed cascade; unresolved means no token
 | Heading show | --font-display | --text-title-show | --text-title-show--line-height | --text-title-show--font-weight | --text-title-show--letter-spacing | typographyRoles[] · packages/ui/src/primitives/text/types.ts · packages/tokens/src/theme.css |
 | Hero lede | --font-sans | --text-body-large | --text-body-large--line-height | --text-body-large--font-weight | --text-body-large--letter-spacing | typographyRoles[] · packages/ui/src/organisms/hero/types.ts · packages/tokens/src/theme.css |
 | ProjectCard code | --font-mono | --text-code | --text-code--line-height | --text-code--font-weight | --text-code--letter-spacing | typographyRoles[] · packages/ui/src/molecules/project-card/types.ts · packages/tokens/src/theme.css |
-| SectionHeader lede | --font-sans | --text-body-muted | --text-body-muted--line-height | --text-body-muted--font-weight | --text-body-muted--letter-spacing | typographyRoles[] · packages/ui/src/molecules/section-header/types.ts · packages/tokens/src/theme.css |
+| SectionHeader lede | --font-sans | --text-body-muted | --text-body-muted--line-height | --text-body-muted--font-weight | --text-body-muted--letter-spacing | typographyRoles[] · packages/ui/src/primitives/text/types.ts · packages/tokens/src/theme.css |
 
 ## Colours
 
@@ -1510,18 +1510,16 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 - SectionHeader (components[] · packages/ui/src/molecules/section-header/types.ts)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - sectionHeaderLedeVariants base: font-sans → --font-sans
-    - sectionHeaderLedeVariants base: text-body-muted → --text-body-muted
     - sectionHeaderVariants variant=stack: gap-5 → --spacing-5
     - sectionHeaderVariants variant=split: gap-y-6 → --spacing-6
     - sectionHeaderVariants variant=split: gap-x-12 → --spacing-12
     - sectionHeaderVariants variant=inline: gap-6 → --spacing-6
   - accent: string; Optional trailing highlighted run in the same heading; blank text is omitted. No separator is inserted. (components[] · packages/ui/src/molecules/section-header/types.ts)
   - accentBreak: boolean; Start the accent on a separate visual line. No effect without an accent. (components[] · packages/ui/src/molecules/section-header/types.ts)
-  - eyebrow: string; Optional context before the heading, rendered by Text's decorative diamond eyebrow recipe. Blank text is omitted. (components[] · packages/ui/src/molecules/section-header/types.ts)
-  - lede: string; Optional introductory paragraph; blank text is omitted, never rendered as a placeholder. (components[] · packages/ui/src/molecules/section-header/types.ts)
+  - eyebrow: SectionHeaderText; Optional context before the heading, rendered by Text's decorative diamond eyebrow recipe. Blank or decorative-only text is omitted. (components[] · packages/ui/src/molecules/section-header/types.ts)
+  - lede: SectionHeaderText; Optional introductory paragraph; blank or decorative-only text is omitted, never a placeholder. (components[] · packages/ui/src/molecules/section-header/types.ts)
   - level: enum; Native heading rank only, not a font-size selector. (components[] · packages/ui/src/molecules/section-header/types.ts)
-  - title: string; Required non-blank heading copy, preserved verbatim. Include any separating space before accent. Blank titles warn in development and render no header. (components[] · packages/ui/src/molecules/section-header/types.ts)
+  - title: SectionHeaderText; Required readable heading copy, preserved verbatim. Include any separating space before accent. Blank or decorative-only titles warn in development and render no header. (components[] · packages/ui/src/molecules/section-header/types.ts)
   - titleId: string; Consumer-supplied document-unique heading ID for external relationships, distinct from root id. Blank IDs are omitted; no ID is generated. (components[] · packages/ui/src/molecules/section-header/types.ts)
   - tone: enum; Accent context: canvas neon or raised brand on surface-1 through surface-3 and overlays. (components[] · packages/ui/src/molecules/section-header/types.ts)
   - variant: enum; Editorial arrangement. Split without a lede and inline without an eyebrow resolve to stack. (components[] · packages/ui/src/molecules/section-header/types.ts)
