@@ -2418,6 +2418,8 @@ const avatarSize: AvatarProps = { size: 30 };
 // @ts-expect-error badgeIcon was removed; wrap Avatar with Indicator for origin glyphs.
 const avatarBadge: AvatarProps = { badgeIcon: 'unknown' };
 export const iconDefaults: IconProps = { name: 'plus' };
+const downloadGlyph: IconName = 'download';
+const externalLinkGlyph: IconName = 'external-link';
 const iconPreset: IconSize = 'lg';
 type IconSampleProps = { iconName?: IconName };
 export function IconSamples({ iconName = 'plus' }: IconSampleProps) {
@@ -2425,6 +2427,9 @@ export function IconSamples({ iconName = 'plus' }: IconSampleProps) {
     createElement(Icon, { ...iconDefaults, name: iconName, id: 'icon-decorative' }),
     createElement('p', { id: 'icon-labelled-host' },
       createElement(Icon, { name: 'search', label: 'Search status', size: 'sm', filled: true })),
+    createElement(Icon, { name: downloadGlyph, id: 'icon-download' }),
+    createElement('p', { id: 'icon-external-link-host' },
+      createElement(Icon, { name: externalLinkGlyph, label: 'Open external link' })),
     createElement(Icon, { name: 'check', size: iconPreset, id: 'icon-override', className: 'size-4.5 text-fg-brand-default' }));
 }
 // Surface: a div ref by default; an HTMLElement ref on the actual slotted host with asChild.
@@ -3147,6 +3152,8 @@ const injectedText: TextProps = { children: 'Copy', dangerouslySetInnerHTML: { _
 const ariaLevelHeading: HeadingProps = { children: 'Title', 'aria-level': 3 };
 // @ts-expect-error The glyph set is closed; unknown names have no runtime fallback.
 const unknownGlyph: IconProps = { name: 'sparkles' };
+// @ts-expect-error The approved glyph is external-link, not the external alias.
+const externalGlyph: IconName = 'external';
 // @ts-expect-error Icon sizes are presets; containers use size-* utilities instead.
 const numericIconSize: IconProps = { name: 'plus', size: 18 };
 // @ts-expect-error Naming goes through label and AccessibleIcon, never a manual role.
@@ -7465,6 +7472,19 @@ for (const frame of [square, wide]) {
   assert.ok(labelledIcon.classList.contains('size-4') && labelledIcon.classList.contains('fill-current'));
   assert.equal(labelledHost.textContent, 'Search status', 'AccessibleIcon must supply exactly one visually hidden name');
   assert.ok(labelledHost.querySelector('title') === null);
+  const downloadIcon = document.getElementById('icon-download');
+  const externalLinkHost = document.getElementById('icon-external-link-host');
+  const externalLinkIcon = externalLinkHost.querySelector('svg.eg-icon');
+  for (const icon of [downloadIcon, externalLinkIcon]) {
+    assert.equal(icon.getAttribute('viewBox'), '0 0 24 24');
+    assert.equal(icon.getAttribute('aria-hidden'), 'true');
+    assert.equal(icon.getAttribute('focusable'), 'false');
+    assert.ok(icon.classList.contains('stroke-current'));
+    assert.equal(icon.querySelectorAll('path').length, 3);
+  }
+  assert.equal(downloadIcon.querySelector('path').getAttribute('d'), 'M12 15V3');
+  assert.equal(externalLinkIcon.querySelector('path').getAttribute('d'), 'M15 3h6v6');
+  assert.equal(externalLinkHost.textContent, 'Open external link');
   const overrideIcon = document.getElementById('icon-override');
   assert.ok(overrideIcon, 'SSR must render the consumer-sized Icon');
   assert.ok(overrideIcon.classList.contains('size-4.5') && overrideIcon.classList.contains('text-fg-brand-default'));
@@ -8215,6 +8235,12 @@ try {
   assert.ok(glyphRoot() === glyphBefore, 'Glyph changes must keep the same svg root');
   assert.equal(glyphRoot().querySelectorAll('path').length, 1, 'minus must replace the plus paths');
   assert.equal(glyphRoot().querySelector('path')?.getAttribute('d'), 'M5 12h14');
+  for (const [name, firstPath] of [['download', 'M12 15V3'], ['external-link', 'M15 3h6v6']]) {
+    await act(async () => root.render(createElement(App, { iconName: name })));
+    assert.ok(glyphRoot() === glyphBefore, 'New glyph changes must keep the same svg root');
+    assert.equal(glyphRoot().querySelectorAll('path').length, 3);
+    assert.equal(glyphRoot().querySelector('path')?.getAttribute('d'), firstPath);
+  }
   assert.equal(glyphRoot().getAttribute('tabindex'), null, 'Default Icons never enter the tab order');
   stage('icon:rerender:complete');
   stage('select:interaction:start');

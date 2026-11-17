@@ -1441,6 +1441,18 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(argTypes.size?.table?.defaultValue?.summary).toBe('"md"');
   });
 
+  it('exposes both new Icon glyphs in the closed select without the external alias', () => {
+    const { argTypes } = story('Icon');
+    expect(argTypes.name?.type?.required).toBe(true);
+    expect(argTypes.name?.control).toEqual({ type: 'select' });
+    expect(argTypes.name?.options).toHaveLength(47);
+    expect(argTypes.name?.options).toEqual(
+      expect.arrayContaining(['search', 'circle-check', 'download', 'external-link'])
+    );
+    expect(argTypes.name?.options).not.toContain('external');
+    expect(argTypes.name?.options).toEqual(story('Icon', false).argTypes.name?.options);
+  });
+
   it('retains IconButton required hidden naming, full choices and native button rows', () => {
     const { argTypes } = story('IconButton');
     expect(argTypes.label?.type).toMatchObject({ name: 'string', required: true });

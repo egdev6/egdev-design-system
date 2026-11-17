@@ -4,9 +4,9 @@
  * Provenance:
  * - The 25 Foundation glyphs (github … chevron-down) are copied verbatim from EGDEV Foundation
  *   `components/Icon/preview.html`, the Lucide-family paths used by egdev.es.
- * - The 20 added glyphs (calendar … info) are copied verbatim from Lucide (ISC), lucide-react
- *   1.55.0, with the mapping grip → grip-vertical, flask → flask-conical, trash → trash-2; the
- *   rest are same-named. Lucide marks several of them as derived from Feather (MIT). See
+ * - The 22 added glyphs (calendar … external-link) are copied verbatim from Lucide (ISC),
+ *   lucide-react 1.55.0, with the mapping grip → grip-vertical, flask → flask-conical,
+ *   trash → trash-2; the rest are same-named. Lucide marks several of them as derived from Feather (MIT). See
  *   THIRD_PARTY_NOTICES.md for both notices.
  *
  * All glyphs share the 24×24 viewBox; stroke width, caps and joins come from the Icon root.
@@ -254,5 +254,15 @@ export const iconPaths: Readonly<Record<IconName, IconGlyph>> = {
     ['circle', { cx: '12', cy: '12', r: '10' }],
     ['path', { d: 'M12 16v-4' }],
     ['path', { d: 'M12 8h.01' }]
+  ],
+  download: [
+    ['path', { d: 'M12 15V3' }],
+    ['path', { d: 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' }],
+    ['path', { d: 'm7 10 5 5 5-5' }]
+  ],
+  'external-link': [
+    ['path', { d: 'M15 3h6v6' }],
+    ['path', { d: 'M10 14 21 3' }],
+    ['path', { d: 'M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6' }]
   ]
 };
