@@ -4,6 +4,10 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## 0.2.0
+
+- Declare the tested React peer range `^18.3.1 || ^19.3.0`.
+
 ## 0.1.0
 
 - First versioned release: `AmbientBackground`, `Isotipo3D`, `ScrollReveal` and the `HomeTemplate`

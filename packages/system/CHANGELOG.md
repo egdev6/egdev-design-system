@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.3.0
+
+- Regenerate the artifact and design reference for `@egdev/ui` 0.2.0 and `@egdev/tokens` 0.4.0:
+  new components and props (ColorSwatchGroup, AppIcon, Dialog and AlertDialog `headerLayout`,
+  Panel `accentEdge` and the other 0.2.0 additions), the semantic contrast role tokens and the
+  Antena navigation recipes.
+
 ## 0.2.0
 
 - Compact the generated artifact without changing its JSON schema or consumers, and enforce a 768 KiB shipped JSON budget.
