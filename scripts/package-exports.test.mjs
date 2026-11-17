@@ -290,7 +290,9 @@ test('dialog exports its public compound API and keeps shared recipes internal',
   for (const dialogSelector of [
     String.raw`.bg-bg-scrim\/72`,
     String.raw`.backdrop-blur-none`,
-    String.raw`.border-b-0`
+    String.raw`.border-b-0`,
+    '.absolute',
+    String.raw`.p-\[var\(--space-3\)\]`
   ]) {
     assert.ok(dialogCss.includes(dialogSelector), `Missing Dialog utility ${dialogSelector}`);
   }

@@ -1,9 +1,24 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { Button } from '../../atoms/button';
+import { Input } from '../../atoms/input';
+import { Stack } from '../../primitives/stack';
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from './Dialog';
 
-/** Modal dialog. Content className merges last; overriding reserved panel geometry, paint, focus or positioning is unsupported. */
+/**
+ * ## Description
+ * Radix modal dialog with a body portal or a ready custom host.
+ *
+ * ## Dependencies
+ * Surface supplies panel material; Button, Input and Stack compose the examples.
+ *
+ * ## Usage guidelines
+ * A container host must be connected, positioned, non-scrolling and have a definite size.
+ * Render Content after its ref is ready and close before replacing or removing it. A custom
+ * host bounds paint, not Radix's document-wide modal interaction. Viewport scope requires
+ * ancestors without clipping or fixed-position containing blocks. Content className merges
+ * last; reserved panel geometry, paint, focus and positioning overrides are unsupported.
+ */
 const meta = {
   title: 'Molecules/Dialog',
   component: Dialog,
@@ -124,6 +139,86 @@ export const Controlled: Story = {
     );
   }
 };
+function ContainerExample({ viewport = false }: { viewport?: boolean }) {
+  const [host, setHost] = useState<HTMLDivElement | null>(null);
+  return (
+    <Dialog>
+      <DialogTrigger asChild={true}>
+        <Button variant='secondary'>Open hosted dialog</Button>
+      </DialogTrigger>
+      <div ref={setHost} className='relative w-full max-w-[calc(var(--space-24)*8)] h-[calc(var(--space-24)*6)]' />
+      {host && (
+        <DialogContent
+          title={viewport ? 'Viewport overlay' : 'Contained overlay'}
+          container={host}
+          overlayScope={viewport ? 'viewport' : undefined}
+        >
+          The portal is mounted in the positioned host.
+        </DialogContent>
+      )}
+    </Dialog>
+  );
+}
+
+/** A ready positioned host bounds the overlay and panel; Radix modality remains document-wide. */
+export const Container: Story = { render: () => <ContainerExample /> };
+
+/** A custom mount may keep viewport layout when its ancestors do not clip or transform it. */
+export const ContainerViewport: Story = { render: () => <ContainerExample viewport={true} /> };
+
+/** Compact body padding and Stack child gaps are independent; the existing Button opts into wrapping. */
+export const CompactForm: Story = {
+  args: {
+    children: (
+      <>
+        <DialogTrigger asChild={true}>
+          <Button variant='secondary'>Open compact form</Button>
+        </DialogTrigger>
+        <DialogContent
+          title='Compact form'
+          bodyPadding='compact'
+          size='sm'
+          actions={<Button labelWrap={true}>Save these detailed account preferences</Button>}
+        >
+          <Stack gap={3}>
+            <Input aria-label='Display name' placeholder='Display name' />
+            <Input aria-label='Email address' type='email' placeholder='Email address' />
+          </Stack>
+        </DialogContent>
+      </>
+    )
+  }
+};
+
+/** A compact body remains the scroll viewport while its header and actions stay in place. */
+export const CompactLongContent: Story = {
+  args: {
+    children: (
+      <>
+        <DialogTrigger asChild={true}>
+          <Button variant='secondary'>Open compact long content</Button>
+        </DialogTrigger>
+        <DialogContent
+          title='Compact long content'
+          bodyPadding='compact'
+          size='sm'
+          actions={
+            <DialogClose asChild={true}>
+              <Button>Done</Button>
+            </DialogClose>
+          }
+        >
+          <Stack gap={3}>
+            {Array.from({ length: 30 }, (_, index) => (
+              <p key={index}>Preference detail {index + 1}</p>
+            ))}
+          </Stack>
+        </DialogContent>
+      </>
+    )
+  }
+};
+
 export const WithoutTrigger: Story = {
   render: function WithoutTriggerStory() {
     const [open, setOpen] = useState(false);

@@ -695,7 +695,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+          "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
         }
       },
       {
@@ -962,7 +962,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+          "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
         }
       },
       {
@@ -2770,7 +2770,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogTriggerProps",
-          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+          "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
         }
       },
       {
@@ -2780,7 +2780,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogCloseProps",
-          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+          "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
         }
       },
       {
@@ -4552,7 +4552,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogProps",
-          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+          "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
         }
       },
       {
@@ -4649,7 +4649,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogProps",
-          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+          "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
         }
       },
       {
@@ -4746,7 +4746,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogProps",
-          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+          "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
         }
       },
       {
@@ -5078,7 +5078,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+          "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
         }
       },
       {
@@ -5423,7 +5423,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+          "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
         }
       },
       {
@@ -5793,6 +5793,43 @@
           "path": "packages/ui/src/primitives/portal/types.ts",
           "symbol": "PortalProps",
           "revision": "sha256:b0fd77d5f283fa71d0617c210bdc9db31185f00a6f1bf1034c4e5a8867edf9ff"
+        }
+      },
+      {
+        "component": "DialogContent",
+        "type": "HTMLElement | null (null or omitted uses body)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogContentProps",
+          "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
+        }
+      }
+    ]
+  },
+  {
+    "id": "dialog-overlay-scope",
+    "name": "overlayScope",
+    "meaning": "The layout boundary of a Dialog modal overlay grid.",
+    "whenToUse": "Choose viewport or container layout for the Dialog overlay, independently of the portal mount target.",
+    "avoid": "Portal mount targets, generic positioning, collision boundaries or claims of locally scoped modality.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/components/dialog/v0.2/prop-naming-approval.json",
+      "scope": "convention:dialog-overlay-scope",
+      "contentHash": "sha256:a2d8773263a45ebc578bbd5dacc58802181c08376ab5ab7e398141d7dd08e2d4"
+    },
+    "usages": [
+      {
+        "component": "DialogContent",
+        "type": "'viewport' | 'container' (derived from host; container requires host)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogContentProps",
+          "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
         }
       }
     ]
@@ -6464,11 +6501,22 @@
     "avoid": "Gaps between children (use gap), outer margins, arbitrary lengths or per-side overrides.",
     "status": "approved",
     "aliases": [],
-    "exceptions": [],
+    "exceptions": [
+      {
+        "scope": "DialogContent",
+        "propName": "bodyPadding",
+        "reason": "Only the body changes; padding would misleadingly describe the whole panel",
+        "approval": {
+          "reference": "docs/components/dialog/v0.2/prop-naming-approval.json",
+          "scope": "exception:inner-padding:DialogContent:bodyPadding",
+          "contentHash": "sha256:46747e9c21ddd6a44b9c29cfb04f3f388b60d790b6724ef05874dc69bf17fffa"
+        }
+      }
+    ],
     "approval": {
-      "reference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "reference": "docs/components/dialog/v0.2/prop-naming-approval.json",
       "scope": "convention:inner-padding",
-      "contentHash": "sha256:81ad5c5f141961a62fc1a42b220a22b80d66ed464787407f544cdafdbba293a0"
+      "contentHash": "sha256:ed9f2dbc2dcfde6cc74120161628a7d30bfd0870509dc30775ef5675225641b6"
     },
     "usages": [
       {
@@ -6479,6 +6527,16 @@
           "path": "packages/ui/src/primitives/surface/types.ts",
           "symbol": "SurfaceProps",
           "revision": "sha256:26d0726b5034dceb74e0067c1c0df5108d351e948205bbf22b5e187b92d9c0b6"
+        }
+      },
+      {
+        "component": "DialogContent",
+        "type": "'default' | 'compact' (body only; default default)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/dialog/types.ts",
+          "symbol": "DialogContentProps",
+          "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
         }
       }
     ]
@@ -6569,7 +6627,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+          "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
         }
       },
       {
@@ -6670,7 +6728,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+          "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
         }
       },
       {
@@ -6707,7 +6765,7 @@
         "source": {
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
-          "revision": "sha256:55f9ddfadf7e3f5cd9859f34373c926fbcb2e09294c782b712b22dd92f4884c1"
+          "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
         }
       }
     ]

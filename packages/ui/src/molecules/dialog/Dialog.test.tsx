@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createRef } from 'react';
+import { createRef, useState } from 'react';
 import { describe, expect, expectTypeOf, it, vi } from 'vitest';
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from '.';
 import type { DialogCloseProps, DialogContentProps, DialogProps, DialogTriggerProps } from './types';
@@ -19,8 +19,38 @@ const dialogStyle: DialogContentProps = { title: 'Title', children: null, style:
 const dialogRole: DialogContentProps = { title: 'Title', children: null, role: 'alert' };
 // @ts-expect-error Content owns its description relationship.
 const dialogDescription: DialogContentProps = { title: 'Title', children: null, 'aria-describedby': 'other' };
-// @ts-expect-error Content does not expose a portal container.
 const dialogContainer: DialogContentProps = { title: 'Title', children: null, container: document.body };
+const dialogViewportHost: DialogContentProps = {
+  title: 'Title',
+  children: null,
+  container: document.body,
+  overlayScope: 'viewport',
+  bodyPadding: 'compact'
+};
+const dialogContainerHost: DialogContentProps = {
+  title: 'Title',
+  children: null,
+  container: document.body,
+  overlayScope: 'container',
+  variant: 'sheet'
+};
+const dialogNullHost: DialogContentProps = {
+  title: 'Title',
+  children: null,
+  container: null,
+  overlayScope: 'viewport'
+};
+// @ts-expect-error Container scope requires a non-null host.
+const dialogMissingHost: DialogContentProps = { title: 'Title', children: null, overlayScope: 'container' };
+// @ts-expect-error Null is not a host for container scope.
+const dialogInvalidNullHost: DialogContentProps = {
+  title: 'Title',
+  children: null,
+  container: null,
+  overlayScope: 'container'
+};
+// @ts-expect-error Body padding accepts only the documented presets.
+const dialogInvalidPadding: DialogContentProps = { title: 'Title', children: null, bodyPadding: 'small' };
 // @ts-expect-error Trigger is always a type=button control.
 const dialogTriggerType: DialogTriggerProps = { children: 'Open', type: 'submit' };
 // @ts-expect-error Slotted close requires an element.
@@ -33,6 +63,12 @@ void [
   dialogRole,
   dialogDescription,
   dialogContainer,
+  dialogViewportHost,
+  dialogContainerHost,
+  dialogNullHost,
+  dialogMissingHost,
+  dialogInvalidNullHost,
+  dialogInvalidPadding,
   dialogTriggerType,
   dialogCloseText
 ];
@@ -52,6 +88,193 @@ function Example() {
     </Dialog>
   );
 }
+
+function HostedExample({
+  overlayScope,
+  onOpenChange
+}: {
+  overlayScope?: 'viewport' | 'container';
+  onOpenChange?: (open: boolean) => void;
+}) {
+  const [host, setHost] = useState<HTMLDivElement | null>(null);
+  return (
+    <>
+      <div aria-label='Outside content'>Outside content</div>
+      <div ref={setHost} className='relative' aria-label='Dialog host' />
+      <Dialog onOpenChange={onOpenChange}>
+        <DialogTrigger>Open hosted dialog</DialogTrigger>
+        {host && (
+          <DialogContent title='Hosted' container={host} overlayScope={overlayScope}>
+            <input aria-label='Hosted input' />
+          </DialogContent>
+        )}
+      </Dialog>
+    </>
+  );
+}
+
+describe('Dialog placement and compact body', () => {
+  it.each(['omitted', 'null'] as const)('keeps %s host in the body with viewport defaults', (host) => {
+    render(
+      <Dialog defaultOpen={true}>
+        <DialogContent title='Defaults' {...(host === 'null' ? { container: null } : {})}>
+          Body
+        </DialogContent>
+      </Dialog>
+    );
+    const panel = screen.getByRole('dialog', { name: 'Defaults' });
+    const overlay = panel.closest('.eg-dialog-backdrop');
+    expect(overlay?.parentElement).toBe(document.body);
+    expect(overlay).toHaveClass('fixed', 'inset-0');
+    expect(overlay).not.toHaveClass('absolute');
+    expect(panel.querySelector('.eg-dialog__body')).toHaveClass('min-h-0', 'overflow-y-auto', 'p-[var(--space-6)]');
+    expect(panel).toHaveClass('eg-dialog', 'bg-surface-2');
+  });
+
+  it.each(['derived', 'container'] as const)('mounts %s container scope in the host', async (scope) => {
+    const user = userEvent.setup();
+    render(<HostedExample overlayScope={scope === 'container' ? 'container' : undefined} />);
+    await user.click(screen.getByRole('button', { name: 'Open hosted dialog' }));
+    const panel = screen.getByRole('dialog', { name: 'Hosted' });
+    const overlay = panel.closest('.eg-dialog-backdrop');
+    expect(overlay?.parentElement).toBe(screen.getByLabelText('Dialog host', { selector: 'div' }));
+    expect(overlay).toContainElement(panel);
+    expect(overlay).toHaveClass('absolute', 'inset-0');
+    expect(overlay).not.toHaveClass('fixed');
+    for (const node of [overlay, panel, ...panel.querySelectorAll('*')]) {
+      for (const attribute of ['container', 'overlayscope', 'bodypadding']) {
+        expect(node).not.toHaveAttribute(attribute);
+      }
+    }
+  });
+
+  it('keeps a custom viewport-scoped portal fixed', async () => {
+    const user = userEvent.setup();
+    render(<HostedExample overlayScope='viewport' />);
+    await user.click(screen.getByRole('button', { name: 'Open hosted dialog' }));
+    const overlay = screen.getByRole('dialog').closest('.eg-dialog-backdrop');
+    expect(overlay?.parentElement).toBe(screen.getByLabelText('Dialog host', { selector: 'div' }));
+    expect(overlay).toHaveClass('fixed', 'inset-0');
+    expect(overlay).not.toHaveClass('absolute');
+  });
+
+  it('blocks untyped container scope with a null host instead of portalling into body', () => {
+    const invalid = {
+      title: 'Blocked',
+      children: 'Body',
+      container: null,
+      overlayScope: 'container'
+    } as unknown as DialogContentProps;
+    render(
+      <Dialog defaultOpen={true}>
+        <DialogContent {...invalid} />
+      </Dialog>
+    );
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(document.querySelector('.eg-dialog-backdrop')).toBeNull();
+  });
+
+  it('changes only body padding and keeps header, footer and scrolling classes', () => {
+    const { rerender } = render(
+      <Dialog defaultOpen={true}>
+        <DialogContent title='Form' actions={<button type='button'>Save</button>}>
+          Body
+        </DialogContent>
+      </Dialog>
+    );
+    const panel = screen.getByRole('dialog');
+    const header = panel.querySelector('header')?.className;
+    const footer = panel.querySelector('footer')?.className;
+    expect(panel.querySelector('.eg-dialog__body')).toHaveClass('p-[var(--space-6)]');
+    rerender(
+      <Dialog defaultOpen={true}>
+        <DialogContent title='Form' bodyPadding='compact' actions={<button type='button'>Save</button>}>
+          Body
+        </DialogContent>
+      </Dialog>
+    );
+    const compact = screen.getByRole('dialog');
+    expect(compact.querySelector('header')?.className).toBe(header);
+    expect(compact.querySelector('footer')?.className).toBe(footer);
+    expect(compact.querySelector('.eg-dialog__body')).toHaveClass('min-h-0', 'overflow-y-auto', 'p-[var(--space-3)]');
+    expect(compact.querySelector('.eg-dialog__body')).not.toHaveClass('p-[var(--space-6)]');
+    expect(compact).not.toHaveAttribute('bodypadding');
+    expect(compact.querySelector('footer')).toContainElement(screen.getByRole('button', { name: 'Save' }));
+  });
+
+  it('traps focus, hides the outside sibling, and restores focus and background after Escape', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(<HostedExample onOpenChange={onOpenChange} />);
+    const trigger = screen.getByRole('button', { name: 'Open hosted dialog' });
+    const outside = screen.getByText('Outside content');
+    await user.click(trigger);
+    expect(outside).toHaveAttribute('aria-hidden', 'true');
+    expect(screen.getByRole('textbox', { name: 'Hosted input' })).toHaveFocus();
+    await user.tab({ shift: true });
+    expect(screen.getByRole('button', { name: 'Close' })).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('textbox', { name: 'Hosted input' })).toHaveFocus();
+    onOpenChange.mockClear();
+    await user.keyboard('{Escape}');
+    expect(onOpenChange).toHaveBeenCalledOnce();
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    await waitFor(() => expect(trigger).toHaveFocus());
+    expect(outside).not.toHaveAttribute('aria-hidden');
+  });
+
+  it('dismisses a hosted scrim click', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(<HostedExample onOpenChange={onOpenChange} />);
+    const trigger = screen.getByRole('button', { name: 'Open hosted dialog' });
+    await user.click(trigger);
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    const scrim = screen.getByRole('dialog').closest('.eg-dialog-backdrop');
+    if (!scrim) {
+      throw new Error('Missing hosted scrim');
+    }
+    onOpenChange.mockClear();
+    fireEvent.pointerDown(scrim, { button: 0, pointerType: 'mouse' });
+    fireEvent.click(scrim);
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(onOpenChange).toHaveBeenCalledOnce();
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    await waitFor(() => expect(trigger).toHaveFocus());
+  });
+
+  it('requests a controlled hosted close once without changing open state', async () => {
+    const host = document.createElement('div');
+    const { container } = render(<div />);
+    container.append(host);
+    const change = vi.fn();
+    const content = (
+      <DialogContent title='Controlled host' container={host}>
+        Body
+      </DialogContent>
+    );
+    const { rerender } = render(
+      <Dialog open={true} onOpenChange={change}>
+        {content}
+      </Dialog>
+    );
+    await userEvent.setup().keyboard('{Escape}');
+    expect(change).toHaveBeenCalledOnce();
+    expect(change).toHaveBeenCalledWith(false);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    change.mockClear();
+    rerender(
+      <Dialog open={false} onOpenChange={change}>
+        {content}
+      </Dialog>
+    );
+    expect(change).not.toHaveBeenCalled();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+});
 
 describe('Dialog public behavior', () => {
   it.each(['{Enter}', ' '])('opens and closes with keyboard %s and restores focus', async (key) => {

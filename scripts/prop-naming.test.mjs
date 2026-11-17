@@ -169,7 +169,10 @@ const postReceiptUsages = [
     'trailing-actions',
     'dismiss-label',
     'visual-treatment',
-    'preset-dimensions'
+    'preset-dimensions',
+    'portal-container',
+    'dialog-overlay-scope',
+    'inner-padding'
   ].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/dialog/types.ts#DialogContentProps'
@@ -863,6 +866,51 @@ function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
       };
     });
 }
+
+test('Dialog placement and body padding bind the delegated naming approval and reviewed source', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/dialog/v0.2/prop-naming-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const sourcePath = 'packages/ui/src/molecules/dialog/types.ts';
+  const source = {
+    path: sourcePath,
+    symbol: 'DialogContentProps',
+    revision: digest(fs.readFileSync(resolve(root, sourcePath)))
+  };
+  assert.equal(receipt.nativeReviewApproval, false);
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(prior.wholeFileSHA256, digest(fs.readFileSync(resolve(root, prior.path))));
+  }
+  for (const id of ['portal-container', 'dialog-overlay-scope', 'inner-padding']) {
+    const entry = registry.find((item) => item.id === id);
+    assert.deepEqual(entry.usages.find((usage) => usage.component === 'DialogContent').source, source);
+  }
+  for (const id of ['dialog-overlay-scope', 'inner-padding']) {
+    const entry = registry.find((item) => item.id === id);
+    const { approval: binding, usages, ...convention } = entry;
+    const contentHash = props.conventionHash(entry);
+    assert.deepEqual(binding, { reference, scope: `convention:${id}`, contentHash });
+    assert.deepEqual(
+      receipt.entries.find((item) => item.scope === binding.scope),
+      { scope: binding.scope, contentHash, convention }
+    );
+  }
+  const padding = registry.find(({ id }) => id === 'inner-padding');
+  const exception = padding.exceptions.find(
+    (item) => item.scope === 'DialogContent' && item.propName === 'bodyPadding'
+  );
+  const { approval: binding, ...payload } = exception;
+  assert.deepEqual(binding, {
+    reference,
+    scope: 'exception:inner-padding:DialogContent:bodyPadding',
+    contentHash: props.exceptionHash(exception)
+  });
+  assert.deepEqual(
+    receipt.entries.find((item) => item.scope === binding.scope),
+    { scope: binding.scope, contentHash: binding.contentHash, exception: payload, source }
+  );
+  validate(registry);
+});
 
 test('Tabs layout conventions bind the owner choices, scoped receipt and reviewed source', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
@@ -1615,9 +1663,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   validate(actual);
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
-  // AmbientBackground adds two directions; TopBar and Tabs each add two; Carousel adds one.
-  assert.equal(actual.length, 167);
-  assert.equal(beforeIndicatorConventions(actual).length, 164);
+  // AmbientBackground adds two directions; TopBar and Tabs each add two; Carousel and Dialog add one each.
+  assert.equal(actual.length, 168);
+  assert.equal(beforeIndicatorConventions(actual).length, 165);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -1744,7 +1792,8 @@ const receiptChain = [
   'docs/components/hero/v0.1/prop-naming-approval-scene-social.json',
   'docs/components/scroll-reveal/v0.1/prop-naming-approval.json',
   'docs/components/home-template/v0.1/prop-naming-approval.json',
-  'docs/components/text/v0.2/foreground-exception-approval.json'
+  'docs/components/text/v0.2/foreground-exception-approval.json',
+  'docs/components/dialog/v0.2/prop-naming-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();
@@ -3359,6 +3408,7 @@ test('Isotipo3D naming receipt preserves 125 entries and binds three scoped appr
             .filter(
               ({ id }) =>
                 ![
+                  'dialog-overlay-scope',
                   'close-auto-focus',
                   'active-section-id',
                   'scene-media',

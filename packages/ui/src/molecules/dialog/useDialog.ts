@@ -32,11 +32,17 @@ export function useDialogContent(props: DialogContentProps) {
     dismissLabel = 'Close',
     variant = 'centered',
     size = 'md',
+    container,
+    overlayScope,
+    bodyPadding,
     className,
     ...rest
   } = props;
   const flush = variant === 'sheet' || size === 'full';
+  const scope = overlayScope ?? (container ? 'container' : 'viewport');
   return {
+    container,
+    blocked: scope === 'container' && !container,
     title,
     description,
     statusText,
@@ -46,7 +52,7 @@ export function useDialogContent(props: DialogContentProps) {
     variant,
     size,
     rest,
-    overlayClass: cn('eg-dialog-backdrop', dialogScrimVariants(), dialogOverlayVariants({ flush })),
+    overlayClass: cn('eg-dialog-backdrop', dialogScrimVariants(), dialogOverlayVariants({ flush, scope })),
     panelClass: cn(
       'eg-dialog',
       dialogPanelVariants({ variant, size: variant === 'sheet' ? undefined : size }),
@@ -57,7 +63,7 @@ export function useDialogContent(props: DialogContentProps) {
     titleClass: cn('eg-dialog__title', dialogTitleVariants()),
     descriptionClass: cn('eg-dialog__description', dialogDescriptionVariants()),
     statusClass: cn('eg-dialog__status', dialogStatusVariants()),
-    bodyClass: cn('eg-dialog__body', dialogBodyVariants()),
+    bodyClass: cn('eg-dialog__body', dialogBodyVariants({ bodyPadding })),
     footClass: cn('eg-dialog__foot', dialogFootVariants({ variant }))
   };
 }

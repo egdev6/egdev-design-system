@@ -353,6 +353,19 @@ const dialogCloseProps: DialogCloseProps = { children: 'Done' };
 const dialogContentProps: DialogContentProps = { title: 'Settings', children: 'Preferences' };
 export const dialogProps: DialogProps = { children: [createElement(DialogTrigger, { ...dialogTriggerProps, key: 'trigger', ref: dialogTriggerRef }), createElement(DialogContent, { ...dialogContentProps, key: 'content', actions: createElement(DialogClose, { ...dialogCloseProps, ref: dialogCloseRef }) })] };
 export function dialogSample() { return createElement(Dialog, dialogProps); }
+export function dialogPlacementFixtures(host: HTMLElement) {
+  const contained: DialogContentProps = { title: 'Contained', children: 'Body', container: host, bodyPadding: 'compact' };
+  const explicit: DialogContentProps = { title: 'Contained', children: 'Body', container: host, overlayScope: 'container', variant: 'sheet' };
+  const viewport: DialogContentProps = { title: 'Viewport', children: 'Body', container: host, overlayScope: 'viewport' };
+  const defaultHost: DialogContentProps = { title: 'Body portal', children: 'Body', container: null, overlayScope: 'viewport' };
+  // @ts-expect-error Container scope requires a non-null host.
+  const missingHost: DialogContentProps = { title: 'Invalid', children: 'Body', overlayScope: 'container' };
+  // @ts-expect-error Null is not a container-scoped host.
+  const nullHost: DialogContentProps = { title: 'Invalid', children: 'Body', container: null, overlayScope: 'container' };
+  // @ts-expect-error Body padding is a closed preset union.
+  const badPadding: DialogContentProps = { title: 'Invalid', children: 'Body', bodyPadding: 'small' };
+  return [contained, explicit, viewport, defaultHost, missingHost, nullHost, badPadding];
+}
 // @ts-expect-error Sheet dimensions cannot be changed using size.
 const dialogInvalidSize: DialogContentProps = { title: 'Settings', children: 'Preferences', variant: 'sheet', size: 'sm' };
 // @ts-expect-error Content requires a title.
@@ -4632,6 +4645,14 @@ function assertPanelConsumerCSS(css) {
   }
 }
 
+function assertDialogConsumerCSS(css) {
+  for (const selector of ['.absolute', String.raw`.p-\[var\(--space-3\)\]`]) {
+    assert.ok(css.includes(selector), `Missing Dialog utility ${selector}`);
+  }
+  assert.match(css, /\.absolute\s*\{[^}]*position:\s*absolute/);
+  assert.match(css, /\.p-\\\[var\\\(--space-3\\\)\\\]\s*\{[^}]*padding:\s*var\(--space-3\)/);
+}
+
 function assertCollapsibleConsumerCSS(css) {
   for (const selector of [
     '.whitespace-normal',
@@ -5277,6 +5298,8 @@ ${assertPanelConsumerCSS.toString()}
 assertPanelConsumerCSS(shippedStyles);
 ${assertCollapsibleConsumerCSS.toString()}
 assertCollapsibleConsumerCSS(shippedStyles);
+${assertDialogConsumerCSS.toString()}
+assertDialogConsumerCSS(shippedStyles);
 assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AlertDialog',
   'AlertDialogAction',
@@ -9412,6 +9435,8 @@ ${assertTerminalCardConsumerCSS.toString()}
 assertTerminalCardConsumerCSS(emitted);
 ${assertCollapsibleConsumerCSS.toString()}
 assertCollapsibleConsumerCSS(emitted);
+${assertDialogConsumerCSS.toString()}
+assertDialogConsumerCSS(emitted);
 ${assertIndicatorConsumerCSS.toString()}
 assertIndicatorConsumerCSS(emitted);
 for (const selector of ['.eg-gauge-arc', '.eg-gauge-center']) assert.ok(emitted.includes(selector), 'Missing shipped selector ' + selector);

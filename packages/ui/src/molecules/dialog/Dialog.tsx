@@ -20,9 +20,18 @@ export const DialogClose = forwardRef<HTMLButtonElement, DialogCloseProps>((prop
   <DialogPrimitive.Close {...useDialogButton(props)} ref={ref} />
 ));
 DialogClose.displayName = 'DialogClose';
-/** Body-portalled modal panel with an owned accessible title and optional description. */
+/**
+ * Modal panel with an owned title and optional description. A connected, positioned,
+ * non-scrolling host bounds container-scoped paint; without one the portal uses body.
+ * A custom host does not localize Radix modality, which remains document-wide. Render
+ * after the host ref is ready and close before replacing or removing it. Viewport scope
+ * under a host is subject to ancestor clipping and fixed-position containing blocks.
+ */
 export function DialogContent(props: DialogContentProps) {
   const c = useDialogContent(props);
+  if (c.blocked) {
+    return null;
+  }
   const body = (
     <>
       <header className={c.headClass}>
@@ -46,7 +55,7 @@ export function DialogContent(props: DialogContentProps) {
     </>
   );
   return (
-    <DialogPrimitive.Portal>
+    <DialogPrimitive.Portal container={c.container}>
       <DialogPrimitive.Overlay className={c.overlayClass}>
         <DialogPrimitive.Content
           {...c.rest}
