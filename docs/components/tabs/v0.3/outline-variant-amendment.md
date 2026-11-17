@@ -1,6 +1,6 @@
 # Tabs — outline variant amendment
 
-- **Version / status:** v0.3 — **Draft — not approved**.
+- **Version / status:** v0.3 — **Approved — 2026-11-17** by the owner (feature log L8–L9); the implementation plan needs separate approval.
 - **Amends:** [Tabs v0.1](../v0.1/implementation.md), the [v0.2 layout amendment](../v0.2/full-width-wrap-amendment.md) and the Tabs portion of [#426](../../../foundation/semantic-roles-adoption.md). This responds to [#464](https://github.com/egdev6/egdev-design-system/issues/464); it authorizes no implementation.
 - **Correction:** owner decision L6 supersedes the earlier `selectedTone` proposal: the Nexo look is a separate value of the existing `variant` prop. No `selectedTone` prop is proposed (`odd/tasks/nexo-requests-464-466-specs.md:9,31`).
 - **Approval / recovery:** Pending explicit owner approval of this snapshot and identified visuals. Prior approvals do not approve this variant, token changes or its implementation plan.

@@ -19,7 +19,7 @@ Spec amendments for three Nexo requests opened after the 0.2.0 release: #464 Tab
 | T1 | S2, S3, S7 | #464 | worker A | `docs/components/tabs/v0.3/**` | 2dd2682, rewrite in next commit |
 | T2 | S2, S4, S7 | #465 | worker B | `docs/components/color-swatch-group/v0.2/**` | 2dd2682, rewrite in next commit |
 | T3 | S2, S5, S7 | #466 | worker C | `docs/components/dialog/v0.3/**`, `docs/components/alert-dialog/**` | 2dd2682 |
-| T4 | S1, S6 | all | parent | commit, Storybook baseline URLs, owner review | — |
+| T4 | S1, S6 | all | parent | commit, Storybook baseline URLs, owner review | dd572c7 + approval commit |
 
 ## Log
 
@@ -31,3 +31,4 @@ Spec amendments for three Nexo requests opened after the 0.2.0 release: #464 Tab
 - L6 (owner, verbatim, after reviewing the Storybook baseline, with two screenshots: Nexo's old tabs "Mis apps / Catálogo" and the "Color de acento" picker): "464 yo lo veo más como una variante propia (Tal i como estaba en Nexo" / "465 el aspecto visual tiene que ser el mismo que quorb y nexo". S3 and S4 rewritten; T1 and T2 reopened. #466 had no correction.
 - L7: T1/T2 rewritten by workers after L6 (sources: Nexo `21fa914^:apps/hub/src/theme/family.css:41-51` + `style.css:34-35` for tabs; Nexo `a00831c^:apps/hub/src/settings/settings.css` and Quorb `src/theme.css:313-325` for the picker). Parent renamed the drafts to `tabs/v0.3/outline-variant-amendment.md` and `color-swatch-group/v0.2/picker-look-amendment.md`. Remaining owner decisions are listed at the end of each draft.
 - L8 (owner decisions, verbatim labels): #464 accent "Derive the gradient from the accent (Recommended)"; #465 size "38.4px circle in a 44.8px target (Recommended)"; #465 rainbow "New named spectrum token (Recommended)"; #465 check "Ring only, no check (Recommended)". Remaining minor choices applied as the parent's stated recommendations (Tabs edge-only shadow, 600 weight, DS focus, fullWidth/labelWrap apply, name `outline`; swatch ring on active custom colour, dark plus badge; Dialog expected `--space-2` after measurement). Two token changes are owner-confirmed for implementation: accent-derived `--gradient-chip-active` and a new spectrum gradient token.
+- L9 (owner, verbatim): "si" — approving the three drafts as they stand, then the implementation plan starting with #466. All three specs marked Approved — 2026-11-17. Next: one implementation plan per issue (separate approval), #466 first, each PR ending with Storybook for owner verification (S6).
