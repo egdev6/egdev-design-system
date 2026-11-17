@@ -47,7 +47,23 @@ Las [13 recetas tipográficas y su procedencia](../../docs/tokens-reference.md) 
 
 Los tokens y recetas de [Material v2](../../docs/MATERIAL.md) conservan su autoridad. Los degradados y demás variables sin utilidad siguen en `:root`. `--color-*: initial` reinicia solo la paleta Tailwind, no todas las escalas.
 
-The [shared semantic contrast roles](../../docs/foundation/semantic-contrast-roles.md) alias existing app surfaces, control and selection colors, Link colors, and selected-control paint. Link retains neon by owner decision, including its documented small-text contrast trade-off. The segmented selection uses the existing brand border and tint; these aliases do not change components or authorize a new Material recipe. Scoped overrides may need explicit alias redeclarations; runtime accent and portal propagation remain separate work.
+The [shared semantic contrast roles](../../docs/foundation/semantic-contrast-roles.md) alias existing app surfaces, control and selection colors, Link colors, and selected-control paint. Link retains neon by owner decision, including its documented small-text contrast trade-off. The segmented selection uses the existing brand border and tint; these aliases do not change components or authorize a new Material recipe. Scoped overrides need the complete alias map described below.
+
+## Runtime accent scopes
+
+`createAccentTheme` is a pure JavaScript and TypeScript export from `@egdev/tokens/accent`. Apply its complete immutable `variables` map to a consumer-owned host; do not apply it to a component that prohibits inline style. For example:
+
+```tsx
+import { type CSSProperties } from 'react';
+import { createAccentTheme } from '@egdev/tokens/accent';
+
+const theme = createAccentTheme('#123456');
+<div style={theme.variables as CSSProperties}>Scoped content</div>;
+```
+
+Three- or six-digit hexadecimal input is normalized; invalid input and the default red produce the complete original red map. Custom colors are lightened when needed for the approved solid-surface and black-ink contrast bounds. Default red retains its existing contrast trade-offs. No provider, global theme mutation, picker, persistence or automatic portal bridge is included. A Dialog inherits a nested theme only when its ready `container` is inside the theme host; a body portal inherits the body's theme. Other portals need their own supported host API.
+
+See the [runtime accent contract](../../docs/foundation/runtime-accent.md) for the exact map, portal constraints, unsupported primitive-backed styles and pending rendered/browser verification.
 
 `--space-*` conserva sus valores en px. Los 15 alias `--spacing-N` apuntan al paso `--space-N`; la base `--spacing` apunta a `--space-1`. El bloque `inline static` emite todas las variables y hace que utilidades como `p-4` usen directamente `var(--space-4)`, respetando overrides locales. No se aplica `inline` a colores ni a las familias existentes.
 

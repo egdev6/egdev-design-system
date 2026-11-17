@@ -1,13 +1,13 @@
 # Runtime accent theming
 
 - **Status:** Approved — 2026-11-17 (owner, in session; odd/tasks/shared-app-theme-specs.md L2). Implementation plan follows the same delegation.
-- **Issue:** [#415](https://github.com/egdev6/egdev-design-system/issues/415); context [#404](https://github.com/egdev6/egdev-design-system/issues/404). The approved helper is not yet an available API.
-- **Dependencies:** [#425](https://github.com/egdev6/egdev-design-system/issues/425) supplies the approved shared contrast roles and their default values; [#426](https://github.com/egdev6/egdev-design-system/issues/426) governs their component adoption. Neither is implemented yet. [#418](../components/panel/v0.4/accent-edge-amendment.md) depends on this contract.
+- **Issue:** [#415](https://github.com/egdev6/egdev-design-system/issues/415); context [#404](https://github.com/egdev6/egdev-design-system/issues/404). The helper implementation is in the working tree; distribution and browser verification remain pending.
+- **Dependencies:** [#425](https://github.com/egdev6/egdev-design-system/issues/425) supplies the shared contrast roles and their default values; [#426](https://github.com/egdev6/egdev-design-system/issues/426) governs their separate component adoption. [#418](../components/panel/v0.4/accent-edge-amendment.md) depends on this contract.
 - **Scope:** opt-in, independently scoped user-selected accents for the existing dark Grafito theme. No light theme, persistence, picker or application effect is approved here. A new dependency or additional token value requires owner confirmation.
 
 ## Approval
 
-The owner's choices are “Sí, confirmo los alias”, “Mantener el neon actual”, “Agregar borde/tinte rojo como Nexo”, “Sí, helper + variables por scope” and “Sí, igual que el 1 y 2” (`odd/tasks/shared-app-theme-specs.md` L2). D1–D7 resolve to their Recommended options: a pure helper and complete scope map, the stated derivation and reset, consumer-host styling, explicit portal hosting, no new dependency, and measured proof. The table incorporates Link option B and the existing-token segmented border/tint. The implementation plan follows the same delegation; implementation and browser evidence remain pending. Any additional token value is **pending owner value**.
+The owner's choices are “Sí, confirmo los alias”, “Mantener el neon actual”, “Agregar borde/tinte rojo como Nexo”, “Sí, helper + variables por scope” and “Sí, igual que el 1 y 2” (`odd/tasks/shared-app-theme-specs.md` L2). D1–D7 resolve to their Recommended options: a pure helper and complete scope map, the stated derivation and reset, consumer-host styling, explicit portal hosting, no new dependency, and measured proof. The table incorporates Link option B and the existing-token segmented border/tint. The implementation plan follows the same delegation; distribution and browser evidence remain pending. Any additional token value is **pending owner value**.
 
 ## Evidence and problem
 
@@ -18,7 +18,7 @@ The owner's choices are “Sí, confirmo los alias”, “Mantener el neon actua
 
 ## Approved consumer contract
 
-**Approved:** a dependency-free, pure `createAccentTheme(input: string | null | undefined)` helper, specified as a future `@egdev/tokens/accent` JavaScript export, plus the exact CSS custom-property map below. It returns `{ normalizedAccent, mode, variables }`, where `mode` is `'default' | 'custom'`, `variables` is an immutable complete map of the table's names to CSS strings, and `normalizedAccent` is lower-case six-digit `#rrggbb`. This approved API and package subpath are not yet an existing export. Its implementation plan follows the same delegation and must cover package/distribution changes; no React provider is required. The helper does not write the DOM, manage persistence, inspect classes or own component state.
+**Approved:** a dependency-free, pure `createAccentTheme(input: string | null | undefined)` helper, exported from `@egdev/tokens/accent`, plus the exact CSS custom-property map below. It returns `{ normalizedAccent, mode, variables }`, where `mode` is `'default' | 'custom'`, `variables` is an immutable complete map of the table's names to CSS strings, and `normalizedAccent` is lower-case six-digit `#rrggbb`. Its implementation plan follows the same delegation and covers package/distribution changes; no React provider is required. The helper does not write the DOM, manage persistence, inspect classes or own component state.
 
 A consumer applies the **entire returned map** to its own theme host, never to a Panel or other component whose `style` API is prohibited. This approves one narrowly scoped exception for runtime custom properties on that consumer-owned host: it is not permission for arbitrary inline component appearance, handwritten Material, gradients or dynamic Tailwind classes. The helper supplies validated, materialized values rather than arbitrary consumer CSS. A lower-level CSS-only implementation may set precisely the same complete map on a host, but it must perform the same validation and checks; changing only a primitive or one alias is unsupported and carries no contrast guarantee. `var()` references may already have resolved at an ancestor, so merely overriding a red primitive locally does not reliably retheme inherited semantic aliases.
 
@@ -30,7 +30,7 @@ In increasing integer steps `i = 0…255`, select the first `B = mix(A, white, i
 
 ### Token confirmation table
 
-**Approved:** the following dark-only names, defaults and derived custom-mode values; no primitive is added. The first group contains existing source tokens, including the brand role shared by the segmented border and tint. The second contains approved #425 roles that are not implemented yet. The complete map must redeclare both groups at the same host; inherited aliases can otherwise freeze at the ancestor. Defaults are explicitly reproduced for nested resets. `rgba(B, a)` means the rounded sRGB channels of B and the stated alpha; `mix` is the materialized calculation above, not a required CSS `color-mix()` feature. No ratio below is an observed new runtime test.
+**Approved:** the following dark-only names, defaults and derived custom-mode values; no primitive is added. The first group contains existing source tokens, including the brand role shared by the segmented border and tint. The second contains the shared #425 roles. The complete map must redeclare both groups at the same host; inherited aliases can otherwise freeze at the ancestor. Defaults are explicitly reproduced for nested resets. `rgba(B, a)` means the rounded sRGB channels of B and the stated alpha; `mix` is the materialized calculation above, not a required CSS `color-mix()` feature. No ratio below is an observed new runtime test.
 
 | Existing or approved token / intended role | Default red value, dark | Approved custom value, dark | Intended surface and contrast evidence / limit |
 | --- | --- | --- | --- |
@@ -48,11 +48,11 @@ In increasing integer steps `i = 0…255`, select the first `B = mix(A, white, i
 | `--gradient-btn-primary-hover` | `linear-gradient(180deg, #FF4A6E 0%, #FF1A49 52%, #F00033 100%)` | `linear-gradient(180deg, mix(B, white, 0.15) 0%, mix(B, white, 0.07) 52%, B 100%)` | Same black-ink bound; real hover rendering remains a required check. |
 | `--shadow-btn-primary` | `inset 0 1px 0 rgba(255, 255, 255, 0.38), inset 0 -1px 0 rgba(0, 0, 0, 0.28), 0 1px 2px rgba(0, 0, 0, 0.6), 0 8px 22px -8px rgba(255, 0, 54, 0.7)` | Same geometry and first three layers; last layer `0 8px 22px -8px rgba(B, 0.7)` | Decorative halo; no standalone contrast promise. The 28% black inset is included in the fill check. |
 | `--shadow-btn-primary-hover` | `inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -1px 0 rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 0, 54, 0.35), 0 10px 30px -6px rgba(255, 0, 54, 0.75)` | Same geometry and first three layers; last two layers `0 0 0 1px rgba(B, 0.35), 0 10px 30px -6px rgba(B, 0.75)` | Decorative halo; its 25% black inset is bounded by the 28% check; inspect actual rendering. |
-| `--color-state-selected` (#425 approved, not yet implemented) | `var(--color-action-primary-solid-bg)` | B | Selected solid/range/underline on surface-0…3; B vs Smax ≥4.6:1. |
-| `--color-on-selected` (#425 approved, not yet implemented) | `var(--color-action-primary-solid-fg)` | `var(--color-primitive-black)` | Indicator on custom solid/selected gradient; conservative black-ink bound ≥4.6:1. |
-| `--gradient-state-selected` (#425 approved, not yet implemented) | `var(--gradient-btn-primary)` | Same fully materialized custom value as `--gradient-btn-primary` above | Black indicator against stops and bevel has the same bound; browser proof pending. |
-| `--shadow-state-selected` (#425 approved, not yet implemented) | `var(--shadow-btn-primary)` | Same fully materialized custom value as `--shadow-btn-primary` above | Decorative bevel/halo; the 28% black inset is included in the fill check. |
-| `--shadow-state-indicator` (#425 approved, not yet implemented) | `var(--shadow-glow-base)` = `0 4px 20px 0 rgba(255, 0, 54, 0.15)` | `0 4px 20px 0 rgba(B, 0.15)` | Decorative underline glow only; no independent contrast guarantee. |
+| `--color-state-selected` (#425) | `var(--color-action-primary-solid-bg)` | B | Selected solid/range/underline on surface-0…3; B vs Smax ≥4.6:1. |
+| `--color-on-selected` (#425) | `var(--color-action-primary-solid-fg)` | `var(--color-primitive-black)` | Indicator on custom solid/selected gradient; conservative black-ink bound ≥4.6:1. |
+| `--gradient-state-selected` (#425) | `var(--gradient-btn-primary)` | Same fully materialized custom value as `--gradient-btn-primary` above | Black indicator against stops and bevel has the same bound; browser proof pending. |
+| `--shadow-state-selected` (#425) | `var(--shadow-btn-primary)` | Same fully materialized custom value as `--shadow-btn-primary` above | Decorative bevel/halo; the 28% black inset is included in the fill check. |
+| `--shadow-state-indicator` (#425) | `var(--shadow-glow-base)` = `0 4px 20px 0 rgba(255, 0, 54, 0.15)` | `0 4px 20px 0 rgba(B, 0.15)` | Decorative underline glow only; no independent contrast guarantee. |
 | `--color-link-default` (#425 option B approved) | `var(--color-fg-brand-raised)` = `#FF0036` | B | Default mode keeps existing neon and fails 4.5:1 for normal text on S1–S3 by owner decision; custom B vs Smax ≥4.6:1. Distinction from surrounding text remains contextual. |
 | `--color-link-hover` (#425 option B approved) | `var(--color-primitive-red-200)` = `#FF8FA6` | H | Default mode keeps existing hover. Custom hover ink against supported surfaces has at least B's bound; a non-color link cue still requires contextual review. |
 
@@ -62,7 +62,7 @@ In increasing integer steps `i = 0…255`, select the first `B = mix(A, white, i
 
 A theme follows **DOM ancestry**, not the React tree. Place a ready, connected same-document portal host within the intended theme host and pass that host as `DialogContent container={host}`; render content only after the host is ready. Use `overlayScope='viewport'` when mount-only/viewport placement is intended, or the existing default container scope with a positioned, non-scrolling suitable host. Viewport scope can still be clipped or get a fixed-position containing block from ancestors; custom hosting does **not** localize Radix's document-wide modality. Close the dialog before replacing or removing its host. An omitted/null container uses body and inherits body's theme, not the trigger's nested scope. React context does not change CSS inheritance. Other portal components are supported only if their public API supplies an appropriate host; otherwise use a correctly scoped body or keep their current colors and report the limitation. No probing `.local-app-dialog` or setting styles on component internals.
 
-For example, after the approved helper exists, a React consumer can use a native theme host and a ready portal host (the cast is for React's `CSSProperties`, not a component style override):
+For example, a React consumer can use a native theme host and a ready portal host (the cast is for React's `CSSProperties`, not a component style override):
 
 ```tsx
 import { useState, type CSSProperties } from 'react';
@@ -86,11 +86,11 @@ function SettingsDialog({ accent }: { accent: string }) {
 }
 ```
 
-With the future helper, Nexo can apply one complete map to the flyout and mount Dialog in an explicitly themed host, removing its class-probing workaround only after package adoption and portal verification. Its independently used three-ring preview may retain its own algorithm: this proposal deliberately changes dark custom colors to meet UI contrast and does not promise pixel parity. Quorb may opt in later; its ring settings and local legacy CSS do not migrate automatically. Existing apps that do not opt in retain exact tokens and rendered defaults. CSS-only and precompiled package consumers need the same emitted rules and values; any scope reset, SSR/hydration, theme transition and ordering behavior must be tested rather than inferred from types. The helper performs no persistence or effect cleanup.
+With the helper, Nexo can apply one complete map to the flyout and mount Dialog in an explicitly themed host, removing its class-probing workaround only after package adoption and portal verification. Its independently used three-ring preview may retain its own algorithm: this proposal deliberately changes dark custom colors to meet UI contrast and does not promise pixel parity. Quorb may opt in later; its ring settings and local legacy CSS do not migrate automatically. Existing apps that do not opt in retain exact tokens and rendered defaults. CSS-only and precompiled package consumers need the same emitted rules and values; any scope reset, SSR/hydration, theme transition and ordering behavior must be tested rather than inferred from types. The helper performs no persistence or effect cleanup.
 
 ## Acceptance and checks
 
-All are planned, not observed. The #425 choices, this table and the host-only appearance exception are approved; the implementation plan follows the same delegation. Additional token values still require owner confirmation.
+The #425 choices, this table and the host-only appearance exception are approved; the implementation plan follows the same delegation. Parent-observed RED exists, but passing package, browser and rendering evidence remains pending. Additional token values still require owner confirmation.
 
 | ID | Observable contract | Planned evidence |
 | --- | --- | --- |
@@ -111,3 +111,11 @@ All are planned, not observed. The #425 choices, this table and the host-only ap
 - D5 — **Approved:** consumer-supplied, ready Dialog `container` inside the theme host; other portals remain unsupported until their public mounting API permits the same behavior.
 - D6 — **Approved:** no new dependency and no reliance on browser `color-mix()` for derived values; verify supported WebView2 and packaged consumers.
 - D7 — **Approved:** require measured browser focus/fill tests and real captures in the implementation plan under the same delegation. Those checks and visual evidence remain pending; the algorithm and source comments are not observed runtime proof.
+
+## Implementation and mathematical boundary
+
+The source helper supplies the approved 21 properties and freezes each returned variable map. The `development` export resolves to source for workspace tooling; the package's JavaScript export is built separately and its declaration describes the same API. The Dialog example uses its existing ready-host API and does not add a provider or modify component internals. The `RuntimeAccent` Dialog story demonstrates a changing custom host, a nested default reset and an explicitly hosted portal.
+
+For any accepted custom input, the search considers the rounded colors for each step from 0 through 254 in order, then uses white for step 255. The strongest surface is `#36373c`, with every channel at most 60; white against that surface exceeds 4.6:1. The rounded 28% black composite of white is `#b8b8b8`, which also exceeds 4.6:1 against black. Therefore a passing candidate always exists, and the first returned candidate meets both bounds. Channel-wise white mixing cannot darken a passing candidate; the custom gradient stops and their stated black composites retain the same conservative bounds. Ratios are compared without rounding. This proof covers the specified solid surfaces and steady-state calculations only, not rendered antialiasing, transitions, clipping or other backgrounds.
+
+The deterministic tests cover examples and channel/rounding boundaries, but they do not replace the required real-browser focus, fill, portal, packed-consumer and contrast evidence. No measured browser result is claimed here.
