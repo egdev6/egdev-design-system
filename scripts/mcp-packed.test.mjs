@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
+import { readClientConfig } from '../packages/mcp/tests/readme-configs.mjs';
 import { tarballName } from './lib/pack-packages.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -49,10 +50,7 @@ test('offline packed install answers all tools with its installed artifact', { t
     const artifact = JSON.parse(readFileSync(join(clean, 'node_modules/@egdev/system/design-system.json'), 'utf8'));
     const designSystem = { name: artifact.name, schemaVersion: artifact.schemaVersion, packages: artifact.packages };
     const docs = readFileSync(resolve(root, 'packages/mcp/README.md'), 'utf8');
-    const blocks = [...docs.matchAll(/```json\n([\s\S]*?)\n```/g)].map((match) => JSON.parse(match[1]));
-    assert.equal(blocks.length, 2);
-    assert.deepEqual(blocks[0], blocks[1]);
-    const config = blocks[0].mcpServers.egdev;
+    const config = readClientConfig(docs);
     const command = config.command.replace('/absolute/path/to/consumer', clean);
     const client = new Client({ name: 'packed-test', version: '1.0.0' });
     await client.connect(new StdioClientTransport({ command, args: config.args }));

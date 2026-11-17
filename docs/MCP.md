@@ -134,7 +134,7 @@ client configuration entry looks like this:
 The client library performs the `initialize` handshake and session handling shown above. This repository
 does not ship or modify any global client configuration: add the entry to the client you use, and keep
 the URL loopback. The `@egdev/mcp` package for the versioned data artifact is a separate, offline server;
-its own examples belong in `packages/mcp/README.md` once that package exists.
+see its [configuration and usage examples](../packages/mcp/README.md).
 
 ## Security boundary
 
