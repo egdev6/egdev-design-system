@@ -3964,6 +3964,44 @@ test('UI Link exports safe native and slotted navigation with decorative small I
   assert.doesNotMatch(slotted, /<svg|asChild=|external=|arrow=/);
 });
 
+test('AppIcon ships its scanned Surface and contained-image recipe with passive SSR', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
+  for (const [selector, declaration] of [
+    ['.inline-grid', /display:\s*inline-grid/],
+    ['.overflow-hidden', /overflow:\s*hidden/],
+    ['.rounded-md', /border-radius:\s*var\(--radius-md/],
+    ['.p-0', /padding:/],
+    ['.object-contain', /object-fit:\s*contain/],
+    ['.object-center', /object-position:\s*center/],
+    ['.font-sans', /font-family:/],
+    ['.text-label-default', /font-size:/],
+    ['.text-body-default', /font-size:/]
+  ]) {
+    assert.match(rule(selector), declaration, selector);
+  }
+  for (const size of ['8', '10', '12']) {
+    const body = rule('.size-' + size);
+    assert.match(body, /width:/);
+    assert.match(body, /height:/);
+  }
+  assert.doesNotMatch(css, /\.eg-app-icon\s*[,{]/, 'AppIcon has no stylesheet');
+  const { AppIcon } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const html = renderToString(createElement(AppIcon, { monogram: 'AB', label: 'Application', src: 'logo.png' }));
+  assert.match(html, /role="img"/);
+  assert.match(html, /aria-label="Application"/);
+  assert.match(html, /eg-app-icon/);
+  assert.match(html, /eg-surface/);
+  assert.match(html, /aria-hidden="true"[^>]*>AB/);
+  assert.doesNotMatch(html, /<img|tabindex=|style=/);
+});
+
 test('UI ships exactly the approved Avatar utility recipe without new marker rules', async () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
@@ -5202,6 +5240,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'AlertDialogCancel',
       'AlertDialogContent',
       'AlertDialogTrigger',
+      'AppIcon',
       'AppShell',
       'ArticleFeature',
       'ArticleFeatureCover',
@@ -5487,6 +5526,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'AlertDialogTone',
     'AlertDialogTrigger',
     'AlertDialogTriggerProps',
+    'AppIcon',
+    'AppIconProps',
+    'AppIconSize',
     'AppShell',
     'AppShellMessages',
     'AppShellProps',

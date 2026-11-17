@@ -17,6 +17,7 @@
 @source "../packages/effects/src/ambient-background/AmbientBackground.stories.tsx";
 @source "../packages/effects/src/atoms/isotipo3d/Isotipo3D.stories.tsx";
 @source "../packages/ui/src/molecules/**/*.stories.tsx";
+@source "../packages/ui/src/atoms/app-icon/AppIcon.stories.tsx";
 @source "../packages/ui/src/atoms/avatar/Avatar.stories.tsx";
 @source "../packages/ui/src/atoms/badge/Badge.stories.tsx";
 @source "../packages/ui/src/atoms/button/Button.stories.tsx";

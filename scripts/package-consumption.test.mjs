@@ -29,6 +29,8 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
+import { AppIcon } from '@egdev/ui';
+import type { AppIconProps, AppIconSize } from '@egdev/ui';
 import { Pixel } from '@egdev/ui';
 import type { PixelProps, PixelState } from '@egdev/ui';
 import { NotesBoard, NotesBoardSide, NotesBoardList } from '@egdev/ui';
@@ -2422,6 +2424,31 @@ export function TypographySamples({ headingLevel = 1 }: TypographySampleProps) {
     createElement(Text, { variant: 'section', accent: 'inline', accentBreak: false, asChild: true,
       children: createElement('span', { id: 'title-slotted', className: 'consumer-span' }, 'Slotted ') }));
 }
+export const appIconDefaults: AppIconProps = { monogram: 'AB', label: 'Application' };
+export function AppIconSamples({ src }: { src?: string } = {}) {
+  const sizes: AppIconSize[] = ['sm', 'md', 'lg'];
+  return createElement('section', null,
+    ...sizes.map((size) => createElement(AppIcon, { ...appIconDefaults, key: size, size, id: 'app-icon-' + size, src })),
+    createElement(AppIcon, { monogram: '👩🏽‍💻', id: 'app-icon-decorative' }));
+}
+// @ts-expect-error A monogram is required.
+const appIconMissing: AppIconProps = {};
+// @ts-expect-error Content belongs to the component.
+const appIconChildren: AppIconProps = { monogram: 'A', children: 'other' };
+// @ts-expect-error There is no public ref API.
+const appIconRef: AppIconProps = { monogram: 'A', ref: createRef<HTMLSpanElement>() };
+// @ts-expect-error There is no asChild API.
+const appIconAsChild: AppIconProps = { monogram: 'A', asChild: true };
+// @ts-expect-error The role is owned by the component.
+const appIconRole: AppIconProps = { monogram: 'A', role: 'button' };
+// @ts-expect-error Inline styling is not supported.
+const appIconStyle: AppIconProps = { monogram: 'A', style: { color: 'red' } };
+// @ts-expect-error The internal image has no public alt prop.
+const appIconAlt: AppIconProps = { monogram: 'A', alt: 'Other' };
+// @ts-expect-error Dimensions use presets only.
+const appIconSize: AppIconProps = { monogram: 'A', size: 30 };
+// @ts-expect-error Internal recipe stays private.
+type AppIconRecipe = (typeof import('@egdev/ui'))['appIconVariants'];
 export const avatarDefaults: AvatarProps = { label: 'Example channel' };
 export function AvatarSamples() {
   const sizes: AvatarSize[] = ['sm', 'md', 'lg', 'xl'];
@@ -3610,6 +3637,30 @@ function assertLabelCSS(css) {
     'Missing Label choice weight utility'
   );
   assert.match(css, /font-weight:\s*var\(--text-body-default--font-weight\)/, 'Missing Label choice weight binding');
+}
+
+function assertAppIconCSS(css) {
+  for (const selector of [
+    '.inline-grid',
+    '.overflow-hidden',
+    '.rounded-md',
+    '.p-0',
+    '.size-8',
+    '.size-10',
+    '.size-12',
+    '.size-full',
+    '.font-sans',
+    '.text-label-default',
+    '.text-body-default',
+    '.object-contain',
+    '.object-center'
+  ]) {
+    assert.ok(css.includes(selector), 'Missing AppIcon utility ' + selector);
+  }
+  assert.match(css, /object-fit:\s*contain/);
+  assert.match(css, /object-position:\s*center/);
+  assert.match(css, /var\(--radius-md\)/);
+  assert.doesNotMatch(css, /\.eg-app-icon\s*[,{]/);
 }
 
 // Avatar's additive utilities must work without changing prior component guards.
@@ -5324,6 +5375,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'AlertDialogCancel',
   'AlertDialogContent',
   'AlertDialogTrigger',
+  'AppIcon',
   'AppShell',
   'ArticleFeature',
   'ArticleFeatureCover',
@@ -5569,6 +5621,8 @@ ${assertSelectCSS.toString()}
 assertSelectCSS(shippedStyles);
 assertButtonCSS(shippedStyles);
 assertAvatarCSS(shippedStyles);
+${assertAppIconCSS.toString()}
+assertAppIconCSS(shippedStyles);
 assertGaugeCSS(shippedStyles);
 assertIconCSS(shippedStyles);
 assertDividerCSS(shippedStyles, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
@@ -5739,6 +5793,20 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
+const { AppIconSamples } = await import('./consumer.ts');
+const appIconDocument = new JSDOM(renderToString(createElement(AppIconSamples, { src: 'logo.png' })));
+for (const [size, utility] of [['sm', 'size-8'], ['md', 'size-10'], ['lg', 'size-12']]) {
+  const icon = appIconDocument.window.document.getElementById('app-icon-' + size);
+  assert.equal(icon.getAttribute('role'), 'img');
+  assert.equal(icon.getAttribute('aria-label'), 'Application');
+  assert.ok(icon.classList.contains(utility) && icon.classList.contains('eg-app-icon') && icon.classList.contains('eg-surface'));
+  assert.equal(icon.textContent, 'AB');
+  assert.equal(icon.firstElementChild.getAttribute('aria-hidden'), 'true');
+  assert.equal(icon.querySelector('img'), null);
+  assert.equal(icon.hasAttribute('tabindex'), false);
+}
+assert.equal(appIconDocument.window.document.getElementById('app-icon-decorative').getAttribute('aria-hidden'), 'true');
+appIconDocument.window.close();
 const { PixelSamples } = await import('./consumer.ts');
 const pixelDocument = new JSDOM(renderToString(createElement(PixelSamples)));
 const pixels = [...pixelDocument.window.document.querySelectorAll('span.eg-pixel')];
@@ -8439,6 +8507,32 @@ try {
     assert.equal(identity.getAttribute('aria-label'), null);
     assert.equal(identity.getAttribute('data-state'), 'active');
     assert.equal(identity.getAttribute('tabindex'), null);
+    const { AppIconSamples } = await import('./consumer.ts');
+    const firstAppPreload = preloads.length;
+    await act(async () => root.render(createElement(AppIconSamples, { src: 'broken.png' })));
+    const appIcon = document.getElementById('app-icon-md');
+    assert.equal(appIcon.textContent, 'AB');
+    assert.equal(appIcon.querySelector('img'), null);
+    assert.equal(preloads.length - firstAppPreload, 3);
+    await act(async () => { for (const image of preloads.slice(firstAppPreload)) image.dispatchEvent(new window.Event('error')); });
+    assert.equal(appIcon.textContent, 'AB');
+    const secondAppPreload = preloads.length;
+    await act(async () => root.render(createElement(AppIconSamples, { src: 'working.png' })));
+    assert.equal(preloads.length - secondAppPreload, 3);
+    await act(async () => {
+      for (const image of preloads.slice(secondAppPreload)) {
+        Object.defineProperties(image, { complete: { value: true }, naturalWidth: { value: 100 } });
+        image.dispatchEvent(new window.Event('load'));
+      }
+    });
+    assert.equal(appIcon.querySelector('img').getAttribute('alt'), '');
+    assert.equal(appIcon.querySelector('img').getAttribute('src'), 'working.png');
+    assert.ok(appIcon.querySelector('img').classList.contains('object-contain'));
+    assert.equal(appIcon.textContent, '');
+    await act(async () => root.render(createElement(AppIconSamples)));
+    assert.equal(appIcon.textContent, 'AB');
+    assert.equal(appIcon.querySelector('img'), null);
+    assert.equal(appIcon.getAttribute('aria-label'), 'Application');
   } finally {
     window.Image = BrowserImage;
   }
@@ -9404,6 +9498,8 @@ ${assertCheckboxCSS.toString()}
 assertCheckboxCSS(emitted);
 assertButtonCSS(emitted);
 assertAvatarCSS(emitted);
+${assertAppIconCSS.toString()}
+assertAppIconCSS(emitted);
 assertGaugeCSS(emitted);
 assertDividerCSS(emitted, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(
@@ -9529,6 +9625,7 @@ assertCheckboxCSS(twCss);
 assertButtonCSS(twCss);
 assertBadgeCSS(twCss);
 assertAvatarCSS(twCss);
+assertAppIconCSS(twCss);
 assertGaugeCSS(twCss);
 assertDividerCSS(twCss, readFileSync(fileURLToPath(import.meta.resolve('@egdev/ui')), 'utf8'));
 assert.match(

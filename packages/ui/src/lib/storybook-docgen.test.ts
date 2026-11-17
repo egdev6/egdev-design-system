@@ -1612,6 +1612,7 @@ describe('Storybook TypeScript docgen contract', () => {
     );
     // Each primitive exports its type alias first and runtime component second; dedupe the specifiers.
     expect([...new Set(modules)].sort()).toEqual([
+      './atoms/app-icon',
       './atoms/avatar',
       './atoms/badge',
       './atoms/button',
@@ -1713,6 +1714,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'AlertDialogCancel',
       'AlertDialogContent',
       'AlertDialogTrigger',
+      'AppIcon',
       'AppShell',
       'ArticleFeature',
       'ArticleFeatureCover',
@@ -3492,6 +3494,71 @@ describe('Stat passive figure metadata contract', () => {
     expect(exportedStoryNames(stories)).toEqual(['Default', 'Highlighted', 'NoData', 'Small', 'TotalsRow']);
     expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);
   }, 20_000);
+});
+
+describe('AppIcon identity metadata contract', () => {
+  it('extracts all own controls, defaults and bounded native rows', { timeout: heavyDocgenTimeoutMs }, () => {
+    const file = ast(source('atoms/app-icon/types.ts'));
+    const controls: Record<string, string> = { monogram: 'text', src: 'text', label: 'text', size: 'select' };
+    const declarations = ownProps(file, ['AppIconProps']);
+    expect(declarations.map((property) => property.name.getText(file))).toEqual(Object.keys(controls));
+    const doc = parser.parse(source('atoms/app-icon/AppIcon.tsx')).find((item) => item.displayName === 'AppIcon');
+    for (const property of declarations) {
+      const name = property.name.getText(file);
+      const tags = ts.getJSDocTags(property);
+      expect(tags.filter((tag) => tag.tagName.text === 'control').map((tag) => tag.comment)).toEqual([controls[name]]);
+      expect(doc?.props[name]?.tags).toMatchObject({ control: controls[name] });
+      expect(doc?.props[name]?.required).toBe(name === 'monogram');
+      if (name !== 'size') {
+        expect(doc?.props[name]?.defaultValue).toBeNull();
+      }
+    }
+    expect(normalize(doc?.props.size?.defaultValue?.value)).toBe('md');
+    expect(doc?.props.size?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()).toEqual([
+      'lg',
+      'md',
+      'sm'
+    ]);
+    expect(defaults(source('atoms/app-icon/useAppIcon.ts'), false)).toEqual({ size: 'md' });
+    for (const prop of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className']) {
+      expect(doc?.props[prop], prop).toBeDefined();
+    }
+    for (const prop of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'aria-hidden',
+      'tabIndex',
+      'style',
+      'dangerouslySetInnerHTML',
+      'contentEditable',
+      'onClick',
+      'onKeyDown',
+      'ref',
+      'asChild',
+      'alt'
+    ]) {
+      expect(doc?.props[prop], prop).toBeUndefined();
+    }
+    expect(publicAPI.AppIcon).toBeDefined();
+    for (const name of ['appIconVariants', 'appIconImageVariants', 'appIconFallbackVariants', 'useAppIcon']) {
+      expect(name in publicAPI).toBe(false);
+    }
+    const stories = ast(source('atoms/app-icon/AppIcon.stories.tsx'));
+    expect(exportedStoryNames(stories)).toEqual([
+      'Default',
+      'Sizes',
+      'WithImage',
+      'NonSquareImage',
+      'MissingImage',
+      'BrokenImage',
+      'Named',
+      'Decorative',
+      'InButton'
+    ]);
+    expect(stories.getText()).not.toMatch(/\b(?:argTypes|play)\s*:/);
+  });
 });
 
 describe('Avatar identity metadata contract', () => {
