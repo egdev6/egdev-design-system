@@ -129,13 +129,13 @@ All checks are **planned**, not observed for v0.3. Stories do not replace tests.
 - L6 replaces the earlier `selectedTone` direction with a separate value of `variant`; `underline` and `segmented` remain unchanged (`odd/tasks/nexo-requests-464-466-specs.md:9,31`). `outline` is the proposed value, not yet owner-approved.
 - Spec batch only: no source, tokens, dependencies, GitHub writes or implementation. The plan requires separate approval.
 
-### Remaining decisions for the owner
+### Owner decisions — 2026-11-17 (feature log L8)
 
-1. **Accent sheen:** choose helper-map extension of the existing chip gradient, a separately approved new role, or an explicitly different existing-role approximation (section 6). Decide exact defaults, derivation and nested reset; no option is approved here.
-2. **Material shadow:** approve the exact historical main-view edge-only recipe / Material exception, or approve edge plus existing two-layer elevation as a visual deviation. The generic Nexo glow was overridden for main tabs.
-3. **Typography and focus:** choose the historical shared 600 label weight or an explicitly stronger selected-only 700 using the existing weight token; choose historical white inset focus versus current accent focus after contrast/forced-colors checks. Never change existing variant defaults to resolve a failing check without approval.
-4. **Layout and accessibility:** choose section 3 option A (reuse `fullWidth` / `labelWrap`) or B (always-full-width `outline`, both props segmented-only). Resolve any measured 4.5:1/3:1, non-color cue or target-size failure before implementation.
-5. **Naming and visuals:** confirm `outline`, supply a recoverable owner screenshot or authorize an expected-design capture, agree conditions and separately adopt exact image hashes. Current Storybook is baseline only.
+1. **Accent sheen:** derive `--gradient-chip-active` from the accent role so `createAccentTheme` recolors it; the default red rendering stays identical. This is a token change in `packages/tokens/src/theme.css` (and the accent helper map), confirmed by the owner for this purpose only.
+2. **Material shadow:** the historical main-view edge-only recipe (`--shadow-edge-strong`), as Nexo had it.
+3. **Typography and focus:** the historical shared 600 label weight; focus keeps the current DS accent focus ring (contrast and forced-colors verified in the implementation PR).
+4. **Layout:** option A: `fullWidth` and `labelWrap` also apply to `outline`.
+5. **Naming and visuals:** `variant="outline"`. The owner screenshot ("Mis apps / Catálogo", feature log L6) is the expected-design reference; the implementation PR captures the result in a real browser for owner review.
 
 ### Planned checks and next step
 
