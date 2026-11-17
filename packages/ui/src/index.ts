@@ -55,6 +55,8 @@ export type {
   CollapsibleTriggerProps
 } from './molecules/collapsible';
 export { Collapsible, CollapsibleContent, CollapsibleHeader, CollapsibleTrigger } from './molecules/collapsible';
+export type { ColorSwatchGroupOption, ColorSwatchGroupProps } from './molecules/color-swatch-group';
+export { ColorSwatchGroup } from './molecules/color-swatch-group';
 export * from './molecules/command-palette';
 export * from './molecules/community-card';
 export * from './molecules/dialog';

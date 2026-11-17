@@ -29,6 +29,55 @@ function run(cwd, command, args, timeout) {
 }
 
 const consumer = `
+import { ColorSwatchGroup } from '@egdev/ui';
+import type { ColorSwatchGroupOption, ColorSwatchGroupProps } from '@egdev/ui';
+const colorSwatchOptions: ColorSwatchGroupOption[] = [
+  { value: '#Aa00BB', label: 'Purple' },
+  { value: '#001122', label: 'Dark', disabled: true },
+  { value: 'var(--unsafe)', label: 'Unsafe' },
+  { value: '#aa00bb', label: 'Duplicate' }
+];
+export const colorSwatchProps: ColorSwatchGroupProps = {
+  label: 'Accent', options: colorSwatchOptions, value: '#aa00bb',
+  customLabel: 'Custom color', onValueChange: (value: string) => { void value; },
+  id: 'packed-color-swatches', dir: 'rtl', 'aria-describedby': 'accent-hint', className: 'w-full mt-2'
+};
+export function ColorSwatchGroupSamples() { return createElement(ColorSwatchGroup, colorSwatchProps); }
+// @ts-expect-error A visible localized group label is required.
+const colorSwatchMissingLabel: ColorSwatchGroupProps = { options: [], value: '#123456', onValueChange: () => {} };
+// @ts-expect-error A controlled value is required.
+const colorSwatchMissingValue: ColorSwatchGroupProps = { label: 'Accent', options: [], onValueChange: () => {} };
+// @ts-expect-error A user-change callback is required.
+const colorSwatchMissingChange: ColorSwatchGroupProps = { label: 'Accent', options: [], value: '#123456' };
+// @ts-expect-error Options require a visible name.
+const colorSwatchOptionNoLabel: ColorSwatchGroupOption = { value: '#123456' };
+// @ts-expect-error Uncontrolled selection is not supported.
+const colorSwatchDefault: ColorSwatchGroupProps = { ...colorSwatchProps, defaultValue: '#123456' };
+// @ts-expect-error Consumers own form serialization.
+const colorSwatchName: ColorSwatchGroupProps = { ...colorSwatchProps, name: 'accent' };
+// @ts-expect-error Native form validation is not part of the contract.
+const colorSwatchRequired: ColorSwatchGroupProps = { ...colorSwatchProps, required: true };
+// @ts-expect-error The component owns its children.
+const colorSwatchChildren: ColorSwatchGroupProps = { ...colorSwatchProps, children: 'Extra' };
+// @ts-expect-error The fieldset's group semantics are protected.
+const colorSwatchRole: ColorSwatchGroupProps = { ...colorSwatchProps, role: 'region' };
+// @ts-expect-error The visible legend owns the group name.
+const colorSwatchAriaLabel: ColorSwatchGroupProps = { ...colorSwatchProps, 'aria-label': 'Other' };
+// @ts-expect-error The visible legend owns the group name.
+const colorSwatchAriaLabelledBy: ColorSwatchGroupProps = { ...colorSwatchProps, 'aria-labelledby': 'other' };
+// @ts-expect-error Inline appearance is not supported.
+const colorSwatchStyle: ColorSwatchGroupProps = { ...colorSwatchProps, style: { color: 'red' } };
+// @ts-expect-error The component owns its change event.
+const colorSwatchOnChange: ColorSwatchGroupProps = { ...colorSwatchProps, onChange: () => {} };
+// @ts-expect-error Raw HTML cannot replace the component's controls.
+const colorSwatchHtml: ColorSwatchGroupProps = { ...colorSwatchProps, dangerouslySetInnerHTML: { __html: 'x' } };
+// @ts-expect-error A root ref is not part of this API.
+const colorSwatchRef: ColorSwatchGroupProps = { ...colorSwatchProps, ref: null };
+// @ts-expect-error Slot composition is not supported.
+const colorSwatchSlot: ColorSwatchGroupProps = { ...colorSwatchProps, asChild: true };
+// @ts-expect-error The internal hook is not public.
+type ColorSwatchPrivateHook = (typeof import('@egdev/ui'))['useColorSwatchGroup'];
+export type ColorSwatchNegatives = [typeof colorSwatchMissingLabel, typeof colorSwatchMissingValue, typeof colorSwatchMissingChange, typeof colorSwatchOptionNoLabel, typeof colorSwatchDefault, typeof colorSwatchName, typeof colorSwatchRequired, typeof colorSwatchChildren, typeof colorSwatchRole, typeof colorSwatchAriaLabel, typeof colorSwatchAriaLabelledBy, typeof colorSwatchStyle, typeof colorSwatchOnChange, typeof colorSwatchHtml, typeof colorSwatchRef, typeof colorSwatchSlot, ColorSwatchPrivateHook];
 import { AppIcon } from '@egdev/ui';
 import type { AppIconProps, AppIconSize } from '@egdev/ui';
 import { Pixel } from '@egdev/ui';
@@ -3523,6 +3572,19 @@ function assertSurfaceCSS(css) {
 }
 
 // Reused inside the installed fixture, against shipped CSS and both consumer build paths.
+function assertColorSwatchGroupCSS(css) {
+  const utility = 'bg-[color:var(--eg-swatch-color)]';
+  const selector =
+    '.' + [...utility].map((char) => (/[\w-]/.test(char) ? char : String.fromCharCode(92) + char)).join('');
+  const start = css.indexOf(selector);
+  assert.ok(start >= 0, 'Packed CSS must include the static ColorSwatchGroup paint utility');
+  const end = css.indexOf('}', start);
+  assert.ok(end > start, 'The swatch utility must have a complete CSS rule');
+  assert.match(css.slice(start, end + 1), /background-color:\s*var\(--eg-swatch-color\)/);
+  assert.doesNotMatch(css, /\.eg-color-swatch-group\s*[,{]/, 'The public marker must not become a stylesheet recipe');
+}
+
+// Reused inside the installed fixture, against shipped CSS and both consumer build paths.
 function assertGaugeCSS(css) {
   assert.match(css, /\.eg-gauge-group-slot\s*\{[^}]*inset:\s*var\(--eg-gauge-group-slot-inset\)/);
   assert.match(css, /\.eg-gauge-group-center\s*\{[^}]*inset:\s*var\(--eg-gauge-group-center-inset\)/);
@@ -5396,6 +5458,8 @@ assert.ok(shippedStyles.slice(emphasisIndex, emphasisIndex + 400).includes('font
 assert.doesNotMatch(shippedStyles, /\\.eg-(?:text|heading)\\s*[,{]/, 'Text/Heading markers must not become shipped CSS rules');
 ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(shippedStyles);
+${assertColorSwatchGroupCSS.toString()}
+assertColorSwatchGroupCSS(shippedStyles);
 ${assertPopoverCSS.toString()}
 assertPopoverCSS(shippedStyles);
 ${assertLinkCSS.toString()}
@@ -5442,6 +5506,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'CollapsibleContent',
   'CollapsibleHeader',
   'CollapsibleTrigger',
+  'ColorSwatchGroup',
   'CommandPalette',
   'CommunityCard',
   'CommunityCardAction',
@@ -5834,6 +5899,38 @@ import { createElement } from 'react';
 import { renderToString } from 'react-dom/server';
 import { JSDOM } from ${JSON.stringify(import.meta.resolve('jsdom'))};
 import { AspectRatio, Divider, Gauge } from '@egdev/ui';
+const { ColorSwatchGroupSamples } = await import('./consumer.ts');
+const colorSwatchDOM = new JSDOM(renderToString(createElement(ColorSwatchGroupSamples)));
+try {
+  const doc = colorSwatchDOM.window.document;
+  const root = doc.querySelector('fieldset.eg-color-swatch-group');
+  assert.ok(root);
+  assert.equal(root.id, 'packed-color-swatches');
+  assert.equal(root.getAttribute('dir'), 'rtl');
+  const group = root.querySelector('[role="radiogroup"]');
+  const legend = root.querySelector('legend');
+  assert.equal(legend.textContent, 'Accent');
+  assert.equal(group.getAttribute('aria-labelledby'), legend.id);
+  assert.equal(group.getAttribute('dir'), 'rtl');
+  const radios = [...group.querySelectorAll('[role="radio"]')];
+  assert.equal(radios.length, 2);
+  assert.deepEqual(radios.map((radio) => radio.getAttribute('aria-checked')), ['true', 'false']);
+  assert.equal(radios[1].disabled, true);
+  const input = root.querySelector('input[type="color"]');
+  assert.ok(input);
+  assert.equal(group.contains(input), false);
+  assert.equal(doc.querySelector('label[for="' + input.id + '"]').textContent, 'Custom color');
+  assert.equal(input.value, '#aa00bb');
+  assert.match(root.querySelector('output').textContent, /Accent.*#aa00bb/);
+  assert.equal(root.querySelector('output').getAttribute('aria-live'), 'polite');
+  const patches = [...root.querySelectorAll('[style]')].filter((node) => node.style.getPropertyValue('--eg-swatch-color'));
+  assert.deepEqual(patches.map((node) => node.style.getPropertyValue('--eg-swatch-color')), ['#aa00bb', '#001122']);
+  for (const patch of patches) {
+    assert.equal(patch.getAttribute('aria-hidden'), 'true');
+    assert.ok(patch.classList.contains('bg-[color:var(--eg-swatch-color)]'));
+  }
+  assert.ok(!root.textContent.includes('Unsafe') && !root.textContent.includes('Duplicate'));
+} finally { colorSwatchDOM.window.close(); }
 const { AppIconSamples } = await import('./consumer.ts');
 const appIconDocument = new JSDOM(renderToString(createElement(AppIconSamples, { src: 'logo.png' })));
 for (const [size, utility] of [['sm', 'size-8'], ['md', 'size-10'], ['lg', 'size-12']]) {
@@ -9621,6 +9718,8 @@ ${assertLabelCSS.toString()}
 assertLabelCSS(emitted);
 ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(emitted);
+${assertColorSwatchGroupCSS.toString()}
+assertColorSwatchGroupCSS(emitted);
 ${assertPopoverCSS.toString()}
 assertPopoverCSS(emitted);
 ${assertLinkCSS.toString()}
@@ -9745,6 +9844,7 @@ for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '
   assert.ok(twCss.includes(utility), 'Tailwind consumer must retain layout utility ' + utility);
 }
 assertSurfaceCSS(twCss);
+assertColorSwatchGroupCSS(twCss);
 assertPopoverCSS(twCss);
 assertLinkCSS(twCss);
 assertNavListCSS(twCss);
