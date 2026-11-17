@@ -67,6 +67,10 @@ Representative source recipes, not a computed cascade; unresolved means no token
 | --color-ambient-line-glow | #4d000d | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-ambient-square | #e6001a | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-ambient-square-glow | #ff2244 | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --color-app-card | var(--color-surface-1) | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --color-app-card-header | var(--color-surface-2) | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --color-app-inset | var(--color-surface-0) | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --color-app-page | var(--color-surface-0) | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-bg-brand-hover | var(--color-alpha-red-18) | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-bg-brand-subtle | var(--color-alpha-red-10) | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-bg-canvas | var(--color-primitive-graphite-950) | theme |  | tokens[] · packages/tokens/src/theme.css |
@@ -82,6 +86,8 @@ Representative source recipes, not a computed cascade; unresolved means no token
 | --color-border-hairline | rgba(255, 255, 255, 0.08) | theme | Elevated surface | tokens[] · packages/tokens/src/theme.css |
 | --color-border-hairline-strong | rgba(255, 255, 255, 0.14) | theme | Overlay | tokens[] · packages/tokens/src/theme.css |
 | --color-border-subtle | var(--color-alpha-white-07) | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --color-control-boundary | var(--color-border-control) | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --color-control-well | var(--color-surface-0) | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-fg-brand-default | var(--color-primitive-red-neon) | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-fg-brand-hover | var(--color-primitive-red-light) | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-fg-brand-raised | var(--color-primitive-red-neon) | theme |  | tokens[] · packages/tokens/src/theme.css |
@@ -92,6 +98,9 @@ Representative source recipes, not a computed cascade; unresolved means no token
 | --color-fg-secondary | var(--color-primitive-neutral-200) | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-focus-ring | var(--color-primitive-red-neon) | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-focus-ring-inverse | var(--color-primitive-white) | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --color-link-default | var(--color-fg-brand-raised) | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --color-link-hover | var(--color-primitive-red-200) | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --color-on-selected | var(--color-action-primary-solid-fg) | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-primitive-black | #000000 | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-primitive-graphite-400 | #A1A2A8 | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-primitive-graphite-500 | #7A7B81 | theme |  | tokens[] · packages/tokens/src/theme.css |
@@ -112,6 +121,8 @@ Representative source recipes, not a computed cascade; unresolved means no token
 | --color-primitive-red-light | #FF335E | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-primitive-red-neon | #FF0036 | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-primitive-white | #FFFFFF | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --color-state-selected | var(--color-action-primary-solid-bg) | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --color-state-selected-surface | var(--color-surface-3) | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-status-danger | var(--color-primitive-red-300) | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-status-danger-bg | color-mix(in srgb, var(--color-status-danger) 12%, transparent) | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --color-status-info | #8AB4FF | theme |  | tokens[] · packages/tokens/src/theme.css |
@@ -284,6 +295,8 @@ Representative source recipes, not a computed cascade; unresolved means no token
 | --shadow-glow-intense | 0 0 22px 4px rgba(255, 0, 54, 0.65), 0 0 55px 8px rgba(255, 0, 54, 0.28) | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --shadow-hot | inset 0 1px 0 rgba(255, 180, 195, 0.35), inset 0 0 0 1px rgba(255, 0, 54, 0.18), 0 2px 0 0 #7A0A1C, 0 5px 0 0 #3D050E, 0 18px 40px -10px rgba(0, 0, 0, 0.85), 0 0 50px -6px rgba(255, 0, 54, 0.45) | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --shadow-ring-brand | 0 0 0 3px rgba(255, 0, 54, 0.22) | theme |  | tokens[] · packages/tokens/src/theme.css |
+| --shadow-state-indicator | var(--shadow-glow-base) | root |  | tokens[] · packages/tokens/src/theme.css |
+| --shadow-state-selected | var(--shadow-btn-primary) | root |  | tokens[] · packages/tokens/src/theme.css |
 | --shadow-well | inset 0 1px 2px rgba(0, 0, 0, 0.55), inset 0 0 0 1px rgba(0, 0, 0, 0.28) | theme | Well | tokens[] · packages/tokens/src/theme.css |
 | --gradient-btn-primary | linear-gradient(180deg, #FF2D57 0%, #FF0036 52%, #EE0031 100%) | root |  | tokens[] · packages/tokens/src/theme.css |
 | --gradient-btn-primary-hover | linear-gradient(180deg, #FF4A6E 0%, #FF1A49 52%, #F00033 100%) | root |  | tokens[] · packages/tokens/src/theme.css |
@@ -296,6 +309,7 @@ Representative source recipes, not a computed cascade; unresolved means no token
 | --gradient-progress | linear-gradient(180deg, #FF4A6E, #FF0036 60%, #D9002D) | root |  | tokens[] · packages/tokens/src/theme.css |
 | --gradient-section-show | radial-gradient(45% 55% at 22% 50%, var(--color-alpha-red-12), transparent 70%) | root |  | tokens[] · packages/tokens/src/theme.css |
 | --gradient-sheen | linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0) 42%) | root | Elevated surface | tokens[] · packages/tokens/src/theme.css |
+| --gradient-state-selected | var(--gradient-btn-primary) | root |  | tokens[] · packages/tokens/src/theme.css |
 | --gradient-vignette | radial-gradient(ellipse 120% 90% at 50% 45%, transparent 35%, rgba(0, 0, 0, 0.55) 75%, rgba(0, 0, 0, 0.92) 100%) | root |  | tokens[] · packages/tokens/src/theme.css |
 | --blur-glass | 16px | theme |  | tokens[] · packages/tokens/src/theme.css |
 | --blur-overlay | 20px | theme | Overlay | tokens[] · packages/tokens/src/theme.css |

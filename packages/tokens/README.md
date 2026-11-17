@@ -10,7 +10,7 @@ Tokens de EGDEV Foundation escritos directamente en CSS. Una sola fuente manual 
 
 | Archivo | Responsabilidad |
 | --- | --- |
-| `src/theme.css` | Fuente manual: 165 variables en `@theme static`, 16 alias de espaciado en `@theme inline static` y 55 en `:root` |
+| `src/theme.css` | Manual source: 230 variables in `@theme static`, 16 spacing aliases in `@theme inline static`, and 65 variables in `:root` |
 | `src/native.css` | Entrada de compilación; importa la fuente y activa el compilador, sin duplicar valores |
 | `dist/tokens.css` | Artefacto nativo de Vite/Tailwind; no se edita ni se versiona |
 
@@ -46,6 +46,8 @@ Las [13 recetas tipográficas y su procedencia](../../docs/tokens-reference.md) 
 ## Límites
 
 Los tokens y recetas de [Material v2](../../docs/MATERIAL.md) conservan su autoridad. Los degradados y demás variables sin utilidad siguen en `:root`. `--color-*: initial` reinicia solo la paleta Tailwind, no todas las escalas.
+
+The [shared semantic contrast roles](../../docs/foundation/semantic-contrast-roles.md) alias existing app surfaces, control and selection colors, Link colors, and selected-control paint. Link retains neon by owner decision, including its documented small-text contrast trade-off. The segmented selection uses the existing brand border and tint; these aliases do not change components or authorize a new Material recipe. Scoped overrides may need explicit alias redeclarations; runtime accent and portal propagation remain separate work.
 
 `--space-*` conserva sus valores en px. Los 15 alias `--spacing-N` apuntan al paso `--space-N`; la base `--spacing` apunta a `--space-1`. El bloque `inline static` emite todas las variables y hace que utilidades como `p-4` usen directamente `var(--space-4)`, respetando overrides locales. No se aplica `inline` a colores ni a las familias existentes.
 

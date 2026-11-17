@@ -48,11 +48,12 @@ test('theme.css keeps the Tailwind color reset instead of a global reset', () =>
 // #291 adds 4 owner-approved SectionShell root tokens (show halo, three fade masks): 56 + 4 = 60 root, 286 + 4 = 290 total.
 // NavList v0.3 adds four static typography declarations: 214 + 4 = 218 utility, 292 + 4 = 296 total.
 // S9 adds the navigation count size: 218 + 1 = 219 utility, 296 + 1 = 297 total.
-test('theme.css declares exactly 219 utility variables, 16 inline aliases, and 62 root variables', () => {
-  assert.equal(extractDeclarations(themeBlock).length, 219, 'utility namespace declaration count');
+// #425 adds 11 utility color aliases and 3 root paint aliases: 230 utility, 65 root, 311 total.
+test('theme.css declares exactly 230 utility variables, 16 inline aliases, and 65 root variables', () => {
+  assert.equal(extractDeclarations(themeBlock).length, 230, 'utility namespace declaration count');
   assert.equal(extractDeclarations(inlineBlock).length, 16, 'inline spacing alias count');
-  assert.equal(extractDeclarations(rootBlock).length, 62, 'root declaration count');
-  assert.equal(extractDeclarations(themeSource).length, 297, 'total declaration count');
+  assert.equal(extractDeclarations(rootBlock).length, 65, 'root declaration count');
+  assert.equal(extractDeclarations(themeSource).length, 311, 'total declaration count');
 });
 
 test('theme.css declares the CalendarGrid stacking container size (#126 D17)', () => {
@@ -99,9 +100,10 @@ test('theme.css declares the indeterminate spin animation token with its keyfram
 });
 
 // #291 --gradient-section-show references --color-alpha-red-12: 53 + 1 = 54 aliases.
-test('theme.css preserves all 54 aliases and has no duplicates, missing targets, or cycles', () => {
+// #425 adds 14 aliases, for 68 references in total.
+test('theme.css preserves all 68 aliases and has no duplicates, missing targets, or cycles', () => {
   const declarations = extractDeclarations(themeSource);
-  assert.equal(declarations.filter(({ value }) => value.includes('var(')).length, 54, 'alias count');
+  assert.equal(declarations.filter(({ value }) => value.includes('var(')).length, 68, 'alias count');
   assert.deepEqual(findDuplicates(declarations), [], 'duplicate declarations');
   assert.deepEqual(findUnresolvedAliases(declarations), [], 'unresolved aliases');
   assert.deepEqual(findAliasCycles(declarations), [], 'alias cycles');
@@ -133,13 +135,13 @@ test('package publishes compiled tokens and keeps backward CSS exports', () => {
   assert.ok(manifest.files.includes('dist'), 'compiled artifact must ship');
 });
 
-test('compiled dist/tokens.css exposes the 297 manual variables and preserves the original 168 values', () => {
+test('compiled dist/tokens.css exposes the 311 manual variables and preserves the original 168 values', () => {
   const artifactPath = at('../dist/tokens.css');
   assert.ok(existsSync(artifactPath), 'dist/tokens.css missing — run pnpm tokens before this test');
   const artifact = readFileSync(artifactPath, 'utf8');
   assert.doesNotMatch(artifact, /@theme/, 'compiled artifact must not keep the @theme at-rule');
   const compiled = toDeclarationMap(artifact);
-  assert.equal(compiled.size, 297, 'compiled artifact must expose 297 variables');
+  assert.equal(compiled.size, 311, 'compiled artifact must expose 311 variables');
   assert.match(artifact, /@keyframes\s+pulse\s*\{/, 'compiled artifact must ship the pulse keyframes');
   assert.match(artifact, /@keyframes\s+spin\s*\{/, 'compiled artifact must ship the spin keyframes');
   const parity = compareParity(artifact, themeSource);

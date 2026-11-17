@@ -33,11 +33,11 @@ All 14 rows describe **approved additions**, not current tokens. Values are dark
 | `--color-control-well` | A: `var(--color-surface-0)` = `#141518` | Input and control wells; foreground text | White 18.26:1; muted 7.17:1 |
 | `--color-control-boundary` | A: `var(--color-border-control)` = `#7A7B81` | Resting enabled control boundary on S0/S1/S2/S3 | 4.33 / 4.04 / 3.68 / 3.21:1 respectively |
 | `--color-state-selected` | A: `var(--color-action-primary-solid-bg)` = `#FF0036` | Solid selected control/range/underline and boundary on S0/S1/S2/S3 | 4.61 / 4.30 / 3.92 / 3.42:1; selected black ink 5.31:1 |
-| `--color-on-selected` | A: `var(--color-action-primary-solid-fg)` = `#000000` | Switch thumb and radio dot on selected solid/gradient | 5.31:1 on neon; gradient stops 5.77 / 5.31 / 4.68:1 |
+| `--color-on-selected` | A: `var(--color-action-primary-solid-fg)` = `#000000` | Switch thumb and radio dot on selected solid/gradient | 5.31:1 on neon; gradient stops 5.76 / 5.31 / 4.68:1 |
 | `--color-state-selected-surface` | A: `var(--color-surface-3)` = `#2D2E33` | Raised segmented-tab selection inside S0 well | White 13.55:1; S0 versus S3 only 1.35:1, not a sufficient non-text cue by itself |
 | `--color-link-default` | B: `var(--color-fg-brand-raised)` = `#FF0036` | Current Link default on S0/S1/S2/S3 | 4.61 / 4.30 / 3.92 / 3.42:1; normal text fails 4.5:1 on S1–S3 by owner decision |
 | `--color-link-hover` | B: `var(--color-primitive-red-200)` = `#FF8FA6` | Current Link hover on S0/S1/S2/S3 | 8.46 / 7.89 / 7.18 / 6.28:1 respectively |
-| `--gradient-state-selected` | A: `var(--gradient-btn-primary)` = `linear-gradient(180deg, #FF2D57 0%, #FF0036 52%, #EE0031 100%)` | Selected Switch/RadioGroup fill | Black against top/middle/bottom stops: 5.77 / 5.31 / 4.68:1; bottom versus S3 3.02:1. Intermediate rendered pixels and bevel remain to be verified |
+| `--gradient-state-selected` | A: `var(--gradient-btn-primary)` = `linear-gradient(180deg, #FF2D57 0%, #FF0036 52%, #EE0031 100%)` | Selected Switch/RadioGroup fill | Black against top/middle/bottom stops: 5.76 / 5.31 / 4.68:1; bottom versus S3 3.02:1. Intermediate rendered pixels and bevel remain to be verified |
 | `--shadow-state-selected` | A: `var(--shadow-btn-primary)`; exact source `packages/tokens/src/theme.css:380` | Existing bevel/halo on selected controls | Not a uniform foreground/background color: no single contrast ratio; do not use halo as the only state cue |
 | `--shadow-state-indicator` | A: `var(--shadow-glow-base)`; exact source `packages/tokens/src/theme.css:352` | Decorative underline glow on S0–S3 | Not a uniform color: no single contrast ratio; the selected line itself has the `--color-state-selected` ratios above |
 
