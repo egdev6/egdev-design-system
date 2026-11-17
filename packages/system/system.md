@@ -1118,6 +1118,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Dialog
     - dialogOverlayLayout base: p-[var(--space-6)] → --space-6
     - dialogOverlayLayout flush=true: p-0 → --spacing-0
     - dialogStatusVariants base: text-label-default → --text-label-default
+    - dialogTitleRowVariants base: gap-[var(--space-3)] → --space-3
     - dialogTitleVariants base: font-display → --font-display
     - dialogTitleVariants base: text-heading-small → --text-heading-small
   - children: ReactNode; Composed Trigger and Content. (components[] · packages/ui/src/molecules/dialog/types.ts)
@@ -2816,6 +2817,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - dialogOverlayLayout base: p-[var(--space-6)] → --space-6
     - dialogOverlayLayout flush=true: p-0 → --spacing-0
     - dialogStatusVariants base: text-label-default → --text-label-default
+    - dialogTitleRowVariants base: gap-[var(--space-3)] → --space-3
     - dialogTitleVariants base: font-display → --font-display
     - dialogTitleVariants base: text-heading-small → --text-heading-small
 ### DialogContent
@@ -2833,6 +2835,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - dialogOverlayLayout base: p-[var(--space-6)] → --space-6
     - dialogOverlayLayout flush=true: p-0 → --spacing-0
     - dialogStatusVariants base: text-label-default → --text-label-default
+    - dialogTitleRowVariants base: gap-[var(--space-3)] → --space-3
     - dialogTitleVariants base: font-display → --font-display
     - dialogTitleVariants base: text-heading-small → --text-heading-small
 ### DialogTrigger
@@ -2850,6 +2853,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - dialogOverlayLayout base: p-[var(--space-6)] → --space-6
     - dialogOverlayLayout flush=true: p-0 → --spacing-0
     - dialogStatusVariants base: text-label-default → --text-label-default
+    - dialogTitleRowVariants base: gap-[var(--space-3)] → --space-3
     - dialogTitleVariants base: font-display → --font-display
     - dialogTitleVariants base: text-heading-small → --text-heading-small
 ### FooterBrand
@@ -4413,6 +4417,7 @@ Not exported:
 - decorative-cover-word: coverWord; approved; ArticleFeatureCover (propNaming[] · skills/_shared/prop-naming.json)
 - decorative-index: index; approved; ProjectCard (propNaming[] · skills/_shared/prop-naming.json)
 - decorative-separation: decorative; approved; Divider (propNaming[] · skills/_shared/prop-naming.json)
+- dialog-header-layout: headerLayout; approved; AlertDialogContent, DialogContent (propNaming[] · skills/_shared/prop-naming.json)
 - dialog-overlay-scope: overlayScope; approved; DialogContent (propNaming[] · skills/_shared/prop-naming.json)
 - disclosure-motion: motion; approved; CollapsibleTrigger (propNaming[] · skills/_shared/prop-naming.json)
 - disclosure-presence: presence; approved; CollapsibleContent (propNaming[] · skills/_shared/prop-naming.json)

@@ -32,11 +32,16 @@ export function DialogContent(props: DialogContentProps) {
   if (c.blocked) {
     return null;
   }
+  const title = (
+    <>
+      <DialogPrimitive.Title className={c.titleClass}>{c.title}</DialogPrimitive.Title>
+      {c.statusText && <span className={c.statusClass}>{c.statusText}</span>}
+    </>
+  );
   const body = (
     <>
       <header className={c.headClass}>
-        <DialogPrimitive.Title className={c.titleClass}>{c.title}</DialogPrimitive.Title>
-        {c.statusText && <span className={c.statusClass}>{c.statusText}</span>}
+        {c.headerLayout === 'stacked' ? <div className={c.titleRowClass}>{title}</div> : title}
         {c.description !== undefined && (
           <DialogPrimitive.Description className={c.descriptionClass}>{c.description}</DialogPrimitive.Description>
         )}

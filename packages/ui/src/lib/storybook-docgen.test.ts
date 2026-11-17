@@ -123,6 +123,61 @@ function defaults(path: string, cva: boolean): Record<string, string> {
   return result;
 }
 
+describe('Dialog header-layout metadata and stories', () => {
+  for (const [name, path, types, defaultValue] of [
+    ['DialogContent', 'molecules/dialog/Dialog.tsx', 'molecules/dialog/types.ts', 'inline'],
+    ['AlertDialogContent', 'molecules/alert-dialog/AlertDialog.tsx', 'molecules/alert-dialog/types.ts', 'stacked']
+  ] as const) {
+    it(`extracts ${name} as an optional select with its own default`, { timeout: heavyDocgenTimeoutMs }, () => {
+      const doc = parser.parse(source(path)).find(({ displayName }) => displayName === name);
+      const prop = doc?.props.headerLayout;
+      expect(prop).toMatchObject({
+        required: false,
+        defaultValue: { value: defaultValue },
+        tags: { control: 'select' }
+      });
+      expect(prop?.type.value.map(({ value }: { value: string }) => normalize(value)).sort()).toEqual([
+        'inline',
+        'stacked'
+      ]);
+      const file = ast(source(types));
+      const declarations = ownProps(file, [`${name}Props`]).filter(
+        (item) => item.name.getText(file) === 'headerLayout'
+      );
+      expect(declarations).toHaveLength(1);
+      const declaration = declarations[0];
+      if (!declaration) {
+        throw new Error(`Missing ${name}.headerLayout declaration`);
+      }
+      expect(
+        ts
+          .getJSDocTags(declaration)
+          .filter(({ tagName }) => tagName.text === 'control')
+          .map((tag) => tag.comment)
+      ).toEqual(['select']);
+    });
+  }
+
+  it.each([
+    ['DialogContent', 'molecules/dialog/Dialog.stories.tsx'],
+    ['AlertDialogContent', 'molecules/alert-dialog/AlertDialog.stories.tsx']
+  ])('documents both explicit layouts for %s in stories', (name, path) => {
+    const file = ast(source(path));
+    expect(exportedStoryNames(file)).toEqual(expect.arrayContaining(['InlineHeader', 'StackedHeader']));
+    for (const [storyName, layout] of [
+      ['InlineHeader', 'inline'],
+      ['StackedHeader', 'stacked']
+    ] as const) {
+      const declaration = file.statements
+        .flatMap((statement) => (ts.isVariableStatement(statement) ? [...statement.declarationList.declarations] : []))
+        .find((item) => item.name.getText(file) === storyName);
+      expect(declaration?.initializer?.getText(file)).toMatch(
+        new RegExp(`<${name}\\b[\\s\\S]*?headerLayout=['"]${layout}['"]`)
+      );
+    }
+  });
+});
+
 describe('Storybook TypeScript docgen contract', () => {
   it('publishes a composed WebTemplate page while keeping the existing stories', async () => {
     const stories = await import('../templates/web-template/WebTemplate.stories');

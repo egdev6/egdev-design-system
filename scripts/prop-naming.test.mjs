@@ -838,6 +838,8 @@ const postReceiptProposals = [
   'tab-list-full-width',
   'control-label-wrap',
   'carousel-track-layout',
+  // Dialog header layout was approved later and is scoped to two content components.
+  'dialog-header-layout',
   // Collapsible v0.5 conventions have their own delegated approval after the frozen receipts.
   'disclosure-presence',
   'disclosure-motion',
@@ -937,9 +939,76 @@ test('Dialog placement and body padding bind the delegated naming approval and r
   });
   assert.deepEqual(
     receipt.entries.find((item) => item.scope === binding.scope),
-    { scope: binding.scope, contentHash: binding.contentHash, exception: payload, source }
+    {
+      scope: binding.scope,
+      contentHash: binding.contentHash,
+      exception: payload,
+      // The earlier receipt remains pinned to the reviewed source at the time of its approval.
+      source: { ...source, revision: 'sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27' }
+    }
   );
   validate(registry);
+});
+
+test('Dialog header layout binds the scoped owner decision and both reviewed sources', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/dialog/v0.2/header-layout-prop-naming-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  for (const quote of [
+    'headerLayout="inline"|"stacked" (Recommended)',
+    'En la primera línea, junto al título (Recommended)',
+    'Agregar la prop también a AlertDialog',
+    'Sí, hasta el merge (Recommended)'
+  ]) {
+    assert.ok(receipt.evidence.userStatements.some((statement) => statement.quote === quote));
+  }
+  const prior = receipt.priorReceipts[0];
+  assert.equal(prior.path, 'docs/components/dialog/v0.2/prop-naming-approval.json');
+  assert.equal(prior.wholeFileSHA256, digest(fs.readFileSync(resolve(root, prior.path))));
+  const amendment = receipt.evidence.amendment;
+  assert.equal(amendment.wholeFileSHA256, digest(fs.readFileSync(resolve(root, amendment.path))));
+
+  const entry = registry.find(({ id }) => id === 'dialog-header-layout');
+  assert.equal(entry.name, 'headerLayout');
+  assert.equal(entry.status, 'approved');
+  const { approval, usages, ...convention } = entry;
+  const contentHash = props.conventionHash(entry);
+  assert.deepEqual(approval, { reference, scope: 'convention:dialog-header-layout', contentHash });
+  assert.deepEqual(receipt.entries, [{ scope: approval.scope, contentHash, convention }]);
+  assert.deepEqual(usages, [
+    {
+      component: 'DialogContent',
+      type: "'inline' | 'stacked' (default inline)",
+      status: 'existing',
+      source: {
+        path: 'packages/ui/src/molecules/dialog/types.ts',
+        symbol: 'DialogContentProps',
+        revision: digest(fs.readFileSync(resolve(root, 'packages/ui/src/molecules/dialog/types.ts')))
+      }
+    },
+    {
+      component: 'AlertDialogContent',
+      type: "'inline' | 'stacked' (default stacked)",
+      status: 'existing',
+      source: {
+        path: 'packages/ui/src/molecules/alert-dialog/types.ts',
+        symbol: 'AlertDialogContentProps',
+        revision: digest(fs.readFileSync(resolve(root, 'packages/ui/src/molecules/alert-dialog/types.ts')))
+      }
+    }
+  ]);
+  assert.deepEqual(historicalRegistry([entry]), []);
+  for (const { source } of registry.flatMap((item) => item.usages)) {
+    if (usages.some((usage) => usage.source.path === source.path)) {
+      assert.equal(source.revision, digest(fs.readFileSync(resolve(root, source.path))));
+    }
+  }
+  validate(registry);
+  const changed = structuredClone(registry);
+  changed.find(({ id }) => id === entry.id).meaning += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
 });
 
 test('Tabs layout conventions bind the owner choices, scoped receipt and reviewed source', () => {
@@ -1857,10 +1926,10 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   validate(actual);
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
-  // AmbientBackground adds two directions; TopBar and Tabs each add two; Carousel, Dialog and AppIcon add one each;
-  // Collapsible adds two separately approved conventions; Panel adds one scoped proposal.
-  assert.equal(actual.length, 172);
-  assert.equal(beforeIndicatorConventions(actual).length, 169);
+  // AmbientBackground adds two directions; TopBar and Tabs each add two; Carousel and AppIcon add one each;
+  // Dialog adds overlay scope and header layout; Collapsible adds two approved conventions; Panel adds one proposal.
+  assert.equal(actual.length, 173);
+  assert.equal(beforeIndicatorConventions(actual).length, 170);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {

@@ -25,7 +25,8 @@ export function useAlertDialogButton(props: AlertDialogTriggerProps | AlertDialo
   return { ...rest, asChild, children, className, type: 'button' as const };
 }
 export function useAlertDialogContent(props: AlertDialogContentProps) {
-  const { title, description, children, actions, tone = 'neutral', className, ...rest } = props;
+  const { title, description, children, actions, tone = 'neutral', headerLayout, className, ...rest } = props;
+  const resolvedHeaderLayout = headerLayout === 'inline' ? 'inline' : 'stacked';
   return {
     title,
     description,
@@ -35,7 +36,7 @@ export function useAlertDialogContent(props: AlertDialogContentProps) {
     rest,
     overlayClass: cn('eg-alert-dialog-backdrop', dialogScrimVariants(), dialogOverlayVariants({ flush: false })),
     panelClass: cn('eg-alert-dialog', dialogPanelVariants({ variant: 'centered', size: 'sm' }), className),
-    headClass: cn('eg-alert-dialog__head', alertDialogHeadVariants()),
+    headClass: cn('eg-alert-dialog__head', alertDialogHeadVariants({ headerLayout: resolvedHeaderLayout })),
     titleRowClass: cn(alertDialogTitleRowVariants()),
     iconClass: cn(alertDialogIconVariants()),
     titleClass: cn('eg-alert-dialog__title', dialogTitleVariants()),

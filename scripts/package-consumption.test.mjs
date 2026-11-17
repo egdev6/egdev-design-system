@@ -396,6 +396,15 @@ type AlertDialogRecipeNotExported = (typeof import('@egdev/ui'))['alertDialogHea
 const alertDialogContentProps: AlertDialogContentProps = { title: 'Delete?', description: 'Cannot undo.', actions: [createElement(AlertDialogCancel, { key: 'cancel', children: 'Cancel' }), createElement(AlertDialogAction, { key: 'action', children: 'Delete' })] };
 export const alertDialogProps: AlertDialogProps = { children: [createElement(AlertDialogTrigger, { key: 'trigger', children: 'Open' }), createElement(AlertDialogContent, { ...alertDialogContentProps, key: 'content' })] };
 export function alertDialogSample() { return createElement(AlertDialog, alertDialogProps); }
+export const alertDialogHeaderLayouts: AlertDialogContentProps[] = [
+  { ...alertDialogContentProps, headerLayout: 'inline' },
+  { ...alertDialogContentProps, headerLayout: 'stacked' }
+];
+// @ts-expect-error Header layout is a closed string union.
+const alertDialogInvalidHeader: AlertDialogContentProps = { ...alertDialogContentProps, headerLayout: 'vertical' };
+// @ts-expect-error Header layout is not a boolean flag.
+const alertDialogBooleanHeader: AlertDialogContentProps = { ...alertDialogContentProps, headerLayout: true };
+export type AlertDialogHeaderNegatives = [typeof alertDialogInvalidHeader, typeof alertDialogBooleanHeader];
 // @ts-expect-error A consequence description is required.
 const alertDialogMissingDescription: AlertDialogContentProps = { title: 'Delete?', actions: null };
 const commandPaletteItem: CommandPaletteItem = { id: 'search', label: 'Search', onSelect: () => {} };
@@ -416,6 +425,15 @@ export const dialogCloseRef = createRef<HTMLButtonElement>();
 const dialogTriggerProps: DialogTriggerProps = { children: 'Open settings' };
 const dialogCloseProps: DialogCloseProps = { children: 'Done' };
 const dialogContentProps: DialogContentProps = { title: 'Settings', children: 'Preferences' };
+export const dialogHeaderLayouts: DialogContentProps[] = [
+  { ...dialogContentProps, headerLayout: 'inline' },
+  { ...dialogContentProps, headerLayout: 'stacked' }
+];
+// @ts-expect-error Header layout is a closed string union.
+const dialogInvalidHeader: DialogContentProps = { ...dialogContentProps, headerLayout: 'vertical' };
+// @ts-expect-error Header layout is not a boolean flag.
+const dialogBooleanHeader: DialogContentProps = { ...dialogContentProps, headerLayout: true };
+export type DialogHeaderNegatives = [typeof dialogInvalidHeader, typeof dialogBooleanHeader];
 export const dialogProps: DialogProps = { children: [createElement(DialogTrigger, { ...dialogTriggerProps, key: 'trigger', ref: dialogTriggerRef }), createElement(DialogContent, { ...dialogContentProps, key: 'content', actions: createElement(DialogClose, { ...dialogCloseProps, ref: dialogCloseRef }) })] };
 export function dialogSample() { return createElement(Dialog, dialogProps); }
 export function dialogPlacementFixtures(host: HTMLElement) {
@@ -4874,6 +4892,16 @@ function assertDialogConsumerCSS(css) {
   }
   assert.match(css, /\.absolute\s*\{[^}]*position:\s*absolute/);
   assert.match(css, /\.p-\\\[var\\\(--space-3\\\)\\\]\s*\{[^}]*padding:\s*var\(--space-3\)/);
+  // Header recipes must work for packed consumers without a Tailwind compiler.
+  assert.match(css, /\.flex\s*\{[^}]*display:\s*flex/);
+  assert.match(css, /\.flex-col\s*\{[^}]*flex-direction:\s*column/);
+  assert.match(css, /\.flex-row\s*\{[^}]*flex-direction:\s*row/);
+  assert.match(css, /\.items-center\s*\{[^}]*align-items:\s*center/);
+  assert.match(css, /\.items-start\s*\{[^}]*align-items:\s*flex-start/);
+  assert.match(css, /\.self-start\s*\{[^}]*align-self:\s*flex-start/);
+  assert.match(css, /\.max-w-full\s*\{[^}]*max-width:\s*100%/);
+  assert.match(css, /\.min-w-0\s*\{[^}]*min-width:\s*var\(--space-0\)/);
+  assert.match(css, /\.gap-\\\[var\\\(--space-3\\\)\\\]\s*\{[^}]*gap:\s*var\(--space-3\)/);
 }
 
 function assertCollapsibleConsumerCSS(css) {

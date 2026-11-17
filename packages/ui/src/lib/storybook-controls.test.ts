@@ -932,6 +932,32 @@ describe('pure JSDoc Controls metadata mapping', () => {
   });
 });
 
+describe('Dialog header-layout Controls', () => {
+  for (const [name, path, defaultValue] of [
+    ['DialogContent', 'molecules/dialog/Dialog.tsx', 'inline'],
+    ['AlertDialogContent', 'molecules/alert-dialog/AlertDialog.tsx', 'stacked']
+  ] as const) {
+    it(`maps ${name} as an optional select with its own default and no injected argument`, {
+      timeout: heavyDocgenTimeoutMs
+    }, () => {
+      const doc = parser
+        .parse(fileURLToPath(new URL(`../${path}`, import.meta.url)))
+        .find((item) => item.displayName === name);
+      expect(doc).toBeDefined();
+      const metadata = Object.assign((_props: Record<string, unknown>) => null, { __docgenInfo: doc });
+      const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+      expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+      const composed = composeStory({}, { title: `Metadata/${name}`, component: metadata }, preview, 'Default');
+      const row = composed.argTypes.headerLayout;
+      expect(row?.control).toEqual({ type: 'select' });
+      expect([...(row?.options ?? [])].sort()).toEqual(['inline', 'stacked']);
+      expect(row?.type?.required).not.toBe(true);
+      expect(row?.table?.defaultValue?.summary).toBe(`"${defaultValue}"`);
+      expect(composed.args).toEqual({});
+    });
+  }
+});
+
 describe('registered JSDoc Controls through installed Storybook extraction and inference', () => {
   it('retains TopBar required inputs, native rows and parts without defaults', () => {
     const card = story('TopBar');

@@ -41,6 +41,44 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
+
+/** The default inline header keeps the description beside the title and passive status. */
+export const InlineHeader: Story = {
+  args: {
+    children: (
+      <>
+        <DialogTrigger asChild={true}>
+          <Button variant='secondary'>Open inline settings</Button>
+        </DialogTrigger>
+        <DialogContent title='Settings' description='Adjust preferences.' statusText='Saved' headerLayout='inline'>
+          Settings content
+        </DialogContent>
+      </>
+    )
+  }
+};
+
+/** The stacked header keeps status with the title and the description on its own line. */
+export const StackedHeader: Story = {
+  args: {
+    children: (
+      <>
+        <DialogTrigger asChild={true}>
+          <Button variant='secondary'>Open stacked settings</Button>
+        </DialogTrigger>
+        <DialogContent
+          title='Settings'
+          description='Adjust preferences.'
+          statusText='Saved'
+          size='sm'
+          headerLayout='stacked'
+        >
+          Settings content
+        </DialogContent>
+      </>
+    )
+  }
+};
 export const WithSplitAction: Story = {
   args: {
     children: (

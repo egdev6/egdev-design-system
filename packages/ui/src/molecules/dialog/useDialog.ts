@@ -11,6 +11,7 @@ import {
   dialogPanelVariants,
   dialogScrimVariants,
   dialogStatusVariants,
+  dialogTitleRowVariants,
   dialogTitleVariants
 } from './types';
 
@@ -35,11 +36,13 @@ export function useDialogContent(props: DialogContentProps) {
     container,
     overlayScope,
     bodyPadding,
+    headerLayout: requestedHeaderLayout,
     className,
     ...rest
   } = props;
   const flush = variant === 'sheet' || size === 'full';
   const scope = overlayScope ?? (container ? 'container' : 'viewport');
+  const headerLayout = requestedHeaderLayout === 'stacked' ? 'stacked' : 'inline';
   return {
     container,
     blocked: scope === 'container' && !container,
@@ -49,6 +52,7 @@ export function useDialogContent(props: DialogContentProps) {
     children,
     actions,
     dismissLabel,
+    headerLayout,
     variant,
     size,
     rest,
@@ -59,10 +63,11 @@ export function useDialogContent(props: DialogContentProps) {
       className
     ),
     dismissClass: cn(dialogDismissVariants()),
-    headClass: cn('eg-dialog__head', dialogHeadVariants()),
+    headClass: cn('eg-dialog__head', dialogHeadVariants({ headerLayout })),
+    titleRowClass: cn(dialogTitleRowVariants()),
     titleClass: cn('eg-dialog__title', dialogTitleVariants()),
     descriptionClass: cn('eg-dialog__description', dialogDescriptionVariants()),
-    statusClass: cn('eg-dialog__status', dialogStatusVariants()),
+    statusClass: cn('eg-dialog__status', dialogStatusVariants({ headerLayout })),
     bodyClass: cn('eg-dialog__body', dialogBodyVariants({ bodyPadding })),
     footClass: cn('eg-dialog__foot', dialogFootVariants({ variant }))
   };
