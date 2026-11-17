@@ -7,13 +7,14 @@ import { SectionHeader } from './SectionHeader';
  * A passive editorial section introduction with an optional eyebrow, trailing accent and lede.
  *
  * ## Dependencies
- * Heading owns section-scale typography and accent semantics; Text owns the decorative eyebrow;
+ * Heading owns section-scale typography and accent semantics; Text owns the eyebrow and lede;
  * Divider owns the inline decorative rule. Surface supplies the raised host example only.
  *
  * ## Usage guidelines
  * Supply title/accent whitespace explicitly. The enclosing section owns outer spacing and region
  * naming; titleId links its heading to an external aria-labelledby. className is outer layout only.
- * Split without a lede and inline without an eyebrow resolve to stack. No actions or children API.
+ * Split without a lede and inline without an eyebrow resolve to stack. Runs preserve caller whitespace,
+ * language and decorative separators; use Multilingual for examples. No actions or children API.
  */
 const meta: Meta<typeof SectionHeader> = {
   title: 'Molecules/SectionHeader',
@@ -96,4 +97,32 @@ export const LongContent: Story = {
     lede: 'InternationalisationWithoutArbitraryTruncation: content remains complete at narrow widths and increased zoom.',
     variant: 'split'
   }
+};
+
+/** Spanish and English runs preserve their own language and decorative separator across all layouts. */
+export const Multilingual: Story = {
+  args: {
+    title: [
+      ['Diseño ', 'es'],
+      ['/ ', undefined, true],
+      ['Design', 'en']
+    ],
+    eyebrow: [
+      ['Nuestro trabajo ', 'es'],
+      ['/ ', undefined, true],
+      ['Our work', 'en']
+    ],
+    lede: [
+      ['Herramientas para equipos. ', 'es'],
+      ['/ ', undefined, true],
+      ['Tools for teams.', 'en']
+    ]
+  },
+  render: (args) => (
+    <div className='flex flex-col gap-10'>
+      <SectionHeader {...args} variant='stack' />
+      <SectionHeader {...args} variant='split' />
+      <SectionHeader {...args} variant='inline' />
+    </div>
+  )
 };

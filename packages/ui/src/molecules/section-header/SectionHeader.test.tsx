@@ -4,7 +4,14 @@ import { useId } from 'react';
 import { renderToString } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { useSectionHeader } from '@/molecules/section-header/useSectionHeader';
-import { SectionHeader, type SectionHeaderLevel, type SectionHeaderProps } from './index';
+import type { SectionHeaderTextRun as RootRun, SectionHeaderText as RootText } from '../../index';
+import {
+  SectionHeader,
+  type SectionHeaderLevel,
+  type SectionHeaderProps,
+  type SectionHeaderText,
+  type SectionHeaderTextRun
+} from './index';
 
 const copy = { title: 'Build ', accent: 'together.', eyebrow: 'Our work', lede: 'Tools for thoughtful teams.' };
 
@@ -226,5 +233,233 @@ describe('SectionHeader public contract', () => {
     expect(html).toBe(renderToString(<SectionHeader {...props} />));
     expect(html).toContain('Équipe ');
     expect(html).not.toMatch(/\sid=|aria-live|tabindex/);
+  });
+});
+
+describe('SectionHeader multilingual public contract', () => {
+  it('exposes readonly runs and requires callers to narrow before string operations', () => {
+    const run: SectionHeaderTextRun = ['Hola', 'es', false];
+    const rootRun: RootRun = run;
+    const text: SectionHeaderText = [rootRun, ['/', undefined, true], ['Hello', 'en']];
+    const rootText: RootText = text;
+    const upper = (value: SectionHeaderText) =>
+      typeof value === 'string' ? value.toUpperCase() : value.map(([content]) => content).join('');
+    // @ts-expect-error Structured entries are tuples, not arbitrary objects.
+    const object: SectionHeaderText = [{ text: 'No' }];
+    // @ts-expect-error Runs have at most three entries.
+    const extra: SectionHeaderText = [['No', 'en', false, 'extra']];
+    // @ts-expect-error Language is a string, never a number.
+    const numericLang: SectionHeaderText = [['No', 7]];
+    // @ts-expect-error The title union must be narrowed before using string methods.
+    const unsafe = (value: SectionHeaderText) => value.toUpperCase();
+    expect(upper(rootText)).toBe('Hola/Hello');
+    expect([object, extra, numericLang, unsafe]).toHaveLength(4);
+  });
+
+  const title = [
+    ['Hotel ', 'es'],
+    ['/ ', undefined, true],
+    ['Hotel', 'en']
+  ] as const;
+  const eyebrow = [
+    ['Trabajo ', 'es'],
+    ['/ ', undefined, true],
+    ['Work', 'en']
+  ] as const;
+  const lede = [
+    ['Hola ', 'es'],
+    ['/ ', undefined, true],
+    ['Hello', 'en']
+  ] as const;
+
+  it.each(['stack', 'split', 'inline'] as const)(
+    'preserves run order, whitespace, language and one eyebrow wrapper in %s',
+    (variant) => {
+      render(<SectionHeader title={title} eyebrow={eyebrow} lede={lede} accent=' now' variant={variant} />);
+      // dom-accessibility-api trims each inline span; verify exact spacing separately in real browser AX.
+      const heading = screen.getByRole('heading', { name: /^Hotel\s*Hotel\s*now$/ });
+      expect(heading.textContent).toBe('Hotel / Hotel now');
+      const titleSpans = Array.from(heading.children);
+      expect(titleSpans.map((span) => span.textContent)).toEqual(['Hotel ', '/ ', 'Hotel', ' now']);
+      expect(titleSpans[0]).toHaveAttribute('lang', 'es');
+      expect(titleSpans[1]).not.toHaveAttribute('lang');
+      expect(titleSpans[1]).toHaveAttribute('aria-hidden', 'true');
+      expect(titleSpans[2]).toHaveAttribute('lang', 'en');
+      expect(titleSpans[2]).not.toHaveAttribute('aria-hidden');
+      expect(titleSpans[3]).toHaveClass('eg-heading__accent');
+      expect(titleSpans[3]).not.toHaveAttribute('aria-hidden');
+
+      const root = heading.parentElement;
+      const eyebrowRoot = root?.firstElementChild;
+      expect(eyebrowRoot).toHaveClass('eg-text', 'inline-flex');
+      expect(eyebrowRoot?.children).toHaveLength(1);
+      const wrapper = eyebrowRoot?.firstElementChild;
+      expect(wrapper?.tagName).toBe('SPAN');
+      expect(wrapper).not.toHaveAttribute('class');
+      expect(Array.from(wrapper?.children ?? []).map((span) => span.textContent)).toEqual(['Trabajo ', '/ ', 'Work']);
+      expect(wrapper?.children[0]).toHaveAttribute('lang', 'es');
+      expect(wrapper?.children[1]).toHaveAttribute('aria-hidden', 'true');
+      expect(wrapper?.children[2]).toHaveAttribute('lang', 'en');
+
+      const paragraph = root?.querySelector('.eg-section-head__lede');
+      expect(paragraph?.tagName).toBe('P');
+      expect(paragraph).toHaveClass(
+        'eg-text',
+        'eg-section-head__lede',
+        'font-sans',
+        'text-body-muted',
+        'text-fg-secondary'
+      );
+      expect(Array.from(paragraph?.children ?? []).map((span) => span.textContent)).toEqual(['Hola ', '/ ', 'Hello']);
+      expect(paragraph?.children[0]).toHaveAttribute('lang', 'es');
+      expect(paragraph?.children[1]).toHaveAttribute('aria-hidden', 'true');
+      expect(paragraph?.children[2]).toHaveAttribute('lang', 'en');
+    }
+  );
+
+  it('keeps string content unwrapped and uses the Text lede recipe', () => {
+    render(<SectionHeader title='Build ' eyebrow='Context' lede='Plain lede' accent='now' />);
+    const heading = screen.getByRole('heading', { name: 'Build now' });
+    expect(heading.firstChild?.nodeType).toBe(Node.TEXT_NODE);
+    expect(heading.firstChild?.textContent).toBe('Build ');
+    expect(heading.children).toHaveLength(1);
+    const context = screen.getByText('Context');
+    expect(context.children).toHaveLength(0);
+    const paragraph = screen.getByText('Plain lede');
+    expect(paragraph.tagName).toBe('P');
+    expect(paragraph.children).toHaveLength(0);
+    expect(paragraph).toHaveClass(
+      'eg-text',
+      'eg-section-head__lede',
+      'm-0',
+      'font-sans',
+      'text-body-muted',
+      'text-fg-secondary'
+    );
+  });
+
+  it('skips malformed entries while preserving valid one-to-three element tuples', () => {
+    const mixed = [
+      ['Uno ', 'es'],
+      null,
+      {},
+      [],
+      [1],
+      ['bad', 3],
+      ['bad', 'en', 'true'],
+      ['bad', 'en', false, 'extra'],
+      ['/', undefined, true],
+      [' Two', '', false],
+      ['!']
+    ] as unknown as SectionHeaderProps['title'];
+    render(<SectionHeader title={mixed} eyebrow={mixed} lede={mixed} />);
+    const heading = screen.getByRole('heading', { name: /^Uno\s*Two!$/ });
+    expect(heading.textContent).toBe('Uno / Two!');
+    expect(Array.from(heading.children).map((span) => span.textContent)).toEqual(['Uno ', '/', ' Two', '!']);
+    expect(heading.children[1]).toHaveAttribute('aria-hidden', 'true');
+    expect(heading.children[2]).toHaveAttribute('lang', '');
+    expect(heading.children[2]).not.toHaveAttribute('aria-hidden');
+    expect(heading.children[3]).not.toHaveAttribute('lang');
+    expect(heading.parentElement?.querySelector('.eg-section-head__lede')?.textContent).toBe('Uno / Two!');
+  });
+
+  it.each(['development', 'production'] as const)(
+    'rejects empty, blank, decorative-only and malformed titles in %s and recovers on rerender',
+    (environment) => {
+      vi.stubEnv('NODE_ENV', environment);
+      const warning = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+      const invalid: unknown[] = [
+        '',
+        '  \n\t',
+        [],
+        [[' ']],
+        [['/', undefined, true]],
+        [
+          [' ', 'en'],
+          ['/', undefined, true]
+        ],
+        null,
+        7,
+        {},
+        [null, ['bad', 1]],
+        [['bad', 'en', false, 'extra']]
+      ];
+      try {
+        const { container, rerender } = render(<SectionHeader title='initial' />);
+        for (const value of invalid) {
+          warning.mockClear();
+          rerender(<SectionHeader title={value as SectionHeaderProps['title']} accent='cannot rescue' />);
+          expect(container).toBeEmptyDOMElement();
+          if (environment === 'development') {
+            expect(warning).toHaveBeenCalledOnce();
+            expect(warning).toHaveBeenCalledWith('SectionHeader requires a non-blank title; no header was rendered.');
+          } else {
+            expect(warning).not.toHaveBeenCalled();
+          }
+          rerender(<SectionHeader title={title} />);
+          expect(screen.getByRole('heading', { name: /^Hotel\s*Hotel$/ })).toBeVisible();
+        }
+      } finally {
+        warning.mockRestore();
+        vi.unstubAllEnvs();
+      }
+    }
+  );
+
+  it.each(['split', 'inline'] as const)('omits invalid optional parts and falls back in %s', (variant) => {
+    const invalid: unknown[] = [
+      undefined,
+      '',
+      '  ',
+      [],
+      [[' ']],
+      [['/', undefined, true]],
+      null,
+      7,
+      {},
+      [null],
+      [['bad', 1]],
+      [['bad', 'en', false, 'extra']]
+    ];
+    const { rerender } = render(<SectionHeader title='Valid' />);
+    for (const value of invalid) {
+      const part = value as SectionHeaderProps['lede'];
+      rerender(<SectionHeader title='Valid' variant={variant} eyebrow={part} lede={part} />);
+      const root = screen.getByRole('heading', { name: 'Valid' }).parentElement;
+      expect(root).toHaveClass('flex', 'gap-5');
+      expect(root?.children).toHaveLength(1);
+      expect(root?.querySelector('.eg-section-head__lede, .eg-divider')).toBeNull();
+    }
+  });
+
+  it.each([1, 2, 3, 4, 5, 6] as const)('preserves rank %s, IDs, inherited language and deterministic SSR', (level) => {
+    const props = {
+      title,
+      eyebrow,
+      lede,
+      level,
+      titleId: `heading-${level}`,
+      id: `root-${level}`,
+      lang: 'fr',
+      dir: 'rtl' as const
+    };
+    const html = renderToString(<SectionHeader {...props} />);
+    expect(html).toBe(renderToString(<SectionHeader {...props} />));
+    expect(html).toContain('<span lang="es">Hotel </span>');
+    expect(html).toContain('<span aria-hidden="true">/ </span>');
+    render(
+      <section aria-labelledby={props.titleId}>
+        <SectionHeader {...props} />
+      </section>
+    );
+    const heading = screen.getByRole('heading', { level, name: /^Hotel\s*Hotel$/ });
+    expect(screen.getByRole('region', { name: /^Hotel\s*Hotel$/ })).toContainElement(heading);
+    expect(heading).toHaveAttribute('id', props.titleId);
+    expect(heading.parentElement).toHaveAttribute('id', props.id);
+    expect(heading.parentElement).toHaveAttribute('lang', 'fr');
+    expect(heading.parentElement).toHaveAttribute('dir', 'rtl');
+    expect(heading.children[0]?.closest('[lang]')).toHaveAttribute('lang', 'es');
+    expect(heading.children[1]?.closest('[lang]')).toHaveAttribute('lang', 'fr');
+    expect(heading.children[2]?.closest('[lang]')).toHaveAttribute('lang', 'en');
   });
 });

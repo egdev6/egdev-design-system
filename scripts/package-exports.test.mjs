@@ -5223,6 +5223,30 @@ test('SectionHeader ships native passive SSR composition with decorative rule an
   assert.match(html, /role="none"/);
   assert.doesNotMatch(html, /role="separator"|aria-live|tabindex|eg-section-head--inline/);
   assert.equal(html, render({ variant: 'inline', eyebrow: 'Our work', titleId: 'section-title', id: 'root' }));
+  const multilingual = render({
+    title: [
+      ['Hotel ', 'es'],
+      ['/ ', undefined, true],
+      ['Hotel', 'en']
+    ],
+    eyebrow: [
+      ['Trabajo ', 'es'],
+      ['Work', 'en']
+    ],
+    lede: [
+      ['Hola ', 'es'],
+      ['Hello', 'en']
+    ],
+    lang: 'fr',
+    dir: 'rtl'
+  });
+  assert.match(
+    multilingual,
+    /<span lang="es">Hotel <\/span><span aria-hidden="true">\/ <\/span><span lang="en">Hotel<\/span>/
+  );
+  assert.match(multilingual, /<p class="[^"]*eg-text[^"]*eg-section-head__lede/);
+  assert.match(multilingual, /lang="fr"/);
+  assert.match(multilingual, /dir="rtl"/);
   for (const variant of ['split', 'inline']) {
     const fallback = render({ variant });
     assert.match(fallback, /flex flex-col items-start gap-5/);
@@ -5856,6 +5880,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SectionHeader',
     'SectionHeaderLevel',
     'SectionHeaderProps',
+    'SectionHeaderText',
+    'SectionHeaderTextRun',
     'SectionHeaderTone',
     'SectionHeaderVariant',
     'SectionNav',
@@ -6172,6 +6198,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'SectionHeader',
     'SectionHeaderLevel',
     'SectionHeaderProps',
+    'SectionHeaderText',
+    'SectionHeaderTextRun',
     'SectionHeaderTone',
     'SectionHeaderVariant',
     'Divider',

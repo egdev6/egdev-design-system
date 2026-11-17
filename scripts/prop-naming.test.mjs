@@ -1411,7 +1411,12 @@ test('Text binds its body foreground exception and reviewed Text and Heading sou
     scope: exception.approval.scope,
     contentHash: exception.approval.contentHash,
     exception: exceptionPayload,
-    source: { path, symbol: 'TextProps', revision }
+    // The immutable receipt records the reviewed Text v0.2 source, not later working-tree revisions.
+    source: {
+      path,
+      symbol: 'TextProps',
+      revision: 'sha256:7c4907d2f3aa220550309b32a1262e2a4ed69ed940c586801115814f01217d7d'
+    }
   });
   assert.match(usages.find(({ component }) => component === 'Text').type, /TextTone.*TextForeground/);
   assert.match(

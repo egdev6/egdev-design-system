@@ -2095,11 +2095,11 @@ describe('Storybook TypeScript docgen contract', () => {
     const file = ast(source('molecules/section-header/types.ts'));
     const properties = ownProps(file, ['SectionHeaderProps']);
     const controls: Record<string, string> = {
-      title: 'text',
-      eyebrow: 'text',
+      title: 'false',
+      eyebrow: 'false',
       accent: 'text',
       accentBreak: 'boolean',
-      lede: 'text',
+      lede: 'false',
       variant: 'select',
       level: 'select',
       titleId: 'text',
@@ -2117,6 +2117,12 @@ describe('Storybook TypeScript docgen contract', () => {
     expect(doc?.props.title?.required).toBe(true);
     for (const name of ['title', 'eyebrow', 'accent', 'lede', 'titleId']) {
       expect(doc?.props[name]?.defaultValue).toBeNull();
+    }
+    for (const name of ['title', 'eyebrow', 'lede']) {
+      expect(doc?.props[name]?.tags).toMatchObject({ controlReason: expect.stringMatching(/Multilingual/) });
+      expect(doc?.props[name]?.type.name).not.toBe('string');
+    }
+    for (const name of ['accent', 'titleId']) {
       expect(doc?.props[name]?.type.name).toBe('string');
     }
     for (const [name, value] of Object.entries({
@@ -2149,7 +2155,8 @@ describe('Storybook TypeScript docgen contract', () => {
       'HeadingLevels',
       'Raised',
       'RTL',
-      'LongContent'
+      'LongContent',
+      'Multilingual'
     ]);
     expect(stories.getText()).toMatch(/title: 'Molecules\/SectionHeader'/);
     expect(stories.getText()).not.toMatch(/argTypes\s*:|\bplay\s*:/);

@@ -1,2 +1,9 @@
 export { SectionHeader } from './SectionHeader';
-export type { SectionHeaderLevel, SectionHeaderProps, SectionHeaderTone, SectionHeaderVariant } from './types';
+export type {
+  SectionHeaderLevel,
+  SectionHeaderProps,
+  SectionHeaderText,
+  SectionHeaderTextRun,
+  SectionHeaderTone,
+  SectionHeaderVariant
+} from './types';

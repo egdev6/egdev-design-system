@@ -254,6 +254,8 @@ import type {
   SocialLinksSize,
   SocialLinksVariant,
   SectionHeaderProps,
+  SectionHeaderText,
+  SectionHeaderTextRun,
   SectionHeaderVariant,
   SectionHeaderLevel,
   SectionHeaderTone,
@@ -1821,6 +1823,25 @@ export function SectionHeaderSamples({ variant = sectionVariant, optional = true
     lede: optional ? sectionHeaderProps.lede : undefined
   });
 }
+const spanishRun: SectionHeaderTextRun = ['Hotel ', 'es'];
+const sectionRuns: SectionHeaderText = [spanishRun, ['/ ', undefined, true], ['Hotel', 'en']];
+const sectionTextForDisplay = (value: SectionHeaderText): string =>
+  typeof value === 'string' ? value.toUpperCase() : value.map(([text]) => text).join('');
+export const multilingualSectionProps: SectionHeaderProps = {
+  title: sectionRuns, eyebrow: [['Trabajo ', 'es'], ['Work', 'en']],
+  lede: [['Hola ', 'es'], ['Hello', 'en']], lang: 'fr', dir: 'rtl'
+};
+export function SectionHeaderMultilingualSamples() {
+  return createElement(SectionHeader, multilingualSectionProps);
+}
+// @ts-expect-error The widened title must be narrowed before applying string methods.
+const unguardedSectionText = (value: SectionHeaderText) => value.toUpperCase();
+// @ts-expect-error Object-shaped rich text is not a run.
+const objectSectionText: SectionHeaderText = [{ text: 'No' }];
+// @ts-expect-error A run accepts at most three tuple entries.
+const longSectionText: SectionHeaderText = [['No', 'en', false, 'extra']];
+// @ts-expect-error A run's language must be a string.
+const numericLanguage: SectionHeaderText = [['No', 7]];
 // @ts-expect-error Visible title is required.
 const missingSectionTitle: SectionHeaderProps = {};
 // @ts-expect-error Content is owned, not arbitrary children.
@@ -6783,6 +6804,29 @@ try {
   assert.ok(statRecipe.includes('px-3') && statRecipe.startsWith('eg-stat '));
 } finally {
   statDocument.window.close();
+}
+// SectionHeader SSR: multilingual runs preserve language, decoration and lede typography.
+{
+  const { SectionHeaderMultilingualSamples } = await import('./consumer.ts');
+  const markup = renderToString(createElement(SectionHeaderMultilingualSamples));
+  assert.equal(markup, renderToString(createElement(SectionHeaderMultilingualSamples)));
+  const dom = new JSDOM(markup);
+  try {
+    const header = dom.window.document.querySelector('header.eg-section-head');
+    const heading = header.querySelector('h2');
+    assert.equal(header.getAttribute('lang'), 'fr');
+    assert.equal(header.getAttribute('dir'), 'rtl');
+    assert.equal(heading.textContent, 'Hotel / Hotel');
+    assert.deepEqual([...heading.children].map((span) => span.getAttribute('lang')), ['es', null, 'en']);
+    assert.equal(heading.children[1].getAttribute('aria-hidden'), 'true');
+    assert.equal(heading.children[0].hasAttribute('aria-hidden'), false);
+    const lede = header.querySelector('p.eg-section-head__lede');
+    assert.ok(lede.classList.contains('eg-text') && lede.classList.contains('text-body-muted'));
+    assert.deepEqual([...lede.children].map((span) => span.getAttribute('lang')), ['es', 'en']);
+    assert.equal(header.firstElementChild.children.length, 1);
+  } finally {
+    dom.window.close();
+  }
 }
 // SectionHeader SSR: native heading/IDs, complete phrase and a presentational inline rule.
 for (const variant of ['stack', 'split', 'inline']) {

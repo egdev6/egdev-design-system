@@ -148,10 +148,34 @@ test('typography roles resolve representative source recipes to tokens', () => {
   assert.equal(role('Heading section').lineHeight, '--text-title-section--line-height');
   assert.equal(role('Heading section').weight, '--text-title-section--font-weight');
   assert.equal(role('Heading section').tracking, '--text-title-section--letter-spacing');
+  assert.equal(role('SectionHeader lede').source, 'packages/ui/src/primitives/text/types.ts');
   assert.equal(role('SectionHeader lede').family, '--font-sans');
+  assert.equal(role('SectionHeader lede').size, '--text-body-muted');
+  assert.equal(role('SectionHeader lede').lineHeight, '--text-body-muted--line-height');
+  assert.equal(role('SectionHeader lede').weight, '--text-body-muted--font-weight');
   assert.equal(role('Hero lede').size, '--text-body-large');
   assert.equal(role('Eyebrow').family, '--font-display');
   assert.equal(role('ProjectCard code').family, '--font-mono');
+});
+
+test('factored Text body recipes retain their classes in the artifact', () => {
+  const artifact = read('packages/system/design-system.json');
+  const text = artifact.components.find(({ name }) => name === 'Text');
+  const flattened = text.variants.find(({ name }) => name === 'textBodyVariants');
+  for (const name of ['text-body-default', 'text-body-large', 'text-body-muted']) {
+    assert.ok(flattened.classes.includes(name), name);
+  }
+  const recipe = text.anatomy.find(({ name }) => name === 'textBodyVariants');
+  for (const [variant, name] of [
+    ['body', 'text-body-default'],
+    ['body-large', 'text-body-large'],
+    ['lede', 'text-body-muted']
+  ]) {
+    assert.ok(
+      recipe.variants.variant[variant].some((id) => artifact.anatomyUtilities[id].className === name),
+      variant
+    );
+  }
 });
 
 test('--check detects typography role font drift without writing', () => {
