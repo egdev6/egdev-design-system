@@ -888,7 +888,7 @@
     "radix": "Dialog",
     "compone": "Surface, IconButton, Icon; consumer actions",
     "accion": "mantener",
-    "notas": "Working-tree implementation under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/119): modal Root, Trigger, Content and Close; centered sizes and sheet. Radix owns portal, dismissal and focus; Surface owns panel paint. Browser, visual and packed-consumer verification remain pending."
+    "notas": "Working-tree implementation under the approved v0.1 contract (#119) and v0.2 container and compact-body amendment (#409, #421): positioned host or viewport overlay and body padding presets. Radix modality remains document-wide; Surface owns panel paint. Browser, visual and packed-consumer verification remain pending."
   },
   {
     "actual": "—",

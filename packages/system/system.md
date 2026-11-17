@@ -1058,10 +1058,11 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 catalog[] · docs/catalog.json · @egdev/ui · molecule · Dialog
 - Dialog (components[] · packages/ui/src/molecules/dialog/types.ts)
   - DialogClose: Explicit close action. (components[].parts · packages/ui/src/molecules/dialog/Dialog.tsx)
-  - DialogContent: Body-portalled modal panel with an owned accessible title and optional description. (components[].parts · packages/ui/src/molecules/dialog/Dialog.tsx)
+  - DialogContent: Modal panel with an owned title and optional description. A connected, positioned, non-scrolling host bounds container-scoped paint; without one the portal uses body. A custom host does not localize Radix modality, which remains document-wide. Render after the host ref is ready and close before replacing or removing it. Viewport scope under a host is subject to ancestor clipping and fixed-position containing blocks. (components[].parts · packages/ui/src/molecules/dialog/Dialog.tsx)
   - DialogTrigger: Optional native or slotted disclosure button. (components[].parts · packages/ui/src/molecules/dialog/Dialog.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - dialogBodyVariants base: p-[var(--space-6)] → --space-6
+    - dialogBodyVariants bodyPadding=default: p-[var(--space-6)] → --space-6
+    - dialogBodyVariants bodyPadding=compact: p-[var(--space-3)] → --space-3
     - dialogDescriptionVariants base: text-body-default → --text-body-default
     - dialogFootVariants base: px-[var(--space-6)] → --space-6
     - dialogFootVariants base: py-[var(--space-4)] → --space-4
@@ -1069,8 +1070,8 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Dialog
     - dialogHeadVariants base: py-[var(--space-4)] → --space-4
     - dialogHeadVariants base: ps-[var(--space-6)] → --space-6
     - dialogHeadVariants base: pe-[calc(var(--space-4)+var(--space-12))] → --space-4, --space-12
-    - dialogOverlayVariants base: p-[var(--space-6)] → --space-6
-    - dialogOverlayVariants flush=true: p-0 → --spacing-0
+    - dialogOverlayLayout base: p-[var(--space-6)] → --space-6
+    - dialogOverlayLayout flush=true: p-0 → --spacing-0
     - dialogStatusVariants base: text-label-default → --text-label-default
     - dialogTitleVariants base: font-display → --font-display
     - dialogTitleVariants base: text-heading-small → --text-heading-small
@@ -2709,7 +2710,8 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
 ### DialogClose
 - DialogClose (components[] · packages/ui/src/molecules/dialog/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - dialogBodyVariants base: p-[var(--space-6)] → --space-6
+    - dialogBodyVariants bodyPadding=default: p-[var(--space-6)] → --space-6
+    - dialogBodyVariants bodyPadding=compact: p-[var(--space-3)] → --space-3
     - dialogDescriptionVariants base: text-body-default → --text-body-default
     - dialogFootVariants base: px-[var(--space-6)] → --space-6
     - dialogFootVariants base: py-[var(--space-4)] → --space-4
@@ -2717,15 +2719,16 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - dialogHeadVariants base: py-[var(--space-4)] → --space-4
     - dialogHeadVariants base: ps-[var(--space-6)] → --space-6
     - dialogHeadVariants base: pe-[calc(var(--space-4)+var(--space-12))] → --space-4, --space-12
-    - dialogOverlayVariants base: p-[var(--space-6)] → --space-6
-    - dialogOverlayVariants flush=true: p-0 → --spacing-0
+    - dialogOverlayLayout base: p-[var(--space-6)] → --space-6
+    - dialogOverlayLayout flush=true: p-0 → --spacing-0
     - dialogStatusVariants base: text-label-default → --text-label-default
     - dialogTitleVariants base: font-display → --font-display
     - dialogTitleVariants base: text-heading-small → --text-heading-small
 ### DialogContent
 - DialogContent (components[] · packages/ui/src/molecules/dialog/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - dialogBodyVariants base: p-[var(--space-6)] → --space-6
+    - dialogBodyVariants bodyPadding=default: p-[var(--space-6)] → --space-6
+    - dialogBodyVariants bodyPadding=compact: p-[var(--space-3)] → --space-3
     - dialogDescriptionVariants base: text-body-default → --text-body-default
     - dialogFootVariants base: px-[var(--space-6)] → --space-6
     - dialogFootVariants base: py-[var(--space-4)] → --space-4
@@ -2733,15 +2736,16 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - dialogHeadVariants base: py-[var(--space-4)] → --space-4
     - dialogHeadVariants base: ps-[var(--space-6)] → --space-6
     - dialogHeadVariants base: pe-[calc(var(--space-4)+var(--space-12))] → --space-4, --space-12
-    - dialogOverlayVariants base: p-[var(--space-6)] → --space-6
-    - dialogOverlayVariants flush=true: p-0 → --spacing-0
+    - dialogOverlayLayout base: p-[var(--space-6)] → --space-6
+    - dialogOverlayLayout flush=true: p-0 → --spacing-0
     - dialogStatusVariants base: text-label-default → --text-label-default
     - dialogTitleVariants base: font-display → --font-display
     - dialogTitleVariants base: text-heading-small → --text-heading-small
 ### DialogTrigger
 - DialogTrigger (components[] · packages/ui/src/molecules/dialog/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - dialogBodyVariants base: p-[var(--space-6)] → --space-6
+    - dialogBodyVariants bodyPadding=default: p-[var(--space-6)] → --space-6
+    - dialogBodyVariants bodyPadding=compact: p-[var(--space-3)] → --space-3
     - dialogDescriptionVariants base: text-body-default → --text-body-default
     - dialogFootVariants base: px-[var(--space-6)] → --space-6
     - dialogFootVariants base: py-[var(--space-4)] → --space-4
@@ -2749,8 +2753,8 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - dialogHeadVariants base: py-[var(--space-4)] → --space-4
     - dialogHeadVariants base: ps-[var(--space-6)] → --space-6
     - dialogHeadVariants base: pe-[calc(var(--space-4)+var(--space-12))] → --space-4, --space-12
-    - dialogOverlayVariants base: p-[var(--space-6)] → --space-6
-    - dialogOverlayVariants flush=true: p-0 → --spacing-0
+    - dialogOverlayLayout base: p-[var(--space-6)] → --space-6
+    - dialogOverlayLayout flush=true: p-0 → --spacing-0
     - dialogStatusVariants base: text-label-default → --text-label-default
     - dialogTitleVariants base: font-display → --font-display
     - dialogTitleVariants base: text-heading-small → --text-heading-small
@@ -4300,6 +4304,7 @@ Not exported:
 - decorative-cover-word: coverWord; approved; ArticleFeatureCover (propNaming[] · skills/_shared/prop-naming.json)
 - decorative-index: index; approved; ProjectCard (propNaming[] · skills/_shared/prop-naming.json)
 - decorative-separation: decorative; approved; Divider (propNaming[] · skills/_shared/prop-naming.json)
+- dialog-overlay-scope: overlayScope; approved; DialogContent (propNaming[] · skills/_shared/prop-naming.json)
 - dismiss-label: dismissLabel; approved; CommandPalette, DialogContent, Toast (propNaming[] · skills/_shared/prop-naming.json)
 - drop-target-label: dropLabel; approved; Dropzone (propNaming[] · skills/_shared/prop-naming.json)
 - effect-profile: profile; approved; AmbientBackground (propNaming[] · skills/_shared/prop-naming.json)
@@ -4335,7 +4340,7 @@ Not exported:
 - initial-uncontrolled-sort: defaultSort; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
 - initial-uncontrolled-value: defaultValue; approved; Carousel, ChipGroup, RadioGroup, Select, SelectTile, Slider, Table, Tabs (propNaming[] · skills/_shared/prop-naming.json)
 - inline-caption-layout: inline; approved; SocialLinks (propNaming[] · skills/_shared/prop-naming.json)
-- inner-padding: padding; approved; Surface (propNaming[] · skills/_shared/prop-naming.json)
+- inner-padding: padding; approved; DialogContent, Surface (propNaming[] · skills/_shared/prop-naming.json)
 - interaction-drag-rotate: dragRotate; approved; Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
 - interaction-flip-gesture: flip; approved; Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
 - interaction-interactive-mode: interactive; approved; Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
@@ -4371,7 +4376,7 @@ Not exported:
 - paused-presentation: paused; approved; Avatar (propNaming[] · skills/_shared/prop-naming.json)
 - pending-activity: loading; approved; Button, Input (propNaming[] · skills/_shared/prop-naming.json)
 - pointer-tilt: pointerTilt; approved; Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
-- portal-container: container; approved; Portal (propNaming[] · skills/_shared/prop-naming.json)
+- portal-container: container; approved; DialogContent, Portal (propNaming[] · skills/_shared/prop-naming.json)
 - preset-dimensions: size; approved; Avatar, Button, Countdown, DialogContent, Gauge, GaugeGroup, Icon, IconButton, Indicator, Input, ListItem, Logo, Notice, NowCard, ProgressBar, ProjectCard, Select, Skeleton, SocialLinks, Spinner, Stat, Table, Tabs, Timeline, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - pressed-change: onPressedChange; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - pressed-state: pressed; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)
