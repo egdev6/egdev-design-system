@@ -1,6 +1,6 @@
 import type * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import type * as ToggleGroupPrimitive from '@radix-ui/react-toggle-group';
-import { type ComponentPropsWithoutRef, useId, useState } from 'react';
+import { type ComponentPropsWithoutRef, useEffect, useId, useRef, useState } from 'react';
 import { cn } from '@/lib/cn';
 import { surfaceVariants } from '@/primitives/surface';
 import { type SelectTileProps, type SelectTileRatio, selectTileVariants } from './types';
@@ -41,6 +41,7 @@ type Item = {
 type UseSelectTileResult = {
   root: Root;
   items: Item[];
+  textOnly: boolean;
   ratio: number;
   mediaClass: string;
   fallbackClass: string;
@@ -50,6 +51,7 @@ type UseSelectTileResult = {
 export function useSelectTile({
   label,
   options,
+  variant = 'default',
   ratio = 'landscape',
   disabled = false,
   dir = 'ltr',
@@ -58,6 +60,27 @@ export function useSelectTile({
 }: SelectTileProps): UseSelectTileResult {
   const id = useId();
   const [failedSources, setFailedSources] = useState<ReadonlySet<string>>(() => new Set());
+  const textOnly = selection.type === 'single' && variant === 'text-only';
+  const ignoredThumbs = JSON.stringify(
+    textOnly
+      ? options
+          .filter((option) => option.thumb !== undefined)
+          .map((option) => option.value)
+          .sort()
+      : []
+  );
+  const lastWarningSet = useRef<string | null>(null);
+  useEffect(() => {
+    if (lastWarningSet.current === ignoredThumbs) {
+      return;
+    }
+    lastWarningSet.current = ignoredThumbs;
+    const values: string[] = JSON.parse(ignoredThumbs);
+    if (values.length > 0 && (typeof process === 'undefined' || process.env.NODE_ENV !== 'production')) {
+      console.warn(`SelectTile: thumb is ignored when variant is "text-only" (options: ${values.join(', ')}).`);
+    }
+  }, [ignoredThumbs]);
+  const presentation = textOnly ? 'text-only' : 'default';
   const rootProps = {
     'aria-label': label,
     orientation: 'horizontal' as const,
@@ -75,6 +98,7 @@ export function useSelectTile({
   }
   return {
     root,
+    textOnly,
     ratio: ratios[ratio],
     mediaClass: cn(surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }), selectTileVariants.media()),
     fallbackClass: cn(selectTileVariants.fallback()),
@@ -86,7 +110,7 @@ export function useSelectTile({
       const badge = option.badge?.trim() ? option.badge : undefined;
       const itemDisabled = disabled || (option.disabled ?? false);
       const sourceKey = JSON.stringify([option.value, option.thumb?.src]);
-      const showImage = option.thumb !== undefined && !failedSources.has(sourceKey);
+      const showImage = !textOnly && option.thumb !== undefined && !failedSources.has(sourceKey);
       return {
         key: option.value,
         label: option.label,
@@ -95,14 +119,14 @@ export function useSelectTile({
         cardProps: {
           className: cn(
             surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'lg' }),
-            selectTileVariants.card()
+            selectTileVariants.card({ variant: presentation })
           ),
           'data-state': option.live ? 'live' : 'idle',
           'data-disabled': itemDisabled ? '' : undefined
         },
         labelProps: { id: labelId, className: cn(selectTileVariants.label()) },
-        metaProps: { id: metaId, className: cn(selectTileVariants.meta()) },
-        badgeProps: { id: badgeId, className: cn(selectTileVariants.badge()) },
+        metaProps: { id: metaId, className: cn(selectTileVariants.meta({ variant: presentation })) },
+        badgeProps: { id: badgeId, className: cn(selectTileVariants.badge({ variant: presentation })) },
         checkProps: { className: cn(selectTileVariants.check()), 'aria-hidden': true },
         controlProps: {
           value: option.value,

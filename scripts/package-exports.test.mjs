@@ -1923,6 +1923,46 @@ test('SelectTile ships shared Material, state priority, stretched geometry and n
   }
 });
 
+test('SelectTile text-only ships logical layout utilities and no server media', async () => {
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const selector of ['.gap-1', '.p-3', '.pe-7', '.justify-center', '.min-h-14', '.self-start', '.px-1']) {
+    assert.ok(utilities.includes(selector + '{') || utilities.includes(selector + ' {'), `Missing ${selector}`);
+  }
+  const { SelectTile } = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const dom = new JSDOM(
+    renderToStaticMarkup(
+      createElement(SelectTile, {
+        type: 'single',
+        variant: 'text-only',
+        label: 'Choices',
+        ratio: 'square',
+        defaultValue: 'first',
+        options: [{ value: 'first', label: 'First', meta: 'Details', badge: 'Live', thumb: { src: 'photo.png' } }]
+      })
+    )
+  );
+  try {
+    const group = dom.window.document.querySelector('[role="radiogroup"]');
+    assert.ok(group);
+    assert.equal(group.hasAttribute('variant'), false);
+    assert.equal(group.querySelector('img, [data-radix-aspect-ratio-wrapper]'), null);
+    const card = group.querySelector('.eg-tile');
+    for (const name of ['gap-1', 'p-3', 'pe-7', 'justify-center', 'min-h-14']) {
+      assert.ok(card.classList.contains(name), name);
+    }
+    assert.equal(group.querySelector('button').getAttribute('aria-checked'), 'true');
+    assert.ok(group.textContent.includes('First'));
+    assert.ok(group.textContent.includes('Details'));
+    assert.ok(group.textContent.includes('Live'));
+  } finally {
+    dom.window.close();
+  }
+});
+
 test('table exports native semantics and keeps internal recipes private', async () => {
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   for (const multiplier of [3, 4, 6]) {

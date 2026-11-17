@@ -334,7 +334,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
+          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
         }
       },
       {
@@ -344,7 +344,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
+          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
         }
       },
       {
@@ -501,7 +501,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
+          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
         }
       },
       {
@@ -598,7 +598,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
+          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
         }
       },
       {
@@ -1254,6 +1254,16 @@
           "symbol": "ScrollRevealProps",
           "revision": "sha256:84c3badd268fe8b78d6b53fc8ba9db3d43b6142904896394b472ace130346158"
         }
+      },
+      {
+        "component": "SelectTile",
+        "type": "'default' | 'text-only' (single); 'default' (multiple)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/select-tile/types.ts",
+          "symbol": "SelectTileProps",
+          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
+        }
       }
     ]
   },
@@ -1644,7 +1654,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
+          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
         }
       },
       {
@@ -1654,7 +1664,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
+          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
         }
       },
       {
@@ -3352,7 +3362,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
+          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
         }
       },
       {
@@ -3695,7 +3705,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
+          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
         }
       },
       {
@@ -4066,7 +4076,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileProps",
-          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
+          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
         }
       },
       {
@@ -6174,7 +6184,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
+          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
         }
       }
     ]
@@ -6201,7 +6211,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
+          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
         }
       }
     ]
@@ -6228,7 +6238,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
+          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
         }
       }
     ]
@@ -6255,7 +6265,7 @@
         "source": {
           "path": "packages/ui/src/molecules/select-tile/types.ts",
           "symbol": "SelectTileOption",
-          "revision": "sha256:2001f548d120e05600a886f8fed3d3632456b5bc0c211a84dcc7fda4836511be"
+          "revision": "sha256:d89650be9580591f8543d36e2185121c8047eecec1a4936dcb74602bdaaeb834"
         }
       }
     ]

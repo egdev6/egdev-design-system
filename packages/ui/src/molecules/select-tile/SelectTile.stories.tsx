@@ -14,6 +14,7 @@ const options: SelectTileOption[] = [
 /**
  * ## Description
  * Choose recognizable visual options using single radios or independent multiple toggles.
+ * Single radios also support a compact text-only presentation without media.
  *
  * ## Dependencies
  * Surface recipes own Material frames and wells; AspectRatio reserves media geometry;
@@ -21,7 +22,8 @@ const options: SelectTileOption[] = [
  *
  * ## Usage guidelines
  * Supply unique non-empty values and meaningful labels. Live is independent of selection,
- * requires readable badge text, and may mark at most one option. Media is decorative.
+ * requires readable badge text, and may mark at most one option. Media is decorative;
+ * text-only ignores ratio and thumbnails, warning in development for supplied thumbnails.
  * Single submits a form value; multiple consumers serialize arrays themselves. Navigation
  * is horizontal and one-dimensional even when cards wrap into several rows.
  * className supports root margins, width, columns and parent layout, not part appearance.
@@ -131,6 +133,39 @@ export const Narrow: Story = {
     ]
   }
 };
+
+/** Single text choices retain the independent live badge and disabled selection behavior. */
+export const TextOnly: Story = {
+  args: {
+    variant: 'text-only',
+    defaultValue: 'slides',
+    options: [
+      { value: 'camera', label: 'Camera', meta: 'Two layers', live: true, badge: 'Live' },
+      { value: 'slides', label: 'Slides', meta: 'Presentation output' },
+      { value: 'break', label: 'Break', disabled: true }
+    ]
+  }
+};
+
+/** A one-column narrow host wraps an unbroken identifying label within the tile. */
+export const TextOnlyNarrow: Story = {
+  args: {
+    variant: 'text-only',
+    className: 'grid-cols-1 w-48',
+    defaultValue: 'long',
+    options: [
+      {
+        value: 'long',
+        label: 'AnUnbrokenIdentifyingChoiceLabelThatMustWrapWithinTheNarrowTile',
+        meta: 'Supplementary details',
+        badge: 'Live'
+      }
+    ]
+  }
+};
+
+/** Logical check clearance and horizontal keyboard direction mirror in RTL. */
+export const TextOnlyRTL: Story = { args: { variant: 'text-only', dir: 'rtl', defaultValue: 'camera' } };
 
 /** A named empty collection has no controls and no keyboard entry point. */
 export const Empty: Story = { args: { options: [] } };

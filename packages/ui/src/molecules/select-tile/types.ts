@@ -33,6 +33,7 @@ export type SelectTileOption = {
   meta?: string;
   /**
    * Decorative preview; omitted or failed media repeats the label decoratively.
+   * Ignored in text-only, with a development warning when supplied.
    * @control false
    * @controlReason Thumbnail data is structured media; see MissingThumbnail and FailedThumbnail.
    */
@@ -97,7 +98,7 @@ type SelectTileCommonProps = SelectTileNativeProps & {
    */
   options: SelectTileOption[];
   /**
-   * Collection-wide thumbnail proportions.
+   * Collection-wide thumbnail proportions; ignored in text-only.
    * @default landscape
    * @control select
    */
@@ -129,6 +130,12 @@ export type SelectTileProps = SelectTileCommonProps &
          * @control select
          */
         type: 'single';
+        /**
+         * Use text-only for media-less radio cards, or default for media cards.
+         * @default default
+         * @control select
+         */
+        variant?: 'default' | 'text-only';
         /**
          * Authoritative selection; an empty string clears without an event on prop updates.
          * @control false
@@ -166,6 +173,11 @@ export type SelectTileProps = SelectTileCommonProps &
          */
         type: 'multiple';
         /**
+         * Multiple choices default to the media presentation and support no other variant.
+         * @control select
+         */
+        variant?: 'default';
+        /**
          * Authoritative selection in Radix activation order; an empty array clears.
          * @control false
          * @controlReason Mode-dependent string / string[] type; see Single, Multiple and Controlled.
@@ -198,24 +210,37 @@ export type SelectTileProps = SelectTileCommonProps &
 
 export const selectTileVariants = {
   root: cva('eg-select-tile grid grid-cols-2 gap-3'),
-  card: cva([
-    'eg-tile group/tile relative flex flex-col gap-2 p-2 min-w-0 min-h-11 text-start font-sans cursor-pointer no-underline',
-    'transition-[border-color,box-shadow] duration-(--duration-fast) ease-(--ease-out)',
-    'hover:border-border-hairline-strong hover:shadow-[var(--shadow-edge-strong),var(--shadow-elev-2)]',
-    'has-[[data-state=checked]]:bg-surface-3 has-[[data-state=on]]:bg-surface-3',
-    'has-[[data-state=checked]]:bg-[image:var(--gradient-post-new)] has-[[data-state=on]]:bg-[image:var(--gradient-post-new)]',
-    'has-[[data-state=checked]]:border-border-brand has-[[data-state=on]]:border-border-brand',
-    'has-[[data-state=checked]]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1)] has-[[data-state=on]]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1)]',
-    'data-[state=live]:border-fg-brand-default data-[state=live]:shadow-[var(--shadow-edge-strong),var(--shadow-glow-base)]',
-    'data-[state=live]:has-[[data-state=checked]]:border-fg-brand-default data-[state=live]:has-[[data-state=on]]:border-fg-brand-default',
-    'data-[state=live]:has-[[data-state=checked]]:shadow-[var(--shadow-edge-strong),var(--shadow-glow-base)] data-[state=live]:has-[[data-state=on]]:shadow-[var(--shadow-edge-strong),var(--shadow-glow-base)]',
-    'data-disabled:opacity-45 data-disabled:pointer-events-none data-disabled:cursor-not-allowed',
-    'motion-reduce:transition-none motion-reduce:transform-none'
-  ]),
+  card: cva(
+    [
+      'eg-tile group/tile relative flex flex-col min-w-0 text-start font-sans cursor-pointer no-underline',
+      'transition-[border-color,box-shadow] duration-(--duration-fast) ease-(--ease-out)',
+      'hover:border-border-hairline-strong hover:shadow-[var(--shadow-edge-strong),var(--shadow-elev-2)]',
+      'has-[[data-state=checked]]:bg-surface-3 has-[[data-state=on]]:bg-surface-3',
+      'has-[[data-state=checked]]:bg-[image:var(--gradient-post-new)] has-[[data-state=on]]:bg-[image:var(--gradient-post-new)]',
+      'has-[[data-state=checked]]:border-border-brand has-[[data-state=on]]:border-border-brand',
+      'has-[[data-state=checked]]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1)] has-[[data-state=on]]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1)]',
+      'data-[state=live]:border-fg-brand-default data-[state=live]:shadow-[var(--shadow-edge-strong),var(--shadow-glow-base)]',
+      'data-[state=live]:has-[[data-state=checked]]:border-fg-brand-default data-[state=live]:has-[[data-state=on]]:border-fg-brand-default',
+      'data-[state=live]:has-[[data-state=checked]]:shadow-[var(--shadow-edge-strong),var(--shadow-glow-base)] data-[state=live]:has-[[data-state=on]]:shadow-[var(--shadow-edge-strong),var(--shadow-glow-base)]',
+      'data-disabled:opacity-45 data-disabled:pointer-events-none data-disabled:cursor-not-allowed',
+      'motion-reduce:transition-none motion-reduce:transform-none'
+    ],
+    {
+      variants: {
+        variant: { default: 'gap-2 p-2 min-h-11', 'text-only': 'gap-1 p-3 pe-7 justify-center min-h-14' }
+      },
+      defaultVariants: { variant: 'default' }
+    }
+  ),
   media: cva('relative overflow-hidden'),
   image: cva('w-full h-full object-cover block'),
   fallback: cva('w-full h-full grid place-items-center text-cta-label text-fg-default font-sans'),
-  badge: cva('absolute top-1.5 start-1.5 pointer-events-none'),
+  badge: cva('pointer-events-none', {
+    variants: {
+      variant: { default: 'absolute top-1.5 start-1.5', 'text-only': 'self-start px-1' }
+    },
+    defaultVariants: { variant: 'default' }
+  }),
   check: cva([
     'absolute top-1.5 end-1.5 pointer-events-none inline-flex h-3.5 w-3.5 items-center justify-center overflow-hidden',
     'opacity-0 scale-50 transition-[opacity,transform] duration-(--duration-fast) ease-(--ease-out)',
@@ -224,7 +249,10 @@ export const selectTileVariants = {
     'motion-reduce:transition-none [&>svg]:size-full'
   ]),
   label: cva('text-cta-label text-fg-default px-1 wrap-anywhere'),
-  meta: cva('text-label-default font-[var(--text-body-default--font-weight)] text-fg-muted px-1 pb-1 wrap-anywhere'),
+  meta: cva('text-label-default font-[var(--text-body-default--font-weight)] text-fg-muted px-1 wrap-anywhere', {
+    variants: { variant: { default: 'pb-1', 'text-only': '' } },
+    defaultVariants: { variant: 'default' }
+  }),
   control: cva([
     'absolute inset-0 w-full h-full rounded-lg border-0 border-solid bg-transparent bg-none p-0 cursor-pointer appearance-none',
     'focus-visible:outline-none focus-visible:shadow-focus disabled:cursor-not-allowed'

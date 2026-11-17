@@ -381,6 +381,7 @@ const expected: Record<string, Record<string, string | false>> = {
   },
   selecttile: {
     type: 'select',
+    variant: 'select',
     label: 'text',
     options: false,
     ratio: 'select',
@@ -734,7 +735,7 @@ const ownPropCounts: Record<string, number> = {
   communitycardaction: 2,
   tipcard: 7,
   timeline: 7,
-  selecttile: 11,
+  selecttile: 12,
   carousel: 7,
   avatar: 4,
   button: 7,
@@ -1552,6 +1553,9 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     const { argTypes } = story('SelectTile');
     expect(argTypes.type?.control).toEqual({ type: 'select' });
     expect(new Set(argTypes.type?.options)).toEqual(new Set(['single', 'multiple']));
+    expect(argTypes.variant?.control).toEqual({ type: 'select' });
+    expect(new Set(argTypes.variant?.options)).toEqual(new Set(['default', 'text-only']));
+    expect(argTypes.variant?.table?.defaultValue?.summary).toBe('"default"');
     expect(argTypes.ratio?.control).toEqual({ type: 'select' });
     expect(new Set(argTypes.ratio?.options)).toEqual(
       new Set(['landscape', 'portrait', 'story', 'square', 'wide', 'banner'])
