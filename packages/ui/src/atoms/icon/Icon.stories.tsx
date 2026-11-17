@@ -48,7 +48,7 @@ export const Gallery: Story = {
   )
 };
 
-/** The sm, md and lg presets: 16, 20 (--icon-size) and 28px. */
+/** The sm, md and lg presets: 12.8, 16 (--icon-size) and 22.4px. */
 export const Sizes: Story = {
   args: { name: 'radio' },
   render: (args) => (

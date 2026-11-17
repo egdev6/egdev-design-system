@@ -35,7 +35,7 @@ export const Default: Story = {
 /** Decorative spinner without a label, hidden from assistive technology. */
 export const Decorative: Story = {};
 
-/** The Icon scale: sm 16px, md 20px (default) and lg 28px. */
+/** The Icon scale: sm 12.8px, md 16px (default) and lg 22.4px. */
 export const Sizes: Story = {
   render: () => (
     <div className='flex items-end gap-6'>
