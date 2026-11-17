@@ -552,6 +552,17 @@ describe('Storybook preview CSS', () => {
     expect(css).not.toMatch(/\.eg-carousel[^{]*\{/);
   });
 
+  it('compiles SelectTile text-only logical clearance and content layout utilities', () => {
+    expect(rule('.gap-1')).toMatch(/gap:\s*var\(--space-1[,)]/);
+    expect(rule('.p-3')).toMatch(/padding:\s*var\(--space-3[,)]/);
+    expect(rule('.pe-7')).toMatch(/padding-inline-end:\s*var\(--space-7[,)]/);
+    expect(rule('.justify-center')).toMatch(/justify-content:\s*center/);
+    expect(rule('.self-start')).toMatch(/align-self:\s*flex-start/);
+    expect(rule('.px-1')).toMatch(/padding-inline:\s*var\(--space-1[,)]/);
+    expect(rule('.min-h-14')).toMatch(/min-height:\s*(?:var\(--space-14[,)]|calc\(var\(--space-1\)\s*\*\s*14\))/);
+    expect(rule('.wrap-anywhere')).toMatch(/overflow-wrap:\s*anywhere/);
+  });
+
   it('compiles Carousel full-width scrolling, scrollbar hiding and inset focus utilities', () => {
     expect(rule('.gap-0')).toMatch(/gap:\s*var\(--space-0[,)]/);
     expect(rule('.p-0')).toMatch(/padding:\s*var\(--space-0[,)]/);

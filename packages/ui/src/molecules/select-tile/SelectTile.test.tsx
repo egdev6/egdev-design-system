@@ -1,5 +1,6 @@
 import { act, fireEvent, render, renderHook, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { renderToString } from 'react-dom/server';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useSelectTile } from '@/molecules/select-tile/useSelectTile';
 import { SelectTile, type SelectTileOption, type SelectTileProps, type SelectTileRatio } from './index';
@@ -375,5 +376,232 @@ describe('SelectTile public contract', () => {
     await arrow(user, 'ArrowLeft');
     expect(screen.getByRole('radio', { name: 'Slides' })).toHaveFocus();
     expect(screen.getByRole('radio', { name: 'Slides' })).toBeChecked();
+  });
+});
+
+describe('SelectTile text-only presentation', () => {
+  const textOptions: SelectTileOption[] = [
+    { value: 'first', label: 'First choice', meta: 'Details', live: true, badge: 'Live' },
+    { value: 'disabled', label: 'Unavailable', disabled: true },
+    { value: 'second', label: 'Second choice' },
+    { value: 'third', label: 'Third choice' }
+  ];
+  const textBase = { type: 'single', label: 'Choices', options: textOptions } as const;
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllEnvs();
+  });
+
+  it('renders only ordered label, metadata, inline badge and the decorative check, even with media inputs', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const withThumb = textOptions.map((option, index) =>
+      index === 0 ? { ...option, thumb: { src: 'preview.png' } } : option
+    );
+    const { container } = render(
+      <SelectTile {...textBase} options={withThumb} variant='text-only' ratio='portrait' defaultValue='first' />
+    );
+    const root = screen.getByRole('radiogroup', { name: 'Choices' });
+    const first = screen.getByRole('radio', { name: 'First choice' });
+    const frame = card(first);
+    expect(root).not.toHaveAttribute('variant');
+    expect(container.querySelector('img, [data-radix-aspect-ratio-wrapper]')).toBeNull();
+    expect(frame.querySelector('.eg-surface')).toBeNull();
+    expect(within(frame).getAllByText('First choice')).toHaveLength(1);
+    const label = within(frame).getByText('First choice');
+    const meta = within(frame).getByText('Details');
+    const badge = within(frame).getByText('Live').parentElement;
+    expect(label.compareDocumentPosition(meta) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(badge && meta.compareDocumentPosition(badge) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(first).toHaveAccessibleDescription('Details Live');
+    expect(first.getAttribute('aria-describedby')?.split(' ')).toEqual([meta.id, badge?.id]);
+    expect(first).toBeChecked();
+    expect(frame).toHaveAttribute('data-state', 'live');
+    expect(frame).toHaveClass('eg-tile', 'eg-surface', 'gap-1', 'p-3', 'pe-7', 'justify-center', 'min-h-14');
+    expect(frame).not.toHaveClass('gap-2', 'p-2', 'min-h-11');
+    expect(label).toHaveClass('wrap-anywhere');
+    expect(meta).not.toHaveClass('pb-1');
+    expect(badge).toHaveClass('self-start', 'px-1', 'pointer-events-none');
+    expect(badge).not.toHaveClass('absolute');
+    const check = frame.querySelector('svg');
+    expect(check).toHaveAttribute('aria-hidden', 'true');
+    expect(check?.closest('span')).toHaveClass('group-has-[[data-state=checked]]/tile:opacity-100');
+    expect(warn).toHaveBeenCalledOnce();
+    expect(warn).toHaveBeenCalledWith('SelectTile: thumb is ignored when variant is "text-only" (options: first).');
+  });
+
+  it('uses the 44.8px minimum for a short text-only choice without metadata or a badge', () => {
+    render(<SelectTile {...textBase} variant='text-only' options={[{ value: 'short', label: 'Short' }]} />);
+    const frame = card(screen.getByRole('radio', { name: 'Short' }));
+    expect(frame).toHaveClass('min-h-14');
+    expect(frame).not.toHaveClass('min-h-11');
+  });
+
+  it('warns once per offending set change, not on renders, object changes or reordering', () => {
+    vi.stubEnv('NODE_ENV', 'development');
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const images = [
+      { value: 'alpha', label: 'Alpha', thumb: { src: 'a.png' } },
+      { value: 'beta', label: 'Beta', thumb: { src: 'b.png' } }
+    ];
+    const { rerender } = render(<SelectTile {...textBase} variant='text-only' options={images} />);
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn).toHaveBeenLastCalledWith(
+      'SelectTile: thumb is ignored when variant is "text-only" (options: alpha, beta).'
+    );
+    rerender(<SelectTile {...textBase} variant='text-only' options={images.map((item) => ({ ...item }))} />);
+    rerender(<SelectTile {...textBase} variant='text-only' options={[...images].reverse()} />);
+    expect(warn).toHaveBeenCalledTimes(1);
+    rerender(<SelectTile {...textBase} variant='text-only' options={images.slice(1)} />);
+    expect(warn).toHaveBeenCalledTimes(2);
+    expect(warn).toHaveBeenLastCalledWith('SelectTile: thumb is ignored when variant is "text-only" (options: beta).');
+    rerender(<SelectTile {...textBase} variant='text-only' options={textOptions} />);
+    expect(warn).toHaveBeenCalledTimes(2);
+    rerender(<SelectTile {...textBase} variant='text-only' options={images.slice(1)} />);
+    expect(warn).toHaveBeenCalledTimes(3);
+  });
+
+  it('does not warn for ratio alone, production, the default presentation, or server rendering', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const images = [{ value: 'photo', label: 'Photo', thumb: { src: 'photo.png' } }];
+    const { rerender, unmount } = render(<SelectTile {...textBase} variant='text-only' ratio='square' />);
+    expect(warn).not.toHaveBeenCalled();
+    rerender(<SelectTile {...textBase} variant='default' options={images} />);
+    expect(warn).not.toHaveBeenCalled();
+    unmount();
+    const { unmount: unmountDefault } = render(<SelectTile {...textBase} options={images} />);
+    expect(warn).not.toHaveBeenCalled();
+    unmountDefault();
+    vi.stubEnv('NODE_ENV', 'production');
+    expect(() => render(<SelectTile {...textBase} variant='text-only' options={images} />)).not.toThrow();
+    expect(warn).not.toHaveBeenCalled();
+    vi.stubEnv('NODE_ENV', 'development');
+    expect(() => renderToString(<SelectTile {...textBase} variant='text-only' options={images} />)).not.toThrow();
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it('keeps untyped multiple plus text-only on the media presentation without forwarding variant', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const invalid = {
+      type: 'multiple',
+      label: 'Outputs',
+      variant: 'text-only',
+      options: [{ value: 'photo', label: 'Photo', thumb: { src: 'photo.png' } }]
+    } as unknown as SelectTileProps; // Simulate a JavaScript consumer bypassing the single-only type.
+    render(<SelectTile {...invalid} />);
+    const root = screen.getByRole('group', { name: 'Outputs' });
+    expect(root).not.toHaveAttribute('variant');
+    expect(root.querySelector('img')).toHaveAttribute('src', 'photo.png');
+    expect(root.querySelector('[data-radix-aspect-ratio-wrapper]')).not.toBeNull();
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it.each(['default', 'text-only'] as const)(
+    'preserves keyboard selection, focus-only endpoints and disabled skipping in %s',
+    async (variant) => {
+      const user = userEvent.setup();
+      const change = vi.fn();
+      const submit = vi.fn((event) => event.preventDefault());
+      render(
+        <form onSubmit={submit}>
+          <SelectTile {...textBase} variant={variant} onValueChange={change} />
+        </form>
+      );
+      await user.tab();
+      const first = screen.getByRole('radio', { name: 'First choice' });
+      const second = screen.getByRole('radio', { name: 'Second choice' });
+      const third = screen.getByRole('radio', { name: 'Third choice' });
+      expect(first).toHaveFocus();
+      await user.keyboard('{Enter}');
+      expect(change).not.toHaveBeenCalled();
+      expect(submit).not.toHaveBeenCalled();
+      await user.keyboard(' ');
+      expect(first).toBeChecked();
+      await user.click(first);
+      expect(change).toHaveBeenCalledTimes(1);
+      await arrow(user, 'ArrowRight');
+      expect(second).toHaveFocus();
+      expect(second).toBeChecked();
+      await user.keyboard('{End}');
+      expect(third).toHaveFocus();
+      expect(second).toBeChecked();
+      await user.keyboard('{Home}');
+      expect(first).toHaveFocus();
+      expect(second).toBeChecked();
+      await arrow(user, 'ArrowLeft');
+      expect(third).toHaveFocus();
+      expect(third).toBeChecked();
+      expect(change.mock.calls.map(([value]) => value)).toEqual(['first', 'second', 'third']);
+    }
+  );
+
+  it.each(['default', 'text-only'] as const)('preserves native form validity and value in %s', async (variant) => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <form>
+        <SelectTile {...textBase} variant={variant} name='choice' required={true} />
+      </form>
+    );
+    const form = container.querySelector('form');
+    if (!form) {
+      throw new Error('Missing form');
+    }
+    expect(form.checkValidity()).toBe(false);
+    expect(new FormData(form).get('choice')).toBeNull();
+    await user.click(screen.getByRole('radio', { name: 'Second choice' }));
+    expect(form.checkValidity()).toBe(true);
+    expect(new FormData(form).get('choice')).toBe('second');
+  });
+
+  it.each(['default', 'text-only'] as const)(
+    'keeps controlled values authoritative and updates silently in %s',
+    async (variant) => {
+      const user = userEvent.setup();
+      const change = vi.fn();
+      const { rerender } = render(<SelectTile {...textBase} variant={variant} value='first' onValueChange={change} />);
+      await user.click(screen.getByRole('radio', { name: 'Second choice' }));
+      expect(change).toHaveBeenCalledOnce();
+      expect(change).toHaveBeenCalledWith('second');
+      expect(screen.getByRole('radio', { name: 'First choice' })).toBeChecked();
+      expect(screen.getByRole('radio', { name: 'Second choice' })).not.toBeChecked();
+      rerender(<SelectTile {...textBase} variant={variant} value='second' onValueChange={change} />);
+      expect(screen.getByRole('radio', { name: 'Second choice' })).toBeChecked();
+      expect(change).toHaveBeenCalledTimes(1);
+    }
+  );
+
+  it.each(['default', 'text-only'] as const)(
+    'retains disabled state and prevents activation in %s',
+    async (variant) => {
+      const user = userEvent.setup();
+      const change = vi.fn();
+      const { rerender } = render(
+        <SelectTile {...textBase} variant={variant} defaultValue='first' onValueChange={change} />
+      );
+      const unavailable = screen.getByRole('radio', { name: 'Unavailable' });
+      expect(unavailable).toBeDisabled();
+      await user.click(unavailable);
+      expect(change).not.toHaveBeenCalled();
+      rerender(
+        <SelectTile {...textBase} variant={variant} defaultValue='first' disabled={true} onValueChange={change} />
+      );
+      const first = screen.getByRole('radio', { name: 'First choice' });
+      expect(first).toBeDisabled();
+      expect(first).toBeChecked();
+      expect(card(first)).toHaveAttribute('data-disabled');
+      expect(card(first)).toHaveAttribute('data-state', 'live');
+      expect(first.className).not.toMatch(/opacity/);
+      await user.click(first);
+      expect(change).not.toHaveBeenCalled();
+    }
+  );
+
+  it.each(['default', 'text-only'] as const)('reverses horizontal navigation in RTL for %s', async (variant) => {
+    const user = userEvent.setup();
+    render(<SelectTile {...textBase} variant={variant} dir='rtl' />);
+    await user.tab();
+    await arrow(user, 'ArrowLeft');
+    expect(screen.getByRole('radio', { name: 'Second choice' })).toHaveFocus();
+    expect(screen.getByRole('radio', { name: 'Second choice' })).toBeChecked();
   });
 });

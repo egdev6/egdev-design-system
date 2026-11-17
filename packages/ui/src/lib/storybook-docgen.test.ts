@@ -1364,7 +1364,8 @@ describe('Storybook TypeScript docgen contract', () => {
     for (const [name, value] of [
       ['ratio', 'landscape'],
       ['dir', 'ltr'],
-      ['disabled', 'false']
+      ['disabled', 'false'],
+      ['variant', 'default']
     ]) {
       expect(doc?.props[name ?? '']?.defaultValue?.value).toBe(value);
     }
@@ -1390,7 +1391,21 @@ describe('Storybook TypeScript docgen contract', () => {
       'SelectTileCommonProps',
       'SelectTileProps'
     ]);
-    expect(properties).toHaveLength(27);
+    expect(properties).toHaveLength(29);
+    const variants = properties.filter((property) => property.name.getText(file) === 'variant');
+    expect(variants).toHaveLength(2);
+    expect(variants.map((property) => property.type?.getText(file))).toEqual(["'default' | 'text-only'", "'default'"]);
+    expect(
+      variants.map((property) =>
+        ts
+          .getJSDocTags(property)
+          .filter((tag) => tag.tagName.text === 'default')
+          .map((tag) => tag.comment)
+      )
+    ).toEqual([['default'], []]);
+    expect(new Set(doc?.props.variant?.type.value.map(({ value }: { value: string }) => normalize(value)))).toEqual(
+      new Set(['default', 'text-only'])
+    );
     for (const property of properties) {
       const tags = ts.getJSDocTags(property);
       expect(
@@ -1418,8 +1433,14 @@ describe('Storybook TypeScript docgen contract', () => {
       'RequiredForm',
       'RTL',
       'Narrow',
+      'TextOnly',
+      'TextOnlyNarrow',
+      'TextOnlyRTL',
       'Empty'
     ]);
+    expect(readFileSync(source('molecules/select-tile/SelectTile.stories.tsx'), 'utf8')).not.toMatch(
+      /\b(?:argTypes|play)\s*:/
+    );
   });
   it('extracts SocialLinks collections, nullable captions, exact presets and native root boundaries', () => {
     const doc = parser

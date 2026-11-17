@@ -767,6 +767,12 @@ const tileOptions: SelectTileOption[] = [
 ];
 const singleTile: Extract<SelectTileProps, { type: 'single' }> = { type: tileType, label: 'Scenes', options: tileOptions, ratio: tileRatio, name: 'scene', required: true };
 const multipleTile: Extract<SelectTileProps, { type: 'multiple' }> = { type: 'multiple', label: 'Outputs', options: tileOptions, defaultValue: ['slides'] };
+export const textOnlyTile: Extract<SelectTileProps, { type: 'single' }> = { ...singleTile, variant: 'text-only' };
+export function SelectTileTextOnlySample() { return createElement(SelectTile, textOnlyTile); }
+// @ts-expect-error Text-only presentation is single-mode only.
+const tileMultipleTextOnly: SelectTileProps = { ...multipleTile, variant: 'text-only' };
+// @ts-expect-error Variant is restricted to the approved presentation choices.
+const tileCompact: SelectTileProps = { ...singleTile, variant: 'compact' };
 export const tileRequests: (string | string[])[] = [];
 export function SelectTileSamples({ multiple = false, value }: { multiple?: boolean; value?: string }) {
   if (multiple) {
@@ -6240,6 +6246,18 @@ for (const multiple of [false, true]) {
   } finally {
     tiles.window.close();
   }
+}
+const { SelectTileTextOnlySample } = await import('./consumer.ts');
+const textTiles = new JSDOM(renderToString(createElement(SelectTileTextOnlySample)));
+try {
+  const group = textTiles.window.document.querySelector('.eg-select-tile');
+  assert.equal(group.getAttribute('role'), 'radiogroup');
+  assert.equal(group.hasAttribute('variant'), false);
+  assert.equal(group.querySelector('img, [data-radix-aspect-ratio-wrapper]'), null);
+  assert.equal(group.querySelectorAll('button').length, 2);
+  assert.ok(group.textContent.includes('Camera'));
+} finally {
+  textTiles.window.close();
 }
 // Popover SSR renders only the named button: the dialog is an internal client portal.
 const popoverDocument = new JSDOM(renderToString(createElement(PopoverSamples)));

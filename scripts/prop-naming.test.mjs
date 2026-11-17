@@ -317,7 +317,8 @@ const postReceiptUsages = [
     'initial-uncontrolled-value',
     'interactive-value-change',
     'selection-cardinality',
-    'aspect-ratio'
+    'aspect-ratio',
+    'visual-treatment'
   ].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/select-tile/types.ts#SelectTileProps'
@@ -949,6 +950,34 @@ test('Carousel track layout binds the owner choices, scoped receipt and every re
   for (const usage of own) {
     assert.equal(usage.source.revision, revision);
     assert.ok(['CarouselProps', 'CarouselItem'].includes(usage.source.symbol));
+  }
+  validate(registry);
+});
+
+test('SelectTile text-only reuses visual-treatment and refreshes all reviewed source revisions', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const path = 'packages/ui/src/molecules/select-tile/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const entry = registry.find(({ id }) => id === 'visual-treatment');
+  assert.equal(entry.name, 'variant');
+  assert.equal(entry.status, 'approved');
+  assert.equal(entry.approval.contentHash, props.conventionHash(entry));
+  assert.deepEqual(
+    entry.usages.filter(({ component }) => component === 'SelectTile'),
+    [
+      {
+        component: 'SelectTile',
+        type: "'default' | 'text-only' (single); 'default' (multiple)",
+        status: 'existing',
+        source: { path, symbol: 'SelectTileProps', revision }
+      }
+    ]
+  );
+  const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
+  assert.equal(own.length, 14);
+  for (const usage of own) {
+    assert.equal(usage.source.revision, revision);
+    assert.ok(['SelectTileProps', 'SelectTileOption'].includes(usage.source.symbol));
   }
   validate(registry);
 });
