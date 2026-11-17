@@ -1242,7 +1242,7 @@
         "source": {
           "path": "packages/ui/src/molecules/panel/types.ts",
           "symbol": "PanelProps",
-          "revision": "sha256:5aa2753d3af82b96e29f8df01eda0af56e750d5f4b7d321664a74bc4c4432cd8"
+          "revision": "sha256:c45b38f34521708baa0996044a57d81d172636bc2e7864115711bec43b386b91"
         }
       },
       {
@@ -1520,7 +1520,7 @@
         "source": {
           "path": "packages/ui/src/molecules/panel/types.ts",
           "symbol": "PanelProps",
-          "revision": "sha256:5aa2753d3af82b96e29f8df01eda0af56e750d5f4b7d321664a74bc4c4432cd8"
+          "revision": "sha256:c45b38f34521708baa0996044a57d81d172636bc2e7864115711bec43b386b91"
         }
       },
       {
@@ -8419,6 +8419,29 @@
           "path": "packages/ui/src/molecules/carousel/types.ts",
           "symbol": "CarouselProps",
           "revision": "sha256:a0915fe671071fc7c372acd0bfdfa525ade5628ff65d50e076784b39268acda9"
+        }
+      }
+    ]
+  },
+  {
+    "id": "panel-accent-edge",
+    "name": "accentEdge",
+    "meaning": "opt in to a passive, inherited-color logical-start Panel edge",
+    "whenToUse": "Add Panel's decorative inherited accent at logical inline-start without changing its tone or bands.",
+    "avoid": "Status, focus or control semantics; arbitrary colors, thickness or physical-side selection.",
+    "status": "proposed",
+    "approval": null,
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "Panel",
+        "type": "'start' (optional; omitted means no edge)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/panel/types.ts",
+          "symbol": "PanelProps",
+          "revision": "sha256:c45b38f34521708baa0996044a57d81d172636bc2e7864115711bec43b386b91"
         }
       }
     ]

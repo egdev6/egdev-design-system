@@ -1,8 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { createAccentTheme } from '@egdev/tokens/accent';
 import { render, renderHook, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createRef, useId } from 'react';
+import { type CSSProperties, createRef, useId } from 'react';
 import ts from 'typescript';
 import { describe, expect, it, vi } from 'vitest';
 import { Surface } from '../../primitives/surface';
@@ -18,6 +19,27 @@ const variants = ['default', 'banded'] as const;
 const matrix = tones.flatMap((tone) => variants.map((variant) => ({ tone, variant })));
 const framedTop = 'first:rounded-t-[calc(var(--radius-xl)-var(--border-width))]';
 const framedBottom = 'last:rounded-b-[calc(var(--radius-xl)-var(--border-width))]';
+const accentBase = [
+  'relative',
+  'before:absolute',
+  'before:pointer-events-none',
+  'before:z-10',
+  "before:content-['']",
+  'before:[inline-size:var(--space-1)]',
+  'before:bg-fg-brand-default'
+];
+const framedAccent = [
+  'before:[inset-inline-start:var(--border-width)]',
+  'before:[inset-block:var(--border-width)]',
+  'before:rounded-ss-[calc(var(--radius-xl)-var(--border-width))]',
+  'before:rounded-es-[calc(var(--radius-xl)-var(--border-width))]'
+];
+const inheritedAccent = [
+  'before:[inset-inline-start:0]',
+  'before:[inset-block:0]',
+  'before:rounded-ss-xl',
+  'before:rounded-es-xl'
+];
 
 function panelFor(element: HTMLElement): HTMLElement {
   const root = element.closest<HTMLElement>('.eg-panel');
@@ -44,6 +66,234 @@ function Example(props: Omit<PanelProps, 'children'>) {
     </Panel>
   );
 }
+
+describe('Panel accent edge contract', () => {
+  it.each(matrix)(
+    'leaves omitted, undefined and invalid edges unchanged without DOM leakage for $tone / $variant',
+    ({ tone, variant }) => {
+      const example = (input: Record<string, unknown>) => (
+        <Panel {...({ tone, variant, ...input } as unknown as PanelProps)}>
+          <PanelHeader>Header</PanelHeader>
+          <PanelBody>Content</PanelBody>
+          <PanelFooter>Footer</PanelFooter>
+        </Panel>
+      );
+      const { rerender } = render(example({}));
+      const root = panelFor(screen.getByText('Content'));
+      const original = root.outerHTML;
+      expect(root).not.toHaveClass('relative');
+      expect([...root.classList].filter((name) => name.startsWith('before:'))).toEqual([]);
+      for (const value of [undefined, null, false, true, '', 'end', 'left', 'START', 0]) {
+        rerender(example({ accentEdge: value }));
+        expect(panelFor(screen.getByText('Content')).outerHTML, String(value)).toBe(original);
+        expect(root).not.toHaveAttribute('accentEdge');
+        expect(root).not.toHaveAttribute('accentedge');
+      }
+    }
+  );
+
+  it.each(matrix.flatMap((entry) => (['ltr', 'rtl'] as const).map((dir) => ({ ...entry, dir }))))(
+    'adds the logical-start edge without changing $tone / $variant zones in $dir',
+    ({ tone, variant, dir }) => {
+      const { rerender } = render(<Example tone={tone} variant={variant} dir={dir} />);
+      const root = panelFor(screen.getByText('Content'));
+      const originalClasses = [...root.classList];
+      const originalZones = root.innerHTML;
+      expect(root).not.toHaveClass('relative');
+      rerender(<Example tone={tone} variant={variant} dir={dir} accentEdge='start' />);
+      expect(panelFor(screen.getByText('Content'))).toBe(root);
+      expect(root).toHaveAttribute('dir', dir);
+      expect(root).toHaveAttribute('data-tone', tone);
+      expect(root).toHaveAttribute('data-variant', variant);
+      expect(root).not.toHaveAttribute('accentedge');
+      expect(root).not.toHaveAttribute('style');
+      expect(root.innerHTML).toBe(originalZones);
+      for (const name of originalClasses) {
+        expect(root).toHaveClass(name);
+      }
+      expect(root).toHaveClass(...accentBase, ...(tone === 'inherit' ? inheritedAccent : framedAccent));
+      for (const name of tone === 'inherit' ? framedAccent : inheritedAccent) {
+        expect(root).not.toHaveClass(name);
+      }
+      expect(root.classList.contains('eg-surface')).toBe(tone !== 'inherit');
+      expect(root).toHaveClass('overflow-visible');
+      expect(root.children).toHaveLength(3);
+      for (const part of root.children) {
+        expect(part).toHaveClass('p-4');
+        expect(part).not.toHaveClass('overflow-hidden');
+      }
+    }
+  );
+
+  it.each([
+    { header: false, footer: false },
+    { header: true, footer: false },
+    { header: false, footer: true }
+  ])('retains optional-zone geometry with an edge (header=$header, footer=$footer)', ({ header, footer }) => {
+    render(
+      <Panel variant='banded' accentEdge='start'>
+        {header && <PanelHeader>Header</PanelHeader>}
+        <PanelBody>Content</PanelBody>
+        {footer && <PanelFooter>Footer</PanelFooter>}
+      </Panel>
+    );
+    const root = panelFor(screen.getByText('Content'));
+    expect(root).toHaveClass(...accentBase, ...framedAccent);
+    expect(root.children).toHaveLength(1 + Number(header) + Number(footer));
+    expect(root.firstElementChild).toHaveClass(framedTop);
+    expect(root.lastElementChild).toHaveClass(framedBottom);
+    expect(root.querySelector('.eg-panel__header') !== null).toBe(header);
+    expect(root.querySelector('.eg-panel__footer') !== null).toBe(footer);
+  });
+
+  it('keeps nested Panel edge selections independent when each opt-in changes', () => {
+    const example = (outer: boolean, inner: boolean) => (
+      <Panel accentEdge={outer ? 'start' : undefined}>
+        <PanelHeader>Outer</PanelHeader>
+        <PanelBody>
+          <Surface tone='surface-2'>
+            <Panel tone='inherit' accentEdge={inner ? 'start' : undefined}>
+              <PanelBody>Inner</PanelBody>
+            </Panel>
+          </Surface>
+        </PanelBody>
+      </Panel>
+    );
+    const { rerender } = render(example(true, false));
+    const outer = panelFor(screen.getByText('Outer'));
+    const inner = panelFor(screen.getByText('Inner'));
+    expect(outer).toHaveClass(...accentBase, ...framedAccent);
+    expect(inner).not.toHaveClass('relative');
+    expect(inner).not.toHaveClass('before:absolute');
+    rerender(example(false, true));
+    expect(panelFor(screen.getByText('Outer'))).toBe(outer);
+    expect(panelFor(screen.getByText('Inner'))).toBe(inner);
+    expect(outer).not.toHaveClass('relative');
+    expect(outer).not.toHaveClass('before:absolute');
+    expect(inner).toHaveClass(...accentBase, ...inheritedAccent);
+  });
+
+  it('retains complete independent runtime-accent host maps and child state across updates and reset', async () => {
+    const user = userEvent.setup();
+    const themed = (outer: string | null) => (
+      <>
+        <div aria-label='Outer theme' style={createAccentTheme(outer).variables as CSSProperties}>
+          <Panel accentEdge='start' variant='banded'>
+            <PanelHeader>Outer panel</PanelHeader>
+            <PanelBody>
+              <input aria-label='Draft' />
+              <div aria-label='Nested theme' style={createAccentTheme(null).variables as CSSProperties}>
+                <Panel accentEdge='start'>
+                  <PanelBody>Nested panel</PanelBody>
+                </Panel>
+              </div>
+            </PanelBody>
+          </Panel>
+        </div>
+        <div aria-label='Sibling theme' style={createAccentTheme('#00ff00').variables as CSSProperties}>
+          <Panel accentEdge='start'>
+            <PanelBody>Sibling panel</PanelBody>
+          </Panel>
+        </div>
+      </>
+    );
+    const expectMap = (host: HTMLElement, input: string | null) => {
+      const variables = createAccentTheme(input).variables;
+      expect(host.style.length).toBe(Object.keys(variables).length);
+      for (const [name, value] of Object.entries(variables)) {
+        expect(host.style.getPropertyValue(name), name).toBe(value);
+      }
+    };
+    const { rerender } = render(themed('#123456'));
+    const outerHost = screen.getByLabelText('Outer theme');
+    const nestedHost = screen.getByLabelText('Nested theme');
+    const siblingHost = screen.getByLabelText('Sibling theme');
+    const draft = screen.getByRole('textbox', { name: 'Draft' });
+    const outer = panelFor(screen.getByText('Outer panel'));
+    const nested = panelFor(screen.getByText('Nested panel'));
+    const sibling = panelFor(screen.getByText('Sibling panel'));
+    await user.type(draft, 'Keep this');
+    for (const root of [outer, nested, sibling]) {
+      expect(root).toHaveClass('before:bg-fg-brand-default');
+      expect(root).not.toHaveAttribute('style');
+    }
+    expectMap(outerHost, '#123456');
+    expectMap(nestedHost, null);
+    expectMap(siblingHost, '#00ff00');
+    for (const input of ['#777777', null]) {
+      rerender(themed(input));
+      expect(screen.getByRole('textbox', { name: 'Draft' })).toBe(draft);
+      expect(draft).toHaveValue('Keep this');
+      expect(panelFor(screen.getByText('Outer panel'))).toBe(outer);
+      expect(panelFor(screen.getByText('Nested panel'))).toBe(nested);
+      expect(panelFor(screen.getByText('Sibling panel'))).toBe(sibling);
+      expectMap(outerHost, input);
+      expectMap(nestedHost, null);
+      expectMap(siblingHost, '#00ff00');
+    }
+  });
+
+  it('keeps a consumer-labelled section and child keyboard and pointer behavior unchanged', async () => {
+    const user = userEvent.setup();
+    const activate = vi.fn();
+    render(
+      <section aria-labelledby='workspace-heading'>
+        <Panel variant='banded' accentEdge='start'>
+          <PanelHeader>
+            <h2 id='workspace-heading'>Workspace</h2>
+            <button type='button'>Header action</button>
+          </PanelHeader>
+          <PanelBody>
+            <button type='button' onClick={activate}>
+              Body action
+            </button>
+          </PanelBody>
+          <PanelFooter>
+            <button type='button'>Footer action</button>
+          </PanelFooter>
+        </Panel>
+      </section>
+    );
+    const region = screen.getByRole('region', { name: 'Workspace' });
+    const heading = screen.getByRole('heading', { level: 2, name: 'Workspace' });
+    const root = panelFor(heading);
+    expect(region).toHaveAttribute('aria-labelledby', heading.id);
+    expect(region).toContainElement(root);
+    expect(root).toHaveClass(...accentBase);
+    expect(root.children).toHaveLength(3);
+    expect(root.querySelectorAll('button')).toHaveLength(3);
+    for (const attribute of ['role', 'tabindex', 'aria-live', 'aria-label', 'style', 'accentedge']) {
+      expect(root).not.toHaveAttribute(attribute);
+    }
+    for (const name of ['Header action', 'Body action', 'Footer action']) {
+      await user.tab();
+      expect(screen.getByRole('button', { name })).toHaveFocus();
+    }
+    await user.click(screen.getByRole('button', { name: 'Body action' }));
+    await user.keyboard('{Enter}');
+    expect(activate).toHaveBeenCalledTimes(2);
+  });
+
+  it('retains supported root and part layout merges with the decoration', () => {
+    render(
+      <Panel variant='banded' accentEdge='start' className='w-full col-span-full m-2 m-4'>
+        <PanelHeader className='items-start'>Header</PanelHeader>
+        <PanelBody className='grid grid-cols-2'>Body</PanelBody>
+        <PanelFooter className='items-start'>Footer</PanelFooter>
+      </Panel>
+    );
+    const root = panelFor(screen.getByText('Body'));
+    expect(root).toHaveClass('eg-panel', 'eg-surface', 'w-full', 'col-span-full', 'm-4', 'bg-surface-1');
+    expect(root).toHaveClass(...accentBase, ...framedAccent);
+    expect(root).not.toHaveClass('m-2');
+    for (const label of ['Header', 'Footer']) {
+      expect(screen.getByText(label)).toHaveClass('items-start', 'p-4');
+      expect(screen.getByText(label)).not.toHaveClass('items-center');
+    }
+    expect(screen.getByText('Body')).toHaveClass('eg-panel__body', 'grid', 'grid-cols-2', 'p-4');
+    expect(screen.getByText('Body')).not.toHaveClass('flex');
+  });
+});
 
 describe('Panel compound contract', () => {
   it.each(tones)('composes two consumer-labelled compact regions in a %s band without changing Panel parts', (tone) => {
@@ -501,6 +751,18 @@ describe('Panel compound contract', () => {
       const tones: PanelTone[] = ['surface-1', 'overlay', 'inherit'];
       const variants: PanelVariant[] = ['default', 'banded'];
       const root: PanelProps = { children: null, dir: 'rtl', id: 'consumer', title: 'Summary', 'aria-describedby': 'help', onClick(event) { const div: HTMLDivElement = event.currentTarget; void div; } };
+      const edged: PanelProps = { children: null, accentEdge: 'start', tone: 'overlay', variant: 'banded' };
+      const omittedEdge: PanelProps = { children: null, accentEdge: undefined };
+      // @ts-expect-error The only supported edge is logical start.
+      const edgeEnd: PanelProps = { children: null, accentEdge: 'end' };
+      // @ts-expect-error A physical edge is not supported.
+      const edgeLeft: PanelProps = { children: null, accentEdge: 'left' };
+      // @ts-expect-error Null is an untyped-boundary fallback, not a public value.
+      const edgeNull: PanelProps = { children: null, accentEdge: null };
+      // @ts-expect-error Boolean edge controls are not supported.
+      const edgeFalse: PanelProps = { children: null, accentEdge: false };
+      // @ts-expect-error Edge is a Panel-only presentation choice.
+      const partEdge: PanelHeaderProps = { children: null, accentEdge: 'start' };
       const header: PanelHeaderProps = { children: 'Header', className: 'items-start' };
       const body: PanelBodyProps = { children: null };
       const footer: PanelFooterProps = { children: 'Metadata' };
@@ -520,7 +782,7 @@ describe('Panel compound contract', () => {
       // @ts-expect-error No arbitrary variant value.
       const unknownVariant: PanelVariant = 'quiet';
       ${negatives.join('\n')}
-      void [tones, variants, valid];
+      void [tones, variants, valid, edged, omittedEdge];
     `;
     const options: ts.CompilerOptions = {
       strict: true,

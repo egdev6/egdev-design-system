@@ -4904,13 +4904,18 @@ describe('Indicator first-wave metadata contract', () => {
 });
 
 describe('Panel first-wave metadata contract', () => {
-  const controls: Record<string, string> = { children: 'false', variant: 'select', tone: 'select' };
+  const controls: Record<string, string> = {
+    children: 'false',
+    variant: 'select',
+    tone: 'select',
+    accentEdge: 'select'
+  };
   const constants: Record<string, string> = { variant: 'default', tone: 'surface-1' };
   const parts: { name: string; native: string[]; own: string[] }[] = [
     {
       name: 'Panel',
       native: ['id', 'title', 'dir', 'aria-describedby', 'className'],
-      own: ['children', 'variant', 'tone']
+      own: ['children', 'variant', 'tone', 'accentEdge']
     },
     { name: 'PanelHeader', native: ['id', 'title', 'dir', 'aria-describedby', 'className'], own: ['children'] },
     { name: 'PanelBody', native: ['id', 'title', 'dir', 'aria-describedby', 'className'], own: ['children'] },
@@ -4920,7 +4925,7 @@ describe('Panel first-wave metadata contract', () => {
   it('annotates every own union declaration and binds false-control reasons to real stories', () => {
     const file = ast(source('molecules/panel/types.ts'));
     const properties = ownProps(file, ['PanelProps', 'PanelHeaderProps', 'PanelBodyProps', 'PanelFooterProps']);
-    expect(properties).toHaveLength(6);
+    expect(properties).toHaveLength(7);
     expect([...new Set(properties.map((property) => property.name.getText(file)))].sort()).toEqual(
       Object.keys(controls).sort()
     );
@@ -4951,6 +4956,16 @@ describe('Panel first-wave metadata contract', () => {
     expect(observedDefaults).toEqual(constants);
     expect(stories.getText()).not.toMatch(/\bargTypes\s*:|\bplay\s*:/);
   });
+
+  it('extracts the optional start-only Panel accent edge with no fabricated default', () => {
+    const doc = parser.parse(source('molecules/panel/Panel.tsx')).find((item) => item.displayName === 'Panel');
+    expect(doc?.props.accentEdge).toMatchObject({
+      required: false,
+      type: { name: 'enum', value: [{ value: '"start"' }] },
+      tags: { control: 'select' }
+    });
+    expect(doc?.props.accentEdge?.defaultValue).toBeNull();
+  }, 20_000);
 
   it('extracts exact public and approved native rows without leaking internal or forbidden props', () => {
     const extracted = parser.parse(source('molecules/panel/Panel.tsx'));

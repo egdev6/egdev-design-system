@@ -306,7 +306,7 @@ const expected: Record<string, Record<string, string | false>> = {
     max: 'number',
     badgeIcon: 'select'
   },
-  panel: { children: false, variant: 'select', tone: 'select' },
+  panel: { children: false, variant: 'select', tone: 'select', accentEdge: 'select' },
   panelheader: { children: false },
   panelbody: { children: false },
   panelfooter: { children: false },
@@ -721,7 +721,7 @@ const ownPropCounts: Record<string, number> = {
   terminalcardlist: 2,
   photoframe: 6,
   indicator: 8,
-  panel: 3,
+  panel: 4,
   panelheader: 1,
   panelbody: 1,
   panelfooter: 1,
@@ -1328,6 +1328,18 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(list.argTypes.className?.control).toEqual({ type: 'text' });
     for (const composed of [story('TerminalCard'), bar, list]) {
       expect(composed.args).toEqual({});
+    }
+  });
+
+  it('exposes Panel accentEdge as an optional start-only select without a default', () => {
+    const { argTypes, args } = story('Panel');
+    expect(argTypes.accentEdge?.control).toEqual({ type: 'select' });
+    expect(argTypes.accentEdge?.options).toEqual(['start']);
+    expect(argTypes.accentEdge?.type?.required).not.toBe(true);
+    expect(argTypes.accentEdge?.table?.defaultValue).toBeUndefined();
+    expect(args).not.toHaveProperty('accentEdge');
+    for (const name of ['PanelHeader', 'PanelBody', 'PanelFooter']) {
+      expect(story(name).argTypes.accentEdge, name).toBeUndefined();
     }
   });
 

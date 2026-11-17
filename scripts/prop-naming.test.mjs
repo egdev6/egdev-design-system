@@ -253,7 +253,7 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/atoms/indicator/types.ts#IndicatorProps'
   })),
-  ...['visual-treatment', 'surface-material-tone'].map((conventionId) => ({
+  ...['visual-treatment', 'surface-material-tone', 'panel-accent-edge'].map((conventionId) => ({
     conventionId,
     source: 'packages/ui/src/molecules/panel/types.ts#PanelProps'
   })),
@@ -841,7 +841,8 @@ const postReceiptProposals = [
   // Collapsible v0.5 conventions have their own delegated approval after the frozen receipts.
   'disclosure-presence',
   'disclosure-motion',
-  'identity-image-source'
+  'identity-image-source',
+  'panel-accent-edge'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -1857,9 +1858,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
   // AmbientBackground adds two directions; TopBar and Tabs each add two; Carousel, Dialog and AppIcon add one each;
-  // Collapsible adds two separately approved conventions.
-  assert.equal(actual.length, 171);
-  assert.equal(beforeIndicatorConventions(actual).length, 168);
+  // Collapsible adds two separately approved conventions; Panel adds one scoped proposal.
+  assert.equal(actual.length, 172);
+  assert.equal(beforeIndicatorConventions(actual).length, 169);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -4334,6 +4335,30 @@ test('Table registers reviewed usage without changing delegated convention appro
     assert.equal(entry.status, 'approved', conventionId);
     assert.equal(entry.usages.filter(({ component }) => component === 'Table').length, 1, conventionId);
   }
+});
+
+test('Panel accentEdge registers one reviewed usage without promoting its scoped proposal', () => {
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(actual);
+  const entry = actual.find(({ id }) => id === 'panel-accent-edge');
+  assert.ok(entry);
+  assert.equal(entry.name, 'accentEdge');
+  assert.equal(entry.meaning, 'opt in to a passive, inherited-color logical-start Panel edge');
+  assert.equal(entry.status, 'proposed');
+  assert.equal(entry.approval, null);
+  assert.deepEqual(entry.aliases, []);
+  assert.deepEqual(entry.exceptions, []);
+  assert.equal(entry.usages.length, 1);
+  const usage = entry.usages[0];
+  assert.equal(usage.component, 'Panel');
+  assert.equal(usage.status, 'existing');
+  assert.match(usage.type, /'start'/);
+  const path = 'packages/ui/src/molecules/panel/types.ts';
+  assert.deepEqual(usage.source, {
+    path,
+    symbol: 'PanelProps',
+    revision: digest(fs.readFileSync(resolve(root, path)))
+  });
 });
 
 test('FieldMessage registers reviewed usage without promoting proposed content/guidance conventions', () => {

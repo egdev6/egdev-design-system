@@ -1833,6 +1833,93 @@ test('Panel ships band resets and direct-zone corner utilities without a new mar
   assert.doesNotMatch(utilities, /\.eg-panel[^{}]*\{/);
   assert.equal(existsSync(resolve(root, 'packages/ui/src/molecules/panel/panel.css')), false);
 });
+test('Panel accent edge exports logical token utilities and opt-in SSR for both directions', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement: h } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  const utilities = cssBlock(readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8'), /@layer utilities\s*\{/);
+  const base = [
+    'before:absolute',
+    'before:pointer-events-none',
+    'before:z-10',
+    "before:content-['']",
+    'before:[inline-size:var(--space-1)]',
+    'before:bg-fg-brand-default'
+  ];
+  const framed = [
+    'before:[inset-inline-start:var(--border-width)]',
+    'before:[inset-block:var(--border-width)]',
+    'before:rounded-ss-[calc(var(--radius-xl)-var(--border-width))]',
+    'before:rounded-es-[calc(var(--radius-xl)-var(--border-width))]'
+  ];
+  const inherited = [
+    'before:[inset-inline-start:0]',
+    'before:[inset-block:0]',
+    'before:rounded-ss-xl',
+    'before:rounded-es-xl'
+  ];
+  const bindings = [
+    ['before:absolute', /position:\s*absolute/],
+    ['before:pointer-events-none', /pointer-events:\s*none/],
+    ['before:z-10', /z-index:\s*10/],
+    ["before:content-['']", /--tw-content:\s*(['"])\1/],
+    ['before:[inline-size:var(--space-1)]', /inline-size:\s*var\(--space-1\)/],
+    ['before:bg-fg-brand-default', /background-color:\s*var\(--color-fg-brand-default[,)]/],
+    [framed[0], /inset-inline-start:\s*var\(--border-width\)/],
+    [framed[1], /inset-block:\s*var\(--border-width\)/],
+    [framed[2], /border-start-start-radius:\s*calc\(var\(--radius-xl\)\s*-\s*var\(--border-width\)\)/],
+    [framed[3], /border-end-start-radius:\s*calc\(var\(--radius-xl\)\s*-\s*var\(--border-width\)\)/],
+    [inherited[0], /inset-inline-start:\s*0(?:px)?\s*;/],
+    [inherited[1], /inset-block:\s*0(?:px)?\s*;/],
+    [inherited[2], /border-start-start-radius:\s*var\(--radius-xl[,)]/],
+    [inherited[3], /border-end-start-radius:\s*var\(--radius-xl[,)]/]
+  ];
+  for (const [name, declaration] of bindings) {
+    const selector = '.' + name.replace(/[^\w-]/g, '\\$&') + '::before';
+    const start = utilities.indexOf(selector);
+    assert.ok(start >= 0, `Missing Panel accent edge utility ${name}`);
+    const rule = cssBlock(utilities.slice(start), /^[^{]*\{/);
+    assert.match(rule, declaration, `Incorrect declaration for ${name}`);
+  }
+  for (const tone of ['surface-1', 'overlay', 'inherit']) {
+    for (const dir of ['ltr', 'rtl']) {
+      for (const accentEdge of [undefined, 'start']) {
+        const dom = new JSDOM(
+          renderToString(
+            h(exported.Panel, {
+              tone,
+              dir,
+              variant: 'banded',
+              accentEdge,
+              children: [
+                h(exported.PanelHeader, { key: 'header', children: 'Heading' }),
+                h(exported.PanelBody, { key: 'body', children: 'Content' }),
+                h(exported.PanelFooter, { key: 'footer', children: 'Metadata' })
+              ]
+            })
+          )
+        );
+        try {
+          const root = dom.window.document.querySelector('.eg-panel');
+          assert.ok(root);
+          assert.equal(root.getAttribute('dir'), dir);
+          assert.equal(root.hasAttribute('accentedge'), false);
+          assert.equal(root.hasAttribute('style'), false);
+          assert.equal(root.classList.contains('relative'), accentEdge === 'start');
+          assert.equal(root.classList.contains('eg-surface'), tone !== 'inherit');
+          assert.equal(root.children.length, 3);
+          for (const name of [...base, ...(tone === 'inherit' ? inherited : framed)]) {
+            assert.equal(root.classList.contains(name), accentEdge === 'start', `${tone}/${dir}: ${name}`);
+          }
+        } finally {
+          dom.window.close();
+        }
+      }
+    }
+  }
+});
+
 test('Panel package preserves compound zones, explicit frame ownership and closed public exports in SSR', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
