@@ -3344,7 +3344,7 @@ function assertChipCSS(css) {
     String.raw`.active\:translate-y-px`,
     String.raw`.motion-reduce\:active\:translate-none`,
     String.raw`.motion-reduce\:active\:scale-none`,
-    String.raw`.pointer-coarse\:min-h-11`
+    String.raw`.pointer-coarse\:min-h-14`
   ]) {
     assert.ok(css.includes(selector), 'Missing Chip selector ' + selector);
   }
@@ -4192,7 +4192,7 @@ function assertFieldCSS(css) {
     String.raw`.group-has-\[\:disabled\]\:opacity-45`,
     String.raw`.group-has-\[\[data-disabled\]\]\:opacity-45`,
     String.raw`.data-\[state\=over\]\:text-status-danger`,
-    String.raw`.pointer-coarse\:min-h-11`
+    String.raw`.pointer-coarse\:min-h-14`
   ]) {
     assert.ok(css.includes(selector), 'Missing Field utility ' + selector);
   }
@@ -4337,8 +4337,8 @@ function assertSearchTriggerCSS(css) {
     '.ps-3',
     '.pe-2',
     '.ms-auto',
-    String.raw`.pointer-coarse\:min-h-11`,
-    String.raw`.pointer-coarse\:w-11`,
+    String.raw`.pointer-coarse\:min-h-14`,
+    String.raw`.pointer-coarse\:w-14`,
     String.raw`.transition-\[border-color\,color\]`,
     String.raw`.enabled\:hover\:border-border-brand`,
     String.raw`.enabled\:hover\:text-fg-secondary`,
