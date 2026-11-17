@@ -1765,6 +1765,19 @@ catalog[] · docs/catalog.json · @egdev/effects · atom · —
   - opacity: number; Layer opacity, clamped to [0, 1]; non-finite values become zero. (components[] · packages/effects/src/ambient-background/types.ts)
   - profile: enum; Particle density and motion profile. (components[] · packages/effects/src/ambient-background/types.ts)
   - squareDirection: enum; Square travel direction in screen coordinates. (components[] · packages/effects/src/ambient-background/types.ts)
+### AppIcon
+catalog[] · docs/catalog.json · @egdev/ui · atom · Avatar
+- AppIcon (components[] · packages/ui/src/atoms/app-icon/types.ts)
+  - Visual anatomy (source classes; unresolved is not a guessed value):
+    - appIconFallbackVariants base: font-sans → --font-sans
+    - appIconFallbackVariants size=sm: text-label-default → --text-label-default
+    - appIconFallbackVariants size=md: text-body-default → --text-body-default
+    - appIconFallbackVariants size=lg: text-body-default → --text-body-default
+    - surfaceVariants({ tone: 'surface-1', elevation: 0, radius: 'md', padding: 'none' }) · packages/ui/src/atoms/app-icon/useAppIcon.ts; see Surface anatomy
+  - label: string; Accessible app name. An absent or blank label makes the icon decorative. (components[] · packages/ui/src/atoms/app-icon/types.ts)
+  - monogram: string; Consumer-supplied app initials, rendered exactly as provided when the image is unavailable. Supply one or two meaningful grapheme clusters. (components[] · packages/ui/src/atoms/app-icon/types.ts)
+  - size: enum; Square frame size. (components[] · packages/ui/src/atoms/app-icon/types.ts)
+  - src: string; Identity image source. Empty or whitespace-only values show the monogram instead. (components[] · packages/ui/src/atoms/app-icon/types.ts)
 ### Avatar
 catalog[] · docs/catalog.json · @egdev/ui · atom · Avatar
 - Avatar (components[] · packages/ui/src/atoms/avatar/types.ts)
@@ -2443,6 +2456,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · —
 catalog[] · docs/catalog.json · @egdev/ui · primitive · Slot
 - Slot (components[] · packages/ui/src/index.ts)
   - Visual anatomy (source classes; unresolved is not a guessed value):
+    - surfaceVariants({ tone: 'surface-1', elevation: 0, radius: 'md', padding: 'none' }) · packages/ui/src/atoms/app-icon/useAppIcon.ts; see Surface anatomy
     - surfaceVariants({         tone: variant === 'framed' ? 'surface-0' : 'surface-1',         elevation: variant === 'framed' ? 2 : 1,         padding: 'none',         radius: 'xl'       }) · packages/ui/src/atoms/photo-frame/usePhotoFrame.ts; see Surface anatomy
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }) · packages/ui/src/atoms/search-trigger/useSearchTrigger.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'md', radius: 'xl' }) · packages/ui/src/molecules/article-feature/useArticleFeature.ts; see Surface anatomy
@@ -3701,6 +3715,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
 ### Slottable
 - Slottable (components[] · packages/ui/src/index.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
+    - surfaceVariants({ tone: 'surface-1', elevation: 0, radius: 'md', padding: 'none' }) · packages/ui/src/atoms/app-icon/useAppIcon.ts; see Surface anatomy
     - surfaceVariants({         tone: variant === 'framed' ? 'surface-0' : 'surface-1',         elevation: variant === 'framed' ? 2 : 1,         padding: 'none',         radius: 'xl'       }) · packages/ui/src/atoms/photo-frame/usePhotoFrame.ts; see Surface anatomy
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }) · packages/ui/src/atoms/search-trigger/useSearchTrigger.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'md', radius: 'xl' }) · packages/ui/src/molecules/article-feature/useArticleFeature.ts; see Surface anatomy
@@ -4283,7 +4298,7 @@ Not exported:
 
 - absolute-deadline-text: deadlineText; approved; Countdown (propNaming[] · skills/_shared/prop-naming.json)
 - accent-line-break: accentBreak; approved; Heading, SectionHeader, Text (propNaming[] · skills/_shared/prop-naming.json)
-- accessible-name: label; approved; Avatar, ButtonGroup, CalendarGrid, Carousel, CarouselItem, ChipGroup, ChipGroupOption, CommandPalette, CommandPaletteItem, Countdown, Dropzone, Field, FooterNavigation, FooterNavigationItem, Gauge, GaugeGroup, GaugeGroupRing, Icon, IconButton, Isotipo3D, Kbd, Logo, MeterRow, ModuleRail, NavList, NowStrip, PopoverContent, ProgressBar, ProjectCardCode, RadioGroup, SearchTrigger, SectionNav, SelectTile, SelectTileOption, Slider, SocialLinkItem, SocialLinks, Spinner, Stat, TabBar, Table, Tabs, TerminalCard, Timeline, ToastProvider, Toggle, TopBar (propNaming[] · skills/_shared/prop-naming.json)
+- accessible-name: label; approved; AppIcon, Avatar, ButtonGroup, CalendarGrid, Carousel, CarouselItem, ChipGroup, ChipGroupOption, CommandPalette, CommandPaletteItem, Countdown, Dropzone, Field, FooterNavigation, FooterNavigationItem, Gauge, GaugeGroup, GaugeGroupRing, Icon, IconButton, Isotipo3D, Kbd, Logo, MeterRow, ModuleRail, NavList, NowStrip, PopoverContent, ProgressBar, ProjectCardCode, RadioGroup, SearchTrigger, SectionNav, SelectTile, SelectTileOption, Slider, SocialLinkItem, SocialLinks, Spinner, Stat, TabBar, Table, Tabs, TerminalCard, Timeline, ToastProvider, Toggle, TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - action-alternative-text: actionAltText; approved; Toast (propNaming[] · skills/_shared/prop-naming.json)
 - active-row: activeRowId; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
 - active-section-id: activeId; approved; SectionNav (propNaming[] · skills/_shared/prop-naming.json)
@@ -4296,7 +4311,7 @@ Not exported:
 - auto-dismiss-duration: duration; approved; Toast (propNaming[] · skills/_shared/prop-naming.json)
 - board-sticky-side: sticky; approved; NotesBoard (propNaming[] · skills/_shared/prop-naming.json)
 - bottom-navigation: bottomNavigation; approved; AppShell (propNaming[] · skills/_shared/prop-naming.json)
-- brand-monogram: monogram; approved;  (propNaming[] · skills/_shared/prop-naming.json)
+- brand-monogram: monogram; approved; AppIcon (propNaming[] · skills/_shared/prop-naming.json)
 - card-link-action-label: actionLabel; approved; ArticleFeature (propNaming[] · skills/_shared/prop-naming.json)
 - carousel-track-layout: trackLayout; approved; Carousel (propNaming[] · skills/_shared/prop-naming.json)
 - character-counter: counter; approved; Field (propNaming[] · skills/_shared/prop-naming.json)
@@ -4354,6 +4369,7 @@ Not exported:
 - heading-title: title; approved; AlertDialogContent, ArticleFeature, ChapterBreak, Closing, CommunityCard, DialogContent, Hero, LabStage, ModuleCard, NowCard, PageHeader, ProjectCard, SectionHeader, TipCard (propNaming[] · skills/_shared/prop-naming.json)
 - icon-glyph-name: name; approved; Icon (propNaming[] · skills/_shared/prop-naming.json)
 - icon-placement: iconPosition; approved; Button (propNaming[] · skills/_shared/prop-naming.json)
+- identity-image-source: src; approved; AppIcon (propNaming[] · skills/_shared/prop-naming.json)
 - image-caption: imageCaption; approved; PhotoFrame (propNaming[] · skills/_shared/prop-naming.json)
 - image-focal-point: focalPoint; approved; PhotoFrame, TipCard (propNaming[] · skills/_shared/prop-naming.json)
 - indicator-count: count; approved; Indicator (propNaming[] · skills/_shared/prop-naming.json)
@@ -4400,7 +4416,7 @@ Not exported:
 - pending-activity: loading; approved; Button, Input (propNaming[] · skills/_shared/prop-naming.json)
 - pointer-tilt: pointerTilt; approved; Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
 - portal-container: container; approved; DialogContent, Portal (propNaming[] · skills/_shared/prop-naming.json)
-- preset-dimensions: size; approved; Avatar, Button, Countdown, DialogContent, Gauge, GaugeGroup, Icon, IconButton, Indicator, Input, ListItem, Logo, Notice, NowCard, ProgressBar, ProjectCard, Select, Skeleton, SocialLinks, Spinner, Stat, Table, Tabs, Timeline, Toggle (propNaming[] · skills/_shared/prop-naming.json)
+- preset-dimensions: size; approved; AppIcon, Avatar, Button, Countdown, DialogContent, Gauge, GaugeGroup, Icon, IconButton, Indicator, Input, ListItem, Logo, Notice, NowCard, ProgressBar, ProjectCard, Select, Skeleton, SocialLinks, Spinner, Stat, Table, Tabs, Timeline, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - pressed-change: onPressedChange; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - pressed-state: pressed; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - preview-thumbnail: thumb; approved; SelectTileOption (propNaming[] · skills/_shared/prop-naming.json)
