@@ -57,6 +57,14 @@ export type ButtonProps = Omit<ComponentPropsWithoutRef<'button'>, 'children'> &
    * @default false
    */
   asChild?: boolean;
+  /**
+   * Wrap the visible label, including long unbroken words; the entire control grows and remains
+   * clickable. Guaranteed for plain text and a compatible asChild link with plain text; other
+   * children are best effort. Avoid labelWrap in attached ButtonGroups.
+   * @control boolean
+   * @default false
+   */
+  labelWrap?: boolean;
 };
 
 export const buttonVariants = cva(
@@ -85,9 +93,10 @@ export const buttonVariants = cva(
         lg: 'min-h-14 py-3 px-5.5 gap-2.5 text-cta-label',
         md: 'min-h-12 py-3 px-5.5 gap-2.5 text-cta-label',
         sm: 'min-h-10 py-2 px-4 gap-2 text-label-default [font-weight:var(--text-cta-label--font-weight)]'
-      }
+      },
+      labelWrap: { true: 'whitespace-normal wrap-anywhere text-center', false: '' }
     },
-    defaultVariants: { variant: 'primary', size: 'md' }
+    defaultVariants: { variant: 'primary', size: 'md', labelWrap: false }
   }
 );
 

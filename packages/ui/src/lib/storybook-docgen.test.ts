@@ -2220,11 +2220,12 @@ describe('Storybook TypeScript docgen contract', () => {
       icon: 'false',
       iconPosition: 'select',
       loading: 'boolean',
-      asChild: 'boolean'
+      asChild: 'boolean',
+      labelWrap: 'boolean'
     };
     const file = ast(source('atoms/button/types.ts'));
     const own = ownProps(file, ['ButtonProps']);
-    expect(own).toHaveLength(7);
+    expect(own).toHaveLength(8);
     for (const declaration of own) {
       const name = declaration.name.getText(file);
       expect(ts.getJSDocTags(declaration).filter(({ tagName }) => tagName.text === 'control')).toHaveLength(1);
@@ -2238,7 +2239,8 @@ describe('Storybook TypeScript docgen contract', () => {
       size: 'md',
       iconPosition: 'end',
       loading: 'false',
-      asChild: 'false'
+      asChild: 'false',
+      labelWrap: 'false'
     })) {
       expect(normalize(props[name]?.defaultValue?.value)).toBe(value);
     }

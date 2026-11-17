@@ -486,6 +486,7 @@ const postReceiptUsages = [
   { conventionId: 'icon-placement', source: 'packages/ui/src/atoms/button/types.ts#ButtonProps' },
   { conventionId: 'pending-activity', source: 'packages/ui/src/atoms/button/types.ts#ButtonProps' },
   { conventionId: 'slot-composition', source: 'packages/ui/src/atoms/button/types.ts#ButtonProps' },
+  { conventionId: 'control-label-wrap', source: 'packages/ui/src/atoms/button/types.ts#ButtonProps' },
   { conventionId: 'surface-material-tone', source: 'packages/ui/src/atoms/badge/types.ts#BadgeProps' },
   { conventionId: 'visual-treatment', source: 'packages/ui/src/atoms/badge/types.ts#BadgeProps' },
   { conventionId: 'leading-icon', source: 'packages/ui/src/atoms/badge/types.ts#BadgeProps' },
@@ -900,14 +901,35 @@ test('Tabs layout conventions bind the owner choices, scoped receipt and reviewe
         convention
       }
     );
-    assert.deepEqual(usages, [
-      {
-        component: 'Tabs',
-        type: 'boolean (default false; segmented only)',
-        status: 'existing',
-        source: { path: sourcePath, symbol: 'TabsProps', revision }
-      }
-    ]);
+    assert.deepEqual(
+      usages.filter(({ component }) => component === 'Tabs'),
+      [
+        {
+          component: 'Tabs',
+          type: 'boolean (default false; segmented only)',
+          status: 'existing',
+          source: { path: sourcePath, symbol: 'TabsProps', revision }
+        }
+      ]
+    );
+    if (id === 'control-label-wrap') {
+      const buttonPath = 'packages/ui/src/atoms/button/types.ts';
+      assert.deepEqual(
+        usages.filter(({ component }) => component === 'Button'),
+        [
+          {
+            component: 'Button',
+            type: 'boolean (default false; plain text and compatible slotted links)',
+            status: 'existing',
+            source: {
+              path: buttonPath,
+              symbol: 'ButtonProps',
+              revision: digest(fs.readFileSync(resolve(root, buttonPath)))
+            }
+          }
+        ]
+      );
+    }
     assert.deepEqual(historicalRegistry([entry]), []);
   }
 });
@@ -2032,7 +2054,15 @@ test('Button alone permits trailing decorative icons through a bounded semantic 
       .filter((entry) => entry.usages.some(({ component }) => component === 'Button'))
       .map(({ id }) => id)
       .sort(),
-    ['icon-placement', 'leading-icon', 'pending-activity', 'preset-dimensions', 'slot-composition', 'visual-treatment']
+    [
+      'control-label-wrap',
+      'icon-placement',
+      'leading-icon',
+      'pending-activity',
+      'preset-dimensions',
+      'slot-composition',
+      'visual-treatment'
+    ]
   );
   assert.equal(receipt.priorReceipts.length, 8);
   const before = registryBeforeSemanticAmendments(

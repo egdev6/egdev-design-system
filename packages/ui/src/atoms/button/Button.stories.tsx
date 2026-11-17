@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { action } from 'storybook/actions';
+import { ButtonGroup } from '../../molecules/button-group';
 import { Icon } from '../icon';
 import { Button } from './Button';
 
@@ -17,6 +18,8 @@ import { Button } from './Button';
  * asChild requires one compatible prop-spreading, ref-forwarding link or button, without overriding
  * disabled/busy/tabIndex state. className supports outer layout only; appearance overrides and
  * interactive descendants are unsupported. Native type defaults to button and is omitted for asChild.
+ * labelWrap supports plain text and compatible slotted links with plain text; other children are
+ * best effort. Avoid it in attached ButtonGroups, which require matching heights.
  */
 const meta = {
   title: 'Atoms/Button',
@@ -112,6 +115,43 @@ export const AsChildLink: Story = {
 /** Hover, press and keyboard focus use real pseudo-states, never simulated legacy state classes. */
 export const States: Story = {
   args: { children: 'Activate action', onClick: action('button-activated') }
+};
+
+/** Constrained spaced and unbroken labels wrap at every size with icons on either side. */
+export const LabelWrap: Story = {
+  render: () => (
+    <div className='flex w-48 flex-col items-start gap-3'>
+      <Button className='w-full' size='sm' labelWrap={true} icon={<Icon name='check' />} iconPosition='start'>
+        Save changes to this document
+      </Button>
+      <Button className='w-full' size='md' labelWrap={true}>
+        Extraordinarilylongunbrokenlocalizedactionlabel
+      </Button>
+      <Button className='w-full' size='lg' labelWrap={true} icon={<Icon name='arrow-right' />}>
+        Continue to project settings
+      </Button>
+    </div>
+  )
+};
+
+/** Wrapping also applies to loading, a slotted link and separately spaced group actions. */
+export const LabelWrapStates: Story = {
+  render: () => (
+    <div className='flex w-48 flex-col items-start gap-3'>
+      <Button className='w-full' labelWrap={true} loading={true} iconPosition='start'>
+        Saving changes to this document
+      </Button>
+      <Button className='w-full' labelWrap={true} asChild={true}>
+        <a href='#projects'>View all project details</a>
+      </Button>
+      <ButtonGroup variant='spaced' label='Document actions'>
+        <Button labelWrap={true} variant='secondary'>
+          Review document details
+        </Button>
+        <Button labelWrap={true}>Publish the document now</Button>
+      </ButtonGroup>
+    </div>
+  )
 };
 
 /** Layout-only width and margin utilities merge at the public root, not inside the icon slot. */

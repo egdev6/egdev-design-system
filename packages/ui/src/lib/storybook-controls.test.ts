@@ -422,7 +422,8 @@ const expected: Record<string, Record<string, string | false>> = {
     icon: false,
     iconPosition: 'select',
     loading: 'boolean',
-    asChild: 'boolean'
+    asChild: 'boolean',
+    labelWrap: 'boolean'
   },
   buttongroup: { label: 'text', variant: 'select', children: false },
   pageheader: { title: 'text', eyebrow: 'text', level: 'select', actions: false, leadingAction: false, lede: 'text' },
@@ -738,7 +739,7 @@ const ownPropCounts: Record<string, number> = {
   selecttile: 12,
   carousel: 7,
   avatar: 4,
-  button: 7,
+  button: 8,
   checkbox: 7,
   chip: 10,
   chipgroup: 8,
@@ -1065,6 +1066,16 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(argTypes.trackLayout?.options).toEqual(['default', 'full-width']);
     expect(argTypes.trackLayout?.type?.required).not.toBe(true);
     expect(argTypes.trackLayout?.table?.defaultValue?.summary).toBe('"default"');
+    expect(args).toEqual({});
+  });
+  it('maps Button labelWrap as an optional boolean control without an injected argument', () => {
+    const metadata = component('Button');
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+    const { argTypes, args } = story('Button');
+    expect(argTypes.labelWrap?.control).toEqual({ type: 'boolean' });
+    expect(argTypes.labelWrap?.type?.required).not.toBe(true);
+    expect(argTypes.labelWrap?.table?.defaultValue?.summary).toBe('false');
     expect(args).toEqual({});
   });
   it('maps both Tabs layout flags as optional boolean controls with false defaults', () => {

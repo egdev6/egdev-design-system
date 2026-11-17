@@ -1001,6 +1001,15 @@ const buttonSize: ButtonSize = 'sm';
 export const buttonRef = createRef<HTMLButtonElement>();
 export const buttonLinkRef = createRef<HTMLButtonElement>();
 export const buttonProps: ButtonProps = { children: 'Save draft', icon: createElement(Icon, { name: 'check' }), variant: buttonVariant, size: buttonSize };
+export const wrappedButtonProps: ButtonProps = { children: 'Save a long draft title', labelWrap: true };
+// Keep these hosts outside ButtonSamples: the client harness asserts its existing button count.
+export function ButtonWrapSamples() {
+  return createElement('section', null,
+    createElement(Button, { ...wrappedButtonProps, id: 'button-wrap-native' }),
+    createElement(Button, { asChild: true, labelWrap: true, children: createElement('a', { href: '#projects', id: 'button-wrap-link' }, 'View long project details') }));
+}
+// @ts-expect-error labelWrap is a boolean, not a number.
+const numericButtonWrap: ButtonProps = { children: 'Save', labelWrap: 1 };
 export function ButtonSamples() {
   return createElement('section', { 'aria-label': 'Actions' },
     createElement(Button, { ...buttonProps, id: 'button-native', ref: buttonRef }),
@@ -3280,7 +3289,10 @@ function assertButtonCSS(css) {
     '.min-h-12',
     '.min-h-10',
     '.text-cta-label',
-    '.text-label-default'
+    '.text-label-default',
+    '.whitespace-normal',
+    '.wrap-anywhere',
+    '.text-center'
   ]) {
     assert.ok(css.includes(selector), 'Missing Button utility ' + selector);
   }
@@ -6094,7 +6106,29 @@ try {
 } finally {
   nowDocument.window.close();
 }
-import { App, ButtonGroupSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TerminalCardSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
+import { App, ButtonGroupSamples, ButtonWrapSamples, CarouselSamples, ChipGroupSamples, CountdownSamples, DefaultSearchTrigger, DropzoneSamples, FieldSamples, ListItemSamples, MeterRowSamples, NavListSamples, NoticeSamples, PopoverSamples, PullQuoteSamples, RadioGroupSamples, SearchTriggerSamples, SectionHeaderSamples, SlotSample, SocialLinksSamples, StatSamples, SwitchSamples, TabsSamples, TerminalCardSamples, TimelineSamples, TimelineEvents, TooltipSamples, noticeRecipe, progressEdgeRecipe, statRecipe, tabsRecipe } from './consumer.ts';
+// Separate SSR evidence keeps the existing ButtonSamples and client button count unchanged.
+{
+  const wrapDocument = new JSDOM(renderToString(createElement(ButtonWrapSamples)));
+  try {
+    const document = wrapDocument.window.document;
+    for (const [id, tag, label] of [
+      ['button-wrap-native', 'BUTTON', 'Save a long draft title'],
+      ['button-wrap-link', 'A', 'View long project details']
+    ]) {
+      const host = document.getElementById(id);
+      assert.equal(host.tagName, tag);
+      assert.equal(host.textContent, label);
+      for (const utility of ['whitespace-normal', 'wrap-anywhere', 'text-center']) {
+        assert.ok(host.classList.contains(utility), id + ' missing ' + utility);
+      }
+      assert.equal(host.classList.contains('whitespace-nowrap'), false);
+      assert.equal(host.hasAttribute('labelwrap'), false);
+    }
+  } finally {
+    wrapDocument.window.close();
+  }
+}
 // TerminalCard SSR: named group, definition pairs, success tone and decorative caret.
 {
   const terminalMarkup = renderToString(createElement(TerminalCardSamples));

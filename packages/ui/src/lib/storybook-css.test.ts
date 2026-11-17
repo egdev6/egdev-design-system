@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
 import { build } from 'vite';
 import { beforeAll, describe, expect, it } from 'vitest';
+import { buttonVariants } from '../atoms/button/types';
 import { gaugeCircleVariants } from '../atoms/gauge/types';
 
 let css: string;
@@ -149,6 +150,14 @@ function rule(selector: string) {
 }
 
 describe('Storybook preview CSS', () => {
+  it('emits Button label wrapping utilities from the production scan', () => {
+    expect(rule('.whitespace-normal')).toMatch(/white-space:\s*normal/);
+    expect(rule('.wrap-anywhere')).toMatch(/overflow-wrap:\s*anywhere/);
+    expect(rule('.text-center')).toMatch(/text-align:\s*center/);
+    for (const utility of ['whitespace-normal', 'wrap-anywhere', 'text-center']) {
+      expect(buttonVariants({ labelWrap: true }).split(/\s+/)).toContain(utility);
+    }
+  });
   it('emits PageHeader intrinsic geometry, token typography and constrained story layout', () => {
     expect(rule(String.raw`.basis-\[calc\(var\(--space-24\)\*3\)\]`)).toMatch(
       /flex-basis:\s*calc\(var\(--space-24\)\s*\*\s*3\)/

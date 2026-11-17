@@ -755,7 +755,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
+          "revision": "sha256:29cfad0c53ca64fdbe46bfa6cda7615e8fab514cb2377141d62471c9d50826c1"
         }
       },
       {
@@ -1042,7 +1042,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
+          "revision": "sha256:29cfad0c53ca64fdbe46bfa6cda7615e8fab514cb2377141d62471c9d50826c1"
         }
       },
       {
@@ -2568,7 +2568,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
+          "revision": "sha256:29cfad0c53ca64fdbe46bfa6cda7615e8fab514cb2377141d62471c9d50826c1"
         }
       },
       {
@@ -2665,7 +2665,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
+          "revision": "sha256:29cfad0c53ca64fdbe46bfa6cda7615e8fab514cb2377141d62471c9d50826c1"
         }
       }
     ]
@@ -2692,7 +2692,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
+          "revision": "sha256:29cfad0c53ca64fdbe46bfa6cda7615e8fab514cb2377141d62471c9d50826c1"
         }
       },
       {
@@ -2789,7 +2789,7 @@
         "source": {
           "path": "packages/ui/src/atoms/button/types.ts",
           "symbol": "ButtonProps",
-          "revision": "sha256:5acf2913181c5bb12776da8a45125dd47a1e2fe00b639b8a64acea7b3b1ec866"
+          "revision": "sha256:29cfad0c53ca64fdbe46bfa6cda7615e8fab514cb2377141d62471c9d50826c1"
         }
       },
       {
@@ -8101,6 +8101,16 @@
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
           "revision": "sha256:a294d6211645a5d74e1a9ece9d012747576e6c4c6ef03e309dab34081d190f5b"
+        }
+      },
+      {
+        "component": "Button",
+        "type": "boolean (default false; plain text and compatible slotted links)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/button/types.ts",
+          "symbol": "ButtonProps",
+          "revision": "sha256:29cfad0c53ca64fdbe46bfa6cda7615e8fab514cb2377141d62471c9d50826c1"
         }
       }
     ]
