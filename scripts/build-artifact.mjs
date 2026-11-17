@@ -110,6 +110,22 @@ for (const statement of storybook.statements) {
     }
   }
 }
+// Text's factored body map is still part of its CVA recipe; resolve only this approved map.
+function textBodyVariantObject(node, source) {
+  if (
+    !ts.isIdentifier(node) ||
+    node.text !== 'textBodyVariantClasses' ||
+    source.fileName !== resolve(root, 'packages/ui/src/primitives/text/types.ts')
+  ) {
+    return node;
+  }
+  let value = checker.getSymbolAtLocation(node)?.valueDeclaration?.initializer;
+  while (value && (ts.isAsExpression(value) || ts.isSatisfiesExpression(value))) {
+    value = value.expression;
+  }
+  return value && ts.isObjectLiteralExpression(value) ? value : node;
+}
+
 function variants(file) {
   if (!file) {
     return [];
@@ -139,7 +155,7 @@ function variants(file) {
         if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
           classes.push(node.text);
         } else if (ts.isPropertyAssignment(node)) {
-          visit(node.initializer);
+          visit(textBodyVariantObject(node.initializer, source));
         } else {
           ts.forEachChild(node, visit);
         }
@@ -377,11 +393,15 @@ function visualAnatomy(file, layout = false) {
           const key = property.name.getText(source).replace(/^['"]|['"]$/g, '');
           if (key === 'variants' && ts.isObjectLiteralExpression(property.initializer)) {
             for (const axis of property.initializer.properties) {
-              if (!ts.isPropertyAssignment(axis) || !ts.isObjectLiteralExpression(axis.initializer)) {
+              if (!ts.isPropertyAssignment(axis)) {
+                continue;
+              }
+              const object = textBodyVariantObject(axis.initializer, source);
+              if (!ts.isObjectLiteralExpression(object)) {
                 continue;
               }
               const values = {};
-              for (const value of axis.initializer.properties) {
+              for (const value of object.properties) {
                 if (ts.isPropertyAssignment(value)) {
                   values[value.name.getText(source).replace(/^['"]|['"]$/g, '')] = anatomyClasses(
                     value.initializer,
@@ -681,7 +701,7 @@ function typographyRoles() {
     ['Heading show', text, 'headingVariants', 'titleRootClasses', 'show'],
     ['Heading display', text, 'headingVariants', 'titleRootClasses', 'display'],
     ['Eyebrow', text, 'textVariants', 'textVariantClasses', 'eyebrow'],
-    ['SectionHeader lede', 'packages/ui/src/molecules/section-header/types.ts', 'sectionHeaderLedeVariants'],
+    ['SectionHeader lede', text, 'textBodyVariants', 'textBodyVariantClasses', 'lede'],
     ['Hero lede', 'packages/ui/src/organisms/hero/types.ts', 'heroLedeVariants'],
     ['ProjectCard code', 'packages/ui/src/molecules/project-card/types.ts', 'projectCardCodeVariants']
   ];

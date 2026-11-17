@@ -41,11 +41,17 @@ export const textVariants = cva('eg-text m-0 font-display uppercase wrap-break-w
   defaultVariants: { variant: 'eyebrow' }
 });
 
+const textBodyVariantClasses = {
+  body: 'text-body-default',
+  'body-large': 'text-body-large',
+  lede: 'text-body-muted'
+} as const satisfies Record<TextBodyVariant, string>;
+
 export const textBodyVariants = cva(
   'eg-text m-0 font-sans [&_strong]:[font-weight:var(--text-heading-small--font-weight)]',
   {
     variants: {
-      variant: { body: 'text-body-default', 'body-large': 'text-body-large', lede: 'text-body-muted' },
+      variant: textBodyVariantClasses,
       foreground: {
         inherit: '',
         default: 'text-fg-default',

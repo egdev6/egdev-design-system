@@ -7,6 +7,10 @@ export type SectionHeaderVariant = 'stack' | 'split' | 'inline';
 export type SectionHeaderLevel = 1 | 2 | 3 | 4 | 5 | 6;
 /** Host context for the Heading accent; never paints the header. */
 export type SectionHeaderTone = 'canvas' | 'raised';
+/** One plain-text run, with optional native language and decorative status. */
+export type SectionHeaderTextRun = readonly [text: string, lang?: string, decorative?: boolean];
+/** Plain text or ordered plain-text runs; callers supply their own whitespace. */
+export type SectionHeaderText = string | readonly SectionHeaderTextRun[];
 
 type SectionHeaderNativeProps = Omit<
   ComponentPropsWithoutRef<'header'>,
@@ -20,17 +24,19 @@ type SectionHeaderNativeProps = Omit<
  */
 export type SectionHeaderProps = SectionHeaderNativeProps & {
   /**
-   * Required non-blank heading copy, preserved verbatim. Include any separating space before accent.
-   * Blank titles warn in development and render no header.
-   * @control text
+   * Required readable heading copy, preserved verbatim. Include any separating space before accent.
+   * Blank or decorative-only titles warn in development and render no header.
+   * @control false
+   * @controlReason Text or structured multilingual runs cannot be represented by one control; see Multilingual.
    */
-  title: string;
+  title: SectionHeaderText;
   /**
    * Optional context before the heading, rendered by Text's decorative diamond eyebrow recipe.
-   * Blank text is omitted.
-   * @control text
+   * Blank or decorative-only text is omitted.
+   * @control false
+   * @controlReason Text or structured multilingual runs cannot be represented by one control; see Multilingual.
    */
-  eyebrow?: string;
+  eyebrow?: SectionHeaderText;
   /**
    * Optional trailing highlighted run in the same heading; blank text is omitted. No separator is inserted.
    * @control text
@@ -43,10 +49,11 @@ export type SectionHeaderProps = SectionHeaderNativeProps & {
    */
   accentBreak?: boolean;
   /**
-   * Optional introductory paragraph; blank text is omitted, never rendered as a placeholder.
-   * @control text
+   * Optional introductory paragraph; blank or decorative-only text is omitted, never a placeholder.
+   * @control false
+   * @controlReason Text or structured multilingual runs cannot be represented by one control; see Multilingual.
    */
-  lede?: string;
+  lede?: SectionHeaderText;
   /**
    * Editorial arrangement. Split without a lede and inline without an eyebrow resolve to stack.
    * @default stack
@@ -92,17 +99,14 @@ export const sectionHeaderEyebrowVariants = cva('min-w-0', {
 export const sectionHeaderHeadingVariants = cva('min-w-0', {
   variants: { variant: { stack: '', split: '', inline: 'col-span-full' } }
 });
-export const sectionHeaderLedeVariants = cva(
-  'eg-section-head__lede m-0 min-w-0 max-w-[var(--bp-sm)] font-sans text-body-muted text-fg-secondary',
-  {
-    variants: {
-      variant: {
-        stack: '',
-        split: 'justify-self-start section-header-split:justify-self-end',
-        inline: 'col-span-full'
-      }
+export const sectionHeaderLedeVariants = cva('eg-section-head__lede min-w-0 max-w-[var(--bp-sm)]', {
+  variants: {
+    variant: {
+      stack: '',
+      split: 'justify-self-start section-header-split:justify-self-end',
+      inline: 'col-span-full'
     }
   }
-);
+});
 /** Override Divider's attribute-specific minimum width through its supported sizing surface. */
 export const sectionHeaderRuleVariants = cva('min-w-0 data-[orientation=horizontal]:min-w-0 self-center');

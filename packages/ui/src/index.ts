@@ -102,6 +102,8 @@ export {
 export type {
   SectionHeaderLevel,
   SectionHeaderProps,
+  SectionHeaderText,
+  SectionHeaderTextRun,
   SectionHeaderTone,
   SectionHeaderVariant
 } from './molecules/section-header';

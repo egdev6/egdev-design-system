@@ -406,11 +406,11 @@ const expected: Record<string, Record<string, string | false>> = {
     trackLayout: 'select'
   },
   sectionheader: {
-    title: 'text',
-    eyebrow: 'text',
+    title: false,
+    eyebrow: false,
     accent: 'text',
     accentBreak: 'boolean',
-    lede: 'text',
+    lede: false,
     variant: 'select',
     level: 'select',
     titleId: 'text',
@@ -1932,7 +1932,14 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
 
   it('retains SectionHeader required copy, derived absences and exact enum controls without args', () => {
     const { argTypes, args } = story('SectionHeader');
-    expect(argTypes.title?.type).toMatchObject({ name: 'string', required: true });
+    expect(argTypes.title?.type).toMatchObject({ required: true });
+    for (const name of ['title', 'eyebrow', 'lede']) {
+      expect(argTypes[name]?.control).toBe(false);
+      expect(argTypes[name]?.table?.disable).toBeUndefined();
+    }
+    for (const name of ['accent', 'titleId']) {
+      expect(argTypes[name]?.type).toMatchObject({ name: 'string' });
+    }
     expect(argTypes.variant?.options).toEqual(['inline', 'stack', 'split']);
     expect([...(argTypes.level?.options ?? [])].sort()).toEqual([1, 2, 3, 4, 5, 6]);
     expect(argTypes.tone?.options).toEqual(['canvas', 'raised']);
