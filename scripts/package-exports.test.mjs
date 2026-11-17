@@ -7249,6 +7249,24 @@ for (const subpath of ['./tokens.css', './theme.css', './native.css']) {
   });
 }
 
+test('Tokens runtime accent subpath ships its public JavaScript and type declarations', async () => {
+  const accentExport = tokens.exports['./accent'];
+  assert.ok(accentExport, 'The approved @egdev/tokens/accent subpath must be exported');
+  const jsTarget = typeof accentExport === 'string' ? accentExport : accentExport.import;
+  const typeTarget =
+    typeof accentExport === 'string' ? accentExport.replace(/\.[cm]?js$/, '.d.ts') : accentExport.types;
+  const entry = artifact('tokens', jsTarget);
+  const declarations = artifact('tokens', typeTarget);
+  assert.match(readFileSync(declarations, 'utf8'), /\bcreateAccentTheme\b/);
+  const exported = await import(entry);
+  assert.equal(typeof exported.createAccentTheme, 'function');
+  const red = exported.createAccentTheme(null);
+  assert.equal(red.normalizedAccent, '#ff0036');
+  assert.equal(red.mode, 'default');
+  assert.equal(red.variables['--color-fg-brand-default'], 'var(--color-primitive-red-neon)');
+  assert.equal(Object.hasOwn(await import(artifact('ui', ui.exports['.'].import)), 'createAccentTheme'), false);
+});
+
 test('Tokens ships a compiled native artifact under dist without @theme', () => {
   assert.equal(tokens.exports['./tokens.css'], './dist/tokens.css', 'native import must be the compiled artifact');
   const entry = artifact('tokens', tokens.exports['./tokens.css']);

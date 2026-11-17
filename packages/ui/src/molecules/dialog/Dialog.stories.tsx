@@ -1,5 +1,6 @@
+import { createAccentTheme } from '@egdev/tokens/accent';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useState } from 'react';
+import { type CSSProperties, useState } from 'react';
 import { Button } from '../../atoms/button';
 import { Input } from '../../atoms/input';
 import { Stack } from '../../primitives/stack';
@@ -165,6 +166,48 @@ export const Container: Story = { render: () => <ContainerExample /> };
 
 /** A custom mount may keep viewport layout when its ancestors do not clip or transform it. */
 export const ContainerViewport: Story = { render: () => <ContainerExample viewport={true} /> };
+
+function RuntimeAccentExample() {
+  const [accent, setAccent] = useState('#0000aa');
+  const [host, setHost] = useState<HTMLDivElement | null>(null);
+  const theme = createAccentTheme(accent);
+  const red = createAccentTheme(null);
+  return (
+    <Stack gap={4}>
+      <Input aria-label='Accent hex' value={accent} onChange={(event) => setAccent(event.currentTarget.value)} />
+      <div style={theme.variables as CSSProperties}>
+        <Stack gap={4}>
+          <p className='text-fg-brand-default'>
+            {theme.mode} accent: {theme.normalizedAccent}
+          </p>
+          <Button>Scoped primary action</Button>
+          <Dialog>
+            <DialogTrigger asChild={true}>
+              <Button>Open themed settings</Button>
+            </DialogTrigger>
+            <div ref={setHost} />
+            {host && (
+              <DialogContent title='Themed settings' container={host} overlayScope='viewport'>
+                <Stack gap={4}>
+                  <p className='text-fg-brand-default'>This portal inherits the surrounding theme host.</p>
+                  <Button>Save settings</Button>
+                </Stack>
+              </DialogContent>
+            )}
+          </Dialog>
+          <div style={red.variables as CSSProperties}>
+            <p className='text-fg-brand-default'>Nested default red</p>
+            <Button>Default red action</Button>
+          </div>
+        </Stack>
+      </div>
+      <p>Secondary gradients and primitive-backed colors do not automatically follow this accent.</p>
+    </Stack>
+  );
+}
+
+/** Apply a complete map to a consumer host and mount the Dialog portal beneath that host. */
+export const RuntimeAccent: Story = { render: () => <RuntimeAccentExample /> };
 
 /** Compact body padding and Stack child gaps are independent; the existing Button opts into wrapping. */
 export const CompactForm: Story = {

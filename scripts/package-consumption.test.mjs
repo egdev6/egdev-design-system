@@ -78,6 +78,18 @@ const colorSwatchSlot: ColorSwatchGroupProps = { ...colorSwatchProps, asChild: t
 // @ts-expect-error The internal hook is not public.
 type ColorSwatchPrivateHook = (typeof import('@egdev/ui'))['useColorSwatchGroup'];
 export type ColorSwatchNegatives = [typeof colorSwatchMissingLabel, typeof colorSwatchMissingValue, typeof colorSwatchMissingChange, typeof colorSwatchOptionNoLabel, typeof colorSwatchDefault, typeof colorSwatchName, typeof colorSwatchRequired, typeof colorSwatchChildren, typeof colorSwatchRole, typeof colorSwatchAriaLabel, typeof colorSwatchAriaLabelledBy, typeof colorSwatchStyle, typeof colorSwatchOnChange, typeof colorSwatchHtml, typeof colorSwatchRef, typeof colorSwatchSlot, ColorSwatchPrivateHook];
+import { createAccentTheme } from '@egdev/tokens/accent';
+import type { CSSProperties } from 'react';
+export const packedAccentTheme = createAccentTheme(' #123456 ');
+export const packedDefaultAccentTheme = createAccentTheme(null);
+export const packedAccentHost = createElement('div', { style: packedAccentTheme.variables as CSSProperties }, 'Scoped accent');
+function accentTypeNegatives() {
+  // @ts-expect-error The public helper accepts only a string, null or undefined.
+  createAccentTheme(123);
+  // @ts-expect-error The returned variable map is immutable.
+  packedAccentTheme.variables['--color-fg-brand-default'] = 'red';
+}
+void accentTypeNegatives;
 import { AppIcon } from '@egdev/ui';
 import type { AppIconProps, AppIconSize } from '@egdev/ui';
 import { Pixel } from '@egdev/ui';
@@ -5376,6 +5388,19 @@ import ts from 'typescript';
 const entry = fileURLToPath(import.meta.resolve('@egdev/ui'));
 assert.ok(!realpathSync(entry).startsWith(${JSON.stringify(root)}), 'UI must be installed outside the workspace');
 const ui = JSON.parse(readFileSync(resolve(dirname(entry), '../package.json'), 'utf8'));
+const accentEntry = fileURLToPath(import.meta.resolve('@egdev/tokens/accent'));
+assert.ok(!realpathSync(accentEntry).startsWith(${JSON.stringify(root)}), 'Accent must be installed outside the workspace');
+const { createAccentTheme } = await import('@egdev/tokens/accent');
+const customAccent = createAccentTheme(' #123456 ');
+const defaultAccent = createAccentTheme(null);
+assert.equal(customAccent.normalizedAccent, '#123456');
+assert.equal(customAccent.mode, 'custom');
+assert.equal(defaultAccent.normalizedAccent, '#ff0036');
+assert.equal(defaultAccent.mode, 'default');
+assert.equal(defaultAccent.variables['--color-fg-brand-default'], 'var(--color-primitive-red-neon)');
+assert.notEqual(customAccent.variables['--color-fg-brand-default'], defaultAccent.variables['--color-fg-brand-default']);
+assert.deepEqual(Object.keys(customAccent.variables).sort(), Object.keys(defaultAccent.variables).sort());
+assert.equal(Object.hasOwn(await import('@egdev/ui'), 'createAccentTheme'), false);
 const ambientEntry = fileURLToPath(import.meta.resolve('@egdev/effects'));
 assert.ok(!realpathSync(ambientEntry).startsWith(${JSON.stringify(root)}), 'Effects must be installed outside the workspace');
 const ambientManifest = JSON.parse(readFileSync(resolve(dirname(ambientEntry), '../package.json'), 'utf8'));

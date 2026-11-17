@@ -4,6 +4,11 @@
   "type": "module",
   "description": "Tokens de EGDEV Foundation: fuente CSS manual (theme.css) y artefacto nativo compilado (tokens.css).",
   "exports": {
+    "./accent": {
+      "development": "./src/accent.ts",
+      "types": "./src/accent.d.ts",
+      "import": "./dist/accent.js"
+    },
     "./tokens.css": "./dist/tokens.css",
     "./theme.css": "./src/theme.css",
     "./native.css": "./src/native.css"
@@ -15,6 +20,6 @@
   "scripts": {
     "build": "vite build",
     "test": "node --test 'tests/*.test.mjs'",
-    "typecheck": "echo 'sin TS'"
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   }
 }
