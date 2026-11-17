@@ -57,6 +57,18 @@ function indicatorProposalHash(entry) {
 }
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  // ColorSwatchGroup records reviewed own props after the existing convention receipts.
+  ...[
+    ['accessible-name', 'ColorSwatchGroupProps.label'],
+    ['choice-options', 'ColorSwatchGroupProps.options'],
+    ['primary-value', 'ColorSwatchGroupProps.value'],
+    ['interactive-value-change', 'ColorSwatchGroupProps.onValueChange'],
+    ['accessible-name', 'ColorSwatchGroupOption.label'],
+    ['primary-value', 'ColorSwatchGroupOption.value']
+  ].map(([conventionId, symbol]) => ({
+    conventionId,
+    source: `packages/ui/src/molecules/color-swatch-group/types.ts#${symbol}`
+  })),
   {
     conventionId: 'choreography-zone-table',
     source: 'packages/effects/src/home-template/types.ts#HomeTemplateProps.zoneTable'
@@ -1494,7 +1506,9 @@ test('SectionNav binds accessible-name exceptions and their source evidence', ()
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const reference = 'docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json';
   const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
-  const entry = registry.find(({ id }) => id === 'accessible-name');
+  const current = registry.find(({ id }) => id === 'accessible-name');
+  // The later ColorSwatchGroup exception must not rewrite the SectionNav receipt's pre-image.
+  const entry = registryBeforeSemanticAmendments([current], reference)[0];
   assert.equal(receipt.evidence.ownerChoice, 'Excepciones de accessible-name con comprobante nuevo (Recomendado)');
   assert.equal(entry.approval.reference, reference);
   assert.equal(entry.approval.contentHash, props.conventionHash(entry));
@@ -1531,6 +1545,118 @@ test('SectionNav binds accessible-name exceptions and their source evidence', ()
   const changed = structuredClone(registry);
   changed.find(({ id }) => id === entry.id).exceptions[0].reason += ' Changed.';
   assert.throws(() => validate(changed), /approval/i);
+});
+
+test('ColorSwatchGroup binds its scoped naming exception and reviewed usages without rewriting history', () => {
+  const reference = 'docs/components/color-swatch-group/v0.1/prop-naming-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const entry = registry.find(({ id }) => id === 'accessible-name');
+  const path = 'packages/ui/src/molecules/color-swatch-group/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(receipt.evidence.ownerChoice, 'Sí, igual que el 1 y 2');
+  assert.equal(receipt.evidence.specPath, 'docs/components/color-swatch-group/v0.1/spec.md');
+  assert.equal(receipt.evidence.specWholeFileSHA256, digest(fs.readFileSync(resolve(root, receipt.evidence.specPath))));
+  assert.match(receipt.evidence.interpretation, /no broader naming convention change or global alias/);
+  assert.deepEqual(receipt.previouslyProposedNowApproved, []);
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(prior.wholeFileSHA256, digest(fs.readFileSync(resolve(root, prior.path))), prior.path);
+  }
+  assert.ok(laterReceipts('docs/components/panel/v0.3/heading-foreground-exception-approval.json').has(reference));
+  const [amendment] = receipt.semanticAmendments;
+  assert.equal(amendment.id, 'accessible-name');
+  assert.deepEqual(amendment.changedFields, ['exceptions']);
+  assert.equal(
+    amendment.previousReference,
+    'docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json'
+  );
+  const previous = JSON.parse(fs.readFileSync(resolve(root, amendment.previousReference), 'utf8')).entries.find(
+    ({ scope }) => scope === 'convention:accessible-name'
+  );
+  assert.equal(amendment.previousContentHash, previous.contentHash);
+  assert.equal(previous.contentHash, props.conventionHash(previous.convention));
+  const exception = entry.exceptions.find(
+    (item) => item.scope === 'ColorSwatchGroup' && item.propName === 'customLabel'
+  );
+  assert.ok(exception);
+  assert.equal(exception.reason, 'Names the separate optional native color input while label names the group');
+  assert.deepEqual(exception.approval, {
+    reference,
+    scope: 'exception:accessible-name:ColorSwatchGroup:customLabel',
+    contentHash: props.exceptionHash(exception)
+  });
+  const { approval, usages: _usages, ...convention } = entry;
+  assert.deepEqual(approval, {
+    reference,
+    scope: 'convention:accessible-name',
+    contentHash: props.conventionHash(entry)
+  });
+  assert.deepEqual(receipt.entries[0], { scope: approval.scope, contentHash: approval.contentHash, convention });
+  assert.deepEqual(
+    { ...convention, exceptions: convention.exceptions.filter((item) => item.scope !== 'ColorSwatchGroup') },
+    previous.convention
+  );
+  const { approval: _exceptionApproval, ...exceptionPayload } = exception;
+  assert.deepEqual(receipt.entries[1], {
+    scope: exception.approval.scope,
+    contentHash: exception.approval.contentHash,
+    exception: exceptionPayload,
+    source: { path, symbol: 'ColorSwatchGroupProps.customLabel', revision }
+  });
+  for (const [id, component, type, symbol] of [
+    ['accessible-name', 'ColorSwatchGroup', 'string (required visible group name)', 'ColorSwatchGroupProps.label'],
+    [
+      'accessible-name',
+      'ColorSwatchGroupOption',
+      'string (visible and accessible preset name)',
+      'ColorSwatchGroupOption.label'
+    ],
+    ['choice-options', 'ColorSwatchGroup', 'ColorSwatchGroupOption[]', 'ColorSwatchGroupProps.options'],
+    [
+      'primary-value',
+      'ColorSwatchGroup',
+      'string (required controlled six-digit hexadecimal color)',
+      'ColorSwatchGroupProps.value'
+    ],
+    [
+      'primary-value',
+      'ColorSwatchGroupOption',
+      'string (opaque six-digit hexadecimal preset color)',
+      'ColorSwatchGroupOption.value'
+    ],
+    [
+      'interactive-value-change',
+      'ColorSwatchGroup',
+      '(value: string) => void (required user-request callback)',
+      'ColorSwatchGroupProps.onValueChange'
+    ]
+  ]) {
+    const actual = registry.find((item) => item.id === id).usages.filter((usage) => usage.component === component);
+    assert.deepEqual(actual, [{ component, type, status: 'existing', source: { path, symbol, revision } }]);
+  }
+  const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
+  assert.equal(own.length, 6);
+  assert.equal(
+    historicalRegistry(registry)
+      .flatMap((item) => item.usages)
+      .some((usage) => usage.source.path === path),
+    false
+  );
+  const projected = registryBeforeSemanticAmendments([entry], amendment.previousReference)[0];
+  assert.deepEqual(projected.exceptions, previous.convention.exceptions);
+  assert.deepEqual(projected.approval, {
+    reference: amendment.previousReference,
+    scope: previous.scope,
+    contentHash: previous.contentHash
+  });
+  validate(registry);
+  const broadened = structuredClone(registry);
+  const changed = broadened.find(({ id }) => id === 'accessible-name');
+  changed.exceptions.find((item) => item.scope === 'ColorSwatchGroup').reason += ' Broadened.';
+  assert.throws(() => validate(broadened), /approval/i);
+  assert.notEqual(props.conventionHash(changed), receipt.entries[0].contentHash);
 });
 
 test('Pixel widens the existing condition convention with recoverable approved history', () => {
@@ -1913,7 +2039,8 @@ const receiptChain = [
   'docs/components/home-template/v0.1/prop-naming-approval.json',
   'docs/components/text/v0.2/foreground-exception-approval.json',
   'docs/components/dialog/v0.2/prop-naming-approval.json',
-  'docs/components/panel/v0.3/heading-foreground-exception-approval.json'
+  'docs/components/panel/v0.3/heading-foreground-exception-approval.json',
+  'docs/components/color-swatch-group/v0.1/prop-naming-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();

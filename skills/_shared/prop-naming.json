@@ -308,6 +308,26 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "ColorSwatchGroup",
+        "type": "string (required controlled six-digit hexadecimal color)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
+          "symbol": "ColorSwatchGroupProps.value",
+          "revision": "sha256:6e52ed0be8db660730c84b1cd9d1cf0ed7bc974dc75947a24854c0bafdcf71c4"
+        }
+      },
+      {
+        "component": "ColorSwatchGroupOption",
+        "type": "string (opaque six-digit hexadecimal preset color)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
+          "symbol": "ColorSwatchGroupOption.value",
+          "revision": "sha256:6e52ed0be8db660730c84b1cd9d1cf0ed7bc974dc75947a24854c0bafdcf71c4"
+        }
+      },
+      {
         "component": "SectionNav",
         "type": "number (required progress percentage)",
         "status": "existing",
@@ -591,6 +611,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "ColorSwatchGroup",
+        "type": "(value: string) => void (required user-request callback)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
+          "symbol": "ColorSwatchGroupProps.onValueChange",
+          "revision": "sha256:6e52ed0be8db660730c84b1cd9d1cf0ed7bc974dc75947a24854c0bafdcf71c4"
+        }
+      },
       {
         "component": "SelectTile",
         "type": "((value: string) => void) | ((value: string[]) => void) (mode-dependent)",
@@ -1550,9 +1580,9 @@
     "avoid": "Assuming Surface has this prop or using it as a generic visible caption.",
     "status": "approved",
     "approval": {
-      "reference": "docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json",
+      "reference": "docs/components/color-swatch-group/v0.1/prop-naming-approval.json",
       "scope": "convention:accessible-name",
-      "contentHash": "sha256:36e573d8e9406d1cbedf973331aee3d0b46f628b0c5f21263f0432581fbd519b"
+      "contentHash": "sha256:0251f2bcfcfcd18f8f614b30c8b42ced530d7bdb59385f9f53afb27c3df8ee78"
     },
     "aliases": [],
     "exceptions": [
@@ -1575,9 +1605,39 @@
           "scope": "exception:accessible-name:SectionNav:nextLabel",
           "contentHash": "sha256:656cf60f41cfadef6cba70507a34c86137b0c0a5a6ad4c386913b80739bbddce"
         }
+      },
+      {
+        "scope": "ColorSwatchGroup",
+        "propName": "customLabel",
+        "reason": "Names the separate optional native color input while label names the group",
+        "approval": {
+          "reference": "docs/components/color-swatch-group/v0.1/prop-naming-approval.json",
+          "scope": "exception:accessible-name:ColorSwatchGroup:customLabel",
+          "contentHash": "sha256:8bb6297a15a522b4d9fed64724a64efb74ec5abd1573b4cefc232213e11fccfd"
+        }
       }
     ],
     "usages": [
+      {
+        "component": "ColorSwatchGroup",
+        "type": "string (required visible group name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
+          "symbol": "ColorSwatchGroupProps.label",
+          "revision": "sha256:6e52ed0be8db660730c84b1cd9d1cf0ed7bc974dc75947a24854c0bafdcf71c4"
+        }
+      },
+      {
+        "component": "ColorSwatchGroupOption",
+        "type": "string (visible and accessible preset name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
+          "symbol": "ColorSwatchGroupOption.label",
+          "revision": "sha256:6e52ed0be8db660730c84b1cd9d1cf0ed7bc974dc75947a24854c0bafdcf71c4"
+        }
+      },
       {
         "component": "AppIcon",
         "type": "string (optional accessible app name)",
@@ -3434,6 +3494,16 @@
     "aliases": [],
     "exceptions": [],
     "usages": [
+      {
+        "component": "ColorSwatchGroup",
+        "type": "ColorSwatchGroupOption[]",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
+          "symbol": "ColorSwatchGroupProps.options",
+          "revision": "sha256:6e52ed0be8db660730c84b1cd9d1cf0ed7bc974dc75947a24854c0bafdcf71c4"
+        }
+      },
       {
         "component": "SelectTile",
         "type": "SelectTileOption[]",

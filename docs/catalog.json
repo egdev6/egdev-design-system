@@ -473,6 +473,17 @@
     "notas": "Implemented React molecule under [approved v0.1 + A1](https://github.com/egdev6/egdev-design-system/issues/81): named single/multiple filter pills, Radix-owned selection and horizontal looping roving focus. Reuses chipVariants without nesting Chip; selected labels add a token underline. Unpainted wrapping root; no form API, ref, asChild, stylesheet or extra internal modules. A1 changes Storybook value/defaultValue metadata only."
   },
   {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "ColorSwatchGroup",
+    "nivel": "molecule",
+    "destino": "ui",
+    "radix": "RadioGroup",
+    "compone": "Surface recipe, Icon; native color input",
+    "accion": "nuevo",
+    "notas": "Working-tree controlled color choice under the [approved v0.1 contract](components/color-swatch-group/v0.1/spec.md): named preset radios and an optional sibling native picker share one consumer-owned hex value. Only validated six-digit colors paint decorative patches through the bounded static utility; no stylesheet, native form API, ref, asChild, token or dependency change. Browser, accessibility, contrast and visual conformity remain pending."
+  },
+  {
     "actual": "`.eg-btn-split`",
     "nivelActual": "sin ficha",
     "nombre": "ButtonGroup",
