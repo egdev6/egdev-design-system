@@ -1393,17 +1393,11 @@ test('Text binds its body foreground exception and reviewed Text and Heading sou
     scope: 'exception:surface-material-tone:Text:foreground',
     contentHash: props.exceptionHash(exception)
   });
-  const { approval: _approval, usages, ...convention } = entry;
-  assert.deepEqual(entry.approval, {
-    reference,
-    scope: 'convention:surface-material-tone',
-    contentHash: props.conventionHash(entry)
-  });
-  assert.deepEqual(receipt.entries[0], {
-    scope: entry.approval.scope,
-    contentHash: entry.approval.contentHash,
-    convention
-  });
+  const { usages } = entry;
+  const convention = receipt.entries[0].convention;
+  assert.equal(receipt.entries[0].scope, 'convention:surface-material-tone');
+  assert.equal(receipt.entries[0].contentHash, props.conventionHash(convention));
+  assert.deepEqual(convention.exceptions, [exception]);
   const path = 'packages/ui/src/primitives/text/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, path)));
   const { approval: _exceptionApproval, ...exceptionPayload } = exception;
@@ -1443,6 +1437,57 @@ test('Text binds its body foreground exception and reviewed Text and Heading sou
   const changed = structuredClone(registry);
   changed.find(({ id }) => id === entry.id).exceptions[0].reason += ' Changed.';
   assert.throws(() => validate(changed), /approval/i);
+});
+
+test('Heading binds its compact foreground exception and preserves the Text receipt', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/panel/v0.3/heading-foreground-exception-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const entry = registry.find(({ id }) => id === 'surface-material-tone');
+  const exception = entry.exceptions.find((item) => item.scope === 'Heading' && item.propName === 'foreground');
+  const { approval: binding, usages, ...convention } = entry;
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.match(receipt.evidence.ownerChoice, /Aplica las recomendaciones/);
+  const amendmentBytes = fs.readFileSync(resolve(root, 'docs/components/panel/v0.3/band-heading-amendment.md'));
+  const payload = amendmentBytes.subarray(amendmentBytes.indexOf(Buffer.from('## 1. Purpose and scope')));
+  assert.equal(receipt.evidence.amendmentPayloadSHA256, digest(payload));
+  assert.deepEqual(binding, {
+    reference,
+    scope: 'convention:surface-material-tone',
+    contentHash: props.conventionHash(entry)
+  });
+  assert.deepEqual(receipt.entries[0], { scope: binding.scope, contentHash: binding.contentHash, convention });
+  assert.deepEqual(exception.approval, {
+    reference,
+    scope: 'exception:surface-material-tone:Heading:foreground',
+    contentHash: props.exceptionHash(exception)
+  });
+  const { approval: _exceptionApproval, ...exceptionPayload } = exception;
+  const path = 'packages/ui/src/primitives/text/types.ts';
+  assert.deepEqual(receipt.entries[1], {
+    scope: exception.approval.scope,
+    contentHash: exception.approval.contentHash,
+    exception: exceptionPayload,
+    source: { path, symbol: 'HeadingProps', revision: digest(fs.readFileSync(resolve(root, path))) }
+  });
+  assert.match(usages.find(({ component }) => component === 'Heading').type, /TextTone.*TextForeground.*compact/);
+  assert.match(
+    registry.find(({ id }) => id === 'visual-treatment').usages.find(({ component }) => component === 'Heading').type,
+    /compact/
+  );
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(prior.wholeFileSHA256, digest(fs.readFileSync(resolve(root, prior.path))));
+  }
+  const [amendment] = receipt.semanticAmendments;
+  const previous = JSON.parse(fs.readFileSync(resolve(root, amendment.previousReference), 'utf8')).entries[0];
+  assert.equal(amendment.previousContentHash, previous.contentHash);
+  assert.equal(previous.contentHash, props.conventionHash(previous.convention));
+  assert.deepEqual(
+    { ...convention, exceptions: convention.exceptions.filter(({ scope }) => scope !== 'Heading') },
+    previous.convention
+  );
+  validate(registry);
 });
 
 test('SectionNav binds accessible-name exceptions and their source evidence', () => {
@@ -1867,7 +1912,8 @@ const receiptChain = [
   'docs/components/scroll-reveal/v0.1/prop-naming-approval.json',
   'docs/components/home-template/v0.1/prop-naming-approval.json',
   'docs/components/text/v0.2/foreground-exception-approval.json',
-  'docs/components/dialog/v0.2/prop-naming-approval.json'
+  'docs/components/dialog/v0.2/prop-naming-approval.json',
+  'docs/components/panel/v0.3/heading-foreground-exception-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();

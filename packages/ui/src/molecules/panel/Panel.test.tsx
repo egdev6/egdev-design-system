@@ -2,10 +2,11 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { render, renderHook, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createRef } from 'react';
+import { createRef, useId } from 'react';
 import ts from 'typescript';
 import { describe, expect, it, vi } from 'vitest';
 import { Surface } from '../../primitives/surface';
+import { Heading } from '../../primitives/text';
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from '../popover';
 import * as publicAPI from '.';
 import { Panel, PanelBody, PanelFooter, PanelHeader } from './Panel';
@@ -45,6 +46,43 @@ function Example(props: Omit<PanelProps, 'children'>) {
 }
 
 describe('Panel compound contract', () => {
+  it.each(tones)('composes two consumer-labelled compact regions in a %s band without changing Panel parts', (tone) => {
+    function LabelledRegion({ name }: { name: string }) {
+      const id = useId();
+      return (
+        <section aria-labelledby={id}>
+          <Heading id={id} variant='compact'>
+            {name}
+          </Heading>
+        </section>
+      );
+    }
+    render(
+      <Panel tone={tone} variant='banded'>
+        <PanelHeader>
+          <LabelledRegion name='Settings' />
+          <LabelledRegion name='Reports' />
+        </PanelHeader>
+        <PanelBody>Content</PanelBody>
+        <PanelFooter>Footer</PanelFooter>
+      </Panel>
+    );
+    const first = screen.getByRole('region', { name: 'Settings' });
+    const second = screen.getByRole('region', { name: 'Reports' });
+    const firstHeading = screen.getByRole('heading', { level: 2, name: 'Settings' });
+    const secondHeading = screen.getByRole('heading', { level: 2, name: 'Reports' });
+    expect(first.getAttribute('aria-labelledby')).toBe(firstHeading.id);
+    expect(second.getAttribute('aria-labelledby')).toBe(secondHeading.id);
+    expect(firstHeading.id).not.toBe(secondHeading.id);
+    expect(firstHeading).toHaveClass('eg-heading', 'text-heading-small');
+    const root = panelFor(firstHeading);
+    expect(root).toHaveClass('eg-panel');
+    expect(first.parentElement).toHaveClass('eg-panel__header', 'eg-surface');
+    expect(screen.getByText('Content')).toHaveClass('eg-panel__body');
+    expect(screen.getByText('Footer')).toHaveClass('eg-panel__footer');
+    expect(root).toHaveAttribute('data-tone', tone);
+    expect(root).toHaveAttribute('data-variant', 'banded');
+  });
   it('rejects an orphan Body with the exact context diagnostic', () => {
     expect(() => render(<PanelBody>Orphan body</PanelBody>)).toThrowError('Panel parts must be rendered inside Panel.');
   });

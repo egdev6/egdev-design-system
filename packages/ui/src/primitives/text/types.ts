@@ -4,6 +4,9 @@ import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 /** Display-scale title recipes shared by Text and Heading. `inverse` is display scale on flood hosts. */
 export type TitleVariant = 'display' | 'hero' | 'section' | 'show' | 'inverse';
 
+/** Heading recipes include the compact band treatment without widening Text. */
+type HeadingVariant = TitleVariant | 'compact';
+
 /** Body and lede typography recipes, available only on Text. */
 type TextBodyVariant = 'body' | 'body-large' | 'lede';
 
@@ -30,6 +33,11 @@ const titleRootClasses = {
   inverse: 'text-title-display text-fg-on-flood'
 } as const satisfies Record<TitleVariant, string>;
 
+const headingRootClasses = {
+  ...titleRootClasses,
+  compact: 'text-heading-small'
+} as const satisfies Record<HeadingVariant, string>;
+
 const textVariantClasses = {
   ...titleRootClasses,
   eyebrow:
@@ -47,28 +55,30 @@ const textBodyVariantClasses = {
   lede: 'text-body-muted'
 } as const satisfies Record<TextBodyVariant, string>;
 
+export const textForegroundClasses = {
+  inherit: '',
+  default: 'text-fg-default',
+  secondary: 'text-fg-secondary',
+  muted: 'text-fg-muted',
+  warning: 'text-status-warning',
+  danger: 'text-status-danger',
+  'on-flood': 'text-fg-on-flood'
+} as const satisfies Record<TextForeground, string>;
+
 export const textBodyVariants = cva(
   'eg-text m-0 font-sans [&_strong]:[font-weight:var(--text-heading-small--font-weight)]',
   {
     variants: {
       variant: textBodyVariantClasses,
-      foreground: {
-        inherit: '',
-        default: 'text-fg-default',
-        secondary: 'text-fg-secondary',
-        muted: 'text-fg-muted',
-        warning: 'text-status-warning',
-        danger: 'text-status-danger',
-        'on-flood': 'text-fg-on-flood'
-      }
+      foreground: textForegroundClasses
     },
     defaultVariants: { foreground: 'inherit' }
   }
 );
 
 export const headingVariants = cva('eg-heading m-0 font-display uppercase wrap-break-word', {
-  variants: { variant: titleRootClasses },
-  defaultVariants: { variant: 'section' }
+  variants: { variant: headingRootClasses, foreground: textForegroundClasses },
+  defaultVariants: { variant: 'section', foreground: 'inherit' }
 });
 
 export const accentVariants = cva('', {
@@ -204,6 +214,11 @@ type HeadingVisualProps =
        */
       variant?: Exclude<TitleVariant, 'inverse'>;
       /**
+       * Semantic foreground is available only on the compact recipe.
+       * @control select
+       */
+      foreground?: never;
+      /**
        * Accent Material context: canvas (surface-0) neon or raised brand on surface-1…3 and overlays.
        * Consumers choose it; the host background is never inspected. The canvas hero accent glows.
        * @default canvas
@@ -218,11 +233,47 @@ type HeadingVisualProps =
        */
       variant: 'inverse';
       /**
+       * Semantic foreground is available only on the compact recipe.
+       * @control select
+       */
+      foreground?: never;
+      /**
        * Not available on inverse: root and accent always use the on-flood foreground.
        * @control select
        */
       tone?: never;
-    } & TitleAccentProps);
+    } & TitleAccentProps)
+  | {
+      /**
+       * Compact uppercase display-family heading, independent of native rank.
+       * @control select
+       */
+      variant: 'compact';
+      /**
+       * Semantic foreground for compact headings. Inherit follows the host. Explicit default,
+       * secondary, muted, warning and danger are for solid surface-0…3; on flood use inherit or
+       * on-flood, and on deep use inherit or default. Check actual pixels on translucent hosts.
+       * Supply meaningful words and a non-color cue for status colors.
+       * @default inherit
+       * @control select
+       */
+      foreground?: TextForeground;
+      /**
+       * Accent Material context is unavailable on compact headings.
+       * @control select
+       */
+      tone?: never;
+      /**
+       * Compact headings use their children rather than a trailing accent.
+       * @control text
+       */
+      accent?: never;
+      /**
+       * Accent layout is unavailable on compact headings.
+       * @control boolean
+       */
+      accentBreak?: never;
+    };
 
 /**
  * Non-heading display, eyebrow or body copy. className supports outer layout only (margins, width

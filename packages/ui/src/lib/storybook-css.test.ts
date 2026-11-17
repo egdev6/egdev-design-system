@@ -150,6 +150,18 @@ function rule(selector: string) {
 }
 
 describe('Storybook preview CSS', () => {
+  it('compiles compact Heading metrics and display family from existing tokens', () => {
+    const compact = rule('.text-heading-small');
+    for (const [property, token] of [
+      ['font-size', '--text-heading-small'],
+      ['line-height', '--text-heading-small--line-height'],
+      ['font-weight', '--text-heading-small--font-weight'],
+      ['letter-spacing', '--text-heading-small--letter-spacing']
+    ]) {
+      expect(compact).toMatch(new RegExp(`${property}:[^;]*var\\(${token}[,)]`));
+    }
+    expect(rule('.font-display')).toMatch(/font-family:\s*var\(--font-display[,)]/);
+  });
   it('compiles Text body typography, semantic foregrounds and descendant emphasis', () => {
     for (const size of ['body-default', 'body-large', 'body-muted']) {
       expect(rule(`.text-${size}`)).toMatch(new RegExp(`font-size:\\s*var\\(--text-${size}[,)]`));

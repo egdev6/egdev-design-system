@@ -4,6 +4,7 @@ import { action } from 'storybook/actions';
 import { Button } from '../../atoms/button';
 import { Portal } from '../../primitives/portal';
 import { Surface } from '../../primitives/surface';
+import { Heading } from '../../primitives/text';
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from '../popover';
 import { Panel, PanelBody, PanelFooter, PanelHeader } from './Panel';
 
@@ -16,6 +17,7 @@ import { Panel, PanelBody, PanelFooter, PanelHeader } from './Panel';
  * Surface owns framed Material and exported recipes supply bounded native bands.
  * Button demonstrates independent child actions. Portal hosts the standalone floating example.
  * Popover owns opening, accessible naming, focus, dismissal and its existing overlay frame.
+ * Heading supplies the optional consumer-owned compact band heading.
  *
  * ## Usage guidelines
  * Render direct DOM sibling zones in Header → Body → Footer order; wrapper-free fragments work.
@@ -54,6 +56,53 @@ export const Default: Story = {};
 
 /** The upper band is surface-2 and the lower band surface-0; Body exposes the single Surface frame. */
 export const Banded: Story = { args: { variant: 'banded' } };
+
+/** Consumer-labelled compact headings in all three banded host modes, including RTL and a floating overlay. */
+export const CompactBandHeading: Story = {
+  render: function CompactBandHeadingExample() {
+    const surfaceId = useId();
+    const inheritedId = useId();
+    const overlayId = useId();
+    return (
+      <div className='grid gap-6'>
+        <section aria-labelledby={surfaceId}>
+          <Panel variant='banded'>
+            <PanelHeader>
+              <Heading id={surfaceId} variant='compact'>
+                Workspace settings
+              </Heading>
+            </PanelHeader>
+            <PanelBody>Surface-1 frame with an inherited heading foreground.</PanelBody>
+          </Panel>
+        </section>
+        <Surface tone='surface-2'>
+          <section aria-labelledby={inheritedId} dir='rtl' lang='en'>
+            <Panel tone='inherit' variant='banded'>
+              <PanelHeader>
+                <Heading id={inheritedId} variant='compact'>
+                  Workspace settings and reports
+                </Heading>
+              </PanelHeader>
+              <PanelBody>Right-to-left panel content.</PanelBody>
+            </Panel>
+          </section>
+        </Surface>
+        <Portal className='fixed top-6 end-6 w-[calc(var(--space-24)*4)] max-w-[calc(100vw-var(--space-12))]'>
+          <section aria-labelledby={overlayId}>
+            <Panel tone='overlay' variant='banded'>
+              <PanelHeader>
+                <Heading id={overlayId} variant='compact'>
+                  Floating summary
+                </Heading>
+              </PanelHeader>
+              <PanelBody>Overlay frame with an inherited heading foreground.</PanelBody>
+            </Panel>
+          </section>
+        </Portal>
+      </div>
+    );
+  }
+};
 
 /** Both variants inherit explicit raised hosts without introducing another frame or guessing host tone. */
 export const InheritedHost: Story = {

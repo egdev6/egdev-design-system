@@ -2414,6 +2414,19 @@ const titleVariant: TitleVariant = 'hero';
 const textVariant = 'eyebrow' satisfies TextVariant;
 const raisedTone: TextTone = 'raised';
 export const headingHero: HeadingProps = { children: 'Build ', variant: titleVariant, accent: 'in public', id: 'title-hero' };
+export const headingCompact: HeadingProps = { children: 'Compact band', variant: 'compact', foreground: 'secondary', id: 'title-compact', level: 3 };
+export const headingCompactDefault: HeadingProps = { children: 'Inherited heading', variant: 'compact' };
+// @ts-expect-error Compact has no accent tone.
+const compactTone: HeadingProps = { variant: 'compact', tone: 'raised', children: 'No' };
+// @ts-expect-error Compact has no trailing accent.
+const compactAccent: HeadingProps = { variant: 'compact', accent: 'No', children: 'No' };
+// @ts-expect-error Compact has no accent layout.
+const compactBreak: HeadingProps = { variant: 'compact', accentBreak: false, children: 'No' };
+// @ts-expect-error Foreground is restricted to compact headings.
+const headingSectionForeground: HeadingProps = { variant: 'section', foreground: 'warning', children: 'No' };
+// @ts-expect-error Text does not have the compact heading recipe.
+const textCompact: TextProps = { variant: 'compact', children: 'No' };
+export type CompactHeadingNegatives = [typeof compactTone, typeof compactAccent, typeof compactBreak, typeof headingSectionForeground, typeof textCompact];
 export const textRaised: TextProps = { children: 'Ship ', variant: 'section', tone: raisedTone, accent: 'today', accentBreak: false };
 const bodyForeground: TextForeground = 'warning';
 export const bodyText: TextProps = { variant: 'body-large', foreground: bodyForeground, children: 'Copy' };
@@ -2436,6 +2449,7 @@ export function TypographySamples({ headingLevel = 1 }: TypographySampleProps) {
   return createElement('section', { 'aria-labelledby': 'title-hero' },
     createElement(Text, { variant: textVariant, id: 'title-eyebrow', children: 'Weekly stream' }),
     createElement(Heading, { ...headingHero, level: headingLevel }),
+    createElement(Heading, headingCompact),
     createElement(Heading, { variant: 'display', accent: '.', accentBreak: false, id: 'title-punctuation', children: 'Talk' }),
     createElement(Heading, { variant: 'inverse', accent: 'time', id: 'title-inverse', children: 'Show ' }),
     createElement(Text, { ...textRaised, id: 'title-raised' }),
@@ -5368,6 +5382,12 @@ for (const utility of ['.text-title-section', '.text-title-hero', '.text-title-s
 for (const utility of ['.text-body-default', '.text-body-large', '.text-body-muted', '.text-status-warning', '.text-status-danger', '.text-fg-on-flood']) {
   assert.ok(shippedStyles.includes(utility), 'Packed styles must retain body utility ' + utility);
 }
+const compactRule = shippedStyles.match(/\\.text-heading-small\\s*\\{([^}]*)\\}/);
+assert.ok(compactRule, 'Packed CSS must include compact heading metrics');
+for (const [property, token] of [['font-size', '--text-heading-small'], ['line-height', '--text-heading-small--line-height'], ['font-weight', '--text-heading-small--font-weight'], ['letter-spacing', '--text-heading-small--letter-spacing']]) {
+  const declaration = compactRule[1].split(';').find((value) => value.trim().startsWith(property + ':'));
+  assert.ok(declaration?.includes('var(' + token), 'Packed compact metrics must include ' + property + ': ' + token);
+}
 const emphasisClass = '[&_strong]:[font-weight:var(--text-heading-small--font-weight)]';
 const emphasisSelector = '.' + emphasisClass.replace(/[^a-zA-Z0-9_-]/g, (char) => String.fromCharCode(92) + char);
 const emphasisIndex = shippedStyles.indexOf(emphasisSelector);
@@ -7611,6 +7631,11 @@ for (const frame of [square, wide]) {
   assert.equal(inverse.tagName, 'H2', 'Heading defaults to h2');
   assert.ok(inverse.classList.contains('text-title-display') && inverse.classList.contains('text-fg-on-flood'));
   assert.ok(inverse.querySelector('.eg-heading__accent').classList.contains('text-fg-on-flood'));
+  const compactHeading = document.getElementById('title-compact');
+  assert.equal(compactHeading.tagName, 'H3');
+  assert.equal(compactHeading.textContent, 'Compact band');
+  assert.ok(compactHeading.classList.contains('eg-heading') && compactHeading.classList.contains('font-display') && compactHeading.classList.contains('text-heading-small') && compactHeading.classList.contains('text-fg-secondary'));
+  assert.equal(compactHeading.hasAttribute('foreground'), false);
   const raised = document.getElementById('title-raised').querySelector('.eg-text__accent');
   assert.ok(raised.classList.contains('text-fg-brand-raised') && raised.classList.contains('inline'));
   assert.ok(raised.className.includes('[text-shadow:none]'));
