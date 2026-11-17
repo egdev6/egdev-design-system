@@ -947,9 +947,11 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · — (native scroll an
     - carouselLabelVariants base: font-display → --font-display
     - carouselLabelVariants base: text-label-eyebrow → --text-label-eyebrow
     - carouselSlideVariants base: rounded-lg → --radius-lg
-    - carouselSlideVariants base: focus-visible:shadow-[var(--shadow-focus)] → --shadow-focus
-    - carouselTrackVariants base: gap-7 → --spacing-7
-    - carouselTrackVariants base: p-2 → --spacing-2
+    - carouselSlideVariants trackLayout=default: focus-visible:shadow-[var(--shadow-focus)] → --shadow-focus
+    - carouselTrackVariants trackLayout=default: gap-7 → --spacing-7
+    - carouselTrackVariants trackLayout=default: p-2 → --spacing-2
+    - carouselTrackVariants trackLayout=full-width: gap-0 → --spacing-0
+    - carouselTrackVariants trackLayout=full-width: p-0 → --spacing-0
     - carouselVariants base: gap-4 → --spacing-4
     - carouselVariants base: font-sans → --font-sans
   - defaultValue: string; Initial uncontrolled identity; absence or an unknown identity resolves to the first item. Later changes do not reset the current item. (components[] · packages/ui/src/molecules/carousel/types.ts)
@@ -957,6 +959,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · — (native scroll an
   - label: string; Non-empty visible and accessible collection name, without repeating its role description. (components[] · packages/ui/src/molecules/carousel/types.ts)
   - messages: Partial<CarouselMessages>; Partial localizable dictionary. Each omitted or blank text falls back independently to English. (components[] · packages/ui/src/molecules/carousel/types.ts)
   - onValueChange: ((value: string) => void); One request for a changed identity per user navigation or settled scroll; never for prop updates. (components[] · packages/ui/src/molecules/carousel/types.ts)
+  - trackLayout: enum; Track spacing and scrollbar presentation. Full-width keeps native scrolling and inset focus. (components[] · packages/ui/src/molecules/carousel/types.ts)
   - value: string; Controlled accepted identity. Missing or unknown identities resolve to the first available item. (components[] · packages/ui/src/molecules/carousel/types.ts)
 ### ChipGroup
 catalog[] · docs/catalog.json · @egdev/ui · molecule · ToggleGroup
@@ -1090,6 +1093,8 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Label + Slot
     - fieldVariants layout=stacked: gap-1.5 → --spacing
     - fieldVariants layout=choice: gap-x-2 → --spacing-2
     - fieldVariants layout=choice: gap-y-1 → --spacing-1
+    - fieldVariants layout=choice-trailing: gap-x-4 → --spacing-4
+    - fieldVariants layout=choice-trailing: gap-y-1 → --spacing-1
   - children: ReactElement<unknown, string \| JSXElementConstructor<any>>; Exactly one Input, Textarea, Select, Slider, Checkbox or Switch element; no Fragment. Slot preserves child-first description ids and explicit child aria-invalid precedence. With an error, omit aria-invalid entirely or supply true/'true'; explicit undefined, null, false and other conflicting values are unsupported. Slider also needs its own label. (components[] · packages/ui/src/molecules/field/types.ts)
   - counter: FieldCounter; Consumer-derived length and limit, shown alone on the stacked bottom row; never invents an error. (components[] · packages/ui/src/molecules/field/types.ts)
   - error: string; Consumer validation message; a non-empty string marks the compatible control invalid. No live announcement or validation logic; an empty string is treated as absent. (components[] · packages/ui/src/molecules/field/types.ts)
@@ -1097,8 +1102,8 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Label + Slot
   - hint: string; Help text; replaced by a non-empty error. Omitted when absent or empty. (components[] · packages/ui/src/molecules/field/types.ts)
   - hintTone: enum; Presentation of the hint only; a non-empty error always takes precedence. No tone changes control validity or creates a live region. (components[] · packages/ui/src/molecules/field/types.ts)
   - label: string; Required control name, even when visually hidden. (components[] · packages/ui/src/molecules/field/types.ts)
-  - layout: enum; Label above the control, or beside a Checkbox/Switch. Choice omits readout and counter. (components[] · packages/ui/src/molecules/field/types.ts)
-  - readout: string; Visible current value in a linked output; omitted in choice layout or when absent. (components[] · packages/ui/src/molecules/field/types.ts)
+  - layout: enum; Label above the control, or beside a Checkbox/Switch. Choice omits readout and counter. Choice-trailing places the label and message before the control. (components[] · packages/ui/src/molecules/field/types.ts)
+  - readout: string; Visible current value in a linked output; omitted in either choice layout or when absent. (components[] · packages/ui/src/molecules/field/types.ts)
 ### GaugeGroup
 catalog[] · docs/catalog.json · @egdev/ui · molecule · — (native group and meters)
 - GaugeGroup (components[] · packages/ui/src/molecules/gauge-group/types.ts)
@@ -1407,10 +1412,15 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
     - pageHeaderEyebrowVariants base: text-label-eyebrow → --text-label-eyebrow
     - pageHeaderHeadingVariants base: font-sans → --font-sans
     - pageHeaderHeadingVariants base: text-heading-small → --text-heading-small
+    - pageHeaderLedeVariants base: font-sans → --font-sans
+    - pageHeaderLedeVariants base: text-body-default → --text-body-default
+    - pageHeaderStartVariants base: gap-3 → --spacing-3
     - pageHeaderVariants base: gap-x-6 → --spacing-6
     - pageHeaderVariants base: gap-y-4 → --spacing-4
   - actions: boolean \| PageHeaderActions \| null; One direct Button (including asChild links), or one supplied ButtonGroup variant="spaced" with at least two direct supported children. Rendered unchanged, never cloned or parsed. Null, undefined and booleans omit the action area. Arrays, fragments, arbitrary wrappers and nested groups are unsupported; JSX type erasure cannot enforce target identity. (components[] · packages/ui/src/molecules/page-header/types.ts)
   - eyebrow: string; Context before the heading. Absent or whitespace-only text is omitted; nonblank supplied text is preserved without a decorative diamond. (components[] · packages/ui/src/molecules/page-header/types.ts)
+  - leadingAction: boolean \| PageHeaderLeadingAction \| null; One direct IconButton, including its asChild link, rendered unchanged before the text. Null, undefined and booleans omit the area. Arrays, fragments and wrappers are unsupported; JSX type erasure cannot enforce component identity. The child owns its name and behavior. (components[] · packages/ui/src/molecules/page-header/types.ts)
+  - lede: string; Optional plain page-purpose text after the heading. Blank text is omitted; nonblank text is preserved verbatim and is not added to the heading's accessible name. (components[] · packages/ui/src/molecules/page-header/types.ts)
   - level: enum; Native h1–h6 rank; never changes the compact heading-small recipe. (components[] · packages/ui/src/molecules/page-header/types.ts)
   - title: string; Visible plain-string heading, not a native tooltip. Must contain non-whitespace text; otherwise the entire header is omitted, with a development warning. (components[] · packages/ui/src/molecules/page-header/types.ts)
 ### Panel
@@ -1514,8 +1524,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 catalog[] · docs/catalog.json · @egdev/ui · molecule · RadioGroup.Item / ToggleGroup.Item
 - SelectTile (components[] · packages/ui/src/molecules/select-tile/types.ts)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - card base: gap-2 → --spacing-2
-    - card base: p-2 → --spacing-2
+    - badge variant=text-only: px-1 → --spacing-1
     - card base: text-start → unresolved
     - card base: font-sans → --font-sans
     - card base: hover:shadow-[var(--shadow-edge-strong),var(--shadow-elev-2)] → --shadow-edge-strong, --shadow-elev-2
@@ -1524,6 +1533,11 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · RadioGroup.Item / Tog
     - card base: data-[state=live]:shadow-[var(--shadow-edge-strong),var(--shadow-glow-base)] → --shadow-edge-strong, --shadow-glow-base
     - card base: data-[state=live]:has-[[data-state=checked]]:shadow-[var(--shadow-edge-strong),var(--shadow-glow-base)] → --shadow-edge-strong, --shadow-glow-base
     - card base: data-[state=live]:has-[[data-state=on]]:shadow-[var(--shadow-edge-strong),var(--shadow-glow-base)] → --shadow-edge-strong, --shadow-glow-base
+    - card variant=default: gap-2 → --spacing-2
+    - card variant=default: p-2 → --spacing-2
+    - card variant=text-only: gap-1 → --spacing-1
+    - card variant=text-only: p-3 → --spacing-3
+    - card variant=text-only: pe-7 → --spacing-7
     - control base: rounded-lg → --radius-lg
     - control base: p-0 → --spacing-0
     - control base: focus-visible:shadow-focus → --shadow-focus
@@ -1534,7 +1548,7 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · RadioGroup.Item / Tog
     - meta base: text-label-default → --text-label-default
     - meta base: font-[var(--text-body-default--font-weight)] → --text-body-default--font-weight
     - meta base: px-1 → --spacing-1
-    - meta base: pb-1 → --spacing-1
+    - meta variant=default: pb-1 → --spacing-1
     - root base: gap-3 → --spacing-3
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'lg' }) · packages/ui/src/molecules/select-tile/useSelectTile.ts; see Surface anatomy
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }) · packages/ui/src/molecules/select-tile/useSelectTile.ts; see Surface anatomy
@@ -1545,10 +1559,11 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · RadioGroup.Item / Tog
   - name: string; Native-equivalent single-mode form field name; omitted unless supplied. Form field names are unavailable in multiple mode; consumers serialize values themselves. (components[] · packages/ui/src/molecules/select-tile/types.ts)
   - onValueChange: ((value: string) => void) \| ((value: string[]) => void); User-driven next selection. Absent unless the consumer subscribes. User-driven next selection in activation order, including an empty array. (components[] · packages/ui/src/molecules/select-tile/types.ts)
   - options: SelectTileOption[]; Standard cards in data order; an empty collection is allowed. Consumers own valid values. (components[] · packages/ui/src/molecules/select-tile/types.ts)
-  - ratio: enum; Collection-wide thumbnail proportions. (components[] · packages/ui/src/molecules/select-tile/types.ts)
+  - ratio: enum; Collection-wide thumbnail proportions; ignored in text-only. (components[] · packages/ui/src/molecules/select-tile/types.ts)
   - required: boolean; Native-equivalent single-mode form requirement. Native required validation is unavailable in multiple mode. (components[] · packages/ui/src/molecules/select-tile/types.ts)
   - type: enum; Single radio choice or independent multiple toggles. (components[] · packages/ui/src/molecules/select-tile/types.ts)
   - value: string \| string[]; Authoritative selection; an empty string clears without an event on prop updates. Authoritative selection in Radix activation order; an empty array clears. (components[] · packages/ui/src/molecules/select-tile/types.ts)
+  - variant: enum; Use text-only for media-less radio cards, or default for media cards. Multiple choices default to the media presentation and support no other variant. (components[] · packages/ui/src/molecules/select-tile/types.ts)
 ### SocialLinks
 catalog[] · docs/catalog.json · @egdev/ui · molecule · — (native anchors; atom-owned Slot + AccessibleIcon)
 - SocialLinks (components[] · packages/ui/src/molecules/social-links/types.ts)
@@ -1628,6 +1643,8 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Tabs
     - tabsListVariants variant=underline: gap-1 → --spacing-1
     - tabsListVariants variant=segmented: gap-0.5 → --spacing
     - tabsListVariants variant=segmented: p-0.75 → --spacing
+    - tabsListVariants {"variant":"segmented","fullWidth":"true"}: p-1.5 → --spacing
+    - tabsListVariants {"variant":"segmented","fullWidth":"true"}: [&::-webkit-scrollbar-thumb]:rounded-full → --radius-full
     - tabsPanelVariants base: pt-4 → --spacing-4
     - tabsTriggerVariants base: gap-2 → --spacing-2
     - tabsTriggerVariants base: font-sans → --font-sans
@@ -1641,11 +1658,15 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Tabs
     - tabsTriggerVariants variant=segmented: data-[state=active]:focus-visible:shadow-focus → --shadow-focus
     - tabsTriggerVariants {"variant":"underline","size":"md"}: px-3 → --spacing-3
     - tabsTriggerVariants {"variant":"underline","size":"sm"}: px-2 → --spacing-2
+    - tabsTriggerVariants {"variant":"segmented","labelWrap":"true"}: text-start → unresolved
+    - tabsTriggerVariants {"variant":"segmented","labelWrap":"true"}: py-1 → --spacing-1
     - tabsVariants base: gap-0 → --spacing-0
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }) · packages/ui/src/molecules/tabs/useTabs.ts; see Surface anatomy
   - defaultValue: string; Initial uncontrolled selection; when absent, selects the first enabled item. (components[] · packages/ui/src/molecules/tabs/types.ts)
+  - fullWidth: boolean; Fill the available width with equal segmented tabs when they fit; overflowing tabs may be unequal. Has no effect on underline. (components[] · packages/ui/src/molecules/tabs/types.ts)
   - items: TabsItem[]; Ordered views: unique, non-empty values and at least one enabled item are required. (components[] · packages/ui/src/molecules/tabs/types.ts)
   - label: string; Accessible name of the tablist. (components[] · packages/ui/src/molecules/tabs/types.ts)
+  - labelWrap: boolean; Wrap and start-align segmented labels, including long words; has no effect on underline. (components[] · packages/ui/src/molecules/tabs/types.ts)
   - onValueChange: ((value: string) => void); Notifies a user-driven selection change; incoming prop updates do not emit it. (components[] · packages/ui/src/molecules/tabs/types.ts)
   - size: enum; Underline height and horizontal padding only; segmented always uses its single height. (components[] · packages/ui/src/molecules/tabs/types.ts)
   - value: string; Controlled selection. When absent, Radix manages selection internally. (components[] · packages/ui/src/molecules/tabs/types.ts)
@@ -1794,10 +1815,12 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · Slot
     - buttonVariants size=sm: gap-2 → --spacing-2
     - buttonVariants size=sm: text-label-default → --text-label-default
     - buttonVariants size=sm: [font-weight:var(--text-cta-label--font-weight)] → --text-cta-label--font-weight
+    - buttonVariants labelWrap=true: text-center → unresolved
   - asChild: boolean; Compose onto one compatible child through Radix Slot. Native type is not forwarded. Disabled children leave tab order; loading children remain focusable. (components[] · packages/ui/src/atoms/button/types.ts)
   - children: ReactNode; Non-empty visible action label; one compatible element when asChild is true. (components[] · packages/ui/src/atoms/button/types.ts)
   - icon: ReactNode; Optional decorative glyph, hidden from assistive technology. Button alone permits start/end placement under its scoped leading-icon amendment; end is the default. (components[] · packages/ui/src/atoms/button/types.ts)
   - iconPosition: enum; Side of the decorative icon slot, also used by the loading spinner. (components[] · packages/ui/src/atoms/button/types.ts)
+  - labelWrap: boolean; Wrap the visible label, including long unbroken words; the entire control grows and remains clickable. Guaranteed for plain text and a compatible asChild link with plain text; other children are best effort. Avoid labelWrap in attached ButtonGroups. (components[] · packages/ui/src/atoms/button/types.ts)
   - loading: boolean; Pending operation: keeps focus, suppresses activation and replaces the icon with Spinner. The consumer owns announcements. Explicit disabled takes precedence over focus retention. (components[] · packages/ui/src/atoms/button/types.ts)
   - size: enum; Minimum height uses spacing tokens: lg 44.8px, md 38.4px and sm 32px. Use lg when the action must meet a 44px touch target. (components[] · packages/ui/src/atoms/button/types.ts)
   - variant: enum; Material treatment. neutral is the visible grey quiet action; use dark only on flood backgrounds. (components[] · packages/ui/src/atoms/button/types.ts)
@@ -4168,6 +4191,8 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - tabsListVariants variant=underline: gap-1 → --spacing-1
     - tabsListVariants variant=segmented: gap-0.5 → --spacing
     - tabsListVariants variant=segmented: p-0.75 → --spacing
+    - tabsListVariants {"variant":"segmented","fullWidth":"true"}: p-1.5 → --spacing
+    - tabsListVariants {"variant":"segmented","fullWidth":"true"}: [&::-webkit-scrollbar-thumb]:rounded-full → --radius-full
     - tabsPanelVariants base: pt-4 → --spacing-4
     - tabsTriggerVariants base: gap-2 → --spacing-2
     - tabsTriggerVariants base: font-sans → --font-sans
@@ -4181,6 +4206,8 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - tabsTriggerVariants variant=segmented: data-[state=active]:focus-visible:shadow-focus → --shadow-focus
     - tabsTriggerVariants {"variant":"underline","size":"md"}: px-3 → --spacing-3
     - tabsTriggerVariants {"variant":"underline","size":"sm"}: px-2 → --spacing-2
+    - tabsTriggerVariants {"variant":"segmented","labelWrap":"true"}: text-start → unresolved
+    - tabsTriggerVariants {"variant":"segmented","labelWrap":"true"}: py-1 → --spacing-1
     - tabsVariants base: gap-0 → --spacing-0
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }) · packages/ui/src/molecules/tabs/useTabs.ts; see Surface anatomy
 ### tooltipVariants
@@ -4235,6 +4262,7 @@ Not exported:
 - bottom-navigation: bottomNavigation; approved; AppShell (propNaming[] · skills/_shared/prop-naming.json)
 - brand-monogram: monogram; approved;  (propNaming[] · skills/_shared/prop-naming.json)
 - card-link-action-label: actionLabel; approved; ArticleFeature (propNaming[] · skills/_shared/prop-naming.json)
+- carousel-track-layout: trackLayout; approved; Carousel (propNaming[] · skills/_shared/prop-naming.json)
 - character-counter: counter; approved; Field (propNaming[] · skills/_shared/prop-naming.json)
 - checked-change: onCheckedChange; approved; Checkbox, Switch (propNaming[] · skills/_shared/prop-naming.json)
 - choice-options: options; approved; ChipGroup, RadioGroup, Select, SelectTile (propNaming[] · skills/_shared/prop-naming.json)
@@ -4250,6 +4278,7 @@ Not exported:
 - container-edge-placement: edge; approved; ProgressBar (propNaming[] · skills/_shared/prop-naming.json)
 - content-description: description; approved; AlertDialogContent, ArticleFeature, DialogContent (propNaming[] · skills/_shared/prop-naming.json)
 - content-detail: detail; approved; ArticleFeature (propNaming[] · skills/_shared/prop-naming.json)
+- control-label-wrap: labelWrap; approved; Button, Tabs (propNaming[] · skills/_shared/prop-naming.json)
 - corner-badge-icon: badgeIcon; approved; Indicator (propNaming[] · skills/_shared/prop-naming.json)
 - corner-radius: radius; approved; Surface (propNaming[] · skills/_shared/prop-naming.json)
 - cover-badge: coverBadge; approved; ArticleFeatureCover, TipCard (propNaming[] · skills/_shared/prop-naming.json)
@@ -4349,7 +4378,7 @@ Not exported:
 - scene-social: social; approved; Hero, WebSection (propNaming[] · skills/_shared/prop-naming.json)
 - search-query-change: onQueryChange; approved; CommandPalette (propNaming[] · skills/_shared/prop-naming.json)
 - section-content-wrap: wrap; approved; SectionShell (propNaming[] · skills/_shared/prop-naming.json)
-- section-lede: lede; approved; ChapterBreak, Closing, Hero, LabStage, SectionHeader (propNaming[] · skills/_shared/prop-naming.json)
+- section-lede: lede; approved; ChapterBreak, Closing, Hero, LabStage, PageHeader, SectionHeader (propNaming[] · skills/_shared/prop-naming.json)
 - section-register: register; approved; SectionShell (propNaming[] · skills/_shared/prop-naming.json)
 - selection-cardinality: type; approved; ChipGroup, SelectTile (propNaming[] · skills/_shared/prop-naming.json)
 - selection-placeholder: placeholder; approved; Select (propNaming[] · skills/_shared/prop-naming.json)
@@ -4361,6 +4390,7 @@ Not exported:
 - square-particle-direction: squareDirection; approved; AmbientBackground (propNaming[] · skills/_shared/prop-naming.json)
 - surface-elevation: elevation; approved; Surface (propNaming[] · skills/_shared/prop-naming.json)
 - surface-material-tone: tone; approved; AlertDialogContent, Badge, Countdown, FieldMessage, Heading, Indicator, MenuEntry, ModuleCard, NavList, Notice, Panel, PreviewFrame, PullQuote, SectionHeader, Surface, Tabs, TerminalCardRow, Text, Timeline, Toast (propNaming[] · skills/_shared/prop-naming.json)
+- tab-list-full-width: fullWidth; approved; Tabs (propNaming[] · skills/_shared/prop-naming.json)
 - table-columns: columns; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
 - table-rows: rows; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
 - table-sort: sort; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
@@ -4378,7 +4408,7 @@ Not exported:
 - value-context: delta; approved; Stat (propNaming[] · skills/_shared/prop-naming.json)
 - value-readout: readout; approved; Field (propNaming[] · skills/_shared/prop-naming.json)
 - viewport-max-height: maxHeight; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
-- visual-treatment: variant; approved; Badge, Button, ButtonGroup, DialogContent, Dropzone, Heading, IconButton, Indicator, Input, Label, Link, ListItem, Logo, MeterRow, ModuleCard, Panel, PhotoFrame, PreviewFrame, ProgressBar, ProjectCard, PullQuote, ScrollReveal, SectionHeader, Skeleton, SocialLinks, Table, Tabs, Text, Textarea, Timeline (propNaming[] · skills/_shared/prop-naming.json)
+- visual-treatment: variant; approved; Badge, Button, ButtonGroup, DialogContent, Dropzone, Heading, IconButton, Indicator, Input, Label, Link, ListItem, Logo, MeterRow, ModuleCard, Panel, PhotoFrame, PreviewFrame, ProgressBar, ProjectCard, PullQuote, ScrollReveal, SectionHeader, SelectTile, Skeleton, SocialLinks, Table, Tabs, Text, Textarea, Timeline (propNaming[] · skills/_shared/prop-naming.json)
 - visually-hidden-label: hideLabel; approved; Field, Table (propNaming[] · skills/_shared/prop-naming.json)
 - web-section-body-slot: body; approved; WebSection (propNaming[] · skills/_shared/prop-naming.json)
 - zone-change: onZoneChange; approved; HomeTemplate (propNaming[] · skills/_shared/prop-naming.json)
