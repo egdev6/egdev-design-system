@@ -1420,6 +1420,11 @@ test('Collapsible ships native group-state caret motion and reduced-motion reset
     '.whitespace-normal',
     '.text-start',
     '.transition-transform',
+    '.p-2',
+    String.raw`.data-\[state\=closed\]\:hidden`,
+    String.raw`.\[\&\:not\(\[aria-disabled\=true\]\)\:active\]\:translate-none`,
+    String.raw`.\[\&\:not\(\[aria-disabled\=true\]\)\:active\]\:scale-100`,
+    String.raw`.group-data-\[state\=open\]\/collapsible\:rotate-0`,
     String.raw`.group-data-\[state\=open\]\/collapsible\:rotate-180`,
     String.raw`.motion-reduce\:group-data-\[state\=open\]\/collapsible\:rotate-0`,
     String.raw`.motion-reduce\:transform-none`
@@ -1437,12 +1442,16 @@ test('Collapsible package preserves amended native closed/open relationships and
   const { JSDOM } = await import('jsdom');
   assert.equal(typeof exported.Collapsible, 'function');
   assert.equal(typeof exported.CollapsibleContent, 'function');
+  assert.equal(typeof exported.CollapsibleHeader, 'function');
   assert.equal(exported.CollapsibleTrigger.$$typeof, Symbol.for('react.forward_ref'));
   for (const name of [
     'useCollapsible',
+    'useCollapsibleHeader',
     'useCollapsibleTrigger',
     'useCollapsibleContent',
     'collapsibleVariants',
+    'collapsibleHeaderVariants',
+    'collapsibleActionsVariants',
     'collapsibleTriggerVariants',
     'collapsibleContentVariants',
     'collapsibleCaretVariants'
@@ -1478,6 +1487,38 @@ test('Collapsible package preserves amended native closed/open relationships and
     } finally {
       dom.window.close();
     }
+  }
+  const retained = new JSDOM(
+    renderToString(
+      createElement(exported.Collapsible, {
+        children: [
+          createElement(
+            exported.CollapsibleHeader,
+            { key: 'header', actions: createElement('button', null, 'Update') },
+            createElement(exported.CollapsibleTrigger, { motion: 'none' }, 'Details')
+          ),
+          createElement(
+            exported.CollapsibleContent,
+            { key: 'content', presence: 'keep-mounted', padding: 'sm' },
+            createElement('input', { name: 'note' })
+          )
+        ]
+      })
+    )
+  );
+  try {
+    const header = retained.window.document.querySelector('.eg-collapsible__header');
+    const trigger = header.querySelector('button');
+    const action = header.querySelector('.eg-collapsible__actions button');
+    const content = retained.window.document.querySelector('.eg-collapsible__content');
+    assert.equal(trigger.contains(action), false);
+    assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+    assert.equal(content.getAttribute('data-state'), 'closed');
+    assert.ok(content.classList.contains('data-[state=closed]:hidden'));
+    assert.ok(content.classList.contains('p-2'));
+    assert.ok(content.querySelector('input'));
+  } finally {
+    retained.window.close();
   }
 });
 
@@ -5184,6 +5225,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'Cluster',
       'Collapsible',
       'CollapsibleContent',
+      'CollapsibleHeader',
       'CollapsibleTrigger',
       'CommandPalette',
       'CommunityCard',
@@ -5510,6 +5552,8 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'Collapsible',
     'CollapsibleContent',
     'CollapsibleContentProps',
+    'CollapsibleHeader',
+    'CollapsibleHeaderProps',
     'CollapsibleProps',
     'CollapsibleTrigger',
     'CollapsibleTriggerProps',

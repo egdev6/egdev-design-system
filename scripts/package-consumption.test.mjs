@@ -2822,8 +2822,8 @@ const panelWavePartStyle: PanelBodyProps = { children: 'Body', style: { color: '
 // @ts-expect-error Tone is a closed frame-ownership union.
 const panelWaveToneError: PanelProps = { children: 'Body', tone: 'brand' };
 
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@egdev/ui';
-import type { CollapsibleProps, CollapsibleTriggerProps, CollapsibleContentProps } from '@egdev/ui';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent, CollapsibleHeader } from '@egdev/ui';
+import type { CollapsibleProps, CollapsibleTriggerProps, CollapsibleContentProps, CollapsibleHeaderProps } from '@egdev/ui';
 // @ts-expect-error State/class preparation helpers are private.
 import type { useCollapsible } from '@egdev/ui';
 export const collapsibleConsumerChanges: boolean[] = [];
@@ -2840,6 +2840,19 @@ export function CollapsibleConsumerSamples({ open, disabled = false, initial = f
     : { children, open, disabled, onOpenChange: next => collapsibleConsumerChanges.push(next) };
   return createElement(Collapsible, { ...props, id: 'packed-collapsible-wave' });
 }
+export function CollapsibleRetainedSample() {
+  const header: CollapsibleHeaderProps = { children: createElement(CollapsibleTrigger, { motion: 'none', children: 'Details' }), actions: createElement('button', null, 'Update') };
+  const content: CollapsibleContentProps = { children: createElement('input', { name: 'note', defaultValue: 'Initial' }), presence: 'keep-mounted', padding: 'sm' };
+  return createElement(Collapsible, null, createElement(CollapsibleHeader, header), createElement(CollapsibleContent, content));
+}
+// @ts-expect-error Presence is a closed union.
+const collapsibleBadPresence: CollapsibleContentProps = { children: 'Body', presence: 'hidden' };
+// @ts-expect-error Header has no inline appearance API.
+const collapsibleHeaderStyle: CollapsibleHeaderProps = { children: 'Label', style: { color: 'red' } };
+// @ts-expect-error Header does not expose role.
+const collapsibleHeaderRole: CollapsibleHeaderProps = { children: 'Label', role: 'group' };
+// @ts-expect-error Header does not expose tabIndex.
+const collapsibleHeaderTab: CollapsibleHeaderProps = { children: 'Label', tabIndex: 0 };
 // @ts-expect-error Controlled visibility requires callback.
 const collapsibleWaveMissingChange: CollapsibleProps = { children: 'Pair', open: true };
 // @ts-expect-error Modes cannot be combined.
@@ -4656,6 +4669,11 @@ function assertDialogConsumerCSS(css) {
 function assertCollapsibleConsumerCSS(css) {
   for (const selector of [
     '.whitespace-normal',
+    '.p-2',
+    '.data-\\[state\\=closed\\]\\:hidden',
+    '.\\[\\&\\:not\\(\\[aria-disabled\\=true\\]\\)\\:active\\]\\:translate-none',
+    '.\\[\\&\\:not\\(\\[aria-disabled\\=true\\]\\)\\:active\\]\\:scale-100',
+    '.group-data-\\[state\\=open\\]\\/collapsible\\:rotate-0',
     '.group-data-\\[state\\=open\\]\\/collapsible\\:rotate-180',
     '.motion-reduce\\:group-data-\\[state\\=open\\]\\/collapsible\\:rotate-0'
   ]) {
@@ -5329,6 +5347,7 @@ assert.deepEqual(Object.keys(await import('@egdev/ui')).sort(), [
   'Cluster',
   'Collapsible',
   'CollapsibleContent',
+  'CollapsibleHeader',
   'CollapsibleTrigger',
   'CommandPalette',
   'CommunityCard',
@@ -6040,7 +6059,21 @@ try {
   assert.equal(panelWave.hasAttribute('role'), false);
 } finally { panelWaveDOM.window.close(); }
 
-import { CollapsibleConsumerSamples } from './consumer.ts';
+import { CollapsibleConsumerSamples, CollapsibleRetainedSample } from './consumer.ts';
+const collapsibleRetainedDOM = new JSDOM(renderToString(createElement(CollapsibleRetainedSample)));
+try {
+  const doc = collapsibleRetainedDOM.window.document;
+  const header = doc.querySelector('.eg-collapsible__header');
+  const trigger = header.querySelector('button');
+  const action = header.querySelector('.eg-collapsible__actions button');
+  const content = doc.querySelector('.eg-collapsible__content');
+  assert.equal(trigger.contains(action), false);
+  assert.equal(trigger.getAttribute('aria-expanded'), 'false');
+  assert.equal(content.getAttribute('data-state'), 'closed');
+  assert.ok(content.classList.contains('data-[state=closed]:hidden'));
+  assert.ok(content.classList.contains('p-2'));
+  assert.ok(content.querySelector('input[name=note]'));
+} finally { collapsibleRetainedDOM.window.close(); }
 const collapsibleWaveHTML = renderToString(createElement(CollapsibleConsumerSamples));
 writeFileSync(new URL('./collapsible-wave-hydration.html', import.meta.url), collapsibleWaveHTML);
 const collapsibleWaveDOM = new JSDOM(collapsibleWaveHTML);

@@ -249,6 +249,15 @@ const postReceiptUsages = [
     conventionId,
     source: 'packages/ui/src/molecules/collapsible/types.ts#CollapsibleProps'
   })),
+  { conventionId: 'trailing-actions', source: 'packages/ui/src/molecules/collapsible/types.ts#CollapsibleHeaderProps' },
+  ...['inner-padding', 'disclosure-presence'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/collapsible/types.ts#CollapsibleContentProps'
+  })),
+  {
+    conventionId: 'disclosure-motion',
+    source: 'packages/ui/src/molecules/collapsible/types.ts#CollapsibleTriggerProps'
+  },
   ...[
     'surface-material-tone',
     'leading-icon',
@@ -812,7 +821,10 @@ const postReceiptProposals = [
   // Tabs and Carousel v0.2 conventions were approved after the historical receipts.
   'tab-list-full-width',
   'control-label-wrap',
-  'carousel-track-layout'
+  'carousel-track-layout',
+  // Collapsible v0.5 conventions have their own delegated approval after the frozen receipts.
+  'disclosure-presence',
+  'disclosure-motion'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -1663,9 +1675,10 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   validate(actual);
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
-  // AmbientBackground adds two directions; TopBar and Tabs each add two; Carousel and Dialog add one each.
-  assert.equal(actual.length, 168);
-  assert.equal(beforeIndicatorConventions(actual).length, 165);
+  // AmbientBackground adds two directions; TopBar and Tabs each add two; Carousel and Dialog add one each;
+  // Collapsible adds two separately approved conventions.
+  assert.equal(actual.length, 170);
+  assert.equal(beforeIndicatorConventions(actual).length, 167);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -1719,6 +1732,32 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
     assert.equal(usage.source.revision, digest(fs.readFileSync(resolve(root, usage.source.path))));
   }
 });
+test('Collapsible v0.5 conventions bind delegated approval and reviewed usages', () => {
+  const reference = 'docs/components/collapsible/v0.5/prop-naming-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  validate(registry);
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.equal(
+    receipt.evidence.amendmentCanonicalSHA256,
+    'sha256:ece44f5ae7a7a27fcbe7c8dfc4e646e1b8bb9c1f2195e520884e3e1626f7d11c'
+  );
+  assert.deepEqual(
+    receipt.entries.map(({ convention }) => convention.id),
+    ['disclosure-presence', 'disclosure-motion']
+  );
+  for (const { convention, scope, contentHash } of receipt.entries) {
+    const entry = registry.find(({ id }) => id === convention.id);
+    assert.ok(entry);
+    assert.equal(props.conventionHash(entry), contentHash);
+    assert.deepEqual(entry.approval, { reference, scope, contentHash });
+    const { approval: _approval, usages, ...actual } = entry;
+    assert.deepEqual(actual, convention);
+    assert.equal(usages.length, 1);
+    assert.equal(usages[0].source.revision, digest(fs.readFileSync(resolve(root, usages[0].source.path))));
+  }
+});
+
 test('pre-Indicator projection removes only exact introduced IDs and approval reference', () => {
   const introduced = { id: 'indicator-count', approval: { reference: indicatorReference } };
   const otherReference = { id: 'indicator-count', approval: { reference: 'docs/other.md' } };

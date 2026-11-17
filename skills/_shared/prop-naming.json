@@ -4592,7 +4592,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleProps",
-          "revision": "sha256:4ccff811ba38c7c700cd1b36fe333c07a6d2189d033d1af163e9cb8db5ed1bba"
+          "revision": "sha256:5f6cba06d788d76d9c05e5a071f05645ad6954d529ef1ed8d5deaa6716f53351"
         }
       }
     ]
@@ -4689,7 +4689,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleProps",
-          "revision": "sha256:4ccff811ba38c7c700cd1b36fe333c07a6d2189d033d1af163e9cb8db5ed1bba"
+          "revision": "sha256:5f6cba06d788d76d9c05e5a071f05645ad6954d529ef1ed8d5deaa6716f53351"
         }
       }
     ]
@@ -4786,7 +4786,7 @@
         "source": {
           "path": "packages/ui/src/molecules/collapsible/types.ts",
           "symbol": "CollapsibleProps",
-          "revision": "sha256:4ccff811ba38c7c700cd1b36fe333c07a6d2189d033d1af163e9cb8db5ed1bba"
+          "revision": "sha256:5f6cba06d788d76d9c05e5a071f05645ad6954d529ef1ed8d5deaa6716f53351"
         }
       }
     ]
@@ -5396,6 +5396,16 @@
       "contentHash": "sha256:4318a40e4fe5464997605a1855c7d71388ed35c8258745780ef3fe5eef393845"
     },
     "usages": [
+      {
+        "component": "CollapsibleHeader",
+        "type": "ReactNode (optional sibling actions)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/collapsible/types.ts",
+          "symbol": "CollapsibleHeaderProps",
+          "revision": "sha256:5f6cba06d788d76d9c05e5a071f05645ad6954d529ef1ed8d5deaa6716f53351"
+        }
+      },
       {
         "component": "WebSection",
         "type": "ReactNode",
@@ -6520,6 +6530,16 @@
     },
     "usages": [
       {
+        "component": "CollapsibleContent",
+        "type": "'sm' | 'md' (default md)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/collapsible/types.ts",
+          "symbol": "CollapsibleContentProps",
+          "revision": "sha256:5f6cba06d788d76d9c05e5a071f05645ad6954d529ef1ed8d5deaa6716f53351"
+        }
+      },
+      {
         "component": "Surface",
         "type": "SurfacePadding (none|sm|md|lg)",
         "status": "existing",
@@ -6537,6 +6557,60 @@
           "path": "packages/ui/src/molecules/dialog/types.ts",
           "symbol": "DialogContentProps",
           "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
+        }
+      }
+    ]
+  },
+  {
+    "id": "disclosure-presence",
+    "name": "presence",
+    "meaning": "Lifetime of a disclosed subtree when its disclosure is closed.",
+    "whenToUse": "Choose whether disclosed content unmounts or remains mounted while closed, as defined by the component.",
+    "avoid": "Visibility state, raw Radix forceMount or animation controls.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/components/collapsible/v0.5/prop-naming-approval.json",
+      "scope": "convention:disclosure-presence",
+      "contentHash": "sha256:a5f91af4fc20e60c6521b47680727b874fb2ee9a473962427dacf026f79c3d41"
+    },
+    "usages": [
+      {
+        "component": "CollapsibleContent",
+        "type": "'unmount' | 'keep-mounted' (default unmount)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/collapsible/types.ts",
+          "symbol": "CollapsibleContentProps",
+          "revision": "sha256:5f6cba06d788d76d9c05e5a071f05645ad6954d529ef1ed8d5deaa6716f53351"
+        }
+      }
+    ]
+  },
+  {
+    "id": "disclosure-motion",
+    "name": "motion",
+    "meaning": "Opt out of movement on a disclosure trigger and its decorative caret.",
+    "whenToUse": "Choose the component default movement or suppress the disclosure trigger and caret movement.",
+    "avoid": "Open state, general animation playback or compact presentation.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/components/collapsible/v0.5/prop-naming-approval.json",
+      "scope": "convention:disclosure-motion",
+      "contentHash": "sha256:e30765ac07f23167833bf9a14c5b8d28dc66a1987d9a9c46410e3da42b688a6e"
+    },
+    "usages": [
+      {
+        "component": "CollapsibleTrigger",
+        "type": "'default' | 'none' (default default)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/collapsible/types.ts",
+          "symbol": "CollapsibleTriggerProps",
+          "revision": "sha256:5f6cba06d788d76d9c05e5a071f05645ad6954d529ef1ed8d5deaa6716f53351"
         }
       }
     ]

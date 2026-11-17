@@ -71,6 +71,28 @@ export type CollapsibleProps = Omit<ComponentPropsWithoutRef<'div'>, OwnedNative
   };
 
 /**
+ * Optional unpainted row. className supports outer margin, width and parent placement only,
+ * merged last; no ref, role, tabIndex, inline appearance or asChild API.
+ */
+export type CollapsibleHeaderProps = Omit<
+  ComponentPropsWithoutRef<'div'>,
+  OwnedNativeProps | 'actions' | 'role' | 'tabIndex'
+> & {
+  /**
+   * One Trigger or a native heading containing one Trigger.
+   * @control false
+   * @controlReason Non-serializable ReactNode; see SiblingActions and NarrowActions.
+   */
+  children: ReactNode;
+  /**
+   * Independent actions outside the Trigger; null or absence omits the wrapper.
+   * @control false
+   * @controlReason Non-serializable ReactNode; see SiblingActions and NarrowActions.
+   */
+  actions?: ReactNode;
+};
+
+/**
  * Native disclosure button with a React 18-compatible HTMLButtonElement ref.
  * className supports outer margin/self-alignment only, merged last; target, paint,
  * wrapping and caret overrides are unsupported. preventDefault onClick cancels toggling.
@@ -85,36 +107,78 @@ export type CollapsibleTriggerProps = Omit<
    * @controlReason Non-serializable ReactNode; see Default and LongLabel.
    */
   children: ReactNode;
+  /**
+   * Disable Trigger and caret movement without changing state or focus.
+   * @control select
+   * @default default
+   */
+  motion?: 'default' | 'none';
 };
 
 /**
- * In-flow body; the native hidden shell/id remains closed while children unmount.
- * Lift persistent form state outside it. className supports outer margin/self-alignment
- * only, merged last; no id, hidden, ref, forceMount or asChild API. Opt-in regions need a name.
+ * In-flow body; by default its native hidden shell/id remains while children unmount.
+ * Retained closed controls still participate in forms. Move focus before externally closing.
+ * className supports outer margin/self-alignment only, merged last; no id, hidden, ref,
+ * forceMount or asChild API. Opt-in regions need a name.
  */
 export type CollapsibleContentProps = Omit<
   ComponentPropsWithoutRef<'div'>,
   OwnedNativeProps | 'id' | 'hidden' | 'tabIndex'
 > & {
   /**
-   * Meaningful flow content; children remount on reopening and local state may reset.
+   * Meaningful flow content; unmounted children remount on reopening and local state may reset.
    * @control false
-   * @controlReason Non-serializable ReactNode; see WithFormContent, Remount and NamedRegion.
+   * @controlReason Non-serializable ReactNode; see WithFormContent, Remount and KeepMounted.
    */
   children: ReactNode;
+  /**
+   * Token-backed body padding on all sides.
+   * @control select
+   * @default md
+   */
+  padding?: 'sm' | 'md';
+  /**
+   * Retain and hide closed children or use the native unmounted default.
+   * @control select
+   * @default unmount
+   */
+  presence?: 'unmount' | 'keep-mounted';
 };
 
 // Internal recipes: native state attributes select appearance, never mirrored state classes.
 export const collapsibleVariants = cva('eg-collapsible overflow-visible');
-// Open Trigger keeps the ghost hover paint but drops its bottom rounding so it stays visually
-// attached to the content below; closed keeps the full Button radius.
+export const collapsibleHeaderVariants = cva(
+  'eg-collapsible__header flex flex-wrap items-center gap-2 [&>:first-child]:grow [&>:first-child]:basis-14 [&>:first-child]:min-w-14'
+);
+export const collapsibleActionsVariants = cva('eg-collapsible__actions flex flex-initial flex-wrap max-w-full gap-2');
+// Preserve the neutral Button paint and flatten only the open Trigger bottom radius.
 export const collapsibleTriggerVariants = cva(
-  'eg-collapsible__trigger group/collapsible w-full justify-between text-start whitespace-normal data-[state=open]:rounded-b-none'
+  'eg-collapsible__trigger group/collapsible w-full justify-between text-start whitespace-normal data-[state=open]:rounded-b-none',
+  {
+    variants: {
+      motion: {
+        default: '',
+        none: 'transition-none [transition-property:none] [&:not([aria-disabled=true]):active]:translate-none [&:not([aria-disabled=true]):active]:scale-100'
+      }
+    },
+    defaultVariants: { motion: 'default' }
+  }
 );
 export const collapsibleContentVariants = cva(
-  'eg-collapsible__content border-t-(length:--border-width) border-solid border-border-hairline p-4 font-sans text-body-default text-fg-default'
+  'eg-collapsible__content border-t-(length:--border-width) border-solid border-border-hairline p-4 font-sans text-body-default text-fg-default',
+  {
+    variants: {
+      padding: { md: '', sm: 'p-2' },
+      presence: { unmount: '', 'keep-mounted': 'data-[state=closed]:hidden' }
+    },
+    defaultVariants: { padding: 'md', presence: 'unmount' }
+  }
 );
 export const collapsibleLabelVariants = cva('min-w-0 [overflow-wrap:anywhere]');
 export const collapsibleCaretVariants = cva(
-  'inline-flex shrink-0 transition-transform duration-(--duration-fast) ease-(--ease-out) group-data-[state=open]/collapsible:rotate-180 motion-reduce:transition-none motion-reduce:transform-none motion-reduce:rotate-0 motion-reduce:group-data-[state=open]/collapsible:rotate-0'
+  'inline-flex shrink-0 transition-transform duration-(--duration-fast) ease-(--ease-out) group-data-[state=open]/collapsible:rotate-180 motion-reduce:transition-none motion-reduce:transform-none motion-reduce:rotate-0 motion-reduce:group-data-[state=open]/collapsible:rotate-0',
+  {
+    variants: { motion: { default: '', none: 'transition-none group-data-[state=open]/collapsible:rotate-0' } },
+    defaultVariants: { motion: 'default' }
+  }
 );

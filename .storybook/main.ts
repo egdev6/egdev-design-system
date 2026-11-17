@@ -13,6 +13,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
   panelBody: ['id', 'title', 'dir', 'aria-describedby', 'className'],
   panelFooter: ['id', 'title', 'dir', 'aria-describedby', 'className'],
   collapsible: ['id', 'title', 'dir', 'aria-describedby', 'className'],
+  collapsibleHeader: ['id', 'title', 'dir', 'aria-describedby', 'className'],
   collapsibleTrigger: [
     'id',
     'title',

@@ -164,6 +164,26 @@ describe('Storybook preview CSS', () => {
       /strong[\s\S]*font-weight:\s*var\(--text-heading-small--font-weight\)/
     );
   });
+  it('compiles Collapsible retained presence, spacing and motion reset selectors', () => {
+    expect(rule('.p-2')).toMatch(/padding:\s*var\(--space-2[,)]/);
+    const transitionReset = css.indexOf(String.raw`.\[transition-property\:none\]`);
+    expect(transitionReset).toBeGreaterThanOrEqual(0);
+    expect(css.slice(transitionReset, transitionReset + 250)).toMatch(/transition-property:\s*none/);
+    const closed = css.indexOf(String.raw`.data-\[state\=closed\]\:hidden`);
+    expect(closed).toBeGreaterThanOrEqual(0);
+    expect(css.slice(closed, closed + 200)).toMatch(/display:\s*none/);
+    for (const selector of [
+      String.raw`.data-\[state\=closed\]\:hidden`,
+      String.raw`.\[\&\:not\(\[aria-disabled\=true\]\)\:active\]\:translate-none`,
+      String.raw`.\[\&\:not\(\[aria-disabled\=true\]\)\:active\]\:scale-100`,
+      String.raw`.group-data-\[state\=open\]\/collapsible\:rotate-0`,
+      String.raw`.\[\&\>\:first-child\]\:grow`,
+      String.raw`.\[\&\>\:first-child\]\:basis-14`,
+      String.raw`.\[\&\>\:first-child\]\:min-w-14`
+    ]) {
+      expect(css.includes(selector), selector).toBe(true);
+    }
+  });
   it('emits Button label wrapping utilities from the production scan', () => {
     expect(rule('.whitespace-normal')).toMatch(/white-space:\s*normal/);
     expect(rule('.wrap-anywhere')).toMatch(/overflow-wrap:\s*anywhere/);
