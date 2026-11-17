@@ -1009,6 +1009,32 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Collapsible
   - disabled: boolean; Disable only Trigger activation, retaining visibility and enabled body controls. (components[] · packages/ui/src/molecules/collapsible/types.ts)
   - onOpenChange: ((open: boolean) => void) \| ((open: boolean) => void); Requests the next visibility without echoing mount or incoming prop updates. (components[] · packages/ui/src/molecules/collapsible/types.ts)
   - open: boolean; Owner-supplied visibility; do not switch control mode while mounted. Owner-supplied visibility; omit in uncontrolled mode and do not switch mode while mounted. (components[] · packages/ui/src/molecules/collapsible/types.ts)
+### ColorSwatchGroup
+catalog[] · docs/catalog.json · @egdev/ui · molecule · RadioGroup
+- ColorSwatchGroup (components[] · packages/ui/src/molecules/color-swatch-group/types.ts)
+  - Visual anatomy (source classes; unresolved is not a guessed value):
+    - customFrame base: gap-2 → --spacing-2
+    - customFrame base: px-2 → --spacing-2
+    - customInput base: focus-visible:shadow-focus → --shadow-focus
+    - customLabel base: text-label-default → --text-label-default
+    - group base: gap-2 → --spacing-2
+    - indicator base: rounded-full → --radius-full
+    - item base: gap-2 → --spacing-2
+    - item base: px-2 → --spacing-2
+    - item base: py-1 → --spacing-1
+    - item base: text-start → unresolved
+    - item base: text-label-default → --text-label-default
+    - item base: focus-visible:shadow-focus → --shadow-focus
+    - legend base: text-label-default → --text-label-default
+    - output base: text-label-default → --text-label-default
+    - root base: p-0 → --spacing-0
+    - root base: font-sans → --font-sans
+    - surfaceVariants({ tone: 'surface-1', elevation: 1, radius: 'md', padding: 'none' }) · packages/ui/src/molecules/color-swatch-group/useColorSwatchGroup.ts; see Surface anatomy
+  - customLabel: string; Localized visible name for the separate native picker; absent or blank omits it. (components[] · packages/ui/src/molecules/color-swatch-group/types.ts)
+  - label: string; Nonblank localized visible legend, radio-group name and current-value prefix. (components[] · packages/ui/src/molecules/color-swatch-group/types.ts)
+  - onValueChange: (value: string) => void; Requests a user-driven color change without normalizing or persisting it. (components[] · packages/ui/src/molecules/color-swatch-group/types.ts)
+  - options: ColorSwatchGroupOption[]; Ordered named presets. Invalid colors, blank labels and later case-insensitive duplicates are skipped. (components[] · packages/ui/src/molecules/color-swatch-group/types.ts)
+  - value: string; Authoritative #RRGGBB color, including colors not present among the presets. (components[] · packages/ui/src/molecules/color-swatch-group/types.ts)
 ### CommandPalette
 catalog[] · docs/catalog.json · @egdev/ui · molecule · Dialog (native D4 combobox)
 - CommandPalette (components[] · packages/ui/src/molecules/command-palette/types.ts)
@@ -2474,6 +2500,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · Slot
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }) · packages/ui/src/atoms/search-trigger/useSearchTrigger.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'md', radius: 'xl' }) · packages/ui/src/molecules/article-feature/useArticleFeature.ts; see Surface anatomy
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'none' }) · packages/ui/src/molecules/article-feature/useArticleFeature.ts; see Surface anatomy
+    - surfaceVariants({ tone: 'surface-1', elevation: 1, radius: 'md', padding: 'none' }) · packages/ui/src/molecules/color-swatch-group/useColorSwatchGroup.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'xl' }) · packages/ui/src/molecules/community-card/useCommunityCard.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-2', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/molecules/community-card/useCommunityCard.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'lg' }) · packages/ui/src/molecules/list-item/useListItem.ts; see Surface anatomy
@@ -3746,6 +3773,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }) · packages/ui/src/atoms/search-trigger/useSearchTrigger.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'md', radius: 'xl' }) · packages/ui/src/molecules/article-feature/useArticleFeature.ts; see Surface anatomy
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'none' }) · packages/ui/src/molecules/article-feature/useArticleFeature.ts; see Surface anatomy
+    - surfaceVariants({ tone: 'surface-1', elevation: 1, radius: 'md', padding: 'none' }) · packages/ui/src/molecules/color-swatch-group/useColorSwatchGroup.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'xl' }) · packages/ui/src/molecules/community-card/useCommunityCard.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-2', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/molecules/community-card/useCommunityCard.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'lg' }) · packages/ui/src/molecules/list-item/useListItem.ts; see Surface anatomy
@@ -4324,7 +4352,7 @@ Not exported:
 
 - absolute-deadline-text: deadlineText; approved; Countdown (propNaming[] · skills/_shared/prop-naming.json)
 - accent-line-break: accentBreak; approved; Heading, SectionHeader, Text (propNaming[] · skills/_shared/prop-naming.json)
-- accessible-name: label; approved; AppIcon, Avatar, ButtonGroup, CalendarGrid, Carousel, CarouselItem, ChipGroup, ChipGroupOption, CommandPalette, CommandPaletteItem, Countdown, Dropzone, Field, FooterNavigation, FooterNavigationItem, Gauge, GaugeGroup, GaugeGroupRing, Icon, IconButton, Isotipo3D, Kbd, Logo, MeterRow, ModuleRail, NavList, NowStrip, PopoverContent, ProgressBar, ProjectCardCode, RadioGroup, SearchTrigger, SectionNav, SelectTile, SelectTileOption, Slider, SocialLinkItem, SocialLinks, Spinner, Stat, TabBar, Table, Tabs, TerminalCard, Timeline, ToastProvider, Toggle, TopBar (propNaming[] · skills/_shared/prop-naming.json)
+- accessible-name: label; approved; AppIcon, Avatar, ButtonGroup, CalendarGrid, Carousel, CarouselItem, ChipGroup, ChipGroupOption, ColorSwatchGroup, ColorSwatchGroupOption, CommandPalette, CommandPaletteItem, Countdown, Dropzone, Field, FooterNavigation, FooterNavigationItem, Gauge, GaugeGroup, GaugeGroupRing, Icon, IconButton, Isotipo3D, Kbd, Logo, MeterRow, ModuleRail, NavList, NowStrip, PopoverContent, ProgressBar, ProjectCardCode, RadioGroup, SearchTrigger, SectionNav, SelectTile, SelectTileOption, Slider, SocialLinkItem, SocialLinks, Spinner, Stat, TabBar, Table, Tabs, TerminalCard, Timeline, ToastProvider, Toggle, TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - action-alternative-text: actionAltText; approved; Toast (propNaming[] · skills/_shared/prop-naming.json)
 - active-row: activeRowId; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
 - active-section-id: activeId; approved; SectionNav (propNaming[] · skills/_shared/prop-naming.json)
@@ -4342,7 +4370,7 @@ Not exported:
 - carousel-track-layout: trackLayout; approved; Carousel (propNaming[] · skills/_shared/prop-naming.json)
 - character-counter: counter; approved; Field (propNaming[] · skills/_shared/prop-naming.json)
 - checked-change: onCheckedChange; approved; Checkbox, Switch (propNaming[] · skills/_shared/prop-naming.json)
-- choice-options: options; approved; ChipGroup, RadioGroup, Select, SelectTile (propNaming[] · skills/_shared/prop-naming.json)
+- choice-options: options; approved; ChipGroup, ColorSwatchGroup, RadioGroup, Select, SelectTile (propNaming[] · skills/_shared/prop-naming.json)
 - choreography-zone-table: zoneTable; approved; HomeTemplate (propNaming[] · skills/_shared/prop-naming.json)
 - clock-initialization-message: initializingText; approved; Countdown (propNaming[] · skills/_shared/prop-naming.json)
 - close-auto-focus: onCloseAutoFocus; approved; PopoverContent (propNaming[] · skills/_shared/prop-naming.json)
@@ -4411,7 +4439,7 @@ Not exported:
 - interaction-interactive-mode: interactive; approved; Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
 - interaction-modality: modal; approved; Popover (propNaming[] · skills/_shared/prop-naming.json)
 - interaction-pose-change: onPoseChange; approved; Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
-- interactive-value-change: onValueChange; approved; Carousel, ChipGroup, RadioGroup, Select, SelectTile, Slider, Table, Tabs (propNaming[] · skills/_shared/prop-naming.json)
+- interactive-value-change: onValueChange; approved; Carousel, ChipGroup, ColorSwatchGroup, RadioGroup, Select, SelectTile, Slider, Table, Tabs (propNaming[] · skills/_shared/prop-naming.json)
 - item-presentation-status: status; approved; CalendarGridEntry, ListItem, ModuleCard (propNaming[] · skills/_shared/prop-naming.json)
 - keyboard-shortcut-hint: shortcut; approved; CommandPaletteItem, MenuEntry, SearchTrigger (propNaming[] · skills/_shared/prop-naming.json)
 - label-layout: layout; approved; Field (propNaming[] · skills/_shared/prop-naming.json)
@@ -4446,7 +4474,7 @@ Not exported:
 - pressed-change: onPressedChange; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - pressed-state: pressed; approved; Chip, Toggle (propNaming[] · skills/_shared/prop-naming.json)
 - preview-thumbnail: thumb; approved; SelectTileOption (propNaming[] · skills/_shared/prop-naming.json)
-- primary-value: value; approved; Carousel, CarouselItem, ChipGroup, ChipGroupOption, Gauge, GaugeGroupRing, MeterRow, ProgressBar, RadioGroup, SectionNav, Select, SelectTile, SelectTileOption, Slider, Stat, Table, Tabs (propNaming[] · skills/_shared/prop-naming.json)
+- primary-value: value; approved; Carousel, CarouselItem, ChipGroup, ChipGroupOption, ColorSwatchGroup, ColorSwatchGroupOption, Gauge, GaugeGroupRing, MeterRow, ProgressBar, RadioGroup, SectionNav, Select, SelectTile, SelectTileOption, Slider, Stat, Table, Tabs (propNaming[] · skills/_shared/prop-naming.json)
 - product-identity: product; approved; ModuleRail, Sidebar (propNaming[] · skills/_shared/prop-naming.json)
 - quotation-source: source; approved; PullQuote (propNaming[] · skills/_shared/prop-naming.json)
 - quotation-text: text; approved; PullQuote (propNaming[] · skills/_shared/prop-naming.json)

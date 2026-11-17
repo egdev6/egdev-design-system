@@ -11,7 +11,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 |---|---|
 | mantener | 30 |
 | mover | 30 |
-| nuevo | 27 |
+| nuevo | 28 |
 | extraer | 12 |
 | componer | 5 |
 | absorber | 4 |
@@ -21,7 +21,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 
 | Destino | Componentes |
 |---|---|
-| @egdev/ui | 103 |
+| @egdev/ui | 104 |
 | @egdev/effects | 5 |
 | Mando | 6 |
 | Cadencia | 1 |
@@ -91,6 +91,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **Field** | Field (átomo) | Label + Slot | Label, VisuallyHidden, FieldMessage, Input\|Textarea\|Select\|Slider\|Checkbox\|Switch | separar | Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/84): coordinates one control with a required visible/hidden label, FieldMessage hint or replacing error, non-error hintTone, optional counter and Slider readout. Stacked/choice layouts and the opt-in v0.4 `choice-trailing` text-first Switch/Checkbox layout, child-first Slot descriptions, compatible-child invalid semantics and single disabled opacity per owned part. Controls own value, interaction and Material; FieldMessage annotation paragraphs, no implicit live region, stylesheet, ref or asChild. The [v0.2 amendment](components/field/v0.2/message-amendment.md) preserves existing hint/error inputs. |
 | **Menu** | MenuList (popup) (molécula) | DropdownMenu | Icon, Kbd, Surface recipe | separar | Implemented data-driven action menu under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/89) plus A1/A2: action/link/separator/label entries, one submenu level, optional non-interactive header and controlled/uncontrolled visibility. Radix owns trigger keys, focus, ARIA, portals and collision handling; Escape closes the entire menu. Shared Surface overlay recipe, decorative Icon and display-only Kbd. No stylesheet, native forwarding, ref or public subcomponents; legacy menu styles unchanged. |
 | **ChipGroup** | — | ToggleGroup | Chip (chipVariants recipe) | nuevo | Implemented React molecule under [approved v0.1 + A1](https://github.com/egdev6/egdev-design-system/issues/81): named single/multiple filter pills, Radix-owned selection and horizontal looping roving focus. Reuses chipVariants without nesting Chip; selected labels add a token underline. Unpainted wrapping root; no form API, ref, asChild, stylesheet or extra internal modules. A1 changes Storybook value/defaultValue metadata only. |
+| **ColorSwatchGroup** | — | RadioGroup | Surface recipe, Icon; native color input | nuevo | Working-tree controlled color choice under the [approved v0.1 contract](components/color-swatch-group/v0.1/spec.md): named preset radios and an optional sibling native picker share one consumer-owned hex value. Only validated six-digit colors paint decorative patches through the bounded static utility; no stylesheet, native form API, ref, asChild, token or dependency change. Browser, accessibility, contrast and visual conformity remain pending. |
 | **ButtonGroup** | `.eg-btn-split` (sin ficha) | — | Button, IconButton (consumer children) | extraer | Implemented under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/79): passive div role=group with optional label, spaced wrapping or attached logical inner corners and focus stacking. Children own Material, sizing, refs and interaction; no built-in Menu or arrow navigation. No stylesheet; legacy split/join rules remain. Browser visual conformity not evaluated. |
 | **Tabs** | Tabs (molécula) | Tabs | Surface well recipe; own counter part | mantener | Implemented React molecule under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/107): data-driven horizontal sibling views with Radix-owned automatic activation, keyboard/focus/ARIA and controlled/uncontrolled selection. Underline md/sm or single-height segmented list composing the existing Surface well recipe; v0.2 adds opt-in segmented fullWidth and labelWrap layouts, with visible overflow scrolling. Raw neutral/danger counters are owned parts, not Badge overrides. Inactive contents unmount while hidden panel wrappers preserve relationships. No public parts, ref, asChild or stylesheet; legacy `.eg-tabs*` remains unchanged. |
 | **NavList** | MenuList --nav (molécula) | Collapsible | Icon, Badge, StatusDot, VisuallyHidden, Surface recipe | separar | Implemented named in-flow navigation under [approved v0.2 contract](https://github.com/egdev6/egdev-design-system/issues/92): native links, consumer-supplied aria-current, static groups and independent Radix disclosures, raw counters, readable tags/signals/warnings. Current rows compose surfaceVariants; the host owns the panel and routing. Entry discriminant kind; no stylesheet, ref, asChild, tree/menu semantics or route inference. Legacy MenuList navigation remains unchanged. |

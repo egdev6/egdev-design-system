@@ -1,0 +1,94 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve only the ColorSwatchGroup customLabel scoped accessible-name exception and its corresponding convention payload amendment.",
+  "evidence": {
+    "channel": "Owner decision in session on 2026-11-17, recorded in the approved spec and PR #455",
+    "ownerChoice": "Sí, igual que el 1 y 2",
+    "specPath": "docs/components/color-swatch-group/v0.1/spec.md",
+    "specWholeFileSHA256": "sha256:09a8acb70d1db2fac00f1ef2901f0545fbc78a87d34936c7df9ebbb75abe1cf4",
+    "interpretation": "The approved ColorSwatchGroup spec includes this exception. The parent confirmed the convention payload amendment is limited to that exception; no broader naming convention change or global alias is approved."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json",
+      "wholeFileSHA256": "sha256:5034c36b063f4e3128a912e23f497ee9196e7e057e50fba94deb7a25eac2a717"
+    },
+    {
+      "path": "docs/components/panel/v0.3/heading-foreground-exception-approval.json",
+      "wholeFileSHA256": "sha256:f8b82b012da6e5d38af1dcd11bc9607f2c1a4d524c2575ad3ee915b44d0e2b17"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [
+    {
+      "id": "accessible-name",
+      "previousReference": "docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json",
+      "previousContentHash": "sha256:36e573d8e9406d1cbedf973331aee3d0b46f628b0c5f21263f0432581fbd519b",
+      "changedFields": ["exceptions"],
+      "boundary": "ColorSwatchGroup customLabel only; the existing convention, aliases, other exceptions and usages remain unchanged."
+    }
+  ],
+  "entries": [
+    {
+      "scope": "convention:accessible-name",
+      "contentHash": "sha256:0251f2bcfcfcd18f8f614b30c8b42ced530d7bdb59385f9f53afb27c3df8ee78",
+      "convention": {
+        "id": "accessible-name",
+        "name": "label",
+        "meaning": "The accessible name of the control or displayed magnitude.",
+        "whenToUse": "The public API owns an explicit accessible-name input.",
+        "avoid": "Assuming Surface has this prop or using it as a generic visible caption.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": [
+          {
+            "scope": "SectionNav",
+            "propName": "disclosureLabel",
+            "reason": "Required localized accessible name of the index disclosure button, distinct from label naming the landmark and dialog.",
+            "approval": {
+              "reference": "docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json",
+              "scope": "exception:accessible-name:SectionNav:disclosureLabel",
+              "contentHash": "sha256:429b45c066db4125640c9348869425ad2099a82e69954b9509a43a92495edc35"
+            }
+          },
+          {
+            "scope": "SectionNav",
+            "propName": "nextLabel",
+            "reason": "Required localized accessible name of the next-section link, distinct from label naming the landmark and dialog.",
+            "approval": {
+              "reference": "docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json",
+              "scope": "exception:accessible-name:SectionNav:nextLabel",
+              "contentHash": "sha256:656cf60f41cfadef6cba70507a34c86137b0c0a5a6ad4c386913b80739bbddce"
+            }
+          },
+          {
+            "scope": "ColorSwatchGroup",
+            "propName": "customLabel",
+            "reason": "Names the separate optional native color input while label names the group",
+            "approval": {
+              "reference": "docs/components/color-swatch-group/v0.1/prop-naming-approval.json",
+              "scope": "exception:accessible-name:ColorSwatchGroup:customLabel",
+              "contentHash": "sha256:8bb6297a15a522b4d9fed64724a64efb74ec5abd1573b4cefc232213e11fccfd"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "scope": "exception:accessible-name:ColorSwatchGroup:customLabel",
+      "contentHash": "sha256:8bb6297a15a522b4d9fed64724a64efb74ec5abd1573b4cefc232213e11fccfd",
+      "exception": {
+        "scope": "ColorSwatchGroup",
+        "propName": "customLabel",
+        "reason": "Names the separate optional native color input while label names the group"
+      },
+      "source": {
+        "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
+        "symbol": "ColorSwatchGroupProps.customLabel",
+        "revision": "sha256:6e52ed0be8db660730c84b1cd9d1cf0ed7bc974dc75947a24854c0bafdcf71c4"
+      }
+    }
+  ]
+}
