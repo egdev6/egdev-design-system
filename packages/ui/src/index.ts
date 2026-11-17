@@ -216,6 +216,7 @@ export { Surface, surfaceVariants } from './primitives/surface';
 export type {
   HeadingLevel,
   HeadingProps,
+  TextForeground,
   TextProps,
   TextTone,
   TextVariant,

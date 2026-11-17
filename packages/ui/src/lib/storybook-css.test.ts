@@ -150,6 +150,20 @@ function rule(selector: string) {
 }
 
 describe('Storybook preview CSS', () => {
+  it('compiles Text body typography, semantic foregrounds and descendant emphasis', () => {
+    for (const size of ['body-default', 'body-large', 'body-muted']) {
+      expect(rule(`.text-${size}`)).toMatch(new RegExp(`font-size:\\s*var\\(--text-${size}[,)]`));
+    }
+    for (const color of ['fg-default', 'fg-secondary', 'fg-muted', 'status-warning', 'status-danger', 'fg-on-flood']) {
+      expect(rule(`.text-${color}`)).toMatch(new RegExp(`color:\\s*var\\(--color-${color}[,)]`));
+    }
+    const selector = String.raw`.\[\&_strong\]\:\[font-weight\:var\(--text-heading-small--font-weight\)\]`;
+    const index = css.indexOf(selector);
+    expect(index).toBeGreaterThanOrEqual(0);
+    expect(css.slice(index, index + 300)).toMatch(
+      /strong[\s\S]*font-weight:\s*var\(--text-heading-small--font-weight\)/
+    );
+  });
   it('emits Button label wrapping utilities from the production scan', () => {
     expect(rule('.whitespace-normal')).toMatch(/white-space:\s*normal/);
     expect(rule('.wrap-anywhere')).toMatch(/overflow-wrap:\s*anywhere/);

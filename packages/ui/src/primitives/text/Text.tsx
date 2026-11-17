@@ -4,7 +4,8 @@ import type { TextProps } from './types';
 import { useText } from './useText';
 
 /**
- * Non-heading display copy or a diamond-prefixed eyebrow with an optional trailing accent.
+ * Non-heading body copy, display copy or a diamond-prefixed eyebrow. Display recipes may have a
+ * trailing accent; body recipes support semantic strong content and a foreground selection.
  * Passive typography with no public ref; an asChild child keeps its own ref through Slot.
  */
 export const Text: FC<TextProps> = (props) => {

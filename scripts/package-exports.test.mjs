@@ -4109,6 +4109,19 @@ test('UI ships the approved Text and Heading title recipes without an applicatio
   ]) {
     assert.match(rule(selector), new RegExp(`color:\\s*var\\(${token}`));
   }
+  for (const size of ['body-default', 'body-large', 'body-muted']) {
+    assert.match(rule(`.text-${size}`), new RegExp(`font-size:\\s*var\\(--text-${size}`));
+  }
+  for (const color of ['fg-default', 'fg-secondary', 'fg-muted', 'status-warning', 'status-danger', 'fg-on-flood']) {
+    assert.match(rule(`.text-${color}`), new RegExp(`color:\\s*var\\(--color-${color}`));
+  }
+  const emphasis = String.raw`.\[\&_strong\]\:\[font-weight\:var\(--text-heading-small--font-weight\)\]`;
+  const emphasisIndex = utilities.indexOf(emphasis);
+  assert.ok(emphasisIndex >= 0, 'Packed styles must contain the escaped body emphasis selector');
+  assert.match(
+    utilities.slice(emphasisIndex, emphasisIndex + 400),
+    /strong[\s\S]*font-weight:\s*var\(--text-heading-small--font-weight\)/
+  );
   assert.match(rule('.text-label-eyebrow'), /font-size:\s*var\(--text-label-eyebrow/);
   assert.match(rule('.font-display'), /font-family:\s*var\(--font-display/);
   assert.match(rule('.uppercase'), /text-transform:\s*uppercase\s*;/);
@@ -5838,6 +5851,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'TerminalCardRow',
     'TerminalCardTone',
     'Text',
+    'TextForeground',
     'TextProps',
     'TextTone',
     'TextVariant',
@@ -6418,6 +6432,32 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     hero.includes('[text-shadow:var(--text-shadow-title-hero)]') && hero.includes('inline'),
     'Canvas hero accent glows inline'
   );
+  const body = renderToString(
+    createElement(
+      exported.Text,
+      { variant: 'body-large', foreground: 'warning', lang: 'en' },
+      'Read ',
+      createElement('strong', null, 'important'),
+      ' copy.'
+    )
+  );
+  assert.match(body, /^<p\b/);
+  assert.match(body, /text-body-large/);
+  assert.match(body, /text-status-warning/);
+  assert.match(body, /Read <strong>important<\/strong> copy\./);
+  assert.doesNotMatch(body, /foreground=|aria-live=|tabindex=|role=/);
+  const bodySlot = renderToString(
+    createElement(
+      exported.Text,
+      { variant: 'lede', asChild: true, foreground: 'on-flood', lang: 'en' },
+      createElement('span', null, 'Before ', createElement('strong', null, 'important'), ' after')
+    )
+  );
+  assert.match(bodySlot, /^<span\b/);
+  assert.match(bodySlot, /text-body-muted/);
+  assert.match(bodySlot, /text-fg-on-flood/);
+  assert.match(bodySlot, /Before <strong>important<\/strong> after/);
+  assert.doesNotMatch(bodySlot, /foreground=|aria-live=|tabindex=|role=/);
   assert.doesNotMatch(eyebrow + heading + hero, /aria-live=|tabindex=|role=|aria-level=/);
   // Surface resolves its Material recipe as static CVA utilities on a passive div or slotted child.
   const surface = renderToString(createElement(exported.Surface, null, 'Card'));

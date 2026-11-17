@@ -1,0 +1,74 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-owner-delegation",
+  "decision": "Approve the Text-only foreground exception to surface-material-tone, without a global alias or a new token.",
+  "evidence": {
+    "channel": "Owner session 2026-11-17, forwarded in the approved Text v0.2 amendment and parent task",
+    "ownerChoice": "pues termina el 1 y luego el 2. Sigue hasta terminar ambos. Aplica las recomendaciones y mergea los prs. Puede paralelizar en hasta 3 subagentes hasta terminar",
+    "provenance": "odd/tasks/milestones-1-2-delivery.md L1; approved Text v0.2 body-tone-amendment.md Approval section; odd/tasks/text-body-foreground.md S6 and L1",
+    "amendmentPayloadSHA256": "sha256:8dc92d7052a5e2c70e6d54097d9d1b0abd1b8fa600253d021493ea5ff3842667",
+    "interpretation": "The recommended D2 scoped exception was approved with the amendment. This is not a native review or approval of new tokens."
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "wholeFileSHA256": "sha256:a615c560018e7d142a9e627d85ba101c57c35a5289abf2fa48bf1cec0b69903b"
+    },
+    {
+      "path": "docs/components/home-template/v0.1/prop-naming-approval.json",
+      "wholeFileSHA256": "sha256:0555ab82fdcbd1ce6082f8cdb0ade8fada55954c06a3f1dd9fe478aaef21c2cd"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [
+    {
+      "id": "surface-material-tone",
+      "previousReference": "docs/decisions/prop-naming-atom-specs-approval.json",
+      "previousContentHash": "sha256:66b858751fbc6e67d40aedf1ebf1ca4e8cf76ea08cecf27fb5ce0d79122ae18f",
+      "changedFields": ["exceptions"],
+      "boundary": "Text foreground on body recipes only; the existing tone convention and other components are unchanged."
+    }
+  ],
+  "entries": [
+    {
+      "scope": "convention:surface-material-tone",
+      "contentHash": "sha256:9c3648b25759ddbb580b8cd3dbd6eeeedf82142e7f0a73ad5ecf99dcf22e1ba2",
+      "convention": {
+        "id": "surface-material-tone",
+        "name": "tone",
+        "meaning": "A component's color tone: a semantic status family or a material surface tone; values are component-specific.",
+        "whenToUse": "Select the tone family a component supports, such as Badge or Mark status tones.",
+        "avoid": "A consumer-selected measurement condition (use state), arbitrary colors, or assuming every component exposes the same tone values.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": [
+          {
+            "scope": "Text",
+            "propName": "foreground",
+            "reason": "Text.tone already selects display-accent material context; semantic body foreground must coexist without overloading it",
+            "approval": {
+              "reference": "docs/components/text/v0.2/foreground-exception-approval.json",
+              "scope": "exception:surface-material-tone:Text:foreground",
+              "contentHash": "sha256:b62666b1c6576fce0700d25571d5fdfbcf0e6381d2e13f8dd052b56ee4e87d04"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "scope": "exception:surface-material-tone:Text:foreground",
+      "contentHash": "sha256:b62666b1c6576fce0700d25571d5fdfbcf0e6381d2e13f8dd052b56ee4e87d04",
+      "exception": {
+        "scope": "Text",
+        "propName": "foreground",
+        "reason": "Text.tone already selects display-accent material context; semantic body foreground must coexist without overloading it"
+      },
+      "source": {
+        "path": "packages/ui/src/primitives/text/types.ts",
+        "symbol": "TextProps",
+        "revision": "sha256:7c4907d2f3aa220550309b32a1262e2a4ed69ed940c586801115814f01217d7d"
+      }
+    }
+  ]
+}

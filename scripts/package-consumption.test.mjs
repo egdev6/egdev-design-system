@@ -288,6 +288,7 @@ import type {
   StackProps,
   HeadingLevel,
   HeadingProps,
+  TextForeground,
   TextProps,
   TextTone,
   TextVariant,
@@ -2378,6 +2379,22 @@ const textVariant = 'eyebrow' satisfies TextVariant;
 const raisedTone: TextTone = 'raised';
 export const headingHero: HeadingProps = { children: 'Build ', variant: titleVariant, accent: 'in public', id: 'title-hero' };
 export const textRaised: TextProps = { children: 'Ship ', variant: 'section', tone: raisedTone, accent: 'today', accentBreak: false };
+const bodyForeground: TextForeground = 'warning';
+export const bodyText: TextProps = { variant: 'body-large', foreground: bodyForeground, children: 'Copy' };
+export const ledeText: TextProps = { variant: 'lede', foreground: 'on-flood', children: 'Copy' };
+// @ts-expect-error Body does not accept the display accent context.
+const bodyTone: TextProps = { variant: 'body', tone: 'raised', children: 'Copy' };
+// @ts-expect-error Body does not accept a trailing display accent.
+const bodyAccent: TextProps = { variant: 'body-large', accent: 'No', children: 'Copy' };
+// @ts-expect-error Body does not accept accent layout.
+const bodyAccentBreak: TextProps = { variant: 'lede', accentBreak: false, children: 'Copy' };
+// @ts-expect-error Foreground is body-only, not a section title option.
+const sectionForeground: TextProps = { variant: 'section', foreground: 'warning', children: 'Copy' };
+// @ts-expect-error Foreground is body-only, not an eyebrow option.
+const eyebrowForeground: TextProps = { variant: 'eyebrow', foreground: 'warning', children: 'Copy' };
+// @ts-expect-error Foreground is body-only, not an inverse title option.
+const inverseForeground: TextProps = { variant: 'inverse', foreground: 'warning', children: 'Copy' };
+export type TextBodyNegatives = [typeof bodyTone, typeof bodyAccent, typeof bodyAccentBreak, typeof sectionForeground, typeof eyebrowForeground, typeof inverseForeground];
 type TypographySampleProps = { headingLevel?: HeadingLevel };
 export function TypographySamples({ headingLevel = 1 }: TypographySampleProps) {
   return createElement('section', { 'aria-labelledby': 'title-hero' },
@@ -2386,6 +2403,9 @@ export function TypographySamples({ headingLevel = 1 }: TypographySampleProps) {
     createElement(Heading, { variant: 'display', accent: '.', accentBreak: false, id: 'title-punctuation', children: 'Talk' }),
     createElement(Heading, { variant: 'inverse', accent: 'time', id: 'title-inverse', children: 'Show ' }),
     createElement(Text, { ...textRaised, id: 'title-raised' }),
+    createElement(Text, { ...bodyText, id: 'text-body', lang: 'en', children: ['Read ', createElement('strong', { key: 'strong' }, 'important'), ' copy.'] }),
+    createElement(Text, { ...ledeText, id: 'text-lede', asChild: true, children: createElement('span', { lang: 'fr' }, 'Before ', createElement('strong', null, 'important'), ' after') }),
+    createElement(Text, { variant: 'body', id: 'text-inherit', children: 'Inherited copy' }),
     createElement(Text, { variant: 'section', accent: 'inline', accentBreak: false, asChild: true,
       children: createElement('span', { id: 'title-slotted', className: 'consumer-span' }, 'Slotted ') }));
 }
@@ -5234,6 +5254,14 @@ for (const utility of ['.flex-col', '.flex-nowrap', '.flex-row', '.flex-wrap', '
 for (const utility of ['.text-title-section', '.text-title-hero', '.text-title-show', '.text-title-display', '.text-fg-brand-raised', '.text-fg-on-flood', 'text-shadow: var(--text-shadow-title-hero)', '.before\\\\:rotate-45']) {
   assert.ok(shippedStyles.includes(utility), 'Packed styles must retain typography utility ' + utility);
 }
+for (const utility of ['.text-body-default', '.text-body-large', '.text-body-muted', '.text-status-warning', '.text-status-danger', '.text-fg-on-flood']) {
+  assert.ok(shippedStyles.includes(utility), 'Packed styles must retain body utility ' + utility);
+}
+const emphasisClass = '[&_strong]:[font-weight:var(--text-heading-small--font-weight)]';
+const emphasisSelector = '.' + emphasisClass.replace(/[^a-zA-Z0-9_-]/g, (char) => String.fromCharCode(92) + char);
+const emphasisIndex = shippedStyles.indexOf(emphasisSelector);
+assert.ok(emphasisIndex >= 0, 'Packed CSS must retain the escaped strong selector');
+assert.ok(shippedStyles.slice(emphasisIndex, emphasisIndex + 400).includes('font-weight: var(--text-heading-small--font-weight)'), 'Packed strong weight must use the token');
 assert.doesNotMatch(shippedStyles, /\\.eg-(?:text|heading)\\s*[,{]/, 'Text/Heading markers must not become shipped CSS rules');
 ${assertSurfaceCSS.toString()}
 assertSurfaceCSS(shippedStyles);
@@ -7418,6 +7446,24 @@ for (const frame of [square, wide]) {
   const raised = document.getElementById('title-raised').querySelector('.eg-text__accent');
   assert.ok(raised.classList.contains('text-fg-brand-raised') && raised.classList.contains('inline'));
   assert.ok(raised.className.includes('[text-shadow:none]'));
+  const body = document.getElementById('text-body');
+  assert.equal(body.tagName, 'P');
+  assert.equal(body.getAttribute('lang'), 'en');
+  assert.ok(body.classList.contains('text-body-large') && body.classList.contains('text-status-warning'));
+  assert.ok(body.classList.contains('[&_strong]:[font-weight:var(--text-heading-small--font-weight)]'));
+  assert.equal(body.textContent, 'Read important copy.');
+  assert.equal(body.querySelector('strong').textContent, 'important');
+  const bodySlot = document.getElementById('text-lede');
+  assert.equal(bodySlot.tagName, 'SPAN');
+  assert.equal(bodySlot.getAttribute('lang'), 'fr');
+  assert.ok(bodySlot.classList.contains('text-body-muted') && bodySlot.classList.contains('text-fg-on-flood'));
+  assert.equal(bodySlot.textContent, 'Before important after');
+  const inherited = document.getElementById('text-inherit');
+  assert.ok(inherited.classList.contains('text-body-default'));
+  assert.equal([...inherited.classList].some((name) => name.startsWith('text-fg-') || name.startsWith('text-status-')), false);
+  for (const node of [body, bodySlot, inherited]) {
+    for (const attribute of ['foreground', 'role', 'tabindex', 'aria-live']) assert.equal(node.hasAttribute(attribute), false);
+  }
   const slotted = document.getElementById('title-slotted');
   assert.equal(slotted.tagName, 'SPAN', 'asChild must render the single slotted element');
   assert.ok(slotted.classList.contains('eg-text') && slotted.classList.contains('consumer-span'));
