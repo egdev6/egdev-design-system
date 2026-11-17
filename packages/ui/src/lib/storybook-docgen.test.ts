@@ -1736,6 +1736,7 @@ describe('Storybook TypeScript docgen contract', () => {
       'Cluster',
       'Collapsible',
       'CollapsibleContent',
+      'CollapsibleHeader',
       'CollapsibleTrigger',
       'CommandPalette',
       'CommunityCard',
@@ -4904,9 +4905,19 @@ describe('Collapsible first-wave metadata contract', () => {
     defaultOpen: 'boolean',
     onOpenChange: 'false',
     children: 'false',
-    disabled: 'boolean'
+    disabled: 'boolean',
+    actions: 'false',
+    padding: 'select',
+    presence: 'select',
+    motion: 'select'
   };
-  const constants: Record<string, string> = { defaultOpen: 'false', disabled: 'false' };
+  const constants: Record<string, string> = {
+    defaultOpen: 'false',
+    disabled: 'false',
+    padding: 'md',
+    presence: 'unmount',
+    motion: 'default'
+  };
   const parts: { name: string; native: string[]; own: string[] }[] = [
     {
       name: 'Collapsible',
@@ -4928,12 +4939,17 @@ describe('Collapsible first-wave metadata contract', () => {
         'aria-label',
         'aria-labelledby'
       ],
-      own: ['children']
+      own: ['children', 'motion']
+    },
+    {
+      name: 'CollapsibleHeader',
+      native: ['id', 'title', 'dir', 'aria-describedby', 'className'],
+      own: ['children', 'actions']
     },
     {
       name: 'CollapsibleContent',
       native: ['title', 'dir', 'aria-describedby', 'className', 'role', 'aria-label', 'aria-labelledby'],
-      own: ['children']
+      own: ['children', 'padding', 'presence']
     }
   ];
 
@@ -4943,10 +4959,11 @@ describe('Collapsible first-wave metadata contract', () => {
       'ControlledDisclosure',
       'UncontrolledDisclosure',
       'CollapsibleProps',
+      'CollapsibleHeaderProps',
       'CollapsibleTriggerProps',
       'CollapsibleContentProps'
     ]);
-    expect(properties).toHaveLength(10);
+    expect(properties).toHaveLength(15);
     expect([...new Set(properties.map((property) => property.name.getText(file)))].sort()).toEqual(
       Object.keys(controls).sort()
     );
@@ -4999,10 +5016,8 @@ describe('Collapsible first-wave metadata contract', () => {
           expect(tags.controlReason).toBeTruthy();
         }
       }
-      if (name === 'Collapsible') {
-        for (const prop of own) {
-          expect(normalize(doc.props[prop]?.defaultValue?.value ?? ''), name + '.' + prop).toBe(constants[prop] ?? '');
-        }
+      for (const prop of own) {
+        expect(normalize(doc.props[prop]?.defaultValue?.value ?? ''), name + '.' + prop).toBe(constants[prop] ?? '');
       }
     }
   }, 20_000);

@@ -47,8 +47,13 @@ export * from './molecules/button-group';
 export * from './molecules/carousel';
 export type { ChipGroupOption, ChipGroupProps, ChipGroupType } from './molecules/chip-group';
 export { ChipGroup } from './molecules/chip-group';
-export type { CollapsibleContentProps, CollapsibleProps, CollapsibleTriggerProps } from './molecules/collapsible';
-export { Collapsible, CollapsibleContent, CollapsibleTrigger } from './molecules/collapsible';
+export type {
+  CollapsibleContentProps,
+  CollapsibleHeaderProps,
+  CollapsibleProps,
+  CollapsibleTriggerProps
+} from './molecules/collapsible';
+export { Collapsible, CollapsibleContent, CollapsibleHeader, CollapsibleTrigger } from './molecules/collapsible';
 export * from './molecules/command-palette';
 export * from './molecules/community-card';
 export * from './molecules/dialog';

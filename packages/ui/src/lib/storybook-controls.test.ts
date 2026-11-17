@@ -83,6 +83,7 @@ const components = [
   ['PanelBody', 'molecules/panel'],
   ['PanelFooter', 'molecules/panel'],
   ['Collapsible', 'molecules/collapsible'],
+  ['CollapsibleHeader', 'molecules/collapsible'],
   ['CollapsibleTrigger', 'molecules/collapsible'],
   ['CollapsibleContent', 'molecules/collapsible'],
   ['GaugeGroup', 'molecules/gauge-group'],
@@ -309,8 +310,9 @@ const expected: Record<string, Record<string, string | false>> = {
   panelbody: { children: false },
   panelfooter: { children: false },
   collapsible: { open: 'boolean', defaultOpen: 'boolean', onOpenChange: false, children: false, disabled: 'boolean' },
-  collapsibletrigger: { children: false },
-  collapsiblecontent: { children: false },
+  collapsibleheader: { children: false, actions: false },
+  collapsibletrigger: { children: false, motion: 'select' },
+  collapsiblecontent: { children: false, padding: 'select', presence: 'select' },
   modulecard: {
     title: 'text',
     level: 'select',
@@ -721,8 +723,9 @@ const ownPropCounts: Record<string, number> = {
   panelbody: 1,
   panelfooter: 1,
   collapsible: 5,
-  collapsibletrigger: 1,
-  collapsiblecontent: 1,
+  collapsibleheader: 2,
+  collapsibletrigger: 2,
+  collapsiblecontent: 3,
   modulecard: 10,
   nowcard: 5,
   nowcardbody: 2,
@@ -1069,6 +1072,31 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(argTypes.trackLayout?.table?.defaultValue?.summary).toBe('"default"');
     expect(args).toEqual({});
   });
+  it('maps Collapsible part controls and defaults through the registered pipeline', () => {
+    for (const name of ['CollapsibleHeader', 'CollapsibleTrigger', 'CollapsibleContent']) {
+      const metadata = component(name);
+      const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+      expect(mapJSDocControls(extract(metadata), metadata).diagnostics, name).toEqual([]);
+      expect(story(name).args).toEqual({});
+    }
+    const header = story('CollapsibleHeader').argTypes;
+    expect(header.children?.control).toBe(false);
+    expect(header.actions?.control).toBe(false);
+    expect(header.children?.type?.required).toBe(true);
+    const trigger = story('CollapsibleTrigger').argTypes;
+    expect(trigger.motion?.control).toEqual({ type: 'select' });
+    expect([...(trigger.motion?.options ?? [])].sort()).toEqual(['default', 'none']);
+    expect(trigger.motion?.table?.defaultValue?.summary).toBe('"default"');
+    const content = story('CollapsibleContent').argTypes;
+    expect(content.padding?.control).toEqual({ type: 'select' });
+    expect([...(content.padding?.options ?? [])].sort()).toEqual(['md', 'sm']);
+    expect(content.padding?.table?.defaultValue?.summary).toBe('"md"');
+    expect(content.presence?.control).toEqual({ type: 'select' });
+    expect([...(content.presence?.options ?? [])].sort()).toEqual(['keep-mounted', 'unmount']);
+    expect(content.presence?.table?.defaultValue?.summary).toBe('"unmount"');
+    expect(content.forceMount).toBeUndefined();
+  });
+
   it('maps Button labelWrap as an optional boolean control without an injected argument', () => {
     const metadata = component('Button');
     const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;

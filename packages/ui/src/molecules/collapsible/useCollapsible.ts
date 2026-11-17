@@ -4,10 +4,13 @@ import { buttonVariants } from '@/atoms/button/types';
 import { cn } from '@/lib/cn';
 import {
   type CollapsibleContentProps,
+  type CollapsibleHeaderProps,
   type CollapsibleProps,
   type CollapsibleTriggerProps,
+  collapsibleActionsVariants,
   collapsibleCaretVariants,
   collapsibleContentVariants,
+  collapsibleHeaderVariants,
   collapsibleLabelVariants,
   collapsibleTriggerVariants,
   collapsibleVariants
@@ -41,6 +44,12 @@ type RootResult = {
   rootProps: Omit<ComponentPropsWithoutRef<typeof CollapsiblePrimitive.Root>, 'children' | 'asChild'>;
   children: ReactNode;
 };
+type HeaderResult = {
+  headerProps: ComponentPropsWithoutRef<'div'>;
+  actionsProps: { className: string };
+  actions: ReactNode;
+  children: ReactNode;
+};
 type TriggerResult = {
   triggerProps: Omit<ComponentPropsWithoutRef<typeof CollapsiblePrimitive.Trigger>, 'children' | 'asChild'>;
   labelProps: { className: string };
@@ -48,10 +57,7 @@ type TriggerResult = {
   children: ReactNode;
 };
 type ContentResult = {
-  contentProps: Omit<
-    ComponentPropsWithoutRef<typeof CollapsiblePrimitive.Content>,
-    'children' | 'asChild' | 'forceMount'
-  >;
+  contentProps: Omit<ComponentPropsWithoutRef<typeof CollapsiblePrimitive.Content>, 'children' | 'asChild'>;
   children: ReactNode;
 };
 
@@ -71,27 +77,43 @@ export function useCollapsible(props: CollapsibleProps): RootResult {
   };
 }
 
-/** Reuse the neutral/md recipe only; Button/useButton would overwrite native open/closed data-state. */
-export function useCollapsibleTrigger(props: CollapsibleTriggerProps): TriggerResult {
-  const { children, className, ...rest } = props;
+/** Prepare an unpainted row and independent action wrapper without owning action state. */
+export function useCollapsibleHeader(props: CollapsibleHeaderProps): HeaderResult {
+  const { children, actions, className, ...rest } = props;
   return {
-    triggerProps: {
-      ...nativeProps(rest, TRIGGER_OWNED),
-      className: cn(buttonVariants({ variant: 'neutral', size: 'md' }), collapsibleTriggerVariants(), className)
-    },
-    labelProps: { className: cn(collapsibleLabelVariants()) },
-    caretProps: { className: cn(collapsibleCaretVariants()), 'aria-hidden': true },
+    headerProps: { ...nativeProps(rest, ROOT_OWNED), className: cn(collapsibleHeaderVariants(), className) },
+    actionsProps: { className: cn(collapsibleActionsVariants()) },
+    actions,
     children
   };
 }
 
-/** Prepare native presence-boundary props; Radix alone owns its id, hidden state and children lifetime. */
+/** Reuse the neutral/md recipe only; Button/useButton would overwrite native open/closed data-state. */
+export function useCollapsibleTrigger(props: CollapsibleTriggerProps): TriggerResult {
+  const { children, className, motion = 'default', ...rest } = props;
+  return {
+    triggerProps: {
+      ...nativeProps(rest, TRIGGER_OWNED),
+      className: cn(
+        buttonVariants({ variant: 'neutral', size: 'md' }),
+        collapsibleTriggerVariants({ motion }),
+        className
+      )
+    },
+    labelProps: { className: cn(collapsibleLabelVariants()) },
+    caretProps: { className: cn(collapsibleCaretVariants({ motion })), 'aria-hidden': true },
+    children
+  };
+}
+
+/** Radix owns its id and lifetime; retained closed content gets an explicit display reset. */
 export function useCollapsibleContent(props: CollapsibleContentProps): ContentResult {
-  const { children, className, ...rest } = props;
+  const { children, className, padding = 'md', presence = 'unmount', ...rest } = props;
   return {
     contentProps: {
       ...nativeProps(rest, CONTENT_OWNED),
-      className: cn(collapsibleContentVariants(), className)
+      forceMount: presence === 'keep-mounted' ? true : undefined,
+      className: cn(collapsibleContentVariants({ padding, presence }), className)
     },
     children
   };

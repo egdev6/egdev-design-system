@@ -1,0 +1,44 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Reuse trailing-actions and inner-padding for Collapsible; approve disclosure-presence and disclosure-motion as distinct conventions.",
+  "evidence": {
+    "channel": "Approved Collapsible v0.5 amendment and parent implementation task",
+    "ownerDelegation": "Apply the recommendations and merge the PRs, as recorded in odd/tasks/collapsible-actions.md L1 and the approved amendment's Approval section.",
+    "amendmentCanonicalSHA256": "sha256:ece44f5ae7a7a27fcbe7c8dfc4e646e1b8bb9c1f2195e520884e3e1626f7d11c",
+    "interpretation": "The amendment expressly approves its new naming conventions under owner delegation. This is not independent review or visual approval."
+  },
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:disclosure-presence",
+      "contentHash": "sha256:a5f91af4fc20e60c6521b47680727b874fb2ee9a473962427dacf026f79c3d41",
+      "convention": {
+        "id": "disclosure-presence",
+        "name": "presence",
+        "meaning": "Lifetime of a disclosed subtree when its disclosure is closed.",
+        "whenToUse": "Choose whether disclosed content unmounts or remains mounted while closed, as defined by the component.",
+        "avoid": "Visibility state, raw Radix forceMount or animation controls.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:disclosure-motion",
+      "contentHash": "sha256:e30765ac07f23167833bf9a14c5b8d28dc66a1987d9a9c46410e3da42b688a6e",
+      "convention": {
+        "id": "disclosure-motion",
+        "name": "motion",
+        "meaning": "Opt out of movement on a disclosure trigger and its decorative caret.",
+        "whenToUse": "Choose the component default movement or suppress the disclosure trigger and caret movement.",
+        "avoid": "Open state, general animation playback or compact presentation.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

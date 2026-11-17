@@ -6,8 +6,13 @@ import { hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
 import { describe, expect, expectTypeOf, it, vi } from 'vitest';
 import * as collapsiblePublic from './index';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './index';
-import type { CollapsibleContentProps, CollapsibleProps, CollapsibleTriggerProps } from './types';
+import { Collapsible, CollapsibleContent, CollapsibleHeader, CollapsibleTrigger } from './index';
+import type {
+  CollapsibleContentProps,
+  CollapsibleHeaderProps,
+  CollapsibleProps,
+  CollapsibleTriggerProps
+} from './types';
 import { useCollapsible, useCollapsibleContent, useCollapsibleTrigger } from './useCollapsible';
 
 function Parts({ label = 'History' }: { label?: string }) {
@@ -21,7 +26,11 @@ function Parts({ label = 'History' }: { label?: string }) {
 
 function LocalCounter() {
   const [count, setCount] = useState(0);
-  return <button onClick={() => setCount(count + 1)}>Count {count}</button>;
+  return (
+    <button type='button' onClick={() => setCount(count + 1)}>
+      Count {count}
+    </button>
+  );
 }
 
 function ExternalCloseExample() {
@@ -43,6 +52,204 @@ function ExternalCloseExample() {
     </Collapsible>
   );
 }
+
+describe('Collapsible sibling actions and options', () => {
+  it('keeps independent actions outside the Trigger in normal tab order', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    const onAction = vi.fn();
+    const { container } = render(
+      <Collapsible defaultOpen={true} onOpenChange={onOpenChange}>
+        <CollapsibleHeader actions={<button onClick={onAction}>Update</button>} className='mt-2 mt-4'>
+          <h2>
+            <CollapsibleTrigger>History</CollapsibleTrigger>
+          </h2>
+        </CollapsibleHeader>
+        <CollapsibleContent>
+          <button>Body action</button>
+        </CollapsibleContent>
+      </Collapsible>
+    );
+    const trigger = screen.getByRole('button', { name: 'History' });
+    const action = screen.getByRole('button', { name: 'Update' });
+    const header = container.querySelector('.eg-collapsible__header');
+    const wrapper = container.querySelector('.eg-collapsible__actions');
+    expect(header).toHaveClass(
+      'flex',
+      'flex-wrap',
+      'items-center',
+      'gap-2',
+      '[&>:first-child]:grow',
+      '[&>:first-child]:basis-14',
+      '[&>:first-child]:min-w-14',
+      'mt-4'
+    );
+    expect(header).not.toHaveClass('mt-2', 'p-2', 'p-4');
+    expect(wrapper).toHaveClass('flex', 'flex-initial', 'flex-wrap', 'max-w-full', 'gap-2');
+    expect(trigger.closest('h2')?.parentElement).toBe(header);
+    expect(wrapper?.parentElement).toBe(header);
+    expect(trigger.contains(action)).toBe(false);
+    await user.tab();
+    expect(trigger).toHaveFocus();
+    await user.tab();
+    expect(action).toHaveFocus();
+    await user.keyboard('{Enter} ');
+    await user.click(action);
+    expect(onAction).toHaveBeenCalledTimes(3);
+    expect(onOpenChange).not.toHaveBeenCalled();
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'Body action' })).toHaveFocus();
+    await user.tab({ shift: true });
+    expect(action).toHaveFocus();
+  });
+
+  it('keeps actions enabled when Root is disabled and omits an absent actions wrapper', async () => {
+    const user = userEvent.setup();
+    const action = vi.fn();
+    const change = vi.fn();
+    const { container, rerender } = render(
+      <Collapsible disabled={true} onOpenChange={change}>
+        <CollapsibleHeader actions={<button onClick={action}>Update</button>}>
+          <CollapsibleTrigger>History</CollapsibleTrigger>
+        </CollapsibleHeader>
+        <CollapsibleContent>Body</CollapsibleContent>
+      </Collapsible>
+    );
+    const trigger = screen.getByRole('button', { name: 'History' });
+    expect(trigger).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Update' })).toBeEnabled();
+    await user.click(screen.getByRole('button', { name: 'Update' }));
+    expect(action).toHaveBeenCalledTimes(1);
+    expect(change).not.toHaveBeenCalled();
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    rerender(
+      <Collapsible>
+        <CollapsibleHeader actions={null}>
+          <CollapsibleTrigger>History</CollapsibleTrigger>
+        </CollapsibleHeader>
+        <CollapsibleContent>Body</CollapsibleContent>
+      </Collapsible>
+    );
+    expect(container.querySelector('.eg-collapsible__actions')).toBeNull();
+  });
+
+  it('filters unsupported Header overrides without forwarding actions', () => {
+    const overrides = { style: { color: 'red' }, role: 'group', tabIndex: 0, contentEditable: true, asChild: true };
+    const { container } = render(
+      <Collapsible>
+        <CollapsibleHeader {...overrides} data-consumer='row' actions={<button>Update</button>}>
+          <CollapsibleTrigger>History</CollapsibleTrigger>
+        </CollapsibleHeader>
+        <CollapsibleContent>Body</CollapsibleContent>
+      </Collapsible>
+    );
+    const header = container.querySelector('.eg-collapsible__header');
+    expect(header).toHaveAttribute('data-consumer', 'row');
+    for (const name of ['style', 'role', 'tabindex', 'contenteditable', 'aschild', 'actions']) {
+      expect(header).not.toHaveAttribute(name);
+    }
+  });
+
+  it('preserves the original DOM without Header and uses padding presets without forwarding props', () => {
+    const { container, rerender } = render(
+      <Collapsible defaultOpen={true}>
+        <CollapsibleTrigger>History</CollapsibleTrigger>
+        <CollapsibleContent>Body</CollapsibleContent>
+      </Collapsible>
+    );
+    const root = container.querySelector('.eg-collapsible');
+    expect(root?.children).toHaveLength(2);
+    expect(root?.firstElementChild?.tagName).toBe('BUTTON');
+    expect(root?.lastElementChild).toHaveClass('eg-collapsible__content', 'p-4');
+    expect(container.querySelector('.eg-collapsible__header')).toBeNull();
+    rerender(
+      <Collapsible defaultOpen={true}>
+        <CollapsibleTrigger motion='default'>History</CollapsibleTrigger>
+        <CollapsibleContent padding='sm' presence='unmount'>
+          Body
+        </CollapsibleContent>
+      </Collapsible>
+    );
+    const trigger = screen.getByRole('button', { name: 'History' });
+    const content = container.querySelector('.eg-collapsible__content');
+    expect(createHash('sha256').update(trigger.className).digest('hex')).toBe(
+      '6b60044d6975fbe82a1af8e21206173a38079f3ea1dd0965e1e91dbd74442153'
+    );
+    expect(content).toHaveClass('p-2');
+    expect(content).not.toHaveClass('p-4');
+    expect(trigger).not.toHaveAttribute('motion');
+    expect(content).not.toHaveAttribute('padding');
+    expect(content).not.toHaveAttribute('presence');
+  });
+
+  it('retains a closed shell, form data, local state and independent native ids on reopen', async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <form>
+        <Collapsible defaultOpen={true}>
+          <CollapsibleTrigger>History</CollapsibleTrigger>
+          <CollapsibleContent presence='keep-mounted'>
+            <input name='note' defaultValue='Initial' />
+            <LocalCounter />
+          </CollapsibleContent>
+        </Collapsible>
+        <Collapsible>
+          <CollapsibleTrigger>Other</CollapsibleTrigger>
+          <CollapsibleContent presence='keep-mounted'>Other body</CollapsibleContent>
+        </Collapsible>
+      </form>
+    );
+    const trigger = screen.getByRole('button', { name: 'History' });
+    const shells = container.querySelectorAll('.eg-collapsible__content');
+    const shell = shells[0];
+    expect(shell?.id).toBeTruthy();
+    expect(shell?.id).not.toBe(shells[1]?.id);
+    expect(trigger).toHaveAttribute('aria-controls', shell?.id);
+    await user.click(screen.getByRole('button', { name: 'Count 0' }));
+    await user.click(trigger);
+    expect(shell).toHaveAttribute('data-state', 'closed');
+    expect(shell).toHaveClass('data-[state=closed]:hidden');
+    expect(shell?.querySelector('input')).toHaveValue('Initial');
+    expect(new FormData(container.querySelector('form') ?? undefined).get('note')).toBe('Initial');
+    expect(trigger).not.toHaveAttribute('aria-controls');
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute('aria-controls', shell?.id);
+    expect(screen.getByRole('button', { name: 'Count 1' })).toBeVisible();
+  });
+
+  it('suppresses Trigger and caret motion without suppressing reduced-motion safeguards', async () => {
+    const user = userEvent.setup();
+    render(
+      <Collapsible>
+        <CollapsibleTrigger motion='none'>History</CollapsibleTrigger>
+        <CollapsibleContent>Body</CollapsibleContent>
+      </Collapsible>
+    );
+    const trigger = screen.getByRole('button', { name: 'History' });
+    const caret = trigger.querySelector('span[aria-hidden=true]');
+    expect(trigger).toHaveClass(
+      'transition-none',
+      '[transition-property:none]',
+      '[&:not([aria-disabled=true]):active]:translate-none',
+      '[&:not([aria-disabled=true]):active]:scale-100',
+      'motion-reduce:transition-none'
+    );
+    expect(trigger.className).not.toContain('[transition-property:background');
+    expect(trigger).not.toHaveClass(
+      '[&:not([aria-disabled=true]):active]:translate-y-px',
+      '[&:not([aria-disabled=true]):active]:scale-97'
+    );
+    expect(caret).toHaveClass(
+      'transition-none',
+      'group-data-[state=open]/collapsible:rotate-0',
+      'motion-reduce:transition-none'
+    );
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    expect(caret).toHaveClass('group-data-[state=open]/collapsible:rotate-0');
+  });
+});
 
 describe('Collapsible native relationship ownership', () => {
   it('preserves the exact baseline Trigger classes shared with Button', () => {
@@ -606,13 +813,31 @@ describe('Collapsible native relationship ownership', () => {
     }
   );
 
-  it('exports only the three named runtime parts from the scoped barrel', () => {
-    expect(Object.keys(collapsiblePublic).sort()).toEqual(['Collapsible', 'CollapsibleContent', 'CollapsibleTrigger']);
+  it('exports only the four named runtime parts from the scoped barrel', () => {
+    expect(Object.keys(collapsiblePublic).sort()).toEqual([
+      'Collapsible',
+      'CollapsibleContent',
+      'CollapsibleHeader',
+      'CollapsibleTrigger'
+    ]);
   });
 
   it('keeps controlled unions, native exclusions and Trigger-only refs in the public types', () => {
     expectTypeOf<ComponentProps<typeof Collapsible>>().toEqualTypeOf<CollapsibleProps>();
     expectTypeOf<ComponentProps<typeof CollapsibleContent>>().toEqualTypeOf<CollapsibleContentProps>();
+    expectTypeOf<ComponentProps<typeof CollapsibleHeader>>().toEqualTypeOf<CollapsibleHeaderProps>();
+    expectTypeOf<CollapsibleContentProps['presence']>().toEqualTypeOf<'unmount' | 'keep-mounted' | undefined>();
+    expectTypeOf<CollapsibleContentProps['padding']>().toEqualTypeOf<'sm' | 'md' | undefined>();
+    expectTypeOf<CollapsibleTriggerProps['motion']>().toEqualTypeOf<'default' | 'none' | undefined>();
+    // @ts-expect-error Header does not accept inline styling.
+    const styledHeader: CollapsibleHeaderProps = { children: 'Label', style: {} };
+    // @ts-expect-error Header does not accept a role.
+    const roleHeader: CollapsibleHeaderProps = { children: 'Label', role: 'group' };
+    // @ts-expect-error Header is not a tab stop.
+    const tabHeader: CollapsibleHeaderProps = { children: 'Label', tabIndex: 0 };
+    // @ts-expect-error Presence only accepts the documented choices.
+    const badPresence: CollapsibleContentProps = { children: 'Body', presence: 'hidden' };
+    void [styledHeader, roleHeader, tabHeader, badPresence];
     expectTypeOf<CollapsibleTriggerProps['onClick']>().toEqualTypeOf<
       React.MouseEventHandler<HTMLButtonElement> | undefined
     >();

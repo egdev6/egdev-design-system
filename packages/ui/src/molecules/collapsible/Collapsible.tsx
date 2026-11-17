@@ -2,8 +2,13 @@ import * as CollapsiblePrimitive from '@radix-ui/react-collapsible';
 import { type FC, forwardRef } from 'react';
 import { Icon } from '@/atoms/icon';
 import { Surface } from '@/primitives/surface';
-import type { CollapsibleContentProps, CollapsibleProps, CollapsibleTriggerProps } from './types';
-import { useCollapsible, useCollapsibleContent, useCollapsibleTrigger } from './useCollapsible';
+import type {
+  CollapsibleContentProps,
+  CollapsibleHeaderProps,
+  CollapsibleProps,
+  CollapsibleTriggerProps
+} from './types';
+import { useCollapsible, useCollapsibleContent, useCollapsibleHeader, useCollapsibleTrigger } from './useCollapsible';
 
 /** One independent in-flow disclosure, composed on the fixed Material Surface frame. */
 export const Collapsible: FC<CollapsibleProps> = (props) => {
@@ -14,6 +19,17 @@ export const Collapsible: FC<CollapsibleProps> = (props) => {
         {children}
       </Surface>
     </CollapsiblePrimitive.Root>
+  );
+};
+
+/** Optional row placing independently owned actions outside the Trigger. */
+export const CollapsibleHeader: FC<CollapsibleHeaderProps> = (props) => {
+  const { headerProps, actionsProps, actions, children } = useCollapsibleHeader(props);
+  return (
+    <div {...headerProps}>
+      {children}
+      {actions != null && <div {...actionsProps}>{actions}</div>}
+    </div>
   );
 };
 
@@ -31,7 +47,7 @@ export const CollapsibleTrigger = forwardRef<HTMLButtonElement, CollapsibleTrigg
 });
 CollapsibleTrigger.displayName = 'CollapsibleTrigger';
 
-/** Native hidden-shell/unmounted-children boundary; no forceMount or content animation. */
+/** Native presence boundary with an optional retained, closed-hidden subtree. */
 export const CollapsibleContent: FC<CollapsibleContentProps> = (props) => {
   const { contentProps, children } = useCollapsibleContent(props);
   return <CollapsiblePrimitive.Content {...contentProps}>{children}</CollapsiblePrimitive.Content>;

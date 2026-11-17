@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useId, useRef, useState } from 'react';
 import { action } from 'storybook/actions';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './Collapsible';
+import { Button } from '@/atoms/button';
+import { Collapsible, CollapsibleContent, CollapsibleHeader, CollapsibleTrigger } from './Collapsible';
 
 /**
  * ## Description
@@ -13,19 +14,21 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './Collapsib
  * the decorative caret. The Button component/state hook is not used.
  *
  * ## Usage guidelines
- * Supply exactly one Trigger/Content pair. Use a non-empty visible label without nested controls.
- * Closed Content keeps its hidden shell/id but unmounts children; lift persistent form state outside.
- * Closed Trigger omits aria-controls; open/reopen restores the native relationship. No forceMount,
- * public asChild, body animation, automatic focus restoration or accordion navigation is provided.
- * Only Trigger forwards a ref. Move focus yourself before externally closing focused body content.
- * className is merged last: Root supports outer margin, width/max-width and grid/flex placement;
- * Trigger/Content support outer margin/self-alignment only. Paint/padding/presence/target overrides
- * are unsupported; twMerge recognition does not imply universal last-class cascade precedence.
+ * Supply exactly one Trigger/Content pair. Use a non-empty visible label without nested controls;
+ * optional Header actions are independent and stay enabled when Root is disabled. The default closed
+ * Content unmounts children; presence='keep-mounted' retains them in a display-hidden shell. Retained
+ * form controls still participate in submission. Closed Trigger omits aria-controls; open/reopen
+ * restores the native relationship. Raw forceMount/keepMounted, public asChild, body animation,
+ * automatic focus restoration and accordion navigation are not provided. Only Trigger forwards a ref.
+ * Move focus yourself before externally closing focused body content. className is merged last: Root
+ * supports outer margin, width/max-width and grid/flex placement; Header supports outer margin,
+ * width and parent placement; Trigger/Content support outer margin/self-alignment only. Appearance
+ * overrides are unsupported; twMerge does not imply universal last-class cascade precedence.
  */
 const meta = {
   title: 'Molecules/Collapsible',
   component: Collapsible,
-  subcomponents: { trigger: CollapsibleTrigger, content: CollapsibleContent },
+  subcomponents: { header: CollapsibleHeader, trigger: CollapsibleTrigger, content: CollapsibleContent },
   tags: ['autodocs']
 } satisfies Meta<typeof Collapsible>;
 
@@ -288,7 +291,129 @@ export const LongLabel: Story = {
   }
 };
 
-/** Enable the actual OS/browser reduced-motion preference: open caret rotation and transitions are removed. */
+/** Consumer-owned actions remain outside the disclosure and do not toggle it. */
+export const SiblingActions: Story = {
+  args: {
+    defaultOpen: true,
+    children: (
+      <>
+        <CollapsibleHeader
+          actions={
+            <Button size='lg' onClick={action('update')}>
+              Update
+            </Button>
+          }
+        >
+          <CollapsibleTrigger>Installed applications</CollapsibleTrigger>
+        </CollapsibleHeader>
+        <CollapsibleContent>
+          <button>Application details</button>
+        </CollapsibleContent>
+      </>
+    )
+  }
+};
+
+/** Long labels and different action widths wrap in a constrained host without overlap. */
+export const NarrowActions: Story = {
+  args: { children: Default.args.children },
+  render: () => (
+    <div className='w-full max-w-[calc(var(--space-24)*3)]'>
+      <Collapsible>
+        <CollapsibleHeader
+          actions={
+            <>
+              <Button size='lg' onClick={action('edit')}>
+                Edit
+              </Button>
+              <Button size='lg' onClick={action('refresh')}>
+                Refresh applications
+              </Button>
+            </>
+          }
+        >
+          <CollapsibleTrigger>Installed applications with a long disclosure label</CollapsibleTrigger>
+        </CollapsibleHeader>
+        <CollapsibleContent>Application details</CollapsibleContent>
+      </Collapsible>
+    </div>
+  )
+};
+
+/** Compact content changes only the body padding. */
+export const CompactContent: Story = {
+  args: {
+    defaultOpen: true,
+    children: (
+      <>
+        <CollapsibleTrigger>Compact details</CollapsibleTrigger>
+        <CollapsibleContent padding='sm'>Compact body content</CollapsibleContent>
+      </>
+    )
+  }
+};
+
+/** Retained content preserves local state while the closed shell is hidden. */
+export const KeepMounted: Story = {
+  args: {
+    defaultOpen: true,
+    children: (
+      <>
+        <CollapsibleTrigger>Retained counter</CollapsibleTrigger>
+        <CollapsibleContent presence='keep-mounted'>
+          <TemporaryCounter />
+        </CollapsibleContent>
+      </>
+    )
+  }
+};
+
+/** The Trigger and caret remain still while disclosure behavior stays native. */
+export const NoMotion: Story = {
+  args: {
+    children: (
+      <>
+        <CollapsibleTrigger motion='none'>Still disclosure</CollapsibleTrigger>
+        <CollapsibleContent>Details</CollapsibleContent>
+      </>
+    )
+  }
+};
+
+/** Right-to-left direction keeps the Trigger and independent actions in DOM order. */
+export const Rtl: Story = {
+  args: {
+    dir: 'rtl',
+    children: (
+      <>
+        <CollapsibleHeader
+          actions={
+            <Button size='lg' onClick={action('update')}>
+              Update
+            </Button>
+          }
+        >
+          <CollapsibleTrigger>Installed applications</CollapsibleTrigger>
+        </CollapsibleHeader>
+        <CollapsibleContent>Application details</CollapsibleContent>
+      </>
+    )
+  }
+};
+
+/** Enable the actual OS/browser reduced-motion preference and compare default and no-motion triggers. */
 export const ReducedMotion: Story = {
-  args: { children: Default.args.children, defaultOpen: true }
+  args: { children: Default.args.children },
+  render: () => (
+    <div className='grid gap-4'>
+      <Collapsible defaultOpen={true}>
+        <CollapsibleTrigger>Default motion</CollapsibleTrigger>
+        <CollapsibleContent>Details</CollapsibleContent>
+      </Collapsible>
+      <Collapsible defaultOpen={true}>
+        <CollapsibleTrigger motion='none'>No motion</CollapsibleTrigger>
+        <CollapsibleContent>Details</CollapsibleContent>
+      </Collapsible>
+    </div>
+  )
 };
