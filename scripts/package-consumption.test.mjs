@@ -2924,14 +2924,31 @@ const panelWaveHeader: PanelHeaderProps = { children: createElement('h2', null, 
 const panelWaveBody: PanelBodyProps = { children: createElement('button', { type: 'button', id: 'packed-panel-wave-action', onClick: () => panelConsumerChanges.push('activate') }, 'Child action') };
 const panelWaveFooter: PanelFooterProps = { children: 'Metadata' };
 const panelWaveProps: PanelProps = { children: 'Composition supplied below' };
-export function PanelConsumerSamples({ tone = panelWaveTone, variant = panelWaveVariant }: { tone?: PanelTone; variant?: PanelVariant } = {}) {
+const panelAccentProps: PanelProps = { children: 'Content', accentEdge: 'start', tone: 'overlay', variant: 'banded' };
+const panelOptionalAccent: PanelProps = { children: 'Content', accentEdge: undefined };
+export function PanelConsumerSamples({ tone = panelWaveTone, variant = panelWaveVariant, accentEdge, dir }: { tone?: PanelTone; variant?: PanelVariant; accentEdge?: PanelProps['accentEdge']; dir?: 'ltr' | 'rtl' } = {}) {
   return createElement(Surface, { tone: 'surface-2', radius: 'xl', padding: 'md', children:
-    createElement(Panel, { ...panelWaveProps, id: 'packed-panel-wave', tone, variant, children: [
+    createElement(Panel, { ...panelWaveProps, id: 'packed-panel-wave', tone, variant, accentEdge, dir, children: [
       createElement(PanelHeader, { ...panelWaveHeader, key: 'header' }),
       createElement(PanelBody, { ...panelWaveBody, key: 'body' }),
       createElement(PanelFooter, { ...panelWaveFooter, key: 'footer' })
     ] }) });
 }
+export function PanelAccentConsumerSamples({ accent = '#123456' }: { accent?: string | null } = {}) {
+  return createElement('section', { 'aria-label': 'Panel accent scope', style: createAccentTheme(accent).variables as CSSProperties },
+    PanelConsumerSamples({ accentEdge: 'start', dir: 'rtl' }));
+}
+// @ts-expect-error Only the logical start edge is supported.
+const panelAccentEnd: PanelProps = { children: null, accentEdge: 'end' };
+// @ts-expect-error Physical edge selection is not supported.
+const panelAccentLeft: PanelProps = { children: null, accentEdge: 'left' };
+// @ts-expect-error Boolean edge values are not supported.
+const panelAccentBoolean: PanelProps = { children: null, accentEdge: false };
+// @ts-expect-error Null is normalized only at an untyped boundary.
+const panelAccentNull: PanelProps = { children: null, accentEdge: null };
+// @ts-expect-error The choice belongs to Panel, not its zones.
+const panelPartAccent: PanelBodyProps = { children: null, accentEdge: 'start' };
+export type PanelAccentNegatives = [typeof panelAccentEnd, typeof panelAccentLeft, typeof panelAccentBoolean, typeof panelAccentNull, typeof panelPartAccent];
 // @ts-expect-error Root owns passive semantics.
 const panelWaveRole: PanelProps = { children: 'Body', role: 'region' };
 // @ts-expect-error Root has no HTML injection API.
@@ -4830,6 +4847,25 @@ function assertPanelConsumerCSS(css) {
   ]) {
     assert.ok(css.includes(selector), 'Missing panel packed CSS utility ' + selector);
   }
+  for (const name of [
+    'before:absolute',
+    'before:pointer-events-none',
+    'before:z-10',
+    "before:content-['']",
+    'before:[inline-size:var(--space-1)]',
+    'before:bg-fg-brand-default',
+    'before:[inset-inline-start:var(--border-width)]',
+    'before:[inset-block:var(--border-width)]',
+    'before:rounded-ss-[calc(var(--radius-xl)-var(--border-width))]',
+    'before:rounded-es-[calc(var(--radius-xl)-var(--border-width))]',
+    'before:[inset-inline-start:0]',
+    'before:[inset-block:0]',
+    'before:rounded-ss-xl',
+    'before:rounded-es-xl'
+  ]) {
+    const selector = '.' + name.replace(/[^\w-]/g, '\\$&');
+    assert.ok(css.includes(selector), 'Missing packed Panel accent edge utility ' + name);
+  }
 }
 
 function assertDialogConsumerCSS(css) {
@@ -6292,7 +6328,7 @@ try {
 
 } finally { waveDOM.window.close(); }
 
-import { PanelConsumerSamples } from './consumer.ts';
+import { PanelConsumerSamples, PanelAccentConsumerSamples, packedAccentTheme } from './consumer.ts';
 const panelWaveHTML = renderToString(createElement(PanelConsumerSamples));
 writeFileSync(new URL('./panel-wave-hydration.html', import.meta.url), panelWaveHTML);
 const panelWaveDOM = new JSDOM(panelWaveHTML);
@@ -6305,7 +6341,24 @@ try {
   assert.deepEqual([...panelWave.children].map(node => node.className.match(/eg-panel__(header|body|footer)/)?.[1]), ['header', 'body', 'footer']);
   assert.equal(panelWave.querySelectorAll('button').length, 1);
   assert.equal(panelWave.hasAttribute('role'), false);
+  assert.equal(panelWave.classList.contains('relative'), false);
+  assert.equal(panelWave.classList.contains('before:absolute'), false);
 } finally { panelWaveDOM.window.close(); }
+const panelAccentDOM = new JSDOM(renderToString(createElement(PanelAccentConsumerSamples)));
+try {
+  const doc = panelAccentDOM.window.document;
+  const host = doc.querySelector('section[aria-label="Panel accent scope"]');
+  const panel = doc.getElementById('packed-panel-wave');
+  assert.equal(host.style.getPropertyValue('--color-fg-brand-default'), packedAccentTheme.variables['--color-fg-brand-default']);
+  assert.ok(host.contains(panel));
+  assert.equal(panel.getAttribute('dir'), 'rtl');
+  assert.equal(panel.hasAttribute('accentedge'), false);
+  assert.equal(panel.hasAttribute('style'), false);
+  assert.equal(panel.children.length, 3);
+  for (const name of ['relative', 'before:absolute', 'before:pointer-events-none', 'before:z-10', 'before:[inline-size:var(--space-1)]', 'before:bg-fg-brand-default', 'before:[inset-inline-start:var(--border-width)]']) {
+    assert.ok(panel.classList.contains(name), 'Missing packed Panel accent class ' + name);
+  }
+} finally { panelAccentDOM.window.close(); }
 
 import { CollapsibleConsumerSamples, CollapsibleRetainedSample } from './consumer.ts';
 const collapsibleRetainedDOM = new JSDOM(renderToString(createElement(CollapsibleRetainedSample)));
@@ -8166,7 +8219,17 @@ try {
   panelWaveAction.focus();
   await act(async () => panelWaveAction.click());
   assert.deepEqual(panelConsumerChanges, ['activate']);
+  assert.equal(panelWave.classList.contains('before:absolute'), false);
+  await act(async () => root.render(createElement(PanelConsumerSamples, { accentEdge: 'start', dir: 'rtl' })));
+  assert.equal(document.getElementById('packed-panel-wave'), panelWave);
+  assert.equal(document.getElementById('packed-panel-wave-action'), panelWaveAction);
+  assert.equal(document.activeElement, panelWaveAction);
+  assert.equal(panelWave.getAttribute('dir'), 'rtl');
+  assert.equal(panelWave.hasAttribute('accentedge'), false);
+  assert.ok(panelWave.classList.contains('before:absolute'));
+  assert.ok(panelWave.classList.contains('before:bg-fg-brand-default'));
   await act(async () => root.render(createElement(PanelConsumerSamples, { tone: 'overlay', variant: 'default' })));
+  assert.equal(panelWave.classList.contains('before:absolute'), false);
   assert.equal(document.getElementById('packed-panel-wave'), panelWave);
   assert.equal(document.getElementById('packed-panel-wave-action'), panelWaveAction);
   assert.equal(document.activeElement, panelWaveAction);

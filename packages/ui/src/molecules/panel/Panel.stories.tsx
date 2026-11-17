@@ -1,5 +1,6 @@
+import { createAccentTheme } from '@egdev/tokens/accent';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useId } from 'react';
+import { type CSSProperties, useId, useState } from 'react';
 import { action } from 'storybook/actions';
 import { Button } from '../../atoms/button';
 import { Portal } from '../../primitives/portal';
@@ -18,12 +19,15 @@ import { Panel, PanelBody, PanelFooter, PanelHeader } from './Panel';
  * Button demonstrates independent child actions. Portal hosts the standalone floating example.
  * Popover owns opening, accessible naming, focus, dismissal and its existing overlay frame.
  * Heading supplies the optional consumer-owned compact band heading.
+ * The optional edge reads the inherited accent role; createAccentTheme supplies a complete host map.
  *
  * ## Usage guidelines
  * Render direct DOM sibling zones in Header → Body → Footer order; wrapper-free fragments work.
  * Omit an optional part rather than render empty content when its padding/band is unwanted.
  * Inherit requires an already painted surface-2 or overlay host, without removing host padding.
  * Overlay is reserved for actually floating content. Container width and heading rank are consumer-owned.
+ * accentEdge='start' adds a decorative logical-start edge, never a status or focus indicator.
+ * The opt-in positions its root, which can change the containing block of absolute descendants.
  * className supports only documented outer layout and per-part content alignment/grid merges.
  */
 const meta = {
@@ -56,6 +60,58 @@ export const Default: Story = {};
 
 /** The upper band is surface-2 and the lower band surface-0; Body exposes the single Surface frame. */
 export const Banded: Story = { args: { variant: 'banded' } };
+
+/** The optional inherited-color edge is decorative and independent of the banded presentation. */
+export const AccentEdge: Story = { args: { variant: 'banded', accentEdge: 'start' } };
+
+/** Complete host accent maps update both directions without changing Panel or child semantics. */
+export const ScopedAccentEdges: Story = {
+  render: function ScopedAccentEdgesExample() {
+    const [custom, setCustom] = useState(true);
+    const ltrId = useId();
+    const rtlId = useId();
+    const theme = createAccentTheme(custom ? '#123456' : null);
+    return (
+      <div className='grid gap-6'>
+        <Button variant='secondary' onClick={() => setCustom((current) => !current)}>
+          {custom ? 'Use default accent' : 'Use custom accent'}
+        </Button>
+        <div className='grid gap-6' style={theme.variables as CSSProperties}>
+          <section aria-labelledby={ltrId} dir='ltr'>
+            <Panel variant='banded' accentEdge='start'>
+              <PanelHeader>
+                <Heading id={ltrId} variant='compact'>
+                  Workspace settings
+                </Heading>
+              </PanelHeader>
+              <PanelBody>
+                <p>The frame and bands retain their Material paint.</p>
+                <Button>Review settings</Button>
+              </PanelBody>
+              <PanelFooter>Decorative edge at inline-start</PanelFooter>
+            </Panel>
+          </section>
+          <Surface tone='surface-2'>
+            <section aria-labelledby={rtlId} dir='rtl' lang='en'>
+              <Panel tone='inherit' variant='banded' accentEdge='start'>
+                <PanelHeader>
+                  <Heading id={rtlId} variant='compact'>
+                    Workspace reports
+                  </Heading>
+                </PanelHeader>
+                <PanelBody>
+                  <p>The inherited Panel keeps its existing raised host.</p>
+                  <Button>Review reports</Button>
+                </PanelBody>
+                <PanelFooter>Logical start follows the reading direction</PanelFooter>
+              </Panel>
+            </section>
+          </Surface>
+        </div>
+      </div>
+    );
+  }
+};
 
 /** Consumer-labelled compact headings in all three banded host modes, including RTL and a floating overlay. */
 export const CompactBandHeading: Story = {
@@ -122,6 +178,17 @@ export const InheritedHost: Story = {
 /** A real out-of-tree, fixed host makes overlay a floating frame; no open/dismiss engine is added. */
 export const Overlay: Story = {
   args: { tone: 'overlay', variant: 'banded' },
+  parameters: { docs: { story: { inline: false } } },
+  render: (args) => (
+    <Portal className='fixed top-6 end-6 w-[calc(var(--space-24)*4)] max-w-[calc(100vw-var(--space-12))]'>
+      <Panel {...args} />
+    </Portal>
+  )
+};
+
+/** The same edge is available on a genuinely floating overlay without replacing its frame. */
+export const AccentEdgeOverlay: Story = {
+  args: { tone: 'overlay', variant: 'banded', accentEdge: 'start' },
   parameters: { docs: { story: { inline: false } } },
   render: (args) => (
     <Portal className='fixed top-6 end-6 w-[calc(var(--space-24)*4)] max-w-[calc(100vw-var(--space-12))]'>

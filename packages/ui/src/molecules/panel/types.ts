@@ -44,6 +44,11 @@ export type PanelProps = PanelNativeProps & {
    * @control select
    */
   tone?: PanelTone;
+  /**
+   * Opt in to a passive inherited-color edge at logical inline-start. Omission draws no edge.
+   * @control select
+   */
+  accentEdge?: 'start';
 };
 
 /** Supplied identity/context zone; no generated heading or landmark. */
@@ -96,8 +101,30 @@ export const panelVariants = cva(
         'surface-1': '',
         overlay: '',
         inherit: 'border-0 border-solid bg-transparent bg-none shadow-none backdrop-filter-none'
+      },
+      accentEdge: {
+        start: [
+          'relative before:absolute before:pointer-events-none before:z-10',
+          "before:content-[''] before:[inline-size:var(--space-1)] before:bg-fg-brand-default"
+        ]
       }
     },
+    compoundVariants: [
+      {
+        tone: ['surface-1', 'overlay'],
+        accentEdge: 'start',
+        class: [
+          'before:[inset-inline-start:var(--border-width)] before:[inset-block:var(--border-width)]',
+          'before:rounded-ss-[calc(var(--radius-xl)-var(--border-width))]',
+          'before:rounded-es-[calc(var(--radius-xl)-var(--border-width))]'
+        ]
+      },
+      {
+        tone: 'inherit',
+        accentEdge: 'start',
+        class: 'before:[inset-inline-start:0] before:[inset-block:0] before:rounded-ss-xl before:rounded-es-xl'
+      }
+    ],
     defaultVariants: { tone: 'surface-1' }
   }
 );

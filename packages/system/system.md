@@ -1488,7 +1488,12 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
     - panelVariants base: font-sans → --font-sans
     - panelVariants base: text-body-default → --text-body-default
     - panelVariants tone=inherit: shadow-none → unresolved
+    - panelVariants {"tone":"['surface-1', 'overlay']","accentEdge":"start"}: before:rounded-ss-[calc(var(--radius-xl)-var(--border-width))] → --radius-xl, --border-width
+    - panelVariants {"tone":"['surface-1', 'overlay']","accentEdge":"start"}: before:rounded-es-[calc(var(--radius-xl)-var(--border-width))] → --radius-xl, --border-width
+    - panelVariants {"tone":"inherit","accentEdge":"start"}: before:rounded-ss-xl → --radius-xl
+    - panelVariants {"tone":"inherit","accentEdge":"start"}: before:rounded-es-xl → --radius-xl
     - surfaceVariants({ tone: bandTone, elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/molecules/panel/usePanel.ts; see Surface anatomy
+  - accentEdge: enum; Opt in to a passive inherited-color edge at logical inline-start. Omission draws no edge. (components[] · packages/ui/src/molecules/panel/types.ts)
   - children: ReactNode; Optional Header, exactly one Body and optional Footer, in direct DOM sibling order. Fragments without wrappers are supported; Panel never parses or repairs the child tree. (components[] · packages/ui/src/molecules/panel/types.ts)
   - tone: enum; Explicit Material ownership. Inherit exposes an existing raised host, never infers one. (components[] · packages/ui/src/molecules/panel/types.ts)
   - variant: enum; Shared presentation of the supplied zones, without changing their behavior. (components[] · packages/ui/src/molecules/panel/types.ts)
@@ -3587,6 +3592,10 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - panelVariants base: font-sans → --font-sans
     - panelVariants base: text-body-default → --text-body-default
     - panelVariants tone=inherit: shadow-none → unresolved
+    - panelVariants {"tone":"['surface-1', 'overlay']","accentEdge":"start"}: before:rounded-ss-[calc(var(--radius-xl)-var(--border-width))] → --radius-xl, --border-width
+    - panelVariants {"tone":"['surface-1', 'overlay']","accentEdge":"start"}: before:rounded-es-[calc(var(--radius-xl)-var(--border-width))] → --radius-xl, --border-width
+    - panelVariants {"tone":"inherit","accentEdge":"start"}: before:rounded-ss-xl → --radius-xl
+    - panelVariants {"tone":"inherit","accentEdge":"start"}: before:rounded-es-xl → --radius-xl
     - surfaceVariants({ tone: bandTone, elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/molecules/panel/usePanel.ts; see Surface anatomy
 ### PanelFooter
 - PanelFooter (components[] · packages/ui/src/molecules/panel/types.ts · @egdev/ui)
@@ -3603,6 +3612,10 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - panelVariants base: font-sans → --font-sans
     - panelVariants base: text-body-default → --text-body-default
     - panelVariants tone=inherit: shadow-none → unresolved
+    - panelVariants {"tone":"['surface-1', 'overlay']","accentEdge":"start"}: before:rounded-ss-[calc(var(--radius-xl)-var(--border-width))] → --radius-xl, --border-width
+    - panelVariants {"tone":"['surface-1', 'overlay']","accentEdge":"start"}: before:rounded-es-[calc(var(--radius-xl)-var(--border-width))] → --radius-xl, --border-width
+    - panelVariants {"tone":"inherit","accentEdge":"start"}: before:rounded-ss-xl → --radius-xl
+    - panelVariants {"tone":"inherit","accentEdge":"start"}: before:rounded-es-xl → --radius-xl
     - surfaceVariants({ tone: bandTone, elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/molecules/panel/usePanel.ts; see Surface anatomy
 ### PanelHeader
 - PanelHeader (components[] · packages/ui/src/molecules/panel/types.ts · @egdev/ui)
@@ -3619,6 +3632,10 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - panelVariants base: font-sans → --font-sans
     - panelVariants base: text-body-default → --text-body-default
     - panelVariants tone=inherit: shadow-none → unresolved
+    - panelVariants {"tone":"['surface-1', 'overlay']","accentEdge":"start"}: before:rounded-ss-[calc(var(--radius-xl)-var(--border-width))] → --radius-xl, --border-width
+    - panelVariants {"tone":"['surface-1', 'overlay']","accentEdge":"start"}: before:rounded-es-[calc(var(--radius-xl)-var(--border-width))] → --radius-xl, --border-width
+    - panelVariants {"tone":"inherit","accentEdge":"start"}: before:rounded-ss-xl → --radius-xl
+    - panelVariants {"tone":"inherit","accentEdge":"start"}: before:rounded-es-xl → --radius-xl
     - surfaceVariants({ tone: bandTone, elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/molecules/panel/usePanel.ts; see Surface anatomy
 ### PopoverClose
 - PopoverClose (components[] · packages/ui/src/molecules/popover/types.ts · @egdev/ui)
@@ -4466,6 +4483,7 @@ Not exported:
 - open-state: open; approved; AlertDialog, Collapsible, CommandPalette, Dialog, Menu, NavList, Popover, SectionNav (propNaming[] · skills/_shared/prop-naming.json)
 - option-metadata: meta; approved; SelectTileOption (propNaming[] · skills/_shared/prop-naming.json)
 - page-top-bar-slot: topBar; approved; WebTemplate (propNaming[] · skills/_shared/prop-naming.json)
+- panel-accent-edge: accentEdge; proposed; Panel (propNaming[] · skills/_shared/prop-naming.json)
 - panel-footer: footer; approved; ModuleCard, PreviewFrame, Sidebar, WebTemplate (propNaming[] · skills/_shared/prop-naming.json)
 - panel-header: header; approved; Menu, WebSection (propNaming[] · skills/_shared/prop-naming.json)
 - paused-presentation: paused; approved; Avatar (propNaming[] · skills/_shared/prop-naming.json)

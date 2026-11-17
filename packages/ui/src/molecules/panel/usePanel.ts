@@ -83,6 +83,7 @@ export function usePanel({
   children,
   tone = 'surface-1',
   variant = 'default',
+  accentEdge,
   className,
   ...native
 }: PanelProps): PanelResult {
@@ -102,7 +103,10 @@ export function usePanel({
       ...passiveNativeProps(native),
       'data-tone': effectiveTone,
       'data-variant': effectiveVariant,
-      className: cn(panelVariants({ tone: effectiveTone }), className)
+      className: cn(
+        panelVariants({ tone: effectiveTone, accentEdge: accentEdge === 'start' ? 'start' : undefined }),
+        className
+      )
     },
     children
   };
