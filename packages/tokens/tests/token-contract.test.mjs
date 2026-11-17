@@ -126,7 +126,7 @@ test('generated sources, JSON source, and custom generators are removed', () => 
 });
 
 test('package publishes compiled tokens and keeps backward CSS exports', () => {
-  assert.equal(manifest.version, '0.3.0');
+  assert.equal(manifest.version, '0.4.0');
   assert.equal(manifest.exports['./tokens.json'], undefined, 'tokens.json export must be retired');
   assert.equal(manifest.exports['./tokens.css'], './dist/tokens.css', 'public native import stays tokens.css');
   assert.equal(manifest.exports['./theme.css'], './src/theme.css', 'public Tailwind import stays theme.css');
