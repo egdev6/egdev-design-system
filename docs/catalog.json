@@ -52,7 +52,7 @@
     "radix": "Slot",
     "compone": "—",
     "accion": "fusionar",
-    "notas": "Implemented in @egdev/ui: Text (paragraph eyebrow by default, title recipes or body/body-large/lede with semantic foreground and native strong emphasis; Slot `asChild`) and Heading (native h1–h6 from `level`, independent of its `section`/`hero`/`show`/`display`/`inverse` recipe). Display accents retain canvas/raised tone; body foreground inherits by default. No stylesheet; legacy `.eg-title`/`.eg-eyebrow` rules are unchanged. Contract: [#108](https://github.com/egdev6/egdev-design-system/issues/108); body amendment: [#396](https://github.com/egdev6/egdev-design-system/issues/396)."
+    "notas": "Implemented in @egdev/ui: Text (paragraph eyebrow by default, title recipes or body/body-large/lede with semantic foreground and native strong emphasis; Slot `asChild`) and Heading (native h1–h6 from `level`, independent of its `section`/`hero`/`show`/`display`/`inverse`/`compact` recipe). Compact pairs heading-small metrics with display font and inherits its host or selects semantic foreground; display accents retain canvas/raised tone. No stylesheet; legacy `.eg-title`/`.eg-eyebrow` rules are unchanged. Contract: [#108](https://github.com/egdev6/egdev-design-system/issues/108); amendments: [#396](https://github.com/egdev6/egdev-design-system/issues/396), [#424](https://github.com/egdev6/egdev-design-system/issues/424)."
   },
   {
     "actual": "Divider",
@@ -657,7 +657,7 @@
     "radix": "—",
     "compone": "Surface",
     "accion": "extraer",
-    "notas": "Implemented public working-tree compound React molecule under the [approved v0.2 contract](components/panel/v0.2/spec.md): Panel/Header/Body/Footer, default/banded treatment and explicit surface-1/overlay/inherit ownership. Real Surface supplies framed paint; inherit requires an already painted host. No stylesheet, ref, asChild or interaction engine; ModuleCard is not migrated. Parent unit, metadata, build and packed React 18.3.1/19.3.0 checks passed; runtime browser/AT conformity remains pending."
+    "notas": "Implemented public working-tree compound React molecule under the [approved v0.2 contract](components/panel/v0.2/spec.md): Panel/Header/Body/Footer, default/banded treatment and explicit surface-1/overlay/inherit ownership. The [v0.3 amendment](components/panel/v0.3/band-heading-amendment.md) composes a consumer-owned compact Heading and region association without adding a Panel title API. Real Surface supplies framed paint; inherit requires an already painted host. No stylesheet, ref, asChild or interaction engine; ModuleCard is not migrated. Parent visual and browser verification remains pending."
   },
   {
     "actual": "—",

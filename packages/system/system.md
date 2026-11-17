@@ -29,6 +29,7 @@ Representative source recipes, not a computed cascade; unresolved means no token
 | Role | Font family | Size | Line height | Weight | Tracking | Source |
 | --- | --- | --- | --- | --- | --- | --- |
 | Eyebrow | --font-display | --text-label-eyebrow | --text-label-eyebrow--line-height | --text-label-eyebrow--font-weight | --text-label-eyebrow--letter-spacing | typographyRoles[] · packages/ui/src/primitives/text/types.ts · packages/tokens/src/theme.css |
+| Heading compact | --font-display | --text-heading-small | --text-heading-small--line-height | --text-heading-small--font-weight | --text-heading-small--letter-spacing | typographyRoles[] · packages/ui/src/primitives/text/types.ts · packages/tokens/src/theme.css |
 | Heading display | --font-display | --text-title-display | --text-title-display--line-height | --text-title-display--font-weight | --text-title-display--letter-spacing | typographyRoles[] · packages/ui/src/primitives/text/types.ts · packages/tokens/src/theme.css |
 | Heading hero | --font-display | --text-title-hero | --text-title-hero--line-height | --text-title-hero--font-weight | --text-title-hero--letter-spacing | typographyRoles[] · packages/ui/src/primitives/text/types.ts · packages/tokens/src/theme.css |
 | Heading section | --font-display | --text-title-section | --text-title-section--line-height | --text-title-section--font-weight | --text-title-section--letter-spacing | typographyRoles[] · packages/ui/src/primitives/text/types.ts · packages/tokens/src/theme.css |
@@ -2544,21 +2545,34 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · Slot
 - Heading (components[] · packages/ui/src/primitives/text/types.ts)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - headingVariants base: font-display → --font-display
+    - headingVariants variant=section: text-title-section → --text-title-section
+    - headingVariants variant=hero: text-title-hero → --text-title-hero
+    - headingVariants variant=show: text-title-show → --text-title-show
+    - headingVariants variant=display: text-title-display → --text-title-display
+    - headingVariants variant=inverse: text-title-display → --text-title-display
+    - headingVariants variant=compact: text-heading-small → --text-heading-small
     - textBodyVariants base: font-sans → --font-sans
     - textBodyVariants base: [&_strong]:[font-weight:var(--text-heading-small--font-weight)] → --text-heading-small--font-weight
     - textBodyVariants variant=body: text-body-default → --text-body-default
     - textBodyVariants variant=body-large: text-body-large → --text-body-large
     - textBodyVariants variant=lede: text-body-muted → --text-body-muted
     - textVariants base: font-display → --font-display
-  - accent: string; One optional trailing highlighted run of the phrase. Empty or whitespace-only text renders no accent; non-empty text is preserved exactly. No separator is inserted: supply whitespace in children. (components[] · packages/ui/src/primitives/text/types.ts)
-  - accentBreak: boolean; Whether the accent starts on its own line (block) or continues inline. No effect without an accent. (components[] · packages/ui/src/primitives/text/types.ts)
+  - accent: string; One optional trailing highlighted run of the phrase. Empty or whitespace-only text renders no accent; non-empty text is preserved exactly. No separator is inserted: supply whitespace in children. Compact headings use their children rather than a trailing accent. (components[] · packages/ui/src/primitives/text/types.ts)
+  - accentBreak: boolean; Whether the accent starts on its own line (block) or continues inline. No effect without an accent. Accent layout is unavailable on compact headings. (components[] · packages/ui/src/primitives/text/types.ts)
   - children: ReactNode; Heading text; its full visible copy, including the accent, is the accessible name. (components[] · packages/ui/src/primitives/text/types.ts)
+  - foreground: enum; Semantic foreground is available only on the compact recipe. Semantic foreground for compact headings. Inherit follows the host. Explicit default, secondary, muted, warning and danger are for solid surface-0…3; on flood use inherit or on-flood, and on deep use inherit or default. Check actual pixels on translucent hosts. Supply meaningful words and a non-color cue for status colors. (components[] · packages/ui/src/primitives/text/types.ts)
   - level: enum; Native heading rank for the document outline; does not change the typography. (components[] · packages/ui/src/primitives/text/types.ts)
-  - tone: enum; Accent Material context: canvas (surface-0) neon or raised brand on surface-1…3 and overlays. Consumers choose it; the host background is never inspected. The canvas hero accent glows. Not available on inverse: root and accent always use the on-flood foreground. (components[] · packages/ui/src/primitives/text/types.ts)
-  - variant: enum; Named visual recipe, independent of the heading level. (components[] · packages/ui/src/primitives/text/types.ts)
+  - tone: enum; Accent Material context: canvas (surface-0) neon or raised brand on surface-1…3 and overlays. Consumers choose it; the host background is never inspected. The canvas hero accent glows. Not available on inverse: root and accent always use the on-flood foreground. Accent Material context is unavailable on compact headings. (components[] · packages/ui/src/primitives/text/types.ts)
+  - variant: enum; Named visual recipe, independent of the heading level. Compact uppercase display-family heading, independent of native rank. (components[] · packages/ui/src/primitives/text/types.ts)
 - Text (components[] · packages/ui/src/primitives/text/types.ts)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - headingVariants base: font-display → --font-display
+    - headingVariants variant=section: text-title-section → --text-title-section
+    - headingVariants variant=hero: text-title-hero → --text-title-hero
+    - headingVariants variant=show: text-title-show → --text-title-show
+    - headingVariants variant=display: text-title-display → --text-title-display
+    - headingVariants variant=inverse: text-title-display → --text-title-display
+    - headingVariants variant=compact: text-heading-small → --text-heading-small
     - textBodyVariants base: font-sans → --font-sans
     - textBodyVariants base: [&_strong]:[font-weight:var(--text-heading-small--font-weight)] → --text-heading-small--font-weight
     - textBodyVariants variant=body: text-body-default → --text-body-default
