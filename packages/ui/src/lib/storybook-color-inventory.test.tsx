@@ -25,7 +25,8 @@ it('integrates every source color once, rather than a curated MDX subset', () =>
   const { container } = render(<ColorInventory source={source} />);
   const names = [...container.querySelectorAll('[data-token]')].map((card) => card.getAttribute('data-token'));
   // #219 option A adds --color-status-danger-bg, derived from the existing status-danger primitive.
-  expect(names).toHaveLength(82);
+  // #425 adds 11 owner-confirmed semantic color aliases (gradient and shadow roles are not colors): 82 + 11 = 93.
+  expect(names).toHaveLength(93);
   expect(new Set(names).size).toBe(names.length);
   expect(names.sort()).toEqual(declarations.map(([name]) => name).sort());
   expect(container.querySelectorAll('[data-token] .eg-docs-swatch')).toHaveLength(names.length * 2);
@@ -122,7 +123,7 @@ it('reads effective preview paint, shows no substituted aliases, and never overr
   const { container } = render(<ColorInventory source={source} />);
   expect(document.documentElement.getAttribute('style')).toBe(rootStyle);
   expect(container.querySelectorAll('[data-different="true"]')).toHaveLength(0);
-  expect(container.querySelectorAll('[data-different="false"]')).toHaveLength(82);
+  expect(container.querySelectorAll('[data-different="false"]')).toHaveLength(93);
   for (const [name, value] of formerAliases) {
     const card = container.querySelector(`[data-token="${name}"]`) as HTMLElement;
     const figures = within(card).getAllByRole('figure');

@@ -171,6 +171,19 @@
   --color-surface-2: var(--color-primitive-graphite-850);
   /* --color-surface-3 — Nivel 3 (Grafito): lo seleccionado y la cabecera de un panel flotante (--glass --banded). */
   --color-surface-3: var(--color-primitive-graphite-750);
+  /* Shared app and selected-control roles (#425). Existing Material recipes still apply. */
+  --color-app-page: var(--color-surface-0);
+  --color-app-card: var(--color-surface-1);
+  --color-app-card-header: var(--color-surface-2);
+  --color-app-inset: var(--color-surface-0);
+  --color-control-well: var(--color-surface-0);
+  --color-control-boundary: var(--color-border-control);
+  --color-state-selected: var(--color-action-primary-solid-bg);
+  --color-on-selected: var(--color-action-primary-solid-fg);
+  --color-state-selected-surface: var(--color-surface-3);
+  /* The owner retained neon Link text and red-200 hover, including the contrast trade-off. */
+  --color-link-default: var(--color-fg-brand-raised);
+  --color-link-hover: var(--color-primitive-red-200);
   /* --color-surface-overlay — Overlay translúcido (Grafito, surface-2 al 84 %) con blur-overlay y saturate(150%). Alternativa sólida: surface-2. */
   --color-surface-overlay: rgba(35, 36, 40, 0.84);
   /* --color-border-hairline — Material v2 · separación de superficies (tarjetas, tablas, barras). Decorativo: los controles siguen con color-border-control (≥3:1). */
@@ -522,6 +535,10 @@
   --gradient-glass-card: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015) 45%);
   /* --gradient-btn-primary — Relleno del botón primario y casillas marcadas. Texto negro: 5,8:1 arriba, 5,3:1 en el centro y 4,7:1 abajo. */
   --gradient-btn-primary: linear-gradient(180deg, #FF2D57 0%, #FF0036 52%, #EE0031 100%);
+  /* Shared selected-control paint aliases (#425); the indicator glow is decorative. */
+  --gradient-state-selected: var(--gradient-btn-primary);
+  --shadow-state-selected: var(--shadow-btn-primary);
+  --shadow-state-indicator: var(--shadow-glow-base);
   /* --gradient-btn-primary-hover — Primario en hover. */
   --gradient-btn-primary-hover: linear-gradient(180deg, #FF4A6E 0%, #FF1A49 52%, #F00033 100%);
   /* --gradient-btn-secondary — Secundario, sobre color-surface-1. */
