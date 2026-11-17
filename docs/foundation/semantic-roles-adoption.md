@@ -110,3 +110,11 @@ The following are proposed checks, not observed passing results. Every component
 | A-08 Visual and gates | Expected design, contrast/interaction evidence and visual adoption are bound to the finalized snapshot; the implementation plan follows the same delegation. | Authorized real-browser captures, comparable conditions and owner review; #426 lists `pnpm test`, `pnpm typecheck`, `pnpm lint` and Storybook review for implementation. | Pending |
 
 The #425 regeneration path is `pnpm tokens` → `@egdev/tokens` Vite build → `packages/tokens/dist/tokens.css`; the source is `packages/tokens/src/theme.css` and the compiled output is never hand-edited. No tests, builds, visual captures or app migrations were run for this documentation change.
+
+## Implementation notes — #426
+
+The component recipes now reference the roles in the mapping above. The earlier source descriptions and pending observations record the pre-implementation baseline; they are not visual verification of this implementation. No token values, public markers, props, exports, Radix behavior or app styles were changed.
+
+Default role aliases preserve the previous Switch, Slider, RadioGroup, Input and Link paint; Link retains the owner-approved neon rest and red-200 hover. Segmented Tabs deliberately gain the approved existing-brand border and tint. Input's code variant retains its darker well. The public `radioGroupVariants` object keeps its keys, but consumers of its item and indicator recipes receive the new role classes.
+
+Old token names remain available, but overrides of an older name, such as `--color-fg-brand-default`, need not propagate to a role alias inherited from a parent scope. Keep Nexo and Quorb overrides until consumer-specific rendered and interaction parity is separately verified; scoped accents and portals belong to #415. Selected-tab stacking, composed boundary and focus contrast, Link's non-color affordance, and visual conformity remain **Not evaluated** until the planned real-browser checks and any expected-design adoption are completed.

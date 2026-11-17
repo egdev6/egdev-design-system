@@ -2,9 +2,9 @@ import { render, renderHook, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, expectTypeOf, it, onTestFinished, vi } from 'vitest';
+import { radioGroupVariants } from './index';
 import { RadioGroup } from './RadioGroup';
 import type { RadioGroupOption, RadioGroupOrientation, RadioGroupProps } from './types';
-import { radioGroupVariants } from './types';
 import { useRadioGroup } from './useRadioGroup';
 
 const visibility: RadioGroupOption[] = [
@@ -107,6 +107,8 @@ describe('RadioGroup', () => {
     expect(checked.children).toHaveLength(1);
     expect(checked.firstElementChild?.tagName).toBe('SPAN');
     expect(checked.firstElementChild).toHaveAttribute('data-state', 'checked');
+    expect(checked.firstElementChild).toHaveClass('bg-on-selected');
+    expect(radio('Private')).toHaveClass('border-control-boundary', 'bg-control-well');
     expect(radio('Private').children).toHaveLength(0);
   });
 
@@ -374,21 +376,34 @@ describe('RadioGroup', () => {
       'rounded-full',
       'border',
       'border-solid',
-      'border-border-control',
-      'bg-surface-0',
+      'border-control-boundary',
+      'bg-control-well',
       'shadow-[var(--shadow-well)]',
       'hover:border-fg-muted',
-      'data-[state=checked]:border-action-primary-solid-bg',
-      'data-[state=checked]:bg-[image:var(--gradient-btn-primary)]',
-      'data-[state=checked]:shadow-[var(--shadow-btn-primary)]',
+      'data-[state=checked]:border-state-selected',
+      'data-[state=checked]:bg-[image:var(--gradient-state-selected)]',
+      'data-[state=checked]:shadow-[var(--shadow-state-selected)]',
       'focus-visible:outline-none',
       'focus-visible:shadow-[var(--shadow-focus)]',
       'data-[state=checked]:focus-visible:shadow-[var(--shadow-focus)]',
       'disabled:pointer-events-none',
       'motion-reduce:transition-none'
     );
-    expect(control.firstElementChild).toHaveClass('size-2', 'rounded-full', 'bg-action-primary-solid-fg');
+    for (const oldClass of [
+      'border-border-control',
+      'bg-surface-0',
+      'data-[state=checked]:border-action-primary-solid-bg',
+      'data-[state=checked]:bg-[image:var(--gradient-btn-primary)]',
+      'data-[state=checked]:shadow-[var(--shadow-btn-primary)]'
+    ]) {
+      expect(control).not.toHaveClass(oldClass);
+    }
+    expect(control.firstElementChild).toHaveClass('size-2', 'rounded-full', 'bg-on-selected');
+    expect(control.firstElementChild).not.toHaveClass('bg-action-primary-solid-fg');
     expect(row(control).querySelector('label')).toHaveClass('cursor-pointer');
+    expect(Object.keys(radioGroupVariants)).toEqual(['root', 'row', 'item', 'indicator', 'label']);
+    expect(radioGroupVariants.item().split(' ')).toContain('bg-control-well');
+    expect(radioGroupVariants.indicator().split(' ')).toContain('bg-on-selected');
   });
 
   it('applies the danger border and tinted well to every radio while the group is invalid (#219 option A)', () => {

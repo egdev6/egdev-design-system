@@ -254,8 +254,8 @@ describe('Input', () => {
       'w-full',
       'rounded-md',
       'border',
-      'border-border-control',
-      'bg-surface-0',
+      'border-control-boundary',
+      'bg-control-well',
       'shadow-[var(--shadow-well)]',
       'font-sans',
       'text-fg-default',
@@ -265,6 +265,8 @@ describe('Input', () => {
       'py-2',
       'text-body-default'
     );
+    expect(control).not.toHaveClass('border-border-control');
+    expect(control).not.toHaveClass('bg-surface-0');
 
     render(<Input aria-label='Small' size='sm' />);
     const small = screen.getByRole('textbox', { name: 'Small' });
@@ -279,8 +281,32 @@ describe('Input', () => {
 
     render(<Input aria-label='Command' variant='code' size='sm' />);
     const code = screen.getByRole('textbox', { name: 'Command' });
-    expect(code).toHaveClass('font-mono', 'text-code', 'bg-primitive-neutral-950', 'min-h-9');
-    expect(code).not.toHaveClass('font-sans', 'bg-surface-0', 'text-label-default', 'text-body-default');
+    expect(code).toHaveClass(
+      'font-mono',
+      'text-code',
+      'bg-primitive-neutral-950',
+      'border-control-boundary',
+      'min-h-9'
+    );
+    for (const oldClass of [
+      'font-sans',
+      'bg-control-well',
+      'bg-surface-0',
+      'border-border-control',
+      'text-label-default',
+      'text-body-default'
+    ]) {
+      expect(code).not.toHaveClass(oldClass);
+    }
+  });
+
+  it('keeps the darker code well while adopting the control boundary role', () => {
+    render(<Input aria-label='Command' variant='code' />);
+    const code = screen.getByRole('textbox', { name: 'Command' });
+    expect(code).toHaveClass('border-control-boundary', 'bg-primitive-neutral-950');
+    for (const oldClass of ['border-border-control', 'bg-control-well', 'bg-surface-0']) {
+      expect(code).not.toHaveClass(oldClass);
+    }
   });
 
   it('resolves documented defaults in the hook and splits root from control props (AC-06)', () => {

@@ -147,12 +147,14 @@ export const tabsTriggerVariants = cva(
       variant: {
         underline: [
           'after:absolute after:-bottom-px after:h-0.5 after:rounded-full after:bg-transparent after:transition-colors motion-reduce:after:transition-none',
-          'data-[state=active]:after:bg-fg-brand-default data-[state=active]:after:shadow-glow-base',
+          'data-[state=active]:after:bg-state-selected data-[state=active]:after:shadow-[var(--shadow-state-indicator)]',
           'focus-visible:outline-none focus-visible:inset-ring-2 focus-visible:inset-ring-focus-ring'
         ],
         segmented: [
-          'min-h-8.5 px-3 rounded-[calc(var(--radius-md)---spacing(0.75))]',
-          'data-[state=active]:bg-[image:var(--gradient-sheen)] data-[state=active]:bg-surface-3 data-[state=active]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1)]',
+          'min-h-8.5 px-3 rounded-[calc(var(--radius-md)---spacing(0.75))] isolate border border-transparent',
+          'data-[state=active]:border-border-brand data-[state=active]:bg-state-selected-surface data-[state=active]:bg-[image:var(--gradient-sheen)] data-[state=active]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1)]',
+          "data-[state=active]:before:content-['']",
+          'data-[state=active]:before:pointer-events-none data-[state=active]:before:absolute data-[state=active]:before:inset-0 data-[state=active]:before:-z-10 data-[state=active]:before:rounded-[inherit] data-[state=active]:before:bg-border-brand',
           'focus-visible:outline-none focus-visible:shadow-focus data-[state=active]:focus-visible:shadow-focus'
         ]
       },
