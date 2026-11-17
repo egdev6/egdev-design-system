@@ -795,7 +795,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon/types.ts",
           "symbol": "IconProps",
-          "revision": "sha256:d79cbabf517ae54a0cc78744b8aa3ca19affa18ff51cff1fa9fad1ce75f28921"
+          "revision": "sha256:b586847d42cc179674cf6c59bfd9434d421dc4e45759e355d770b9289b58a361"
         }
       },
       {
@@ -805,7 +805,7 @@
         "source": {
           "path": "packages/ui/src/atoms/spinner/types.ts",
           "symbol": "SpinnerProps",
-          "revision": "sha256:15beb1c08eb7851cb4b7c233fe4b15331b4fb193d7a11677189089f6615c3717"
+          "revision": "sha256:10ea9721ca295038877fa8e9d0252e744b5a5f0ea548fd1b1009343a3aacbe0c"
         }
       },
       {
@@ -865,7 +865,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
-          "revision": "sha256:5934ce381aedde034bd7c1d87c89a2a1f5d2d045a7ff2d2b5e5a18465c36b50a"
+          "revision": "sha256:9018d3d7c164e7858bd40a937af4cf968fa0ccb4ee32c3820abf6ca048109f75"
         }
       },
       {
@@ -1152,7 +1152,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
-          "revision": "sha256:5934ce381aedde034bd7c1d87c89a2a1f5d2d045a7ff2d2b5e5a18465c36b50a"
+          "revision": "sha256:9018d3d7c164e7858bd40a937af4cf968fa0ccb4ee32c3820abf6ca048109f75"
         }
       },
       {
@@ -1785,7 +1785,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon/types.ts",
           "symbol": "IconProps",
-          "revision": "sha256:d79cbabf517ae54a0cc78744b8aa3ca19affa18ff51cff1fa9fad1ce75f28921"
+          "revision": "sha256:b586847d42cc179674cf6c59bfd9434d421dc4e45759e355d770b9289b58a361"
         }
       },
       {
@@ -1795,7 +1795,7 @@
         "source": {
           "path": "packages/ui/src/atoms/spinner/types.ts",
           "symbol": "SpinnerProps",
-          "revision": "sha256:15beb1c08eb7851cb4b7c233fe4b15331b4fb193d7a11677189089f6615c3717"
+          "revision": "sha256:10ea9721ca295038877fa8e9d0252e744b5a5f0ea548fd1b1009343a3aacbe0c"
         }
       },
       {
@@ -1865,7 +1865,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
-          "revision": "sha256:5934ce381aedde034bd7c1d87c89a2a1f5d2d045a7ff2d2b5e5a18465c36b50a"
+          "revision": "sha256:9018d3d7c164e7858bd40a937af4cf968fa0ccb4ee32c3820abf6ca048109f75"
         }
       },
       {
@@ -2639,7 +2639,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
-          "revision": "sha256:5934ce381aedde034bd7c1d87c89a2a1f5d2d045a7ff2d2b5e5a18465c36b50a"
+          "revision": "sha256:9018d3d7c164e7858bd40a937af4cf968fa0ccb4ee32c3820abf6ca048109f75"
         }
       },
       {
@@ -2900,7 +2900,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon-button/types.ts",
           "symbol": "IconButtonProps",
-          "revision": "sha256:5934ce381aedde034bd7c1d87c89a2a1f5d2d045a7ff2d2b5e5a18465c36b50a"
+          "revision": "sha256:9018d3d7c164e7858bd40a937af4cf968fa0ccb4ee32c3820abf6ca048109f75"
         }
       },
       {
@@ -3169,7 +3169,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon/types.ts",
           "symbol": "IconProps",
-          "revision": "sha256:d79cbabf517ae54a0cc78744b8aa3ca19affa18ff51cff1fa9fad1ce75f28921"
+          "revision": "sha256:b586847d42cc179674cf6c59bfd9434d421dc4e45759e355d770b9289b58a361"
         }
       }
     ]
@@ -3196,7 +3196,7 @@
         "source": {
           "path": "packages/ui/src/atoms/icon/types.ts",
           "symbol": "IconProps",
-          "revision": "sha256:d79cbabf517ae54a0cc78744b8aa3ca19affa18ff51cff1fa9fad1ce75f28921"
+          "revision": "sha256:b586847d42cc179674cf6c59bfd9434d421dc4e45759e355d770b9289b58a361"
         }
       }
     ]

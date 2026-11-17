@@ -84,7 +84,7 @@ export type IconProps = IconNativeProps & {
    */
   name: IconName;
   /**
-   * Preset square size: sm 16px, md 20px (--icon-size), lg 28px. Containers needing other
+   * Preset square size: sm 12.8px (size-4), md 16px (--icon-size), lg 22.4px (size-7). Containers needing other
    * sizes pass a spacing-scale size-* utility in className, which wins over the preset.
    * @control select
    * @default md

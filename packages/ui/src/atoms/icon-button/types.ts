@@ -25,7 +25,7 @@ export type IconButtonProps = Omit<ComponentPropsWithoutRef<'button'>, 'children
    */
   variant?: IconButtonVariant;
   /**
-   * Square control: sm 32px, md 40px, lg 48px. Glyph: sm 16px, otherwise 20px.
+   * Square control: sm 25.6px, md 32px, lg 38.4px. Glyph: sm 12.8px, otherwise 16px (--icon-size).
    * Use sm only for dense desktop toolbars; touch layouts provide a hit area of at least 44px.
    * @control select
    * @default md

@@ -62,7 +62,7 @@ No state machine, fallback for unsupported runtime names, activation, navigation
 
 Existing token-backed CVA in `types.ts` and `cn()` composition remain; no Material surface, motion, dynamic geometry, new tokens or dependency. `className` supports the existing outer layout, token text-color and spacing-scale `size-*` utilities; recognized conflicts merge through `cn`/`twMerge`, not universal appearance overrides. **No stylesheet.** The six meaningful files remain `types.ts`, `useIcon.ts`, `Icon.tsx`, `Icon.test.tsx`, `Icon.stories.tsx`, and `index.ts`; the only additional internal module remains `icon-paths.ts` for descriptors.
 
-The existing `types.ts`/story prose describes `md` as 20px, while `packages/tokens/src/theme.css` currently sets `--icon-size: 16px`; no size or token change is proposed here. Tracked separately in a dedicated issue (#428).
+The existing `types.ts`/story prose describes `md` as 20px, while `packages/tokens/src/theme.css` currently sets `--icon-size: 16px`; no size or token change is proposed here. Tracked separately in a dedicated issue (#428), resolved by correcting the documentation to the real preset sizes: sm 12.8px, md 16px, lg 22.4px (no token change).
 
 ### Expected-design visual reference
 

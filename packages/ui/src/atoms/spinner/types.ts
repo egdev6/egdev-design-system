@@ -16,7 +16,7 @@ export type SpinnerProps = Omit<ComponentPropsWithoutRef<'span'>, 'children' | '
    */
   label?: string;
   /**
-   * Icon-scale square: sm 16px, md 20px (--icon-size), lg 28px.
+   * Icon-scale square: sm 12.8px (size-4), md 16px (--icon-size), lg 22.4px (size-7).
    * @control select
    * @default md
    */

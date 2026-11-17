@@ -1979,7 +1979,7 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · AccessibleIcon
   - filled: boolean; Fills the glyph with currentColor in addition to its stroke, e.g. a solid play triangle. (components[] · packages/ui/src/atoms/icon/types.ts)
   - label: string; Accessible name for an informative icon, exposed through Radix AccessibleIcon. When omitted or empty, the icon is decorative and hidden from assistive technology. (components[] · packages/ui/src/atoms/icon/types.ts)
   - name: enum; Glyph to draw from the closed system icon set. (components[] · packages/ui/src/atoms/icon/types.ts)
-  - size: enum; Preset square size: sm 16px, md 20px (--icon-size), lg 28px. Containers needing other sizes pass a spacing-scale size-* utility in className, which wins over the preset. (components[] · packages/ui/src/atoms/icon/types.ts)
+  - size: enum; Preset square size: sm 12.8px (size-4), md 16px (--icon-size), lg 22.4px (size-7). Containers needing other sizes pass a spacing-scale size-* utility in className, which wins over the preset. (components[] · packages/ui/src/atoms/icon/types.ts)
 ### IconButton
 catalog[] · docs/catalog.json · @egdev/ui · atom · Slot + AccessibleIcon
 - IconButton (components[] · packages/ui/src/atoms/icon-button/types.ts)
@@ -2003,7 +2003,7 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · Slot + AccessibleIcon
   - children: ReactElement<unknown, string \| JSXElementConstructor<any>>; Single host element when asChild is true; not visible label content. Omitted in native mode. (components[] · packages/ui/src/atoms/icon-button/types.ts)
   - icon: ReactElement<unknown, string \| JSXElementConstructor<any>>; One decorative Icon (without its own label) or SVG element, hidden from assistive technology. (components[] · packages/ui/src/atoms/icon-button/types.ts)
   - label: string; Clear, non-empty accessible name rendered as Radix visually hidden text, not aria-label. (components[] · packages/ui/src/atoms/icon-button/types.ts)
-  - size: enum; Square control: sm 32px, md 40px, lg 48px. Glyph: sm 16px, otherwise 20px. Use sm only for dense desktop toolbars; touch layouts provide a hit area of at least 44px. (components[] · packages/ui/src/atoms/icon-button/types.ts)
+  - size: enum; Square control: sm 25.6px, md 32px, lg 38.4px. Glyph: sm 12.8px, otherwise 16px (--icon-size). Use sm only for dense desktop toolbars; touch layouts provide a hit area of at least 44px. (components[] · packages/ui/src/atoms/icon-button/types.ts)
   - variant: enum; Visual treatment. Outline is the round treatment; it is the web social-row treatment used at lg. Every other treatment uses radius-md. (components[] · packages/ui/src/atoms/icon-button/types.ts)
 ### Indicator
 catalog[] · docs/catalog.json · @egdev/ui · atom · —
@@ -2301,7 +2301,7 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · —
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - No statically extracted anatomy.
   - label: string; Non-empty status text read by assistive technology; makes the root a polite status region. When omitted, empty or whitespace-only, the spinner is decorative and hidden from assistive technology, for hosts that own their busy state (for example a loading Button). (components[] · packages/ui/src/atoms/spinner/types.ts)
-  - size: enum; Icon-scale square: sm 16px, md 20px (--icon-size), lg 28px. (components[] · packages/ui/src/atoms/spinner/types.ts)
+  - size: enum; Icon-scale square: sm 12.8px (size-4), md 16px (--icon-size), lg 22.4px (size-7). (components[] · packages/ui/src/atoms/spinner/types.ts)
 ### Stat
 catalog[] · docs/catalog.json · @egdev/ui · atom · —
 - Stat (components[] · packages/ui/src/atoms/stat/types.ts)
