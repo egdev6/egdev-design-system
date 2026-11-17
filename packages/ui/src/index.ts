@@ -1,4 +1,5 @@
 // Atoms
+export * from './atoms/app-icon';
 export * from './atoms/avatar';
 export * from './atoms/badge';
 export * from './atoms/button';

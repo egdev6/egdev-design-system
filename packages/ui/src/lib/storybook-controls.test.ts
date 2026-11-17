@@ -131,7 +131,8 @@ const components = [
   ['Closing', 'organisms/closing'],
   ['Hero', 'organisms/hero'],
   ['WebSection', 'organisms/web-section'],
-  ['WebTemplate', 'templates/web-template']
+  ['WebTemplate', 'templates/web-template'],
+  ['AppIcon', 'atoms/app-icon']
 ] as const;
 const parser = withCustomConfig(fileURLToPath(new URL('../../tsconfig.json', import.meta.url)), {
   ...config.typescript?.reactDocgenTypescriptOptions
@@ -415,6 +416,7 @@ const expected: Record<string, Record<string, string | false>> = {
     titleId: 'text',
     tone: 'select'
   },
+  appicon: { monogram: 'text', src: 'text', label: 'text', size: 'select' },
   avatar: { src: 'text', label: 'text', size: 'select', paused: 'boolean' },
   navlist: { label: 'text', items: false, onNavigate: false },
   button: {
@@ -742,6 +744,7 @@ const ownPropCounts: Record<string, number> = {
   timeline: 7,
   selecttile: 12,
   carousel: 7,
+  appicon: 4,
   avatar: 4,
   button: 8,
   checkbox: 7,
@@ -1060,6 +1063,39 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
     const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
     expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+  });
+  it('retains AppIcon required monogram, passive native rows and size choices', () => {
+    const { argTypes, args } = story('AppIcon');
+    expect(argTypes.monogram?.type).toMatchObject({ name: 'string', required: true });
+    for (const prop of ['monogram', 'src', 'label']) {
+      expect(argTypes[prop]?.control).toEqual({ type: 'text' });
+      expect(argTypes[prop]?.table?.defaultValue).toBeUndefined();
+    }
+    expect(argTypes.size?.control).toEqual({ type: 'select' });
+    expect([...(argTypes.size?.options ?? [])].sort()).toEqual(['lg', 'md', 'sm']);
+    expect(argTypes.size?.table?.defaultValue?.summary).toBe('"md"');
+    for (const prop of ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className']) {
+      expect(argTypes[prop], prop).toBeDefined();
+    }
+    for (const prop of [
+      'children',
+      'role',
+      'aria-label',
+      'aria-labelledby',
+      'aria-hidden',
+      'tabIndex',
+      'style',
+      'dangerouslySetInnerHTML',
+      'contentEditable',
+      'onClick',
+      'onKeyDown',
+      'ref',
+      'asChild',
+      'alt'
+    ]) {
+      expect(argTypes[prop], prop).toBeUndefined();
+    }
+    expect(args).toEqual({});
   });
   it('maps Carousel track layout as an optional select without injecting an argument', () => {
     const metadata = component('Carousel');
@@ -1414,6 +1450,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Stat', { highlighted: 'false', size: '"md"', unavailableText: '"No data"' }],
     ['Select', { size: '"md"', required: 'false', disabled: 'false' }],
     ['Avatar', { size: '"md"', paused: 'false' }],
+    ['AppIcon', { size: '"md"' }],
     [
       'Link',
       { asChild: 'false', external: 'false', arrow: 'true', newTabText: '"(opens in a new tab)"', variant: '"plain"' }

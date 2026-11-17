@@ -488,6 +488,10 @@ const postReceiptUsages = [
       source: 'packages/ui/src/atoms/icon-button/types.ts#IconButtonProps'
     })
   ),
+  ...['brand-monogram', 'identity-image-source', 'accessible-name', 'preset-dimensions'].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/atoms/app-icon/types.ts#AppIconProps'
+  })),
   { conventionId: 'checked-change', source: 'packages/ui/src/atoms/checkbox/types.ts#CheckboxProps' },
   { conventionId: 'preset-dimensions', source: 'packages/ui/src/atoms/avatar/types.ts#AvatarProps' },
   { conventionId: 'accessible-name', source: 'packages/ui/src/atoms/avatar/types.ts#AvatarProps' },
@@ -824,7 +828,8 @@ const postReceiptProposals = [
   'carousel-track-layout',
   // Collapsible v0.5 conventions have their own delegated approval after the frozen receipts.
   'disclosure-presence',
-  'disclosure-motion'
+  'disclosure-motion',
+  'identity-image-source'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -1675,10 +1680,10 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   validate(actual);
   // Union of both branch additions: two new approved conventions over the shared base; the
   // ArticleFeature naming additions add three more later in the chain.
-  // AmbientBackground adds two directions; TopBar and Tabs each add two; Carousel and Dialog add one each;
+  // AmbientBackground adds two directions; TopBar and Tabs each add two; Carousel, Dialog and AppIcon add one each;
   // Collapsible adds two separately approved conventions.
-  assert.equal(actual.length, 170);
-  assert.equal(beforeIndicatorConventions(actual).length, 167);
+  assert.equal(actual.length, 171);
+  assert.equal(beforeIndicatorConventions(actual).length, 168);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {
@@ -1758,6 +1763,31 @@ test('Collapsible v0.5 conventions bind delegated approval and reviewed usages',
   }
 });
 
+test('AppIcon naming binds its scoped approval and reviewed source', () => {
+  const reference = 'docs/components/app-icon/v0.1/prop-naming-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const actual = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const entry = actual.find(({ id }) => id === 'identity-image-source');
+  const record = receipt.entries[0];
+  assert.deepEqual(entry.approval, { reference, scope: record.scope, contentHash: props.conventionHash(entry) });
+  const { approval, usages, ...convention } = entry;
+  assert.deepEqual(convention, record.convention);
+  assert.equal(record.contentHash, props.conventionHash(entry));
+  const path = 'packages/ui/src/atoms/app-icon/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const matches = actual.flatMap((item) =>
+    item.usages.filter((usage) => usage.component === 'AppIcon').map((usage) => [item.id, usage])
+  );
+  assert.deepEqual(matches.map(([id]) => id).sort(), [
+    'accessible-name',
+    'brand-monogram',
+    'identity-image-source',
+    'preset-dimensions'
+  ]);
+  for (const [, usage] of matches) {
+    assert.deepEqual(usage.source, { path, symbol: 'AppIconProps', revision });
+  }
+});
 test('pre-Indicator projection removes only exact introduced IDs and approval reference', () => {
   const introduced = { id: 'indicator-count', approval: { reference: indicatorReference } };
   const otherReference = { id: 'indicator-count', approval: { reference: 'docs/other.md' } };

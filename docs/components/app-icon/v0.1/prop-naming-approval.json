@@ -1,0 +1,36 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-delegation",
+  "decision": "Approve the identity-image-source convention for the consumer-supplied app identity image source, as delegated in the AppIcon v0.1 spec.",
+  "evidence": {
+    "userStatements": [
+      {
+        "quote": "pues termina el 1 y luego el 2. Sigue hasta terminar ambos. Aplica las recomendaciones y mergea los prs. Puede paralelizar en hasta 3 subagentes hasta terminar",
+        "provenance": "docs/components/app-icon/v0.1/spec.md#approval; owner session recorded in odd/tasks/milestones-1-2-delivery.md L1 and odd/tasks/nexo-adoption-m2-specs.md L1."
+      }
+    ],
+    "interpretation": "The owner delegated the recommended decisions and convention approval to the parent. The approved spec scopes the new convention to supplied identity image sources; this is not native review authority.",
+    "spec": "docs/components/app-icon/v0.1/spec.md",
+    "specContentSHA256": "sha256:c9c88ec10543e4056ed1e517706a06e82f1da96366f68d89eb9e7b5101e91ebf"
+  },
+  "priorReceipts": [],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:identity-image-source",
+      "contentHash": "sha256:7d52f064af7e758da7cdadca8800749bfed232df2bd3da4dd3e48724f6bd270d",
+      "convention": {
+        "id": "identity-image-source",
+        "name": "src",
+        "meaning": "The consumer-supplied source of an image identifying an application or other entity.",
+        "whenToUse": "Provide an identity image source for a component that owns image loading and fallback.",
+        "avoid": "Do not use for accessible naming, arbitrary editorial media, image validation or application discovery.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}

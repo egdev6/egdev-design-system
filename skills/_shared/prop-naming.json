@@ -689,6 +689,16 @@
     "exceptions": [],
     "usages": [
       {
+        "component": "AppIcon",
+        "type": "AppIconSize ('sm' | 'md' | 'lg'; default md)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/app-icon/types.ts",
+          "symbol": "AppIconProps",
+          "revision": "sha256:251f76d8a3a8b6b74be7d9d40b292babe5904f5238259459ee462851dfc460ff"
+        }
+      },
+      {
         "component": "DialogContent",
         "type": "DialogSize (sm | md | lg | full; centered only)",
         "status": "existing",
@@ -1558,6 +1568,16 @@
       }
     ],
     "usages": [
+      {
+        "component": "AppIcon",
+        "type": "string (optional accessible app name)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/app-icon/types.ts",
+          "symbol": "AppIconProps",
+          "revision": "sha256:251f76d8a3a8b6b74be7d9d40b292babe5904f5238259459ee462851dfc460ff"
+        }
+      },
       {
         "component": "SectionNav",
         "type": "string (required navigation and dialog name)",
@@ -3322,7 +3342,45 @@
     },
     "aliases": [],
     "exceptions": [],
-    "usages": []
+    "usages": [
+      {
+        "component": "AppIcon",
+        "type": "string (required app monogram)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/app-icon/types.ts",
+          "symbol": "AppIconProps",
+          "revision": "sha256:251f76d8a3a8b6b74be7d9d40b292babe5904f5238259459ee462851dfc460ff"
+        }
+      }
+    ]
+  },
+  {
+    "id": "identity-image-source",
+    "name": "src",
+    "meaning": "The consumer-supplied source of an image identifying an application or other entity.",
+    "whenToUse": "Provide an identity image source for a component that owns image loading and fallback.",
+    "avoid": "Do not use for accessible naming, arbitrary editorial media, image validation or application discovery.",
+    "status": "approved",
+    "approval": {
+      "reference": "docs/components/app-icon/v0.1/prop-naming-approval.json",
+      "scope": "convention:identity-image-source",
+      "contentHash": "sha256:7d52f064af7e758da7cdadca8800749bfed232df2bd3da4dd3e48724f6bd270d"
+    },
+    "aliases": [],
+    "exceptions": [],
+    "usages": [
+      {
+        "component": "AppIcon",
+        "type": "string (optional identity image source)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/atoms/app-icon/types.ts",
+          "symbol": "AppIconProps",
+          "revision": "sha256:251f76d8a3a8b6b74be7d9d40b292babe5904f5238259459ee462851dfc460ff"
+        }
+      }
+    ]
   },
   {
     "id": "container-edge-placement",

@@ -112,6 +112,7 @@ const documentedNativeProps: Record<string, readonly string[]> = {
     'className',
     'onClick'
   ],
+  appIcon: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className'],
   avatar: ['id', 'title', 'aria-describedby', 'className', 'style'],
   navList: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
   tabBar: ['id', 'title', 'dir', 'lang', 'aria-describedby', 'className', 'onClick'],
