@@ -143,6 +143,11 @@ test('--check detects a changed composition import without writing', () => {
 test('typography roles resolve representative source recipes to tokens', () => {
   const roles = read('packages/system/design-system.json').typographyRoles;
   const role = (name) => roles.find((item) => item.name === name);
+  assert.equal(role('Heading compact').family, '--font-display');
+  assert.equal(role('Heading compact').size, '--text-heading-small');
+  assert.equal(role('Heading compact').lineHeight, '--text-heading-small--line-height');
+  assert.equal(role('Heading compact').weight, '--text-heading-small--font-weight');
+  assert.equal(role('Heading compact').tracking, '--text-heading-small--letter-spacing');
   assert.equal(role('Heading section').family, '--font-display');
   assert.equal(role('Heading section').size, '--text-title-section');
   assert.equal(role('Heading section').lineHeight, '--text-title-section--line-height');

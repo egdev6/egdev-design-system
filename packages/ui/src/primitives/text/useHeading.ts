@@ -1,6 +1,6 @@
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { cn } from '@/lib/cn';
-import { accentVariants, type HeadingLevel, type HeadingProps, headingVariants, type TitleVariant } from './types';
+import { accentVariants, type HeadingLevel, type HeadingProps, headingVariants, textForegroundClasses } from './types';
 
 type HeadingElement = `h${HeadingLevel}`;
 
@@ -14,7 +14,14 @@ type HeadingResult = {
 };
 
 const headingLevels: readonly HeadingLevel[] = [1, 2, 3, 4, 5, 6];
-const titleVariantNames: readonly TitleVariant[] = ['display', 'hero', 'section', 'show', 'inverse'];
+const headingVariantNames: readonly Exclude<HeadingProps['variant'], undefined>[] = [
+  'display',
+  'hero',
+  'section',
+  'show',
+  'inverse',
+  'compact'
+];
 
 /**
  * Resolve the native h1–h6 element from level (h2 fallback), the section default, the optional
@@ -24,6 +31,7 @@ const titleVariantNames: readonly TitleVariant[] = ['display', 'hero', 'section'
 export function useHeading({
   level,
   variant: requestedVariant,
+  foreground,
   tone,
   accent,
   accentBreak = true,
@@ -37,8 +45,9 @@ export function useHeading({
     ...rootProps
   } = native as typeof native & { dangerouslySetInnerHTML?: unknown; asChild?: unknown };
   const resolvedLevel = level !== undefined && headingLevels.includes(level) ? level : 2;
-  const variant = requestedVariant && titleVariantNames.includes(requestedVariant) ? requestedVariant : 'section';
-  const accentText = typeof accent === 'string' && accent.trim() !== '' ? accent : undefined;
+  const variant = requestedVariant && headingVariantNames.includes(requestedVariant) ? requestedVariant : 'section';
+  const resolvedForeground = foreground && Object.hasOwn(textForegroundClasses, foreground) ? foreground : 'inherit';
+  const accentText = variant !== 'compact' && typeof accent === 'string' && accent.trim() !== '' ? accent : undefined;
   const accentTone = variant === 'inverse' ? 'flood' : tone === 'raised' ? 'raised' : 'canvas';
   return {
     element: `h${resolvedLevel}`,
@@ -55,6 +64,12 @@ export function useHeading({
               accentBreak: accentBreak !== false
             })
           },
-    rootProps: { ...rootProps, className: cn(headingVariants({ variant }), className) }
+    rootProps: {
+      ...rootProps,
+      className: cn(
+        headingVariants({ variant, foreground: variant === 'compact' ? resolvedForeground : 'inherit' }),
+        className
+      )
+    }
   };
 }

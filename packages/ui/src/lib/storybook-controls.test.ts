@@ -499,6 +499,7 @@ const expected: Record<string, Record<string, string | false>> = {
   },
   heading: {
     variant: 'select',
+    foreground: 'select',
     tone: 'select',
     accent: 'text',
     accentBreak: 'boolean',
@@ -792,7 +793,7 @@ const ownPropCounts: Record<string, number> = {
   stack: 4,
   cluster: 4,
   text: 7,
-  heading: 6,
+  heading: 7,
   surface: 5
 };
 const ownPropCount = (name: string): number => {
@@ -1401,7 +1402,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
       'Text',
       { variant: '"eyebrow"', foreground: '"inherit"', tone: '"canvas"', accentBreak: 'true', asChild: 'false' }
     ],
-    ['Heading', { variant: '"section"', tone: '"canvas"', accentBreak: 'true', level: '2' }],
+    ['Heading', { variant: '"section"', foreground: '"inherit"', tone: '"canvas"', accentBreak: 'true', level: '2' }],
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
     ['Skeleton', { variant: '"line"', size: '"md"', pulse: 'true' }],
@@ -1504,24 +1505,27 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(preview.parameters?.layout).toBe('padded');
   });
 
-  it('maps Text foreground to its seven choices and keeps Heading independent', () => {
-    const metadata = component('Text');
+  it('maps Text and compact Heading foreground to seven choices without injecting arguments', () => {
     const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
-    expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
-    const { argTypes, args } = story('Text');
-    expect(argTypes.foreground?.control).toEqual({ type: 'select' });
-    expect([...(argTypes.foreground?.options ?? [])].sort()).toEqual([
-      'danger',
-      'default',
-      'inherit',
-      'muted',
-      'on-flood',
-      'secondary',
-      'warning'
-    ]);
-    expect(argTypes.foreground?.table?.defaultValue?.summary).toBe('"inherit"');
-    expect(args).toEqual({});
-    expect(story('Heading').argTypes.foreground).toBeUndefined();
+    for (const name of ['Text', 'Heading']) {
+      const metadata = component(name);
+      expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+      const { argTypes, args } = story(name);
+      expect(argTypes.foreground?.control).toEqual({ type: 'select' });
+      expect([...(argTypes.foreground?.options ?? [])].sort()).toEqual([
+        'danger',
+        'default',
+        'inherit',
+        'muted',
+        'on-flood',
+        'secondary',
+        'warning'
+      ]);
+      expect(argTypes.foreground?.table?.defaultValue?.summary).toBe('"inherit"');
+      expect(args).toEqual({});
+    }
+    expect(story('Heading').argTypes.variant?.options).toContain('compact');
+    expect(story('Text').argTypes.variant?.options).not.toContain('compact');
   });
 
   it('exposes all Button size choices with md as the default', () => {

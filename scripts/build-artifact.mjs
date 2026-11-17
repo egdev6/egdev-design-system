@@ -110,11 +110,13 @@ for (const statement of storybook.statements) {
     }
   }
 }
-// Text's factored body map is still part of its CVA recipe; resolve only this approved map.
-function textBodyVariantObject(node, source) {
+// Resolve the factored Text/Heading recipe maps without following unrelated identifiers.
+function textRecipeObject(node, source) {
   if (
     !ts.isIdentifier(node) ||
-    node.text !== 'textBodyVariantClasses' ||
+    !['textBodyVariantClasses', 'textForegroundClasses', 'headingRootClasses', 'titleRootClasses'].includes(
+      node.text
+    ) ||
     source.fileName !== resolve(root, 'packages/ui/src/primitives/text/types.ts')
   ) {
     return node;
@@ -155,7 +157,9 @@ function variants(file) {
         if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
           classes.push(node.text);
         } else if (ts.isPropertyAssignment(node)) {
-          visit(textBodyVariantObject(node.initializer, source));
+          visit(textRecipeObject(node.initializer, source));
+        } else if (ts.isSpreadAssignment(node)) {
+          visit(textRecipeObject(node.expression, source));
         } else {
           ts.forEachChild(node, visit);
         }
@@ -396,20 +400,28 @@ function visualAnatomy(file, layout = false) {
               if (!ts.isPropertyAssignment(axis)) {
                 continue;
               }
-              const object = textBodyVariantObject(axis.initializer, source);
+              const object = textRecipeObject(axis.initializer, source);
               if (!ts.isObjectLiteralExpression(object)) {
                 continue;
               }
               const values = {};
-              for (const value of object.properties) {
-                if (ts.isPropertyAssignment(value)) {
-                  values[value.name.getText(source).replace(/^['"]|['"]$/g, '')] = anatomyClasses(
-                    value.initializer,
-                    source,
-                    layout
-                  );
+              function collectValues(recipe) {
+                for (const value of recipe.properties) {
+                  if (ts.isSpreadAssignment(value)) {
+                    const spread = textRecipeObject(value.expression, source);
+                    if (ts.isObjectLiteralExpression(spread)) {
+                      collectValues(spread);
+                    }
+                  } else if (ts.isPropertyAssignment(value)) {
+                    values[value.name.getText(source).replace(/^['"]|['"]$/g, '')] = anatomyClasses(
+                      value.initializer,
+                      source,
+                      layout
+                    );
+                  }
                 }
               }
+              collectValues(object);
               recipe.variants[axis.name.getText(source).replace(/^['"]|['"]$/g, '')] = values;
             }
           }
@@ -696,6 +708,7 @@ for (const entry of registry) {
 function typographyRoles() {
   const text = 'packages/ui/src/primitives/text/types.ts';
   const specs = [
+    ['Heading compact', text, 'headingVariants', 'headingRootClasses', 'compact'],
     ['Heading section', text, 'headingVariants', 'titleRootClasses', 'section'],
     ['Heading hero', text, 'headingVariants', 'titleRootClasses', 'hero'],
     ['Heading show', text, 'headingVariants', 'titleRootClasses', 'show'],

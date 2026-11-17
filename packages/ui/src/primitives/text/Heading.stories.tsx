@@ -5,7 +5,7 @@ import { Text } from './Text';
 /**
  * ## Description
  * A native h1–h6 display heading. `level` sets the document rank; `variant` sets the visual recipe
- * (`section`, `hero`, `show`, `display`, `inverse`); the two are independent.
+ * (`section`, `hero`, `show`, `display`, `inverse`, `compact`); the two are independent.
  *
  * ## Dependencies
  * None beyond React: the native heading owns its role and level. No interactive primitive.
@@ -13,7 +13,8 @@ import { Text } from './Text';
  * ## Usage guidelines
  * The full visible copy, including the accent, is the accessible name. Supply whitespace in
  * children before a separate accented word. Choose `tone="raised"` on surface-1…3 or overlays.
- * Consumers own the document outline and localization. className supports outer layout only.
+ * Compact headings inherit the host color by default; explicit foregrounds follow Text's host and
+ * contrast restrictions. Consumers own the document outline and localization. className supports outer layout only.
  * Host panels in these examples are illustrative consumer content, not Heading parts.
  */
 const meta: Meta<typeof Heading> = {
@@ -30,6 +31,41 @@ const raisedHost =
 /** The default h2 section title; only the required copy is supplied. */
 export const Default: Story = {
   args: { children: 'Section title' }
+};
+
+/** Compact typography keeps its native rank and inherits its host foreground. */
+export const Compact: Story = {
+  args: { variant: 'compact', children: 'Panel heading' }
+};
+
+/** Semantic foreground choices on supported solid and flood hosts; status wording remains meaningful. */
+export const CompactForeground: Story = {
+  args: { variant: 'compact', foreground: 'secondary', children: 'Secondary heading' },
+  render: (args) => (
+    <div className='grid gap-4'>
+      <div className='flex flex-col gap-2 p-6 bg-surface-1'>
+        <Heading {...args} />
+        <Heading variant='compact' foreground='default'>
+          Default heading
+        </Heading>
+        <Heading variant='compact' foreground='muted'>
+          Muted heading
+        </Heading>
+        <Heading variant='compact' foreground='warning'>
+          <span aria-hidden='true'>⚠ </span>Warning: review required
+        </Heading>
+        <Heading variant='compact' foreground='danger'>
+          <span aria-hidden='true'>✕ </span>Danger: action failed
+        </Heading>
+      </div>
+      <div className='flex flex-col gap-2 p-6 bg-bg-flood text-fg-on-flood'>
+        <Heading variant='compact'>Inherited on flood</Heading>
+        <Heading variant='compact' foreground='on-flood'>
+          Explicit on flood
+        </Heading>
+      </div>
+    </div>
+  )
 };
 
 /** Every rank from h1 to h6 keeps the same section recipe: level never resizes the typography. */
@@ -96,7 +132,7 @@ export const Raised: Story = {
       </div>
       <div className={raisedHost}>
         <Text>Raised panel</Text>
-        <Heading {...args} variant='section' tone='raised' />
+        <Heading {...args} variant='section' foreground={undefined} tone='raised' />
       </div>
     </div>
   )

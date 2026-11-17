@@ -1132,17 +1132,17 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
-          "revision": "sha256:a7abcc3f830036a930a6b15022834788f6c960c4c7fe97c22133fbaf286f6434"
+          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
         }
       },
       {
         "component": "Heading",
-        "type": "TitleVariant (display|hero|section|show|inverse)",
+        "type": "TitleVariant (display|hero|section|show|inverse) | compact",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
-          "revision": "sha256:a7abcc3f830036a930a6b15022834788f6c960c4c7fe97c22133fbaf286f6434"
+          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
         }
       },
       {
@@ -1285,9 +1285,9 @@
     "avoid": "A consumer-selected measurement condition (use state), arbitrary colors, or assuming every component exposes the same tone values.",
     "status": "approved",
     "approval": {
-      "reference": "docs/components/text/v0.2/foreground-exception-approval.json",
+      "reference": "docs/components/panel/v0.3/heading-foreground-exception-approval.json",
       "scope": "convention:surface-material-tone",
-      "contentHash": "sha256:9c3648b25759ddbb580b8cd3dbd6eeeedf82142e7f0a73ad5ecf99dcf22e1ba2"
+      "contentHash": "sha256:37697bd822f4a58ec20cbddd04bdf05a1714715da89d8005cfbccda2a73529f1"
     },
     "aliases": [],
     "exceptions": [
@@ -1299,6 +1299,16 @@
           "reference": "docs/components/text/v0.2/foreground-exception-approval.json",
           "scope": "exception:surface-material-tone:Text:foreground",
           "contentHash": "sha256:b62666b1c6576fce0700d25571d5fdfbcf0e6381d2e13f8dd052b56ee4e87d04"
+        }
+      },
+      {
+        "scope": "Heading",
+        "propName": "foreground",
+        "reason": "Heading.tone already controls display-accent material context; compact semantic foreground must remain independent",
+        "approval": {
+          "reference": "docs/components/panel/v0.3/heading-foreground-exception-approval.json",
+          "scope": "exception:surface-material-tone:Heading:foreground",
+          "contentHash": "sha256:2df3435a38863b04ca1b49e7e806f39f5a0233437402fdb1cc26a241c1e9a0a9"
         }
       }
     ],
@@ -1400,17 +1410,17 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
-          "revision": "sha256:a7abcc3f830036a930a6b15022834788f6c960c4c7fe97c22133fbaf286f6434"
+          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
         }
       },
       {
         "component": "Heading",
-        "type": "TextTone (canvas|raised)",
+        "type": "TextTone (canvas|raised); TextForeground (inherit|default|secondary|muted|warning|danger|on-flood; compact foreground exception)",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
-          "revision": "sha256:a7abcc3f830036a930a6b15022834788f6c960c4c7fe97c22133fbaf286f6434"
+          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
         }
       },
       {
@@ -2860,7 +2870,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
-          "revision": "sha256:a7abcc3f830036a930a6b15022834788f6c960c4c7fe97c22133fbaf286f6434"
+          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
         }
       },
       {
@@ -5303,7 +5313,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
-          "revision": "sha256:a7abcc3f830036a930a6b15022834788f6c960c4c7fe97c22133fbaf286f6434"
+          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
         }
       },
       {
@@ -5944,7 +5954,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
-          "revision": "sha256:a7abcc3f830036a930a6b15022834788f6c960c4c7fe97c22133fbaf286f6434"
+          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
         }
       },
       {
@@ -5954,7 +5964,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
-          "revision": "sha256:a7abcc3f830036a930a6b15022834788f6c960c4c7fe97c22133fbaf286f6434"
+          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
         }
       },
       {
@@ -6159,7 +6169,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "TextProps",
-          "revision": "sha256:a7abcc3f830036a930a6b15022834788f6c960c4c7fe97c22133fbaf286f6434"
+          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
         }
       },
       {
@@ -6169,7 +6179,7 @@
         "source": {
           "path": "packages/ui/src/primitives/text/types.ts",
           "symbol": "HeadingProps",
-          "revision": "sha256:a7abcc3f830036a930a6b15022834788f6c960c4c7fe97c22133fbaf286f6434"
+          "revision": "sha256:0d73906f1500925d27c220ca2ec883a36ad21ac28c063b29d318757bb932b69c"
         }
       }
     ]

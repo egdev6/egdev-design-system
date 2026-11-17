@@ -2919,7 +2919,7 @@ describe('Storybook TypeScript docgen contract', () => {
         'eyebrow',
         'asChild'
       ],
-      ['Heading', ['display', 'hero', 'inverse', 'section', 'show'], 'section', 'level']
+      ['Heading', ['compact', 'display', 'hero', 'inverse', 'section', 'show'], 'section', 'level']
     ] as const) {
       const doc = docs.find((item) => item.displayName === name);
       if (!doc) {
@@ -2959,7 +2959,14 @@ describe('Storybook TypeScript docgen contract', () => {
       '6'
     ]);
     expect(normalize(heading?.level?.defaultValue?.value)).toBe('2');
-    expect(heading?.foreground).toBeUndefined();
+    expect(heading?.foreground).toMatchObject({
+      required: false,
+      tags: { control: expect.stringMatching(/^select(?:\nselect)*$/) }
+    });
+    expect(normalize(heading?.foreground?.defaultValue?.value)).toBe('inherit');
+    expect(
+      (heading?.foreground?.type.value ?? []).map((item: { value: string }) => normalize(item.value)).sort()
+    ).toEqual(['danger', 'default', 'inherit', 'muted', 'on-flood', 'secondary', 'warning']);
     const text = docs.find((item) => item.displayName === 'Text')?.props;
     expect(text?.level).toBeUndefined();
     expect(text?.foreground).toMatchObject({
@@ -2992,7 +2999,7 @@ describe('Storybook TypeScript docgen contract', () => {
       level: 'select'
     };
     // All Text/Heading union branches and shared accent declarations are annotated.
-    expect(properties).toHaveLength(26);
+    expect(properties).toHaveLength(33);
     for (const property of properties) {
       const name = property.name.getText(file);
       const tags = ts.getJSDocTags(property);
