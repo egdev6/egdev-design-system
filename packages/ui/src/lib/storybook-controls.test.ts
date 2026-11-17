@@ -486,6 +486,7 @@ const expected: Record<string, Record<string, string | false>> = {
   cluster: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   text: {
     variant: 'select',
+    foreground: 'select',
     tone: 'select',
     accent: 'text',
     accentBreak: 'boolean',
@@ -784,7 +785,7 @@ const ownPropCounts: Record<string, number> = {
   visuallyhidden: 2,
   stack: 4,
   cluster: 4,
-  text: 6,
+  text: 7,
   heading: 6,
   surface: 5
 };
@@ -1332,7 +1333,10 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['AspectRatio', { ratio: '1' }],
     ['Stack', { gap: '4', alignItems: '"stretch"', justifyContent: '"start"', asChild: 'false' }],
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],
-    ['Text', { variant: '"eyebrow"', tone: '"canvas"', accentBreak: 'true', asChild: 'false' }],
+    [
+      'Text',
+      { variant: '"eyebrow"', foreground: '"inherit"', tone: '"canvas"', accentBreak: 'true', asChild: 'false' }
+    ],
     ['Heading', { variant: '"section"', tone: '"canvas"', accentBreak: 'true', level: '2' }],
     ['Surface', { tone: '"surface-1"', elevation: '1', padding: '"md"', radius: '"xl"', asChild: 'false' }],
     ['VisuallyHidden', { asChild: 'false' }],
@@ -1433,6 +1437,26 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     expect(jsdocControlsEnhancer.secondPass).toBeUndefined();
     expect(preview.parameters?.backgrounds).toEqual({ disable: true });
     expect(preview.parameters?.layout).toBe('padded');
+  });
+
+  it('maps Text foreground to its seven choices and keeps Heading independent', () => {
+    const metadata = component('Text');
+    const extract = INTERNAL_DEFAULT_PROJECT_ANNOTATIONS.parameters?.docs?.extractArgTypes;
+    expect(mapJSDocControls(extract(metadata), metadata).diagnostics).toEqual([]);
+    const { argTypes, args } = story('Text');
+    expect(argTypes.foreground?.control).toEqual({ type: 'select' });
+    expect([...(argTypes.foreground?.options ?? [])].sort()).toEqual([
+      'danger',
+      'default',
+      'inherit',
+      'muted',
+      'on-flood',
+      'secondary',
+      'warning'
+    ]);
+    expect(argTypes.foreground?.table?.defaultValue?.summary).toBe('"inherit"');
+    expect(args).toEqual({});
+    expect(story('Heading').argTypes.foreground).toBeUndefined();
   });
 
   it('exposes all Button size choices with md as the default', () => {

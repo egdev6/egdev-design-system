@@ -4,8 +4,14 @@ import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 /** Display-scale title recipes shared by Text and Heading. `inverse` is display scale on flood hosts. */
 export type TitleVariant = 'display' | 'hero' | 'section' | 'show' | 'inverse';
 
-/** Text recipes: every title recipe plus the diamond-prefixed eyebrow. */
-export type TextVariant = TitleVariant | 'eyebrow';
+/** Body and lede typography recipes, available only on Text. */
+type TextBodyVariant = 'body' | 'body-large' | 'lede';
+
+/** Text recipes: title, eyebrow and body typography. */
+export type TextVariant = TitleVariant | 'eyebrow' | TextBodyVariant;
+
+/** Semantic body foreground; inherit follows the actual host color. */
+export type TextForeground = 'inherit' | 'default' | 'secondary' | 'muted' | 'warning' | 'danger' | 'on-flood';
 
 /** Material context that selects the accent color; never paints a background. */
 export type TextTone = 'canvas' | 'raised';
@@ -28,12 +34,31 @@ const textVariantClasses = {
   ...titleRootClasses,
   eyebrow:
     "text-label-eyebrow text-fg-secondary inline-flex items-center gap-2.5 before:content-[''] before:size-2 before:shrink-0 before:rotate-45 before:bg-fg-brand-default"
-} as const satisfies Record<TextVariant, string>;
+} as const satisfies Record<Exclude<TextVariant, TextBodyVariant>, string>;
 
 export const textVariants = cva('eg-text m-0 font-display uppercase wrap-break-word', {
   variants: { variant: textVariantClasses },
   defaultVariants: { variant: 'eyebrow' }
 });
+
+export const textBodyVariants = cva(
+  'eg-text m-0 font-sans [&_strong]:[font-weight:var(--text-heading-small--font-weight)]',
+  {
+    variants: {
+      variant: { body: 'text-body-default', 'body-large': 'text-body-large', lede: 'text-body-muted' },
+      foreground: {
+        inherit: '',
+        default: 'text-fg-default',
+        secondary: 'text-fg-secondary',
+        muted: 'text-fg-muted',
+        warning: 'text-status-warning',
+        danger: 'text-status-danger',
+        'on-flood': 'text-fg-on-flood'
+      }
+    },
+    defaultVariants: { foreground: 'inherit' }
+  }
+);
 
 export const headingVariants = cva('eg-heading m-0 font-display uppercase wrap-break-word', {
   variants: { variant: titleRootClasses },
@@ -78,6 +103,11 @@ type TextVisualProps =
        */
       variant?: 'eyebrow';
       /**
+       * Semantic foreground is only available on body recipes.
+       * @control select
+       */
+      foreground?: never;
+      /**
        * Accent Material context. Not available on the eyebrow, whose diamond is decorative.
        * @control select
        */
@@ -100,6 +130,11 @@ type TextVisualProps =
        */
       variant: Exclude<TitleVariant, 'inverse'>;
       /**
+       * Semantic foreground is only available on body recipes.
+       * @control select
+       */
+      foreground?: never;
+      /**
        * Accent Material context: canvas (surface-0) neon or raised brand on surface-1…3 and overlays.
        * Consumers choose it; the host background is never inspected. The canvas hero accent glows.
        * @default canvas
@@ -114,11 +149,45 @@ type TextVisualProps =
        */
       variant: 'inverse';
       /**
+       * Semantic foreground is only available on body recipes.
+       * @control select
+       */
+      foreground?: never;
+      /**
        * Not available on inverse: root and accent always use the on-flood foreground.
        * @control select
        */
       tone?: never;
-    } & TitleAccentProps);
+    } & TitleAccentProps)
+  | {
+      /**
+       * Body or lede typography; use Heading for document hierarchy.
+       * @control select
+       */
+      variant: TextBodyVariant;
+      /**
+       * Foreground for body copy. Inherit follows the host; use on-flood or inherit on flood,
+       * and provide meaningful words and a non-color cue for status colors.
+       * @default inherit
+       * @control select
+       */
+      foreground?: TextForeground;
+      /**
+       * Accent Material context is unavailable on body recipes.
+       * @control select
+       */
+      tone?: never;
+      /**
+       * Use semantic strong content instead of a trailing accent on body recipes.
+       * @control text
+       */
+      accent?: never;
+      /**
+       * Accent layout is unavailable on body recipes.
+       * @control boolean
+       */
+      accentBreak?: never;
+    };
 
 type HeadingVisualProps =
   | ({
@@ -150,7 +219,7 @@ type HeadingVisualProps =
     } & TitleAccentProps);
 
 /**
- * Non-heading display copy or an eyebrow. className supports outer layout only (margins, width
+ * Non-heading display, eyebrow or body copy. className supports outer layout only (margins, width
  * constraints, flex/grid placement); typography, color, glow and accent layout follow the contract.
  */
 export type TextProps = Omit<ComponentPropsWithoutRef<'p'>, 'children' | 'role' | 'dangerouslySetInnerHTML'> &

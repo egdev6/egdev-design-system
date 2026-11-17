@@ -1,6 +1,13 @@
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { cn } from '@/lib/cn';
-import { accentVariants, type TextProps, type TextVariant, textVariants } from './types';
+import {
+  accentVariants,
+  type TextForeground,
+  type TextProps,
+  type TextVariant,
+  textBodyVariants,
+  textVariants
+} from './types';
 
 type TextAccent = { className: string; text: string };
 
@@ -11,15 +18,35 @@ type TextResult = {
   rootProps: Omit<ComponentPropsWithoutRef<'p'>, 'children' | 'role' | 'dangerouslySetInnerHTML'>;
 };
 
-const textVariantNames: readonly TextVariant[] = ['display', 'hero', 'section', 'eyebrow', 'show', 'inverse'];
+const textVariantNames: readonly TextVariant[] = [
+  'display',
+  'hero',
+  'section',
+  'eyebrow',
+  'show',
+  'inverse',
+  'body',
+  'body-large',
+  'lede'
+];
+const foregroundNames: readonly TextForeground[] = [
+  'inherit',
+  'default',
+  'secondary',
+  'muted',
+  'warning',
+  'danger',
+  'on-flood'
+];
 
 /**
- * Resolve the eyebrow default, the optional trailing accent and the root/accent classes.
- * Blank accents are omitted; non-empty accent text is kept verbatim. An untyped
+ * Resolve body or title classes, the eyebrow default and optional trailing accent.
+ * Body foreground defaults to inherit. Blank accents are omitted; non-empty text is kept verbatim. An untyped
  * dangerouslySetInnerHTML is discarded so it never reaches the paragraph or Slot.
  */
 export function useText({
   variant: requestedVariant,
+  foreground,
   tone,
   accent,
   accentBreak = true,
@@ -32,7 +59,10 @@ export function useText({
     dangerouslySetInnerHTML?: unknown;
   };
   const variant = requestedVariant && textVariantNames.includes(requestedVariant) ? requestedVariant : 'eyebrow';
-  const accentText = variant !== 'eyebrow' && typeof accent === 'string' && accent.trim() !== '' ? accent : undefined;
+  const isBody = variant === 'body' || variant === 'body-large' || variant === 'lede';
+  const resolvedForeground = foreground && foregroundNames.includes(foreground) ? foreground : 'inherit';
+  const accentText =
+    !isBody && variant !== 'eyebrow' && typeof accent === 'string' && accent.trim() !== '' ? accent : undefined;
   const accentTone = variant === 'inverse' ? 'flood' : tone === 'raised' ? 'raised' : 'canvas';
   return {
     asChild,
@@ -49,6 +79,12 @@ export function useText({
               accentBreak: accentBreak !== false
             })
           },
-    rootProps: { ...rootProps, className: cn(textVariants({ variant }), className) }
+    rootProps: {
+      ...rootProps,
+      className: cn(
+        isBody ? textBodyVariants({ variant, foreground: resolvedForeground }) : textVariants({ variant }),
+        className
+      )
+    }
   };
 }

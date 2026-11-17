@@ -1,11 +1,13 @@
+import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { describe, expect, it, vi } from 'vitest';
+import { Heading } from './Heading';
 import { Text } from './Text';
-import type { TextProps } from './types';
+import { type TextForeground, type TextProps, textVariants } from './types';
 import { useText } from './useText';
 
 const theme = readFileSync(resolve(import.meta.dirname, '../../../../tokens/src/theme.css'), 'utf8');
@@ -35,6 +37,211 @@ describe('useText', () => {
     } as unknown as TextProps;
     const { result } = renderHook(() => useText(untyped));
     expect(Object.hasOwn(result.current.rootProps, 'dangerouslySetInnerHTML')).toBe(false);
+  });
+});
+
+describe('Text body contract', () => {
+  const colorClasses = [
+    'text-fg-default',
+    'text-fg-secondary',
+    'text-fg-muted',
+    'text-status-warning',
+    'text-status-danger',
+    'text-fg-on-flood'
+  ];
+
+  it.each([
+    ['body', 'text-body-default'],
+    ['body-large', 'text-body-large'],
+    ['lede', 'text-body-muted']
+  ] as const)('renders %s as normal-flow paragraph with the body recipe', (variant, recipe) => {
+    render(
+      <Text variant={variant} lang='en'>
+        Body copy
+      </Text>
+    );
+    const root = screen.getByText('Body copy');
+    expect(root.tagName).toBe('P');
+    expect(root).toHaveAttribute('lang', 'en');
+    expect(root).toHaveClass(
+      'eg-text',
+      'm-0',
+      'font-sans',
+      recipe,
+      '[&_strong]:[font-weight:var(--text-heading-small--font-weight)]'
+    );
+    for (const name of ['font-display', 'uppercase', 'wrap-break-word', 'inline-flex', ...colorClasses]) {
+      expect(root).not.toHaveClass(name);
+    }
+    expect(root).not.toHaveAttribute('foreground');
+  });
+
+  it('preserves ordered native strong content without a wrapper or inline appearance', () => {
+    render(
+      <Text variant='body'>
+        Read <strong>important</strong> words.
+      </Text>
+    );
+    const strong = screen.getByText('important');
+    const root = strong.parentElement;
+    expect(root?.tagName).toBe('P');
+    expect(root?.textContent).toBe('Read important words.');
+    expect(root?.childNodes).toHaveLength(3);
+    expect(strong.tagName).toBe('STRONG');
+    expect(strong).not.toHaveAttribute('style');
+    expect(root).toHaveClass('[&_strong]:[font-weight:var(--text-heading-small--font-weight)]');
+  });
+
+  it.each(['body', 'body-large', 'lede'] as const)(
+    'slots %s without losing whitespace, language or emphasis',
+    (variant) => {
+      render(
+        <Text asChild={true} variant={variant} lang='fr'>
+          <span data-origin='child'>
+            Before <strong>important</strong> after
+          </span>
+        </Text>
+      );
+      const root = screen.getByText('important').parentElement;
+      expect(root?.tagName).toBe('SPAN');
+      expect(root).toHaveAttribute('lang', 'fr');
+      expect(root).toHaveAttribute('data-origin', 'child');
+      expect(root?.textContent).toBe('Before important after');
+      expect(root).toHaveClass('[&_strong]:[font-weight:var(--text-heading-small--font-weight)]');
+      expect(root?.parentElement?.tagName).not.toBe('P');
+      expect(root).not.toHaveAttribute('foreground');
+    }
+  );
+
+  it.each([
+    ['inherit', ''],
+    ['default', 'text-fg-default'],
+    ['secondary', 'text-fg-secondary'],
+    ['muted', 'text-fg-muted'],
+    ['warning', 'text-status-warning'],
+    ['danger', 'text-status-danger'],
+    ['on-flood', 'text-fg-on-flood']
+  ] satisfies [TextForeground, string][])(
+    'maps %s without leaking attributes or adding status semantics',
+    (foreground, expected) => {
+      render(
+        <Text variant='body' foreground={foreground}>
+          Meaningful status copy
+        </Text>
+      );
+      const root = screen.getByText('Meaningful status copy');
+      for (const name of colorClasses) {
+        if (name === expected) {
+          expect(root).toHaveClass(name);
+        } else {
+          expect(root).not.toHaveClass(name);
+        }
+      }
+      for (const attribute of ['foreground', 'role', 'aria-live', 'tabindex']) {
+        expect(root).not.toHaveAttribute(attribute);
+      }
+    }
+  );
+
+  it('falls back to inherited color for bogus input and updates across rerenders', () => {
+    const { rerender } = render(
+      <Text variant='body' foreground='warning'>
+        Copy
+      </Text>
+    );
+    const root = screen.getByText('Copy');
+    expect(root).toHaveClass('text-status-warning');
+    rerender(
+      <Text variant='body-large' foreground='danger'>
+        Copy
+      </Text>
+    );
+    expect(root).toHaveClass('text-body-large', 'text-status-danger');
+    expect(root).not.toHaveClass('text-status-warning');
+    const invalid = { variant: 'lede', foreground: 'bogus', children: 'Copy' } as unknown as TextProps;
+    rerender(<Text {...invalid} />);
+    expect(root).toHaveClass('text-body-muted');
+    for (const name of colorClasses) {
+      expect(root).not.toHaveClass(name);
+    }
+    expect(root).not.toHaveAttribute('foreground');
+    rerender(<Text variant='body'>Copy</Text>);
+    for (const name of colorClasses) {
+      expect(root).not.toHaveClass(name);
+    }
+  });
+
+  it.each(['body', 'body-large', 'lede'] as const)('discards untyped title accent and tone on %s', (variant) => {
+    const props = {
+      variant,
+      tone: 'raised',
+      accent: 'Hidden',
+      accentBreak: false,
+      children: 'Plain'
+    } as unknown as TextProps;
+    const { container } = render(<Text {...props} />);
+    const root = screen.getByText('Plain');
+    const recipe = { body: 'text-body-default', 'body-large': 'text-body-large', lede: 'text-body-muted' }[variant];
+    expect(root).toHaveClass(recipe, 'font-sans');
+    expect(container.querySelector('.eg-text__accent')).toBeNull();
+    expect(root.textContent).toBe('Plain');
+    for (const name of ['tone', 'accent', 'accentBreak']) {
+      expect(root).not.toHaveAttribute(name);
+    }
+  });
+
+  it('retains the eyebrow fallback for an invalid untyped variant', () => {
+    const props = { variant: 'unknown', foreground: 'danger', children: 'Fallback' } as unknown as TextProps;
+    render(<Text {...props} />);
+    const root = screen.getByText('Fallback');
+    expect(root.className).toBe(textVariants({ variant: 'eyebrow' }));
+    expect(root).not.toHaveAttribute('foreground');
+    expect(root).not.toHaveClass('text-status-danger');
+  });
+
+  it.each(['eyebrow', 'section', 'hero', 'show', 'display', 'inverse'] as const)(
+    'ignores untyped foreground on old %s and preserves its previous exact classes',
+    (variant) => {
+      const props = { variant, foreground: 'warning', children: 'Old copy' } as unknown as TextProps;
+      render(<Text {...props} />);
+      const root = screen.getByText('Old copy');
+      expect(root.className).toBe(textVariants({ variant }));
+      expect(root).not.toHaveAttribute('foreground');
+      expect(root).not.toHaveClass('text-status-warning');
+    }
+  );
+
+  it.each([
+    ['section', '1486cc186cf99b22fc786633f78037b0aebdd1c70ad3390de53dbc8cbfe369ed'],
+    ['hero', '35b387bbd8589640eec370ebd0e7d8d4a0c00eed1e46ad83827631da3fb24b65'],
+    ['show', '0c88e5ff9ab9a14c3c22c02c1e1c1528dffba799fa08499f1244a1e0d9c4796c'],
+    ['display', 'ab97ac27b1923294c3be7acf1f09375e8024ce938c916285bce9a8703b050fc4'],
+    ['inverse', '96a92a552765edb6e8d67fb96d82a368e6e0f7ae7ed4e292fd51e9b5784c0e96']
+  ] as const)('preserves the pre-change Heading %s class hash', (variant, hash) => {
+    render(<Heading variant={variant}>Heading</Heading>);
+    const classes = screen.getByRole('heading', { name: 'Heading' }).className;
+    expect(createHash('sha256').update(classes).digest('hex')).toBe(hash);
+  });
+
+  it('checks body and existing variant combinations at the type boundary', () => {
+    const valid: TextProps[] = [
+      { variant: 'body', children: 'Copy' },
+      { variant: 'body-large', foreground: 'warning', children: 'Copy' },
+      { variant: 'lede', foreground: 'on-flood', children: 'Copy' }
+    ];
+    // @ts-expect-error Body does not accept display accent tone.
+    const tone: TextProps = { variant: 'body', tone: 'raised', children: 'Copy' };
+    // @ts-expect-error Body does not accept a trailing accent.
+    const accent: TextProps = { variant: 'body-large', accent: 'No', children: 'Copy' };
+    // @ts-expect-error Body does not accept accent layout.
+    const accentBreak: TextProps = { variant: 'lede', accentBreak: false, children: 'Copy' };
+    // @ts-expect-error Foreground is restricted to body recipes.
+    const section: TextProps = { variant: 'section', foreground: 'warning', children: 'Copy' };
+    // @ts-expect-error Foreground is restricted to body recipes.
+    const eyebrow: TextProps = { variant: 'eyebrow', foreground: 'warning', children: 'Copy' };
+    // @ts-expect-error Foreground is restricted to body recipes.
+    const inverse: TextProps = { variant: 'inverse', foreground: 'warning', children: 'Copy' };
+    expect([...valid, tone, accent, accentBreak, section, eyebrow, inverse]).toHaveLength(9);
   });
 });
 

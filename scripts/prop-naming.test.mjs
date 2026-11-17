@@ -1310,6 +1310,71 @@ test('Popover binds the approved close auto-focus convention and reviewed usage'
   validate(registry);
 });
 
+test('Text binds its body foreground exception and reviewed Text and Heading sources', () => {
+  const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
+  const reference = 'docs/components/text/v0.2/foreground-exception-approval.json';
+  const receipt = JSON.parse(fs.readFileSync(resolve(root, reference), 'utf8'));
+  const entry = registry.find(({ id }) => id === 'surface-material-tone');
+  const exception = entry.exceptions.find((item) => item.scope === 'Text' && item.propName === 'foreground');
+  assert.equal(receipt.kind, 'human-approval-record');
+  assert.equal(receipt.nativeReviewApproval, false);
+  assert.match(receipt.evidence.ownerChoice, /Aplica las recomendaciones/);
+  assert.equal(
+    receipt.evidence.amendmentPayloadSHA256,
+    'sha256:8dc92d7052a5e2c70e6d54097d9d1b0abd1b8fa600253d021493ea5ff3842667'
+  );
+  assert.deepEqual(exception.approval, {
+    reference,
+    scope: 'exception:surface-material-tone:Text:foreground',
+    contentHash: props.exceptionHash(exception)
+  });
+  const { approval: _approval, usages, ...convention } = entry;
+  assert.deepEqual(entry.approval, {
+    reference,
+    scope: 'convention:surface-material-tone',
+    contentHash: props.conventionHash(entry)
+  });
+  assert.deepEqual(receipt.entries[0], {
+    scope: entry.approval.scope,
+    contentHash: entry.approval.contentHash,
+    convention
+  });
+  const path = 'packages/ui/src/primitives/text/types.ts';
+  const revision = digest(fs.readFileSync(resolve(root, path)));
+  const { approval: _exceptionApproval, ...exceptionPayload } = exception;
+  assert.deepEqual(receipt.entries[1], {
+    scope: exception.approval.scope,
+    contentHash: exception.approval.contentHash,
+    exception: exceptionPayload,
+    source: { path, symbol: 'TextProps', revision }
+  });
+  assert.match(usages.find(({ component }) => component === 'Text').type, /TextTone.*TextForeground/);
+  assert.match(
+    registry.find(({ id }) => id === 'visual-treatment').usages.find(({ component }) => component === 'Text').type,
+    /body\|body-large\|lede/
+  );
+  const own = registry.flatMap((item) => item.usages.filter((usage) => usage.source.path === path));
+  assert.equal(own.length, 10);
+  for (const usage of own) {
+    assert.equal(usage.source.revision, revision);
+    assert.ok(['TextProps', 'HeadingProps'].includes(usage.source.symbol));
+  }
+  for (const prior of receipt.priorReceipts) {
+    assert.equal(prior.wholeFileSHA256, digest(fs.readFileSync(resolve(root, prior.path))));
+  }
+  const [amendment] = receipt.semanticAmendments;
+  const previous = JSON.parse(fs.readFileSync(resolve(root, amendment.previousReference), 'utf8')).entries.find(
+    ({ convention: item }) => item.id === entry.id
+  );
+  assert.equal(amendment.previousContentHash, previous.contentHash);
+  assert.equal(props.conventionHash(previous.convention), previous.contentHash);
+  assert.deepEqual({ ...convention, exceptions: [] }, previous.convention);
+  validate(registry);
+  const changed = structuredClone(registry);
+  changed.find(({ id }) => id === entry.id).exceptions[0].reason += ' Changed.';
+  assert.throws(() => validate(changed), /approval/i);
+});
+
 test('SectionNav binds accessible-name exceptions and their source evidence', () => {
   const registry = JSON.parse(fs.readFileSync(resolve(root, 'skills/_shared/prop-naming.json'), 'utf8'));
   const reference = 'docs/components/section-nav/v0.1/accessible-name-exceptions-approval.json';
@@ -1678,7 +1743,8 @@ const receiptChain = [
   'docs/components/hero/v0.1/prop-naming-approval-scene-media.json',
   'docs/components/hero/v0.1/prop-naming-approval-scene-social.json',
   'docs/components/scroll-reveal/v0.1/prop-naming-approval.json',
-  'docs/components/home-template/v0.1/prop-naming-approval.json'
+  'docs/components/home-template/v0.1/prop-naming-approval.json',
+  'docs/components/text/v0.2/foreground-exception-approval.json'
 ];
 function laterReceipts(reference) {
   const later = new Map();

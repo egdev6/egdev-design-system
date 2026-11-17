@@ -2903,7 +2903,12 @@ describe('Storybook TypeScript docgen contract', () => {
 
   it('extracts the real Text and Heading typography contracts with their own defaults', () => {
     for (const [name, variants, variantDefault, extra] of [
-      ['Text', ['display', 'eyebrow', 'hero', 'inverse', 'section', 'show'], 'eyebrow', 'asChild'],
+      [
+        'Text',
+        ['body', 'body-large', 'display', 'eyebrow', 'hero', 'inverse', 'lede', 'section', 'show'],
+        'eyebrow',
+        'asChild'
+      ],
       ['Heading', ['display', 'hero', 'inverse', 'section', 'show'], 'section', 'level']
     ] as const) {
       const doc = docs.find((item) => item.displayName === name);
@@ -2944,7 +2949,17 @@ describe('Storybook TypeScript docgen contract', () => {
       '6'
     ]);
     expect(normalize(heading?.level?.defaultValue?.value)).toBe('2');
-    expect(docs.find((item) => item.displayName === 'Text')?.props.level).toBeUndefined();
+    expect(heading?.foreground).toBeUndefined();
+    const text = docs.find((item) => item.displayName === 'Text')?.props;
+    expect(text?.level).toBeUndefined();
+    expect(text?.foreground).toMatchObject({
+      required: false,
+      tags: { control: expect.stringMatching(/^select(?:\nselect)*$/) }
+    });
+    expect(normalize(text?.foreground?.defaultValue?.value)).toBe('inherit');
+    expect((text?.foreground?.type.value ?? []).map((item: { value: string }) => normalize(item.value)).sort()).toEqual(
+      ['danger', 'default', 'inherit', 'muted', 'on-flood', 'secondary', 'warning']
+    );
   });
 
   it('annotates every Text and Heading own declaration, including each union branch', () => {
@@ -2958,6 +2973,7 @@ describe('Storybook TypeScript docgen contract', () => {
     ]);
     const allowed: Record<string, string> = {
       variant: 'select',
+      foreground: 'select',
       tone: 'select',
       accent: 'text',
       accentBreak: 'boolean',
@@ -2965,8 +2981,8 @@ describe('Storybook TypeScript docgen contract', () => {
       children: 'false',
       level: 'select'
     };
-    // Two accent props, Text's three branches (4 + 2 + 2), Heading's two branches (2 + 2), two own extras each.
-    expect(properties).toHaveLength(18);
+    // All Text/Heading union branches and shared accent declarations are annotated.
+    expect(properties).toHaveLength(26);
     for (const property of properties) {
       const name = property.name.getText(file);
       const tags = ts.getJSDocTags(property);
