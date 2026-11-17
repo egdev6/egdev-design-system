@@ -71,9 +71,9 @@ export type SliderProps = Omit<ComponentPropsWithoutRef<'span'>, 'children' | 'd
   name?: string;
 };
 
-/** Root hit area: 24px high, 44px on coarse pointers; consumer className sets outer layout only. */
+/** Root hit area: 19.2px high (h-6), 44.8px on coarse pointers (h-14); consumer className sets outer layout only. */
 export const sliderVariants = cva(
-  'eg-slider relative flex w-full items-center h-6 pointer-coarse:h-11 touch-none select-none data-[disabled]:opacity-45 data-[disabled]:pointer-events-none'
+  'eg-slider relative flex w-full items-center h-6 pointer-coarse:h-14 touch-none select-none data-[disabled]:opacity-45 data-[disabled]:pointer-events-none'
 );
 
 /** Track: 4px Material well ("what is filled sinks"). */

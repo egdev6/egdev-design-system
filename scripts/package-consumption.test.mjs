@@ -3824,7 +3824,7 @@ function assertSliderCSS(css) {
     '.bg-fg-brand-default',
     '.bg-fg-default',
     '.transition-shadow',
-    String.raw`.pointer-coarse\:h-11`,
+    String.raw`.pointer-coarse\:h-14`,
     String.raw`.data-\[disabled\]\:opacity-45`,
     String.raw`.focus-visible\:shadow-\[var\(--shadow-focus\)\]`,
     // #219 option A closed additions: invalid border width and tinted thumb fill.
