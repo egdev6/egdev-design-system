@@ -977,12 +977,16 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · ToggleGroup
 ### Collapsible
 catalog[] · docs/catalog.json · @egdev/ui · molecule · Collapsible
 - Collapsible (components[] · packages/ui/src/molecules/collapsible/types.ts)
-  - CollapsibleContent: Native hidden-shell/unmounted-children boundary; no forceMount or content animation. Children: In-flow body; the native hidden shell/id remains closed while children unmount. Lift persistent form state outside it. className supports outer margin/self-alignment only, merged last; no id, hidden, ref, forceMount or asChild API. Opt-in regions need a name. Meaningful flow content; children remount on reopening and local state may reset. (components[].parts · packages/ui/src/molecules/collapsible/Collapsible.tsx)
+  - CollapsibleContent: Native presence boundary with an optional retained, closed-hidden subtree. Children: In-flow body; by default its native hidden shell/id remains while children unmount. Retained closed controls still participate in forms. Move focus before externally closing. className supports outer margin/self-alignment only, merged last; no id, hidden, ref, forceMount or asChild API. Opt-in regions need a name. Meaningful flow content; unmounted children remount on reopening and local state may reset. (components[].parts · packages/ui/src/molecules/collapsible/Collapsible.tsx)
+  - CollapsibleHeader: Optional row placing independently owned actions outside the Trigger. Children: Optional unpainted row. className supports outer margin, width and parent placement only, merged last; no ref, role, tabIndex, inline appearance or asChild API. One Trigger or a native heading containing one Trigger. (components[].parts · packages/ui/src/molecules/collapsible/Collapsible.tsx)
   - CollapsibleTrigger: Native button; the React 18-compatible bridge connects only this public part's ref. (components[].parts · packages/ui/src/molecules/collapsible/Collapsible.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
+    - collapsibleActionsVariants base: gap-2 → --spacing-2
     - collapsibleContentVariants base: p-4 → --spacing-4
     - collapsibleContentVariants base: font-sans → --font-sans
     - collapsibleContentVariants base: text-body-default → --text-body-default
+    - collapsibleContentVariants padding=sm: p-2 → --spacing-2
+    - collapsibleHeaderVariants base: gap-2 → --spacing-2
     - collapsibleTriggerVariants base: text-start → unresolved
     - collapsibleTriggerVariants base: data-[state=open]:rounded-b-none → --radius-none
   - children: ReactNode; One named Trigger/Content pair; nested Roots are independent. (components[] · packages/ui/src/molecules/collapsible/types.ts)
@@ -2650,17 +2654,34 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
 ### CollapsibleContent
 - CollapsibleContent (components[] · packages/ui/src/molecules/collapsible/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
+    - collapsibleActionsVariants base: gap-2 → --spacing-2
     - collapsibleContentVariants base: p-4 → --spacing-4
     - collapsibleContentVariants base: font-sans → --font-sans
     - collapsibleContentVariants base: text-body-default → --text-body-default
+    - collapsibleContentVariants padding=sm: p-2 → --spacing-2
+    - collapsibleHeaderVariants base: gap-2 → --spacing-2
+    - collapsibleTriggerVariants base: text-start → unresolved
+    - collapsibleTriggerVariants base: data-[state=open]:rounded-b-none → --radius-none
+### CollapsibleHeader
+- CollapsibleHeader (components[] · packages/ui/src/molecules/collapsible/types.ts · @egdev/ui)
+  - Visual anatomy (source classes; unresolved is not a guessed value):
+    - collapsibleActionsVariants base: gap-2 → --spacing-2
+    - collapsibleContentVariants base: p-4 → --spacing-4
+    - collapsibleContentVariants base: font-sans → --font-sans
+    - collapsibleContentVariants base: text-body-default → --text-body-default
+    - collapsibleContentVariants padding=sm: p-2 → --spacing-2
+    - collapsibleHeaderVariants base: gap-2 → --spacing-2
     - collapsibleTriggerVariants base: text-start → unresolved
     - collapsibleTriggerVariants base: data-[state=open]:rounded-b-none → --radius-none
 ### CollapsibleTrigger
 - CollapsibleTrigger (components[] · packages/ui/src/molecules/collapsible/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
+    - collapsibleActionsVariants base: gap-2 → --spacing-2
     - collapsibleContentVariants base: p-4 → --spacing-4
     - collapsibleContentVariants base: font-sans → --font-sans
     - collapsibleContentVariants base: text-body-default → --text-body-default
+    - collapsibleContentVariants padding=sm: p-2 → --spacing-2
+    - collapsibleHeaderVariants base: gap-2 → --spacing-2
     - collapsibleTriggerVariants base: text-start → unresolved
     - collapsibleTriggerVariants base: data-[state=open]:rounded-b-none → --radius-none
 ### CommunityCardAction
@@ -4305,6 +4326,8 @@ Not exported:
 - decorative-index: index; approved; ProjectCard (propNaming[] · skills/_shared/prop-naming.json)
 - decorative-separation: decorative; approved; Divider (propNaming[] · skills/_shared/prop-naming.json)
 - dialog-overlay-scope: overlayScope; approved; DialogContent (propNaming[] · skills/_shared/prop-naming.json)
+- disclosure-motion: motion; approved; CollapsibleTrigger (propNaming[] · skills/_shared/prop-naming.json)
+- disclosure-presence: presence; approved; CollapsibleContent (propNaming[] · skills/_shared/prop-naming.json)
 - dismiss-label: dismissLabel; approved; CommandPalette, DialogContent, Toast (propNaming[] · skills/_shared/prop-naming.json)
 - drop-target-label: dropLabel; approved; Dropzone (propNaming[] · skills/_shared/prop-naming.json)
 - effect-profile: profile; approved; AmbientBackground (propNaming[] · skills/_shared/prop-naming.json)
@@ -4340,7 +4363,7 @@ Not exported:
 - initial-uncontrolled-sort: defaultSort; approved; Table (propNaming[] · skills/_shared/prop-naming.json)
 - initial-uncontrolled-value: defaultValue; approved; Carousel, ChipGroup, RadioGroup, Select, SelectTile, Slider, Table, Tabs (propNaming[] · skills/_shared/prop-naming.json)
 - inline-caption-layout: inline; approved; SocialLinks (propNaming[] · skills/_shared/prop-naming.json)
-- inner-padding: padding; approved; DialogContent, Surface (propNaming[] · skills/_shared/prop-naming.json)
+- inner-padding: padding; approved; CollapsibleContent, DialogContent, Surface (propNaming[] · skills/_shared/prop-naming.json)
 - interaction-drag-rotate: dragRotate; approved; Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
 - interaction-flip-gesture: flip; approved; Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
 - interaction-interactive-mode: interactive; approved; Isotipo3D (propNaming[] · skills/_shared/prop-naming.json)
@@ -4416,7 +4439,7 @@ Not exported:
 - tooltip-content: content; approved; Tooltip, WebTemplate (propNaming[] · skills/_shared/prop-naming.json)
 - top-bar-content-width: contentWidth; approved; TopBar (propNaming[] · skills/_shared/prop-naming.json)
 - top-bar-initial-background: initialBackground; approved; TopBar (propNaming[] · skills/_shared/prop-naming.json)
-- trailing-actions: actions; approved; AlertDialogContent, DialogContent, ModuleCard, Notice, PageHeader, PreviewFrame, Toast, WebSection (propNaming[] · skills/_shared/prop-naming.json)
+- trailing-actions: actions; approved; AlertDialogContent, CollapsibleHeader, DialogContent, ModuleCard, Notice, PageHeader, PreviewFrame, Toast, WebSection (propNaming[] · skills/_shared/prop-naming.json)
 - trailing-arrow: arrow; approved; Link (propNaming[] · skills/_shared/prop-naming.json)
 - trailing-text-accent: accent; approved; ChapterBreak, Closing, Heading, Hero, LabStage, PullQuote, SectionHeader, Text (propNaming[] · skills/_shared/prop-naming.json)
 - transient-highlight: highlighted; approved; Stat, Timeline (propNaming[] · skills/_shared/prop-naming.json)
