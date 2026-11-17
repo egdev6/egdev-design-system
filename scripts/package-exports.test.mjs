@@ -6761,7 +6761,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.match(offSwitch, /class="eg-switch /);
   assert.match(
     offSwitch,
-    /<span data-state="unchecked" class="absolute top-0\.5 left-0\.5 size-3\.5 [^"]*"><\/span><\/button><input type="checkbox" aria-hidden="true" tabindex="-1" [^>]*value="on"\/>$/
+    /<span data-state="unchecked" class="absolute top-0\.5 start-0\.5 size-3\.5 [^"]*"><\/span><\/button><input type="checkbox" aria-hidden="true" tabindex="-1" [^>]*value="on"\/>$/
   );
   assert.doesNotMatch(offSwitch, /disabled=""|data-disabled|checked=""/);
   const onSwitch = renderToString(

@@ -196,6 +196,15 @@ describe('Storybook preview CSS', () => {
       expect(css.includes(selector), selector).toBe(true);
     }
   });
+  it('compiles the Switch thumb logical inset and RTL travel (#432)', () => {
+    expect(rule('.start-0\\.5')).toMatch(/inset-inline-start:\s*calc\(var\(--space-1\)\s*\*\s*0?\.5\)/);
+    const selector = String.raw`.rtl\:data-\[state\=checked\]\:-translate-x-4`;
+    const index = css.indexOf(selector);
+    expect(index).toBeGreaterThanOrEqual(0);
+    expect(css.slice(index, index + 400)).toMatch(/dir\(rtl\)|\[dir=["']?rtl/);
+    // The RTL rule must move the thumb in the negative inline direction.
+    expect(css.slice(index, index + 400)).toMatch(/--tw-translate-x:\s*calc\([^;]*\*\s*-1\)/);
+  });
   it('emits Button label wrapping utilities from the production scan', () => {
     expect(rule('.whitespace-normal')).toMatch(/white-space:\s*normal/);
     expect(rule('.wrap-anywhere')).toMatch(/overflow-wrap:\s*anywhere/);
