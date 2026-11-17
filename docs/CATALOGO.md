@@ -11,7 +11,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 |---|---|
 | mantener | 30 |
 | mover | 30 |
-| nuevo | 26 |
+| nuevo | 27 |
 | extraer | 12 |
 | componer | 5 |
 | absorber | 4 |
@@ -21,7 +21,7 @@ Se genera con `python scripts/build_catalog.py` a partir de `scripts/catalog_dat
 
 | Destino | Componentes |
 |---|---|
-| @egdev/ui | 102 |
+| @egdev/ui | 103 |
 | @egdev/effects | 5 |
 | Mando | 6 |
 | Cadencia | 1 |
@@ -69,6 +69,7 @@ Leyenda de acciones: **mantener** (sigue igual), **renombrar**, **separar** (un 
 | **FieldMessage** | Field message (internal part) | — | Icon | extraer | React atom extracted from Field: plain text, description/info/warning/success/error tones, derived decorative status glyphs and native announcement opt-in only. No validation, ref/asChild, surface or stylesheet. Field retains hint/error and adds hintTone. Contract: [#179](https://github.com/egdev6/egdev-design-system/issues/179), [v0.2](components/field-message/v0.2/spec.md). |
 | **StatusDot** | StatusDot + LiveDot (átomo) | — | — | fusionar | Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/71): decorative aria-hidden dot fusing StatusDot and LiveDot. Status states running/idle/warning/error/stopped (default) are 8px with a surface ring; live/standby are 10px with the hot glow and a motion-safe pulse (pulse={false} for static). Migration: LiveDot → state='live', LiveDot--static → pulse={false}, waiting → state='standby'. status-dot.css holds only the pulse keyframes. |
 | **Kbd** | Kbd (átomo) | — | — | mantener | Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/60): one key or shortcut glyph as native inline kbd text with a flat hairline treatment (label-default recipe, secondary text). Optional label gives symbol keys a spoken name through Radix VisuallyHidden and hides the glyph. Combos are consumer composition. No stylesheet. |
+| **AppIcon** | — | Avatar | Surface recipe | nuevo | Working-tree React atom under the [approved v0.1 contract](components/app-icon/v0.1/spec.md): passive square application identity, consumer-supplied monogram and optional image with Radix loading and fallback. Named or decorative root, sm/md/lg token sizes, contained artwork and Surface frame. No stylesheet, ref, asChild, new token or dependency; browser and packed-consumer verification pending. |
 | **Avatar** | Avatar (átomo) | Avatar | Icon; Indicator (consumer composition) | mantener | Implemented in @egdev/ui under the approved v0.1 contract: passive identity disc with Radix-managed photo loading and immediate user-icon fallback, sm/md/lg/xl sizes and paused presentation. The v0.3 amendment removes the optional decorative network badge (owner: “Quitar badgeIcon (ya tenemos el indicator)”); origin/network glyphs now compose the public Indicator wrapper around the Avatar. Root label owns the accessible name; decorative without it. No initials, interaction, ref, asChild or stylesheet. Contract: [#51](https://github.com/egdev6/egdev-design-system/issues/51). Public types, markup, ring and paused policy otherwise remain unchanged. |
 | **Logo** | Logo (átomo) | — | — | mantener | Implemented React atom under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/62): V4 isotype (mark) or isotype with white name (wordmark) as inline SVG data with the --logo-red/--logo-red-shade token inks, 28/32/36px heights, named span image or native link with the focus ring. No asChild, ref or stylesheet; legacy eg-logo CSS untouched. |
 | **Pixel** | Pixel (átomo) | — | — | mover | Implemented React atom under the [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/300): passive hidden position marker with idle, past and active states, token-scaled dimensions and approved static clip-path. The host owns meaning and composition; no glow, stylesheet, ref or asChild. Browser and packed-consumer verification remain pending. |

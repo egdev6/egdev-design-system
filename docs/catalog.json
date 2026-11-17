@@ -308,6 +308,17 @@
     "notas": "Implemented React atom under [approved v0.1 contract](https://github.com/egdev6/egdev-design-system/issues/60): one key or shortcut glyph as native inline kbd text with a flat hairline treatment (label-default recipe, secondary text). Optional label gives symbol keys a spoken name through Radix VisuallyHidden and hides the glyph. Combos are consumer composition. No stylesheet."
   },
   {
+    "actual": "—",
+    "nivelActual": "—",
+    "nombre": "AppIcon",
+    "nivel": "atom",
+    "destino": "ui",
+    "radix": "Avatar",
+    "compone": "Surface recipe",
+    "accion": "nuevo",
+    "notas": "Working-tree React atom under the [approved v0.1 contract](components/app-icon/v0.1/spec.md): passive square application identity, consumer-supplied monogram and optional image with Radix loading and fallback. Named or decorative root, sm/md/lg token sizes, contained artwork and Surface frame. No stylesheet, ref, asChild, new token or dependency; browser and packed-consumer verification pending."
+  },
+  {
     "actual": "Avatar",
     "nivelActual": "átomo",
     "nombre": "Avatar",
