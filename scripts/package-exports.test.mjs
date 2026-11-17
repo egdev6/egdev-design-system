@@ -7128,7 +7128,7 @@ test('UI ships the Slider well, range and raised thumb utilities without a Slide
   // The 35.2px touch target applies only on coarse pointers (D9); reduced motion drops the transition.
   assert.match(
     utilities,
-    /@media \(pointer: coarse\)\s*\{\s*\.pointer-coarse\\:h-11\s*\{\s*height:\s*calc\(var\(--space-1\)\s*\*\s*11\)\s*;/
+    /@media \(pointer: coarse\)\s*\{\s*\.pointer-coarse\\:h-14\s*\{\s*height:\s*(?:var\(--space-14\)|var\(--spacing-14\)|calc\(var\(--space-1\)\s*\*\s*14\))\s*;/
   );
   assert.match(
     utilities,

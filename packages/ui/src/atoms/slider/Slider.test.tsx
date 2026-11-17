@@ -312,10 +312,12 @@ describe('Slider', () => {
       'w-full',
       'items-center',
       'h-6',
-      'pointer-coarse:h-11',
+      'pointer-coarse:h-14',
       'touch-none',
       'select-none'
     );
+    // h-11 is only 35.2px with the x0.8 spacing scale; the coarse hit area is 44.8px (#452 follow-up).
+    expect(slider).not.toHaveClass('pointer-coarse:h-11');
     expect(track).toHaveClass(
       'relative',
       'h-1',
