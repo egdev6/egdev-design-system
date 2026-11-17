@@ -184,11 +184,11 @@ export const rowVariants = cva(
   'group hover:bg-fg-default/3 data-[state=selected]:bg-surface-3 aria-[current=true]:!bg-bg-brand-subtle aria-[current=true]:[&>:first-child]:relative aria-[current=true]:[&>:first-child]:before:absolute aria-[current=true]:[&>:first-child]:before:start-0 aria-[current=true]:[&>:first-child]:before:inset-y-0 aria-[current=true]:[&>:first-child]:before:w-[var(--focus-width)] aria-[current=true]:[&>:first-child]:before:bg-action-primary-solid-bg'
 );
 export const sortVariants = cva(
-  'inline-flex items-center gap-1 bg-transparent border-0 p-0 font-inherit text-inherit cursor-pointer hover:text-fg-default focus-visible:shadow-focus pointer-coarse:min-h-11'
+  'inline-flex items-center gap-1 bg-transparent border-0 p-0 font-inherit text-inherit cursor-pointer hover:text-fg-default focus-visible:shadow-focus pointer-coarse:min-h-14'
 );
 export const codeVariants = cva('eg-table__code font-mono text-code text-fg-brand-raised');
 export const selectLabelVariants = cva(
-  'inline-flex items-center justify-center pointer-coarse:min-h-11 pointer-coarse:min-w-11'
+  'inline-flex items-center justify-center pointer-coarse:min-h-14 pointer-coarse:min-w-14'
 );
 export const emptyVariants = cva('py-6 px-4 text-center text-fg-muted');
 export const scrollbarVariants = cva(

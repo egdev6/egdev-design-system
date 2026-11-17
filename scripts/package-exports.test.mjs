@@ -2319,7 +2319,7 @@ test('Chip ships its exact token-backed pill, pressed, focus, press and reduced-
   );
   assert.match(cssBlock(reducedMotion, /\.motion-reduce\\:active\\:scale-none:active\s*\{/), /scale:\s*none\s*;/);
   for (const selector of [
-    String.raw`.pointer-coarse\:min-h-11`,
+    String.raw`.pointer-coarse\:min-h-14`,
     String.raw`.active\:translate-y-px`,
     String.raw`.active\:duration-\[var\(--duration-press\)\]`,
     String.raw`.active\:ease-\[var\(--ease-snappy\)\]`,
@@ -2647,7 +2647,7 @@ test('UI ships Field layout, description tones and single-opacity disabled selec
     rule(String.raw`.font-\[var\(--text-body-muted--font-weight\)\]`),
     /font-weight:\s*var\(--text-body-muted--font-weight[,)]/
   );
-  assert.ok(utilities.includes(String.raw`.pointer-coarse\:min-h-11`));
+  assert.ok(utilities.includes(String.raw`.pointer-coarse\:min-h-14`));
   assert.match(utilities, /@media\s*\(pointer:\s*coarse\)/);
   assert.doesNotMatch(utilities, /\.eg-field[^\{]*\{/, 'Field marker is not a second visual engine');
 });
@@ -2897,8 +2897,14 @@ test('UI ships SearchTrigger token geometry, coarse targets and attribute-driven
     ['.ps-3', /padding-inline-start:\s*var\(--space-3\)/],
     ['.pe-2', /padding-inline-end:\s*var\(--space-2\)/],
     ['.ms-auto', /margin-inline-start:\s*auto/],
-    [String.raw`.pointer-coarse\:min-h-11`, /min-height:\s*calc\(var\(--space-1\)\s*\*\s*11\)/],
-    [String.raw`.pointer-coarse\:w-11`, /width:\s*calc\(var\(--space-1\)\s*\*\s*11\)/],
+    [
+      String.raw`.pointer-coarse\:min-h-14`,
+      /min-height:\s*(?:var\(--space-14\)|var\(--spacing-14\)|calc\(var\(--space-1\)\s*\*\s*14\))/
+    ],
+    [
+      String.raw`.pointer-coarse\:w-14`,
+      /width:\s*(?:var\(--space-14\)|var\(--spacing-14\)|calc\(var\(--space-1\)\s*\*\s*14\))/
+    ],
     [String.raw`.transition-\[border-color\,color\]`, /transition-property:\s*border-color,\s*color\s*;/],
     [String.raw`.enabled\:hover\:border-border-brand:enabled:hover`, /border-color:\s*var\(--color-border-brand/],
     [String.raw`.enabled\:hover\:text-fg-secondary:enabled:hover`, /color:\s*var\(--color-fg-secondary/],
@@ -2913,7 +2919,7 @@ test('UI ships SearchTrigger token geometry, coarse targets and attribute-driven
   }
   const coarse = cssBlock(utilities, /@media\s*\(pointer:\s*coarse\)\s*\{/);
   assert.ok(
-    coarse.includes(String.raw`.pointer-coarse\:min-h-11`) && coarse.includes(String.raw`.pointer-coarse\:w-11`)
+    coarse.includes(String.raw`.pointer-coarse\:min-h-14`) && coarse.includes(String.raw`.pointer-coarse\:w-14`)
   );
   assert.ok(utilities.includes(String.raw`.focus-visible\:shadow-focus:focus-visible`));
   // Legacy .eg-search keeps its components-layer defaults; utilities win by layer order.

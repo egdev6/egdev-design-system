@@ -34,7 +34,7 @@ export type SearchTriggerProps = Omit<
 /** Launcher layout over the Surface well recipe; resets every legacy .eg-search default. */
 export const searchTriggerVariants = cva(
   [
-    'eg-search inline-flex items-center gap-3 h-auto min-h-10 pointer-coarse:min-h-11 border-border-hairline-strong ps-3 pe-2 py-0 text-fg-muted font-sans text-label-default font-[var(--text-body-default--font-weight)] cursor-pointer',
+    'eg-search inline-flex items-center gap-3 h-auto min-h-10 pointer-coarse:min-h-14 border-border-hairline-strong ps-3 pe-2 py-0 text-fg-muted font-sans text-label-default font-[var(--text-body-default--font-weight)] cursor-pointer',
     'transition-[border-color,color] duration-(--duration-fast) ease-(--ease-out) motion-reduce:transition-none',
     'enabled:hover:border-border-brand enabled:hover:text-fg-secondary focus-visible:outline-none focus-visible:shadow-focus',
     'disabled:opacity-45 disabled:pointer-events-none disabled:cursor-not-allowed'
@@ -43,7 +43,7 @@ export const searchTriggerVariants = cva(
     variants: {
       compact: {
         false: 'min-w-48',
-        true: 'min-w-0 w-10 pointer-coarse:w-11 p-0 justify-center'
+        true: 'min-w-0 w-10 pointer-coarse:w-14 p-0 justify-center'
       }
     },
     defaultVariants: { compact: false }

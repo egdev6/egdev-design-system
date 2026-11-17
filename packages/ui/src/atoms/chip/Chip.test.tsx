@@ -172,7 +172,7 @@ describe('Chip public contract', () => {
     for (const utility of [
       'eg-chip',
       'min-h-8',
-      'pointer-coarse:min-h-11',
+      'pointer-coarse:min-h-14',
       'rounded-full',
       'border-border-hairline',
       '[background:var(--gradient-sheen),var(--color-surface-1)]',
@@ -302,7 +302,7 @@ describe('Chip mode contract', () => {
     ]) {
       expect(classes, utility).toContain(utility);
     }
-    for (const utility of ['cursor-pointer', 'transition-colors', 'pointer-coarse:min-h-11', 'disabled:opacity-45']) {
+    for (const utility of ['cursor-pointer', 'transition-colors', 'pointer-coarse:min-h-14', 'disabled:opacity-45']) {
       expect(classes, utility).not.toContain(utility);
     }
     expect(

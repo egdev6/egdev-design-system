@@ -233,7 +233,7 @@ describe('useSearchTrigger', () => {
         'text-fg-muted',
         'min-w-48',
         'min-h-10',
-        'pointer-coarse:min-h-11',
+        'pointer-coarse:min-h-14',
         'ps-3',
         'pe-2',
         'focus-visible:shadow-focus',
@@ -254,7 +254,7 @@ describe('useSearchTrigger', () => {
   it('switches to compact geometry, drops visible parts and lets layout width win', () => {
     const { result } = renderHook(() => useSearchTrigger({ compact: true, shortcut: '⌘K', className: 'w-full' }));
     const list = result.current.rootProps.className?.split(' ') ?? [];
-    expect(list).toEqual(expect.arrayContaining(['min-w-0', 'p-0', 'justify-center', 'pointer-coarse:w-11']));
+    expect(list).toEqual(expect.arrayContaining(['min-w-0', 'p-0', 'justify-center', 'pointer-coarse:w-14']));
     expect(list).not.toContain('min-w-48');
     expect(list).not.toContain('ps-3');
     expect(list).not.toContain('w-10');
