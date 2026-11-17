@@ -249,14 +249,17 @@ describe('Switch', () => {
     expect(thumb(control)).toHaveClass(
       'absolute',
       'top-0.5',
-      'left-0.5',
+      'start-0.5',
       'size-3.5',
       'rounded-full',
       'bg-fg-secondary',
       'data-[state=checked]:translate-x-4',
+      'rtl:data-[state=checked]:-translate-x-4',
       'data-[state=checked]:bg-action-primary-solid-fg',
       'motion-reduce:transition-none'
     );
+    // Logical inset and an RTL travel direction so the thumb mirrors in right-to-left contexts (#432).
+    expect(thumb(control)).not.toHaveClass('left-0.5');
   });
 
   it('applies the danger border and tinted well while invalid, checked and unchecked (#219 option A)', () => {
