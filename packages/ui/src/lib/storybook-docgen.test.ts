@@ -1221,7 +1221,10 @@ describe('Storybook TypeScript docgen contract', () => {
       'error'
     ]);
     expect(props.icon).toMatchObject({ defaultValue: null, tags: { control: 'select' } });
-    expect(props.icon?.type.value).toHaveLength(45);
+    const glyphs = props.icon?.type.value.map(({ value }: { value: string }) => normalize(value));
+    expect(glyphs).toHaveLength(47);
+    expect(glyphs).toEqual(expect.arrayContaining(['circle-alert', 'download', 'external-link']));
+    expect(glyphs).not.toContain('external');
     expect(props.role?.defaultValue).toBeNull();
     expect(props['aria-live']?.defaultValue).toBeNull();
     for (const name of ['id', 'className', 'role', 'aria-live']) {
@@ -3276,8 +3279,12 @@ describe('Icon glyph metadata contract', () => {
     expect(props.name).toMatchObject({ required: true, defaultValue: null, tags: { control: 'select' } });
     expect(props.name?.type.name).toBe('enum');
     const glyphs = (props.name?.type.value ?? []).map((item: { value: string }) => normalize(item.value));
-    expect(glyphs).toHaveLength(45);
-    expect(glyphs).toEqual(expect.arrayContaining(['check', 'minus', 'plus', 'chevron-down']));
+    expect(glyphs).toHaveLength(47);
+    expect(new Set(glyphs).size).toBe(47);
+    expect(glyphs).toEqual(
+      expect.arrayContaining(['check', 'minus', 'plus', 'chevron-down', 'download', 'external-link'])
+    );
+    expect(glyphs).not.toContain('external');
     expect(props.size?.type.value?.map((item: { value: string }) => normalize(item.value)).sort()).toEqual([
       'lg',
       'md',

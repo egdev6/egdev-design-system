@@ -4,6 +4,7 @@ import { render, renderHook, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import { Icon } from './Icon';
+import { Gallery } from './Icon.stories';
 import { iconPaths } from './icon-paths';
 import type { IconName, IconSize } from './types';
 import { useIcon } from './useIcon';
@@ -15,6 +16,18 @@ const sizes: [IconSize, string][] = [
   ['lg', 'size-7']
 ];
 const glyphElements = new Set(['path', 'circle', 'rect', 'line', 'polyline', 'polygon']);
+const newGlyphs = [
+  {
+    name: 'download',
+    label: 'Download',
+    paths: ['M12 15V3', 'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4', 'm7 10 5 5 5-5']
+  },
+  {
+    name: 'external-link',
+    label: 'Open external link',
+    paths: ['M15 3h6v6', 'M10 14 21 3', 'M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6']
+  }
+] as const;
 
 const svgOf = (container: HTMLElement) => {
   const svg = container.querySelector('svg.eg-icon');
@@ -25,8 +38,10 @@ const svgOf = (container: HTMLElement) => {
 };
 
 describe('Icon glyph set', () => {
-  it('ships the closed 45-name set, including the approved message status glyphs', () => {
-    expect(names).toHaveLength(45);
+  it('ships exactly 47 names, including both additions and the existing status glyphs', () => {
+    expect(names).toHaveLength(47);
+    expect(new Set(names).size).toBe(47);
+    expect(names).not.toContain('external');
     for (const name of [
       'check',
       'minus',
@@ -37,7 +52,9 @@ describe('Icon glyph set', () => {
       'trash',
       'circle-alert',
       'circle-check',
-      'info'
+      'info',
+      'download',
+      'external-link'
     ] as const) {
       expect(names).toContain(name);
     }
@@ -67,10 +84,75 @@ describe('Icon glyph set', () => {
     expect(d('plus')).toEqual(['M5 12h14', 'M12 5v14']);
   });
 
-  it('rejects unknown names at the type level', () => {
+  it('rejects unknown names and the unapproved external alias at the type level', () => {
     // @ts-expect-error The glyph set is closed; there is no runtime fallback glyph.
     const unknown = <Icon name='unknown-glyph' />;
+    // @ts-expect-error The approved public name is external-link, never external.
+    const external = <Icon name='external' />;
     expect(unknown).toBeTruthy();
+    expect(external).toBeTruthy();
+  });
+
+  it.each(newGlyphs)('renders $name with source geometry and both accessibility modes', ({ name, label, paths }) => {
+    const { container, rerender } = render(
+      <button type='button'>
+        <Icon name={name} />
+      </button>
+    );
+    const svg = svgOf(container);
+    expect(svg).toHaveAttribute('viewBox', '0 0 24 24');
+    expect(svg).toHaveAttribute('aria-hidden', 'true');
+    expect(svg).toHaveAttribute('focusable', 'false');
+    expect(svg).toHaveAttribute('stroke-linecap', 'round');
+    expect(svg).toHaveAttribute('stroke-linejoin', 'round');
+    expect(svg).toHaveClass('stroke-current', 'fill-none', 'size-(--icon-size)');
+    expect(svg).not.toHaveAttribute('stroke');
+    expect(svg.querySelector('title')).toBeNull();
+    expect([...svg.children].map((child) => [child.tagName, child.getAttribute('d')])).toEqual(
+      paths.map((path) => ['path', path])
+    );
+    expect(container.querySelector('span')).toBeNull();
+
+    rerender(
+      <button type='button'>
+        <Icon name={name} label='' />
+      </button>
+    );
+    expect(svgOf(container)).toHaveAttribute('aria-hidden', 'true');
+    expect(container.querySelector('span')).toBeNull();
+
+    rerender(
+      <button type='button'>
+        <Icon name={name} label={label} />
+      </button>
+    );
+    expect(screen.getByRole('button', { name: label })).toBeInTheDocument();
+    expect(screen.getAllByText(label)).toHaveLength(1);
+    expect(svgOf(container)).toHaveAttribute('aria-hidden', 'true');
+    expect(svgOf(container)).toHaveAttribute('focusable', 'false');
+  });
+
+  it('switches the two new glyphs without replacing the svg root', () => {
+    const { container, rerender } = render(<Icon name='download' />);
+    const original = svgOf(container);
+    rerender(<Icon name='external-link' />);
+    expect(svgOf(container) === original).toBe(true);
+    expect([...original.querySelectorAll('path')].map((path) => path.getAttribute('d'))).toEqual(newGlyphs[1].paths);
+    rerender(<Icon name='download' />);
+    expect(svgOf(container) === original).toBe(true);
+    expect([...original.querySelectorAll('path')].map((path) => path.getAttribute('d'))).toEqual(newGlyphs[0].paths);
+  });
+
+  it('shows the new glyphs in the gallery alongside existing icons', () => {
+    if (!Gallery.render) {
+      throw new Error('Gallery must have a render function');
+    }
+    const content = Gallery.render({ name: 'search' }, {} as Parameters<typeof Gallery.render>[1]);
+    render(<>{content}</>);
+    for (const name of ['search', 'download', 'external-link']) {
+      const card = screen.getByText(name).parentElement;
+      expect(card?.querySelector('svg.eg-icon')).toBeInTheDocument();
+    }
   });
 
   it('swaps glyph paths on rerender while keeping the same root element', () => {

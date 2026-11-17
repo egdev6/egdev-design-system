@@ -4016,6 +4016,19 @@ test('UI Icon renders decorative and labelled svg glyphs on the server', async (
   );
   assert.doesNotMatch(labelled, /role=|<title|label="/);
   assert.doesNotMatch(renderToString(createElement(Icon, { name: 'search', label: '' })), /<span/);
+  for (const [name, firstPath] of [
+    ['download', 'M12 15V3'],
+    ['external-link', 'M15 3h6v6']
+  ]) {
+    const glyph = renderToString(createElement(Icon, { name }));
+    assert.match(glyph, /^<svg /);
+    assert.ok(glyph.includes('viewBox="0 0 24 24"') && glyph.includes('aria-hidden="true"'));
+    assert.ok(glyph.includes('focusable="false"') && glyph.includes('stroke-current'));
+    assert.ok(glyph.includes(`<path d="${firstPath}"></path>`));
+    assert.equal((glyph.match(/<path /g) ?? []).length, 3);
+    const named = renderToString(createElement(Icon, { name, label: 'Glyph label' }));
+    assert.match(named, /<span [^>]*>Glyph label<\/span>$/);
+  }
 });
 
 test('UI ships the Surface Material recipes as static token utilities', () => {
