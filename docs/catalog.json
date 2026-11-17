@@ -52,7 +52,7 @@
     "radix": "Slot",
     "compone": "—",
     "accion": "fusionar",
-    "notas": "Implemented in @egdev/ui: Text (paragraph eyebrow by default, or any title recipe with Slot `asChild`) and Heading (native h1–h6 from `level`, independent of its `section`/`hero`/`show`/`display`/`inverse` recipe), with an optional trailing accent and canvas/raised tone. No stylesheet; legacy `.eg-title`/`.eg-eyebrow` rules are unchanged. Contract: [#108](https://github.com/egdev6/egdev-design-system/issues/108)."
+    "notas": "Implemented in @egdev/ui: Text (paragraph eyebrow by default, title recipes or body/body-large/lede with semantic foreground and native strong emphasis; Slot `asChild`) and Heading (native h1–h6 from `level`, independent of its `section`/`hero`/`show`/`display`/`inverse` recipe). Display accents retain canvas/raised tone; body foreground inherits by default. No stylesheet; legacy `.eg-title`/`.eg-eyebrow` rules are unchanged. Contract: [#108](https://github.com/egdev6/egdev-design-system/issues/108); body amendment: [#396](https://github.com/egdev6/egdev-design-system/issues/396)."
   },
   {
     "actual": "Divider",

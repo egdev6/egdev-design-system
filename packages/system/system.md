@@ -2527,6 +2527,11 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · Slot
 - Heading (components[] · packages/ui/src/primitives/text/types.ts)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - headingVariants base: font-display → --font-display
+    - textBodyVariants base: font-sans → --font-sans
+    - textBodyVariants base: [&_strong]:[font-weight:var(--text-heading-small--font-weight)] → --text-heading-small--font-weight
+    - textBodyVariants variant=body: text-body-default → --text-body-default
+    - textBodyVariants variant=body-large: text-body-large → --text-body-large
+    - textBodyVariants variant=lede: text-body-muted → --text-body-muted
     - textVariants base: font-display → --font-display
   - accent: string; One optional trailing highlighted run of the phrase. Empty or whitespace-only text renders no accent; non-empty text is preserved exactly. No separator is inserted: supply whitespace in children. (components[] · packages/ui/src/primitives/text/types.ts)
   - accentBreak: boolean; Whether the accent starts on its own line (block) or continues inline. No effect without an accent. (components[] · packages/ui/src/primitives/text/types.ts)
@@ -2537,13 +2542,19 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · Slot
 - Text (components[] · packages/ui/src/primitives/text/types.ts)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - headingVariants base: font-display → --font-display
+    - textBodyVariants base: font-sans → --font-sans
+    - textBodyVariants base: [&_strong]:[font-weight:var(--text-heading-small--font-weight)] → --text-heading-small--font-weight
+    - textBodyVariants variant=body: text-body-default → --text-body-default
+    - textBodyVariants variant=body-large: text-body-large → --text-body-large
+    - textBodyVariants variant=lede: text-body-muted → --text-body-muted
     - textVariants base: font-display → --font-display
-  - accent: string; Not available on the eyebrow: it is one short phrase with a fixed decorative diamond. One optional trailing highlighted run of the phrase. Empty or whitespace-only text renders no accent; non-empty text is preserved exactly. No separator is inserted: supply whitespace in children. (components[] · packages/ui/src/primitives/text/types.ts)
-  - accentBreak: boolean; Not available on the eyebrow. Whether the accent starts on its own line (block) or continues inline. No effect without an accent. (components[] · packages/ui/src/primitives/text/types.ts)
+  - accent: string; Not available on the eyebrow: it is one short phrase with a fixed decorative diamond. One optional trailing highlighted run of the phrase. Empty or whitespace-only text renders no accent; non-empty text is preserved exactly. No separator is inserted: supply whitespace in children. Use semantic strong content instead of a trailing accent on body recipes. (components[] · packages/ui/src/primitives/text/types.ts)
+  - accentBreak: boolean; Not available on the eyebrow. Whether the accent starts on its own line (block) or continues inline. No effect without an accent. Accent layout is unavailable on body recipes. (components[] · packages/ui/src/primitives/text/types.ts)
   - asChild: boolean; Render onto one non-heading child element through Slot instead of a paragraph. (components[] · packages/ui/src/primitives/text/types.ts)
   - children: ReactNode; Main copy. With asChild, exactly one prop-spreading non-heading element with normal children. (components[] · packages/ui/src/primitives/text/types.ts)
-  - tone: enum; Accent Material context. Not available on the eyebrow, whose diamond is decorative. Accent Material context: canvas (surface-0) neon or raised brand on surface-1…3 and overlays. Consumers choose it; the host background is never inspected. The canvas hero accent glows. Not available on inverse: root and accent always use the on-flood foreground. (components[] · packages/ui/src/primitives/text/types.ts)
-  - variant: enum; Named visual recipe. Text excludes headings: use Heading for document hierarchy. (components[] · packages/ui/src/primitives/text/types.ts)
+  - foreground: enum; Semantic foreground is only available on body recipes. Foreground for body copy. Inherit follows the host; use on-flood or inherit on flood, and provide meaningful words and a non-color cue for status colors. (components[] · packages/ui/src/primitives/text/types.ts)
+  - tone: enum; Accent Material context. Not available on the eyebrow, whose diamond is decorative. Accent Material context: canvas (surface-0) neon or raised brand on surface-1…3 and overlays. Consumers choose it; the host background is never inspected. The canvas hero accent glows. Not available on inverse: root and accent always use the on-flood foreground. Accent Material context is unavailable on body recipes. (components[] · packages/ui/src/primitives/text/types.ts)
+  - variant: enum; Named visual recipe. Text excludes headings: use Heading for document hierarchy. Body or lede typography; use Heading for document hierarchy. (components[] · packages/ui/src/primitives/text/types.ts)
 ### VisuallyHidden
 catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
 - VisuallyHidden (components[] · packages/ui/src/primitives/visually-hidden/types.ts)
