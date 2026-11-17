@@ -85,6 +85,8 @@ export type DialogContentProps = Omit<
      * @control select
      */
     bodyPadding?: 'default' | 'compact';
+    /** Arrange the description beside or below the title and status. @default inline
+     * @control select */ headerLayout?: 'inline' | 'stacked';
     /** Non-empty localized visible title. @control text */ title: string;
     /** Optional visible description. @control text */ description?: string;
     /** Optional passive header status. @control text */ statusText?: string;
@@ -133,12 +135,20 @@ export const dialogPanelVariants = cva(
   }
 );
 export const dialogHeadVariants = cva(
-  'relative shrink-0 border-b-0 py-[var(--space-4)] ps-[var(--space-6)] pe-[calc(var(--space-4)+var(--space-12))]'
+  'relative shrink-0 border-b-0 py-[var(--space-4)] ps-[var(--space-6)] pe-[calc(var(--space-4)+var(--space-12))]',
+  {
+    variants: { headerLayout: { inline: '', stacked: 'flex flex-col items-start' } },
+    defaultVariants: { headerLayout: 'inline' }
+  }
 );
+export const dialogTitleRowVariants = cva('flex items-center gap-[var(--space-3)] max-w-full min-w-0');
 export const dialogDismissVariants = cva('absolute top-[var(--space-4)] end-[var(--space-4)]');
 export const dialogTitleVariants = cva('font-display uppercase text-heading-small text-fg-default');
 export const dialogDescriptionVariants = cva('text-body-default text-fg-secondary');
-export const dialogStatusVariants = cva('text-label-default text-fg-muted');
+export const dialogStatusVariants = cva('text-label-default text-fg-muted', {
+  variants: { headerLayout: { inline: '', stacked: 'self-start' } },
+  defaultVariants: { headerLayout: 'inline' }
+});
 export const dialogBodyVariants = cva('min-h-0 overflow-y-auto', {
   variants: { bodyPadding: { default: 'p-[var(--space-6)]', compact: 'p-[var(--space-3)]' } },
   defaultVariants: { bodyPadding: 'default' }

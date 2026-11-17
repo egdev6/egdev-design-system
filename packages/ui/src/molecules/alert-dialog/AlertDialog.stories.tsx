@@ -47,6 +47,54 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
+
+/** Inline places the title row and consequence side by side. */
+export const InlineHeader: Story = {
+  args: {
+    children: (
+      <>
+        <AlertDialogTrigger asChild={true}>
+          <Button variant='secondary'>Open inline confirmation</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent
+          title='Disconnect?'
+          description='Access will be removed.'
+          headerLayout='inline'
+          actions={
+            <>
+              <AlertDialogCancel>Keep connected</AlertDialogCancel>
+              <AlertDialogAction>Disconnect</AlertDialogAction>
+            </>
+          }
+        />
+      </>
+    )
+  }
+};
+
+/** Stacked is the existing default, with the consequence below the title row. */
+export const StackedHeader: Story = {
+  args: {
+    children: (
+      <>
+        <AlertDialogTrigger asChild={true}>
+          <Button variant='secondary'>Open stacked confirmation</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent
+          title='Disconnect?'
+          description='Access will be removed.'
+          headerLayout='stacked'
+          actions={
+            <>
+              <AlertDialogCancel>Keep connected</AlertDialogCancel>
+              <AlertDialogAction>Disconnect</AlertDialogAction>
+            </>
+          }
+        />
+      </>
+    )
+  }
+};
 export const Danger: Story = {
   args: {
     children: (

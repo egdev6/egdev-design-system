@@ -432,6 +432,58 @@ test('dialog exports its public compound API and keeps shared recipes internal',
   }
 });
 
+test('Dialog and AlertDialog export closed header-layout props and shipped layout utilities', () => {
+  const declaration = artifact('ui', ui.exports['.'].types);
+  const program = ts.createProgram([declaration], {
+    module: ts.ModuleKind.ESNext,
+    moduleResolution: ts.ModuleResolutionKind.Bundler,
+    strictNullChecks: true,
+    skipLibCheck: true
+  });
+  const checker = program.getTypeChecker();
+  const source = program.getSourceFile(declaration);
+  assert.ok(source);
+  const moduleSymbol = checker.getSymbolAtLocation(source);
+  assert.ok(moduleSymbol);
+  const exports = checker.getExportsOfModule(moduleSymbol);
+  for (const name of ['DialogContentProps', 'AlertDialogContentProps']) {
+    const exported = exports.find((entry) => entry.name === name);
+    assert.ok(exported, `Missing ${name}`);
+    const symbol = exported.flags & ts.SymbolFlags.Alias ? checker.getAliasedSymbol(exported) : exported;
+    const prop = checker.getPropertyOfType(checker.getDeclaredTypeOfSymbol(symbol), 'headerLayout');
+    assert.ok(prop, `${name}.headerLayout must be public`);
+    assert.ok(prop.flags & ts.SymbolFlags.Optional, `${name}.headerLayout must be optional`);
+    const type = checker.getTypeOfSymbolAtLocation(prop, source);
+    assert.ok(type.isUnion(), `${name}.headerLayout must be a closed union`);
+    assert.deepEqual(
+      type.types
+        .filter((part) => part.isStringLiteral())
+        .map((part) => part.value)
+        .sort(),
+      ['inline', 'stacked']
+    );
+    assert.equal(type.types.length, 3, `${name}.headerLayout accepts only the two strings or undefined`);
+    assert.ok(type.types.some((part) => part.flags & ts.TypeFlags.Undefined));
+  }
+
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  for (const [selector, declaration] of [
+    [/\.flex\s*\{/, /display:\s*flex/],
+    [/\.flex-col\s*\{/, /flex-direction:\s*column/],
+    [/\.flex-row\s*\{/, /flex-direction:\s*row/],
+    [/\.items-center\s*\{/, /align-items:\s*center/],
+    [/\.items-start\s*\{/, /align-items:\s*flex-start/],
+    [/\.self-start\s*\{/, /align-self:\s*flex-start/],
+    [/\.max-w-full\s*\{/, /max-width:\s*100%/],
+    [/\.min-w-0\s*\{/, /min-width:\s*var\(--space-0\)/],
+    [/\.gap-\\\[var\\\(--space-3\\\)\\\]\s*\{/, /gap:\s*var\(--space-3\)/]
+  ]) {
+    assert.match(cssBlock(utilities, selector), declaration);
+  }
+  assert.match(cssBlock(css, /@layer components\s*\{/), /\.eg-dialog__head\s*\{[^}]*display:\s*flex/);
+});
+
 test('ambient package exposes the decorative component and its stylesheet without private engines', async () => {
   assert.equal(effects.exports['.'].import, './dist/index.js');
   assert.equal(effects.exports['.'].types, './dist/index.d.ts');

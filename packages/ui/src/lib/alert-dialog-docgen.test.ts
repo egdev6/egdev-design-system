@@ -20,7 +20,14 @@ const expected = {
   alertDialogTrigger: { children: false, asChild: 'boolean' },
   alertDialogCancel: { children: false, asChild: 'boolean' },
   alertDialogAction: { children: false, asChild: 'boolean' },
-  alertDialogContent: { title: 'text', description: 'text', children: false, actions: false, tone: 'select' }
+  alertDialogContent: {
+    title: 'text',
+    description: 'text',
+    children: false,
+    actions: false,
+    tone: 'select',
+    headerLayout: 'select'
+  }
 } as const;
 
 describe('AlertDialog Storybook metadata', () => {
@@ -54,6 +61,9 @@ describe('AlertDialog Storybook metadata', () => {
       expect(doc?.props.description?.required).toBe(true);
       expect(doc?.props.actions?.required).toBe(true);
       expect([...(composed.argTypes.tone?.options ?? [])].sort()).toEqual(['danger', 'neutral']);
+      expect([...(composed.argTypes.headerLayout?.options ?? [])].sort()).toEqual(['inline', 'stacked']);
+      expect(doc?.props.headerLayout?.defaultValue?.value).toBe('stacked');
+      expect(composed.argTypes.headerLayout?.table?.defaultValue?.summary).toBe('"stacked"');
       for (const prop of ['role', 'aria-describedby', 'style', 'ref', 'size']) {
         expect(doc?.props[prop], prop).toBeUndefined();
       }
@@ -75,6 +85,6 @@ describe('AlertDialog Storybook metadata', () => {
       ts.forEachChild(node, visit);
     };
     visit(file);
-    expect(count).toBe(13);
+    expect(count).toBe(14);
   });
 });

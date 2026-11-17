@@ -33,7 +33,8 @@ const expected = {
     size: 'select',
     container: false,
     overlayScope: 'select',
-    bodyPadding: 'select'
+    bodyPadding: 'select',
+    headerLayout: 'select'
   }
 } as const;
 
@@ -71,6 +72,9 @@ describe('Dialog Storybook metadata and CSS', () => {
         expect([...(composed.argTypes.bodyPadding?.options ?? [])].sort()).toEqual(['compact', 'default']);
         expect(doc?.props.bodyPadding?.defaultValue?.value).toBe('default');
         expect(composed.argTypes.bodyPadding?.table?.defaultValue?.summary).toBe('"default"');
+        expect([...(composed.argTypes.headerLayout?.options ?? [])].sort()).toEqual(['inline', 'stacked']);
+        expect(doc?.props.headerLayout?.defaultValue?.value).toBe('inline');
+        expect(composed.argTypes.headerLayout?.table?.defaultValue?.summary).toBe('"inline"');
         for (const prop of ['role', 'aria-labelledby', 'aria-describedby', 'aria-modal', 'style', 'ref']) {
           expect(doc?.props[prop], prop).toBeUndefined();
         }
@@ -100,7 +104,7 @@ describe('Dialog Storybook metadata and CSS', () => {
       ts.forEachChild(node, visit);
     };
     visit(file);
-    expect(count).toBe(23);
+    expect(count).toBe(24);
   });
 
   it('scans and emits container positioning and compact padding from production CVA', async () => {

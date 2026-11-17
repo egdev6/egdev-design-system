@@ -45,6 +45,8 @@ export type AlertDialogContentProps = Omit<
 > & {
   /** Non-empty localized title. @control text */ title: string;
   /** Non-empty localized consequence. @control text */ description: string;
+  /** Arrange the description beside or below the title row. @default stacked
+   * @control select */ headerLayout?: 'inline' | 'stacked';
   /** Supporting content. @control false
    * @controlReason ReactNode is not serializable; see WithBody. */ children?: ReactNode;
   /** One Cancel followed by one or more Actions. @control false
@@ -53,7 +55,11 @@ export type AlertDialogContentProps = Omit<
    * @control select */ tone?: AlertDialogTone;
 };
 export const alertDialogHeadVariants = cva(
-  'flex flex-col gap-[var(--space-2)] px-[var(--space-6)] pt-[var(--space-6)] pb-[var(--space-4)]'
+  'flex flex-col gap-[var(--space-2)] px-[var(--space-6)] pt-[var(--space-6)] pb-[var(--space-4)]',
+  {
+    variants: { headerLayout: { stacked: '', inline: 'flex-row items-center' } },
+    defaultVariants: { headerLayout: 'stacked' }
+  }
 );
 export const alertDialogTitleRowVariants = cva('flex items-center gap-[var(--space-3)]');
 export const alertDialogIconVariants = cva('text-[var(--color-status-danger)] size-[var(--space-6)] shrink-0');

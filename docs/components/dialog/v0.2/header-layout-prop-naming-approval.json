@@ -1,0 +1,56 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Approve headerLayout only for DialogContent and AlertDialogContent, with inline and stacked values and their component-specific defaults.",
+  "evidence": {
+    "channel": "Owner decisions recorded in odd/tasks/dialog-header-layout.md S2, 2026-11-17.",
+    "userStatements": [
+      {
+        "quote": "headerLayout=\"inline\"|\"stacked\" (Recommended)",
+        "provenance": "odd/tasks/dialog-header-layout.md S2: owner API decision."
+      },
+      {
+        "quote": "En la primera línea, junto al título (Recommended)",
+        "provenance": "odd/tasks/dialog-header-layout.md S2: owner statusText placement decision."
+      },
+      {
+        "quote": "Agregar la prop también a AlertDialog",
+        "provenance": "odd/tasks/dialog-header-layout.md S2: owner component scope decision."
+      },
+      {
+        "quote": "Sí, hasta el merge (Recommended)",
+        "provenance": "odd/tasks/dialog-header-layout.md S2: owner delivery decision."
+      }
+    ],
+    "interpretation": "This record binds the approved header arrangement only to DialogContent and AlertDialogContent; it is not native review authority, visual approval, or approval for other component APIs.",
+    "amendment": {
+      "path": "docs/components/dialog/v0.2/header-layout-amendment.md",
+      "wholeFileSHA256": "sha256:afe4af69afce93ce7420152a2113f477dd75052a9f4c1421f2f56e2cb15fe665"
+    }
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/components/dialog/v0.2/prop-naming-approval.json",
+      "wholeFileSHA256": "sha256:fe828fe5b1a6897ebc834338e71a0c3b8d7e288734091d1088669905603ff94f"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [],
+  "entries": [
+    {
+      "scope": "convention:dialog-header-layout",
+      "contentHash": "sha256:b0f41a15963f1455d893f9dbc1e6578afd86d72382be0a290bc8a481a7046c65",
+      "convention": {
+        "id": "dialog-header-layout",
+        "name": "headerLayout",
+        "meaning": "The arrangement of the title line and description in DialogContent and AlertDialogContent.",
+        "whenToUse": "Choose inline or stacked header content in DialogContent or AlertDialogContent.",
+        "avoid": "Generic layout, control-label arrangement, keyboard orientation or other component APIs.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    }
+  ]
+}
