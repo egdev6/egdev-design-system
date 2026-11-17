@@ -20,6 +20,140 @@ function artifact(name, target) {
   return path;
 }
 
+test('ColorSwatchGroup exports named controls and ships its scanned utilities', async () => {
+  const exported = await import(artifact('ui', ui.exports['.'].import));
+  const { createElement } = await import('react');
+  const { renderToString } = await import('react-dom/server');
+  const { JSDOM } = await import('jsdom');
+  assert.equal(typeof exported.ColorSwatchGroup, 'function');
+  assert.equal(exported.useColorSwatchGroup, undefined);
+  const html = renderToString(
+    createElement(exported.ColorSwatchGroup, {
+      label: 'Accent',
+      options: [
+        { value: '#Aa00BB', label: 'Purple' },
+        { value: '#001122', label: 'Dark' },
+        { value: 'var(--unsafe)', label: 'Unsafe' },
+        { value: '#aa00bb', label: 'Duplicate' }
+      ],
+      value: '#aa00bb',
+      customLabel: 'Custom color',
+      onValueChange: () => undefined
+    })
+  );
+  const dom = new JSDOM(html);
+  try {
+    const doc = dom.window.document;
+    const fieldset = doc.querySelector('fieldset.eg-color-swatch-group');
+    assert.ok(fieldset);
+    const legend = fieldset.querySelector('legend');
+    const group = fieldset.querySelector('[role="radiogroup"]');
+    assert.equal(legend?.textContent, 'Accent');
+    assert.equal(group?.getAttribute('aria-labelledby'), legend?.id);
+    const radios = [...group.querySelectorAll('[role="radio"]')];
+    assert.equal(radios.length, 2);
+    assert.deepEqual(
+      radios.map((radio) => radio.getAttribute('aria-checked')),
+      ['true', 'false']
+    );
+    assert.equal(group.getAttribute('aria-orientation'), 'horizontal');
+    const input = fieldset.querySelector('input[type="color"]');
+    assert.ok(input);
+    assert.equal(group.contains(input), false);
+    assert.equal(doc.querySelector(`label[for="${input.id}"]`)?.textContent, 'Custom color');
+    assert.equal(input.value, '#aa00bb');
+    assert.match(fieldset.querySelector('output')?.textContent ?? '', /Accent.*#aa00bb/);
+    assert.equal(fieldset.querySelector('output')?.getAttribute('aria-live'), 'polite');
+    const patches = [...fieldset.querySelectorAll('[style]')].filter((node) =>
+      node.style.getPropertyValue('--eg-swatch-color')
+    );
+    assert.deepEqual(
+      patches.map((node) => node.style.getPropertyValue('--eg-swatch-color')),
+      ['#aa00bb', '#001122']
+    );
+    for (const patch of patches) {
+      assert.equal(patch.getAttribute('aria-hidden'), 'true');
+      assert.ok(patch.classList.contains('bg-[color:var(--eg-swatch-color)]'));
+      assert.equal(patch.textContent, '');
+    }
+    assert.doesNotMatch(html, /var\(--unsafe\)|Unsafe|Duplicate/);
+  } finally {
+    dom.window.close();
+  }
+
+  const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
+  const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const source = ts.createSourceFile(
+    'types.ts',
+    readFileSync(resolve(root, 'packages/ui/src/molecules/color-swatch-group/types.ts'), 'utf8'),
+    ts.ScriptTarget.Latest,
+    true
+  );
+  const classes = new Set();
+  function collect(node) {
+    if (ts.isPropertyAssignment(node)) {
+      collect(node.initializer);
+    } else if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+      node.text
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((name) => classes.add(name));
+    } else {
+      ts.forEachChild(node, collect);
+    }
+  }
+  function visit(node) {
+    if (ts.isCallExpression(node) && node.expression.getText(source) === 'cva') {
+      if (node.arguments[0]) {
+        collect(node.arguments[0]);
+      }
+      const config = node.arguments[1];
+      if (config && ts.isObjectLiteralExpression(config)) {
+        for (const property of config.properties) {
+          if (!ts.isPropertyAssignment(property)) {
+            continue;
+          }
+          const name = property.name.getText(source);
+          if (name === 'variants') {
+            collect(property.initializer);
+          }
+          if (name === 'compoundVariants' && ts.isArrayLiteralExpression(property.initializer)) {
+            for (const compound of property.initializer.elements) {
+              if (!ts.isObjectLiteralExpression(compound)) {
+                continue;
+              }
+              for (const field of compound.properties) {
+                if (ts.isPropertyAssignment(field) && ['class', 'className'].includes(field.name.getText(source))) {
+                  collect(field.initializer);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(source);
+  assert.ok(classes.size > 10, 'ColorSwatchGroup must declare meaningful static CVA utilities');
+  assert.ok(classes.has('bg-[color:var(--eg-swatch-color)]'));
+  for (const name of classes) {
+    if (
+      name.startsWith('eg-') ||
+      name === 'group' ||
+      name.startsWith('group/') ||
+      name === 'peer' ||
+      name.startsWith('peer/')
+    ) {
+      continue;
+    }
+    const selector = '.' + name.replace(/[^\w-]/g, '\\$&');
+    assert.ok(utilities.includes(selector), `Missing ColorSwatchGroup utility ${name}`);
+  }
+  assert.match(utilities, /background-color:\s*var\(--eg-swatch-color\)/);
+  assert.doesNotMatch(utilities, /\.eg-color-swatch-group\s*[,{]/);
+});
+
 test('SectionShell ships scanned utilities and named section SSR (SS-07)', async () => {
   const exported = await import(artifact('ui', ui.exports['.'].import));
   const { createElement } = await import('react');
@@ -5296,6 +5430,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
       'CollapsibleContent',
       'CollapsibleHeader',
       'CollapsibleTrigger',
+      'ColorSwatchGroup',
       'CommandPalette',
       'CommunityCard',
       'CommunityCardAction',
@@ -5629,6 +5764,9 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'CollapsibleProps',
     'CollapsibleTrigger',
     'CollapsibleTriggerProps',
+    'ColorSwatchGroup',
+    'ColorSwatchGroupOption',
+    'ColorSwatchGroupProps',
     'CommandPalette',
     'CommandPaletteFiltering',
     'CommandPaletteItem',
