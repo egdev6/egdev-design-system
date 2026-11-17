@@ -1,6 +1,6 @@
 # Dialog and AlertDialog v0.3 — stacked-header spacing amendment
 
-- **Version / status:** v0.3 — Draft — not approved.
+- **Version / status:** v0.3 — **Approved — 2026-11-17** by the owner (feature log L8–L9); the implementation plan needs separate approval.
 - **Amends:** the approved [Dialog and AlertDialog v0.2 header-layout amendment](../v0.2/header-layout-amendment.md), alongside the [Dialog v0.2 container/body amendment](../v0.2/container-compact-amendment.md) and [AlertDialog v0.1 contract/plan record](../../alert-dialog/v0.1/implementation-plan.md). Unmentioned promises remain unchanged. Request: [#466](https://github.com/egdev6/egdev-design-system/issues/466).
 - **Approval / recovery:** This file is the recoverable proposal, not approval. Owner review of the exact snapshot and identified visual references is pending. Spec approval does not approve an implementation plan; that plan needs separate approval. This draft authorizes no code, tokens, dependencies, captures or external writes.
 - **Snapshot identity:** `version: v0.3`; `contentSHA256: Pending before finalization`; `visualHashes: VIS-01 Pending, VIS-02 Pending, VIS-03 Pending, VIS-04 Pending`; `approvalReference: Pending`; `canonicalIssue: Dialog https://github.com/egdev6/egdev-design-system/issues/119; AlertDialog https://github.com/egdev6/egdev-design-system/issues/120`; `latestPublishedComment: Pending`.

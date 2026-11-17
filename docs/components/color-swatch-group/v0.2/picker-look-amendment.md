@@ -1,6 +1,6 @@
 # ColorSwatchGroup — circular accent-picker appearance amendment
 
-- **Version / status:** v0.2 — **Draft — not approved**.
+- **Version / status:** v0.2 — **Approved — 2026-11-17** by the owner (feature log L8–L9); the implementation plan needs separate approval.
 - **Amends:** the [approved v0.1 contract](../v0.1/spec.md) and its [implementation notes](../v0.1/implementation.md). Owner correction L6 broadens this draft beyond the earlier ring-only proposal to the entire default picker anatomy and appearance. This file retains its existing path; the earlier proposal in this file is superseded, not implemented.
 - **Approval / recovery:** owner approval of this exact snapshot and the unresolved exceptions below is pending. Spec approval does not authorize an implementation plan, code, tokens, dependencies, consumer migration, or external writes. Request [#465](https://github.com/egdev6/egdev-design-system/issues/465) is not a new canonical component issue.
 - **Snapshot identity:** `version: v0.2`; `contentSHA256: Pending before finalization`; `visualHashes: VIS-01 Pending, VIS-02 Pending, VIS-03 Pending`; `approvalReference: Pending`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/416`; `latestPublishedComment: Pending`.
