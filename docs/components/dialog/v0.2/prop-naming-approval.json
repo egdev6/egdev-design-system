@@ -1,0 +1,96 @@
+{
+  "kind": "human-approval-record",
+  "nativeReviewApproval": false,
+  "authority": "assistant-recorded-forwarded-owner-approval",
+  "decision": "Apply the delegated recommended Dialog v0.2 naming decisions: reuse portal-container, approve dialog-overlay-scope and the DialogContent.bodyPadding exception to inner-padding.",
+  "evidence": {
+    "channel": "Owner delegation recorded in odd/tasks/milestones-1-2-delivery.md L1 and odd/tasks/nexo-adoption-m2-specs.md L1; approved Dialog v0.2 amendment in PR #442",
+    "userStatements": [
+      {
+        "quote": "pues termina el 1 y luego el 2. Sigue hasta terminar ambos. Aplica las recomendaciones y mergea los prs. Puede paralelizar en hasta 3 subagentes hasta terminar",
+        "provenance": "Owner session 2026-11-17, quoted in the Dialog v0.2 amendment Approval section."
+      }
+    ],
+    "interpretation": "The parent applied the recommended options under the owner's delegation. This record binds the scoped naming payloads, not an independent review or visual approval.",
+    "amendment": {
+      "path": "docs/components/dialog/v0.2/container-compact-amendment.md",
+      "source": "PR #442, read-only sibling worktree snapshot",
+      "canonicalPayloadSHA256": "sha256:6b809f230033d7dcca6bd2c90c1241a85e9d53a9a1b97404c4973a69bc16ab31"
+    }
+  },
+  "priorReceipts": [
+    {
+      "path": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "wholeFileSHA256": "sha256:2ef1fd8192f5004da741b83570a08b4a2e517cee6e714cd6154e37d67b53e838"
+    },
+    {
+      "path": "docs/components/home-template/v0.1/prop-naming-approval.json",
+      "wholeFileSHA256": "sha256:0555ab82fdcbd1ce6082f8cdb0ade8fada55954c06a3f1dd9fe478aaef21c2cd"
+    }
+  ],
+  "previouslyProposedNowApproved": [],
+  "semanticAmendments": [
+    {
+      "id": "inner-padding",
+      "previousReference": "docs/decisions/prop-naming-molecule-specs-approval.json",
+      "previousContentHash": "sha256:81ad5c5f141961a62fc1a42b220a22b80d66ed464787407f544cdafdbba293a0",
+      "changedFields": ["exceptions"],
+      "boundary": "DialogContent bodyPadding only; the existing convention meaning and other component usages remain unchanged."
+    }
+  ],
+  "entries": [
+    {
+      "scope": "convention:dialog-overlay-scope",
+      "contentHash": "sha256:a2d8773263a45ebc578bbd5dacc58802181c08376ab5ab7e398141d7dd08e2d4",
+      "convention": {
+        "id": "dialog-overlay-scope",
+        "name": "overlayScope",
+        "meaning": "The layout boundary of a Dialog modal overlay grid.",
+        "whenToUse": "Choose viewport or container layout for the Dialog overlay, independently of the portal mount target.",
+        "avoid": "Portal mount targets, generic positioning, collision boundaries or claims of locally scoped modality.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": []
+      }
+    },
+    {
+      "scope": "convention:inner-padding",
+      "contentHash": "sha256:ed9f2dbc2dcfde6cc74120161628a7d30bfd0870509dc30775ef5675225641b6",
+      "convention": {
+        "id": "inner-padding",
+        "name": "padding",
+        "meaning": "Preset inner spacing between a container's edge and its content, mapped to spacing tokens.",
+        "whenToUse": "A container primitive such as Surface offers a few token-backed padding presets, including none for edge-to-edge content.",
+        "avoid": "Gaps between children (use gap), outer margins, arbitrary lengths or per-side overrides.",
+        "status": "approved",
+        "aliases": [],
+        "exceptions": [
+          {
+            "scope": "DialogContent",
+            "propName": "bodyPadding",
+            "reason": "Only the body changes; padding would misleadingly describe the whole panel",
+            "approval": {
+              "reference": "docs/components/dialog/v0.2/prop-naming-approval.json",
+              "scope": "exception:inner-padding:DialogContent:bodyPadding",
+              "contentHash": "sha256:46747e9c21ddd6a44b9c29cfb04f3f388b60d790b6724ef05874dc69bf17fffa"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "scope": "exception:inner-padding:DialogContent:bodyPadding",
+      "contentHash": "sha256:46747e9c21ddd6a44b9c29cfb04f3f388b60d790b6724ef05874dc69bf17fffa",
+      "exception": {
+        "scope": "DialogContent",
+        "propName": "bodyPadding",
+        "reason": "Only the body changes; padding would misleadingly describe the whole panel"
+      },
+      "source": {
+        "path": "packages/ui/src/molecules/dialog/types.ts",
+        "symbol": "DialogContentProps",
+        "revision": "sha256:cd7acbf2d79d113bec8e1b9d8acfb40af210618b0eea11b0192b98466ffe3e27"
+      }
+    }
+  ]
+}

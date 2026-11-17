@@ -47,6 +47,22 @@ type DialogDimensions =
       /** Sheet dimensions are fixed. @control select */ size?: never;
     };
 
+type DialogPlacement =
+  | {
+      /** Body portal when absent or null. @control false
+       * @controlReason DOM elements are not serializable; see Container and ContainerViewport. */
+      container?: null;
+      /** Viewport layout without a host; derived from container when omitted. @control select */
+      overlayScope?: 'viewport';
+    }
+  | {
+      /** Ready, connected same-document host. @control false
+       * @controlReason DOM elements are not serializable; see Container and ContainerViewport. */
+      container: HTMLElement;
+      /** Container layout by default with a host; viewport permits mount-only use. @control select */
+      overlayScope?: 'viewport' | 'container';
+    };
+
 /** Modal panel; className merges last. Reserved width, padding, radius, paint, focus and positioning overrides are unsupported but not prevented. */
 export type DialogContentProps = Omit<
   ComponentPropsWithoutRef<'div'>,
@@ -61,7 +77,14 @@ export type DialogContentProps = Omit<
   | 'dangerouslySetInnerHTML'
   | 'contentEditable'
 > &
-  DialogDimensions & {
+  DialogDimensions &
+  DialogPlacement & {
+    /**
+     * Body-only token padding; child gaps, header and footer are unchanged.
+     * @default default
+     * @control select
+     */
+    bodyPadding?: 'default' | 'compact';
     /** Non-empty localized visible title. @control text */ title: string;
     /** Optional visible description. @control text */ description?: string;
     /** Optional passive header status. @control text */ statusText?: string;
@@ -75,9 +98,22 @@ export type DialogContentProps = Omit<
 
 /** Internal, marker-free paint recipe shared by modal components. */
 export const dialogScrimVariants = cva('bg-bg-scrim/72 backdrop-blur-none');
-export const dialogOverlayVariants = cva('fixed inset-0 grid overflow-y-auto place-items-center p-[var(--space-6)]', {
-  variants: { flush: { true: 'p-0', false: '' } }
+export const dialogOverlayLayout = cva('inset-0 grid overflow-y-auto place-items-center p-[var(--space-6)]', {
+  variants: {
+    scope: { viewport: 'fixed', container: 'absolute' },
+    flush: { true: 'p-0', false: '' }
+  },
+  defaultVariants: { scope: 'viewport' }
 });
+/** Keep the existing shared overlay class ordering while positioning is a separate axis. */
+export function dialogOverlayVariants(props?: Parameters<typeof dialogOverlayLayout>[0]) {
+  const classes = dialogOverlayLayout(props).split(' ');
+  const position = classes.findIndex((value) => value === 'fixed' || value === 'absolute');
+  if (position >= 0) {
+    classes.unshift(...classes.splice(position, 1));
+  }
+  return classes.join(' ');
+}
 export const dialogPanelVariants = cva(
   'relative flex flex-col box-border overflow-hidden max-h-full w-full motion-reduce:transition-none motion-reduce:transform-none transition-opacity duration-[var(--duration-fast)] ease-[var(--ease-out)] data-[state=open]:starting:opacity-0',
   {
@@ -103,7 +139,10 @@ export const dialogDismissVariants = cva('absolute top-[var(--space-4)] end-[var
 export const dialogTitleVariants = cva('font-display uppercase text-heading-small text-fg-default');
 export const dialogDescriptionVariants = cva('text-body-default text-fg-secondary');
 export const dialogStatusVariants = cva('text-label-default text-fg-muted');
-export const dialogBodyVariants = cva('min-h-0 overflow-y-auto p-[var(--space-6)]');
+export const dialogBodyVariants = cva('min-h-0 overflow-y-auto', {
+  variants: { bodyPadding: { default: 'p-[var(--space-6)]', compact: 'p-[var(--space-3)]' } },
+  defaultVariants: { bodyPadding: 'default' }
+});
 export const dialogFootVariants = cva(
   'shrink-0 flex justify-end items-center px-[var(--space-6)] py-[var(--space-4)] gap-[var(--space-3)] border-t border-border-hairline',
   { variants: { variant: { centered: 'bg-surface-0', sheet: 'bg-surface-1' } } }

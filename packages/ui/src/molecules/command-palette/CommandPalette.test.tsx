@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
@@ -23,6 +24,16 @@ const items: [CommandPaletteItem, CommandPaletteItem, CommandPaletteItem] = [
 ];
 
 describe('CommandPalette', () => {
+  it('preserves the shared scrim overlay class baseline', () => {
+    render(<CommandPalette defaultOpen={true} items={items} />);
+    const overlay = document.querySelector('.eg-palette');
+    expect(overlay).toHaveClass('fixed', 'inset-0', 'bg-bg-scrim/72', 'backdrop-blur-none');
+    expect(
+      createHash('sha256')
+        .update(overlay?.className ?? '')
+        .digest('hex')
+    ).toBe('aed654be1d10d4a1267ec18b5d79a6899c36a36270ee21aa82456a00c4401932');
+  });
   it('opens with a labelled input, an enabled active option and restores launcher focus on Escape', async () => {
     const user = userEvent.setup();
     render(

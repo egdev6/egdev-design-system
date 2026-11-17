@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { composeStory } from '@storybook/react-vite';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -72,6 +73,34 @@ function Example({ onOpenChange }: { onOpenChange?: (open: boolean) => void }) {
 }
 
 describe('AlertDialog public behavior', () => {
+  it('preserves baseline overlay and body classes', () => {
+    render(
+      <AlertDialog defaultOpen={true}>
+        <AlertDialogContent
+          title='Baseline'
+          description='Baseline'
+          actions={<AlertDialogCancel>Cancel</AlertDialogCancel>}
+        >
+          Details
+        </AlertDialogContent>
+      </AlertDialog>
+    );
+    const overlay = document.querySelector('.eg-alert-dialog-backdrop');
+    const body = document.querySelector('.eg-alert-dialog__body');
+    expect(overlay).toHaveClass('fixed', 'inset-0');
+    expect(body).toHaveClass('min-h-0', 'overflow-y-auto', 'p-[var(--space-6)]');
+    expect([
+      createHash('sha256')
+        .update(overlay?.className ?? '')
+        .digest('hex'),
+      createHash('sha256')
+        .update(body?.className ?? '')
+        .digest('hex')
+    ]).toEqual([
+      '5555eba62384a77e5a02623fc9286f945a2ff56add76e858db41b7134fde6d65',
+      '35e32c4255b8acef72e2dcc93f2623d8c08bbace6a59111c1b82cdb46f840141'
+    ]);
+  });
   it.each(['{Enter}', ' '])('opens using keyboard %s and focuses Cancel', async (key) => {
     const user = userEvent.setup();
     render(<Example />);
