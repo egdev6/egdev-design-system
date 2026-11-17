@@ -441,7 +441,7 @@ describe('useChipGroup composition', () => {
       expect.arrayContaining([
         'eg-chip',
         'min-h-8',
-        'pointer-coarse:min-h-11',
+        'pointer-coarse:min-h-14',
         'text-label-default',
         'focus-visible:shadow-focus',
         'data-[state=on]:focus-visible:shadow-focus',

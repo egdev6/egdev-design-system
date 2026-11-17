@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import type { TableColumn, TableProps } from './index';
 import { Table } from './index';
+import { selectLabelVariants, sortVariants } from './types';
 
 beforeAll(() =>
   vi.stubGlobal(
@@ -198,5 +199,14 @@ describe('Table', () => {
     expect(screen.getByRole('checkbox', { name: 'Select all rows' })).toBeDisabled();
     rerender(<Table variant='details' label='Items' columns={columns} rows={rows} />);
     expect(within(screen.getByRole('table')).queryAllByRole('columnheader')).toHaveLength(0);
+  });
+
+  it('gives sort buttons and selection labels a 44.8px coarse-pointer target (#452)', () => {
+    // min-h-11 / min-w-11 resolve to 35.2px with the x0.8 spacing scale; 14 steps give 44.8px.
+    expect(sortVariants()).toContain('pointer-coarse:min-h-14');
+    expect(sortVariants()).not.toContain('pointer-coarse:min-h-11');
+    expect(selectLabelVariants()).toContain('pointer-coarse:min-h-14');
+    expect(selectLabelVariants()).toContain('pointer-coarse:min-w-14');
+    expect(selectLabelVariants()).not.toMatch(/pointer-coarse:min-(h|w)-11/);
   });
 });
