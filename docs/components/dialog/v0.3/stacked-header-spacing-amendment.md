@@ -114,10 +114,10 @@ All implementation checks are **planned**, not observed in this batch. A story i
 - Inline layout, header-to-body spacing and Dialog dismiss placement remain unchanged. Existing component-specific layout defaults stay unchanged.
 - Reuse the existing molecules and registered `dialog-header-layout` convention; this draft does not request tokens, dependencies or new conventions.
 
-### Remaining decisions for the owner
+### Owner decisions — 2026-11-17 (feature log L8)
 
-- After the baseline measurement and comparison, choose `--space-1` or `--space-2` as the effective stacked separation, including whether one choice can satisfy both components without violating the protected boundaries. If not, review the concrete measured conflict before implementation.
-- Review and approve the exact v0.3 snapshot and, separately, an implementation plan. Confirm visual source, scenarios and capture conditions, then explicitly adopt the identified visual references/hashes; no appearance validation is claimed yet.
+- The implementation plan measures the stacked header in a real browser first, then applies `--space-1` or `--space-2` (expected `--space-2`, matching AlertDialog) without a new prop; the measured choice is shown to the owner in Storybook before merging.
+- Visuals: the PR captures both layouts with a long title for owner review.
 
 ### Planned checks
 

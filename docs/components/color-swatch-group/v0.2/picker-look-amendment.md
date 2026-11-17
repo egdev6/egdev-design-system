@@ -150,15 +150,15 @@ All checks are **planned**, not observed for v0.2. Stories illustrate cases and 
 - Keep the Radix RadioGroup semantics, native custom input, `<output>`, consumer-owned data and public API. Nexo is the only current consumer according to the request.
 - This is a draft; neither the visual reference nor implementation plan is approved by documenting these choices.
 
-### Remaining owner decisions and evidence
+### Owner decisions — 2026-11-17 (feature log L8)
 
-1. **Visual versus hit area:** approve the recommended `size-12` 38.4px visual inside a non-overlapping `size-14` 44.8px actual target, or choose the historically sourced 32px visual while retaining the 44.8px target. An exact 40px visual or smaller target needs a separate token/policy decision; do not infer CSS pixels from the screenshot. Decide row gap (`gap-3`/9.6px, `gap-2`/6.4px, or a proposed exact-8px role) after measuring focus and touch spacing.
-2. **Spectrum versus gradient policy:** approve a separately proposed named spectrum token with the historical seven color stops, or approve a bounded Material-compatible component recipe/asset; alternatively choose a non-gradient custom appearance and accept that it will not match the screenshot. No option authorizes writing a token or handwritten gradient in this batch.
-3. **Preset-color exception:** confirm that an unchanged, validated, `aria-hidden` **circular preset patch** with a separate inset/selection surround stays within the existing `AGENTS.md` exception; or require a specifically scoped amended exception. Neither option automatically covers the custom rainbow or other inline appearance.
-4. **Material and ring/focus geometry:** approve a bounded circle-specific recipe and either explicitly permit reuse of focus geometry for the 2px selection gap/ring or approve a dedicated semantic role. Choose Nexo's 5px focus offset via an approved role or an existing token-backed alternative; verify 3:1 contrast and no clipping. `--shadow-edge-strong` is not the inset ring.
-5. **Badge / non-color state:** confirm the described dark badge with a contrasting plus versus Nexo's historical white badge with black plus. For selected presets, either approve a screenshot-faithful no-check appearance with a specifically reviewed non-color/text equivalent and any needed rule exception, or retain a visible check and accept the visual difference. A forced-colors fallback must remain distinguishable in either case.
-6. **Custom selected state:** confirm the proposed ring only for an accepted valid non-preset color; alternatively choose a different visual rule without changing native or RadioGroup semantics.
-7. Provide/authorize the real expected-design source, screenshot conditions, captures and scoped visual approval. Review this exact v0.2 snapshot, then separately approve a bounded implementation plan and any token/dependency or consumer work.
+1. **Visual versus hit area:** a `size-12` (38.4px) circle inside a non-overlapping `size-14` (44.8px) target. Row gap decided after measuring focus and touch spacing in the implementation PR.
+2. **Spectrum:** a new named spectrum token (for example `--gradient-spectrum`) with Nexo's seven historical colour stops, added to `packages/tokens/src/theme.css`; confirmed by the owner for this purpose only. No handwritten gradient.
+3. **Preset-colour exception:** the validated, `aria-hidden` circular preset patch stays within the existing `AGENTS.md` exception; the inset/selection surround is not inline appearance.
+4. **Ring and focus geometry:** a bounded circle-specific recipe; the selection ring reuses existing focus-width geometry with `fg-default`, and focus keeps a distinct offset `focus-ring` outline (3:1 and no clipping verified in the PR).
+5. **Selection cue:** ring only, no check badge (faithful to Quorb/Nexo). The ring is a shape cue, RadioGroup keeps `aria-checked`, and forced colors keep the ring visible. The custom control's plus badge is dark, as in the owner screenshot.
+6. **Custom selected state:** the same ring marks the custom control when a valid non-preset colour is active.
+7. **Visuals:** the owner screenshot ("Color de acento", feature log L6) is the expected-design reference; the implementation PR captures the result in a real browser for owner review.
 
 ### Planned checks
 
