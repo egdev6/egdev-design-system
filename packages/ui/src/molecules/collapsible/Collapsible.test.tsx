@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { act, render, renderHook, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { type ComponentProps, createRef, useRef, useState } from 'react';
@@ -44,6 +45,20 @@ function ExternalCloseExample() {
 }
 
 describe('Collapsible native relationship ownership', () => {
+  it('preserves the exact baseline Trigger classes shared with Button', () => {
+    render(
+      <Collapsible>
+        <CollapsibleTrigger>History</CollapsibleTrigger>
+      </Collapsible>
+    );
+    const trigger = screen.getByRole('button', { name: 'History' });
+    // Recorded from the unchanged Trigger before adding the Button CVA option.
+    expect(createHash('sha256').update(trigger.className).digest('hex')).toBe(
+      '6b60044d6975fbe82a1af8e21206173a38079f3ea1dd0965e1e91dbd74442153'
+    );
+    expect(trigger).toHaveClass('eg-btn', 'eg-collapsible__trigger', 'whitespace-normal');
+    expect(trigger).not.toHaveClass('whitespace-nowrap', 'wrap-anywhere');
+  });
   it('rejects unsupported relationship overrides through close/open/reopen', async () => {
     const user = userEvent.setup();
     const triggerOverrides = { 'aria-controls': 'foreign', 'aria-expanded': true };

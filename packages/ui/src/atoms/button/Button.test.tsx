@@ -378,6 +378,180 @@ describe('Button contract', () => {
   });
 });
 
+describe('Button label wrapping', () => {
+  it.each(
+    (['primary', 'secondary', 'neutral', 'dark'] as const).flatMap((variant) =>
+      (['sm', 'md', 'lg'] as const).map((size) => [variant, size] as const)
+    )
+  )('keeps omitted and false classes identical for %s / %s', (variant, size) => {
+    const { rerender } = render(
+      <Button variant={variant} size={size}>
+        Save draft
+      </Button>
+    );
+    const button = screen.getByRole('button', { name: 'Save draft' });
+    const omitted = button.className;
+    rerender(
+      <Button variant={variant} size={size} labelWrap={false}>
+        Save draft
+      </Button>
+    );
+    expect(button.className).toBe(omitted);
+    expect(button).toHaveClass('whitespace-nowrap');
+    for (const utility of ['whitespace-normal', 'wrap-anywhere', 'text-center']) {
+      expect(button).not.toHaveClass(utility);
+    }
+    expect(button).not.toHaveAttribute('labelwrap');
+  });
+
+  it.each([
+    ['sm', 'min-h-10', 'py-2'],
+    ['md', 'min-h-12', 'py-3'],
+    ['lg', 'min-h-14', 'py-3']
+  ] as const)('wraps long text while retaining the %s minimum and padding', (size, minHeight, padding) => {
+    const label = 'Publish extraordinarilylongunbrokenlocalizedactionlabel now';
+    render(
+      <Button size={size} labelWrap={true}>
+        {label}
+      </Button>
+    );
+    const button = screen.getByRole('button', { name: label });
+    expect(button).toHaveClass('whitespace-normal', 'wrap-anywhere', 'text-center', minHeight, padding);
+    expect(button).not.toHaveClass('whitespace-nowrap');
+    expect(button).not.toHaveClass('wrap-break-word');
+    expect(button).not.toHaveAttribute('labelwrap');
+  });
+
+  it.each(['start', 'end'] as const)(
+    'keeps the wrapped %s icon and spinner decorative and in order',
+    (iconPosition) => {
+      const { rerender } = render(
+        <Button labelWrap={true} icon={<Icon name='check' />} iconPosition={iconPosition}>
+          Save draft now
+        </Button>
+      );
+      const button = screen.getByRole('button', { name: 'Save draft now' });
+      expect(button).toHaveClass('whitespace-normal', 'wrap-anywhere', 'text-center');
+      const icon = button.querySelector('.eg-btn__icon');
+      expect(icon).toHaveAttribute('aria-hidden', 'true');
+      expect(icon?.querySelector('.eg-icon')).not.toBeNull();
+      expect(iconPosition === 'start' ? button.firstChild : button.lastChild).toBe(icon);
+      rerender(
+        <Button labelWrap={true} loading={true} iconPosition={iconPosition}>
+          Save draft now
+        </Button>
+      );
+      const spinner = button.querySelector('.eg-btn__icon');
+      expect(spinner).toHaveAttribute('aria-hidden', 'true');
+      expect(spinner?.querySelector('.eg-spinner')).not.toBeNull();
+      expect(iconPosition === 'start' ? button.firstChild : button.lastChild).toBe(spinner);
+      expect(button).toHaveAccessibleName('Save draft now');
+    }
+  );
+
+  it('preserves native refs, activation, loading and disabled guards with wrapping', async () => {
+    const user = userEvent.setup();
+    const click = vi.fn();
+    const capture = vi.fn();
+    const ref = createRef<HTMLButtonElement>();
+    const { rerender } = render(
+      <Button labelWrap={true} ref={ref} onClick={click} onClickCapture={capture} className='w-full w-auto m-2'>
+        Save draft now
+      </Button>
+    );
+    const button = screen.getByRole('button', { name: 'Save draft now' });
+    expect(button).toHaveClass('whitespace-normal', 'wrap-anywhere', 'text-center', 'w-auto', 'm-2');
+    expect(button).not.toHaveClass('w-full');
+    expect(button).not.toHaveClass('m-0');
+    expect(button).not.toHaveClass('whitespace-nowrap');
+    expect(button).not.toHaveAttribute('labelwrap');
+    expect(ref.current).toBe(button);
+    await user.tab();
+    expect(button).toHaveFocus();
+    await user.keyboard('{Enter} ');
+    await user.click(button);
+    expect(click).toHaveBeenCalledTimes(3);
+    expect(capture).toHaveBeenCalledTimes(3);
+    rerender(
+      <Button labelWrap={true} ref={ref} loading={true} onClick={click} onClickCapture={capture}>
+        Save draft now
+      </Button>
+    );
+    expect(button).toHaveFocus();
+    expect(button).toHaveAttribute('aria-busy', 'true');
+    expect(button).toHaveAttribute('aria-disabled', 'true');
+    await user.keyboard('{Enter} ');
+    await user.click(button);
+    expect(click).toHaveBeenCalledTimes(3);
+    expect(capture).toHaveBeenCalledTimes(3);
+    rerender(
+      <Button labelWrap={true} ref={ref} disabled={true} loading={true} onClick={click}>
+        Save draft now
+      </Button>
+    );
+    expect(button).toBeDisabled();
+    fireEvent.click(button);
+    expect(click).toHaveBeenCalledTimes(3);
+    rerender(
+      <Button labelWrap={true} ref={ref} onClick={click}>
+        Save draft now
+      </Button>
+    );
+    expect(button).not.toHaveAttribute('aria-busy');
+    await user.click(button);
+    expect(click).toHaveBeenCalledTimes(4);
+  });
+
+  it('preserves slotted link refs, handlers, focus and guarded Enter activation with wrapping', async () => {
+    const user = userEvent.setup();
+    const rootClick = vi.fn((event: React.MouseEvent<HTMLButtonElement>) => event.preventDefault());
+    const childClick = vi.fn();
+    const ref = createRef<HTMLButtonElement>();
+    const link = (
+      <a href='#draft' onClick={childClick}>
+        Review draft details
+      </a>
+    );
+    const view = (state: { loading?: boolean; disabled?: boolean } = {}) => (
+      <Button asChild={true} labelWrap={true} ref={ref} onClick={rootClick} {...state}>
+        {link}
+      </Button>
+    );
+    const { rerender } = render(view());
+    const anchor = screen.getByRole('link', { name: 'Review draft details' });
+    expect(anchor).toHaveClass('whitespace-normal', 'wrap-anywhere', 'text-center');
+    expect(anchor).not.toHaveClass('whitespace-nowrap');
+    expect(anchor).not.toHaveAttribute('labelwrap');
+    expect(ref.current === anchor).toBe(true);
+    await user.tab();
+    expect(anchor).toHaveFocus();
+    await user.keyboard('{Enter}');
+    expect(rootClick).toHaveBeenCalledTimes(1);
+    expect(childClick).toHaveBeenCalledTimes(1);
+    rerender(view({ loading: true }));
+    expect(anchor).toHaveFocus();
+    expect(anchor).toHaveAttribute('aria-busy', 'true');
+    expect(anchor).toHaveAttribute('aria-disabled', 'true');
+    await user.keyboard('{Enter}');
+    expect(fireEvent.click(anchor)).toBe(false);
+    expect(rootClick).toHaveBeenCalledTimes(1);
+    expect(childClick).toHaveBeenCalledTimes(1);
+    rerender(view({ disabled: true }));
+    expect(anchor).toHaveAttribute('tabindex', '-1');
+    expect(anchor).toHaveAttribute('aria-disabled', 'true');
+    expect(fireEvent.click(anchor)).toBe(false);
+    expect(rootClick).toHaveBeenCalledTimes(1);
+    expect(childClick).toHaveBeenCalledTimes(1);
+    rerender(view());
+    expect(anchor).not.toHaveAttribute('aria-busy');
+    expect(anchor).not.toHaveAttribute('tabindex');
+    anchor.focus();
+    await user.keyboard('{Enter}');
+    expect(rootClick).toHaveBeenCalledTimes(2);
+    expect(childClick).toHaveBeenCalledTimes(2);
+  });
+});
+
 describe('Button hover motion (#224 owner review)', () => {
   const hoverMotion = /hover\]?(?:\/button)?:-?(?:translate|scale)|hover\]:-?translate/;
 

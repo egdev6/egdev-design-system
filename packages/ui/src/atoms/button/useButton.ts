@@ -26,6 +26,7 @@ export function useButton({
   icon,
   iconPosition = 'end',
   loading = false,
+  labelWrap = false,
   disabled = false,
   type = 'button',
   tabIndex,
@@ -54,7 +55,7 @@ export function useButton({
     iconClassName: cn(buttonIconVariants({ size })),
     rootProps: {
       ...rest,
-      className: cn(buttonVariants({ variant, size }), className),
+      className: cn(buttonVariants({ variant, size, labelWrap }), className),
       type: asChild ? undefined : type,
       disabled: asChild ? undefined : disabled,
       tabIndex: asChild && disabled ? -1 : tabIndex,
