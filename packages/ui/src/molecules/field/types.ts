@@ -81,7 +81,7 @@ export const fieldVariants = cva('eg-field group min-w-0 font-sans', {
   variants: {
     layout: {
       stacked: 'flex flex-col gap-1.5',
-      choice: 'grid grid-cols-[auto_1fr] items-center gap-x-2 gap-y-1 min-h-9 pointer-coarse:min-h-11',
+      choice: 'grid grid-cols-[auto_1fr] items-center gap-x-2 gap-y-1 min-h-9 pointer-coarse:min-h-14',
       // The root places the control (a Radix button) beside the label row without classing it; not
       // :last-child, because Radix appends a hidden native input inside forms and during SSR.
       'choice-trailing':

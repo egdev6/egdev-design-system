@@ -236,7 +236,9 @@ describe('Field public contract', () => {
     const control = screen.getByRole(role, { name: 'Notifications', description: 'Receive updates' });
     const root = rootFor(control);
     expect(root?.firstElementChild).toBe(control);
-    expect(root).toHaveClass('grid', 'min-h-9', 'pointer-coarse:min-h-11');
+    // 44.8px coarse-pointer row, matching choice-trailing (#431); min-h-11 is only 35.2px in this system.
+    expect(root).toHaveClass('grid', 'min-h-9', 'pointer-coarse:min-h-14');
+    expect(root).not.toHaveClass('pointer-coarse:min-h-11');
     const label = screen.getByText('Notifications');
     expect(label).toHaveClass('font-[var(--text-body-default--font-weight)]');
     expect(label.parentElement).toHaveClass('cursor-pointer');
