@@ -21,12 +21,21 @@ describe('Link navigation contract', () => {
     expect(link).toHaveClass(
       'eg-link',
       'text-label-default',
-      'text-fg-brand-raised',
+      'text-link-default',
+      'hover:text-link-hover',
       'items-center',
       'border-0',
       'pb-0'
     );
-    expect(link).not.toHaveClass('border-b', 'border-border-brand', 'text-fg-default');
+    for (const oldClass of [
+      'border-b',
+      'border-border-brand',
+      'text-fg-default',
+      'text-fg-brand-raised',
+      'hover:text-primitive-red-200'
+    ]) {
+      expect(link).not.toHaveClass(oldClass);
+    }
     expect(link).not.toHaveAttribute('target');
     expect(link).not.toHaveAttribute('rel');
     const arrow = link.querySelector('svg');
@@ -129,7 +138,7 @@ describe('Link navigation contract', () => {
     );
     const link = screen.getByRole('link', { name: 'Router docs' });
     expect(screen.getAllByRole('link')).toHaveLength(1);
-    expect(link).toHaveClass('eg-link', 'mt-4', 'self-start');
+    expect(link).toHaveClass('eg-link', 'mt-4', 'self-start', 'text-link-default', 'hover:text-link-hover');
     expect(parentRef.current === link && childRef.current === link).toBe(true);
     expect(link.querySelector('svg')).not.toBeNull();
     await user.tab();
@@ -236,7 +245,7 @@ describe('Link underlined variant', () => {
     expect(tokens(plain)).toEqual(tokens(linkVariants()));
     expect(tokens(linkVariants())).toContain('border-0');
     expect(tokens(linkVariants())).toContain('pb-0');
-    for (const utility of ['border-b', 'border-border-brand', 'pb-0.5', 'hover:border-fg-brand-default']) {
+    for (const utility of ['border-b', 'border-border-brand', 'pb-0.5', 'hover:border-state-selected']) {
       expect(tokens(plain)).not.toContain(utility);
     }
   });
@@ -244,7 +253,7 @@ describe('Link underlined variant', () => {
   it('resolves the underline utilities for the underlined variant and drops the reset', () => {
     const base = tokens(linkVariants());
     const underlined = tokens(linkVariants({ variant: 'underlined' }));
-    for (const utility of ['border-b', 'border-border-brand', 'pb-0.5', 'hover:border-fg-brand-default']) {
+    for (const utility of ['border-b', 'border-border-brand', 'pb-0.5', 'hover:border-state-selected']) {
       expect(underlined).toContain(utility);
     }
     expect(underlined).not.toContain('border-0');
@@ -265,14 +274,23 @@ describe('Link underlined variant', () => {
     expect(screen.getAllByRole('link')).toHaveLength(1);
     expect(link).toHaveClass(
       'eg-link',
-      'text-fg-brand-raised',
+      'text-link-default',
+      'hover:text-link-hover',
       'no-underline',
       'border-b',
       'border-border-brand',
       'pb-0.5',
-      'hover:border-fg-brand-default'
+      'hover:border-state-selected'
     );
-    expect(link).not.toHaveClass('border-0', 'pb-0');
+    for (const oldClass of [
+      'border-0',
+      'pb-0',
+      'text-fg-brand-raised',
+      'hover:text-primitive-red-200',
+      'hover:border-fg-brand-default'
+    ]) {
+      expect(link).not.toHaveClass(oldClass);
+    }
     expect(link).not.toHaveAttribute('variant');
     expect(link.style.textDecoration).toBe('');
     const arrow = link.querySelector('svg');

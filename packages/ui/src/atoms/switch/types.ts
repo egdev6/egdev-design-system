@@ -56,9 +56,9 @@ export type SwitchProps = SwitchNativeProps & {
 
 /** Track: Material well when off, primary bevel and halo when on, with the focus ring winning in both states. */
 export const switchVariants = cva([
-  'eg-switch relative inline-block shrink-0 box-border p-0 w-9 h-5 rounded-full border border-solid border-border-control bg-surface-0 shadow-[var(--shadow-well)] cursor-pointer',
+  'eg-switch relative inline-block shrink-0 box-border p-0 w-9 h-5 rounded-full border border-solid border-control-boundary bg-control-well shadow-[var(--shadow-well)] cursor-pointer',
   'transition-[background-color,border-color] ease-out duration-[var(--duration-fast)] motion-reduce:transition-none',
-  'data-[state=checked]:bg-[image:var(--gradient-btn-primary)] data-[state=checked]:border-action-primary-solid-bg data-[state=checked]:shadow-[var(--shadow-btn-primary)]',
+  'data-[state=checked]:bg-[image:var(--gradient-state-selected)] data-[state=checked]:border-state-selected data-[state=checked]:shadow-[var(--shadow-state-selected)]',
   'focus-visible:outline-none focus-visible:shadow-[var(--shadow-focus)] data-[state=checked]:focus-visible:shadow-[var(--shadow-focus)]',
   // #219 option A: error lives inside the control. Unchecked errors tint the well; checked errors
   // keep their opaque primary fill, so only the danger border width and color apply there.
@@ -72,5 +72,5 @@ export const switchVariants = cva([
  * The inset is logical and the travel is reversed in right-to-left contexts, so it mirrors (#432).
  */
 export const switchThumbVariants = cva(
-  'absolute top-0.5 start-0.5 size-3.5 rounded-full bg-fg-secondary transition-[translate,background-color] ease-out duration-[var(--duration-fast)] motion-reduce:transition-none data-[state=checked]:translate-x-4 rtl:data-[state=checked]:-translate-x-4 data-[state=checked]:bg-action-primary-solid-fg'
+  'absolute top-0.5 start-0.5 size-3.5 rounded-full bg-fg-secondary transition-[translate,background-color] ease-out duration-[var(--duration-fast)] motion-reduce:transition-none data-[state=checked]:translate-x-4 rtl:data-[state=checked]:-translate-x-4 data-[state=checked]:bg-on-selected'
 );

@@ -2551,13 +2551,28 @@ test('Tabs publishes only its approved API and ships static molecule utilities',
   assert.match(entry, /TabsProps/);
   const css = readFileSync(artifact('ui', ui.exports['./styles.css']), 'utf8');
   const utilities = cssBlock(css, /@layer utilities\s*\{/);
+  const rule = (selector) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
+  };
   for (const selector of [
     String.raw`.p-0\.75`,
     String.raw`.min-h-8\.5`,
     String.raw`.\[scrollbar-width\:none\]`,
     String.raw`.rounded-\[calc\(var\(--radius-md\)---spacing\(0\.75\)\)\]`,
-    String.raw`.data-\[state\=active\]\:after\:bg-fg-brand-default`,
-    String.raw`.data-\[state\=active\]\:after\:shadow-glow-base`,
+    String.raw`.data-\[state\=active\]\:after\:bg-state-selected`,
+    String.raw`.data-\[state\=active\]\:after\:shadow-\[var\(--shadow-state-indicator\)\]`,
+    '.isolate',
+    '.border-transparent',
+    String.raw`.data-\[state\=active\]\:border-border-brand`,
+    String.raw`.data-\[state\=active\]\:bg-state-selected-surface`,
+    String.raw`.data-\[state\=active\]\:before\:content-\[\'\'\]`,
+    String.raw`.data-\[state\=active\]\:before\:pointer-events-none`,
+    String.raw`.data-\[state\=active\]\:before\:absolute`,
+    String.raw`.data-\[state\=active\]\:before\:inset-0`,
+    String.raw`.data-\[state\=active\]\:before\:-z-10`,
+    String.raw`.data-\[state\=active\]\:before\:rounded-\[inherit\]`,
+    String.raw`.data-\[state\=active\]\:before\:bg-border-brand`,
     String.raw`.motion-reduce\:after\:transition-none`,
     String.raw`.focus-visible\:inset-ring-focus-ring`,
     String.raw`.bg-status-danger\/14`
@@ -2566,6 +2581,30 @@ test('Tabs publishes only its approved API and ships static molecule utilities',
   }
   assert.match(utilities, /scrollbar-width:\s*none/);
   assert.match(utilities, /border-radius:\s*calc\(var\(--radius-md\)\s*-\s*[^;]+\)/);
+  assert.match(rule('.isolate'), /isolation:\s*isolate\s*;/);
+  assert.match(rule('.border-transparent'), /border-color:\s*transparent\s*;/);
+  assert.match(
+    rule(String.raw`.data-\[state\=active\]\:after\:bg-state-selected[data-state="active"]::after`),
+    /background-color:\s*var\(--color-state-selected[,)]/
+  );
+  assert.match(
+    rule(
+      String.raw`.data-\[state\=active\]\:after\:shadow-\[var\(--shadow-state-indicator\)\][data-state="active"]::after`
+    ),
+    /--tw-shadow:\s*var\(--shadow-state-indicator\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=active\]\:border-border-brand[data-state="active"]`),
+    /border-color:\s*var\(--color-border-brand[,)]/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=active\]\:bg-state-selected-surface[data-state="active"]`),
+    /background-color:\s*var\(--color-state-selected-surface[,)]/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=active\]\:before\:bg-border-brand[data-state="active"]::before`),
+    /background-color:\s*var\(--color-border-brand[,)]/
+  );
   const active = css.indexOf(String.raw`.data-\[state\=active\]\:shadow-\[var\(--shadow-edge-strong\)`);
   const activeFocus = css.indexOf(String.raw`.data-\[state\=active\]\:focus-visible\:shadow-focus`);
   assert.ok(active > -1 && activeFocus > active, 'Focused active segment must retain the focus shadow');
@@ -3638,24 +3677,25 @@ test('UI ships the RadioGroup row, radio and indicator utilities without a Radio
   assert.match(rule('.size-5'), /width:\s*var\(--space-5\)\s*;\s*height:\s*var\(--space-5\)\s*;/);
   assert.match(rule('.place-items-center'), /place-items:\s*center\s*;/);
   assert.match(rule('.box-border'), /box-sizing:\s*border-box\s*;/);
-  assert.match(rule('.border-border-control'), /border-color:\s*var\(--color-border-control[,)]/);
+  assert.match(rule('.border-control-boundary'), /border-color:\s*var\(--color-control-boundary[,)]/);
+  assert.match(rule('.bg-control-well'), /background-color:\s*var\(--color-control-well[,)]/);
   assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)\s*;/);
   assert.match(
-    rule(String.raw`.data-\[state\=checked\]\:border-action-primary-solid-bg[data-state="checked"]`),
-    /border-color:\s*var\(--color-action-primary-solid-bg[,)]/
+    rule(String.raw`.data-\[state\=checked\]\:border-state-selected[data-state="checked"]`),
+    /border-color:\s*var\(--color-state-selected[,)]/
   );
   assert.match(
-    rule(String.raw`.data-\[state\=checked\]\:bg-\[image\:var\(--gradient-btn-primary\)\][data-state="checked"]`),
-    /background-image:\s*var\(--gradient-btn-primary\)\s*;/
+    rule(String.raw`.data-\[state\=checked\]\:bg-\[image\:var\(--gradient-state-selected\)\][data-state="checked"]`),
+    /background-image:\s*var\(--gradient-state-selected\)\s*;/
   );
   assert.match(
-    rule(String.raw`.data-\[state\=checked\]\:shadow-\[var\(--shadow-btn-primary\)\][data-state="checked"]`),
-    /--tw-shadow:\s*var\(--shadow-btn-primary\)\s*;/
+    rule(String.raw`.data-\[state\=checked\]\:shadow-\[var\(--shadow-state-selected\)\][data-state="checked"]`),
+    /--tw-shadow:\s*var\(--shadow-state-selected\)\s*;/
   );
   // Checked border wins over hover because the checked rule is emitted later at equal specificity.
   assert.ok(
     utilities.indexOf(String.raw`.hover\:border-fg-muted:hover`) <
-      utilities.indexOf(String.raw`.data-\[state\=checked\]\:border-action-primary-solid-bg[data-state="checked"]`),
+      utilities.indexOf(String.raw`.data-\[state\=checked\]\:border-state-selected[data-state="checked"]`),
     'The checked border must follow the hover border'
   );
   // Focus ring wins over the checked halo through the higher-specificity checked+focus rule (AC-06).
@@ -3672,7 +3712,7 @@ test('UI ships the RadioGroup row, radio and indicator utilities without a Radio
   assert.match(rule(String.raw`.disabled\:pointer-events-none:disabled`), /pointer-events:\s*none\s*;/);
   // Indicator: 6.4px black dot.
   assert.match(rule('.size-2'), /width:\s*var\(--space-2\)\s*;/);
-  assert.match(rule('.bg-action-primary-solid-fg'), /background-color:\s*var\(--color-action-primary-solid-fg[,)]/);
+  assert.match(rule('.bg-on-selected'), /background-color:\s*var\(--color-on-selected[,)]/);
   // D9 no stylesheet: the marker carries no rule.
   assert.doesNotMatch(css, /\.eg-radio-group[^{]*\{/, 'RadioGroup has no stylesheet: its marker carries no rule');
 });
@@ -3737,25 +3777,29 @@ test('UI ships the Switch track, thumb and state utilities without a Switch styl
   assert.match(rule('.w-9'), /width:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)\s*;/);
   assert.match(rule('.h-5'), /height:\s*var\(--space-5\)\s*;/);
   assert.match(rule('.box-border'), /box-sizing:\s*border-box\s*;/);
-  assert.match(rule('.border-border-control'), /border-color:\s*var\(--color-border-control[,)]/);
-  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule('.border-control-boundary'), /border-color:\s*var\(--color-control-boundary[,)]/);
+  assert.match(rule('.bg-control-well'), /background-color:\s*var\(--color-control-well[,)]/);
   assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)\s*;/);
-  // Checked: primary gradient, bevel/halo token and the black thumb moved 12.8px (D4).
+  // Checked: selected border/gradient/bevel roles and the black thumb moved 12.8px (D4).
   assert.match(
-    rule(String.raw`.data-\[state\=checked\]\:bg-\[image\:var\(--gradient-btn-primary\)\][data-state="checked"]`),
-    /background-image:\s*var\(--gradient-btn-primary\)\s*;/
+    rule(String.raw`.data-\[state\=checked\]\:border-state-selected[data-state="checked"]`),
+    /border-color:\s*var\(--color-state-selected[,)]/
   );
   assert.match(
-    rule(String.raw`.data-\[state\=checked\]\:shadow-\[var\(--shadow-btn-primary\)\][data-state="checked"]`),
-    /--tw-shadow:\s*var\(--shadow-btn-primary\)\s*;/
+    rule(String.raw`.data-\[state\=checked\]\:bg-\[image\:var\(--gradient-state-selected\)\][data-state="checked"]`),
+    /background-image:\s*var\(--gradient-state-selected\)\s*;/
+  );
+  assert.match(
+    rule(String.raw`.data-\[state\=checked\]\:shadow-\[var\(--shadow-state-selected\)\][data-state="checked"]`),
+    /--tw-shadow:\s*var\(--shadow-state-selected\)\s*;/
   );
   assert.match(
     rule(String.raw`.data-\[state\=checked\]\:translate-x-4[data-state="checked"]`),
     /--tw-translate-x:\s*var\(--(?:space-4|spacing-4)\)\s*;\s*translate:/
   );
   assert.match(
-    rule(String.raw`.data-\[state\=checked\]\:bg-action-primary-solid-fg[data-state="checked"]`),
-    /background-color:\s*var\(--color-action-primary-solid-fg[,)]/
+    rule(String.raw`.data-\[state\=checked\]\:bg-on-selected[data-state="checked"]`),
+    /background-color:\s*var\(--color-on-selected[,)]/
   );
   assert.match(rule(String.raw`.size-3\.5`), /width:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*3\.5\)\s*;/);
   // Thumb travel animates the translate property; reduced motion removes every transition (D6).
@@ -3902,9 +3946,9 @@ test('UI ships the Input well, state and preset utilities without an Input-speci
     const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     return cssBlock(utilities, new RegExp(`${escaped}\\s*\\{`));
   };
-  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
+  assert.match(rule('.bg-control-well'), /background-color:\s*var\(--color-control-well[,)]/);
   assert.match(rule('.bg-primitive-neutral-950'), /background-color:\s*var\(--color-primitive-neutral-950[,)]/);
-  assert.match(rule('.border-border-control'), /border-color:\s*var\(--color-border-control[,)]/);
+  assert.match(rule('.border-control-boundary'), /border-color:\s*var\(--color-control-boundary[,)]/);
   assert.match(rule(String.raw`.shadow-\[var\(--shadow-well\)\]`), /--tw-shadow:\s*var\(--shadow-well\)/);
   assert.match(rule('.min-h-11'), /min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*11\)/);
   assert.match(rule('.min-h-9'), /min-height:\s*calc\(var\(--(?:space-1|spacing)\)\s*\*\s*9\)/);
@@ -4037,7 +4081,7 @@ test('UI ships Link token recipes, scoped motion and legacy resets without a new
   for (const [selector, declaration] of [
     ['.border-0', /border-width:\s*0(?:px)?\s*;/],
     ['.border-border-brand', /border-color:\s*var\(--color-border-brand[,)]/],
-    ['.text-fg-brand-raised', /color:\s*var\(--color-fg-brand-raised[,)]/],
+    ['.text-link-default', /color:\s*var\(--color-link-default[,)]/],
     ['.pb-0', /padding-bottom:\s*var\(--space-0\)/],
     ['.no-underline', /text-decoration-line:\s*none/],
     ['.cursor-pointer', /cursor:\s*pointer/],
@@ -4052,8 +4096,8 @@ test('UI ships Link token recipes, scoped motion and legacy resets without a new
   for (const selector of [
     '.border-b',
     '.pb-0\\.5',
-    String.raw`.hover\:text-primitive-red-200`,
-    String.raw`.hover\:border-fg-brand-default`,
+    String.raw`.hover\:text-link-hover`,
+    String.raw`.hover\:border-state-selected`,
     String.raw`.motion-safe\:group-hover\/link\:translate-x-1`,
     String.raw`.motion-reduce\:translate-none`,
     String.raw`.motion-reduce\:transition-none`,
@@ -4064,9 +4108,10 @@ test('UI ships Link token recipes, scoped motion and legacy resets without a new
     assert.ok(utilities.includes(selector), `Missing Link utility ${selector}`);
   }
   assert.match(
-    rule(String.raw`.hover\:border-fg-brand-default:hover`),
-    /border-color:\s*var\(--color-fg-brand-default[,)]/
+    rule(String.raw`.hover\:border-state-selected:hover`),
+    /border-color:\s*var\(--color-state-selected[,)]/
   );
+  assert.match(rule(String.raw`.hover\:text-link-hover:hover`), /color:\s*var\(--color-link-hover[,)]/);
   assert.match(css, /@property --tw-border-style\s*\{[^}]*initial-value:\s*solid/);
   assert.match(utilities, /@media \(prefers-reduced-motion:\s*no-preference\)/);
   assert.match(rule(String.raw`.motion-reduce\:translate-none`), /translate:\s*none/);
@@ -6877,7 +6922,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
   assert.equal(radioGroup.match(/<input type="radio" aria-hidden="true"[^>]*name="visibility"/g)?.length, 2);
   assert.match(
     radioGroup,
-    /aria-checked="true" data-state="checked" value="public" id="([^"]+)"[^>]*><span data-state="checked" class="size-2 rounded-full bg-action-primary-solid-fg"><\/span><\/button><input [^>]*checked="" value="public"\/><label for="\1" class="cursor-pointer">Public<\/label>/
+    /aria-checked="true" data-state="checked" value="public" id="([^"]+)"[^>]*><span data-state="checked" class="size-2 rounded-full bg-on-selected"><\/span><\/button><input [^>]*checked="" value="public"\/><label for="\1" class="cursor-pointer">Public<\/label>/
   );
   assert.match(
     radioGroup,
@@ -7014,7 +7059,7 @@ test('UI root exports the layout primitives, Surface, Gauge, AspectRatio, Portal
     'px-3',
     'py-2',
     'text-body-default',
-    'bg-surface-0',
+    'bg-control-well',
     'shadow-[var(--shadow-well)]'
   ]) {
     assert.ok(field.includes(utility), `Input md/default must render ${utility}`);
@@ -7244,8 +7289,8 @@ test('UI ships the Slider well, range and raised thumb utilities without a Slide
   assert.match(rule('.grow'), /flex-grow:\s*1\s*;/);
   assert.match(rule(String.raw`.data-\[disabled\]\:opacity-45`), /opacity:\s*45%\s*;/);
   assert.match(rule(String.raw`.data-\[disabled\]\:pointer-events-none`), /pointer-events:\s*none\s*;/);
-  assert.match(rule('.bg-surface-0'), /background-color:\s*var\(--color-surface-0[,)]/);
-  assert.match(rule('.bg-fg-brand-default'), /background-color:\s*var\(--color-fg-brand-default[,)]/);
+  assert.match(rule('.bg-control-well'), /background-color:\s*var\(--color-control-well[,)]/);
+  assert.match(rule('.bg-state-selected'), /background-color:\s*var\(--color-state-selected[,)]/);
   assert.match(rule('.bg-fg-default'), /background-color:\s*var\(--color-fg-default[,)]/);
   // Material shadows stay token references instead of copied literal values.
   for (const token of ['shadow-well', 'shadow-elev-1']) {

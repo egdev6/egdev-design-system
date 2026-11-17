@@ -1694,10 +1694,11 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Tabs
     - tabsTriggerVariants base: font-sans → --font-sans
     - tabsTriggerVariants base: text-label-default → --text-label-default
     - tabsTriggerVariants variant=underline: after:rounded-full → --radius-full
-    - tabsTriggerVariants variant=underline: data-[state=active]:after:shadow-glow-base → --shadow-glow-base
+    - tabsTriggerVariants variant=underline: data-[state=active]:after:shadow-[var(--shadow-state-indicator)] → --shadow-state-indicator
     - tabsTriggerVariants variant=segmented: px-3 → --spacing-3
     - tabsTriggerVariants variant=segmented: rounded-[calc(var(--radius-md)---spacing(0.75))] → --radius-md, --spacing
     - tabsTriggerVariants variant=segmented: data-[state=active]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1)] → --shadow-edge-strong, --shadow-elev-1
+    - tabsTriggerVariants variant=segmented: data-[state=active]:before:rounded-[inherit] → unresolved
     - tabsTriggerVariants variant=segmented: focus-visible:shadow-focus → --shadow-focus
     - tabsTriggerVariants variant=segmented: data-[state=active]:focus-visible:shadow-focus → --shadow-focus
     - tabsTriggerVariants {"variant":"underline","size":"md"}: px-3 → --spacing-3
@@ -2234,7 +2235,7 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · RadioGroup
     - radioGroupItemVariants base: p-0 → --spacing-0
     - radioGroupItemVariants base: rounded-full → --radius-full
     - radioGroupItemVariants base: shadow-[var(--shadow-well)] → --shadow-well
-    - radioGroupItemVariants base: data-[state=checked]:shadow-[var(--shadow-btn-primary)] → --shadow-btn-primary
+    - radioGroupItemVariants base: data-[state=checked]:shadow-[var(--shadow-state-selected)] → --shadow-state-selected
     - radioGroupItemVariants base: focus-visible:shadow-[var(--shadow-focus)] → --shadow-focus
     - radioGroupItemVariants base: data-[state=checked]:focus-visible:shadow-[var(--shadow-focus)] → --shadow-focus
     - radioGroupRootVariants orientation=vertical: gap-1 → --spacing-1
@@ -2385,7 +2386,7 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · Switch
     - switchVariants base: p-0 → --spacing-0
     - switchVariants base: rounded-full → --radius-full
     - switchVariants base: shadow-[var(--shadow-well)] → --shadow-well
-    - switchVariants base: data-[state=checked]:shadow-[var(--shadow-btn-primary)] → --shadow-btn-primary
+    - switchVariants base: data-[state=checked]:shadow-[var(--shadow-state-selected)] → --shadow-state-selected
     - switchVariants base: focus-visible:shadow-[var(--shadow-focus)] → --shadow-focus
     - switchVariants base: data-[state=checked]:focus-visible:shadow-[var(--shadow-focus)] → --shadow-focus
   - checked: boolean; Controlled on/off state. When omitted the switch is uncontrolled and starts from defaultChecked. (components[] · packages/ui/src/atoms/switch/types.ts)
@@ -4184,7 +4185,7 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - radioGroupItemVariants base: p-0 → --spacing-0
     - radioGroupItemVariants base: rounded-full → --radius-full
     - radioGroupItemVariants base: shadow-[var(--shadow-well)] → --shadow-well
-    - radioGroupItemVariants base: data-[state=checked]:shadow-[var(--shadow-btn-primary)] → --shadow-btn-primary
+    - radioGroupItemVariants base: data-[state=checked]:shadow-[var(--shadow-state-selected)] → --shadow-state-selected
     - radioGroupItemVariants base: focus-visible:shadow-[var(--shadow-focus)] → --shadow-focus
     - radioGroupItemVariants base: data-[state=checked]:focus-visible:shadow-[var(--shadow-focus)] → --shadow-focus
     - radioGroupRootVariants orientation=vertical: gap-1 → --spacing-1
@@ -4303,10 +4304,11 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - tabsTriggerVariants base: font-sans → --font-sans
     - tabsTriggerVariants base: text-label-default → --text-label-default
     - tabsTriggerVariants variant=underline: after:rounded-full → --radius-full
-    - tabsTriggerVariants variant=underline: data-[state=active]:after:shadow-glow-base → --shadow-glow-base
+    - tabsTriggerVariants variant=underline: data-[state=active]:after:shadow-[var(--shadow-state-indicator)] → --shadow-state-indicator
     - tabsTriggerVariants variant=segmented: px-3 → --spacing-3
     - tabsTriggerVariants variant=segmented: rounded-[calc(var(--radius-md)---spacing(0.75))] → --radius-md, --spacing
     - tabsTriggerVariants variant=segmented: data-[state=active]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1)] → --shadow-edge-strong, --shadow-elev-1
+    - tabsTriggerVariants variant=segmented: data-[state=active]:before:rounded-[inherit] → unresolved
     - tabsTriggerVariants variant=segmented: focus-visible:shadow-focus → --shadow-focus
     - tabsTriggerVariants variant=segmented: data-[state=active]:focus-visible:shadow-focus → --shadow-focus
     - tabsTriggerVariants {"variant":"underline","size":"md"}: px-3 → --spacing-3

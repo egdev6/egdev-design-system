@@ -64,11 +64,11 @@ it('compiles production Tabs CVA utilities without writing build artifacts', asy
     /border-radius:\s*calc\(var\(--radius-md\)\s*-\s*calc\(var\(--space-1\)\s*\*\s*0\.75\)\)/
   );
   expect(rule(String.raw`.\[scrollbar-width\:none\]`)).toContain('scrollbar-width: none');
-  expect(rule(String.raw`.data-\[state\=active\]\:after\:bg-fg-brand-default`)).toMatch(
-    /var\(--color-fg-brand-default[,)]/
+  expect(rule(String.raw`.data-\[state\=active\]\:after\:bg-state-selected`)).toMatch(
+    /var\(--color-state-selected[,)]/
   );
-  expect(rule(String.raw`.data-\[state\=active\]\:after\:shadow-glow-base`)).toMatch(
-    /--tw-shadow:[^;]+;[\s\S]*box-shadow:/
+  expect(rule(String.raw`.data-\[state\=active\]\:after\:shadow-\[var\(--shadow-state-indicator\)\]`)).toMatch(
+    /--tw-shadow:\s*var\(--shadow-state-indicator\)[\s\S]*box-shadow:/
   );
   expect(rule(String.raw`.bg-status-danger\/14`)).toMatch(/var\(--color-status-danger[^;]*14%, transparent/);
   expect(rule(String.raw`.focus-visible\:inset-ring-focus-ring`)).toMatch(/var\(--color-focus-ring[,)]/);

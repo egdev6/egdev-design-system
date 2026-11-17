@@ -221,9 +221,11 @@ describe('Tabs public contract', () => {
     const tab = screen.getByRole('tab', { name: 'Queue' });
     expect(tab).toHaveClass('min-h-11', 'px-3', 'text-label-default', 'after:inset-x-3');
     expect(tab).toHaveClass(
-      'data-[state=active]:after:bg-fg-brand-default',
-      'data-[state=active]:after:shadow-glow-base'
+      'data-[state=active]:after:bg-state-selected',
+      'data-[state=active]:after:shadow-[var(--shadow-state-indicator)]'
     );
+    expect(tab).not.toHaveClass('data-[state=active]:after:bg-fg-brand-default');
+    expect(tab).not.toHaveClass('data-[state=active]:after:shadow-glow-base');
     expect(tab).toHaveClass(
       'motion-reduce:transition-none',
       'motion-reduce:after:transition-none',
@@ -251,7 +253,11 @@ describe('Tabs public contract', () => {
     expect(list).not.toHaveClass('p-0', 'p-6', 'rounded-xl', 'overflow-x-auto');
     const tab = screen.getByRole('tab', { name: 'Queue' });
     expect(tab).toHaveClass('min-h-8.5', 'px-3', 'rounded-[calc(var(--radius-md)---spacing(0.75))]');
-    expect(tab).toHaveClass('data-[state=active]:bg-surface-3', 'data-[state=active]:bg-[image:var(--gradient-sheen)]');
+    expect(tab).toHaveClass(
+      'data-[state=active]:bg-state-selected-surface',
+      'data-[state=active]:bg-[image:var(--gradient-sheen)]'
+    );
+    expect(tab).not.toHaveClass('data-[state=active]:bg-surface-3');
     expect(tab).toHaveClass(
       'data-[state=active]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1)]',
       'focus-visible:shadow-focus',
@@ -261,6 +267,42 @@ describe('Tabs public contract', () => {
     rerender(<Tabs {...base} variant='segmented' size='sm' />);
     expect(tab.className).toBe(classes);
     expect(tab.className).not.toContain('after:');
+  });
+
+  it('uses the approved segmented border and non-interactive tint as selection moves', async () => {
+    const user = userEvent.setup();
+    render(<Tabs {...base} variant='segmented' />);
+    const queue = screen.getByRole('tab', { name: 'Queue' });
+    const drafts = screen.getByRole('tab', { name: 'Drafts' });
+    const selectedTreatment = [
+      'isolate',
+      'border',
+      'border-transparent',
+      'data-[state=active]:border-border-brand',
+      'data-[state=active]:bg-state-selected-surface',
+      'data-[state=active]:bg-[image:var(--gradient-sheen)]',
+      'data-[state=active]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1)]',
+      "data-[state=active]:before:content-['']",
+      'data-[state=active]:before:pointer-events-none',
+      'data-[state=active]:before:absolute',
+      'data-[state=active]:before:inset-0',
+      'data-[state=active]:before:-z-10',
+      'data-[state=active]:before:rounded-[inherit]',
+      'data-[state=active]:before:bg-border-brand'
+    ];
+    for (const tab of [queue, drafts]) {
+      expect(tab).toHaveClass(...selectedTreatment);
+      expect(tab).not.toHaveClass('border-0');
+      expect(tab).not.toHaveClass('data-[state=active]:bg-surface-3');
+    }
+    expect(queue).toHaveAttribute('data-state', 'active');
+    expect(drafts).toHaveAttribute('data-state', 'inactive');
+    const classes = [queue.className, drafts.className];
+    await user.click(drafts);
+    expect(queue).toHaveAttribute('data-state', 'inactive');
+    expect(drafts).toHaveAttribute('data-state', 'active');
+    expect(drafts).toHaveAttribute('aria-selected', 'true');
+    expect([queue.className, drafts.className]).toEqual(classes);
   });
 
   it('renders the selected default on the server without effects or browser-only initialization', () => {

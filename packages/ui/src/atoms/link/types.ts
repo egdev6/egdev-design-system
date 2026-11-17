@@ -69,14 +69,14 @@ export type LinkProps = Omit<ComponentPropsWithoutRef<'a'>, 'href' | 'children'>
 export type LinkVariant = 'plain' | 'underlined';
 
 export const linkVariants = cva(
-  'eg-link group/link inline-flex items-center gap-2 font-sans text-label-default text-fg-brand-raised no-underline cursor-pointer transition-colors duration-(--duration-fast) ease-(--ease-out) hover:text-primitive-red-200 focus-visible:outline-none focus-visible:[box-shadow:var(--shadow-focus)] focus-visible:rounded-sm motion-reduce:transition-none',
+  'eg-link group/link inline-flex items-center gap-2 font-sans text-label-default text-link-default no-underline cursor-pointer transition-colors duration-(--duration-fast) ease-(--ease-out) hover:text-link-hover focus-visible:outline-none focus-visible:[box-shadow:var(--shadow-focus)] focus-visible:rounded-sm motion-reduce:transition-none',
   {
     variants: {
       variant: {
         // The legacy border/padding reset lives in the default branch only: border-0 and border-b are
         // different tailwind-merge groups, so a shared reset would let emitted CSS order decide the line.
         plain: 'pb-0 border-0',
-        underlined: 'border-b border-border-brand pb-0.5 hover:border-fg-brand-default'
+        underlined: 'border-b border-border-brand pb-0.5 hover:border-state-selected'
       }
     },
     defaultVariants: { variant: 'plain' }

@@ -78,11 +78,11 @@ export const sliderVariants = cva(
 
 /** Track: 4px Material well ("what is filled sinks"). */
 export const sliderTrackVariants = cva(
-  'relative h-1 grow overflow-hidden rounded-full bg-surface-0 shadow-[var(--shadow-well)]'
+  'relative h-1 grow overflow-hidden rounded-full bg-control-well shadow-[var(--shadow-well)]'
 );
 
 /** Range: brand fill up to the value; Radix positions it with inline percentages. */
-export const sliderRangeVariants = cva('absolute h-full bg-fg-brand-default');
+export const sliderRangeVariants = cva('absolute h-full bg-state-selected');
 
 /** Thumb: raised 16px handle ("what is pressed stands out"); the focus ring replaces the elevation.
  * An invalid value doubles the border and tints the fill (#219 option A). */

@@ -3882,8 +3882,8 @@ function assertSliderCSS(css) {
     '.h-1',
     '.grow',
     '.size-4',
-    '.bg-surface-0',
-    '.bg-fg-brand-default',
+    '.bg-control-well',
+    '.bg-state-selected',
     '.bg-fg-default',
     '.transition-shadow',
     String.raw`.pointer-coarse\:h-14`,
@@ -3972,14 +3972,15 @@ function assertKbdCSS(css) {
 function assertSwitchCSS(css) {
   for (const utility of [
     '.box-border',
-    '.border-border-control',
-    '.bg-surface-0',
+    '.border-control-boundary',
+    '.bg-control-well',
     '.bg-fg-secondary',
     '.rounded-full',
     '.shadow-\\[var\\(--shadow-well\\)\\]',
-    '.data-\\[state\\=checked\\]\\:bg-\\[image\\:var\\(--gradient-btn-primary\\)\\]',
-    '.data-\\[state\\=checked\\]\\:shadow-\\[var\\(--shadow-btn-primary\\)\\]',
-    '.data-\\[state\\=checked\\]\\:bg-action-primary-solid-fg',
+    '.data-\\[state\\=checked\\]\\:border-state-selected',
+    '.data-\\[state\\=checked\\]\\:bg-\\[image\\:var\\(--gradient-state-selected\\)\\]',
+    '.data-\\[state\\=checked\\]\\:shadow-\\[var\\(--shadow-state-selected\\)\\]',
+    '.data-\\[state\\=checked\\]\\:bg-on-selected',
     '.data-\\[state\\=checked\\]\\:focus-visible\\:shadow-\\[var\\(--shadow-focus\\)\\]',
     // #219 option A closed additions: invalid border width and tinted well (unchecked only).
     '.aria-invalid\\:data-\\[state\\=unchecked\\]\\:border-\\(length\\:--border-width-invalid\\)',
@@ -4148,7 +4149,8 @@ function assertTextareaCSS(css) {
 // Input ships its Material well, state variants and presets as token utilities; no Input stylesheet.
 function assertInputCSS(css) {
   for (const utility of [
-    '.border-border-control',
+    '.border-control-boundary',
+    '.bg-control-well',
     '.bg-primitive-neutral-950',
     '.font-mono',
     '.text-code',
@@ -4436,7 +4438,19 @@ function assertTabsCSS(css) {
     String.raw`.min-h-8\.5`,
     String.raw`.rounded-\[calc\(var\(--radius-md\)---spacing\(0\.75\)\)\]`,
     String.raw`.\[scrollbar-width\:none\]`,
-    String.raw`.data-\[state\=active\]\:after\:shadow-glow-base`,
+    String.raw`.data-\[state\=active\]\:after\:bg-state-selected`,
+    String.raw`.data-\[state\=active\]\:after\:shadow-\[var\(--shadow-state-indicator\)\]`,
+    '.isolate',
+    '.border-transparent',
+    String.raw`.data-\[state\=active\]\:border-border-brand`,
+    String.raw`.data-\[state\=active\]\:bg-state-selected-surface`,
+    String.raw`.data-\[state\=active\]\:before\:content-\[\'\'\]`,
+    String.raw`.data-\[state\=active\]\:before\:pointer-events-none`,
+    String.raw`.data-\[state\=active\]\:before\:absolute`,
+    String.raw`.data-\[state\=active\]\:before\:inset-0`,
+    String.raw`.data-\[state\=active\]\:before\:-z-10`,
+    String.raw`.data-\[state\=active\]\:before\:rounded-\[inherit\]`,
+    String.raw`.data-\[state\=active\]\:before\:bg-border-brand`,
     String.raw`.data-\[state\=active\]\:focus-visible\:shadow-focus`,
     String.raw`.focus-visible\:inset-ring-focus-ring`,
     String.raw`.motion-reduce\:after\:transition-none`,
@@ -4737,16 +4751,16 @@ function assertRadioGroupCSS(css) {
     '.gap-x-6',
     '.gap-y-1',
     '.place-items-center',
-    '.border-border-control',
-    '.bg-surface-0',
-    '.bg-action-primary-solid-fg',
+    '.border-control-boundary',
+    '.bg-control-well',
+    '.bg-on-selected',
     '.shadow-\\[var\\(--shadow-well\\)\\]',
     '.has-\\[\\[data-state\\=checked\\]\\]\\:text-fg-default',
     '.has-\\[\\[data-disabled\\]\\]\\:opacity-45',
     '.hover\\:border-fg-muted',
-    '.data-\\[state\\=checked\\]\\:border-action-primary-solid-bg',
-    '.data-\\[state\\=checked\\]\\:bg-\\[image\\:var\\(--gradient-btn-primary\\)\\]',
-    '.data-\\[state\\=checked\\]\\:shadow-\\[var\\(--shadow-btn-primary\\)\\]',
+    '.data-\\[state\\=checked\\]\\:border-state-selected',
+    '.data-\\[state\\=checked\\]\\:bg-\\[image\\:var\\(--gradient-state-selected\\)\\]',
+    '.data-\\[state\\=checked\\]\\:shadow-\\[var\\(--shadow-state-selected\\)\\]',
     '.data-\\[state\\=checked\\]\\:focus-visible\\:shadow-\\[var\\(--shadow-focus\\)\\]',
     // #219 option A closed additions: the invalid group treatment on every radio.
     '.group-aria-invalid\\:border-status-danger',
@@ -5837,7 +5851,9 @@ function assertCarouselCSS(css) {
 function assertLinkCSS(css) {
   for (const selector of [
     '.border-0',
-    '.text-fg-brand-raised',
+    '.border-b',
+    '.border-border-brand',
+    '.text-link-default',
     '.text-label-default',
     '.no-underline',
     '.cursor-pointer',
@@ -5847,7 +5863,8 @@ function assertLinkCSS(css) {
     String.raw`.transition-\[translate\]`,
     String.raw`.duration-\(--duration-fast\)`,
     String.raw`.ease-\(--ease-out\)`,
-    String.raw`.hover\:text-primitive-red-200`,
+    String.raw`.hover\:text-link-hover`,
+    String.raw`.hover\:border-state-selected`,
     String.raw`.motion-safe\:group-hover\/link\:translate-x-1`,
     String.raw`.motion-reduce\:translate-none`,
     String.raw`.motion-reduce\:transition-none`,
@@ -6751,6 +6768,9 @@ try {
   const triggers = [...list.querySelectorAll('[role="tab"]')];
   assert.deepEqual(triggers.map((tab) => tab.textContent), ['Queue 0', 'Drafts 312', 'Unavailable']);
   for (const trigger of triggers) {
+    for (const name of ['isolate', 'border', 'border-transparent', 'data-[state=active]:border-border-brand', 'data-[state=active]:bg-state-selected-surface', 'data-[state=active]:before:bg-border-brand', 'data-[state=active]:before:pointer-events-none']) {
+      assert.ok(trigger.classList.contains(name), 'Segmented trigger must carry ' + name);
+    }
     const panel = document.getElementById(trigger.getAttribute('aria-controls'));
     assert.equal(panel.getAttribute('aria-labelledby'), trigger.id);
     assert.equal(panel.getAttribute('role'), 'tabpanel');
@@ -7061,6 +7081,9 @@ try {
     assert.equal(group.getAttribute('role'), 'radiogroup');
     assert.ok(group.getAttribute('aria-label'), 'Each group is named by its label');
     for (const control of group.querySelectorAll('button[role="radio"]')) {
+      for (const name of ['border-control-boundary', 'bg-control-well', 'data-[state=checked]:border-state-selected', 'data-[state=checked]:bg-[image:var(--gradient-state-selected)]', 'data-[state=checked]:shadow-[var(--shadow-state-selected)]']) {
+        assert.ok(control.classList.contains(name), 'Radio must carry ' + name);
+      }
       assert.equal(control.getAttribute('type'), 'button');
       assert.equal(control.nextElementSibling?.getAttribute('type'), 'radio', 'Radix hidden input follows the radio');
       const label = control.nextElementSibling.nextElementSibling;
@@ -7079,6 +7102,7 @@ try {
   assert.ok(format.className.includes('flex-wrap'), 'Horizontal groups wrap');
   assert.equal(format.querySelector('button[value="video"]').getAttribute('aria-checked'), 'true');
   assert.equal(format.querySelector('button[value="video"]').children.length, 1, 'The checked radio shows its indicator');
+  assert.ok(format.querySelector('button[value="video"]').firstElementChild.classList.contains('bg-on-selected'));
   assert.equal(format.querySelector('button[value="live"]').children.length, 0);
   const locked = radioDocument.window.document.getElementById('radio-locked');
   assert.equal(locked.hasAttribute('data-disabled'), true);
@@ -7102,6 +7126,10 @@ try {
   const switches = [...switchForm.querySelectorAll('button.eg-switch')];
   assert.equal(switches.length, 4, 'One root button per Switch');
   for (const control of switches) {
+    for (const name of ['border-control-boundary', 'bg-control-well', 'data-[state=checked]:border-state-selected', 'data-[state=checked]:bg-[image:var(--gradient-state-selected)]', 'data-[state=checked]:shadow-[var(--shadow-state-selected)]']) {
+      assert.ok(control.classList.contains(name), 'Switch must carry ' + name);
+    }
+    assert.ok(control.firstElementChild.classList.contains('data-[state=checked]:bg-on-selected'));
     assert.equal(control.getAttribute('role'), 'switch');
     assert.equal(control.getAttribute('type'), 'button');
     assert.equal(control.children.length, 1, 'Each Switch renders exactly its thumb');
@@ -7271,7 +7299,11 @@ try {
   assert.equal(link.getAttribute('href'), '#docs');
   assert.ok(link.classList.contains('eg-link') && link.classList.contains('mt-4') && !link.classList.contains('mt-2'));
   assert.equal(link.textContent, 'Documentation');
-  assert.ok(link.classList.contains('text-fg-brand-raised'));
+  assert.ok(link.classList.contains('text-link-default'));
+  assert.ok(link.classList.contains('hover:text-link-hover'));
+  const underlinedLink = document.getElementById('link-underlined');
+  assert.ok(underlinedLink.classList.contains('border-border-brand'));
+  assert.ok(underlinedLink.classList.contains('hover:border-state-selected'));
   assert.ok(link.classList.contains('border-0'));
   assert.ok(!link.classList.contains('border-b'));
   assert.equal(link.querySelector('svg').getAttribute('aria-hidden'), 'true');
@@ -7458,6 +7490,8 @@ for (const frame of [square, wide]) {
   assert.equal(sliderRoot.hasAttribute('aria-describedby'), false);
   assert.equal(sliderThumb.style.display, 'none', 'Radix reveals the thumb after its collection mounts');
   assert.equal(sliderRoot.querySelector('input').name, 'volume');
+  assert.ok(sliderRoot.firstElementChild.classList.contains('bg-control-well'));
+  assert.ok(sliderRoot.firstElementChild.firstElementChild.classList.contains('bg-state-selected'));
   assert.ok(sliderRoot.classList.contains('w-64') && !sliderRoot.classList.contains('w-full'));
   const moduleStates = document.querySelector('ul[aria-label="Module states"]');
   assert.ok(moduleStates, 'SSR must render StatusDot samples');
@@ -7606,7 +7640,7 @@ for (const frame of [square, wide]) {
   assert.ok(titleInput.parentElement.className.startsWith('eg-input '), 'The public marker leads the root classes');
   assert.equal(titleInput.parentElement.children.length, 1, 'No icon wrapper without an icon');
   assert.equal(document.querySelector('label[for="input-title"]').textContent, 'Post title');
-  for (const name of ['min-h-11', 'px-3', 'py-2', 'text-body-default', 'bg-surface-0', 'border-border-control', 'shadow-[var(--shadow-well)]']) {
+  for (const name of ['min-h-11', 'px-3', 'py-2', 'text-body-default', 'bg-control-well', 'border-control-boundary', 'shadow-[var(--shadow-well)]']) {
     assert.ok(titleInput.classList.contains(name), 'Default Input must carry ' + name);
   }
   const nativeInput = document.getElementById('input-native');
@@ -7626,7 +7660,7 @@ for (const frame of [square, wide]) {
   for (const name of ['min-h-9', 'pl-9', 'font-mono', 'text-code', 'bg-primitive-neutral-950']) {
     assert.ok(searchInput.classList.contains(name), 'sm/code/icon Input must carry ' + name);
   }
-  for (const name of ['font-sans', 'bg-surface-0', 'text-label-default']) {
+  for (const name of ['font-sans', 'bg-control-well', 'bg-surface-0', 'text-label-default']) {
     assert.ok(!searchInput.classList.contains(name), 'The code treatment must replace ' + name);
   }
   assert.equal(document.getElementById('input-invalid').getAttribute('aria-invalid'), 'true');

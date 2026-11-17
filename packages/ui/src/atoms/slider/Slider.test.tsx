@@ -324,10 +324,12 @@ describe('Slider', () => {
       'grow',
       'overflow-hidden',
       'rounded-full',
-      'bg-surface-0',
+      'bg-control-well',
       'shadow-[var(--shadow-well)]'
     );
-    expect(range).toHaveClass('absolute', 'h-full', 'bg-fg-brand-default');
+    expect(track).not.toHaveClass('bg-surface-0');
+    expect(range).toHaveClass('absolute', 'h-full', 'bg-state-selected');
+    expect(range).not.toHaveClass('bg-fg-brand-default');
     expect(range.style.left).toBe('0%');
     expect(range.style.right).toBe('60%');
     expect(thumb).toHaveClass(
@@ -348,6 +350,14 @@ describe('Slider', () => {
       expect(recipe).not.toMatch(/eg-|#|rgb|gradient|animate-/);
     }
     expect(sliderVariants()).toMatch(/^eg-slider /);
+  });
+
+  it('uses the selected role for the rendered range', () => {
+    const { container } = render(<Slider label='Volume' defaultValue={40} />);
+    const { range } = parts(container);
+    expect(range).toHaveClass('bg-state-selected');
+    expect(range).not.toHaveClass('bg-fg-brand-default');
+    expect(range.style.right).toBe('60%');
   });
 
   it('submits the current value through a hidden input named by name inside a form (AC-07)', async () => {

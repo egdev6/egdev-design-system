@@ -89,7 +89,13 @@ describe('Switch', () => {
     render(<Switch aria-label='Stream alerts' defaultChecked={true} />);
     const control = screen.getByRole('switch');
     expect(control).toHaveAttribute('aria-checked', 'true');
+    expect(control).toHaveClass(
+      'data-[state=checked]:border-state-selected',
+      'data-[state=checked]:bg-[image:var(--gradient-state-selected)]',
+      'data-[state=checked]:shadow-[var(--shadow-state-selected)]'
+    );
     expect(thumb(control)).toHaveAttribute('data-state', 'checked');
+    expect(thumb(control)).toHaveClass('data-[state=checked]:bg-on-selected');
   });
 
   it('toggles on click, Space and Enter and reports the next boolean (AC-02)', async () => {
@@ -233,12 +239,12 @@ describe('Switch', () => {
       'rounded-full',
       'border',
       'border-solid',
-      'border-border-control',
-      'bg-surface-0',
+      'border-control-boundary',
+      'bg-control-well',
       'shadow-[var(--shadow-well)]',
-      'data-[state=checked]:bg-[image:var(--gradient-btn-primary)]',
-      'data-[state=checked]:border-action-primary-solid-bg',
-      'data-[state=checked]:shadow-[var(--shadow-btn-primary)]',
+      'data-[state=checked]:bg-[image:var(--gradient-state-selected)]',
+      'data-[state=checked]:border-state-selected',
+      'data-[state=checked]:shadow-[var(--shadow-state-selected)]',
       'focus-visible:outline-none',
       'focus-visible:shadow-[var(--shadow-focus)]',
       'data-[state=checked]:focus-visible:shadow-[var(--shadow-focus)]',
@@ -255,9 +261,19 @@ describe('Switch', () => {
       'bg-fg-secondary',
       'data-[state=checked]:translate-x-4',
       'rtl:data-[state=checked]:-translate-x-4',
-      'data-[state=checked]:bg-action-primary-solid-fg',
+      'data-[state=checked]:bg-on-selected',
       'motion-reduce:transition-none'
     );
+    for (const oldClass of [
+      'border-border-control',
+      'bg-surface-0',
+      'data-[state=checked]:bg-[image:var(--gradient-btn-primary)]',
+      'data-[state=checked]:border-action-primary-solid-bg',
+      'data-[state=checked]:shadow-[var(--shadow-btn-primary)]'
+    ]) {
+      expect(control).not.toHaveClass(oldClass);
+    }
+    expect(thumb(control)).not.toHaveClass('data-[state=checked]:bg-action-primary-solid-fg');
     // Logical inset and an RTL travel direction so the thumb mirrors in right-to-left contexts (#432).
     expect(thumb(control)).not.toHaveClass('left-0.5');
   });
