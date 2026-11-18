@@ -11,14 +11,23 @@ import {
   statSync,
   writeFileSync
 } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readPackedManifest } from '../../packages/cli/src/release.mjs';
+import { flattenMessage } from '../../packages/cli/src/text.mjs';
 
-// Release set decided by docs/odd/distribution/342-local-tarballs.md (R1). Members that do not
-// exist yet in the workspace are skipped, so the two packages added by later tasks join the same
-// run without a second packing path (ODD task L7).
-export const RELEASE_SET = ['@egdev/tokens', '@egdev/ui', '@egdev/effects', '@egdev/system', '@egdev/mcp'];
+// Release set decided by docs/odd/distribution/342-local-tarballs.md (R1), plus `@egdev/cli`, the
+// sixth package (docs/distribution/egdev-ds-cli.md §10). Members that do not exist yet in the
+// workspace are skipped, so a package added by a later task joins the same run without a second
+// packing path (ODD task L7).
+export const RELEASE_SET = [
+  '@egdev/tokens',
+  '@egdev/ui',
+  '@egdev/effects',
+  '@egdev/system',
+  '@egdev/mcp',
+  '@egdev/cli'
+];
 
 export const DEPENDENCY_FIELDS = ['dependencies', 'peerDependencies', 'optionalDependencies', 'devDependencies'];
 
@@ -183,7 +192,8 @@ export const RELEASE_MANIFEST_FILE = 'release.json';
 function gitOutput(root, args) {
   const result = spawnSync('git', args, { cwd: root, encoding: 'utf8', timeout: 60_000 });
   if (result.status !== 0) {
-    const reason = (result.stderr || String(result.error ?? result.signal)).trim().replace(/\s*\n\s*/g, ' ');
+    // Linear flattening: no `\s*\n\s*` regex on git output (CodeQL js/polynomial-redos).
+    const reason = flattenMessage((result.stderr || String(result.error ?? result.signal)).trim());
     throw new Error(`Cannot read the release commit: git ${args.join(' ')} failed (${reason})`);
   }
   return result.stdout;
@@ -245,6 +255,41 @@ export function completeReleasePack(packed, { destination, provenance, log, erro
   return 0;
 }
 
+const RELEASE_PACK_USAGE = 'Usage: pnpm release:pack [--out-dir <dir>]';
+
+// `release:pack [--out-dir <dir>]`: the output folder, `release/` at the repository root by default.
+// Tests pass a temporary folder so they never replace the operator's own release.
+export function parseReleasePackArgs(args, root = defaultRoot) {
+  if (args.length === 0) {
+    return { destination: join(root, 'release') };
+  }
+  const [flag, value, ...rest] = args;
+  if (flag !== '--out-dir' || !value || value.startsWith('--') || rest.length > 0) {
+    throw new Error(RELEASE_PACK_USAGE);
+  }
+  return { destination: resolve(root, value) };
+}
+
+// The output folder is emptied on every run, so it may hold only what a previous run wrote:
+// tarballs, release.json and leftover staging folders. Anything else is refused, never deleted.
+export function releaseFolderProblem(destination) {
+  if (!existsSync(destination)) {
+    return null;
+  }
+  if (!statSync(destination).isDirectory()) {
+    return `Refusing to use ${destination}: it is not a directory.`;
+  }
+  const foreign = readdirSync(destination)
+    .sort()
+    .find(
+      (name) =>
+        !/^egdev-[a-z0-9][a-z0-9.+-]*\.tgz$/.test(name) &&
+        name !== RELEASE_MANIFEST_FILE &&
+        !name.startsWith('.staging-')
+    );
+  return foreign ? `Refusing to empty ${destination}: it holds ${foreign}, which release:pack did not write.` : null;
+}
+
 // `release:pack` entry point. Bumps stay manual: this never edits a version.
 export function runReleasePack({
   root = defaultRoot,
@@ -274,6 +319,11 @@ export function runReleasePack({
     return 1;
   }
   // One shared folder: emptied on start so a run never mixes tarballs from different versions.
+  const problem = releaseFolderProblem(destination);
+  if (problem) {
+    error(problem);
+    return 1;
+  }
   rmSync(destination, { recursive: true, force: true });
   mkdirSync(destination, { recursive: true });
   return completeReleasePack(packReleaseSet({ root, destination }), { destination, provenance, log, error });
