@@ -18,10 +18,13 @@ The release set is:
 | `@egdev/effects` | Effect layers (`AmbientBackground`, `Isotipo3D`, `ScrollReveal`, `HomeTemplate`) |
 | `@egdev/system` | Design system data artifact (added by its own task) |
 | `@egdev/mcp` | Offline MCP server (added by its own task) |
+| `@egdev/cli` | The `egdev-ds` command: `init`, `upgrade` and `doctor` for consumer apps ([egdev-ds-cli.md](./egdev-ds-cli.md)) |
 
-`pnpm release:pack` packs the release-set members that exist in the workspace. `@egdev/system` and
-`@egdev/mcp` join the same run when their packages land; the script never needs a second packing
-path, and a missing member is simply not part of the set yet.
+`pnpm release:pack` packs the release-set members that exist in the workspace, in the order above.
+A new member joins the same run when its package lands; the script never needs a second packing
+path, and a missing member is simply not part of the set yet. `pnpm release:pack --out-dir <dir>`
+writes the same output to another folder (tests use a temporary one, so they never replace
+`release/`).
 
 Every tarball ships its package `CHANGELOG.md`, so a consumer can read the sections between two
 releases from the tarballs alone.
@@ -47,7 +50,7 @@ the tarballs. A failed verification writes no `release.json`.
   (ignored files such as `release/` do not count). `release:pack` records the flag and still packs;
   consumers refuse a dirty release unless they opt in explicitly.
 - `packages` lists every tarball written by the run, in release-set order, with the sha256 of the
-  file on disk.
+  file on disk. `@egdev/cli` is the last entry.
 - The file has no timestamp and a fixed key order, so the same tarballs and tree give byte-identical
   output. It is written under a temporary name and renamed into place.
 
@@ -72,6 +75,20 @@ Bump procedure for one package:
 
 When several packages change together, bump each one that changed. Packages that did not change
 keep their version and their tarball name.
+
+### `@egdev/cli`
+
+`egdev-ds` reads `release.json` and the tarballs it sits next to; it never pins the versions of the
+other packages, so a new release of them needs no CLI bump. Bump `@egdev/cli` when the command
+itself changes:
+
+- A change to the files `init` or `upgrade` write, a flag, an exit code, the plan or JSON format,
+  or a doctor check is a **minor** bump under 0.x.
+- A fix that keeps those contracts is a **patch** bump.
+- Doctor codes are stable: a code is never reused for a different check.
+
+Apps vendor the CLI as a devDependency (`egdev-ds init` adds it; `egdev-ds upgrade --add cli` adds
+it to an app vendored before it joined the set), so it moves with the rest of the set.
 
 ## Semver under 0.x
 
