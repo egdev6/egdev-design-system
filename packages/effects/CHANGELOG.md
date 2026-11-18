@@ -4,6 +4,11 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## 0.2.1
+
+- No code changes. Repacked with `@egdev/ui` 0.3.1 as its peer dependency, so the effects tarball
+  matches the current ui and tokens releases.
+
 ## 0.2.0
 
 - Declare the tested React peer range `^18.3.1 || ^19.3.0`.

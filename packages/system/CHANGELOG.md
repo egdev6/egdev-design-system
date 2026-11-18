@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.4.1
+
+- Regenerate the artifact and design reference for `@egdev/ui` 0.3.1 (Link underlined at rest,
+  underline removed on hover, deprecated `underlined` variant) and `@egdev/effects` 0.2.1.
+
 ## 0.4.0
 
 - Regenerate the artifact and design reference for `@egdev/ui` 0.3.0 and `@egdev/tokens` 0.5.0:
