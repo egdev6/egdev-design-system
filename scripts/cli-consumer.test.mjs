@@ -246,7 +246,8 @@ test('AC19 real consumers: init → install → ds:doctor → build → upgrade 
   mkdirSync(work);
   const egdevDs = (args) => run(work, process.execPath, [bin, ...args]);
   const doctorClean = 'egdev-ds doctor . (';
-  const doctorSummary = '0 errors, 0 warnings, 2 skipped.';
+  // DS014 and DS017 skip without --from; DS051 skips because the fixtures have no design/system.md.
+  const doctorSummary = '0 errors, 0 warnings, 3 skipped.';
 
   await t.test('AC19 npm + Vite (native), init bootstrapped from the CLI tarball', () => {
     const project = npmViteConsumer(work);
