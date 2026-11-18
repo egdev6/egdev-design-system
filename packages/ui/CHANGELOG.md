@@ -4,6 +4,20 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## 0.3.1
+
+### Changed
+
+- **Link has a new default look**: it is underlined at rest in the link color, and hover removes
+  the underline instead of changing the color; the arrow keeps its rightward motion. Underlining
+  identifies links without relying on color alone. Apps that styled links around the previous
+  borderless look should re-check them.
+
+### Deprecated
+
+- Link `variant="underlined"` now renders exactly like the default and is deprecated; it will be
+  removed in a later major. Remove the prop when convenient.
+
 ## 0.3.0
 
 ### Added
