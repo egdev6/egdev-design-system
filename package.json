@@ -29,6 +29,7 @@
     "test:artifact": "node --test scripts/design-system-artifact.test.mjs",
     "test:system": "node --test packages/system/tests/*.test.mjs scripts/system-md.test.mjs",
     "test:cli": "node --test packages/cli/tests/*.test.mjs",
+    "test:cli:consumer": "node --test scripts/cli-consumer.test.mjs",
     "system:docs": "node scripts/system-md.mjs --write",
     "system:check": "node scripts/system-md.mjs --check",
     "test:system:consumer": "node --test scripts/system-md-consumer.test.mjs",
