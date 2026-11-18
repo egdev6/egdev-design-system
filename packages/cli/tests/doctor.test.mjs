@@ -59,7 +59,8 @@ test('AC17 npm+Vite (Nexo-like) clean project: exit 0, exact stdout, nothing wri
       'egdev-ds doctor apps/hub (npm, vite, native)',
       `DS014 skipped ${skipped}`,
       `DS017 skipped ${skipped}`,
-      '0 errors, 0 warnings, 2 skipped.',
+      'DS051 skipped Skipped: no design/system.md in the project or up to its repository root.',
+      '0 errors, 0 warnings, 3 skipped.',
       ''
     ].join('\n'),
     stderr: ''
@@ -73,7 +74,8 @@ test('AC17 pnpm+Next.js (website-like) clean project with --from: exit 0, nothin
   const before = [treeHash(fixture.root), treeHash(releaseDirectory)];
   assert.deepEqual(runBin(['doctor', '.', '--from', releaseDirectory], fixture.root), {
     status: 0,
-    stdout: 'egdev-ds doctor . (pnpm, next, tailwind)\n0 errors, 0 warnings, 0 skipped.\n',
+    stdout:
+      'egdev-ds doctor . (pnpm, next, tailwind)\nDS051 skipped Skipped: no design/system.md in the project or up to its repository root.\n0 errors, 0 warnings, 1 skipped.\n',
     stderr: ''
   });
   assert.deepEqual([treeHash(fixture.root), treeHash(releaseDirectory)], before, 'doctor never writes');
@@ -104,6 +106,11 @@ test('AC17 --json prints exactly one document on stdout, also when errors exit 1
         message: 'Raw <button type="button">: use a DS component or add an allowlist entry with an issue.',
         file: 'src/Raw.tsx',
         line: 1
+      },
+      {
+        code: 'DS051',
+        severity: 'skipped',
+        message: 'Skipped: no design/system.md in the project or up to its repository root.'
       }
     ],
     result: 'failed'
@@ -117,7 +124,7 @@ test('AC17 --json prints exactly one document on stdout, also when errors exit 1
   assert.equal(document.release, null);
   assert.deepEqual(
     document.findings.map(({ code, severity }) => `${code} ${severity}`),
-    ['DS014 skipped', 'DS017 skipped']
+    ['DS014 skipped', 'DS017 skipped', 'DS051 skipped']
   );
 });
 
@@ -134,7 +141,8 @@ test('AC17 a failing doctor run prints its findings, the summary and exits 1 wit
       'DS016 error package.json: Missing npm override: "@egdev/system": "$@egdev/system".',
       `DS017 skipped ${skipped}`,
       'DS041 error src/view.css:1: DS internal selector .wrapper .eg-button: move it under src/theme/ or add an allowlist entry with an issue.',
-      '2 errors, 0 warnings, 2 skipped.',
+      'DS051 skipped Skipped: no design/system.md in the project or up to its repository root.',
+      '2 errors, 0 warnings, 3 skipped.',
       ''
     ].join('\n'),
     stderr: ''
@@ -294,7 +302,8 @@ test('AC17 DS014 mixed commits, and upgrade available with --from', async () => 
   assert.equal(newer.status, 0);
   assert.deepEqual(newer.stdout.split('\n').slice(1, -2), [
     'DS014 warning package.json: upgrade available: vendored at e712915, release at b54222c.',
-    'DS017 skipped Release check skipped: the vendored commit differs from the release.'
+    'DS017 skipped Release check skipped: the vendored commit differs from the release.',
+    'DS051 skipped Skipped: no design/system.md in the project or up to its repository root.'
   ]);
 });
 
@@ -554,4 +563,74 @@ test('Q5 the allowlist loads with type stripping without a warning, even in a ty
   const result = runBin(['doctor', '.'], fixture.root);
   assert.equal(result.stderr, '');
   assert.equal(result.status, 0);
+});
+
+// DS051 (#486, odd/tasks/egdev-ds-485-486.md S3): the commit in the design/system.md header that the
+// apps' sync scripts write (`<!-- Generated from EGDEV design system <commit>; … -->`).
+const systemHeader = (commit) =>
+  `<!-- Generated from EGDEV design system ${commit}; regenerate: \`node scripts/sync-design-system-md.mjs\` (from repository root). -->\n\n## Composition guide\n`;
+const ds051 = (stdout) => stdout.split('\n').filter((line) => line.startsWith('DS051 '));
+
+test('S3 DS051 design/system.md header matches the vendored commit: no finding', async () => {
+  for (const commit of [COMMIT.slice(0, 7), COMMIT]) {
+    const fixture = pnpm();
+    write(join(fixture.project, 'design/system.md'), systemHeader(commit));
+    const result = await runInProcess(run, ['doctor', '.'], fixture.root);
+    assert.equal(result.status, 0);
+    assert.deepEqual(ds051(result.stdout), []);
+  }
+});
+
+test('S3 DS051 a stale header is a warning (exit 0) naming both commits; nothing written', async () => {
+  const fixture = pnpm();
+  write(join(fixture.project, 'design/system.md'), systemHeader(OTHER_COMMIT.slice(0, 7)));
+  const before = treeHash(fixture.root);
+  const result = await runInProcess(run, ['doctor', '.', '--json'], fixture.root);
+  assert.equal(result.status, 0);
+  assert.deepEqual(
+    JSON.parse(result.stdout).findings.filter(({ code }) => code === 'DS051'),
+    [
+      {
+        code: 'DS051',
+        severity: 'warning',
+        message: 'Header records b54222c, vendored at e712915: regenerate design/system.md.',
+        file: 'design/system.md'
+      }
+    ]
+  );
+  assert.equal(treeHash(fixture.root), before);
+});
+
+test('S3 DS051 finds design/system.md up to the repository root (Nexo keeps it there)', async () => {
+  const fixture = npm();
+  write(join(fixture.root, 'design/system.md'), systemHeader(OTHER_COMMIT.slice(0, 7)));
+  const outside = await runInProcess(run, ['doctor', 'apps/hub'], fixture.root);
+  assert.deepEqual(ds051(outside.stdout), [
+    'DS051 skipped Skipped: no design/system.md in the project or up to its repository root.'
+  ]);
+  mkdirSync(join(fixture.root, '.git'));
+  const inside = await runInProcess(run, ['doctor', 'apps/hub'], fixture.root);
+  assert.equal(inside.status, 0);
+  assert.deepEqual(ds051(inside.stdout), [
+    'DS051 warning ../../design/system.md: Header records b54222c, vendored at e712915: regenerate design/system.md.'
+  ]);
+});
+
+test('S3 DS051 is skipped without a recorded commit or a single vendored commit', async () => {
+  const plain = pnpm();
+  write(join(plain.project, 'design/system.md'), '<!-- Generated from design-system.json. Do not edit. -->\n# EGDEV\n');
+  assert.deepEqual(ds051((await runInProcess(run, ['doctor', '.'], plain.root)).stdout), [
+    'DS051 skipped design/system.md: Skipped: the header records no design system commit.'
+  ]);
+  const mixed = pnpm();
+  write(join(mixed.project, 'design/system.md'), systemHeader(COMMIT.slice(0, 7)));
+  const name = `egdev-ui-${MANIFESTS.ui.version}-${OTHER_COMMIT.slice(0, 7)}.tgz`;
+  write(join(mixed.project, 'vendor/egdev', name), tarball(MANIFESTS.ui));
+  editJson(join(mixed.project, 'package.json'), (manifest) => ({
+    ...manifest,
+    dependencies: { ...manifest.dependencies, '@egdev/ui': `file:./vendor/egdev/${name}` }
+  }));
+  assert.deepEqual(ds051((await runInProcess(run, ['doctor', '.'], mixed.root)).stdout), [
+    'DS051 skipped Skipped: the vendored set is mixed (DS014).'
+  ]);
 });

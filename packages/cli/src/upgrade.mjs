@@ -24,6 +24,7 @@ import {
 import { findInstalled } from './doctor.mjs';
 import {
   installCommand,
+  localRepoNote,
   nextSteps,
   planConfig,
   planMcp,
@@ -504,12 +505,18 @@ export async function runUpgrade({ argument, project, from, releaseDir, release,
     }
   }
   if (added.has('@egdev/cli')) {
-    const config = planConfig(project, manifest);
+    const config = planConfig(project, manifest, options.localRepo);
     actions.push(config.action);
     if (config.write) {
       writes.push(config.write);
     }
   }
+  // #485: --local-repo only shapes a newly created egdev-ds.json; say so when it cannot apply.
+  const localNote =
+    localRepoNote(project, options.localRepo) ??
+    (options.localRepo !== undefined && !added.has('@egdev/cli')
+      ? `Note: --local-repo ${options.localRepo} has no effect: upgrade creates egdev-ds.json only with --add cli.\n`
+      : null);
   if (added.has('@egdev/mcp')) {
     const mcp = planMcp(project, false);
     actions.push(...mcp.actions);
@@ -569,6 +576,9 @@ export async function runUpgrade({ argument, project, from, releaseDir, release,
     release: { dir: from, commit: release.commit }
   };
 
+  if (localNote) {
+    stderr(localNote);
+  }
   // Conflicts (spec §9.7) can only come from `--add`: listed, nothing written.
   if (conflicts.length > 0) {
     reportConflicts(conflicts, 'upgrade has no --force: edit these values by hand, then upgrade again.', stderr);

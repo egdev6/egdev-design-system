@@ -1,7 +1,8 @@
 // Flag parsing and usage text (docs/distribution/egdev-ds-cli.md §4). Misuse is a UsageError,
 // which the CLI reports on stderr with the usage line and exit code 2.
+import { REPO_NAME } from './detect.mjs';
 
-/** @typedef {'init' | 'upgrade' | 'doctor'} Command */
+/** @typedef {'init' | 'upgrade' | 'doctor' | 'status'} Command */
 /** @typedef {'tokens' | 'ui' | 'effects' | 'system' | 'mcp'} PackageName */
 /** @typedef {PackageName | 'cli'} ReleasePackageName */
 
@@ -12,6 +13,7 @@
  *   add?: ReleasePackageName[],
  *   css?: 'tailwind' | 'native',
  *   cssEntry?: string,
+ *   localRepo?: string,
  *   accent: boolean,
  *   noInstall: boolean,
  *   offline: boolean,
@@ -30,14 +32,17 @@
 
 export const USAGE = `Usage:
   egdev-ds init    <project> [--from <dir>] [--packages <list>] [--css tailwind|native] [--css-entry <path>]
-                             [--accent] [--no-install] [--offline] [--allow-dirty] [--force] [--dry-run] [--json]
-  egdev-ds upgrade <project> [--from <dir>] [--add <list>] [--no-install] [--offline] [--allow-dirty] [--dry-run]
-                             [--json]
+                             [--local-repo <name>] [--accent] [--no-install] [--offline] [--allow-dirty] [--force]
+                             [--dry-run] [--json]
+  egdev-ds upgrade <project> [--from <dir>] [--add <list>] [--local-repo <name>] [--no-install] [--offline]
+                             [--allow-dirty] [--dry-run] [--json]
   egdev-ds doctor  <project> [--from <dir>] [--json]
+  egdev-ds status  <project> [--from <dir>] [--json]
   egdev-ds --help | --version
 `;
 
-export const USAGE_LINE = 'Usage: egdev-ds init|upgrade|doctor <project> [options]; run egdev-ds --help for details.';
+export const USAGE_LINE =
+  'Usage: egdev-ds init|upgrade|doctor|status <project> [options]; run egdev-ds --help for details.';
 
 /** Misuse or a refused precondition: exit 2, nothing written. */
 export class UsageError extends Error {
@@ -66,16 +71,18 @@ export const ADD_NAMES = [...PACKAGE_NAMES, 'cli'];
 
 /** @type {Record<Command, readonly string[]>} */
 const VALUE_FLAGS = {
-  init: ['--from', '--packages', '--css', '--css-entry'],
-  upgrade: ['--from', '--add'],
-  doctor: ['--from']
+  init: ['--from', '--packages', '--css', '--css-entry', '--local-repo'],
+  upgrade: ['--from', '--add', '--local-repo'],
+  doctor: ['--from'],
+  status: ['--from']
 };
 
 /** @type {Record<Command, readonly string[]>} */
 const BOOLEAN_FLAGS = {
   init: ['--accent', '--no-install', '--offline', '--allow-dirty', '--force', '--dry-run', '--json'],
   upgrade: ['--no-install', '--offline', '--allow-dirty', '--dry-run', '--json'],
-  doctor: ['--json']
+  doctor: ['--json'],
+  status: ['--json']
 };
 
 const KNOWN_FLAGS = new Set([...Object.values(VALUE_FLAGS).flat(), ...Object.values(BOOLEAN_FLAGS).flat()]);
@@ -95,7 +102,7 @@ const BOOLEAN_KEYS = {
  * @param {string} value
  * @returns {value is Command}
  */
-const isCommand = (value) => value === 'init' || value === 'upgrade' || value === 'doctor';
+const isCommand = (value) => value === 'init' || value === 'upgrade' || value === 'doctor' || value === 'status';
 
 /**
  * @param {string} value
@@ -134,6 +141,11 @@ function setValue(options, flag, value) {
       throw new UsageError('Invalid --css: choose tailwind or native.');
     }
     options.css = value;
+  } else if (flag === '--local-repo') {
+    if (!REPO_NAME.test(value)) {
+      throw new UsageError('Invalid --local-repo: expected a repository name (letters, digits, ., _ or -).');
+    }
+    options.localRepo = value;
   } else {
     if (!value.endsWith('.css')) {
       throw new UsageError('Invalid --css-entry: expected a .css file.');

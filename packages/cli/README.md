@@ -4,7 +4,7 @@
 library only and has no dependencies. The approved spec is
 [docs/distribution/egdev-ds-cli.md](../../docs/distribution/egdev-ds-cli.md).
 
-This release ships `init`, `upgrade` and `doctor`.
+This release ships `init`, `upgrade`, `doctor` and `status`.
 
 ## Usage
 
@@ -14,6 +14,7 @@ From a design system checkout:
 node <ds-repo>/packages/cli/bin/egdev-ds.mjs init <project> [--from <dir>] [--dry-run]
 node <ds-repo>/packages/cli/bin/egdev-ds.mjs upgrade <project> [--from <dir>] [--add <list>] [--dry-run]
 node <ds-repo>/packages/cli/bin/egdev-ds.mjs doctor <project> [--from <dir>] [--json]
+node <ds-repo>/packages/cli/bin/egdev-ds.mjs status <project> [--from <dir>] [--json]
 ```
 
 Or from the CLI tarball of a release, without a checkout:
@@ -26,9 +27,12 @@ After `init`, the CLI is vendored as a devDependency, so `npm run ds:doctor` or 
 
 ```text
 egdev-ds init    <project> [--from <dir>] [--packages <list>] [--css tailwind|native] [--css-entry <path>]
-                           [--accent] [--no-install] [--offline] [--allow-dirty] [--force] [--dry-run] [--json]
-egdev-ds upgrade <project> [--from <dir>] [--add <list>] [--no-install] [--offline] [--allow-dirty] [--dry-run] [--json]
+                           [--local-repo <name>] [--accent] [--no-install] [--offline] [--allow-dirty] [--force]
+                           [--dry-run] [--json]
+egdev-ds upgrade <project> [--from <dir>] [--add <list>] [--local-repo <name>] [--no-install] [--offline]
+                           [--allow-dirty] [--dry-run] [--json]
 egdev-ds doctor  <project> [--from <dir>] [--json]
+egdev-ds status  <project> [--from <dir>] [--json]
 egdev-ds --help | --version
 ```
 
@@ -36,6 +40,7 @@ egdev-ds --help | --version
 - `--from <dir>` is a `release:pack` folder with `release.json`. `init` and `upgrade` default to
   `../egdev-design-system/release`, resolved against the current directory. `doctor` uses it only for the release
   checks (DS014 commit comparison and DS017 hashes). Without `--from`, those checks are reported as `skipped`.
+  `status` uses it only to report the release commit and whether an upgrade is available.
 - `--json` prints exactly one JSON document on stdout.
 
 ## `init`
@@ -48,6 +53,7 @@ framework, the CSS mode and the CSS entry, prints the plan, then applies it as o
 | `--packages <list>` | Comma-separated from `tokens,ui,effects,system,mcp`. Default `tokens,ui,system,mcp`. `cli` is always added. A package whose `@egdev` dependency or peer is not selected is refused. |
 | `--css tailwind\|native` | Overrides CSS mode detection. |
 | `--css-entry <path>` | The CSS file for the imports, relative to `<project>`. Must exist inside it. |
+| `--local-repo <name>` | `localRepo` for a new `egdev-ds.json` (letters, digits, `.`, `_`, `-`; otherwise exit 2). An existing file keeps its value; a different flag prints a note on stderr. |
 | `--accent` | Creates `src/theme/accent-host.ts` when it is missing. |
 | `--no-install` | Skips the install and prints the exact command instead. Integrities stay unverified. |
 | `--offline` | Adds `--offline` to the install. |
@@ -67,7 +73,7 @@ framework, the CSS mode and the CSS entry, prints the plan, then applies it as o
 | `package.json` `packageManager` | — | `pnpm@10.34.6` when absent |
 | `pnpm-workspace.yaml` | — | `overrides:` pins every selected package; `strictPeerDependencies: true` when absent. Edited as text, so comments survive. Uses `pnpm.overrides` instead when `package.json` has it. |
 | CSS entry | Tailwind: `theme.css`, `ui/styles.css` (and effects) right after `@import "tailwindcss"`. Native: `tokens.css`, `ui/styles.css` (and effects) at the top, after any `@charset`. Existing lines are kept, never reordered. | Same |
-| `egdev-ds.json` | Created with the defaults when missing | Same |
+| `egdev-ds.json` | Created with the defaults when missing; `localRepo` is `--local-repo` or the repository folder (see Configuration) | Same |
 | `.mcp.json` | `mcpServers.egdev-design-system` when mcp is selected; other servers are kept | Same |
 | lockfile | Written by `npm install`, then every vendored integrity is checked against the tarball's sha512 | `pnpm install --no-frozen-lockfile` (pnpm freezes the lockfile under `CI=true`), same check |
 
@@ -84,7 +90,7 @@ egdev-ds init apps/hub (npm, vite, native) from ../egdev-design-system/release a
   keep    package.json  dependencies.react = ^19.3.0
   edit    package.json  overrides.@egdev/system = $@egdev/system
   edit    src/index.css  +@import "@egdev/tokens/tokens.css"
-  create  egdev-ds.json
+  create  egdev-ds.json  localRepo=nexo
   create  .mcp.json  mcpServers.egdev-design-system
   run     npm install
 Dry run: nothing written.
@@ -119,6 +125,7 @@ has it.
 | Flag | Effect |
 | --- | --- |
 | `--add <list>` | Comma-separated from `tokens,ui,effects,system,mcp,cli`. Adds each named package the app does not declare yet, with the file effects `init` gives it (see below). A package the app already declares is just upgraded. |
+| `--local-repo <name>` | `localRepo` for the `egdev-ds.json` that `--add cli` creates. Otherwise it changes nothing and prints a note on stderr. |
 | `--no-install` | Skips the install and prints the exact command instead. Integrities stay unverified. |
 | `--offline` | Adds `--offline` to the install. |
 | `--allow-dirty` | Accepts a release packed from a dirty tree. |
@@ -146,7 +153,8 @@ For each added package, in the same transaction as the upgrade:
 - `ui` and `effects` add their stylesheet to the CSS entry, after the existing design system imports. When the Vite entry
   module imports the design system CSS, nothing is edited; the import to add is printed as a next step
   (`Import @egdev/effects/styles.css in src/main.tsx.`) and `doctor` reports DS030 until it is there.
-- `cli` adds `scripts.ds:doctor` and, when it is missing, `egdev-ds.json`. `mcp` adds the `.mcp.json` server.
+- `cli` adds `scripts.ds:doctor` and, when it is missing, `egdev-ds.json` (plan line `create  egdev-ds.json  localRepo=<value>`).
+  `mcp` adds the `.mcp.json` server.
 - An added package has no changelog diff. An internal dependency it needs that the app does not declare is refused
   (exit 2) with `… upgrade adds no packages: pass --add <pkg>.` A package the release does not list exits 1.
 - A repeated `--add` at the same release is a no-op: `Already at …`.
@@ -212,6 +220,50 @@ Dry run: nothing written.
 - Old tarballs are removed only after success. If a removal fails, the run exits 1 with
   `Cannot remove <file> (<code>); new installation is intact.` and nothing is rolled back.
 
+## `status`
+
+`status` prints what an app has vendored, for people and for app scripts (the `design/system.md` sync, an MCP check)
+that need the design system commit without parsing file names themselves. It is read-only: it writes nothing, starts
+no process and never runs `git`. There is no state file; everything comes from the vendored file names in
+`package.json` and `pnpm-workspace.yaml`.
+
+```text
+egdev-ds status apps/hub (npm, vite, native)
+Vendored at ba7a38e:
+  @egdev/tokens  0.5.1  file:vendor/egdev-tokens-0.5.1-ba7a38e.tgz
+  @egdev/ui      0.3.2  file:vendor/egdev-ui-0.3.2-ba7a38e.tgz
+  @egdev/system  0.4.2  file:vendor/egdev-system-0.4.2-ba7a38e.tgz
+  @egdev/mcp     0.4.2  file:vendor/egdev-mcp-0.4.2-ba7a38e.tgz
+  @egdev/cli     0.1.0  file:vendor/egdev-cli-0.1.0-ba7a38e.tgz
+Release check skipped: pass --from <dir>.
+```
+
+- Packages are listed in release-set order with their version and full specifier. The version comes from the file
+  name; the dependency-field specifier wins over an override.
+- With `--from <dir>`, the last line is `Release at <commit7> (<dir>): upgrade available.` or `… up to date.`
+- With `--json`:
+
+  ```json
+  {
+    "schemaVersion": 1,
+    "command": "status",
+    "project": "apps/hub",
+    "packageManager": "npm",
+    "framework": "vite",
+    "cssMode": "native",
+    "release": null,
+    "commit": "ba7a38e",
+    "packages": [{ "name": "@egdev/ui", "version": "0.3.2", "file": "vendor/egdev-ui-0.3.2-ba7a38e.tgz", "style": "file:" }],
+    "upgradeAvailable": null
+  }
+  ```
+
+  `commit` has the 7 characters of the file names. `style` is `file:` or `file:./`. `release` is `{ dir, commit }` and
+  `upgradeAvailable` a boolean with `--from`; both are `null` without it.
+- Exit 0 when the vendored set is consistent. A project with nothing vendored, an unsafe `file:vendor/` path, a
+  registry, `workspace:` or `link:` specifier, or a mixed set is refused with exit 2 and one stderr line, as `upgrade`
+  refuses them.
+
 ## Tests
 
 - `pnpm test:cli`: unit tests with synthetic tarballs and a fake package manager.
@@ -225,7 +277,7 @@ Dry run: nothing written.
 
 | Code | Meaning |
 | --- | --- |
-| 0 | Success, or already current. `doctor` found no error; warnings and skipped checks do not fail. |
+| 0 | Success, or already current. `doctor` found no error; warnings and skipped checks do not fail. `status` read a consistent vendored set. |
 | 1 | `doctor` found at least one error; the release folder is unreadable, inconsistent or lacks a selected package; `init` or `upgrade` failed and was rolled back; or an old tarball could not be removed after a successful upgrade. |
 | 2 | Misuse (unknown, duplicate or missing-value flag, missing `<project>`), a missing release folder, an ambiguous detection, conflicts without `--force`, or a refused precondition. Nothing is written. |
 
@@ -237,7 +289,8 @@ Results go to stdout. Errors go to stderr, one line each; misuse adds the usage 
 egdev-ds doctor apps/hub (npm, vite, native)
 DS014 skipped Release check skipped: pass --from <dir>.
 DS017 skipped Release check skipped: pass --from <dir>.
-0 errors, 0 warnings, 2 skipped.
+DS051 skipped Skipped: no design/system.md in the project or up to its repository root.
+0 errors, 0 warnings, 3 skipped.
 ```
 
 Each finding prints as `<code> <severity> [<file>[:<line>]: ]<message>`. With `--json`:
@@ -287,6 +340,7 @@ Codes are stable: a code is never reused for another check.
 | DS044 | error | `typescript` or `postcss` is not resolvable from the project; the guard needs both. |
 | DS045 | error | `egdev-ds.json` is missing or invalid. |
 | DS050 | warning | `@egdev/mcp` is a dependency, but no `.mcp.json` in the project or an ancestor wires an existing `egdev-design-system` script. |
+| DS051 | warning | The nearest `design/system.md`, from the project up to its repository root (the nearest folder with `.git`), records a design system commit in its first line (`<!-- Generated from EGDEV design system <commit>; … -->`) other than the vendored one: regenerate it. Skipped without the file, a recorded commit or a single vendored commit. |
 
 ## Configuration: `egdev-ds.json`
 
@@ -297,7 +351,10 @@ Codes are stable: a code is never reused for another check.
 - `sourceDirectory`: the guarded tree. Default `src`.
 - `themeDirectory`: the only place where CSS may target DS internals. Default `src/theme/`.
 - `localRepo`: the repository for local issue references (`<localRepo>#N`, `<localRepo>#TBD-slug`). Default: the
-  `package.json` name without its scope.
+  name of the nearest folder, from the project up, that holds a `.git` entry (a directory, or a worktree's `.git`
+  file; no git command runs). Without one, or when that name is not a repository name, the `package.json` name
+  without its scope. `init` and `upgrade --add cli` write this value unless `--local-repo` is passed; doctor uses the
+  same default when the file is missing.
 - `exclude`: project-relative paths the guard skips, such as generated routes.
 
 A missing or invalid file is DS045; the other checks still run with the defaults.

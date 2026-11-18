@@ -177,7 +177,8 @@ test('AC8 AC10 AC16 npm+Vite upgrade A → B replaces the set as one unit, never
   }
   assert.deepEqual(await runInProcess(run, ['doctor', 'apps/hub', '--from', from], fixture.root), {
     status: 0,
-    stdout: 'egdev-ds doctor apps/hub (npm, vite, native)\n0 errors, 0 warnings, 0 skipped.\n',
+    stdout:
+      'egdev-ds doctor apps/hub (npm, vite, native)\nDS051 skipped Skipped: no design/system.md in the project or up to its repository root.\n0 errors, 0 warnings, 1 skipped.\n',
     stderr: ''
   });
 });
@@ -281,7 +282,8 @@ test('AC8 AC10 pnpm+Next.js upgrade A → B rewrites package.json and pnpm-works
   );
   assert.deepEqual(await runInProcess(run, ['doctor', '.', '--from', from], project), {
     status: 0,
-    stdout: 'egdev-ds doctor . (pnpm, next, tailwind)\n0 errors, 0 warnings, 0 skipped.\n',
+    stdout:
+      'egdev-ds doctor . (pnpm, next, tailwind)\nDS051 skipped Skipped: no design/system.md in the project or up to its repository root.\n0 errors, 0 warnings, 1 skipped.\n',
     stderr: ''
   });
 });

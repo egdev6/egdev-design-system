@@ -15,9 +15,11 @@ import {
   detectFramework,
   detectPackageManager,
   field,
+  findRepoRoot,
   isVendorPath,
   overrideEntries,
   PACKAGES,
+  REPO_NAME,
   safeVendorFile,
   workspaceOverrides
 } from './detect.mjs';
@@ -49,6 +51,10 @@ export const ALLOWLIST_FILE = 'design-system-allowlist.ts';
 const RELEASE_SKIPPED = 'Release check skipped: pass --from <dir>.';
 const CSS_PACKAGES = ['tokens', 'ui', 'effects'];
 const CONFIG_KEYS = new Set(['schemaVersion', 'sourceDirectory', 'themeDirectory', 'localRepo', 'exclude']);
+export const SYSTEM_MD = 'design/system.md';
+// The header the apps' design/system.md sync scripts write on the first line (#486):
+// `<!-- Generated from EGDEV design system <commit>; regenerate: … -->`.
+const SYSTEM_MD_HEADER = /^<!-- Generated from EGDEV design system ([0-9a-f]{7,40})(?![0-9a-f])/;
 
 /**
  * @param {string} path
@@ -82,6 +88,22 @@ const isRelativePath = (path) =>
   path.split('/').every((part) => part !== '' && part !== '.' && part !== '..');
 
 /**
+ * The default `localRepo` (#485, odd/tasks/egdev-ds-485-486.md S2): the folder name of the nearest
+ * ancestor holding `.git`, else the unscoped package name, else `app`. Names must be repository names.
+ * @param {string} project an absolute path
+ * @param {Record<string, unknown>} manifest
+ */
+export function defaultLocalRepo(project, manifest) {
+  const root = findRepoRoot(project);
+  const folder = root ? basename(root) : '';
+  if (REPO_NAME.test(folder)) {
+    return folder;
+  }
+  const name = typeof manifest.name === 'string' ? manifest.name.replace(/^@[^/]+\//, '') : '';
+  return REPO_NAME.test(name) ? name : 'app';
+}
+
+/**
  * Doctor options from `egdev-ds.json` (Q6). Missing or invalid files fall back to the defaults so
  * the remaining checks still run, and DS045 reports the problem.
  * @param {string} project
@@ -89,12 +111,11 @@ const isRelativePath = (path) =>
  * @returns {{ config: DoctorConfig, problem?: string }}
  */
 export function readConfig(project, manifest) {
-  const name = typeof manifest.name === 'string' ? manifest.name.replace(/^@[^/]+\//, '') : '';
   /** @type {DoctorConfig} */
   const config = {
     sourceDirectory: 'src',
     themeDirectory: 'src/theme/',
-    localRepo: /^[A-Za-z0-9._-]+$/.test(name) ? name : 'app',
+    localRepo: defaultLocalRepo(project, manifest),
     exclude: []
   };
   const text = readText(join(project, CONFIG_FILE));
@@ -127,7 +148,7 @@ export function readConfig(project, manifest) {
   ) {
     return { config, problem: 'themeDirectory must be a relative directory ending with /.' };
   }
-  if (localRepo !== undefined && (typeof localRepo !== 'string' || !/^[A-Za-z0-9._-]+$/.test(localRepo))) {
+  if (localRepo !== undefined && (typeof localRepo !== 'string' || !REPO_NAME.test(localRepo))) {
     return { config, problem: 'localRepo must be a repository name.' };
   }
   if (
@@ -145,6 +166,34 @@ export function readConfig(project, manifest) {
       exclude: Array.isArray(exclude) ? exclude.map((entry) => String(entry).replace(/\/$/, '')) : []
     }
   };
+}
+
+/**
+ * The nearest `design/system.md` from `project` up to its repository root (the nearest `.git`
+ * ancestor), or only inside `project` when there is none. Nexo keeps the file at its repository root.
+ * @param {string} project
+ * @returns {string | null} an absolute path
+ */
+function findSystemMd(project) {
+  const root = findRepoRoot(project) ?? project;
+  for (let directory = project; ; directory = dirname(directory)) {
+    const path = join(directory, SYSTEM_MD);
+    if (isFile(path)) {
+      return path;
+    }
+    if (directory === root || dirname(directory) === directory) {
+      return null;
+    }
+  }
+}
+
+/**
+ * The DS commit recorded in the first line of a design/system.md, or null.
+ * @param {string} text
+ */
+export function systemMdCommit(text) {
+  const end = text.indexOf('\n');
+  return (end === -1 ? text : text.slice(0, end)).match(SYSTEM_MD_HEADER)?.[1] ?? null;
 }
 
 /**
@@ -429,10 +478,27 @@ export async function runDoctor({ project, release }) {
     }
   }
 
-  // DS014, DS017
+  // DS014, DS017, DS051
   if (files.size > 0) {
     const commits = [...new Set([...files.keys()].map((file) => commitOf(file) ?? 'none'))].sort();
     const commit = commits.length === 1 && commits[0] !== 'none' ? (commits[0] ?? null) : null;
+    const systemMd = findSystemMd(project);
+    const systemFile = systemMd ? relative(project, systemMd).split('\\').join('/') : undefined;
+    const recorded = systemMd ? systemMdCommit(readText(systemMd) ?? '') : null;
+    if (!commit) {
+      add('DS051', 'skipped', 'Skipped: the vendored set is mixed (DS014).');
+    } else if (!systemMd) {
+      add('DS051', 'skipped', `Skipped: no ${SYSTEM_MD} in the project or up to its repository root.`);
+    } else if (!recorded) {
+      add('DS051', 'skipped', 'Skipped: the header records no design system commit.', systemFile);
+    } else if (!recorded.startsWith(commit) && !commit.startsWith(recorded)) {
+      add(
+        'DS051',
+        'warning',
+        `Header records ${recorded.slice(0, 7)}, vendored at ${commit.slice(0, 7)}: regenerate ${SYSTEM_MD}.`,
+        systemFile
+      );
+    }
     if (!commit) {
       add('DS014', 'error', `Vendored files do not share one commit: ${commits.join(', ')}.`, 'package.json');
       add('DS017', 'skipped', release ? 'Release check skipped: the vendored set is mixed (DS014).' : RELEASE_SKIPPED);

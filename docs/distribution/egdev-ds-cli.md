@@ -77,6 +77,7 @@ packages/cli/
   src/css.mjs               # CSS entry import detection and insertion
   src/semver.mjs            # minimal range check for peers: exact, ^, ||
   src/doctor.mjs            # check registry and the stable codes
+  src/status.mjs            # read-only vendored-state report (amendment, odd/tasks/egdev-ds-485-486.md S3)
   src/guard.mjs             # checkDesignSystem, moved from the skill asset
 ```
 
@@ -132,11 +133,26 @@ Two inputs the CLI needs are missing from the evidence today:
 
 ```text
 egdev-ds init    <project> [--from <dir>] [--packages <list>] [--css tailwind|native] [--css-entry <path>]
-                           [--accent] [--no-install] [--offline] [--allow-dirty] [--force] [--dry-run] [--json]
-egdev-ds upgrade <project> [--from <dir>] [--add <list>] [--no-install] [--offline] [--allow-dirty] [--dry-run] [--json]
+                           [--local-repo <name>] [--accent] [--no-install] [--offline] [--allow-dirty] [--force]
+                           [--dry-run] [--json]
+egdev-ds upgrade <project> [--from <dir>] [--add <list>] [--local-repo <name>] [--no-install] [--offline]
+                           [--allow-dirty] [--dry-run] [--json]
 egdev-ds doctor  <project> [--from <dir>] [--json]
+egdev-ds status  <project> [--from <dir>] [--json]
 egdev-ds --help | --version
 ```
+
+**Amendment, `odd/tasks/egdev-ds-485-486.md` S2 and S3** (owner choices, verbatim labels "Repo folder + flag + shown in plan (Recommended)" and "New read-only `egdev-ds status --json` (Recommended)"): `--local-repo` and `status` below.
+
+### `status` (S3)
+
+`egdev-ds status <project>` reports the vendored state without changing anything: it writes nothing, spawns nothing, runs no git and adds no state file. Everything is derived from the vendored file names that §5.5 already parses.
+
+- Text: the header `egdev-ds status <project> (<packageManager>, <framework>, <cssMode>)` (`unknown` when undetectable), `Vendored at <commit7>:`, one line per vendored package in release-set order (`  <name>  <version>  <specifier>`, columns aligned), then `Release at <commit7> (<dir>): upgrade available.`, `… up to date.`, or without `--from` `Release check skipped: pass --from <dir>.`
+- Per package: name, the version from the file name, the project-relative file and the specifier style (`file:` or `file:./`). The dependency-field specifier wins over an override.
+- `--json`: `{ "schemaVersion": 1, "command": "status", "project", "packageManager", "framework", "cssMode", "release": { "dir", "commit" } | null, "commit": "<commit7>", "packages": [{ "name", "version", "file", "style" }], "upgradeAvailable": boolean | null }`. App scripts, such as a `design/system.md` sync or an MCP check, read this instead of parsing file names.
+- `--from <dir>` is optional and only adds the release commit and `upgradeAvailable` (the release commit does not start with the vendored commit). The release is read and its hashes verified as for `doctor` (§3).
+- Exit 0 for a `vendored@<commit>` state. `none`, an unsafe `file:vendor/` path, `foreign` and `mixed` are refused with exit 2 and one stderr line, with the same messages `init` and `upgrade` use (`… run egdev-ds init.`, `Unsafe vendored path: …`, `… status reads only vendored tarballs.`, `… run egdev-ds upgrade.`).
 
 ### Flags
 
@@ -144,11 +160,12 @@ All entries are [I] except where cited. Flag names follow existing habits: `--dr
 
 | Flag | Commands | Meaning |
 | --- | --- | --- |
-| `--from <dir>` | all | Release folder (§3). `doctor` uses it only for release-dependent checks (DS014, DS017). Without a release, those checks are skipped and reported as `skipped`. |
+| `--from <dir>` | all | Release folder (§3). `doctor` uses it only for release-dependent checks (DS014, DS017). Without a release, those checks are skipped and reported as `skipped`. `status` uses it only to report the release commit and whether an upgrade is available (S3). |
 | `--packages <list>` | init | Comma-separated names from `tokens,ui,effects,system,mcp`. Default: `tokens,ui,system,mcp` (Q13). `cli` is always added. Same value syntax and validation message as `ds-vendor.mjs` [E `assets/ds-vendor.mjs:36-42`]. Selecting `effects` also adds the exact `three` peer. |
 | `--add <list>` | upgrade | Amendment, owner decision L11 (`odd/tasks/egdev-ds-cli.md`, verbatim label "upgrade --add <pkg> (Recommended)"). Comma-separated names from `tokens,ui,effects,system,mcp,cli`; an unknown or repeated name exits 2 with `Invalid --add: choose from tokens,ui,effects,system,mcp,cli.` Each named package the app does not declare yet is added with the file effects `init` gives it (§7.2). A named package the app already declares is just upgraded. A name the release does not list exits 1 (`Release lacks @egdev/<pkg>: …`). |
 | `--css tailwind\|native` | init | Overrides CSS mode detection (§5.3). |
 | `--css-entry <path>` | init | Overrides CSS entry detection. Must be a `.css` file inside `<project>`. |
+| `--local-repo <name>` | init, upgrade | Amendment, `odd/tasks/egdev-ds-485-486.md` S2. `localRepo` for a newly created `egdev-ds.json` (§6.7); same rule as the file's key (`^[A-Za-z0-9._-]+$`), otherwise exit 2 with `Invalid --local-repo: expected a repository name (letters, digits, ., _ or -).` An existing file keeps its value: a different flag value prints `Note: egdev-ds.json keeps localRepo "<value>"; --local-repo <name> applies only when egdev-ds.json is created.` on stderr, which is not an error. `upgrade` creates the file only with `--add cli`; otherwise it prints `Note: --local-repo <name> has no effect: upgrade creates egdev-ds.json only with --add cli.` |
 | `--accent` | init | Writes the accent host scaffold (§6.6, Q9). |
 | `--no-install` | init, upgrade | Skips the lockfile refresh. The CLI prints the exact command instead. Integrity is then unverified, and `doctor` reports DS012/DS015 until the command runs. |
 | `--offline` | init, upgrade | Adds `--offline` to the package manager install. `ds-vendor.mjs` always installs offline [E `assets/ds-vendor.mjs:246,357`]. Here it is opt-in, because `init` adds new external dependencies. |
@@ -191,7 +208,7 @@ egdev-ds init apps/hub (npm, vite, native) from ../egdev-design-system/release a
   edit    package.json  overrides.@egdev/system = $@egdev/system
   edit    package.json  scripts.ds:doctor = egdev-ds doctor .
   edit    src/styles.css  +@import "@egdev/tokens/tokens.css"
-  create  egdev-ds.json
+  create  egdev-ds.json  localRepo=nexo
   create  .mcp.json  mcpServers.egdev-design-system
   run     npm install
 Dry run: nothing written.
@@ -334,8 +351,12 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
 - **`egdev-ds.json`** at `<project>` (Q6) holds only the doctor options that the apps currently set by hand in their copied guard tests:
 
   ```json
-  { "schemaVersion": 1, "sourceDirectory": "src", "themeDirectory": "src/theme/", "localRepo": "<package.json name>", "exclude": [] }
+  { "schemaVersion": 1, "sourceDirectory": "src", "themeDirectory": "src/theme/", "localRepo": "<repository folder>", "exclude": [] }
   ```
+
+  - **`localRepo` default, amendment `odd/tasks/egdev-ds-485-486.md` S2** (#485): the name of the nearest ancestor of `<project>`, the project itself included, that holds a `.git` entry, a directory or a worktree's `.git` file. Only the entry's existence is checked; no git command runs and no `.git` data is read (§9.1). With no such ancestor, or when its name fails `^[A-Za-z0-9._-]+$`, the earlier rule applies: the `package.json` name without its scope, else `app`. Evidence: Nexo's `apps/hub` package `nexo-hub` produced `localRepo: "nexo-hub"`, while its issues live in the `nexo` repository.
+  - `--local-repo <name>` overrides the default (§4). The plan always shows the value: `create  egdev-ds.json  localRepo=<value>` in text and as the action's `detail` in `--json`. An existing file is kept with its value (`keep  egdev-ds.json`).
+  - `doctor` uses the same default in memory when the file is missing, so DS045 and the guard (DS043 placeholders) agree with what `init` would write.
 
   The evidence for those options [E]: `localRepo` and `themeDirectory` are guard options (skill `assets/guard/design-system-guard.ts:32-37,155-158`); the website sets `localRepo: 'egdev-website'` (`egdev-website/src/design-system-guard.test.ts:7`) and skips `(payload)` (`:18`). The defaults [I] are written explicitly so the file is self-describing.
 - **`.mcp.json`** at `<project>`: adds `mcpServers["egdev-design-system"] = { "command": "node", "args": ["node_modules/@egdev/mcp/dist/index.js"] }` when mcp is selected [E the website's file has exactly that entry; the mcp bin path: `packages/mcp/package.json:5-7`].
@@ -377,7 +398,7 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
    - **Amendment, owner decision L11** (`odd/tasks/egdev-ds-cli.md` L11, verbatim label "upgrade --add <pkg> (Recommended)"). Without `--add`, the rule above is unchanged: upgrade adds nothing. `--add <list>` is the explicit opt-in that adds release packages to an already-vendored app, for example `cli` to an app vendored before `@egdev/cli` joined the release set, or `effects`. Each named package the app does not declare yet:
      - is selected with the declared ones, so step 4 checks it as part of the same unit. An internal dependency it needs that the app does not declare, and that `--add` does not name, exits 2: `<name> <version> needs <dependency>, which <project> does not declare; upgrade adds no packages: pass --add <pkg>.` Its external peers need not be installed yet; the install in step 8 brings them;
      - is copied to `<folder>/egdev-<pkg>-<version>-<commit7>.tgz`, where `<folder>` and the `file:` or `file:./` style come from the app's first vendored dependency (§6.1);
-     - gets the `init` file effects for that package, through the same code: the `package.json` entry (`tokens`, `ui`, `effects` in `dependencies`; `system`, `mcp`, `cli` in `devDependencies`), the external peers it declares (exact `three` `0.160.0` for effects; an existing react range is kept), the npm `$` override or the pnpm pin (§6.3–§6.4), the CSS entry imports for `ui` and `effects` (§6.5), `scripts.ds:doctor` and `egdev-ds.json` when `cli` is added, and `.mcp.json` when `mcp` is added (§6.7);
+     - gets the `init` file effects for that package, through the same code: the `package.json` entry (`tokens`, `ui`, `effects` in `dependencies`; `system`, `mcp`, `cli` in `devDependencies`), the external peers it declares (exact `three` `0.160.0` for effects; an existing react range is kept), the npm `$` override or the pnpm pin (§6.3–§6.4), the CSS entry imports for `ui` and `effects` (§6.5), `scripts.ds:doctor` and `egdev-ds.json` when `cli` is added (its `localRepo` from `--local-repo` or the repository folder default, amendment `odd/tasks/egdev-ds-485-486.md` S2; an existing file keeps its value), and `.mcp.json` when `mcp` is added (§6.7);
      - has no changelog diff in step 6, because there is no installed version.
    - When the Vite entry module imports the design system CSS (Nexo), an added stylesheet is code, not an owned key: upgrade edits nothing there and prints `Import <file> in <module>.` among the next steps; `doctor` reports DS030 until it is added.
    - Owned keys with a different value (`three`, `scripts.ds:doctor`, the `.mcp.json` server) are conflicts (§9.7). They are listed, nothing is written, and the command exits 2: `upgrade` has no `--force`.
@@ -427,18 +448,19 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
 | DS044 | error | Guard engine unavailable: `typescript` or `postcss` not resolvable from `<project>` (Q4) | [E the guard imports both: `assets/guard/design-system-guard.ts:1-2`] |
 | DS045 | error | `egdev-ds.json` missing or invalid | [I, Q6] |
 | DS050 | warning | `@egdev/mcp` is a dependency, but no `.mcp.json` in `<project>` or an ancestor has an `egdev-design-system` server whose script path exists | [E `egdev-website/.mcp.json`; `nexo/.mcp.json`] |
+| DS051 | warning | Amendment, `odd/tasks/egdev-ds-485-486.md` S3. With vendored files, the nearest `design/system.md` from `<project>` up to its repository root (the nearest `.git` ancestor; only `<project>` without one) records a design system commit in its first line, `<!-- Generated from EGDEV design system <commit>; … -->`, that differs from the vendored commit (prefix comparison, 7 to 40 hex): `Header records <a>, vendored at <b>: regenerate design/system.md.` `skipped` when the vendored set is mixed, the file is absent, or the first line records no commit | [E the header both apps' sync scripts write: `egdev-website/scripts/design-system-md.mjs:11`, `nexo/apps/hub/scripts/sync-design-system-md.mjs:5`; Nexo keeps the file at its repository root: `nexo/apps/hub/scripts/sync-design-system-md.mjs:8`. `egdev-system-md` itself writes no commit: `packages/system/src/render-system-md.mjs:87-97`] |
 
 - **Guard parity:** `src/guard.mjs` is the skill's `checkDesignSystem`, moved here unchanged except for its options source [E S3 "one maintained guard implementation"]. Both apps' copies are identical to the asset (see §1). Its existing tests move with it, including the comment-trivia regression [E skill `references/freno.md:33`].
 - **Allowlist file:** `src/design-system-allowlist.ts`, as in both apps [E `nexo/apps/hub/src/design-system-allowlist.ts:1-5`]. It is loaded with Node 24's built-in type stripping, which the file's syntax allows (only `import type` plus an array literal) [I, Q5].
-- **Deferred:** a `design/system.md` freshness check. Nexo's file carries a custom header and a whitespace fix [E `nexo/apps/hub/scripts/sync-design-system-md.mjs:5-7`], so `egdev-system-md --check` would always report stale. This is out of v1.
+- **`design/system.md` freshness:** a full content check stays deferred. Nexo's file carries a custom header and a whitespace fix [E `nexo/apps/hub/scripts/sync-design-system-md.mjs:5-7`], so `egdev-system-md --check` would always report stale. DS051 (S3) checks only the commit the header records.
 
 ## 9. Idempotency and safety rules
 
 [I unless cited]
 
-1. **Never run `git`.** The CLI never spawns `git`, reads no `.git` data, and stages or commits nothing. This also drops the merged-on-`origin/main` check that `ds-vendor.mjs` performs [E `assets/ds-vendor.mjs:175-181`] (Q2).
+1. **Never run `git`.** The CLI never spawns `git`, reads no `.git` data, and stages or commits nothing. Checking whether a `.git` entry exists, to name the repository folder (`localRepo`, §6.7) and bound the DS051 lookup, reads no data (S2). This also drops the merged-on-`origin/main` check that `ds-vendor.mjs` performs [E `assets/ds-vendor.mjs:175-181`] (Q2).
 2. **Only spawn the detected package manager**, with the documented arguments. No other process.
-3. **Stay inside `<project>`.** Every write target resolves inside `<project>`, with symlinks and multi-link files refused. Precedent: `packages/system/src/cli.mjs:26-47`. Reads outside `<project>` are limited to `--from`, ancestor `.mcp.json` files (read only), and the CLI's own files.
+3. **Stay inside `<project>`.** Every write target resolves inside `<project>`, with symlinks and multi-link files refused. Precedent: `packages/system/src/cli.mjs:26-47`. Reads outside `<project>` are limited to `--from`, ancestor `.mcp.json` files (read only), the existence of ancestor `.git` entries and ancestor `design/system.md` files up to the repository root (DS051, read only), and the CLI's own files.
 4. **Atomic writes.** Each file is written to a temporary file in the same folder and renamed into place, so a reader never sees a partial file. Precedent: `scripts/lib/pack-packages.mjs:53-60,83-84`.
 5. **Transaction and rollback.** Originals are snapshotted before the first write, and every failure restores them and removes the files the run copied (§7 step 9). Old tarballs are removed only after success.
 6. **Owned keys only.** The CLI owns exactly the keys listed in §6. It never deletes or rewrites anything else. JSON files are re-serialized with 2-space indent and a trailing newline [E parity `assets/ds-vendor.mjs:14`], with key order kept and new keys appended. YAML and CSS are edited as text.
@@ -534,6 +556,8 @@ S3: "the CLI owns mechanics (vendor, upgrade, checks); the global skill `egdev-d
 | AC19 | Real consumers: npm+Vite (native) and pnpm+Next.js (tailwind) run `init` → install → build → `ds:doctor` exit 0 → `upgrade` against a second pack → `ds:doctor` exit 0 | E2E |
 | AC20 | `release:pack` includes `egdev-cli-<version>.tgz` and a `release.json` whose sha256 values and commit match | `scripts/package-release.test.mjs` |
 | AC21 | `install.md` keeps exactly one `sh` block, and it still passes verbatim | Existing test `scripts/package-release.test.mjs:295` |
+| AC22 | S2: `localRepo` defaults to the nearest `.git` ancestor folder (directory or file), falls back to the package name, `--local-repo` overrides it (invalid → exit 2), an existing `egdev-ds.json` is kept with a note, the plan shows `localRepo=<value>`, and doctor's default agrees | Unit `local-repo.test.mjs` |
+| AC23 | S3: `status` text and JSON for npm+Vite and pnpm+Next.js, `--from` upgrade-available, exit 2 for `none`/unsafe/`foreign`/`mixed`, tree unchanged and nothing spawned; DS051 match, mismatch warning and skips | Unit `status.test.mjs`, `doctor.test.mjs` |
 
 ## 14. Owner decisions
 

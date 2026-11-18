@@ -1,6 +1,6 @@
 // Read-only detection (spec §5): package manager, framework, CSS mode and the vendored state.
 import { existsSync } from 'node:fs';
-import { basename, join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { isRecord } from './release.mjs';
 
 /** @typedef {'npm' | 'pnpm'} PackageManager */
@@ -17,6 +17,8 @@ import { isRecord } from './release.mjs';
 /** Every package of the release set, including the CLI itself (Q7). */
 export const PACKAGES = ['tokens', 'ui', 'effects', 'system', 'mcp', 'cli'];
 export const DEPENDENCY_FIELDS = ['dependencies', 'devDependencies', 'optionalDependencies', 'peerDependencies'];
+/** A repository name, as `localRepo` in egdev-ds.json and `--local-repo` accept it (#485). */
+export const REPO_NAME = /^[A-Za-z0-9._-]+$/;
 const NAMES = new Set(PACKAGES.map((pkg) => `@egdev/${pkg}`));
 
 /**
@@ -249,6 +251,24 @@ export function detectInitCssMode(manifest, framework, entry) {
     return ask(`${entry.file} has no @import "tailwindcss"`);
   }
   return { cssMode: dependency ? 'tailwind' : 'native' };
+}
+
+/**
+ * The nearest ancestor of `project` (itself included) that holds a `.git` entry, a directory or a
+ * worktree's `.git` file, or null (#485). Only the entry's existence is checked: no git command runs
+ * and no `.git` data is read (spec §9.1).
+ * @param {string} project an absolute path
+ * @returns {string | null}
+ */
+export function findRepoRoot(project) {
+  for (let directory = project; ; directory = dirname(directory)) {
+    if (existsSync(join(directory, '.git'))) {
+      return directory;
+    }
+    if (dirname(directory) === directory) {
+      return null;
+    }
+  }
 }
 
 /**

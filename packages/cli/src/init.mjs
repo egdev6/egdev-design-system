@@ -214,19 +214,49 @@ export function nextSteps({ packageManager, install, noInstall, extra = [] }) {
 
 /**
  * `egdev-ds.json` (spec §6.7): kept when it exists, otherwise created with the doctor defaults.
+ * `localRepo` is `--local-repo` or the repository folder default (#485); the plan line shows it.
  * @param {string} project
  * @param {Record<string, unknown>} manifest
+ * @param {string} [localRepo] the `--local-repo` value
  * @returns {{ action: Action, write: FileWrite | null }}
  */
-export function planConfig(project, manifest) {
+export function planConfig(project, manifest, localRepo) {
   if (existsSync(join(project, CONFIG_FILE))) {
     return { action: { verb: 'keep', path: CONFIG_FILE, detail: '' }, write: null };
   }
   const { config } = readConfig(project, manifest);
+  const created = { ...config, localRepo: localRepo ?? config.localRepo };
   return {
-    action: { verb: 'create', path: CONFIG_FILE, detail: '' },
-    write: { path: CONFIG_FILE, content: `${JSON.stringify({ schemaVersion: 1, ...config }, null, 2)}\n` }
+    action: { verb: 'create', path: CONFIG_FILE, detail: `localRepo=${created.localRepo}` },
+    write: { path: CONFIG_FILE, content: `${JSON.stringify({ schemaVersion: 1, ...created }, null, 2)}\n` }
   };
+}
+
+/**
+ * The stderr note when `--local-repo` differs from the `localRepo` of an existing egdev-ds.json,
+ * which is kept (#485): not an error. Null when there is nothing to note.
+ * @param {string} project
+ * @param {string | undefined} localRepo the `--local-repo` value
+ * @returns {string | null}
+ */
+export function localRepoNote(project, localRepo) {
+  const text = localRepo === undefined ? null : readText(join(project, CONFIG_FILE));
+  if (text === null) {
+    return null;
+  }
+  /** @type {unknown} */
+  let data = null;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = null;
+  }
+  const current = isRecord(data) ? data.localRepo : undefined;
+  if (current === localRepo) {
+    return null;
+  }
+  const shown = typeof current === 'string' ? `"${current}"` : 'its value';
+  return `Note: ${CONFIG_FILE} keeps localRepo ${shown}; --local-repo ${localRepo} applies only when ${CONFIG_FILE} is created.\n`;
 }
 
 /**
@@ -500,8 +530,12 @@ export async function runInit({ argument, project, from, releaseDir, release, op
     actions.push({ verb: 'keep', path: wiredModule, detail: 'design system CSS imported by the entry module' });
   }
 
-  const configPlan = planConfig(project, manifest);
+  const configPlan = planConfig(project, manifest, options.localRepo);
   actions.push(configPlan.action);
+  const note = localRepoNote(project, options.localRepo);
+  if (note) {
+    stderr(note);
+  }
   if (configPlan.write) {
     writes.push(configPlan.write);
   }
