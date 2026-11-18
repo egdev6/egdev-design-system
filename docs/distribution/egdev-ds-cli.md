@@ -1,6 +1,6 @@
 # `egdev-ds` — design system install, upgrade and check CLI
 
-- **Status:** Draft — not approved. Waiting on owner review ([#477](https://github.com/egdev6/egdev-design-system/issues/477); `odd/tasks/egdev-ds-cli.md` T2).
+- **Status:** Approved — 2026-11-18 by the owner, with every recommended option (a) in §14 (verbatim answer: "si"; [#477](https://github.com/egdev6/egdev-design-system/issues/477); `odd/tasks/egdev-ds-cli.md` L5). The implementation plan needs separate approval.
 - **Package:** `@egdev/cli`, the sixth package in the release set. It ships the `egdev-ds` binary.
 - **Approved inputs:** the owner decisions recorded verbatim in `odd/tasks/egdev-ds-cli.md` S3 (L3): "New @egdev/cli package (Recommended)", "--from, default sibling DS release/ (Recommended)", "Checker inside the CLI (doctor) (Recommended)", "Skill calls the CLI (Recommended)". The owner's original request is S1: "sería interesante crear un comando o mcp que instale en un proyecto toda la infrastructura necesaria para integrar el design system?" then "si" then "vamos con ello ya".
 - **Next step after approval:** a separate implementation plan (T3), approved separately, and then the implementation PRs. This document changes no code and creates no package.
@@ -524,9 +524,9 @@ S3: "the CLI owns mechanics (vendor, upgrade, checks); the global skill `egdev-d
 | AC20 | `release:pack` includes `egdev-cli-<version>.tgz` and a `release.json` whose sha256 values and commit match | `scripts/package-release.test.mjs` |
 | AC21 | `install.md` keeps exactly one `sh` block, and it still passes verbatim | Existing test `scripts/package-release.test.mjs:295` |
 
-## 14. Open questions for the owner
+## 14. Owner decisions
 
-Each question has a recommendation; the owner can approve it or pick the alternative.
+Resolved on 2026-11-18: the owner accepted every recommended option, marked in bold as (a) below. Read each row as decided; the alternatives are kept for history.
 
 | Q | Question | Options (recommended first) |
 | --- | --- | --- |

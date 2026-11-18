@@ -15,7 +15,7 @@ A command to install, upgrade and check the EGDEV design system in a consumer ap
 | ID | Specs | Route | Commit |
 | --- | --- | --- | --- |
 | T1 | S1–S5 | worker | this commit |
-| T2 | S1, S3 | parent | review, owner approval, issue comment |
+| T2 | S1, S3 | parent | review, owner approval, issue comment (approval commit) |
 | T3 | — | parent | implementation plan (separate approval) |
 
 ## Log
@@ -24,3 +24,4 @@ A command to install, upgrade and check the EGDEV design system in a consumer ap
 - L2: Issue #477 opened with the proposal and four open decisions.
 - L3 (owner decisions): S3.
 - L4: T1 draft written by worker (docs/distribution/egdev-ds-cli.md, 546 lines, Draft — not approved; [E]/[I] tagged; 14 open questions Q1–Q14 with recommendations). Blocking findings: release/ has no commit/sha256 record (Q1 release.json); tarballs carry no CHANGELOG.md (Q3); the guard needs typescript/postcss vs stdlib-only (Q4); no git means no 'commit on main' check (Q2). Evidence: Nexo npm+Vite native CSS, website pnpm+Next Tailwind, both carry byte-identical copies of the skill guard.
+- L5 (owner, verbatim): "si" — accepting all 14 recommendations (option a for Q1–Q14). Spec marked Approved — 2026-11-18. Next: T3 implementation plan (separate approval).
