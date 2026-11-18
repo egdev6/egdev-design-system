@@ -3434,7 +3434,7 @@ function assertChipCSS(css) {
     String.raw`.hover\:\[background\:var\(--gradient-sheen\)\,var\(--color-surface-2\)\]`,
     String.raw`.data-\[state\=on\]\:\[background\:var\(--gradient-chip-active\)\,var\(--color-surface-1\)\]`,
     String.raw`.data-\[state\=on\]\:shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-glow-base\)\]`,
-    String.raw`.data-\[state\=on\]\:border-primitive-red-neon\/60`,
+    String.raw`.data-\[state\=on\]\:border-state-selected\/60`,
     String.raw`.data-\[state\=on\]\:focus-visible\:shadow-focus`,
     String.raw`.active\:scale-\[\.97\]`,
     String.raw`.active\:translate-y-px`,

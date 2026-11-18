@@ -1,5 +1,6 @@
+import { createAccentTheme } from '@egdev/tokens/accent';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useState } from 'react';
+import { type CSSProperties, useState } from 'react';
 import { action } from 'storybook/actions';
 import { Icon } from '../icon';
 import { Chip } from './Chip';
@@ -145,4 +146,24 @@ export const StaticInList: Story = {
       </li>
     </ul>
   )
+};
+
+/** A consumer-owned host applies a complete accent map; the on border and sheen follow it, next to default red. */
+export const CustomAccent: Story = {
+  render: function CustomAccentExample() {
+    const theme = createAccentTheme('#3b82f6');
+    const red = createAccentTheme(null);
+    return (
+      <div className='grid gap-4'>
+        <div className='flex flex-wrap gap-2' style={theme.variables as CSSProperties}>
+          <Chip>Design</Chip>
+          <Chip defaultPressed={true}>Custom accent</Chip>
+        </div>
+        <div className='flex flex-wrap gap-2' style={red.variables as CSSProperties}>
+          <Chip>Design</Chip>
+          <Chip defaultPressed={true}>Default accent</Chip>
+        </div>
+      </div>
+    );
+  }
 };

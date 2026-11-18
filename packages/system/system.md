@@ -1694,8 +1694,10 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Tabs
     - tabsListVariants variant=underline: gap-1 → --spacing-1
     - tabsListVariants variant=segmented: gap-0.5 → --spacing
     - tabsListVariants variant=segmented: p-0.75 → --spacing
-    - tabsListVariants {"variant":"segmented","fullWidth":"true"}: p-1.5 → --spacing
-    - tabsListVariants {"variant":"segmented","fullWidth":"true"}: [&::-webkit-scrollbar-thumb]:rounded-full → --radius-full
+    - tabsListVariants variant=outline: gap-0.5 → --spacing
+    - tabsListVariants variant=outline: p-0.75 → --spacing
+    - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: p-1.5 → --spacing
+    - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: [&::-webkit-scrollbar-thumb]:rounded-full → --radius-full
     - tabsPanelVariants base: pt-4 → --spacing-4
     - tabsTriggerVariants base: gap-2 → --spacing-2
     - tabsTriggerVariants base: font-sans → --font-sans
@@ -1708,21 +1710,26 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Tabs
     - tabsTriggerVariants variant=segmented: data-[state=active]:before:rounded-[inherit] → unresolved
     - tabsTriggerVariants variant=segmented: focus-visible:shadow-focus → --shadow-focus
     - tabsTriggerVariants variant=segmented: data-[state=active]:focus-visible:shadow-focus → --shadow-focus
+    - tabsTriggerVariants variant=outline: px-3 → --spacing-3
+    - tabsTriggerVariants variant=outline: rounded-[calc(var(--radius-md)---spacing(0.75))] → --radius-md, --spacing
+    - tabsTriggerVariants variant=outline: data-[state=active]:shadow-[var(--shadow-edge-strong)] → --shadow-edge-strong
+    - tabsTriggerVariants variant=outline: focus-visible:shadow-focus → --shadow-focus
+    - tabsTriggerVariants variant=outline: data-[state=active]:focus-visible:shadow-focus → --shadow-focus
     - tabsTriggerVariants {"variant":"underline","size":"md"}: px-3 → --spacing-3
     - tabsTriggerVariants {"variant":"underline","size":"sm"}: px-2 → --spacing-2
-    - tabsTriggerVariants {"variant":"segmented","labelWrap":"true"}: text-start → unresolved
-    - tabsTriggerVariants {"variant":"segmented","labelWrap":"true"}: py-1 → --spacing-1
+    - tabsTriggerVariants {"variant":"['segmented', 'outline']","labelWrap":"true"}: text-start → unresolved
+    - tabsTriggerVariants {"variant":"['segmented', 'outline']","labelWrap":"true"}: py-1 → --spacing-1
     - tabsVariants base: gap-0 → --spacing-0
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }) · packages/ui/src/molecules/tabs/useTabs.ts; see Surface anatomy
   - defaultValue: string; Initial uncontrolled selection; when absent, selects the first enabled item. (components[] · packages/ui/src/molecules/tabs/types.ts)
-  - fullWidth: boolean; Fill the available width with equal segmented tabs when they fit; overflowing tabs may be unequal. Has no effect on underline. (components[] · packages/ui/src/molecules/tabs/types.ts)
+  - fullWidth: boolean; Fill the available width with equal segmented or outline tabs when they fit; overflowing tabs may be unequal. Has no effect on underline. (components[] · packages/ui/src/molecules/tabs/types.ts)
   - items: TabsItem[]; Ordered views: unique, non-empty values and at least one enabled item are required. (components[] · packages/ui/src/molecules/tabs/types.ts)
   - label: string; Accessible name of the tablist. (components[] · packages/ui/src/molecules/tabs/types.ts)
-  - labelWrap: boolean; Wrap and start-align segmented labels, including long words; has no effect on underline. (components[] · packages/ui/src/molecules/tabs/types.ts)
+  - labelWrap: boolean; Wrap and start-align segmented or outline labels, including long words; has no effect on underline. (components[] · packages/ui/src/molecules/tabs/types.ts)
   - onValueChange: ((value: string) => void); Notifies a user-driven selection change; incoming prop updates do not emit it. (components[] · packages/ui/src/molecules/tabs/types.ts)
-  - size: enum; Underline height and horizontal padding only; segmented always uses its single height. (components[] · packages/ui/src/molecules/tabs/types.ts)
+  - size: enum; Underline height and horizontal padding only; segmented and outline always use their single height. (components[] · packages/ui/src/molecules/tabs/types.ts)
   - value: string; Controlled selection. When absent, Radix manages selection internally. (components[] · packages/ui/src/molecules/tabs/types.ts)
-  - variant: enum; Underline row or recessed segmented well. (components[] · packages/ui/src/molecules/tabs/types.ts)
+  - variant: enum; Underline row, recessed segmented well, or outline well whose selected tab shows an accent border and chip sheen over surface-1. (components[] · packages/ui/src/molecules/tabs/types.ts)
 ### TerminalCard
 catalog[] · docs/catalog.json · @egdev/ui · molecule · —
 - TerminalCard (components[] · packages/ui/src/molecules/terminal-card/types.ts)
@@ -4322,8 +4329,10 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - tabsListVariants variant=underline: gap-1 → --spacing-1
     - tabsListVariants variant=segmented: gap-0.5 → --spacing
     - tabsListVariants variant=segmented: p-0.75 → --spacing
-    - tabsListVariants {"variant":"segmented","fullWidth":"true"}: p-1.5 → --spacing
-    - tabsListVariants {"variant":"segmented","fullWidth":"true"}: [&::-webkit-scrollbar-thumb]:rounded-full → --radius-full
+    - tabsListVariants variant=outline: gap-0.5 → --spacing
+    - tabsListVariants variant=outline: p-0.75 → --spacing
+    - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: p-1.5 → --spacing
+    - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: [&::-webkit-scrollbar-thumb]:rounded-full → --radius-full
     - tabsPanelVariants base: pt-4 → --spacing-4
     - tabsTriggerVariants base: gap-2 → --spacing-2
     - tabsTriggerVariants base: font-sans → --font-sans
@@ -4336,10 +4345,15 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - tabsTriggerVariants variant=segmented: data-[state=active]:before:rounded-[inherit] → unresolved
     - tabsTriggerVariants variant=segmented: focus-visible:shadow-focus → --shadow-focus
     - tabsTriggerVariants variant=segmented: data-[state=active]:focus-visible:shadow-focus → --shadow-focus
+    - tabsTriggerVariants variant=outline: px-3 → --spacing-3
+    - tabsTriggerVariants variant=outline: rounded-[calc(var(--radius-md)---spacing(0.75))] → --radius-md, --spacing
+    - tabsTriggerVariants variant=outline: data-[state=active]:shadow-[var(--shadow-edge-strong)] → --shadow-edge-strong
+    - tabsTriggerVariants variant=outline: focus-visible:shadow-focus → --shadow-focus
+    - tabsTriggerVariants variant=outline: data-[state=active]:focus-visible:shadow-focus → --shadow-focus
     - tabsTriggerVariants {"variant":"underline","size":"md"}: px-3 → --spacing-3
     - tabsTriggerVariants {"variant":"underline","size":"sm"}: px-2 → --spacing-2
-    - tabsTriggerVariants {"variant":"segmented","labelWrap":"true"}: text-start → unresolved
-    - tabsTriggerVariants {"variant":"segmented","labelWrap":"true"}: py-1 → --spacing-1
+    - tabsTriggerVariants {"variant":"['segmented', 'outline']","labelWrap":"true"}: text-start → unresolved
+    - tabsTriggerVariants {"variant":"['segmented', 'outline']","labelWrap":"true"}: py-1 → --spacing-1
     - tabsVariants base: gap-0 → --spacing-0
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }) · packages/ui/src/molecules/tabs/useTabs.ts; see Surface anatomy
 ### tooltipVariants

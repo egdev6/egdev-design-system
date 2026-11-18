@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
 import { render, renderHook, screen, within } from '@testing-library/react';
@@ -653,5 +654,184 @@ describe('Tabs segmented layout opt-ins', () => {
     );
     selected('UnbrokenLongDraftsLabel 312');
     expect(onValueChange).toHaveBeenCalledTimes(requests);
+  });
+});
+
+describe('Tabs outline variant', () => {
+  const outlineItems = [
+    { value: 'apps', label: 'My apps', count: 3, content: 'Installed apps' },
+    { value: 'catalog', label: 'Catalog', content: 'Available apps' }
+  ];
+  const outlineBase = { items: outlineItems, label: 'App views' };
+  const outlineTreatment = [
+    'min-h-8.5',
+    'px-3',
+    'rounded-[calc(var(--radius-md)---spacing(0.75))]',
+    'border',
+    'border-transparent',
+    'text-fg-secondary',
+    'data-[state=active]:text-fg-default',
+    'data-[state=active]:border-state-selected',
+    'data-[state=active]:[background:var(--gradient-chip-active),var(--color-surface-1)]',
+    'data-[state=active]:shadow-[var(--shadow-edge-strong)]',
+    'focus-visible:outline-none',
+    'focus-visible:shadow-focus',
+    'data-[state=active]:focus-visible:shadow-focus'
+  ];
+
+  // SHA-256 of JSON [list, trigger, count, typeof onFocus] for every underline/segmented combination,
+  // captured before the outline variant existed: both existing variants must stay byte-identical.
+  const previousRecipes: Record<string, string> = {
+    'underline|md': 'b7e7458902c516780666e15a9541296e4e3a895d467ac915f3f544517879be2c',
+    'underline|sm': 'd21a97d345ae7ecd826ce0c1b809eb725f29aeef1504af97fcaacd37bc4e35c2',
+    'segmented|false|false': 'd64840bd41c311550f4b9fa74fb935e3a6c019f6a3e6913bd056cbfb98f99ea5',
+    'segmented|false|true': 'd3e44fa60eaf3913c522a7b1e0cf1a788673b947f7615dda328a5d738c39278c',
+    'segmented|true|false': '036f056c4cd58c3eb278aafba8208d110a65ffd66837fd973c0c9c43255d8d41',
+    'segmented|true|true': '4b3a500ff50186960394fcf9ae1bd8effeea98a274d727ce6100f0957da8104e'
+  };
+
+  it('keeps every underline and segmented list, trigger, counter and focus handler byte-identical', () => {
+    const counted = [{ value: 'a', label: 'A', count: 1, content: 'x' }];
+    for (const variant of ['underline', 'segmented'] as const) {
+      for (const size of ['md', 'sm'] as const) {
+        for (const fullWidth of [false, true]) {
+          for (const labelWrap of [false, true]) {
+            const { result: hook } = renderHook(() =>
+              useTabs({ items: counted, label: 'L', variant, size, fullWidth, labelWrap })
+            );
+            const result = hook.current;
+            const fingerprint = createHash('sha256')
+              .update(
+                JSON.stringify([
+                  result.listProps.className,
+                  result.triggerClassName,
+                  result.items[0]?.countClassName,
+                  typeof result.listProps.onFocus
+                ])
+              )
+              .digest('hex');
+            const key = variant === 'underline' ? `underline|${size}` : `segmented|${fullWidth}|${labelWrap}`;
+            expect(fingerprint, `${variant} ${size} ${fullWidth} ${labelWrap}`).toBe(previousRecipes[key]);
+          }
+        }
+      }
+    }
+  });
+
+  it('composes the existing well on the outline list with segmented geometry', () => {
+    const { rerender } = render(<Tabs {...outlineBase} variant='outline' />);
+    const list = screen.getByRole('tablist', { name: 'App views' });
+    const well = surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' })
+      .split(' ')
+      .filter((part) => part !== 'p-0');
+    expect(list).toHaveClass(...well, 'inline-flex', 'self-start', 'gap-0.5', 'p-0.75');
+    expect(list).not.toHaveClass('p-0', 'border-b', 'overflow-x-auto', 'grid');
+    const tab = screen.getByRole('tab', { name: 'My apps 3' });
+    expect(tab).toHaveClass(...outlineTreatment);
+    const classes = tab.className;
+    rerender(<Tabs {...outlineBase} variant='outline' size='sm' />);
+    expect(tab.className).toBe(classes);
+  });
+
+  it('paints the selected box from accent-following roles without the segmented overlay or tint', () => {
+    render(<Tabs {...outlineBase} variant='outline' />);
+    const tab = screen.getByRole('tab', { name: 'My apps 3' });
+    expect(tab.className).not.toContain('before:');
+    expect(tab.className).not.toContain('after:');
+    expect(tab).not.toHaveClass(
+      'isolate',
+      'border-0',
+      'data-[state=active]:bg-state-selected-surface',
+      'data-[state=active]:bg-[image:var(--gradient-sheen)]',
+      'data-[state=active]:border-border-brand',
+      'data-[state=active]:shadow-[var(--shadow-edge-strong),var(--shadow-elev-1)]'
+    );
+    expect(tab.className).not.toMatch(/primitive-|#[\da-f]|rgba\(|shadow-elev|glow/i);
+  });
+
+  it('transfers the selected treatment as Radix selection moves, without changing classes', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<Tabs {...outlineBase} variant='outline' onValueChange={onValueChange} />);
+    const apps = screen.getByRole('tab', { name: 'My apps 3' });
+    const catalog = screen.getByRole('tab', { name: 'Catalog' });
+    expect(apps).toHaveAttribute('data-state', 'active');
+    expect(catalog).toHaveAttribute('data-state', 'inactive');
+    const classes = [apps.className, catalog.className];
+    expect(catalog).toHaveClass(...outlineTreatment);
+    await user.click(catalog);
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith('catalog');
+    expect(catalog).toHaveAttribute('aria-selected', 'true');
+    expect(apps).toHaveAttribute('data-state', 'inactive');
+    expect(screen.getByRole('tabpanel', { name: 'Catalog' })).toHaveTextContent('Available apps');
+    expect([apps.className, catalog.className]).toEqual(classes);
+    await user.keyboard('{ArrowRight}');
+    expect(apps).toHaveFocus();
+    selected('My apps 3');
+  });
+
+  it('keeps selection and emits nothing when only the variant changes', () => {
+    const onValueChange = vi.fn();
+    const { rerender } = render(
+      <Tabs {...outlineBase} variant='segmented' defaultValue='catalog' onValueChange={onValueChange} />
+    );
+    rerender(<Tabs {...outlineBase} variant='outline' defaultValue='catalog' onValueChange={onValueChange} />);
+    selected('Catalog');
+    expect(onValueChange).not.toHaveBeenCalled();
+  });
+
+  it('applies fullWidth to outline with equal columns, focus-ring padding and centered labels', () => {
+    render(<Tabs {...outlineBase} variant='outline' fullWidth={true} />);
+    const list = screen.getByRole('tablist');
+    expect(list).toHaveClass(
+      'grid',
+      'grid-flow-col',
+      'auto-cols-[1fr]',
+      'w-full',
+      'self-stretch',
+      'overflow-x-auto',
+      'p-1.5',
+      'scroll-px-1.5',
+      '[&::-webkit-scrollbar]:h-1.5'
+    );
+    expect(list).not.toHaveClass('inline-flex', 'self-start', 'p-0.75');
+    expect(screen.getByRole('tab', { name: 'Catalog' })).toHaveClass('justify-center', 'whitespace-nowrap');
+  });
+
+  it('applies labelWrap to outline, keeping counters together, and both props combine', () => {
+    const { rerender } = render(<Tabs {...outlineBase} variant='outline' labelWrap={true} />);
+    const tab = screen.getByRole('tab', { name: 'My apps 3' });
+    expect(tab).toHaveClass('whitespace-normal', 'wrap-anywhere', 'text-start', 'justify-start', 'py-1');
+    expect(tab).not.toHaveClass('whitespace-nowrap', 'justify-center');
+    expect(within(tab).getByText('3')).toHaveClass('whitespace-nowrap');
+    rerender(<Tabs {...outlineBase} variant='outline' fullWidth={true} labelWrap={true} />);
+    expect(tab).toHaveClass('wrap-break-word', 'whitespace-normal', 'text-start');
+    expect(tab).toHaveClass(...outlineTreatment);
+  });
+
+  it('reveals the focused tab when the full-width outline list overflows', async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    render(<Tabs {...outlineBase} variant='outline' fullWidth={true} onValueChange={onValueChange} />);
+    const list = screen.getByRole('tablist');
+    Object.defineProperties(list, {
+      clientWidth: { configurable: true, value: 80 },
+      scrollWidth: { configurable: true, value: 160 }
+    });
+    const catalog = screen.getByRole('tab', { name: 'Catalog' });
+    const scrollIntoView = vi.fn();
+    Object.defineProperty(catalog, 'scrollIntoView', { configurable: true, value: scrollIntoView });
+    await user.tab();
+    await user.keyboard('{End}');
+    expect(catalog).toHaveFocus();
+    expect(onValueChange).toHaveBeenCalledExactlyOnceWith('catalog');
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
+  });
+
+  it('does not attach the reveal handler to the intrinsic outline list', () => {
+    const intrinsic = renderHook(() => useTabs({ ...outlineBase, variant: 'outline' })).result.current;
+    expect(intrinsic.listProps.onFocus).toBeUndefined();
+    const filled = renderHook(() => useTabs({ ...outlineBase, variant: 'outline', fullWidth: true })).result.current;
+    expect(filled.listProps.onFocus).toBeTypeOf('function');
   });
 });

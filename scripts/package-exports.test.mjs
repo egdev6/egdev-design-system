@@ -2578,7 +2578,7 @@ test('Chip ships its exact token-backed pill, pressed, focus, press and reduced-
     rule(String.raw`.data-\[state\=on\]\:shadow-\[var\(--shadow-edge-strong\)\,var\(--shadow-glow-base\)\]`),
     /--tw-shadow:\s*var\(--shadow-edge-strong\),\s*var\(--shadow-glow-base\)\s*;/
   );
-  assert.match(rule(String.raw`.data-\[state\=on\]\:border-primitive-red-neon\/60`), /color-mix\(/);
+  assert.match(rule(String.raw`.data-\[state\=on\]\:border-state-selected\/60`), /color-mix\(/);
   assert.match(rule(String.raw`.active\:scale-\[\.97\]`), /scale:\s*\.97\s*;/);
   // The on-state shadow is emitted after the plain focus ring, so the on+focus rule restores it.
   const focus = css.indexOf(String.raw`.focus-visible\:shadow-focus:focus-visible`);

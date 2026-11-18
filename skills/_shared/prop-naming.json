@@ -484,7 +484,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:5de3e398e36e462dae3ab06258efa69114ac790fcc2ac790acf306b07899b5fd"
+          "revision": "sha256:f206d5b61fa357ba70b3f018b49f888028295254674b783aa2c50575b2c1d0da"
         }
       },
       {
@@ -581,7 +581,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:5de3e398e36e462dae3ab06258efa69114ac790fcc2ac790acf306b07899b5fd"
+          "revision": "sha256:f206d5b61fa357ba70b3f018b49f888028295254674b783aa2c50575b2c1d0da"
         }
       },
       {
@@ -688,7 +688,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:5de3e398e36e462dae3ab06258efa69114ac790fcc2ac790acf306b07899b5fd"
+          "revision": "sha256:f206d5b61fa357ba70b3f018b49f888028295254674b783aa2c50575b2c1d0da"
         }
       },
       {
@@ -925,7 +925,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:5de3e398e36e462dae3ab06258efa69114ac790fcc2ac790acf306b07899b5fd"
+          "revision": "sha256:f206d5b61fa357ba70b3f018b49f888028295254674b783aa2c50575b2c1d0da"
         }
       },
       {
@@ -1217,12 +1217,12 @@
       },
       {
         "component": "Tabs",
-        "type": "TabsVariant ('underline' | 'segmented')",
+        "type": "TabsVariant ('underline' | 'segmented' | 'outline')",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:5de3e398e36e462dae3ab06258efa69114ac790fcc2ac790acf306b07899b5fd"
+          "revision": "sha256:f206d5b61fa357ba70b3f018b49f888028295254674b783aa2c50575b2c1d0da"
         }
       },
       {
@@ -1490,7 +1490,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsItem",
-          "revision": "sha256:5de3e398e36e462dae3ab06258efa69114ac790fcc2ac790acf306b07899b5fd"
+          "revision": "sha256:f206d5b61fa357ba70b3f018b49f888028295254674b783aa2c50575b2c1d0da"
         }
       },
       {
@@ -2025,7 +2025,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:5de3e398e36e462dae3ab06258efa69114ac790fcc2ac790acf306b07899b5fd"
+          "revision": "sha256:f206d5b61fa357ba70b3f018b49f888028295254674b783aa2c50575b2c1d0da"
         }
       },
       {
@@ -2719,7 +2719,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:a81311ad977375a785769c2c220c826654b5db791a2102ad00b79d4d042d4fcc"
+          "revision": "sha256:8cdf8fe542702525be06a0b40c2f49b0ffc2b3f5f7f6161f829025b80690f4c8"
         }
       },
       {
@@ -3074,7 +3074,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:a81311ad977375a785769c2c220c826654b5db791a2102ad00b79d4d042d4fcc"
+          "revision": "sha256:8cdf8fe542702525be06a0b40c2f49b0ffc2b3f5f7f6161f829025b80690f4c8"
         }
       }
     ]
@@ -3111,7 +3111,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:a81311ad977375a785769c2c220c826654b5db791a2102ad00b79d4d042d4fcc"
+          "revision": "sha256:8cdf8fe542702525be06a0b40c2f49b0ffc2b3f5f7f6161f829025b80690f4c8"
         }
       }
     ]
@@ -3148,7 +3148,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:a81311ad977375a785769c2c220c826654b5db791a2102ad00b79d4d042d4fcc"
+          "revision": "sha256:8cdf8fe542702525be06a0b40c2f49b0ffc2b3f5f7f6161f829025b80690f4c8"
         }
       }
     ]
@@ -3303,7 +3303,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:a81311ad977375a785769c2c220c826654b5db791a2102ad00b79d4d042d4fcc"
+          "revision": "sha256:8cdf8fe542702525be06a0b40c2f49b0ffc2b3f5f7f6161f829025b80690f4c8"
         }
       }
     ]
@@ -3350,7 +3350,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:a81311ad977375a785769c2c220c826654b5db791a2102ad00b79d4d042d4fcc"
+          "revision": "sha256:8cdf8fe542702525be06a0b40c2f49b0ffc2b3f5f7f6161f829025b80690f4c8"
         }
       }
     ]
@@ -4001,7 +4001,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:5de3e398e36e462dae3ab06258efa69114ac790fcc2ac790acf306b07899b5fd"
+          "revision": "sha256:f206d5b61fa357ba70b3f018b49f888028295254674b783aa2c50575b2c1d0da"
         }
       },
       {
@@ -7955,7 +7955,7 @@
         "source": {
           "path": "packages/ui/src/atoms/chip/types.ts",
           "symbol": "ChipProps",
-          "revision": "sha256:a81311ad977375a785769c2c220c826654b5db791a2102ad00b79d4d042d4fcc"
+          "revision": "sha256:8cdf8fe542702525be06a0b40c2f49b0ffc2b3f5f7f6161f829025b80690f4c8"
         }
       }
     ]
@@ -8391,7 +8391,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:5de3e398e36e462dae3ab06258efa69114ac790fcc2ac790acf306b07899b5fd"
+          "revision": "sha256:f206d5b61fa357ba70b3f018b49f888028295254674b783aa2c50575b2c1d0da"
         }
       }
     ]
@@ -8418,7 +8418,7 @@
         "source": {
           "path": "packages/ui/src/molecules/tabs/types.ts",
           "symbol": "TabsProps",
-          "revision": "sha256:5de3e398e36e462dae3ab06258efa69114ac790fcc2ac790acf306b07899b5fd"
+          "revision": "sha256:f206d5b61fa357ba70b3f018b49f888028295254674b783aa2c50575b2c1d0da"
         }
       },
       {
