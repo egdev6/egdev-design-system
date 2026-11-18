@@ -16,7 +16,13 @@ A command to install, upgrade and check the EGDEV design system in a consumer ap
 | --- | --- | --- | --- |
 | T1 | S1–S5 | worker | this commit |
 | T2 | S1, S3 | parent | review, owner approval, issue comment (approval commit) |
-| T3 | — | parent | implementation plan (separate approval) |
+| T3 | — | parent | implementation plan (separate approval) — proposed below |
+| T4 | spec §3, §10, Q1–Q3 | worker | PR 1: `release:pack` writes `release.json` (commit, dirty, sha256 per tarball); every package ships `CHANGELOG.md`; package-release tests |
+| T5 | spec §2, §4, §8, Q4–Q6 | worker | PR 2: `@egdev/cli` skeleton (bin `egdev-ds`, arg parsing, exit codes, plan/`--json` output) + `doctor` (DS0xx codes, guard ported from the skill asset with consumer-resolved typescript/postcss, `egdev-ds.json`); fixture-project tests |
+| T6 | spec §5, §6, §9, Q7–Q9, Q13 | worker | PR 3: `init` (detection, vendor, package.json/overrides/CSS/.mcp.json/ds:doctor script, `--accent`, `--dry-run`, `--force`, atomic writes + rollback); fixtures npm+Vite and pnpm+Next.js |
+| T7 | spec §7, §9 | worker | PR 4: `upgrade` (set-as-a-unit, sha256 against release.json, only declared packages, changelog diff, lockfile refresh command, failure handling) |
+| T8 | spec §10, §11, Q10, Q12 | worker | PR 5: release-set integration (`@egdev/cli` in release:pack, versioning.md, CI e2e for npm+Vite and pnpm+Next.js) + install.md rewritten as CLI guide with manual fallback; first release including the CLI |
+| T9 | spec §12, Q11 | parent | Global skill migration (outside this repo): skill calls the CLI; retire ds-vendor.mjs after the parity table passes; then adopt in Nexo/website via their sessions |
 
 ## Log
 
