@@ -1673,7 +1673,12 @@ test('ColorSwatchGroup binds its scoped naming exception and reviewed usages wit
     scope: exception.approval.scope,
     contentHash: exception.approval.contentHash,
     exception: exceptionPayload,
-    source: { path, symbol: 'ColorSwatchGroupProps.customLabel', revision }
+    // The receipt is an immutable approval record: it keeps the source revision reviewed at approval time.
+    source: {
+      path,
+      symbol: 'ColorSwatchGroupProps.customLabel',
+      revision: 'sha256:6e52ed0be8db660730c84b1cd9d1cf0ed7bc974dc75947a24854c0bafdcf71c4'
+    }
   });
   for (const [id, component, type, symbol] of [
     ['accessible-name', 'ColorSwatchGroup', 'string (required visible group name)', 'ColorSwatchGroupProps.label'],

@@ -1,7 +1,6 @@
 import type * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import { type ChangeEvent, type ComponentPropsWithoutRef, type CSSProperties, useId } from 'react';
 import { cn } from '@/lib/cn';
-import { surfaceVariants } from '@/primitives/surface';
 import { type ColorSwatchGroupOption, type ColorSwatchGroupProps, colorSwatchGroupVariants } from './types';
 
 const forbidden = new Set([
@@ -54,12 +53,15 @@ type UseColorSwatchGroupResult = {
   rootProps: ComponentPropsWithoutRef<'fieldset'>;
   legendProps: ComponentPropsWithoutRef<'legend'>;
   groupProps: ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>;
+  rowClass: string;
   items: Item[];
   optionLabelClass: string;
-  indicatorClass: string;
+  ringClass: string;
   custom: {
     key: string;
-    frameClass: string;
+    frameProps: ComponentPropsWithoutRef<'div'> & { 'data-state': 'checked' | 'unchecked' };
+    spectrumProps: ComponentPropsWithoutRef<'span'>;
+    badgeProps: ComponentPropsWithoutRef<'span'>;
     labelProps: ComponentPropsWithoutRef<'label'>;
     inputProps: ComponentPropsWithoutRef<'input'>;
   } | null;
@@ -91,8 +93,6 @@ export function useColorSwatchGroup({
       nativeProps[key] = entry;
     }
   }
-  const frame = surfaceVariants({ tone: 'surface-1', elevation: 1, radius: 'md', padding: 'none' });
-
   const requestPreset = (next: string) => {
     const option = choices.find((choice) => choice.value === next);
     if (disabled || !option || option.disabled || option.value.toLowerCase() === current) {
@@ -107,12 +107,19 @@ export function useColorSwatchGroup({
     }
     onValueChange(next);
   };
+  const customState: 'checked' | 'unchecked' = validValue && !selected ? 'checked' : 'unchecked';
   const custom =
     typeof customLabel === 'string' && customLabel.trim()
       ? {
           // Remount across validity changes rather than switching the native input's controlledness.
           key: validValue ? 'valid' : 'invalid',
-          frameClass: cn(frame, colorSwatchGroupVariants.customFrame()),
+          frameProps: {
+            // The same ring marks the custom control only for an accepted non-preset color.
+            'data-state': customState,
+            className: cn(colorSwatchGroupVariants.customFrame())
+          },
+          spectrumProps: { 'aria-hidden': true, className: cn(colorSwatchGroupVariants.spectrum()) },
+          badgeProps: { 'aria-hidden': true, className: cn(colorSwatchGroupVariants.badge()) },
           labelProps: {
             htmlFor: inputId,
             className: cn(colorSwatchGroupVariants.customLabel()),
@@ -144,13 +151,14 @@ export function useColorSwatchGroup({
       onValueChange: requestPreset,
       className: cn(colorSwatchGroupVariants.group())
     },
+    rowClass: cn(colorSwatchGroupVariants.row()),
     items: choices.map((option) => ({
       key: option.value.toLowerCase(),
       label: option.label,
       itemProps: {
         value: option.value,
         disabled: disabled || (option.disabled ?? false),
-        className: cn(frame, colorSwatchGroupVariants.item())
+        className: cn(colorSwatchGroupVariants.item())
       },
       patchProps: {
         'aria-hidden': true,
@@ -159,7 +167,7 @@ export function useColorSwatchGroup({
       }
     })),
     optionLabelClass: cn(colorSwatchGroupVariants.optionLabel()),
-    indicatorClass: cn(colorSwatchGroupVariants.indicator()),
+    ringClass: cn(colorSwatchGroupVariants.ring()),
     custom,
     outputProps: {
       'aria-live': 'polite',
