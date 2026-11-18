@@ -101,3 +101,55 @@ export function findCssEntry(project, framework) {
   }
   return { ...entry, module, moduleImports: imports };
 }
+
+/**
+ * The DS stylesheet imports for a CSS mode and package selection, in install-guide order (spec §6.5).
+ * @param {'tailwind' | 'native'} mode
+ * @param {readonly string[]} packages
+ */
+export function designSystemImports(mode, packages) {
+  return [
+    ...(packages.includes('tokens')
+      ? [mode === 'tailwind' ? '@egdev/tokens/theme.css' : '@egdev/tokens/tokens.css']
+      : []),
+    ...(packages.includes('ui') ? ['@egdev/ui/styles.css'] : []),
+    ...(packages.includes('effects') ? ['@egdev/effects/styles.css'] : [])
+  ];
+}
+
+/**
+ * Inserts the missing `@import` lines, never reordering or duplicating one that exists in any quote
+ * style. Tailwind mode inserts after `@import "tailwindcss"`; native mode at the top, after any
+ * `@charset`. Either way, after the last design system import already present.
+ * @param {string} text
+ * @param {string} file
+ * @param {'tailwind' | 'native'} mode
+ * @param {readonly string[]} wanted
+ * @returns {{ text: string, added: string[], error?: undefined } | { text: null, added: string[], error: string }}
+ */
+export function insertCssImports(text, file, mode, wanted) {
+  const present = new Set(cssImports(text));
+  const missing = wanted.filter((target) => !present.has(target));
+  if (missing.length === 0) {
+    return { text, added: [] };
+  }
+  const eol = text.includes('\r\n') ? '\r\n' : '\n';
+  const lines = text.split(eol);
+  /** @param {string} line */
+  const target = (line) => cssImports(line)[0];
+  let anchor =
+    mode === 'tailwind'
+      ? lines.findIndex((line) => target(line) === 'tailwindcss')
+      : lines.findIndex((line) => line.trimStart().startsWith('@charset'));
+  if (mode === 'tailwind' && anchor === -1) {
+    return { text: null, added: [], error: `${file} has no @import "tailwindcss"; add it first or pass --css native.` };
+  }
+  for (const [index, line] of lines.entries()) {
+    const imported = target(line);
+    if (index > anchor && imported && wanted.includes(imported)) {
+      anchor = index;
+    }
+  }
+  lines.splice(anchor + 1, 0, ...missing.map((line) => `@import "${line}";`));
+  return { text: lines.join(eol), added: missing };
+}

@@ -57,3 +57,52 @@ export function formatDoctorJson({ project, report, release }) {
   };
   return `${JSON.stringify(document, null, 2)}\n`;
 }
+
+/** @typedef {import('./manifest.mjs').Action} Action */
+/**
+ * @typedef {{
+ *   command: 'init',
+ *   project: string,
+ *   packageManager: 'npm' | 'pnpm',
+ *   framework: 'next' | 'vite',
+ *   cssMode: 'tailwind' | 'native',
+ *   release: { dir: string, commit: string }
+ * }} PlanHeader
+ */
+
+/**
+ * `egdev-ds init apps/hub (npm, vite, native) from ../egdev-design-system/release at e712915`.
+ * @param {PlanHeader} header
+ */
+export const formatHeader = ({ command, project, packageManager, framework, cssMode, release }) =>
+  `egdev-ds ${command} ${project} (${packageManager}, ${framework}, ${cssMode}) from ${release.dir} at ${release.commit.slice(0, 7)}`;
+
+/**
+ * One plan line: the verb padded to eight columns, the project-relative path, then the detail.
+ * Text shortens a copy's sha256; JSON keeps all 64 characters.
+ * @param {Action} action
+ */
+export function formatAction({ verb, path, detail }) {
+  const shown = verb === 'copy' ? detail.replace(/^(sha256 [0-9a-f]{12})[0-9a-f]{52}$/, '$1…') : detail;
+  return `  ${verb.padEnd(8)}${path}${shown ? `  ${shown}` : ''}`;
+}
+
+/**
+ * @param {{ header: PlanHeader, actions: readonly Action[], result: 'planned' | 'applied' | 'current' | 'failed' }} input
+ * @returns {string}
+ */
+export function formatPlanJson({ header, actions, result }) {
+  const document = {
+    schemaVersion: 1,
+    command: header.command,
+    project: header.project,
+    packageManager: header.packageManager,
+    framework: header.framework,
+    cssMode: header.cssMode,
+    release: header.release,
+    actions,
+    findings: [],
+    result
+  };
+  return `${JSON.stringify(document, null, 2)}\n`;
+}

@@ -45,6 +45,15 @@ export class UsageError extends Error {
   }
 }
 
+/** A refused precondition: exit 2 with one stderr line and no usage. Nothing is written. */
+export class RefusedError extends Error {
+  /** @param {string} message */
+  constructor(message) {
+    super(message);
+    this.status = 2;
+  }
+}
+
 /** @type {readonly PackageName[]} */
 export const PACKAGE_NAMES = ['tokens', 'ui', 'effects', 'system', 'mcp'];
 
