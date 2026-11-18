@@ -48,6 +48,32 @@ export const MANIFESTS = {
 // The release set once `@egdev/cli` joins `release:pack` (Q7).
 export const FULL_SET = ['tokens', 'ui', 'effects', 'system', 'mcp', 'cli'];
 
+// Release B, packed at OTHER_COMMIT: new versions except system, which only changes commit.
+export const MANIFESTS_B = {
+  tokens: { name: '@egdev/tokens', version: '0.6.0' },
+  ui: { name: '@egdev/ui', version: '0.4.0', peerDependencies: { ...peers, '@egdev/tokens': '0.6.0' } },
+  effects: {
+    name: '@egdev/effects',
+    version: '0.2.2',
+    dependencies: { '@egdev/ui': '0.4.0' },
+    peerDependencies: { ...peers, three: '0.160.0', '@egdev/tokens': '0.6.0' }
+  },
+  system: { name: '@egdev/system', version: '0.4.1' },
+  mcp: { name: '@egdev/mcp', version: '0.4.2', dependencies: { '@egdev/system': '0.4.1' } },
+  cli: { name: '@egdev/cli', version: '0.1.1', bin: { 'egdev-ds': './bin/egdev-ds.mjs' } }
+};
+
+// The CHANGELOG.md each release B tarball ships (Q3); older sections must not reach the diff.
+export const CHANGELOGS_B = {
+  tokens:
+    '# Changelog\n\n## 0.6.0\n\n- Adds the surface-raised token.\n\n## 0.5.1\n\n- Fixes the focus ring contrast.\n\n## 0.5.0\n\n- First vendored release.\n',
+  ui: '# Changelog\n\n## 0.4.0\n\n- Adds Tabs orientation.\n- Needs @egdev/tokens 0.6.0.\n\n## 0.3.1\n\n- Fixes Button focus.\n',
+  effects: '# Changelog\n\n## 0.2.2\n\n- Follows @egdev/ui 0.4.0.\n\n## 0.2.1\n\n- Old entry.\n',
+  system: '# Changelog\n\n## 0.4.1\n\n- Old entry.\n',
+  mcp: '# Changelog\n\n## 0.4.2\n\n- Adds the doctor tool.\n\n## 0.4.1\n\n- Old entry.\n',
+  cli: '# Changelog\n\n## 0.1.1\n\n- Adds upgrade.\n\n## 0.1.0\n\n- First release.\n'
+};
+
 function tarHeader(name, size) {
   const header = Buffer.alloc(512);
   header.write(name, 0, 'utf8');
@@ -68,11 +94,16 @@ function tarHeader(name, size) {
   return header;
 }
 
-// Dependency-free tarball, as `scripts/package-release.test.mjs` builds its fixtures.
-export function tarball(manifest) {
-  const body = Buffer.from(JSON.stringify(manifest));
-  const padding = Buffer.alloc(Math.ceil(body.length / 512) * 512 - body.length);
-  return gzipSync(Buffer.concat([tarHeader('package/package.json', body.length), body, padding, Buffer.alloc(1024)]));
+// Dependency-free tarball, as `scripts/package-release.test.mjs` builds its fixtures. `files` adds
+// entries after the manifest, such as `{ 'package/CHANGELOG.md': text }`.
+export function tarball(manifest, files = {}) {
+  const entries = [['package/package.json', JSON.stringify(manifest)], ...Object.entries(files)];
+  const parts = entries.flatMap(([name, content]) => {
+    const body = Buffer.from(content);
+    const padding = Buffer.alloc(Math.ceil(body.length / 512) * 512 - body.length);
+    return [tarHeader(name, body.length), body, padding];
+  });
+  return gzipSync(Buffer.concat([...parts, Buffer.alloc(1024)]));
 }
 
 export function write(path, content) {
@@ -336,14 +367,20 @@ export function pnpmNextFixture() {
   return { root: project, project, argument: '.', selected, vendorName, spec };
 }
 
-// A `release:pack` folder for the fixture set: tarballs plus `release.json` (spec §3).
-export function releaseFixture(selected = ['tokens', 'ui', 'effects', 'system', 'mcp'], commit = COMMIT) {
+// A `release:pack` folder for the fixture set: tarballs plus `release.json` (spec §3). Release B is
+// `releaseFixture(FULL_SET, OTHER_COMMIT, { manifests: MANIFESTS_B, changelogs: CHANGELOGS_B })`.
+export function releaseFixture(
+  selected = ['tokens', 'ui', 'effects', 'system', 'mcp'],
+  commit = COMMIT,
+  { manifests = MANIFESTS, changelogs = {} } = {}
+) {
   const directory = mkdtempSync(join(tmpdir(), 'egdev-ds-release-'));
   const packages = selected.map((pkg) => {
-    const bytes = tarball(MANIFESTS[pkg]);
-    const file = `egdev-${pkg}-${MANIFESTS[pkg].version}.tgz`;
+    const manifest = manifests[pkg];
+    const bytes = tarball(manifest, changelogs[pkg] ? { 'package/CHANGELOG.md': changelogs[pkg] } : {});
+    const file = `egdev-${pkg}-${manifest.version}.tgz`;
     write(join(directory, file), bytes);
-    return { name: MANIFESTS[pkg].name, version: MANIFESTS[pkg].version, file, sha256: sha256(bytes) };
+    return { name: manifest.name, version: manifest.version, file, sha256: sha256(bytes) };
   });
   write(join(directory, 'release.json'), json({ schemaVersion: 1, commit, dirty: false, packages }));
   return directory;

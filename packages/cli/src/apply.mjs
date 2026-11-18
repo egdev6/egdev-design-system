@@ -48,7 +48,7 @@ const readIfPresent = (path) => {
 };
 
 /** @param {unknown} error */
-const codeOf = (error) =>
+export const codeOf = (error) =>
   error instanceof Error && 'code' in error && typeof error.code === 'string' ? error.code : 'error';
 
 /**

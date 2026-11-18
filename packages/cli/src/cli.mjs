@@ -6,6 +6,11 @@ import { runDoctor } from './doctor.mjs';
 import { runInit, spawnRunner } from './init.mjs';
 import { formatDoctorJson, formatDoctorText, hasErrors } from './plan.mjs';
 import { readRelease } from './release.mjs';
+import { flattenMessage } from './text.mjs';
+
+export { flattenMessage };
+
+import { runUpgrade } from './upgrade.mjs';
 
 /**
  * @typedef {{
@@ -37,28 +42,6 @@ const isDirectory = (path) => {
 };
 
 /**
- * Collapses every line break and the whitespace around it into one space, in linear time.
- * Same result as replacing each whitespace-newline-whitespace run with a space, without the polynomial
- * backtracking of that regular expression (CodeQL js/polynomial-redos).
- * @param {string} text
- * @returns {string}
- */
-export function flattenMessage(text) {
-  const lines = text.split('\n');
-  const last = lines.length - 1;
-  /** @type {string[]} */
-  const parts = [];
-  lines.forEach((line, index) => {
-    const start = index === 0 ? line : line.trimStart();
-    const trimmed = index === last ? start : start.trimEnd();
-    if (trimmed !== '' || index === 0 || index === last) {
-      parts.push(trimmed);
-    }
-  });
-  return parts.join(' ');
-}
-
-/**
  * @param {readonly string[]} args
  * @param {RunContext} context
  * @returns {Promise<number>} the process exit code
@@ -75,10 +58,7 @@ export async function run(args, { cwd, stdout, stderr, runner = spawnRunner }) {
       return 0;
     }
     const { command, project, options } = parsed;
-    if (command === 'upgrade') {
-      throw new RefusedError(`egdev-ds ${command} is not implemented yet; only doctor and init are available.`);
-    }
-    if (command === 'init') {
+    if (command === 'init' || command === 'upgrade') {
       const from = options.from ?? DEFAULT_RELEASE;
       const releaseDir = resolve(cwd, from);
       if (!isDirectory(releaseDir)) {
@@ -89,7 +69,7 @@ export async function run(args, { cwd, stdout, stderr, runner = spawnRunner }) {
         );
       }
       const release = readRelease(releaseDir);
-      return await runInit({
+      return await (command === 'init' ? runInit : runUpgrade)({
         argument: project,
         project: resolve(cwd, project),
         from,

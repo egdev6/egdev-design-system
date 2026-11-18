@@ -25,6 +25,7 @@ import { createGuard } from './guard.mjs';
 import { checkLockfile } from './lockfile.mjs';
 import { isRecord, readPackedManifest, sha256 } from './release.mjs';
 import { satisfies } from './semver.mjs';
+import { flattenMessage } from './text.mjs';
 
 /** @typedef {import('./release.mjs').Release} Release */
 /** @typedef {import('./guard.mjs').GuardAllowlistEntry} GuardAllowlistEntry */
@@ -71,7 +72,7 @@ const isFile = (path) => {
 };
 
 /** @param {string} text */
-const oneLine = (text) => text.replace(/\s*\n\s*/g, ' ').trim();
+const oneLine = (text) => flattenMessage(text).trim();
 
 /** @param {string} path */
 const isRelativePath = (path) =>
@@ -153,7 +154,7 @@ export function readConfig(project, manifest) {
  * @param {string} root
  * @returns {Record<string, unknown> | null}
  */
-function findInstalled(from, name, root) {
+export function findInstalled(from, name, root) {
   for (let directory = from; ; directory = dirname(directory)) {
     if (basename(directory) !== 'node_modules') {
       const text = readText(join(directory, 'node_modules', name, 'package.json'));

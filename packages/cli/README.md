@@ -4,7 +4,7 @@
 library only and has no dependencies. The approved spec is
 [docs/distribution/egdev-ds-cli.md](../../docs/distribution/egdev-ds-cli.md).
 
-This release ships `init` and `doctor`. `upgrade` is reserved: it refuses with exit code 2 until it ships.
+This release ships `init`, `upgrade` and `doctor`.
 
 ## Usage
 
@@ -12,6 +12,7 @@ From a design system checkout:
 
 ```text
 node <ds-repo>/packages/cli/bin/egdev-ds.mjs init <project> [--from <dir>] [--dry-run]
+node <ds-repo>/packages/cli/bin/egdev-ds.mjs upgrade <project> [--from <dir>] [--dry-run]
 node <ds-repo>/packages/cli/bin/egdev-ds.mjs doctor <project> [--from <dir>] [--json]
 ```
 
@@ -26,7 +27,7 @@ egdev-ds --help | --version
 ```
 
 - `<project>` is the app directory that holds its `package.json`, relative to the current directory.
-- `--from <dir>` is a `release:pack` folder with `release.json`. `init` defaults to
+- `--from <dir>` is a `release:pack` folder with `release.json`. `init` and `upgrade` default to
   `../egdev-design-system/release`, resolved against the current directory. `doctor` uses it only for the release
   checks (DS014 commit comparison and DS017 hashes). Without `--from`, those checks are reported as `skipped`.
 - `--json` prints exactly one JSON document on stdout.
@@ -102,13 +103,89 @@ Dry run: nothing written.
   without `--allow-dirty`, and any ambiguous detection. A release that lacks a selected package, `@egdev/cli`
   included, is refused with exit 1.
 
+## `upgrade`
+
+`upgrade` replaces the vendored set of an app that already uses the design system with the set of a newer release,
+as one unit. It never adds a package: only the `@egdev` packages the app declares, or pins through an override, are
+upgraded. An app without `@egdev/effects` stays without it, and `@egdev/cli` is upgraded only when the app has it.
+
+| Flag | Effect |
+| --- | --- |
+| `--no-install` | Skips the install and prints the exact command instead. Integrities stay unverified. |
+| `--offline` | Adds `--offline` to the install. |
+| `--allow-dirty` | Accepts a release packed from a dirty tree. |
+| `--dry-run` | Prints the plan and the changelog diff and writes nothing, `node_modules` included. |
+
+There is no `--packages` and no `--force`: the set moves as one unit, and every key `upgrade` rewrites is already a
+vendored specifier.
+
+### What `upgrade` checks first
+
+- The app has vendored `@egdev` specifiers only. Nothing vendored (use `init`), a registry range, a `workspace:` or
+  `link:` specifier, or an unsafe `file:vendor/` path is refused with exit 2. A mixed set, including legacy names
+  without a commit, is upgraded.
+- The release lists every upgraded package, and each tarball's sha256 matches `release.json`; otherwise exit 1.
+- No upgraded tarball declares a `workspace:` or `link:` specifier, and every `@egdev` dependency or peer names the
+  version of that package in the same release (exit 1). One the app does not declare is refused with exit 2.
+- The external peers of the new tarballs (`react`, `react-dom`, `three`) are satisfied by the installed versions;
+  otherwise exit 2: update them first.
+- A dirty release is refused with exit 2 unless `--allow-dirty`.
+
+### What `upgrade` writes
+
+| File | Effect |
+| --- | --- |
+| `vendor/…/egdev-<pkg>-<version>-<commit7>.tgz` | Copied from the release into the folder each package already uses; sha256 checked again while copying. Unchanged versions are copied too, so the whole set carries one commit. |
+| `package.json` | Every `@egdev` specifier in the dependency fields, npm `overrides` (nested ones included) and `pnpm.overrides`, keeping its `file:` or `file:./` style. npm: a missing `$` override for a new internal dependency is added. pnpm: a missing pin is added. |
+| `pnpm-workspace.yaml` | The `@egdev` values of `overrides:`, edited as text: quotes, comments and layout survive. |
+| `package-lock.json` | npm only, before installing: each replaced entry gets the new `version`, `resolved`, sha512 `integrity` and packed metadata, and the root entry follows `package.json`. |
+| lockfile | `npm install` or `pnpm install` after removing `node_modules/@egdev`, then every vendored integrity is checked, and no lock entry may still point at an old tarball. |
+| old tarballs | Removed after success. |
+
+### Plan output
+
+```text
+egdev-ds upgrade apps/hub (npm, vite, native) from ../egdev-design-system/release at b54222c
+  copy    vendor/egdev-ui-0.4.0-b54222c.tgz  sha256 1f0c3a9be2d4…
+  edit    package.json  dependencies.@egdev/ui = file:vendor/egdev-ui-0.4.0-b54222c.tgz
+  keep    package.json  overrides.@egdev/system = $@egdev/system
+  edit    package-lock.json  node_modules/@egdev/ui = file:vendor/egdev-ui-0.4.0-b54222c.tgz
+  remove  node_modules/@egdev
+  run     npm install
+  remove  vendor/egdev-ui-0.3.1-e712915.tgz
+Changelog (e712915 → b54222c):
+  @egdev/ui 0.3.1 → 0.4.0
+    ## 0.4.0
+
+    - Adds Tabs orientation.
+  @egdev/system 0.4.1 unchanged version
+Dry run: nothing written.
+```
+
+- The changelog diff comes from the `CHANGELOG.md` inside each new tarball: the sections newer than the installed
+  version, up to and including the new one. A legacy name without a commit shows as `unversioned`.
+- A real run ends with `Upgraded to b54222c; <n> vendored integrities verified.`, the next steps and
+  `Review the diff before committing.`
+- A run at the release commit verifies and prints `Already at b54222c; <n> vendored integrities verified; no changes.`
+- With `--json`, the document adds `changelog`: `[{ name, from, to, notes }]`, where `notes` holds the markdown
+  sections, `""` for an unchanged version and `null` when the tarball has no `CHANGELOG.md`.
+
+### Safety
+
+- `upgrade` follows the same rules as `init`: no `git`, writes only inside `<project>`, atomic writes, and one
+  transaction. If a copy, a write, the install or the integrity check fails, `package.json`, the lockfile and
+  `pnpm-workspace.yaml` are restored byte for byte and the copied tarballs are removed (exit 1). `node_modules/@egdev`
+  is not restored; run the install again.
+- Old tarballs are removed only after success. If a removal fails, the run exits 1 with
+  `Cannot remove <file> (<code>); new installation is intact.` and nothing is rolled back.
+
 ## Exit codes
 
 | Code | Meaning |
 | --- | --- |
 | 0 | Success, or already current. `doctor` found no error; warnings and skipped checks do not fail. |
-| 1 | `doctor` found at least one error; the release folder is unreadable, inconsistent or lacks a selected package; or `init` failed and was rolled back. |
-| 2 | Misuse (unknown, duplicate or missing-value flag, missing `<project>`), a missing release folder, an ambiguous detection, conflicts without `--force`, a refused precondition, or a command that is not available yet. Nothing is written. |
+| 1 | `doctor` found at least one error; the release folder is unreadable, inconsistent or lacks a selected package; `init` or `upgrade` failed and was rolled back; or an old tarball could not be removed after a successful upgrade. |
+| 2 | Misuse (unknown, duplicate or missing-value flag, missing `<project>`), a missing release folder, an ambiguous detection, conflicts without `--force`, or a refused precondition. Nothing is written. |
 
 Results go to stdout. Errors go to stderr, one line each; misuse adds the usage line.
 

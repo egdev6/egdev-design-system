@@ -50,6 +50,18 @@ function satisfiesPart(version, part) {
 }
 
 /**
+ * Orders two exact `major.minor.patch` versions; null when either is outside that syntax.
+ * @param {string} a
+ * @param {string} b
+ * @returns {number | null}
+ */
+export function compareVersions(a, b) {
+  const left = parse(a);
+  const right = parse(b);
+  return left && right ? compare(left, right) : null;
+}
+
+/**
  * Whether `version` satisfies `range`; `null` when either is outside the supported syntax.
  * @param {string} version
  * @param {string} range

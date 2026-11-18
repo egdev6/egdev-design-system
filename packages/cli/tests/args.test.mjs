@@ -137,18 +137,13 @@ test('AC2 bin: misuse exits 2 with one error line plus usage on stderr, empty st
   assert.equal(treeHash(cwd), before);
 });
 
-test('AC2 bin: upgrade is refused with exit 2 until PR 4, writing nothing; init is available', () => {
+test('AC2 bin: upgrade and init are available; without a release folder both exit 2 writing nothing', () => {
   const cwd = temporary();
   writeFileSync(join(cwd, 'package.json'), '{}\n');
   const before = treeHash(cwd);
-  assert.deepEqual(runBin(['upgrade', '.', '--json'], cwd), {
-    status: 2,
-    stdout: '',
-    stderr: 'egdev-ds upgrade is not implemented yet; only doctor and init are available.\n'
-  });
-  const init = runBin(['init', '.', '--dry-run'], cwd);
-  assert.equal(init.status, 2);
-  assert.equal(init.stdout, '');
-  assert.ok(!init.stderr.includes('not implemented'), init.stderr);
+  const missing = 'No release folder: pass --from <dir> (default ../egdev-design-system/release not found).\n';
+  for (const command of ['upgrade', 'init']) {
+    assert.deepEqual(runBin([command, '.', '--dry-run'], cwd), { status: 2, stdout: '', stderr: missing });
+  }
   assert.equal(treeHash(cwd), before);
 });
