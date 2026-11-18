@@ -238,7 +238,8 @@ const skip = await skipReason();
 
 test('AC19 real consumers: init → install → ds:doctor → build → upgrade → ds:doctor', {
   skip,
-  timeout: 1_800_000
+  // Below the CI step timeout (20 min) so a hang reports its cause instead of killing the job.
+  timeout: 1_080_000
 }, async (t) => {
   const release = packReleases();
   const work = join(scratch, 'consumers');
