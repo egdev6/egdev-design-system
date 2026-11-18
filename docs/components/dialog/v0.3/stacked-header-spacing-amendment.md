@@ -122,3 +122,13 @@ All implementation checks are **planned**, not observed in this batch. A story i
 ### Planned checks
 
 First arrange separately authorized real-browser baseline measurement for AC-01; then select the token and request the separately approved plan. After that, use test-first behavior regressions, long-title stories, matched real-browser geometry/captures, keyboard/AT checks and scoped package/CSS checks in AC-02–AC-08. None is marked implemented or passed here.
+
+## Owner extension — 2026-11-18
+
+The owner extended this amendment to every Dialog and AlertDialog header variant (verbatim): "revisa la cabecera de los alertDialog y en los dialog en todas su variantes: -Titulo alineado con icono de close - Subtitulo con space-2 de separación - Resto de textos alineados en la partte baja del título". This supersedes the "inline layout unchanged" boundary above.
+
+- **Title and dismiss:** in every Dialog variant the vertical centre of the title's first line matches the dismiss icon's centre.
+- **Subtitle:** the title-to-description separation is `--space-2` in both layouts; title and description carry no inherited browser margins.
+- **Other texts:** the inline description and the status text (both layouts) share the baseline of the title's last line, including multi-line titles. AlertDialog's icon + title row is unchanged.
+- **Measured result** (Chrome, Storybook, 23 header stories): 0.0px deviation for the dismiss centre and the baselines; 6.4px title-to-description in stacked. Implemented on `fix/dialog-stacked-header-spacing` (commit fd93cd7, plan in `odd/tasks/dialog-header-alignment.md`); visually verified by the owner in Storybook on 2026-11-18 ("está OK").
+- **Visible side effects accepted:** the inline title-to-status gap drops from `--space-3` to `--space-2`; AlertDialog's default (stacked) header changes for every consumer; the dismiss button sits about 5px from the panel's top edge.
