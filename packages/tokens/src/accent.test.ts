@@ -38,7 +38,9 @@ const defaultVariables: Readonly<Record<string, string>> = {
   '--shadow-state-indicator': 'var(--shadow-glow-base)',
   '--color-link-default': 'var(--color-fg-brand-raised)',
   '--color-link-hover': 'var(--color-primitive-red-200)',
-  '--gradient-chip-active': 'linear-gradient(180deg, rgba(255, 0, 54, 0.24), rgba(255, 0, 54, 0.09))'
+  '--gradient-chip-active': 'linear-gradient(180deg, rgba(255, 0, 54, 0.24), rgba(255, 0, 54, 0.09))',
+  '--shadow-glow-base': '0 4px 20px 0 rgba(255, 0, 54, 0.15)',
+  '--shadow-glow-active': '0 8px 30px 0 rgba(255, 0, 54, 0.30)'
 };
 
 const white: Rgb = [255, 255, 255];
@@ -179,6 +181,8 @@ function assertCustomMap(theme: AccentTheme, input: Rgb): void {
   expect(normalizedPaint(variable(vars, '--gradient-chip-active'))).toBe(
     `linear-gradient(180deg, rgba(${r}, ${g}, ${b}, 0.24), rgba(${r}, ${g}, ${b}, 0.09))`
   );
+  expect(normalizedPaint(variable(vars, '--shadow-glow-base'))).toBe(`0 4px 20px 0 rgba(${r}, ${g}, ${b}, 0.15)`);
+  expect(normalizedPaint(variable(vars, '--shadow-glow-active'))).toBe(`0 8px 30px 0 rgba(${r}, ${g}, ${b}, 0.3)`);
   for (const stop of [base, hover, top, middle, bottom]) {
     expect(contrast(stop, mix(graphite3, white, 0.045))).toBeGreaterThanOrEqual(4.6);
     expect(contrast(black, mix(stop, black, 0.28))).toBeGreaterThanOrEqual(4.6);
@@ -229,6 +233,24 @@ describe('createAccentTheme public contract', () => {
     expect(blueSheen).not.toContain('255, 0, 54');
     const [r, g, b] = readColor(variable(blue.variables, '--color-state-selected'));
     expect(blueSheen).toBe(`linear-gradient(180deg, rgba(${r}, ${g}, ${b}, 0.24), rgba(${r}, ${g}, ${b}, 0.09))`);
+  });
+
+  it('reproduces the theme.css state glows for the default accent and recolors them for a custom accent', async () => {
+    const { createAccentTheme } = await loadAccent();
+    const theme = readFileSync(resolve('packages/tokens/src/theme.css'), 'utf8');
+    const red = createAccentTheme('#ff0036');
+    const blue = createAccentTheme('#3b82f6');
+    const [r, g, b] = readColor(variable(blue.variables, '--color-state-selected'));
+    for (const [name, alpha] of [
+      ['--shadow-glow-base', '0.15'],
+      ['--shadow-glow-active', '0.3']
+    ] as const) {
+      const declaration = new RegExp(`^\\s*${name}:\\s*([^;]+);`, 'm').exec(theme);
+      expect(variable(red.variables, name)).toBe(declaration?.[1]);
+      const glow = variable(blue.variables, name);
+      expect(glow).not.toContain('255, 0, 54');
+      expect(normalizedPaint(glow)).toContain(`rgba(${r}, ${g}, ${b}, ${alpha})`);
+    }
   });
 
   it.each([

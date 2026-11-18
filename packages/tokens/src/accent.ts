@@ -35,7 +35,9 @@ const defaultVariables = Object.freeze({
   '--shadow-state-indicator': 'var(--shadow-glow-base)',
   '--color-link-default': 'var(--color-fg-brand-raised)',
   '--color-link-hover': 'var(--color-primitive-red-200)',
-  '--gradient-chip-active': 'linear-gradient(180deg, rgba(255, 0, 54, 0.24), rgba(255, 0, 54, 0.09))'
+  '--gradient-chip-active': 'linear-gradient(180deg, rgba(255, 0, 54, 0.24), rgba(255, 0, 54, 0.09))',
+  '--shadow-glow-base': '0 4px 20px 0 rgba(255, 0, 54, 0.15)',
+  '--shadow-glow-active': '0 8px 30px 0 rgba(255, 0, 54, 0.30)'
 });
 
 // Integer weights implement the specified sRGB interpolation with exact
@@ -136,7 +138,9 @@ function customVariables(base: Rgb): AccentTheme['variables'] {
     '--shadow-state-indicator': `0 4px 20px 0 ${rgba(base, 0.15)}`,
     '--color-link-default': color,
     '--color-link-hover': hover,
-    '--gradient-chip-active': `linear-gradient(180deg, ${rgba(base, 0.24)}, ${rgba(base, 0.09)})`
+    '--gradient-chip-active': `linear-gradient(180deg, ${rgba(base, 0.24)}, ${rgba(base, 0.09)})`,
+    '--shadow-glow-base': `0 4px 20px 0 ${rgba(base, 0.15)}`,
+    '--shadow-glow-active': `0 8px 30px 0 ${rgba(base, 0.3)}`
   });
 }
 
