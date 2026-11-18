@@ -87,8 +87,9 @@ describe('AlertDialog header layout', () => {
     render(<Example headerLayout='inline' />);
     const { panel, header, title, description } = headerParts();
     const titleRow = title.parentElement;
-    expect(header).toHaveClass('flex', 'flex-row', 'items-center');
+    expect(header).toHaveClass('flex', 'flex-row', 'items-baseline-last');
     expect(header).not.toHaveClass('flex-col');
+    expect(header).not.toHaveClass('items-center');
     expect(titleRow).toHaveClass('flex', 'items-center', 'gap-[var(--space-3)]');
     expect(titleRow?.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
     expect(titleRow?.parentElement).toBe(header);
@@ -130,5 +131,17 @@ describe('AlertDialog header layout', () => {
 
   it('limits the public layout values', () => {
     expectTypeOf<AlertDialogContentProps['headerLayout']>().toEqualTypeOf<HeaderLayout | undefined>();
+  });
+
+  it('separates the description by --space-2 without inherited margins in every layout', () => {
+    const { rerender } = render(<Example />);
+    for (const layout of [undefined, 'stacked', 'inline'] as const) {
+      rerender(<Example headerLayout={layout} />);
+      const { header, title, description } = headerParts();
+      expect(header).toHaveClass('gap-[var(--space-2)]');
+      expect(title).toHaveClass('m-0');
+      expect(description).toHaveClass('m-0');
+      expect(title.parentElement).toHaveClass('flex', 'items-center', 'gap-[var(--space-3)]');
+    }
   });
 });

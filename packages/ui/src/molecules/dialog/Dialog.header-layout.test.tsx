@@ -5,6 +5,9 @@ import { Dialog, DialogContent } from '.';
 import type { DialogContentProps } from './types';
 
 type HeaderLayout = 'inline' | 'stacked';
+/** Centres the lg dismiss (`--space-12`) on the title's first line below the header's `--space-4` padding. */
+const DISMISS_TOP =
+  'top-[calc(var(--space-4)+(var(--text-heading-small)*var(--text-heading-small--line-height)-var(--space-12))/2)]';
 
 function Example({ headerLayout }: { headerLayout?: HeaderLayout }) {
   return (
@@ -60,7 +63,10 @@ describe('Dialog header layout', () => {
       'border-b-0',
       'py-[var(--space-4)]',
       'ps-[var(--space-6)]',
-      'pe-[calc(var(--space-4)+var(--space-12))]'
+      'pe-[calc(var(--space-4)+var(--space-12))]',
+      'flex',
+      'items-baseline-last',
+      'gap-[var(--space-2)]'
     );
     expect(header.children).toHaveLength(3);
     expect(Array.from(header.children)).toEqual([title, status, description]);
@@ -84,7 +90,8 @@ describe('Dialog header layout', () => {
     const titleRow = title.parentElement;
     expect(header).toHaveClass('flex', 'flex-col');
     expect(titleRow).not.toBe(header);
-    expect(titleRow).toHaveClass('flex', 'items-center');
+    expect(titleRow).toHaveClass('flex', 'items-baseline-last');
+    expect(titleRow).not.toHaveClass('items-center');
     expect(titleRow).toContainElement(status);
     expect(title.nextElementSibling).toBe(status);
     expect(titleRow?.parentElement).toBe(header);
@@ -105,7 +112,7 @@ describe('Dialog header layout', () => {
     if (!titleId || !descriptionId) {
       throw new Error('Missing dialog title or description relationship');
     }
-    expect(first.dismiss).toHaveClass('absolute', 'top-[var(--space-4)]', 'end-[var(--space-4)]');
+    expect(first.dismiss).toHaveClass('absolute', DISMISS_TOP, 'end-[var(--space-4)]');
     expect(first.panel.lastElementChild).toBe(first.dismiss);
     expect(screen.getByRole('textbox', { name: 'Name' })).toHaveFocus();
 
@@ -118,7 +125,7 @@ describe('Dialog header layout', () => {
       expect(description.id).toBe(descriptionId);
       expect(dismiss).toBe(first.dismiss);
       expect(panel.lastElementChild).toBe(dismiss);
-      expect(dismiss).toHaveClass('absolute', 'top-[var(--space-4)]', 'end-[var(--space-4)]');
+      expect(dismiss).toHaveClass('absolute', DISMISS_TOP, 'end-[var(--space-4)]');
       await user.tab();
       expect(within(panel).getByRole('button', { name: 'Save' })).toHaveFocus();
       await user.tab();
@@ -151,5 +158,42 @@ describe('Dialog header layout', () => {
     expect(title.parentElement?.parentElement).toBe(header);
     expect(title.parentElement?.nextElementSibling).toBe(within(panel).getByText('More details'));
     expect(header?.querySelector('.eg-dialog__status')).toBeNull();
+  });
+
+  it('separates the description by --space-2 without inherited margins in every layout', () => {
+    const { rerender } = render(<Example />);
+    for (const headerLayout of [undefined, 'inline', 'stacked'] as const) {
+      rerender(<Example headerLayout={headerLayout} />);
+      const { header, title, description, dismiss } = headerParts();
+      expect(header).toHaveClass('gap-[var(--space-2)]');
+      expect(header).not.toHaveClass('gap-[var(--space-3)]');
+      expect(title).toHaveClass('m-0');
+      expect(description).toHaveClass('m-0');
+      expect(dismiss).toHaveClass(DISMISS_TOP);
+      expect(dismiss).not.toHaveClass('top-[var(--space-4)]');
+    }
+  });
+
+  it('aligns inline description and status to the last title baseline', () => {
+    const { rerender } = render(<Example />);
+    for (const headerLayout of [undefined, 'inline'] as const) {
+      rerender(<Example headerLayout={headerLayout} />);
+      const { header } = headerParts();
+      expect(header).toHaveClass('flex', 'items-baseline-last');
+      expect(header).not.toHaveClass('items-center');
+    }
+    rerender(<Example headerLayout='stacked' />);
+    const stacked = headerParts();
+    expect(stacked.header).toHaveClass('items-start');
+    expect(stacked.header).not.toHaveClass('items-baseline-last');
+    expect(stacked.title.parentElement).toHaveClass('items-baseline-last');
+  });
+
+  it('lets the stacked status follow the title row last baseline', () => {
+    render(<Example headerLayout='stacked' />);
+    const { title, status } = headerParts();
+    expect(title.parentElement).toHaveClass('items-baseline-last');
+    expect(status.parentElement).toBe(title.parentElement);
+    expect(status).not.toHaveClass('self-start');
   });
 });

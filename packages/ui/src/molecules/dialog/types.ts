@@ -134,21 +134,26 @@ export const dialogPanelVariants = cva(
     }
   }
 );
+/** Inline headers align the description and status to the title's last baseline, `--space-2` apart. */
 export const dialogHeadVariants = cva(
-  'relative shrink-0 border-b-0 py-[var(--space-4)] ps-[var(--space-6)] pe-[calc(var(--space-4)+var(--space-12))]',
+  'relative shrink-0 border-b-0 py-[var(--space-4)] ps-[var(--space-6)] pe-[calc(var(--space-4)+var(--space-12))] gap-[var(--space-2)]',
   {
-    variants: { headerLayout: { inline: '', stacked: 'flex flex-col items-start' } },
+    variants: {
+      headerLayout: { inline: 'flex items-baseline-last', stacked: 'flex flex-col items-start' }
+    },
     defaultVariants: { headerLayout: 'inline' }
   }
 );
-export const dialogTitleRowVariants = cva('flex items-center gap-[var(--space-3)] max-w-full min-w-0');
-export const dialogDismissVariants = cva('absolute top-[var(--space-4)] end-[var(--space-4)]');
-export const dialogTitleVariants = cva('font-display uppercase text-heading-small text-fg-default');
-export const dialogDescriptionVariants = cva('text-body-default text-fg-secondary');
-export const dialogStatusVariants = cva('text-label-default text-fg-muted', {
-  variants: { headerLayout: { inline: '', stacked: 'self-start' } },
-  defaultVariants: { headerLayout: 'inline' }
-});
+/** Stacked title row: the status shares the title's last baseline. */
+export const dialogTitleRowVariants = cva('flex items-baseline-last gap-[var(--space-3)] max-w-full min-w-0');
+/** Centres the `lg` dismiss (`--space-12`) on the title's first line, below the header's `--space-4` padding. */
+export const dialogDismissVariants = cva(
+  'absolute top-[calc(var(--space-4)+(var(--text-heading-small)*var(--text-heading-small--line-height)-var(--space-12))/2)] end-[var(--space-4)]'
+);
+/** Header text zeroes the browser's default heading and paragraph margins in every layout. */
+export const dialogTitleVariants = cva('m-0 font-display uppercase text-heading-small text-fg-default');
+export const dialogDescriptionVariants = cva('m-0 text-body-default text-fg-secondary');
+export const dialogStatusVariants = cva('text-label-default text-fg-muted');
 export const dialogBodyVariants = cva('min-h-0 overflow-y-auto', {
   variants: { bodyPadding: { default: 'p-[var(--space-6)]', compact: 'p-[var(--space-3)]' } },
   defaultVariants: { bodyPadding: 'default' }

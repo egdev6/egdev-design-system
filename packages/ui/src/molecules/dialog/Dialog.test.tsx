@@ -353,7 +353,7 @@ describe('Dialog public behavior', () => {
     expect(dialog.querySelector('header')).toContainElement(screen.getByText('Saved'));
     expect(screen.getByRole('button', { name: 'Close' })).toHaveClass(
       'absolute',
-      'top-[var(--space-4)]',
+      'top-[calc(var(--space-4)+(var(--text-heading-small)*var(--text-heading-small--line-height)-var(--space-12))/2)]',
       'end-[var(--space-4)]'
     );
     expect(dialog.querySelector('header')).toContainElement(screen.getByText('Adjust preferences'));
