@@ -13,7 +13,7 @@ import {
 } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { gunzipSync } from 'node:zlib';
+import { readPackedManifest } from '../../packages/cli/src/release.mjs';
 
 // Release set decided by docs/odd/distribution/342-local-tarballs.md (R1). Members that do not
 // exist yet in the workspace are skipped, so the two packages added by later tasks join the same
@@ -96,31 +96,9 @@ function packMember(member, destination, staging) {
   return { name: member.name, version: member.version, file, path, directory: member.directory };
 }
 
-function headerString(header, offset, length) {
-  const field = header.subarray(offset, offset + length);
-  const end = field.indexOf(0);
-  return field.subarray(0, end === -1 ? field.length : end).toString('utf8');
-}
-
-// Dependency-free reader for the packed manifest: gunzip plus 512-byte tar headers, no `tar` CLI
-// and no new dependency on any platform.
-export function readPackedManifest(tarball) {
-  const archive = gunzipSync(readFileSync(tarball));
-  for (let offset = 0; offset + 512 <= archive.length; ) {
-    const header = archive.subarray(offset, offset + 512);
-    if (header.every((byte) => byte === 0)) {
-      break;
-    }
-    const entryName = headerString(header, 0, 100).replace(/^\.\//, '');
-    const size = Number.parseInt(headerString(header, 124, 12).trim() || '0', 8);
-    const dataStart = offset + 512;
-    if (entryName === 'package/package.json') {
-      return JSON.parse(archive.subarray(dataStart, dataStart + size).toString('utf8'));
-    }
-    offset = dataStart + Math.ceil(size / 512) * 512;
-  }
-  throw new Error(`No package/package.json inside ${tarball}`);
-}
+// The packed-manifest reader has one owner, in the CLI, which cannot import `scripts/` when it runs
+// from its tarball (docs/distribution/egdev-ds-cli.md §2).
+export { readPackedManifest };
 
 export function changelogError({ name, version, directory }) {
   const path = join(directory, 'CHANGELOG.md');

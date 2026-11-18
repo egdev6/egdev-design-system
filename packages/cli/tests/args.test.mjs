@@ -1,0 +1,155 @@
+import assert from 'node:assert/strict';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { after, test } from 'node:test';
+import { parseArgs, USAGE, USAGE_LINE } from '../src/args.mjs';
+import { runBin, treeHash } from './helpers.mjs';
+
+const scratch = [];
+after(() => {
+  for (const path of scratch) {
+    rmSync(path, { recursive: true, force: true });
+  }
+});
+const temporary = () => {
+  const directory = mkdtempSync(join(tmpdir(), 'egdev-ds-args-'));
+  scratch.push(directory);
+  return directory;
+};
+
+const defaults = {
+  accent: false,
+  allowDirty: false,
+  dryRun: false,
+  force: false,
+  json: false,
+  noInstall: false,
+  offline: false
+};
+
+test('AC2 parseArgs reads every documented command and flag', () => {
+  assert.deepEqual(parseArgs(['--help']), { kind: 'help' });
+  assert.deepEqual(parseArgs(['doctor', 'apps/hub', '--help']), { kind: 'help' });
+  assert.deepEqual(parseArgs(['--version']), { kind: 'version' });
+  assert.deepEqual(parseArgs(['doctor', '.']), { kind: 'command', command: 'doctor', project: '.', options: defaults });
+  assert.deepEqual(parseArgs(['doctor', '--json', 'apps/hub', '--from', '../release']), {
+    kind: 'command',
+    command: 'doctor',
+    project: 'apps/hub',
+    options: { ...defaults, json: true, from: '../release' }
+  });
+  assert.deepEqual(
+    parseArgs([
+      'init',
+      'app',
+      '--packages',
+      'tokens,ui,effects',
+      '--css',
+      'tailwind',
+      '--css-entry',
+      'src/app.css',
+      '--accent',
+      '--no-install',
+      '--offline',
+      '--allow-dirty',
+      '--force',
+      '--dry-run'
+    ]),
+    {
+      kind: 'command',
+      command: 'init',
+      project: 'app',
+      options: {
+        accent: true,
+        allowDirty: true,
+        dryRun: true,
+        force: true,
+        json: false,
+        noInstall: true,
+        offline: true,
+        packages: ['tokens', 'ui', 'effects'],
+        css: 'tailwind',
+        cssEntry: 'src/app.css'
+      }
+    }
+  );
+  assert.deepEqual(parseArgs(['upgrade', 'app', '--offline', '--dry-run']).options, {
+    ...defaults,
+    offline: true,
+    dryRun: true
+  });
+});
+
+test('AC2 parseArgs rejects misuse with one stable message each', () => {
+  const cases = [
+    [[], 'Missing command.'],
+    [['fix', '.'], 'Unknown command: fix'],
+    [['--verbose'], 'Unknown argument: --verbose'],
+    [['--version', 'doctor'], 'Unexpected argument: doctor'],
+    [['doctor'], 'Missing <project>.'],
+    [['doctor', 'a', 'b'], 'Unexpected argument: b'],
+    [['doctor', '.', '--verbose'], 'Unknown argument: --verbose'],
+    [['doctor', '.', '--dry-run'], 'Unknown argument for doctor: --dry-run'],
+    [['upgrade', '.', '--packages', 'ui'], 'Unknown argument for upgrade: --packages'],
+    [['doctor', '.', '--from'], 'Missing value: --from'],
+    [['doctor', '.', '--from', '--json'], 'Missing value: --from'],
+    [['doctor', '.', '--from', ''], 'Missing value: --from'],
+    [['doctor', '.', '--json', '--json'], 'Duplicate argument: --json'],
+    [['doctor', '.', '--from=release'], 'Unknown argument: --from=release'],
+    [['init', '.', '--packages', 'ui,cli'], 'Invalid packages: choose from tokens,ui,effects,system,mcp.'],
+    [['init', '.', '--packages', 'ui,ui'], 'Invalid packages: choose from tokens,ui,effects,system,mcp.'],
+    [['init', '.', '--css', 'sass'], 'Invalid --css: choose tailwind or native.'],
+    [['init', '.', '--css-entry', 'src/app.scss'], 'Invalid --css-entry: expected a .css file.']
+  ];
+  for (const [args, message] of cases) {
+    assert.throws(
+      () => parseArgs(args),
+      (error) =>
+        error instanceof Error && error.message === message && /** @type {{status?: number}} */ (error).status === 2,
+      `${JSON.stringify(args)} must fail with ${message}`
+    );
+  }
+});
+
+test('AC2 bin: --help and --version print on stdout and exit 0', () => {
+  const cwd = temporary();
+  const help = runBin(['--help'], cwd);
+  assert.deepEqual(help, { status: 0, stdout: USAGE, stderr: '' });
+  assert.match(USAGE, /^Usage:\n {2}egdev-ds init {4}<project> \[--from <dir>\]/);
+  assert.match(USAGE, /\n {2}egdev-ds doctor {2}<project> \[--from <dir>\] \[--json\]\n/);
+  assert.deepEqual(runBin(['--version'], cwd), { status: 0, stdout: '0.1.0\n', stderr: '' });
+});
+
+test('AC2 bin: misuse exits 2 with one error line plus usage on stderr, empty stdout, no files changed', () => {
+  const cwd = temporary();
+  writeFileSync(join(cwd, 'package.json'), '{}\n');
+  const before = treeHash(cwd);
+  for (const [args, message] of [
+    [['doctor', '.', '--unknown'], 'Unknown argument: --unknown'],
+    [['doctor', '.', '--json', '--json'], 'Duplicate argument: --json'],
+    [['doctor', '.', '--from'], 'Missing value: --from'],
+    [['doctor'], 'Missing <project>.'],
+    [[], 'Missing command.']
+  ]) {
+    assert.deepEqual(runBin(args, cwd), { status: 2, stdout: '', stderr: `${message}\n${USAGE_LINE}\n` });
+  }
+  assert.equal(treeHash(cwd), before);
+});
+
+test('AC2 bin: init and upgrade are refused with exit 2 until PR 3 and PR 4, writing nothing', () => {
+  const cwd = temporary();
+  writeFileSync(join(cwd, 'package.json'), '{}\n');
+  const before = treeHash(cwd);
+  assert.deepEqual(runBin(['init', '.', '--dry-run'], cwd), {
+    status: 2,
+    stdout: '',
+    stderr: 'egdev-ds init is not implemented yet; only doctor is available.\n'
+  });
+  assert.deepEqual(runBin(['upgrade', '.', '--json'], cwd), {
+    status: 2,
+    stdout: '',
+    stderr: 'egdev-ds upgrade is not implemented yet; only doctor is available.\n'
+  });
+  assert.equal(treeHash(cwd), before);
+});
