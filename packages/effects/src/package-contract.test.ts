@@ -5,14 +5,14 @@ import { describe, expect, it } from 'vitest';
 const manifest = JSON.parse(readFileSync(resolve(process.cwd(), 'packages/effects/package.json'), 'utf8'));
 
 describe('@egdev/effects package contract', () => {
-  it('exposes only its built root and stylesheet and publishes dist', () => {
+  it('exposes only its built root and stylesheet and publishes dist and its changelog', () => {
     expect(manifest.main).toBe('./dist/index.js');
     expect(manifest.types).toBe('./dist/index.d.ts');
     expect(manifest.exports).toEqual({
       '.': { types: './dist/index.d.ts', import: './dist/index.js' },
       './styles.css': './dist/styles.css'
     });
-    expect(manifest.files).toEqual(['dist']);
+    expect(manifest.files).toEqual(['dist', 'CHANGELOG.md']);
     expect(manifest.sideEffects).toEqual(['**/*.css']);
   });
 

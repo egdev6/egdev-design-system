@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import {
   existsSync,
   mkdirSync,
@@ -18,13 +19,17 @@ import { fileURLToPath } from 'node:url';
 import { gunzipSync, gzipSync } from 'node:zlib';
 import {
   changelogError,
+  completeReleasePack,
   finishReleasePack,
   formatPackedLine,
+  RELEASE_MANIFEST_FILE,
   RELEASE_SET,
   readPackedManifest,
+  readReleaseProvenance,
   releaseMembers,
   tarballName,
-  verifyPackedManifests
+  verifyPackedManifests,
+  writeReleaseManifest
 } from './lib/pack-packages.mjs';
 
 // The pack run is shared by every check in this file, so the workspace is built once.
@@ -77,8 +82,12 @@ test('pnpm release:pack writes the versioned release set', async (t) => {
   const run = packedRelease();
   const expected = members.map((member) => tarballName(member.name, member.version)).sort();
 
-  await t.test('one tarball per workspace member, named with its manifest version', () => {
-    assert.deepEqual(readdirSync(releaseDir).sort(), expected, 'release/ must hold exactly the versioned tarballs');
+  await t.test('one tarball per workspace member, named with its manifest version, plus release.json', () => {
+    assert.deepEqual(
+      readdirSync(releaseDir).sort(),
+      [...expected, 'release.json'].sort(),
+      'release/ must hold exactly the versioned tarballs and release.json'
+    );
     for (const member of members) {
       assert.ok(
         member.version,
@@ -116,6 +125,42 @@ test('pnpm release:pack writes the versioned release set', async (t) => {
       const manifest = readPackedManifest(entry.path);
       assert.equal(manifest.name, entry.name);
       assert.equal(manifest.version, entry.version);
+    }
+  });
+
+  await t.test('release.json records the commit, the dirty flag and the sha256 of every tarball', () => {
+    const manifest = JSON.parse(readFileSync(join(releaseDir, 'release.json'), 'utf8'));
+    assert.deepEqual(Object.keys(manifest), ['schemaVersion', 'commit', 'dirty', 'packages']);
+    assert.equal(manifest.schemaVersion, 1);
+    assert.match(manifest.commit, /^[0-9a-f]{40}$/);
+    assert.equal(manifest.commit, git(root, ['rev-parse', 'HEAD']), 'commit must be the HEAD that was packed');
+    assert.equal(
+      manifest.dirty,
+      git(root, ['status', '--porcelain']) !== '',
+      'dirty must reflect uncommitted or untracked changes in the packed tree'
+    );
+    assert.deepEqual(
+      manifest.packages,
+      members.map((member) => {
+        const file = tarballName(member.name, member.version);
+        return { name: member.name, version: member.version, file, sha256: sha256Of(join(releaseDir, file)) };
+      }),
+      'release.json must list every tarball in release-set order with its real sha256'
+    );
+    assert.ok(
+      run.stdout.split('\n').includes(`release.json: ${manifest.commit}${manifest.dirty ? ' (dirty)' : ''}`),
+      'release:pack must print the recorded provenance'
+    );
+  });
+
+  await t.test('every tarball ships the package CHANGELOG.md', () => {
+    for (const member of members) {
+      const path = join(releaseDir, tarballName(member.name, member.version));
+      assert.equal(
+        readPackedFile(path, 'package/CHANGELOG.md'),
+        readFileSync(join(member.directory, 'CHANGELOG.md'), 'utf8'),
+        `${member.name} must pack its CHANGELOG.md`
+      );
     }
   });
 
@@ -185,6 +230,179 @@ test('release verification rejects an MCP tarball without its carrier dependency
     writeTarball(path, { name: '@egdev/mcp', version: '0.1.0' });
     const entry = { name: '@egdev/mcp', version: '0.1.0', path, directory: fixture };
     assert.match(verifyPackedManifests([entry]).join('\n'), /packed @egdev\/system dependency/);
+  } finally {
+    rmSync(fixture, { recursive: true, force: true });
+  }
+});
+
+function git(cwd, args) {
+  const result = spawnSync('git', args, { cwd, encoding: 'utf8' });
+  assert.equal(result.status, 0, `git ${args.join(' ')} failed: ${result.stderr}`);
+  return result.stdout.trim();
+}
+
+function sha256Of(path) {
+  return createHash('sha256').update(readFileSync(path)).digest('hex');
+}
+
+// Reads one entry from a packed tarball with the same gunzip + 512-byte header walk as the lib.
+function readPackedFile(tarball, entry) {
+  const archive = gunzipSync(readFileSync(tarball));
+  for (let offset = 0; offset + 512 <= archive.length; ) {
+    const header = archive.subarray(offset, offset + 512);
+    if (header.every((byte) => byte === 0)) {
+      break;
+    }
+    const name = header.subarray(0, 100).toString('utf8').split('\0')[0].replace(/^\.\//, '');
+    const size = Number.parseInt(header.subarray(124, 136).toString('utf8').replace(/\0.*$/, '').trim() || '0', 8);
+    const start = offset + 512;
+    if (name === entry) {
+      return archive.subarray(start, start + size).toString('utf8');
+    }
+    offset = start + Math.ceil(size / 512) * 512;
+  }
+  return undefined;
+}
+
+// Fixture release folder with two tarballs, as a successful pack leaves it.
+function fixtureRelease(fixture) {
+  const destination = join(fixture, 'release');
+  mkdirSync(destination, { recursive: true });
+  writeFileSync(join(fixture, 'CHANGELOG.md'), '# Changelog\n\n## 0.0.1\n');
+  return ['@egdev/tokens', '@egdev/ui'].map((name) => {
+    const file = tarballName(name, '0.0.1');
+    const path = join(destination, file);
+    writeTarball(path, { name, version: '0.0.1' });
+    return { name, version: '0.0.1', file, path, directory: fixture };
+  });
+}
+
+const fixtureProvenance = { commit: 'a'.repeat(40), dirty: false };
+
+test('writeReleaseManifest writes the release.json schema with the real sha256 values', () => {
+  const fixture = mkdtempSync(join(tmpdir(), 'egdev-release-manifest-'));
+  try {
+    const packed = fixtureRelease(fixture);
+    const destination = join(fixture, 'release');
+    const written = writeReleaseManifest({ destination, packed, provenance: fixtureProvenance });
+    const path = join(destination, RELEASE_MANIFEST_FILE);
+    assert.equal(RELEASE_MANIFEST_FILE, 'release.json');
+    const expected = {
+      schemaVersion: 1,
+      commit: 'a'.repeat(40),
+      dirty: false,
+      packages: packed.map((entry) => ({
+        name: entry.name,
+        version: entry.version,
+        file: entry.file,
+        sha256: sha256Of(entry.path)
+      }))
+    };
+    assert.deepEqual(written, expected);
+    const bytes = readFileSync(path, 'utf8');
+    assert.equal(bytes, `${JSON.stringify(expected, null, 2)}\n`, 'release.json keeps a fixed key order and format');
+    assert.deepEqual(
+      readdirSync(destination).sort(),
+      [...packed.map((entry) => entry.file), 'release.json'].sort(),
+      'The atomic write must leave no temporary file behind'
+    );
+    writeReleaseManifest({ destination, packed, provenance: fixtureProvenance });
+    assert.equal(readFileSync(path, 'utf8'), bytes, 'The same tarballs and tree must give byte-identical output');
+    writeReleaseManifest({ destination, packed, provenance: { ...fixtureProvenance, dirty: true } });
+    assert.equal(JSON.parse(readFileSync(path, 'utf8')).dirty, true, 'release:pack records a dirty tree as-is');
+  } finally {
+    rmSync(fixture, { recursive: true, force: true });
+  }
+});
+
+test('writeReleaseManifest rejects a provenance without a full commit SHA', () => {
+  const fixture = mkdtempSync(join(tmpdir(), 'egdev-release-manifest-'));
+  try {
+    const packed = fixtureRelease(fixture);
+    const destination = join(fixture, 'release');
+    assert.throws(
+      () => writeReleaseManifest({ destination, packed, provenance: { commit: 'abc1234', dirty: false } }),
+      /release\.json: commit must be a 40-character hex SHA, got abc1234/
+    );
+    assert.equal(existsSync(join(destination, 'release.json')), false);
+  } finally {
+    rmSync(fixture, { recursive: true, force: true });
+  }
+});
+
+test('readReleaseProvenance reads HEAD and the dirty flag from git', () => {
+  const repo = mkdtempSync(join(tmpdir(), 'egdev-release-provenance-'));
+  try {
+    const identity = ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid'];
+    git(repo, ['init', '--quiet']);
+    writeFileSync(join(repo, 'tracked.txt'), 'one\n');
+    git(repo, ['add', 'tracked.txt']);
+    git(repo, [...identity, 'commit', '--quiet', '--no-gpg-sign', '-m', 'fixture']);
+    const head = git(repo, ['rev-parse', 'HEAD']);
+    assert.deepEqual(readReleaseProvenance(repo), { commit: head, dirty: false });
+    writeFileSync(join(repo, 'untracked.txt'), 'new\n');
+    assert.deepEqual(readReleaseProvenance(repo), { commit: head, dirty: true }, 'Untracked files make the tree dirty');
+    rmSync(join(repo, 'untracked.txt'));
+    writeFileSync(join(repo, 'tracked.txt'), 'two\n');
+    assert.deepEqual(readReleaseProvenance(repo), { commit: head, dirty: true }, 'Modified files make the tree dirty');
+  } finally {
+    rmSync(repo, { recursive: true, force: true });
+  }
+});
+
+test('readReleaseProvenance fails outside a git repository', () => {
+  const folder = mkdtempSync(join(tmpdir(), 'egdev-release-provenance-'));
+  try {
+    assert.throws(
+      () => readReleaseProvenance(folder),
+      /^Error: Cannot read the release commit: git rev-parse HEAD failed/
+    );
+  } finally {
+    rmSync(folder, { recursive: true, force: true });
+  }
+});
+
+test('completeReleasePack writes release.json only after a verified pack', () => {
+  const fixture = mkdtempSync(join(tmpdir(), 'egdev-release-complete-'));
+  try {
+    const packed = fixtureRelease(fixture);
+    const destination = join(fixture, 'release');
+    const lines = [];
+    const errors = [];
+    const exitCode = completeReleasePack(packed, {
+      destination,
+      provenance: { ...fixtureProvenance, dirty: true },
+      log: (line) => lines.push(line),
+      error: (line) => errors.push(line)
+    });
+    assert.equal(exitCode, 0);
+    assert.deepEqual(errors, []);
+    assert.deepEqual(lines, [...packed.map(formatPackedLine), `release.json: ${'a'.repeat(40)} (dirty)`]);
+    assert.equal(JSON.parse(readFileSync(join(destination, 'release.json'), 'utf8')).dirty, true);
+
+    const failing = mkdtempSync(join(tmpdir(), 'egdev-release-complete-'));
+    try {
+      const [bad] = fixtureRelease(failing);
+      writeTarball(bad.path, { name: bad.name, version: bad.version, dependencies: { '@egdev/ui': 'workspace:^' } });
+      const failedLines = [];
+      const failedErrors = [];
+      const failedExit = completeReleasePack([bad], {
+        destination: join(failing, 'release'),
+        provenance: fixtureProvenance,
+        log: (line) => failedLines.push(line),
+        error: (line) => failedErrors.push(line)
+      });
+      assert.equal(failedExit, 1);
+      assert.deepEqual(failedLines, []);
+      assert.deepEqual(failedErrors, ['@egdev/tokens: workspace specifier in dependencies.@egdev/ui (workspace:^)']);
+      assert.equal(
+        existsSync(join(failing, 'release', 'release.json')),
+        false,
+        'A failed verification must not write release.json'
+      );
+    } finally {
+      rmSync(failing, { recursive: true, force: true });
+    }
   } finally {
     rmSync(fixture, { recursive: true, force: true });
   }

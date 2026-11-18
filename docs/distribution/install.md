@@ -7,9 +7,12 @@ reach a product as `.tgz` files produced by one command.
 
 `pnpm release:pack` (repository root) builds the workspace, then writes one tarball per
 release-set package into `release/`, named after the package manifest version
-(`egdev-ui-0.1.0.tgz`). The command prints one line per tarball and fails with exit code 1 if a
-packed manifest still contains a `workspace:` specifier or if a package has no `CHANGELOG.md`
-section for the version being packed.
+(`egdev-ui-0.1.0.tgz`). Each tarball ships the package `CHANGELOG.md`. Next to the tarballs it
+writes `release.json`, which records the design system commit, whether the tree was dirty, and the
+sha256 of every tarball (see [versioning.md](./versioning.md#release-provenance-releasejson)). The
+command prints one line per tarball plus one `release.json` line, and fails with exit code 1 — without
+writing `release.json` — if a packed manifest still contains a `workspace:` specifier or if a package
+has no `CHANGELOG.md` section for the version being packed.
 
 Versions and bump rules live in [versioning.md](./versioning.md). This guide installs exactly the
 tarballs written by one `release:pack` run.

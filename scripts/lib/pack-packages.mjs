@@ -1,5 +1,16 @@
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, statSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+  statSync,
+  writeFileSync
+} from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gunzipSync } from 'node:zlib';
@@ -188,6 +199,74 @@ export function finishReleasePack(packed, { log, error }) {
   return 0;
 }
 
+// Provenance record written next to the tarballs (docs/distribution/egdev-ds-cli.md §3, Q1).
+export const RELEASE_MANIFEST_FILE = 'release.json';
+
+function gitOutput(root, args) {
+  const result = spawnSync('git', args, { cwd: root, encoding: 'utf8', timeout: 60_000 });
+  if (result.status !== 0) {
+    const reason = (result.stderr || String(result.error ?? result.signal)).trim().replace(/\s*\n\s*/g, ' ');
+    throw new Error(`Cannot read the release commit: git ${args.join(' ')} failed (${reason})`);
+  }
+  return result.stdout;
+}
+
+// Runs git in the design system repository at pack time: the HEAD commit, and whether the tree has
+// uncommitted or untracked changes (ignored files, such as `release/` itself, do not count).
+export function readReleaseProvenance(root = defaultRoot) {
+  const commit = gitOutput(root, ['rev-parse', 'HEAD']).trim();
+  const dirty = gitOutput(root, ['status', '--porcelain']).trim() !== '';
+  return { commit, dirty };
+}
+
+function sha256File(path) {
+  return createHash('sha256').update(readFileSync(path)).digest('hex');
+}
+
+// Writes `release.json` from the tarballs actually packed, with a fixed key order and no timestamp,
+// so the same tarballs and tree give byte-identical output. The file is written under a temporary
+// name in the same folder and renamed, so a reader never sees a partial record.
+export function writeReleaseManifest({ destination, packed, provenance }) {
+  if (!/^[0-9a-f]{40}$/.test(provenance?.commit ?? '')) {
+    throw new Error(`${RELEASE_MANIFEST_FILE}: commit must be a 40-character hex SHA, got ${provenance?.commit}`);
+  }
+  const manifest = {
+    schemaVersion: 1,
+    commit: provenance.commit,
+    dirty: provenance.dirty === true,
+    packages: packed.map((entry) => ({
+      name: entry.name,
+      version: entry.version,
+      file: entry.file,
+      sha256: sha256File(entry.path)
+    }))
+  };
+  const staging = mkdtempSync(join(destination, '.staging-'));
+  try {
+    const temporary = join(staging, RELEASE_MANIFEST_FILE);
+    writeFileSync(temporary, `${JSON.stringify(manifest, null, 2)}\n`);
+    renameSync(temporary, join(destination, RELEASE_MANIFEST_FILE));
+  } finally {
+    rmSync(staging, { recursive: true, force: true });
+  }
+  return manifest;
+}
+
+export function formatProvenanceLine(manifest) {
+  return `${RELEASE_MANIFEST_FILE}: ${manifest.commit}${manifest.dirty ? ' (dirty)' : ''}`;
+}
+
+// Verifies the packed set and, only when it passes, records its provenance. A failed verification
+// leaves the tarballs in place and writes no `release.json`.
+export function completeReleasePack(packed, { destination, provenance, log, error }) {
+  const exitCode = finishReleasePack(packed, { log, error });
+  if (exitCode !== 0) {
+    return exitCode;
+  }
+  log(formatProvenanceLine(writeReleaseManifest({ destination, packed, provenance })));
+  return 0;
+}
+
 // `release:pack` entry point. Bumps stay manual: this never edits a version.
 export function runReleasePack({
   root = defaultRoot,
@@ -208,8 +287,16 @@ export function runReleasePack({
       return 1;
     }
   }
+  // Read before the folder is emptied, so a tree without git fails without touching `release/`.
+  let provenance;
+  try {
+    provenance = readReleaseProvenance(root);
+  } catch (failure) {
+    error(failure.message);
+    return 1;
+  }
   // One shared folder: emptied on start so a run never mixes tarballs from different versions.
   rmSync(destination, { recursive: true, force: true });
   mkdirSync(destination, { recursive: true });
-  return finishReleasePack(packReleaseSet({ root, destination }), { log, error });
+  return completeReleasePack(packReleaseSet({ root, destination }), { destination, provenance, log, error });
 }
