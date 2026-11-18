@@ -33,6 +33,28 @@ const isDirectory = (path) => {
 };
 
 /**
+ * Collapses every line break and the whitespace around it into one space, in linear time.
+ * Same result as replacing each whitespace-newline-whitespace run with a space, without the polynomial
+ * backtracking of that regular expression (CodeQL js/polynomial-redos).
+ * @param {string} text
+ * @returns {string}
+ */
+export function flattenMessage(text) {
+  const lines = text.split('\n');
+  const last = lines.length - 1;
+  /** @type {string[]} */
+  const parts = [];
+  lines.forEach((line, index) => {
+    const start = index === 0 ? line : line.trimStart();
+    const trimmed = index === last ? start : start.trimEnd();
+    if (trimmed !== '' || index === 0 || index === last) {
+      parts.push(trimmed);
+    }
+  });
+  return parts.join(' ');
+}
+
+/**
  * @param {readonly string[]} args
  * @param {RunContext} context
  * @returns {Promise<number>} the process exit code
@@ -67,7 +89,7 @@ export async function run(args, { cwd, stdout, stderr }) {
     );
     return hasErrors(report.findings) ? 1 : 0;
   } catch (error) {
-    const message = (error instanceof Error ? error.message : String(error)).replace(/\s*\n\s*/g, ' ');
+    const message = flattenMessage(error instanceof Error ? error.message : String(error));
     if (error instanceof UsageError) {
       stderr(`${message}\n${USAGE_LINE}\n`);
       return 2;
