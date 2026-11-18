@@ -57,26 +57,35 @@ export type LinkProps = Omit<ComponentPropsWithoutRef<'a'>, 'href' | 'children'>
      */
     arrow?: boolean;
     /**
-     * Appearance axis: plain keeps the borderless brand-coloured text; underlined adds the 1px brand
-     * hairline under the label, which turns neon on hover. Paint only; it never implies interactivity.
+     * Appearance axis. plain is the only treatment: link-coloured text with a text underline at rest that
+     * is removed on hover, where the arrow still moves and the colour stays. `underlined` is deprecated:
+     * it is an alias that renders exactly like plain, kept so existing consumers do not break, and it
+     * will be removed in a later major. Omit the prop instead of requesting underlined.
      * @control select
      * @default plain
      */
     variant?: LinkVariant;
   };
 
-/** Appearance axis for the link root: the borderless default or the opt-in brand underline. */
+/**
+ * Appearance axis for the link root. `underlined` is a deprecated alias of `plain` (same classes), kept
+ * for compatibility until a later major removes it.
+ */
 export type LinkVariant = 'plain' | 'underlined';
 
+// Resets the retained legacy .eg-link bottom border and padding, so the text underline is the only line.
+const plainLinkRecipe = 'pb-0 border-0';
+
+// The text underline follows the link colour (currentColor) and is offset by a space token; hover removes
+// it instead of changing the colour, so the hover change never relies on colour alone (WCAG 1.4.1).
 export const linkVariants = cva(
-  'eg-link group/link inline-flex items-center gap-2 font-sans text-label-default text-link-default no-underline cursor-pointer transition-colors duration-(--duration-fast) ease-(--ease-out) hover:text-link-hover focus-visible:outline-none focus-visible:[box-shadow:var(--shadow-focus)] focus-visible:rounded-sm motion-reduce:transition-none',
+  'eg-link group/link inline-flex items-center gap-2 font-sans text-label-default text-link-default underline underline-offset-(--space-1) cursor-pointer transition-colors duration-(--duration-fast) ease-(--ease-out) hover:no-underline focus-visible:outline-none focus-visible:[box-shadow:var(--shadow-focus)] focus-visible:rounded-sm motion-reduce:transition-none',
   {
     variants: {
       variant: {
-        // The legacy border/padding reset lives in the default branch only: border-0 and border-b are
-        // different tailwind-merge groups, so a shared reset would let emitted CSS order decide the line.
-        plain: 'pb-0 border-0',
-        underlined: 'border-b border-border-brand pb-0.5 hover:border-state-selected'
+        plain: plainLinkRecipe,
+        /** @deprecated Alias of plain; renders the same classes. Removed in a later major. */
+        underlined: plainLinkRecipe
       }
     },
     defaultVariants: { variant: 'plain' }

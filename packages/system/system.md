@@ -2152,15 +2152,15 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · Slot + VisuallyHidden
     - linkVariants base: text-label-default → --text-label-default
     - linkVariants base: focus-visible:[box-shadow:var(--shadow-focus)] → --shadow-focus
     - linkVariants base: focus-visible:rounded-sm → --radius-sm
-    - linkVariants variant=plain: pb-0 → --spacing-0
-    - linkVariants variant=underlined: pb-0.5 → --spacing
+    - linkVariants variant=plain: plainLinkRecipe → unresolved
+    - linkVariants variant=underlined: plainLinkRecipe → unresolved
   - arrow: boolean; Show the trailing decorative right arrow, independent of external. (components[] · packages/ui/src/atoms/link/types.ts)
   - asChild: boolean; Use the native anchor; href supplies its destination. Render onto one prop-spreading, ref-forwarding anchor child through Radix Slot. The child owns href and must preserve anchor navigation semantics. (components[] · packages/ui/src/atoms/link/types.ts)
   - children: ReactNode; Descriptive visible link text; exactly one anchor element when asChild is true. (components[] · packages/ui/src/atoms/link/types.ts)
   - external: boolean; Open in a new tab with safe rel tokens and a hidden notice; the arrow still points right. (components[] · packages/ui/src/atoms/link/types.ts)
   - href: string; Native destination, required unless asChild is true. Not available with asChild: the child supplies its destination. (components[] · packages/ui/src/atoms/link/types.ts)
   - newTabText: string; Localized screen-reader notice appended only when external is true. (components[] · packages/ui/src/atoms/link/types.ts)
-  - variant: enum; Appearance axis: plain keeps the borderless brand-coloured text; underlined adds the 1px brand hairline under the label, which turns neon on hover. Paint only; it never implies interactivity. (components[] · packages/ui/src/atoms/link/types.ts)
+  - variant: enum; Appearance axis. plain is the only treatment: link-coloured text with a text underline at rest that is removed on hover, where the arrow still moves and the colour stays. `underlined` is deprecated: it is an alias that renders exactly like plain, kept so existing consumers do not break, and it will be removed in a later major. Omit the prop instead of requesting underlined. (components[] · packages/ui/src/atoms/link/types.ts)
 ### Logo
 catalog[] · docs/catalog.json · @egdev/ui · atom · —
 - Logo (components[] · packages/ui/src/atoms/logo/types.ts)

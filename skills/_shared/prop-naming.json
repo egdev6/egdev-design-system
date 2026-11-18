@@ -1272,7 +1272,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:c25fc623389e2e56deccfbd9e936695418449dc70d21da63836f4df57ec35325"
+          "revision": "sha256:850d9f0b819c53b391eea8783382b7b5e9f654ac1bd42cf1f5a94f6fb6e52021"
         }
       },
       {
@@ -2950,7 +2950,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:c25fc623389e2e56deccfbd9e936695418449dc70d21da63836f4df57ec35325"
+          "revision": "sha256:850d9f0b819c53b391eea8783382b7b5e9f654ac1bd42cf1f5a94f6fb6e52021"
         }
       },
       {
@@ -3293,7 +3293,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:c25fc623389e2e56deccfbd9e936695418449dc70d21da63836f4df57ec35325"
+          "revision": "sha256:850d9f0b819c53b391eea8783382b7b5e9f654ac1bd42cf1f5a94f6fb6e52021"
         }
       },
       {
@@ -3340,7 +3340,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:c25fc623389e2e56deccfbd9e936695418449dc70d21da63836f4df57ec35325"
+          "revision": "sha256:850d9f0b819c53b391eea8783382b7b5e9f654ac1bd42cf1f5a94f6fb6e52021"
         }
       },
       {
@@ -3377,7 +3377,7 @@
         "source": {
           "path": "packages/ui/src/atoms/link/types.ts",
           "symbol": "LinkProps",
-          "revision": "sha256:c25fc623389e2e56deccfbd9e936695418449dc70d21da63836f4df57ec35325"
+          "revision": "sha256:850d9f0b819c53b391eea8783382b7b5e9f654ac1bd42cf1f5a94f6fb6e52021"
         }
       }
     ]

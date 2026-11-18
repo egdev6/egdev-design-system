@@ -2282,7 +2282,7 @@ const slottedLinkDestination: LinkProps = { asChild: true, href: '#docs', childr
 const missingLinkContent: LinkProps = { href: '#docs' };
 // @ts-expect-error Disabled links are not supported; use plain text without a destination.
 const disabledLink: LinkProps = { href: '#docs', children: 'Docs', disabled: true };
-// @ts-expect-error Link only accepts the opt-in plain|underlined appearance axis.
+// @ts-expect-error Link only accepts plain and its deprecated underlined alias.
 const variantLink: LinkProps = { href: '#docs', children: 'Docs', variant: 'primary' };
 // @ts-expect-error The public ref is an anchor ref, never a button ref.
 const wrongLinkRef: ComponentProps<typeof Link> = { href: '#docs', children: 'Docs', ref: createRef<HTMLButtonElement>() };
@@ -5940,11 +5940,10 @@ function assertCarouselCSS(css) {
 function assertLinkCSS(css) {
   for (const selector of [
     '.border-0',
-    '.border-b',
-    '.border-border-brand',
     '.text-link-default',
     '.text-label-default',
-    '.no-underline',
+    '.underline',
+    String.raw`.underline-offset-\(--space-1\)`,
     '.cursor-pointer',
     '.transform-none',
     '.pb-0',
@@ -5952,8 +5951,7 @@ function assertLinkCSS(css) {
     String.raw`.transition-\[translate\]`,
     String.raw`.duration-\(--duration-fast\)`,
     String.raw`.ease-\(--ease-out\)`,
-    String.raw`.hover\:text-link-hover`,
-    String.raw`.hover\:border-state-selected`,
+    String.raw`.hover\:no-underline`,
     String.raw`.motion-safe\:group-hover\/link\:translate-x-1`,
     String.raw`.motion-reduce\:translate-none`,
     String.raw`.motion-reduce\:transition-none`,
@@ -7406,10 +7404,12 @@ try {
   assert.ok(link.classList.contains('eg-link') && link.classList.contains('mt-4') && !link.classList.contains('mt-2'));
   assert.equal(link.textContent, 'Documentation');
   assert.ok(link.classList.contains('text-link-default'));
-  assert.ok(link.classList.contains('hover:text-link-hover'));
+  assert.ok(link.classList.contains('underline') && link.classList.contains('underline-offset-(--space-1)'));
+  assert.ok(link.classList.contains('hover:no-underline') && !link.classList.contains('hover:text-link-hover'));
+  // The deprecated underlined value is an alias: identical classes to the default, no brand border.
   const underlinedLink = document.getElementById('link-underlined');
-  assert.ok(underlinedLink.classList.contains('border-border-brand'));
-  assert.ok(underlinedLink.classList.contains('hover:border-state-selected'));
+  assert.deepEqual([...underlinedLink.classList].sort(), [...link.classList].filter((name) => !['mt-4', 'self-start'].includes(name)).sort());
+  assert.ok(!underlinedLink.classList.contains('border-b') && !underlinedLink.classList.contains('border-border-brand'));
   assert.ok(link.classList.contains('border-0'));
   assert.ok(!link.classList.contains('border-b'));
   assert.equal(link.querySelector('svg').getAttribute('aria-hidden'), 'true');

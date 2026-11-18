@@ -3760,6 +3760,9 @@ describe('Link navigation metadata contract', () => {
     expect(props.external?.tags).toMatchObject({ control: 'boolean' });
     expect(props.arrow?.tags).toMatchObject({ control: 'boolean' });
     expect(props.variant?.tags).toMatchObject({ control: 'select', default: 'plain' });
+    // The deprecation is of one value, not of the prop: no @deprecated tag may strike the whole axis.
+    expect(props.variant?.description).toMatch(/`underlined` is deprecated/);
+    expect(props.variant?.tags).not.toHaveProperty('deprecated');
     for (const prop of ['disabled', 'size']) {
       expect(props[prop]).toBeUndefined();
     }

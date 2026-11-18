@@ -41,7 +41,8 @@ export function useLink({
   // on the child too, so a router anchor cannot accidentally undo new-tab safety.
   const content = external && child ? cloneElement(child, { target: '_blank', rel: safeRel }) : children;
   // A cast-invalid runtime value must not reach CVA: with no variant classes the legacy .eg-link
-  // border would paint, so outside the union resolves to the plain default instead.
+  // border would paint, so outside the union resolves to the plain default instead. The deprecated
+  // underlined value stays accepted; its CVA branch is the plain recipe.
   const resolvedVariant: LinkVariant = variant === 'underlined' ? 'underlined' : 'plain';
 
   return {
