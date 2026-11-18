@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.4.0
+
+- Regenerate the artifact and design reference for `@egdev/ui` 0.3.0 and `@egdev/tokens` 0.5.0:
+  the Tabs `outline` variant, the ColorSwatchGroup picker look, the aligned Dialog and AlertDialog
+  headers, the `--gradient-spectrum` token and the current package versions.
+- The artifact test derives its naming types and token count from their sources, so it no longer
+  needs hand-edited expectations when tokens or prop names change.
+
 ## 0.3.0
 
 - Regenerate the artifact and design reference for `@egdev/ui` 0.2.0 and `@egdev/tokens` 0.4.0:
