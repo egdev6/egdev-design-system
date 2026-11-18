@@ -19,7 +19,7 @@ jobs:
   verify:
     name: Verify
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     permissions:
       contents: read
     steps:
@@ -52,9 +52,14 @@ jobs:
         run: pnpm build
       - name: Unit tests
         run: pnpm test
+      - name: Test CLI
+        run: pnpm test:cli
       - name: Test compiled token contract
         run: pnpm --filter @egdev/tokens run test
       - name: Test package exports after build
         run: pnpm test:package-exports
       - name: Test packed package consumption (React 18 and 19)
         run: pnpm test:package-consumption
+      # Real installs from the registry; CI=true makes an unreachable registry fail instead of skip.
+      - name: Test egdev-ds end to end (npm + Vite, pnpm + Next.js)
+        run: pnpm test:cli:consumer
