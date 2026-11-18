@@ -10,9 +10,10 @@ const RouterLink = forwardRef<HTMLAnchorElement, ComponentPropsWithoutRef<'a'>>(
 
 /**
  * ## Description
- * Brand-colored text navigation with a centered right arrow and one appearance axis: the default `plain`
- * borderless look, or the opt-in `underlined` brand hairline. Use for secondary links in a block, not primary
- * actions, icon-only navigation or inline prose.
+ * Link-colored text navigation with a centered right arrow. At rest the label carries a text underline in
+ * the link color, offset by a space token; on hover the arrow moves right and the underline is removed, while
+ * the color stays the same. Use for secondary links in a block, not primary actions, icon-only navigation or
+ * inline prose.
  *
  * ## Dependencies
  * Icon supplies decorative 16px arrows. Radix Slot/Slottable preserve router-link composition;
@@ -21,9 +22,10 @@ const RouterLink = forwardRef<HTMLAnchorElement, ComponentPropsWithoutRef<'a'>>(
  * ## Usage guidelines
  * Supply descriptive children and a destination. With asChild, supply exactly one anchor-compatible
  * child that forwards props and its ref; it owns href. external forces a safe new tab, including on
- * that child. Localize newTabText. `underlined` is opt-in paint, never a second interactivity level:
- * request it where a web view needs the brand hairline instead of adding border utilities through
- * className. className supports outer margin/alignment only. No stylesheet ships with this atom.
+ * that child. Localize newTabText. The underline is part of the default look, so omit `variant`:
+ * `underlined` is deprecated, renders exactly like `plain` and will be removed in a later major. Never
+ * add border or decoration utilities through className. className supports outer margin/alignment only.
+ * No stylesheet ships with this atom.
  * The arrow always points right; it never encodes the destination and no ref exists beyond the anchor.
  * Browser appearance, focus, reduced motion and Controls widget checks are deferred to owner review.
  */
@@ -36,7 +38,7 @@ export default meta;
 
 type Story = StoryObj<typeof Link>;
 
-/** Required inputs only; preserves the internal arrow and all runtime defaults. */
+/** Required inputs only: the underlined label at rest, the internal arrow and all runtime defaults. */
 export const Default: Story = {
   args: { href: '#articles', children: 'All articles' }
 };
@@ -65,16 +67,18 @@ export const AsChild: Story = {
   }
 };
 
-/** Tab to inspect the focus ring; hover moves the arrow right by one space token, unless motion is reduced. */
+/**
+ * Hover removes the underline and moves the arrow right by one space token (unless motion is reduced); the
+ * color does not change. Tab to inspect the focus ring.
+ */
 export const States: Story = {
   args: { href: '#states', children: 'Explore states', className: 'self-start mt-4', onClick: action('navigate') }
 };
 
 /**
- * The opt-in `underlined` treatment draws the 1px brand hairline under the label, which turns neon on
- * hover. It is paint only, never a second interactivity level, and it is the treatment a web view
- * requests explicitly instead of overriding className. The second anchor hides the arrow so the
- * underline reads independently of the trailing glyph.
+ * Deprecated: `variant="underlined"` is an alias of the default and renders exactly the same classes, shown
+ * here next to a default link for comparison. Existing consumers keep working; omit the prop in new code,
+ * because the value will be removed in a later major.
  */
 export const Underlined: Story = {
   args: {
@@ -89,8 +93,8 @@ export const Underlined: Story = {
       <Link href={href ?? '#guides'} variant='underlined' className='self-start' onClick={onClick}>
         {children ?? 'Read the guide'}
       </Link>
-      <Link href='#privacy' variant='underlined' arrow={false} className='self-start' onClick={onClick}>
-        Privacy policy
+      <Link href='#guides-default' className='self-start' onClick={onClick}>
+        Read the guide (default)
       </Link>
     </div>
   )

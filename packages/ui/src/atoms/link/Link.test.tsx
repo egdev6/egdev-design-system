@@ -8,6 +8,8 @@ import { Link } from './Link';
 import { type LinkVariant, linkVariants } from './types';
 import { useLink } from './useLink';
 
+const tokens = (value: string) => value.split(/\s+/).filter(Boolean).sort();
+
 const RouterLink = forwardRef<HTMLAnchorElement, ComponentPropsWithoutRef<'a'>>((props, ref) => (
   <a {...props} ref={ref} />
 ));
@@ -22,12 +24,16 @@ describe('Link navigation contract', () => {
       'eg-link',
       'text-label-default',
       'text-link-default',
-      'hover:text-link-hover',
+      'underline',
+      'underline-offset-(--space-1)',
+      'hover:no-underline',
       'items-center',
       'border-0',
       'pb-0'
     );
     for (const oldClass of [
+      'no-underline',
+      'hover:text-link-hover',
       'border-b',
       'border-border-brand',
       'text-fg-default',
@@ -138,7 +144,8 @@ describe('Link navigation contract', () => {
     );
     const link = screen.getByRole('link', { name: 'Router docs' });
     expect(screen.getAllByRole('link')).toHaveLength(1);
-    expect(link).toHaveClass('eg-link', 'mt-4', 'self-start', 'text-link-default', 'hover:text-link-hover');
+    expect(link).toHaveClass('eg-link', 'mt-4', 'self-start', 'text-link-default', 'underline', 'hover:no-underline');
+    expect(link).not.toHaveClass('hover:text-link-hover');
     expect(parentRef.current === link && childRef.current === link).toBe(true);
     expect(link.querySelector('svg')).not.toBeNull();
     await user.tab();
@@ -206,6 +213,9 @@ describe('Link navigation contract', () => {
     expect(result.current.rootProps.className).toContain('group/link');
     expect(result.current.rootProps.className).toContain('focus-visible:[box-shadow:var(--shadow-focus)]');
     expect(result.current.rootProps.className).toContain('motion-reduce:transition-none');
+    for (const utility of ['focus-visible:outline-none', 'focus-visible:rounded-sm']) {
+      expect(tokens(result.current.rootProps.className as string)).toContain(utility);
+    }
     expect(result.current.arrowClassName).toContain('transform-none');
     expect(result.current.arrowClassName).toContain('motion-safe:group-hover/link:translate-x-1');
     expect(result.current.arrowClassName).not.toContain('translate-y');
@@ -237,9 +247,21 @@ describe('Link navigation contract', () => {
   });
 });
 
-const tokens = (value: string) => value.split(/\s+/).filter(Boolean).sort();
+describe('Link underline treatment and deprecated underlined alias', () => {
+  it('underlines the label at rest with a token offset and removes it on hover without a colour change', () => {
+    const recipe = tokens(linkVariants());
+    for (const utility of ['underline', 'underline-offset-(--space-1)', 'hover:no-underline', 'text-link-default']) {
+      expect(recipe).toContain(utility);
+    }
+    for (const utility of ['no-underline', 'hover:text-link-hover', 'hover:underline']) {
+      expect(recipe).not.toContain(utility);
+    }
+    expect(recipe.filter((utility) => utility.startsWith('underline-offset-'))).toEqual([
+      'underline-offset-(--space-1)'
+    ]);
+    expect(recipe.filter((utility) => utility.startsWith('hover:text-'))).toEqual([]);
+  });
 
-describe('Link underlined variant', () => {
   it('keeps the plain recipe as the default, including its legacy border and padding reset', () => {
     const plain = linkVariants({ variant: 'plain' });
     expect(tokens(plain)).toEqual(tokens(linkVariants()));
@@ -250,44 +272,37 @@ describe('Link underlined variant', () => {
     }
   });
 
-  it('resolves the underline utilities for the underlined variant and drops the reset', () => {
-    const base = tokens(linkVariants());
-    const underlined = tokens(linkVariants({ variant: 'underlined' }));
-    for (const utility of ['border-b', 'border-border-brand', 'pb-0.5', 'hover:border-state-selected']) {
-      expect(underlined).toContain(utility);
-    }
-    expect(underlined).not.toContain('border-0');
-    expect(underlined).not.toContain('pb-0');
-    const reset = new Set(['border-0', 'pb-0']);
-    for (const utility of base.filter((token) => !reset.has(token))) {
-      expect(underlined).toContain(utility);
-    }
+  it('resolves the deprecated underlined variant to exactly the default recipe', () => {
+    const deprecatedAlias: LinkVariant = 'underlined';
+    expect(tokens(linkVariants({ variant: deprecatedAlias }))).toEqual(tokens(linkVariants()));
+    const { result } = renderHook(() => useLink({ href: '#docs', children: 'Docs', variant: deprecatedAlias }));
+    const defaults = renderHook(() => useLink({ href: '#docs', children: 'Docs' }));
+    expect(tokens(result.current.rootProps.className as string)).toEqual(
+      tokens(defaults.result.current.rootProps.className as string)
+    );
+    expect(result.current.arrowClassName).toBe(defaults.result.current.arrowClassName);
   });
 
-  it('paints the underline on the root while keeping ink, marker and the decorative arrow', () => {
+  it('renders underlined with the default classes, ink, marker and decorative arrow', () => {
     render(
-      <Link href='#docs' variant='underlined'>
-        Docs
-      </Link>
+      <>
+        <Link href='#docs' variant='underlined'>
+          Docs
+        </Link>
+        <Link href='#docs'>Default docs</Link>
+      </>
     );
     const link = screen.getByRole('link', { name: 'Docs' });
-    expect(screen.getAllByRole('link')).toHaveLength(1);
-    expect(link).toHaveClass(
-      'eg-link',
-      'text-link-default',
-      'hover:text-link-hover',
+    const reference = screen.getByRole('link', { name: 'Default docs' });
+    expect(tokens(link.className)).toEqual(tokens(reference.className));
+    expect(link).toHaveClass('eg-link', 'text-link-default', 'underline', 'hover:no-underline', 'border-0', 'pb-0');
+    for (const oldClass of [
       'no-underline',
+      'hover:text-link-hover',
       'border-b',
       'border-border-brand',
       'pb-0.5',
       'hover:border-state-selected'
-    );
-    for (const oldClass of [
-      'border-0',
-      'pb-0',
-      'text-fg-brand-raised',
-      'hover:text-primitive-red-200',
-      'hover:border-fg-brand-default'
     ]) {
       expect(link).not.toHaveClass(oldClass);
     }
@@ -297,6 +312,7 @@ describe('Link underlined variant', () => {
     expect(arrow).toHaveAttribute('aria-hidden', 'true');
     expect(arrow).toHaveAttribute('focusable', 'false');
     expect(arrow).toHaveClass('size-4');
+    expect(arrow?.getAttribute('class')).toBe(reference.querySelector('svg')?.getAttribute('class'));
     expect(arrow?.innerHTML).toContain('M5 12h14');
     expect(link.querySelector('span')).toBeNull();
   });
@@ -310,7 +326,7 @@ describe('Link underlined variant', () => {
     expect(tokens(result.current.rootProps.className as string)).not.toContain('border-b');
   });
 
-  it('keeps new-tab safety, the hidden notice and arrow visibility for the underlined variant', () => {
+  it('keeps new-tab safety, the hidden notice and arrow visibility for the deprecated underlined alias', () => {
     const { rerender } = render(
       <Link href='https://example.com' external={true} variant='underlined'>
         Repository
@@ -328,7 +344,8 @@ describe('Link underlined variant', () => {
     );
     const withoutArrow = screen.getByRole('link', { name: 'Repository (opens in a new tab)' });
     expect(withoutArrow.querySelector('svg')).toBeNull();
-    expect(withoutArrow).toHaveClass('border-b');
+    expect(withoutArrow).toHaveClass('underline', 'hover:no-underline');
+    expect(withoutArrow).not.toHaveClass('border-b');
   });
 
   it('merges consumer layout last, keeps the marker and never leaks own props for either mode', () => {
@@ -338,7 +355,8 @@ describe('Link underlined variant', () => {
       </Link>
     );
     const link = screen.getByRole('link', { name: 'Docs' });
-    expect(link).toHaveClass('eg-link', 'mt-4', 'self-start', 'border-b');
+    expect(link).toHaveClass('eg-link', 'mt-4', 'self-start', 'underline');
+    expect(link).not.toHaveClass('border-b');
     expect(link).not.toHaveClass('mt-2');
     for (const prop of ['variant', 'external', 'newTabText', 'asChild', 'arrow']) {
       expect(link).not.toHaveAttribute(prop);
@@ -349,7 +367,8 @@ describe('Link underlined variant', () => {
       </Link>
     );
     const slotted = screen.getByRole('link', { name: 'Router docs' });
-    expect(slotted).toHaveClass('eg-link', 'self-start', 'border-b', 'border-border-brand');
+    expect(slotted).toHaveClass('eg-link', 'self-start', 'underline', 'hover:no-underline');
+    expect(slotted).not.toHaveClass('border-b');
     expect(slotted).not.toHaveAttribute('variant');
   });
 });
