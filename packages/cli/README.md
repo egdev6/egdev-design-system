@@ -69,7 +69,7 @@ framework, the CSS mode and the CSS entry, prints the plan, then applies it as o
 | CSS entry | Tailwind: `theme.css`, `ui/styles.css` (and effects) right after `@import "tailwindcss"`. Native: `tokens.css`, `ui/styles.css` (and effects) at the top, after any `@charset`. Existing lines are kept, never reordered. | Same |
 | `egdev-ds.json` | Created with the defaults when missing | Same |
 | `.mcp.json` | `mcpServers.egdev-design-system` when mcp is selected; other servers are kept | Same |
-| lockfile | Written by `npm install`, then every vendored integrity is checked against the tarball's sha512 | `pnpm install`, same check |
+| lockfile | Written by `npm install`, then every vendored integrity is checked against the tarball's sha512 | `pnpm install --no-frozen-lockfile` (pnpm freezes the lockfile under `CI=true`), same check |
 
 The CSS entry is `src/app/globals.css` or `app/globals.css` for Next.js. For Vite, it is the first local `.css`
 file that the `index.html` entry module imports. If that module already imports `@egdev/*.css`, the CSS counts as
@@ -171,7 +171,7 @@ For each added package, in the same transaction as the upgrade:
 | `package.json` | Every `@egdev` specifier in the dependency fields, npm `overrides` (nested ones included) and `pnpm.overrides`, keeping its `file:` or `file:./` style. npm: a missing `$` override for a new internal dependency is added. pnpm: a missing pin is added. |
 | `pnpm-workspace.yaml` | The `@egdev` values of `overrides:`, edited as text: quotes, comments and layout survive. |
 | `package-lock.json` | npm only, before installing: each replaced entry gets the new `version`, `resolved`, sha512 `integrity` and packed metadata, and the root entry follows `package.json`. |
-| lockfile | `npm install` or `pnpm install` after removing `node_modules/@egdev`, then every vendored integrity is checked, and no lock entry may still point at an old tarball. |
+| lockfile | `npm install` or `pnpm install --no-frozen-lockfile` after removing `node_modules/@egdev`, then every vendored integrity is checked, and no lock entry may still point at an old tarball. |
 | old tarballs | Removed after success. |
 
 ### Plan output

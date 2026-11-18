@@ -93,7 +93,7 @@ entry, prints the plan, then applies it as one transaction:
 | `egdev-ds.json` | The doctor options, created with defaults. |
 | `.mcp.json` | The `egdev-design-system` MCP server, next to any other server. |
 | `src/theme/accent-host.ts` | Only with `--accent`. |
-| lockfile | `npm install` or `pnpm install`, then every vendored integrity is verified. |
+| lockfile | `npm install` or `pnpm install --no-frozen-lockfile`, then every vendored integrity is verified. |
 
 - The default packages are `tokens,ui,system,mcp`; `cli` is always added. `effects` is opt-in.
 - A key `init` owns that already holds another value is a **conflict**: every conflict is listed,
