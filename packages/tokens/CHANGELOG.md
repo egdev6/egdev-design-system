@@ -4,6 +4,15 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## 0.5.0
+
+- `createAccentTheme(accent)` now also maps `--gradient-chip-active`, `--shadow-glow-base` and
+  `--shadow-glow-active`, so selected chips, tabs and state glows recolor with a custom accent. The
+  default red map reproduces the existing `theme.css` values; nothing changes without a custom
+  accent.
+- Add `--gradient-spectrum`, a decorative hue-wheel gradient used by the ColorSwatchGroup custom
+  color control. It is not meant for text or state backgrounds.
+
 ## 0.4.0
 
 - Add 14 shared semantic contrast roles (`--color-app-page`, `--color-app-card`,

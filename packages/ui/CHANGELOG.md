@@ -4,6 +4,36 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## 0.3.0
+
+### Added
+
+- Tabs `variant="outline"`: a recessed well whose selected tab shows an accent border and the chip
+  sheen over surface-1. It follows a runtime accent from `createAccentTheme` and supports
+  `fullWidth` and `labelWrap` like the segmented variant.
+
+### Changed
+
+- Chip's pressed state follows the runtime accent: its border uses `--color-state-selected` and
+  its sheen and glow recolor with `@egdev/tokens` 0.5.0. The default red rendering is unchanged.
+- **ColorSwatchGroup has a new default look**, the circular accent picker used by Quorb and Nexo:
+  38.4px circular swatches in a 44.8px target, visually hidden option labels (accessible names are
+  kept), a hairline ring per swatch, a neutral surface gap plus `fg-default` ring for the selected
+  swatch instead of the check mark, a distinct offset focus ring, and the custom color control as
+  a spectrum circle with a plus badge in the same row. RadioGroup semantics, the custom color input
+  and the `<output>` are unchanged. Apps that relied on the visible labels or the check should
+  re-check their layouts.
+
+### Fixed
+
+- Dialog and AlertDialog headers align in every variant and both header layouts: the Dialog title's
+  first line is centred on the dismiss icon, the description sits `--space-2` from the title, the
+  description (inline) and status text share the title's last baseline, including multi-line
+  titles, and the title and description no longer inherit browser heading and paragraph margins.
+  This changes the **default AlertDialog** (stacked) rendering, where the description now sits
+  closer to the title, and inline headers now keep a `--space-2` gap between the title and the
+  status.
+
 ## 0.2.0
 
 ### Added

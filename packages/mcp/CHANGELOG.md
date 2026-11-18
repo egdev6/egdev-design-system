@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.0
+
+- Depend on `@egdev/system` 0.4.0: every tool serves the artifact for `@egdev/ui` 0.3.0 and
+  `@egdev/tokens` 0.5.0.
+
 ## 0.3.0
 
 - Depend on `@egdev/system` 0.3.0: every tool serves the artifact for `@egdev/ui` 0.2.0 and
