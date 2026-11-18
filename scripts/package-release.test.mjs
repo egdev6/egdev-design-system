@@ -14,7 +14,7 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative, resolve } from 'node:path';
-import test from 'node:test';
+import test, { after } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { gunzipSync, gzipSync } from 'node:zlib';
 import {
@@ -22,19 +22,26 @@ import {
   completeReleasePack,
   finishReleasePack,
   formatPackedLine,
+  parseReleasePackArgs,
   RELEASE_MANIFEST_FILE,
   RELEASE_SET,
   readPackedManifest,
   readReleaseProvenance,
+  releaseFolderProblem,
   releaseMembers,
   tarballName,
   verifyPackedManifests,
   writeReleaseManifest
 } from './lib/pack-packages.mjs';
 
-// The pack run is shared by every check in this file, so the workspace is built once.
+// The pack run is shared by every check in this file, so the workspace is built once. It writes to
+// a temporary folder through `--out-dir`, so the operator's own `release/` is never touched.
 const root = fileURLToPath(new URL('../', import.meta.url));
-const releaseDir = join(root, 'release');
+const operatorRelease = join(root, 'release');
+const operatorReleaseBefore = folderFingerprint(operatorRelease);
+const scratch = mkdtempSync(join(tmpdir(), 'egdev-release-pack-'));
+const releaseDir = join(scratch, 'release');
+after(() => rmSync(scratch, { recursive: true, force: true }));
 // Read by the guide block; the key cannot be written as a literal property (naming convention).
 const releaseDirectoryVariable = 'EGDEV_RELEASE_DIR';
 const members = releaseMembers(root);
@@ -42,7 +49,7 @@ let releaseRun;
 
 function packedRelease() {
   if (!releaseRun) {
-    const result = spawnSync('pnpm', ['release:pack'], {
+    const result = spawnSync('pnpm', ['release:pack', '--out-dir', releaseDir], {
       cwd: root,
       encoding: 'utf8',
       timeout: 900_000,
@@ -86,7 +93,7 @@ test('pnpm release:pack writes the versioned release set', async (t) => {
     assert.deepEqual(
       readdirSync(releaseDir).sort(),
       [...expected, 'release.json'].sort(),
-      'release/ must hold exactly the versioned tarballs and release.json'
+      'The output folder must hold exactly the versioned tarballs and release.json'
     );
     for (const member of members) {
       assert.ok(
@@ -213,6 +220,33 @@ test('release:pack includes the system artifact in its versioned tarball', () =>
   assert.equal(manifest.exports['.'], './src/render-system-md.mjs');
 });
 
+test('AC20 release:pack includes @egdev/cli with its egdev-ds bin, listed in release.json', () => {
+  assert.deepEqual(RELEASE_SET, [
+    '@egdev/tokens',
+    '@egdev/ui',
+    '@egdev/effects',
+    '@egdev/system',
+    '@egdev/mcp',
+    '@egdev/cli'
+  ]);
+  packedRelease();
+  const entry = packedEntry('@egdev/cli');
+  assert.ok(existsSync(entry.path), `Missing ${entry.file}`);
+  const manifest = readPackedManifest(entry.path);
+  assert.equal(manifest.bin['egdev-ds'], './bin/egdev-ds.mjs');
+  assert.equal(manifest.dependencies, undefined, '@egdev/cli has no dependencies');
+  assert.equal(typeof readPackedFile(entry.path, 'package/bin/egdev-ds.mjs'), 'string');
+  assert.equal(typeof readPackedFile(entry.path, 'package/src/upgrade.mjs'), 'string');
+  assert.equal(readPackedFile(entry.path, 'package/tests/helpers.mjs'), undefined, 'tests are not packed');
+  const listed = JSON.parse(readFileSync(join(releaseDir, 'release.json'), 'utf8')).packages.at(-1);
+  assert.deepEqual(listed, {
+    name: '@egdev/cli',
+    version: entry.version,
+    file: entry.file,
+    sha256: sha256Of(entry.path)
+  });
+});
+
 test('release:pack includes MCP with the matching carrier dependency', () => {
   packedRelease();
   const entry = packedEntry('@egdev/mcp');
@@ -234,6 +268,51 @@ test('release verification rejects an MCP tarball without its carrier dependency
     rmSync(fixture, { recursive: true, force: true });
   }
 });
+
+test('release:pack --out-dir chooses the output folder; release/ stays the default', () => {
+  assert.deepEqual(parseReleasePackArgs([], root), { destination: join(root, 'release') });
+  assert.deepEqual(parseReleasePackArgs(['--out-dir', 'tmp/pack'], root), { destination: join(root, 'tmp/pack') });
+  assert.deepEqual(parseReleasePackArgs(['--out-dir', '/abs/pack'], root), { destination: '/abs/pack' });
+  for (const args of [['--out-dir'], ['--out-dir', '--x'], ['--other'], ['--out-dir', 'a', '--out-dir', 'b']]) {
+    assert.throws(() => parseReleasePackArgs(args, root), /^Error: Usage: pnpm release:pack \[--out-dir <dir>\]$/);
+  }
+});
+
+test('release:pack refuses to empty a folder that holds files it did not write', () => {
+  const fixture = mkdtempSync(join(tmpdir(), 'egdev-release-folder-'));
+  try {
+    assert.equal(releaseFolderProblem(join(fixture, 'missing')), null, 'A missing folder is created');
+    writeFileSync(join(fixture, 'egdev-ui-0.3.1.tgz'), '');
+    writeFileSync(join(fixture, 'release.json'), '{}');
+    mkdirSync(join(fixture, '.staging-abc'));
+    assert.equal(releaseFolderProblem(fixture), null, 'A previous release folder is replaced');
+    writeFileSync(join(fixture, 'notes.md'), 'mine');
+    assert.equal(
+      releaseFolderProblem(fixture),
+      `Refusing to empty ${fixture}: it holds notes.md, which release:pack did not write.`
+    );
+    assert.equal(
+      releaseFolderProblem(join(fixture, 'notes.md')),
+      `Refusing to use ${join(fixture, 'notes.md')}: it is not a directory.`
+    );
+  } finally {
+    rmSync(fixture, { recursive: true, force: true });
+  }
+});
+
+// Names, sizes and sha256 of every entry, or `absent`: proves a run left a folder byte-identical.
+function folderFingerprint(directory) {
+  if (!existsSync(directory)) {
+    return 'absent';
+  }
+  return readdirSync(directory, { recursive: true })
+    .sort()
+    .map((name) => {
+      const path = join(directory, name);
+      return statSync(path).isDirectory() ? `${name}/` : `${name} ${sha256Of(path)}`;
+    })
+    .join('\n');
+}
 
 function git(cwd, args) {
   const result = spawnSync('git', args, { cwd, encoding: 'utf8' });
@@ -562,4 +641,9 @@ test('the install guide runs verbatim in a clean directory', { timeout: 600_000 
   } finally {
     rmSync(clean, { recursive: true, force: true });
   }
+});
+
+// Last on purpose: every pack above went to the temporary --out-dir folder.
+test("the tests never alter the operator's release/ folder", () => {
+  assert.equal(folderFingerprint(operatorRelease), operatorReleaseBefore);
 });
