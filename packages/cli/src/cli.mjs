@@ -4,8 +4,9 @@ import { resolve } from 'node:path';
 import { parseArgs, RefusedError, USAGE, USAGE_LINE, UsageError } from './args.mjs';
 import { runDoctor } from './doctor.mjs';
 import { runInit, spawnRunner } from './init.mjs';
-import { formatDoctorJson, formatDoctorText, hasErrors } from './plan.mjs';
+import { formatDoctorJson, formatDoctorText, formatStatusJson, formatStatusText, hasErrors } from './plan.mjs';
 import { readRelease } from './release.mjs';
+import { readStatus } from './status.mjs';
 import { flattenMessage } from './text.mjs';
 
 export { flattenMessage };
@@ -89,8 +90,13 @@ export async function run(args, { cwd, stdout, stderr, runner = spawnRunner }) {
       }
       release = readRelease(directory);
     }
-    const report = await runDoctor({ project: resolve(cwd, project), release });
     const summary = release && options.from !== undefined ? { dir: options.from, commit: release.commit } : null;
+    if (command === 'status') {
+      const report = readStatus({ argument: project, project: resolve(cwd, project), release });
+      stdout((options.json ? formatStatusJson : formatStatusText)({ project, report, release: summary }));
+      return 0;
+    }
+    const report = await runDoctor({ project: resolve(cwd, project), release });
     stdout(
       options.json ? formatDoctorJson({ project, report, release: summary }) : formatDoctorText({ project, report })
     );

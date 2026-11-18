@@ -74,6 +74,18 @@ test('AC2 parseArgs reads every documented command and flag', () => {
       }
     }
   );
+  assert.deepEqual(parseArgs(['status', 'apps/hub', '--json', '--from', '../release']), {
+    kind: 'command',
+    command: 'status',
+    project: 'apps/hub',
+    options: { ...defaults, json: true, from: '../release' }
+  });
+  assert.deepEqual(parseArgs(['upgrade', '.', '--local-repo', 'nexo']), {
+    kind: 'command',
+    command: 'upgrade',
+    project: '.',
+    options: { ...defaults, localRepo: 'nexo' }
+  });
   assert.deepEqual(parseArgs(['upgrade', 'app', '--offline', '--dry-run']).options, {
     ...defaults,
     offline: true,
@@ -118,7 +130,7 @@ test('AC2 bin: --help and --version print on stdout and exit 0', () => {
   assert.deepEqual(help, { status: 0, stdout: USAGE, stderr: '' });
   assert.match(USAGE, /^Usage:\n {2}egdev-ds init {4}<project> \[--from <dir>\]/);
   assert.match(USAGE, /\n {2}egdev-ds doctor {2}<project> \[--from <dir>\] \[--json\]\n/);
-  assert.deepEqual(runBin(['--version'], cwd), { status: 0, stdout: '0.1.0\n', stderr: '' });
+  assert.deepEqual(runBin(['--version'], cwd), { status: 0, stdout: '0.1.1\n', stderr: '' });
 });
 
 test('AC2 bin: misuse exits 2 with one error line plus usage on stderr, empty stdout, no files changed', () => {

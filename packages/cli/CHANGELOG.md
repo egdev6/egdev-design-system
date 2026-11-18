@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.1.1
+
+- `egdev-ds status <project> [--from <dir>] [--json]` (#486): a read-only report of the vendored commit and each
+  vendored `@egdev` package's version, file and specifier style, derived from the vendored file names. With `--from`
+  it also reports the release commit and whether an upgrade is available. It writes nothing, spawns nothing and
+  refuses (exit 2) the `none`, unsafe, `foreign` and mixed states.
+- `localRepo` in a new `egdev-ds.json` now defaults to the name of the nearest ancestor folder that holds a `.git`
+  entry (a directory or a worktree's file; no git command runs), falling back to the package name (#485). The plan
+  shows it: `create  egdev-ds.json  localRepo=<value>`. `doctor` uses the same default when the file is missing.
+- `--local-repo <name>` for `init` and `upgrade` sets `localRepo` when `egdev-ds.json` is created. An existing file
+  keeps its value, and a different `--local-repo` prints a note on stderr.
+- `doctor` DS051 warns when the `design/system.md` header (`<!-- Generated from EGDEV design system <commit>; … -->`)
+  records a commit other than the vendored one. It looks from the project up to its repository root and is skipped
+  without the file, a recorded commit or a single vendored commit.
+
 ## 0.1.0
 
 - First release of `egdev-ds`: argument parsing, `--help`, `--version`, exit codes 0/1/2 and `--json` output.

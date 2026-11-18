@@ -58,6 +58,53 @@ export function formatDoctorJson({ project, report, release }) {
   return `${JSON.stringify(document, null, 2)}\n`;
 }
 
+/** @typedef {import('./status.mjs').StatusReport} StatusReport */
+
+/**
+ * `status` text (#486): the header, `Vendored at <commit7>:`, one aligned line per package with its
+ * full specifier, then the release line (or the skipped note without `--from`).
+ * @param {{ project: string, report: StatusReport, release: ReleaseSummary }} input
+ * @returns {string}
+ */
+export function formatStatusText({ project, report, release }) {
+  const { packageManager, framework, cssMode, commit, packages } = report;
+  const width = Math.max(...packages.map(({ name }) => name.length));
+  const versionWidth = Math.max(...packages.map(({ version }) => version.length));
+  const releaseLine = release
+    ? `Release at ${release.commit.slice(0, 7)} (${release.dir}): ${report.upgradeAvailable ? 'upgrade available' : 'up to date'}.`
+    : 'Release check skipped: pass --from <dir>.';
+  return [
+    `egdev-ds status ${project} (${packageManager ?? 'unknown'}, ${framework ?? 'unknown'}, ${cssMode})`,
+    `Vendored at ${commit}:`,
+    ...packages.map(
+      ({ name, version, file, style }) => `  ${name.padEnd(width)}  ${version.padEnd(versionWidth)}  ${style}${file}`
+    ),
+    releaseLine,
+    ''
+  ].join('\n');
+}
+
+/**
+ * `status --json` (#486): one versioned document with the same header fields as the other commands.
+ * @param {{ project: string, report: StatusReport, release: ReleaseSummary }} input
+ * @returns {string}
+ */
+export function formatStatusJson({ project, report, release }) {
+  const document = {
+    schemaVersion: 1,
+    command: 'status',
+    project,
+    packageManager: report.packageManager,
+    framework: report.framework,
+    cssMode: report.cssMode,
+    release,
+    commit: report.commit,
+    packages: report.packages,
+    upgradeAvailable: report.upgradeAvailable
+  };
+  return `${JSON.stringify(document, null, 2)}\n`;
+}
+
 /** @typedef {import('./manifest.mjs').Action} Action */
 /**
  * `framework` is null only for upgrade, which does not need it.

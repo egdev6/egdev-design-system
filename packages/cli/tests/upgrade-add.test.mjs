@@ -185,7 +185,8 @@ test('L11 AC16 npm upgrade --add cli vendors the CLI as a devDependency, doctor 
   );
   assert.deepEqual(await runInProcess(run, ['doctor', 'apps/hub', '--from', from], fixture.root), {
     status: 0,
-    stdout: 'egdev-ds doctor apps/hub (npm, vite, native)\n0 errors, 0 warnings, 0 skipped.\n',
+    stdout:
+      'egdev-ds doctor apps/hub (npm, vite, native)\nDS051 skipped Skipped: no design/system.md in the project or up to its repository root.\n0 errors, 0 warnings, 1 skipped.\n',
     stderr: ''
   });
 
@@ -250,7 +251,8 @@ test('L11 npm upgrade --add effects adds the dependency, the exact three peer, t
   write(join(project, 'node_modules/three/package.json'), json({ name: 'three', version: '0.160.0' }));
   assert.deepEqual(await runInProcess(run, ['doctor', 'apps/hub', '--from', from], fixture.root), {
     status: 0,
-    stdout: 'egdev-ds doctor apps/hub (npm, vite, native)\n0 errors, 0 warnings, 0 skipped.\n',
+    stdout:
+      'egdev-ds doctor apps/hub (npm, vite, native)\nDS051 skipped Skipped: no design/system.md in the project or up to its repository root.\n0 errors, 0 warnings, 1 skipped.\n',
     stderr: ''
   });
 });
@@ -296,7 +298,8 @@ test('L11 pnpm upgrade --add cli pins the CLI in pnpm-workspace.yaml as text and
   assert.equal(read(join(project, 'pnpm-workspace.yaml')), expected, 'comments and layout survive');
   assert.deepEqual(await runInProcess(run, ['doctor', '.', '--from', from], project), {
     status: 0,
-    stdout: 'egdev-ds doctor . (pnpm, next, tailwind)\n0 errors, 0 warnings, 0 skipped.\n',
+    stdout:
+      'egdev-ds doctor . (pnpm, next, tailwind)\nDS051 skipped Skipped: no design/system.md in the project or up to its repository root.\n0 errors, 0 warnings, 1 skipped.\n',
     stderr: ''
   });
 });

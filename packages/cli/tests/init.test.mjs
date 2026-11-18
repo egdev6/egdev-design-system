@@ -83,7 +83,7 @@ const npmPlan = (fixture, from) => [
   line('edit', 'package.json', 'overrides.@egdev/system = $@egdev/system'),
   line('edit', 'src/index.css', '+@import "@egdev/tokens/tokens.css"'),
   line('edit', 'src/index.css', '+@import "@egdev/ui/styles.css"'),
-  line('create', 'egdev-ds.json'),
+  line('create', 'egdev-ds.json', 'localRepo=hub'),
   line('create', '.mcp.json', 'mcpServers.egdev-design-system')
 ];
 
@@ -166,7 +166,8 @@ test('AC6 AC16 npm+Vite+native init writes exactly the §6 effects, runs only np
   ]);
   assert.deepEqual(await runInProcess(run, ['doctor', 'apps/hub', '--from', from], fixture.root), {
     status: 0,
-    stdout: 'egdev-ds doctor apps/hub (npm, vite, native)\n0 errors, 0 warnings, 0 skipped.\n',
+    stdout:
+      'egdev-ds doctor apps/hub (npm, vite, native)\nDS051 skipped Skipped: no design/system.md in the project or up to its repository root.\n0 errors, 0 warnings, 1 skipped.\n',
     stderr: ''
   });
 });
@@ -223,7 +224,7 @@ test('AC6 pnpm+Next.js+tailwind init with effects: workspace overrides, packageM
       line('edit', 'src/app/globals.css', '+@import "@egdev/tokens/theme.css"'),
       line('edit', 'src/app/globals.css', '+@import "@egdev/ui/styles.css"'),
       line('edit', 'src/app/globals.css', '+@import "@egdev/effects/styles.css"'),
-      line('create', 'egdev-ds.json'),
+      line('create', 'egdev-ds.json', 'localRepo=site'),
       line('create', '.mcp.json', 'mcpServers.egdev-design-system'),
       line('run', 'pnpm install --no-frozen-lockfile'),
       `Initialized at ${C7}; 6 vendored integrities verified.`,
@@ -297,7 +298,8 @@ test('AC6 pnpm+Next.js+tailwind init with effects: workspace overrides, packageM
   );
   assert.deepEqual(await runInProcess(run, ['doctor', '.', '--from', from], project), {
     status: 0,
-    stdout: 'egdev-ds doctor . (pnpm, next, tailwind)\n0 errors, 0 warnings, 0 skipped.\n',
+    stdout:
+      'egdev-ds doctor . (pnpm, next, tailwind)\nDS051 skipped Skipped: no design/system.md in the project or up to its repository root.\n0 errors, 0 warnings, 1 skipped.\n',
     stderr: ''
   });
   const again = await init(fixture, ['--from', from, '--packages', 'tokens,ui,effects,system,mcp'], runner);
@@ -315,7 +317,10 @@ test('AC6 npm+Vite+tailwind inserts theme.css after @import "tailwindcss"; docto
     '@import "tailwindcss";\n@import "@egdev/tokens/theme.css";\n@import "@egdev/ui/styles.css";\n\n:root { color-scheme: dark; }\n'
   );
   const doctor = await runInProcess(run, ['doctor', 'apps/hub', '--from', from], fixture.root);
-  assert.equal(doctor.stdout, 'egdev-ds doctor apps/hub (npm, vite, tailwind)\n0 errors, 0 warnings, 0 skipped.\n');
+  assert.equal(
+    doctor.stdout,
+    'egdev-ds doctor apps/hub (npm, vite, tailwind)\nDS051 skipped Skipped: no design/system.md in the project or up to its repository root.\n0 errors, 0 warnings, 1 skipped.\n'
+  );
 });
 
 test('AC6 pnpm+Vite+native without a lockfile creates pnpm-workspace.yaml and keeps @charset first; doctor passes', async () => {
@@ -344,7 +349,10 @@ test('AC6 pnpm+Vite+native without a lockfile creates pnpm-workspace.yaml and ke
     '@charset "utf-8";\n@import "@egdev/tokens/tokens.css";\n@import "@egdev/ui/styles.css";\nbody { margin: 0; }\n'
   );
   const doctor = await runInProcess(run, ['doctor', '.', '--from', from], fixture.project);
-  assert.equal(doctor.stdout, 'egdev-ds doctor . (pnpm, vite, native)\n0 errors, 0 warnings, 0 skipped.\n');
+  assert.equal(
+    doctor.stdout,
+    'egdev-ds doctor . (pnpm, vite, native)\nDS051 skipped Skipped: no design/system.md in the project or up to its repository root.\n0 errors, 0 warnings, 1 skipped.\n'
+  );
 });
 
 test('AC6 a Vite entry module that already imports @egdev CSS is wired: no CSS edit (Nexo layout)', async () => {
