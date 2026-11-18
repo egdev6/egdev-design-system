@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2024"],
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "verbatimModuleSyntax": false,
+    "types": ["node"]
+  },
+  "include": ["bin", "src"]
+}

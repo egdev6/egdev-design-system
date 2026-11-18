@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import { readFileSync, statSync } from 'node:fs';
+import test from 'node:test';
+import { readPackedManifest as packScriptReader } from '../../../scripts/lib/pack-packages.mjs';
+import { readPackedManifest } from '../src/release.mjs';
+
+const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
+
+test('AC1 @egdev/cli ships bin egdev-ds, Node 24, no dependencies and a matching changelog', () => {
+  const manifest = JSON.parse(read('../package.json'));
+  assert.equal(manifest.name, '@egdev/cli');
+  assert.equal(manifest.version, '0.1.0');
+  assert.equal(manifest.type, 'module');
+  assert.deepEqual(manifest.bin, { 'egdev-ds': './bin/egdev-ds.mjs' });
+  assert.deepEqual(manifest.files, ['bin', 'src', 'CHANGELOG.md']);
+  assert.deepEqual(manifest.engines, { node: '>=24.0.0 <25' });
+  assert.equal(manifest.dependencies, undefined);
+  assert.equal(manifest.devDependencies, undefined);
+  assert.equal(manifest.scripts?.build, undefined, 'No build step: pnpm -r run build skips the package');
+  const top = read('../CHANGELOG.md')
+    .split('\n')
+    .find((line) => /^##\s+\S/.test(line));
+  assert.equal(top, '## 0.1.0');
+  const bin = read('../bin/egdev-ds.mjs');
+  assert.ok(bin.startsWith('#!/usr/bin/env node\n'));
+  assert.ok(statSync(new URL('../bin/egdev-ds.mjs', import.meta.url)).mode & 0o100, 'The bin is executable');
+});
+
+test('AC1 the packed-manifest reader has one owner shared with release:pack', () => {
+  assert.equal(packScriptReader, readPackedManifest);
+});
