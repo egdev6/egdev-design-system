@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.2
+
+- Depend on `@egdev/system` 0.4.2. The tarball now ships this `CHANGELOG.md`.
+
 ## 0.4.1
 
 - Depend on `@egdev/system` 0.4.1: every tool serves the artifact for `@egdev/ui` 0.3.1.

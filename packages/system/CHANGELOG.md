@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## 0.4.2
+
+- No code changes. The tarball now ships this `CHANGELOG.md`, and `release:pack` records the release in `release.json` (commit, dirty flag, sha256), so `egdev-ds upgrade` can verify the set and show what changed.
+- Regenerate the artifact for the 0.5.1/0.3.2/0.2.2 package versions.
+
 ## 0.4.1
 
 - Regenerate the artifact and design reference for `@egdev/ui` 0.3.1 (Link underlined at rest,
