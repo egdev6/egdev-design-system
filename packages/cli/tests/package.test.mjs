@@ -12,7 +12,14 @@ test('AC1 @egdev/cli ships bin egdev-ds, Node 24, no dependencies and a matching
   assert.equal(manifest.version, '0.1.1');
   assert.equal(manifest.type, 'module');
   assert.deepEqual(manifest.bin, { 'egdev-ds': './bin/egdev-ds.mjs' });
-  assert.deepEqual(manifest.files, ['bin', 'src', 'CHANGELOG.md']);
+  assert.deepEqual(manifest.files, ['bin', 'src', 'types', 'CHANGELOG.md']);
+  // S6 (#488): a type-only entry; there is no runtime module to import.
+  assert.equal(manifest.types, './types/index.d.ts');
+  assert.deepEqual(manifest.exports, {
+    '.': { types: './types/index.d.ts' },
+    './package.json': './package.json'
+  });
+  assert.equal(manifest.main, undefined);
   assert.deepEqual(manifest.engines, { node: '>=24.0.0 <25' });
   assert.equal(manifest.dependencies, undefined);
   assert.equal(manifest.devDependencies, undefined);

@@ -51,7 +51,8 @@ These come from S2 unless marked otherwise:
 | Location | `packages/cli/` | [E S3: bootstrap path `packages/cli/bin/egdev-ds.mjs`] |
 | Binary | `"bin": { "egdev-ds": "./bin/egdev-ds.mjs" }` | [E S3] |
 | Language | Plain ESM `.mjs`, no build step, no TypeScript compile | [I] Closest precedent: `@egdev/system` ships plain `.mjs` bins from `src/` (`packages/system/package.json:10-12`, `packages/system/src/cli.mjs:1`). `@egdev/mcp` needs `tsc` and runtime dependencies (`packages/mcp/package.json:18,21-25`), which S3 rules out. |
-| `files` | `["bin", "src", "CHANGELOG.md"]` | [I] `CHANGELOG.md` depends on Q3. |
+| `files` | `["bin", "src", "types", "CHANGELOG.md"]` | [I] `CHANGELOG.md` depends on Q3. `types` is the amendment below. |
+| Types | Amendment, `odd/tasks/egdev-ds-485-486.md` S6 (#488): `"types": "./types/index.d.ts"` and `"exports": { ".": { "types": "./types/index.d.ts" }, "./package.json": "./package.json" }`. A hand-written, type-only entry exporting `GuardAllowlistEntry` and `DesignSystemAllowlist`; no runtime entry, no build step, no dependency. `src/guard.mjs` imports its typedef from it, so the shape has one source of truth. | [E #488: the skill's legacy guard exported `GuardAllowlistEntry`, and apps lost the type when they moved to the CLI] |
 | `engines` | `"node": ">=24.0.0 <25"` | [E] Same range as the repository root and `@egdev/mcp` (`package.json:6-8`, `packages/mcp/package.json:14-16`). The website already requires `>=24.22.1` (`egdev-website/package.json:7-9`), which this range accepts. |
 | `dependencies` | none | [E S3] |
 | `scripts` | none. With no `build` script, `pnpm -r run build` skips the package. | [I] Assumes pnpm skips a missing script under `-r run`. The implementation plan must confirm it against `scripts/lib/pack-packages.mjs:200`. |
@@ -79,6 +80,7 @@ packages/cli/
   src/doctor.mjs            # check registry and the stable codes
   src/status.mjs            # read-only vendored-state report (amendment, odd/tasks/egdev-ds-485-486.md S3)
   src/guard.mjs             # checkDesignSystem, moved from the skill asset
+  types/index.d.ts          # type-only public entry: GuardAllowlistEntry (amendment, odd/tasks/egdev-ds-485-486.md S6)
 ```
 
 - `run()` takes an injectable filesystem, process runner and output streams. This mirrors `runVendor` [E skill `assets/ds-vendor.mjs:380-384`], whose deterministic tests depend on that injection [E skill `assets/ds-vendor.test.mjs:1-30`].
@@ -443,7 +445,7 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
 | DS031 | error | CSS mode coherence: `theme.css` requires a Tailwind import before it; `tokens.css` and `theme.css` are not both imported | [E `install.md:138-145`] |
 | DS040 | error | Guard: raw `<button`, `<input`, `<a`, `<label` in non-test `.tsx` under `sourceDirectory`, except a sole `asChild` child or an allowlisted entry | [E skill `references/freno.md:7`; guard asset] |
 | DS041 | error | Guard: `.eg-*` or `[role=tab]` selectors in CSS outside `themeDirectory` | [E skill `references/freno.md:8`] |
-| DS042 | error | Guard allowlist: invalid issue, empty reason, TODO mismatch, stale entry | [E skill `references/freno.md:9-11`; `assets/guard/design-system-guard.ts:163-174,192-194`] |
+| DS042 | error | Guard allowlist: invalid issue, empty reason, TODO mismatch, stale entry. The entry shape doctor accepts (`file`, `pattern`, `issue`, `reason` strings; optional `kind: 'component-gap'` and `comment` string) is the published `GuardAllowlistEntry` type (§2 Types; amendment S6, #488), pinned by a drift test | [E skill `references/freno.md:9-11`; `assets/guard/design-system-guard.ts:163-174,192-194`] |
 | DS043 | warning | Guard: `<localRepo>#TBD-*` placeholders pending | [E `assets/guard/design-system-guard.ts:195`; `nexo/apps/hub/src/design-system-guard.test.ts:32-35`] |
 | DS044 | error | Guard engine unavailable: `typescript` or `postcss` not resolvable from `<project>` (Q4) | [E the guard imports both: `assets/guard/design-system-guard.ts:1-2`] |
 | DS045 | error | `egdev-ds.json` missing or invalid | [I, Q6] |
@@ -451,7 +453,7 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
 | DS051 | warning | Amendment, `odd/tasks/egdev-ds-485-486.md` S3. With vendored files, the nearest `design/system.md` from `<project>` up to its repository root (the nearest `.git` ancestor; only `<project>` without one) records a design system commit in its first line, `<!-- Generated from EGDEV design system <commit>; … -->`, that differs from the vendored commit (prefix comparison, 7 to 40 hex): `Header records <a>, vendored at <b>: regenerate design/system.md.` `skipped` when the vendored set is mixed, the file is absent, or the first line records no commit | [E the header both apps' sync scripts write: `egdev-website/scripts/design-system-md.mjs:11`, `nexo/apps/hub/scripts/sync-design-system-md.mjs:5`; Nexo keeps the file at its repository root: `nexo/apps/hub/scripts/sync-design-system-md.mjs:8`. `egdev-system-md` itself writes no commit: `packages/system/src/render-system-md.mjs:87-97`] |
 
 - **Guard parity:** `src/guard.mjs` is the skill's `checkDesignSystem`, moved here unchanged except for its options source [E S3 "one maintained guard implementation"]. Both apps' copies are identical to the asset (see §1). Its existing tests move with it, including the comment-trivia regression [E skill `references/freno.md:33`].
-- **Allowlist file:** `src/design-system-allowlist.ts`, as in both apps [E `nexo/apps/hub/src/design-system-allowlist.ts:1-5`]. It is loaded with Node 24's built-in type stripping, which the file's syntax allows (only `import type` plus an array literal) [I, Q5].
+- **Allowlist file:** `src/design-system-allowlist.ts`, as in both apps [E `nexo/apps/hub/src/design-system-allowlist.ts:1-5`]. It is loaded with Node 24's built-in type stripping, which the file's syntax allows (only `import type` plus an array literal) [I, Q5]. Apps type it with `import type { GuardAllowlistEntry } from '@egdev/cli'` (S6, #488).
 - **`design/system.md` freshness:** a full content check stays deferred. Nexo's file carries a custom header and a whitespace fix [E `nexo/apps/hub/scripts/sync-design-system-md.mjs:5-7`], so `egdev-system-md --check` would always report stale. DS051 (S3) checks only the commit the header records.
 
 ## 9. Idempotency and safety rules

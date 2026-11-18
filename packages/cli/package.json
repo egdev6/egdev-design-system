@@ -5,9 +5,17 @@
   "bin": {
     "egdev-ds": "./bin/egdev-ds.mjs"
   },
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "bin",
     "src",
+    "types",
     "CHANGELOG.md"
   ],
   "engines": {

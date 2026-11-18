@@ -366,5 +366,29 @@ with Node's built-in type stripping, so the file may hold only `import type` lin
 file is an empty allowlist. The guard resolves `typescript` and `postcss` from the project; doctor runs the project's
 own copies.
 
+`@egdev/cli` publishes a type-only entry (`types/index.d.ts`) with the entry shape doctor validates (DS042), so the
+allowlist is checked at compile time:
+
+```ts
+import type { GuardAllowlistEntry } from '@egdev/cli';
+
+// Exact opening tags and selectors: remove each entry when its workaround goes away.
+export const designSystemAllowlist: readonly GuardAllowlistEntry[] = [
+  { file: 'src/Swatch.tsx', pattern: '<input type="color" />', issue: 'my-app#21', reason: 'Awaiting a DS swatch.' },
+  {
+    file: 'src/Switcher.tsx',
+    pattern: '<Cluster gap={4}>',
+    issue: 'egdev6/egdev-design-system#391',
+    reason: 'Awaiting the DS switcher.',
+    kind: 'component-gap',
+    comment: '// TODO(egdev-design-system#391): Replace with the DS switcher.'
+  }
+];
+```
+
+`file`, `pattern`, `issue` and `reason` are required strings; `kind` is only `'component-gap'`, which needs the matching
+TODO `comment`. `DesignSystemAllowlist` is the same array type. The package has no runtime entry: use `import type`,
+which Node strips when doctor loads the file.
+
 **Doctor executes project code.** Loading the allowlist imports a module from the project, and the guard runs the
 project's `typescript` and `postcss`. Run `egdev-ds doctor` only on projects you trust, as you would their tests.
