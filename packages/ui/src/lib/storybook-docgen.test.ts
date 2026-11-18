@@ -5288,7 +5288,8 @@ describe('Chip metadata contract', () => {
       'Static',
       'Link',
       'ExternalLink',
-      'StaticInList'
+      'StaticInList',
+      'CustomAccent'
     ]);
   });
 });

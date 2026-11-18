@@ -1,5 +1,6 @@
+import { createAccentTheme } from '@egdev/tokens/accent';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useState } from 'react';
+import { type CSSProperties, useState } from 'react';
 import { action } from 'storybook/actions';
 import { Tabs } from './Tabs';
 import type { TabsItem } from './types';
@@ -12,17 +13,19 @@ const items: TabsItem[] = [
 
 /**
  * ## Description
- * Horizontal sibling views inside a page, with optional counters and underline or segmented treatment.
+ * Horizontal sibling views inside a page, with optional counters and underline, segmented or outline treatment.
  *
  * ## Dependencies
  * Radix Tabs owns automatic activation, roving focus and tab/panel relationships. The existing
- * Surface well recipe paints the segmented list; compact counters are owned parts, not Badge overrides.
+ * Surface well recipe paints the segmented and outline lists; compact counters are owned parts, not Badge overrides.
+ * The outline selected tab reads the accent roles (selected border and chip sheen), so a host accent map recolors it.
  *
  * ## Usage guidelines
  * Supply unique, non-empty item values and at least one enabled item. Inactive panel contents unmount;
  * lift persistent state into the host. Counts are raw numbers and included in accessible tab names.
  * Use meaningful labels for danger counters. Dense small/segmented sizes target pointer devices.
- * Segmented fullWidth distributes tabs equally when they fit; labelWrap permits long labels to wrap at logical start.
+ * Segmented and outline fullWidth distribute tabs equally when they fit; labelWrap permits long labels to wrap at
+ * logical start.
  * The options are independent, do not affect underline and preserve the visible overflow scrollbar.
  * className supports root margin, width and grid placement only, not internal appearance overrides.
  */
@@ -138,4 +141,38 @@ export const FullWidthLabelWrap: Story = {
       <Tabs {...args} />
     </div>
   )
+};
+
+const appItems: TabsItem[] = [
+  { value: 'apps', label: 'My apps', content: 'Installed apps' },
+  { value: 'catalog', label: 'Catalog', content: 'Available apps' }
+];
+
+/** Bordered well whose selected tab shows the accent border and chip sheen over surface-1 with an edge highlight. */
+export const Outline: Story = {
+  args: { variant: 'outline', label: 'App views', items: appItems }
+};
+
+/** The outline well fills the host; equal tabs when they fit, scrolling with focus reveal when they do not. */
+export const OutlineFullWidth: Story = {
+  args: { variant: 'outline', fullWidth: true, label: 'App views', items: appItems }
+};
+
+/** A consumer-owned host applies a complete accent map; the selected border and sheen follow it. */
+export const OutlineCustomAccent: Story = {
+  args: { variant: 'outline', label: 'App views', items: appItems },
+  render: function OutlineCustomAccentExample(args) {
+    const theme = createAccentTheme('#3b82f6');
+    const red = createAccentTheme(null);
+    return (
+      <div className='grid gap-6'>
+        <div style={theme.variables as CSSProperties}>
+          <Tabs {...args} />
+        </div>
+        <div style={red.variables as CSSProperties}>
+          <Tabs {...args} label='App views with the default accent' />
+        </div>
+      </div>
+    );
+  }
 };

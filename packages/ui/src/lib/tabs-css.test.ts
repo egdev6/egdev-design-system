@@ -83,4 +83,16 @@ it('compiles production Tabs CVA utilities without writing build artifacts', asy
   expect(rule(String.raw`.data-\[state\=active\]\:focus-visible\:shadow-focus`)).toMatch(
     /--tw-shadow:[^;]+;[\s\S]*box-shadow:/
   );
+  // Outline: accent-following border and chip sheen over surface-1 with the edge-only shadow.
+  expect(rule(String.raw`.data-\[state\=active\]\:border-state-selected`)).toMatch(
+    /border-color:\s*var\(--color-state-selected[,)]/
+  );
+  expect(
+    rule(String.raw`.data-\[state\=active\]\:\[background\:var\(--gradient-chip-active\)\,var\(--color-surface-1\)\]`)
+  ).toMatch(/background:\s*var\(--gradient-chip-active\),\s*var\(--color-surface-1\)/);
+  const edgeOnly = String.raw`.data-\[state\=active\]\:shadow-\[var\(--shadow-edge-strong\)\]`;
+  expect(rule(edgeOnly)).toMatch(/--tw-shadow:\s*var\(--shadow-edge-strong\)[\s\S]*box-shadow:/);
+  expect(css.indexOf(String.raw`.data-\[state\=active\]\:focus-visible\:shadow-focus`)).toBeGreaterThan(
+    css.indexOf(edgeOnly)
+  );
 }, 30_000);

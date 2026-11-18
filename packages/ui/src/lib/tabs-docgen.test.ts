@@ -69,7 +69,10 @@ describe('Tabs Storybook metadata', () => {
       'Disabled',
       'FullWidth',
       'LabelWrap',
-      'FullWidthLabelWrap'
+      'FullWidthLabelWrap',
+      'Outline',
+      'OutlineFullWidth',
+      'OutlineCustomAccent'
     ]);
     expect(readFileSync(source('Tabs.stories.tsx'), 'utf8')).not.toMatch(/argTypes:|\bplay:/);
   });
@@ -104,7 +107,7 @@ describe('Tabs Storybook metadata', () => {
     }
     const choices = (name: string) =>
       props[name]?.type.value.map(({ value }: { value: string }) => value.replaceAll('"', ''));
-    expect(choices('variant')).toEqual(['underline', 'segmented']);
+    expect(choices('variant')).toEqual(['underline', 'segmented', 'outline']);
     expect(choices('size')).toEqual(['md', 'sm']);
     expect(Object.keys(props).sort()).toEqual(
       [...Object.keys(controls), 'id', 'title', 'aria-describedby', 'className', 'style'].sort()

@@ -34,7 +34,8 @@ const defaultVariables = Object.freeze({
   '--shadow-state-selected': 'var(--shadow-btn-primary)',
   '--shadow-state-indicator': 'var(--shadow-glow-base)',
   '--color-link-default': 'var(--color-fg-brand-raised)',
-  '--color-link-hover': 'var(--color-primitive-red-200)'
+  '--color-link-hover': 'var(--color-primitive-red-200)',
+  '--gradient-chip-active': 'linear-gradient(180deg, rgba(255, 0, 54, 0.24), rgba(255, 0, 54, 0.09))'
 });
 
 // Integer weights implement the specified sRGB interpolation with exact
@@ -134,7 +135,8 @@ function customVariables(base: Rgb): AccentTheme['variables'] {
     '--shadow-state-selected': restShadow,
     '--shadow-state-indicator': `0 4px 20px 0 ${rgba(base, 0.15)}`,
     '--color-link-default': color,
-    '--color-link-hover': hover
+    '--color-link-hover': hover,
+    '--gradient-chip-active': `linear-gradient(180deg, ${rgba(base, 0.24)}, ${rgba(base, 0.09)})`
   });
 }
 

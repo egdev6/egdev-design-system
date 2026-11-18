@@ -4,8 +4,8 @@ import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 /** Counter status family, independent of selection. */
 export type TabsTone = 'neutral' | 'danger';
 /** In-page tab row treatment. */
-export type TabsVariant = 'underline' | 'segmented';
-/** Underline dimensions; segmented has one fixed height. */
+export type TabsVariant = 'underline' | 'segmented' | 'outline';
+/** Underline dimensions; segmented and outline have one fixed height. */
 export type TabsSize = 'md' | 'sm';
 
 /** One sibling view. Values must be unique and non-empty; keep at least one item enabled. */
@@ -78,26 +78,27 @@ export type TabsProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'defa
    */
   onValueChange?: (value: string) => void;
   /**
-   * Underline row or recessed segmented well.
+   * Underline row, recessed segmented well, or outline well whose selected tab shows an accent border
+   * and chip sheen over surface-1.
    * @default underline
    * @control select
    */
   variant?: TabsVariant;
   /**
-   * Underline height and horizontal padding only; segmented always uses its single height.
+   * Underline height and horizontal padding only; segmented and outline always use their single height.
    * @default md
    * @control select
    */
   size?: TabsSize;
   /**
-   * Fill the available width with equal segmented tabs when they fit; overflowing tabs may be unequal.
-   * Has no effect on underline.
+   * Fill the available width with equal segmented or outline tabs when they fit; overflowing tabs may be
+   * unequal. Has no effect on underline.
    * @default false
    * @control boolean
    */
   fullWidth?: boolean;
   /**
-   * Wrap and start-align segmented labels, including long words; has no effect on underline.
+   * Wrap and start-align segmented or outline labels, including long words; has no effect on underline.
    * @default false
    * @control boolean
    */
@@ -107,18 +108,19 @@ export type TabsProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'defa
 /** Public root recipe resets the legacy tablist geometry without emitting legacy part markers. */
 export const tabsVariants = cva('eg-tabs flex flex-col gap-0 border-0 overflow-visible');
 
-/** Only the segmented list composes the existing Surface well recipe in useTabs. */
+/** Only the segmented and outline lists compose the existing Surface well recipe in useTabs. */
 export const tabsListVariants = cva('', {
   variants: {
     variant: {
       underline: 'flex items-stretch gap-1 border-b border-border-default overflow-x-auto [scrollbar-width:none]',
-      segmented: 'inline-flex self-start gap-0.5 p-0.75'
+      segmented: 'inline-flex self-start gap-0.5 p-0.75',
+      outline: 'inline-flex self-start gap-0.5 p-0.75'
     },
     fullWidth: { true: '', false: '' }
   },
   compoundVariants: [
     {
-      variant: 'segmented',
+      variant: ['segmented', 'outline'],
       fullWidth: true,
       // Reserve room for the 4px focus ring even at the scrollport edges. The overflow scrollbar is
       // thin and token-colored: Blink/WebKit pseudo-elements without arrow buttons, and the standard
@@ -156,6 +158,12 @@ export const tabsTriggerVariants = cva(
           "data-[state=active]:before:content-['']",
           'data-[state=active]:before:pointer-events-none data-[state=active]:before:absolute data-[state=active]:before:inset-0 data-[state=active]:before:-z-10 data-[state=active]:before:rounded-[inherit] data-[state=active]:before:bg-border-brand',
           'focus-visible:outline-none focus-visible:shadow-focus data-[state=active]:focus-visible:shadow-focus'
+        ],
+        // Accent-following border and chip sheen over surface-1 with the edge-only shadow; no overlay.
+        outline: [
+          'min-h-8.5 px-3 rounded-[calc(var(--radius-md)---spacing(0.75))] border border-transparent',
+          'data-[state=active]:border-state-selected data-[state=active]:[background:var(--gradient-chip-active),var(--color-surface-1)] data-[state=active]:shadow-[var(--shadow-edge-strong)]',
+          'focus-visible:outline-none focus-visible:shadow-focus data-[state=active]:focus-visible:shadow-focus'
         ]
       },
       size: { md: '', sm: '' },
@@ -165,10 +173,14 @@ export const tabsTriggerVariants = cva(
     compoundVariants: [
       { variant: 'underline', size: 'md', class: 'min-h-11 px-3 after:inset-x-3' },
       { variant: 'underline', size: 'sm', class: 'min-h-9 px-2 after:inset-x-2' },
-      { variant: 'segmented', fullWidth: true, class: 'justify-center' },
-      { variant: 'segmented', labelWrap: true, class: 'whitespace-normal wrap-anywhere text-start justify-start py-1' },
+      { variant: ['segmented', 'outline'], fullWidth: true, class: 'justify-center' },
+      {
+        variant: ['segmented', 'outline'],
+        labelWrap: true,
+        class: 'whitespace-normal wrap-anywhere text-start justify-start py-1'
+      },
       // Full width scrolls, so keep words whole and let a long word widen its column instead.
-      { variant: 'segmented', fullWidth: true, labelWrap: true, class: 'wrap-break-word' }
+      { variant: ['segmented', 'outline'], fullWidth: true, labelWrap: true, class: 'wrap-break-word' }
     ],
     defaultVariants: { variant: 'underline', size: 'md' }
   }
@@ -183,10 +195,10 @@ export const tabsCountVariants = cva(
         neutral: 'bg-bg-glass text-fg-secondary',
         danger: 'bg-status-danger/14 text-status-danger'
       },
-      variant: { underline: '', segmented: '' },
+      variant: { underline: '', segmented: '', outline: '' },
       labelWrap: { true: '', false: '' }
     },
-    compoundVariants: [{ variant: 'segmented', labelWrap: true, class: 'whitespace-nowrap' }],
+    compoundVariants: [{ variant: ['segmented', 'outline'], labelWrap: true, class: 'whitespace-nowrap' }],
     defaultVariants: { tone: 'neutral', variant: 'underline' }
   }
 );

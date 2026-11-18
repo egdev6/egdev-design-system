@@ -33,6 +33,7 @@ export function useTabs(props: TabsProps): UseTabsResult {
     className,
     ...rest
   } = props;
+  const framed = variant === 'segmented' || variant === 'outline';
   return {
     rootProps: {
       ...rest,
@@ -46,7 +47,7 @@ export function useTabs(props: TabsProps): UseTabsResult {
     listProps: {
       'aria-label': label,
       onFocus:
-        variant === 'segmented' && fullWidth
+        framed && fullWidth
           ? (event) => {
               if (
                 event.target.getAttribute('role') === 'tab' &&
@@ -57,7 +58,7 @@ export function useTabs(props: TabsProps): UseTabsResult {
             }
           : undefined,
       className: cn(
-        variant === 'segmented' && surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }),
+        framed && surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }),
         tabsListVariants({ variant, fullWidth })
       )
     },

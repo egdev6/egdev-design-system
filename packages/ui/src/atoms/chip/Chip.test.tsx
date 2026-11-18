@@ -1,6 +1,11 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { createAccentTheme } from '@egdev/tokens/accent';
+import tailwindcss from '@tailwindcss/vite';
 import { render, renderHook, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { createRef } from 'react';
+import { build } from 'vite';
 import { describe, expect, it, vi } from 'vitest';
 import { Icon } from '../icon';
 import { Chip, type ChipProps, chipVariants } from './index';
@@ -183,7 +188,7 @@ describe('Chip public contract', () => {
       'hover:border-border-hairline-strong',
       'hover:[background:var(--gradient-sheen),var(--color-surface-2)]',
       'hover:text-fg-default',
-      'data-[state=on]:border-primitive-red-neon/60',
+      'data-[state=on]:border-state-selected/60',
       'data-[state=on]:[background:var(--gradient-chip-active),var(--color-surface-1)]',
       'data-[state=on]:shadow-[var(--shadow-edge-strong),var(--shadow-glow-base)]',
       'data-[state=on]:text-fg-default',
@@ -201,6 +206,52 @@ describe('Chip public contract', () => {
       expect(classes, utility).toContain(utility);
     }
   });
+
+  it('derives the selected border and sheen from accent roles that default to the previous red', () => {
+    const classes = chipVariants().split(' ');
+    expect(classes).not.toContain('data-[state=on]:border-primitive-red-neon/60');
+    expect(classes.filter((utility) => utility.includes('primitive-red'))).toEqual([]);
+    const theme = readFileSync(resolve('packages/tokens/src/theme.css'), 'utf8');
+    const declared = (name: string) => new RegExp(`^\\s*${name}:\\s*([^;]+);`, 'm').exec(theme)?.[1];
+    // Default chain: state-selected -> primary solid background -> the red neon the border used before.
+    expect(declared('--color-state-selected')).toBe('var(--color-action-primary-solid-bg)');
+    expect(declared('--color-action-primary-solid-bg')).toBe('var(--color-primitive-red-neon)');
+    const red = createAccentTheme(null).variables;
+    expect(red['--color-state-selected']).toBe('var(--color-action-primary-solid-bg)');
+    expect(red['--color-action-primary-solid-bg']).toBe('var(--color-primitive-red-neon)');
+    expect(red['--gradient-chip-active']).toBe(declared('--gradient-chip-active'));
+    const blue = createAccentTheme('#3b82f6').variables;
+    expect(blue['--color-state-selected']).not.toContain('red');
+    expect(blue['--gradient-chip-active']).not.toBe(red['--gradient-chip-active']);
+  });
+
+  it('compiles the selected border to the same 60% mix, now of the accent-following role', async () => {
+    const entry = resolve('packages/ui/src/styles/compiled.css');
+    const result = await build({
+      configFile: false,
+      envDir: false,
+      plugins: [tailwindcss({ optimize: false })],
+      logLevel: 'warn',
+      build: { write: false, minify: false, cssMinify: false, rolldownOptions: { input: entry } }
+    });
+    const outputs = (Array.isArray(result) ? result : [result]).flatMap((output) =>
+      'output' in output ? output.output : []
+    );
+    const asset = outputs.find((output) => output.type === 'asset' && output.fileName.endsWith('.css'));
+    if (asset?.type !== 'asset') {
+      throw new Error('Missing production CSS output');
+    }
+    const css = String(asset.source);
+    const selector = String.raw`.data-\[state\=on\]\:border-state-selected\/60`;
+    const start = css.indexOf(selector);
+    expect(start, selector).toBeGreaterThan(-1);
+    const rule = css.slice(start, css.indexOf('}', css.indexOf('}', start) + 1) + 1);
+    // The static fallback is the default red; modern engines mix the inherited, accent-following role.
+    expect(rule).toMatch(/border-color:\s*color-mix\(in srgb,\s*#FF0036 60%, transparent\)/i);
+    expect(rule).toMatch(
+      /border-color:\s*color-mix\(in oklab,\s*var\(--color-state-selected, var\(--color-action-primary-solid-bg\)\) 60%, transparent\)/
+    );
+  }, 30_000);
 
   it('merges consumer layout last and forwards native attributes without dropping eg-chip (AC-11 toggle)', async () => {
     const click = vi.fn();

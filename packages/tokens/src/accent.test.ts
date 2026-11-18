@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 type Rgb = readonly [number, number, number];
@@ -35,7 +37,8 @@ const defaultVariables: Readonly<Record<string, string>> = {
   '--shadow-state-selected': 'var(--shadow-btn-primary)',
   '--shadow-state-indicator': 'var(--shadow-glow-base)',
   '--color-link-default': 'var(--color-fg-brand-raised)',
-  '--color-link-hover': 'var(--color-primitive-red-200)'
+  '--color-link-hover': 'var(--color-primitive-red-200)',
+  '--gradient-chip-active': 'linear-gradient(180deg, rgba(255, 0, 54, 0.24), rgba(255, 0, 54, 0.09))'
 };
 
 const white: Rgb = [255, 255, 255];
@@ -173,6 +176,9 @@ function assertCustomMap(theme: AccentTheme, input: Rgb): void {
   expect(variable(vars, '--gradient-state-selected')).toBe(restGradient);
   expect(variable(vars, '--shadow-state-selected')).toBe(variable(vars, '--shadow-btn-primary'));
   expect(normalizedPaint(variable(vars, '--shadow-state-indicator'))).toBe(`0 4px 20px 0 rgba(${r}, ${g}, ${b}, 0.15)`);
+  expect(normalizedPaint(variable(vars, '--gradient-chip-active'))).toBe(
+    `linear-gradient(180deg, rgba(${r}, ${g}, ${b}, 0.24), rgba(${r}, ${g}, ${b}, 0.09))`
+  );
   for (const stop of [base, hover, top, middle, bottom]) {
     expect(contrast(stop, mix(graphite3, white, 0.045))).toBeGreaterThanOrEqual(4.6);
     expect(contrast(black, mix(stop, black, 0.28))).toBeGreaterThanOrEqual(4.6);
@@ -208,6 +214,21 @@ describe('createAccentTheme public contract', () => {
     for (const [name, value] of Object.entries(result.variables)) {
       expect(value).not.toContain(`var(${name})`);
     }
+  });
+
+  it('reproduces the theme.css chip-active literal for the default accent and derives a different custom sheen', async () => {
+    const { createAccentTheme } = await loadAccent();
+    const theme = readFileSync(resolve('packages/tokens/src/theme.css'), 'utf8');
+    const declaration = /^\s*--gradient-chip-active:\s*([^;]+);/m.exec(theme);
+    expect(declaration?.[1]).toBe('linear-gradient(180deg, rgba(255, 0, 54, 0.24), rgba(255, 0, 54, 0.09))');
+    const red = createAccentTheme('#ff0036');
+    expect(variable(red.variables, '--gradient-chip-active')).toBe(declaration?.[1]);
+    const blue = createAccentTheme('#3b82f6');
+    const blueSheen = variable(blue.variables, '--gradient-chip-active');
+    expect(blueSheen).not.toBe(declaration?.[1]);
+    expect(blueSheen).not.toContain('255, 0, 54');
+    const [r, g, b] = readColor(variable(blue.variables, '--color-state-selected'));
+    expect(blueSheen).toBe(`linear-gradient(180deg, rgba(${r}, ${g}, ${b}, 0.24), rgba(${r}, ${g}, ${b}, 0.09))`);
   });
 
   it.each([
