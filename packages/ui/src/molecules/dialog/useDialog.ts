@@ -67,7 +67,7 @@ export function useDialogContent(props: DialogContentProps) {
     titleRowClass: cn(dialogTitleRowVariants()),
     titleClass: cn('eg-dialog__title', dialogTitleVariants()),
     descriptionClass: cn('eg-dialog__description', dialogDescriptionVariants()),
-    statusClass: cn('eg-dialog__status', dialogStatusVariants({ headerLayout })),
+    statusClass: cn('eg-dialog__status', dialogStatusVariants()),
     bodyClass: cn('eg-dialog__body', dialogBodyVariants({ bodyPadding })),
     footClass: cn('eg-dialog__foot', dialogFootVariants({ variant }))
   };

@@ -79,6 +79,47 @@ export const StackedHeader: Story = {
     )
   }
 };
+/** A long title in the stacked header: the description reads as its subtitle. */
+export const StackedLongTitle: Story = {
+  args: {
+    children: (
+      <>
+        <DialogTrigger asChild={true}>
+          <Button variant='secondary'>Open stacked long title</Button>
+        </DialogTrigger>
+        <DialogContent
+          title='Add a local application'
+          description='Pick an executable and customize how it appears in the hub.'
+          size='sm'
+          headerLayout='stacked'
+        >
+          Application form
+        </DialogContent>
+      </>
+    )
+  }
+};
+
+/** The same long title in the inline header, for comparison. */
+export const InlineLongTitle: Story = {
+  args: {
+    children: (
+      <>
+        <DialogTrigger asChild={true}>
+          <Button variant='secondary'>Open inline long title</Button>
+        </DialogTrigger>
+        <DialogContent
+          title='Add a local application'
+          description='Pick an executable and customize how it appears in the hub.'
+          size='sm'
+          headerLayout='inline'
+        >
+          Application form
+        </DialogContent>
+      </>
+    )
+  }
+};
 export const WithSplitAction: Story = {
   args: {
     children: (

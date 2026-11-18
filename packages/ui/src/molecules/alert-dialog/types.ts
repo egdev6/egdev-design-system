@@ -57,7 +57,7 @@ export type AlertDialogContentProps = Omit<
 export const alertDialogHeadVariants = cva(
   'flex flex-col gap-[var(--space-2)] px-[var(--space-6)] pt-[var(--space-6)] pb-[var(--space-4)]',
   {
-    variants: { headerLayout: { stacked: '', inline: 'flex-row items-center' } },
+    variants: { headerLayout: { stacked: '', inline: 'flex-row items-baseline-last' } },
     defaultVariants: { headerLayout: 'stacked' }
   }
 );

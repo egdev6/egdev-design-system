@@ -95,6 +95,53 @@ export const StackedHeader: Story = {
     )
   }
 };
+/** A long title in the stacked header: the description reads as its subtitle. */
+export const StackedLongTitle: Story = {
+  args: {
+    children: (
+      <>
+        <AlertDialogTrigger asChild={true}>
+          <Button variant='secondary'>Open stacked long title</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent
+          title='Remove this application from the hub?'
+          description='Its shortcut and custom settings will be deleted. The executable stays on disk.'
+          headerLayout='stacked'
+          actions={
+            <>
+              <AlertDialogCancel>Keep it</AlertDialogCancel>
+              <AlertDialogAction>Remove</AlertDialogAction>
+            </>
+          }
+        />
+      </>
+    )
+  }
+};
+
+/** The same long title in the inline header, for comparison. */
+export const InlineLongTitle: Story = {
+  args: {
+    children: (
+      <>
+        <AlertDialogTrigger asChild={true}>
+          <Button variant='secondary'>Open inline long title</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent
+          title='Remove this application from the hub?'
+          description='Its shortcut and custom settings will be deleted. The executable stays on disk.'
+          headerLayout='inline'
+          actions={
+            <>
+              <AlertDialogCancel>Keep it</AlertDialogCancel>
+              <AlertDialogAction>Remove</AlertDialogAction>
+            </>
+          }
+        />
+      </>
+    )
+  }
+};
 export const Danger: Story = {
   args: {
     children: (
