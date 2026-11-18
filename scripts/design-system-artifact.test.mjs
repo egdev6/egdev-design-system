@@ -392,10 +392,13 @@ test('anatomy utilities are shared and the artifact stays below one MiB', () => 
 test('all L9 naming types retain their source and owner', () => {
   const artifact = read('packages/system/design-system.json');
   const usages = read('skills/_shared/prop-naming.json').flatMap((entry) => entry.usages);
+  // Explicit owner inventory: the independent oracle for the builder's owner inference.
+  // Every registry naming type must appear here, so a new type requires a reviewed owner.
   const owners = new Map([
     ['CalendarGridEntry', 'CalendarGrid'],
     ['CarouselItem', 'Carousel'],
     ['ChipGroupOption', 'ChipGroup'],
+    ['ColorSwatchGroupOption', 'ColorSwatchGroup'],
     ['CommandPaletteItem', 'CommandPalette'],
     ['FooterNavigationItem', 'FooterNavigation'],
     ['GaugeGroupRing', 'GaugeGroup'],
@@ -407,7 +410,14 @@ test('all L9 naming types retain their source and owner', () => {
     ['TerminalCardRow', 'TerminalCard'],
     ['Toast', 'Toast']
   ]);
-  assert.deepEqual(artifact.types.map(({ name }) => name).sort(), [...owners.keys()].sort());
+  // Naming types are the registry usages whose component is not a public component export.
+  const publicNames = new Set(artifact.components.map(({ name }) => name));
+  const registryTypes = [...new Set(usages.map(({ component }) => component))]
+    .filter((name) => !publicNames.has(name))
+    .sort();
+  assert.ok(registryTypes.length > 0);
+  assert.deepEqual(artifact.types.map(({ name }) => name).sort(), registryTypes);
+  assert.deepEqual([...owners.keys()].sort(), registryTypes);
   for (const entry of artifact.types) {
     assert.equal(entry.owner, owners.get(entry.name), entry.name);
     const sources = usages.filter((usage) => usage.component === entry.name).map((usage) => usage.source.path);
@@ -647,7 +657,12 @@ test('own props match docgen for every exported props alias and reject removal o
 
 test('artifact contains the complete token source', () => {
   const artifact = read('packages/system/design-system.json');
-  // #402 added the four navigation typography tokens and --text-nav-count: 292 + 5 = 297.
-  assert.equal(artifact.tokens.length, 297);
+  const source = extractGroupedDeclarations(
+    readFileSync(new URL('../packages/tokens/src/theme.css', import.meta.url), 'utf8')
+  );
+  assert.ok(source.length > 0);
+  assert.equal(artifact.tokens.length, source.length);
+  assert.equal(new Set(artifact.tokens.map(({ name }) => name)).size, source.length);
   assert.deepEqual(new Set(artifact.tokens.map(({ group }) => group)), new Set(['theme', 'root', 'inline']));
+  assert.deepEqual(new Set(source.map(({ group }) => group)), new Set(['theme', 'root', 'inline']));
 });
