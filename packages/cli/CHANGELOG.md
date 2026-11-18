@@ -11,4 +11,9 @@
   overrides, the CSS entry imports, `egdev-ds.json`, `.mcp.json` and, with `--accent`, `src/theme/accent-host.ts`.
   It runs the package manager install and verifies every vendored integrity. Writes are atomic and roll back on
   failure. Conflicts are refused unless `--force`. `--dry-run` writes nothing, and a second run is a no-op.
-- `upgrade` is reserved and refuses with exit 2 until it ships.
+- `egdev-ds upgrade <project>` replaces the vendored set as one unit from a newer release, only for the `@egdev`
+  packages the app already declares. It verifies sha256 and internal and external peer coherence, refuses dirty
+  releases without `--allow-dirty`, copies the new tarballs into the existing vendor folder, rewrites every specifier
+  (dependencies, npm and pnpm overrides, `pnpm-workspace.yaml`), pre-rewrites the npm lock, prints the changelog diff
+  from the tarballs' `CHANGELOG.md`, installs and verifies the lockfile, rolls back on failure, and removes the old
+  tarballs after success. A run at the release commit is a no-op.

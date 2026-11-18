@@ -60,22 +60,24 @@ export function formatDoctorJson({ project, report, release }) {
 
 /** @typedef {import('./manifest.mjs').Action} Action */
 /**
+ * `framework` is null only for upgrade, which does not need it.
  * @typedef {{
- *   command: 'init',
+ *   command: 'init' | 'upgrade',
  *   project: string,
  *   packageManager: 'npm' | 'pnpm',
- *   framework: 'next' | 'vite',
+ *   framework: 'next' | 'vite' | null,
  *   cssMode: 'tailwind' | 'native',
  *   release: { dir: string, commit: string }
  * }} PlanHeader
  */
+/** @typedef {{ name: string, from: string | null, to: string, notes: string | null }} ChangelogEntry */
 
 /**
  * `egdev-ds init apps/hub (npm, vite, native) from ../egdev-design-system/release at e712915`.
  * @param {PlanHeader} header
  */
 export const formatHeader = ({ command, project, packageManager, framework, cssMode, release }) =>
-  `egdev-ds ${command} ${project} (${packageManager}, ${framework}, ${cssMode}) from ${release.dir} at ${release.commit.slice(0, 7)}`;
+  `egdev-ds ${command} ${project} (${packageManager}, ${framework ?? 'unknown'}, ${cssMode}) from ${release.dir} at ${release.commit.slice(0, 7)}`;
 
 /**
  * One plan line: the verb padded to eight columns, the project-relative path, then the detail.
@@ -88,10 +90,17 @@ export function formatAction({ verb, path, detail }) {
 }
 
 /**
- * @param {{ header: PlanHeader, actions: readonly Action[], result: 'planned' | 'applied' | 'current' | 'failed' }} input
+ * Upgrade adds `changelog`: one entry per upgraded package, with the markdown sections between the
+ * installed and the new version (`''` when the version is unchanged, null without a CHANGELOG.md).
+ * @param {{
+ *   header: PlanHeader,
+ *   actions: readonly Action[],
+ *   result: 'planned' | 'applied' | 'current' | 'failed',
+ *   changelog?: readonly ChangelogEntry[]
+ * }} input
  * @returns {string}
  */
-export function formatPlanJson({ header, actions, result }) {
+export function formatPlanJson({ header, actions, result, changelog }) {
   const document = {
     schemaVersion: 1,
     command: header.command,
@@ -101,6 +110,7 @@ export function formatPlanJson({ header, actions, result }) {
     cssMode: header.cssMode,
     release: header.release,
     actions,
+    ...(changelog ? { changelog } : {}),
     findings: [],
     result
   };

@@ -22,7 +22,7 @@ import { checkLockfile } from './lockfile.mjs';
 import { MANIFEST_FILE, planManifest } from './manifest.mjs';
 import { formatAction, formatHeader, formatPlanJson } from './plan.mjs';
 import { planWorkspace, WORKSPACE_FILE } from './pnpm-workspace.mjs';
-import { isRecord, ReleaseError, readPackedManifest, sha256 } from './release.mjs';
+import { isRecord, loadReleasePackage, readPackedManifest, sha256 } from './release.mjs';
 
 /** @typedef {import('./args.mjs').Options} Options */
 /** @typedef {import('./release.mjs').Release} Release */
@@ -71,7 +71,7 @@ export const spawnRunner = (command, args, cwd) => {
  * @param {string} path
  * @returns {string | null}
  */
-function readText(path) {
+export function readText(path) {
   try {
     return readFileSync(path, 'utf8');
   } catch {
@@ -112,13 +112,15 @@ function expectedFiles(manifest, workspace, packageManager) {
 
 /**
  * Verifies every vendored lockfile integrity against its tarball's sha512; returns the count.
+ * `exclusive` also refuses lock entries for any other vendored file (upgrade, spec §7.8).
  * @param {string} project
  * @param {'npm' | 'pnpm'} packageManager
+ * @param {boolean} [exclusive]
  */
-function verifyLock(project, packageManager) {
+export function verifyLock(project, packageManager, exclusive = false) {
   const manifest = JSON.parse(readFileSync(join(project, MANIFEST_FILE), 'utf8'));
   const expected = expectedFiles(manifest, readText(join(project, WORKSPACE_FILE)), packageManager);
-  const problems = checkLockfile({ project, packageManager, expected });
+  const problems = checkLockfile({ project, packageManager, expected, exclusive });
   if (problems.length > 0) {
     throw new Error(`Integrity check failed: ${problems.map(({ message }) => message).join(' ')}`);
   }
@@ -130,6 +132,71 @@ function verifyLock(project, packageManager) {
  * @param {string} suffix
  */
 const withSuffix = (message, suffix) => `${message.endsWith('.') ? message.slice(0, -1) : message}${suffix}`;
+
+/**
+ * Reads `<project>/package.json` as an object; any failure is a refused precondition (exit 2).
+ * @param {string} project
+ * @param {string} argument the project as the user passed it
+ * @returns {{ manifest: Record<string, unknown>, text: string }}
+ */
+export function readManifest(project, argument) {
+  const manifestPath = toPosix(join(argument, MANIFEST_FILE));
+  const text = readText(join(project, MANIFEST_FILE));
+  if (text === null) {
+    throw new RefusedError(`Cannot read ${manifestPath}: not found.`);
+  }
+  /** @type {unknown} */
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    throw new RefusedError(`Cannot read ${manifestPath}: invalid JSON.`);
+  }
+  if (!isRecord(parsed)) {
+    throw new RefusedError(`Cannot read ${manifestPath}: expected a JSON object.`);
+  }
+  return { manifest: parsed, text };
+}
+
+/**
+ * A fresh install of the vendored set, as ds-vendor.mjs does (spec §6.7, §7.8): removes
+ * `node_modules/@egdev`, runs the package manager, passes its output to stderr, and throws when it
+ * cannot start or exits non-zero.
+ * @param {{ project: string, install: readonly string[], runner: Runner, stderr: (text: string) => void }} input
+ */
+export function runInstall({ project, install, runner, stderr }) {
+  const [command = 'npm', ...args] = install;
+  rmSync(join(project, 'node_modules/@egdev'), { recursive: true, force: true });
+  const result = runner(command, args, project);
+  const output = `${result.stdout ?? ''}${result.stderr ?? ''}`;
+  if (output) {
+    stderr(output);
+  }
+  if (result.error) {
+    const code = 'code' in result.error ? String(result.error.code) : result.error.message;
+    throw new Error(`Cannot run ${command} (${code})`);
+  }
+  if (result.status !== 0) {
+    throw new Error(`${install.join(' ')} failed (exit ${result.status ?? 'signal'})`);
+  }
+}
+
+/**
+ * The "Next steps" lines after a real run (spec §6.7), ending with the review reminder (Q14).
+ * @param {{ packageManager: 'npm' | 'pnpm', install: readonly string[], noInstall: boolean, extra?: string[] }} input
+ */
+export function nextSteps({ packageManager, install, noInstall, extra = [] }) {
+  const doctorScript = packageManager === 'npm' ? 'npm run ds:doctor' : 'pnpm ds:doctor';
+  return [
+    'Next steps:',
+    ...(noInstall ? [`  Run ${install.join(' ')}.`] : []),
+    '  Restart the dev server with --force.',
+    '  Regenerate design/system.md with egdev-system-md --write.',
+    `  Add ${doctorScript} to CI.`,
+    ...extra,
+    'Review the diff before committing.'
+  ];
+}
 
 /**
  * Runs `egdev-ds init`. Refusals throw RefusedError (exit 2); release and apply failures throw
@@ -149,22 +216,7 @@ const withSuffix = (message, suffix) => `${message.endsWith('.') ? message.slice
  */
 export async function runInit({ argument, project, from, releaseDir, release, options, runner, stdout, stderr }) {
   // Detection (spec §5): reads only, stops at the first ambiguity.
-  const manifestPath = toPosix(join(argument, MANIFEST_FILE));
-  const manifestText = readText(join(project, MANIFEST_FILE));
-  if (manifestText === null) {
-    throw new RefusedError(`Cannot read ${manifestPath}: not found.`);
-  }
-  /** @type {unknown} */
-  let parsed;
-  try {
-    parsed = JSON.parse(manifestText);
-  } catch {
-    throw new RefusedError(`Cannot read ${manifestPath}: invalid JSON.`);
-  }
-  if (!isRecord(parsed)) {
-    throw new RefusedError(`Cannot read ${manifestPath}: expected a JSON object.`);
-  }
-  const manifest = parsed;
+  const { manifest, text: manifestText } = readManifest(project, argument);
   const { packageManager, error: packageManagerError } = detectPackageManager(project, manifest);
   if (!packageManager) {
     throw new RefusedError(packageManagerError ?? 'Cannot detect the package manager.');
@@ -262,29 +314,11 @@ export async function runInit({ argument, project, from, releaseDir, release, op
 
   // Selection (spec §4 `--packages`, Q7, Q13): the default set or the list, plus the CLI.
   const names = options.packages ?? DEFAULT_PACKAGES;
-  const releaseFile = join(from, 'release.json');
   /** @type {(SelectedPackage & { file: string, source: string, sha256: string })[]} */
   const selected = [];
   for (const pkg of PACKAGES.filter((item) => item === 'cli' || names.some((name) => name === item))) {
     const name = `@egdev/${pkg}`;
-    const entry = release.packages.find((item) => item.name === name);
-    if (!entry) {
-      throw new ReleaseError(`Release lacks ${name}: ${releaseFile} does not list it.`);
-    }
-    const source = join(releaseDir, entry.file);
-    const packed = readPackedManifest(source);
-    if (packed.name !== entry.name || packed.version !== entry.version) {
-      throw new ReleaseError(
-        `Release mismatch: ${join(from, entry.file)} packs ${String(packed.name)}@${String(packed.version)}, not ${entry.name}@${entry.version}.`
-      );
-    }
-    for (const key of ['dependencies', 'peerDependencies']) {
-      for (const [dependency, range] of Object.entries(field(packed, key))) {
-        if (typeof range === 'string' && /^(?:workspace|link):/.test(range)) {
-          throw new ReleaseError(`Release mismatch: ${join(from, entry.file)} declares ${dependency} as ${range}.`);
-        }
-      }
-    }
+    const { entry, source, packed } = loadReleasePackage({ release, releaseDir, from, name });
     const file = `${VENDOR_DIRECTORY}/egdev-${pkg}-${entry.version}-${short}.tgz`;
     selected.push({ pkg, name, spec: `file:./${file}`, packed, file, source, sha256: entry.sha256 });
   }
@@ -480,21 +514,7 @@ export async function runInit({ argument, project, from, releaseDir, release, op
         if (options.noInstall) {
           return null;
         }
-        const [command = packageManager, ...args] = install;
-        // A fresh install of the vendored set, as ds-vendor.mjs does (spec §6.7).
-        rmSync(join(project, 'node_modules/@egdev'), { recursive: true, force: true });
-        const result = runner(command, args, project);
-        const output = `${result.stdout ?? ''}${result.stderr ?? ''}`;
-        if (output) {
-          stderr(output);
-        }
-        if (result.error) {
-          const code = 'code' in result.error ? String(result.error.code) : result.error.message;
-          throw new Error(`Cannot run ${command} (${code})`);
-        }
-        if (result.status !== 0) {
-          throw new Error(`${install.join(' ')} failed (exit ${result.status ?? 'signal'})`);
-        }
+        runInstall({ project, install, runner, stderr });
         return verifyLock(project, packageManager);
       }
     });
@@ -509,17 +529,15 @@ export async function runInit({ argument, project, from, releaseDir, release, op
     stdout(formatPlanJson({ header, actions, result: 'applied' }));
     return 0;
   }
-  const doctorScript = packageManager === 'npm' ? 'npm run ds:doctor' : 'pnpm ds:doctor';
   stdout(
     [
       `Initialized at ${short}; ${count === null ? 'integrities unverified (--no-install)' : `${count} vendored integrities verified`}.`,
-      'Next steps:',
-      ...(options.noInstall ? [`  Run ${install.join(' ')}.`] : []),
-      '  Restart the dev server with --force.',
-      '  Regenerate design/system.md with egdev-system-md --write.',
-      `  Add ${doctorScript} to CI.`,
-      ...(accentCreated ? [`  Call applyAccent from ${ACCENT_FILE} on a host element your app owns.`] : []),
-      'Review the diff before committing.',
+      ...nextSteps({
+        packageManager,
+        install,
+        noInstall: options.noInstall,
+        extra: accentCreated ? [`  Call applyAccent from ${ACCENT_FILE} on a host element your app owns.`] : []
+      }),
       ''
     ].join('\n')
   );

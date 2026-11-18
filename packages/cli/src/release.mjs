@@ -42,12 +42,13 @@ function headerString(header, offset, length) {
 }
 
 /**
- * Dependency-free reader for the packed manifest: gunzip plus 512-byte tar headers, no `tar` CLI
- * and no new dependency on any platform.
+ * Dependency-free reader for one tarball entry: gunzip plus 512-byte tar headers, no `tar` CLI and
+ * no new dependency on any platform. Returns null when the entry is absent.
  * @param {string} tarball
- * @returns {Record<string, unknown>}
+ * @param {string} entry such as `package/CHANGELOG.md`
+ * @returns {Buffer | null}
  */
-export function readPackedManifest(tarball) {
+export function readPackedFile(tarball, entry) {
   const archive = gunzipSync(readFileSync(tarball));
   for (let offset = 0; offset + 512 <= archive.length; ) {
     const header = archive.subarray(offset, offset + 512);
@@ -57,12 +58,55 @@ export function readPackedManifest(tarball) {
     const entryName = headerString(header, 0, 100).replace(/^\.\//, '');
     const size = Number.parseInt(headerString(header, 124, 12).trim() || '0', 8);
     const dataStart = offset + 512;
-    if (entryName === 'package/package.json') {
-      return JSON.parse(archive.subarray(dataStart, dataStart + size).toString('utf8'));
+    if (entryName === entry) {
+      return archive.subarray(dataStart, dataStart + size);
     }
     offset = dataStart + Math.ceil(size / 512) * 512;
   }
-  throw new Error(`No package/package.json inside ${tarball}`);
+  return null;
+}
+
+/**
+ * The packed `package/package.json`.
+ * @param {string} tarball
+ * @returns {Record<string, unknown>}
+ */
+export function readPackedManifest(tarball) {
+  const bytes = readPackedFile(tarball, 'package/package.json');
+  if (bytes === null) {
+    throw new Error(`No package/package.json inside ${tarball}`);
+  }
+  return JSON.parse(bytes.toString('utf8'));
+}
+
+/**
+ * One package of the release, checked as `init` and `upgrade` both need it: listed in
+ * `release.json`, its packed name and version match the entry, and no `@egdev`-relevant field uses a
+ * `workspace:` or `link:` specifier (spec §7 steps 3-4). `from` is the folder as the user passed it.
+ * @param {{ release: Release, releaseDir: string, from: string, name: string }} input
+ * @returns {{ entry: ReleasePackage, source: string, packed: Record<string, unknown> }}
+ */
+export function loadReleasePackage({ release, releaseDir, from, name }) {
+  const entry = release.packages.find((item) => item.name === name);
+  if (!entry) {
+    throw new ReleaseError(`Release lacks ${name}: ${join(from, 'release.json')} does not list it.`);
+  }
+  const source = join(releaseDir, entry.file);
+  const packed = readPackedManifest(source);
+  if (packed.name !== entry.name || packed.version !== entry.version) {
+    throw new ReleaseError(
+      `Release mismatch: ${join(from, entry.file)} packs ${String(packed.name)}@${String(packed.version)}, not ${entry.name}@${entry.version}.`
+    );
+  }
+  for (const key of ['dependencies', 'peerDependencies', 'optionalDependencies']) {
+    const value = packed[key];
+    for (const [dependency, range] of Object.entries(isRecord(value) ? value : {})) {
+      if (typeof range === 'string' && (range.startsWith('workspace:') || range.startsWith('link:'))) {
+        throw new ReleaseError(`Release mismatch: ${join(from, entry.file)} declares ${dependency} as ${range}.`);
+      }
+    }
+  }
+  return { entry, source, packed };
 }
 
 /**

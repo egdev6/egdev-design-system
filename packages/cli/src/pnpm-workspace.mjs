@@ -72,20 +72,76 @@ function append(lines, eol, block) {
 const isUnsafeValue = (value) => /^[&*{[|>!]/.test(value);
 
 /**
+ * The line range of the top-level `overrides:` block: `start` is its key line, `end` the first line
+ * after its body; null when the file has none.
+ * @param {readonly string[]} lines
+ */
+function overridesBlock(lines) {
+  const start = lines.findIndex((line) => indentOf(line) === 0 && mappingLine(line)?.key === 'overrides');
+  if (start === -1) {
+    return null;
+  }
+  let end = start + 1;
+  while (end < lines.length && (isBlankOrComment(lines[end] ?? '') || indentOf(lines[end] ?? '') > 0)) {
+    end++;
+  }
+  return { start, end };
+}
+
+/**
+ * Rewrites the values of `@egdev/*` entries in the `overrides:` block in place, for upgrade
+ * (spec §7.7): `respec` maps a value to its replacement, or null to keep it. Quotes, indent and
+ * trailing comments survive; nothing else changes.
+ * @param {string} text
+ * @param {(spec: string) => string | null} respec
+ * @returns {{ text: string, actions: Action[] }}
+ */
+export function rewriteWorkspace(text, respec) {
+  /** @type {Action[]} */
+  const actions = [];
+  const eol = text.includes('\r\n') ? '\r\n' : '\n';
+  const lines = text.split(eol);
+  const block = overridesBlock(lines);
+  for (let index = (block?.start ?? 0) + 1; block && index < block.end; index++) {
+    const line = lines[index] ?? '';
+    const parsed = isBlankOrComment(line) ? null : mappingLine(line);
+    if (!parsed?.key.startsWith('@egdev/')) {
+      continue;
+    }
+    const raw = splitComment(parsed.rest).value;
+    const next = raw === '' ? null : respec(unquote(raw));
+    if (next === null) {
+      continue;
+    }
+    const mark = raw[0] === "'" || raw[0] === '"' ? raw[0] : '';
+    const at = line.trimEnd().length - parsed.rest.length + parsed.rest.indexOf(raw);
+    lines[index] = `${line.slice(0, at)}${mark}${next}${mark}${line.slice(at + raw.length)}`;
+    actions.push({ verb: 'edit', path: WORKSPACE_FILE, detail: `overrides.${parsed.key} = ${next}` });
+  }
+  return { text: lines.join(eol), actions };
+}
+
+/**
  * Plans the `overrides:` entries and `strictPeerDependencies` of `pnpm-workspace.yaml`.
- * `text` is null when the file does not exist; the plan then creates it.
+ * `text` is null when the file does not exist; the plan then creates it. `strict` false leaves
+ * `strictPeerDependencies` alone (upgrade adds only missing overrides).
  * @param {string | null} text
  * @param {readonly WorkspaceEntry[]} entries
  * @param {boolean} force
+ * @param {boolean} [strict]
  * @returns {WorkspacePlan}
  */
-export function planWorkspace(text, entries, force) {
+export function planWorkspace(text, entries, force, strict = true) {
   /** @type {Action[]} */
   const actions = [];
   /** @type {Conflict[]} */
   const conflicts = [];
   const block = (indent = '  ') => entries.map(({ name, spec }) => `${indent}${quote(name)}: ${quote(spec)}`);
   if (text === null) {
+    if (!strict) {
+      actions.push({ verb: 'create', path: WORKSPACE_FILE, detail: 'overrides' });
+      return { text: ['overrides:', ...block(), ''].join('\n'), actions, conflicts };
+    }
     actions.push({ verb: 'create', path: WORKSPACE_FILE, detail: `overrides, ${STRICT}` });
     return { text: ['overrides:', ...block(), '', `${STRICT}: true`, ''].join('\n'), actions, conflicts };
   }
@@ -98,8 +154,9 @@ export function planWorkspace(text, entries, force) {
   });
   const eol = text.includes('\r\n') ? '\r\n' : '\n';
   let lines = text.split(eol);
-  const start = lines.findIndex((line) => indentOf(line) === 0 && mappingLine(line)?.key === 'overrides');
-  if (start === -1) {
+  const found = overridesBlock(lines);
+  const start = found?.start ?? -1;
+  if (!found) {
     lines = append(lines, eol, ['overrides:', ...block()]);
     for (const { name, spec } of entries) {
       actions.push({ verb: 'edit', path: WORKSPACE_FILE, detail: `overrides.${name} = ${spec}` });
@@ -109,11 +166,7 @@ export function planWorkspace(text, entries, force) {
     if (head && splitComment(head.rest).value !== '') {
       return refuse('overrides is not a block mapping');
     }
-    let end = start + 1;
-    while (end < lines.length && (isBlankOrComment(lines[end] ?? '') || indentOf(lines[end] ?? '') > 0)) {
-      end++;
-    }
-    const body = lines.slice(start + 1, end).map((line, offset) => ({ line, index: start + 1 + offset }));
+    const body = lines.slice(start + 1, found.end).map((line, offset) => ({ line, index: start + 1 + offset }));
     const filled = body.filter(({ line }) => !isBlankOrComment(line));
     const indent = ' '.repeat(filled[0] ? indentOf(filled[0].line) : 2);
     /** @type {Map<string, { index: number, value: string, comment: string }>} */
@@ -151,11 +204,12 @@ export function planWorkspace(text, entries, force) {
     const last = filled.at(-1)?.index ?? start;
     lines.splice(last + 1, 0, ...missing);
   }
-  const strict = lines.find((line) => indentOf(line) === 0 && mappingLine(line)?.key === STRICT);
-  if (strict) {
-    const value = splitComment(mappingLine(strict)?.rest ?? '').value;
+  const current = lines.find((line) => indentOf(line) === 0 && mappingLine(line)?.key === STRICT);
+  // Without `strict` (upgrade), strictPeerDependencies stays as the app has it.
+  if (strict && current) {
+    const value = splitComment(mappingLine(current)?.rest ?? '').value;
     actions.push({ verb: 'keep', path: WORKSPACE_FILE, detail: `${STRICT} = ${value}` });
-  } else {
+  } else if (strict) {
     lines = append(lines, eol, [`${STRICT}: true`]);
     actions.push({ verb: 'edit', path: WORKSPACE_FILE, detail: `${STRICT} = true` });
   }
