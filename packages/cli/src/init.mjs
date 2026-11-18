@@ -159,6 +159,20 @@ export function readManifest(project, argument) {
 }
 
 /**
+ * The install command init and upgrade run. pnpm freezes the lockfile under `CI=true`, but egdev-ds edits
+ * the manifests on purpose and verifies the lockfile afterwards, so pnpm must be allowed to update it.
+ * @param {'npm' | 'pnpm'} packageManager
+ * @param {boolean | undefined} offline
+ * @returns {string[]}
+ */
+export const installCommand = (packageManager, offline) => [
+  packageManager,
+  'install',
+  ...(packageManager === 'pnpm' ? ['--no-frozen-lockfile'] : []),
+  ...(offline ? ['--offline'] : [])
+];
+
+/**
  * A fresh install of the vendored set, as ds-vendor.mjs does (spec §6.7, §7.8): removes
  * `node_modules/@egdev`, runs the package manager, passes its output to stderr, and throws when it
  * cannot start or exits non-zero.
@@ -373,7 +387,7 @@ export async function runInit({ argument, project, from, releaseDir, release, op
     cssMode,
     release: { dir: from, commit: release.commit }
   };
-  const install = [packageManager, 'install', ...(options.offline ? ['--offline'] : [])];
+  const install = installCommand(packageManager, options.offline);
 
   // Idempotency (spec §6, §9.8): already vendored at the release commit → verify, change nothing.
   if (vendoredAt && !state.foreign) {

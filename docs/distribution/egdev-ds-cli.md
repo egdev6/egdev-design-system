@@ -344,7 +344,7 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
   - Nexo keeps `.mcp.json` at the **repository root**, with `apps/hub/node_modules/…` [E `nexo/.mcp.json`]. The CLI cannot locate a repository root without git. So it writes only `<project>/.mcp.json`, and `doctor` accepts the nearest ancestor `.mcp.json` whose args resolve (DS050) [I].
 - **Install:**
   - Remove `node_modules/@egdev` inside `<project>` [E parity `assets/ds-vendor.mjs:245,356`].
-  - Run `pnpm install` or `npm install`, adding `--offline` when that flag is given.
+  - Run `npm install` or `pnpm install --no-frozen-lockfile`, adding `--offline` when that flag is given. pnpm freezes the lockfile when `CI=true`; egdev-ds edits the manifests on purpose and verifies the lockfile itself, so it always lets pnpm update it (found by the AC19 end-to-end run in CI).
   - npm: before installing, rewrite the lock entries' `resolved` and `integrity` [E `assets/ds-vendor.mjs:122-155` and `references/adoptar.md:25`]. This applies only when a lockfile already exists.
   - After installing, verify every vendored lockfile integrity against the tarball's sha512 [E `assets/ds-vendor.mjs:81-95,297-311`].
 - **Next steps** (stdout):
@@ -394,7 +394,7 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
    - Copy the new files, including unchanged versions, so the whole set points at one commit [E skill `references/adoptar.md:37`].
    - Rewrite every specifier: dependency fields, npm overrides, `pnpm.overrides` and `pnpm-workspace.yaml`. Each package keeps its existing folder and specifier style [E `assets/ds-vendor.mjs:436-443`].
    - npm: rewrite the lock entries, including metadata fields [E `assets/ds-vendor.mjs:122-155`; test `assets/ds-vendor.test.mjs:216`].
-8. **Refresh the lockfile.** Remove `node_modules/@egdev`, then run `npm install` or `pnpm install` (with `--offline` when given). Then verify every vendored integrity and that the installed specifiers point at the new commit [E `assets/ds-vendor.mjs:244-251,357-364`].
+8. **Refresh the lockfile.** Remove `node_modules/@egdev`, then run `npm install` or `pnpm install --no-frozen-lockfile` (with `--offline` when given). Then verify every vendored integrity and that the installed specifiers point at the new commit [E `assets/ds-vendor.mjs:244-251,357-364`].
 9. **On failure** at any step before success: restore `package.json`, the lockfile and `pnpm-workspace.yaml` byte for byte, and remove the tarballs this run copied. Exit 1 [E `assets/ds-vendor.mjs:252-256,365-368`; tests `assets/ds-vendor.test.mjs:246`, `assets/ds-vendor.pnpm.test.mjs:166,173`].
 10. **After success**, remove the previous tarballs that nothing references anymore. A failed removal is reported with exit 1 and `new installation is intact`, and never rolled back [E `assets/ds-vendor.mjs:258-265,370-376`; test `assets/ds-vendor.test.mjs:254`].
 11. **Print** the "Next steps" (§6.7).

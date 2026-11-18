@@ -23,6 +23,7 @@ import {
 } from './detect.mjs';
 import { findInstalled } from './doctor.mjs';
 import {
+  installCommand,
   nextSteps,
   planConfig,
   planMcp,
@@ -519,7 +520,7 @@ export async function runUpgrade({ argument, project, from, releaseDir, release,
   }
 
   // 8 and 10: install, then remove the previous tarballs nothing references anymore.
-  const install = [packageManager, 'install', ...(options.offline ? ['--offline'] : [])];
+  const install = installCommand(packageManager, options.offline);
   if (!options.noInstall) {
     if (existsSync(join(project, 'node_modules/@egdev'))) {
       actions.push({ verb: 'remove', path: 'node_modules/@egdev', detail: '' });

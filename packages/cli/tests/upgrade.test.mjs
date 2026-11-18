@@ -241,7 +241,7 @@ test('AC8 AC10 pnpm+Next.js upgrade A → B rewrites package.json and pnpm-works
         line('edit', 'pnpm-workspace.yaml', `overrides.@egdev/${pkg} = ${spec(pkg)}`)
       ),
       line('remove', 'node_modules/@egdev'),
-      line('run', 'pnpm install'),
+      line('run', 'pnpm install --no-frozen-lockfile'),
       ...order.map((pkg) => line('remove', `vendor/egdev/${oldName(pkg)}`)),
       ...changelog(['tokens', 'ui', 'effects', 'system', 'mcp']),
       `Upgraded to ${B7}; 5 vendored integrities verified.`,
@@ -250,7 +250,7 @@ test('AC8 AC10 pnpm+Next.js upgrade A → B rewrites package.json and pnpm-works
     ].join('\n'),
     stderr: 'added 5 packages\n'
   });
-  assert.deepEqual(calls, [['pnpm', ['install'], project]]);
+  assert.deepEqual(calls, [['pnpm', ['install', '--no-frozen-lockfile'], project]]);
   assert.equal(
     read(join(project, 'package.json')),
     json({

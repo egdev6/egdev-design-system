@@ -225,14 +225,14 @@ test('AC6 pnpm+Next.js+tailwind init with effects: workspace overrides, packageM
       line('edit', 'src/app/globals.css', '+@import "@egdev/effects/styles.css"'),
       line('create', 'egdev-ds.json'),
       line('create', '.mcp.json', 'mcpServers.egdev-design-system'),
-      line('run', 'pnpm install'),
+      line('run', 'pnpm install --no-frozen-lockfile'),
       `Initialized at ${C7}; 6 vendored integrities verified.`,
       ...nextSteps('pnpm ds:doctor'),
       ''
     ].join('\n'),
     stderr: 'added 6 packages\n'
   });
-  assert.deepEqual(calls, [['pnpm', ['install'], fixture.project]]);
+  assert.deepEqual(calls, [['pnpm', ['install', '--no-frozen-lockfile'], fixture.project]]);
   const { project } = fixture;
   assert.equal(
     read(join(project, 'package.json')),
@@ -324,10 +324,10 @@ test('AC6 pnpm+Vite+native without a lockfile creates pnpm-workspace.yaml and ke
   const { calls, runner } = fakeInstaller();
   const result = await init(fixture, ['--from', from, '--offline'], runner);
   assert.equal(result.status, 0, result.stderr);
-  assert.deepEqual(calls, [['pnpm', ['install', '--offline'], fixture.project]]);
+  assert.deepEqual(calls, [['pnpm', ['install', '--no-frozen-lockfile', '--offline'], fixture.project]]);
   assert.ok(result.stdout.includes(`${line('keep', 'package.json', 'packageManager = pnpm@10.34.6')}\n`));
   assert.ok(result.stdout.includes(`${line('create', 'pnpm-workspace.yaml', 'overrides, strictPeerDependencies')}\n`));
-  assert.ok(result.stdout.includes(`${line('run', 'pnpm install --offline')}\n`));
+  assert.ok(result.stdout.includes(`${line('run', 'pnpm install --no-frozen-lockfile --offline')}\n`));
   const selected = ['tokens', 'ui', 'system', 'mcp', 'cli'];
   assert.equal(
     read(join(fixture.project, 'pnpm-workspace.yaml')),
