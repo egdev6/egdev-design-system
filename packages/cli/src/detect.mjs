@@ -216,3 +216,54 @@ export function collectSpecifiers(manifest, workspace) {
   }
   return specs.filter(({ spec }) => !spec.startsWith('$'));
 }
+
+/**
+ * CSS mode for init (spec §5.3): every signal must agree, otherwise the caller asks for `--css`.
+ * `entry` is the detected CSS entry and its `@import` targets, or null when the CSS is imported
+ * from the Vite entry module.
+ * @param {Record<string, unknown>} manifest
+ * @param {Framework} framework
+ * @param {{ file: string, imports: readonly string[] } | null} entry
+ * @returns {{ cssMode: 'tailwind' | 'native', error?: undefined } | { cssMode: null, error: string }}
+ */
+export function detectInitCssMode(manifest, framework, entry) {
+  const plugin = framework === 'vite' ? '@tailwindcss/vite' : '@tailwindcss/postcss';
+  const dependency = declares(manifest, 'tailwindcss');
+  const hasPlugin = declares(manifest, plugin);
+  const imported = entry ? entry.imports.includes('tailwindcss') : null;
+  /** @param {string} reason */
+  const ask = (reason) => ({
+    cssMode: /** @type {null} */ (null),
+    error: `Contradictory CSS signals: ${reason}; pass --css tailwind|native.`
+  });
+  if (dependency && !hasPlugin) {
+    return ask(`tailwindcss without ${plugin}`);
+  }
+  if (!dependency && hasPlugin) {
+    return ask(`${plugin} without tailwindcss`);
+  }
+  if (entry && !dependency && imported) {
+    return ask(`${entry.file} imports tailwindcss, which is not a dependency`);
+  }
+  if (entry && dependency && !imported) {
+    return ask(`${entry.file} has no @import "tailwindcss"`);
+  }
+  return { cssMode: dependency ? 'tailwind' : 'native' };
+}
+
+/**
+ * The vendored state (spec §5.5) from every `@egdev/*` specifier: `unsafe` names the first unsafe
+ * `file:vendor/` path, `commits` the sorted commits of the vendored files (`none` for legacy names),
+ * and `foreign` whether any specifier is a registry range or a `workspace:`/`link:` path.
+ * @param {readonly Specifier[]} specs
+ * @returns {{ unsafe: Specifier | null, commits: string[], foreign: boolean }}
+ */
+export function vendorState(specs) {
+  const unsafe = specs.find(({ spec }) => isVendorPath(spec) && !safeVendorFile(spec)) ?? null;
+  const files = specs.map(({ spec }) => safeVendorFile(spec)).filter((file) => file !== null);
+  return {
+    unsafe,
+    commits: [...new Set(files.map((file) => commitOf(file) ?? 'none'))].sort(),
+    foreign: specs.some(({ spec }) => !isVendorPath(spec))
+  };
+}

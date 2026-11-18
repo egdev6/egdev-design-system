@@ -1,21 +1,25 @@
 // `run()` is the whole CLI behind injectable streams and cwd; the bin only wires the process.
 import { readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { parseArgs, USAGE, USAGE_LINE, UsageError } from './args.mjs';
+import { parseArgs, RefusedError, USAGE, USAGE_LINE, UsageError } from './args.mjs';
 import { runDoctor } from './doctor.mjs';
+import { runInit, spawnRunner } from './init.mjs';
 import { formatDoctorJson, formatDoctorText, hasErrors } from './plan.mjs';
 import { readRelease } from './release.mjs';
 
-/** @typedef {{ cwd: string, stdout: (text: string) => void, stderr: (text: string) => void }} RunContext */
+/**
+ * @typedef {{
+ *   cwd: string,
+ *   stdout: (text: string) => void,
+ *   stderr: (text: string) => void,
+ *   runner?: import('./init.mjs').Runner
+ * }} RunContext
+ */
 
-/** A refused precondition: exit 2 with one stderr line and no usage. */
-export class RefusedError extends Error {
-  /** @param {string} message */
-  constructor(message) {
-    super(message);
-    this.status = 2;
-  }
-}
+export { RefusedError };
+
+/** The release folder when `--from` is omitted, resolved against the current directory (spec §3). */
+export const DEFAULT_RELEASE = '../egdev-design-system/release';
 
 /** @returns {string} */
 function version() {
@@ -59,7 +63,7 @@ export function flattenMessage(text) {
  * @param {RunContext} context
  * @returns {Promise<number>} the process exit code
  */
-export async function run(args, { cwd, stdout, stderr }) {
+export async function run(args, { cwd, stdout, stderr, runner = spawnRunner }) {
   try {
     const parsed = parseArgs(args);
     if (parsed.kind === 'help') {
@@ -71,8 +75,31 @@ export async function run(args, { cwd, stdout, stderr }) {
       return 0;
     }
     const { command, project, options } = parsed;
-    if (command !== 'doctor') {
-      throw new RefusedError(`egdev-ds ${command} is not implemented yet; only doctor is available.`);
+    if (command === 'upgrade') {
+      throw new RefusedError(`egdev-ds ${command} is not implemented yet; only doctor and init are available.`);
+    }
+    if (command === 'init') {
+      const from = options.from ?? DEFAULT_RELEASE;
+      const releaseDir = resolve(cwd, from);
+      if (!isDirectory(releaseDir)) {
+        throw new RefusedError(
+          options.from === undefined
+            ? `No release folder: pass --from <dir> (default ${DEFAULT_RELEASE} not found).`
+            : `No release folder: ${options.from} not found.`
+        );
+      }
+      const release = readRelease(releaseDir);
+      return await runInit({
+        argument: project,
+        project: resolve(cwd, project),
+        from,
+        releaseDir,
+        release,
+        options,
+        runner,
+        stdout,
+        stderr
+      });
     }
     let release = null;
     if (options.from !== undefined) {
