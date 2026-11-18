@@ -17,3 +17,8 @@
   (dependencies, npm and pnpm overrides, `pnpm-workspace.yaml`), pre-rewrites the npm lock, prints the changelog diff
   from the tarballs' `CHANGELOG.md`, installs and verifies the lockfile, rolls back on failure, and removes the old
   tarballs after success. A run at the release commit is a no-op.
+- `egdev-ds upgrade <project> --add <list>` adds packages from the release to an app that is already vendored, such as
+  `cli` or `effects`, with the file effects `init` gives them: the dependency or devDependency, external peers, npm `$`
+  overrides or pnpm pins, CSS imports for `ui` and `effects`, `scripts.ds:doctor` and `egdev-ds.json` for `cli`, and
+  `.mcp.json` for `mcp`. Without `--add`, upgrade still adds nothing.
+- `@egdev/cli` is part of the release set: `pnpm release:pack` packs it and `release.json` lists it.

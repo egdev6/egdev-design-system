@@ -23,7 +23,7 @@ export const DOCTOR_SCRIPT = 'egdev-ds doctor .';
 export const PNPM_PIN = 'pnpm@10.34.6';
 /** Versions the install guide tests, added only when the app lacks the peer (spec §6.2). */
 export const EXTERNAL_PEERS = { react: '19.3.0', 'react-dom': '19.3.0', three: '0.160.0' };
-const RUNTIME_PACKAGES = new Set(['tokens', 'ui', 'effects']);
+export const RUNTIME_PACKAGES = new Set(['tokens', 'ui', 'effects']);
 
 /** @returns {Ledger} */
 export const createLedger = () => ({ actions: [], conflicts: [] });
@@ -60,40 +60,50 @@ export function own(ledger, { file, object, key, value, label, force }) {
 }
 
 /**
- * Plans every owned `package.json` key for the selected packages.
- * @param {{
- *   manifest: Record<string, unknown>,
- *   packageManager: 'npm' | 'pnpm',
- *   selected: readonly SelectedPackage[],
- *   force: boolean
- * }} input
- * @returns {{ manifest: Record<string, unknown>, ledger: Ledger, manifestOverrides: boolean }}
+ * The top-level object `key` of `next`, created when absent; any other value is refused.
+ * @param {Record<string, unknown>} next
+ * @param {string} key
+ * @returns {Record<string, unknown>}
  */
-export function planManifest({ manifest, packageManager, selected, force }) {
-  /** @type {Record<string, unknown>} */
-  const next = structuredClone(manifest);
-  const ledger = createLedger();
-  /**
-   * @param {string} key
-   * @returns {Record<string, unknown>}
-   */
-  const record = (key) => {
-    if (next[key] === undefined) {
-      next[key] = {};
-    }
-    const value = next[key];
-    if (!isRecord(value)) {
-      throw new RefusedError(`${MANIFEST_FILE} ${key} is not an object.`);
-    }
-    return value;
-  };
+export function manifestRecord(next, key) {
+  if (next[key] === undefined) {
+    next[key] = {};
+  }
+  const value = next[key];
+  if (!isRecord(value)) {
+    throw new RefusedError(`${MANIFEST_FILE} ${key} is not an object.`);
+  }
+  return value;
+}
+
+/**
+ * The owned keys a package brings when it joins an app (spec §6.2), shared by `init` and
+ * `upgrade --add` (L11): its `file:` dependency (runtime packages in `dependencies`, the rest in
+ * `devDependencies`), the external peers it declares (`three` exact; an existing react range is
+ * kept) and, when `doctorScript`, `scripts.ds:doctor`. Edits `next` in place.
+ * @param {{
+ *   next: Record<string, unknown>,
+ *   ledger: Ledger,
+ *   selected: readonly SelectedPackage[],
+ *   force: boolean,
+ *   doctorScript: boolean
+ * }} input
+ */
+export function planPackageKeys({ next, ledger, selected, force, doctorScript }) {
   /**
    * @param {string} where
    * @param {string} key
    * @param {string} value
    */
   const set = (where, key, value) =>
-    own(ledger, { file: MANIFEST_FILE, object: record(where), key, value, label: `${where}.${key}`, force });
+    own(ledger, {
+      file: MANIFEST_FILE,
+      object: manifestRecord(next, where),
+      key,
+      value,
+      label: `${where}.${key}`,
+      force
+    });
 
   for (const { pkg, name, spec } of selected) {
     const elsewhere = ['optionalDependencies', 'peerDependencies'].find((key) => Object.hasOwn(field(next, key), name));
@@ -121,7 +131,28 @@ export function planManifest({ manifest, packageManager, selected, force }) {
     }
   }
 
-  set('scripts', 'ds:doctor', DOCTOR_SCRIPT);
+  if (doctorScript) {
+    set('scripts', 'ds:doctor', DOCTOR_SCRIPT);
+  }
+}
+
+/**
+ * Plans every owned `package.json` key for the selected packages.
+ * @param {{
+ *   manifest: Record<string, unknown>,
+ *   packageManager: 'npm' | 'pnpm',
+ *   selected: readonly SelectedPackage[],
+ *   force: boolean
+ * }} input
+ * @returns {{ manifest: Record<string, unknown>, ledger: Ledger, manifestOverrides: boolean }}
+ */
+export function planManifest({ manifest, packageManager, selected, force }) {
+  /** @type {Record<string, unknown>} */
+  const next = structuredClone(manifest);
+  const ledger = createLedger();
+  /** @param {string} key */
+  const record = (key) => manifestRecord(next, key);
+  planPackageKeys({ next, ledger, selected, force, doctorScript: true });
 
   let manifestOverrides = false;
   if (packageManager === 'npm') {

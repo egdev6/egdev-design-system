@@ -120,16 +120,18 @@ export function designSystemImports(mode, packages) {
 /**
  * Inserts the missing `@import` lines, never reordering or duplicating one that exists in any quote
  * style. Tailwind mode inserts after `@import "tailwindcss"`; native mode at the top, after any
- * `@charset`. Either way, after the last design system import already present.
+ * `@charset`. Either way, after the last design system import already present. `insert` limits the
+ * inserted lines to a subset of `wanted` (upgrade `--add` adds only the new packages' imports).
  * @param {string} text
  * @param {string} file
  * @param {'tailwind' | 'native'} mode
  * @param {readonly string[]} wanted
+ * @param {readonly string[]} [insert]
  * @returns {{ text: string, added: string[], error?: undefined } | { text: null, added: string[], error: string }}
  */
-export function insertCssImports(text, file, mode, wanted) {
+export function insertCssImports(text, file, mode, wanted, insert = wanted) {
   const present = new Set(cssImports(text));
-  const missing = wanted.filter((target) => !present.has(target));
+  const missing = insert.filter((target) => !present.has(target));
   if (missing.length === 0) {
     return { text, added: [] };
   }

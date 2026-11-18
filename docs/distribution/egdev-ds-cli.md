@@ -3,6 +3,7 @@
 - **Status:** Approved — 2026-11-18 by the owner, with every recommended option (a) in §14 (verbatim answer: "si"; [#477](https://github.com/egdev6/egdev-design-system/issues/477); `odd/tasks/egdev-ds-cli.md` L5). The implementation plan needs separate approval.
 - **Package:** `@egdev/cli`, the sixth package in the release set. It ships the `egdev-ds` binary.
 - **Approved inputs:** the owner decisions recorded verbatim in `odd/tasks/egdev-ds-cli.md` S3 (L3): "New @egdev/cli package (Recommended)", "--from, default sibling DS release/ (Recommended)", "Checker inside the CLI (doctor) (Recommended)", "Skill calls the CLI (Recommended)". The owner's original request is S1: "sería interesante crear un comando o mcp que instale en un proyecto toda la infrastructura necesaria para integrar el design system?" then "si" then "vamos con ello ya".
+- **Amendments:** `upgrade --add <list>` in §4 and §7.2, by owner decision L11 (`odd/tasks/egdev-ds-cli.md`, verbatim label "upgrade --add <pkg> (Recommended)"); the end-to-end test's skip flag in §10.5 (T8).
 - **Next step after approval:** a separate implementation plan (T3), approved separately, and then the implementation PRs. This document changes no code and creates no package.
 
 ## How to read this document
@@ -94,7 +95,7 @@ packages/cli/
 ## 3. Bootstrap and the `--from` source
 
 - First run, from a design system checkout: `node <ds-repo>/packages/cli/bin/egdev-ds.mjs init <project>` [E S3].
-- First run, from a tarball: [I] `npm exec --yes --package=<release>/egdev-cli-<version>.tgz -- egdev-ds init <project>`. The exact command is not verified yet. The end-to-end test in §13 must prove it, or §11 documents only the checkout form.
+- First run, from a tarball: `npm exec --yes --package=<release>/egdev-cli-<version>.tgz -- egdev-ds init <project>`. The end-to-end test runs exactly this form for its npm + Vite consumer (`scripts/cli-consumer.test.mjs`, AC19).
 - After `init`, the CLI is vendored as a devDependency (Q7). From then on it runs as `pnpm exec egdev-ds …`, `npx egdev-ds …`, or through the `ds:doctor` script.
 - `--from <dir>` selects the release folder [E S3]. When it is omitted, the default is `../egdev-design-system/release`.
   - [I] The default resolves against the **current working directory**. `ds-vendor.mjs` resolves its `--ds` default the same way [E skill `assets/ds-vendor.mjs:389`], and it is meant to run from the repository root [E skill `references/adoptar.md:7`].
@@ -132,7 +133,7 @@ Two inputs the CLI needs are missing from the evidence today:
 ```text
 egdev-ds init    <project> [--from <dir>] [--packages <list>] [--css tailwind|native] [--css-entry <path>]
                            [--accent] [--no-install] [--offline] [--allow-dirty] [--force] [--dry-run] [--json]
-egdev-ds upgrade <project> [--from <dir>] [--no-install] [--offline] [--allow-dirty] [--dry-run] [--json]
+egdev-ds upgrade <project> [--from <dir>] [--add <list>] [--no-install] [--offline] [--allow-dirty] [--dry-run] [--json]
 egdev-ds doctor  <project> [--from <dir>] [--json]
 egdev-ds --help | --version
 ```
@@ -145,6 +146,7 @@ All entries are [I] except where cited. Flag names follow existing habits: `--dr
 | --- | --- | --- |
 | `--from <dir>` | all | Release folder (§3). `doctor` uses it only for release-dependent checks (DS014, DS017). Without a release, those checks are skipped and reported as `skipped`. |
 | `--packages <list>` | init | Comma-separated names from `tokens,ui,effects,system,mcp`. Default: `tokens,ui,system,mcp` (Q13). `cli` is always added. Same value syntax and validation message as `ds-vendor.mjs` [E `assets/ds-vendor.mjs:36-42`]. Selecting `effects` also adds the exact `three` peer. |
+| `--add <list>` | upgrade | Amendment, owner decision L11 (`odd/tasks/egdev-ds-cli.md`, verbatim label "upgrade --add <pkg> (Recommended)"). Comma-separated names from `tokens,ui,effects,system,mcp,cli`; an unknown or repeated name exits 2 with `Invalid --add: choose from tokens,ui,effects,system,mcp,cli.` Each named package the app does not declare yet is added with the file effects `init` gives it (§7.2). A named package the app already declares is just upgraded. A name the release does not list exits 1 (`Release lacks @egdev/<pkg>: …`). |
 | `--css tailwind\|native` | init | Overrides CSS mode detection (§5.3). |
 | `--css-entry <path>` | init | Overrides CSS entry detection. Must be a `.css` file inside `<project>`. |
 | `--accent` | init | Writes the accent host scaffold (§6.6, Q9). |
@@ -155,7 +157,7 @@ All entries are [I] except where cited. Flag names follow existing habits: `--dr
 | `--dry-run` | init, upgrade | Prints the plan and writes nothing, including `node_modules` [E S2]. |
 | `--json` | all | Prints one JSON document on stdout instead of text (justified below). |
 
-There is no `--packages` on `upgrade`. The set is replaced as one unit, and only for packages the app already declares (§7). `ds-vendor.mjs` allows a partial selection [E skill `assets/ds-vendor.test.mjs:169`]. That conflicts with S4 ("replace the set as one unit"), so this is a deliberate parity break (§12).
+There is no `--packages` on `upgrade`. The set is replaced as one unit, and only for packages the app already declares (§7), plus the packages `--add` names explicitly (L11). `ds-vendor.mjs` allows a partial selection [E skill `assets/ds-vendor.test.mjs:169`]. That conflicts with S4 ("replace the set as one unit"), so this is a deliberate parity break (§12).
 
 **Why `--json`:** with "Skill calls the CLI" [E S3], the skill reads the plan and the doctor findings. A stable JSON shape keeps that from depending on text parsing. Humans keep the text format. The JSON shape is versioned: `schemaVersion: 1`.
 
@@ -372,6 +374,14 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
 
 1. **Detect** the package manager and the vendored state (§5). `none` → exit 2 (use `init`). `foreign` → exit 2.
 2. **Select** the packages the app declares or vendors through an override. Only those are upgraded, and none are added: Nexo does not use effects, and its upgrade must not add it [E S4; skill `references/adoptar.md:36`]. The detection matches `ds-vendor.mjs` [E `assets/ds-vendor.mjs:398-402`].
+   - **Amendment, owner decision L11** (`odd/tasks/egdev-ds-cli.md` L11, verbatim label "upgrade --add <pkg> (Recommended)"). Without `--add`, the rule above is unchanged: upgrade adds nothing. `--add <list>` is the explicit opt-in that adds release packages to an already-vendored app, for example `cli` to an app vendored before `@egdev/cli` joined the release set, or `effects`. Each named package the app does not declare yet:
+     - is selected with the declared ones, so step 4 checks it as part of the same unit. An internal dependency it needs that the app does not declare, and that `--add` does not name, exits 2: `<name> <version> needs <dependency>, which <project> does not declare; upgrade adds no packages: pass --add <pkg>.` Its external peers need not be installed yet; the install in step 8 brings them;
+     - is copied to `<folder>/egdev-<pkg>-<version>-<commit7>.tgz`, where `<folder>` and the `file:` or `file:./` style come from the app's first vendored dependency (§6.1);
+     - gets the `init` file effects for that package, through the same code: the `package.json` entry (`tokens`, `ui`, `effects` in `dependencies`; `system`, `mcp`, `cli` in `devDependencies`), the external peers it declares (exact `three` `0.160.0` for effects; an existing react range is kept), the npm `$` override or the pnpm pin (§6.3–§6.4), the CSS entry imports for `ui` and `effects` (§6.5), `scripts.ds:doctor` and `egdev-ds.json` when `cli` is added, and `.mcp.json` when `mcp` is added (§6.7);
+     - has no changelog diff in step 6, because there is no installed version.
+   - When the Vite entry module imports the design system CSS (Nexo), an added stylesheet is code, not an owned key: upgrade edits nothing there and prints `Import <file> in <module>.` among the next steps; `doctor` reports DS030 until it is added.
+   - Owned keys with a different value (`three`, `scripts.ds:doctor`, the `.mcp.json` server) are conflicts (§9.7). They are listed, nothing is written, and the command exits 2: `upgrade` has no `--force`.
+   - An `--add` package that is already declared adds nothing, so a repeated `upgrade --add` at the same commit prints `Already at …; no changes.` (§9.8). Dry run, rollback and the old-tarball rules are unchanged.
 3. **Load the release.** Read `release.json` (§3), check every selected package's file exists, compute its sha256 and compare it with `release.json` [E S4 "verify sha256"; skill `references/adoptar.md:35`]. Read each packed manifest and check its name and version match the file name [E parity `assets/ds-vendor.mjs:194-196`].
 4. **Check the set as one unit:**
    - No packed manifest contains `workspace:` [E S4; `scripts/lib/pack-packages.mjs:143-151`].
@@ -445,9 +455,10 @@ The CLI never adds `tailwindcss`, `vite` or `next`. The framework and its CSS pi
 4. **Changelogs in tarballs** (Q3): add `CHANGELOG.md` to `files` in every package, then assert it inside the packed tarballs in `scripts/package-release.test.mjs` [I].
 5. **Root scripts** [I], following the root habit [E `package.json:20-30`]:
    - `"test:cli": "node --test packages/cli/tests/*.test.mjs"`, which is fast and uses synthetic fixtures;
-   - `"test:cli:consumer": "node --test scripts/cli-consumer.test.mjs"`, the end-to-end run with real tarballs and installs.
-6. **CI** [I, Q12]: add a `Test CLI` step running `pnpm test:cli` after `Unit tests` [E `.github/workflows/build-and-test.yml:53-54`]. `test:cli:consumer` needs the network, like `test:package-consumption`, which already runs in CI [E `build-and-test.yml:59-60`; `scripts/package-consumption.test.mjs:11-12`]. `test:package-release` does not run in CI today [E absent from `build-and-test.yml`].
+   - `"test:cli:consumer": "node --test scripts/cli-consumer.test.mjs"`, the end-to-end run with real tarballs and installs. It packs the built workspace into a temporary folder (never `release/`), so `pnpm build` must run first. It needs the network: locally it is skipped with a message when `registry.npmjs.org` does not resolve, or when `EGDEV_SKIP_CLI_CONSUMER=1`; with `CI` set, an unreachable registry fails instead of skipping. Its second release for `upgrade` is the same tarballs relabelled with another commit in `release.json`.
+6. **CI** [I, Q12]: add a `Test CLI` step running `pnpm test:cli` after `Unit tests` [E `.github/workflows/build-and-test.yml:53-54`]. `test:cli:consumer` needs the network, like `test:package-consumption`, which already runs in CI [E `build-and-test.yml:59-60`; `scripts/package-consumption.test.mjs:11-12`]. `test:package-release` does not run in CI today [E absent from `build-and-test.yml`]. Implemented in T8: `Test CLI` after `Unit tests`, and `Test egdev-ds end to end (npm + Vite, pnpm + Next.js)` after the package-consumption step; the job timeout grows from 20 to 30 minutes for the real installs and builds.
 7. **Lint:** `packages/cli` is covered by `biome check .` [E `package.json:16`].
+8. **Output folder:** `release:pack --out-dir <dir>` packs into another folder (default `release/`). `test:package-release` uses a temporary one, so tests never replace the operator's release. The folder is emptied on every run only when it holds nothing but tarballs, `release.json` and staging leftovers; anything else is refused with exit 1.
 
 ## 11. Documentation changes
 

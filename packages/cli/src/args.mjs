@@ -3,11 +3,13 @@
 
 /** @typedef {'init' | 'upgrade' | 'doctor'} Command */
 /** @typedef {'tokens' | 'ui' | 'effects' | 'system' | 'mcp'} PackageName */
+/** @typedef {PackageName | 'cli'} ReleasePackageName */
 
 /**
  * @typedef {{
  *   from?: string,
  *   packages?: PackageName[],
+ *   add?: ReleasePackageName[],
  *   css?: 'tailwind' | 'native',
  *   cssEntry?: string,
  *   accent: boolean,
@@ -29,7 +31,8 @@
 export const USAGE = `Usage:
   egdev-ds init    <project> [--from <dir>] [--packages <list>] [--css tailwind|native] [--css-entry <path>]
                              [--accent] [--no-install] [--offline] [--allow-dirty] [--force] [--dry-run] [--json]
-  egdev-ds upgrade <project> [--from <dir>] [--no-install] [--offline] [--allow-dirty] [--dry-run] [--json]
+  egdev-ds upgrade <project> [--from <dir>] [--add <list>] [--no-install] [--offline] [--allow-dirty] [--dry-run]
+                             [--json]
   egdev-ds doctor  <project> [--from <dir>] [--json]
   egdev-ds --help | --version
 `;
@@ -57,10 +60,14 @@ export class RefusedError extends Error {
 /** @type {readonly PackageName[]} */
 export const PACKAGE_NAMES = ['tokens', 'ui', 'effects', 'system', 'mcp'];
 
+/** Names `upgrade --add` accepts: the whole release set, the CLI included (owner decision L11). */
+/** @type {readonly ReleasePackageName[]} */
+export const ADD_NAMES = [...PACKAGE_NAMES, 'cli'];
+
 /** @type {Record<Command, readonly string[]>} */
 const VALUE_FLAGS = {
   init: ['--from', '--packages', '--css', '--css-entry'],
-  upgrade: ['--from'],
+  upgrade: ['--from', '--add'],
   doctor: ['--from']
 };
 
@@ -97,6 +104,12 @@ const isCommand = (value) => value === 'init' || value === 'upgrade' || value ==
 const isPackageName = (value) => PACKAGE_NAMES.some((name) => name === value);
 
 /**
+ * @param {string} value
+ * @returns {value is ReleasePackageName}
+ */
+const isAddName = (value) => ADD_NAMES.some((name) => name === value);
+
+/**
  * @param {Options} options
  * @param {string} flag
  * @param {string} value
@@ -110,6 +123,12 @@ function setValue(options, flag, value) {
       throw new UsageError(`Invalid packages: choose from ${PACKAGE_NAMES.join(',')}.`);
     }
     options.packages = names.filter(isPackageName);
+  } else if (flag === '--add') {
+    const names = value.split(',');
+    if (!names.every(isAddName) || new Set(names).size !== names.length) {
+      throw new UsageError(`Invalid --add: choose from ${ADD_NAMES.join(',')}.`);
+    }
+    options.add = names.filter(isAddName);
   } else if (flag === '--css') {
     if (value !== 'tailwind' && value !== 'native') {
       throw new UsageError('Invalid --css: choose tailwind or native.');
