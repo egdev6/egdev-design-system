@@ -1630,7 +1630,7 @@
       },
       {
         "component": "ColorSwatchGroupOption",
-        "type": "string (visible and accessible preset name)",
+        "type": "string (accessible preset name; visually hidden)",
         "status": "existing",
         "source": {
           "path": "packages/ui/src/molecules/color-swatch-group/types.ts",

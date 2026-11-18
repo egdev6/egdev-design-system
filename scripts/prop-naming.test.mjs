@@ -1685,7 +1685,7 @@ test('ColorSwatchGroup binds its scoped naming exception and reviewed usages wit
     [
       'accessible-name',
       'ColorSwatchGroupOption',
-      'string (visible and accessible preset name)',
+      'string (accessible preset name; visually hidden)',
       'ColorSwatchGroupOption.label'
     ],
     ['choice-options', 'ColorSwatchGroup', 'ColorSwatchGroupOption[]', 'ColorSwatchGroupProps.options'],
