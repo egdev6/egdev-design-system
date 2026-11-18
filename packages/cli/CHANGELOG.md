@@ -14,6 +14,9 @@
 - `doctor` DS051 warns when the `design/system.md` header (`<!-- Generated from EGDEV design system <commit>; … -->`)
   records a commit other than the vendored one. It looks from the project up to its repository root and is skipped
   without the file, a recorded commit or a single vendored commit.
+- A type-only entry (#488): `import type { GuardAllowlistEntry } from '@egdev/cli'` types
+  `design-system-allowlist.ts` with the entry shape doctor validates (DS042). `DesignSystemAllowlist` is the array type.
+  The package adds `types` and a types-only `exports` entry; it has no runtime entry and no new dependency.
 
 ## 0.1.0
 

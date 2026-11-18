@@ -25,7 +25,8 @@
 /**
  * An exact, whitespace-normalized opening tag or individual CSS selector, not a regex. Non-guarded
  * markup awaiting a DS capability is tracked by its opening tag and TODO (`kind: 'component-gap'`).
- * @typedef {{ file: string, pattern: string, issue: string, reason: string, kind?: 'component-gap', comment?: string }} GuardAllowlistEntry
+ * Declared once in the package's public type entry (S6, #488); doctor validates the same shape (DS042).
+ * @typedef {import('../types/index.d.ts').GuardAllowlistEntry} GuardAllowlistEntry
  */
 /** @typedef {{ file: string, line: number, snippet: string }} GuardViolation */
 /** @typedef {{ violations: GuardViolation[], errors: string[], pendingIssueCount: number }} GuardResult */
