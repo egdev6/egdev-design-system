@@ -5,7 +5,8 @@
   "files": [
     "design-system.json",
     "system.md",
-    "src"
+    "src",
+    "CHANGELOG.md"
   ],
   "bin": {
     "egdev-system-md": "./src/cli.mjs",

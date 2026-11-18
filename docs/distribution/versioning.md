@@ -23,6 +23,34 @@ The release set is:
 `@egdev/mcp` join the same run when their packages land; the script never needs a second packing
 path, and a missing member is simply not part of the set yet.
 
+Every tarball ships its package `CHANGELOG.md`, so a consumer can read the sections between two
+releases from the tarballs alone.
+
+### Release provenance: `release.json`
+
+After the packed manifests pass verification, `release:pack` writes `release/release.json` next to
+the tarballs. A failed verification writes no `release.json`.
+
+```json
+{
+  "schemaVersion": 1,
+  "commit": "<40-hex design system HEAD at pack time>",
+  "dirty": false,
+  "packages": [
+    { "name": "@egdev/ui", "version": "0.3.1", "file": "egdev-ui-0.3.1.tgz", "sha256": "<64-hex>" }
+  ]
+}
+```
+
+- `commit` is `git rev-parse HEAD` in this repository at pack time.
+- `dirty` is `true` when `git status --porcelain` reports any modified, staged or untracked file
+  (ignored files such as `release/` do not count). `release:pack` records the flag and still packs;
+  consumers refuse a dirty release unless they opt in explicitly.
+- `packages` lists every tarball written by the run, in release-set order, with the sha256 of the
+  file on disk.
+- The file has no timestamp and a fixed key order, so the same tarballs and tree give byte-identical
+  output. It is written under a temporary name and renamed into place.
+
 ## Independent versions, manual bumps
 
 Each package carries its **own** version in `packages/<name>/package.json`. There is no lockstep
@@ -38,7 +66,7 @@ Bump procedure for one package:
    Between releases, changes accumulate under an `## Unreleased` section above the last
    version; `release:pack` ignores that section and checks the first versioned one.
 4. Run `pnpm release:pack`. The command fails until the two agree, then prints one line per
-   tarball.
+   tarball and one `release.json` line with the recorded commit.
 5. Commit the manifest and the changelog together, so the packed version and its section land in
    the same review.
 
