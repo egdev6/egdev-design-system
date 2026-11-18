@@ -9,7 +9,7 @@ export type ColorSwatchGroupOption = {
    */
   value: string;
   /**
-   * Nonblank localized visible and accessible color name.
+   * Nonblank localized accessible color name, visually hidden in the circular swatch.
    * @control text
    */
   label: string;
@@ -66,39 +66,60 @@ export type ColorSwatchGroupProps = ColorSwatchGroupNativeProps & {
    */
   onValueChange: (value: string) => void;
   /**
-   * Localized visible name for the separate native picker; absent or blank omits it.
+   * Localized accessible name for the separate native picker, visually hidden in the
+   * spectrum control; absent or blank omits it.
    * @control text
    */
   customLabel?: string;
 };
 
-/** Private token-backed recipes. The sample color is confined to the decorative patch. */
+/**
+ * Private token-backed recipes for the circular accent-picker look. The sample color is
+ * confined to the decorative patch; the spectrum is a static token gradient.
+ */
 export const colorSwatchGroupVariants = {
   root: cva('eg-color-swatch-group min-w-0 border-0 p-0 font-sans text-fg-default'),
   legend: cva('mb-2 text-label-default text-fg-default'),
-  group: cva('flex flex-wrap items-stretch gap-2'),
+  row: cva('flex flex-wrap items-center gap-3'),
+  group: cva('flex flex-wrap items-center gap-3'),
   item: cva([
-    'relative inline-flex min-h-14 min-w-14 items-center gap-2 px-2 py-1 text-start text-label-default text-fg-default',
-    'border-border-control cursor-pointer focus-visible:outline-none focus-visible:shadow-focus',
-    'forced-colors:focus-visible:outline-solid forced-colors:focus-visible:outline-(length:--focus-width)',
+    'group relative inline-flex size-14 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0',
+    // Focus is a distinct focus-ring outline offset beyond the selection ring.
+    'cursor-pointer focus-visible:outline-solid focus-visible:outline-(length:--focus-width)',
+    'focus-visible:outline-focus-ring focus-visible:outline-offset-(--focus-offset)',
     'forced-colors:focus-visible:outline-[color:Highlight]',
     'data-disabled:pointer-events-none data-disabled:cursor-not-allowed data-disabled:opacity-45',
     'motion-reduce:transition-none motion-reduce:transform-none'
   ]),
-  patch: cva('size-10 shrink-0 bg-[color:var(--eg-swatch-color)]'),
-  optionLabel: cva('min-w-0 wrap-anywhere text-fg-default'),
-  indicator: cva(
-    'absolute end-1 top-1 inline-flex size-5 items-center justify-center rounded-full bg-surface-0 text-fg-default'
-  ),
+  patch: cva('size-12 shrink-0 rounded-full bg-[color:var(--eg-swatch-color)] forced-colors:forced-color-adjust-none'),
+  /**
+   * Shared decorative ring of presets and the custom control: an inset token hairline on
+   * every circle and, when the owning target is checked, a 2px fg-default outline separated
+   * from the circle by a surface gap of the same focus-width geometry.
+   */
+  ring: cva([
+    'pointer-events-none absolute inset-0 m-auto size-12 rounded-full',
+    'border-solid border-(length:--border-width) border-border-hairline-strong',
+    'group-data-[state=checked]:outline-solid group-data-[state=checked]:outline-(length:--focus-width)',
+    'group-data-[state=checked]:outline-fg-default group-data-[state=checked]:outline-offset-(--focus-width)',
+    'forced-colors:group-data-[state=checked]:outline-[color:CanvasText]'
+  ]),
+  optionLabel: cva('sr-only'),
   customFrame: cva([
-    'mt-2 inline-flex items-center gap-2 border-border-control px-2',
+    'group relative inline-flex size-14 shrink-0 items-center justify-center rounded-full',
+    // The transparent native input keeps focus; the frame shows it like a preset target.
+    'has-[:focus-visible]:outline-solid has-[:focus-visible]:outline-(length:--focus-width)',
+    'has-[:focus-visible]:outline-focus-ring has-[:focus-visible]:outline-offset-(--focus-offset)',
+    'forced-colors:has-[:focus-visible]:outline-[color:Highlight]',
     'has-[:disabled]:pointer-events-none has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-45'
   ]),
-  customLabel: cva('text-label-default text-fg-default wrap-anywhere'),
+  spectrum: cva('pointer-events-none absolute inset-0 m-auto size-12 rounded-full bg-[image:var(--gradient-spectrum)]'),
+  badge: cva(
+    'pointer-events-none relative inline-flex size-5 items-center justify-center rounded-full bg-surface-0 text-fg-default'
+  ),
+  customLabel: cva('sr-only'),
   customInput: cva([
-    'min-h-14 min-w-14 cursor-pointer focus-visible:outline-none focus-visible:shadow-focus',
-    'forced-colors:focus-visible:outline-solid forced-colors:focus-visible:outline-(length:--focus-width)',
-    'forced-colors:focus-visible:outline-[color:Highlight]',
+    'absolute inset-0 size-full cursor-pointer rounded-full opacity-0 focus-visible:outline-none',
     'disabled:cursor-not-allowed motion-reduce:transition-none motion-reduce:transform-none'
   ]),
   output: cva('mt-2 block text-label-default text-fg-default wrap-anywhere')

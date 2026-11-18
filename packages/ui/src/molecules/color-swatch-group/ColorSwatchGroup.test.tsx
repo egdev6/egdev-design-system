@@ -41,6 +41,29 @@ function patches(root: Element) {
   );
 }
 
+const ringClasses = [
+  'rounded-full',
+  'border-solid',
+  'border-(length:--border-width)',
+  'border-border-hairline-strong',
+  'group-data-[state=checked]:outline-solid',
+  'group-data-[state=checked]:outline-(length:--focus-width)',
+  'group-data-[state=checked]:outline-fg-default',
+  'group-data-[state=checked]:outline-offset-(--focus-width)'
+];
+
+function rings(container: Element) {
+  return [...container.querySelectorAll<HTMLElement>('.border-border-hairline-strong')];
+}
+
+function customFrame() {
+  const frame = picker().parentElement;
+  if (!frame) {
+    throw new Error('Missing custom frame');
+  }
+  return frame;
+}
+
 async function arrow(user: ReturnType<typeof userEvent.setup>, key: 'ArrowLeft' | 'ArrowRight') {
   // Radix schedules focus while the arrow is held, as in a browser.
   await user.keyboard(`{${key}>}`);
@@ -102,7 +125,8 @@ describe('ColorSwatchGroup public contract', () => {
     expect(within(group).getAllByRole('radio')).toHaveLength(4);
     for (const option of options) {
       expect(radio(option.label)).toHaveAccessibleName(option.label);
-      expect(screen.getByText(option.label)).toBeVisible();
+      // v0.2: names stay in the accessibility tree but are visually hidden.
+      expect(screen.getByText(option.label)).toHaveClass('sr-only');
     }
     expect(picker()).toHaveAttribute('type', 'color');
     expect(picker()).toHaveAccessibleName('Custom color');
@@ -624,17 +648,135 @@ describe('ColorSwatchGroup public contract', () => {
     expect(change).not.toHaveBeenCalled();
   });
 
-  it('provides a separate decorative selected indicator on neutral backing (AC-09)', () => {
-    render(<ColorSwatchGroup label='Accent' options={options} value='#AA0000' onValueChange={vi.fn()} />);
-    const selected = radio('Red');
-    const indicator = selected.querySelector('[data-state="checked"]');
-    expect(indicator).not.toBeNull();
-    const nodes = indicator ? [indicator, ...indicator.querySelectorAll('*')] : [];
-    expect(nodes.some((node) => node.getAttribute('aria-hidden') === 'true')).toBe(true);
-    expect(nodes.some((node) => node.classList.contains('bg-surface-0'))).toBe(true);
-    expect(nodes.some((node) => node.classList.contains('text-fg-default'))).toBe(true);
-    expect(indicator?.querySelector('svg') || indicator?.textContent?.trim()).toBeTruthy();
-    expect(indicator?.getAttribute('style') ?? '').not.toContain('--eg-swatch-color');
+  it('renders circular patches inside larger targets with visually hidden names (v0.2 AC-01, AC-02, AC-07)', () => {
+    const { container } = render(
+      <ColorSwatchGroup
+        label='Accent'
+        options={options}
+        value='#AA0000'
+        customLabel='Custom color'
+        onValueChange={vi.fn()}
+      />
+    );
+    for (const option of options) {
+      const item = radio(option.label);
+      expect(item).toHaveClass('size-14', 'rounded-full', 'group');
+      const name = within(item).getByText(option.label);
+      expect(name).toHaveClass('sr-only');
+      expect(name).not.toHaveAttribute('aria-hidden');
+      expect(item).toHaveAccessibleName(option.label);
+    }
+    for (const patch of patches(container)) {
+      expect(patch).toHaveClass('size-12', 'rounded-full');
+    }
+    expect(screen.getByText('Custom color', { selector: 'label' })).toHaveClass('sr-only');
+    expect(picker()).toHaveAccessibleName('Custom color');
+  });
+
+  it('marks selection with a decorative ring and no check icon (v0.2 AC-03, AC-09)', () => {
+    render(<ColorSwatchGroup label='Accent' options={options} value='#aa0000' onValueChange={vi.fn()} />);
+    for (const option of options) {
+      const item = radio(option.label);
+      expect(item.querySelector('svg')).toBeNull();
+      // No Radix Indicator or other stateful descendant remains inside the radio.
+      expect(item.querySelector('[data-state]')).toBeNull();
+      const found = rings(item);
+      expect(found).toHaveLength(1);
+      const [ring] = found;
+      expect(ring).toHaveAttribute('aria-hidden', 'true');
+      expect(ring).not.toHaveAttribute('style');
+      expect(ring).toHaveClass(...ringClasses);
+    }
+    expect(radio('Red')).toHaveAttribute('data-state', 'checked');
+    expect(radio('Red')).toHaveAttribute('aria-checked', 'true');
+    expect(radio('Ocean')).toHaveAttribute('data-state', 'unchecked');
+  });
+
+  it('keeps focus distinct from and outside the selection ring, with system colors in forced colors (v0.2 AC-06)', () => {
+    const { container } = render(
+      <ColorSwatchGroup
+        label='Accent'
+        options={options}
+        value='#AA0000'
+        customLabel='Custom color'
+        onValueChange={vi.fn()}
+      />
+    );
+    const item = radio('Red');
+    expect(item).toHaveClass(
+      'focus-visible:outline-solid',
+      'focus-visible:outline-(length:--focus-width)',
+      'focus-visible:outline-focus-ring',
+      'focus-visible:outline-offset-(--focus-offset)',
+      'forced-colors:focus-visible:outline-[color:Highlight]'
+    );
+    expect(item).not.toHaveClass('focus-visible:shadow-focus');
+    const [ring] = rings(item);
+    expect(ring).toHaveClass('forced-colors:group-data-[state=checked]:outline-[color:CanvasText]');
+    expect([...(ring?.classList ?? [])].some((name) => name.includes('focus-ring'))).toBe(false);
+    const frame = customFrame();
+    expect(frame).toHaveClass(
+      'has-[:focus-visible]:outline-solid',
+      'has-[:focus-visible]:outline-(length:--focus-width)',
+      'has-[:focus-visible]:outline-focus-ring',
+      'has-[:focus-visible]:outline-offset-(--focus-offset)',
+      'forced-colors:has-[:focus-visible]:outline-[color:Highlight]'
+    );
+    expect(picker()).toHaveClass('absolute', 'inset-0', 'size-full', 'opacity-0', 'focus-visible:outline-none');
+    const adjusted = [...container.querySelectorAll('[class*="forced-color-adjust-none"]')];
+    expect(adjusted).toEqual(patches(container));
+    for (const patch of patches(container)) {
+      expect(patch).toHaveClass('forced-colors:forced-color-adjust-none');
+    }
+  });
+
+  it('renders the custom control as a spectrum circle with a decorative plus badge in the same row (v0.2 AC-01, AC-05)', () => {
+    const { container } = render(
+      <ColorSwatchGroup
+        label='Accent'
+        options={options}
+        value='#AA0000'
+        customLabel='Custom color'
+        onValueChange={vi.fn()}
+      />
+    );
+    const frame = customFrame();
+    expect(frame).toHaveClass('group', 'relative', 'size-14', 'rounded-full');
+    expect(frame.parentElement).toBe(screen.getByRole('radiogroup').parentElement);
+    const spectrum = frame.querySelector('.bg-\\[image\\:var\\(--gradient-spectrum\\)\\]');
+    expect(spectrum).not.toBeNull();
+    expect(spectrum).toHaveAttribute('aria-hidden', 'true');
+    expect(spectrum).toHaveClass('size-12', 'rounded-full');
+    expect(spectrum).not.toHaveAttribute('style');
+    const badge = frame.querySelector('.bg-surface-0');
+    expect(badge).toHaveAttribute('aria-hidden', 'true');
+    expect(badge).toHaveClass('text-fg-default', 'rounded-full');
+    expect(badge?.querySelector('svg')).not.toBeNull();
+    const found = rings(frame);
+    expect(found).toHaveLength(1);
+    expect(found[0]).toHaveClass(...ringClasses);
+    expect(found[0]).toHaveAttribute('aria-hidden', 'true');
+    // Only the preset patches carry the validated inline color.
+    expect(patches(container)).toHaveLength(4);
+    expect(frame.querySelectorAll('[style]')).toHaveLength(0);
+    expect(picker()).not.toHaveAttribute('aria-checked');
+    expect(picker()).not.toHaveAttribute('data-state');
+  });
+
+  it('checks the custom frame only for a valid non-preset value (v0.2 AC-04)', () => {
+    const props = { label: 'Accent', options, customLabel: 'Custom color', onValueChange: vi.fn() };
+    const { rerender } = render(<ColorSwatchGroup {...props} value='#123456' />);
+    expect(customFrame()).toHaveAttribute('data-state', 'checked');
+    expect(screen.getAllByRole('radio').every((item) => item.getAttribute('data-state') === 'unchecked')).toBe(true);
+    rerender(<ColorSwatchGroup {...props} value='#aa0000' />);
+    expect(customFrame()).toHaveAttribute('data-state', 'unchecked');
+    expect(radio('Red')).toHaveAttribute('data-state', 'checked');
+    rerender(<ColorSwatchGroup {...props} value='#CCCCCC' disabled={true} />);
+    expect(customFrame()).toHaveAttribute('data-state', 'unchecked');
+    rerender(<ColorSwatchGroup {...props} value='invalid' />);
+    expect(customFrame()).toHaveAttribute('data-state', 'unchecked');
+    expect(screen.getAllByRole('radio').every((item) => item.getAttribute('data-state') === 'unchecked')).toBe(true);
+    expect(props.onValueChange).not.toHaveBeenCalled();
   });
 
   it('merges supported root layout classes without exposing patch paint to className (AC-08, AC-10)', () => {

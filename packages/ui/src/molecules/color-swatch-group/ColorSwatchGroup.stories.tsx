@@ -7,21 +7,34 @@ import { Surface } from '@/primitives/surface';
 import { ColorSwatchGroup } from './ColorSwatchGroup';
 import type { ColorSwatchGroupOption } from './types';
 
+/** Consumer-supplied example accent presets (Quorb/Nexo); not built-in defaults. */
 const options: ColorSwatchGroupOption[] = [
   { value: '#ff0036', label: 'Red' },
+  { value: '#ff7a00', label: 'Orange' },
+  { value: '#ffd400', label: 'Yellow' },
+  { value: '#22c55e', label: 'Green' },
+  { value: '#00c2ff', label: 'Cyan' },
   { value: '#3b82f6', label: 'Blue' },
-  { value: '#10b981', label: 'Green' },
-  { value: '#a855f7', label: 'Purple', disabled: true }
+  { value: '#8b5cf6', label: 'Violet' },
+  { value: '#ff3fb4', label: 'Pink' }
 ];
+
+/** The same presets with one disabled choice for keyboard and disabled-state examples. */
+const withDisabled: ColorSwatchGroupOption[] = options.map((option) =>
+  option.value === '#8b5cf6' ? { ...option, disabled: true } : option
+);
 
 /**
  * ## Description
- * Coordinate named preset radios and an optional separately labelled native color picker.
- * A polite output shows only the value accepted by the consumer.
+ * Coordinate circular preset radios and an optional native color picker shown as a spectrum
+ * circle with a plus badge in the same row. Option and picker names are visually hidden but
+ * remain accessible. A polite output shows only the value accepted by the consumer.
  *
  * ## Dependencies
  * Radix RadioGroup owns selection, horizontal roving focus and keyboard interaction.
- * Surface recipes supply neutral Material frames; the browser owns the native picker.
+ * A decorative hairline ring marks every circle; the selected circle adds a surface gap and a
+ * 2px fg-default ring, and focus is a separate offset focus-ring outline. The browser owns the
+ * native picker.
  *
  * ## Usage guidelines
  * Supply localized nonblank names and unique opaque six-digit #RRGGBB colors. Invalid
@@ -39,12 +52,22 @@ const meta: Meta<typeof ColorSwatchGroup> = {
 export default meta;
 type Story = StoryObj<typeof ColorSwatchGroup>;
 
-function AcceptingExample({ initial = '#ff0036', dir = 'ltr' }: { initial?: string; dir?: 'ltr' | 'rtl' }) {
+function AcceptingExample({
+  initial = '#ff0036',
+  dir = 'ltr',
+  label = 'Accent color',
+  choices = withDisabled
+}: {
+  initial?: string;
+  dir?: 'ltr' | 'rtl';
+  label?: string;
+  choices?: ColorSwatchGroupOption[];
+}) {
   const [value, setValue] = useState(initial);
   return (
     <ColorSwatchGroup
-      label='Accent color'
-      options={options}
+      label={label}
+      options={choices}
       value={value}
       customLabel='Custom color'
       dir={dir}
@@ -56,26 +79,29 @@ function AcceptingExample({ initial = '#ff0036', dir = 'ltr' }: { initial?: stri
   );
 }
 
-/** Named presets with the current choice controlled by the supplied args. */
-export const Presets: Story = {};
+/** Eight circular presets with the selected red ring and the spectrum custom control last. */
+export const Presets: Story = { args: { customLabel: 'Custom color' } };
 
-/** A non-preset value leaves every radio unchecked and remains visible in the native picker. */
+/** A non-preset value leaves every radio unchecked and rings the spectrum custom control. */
 export const Custom: Story = { args: { value: '#8233cc', customLabel: 'Custom color' } };
 
 /** Horizontal arrows loop and skip the disabled preset; Tab moves to the native picker. */
 export const Keyboard: Story = { render: () => <AcceptingExample /> };
 
-/** Narrow placement wraps named choices while keyboard navigation remains horizontal. */
-export const Wrapped: Story = {
-  args: {
-    className: 'w-48',
-    customLabel: 'Custom color',
-    options: [
-      { value: '#ff0036', label: 'A very long localized red color name' },
-      { value: '#3b82f6', label: 'A very long localized blue color name' },
-      { value: '#10b981', label: 'Green' }
-    ]
-  }
+/** Narrow placement wraps the circles in order while keyboard navigation remains horizontal. */
+export const Wrapped: Story = { args: { className: 'w-48', customLabel: 'Custom color' } };
+
+/**
+ * Tab into each group to compare states: the focused circle shows an offset focus-ring outline
+ * outside the neutral selection ring. The second group selects a custom color.
+ */
+export const FocusAndSelection: Story = {
+  render: () => (
+    <>
+      <AcceptingExample label='Preset selected' choices={options} />
+      <AcceptingExample label='Custom selected' initial='#123456' choices={options} />
+    </>
+  )
 };
 
 /** Requests are logged but the unchanged value prop rejects them. */
@@ -107,7 +133,7 @@ export const InvalidInput: Story = {
   }
 };
 
-/** Dark, bright and matching-host samples use the same neutral frame and selected check. */
+/** Dark, bright and matching-host samples use the same hairline and neutral selection ring. */
 export const ColorExtremes: Story = {
   args: {
     options: [
@@ -127,8 +153,8 @@ export const States: Story = {
       <AcceptingExample initial='#123456' />
       <ColorSwatchGroup
         label='Unavailable accent'
-        options={options}
-        value='#a855f7'
+        options={withDisabled}
+        value='#8b5cf6'
         customLabel='Unavailable custom color'
         disabled={true}
         onValueChange={action('disabled-color')}

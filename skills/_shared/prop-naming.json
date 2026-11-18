@@ -314,7 +314,7 @@
         "source": {
           "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
           "symbol": "ColorSwatchGroupProps.value",
-          "revision": "sha256:6e52ed0be8db660730c84b1cd9d1cf0ed7bc974dc75947a24854c0bafdcf71c4"
+          "revision": "sha256:6a039f9063308ef2ba6a849bc6abbb365ab00f266f804543763382e63944fcb0"
         }
       },
       {
@@ -324,7 +324,7 @@
         "source": {
           "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
           "symbol": "ColorSwatchGroupOption.value",
-          "revision": "sha256:6e52ed0be8db660730c84b1cd9d1cf0ed7bc974dc75947a24854c0bafdcf71c4"
+          "revision": "sha256:6a039f9063308ef2ba6a849bc6abbb365ab00f266f804543763382e63944fcb0"
         }
       },
       {
@@ -618,7 +618,7 @@
         "source": {
           "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
           "symbol": "ColorSwatchGroupProps.onValueChange",
-          "revision": "sha256:6e52ed0be8db660730c84b1cd9d1cf0ed7bc974dc75947a24854c0bafdcf71c4"
+          "revision": "sha256:6a039f9063308ef2ba6a849bc6abbb365ab00f266f804543763382e63944fcb0"
         }
       },
       {
@@ -1625,7 +1625,7 @@
         "source": {
           "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
           "symbol": "ColorSwatchGroupProps.label",
-          "revision": "sha256:6e52ed0be8db660730c84b1cd9d1cf0ed7bc974dc75947a24854c0bafdcf71c4"
+          "revision": "sha256:6a039f9063308ef2ba6a849bc6abbb365ab00f266f804543763382e63944fcb0"
         }
       },
       {
@@ -1635,7 +1635,7 @@
         "source": {
           "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
           "symbol": "ColorSwatchGroupOption.label",
-          "revision": "sha256:6e52ed0be8db660730c84b1cd9d1cf0ed7bc974dc75947a24854c0bafdcf71c4"
+          "revision": "sha256:6a039f9063308ef2ba6a849bc6abbb365ab00f266f804543763382e63944fcb0"
         }
       },
       {
@@ -3501,7 +3501,7 @@
         "source": {
           "path": "packages/ui/src/molecules/color-swatch-group/types.ts",
           "symbol": "ColorSwatchGroupProps.options",
-          "revision": "sha256:6e52ed0be8db660730c84b1cd9d1cf0ed7bc974dc75947a24854c0bafdcf71c4"
+          "revision": "sha256:6a039f9063308ef2ba6a849bc6abbb365ab00f266f804543763382e63944fcb0"
         }
       },
       {

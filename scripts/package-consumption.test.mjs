@@ -9914,7 +9914,8 @@ const partialTypography = ${JSON.stringify(partialTypography)};
 // NavList v0.3 adds four static typography declarations: 292 + 4 = 296.
 // S9 adds the navigation count size: 296 + 1 = 297.
 // #425 adds 14 owner-confirmed semantic role aliases: 297 + 14 = 311.
-assert.equal(names.length, 311, 'Packed native artifact must expose 311 variables');
+// #465 adds the owner-approved --gradient-spectrum: 311 + 1 = 312.
+assert.equal(names.length, 312, 'Packed native artifact must expose 312 variables');
 for (const token of names) assert.ok(emitted.includes(token + ':'), 'Missing shipped token definition ' + token);
 for (const token of ['--color-surface-0', '--radius-full', '--shadow-well']) assert.ok(emitted.includes('var(' + token + ')'), 'UI must consume shipped token ' + token);
 for (const name of typography) {

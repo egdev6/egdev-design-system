@@ -309,6 +309,7 @@ Representative source recipes, not a computed cascade; unresolved means no token
 | --gradient-progress | linear-gradient(180deg, #FF4A6E, #FF0036 60%, #D9002D) | root |  | tokens[] · packages/tokens/src/theme.css |
 | --gradient-section-show | radial-gradient(45% 55% at 22% 50%, var(--color-alpha-red-12), transparent 70%) | root |  | tokens[] · packages/tokens/src/theme.css |
 | --gradient-sheen | linear-gradient(180deg, rgba(255, 255, 255, 0.045) 0%, rgba(255, 255, 255, 0) 42%) | root | Elevated surface | tokens[] · packages/tokens/src/theme.css |
+| --gradient-spectrum | conic-gradient(#FF0000, #FFFF00, #00FF00, #00FFFF, #0000FF, #FF00FF, #FF0000) | root |  | tokens[] · packages/tokens/src/theme.css |
 | --gradient-state-selected | var(--gradient-btn-primary) | root |  | tokens[] · packages/tokens/src/theme.css |
 | --gradient-vignette | radial-gradient(ellipse 120% 90% at 50% 45%, transparent 35%, rgba(0, 0, 0, 0.55) 75%, rgba(0, 0, 0, 0.92) 100%) | root |  | tokens[] · packages/tokens/src/theme.css |
 | --blur-glass | 16px | theme |  | tokens[] · packages/tokens/src/theme.css |
@@ -1013,24 +1014,21 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Collapsible
 catalog[] · docs/catalog.json · @egdev/ui · molecule · RadioGroup
 - ColorSwatchGroup (components[] · packages/ui/src/molecules/color-swatch-group/types.ts)
   - Visual anatomy (source classes; unresolved is not a guessed value):
-    - customFrame base: gap-2 → --spacing-2
-    - customFrame base: px-2 → --spacing-2
-    - customInput base: focus-visible:shadow-focus → --shadow-focus
-    - customLabel base: text-label-default → --text-label-default
-    - group base: gap-2 → --spacing-2
-    - indicator base: rounded-full → --radius-full
-    - item base: gap-2 → --spacing-2
-    - item base: px-2 → --spacing-2
-    - item base: py-1 → --spacing-1
-    - item base: text-start → unresolved
-    - item base: text-label-default → --text-label-default
-    - item base: focus-visible:shadow-focus → --shadow-focus
+    - badge base: rounded-full → --radius-full
+    - customFrame base: rounded-full → --radius-full
+    - customInput base: rounded-full → --radius-full
+    - group base: gap-3 → --spacing-3
+    - item base: rounded-full → --radius-full
+    - item base: p-0 → --spacing-0
     - legend base: text-label-default → --text-label-default
     - output base: text-label-default → --text-label-default
+    - patch base: rounded-full → --radius-full
+    - ring base: rounded-full → --radius-full
     - root base: p-0 → --spacing-0
     - root base: font-sans → --font-sans
-    - surfaceVariants({ tone: 'surface-1', elevation: 1, radius: 'md', padding: 'none' }) · packages/ui/src/molecules/color-swatch-group/useColorSwatchGroup.ts; see Surface anatomy
-  - customLabel: string; Localized visible name for the separate native picker; absent or blank omits it. (components[] · packages/ui/src/molecules/color-swatch-group/types.ts)
+    - row base: gap-3 → --spacing-3
+    - spectrum base: rounded-full → --radius-full
+  - customLabel: string; Localized accessible name for the separate native picker, visually hidden in the spectrum control; absent or blank omits it. (components[] · packages/ui/src/molecules/color-swatch-group/types.ts)
   - label: string; Nonblank localized visible legend, radio-group name and current-value prefix. (components[] · packages/ui/src/molecules/color-swatch-group/types.ts)
   - onValueChange: (value: string) => void; Requests a user-driven color change without normalizing or persisting it. (components[] · packages/ui/src/molecules/color-swatch-group/types.ts)
   - options: ColorSwatchGroupOption[]; Ordered named presets. Invalid colors, blank labels and later case-insensitive duplicates are skipped. (components[] · packages/ui/src/molecules/color-swatch-group/types.ts)
@@ -2515,7 +2513,6 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · Slot
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }) · packages/ui/src/atoms/search-trigger/useSearchTrigger.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'md', radius: 'xl' }) · packages/ui/src/molecules/article-feature/useArticleFeature.ts; see Surface anatomy
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'none' }) · packages/ui/src/molecules/article-feature/useArticleFeature.ts; see Surface anatomy
-    - surfaceVariants({ tone: 'surface-1', elevation: 1, radius: 'md', padding: 'none' }) · packages/ui/src/molecules/color-swatch-group/useColorSwatchGroup.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'xl' }) · packages/ui/src/molecules/community-card/useCommunityCard.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-2', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/molecules/community-card/useCommunityCard.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'lg' }) · packages/ui/src/molecules/list-item/useListItem.ts; see Surface anatomy
@@ -3806,7 +3803,6 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'md' }) · packages/ui/src/atoms/search-trigger/useSearchTrigger.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'md', radius: 'xl' }) · packages/ui/src/molecules/article-feature/useArticleFeature.ts; see Surface anatomy
     - surfaceVariants({ tone: 'well', padding: 'none', radius: 'none' }) · packages/ui/src/molecules/article-feature/useArticleFeature.ts; see Surface anatomy
-    - surfaceVariants({ tone: 'surface-1', elevation: 1, radius: 'md', padding: 'none' }) · packages/ui/src/molecules/color-swatch-group/useColorSwatchGroup.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'xl' }) · packages/ui/src/molecules/community-card/useCommunityCard.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-2', elevation: 0, padding: 'none', radius: 'none' }) · packages/ui/src/molecules/community-card/useCommunityCard.ts; see Surface anatomy
     - surfaceVariants({ tone: 'surface-1', elevation: 1, padding: 'none', radius: 'lg' }) · packages/ui/src/molecules/list-item/useListItem.ts; see Surface anatomy
