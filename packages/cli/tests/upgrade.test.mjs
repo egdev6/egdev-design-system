@@ -419,7 +419,7 @@ test('§7.4 a release that lacks a package the app depends on exits 1 naming rel
     stderr: `Release lacks @egdev/ui: ${from}/release.json does not list it.\n`
   });
   assert.equal(treeHash(fixture.root), before);
-  // The real release has no @egdev/cli yet; an app without cli upgrades from it.
+  // A release without @egdev/cli (packed before it joined the set) still upgrades an app without cli.
   const withoutCli = await upgrade(fixture, ['--from', releaseB(['tokens', 'ui', 'system', 'mcp']), '--dry-run']);
   assert.equal(withoutCli.status, 0, withoutCli.stderr);
 });
@@ -444,7 +444,8 @@ test('AC14 workspace: specifiers, mismatched internal peers and unsatisfied exte
     [
       { ...MANIFESTS_B, mcp: { ...MANIFESTS_B.mcp, dependencies: { '@egdev/effects': '0.2.2' } } },
       2,
-      () => '@egdev/mcp 0.4.2 needs @egdev/effects, which apps/hub does not declare; upgrade adds no packages.\n'
+      () =>
+        '@egdev/mcp 0.4.2 needs @egdev/effects, which apps/hub does not declare; upgrade adds no packages: pass --add effects.\n'
     ]
   ];
   for (const [manifests, status, stderr] of cases) {

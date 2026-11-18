@@ -12,8 +12,14 @@ From a design system checkout:
 
 ```text
 node <ds-repo>/packages/cli/bin/egdev-ds.mjs init <project> [--from <dir>] [--dry-run]
-node <ds-repo>/packages/cli/bin/egdev-ds.mjs upgrade <project> [--from <dir>] [--dry-run]
+node <ds-repo>/packages/cli/bin/egdev-ds.mjs upgrade <project> [--from <dir>] [--add <list>] [--dry-run]
 node <ds-repo>/packages/cli/bin/egdev-ds.mjs doctor <project> [--from <dir>] [--json]
+```
+
+Or from the CLI tarball of a release, without a checkout:
+
+```text
+npm exec --yes --package=<release>/egdev-cli-<version>.tgz -- egdev-ds init <project>
 ```
 
 After `init`, the CLI is vendored as a devDependency, so `npm run ds:doctor` or `pnpm ds:doctor` runs it.
@@ -21,7 +27,7 @@ After `init`, the CLI is vendored as a devDependency, so `npm run ds:doctor` or 
 ```text
 egdev-ds init    <project> [--from <dir>] [--packages <list>] [--css tailwind|native] [--css-entry <path>]
                            [--accent] [--no-install] [--offline] [--allow-dirty] [--force] [--dry-run] [--json]
-egdev-ds upgrade <project> [--from <dir>] [--no-install] [--offline] [--allow-dirty] [--dry-run] [--json]
+egdev-ds upgrade <project> [--from <dir>] [--add <list>] [--no-install] [--offline] [--allow-dirty] [--dry-run] [--json]
 egdev-ds doctor  <project> [--from <dir>] [--json]
 egdev-ds --help | --version
 ```
@@ -106,18 +112,44 @@ Dry run: nothing written.
 ## `upgrade`
 
 `upgrade` replaces the vendored set of an app that already uses the design system with the set of a newer release,
-as one unit. It never adds a package: only the `@egdev` packages the app declares, or pins through an override, are
-upgraded. An app without `@egdev/effects` stays without it, and `@egdev/cli` is upgraded only when the app has it.
+as one unit. Without `--add`, it never adds a package: only the `@egdev` packages the app declares, or pins through an
+override, are upgraded. An app without `@egdev/effects` stays without it, and `@egdev/cli` is upgraded only when the app
+has it.
 
 | Flag | Effect |
 | --- | --- |
+| `--add <list>` | Comma-separated from `tokens,ui,effects,system,mcp,cli`. Adds each named package the app does not declare yet, with the file effects `init` gives it (see below). A package the app already declares is just upgraded. |
 | `--no-install` | Skips the install and prints the exact command instead. Integrities stay unverified. |
 | `--offline` | Adds `--offline` to the install. |
 | `--allow-dirty` | Accepts a release packed from a dirty tree. |
 | `--dry-run` | Prints the plan and the changelog diff and writes nothing, `node_modules` included. |
 
 There is no `--packages` and no `--force`: the set moves as one unit, and every key `upgrade` rewrites is already a
-vendored specifier.
+vendored specifier. A conflict in a key `--add` owns is listed and nothing is written (exit 2).
+
+### Adding packages: `--add`
+
+`--add` is the explicit opt-in (owner decision L11 in the spec, §7.2) for an app that is already vendored, for example
+one vendored before `@egdev/cli` joined the release set:
+
+```text
+egdev-ds upgrade apps/hub --add cli --dry-run
+egdev-ds upgrade . --add effects
+```
+
+For each added package, in the same transaction as the upgrade:
+
+- The tarball is copied to the folder of the app's first vendored dependency, with its `file:` or `file:./` style.
+- `package.json` gets the entry `init` writes: `tokens`, `ui`, `effects` in `dependencies`; `system`, `mcp`, `cli` in
+  `devDependencies`. Its external peers too: exact `three` `0.160.0` for effects, `react` and `react-dom` only when
+  absent. npm: the `$` override for an internal dependency (`@egdev/ui` for effects). pnpm: the override pin.
+- `ui` and `effects` add their stylesheet to the CSS entry, after the existing design system imports. When the Vite entry
+  module imports the design system CSS, nothing is edited; the import to add is printed as a next step
+  (`Import @egdev/effects/styles.css in src/main.tsx.`) and `doctor` reports DS030 until it is there.
+- `cli` adds `scripts.ds:doctor` and, when it is missing, `egdev-ds.json`. `mcp` adds the `.mcp.json` server.
+- An added package has no changelog diff. An internal dependency it needs that the app does not declare is refused
+  (exit 2) with `… upgrade adds no packages: pass --add <pkg>.` A package the release does not list exits 1.
+- A repeated `--add` at the same release is a no-op: `Already at …`.
 
 ### What `upgrade` checks first
 
@@ -166,7 +198,8 @@ Dry run: nothing written.
   version, up to and including the new one. A legacy name without a commit shows as `unversioned`.
 - A real run ends with `Upgraded to b54222c; <n> vendored integrities verified.`, the next steps and
   `Review the diff before committing.`
-- A run at the release commit verifies and prints `Already at b54222c; <n> vendored integrities verified; no changes.`
+- A run at the release commit verifies and prints `Already at b54222c; <n> vendored integrities verified; no changes.`,
+  with or without an `--add` package the app already declares.
 - With `--json`, the document adds `changelog`: `[{ name, from, to, notes }]`, where `notes` holds the markdown
   sections, `""` for an unchanged version and `null` when the tarball has no `CHANGELOG.md`.
 
@@ -178,6 +211,15 @@ Dry run: nothing written.
   is not restored; run the install again.
 - Old tarballs are removed only after success. If a removal fails, the run exits 1 with
   `Cannot remove <file> (<code>); new installation is intact.` and nothing is rolled back.
+
+## Tests
+
+- `pnpm test:cli`: unit tests with synthetic tarballs and a fake package manager.
+- `pnpm test:cli:consumer`: the end-to-end run (spec AC19). It packs the built workspace into a temporary folder, then
+  npm + Vite and pnpm + Next.js consumers run `init` (the npm one from the CLI tarball), the real install, `ds:doctor`,
+  a production build, `upgrade` and `ds:doctor` again. Run `pnpm build` first. It needs the network: it is skipped with a
+  message when `registry.npmjs.org` does not resolve or with `EGDEV_SKIP_CLI_CONSUMER=1`, and fails offline when `CI`
+  is set. CI runs both.
 
 ## Exit codes
 

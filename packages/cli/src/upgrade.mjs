@@ -1,10 +1,13 @@
 // `egdev-ds upgrade <project>` (spec §7, §9): replaces the vendored set as one unit from a newer
-// release, only for the packages the app already declares. Copies, edits, install and verification
-// run as one transaction with rollback; the previous tarballs are removed only after success.
+// release, only for the packages the app already declares, plus the packages named by `--add`
+// (owner decision L11), which get the file effects `init` gives them. Copies, edits, install and
+// verification run as one transaction with rollback; the previous tarballs are removed only after
+// success.
 import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { assertSafeTarget, codeOf, transact } from './apply.mjs';
 import { RefusedError } from './args.mjs';
+import { designSystemImports, findCssEntry, insertCssImports } from './css.mjs';
 import {
   collectSpecifiers,
   DEPENDENCY_FIELDS,
@@ -19,9 +22,19 @@ import {
   workspaceOverrides
 } from './detect.mjs';
 import { findInstalled } from './doctor.mjs';
-import { nextSteps, readManifest, readText, runInstall, verifyLock } from './init.mjs';
+import {
+  nextSteps,
+  planConfig,
+  planMcp,
+  readManifest,
+  readText,
+  reportConflicts,
+  runInstall,
+  VENDOR_DIRECTORY,
+  verifyLock
+} from './init.mjs';
 import { rewriteNpmLock } from './lockfile.mjs';
-import { MANIFEST_FILE } from './manifest.mjs';
+import { createLedger, MANIFEST_FILE, planPackageKeys } from './manifest.mjs';
 import { formatAction, formatHeader, formatPlanJson } from './plan.mjs';
 import { planWorkspace, rewriteWorkspace, WORKSPACE_FILE } from './pnpm-workspace.mjs';
 import {
@@ -40,6 +53,7 @@ import { compareVersions, satisfies } from './semver.mjs';
 /** @typedef {import('./release.mjs').ReleasePackage} ReleasePackage */
 /** @typedef {import('./init.mjs').Runner} Runner */
 /** @typedef {import('./manifest.mjs').Action} Action */
+/** @typedef {import('./manifest.mjs').Conflict} Conflict */
 /** @typedef {import('./plan.mjs').PlanHeader} PlanHeader */
 /** @typedef {import('./plan.mjs').ChangelogEntry} ChangelogEntry */
 /** @typedef {import('./apply.mjs').FileWrite} FileWrite */
@@ -47,6 +61,7 @@ import { compareVersions, satisfies } from './semver.mjs';
 /**
  * @typedef {{ pkg: string, entry: ReleasePackage, source: string, packed: Record<string, unknown> }} Selected
  * @typedef {{ name: string, target: string, sha256: string, source: string, packed: Record<string, unknown> }} Move
+ * @typedef {Selected & { name: string, file: string, spec: string }} Addition
  */
 
 /**
@@ -163,14 +178,21 @@ export async function runUpgrade({ argument, project, from, releaseDir, release,
     throw new RefusedError(`Release ${from} was packed from a dirty tree (${short}); pass --allow-dirty to use it.`);
   }
 
-  // 2-3. Select only what the app declares or overrides, and load it from the release (sha256 was
-  // verified by readRelease; name, version and workspace: by loadReleasePackage).
+  // 2-3. Select only what the app declares or overrides, plus what `--add` names (L11), and load it
+  // from the release (sha256 was verified by readRelease; name, version and workspace: by
+  // loadReleasePackage). An `--add` package the app already declares is simply upgraded.
   /** @type {Map<string, Selected>} */
   const selected = new Map();
+  /** @type {Set<string>} */
+  const added = new Set();
   for (const pkg of PACKAGES) {
     const name = `@egdev/${pkg}`;
-    if (specs.some((spec) => spec.name === name)) {
+    const declared = specs.some((spec) => spec.name === name);
+    if (declared || options.add?.some((item) => item === pkg)) {
       selected.set(name, { pkg, ...loadReleasePackage({ release, releaseDir, from, name }) });
+      if (!declared) {
+        added.add(name);
+      }
     }
   }
 
@@ -200,13 +222,14 @@ export async function runUpgrade({ argument, project, from, releaseDir, release,
         }
         if (!selected.has(dependency) && !optional) {
           throw new RefusedError(
-            `${name} ${version} needs ${dependency}, which ${argument} does not declare; upgrade adds no packages.`
+            `${name} ${version} needs ${dependency}, which ${argument} does not declare; upgrade adds no packages: pass --add ${dependency.slice('@egdev/'.length)}.`
           );
         }
       } else if (Object.hasOwn(peers, dependency)) {
         const installed = findInstalled(project, dependency, project);
         const at = installed && typeof installed.version === 'string' ? installed.version : null;
-        if (at === null && !optional) {
+        // An added package's missing peer is declared below and arrives with the install.
+        if (at === null && !optional && !added.has(name)) {
           throw new RefusedError(
             `${name} ${version} needs ${dependency} ${range}; ${argument} does not have it installed: run ${packageManager} install first.`
           );
@@ -266,6 +289,32 @@ export async function runUpgrade({ argument, project, from, releaseDir, release,
     }
   }
 
+  // L11: added packages go to the folder and `file:` style of the app's first vendored dependency.
+  const anchor =
+    specs.find(({ spec, field: key }) => DEPENDENCY_FIELDS.includes(key) && safeVendorFile(spec)) ??
+    specs.find(({ spec }) => safeVendorFile(spec));
+  const anchorFile = anchor ? safeVendorFile(anchor.spec) : null;
+  const folder = anchorFile ? anchorFile.slice(0, anchorFile.lastIndexOf('/')) : VENDOR_DIRECTORY;
+  const style = anchor && anchorFile ? anchor.spec.slice(0, anchor.spec.length - anchorFile.length) : 'file:./';
+  /** @type {Addition[]} */
+  const additions = [];
+  for (const [name, item] of selected) {
+    if (!added.has(name)) {
+      continue;
+    }
+    const file = `${folder}/egdev-${item.pkg}-${item.entry.version}-${short}.tgz`;
+    additions.push({ ...item, name, file, spec: `${style}${file}` });
+    targets.add(file);
+    const existing = existsSync(join(project, file)) ? readFileSync(join(project, file)) : null;
+    if (existing && sha256(existing) !== item.entry.sha256) {
+      throw new RefusedError(`Refusing to overwrite a different tarball: ${file}.`);
+    }
+    actions.push({ verb: existing ? 'keep' : 'copy', path: file, detail: `sha256 ${item.entry.sha256}` });
+    if (!existing) {
+      copies.push({ path: file, source: item.source, sha256: item.entry.sha256 });
+    }
+  }
+
   // Every specifier location, each keeping its folder and `file:` / `file:./` style.
   const next = structuredClone(manifest);
   /** @param {string} detail */
@@ -301,6 +350,16 @@ export async function runUpgrade({ argument, project, from, releaseDir, release,
   rewriteTree(next.overrides, 'overrides');
   rewriteTree(field(next, 'pnpm').overrides, 'pnpm.overrides');
 
+  // L11: the owned keys `init` writes for each added package (spec §6.2); upgrade has no --force.
+  /** @type {Conflict[]} */
+  const conflicts = [];
+  if (additions.length > 0) {
+    const ledger = createLedger();
+    planPackageKeys({ next, ledger, selected: additions, force: false, doctorScript: added.has('@egdev/cli') });
+    actions.push(...ledger.actions);
+    conflicts.push(...ledger.conflicts);
+  }
+
   // Overrides the new set needs (spec §6.3-§6.4): npm `$` references for internal dependencies,
   // pnpm pins for every upgraded package. Existing values are never replaced.
   if (packageManager === 'npm') {
@@ -333,6 +392,10 @@ export async function runUpgrade({ argument, project, from, releaseDir, release,
   if (packageManager === 'pnpm') {
     /** @param {string} name */
     const pin = (name) => {
+      const addition = additions.find((item) => item.name === name);
+      if (addition) {
+        return addition.spec;
+      }
       const spec = specs.find((item) => item.name === name && DEPENDENCY_FIELDS.includes(item.field))?.spec;
       const fallback = specs.find((item) => item.name === name)?.spec ?? '';
       return respec(spec ?? fallback) ?? spec ?? fallback;
@@ -392,6 +455,69 @@ export async function runUpgrade({ argument, project, from, releaseDir, release,
     }
   }
 
+  // L11: the CSS imports, egdev-ds.json and .mcp.json `init` writes for the added packages (§6.5,
+  // §6.7). An entry module that imports the DS CSS is code: the import to add becomes a next step.
+  /** @type {string[]} */
+  const extraSteps = [];
+  const cssMode = detectCssMode(manifest);
+  const addedCss = designSystemImports(
+    cssMode,
+    additions.map(({ pkg }) => pkg)
+  );
+  if (addedCss.length > 0) {
+    const { framework, error } = detectFramework(manifest);
+    if (!framework) {
+      throw new RefusedError(error ?? 'Cannot detect the framework.');
+    }
+    const found = findCssEntry(project, framework);
+    if (found.error) {
+      throw new RefusedError(found.error);
+    }
+    if (found.module && found.moduleImports.some((item) => item.startsWith('@egdev/') && item.endsWith('.css'))) {
+      for (const target of addedCss) {
+        if (found.moduleImports.includes(target)) {
+          actions.push({ verb: 'keep', path: found.module, detail: `import '${target}'` });
+        } else {
+          extraSteps.push(`  Import ${target} in ${found.module}.`);
+        }
+      }
+    } else if (found.file) {
+      const cssText = readText(join(project, found.file)) ?? '';
+      const all = designSystemImports(
+        cssMode,
+        [...selected.values()].map(({ pkg }) => pkg)
+      );
+      const inserted = insertCssImports(cssText, found.file, cssMode, all, addedCss);
+      if (inserted.error !== undefined) {
+        throw new RefusedError(inserted.error);
+      }
+      for (const target of addedCss) {
+        const verb = inserted.added.includes(target) ? 'edit' : 'keep';
+        actions.push({ verb, path: found.file, detail: `${verb === 'edit' ? '+' : ''}@import "${target}"` });
+      }
+      if (inserted.text !== cssText) {
+        writes.push({ path: found.file, content: inserted.text });
+      }
+    } else {
+      throw new RefusedError(`No CSS entry: ${found.module} imports no local .css file; add the imports by hand.`);
+    }
+  }
+  if (added.has('@egdev/cli')) {
+    const config = planConfig(project, manifest);
+    actions.push(config.action);
+    if (config.write) {
+      writes.push(config.write);
+    }
+  }
+  if (added.has('@egdev/mcp')) {
+    const mcp = planMcp(project, false);
+    actions.push(...mcp.actions);
+    conflicts.push(...mcp.conflicts);
+    if (mcp.write) {
+      writes.push(mcp.write);
+    }
+  }
+
   // 8 and 10: install, then remove the previous tarballs nothing references anymore.
   const install = [packageManager, 'install', ...(options.offline ? ['--offline'] : [])];
   if (!options.noInstall) {
@@ -409,6 +535,9 @@ export async function runUpgrade({ argument, project, from, releaseDir, release,
   /** @type {ChangelogEntry[]} */
   const changelog = [];
   for (const [name, item] of selected) {
+    if (added.has(name)) {
+      continue;
+    }
     const oldFile = [...moves.entries()].find(([, move]) => move.name === name)?.[0];
     /** @type {string | null} */
     let installedVersion = null;
@@ -435,9 +564,15 @@ export async function runUpgrade({ argument, project, from, releaseDir, release,
     project: argument,
     packageManager,
     framework: detectFramework(manifest).framework,
-    cssMode: detectCssMode(manifest),
+    cssMode,
     release: { dir: from, commit: release.commit }
   };
+
+  // Conflicts (spec §9.7) can only come from `--add`: listed, nothing written.
+  if (conflicts.length > 0) {
+    reportConflicts(conflicts, 'upgrade has no --force: edit these values by hand, then upgrade again.', stderr);
+    return 2;
+  }
 
   // 5. Already current: verify the integrities, change nothing (spec §7.5, §9.8).
   if (copies.length === 0 && writes.length === 0 && removals.length === 0) {
@@ -511,7 +646,7 @@ export async function runUpgrade({ argument, project, from, releaseDir, release,
     stdout(
       [
         `Upgraded to ${short}; ${verified}.`,
-        ...nextSteps({ packageManager, install, noInstall: options.noInstall }),
+        ...nextSteps({ packageManager, install, noInstall: options.noInstall, extra: extraSteps }),
         ''
       ].join('\n')
     );

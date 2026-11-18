@@ -199,6 +199,94 @@ export function nextSteps({ packageManager, install, noInstall, extra = [] }) {
 }
 
 /**
+ * `egdev-ds.json` (spec §6.7): kept when it exists, otherwise created with the doctor defaults.
+ * @param {string} project
+ * @param {Record<string, unknown>} manifest
+ * @returns {{ action: Action, write: FileWrite | null }}
+ */
+export function planConfig(project, manifest) {
+  if (existsSync(join(project, CONFIG_FILE))) {
+    return { action: { verb: 'keep', path: CONFIG_FILE, detail: '' }, write: null };
+  }
+  const { config } = readConfig(project, manifest);
+  return {
+    action: { verb: 'create', path: CONFIG_FILE, detail: '' },
+    write: { path: CONFIG_FILE, content: `${JSON.stringify({ schemaVersion: 1, ...config }, null, 2)}\n` }
+  };
+}
+
+/**
+ * The `egdev-design-system` server in `<project>/.mcp.json` (spec §6.7): created, added next to
+ * other servers, kept when equal, or a conflict that `force` resolves by replacing only that entry.
+ * @param {string} project
+ * @param {boolean} force
+ * @returns {{ actions: Action[], conflicts: Conflict[], write: FileWrite | null }}
+ */
+export function planMcp(project, force) {
+  const detail = `mcpServers.${MCP_SERVER}`;
+  const mcpText = readText(join(project, MCP_FILE));
+  if (mcpText === null) {
+    return {
+      actions: [{ verb: 'create', path: MCP_FILE, detail }],
+      conflicts: [],
+      write: { path: MCP_FILE, content: `${JSON.stringify({ mcpServers: { [MCP_SERVER]: MCP_ENTRY } }, null, 2)}\n` }
+    };
+  }
+  /** @type {Action[]} */
+  const actions = [];
+  /** @type {Conflict[]} */
+  const conflicts = [];
+  /** @type {unknown} */
+  let data = null;
+  try {
+    data = JSON.parse(mcpText);
+  } catch {
+    data = null;
+  }
+  if (isRecord(data) && data.mcpServers === undefined) {
+    data.mcpServers = {};
+  }
+  const servers = isRecord(data) ? data.mcpServers : null;
+  if (!isRecord(data) || !isRecord(servers)) {
+    throw new RefusedError(`Cannot edit ${MCP_FILE}: expected a JSON object with an mcpServers object.`);
+  }
+  let changed = true;
+  const server = servers[MCP_SERVER];
+  const current = isRecord(server) ? { command: server.command, args: server.args } : server;
+  if (server === undefined) {
+    servers[MCP_SERVER] = MCP_ENTRY;
+    actions.push({ verb: 'edit', path: MCP_FILE, detail });
+  } else if (JSON.stringify(current) === JSON.stringify(MCP_ENTRY)) {
+    changed = false;
+    actions.push({ verb: 'keep', path: MCP_FILE, detail });
+  } else {
+    changed = force;
+    const shown = JSON.stringify(current) ?? String(current);
+    conflicts.push({ file: MCP_FILE, key: detail, current: shown, wanted: JSON.stringify(MCP_ENTRY) });
+    if (force) {
+      servers[MCP_SERVER] = isRecord(server) ? { ...server, ...MCP_ENTRY } : MCP_ENTRY;
+      actions.push({ verb: 'edit', path: MCP_FILE, detail: `${detail} (replaces ${shown})` });
+    }
+  }
+  const nextMcp = `${JSON.stringify(data, null, 2)}\n`;
+  return { actions, conflicts, write: changed && nextMcp !== mcpText ? { path: MCP_FILE, content: nextMcp } : null };
+}
+
+/**
+ * Lists conflicts on stderr, one per line, then the count and how to resolve them (spec §9.7).
+ * @param {readonly Conflict[]} conflicts
+ * @param {string} resolution
+ * @param {(text: string) => void} stderr
+ */
+export function reportConflicts(conflicts, resolution, stderr) {
+  const lines = conflicts.map(
+    ({ file, key, current, wanted }) => `Conflict: ${file} ${key} is ${current}; egdev-ds sets ${wanted}.`
+  );
+  const count = `${conflicts.length} conflict${conflicts.length === 1 ? '' : 's'}`;
+  stderr(`${lines.join('\n')}\n${count}: nothing written; ${resolution}\n`);
+}
+
+/**
  * Runs `egdev-ds init`. Refusals throw RefusedError (exit 2); release and apply failures throw
  * errors with status 1. Conflicts are listed on stderr, one per line, and return 2.
  * @param {{
@@ -398,60 +486,18 @@ export async function runInit({ argument, project, from, releaseDir, release, op
     actions.push({ verb: 'keep', path: wiredModule, detail: 'design system CSS imported by the entry module' });
   }
 
-  if (existsSync(join(project, CONFIG_FILE))) {
-    actions.push({ verb: 'keep', path: CONFIG_FILE, detail: '' });
-  } else {
-    const { config } = readConfig(project, manifest);
-    actions.push({ verb: 'create', path: CONFIG_FILE, detail: '' });
-    writes.push({ path: CONFIG_FILE, content: `${JSON.stringify({ schemaVersion: 1, ...config }, null, 2)}\n` });
+  const configPlan = planConfig(project, manifest);
+  actions.push(configPlan.action);
+  if (configPlan.write) {
+    writes.push(configPlan.write);
   }
 
   if (packages.includes('mcp')) {
-    const detail = `mcpServers.${MCP_SERVER}`;
-    const mcpText = readText(join(project, MCP_FILE));
-    if (mcpText === null) {
-      actions.push({ verb: 'create', path: MCP_FILE, detail });
-      writes.push({
-        path: MCP_FILE,
-        content: `${JSON.stringify({ mcpServers: { [MCP_SERVER]: MCP_ENTRY } }, null, 2)}\n`
-      });
-    } else {
-      /** @type {unknown} */
-      let data = null;
-      try {
-        data = JSON.parse(mcpText);
-      } catch {
-        data = null;
-      }
-      if (isRecord(data) && data.mcpServers === undefined) {
-        data.mcpServers = {};
-      }
-      const servers = isRecord(data) ? data.mcpServers : null;
-      if (!isRecord(data) || !isRecord(servers)) {
-        throw new RefusedError(`Cannot edit ${MCP_FILE}: expected a JSON object with an mcpServers object.`);
-      }
-      let changed = true;
-      const server = servers[MCP_SERVER];
-      const current = isRecord(server) ? { command: server.command, args: server.args } : server;
-      if (server === undefined) {
-        servers[MCP_SERVER] = MCP_ENTRY;
-        actions.push({ verb: 'edit', path: MCP_FILE, detail });
-      } else if (JSON.stringify(current) === JSON.stringify(MCP_ENTRY)) {
-        changed = false;
-        actions.push({ verb: 'keep', path: MCP_FILE, detail });
-      } else {
-        changed = options.force;
-        const shown = JSON.stringify(current) ?? String(current);
-        conflicts.push({ file: MCP_FILE, key: detail, current: shown, wanted: JSON.stringify(MCP_ENTRY) });
-        if (options.force) {
-          servers[MCP_SERVER] = isRecord(server) ? { ...server, ...MCP_ENTRY } : MCP_ENTRY;
-          actions.push({ verb: 'edit', path: MCP_FILE, detail: `${detail} (replaces ${shown})` });
-        }
-      }
-      const nextMcp = `${JSON.stringify(data, null, 2)}\n`;
-      if (changed && nextMcp !== mcpText) {
-        writes.push({ path: MCP_FILE, content: nextMcp });
-      }
+    const mcpPlan = planMcp(project, options.force);
+    actions.push(...mcpPlan.actions);
+    conflicts.push(...mcpPlan.conflicts);
+    if (mcpPlan.write) {
+      writes.push(mcpPlan.write);
     }
   }
 
@@ -473,11 +519,7 @@ export async function runInit({ argument, project, from, releaseDir, release, op
 
   // Conflicts (spec §9.7, Q8): listed, nothing written, unless --force replaced exactly those values.
   if (conflicts.length > 0 && !options.force) {
-    const lines = conflicts.map(
-      ({ file, key, current, wanted }) => `Conflict: ${file} ${key} is ${current}; egdev-ds sets ${wanted}.`
-    );
-    const count = `${conflicts.length} conflict${conflicts.length === 1 ? '' : 's'}`;
-    stderr(`${lines.join('\n')}\n${count}: nothing written; pass --force to replace only these values.\n`);
+    reportConflicts(conflicts, 'pass --force to replace only these values.', stderr);
     return 2;
   }
   // Specifiers outside the owned keys (a nested npm override, for example) are never rewritten.
