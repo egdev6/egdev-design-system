@@ -114,3 +114,6 @@ The guard reads `<sourceDirectory>/design-system-allowlist.ts`, which exports `d
 with Node's built-in type stripping, so the file may hold only `import type` lines and the array literal. A missing
 file is an empty allowlist. The guard resolves `typescript` and `postcss` from the project; doctor runs the project's
 own copies.
+
+**Doctor executes project code.** Loading the allowlist imports a module from the project, and the guard runs the
+project's `typescript` and `postcss`. Run `egdev-ds doctor` only on projects you trust, as you would their tests.
