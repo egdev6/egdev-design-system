@@ -3,7 +3,7 @@
 - **Version / status:** v0.4 — **Approved — 2026-11-19** by the owner (conversation reply "si" to the v0.4 draft and its three open decisions, choosing the recommended option A for decision 3). The implementation plan needs separate approval.
 - **Amends:** [Tabs v0.1](../v0.1/implementation.md), the [v0.2 layout amendment](../v0.2/full-width-wrap-amendment.md) and the [v0.3 outline amendment](../v0.3/outline-variant-amendment.md). Inspired by Diego Haz's scrollable-tabs post (LinkedIn, November 2026); only the post text was available, its video was not accessed.
 - **Approval / recovery:** this file is the recoverable snapshot. The approval covers this spec only; it does not approve the implementation plan, visual references or any change outside the decisions recorded below.
-- **Snapshot identity:** `version: v0.4`; `contentSHA256: e8bc19cf5ffea4b4a1392a3bcea10ee91bde7259975d970613fd189a3b6d68c2`; `visualHashes: VIS-01 Pending, VIS-02 Pending, VIS-03 Pending`; `approvalReference: owner conversation 2026-11-19`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/107`; `latestPublishedComment: Pending`.
+- **Snapshot identity:** `version: v0.4`; `contentSHA256: 4bf76b8f014447af778d71e8ca9fcc532ce52419ab21ea180e66b2974b4404d0`; `visualHashes: VIS-01 Pending, VIS-02 Pending, VIS-03 Pending`; `approvalReference: owner conversation 2026-11-19`; `canonicalIssue: https://github.com/egdev6/egdev-design-system/issues/107`; `latestPublishedComment: Pending`. (RTL correction 2026-11-19, owner decision: RTL comes from a Radix `DirectionProvider`; recomputed per the hash definition. The approved value before this correction was `e8bc19cf…`.)
 - **Implementation correction (metadata, outside the hashed payload):** 2026-11-19, owner-confirmed. The token in section 6 is implemented as three static mask layers sized on the list, because `var()` inside a `:root` token resolves at `:root`. See the [implementation plan](implementation-plan.md#tabs-v04--edge-fade-implementation-plan) correction.
 - **Hash definition:** SHA-256 of the UTF-8 payload from `## 1. Purpose and scope` through EOF, LF line endings and the final newline. Tracking metadata above that heading is excluded.
 
@@ -30,7 +30,7 @@ Parts are unchanged: Root (Radix `Tabs.Root`), List (Radix `Tabs.List`), Trigger
 | Overflow, scrolled to the start | Only the inline-end edge fades | None |
 | Overflow, scrolled to the middle | Both edges fade | None |
 | Overflow, scrolled to the end | Only the inline-start edge fades | None |
-| `dir="rtl"` on an ancestor | Fade edges follow logical inline start/end | None |
+| Right to left from a Radix `DirectionProvider` ancestor (a bare `dir` attribute is ignored, because Radix writes `dir` on the root) | Fade edges follow logical inline start/end | None |
 | Browser without `animation-timeline` support | No fade; rendering identical to v0.3 (progressive enhancement) | None |
 | Keyboard or programmatic focus moves to a partially hidden tab | The tab scrolls fully outside the faded zones | Existing Radix selection request only |
 

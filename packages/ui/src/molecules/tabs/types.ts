@@ -48,6 +48,8 @@ export type TabsItem = {
  * Horizontal in-page view switcher. Radix owns selection, automatic activation, focus and ARIA.
  * className supports outer layout (margin, width, grid placement), merged last through cn;
  * appearance and internal-part overrides are unsupported. No ref, asChild or children API.
+ * Right to left needs a Radix DirectionProvider ancestor: Radix writes dir on the root, so a bare dir
+ * attribute on an ancestor is ignored.
  */
 export type TabsProps = Omit<ComponentPropsWithoutRef<'div'>, 'children' | 'defaultValue' | 'dir' | 'onChange'> & {
   /**

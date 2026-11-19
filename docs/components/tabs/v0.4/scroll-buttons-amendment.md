@@ -1,10 +1,10 @@
 # Tabs — scroll buttons amendment (v0.4-A)
 
 - **Version / status:** v0.4-A — **Approved — 2026-11-19** by the owner (reply "si" to the draft and its three open decisions: fine-pointer buttons with inert-while-hovered, rotated `chevron-down`, underline focus reveal).
-- **Amends:** the approved [v0.4 edge-fade amendment](edge-fade-amendment.md) (`contentSHA256: e8bc19cf5ffea4b4a1392a3bcea10ee91bde7259975d970613fd189a3b6d68c2`) before release. It **supersedes owner decision 3** of v0.4 (option A, "keep the underline scrollbar hidden; chevrons are phase 2") and **changes one v0.2 promise**: underline focus scrolling. Every other v0.4 promise stays.
+- **Amends:** the approved [v0.4 edge-fade amendment](edge-fade-amendment.md) (`contentSHA256: 4bf76b8f014447af778d71e8ca9fcc532ce52419ab21ea180e66b2974b4404d0`) before release. It **supersedes owner decision 3** of v0.4 (option A, "keep the underline scrollbar hidden; chevrons are phase 2") and **changes one v0.2 promise**: underline focus scrolling. Every other v0.4 promise stays.
 - **Reason:** owner review in Storybook (2026-11-19): "el gradiente tapa parte del ultimo elemento y no hay nada que permita scrolear en horizontal? habría que valorar añadir botones con flechas y ocultar el gradiente/botones al llegar a los extremos?" Browser measurement in Chrome 157 also found that, on underline, arrow-key focus can leave a partly visible tab up to 25px under the fade (Chrome does not scroll a partially visible element on `focus()`).
 - **Approval / recovery:** this file is the recoverable snapshot; canonical issue #107. Approval covers this amendment only, not the updated implementation plan.
-- **Snapshot identity:** `version: v0.4-A`; `contentSHA256: c1a1450e93fb118d341a15adb22a75e427815c6d209a86f3506e659eaa3f868e`; `visualHashes: VIS-04..06 Pending`; `approvalReference: owner conversation 2026-11-19`.
+- **Snapshot identity:** `version: v0.4-A`; `contentSHA256: 1330129a42eae5f49241d156b8746ec81e104eaccd9467afa3c3fcfbb09504c9`; `visualHashes: VIS-04..06 Pending`; `approvalReference: owner conversation 2026-11-19`. (RTL correction 2026-11-19, owner decision: RTL comes from a Radix `DirectionProvider`; recomputed per the hash definition. The approved value before this correction was `c1a1450e…`.)
 - **Hash definition:** SHA-256 of the UTF-8 payload from `## 1. Purpose and scope` through EOF, LF line endings and the final newline.
 
 ## 1. Purpose and scope
@@ -42,7 +42,7 @@
 | Reach an extreme while the pointer **is** over that button | Button stays in place, inert (clicks do nothing) and at low opacity, until the pointer leaves; then it hides. Prevents clicking what lies underneath | None |
 | Coarse pointer or no hover (touch) | Never renders the buttons; fade only | None |
 | Resize, font load or item change alters overflow | Button state updates (`ResizeObserver` plus scroll listener) | None |
-| RTL | Start/end follow the logical inline direction; chevrons mirror | None |
+| RTL from a Radix `DirectionProvider` ancestor | Start/end follow the logical inline direction; chevrons mirror | None |
 | Keyboard focus moves to a tab on any scrollable list, including underline | The tab scrolls fully outside the edge zones (`scrollIntoView({ block: 'nearest', inline: 'nearest' })`, which honors `scroll-padding`). **Changes the v0.2 underline promise** "preserves native focus scrolling" | Existing Radix selection request only |
 
 - **State representation:** each button exposes its own `data-state` (`visible` / `inert` / `hidden`) from the hook; the inert state is not native `disabled`, because disabled buttons do not dispatch the pointer-leave the state depends on.
