@@ -191,7 +191,8 @@ describe('Heading compact contract', () => {
     expect(
       ts.getPreEmitDiagnostics(program).map((item) => ts.flattenDiagnosticMessageText(item.messageText, '\n'))
     ).toEqual([]);
-  }, 15000);
+    // A full TypeScript program build: alone it takes ~7s, but under the full parallel suite it can exceed 15s.
+  }, 30_000);
 
   it('enforces compact-only foreground and excludes title accent props', () => {
     const valid: HeadingProps[] = [
