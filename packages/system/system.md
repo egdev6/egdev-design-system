@@ -1129,11 +1129,8 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Label + Slot
 - Field (components[] · packages/ui/src/molecules/field/types.ts)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - fieldCounterVariants base: text-label-default → --text-label-default
-    - fieldCounterVariants base: disabledPart → unresolved
     - fieldFooterRowVariants base: gap-2 → --spacing-2
     - fieldLabelRowVariants base: gap-2 → --spacing-2
-    - fieldLabelRowVariants base: disabledPart → unresolved
-    - fieldMessageVariants base: disabledPart → unresolved
     - fieldReadoutVariants base: text-label-default → --text-label-default
     - fieldVariants base: font-sans → --font-sans
     - fieldVariants layout=stacked: gap-1.5 → --spacing
@@ -1477,12 +1474,15 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · —
   - PanelHeader: Supplied identity/context, without generated heading semantics. Children: Supplied identity/context zone; no generated heading or landmark. Meaningful supplied header content. Omit the part itself when it is not needed. (components[].parts · packages/ui/src/molecules/panel/Panel.tsx)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - panelBodyVariants base: gap-4 → --spacing-4
-    - panelBodyVariants base: zoneGeometry → unresolved
+    - panelBodyVariants base: p-4 → --spacing-4
+    - panelBodyVariants base: rounded-none → --radius-none
     - panelFooterVariants base: gap-3 → --spacing-3
-    - panelFooterVariants base: zoneGeometry → unresolved
+    - panelFooterVariants base: p-4 → --spacing-4
+    - panelFooterVariants base: rounded-none → --radius-none
     - panelFooterVariants variant=banded: shadow-none → unresolved
     - panelHeaderVariants base: gap-3 → --spacing-3
-    - panelHeaderVariants base: zoneGeometry → unresolved
+    - panelHeaderVariants base: p-4 → --spacing-4
+    - panelHeaderVariants base: rounded-none → --radius-none
     - panelVariants base: gap-0 → --spacing-0
     - panelVariants base: p-0 → --spacing-0
     - panelVariants base: font-sans → --font-sans
@@ -1696,8 +1696,6 @@ catalog[] · docs/catalog.json · @egdev/ui · molecule · Tabs
     - tabsListVariants variant=outline: p-0.75 → --spacing
     - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: p-1.5 → --spacing
     - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: [&::-webkit-scrollbar-thumb]:rounded-full → --radius-full
-    - tabsListVariants {"variant":"underline"}: tabsEdgeFade → unresolved
-    - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: tabsEdgeFade → unresolved
     - tabsPanelVariants base: pt-4 → --spacing-4
     - tabsTriggerVariants base: gap-2 → --spacing-2
     - tabsTriggerVariants base: font-sans → --font-sans
@@ -2154,8 +2152,8 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · Slot + VisuallyHidden
     - linkVariants base: text-label-default → --text-label-default
     - linkVariants base: focus-visible:[box-shadow:var(--shadow-focus)] → --shadow-focus
     - linkVariants base: focus-visible:rounded-sm → --radius-sm
-    - linkVariants variant=plain: plainLinkRecipe → unresolved
-    - linkVariants variant=underlined: plainLinkRecipe → unresolved
+    - linkVariants variant=plain: pb-0 → --spacing-0
+    - linkVariants variant=underlined: pb-0 → --spacing-0
   - arrow: boolean; Show the trailing decorative right arrow, independent of external. (components[] · packages/ui/src/atoms/link/types.ts)
   - asChild: boolean; Use the native anchor; href supplies its destination. Render onto one prop-spreading, ref-forwarding anchor child through Radix Slot. The child owns href and must preserve anchor navigation semantics. (components[] · packages/ui/src/atoms/link/types.ts)
   - children: ReactNode; Descriptive visible link text; exactly one anchor element when asChild is true. (components[] · packages/ui/src/atoms/link/types.ts)
@@ -2415,10 +2413,16 @@ catalog[] · docs/catalog.json · @egdev/ui · atom · —
 - Textarea (components[] · packages/ui/src/atoms/textarea/types.ts)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - textareaVariants base: rounded-md → --radius-md
-    - textareaVariants variant=default: well → unresolved
+    - textareaVariants variant=default: px-3 → --spacing-3
+    - textareaVariants variant=default: py-2 → --spacing-2
+    - textareaVariants variant=default: shadow-[var(--shadow-well)] → --shadow-well
+    - textareaVariants variant=default: focus-visible:shadow-[var(--shadow-well),var(--shadow-focus)] → --shadow-well, --shadow-focus
     - textareaVariants variant=default: font-sans → --font-sans
     - textareaVariants variant=default: text-body-default → --text-body-default
-    - textareaVariants variant=code: well → unresolved
+    - textareaVariants variant=code: px-3 → --spacing-3
+    - textareaVariants variant=code: py-2 → --spacing-2
+    - textareaVariants variant=code: shadow-[var(--shadow-well)] → --shadow-well
+    - textareaVariants variant=code: focus-visible:shadow-[var(--shadow-well),var(--shadow-focus)] → --shadow-well, --shadow-focus
     - textareaVariants variant=code: font-mono → --font-mono
     - textareaVariants variant=code: text-code → --text-code
     - textareaVariants variant=prose: p-5 → --spacing-5
@@ -2588,7 +2592,6 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · Slot
     - surfaceVariants {"tone":"raisedTones","elevation":"1"}: shadow-[var(--shadow-edge),var(--shadow-elev-1)] → --shadow-edge, --shadow-elev-1
     - surfaceVariants {"tone":"raisedTones","elevation":"2"}: shadow-[var(--shadow-edge-strong),var(--shadow-elev-2)] → --shadow-edge-strong, --shadow-elev-2
     - surfaceVariants {"tone":"raisedTones","elevation":"3"}: shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)] → --shadow-edge-strong, --shadow-elev-3
-    - surfaceVariants {"tone":"surface-0","elevation":"[1, 2, 3]"}: sheen → unresolved
     - surfaceVariants({ tone, elevation: raised ? (elevation ?? 1) : null, padding, radius }) · packages/ui/src/primitives/surface/useSurface.ts; see Surface anatomy
   - asChild: boolean; Merge the material onto one HTMLElement-backed child through Slot instead of a div. (components[] · packages/ui/src/primitives/surface/types.ts)
   - elevation: enum; Light edge and two-layer shadow of a raised tone; well and overlay reject it. (components[] · packages/ui/src/primitives/surface/types.ts)
@@ -3595,12 +3598,15 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
 - PanelBody (components[] · packages/ui/src/molecules/panel/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - panelBodyVariants base: gap-4 → --spacing-4
-    - panelBodyVariants base: zoneGeometry → unresolved
+    - panelBodyVariants base: p-4 → --spacing-4
+    - panelBodyVariants base: rounded-none → --radius-none
     - panelFooterVariants base: gap-3 → --spacing-3
-    - panelFooterVariants base: zoneGeometry → unresolved
+    - panelFooterVariants base: p-4 → --spacing-4
+    - panelFooterVariants base: rounded-none → --radius-none
     - panelFooterVariants variant=banded: shadow-none → unresolved
     - panelHeaderVariants base: gap-3 → --spacing-3
-    - panelHeaderVariants base: zoneGeometry → unresolved
+    - panelHeaderVariants base: p-4 → --spacing-4
+    - panelHeaderVariants base: rounded-none → --radius-none
     - panelVariants base: gap-0 → --spacing-0
     - panelVariants base: p-0 → --spacing-0
     - panelVariants base: font-sans → --font-sans
@@ -3615,12 +3621,15 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
 - PanelFooter (components[] · packages/ui/src/molecules/panel/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - panelBodyVariants base: gap-4 → --spacing-4
-    - panelBodyVariants base: zoneGeometry → unresolved
+    - panelBodyVariants base: p-4 → --spacing-4
+    - panelBodyVariants base: rounded-none → --radius-none
     - panelFooterVariants base: gap-3 → --spacing-3
-    - panelFooterVariants base: zoneGeometry → unresolved
+    - panelFooterVariants base: p-4 → --spacing-4
+    - panelFooterVariants base: rounded-none → --radius-none
     - panelFooterVariants variant=banded: shadow-none → unresolved
     - panelHeaderVariants base: gap-3 → --spacing-3
-    - panelHeaderVariants base: zoneGeometry → unresolved
+    - panelHeaderVariants base: p-4 → --spacing-4
+    - panelHeaderVariants base: rounded-none → --radius-none
     - panelVariants base: gap-0 → --spacing-0
     - panelVariants base: p-0 → --spacing-0
     - panelVariants base: font-sans → --font-sans
@@ -3635,12 +3644,15 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
 - PanelHeader (components[] · packages/ui/src/molecules/panel/types.ts · @egdev/ui)
   - Visual anatomy (source classes; unresolved is not a guessed value):
     - panelBodyVariants base: gap-4 → --spacing-4
-    - panelBodyVariants base: zoneGeometry → unresolved
+    - panelBodyVariants base: p-4 → --spacing-4
+    - panelBodyVariants base: rounded-none → --radius-none
     - panelFooterVariants base: gap-3 → --spacing-3
-    - panelFooterVariants base: zoneGeometry → unresolved
+    - panelFooterVariants base: p-4 → --spacing-4
+    - panelFooterVariants base: rounded-none → --radius-none
     - panelFooterVariants variant=banded: shadow-none → unresolved
     - panelHeaderVariants base: gap-3 → --spacing-3
-    - panelHeaderVariants base: zoneGeometry → unresolved
+    - panelHeaderVariants base: p-4 → --spacing-4
+    - panelHeaderVariants base: rounded-none → --radius-none
     - panelVariants base: gap-0 → --spacing-0
     - panelVariants base: p-0 → --spacing-0
     - panelVariants base: font-sans → --font-sans
@@ -4299,7 +4311,6 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - surfaceVariants {"tone":"raisedTones","elevation":"1"}: shadow-[var(--shadow-edge),var(--shadow-elev-1)] → --shadow-edge, --shadow-elev-1
     - surfaceVariants {"tone":"raisedTones","elevation":"2"}: shadow-[var(--shadow-edge-strong),var(--shadow-elev-2)] → --shadow-edge-strong, --shadow-elev-2
     - surfaceVariants {"tone":"raisedTones","elevation":"3"}: shadow-[var(--shadow-edge-strong),var(--shadow-elev-3)] → --shadow-edge-strong, --shadow-elev-3
-    - surfaceVariants {"tone":"surface-0","elevation":"[1, 2, 3]"}: sheen → unresolved
     - surfaceVariants({ tone, elevation: raised ? (elevation ?? 1) : null, padding, radius }) · packages/ui/src/primitives/surface/useSurface.ts; see Surface anatomy
 ### tabBarVariants
 - tabBarVariants (components[] · packages/ui/src/organisms/tab-bar/types.ts · @egdev/ui)
@@ -4331,8 +4342,6 @@ catalog[] · docs/catalog.json · @egdev/ui · primitive · VisuallyHidden
     - tabsListVariants variant=outline: p-0.75 → --spacing
     - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: p-1.5 → --spacing
     - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: [&::-webkit-scrollbar-thumb]:rounded-full → --radius-full
-    - tabsListVariants {"variant":"underline"}: tabsEdgeFade → unresolved
-    - tabsListVariants {"variant":"['segmented', 'outline']","fullWidth":"true"}: tabsEdgeFade → unresolved
     - tabsPanelVariants base: pt-4 → --spacing-4
     - tabsTriggerVariants base: gap-2 → --spacing-2
     - tabsTriggerVariants base: font-sans → --font-sans

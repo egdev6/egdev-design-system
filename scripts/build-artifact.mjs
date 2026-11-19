@@ -351,6 +351,14 @@ function layoutUtility(className) {
 
 function anatomyClasses(node, source, layout = false) {
   const result = [];
+  // Reject nonliteral elements rather than following aliases, so cycles stay unresolved.
+  function literalClass(item) {
+    return (
+      ts.isStringLiteral(item) ||
+      ts.isNoSubstitutionTemplateLiteral(item) ||
+      (ts.isArrayLiteralExpression(item) && item.elements.every(literalClass))
+    );
+  }
   function visit(item) {
     if (ts.isStringLiteral(item) || ts.isNoSubstitutionTemplateLiteral(item)) {
       for (const word of item.text.split(/\s+/).filter(Boolean)) {
@@ -362,7 +370,20 @@ function anatomyClasses(node, source, layout = false) {
     } else if (ts.isArrayLiteralExpression(item)) {
       item.elements.forEach(visit);
     } else if (ts.isTemplateExpression(item) || ts.isIdentifier(item) || ts.isCallExpression(item)) {
-      result.push(internUtility({ className: item.getText(source), tokens: [], unresolved: true }));
+      const declaration = ts.isIdentifier(item) && checker.getSymbolAtLocation(item)?.valueDeclaration;
+      const initializer =
+        declaration &&
+        ts.isVariableDeclaration(declaration) &&
+        declaration.getSourceFile() === source &&
+        ts.isVariableDeclarationList(declaration.parent) &&
+        (declaration.parent.flags & ts.NodeFlags.Const) !== 0
+          ? declaration.initializer
+          : null;
+      if (initializer && literalClass(initializer)) {
+        visit(initializer);
+      } else {
+        result.push(internUtility({ className: item.getText(source), tokens: [], unresolved: true }));
+      }
     }
   }
   if (node) {
