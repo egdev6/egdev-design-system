@@ -57,6 +57,17 @@ function indicatorProposalHash(entry) {
 }
 // Reviewed implementation usages added after the immutable naming receipts.
 const postReceiptUsages = [
+  // AttachmentField v0.1 reuses five existing conventions after the frozen receipts.
+  ...[
+    'accessible-name',
+    'primary-value',
+    'initial-uncontrolled-value',
+    'interactive-value-change',
+    'localized-messages'
+  ].map((conventionId) => ({
+    conventionId,
+    source: 'packages/ui/src/molecules/attachment-field/types.ts#AttachmentFieldProps'
+  })),
   // ColorSwatchGroup records reviewed own props after the existing convention receipts.
   ...[
     ['accessible-name', 'ColorSwatchGroupProps.label'],
@@ -844,7 +855,12 @@ const postReceiptProposals = [
   'disclosure-presence',
   'disclosure-motion',
   'identity-image-source',
-  'panel-accent-edge'
+  'panel-accent-edge',
+  // AttachmentField v0.1 conventions have their own approval record (docs/decisions/prop-naming-attachment-field-approval.json).
+  'accepted-file-types',
+  'max-file-bytes',
+  'max-file-count',
+  'files-rejected'
 ];
 function historicalRegistry(registry, reviewedUsages = postReceiptUsages) {
   return beforeIndicatorConventions(registry)
@@ -1933,8 +1949,9 @@ test('Indicator conventions bind exact owner-approved proposal bytes and actual 
   // ArticleFeature naming additions add three more later in the chain.
   // AmbientBackground adds two directions; TopBar and Tabs each add two; Carousel and AppIcon add one each;
   // Dialog adds overlay scope and header layout; Collapsible adds two approved conventions; Panel adds one proposal.
-  assert.equal(actual.length, 173);
-  assert.equal(beforeIndicatorConventions(actual).length, 170);
+  // AttachmentField adds four approved file-intake conventions.
+  assert.equal(actual.length, 177);
+  assert.equal(beforeIndicatorConventions(actual).length, 174);
   const source = 'packages/ui/src/atoms/indicator/types.ts';
   const revision = digest(fs.readFileSync(resolve(root, source)));
   for (const [id, proposed, approved] of indicatorConventions) {

@@ -58,6 +58,7 @@
 @source "../packages/ui/src/molecules/chip-group/ChipGroup.stories.tsx";
 @source "../packages/ui/src/molecules/list-item/ListItem.stories.tsx";
 @source "../packages/ui/src/molecules/menu/Menu.stories.tsx";
+@source "../packages/ui/src/molecules/attachment-field/AttachmentField.stories.tsx";
 @source "../packages/ui/src/molecules/tabs/Tabs.stories.tsx";
 @source "../packages/ui/src/molecules/**/*.stories.tsx";
 @source "../packages/ui/src/primitives/aspect-ratio/AspectRatio.stories.tsx";

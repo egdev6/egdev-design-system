@@ -496,6 +496,16 @@
           "symbol": "TableProps",
           "revision": "sha256:d5a3e338a75fac41a8af39f4d451574a5f1af152ffd3d48f8d5fc49d373bcc05"
         }
+      },
+      {
+        "component": "AttachmentField",
+        "type": "File[] (controlled attachments)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/attachment-field/types.ts",
+          "symbol": "AttachmentFieldProps",
+          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
+        }
       }
     ]
   },
@@ -592,6 +602,16 @@
           "path": "packages/ui/src/molecules/table/types.ts",
           "symbol": "TableProps",
           "revision": "sha256:d5a3e338a75fac41a8af39f4d451574a5f1af152ffd3d48f8d5fc49d373bcc05"
+        }
+      },
+      {
+        "component": "AttachmentField",
+        "type": "File[] (optional)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/attachment-field/types.ts",
+          "symbol": "AttachmentFieldProps",
+          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
         }
       }
     ]
@@ -699,6 +719,16 @@
           "path": "packages/ui/src/molecules/table/types.ts",
           "symbol": "TableProps",
           "revision": "sha256:d5a3e338a75fac41a8af39f4d451574a5f1af152ffd3d48f8d5fc49d373bcc05"
+        }
+      },
+      {
+        "component": "AttachmentField",
+        "type": "(files: File[]) => void (required when controlled)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/attachment-field/types.ts",
+          "symbol": "AttachmentFieldProps",
+          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
         }
       }
     ]
@@ -2116,6 +2146,16 @@
           "path": "packages/ui/src/organisms/top-bar/types.ts",
           "symbol": "TopBarProps",
           "revision": "sha256:c68e86adf39da3f418e3e9770cbb44fde11743919330a7c022c205fe6a753c80"
+        }
+      },
+      {
+        "component": "AttachmentField",
+        "type": "string (required name of the attachment list)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/attachment-field/types.ts",
+          "symbol": "AttachmentFieldProps",
+          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
         }
       }
     ]
@@ -4199,6 +4239,16 @@
           "path": "packages/ui/src/templates/app-shell/types.ts",
           "symbol": "AppShellProps",
           "revision": "sha256:a38077de08175a76725986fd36f873de673304cb800d1134b90b18d80251aed4"
+        }
+      },
+      {
+        "component": "AttachmentField",
+        "type": "Partial<AttachmentFieldMessages>",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/attachment-field/types.ts",
+          "symbol": "AttachmentFieldProps",
+          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
         }
       }
     ]
@@ -8479,6 +8529,114 @@
           "path": "packages/ui/src/molecules/panel/types.ts",
           "symbol": "PanelProps",
           "revision": "sha256:c45b38f34521708baa0996044a57d81d172636bc2e7864115711bec43b386b91"
+        }
+      }
+    ]
+  },
+  {
+    "id": "accepted-file-types",
+    "name": "acceptedTypes",
+    "meaning": "Explicit list of MIME types a file field accepts; files outside it are rejected by the component itself.",
+    "whenToUse": "A component validates picked, dropped or pasted files by MIME type and reports rejections.",
+    "avoid": "A native picker filter that never rejects (Dropzone accept), file extensions, size or count limits.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-attachment-field-approval.json",
+      "scope": "convention:accepted-file-types",
+      "contentHash": "sha256:9fcdc98bdec2b5d9c658ab1ce50e9d31b1aa635e29f48c778f4e6f043e98fa3c"
+    },
+    "usages": [
+      {
+        "component": "AttachmentField",
+        "type": "readonly `image/${string}`[] (optional; omitted or empty means any image/*)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/attachment-field/types.ts",
+          "symbol": "AttachmentFieldProps",
+          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
+        }
+      }
+    ]
+  },
+  {
+    "id": "max-file-bytes",
+    "name": "maxFileBytes",
+    "meaning": "Largest allowed size, in bytes, of one file accepted by a file field; a file of exactly this size is accepted.",
+    "whenToUse": "A component validates the size of each picked, dropped or pasted file and reports rejections.",
+    "avoid": "Total size across files, display thresholds, text length limits or scroll viewport heights.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-attachment-field-approval.json",
+      "scope": "convention:max-file-bytes",
+      "contentHash": "sha256:f587f7f8f9fc142836377245c407050818d03e686e43ec59be335ec26fc46d5e"
+    },
+    "usages": [
+      {
+        "component": "AttachmentField",
+        "type": "number (optional per-file byte limit)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/attachment-field/types.ts",
+          "symbol": "AttachmentFieldProps",
+          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
+        }
+      }
+    ]
+  },
+  {
+    "id": "max-file-count",
+    "name": "maxFiles",
+    "meaning": "Largest number of files a file field holds at once, counting those already attached; further files are rejected.",
+    "whenToUse": "A component limits how many files can be attached and reports rejections of the excess.",
+    "avoid": "Display overflow caps on counters, text length limits or per-file size limits.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-attachment-field-approval.json",
+      "scope": "convention:max-file-count",
+      "contentHash": "sha256:fcbd110f0acc5ff1daaf590dda146b6b600a5a86abdbfccf9a6162d14ab1601a"
+    },
+    "usages": [
+      {
+        "component": "AttachmentField",
+        "type": "number (optional)",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/attachment-field/types.ts",
+          "symbol": "AttachmentFieldProps",
+          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
+        }
+      }
+    ]
+  },
+  {
+    "id": "files-rejected",
+    "name": "onFilesRejected",
+    "meaning": "Notification carrying the files a file field refused to attach, each with the rule it broke.",
+    "whenToUse": "A component validates files itself and lets the consumer log, mirror or react to rejections.",
+    "avoid": "Files that were accepted (use onValueChange), upload failures or the visible error text.",
+    "status": "approved",
+    "aliases": [],
+    "exceptions": [],
+    "approval": {
+      "reference": "docs/decisions/prop-naming-attachment-field-approval.json",
+      "scope": "convention:files-rejected",
+      "contentHash": "sha256:7c15adcff4fe8f688d576e664549d890877c2810496d43d1848658dc7889719b"
+    },
+    "usages": [
+      {
+        "component": "AttachmentField",
+        "type": "(rejections: AttachmentRejection[]) => void",
+        "status": "existing",
+        "source": {
+          "path": "packages/ui/src/molecules/attachment-field/types.ts",
+          "symbol": "AttachmentFieldProps",
+          "revision": "sha256:344b1b447c3d07fd0d0c3cc52d94373d4ba392d36b2942045bda584af509c75f"
         }
       }
     ]

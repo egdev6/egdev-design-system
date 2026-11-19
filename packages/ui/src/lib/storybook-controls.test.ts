@@ -38,6 +38,7 @@ const components = [
   ['Field', 'molecules/field'],
   ['FieldMessage', 'atoms/field-message'],
   ['Dropzone', 'atoms/dropzone'],
+  ['AttachmentField', 'molecules/attachment-field'],
   ['Heading', 'primitives/text'],
   ['Icon', 'atoms/icon'],
   ['IconButton', 'atoms/icon-button'],
@@ -486,6 +487,19 @@ const expected: Record<string, Record<string, string | false>> = {
     multiple: 'boolean',
     variant: 'select'
   },
+  attachmentfield: {
+    label: 'text',
+    acceptedTypes: false,
+    maxFileBytes: 'number',
+    maxFiles: 'number',
+    onFilesRejected: false,
+    messages: false,
+    disabled: 'boolean',
+    children: false,
+    value: false,
+    onValueChange: false,
+    defaultValue: false
+  },
   stack: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   cluster: { gap: 'select', justifyContent: 'select', asChild: 'boolean', alignItems: 'select' },
   text: {
@@ -757,6 +771,7 @@ const ownPropCounts: Record<string, number> = {
   buttongroup: 3,
   pageheader: 6,
   dropzone: 6,
+  attachmentfield: 11,
   gauge: 8,
   field: 9,
   fieldmessage: 3,
@@ -1357,6 +1372,24 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     }
   });
 
+  it('keeps every controlled and uncontrolled AttachmentField row after real union extraction', () => {
+    const { argTypes, args } = story('AttachmentField');
+    for (const name of ['label', 'value', 'onValueChange', 'defaultValue', 'acceptedTypes', 'messages']) {
+      expect(argTypes[name], name).toBeDefined();
+    }
+    expect(argTypes.label?.type?.required).toBe(true);
+    for (const name of ['value', 'defaultValue', 'onValueChange']) {
+      expect(argTypes[name]?.control, name).toBe(false);
+    }
+    for (const name of ['id', 'title', 'aria-describedby', 'className', 'style']) {
+      expect(argTypes[name], name).toBeDefined();
+    }
+    for (const name of ['onPaste', 'onChange', 'ref', 'asChild', 'role', 'aria-label']) {
+      expect(argTypes[name], name).toBeUndefined();
+    }
+    expect(args).toEqual({});
+  });
+
   it('exposes Panel accentEdge as an optional start-only select without a default', () => {
     const { argTypes, args } = story('Panel');
     expect(argTypes.accentEdge?.control).toEqual({ type: 'select' });
@@ -1434,6 +1467,7 @@ describe('registered JSDoc Controls through installed Storybook extraction and i
     ['Menu', { side: '"bottom"', align: '"start"', defaultOpen: 'false' }],
     ['Chip', { mode: '"toggle"', defaultPressed: 'false', disabled: 'false', external: 'false' }],
     ['AspectRatio', { ratio: '1' }],
+    ['AttachmentField', { disabled: 'false' }],
     ['Stack', { gap: '4', alignItems: '"stretch"', justifyContent: '"start"', asChild: 'false' }],
     ['Cluster', { gap: '4', alignItems: '"center"', justifyContent: '"start"', asChild: 'false' }],
     [

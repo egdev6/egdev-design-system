@@ -37,6 +37,7 @@
 @source "../atoms/textarea/types.ts";
 @source "../atoms/toggle/types.ts";
 @source "../atoms/tooltip/types.ts";
+@source "../molecules/attachment-field/types.ts";
 @source "../molecules/dialog/types.ts";
 @source "../molecules/field/types.ts";
 @source "../molecules/nav-list/types.ts";
