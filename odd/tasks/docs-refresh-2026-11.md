@@ -14,12 +14,14 @@ Bring the README and project documentation up to date with the current design sy
 
 | ID | Specs | Route | Branch | Commit |
 | --- | --- | --- | --- | --- |
-| T1 | S1, S2, S4, S5 | worker A (draft) → owner review → write | docs/readme-branding | this commit |
-| T2 | S1, S3, S4, S5 | worker B | docs/project-docs-refresh | — |
+| T1 | S1, S2, S4, S5 | worker A (draft) → owner review → write | docs/readme-branding | 477cbd1 |
+| T2 | S1, S3, S4, S5 | worker B | docs/project-docs-refresh → moved to docs/readme-branding (one PR) | this commit |
 | T3 | S1 | parent | both | checks, PRs, CI, merge |
 
 ## Log
 
 - L1 (owner, verbatim): S1.
 - L2 (owner choices): S2, S3.
+- L3: T2 done by worker B (AGENTS six packages + commands + distribution pointer; CONTRIBUTING #491, #366 open, CI jobs and CLI tests; ARQUITECTURA six-package table + Distribution section; PLAN #491; versioning.md system/mcp shipped + status/--add; effects README Estado). Parent fixed effects README line 3 (four exported components, src/index.ts:1-8). Facts checked against sources; links resolve.
 - L4 (owner choices on the README draft): banner "Generate a project banner with Encuadre (Recommended)" (generated with egdev_media_tool generar_banner wip, at .github/assets/banner.png, mode 644); milestone badge, verbatim: "quita el banner de milestone"; "Remove the Mando note" (Gentle Dots paragraph removed, tools list kept); "Approve and publish". No version badge, no project screenshot.
+- L5: The two branches shared the plan commit, so T2 was cherry-picked onto docs/readme-branding to ship as one PR (only this log conflicted; resolved keeping both entries).

@@ -19,7 +19,10 @@ Public React availability is defined by `packages/ui/src/index.ts` and `packages
 |---|---|---|
 | `@egdev/tokens` | `src/theme.css` (fuente CSS manual); `tokens.css` (artefacto nativo compilado) y `theme.css` (fuente para Tailwind v4) | — |
 | `@egdev/ui` | Primitivas, átomos, moléculas, organismos y plantillas genéricos | Paquetes individuales `@radix-ui/react-*`, CVA, `@egdev/tokens` |
-| `@egdev/effects` | Capas de efecto de la web (AmbientBackground, Isotipo3D) | canvas, three.js, `@egdev/tokens` |
+| `@egdev/effects` | Capas de efecto de la web (AmbientBackground, Isotipo3D, ScrollReveal, HomeTemplate) | `@egdev/ui`, canvas, three.js (peer exacto `0.160.0`), `@egdev/tokens` |
+| `@egdev/system` | Artefacto de datos: `design-system.json` y el `system.md` generado | — (se genera desde tokens, ui y effects) |
+| `@egdev/mcp` | Servidor MCP offline y de solo lectura sobre el artefacto | `@egdev/system`, `@modelcontextprotocol/sdk`, `zod` |
+| `@egdev/cli` | Comando `egdev-ds` para apps consumidoras | — (solo la biblioteca estándar de Node 24) |
 
 Lo que solo tiene sentido en un producto **no entra en el sistema**: se queda en el repo de esa app, en `src/patterns/`, y se construye con `@egdev/ui`:
 
@@ -30,6 +33,10 @@ Lo que solo tiene sentido en un producto **no entra en el sistema**: se queda en
 **Regla de subida:** ~~un patrón de producto pasa a `@egdev/ui` cuando lo necesita una segunda app.~~ Se generaliza al subir: nombre neutro, sin datos ni textos del dominio.
 
 > **Web consumer amendment (approved 2026-11-02).** The second-app requirement no longer gates the web: a web building block that a new web view could reuse enters `@egdev/ui` even when only the web uses it, provided no domain data is built in, and choreography belongs to `@egdev/effects`. Both struck-through passages above keep their original wording as superseded history. See [CATALOGACION.md — web consumer amendment](CATALOGACION.md#web-consumer-amendment-approved-2026-11-02); Mando, Cadencia and every other product keep the original rule.
+
+## Distribution
+
+The six packages ship to products as versioned local tarballs, without a registry. `pnpm release:pack` packs the release set and writes `release/release.json` (commit, dirty flag and the sha256 of each tarball). Consumer apps install and upgrade that set with `egdev-ds` from `@egdev/cli` (`init`, `upgrade`, `upgrade --add`, `doctor`, `status`). See [install.md](distribution/install.md), [egdev-ds-cli.md](distribution/egdev-ds-cli.md) and [versioning.md](distribution/versioning.md).
 
 ## Niveles
 

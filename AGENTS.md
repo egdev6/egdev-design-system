@@ -6,15 +6,20 @@ Este archivo se inyecta como contexto a cualquier agente que trabaje en el repo.
 
 **EGDEV Foundation** en código: sistema de diseño de egdev.es y de las herramientas egdev. Monorepo pnpm.
 
-| Paquete | Ruta |
-|---|---|
-| `@egdev/tokens` | `packages/tokens` |
-| `@egdev/ui` | `packages/ui` |
-| `@egdev/effects` | `packages/effects` |
+| Paquete | Ruta | Rol |
+|---|---|---|
+| `@egdev/tokens` | `packages/tokens` | Token CSS source (`theme.css`) and compiled native artifact (`tokens.css`) |
+| `@egdev/ui` | `packages/ui` | Radix-based component library: primitives to templates |
+| `@egdev/effects` | `packages/effects` | Web effect layers (AmbientBackground, Isotipo3D, ScrollReveal, HomeTemplate); canvas and three.js |
+| `@egdev/system` | `packages/system` | Data-only artifact: `design-system.json` and the generated `system.md` |
+| `@egdev/mcp` | `packages/mcp` | Offline, read-only MCP server over the `@egdev/system` artifact |
+| `@egdev/cli` | `packages/cli` | The `egdev-ds` command (`init`, `upgrade`, `upgrade --add`, `doctor`, `status`) for consumer apps |
 
 **Stack:** React 19 · strict TypeScript · individual `@radix-ui/react-*` packages · CVA · Tailwind v4 appearance utilities backed by `@egdev/tokens` · `cn()` (`clsx` + `twMerge`) · Storybook 10 · Vitest · Biome · pnpm.
 
-**Comandos:** `pnpm storybook`, `pnpm test`, `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm tokens`.
+**Comandos:** `pnpm storybook`, `pnpm test`, `pnpm typecheck`, `pnpm lint`, `pnpm build`, `pnpm tokens`. Packaging and distribution: `pnpm release:pack` (tarballs plus `release/release.json`), `pnpm test:cli`, `pnpm test:cli:consumer`, `pnpm test:package-release`, `pnpm artifact`, `pnpm system:docs`; the full list is in the root `package.json` `scripts`.
+
+**Distribution:** products consume the six-package release set as local tarballs, installed and upgraded with `egdev-ds`; see [docs/distribution/](docs/distribution/) ([install](docs/distribution/install.md), [egdev-ds](docs/distribution/egdev-ds-cli.md), [versioning](docs/distribution/versioning.md)).
 
 **Current React availability:** the public exports of `packages/ui/src/index.ts` (and `packages/effects/src/index.ts`) are authoritative; [the catalog](docs/CATALOGO.md) lists them by level. They include primitives such as Surface, atoms such as IconButton, molecules such as Tabs, and the web-catalog organisms and templates (e.g. WebSection, WebTemplate). `cn` is a utility, not a component. Never infer availability from CSS, stories or the catalog alone; check the barrel. Gauge keeps its [effective v0.10 contract and separate plan approval](skills/_shared/component-contract.md#current-gauge-contract); being exported does not establish catalog-wide M3 compliance for any component.
 
