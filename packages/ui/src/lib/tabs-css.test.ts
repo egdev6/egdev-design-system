@@ -128,6 +128,18 @@ it('compiles production Tabs CVA utilities without writing build artifacts', asy
   const beforeFinePointer = css.slice(0, css.indexOf(finePointerSelector));
   const finePointerMedia = beforeFinePointer.slice(beforeFinePointer.lastIndexOf('@media'));
   expect(finePointerMedia).toMatch(/^@media\s*\(hover:\s*hover\)\s*and\s*\(pointer:\s*fine\)\s*\{\s*$/);
+  // v0.5 fill: static utilities for the Panel and Tabs fill variants ship in the production stylesheet.
+  expect(rule('.h-full')).toContain('height: 100%');
+  expect(rule('.min-h-0')).toMatch(/min-height:\s*var\(--space-0\)/);
+  expect(rule('.flex-1')).toMatch(/flex:\s*1/);
+  expect(rule('.shrink-0')).toContain('flex-shrink: 0');
+  expect(rule('.overflow-y-auto')).toContain('overflow-y: auto');
+  expect(rule(String.raw`.\[scrollbar-gutter\:stable\]`)).toContain('scrollbar-gutter: stable');
+  expect(rule(String.raw`.focus-visible\:-outline-offset-2`)).toMatch(/outline-offset:\s*calc\(2px\s*\*\s*-1\)/);
+  // D-G: a Panel Body with a direct data-fill child (the fill Tabs root) hands the gutter to that child.
+  expect(css).toMatch(
+    /\.has-\\\[\\>\\\[data-fill\\\]\\\]\\:\\\[scrollbar-gutter\\:auto\\\]:has\(\s*>\s*\[data-fill\]\s*\)\s*\{[^}]*scrollbar-gutter:\s*auto/
+  );
   const theme = readFileSync(fileURLToPath(new URL('../../../tokens/src/theme.css', import.meta.url)), 'utf8');
   // Static layers only: a var() inside a :root token would be substituted at :root, never on the list.
   expect(theme).toContain(

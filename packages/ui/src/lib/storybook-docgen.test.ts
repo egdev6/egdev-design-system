@@ -4968,14 +4968,15 @@ describe('Panel first-wave metadata contract', () => {
     children: 'false',
     variant: 'select',
     tone: 'select',
-    accentEdge: 'select'
+    accentEdge: 'select',
+    fill: 'boolean'
   };
-  const constants: Record<string, string> = { variant: 'default', tone: 'surface-1' };
+  const constants: Record<string, string> = { variant: 'default', tone: 'surface-1', fill: 'false' };
   const parts: { name: string; native: string[]; own: string[] }[] = [
     {
       name: 'Panel',
       native: ['id', 'title', 'dir', 'aria-describedby', 'className'],
-      own: ['children', 'variant', 'tone', 'accentEdge']
+      own: ['children', 'variant', 'tone', 'accentEdge', 'fill']
     },
     { name: 'PanelHeader', native: ['id', 'title', 'dir', 'aria-describedby', 'className'], own: ['children'] },
     { name: 'PanelBody', native: ['id', 'title', 'dir', 'aria-describedby', 'className'], own: ['children'] },
@@ -4985,7 +4986,7 @@ describe('Panel first-wave metadata contract', () => {
   it('annotates every own union declaration and binds false-control reasons to real stories', () => {
     const file = ast(source('molecules/panel/types.ts'));
     const properties = ownProps(file, ['PanelProps', 'PanelHeaderProps', 'PanelBodyProps', 'PanelFooterProps']);
-    expect(properties).toHaveLength(7);
+    expect(properties).toHaveLength(8);
     expect([...new Set(properties.map((property) => property.name.getText(file)))].sort()).toEqual(
       Object.keys(controls).sort()
     );

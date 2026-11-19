@@ -2214,6 +2214,10 @@ const directedTabs: TabsProps = { ...tabsProps, dir: 'rtl' };
 const formattedTab: TabsItem = { value: 'queue', label: 'Queue', content: null, count: '99+' };
 // @ts-expect-error Only underline/segmented treatments exist.
 const pillTabs: TabsProps = { ...tabsProps, variant: 'pill' };
+export const tabsFillProps: TabsProps = { ...tabsProps, variant: 'outline', fill: true };
+export const tabsFillOffProps: TabsProps = { ...tabsProps, fill: false };
+// @ts-expect-error fill is a boolean opt-in, never a string.
+const stringFillTabs: TabsProps = { ...tabsProps, fill: 'yes' };
 // @ts-expect-error Only md/sm underline sizes exist.
 const largeTabs: TabsProps = { ...tabsProps, size: 'lg' };
 
@@ -2982,6 +2986,13 @@ const panelWaveFooter: PanelFooterProps = { children: 'Metadata' };
 const panelWaveProps: PanelProps = { children: 'Composition supplied below' };
 const panelAccentProps: PanelProps = { children: 'Content', accentEdge: 'start', tone: 'overlay', variant: 'banded' };
 const panelOptionalAccent: PanelProps = { children: 'Content', accentEdge: undefined };
+export const panelFillProps: PanelProps = { children: 'Content', fill: true, variant: 'banded' };
+export const panelFillOffProps: PanelProps = { children: 'Content', fill: false };
+// @ts-expect-error fill is a boolean opt-in, never a string.
+const panelFillString: PanelProps = { children: 'Content', fill: 'yes' };
+// @ts-expect-error fill belongs to Panel, not its zones.
+const panelPartFill: PanelBodyProps = { children: null, fill: true };
+export type PanelFillNegatives = [typeof panelFillString, typeof panelPartFill];
 export function PanelConsumerSamples({ tone = panelWaveTone, variant = panelWaveVariant, accentEdge, dir }: { tone?: PanelTone; variant?: PanelVariant; accentEdge?: PanelProps['accentEdge']; dir?: 'ltr' | 'rtl' } = {}) {
   return createElement(Surface, { tone: 'surface-2', radius: 'xl', padding: 'md', children:
     createElement(Panel, { ...panelWaveProps, id: 'packed-panel-wave', tone, variant, accentEdge, dir, children: [
@@ -4551,6 +4562,22 @@ function assertTabsCSS(css) {
   assert.match(css, /border-radius:\s*calc\(var\(--radius-md\)\s*-\s*[^;]+\)/);
   assert.match(css, /scrollbar-width:\s*none/);
   assert.match(css, /overflow-wrap:\s*anywhere/);
+  for (const selector of [
+    '.h-full',
+    '.min-h-0',
+    '.flex-1',
+    '.shrink-0',
+    '.overflow-y-auto',
+    String.raw`.\[scrollbar-gutter\:stable\]`,
+    String.raw`.focus-visible\:-outline-offset-2`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing fill utility ' + selector);
+  }
+  assert.match(
+    css,
+    /\.has-\\\[\\>\\\[data-fill\\\]\\\]\\:\\\[scrollbar-gutter\\:auto\\\]:has\(\s*>\s*\[data-fill\]\s*\)\s*\{[^}]*scrollbar-gutter:\s*auto/,
+    'Missing the Panel Body :has(> [data-fill]) gutter rule'
+  );
 }
 
 // PullQuote quote recipes, logical filet and measure ship without preflight or a stylesheet.
@@ -4932,6 +4959,22 @@ function assertPanelConsumerCSS(css) {
     const selector = '.' + name.replace(/[^\w-]/g, '\\$&');
     assert.ok(css.includes(selector), 'Missing packed Panel accent edge utility ' + name);
   }
+  for (const selector of [
+    '.h-full',
+    '.min-h-0',
+    '.flex-1',
+    '.shrink-0',
+    '.overflow-y-auto',
+    String.raw`.\[scrollbar-gutter\:stable\]`,
+    String.raw`.focus-visible\:-outline-offset-2`
+  ]) {
+    assert.ok(css.includes(selector), 'Missing fill utility ' + selector);
+  }
+  assert.match(
+    css,
+    /\.has-\\\[\\>\\\[data-fill\\\]\\\]\\:\\\[scrollbar-gutter\\:auto\\\]:has\(\s*>\s*\[data-fill\]\s*\)\s*\{[^}]*scrollbar-gutter:\s*auto/,
+    'Missing the Panel Body :has(> [data-fill]) gutter rule'
+  );
 }
 
 function assertDialogConsumerCSS(css) {

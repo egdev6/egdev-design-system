@@ -28,6 +28,8 @@ const items: TabsItem[] = [
  * Segmented and outline fullWidth distribute tabs equally when they fit; labelWrap permits long labels to wrap at
  * logical start.
  * The options are independent, do not affect underline and preserve the visible overflow scrollbar.
+ * fill makes Tabs fill a host that owns a definite height: the tab list stays fixed and only the active panel
+ * scrolls, and the root carries a bare data-fill marker. Inactive panels unmount, so scroll position is not kept.
  * className supports root margin, width and grid placement only, not internal appearance overrides.
  */
 const meta: Meta<typeof Tabs> = {
@@ -213,4 +215,26 @@ export const EdgeFade: Story = {
       </div>
     );
   }
+};
+
+const fillItems: TabsItem[] = manyItems.map((item) => ({
+  ...item,
+  content: Array.from({ length: 14 }, (_, index) => (
+    <p key={index}>
+      {item.label} entry {index + 1}: the list stays fixed while this panel scrolls.
+    </p>
+  ))
+}));
+
+/**
+ * A fixed 440 × 640 host owns the definite height. The overflowing tab list keeps its fade, buttons and focus
+ * reveal inside the fixed region while the active panel scrolls; for a Panel host see Molecules/Panel FillWithTabs.
+ */
+export const FillHost: Story = {
+  args: { fill: true, variant: 'outline', items: fillItems, label: 'Project views' },
+  render: (args) => (
+    <div className='h-[640px] w-[440px]'>
+      <Tabs {...args} />
+    </div>
+  )
 };
