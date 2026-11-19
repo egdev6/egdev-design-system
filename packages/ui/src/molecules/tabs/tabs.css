@@ -1,0 +1,35 @@
+/*
+ * Tabs v0.4 scroll-driven edge masking (approved stylesheet role). Static CVA utilities in types.ts apply
+ * the mask and bind this animation to the list's own inline scroll timeline behind
+ * @supports (animation-timeline: scroll()). Without overflow the timeline is inactive, both sizes stay
+ * 0px and the mask is fully opaque. @property and @keyframes are global at-rules, so they stay unlayered.
+ */
+@property --eg-tabs-fade-start {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --eg-tabs-fade-end {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+/* Start: only the inline-end edge fades. Middle: both. End: only the inline-start edge. */
+@keyframes eg-tabs-edge-fade {
+  0% {
+    --eg-tabs-fade-start: 0px;
+    --eg-tabs-fade-end: var(--eg-tabs-fade-size);
+  }
+  10% {
+    --eg-tabs-fade-start: var(--eg-tabs-fade-size);
+  }
+  90% {
+    --eg-tabs-fade-end: var(--eg-tabs-fade-size);
+  }
+  100% {
+    --eg-tabs-fade-start: var(--eg-tabs-fade-size);
+    --eg-tabs-fade-end: 0px;
+  }
+}

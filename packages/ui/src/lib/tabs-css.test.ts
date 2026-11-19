@@ -95,4 +95,35 @@ it('compiles production Tabs CVA utilities without writing build artifacts', asy
   expect(css.indexOf(String.raw`.data-\[state\=active\]\:focus-visible\:shadow-focus`)).toBeGreaterThan(
     css.indexOf(edgeOnly)
   );
+  // v0.4 edge fade: registered fade sizes, scroll-driven keyframes and a mask guarded by @supports, so
+  // browsers without scroll timelines render exactly as v0.3. Longhands only: the animation shorthand
+  // would reset animation-timeline.
+  expect(css).toMatch(/@property --eg-tabs-fade-start\s*\{[^}]*syntax:\s*"<length>"[^}]*initial-value:\s*0px/);
+  expect(css).toMatch(/@property --eg-tabs-fade-end\s*\{[^}]*inherits:\s*false/);
+  expect(css).toMatch(/@keyframes eg-tabs-edge-fade\s*\{[\s\S]*--eg-tabs-fade-end:\s*var\(--eg-tabs-fade-size\)/);
+  const fadeGuard =
+    /@supports\s*\(animation-timeline:\s*scroll\(\)\)\s*\{[\s\S]*?mask-image:\s*var\(--mask-scroll-fade-inline\)/;
+  expect(css).toMatch(fadeGuard);
+  expect(css).toMatch(
+    /@supports\s*\(animation-timeline:\s*scroll\(\)\)\s*\{[\s\S]*?animation-timeline:\s*scroll\(self inline\)/
+  );
+  expect(css).not.toMatch(/animation:\s*eg-tabs-edge-fade/);
+  // The fade width equals the scroll padding, so focus always lands past the faded zone.
+  expect(rule(String.raw`.\[--eg-tabs-fade-size\:var\(--space-8\)\]`)).toMatch(
+    /--eg-tabs-fade-size:\s*var\(--space-8\)/
+  );
+  expect(rule('.scroll-px-8')).toMatch(/scroll-padding-inline:\s*var\(--space-8\)/);
+  expect(css).toMatch(
+    /@supports\s*\(animation-timeline:\s*scroll\(\)\)\s*\{[\s\S]*?mask-size:\s*var\(--mask-fade-left\) 100%,\s*calc\(100% - var\(--mask-fade-left\) - var\(--mask-fade-right\)\) 100%,\s*var\(--mask-fade-right\) 100%/
+  );
+  expect(css).toMatch(
+    /@supports\s*\(animation-timeline:\s*scroll\(\)\)\s*\{[\s\S]*?mask-position:\s*left,\s*var\(--mask-fade-left\) 0,\s*right/
+  );
+  expect(css).toMatch(/@supports\s*\(animation-timeline:\s*scroll\(\)\)\s*\{[\s\S]*?mask-repeat:\s*no-repeat/);
+  expect(css).toMatch(/:dir\(rtl\)[\s\S]*?--mask-fade-left:\s*var\(--eg-tabs-fade-end\)/);
+  const theme = readFileSync(fileURLToPath(new URL('../../../tokens/src/theme.css', import.meta.url)), 'utf8');
+  // Static layers only: a var() inside a :root token would be substituted at :root, never on the list.
+  expect(theme).toContain(
+    '--mask-scroll-fade-inline: linear-gradient(to right, transparent, #000), linear-gradient(#000, #000), linear-gradient(to left, transparent, #000);'
+  );
 }, 30_000);
