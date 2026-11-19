@@ -14,7 +14,7 @@ Bring the README and project documentation up to date with the current design sy
 
 | ID | Specs | Route | Branch | Commit |
 | --- | --- | --- | --- | --- |
-| T1 | S1, S2, S4, S5 | worker A (draft) → owner review → write | docs/readme-branding | — |
+| T1 | S1, S2, S4, S5 | worker A (draft) → owner review → write | docs/readme-branding | this commit |
 | T2 | S1, S3, S4, S5 | worker B | docs/project-docs-refresh | — |
 | T3 | S1 | parent | both | checks, PRs, CI, merge |
 
@@ -22,3 +22,4 @@ Bring the README and project documentation up to date with the current design sy
 
 - L1 (owner, verbatim): S1.
 - L2 (owner choices): S2, S3.
+- L4 (owner choices on the README draft): banner "Generate a project banner with Encuadre (Recommended)" (generated with egdev_media_tool generar_banner wip, at .github/assets/banner.png, mode 644); milestone badge, verbatim: "quita el banner de milestone"; "Remove the Mando note" (Gentle Dots paragraph removed, tools list kept); "Approve and publish". No version badge, no project screenshot.
