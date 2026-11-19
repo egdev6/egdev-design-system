@@ -4,6 +4,11 @@ All notable changes to this package are documented here, newest first. Versions 
 [0.x policy](../../docs/distribution/versioning.md) of this repository, and every version ships as
 a local tarball from `pnpm release:pack`.
 
+## 0.2.3
+
+- No code changes. Repacked with `@egdev/ui` 0.4.0 and `@egdev/tokens` 0.6.0 so the effects
+  tarball matches the current release set.
+
 ## 0.2.2
 
 - No code changes. The tarball now ships this `CHANGELOG.md`, and `release:pack` records the release in `release.json` (commit, dirty flag, sha256), so `egdev-ds upgrade` can verify the set and show what changed.
