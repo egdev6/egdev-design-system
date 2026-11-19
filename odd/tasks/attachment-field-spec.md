@@ -14,9 +14,12 @@ Draft the individual spec for the new `@egdev/ui` molecule that attaches pasted 
 | ID | Specs | Task | Route | Commit |
 |---|---|---|---|---|
 | T1 | S1–S4 | Draft spec v0.1 with open decisions | worker | see L2 |
-| T2 | S3 | Owner decisions, approval, issue handoff comment on #497 | inline | pending |
+| T2 | S3 | Owner decisions, approval, issue handoff comment on #497 | inline | c0b43e4, PR #498, #497 comment |
+| T3 | S1, S4 | Implementation plan (separate owner approval) | worker | see L4 |
 
 ## Log
 
 - L1 — Owner: "catalogala" → cataloging approved with "Sí, va a @egdev/ui"; then "dale" to start the spec.
 - L2 — Worker drafted `docs/components/attachment-field/v0.1/spec.md` (Q2–Q7 plus C1–C4, each with a recommendation). Owner: "Acepto todas las recomendaciones" → spec v0.1 approved; contentSHA256 recorded in the spec header. Next: commit, issue handoff comment on #497, then the implementation plan (separate approval).
+- L3 — PR #498 opened (CI green); handoff comment posted on #497. Merge blocked by branch policy (needs owner; no --admin without explicit authorization). Owner: "en orden" → plan next.
+- L4 — Plan written by worker; owner approved: "Apruebo, con el registro de aprobación (OQ1)". Implementation tracked in `odd/tasks/attachment-field-build.md`.
