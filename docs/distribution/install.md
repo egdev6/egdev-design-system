@@ -36,7 +36,9 @@ Both installation paths consume exactly the tarballs of one `release:pack` run.
 
 ## Prerequisites
 
-- **Node.js 24**, the range declared by `engines` in the repository root.
+- **Node.js 24**, the range declared by `engines` in the repository root. `@egdev/cli` declares
+  `engines.node` `>=24 <25`, so the app's CI must run Node 24 too: move a CI pinned to Node 22 before
+  adding `ds:doctor` (Nexo had to, egdev6/nexo#67).
 - **pnpm or npm** in the app. For pnpm, use the `pnpm@10.34.6` pin the repository uses, so tarball
   resolution behaves identically. yarn and bun are not supported.
 - **Vite or Next.js.** `egdev-ds` finds the CSS entry through `index.html` (Vite) or
@@ -114,7 +116,7 @@ egdev-ds doctor . --json
 one commit), the overrides, the internal and external peers, the CSS imports, the design-system
 guard (raw `<button>`, `<input>`, `<a>`, `<label>` and `.eg-*` selectors outside the theme folder)
 and the MCP wiring. Each finding has a stable `DS0xx` code; errors exit 1, warnings do not. With
-`--from`, it also compares the app with that release. Add `ds:doctor` to the app's CI.
+`--from`, it also compares the app with that release. Add `ds:doctor` to the app's CI, on Node 24.
 
 `doctor` loads the app's allowlist and runs the app's own `typescript` and `postcss`: run it only on
 projects you trust, as you would their tests.
